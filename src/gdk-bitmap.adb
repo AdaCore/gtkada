@@ -33,15 +33,20 @@ package body Gdk.Bitmap is
    --  Create_From_Data  --
    ------------------------
 
-   procedure Create_From_Data (Bitmap :    out Gdk_Bitmap;
-                               Window : in     Gdk.Window.Gdk_Window;
-                               Data   : in     String;
-                               Width  : in     Gint;
-                               Height : in     Gint) is
-      function Internal (Window        : in Gdk.Window.Gdk_Window;
-                         Data          : in String;
-                         Width, Height : in Gint) return Gdk_Bitmap;
+   procedure Create_From_Data
+     (Bitmap :    out Gdk_Bitmap;
+      Window : in     Gdk.Window.Gdk_Window;
+      Data   : in     String;
+      Width  : in     Gint;
+      Height : in     Gint)
+   is
+      function Internal
+        (Window : Gdk.Window.Gdk_Window;
+         Data   : String;
+         Width  : Gint;
+         Height : Gint) return Gdk_Bitmap;
       pragma Import (C, Internal, "gdk_bitmap_create_from_data");
+
    begin
       Bitmap := Internal (Window, Data & ASCII.NUL, Width, Height);
    end Create_From_Data;
@@ -50,15 +55,19 @@ package body Gdk.Bitmap is
    -- Gdk_New --
    -------------
 
-   procedure Gdk_New (Bitmap : out Gdk_Bitmap;
-                      Window : in  Gdk.Window.Gdk_Window;
-                      Width  : in  Gint;
-                      Height : in  Gint) is
-      function Internal (Window : in Gdk.Window.Gdk_Window;
-                         Width  : in Gint;
-                         Height : in Gint;
-                         Depth  : in Gint) return Gdk_Bitmap;
+   procedure Gdk_New
+     (Bitmap : out Gdk_Bitmap;
+      Window : in  Gdk.Window.Gdk_Window;
+      Width  : in  Gint;
+      Height : in  Gint)
+   is
+      function Internal
+        (Window : in Gdk.Window.Gdk_Window;
+         Width  : in Gint;
+         Height : in Gint;
+         Depth  : in Gint) return Gdk_Bitmap;
       pragma Import (C, Internal, "gdk_pixmap_new");
+
    begin
       Bitmap := Internal (Window, Width, Height, 1);
    end Gdk_New;
