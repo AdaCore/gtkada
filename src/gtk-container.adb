@@ -61,6 +61,19 @@ package body Gtk.Container is
       return List;
    end Children;
 
+   -------------------
+   -- Get_Toplevels --
+   -------------------
+
+   function Get_Toplevels return Gtk.Widget.Widget_List.Glist is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_container_get_toplevels");
+      List : Gtk.Widget.Widget_List.Glist;
+   begin
+      Gtk.Widget.Widget_List.Set_Object (List, Internal);
+      return List;
+   end Get_Toplevels;
+
    ------------
    -- Remove --
    ------------

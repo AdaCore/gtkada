@@ -48,6 +48,7 @@ package Gtk.Container is
 
    function Children (Container : access Gtk_Container_Record)
                       return Gtk.Widget.Widget_List.Glist;
+   function Get_Toplevels return Gtk.Widget.Widget_List.Glist;
 
    procedure Set_Focus_Hadjustment
      (Container  : access Gtk_Container_Record;
