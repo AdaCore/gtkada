@@ -31,6 +31,7 @@ with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
 with Gdk.Window;
+with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Style; use Gtk.Style;
@@ -72,6 +73,9 @@ package Gtk.Clist is
 
    procedure Column_Titles_Show (Clist : access Gtk_Clist_Record);
 
+   function Columns_Autosize (Clist  : access Gtk_Clist_Record) return Gint;
+   --  Returns the total width of all columns after autosize.
+
    procedure Freeze (Clist : access Gtk_Clist_Record);
 
    function Get_Cell_Type
@@ -79,6 +83,11 @@ package Gtk.Clist is
       Row    : in Gint;
       Column : in Gint)
       return      Gtk_Cell_Type;
+
+   function Get_Cell_Style (Clist  : access Gtk_Clist_Record;
+                            Row    : in     Gint;
+                            Column : in     Gint)
+                            return          Gtk.Style.Gtk_Style'Class;
 
    function Get_Clist_Window (Clist : access Gtk_Clist_Record)
                               return Gdk.Window.Gdk_Window;
@@ -90,6 +99,9 @@ package Gtk.Clist is
    function Get_Column_Title
      (Clist  : access Gtk_Clist_Record; Column : in Gint)
       return String;
+
+   function Get_Hadjustment (Clist  : access  Gtk_Clist_Record)
+                             return           Gtk.Adjustment.Gtk_Adjustment;
 
    procedure Get_Pixmap
      (Clist    : access Gtk_Clist_Record;
@@ -110,6 +122,10 @@ package Gtk.Clist is
       Is_Valid : out Boolean);
    --  The result is not meaningful if Is_Valid is false
    --  The only way to get the string is to use Get_Text (See below)
+
+   function Get_Row_Style (Clist  : access Gtk_Clist_Record;
+                           Row    : in     Gint)
+                           return          Gtk.Style.Gtk_Style'Class;
 
    function Get_Selectable
      (Clist : access Gtk_Clist_Record; Row : Gint)
@@ -137,6 +153,9 @@ package Gtk.Clist is
    --  If there was a problem, a null-length string is returned.
    --  The problem might appear in case the row or the column are
    --  invalid, or if the cell does not contain any text.
+
+   function Get_Vadjustment (Clist  : access Gtk_Clist_Record)
+                             return          Gtk.Adjustment.Gtk_Adjustment;
 
    procedure Gtk_New (Widget : out Gtk_Clist; Columns : in Gint);
    procedure Initialize (Widget : access Gtk_Clist_Record; Columns : in Gint);
@@ -169,6 +188,12 @@ package Gtk.Clist is
 
    function Prepend (Clist : access Gtk_Clist_Record; Text  : in Line_Data)
                      return      Gint;
+
+   procedure Row_Move (Clist      : access Gtk_Clist_Record;
+                       Source_Row : in     Gint;
+                       Dest_Row   : in     Gint);
+
+   procedure Select_All (Clist : access Gtk_Clist_Record);
 
    procedure Select_Row
      (Clist  : access Gtk_Clist_Record;
@@ -222,8 +247,8 @@ package Gtk.Clist is
 
    procedure Set_Column_Widget
      (Clist  : access Gtk_Clist_Record;
-      Column : in Gint;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+      Column : in     Gint;
+      Widget : in     Gtk.Widget.Gtk_Widget);
 
    procedure Set_Column_Width
      (Clist  : access Gtk_Clist_Record;
@@ -234,6 +259,10 @@ package Gtk.Clist is
      (Clist : access Gtk_Clist_Record;
       Row   : in Gint;
       Color : in Gdk.Color.Gdk_Color);
+
+   procedure Set_Hadjustment
+      (Clist      : access Gtk_Clist_Record;
+       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Set_Pixmap
      (Clist  : access Gtk_Clist_Record;
@@ -286,6 +315,10 @@ package Gtk.Clist is
    procedure Set_Use_Drag_Icons
      (Clist : access Gtk_Clist_Record; Use_Icons : Boolean);
 
+   procedure Set_Vadjustment
+     (Clist      : access Gtk_Clist_Record;
+      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Thaw (Clist : access Gtk_Clist_Record);
 
    function Optimal_Column_Width
@@ -297,6 +330,8 @@ package Gtk.Clist is
       Column : in Gint);
 
    procedure Undo_Selection (Clist  : access Gtk_Clist_Record);
+
+   procedure Unselect_All (Clist : access Gtk_Clist_Record);
 
    ---------------
    -- Row_Data --
