@@ -80,7 +80,7 @@ package body Gtk.Table is
       (Widget      : out Gtk_Table;
        Rows        : in Gint;
        Columns     : in Gint;
-       Homogeneous : in Gint)
+       Homogeneous : in Boolean)
    is
       function Internal
          (Rows        : in Gint;
@@ -91,7 +91,7 @@ package body Gtk.Table is
    begin
       Set_Object (Widget, Internal (Rows,
                                     Columns,
-                                    Homogeneous));
+                                    Boolean'Pos (Homogeneous)));
    end Gtk_New;
 
    ---------------------

@@ -29,7 +29,7 @@ package Gtk.Table is
       (Widget      : out Gtk_Table;
        Rows        : in Gint;
        Columns     : in Gint;
-       Homogeneous : in Gint);
+       Homogeneous : in Boolean);
    procedure Set_Col_Spacing
       (Table   : in Gtk_Table'Class;
        Column  : in Gint;
