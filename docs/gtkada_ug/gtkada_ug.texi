@@ -876,7 +876,7 @@ the @code{Create_Window} procedure looks like
 This section describes briefly how to use the GTK toolset.
 It is here only until the GtkAda reference manual is fully completed, and
 document some widgets that are not yet documented in the reference manual.
-You should preferably should at the reference manual for more information.
+You should preferably look at the reference manual for more information.
 
 The GTK toolkit is based on two lower level layers: GDK and Glib.  It is
 sometimes needed to call these layers directly. For a brief description of
