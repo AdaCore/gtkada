@@ -171,10 +171,26 @@ package Gdk.Types is
    --  This type is specific to GtkAda. In gdk, they use guint32.
 
    type Gdk_Event_Mask is new Guint;
+   --  Note that you need to change the event mask of a widget if you want
+   --  to be able to get certain events. To change this mask, the widget
+   --  must first be Unrealized.
+
    Null_Event_Mask          : constant Gdk_Event_Mask;
    Exposure_Mask            : constant Gdk_Event_Mask;
+
    Pointer_Motion_Mask      : constant Gdk_Event_Mask;
+   --  Every time the mouse moves, GtkAda will send a Motion_Notify event.
+   --  These events will be sent as fast as possible, and your application
+   --  needs to be able to respond as fast as possible (generally about
+   --  200 events per second).
+
    Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask;
+   --  GtkAda will only send one Motion_Notify event when the mouse moves.
+   --  The handler should call Gdk.Window.Get_Pointer, to get the current
+   --  position and signals GtkAda that it is ready to get another
+   --  Motion_Notify signal. No new Motion_Notify will be sent until
+   --  Get_Pointer has been called.
+
    Button_Motion_Mask       : constant Gdk_Event_Mask;
    Button1_Motion_Mask      : constant Gdk_Event_Mask;
    Button2_Motion_Mask      : constant Gdk_Event_Mask;
@@ -199,8 +215,8 @@ package Gdk.Types is
                            Expose,
                            Motion_Notify,
                            Button_Press,
-                           Gdk_2button_Press,
-                           Gdk_3button_Press,
+                           Gdk_2button_Press,  --  Double-click
+                           Gdk_3button_Press,  --  Triple-click
                            Button_Release,
                            Key_Press,
                            Key_Release,
