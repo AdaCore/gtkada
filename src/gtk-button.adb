@@ -35,6 +35,7 @@ with Gtk.Object; use Gtk.Object;
 with Gtk.Container; use Gtk.Container;
 with Gtk.File_Selection; use Gtk.File_Selection;
 with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
+with Gtk.Font_Selection_Dialog; use Gtk.Font_Selection_Dialog;
 
 package body Gtk.Button is
 
@@ -173,11 +174,6 @@ package body Gtk.Button is
 
       Container.Generate (N, File);
       Gen_Set (N, "Button", "relief", File);
-
-      if Child_Name = null and then not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Button : in out Gtk_Object;
@@ -186,6 +182,7 @@ package body Gtk.Button is
       S               : String_Ptr := Get_Field (N, "label");
       File_Selection  : Gtk_File_Selection;
       Color_Selection : Gtk_Color_Selection_Dialog;
+      Font_Selection  : Gtk_Font_Selection_Dialog;
 
    begin
       if not N.Specific_Data.Created then
@@ -225,6 +222,18 @@ package body Gtk.Button is
                   elsif Get_Part (Child_Name.all, 2) = "help_button" then
                      Button := Gtk_Object (Get_Help_Button (Color_Selection));
                   end if;
+
+               elsif Get_Part (Child_Name.all, 1) = "FontSel" then
+                  Font_Selection := Gtk_Font_Selection_Dialog (Selection);
+
+                  if Get_Part (Child_Name.all, 2) = "ok_button" then
+                     Button := Gtk_Object (Get_OK_Button (Font_Selection));
+                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
+                     Button :=
+                       Gtk_Object (Get_Cancel_Button (Font_Selection));
+                  elsif Get_Part (Child_Name.all, 2) = "apply_button" then
+                     Button := Gtk_Object (Get_Apply_Button (Font_Selection));
+                  end if;
                end if;
             end;
          end if;
@@ -240,13 +249,6 @@ package body Gtk.Button is
       if S /= null then
          Set_Relief
            (Gtk_Button (Button), Gtk.Enums.Gtk_Relief_Style'Value (S.all));
-      end if;
-
-      if Child_Name = null and then not N.Specific_Data.Has_Container then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk_Widget (Button));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
