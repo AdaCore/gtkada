@@ -1,6 +1,9 @@
 SHELL = /bin/sh
 @SET_MAKE@
 
+include ../src/Makefile.common
+examples=$(prefix)/share/gtkada/examples/testgtk
+
 .SUFFIXES:
 .SUFFIXES: .c .o .ads .adb .ali
 
@@ -23,7 +26,14 @@ GNATMAKE = gnatmake
 GNATMAKELDFLAGS = -largs -L$(src_dir) -L$(opengl_dir) -lgtkada @GTK_LIBS@ \
 		  $(TARGET_LFLAGS)
 
-CP = cp -f
+CP = cp -pf
+MKDIR = mkdir -p
+RMDIR = rmdir
+RM = rm -f
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
 ## This variable should be set to "True" if the opengl directories
 ## have been installed on the system.
@@ -57,7 +67,12 @@ lw.o: opengl/lw.c opengl/lw.h
 	$(CC) -c opengl/lw.c -Iopengl @GTK_CFLAGS@
 
 install: all
-	@echo "Nothing to do --  just run the ./testgtk program"
+	$(MKDIR) $(examples)
+	$(MKDIR) $(examples)/opengl
+	$(RM) b~*
+	$(INSTALL_PROGRAM) testgtk $(examples)
+	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo $(examples)
+	$(CP) opengl/*.ad? opengl/*.[ch] $(examples)/opengl
 
 clean:
 	-${RM} *.o *.ali *~ testgtk b_testgtk.c b~testgtk.ad? core
