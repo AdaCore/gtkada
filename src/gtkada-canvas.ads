@@ -253,6 +253,26 @@ package Gtkada.Canvas is
                         Item   : access Canvas_Item_Record'Class);
    --  Scroll the canvas so that Item is visible.
 
+   procedure Zoom
+     (Canvas : access Interactive_Canvas_Record;
+      Percent : Glib.Guint := 100;
+      Steps   : Glib.Guint := 1);
+   --  Zoom in or out in the canvas. All items are resized, and their contents
+   --  is then random.
+   --  You must either redraw them systematically afterwards, or connect to the
+   --  "zoomed" signal which is emitted automatically by this subprogram.
+   --
+   --  Steps is the number of successive zooms that will be done to provide
+   --  smooth scrolling.
+   --
+   --  Note that one possible use for this function is to refresh the canvas
+   --  and emit the "zoomed" signal, which might redraw all the items. This can
+   --  be accomplished by keeping the default 100 value for Percent.
+
+   function Get_Zoom
+     (Canvas : access Interactive_Canvas_Record) return Glib.Guint;
+   --  Return the current zoom level
+
    -----------
    -- Links --
    -----------
@@ -424,6 +444,12 @@ package Gtkada.Canvas is
    --  drag even has occured. This is a good time to add other items to the
    --  selection if you need.
    --
+   --  - "zoomed"
+   --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class);
+   --
+   --  Emitted when the canvas has been zoomed in or out. The items have been
+   --  resized, and you need to redraw them.
+   --
    --  </signals>
 
 private
@@ -506,9 +532,9 @@ private
 
          Annotation_Font   : String_Access;
          Annotation_Height : Glib.Gint := Default_Annotation_Height;
-         Arc_Link_Offset   : Float := Float (Default_Arc_Link_Offset);
+         Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
          Arrow_Angle       : Float;
-         Arrow_Length      : Float := Float (Default_Arrow_Length);
+         Arrow_Length      : Glib.Gint := Default_Arrow_Length;
          Motion_Threshold  : Glib.Gint := Default_Motion_Threshold;
          Align_On_Grid     : Boolean := False;
 
@@ -520,9 +546,18 @@ private
          Anim_GC  : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
          Font     : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
 
+         Double_Buffer : Gdk.Pixmap.Gdk_Pixmap;
+
          Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
          Scrolling_Timeout_Id : Gtk.Main.Timeout_Handler_Id := 0;
          Dashed_Line_Visible : Boolean := False;
+
+         Zoom : Glib.Guint := 100;
+         --  Zoom level in percent (100% is normal size)
+
+         Target_Zoom : Glib.Guint := 100;
+         Zoom_Step : Glib.Gint;
+         --  Variables used while smooth-scrolling the canvas
       end record;
 
    type Canvas_Item_Record is abstract tagged record
