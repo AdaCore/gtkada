@@ -60,7 +60,6 @@ package Gtk.Tree_Model is
    procedure Gtk_New (Widget : out Gtk_Tree_Path);
    --  Creates a new Gtk_Tree_Path.
 
-
    procedure Initialize (Widget : in out Gtk_Tree_Path);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
