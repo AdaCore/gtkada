@@ -73,7 +73,6 @@ Getting started with GtkAda
 
 Description of the GDK hierarchy
 
-* Package Gdk.Window::
 * Package Gdk.Drawable::
 * Draw in a widget::
 
@@ -880,30 +879,10 @@ GTK is based on a lower level layer called GDK that contains some simple
 drawing and window primitives.
 
 @menu
-* Package Gdk.Window::
 * Package Gdk.Drawable::
 * Draw in a widget::
 @end menu
 
-@node Package Gdk.Window
-@section Package Gdk.Window
-@example
-@c @group
-@c @cartouche
-@b{type} Gdk_Window @b{is new} Root_Type @b{with private};
-@c @end cartouche
-@c @end group
-@end example
-
-To clear a window (e.g before drawing):
-@example
-@c @group
-@c @cartouche
-@b{procedure} Clear (Window : @b{in out} Gdk_Window);
-@c @end cartouche
-@c @end group
-@end example
- 
 @node Package Gdk.Drawable
 @section Package Gdk.Drawable
 @example
