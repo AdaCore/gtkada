@@ -52,7 +52,6 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Gtk.Object;       use Gtk.Object;
 with System;
 with Unchecked_Deallocation;
-with Ada.Text_IO; use Ada.Text_IO;
 
 package body Gtkada.Canvas is
 
