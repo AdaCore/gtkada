@@ -72,7 +72,7 @@ package body Create_Entry is
    procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       use String_List;
 
-      List      : Glist;
+      List      : String_List.Glist;
       Id        : Guint;
       Box1,
         Box2    : Gtk_Box;
