@@ -1500,4 +1500,17 @@ package body Gtk.Widget is
                 Get_Object (Group));
    end Set_Accel_Path;
 
+   -----------------------
+   -- Set_Child_Visible --
+   -----------------------
+
+   procedure Set_Child_Visible
+     (Widget : access Gtk_Widget_Record; Is_Visible : Boolean)
+   is
+      procedure Internal (Widget : System.Address; Is_Visible : Integer);
+      pragma Import (C, Internal, "gtk_widget_set_child_visible");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (Is_Visible));
+   end Set_Child_Visible;
+
 end Gtk.Widget;

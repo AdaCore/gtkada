@@ -104,6 +104,9 @@ package Gtk.Widget is
    pragma Convention (C, Gtk_Allocation_Access);
    --  This type is used to create new widgets.
 
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with a Gtk_Widget.
+
    -------------------------
    -- Widgets' life cycle --
    -------------------------
@@ -206,8 +209,24 @@ package Gtk.Widget is
    --  Hide widget and return True.
    --  This function is intended to be used as a callback.
 
-   function Get_Type return Glib.GType;
-   --  Return the internal value associated with a Gtk_Widget.
+   procedure Set_Child_Visible
+     (Widget : access Gtk_Widget_Record; Is_Visible : Boolean);
+   --  Sets whether @widget should be mapped along with its when its parent
+   --  is mapped and @widget has been shown with Show.
+   --
+   --  The child visibility can be set for widget before it is added to a
+   --  container with Set_Parent, to avoid mapping children unnecessary before
+   --  immediately unmapping them. However it will be reset to its default
+   --  state of True when the widget is removed from a container.
+   --
+   --  Note that changing the child visibility of a widget does not
+   --  queue a resize on the widget. Most of the time, the size of
+   --  a widget is computed from all visible children, whether or
+   --  not they are mapped. If this is not the case, the container
+   --  can queue a resize itself.
+   --
+   --  This function is only useful for container implementations and
+   --  never should be called by an application.
 
    ----------------------
    -- Drawing a widget --
