@@ -875,69 +875,79 @@ package body Glib.Glade is
             Object   : constant String := Get_Attribute (P, "object");
             After    : constant String :=
               Yes_No_To_True_False (Get_Attribute (P, "after"));
+            Id       : constant Signal_Id :=
+              Lookup (Type_From_Name (Orig_Class), Name);
+
          begin
-
-            --           if Object /= null then
-            --              Class := Gtk_Widget_Class'Access;
-            --           else
-            --              Class := Orig_Class;
-            --           end if;
-
-            Query (Lookup (Type_From_Name (Orig_Class), Name), Q);
-            Returned := Return_Type (Q);
-
-            Rename := Add_Signal
-              (Top,
-               new String'(Handler),
-               new String'(Name),
-               new String'(Class),
-               new String'(Orig_Class));
-
-            if Returned <= GType_None and then Class /= "GtkWidget" then
-               Add_Signal_Instantiation (new String'(Class), Rename);
-            end if;
-
-            if Returned > GType_None then
-               Put (File, "   Return_Callback.");
+            if Id = Invalid_Signal_Id
+              or else Id = Null_Signal_Id
+            then
+               Put_Line ("   -- Signal " & Name & " invalid for "
+                         & To_Ada (Current));
+               Put_Line ("   !!!");
             else
-               Put
-                 (File, "   " &
-                  To_Ada
-                    (Class (Class'First + 3 .. Class'Last)) & "_Callback.");
+               --           if Object /= null then
+               --              Class := Gtk_Widget_Class'Access;
+               --           else
+               --              Class := Orig_Class;
+               --           end if;
+
+               Query (Id, Q);
+               Returned := Return_Type (Q);
+
+               Rename := Add_Signal
+                 (Top,
+                  new String'(Handler),
+                  new String'(Name),
+                  new String'(Class),
+                  new String'(Orig_Class));
+
+               if Returned <= GType_None and then Class /= "GtkWidget" then
+                  Add_Signal_Instantiation (new String'(Class), Rename);
+               end if;
+
+               if Returned > GType_None then
+                  Put (File, "   Return_Callback.");
+               else
+                  Put
+                    (File, "   " &
+                     To_Ada
+                       (Class (Class'First + 3 .. Class'Last)) & "_Callback.");
+               end if;
+
+               if Object /= "" then
+                  Put (File, "Object_");
+               end if;
+
+               Put_Line (File, "Connect");
+               Put (File, "     (");
+
+               if Top /= N then
+                  Put (File, To_Ada (Get_Name (Top)) & ".");
+               end if;
+
+               Put (File, To_Ada (Current) & ", """ & Name & """,");
+
+               if Params (Q)'Length = 0 then
+                  New_Line (File);
+                  Put (File, "      " &
+                       To_Ada (Class (Class'First + 3 .. Class'Last)) &
+                       "_Callback.To_Marshaller (" & To_Ada (Handler)
+                       & "'Access)");
+               else
+                  Put (File, " " & To_Ada (Handler) & "'Access");
+               end if;
+
+               if Object /= "" then
+                  Put (File, ", " & To_Ada (Object));
+               end if;
+
+               if After /= "" then
+                  Put (File, ", " & To_Ada (After));
+               end if;
+
+               Put_Line (File, ");");
             end if;
-
-            if Object /= "" then
-               Put (File, "Object_");
-            end if;
-
-            Put_Line (File, "Connect");
-            Put (File, "     (");
-
-            if Top /= N then
-               Put (File, To_Ada (Get_Name (Top)) & ".");
-            end if;
-
-            Put (File, To_Ada (Current) & ", """ & Name & """,");
-
-            if Params (Q)'Length = 0 then
-               New_Line (File);
-               Put (File, "      " &
-                 To_Ada (Class (Class'First + 3 .. Class'Last)) &
-                 "_Callback.To_Marshaller (" & To_Ada (Handler) & "'Access" &
-                 ")");
-            else
-               Put (File, " " & To_Ada (Handler) & "'Access");
-            end if;
-
-            if Object /= "" then
-               Put (File, ", " & To_Ada (Object));
-            end if;
-
-            if After /= "" then
-               Put (File, ", " & To_Ada (After));
-            end if;
-
-            Put_Line (File, ");");
          end;
 
          P := Find_Tag (P.Next, "signal");
