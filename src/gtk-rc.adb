@@ -105,7 +105,7 @@ package body Gtk.Rc is
       function Internal return Flat_Access;
       pragma Import (C, Internal, "gtk_rc_get_default_files");
 
-      Addr : Flat_Access := Internal;
+      Addr : constant Flat_Access := Internal;
       Len  : Positive;
 
       use type Strings.chars_ptr;
@@ -262,15 +262,12 @@ package body Gtk.Rc is
       function Internal (Module_File : String) return Chars_Ptr;
       pragma Import (C, Internal, "gtk_rc_find_module_in_path");
 
-      S : Chars_Ptr := Internal (Module_File & ASCII.NUL);
+      S   : constant Chars_Ptr := Internal (Module_File & ASCII.NUL);
+      Str : constant String := Strings.Value (S);
 
    begin
-      declare
-         Str : constant String := Strings.Value (S);
-      begin
-         g_free (S);
-         return Str;
-      end;
+      g_free (S);
+      return Str;
    end Find_Module_In_Path;
 
    -------------------
@@ -281,15 +278,12 @@ package body Gtk.Rc is
       function Internal return Chars_Ptr;
       pragma Import (C, Internal, "gtk_rc_get_theme_dir");
 
-      S : Chars_Ptr := Internal;
+      S   : constant Chars_Ptr := Internal;
+      Str : constant String := Strings.Value (S);
 
    begin
-      declare
-         Str : constant String := Strings.Value (S);
-      begin
-         g_free (S);
-         return Str;
-      end;
+      g_free (S);
+      return Str;
    end Get_Theme_Dir;
 
    --------------------
@@ -300,15 +294,12 @@ package body Gtk.Rc is
       function Internal return Chars_Ptr;
       pragma Import (C, Internal, "gtk_rc_get_module_dir");
 
-      S : Chars_Ptr := Internal;
+      S   : constant Chars_Ptr := Internal;
+      Str : constant String := Strings.Value (S);
 
    begin
-      declare
-         Str : constant String := Strings.Value (S);
-      begin
-         g_free (S);
-         return Str;
-      end;
+      g_free (S);
+      return Str;
    end Get_Module_Dir;
 
    ------------------------
@@ -319,15 +310,12 @@ package body Gtk.Rc is
       function Internal return Chars_Ptr;
       pragma Import (C, Internal, "gtk_rc_get_im_module_path");
 
-      S : Chars_Ptr := Internal;
+      S   : constant Chars_Ptr := Internal;
+      Str : constant String := Strings.Value (S);
 
    begin
-      declare
-         Str : constant String := Strings.Value (S);
-      begin
-         g_free (S);
-         return Str;
-      end;
+      g_free (S);
+      return Str;
    end Get_Im_Module_Path;
 
    ------------------------
@@ -338,15 +326,12 @@ package body Gtk.Rc is
       function Internal return Chars_Ptr;
       pragma Import (C, Internal, "gtk_rc_get_im_module_file");
 
-      S : Chars_Ptr := Internal;
+      S   : constant Chars_Ptr := Internal;
+      Str : constant String := Strings.Value (S);
 
    begin
-      declare
-         Str : constant String := Strings.Value (S);
-      begin
-         g_free (S);
-         return Str;
-      end;
+      g_free (S);
+      return Str;
    end Get_Im_Module_File;
 
    ------------------------

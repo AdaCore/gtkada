@@ -61,6 +61,9 @@ package body Gtk.Text_Iter is
    package Iter_Access_Address_Conversions is
      new System.Address_To_Access_Conversions (Gtk_Text_Iter);
 
+   procedure g_free (Mem : Interfaces.C.Strings.chars_ptr);
+   pragma Import (C, g_free, "g_free");
+
    ----------------
    -- Can_Insert --
    ----------------
@@ -143,10 +146,8 @@ package body Gtk.Text_Iter is
      (Start   : Gtk_Text_Iter;
       The_End : Gtk_Text_Iter) return String
    is
-      procedure g_free (Mem : Interfaces.C.Strings.chars_ptr);
-      pragma Import (C, g_free, "g_free");
-
-      Str : Interfaces.C.Strings.chars_ptr := Get_Slice (Start, The_End);
+      Str : constant Interfaces.C.Strings.chars_ptr :=
+        Get_Slice (Start, The_End);
       S   : constant String := Interfaces.C.Strings.Value (Str);
 
    begin
@@ -168,10 +169,8 @@ package body Gtk.Text_Iter is
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_text");
 
-      procedure g_free (Mem : Interfaces.C.Strings.chars_ptr);
-      pragma Import (C, g_free, "g_free");
-
-      Str : Interfaces.C.Strings.chars_ptr := Internal (Start, The_End);
+      Str : constant Interfaces.C.Strings.chars_ptr :=
+        Internal (Start, The_End);
 
    begin
       declare

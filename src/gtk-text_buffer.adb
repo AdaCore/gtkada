@@ -357,17 +357,15 @@ package body Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False) return String is
-   begin
-      declare
-         Str : Interfaces.C.Strings.chars_ptr :=
-           Get_Text (Buffer, Start, The_End, Include_Hidden_Chars);
-         S : constant String := Interfaces.C.Strings.Value (Str);
+      Include_Hidden_Chars : Boolean := False) return String
+   is
+      Str : constant Interfaces.C.Strings.chars_ptr :=
+        Get_Text (Buffer, Start, The_End, Include_Hidden_Chars);
+      S : constant String := Interfaces.C.Strings.Value (Str);
 
-      begin
-         Gtkada.Types.g_free (Str);
-         return S;
-      end;
+   begin
+      Gtkada.Types.g_free (Str);
+      return S;
    end Get_Text;
 
    ---------------
@@ -400,17 +398,15 @@ package body Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False) return String is
-   begin
-      declare
-         Str : Interfaces.C.Strings.chars_ptr :=
-           Get_Slice (Buffer, Start, The_End, Include_Hidden_Chars);
-         S   : constant String := Interfaces.C.Strings.Value (Str);
+      Include_Hidden_Chars : Boolean := False) return String
+   is
+      Str : constant Interfaces.C.Strings.chars_ptr :=
+        Get_Slice (Buffer, Start, The_End, Include_Hidden_Chars);
+      S   : constant String := Interfaces.C.Strings.Value (Str);
 
-      begin
-         Gtkada.Types.g_free (Str);
-         return S;
-      end;
+   begin
+      Gtkada.Types.g_free (Str);
+      return S;
    end Get_Slice;
 
    -------------------

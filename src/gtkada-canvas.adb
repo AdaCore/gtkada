@@ -550,8 +550,9 @@ package body Gtkada.Canvas is
      (Canv : access Gtk_Widget_Record'Class;
       Args   : Gtk_Args)
    is
-      Alloc : Gtk_Allocation_Access := To_Allocation (Args, 1);
-      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
+      Alloc  : constant Gtk_Allocation_Access := To_Allocation (Args, 1);
+      Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
+
    begin
       Set_Page_Size (Canvas.Hadj, Gdouble (Alloc.Width));
       Set_Step_Increment (Canvas.Hadj, 10.0);
@@ -1289,12 +1290,12 @@ package body Gtkada.Canvas is
       Xc1, Xc2, Yc1, Yc2 : Gint;
       Xarr_End, Yarr_End, Xarr_Start, Yarr_Start : Gint;
       Angle_Arr_End, Angle_Arr_Start : Float;
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
-      Dest : Canvas_Item := Canvas_Item (Get_Dest (Link));
+      Xbase    : constant Gint := Gint (Get_Value (Canvas.Hadj));
+      Ybase    : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Src      : constant Canvas_Item := Canvas_Item (Get_Src (Link));
+      Dest     : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
+      Line_Pos : constant Gint_Array := Compute_Line_Pos (Canvas);
 
-      Line_Pos : Gint_Array := Compute_Line_Pos (Canvas);
    begin
       X1 := To_Canvas_Coordinates (Canvas, Src.Coord.X) - Xbase;
       Y1 := To_Canvas_Coordinates (Canvas, Src.Coord.Y) - Ybase;
@@ -1483,8 +1484,9 @@ package body Gtkada.Canvas is
       X1, Y1, X2, Y2 : Gint;
       Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
-      Dest : Canvas_Item := Canvas_Item (Get_Dest (Link));
+      Src   : constant Canvas_Item := Canvas_Item (Get_Src (Link));
+      Dest  : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
+
    begin
       Clip_Line
         (Src.Coord,
@@ -1562,7 +1564,7 @@ package body Gtkada.Canvas is
         Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
       Right_Angle : constant Float := Ada.Numerics.Pi / 2.0;
       X1, Y1, X3, Y3, Xc, Yc, Radius : Gint;
-      Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
+      Src        : constant Canvas_Item := Canvas_Item (Get_Src (Link));
 
    begin
       pragma Assert (Src = Canvas_Item (Get_Dest (Link)));
@@ -1673,8 +1675,8 @@ package body Gtkada.Canvas is
       Ybase       : constant Gint := Gint (Get_Value (Canvas.Vadj));
       Arc_Offset  : constant Float :=
         Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
-      Src         : Canvas_Item := Canvas_Item (Get_Src (Link));
-      Dest        : Canvas_Item := Canvas_Item (Get_Dest (Link));
+      Src         : constant Canvas_Item := Canvas_Item (Get_Src (Link));
+      Dest        : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
 
    begin
       --  We will first compute the extra intermediate point between the
@@ -1888,8 +1890,8 @@ package body Gtkada.Canvas is
      (Canvas : access Gtk_Widget_Record'Class;
       Args   : Glib.Values.GValues)
    is
-      Pix : Gdk_Window := Gdk_Window (To_C_Proxy (Args, 1));
-      C : Interactive_Canvas := Interactive_Canvas (Canvas);
+      Pix : constant Gdk_Window := Gdk_Window (To_C_Proxy (Args, 1));
+      C   : constant Interactive_Canvas := Interactive_Canvas (Canvas);
    begin
       Update_Links (C, Pix, C.Black_GC, False);
    end Draw_Links_Cb;
@@ -1919,19 +1921,19 @@ package body Gtkada.Canvas is
      (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk.Event.Gdk_Event) return Boolean
    is
-      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
-      Rect : Gdk_Rectangle := Get_Area (Event);
-      Item : Canvas_Item;
-      Tmp : Vertex_Iterator := First (Canvas.Children);
-      X, Y : Gint;
-      Xmin : Gint;
-      Dest : Gdk_Rectangle;
+      Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
+      Rect   : constant Gdk_Rectangle := Get_Area (Event);
+      Item   : Canvas_Item;
+      Tmp    : Vertex_Iterator := First (Canvas.Children);
+      X, Y   : Gint;
+      Xmin   : Gint;
+      Dest   : Gdk_Rectangle;
       Inters : Boolean;
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      Grid  : constant Gint :=
+      Xbase  : constant Gint := Gint (Get_Value (Canvas.Hadj));
+      Ybase  : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Grid   : constant Gint :=
         Gint (Canvas.Grid_Size) * Gint (Canvas.Zoom) / 100;
-      Pix : Gdk_Pixmap := Get_Window (Canvas);
+      Pix    : constant Gdk_Pixmap := Get_Window (Canvas);
 
    begin
       --  If the GC was not created, do not do anything
@@ -2035,7 +2037,7 @@ package body Gtkada.Canvas is
      (Canv : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas    : Interactive_Canvas := Interactive_Canvas (Canv);
+      Canvas    : constant Interactive_Canvas := Interactive_Canvas (Canv);
       Value     : constant Gdouble := Get_Value (Canvas.Vadj);
       Upper     : constant Gdouble := Get_Upper (Canvas.Vadj);
       Lower     : constant Gdouble := Get_Lower (Canvas.Vadj);
