@@ -148,8 +148,7 @@ package body Gtk.Menu_Item is
      (Menu_Item : access Gtk_Menu_Item_Record) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Menu_Item : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_gtk_menu_item_get_submenu");
-
+      pragma Import (C, Internal, "gtk_menu_item_get_submenu");
    begin
       return Gtk.Widget.Convert (Internal (Get_Object (Menu_Item)));
    end Get_Submenu;
