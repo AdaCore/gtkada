@@ -13,6 +13,7 @@ New features in 2.2.0:
 - Support for Glade2
 - Support for GtkExtra
 - Support for libglade2
+- New functions bound in Gtk.Label
 - New type UTF8_String to make it clearer when UTF8 strings are expected
 - New capabilities in GtkAda.MDI, see spec for details
 - Support for drad-n-drop in GtkAda.MDI
