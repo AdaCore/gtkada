@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003 ACT-Europe                     --
+--                 Copyright (C) 2003-2005 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -854,6 +854,8 @@ package body Gtkada.Multi_Paned is
          return False;
       end if;
 
+      Split.Selected_Handle_Parent := null;
+
       while Get (Iter) /= null loop
          Current := Get (Iter);
          if not Current.Is_Widget then
@@ -868,6 +870,11 @@ package body Gtkada.Multi_Paned is
 
          Next (Iter);
       end loop;
+
+      if Traces then
+         Put_Line ("Button_Pressed in multi_panned has_selected_handle="
+                   & Boolean'Image (Split.Selected_Handle_Parent /= null));
+      end if;
 
       if Split.Selected_Handle_Parent = null then
          return False;
@@ -922,6 +929,10 @@ package body Gtkada.Multi_Paned is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
    begin
       if Split.Selected_Handle_Parent /= null then
+         if Traces then
+            Put_Line ("Button_Released in multi_paned");
+         end if;
+
          Draw_Resize_Line (Split);
 
          if not Split.Opaque_Resizing then
@@ -2140,6 +2151,8 @@ package body Gtkada.Multi_Paned is
       Child   : Child_Description_Access;
       Percent : Float;
       Current_Percent : Float;
+      Selected : Child_Description_Access;
+      Index : Natural;
    begin
       loop
          Current := Get (Iter);
@@ -2148,12 +2161,12 @@ package body Gtkada.Multi_Paned is
          if Current.Is_Widget
            and then Current.Widget = Gtk_Widget (Widget)
          then
-            Win.Selected_Handle_Parent := null;
+            Selected := null;
             Child := Current.Parent.First_Child;
             for H in Current.Parent.Handles'Range loop
                if Child = Current then
-                  Win.Selected_Handle_Index := H;
-                  Win.Selected_Handle_Parent := Current.Parent;
+                  Index := H;
+                  Selected := Current.Parent;
                   exit;
                end if;
                Child := Child.Next;
@@ -2175,31 +2188,28 @@ package body Gtkada.Multi_Paned is
                     / Float (Get_Allocation_Width (Widget));
             end case;
 
-            if Win.Selected_Handle_Parent = null then
-               Win.Selected_Handle_Index := Current.Parent.Handles'Last;
-               Win.Selected_Handle_Parent := Current.Parent;
-               Current_Percent :=
-                 Current.Parent.Handles (Win.Selected_Handle_Index).Percent;
+            if Selected = null then
+               Index := Current.Parent.Handles'Last;
+               Selected := Current.Parent;
+               Current_Percent := Current.Parent.Handles (Index).Percent;
 
-               Current.Parent.Handles (Win.Selected_Handle_Index).Percent :=
+               Current.Parent.Handles (Index).Percent :=
                  1.0 - Percent * (1.0 - Current_Percent);
 
-            elsif Win.Selected_Handle_Index = Current.Parent.Handles'First then
+            elsif Index = Current.Parent.Handles'First then
                Current_Percent :=
-                 Current.Parent.Handles (Win.Selected_Handle_Index).Percent;
-               Current.Parent.Handles (Win.Selected_Handle_Index).Percent :=
+                 Current.Parent.Handles (Index).Percent;
+               Current.Parent.Handles (Index).Percent :=
                  Percent * Current_Percent;
 
             else
                Current_Percent :=
-                 Current.Parent.Handles (Win.Selected_Handle_Index).Percent;
-               Current.Parent.Handles (Win.Selected_Handle_Index).Percent :=
+                 Current.Parent.Handles (Index).Percent;
+               Current.Parent.Handles (Index).Percent :=
                  Percent
                    * (Current_Percent
-                      - Current.Parent.Handles
-                        (Win.Selected_Handle_Index - 1).Percent)
-                 + Current.Parent.Handles
-                 (Win.Selected_Handle_Index - 1).Percent;
+                      - Current.Parent.Handles (Index - 1).Percent)
+                 + Current.Parent.Handles (Index - 1).Percent;
             end if;
 
             Current.Fixed_Size := Fixed_Size;
@@ -2209,8 +2219,7 @@ package body Gtkada.Multi_Paned is
                Current.Height     := Height;
             end if;
 
-            Move_Handles (Win, Current.Parent, Win.Selected_Handle_Index);
-            Win.Selected_Handle_Parent := null;
+            Move_Handles (Win, Current.Parent, Index);
             exit;
          end if;
 
