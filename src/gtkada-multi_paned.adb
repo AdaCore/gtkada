@@ -154,7 +154,9 @@ package body Gtkada.Multi_Paned is
    begin
       if not Child.Is_Widget then
          for H in Child.Handles'Range loop
-            Destroy (Child.Handles (H).Win);
+            if Child.Handles (H).Win /= null then
+               Destroy (Child.Handles (H).Win);
+            end if;
          end loop;
 
          Unchecked_Free (Child.Handles);
