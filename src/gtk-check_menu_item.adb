@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -123,8 +123,7 @@ package body Gtk.Check_Menu_Item is
    -- Generate --
    --------------
 
-   procedure Generate (N               : in Node_Ptr;
-                       File            : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
    begin
       Gen_New (N, "Check_Menu_Item", Get_Field (N, "label").all,
         File => File, Delim => '"');
@@ -133,8 +132,9 @@ package body Gtk.Check_Menu_Item is
       Gen_Set (N, "Check_Menu_Item", "always_show_toggle", File => File);
    end Generate;
 
-   procedure Generate (Check_Menu_Item : in out Gtk_Object;
-                       N               : in Node_Ptr) is
+   procedure Generate
+     (Check_Menu_Item : in out Gtk_Object; N : in Node_Ptr)
+   is
       S : String_Ptr;
    begin
       if not N.Specific_Data.Created then

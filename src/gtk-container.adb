@@ -148,8 +148,8 @@ package body Gtk.Container is
 
    procedure Set_Focus_Hadjustment
      (Container  : access Gtk_Container_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class) is
-
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
       procedure Internal (Container : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_container_set_focus_hadjustment");
@@ -164,8 +164,8 @@ package body Gtk.Container is
 
    procedure Set_Focus_Vadjustment
      (Container  : access Gtk_Container_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class) is
-
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
       procedure Internal (Container : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_container_set_focus_vadjustment");
