@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,23 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This widget is a container that catches event for its child when its
+--  child does not have its own window (like a Gtk_Scrolled_Window for
+--  instance).
+--  Some widgets in GtkAda do not have their own window, and thus can not
+--  directly get events from the server. The Gtk_Event_Box widget can be
+--  used to force its child to receive events anyway.
+--
+--  For instance, this widget is used internally in a Gtk_Combo_Box so that
+--  the application can change the cursor when the mouse is in the popup
+--  window. In that case, it contains a frame, that itself contains the
+--  scrolled window of the popup.
+--
+--  </description>
+--  <c_version>1.2.6</c_version>
+
 with Gtk.Object;
 with Gtk.Bin;
 
@@ -36,16 +53,35 @@ package Gtk.Event_Box is
    type Gtk_Event_Box is access all Gtk_Event_Box_Record'Class;
 
    procedure Gtk_New (Event_Box : out Gtk_Event_Box);
-   procedure Initialize (Event_Box : access Gtk_Event_Box_Record'Class);
+   --  Creates a new box.
+   --  The box's child can then be set using the Gtk.Container.Add function.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   procedure Initialize (Event_Box : access Gtk_Event_Box_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Event_Box internally.
+
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate (Event_Box : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
-   type Gtk_Event_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
-
+   type Gtk_Event_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record
+   pragma Import (C, Get_Type, "gtk_event_box_get_type");
 end Gtk.Event_Box;
