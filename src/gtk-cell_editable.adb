@@ -30,7 +30,6 @@
 with Gdk; use Gdk;
 with Gtk.Cell_Editable;
 with Gdk.Event;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk; use Gtk;
 with System;
 
