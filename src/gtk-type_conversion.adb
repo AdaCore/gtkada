@@ -29,6 +29,7 @@
 
 with Glib; use Glib;
 pragma Warnings (Off);
+with Gtk.Accel_Label;
 with Gtk.Adjustment;
 with Gtk.Alignment;
 with Gtk.Arrow;
@@ -111,7 +112,6 @@ with Gtk.Widget;
 with Gtk.Window;
 pragma Warnings (On);
 
-
 package body Gtk.Type_Conversion is
 
    ----------
@@ -136,7 +136,9 @@ package body Gtk.Type_Conversion is
    begin
       case Type_Name (Type_Name'First + 3) is
          when 'A' =>
-            if Type_Name = "GtkAdjustment" then
+            if Type_Name = "GtkAccelLabel" then
+               return new Gtk.Accel_Label.Gtk_Accel_Label_Record;
+            elsif Type_Name = "GtkAdjustment" then
                return new Gtk.Adjustment.Gtk_Adjustment_Record;
             elsif Type_Name = "GtkAlignment" then
                return new Gtk.Alignment.Gtk_Alignment_Record;
@@ -162,7 +164,7 @@ package body Gtk.Type_Conversion is
                return new Gtk.Check_Button.Gtk_Check_Button_Record;
             elsif Type_Name = "GtkCheckMenuItem" then
                return new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record;
-            elsif Type_Name = "GtkClist" then
+            elsif Type_Name = "GtkCList" then
                return new Gtk.Clist.Gtk_Clist_Record;
             elsif Type_Name = "GtkColorSelection" then
                return new Gtk.Color_Selection.Gtk_Color_Selection_Record;
@@ -216,7 +218,7 @@ package body Gtk.Type_Conversion is
                return new Gtk.Box.Gtk_Box_Record;
             elsif Type_Name = "GtkHandleBox" then
                return new Gtk.Handle_Box.Gtk_Handle_Box_Record;
-            elsif Type_Name = "GtkHbuttonBox" then
+            elsif Type_Name = "GtkHButtonBox" then
                return new Gtk.Hbutton_Box.Gtk_Hbutton_Box_Record;
             end if;
          when 'I' =>
