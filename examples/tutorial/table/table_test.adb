@@ -41,7 +41,7 @@ begin
 
    Handlers.Connect
      (Button, "clicked", Handlers.To_Marshaller (Callback'Access),
-      new String' ("button 1"));
+      new String'("button 1"));
 
    --  Insert button 1 into the upper left quadrant of the table
    Attach_Defaults (Table, Button, 0, 1, 0, 1);
@@ -54,7 +54,7 @@ begin
    --  with a pointer to "button 2" as its argument
    Handlers.Connect
      (Button, "clicked",
-      Handlers.To_Marshaller (Callback'Access), new String' ("button 2"));
+      Handlers.To_Marshaller (Callback'Access), new String'("button 2"));
 
    --  Insert button 2 into the upper right quadrant of the table
    Attach_Defaults (Table, Button, 1, 2, 0, 1);
@@ -67,7 +67,7 @@ begin
 
    Handlers.Connect
      (Button, "clicked", Handlers.To_Marshaller (Quit'Access),
-      new String' ("Button Pressed"));
+      new String'("Button Pressed"));
 
    --  Insert the quit button into the both
    --  lower quadrants of the table
