@@ -227,7 +227,8 @@ package body Test is
 
       Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 0);
       Border_Width (Container => Box2, Border_Width => 10);
-      Add (Container => A_Scrolled_Window, Widget => Box2);
+      Add_With_Viewport (Scrolled_Window => A_Scrolled_Window,
+                         Child           => Box2);
       Temp := Scrolled_Window.Get_Vadjustment (Scrolled_Window => A_Scrolled_Window);
       Set_Focus_Vadjustment (Container => Box2, Adjustment => Temp);
       Show (Box2);

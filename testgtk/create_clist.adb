@@ -33,6 +33,7 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Clist; use Gtk.Clist;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Scrolled_Window;  use Gtk.Scrolled_Window;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Separator; use Gtk.Separator;
 with Gtk.Style; use Gtk.Style;
@@ -159,6 +160,7 @@ package body Create_Clist is
       Button    : Gtk_Button;
       Separator : Gtk_Separator;
       New_Row   : Gint;
+      Scrolled  : Gtk_Scrolled_Window;
    begin
 
       if not Is_Created (Window) then
@@ -177,7 +179,10 @@ package body Create_Clist is
          Pack_Start (Box1, Box2, False, False, 0);
          Show (Box2);
 
+         Gtk_New (Scrolled);
+         Show (Scrolled);
          Gtk_New (Clist, Clist_Columns, Titles);
+         Add (Scrolled, Clist);
 
          Gtk_New (Button, "Add 1000 Rows with Pixmaps");
          Pack_Start (Box2, Button, True, True, 0);
@@ -235,7 +240,7 @@ package body Create_Clist is
          end loop;
 
          Set_Selection_Mode (Clist, Selection_Browse);
-         Set_Policy (Clist, Policy_Automatic, Policy_Automatic);
+         Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
          Set_Column_Justification (Clist, 1, Justify_Right);
          Set_Column_Justification (Clist, 2, Justify_Center);
 
@@ -255,7 +260,7 @@ package body Create_Clist is
          Free_Line_Data (Texts);
 
          Border_Width (Clist, 5);
-         Pack_Start (Box2, Clist, True, True, 0);
+         Pack_Start (Box2, Scrolled, True, True, 0);
          Show (Clist);
 
          Gtk_New_Hseparator (Separator);
