@@ -108,7 +108,6 @@ package body Create_Color_Selection is
    begin
       if Dialog = null then
          Gtk_New (Dialog, Title => "Color Selection Dialog");
-         Set_Opacity (Get_Colorsel (Dialog), True);
          Set_Update_Policy (Get_Colorsel (Dialog), Enums.Update_Continuous);
          Set_Position (Dialog, Enums.Win_Pos_Mouse);
 
