@@ -14,4 +14,7 @@ all: $(OBJ)
 	$(CC) -c $(ALL_CFLAGS) $<
 
 clean:
-	$(RM) $(OBJ)
+	-$(RM) $(OBJ)
+
+distclean: clean
+	-$(RM) Makefile
