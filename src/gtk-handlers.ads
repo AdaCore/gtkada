@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2001                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -51,8 +51,8 @@
 --
 --    In GtkAda, the handlers are defined in a form as general as
 --    possible. The first argument is always an access to the object it
---    has been connected to. The second object is a table of arguments
---    (See Gtk.Arguments for more details about this table). It is the
+--    has been connected to. The second object is a table of values
+--    (See Glib.Values for more details about this table). It is the
 --    responsibility of this handler to extract the values from it, and
 --    to convert them to the correct Ada type.
 --
@@ -132,8 +132,8 @@
 --
 --  </description>
 
+with Glib.Values;
 with Gdk.Event;
-with Gtk.Arguments;
 with Gtk.Marshallers;
 with Gtk.Notebook;
 with Gtk.Object;
@@ -158,9 +158,9 @@ package Gtk.Handlers is
       type Return_Type is private;
    package Return_Callback is
 
-      type Handler is access function (Widget : access Widget_Type'Class;
-                                       Params : Gtk.Arguments.Gtk_Args)
-                                      return Return_Type;
+      type Handler is access function
+        (Widget : access Widget_Type'Class;
+         Params : Glib.Values.GValues) return Return_Type;
 
       package Marshallers is new Gtk.Marshallers.Return_Marshallers
         (Widget_Type, Return_Type);
@@ -177,34 +177,34 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Marsh   : in     Marshallers.Marshaller;
-         After   : in     Boolean := False);
+         Name    : String;
+         Marsh   : Marshallers.Marshaller;
+         After   : Boolean := False);
       --  Connects a Marshaller. The Handler_Id is dropped.
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Marsh       : in     Marshallers.Marshaller;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False);
+         After       : Boolean := False);
       --  Connects a Marshaller. The Handler_Id is dropped.
       --  This is automatically disconnected as soon as either Widget or
       --  Slot_Object is destroyed.
 
       procedure Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Cb      : in     Handler;
-         After   : in     Boolean := False);
+         Name    : String;
+         Cb      : Handler;
+         After   : Boolean := False);
       --  Connects a Handler. The Handler_Id is dropped.
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Cb          : in     Handler;
+         Name        : String;
+         Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False);
+         After       : Boolean := False);
       --  Connects a Handler. The Handler_Id is dropped.
       --  This is automatically disconnected as soon as either Widget or
       --  Slot_Object is destroyed.
@@ -214,38 +214,34 @@ package Gtk.Handlers is
 
       function Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Marsh   : in     Marshallers.Marshaller;
-         After   : in     Boolean := False)
-        return Handler_Id;
+         Name    : String;
+         Marsh   : Marshallers.Marshaller;
+         After   : Boolean := False) return Handler_Id;
       --  Connects a Marshaller. Returns the Handler_Id.
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Marsh       : in     Marshallers.Marshaller;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
-        return Handler_Id;
+         After       : Boolean := False) return Handler_Id;
       --  Connects a Marshaller. Returns the Handler_Id.
       --  This is automatically disconnected as soon as either Widget or
       --  Slot_Object is destroyed.
 
       function Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Cb      : in     Handler;
-         After   : in     Boolean := False)
-        return Handler_Id;
+         Name    : String;
+         Cb      : Handler;
+         After   : Boolean := False) return Handler_Id;
       --  Connects a Handler. Returns the Handler_Id.
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Cb          : in     Handler;
+         Name        : String;
+         Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
-        return Handler_Id;
+         After       : Boolean := False) return Handler_Id;
       --  Connects a Handler. Returns the Handler_Id.
       --  This is automatically disconnected as soon as either Widget or
       --  Slot_Object is destroyed.
@@ -253,69 +249,79 @@ package Gtk.Handlers is
       --  Some convenient functions to create marshallers
 
       package Gint_Marshaller is new Marshallers.Generic_Marshaller
-        (Gint, Gtk.Arguments.To_Gint);
+        (Gint, Glib.Values.Get_Int);
       package Guint_Marshaller is new Marshallers.Generic_Marshaller
-        (Guint, Gtk.Arguments.To_Guint);
+        (Guint, Glib.Values.Get_Uint);
       package Event_Marshaller is new Marshallers.Generic_Marshaller
-        (Gdk.Event.Gdk_Event, Gtk.Arguments.To_Event);
+        (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
       package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Arguments.To_Notebook_Page);
+        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
 
-      function To_Marshaller (Cb : Gint_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Gint_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Guint_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Guint_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Event_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Event_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Widget_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Widget_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Marshallers.Void_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Marshallers.Void_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Notebook_Page_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Notebook_Page_Marshaller.To_Marshaller;
+      function To_Marshaller
+        (Cb : Gint_Marshaller.Handler)
+         return Marshallers.Marshaller renames Gint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Guint_Marshaller.Handler)
+         return Marshallers.Marshaller renames Guint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Event_Marshaller.Handler)
+         return Marshallers.Marshaller renames Event_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Widget_Marshaller.Handler)
+         return Marshallers.Marshaller renames Widget_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Marshallers.Void_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Marshallers.Void_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Notebook_Page_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Gint)
-                            return Return_Type
-                            renames Gint_Marshaller.Emit_By_Name;
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Guint)
-                            return Return_Type
-                            renames Guint_Marshaller.Emit_By_Name;
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Gdk.Event.Gdk_Event)
-                            return Return_Type;
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : in String;
+         Name   : String;
+         Param  : Gint)
+         return Return_Type renames Gint_Marshaller.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Guint)
+         return Return_Type renames Guint_Marshaller.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event) return Return_Type;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
-        return Return_Type
-        renames Widget_Marshaller.Emit_By_Name;
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String)
-                            return Return_Type
-                            renames Marshallers.Void_Marshaller.Emit_By_Name;
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Gtk.Notebook.Gtk_Notebook_Page)
-                            return Return_Type
-                            renames Notebook_Page_Marshaller.Emit_By_Name;
+         return Return_Type renames Widget_Marshaller.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String)
+         return Return_Type renames Marshallers.Void_Marshaller.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gtk.Notebook.Gtk_Notebook_Page)
+         return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
 
    end Return_Callback;
-
 
    ---------------------------------------------------------
    --  These handlers should return a value
@@ -328,10 +334,10 @@ package Gtk.Handlers is
       type User_Type (<>) is private;
    package User_Return_Callback is
 
-      type Handler is access function (Widget    : access Widget_Type'Class;
-                                       Params    : Gtk.Arguments.Gtk_Args;
-                                       User_Data : User_Type)
-                                      return Return_Type;
+      type Handler is access function
+        (Widget    : access Widget_Type'Class;
+         Params    : Glib.Values.GValues;
+         User_Data : User_Type) return Return_Type;
 
       package Marshallers is new Gtk.Marshallers.User_Return_Marshallers
         (Widget_Type, Return_Type, User_Type);
@@ -340,99 +346,108 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Marsh     : in     Marshallers.Marshaller;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False);
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False);
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Cb        : in     Handler;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False);
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False);
 
       pragma Inline (Connect);
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Marsh     : in     Marshallers.Marshaller;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
-        return Handler_Id;
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id;
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Cb        : in     Handler;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
-        return Handler_Id;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id;
 
       --  Some convenient functions to create marshallers
 
       package Gint_Marshaller is new Marshallers.Generic_Marshaller
-        (Gint, Gtk.Arguments.To_Gint);
+        (Gint, Glib.Values.Get_Int);
       package Guint_Marshaller is new Marshallers.Generic_Marshaller
-        (Guint, Gtk.Arguments.To_Guint);
+        (Guint, Glib.Values.Get_Uint);
       package Event_Marshaller is new Marshallers.Generic_Marshaller
-        (Gdk.Event.Gdk_Event, Gtk.Arguments.To_Event);
+        (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
       package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Arguments.To_Notebook_Page);
+        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
 
-      function To_Marshaller (Cb : Gint_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Gint_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Guint_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Guint_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Event_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Event_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Widget_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Widget_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Marshallers.Void_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Marshallers.Void_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Notebook_Page_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Notebook_Page_Marshaller.To_Marshaller;
+      function To_Marshaller
+        (Cb : Gint_Marshaller.Handler)
+         return Marshallers.Marshaller renames Gint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Guint_Marshaller.Handler)
+         return Marshallers.Marshaller renames Guint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Event_Marshaller.Handler)
+         return Marshallers.Marshaller renames Event_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Widget_Marshaller.Handler)
+         return Marshallers.Marshaller renames Widget_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Marshallers.Void_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Marshallers.Void_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Notebook_Page_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Gint)
-                            return Return_Type
-                            renames Gint_Marshaller.Emit_By_Name;
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Guint)
-                            return Return_Type
-                            renames Guint_Marshaller.Emit_By_Name;
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Gdk.Event.Gdk_Event)
-                            return Return_Type;
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : in String;
+         Name   : String;
+         Param  : Gint)
+         return Return_Type renames Gint_Marshaller.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Guint)
+         return Return_Type renames Guint_Marshaller.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event) return Return_Type;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
-        return Return_Type
-        renames Widget_Marshaller.Emit_By_Name;
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String)
-                            return Return_Type
-                            renames Marshallers.Void_Marshaller.Emit_By_Name;
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Gtk.Notebook.Gtk_Notebook_Page)
-                            return Return_Type
-                            renames Notebook_Page_Marshaller.Emit_By_Name;
+         return Return_Type renames Widget_Marshaller.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String)
+         return Return_Type renames Marshallers.Void_Marshaller.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gtk.Notebook.Gtk_Notebook_Page)
+         return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
    end User_Return_Callback;
 
    ---------------------------------------------------------
@@ -444,133 +459,143 @@ package Gtk.Handlers is
       type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
    package Callback is
 
-      type Handler is access procedure (Widget : access Widget_Type'Class;
-                                        Params : Gtk.Arguments.Gtk_Args);
+      type Handler is access procedure
+        (Widget : access Widget_Type'Class;
+         Params : Glib.Values.GValues);
 
-      package Marshallers is
-         new Gtk.Marshallers.Void_Marshallers (Widget_Type);
+      package Marshallers is new
+        Gtk.Marshallers.Void_Marshallers (Widget_Type);
 
       --  Connecting a handler to an object
 
       procedure Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Marsh   : in     Marshallers.Marshaller;
-         After   : in     Boolean := False);
+         Name    : String;
+         Marsh   : Marshallers.Marshaller;
+         After   : Boolean := False);
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Marsh       : in     Marshallers.Marshaller;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False);
+         After       : Boolean := False);
 
       procedure Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Cb      : in     Handler;
-         After   : in     Boolean := False);
+         Name    : String;
+         Cb      : Handler;
+         After   : Boolean := False);
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Cb          : in     Handler;
+         Name        : String;
+         Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False);
+         After       : Boolean := False);
 
       pragma Inline (Connect);
       pragma Inline (Object_Connect);
 
       function Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Marsh   : in     Marshallers.Marshaller;
-         After   : in     Boolean := False)
-        return Handler_Id;
+         Name    : String;
+         Marsh   : Marshallers.Marshaller;
+         After   : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Marsh       : in     Marshallers.Marshaller;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
-        return Handler_Id;
+         After       : Boolean := False) return Handler_Id;
 
       function Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Cb      : in     Handler;
-         After   : in     Boolean := False)
-        return Handler_Id;
+         Name    : String;
+         Cb      : Handler;
+         After   : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Cb          : in     Handler;
+         Name        : String;
+         Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
-        return Handler_Id;
+         After       : Boolean := False) return Handler_Id;
 
       --  Some convenient functions to create marshallers
 
       package Gint_Marshaller is new Marshallers.Generic_Marshaller
-        (Gint, Gtk.Arguments.To_Gint);
+        (Gint, Glib.Values.Get_Int);
       package Guint_Marshaller is new Marshallers.Generic_Marshaller
-        (Guint, Gtk.Arguments.To_Guint);
+        (Guint, Glib.Values.Get_Uint);
       package Event_Marshaller is new Marshallers.Generic_Marshaller
-        (Gdk.Event.Gdk_Event, Gtk.Arguments.To_Event);
+        (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
       package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Arguments.To_Notebook_Page);
+        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
 
-      function To_Marshaller (Cb : Gint_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Gint_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Guint_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Guint_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Event_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Event_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Widget_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Widget_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Marshallers.Void_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Marshallers.Void_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Notebook_Page_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Notebook_Page_Marshaller.To_Marshaller;
+      function To_Marshaller
+        (Cb : Gint_Marshaller.Handler)
+         return Marshallers.Marshaller renames Gint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Guint_Marshaller.Handler)
+         return Marshallers.Marshaller renames Guint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Event_Marshaller.Handler)
+         return Marshallers.Marshaller renames Event_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Widget_Marshaller.Handler)
+         return Marshallers.Marshaller renames Widget_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Marshallers.Void_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Marshallers.Void_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Notebook_Page_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gint)
-                             renames Gint_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Guint)
-                             renames Guint_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gdk.Event.Gdk_Event);
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : in String;
+         Name   : String;
+         Param  : Gint) renames Gint_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Guint) renames Guint_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name
+         (Object : access Widget_Type'Class;
+          Name   : String;
+          Param  : Gdk.Event.Gdk_Event);
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
-        renames Widget_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String)
-                             renames Marshallers.Void_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gtk.Notebook.Gtk_Notebook_Page)
-                             renames Notebook_Page_Marshaller.Emit_By_Name;
+         renames Widget_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String) renames Marshallers.Void_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gtk.Notebook.Gtk_Notebook_Page)
+         renames Notebook_Page_Marshaller.Emit_By_Name;
 
    end Callback;
-
 
    ---------------------------------------------------------
    --  These handlers do not return a value
@@ -582,104 +607,117 @@ package Gtk.Handlers is
       type User_Type (<>) is private;
    package User_Callback is
 
-      type Handler is access procedure (Widget    : access Widget_Type'Class;
-                                        Params    : Gtk.Arguments.Gtk_Args;
-                                        User_Data : User_Type);
+      type Handler is access procedure
+        (Widget    : access Widget_Type'Class;
+         Params    : Glib.Values.GValues;
+         User_Data : User_Type);
 
-      package Marshallers is new Gtk.Marshallers.User_Void_Marshallers
-        (Widget_Type, User_Type);
+      package Marshallers is new
+        Gtk.Marshallers.User_Void_Marshallers (Widget_Type, User_Type);
 
       --  Connecting a handler to an object
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Marsh     : in     Marshallers.Marshaller;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False);
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False);
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Cb        : in     Handler;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False);
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False);
 
       pragma Inline (Connect);
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Marsh     : in     Marshallers.Marshaller;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
-        return Handler_Id;
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id;
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Cb        : in     Handler;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
-        return Handler_Id;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id;
 
       --  Some convenient functions to create marshallers
 
       package Gint_Marshaller is new Marshallers.Generic_Marshaller
-        (Gint, Gtk.Arguments.To_Gint);
+        (Gint, Glib.Values.Get_Int);
       package Guint_Marshaller is new Marshallers.Generic_Marshaller
-        (Guint, Gtk.Arguments.To_Guint);
+        (Guint, Glib.Values.Get_Uint);
       package Event_Marshaller is new Marshallers.Generic_Marshaller
-        (Gdk.Event.Gdk_Event, Gtk.Arguments.To_Event);
+        (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
       package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Arguments.To_Notebook_Page);
+        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
 
-      function To_Marshaller (Cb : Gint_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Gint_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Guint_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Guint_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Event_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Event_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Widget_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Widget_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Marshallers.Void_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Marshallers.Void_Marshaller.To_Marshaller;
-      function To_Marshaller (Cb : Notebook_Page_Marshaller.Handler)
-                             return Marshallers.Marshaller
-                             renames Notebook_Page_Marshaller.To_Marshaller;
+      function To_Marshaller
+        (Cb : Gint_Marshaller.Handler)
+         return Marshallers.Marshaller renames Gint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Guint_Marshaller.Handler)
+         return Marshallers.Marshaller renames Guint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Event_Marshaller.Handler)
+         return Marshallers.Marshaller renames Event_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Widget_Marshaller.Handler)
+         return Marshallers.Marshaller renames Widget_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Marshallers.Void_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Marshallers.Void_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Notebook_Page_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gint)
-                             renames Gint_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Guint)
-                             renames Guint_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gdk.Event.Gdk_Event);
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : in String;
+         Name   : String;
+         Param  : Gint) renames Gint_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Guint) renames Guint_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event);
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
-        renames Widget_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String)
-                             renames Marshallers.Void_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gtk.Notebook.Gtk_Notebook_Page)
-                             renames Notebook_Page_Marshaller.Emit_By_Name;
+         renames Widget_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String) renames Marshallers.Void_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gtk.Notebook.Gtk_Notebook_Page)
+         renames Notebook_Page_Marshaller.Emit_By_Name;
 
    end User_Callback;
 
@@ -689,18 +727,18 @@ package Gtk.Handlers is
 
    procedure Disconnect
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Id     : in Handler_Id);
+      Id     : Handler_Id);
    --  Disconnect the handler identified by the given Handler_Id.
 
    procedure Emit_Stop_By_Name
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Name   : in String);
+      Name   : String);
    --  During a signal emission, invoking this procedure will halt the
    --  emission.
 
    procedure Handler_Block
      (Obj : access Gtk.Object.Gtk_Object_Record'Class;
-      Id  : in Handler_Id);
+      Id  : Handler_Id);
    --  Blocks temporily the signal. For each call to this procedure,
    --  a call to Handler_Unblock must be performed in order to really
    --  unblock the signal.
@@ -711,7 +749,7 @@ package Gtk.Handlers is
 
    procedure Handler_Unblock
      (Obj : access Gtk.Object.Gtk_Object_Record'Class;
-      Id  : in Handler_Id);
+      Id  : Handler_Id);
    --  See Handler_Block.
 
    --  </doc_ignore>
