@@ -67,10 +67,12 @@ package Glib is
    type Gint8  is range -(2 ** 7) .. (2 ** 7 - 1);
    type Gint16 is range -(2 ** 15) .. (2 ** 15 - 1);
    type Gint32 is range -(2 ** 31) .. (2 ** 31 - 1);
+   type Gint64 is range -(2 ** 63) .. (2 ** 63 - 1);
 
    type Guint8  is mod 2 ** 8;
    type Guint16 is mod 2 ** 16;
    type Guint32 is mod 2 ** 32;
+   type Guint64 is mod 2 ** 64;
 
    type Gunichar is new Guint32;
 
