@@ -1703,6 +1703,94 @@ ada_clist_get_clist_window (GtkCList* widget)
   return widget->clist_window;
 }
 
+GList*
+ada_clist_get_row_list (GtkCList* widget)
+{
+  return widget->row_list;
+}
+
+
+/******************************************
+ ** Functions for CTree
+ ******************************************/
+
+GtkCTreeExpanderStyle
+ada_ctree_get_expander_style (GtkCTree* widget)
+{
+  return widget->expander_style;
+}
+
+GtkCTreeLineStyle
+ada_ctree_get_line_style (GtkCTree* widget)
+{
+  return widget->line_style;
+}
+
+gboolean
+ada_ctree_get_show_stub (GtkCTree* widget)
+{
+  return widget->show_stub;
+}
+
+gint
+ada_ctree_get_tree_column (GtkCTree* widget)
+{
+   return widget->tree_column;
+}
+
+gint
+ada_ctree_get_tree_indent (GtkCTree* widget)
+{
+   return widget->tree_indent;
+}
+
+gint
+ada_ctree_get_tree_spacing (GtkCTree* widget)
+{
+   return widget->tree_spacing;
+}
+
+GtkCTreeRow*
+ada_ctree_node_get_row (GtkCTreeNode* node)
+{
+  return GTK_CTREE_ROW (node);
+}
+
+GtkCTreeNode*
+ada_ctree_row_get_children (GtkCTreeRow* row)
+{
+  g_return_val_if_fail (row != NULL, NULL);
+  return row->children;
+}
+
+guint
+ada_ctree_row_get_expanded (GtkCTreeRow* row)
+{
+  g_assert (row != NULL);
+  return row->expanded;
+}
+
+guint
+ada_ctree_row_get_is_leaf (GtkCTreeRow* row)
+{
+  g_assert (row != NULL);
+  return row->is_leaf;
+}
+
+GtkCTreeNode*
+ada_ctree_row_get_parent (GtkCTreeRow* row)
+{
+  g_return_val_if_fail (row != NULL, NULL);
+  return row->parent;
+}
+
+GtkCTreeNode*
+ada_ctree_row_get_sibling (GtkCTreeRow* row)
+{
+  g_return_val_if_fail (row != NULL, NULL);
+  return row->sibling;
+}
+
 
 /*
  *
