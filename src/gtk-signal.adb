@@ -222,7 +222,7 @@ package body Gtk.Signal is
          Widget2 : Cb_Type;
          Tmp    : System.Address := Internal (Params, 0);
       begin
-         if Nparams = 0 or Tmp = System.Null_Address then
+         if Nparams = 0 then
             raise Constraint_Error;
          end if;
          if Data.Func /= null then

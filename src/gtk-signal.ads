@@ -48,13 +48,13 @@ package Gtk.Signal is
 
       type Data_Type (<>) is private;
 
-      type Cb_Type is new Gtk.Object.Gtk_Object with private;
+      type Cb_Type is new Gtk.Root_Type with private;
 
    package Two_Callback is
 
       type Callback is access procedure
         (Widget  : in out Widget_Type'Class;
-         Cb_Data : in out Cb_Type'Class;
+         Cb_Data : in out Cb_Type;
          Data    : in out Data_Type);
       --  Callback function for Signal_Connect below
 
