@@ -29,11 +29,49 @@
 
 package body Gtkada.Types is
 
+   use Interfaces.C.Strings;
+
+   ---------
+   -- "+" --
+   ---------
+
+   function "+" (S1, S2 : String) return Chars_Ptr_Array is
+   begin
+      return (0 => New_String (S1), 1 => New_String (S2));
+   end "+";
+
+   function "+" (S1 : Chars_Ptr_Array; S2 : String) return Chars_Ptr_Array is
+   begin
+      return S1 + New_String (S2);
+   end "+";
+
+   function "+" (S1 : Chars_Ptr_Array; S2 : Chars_Ptr)
+     return Chars_Ptr_Array
+   is
+      use type Interfaces.C.size_t;
+
+      Result : Chars_Ptr_Array (S1'First .. S1'Last + 1);
+
+   begin
+      Result (S1'Range) := S1;
+      Result (S1'Last + 1) := S2;
+      return Result;
+   end "+";
+
+   ----------
+   -- Free --
+   ----------
+
    procedure Free (A : in out Chars_Ptr_Array) is
    begin
-      for Index in A'Range loop
-         Interfaces.C.Strings.Free (A (Index));
+      for J in A'Range loop
+         Interfaces.C.Strings.Free (A (J));
       end loop;
    end Free;
+
+   function Null_Array return Chars_Ptr_Array is
+   begin
+      return (1 .. 0 => Null_Ptr);
+   end Null_Array;
 
 end Gtkada.Types;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -31,11 +31,51 @@ with Interfaces.C.Strings;
 
 package Gtkada.Types is
 
+   pragma Preelaborate;
+
    Data_Error : exception;
 
+   subtype Chars_Ptr is Interfaces.C.Strings.chars_ptr;
    subtype Chars_Ptr_Array is Interfaces.C.Strings.chars_ptr_array;
-   Null_Array : constant Gtkada.Types.Chars_Ptr_Array
-     := (1 .. 0 => Interfaces.C.Strings.Null_Ptr);
+
+   Null_Ptr : Chars_Ptr renames Interfaces.C.Strings.Null_Ptr;
+
+   function Null_Array return Chars_Ptr_Array;
+   pragma Inline (Null_Array);
+   --  Return a null array.
+
+   --  The following functions provide a very convenient way to create
+   --  C arrays of null terminated strings in Ada.
+   --
+   --  You can either create such a String on the fly, or declare a variable:
+   --
+   --     Signals : Chars_Ptr_Array := "clicked" + "missed" + "new signal";
+   --
+   --  which corresponds to the C declaration:
+   --
+   --     char *signals[] = {"clicked", "missed", "new signal"};
+   --
+   --  Note that you still need to manually call Free (Signals) if you want to
+   --  release the memory dynamically allocated by the "+" functions.
+
+   function "+" (S1, S2 : String) return Chars_Ptr_Array;
+   --  Create an array containing S1 and S2.
+   --  Note that this function allocates memory to store S1 and S2 as null
+   --  terminated Strings. The user is responsible for calling Free on the
+   --  resulting array.
+
+   function "+" (S1 : Chars_Ptr_Array; S2 : String) return Chars_Ptr_Array;
+   --  Append S2 to S1.
+   --  Note that this function allocates memory to store S2 as a null
+   --  terminated Strings. The user is responsible for calling Free on the
+   --  resulting array.
+
+   function "+" (S1 : Chars_Ptr_Array; S2 : Chars_Ptr) return Chars_Ptr_Array;
+   pragma Inline ("+");
+   --  Append S2 to S1.
+   --  Note that this function allocates memory to store S2 as a null
+   --  terminated Strings. The user is responsible for calling Free on the
+   --  resulting array.
 
    procedure Free (A : in out Chars_Ptr_Array);
    --  Frees all the strings in A
