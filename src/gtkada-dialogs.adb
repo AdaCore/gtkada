@@ -105,7 +105,7 @@ package body Gtkada.Dialogs is
       Response : Gtk_Response_Type;
 
    begin
-      if Parent = null then
+      if Parent = null or else not Realized_Is_Set (Parent) then
          Set_Position (Dialog, Win_Pos_Mouse);
 
       elsif (Get_State (Get_Window (Parent))
