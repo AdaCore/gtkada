@@ -30,6 +30,7 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
+with Interfaces.C.Strings;
 
 package body Gtk.Window is
 
@@ -79,16 +80,45 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Get_Object (Defaultw));
    end Set_Default;
 
+   ----------------------
+   -- Set_Default_Size --
+   ----------------------
+
+   procedure Set_Default_Size (Window : in Gtk_Window;
+                               Width  : in Gint;
+                               Height : in Gint) is
+      procedure Internal (Window : System.Address;
+                          Width  : Gint;
+                          Height : Gint);
+      pragma Import (C, Internal, "gtk_window_set_default_size");
+   begin
+      Internal (Get_Object (Window), Width, Height);
+   end Set_Default_Size;
+
    ---------------
    -- Set_Focus --
    ---------------
 
-   procedure Set_Focus (Window : in out Gtk_Window) is
-      procedure Internal (Window : in System.Address);
+   procedure Set_Focus (Window : in Gtk_Window;
+                        Focus  : in Gtk_Widget) is
+      procedure Internal (Window : in System.Address;
+                          Focus  : in System.Address);
       pragma Import (C, Internal, "gtk_window_set_focus");
    begin
-      Internal (Get_Object (Window));
+      Internal (Get_Object (Window), Get_Object (Focus));
    end Set_Focus;
+
+   ---------------
+   -- Set_Modal --
+   ---------------
+
+   procedure Set_Modal (Window : in Gtk_Window;
+                        Modal  : in Boolean) is
+      procedure Internal (Window : System.Address; Modal : Integer);
+      pragma Import (C, Internal, "gtk_window_set_modal");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Modal));
+   end Set_Modal;
 
    ----------------
    -- Set_Policy --
@@ -134,6 +164,22 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Title & Ascii.NUL);
    end Set_Title;
 
+   -----------------
+   -- Set_Wmclass --
+   -----------------
+
+   procedure Set_Wmclass (Window        : in Gtk_Window;
+                          Wmclass_Name  : in String;
+                          Wmclass_Class : in String) is
+      procedure Internal (W : System.Address;
+                          N : Interfaces.C.Strings.chars_ptr;
+                          C : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_window_set_wmclass");
+   begin
+      Internal (Get_Object (Window),
+                Interfaces.C.Strings.New_String (Wmclass_Name),
+                Interfaces.C.Strings.New_String (Wmclass_Class));
+   end Set_Wmclass;
    --------------
    -- Generate --
    --------------

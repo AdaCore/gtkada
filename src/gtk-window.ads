@@ -41,10 +41,14 @@ package Gtk.Window is
    procedure Set_Title (Window : in out Gtk_Window;
                         Title  : in String);
 
-   procedure Set_Focus (Window : in out Gtk_Window);
+   procedure Set_Focus (Window : in Gtk_Window;
+                        Focus   : in Gtk_Widget);
 
    procedure Set_Default (Window   : in out Gtk_Window;
                           Defaultw : in     Widget.Gtk_Widget'Class);
+
+   procedure Set_Modal (Window : in Gtk_Window;
+                        Modal  : in Boolean);
 
    procedure Set_Policy (Window       : in out Gtk_Window;
                          Allow_Shrink : in     Boolean;
@@ -57,6 +61,14 @@ package Gtk.Window is
    function Activate_Focus (Window : in Gtk_Window) return Boolean;
 
    function Activate_Default (Window : in Gtk_Window) return Boolean;
+
+   procedure Set_Default_Size (Window : in Gtk_Window;
+                               Width  : in Gint;
+                               Height : in Gint);
+
+   procedure Set_Wmclass (Window        : in Gtk_Window;
+                          Wmclass_Name  : in String;
+                          Wmclass_Class : in String);
 
    procedure Generate (Window : in Gtk_Window;
                        N      : in Node_Ptr;
