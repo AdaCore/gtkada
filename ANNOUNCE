@@ -1,8 +1,8 @@
 
-GtkAda 0.4 release (Beta code)
+GtkAda 0.5 release (Beta code)
 ------------------------------
      
-GtkAda is  an Ada95 binding of  Gtk+ version 1.1.9.   It allows you to
+GtkAda is  an Ada95 binding of  Gtk+ version 1.1.14.   It allows you to
 develop graphical applications in Ada95 using Gtk+.
 
 Currently, all widgets  of the  Gtk+ 1.1 series  have  been bound. The
@@ -15,9 +15,9 @@ re-implemented and is also distributed with the binding.
 LSM entry follows :
 Begin3
  Title:  GtkAda
- Version: 0.4
- Entered-date: 05JAN99
- Description: Ada95 binding to Gtk+ (version 1.1.9) 
+ Version: 0.5
+ Entered-date: 03FEB99
+ Description: Ada95 binding to Gtk+ (version 1.1.14) 
  Keywords: Ada95 Ada Gtk+ Gtk X Gui
  Author: Emmanuel Briot <briot@gnat.com> and Joel Brobecker <jbrobecker@west.raytheon.com>
  Maintained-by: <briot@gnat.com> and <jbrobecker@west.raytheon.com> 

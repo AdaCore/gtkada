@@ -13,13 +13,13 @@ The home page for GtkAda is
      
 This home page will always contain the latest news for this binding.
      
-This is GtkAda version 0.4-beta. This package is  an Ada95 binding for
+This is GtkAda version 0.5-beta. This package is  an Ada95 binding for
 the Gimp Toolkit,  which means this is a  set of packages to allow you
 to easily create some graphical interfaces under X11, using Ada95 as a
 programming language.
      
 This is still  a beta version, although  it is already pretty  usable.
-Every widget from gtk 1.1.9 as been implemented,  and the test program
+Every widget from gtk 1.1.14 as been implemented,  and the test program
 found in the gtk release has been reimplemented in Ada (have a look at
 the testgtk/ directory).
      
@@ -31,7 +31,7 @@ using the following compilers :
    - Gnat 3.11p
      
 and the following version of gtk :
-   - Gtk 1.1.12
+   - Gtk 1.1.14
      
    Although versions up to 0.2.1 were compatible with Gtk1.0, this one
    is Gtk-1.1  specific.  If you are  looking for a binding to Gtk1.0,
