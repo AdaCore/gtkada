@@ -341,6 +341,11 @@ ada_gtk_widget_set_allocation (GtkWidget* widget, GtkAllocation* allocation) {
   widget->allocation = *allocation;
 }
 
+gpointer
+ada_gtk_default_expose_event_handler (gpointer klass) {
+  return GTK_WIDGET_CLASS (klass)->expose_event;
+}
+
 /*********************************************************************
  **  Gdk.RGB functions
  *********************************************************************/

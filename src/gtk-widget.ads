@@ -293,7 +293,7 @@ package Gtk.Widget is
 
    procedure Size_Allocate
      (Widget     : access Gtk_Widget_Record;
-      Allocation : in out Gtk_Allocation);
+      Allocation : Gtk_Allocation);
    --  Emit a "size_allocate" event for the widget.
    --  Allocation'size is first constrained to a range between 1x1 and
    --  32767x32767.
@@ -753,6 +753,16 @@ package Gtk.Widget is
    --  Beware that the only use of this method is inside a callback set
    --  by Set_Default_Size_Allocate_Handler. If you simply want to resize
    --  or reposition a widget, use Size_Allocate instead.
+
+   type Expose_Event_Handler is access function
+     (Widget : System.Address; Event : Gdk.Event.Gdk_Event) return Boolean;
+   function Default_Expose_Event_Handler (Klass : GObject_Class)
+      return Expose_Event_Handler;
+   --  Return the default expose event handler for the widget class Klass. The
+   --  typical use for this function is when you are writting your own
+   --  container class. You should then, from your own handler for
+   --  expose_event, call the one of the parent class, so that all the children
+   --  are automatically redrawn.
 
    -----------
    -- Flags --
@@ -1531,6 +1541,8 @@ private
    pragma Import (C, Set_Default_Colormap, "gtk_widget_set_default_colormap");
    pragma Import (C, Set_Default_Size_Allocate_Handler,
                   "ada_gtk_widget_set_default_size_allocate_handler");
+   pragma Import (C, Default_Expose_Event_Handler,
+                  "ada_gtk_default_expose_event_handler");
    pragma Inline (Toplevel_Is_Set);
    pragma Inline (No_Window_Is_Set);
    pragma Inline (Realized_Is_Set);
