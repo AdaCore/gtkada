@@ -589,17 +589,6 @@ AC_DEFUN(AM_CHECK_GNOME,
   AC_SUBST(GNOME_STATIC_LIBS)
   AC_SUBST(HAVE_GNOME)
 ])
-#############################################################
-#
-#  Checking for gdk-pixbuf
-#
-#############################################################
-
-AC_DEFUN(AM_CHECK_PIXBUF,
-[   
-  HAVE_PIXBUF="True"
-  AC_SUBST(HAVE_PIXBUF)
-])
 
 #############################################################
 #
