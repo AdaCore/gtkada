@@ -11,11 +11,10 @@ Most of the new features of Gtk+ 2.0.0 have been bound at this stage.
 Most of the GtkExtra package has not been ported to Gtk+ 2.0.0 yet (this
 is work in progress), so these widgets are currently disabled.
 
-GtkAda 2.0.0 also comes with two new widgets which are not fully stabilized
+GtkAda 2.0.0 also comes with a new widget which is not fully stabilized
 yet, and on which feedbacks and comments will be welcome:
-- GtkAda.File_Selector:  a new file selector widget
-- GtkAda.MDI:            a fully featured multiple document interface suitable
-                         for use in IDE-like applications.
+- GtkAda.MDI: a fully featured multiple document interface suitable for use in
+              IDE-like applications.
 
 LSM entry follows:
 Begin4
