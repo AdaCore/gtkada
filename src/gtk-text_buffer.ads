@@ -34,6 +34,7 @@
 
 with Gtkada.Types;
 with Gdk.Pixbuf;
+with Gtk.Clipboard;
 with Gtk.Text_Child;
 with Gtk.Text_Iter;
 with Gtk.Text_Mark;
@@ -519,17 +520,24 @@ package Gtk.Text_Buffer is
 
    procedure Cut_Clipboard
      (Buffer           : access Gtk_Text_Buffer_Record;
-      Default_Editable : Boolean);
+      Clipboard        : Gtk.Clipboard.Gtk_Clipboard;
+      Default_Editable : Boolean := True);
    --  Copy the currently-selected text to the clipboard, then delete
    --  said text if it's editable.
+   --  Default_Editable: default editability of the buffer.
 
-   procedure Copy_Clipboard (Buffer : access Gtk_Text_Buffer_Record);
+   procedure Copy_Clipboard
+     (Buffer     : access Gtk_Text_Buffer_Record;
+      Clipboard  : Gtk.Clipboard.Gtk_Clipboard);
    --  Copy the currently-selected text to the clipboard.
 
    procedure Paste_Clipboard
-     (Buffer           : access Gtk_Text_Buffer_Record;
-      Default_Editable : Boolean);
-   --  Paste the clipboard contents at the insertion point.
+     (Buffer            : access Gtk_Text_Buffer_Record;
+      Clipboard         : Gtk.Clipboard.Gtk_Clipboard;
+      Override_Location : Gtk.Text_Iter.Gtk_Text_Iter_Access := null;
+      Default_Editable  : Boolean := True);
+   --  Paste the clipboard contents at the insertion point,
+   --  or at Override_Location if this parameter is not null.
    --  (Note: pasting is asynchronous, that is, we'll ask for the paste data
    --  and return, and at some point later after the main loop runs, the paste
    --  data will be inserted.)

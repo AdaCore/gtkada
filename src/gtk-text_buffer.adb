@@ -971,27 +971,34 @@ package body Gtk.Text_Buffer is
 
    procedure Cut_Clipboard
      (Buffer           : access Gtk_Text_Buffer_Record;
-      Default_Editable : Boolean)
+      Clipboard        : Gtk.Clipboard.Gtk_Clipboard;
+      Default_Editable : Boolean := True)
    is
       procedure Internal
         (Buffer           : System.Address;
+         Clipboard        : Gtk.Clipboard.Gtk_Clipboard;
          Default_Editable : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_cut_clipboard");
 
    begin
-      Internal (Get_Object (Buffer), To_Gboolean (Default_Editable));
+      Internal
+        (Get_Object (Buffer), Clipboard, To_Gboolean (Default_Editable));
    end Cut_Clipboard;
 
    --------------------
    -- Copy_Clipboard --
    --------------------
 
-   procedure Copy_Clipboard (Buffer : access Gtk_Text_Buffer_Record) is
-      procedure Internal (Buffer : System.Address);
+   procedure Copy_Clipboard
+     (Buffer     : access Gtk_Text_Buffer_Record;
+      Clipboard  : Gtk.Clipboard.Gtk_Clipboard)
+   is
+      procedure Internal
+        (Buffer : System.Address; Clipboard : Gtk.Clipboard.Gtk_Clipboard);
       pragma Import (C, Internal, "gtk_text_buffer_copy_clipboard");
 
    begin
-      Internal (Get_Object (Buffer));
+      Internal (Get_Object (Buffer), Clipboard);
    end Copy_Clipboard;
 
    ---------------------
@@ -999,16 +1006,22 @@ package body Gtk.Text_Buffer is
    ---------------------
 
    procedure Paste_Clipboard
-     (Buffer           : access Gtk_Text_Buffer_Record;
-      Default_Editable : Boolean)
+     (Buffer            : access Gtk_Text_Buffer_Record;
+      Clipboard         : Gtk.Clipboard.Gtk_Clipboard;
+      Override_Location : Gtk.Text_Iter.Gtk_Text_Iter_Access := null;
+      Default_Editable  : Boolean := True)
    is
       procedure Internal
-        (Buffer           : System.Address;
-         Default_Editable : Gboolean);
+        (Buffer            : System.Address;
+         Clipboard         : Gtk.Clipboard.Gtk_Clipboard;
+         Override_Location : Gtk.Text_Iter.Gtk_Text_Iter_Access;
+         Default_Editable  : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_paste_clipboard");
 
    begin
-      Internal (Get_Object (Buffer), To_Gboolean (Default_Editable));
+      Internal
+        (Get_Object (Buffer), Clipboard,
+         Override_Location, To_Gboolean (Default_Editable));
    end Paste_Clipboard;
 
    ----------------------
