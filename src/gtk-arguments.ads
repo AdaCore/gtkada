@@ -38,8 +38,8 @@
 
 with System;
 with Gdk.Event;
-with Gtk.Notebook;
 with Gtk.Object;
+with Gtk.Notebook;
 
 package Gtk.Arguments is
 
@@ -64,29 +64,37 @@ package Gtk.Arguments is
    function To_Gint    (Args : Gtk_Args; Num : Positive) return Gint;
    function To_Guint   (Args : Gtk_Args; Num : Positive) return Guint;
    function To_Boolean (Args : Gtk_Args; Num : Positive) return Boolean;
-   function To_Event (Args : Gtk_Args; Num : Positive)
-                     return Gdk.Event.Gdk_Event;
+   function To_Event   (Args : Gtk_Args; Num : Positive)
+     return Gdk.Event.Gdk_Event;
    function To_String  (Args : Gtk_Args; Num : Positive) return String;
    function To_Notebook_Page (Args : Gtk_Args; Num : Positive)
-                             return Gtk.Notebook.Gtk_Notebook_Page;
+     return Gtk.Notebook.Gtk_Notebook_Page;
+   function To_Address (Args : Gtk_Args; Num : Positive) return System.Address;
 
-   function To_Object  (Args : Gtk_Args; Num : Positive)
-                       return Gtk.Object.Gtk_Object;
+   function To_Root_Type (Args : Gtk_Args; Num : Positive)
+     return Gdk.Root_Type_Access;
+   function To_Object (Args : Gtk_Args; Num : Positive)
+     return Gtk.Object.Gtk_Object;
    --  This function can return null, if the C object was not created.
+
+   function To_Object_Type (Args : Gtk_Args; Num : Positive)
+     return Glib.Object_Type;
 
    ----------------------------------
    --  General conversion functions
    --  These are the same functions as above, but more general
    ----------------------------------
 
-   function To_Gint    (C : System.Address) return Gint;
-   function To_Guint   (C : System.Address) return Guint;
-   function To_Boolean (C : System.Address) return Boolean;
-   function To_Event   (C : System.Address) return Gdk.Event.Gdk_Event;
-   function To_String  (C : System.Address) return String;
+   function To_Gint          (C : System.Address) return Gint;
+   function To_Guint         (C : System.Address) return Guint;
+   function To_Boolean       (C : System.Address) return Boolean;
+   function To_Event         (C : System.Address) return Gdk.Event.Gdk_Event;
+   function To_String        (C : System.Address) return String;
    function To_Notebook_Page (C : System.Address)
-                             return Gtk.Notebook.Gtk_Notebook_Page;
-   function To_Object  (C : System.Address) return Gtk.Object.Gtk_Object;
+     return Gtk.Notebook.Gtk_Notebook_Page;
+   function To_Object        (C : System.Address) return Gtk.Object.Gtk_Object;
+   function To_Object_Type   (C : System.Address) return Glib.Object_Type;
+   function To_Root_Type     (C : System.Address) return Gdk.Root_Type_Access;
 
 private
    type Gtk_Args is record

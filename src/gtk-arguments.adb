@@ -106,20 +106,58 @@ package body Gtk.Arguments is
    function To_Object  (C : System.Address) return Gtk.Object.Gtk_Object is
       use type System.Address;
       Stub : Gtk.Object.Gtk_Object_Record;
+
    begin
       if C = System.Null_Address then
-         return Gtk.Object.Gtk_Object'(null);
+         return null;
       else
          return Gtk.Object.Gtk_Object (Get_User_Data (C, Stub));
       end if;
    end To_Object;
 
-   function To_Object  (Args : Gtk_Args; Num : Positive)
-                       return Gtk.Object.Gtk_Object
-   is
+   function To_Object (Args : Gtk_Args; Num : Positive)
+     return Gtk.Object.Gtk_Object is
    begin
       return To_Object (Get_Nth (Args, Num));
    end To_Object;
+
+   --------------------
+   -- To_Object_Type --
+   --------------------
+
+   function To_Object_Type (C : System.Address) return Glib.Object_Type is
+      Object : Glib.Object_Type;
+   begin
+      Set_Object (Object, C);
+      return Object;
+   end To_Object_Type;
+
+   function To_Object_Type
+     (Args : Gtk_Args; Num : Positive) return Glib.Object_Type is
+   begin
+      return To_Object_Type (Get_Nth (Args, Num));
+   end To_Object_Type;
+
+   ------------------
+   -- To_Root_Type --
+   ------------------
+
+   function To_Root_Type (C : System.Address) return Gdk.Root_Type_Access is
+      use type System.Address;
+      Stub : Gdk.Root_Type;
+   begin
+      if C = System.Null_Address then
+         return null;
+      else
+         return Gdk.Root_Type_Access (Get_User_Data (C, Stub));
+      end if;
+   end To_Root_Type;
+
+   function To_Root_Type (Args : Gtk_Args; Num : Positive)
+     return Gdk.Root_Type_Access is
+   begin
+      return To_Root_Type (Get_Nth (Args, Num));
+   end To_Root_Type;
 
    --------------
    -- To_Event --
@@ -133,7 +171,7 @@ package body Gtk.Arguments is
    end To_Event;
 
    function To_Event (Args : Gtk_Args; Num : Positive)
-                     return Gdk.Event.Gdk_Event is
+     return Gdk.Event.Gdk_Event is
    begin
       return To_Event (Get_Nth (Args, Num));
    end To_Event;
@@ -143,7 +181,7 @@ package body Gtk.Arguments is
    ----------------------
 
    function To_Notebook_Page (C : System.Address)
-                             return Gtk.Notebook.Gtk_Notebook_Page
+     return Gtk.Notebook.Gtk_Notebook_Page
    is
       Page : Gtk.Notebook.Gtk_Notebook_Page;
    begin
@@ -152,11 +190,20 @@ package body Gtk.Arguments is
    end To_Notebook_Page;
 
    function To_Notebook_Page (Args : Gtk_Args; Num : Positive)
-                             return Gtk.Notebook.Gtk_Notebook_Page
-   is
+     return Gtk.Notebook.Gtk_Notebook_Page is
    begin
       return To_Notebook_Page (Get_Nth (Args, Num));
    end To_Notebook_Page;
+
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Address (Args : Gtk_Args; Num : Positive)
+     return System.Address is
+   begin
+      return Get_Nth (Args, Num);
+   end To_Address;
 
    ---------------
    -- To_String --
