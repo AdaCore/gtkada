@@ -36,7 +36,6 @@ with Gtk.Table;          use Gtk.Table;
 with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
 with Gtk.Object;         use Gtk.Object;
 with Gtk.Widget;         use Gtk.Widget;
-with Gtk.Window;         use Gtk.Window;
 
 package body Create_Packer is
 
