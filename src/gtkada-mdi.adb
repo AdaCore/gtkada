@@ -1310,29 +1310,25 @@ package body Gtkada.MDI is
 
       Widget_List.Remove (C.MDI.Items, Gtk_Widget (C));
 
-      if C.State = Floating then
-         --  Initial_Child could be null if we are destroying a floating
-         --  child explicitly (by closing its X11 window)
-
-         if C.Initial_Child /= null
-           and then Get_Parent (C.Initial_Child) /= null
-         then
-            Destroy (Get_Parent (C.Initial_Child));
-         end if;
-
+      --  Initial_Child could be null if we are destroying a floating
+      --  child explicitly (by closing its X11 window)
+      if C.State = Floating
+        and then C.Initial_Child /= null
+      then
+         Float_Child (C, False);
       elsif C.State = Docked then
-         Ref (C.Initial_Child);
-         Remove_From_Notebook (C, C.Dock);
-         C.State := Normal;
-         Unref (C.Initial_Child);
+         Dock_Child (C, False);
+      end if;
 
-      --  for maximized children
+      --  For maximized children, test whether there are still more than three
+      --  items (ie the item being destroyed item and two others) to see
+      --  whether we should leave the tabs visible.
 
-      elsif C.State = Normal
+      if C.State = Normal
         and then Children_Are_Maximized (C.MDI)
       then
          Set_Show_Tabs
-           (C.MDI.Docks (None), Get_Nth_Page (C.MDI.Docks (None), 1) /= null);
+           (C.MDI.Docks (None), Get_Nth_Page (C.MDI.Docks (None), 2) /= null);
       end if;
 
       --  Destroy the toplevel Child is associated with
