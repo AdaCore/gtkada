@@ -1,0 +1,29 @@
+AC_REVISION($Revision$)
+AC_INIT(glib.ads)
+
+# Current release settings
+GTKADA_MAJOR_VERSION=1
+GTKADA_MINOR_VERSION=1
+GTKADA_MICRO_VERSION=15
+GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
+
+AC_CANONICAL_HOST
+
+# checking for local tools
+AC_PROG_CC
+AM_PATH_GNAT
+AM_PATH_PERL
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+# checking for gtk
+AM_PATH_GTK(1.1.14,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+
+# Set the version number of GtkAda
+AC_SUBST(GTKADA_VERSION)
+
+EXEC_PREFIX="$prefix"
+AC_SUBST(EXEC_PREFIX)
+
+AC_OUTPUT(Makefile testgtk/Makefile create_test_link.pl gtkada-config)

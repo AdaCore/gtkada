@@ -1,0 +1,129 @@
+SHELL=/bin/sh
+@SET_MAKE@
+
+.SUFFIXES:
+.SUFFIXES: .c .o .ads .adb .ali
+
+.PHONY:
+.PHONY: clean-generic mostlyclean-generic \
+	clean distclean mostlyclean maintainer-clean
+
+TEST_LINK = test_link
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+CC = @CC@
+CFLAGS = @CFLAGS@ -Wall
+ALL_CFLAGS = $(CFLAGS) @GTK_CFLAGS@ -shared -fPIC
+
+GNATCC = gcc
+GNATFLAGS = -O2 -g -gnatg -gnata
+ALL_GNATFLAGS = $(GNATFLAGS) -shared -fPIC
+
+GNATMAKE = gnatmake
+GNATMAKEFLAGS = $(GNATFLAGS)
+GNATMAKELDFLAGS = -largs -L. @GTK_LIBS@ -lgtkada
+
+ARFLAGS = r
+
+RANLIB = @RANLIB@
+
+SONAME        = libgtkada.so
+LIBNAME       = libgtkada.so
+ARCHIVENAME   = libgtkada.a
+
+GTKADA_CONFIG = gtkada-config
+GATE_SRC      = gate.adb
+GATE_EX       = gate.ex
+DGATE         = dgate
+
+prefix        = @prefix@
+exec_prefix   = $(prefix)
+bindir        = $(prefix)/bin
+libdir        = $(prefix)/lib
+incdir        = $(prefix)/include/gtkada
+alidir        = $(incdir)
+
+
+c_objects = misc.o misc-gnat.o
+
+all: libs $(GATE_EX) $(DGATE) testgtk 
+
+libs: $(LIBNAME) $(ARCHIVENAME)
+
+$(LIBNAME):: $(TEST_LINK).o $(c_objects)
+	$(CC) -shared -Wl,-soname,$(SONAME) -o $(LIBNAME) g*.o $(c_objects) @GTK_LIBS@ -lm
+
+$(ARCHIVENAME):: $(TEST_LINK).o $(c_objects)
+	$(AR) $(ARFLAGS) $(ARCHIVENAME) g*.o $(c_objects)
+	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
+	  $(RANLIB) $(ARCHIVENAME); \
+	fi
+
+$(GATE_EX):: $(GATE_SRC) $(TEST_LINK).o $(c_objects)
+	$(GNATMAKE) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS)
+
+$(DGATE):: $(DGATE).adb $(TEST_LINK).o $(c_objects)
+	$(GNATMAKE) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS)
+
+testgtk::
+	$(MAKE) -C testgtk
+
+$(TEST_LINK).o::
+	test -f $(TEST_LINK).adb || perl ./create_test_link.pl > $(TEST_LINK).adb
+	$(GNATMAKE) -c $(TEST_LINK) -shared -fPIC $(GNATFLAGS)
+
+install: $(ARCHIVENAME) $(LIBNAME)
+	@if [ "$(prefix)" != `pwd` ]; then \
+	   echo Installing GtkAda in $(prefix); \
+	   $(RM) test_link.ali; \
+	   $(INSTALL) -d $(bindir) $(libdir) $(incdir) $(alidir); \
+	   $(INSTALL_DATA) $(ARCHIVENAME) $(LIBNAME) $(libdir); \
+	   $(INSTALL) -m 444 *.ads *.adb $(incdir); \
+	   $(INSTALL) -m 444 *.ali $(alidir); \
+	   $(INSTALL_PROGRAM) $(GTKADA_CONFIG) $(bindir); \
+           $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
+           $(INSTALL_PROGRAM) $(DGATE) $(bindir); \
+	fi
+	@echo ------------------------------------------------------------------
+	@echo --  GtkAda has now been installed.                              --
+	@echo --  To be able to use the library, you may need to update your  --
+	@echo --  LD_LIBRARY_PATH or to run ldconfig. You may also need to    --
+	@echo --  update your PATH to include gtkada-config in it.	      --
+	@echo ------------------------------------------------------------------
+
+clean-generic:
+	-${RM} *.o *.ali *~ main b_main.c core
+	-${RM} $(ARCHIVENAME) $(LIBNAME)
+	-${RM} $(GATE_EX) b_$(GATE_EX).c $(DGATE) b_$(DGATE).c
+	-${RM} $(TEST_LINK) b_$(TEST_LINK).c $(TEST_LINK).adb
+	-${RM} .\#*
+
+mostlyclean-generic: clean-generic
+	-${RM} Makefile
+	-${RM} create_test_link.pl
+	-${RM} $(GTKADA_CONFIG)
+
+clean: clean-generic
+	-cd testgtk && ${MAKE} clean
+
+distclean: mostlyclean-generic
+	-${RM} config.cache config.log config.status
+	-cd testgtk && ${MAKE} distclean
+
+mostlyclean: mostlyclean-generic
+	-cd testgtk && ${MAKE} mostlyclean
+
+maintainer-clean: mostlyclean-generic
+	-${RM} config.cache config.log config.status
+	-${RM} configure
+	-cd testgtk && ${MAKE} maintainer-clean
+
+.c.o:
+	$(CC) -c $(ALL_CFLAGS) $<
+.ads.o:
+	$(CC) -c $(ALL_GNATFLAGS) $<
+
+.adb.o:
+	$(CC) -c $(ALL_GNATFLAGS) $<
