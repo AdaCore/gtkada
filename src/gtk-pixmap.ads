@@ -40,24 +40,24 @@ package Gtk.Pixmap is
 
    procedure Get
      (Pixmap : access Gtk_Pixmap_Record;
-      Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Val    : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
    function Get_Mask (Widget : access Gtk_Pixmap_Record)
-     return Gdk.Bitmap.Gdk_Bitmap'Class;
+                     return Gdk.Bitmap.Gdk_Bitmap;
    function Get_Pixmap (Widget : access Gtk_Pixmap_Record)
-     return Gdk.Pixmap.Gdk_Pixmap'Class;
+                       return Gdk.Pixmap.Gdk_Pixmap;
    procedure Gtk_New
      (Widget : out Gtk_Pixmap;
-      Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
    procedure Initialize
      (Widget : access Gtk_Pixmap_Record'Class;
-      Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
    procedure Set
      (Pixmap : access Gtk_Pixmap_Record;
-      Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Val    : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
 
    function Create_Pixmap
      (Filename : in String;

@@ -36,11 +36,11 @@ with Interfaces.C.Strings;
 
 package Gdk.Pixmap is
 
-   type Gdk_Pixmap is new Gdk.Drawable.Gdk_Drawable with private;
+   subtype Gdk_Pixmap is Gdk.Drawable.Gdk_Drawable;
    Null_Pixmap : constant Gdk_Pixmap;
 
    procedure Gdk_New (Pixmap :    out Gdk_Pixmap;
-                      Window : in     Gdk.Window.Gdk_Window'Class;
+                      Window : in     Gdk.Window.Gdk_Window;
                       Width  : in     Gint;
                       Height : in     Gint;
                       Depth  : in     Gint := -1);
@@ -56,7 +56,7 @@ package Gdk.Pixmap is
    --  there is no more reference
 
    procedure Create_From_Data (Pixmap :    out Gdk_Pixmap;
-                               Window : in     Gdk.Window.Gdk_Window'Class;
+                               Window : in     Gdk.Window.Gdk_Window;
                                Data   : in     String;
                                Width  : in     Gint;
                                Height : in     Gint;
@@ -65,13 +65,13 @@ package Gdk.Pixmap is
                                Bg     : in     Color.Gdk_Color);
 
    procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
-                              Window      : in     Gdk.Window.Gdk_Window'Class;
+                              Window      : in     Gdk.Window.Gdk_Window;
                               Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
                               Transparent : in     Gdk.Color.Gdk_Color;
                               Filename    : in     String);
 
    procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
-                              Window      : in     Gdk.Window.Gdk_Window'Class;
+                              Window      : in     Gdk.Window.Gdk_Window;
                               Colormap    : in     Gdk.Color.Gdk_Colormap;
                               Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
                               Transparent : in     Gdk.Color.Gdk_Color;
@@ -79,7 +79,7 @@ package Gdk.Pixmap is
 
    procedure Create_From_Xpm_D
      (Pixmap      :    out Gdk_Pixmap;
-      Window      : in     Gdk.Window.Gdk_Window'Class;
+      Window      : in     Gdk.Window.Gdk_Window;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
       Transparent : in     Gdk.Color.Gdk_Color;
       Data        : in     Interfaces.C.Strings.chars_ptr_array);
@@ -88,7 +88,7 @@ package Gdk.Pixmap is
 
    procedure Create_From_Xpm_D
      (Pixmap      :    out Gdk_Pixmap;
-      Window      : in     Gdk.Window.Gdk_Window'Class;
+      Window      : in     Gdk.Window.Gdk_Window;
       Colormap    : in     Gdk.Color.Gdk_Colormap;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
       Transparent : in     Gdk.Color.Gdk_Color;
@@ -98,8 +98,7 @@ package Gdk.Pixmap is
 
 
 private
-
-   type Gdk_Pixmap is new Gdk.Drawable.Gdk_Drawable with null record;
-   Null_Pixmap : constant Gdk_Pixmap := (Ptr => System.Null_Address);
-
+   Null_Pixmap : constant Gdk_Pixmap := null;
+   pragma Import (C, Ref, "gdk_pixmap_ref");
+   pragma Import (C, Unref, "gdk_pixmap_unref");
 end Gdk.Pixmap;

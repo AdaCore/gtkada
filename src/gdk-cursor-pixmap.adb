@@ -35,21 +35,21 @@ package body Gdk.Cursor.Pixmap is
 
    procedure Gdk_New
       (Widget : out Gdk_Cursor;
-       Source : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Pixmap.Gdk_Pixmap'Class;
+       Source : in Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : in Gdk.Pixmap.Gdk_Pixmap;
        Fg     : in Gdk.Color.Gdk_Color;
        Bg     : in Gdk.Color.Gdk_Color;
        X      : in Gint;
        Y      : in Gint)
    is
       function Internal
-         (Source : in System.Address;
-          Mask   : in System.Address;
+         (Source : in Gdk.Pixmap.Gdk_Pixmap;
+          Mask   : in Gdk.Pixmap.Gdk_Pixmap;
           Fg     : in System.Address;
           Bg     : in System.Address;
           X      : in Gint;
           Y      : in Gint)
-          return      System.Address;
+          return      Gdk_Cursor;
       pragma Import (C, Internal, "gdk_cursor_new_from_pixmap");
 
       Col_Fg : aliased Gdk.Color.Gdk_Color := Fg;
@@ -57,12 +57,8 @@ package body Gdk.Cursor.Pixmap is
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
    begin
-      Set_Object (Widget, Internal (Get_Object (Source),
-                                    Get_Object (Mask),
-                                    Col_Fg'Address,
-                                    Col_Bg'Address,
-                                    X,
-                                    Y));
+      Widget := Internal (Source, Mask, Col_Fg'Address,  Col_Bg'Address,
+                          X, Y);
    end Gdk_New;
 
 end Gdk.Cursor.Pixmap;

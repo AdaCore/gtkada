@@ -28,14 +28,13 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-
 with Gdk.Visual;
 with Gdk.Window;
 
 package Gdk.Image is
 
-
-   type Gdk_Image is new Gdk.Root_Type with private;
+   type Gdk_Image is new Gdk.C_Proxy;
+   Null_Image : constant Gdk_Image;
 
    type Gdk_Image_Type is (Image_Normal,
                            Image_Shared,
@@ -43,12 +42,12 @@ package Gdk.Image is
 
    procedure Gdk_New (Image      :    out Gdk_Image;
                       Image_Type : in     Gdk_Image_Type;
-                      Visual     : in     Gdk.Visual.Gdk_Visual'Class;
+                      Visual     : in     Gdk.Visual.Gdk_Visual;
                       Width      : in     Gint;
                       Height     : in     Gint);
 
    procedure Get (Image  :    out Gdk_Image;
-                  Window : in     Gdk.Window.Gdk_Window'Class;
+                  Window : in     Gdk.Window.Gdk_Window;
                   X      : in     Gint;
                   Y      : in     Gint;
                   Width  : in     Gint;
@@ -65,12 +64,9 @@ package Gdk.Image is
 
    procedure Destroy (Image : in out Gdk_Image);
 
-
-
 private
-
-   type Gdk_Image is new Gdk.Root_Type with null record;
-
-
-
+   Null_Image : constant Gdk_Image := null;
+   pragma Import (C, Destroy, "gdk_image_destroy");
+   pragma Import (C, Get_Pixel, "gdk_image_get_pixel");
+   pragma Import (C, Put_Pixel, "gdk_image_put_pixel");
 end Gdk.Image;

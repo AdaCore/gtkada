@@ -72,12 +72,11 @@
 --  <c_version>gtk+extra0.99</c_version>
 
 with Gdk.Font;
-with System;
 with Gtkada.Types;
 
 package Gtk.Extra.PsFont is
 
-   type Gtk_PsFont is private;
+   type Gtk_PsFont is new Gdk.C_Proxy;
 
    function Getfont (Name   : in String) return Gtk_PsFont;
    --  Return the font structure associated with the font Name.
@@ -123,6 +122,4 @@ package Gtk.Extra.PsFont is
    --  The following new signals are defined in this package:
    --  </signals>
 
-private
-   type Gtk_PsFont is new System.Address;
 end Gtk.Extra.PsFont;

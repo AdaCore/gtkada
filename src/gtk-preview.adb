@@ -57,20 +57,6 @@ package body Gtk.Preview is
    end Draw_Row;
 
    --------------
-   -- Get_Cmap --
-   --------------
-
-   function Get_Cmap return Gdk.Color.Gdk_Colormap'Class is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_preview_get_cmap");
-      Widget : Gdk.Color.Gdk_Colormap;
-
-   begin
-      Set_Object (Widget, Internal);
-      return Widget;
-   end Get_Cmap;
-
-   --------------
    -- Get_Info --
    --------------
 
@@ -82,20 +68,6 @@ package body Gtk.Preview is
       return Gtk_Preview_Info
         (Get_User_Data (Internal, Stub));
    end Get_Info;
-
-   ----------------
-   -- Get_Visual --
-   ----------------
-
-   function Get_Visual return Gdk.Visual.Gdk_Visual'Class is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_preview_get_visual");
-      Widget : Gdk.Visual.Gdk_Visual;
-
-   begin
-      Set_Object (Widget, Internal);
-      return Widget;
-   end Get_Visual;
 
    -------------
    -- Gtk_New --
@@ -129,8 +101,8 @@ package body Gtk.Preview is
 
    procedure Put
      (Preview : access Gtk_Preview_Record;
-      Window  : in Gdk.Window.Gdk_Window'Class;
-      Gc      : in Gdk.GC.Gdk_GC'Class;
+      Window  : in Gdk.Window.Gdk_Window;
+      Gc      : in Gdk.GC.Gdk_GC;
       Srcx    : in Gint;
       Srcy    : in Gint;
       Destx   : in Gint;
@@ -140,8 +112,8 @@ package body Gtk.Preview is
    is
       procedure Internal
         (Preview : in System.Address;
-         Window  : in System.Address;
-         Gc      : in System.Address;
+         Window  : in Gdk.Window.Gdk_Window;
+         Gc      : in Gdk.GC.Gdk_GC;
          Srcx    : in Gint;
          Srcy    : in Gint;
          Destx   : in Gint;
@@ -152,7 +124,7 @@ package body Gtk.Preview is
 
    begin
       Internal
-        (Get_Object (Preview), Get_Object (Window), Get_Object (Gc),
+        (Get_Object (Preview), Window, Gc,
          Srcx, Srcy, Destx, Desty, Width, Height);
    end Put;
 

@@ -58,7 +58,7 @@ package Gdk.Color is
    --  context, although this exact specification depends on the function you
    --  want to use.
 
-   type Gdk_Colormap is new Root_Type with private;
+   type Gdk_Colormap is new C_Proxy;
    Null_Colormap : constant Gdk_Colormap;
 
    Wrong_Color : exception;
@@ -241,10 +241,7 @@ package Gdk.Color is
    --  Return the Pixel field of Color.
 
 private
-
-   type Gdk_Colormap is new Root_Type with null record;
-
-   Null_Colormap : constant Gdk_Colormap := (Ptr => System.Null_Address);
+   Null_Colormap : constant Gdk_Colormap := null;
 
    type Gdk_Color is
       record
@@ -268,6 +265,9 @@ private
    pragma Inline (Blue);
    pragma Inline (Pixel);
    pragma Import (C, Get_System_Size, "gdk_colormap_get_system_size");
+   pragma Import (C, Get_System, "gdk_colormap_get_system");
+   pragma Import (C, Ref, "gdk_colormap_ref");
+   pragma Import (C, Unref, "gdk_colormap_unref");
 end Gdk.Color;
 
 --  <example>

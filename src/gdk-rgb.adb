@@ -44,15 +44,15 @@ package body Gdk.Rgb is
       Rgb_Buf       : in Rgb_Buffer;
       Rowstride     : in Glib.Gint)
    is
-      procedure Internal (Drawable            : System.Address;
-                          GC                  : System.Address;
+      procedure Internal (Drawable            : Gdk.Drawable.Gdk_Drawable;
+                          GC                  : Gdk.GC.Gdk_GC;
                           X, Y, Width, Height : Glib.Gint;
                           Dith                : Integer;
                           Rgb_Buf             : System.Address;
                           Rowstride           : Glib.Gint);
       pragma Import (C, Internal, "gdk_draw_gray_image");
    begin
-      Internal (Get_Object (Drawable), Get_Object (GC), X, Y,
+      Internal (Drawable, GC, X, Y,
                 Width, Height,
                 Gdk_Rgb_Dither'Pos (Dith), Rgb_Buf'Address, Rowstride);
    end Draw_Gray_Image;
@@ -71,8 +71,8 @@ package body Gdk.Rgb is
       Rowstride     : in     Glib.Gint;
       Cmap          : in     Gdk_Rgb_Cmap)
    is
-      procedure Internal (Drawable            : System.Address;
-                          GC                  : System.Address;
+      procedure Internal (Drawable            : Gdk.Drawable.Gdk_Drawable;
+                          GC                  : Gdk.GC.Gdk_GC;
                           X, Y, Width, Height : Glib.Gint;
                           Dith                : Integer;
                           Rgb_Buf             : System.Address;
@@ -84,7 +84,7 @@ package body Gdk.Rgb is
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
    begin
-      Internal (Get_Object (Drawable), Get_Object (GC), X, Y, Width, Height,
+      Internal (Drawable, GC, X, Y, Width, Height,
                 Gdk_Rgb_Dither'Pos (Dith),
                 Rgb_Buf'Address, Rowstride, Color_Map'Address);
    end Draw_Indexed_Image;
@@ -102,15 +102,15 @@ package body Gdk.Rgb is
       Rgb_Buf       : in     Rgb_Buffer;
       Rowstride     : in     Glib.Gint)
    is
-      procedure Internal (Drawable            : System.Address;
-                          GC                  : System.Address;
+      procedure Internal (Drawable            : Gdk.Drawable.Gdk_Drawable;
+                          GC                  : Gdk.GC.Gdk_GC;
                           X, Y, Width, Height : Glib.Gint;
                           Dith                : Integer;
                           Rgb_Buf             : System.Address;
                           Rowstride           : Glib.Gint);
       pragma Import (C, Internal, "gdk_draw_rgb_32_image");
    begin
-      Internal (Get_Object (Drawable), Get_Object (GC), X, Y,
+      Internal (Drawable, GC, X, Y,
                 Width, Height,
                 Gdk_Rgb_Dither'Pos (Dith), Rgb_Buf'Address, Rowstride);
    end Draw_Rgb_32_Image;
@@ -127,15 +127,15 @@ package body Gdk.Rgb is
                              Rgb_Buf       : in     Rgb_Buffer;
                              Rowstride     : in     Glib.Gint)
    is
-      procedure Internal (Drawable            : System.Address;
-                          GC                  : System.Address;
+      procedure Internal (Drawable            : Gdk.Drawable.Gdk_Drawable;
+                          GC                  : Gdk.GC.Gdk_GC;
                           X, Y, Width, Height : Glib.Gint;
                           Dith                : Integer;
                           Rgb_Buf             : System.Address;
                           Rowstride           : Glib.Gint);
       pragma Import (C, Internal, "gdk_draw_rgb_image");
    begin
-      Internal (Get_Object (Drawable), Get_Object (GC), X, Y,
+      Internal (Drawable, GC, X, Y,
                 Width, Height, Gdk_Rgb_Dither'Pos (Dith),
                 Rgb_Buf'Address, Rowstride);
    end Draw_Rgb_Image;
@@ -154,8 +154,8 @@ package body Gdk.Rgb is
       Rowstride     : in     Glib.Gint;
       Xdith, Ydith  : in     Glib.Gint)
    is
-      procedure Internal (Drawable            : System.Address;
-                          GC                  : System.Address;
+      procedure Internal (Drawable            : Gdk.Drawable.Gdk_Drawable;
+                          GC                  : Gdk.GC.Gdk_GC;
                           X, Y, Width, Height : Glib.Gint;
                           Dith                : Integer;
                           Rgb_Buf             : System.Address;
@@ -163,7 +163,7 @@ package body Gdk.Rgb is
                           Xdith, Ydith        : Glib.Gint);
       pragma Import (C, Internal, "gdk_draw_rgb_image_dithalign");
    begin
-      Internal (Get_Object (Drawable), Get_Object (GC), X, Y, Width,
+      Internal (Drawable, GC, X, Y, Width,
                 Height, Gdk_Rgb_Dither'Pos (Dith), Rgb_Buf'Address,
                 Rowstride, Xdith, Ydith);
    end Draw_Rgb_Image_Dithalign;
@@ -178,32 +178,6 @@ package body Gdk.Rgb is
    begin
       Internal (Cmap);
    end Free;
-
-   -----------------------
-   -- GC_Set_Background --
-   -----------------------
-
-   procedure GC_Set_Background
-     (GC : in out Gdk.GC.Gdk_GC; Value : in Rgb_Item)
-   is
-      procedure Internal (GC : System.Address; Value : Rgb_Item);
-      pragma Import (C, Internal, "gdk_rgb_gc_set_background");
-   begin
-      Internal (Get_Object (GC), Value);
-   end GC_Set_Background;
-
-   -----------------------
-   -- GC_Set_Foreground --
-   -----------------------
-
-   procedure GC_Set_Foreground
-     (GC : in out Gdk.GC.Gdk_GC; Value : in Rgb_Item)
-   is
-      procedure Internal (GC : System.Address; Value : Rgb_Item);
-      pragma Import (C, Internal, "gdk_rgb_gc_set_foreground");
-   begin
-      Internal (Get_Object (GC), Value);
-   end GC_Set_Foreground;
 
    ---------
    -- Get --
@@ -233,32 +207,6 @@ package body Gdk.Rgb is
    begin
       return Internal (Cmap, Index);
    end Get_8;
-
-   --------------
-   -- Get_Cmap --
-   --------------
-
-   function Get_Cmap return Gdk.Color.Gdk_Colormap is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gdk_rgb_get_cmap");
-      Cmap : Gdk.Color.Gdk_Colormap;
-   begin
-      Set_Object (Cmap, Internal);
-      return Cmap;
-   end Get_Cmap;
-
-   ----------------
-   -- Get_Visual --
-   ----------------
-
-   function Get_Visual return Gdk.Visual.Gdk_Visual is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gdk_rgb_get_visual");
-      Visual : Gdk.Visual.Gdk_Visual;
-   begin
-      Set_Object (Visual, Internal);
-      return Visual;
-   end Get_Visual;
 
    -------------
    -- Gtk_New --

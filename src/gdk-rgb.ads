@@ -32,7 +32,6 @@ with Gdk.Color;
 with Gdk.Visual;
 with Gdk.GC;
 with Gdk.Drawable;
-with System;
 
 package Gdk.Rgb is
 
@@ -127,7 +126,7 @@ package Gdk.Rgb is
    --  Colormap manipulation  --
    -----------------------------
 
-   type Gdk_Rgb_Cmap is private;
+   type Gdk_Rgb_Cmap is new Gdk.C_Proxy;
    --  This is the full colormap, ie a set of 256 Rbg items.
    --  You can extract values using the functions Get or Set below.
 
@@ -220,11 +219,12 @@ package Gdk.Rgb is
 
 
 private
-   type Gdk_Rgb_Cmap is new System.Address;
-
    pragma Inline (Get);
    pragma Inline (Set);
 
    pragma Import (C, Init, "gdk_rgb_init");
-
+   pragma Import (C, GC_Set_Background, "gdk_rgb_gc_set_background");
+   pragma Import (C, GC_Set_Foreground, "gdk_rgb_gc_set_foreground");
+   pragma Import (C, Get_Cmap, "gdk_rgb_get_cmap");
+   pragma Import (C, Get_Visual, "gdk_rgb_get_visual");
 end Gdk.Rgb;

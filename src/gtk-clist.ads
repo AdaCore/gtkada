@@ -60,6 +60,7 @@ with Gtk.Style;
 with Gtk.Object;
 with Gtk.Widget;
 with Gtkada.Types;
+with Unchecked_Conversion;
 
 package Gtk.Clist is
 
@@ -67,14 +68,15 @@ package Gtk.Clist is
      with private;
    type Gtk_Clist is access all Gtk_Clist_Record'Class;
 
-   type Gtk_Clist_Row is access System.Address;
+   type Gtk_Clist_Row is new Gdk.C_Proxy;
 
    type Gtk_Sort_Type is (Ascending, Descending);
 
    --  <doc_ignore>
-   function Convert (C : in Gtk_Clist_Row) return System.Address;
-   function Convert (W : System.Address) return Gtk_Clist_Row;
-
+   function Convert is new Unchecked_Conversion
+     (Gtk_Clist_Row, System.Address);
+   function Convert is new Unchecked_Conversion
+     (System.Address, Gtk_Clist_Row);
    package Row_List is new Glib.Glist.Generic_List (Gtk_Clist_Row);
 
    --  </doc_ignore>
@@ -443,13 +445,13 @@ package Gtk.Clist is
 
    procedure Set_Row_Style
      (Clist : access Gtk_Clist_Record; Row : Gint;
-      Style : in Gtk.Style.Gtk_Style'Class);
+      Style : in Gtk.Style.Gtk_Style);
    --  Set the default style for the cells in the row. This can be
    --  overriden for each cell with Set_Cell_Style.
 
    function Get_Row_Style (Clist  : access Gtk_Clist_Record;
                            Row    : in     Gint)
-                           return          Gtk.Style.Gtk_Style'Class;
+                           return          Gtk.Style.Gtk_Style;
    --  Return the default style used for the row.
 
    procedure Set_Selectable (Clist      : access Gtk_Clist_Record;
@@ -554,8 +556,8 @@ package Gtk.Clist is
      (Clist  : access Gtk_Clist_Record;
       Row    : in Gint;
       Column : in Gint;
-      Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
    --  Set the cell's pixmap, replacing its current contents.
    --  The type of the cell becomes Cell_Pixmap, and the text is no longer
    --  displayed.
@@ -564,8 +566,8 @@ package Gtk.Clist is
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gint;
       Column   : in Gint;
-      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : out Gdk.Bitmap.Gdk_Bitmap;
       Is_Valid : out Boolean);
    --  Return the pixmap contained in a cell. The type of the cell should
    --  be Cell_Pixmap.
@@ -576,8 +578,8 @@ package Gtk.Clist is
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gtk_Clist_Row;
       Column   : in Gint;
-      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : out Gdk.Bitmap.Gdk_Bitmap;
       Is_Valid : out Boolean);
    --  Return the pixmap contained in a cell. Row can be obtained directly with
    --  Get_Row_List, and speeds up the access a little compared to the previous
@@ -589,8 +591,8 @@ package Gtk.Clist is
       Column  : in Gint;
       Text    : in String;
       Spacing : in Guint8;
-      Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Pixmap  : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask    : in Gdk.Bitmap.Gdk_Bitmap);
    --  Set both the text and the pixmap for the cell.
    --  Replace its current contents. The type of the cell becomes Cell_Pixtext,
    --  and both the text and the pixmap are displayed.
@@ -600,8 +602,8 @@ package Gtk.Clist is
       Row      : in Gint;
       Column   : in Gint;
       Spacing  : in out Guint8;
-      Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : in out Gdk.Bitmap.Gdk_Bitmap;
       Is_Valid : out Boolean);
    --  The result is not meaningful if Is_Valid is False.
    --  The only way to get the string is to use Get_Text, since a String is
@@ -611,14 +613,14 @@ package Gtk.Clist is
    procedure Set_Cell_Style (Clist  : access Gtk_Clist_Record;
                              Row    : in Gint;
                              Column : in Gint;
-                             Style  : in Gtk.Style.Gtk_Style'Class);
+                             Style  : in Gtk.Style.Gtk_Style);
    --  Set the style (font, color, ...) used for the cell.
    --  This overrides the row's style.
 
    function Get_Cell_Style (Clist  : access Gtk_Clist_Record;
                             Row    : in     Gint;
                             Column : in     Gint)
-                            return          Gtk.Style.Gtk_Style'Class;
+                            return          Gtk.Style.Gtk_Style;
    --  Return the style of the cell.
 
    procedure Set_Shift

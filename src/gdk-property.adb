@@ -29,7 +29,6 @@
 
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
-with System;
 
 package body Gdk.Property is
 
@@ -96,7 +95,7 @@ package body Gdk.Property is
                      Format    : in Gint;
                      Mode      : in Gdk.Types.Gdk_Prop_Mode;
                      Data      : in Guchar_Array) is
-      procedure Internal (Window    : in System.Address;
+      procedure Internal (Window    : in Gdk.Window.Gdk_Window;
                           Property  : in Gdk.Types.Gdk_Atom;
                           The_Type  : in Gdk.Types.Gdk_Atom;
                           Format    : in Gint;
@@ -105,29 +104,9 @@ package body Gdk.Property is
                           Nelements : in Gint);
       pragma Import (C, Internal, "gdk_property_change");
    begin
-      Internal (Get_Object (Window),
-                Property,
-                The_Type,
-                Format,
-                Mode,
-                Data,
-                Data'Length);
+      Internal (Window, Property, The_Type,  Format, Mode,
+                Data, Data'Length);
    end Change;
-
-
-   ------------
-   -- Delete --
-   ------------
-
-   procedure Delete (Window   : in Gdk.Window.Gdk_Window;
-                     Property : in Gdk.Types.Gdk_Atom) is
-      procedure Internal (Window   : in System.Address;
-                          Property : in Gdk.Types.Gdk_Atom);
-      pragma Import (C, Internal, "gdk_property_delete");
-   begin
-      Internal (Get_Object (Window), Property);
-   end Delete;
-
 
    ---------
    -- Get --
@@ -143,7 +122,7 @@ package body Gdk.Property is
                   Actual_Format        :    out Gint;
                   Data                 :    out Guchar_Array_Access;
                   Success              :    out Boolean) is
-      procedure Internal (Window               : in     System.Address;
+      procedure Internal (Window               : in     Gdk.Window.Gdk_Window;
                           Property             : in     Gdk.Types.Gdk_Atom;
                           The_Type             : in     Gdk.Types.Gdk_Atom;
                           Offset               : in     Gulong;
@@ -160,19 +139,19 @@ package body Gdk.Property is
       Tmp_Result : Guchars_Ptr.Pointer;
    begin
 
-      Internal (Get_Object (Window),
+      Internal (Window,
                 Property,
                 The_Type,
                 Offset,
                 Length,
-                To_Gint (Pdelete),
+                Boolean'Pos (Pdelete),
                 Actual_Property_Type,
                 Actual_Format,
                 Actual_Length,
                 Tmp_Result,
                 Tmp_Success);
 
-      Success := To_Boolean (Tmp_Success);
+      Success := Boolean'Val (Tmp_Success);
       Data := new Guchar_Array'
         (To_Guchar_Array
          (Guchars_Ptr.Value

@@ -233,7 +233,7 @@ package Gtk.Packer is
    --  the packer, and then do some type-casting, which is what we are
    --  trying to avoid in Ada.
 
-   type Gtk_Packer_Child is new System.Address;
+   type Gtk_Packer_Child is new Gdk.C_Proxy;
    Null_Packer_Child : constant Gtk_Packer_Child;
 
    function Find_Child (Packer : access Gtk_Packer_Record;
@@ -287,8 +287,7 @@ package Gtk.Packer is
 private
    type Gtk_Packer_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
-   Null_Packer_Child : constant Gtk_Packer_Child
-     := Gtk_Packer_Child (System.Null_Address);
+   Null_Packer_Child : constant Gtk_Packer_Child := null;
 
    Gtk_No_Options  : constant Gtk_Packer_Options := 0;
    Gtk_Pack_Expand : constant Gtk_Packer_Options := 2 ** 0;

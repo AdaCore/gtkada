@@ -35,8 +35,8 @@ package Gdk.Cursor.Pixmap is
 
    procedure Gdk_New
      (Widget : out Gdk_Cursor;
-      Source : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask   : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Source : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : in Gdk.Pixmap.Gdk_Pixmap;
       Fg     : in Gdk.Color.Gdk_Color;
       Bg     : in Gdk.Color.Gdk_Color;
       X      : in Gint;

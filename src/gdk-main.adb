@@ -39,17 +39,17 @@ package body Gdk.Main is
    procedure Init is
       gnat_argc : Interfaces.C.int;
       pragma Import (C, gnat_argc);
-  
+
       gnat_argv : System.Address;
       pragma Import (C, gnat_argv);
- 
+
       procedure Internal (argc : System.Address; argv : System.Address);
       pragma Import (C, Internal, "gdk_init");
- 
+
    begin
       Internal (gnat_argc'Address, gnat_argv'Address);
    end Init;
- 
+
    -----------------
    -- Get_Display --
    -----------------
@@ -82,13 +82,13 @@ package body Gdk.Main is
                            return Boolean
    is
       function Internal
-         (Window       : in System.Address;
+         (Window       : in Gdk.Window.Gdk_Window;
           Owner_Events : in Gint;
           Time         : in Guint32)
           return            Gint;
       pragma Import (C, Internal, "gdk_keyboard_grab");
    begin
-      return To_Boolean (Internal (Get_Object (Window),
+      return To_Boolean (Internal (Window,
                                    To_Gint (Owner_Events),
                                    Time));
    end Keyboard_Grab;
@@ -117,19 +117,19 @@ package body Gdk.Main is
       Cursor       : in Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
       Time         : in Guint32) return Boolean
    is
-      function Internal (Window       : in System.Address;
+      function Internal (Window       : in Gdk.Window.Gdk_Window;
                          Owner_Events : in Gint;
                          Event_Mask   : in Gint;
-                         Confine_To   : in System.Address;
-                         Cursor       : in System.Address;
+                         Confine_To   : in Gdk.Window.Gdk_Window;
+                         Cursor       : in Gdk.Cursor.Gdk_Cursor;
                          Time         : in Guint32) return Gint;
       pragma Import (C, Internal, "gdk_pointer_grab");
    begin
-      return To_Boolean (Internal (Get_Object (Window),
+      return To_Boolean (Internal (Window,
                                    To_Gint (Owner_Events),
                                    Gint (Event_Mask),
-                                   Get_Object (Confine_To),
-                                   Get_Object (Cursor),
+                                   Confine_To,
+                                   Cursor,
                                    Time));
    end Pointer_Grab;
 

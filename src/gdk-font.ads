@@ -38,18 +38,18 @@
 --
 --  -adobe-courier-bold-o-normal--10-100-75-75-m-60-iso8859-1
 --  where:
---     - adobe     : foundry
---     - courier   : font family
---     - bold      : weight (e.g. bold, medium)
---     - o         : slant (e.g. roman, italic, oblique)
---     - normal    : set width (e.g. normal, condensed, narrow, double)
---     - 10        : pixels
---     - 100       : points (in tenths of a point)
---     - 75        : horizontal resolution in dpi
---     - 75        : vertical resolution in dpi
---     - m         : spacing (e.g. monospace or proportional)
---     - 60        : average width (in tenths of a pixel)
---     - iso8859-1 : character set
+--    - adobe     : foundry
+--    - courier   : font family
+--    - bold      : weight (e.g. bold, medium)
+--    - o         : slant (e.g. roman, italic, oblique)
+--    - normal    : set width (e.g. normal, condensed, narrow, double)
+--    - 10        : pixels
+--    - 100       : points (in tenths of a point)
+--    - 75        : horizontal resolution in dpi
+--    - 75        : vertical resolution in dpi
+--    - m         : spacing (e.g. monospace or proportional)
+--    - 60        : average width (in tenths of a pixel)
+--    - iso8859-1 : character set
 --
 --  Any of the fields can have a '*' instead, so that the system will
 --  automatically find a font that matches the rest of the string, and won't
@@ -87,7 +87,7 @@ with Gdk.Types;
 
 package Gdk.Font is
 
-   type Gdk_Font is new Root_Type with private;
+   type Gdk_Font is new Gdk.C_Proxy;
    Null_Font : constant Gdk_Font;
 
    procedure Load (Font      :    out Gdk_Font;
@@ -120,7 +120,7 @@ package Gdk.Font is
    --  This Id will only be needed if you want to call directly X11 functions,
    --  you won't need it with GtkAda.
 
-   function "=" (Fonta, Fontb : in Gdk_Font) return Boolean;
+   function Equal (Fonta, Fontb : in Gdk_Font) return Boolean;
    --  Compare two fonts or two fontsets for equality.
    --  Two fonts are equal if they have the same font Id.
    --  Two fontsets are equal if the name given to Fontset_Load was the same.
@@ -241,6 +241,9 @@ package Gdk.Font is
 
 
 private
-   type Gdk_Font is new Root_Type with null record;
-   Null_Font : constant Gdk_Font := (Ptr => System.Null_Address);
+   Null_Font : constant Gdk_Font := null;
+   pragma Import (C, Char_Height, "gdk_char_height");
+   pragma Import (C, Id, "gdk_font_id");
+   pragma Import (C, Ref, "gdk_font_ref");
+   pragma Import (C, Unref, "gdk_font_unref");
 end Gdk.Font;

@@ -33,8 +33,8 @@ with Gdk.Types;
 
 package Gdk.Region is
 
-   type Gdk_Region is new Root_Type with private;
-
+   type Gdk_Region is new Gdk.C_Proxy;
+   Null_Region : constant Gdk_Region;
 
    procedure Gdk_New (Region : out Gdk_Region);
 
@@ -63,9 +63,9 @@ package Gdk.Region is
                      Dx     : in Gint;
                      Dy     : in Gint);
 
-   procedure Shrink (Region : in out Gdk_Region;
-                     Dx     : in     Gint;
-                     Dy     : in     Gint);
+   procedure Shrink (Region : in Gdk_Region;
+                     Dx     : in Gint;
+                     Dy     : in Gint);
 
    procedure Union_With_Rect (Result :    out Gdk_Region;
                               Region : in     Gdk_Region;
@@ -88,7 +88,7 @@ package Gdk.Region is
                       Source2 : in      Gdk_Region);
 
 private
-
-   type Gdk_Region is new Root_Type with null record;
-
+   Null_Region : constant Gdk_Region := null;
+   pragma Import (C, Offset, "gdk_region_offset");
+   pragma Import (C, Shrink, "gdk_region_shrink");
 end Gdk.Region;

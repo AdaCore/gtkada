@@ -104,11 +104,11 @@ package body Gtk.Extra.Plot is
    procedure Initialize (Plot     : access Gtk_Plot_Record'Class;
                          Drawable : in Gdk.Drawable.Gdk_Drawable)
    is
-      function Internal (Drawable : in System.Address)
+      function Internal (Drawable : in Gdk.Drawable.Gdk_Drawable)
                          return        System.Address;
       pragma Import (C, Internal, "gtk_plot_new");
    begin
-      Set_Object (Plot, Internal (Get_Object (Drawable)));
+      Set_Object (Plot, Internal (Drawable));
       Initialize_User_Data (Plot);
    end Initialize;
 
@@ -136,13 +136,13 @@ package body Gtk.Extra.Plot is
                          Width    : in Gdouble;
                          Height   : in Gdouble)
    is
-      function Internal (Drawable : in System.Address;
+      function Internal (Drawable : in Gdk.Drawable.Gdk_Drawable;
                          Width    : in Gdouble;
                          Height   : in Gdouble)
                         return        System.Address;
       pragma Import (C, Internal, "gtk_plot_new_with_size");
    begin
-      Set_Object (Plot, Internal (Get_Object (Drawable), Width, Height));
+      Set_Object (Plot, Internal (Drawable, Width, Height));
       Initialize_User_Data (Plot);
    end Initialize;
 
@@ -154,10 +154,10 @@ package body Gtk.Extra.Plot is
                            Drawable : in     Gdk.Drawable.Gdk_Drawable)
    is
       procedure Internal (Plot     : in System.Address;
-                          Drawable : in System.Address);
+                          Drawable : in Gdk.Drawable.Gdk_Drawable);
       pragma Import (C, Internal, "gtk_plot_set_drawable");
    begin
-      Internal (Get_Object (Plot), Get_Object (Drawable));
+      Internal (Get_Object (Plot), Drawable);
    end Set_Drawable;
 
    ------------------
@@ -167,12 +167,11 @@ package body Gtk.Extra.Plot is
    function Get_Drawable (Plot   : access Gtk_Plot_Record)
                           return      Gdk.Drawable.Gdk_Drawable
    is
-      function Internal (Plot : in System.Address) return System.Address;
+      function Internal (Plot : in System.Address)
+                        return Gdk.Drawable.Gdk_Drawable;
       pragma Import (C, Internal, "gtk_plot_get_drawable");
-      Tmp : Gdk.Drawable.Gdk_Drawable;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Plot)));
-      return Tmp;
+      return Internal (Get_Object (Plot));
    end Get_Drawable;
 
    ------------------
@@ -1360,7 +1359,7 @@ package body Gtk.Extra.Plot is
       pragma Import (C, Internal, "g_free");
    begin
       Internal (Widget);
-      Widget := Gtk_Plot_Data (System.Null_Address);
+      Widget := null;
    end Free;
 
    -----------------
@@ -1402,13 +1401,11 @@ package body Gtk.Extra.Plot is
                            Data : in Gtk_Plot_Data)
    is
       procedure Internal (Plot : in System.Address;
-                          Gc   : in System.Address;
+                          Gc   : in Gdk.GC.Gdk_GC;
                           Data : in Gtk_Plot_Data);
       pragma Import (C, Internal, "gtk_plot_draw_dataset");
    begin
-      Internal (Get_Object (Plot),
-                Get_Object (Gc),
-                Data);
+      Internal (Get_Object (Plot), Gc, Data);
    end Draw_Dataset;
 
    ------------------------
@@ -1833,7 +1830,7 @@ package body Gtk.Extra.Plot is
    ---------------------------
 
    function Generic_Plot_Function (Plot  : System.Address;
-                                   Set   : System.Address;
+                                   Set   : Gtk_Plot_Data;
                                    X     : Gdouble;
                                    Error : access Gboolean)
                                   return Gdouble
@@ -1843,7 +1840,7 @@ package body Gtk.Extra.Plot is
       Y    : Gdouble;
    begin
       Y :=  Func (Gtk_Plot (Get_User_Data (Plot, Stub)),
-                  Gtk_Plot_Data (Set),
+                  Set,
                   X,
                   B'Access);
       Error.all := Boolean'Pos (B);
@@ -1891,41 +1888,5 @@ package body Gtk.Extra.Plot is
    begin
       return Interfaces.C.Strings.Value (Internal (Text));
    end Get_Text_String;
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (S : System.Address) return Gtk_Plot_Data is
-   begin
-      return Gtk_Plot_Data (S);
-   end Convert;
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (S : Gtk_Plot_Data) return System.Address is
-   begin
-      return System.Address (S);
-   end Convert;
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (S : System.Address) return Gtk_Plot_Text is
-   begin
-      return Gtk_Plot_Text (S);
-   end Convert;
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (S : Gtk_Plot_Text) return System.Address is
-   begin
-      return System.Address (S);
-   end Convert;
 
 end Gtk.Extra.Plot;

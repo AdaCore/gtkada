@@ -78,15 +78,12 @@ package Gtk.Arguments is
    function To_Notebook_Page (Args : Gtk_Args; Num : Positive)
      return Gtk.Notebook.Gtk_Notebook_Page;
    function To_Address (Args : Gtk_Args; Num : Positive) return System.Address;
-
+   function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy;
    function To_Root_Type (Args : Gtk_Args; Num : Positive)
      return Gdk.Root_Type_Access;
    function To_Object (Args : Gtk_Args; Num : Positive)
      return Gtk.Object.Gtk_Object;
    --  This function can return null, if the C object was not created.
-
-   function To_Object_Type (Args : Gtk_Args; Num : Positive)
-     return Glib.Object_Type;
 
    ----------------------------------
    --  General conversion functions
@@ -100,7 +97,7 @@ package Gtk.Arguments is
    function To_Notebook_Page (C : System.Address)
      return Gtk.Notebook.Gtk_Notebook_Page;
    function To_Object        (C : System.Address) return Gtk.Object.Gtk_Object;
-   function To_Object_Type   (C : System.Address) return Glib.Object_Type;
+   function To_C_Proxy       (C : System.Address) return Gdk.C_Proxy;
    function To_Root_Type     (C : System.Address) return Gdk.Root_Type_Access;
 
    ----------------------------------

@@ -42,4 +42,6 @@ package Gdk.Window.Pixmap is
    --  void          gdk_window_set_icon_name   (GdkWindow       *window,
    --                                            gchar           *name);
 
+private
+   pragma Import (C, Set_Back_Pixmap, "gdk_window_set_back_pixmap");
 end Gdk.Window.Pixmap;

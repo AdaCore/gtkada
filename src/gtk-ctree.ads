@@ -49,6 +49,7 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.Style;
 with Gtkada.Types; use Gtkada.Types;
 with Interfaces.C.Strings;
+with Unchecked_Conversion;
 
 package Gtk.Ctree is
    pragma Elaborate_Body;
@@ -58,14 +59,16 @@ package Gtk.Ctree is
 
    type Gtk_Ctree_Row is new Gtk.Clist.Gtk_Clist_Row;
 
-   type Gtk_Ctree_Node is access System.Address;
+   type Gtk_Ctree_Node is new Gdk.C_Proxy;
    Null_Ctree_Node : constant Gtk_Ctree_Node := null;
 
    --  <doc_ignore>
    package Row_List is new Glib.Glist.Generic_List (Gtk_Ctree_Row);
 
-   function Convert (C : in Gtk_Ctree_Node) return System.Address;
-   function Convert (W : System.Address) return Gtk_Ctree_Node;
+   function Convert is new Unchecked_Conversion
+     (Gtk_Ctree_Node, System.Address);
+   function Convert is new Unchecked_Conversion
+     (System.Address, Gtk_Ctree_Node);
    package Node_List is new Glib.Glist.Generic_List (Gtk_Ctree_Node);
    --  </doc_ignore>
 
@@ -713,7 +716,7 @@ package Gtk.Ctree is
    -------------
    -- Signals --
    -------------
- 
+
    --  <signals>
    --  The following new signals are defined for this widget:
    --

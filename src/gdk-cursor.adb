@@ -30,20 +30,6 @@
 package body Gdk.Cursor is
 
    -------------
-   -- Destroy --
-   -------------
-
-   procedure Destroy (Cursor : in out Gdk_Cursor)
-   is
-      procedure Internal (Cursor : in System.Address);
-      pragma Import (C, Internal, "gdk_cursor_destroy");
-   begin
-      Internal (Get_Object (Cursor));
-      Set_Object (Cursor, System.Null_Address);
-   end Destroy;
-
-
-   -------------
    -- Gdk_New --
    -------------
 
@@ -51,11 +37,10 @@ package body Gdk.Cursor is
                       Cursor_Type : in Gdk.Types.Gdk_Cursor_Type)
    is
       function Internal (Cursor_Type : in Gdk.Types.Gdk_Cursor_Type)
-                         return System.Address;
+                         return Gdk_Cursor;
       pragma Import (C, Internal, "ada_gdk_cursor_new");
    begin
-      Set_Object (Widget,
-                  Internal (Cursor_Type));
+      Widget := Internal (Cursor_Type);
    end Gdk_New;
 
 end Gdk.Cursor;

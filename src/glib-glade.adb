@@ -993,7 +993,7 @@ package body Glib.Glade is
                            if Kind.all = "Gtk_Clist_Row"
                              or else Kind.all = "Gtk_Ctree_Node"
                            then
-                              Put (File, Kind.all & " (To_Object_Type");
+                              Put (File, Kind.all & " (To_C_Proxy");
                            elsif Kind.all = "Gtk_Object"
                              or else Kind.all = "Gtk_Widget"
                              or else Kind.all = "Gtk_Accel_Group_Access"
@@ -1027,7 +1027,7 @@ package body Glib.Glade is
 
                         Free (Kind);
                      end loop;
-                  
+
                      Put_Line (File, "   begin");
                      Put_Line (File, "      null;");
                      Put_Line (File, "   end " & Handler & ";");

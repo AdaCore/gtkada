@@ -137,7 +137,7 @@ package Gtk.Text is
 
    procedure Insert
      (Text   : access Gtk_Text_Record;
-      Font   : in Gdk.Font.Gdk_Font'Class;
+      Font   : in Gdk.Font.Gdk_Font;
       Fore   : in Gdk.Color.Gdk_Color;
       Back   : in Gdk.Color.Gdk_Color;
       Chars  : in String;

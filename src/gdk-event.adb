@@ -145,12 +145,10 @@ package body Gdk.Event is
    ----------------
 
    function Get_Window (Event  : in Gdk_Event) return Gdk_Window is
-      function Internal (Event : in System.Address) return System.Address;
+      function Internal (Event : in System.Address) return Gdk_Window;
       pragma Import (C, Internal, "ada_gdk_event_get_window");
-      Win : Gdk.Window.Gdk_Window;
    begin
-      Set_Object (Win, Internal (Get_Object (Event)));
-      return Win;
+      return Internal (Get_Object (Event));
    end Get_Window;
 
    --------------
@@ -289,17 +287,14 @@ package body Gdk.Event is
    -------------------
 
    function Get_Subwindow (Event : in Gdk_Event) return Gdk_Window is
-      function Internal (Event : in System.Address) return System.Address;
+      function Internal (Event : in System.Address) return Gdk_Window;
       pragma Import (C, Internal, "ada_gdk_event_get_subwindow");
-      Addr : constant System.Address := Internal (Get_Object (Event));
-      Win  : Gdk.Window.Gdk_Window;
-      use type System.Address;
+      Addr : constant Gdk_Window := Internal (Get_Object (Event));
    begin
-      if Addr = System.Null_Address then
+      if Addr = Null_Window then
          raise Invalid_Field;
       end if;
-      Set_Object (Win, Addr);
-      return Win;
+      return Addr;
    end Get_Subwindow;
 
    --------------
@@ -718,12 +713,13 @@ package body Gdk.Event is
    ---------------------------
 
    procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose;
-                                  Window : in Gdk.Window.Gdk_Window'Class)
+                                  Window : in Gdk.Window.Gdk_Window)
    is
-      function Internal (Window : in System.Address) return System.Address;
+      function Internal (Window : in Gdk.Window.Gdk_Window)
+                        return System.Address;
       pragma Import (C, Internal, "gdk_event_get_graphics_expose");
    begin
-      Set_Object (Event, Internal (Get_Object (Window)));
+      Set_Object (Event, Internal (Window));
    end Get_Graphics_Expose;
 
    ---------------
@@ -838,11 +834,11 @@ package body Gdk.Event is
                        Window     : in Gdk.Window.Gdk_Window)
    is
       function Internal (Event_Type : Gdk_Event_Type;
-                         Win        : System.Address)
+                         Win        : Gdk.Window.Gdk_Window)
                         return System.Address;
       pragma Import (C, Internal, "ada_gdk_event_create");
    begin
-      Set_Object (Event, Internal (Event_Type, Get_Object (Window)));
+      Set_Object (Event, Internal (Event_Type, Window));
       Event.User_Created := True;
    end Allocate;
 
@@ -865,10 +861,10 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_Window (Event  : in Gdk_Event; Win : Gdk_Window) is
-      procedure Internal (Event : in System.Address; Win : System.Address);
+      procedure Internal (Event : in System.Address; Win : Gdk_Window);
       pragma Import (C, Internal, "ada_gdk_event_set_window");
    begin
-      Internal (Get_Object (Event), Get_Object (Win));
+      Internal (Get_Object (Event), Win);
    end Set_Window;
 
    -----------
@@ -960,11 +956,12 @@ package body Gdk.Event is
    -------------------
 
    procedure Set_Subwindow (Event : in Gdk_Event; Window : Gdk_Window) is
-      function Internal (Event : in System.Address; Win : System.Address)
+      function Internal (Event : in System.Address;
+                         Win   : Gdk_Window)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_subwindow");
    begin
-      if Internal (Get_Object (Event), Get_Object (Window)) = 0 then
+      if Internal (Get_Object (Event), Window) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Subwindow;

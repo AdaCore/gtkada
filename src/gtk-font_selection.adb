@@ -86,18 +86,10 @@ package body Gtk.Font_Selection is
                       return      Gdk.Font.Gdk_Font
    is
       function Internal (Fsd    : in System.Address)
-                         return      System.Address;
+                         return      Gdk.Font.Gdk_Font;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_font");
-      use type System.Address;
-      Tmp : Gdk.Font.Gdk_Font;
-      S : System.Address := Internal (Get_Object (Fsd));
    begin
-      if S = System.Null_Address then
-         return Gdk.Font.Null_Font;
-      else
-         Set_Object (Tmp, S);
-         return Tmp;
-      end if;
+      return Internal (Get_Object (Fsd));
    end Get_Font;
 
    -------------------
@@ -226,18 +218,10 @@ package body Gtk.Font_Selection is
                       return       Gdk.Font.Gdk_Font
    is
       function Internal (Fontsel : in System.Address)
-                         return       System.Address;
+                         return       Gdk.Font.Gdk_Font;
       pragma Import (C, Internal, "gtk_font_selection_get_font");
-      use type System.Address;
-      Tmp : Gdk.Font.Gdk_Font;
-      S : System.Address := Internal (Get_Object (Fontsel));
    begin
-      if S = System.Null_Address then
-         return Gdk.Font.Null_Font;
-      else
-         Set_Object (Tmp, S);
-         return Tmp;
-      end if;
+      return Internal (Get_Object (Fontsel));
    end Get_Font;
 
    -------------------

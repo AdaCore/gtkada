@@ -42,11 +42,11 @@ package Gtk.Rc is
                        return Gtk.Style.Gtk_Style;
 
    procedure Add_Widget_Name_Style
-     (Style   : in Gtk.Style.Gtk_Style'Class;
+     (Style   : in Gtk.Style.Gtk_Style;
       Pattern : in String);
 
    procedure Add_Widget_Class_Style
-     (Style   : in Gtk.Style.Gtk_Style'Class;
+     (Style   : in Gtk.Style.Gtk_Style;
       Pattern : in String);
 
 

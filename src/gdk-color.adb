@@ -49,7 +49,7 @@ package body Gdk.Color is
                     Planes     : in Gulong_Array;
                     Pixels     : in Gulong_Array;
                     Succeeded  :    out Boolean) is
-      function Internal (Colormap   : in System.Address;
+      function Internal (Colormap   : in Gdk_Colormap;
                          Contiguous : in Gint;
                          Planes     : in Gulong_Array;
                          Nplanes    : in Gint;
@@ -57,10 +57,10 @@ package body Gdk.Color is
                          Npixels    : in Gint) return Gint;
       pragma Import (C, Internal, "gdk_colors_alloc");
    begin
-      Succeeded := To_Boolean (Internal (Get_Object (Colormap),
-                                         To_Gint (Contiguous),
-                                         Planes, Planes'Length,
-                                         Pixels, Pixels'Length));
+      Succeeded := Boolean'Val (Internal (Colormap,
+                                          To_Gint (Contiguous),
+                                          Planes, Planes'Length,
+                                          Pixels, Pixels'Length));
    end Alloc;
 
    -----------
@@ -70,14 +70,15 @@ package body Gdk.Color is
    procedure Alloc (Colormap  : in Gdk_Colormap;
                     Color     : in out Gdk_Color)
    is
-      function Internal (Colormap, Color : in System.Address) return Gint;
+      function Internal (Colormap : in Gdk_Colormap;
+                         Color    : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_color_alloc");
 
       Col : aliased Gdk_Color := Color;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
    begin
-      if not To_Boolean (Internal (Get_Object (Colormap), Col'Address)) then
+      if not Boolean'Val (Internal (Colormap, Col'Address)) then
          raise Wrong_Color;
       end if;
       Color := Col;
@@ -93,7 +94,7 @@ package body Gdk.Color is
                           Writeable  : in Boolean;
                           Best_Match : in Boolean;
                           Success    :    out Boolean) is
-      function Internal (Colormap   : in System.Address;
+      function Internal (Colormap   : in Gdk_Colormap;
                          Color      : in System.Address;
                          Writeable  : in Gboolean;
                          Best_Match : in Gboolean) return Gboolean;
@@ -103,13 +104,12 @@ package body Gdk.Color is
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
    begin
-      Success := To_Boolean (Internal (Get_Object (Colormap),
-                                       Col'Address,
-                                       To_Gboolean (Writeable),
-                                       To_Gboolean (Best_Match)));
+      Success := Boolean'Val (Internal (Colormap,
+                                        Col'Address,
+                                        To_Gboolean (Writeable),
+                                        To_Gboolean (Best_Match)));
       Color := Col;
    end Alloc_Color;
-
 
    --------------------
    --  Alloc_Colors  --
@@ -121,7 +121,7 @@ package body Gdk.Color is
                            Best_Match : in     Boolean;
                            Success    :    out Boolean_Array;
                            Result     :    out Gint) is
-      function Internal (Colormap   : in System.Address;
+      function Internal (Colormap   : in Gdk_Colormap;
                          Colors     : in System.Address;
                          N_Colors   : in Gint;
                          Writeable  : in Gboolean;
@@ -131,7 +131,7 @@ package body Gdk.Color is
       pragma Import (C, Internal, "gdk_colormap_alloc_colors");
       Tmp : Gboolean_Array (Colors'Range);
    begin
-      Result := Internal (Get_Object (Colormap),
+      Result := Internal (Colormap,
                           Colors'Address,
                           Colors'Length,
                           To_Gboolean (Writeable),
@@ -140,17 +140,17 @@ package body Gdk.Color is
       Success := To_Boolean_Array (Tmp);
    end Alloc_Colors;
 
-
    -----------
    -- Black --
    -----------
 
    function Black (Colormap  : in Gdk_Colormap) return Gdk_Color is
-      function Internal (Colormap, Color : in System.Address) return Gint;
+      function Internal (Colormap : in Gdk_Colormap;
+                         Color : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_color_black");
       Color : aliased Gdk_Color;
    begin
-      if not To_Boolean (Internal (Get_Object (Colormap), Color'Address)) then
+      if not To_Boolean (Internal (Colormap, Color'Address)) then
          raise Wrong_Color;
       end if;
       return Color;
@@ -171,11 +171,11 @@ package body Gdk.Color is
 
    procedure Change (Colormap : in Gdk_Colormap;
                      Ncolors  : in Gint) is
-      procedure Internal (Colormap : in System.Address;
+      procedure Internal (Colormap : in Gdk_Colormap;
                           Ncolors : in Gint);
       pragma Import (C, Internal, "gdk_colormap_change");
    begin
-      Internal (Get_Object (Colormap), Ncolors);
+      Internal (Colormap, Ncolors);
    end Change;
 
    ------------
@@ -185,15 +185,15 @@ package body Gdk.Color is
    procedure Change (Colormap  : in Gdk_Colormap;
                      Color     : in out Gdk_Color;
                      Succeeded :    out Boolean) is
-      function Internal (Colormap, Color : in System.Address) return Gint;
+      function Internal (Colormap : in Gdk_Colormap;
+                         Color : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_color_change");
 
       Col : aliased Gdk_Color := Color;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
    begin
-      Succeeded := To_Boolean (Internal (Get_Object (Colormap),
-                                         Col'Address));
+      Succeeded := To_Boolean (Internal (Colormap, Col'Address));
       Color := Col;
    end Change;
 
@@ -218,15 +218,14 @@ package body Gdk.Color is
    procedure Free (Colormap : in Gdk_Colormap;
                    Pixels   : in Gulong_Array;
                    Planes   : in Gulong) is
-      procedure Internal (Colormap : in System.Address;
+      procedure Internal (Colormap : in Gdk_Colormap;
                           Pixels   : in Gulong_Array;
                           NPixels  : in Gint;
                           Planes   : in Gulong);
       pragma Import (C, Internal, "gdk_colors_free");
    begin
-      Internal (Get_Object (Colormap), Pixels, Pixels'Length, Planes);
+      Internal (Colormap, Pixels, Pixels'Length, Planes);
    end Free;
-
 
    -----------------
    -- Free_Colors --
@@ -234,16 +233,13 @@ package body Gdk.Color is
 
    procedure Free_Colors (Colormap : in Gdk_Colormap;
                           Colors   : in Gdk_Color_Array) is
-      procedure Internal (Colormap : in System.Address;
+      procedure Internal (Colormap : in Gdk_Colormap;
                           Colors   : in Gdk_Color_Array;
                           Ncolors  : in Gint);
       pragma Import (C, Internal, "gdk_colormap_free_colors");
    begin
-      Internal (Get_Object (Colormap),
-                Colors,
-                Colors'Length);
+      Internal (Colormap, Colors, Colors'Length);
    end Free_Colors;
-
 
    -------------
    -- Gdk_New --
@@ -252,26 +248,12 @@ package body Gdk.Color is
    procedure Gdk_New (Colormap     :    out Gdk_Colormap;
                       Visual       : in     Gdk.Visual.Gdk_Visual;
                       Private_Cmap : in     Boolean) is
-      function Internal (Visual   : in System.Address;
-                         Private_Cmap : in Gint) return System.Address;
+      function Internal (Visual   : in Gdk.Visual.Gdk_Visual;
+                         Private_Cmap : in Gint) return Gdk_Colormap;
       pragma Import (C, Internal, "gdk_colormap_new");
    begin
-      Set_Object (Colormap, Internal (Get_Object (Visual),
-                                      Boolean'Pos (Private_Cmap)));
+      Colormap := Internal (Visual, Boolean'Pos (Private_Cmap));
    end Gdk_New;
-
-   ------------------
-   --  Get_System  --
-   ------------------
-
-   function Get_System return Gdk_Colormap is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gdk_colormap_get_system");
-      Colormap : Gdk_Colormap;
-   begin
-      Set_Object (Colormap, Internal);
-      return Colormap;
-   end Get_System;
 
    ------------------
    --  Get_Visual  --
@@ -279,10 +261,11 @@ package body Gdk.Color is
 
    procedure Get_Visual (Colormap : in     Gdk_Colormap;
                          Visual   :    out Gdk.Visual.Gdk_Visual) is
-      function Internal (Colormap : in System.Address) return System.Address;
+      function Internal (Colormap : in Gdk_Colormap)
+                        return Gdk.Visual.Gdk_Visual;
       pragma Import (C, Internal, "gdk_colormap_get_visual");
    begin
-      Set_Object (Visual, Internal (Get_Object (Colormap)));
+      Visual := Internal (Colormap);
    end Get_Visual;
 
    -----------
@@ -345,18 +328,6 @@ package body Gdk.Color is
       return Color.Red;
    end Red;
 
-   -----------
-   --  Ref  --
-   -----------
-
-   procedure Ref (Colormap : in Gdk_Colormap) is
-      function Internal (Colormap : in System.Address) return System.Address;
-      pragma Import (C, Internal, "gdk_colormap_ref");
-      S : System.Address;
-   begin
-      S := Internal (Get_Object (Colormap));
-   end Ref;
-
    ---------------
    -- Set_Pixel --
    ---------------
@@ -386,37 +357,25 @@ package body Gdk.Color is
    procedure Store (Colormap : in Gdk_Colormap;
                     Colors   : in Gdk_Color_Array)
    is
-      procedure Internal (Colormap : in System.Address;
+      procedure Internal (Colormap : in Gdk_Colormap;
                           Colors : in System.Address;
                           Ncolors : in Gint);
       pragma Import (C, Internal, "gdk_colors_store");
    begin
-      Internal (Get_Object (Colormap), Colors'Address, Colors'Length);
+      Internal (Colormap, Colors'Address, Colors'Length);
    end Store;
-
-   -------------
-   --  Unref  --
-   -------------
-
-   procedure Unref (Colormap : in out Gdk_Colormap) is
-      procedure Internal (Colormap : in System.Address);
-      pragma Import (C, Internal, "gdk_colormap_unref");
-   begin
-      Internal (Get_Object (Colormap));
-      Set_Object (Colormap, System.Null_Address);
-   end Unref;
-
 
    -----------
    -- White --
    -----------
 
    function White (Colormap  : in Gdk_Colormap) return Gdk_Color is
-      function Internal (Colormap, Color : in System.Address) return Gint;
+      function Internal (Colormap : in Gdk_Colormap;
+                         Color : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_color_white");
       Color     : aliased Gdk_Color;
    begin
-      if not To_Boolean (Internal (Get_Object (Colormap), Color'Address)) then
+      if not To_Boolean (Internal (Colormap, Color'Address)) then
          raise Wrong_Color;
       end if;
       return Color;

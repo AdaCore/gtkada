@@ -379,17 +379,13 @@ package body Gtk.Widget is
    ----------------
 
    function Get_Window (Widget : access Gtk_Widget_Record)
-     return Gdk.Window.Gdk_Window
+                       return Gdk.Window.Gdk_Window
    is
       function Internal (Widget : System.Address)
-        return System.Address;
+                        return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "ada_widget_get_window");
-
-      Win : Gdk.Window.Gdk_Window;
-
    begin
-      Set_Object (Win, Internal (Get_Object (Widget)));
-      return Win;
+      return Internal (Get_Object (Widget));
    end Get_Window;
 
    ------------------
@@ -421,32 +417,14 @@ package body Gtk.Widget is
    ------------------
 
    function Get_Colormap (Widget : access Gtk_Widget_Record)
-     return Gdk.Color.Gdk_Colormap
+                         return Gdk.Color.Gdk_Colormap
    is
-      function Internal (Widget : in System.Address) return System.Address;
+      function Internal (Widget : in System.Address)
+                        return Gdk.Color.Gdk_Colormap;
       pragma Import (C, Internal, "gtk_widget_get_colormap");
-
-      Result : Gdk.Color.Gdk_Colormap;
-
    begin
-      Set_Object (Result, Internal (Get_Object (Widget)));
-      return Result;
+      return Internal (Get_Object (Widget));
    end Get_Colormap;
-
-   --------------------------
-   -- Get_Default_Colormap --
-   --------------------------
-
-   function Get_Default_Colormap return Gdk.Color.Gdk_Colormap is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_widget_get_default_colormap");
-
-      Result : Gdk.Color.Gdk_Colormap;
-
-   begin
-      Set_Object (Result, Internal);
-      return Result;
-   end Get_Default_Colormap;
 
    ---------------------------------
    -- Default_Motion_Notify_Event --
@@ -463,19 +441,6 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget), Get_Object (Event));
    end Default_Motion_Notify_Event;
-
-   ------------------------
-   -- Get_Default_Visual --
-   ------------------------
-
-   function Get_Default_Visual return Gdk.Visual.Gdk_Visual is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_widget_get_default_visual");
-      Visual : Gdk.Visual.Gdk_Visual;
-   begin
-      Set_Object (Visual, Internal);
-      return Visual;
-   end Get_Default_Visual;
 
    ---------------------------
    -- Get_Child_Requisition --
@@ -498,12 +463,10 @@ package body Gtk.Widget is
    ----------------
 
    function Get_Visual (Widget : access Gtk_Widget_Record) return Gdk_Visual is
-      function Internal (Widget : System.Address) return System.Address;
+      function Internal (Widget : System.Address) return Gdk_Visual;
       pragma Import (C, Internal, "gtk_widget_get_visual");
-      Visual : Gdk.Visual.Gdk_Visual;
    begin
-      Set_Object (Visual, Internal (Get_Object (Widget)));
-      return Visual;
+      return Internal (Get_Object (Widget));
    end Get_Visual;
 
    ------------------------
@@ -631,28 +594,6 @@ package body Gtk.Widget is
    begin
       return Gtk.Widget.Flag_Is_Set (Widget, No_Window);
    end No_Window_Is_Set;
-
-   -------------------
-   -- Push_Colormap --
-   -------------------
-
-   procedure Push_Colormap (Cmap : Gdk.Color.Gdk_Colormap) is
-      procedure Internal (Cmap : System.Address);
-      pragma Import (C, Internal, "gtk_widget_push_colormap");
-   begin
-      Internal (Get_Object (Cmap));
-   end Push_Colormap;
-
-   -----------------
-   -- Push_Visual --
-   -----------------
-
-   procedure Push_Visual (Visual : Gdk_Visual) is
-      procedure Internal (Visual : System.Address);
-      pragma Import (C, Internal, "gtk_widget_push_visual");
-   begin
-      Internal (Get_Object (Visual));
-   end Push_Visual;
 
    -----------
    -- Popup --
@@ -863,36 +804,12 @@ package body Gtk.Widget is
    procedure Set_Colormap (Widget : access Gtk_Widget_Record;
                            Cmap : Gdk_Colormap)
    is
-      procedure Internal (Widget : System.Address; Cmap : System.Address);
+      procedure Internal (Widget : System.Address; Cmap : Gdk_Colormap);
       pragma Import (C, Internal, "gtk_widget_set_colormap");
 
    begin
-      Internal (Get_Object (Widget), Get_Object (Cmap));
+      Internal (Get_Object (Widget), Cmap);
    end Set_Colormap;
-
-   --------------------------
-   -- Set_Default_Colormap --
-   --------------------------
-
-   procedure Set_Default_Colormap (Cmap : Gdk_Colormap) is
-      procedure Internal (Cmap : System.Address);
-      pragma Import (C, Internal, "gtk_widget_set_default_colormap");
-
-   begin
-      Internal (Get_Object (Cmap));
-   end Set_Default_Colormap;
-
-   ------------------------
-   -- Set_Default_Visual --
-   ------------------------
-
-   procedure Set_Default_Visual (Visual : Gdk_Visual) is
-      procedure Internal (Visual : System.Address);
-      pragma Import (C, Internal, "gtk_widget_set_default_visual");
-
-   begin
-      Internal (Get_Object (Visual));
-   end Set_Default_Visual;
 
    ----------------
    -- Set_Events --
@@ -1124,11 +1041,11 @@ package body Gtk.Widget is
    procedure Set_Visual (Widget : access Gtk_Widget_Record;
                          Visual : Gdk_Visual)
    is
-      procedure Internal (Widget : System.Address; Visual : System.Address);
+      procedure Internal (Widget : System.Address; Visual : Gdk_Visual);
       pragma Import (C, Internal, "gtk_widget_set_visual");
 
    begin
-      Internal (Get_Object (Widget), Get_Object (Visual));
+      Internal (Get_Object (Widget), Visual);
    end Set_Visual;
 
    ----------
@@ -1215,18 +1132,18 @@ package body Gtk.Widget is
 
    procedure Shape_Combine_Mask
      (Widget     : access Gtk_Widget_Record;
-      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap'Class;
+      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
       Offset_X   : Gint;
       Offset_Y   : Gint)
    is
       procedure Internal (Widget     : System.Address;
-                          Shape_Mask : System.Address;
+                          Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
                           Offset_X   : Gint;
                           Offset_Y   : Gint);
       pragma Import (C, Internal, "gtk_widget_shape_combine_mask");
    begin
       Internal (Get_Object (Widget),
-                Get_Object (Shape_Mask),
+                Shape_Mask,
                 Offset_X,
                 Offset_Y);
    end Shape_Combine_Mask;

@@ -35,7 +35,8 @@ with Glib;
 
 package Gdk.Window_Attr is
 
-   type Gdk_Window_Attr is new Root_Type with private;
+   type Gdk_Window_Attr is new C_Proxy;
+   Null_Window_Attr : constant Gdk_Window_Attr;
 
    procedure Gdk_New
      (Window_Attr       :    out Gdk_Window_Attr;
@@ -47,13 +48,13 @@ package Gdk.Window_Attr is
       Height            : in     Glib.Gint16 := 0;
       Wclass            : in     Gdk.Types.Gdk_Window_Class :=
         Gdk.Types.Input_Output;
-      Visual            : in     Gdk.Visual.Gdk_Visual'Class :=
+      Visual            : in     Gdk.Visual.Gdk_Visual :=
         Gdk.Visual.Null_Visual;
-      Colormap          : in     Gdk.Color.Gdk_Colormap'Class :=
+      Colormap          : in     Gdk.Color.Gdk_Colormap :=
         Gdk.Color.Null_Colormap;
       Window_Type       : in     Gdk.Types.Gdk_Window_Type :=
         Gdk.Types.Window_Root;
-      Cursor            : in     Gdk.Cursor.Gdk_Cursor'Class :=
+      Cursor            : in     Gdk.Cursor.Gdk_Cursor :=
         Gdk.Cursor.Null_Cursor;
       Wmclass_Name      : in     String := "";
       Wmclass_Class     : in     String := "";
@@ -83,7 +84,7 @@ package Gdk.Window_Attr is
    procedure Set_Y (Window_Attr : in Gdk_Window_Attr;
                     Y           : in Glib.Gint16);
 
-   function Get_y (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16;
+   function Get_Y (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16;
 
 
    procedure Set_Width (Window_Attr : in Gdk_Window_Attr;
@@ -107,14 +108,14 @@ package Gdk.Window_Attr is
 
 
    procedure Set_Visual (Window_Attr : in Gdk_Window_Attr;
-                         Visual      : in Gdk.Visual.Gdk_Visual'class);
+                         Visual      : in Gdk.Visual.Gdk_Visual);
 
    function Get_Visual (Window_Attr : in Gdk_Window_Attr)
                         return Gdk.Visual.Gdk_Visual;
 
 
    procedure Set_Colormap (Window_Attr : in Gdk_Window_Attr;
-                           Colormap    : in Gdk.Color.Gdk_Colormap'Class);
+                           Colormap    : in Gdk.Color.Gdk_Colormap);
 
    function Get_Colormap (Window_Attr : in Gdk_Window_Attr)
                           return Gdk.Color.Gdk_Colormap;
@@ -128,7 +129,7 @@ package Gdk.Window_Attr is
 
 
    procedure Set_Cursor (Window_Attr : in Gdk_Window_Attr;
-                         Cursor      : in Gdk.Cursor.Gdk_Cursor'Class);
+                         Cursor      : in Gdk.Cursor.Gdk_Cursor);
 
    function Get_Cursor (Window_Attr : in Gdk_Window_Attr)
                         return Gdk.Cursor.Gdk_Cursor;
@@ -153,7 +154,25 @@ package Gdk.Window_Attr is
                                    return Boolean;
 
 private
-
-   type Gdk_Window_Attr is new Root_Type with null record;
-
+   Null_Window_Attr : constant Gdk_Window_Attr := null;
+   pragma Import (C, Get_Colormap, "ada_gdk_window_attr_get_colormap");
+   pragma Import (C, Get_Cursor, "ada_gdk_window_attr_get_cursor");
+   pragma Import (C, Get_Event_Mask, "ada_gdk_window_attr_get_event_mask");
+   pragma Import (C, Get_Height, "ada_gdk_window_attr_get_height");
+   pragma Import (C, Get_Visual, "ada_gdk_window_attr_get_visual");
+   pragma Import (C, Get_Width, "ada_gdk_window_attr_get_width");
+   pragma Import (C, Get_Window_Class, "ada_gdk_window_attr_get_wclass");
+   pragma Import (C, Get_Window_Type, "ada_gdk_window_attr_get_window_type");
+   pragma Import (C, Get_X, "ada_gdk_window_attr_get_x");
+   pragma Import (C, Get_Y, "ada_gdk_window_attr_get_y");
+   pragma Import (C, Set_Colormap, "ada_gdk_window_attr_set_colormap");
+   pragma Import (C, Set_Cursor, "ada_gdk_window_attr_set_cursor");
+   pragma Import (C, Set_Event_Mask, "ada_gdk_window_attr_set_event_mask");
+   pragma Import (C, Set_Height, "ada_gdk_window_attr_set_height");
+   pragma Import (C, Set_Visual, "ada_gdk_window_attr_set_visual");
+   pragma Import (C, Set_Width, "ada_gdk_window_attr_set_width");
+   pragma Import (C, Set_Window_Class, "ada_gdk_window_attr_set_wclass");
+   pragma Import (C, Set_Window_Type, "ada_gdk_window_attr_set_window_type");
+   pragma Import (C, Set_X, "ada_gdk_window_attr_set_x");
+   pragma Import (C, Set_Y, "ada_gdk_window_attr_set_y");
 end Gdk.Window_Attr;

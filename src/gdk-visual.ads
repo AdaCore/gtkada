@@ -29,6 +29,7 @@
 
 with Glib; use Glib;
 with Glib.Glist;
+with Unchecked_Conversion;
 pragma Elaborate_All (Glib.Glist);
 
 with Gdk.Types;
@@ -36,11 +37,10 @@ with Gdk.Types;
 
 package Gdk.Visual is
 
-   type Gdk_Visual is new Root_Type with null record;
+   type Gdk_Visual is new Gdk.C_Proxy;
+   Null_Visual : constant Gdk_Visual;
    --  This type is not private because we need the full declaration
    --  to instanciate Glib.Glist.Generic_List with it.
-
-   Null_Visual : constant Gdk_Visual;
 
    type Gdk_Visual_Type_Array is array (Natural range <>)
      of Types.Gdk_Visual_Type;
@@ -70,19 +70,16 @@ package Gdk.Visual is
 
 
 
-   function Convert (V : in Gdk_Visual'Class) return System.Address;
-   function Convert (V : in System.Address) return Gdk_Visual'Class;
+   function Convert is new Unchecked_Conversion (Gdk_Visual, System.Address);
+   function Convert is new Unchecked_Conversion (System.Address, Gdk_Visual);
 
-   package Gdk_Visual_List is new Glib.Glist.Generic_List (Gdk_Visual'Class);
+   package Gdk_Visual_List is new Glib.Glist.Generic_List (Gdk_Visual);
 
    function List_Visuals return Gdk_Visual_List.Glist;
 
 
 private
-
-   Null_Visual : constant Gdk_Visual := (Ptr => System.Null_Address);
-
+   Null_Visual : constant Gdk_Visual := null;
    pragma Import (C, Get_Best_Depth, "gdk_visual_get_best_depth");
    pragma Import (C, Get_Best_Type, "gdk_visual_get_best_type");
-
 end Gdk.Visual;

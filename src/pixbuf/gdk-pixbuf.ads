@@ -400,6 +400,9 @@ private
    pragma Import (C, Scale_Simple, "gdk_pixbuf_scale_simple");
    pragma Import (C, Composite_Color_Simple,
                     "gdk_pixbuf_composite_color_simple");
+   pragma Import (C, Render_Threshold_Alpha,
+                    "gdk_pixbuf_render_threshold_alpha");
+   pragma Import (C, Get_From_Drawable, "gdk_pixbuf_get_from_drawable");
 end Gdk.Pixbuf;
 
 --  NOT BOUND: gdk_pixbuf_new_from_data

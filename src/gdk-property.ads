@@ -61,4 +61,6 @@ package Gdk.Property is
    procedure Delete (Window   : in Gdk.Window.Gdk_Window;
                      Property : in Gdk.Types.Gdk_Atom);
 
+private
+   pragma Import (C, Delete, "gdk_property_delete");
 end Gdk.Property;

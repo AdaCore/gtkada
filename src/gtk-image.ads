@@ -39,23 +39,23 @@ package Gtk.Image is
 
    procedure Get
      (Image : access Gtk_Image_Record;
-      Val   : in Gdk.Image.Gdk_Image'Class;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Val   : in Gdk.Image.Gdk_Image;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap);
 
    procedure Gtk_New
      (Image : out Gtk_Image;
-      Val   : in Gdk.Image.Gdk_Image'Class;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Val   : in Gdk.Image.Gdk_Image;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap);
 
    procedure Initialize
      (Image : access Gtk_Image_Record'Class;
-      Val   : in Gdk.Image.Gdk_Image'Class;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Val   : in Gdk.Image.Gdk_Image;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap);
 
    procedure Set
      (Image : access Gtk_Image_Record;
-      Val   : in Gdk.Image.Gdk_Image'Class;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+      Val   : in Gdk.Image.Gdk_Image;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap);
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function

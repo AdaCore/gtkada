@@ -234,11 +234,10 @@ package body Gtk.Packer is
    is
       function Internal (Packer : System.Address;
                          Child  : System.Address)
-                        return System.Address;
+                        return Gtk_Packer_Child;
       pragma Import (C, Internal, "ada_packer_find_child");
    begin
-      return Gtk_Packer_Child (Internal (Get_Object (Packer),
-                                         Get_Object (Child)));
+      return Internal (Get_Object (Packer), Get_Object (Child));
    end Find_Child;
 
    -------------------
@@ -250,10 +249,10 @@ package body Gtk.Packer is
                           return Gtk_Packer_Child
    is
       function Internal (Packer : System.Address; N : Guint)
-                        return System.Address;
+                        return Gtk_Packer_Child;
       pragma Import (C, Internal, "ada_packer_get_nth_child");
    begin
-      return Gtk_Packer_Child (Internal (Get_Object (Packer), N));
+      return Internal (Get_Object (Packer), N);
    end Get_Nth_Child;
 
    -----------------

@@ -37,4 +37,7 @@ package Gdk.GC.Pixmap is
    procedure Set_Stipple (GC      : in Gdk_GC;
                           Stipple : in Gdk.Pixmap.Gdk_Pixmap);
 
+private
+   pragma Import (C, Set_Stipple, "gdk_gc_set_stipple");
+   pragma Import (C, Set_Tile, "gdk_gc_set_tile");
 end Gdk.GC.Pixmap;

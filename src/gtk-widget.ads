@@ -575,7 +575,7 @@ package Gtk.Widget is
 
    procedure Shape_Combine_Mask
      (Widget     : access Gtk_Widget_Record;
-      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap'Class;
+      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
       Offset_X   : Gint;
       Offset_Y   : Gint);
    --  Modify the shape of the window that contains the widget.
@@ -1150,6 +1150,12 @@ private
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Pop_Visual, "gtk_widget_pop_visual");
    pragma Import (C, Get_Type, "gtk_widget_get_type");
+   pragma Import (C, Get_Default_Colormap, "gtk_widget_get_default_colormap");
+   pragma Import (C, Get_Default_Visual, "gtk_widget_get_default_visual");
+   pragma Import (C, Push_Colormap, "gtk_widget_push_colormap");
+   pragma Import (C, Push_Visual, "gtk_widget_push_visual");
+   pragma Import (C, Set_Default_Colormap, "gtk_widget_set_default_colormap");
+   pragma Import (C, Set_Default_Visual, "gtk_widget_set_default_visual");
    pragma Inline (Toplevel_Is_Set);
    pragma Inline (No_Window_Is_Set);
    pragma Inline (Realized_Is_Set);

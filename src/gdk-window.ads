@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,22 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  A Gdk_Window is the physical window that appears on the screen.
+--  This is the low-level structure known to the X server or to Win32.
+--  All the widgets are internally associated with a specific Gdk_Window,
+--  that holds attributes such as the window decoration, whether the window
+--  can be interactively resized,...
+--
+--  On some systems, the graphic server knows how to display non-rectangular
+--  windows (this is part of the X extensions).
+--
+--  If you simply want to create a simply window, you should instead look
+--  at the functions provided in Gtk.Window and Gtk.Widget, which are higher
+--  level than these.
+--  </description>
+--  <c_version>1.2.7</c_version>
+
 with Glib; use Glib;
 with Glib.Glist;
 with Gdk;
@@ -35,14 +51,11 @@ with Gdk.Cursor;
 with Gdk.Types;
 with Gdk.Visual;
 with Gdk.Window_Attr;
+with Unchecked_Conversion;
 
 package Gdk.Window is
 
-   type Gdk_Window is new Root_Type with null record;
-   --
-   --  This type is not defined as private because we need the
-   --  full declaration to instantiate the Glist package with it
-
+   type Gdk_Window is new C_Proxy;
    Null_Window : constant Gdk_Window;
 
 
@@ -213,17 +226,9 @@ package Gdk.Window is
                           Mask   :    out Gdk.Types.Gdk_Modifier_Type;
                           Result :    out Gdk_Window);
 
-   procedure Get_Parent (Window : in     Gdk_Window;
-                         Parent :    out Gdk_Window);
-   --
-   --  NOTE : This is declared as a procedure instead of a function to avoid
-   --         having to override it for all the derived types of Gdk_Window.
+   function Get_Parent (Window : in Gdk_Window) return Gdk_Window;
 
-   procedure Get_Toplevel (Window   : in     Gdk_Window;
-                           Toplevel :    out Gdk_Window);
-   --
-   --  NOTE : This is declared as a procedure instead of a function to avoid
-   --         having to override it for all the derived types of Gdk_Window.
+   function Get_Toplevel (Window   : in Gdk_Window) return Gdk_Window;
 
    function Get_Events (Window : in Gdk_Window)
                         return Gdk.Types.Gdk_Event_Mask;
@@ -252,19 +257,53 @@ package Gdk.Window is
 
    --  Gdk_Window_List
    --
-   function Convert (S : in System.Address) return Gdk_Window'Class;
-   function Convert (P : in Gdk_Window'Class) return System.Address;
+   function Convert is new Unchecked_Conversion (Gdk_Window, System.Address);
+   function Convert is new Unchecked_Conversion (System.Address, Gdk_Window);
 
    package Gdk_Window_List is new Glib.Glist.Generic_List
-     (Gpointer => Gdk_Window'Class);
+     (Gpointer => Gdk_Window);
 
-   function Get_Children (Window : in Gdk_Window'Class)
+   function Get_Children (Window : in Gdk_Window)
                           return Gdk_Window_List.Glist;
 
    function Get_Toplevels return Gdk_Window_List.Glist;
 
 private
 
-   Null_Window : constant Gdk_Window := (Ptr => System.Null_Address);
-
+   Null_Window : constant Gdk_Window := null;
+   pragma Import (C, Clear, "gdk_window_clear");
+   pragma Import (C, Clear_Area, "gdk_window_clear_area");
+   pragma Import (C, Clear_Area_E, "gdk_window_clear_area_e");
+   pragma Import (C, Get_Events, "gdk_window_get_events");
+   pragma Import (C, Get_Geometry, "gdk_window_get_geometry");
+   pragma Import (C, Get_Parent, "gdk_window_get_parent");
+   pragma Import (C, Get_Position, "gdk_window_get_position");
+   pragma Import (C, Get_Root_Origin, "gdk_window_get_root_origin");
+   pragma Import (C, Get_Size, "gdk_window_get_size");
+   pragma Import (C, Get_Toplevel, "gdk_window_get_toplevel");
+   pragma Import (C, Get_Type, "gdk_window_get_type");
+   pragma Import (C, Hide, "gdk_window_hide");
+   pragma Import (C, Lower, "gdk_window_lower");
+   pragma Import (C, Merge_Child_Shapes, "gdk_window_merge_child_shapes");
+   pragma Import (C, Move, "gdk_window_move");
+   pragma Import (C, Move_Resize, "gdk_window_move_resize");
+   pragma Import (C, Gdk_Raise, "gdk_window_raise");
+   pragma Import (C, Ref, "gdk_window_ref");
+   pragma Import (C, Reparent, "gdk_window_reparent");
+   pragma Import (C, Resize, "gdk_window_resize");
+   pragma Import (C, Set_Child_Shapes, "gdk_window_set_child_shapes");
+   pragma Import (C, Set_Decorations, "gdk_window_set_decorations");
+   pragma Import (C, Set_Events, "gdk_window_set_events");
+   pragma Import (C, Set_Functions, "gdk_window_set_functions");
+   pragma Import (C, Set_Geometry_Hints, "gdk_window_set_geometry_hints");
+   pragma Import (C, Set_Group, "gdk_window_set_group");
+   pragma Import (C, Set_Hints, "gdk_window_set_hints");
+   pragma Import (C, Set_Transient_For, "gdk_window_set_transient_for");
+   pragma Import (C, Show, "gdk_window_show");
+   pragma Import (C, Unref, "gdk_window_unref");
+   pragma Import (C, Withdraw, "gdk_window_withdraw");
+   pragma Import (C, Set_Cursor, "gdk_window_set_cursor");
+   pragma Import (C, Get_Colormap, "gdk_window_get_colormap");
+   pragma Import (C, Get_Visual, "gdk_window_get_visual");
+   pragma Import (C, Set_Colormap, "gdk_window_set_colormap");
 end Gdk.Window;

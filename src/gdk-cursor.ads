@@ -31,8 +31,7 @@ with Gdk.Types;
 
 package Gdk.Cursor is
 
-   type Gdk_Cursor is new Root_Type with private;
-
+   type Gdk_Cursor is new Gdk.C_Proxy;
    Null_Cursor : constant Gdk_Cursor;
 
 
@@ -47,9 +46,6 @@ package Gdk.Cursor is
    --  to prevent any circular dependency.
 
 private
-
-   type Gdk_Cursor is new Root_Type with null record;
-
-   Null_Cursor : constant Gdk_Cursor := (Ptr => System.Null_Address);
-
+   Null_Cursor : constant Gdk_Cursor := null;
+   pragma Import (C, Destroy, "gdk_cursor_destroy");
 end Gdk.Cursor;

@@ -62,23 +62,28 @@ with Gdk.Rectangle;
 with Gtk.Enums;
 with Gtk.Misc;
 with Gtk.Widget;
+with Unchecked_Conversion;
 
 package Gtk.Extra.Plot is
 
    type Gtk_Plot_Record is new Gtk.Misc.Gtk_Misc_Record with private;
    type Gtk_Plot is access all Gtk_Plot_Record'Class;
 
-   type Gtk_Plot_Data is new System.Address;
-   type Gtk_Plot_Axis is private;
-   type Gtk_Plot_Text is new System.Address;
+   type Gtk_Plot_Data is new Gdk.C_Proxy;
+   type Gtk_Plot_Axis is new Gdk.C_Proxy;
+   type Gtk_Plot_Text is new Gdk.C_Proxy;
 
    --  <doc_ignore>
-   function Convert (S : System.Address) return Gtk_Plot_Data;
-   function Convert (S : Gtk_Plot_Data) return System.Address;
+   function Convert is new Unchecked_Conversion
+     (Gtk_Plot_Data, System.Address);
+   function Convert is new Unchecked_Conversion
+     (System.Address, Gtk_Plot_Data);
    package Datasets_List is new Glib.Glist.Generic_List (Gtk_Plot_Data);
 
-   function Convert (S : System.Address) return Gtk_Plot_Text;
-   function Convert (S : Gtk_Plot_Text) return System.Address;
+   function Convert is new Unchecked_Conversion
+     (Gtk_Plot_Text, System.Address);
+   function Convert is new Unchecked_Conversion
+     (System.Address, Gtk_Plot_Text);
    package Texts_List is new Glib.Glist.Generic_List (Gtk_Plot_Text);
 
    --  </doc_ignore>
@@ -109,7 +114,7 @@ package Gtk.Extra.Plot is
                           Error : access Boolean)
                          return Gdouble;
    function Generic_Plot_Function (Plot  : System.Address;
-                                   Set   : System.Address;
+                                   Set   : Gtk_Plot_Data;
                                    X     : Gdouble;
                                    Error : access Gboolean)
                                   return Gdouble;
@@ -118,7 +123,7 @@ package Gtk.Extra.Plot is
 
 
    type Plot_Function is access function (Plot  : System.Address;
-                                          Set   : System.Address;
+                                          Set   : Gtk_Plot_Data;
                                           X     : Gdouble;
                                           Error : access Gboolean)
                                          return Gdouble;
@@ -1019,7 +1024,6 @@ private
    type Gtk_Plot_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
    pragma Import (C, Get_Type, "gtk_plot_get_type");
 
-   type Gtk_Plot_Axis is new System.Address;
    for Plot_Label_Pos use (Label_None   => 0,
                            Label_Left   => 1,
                            Label_Right  => 2,

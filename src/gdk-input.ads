@@ -48,4 +48,9 @@ package Gdk.Input is
    --    times. This might give a finer granularity than getting the
    --    Motion_Events themselves, and might be more efficient.
    --    Not supporting by all XServers though.
+
+private
+   pragma Import (C, Init, "gdk_input_init");
+   pragma Import (C, Gdk_Exit, "gdk_input_exit");
+   pragma Import (C, Set_Extension_Events, "gdk_input_set_extension_events");
 end Gdk.Input;

@@ -36,74 +36,57 @@ package body Gdk.Color_Context is
    procedure Add_Palette (CC           : in  Gdk_Color_Context;
                           Palette      : in  Gdk.Color.Gdk_Color_Array;
                           Palette_Size : out Glib.Gint) is
-      function Internal  (CC          : in System.Address;
+      function Internal  (CC          : in Gdk_Color_Context;
                           Palette     : in System.Address;
                           Num_Palette : in Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gdk_color_context_add_palette");
    begin
-      Palette_Size := Internal (CC => Get_Object (CC),
+      Palette_Size := Internal (CC => CC,
                                 Palette => Palette'Address,
                                 Num_Palette => Palette'Length);
    end Add_Palette;
-
 
    ------------
    --  Free  --
    ------------
 
    procedure Free (CC : in out Gdk_Color_Context) is
-      procedure Internal (CC : in System.Address);
+      procedure Internal (CC : in Gdk_Color_Context);
       pragma Import (C, Internal, "gdk_color_context_free");
    begin
-      Internal (Get_Object (CC));
-      Set_Object (CC, System.Null_Address);
+      Internal (CC);
+      CC := Null_Color_Context;
    end Free;
-
-
-   -------------------
-   --  Free_Dither  --
-   -------------------
-
-   procedure Free_Dither (CC : in out Gdk_Color_Context) is
-      procedure Internal (CC : in System.Address);
-      pragma Import (C, Internal, "gdk_color_context_free_dither");
-   begin
-      Internal (Get_Object (CC));
-   end Free_Dither;
 
    ---------------
    --  Gdk_New  --
    ---------------
 
    procedure Gdk_New (CC       :    out Gdk_Color_Context;
-                      Visual   : in     Gdk.Visual.Gdk_Visual'Class;
-                      Colormap : in     Gdk.Color.Gdk_Colormap'Class) is
-      function Internal (Visual, Colormap : in System.Address)
-        return System.Address;
+                      Visual   : in     Gdk.Visual.Gdk_Visual;
+                      Colormap : in     Gdk.Color.Gdk_Colormap) is
+      function Internal (Visual   : in Gdk.Visual.Gdk_Visual;
+                         Colormap : in Gdk.Color.Gdk_Colormap)
+                        return Gdk_Color_Context;
       pragma Import (C, Internal, "gdk_color_context_new");
    begin
-      Set_Object (CC, Internal (Get_Object (Visual),
-                                Get_Object (Colormap)));
+      CC := Internal (Visual, Colormap);
    end Gdk_New;
-
 
    --------------------
    --  Gdk_New_Mono  --
    --------------------
 
    procedure Gdk_New_Mono (CC       :    out Gdk_Color_Context;
-                           Visual   : in     Gdk.Visual.Gdk_Visual'Class;
-                           Colormap : in     Gdk.Color.Gdk_Colormap'Class) is
-      function Internal (Visual, Colormap : in System.Address)
-                         return System.Address;
+                           Visual   : in     Gdk.Visual.Gdk_Visual;
+                           Colormap : in     Gdk.Color.Gdk_Colormap) is
+      function Internal (Visual : in Gdk.Visual.Gdk_Visual;
+                         Colormap : in Gdk.Color.Gdk_Colormap)
+                         return Gdk_Color_Context;
       pragma Import (C, Internal, "gdk_color_context_new_mono");
-      Result : Gdk_Color_Context;
    begin
-      Set_Object (Result, Internal (Get_Object (Visual),
-                                    Get_Object (Colormap)));
-      CC := Result;
+      CC := Internal (Visual, Colormap);
    end Gdk_New_Mono;
-
 
    ------------------------------
    --  Get_Index_From_Palette  --
@@ -113,7 +96,7 @@ package body Gdk.Color_Context is
                                      Color  : in out Color_Description;
                                      Failed :    out Boolean;
                                      Index  :    out Glib.Gint) is
-      function Internal (CC : in System.Address;
+      function Internal (CC : in Gdk_Color_Context;
                          Red : in System.Address;
                          Green : in System.Address;
                          Blue : in System.Address;
@@ -125,7 +108,7 @@ package body Gdk.Color_Context is
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
    begin
-      Index := Glib.Gint (Internal (CC => Get_Object (CC),
+      Index := Glib.Gint (Internal (CC => CC,
                                     Red => Col.Red'Address,
                                     Green => Col.Green'Address,
                                     Blue => Col.Blue'Address,
@@ -133,7 +116,6 @@ package body Gdk.Color_Context is
       Color := Col;
       Failed := Glib.To_Boolean (Local_Failed);
    end Get_Index_From_Palette;
-
 
    -----------------
    --  Get_Pixel  --
@@ -143,21 +125,20 @@ package body Gdk.Color_Context is
                         Color  : in     Color_Description;
                         Failed :    out Boolean;
                         Pixel  :    out Glib.Gulong) is
-      function Internal (CC : in System.Address;
+      function Internal (CC : in Gdk_Color_Context;
                          Red, Green, Blue : in Glib.Gushort;
                          Failed : in System.Address)
                          return Glib.Gulong;
       pragma Import (C, Internal, "gdk_color_context_get_pixel");
       Result : Integer;
    begin
-      Pixel := Internal (CC => Get_Object (CC),
+      Pixel := Internal (CC => CC,
                          Red => Color.Red,
                          Green => Color.Green,
                          Blue => Color.Blue,
                          Failed => Result'Address);
       Failed := Result /= 0;
    end Get_Pixel;
-
 
    ------------------------------
    --  Get_Pixel_From_Palette  --
@@ -167,7 +148,7 @@ package body Gdk.Color_Context is
                                      Color  : in out Color_Description;
                                      Failed :    out Boolean;
                                      Pixel  :    out Glib.Gulong) is
-      function Internal (CC : in System.Address;
+      function Internal (CC : in Gdk_Color_Context;
                          Red : in System.Address;
                          Green : in System.Address;
                          Blue : in System.Address;
@@ -175,14 +156,13 @@ package body Gdk.Color_Context is
       pragma Import (C, Internal, "gdk_color_context_get_pixel_from_palette");
       Local_Failed : aliased Glib.Gint;
    begin
-      Pixel := Internal (CC => Get_Object (CC),
+      Pixel := Internal (CC => CC,
                          Red => Color.Red'Address,
                          Green => Color.Green'Address,
                          Blue => Color.Blue'Address,
                          Failed => Local_Failed'Address);
       Failed := Glib.To_Boolean (Local_Failed);
    end Get_Pixel_From_Palette;
-
 
    ------------------
    --  Get_Pixels  --
@@ -191,7 +171,7 @@ package body Gdk.Color_Context is
    function Get_Pixels (CC     : in     Gdk_Color_Context;
                         Colors : in     Color_Description_Array)
                         return Glib.Gulong_Array is
-      procedure Internal (CC         : in     System.Address;
+      procedure Internal (CC         : in     Gdk_Color_Context;
                           Reds       : in     Glib.Gushort_Array;
                           Greens     : in     Glib.Gushort_Array;
                           Blues      : in     Glib.Gushort_Array;
@@ -215,18 +195,15 @@ package body Gdk.Color_Context is
          Blues (Index) := Colors (Index).Blue;
       end loop;
 
-      Internal (CC => Get_Object (CC),
+      Internal (CC => CC,
                 Reds => Reds,
                 Greens => Greens,
                 Blues => Blues,
                 Ncolors => Colors'Length,
                 Colors => Result,
                 Nallocated => Nallocated);
-
       return Result (1 .. Natural (Nallocated));
-
    end Get_Pixels;
-
 
    ------------------------------
    --  Get_Pixels_Incremental  --
@@ -234,8 +211,9 @@ package body Gdk.Color_Context is
 
    procedure Get_Pixels_Incremental
      (CC   : in     Gdk_Color_Context;
-      Data : in out Get_Pixel_Incremental_Data) is
-      procedure Internal (CC         : in     System.Address;
+      Data : in out Get_Pixel_Incremental_Data)
+   is
+      procedure Internal (CC         : in     Gdk_Color_Context;
                           Reds       : in     Glib.Gushort_Array;
                           Greens     : in     Glib.Gushort_Array;
                           Blues      : in     Glib.Gushort_Array;
@@ -258,7 +236,7 @@ package body Gdk.Color_Context is
          Used (Index) := Glib.To_Gint (Data.Used (Index));
       end loop;
 
-      Internal (CC => Get_Object (CC),
+      Internal (CC => CC,
                 Reds => Reds,
                 Greens => Greens,
                 Blues => Blues,
@@ -268,35 +246,7 @@ package body Gdk.Color_Context is
                 Nallocated => Nallocated);
 
       Data.Number_Of_Colors_Allocated := Natural (Nallocated);
-
    end Get_Pixels_Incremental;
-
-
-   -------------------
-   --  Init_Dither  --
-   -------------------
-
-   procedure Init_Dither (CC : in out Gdk_Color_Context) is
-      procedure Internal (CC : in System.Address);
-      pragma Import (C, Internal, "gdk_color_context_init_dither");
-   begin
-      Internal (Get_Object (CC));
-   end Init_Dither;
-
-
-   -------------------
-   --  Query_Color  --
-   -------------------
-
-   procedure Query_Color (CC    : in     Gdk_Color_Context;
-                          Color :    out Gdk.Color.Gdk_Color) is
-      procedure Internal (CC    : in     System.Address;
-                          Color :    out Gdk.Color.Gdk_Color);
-      pragma Import (C, Internal, "gdk_color_context_query_color");
-   begin
-      Internal (Get_Object (CC), Color);
-   end Query_Color;
-
 
    --------------------
    --  Query_Colors  --
@@ -304,12 +254,12 @@ package body Gdk.Color_Context is
 
    procedure Query_Colors (CC     : in     Gdk_Color_Context;
                            Colors : in out Gdk.Color.Gdk_Color_Array) is
-      procedure Internal (CC         : in     System.Address;
+      procedure Internal (CC         : in     Gdk_Color_Context;
                           Colors     : in out Gdk.Color.Gdk_Color_Array;
                           Num_Colors : in     Glib.Gint);
       pragma Import (C, Internal, "gdk_color_context_query_colors");
    begin
-      Internal (Get_Object (CC), Colors, Colors'Length);
+      Internal (CC, Colors, Colors'Length);
    end Query_Colors;
 
 end Gdk.Color_Context;

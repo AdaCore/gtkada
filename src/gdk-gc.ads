@@ -56,15 +56,17 @@ with Gdk.Window;
 
 package Gdk.GC is
 
-   type Gdk_GC is new Root_Type with private;
-   type Gdk_GC_Values is new Root_Type with private;
+   type Gdk_GC is new Gdk.C_Proxy;
+   type Gdk_GC_Values is new Gdk.C_Proxy;
+   Null_GC : constant Gdk_GC;
+   Null_GC_Values : constant Gdk_GC_Values;
 
    ------------
    -- Gdk_GC --
    ------------
 
    procedure Gdk_New (GC     :    out Gdk_GC;
-                      Window : in     Gdk.Window.Gdk_Window'Class);
+                      Window : in     Gdk.Window.Gdk_Window);
    --  Create a new graphic context.
    --  The window must have been realized first (so that it is associated
    --  with some ressources on the Xserver).
@@ -73,8 +75,8 @@ package Gdk.GC is
    --  See the manual page for XCreateGC on Unix systems for more information.
 
    procedure Gdk_New (GC          :    out Gdk_GC;
-                      Window      : in     Gdk.Window.Gdk_Window'Class;
-                      Values      : in     Gdk_GC_Values'Class;
+                      Window      : in     Gdk.Window.Gdk_Window;
+                      Values      : in     Gdk_GC_Values;
                       Values_Mask : in     Types.Gdk_GC_Values_Mask);
    --  Create a new graphic context.
    --  It is directly created with the values set in Values, and whose
@@ -88,20 +90,21 @@ package Gdk.GC is
    --  Graphic contexts are never freed automatically by GtkAda, this is
    --  the user responsability to do so.
 
-   procedure Ref (GC : in out Gdk_GC);
+   procedure Ref (GC : in Gdk_GC);
    --  Increment the reference counting for the graphic context.
    --  You should usually not have to use it.
 
-   procedure Unref (GC : in out Gdk_GC);
+   procedure Unref (GC : in Gdk_GC);
    --  Decrement the reference counting for the graphic context.
    --  When this reaches 0, the graphic context is destroyed.
 
-   procedure Get_Values (GC     : in     Gdk_GC'Class;
-                         Values :    out Gdk_GC_Values);
+   procedure Get_Values (GC     : in Gdk_GC;
+                         Values : in Gdk_GC_Values);
    --  Get the values set in the GC.
    --  This copies the values from the server to client, allowing faster
    --  modifications. Values can then be copied back to the server by
    --  creating a new graphic context with the function Gdk_New above.
+   --  Values should have been allocated first with a call to Gdk_New.
 
    procedure Set_Foreground (GC    : in Gdk_GC;
                              Color : in Gdk.Color.Gdk_Color);
@@ -113,7 +116,7 @@ package Gdk.GC is
    --  Set the background color for the graphic context.
 
    procedure Set_Font (GC   : in Gdk_GC;
-                       Font : in Gdk.Font.Gdk_Font'Class);
+                       Font : in Gdk.Font.Gdk_Font);
    --  Set the font used by the graphic context.
    --  This font is used by the function Gdk.Drawable.Draw_Text.
 
@@ -163,7 +166,7 @@ package Gdk.GC is
    --  with Set_Clip_Origin.
 
    procedure Set_Clip_Region (GC     : in Gdk_GC;
-                              Region : in Gdk.Region.Gdk_Region'Class);
+                              Region : in Gdk.Region.Gdk_Region);
    --  Define a clip region on the screen.
    --  This is just like Set_Clip_Rectangle, except that a region is a more
    --  complex region, that can be the intersection or union of multiple
@@ -214,8 +217,8 @@ package Gdk.GC is
    --  this is equivalent to giving the array concatenated with itself.
    --  Dash_Offset specifies the phase of the pattern to start with.
 
-   procedure Copy (Dst_GC :    out Gdk_GC;
-                   Src_GC : in     Gdk_GC);
+   procedure Copy (Dst_GC : in Gdk_GC;
+                   Src_GC : in Gdk_GC);
    --  Copy a Src_GC to Dst_GC.
 
 
@@ -228,7 +231,7 @@ package Gdk.GC is
    --  Note that this function allocates a C structure, and thus needs to
    --  be freed with a call to Free below.
 
-   procedure Free (Values : in out Gdk_GC_Values);
+   procedure Free (Values : in Gdk_GC_Values);
    --  Free the C structure associated with Values.
 
    procedure Set_Foreground (Values : in Gdk_GC_Values;
@@ -240,7 +243,7 @@ package Gdk.GC is
    --  Same as Set_Background, but on the client side
 
    procedure Set_Font (Values : in Gdk_GC_Values;
-                       Font   : in Gdk.Font.Gdk_Font'Class);
+                       Font   : in Gdk.Font.Gdk_Font);
    --  Same as Set_Font, but on the client side
 
    procedure Set_Function (Values : in Gdk_GC_Values;
@@ -275,6 +278,12 @@ package Gdk.GC is
    --  Same as Set_Line_Attributes, but on the client side
 
 private
-   type Gdk_GC is new Root_Type with null record;
-   type Gdk_GC_Values is new Root_Type with null record;
+   Null_GC : constant Gdk_GC := null;
+   Null_GC_Values : constant Gdk_GC_Values := null;
+   pragma Import (C, Copy, "gdk_gc_copy");
+   pragma Import (C, Destroy, "gdk_gc_destroy");
+   pragma Import (C, Free, "ada_gdk_gc_free_values");
+   pragma Import (C, Get_Values, "gdk_gc_get_values");
+   pragma Import (C, Ref, "gdk_gc_ref");
+   pragma Import (C, Unref, "gdk_gc_unref");
 end Gdk.GC;

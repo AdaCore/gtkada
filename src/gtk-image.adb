@@ -40,17 +40,17 @@ package body Gtk.Image is
 
    procedure Get
      (Image : access Gtk_Image_Record;
-      Val   : in Gdk.Image.Gdk_Image'Class;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class)
+      Val   : in Gdk.Image.Gdk_Image;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
         (Image : in System.Address;
-         Val   : in System.Address;
-         Mask  : in System.Address);
+         Val   : in Gdk.Image.Gdk_Image;
+         Mask  : in Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_image_get");
 
    begin
-      Internal (Get_Object (Image), Get_Object (Val), Get_Object (Mask));
+      Internal (Get_Object (Image), Val, Mask);
    end Get;
 
    -------------
@@ -59,8 +59,8 @@ package body Gtk.Image is
 
    procedure Gtk_New
      (Image : out Gtk_Image;
-      Val   : in Gdk.Image.Gdk_Image'Class;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class) is
+      Val   : in Gdk.Image.Gdk_Image;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap) is
    begin
       Image := new Gtk_Image_Record;
       Initialize (Image, Val, Mask);
@@ -72,17 +72,17 @@ package body Gtk.Image is
 
    procedure Initialize
      (Image : access Gtk_Image_Record'Class;
-      Val    : in Gdk.Image.Gdk_Image'Class;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
+      Val    : in Gdk.Image.Gdk_Image;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap)
    is
       function Internal
-        (Val    : in System.Address;
-         Mask   : in System.Address)
+        (Val    : in Gdk.Image.Gdk_Image;
+         Mask   : in Gdk.Bitmap.Gdk_Bitmap)
          return System.Address;
       pragma Import (C, Internal, "gtk_image_new");
 
    begin
-      Set_Object (Image, Internal (Get_Object (Val), Get_Object (Mask)));
+      Set_Object (Image, Internal (Val, Mask));
       Initialize_User_Data (Image);
    end Initialize;
 
@@ -92,17 +92,17 @@ package body Gtk.Image is
 
    procedure Set
      (Image : access Gtk_Image_Record;
-      Val   : in Gdk.Image.Gdk_Image'Class;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class)
+      Val   : in Gdk.Image.Gdk_Image;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
         (Image : in System.Address;
-         Val   : in System.Address;
-         Mask  : in System.Address);
+         Val   : in Gdk.Image.Gdk_Image;
+         Mask  : in Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_image_set");
 
    begin
-      Internal (Get_Object (Image), Get_Object (Val), Get_Object (Mask));
+      Internal (Get_Object (Image), Val, Mask);
    end Set;
 
    --------------

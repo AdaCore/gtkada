@@ -50,10 +50,10 @@ package body Gdk.Visual is
    --------------
 
    procedure Get_Best (Visual : out Gdk_Visual) is
-      function Internal return System.Address;
+      function Internal return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_system");
    begin
-      Set_Object (Visual, Internal);
+      Visual := Internal;
    end Get_Best;
 
    --------------
@@ -62,10 +62,10 @@ package body Gdk.Visual is
 
    procedure Get_Best (Visual :    out Gdk_Visual;
                        Depth  : in     Gint) is
-      function Internal (Depth : in Gint) return System.Address;
+      function Internal (Depth : in Gint) return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_best_with_depth");
    begin
-      Set_Object (Visual, Internal (Depth));
+      Visual := Internal (Depth);
    end Get_Best;
 
    --------------
@@ -75,10 +75,10 @@ package body Gdk.Visual is
    procedure Get_Best (Visual      :    out Gdk_Visual;
                        Visual_Type : in     Types.Gdk_Visual_Type) is
       function Internal (Visual_Type : in Types.Gdk_Visual_Type)
-                         return System.Address;
+                         return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_best_with_type");
    begin
-      Set_Object (Visual, Internal (Visual_Type));
+      Visual := Internal (Visual_Type);
    end Get_Best;
 
    --------------
@@ -90,10 +90,10 @@ package body Gdk.Visual is
                        Visual_Type : in     Types.Gdk_Visual_Type) is
       function Internal (Depth       : in Gint;
                          Visual_Type : in Types.Gdk_Visual_Type)
-                         return System.Address;
+                         return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_best_with_both");
    begin
-      Set_Object (Visual, Internal (Depth, Visual_Type));
+      Visual := Internal (Depth, Visual_Type);
    end Get_Best;
 
    ----------------
@@ -101,27 +101,15 @@ package body Gdk.Visual is
    ----------------
 
    procedure Get_System (Visual : out Gdk_Visual) is
-      function Internal return System.Address;
+      function Internal return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_system");
    begin
-      Set_Object (Visual, Internal);
+      Visual := Internal;
    end Get_System;
 
    ------------------
    -- List_Visuals --
    ------------------
-
-   function Convert (V : in Gdk_Visual'Class) return System.Address is
-   begin
-      return Get_Object (V);
-   end Convert;
-
-   function Convert (V : in System.Address) return Gdk_Visual'Class is
-      Result : Gdk_Visual;
-   begin
-      Set_Object (Result, V);
-      return Result;
-   end Convert;
 
    function List_Visuals return Gdk_Visual_List.Glist is
       function Internal return System.Address;

@@ -43,18 +43,16 @@ package body Gtk.Pixmap is
 
    procedure Get
       (Pixmap : access Gtk_Pixmap_Record;
-       Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
+       Val    : in Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
          (Pixmap : in System.Address;
-          Val    : in System.Address;
-          Mask   : in System.Address);
+          Val    : in Gdk.Pixmap.Gdk_Pixmap;
+          Mask   : in Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_pixmap_get");
    begin
-      Internal (Get_Object (Pixmap),
-                Get_Object (Val),
-                Get_Object (Mask));
+      Internal (Get_Object (Pixmap), Val, Mask);
    end Get;
 
    --------------
@@ -62,15 +60,13 @@ package body Gtk.Pixmap is
    --------------
 
    function Get_Mask (Widget : access Gtk_Pixmap_Record)
-                      return      Gdk.Bitmap.Gdk_Bitmap'Class
+                      return      Gdk.Bitmap.Gdk_Bitmap
    is
       function Internal (Widget : in System.Address)
-                         return      System.Address;
+                         return      Gdk.Bitmap.Gdk_Bitmap;
       pragma Import (C, Internal, "ada_pixmap_get_mask");
-      Tmp : Gdk.Bitmap.Gdk_Bitmap;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Widget)));
-      return Tmp;
+      return Internal (Get_Object (Widget));
    end Get_Mask;
 
    ----------------
@@ -78,15 +74,13 @@ package body Gtk.Pixmap is
    ----------------
 
    function Get_Pixmap (Widget : access Gtk_Pixmap_Record)
-                        return      Gdk.Pixmap.Gdk_Pixmap'Class
+                        return      Gdk.Pixmap.Gdk_Pixmap
    is
       function Internal (Widget : in System.Address)
-                         return      System.Address;
+                         return      Gdk.Pixmap.Gdk_Pixmap;
       pragma Import (C, Internal, "ada_pixmap_get_pixmap");
-      Tmp : Gdk.Pixmap.Gdk_Pixmap;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Widget)));
-      return Tmp;
+      return Internal (Get_Object (Widget));
    end Get_Pixmap;
 
    -------------
@@ -95,8 +89,8 @@ package body Gtk.Pixmap is
 
    procedure Gtk_New
       (Widget : out Gtk_Pixmap;
-       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class) is
+       Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap) is
    begin
       Widget := new Gtk_Pixmap_Record;
       Initialize (Widget, Pixmap, Mask);
@@ -108,17 +102,16 @@ package body Gtk.Pixmap is
 
    procedure Initialize
       (Widget : access Gtk_Pixmap_Record'Class;
-       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
+       Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap)
    is
       function Internal
-         (Pixmap : in System.Address;
-          Mask   : in System.Address)
+         (Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
+          Mask   : in Gdk.Bitmap.Gdk_Bitmap)
           return      System.Address;
       pragma Import (C, Internal, "gtk_pixmap_new");
    begin
-      Set_Object (Widget, Internal (Get_Object (Pixmap),
-                                    Get_Object (Mask)));
+      Set_Object (Widget, Internal (Pixmap, Mask));
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -128,18 +121,16 @@ package body Gtk.Pixmap is
 
    procedure Set
       (Pixmap : access Gtk_Pixmap_Record;
-       Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
+       Val    : in Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
          (Pixmap : in System.Address;
-          Val    : in System.Address;
-          Mask   : in System.Address);
+          Val    : in Gdk.Pixmap.Gdk_Pixmap;
+          Mask   : in Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_pixmap_set");
    begin
-      Internal (Get_Object (Pixmap),
-                Get_Object (Val),
-                Get_Object (Mask));
+      Internal (Get_Object (Pixmap), Val, Mask);
    end Set;
 
    -------------------

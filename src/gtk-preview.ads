@@ -56,17 +56,17 @@ package Gtk.Preview is
    --  for a color preview, Data'Length = W * 3  (for R, G ,B)
    --  for a grey preview, Data'Length = W;
 
-   function Get_Cmap return Gdk.Color.Gdk_Colormap'Class;
+   function Get_Cmap return Gdk.Color.Gdk_Colormap;
    function Get_Info return Gtk_Preview_Info;
-   function Get_Visual return Gdk.Visual.Gdk_Visual'Class;
+   function Get_Visual return Gdk.Visual.Gdk_Visual;
    procedure Gtk_New (Preview  : out Gtk_Preview;
                       The_Type : in Gtk_Preview_Type);
    procedure Initialize (Preview  : access Gtk_Preview_Record'Class;
                          The_Type : in Gtk_Preview_Type);
    procedure Put
      (Preview : access Gtk_Preview_Record;
-      Window  : in Gdk.Window.Gdk_Window'Class;
-      Gc      : in Gdk.GC.Gdk_GC'Class;
+      Window  : in Gdk.Window.Gdk_Window;
+      Gc      : in Gdk.GC.Gdk_GC;
       Srcx    : in Gint;
       Srcy    : in Gint;
       Destx   : in Gint;
@@ -106,5 +106,6 @@ private
      with null record;
    type Gtk_Preview_Info_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
-
+   pragma Import (C, Get_Visual, "gtk_preview_get_visual");
+   pragma Import (C, Get_Cmap, "gtk_preview_get_cmap");
 end Gtk.Preview;

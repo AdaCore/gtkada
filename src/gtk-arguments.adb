@@ -121,23 +121,6 @@ package body Gtk.Arguments is
       return To_Object (Get_Nth (Args, Num));
    end To_Object;
 
-   --------------------
-   -- To_Object_Type --
-   --------------------
-
-   function To_Object_Type (C : System.Address) return Glib.Object_Type is
-      Object : Glib.Object_Type;
-   begin
-      Set_Object (Object, C);
-      return Object;
-   end To_Object_Type;
-
-   function To_Object_Type
-     (Args : Gtk_Args; Num : Positive) return Glib.Object_Type is
-   begin
-      return To_Object_Type (Get_Nth (Args, Num));
-   end To_Object_Type;
-
    ------------------
    -- To_Root_Type --
    ------------------
@@ -158,6 +141,22 @@ package body Gtk.Arguments is
    begin
       return To_Root_Type (Get_Nth (Args, Num));
    end To_Root_Type;
+
+   ----------------
+   -- To_C_Proxy --
+   ----------------
+
+   function To_C_Proxy (C : System.Address) return Gdk.C_Proxy is
+      function Internal is new Unchecked_Conversion
+        (System.Address, Gdk.C_Proxy);
+   begin
+      return Internal (C);
+   end To_C_Proxy;
+
+   function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy is
+   begin
+      return To_C_Proxy (Get_Nth (Args, Num));
+   end To_C_Proxy;
 
    --------------
    -- To_Event --

@@ -103,35 +103,6 @@ package body Gdk.Pixbuf is
                        Red, Green, Blue);
    end Add_Alpha;
 
-   ----------------------------
-   -- Render_Threshold_Alpha --
-   ----------------------------
-
-   procedure Render_Threshold_Alpha (Pixbuf : in Gdk_Pixbuf;
-                                     Bitmap : in Gdk.Bitmap.Gdk_Bitmap;
-                                     Src_X  : in Gint;
-                                     Src_Y  : in Gint;
-                                     Dest_X : in Gint;
-                                     Dest_Y : in Gint;
-                                     Width  : in Gint;
-                                     Height : in Gint;
-                                     Alpha_Threshold : in Gint)
-   is
-      procedure Internal (Pixbuf : in Gdk_Pixbuf;
-                          Bitmap : in System.Address;
-                          Src_X  : in Gint;
-                          Src_Y  : in Gint;
-                          Dest_X : in Gint;
-                          Dest_Y : in Gint;
-                          Width  : in Gint;
-                          Height : in Gint;
-                          Alpha_Threshold : in Gint);
-      pragma Import (C, Internal, "gdk_pixbuf_render_threshold_alpha");
-   begin
-      Internal (Pixbuf, Get_Object (Bitmap), Src_X, Src_Y,
-                Dest_X, Dest_Y, Width, Height, Alpha_Threshold);
-   end Render_Threshold_Alpha;
-
    ------------------------
    -- Render_To_Drawable --
    ------------------------
@@ -151,8 +122,8 @@ package body Gdk.Pixbuf is
       Y_Dither : in Gint := 0)
    is
       procedure Internal (Pixbuf   : in Gdk_Pixbuf;
-                          Drawable : in System.Address;
-                          Gc       : in System.Address;
+                          Drawable : in Gdk.Drawable.Gdk_Drawable;
+                          Gc       : in Gdk.GC.Gdk_GC;
                           Src_X    : in Gint;
                           Src_Y    : in Gint;
                           Dest_X   : in Gint;
@@ -164,7 +135,7 @@ package body Gdk.Pixbuf is
                           Y_Dither : in Gint);
       pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable");
    begin
-      Internal (Pixbuf, Get_Object (Drawable), Get_Object (Gc),
+      Internal (Pixbuf, Drawable, Gc,
                 Src_X, Src_Y, Dest_X, Dest_Y, Width, Height,
                 Gdk.Rgb.Gdk_Rgb_Dither'Pos (Dither),
                 X_Dither, Y_Dither);
@@ -189,7 +160,7 @@ package body Gdk.Pixbuf is
       Y_Dither        : in Gint := 0)
    is
       procedure Internal (Pixbuf          : in Gdk_Pixbuf;
-                          Drawable        : in System.Address;
+                          Drawable        : in Gdk.Drawable.Gdk_Drawable;
                           Src_X           : in Gint;
                           Src_Y           : in Gint;
                           Dest_X          : in Gint;
@@ -202,42 +173,11 @@ package body Gdk.Pixbuf is
                           Y_Dither        : in Gint);
       pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable_alpha");
    begin
-      Internal (Pixbuf, Get_Object (Drawable),
+      Internal (Pixbuf, Drawable,
                 Src_X, Src_Y, Dest_X, Dest_Y, Width, Height,
                 Alpha_Threshold,
                 Gdk.Rgb.Gdk_Rgb_Dither'Pos (Dither),
                 X_Dither, Y_Dither);
    end Render_To_Drawable_Alpha;
-
-   -----------------------
-   -- Get_From_Drawable --
-   -----------------------
-
-   function Get_From_Drawable (Dest   : in Gdk_Pixbuf;
-                               Src    : in Gdk.Drawable.Gdk_Drawable;
-                               Cmap   : in Gdk.Color.Gdk_Colormap;
-                               Src_X  : in Gint;
-                               Src_Y  : in Gint;
-                               Dest_X : in Gint;
-                               Dest_Y : in Gint;
-                               Width  : in Gint;
-                               Height : in Gint)
-                              return Gdk_Pixbuf
-   is
-      function Internal (Dest   : in Gdk_Pixbuf;
-                         Src    : in System.Address;
-                         Cmap   : in System.Address;
-                         Src_X  : in Gint;
-                         Src_Y  : in Gint;
-                         Dest_X : in Gint;
-                         Dest_Y : in Gint;
-                         Width  : in Gint;
-                         Height : in Gint)
-                        return Gdk_Pixbuf;
-      pragma Import (C, Internal, "gdk_pixbuf_get_from_drawable");
-   begin
-      return Internal (Dest, Get_Object (Src), Get_Object (Cmap),
-                       Src_X, Src_Y, Dest_X, Dest_Y, Width, Height);
-   end Get_From_Drawable;
 
 end Gdk.Pixbuf;

@@ -33,7 +33,8 @@ with Glib;
 
 package Gdk.Color_Context is
 
-   type Gdk_Color_Context is new Root_Type with private;
+   type Gdk_Color_Context is new Gdk.C_Proxy;
+   Null_Color_Context : constant Gdk_Color_Context;
 
    type Color_Description is
       record
@@ -47,12 +48,12 @@ package Gdk.Color_Context is
 
 
    procedure Gdk_New (CC       :    out Gdk_Color_Context;
-                      Visual   : in     Gdk.Visual.Gdk_Visual'Class;
-                      Colormap : in     Gdk.Color.Gdk_Colormap'Class);
+                      Visual   : in     Gdk.Visual.Gdk_Visual;
+                      Colormap : in     Gdk.Color.Gdk_Colormap);
 
    procedure Gdk_New_Mono (CC       :    out Gdk_Color_Context;
-                           Visual   : in     Gdk.Visual.Gdk_Visual'Class;
-                           Colormap : in     Gdk.Color.Gdk_Colormap'Class);
+                           Visual   : in     Gdk.Visual.Gdk_Visual;
+                           Colormap : in     Gdk.Color.Gdk_Colormap);
 
    procedure Free (CC : in out Gdk_Color_Context);
 
@@ -104,9 +105,9 @@ package Gdk.Color_Context is
    --  in the Color_Context palette. It can be equal or less than the
    --  length of the Palette array.
 
-   procedure Init_Dither (CC : in out Gdk_Color_Context);
+   procedure Init_Dither (CC : in Gdk_Color_Context);
 
-   procedure Free_Dither (CC : in out Gdk_Color_Context);
+   procedure Free_Dither (CC : in Gdk_Color_Context);
 
    procedure Get_Pixel_From_Palette (CC     : in     Gdk_Color_Context;
                                      Color  : in out Color_Description;
@@ -122,7 +123,8 @@ package Gdk.Color_Context is
    --  a Gint, which seems more reasonable to me. So, let's return a Gint.
 
 private
-
-   type Gdk_Color_Context is new Root_Type with null record;
-
+   Null_Color_Context : constant Gdk_Color_Context := null;
+   pragma Import (C, Free_Dither, "gdk_color_context_free_dither");
+   pragma Import (C, Init_Dither, "gdk_color_context_init_dither");
+   pragma Import (C, Query_Color, "gdk_color_context_query_color");
 end Gdk.Color_Context;

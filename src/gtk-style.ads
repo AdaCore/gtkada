@@ -39,8 +39,8 @@ with Gtk.Widget;
 
 package Gtk.Style is
 
-   type Gtk_Style is new Root_Type with private;
-   type Gtk_Style_Access is access all Gtk_Style'Class;
+   type Gtk_Style is private;
+   Null_Style : constant Gtk_Style;
 
    --  NOTE: Gtk_Style is not an access type, since there is no easy
    --  way to automatically deallocate memory when the C widget is
@@ -475,6 +475,24 @@ package Gtk.Style is
    procedure Unref (Object : in Gtk_Style);
 
 private
-   type Gtk_Style is new Root_Type with null record;
-
+   type Gtk_Style is new Gdk.C_Proxy;
+   Null_Style : constant Gtk_Style := null;
+   pragma Import (C, Attach, "gtk_style_attach");
+   pragma Import (C, Copy, "gtk_style_copy");
+   pragma Import (C, Detach, "gtk_style_detach");
+   pragma Import (C, Ref, "gtk_style_ref");
+   pragma Import (C, Unref, "gtk_style_unref");
+   pragma Import (C, Draw_Arrow, "gtk_draw_arrow");
+   pragma Import (C, Draw_Diamond, "gtk_draw_diamond");
+   pragma Import (C, Draw_Hline, "gtk_draw_hline");
+   pragma Import (C, Draw_Oval, "gtk_draw_oval");
+   pragma Import (C, Draw_Shadow, "gtk_draw_shadow");
+   pragma Import (C, Draw_Vline, "gtk_draw_vline");
+   pragma Import (C, Push_Style, "gtk_widget_push_style");
+   pragma Import (C, Set_Font, "ada_style_set_font");
+   pragma Import (C, Get_Font, "ada_style_get_font");
+   pragma Import (C, Set_Black_GC, "ada_style_set_black_gc");
+   pragma Import (C, Get_Black_GC, "ada_style_get_black_gc");
+   pragma Import (C, Set_White_GC, "ada_style_set_white_gc");
+   pragma Import (C, Get_White_GC, "ada_style_get_white_gc");
 end Gtk.Style;

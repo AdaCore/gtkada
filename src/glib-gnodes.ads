@@ -27,12 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk;
 with Glib.Enums; use Glib.Enums;
-
 
 package Glib.Gnodes is
 
-   type Gnode is new Object_Type;
+   type Gnode is new Gdk.C_Proxy;
 
    --  pop_allocator
    --  push_allocator
@@ -109,4 +109,21 @@ package Glib.Gnodes is
 
    end Gnode_Data;
 
+private
+   pragma Import (C, Child_Position, "g_node_child_position");
+   pragma Import (C, Depth, "g_node_depth");
+   pragma Import (C, First_Child, "ada_gnode_first_child");
+   pragma Import (C, First_Sibling, "g_node_first_sibling");
+   pragma Import (C, Get_Root, "g_node_get_root");
+   pragma Import (C, Insert, "g_node_insert");
+   pragma Import (C, Insert_Before, "g_node_insert_before");
+   pragma Import (C, Last_Child, "g_node_last_child");
+   pragma Import (C, Last_Sibling, "g_node_last_sibling");
+   pragma Import (C, Max_Height, "g_node_max_height");
+   pragma Import (C, Next_Sibling, "ada_gnode_next_sibling");
+   pragma Import (C, Nth_Child, "g_node_nth_child");
+   pragma Import (C, Prepend, "g_node_prepend");
+   pragma Import (C, Prev_Sibling, "ada_gnode_prev_sibling");
+   pragma Import (C, Reverse_Children, "g_node_reverse_children");
+   pragma Import (C, Unlink, "g_node_unlink");
 end Glib.Gnodes;

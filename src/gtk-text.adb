@@ -240,7 +240,7 @@ package body Gtk.Text is
 
    procedure Insert
      (Text   : access Gtk_Text_Record;
-      Font   : in Gdk.Font.Gdk_Font'Class;
+      Font   : in Gdk.Font.Gdk_Font;
       Fore   : in Gdk.Color.Gdk_Color;
       Back   : in Gdk.Color.Gdk_Color;
       Chars  : in String;
@@ -248,7 +248,7 @@ package body Gtk.Text is
    is
       procedure Internal
         (Text   : in System.Address;
-         Font   : in System.Address;
+         Font   : in Gdk.Font.Gdk_Font;
          Fore   : in System.Address;
          Back   : in System.Address;
          Chars  : in String;
@@ -272,7 +272,7 @@ package body Gtk.Text is
       end if;
 
       Internal
-        (Get_Object (Text), Get_Object (Font), Fore_A, Back_A,
+        (Get_Object (Text), Font, Fore_A, Back_A,
          Chars & ASCII.Nul, Length);
    end Insert;
 

@@ -341,7 +341,7 @@ package Gdk.Event is
 
    procedure Get_Graphics_Expose
      (Event  : out Gdk_Event_Expose;
-      Window : in Gdk.Window.Gdk_Window'Class);
+      Window : in Gdk.Window.Gdk_Window);
    --  ???
 
    function Events_Pending return Boolean;

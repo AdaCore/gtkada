@@ -92,12 +92,10 @@ package body Gtk.Extra.PsFont is
    is
       function Internal (Name   : in String;
                          Height : in Gint)
-                        return      System.Address;
+                        return      Gdk.Font.Gdk_Font;
       pragma Import (C, Internal, "gtk_psfont_get_gdkfont");
-      Tmp : Gdk.Font.Gdk_Font;
    begin
-      Set_Object (Tmp, Internal (Name & ASCII.Nul, Height));
-      return Tmp;
+      return Internal (Name & ASCII.Nul, Height);
    end Get_Gdkfont;
 
    --------------------

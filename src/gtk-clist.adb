@@ -153,26 +153,6 @@ package body Gtk.Clist is
       return Internal (Get_Object (Clist));
    end Columns_Autosize;
 
-   ---------------
-   --  Convert  --
-   ---------------
-
-   function To_Address is
-     new Unchecked_Conversion (Gtk_Clist_Row, System.Address);
-
-   function Convert (C : in Gtk_Clist_Row) return System.Address is
-   begin
-      return To_Address (C);
-   end Convert;
-
-   function To_Clist_Row is
-     new Unchecked_Conversion (System.Address, Gtk_Clist_Row);
-
-   function Convert (W : System.Address) return Gtk_Clist_Row is
-   begin
-      return To_Clist_Row (W);
-   end Convert;
-
    ------------
    -- Freeze --
    ------------
@@ -191,16 +171,14 @@ package body Gtk.Clist is
    function Get_Cell_Style (Clist  : access Gtk_Clist_Record;
                             Row    : in     Gint;
                             Column : in     Gint)
-                            return          Gtk.Style.Gtk_Style'Class is
+                            return          Gtk.Style.Gtk_Style is
       function Internal (Clist  : in System.Address;
                          Row    : in Gint;
                          Column : in Gint)
-                         return      System.Address;
+                         return      Gtk.Style.Gtk_Style;
       pragma Import (C, Internal, "gtk_clist_get_cell_style");
-      Tmp : Gtk.Style.Gtk_Style;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Clist), Row, Column));
-      return Tmp;
+      return Internal (Get_Object (Clist), Row, Column);
    end Get_Cell_Style;
 
    -------------------
@@ -230,12 +208,11 @@ package body Gtk.Clist is
    function Get_Clist_Window (Clist : access Gtk_Clist_Record)
                               return     Gdk.Window.Gdk_Window
    is
-      function Internal (Clist : in System.Address) return System.Address;
+      function Internal (Clist : in System.Address)
+                        return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "ada_clist_get_clist_window");
-      Window : Gdk.Window.Gdk_Window;
    begin
-      Gdk.Set_Object (Window, Internal (Get_Object (Clist)));
-      return Window;
+      return Internal (Get_Object (Clist));
    end Get_Clist_Window;
 
    -----------------------
@@ -333,8 +310,8 @@ package body Gtk.Clist is
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gint;
       Column   : in Gint;
-      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : out Gdk.Bitmap.Gdk_Bitmap;
       Is_Valid : out Boolean)
    is
       function Internal
@@ -345,16 +322,16 @@ package body Gtk.Clist is
          Mask   : in System.Address)
          return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_pixmap");
-      Pix : aliased System.Address;
-      Msk : aliased System.Address;
+      Pix : aliased Gdk.Pixmap.Gdk_Pixmap;
+      Msk : aliased Gdk.Bitmap.Gdk_Bitmap;
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
                                          Row,
                                          Column,
                                          Pix'Address,
                                          Msk'Address));
-      Gdk.Set_Object (Pixmap, Pix);
-      Gdk.Set_Object (Mask, Msk);
+      Pixmap := Pix;
+      Mask := Msk;
    end Get_Pixmap;
 
    ----------------
@@ -365,8 +342,8 @@ package body Gtk.Clist is
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gtk_Clist_Row;
       Column   : in Gint;
-      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : out Gdk.Bitmap.Gdk_Bitmap;
       Is_Valid : out Boolean)
    is
       function Internal
@@ -377,8 +354,8 @@ package body Gtk.Clist is
          Mask   : in System.Address)
          return      Gint;
       pragma Import (C, Internal, "ada_gtk_clist_get_pixmap");
-      Pix : aliased System.Address;
-      Msk : aliased System.Address;
+      Pix : aliased Gdk.Pixmap.Gdk_Pixmap;
+      Msk : aliased Gdk.Bitmap.Gdk_Bitmap;
 
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
@@ -386,8 +363,8 @@ package body Gtk.Clist is
                                          Column,
                                          Pix'Address,
                                          Msk'Address));
-      Gdk.Set_Object (Pixmap, Pix);
-      Gdk.Set_Object (Mask, Msk);
+      Pixmap := Pix;
+      Mask := Msk;
    end Get_Pixmap;
 
    -----------------
@@ -399,8 +376,8 @@ package body Gtk.Clist is
       Row      : in Gint;
       Column   : in Gint;
       Spacing  : in out Guint8;
-      Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : in out Gdk.Bitmap.Gdk_Bitmap;
       Is_Valid : out Boolean)
    is
       function Internal
@@ -415,8 +392,8 @@ package body Gtk.Clist is
       pragma Import (C, Internal, "gtk_clist_get_pixtext");
 
       S    : aliased Interfaces.C.Strings.chars_ptr;
-      Pix  : aliased System.Address;
-      Msk  : aliased System.Address;
+      Pix  : aliased Gdk.Pixmap.Gdk_Pixmap;
+      Msk  : aliased Gdk.Bitmap.Gdk_Bitmap;
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
                                          Row,
@@ -425,8 +402,8 @@ package body Gtk.Clist is
                                          Spacing'Address,
                                          Pix'Address,
                                          Msk'Address));
-      Gdk.Set_Object (Pixmap, Pix);
-      Gdk.Set_Object (Mask, Msk);
+      Pixmap := Pix;
+      Mask := Msk;
    end Get_Pixtext;
 
    ------------------
@@ -450,16 +427,14 @@ package body Gtk.Clist is
 
    function Get_Row_Style (Clist  : access Gtk_Clist_Record;
                            Row    : in     Gint)
-                           return          Gtk.Style.Gtk_Style'Class
+                           return          Gtk.Style.Gtk_Style
    is
       function Internal (Clist  : in System.Address;
                          Row    : in Gint)
-                         return      System.Address;
+                         return      Gtk.Style.Gtk_Style;
       pragma Import (C, Internal, "gtk_clist_get_row_style");
-      Tmp : Gtk.Style.Gtk_Style;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Clist), Row));
-      return Tmp;
+      return Internal (Get_Object (Clist), Row);
    end Get_Row_Style;
 
    --------------------
@@ -888,13 +863,13 @@ package body Gtk.Clist is
    procedure Set_Cell_Style (Clist  : access Gtk_Clist_Record;
                              Row    : in Gint;
                              Column : in Gint;
-                             Style  : in Gtk_Style'Class) is
+                             Style  : in Gtk_Style) is
       procedure Internal
         (Clist : System.Address; Row : Gint;
-                                 Column : Gint; Style : System.Address);
+                                 Column : Gint; Style : Gtk_Style);
       pragma Import (C, Internal, "gtk_clist_set_cell_style");
    begin
-      Internal (Get_Object (Clist), Row, Column, Get_Object (Style));
+      Internal (Get_Object (Clist), Row, Column, Style);
    end Set_Cell_Style;
 
    ----------------------------
@@ -1145,22 +1120,22 @@ package body Gtk.Clist is
      (Clist  : access Gtk_Clist_Record;
       Row    : in Gint;
       Column : in Gint;
-      Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
+      Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
         (Clist  : in System.Address;
          Row    : in Gint;
          Column : in Gint;
-         Pixmap : in System.Address;
-         Mask   : in System.Address);
+         Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
+         Mask   : in Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_clist_set_pixmap");
    begin
       Internal (Get_Object (Clist),
                 Row,
                 Column,
-                Gdk.Get_Object (Pixmap),
-                Gdk.Get_Object (Mask));
+                Pixmap,
+                Mask);
    end Set_Pixmap;
 
    -----------------
@@ -1173,8 +1148,8 @@ package body Gtk.Clist is
       Column  : in Gint;
       Text    : in String;
       Spacing : in Guint8;
-      Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
-      Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class)
+      Pixmap  : in Gdk.Pixmap.Gdk_Pixmap;
+      Mask    : in Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
         (Clist   : in System.Address;
@@ -1182,8 +1157,8 @@ package body Gtk.Clist is
          Column  : in Gint;
          Text    : in String;
          Spacing : in Guint8;
-         Pixmap  : in System.Address;
-         Mask    : in System.Address);
+         Pixmap  : in Gdk.Pixmap.Gdk_Pixmap;
+         Mask    : in Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_clist_set_pixtext");
    begin
       Internal (Get_Object (Clist),
@@ -1191,8 +1166,8 @@ package body Gtk.Clist is
                 Column,
                 Text & ASCII.Nul,
                 Spacing,
-                Gdk.Get_Object (Pixmap),
-                Gdk.Get_Object (Mask));
+                Pixmap,
+                Mask);
    end Set_Pixtext;
 
    ---------------------
@@ -1227,13 +1202,13 @@ package body Gtk.Clist is
 
    procedure Set_Row_Style
      (Clist : access Gtk_Clist_Record; Row : Gint;
-      Style : in Gtk_Style'Class)
+      Style : in Gtk_Style)
    is
       procedure Internal
-        (Clist : System.Address; Row : Gint; Style : System.Address);
+        (Clist : System.Address; Row : Gint; Style : Gtk_Style);
       pragma Import (C, Internal, "gtk_clist_set_row_style");
    begin
-      Internal (Get_Object (Clist), Row, Get_Object (Style));
+      Internal (Get_Object (Clist), Row, Style);
    end Set_Row_Style;
 
    --------------------
@@ -1505,8 +1480,8 @@ package body Gtk.Clist is
                           Cell_Type : Gtk_Cell_Type;
                           Text      : System.Address;
                           Spacing   : Guint8;
-                          Pixmap    : System.Address;
-                          Mask      : System.Address);
+                          Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
+                          Mask      : Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "ada_gtk_clist_set_cell_contents");
       T : System.Address := System.Null_Address;
    begin
@@ -1514,7 +1489,7 @@ package body Gtk.Clist is
          T := T'Address;
       end if;
       Internal (Get_Object (Clist), Row, Column,
-                Cell_Type, T, Spacing, Get_Object (Pixmap), Get_Object (Mask));
+                Cell_Type, T, Spacing, Pixmap, Mask);
    end Set_Cell_Contents;
 
    --------------

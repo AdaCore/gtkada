@@ -34,85 +34,33 @@ package body Gdk.Bitmap is
    ------------------------
 
    procedure Create_From_Data (Bitmap :    out Gdk_Bitmap;
-                               Window : in     Gdk.Window.Gdk_Window'Class;
+                               Window : in     Gdk.Window.Gdk_Window;
                                Data   : in     String;
                                Width  : in     Gint;
                                Height : in     Gint) is
-      function Internal (Window        : in System.Address;
+      function Internal (Window        : in Gdk.Window.Gdk_Window;
                          Data          : in String;
-                         Width, Height : in Gint) return System.Address;
+                         Width, Height : in Gint) return Gdk_Bitmap;
       pragma Import (C, Internal, "gdk_bitmap_create_from_data");
    begin
-      Set_Object (Bitmap, Internal (Get_Object (Window), Data & ASCII.NUL,
-                                    Width, Height));
+      Bitmap := Internal (Window, Data & ASCII.NUL, Width, Height);
    end Create_From_Data;
-
-
-   -----------
-   --  Ref  --
-   -----------
-
-   procedure Ref (Bitmap : in Gdk_Bitmap) is
-      function Internal (Bitmap : in System.Address) return System.Address;
-      pragma Import (C, Internal, "gdk_bitmap_ref");
-      S : System.Address;
-   begin
-      S := Internal (Get_Object (Bitmap));
-   end Ref;
-
-
-   ---------------------
-   --  Set_Clip_Mask  --
-   ---------------------
-
-   procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC'Class;
-                            Mask  : in Gdk_Bitmap) is
-      procedure Internal (GC, Mask : in System.Address);
-      pragma Import (C, Internal, "gdk_gc_set_clip_mask");
-   begin
-      Internal (Get_Object (GC), Get_Object (Mask));
-   end Set_Clip_Mask;
-
-
-   -------------
-   --  Unref  --
-   -------------
-
-   procedure Unref (Bitmap : in out Gdk_Bitmap) is
-      procedure Internal (Bitmap : in System.Address);
-      pragma Import (C, Internal, "gdk_bitmap_unref");
-   begin
-      Internal (Get_Object (Bitmap));
-      Set_Object (Bitmap, System.Null_Address);
-   end Unref;
 
    -------------
    -- Gdk_New --
    -------------
 
    procedure Gdk_New (Bitmap : out Gdk_Bitmap;
-                      Window : in  Gdk.Window.Gdk_Window'Class;
+                      Window : in  Gdk.Window.Gdk_Window;
                       Width  : in  Gint;
                       Height : in  Gint) is
-      function Internal (Window : in System.Address;
+      function Internal (Window : in Gdk.Window.Gdk_Window;
                          Width  : in Gint;
                          Height : in Gint;
-                         Depth  : in Gint) return System.Address;
+                         Depth  : in Gint) return Gdk_Bitmap;
       pragma Import (C, Internal, "gdk_pixmap_new");
    begin
-      Set_Object (Bitmap, Internal (Get_Object (Window),
-                                    Width, Height, 1));
-
+      Bitmap := Internal (Window, Width, Height, 1);
    end Gdk_New;
-
-   -----------------
-   -- Null_Bitmap --
-   -----------------
-
-   function Null_Bitmap return Gdk_Bitmap is
-      Bitmap : Gdk_Bitmap;
-   begin
-      return Bitmap;
-   end Null_Bitmap;
 
 end Gdk.Bitmap;

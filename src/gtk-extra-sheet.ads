@@ -40,7 +40,6 @@ with Gdk.Rectangle;
 with Gdk.Color;
 with Gdk.Types;
 with Gdk.Font;
-with System;
 with Gtk.Widget;
 
 package Gtk.Extra.Sheet is
@@ -56,7 +55,7 @@ package Gtk.Extra.Sheet is
       end record;
    type Gtk_Sheet_Range_Access is access all Gtk_Sheet_Range;
 
-   type Gtk_Sheet_Child is private;
+   type Gtk_Sheet_Child is new Gdk.C_Proxy;
 
    ----------------
    -- Enum types --
@@ -837,8 +836,6 @@ private
    type Gtk_Sheet_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
    pragma Import (C, Get_Type, "gtk_sheet_get_type");
-
-   type Gtk_Sheet_Child is new System.Address;
 
    No_Border     : constant Gtk_Sheet_Border := 0;
    Left_Border   : constant Gtk_Sheet_Border := 1;

@@ -35,12 +35,12 @@ with Gdk.Window;
 
 package Gdk.Bitmap is
 
-   type Gdk_Bitmap is new Gdk.Drawable.Gdk_Drawable with private;
+   subtype Gdk_Bitmap is Gdk.Drawable.Gdk_Drawable;
 
-   function Null_Bitmap return Gdk_Bitmap;
+   Null_Bitmap : constant Gdk_Bitmap;
 
    procedure Gdk_New (Bitmap : out Gdk_Bitmap;
-                      Window : in  Gdk.Window.Gdk_Window'Class;
+                      Window : in  Gdk.Window.Gdk_Window;
                       Width  : in  Gint;
                       Height : in  Gint);
 
@@ -51,17 +51,18 @@ package Gdk.Bitmap is
    --  there is no more reference
 
    procedure Create_From_Data (Bitmap :    out Gdk_Bitmap;
-                               Window : in     Gdk.Window.Gdk_Window'Class;
+                               Window : in     Gdk.Window.Gdk_Window;
                                Data   : in     String;
                                Width  : in     Gint;
                                Height : in     Gint);
 
-   procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC'Class;
+   procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC;
                             Mask  : in Gdk_Bitmap);
    --  If MASK is set to Null_Bitmap, then no clip_mask is used for drawing
 
 private
-
-   type Gdk_Bitmap is new Gdk.Drawable.Gdk_Drawable with null record;
-
+   Null_Bitmap : constant Gdk_Bitmap := null;
+   pragma Import (C, Ref, "gdk_bitmap_ref");
+   pragma Import (C, Unref, "gdk_bitmap_unref");
+   pragma Import (C, Set_Clip_Mask, "gdk_gc_set_clip_mask");
 end Gdk.Bitmap;

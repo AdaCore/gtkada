@@ -1311,10 +1311,10 @@ package body Gtk.Extra.Sheet is
    is
       procedure Internal (Sheet     : in System.Address;
                           The_Range : in Gtk_Sheet_Range;
-                          Font      : in System.Address);
+                          Font      : in Gdk.Font.Gdk_Font);
       pragma Import (C, Internal, "gtk_sheet_range_set_font");
    begin
-      Internal (Get_Object (Sheet), The_Range, Get_Object (Font));
+      Internal (Get_Object (Sheet), The_Range, Font);
    end Range_Set_Font;
 
    ---------

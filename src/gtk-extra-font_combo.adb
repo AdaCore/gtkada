@@ -171,12 +171,11 @@ package body Gtk.Extra.Font_Combo is
    function Get_Font (Font_Combo : access Gtk_Font_Combo_Record)
                      return Gdk.Font.Gdk_Font
    is
-      function Internal (Font_Combo : System.Address) return System.Address;
+      function Internal (Font_Combo : System.Address)
+                        return Gdk.Font.Gdk_Font;
       pragma Import (C, Internal, "ada_gtk_font_combo_get_font");
-      F : Gdk.Font.Gdk_Font;
    begin
-      Set_Object (F, Internal (Get_Object (Font_Combo)));
-      return F;
+      return Internal (Get_Object (Font_Combo));
    end Get_Font;
 
 end Gtk.Extra.Font_Combo;
