@@ -73,10 +73,8 @@ Getting started with GtkAda
 
 Description of the GDK hierarchy
 
-* Package Gdk.Point::
 * Package Gdk.Window::
 * Package Gdk.Drawable::
-* Package Gdk.Font::
 * Draw in a widget::
 
 Object-oriented features
@@ -882,38 +880,11 @@ GTK is based on a lower level layer called GDK that contains some simple
 drawing and window primitives.
 
 @menu
-* Package Gdk.Point::
 * Package Gdk.Window::
 * Package Gdk.Drawable::
-* Package Gdk.Font::
 * Draw in a widget::
 @end menu
 
-@node Package Gdk.Point
-@section Package Gdk.Point
-@example
-@c @group
-@c @cartouche
-@b{type} Gdk_Point @b{is private};
-@c @end cartouche
-@c @end group
-@end example
-
-Used to describe polygons.
-
-@example
-@c @group
-@c @cartouche
-@b{type} Gdk_Points_Array @b{is array} (Positive @b{range} <>) @b{of} Gdk_Point;
-
-@b{function} Get_X (Point : @b{in} Gdk_Point) @b{return} Glib.Gint16;
-@b{function} Get_Y (Point : @b{in} Gdk_Point) @b{return} Glib.Gint16;
-@b{procedure} Set_X (Point : @b{in out} Gdk_Point; X : Glib.Gint16);
-@b{procedure} Set_Y (Point : @b{in out} Gdk_Point; Y : Glib.Gint16);
-@c @end cartouche
-@c @end group
-@end example
- 
 @node Package Gdk.Window
 @section Package Gdk.Window
 @example
@@ -1016,71 +987,6 @@ containing an ellipse.
 @c @end group
 @end example
 @end itemize
-
-@node Package Gdk.Font
-@section Package Gdk.Font
-A font describes the graphical aspect of the characters, their size,
-kind, @dots{}.
-
-Under @code{X11}, each font has a name of the form:
-@example
-@c @group
-@c @cartouche
-"-adobe-courier-medium-i-*-*-15-*-*-*-*-*-*-*"
-@c @end cartouche
-@c @end group
-@end example
-
-The X command @code{xfontsel} lets you select a font and build its associated
-name automatically.
- 
-@example
-@c @group
-@c @cartouche
-   @b{type} Gdk_Font @b{is new} Root_Type @b{with private};
- 
-   @b{procedure} Load
-     (Font      :    @b{out} Gdk_Font;
-      Font_Name : @b{in}     String);
- 
-   @b{procedure} Fontset_Load
-     (Font         :   @b{out} Gdk_Font;
-      Fontset_Name : @b{in}    String);
- 
-   @b{function} Id (Font : @b{in} Gdk_Font) @b{return} Gint;
- 
-   @b{function} "=" (Fonta, Fontb : @b{in} Gdk_Font) @b{return} Boolean;
- 
-   @b{function} String_Width
-     (Font : @b{in} Gdk_Font;
-      Str  : @b{in} String) @b{return} Gint;
- 
-   @b{function} Text_Width
-     (Font : @b{in} Gdk_Font;
-      Text : @b{in} String) @b{return} Gint;
- 
-   @b{function} Char_Width
-     (Font : @b{in} Gdk_Font;
-      Char : @b{in} Character) @b{return} Gint;
- 
-   @b{function} String_Measure
-     (Font : @b{in} Gdk_Font;
-      Str  : @b{in} String) @b{return} Gint;
- 
-   @b{function} Text_Measure
-     (Font : @b{in} Gdk_Font;
-      Text : @b{in} String) @b{return} Gint;
- 
-   @b{function} Char_Measure
-     (Font : @b{in} Gdk_Font;
-      Char : @b{in} Character) @b{return} Gint;
-@c @end cartouche
-@c @end group
-@end example
-
-@code{Width} gives the sum of the characters' widths,
-@code{Measure} gives a value similar to @code{Width} except that it takes
-into account the attributes of the font (e.g @code{italic}).
 
 @node Draw in a widget
 @section Draw in a widget
