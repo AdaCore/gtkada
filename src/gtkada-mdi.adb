@@ -4086,12 +4086,25 @@ package body Gtkada.MDI is
          --  Does nothing if called multiple times
 
          procedure Remove_All_Items (Remove_All_Empty : Boolean) is
-            Children : Widget_List.Glist := Get_Children (MDI);
-            L : Widget_List.Glist := Children;
+            Children : Widget_List.Glist;
+            L, L2 : Widget_List.Glist;
             Found_Empty : Boolean := Remove_All_Empty;
             Note : Gtk_Notebook;
          begin
             if not Items_Removed then
+               --  First loop is to remove all children. We give them a chance
+               --  to react to the delete_event, in case they do some cleanup
+               --  at that point
+               L := MDI.Items;
+               while L /= Null_List loop
+                  L2 := Next (L);
+                  Close_Child (MDI_Child (Get_Data (L)));
+                  L := L2;
+               end loop;
+
+               --  We now force the closing of all notebooks and children.
+               Children := Get_Children (MDI);
+               L := Children;
                while L /= Null_List loop
                   Note := Gtk_Notebook (Get_Data (L));
                   if Get_Nth_Page (Note, 0) = null then
