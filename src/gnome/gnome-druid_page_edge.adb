@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,54 +28,11 @@
 -----------------------------------------------------------------------
 
 with Gdk.Color;
---  with Gdk.ImlibImage;
 with Gdk; use Gdk;
 with Gtk; use Gtk;
 with System;
 
 package body Gnome.Druid_Page_Edge is
-
-   ---------------
-   -- Gnome_New --
-   ---------------
-
-   --  procedure Gnome_New
-   --    (Widget    : out Gnome_Druid_Page_Edge;
-   --     Title     : String;
-   --     Text      : String;
-   --     Logo      : Gdk.ImlibImage.Gdk_ImlibImage;
-   --     Watermark : Gdk.ImlibImage.Gdk_ImlibImage)
-   --  is
-   --  begin
-   --     Widget := new Gnome_Druid_Page_Edge_Record;
-   --     Initialize (Widget, Title, Text, Logo, Watermark);
-   --  end Gnome_New;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   --  procedure Initialize
-   --    (Widget    : access Gnome_Druid_Page_Edge_Record'Class;
-   --     Title     : String;
-   --     Text      : String;
-   --     Logo      : Gdk.ImlibImage.Gdk_ImlibImage;
-   --     Watermark : Gdk.ImlibImage.Gdk_ImlibImage)
-   --  is
-   --     function Internal
-   --       (Title     : String;
-   --        Text      : String;
-   --        Logo      : GdkImlibImage;
-   --        Watermark : GdkImlibImage)
-   --        return System.Address;
-   --     pragma Import (C, Internal, "gnome_druid_page_edge_new_with_vals");
-   --  begin
-   --     Set_Object (Widget, Internal (Title & ASCII.NUL,
-   --                                   Text & ASCII.NUL,
-   --                                   Logo,
-   --                                   Watermark));
-   --     Initialize_User_Data (Widget);
-   --  end Initialize;
 
    ---------------
    -- Gnome_New --
@@ -116,23 +73,6 @@ package body Gnome.Druid_Page_Edge is
    begin
       Internal (Get_Object (Druid_Page_Edge), Color);
    end Set_Bg_Color;
-
-   --------------
-   -- Set_Logo --
-   --------------
-
-   --  procedure Set_Logo
-   --    (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-   --     Logo_Image       : Gdk.ImlibImage.Gdk_ImlibImage)
-   --  is
-   --     procedure Internal
-   --       (Druid_Page_Edge : System.Address;
-   --        Logo_Image       : GdkImlibImage);
-   --     pragma Import (C, Internal, "gnome_druid_page_edge_set_logo");
-   --  begin
-   --     Internal (Get_Object (Druid_Page_Edge),
-   --               Logo_Image);
-   --  end Set_Logo;
 
    -----------------------
    -- Set_Logo_Bg_Color --
@@ -230,10 +170,10 @@ package body Gnome.Druid_Page_Edge is
       Internal (Get_Object (Druid_Page_Edge), Color);
    end Set_Title_Color;
 
-
    --------------
    -- Set_Logo --
    --------------
+
    procedure Set_Logo
        (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
         Logo_Image       : Gdk.Pixbuf.Gdk_Pixbuf)
@@ -249,6 +189,7 @@ package body Gnome.Druid_Page_Edge is
    -------------------
    -- Set_Watermark --
    -------------------
+
    procedure Set_Watermark
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
       Watermark        : Gdk.Pixbuf.Gdk_Pixbuf)
@@ -264,6 +205,7 @@ package body Gnome.Druid_Page_Edge is
    -----------------------
    -- Set_Top_Watermark --
    -----------------------
+
    procedure Set_Top_Watermark
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
       Top_Watermark   : Gdk.Pixbuf.Gdk_Pixbuf)
@@ -275,4 +217,5 @@ package body Gnome.Druid_Page_Edge is
    begin
       Internal (Get_Object (Druid_Page_Edge), Top_Watermark);
    end Set_Top_Watermark;
+
 end Gnome.Druid_Page_Edge;

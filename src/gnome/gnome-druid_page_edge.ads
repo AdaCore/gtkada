@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -38,22 +38,6 @@ package Gnome.Druid_Page_Edge is
    type Gnome_Druid_Page_Edge is access all
      Gnome_Druid_Page_Edge_Record'Class;
 
-   --  procedure Gnome_New
-   --    (Widget    : out Gnome_Druid_Page_Edge;
-   --     Title     : String;
-   --     Text      : String;
-   --     Logo      : Gdk.ImlibImage.Gdk_ImlibImage;
-   --     Watermark : Gdk.ImlibImage.Gdk_ImlibImage);
-
-   --  procedure Initialize
-   --    (Widget    : access Gnome_Druid_Page_Edge_Record'Class;
-   --     Title     : String;
-   --     Text      : String;
-   --     Logo      : Gdk.ImlibImage.Gdk_ImlibImage;
-   --     Watermark : Gdk.ImlibImage.Gdk_ImlibImage);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
    procedure Gnome_New (Widget : out Gnome_Druid_Page_Edge);
 
    procedure Initialize (Widget : access Gnome_Druid_Page_Edge_Record'Class);
@@ -65,39 +49,39 @@ package Gnome.Druid_Page_Edge is
 
    procedure Set_Bg_Color
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-      Color            : Gdk.Color.Gdk_Color);
+      Color           : Gdk.Color.Gdk_Color);
 
    procedure Set_Logo
-       (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-        Logo_Image       : Gdk.Pixbuf.Gdk_Pixbuf);
+     (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
+      Logo_Image      : Gdk.Pixbuf.Gdk_Pixbuf);
 
    procedure Set_Logo_Bg_Color
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-      Color            : Gdk.Color.Gdk_Color);
+      Color           : Gdk.Color.Gdk_Color);
 
    procedure Set_Text
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-      Text             : String);
+      Text            : String);
 
    procedure Set_Text_Color
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-      Color            : Gdk.Color.Gdk_Color);
+      Color           : Gdk.Color.Gdk_Color);
 
    procedure Set_Textbox_Color
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-      Color            : Gdk.Color.Gdk_Color);
+      Color           : Gdk.Color.Gdk_Color);
 
    procedure Set_Title
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-      Title            : String);
+      Title           : String);
 
    procedure Set_Title_Color
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-      Color            : Gdk.Color.Gdk_Color);
+      Color           : Gdk.Color.Gdk_Color);
 
    procedure Set_Watermark
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
-      Watermark        : Gdk.Pixbuf.Gdk_Pixbuf);
+      Watermark       : Gdk.Pixbuf.Gdk_Pixbuf);
 
    procedure Set_Top_Watermark
      (Druid_Page_Edge : access Gnome_Druid_Page_Edge_Record;
