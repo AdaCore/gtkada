@@ -288,7 +288,7 @@ sub parse_functions
       {
 	chop;
 	s/ \*/\* /g;
-	if (/^(\S+)\s+(g[dt]k_\S+)\s+\((.*)/)
+	if (/^(\S+)\s+(g[dt]k_\S+)\s*\((.*)/)
 	  {
 	    $func_name = $2;
 	    $return = $1;
@@ -659,12 +659,17 @@ sub convert_ada_type
 	return "out Guint$1";
       }
       return "Guint$1";
+    } elsif ($type eq "gboolean") {
+      return "Boolean";
     } elsif ($type eq "gfloat") {
       return "Gfloat";
     } elsif ($type =~ /(const)?(g?)char\*/) {
       return "String";
     } elsif ($type eq "Root_Type") {
 	return "Root_Type";
+    } elsif ($type =~ /GSList\*/) {
+      $with_list {"with Glib.GSList"};
+      return "GSList";
     } elsif ($type =~ /(G[td]k)([^*]+)\*/) {
       my ($t) = $2;
       my ($prefix) = $1;
@@ -707,6 +712,8 @@ sub convert_c_type
 	return "out Integer";
       }
       return "Integer";
+    } elsif ($type eq "gboolean") {
+      return "gint";
     } elsif ($type =~ /guint([^*]*)(\*?)/) {
       if ($2 ne "") {
 	return "out Guint$1";
