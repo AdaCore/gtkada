@@ -25,6 +25,7 @@ with Create_Entry;
 with Create_File_Selection;
 with Create_Gamma_Curve;
 with Create_Handle_Box;
+with Create_Menu;
 with Create_Toolbar;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
@@ -90,7 +91,7 @@ package body Test is
       (US ("gamma curve"), Create_Gamma_Curve.Run'Access),
       (US ("handle box"), Create_Handle_Box.Run'Access),
       (US ("list"), null),
-      (US ("menus"), null),
+      (US ("menus"), Create_Menu.Run'Access),
       (US ("miscellaneous"), null),
       (US ("notebook"), null),
       (US ("panes"), null),
