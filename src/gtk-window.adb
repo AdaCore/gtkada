@@ -128,7 +128,7 @@ package body Gtk.Window is
    -- Set_Title --
    -------------------
 
-   procedure Set_Title (Window : in out Gtk_Window;
+   procedure Set_Title (Window : in out Gtk_Window'Class;
                         Title  : in     String) is
       procedure Internal (W : in System.Address;
                           T : in String);

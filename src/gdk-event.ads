@@ -28,7 +28,7 @@
 
 with Glib; use Glib;
 with Gdk.Rectangle;
-with Gdk.Types;
+with Gdk.Types; use Gdk.Types;
 with Gdk.Window; use Gdk.Window;
 
 package Gdk.Event is
@@ -94,7 +94,6 @@ package Gdk.Event is
 
    type Gdk_Event_Any is new Gdk_Event with private;
 
-
    ---------------------------
    --  Gdk_Event_Configure  --
    ---------------------------
@@ -120,7 +119,6 @@ package Gdk.Event is
 
    procedure Set_Height (Event  : in out Gdk_Event_Configure;
                          Height : in     Gint16);
-
 
    ------------------------
    --  Gdk_Event_Expose  --
@@ -151,6 +149,10 @@ package Gdk.Event is
 
    function Get_Y (Event : in Gdk_Event_Button) return Gint16;
 
+   function Get_State (Event : in Gdk_Event_Button) return Gdk_Modifier_Mask;
+   function Get_Button (Event : in Gdk_Event_Button) return Guint32;
+
+ 
    ------------------------
    --  Gdk_Event_Motion  --
    ------------------------
@@ -161,6 +163,7 @@ package Gdk.Event is
 
    function Get_Y (Event : in Gdk_Event_Motion) return Gint16;
 
+   function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Mask;
 
 private
 

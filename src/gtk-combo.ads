@@ -28,6 +28,7 @@
 
 
 with Gtk.GEntry;
+with Gtk.List;
 with Gtk.Box;
 with Gtk.Item;
 with Gtk.Enums; use Gtk.Enums;
@@ -42,6 +43,10 @@ package Gtk.Combo is
    function Get_Entry (Combo_Box : in Gtk_Combo'Class)
                        return         Gtk.GEntry.Gtk_Entry;
    --  mapping: Get_Entry gtkcombo.h GtkCombo->entry
+
+   function Get_List (Combo_Box : in Gtk_Combo'Class)
+                      return         Gtk.List.Gtk_List;
+   --  mapping: Get_Entry gtkcombo.h GtkCombo->list
 
    procedure Gtk_New (Widget      : out Gtk_Combo);
    --  mapping: Gtk_New gtkcombo.h gtk_combo_new

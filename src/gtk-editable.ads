@@ -60,6 +60,7 @@ package Gtk.Editable is
                              return      Guint;
    function Get_Editable (Widget : in Gtk_Editable'Class)
                           return      Boolean;
+   procedure Set_Editable (Widget : in Gtk_Editable'Class; Editable : boolean);
    function Get_Has_Selection (Widget : in Gtk_Editable'Class)
                                return      Boolean;
    function Get_Selection_End_Pos (Widget : in Gtk_Editable'Class)
@@ -92,6 +93,7 @@ private
    --  mapping: Get_Clipboard_Text gtkeditable.h GtkEditable->clipboard_text
    --  mapping: Get_Current_Pos gtkeditable.h GtkEditable->current_pos
    --  mapping: Get_Editable gtkeditable.h GtkEditable->editable
+   --  mapping: Set_Editable gtkeditable.h GtkEditable->editable
    --  mapping: Get_Has_Selection gtkeditable.h GtkEditable->has_selection
    --  mapping: Get_Selection_End_Pos gtkeditable.h \
    --  mapping:    GtkEditable->selection_end_pos

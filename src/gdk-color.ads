@@ -38,6 +38,8 @@ package Gdk.Color is
    Null_Color : constant Gdk_Color;
 
 
+   function Gdk_New return Gdk_Color;
+
    procedure Gdk_New (Colormap     :    out Gdk_Colormap;
                       Visual       : in     Gdk.Visual.Gdk_Visual;
                       Private_Cmap : in     Gint);

@@ -38,7 +38,7 @@ package Gtk.Window is
                       The_Type : in  Gtk_Window_Type);
    --  mapping: New gtkwindow.h gtk_window_new
 
-   procedure Set_Title (Window : in out Gtk_Window;
+   procedure Set_Title (Window : in out Gtk_Window'Class;
                         Title  : in String);
    --  mapping: Set_Title gtkwindow.h gtk_window_set_title
 

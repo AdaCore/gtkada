@@ -22,7 +22,7 @@ and the following version of gtk :
    - Gtk 1.0.5
 
 If you  manage to use  it on other systems   (which should probably be
-straight forward - just recompile GtkAda),  please let us know so that
+straightforward - just recompile GtkAda),  please let us know so that
 we can add to the above list.
 
 Disclaimer
@@ -53,7 +53,7 @@ between the Ada functions and the C functions, so that you can easily
 use the documents, tutorial,... already written for the gtk itself.
 
 A little  Perl script  is provided  (mapping.pl) to  allow you to find
-quicky the function you are looking for :
+quickly the function you are looking for :
 
    $ perl mapping.pl  gtk_misc_set_padding
    gtk_misc_set_padding (file gtkmisc.h) is mapped to
@@ -224,7 +224,5 @@ binding is as useful as possible...
 AUTHORS
 =======
 
-Emmanuel Briot  <Emmanuel.Briot@enst-bretagne.fr>, 
-                <briot@gnat.com>
-Joel Brobecker  <Joel.Brobecker@enst-bretagne.fr>, 
-                <jbrobecker@west.raytheon.com>
+Emmanuel Briot <briot@gnat.com>
+Joel Brobecker <jbrobecker@west.raytheon.com>

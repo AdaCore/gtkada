@@ -102,5 +102,3 @@ installdirs: ;
 
 .adb.o:
 	$(CC) -c $(ALL_GNATFLAGS) $<
-
-misc.o: misc.c misc-manu.c misc-joel.c

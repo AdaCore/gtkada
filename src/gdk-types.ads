@@ -212,7 +212,21 @@ package Gdk.Types is
                             True_Color,
                             Direct_Color);
 
-
+   type Gdk_Modifier_Mask is new Guint;
+   Shift_Mask   : constant Gdk_Modifier_Mask := 2 ** 0;
+   Lock_Mask    : constant Gdk_Modifier_Mask := 2 ** 1;
+   Control_Mask : constant Gdk_Modifier_Mask := 2 ** 2;
+   Mod1_Mask    : constant Gdk_Modifier_Mask := 2 ** 3;
+   Mod2_Mask    : constant Gdk_Modifier_Mask := 2 ** 4;
+   Mod3_Mask    : constant Gdk_Modifier_Mask := 2 ** 5;
+   Mod4_Mask    : constant Gdk_Modifier_Mask := 2 ** 6;
+   Mod5_Mask    : constant Gdk_Modifier_Mask := 2 ** 7;
+   Button1_Mask : constant Gdk_Modifier_Mask := 2 ** 8;
+   Button2_Mask : constant Gdk_Modifier_Mask := 2 ** 9;
+   Button3_Mask : constant Gdk_Modifier_Mask := 2 ** 10;
+   Button4_Mask : constant Gdk_Modifier_Mask := 2 ** 11;
+   Button5_Mask : constant Gdk_Modifier_Mask := 2 ** 12;
+   
    ------------------------------
    --  Representation clauses  --
    ------------------------------

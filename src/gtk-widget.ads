@@ -34,6 +34,7 @@
 with Gtk.Object;
 with Gdk.Types;
 with Gdk.Rectangle;
+with Gdk.Color;
 with System;
 
 package Gtk.Widget is
@@ -152,6 +153,10 @@ package Gtk.Widget is
 
    procedure Grab_Focus (Widget : in out Gtk_Widget'Class);
    --  mapping: Grab_Focus gtkwidget.h gtk_widget_grab_focus
+
+   function Get_Colormap (Widget : in Gtk_Widget'Class)
+                          return Gdk.Color.Gdk_Colormap;
+   --  mapping: Get_Colormap gtkwidget.h gtk_widget_get_default_colormap
 
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_colormap
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_default_colormap

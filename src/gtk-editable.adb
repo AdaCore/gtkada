@@ -195,6 +195,18 @@ package body Gtk.Editable is
       return Internal (Get_Object (Widget)) /= 0;
    end Get_Editable;
 
+   ------------------
+   -- Set_Editable --
+   ------------------
+
+   procedure Set_Editable (Widget : in Gtk_Editable'Class; Editable : boolean)
+   is
+      procedure Internal (Widget : in System.Address; Editable : Guint);
+      pragma Import (C, Internal, "ada_editable_set_editable");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (Editable));
+   end Set_Editable;
+
    -----------------------
    -- Get_Has_Selection --
    -----------------------

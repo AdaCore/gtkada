@@ -191,6 +191,19 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Grab_Focus;
 
+   --------------------
+   --  Get_Colormap  --
+   --------------------
+
+   function Get_Colormap (Widget : in Gtk_Widget'Class)
+                          return Gdk.Color.Gdk_Colormap is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_colormap");
+      Result : Gdk.Color.Gdk_Colormap;
+   begin
+      Set_Object (Result, Internal (Get_Object (Widget)));
+      return Result;
+   end Get_Colormap;
 
    --------------------------
    --  Has_Default_Is_Set  --

@@ -58,6 +58,22 @@ package body Gtk.Combo is
       return Tmp;
    end Get_Entry;
 
+   --------------
+   -- Get_List --
+   --------------
+
+   function Get_List (Combo_Box : in Gtk_Combo'Class)
+                      return         Gtk.List.Gtk_List
+   is
+      function Internal (Combo_Box : in System.Address)
+                         return         System.Address;
+      pragma Import (C, Internal, "ada_combo_get_list");
+      Tmp : Gtk.List.Gtk_List;
+   begin
+      Set_Object (Tmp, Internal (Get_Object (Combo_Box)));
+      return Tmp;
+   end Get_List;
+
    -------------
    -- Gtk_New --
    -------------

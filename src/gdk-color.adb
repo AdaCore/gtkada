@@ -155,6 +155,18 @@ package body Gdk.Color is
       Set_Object (Colormap, Internal (Get_Object (Visual), Private_Cmap));
    end Gdk_New;
 
+   --  Gdk_New  --
+   ---------------
+
+   function Gdk_New return Gdk_Color is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "ada_gdk_color_new_color");
+      Retval : Gdk_Color;
+   begin
+      Set_Object (Retval, Internal);
+      return Retval;
+   end Gdk_New;
+
 
    -------------
    --  Parse  --
