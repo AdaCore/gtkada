@@ -322,7 +322,7 @@ package Gtk.Text_Buffer is
      (Buffer : access Gtk_Text_Buffer_Record)
       return Gtk.Text_Mark.Gtk_Text_Mark;
    --  Return the mark that represents the cursor (insertion point).
-   --  Equivalent to calling Get_Mark to get the mark name "insert", but very
+   --  Equivalent to calling Get_Mark to get the mark name "insert", but
    --  slightly more efficient, and involves less typing.
 
    function Get_Selection_Bound
