@@ -27,9 +27,21 @@
 -----------------------------------------------------------------------
 
 with Gtk.Button;
+with Gtk.Option_Menu; use Gtk.Option_Menu;
+with Gtk.Widget;      use Gtk.Widget;
+with Common;          use Common;
 
 package Create_Progress is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button);
+
+   type String10 is new String (1 .. 10);
+   type Array_Of_String is array (Natural range <>) of String10;
+
+   procedure Build_Option_Menu (Omenu   : out Gtk_Option_Menu;
+                                Gr      : out Widget_Slist.GSlist;
+                                Items   : Array_Of_String;
+                                History : Natural;
+                                Cb      : Widget_Cb.Callback);
 
 end Create_Progress;

@@ -40,7 +40,6 @@ with Gtk.Gentry; use Gtk.Gentry;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Menu; use Gtk.Menu;
-with Gtk.Option_Menu; use Gtk.Option_Menu;
 with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Spin_Button; use Gtk.Spin_Button;
@@ -48,17 +47,10 @@ with Gtk.Table;       use Gtk.Table;
 with Gtk.Tooltips; use Gtk.Tooltips;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
-with Common; use Common;
-
-pragma Warnings (Off);
 
 package body Create_Progress is
 
    package Time_Cb   is new Gtk.Main.Timeout (Gtk_Progress_Bar);
-
-
-   type String10 is new String (1 .. 10);
-   type Array_Of_String is array (Natural range <>) of String10;
 
    Items1 : constant Array_Of_String :=
      ("Left-Right",
