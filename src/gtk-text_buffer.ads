@@ -43,16 +43,17 @@ package Gtk.Text_Buffer is
      new Glib.GObjects.GObject_Record with private;
    type Gtk_Text_Buffer is access all Gtk_Text_Buffer_Record'Class;
 
+   procedure Gtk_New (Buffer : out Gtk_Text_Buffer);
 
    procedure Gtk_New
      (Buffer : out Gtk_Text_Buffer;
-      Table  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class :=
-                        Gtk.Text_Tag.Gtk_Text_Tag'(null));
+      Table  : access Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record'Class);
+
+   procedure Initialize (Buffer : access Gtk_Text_Buffer_Record'Class);
 
    procedure Initialize
      (Buffer : access Gtk_Text_Buffer_Record'Class;
-      Table  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class :=
-                        Gtk.Text_Tag.Gtk_Text_Tag'(null));
+      Table  : access Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record'Class);
 
    function Get_Type return Glib.GType;
 

@@ -36,10 +36,19 @@ package body Gtk.Text_Buffer is
    -- Gtk_New --
    -------------
 
+   procedure Gtk_New (Buffer : out Gtk_Text_Buffer) is
+   begin
+      Buffer := new Gtk_Text_Buffer_Record;
+      Initialize (Buffer);
+   end Gtk_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
    procedure Gtk_New
      (Buffer : out Gtk_Text_Buffer;
-      Table  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class :=
-                        Gtk.Text_Tag.Gtk_Text_Tag'(null)) is
+      Table  : access Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record'Class) is
    begin
       Buffer := new Gtk_Text_Buffer_Record;
       Initialize (Buffer, Table);
@@ -49,10 +58,22 @@ package body Gtk.Text_Buffer is
    -- Initialize --
    ----------------
 
+   procedure Initialize (Buffer : access Gtk_Text_Buffer_Record'Class)
+   is
+      function Internal (Table : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_text_buffer_new");
+   begin
+      Set_Object (Buffer, Internal (System.Null_Address));
+      Initialize_User_Data (Buffer);
+   end Initialize;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
    procedure Initialize
      (Buffer : access Gtk_Text_Buffer_Record'Class;
-      Table  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class :=
-                        Gtk.Text_Tag.Gtk_Text_Tag'(null))
+      Table  : access Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record'Class)
    is
       function Internal (Table : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_new");
