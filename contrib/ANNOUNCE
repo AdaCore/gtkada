@@ -1,23 +1,23 @@
 
-GtkAda 1.2.0 release
+GtkAda 1.2.1 release
 --------------------
 
-GtkAda is an Ada95 binding of Gtk+ version 1.2.0. It allows you to
-develop graphical applications in Ada95 using Gtk+.
+GtkAda is an Ada95 graphical toolkit based on Gtk+ version 1.2.x. It
+allows you to develop graphical applications in Ada95 using Gtk+.
 
 Currently, all widgets  of the Gtk+ 1.2 series have  been bound. The
 binding  for the Gdk part is not complete yet, but is already pretty
 much in place.
 
-To test our binding, the testgtk program has been almost completely 
-re-implemented and is also distributed with the binding.
+To test our toolkit, the testgtk program has been almost completely 
+re-implemented and is also distributed.
 
 LSM entry follows :
 Begin3
  Title:  GtkAda
- Version: 1.2.0
+ Version: 1.2.1
  Entered-date: 06APR99
- Description: Ada95 binding to Gtk+ (version 1.2.0) 
+ Description: Ada95 graphical toolkit based on Gtk+ (version 1.2.x) 
  Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade
  Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
  Maintained-by: gtkada@ada.eu.org
@@ -28,7 +28,9 @@ Begin3
 End
 
 
-New features from 0.6 include:
+New features in 1.2.1 include:
+
+New features in 1.2.0 include:
 
 - All 1.2.0 widgets are now bound (including Gtk.Ctree)
 - New directory structure
@@ -40,7 +42,7 @@ New features from 0.6 include:
   in Ada (both composite widgets and widgets from scratch); a simple editor
   generated using Glade.
 
-New features from 0.5 include:
+New features in 0.6 include:
 
 - Upgrade to GTK+ 1.2.0
  
