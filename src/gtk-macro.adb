@@ -278,10 +278,6 @@ package body Gtk.Macro is
    procedure Free is new Unchecked_Deallocation
      (Macro_Item'Class, Macro_Item_Access);
 
-   procedure My_Emit_By_Name (Object : access Gtk_Widget_Record'Class;
-                              Name   : in String;
-                              Param  : Gdk.Event.Gdk_Event);
-
    package Void_Cb is new Gtk.Handlers.Callback (Gtk_Button_Record);
    package Boolean_Cb is new Gtk.Handlers.Return_Callback
      (Widget_Type => Gtk_Widget_Record, Return_Type => Boolean);
@@ -379,23 +375,6 @@ package body Gtk.Macro is
    --  the item is incorrect.
 
    Invalid_Line : exception;
-
-   ---------------------
-   -- My_Emit_By_Name --
-   ---------------------
-
-   procedure My_Emit_By_Name (Object : access Gtk_Widget_Record'Class;
-                              Name   : in String;
-                              Param  : Gdk.Event.Gdk_Event)
-   is
-      procedure Internal (Object : in System.Address;
-                          Name   : in String;
-                          Param  : System.Address);
-      pragma Import (C, Internal, "gtk_signal_emit_by_name");
-   begin
-      pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-      Internal (Get_Object (Object.all), Name & Ascii.Nul, Get_Object (Param));
-   end My_Emit_By_Name;
 
    ---------------------
    -- Record_Macro_Cb --
@@ -522,6 +501,7 @@ package body Gtk.Macro is
       N : Natural := Num_Steps;
       E : Gdk_Event;
       W : Gtk_Widget;
+      B : Boolean;
    begin
       while N /= 0
         and then Current_Macro.Current_Read /= null
@@ -554,7 +534,8 @@ package body Gtk.Macro is
                          & Current_Macro.Current_Read.Widget_Name
                          & ")");
             end if;
-            My_Emit_By_Name (W, Event_Name_From_Type (Get_Event_Type (E)), E);
+            B := Boolean_Cb.Emit_By_Name
+              (W, Event_Name_From_Type (Get_Event_Type (E)), E);
             Free (E);
          end if;
          Current_Macro.Current_Read := Current_Macro.Current_Read.Next;
@@ -1262,7 +1243,7 @@ package body Gtk.Macro is
    function Parse_Cmd_Line (Switch : String) return Gint;
    pragma Import (C, Parse_Cmd_Line, "ada_gtk_parse_cmd_line");
 begin
-   if Parse_Cmd_Line ("--gtkada_macro") /= 0 then
+   if Parse_Cmd_Line ("--gtkada_macro" & ASCII.NUL) /= 0 then
       Gtk.Main.Main_Hook            := Initialize_Macro'Access;
       Gtk.Initialize_User_Data_Hook := Create_Object'Access;
    end if;
