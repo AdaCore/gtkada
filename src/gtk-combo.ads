@@ -44,6 +44,10 @@ package Gtk.Combo is
 
    function Get_Entry (Combo_Box : access Gtk_Combo_Record)
      return Gtk.GEntry.Gtk_Entry;
+   procedure Set_Entry (Combo_Box : access Gtk_Combo_Record;
+                        GEntry    : Gtk.GEntry.Gtk_Entry);
+   --  Get or sets the entry fields for the combo box.
+
 
    function Get_List (Combo_Box : access Gtk_Combo_Record)
      return Gtk.List.Gtk_List;

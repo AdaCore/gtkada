@@ -120,6 +120,20 @@ package body Gtk.Combo is
       Internal (Get_Object (Combo_Box), Boolean'Pos (Val));
    end Set_Case_Sensitive;
 
+   ---------------
+   -- Set_Entry --
+   ---------------
+
+   procedure Set_Entry (Combo_Box : access Gtk_Combo_Record;
+                        GEntry    : Gtk.GEntry.Gtk_Entry)
+   is
+      procedure Internal (Combo_Box : in System.Address;
+                          GEntry    : in System.Address);
+      pragma Import (C, Internal, "ada_combo_set_entry");
+   begin
+      Internal (Get_Object (Combo_Box), Get_Object (GEntry));
+   end Set_Entry;
+
    ---------------------
    -- Set_Item_String --
    ---------------------
@@ -208,6 +222,7 @@ package body Gtk.Combo is
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       S : String_Ptr;
       First, Last : Natural;
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
 
    begin
       Gen_New (N, "Combo", File => File);
@@ -237,9 +252,10 @@ package body Gtk.Combo is
             First := Last + 1;
          end loop;
 
-         Put_Line (File, "   Combo.Set_Popdown_Strings (Gtk_Combo (" &
-           To_Ada (Get_Field (N, "name").all) & "), " &
-           To_Ada (Get_Field (N, "name").all) & "_Items);");
+         Put_Line (File, "   Combo.Set_Popdown_Strings (" &
+                   To_Ada (Top.all) & "." &
+                   To_Ada (Get_Field (N, "name").all) & ", " &
+                   To_Ada (Get_Field (N, "name").all) & "_Items);");
          Put_Line (File, "   String_List.Free (" &
            To_Ada (Get_Field (N, "name").all) & "_Items);");
       end if;

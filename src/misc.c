@@ -1887,6 +1887,12 @@ ada_combo_get_entry (GtkCombo* widget)
   return widget->entry;
 }
 
+void
+ada_combo_set_entry (GtkCombo* widget, GtkWidget* entry)
+{
+  widget->entry = entry;
+}
+
 GtkWidget*
 ada_combo_get_list (GtkCombo* widget)
 {
