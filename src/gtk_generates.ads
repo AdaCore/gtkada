@@ -57,6 +57,7 @@ package Gtk_Generates is
    procedure Handle_Box_Generate             (N : Node_Ptr; File : File_Type);
    procedure Hbutton_Box_Generate            (N : Node_Ptr; File : File_Type);
    procedure Image_Generate                  (N : Node_Ptr; File : File_Type);
+   procedure Image_Menu_Item_Generate        (N : Node_Ptr; File : File_Type);
    procedure Input_Dialog_Generate           (N : Node_Ptr; File : File_Type);
    procedure Label_Generate                  (N : Node_Ptr; File : File_Type);
    procedure Layout_Generate                 (N : Node_Ptr; File : File_Type);
@@ -80,6 +81,7 @@ package Gtk_Generates is
    procedure Scrollbar_Generate              (N : Node_Ptr; File : File_Type);
    procedure Scrolled_Window_Generate        (N : Node_Ptr; File : File_Type);
    procedure Separator_Generate              (N : Node_Ptr; File : File_Type);
+   procedure Separator_Menu_Item_Generate    (N : Node_Ptr; File : File_Type);
    procedure Spin_Button_Generate            (N : Node_Ptr; File : File_Type);
    procedure Status_Bar_Generate             (N : Node_Ptr; File : File_Type);
    procedure Table_Generate                  (N : Node_Ptr; File : File_Type);
