@@ -22,7 +22,7 @@ The home page for gtk is
      
 This home page will always contain the latest news for this toolkit.
 
-This is GtkAda version 1.2.4. This package is an Ada95 graphical library
+This is GtkAda version 1.2.5. This package is an Ada95 graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada95
 as a programming language.
@@ -42,8 +42,10 @@ These functions were tested on the following systems :
    - Dec Unix 4.0b
    - SGI IRIX 6.5
    - HP/UX 10.20
+   - HP/UX 11.00
    - NT 4.0
    - AiX 4.3.2
+   - SCO UnixWare 7.1
 using the following compilers:
    - Gnat 3.12
    - Gnat 3.11b2

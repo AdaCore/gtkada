@@ -1,5 +1,5 @@
 
-GtkAda 1.2.4 release
+GtkAda 1.2.5 release
 --------------------
 
 GtkAda is an Ada95 graphical toolkit based on Gtk+ version 1.2.x. It
@@ -15,18 +15,23 @@ re-implemented and is also distributed.
 LSM entry follows :
 Begin3
 Title:  GtkAda
-Version: 1.2.4
-Entered-date: 22OCT99
+Version: 1.2.5
+Entered-date: 22NOV99
 Description: Ada95 graphical toolkit based on Gtk+ (version 1.2.x) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
 Maintained-by: gtkada@ada.eu.org
 Primary-site:  http://gtkada.eu.org
 Original-site: http://ada.eu.org/gtkada/ 
-Platforms: SunOS-5.5.1 Linux-2.0.36 DECUnix-4.0b IRIX-6.5 HP/UX-10.20 NT-4.0 AiX-4.3.2
+Platforms: Solaris Linux Tru64 IRIX HP/UX NT AiX
 Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
 
+
+New features in 1.2.5 include:
+
+- Tested on HP-UX 11.00
+- Tested on SCO UnixWare 7.1
 
 New features in 1.2.4 include:
 
