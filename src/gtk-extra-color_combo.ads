@@ -32,7 +32,7 @@
 --  by the user. It is a special form of a Gtk_Combo_Box, that displays
 --  a special popup window, with a list of colors.
 --
---  Note that nothing appears in the button, this your responsability to
+--  Note that nothing appears in the button, this your responsibility to
 --  update it when the user selects a new color (see the "changed" signal).
 --  </description>
 --  <c_version>gtk+extra 0.99.1</c_version>

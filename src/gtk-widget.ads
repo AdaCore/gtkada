@@ -103,7 +103,7 @@ package Gtk.Widget is
    --  Schedule the widget to be displayed on the screen when its parent is
    --  also shown (emits the "show" signal).
    --  If its ancestors are already mapped to the screen, then the widget is
-   --  immediatly displayed through a call to Map below.
+   --  immediately displayed through a call to Map below.
 
    procedure Show_Now (Widget : access Gtk_Widget_Record);
    --  Show the widget.
@@ -112,7 +112,7 @@ package Gtk.Widget is
 
    procedure Hide (Widget : access Gtk_Widget_Record);
    --  Hide the widget from the screen (emits the "hide" signal).
-   --  If Widget was visible, it is immediatly hidden.
+   --  If Widget was visible, it is immediately hidden.
    --  If one of its ancestor is later shown on the screen, Widget won't
    --  appear.
 
@@ -145,7 +145,7 @@ package Gtk.Widget is
    procedure Realize (Widget : access Gtk_Widget_Record);
    --  Create a window for Widget and its ancestors (emit the "realize" signal)
    --  This does not mean that the widget will appear on the screen, but
-   --  ressources such as colormaps, etc. become available.
+   --  resources such as colormaps, etc. become available.
    --  Some routines require that the widget is realized before any call.
    --  You must set the Event_Mask before calling this routine if you want to
    --  change it from its default value.
@@ -153,7 +153,7 @@ package Gtk.Widget is
    procedure Unrealize (Widget : access Gtk_Widget_Record);
    --  Hide the widget from the screen and deletes the associated window.
    --  This does not destroy the widget itself, only its server-side
-   --  ressources.
+   --  resources.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Widget.
@@ -166,7 +166,7 @@ package Gtk.Widget is
    --  Add a drawing request to the event queue for the whole widget.
    --  This is more efficient than calling Draw directly, since GtkAda groups
    --  drawing requests as much as possible to speed up the drawing process.
-   --  The actualy drawing will take place as soon as GtkAda is not busy
+   --  The actual drawing will take place as soon as GtkAda is not busy
    --  processing other events, but before idle events.
 
    procedure Queue_Draw_Area (Widget : access Gtk_Widget_Record;
@@ -342,7 +342,7 @@ package Gtk.Widget is
                          Events : in     Gdk.Types.Gdk_Event_Mask);
    --  Sets the event mask for the widget.
    --  Widget should not have been realized before, or nothing is done.
-   --  This is the only way you can explictly get mouse or keyboards events on
+   --  This is the only way you can explicitly get mouse or keyboards events on
    --  widgets that do not automatically get them, as for instance in a
    --  Gtk_Drawing_Area.
 
@@ -424,7 +424,7 @@ package Gtk.Widget is
    procedure Set_Default_Colormap (Cmap : Gdk.Color.Gdk_Colormap);
    --  Modify permanently the default colormap used when a widget is created.
    --  If you only want to modify this colormap temporarily for a few widgets,
-   --  you shoud consider using Push_Colormap and Pop_Colormap instead.
+   --  you should consider using Push_Colormap and Pop_Colormap instead.
 
    function Get_Default_Visual return Gdk.Visual.Gdk_Visual;
    --  Return the default visual used when a new widget is created.
@@ -432,7 +432,7 @@ package Gtk.Widget is
    procedure Set_Default_Visual (Visual : Gdk.Visual.Gdk_Visual);
    --  Modify permanently the default visual used when a widget is created.
    --  If you only want to modify this visual temporarily for a few widgets,
-   --  you shoud consider using Push_Visual and Pop_Visual instead.
+   --  you should consider using Push_Visual and Pop_Visual instead.
 
    ------------
    -- Styles --
@@ -769,7 +769,7 @@ package Gtk.Widget is
    --    Emitted when a widget is to be shown (see explanation for the Show
    --    subprogam). This schedules the widget to be displayed on the screen,
    --    and if this is a toplevel widget it actually appears on the screen
-   --    and all its children that have ben shown.
+   --    and all its children that have been shown.
    --
    --  - "hide"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
@@ -860,7 +860,7 @@ package Gtk.Widget is
    --
    --    The widget's style has been changed (this is not call when some
    --    settings in the style are changed, only when the style itself is
-   --    completly changed with a call to Set_Style or Set_Rc_Style).
+   --    completely changed with a call to Set_Style or Set_Rc_Style).
    --
    --  - "add_accelerator"
    --
@@ -955,7 +955,7 @@ package Gtk.Widget is
    --
    --    The widget needs to be partly redrawn. The exact area to redraw is
    --    found in Event. For some widgets, you should rather connect to the
-   --    "draw" signal. Howether, for instance for Gtk_Drawing_Area widgets,
+   --    "draw" signal. However, for instance for Gtk_Drawing_Area widgets,
    --    you have to use this, after setting the correct event mask with
    --    Set_Events.
    --    If the handler returns False, the event might be pass to the parent

@@ -36,11 +36,11 @@
 --
 --  On X11 systems, this structure is stored directly on the XServer,
 --  which speeds up the transfer of the drawing attributes a lot. Instead
---  of transfering all of them everytime you call one of the drawing
+--  of transferring all of them every time you call one of the drawing
 --  functions, you simply specify which GC you want to use.
 --
 --  Thus, it is recommended to create as many GCs as you need, instead
---  of creating a single one that is modified everytime you need to
+--  of creating a single one that is modified every time you need to
 --  modify one of the attributes.
 --
 --  </description>
@@ -80,7 +80,7 @@ package Gdk.GC is
                       Window : in     Gdk.Window.Gdk_Window);
    --  Create a new graphic context.
    --  The window must have been realized first (so that it is associated
-   --  with some ressources on the Xserver).
+   --  with some resources on the Xserver).
    --  The GC can then be used for any window that has the same root window,
    --  and same color depth as Window.
    --  See the manual page for XCreateGC on Unix systems for more information.
@@ -99,7 +99,7 @@ package Gdk.GC is
    procedure Destroy (GC : in out Gdk_GC);
    --  Free the memory allocated on the server for the graphic context.
    --  Graphic contexts are never freed automatically by GtkAda, this is
-   --  the user responsability to do so.
+   --  the user responsibility to do so.
 
    procedure Ref (GC : in Gdk_GC);
    --  Increment the reference counting for the graphic context.
@@ -153,7 +153,7 @@ package Gdk.GC is
 
    procedure Set_Tile (GC   : in Gdk_GC;
                        Tile : in Gdk.Gdk_Pixmap);
- 
+
    procedure Set_Stipple (GC      : in Gdk_GC;
                           Stipple : in Gdk.Gdk_Pixmap);
 
@@ -166,7 +166,7 @@ package Gdk.GC is
 
    procedure Set_Ts_Origin (GC   : in Gdk_GC;
                             X, Y : in Gint);
-   --  Set the Tile and Stiple origin in the graphic context.
+   --  Set the Tile and Stipple origin in the graphic context.
 
    procedure Set_Clip_Origin (GC   : in Gdk_GC;
                               X, Y : in Gint);

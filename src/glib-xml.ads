@@ -95,6 +95,6 @@ package Glib.XML is
    function Get_Attribute
      (N : in Node_Ptr;
       Attribute_Name : in String) return String_Ptr;
-   --  Return the value of the attibute 'Attribute_Name' if present.
+   --  Return the value of the attribute 'Attribute_Name' if present.
    --  Return null otherwise.
 end Glib.XML;

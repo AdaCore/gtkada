@@ -141,13 +141,13 @@ package Gtk.Main is
    --  Start the main loop, and returns only when the main loop is exited.
    --  This subprogram can be called recursively, to start new internal
    --  loops. Each of these loops is exited through a call to Main_Quit.
-   --  This is the recommended technics to use when you want to popup a dialog
+   --  This is the recommended method to use when you want to popup a dialog
    --  and wait for the user answer before going any further.
    --  Note that this procedure can only be called within a single task.
 
    function Main_Level return Guint;
    --  Return the level of the current main loop.
-   --  Since there can be imbricated loops, this returns the depth of the
+   --  Since there can be nested loops, this returns the depth of the
    --  current one, starting from 1 (0 if there is none).
 
    procedure Main_Quit;

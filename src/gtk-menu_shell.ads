@@ -31,7 +31,7 @@
 --
 --  This widget is a base class for all menu widgets. It contains a list of
 --  items that can be navigated, selected and activated by the user.
---  It can not be instanciated directly.
+--  It can not be instantiated directly.
 --
 --  A menu is considered "active" when it is displayed on the screen, or, in
 --  the case of a menu_bar when one of its menus is active.

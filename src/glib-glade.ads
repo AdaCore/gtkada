@@ -139,7 +139,7 @@ package Glib.Glade is
    --  Output an assignment in File of the form:
    --  <Name> := Get_<Child-2> (<Parent>);
    --  where Name is the name of the widget represented by N,
-   --        Child-2 is the second part of Child.Value, the delimitor being ':'
+   --        Child-2 is the second part of Child.Value, the delimiter being ':'
    --         (e.g Child-2 = Vbox if Child.Value = Dialog:vbox)
    --        Parent is the first parent of N whose class is the first part of
    --         Child.Value (e.g Dialog if Child.Value = Dialog:vbox)
@@ -154,7 +154,7 @@ package Glib.Glade is
    --    <Call> (<Parent>, N)
    --  where Parent (N) is the name of N.Parent and <Parent> is the name of the
    --  first parent of N whose class is <Class>
-   --  Param<n> when non null, represents a field of Child (Child musn't be
+   --  Param<n> when non null, represents a field of Child (Child must not be
    --  null) and is added to the parameters of <Call>
 
    procedure Gen_Packages (File : File_Type);
@@ -176,12 +176,12 @@ package Glib.Glade is
    --  Output to file calls to connect if N contains any signal.
    --  Also register the class of the widget that uses signals.
 
-   function Gen_Signal_Instanciations (Project : String; File : File_Type)
+   function Gen_Signal_Instantiations (Project : String; File : File_Type)
      return Natural;
-   --  Output to file all the instanciations of Gtk.Signal that have been
+   --  Output to file all the instantiations of Gtk.Signal that have been
    --  referenced in previous calls to Gen_Signal.
-   --  Return the number of instanciations generated.
-   --  The instanciations are all generated in a package called
+   --  Return the number of instantiations generated.
+   --  The instantiations are all generated in a package called
    --  Callbacks_<Project>
 
    function To_Package_Name (S : String) return String;

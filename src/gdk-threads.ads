@@ -29,9 +29,9 @@
 
 --  <description>
 --
---  This package provides simple primitives to write multithreaded applications
---  with GtkAda. See the GtkAda User's Guide for more details (section
---  Tasking with GtkAda).
+--  This package provides simple primitives to write multi-threaded
+--  applications with GtkAda. See the GtkAda User's Guide for more details
+--  (section Tasking with GtkAda).
 --
 --  </description>
 --  <c_version>1.2.7</c_version>

@@ -33,7 +33,7 @@
 --  constrains its child to a specific aspect ratio between its width
 --  and its height.
 --
---  This ratio can either be given explictly by the user, or chosen from the
+--  This ratio can either be given explicitly by the user, or chosen from the
 --  widget's initial size request (might be different from the one if was
 --  actually given).
 --

@@ -110,7 +110,7 @@ package Gtk.Menu is
    --  If Torn_Off is False, the menu is displayed as a drop down menu which
    --  disappears when the menu is not active. If Torn_Off is True, the menu
    --  persists until it is closed or reattached.
-   --  Note that you can give the user access to this functionnality by
+   --  Note that you can give the user access to this functionality by
    --  inserting a Gtk_Tearoff_Menu_Item in the menu.
 
    procedure Set_Title (Menu  : access Gtk_Menu_Record;
@@ -166,7 +166,7 @@ package Gtk.Menu is
    --  null, then a default function that positions the menu at the pointer
    --  location is used.
    --  Button is the mouse button that was pressed to initiate the event.
-   --  Activate_Time is the time at which the event occured (you can get it
+   --  Activate_Time is the time at which the event occurred (you can get it
    --  directly from the Gdk_Event structure).
    --
    --  Note that a variant of this function is given in the generic package

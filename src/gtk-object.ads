@@ -36,7 +36,7 @@
 --  in your applications:
 --
 --  - Reference counting: an object is not deleted while there exists at least
---    one reference to it. Altough GtkAda mostly takes care of that aspect
+--    one reference to it. Although GtkAda mostly takes care of that aspect
 --    transparently, you might need in some obscure cases to increment or
 --    decrement the reference counting for a widget manually, so that it is not
 --    removed from memory while you still need it.
@@ -45,9 +45,9 @@
 --    its children. Theses data are references by a String, in a hash-table.
 --    GtkAda itself uses this feature to provide an easy conversion between C
 --    and Ada widgets.
---    Altough you might prefer to have a completly object-oriented application
---    (and thus associate data through class inheritance), it might be
---    convenient to directly attach some data to your objects.
+--    Although you might prefer to have a completely object-oriented
+--    application (and thus associate data through class inheritance), it
+--    might be convenient to directly attach some data to your objects.
 --
 --  - It also contains the basic structures and subprograms required for signal
 --    emission. This is of course used to implement the signal mechanism in
@@ -156,10 +156,11 @@ package Gtk.Object is
    --     anyway).
    --
    --  - "Floating":
-   --     The objet has no parent yet, since it was just created. Its reference
-   --     count is still 1 (as it was initially). This flag is cleared as soon
-   --     as Set_Parent is called on the widget or the widget is qualified as
-   --     a toplevel widget (see Gtk.Container.Register_Toplevel).
+   --     The object has no parent yet, since it was just created. Its
+   --     reference count is still 1 (as it was initially). This flag is
+   --     cleared as soon as Set_Parent is called on the widget or the widget
+   --     is qualified as a toplevel widget (see
+   --     Gtk.Container.Register_Toplevel).
    --
    --  - "Connected":
    --     Set if the object is connected to at least one handler

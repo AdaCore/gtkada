@@ -64,7 +64,7 @@ package Gtk.Extra.Sheet is
 
    type Gtk_Sheet_Child is new Gdk.C_Proxy;
    --  A widget insert in the sheet.
-   --  This structure includes both a widge pointer and the position in the
+   --  This structure includes both a widget pointer and the position in the
    --  table in which it is put.
 
    ----------------
@@ -192,7 +192,7 @@ package Gtk.Extra.Sheet is
    --  Scroll the viewing area to (Row, Column).
    --  (Row_Align, Col_Align) represent the location on the screen that the
    --  cell should appear at. (0.0, 0.0) is at the top-left of the screen,
-   --  wherease (1.0, 1.0) is at the bottom-right corner.
+   --  whereas (1.0, 1.0) is at the bottom-right corner.
    --  If Row or Column is negative, there is no change.
 
    ----------------------------
@@ -594,7 +594,7 @@ package Gtk.Extra.Sheet is
    -----------------------
    --  You can associate any kind of data with a cell, just like you
    --  can associate user_data with all the widgets.
-   --  Note that this uses a generic package, which must be instanciated at
+   --  Note that this uses a generic package, which must be instantiated at
    --  library level since it has internal clean up functions.
 
    generic

@@ -54,7 +54,7 @@ package Gtk.Extra.Plot_Canvas is
                       Height : in Gint);
    --  Create a new Gtk_Plot_Canvas, with a specific screen size.
    --  Since the widget can have an unlimited internal size, it does not try
-   --  to set its size to accomodate all of its children.
+   --  to set its size to accommodate all of its children.
 
    procedure Initialize (Widget : access Gtk_Plot_Canvas_Record'Class;
                          Width  : in Gint;
@@ -71,7 +71,7 @@ package Gtk.Extra.Plot_Canvas is
        X           : in Gdouble;
        Y           : in Gdouble);
    --  Add a new plot to the list handled by the canvas.
-   --  The canvas will then provide drag-and-drop functionnalities for that
+   --  The canvas will then provide drag-and-drop functionalities for that
    --  plot.
    --  The plot is displayed at the relative screen coordinates (X, Y).
    --  Plot becomes the new active plot, and its associated pixmap becomes the

@@ -96,7 +96,7 @@ package Gtk.Extra.Plot_Layout is
    --  Put an arbitrary text in the layout.
    --  Ps_Font should be the name of a postscript font.
    --  (X, Y) are the relative coordinates to which the text should be drawn.
-   --  The only legal values for Angle are 0, 90, 180 and 270 degres.
+   --  The only legal values for Angle are 0, 90, 180 and 270 degrees.
 
    procedure Get_Pixel (Plot_Layout : access Gtk_Plot_Layout_Record;
                         Px          : in Gdouble;

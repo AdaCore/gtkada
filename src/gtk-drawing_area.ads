@@ -63,7 +63,7 @@ package Gtk.Drawing_Area is
 
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
    --  Create a new blank Drawing_Area.
-   --  Note that the background of the widget is unitialized, and that you
+   --  Note that the background of the widget is uninitialized, and that you
    --  have to draw on it yourself.
 
    procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record'Class);

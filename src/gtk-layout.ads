@@ -109,7 +109,7 @@ package Gtk.Layout is
                             return Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment that indicate the horizontal visual area
    --  of the layout.
-   --  You generally do not have to modify the value of this adustment
+   --  You generally do not have to modify the value of this adjustment
    --  yourself. This is done automatically by GtkAda when the layout has
    --  been put in a Gtk_Scrolled_Window.
 
@@ -117,7 +117,7 @@ package Gtk.Layout is
                             return Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment that indicate the vertical visual area
    --  of the layout.
-   --  You generally do not have to modify the value of this adustment
+   --  You generally do not have to modify the value of this adjustment
    --  yourself. This is done automatically by GtkAda when the layout has
    --  been put in a Gtk_Scrolled_Window.
 

@@ -48,7 +48,7 @@ package Gdk.Cursor is
       X      : in Glib.Gint;
       Y      : in Glib.Gint);
 
-   procedure Destroy (Cursor : in out Gdk_Cursor);
+   procedure Destroy (Cursor : in Gdk_Cursor);
 
 private
    Null_Cursor : constant Gdk_Cursor := null;

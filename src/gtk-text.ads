@@ -31,7 +31,7 @@
 --
 --  This widget displays any given text that can be manipulated by
 --  both the user and the programmer.
---  The text can optionaly be interactively modified by the user.
+--  The text can optionally be interactively modified by the user.
 --  Different colors and fonts can be used for any given part of the
 --  text. The background can have any color, or even be a pixmap.
 --
@@ -76,7 +76,7 @@ package Gtk.Text is
    --  Backward delete Nchars characters from the current cursor position.
    --  There must be at least Nchars characters to delete before the
    --  pointer, or the operation will not be performed.
-   --  Return True if the operation was succesful, False otherwise.
+   --  Return True if the operation was successful, False otherwise.
 
    function Forward_Delete (Text : access Gtk_Text_Record;
                             Nchars : in Guint)
@@ -84,7 +84,7 @@ package Gtk.Text is
    --  Forward delete Nchars characters from the current point position.
    --  There must be at least Nchars characters to delete after the
    --  pointer, or the operation will not be performed.
-   --  Return True if the operation was succesful, False otherwise.
+   --  Return True if the operation was successful, False otherwise.
 
    procedure Freeze (Text : access Gtk_Text_Record);
    --  Freeze the Gtk_Text widget.

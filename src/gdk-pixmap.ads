@@ -29,7 +29,7 @@
 
 --  <description>
 --
---  Pixmaps are offscreen drawables. They can be drawn upon with the standard
+--  Pixmaps are off-screen drawables. They can be drawn upon with the standard
 --  drawing primitives, then copied to another drawable (such as a Gdk_Window)
 --  with Gdk.Pixmap.Draw. The depth of a pixmap is the number of bits per
 --  pixels. Bitmaps are simply pixmaps with a depth of 1. (That is, they are

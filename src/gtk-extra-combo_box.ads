@@ -50,7 +50,7 @@ package Gtk.Extra.Combo_Box is
    procedure Gtk_New (Widget : out Gtk_Combo_Box);
    --  Create a new combo box.
    --  This creates all the internal subwidgets (the popup window,...) but
-   --  this is your responsability to put something inside the button or
+   --  this is your responsibility to put something inside the button or
    --  the popup window.
 
    procedure Initialize (Widget : access Gtk_Combo_Box_Record'Class);

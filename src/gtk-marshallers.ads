@@ -52,7 +52,7 @@
 --     explained in more details.
 --
 --     A General_Handler is an access to any Handler. Note that this is
---     a type used internaly, most users should *not* be using it. It is
+--     a type used internally, most users should *not* be using it. It is
 --     publicly declared so that users can create new marshallers that
 --     would not be already provided here.
 --

@@ -82,7 +82,7 @@ package Gtk.Packer is
    --  other widget is inserted in the same line.
    --
    --  For instance, if you put two widgets on Side_Top, the second one will
-   --  appear below the first one. If you add two widgets on Side_RighT, the
+   --  appear below the first one. If you add two widgets on Side_Right, the
    --  second one will be placed on the left of the first.
 
    type Gtk_Anchor_Type is (Anchor_Center,

@@ -201,7 +201,7 @@ package Gtk.Editable is
    --
    --    Emitted when some text is deleted by the user. As for the
    --    "insert-text" handler, it is possible to override the default
-   --    behaviour by connecting a handler to this signal, and then
+   --    behavior by connecting a handler to this signal, and then
    --    stopping the signal.
    --
    --  - "activate"

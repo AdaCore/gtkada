@@ -75,7 +75,7 @@ package Gtk.Clist is
    --  number, starting from 0.
 
    type Gtk_Sort_Type is (Ascending, Descending);
-   --  The order in which the rwos should be sorted.
+   --  The order in which the rows should be sorted.
 
    --  <doc_ignore>
    function Convert is new Unchecked_Conversion
@@ -173,7 +173,7 @@ package Gtk.Clist is
    --  Modify the selection mode for the clist.
    --  This indicates whether one or more lines can be selected at the
    --  same time in the clist, and how this selection can done by the
-   --  user (does he have to click explictly on an item, or can he
+   --  user (does he have to click explicitly on an item, or can he
    --  browse through the clist and select the last item he was on, etc.)
    --
    --  Note that changing the selection mode to Selection_Single or
@@ -462,7 +462,7 @@ package Gtk.Clist is
      (Clist : access Gtk_Clist_Record; Row : Gint;
       Style : in Gtk.Style.Gtk_Style);
    --  Set the default style for the cells in the row. This can be
-   --  overriden for each cell with Set_Cell_Style.
+   --  overridden for each cell with Set_Cell_Style.
 
    function Get_Row_Style (Clist  : access Gtk_Clist_Record;
                            Row    : in     Gint)
@@ -679,7 +679,7 @@ package Gtk.Clist is
      (Clist         : access Gtk_Clist_Record;
       Button        :        Guint;
       Button_Action :        Gtk.Enums.Gtk_Button_Action);
-   --  Set the action for a specific buton on the list.
+   --  Set the action for a specific button on the list.
    --  The default if for the left mouse button to select or drag and item,
    --  the other buttons are ignored.
    --  The Button_Expands action has no effect on a clist.
@@ -706,9 +706,10 @@ package Gtk.Clist is
    --  line in the clist.
    --  This package is the equivalent of Gtk.Widget.User_Data for the Clists.
    --
-   --  This is your responsability to use the Get and Set functions from the
+   --  This is your responsibility to use the Get and Set functions from the
    --  same generic package. However, you can use different packages for
-   --  different lines (altough this will definitly make things harded to use!)
+   --  different lines (although this will definitely make things harder to
+   --  use!)
    --
    --  Note also that an internal copy of the Data is done, therefore the
    --  "find" functions found in gtk+ have no equivalent in GtkAda, although it

@@ -29,7 +29,7 @@
 
 --  <description>
 --
---  This package provides useful routines in cunjunction with the run time
+--  This package provides useful routines in conjunction with the run time
 --  loading of XML files.
 --  @pxref{Package_Gtk.Glade}.
 --

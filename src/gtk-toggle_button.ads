@@ -34,7 +34,8 @@
 --  when the state is changed.
 --
 --  You should consider using a Gtk_Check_Button instead, since it looks
---  nicer and provides more visual clues that the button is toggleable.
+--  nicer and provides more visual clues that the button can be
+--  toggled.
 
 --  </description>
 --  <c_version> 1.2.6 </c_version>

@@ -36,7 +36,7 @@
 --     bmp.
 --
 --  With this package, you can load images from file, display them on the
---  screen, rescale them and composite them with other images.
+--  screen, re-scale them and composite them with other images.
 --  All the functions fully support alpha channels (opacity).
 --
 --  Different filters are provided, depending on the quality of output you
@@ -136,7 +136,7 @@ package Gdk.Pixbuf is
                      Has_Alpha       : in Boolean := False;
                      Bits_Per_Sample : in Gint := 8)
                     return Gdk_Pixbuf;
-   --  Create a blank pixbuf with an optimal rowstride and a new buffer.
+   --  Create a blank pixbuf with an optimal row stride and a new buffer.
    --  The buffer is allocated, but not cleared.
    --  The reference counting is initialized to 1.
 
@@ -277,7 +277,7 @@ package Gdk.Pixbuf is
    --  all of its ancestors up to the root window must be mapped.  Also, the
    --  specified source rectangle must be completely contained within the
    --  window and within the screen.  If regions of the window are obscured by
-   --  noninferior windows, the contents of those regions are undefined.
+   --  non-inferior windows, the contents of those regions are undefined.
    --  The contents of regions obscured by inferior windows of a different
    --  depth than that of the source window will also be undefined.
    --

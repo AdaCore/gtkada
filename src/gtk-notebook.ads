@@ -283,7 +283,7 @@ package Gtk.Notebook is
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Modify the widget displayed in the tab for the page that contains Child.
-   --  Tab_Label is generally a Gtk_Label, altough it can also be a Gtk_Box
+   --  Tab_Label is generally a Gtk_Label, although it can also be a Gtk_Box
    --  that contains a Gtk_Pixmap and a Gtk_Label if you want to show pixmaps.
 
    procedure Set_Tab_Label_Text

@@ -57,7 +57,7 @@ package Gtk.Button_Box is
    --  Set the default size for the children of the button boxes.
    --  This is the minimal size that the children will have (in pixels).
    --  These default values apply to all the Button_Boxes created in your
-   --  application, expcet for boxes where Set_Child_Size has been called.
+   --  application, except for boxes where Set_Child_Size has been called.
 
    procedure Get_Child_Size_Default (Min_Width  : out Gint;
                                      Min_Height : out Gint);

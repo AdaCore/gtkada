@@ -727,7 +727,7 @@ end Gtk.Handlers;
 
 --  <example>
 --  --  This example connects the "delete_event" signal to a widget.
---  --  The handlers for this signal get an extran argument which is
+--  --  The handlers for this signal get an extra argument which is
 --  --  the Gdk_Event that generated the signal.
 --
 --  with Gtk.Handlers;    use Gtk.Handlers;

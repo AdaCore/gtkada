@@ -91,7 +91,7 @@ package Gtk.Window is
                           Wmclass_Name  : in String;
                           Wmclass_Class : in String);
    --  Specify the string to look for in the user's configuration files
-   --  (Xdefault...) for windows specific ressources. See some X11
+   --  (Xdefault...) for windows specific resources. See some X11
    --  documentation for more information (man XSetClassHint)
    --  The window should not be realized when you call this function.
 
@@ -166,7 +166,7 @@ package Gtk.Window is
    procedure Set_Transient_For (Window : access Gtk_Window_Record;
                                 Parent : access Gtk_Window_Record'Class);
    --  Specify that Window is a transient window.
-   --  A transcient window is a temporary window, like a popup menu or a
+   --  A transient window is a temporary window, like a popup menu or a
    --  dialog box). Parent is the toplevel window of the application to which
    --  Window belongs. A window that has set this can expect less decoration
    --  from the window manager (for instance no title bar and no borders).

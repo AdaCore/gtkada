@@ -89,7 +89,7 @@ package Glib.Glist is
       function Concat (List1 : in Glist;
                        List2 : in Glist)
                       return Glist;
-      --  Concat two lists, and return the result.
+      --  Concatenate two lists, and return the result.
       --  List2 is added at the end of List1.
       --  The complexity is O(n1) (depends on the size of List1).
 

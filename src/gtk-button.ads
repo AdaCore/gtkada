@@ -50,7 +50,7 @@ package Gtk.Button is
    --  if Label is not the empty string, then the text appears in the
    --  button (and the child of the button is a Gtk_Label). On the other
    --  hand, if Label is the empty string, then no child is created for
-   --  the button and it is your responsability to add one. This is the
+   --  the button and it is your responsibility to add one. This is the
    --  recommended way to put a pixmap inside the button.
 
    procedure Initialize (Button : access Gtk_Button_Record'Class;

@@ -60,7 +60,7 @@ package Gtk.Hbutton_Box is
    procedure Set_Spacing_Default (Spacing : in Gint);
    --  Set the default spacing (space between two adjacent children).
    --  This is done for all the Hbutton_Boxes in your application. This can be
-   --  overriden for a specific box by calling Gtk.Button_Box.Set_Spacing.
+   --  overridden for a specific box by calling Gtk.Button_Box.Set_Spacing.
 
    function Get_Spacing_Default return Gint;
    --  Return the default spacing to use for all Hbutton_Boxes in your

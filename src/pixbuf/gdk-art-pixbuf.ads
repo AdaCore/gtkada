@@ -55,10 +55,10 @@ package Gdk.Art.Pixbuf is
    --  Filter_Nearest is nearest neighbor. It is the fastest and lowest
    --  quality.
    --
-   --  Filter_Tiles is an accurate simulation of the PostScript image operator
+   --  Filter_Tiles is an accurate simulation of the Postscript image operator
    --  without any interpolation enabled; each pixel is rendered as a tiny
    --  parallelogram of solid color, the edges of which are implemented
-   --  with antialiasing. It resembles nearest neighbor for enlargement,
+   --  with anti-aliasing. It resembles nearest neighbor for enlargement,
    --  and bilinear for reduction.
    --
    --  Filter_Bilinear is bilinear interpolation. For enlargement, it is

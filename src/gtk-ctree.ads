@@ -447,7 +447,7 @@ package Gtk.Ctree is
                                  Node  : in     Gtk_Ctree_Node;
                                  Style : in     Gtk.Style.Gtk_Style);
    --  Set the default style for the cells in the Node.
-   --  This can be overriden for each cell with Node_Set_Cell_Style.
+   --  This can be overridden for each cell with Node_Set_Cell_Style.
 
    function Node_Get_Row_Style (Ctree  : access Gtk_Ctree_Record;
                                 Node   : in     Gtk_Ctree_Node)

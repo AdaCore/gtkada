@@ -85,7 +85,7 @@ package Gtk.Paned is
 
    procedure Gtk_New_Hpaned (Widget : out Gtk_Paned);
    --  Create a new horizontal container.
-   --  The children will be displayed one besized the other.
+   --  The children will be displayed one besides the other.
 
    procedure Initialize_Vpaned (Widget : access Gtk_Paned_Record'Class);
    --  Internal initialization function.

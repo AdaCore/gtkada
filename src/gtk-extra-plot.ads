@@ -753,7 +753,7 @@ package Gtk.Extra.Plot is
    --------------
    --  A dataset is a set of points, either given explicitly by your
    --  application or calculated with a specific function, and that can be
-   --  ploted on the screen.
+   --  plotted on the screen.
    --  In Gtk_Plot, such a set is represented with symbols (special points in
    --  the graph, that can be manipulated interactively if you so wish), linked
    --  by connectors, which are either straight lines, splines, sets, ...
@@ -763,7 +763,7 @@ package Gtk.Extra.Plot is
    --  Return a newly allocated dataset.
    --  This set has to be freed manually by your application, by calling the
    --  Free subprogram below.
-   --  Datasets allocated by this function will contain explicits points
+   --  Datasets allocated by this function will contain explicit points
    --  specified by the user. If you want to automatically calculate the set
    --  with a function, see the subprogram Add_Function below.
 
@@ -801,7 +801,7 @@ package Gtk.Extra.Plot is
                            Gc   : in Gdk.GC.Gdk_GC;
                            Data : in Gtk_Plot_Data);
    --  Force a redraw of the dataset.
-   --  The set is redrawn immediatly. You should probably rather queue a draw
+   --  The set is redrawn immediately. You should probably rather queue a draw
    --  request for Plot itself, which will also redraw all the other sets
    --  associated with the plot.
 
@@ -1006,7 +1006,7 @@ package Gtk.Extra.Plot is
    --  part of the standard gtk+ packages. Instead, use the functions below.
    --
    --  - "transparent"
-   --    If this flag is set, the widget's backgroud is not filled, and thus
+   --    If this flag is set, the widget's background is not filled, and thus
    --    the widget's parent's background is seen through it.
 
    Transparent : constant := 2 ** 0;
