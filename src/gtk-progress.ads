@@ -47,7 +47,7 @@ package Gtk.Progress is
       return        String;
    function Get_Value (Progress : in Gtk_Progress)
                        return        Gfloat;
-   procedure Reconfigure
+   procedure Configure
      (Progress : in Gtk_Progress;
       Value    : in Gfloat;
       Min      : in Gfloat;

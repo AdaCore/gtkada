@@ -33,6 +33,29 @@ with System;
 
 package body Gtk.Progress is
 
+   ---------------
+   -- Configure --
+   ---------------
+
+   procedure Configure
+      (Progress : in Gtk_Progress;
+       Value    : in Gfloat;
+       Min      : in Gfloat;
+       Max      : in Gfloat)
+   is
+      procedure Internal
+         (Progress : in System.Address;
+          Value    : in Gfloat;
+          Min      : in Gfloat;
+          Max      : in Gfloat);
+      pragma Import (C, Internal, "gtk_progress_configure");
+   begin
+      Internal (Get_Object (Progress),
+                Value,
+                Min,
+                Max);
+   end Configure;
+
    -----------------------
    -- Get_Activity_Mode --
    -----------------------
@@ -123,29 +146,6 @@ package body Gtk.Progress is
    begin
       return Internal (Get_Object (Progress));
    end Get_Value;
-
-   -----------------
-   -- Reconfigure --
-   -----------------
-
-   procedure Reconfigure
-      (Progress : in Gtk_Progress;
-       Value    : in Gfloat;
-       Min      : in Gfloat;
-       Max      : in Gfloat)
-   is
-      procedure Internal
-         (Progress : in System.Address;
-          Value    : in Gfloat;
-          Min      : in Gfloat;
-          Max      : in Gfloat);
-      pragma Import (C, Internal, "gtk_progress_reconfigure");
-   begin
-      Internal (Get_Object (Progress),
-                Value,
-                Min,
-                Max);
-   end Reconfigure;
 
    -----------------------
    -- Set_Activity_Mode --
