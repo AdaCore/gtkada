@@ -622,6 +622,7 @@ package body Gtkada.MDI is
          2 => (1 => GType_Pointer),
          3 => (1 => GType_Pointer));
       No_Signals : constant chars_ptr_array (1 .. 0) := (others => Null_Ptr);
+
    begin
       Gtk.Fixed.Initialize (MDI);
       Set_Has_Window (MDI, True);
@@ -637,8 +638,6 @@ package body Gtkada.MDI is
 
       MDI.Focus_Title_Color := Parse (Default_Title_Bar_Focus_Color);
       Alloc (Get_Default_Colormap, MDI.Focus_Title_Color);
-
-      MDI.Highlight_Style := Copy (Get_Style (MDI));
 
       Configure (MDI,
                  Opaque_Resize     => True,
@@ -819,19 +818,23 @@ package body Gtkada.MDI is
      (MDI   : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      M : constant MDI_Window := MDI_Window (MDI);
-      D : constant Selection_Dialog_Access :=
+      M     : constant MDI_Window := MDI_Window (MDI);
+      D     : constant Selection_Dialog_Access :=
         Selection_Dialog_Access (M.Selection_Dialog);
       Close : Boolean := False;
+      Key   : Gdk_Key_Type;
       Tmp   : Boolean;
       pragma Unreferenced (Tmp);
+
    begin
       --  This isn't a key press for the next_child or previous_child
       --  functions, since those are handled by the outside application.
 
       if Get_Event_Type (Event) = Key_Press then
-         if Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_BackSpace
-           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Delete
+         Key := Get_Key_Val (Event);
+
+         if Key = Gdk.Types.Keysyms.GDK_BackSpace
+           or else Key = Gdk.Types.Keysyms.GDK_Delete
          then
             Delete_Text (D.Ent, Gint (D.Length) - 1, -1);
          else
@@ -848,20 +851,25 @@ package body Gtkada.MDI is
       elsif Get_Event_Type (Event) = Key_Release then
          --  As soon as one of the modifiers of the initial key is released,
          --  we close the dialog
+
+         Key := Get_Key_Val (Event);
+
          if (D.Modifier and Control_Mask) /= 0
            and then
-             (Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Control_L
-              or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Control_R)
+             (Key = Gdk.Types.Keysyms.GDK_Control_L
+              or else Key = Gdk.Types.Keysyms.GDK_Control_R)
          then
             Close := True;
-         end if;
 
-         if (D.Modifier and Mod1_Mask) /= 0
-         and then (Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Meta_L
-                   or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Meta_R
-                   or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Alt_L
-                   or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Alt_R)
+         elsif (D.Modifier and Mod1_Mask) /= 0
+           and then (Key = Gdk.Types.Keysyms.GDK_Meta_L
+                     or else Key = Gdk.Types.Keysyms.GDK_Meta_R
+                     or else Key = Gdk.Types.Keysyms.GDK_Alt_L
+                     or else Key = Gdk.Types.Keysyms.GDK_Alt_R)
          then
+            Close := True;
+
+         elsif Key = Gdk.Types.Keysyms.GDK_Escape then
             Close := True;
          end if;
 
@@ -1042,6 +1050,12 @@ package body Gtkada.MDI is
       if Title_Bar_Color /= Null_Color then
          MDI.Title_Bar_Color   := Title_Bar_Color;
       end if;
+
+      if MDI.Highlight_Style /= null then
+         Unref (MDI.Highlight_Style);
+      end if;
+
+      MDI.Highlight_Style := Copy (Get_Style (MDI));
 
       if Focus_Title_Color /= Null_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
