@@ -497,17 +497,25 @@ package body Gtkada.MDI is
    function Set_Focus_Child_MDI_Floating
      (Child : access Gtk_Widget_Record'Class) return Boolean is
    begin
-      Set_Focus_Child (MDI_Child (Child));
+      --  Let the even through if the child already has the focus. This way,
+      --  the notebook tab of the focus child can still be used for
+      --  drag-and-drop
+      if MDI_Child (Child).MDI.Focus_Child = MDI_Child (Child) then
+         return False;
 
-      --  We must return True here, to stop the propagation. This function is
-      --  called as a result of a button_press event in the notebook's tabs.
-      --  The call to Set_Focus_Child above raises the child and gives it the
-      --  focus appropriately. However, if we let the signal go through, it
-      --  will be handled by the notebook, which will not see a change in the
-      --  current page, and will give the focus to the tab itself, not to the
-      --  page's contents.
+      else
+         Set_Focus_Child (MDI_Child (Child));
 
-      return True;
+         --  We must return True here, to stop the propagation. This function
+         --  is called as a result of a button_press event in the notebook's.
+         --  tabs The call to Set_Focus_Child above raises the child and gives
+         --  it the focus appropriately. However, if we let the signal go
+         --  through it will be handled by the notebook, which will not see a
+         --  change in the current page, and will give the focus to the tab
+         --  itself, not to the page's contents.
+
+         return True;
+      end if;
    end Set_Focus_Child_MDI_Floating;
 
    -------------
