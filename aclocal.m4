@@ -649,6 +649,9 @@ AC_DEFUN(AM_WITH_NLS,
     AC_MSG_RESULT($USE_NLS)
     AC_SUBST(USE_NLS)
 
+    GETTEXT_INTL="False"
+    HAVE_GETTEXT="False"
+
     dnl If we use NLS figure out what method
     if test "$USE_NLS" = "yes"; then
       AC_DEFINE(ENABLE_NLS)
@@ -656,8 +659,6 @@ AC_DEFUN(AM_WITH_NLS,
       dnl Figure out whether gettext is available in the C or intl library.
       nls_cv_header_intl=
       nls_cv_header_libgt=
-      GETTEXT_INTL="False"
-      HAVE_GETTEXT="False"
 
       AC_CHECK_HEADER(libintl.h,
 	[AC_CACHE_CHECK([for gettext in libc], gt_cv_func_gettext_libc,
