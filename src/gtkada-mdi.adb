@@ -1165,12 +1165,15 @@ package body Gtkada.MDI is
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
 
-         if (not Children_Are_Maximized (M) and then C.State = Normal)
-           or else (C.Uniconified_Width = -1 or else C.Uniconified_Height = -1)
-         then
+         if C.Uniconified_Width = -1 or else C.Uniconified_Height = -1 then
             Req := Get_Child_Requisition (C);
             C.Uniconified_Width := Req.Width;
             C.Uniconified_Height := Req.Height;
+         end if;
+
+         if (not Children_Are_Maximized (M) and then C.State = Normal)
+           or else (C.Uniconified_Width = -1 or else C.Uniconified_Height = -1)
+         then
             Alloc := (C.X, C.Y, Allocation_Int (C.Uniconified_Width),
                       Allocation_Int (C.Uniconified_Height));
             Size_Allocate (C, Alloc);
@@ -3092,7 +3095,6 @@ package body Gtkada.MDI is
 
       List      : Widget_List.Glist := Last (MDI.Items);
       C         : MDI_Child;
-      Alloc     : Gtk_Allocation;
       Old_Focus : constant MDI_Child := MDI.Focus_Child;
       Created   : Boolean := False;
 
@@ -3132,11 +3134,6 @@ package body Gtkada.MDI is
             Ref (C);
             Remove_From_Notebook (C, None);
             Put (MDI.Layout, C, 0, 0);
-            Alloc := (C.X, C.Y,
-                      Allocation_Int (C.Uniconified_Width),
-                      Allocation_Int (C.Uniconified_Height));
-            Size_Allocate (C, Alloc);
-
             Unref (C);
          end loop;
 
