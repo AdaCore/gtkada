@@ -3,10 +3,16 @@ with System;
 
 package Gtk is
 
-   subtype Gint  is Integer;
-   subtype Guint is Positive;
-   subtype Gint32 is Integer range -(2 ** 16) .. (2 ** 16 - 1);
+   subtype Gdouble is Long_Float;
+   subtype Gint    is Integer;
+   subtype Guint   is Positive;
+   subtype Gint32  is Integer range -(2 ** 16) .. (2 ** 16 - 1);
    --  Same for all basic types
+
+   type Gtk_Update_Type is (Update_Continuous,
+                            Update_Discontinuous,
+                            Update_Delayed);
+   --  mapping: Gtk_Update_Type gtkenums.h GtkUpdateType
 
    type Gtk_Object is tagged private;
 
