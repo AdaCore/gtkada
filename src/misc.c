@@ -1,3 +1,4 @@
+
 /*
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
@@ -215,7 +216,7 @@ ada_initialize_class_record
       /* Note: The memory allocated in this function is never freed. No need
 	 to worry, since this is only allocated once per user's widget type,
 	 and might be used until the end of the application */
-
+      
       /* Right now, object->klass points to the ancestor's class */
       GType ancestor = G_TYPE_FROM_CLASS (G_OBJECT_GET_CLASS (object));
       GTypeInfo * class_info = g_new (GTypeInfo, 1);
@@ -1777,12 +1778,6 @@ ada_style_get_white (GtkStyle* style)
   return &style->white;
 }
 
-GdkFont*
-ada_style_get_font (GtkStyle* style)
-{
-  return style->font;
-}
-
 void
 ada_style_set_fg_gc (GtkStyle* style, gint state, GdkGC* gc)
 {
@@ -2114,7 +2109,7 @@ ada_gtk_viewport_get_bin_window (GtkViewport* viewport) {
  ** Functions for Text_Attributes
  ******************************************/
 
-PangoFontDescription
+PangoFontDescription*
 ada_text_attributes_get_font (GtkTextAttributes* text_attr)
 {
   return text_attr->font;
@@ -2126,15 +2121,7 @@ ada_text_attributes_set_font (GtkTextAttributes* text_attr,
 {
   g_return_if_fail (font != NULL);
 
-  /* Free the family name pointer if already allocated */
-  if (text_attr->font.family_name)
-     g_free (text_attr->font.family_name);
-
-  /* set the font. Make sure to strdup the font->family_name field
-     to avoid dangling pointers. This memory will be deallocated
-     during the final unref */
-  text_attr->font = *font;
-  text_attr->font.family_name = g_strdup (font->family_name);
+  text_attr->font = font;
 }
 
 /******************************************
@@ -2990,14 +2977,6 @@ gchar* ada_gflags_get_nick (GFlagsValue* value) {
 
 char* ada_gparam_get_name (GParamSpec* param) {
   return param->name;
-}
-
-char* ada_gparam_get_nick (GParamSpec* param) {
-  return param->nick;
-}
-
-char* ada_gparam_get_blurb (GParamSpec* param) {
-  return param->blurb;
 }
 
 GParamFlags ada_gparam_get_flags (GParamSpec* param) {

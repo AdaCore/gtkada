@@ -67,7 +67,7 @@ package body Glib.Properties.Creation is
    function Description (Param : Param_Spec) return String is
       function Internal (Param : Param_Spec)
          return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_gparam_get_blurb");
+      pragma Import (C, Internal, "g_param_get_blurb");
    begin
       return Interfaces.C.Strings.Value (Internal (Param));
    end Description;
@@ -79,7 +79,7 @@ package body Glib.Properties.Creation is
    function Nick_Name (Param : Param_Spec) return String is
       function Internal (Param : Param_Spec)
          return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_gparam_get_nick");
+      pragma Import (C, Internal, "g_param_get_nick");
    begin
       return Interfaces.C.Strings.Value (Internal (Param));
    end Nick_Name;
