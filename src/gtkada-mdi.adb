@@ -4355,7 +4355,7 @@ package body Gtkada.MDI is
          Add_Child (Child_Node, ID_Node);
       end if;
 
-      Add_Child (Tree, Child_Node);
+      Add_Child (Tree, Child_Node, Append => True);
    end Add_To_Tree;
 
    package body Desktop is
