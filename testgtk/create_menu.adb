@@ -41,17 +41,39 @@ package body Create_Menu is
 
    function Help return String is
    begin
-      return "This demo shows how to create a @bGtk_Menu_Bar@B, with multiple"
+      return
+        "There are several widgets involved in displaying menus. The"
+        & " @bGtk_Menu_Bar@B widget is a horizontal menu bar, which normally"
+        & " appears at the top of an application. The @bGtk_Menu@B widget is"
+        & " the actual menu that pops up. Both @bGtk_Menu_Bar@B and"
+        & " @bGtk_Menu@B are subclasses of @bGtk_Menu_Shell@B; a"
+        & " @bGtk_Menu_Shell@B contains menu items (@bGtk_Menu_Item@B)."
+        & " Each menu item contains text and/or images and can be selected"
+        & " by the user."
+        & ASCII.LF
+        & "This demo shows how to create a @bGtk_Menu_Bar@B, with multiple"
         & " @bGtk_Menu@Bs. Each of this submenu is actually a @btearoff@B menu"
         & ", which means by that clicking on the dashed line, you can simply"
         & " glue the submenu to another place on your desktop, and keep it"
         & " around. To hide it, simply click on the dashed line again."
         & ASCII.LF
-        & "The second item in this demo is a @bGtk_Option_Menu@B which"
-        & " provides a list for the user to choose from. This is different"
-        & " from the @bGtk_Combo_Box@B that you can see in the @bEntry@B demo,"
-        & " since a @bGtk_Option_Menu@B does not have any editable entry"
-        & " associated with it.";
+        & "There are several kinds of menu item, including plain"
+        & " @bGtk_Menu_Item@B, @bGtk_Check_Menu_Item@B which can be"
+        & " checked/unchecked, @bGtk_Radio_Menu_Item@B which is a check menu"
+        & " item that's in a mutually exclusive group,"
+        & " @bGtk_Separator_Menu_Item@B which is a separator bar,"
+        & " @bGtk_Tearoff_Menu_Item@B which allows a @bGtk_Menu@B to be torn"
+        & " off, and @bGtk_Image_Menu_Item@B which can place a @bGtk_Image@B"
+        & " or other widget next to the menu text. A @bGtk_Menu_Item can have"
+        & " a submenu, which is simply a @bGtk_Menu@B to pop up when the menu"
+        & " item is selected. Typically, all menu items in a menu bar have"
+        & " submenus."
+        & ASCII.LF
+        & "The @bGtk_Option_Menu@B widget is a button that pops up a"
+        & " @bGtk_Menu@B when clicked. It's used inside dialogs and such."
+        & " This is different from the @bGtk_Combo_Box@B that you can see"
+        & " in the @bEntry@B demo, since a @bGtk_Option_Menu@B does not have"
+        & " any editable entry associated with it.";
    end Help;
 
    function Create_Menu
