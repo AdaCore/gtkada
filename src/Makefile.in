@@ -81,7 +81,6 @@ $(ARCHIVENAME):: $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 	fi
 
 install_ali::
-	$(CP) $(LIB_DIR)/*.ali .
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
 
 $(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
