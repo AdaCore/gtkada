@@ -8,14 +8,8 @@ package Gtk.Curve is
                            Gtk_Curve_Type_Spline,
                            Gtk_Curve_Type_Free);
 
-   type Float_Array is array (Positive range <>) of Gfloat;
-   type Curve_Vector (Vec_Len : Positive) is
-      record
-         Vector : Float_Array (1 .. Vec_Len);
-      end record;
-
    procedure Get_Vector (Curve  : in Gtk_Curve'Class;
-                         Vector : in out Curve_Vector);
+                         Vector : in out Gfloat_Array);
    procedure Gtk_New (Widget : out Gtk_Curve);
    procedure Reset (Curve : in Gtk_Curve'Class);
    procedure Set_Curve_Type (Curve      : in Gtk_Curve'Class;
@@ -28,7 +22,7 @@ package Gtk.Curve is
       Min_Y : in Gfloat;
       Max_Y : in Gfloat);
    procedure Set_Vector (Curve  : in Gtk_Curve'Class;
-                         Vector : in Curve_Vector);
+                         Vector : in Gfloat_Array);
 
 private
 

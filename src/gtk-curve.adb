@@ -6,15 +6,15 @@ package body Gtk.Curve is
    ----------------
 
    procedure Get_Vector (Curve  : in Gtk_Curve'Class;
-                         Vector : in out Curve_Vector)
+                         Vector : in out Gfloat_Array)
    is
       procedure Internal (Curve  : System.Address;
                           Veclen : Integer;
                           Vector : System.Address);
       pragma Import (C, Internal, "gtk_curve_get_vector");
    begin
-      Internal (Get_Object (Curve), Vector.Vec_Len,
-                Vector.Vector'Address);
+      Internal (Get_Object (Curve), Vector'Length,
+                Vector'Address);
    end Get_Vector;
 
    -------------
@@ -91,15 +91,15 @@ package body Gtk.Curve is
    ----------------
 
    procedure Set_Vector (Curve  : in Gtk_Curve'Class;
-                         Vector : in Curve_Vector)
+                         Vector : in Gfloat_Array)
    is
       procedure Internal (Curve  : System.Address;
                           Veclen : Integer;
                           Vector : System.Address);
       pragma Import (C, Internal, "gtk_curve_set_vector");
    begin
-      Internal (Get_Object (Curve), Vector.Vec_Len,
-                Vector.Vector'Address);
+      Internal (Get_Object (Curve), Vector'Length,
+                Vector'Address);
    end Set_Vector;
 
 
