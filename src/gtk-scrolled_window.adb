@@ -24,30 +24,36 @@ package body Gtk.Scrolled_Window is
    --  Get_Hadjustement  --
    ------------------------
 
-   procedure Get_Hadjustement
-     (Scrolled_Window : in     Gtk_Scrolled_Window'Class;
-      Hadjustment     :    out Adjustment.Gtk_Adjustment'Class) is
+   function Get_Hadjustment
+     (Scrolled_Window : in Gtk_Scrolled_Window'Class)
+      return Adjustment.Gtk_Adjustment
+   is
       function Internal (Scrolled_Window : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_hadjustment");
+      Adjust : Adjustment.Gtk_Adjustment;
    begin
-      Set_Object (Hadjustment, Internal (Get_Object (Scrolled_Window)));
-   end Get_Hadjustement;
+      Set_Object (Adjust, Internal (Get_Object (Scrolled_Window)));
+      return Adjust;
+   end Get_Hadjustment;
 
 
    ------------------------
    --  Get_Vadjustement  --
    ------------------------
 
-   procedure Get_Vadjustement
-     (Scrolled_Window : in     Gtk_Scrolled_Window'Class;
-      Vadjustment     :    out Adjustment.Gtk_Adjustment'Class) is
+   function Get_Vadjustment
+     (Scrolled_Window : in Gtk_Scrolled_Window'Class)
+      return               Adjustment.Gtk_Adjustment
+   is
       function Internal (Scrolled_Window : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_vadjustment");
+      Adjust : Adjustment.Gtk_Adjustment;
    begin
-      Set_Object (Vadjustment, Internal (Get_Object (Scrolled_Window)));
-   end Get_Vadjustement;
+      Set_Object (Adjust, Internal (Get_Object (Scrolled_Window)));
+      return Adjust;
+   end Get_Vadjustment;
 
 
    ---------------

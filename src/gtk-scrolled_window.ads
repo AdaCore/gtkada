@@ -22,15 +22,15 @@ package Gtk.Scrolled_Window is
         Adjustment.Null_Adjustment);
    --  mapping: Construct gtkscrolledwindow.h gtk_scrolled_window_construct
 
-   procedure Get_Hadjustement
-     (Scrolled_Window : in     Gtk_Scrolled_Window'Class;
-      Hadjustment     :    out Adjustment.Gtk_Adjustment'Class);
+   function Get_Hadjustment
+     (Scrolled_Window : in Gtk_Scrolled_Window'Class)
+      return               Adjustment.Gtk_Adjustment;
    --  mapping: Get_Hadjustement gtkscrolledwindow.h \
    --  mapping:                  gtk_scrolled_window_get_hadjustment
 
-   procedure Get_Vadjustement
-     (Scrolled_Window : in     Gtk_Scrolled_Window'Class;
-      Vadjustment     :    out Adjustment.Gtk_Adjustment'Class);
+   function Get_Vadjustment
+     (Scrolled_Window : in Gtk_Scrolled_Window'Class)
+      return               Adjustment.Gtk_Adjustment;
    --  mapping: Get_Vadjustement gtkscrolledwindow.h \
    --  mapping:                  gtk_scrolled_window_get_vadjustment
 
