@@ -17,7 +17,8 @@ gtk+, then do the following:
 If you are under Windows, you need to use GCC 3.2 (or later) to build the
 C files. You can use an older GCC version for the Ada files (gnatmake):
    $ (cd src; patch -p0 < ../contrib/gtkada-2.0-win32.diff)
-   $ CC='gcc-3.2 -mms-bitfields' ./configure --prefix=<install_dir>
+   $ CC='gcc-3.2 -mms-bitfields' ./configure --prefix=<install_dir> \
+       --build=i386-pc-mingw32
    $ make install
 
 On others platforms:
