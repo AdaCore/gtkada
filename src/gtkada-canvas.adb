@@ -19,9 +19,18 @@ with Gtk.Main;         use Gtk.Main;
 with Gtk.Style;        use Gtk.Style;
 with Gtk.Viewport;     use Gtk.Viewport;
 with Gtk.Widget;       use Gtk.Widget;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtk.Object;       use Gtk.Object;
+with System;
 with Unchecked_Deallocation;
 
 package body Gtkada.Canvas is
+
+   Class_Record : System.Address := System.Null_Address;
+   --  This pointer will keep a pointer to the C 'class record' for
+   --  gtk. To avoid allocating memory for each widget, this may be done
+   --  only once, and reused.
+   --  ??? This is a global variable.
 
    -----------------
    -- Subprograms --
@@ -151,12 +160,29 @@ package body Gtkada.Canvas is
    ----------------
 
    procedure Initialize (Canvas : access Interactive_Canvas_Record'Class) is
+      Signals : chars_ptr_array := (1 => New_String ("background_click"));
+      --  Array of the signals created for this widget
+
+      Signal_Parameters : Signal_Parameter_Types :=
+        (1 => (1 => Gtk.Gtk_Type_Gdk_Event));
+      --  the parameters for the above signals.
+      --  This must be defined in this function rather than at the
+      --  library-level, or the value of Gtk_Type_Gdk_Event is not yet
+      --  initialized.
+
    begin
       --  Create the viewport.
       --  The adjustments will be added automatically when the canvas is
       --  put in a scrolled window.
 
       Gtk.Viewport.Initialize (Canvas, Null_Adjustment, Null_Adjustment);
+
+      --  The following call is required to initialize the class record,
+      --  and the new signals created for this widget.
+      --  Note also that we keep Class_Record, so that the memory allocation
+      --  is done only once.
+      Gtk.Object.Initialize_Class_Record
+        (Canvas, Signals, Signal_Parameters, Class_Record);
 
       Gtk_New (Canvas.Drawing_Area);
       Add (Canvas, Canvas.Drawing_Area);
@@ -500,8 +526,9 @@ package body Gtkada.Canvas is
    is
       Item : Canvas_Item_List := Canvas.Children;
    begin
-      while Item /= null loop
-         Execute (Canvas, Item.Item);
+      while Item /= null
+        and then Execute (Canvas, Item.Item)
+      loop
          Item := Item.Next;
       end loop;
    end For_Each_Item;
@@ -1248,6 +1275,7 @@ package body Gtkada.Canvas is
       --  If there was none, nothing to do...
 
       if Canvas.Selected_Child = null then
+         Realize_Handler.Emit_By_Name (Canvas, "background_click", Event);
          return False;
       end if;
 
@@ -1267,8 +1295,20 @@ package body Gtkada.Canvas is
       --  Only left mouse button clicks can select an item
 
       if Get_Button (Event) /= 1 then
+         --  Call the callbacks
+
+         Set_X (Event,
+                Get_X (Event) - Gdouble (Canvas.Selected_Child.Coord.X));
+         Set_Y (Event,
+                Get_Y (Event) - Gdouble (Canvas.Selected_Child.Coord.Y));
+         On_Button_Click (Canvas.Selected_Child, Event);
+
+         Canvas.Selected_Child := null;
+
          return False;
       end if;
+
+      --  Initialize the move
 
       Canvas.Last_X_Event := Gint (Get_X_Root (Event));
       Canvas.Last_Y_Event := Gint (Get_Y_Root (Event));
@@ -1299,6 +1339,7 @@ package body Gtkada.Canvas is
       Grab_Remove (Canvas.Drawing_Area);
 
       if Canvas.Selected_Child = null then
+         Realize_Handler.Emit_By_Name (Canvas, "background_click", Event);
          return False;
       end if;
 
@@ -1739,5 +1780,34 @@ package body Gtkada.Canvas is
       end loop;
       return Current.Item = Canvas_Item (Item);
    end Is_On_Top;
+
+   ---------------
+   -- Show_Item --
+   ---------------
+
+   procedure Show_Item (Canvas : access Interactive_Canvas_Record;
+                        Item   : access Canvas_Item_Record'Class)
+   is
+   begin
+      Clamp_Page (Get_Hadjustment (Canvas),
+                  Gfloat (Item.Coord.X),
+                  Gfloat (Item.Coord.X) + Gfloat (Item.Coord.Width));
+      Clamp_Page (Get_Vadjustment (Canvas),
+                  Gfloat (Item.Coord.Y),
+                  Gfloat (Item.Coord.Y) + Gfloat (Item.Coord.Height));
+      Value_Changed (Get_Hadjustment (Canvas));
+      Value_Changed (Get_Vadjustment (Canvas));
+   end Show_Item;
+
+   -----------------------
+   -- Get_Align_On_Grid --
+   -----------------------
+
+   function Get_Align_On_Grid (Canvas : access Interactive_Canvas_Record)
+                              return Boolean
+   is
+   begin
+      return Canvas.Align_On_Grid;
+   end Get_Align_On_Grid;
 
 end Gtkada.Canvas;

@@ -153,6 +153,10 @@ package Gtkada.Canvas is
    --  Existing items are not moved even if you set this parameter to True,
    --  this will only take effect the next time the items are moved.
 
+   function Get_Align_On_Grid (Canvas : access Interactive_Canvas_Record)
+                              return Boolean;
+   --  Return True if items are currently aligned on grid.
+
    procedure Add_Link (Canvas : access Interactive_Canvas_Record;
                        Src    : access Canvas_Item_Record'Class;
                        Dest   : access Canvas_Item_Record'Class;
@@ -195,11 +199,13 @@ package Gtkada.Canvas is
    --  calling this procedure.
 
    type Item_Processor is access
-     procedure (Canvas : access Interactive_Canvas_Record'Class;
-                Item   : access Canvas_Item_Record'Class);
+     function (Canvas : access Interactive_Canvas_Record'Class;
+               Item   : access Canvas_Item_Record'Class)
+              return Boolean;
    procedure For_Each_Item (Canvas  : access Interactive_Canvas_Record;
                             Execute : Item_Processor);
    --  Execute an action on each of the items contained in the canvas.
+   --  If Execute returns False, we stop traversing the list of children.
 
    function Has_Link (Canvas   : access Interactive_Canvas_Record;
                       From, To : access Canvas_Item_Record'Class;
@@ -223,6 +229,10 @@ package Gtkada.Canvas is
                        Item   : access Canvas_Item_Record'Class)
                       return Boolean;
    --  Return True if Item is displayed on top of all the others in the canvas.
+
+   procedure Show_Item (Canvas : access Interactive_Canvas_Record;
+                        Item   : access Canvas_Item_Record'Class);
+   --  Scroll the canvas so that Item is visible.
 
    ------------------------
    -- Items manipulation --
@@ -248,7 +258,8 @@ package Gtkada.Canvas is
    --  is only called when the click was short.
    --  If it returns True, the canvas it redrawn afterwards (in case the item
    --  has changed for instance).
-   --  This procedure is called in two cases: on button release, or on
+   --  This procedure is called is always called, except when clicking with the
+   --  first button on an item. It is called otherwise for button releases and
    --  double-clicks.
    --  The coordinates (X, Y) in the Event are relative to the top-left corner
    --  of Item.
@@ -263,6 +274,17 @@ package Gtkada.Canvas is
 
    --  <signals>
    --  The following new signals are defined for this widget:
+   --
+   --  "background_click"
+   --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class;
+   --                     Event  : Gdk.Event.Gdk_Event);
+   --
+   --  Called every time the user clicks in the background (ie not on an item,
+   --  or On_Button_Click would be called).
+   --  This is called both on Button_Release and Button_Press events.
+   --  The coordinates (X, Y) in the Event are relative to the top-left corner
+   --  of Canvas.
+   --
    --  </signals>
 
 private
