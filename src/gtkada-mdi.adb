@@ -256,11 +256,6 @@ package body Gtkada.MDI is
      (Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Internal version of Close, for a MDI_Child
 
-   function Leave_Child
-     (Child : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean;
-   --  The pointer has left the mouse.
-
    function Create_Notebook return Gtk_Notebook;
    --  Create a notebook, and set it up for drag-and-drop
 
@@ -2207,29 +2202,6 @@ package body Gtkada.MDI is
       return MDI_Child (Child);
    end Dnd_Data;
 
-   -----------------
-   -- Leave_Child --
-   -----------------
-
-   function Leave_Child
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean
-   is
-      MDI : constant MDI_Window := MDI_Child (Child).MDI;
-   begin
-      --  Ignore this event if we are currently resizing otherwise it becomes
-      --  a move operation (reset of MDI.Current_Cursor).
-      if Get_State (Event) = 0
-        and then MDI.Current_Cursor /= Left_Ptr
-        and then MDI.Selected_Child = null
-      then
-         MDI.Current_Cursor := Left_Ptr;
-         Gdk.Window.Set_Cursor (Get_Window (Child), null);
-      end if;
-
-      return False;
-   end Leave_Child;
-
    ----------
    -- Side --
    ----------
@@ -2361,9 +2333,6 @@ package body Gtkada.MDI is
       Widget_Callback.Connect
         (Child, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Child'Access));
-      Return_Callback.Connect
-        (Child, "leave_notify_event",
-         Return_Callback.To_Marshaller (Leave_Child'Access));
 
       Gtk_New_Vbox (Child.Main_Box, Homogeneous => False, Spacing => 0);
       Add (Child, Child.Main_Box);
@@ -2674,6 +2643,10 @@ package body Gtkada.MDI is
       Title       : UTF8_String;
       Short_Title : UTF8_String := "")
    is
+      Title_Changed : constant Boolean := Child.Title = null
+         or else Child.Title.all /= Title;
+      Short_Title_Changed : constant Boolean := Child.Short_Title = null
+         or else Child.Short_Title.all /= Short_Title;
       The_Title       : String_Access;
       The_Short_Title : String_Access;
       --  Those pointers are used to prevent problems when
@@ -2693,28 +2666,31 @@ package body Gtkada.MDI is
       Child.Title := The_Title;
       Child.Short_Title := The_Short_Title;
 
-      if Child.State = Floating then
+      if Title_Changed and then Child.State = Floating then
          Set_Title (Gtk_Window (Get_Toplevel (Child.Initial)),
                     Locale_From_UTF8 (Title));
       end if;
 
-      Update_Tab_Label (Child);
+      if Short_Title_Changed then
+         Update_Tab_Label (Child);
 
-      --  Update the menu, if it exists. We need to recreate the menu item to
-      --  keep it sorted
+         --  Update the menu, if it exists. We need to recreate the menu item
+         --  to keep it sorted
 
-      if Child.Menu_Item /= null then
-         Destroy (Child.Menu_Item);
-         Create_Menu_Entry (Child);
+         if Child.Menu_Item /= null then
+            Destroy (Child.Menu_Item);
+            Create_Menu_Entry (Child);
+         end if;
       end if;
 
-      if Get_Window (Child) /= Null_Window then
-         Queue_Draw (Child);
+      if Title_Changed or else Short_Title_Changed then
+         if Get_Window (Child) /= Null_Window then
+            Queue_Draw (Child);
+         end if;
+         Emit_By_Name_Child
+           (Get_Object (Child.MDI), "child_title_changed" & ASCII.NUL,
+            Get_Object (Child));
       end if;
-
-      Emit_By_Name_Child
-        (Get_Object (Child.MDI), "child_title_changed" & ASCII.NUL,
-         Get_Object (Child));
    end Set_Title;
 
    --------------------
