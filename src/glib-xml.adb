@@ -624,10 +624,8 @@ package body Glib.XML is
 
       use Dir;
 
-      Index       : aliased Natural := 2;
       F           : Dir.File_Type;
       Buf         : String_Ptr;
-      XML_Version : String_Ptr;
       Result      : Node_Ptr;
 
    begin
@@ -648,13 +646,24 @@ package body Glib.XML is
       end if;
 
       Fast_Read (File, Buf);
-
-      Get_Buf (Buf.all, Index, '>', XML_Version);
-      Result := Get_Node (Buf.all, Index'Unchecked_Access);
+      Result := Parse_Buffer (Buf.all);
       Free (Buf);
-      Free (XML_Version);
       return Result;
    end Parse;
+
+   ------------------
+   -- Parse_Buffer --
+   ------------------
+
+   function Parse_Buffer (Buffer : String) return Node_Ptr is
+      Index       : aliased Natural := 2;
+      XML_Version : String_Ptr;
+
+   begin
+      Get_Buf (Buffer, Index, '>', XML_Version);
+      Free (XML_Version);
+      return Get_Node (Buffer, Index'Unchecked_Access);
+   end Parse_Buffer;
 
    --------------
    -- Find_Tag --

@@ -82,6 +82,10 @@ package Glib.XML is
    function Parse (File : String) return Node_Ptr;
    --  Parse File and return the first node representing the XML file.
 
+   function Parse_Buffer (Buffer : String) return Node_Ptr;
+   --  Parse a given Buffer in memory and return the first node representing
+   --  the XML contents.
+
    procedure Print (N : Node_Ptr; File_Name : String := "");
    --  Write the tree starting with N into a file File_Name. The generated
    --  file is valid XML, and can be parsed with the Parse function.
