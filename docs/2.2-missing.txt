@@ -1,7 +1,7 @@
 Here is a list of functions/files that have not been bound yet. Note that
 some of these functions are probably never needed by an Ada/GtkAda application.
 
-gunicode.h
+gunicode.h: partially bound in Glib.Unicode
 gdk.h: see "missing" section.
 gdkdnd.h
 gdkdrawable.h: see "missing pango" section in gdk-drawable.ads
@@ -89,7 +89,7 @@ gtkwindow.h:gtk_window_get_screen
 
 API additions in GtkTreeView, including:
 gtk_tree_model_get_string_from_iter
-gtk_list_store_remove API
+gtk_list_store_remove
 gtk_tree_model_sort_iter_is_valid(), gtk_tree_view_expand_to_path()
 Add gtk_tree_selection_get_selected_rows(),
 gtk_tree_selection_count_selected_rows()
