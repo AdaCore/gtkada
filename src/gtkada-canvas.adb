@@ -174,16 +174,12 @@ package body Gtkada.Canvas is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Canvas : access Interactive_Canvas_Record'Class) is
-      --  These have to be declared as local variables here, otherwise we
-      --  get a warning message
-      --  Gtk-WARNING **: gtk_signal_collect_params(): invalid untyped argument
-      --  at runtime when emitting the signal ???
-      Signals : constant chars_ptr_array
-        := (1 => New_String ("background_click"),
-            2 => New_String ("item_selected"));
-      --  Array of the signals created for this widget
+   Signals : constant chars_ptr_array :=
+     (1 => New_String ("background_click"),
+      2 => New_String ("item_selected"));
+   --  Array of the signals created for this widget
 
+   procedure Initialize (Canvas : access Interactive_Canvas_Record'Class) is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => Gtk.Gtk_Type_Gdk_Event),
          2 => (1 => Gtk.Gtk_Type_Pointer));
