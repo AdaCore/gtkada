@@ -1139,18 +1139,16 @@ package body Gtkada.Canvas is
    is
       Area : Gdk_Rectangle := Get_Area (Event);
    begin
-      if Get_Count (Event) = 0 then
-         Gdk.Drawable.Copy_Area
-           (Get_Window (Canvas.Drawing_Area),
-            Canvas.Black_GC,
-            X        => Area.X,
-            Y        => Area.Y,
-            Source   => Canvas.Double_Pixmap,
-            Source_X => Area.X,
-            Source_Y => Area.Y,
-            Width    => Gint (Area.Width),
-            Height   => Gint (Area.Height));
-      end if;
+      Gdk.Drawable.Copy_Area
+        (Get_Window (Canvas.Drawing_Area),
+         Canvas.Black_GC,
+         X        => Area.X,
+         Y        => Area.Y,
+         Source   => Canvas.Double_Pixmap,
+         Source_X => Area.X,
+         Source_Y => Area.Y,
+         Width    => Gint (Area.Width),
+         Height   => Gint (Area.Height));
       return False;
    end Expose;
 
