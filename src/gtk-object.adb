@@ -268,11 +268,12 @@ package body Gtk.Object is
       ----------
 
       procedure Free_Data (Data : in System.Address) is
-         procedure Internal is new Unchecked_Deallocation (Cb_Record,
-                                                           Cb_Record_Access);
-         procedure Internal2 is new Unchecked_Deallocation (Data_Type,
-                                                            Data_Access);
+         procedure Internal is new
+           Unchecked_Deallocation (Cb_Record, Cb_Record_Access);
+         procedure Internal2 is new
+           Unchecked_Deallocation (Data_Type, Data_Access);
          D : Cb_Record_Access := Convert (Data);
+
       begin
          Internal2 (D.Ptr);
          Internal (D);
@@ -282,40 +283,46 @@ package body Gtk.Object is
       -- Get --
       ---------
 
-      function Get (Object : access Gtk_Object_Record'Class;
-                    Id     : in String := "user_data") return Data_Type
+      function Get
+        (Object : access Gtk_Object_Record'Class;
+         Id     : in String := "user_data") return Data_Type
       is
          function Internal (Object : in System.Address;
                             Key    : in String)
                             return System.Address;
          pragma Import (C, Internal, "gtk_object_get_data");
-         D : Cb_Record_Access :=
+         D : constant Cb_Record_Access :=
            Convert (Internal (Get_Object (Object), Id & ASCII.NUL));
+
       begin
-         return D.Ptr.all;
-      exception
-         when Constraint_Error =>
+         if D.Ptr = null then
             raise Gtkada.Types.Data_Error;
+         else
+            return D.Ptr.all;
+         end if;
       end Get;
 
       ---------
       -- Get --
       ---------
 
-      function Get (Object : access Gtk_Object_Record'Class;
-                    Id     : in Glib.GQuark)
-                   return Data_Type
+      function Get
+        (Object : access Gtk_Object_Record'Class;
+         Id     : in Glib.GQuark) return Data_Type
       is
-         function Internal (Object : in System.Address;
-                            Key    : in Glib.GQuark)
-                            return System.Address;
+         function Internal
+           (Object : in System.Address;
+            Key    : in Glib.GQuark) return System.Address;
          pragma Import (C, Internal, "gtk_object_get_data_by_id");
-         D : Cb_Record_Access := Convert (Internal (Get_Object (Object), Id));
+         D : constant Cb_Record_Access :=
+           Convert (Internal (Get_Object (Object), Id));
+
       begin
-         return D.Ptr.all;
-      exception
-         when Constraint_Error =>
+         if D.Ptr = null then
             raise Gtkada.Types.Data_Error;
+         else
+            return D.Ptr.all;
+         end if;
       end Get;
 
       ---------
