@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -118,7 +119,10 @@ package body Create_Ctree is
 
    function Help return String is
    begin
-      return "A @bGtk_Ctree@B is a widget similar to a @bGtk_Clist@B, except"
+      return "!!!! Consider using a @bGtk_Tree_View@B instead !!!!"
+        & ASCII.LF
+        & ASCII.LF
+        & "A @bGtk_Ctree@B is a widget similar to a @bGtk_Clist@B, except"
         & " that the information is presented in a hierarchical manner, as in"
         & " a @bGtk_Tree@B.";
    end Help;
