@@ -27,9 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk; use Gdk;
-with Gtk.Widget;
-with Gtk.Util; use Gtk.Util;
+with Gdk;        use Gdk;
+with Gtk.Widget; use Gtk.Widget;
+with Gtk.Util;   use Gtk.Util;
 with System;
 
 package body Gtk.Packer is
@@ -224,6 +224,38 @@ package body Gtk.Packer is
                 Pad_Y);
    end Set_Default_Pad;
 
+   ----------------
+   -- Find_Child --
+   ----------------
+
+   function Find_Child (Packer : access Gtk_Packer_Record;
+                        Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
+                       return Gtk_Packer_Child
+   is
+      function Internal (Packer : System.Address;
+                         Child  : System.Address)
+                        return System.Address;
+      pragma Import (C, Internal, "ada_packer_find_child");
+   begin
+      return Gtk_Packer_Child (Internal (Get_Object (Packer),
+                                         Get_Object (Child)));
+   end Find_Child;
+
+   -------------------
+   -- Get_Nth_Child --
+   -------------------
+
+   function Get_Nth_Child (Packer : access Gtk_Packer_Record;
+                           N      : Guint)
+                          return Gtk_Packer_Child
+   is
+      function Internal (Packer : System.Address; N : Guint)
+                        return System.Address;
+      pragma Import (C, Internal, "ada_packer_get_nth_child");
+   begin
+      return Gtk_Packer_Child (Internal (Get_Object (Packer), N));
+   end Get_Nth_Child;
+
    -----------------
    -- Set_Spacing --
    -----------------
@@ -241,7 +273,7 @@ package body Gtk.Packer is
    --------------
    -- Generate --
    --------------
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
       S : String_Ptr;
@@ -264,7 +296,7 @@ package body Gtk.Packer is
            Get_Field (N, "default_ipad_y").all, "", "", File => File);
       end if;
    end Generate;
- 
+
    procedure Generate
      (Packer : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
    is
@@ -279,20 +311,20 @@ package body Gtk.Packer is
       Container.Generate (Packer, N);
 
       S := Get_Field (N, "default_border_width");
- 
+
       if S /= null then
          Set_Default_Border_Width (Gtk_Packer (Packer), Guint'Value (S.all));
       end if;
 
       S := Get_Field (N, "default_pad_x");
- 
+
       if S /= null then
          Set_Default_Pad (Gtk_Packer (Packer), Guint'Value (S.all),
            Guint'Value (Get_Field (N, "default_pad_y").all));
       end if;
 
       S := Get_Field (N, "default_ipad_x");
- 
+
       if S /= null then
          Set_Default_Ipad (Gtk_Packer (Packer), Guint'Value (S.all),
            Guint'Value (Get_Field (N, "default_ipad_y").all));
