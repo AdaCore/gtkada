@@ -17,6 +17,7 @@ with Gtk.Widget;
 with Gtk.Window;
 
 with Create_Color_Selection;
+with Create_Buttons;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
 
@@ -81,7 +82,7 @@ package body Test is
 
    Buttons : constant Buttons_Array :=
      ((ASU.To_Unbounded_String ("button box"), null),
-      (ASU.To_Unbounded_String ("buttons"), null),
+      (ASU.To_Unbounded_String ("buttons"), Create_Buttons.Run'Access),
       (ASU.To_Unbounded_String ("check buttons"), Create_Check_Buttons'Access),
       (ASU.To_Unbounded_String ("clist"), null),
       (ASU.To_Unbounded_String ("color selection"),
