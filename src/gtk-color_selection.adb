@@ -113,7 +113,7 @@ package body Gtk.Color_Selection is
 
    function To_Percent (Color : Gushort) return Gdouble is
    begin
-      return Gdouble (Gdouble (Color) / Gdouble (Gushort'Last));
+      return Gdouble (Color) / Gdouble (Gushort'Last);
    end To_Percent;
 
    -----------------------
