@@ -83,7 +83,7 @@ package Gtk.Item_Factory is
    procedure Gtk_New
      (Ifactory       : out Gtk_Item_Factory;
       Container_Type : Gtk_Type;
-      Path           : String;
+      Path           : UTF8_String;
       Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group);
    --  Possible values of Container_Type are:
    --    - Gtk.Option_Menu.Get_Type
