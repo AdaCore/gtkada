@@ -7,6 +7,8 @@ package Gdk.Color is
    type Gdk_Color is new Root_Type with private;
    type Gdk_Colormap is new Root_Type with private;
 
+   Null_Color : constant Gdk_Color;
+
 
    procedure Gdk_New (Colormap     :    out Gdk_Colormap;
                       Visual       : in     Gdk.Visual.Gdk_Visual;
@@ -66,6 +68,8 @@ private
 
    type Gdk_Color is new Root_Type with null record;
    type Gdk_Colormap is new Root_Type with null record;
+
+   Null_Color : constant Gdk_Color := (Ptr => System.Null_Address);
 
    --  mapping: NOT_IMPLEMENTED gdk.h gdk_colormap_ref
    --  mapping: NOT_IMPLEMENTED gdk.h gdk_colormap_unref
