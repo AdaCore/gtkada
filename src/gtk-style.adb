@@ -830,12 +830,29 @@ package body Gtk.Style is
          Detail              : String;
          X, Y, Width, Height : Gint;
          Orientation         : Gtk.Enums.Gtk_Orientation);
+      procedure Internal
+        (Style               : Gtk_Style;
+         Window              : Gdk.Gdk_Window;
+         State_Type          : Gtk.Enums.Gtk_State_Type;
+         Shadow_Type         : Gtk.Enums.Gtk_Shadow_Type;
+         Area                : System.Address;
+         Widget              : System.Address;
+         Detail              : String;
+         X, Y, Width, Height : Gint;
+         Orientation         : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_paint_handle");
    begin
-      Internal
-        (Style, Window, State_Type, Shadow_Type,
-         Area, Get_Object (Widget), Detail & ASCII.Nul,
-         X, Y, Width, Height, Orientation);
+      if Area = Full_Area then
+         Internal
+           (Style, Window, State_Type, Shadow_Type,
+            System.Null_Address, Get_Object (Widget), Detail & ASCII.Nul,
+            X, Y, Width, Height, Orientation);
+      else
+         Internal
+           (Style, Window, State_Type, Shadow_Type,
+            Area, Get_Object (Widget), Detail & ASCII.Nul,
+            X, Y, Width, Height, Orientation);
+      end if;
    end Paint_Handle;
 
 
