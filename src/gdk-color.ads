@@ -28,37 +28,88 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-
 with Gdk.Visual;
 
 package Gdk.Color is
 
+   --  This package provides an interface to the color handling facilities in
+   --  gtk+. It is able to handle any kind of visual (monochrome, greyscale,
+   --  color with different depths, ...), but provides a common and easy
+   --  interface for all of them.
+   --  Some of these functions expect a Colormap. There are two ways you can
+   --  get such a colormap, either a system default colormap or a per-widget
+   --  colormap. It is recommended, unless you are writing your own new widget,
+   --  to always use the system default Colormap. All the functions to get
+   --  these colormap are found in Gtk.Widget.
+   --
+   --  Here is an example how you can allocate a new color, if you already know
+   --  its red/green/blue components:
+   --     Color   : Gdk_Color;
+   --     Success : Boolean;
+   --     Set_Rbg (Color, 255, 255, 255);
+   --     Alloc_Color (Colormap   => Gtk.Widget.Get_Default_Colormap,
+   --                  Color      => Color,
+   --                  Writeable  => False,
+   --                  Best_Match => True,
+   --                  Success    => Success);
+   --     if not Success then
+   --         ...;  --  allocation failed
+   --     end if;
+   --
+   --  Getting the Red/Green/Blue components can be done through Parse, and is
+   --  actually recommended, since the exact color generally depends on the
+   --  visual your application is running on.
+
    type Gdk_Color is private;
    type Gdk_Color_Array is array (Natural range <>) of Gdk_Color;
-
    Null_Color : constant Gdk_Color;
+   --  No color. For most functions, this will select the default color in the
+   --  context, although this exact specification depends on the function you
+   --  want to use.
+
 
    type Gdk_Colormap is new Root_Type with private;
-
    Null_Colormap : constant Gdk_Colormap;
 
+
    Wrong_Color : exception;
+   --  Exception raised when some functions below could not find or allocate
+   --  a color on the user's system.
 
 
-   procedure Gdk_New (Colormap     :    out Gdk_Colormap;
-                      Visual       : in     Gdk.Visual.Gdk_Visual;
-                      Private_Cmap : in     Gint);
+   function Parse (Spec : in String) return Gdk_Color;
+   --  Parses the string Spec, and get its Red/Green/Blue components. The color
+   --  is not allocated, and you need to call Alloc_Color.
+   --  It the string could not be parsed to an existing color, Wrong_Color is
+   --  raised.
+   --  The string can be one of :
+   --  * "RBG: FF/FF/FF" where the "FF" substrings are respectively the value
+   --    of the red, green and blue components. Some other prefixes than RBG
+   --    are defined in the X11 definition, please see some X11 documentation
+   --    (or the man page XParseColor on unix systems).
+   --  * "color_name" which can be any color name defined in the file rgb.txt
+   --    the user system. You should always check that Wrong_Color was not
+   --    raised, in case the color was not known on the user's system.
 
-   procedure Ref (Colormap : in Gdk_Colormap);
 
-   procedure Unref (Colormap : in out Gdk_Colormap);
+   procedure Alloc_Color (Colormap   : in     Gdk_Colormap;
+                          Color      : in     Gdk_Color;
+                          Writeable  : in     Boolean;
+                          Best_Match : in     Boolean;
+                          Success    :    out Boolean);
+   --  Allocate a new color. The fields RGB should have been set before calling
+   --  this function.
+   --  If Writeable is True, the color will be allocated read/write, that can
+   --  be changed at any time. Not all visulals support this. On modern systems
+   --  this usage has become less useful than before, since redrawing the
+   --  screen with a new color is about as fast.
+   --  If Best_Match is True, and the exact color can not be allocated, GtkAda
+   --  will find the closest possible match, and modify the fields Red, Green
+   --  and Blue of Color.
+   --  Note that the allocation has more chances to succeed if Writeable is
+   --  False and Best_Match is True.
+   --  When you no longer use a color, you should call Free.
 
-   procedure Get_System (Colormap : out Gdk_Colormap);
-
-   function Get_System_Size return Gint;
-
-   procedure Change (Colormap : in Gdk_Colormap;
-                     Ncolors  : in Gint);
 
    procedure Alloc_Colors (Colormap   : in     Gdk_Colormap;
                            Colors     : in     Gdk_Color_Array;
@@ -66,16 +117,46 @@ package Gdk.Color is
                            Best_Match : in     Boolean;
                            Success    :    out Boolean_Array;
                            Result     :    out Gint);
+   --  Allocate a set of colors. The parameters are the same as for Alloc_Color
+   --  Result is the number of colors successfully allocated.
+
+
+   function White (Colormap  : in Gdk_Colormap) return Gdk_Color;
+   function Black (Colormap  : in Gdk_Colormap) return Gdk_Color;
+   --  Returns the default white and black colors for the colormap. If these
+   --  colors were not found or could not be allocated, Wrong_Color is raised.
+
+
+   function Get_System return Gdk_Colormap;
+   --  Get the default colormap for the system. This is the same function as
+   --  Gtk.Widget.Get_Default_Colormap.
+
+   procedure Get_Visual (Colormap : in     Gdk_Colormap;
+                         Visual   :    out Gdk.Visual.Gdk_Visual);
+   --  Get the visual associated with a colormap. The main information you can
+   --  get from there is the depth of the display.
+
+
+   procedure Gdk_New (Colormap     :    out Gdk_Colormap;
+                      Visual       : in     Gdk.Visual.Gdk_Visual;
+                      Private_Cmap : in     Boolean);
+   --  Creates a new colormap for the visual. If Private_Cmap is true, then the
+   --  colormap won't be modifiable outside this scope. This might result in
+   --  some strange colors on the display...
+
+
+   procedure Ref (Colormap : in Gdk_Colormap);
+   procedure Unref (Colormap : in out Gdk_Colormap);
+
+   function Get_System_Size return Gint;
+
+   procedure Change (Colormap : in Gdk_Colormap;
+                     Ncolors  : in Gint);
+
    --
    --  The size of the Boolean_Array is equal to the length of the
    --  Colors_Array. USAGE OF AN ARRAY OF A DIFFERENT SIZE WILL
    --  PROBABLY LEAD TO A CONSTRAINT_ERROR.
-
-   procedure Alloc_Color (Colormap   : in     Gdk_Colormap;
-                          Color      : in     Gdk_Color;
-                          Writeable  : in     Boolean;
-                          Best_Match : in     Boolean;
-                          Success    :    out Boolean);
 
    procedure Free_Colors (Colormap : in Gdk_Colormap;
                           Colors   : in Gdk_Color_Array);
@@ -94,17 +175,11 @@ package Gdk.Color is
                    Pixels   : in Gulong_Array;
                    Planes   : in Gulong);
 
-   function White (Colormap  : in Gdk_Colormap) return Gdk_Color;
-   function Black (Colormap  : in Gdk_Colormap) return Gdk_Color;
-   function Parse (Spec      : in String) return Gdk_Color;
+
    procedure Alloc (Colormap  : in Gdk_Colormap;
                     Color     : in out Gdk_Color);
-   --
-   --  The four previous functions raise Wrong_Color if the color could not
+   --  The three previous functions raise Wrong_Color if the color could not
    --  be created
-   --
-   --  The usual way to allocate a new color is :
-   --  Alloc (Get_Default_Colormap (Widget), Parse ("colorname"));
 
 
    function Hash (Color_A : in Gdk_Color;
@@ -114,21 +189,21 @@ package Gdk.Color is
                      Color     : in out Gdk_Color;
                      Succeeded :    out Boolean);
 
-   procedure Get_Visual (Colormap : in     Gdk_Colormap;
-                         Visual   :    out Gdk.Visual.Gdk_Visual);
-
    procedure Copy (Source      : in     Gdk_Color;
                    Destination :    out Gdk_Color);
 
    function "=" (Colora, Colorb : in Gdk_Color) return Boolean;
 
-   --------------------------------------
-   --  Getting the fields of Gdk_Color --
-   --------------------------------------
+   ----------------------------------------------
+   --  Setting/Getting the fields of Gdk_Color --
+   ----------------------------------------------
 
    procedure Set_Rgb (Color   : out Gdk_Color;
                       Red, Green, Blue : in Gushort);
+
    procedure Set_Pixel (Color : in out Gdk_Color; Pixel : Gulong);
+   --  This function should almost never be used. Instead, use Alloc_Color
+
    function Red (Color : in Gdk_Color) return Gushort;
    function Green (Color : in Gdk_Color) return Gushort;
    function Blue (Color : in Gdk_Color) return Gushort;

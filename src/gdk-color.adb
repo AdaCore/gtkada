@@ -236,23 +236,26 @@ package body Gdk.Color is
 
    procedure Gdk_New (Colormap     :    out Gdk_Colormap;
                       Visual       : in     Gdk.Visual.Gdk_Visual;
-                      Private_Cmap : in     Gint) is
+                      Private_Cmap : in     Boolean) is
       function Internal (Visual   : in System.Address;
                          Private_Cmap : in Gint) return System.Address;
       pragma Import (C, Internal, "gdk_colormap_new");
    begin
-      Set_Object (Colormap, Internal (Get_Object (Visual), Private_Cmap));
+      Set_Object (Colormap, Internal (Get_Object (Visual),
+                                      Boolean'Pos (Private_Cmap)));
    end Gdk_New;
 
    ------------------
    --  Get_System  --
    ------------------
 
-   procedure Get_System (Colormap : out Gdk_Colormap) is
+   function Get_System return Gdk_Colormap is
       function Internal return System.Address;
       pragma Import (C, Internal, "gdk_colormap_get_system");
+      Colormap : Gdk_Colormap;
    begin
       Set_Object (Colormap, Internal);
+      return Colormap;
    end Get_System;
 
    ------------------
