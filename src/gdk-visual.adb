@@ -87,6 +87,32 @@ package body Gdk.Visual is
 
 
    --------------------
+   --  List_Visuals  --
+   --------------------
+
+   function Convert (V : in Gdk_Visual'Class) return System.Address is
+   begin
+      return Get_Object (V);
+   end Convert;
+
+   function Convert (V : in System.Address) return Gdk_Visual'Class is
+      Result : Gdk_Visual;
+   begin
+      Set_Object (Result, V);
+      return Result;
+   end Convert;
+
+   function List_Visuals return Gdk_Visual_List.Glist is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gdk_list_visuals");
+      Result : Gdk_Visual_List.Glist;
+   begin
+      Gdk_Visual_List.Set_Object (Result, Internal);
+      return Result;
+   end List_Visuals;
+
+
+   --------------------
    --  Query_Depths  --
    --------------------
 

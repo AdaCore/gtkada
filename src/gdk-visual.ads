@@ -1,10 +1,13 @@
 with Glib; use Glib;
+with Glib.Glist;
 with Gdk.Types;
 
 
 package Gdk.Visual is
 
-   type Gdk_Visual is new Root_Type with private;
+   type Gdk_Visual is new Root_Type with null record;
+   --  This type is not private because we need the full declaration
+   --  to instanciate Glib.Glist.Generic_List with it.
 
    type Gdk_Visual_Type_Array is array (Natural range <>)
      of Types.Gdk_Visual_Type;
@@ -42,13 +45,17 @@ package Gdk.Visual is
    --  mapping: Query_Visual_Types gdk.h gdk_query_visual_types
 
 
-   --  mapping: NOT_IMPLEMENTED gdk.h gdk_list_visuals
+
+   function Convert (V : in Gdk_Visual'Class) return System.Address;
+   function Convert (V : in System.Address) return Gdk_Visual'Class;
+
+   package Gdk_Visual_List is new Glib.Glist.Generic_List (Gdk_Visual'Class);
+
+   function List_Visuals return Gdk_Visual_List.Glist;
+   --  mapping: List_Visuals gdk.h gdk_list_visuals
 
 
 private
-
-   type Gdk_Visual is new Root_Type with null record;
-
 
    pragma Import (C, Get_Best_Depth, "gdk_visual_get_best_depth");
    pragma Import (C, Get_Best_Type, "gdk_visual_get_best_type");
