@@ -43,11 +43,46 @@ if ($cfile[$line] =~ /\/\*/) ## If we have a comment, skip it
 ### Look for the parent widget
 
 my ($parent) = (split (/\s+/, $cfile[$line])) [1];
+
+my (%fields) = ();
+$line++;
+while ($cfile[$line] !~ /\}/)
+  {
+    if ($cfile[$line] =~ /\/\*/) ## If we have a comment, skip it
+      {
+	1 while ($cfile[++$line] !~ /\*\//);
+	$line++;
+      }
+    $line++ while ($cfile[$line] =~ /^\s*$/);
+    chop ($cfile[$line]);
+    $cfile[$line] =~ s/\s+/ /;
+    $cfile[$line] =~ s/^ //;
+    $cfile[$line] =~ s/ \*/\* /;  ## attach the pointer to the type not to the field
+    $cfile[$line] =~ s/;//;
+    my ($type, $field) = split (/ /, $cfile[$line]);
+
+    print "Create a function for the field $field (of type $type) [n]?";
+    my ($answer) = scalar (<STDIN>);
+    if ($answer =~ /^y/)
+      {
+	$fields {$field} = $type;
+      }
+    $line ++;
+  }
+
+
 my (%functions) = &parse_functions;
-    
+
+## Create some new functions for every field to get
+foreach (keys %fields)
+  {
+    push (@{$functions{"ada_" . lc ($current_package) . "_get_$_"}},
+	  $fields{$_}, "Gtk_$current_package Widget");
+  }
 
 &generate_specifications;
 &generate_body;
+&generate_c_functions;
 
 ### END ###############
 
@@ -65,7 +100,7 @@ sub generate_specifications
 	  &package_name ($parent). ".Gtk_", &create_ada_name ($parent).
 	  " with private;\n\n");
     
-    foreach (sort keys %functions)
+    foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
       {
 	&print_declaration ($_, @{$functions{$_}});
       }
@@ -74,7 +109,7 @@ sub generate_specifications
 	  &package_name ($parent). ".Gtk_", &create_ada_name ($parent).
 	  " with null record;\n\n");
     
-    foreach (sort keys %functions)
+    foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
       {
 	&print_comment ($_, @{$functions{$_}});
       }
@@ -95,7 +130,7 @@ sub generate_body
     @output = ();
     push (@output, "package body Gtk.$current_package is\n\n");
     
-    foreach (sort keys %functions)
+    foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
       {
 	&print_body ($_, @{$functions{$_}});
       }
@@ -103,11 +138,30 @@ sub generate_body
     push (@output, "end Gtk.$current_package;\n");
 
     print "\n";
-#    if (scalar (keys %with_list) > 0)
-#      {
-#	print join (";\n", sort keys %with_list), ";\n";
-#      }
     print "\n", join ("", @output);
+  }
+
+#######################
+## Generates the C functions needed to retrieve the fields
+#######################
+sub generate_c_functions
+  {
+    return if (scalar (keys %fields) == 0);
+
+    @output = ();
+    push (@output, "/******************************************\n");
+    push (@output, " ** Functions for $current_package\n");
+    push (@output, " ******************************************/\n\n");
+
+    foreach (sort keys %fields)
+      {
+	my ($ctype) = $current_package;
+	$ctype =~ s/_//g;
+	push (@output, $fields{$_} . "\n");
+	push (@output, "ada_" . lc ($current_package) . "_get_$_ (");
+	push (@output, "Gtk$ctype* widget)\n{\n   return widget->$_;\n}\n\n");
+      }
+    print "\n\n", join ("", @output);
   }
 
 #######################
@@ -265,8 +319,9 @@ sub print_arguments
     if ($return ne "void")
       {
 	push (@output, "\n$indent") if ($arguments[0] !~ /void/);
-	push (@output, "return");
-	push (@output, ' ' x ($longest) . &{$convert} ($return));
+	push (@output, "return ");
+	push (@output, ' ' x ($longest - 1)) if  ($arguments[0] !~ /void/);
+	push (@output, &{$convert} ($return));
       }
   }
 
@@ -390,7 +445,7 @@ sub print_body
 		      6, @arguments);
     push (@output, ";\n");
 
-    push (@output, "      pragma Import (C, Internal, $func_name);\n");
+    push (@output, "      pragma Import (C, Internal, \"$func_name\");\n");
     if ($adaname =~ /New/)
       {
 	push (@output, "      Widget : Gtk_$current_package;\n");
@@ -429,7 +484,7 @@ sub ada_func_name
     my ($c_func_name) = shift;
     my ($type) = lc ($current_package);
 
-    $c_func_name =~ s/^gtk_?//;
+    $c_func_name =~ s/^(gtk|ada)_?//;
     $c_func_name =~ s/^$type\_//;
 
     $type = &create_ada_name ($c_func_name);
@@ -511,5 +566,16 @@ sub print_comment
       {
 	push (@output, &ada_func_name ($func_name));
       }
-    push (@output," $hfile $func_name\n");
+    push (@output," $hfile ");
+    if ($func_name =~ /^gtk/)
+      {
+	push (@output, "$func_name\n");
+      }
+    else
+      {
+	my ($entity) = $current_package;
+	my ($field) = ($func_name =~ /get_(.*)$/);
+	$entity =~ s/_//g;
+	push (@output, "Gtk$entity->$field\n");
+      }
   }
