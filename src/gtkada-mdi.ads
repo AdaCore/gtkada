@@ -49,6 +49,7 @@ with Gtk.Menu_Item;
 with Gtk.Style;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
+with Gtk.Table;
 with Gtk.Widget;
 with Gtkada.Multi_Paned;
 with Pango.Font;
@@ -83,19 +84,21 @@ package Gtkada.MDI is
    --      (the middle notebook only contains Normal items).
 
    type Dock_Side is (Left, Right, Top, Bottom, None);
+   subtype Dock_Side_Not_Central is Dock_Side range Left .. Bottom;
    --  Side on which a child will be docked. If None, the child cannot be
    --  docked.
    --  Order is important, since items docked on the left or right will
    --  occupy the whole height of MDI, whereas the ones on top or bottom will
    --  occupy the full width minus the left and right docks.
 
-   type Priorities_Array is array (Left .. Bottom) of Integer;
-   --  The priorities for the docks on each side of MDI. The lower priority
-   --  dock will be resized first, and thus will occupy the maximum space
-   --  available (for instance, if Left has a lower priority that Bottom, then
-   --  the dock on the left side will occupy the full height of MDI, whereas
-   --  the dock at the bottom will occupy the full width minus the width of
-   --  the left dock).
+   type Priorities_Array is array (1 .. 4) of Dock_Side_Not_Central;
+   --  The priorities for the docks on each side of MDI. The docks are resized
+   --  in the order in which they are found in this array. As a result, if
+   --  Left is seen before Bottom, then the dock on the left side will occupy
+   --  the full height of the MDI, whereas the dock at the bottom will occupy
+   --  the full width minus the width of the left dock.
+   --  Note: sides mustn't be duplicated in this area, each of them must
+   --  appear only once.
 
    procedure Gtk_New
      (MDI   : out MDI_Window;
@@ -305,7 +308,7 @@ package Gtkada.MDI is
    --  visible in the central area can be selected. There is only one such
    --  child unless the central area was splitted. Event is ignored in this
    --  case, and the selection is not interactive
-   --
+
    --  This function is not internal to the MDI since connecting to the
    --  key_press_event and key_release_event should be done in the gtk_window
    --  that contains the MDI. Otherwise, some events are intercepted by gtk+,
@@ -708,7 +711,6 @@ private
    end record;
 
    type Notebook_Array is array (Left .. Bottom) of Gtk.Notebook.Gtk_Notebook;
-   type Int_Array is array (Left .. Bottom) of Glib.Gint;
    type Window_Array is array (Left .. Bottom) of Gdk.Window.Gdk_Window;
    type Event_Array is array (Left .. Bottom) of Gtk.Event_Box.Gtk_Event_Box;
 
@@ -722,7 +724,9 @@ private
    --  The central area. Only one of the items is active at any item and
    --  contains the items assigned to the central area
 
-   type MDI_Window_Record is new Gtk.Fixed.Gtk_Fixed_Record with record
+   type MDI_Window_Record is new Gtk.Table.Gtk_Table_Record with record
+      Main_Pane : Gtkada.Multi_Paned.Gtkada_Multi_Paned;
+
       Items : Gtk.Widget.Widget_List.Glist := Gtk.Widget.Widget_List.Null_List;
       --  The list of all MDI children.
 
@@ -737,21 +741,8 @@ private
       --  The drop sites on each side of the MDI, where items can be dropped to
       --  create new docks
 
-      Docks_Size : Int_Array := (others => 0);
-      --  The size (height or width, depending on the location) of each of
-      --  the docks. The size of the middle dock depends on the size of all
-      --  the others.
-      --  If the value is 0, this means there is no dock on that size.
-      --  If the value is -1, this means that the value should be
-      --  recomputed based on the size requested by the dock itself.
-
       Desktop_Was_Loaded : Boolean := False;
       --  True if a desktop was loaded
-
-      Handles : Window_Array;
-      --  The four handles that can be manipulated by the user to resize
-      --  the docks. We use separate windows so as not to handle the events
-      --  ourselves, but rely on the X server for this.
 
       Selected : Dock_Side := None;
       --  The handle that was selected for the resize operation.
@@ -782,10 +773,6 @@ private
       Focus_Child : MDI_Child := null;
       --  The child that currently has the focus. Some default actions will
       --  apply to this child only.
-
-      Priorities : Priorities_Array := (0, 1, 2, 3);
-      --  The order in which the docks should be displayed. See the
-      --  description of Priorities_Array.
 
       Menu               : Gtk.Menu.Gtk_Menu;
       Dock_Menu_Item     : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
