@@ -71,6 +71,18 @@ package body Gtk.Toggle_Button is
       Initialize (Toggle_Button, Label);
    end Gtk_New;
 
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic
+     (Toggle_Button : out Gtk_Toggle_Button;
+      Label         : String) is
+   begin
+      Toggle_Button := new Gtk_Toggle_Button_Record;
+      Initialize_With_Mnemonic (Toggle_Button, Label);
+   end Gtk_New_With_Mnemonic;
+
    ----------------
    -- Initialize --
    ----------------
@@ -94,6 +106,21 @@ package body Gtk.Toggle_Button is
 
       Initialize_User_Data (Toggle_Button);
    end Initialize;
+
+   ------------------------------
+   -- Initialize_With_Mnemonic --
+   ------------------------------
+
+   procedure Initialize_With_Mnemonic
+     (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      Label         : String)
+   is
+      function Internal (Label : String) return System.Address;
+      pragma Import (C, Internal, "gtk_toggle_button_new_with_mnemonic");
+   begin
+      Set_Object (Toggle_Button, Internal (Label & ASCII.NUL));
+      Initialize_User_Data (Toggle_Button);
+   end Initialize_With_Mnemonic;
 
    ----------------
    -- Set_Active --

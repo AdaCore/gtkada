@@ -38,7 +38,7 @@
 --  toggled.
 
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 --  <screenshot>togglebutton</screenshot>
 
 with Glib;
@@ -59,11 +59,23 @@ package Gtk.Toggle_Button is
    --  Gtk.Container.Add. This is the recommended way to put a pixmap
    --  inside a toggle button.
 
+   procedure Gtk_New_With_Mnemonic
+     (Toggle_Button : out Gtk_Toggle_Button;
+      Label         : String);
+   --  Create a Gtk_Toggle_Button containing Label. The Label will be created
+   --  using Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate
+   --  the mnemonic for the button.
+
    procedure Initialize
      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
       Label         : String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Initialize_With_Mnemonic
+     (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      Label         : String);
+   --  Internal initialization function.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Toggle_Button.
