@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -41,17 +41,6 @@ with Gtk.Ctree; use Gtk.Ctree;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Clist is
-
-   procedure Output_Titles (Name : in String;
-                            A    : in Chars_Ptr_Array;
-                            File : in File_Type);
-   --  Given an array of C String, generate the corresponding Ada code
-   --  in the context of GATE.
-
-   procedure Build_Title_List (N : in Node_Ptr;
-                               A : out Chars_Ptr_Array);
-   --  Build an array of C Strings corresponding to the label contained in the
-   --  widget described by N.
 
    ------------
    -- Append --
@@ -298,12 +287,12 @@ package body Gtk.Clist is
    ---------------------
 
    function Get_Hadjustment (Clist  : access Gtk_Clist_Record)
-                             return          Gtk.Adjustment.Gtk_Adjustment
+     return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (Clist  : in System.Address)
-                         return      System.Address;
+      function Internal (Clist  : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_clist_get_hadjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Clist)), Stub));
@@ -522,12 +511,12 @@ package body Gtk.Clist is
    ---------------------
 
    function Get_Vadjustment (Clist  : access Gtk_Clist_Record)
-                             return          Gtk.Adjustment.Gtk_Adjustment
+     return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (Clist  : in System.Address)
-                         return      System.Address;
+      function Internal (Clist  : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_clist_get_vadjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Clist)), Stub));
@@ -969,9 +958,9 @@ package body Gtk.Clist is
       procedure Internal (Clist      : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_hadjustment");
+
    begin
-      Internal (Get_Object (Clist),
-                Get_Object (Adjustment));
+      Internal (Get_Object (Clist), Get_Object (Adjustment));
    end Set_Hadjustment;
 
    ----------------
@@ -1205,9 +1194,9 @@ package body Gtk.Clist is
       procedure Internal (Clist      : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_vadjustment");
+
    begin
-      Internal (Get_Object (Clist),
-                Get_Object (Adjustment));
+      Internal (Get_Object (Clist), Get_Object (Adjustment));
    end Set_Vadjustment;
 
    ---------------
@@ -1356,71 +1345,12 @@ package body Gtk.Clist is
 
    end Row_Data;
 
-   -------------------
-   -- Output_Titles --
-   -------------------
-
-   procedure Output_Titles (Name : in String;
-                            A    : in Chars_Ptr_Array;
-                            File : in File_Type)
-   is
-      First : Boolean := True;
-
-      use type Interfaces.C.size_t;
-
-   begin
-      Glib.Glade.Add_Package ("Interfaces.C.Strings");
-      Put_Line (File, "   " & To_Ada (Name) & " := (");
-
-      for Index in A'First .. A'Last loop
-         if First then
-            First := False;
-         else
-            Put_Line (File, ",");
-         end if;
-
-         if A'First = A'Last then
-            Put (File, "     1 => ");
-         else
-            Put (File, "     ");
-         end if;
-
-         Put (File, "Interfaces.C.Strings.New_String (""" &
-           Interfaces.C.Strings.Value (A (Index)) & """)");
-      end loop;
-
-      Put_Line (File, ");");
-   end Output_Titles;
-
-   ----------------------
-   -- Build_Title_List --
-   ----------------------
-
-   procedure Build_Title_List (N : in Node_Ptr;
-                               A : out Chars_Ptr_Array) is
-      M : Node_Ptr;
-      S : String_Ptr;
-   begin
-      M := Find_Tag (N.Child, "widget");
-
-      for Index in A'First .. A'Last loop
-         S := Get_Field (M, "label");
-
-         if S /= null then
-            A (Index) := Interfaces.C.Strings.New_String (S.all);
-         end if;
-
-         M := M.Next;
-      end loop;
-   end Build_Title_List;
-
    --------------
    -- Generate --
    --------------
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      package ICS renames Interfaces.C.Strings;
       Columns, S : String_Ptr;
       Cur : constant String_Ptr := Get_Field (N, "name");
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
@@ -1428,25 +1358,15 @@ package body Gtk.Clist is
    begin
       Columns := Get_Field (N, "columns");
 
-      if not N.Specific_Data.Created and then Columns /= null then
-         declare
-            Titles : Chars_Ptr_Array
-              (1 .. Interfaces.C.size_t'Value (Columns.all));
-            Name   : constant String := To_Ada (Cur.all) & "_Titles";
-         begin
-            Build_Title_List (N, Titles);
-            Output_Titles (Name, Titles, File);
-
-            if Get_Field (N, "class").all = "GtkCTree" then
-               Gen_New (N, "Ctree", Name, File => File);
-            else
-               Gen_New (N, "Clist", Columns.all, Name, File => File);
-            end if;
-         end;
+      if not N.Specific_Data.Created then
+         if Get_Field (N, "class").all = "GtkCTree" then
+            Gen_New (N, "Ctree", Columns.all, File => File);
+         else
+            Gen_New (N, "Clist", Columns.all, File => File);
+         end if;
       end if;
 
       Container.Generate (N, File);
-
       Gen_Set (N, "Clist", "selection_mode", File => File);
       Gen_Set (N, "Clist", "shadow_type", File => File);
       Gen_Set (N, "Clist", "show_titles", File);
@@ -1465,11 +1385,6 @@ package body Gtk.Clist is
               ", " & Get_Part (S.all, Integer (J + 1), ',') & ");");
          end loop;
       end if;
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Clist : in out Gtk_Object; N : in Node_Ptr) is
@@ -1478,24 +1393,14 @@ package body Gtk.Clist is
       if not N.Specific_Data.Created then
          Columns := Get_Field (N, "columns");
 
-         if Columns /= null then
-            declare
-               Titles : Chars_Ptr_Array
-                 (1 .. Interfaces.C.size_t'Value (Columns.all));
-            begin
-               Build_Title_List (N, Titles);
-
-               if Get_Field (N, "class").all = "GtkCTree" then
-                  Gtk_New (Gtk_Ctree (Clist), Titles);
-               else
-                  Gtk_New (Gtk_Clist (Clist), Gint'Value (Columns.all),
-                    Titles);
-               end if;
-            end;
-
-            Set_Object (Get_Field (N, "name"), Clist);
-            N.Specific_Data.Created := True;
+         if Get_Field (N, "class").all = "GtkCTree" then
+            Gtk_New (Gtk_Ctree (Clist), Gint'Value (Columns.all));
+         else
+            Gtk_New (Gtk_Clist (Clist), Gint'Value (Columns.all));
          end if;
+
+         Set_Object (Get_Field (N, "name"), Clist);
+         N.Specific_Data.Created := True;
       end if;
 
       Container.Generate (Clist, N);
@@ -1527,14 +1432,6 @@ package body Gtk.Clist is
             Set_Column_Width (Gtk_Clist (Clist), J,
               Gint'Value (Get_Part (S.all, Integer (J + 1), ',')));
          end loop;
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Container.Gtk_Container
-            (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk.Widget.Gtk_Widget (Clist));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
