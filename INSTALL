@@ -38,11 +38,11 @@ directory, or copy the gtkada-config script somewhere in your path
 or
    $ export PATH=<installation_directory>:$PATH
      
-Finally, update your LD_LIBRARY_PATH variable to include that
+Finally, update your LD_LIBRARY_PATH variable to include the <prefix>/lib
 directory, so that the linker can find the libraries.  The other
-alternative if you have access to root priviledges is to add this
-'prefix' directory added in /etc/ld.conf and then run ldconfig.
-     
+alternative under GNU/Linux if you have root priviledges is to add this
+'prefix/lib' directory added in /etc/ld.conf and then run ldconfig.
+
 Then, when you want to compile your application, simply use the
 gtkada-config script:
      
