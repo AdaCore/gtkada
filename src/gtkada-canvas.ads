@@ -170,6 +170,17 @@ package Gtkada.Canvas is
    --  A Grid_Size of 0 means than no grid should be drawn in the background of
    --  canvas. Note that in that case you can never activate Align_On_Grid.
 
+   procedure Set_Orthogonal_Links
+     (Canvas : access Interactive_Canvas_Record;
+      Orthogonal : Boolean);
+   --  If Orthogonal is True, then all the links will be drawn only with
+   --  vertical and horizontal lines. This is not applied for the second or
+   --  more link between two items.
+
+   function Get_Orthogonal_Links
+     (Canvas : access Interactive_Canvas_Record) return Boolean;
+   --  Return True if the links are only drawn horizontally and vertically.
+
    procedure Align_On_Grid
      (Canvas : access Interactive_Canvas_Record;
       Align  : Boolean := True);
@@ -441,6 +452,12 @@ package Gtkada.Canvas is
    --
    --  ??? Would be nicer to give direct access to the Graph iterators
 
+   procedure Update_Links
+     (Canvas : access Interactive_Canvas_Record'Class;
+      From_Item : Canvas_Item := null);
+   --  Draw all the links to and from From_Item (or all the links in the canvas
+   --  if From_Item is null).
+
    procedure Draw_Link
      (Canvas      : access Interactive_Canvas_Record'Class;
       Link        : access Canvas_Link_Record;
@@ -643,7 +660,7 @@ private
    end record;
 
    type Item_Selection_List_Record;
-   type Item_Selection_List is access Item_Selection_List_Record;
+   type Item_Selection_List is access all Item_Selection_List_Record;
    type Item_Selection_List_Record is record
       Item : Canvas_Item;
       X, Y : Glib.Gint;
@@ -702,6 +719,9 @@ private
       Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
       Scrolling_Timeout_Id : Gtk.Main.Timeout_Handler_Id := 0;
       Dashed_Line_Visible : Boolean := False;
+
+      Orthogonal_Links : Boolean := False;
+      --  True if the links should be orthogonal
 
       Zoom : Glib.Guint := 100;
       --  Zoom level in percent (100% is normal size)
