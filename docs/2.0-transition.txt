@@ -2,6 +2,7 @@ Here are the API changes that occured between GtkAda 1.2 and GtkAda 2.0:
 
 Glib:
   GType_* constants replace Gtk.Gtk_Type_*
+Glib.GOjbects: new package
 Gdk.Color_Context: removed
 Gdk.Event:
   Get_Pressure, Get_Xtilt, Get_Ytilt, Get_Source: removed
@@ -15,6 +16,8 @@ Gdk.Rgb:
 Gtk:
   Gtk_Type_* constants replaced by Glib.GType_*
   Gtk_Type_Gdk_Event: replace by Gdk.Event.Get_Type
+  Root_Type replaced by Glib.GObjects.GObject_Record
+  All subprograms related to Root_Type moved to Glib.GObjects as well.
 Gtk.Arguments obsolete, use Glib.Values instead
 Gtk.Button_Box:
   Set/Get_Spacing: removed since redundant with Gtk.Box
