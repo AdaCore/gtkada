@@ -5,14 +5,14 @@ $version =~ s/^GNAT (.\...).*$/$1/;
 
 print "pragma Warnings (Off);\n" if $version >= '3.11';
 
-foreach (<g*.ads>)
+foreach (<gtk*.ads>, <gdk*.ads>, <glib*.ads>)
 {
     if (/g(lib|dk|tk)/)
     {
        open (FILE, $_);
        while ($line = <FILE>)
        {
-           last if ($line =~ /package\s+(\S+)/);
+           last if ($line =~ /^\s*package\s+(\S+)/);
        }
        close (FILE);
        $line =~ /package\s+(\S+)/;
