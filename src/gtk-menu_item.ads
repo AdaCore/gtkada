@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Enums;
 with Gtk.Item;
@@ -40,8 +40,21 @@ package Gtk.Menu_Item is
 
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item; Label : String := "");
 
+   procedure Gtk_New_With_Mnemonic
+     (Menu_Item : out Gtk_Menu_Item;
+      Label     : String);
+   --  Create a new Gtk_Menu_Item containing a label. The label is created
+   --  using Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate
+   --  the mnemonic for the menu item.
+
    procedure Initialize
      (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : String);
+   --  Internal initialization procedure.
+
+   procedure Initialize_With_Mnemonic
+     (Menu_Item : access Gtk_Menu_Item_Record'Class;
+      Label     : String);
+   --  Internal initialization procedure.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu_Item.

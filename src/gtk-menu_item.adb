@@ -97,6 +97,18 @@ package body Gtk.Menu_Item is
       Initialize (Menu_Item, Label);
    end Gtk_New;
 
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic
+     (Menu_Item : out Gtk_Menu_Item;
+      Label     : String) is
+   begin
+      Menu_Item := new Gtk_Menu_Item_Record;
+      Initialize_With_Mnemonic (Menu_Item, Label);
+   end Gtk_New_With_Mnemonic;
+
    ----------------
    -- Gtk_Select --
    ----------------
@@ -132,6 +144,22 @@ package body Gtk.Menu_Item is
 
       Initialize_User_Data (Menu_Item);
    end Initialize;
+
+   ------------------------------
+   -- Initialize_With_Mnemonic --
+   ------------------------------
+
+   procedure Initialize_With_Mnemonic
+     (Menu_Item : access Gtk_Menu_Item_Record'Class;
+      Label     : String)
+   is
+      function Internal (Label : String) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_item_new_with_mnemonic");
+   begin
+      Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
+      Initialize_User_Data (Menu_Item);
+   end Initialize_With_Mnemonic;
+
 
    -----------------
    -- Get_Submenu --
