@@ -11,6 +11,7 @@ SHELL = /bin/sh
 
 target  = testgtk
 src_dir = ../src
+opengl_dir = $(src_dir)/opengl
 
 CC = @CC@
 GTKADA_CONFIG=gtkada-config
@@ -18,7 +19,7 @@ GNATFLAGS = @CFLAGS@ -gnata
 GNATFLAGS_DEVEL = @CFLAGS@ -g -gnatawu
 
 GNATMAKE = gnatmake
-GNATMAKELDFLAGS = -largs -L$(src_dir) -lgtkada @GTK_LIBS@
+GNATMAKELDFLAGS = -largs -L$(src_dir) -L$(opengl_dir) -lgtkada @GTK_LIBS@
 
 CP = cp -f
 
