@@ -108,10 +108,10 @@ package Gtk.Text_View is
    procedure Scroll_To_Mark
      (Text_View     : access Gtk_Text_View_Record;
       Mark          : access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class;
-      Within_Margin : Gdouble;
-      Use_Align     : Boolean;
-      Xalign        : Gdouble;
-      Yalign        : Gdouble);
+      Within_Margin : Gdouble := 0.0;
+      Use_Align     : Boolean := False;
+      Xalign        : Gdouble := 0.0;
+      Yalign        : Gdouble := 0.0);
    --  Scroll Text_View so that Mark is on the screen in the position indicated
    --  by Xalign and Yalign. An alignment of 0.0 indicates left or top, 1.0
    --  indicates right or bottom, 0.5 means center. If Use_Align is False, the
@@ -122,7 +122,7 @@ package Gtk.Text_View is
    procedure Scroll_Mark_Onscreen
      (Text_View : access Gtk_Text_View_Record;
       Mark      : access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
-   --  ???
+   --  Same as the above with the default values
 
    function Move_Mark_Onscreen
      (Text_View : access Gtk_Text_View_Record;
