@@ -138,9 +138,9 @@ package Gtk.Paned is
 
    procedure Set_Position (Paned    : access Gtk_Paned_Record;
                            Position : Gint);
-   --  Change the position of the separator, as if set by the user.
+   --  Change the position of the separator.
    --  If position is negative, the remembered position is forgotten,
-   --  and the division is recomputed from the the requisitions of the
+   --  and the division is recomputed from the requisitions of the
    --  children.
    --  Position is in fact the size (either vertically or horizontally,
    --  depending on the container) set for the first child.
