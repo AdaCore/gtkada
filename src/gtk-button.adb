@@ -30,8 +30,10 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Widget; use Gtk.Widget;
 with Gtk.Container; use Gtk.Container;
 with Gtk.File_Selection; use Gtk.File_Selection;
+with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
 
 package body Gtk.Button is
 
@@ -163,19 +165,16 @@ package body Gtk.Button is
 
       Generate (Gtk_Container (Button), N, File);
       Gen_Set (N, "Button", "relief", File);
-
-      if Child_Name = null then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-      end if;
    end Generate;
 
    procedure Generate (Button : in out Gtk_Button;
                        N      : in Node_Ptr) is
       use Container;
 
-      Child_Name     : String_Ptr := Get_Field (N, "child_name");
-      S              : String_Ptr := Get_Field (N, "label");
-      File_Selection : Gtk_File_Selection;
+      Child_Name      : String_Ptr := Get_Field (N, "child_name");
+      S               : String_Ptr := Get_Field (N, "label");
+      File_Selection  : Gtk_File_Selection;
+      Color_Selection : Gtk_Color_Selection_Dialog;
 
    begin
       if not N.Specific_Data.Created then
@@ -186,18 +185,36 @@ package body Gtk.Button is
                Gtk_New (Button, S.all);
             end if;
          else
-            File_Selection :=
-              Gtk_File_Selection (Get_Object (Find_Tag
-                (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                 "name").Value).all);
+            declare
+               Selection : Gtk_Widget'Class :=
+                 Get_Object (Find_Tag
+                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+                    "name").Value).all;
 
-            if Get_Part (Child_Name.all, 2) = "ok_button" then
-               Button := Get_Ok_Button (File_Selection);
-            elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
-               Button := Get_Cancel_Button (File_Selection);
-            elsif Get_Part (Child_Name.all, 2) = "help_button" then
-               Button := Get_Help_Button (File_Selection);
-            end if;
+            begin
+               if Get_Part (Child_Name.all, 1) = "FileSel" then
+                  File_Selection := Gtk_File_Selection (Selection);
+
+                  if Get_Part (Child_Name.all, 2) = "ok_button" then
+                     Button := Get_Ok_Button (File_Selection);
+                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
+                     Button := Get_Cancel_Button (File_Selection);
+                  elsif Get_Part (Child_Name.all, 2) = "help_button" then
+                     Button := Get_Help_Button (File_Selection);
+                  end if;
+
+               elsif Get_Part (Child_Name.all, 1) = "ColorSel" then
+                  Color_Selection := Gtk_Color_Selection_Dialog (Selection);
+
+                  if Get_Part (Child_Name.all, 2) = "ok_button" then
+                     Button := Get_OK_Button (Color_Selection);
+                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
+                     Button := Get_Cancel_Button (Color_Selection);
+                  elsif Get_Part (Child_Name.all, 2) = "help_button" then
+                     Button := Get_Help_Button (Color_Selection);
+                  end if;
+               end if;
+            end;
          end if;
 
          Set_Object (Get_Field (N, "name"), Button'Unchecked_Access);
@@ -210,11 +227,6 @@ package body Gtk.Button is
 
       if S /= null then
          Set_Relief (Button, Gtk.Enums.Gtk_Relief_Style'Value (S.all));
-      end if;
-
-      if Child_Name = null then
-         Container.Add (Gtk_Container (Get_Object
-           (Get_Field (N.Parent, "name")).all), Button);
       end if;
    end Generate;
 
