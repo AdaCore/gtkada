@@ -1816,6 +1816,27 @@ Wrong_Color : @b{exception};
 
 See for example @code{Get_Default_Colormap}.
 
+You can of course create your own colors (provided your screen can
+display them), by calling the following functions :
+
+@example
+@b{declare}
+   Color : Gdk_Color;
+   Name  : String := "brown";  --  the name of the color to be created
+@b{begin}
+   --  First, create a color from its name
+   Color := Gdk.Color.Parse (Name);
+   Gdk.Color.Alloc (Gtk.Widget.Get_Default_Colormap, Color);
+
+   --  Or create a color from its values
+   Gdk.Color.Set_Rgb (Color,
+                      Red   => 20000, 
+                      Green => 20000,
+                      Blue  => 65500);
+   Gdk.Color.Alloc (Gtk.Widget.Get_Default_Colormap, Color);
+@b{end}; 
+@end example
+
 @node Package Gdk.Point
 @section Package Gdk.Point
 @example
@@ -2119,6 +2140,40 @@ Typically the code will look like:
 
 Glib is the low-level layer and provides various @b{type}s such as
 @code{Gint, Guint}, @dots{}.
+
+It also provides access to lists and double-linked lists. Some functions
+in GtkAda return lists of Widgets or lists of integer, so it might be
+useful to know how to traverse the list.
+
+Here are the functions available (note that the packages in Glib are
+generics that you need to instanciate first).
+
+@example
+@b{function} First (List : @b{in out} Glist);
+@b{function} Next (List : @b{in} Glist) @b{return} Glist;
+@b{function} Last (List : @b{in} Glist) @b{return} Glist;
+@end example
+
+These three functions allow you to traverse the list: get the first
+element, then loop while the current element is different from Last.
+For instance, here is how you would get the selection in a
+@code{Gtk_List} widget:
+
+@example
+@b{declare}
+   @b{use type} Widget_List.Glist;
+   Selection : Widget_List.Glist := Gtk.List.Get_Selection (Widget);
+   Current   : Widget_List.Glist := Widget_List.First (Selection);
+   Item      : Gtk_Widget;
+@b{begin}
+   @b{while} Current /= Widget_List.Last (Selection) @b{loop}
+       Item := Widget_List.Get_Data (Current);
+       --  use Item however you want
+       Current := Widget_List.Next (Current);
+   @b{end loop};
+@b{end};
+@end example   
+
 
 @c Glib.XML
 
