@@ -1,3 +1,5 @@
+with Interfaces.C.Strings;
+
 package body Gtk is
 
    use type System.Address;
@@ -90,7 +92,7 @@ package body Gtk is
    -- Ref --
    ---------
 
-   procedure Ref (Object : in out Root_Type'Class) is
+   procedure Ref (Object : in out Root_Type) is
       procedure Internal (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_ref");
    begin
@@ -116,7 +118,7 @@ package body Gtk is
    -- Unref --
    -----------
 
-   procedure Unref (Object : in out Root_Type'Class) is
+   procedure Unref (Object : in out Root_Type) is
       procedure Internal (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_unref");
    begin
@@ -124,5 +126,20 @@ package body Gtk is
          Internal (Get_Object (Object));
       end if;
    end Unref;
+
+   ---------------
+   -- Type_Name --
+   ---------------
+
+   function Type_Name (Object : in Root_Type'Class)
+                       return      String
+   is
+      function Internal (Object : in System.Address)
+                         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "ada_type_name");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Object)));
+   end Type_Name;
+
 
 end Gtk;

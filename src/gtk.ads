@@ -21,11 +21,14 @@ package Gtk is
    function Minor_Version return Guint;
    function Micro_Version return Guint;
 
-   procedure Ref (Object : in out Root_Type'Class);
+   procedure Ref (Object : in out Root_Type);
    --  mapping: Ref gtkobject.h gtk_object_ref
 
-   procedure Unref (Object : in out Root_Type'Class);
+   procedure Unref (Object : in out Root_Type);
    --  mapping: Unref gtkobject.h gtk_object_unref
+
+   function Type_Name (Object : in Root_Type'Class)
+                       return      String;
 
 private
 
