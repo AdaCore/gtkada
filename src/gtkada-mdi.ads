@@ -330,7 +330,7 @@ package Gtkada.MDI is
    --  If the child was floating, it is first put back in the MDI.
 
    procedure Set_Dock_Side
-     (Child : access MDI_Child_Record'Class; Side  : Dock_Side);
+     (Child : access MDI_Child_Record'Class; Side : Dock_Side);
    --  Specify where a child should be docked. Note that this doesn't
    --  actually dock the child.
    --  If the child was already docked, its location is changed accordingly.
