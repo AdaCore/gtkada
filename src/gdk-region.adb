@@ -40,10 +40,7 @@ package body Gdk.Region is
    -------------
 
    function Empty (Region : in Gdk_Region) return Boolean is
-      function Internal (Region : in System.Address) return Gint;
-      --  FIXME : Real result type is gboolean which is a char.
-      --  FIXME : Here, we are making the bet that gint and char are
-      --  FIXME : represented the same way in memory.
+      function Internal (Region : in System.Address) return Gboolean;
       pragma Import (C, Internal, "gdk_region_empty");
    begin
       return To_Boolean (Internal (Get_Object (Region)));
@@ -55,10 +52,7 @@ package body Gdk.Region is
    -------------
 
    function Equal (Region1, Region2 : in Gdk_Region) return Boolean is
-      function Internal (Region1, Region2 : in System.Address) return Gint;
-      --  FIXME : Real result type is gboolean which is a char.
-      --  FIXME : Here, we are making the bet that gint and char are
-      --  FIXME : represented the same way in memory.
+      function Internal (Region1, Region2 : in System.Address) return Gboolean;
       pragma Import (C, Internal, "gdk_region_equal");
    begin
       return To_Boolean (Internal (Get_Object (Region1),
@@ -132,10 +126,7 @@ package body Gdk.Region is
    function Point_In (Region : in Gdk_Region;
                       X, Y   : in Integer) return Boolean is
       function Internal (Region : in System.Address; X, Y : in Integer)
-                         return Gint;
-      --  FIXME : Real result type is gboolean which is a char.
-      --  FIXME : Here, we are making the bet that gint and char are
-      --  FIXME : represented the same way in memory.
+                         return Gboolean;
       pragma Import (C, Internal, "gdk_region_point_in");
    begin
       return To_Boolean (Internal (Get_Object (Region), X, Y));
