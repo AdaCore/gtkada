@@ -585,13 +585,10 @@ package body Gtk.Tree_Model is
       if A = Null_Ptr then
          return "";
       else
-         declare
-            Result : constant String := Value (A);
-         begin
-            --  No need to free A, since it returns a handle to the internal
-            --  pointer of gtk.
-            return Result;
-         end;
+         --  No need to free A, since it returns a handle to the internal
+         --  pointer of Gtk+
+
+         return Value (A);
       end if;
    end Get_String;
 
