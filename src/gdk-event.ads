@@ -87,7 +87,10 @@ package Gdk.Event is
 
    subtype Gdk_Event_No_Expose is Gdk_Event;
    --  Indicate that the source region was completely available when parts of
-   --  a drawable were copied. This is not very useful.
+   --  a drawable were copied.
+   --  This is also emitted when a gc whose "exposures" attribute is set to
+   --  False in a call to Copy_Area or Draw_Pixmap. See the documentation for
+   --  Gdk.GC.Set_Exposures.
    --  No Relevent fields except the common ones
    --  Type: No_Expose
 

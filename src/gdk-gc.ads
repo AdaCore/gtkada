@@ -203,6 +203,9 @@ package Gdk.GC is
    --  be reported when calling Copy_Area and Copy_Plane with this GC.
    --  You should disable this if you don't need the event and want to optimize
    --  your application.
+   --  If Exposures is True, then any call to Copy_Area or Draw_Pixmap will
+   --  generate an expose event. Otherwise, these will generate a no_expose
+   --  event.
 
    procedure Set_Line_Attributes (GC         : in Gdk_GC;
                                   Line_Width : in Gint;
