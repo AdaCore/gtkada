@@ -13,7 +13,7 @@ CFLAGS = -O2 -g -Wall
 
 ALL_CFLAGS = $(CFLAGS) -I../
 
-GTKADA_CONFIG=gtkadaconfig
+GTKADA_CONFIG=gtkada-config
 GNATCC = gcc
 GNATFLAGS = -g
 
