@@ -72,6 +72,10 @@ package Gtk.Style is
                        return Gtk.Style.Gtk_Style;
 
    function Get_Black_GC (Style : in Gtk_Style'Class) return Gdk.GC.Gdk_GC;
+   function Get_Bg_GC (Style : in Gtk_Style'Class;
+                       State : in Enums.Gtk_State_Type)
+                       return Gdk.GC.Gdk_GC;
+   function Get_White_GC (Style : in Gtk_Style'Class) return Gdk.GC.Gdk_GC;
 
    procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;

@@ -300,6 +300,36 @@ package body Gtk.Style is
       return Result;
    end Get_Black_GC;
 
+   -----------------
+   --  Get_Bg_GC  --
+   -----------------
+
+   function Get_Bg_GC (Style : in Gtk_Style'Class;
+                       State : in Enums.Gtk_State_Type)
+                       return Gdk.GC.Gdk_GC
+   is
+      function Internal (Style : in System.Address; State : Gint)
+                         return System.Address;
+      pragma Import (C, Internal, "ada_gtk_style_get_bg_gc");
+      Result : Gdk.GC.Gdk_GC;
+   begin
+      Set_Object (Result, Internal (Get_Object (Style),
+                                    Enums.Gtk_State_Type'Pos (State)));
+      return Result;
+   end Get_Bg_GC;
+
+   --------------------
+   --  Get_White_GC  --
+   --------------------
+
+   function Get_White_GC (Style : in Gtk_Style'Class) return Gdk.GC.Gdk_GC is
+      function Internal (Style : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gtk_style_get_white_gc");
+      Result : Gdk.GC.Gdk_GC;
+   begin
+      Set_Object (Result, Internal (Get_Object (Style)));
+      return Result;
+   end Get_White_GC;
 
    ---------------
    -- Get_White --
