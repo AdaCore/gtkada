@@ -12,7 +12,7 @@
 @subtitle Version @value{GtkAdaVersion}
 @subtitle Document revision level $Revision$
 @subtitle Date: $Date$
-@author E. Briot, J. Brobecker, A. Charlet, P. Durif
+@author E. Briot, J. Brobecker, A. Charlet
 
 @page
 @vskip 0pt plus 1filll
@@ -1375,7 +1375,7 @@ interaction you should consider using the Gtk_Fixed container. However, please
 read the GtkAda reference manual before considering using Gtk_Fixed.
 
 @section Using Glade
-Note that we only recommend using version 0.5.5 of Glade, as some previous
+Note that we only recommend using version 0.5.9 of Glade, as some previous
 versions are not compatible. Using this version you can directly create Ada
 files from Glade by selecting Ada95 as the language under project options.
 By doing so, you will tell Glade to call Gate internally when using the
@@ -1383,6 +1383,33 @@ By doing so, you will tell Glade to call Gate internally when using the
 Glade saves your interface in a project file whose syntax is XML
 based. In the following sections, we will refer to this file as either
 ``the XML file'' or ``the project file'' interchangeably.
+
+@subsection Taking advantage of Glade's options
+In this XML file, Glade will save various options that Gate can take
+advantage of. In particular, going to the project options window, some General
+Options in the ``C Options'' section will also be used by Gate: Gettext support,
+if enabled, will generate an additional package called <project>_intl that
+will use Gtkada.Intl;
+The ``Set Widget Names'' option is also recognized and will generate additional
+calls to Set_Name for each widget.
+
+@subsection Associating icons with buttons
+Up to now, the only way to specify an icon for a button was to associate a
+pixmap file to it. As an alternative, if the name specified in the ``Icon''
+field does not contain any dots, Gate will consider the name as a variable
+rather than a file name. It is up to you to provide the necessary definitions
+in order to compile properly the generated code.
+
+@subsection Note for Linux users
+Some Linux systems come with a precompiled version of Glade that will usually
+have support for Gnome. GtkAda and Gate currently do not provide support
+for Gnome (GtkAda instead provides portable alternatives to Gnome widgets,
+see e.g Gtkada.Canvas, Gtkada.Dialogs, Gtkada.Pixmaps), which means that
+you should not enable any Gnome specific features in Glade. In particular,
+you should disable Gnome support in the Project Options window, and make sure
+that you don't use the ``Stock Button'' property, nor the list of predefined
+Gnome icons provided with various widgets such as toolbar buttons and menu
+items.
 
 @section Gate
 @subsection Invoking Gate
@@ -1403,7 +1430,7 @@ this initialization.
 
 @subsubsection Top level widget files
 For each top level widget, Gate will generate a package
-@code{<widget>_Pkg.Callbacks} in the files @code{<widget_pkg-callbacks.ads} and
+@code{<widget>_Pkg.Callbacks} in the files @code{<widget>_pkg-callbacks.ads} and
 @code{.adb}. These packages contain all the GtkAda calls needed to create the
 widgets you designed within Glade. You will usually not need to modify these
 files yourself.
