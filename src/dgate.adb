@@ -34,6 +34,7 @@ with Gtk.Util; use Gtk.Util;
 with System;
 with DGate_Callbacks;
 with Unchecked_Conversion;
+with GNAT.OS_Lib;
  
 procedure DGate is
 
@@ -94,6 +95,11 @@ begin
    if Argument_Count = 0 then
       Usage;
    else
+      if not GNAT.OS_Lib.Is_Regular_File (Argument (1)) then
+         Put_Line (Argument (1) & " is not a regular file");
+         return;
+      end if;
+
       Gtk.Main.Set_Locale;
       Gtk.Main.Init;
       N := Parse (Argument (1));

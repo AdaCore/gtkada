@@ -66,6 +66,11 @@ begin
          return;
       end if;
 
+      if not GNAT.OS_Lib.Is_Regular_File (Argument (Arg)) then
+         Put_Line (Argument (Arg) & " is not a regular file");
+         GNAT.OS_Lib.OS_Exit (2);
+      end if;
+
       N := Parse (Argument (Arg));
 
       if Flag_Project or else Flag_Source_Directory then
