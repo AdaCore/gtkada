@@ -84,14 +84,12 @@ package body Create_Buttons is
 
       Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
       Add (Frame, Box1);
-      Show (Box1);
 
       Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
       Set_Row_Spacings (Table, Spacing => 5);
       Set_Col_Spacings (Table, Spacing => 5);
       Set_Border_Width (Table, Border_Width => 10);
       Pack_Start (Box1, Table, Expand => False, Fill => False, Padding => 0);
-      Show (Table);
 
       for J in Button'Range loop
          Gtk_New (Button (J), Label => "Button" & Integer'Image (J));
@@ -107,8 +105,9 @@ package body Create_Buttons is
                  Top_A (J), Bott_A (J),
                  Expand + Fill,
                  Expand + Fill, Xpadding => 0, Ypadding => 0);
-         Show (Button (J));
       end loop;
+
+      Show_All (Box1);
    end Run;
 
 end Create_Buttons;
