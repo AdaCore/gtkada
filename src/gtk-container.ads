@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -72,10 +72,15 @@ package Gtk.Container is
    procedure Remove
      (Container : access Gtk_Container_Record;
       Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Remove a child from the container.
-   --  Nothing is done if Widget is not a child of Container. Widget is not
-   --  destroyed, but is deleted from the screen.
-   --  This basically sends the "remove" signal (see below)
+   --  Removes Widget from Container. Widget must be inside Container.
+   --  Note that Container will own a reference to Widget, and that this
+   --  may be the last reference held; so removing a widget from its
+   --  container can destroy that widget. If you want to use Widget
+   --  again, you need to add a reference to it while it's not inside
+   --  a container, using Glib.Object.Ref. If you don't want to use Widget
+   --  again it's usually more efficient to simply destroy it directly
+   --  using Gtk.Widget.Destroy since this will remove it from the
+   --  container and help break any circular reference count cycles.
 
    procedure Set_Resize_Mode
      (Container   : access Gtk_Container_Record;
