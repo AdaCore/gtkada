@@ -2,12 +2,17 @@ Here are the API changes that occured between GtkAda 1.2 and GtkAda 2.0:
 
 Glib:
   GType_* constants replace Gtk.Gtk_Type_*
+Glib.Error:
+  new package related to error handling
+Glib.Convert:
+  new package related to strings conversion to utf8
 Glib.GObjects: new package
 Glib.Properties.Creation:
   Gnew_Closure: removed.
 Gdk.Color_Context: removed, use Gdk.Color instead.
 Gtk.Combo:
   Get_Popup_Window: new procedure.
+  Set_Value_In_List: Val is now a Boolean.
 Gdk.Cursor:
   Destroy: deprecated, use Unref instead.
   Ref/Unref: new procedures.
@@ -110,29 +115,28 @@ Gtk.Container:
   new functions: Propagate_Expose, Set/Unset_Focus_Chain, Resize_Children.
   Focus: Removed.
   Children: replace by Get_Children
+  Set_Border_Width: now takes a Guint instead of a Gint.
+  Get_Border_Width, Get_Resize_Mode: new functions.
 Gtk.Ctree: deprecated, use Gtk_Tree_View instead.
+Gtk.Curve: type Gtk_Curve_Type moved to Gtk.Enums.
 Gtk.Data: removed, obsolete.
 Gtk.Editable:
-  Claim_Selection: removed
-  Get_Clipboard_Text, Get_Editable, Get_Has_Selection, Changed: removed
-  Get_Selection_End_Pos/Start_Pos: replaced by Get_Selection_Bounds.
-  The following signals are removed: changed, activate, set-editable,
-   move_cursor, move_word, move_page, move_to_row, move_to_column,
-   kill_char, kill_word, kill_line, cut_clipboard, copy_clipboard,
-   paste_clipboard.
+  The old Gtk.Editable has been renamed Gtk.Old_Editable and is obsolete.
+  Gtk.Editable is a new package providing an abstract interface for text edition
 Gtk.Enums:
   Gtk_Scroll_Type has new values
   Gtk_Window_Position has a new value
   The Window_Dialog value has been removed from Gtk_Window_Type
   Gtk_Scroll_Type has new values.
-  New type Gtk_Text_Direction, Gtk_Anchor_Type, Gtk_Side_Type,
-   Gtk_Wrap_Mode
+  New type Gtk_Text_Direction, Gtk_Anchor_Type, Gtk_Side_Type, Gtk_Wrap_Mode
   Gtk_Trough_Type: removed.
-  Selection_Extended: removed.
+  Selection_Extended: removed, use Selection_Multiple instead.
+  Gtk_Scroll_Type: Scroll_Page_Start/End renamed Scroll_Start/End
 Gtk.File_Selection:
   now a child of Gtk_Dialog
 Gtk.Fixed:
   new procedure: Set_Has_Window
+  Move, Put: now take Gint instead of Gint16 as parameters.
 Gtk.Font_Selection:
   Gtk_Font_Selection_Dialog is now a child of Gtk_Dialog
   Gtk_Font_Selection is now a child of Gtk_Vbox
@@ -193,6 +197,8 @@ Gtk.Menu_Bar:
 Gtk.Menu_Item:
   Gtk_New_With_Mnemonic: new function.
   Configure, Set_Placement : removed.
+Gtk.Men_Shell:
+  Gtk_Menu_Direction_Type: moved to Gtk.Enums.
 Gtk.Notebook:
   Get_Notebook_Page: replace Gtk.Arguments.To_Notebook_Page
   Get_Cur_Page, Get_Tab_Label, Get_Allocation_*, Get_Child: removed
@@ -206,7 +212,7 @@ Gtk.Paned:
   Set/Get_Gutter_Size: stubs provided for compatibility only.
   Set/Get_Handle_Size: stubs provided for compatibility only.
   Get_Position: new function.
-Gtk.Pixmap: deprecated.
+Gtk.Pixmap: deprecated, use Gtk.Image instead.
   Get_Mask, Get_Pixmap: Removed, see Get instead
 Gtk.Preview: deprecated.
 Gtk.Progress: deprecated.
@@ -220,6 +226,8 @@ Gtk.Radio_Menu_Item:
   Group : replace by Get_Group.
 Gtk.Range:
   Set_Increments, Set_Range, Get/Set_Value: new subprograms.
+Gtk.Rc:
+  Now completely bound. See gtk-rc.ads for more details.
 Gtk.Ruler:
   all functions now take/return Gdouble instead of Gfloat.
   Get_Lower, Get_Upper, Get_Max_Size, Get_Position : removed
@@ -229,10 +237,12 @@ Gtk.Scale:
    Get_Value_Pos: new functions.
   Draw_Value, Get_Value_Size, Get_Value_Width: removed.
 Gtk.Scrolled_Window:
-  new a child of Gtk_Bin (instead of Gtk_Container).
+  now a child of Gtk_Bin (instead of Gtk_Container).
   Set_Shadow_Type: new function.
+  Gtk_Corner_Type: moved to Gtk.Enums.
 Gtk.Selection:
   Clear_Targets: new function.
+Gtk.Settings: new package.
 Gtk.Signal: removed, obsolete. Use Gtk.Handlers instead.
 Gtk.Spin_Button:
   type Gtk_Spin_Button_Update_Policy moved here (from Gtk.Enums).
@@ -284,6 +294,7 @@ Gtk.Widget:
   Draw_Default, Draw_Focus, Popup: removed
   Set_USize: deprecated
   Set_Size_Request: new function
+  Modify_Style, Get_Modifier_Style: moved to Gtk.Rc
 Gtk.Window:
   Set_Role, Set_Destroy_With_Parent,
   Set/Get_Resizable, Set_Has_Frame, Set_Frame_Dimensions,
@@ -306,7 +317,7 @@ GtkExtra code:
 ====
 
 Not bound yet:
-gerror.h
+gunicode.h
 gdk.h: see "missing" section.
 gdkdnd.h
 gdkdrawable.h: see "missing pango" section in gdk-drawable.ads
@@ -319,15 +330,12 @@ gdkselection.h
 gdk-pixbuf-loader.h
 gdkwindow.h: see "missing" section.
 gtkaccessible.h (derives from AtkObject)
+gtkaccelmap.h
 gtkaccelgroup.h: see ??? comments.
 gtkarg.h
 gtkbindings.h
-gtkcellrenderer.h            |
-gtkcellrendererpixbuf.h      |
-gtkcellrenderertext.h        |   Binding almost complete
-gtkcellrenderertextpixbuf.h  |
-gtkcellrenderertoggle.h      |
 gtkclipboard.h
+gtkcontainer.h: see "missing" section in gtk-container.ads
 gtkdialog.h: see "missing" section in gtk-dialogs.ads
 gtkdnd.h: see "missing" section in gtk-dnd.ads
 gtkeditable.h: is a GTypeInterface, not a GObject
@@ -340,10 +348,8 @@ gtkimcontext.h
 gtkimmodule.h
 gtkimmulticontext.h
 gtklabel.h: see "missing" section in gtk-label.ads
-gtkliststore.h
 gtkmenuitem.h: see "missing" section in gtk-menu_item.ads
 gtkmessagedialog.h
-gtkrc.h: only partly bound.
 gtkselection.h: see "missing" section in gtk-selection.ads
 gtkseparatormenuitem.h
 gtksettings.h
@@ -351,14 +357,6 @@ gtkstyle.h: now a GObject with signals. see "missing" section.
             need to update field accessors.
 gtktreednd.h
 
-gtktreemodel.h        |
-gtktreemodelsort.h    |
-gtktreeselection.h    |
-gtktreesortable.h     |   Binding almost complete
-gtktreestore.h        |
-gtktreeview.h         |
-gtktreeviewcolumn.h   |
-          
 gtkwidget.h: see "missing" section. check signals.
 gtkwindow.h: see "missing" section.
 
