@@ -50,13 +50,7 @@ package Gtk.Packer is
    type Gtk_Packer is access all Gtk_Packer_Record'Class;
 
    type Gtk_Packer_Options is new Guint;
-   Gtk_No_Options  : constant Gtk_Packer_Options;
-   Gtk_Pack_Expand : constant Gtk_Packer_Options;
-   Gtk_Fill_X      : constant Gtk_Packer_Options;
-   Gtk_Fill_Y      : constant Gtk_Packer_Options;
-   --  <description>
-   --  Gtk_Packer_Options Indicates how the child should fill its allocated
-   --  area.
+   --  Indicate how the child should fill its allocated area.
    --
    --  If Gtk_Pack_Expand is set, the child allocated area is expanded to
    --  occupy the whole width (or height) or the Package. The orientation
@@ -69,13 +63,16 @@ package Gtk.Packer is
    --  be filled horizontally with Gtk_Fill_X (and will thus be as wide as
    --  the Gtk_Packer itself. However, it can be filled vertically with
    --  Gtk_Fill_Y only if Gtk_Pack_Expand is set.
-   --  </description>
+
+   Gtk_No_Options  : constant Gtk_Packer_Options;
+   Gtk_Pack_Expand : constant Gtk_Packer_Options;
+   Gtk_Fill_X      : constant Gtk_Packer_Options;
+   Gtk_Fill_Y      : constant Gtk_Packer_Options;
 
    type Gtk_Side_Type is (Side_Top,
                           Side_Bottom,
                           Side_Left,
                           Side_Right);
-   --  <description>
    --  Gtk_Side_Type indicates on which the widget should be inserted.
    --  The children are displayed in the order they were inserted into the
    --  container.
@@ -87,7 +84,6 @@ package Gtk.Packer is
    --  For instance, if you put two widgets on Side_Top, the second one will
    --  appear below the first one. If you add two widgets on Side_RighT, the
    --  second one will be placed on the left of the first.
-   --  </description>
 
    type Gtk_Anchor_Type is (Anchor_Center,
                             Anchor_North,
@@ -98,15 +94,6 @@ package Gtk.Packer is
                             Anchor_South_West,
                             Anchor_West,
                             Anchor_East);
-   Anchor_N  : Gtk_Anchor_Type renames Anchor_North;
-   Anchor_NW : Gtk_Anchor_Type renames Anchor_North_West;
-   Anchor_NE : Gtk_Anchor_Type renames Anchor_North_East;
-   Anchor_S  : Gtk_Anchor_Type renames Anchor_South;
-   Anchor_SW : Gtk_Anchor_Type renames Anchor_South_West;
-   Anchor_SE : Gtk_Anchor_Type renames Anchor_South_East;
-   Anchor_W  : Gtk_Anchor_Type renames Anchor_West;
-   Anchor_E  : Gtk_Anchor_Type renames Anchor_East;
-   --  <description>
    --  Gtk_Anchor_Type indicates the exact location of the widget on its
    --  side. Note that not all anchors are relevant for each side.
    --
@@ -118,7 +105,15 @@ package Gtk.Packer is
    --  Thus, if a previous child was added on Side_North, then the new child
    --  will only appear on the second line in the container. The order the
    --  children are inserted into the container is important.
-   --  </description>
+
+   Anchor_N  : Gtk_Anchor_Type renames Anchor_North;
+   Anchor_NW : Gtk_Anchor_Type renames Anchor_North_West;
+   Anchor_NE : Gtk_Anchor_Type renames Anchor_North_East;
+   Anchor_S  : Gtk_Anchor_Type renames Anchor_South;
+   Anchor_SW : Gtk_Anchor_Type renames Anchor_South_West;
+   Anchor_SE : Gtk_Anchor_Type renames Anchor_South_East;
+   Anchor_W  : Gtk_Anchor_Type renames Anchor_West;
+   Anchor_E  : Gtk_Anchor_Type renames Anchor_East;
 
    --------------------------
    -- Modifying the Packer --
@@ -235,6 +230,9 @@ package Gtk.Packer is
    --  trying to avoid in Ada.
 
    type Gtk_Packer_Child is new Gdk.C_Proxy;
+   --  A child of the packer.
+   --  It includes both the widget and its position in the packer.
+
    Null_Packer_Child : constant Gtk_Packer_Child;
 
    function Find_Child (Packer : access Gtk_Packer_Record;

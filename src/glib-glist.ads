@@ -55,10 +55,16 @@ with System;
 
 package Glib.Glist is
 
+
    generic
+      --  <doc_ignore>
+
       type Gpointer (<>) is private;
       with function Convert (P : Gpointer) return System.Address is <>;
       with function Convert (S : System.Address) return Gpointer is <>;
+
+      --  </doc_ignore>
+
    package Generic_List is
 
       type Glist is private;

@@ -66,8 +66,8 @@ package Gtk.Button_Box is
    procedure Set_Child_Ipadding_Default (Ipad_X : in Gint;
                                          Ipad_Y : in Gint);
    --  Set the default padding (the empty space left around all children).
-   --  This is done for all the button boxes in your application, except those
-   --  for which Set_Child_Ipadding has been used.
+   --  This will be used for all the button boxes in your application,
+   --  except those for which Set_Child_Ipadding has been used.
 
    procedure Get_Child_Ipadding_Default (Ipad_X : out Gint;
                                          Ipad_Y : out Gint);
@@ -88,15 +88,15 @@ package Gtk.Button_Box is
    --  Set the layout to use for the box.
    --  There are four such styles:
    --
-   --    Buttonbox_Spread: The children are spread regularly across the box
+   --  - Buttonbox_Spread: The children are spread regularly across the box
    --
-   --    Buttonbox_Edge  : Same as Spread, except that the first and last
+   --  - Buttonbox_Edge  : Same as Spread, except that the first and last
    --                      children are aligned on the border of the box.
    --
-   --    Buttonbox_Start : The children are put as much to the left (resp. top)
+   --  - Buttonbox_Start : The children are put as much to the left (resp. top)
    --                      as possible in the box.
    --
-   --    Buttonbox_End   : The children are put as much to the right
+   --  - Buttonbox_End   : The children are put as much to the right
    --                      (resp. bottom) as possible in the box.
 
    function Get_Layout (Button_Box : access Gtk_Button_Box_Record)
@@ -121,8 +121,7 @@ package Gtk.Button_Box is
                                  Ipad_X     : in Gint;
                                  Ipad_Y     : in Gint);
    --  Set the padding to use for the children of this specific box.
-   --  Note that you can modify the default padding to use for all the boxes
-   --  by using Set_Child_Ipadding_Default.
+   --  You can modify the default padding by using Set_Child_Ipadding_Default.
 
    procedure Get_Child_Ipadding (Button_Box : access Gtk_Button_Box_Record;
                                  Ipad_X     : out Gint;

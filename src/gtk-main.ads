@@ -77,18 +77,27 @@ package Gtk.Main is
    -----------------------------
 
    type Init_Function is access procedure (Data : System.Address);
+   --  Function called just before starting the main loop.
+   --  This can be registered with Init_Add below.
+
    procedure Init_Add (Func : Init_Function; Data : System.Address);
    --  Register a function to be called just before starting a main loop.
    --  This function is called only once, even if a new main loop is started
    --  recursively.
 
    type Quit_Handler_Id is new Guint;
+   --  registration ID for functions that will be called before the
+   --  main loop exits.
 
    type Quit_Function is access function return Boolean;
+   --  Type of function that can be called when the main loop exits.
+   --  It should return False if it should not be called again when another
+   --  main loop exits.
+
    function Quit_Add (Main_Level : Guint;
                       Func       : Quit_Function)
                      return Quit_Handler_Id;
-   --  Register a new function to be called when the current main loop exists.
+   --  Register a new function to be called when the current main loop exits.
    --  The function will be called once when the current main loop exists.
    --  If it returns False, it will then be deleted from the list of
    --  quit functions, and won't be called again next time a main loop is
@@ -209,12 +218,23 @@ package Gtk.Main is
    --  Two versions are given, either with a user data or with none.
 
    type Idle_Handler_Id is new Guint;
+   --  Id for Idle handlers.
+
    type Idle_Priority   is new Guint;
+   --  Priorities that can be set for idle handlers.
+   --  The higher the priority, the less urgent the task. Handlers whose
+   --  priority is lower will be called before others.
+
    Priority_High_Idle    : constant Idle_Priority := 100;
    Priority_Default_Idle : constant Idle_Priority := 200;
    Priority_Low_Idle     : constant Idle_Priority := 300;
 
    type Idle_Callback is access function return Boolean;
+   --  Function that can be called automatically whenever GtkAda is not
+   --  processing events.
+   --  It should return True if the function should be called again as soon
+   --  as possible, False if it should be unregistered.
+
    function Idle_Add (Cb       : in Idle_Callback;
                       Priority : in Idle_Priority := Priority_Default_Idle)
                      return Idle_Handler_Id;
@@ -246,8 +266,13 @@ package Gtk.Main is
    --  this might provide an easier way of doing things.
 
    type Timeout_Handler_Id is new Guint;
+   --  Id for Timeout handlers.
 
    type Timeout_Callback is access function return Boolean;
+   --  Function that can be called automatically at precise time intervals.
+   --  It should return True if the function should be called again as soon
+   --  as possible, False if it should be unregistered.
+
    function Timeout_Add (Interval : in Guint32;
                          Func : Timeout_Callback)
                         return Timeout_Handler_Id;

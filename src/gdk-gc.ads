@@ -57,7 +57,18 @@ with Gdk.Window;
 package Gdk.GC is
 
    type Gdk_GC is new Gdk.C_Proxy;
+   --  A graphic context that contain all the information to draw graphics
+   --  on the screen.
+   --  Creating these GC is more efficient than passing a lot of parameters
+   --  to each of the drawing functions, since these GC are stored on the
+   --  server side and do not need to be pass through the network.
+
    type Gdk_GC_Values is new Gdk.C_Proxy;
+   --  A structure used on the client side to store the same information
+   --  as the GC. Creating a GC from this structure is more efficient than
+   --  calling a lot of functions to modify the GC directly, since there is
+   --  a single call to the server.
+
    Null_GC : constant Gdk_GC;
    Null_GC_Values : constant Gdk_GC_Values;
 
@@ -197,9 +208,9 @@ package Gdk.GC is
    --  thin as possible, possibly even more so than if the width is 1. It is
    --  also faster to draw a line with width 0 than any other line width.
    --
-   --  Line_Style specifies whether the line should be solid or dashed. If its
-   --  value is Line_On_Off_Dash, the colors are alternatively the foreground
-   --  color, and blank. If the value is Line_Double_Dash, the colors are
+   --  Line_Style specifies whether the line should be solid or dashed.
+   --  With Line_On_Off_Dash, the colors are alternatively the foreground
+   --  color, and blank. With Line_Double_Dash, the colors are
    --  alternatively the foreground and background colors.
    --
    --  Cap_Style specifies how the line should end, either flat or rounded.

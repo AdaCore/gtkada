@@ -53,14 +53,25 @@ package Gtk.Extra.Sheet is
          Row0, Col0 : Gint;  --  Upper-left cell
          Rowi, Coli : Gint;  --  Lower-right cell
       end record;
+   --  A range in the sheet.
+   --  This is a part of the sheet represented by its upper-left cell and
+   --  its lower-right cell.
+   --  Most operations below apply to such ranges.
+
+   --  <doc_ignore>
    type Gtk_Sheet_Range_Access is access all Gtk_Sheet_Range;
+   --  </doc_ignore>
 
    type Gtk_Sheet_Child is new Gdk.C_Proxy;
+   --  A widget insert in the sheet.
+   --  This structure includes both a widge pointer and the position in the
+   --  table in which it is put.
 
    ----------------
    -- Enum types --
    ----------------
 
+   --  <doc_ignore>
    type Sheet_Attr_Type is (Sheet_Foreground,
                             Sheet_Background,
                             Sheet_Font,
@@ -69,20 +80,26 @@ package Gtk.Extra.Sheet is
                             Sheet_Border_Color,
                             Sheet_Is_Editable,
                             Sheet_Is_Visible);
+   --  Attributes that can be set for the sheet.
+   --  No function is provided at the Ada level to modify these attributes
+   --  directly.
+   --  </doc_ignore>
 
    type Sheet_State is (Sheet_Normal,
                         Sheet_Row_Selected,
                         Sheet_Column_Selected,
                         Sheet_Range_Selected);
+   --  The state of the selection.
 
    type Gtk_Sheet_Border is new Integer;
+   --  Mask that indicates which borders should be visible in a cell.
+
    No_Border     : constant Gtk_Sheet_Border;
    Left_Border   : constant Gtk_Sheet_Border;
    Right_Border  : constant Gtk_Sheet_Border;
    Top_Border    : constant Gtk_Sheet_Border;
    Bottom_Border : constant Gtk_Sheet_Border;
    All_Borders   : constant Gtk_Sheet_Border;
-   --  Mask that indicates which borders should be visible in a cell.
 
    -------------------------------
    -- Creation and modification --
@@ -581,9 +598,11 @@ package Gtk.Extra.Sheet is
    --  library level since it has internal clean up functions.
 
    generic
+      --  <doc_ignore>
       type Data_Type (<>) is private;
    package Links is
       type Data_Type_Access is access all Data_Type;
+      --  </doc_ignore>
 
       procedure Link_Cell (Sheet : access Gtk_Sheet_Record;
                            Row   : in Gint;

@@ -51,6 +51,9 @@ package Gtk.Notebook is
    type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
 
    type Gtk_Notebook_Page is new Gdk.C_Proxy;
+   --  A page of the notebook.
+   --  It can contain a single child, and is also associated with a tab
+   --  label used to select that page in the notebook.
 
    ---------------------------------------------
    -- Creating a notebook and inserting pages --

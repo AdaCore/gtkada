@@ -40,9 +40,11 @@ with Unchecked_Conversion;
 package Gdk is
    pragma Preelaborate;
 
+   --  <doc_ignore>
    type C_Dummy is limited private;
+   --  </doc_ignore>
+
    type C_Proxy is access C_Dummy;
-   pragma Convention (C, C_Proxy);
    --  General proxy for C structures.
    --  This type is used instead of System.Address so that the variables are
    --  automatically initialized to 'null'.
@@ -65,4 +67,5 @@ private
    --  This array can contain anything, since it is never used on the Ada side
    --  anyway.
 
+   pragma Convention (C, C_Proxy);
 end Gdk;

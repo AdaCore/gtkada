@@ -69,8 +69,13 @@ package Gtk.Clist is
    type Gtk_Clist is access all Gtk_Clist_Record'Class;
 
    type Gtk_Clist_Row is new Gdk.C_Proxy;
+   --  A row of the clist.
+   --  Application-specific data can be associated with each row.
+   --  In the following subprograms, rows can also be accessed via their
+   --  number, starting from 0.
 
    type Gtk_Sort_Type is (Ascending, Descending);
+   --  The order in which the rwos should be sorted.
 
    --  <doc_ignore>
    function Convert is new Unchecked_Conversion
@@ -700,7 +705,9 @@ package Gtk.Clist is
    --  would be enough to write one by iterating over the Row numbers.
 
    generic
+      --  <doc_ignore>
       type Data_Type (<>) is private;
+      --  </doc_ignore>
    package Row_Data is
       function Get (Object : access Gtk_Clist_Record'Class;
                     Row    : in     Gint)

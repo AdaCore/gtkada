@@ -68,14 +68,12 @@ package Gtk.Widget is
       Width  : Gint16;
       Height : Gint16;
    end record;
-   pragma Pack (Gtk_Requisition);
-   --  <description>
    --  Gtk_Requisition is the desired amount of screen real-estate a widget
    --  requests to the server. Its real allocated size might be different.
    --  See the section in the GtkAda user guide on how to create new widgets
    --  in Ada, and the examples/base_widget directory for an example on how to
    --  use this.
-   --  </description>
+   pragma Pack (Gtk_Requisition);
 
    type Gtk_Allocation is record
       X      : Gint16;
@@ -83,12 +81,10 @@ package Gtk.Widget is
       Width  : Guint16;
       Height : Guint16;
    end record;
-   pragma Pack (Gtk_Allocation);
-   --  <description>
    --  Gtk_Allocation indicates a size and position a widget was allocated.
    --  See the section in the user guide on how to create new widgets for more
    --  information.
-   --  </description>
+   pragma Pack (Gtk_Allocation);
 
    -------------------------
    -- Widgets' life cycle --
@@ -457,7 +453,7 @@ package Gtk.Widget is
    procedure Restore_Default_Style (Widget : access Gtk_Widget_Record);
    --  Restore the default style that was set for the widget.
    --  The default style is the first one that was set either by a call
-   --  to Set_Rc_Style or Gtk.Style.Set_Style.
+   --  to Gtk.Style.Set_Style or Set_Rc_Style.
 
    procedure Reset_Rc_Styles (Widget : access Gtk_Widget_Record);
    --  Restore the Rc style recursively for widget and its children.

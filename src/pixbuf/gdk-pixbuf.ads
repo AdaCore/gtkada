@@ -57,11 +57,19 @@ with Interfaces.C.Strings;
 package Gdk.Pixbuf is
 
    type Gdk_Pixbuf is private;
+   --  A very efficient client-side pixmap.
+   --  This type can be adapted to all the possible screen depths (number of
+   --  bits per pixel), and the algorithms are extremely efficient.
+   --  You can also load a pixbuf directly from an external file in one of
+   --  the standard image formats.
+
    Null_Pixbuf : constant Gdk_Pixbuf;
 
    type Alpha_Mode is (Alpha_Bilevel,
                        Alpha_Full);
-   --  Alpha compositing mode
+   --  Alpha compositing mode.
+   --  This indicates how the alpha channel (for opacity) is handled when
+   --  rendering.
 
    --------------------------
    -- Accessing the fields --
@@ -214,6 +222,7 @@ package Gdk.Pixbuf is
       Dest_Y          : in Gint;
       Width           : in Gint;
       Height          : in Gint;
+      Alpha           : in Alpha_Mode;
       Alpha_Threshold : in Gint;
       Dither          : in Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
       X_Dither        : in Gint := 0;

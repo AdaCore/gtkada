@@ -122,4 +122,16 @@ package body Gtk.Extra.PsFont is
       return Internal (Name & ASCII.Nul);
    end Getfont;
 
+   ----------------
+   -- Get_Psname --
+   ----------------
+
+   function Get_Psname (Font : Gtk_PsFont) return String is
+      function Internal (Font : Gtk_PsFont)
+                        return  Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "ada_gtk_psfont_get_psname");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Name & ASCII.Nul));
+   end Get_Psname;
+
 end Gtk.Extra.PsFont;

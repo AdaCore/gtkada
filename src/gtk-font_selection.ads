@@ -70,13 +70,14 @@ package Gtk.Font_Selection is
    --  Used to determine whether point or pixel sizes are used.
 
    subtype Gtk_Font_Type is Gint;
+   --  Used for determining the type of a font style (bitmap, scalable,...),
+   --  and also for setting filters.  These can be combined if a style has
+   --  bitmaps and scalable fonts available.
+
    Font_Bitmap          : constant Gtk_Font_Type;
    Font_Scalable        : constant Gtk_Font_Type;
    Font_Scalable_Bitmap : constant Gtk_Font_Type;
    Font_All             : constant Gtk_Font_Type;
-   --  Used for determining the type of a font style, and also for setting
-   --  filters.  These can be combined if a style has bitmaps and scalable
-   --  fonts available.
 
    type Gtk_Font_Filter_Type is (Font_Filter_Base,
                                  Font_Filter_User);

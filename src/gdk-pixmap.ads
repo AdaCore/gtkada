@@ -49,6 +49,11 @@ with Gtkada.Types;
 package Gdk.Pixmap is
 
    subtype Gdk_Pixmap is Gdk.Drawable.Gdk_Drawable;
+   --  A server-side image.
+   --  You can create an empty pixmap, or load if from external files in
+   --  bitmap and pixmap format. See Gdk.Pixbuf if you need to load
+   --  images in other formats.
+
    Null_Pixmap : constant Gdk_Pixmap;
 
    procedure Gdk_New (Pixmap :    out Gdk_Pixmap;

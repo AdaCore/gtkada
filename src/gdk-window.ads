@@ -120,9 +120,7 @@ package Gdk.Window is
                            Height : in Gint);
    --  Same as Clear_Area, but generates an expose event.
 
-   ---------------------------
    --  procedure Copy_Area  --
-   ---------------------------
    --
    --  Copy_Area needs a Gdk_Gc object. However, the Gdk.Gc package depends
    --  on this package, thus creating a circular dependency. This service
@@ -169,9 +167,7 @@ package Gdk.Window is
    procedure Set_Background (Window : in Gdk_Window;
                              Color  : in Gdk.Color.Gdk_Color);
 
-   ---------------------------------
-   --  procedure Set_Back_Pixmap  --
-   ---------------------------------
+   --  procedure Set_Back_Pixmap
    --
    --  For circular dependency reasons, this procedure has been moved to
    --  The Gdk.Window.Pixmap child package.
@@ -236,10 +232,8 @@ package Gdk.Window is
    procedure Set_Events (Window     : in Gdk_Window;
                          Event_Mask : in Gdk.Types.Gdk_Event_Mask);
 
-   -------------------------------
    --  procedure Set_Icon       --
    --  procedure Set_Icon_Name  --
-   -------------------------------
    --
    --  For circular dependency issues, these 2 services have been moved
    --  to the Gdk.Window.Pixmap child package.

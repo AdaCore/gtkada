@@ -79,6 +79,8 @@ package Gtk.Container is
 
    type Forall_Function is
      access procedure (Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Function that can be call for each child of a container.
+   --  This is called automatically by the Forall subprogram below.
 
    procedure Forall (Container : access Gtk_Container_Record;
                      Func      : Forall_Function);

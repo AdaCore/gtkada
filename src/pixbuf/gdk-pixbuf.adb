@@ -154,6 +154,7 @@ package body Gdk.Pixbuf is
       Dest_Y          : in Gint;
       Width           : in Gint;
       Height          : in Gint;
+      Alpha           : in Alpha_Mode;
       Alpha_Threshold : in Gint;
       Dither          : in Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
       X_Dither        : in Gint := 0;
@@ -167,6 +168,7 @@ package body Gdk.Pixbuf is
                           Dest_Y          : in Gint;
                           Width           : in Gint;
                           Height          : in Gint;
+                          Alpha           : in Gint;
                           Alpha_Threshold : in Gint;
                           Dither          : in Gint;
                           X_Dither        : in Gint;
@@ -175,6 +177,7 @@ package body Gdk.Pixbuf is
    begin
       Internal (Pixbuf, Drawable,
                 Src_X, Src_Y, Dest_X, Dest_Y, Width, Height,
+                Alpha_Mode'Pos (Alpha),
                 Alpha_Threshold,
                 Gdk.Rgb.Gdk_Rgb_Dither'Pos (Dither),
                 X_Dither, Y_Dither);

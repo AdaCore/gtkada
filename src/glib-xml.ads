@@ -38,6 +38,8 @@ with Unchecked_Deallocation;
 
 generic
    type XML_Specific_Data is private;
+   --  The type of the extra data that can be attached to each node of the
+   --  XML tree. See for instance the package Glib.Glade.
 
 package Glib.XML is
 
@@ -47,6 +49,8 @@ package Glib.XML is
 
    type Node;
    type Node_Ptr is access all Node;
+   --  Pointer to a node of the XML tree.
+
    type Node is record
       Tag   : String_Ptr;
       --  The name of this node
@@ -70,6 +74,10 @@ package Glib.XML is
       --  Use to store data specific to each implementation (e.g a boolean
       --  indicating whether this node has been accessed)
    end record;
+   --  A node of the XML tree.
+   --  Each time a tag is found in the XML file, a new node is created, that
+   --  points to its parent, its children and its siblings (nodes at the same
+   --  level in the tree and with the same parent).
 
    function Parse (File : String) return Node_Ptr;
    --  Parse File and return the first node representing the XML file.

@@ -48,6 +48,9 @@ with Gdk.Window;
 package Gdk.Bitmap is
 
    subtype Gdk_Bitmap is Gdk.Drawable.Gdk_Drawable;
+   --  A black and white image.
+   --  This type is mainly used as a mask when drawing other colored images.
+   --  Each pixel can have two values, 0 or 1.
 
    Null_Bitmap : constant Gdk_Bitmap;
 

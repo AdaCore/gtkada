@@ -153,7 +153,7 @@ package Gtk.Scrolled_Window is
       H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
       V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type);
    --  Set the scrollbar policy for the horizontal and vertical scrollbars.
-   --  The policy determines when the scrollbar should appear; it is a value
+   --  It determines when the scrollbar should appear; it is a value
    --  from the Gtk_Policy_Type enumeration. If Policy_Always, the scrollbar is
    --  always present; if Policy_Never, the scrollbar is never present; if
    --  Policy_Automatic, the scrollbar is present only if needed (that is, if

@@ -52,6 +52,7 @@ package Gtk.Tooltips is
    type Gtk_Tooltips_Record is new Gtk.Data.Gtk_Data_Record with private;
    type Gtk_Tooltips is access all Gtk_Tooltips_Record'Class;
 
+   --  <doc_ignore>
    type Tooltips_Data (Text_Length    : Natural;
                        Private_Length : Natural)
    is record
@@ -60,6 +61,7 @@ package Gtk.Tooltips is
       Text         : String (1 .. Text_Length); --  the text of the tooltip
       Text_Private : String (1 .. Private_Length); --  the private text
    end record;
+   --  </doc_ignore>
 
    procedure Gtk_New (Widget : out Gtk_Tooltips);
    --  Create a new group of tooltips.

@@ -200,3 +200,14 @@ gint
 ada_gtk_item_entry_get_justification (GtkIentry* item) {
   return item->justification;
 }
+
+/********************************************************************
+ **
+ **  PsFont
+ **
+ ********************************************************************/
+
+char*
+ada_gtk_psfont_get_psname (GtkPSFont* font) {
+  return font->psname;
+}

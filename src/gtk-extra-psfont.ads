@@ -77,6 +77,7 @@ with Gtkada.Types;
 package Gtk.Extra.PsFont is
 
    type Gtk_PsFont is new Gdk.C_Proxy;
+   --  A postscript font.
 
    function Getfont (Name   : in String) return Gtk_PsFont;
    --  Return the font structure associated with the font Name.
@@ -113,6 +114,11 @@ package Gtk.Extra.PsFont is
    --  procedure Get_Families (Family : out Gtkada.Types.Chars_Ptr_Array;
    --                          Numf   : out Gint);
    --  Return the list of all the font families recognized in that package.
+
+   function Get_Psname (Font : Gtk_PsFont) return String;
+   --  Return the name of the font.
+   --  This name can be give to Get_GdkFont above to get a font that can be
+   --  used anywhere in GtkAda.
 
    -------------
    -- Signals --

@@ -55,6 +55,7 @@ package Gtk.Extra.Plot_Ps is
                      Plot_Mm,
                      Plot_Cm,
                      Plot_Pspoints);
+   --  Units of measure for paper sizes.
 
    procedure Plot_Export_Ps
       (Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;

@@ -58,6 +58,9 @@ package Glib.Glade is
       Has_Radio_Group : Boolean := False;
       --  True if object has created a radio button/menu_item group
    end record;
+   --  Extra Data added to each node of the XML tree when parsing a
+   --  Glade file. This node summarizes the characteristics of the widget
+   --  bound to that node.
 
    package Glib_XML is new Glib.XML (XML_Data);
    use Glib_XML;

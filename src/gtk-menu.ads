@@ -159,8 +159,7 @@ package Gtk.Menu is
       Activate_Time     : in Guint32 := 0);
    --  Display a menu on the screen.
    --  This is the function to use to create contextual menus.
-   --  Most of the time, Parent_Menu_Shell, Parent_Menu_Item and Func can
-   --  have a null value.
+   --  Most of the time, the parameters can have a null value.
    --  Parent_Menu_Shell is the Gtk_Menu_Shell that contains Parent_Menu_Item,
    --  i.e. the widget that triggered the display of the menu.
    --  Func is a function that returns the coordinates for the menu. If it is
@@ -177,13 +176,18 @@ package Gtk.Menu is
    --  parameters because they might be null.
 
    generic
+      --  <doc_ignore>
       type Data_Type is private;
+      --  </doc_ignore>
+
    package User_Menu_Popup is
+      --  <doc_ignore>
       type Gtk_Menu_Position_Func is access procedure
         (Menu      : access Gtk_Menu_Record;
          X         : out Gint;
          Y         : out Gint;
          User_Data : access Data_Type);
+      --  </doc_ignore>
 
       procedure Popup
         (Menu              : access Gtk_Menu_Record;

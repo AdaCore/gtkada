@@ -88,6 +88,16 @@ with Gdk.Types;
 package Gdk.Font is
 
    type Gdk_Font is new Gdk.C_Proxy;
+   --  A font used to draw text.
+   --  This can represent a bitmap font, a scalable (vectorial) font, or
+   --  a fontset. A fontset is a list of comma-separated fonts, that permits
+   --  GtkAda to obtain the fonts needed for a variety of locales from a
+   --  single locale-independent base font name. The single base font name
+   --  should name a family of fonts whose members are encoded in the various
+   --  charsets needed by the locales of interest.
+   --  The algorithm used to select the font is described in the manual page
+   --  for XCreateFontSet(3X).
+
    Null_Font : constant Gdk_Font;
 
    procedure Load (Font      :    out Gdk_Font;

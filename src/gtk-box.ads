@@ -61,8 +61,11 @@ with Gtk.Widget;
 package Gtk.Box is
 
    type Gtk_Box_Record is new Gtk.Container.Gtk_Container_Record with private;
+
+   --  <doc_ignore>
    subtype Gtk_Hbox_Record is Gtk_Box_Record;
    subtype Gtk_Vbox_Record is Gtk_Box_Record;
+   --  </doc_ignore>
 
    type Gtk_Box is access all Gtk_Box_Record'Class;
    subtype Gtk_Hbox is Gtk_Box;

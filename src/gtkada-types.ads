@@ -41,8 +41,10 @@ package Gtkada.Types is
 
    Data_Error : exception;
 
+   --  <doc_ignore>
    subtype Chars_Ptr is Interfaces.C.Strings.chars_ptr;
    subtype Chars_Ptr_Array is Interfaces.C.Strings.chars_ptr_array;
+   --  </doc_ignore>
 
    Null_Ptr : Chars_Ptr renames Interfaces.C.Strings.Null_Ptr;
 

@@ -41,6 +41,8 @@ with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
 
 package Gtk.Glade is
 
+   --  <doc_ignore>
+
    type Generate_Ptr is access procedure (N : Node_Ptr; File : File_Type);
    type Dynamic_Generate_Ptr is access
      procedure (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr);
@@ -50,15 +52,14 @@ package Gtk.Glade is
       Dgate : Dynamic_Generate_Ptr;
    end record;
 
-   --  <doc_ignore>
    procedure Generic_Ptr (N : Node_Ptr; File : File_Type);
    --  Dummy Generate_Ptr that does nothing.
- 
+
    procedure Generic_DPtr
      (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr);
    --  Dummy Dynamic_Generate_Ptr that does nothing.
    --  </doc_ignore>
- 
+
    function Get_Gate (Class : String) return Generate_Ptr;
    --  Return a Generate_Ptr corresponding to a specific Class.
    --  If class isn't found, return a pointer to Generic_Ptr.

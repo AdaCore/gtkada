@@ -52,13 +52,27 @@ with Gdk.Visual;
 package Gdk.Color is
 
    type Gdk_Color is private;
+   --  A color to be displayed on the screen.
+   --  Currently, GtkAda only supports the RGB standard, ie each color is
+   --  set by its red, green and blue components.
+   --  An extra field (Pixel) is the internal representation of the color,
+   --  which is set once the color has been allocated.
+
    type Gdk_Color_Array is array (Natural range <>) of Gdk_Color;
+   --  An array of colors.
+
    Null_Color : constant Gdk_Color;
    --  No color. For most functions, this will select the default color in the
    --  context, although this exact specification depends on the function you
    --  want to use.
 
    type Gdk_Colormap is new C_Proxy;
+   --  The set of colors the can be displayed on the screen.
+   --  When the screen is not a true-color screen (ie there is only a limited
+   --  number of possible colors, like 256), the colors are in fact indexes
+   --  into a colormap, which gives the components of the color.
+   --  This is the same concept as a palette.
+
    Null_Colormap : constant Gdk_Colormap;
 
    Wrong_Color : exception;
