@@ -1557,7 +1557,10 @@ package body Gtkada.MDI is
 
                if C2.State /= Normal
                  or else Current /= Get_Parent (C2)
-                 or else Position /= Position_Default
+                 or else (Position < Position_Default
+                          and then not Move_Whole_Notebook
+                          and then Get_Nth_Page
+                            (Gtk_Notebook (Current), 1) /= null)
                then
                   declare
                      Item : Widget_List.Glist := MDI.Items;
