@@ -128,6 +128,10 @@ package Glib.Values is
    --  For types that you have redefined yourself, you have access to more
    --  suitable functions directly in the package Generic_Enumeration_Property.
 
+   procedure Set_Flags (Value : in out GValue; V_Enum : Guint);
+   function Get_Flags (Value : GValue) return Glib.Guint;
+   --  ??? Should really manipulate Glib.Properties.Creation.Flags_Int_Value
+
    --  Convenience function to Get and Set a Gtk_Text_Iter are
    --  also provided inside Gtk.Text_Iter.
 
@@ -174,6 +178,8 @@ private
    pragma Import (C, Set_Address, "g_value_set_pointer");
    pragma Import (C, Set_Enum, "g_value_set_enum");
    pragma Import (C, Get_Enum, "g_value_get_enum");
+   pragma Import (C, Set_Flags, "g_value_set_flags");
+   pragma Import (C, Get_Flags, "g_value_get_flags");
    pragma Import (C, Set_Boxed, "g_value_set_boxed");
    pragma Import (C, Get_Boxed, "g_value_get_boxed");
    pragma Import (C, Unset, "g_value_unset");
