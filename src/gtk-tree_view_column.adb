@@ -27,7 +27,6 @@
 -----------------------------------------------------------------------
 
 with Gdk.Rectangle;
-with Gdk.Window;
 with Gdk;               use Gdk;
 with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
 with Gtk.Enums;         use Gtk.Enums;
@@ -854,84 +853,6 @@ package body Gtk.Tree_View_Column is
                 Height);
    end Cell_Get_Size;
 
-   -----------------
-   -- Cell_Render --
-   -----------------
-
-   procedure Cell_Render
-     (Tree_Column     : access Gtk_Tree_View_Column_Record;
-      Window          : Gdk.Window.Gdk_Window;
-      Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-      Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-      Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
-      Flags           : Guint)
-   is
-      procedure Internal
-        (Tree_Column     : System.Address;
-         Window          : Gdk.Window.Gdk_Window;
-         Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-         Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-         Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
-         Flags           : Guint);
-      pragma Import (C, Internal, "gtk_tree_view_column_cell_render");
-
-   begin
-      Internal
-        (Get_Object (Tree_Column),
-         Window,
-         Background_Area,
-         Cell_Area,
-         Expose_Area,
-         Flags);
-   end Cell_Render;
-
-   ----------------
-   -- Cell_Focus --
-   ----------------
-
-   function Cell_Focus
-     (Tree_Column : access Gtk_Tree_View_Column_Record;
-      Direction   : Gint) return Boolean
-   is
-      function Internal
-        (Tree_Column : System.Address;
-         Direction   : Gint) return Gboolean;
-      pragma Import (C, Internal, "gtk_tree_view_column_cell_focus");
-
-   begin
-      return To_Boolean (Internal (Get_Object (Tree_Column), Direction));
-   end Cell_Focus;
-
-   ---------------------
-   -- Cell_Draw_Focus --
-   ---------------------
-
-   procedure Cell_Draw_Focus
-     (Tree_Column     : access Gtk_Tree_View_Column_Record;
-      Window          : Gdk.Window.Gdk_Window;
-      Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-      Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-      Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
-      Flags           : Guint)
-   is
-      procedure Internal
-        (Tree_Column     : System.Address;
-         Window          : Gdk.Window.Gdk_Window;
-         Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-         Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-         Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
-         Flags           : Guint);
-      pragma Import (C, Internal, "gtk_tree_view_column_cell_draw_focus");
-
-   begin
-      Internal (Get_Object (Tree_Column),
-                Window,
-                Background_Area,
-                Cell_Area,
-                Expose_Area,
-                Flags);
-   end Cell_Draw_Focus;
-
    ---------------------
    -- Cell_Is_Visible --
    ---------------------
@@ -944,18 +865,5 @@ package body Gtk.Tree_View_Column is
    begin
       return To_Boolean (Internal (Get_Object (Tree_Column)));
    end Cell_Is_Visible;
-
-   --------------------
-   -- Cell_Set_Dirty --
-   --------------------
-
-   procedure Cell_Set_Dirty
-     (Tree_Column : access Gtk_Tree_View_Column_Record)
-   is
-      procedure Internal (Tree_Column : System.Address);
-      pragma Import (C, Internal, "gtk_tree_view_column_cell_set_dirty");
-   begin
-      Internal (Get_Object (Tree_Column));
-   end Cell_Set_Dirty;
 
 end Gtk.Tree_View_Column;

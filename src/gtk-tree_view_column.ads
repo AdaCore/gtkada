@@ -54,10 +54,9 @@
 --  by iterators (Gtk_Tree_Iter).
 --  </description>
 
---  <c_version>1.3.11</c_version>
+--  <c_version>partial 1.3.15</c_version>
 
 with Gdk.Rectangle;
-with Gdk.Window;
 with Gtk;
 with Gtk.Cell_Renderer;
 with Gtk.Enums; use Gtk.Enums;
@@ -436,38 +435,8 @@ package Gtk.Tree_View_Column is
    --  Obtain the width and height needed to render the column.
    --  This is used primarily by the Gtk_Tree_View.
 
-   procedure Cell_Render
-     (Tree_Column     : access Gtk_Tree_View_Column_Record;
-      Window          : Gdk.Window.Gdk_Window;
-      Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-      Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-      Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
-      Flags           : Guint);
-   --  Render the cell contained by Tree_Column.
-   --  This is used primarily by the Gtk_Tree_View.
-   --  Window: a Gdk_Drawable to draw to
-   --  Background_Area: entire cell area (including tree expanders and maybe
-   --  padding on the sides)
-   --  Cell_Area: area normally rendered by a cell renderer
-   --  Expose_Area: area that actually needs updating
-   --  Flags: flags that affect rendering
-
-   function Cell_Focus
-     (Tree_Column : access Gtk_Tree_View_Column_Record;
-      Direction   : Gint) return Boolean;
-
-   procedure Cell_Draw_Focus
-     (Tree_Column     : access Gtk_Tree_View_Column_Record;
-      Window          : Gdk.Window.Gdk_Window;
-      Background_Area : Gdk.Rectangle.Gdk_Rectangle;
-      Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-      Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
-      Flags           : Guint);
-
    function Cell_Is_Visible
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
-
-   procedure Cell_Set_Dirty (Tree_Column : access Gtk_Tree_View_Column_Record);
 
    -------------
    -- Signals --
