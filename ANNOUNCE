@@ -15,4 +15,6 @@ New features in 2.2.1:
 - Improvements in GtkAda.MDI (more flexible drag-n-drop, ability to split
   areas in multiple parts, ...)
 - New style-related functions bound in Gtk.widget
-
+- Documentation updates
+- Support for encodings in Glib.XML
+- Support for boxed type in Glib.Values
