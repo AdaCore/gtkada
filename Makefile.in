@@ -5,7 +5,8 @@ SHELL=/bin/sh
 
 .PHONY:
 .PHONY: clean-generic mostlyclean-generic \
-	clean distclean mostlyclean maintainer-clean
+	clean distclean mostlyclean maintainer-clean \
+	install
 
 src_dir     = src
 testgtk_dir = testgtk
