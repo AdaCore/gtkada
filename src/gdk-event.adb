@@ -559,9 +559,9 @@ package body Gdk.Event is
    -------------------
 
    function Get_Requestor (Event : in Gdk_Event) return Guint32 is
-      function Internal (Event : in System.Address) return guint32;
+      function Internal (Event : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_gdk_event_get_requestor");
-      Req : constant guint32 := Internal (Get_Object (Event));
+      Req : constant Guint32 := Internal (Get_Object (Event));
    begin
       if Req = 100000 then
          raise Invalid_Field;
@@ -1025,7 +1025,8 @@ package body Gdk.Event is
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_visibility_state");
    begin
-      if Internal (Get_Object (Event), Gdk_Visibility_State'Pos (State)) = 0
+      if Internal (Get_Object (Event), Gdk_Visibility_State'Pos (State))
+        = 0
       then
          raise Invalid_Field;
       end if;

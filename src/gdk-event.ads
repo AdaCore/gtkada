@@ -36,7 +36,6 @@ with Glib; use Glib;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;
-with Ada.Finalization;
 
 package Gdk.Event is
 
