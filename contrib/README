@@ -11,6 +11,9 @@ Windows specific problems.
 
 gtkada-2.2-win32.diff: a patch to run GtkAda 2.2.x properly under Windows
 
+pkgconfig-0.14.0.diff: a patch against pkgconfig-0.14.0 needed with some
+non gcc compilers (e.g. SGI cc).
+
 glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
 
 gtk-wimp.diff: a patch against gtk-wimp, fixing handling of radio buttons
