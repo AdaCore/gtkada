@@ -430,4 +430,32 @@ package body Gtk.Tree_Store is
       Internal (Get_Object (Tree_Store));
    end Clear;
 
+   -----------------
+   -- Freeze_Sort --
+   -----------------
+
+   function Freeze_Sort
+     (Tree : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class)
+      return Gint
+   is
+      function Internal (Tree : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gtk_tree_view_freeze_sort");
+   begin
+      return Internal (Get_Object (Tree));
+   end Freeze_Sort;
+
+   ---------------
+   -- Thaw_Sort --
+   ---------------
+
+   procedure Thaw_Sort
+     (Tree : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
+      Column_Id : Gint)
+   is
+      procedure Internal (Tree : System.Address; Id : Gint);
+      pragma Import (C, Internal, "ada_gtk_tree_view_thaw_sort");
+   begin
+      Internal (Get_Object (Tree), Column_Id);
+   end Thaw_Sort;
+
 end Gtk.Tree_Store;

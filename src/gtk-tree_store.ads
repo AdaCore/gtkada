@@ -217,6 +217,25 @@ package Gtk.Tree_Store is
    procedure Clear (Tree_Store : access Gtk_Tree_Store_Record);
    --  Removes all rows from Tree_Store
 
+   ---------------------------
+   -- Sorting Freeze / Thaw --
+   ---------------------------
+
+   --  Note: the following two functions are not part of the Gtk+ API, but
+   --  are provided by GtkAda.
+
+   function Freeze_Sort
+     (Tree : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class)
+      return Gint;
+   --  Freeze the sorting in the tree view, and returns the current
+   --  sort_column_id, which should be used when thawing. (See Thaw_Sort)
+
+   procedure Thaw_Sort
+     (Tree      : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
+      Column_Id : Gint);
+   --  Thaw a freezed tree_view. Column_Id should be the value returned by
+   --  the corresponding call to Freeze_Sort.
+
    -------------
    -- Signals --
    -------------
