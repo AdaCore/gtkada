@@ -5097,9 +5097,9 @@ package body Gtkada.MDI is
          --    - the child is in the layout and has the focus
          --    - the child is in a notebook and is in the current page
 
-         if (Child.State = Normal
-             and then not Child.MDI.Central.Children_Are_Maximized
-             and then Child.MDI.Selected_Child = MDI_Child (Child))
+         if Child.State = Normal
+           and then not Child.MDI.Central.Children_Are_Maximized
+           and then Child.MDI.Selected_Child = MDI_Child (Child)
          then
             return;
          end if;

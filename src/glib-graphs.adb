@@ -680,7 +680,7 @@ package body Glib.Graphs is
 
       U : Vertex_List;
    begin
-      pragma Assert (G.Directed = True);
+      pragma Assert (G.Directed);
 
       U := G.Vertices;
       while U /= null loop
