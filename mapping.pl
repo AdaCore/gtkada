@@ -193,9 +193,9 @@ sub convert_c
   my ($type) = shift;
 
   if ($type eq "gint") {
-    return "GInt";
+    return "Gint";
   } elsif ($type eq "guint") {
-    return "GUint";
+    return "Guint";
   } elsif ($type eq "constgchar*") {
     return "String";
   } elsif ($type =~ /Gtk([^*]+)\*/) {
@@ -212,9 +212,9 @@ sub convert_type
   my ($type) = shift;
 
   if ($type eq "gint") {
-    return "GInt";
+    return "Gint";
   } elsif ($type eq "guint") {
-    return "GUint";
+    return "Guint";
   } elsif ($type eq "constgchar*") {
     return "String";
   } elsif ($type =~ /Gtk([^*]+)\*/) {
