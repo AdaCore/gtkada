@@ -99,6 +99,20 @@ package body Gtk.Box is
                 Boolean'Pos (Expand), Boolean'Pos (Fill), Padding);
    end Pack_Start;
 
+   -------------------------
+   -- Pack_Start_Defaults --
+   -------------------------
+
+   procedure Pack_Start_Defaults
+     (In_Box  : in Gtk_Box;
+      Child   : in Gtk.Widget.Gtk_Widget'Class) is
+      procedure Internal (In_Box  : System.Address;
+                          Child   : System.Address);
+      pragma Import (C, Internal, "gtk_box_pack_start_defaults");
+   begin
+      Internal (Get_Object (In_Box), Get_Object (Child));
+   end Pack_Start_Defaults;
+
    --------------
    -- Pack_End --
    --------------
@@ -120,6 +134,20 @@ package body Gtk.Box is
       Internal (Get_Object (In_Box), Get_Object (Child),
                 Boolean'Pos (Expand), Boolean'Pos (Fill), Padding);
    end Pack_End;
+
+   -----------------------
+   -- Pack_End_Defaults --
+   -----------------------
+
+   procedure Pack_End_Defaults
+     (In_Box  : in Gtk_Box;
+      Child   : in Gtk.Widget.Gtk_Widget'Class) is
+      procedure Internal (In_Box  : System.Address;
+                          Child   : System.Address);
+      pragma Import (C, Internal, "gtk_box_pack_end_defaults");
+   begin
+      Internal (Get_Object (In_Box), Get_Object (Child));
+   end Pack_End_Defaults;
 
    ---------------------
    -- Set_Homogeneous --

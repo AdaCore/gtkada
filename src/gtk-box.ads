@@ -58,6 +58,14 @@ package Gtk.Box is
       Fill    : in Boolean := True;
       Padding : in Gint    := 0);
 
+   procedure Pack_Start_Defaults
+     (In_Box  : in Gtk_Box;
+      Child   : in Gtk.Widget.Gtk_Widget'Class);
+
+   procedure Pack_End_Defaults
+     (In_Box  : in Gtk_Box;
+      Child   : in Gtk.Widget.Gtk_Widget'Class);
+
    procedure Set_Homogeneous (In_Box : in Gtk_Box; Homogeneous : in Boolean);
 
    procedure Set_Spacing (In_Box : in Gtk_Box; Spacing : in Gint);
