@@ -79,7 +79,8 @@ package body Gdk.GC is
    --------------
 
    procedure Gdk_New (GC     :    out Gdk_GC;
-                      Window : in     Gdk.Window.Gdk_Window) is
+                      Window : in     Gdk.Window.Gdk_Window'Class)
+   is
       function Internal (Window : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_gc_new");
    begin
@@ -177,11 +178,11 @@ package body Gdk.GC is
    ---------------------
 
    procedure Set_Exposures (GC        : in out Gdk_GC;
-                            Exposures : in     Gint) is
+                            Exposures : in     Boolean) is
       procedure Internal (GC : in System.Address; Exposures : in Gint);
       pragma Import (C, Internal, "gdk_gc_set_exposures");
    begin
-      Internal (Get_Object (GC), Exposures);
+      Internal (Get_Object (GC), Boolean'Pos (Exposures));
    end Set_Exposures;
 
 

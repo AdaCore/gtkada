@@ -44,7 +44,7 @@ package Gdk.GC is
 
 
    procedure Gdk_New (GC     :    out Gdk_GC;
-                      Window : in     Gdk.Window.Gdk_Window);
+                      Window : in     Gdk.Window.Gdk_Window'Class);
    --  mapping: Gdk_New gdk.h gdk_gc_new
 
    procedure Gdk_New (GC          :    out Gdk_GC;
@@ -114,7 +114,7 @@ package Gdk.GC is
    --  mapping: Set_Subwindow gdk.h gdk_gc_set_subwindow
 
    procedure Set_Exposures (GC        : in out Gdk_GC;
-                            Exposures : in     Gint);
+                            Exposures : in     Boolean);
    --  mapping: Set_Exposures gdk.h gdk_gc_set_exposures
 
    procedure Set_Line_Attributes (GC         : in out Gdk_GC;
