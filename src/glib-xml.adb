@@ -456,7 +456,7 @@ package body Glib.XML is
             if N.Tag (N.Tag'Last) = '/' then
                Put_Line (">");
             else
-               Put_Line ("/>");
+               Put_Line (" />");
             end if;
          else
             Put (">");
