@@ -79,8 +79,8 @@ package Gdk.Rgb is
    --      Gtk.Widget.Push_Visual (Gdk.Rgb.Get_Visual);
    --      Gtk.Widget.Push_Colormap (Gdk.Rgb.Get_Cmap);
    --      Gtk_New (....)
-   --      Gtk.Widget.Pop_Visual (Gdk.Rgb.Get_Visual);
-   --      Gtk.Widget.Pop_Colormap (Gdk.Rgb.Get_Cmap);
+   --      Gtk.Widget.Pop_Visual;
+   --      Gtk.Widget.Pop_Colormap;
 
 
    type Rgb_Buffer is array (Natural range <>) of Glib.Guchar;
