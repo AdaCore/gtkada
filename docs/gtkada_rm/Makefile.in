@@ -1,3 +1,9 @@
+prefix = @prefix@
+docdir = $(prefix)/doc/GtkAda/gtkada_rm
+
+MKDIR = mkdir -p
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
 
 SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/pixbuf/*.ads ../../src/glade/*.ads
 
@@ -26,8 +32,17 @@ gtkada_rm.info: generated.texi
 	makeinfo --force -o gtkada_rm.info gtkada_rm.texi
 	makeinfo --force --no-headers --no-split -o gtkada_rm.txt gtkada_rm.texi
 
+install:
+	$(MKDIR) $(docdir)
+	for i in `ls *.html *.info* *.ps *.texi *.txt *.tex *.jpg`; \
+	do \
+	  $(INSTALL_DATA) $$i $(docdir); \
+	done
+
 clean:
 	${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
 	${RM} *.ps *.html *.info* *.txt
 	${RM} generated.texi generated_menu.texi
 
+distclean: clean
+	-${RM} Makefile
