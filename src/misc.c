@@ -346,6 +346,22 @@ ada_widget_set_realize (GtkObject *widget, void (* realize) (GtkWidget *))
 }
 
 void
+ada_style_set_draw_expander
+  (GtkStyle *style,
+   void (* draw_expander) (GtkStyle		*style,
+			   GdkWindow		*window,
+			   GtkStateType		state_type,
+			   GdkRectangle		*area,
+			   GtkWidget		*widget,
+			   const gchar		*detail,
+			   gint			x,
+			   gint			y,
+			   GtkExpanderStyle	expander_style))
+{
+  GTK_STYLE_CLASS (G_OBJECT_GET_CLASS (style))->draw_expander = draw_expander;
+}
+
+void
 ada_widget_set_scroll_adjustments_signal (gpointer klass, char* name)
 {
   if (GTK_IS_WIDGET_CLASS (klass))
@@ -814,6 +830,9 @@ GdkAtom ada_make_atom (gulong num)
 
 gdouble ada_gdk_event_get_x (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gdouble_value;
+
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
@@ -836,6 +855,9 @@ gdouble ada_gdk_event_get_x (GdkEvent * event)
 
 gdouble ada_gdk_event_get_y (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gdouble_value;
+
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
@@ -858,6 +880,9 @@ gdouble ada_gdk_event_get_y (GdkEvent * event)
 
 gint ada_gdk_event_get_width (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   switch (event->type)
     {
     case GDK_CONFIGURE:
@@ -870,6 +895,9 @@ gint ada_gdk_event_get_width (GdkEvent * event)
 
 gint ada_gdk_event_get_height (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   switch (event->type)
     {
     case GDK_CONFIGURE:
@@ -882,6 +910,9 @@ gint ada_gdk_event_get_height (GdkEvent * event)
 
 gdouble ada_gdk_event_get_x_root (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gdouble_value;
+
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
@@ -902,6 +933,9 @@ gdouble ada_gdk_event_get_x_root (GdkEvent * event)
 
 gdouble ada_gdk_event_get_y_root (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gdouble_value;
+
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
@@ -922,6 +956,9 @@ gdouble ada_gdk_event_get_y_root (GdkEvent * event)
 
 guint ada_gdk_event_get_button (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_guint_value;
+
   switch (event->type)
     {
     case GDK_BUTTON_PRESS:
@@ -937,6 +974,9 @@ guint ada_gdk_event_get_button (GdkEvent * event)
 
 guint ada_gdk_event_get_state (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_guint_value;
+
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
@@ -962,6 +1002,9 @@ guint ada_gdk_event_get_state (GdkEvent * event)
 
 GdkWindow* ada_gdk_event_get_subwindow (GdkEvent * event)
 {
+  if (!event)
+    return NULL;
+
   switch (event->type)
     {
     case GDK_ENTER_NOTIFY:
@@ -975,6 +1018,9 @@ GdkWindow* ada_gdk_event_get_subwindow (GdkEvent * event)
 
 gint ada_gdk_event_get_mode (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   switch (event->type)
     {
     case GDK_ENTER_NOTIFY:
@@ -988,6 +1034,9 @@ gint ada_gdk_event_get_mode (GdkEvent * event)
 
 gint ada_gdk_event_get_detail (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   switch (event->type)
     {
     case GDK_ENTER_NOTIFY:
@@ -1001,6 +1050,9 @@ gint ada_gdk_event_get_detail (GdkEvent * event)
 
 gint ada_gdk_event_get_focus (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   switch (event->type)
     {
     case GDK_ENTER_NOTIFY:
@@ -1014,6 +1066,9 @@ gint ada_gdk_event_get_focus (GdkEvent * event)
 
 GdkDevice *ada_gdk_event_get_device_id (GdkEvent * event)
 {
+  if (!event)
+    return NULL;
+
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
@@ -1045,6 +1100,9 @@ ada_gdk_event_get_area (GdkEvent *event, GdkRectangle *area)
 
 gint ada_gdk_event_get_count (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   if (event->type == GDK_EXPOSE)
     return event->expose.count;
   return ada_gdk_invalid_gint_value;
@@ -1052,6 +1110,9 @@ gint ada_gdk_event_get_count (GdkEvent * event)
 
 gint ada_gdk_event_get_in (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   if (event->type == GDK_FOCUS_CHANGE)
     return event->focus_change.in;
   return ada_gdk_invalid_gint_value;
@@ -1059,6 +1120,9 @@ gint ada_gdk_event_get_in (GdkEvent * event)
 
 gint ada_gdk_event_get_is_hint (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   if (event->type == GDK_MOTION_NOTIFY)
     return event->motion.is_hint;
   return ada_gdk_invalid_gint_value;
@@ -1066,6 +1130,9 @@ gint ada_gdk_event_get_is_hint (GdkEvent * event)
 
 gint ada_gdk_event_get_key_val (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   switch (event->type)
     {
     case GDK_KEY_PRESS:
@@ -1079,6 +1146,9 @@ gint ada_gdk_event_get_key_val (GdkEvent * event)
 
 char* ada_gdk_event_get_string (GdkEvent * event)
 {
+  if (!event)
+    return NULL;
+
   /* The type of the event is checked in gdk-event.adb */
   return event->key.string;
 }
@@ -1092,6 +1162,9 @@ GdkAtom ada_gdk_event_get_atom (GdkEvent * event)
 
 guint ada_gdk_event_get_property_state (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_guint_value;
+
   if (event->type == GDK_PROPERTY_NOTIFY)
     return event->property.state;
   return ada_gdk_invalid_guint_value;
@@ -1099,6 +1172,9 @@ guint ada_gdk_event_get_property_state (GdkEvent * event)
 
 gint ada_gdk_event_get_visibility_state (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
   if (event->type == GDK_VISIBILITY_NOTIFY)
     return event->visibility.state;
   return ada_gdk_invalid_gint_value;
@@ -1106,6 +1182,9 @@ gint ada_gdk_event_get_visibility_state (GdkEvent * event)
 
 GdkAtom ada_gdk_event_get_selection (GdkEvent * event)
 {
+  if (!event)
+    return NULL;
+
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.selection;
   return NULL;
@@ -1113,6 +1192,9 @@ GdkAtom ada_gdk_event_get_selection (GdkEvent * event)
 
 GdkAtom ada_gdk_event_get_target (GdkEvent * event)
 {
+  if (!event)
+    return NULL;
+
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.target;
   return NULL;
@@ -1120,6 +1202,9 @@ GdkAtom ada_gdk_event_get_target (GdkEvent * event)
 
 GdkAtom ada_gdk_event_get_property (GdkEvent * event)
 {
+  if (!event)
+    return NULL;
+
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.property;
   return NULL;
@@ -1127,6 +1212,9 @@ GdkAtom ada_gdk_event_get_property (GdkEvent * event)
 
 guint32 ada_gdk_event_get_requestor (GdkEvent * event)
 {
+  if (!event)
+    return ada_gdk_invalid_guint32_value;
+
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.requestor;
   return ada_gdk_invalid_guint32_value;
@@ -1134,6 +1222,9 @@ guint32 ada_gdk_event_get_requestor (GdkEvent * event)
 
 GdkAtom ada_gdk_event_get_message_type (GdkEvent * event)
 {
+  if (!event)
+    return NULL;
+
   if (event->type == GDK_CLIENT_EVENT)
     return event->client.message_type;
   return NULL;
