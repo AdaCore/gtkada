@@ -1222,6 +1222,13 @@ package body Gtkada.MDI is
    begin
       Minimize_Child (C, not (C.State = Iconified));
       Set_Focus_Child (C);
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the button in Initialize
+         null;
    end Iconify_Child;
 
    -----------
@@ -1284,6 +1291,13 @@ package body Gtkada.MDI is
       end if;
 
       Free (Event);
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the button in Initialize
+         null;
    end Close_Child;
 
    -------------------
@@ -3186,6 +3200,13 @@ package body Gtkada.MDI is
    procedure Cascade_Cb (MDI : access Gtk_Widget_Record'Class) is
    begin
       Cascade_Children (MDI_Window (MDI));
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         null;
    end Cascade_Cb;
 
    ---------------
@@ -3195,6 +3216,13 @@ package body Gtkada.MDI is
    procedure Tile_H_Cb (MDI : access Gtk_Widget_Record'Class) is
    begin
       Tile_Horizontally (MDI_Window (MDI));
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         null;
    end Tile_H_Cb;
 
    ---------------
@@ -3204,6 +3232,13 @@ package body Gtkada.MDI is
    procedure Tile_V_Cb (MDI : access Gtk_Widget_Record'Class) is
    begin
       Tile_Vertically (MDI_Window (MDI));
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         null;
    end Tile_V_Cb;
 
    -----------------
@@ -3213,6 +3248,13 @@ package body Gtkada.MDI is
    procedure Maximize_Cb (MDI : access Gtk_Widget_Record'Class) is
    begin
       Maximize_Children (MDI_Window (MDI), True);
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         null;
    end Maximize_Cb;
 
    -----------------------
@@ -3224,6 +3266,13 @@ package body Gtkada.MDI is
    begin
       Maximize_Children (M, not Children_Are_Maximized (M));
       Set_Focus_Child (MDI_Child (Child));
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the button in Initialize
+         null;
    end Maximize_Child_Cb;
 
    -------------------
@@ -3233,6 +3282,13 @@ package body Gtkada.MDI is
    procedure Unmaximize_Cb (MDI : access Gtk_Widget_Record'Class) is
    begin
       Maximize_Children (MDI_Window (MDI), False);
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         null;
    end Unmaximize_Cb;
 
    -------------
@@ -3253,6 +3309,13 @@ package body Gtkada.MDI is
          Set_Focus_Child (C);
          Raise_Child (C);
       end if;
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         null;
    end Dock_Cb;
 
    --------------
@@ -3273,6 +3336,13 @@ package body Gtkada.MDI is
          Set_Focus_Child (C);
          Raise_Child (C);
       end if;
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         null;
    end Float_Cb;
 
    --------------
@@ -3295,6 +3365,13 @@ package body Gtkada.MDI is
       if C /= null then
          Close_Child (C);
       end if;
+
+   exception
+      when others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         null;
    end Close_Cb;
 
    --------------
