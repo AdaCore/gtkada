@@ -23,9 +23,9 @@ package body Gtk.Menu_Item is
    function Accelerator_Text (Menu_Item : in Gtk_Menu_Item'Class)
                               return String is
       procedure Internal (Menu_Item : in System.Address;
-                          Buffer : in out C.Char_Array);
+                          Buffer : in out C.char_array);
       pragma Import (C, Internal, "gtk_menu_item_accelerator_text");
-      Buffer : C.Char_Array (1 .. 32);
+      Buffer : C.char_array (1 .. 32);
       --
       --  The size of the buffer has been taken from the source of gtk.
       --  (see gtk_menu_item_accelerator_size for confirmation).
