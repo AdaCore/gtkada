@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.4 
+# From configure.in Revision: 1.5 
 #############################################################
 #
 #  Checking for Gnat
@@ -566,8 +566,8 @@ fi
 
 # Current release settings
 GTKADA_MAJOR_VERSION=1
-GTKADA_MINOR_VERSION=1
-GTKADA_MICRO_VERSION=99
+GTKADA_MINOR_VERSION=2
+GTKADA_MICRO_VERSION=0
 GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 
 ac_aux_dir=
