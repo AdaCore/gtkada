@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                   Copyright (C) 2000-2001                         --
---                         ACT-Europe                                --
+--                   Copyright (C) 2000-2002                         --
+--                          ACT-Europe                               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,12 +42,6 @@ package body Gnome.App_Helper is
 
    function To_Gint is new
      Unchecked_Conversion (UI_Info_Configurable_Types, Gint);
-
-   function To_Address is new
-     Unchecked_Conversion (Generic_Callback, System.Address);
-
-   function To_Address is new
-     Unchecked_Conversion (Gtk_Widget, System.Address);
 
    procedure First_Marshaller
      (Object    : System.Address;
