@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Bar is
@@ -103,6 +104,7 @@ package body Gtk.Menu_Bar is
    begin
       Gen_New (N, "Menu_Bar", File => File);
       Generate (Gtk_Menu_Shell (Menu_Bar), N, File);
+      Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
    procedure Generate (Menu_Bar : in out Gtk_Menu_Bar;
@@ -116,6 +118,9 @@ package body Gtk.Menu_Bar is
       end if;
 
       Generate (Gtk_Menu_Shell (Menu_Bar), N);
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+         Menu_Bar);
    end Generate;
 
 end Gtk.Menu_Bar;
