@@ -1134,9 +1134,7 @@ package body Gtkada.MDI is
       List := First (MDI.Items);
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
-         if C.Title_Box /= null then
-            Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
-         end if;
+         Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
          List := Widget_List.Next (List);
       end loop;
 
@@ -2371,11 +2369,11 @@ package body Gtkada.MDI is
          Slot_Object => Child,
          After => True);
 
-      --  Return_Callback.Object_Connect
-      --  (Child, "expose_event",
-      --   Return_Callback.To_Marshaller (Draw_Child'Access),
-      --   Slot_Object => Child,
-      --   After => True);
+      Return_Callback.Object_Connect
+        (Child, "expose_event",
+         Return_Callback.To_Marshaller (Draw_Child'Access),
+         Slot_Object => Child,
+         After => True);
 
       if (Flags and Destroy_Button) /= 0 then
          Pix := Gdk_New_From_Xpm_Data (Close_Xpm);
@@ -2517,9 +2515,7 @@ package body Gtkada.MDI is
       C.Y   := MDI.Default_Y;
       C.Focus_Widget := Focus_Widget;
 
-      if C.Title_Box /= null then
-         Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
-      end if;
+      Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
 
       if not MDI.Central.Children_Are_Maximized
         and then MDI.Default_X + Threshold >
