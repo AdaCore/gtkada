@@ -65,11 +65,11 @@ package Gdk.Drawable is
       Width    : in Gint := -1;
       Height   : in Gint := -1);
    --  Copy a drawing area.
-   --  To is the Gdk_Drawable to draw.
-   --  Source_X is the left edge of the source rectangle within Source.
-   --  Source_Y is the top of the source rectangle within Source.
+   --  Dest is the Gdk_Drawable to draw.
    --  X is the x coordinate of the destination within Dest.
    --  X is the y coordinate of the destination within Dest.
+   --  Source_X is the left edge of the source rectangle within Source.
+   --  Source_Y is the top of the source rectangle within Source.
    --  Width is the width of the area to be copied, or -1 to make the area
    --  extend to the right edge of Source.
    --  Height is the height of the area to be copied, or -1 to make the area
