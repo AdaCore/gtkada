@@ -164,15 +164,13 @@ ada_signal_count_arguments (gint type, char* signal_name)
      malloc and free, but using the internal variables/macros for
      gtksignal.c would make this too dependent from the exact implementation
      of gtk+ */
-  guint signal_id = gtk_signal_lookup (signal_name, type);
-  GtkSignalQuery * signal;
-  guint nparams;
+  guint signal_id = g_signal_lookup (signal_name, type);
+  GSignalQuery signal;
+
   if (signal_id == 0)
     return -1;
-  signal = gtk_signal_query (signal_id);  
-  nparams = signal->nparams;
-  g_free (signal);
-  return nparams;
+  g_signal_query (signal_id, &signal);  
+  return signal.n_params;
 }
 
 /********************************************************************
@@ -181,61 +179,57 @@ ada_signal_count_arguments (gint type, char* signal_name)
  **  If num is negative, returns the type returned by the handler
  ********************************************************************/
 
-GtkType
+GType
 ada_signal_argument_type (gint type, char* signal_name, gint num)
 {
-  /* Implementation note: using gtk_signal_query adds an extra call to
+  /* Implementation note: using g_signal_query adds an extra call to
      malloc and free, but using the internal variables/macros of
-     gtksignal.c would make this too dependent on the exact implementation
+     gsignal.c would make this too dependent on the exact implementation
      of gtk+ */
-  guint signal_id = gtk_signal_lookup (signal_name, type);
-  GtkSignalQuery * signal;
+  guint signal_id = g_signal_lookup (signal_name, type);
+  GSignalQuery signal;
 
   if (signal_id == 0)
     return GTK_TYPE_INVALID;
 
-  signal = gtk_signal_query (signal_id);
+  g_signal_query (signal_id, &signal);
 
   if (num < 0)
-    return signal->return_val;
-  else if (num >= signal->nparams)
-    return GTK_TYPE_NONE;
+    return signal.return_type;
+  else if (num >= signal.n_params)
+    return G_TYPE_NONE;
   else
-    {
-      GtkType params = signal->params [num];
-      g_free (signal);
-      return params;
-    }
+    return signal.param_types [num];
 }
 
 void
-ada_set_return_value (GtkType type, void* value, GtkArg* params, guint num) {
-  
+ada_set_return_value (GType type, void* value, GtkArg* params, guint num)
+{
   params[num].type = type;
-  switch (GTK_FUNDAMENTAL_TYPE (type))
+  switch (G_TYPE_FUNDAMENTAL (type))
     {
-    case GTK_TYPE_BOOL:
+    case G_TYPE_BOOLEAN:
       *(GTK_RETLOC_BOOL (params[num])) = (gboolean)value;
       break;
-    case GTK_TYPE_INT:
+    case G_TYPE_INT:
       *(GTK_RETLOC_INT (params[num])) = (gint)value;
       break;
-    case GTK_TYPE_UINT:
+    case G_TYPE_UINT:
       *(GTK_RETLOC_UINT (params[num])) = (guint)value;
       break;
-    case GTK_TYPE_LONG:
+    case G_TYPE_LONG:
       *(GTK_RETLOC_LONG (params[num])) = (glong)value;
       break;
-    case GTK_TYPE_ULONG:
+    case G_TYPE_ULONG:
       *(GTK_RETLOC_ULONG (params[num])) = (gulong)value;
       break;
-    case GTK_TYPE_STRING:
+    case G_TYPE_STRING:
       *(GTK_RETLOC_STRING (params[num])) = (char*)value;
       break;
-    case GTK_TYPE_POINTER:
+    case G_TYPE_POINTER:
       *(GTK_RETLOC_POINTER (params[num])) = (gpointer*)value;
       break;
-    case GTK_TYPE_BOXED:
+    case G_TYPE_BOXED:
       *(GTK_RETLOC_BOXED (params[num])) = (gpointer*)value;
       break;
     default:
@@ -250,17 +244,20 @@ ada_set_return_value (GtkType type, void* value, GtkArg* params, guint num) {
  *********************************************************************/
 
 void*
-ada_initialize_class_record (GtkObject*  object,
-			     gint        nsignals,
-			     char*       signals[],
-			     GtkType     parameters[],
-			     gint        max_parameters,
-			     void*       old_class_record,
-			     guint       scroll_adj_signals)
+ada_initialize_class_record (GObject*  object,
+			     gint      nsignals,
+			     char*     signals[],
+			     GType     parameters[],
+			     gint      max_parameters,
+			     void*     old_class_record,
+			     guint     scroll_adj_signals)
 {
+/* XXX ??? */
+  printf ("*** GtkAda error: ada_initialize_class_record not implemented.\n");
+#if 0
   if (old_class_record)
     {
-      object->klass = old_class_record;
+      G_OBJECT_GET_CLASS (object) = old_class_record;
       return old_class_record;
     }
   else
@@ -268,28 +265,27 @@ ada_initialize_class_record (GtkObject*  object,
       int i;
 
       /* Right now, object->klass points to the ancestor's class */
-      GtkObjectClass* ancestor = (GtkObjectClass*)(object->klass);
+      GObjectClass* ancestor = G_OBJECT_GET_CLASS (object);
 
       /* We need to know the ancestor's class size */
-      GtkTypeQuery* query = gtk_type_query (ancestor->type);
+      GTypeQuery* query = g_type_query (GTK_CLASS_TYPE (ancestor));
 
       /* Note: The memory allocated here is never freed. No need to worry,
 	 since this is only allocated once per user's widget type, and
 	 might be used until the end of the application */
-      object->klass = (GtkObjectClass*) malloc
+      G_OBJECT_GET_CLASS (object) = (GtkObjectClass*) malloc
 	(query->class_size + nsignals * sizeof (void*));
-      memcpy (object->klass, ancestor, query->class_size);
+      memcpy (G_OBJECT_GET_CLASS (object), ancestor, query->class_size);
 
       /* Note: we *must* reallocate the signals array from scratch, and not
 	 use gtk_object_class_add_signals. Otherwise, if we have two Ada
 	 objects that inherit from the same Gtk+ widget, the first one will
 	 be corrupted through a call to realloc */
-      object->klass->signals =
-	g_new (guint, object->klass->nsignals + nsignals);
-      memcpy (object->klass->signals, ancestor->signals,
+      G_OBJECT_GET_CLASS (object)->signals =
+	g_new (guint, G_OBJECT_GET_CLASS (object)->nsignals + nsignals);
+      memcpy (G_OBJECT_GET_CLASS (object)->signals, ancestor->signals,
 	      ancestor->nsignals * sizeof (guint));
       
-
       /* Implementation Note: We are actually cheating here: we should
 	 really create a new type, instead of reusing the parent class's type.
 	 This would be cleaner for some things, but since it seems to work
@@ -302,15 +298,15 @@ ada_initialize_class_record (GtkObject*  object,
 	  int count = 0;
 	  while (count < max_parameters
 		 &&
-		 (parameters [i * max_parameters + count] != GTK_TYPE_NONE))
+		 (parameters [i * max_parameters + count] != G_TYPE_NONE))
 	    {
 	      count ++;
 	    }
 
-	  object->klass->signals [i + ancestor->nsignals] = gtk_signal_newv
+	  G_OBJECT_GET_CLASS (object)->signals [i + ancestor->nsignals] = gtk_signal_newv
 	    (signals[i],
 	     GTK_RUN_FIRST,
-	     object->klass->type,
+	     GTK_CLASS_TYPE (G_OBJECT_GET_CLASS (object)),
 	     query->class_size + i * sizeof (void*) /*offset*/,
 	     gtk_marshal_NONE__NONE,  /* default marshaller, unused at the
 					 Ada level */
@@ -318,28 +314,30 @@ ada_initialize_class_record (GtkObject*  object,
 	     parameters  + i * max_parameters);
 	}
 
-      object->klass->nsignals += nsignals;
+      G_OBJECT_GET_CLASS (object)->nsignals += nsignals;
 
       if (scroll_adj_signals)
 	{
-	  GTK_WIDGET_CLASS(object->klass)->set_scroll_adjustments_signal =
-	    object->klass->signals
-	    [scroll_adj_signals - 1 + ancestor->nsignals];
+	  GTK_WIDGET_GET_CLASS(object)->set_scroll_adjustments_signal =
+	    G_OBJECT_GET_CLASS (object)->signals
+	      [scroll_adj_signals - 1 + ancestor->nsignals];
 	}
       
       /* Initialize the function pointers for the new signals to NULL */
-      memset ((char*)(object->klass) + query->class_size, 0, 
+      memset ((char*)(G_OBJECT_GET_CLASS (object)) + query->class_size, 0, 
 	      nsignals * sizeof (void*));
 
       g_free (query);
-      return object->klass;
+      return G_OBJECT_GET_CLASS (object);
     }
+#endif
+  return NULL;
 }
 
 void
 ada_widget_set_realize (GtkObject *widget, void (* realize) (GtkWidget *))
 {
-  ((GtkWidgetClass *)(widget->klass))->realize = realize;
+  (GTK_WIDGET_CLASS (G_OBJECT_GET_CLASS (widget)))->realize = realize;
 }
 /*********************************************************************
  **  Gdk.RGB functions
@@ -351,22 +349,10 @@ ada_rgb_cmap_get (GdkRgbCmap* cmap, gint index)
   return cmap->colors [index];
 }
 
-guchar
-ada_rgb_cmap_get8 (GdkRgbCmap* cmap, gint index)
-{
-  return cmap->lut [index];
-}
-
 void
 ada_rgb_cmap_set (GdkRgbCmap* cmap, gint index, guint32 value)
 {
   cmap->colors [index] = value;
-}
-
-void
-ada_rgb_cmap_set8 (GdkRgbCmap* cmap, gint index, guchar value)
-{
-  cmap->lut [index] = value;
 }
 
 /******************************************************
@@ -685,11 +671,6 @@ ada_paned_get_child2 (GtkPaned* widget) {
 guint16
 ada_gtk_paned_get_handle_size (GtkPaned* widget) {
   return widget->handle_size;
-}
-
-guint16
-ada_gtk_paned_get_gutter_size (GtkPaned* widget) {
-  return widget->gutter_size;
 }
 
 /********************
@@ -1047,95 +1028,24 @@ gint ada_gdk_event_get_focus (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gdouble ada_gdk_event_get_pressure (GdkEvent * event)
+GdkDevice *ada_gdk_event_get_device_id (GdkEvent * event)
 {
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
-      return event->motion.pressure;
+      return event->motion.device;
     case GDK_BUTTON_PRESS:
     case GDK_2BUTTON_PRESS:
     case GDK_3BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
-      return event->button.pressure;
-    default:
-      break;
-    }
-  return ada_gdk_invalid_gdouble_value;
-}
-
-gdouble ada_gdk_event_get_xtilt (GdkEvent * event)
-{
-  switch (event->type)
-    {
-    case GDK_MOTION_NOTIFY:
-      return event->motion.xtilt;
-    case GDK_BUTTON_PRESS:
-    case GDK_2BUTTON_PRESS:
-    case GDK_3BUTTON_PRESS:
-    case GDK_BUTTON_RELEASE:
-      return event->button.xtilt;
-    default:
-      break;
-    }
-  return ada_gdk_invalid_gdouble_value;
-}
-
-gdouble ada_gdk_event_get_ytilt (GdkEvent * event)
-{
-  switch (event->type)
-    {
-    case GDK_MOTION_NOTIFY:
-      return event->motion.ytilt;
-    case GDK_BUTTON_PRESS:
-    case GDK_2BUTTON_PRESS:
-    case GDK_3BUTTON_PRESS:
-    case GDK_BUTTON_RELEASE:
-      return event->button.ytilt;
-    default:
-      break;
-    }
-  return ada_gdk_invalid_gdouble_value;
-}
-
-gint ada_gdk_event_get_source (GdkEvent * event)
-{
-  switch (event->type)
-    {
-    case GDK_MOTION_NOTIFY:
-      return event->motion.source;
-    case GDK_BUTTON_PRESS:
-    case GDK_2BUTTON_PRESS:
-    case GDK_3BUTTON_PRESS:
-    case GDK_BUTTON_RELEASE:
-      return event->button.source;
+      return event->button.device;
     case GDK_PROXIMITY_IN:
     case GDK_PROXIMITY_OUT:
-      return event->proximity.source;
+      return event->proximity.device;
     default:
       break;
     }
-  return ada_gdk_invalid_gint_value;
-}
-
-guint32 ada_gdk_event_get_device_id (GdkEvent * event)
-{
-  switch (event->type)
-    {
-    case GDK_MOTION_NOTIFY:
-      return event->motion.deviceid;
-    case GDK_BUTTON_PRESS:
-    case GDK_2BUTTON_PRESS:
-    case GDK_3BUTTON_PRESS:
-    case GDK_BUTTON_RELEASE:
-      return event->button.deviceid;
-    case GDK_PROXIMITY_IN:
-    case GDK_PROXIMITY_OUT:
-      return event->proximity.deviceid;
-    default:
-      break;
-    }
-  return ada_gdk_invalid_guint32_value;
+  return NULL;
 }
 
 void
@@ -2063,12 +1973,12 @@ ada_style_get_bg_pixmap (GtkStyle* style, gint state)
 
 gint
 ada_style_get_x_thickness (GtkStyle* style) {
-  return style->klass->xthickness;
+  return style->xthickness;
 }
 
 gint
 ada_style_get_y_thickness (GtkStyle* style) {
-  return style->klass->ythickness;
+  return style->ythickness;
 }
 
 /***************************************************
@@ -2078,7 +1988,7 @@ ada_style_get_y_thickness (GtkStyle* style) {
 gint
 ada_object_get_type (GtkObject* object)
 {
-  return GTK_OBJECT_TYPE (object);
+  return G_OBJECT_TYPE (object);
 }
 
 /***************************************************
@@ -2089,45 +1999,45 @@ gpointer
 ada_gtkarg_value_object (GtkArg* args, guint num)
 {
   gpointer return_value = NULL;
-  switch (GTK_FUNDAMENTAL_TYPE (args [num].type))
+  switch (G_TYPE_FUNDAMENTAL (args [num].type))
     {
-    case GTK_TYPE_OBJECT:
+    case G_TYPE_OBJECT:
       return_value = (gpointer)GTK_VALUE_OBJECT (args [num]);
       break;
-    case GTK_TYPE_POINTER:
+    case G_TYPE_POINTER:
       return_value = (gpointer)GTK_VALUE_POINTER (args [num]);
       break;
-    case GTK_TYPE_STRING:
+    case G_TYPE_STRING:
       return_value = (gpointer)GTK_VALUE_STRING (args [num]);
       break;
-    case GTK_TYPE_BOXED:
+    case G_TYPE_BOXED:
       return_value = (gpointer)GTK_VALUE_BOXED (args [num]);
       break;
-    case GTK_TYPE_INT:
+    case G_TYPE_INT:
       return_value = (gpointer)GTK_VALUE_INT (args [num]);
       break;
-    case GTK_TYPE_BOOL:
+    case G_TYPE_BOOLEAN:
       return_value = (gpointer)GTK_VALUE_BOOL (args [num]);
       break;
-    case GTK_TYPE_UINT:
+    case G_TYPE_UINT:
       return_value = (gpointer)GTK_VALUE_UINT (args [num]);
       break;
-    case GTK_TYPE_LONG:
+    case G_TYPE_LONG:
       return_value = (gpointer)GTK_VALUE_LONG (args [num]);
       break;
-    case GTK_TYPE_ULONG:
+    case G_TYPE_ULONG:
       return_value = (gpointer)GTK_VALUE_ULONG (args [num]);
       break;
-    case GTK_TYPE_INVALID:
-      fprintf (stderr, "GtkAda: GTK_TYPE_INVALID found in ada_gtkarg_value_object\n");
+    case G_TYPE_INVALID:
+      fprintf (stderr, "GtkAda: G_TYPE_INVALID found in ada_gtkarg_value_object\n");
       break;
-    case GTK_TYPE_NONE:
-      fprintf (stderr, "GtkAda: GTK_TYPE_NONE found in ada_gtkarg_value_object\n");
+    case G_TYPE_NONE:
+      fprintf (stderr, "GtkAda: G_TYPE_NONE found in ada_gtkarg_value_object\n");
       break;
     default:
       {
 	fprintf (stderr, "GtkAda: request for an Object value (%d) when we have a %d\n",
-		 GTK_TYPE_OBJECT, (args[num].type % 256));
+		 G_TYPE_OBJECT, (args[num].type % 256));
       }
     }
   return return_value;
@@ -2148,12 +2058,6 @@ GtkWidget*
 ada_colorsel_dialog_get_ok_button (GtkColorSelectionDialog* dialog)
 {
   return dialog->ok_button;
-}
-
-GtkWidget*
-ada_colorsel_dialog_get_reset_button (GtkColorSelectionDialog* dialog)
-{
-  return dialog->reset_button;
 }
 
 GtkWidget*
@@ -2264,46 +2168,6 @@ gfloat
 ada_ruler_get_upper (GtkRuler* widget)
 {
    return widget->upper;
-}
-
-/******************************************
- ** Functions for Editable
- ******************************************/
-
-guint
-ada_editable_get_editable (GtkEditable* widget)
-{
-  return widget->editable;
-}
-
-void
-ada_editable_set_editable (GtkEditable* widget, guint val)
-{
-  widget->editable = val;
-}
-
-gchar*
-ada_editable_get_clipboard_text (GtkEditable* widget)
-{
-   return widget->clipboard_text;
-}
-
-guint
-ada_editable_get_has_selection (GtkEditable* widget)
-{
-   return widget->has_selection;
-}
-
-guint
-ada_editable_get_selection_end_pos (GtkEditable* widget)
-{
-   return widget->selection_end_pos;
-}
-
-guint
-ada_editable_get_selection_start_pos (GtkEditable* widget)
-{
-   return widget->selection_start_pos;
 }
 
 /******************************************
@@ -2542,15 +2406,14 @@ ada_widget_get_parent (GtkWidget* widget)
 gint
 ada_widget_get_motion_notify (GtkWidget* widget, GdkEvent* event)
 {
-  return (GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)
+  return (GTK_WIDGET_GET_CLASS (widget)
 	  ->motion_notify_event)(widget, (GdkEventMotion*)event);
 }
 
 gint
 ada_widget_has_default_motion_notify (GtkWidget* widget)
 {
-  return
-    (GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)->motion_notify_event) != 0;
+  return (GTK_WIDGET_GET_CLASS (widget)->motion_notify_event) != 0;
 }
 
 /******************************************
@@ -2821,8 +2684,8 @@ ada_gtk_clist_set_cell_contents (GtkCList* clist,
 				 GdkPixmap *pixmap,
 				 GdkBitmap *mask)
 {
-  GTK_CLIST_CLASS (((GtkObject*)clist)->klass)->set_cell_contents
-     (clist, row, column, type, string, spacing, pixmap, mask);
+  GTK_CLIST_GET_CLASS (clist)->set_cell_contents
+    (clist, row, column, type, string, spacing, pixmap, mask);
 }
 
 int
@@ -3395,10 +3258,10 @@ gdk_window_get_size (GdkWindow      *drawable,
   gdk_drawable_get_size (drawable, width, height);
 }
 
-GdkDrawableType
+GdkWindowType
 gdk_window_get_type (GdkDrawable    *window)
 {
-  return gdk_drawable_get_type (window);
+  return gdk_window_get_window_type (window);
 }
 
 GdkColormap*
