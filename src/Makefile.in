@@ -55,7 +55,7 @@ incdir        = $(prefix)/include/gtkada
 alidir        = $(incdir)
 
 
-c_objects = $(LIB_DIR)/misc.o $(LIB_DIR)/misc-gnat.o
+c_objects = $(LIB_DIR)/misc.o
 
 ## General and public targets
 
@@ -160,8 +160,6 @@ mostlyclean: mostlyclean-generic
 maintainer-clean: mostlyclean-generic
 
 $(LIB_DIR)/misc.o: misc.c
-	$(CD) $(LIB_DIR); $(CC) -c $(ALL_CFLAGS) ../$<
-$(LIB_DIR)/misc-gnat.o: misc-gnat.c
 	$(CD) $(LIB_DIR); $(CC) -c $(ALL_CFLAGS) ../$<
 
 .ads.o:

@@ -37,6 +37,24 @@ package body Gtk.Main is
 
    package C renames Interfaces.C;
 
+   ----------
+   -- Init --
+   ----------
+
+   procedure Init is
+      gnat_argc : Interfaces.C.int;
+      pragma Import (C, gnat_argc);
+
+      gnat_argv : System.Address;
+      pragma Import (C, gnat_argv);
+
+      procedure Internal (argc : System.Address; argv : System.Address);
+      pragma Import (C, Internal, "gtk_init");
+
+   begin
+      Internal (gnat_argc'Address, gnat_argv'Address);
+   end Init;
+
    --------------
    -- Grab_Add --
    --------------
@@ -69,10 +87,6 @@ package body Gtk.Main is
    begin
       return C.Strings.Value (Internal);
    end Set_Locale;
-
-   ----------------
-   -- Set_Locale --
-   ----------------
 
    procedure Set_Locale is
       Dummy : constant String := Set_Locale;

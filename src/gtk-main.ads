@@ -55,16 +55,6 @@ package Gtk.Main is
 
    procedure Grab_Remove (Widget : Gtk.Widget.Gtk_Widget);
 
-   --  Some services can be directly binded...
-   --
-   pragma Import (C, Init, "ag_gtk_init");
-   pragma Import (C, Gtk_Exit, "gtk_exit");
-   pragma Import (C, Events_Pending, "gtk_events_pending");
-   pragma Import (C, Main, "gtk_main");
-   pragma Import (C, Main_Level, "gtk_main_level");
-   pragma Import (C, Main_Quit, "gtk_main_quit");
-   pragma Import (C, Main_Iteration, "gtk_main_iteration");
-
    ----------
    -- Idle --
    ----------
@@ -82,7 +72,6 @@ package Gtk.Main is
    --  when the callback is called.
 
    procedure Idle_Remove (Id : in Guint);
-   pragma Import (C, Idle_Remove, "gtk_idle_remove");
 
    -------------
    -- Timeout --
@@ -104,6 +93,17 @@ package Gtk.Main is
    --  when the callback is called.
 
    procedure Timeout_Remove (Id : in Guint);
-   pragma Import (C, Timeout_Remove, "gtk_timeout_remove");
 
+private
+   --  Some services can be directly binded...
+
+   pragma Import (C, Gtk_Exit, "gtk_exit");
+   pragma Import (C, Events_Pending, "gtk_events_pending");
+   pragma Import (C, Main, "gtk_main");
+   pragma Import (C, Main_Level, "gtk_main_level");
+   pragma Import (C, Main_Quit, "gtk_main_quit");
+   pragma Import (C, Main_Iteration, "gtk_main_iteration");
+
+   pragma Import (C, Idle_Remove, "gtk_idle_remove");
+   pragma Import (C, Timeout_Remove, "gtk_timeout_remove");
 end Gtk.Main;

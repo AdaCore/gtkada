@@ -27,13 +27,32 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
 with Interfaces.C.Strings;
 
 package body Gdk.Main is
 
-   -------------------
-   --  Get_Display  --
-   -------------------
+   ----------
+   -- Init --
+   ----------
+
+   procedure Init is
+      gnat_argc : Interfaces.C.int;
+      pragma Import (C, gnat_argc);
+  
+      gnat_argv : System.Address;
+      pragma Import (C, gnat_argv);
+ 
+      procedure Internal (argc : System.Address; argv : System.Address);
+      pragma Import (C, Internal, "gdk_init");
+ 
+   begin
+      Internal (gnat_argc'Address, gnat_argv'Address);
+   end Init;
+ 
+   -----------------
+   -- Get_Display --
+   -----------------
 
    function Get_Display return String is
       function Internal return Interfaces.C.Strings.chars_ptr;
@@ -42,10 +61,9 @@ package body Gdk.Main is
       return Interfaces.C.Strings.Value (Internal);
    end Get_Display;
 
-
-   --------------------
-   --  Get_Use_Xshm  --
-   --------------------
+   ------------------
+   -- Get_Use_Xshm --
+   ------------------
 
    function Get_Use_Xshm return Boolean is
       function Internal return Gint;
@@ -53,7 +71,6 @@ package body Gdk.Main is
    begin
       return To_Boolean (Internal);
    end Get_Use_Xshm;
-
 
    -------------------
    -- Keyboard_Grab --
@@ -76,7 +93,6 @@ package body Gdk.Main is
                                    Time));
    end Keyboard_Grab;
 
-
    ---------------------
    -- Keyboard_Ungrab --
    ---------------------
@@ -88,7 +104,6 @@ package body Gdk.Main is
    begin
       Internal (Time);
    end Keyboard_Ungrab;
-
 
    ------------------
    -- Pointer_Grab --
@@ -118,7 +133,6 @@ package body Gdk.Main is
                                    Time));
    end Pointer_Grab;
 
-
    ------------------------
    -- Pointer_Is_Grabbed --
    ------------------------
@@ -131,7 +145,6 @@ package body Gdk.Main is
       return To_Boolean (Internal);
    end Pointer_Is_Grabbed;
 
-
    --------------------
    -- Pointer_Ungrab --
    --------------------
@@ -143,10 +156,9 @@ package body Gdk.Main is
       Internal (Time);
    end Pointer_Ungrab;
 
-
-   ------------------
-   --  Set_Locale  --
-   ------------------
+   ----------------
+   -- Set_Locale --
+   ----------------
 
    function Set_Locale return String is
       function Internal return Interfaces.C.Strings.chars_ptr;
@@ -155,11 +167,6 @@ package body Gdk.Main is
       return C.Strings.Value (Internal);
    end Set_Locale;
 
-
-   ------------------
-   --  Set_Locale  --
-   ------------------
-
    procedure Set_Locale is
       Dummy : constant String := Set_Locale;
       pragma Warnings (Off, Dummy);
@@ -167,10 +174,9 @@ package body Gdk.Main is
       null;
    end Set_Locale;
 
-
-   --------------------
-   --  Set_Use_Xshm  --
-   --------------------
+   ------------------
+   -- Set_Use_Xshm --
+   ------------------
 
    procedure Set_Use_Xshm (Use_Xshm : in Boolean := True) is
       procedure Internal (Use_Xshm : in Gint);

@@ -97,9 +97,7 @@ package Gdk.Main is
 
    procedure Keyboard_Ungrab (Time : in Guint32);
 
-   ----------------------------------------------------------------------
-
-   pragma Import (C, Init, "ag_gdk_init");
+private
    pragma Import (C, Gdk_Exit, "gdk_exit");
    pragma Import (C, Time_Get, "gdk_time_get");
    pragma Import (C, Timer_Get, "gdk_timer_get");
@@ -112,5 +110,4 @@ package Gdk.Main is
    pragma Import (C, Beep, "gdk_beep");
    pragma Import (C, Key_Repeat_Disable, "gdk_key_repeat_disable");
    pragma Import (C, Key_Repeat_Restore, "gdk_key_repeat_restore");
-
 end Gdk.Main;
