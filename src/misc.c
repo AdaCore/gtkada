@@ -132,7 +132,7 @@ ada_gtk_parse_cmd_line (int *gnat_argc, char **gnat_argv, char* macro_switch)
 	  i++;
 	}
 	gnat_argv [i] = NULL;
-	*gnat_argc--;
+	(*gnat_argc)--;
 	return 1;
       }
     }
