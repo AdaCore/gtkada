@@ -609,7 +609,7 @@ package body Gtk.Glade is
          M := M.Next;
       end loop;
 
-      Num_Signals := Gen_Signal_Instanciations (Project, Standard_Output);
+      Num_Signals := Gen_Signal_Instantiations (Project, Standard_Output);
    end Generate;
 
    -----------------
