@@ -53,8 +53,10 @@ package Gtkada.Multi_Paned is
    procedure Add_Child
      (Win           : access Gtkada_Multi_Paned_Record;
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation   : Gtk.Enums.Gtk_Orientation :=
+        Gtk.Enums.Orientation_Horizontal;
       Width, Height : Glib.Gint := 0);
-   --  Add new child, splitting as needed (in the direction of the main pane).
+   --  Add new child, splitting as needed.
    --  This should be used when there is no child yet
    --  The window is splitted in two by default. However, if Width and Height
    --  are specified (or left to -1 for automatic computation), the window is
