@@ -2,7 +2,8 @@ SRC=gtkplot.c gtkplotcanvas.c gtkplotprint.c gtkplotps.c \
   gtkpsfont.c gtkcheckitem.c gtkplotpc.c gtksheet.c gtkitementry.c \
   gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c gtkplotgdk.c \
   gtkplotdata.c gtkplot3d.c gtkplotpolar.c gtkplotbar.c gtkplotbox.c gtkplotsurface.c
-SRC=gtkpsfont.c gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c
+SRC=gtkpsfont.c gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c \
+    gtkpixmapmenuitem.c
 
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
