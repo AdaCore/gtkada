@@ -82,7 +82,6 @@ package Gtkada.Types is
    --  resulting array.
 
    function "+" (S1 : Chars_Ptr_Array; S2 : Chars_Ptr) return Chars_Ptr_Array;
-   pragma Inline ("+");
    --  Append S2 to S1.
    --  Note that this function allocates memory to store S2 as a null
    --  terminated Strings. The user is responsible for calling Free on the
