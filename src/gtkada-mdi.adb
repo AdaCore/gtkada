@@ -3020,9 +3020,9 @@ package body Gtkada.MDI is
       return Get (Iter);
    end Find_MDI_Child_By_Tag;
 
-   ---------------------------
+   ----------------------------
    -- Find_MDI_Child_By_Name --
-   ---------------------------
+   ----------------------------
 
    function Find_MDI_Child_By_Name
      (MDI    : access MDI_Window_Record;
