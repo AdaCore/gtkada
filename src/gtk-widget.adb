@@ -1092,11 +1092,6 @@ package body Gtk.Widget is
                  Get_Field (Child, "ypad").all & ");");
                N.Specific_Data.Has_Container := True;
             end if;
-
-         elsif Q.Value.all = "GTK_PACK_END" then
-            Gen_Call_Child (N, Child, "Box", "Pack_End",
-              "expand", "fill", "padding", File);
-            N.Specific_Data.Has_Container := True;
          end if;
       end if;
 
@@ -1323,17 +1318,6 @@ package body Gtk.Widget is
                   when Constraint_Error =>
                      null;
                end;
-            end if;
- 
-         elsif Q.Value.all = "GTK_PACK_END" then
-            if S /= null and then S2 /= null and then S3 /= null then
-               Gtk.Box.Pack_End
-                 (Gtk_Box (Get_Object (Find_Tag
-                   (Find_Parent (N.Parent, "Box"), "name").Value)),
-                  Gtk_Widget (Get_Object (Get_Field (N, "name"))),
-                  Boolean'Value (S.all), Boolean'Value (S2.all),
-                  Gint'Value (S3.all));
-               N.Specific_Data.Has_Container := True;
             end if;
          end if;
       end if;
