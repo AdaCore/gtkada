@@ -79,6 +79,7 @@ with Create_Font_Selection;
 with Create_Gamma_Curve;
 with Create_Gc;
 with Create_Handle_Box;
+with Create_Item_Factory;
 with Create_Label;
 with Create_Layout;
 with Create_List;
@@ -183,24 +184,23 @@ package body Main_Windows is
                          return Boolean;
 
    type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc);
-   --  The available types for demos. Each of them is a tree item, whose subitems
-   --  are the matching demos.
+   --  The available types for demos.
+   --  Each of them is a tree item, whose subitems are the matching demos.
    --  Box:     Containers
    --  Base:    Basic widgets, found in all GUI toolkits
    --  Complex: More interesting widgets
    --  Gimp:    Widgets developped for gimp, that could be reused
    --  Misc:    Demonstrates some features that are not widgets
 
-   type Tree_Item_Information is
-      record
-         Label  : String_Access;
-         Typ    : Demo_Type;
-         Func   : Demo_Function;
-         Help   : Help_Function;
-      end record;
+   type Tree_Item_Information is record
+      Label  : String_Access;
+      Typ    : Demo_Type;
+      Func   : Demo_Function;
+      Help   : Help_Function;
+   end record;
+
    type Tree_Item_Array is array (Positive range <>) of Tree_Item_Information;
    --  The list of items to put in the tree for the gtk demos
-
 
    Gtk_Demos : constant Tree_Item_Array :=
      ((NS ("alignment"),        Box,     Create_Alignment.Run'Access,
@@ -249,7 +249,8 @@ package body Main_Windows is
                                          Create_Gc.Help'Access),
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
                                          Create_Handle_Box.Help'Access),
-      (NS ("item factory"),     Complex, null, null),
+      (NS ("item factory"),     Complex, Create_Item_Factory.Run'Access,
+                                         Create_Item_Factory.Help'Access),
       (NS ("labels"),           Base,    Create_Label.Run'Access,
                                          Create_Label.Help'Access),
       (NS ("layout"),           Box,     Create_Layout.Run'Access,
