@@ -359,7 +359,7 @@ package body Glib.Convert is
          Error         : GError_Access := null) return chars_ptr;
       pragma Import (C, Internal, "g_locale_from_utf8");
 
-      S   : constant chars_ptr := Internal (UTF8_String, UTF8_String'Length);
+      S : constant chars_ptr := Internal (UTF8_String, UTF8_String'Length);
 
    begin
       if S = Null_Ptr then
