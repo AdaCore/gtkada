@@ -99,12 +99,16 @@ package body Glib.Convert is
         (Str, Str'Length, To_Codeset & ASCII.NUL, From_Codeset & ASCII.NUL,
          Read'Access, Written'Access, Error);
 
-      declare
-         Res : constant String := Value (S);
-      begin
-         g_free (S);
-         return Res;
-      end;
+      if S = Null_Ptr then
+         return "";
+      else
+         declare
+            Res : constant String := Value (S);
+         begin
+            g_free (S);
+            return Res;
+         end;
+      end if;
    end Convert;
 
    procedure Convert
@@ -128,13 +132,16 @@ package body Glib.Convert is
       Bytes_Read := Natural (Read);
       Bytes_Written := Natural (Written);
 
-      declare
-         Res : constant String := Value (S);
-      begin
-         Result (Result'First .. Result'First + Bytes_Written - 1) := Res;
-      end;
-
-      g_free (S);
+      if S = Null_Ptr then
+         Bytes_Written := 0;
+      else
+         declare
+            Res : constant String := Value (S);
+         begin
+            Result (Result'First .. Result'First + Bytes_Written - 1) := Res;
+         end;
+         g_free (S);
+      end if;
    end Convert;
 
    function Convert
