@@ -1624,11 +1624,11 @@ package body Gtk.Handlers is
      (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id)
    is
-      procedure Internal (Obj : System.Address; Id : Handler_Id);
+      procedure Internal (Obj : System.Address; Id : Signal_Id);
       pragma Import (C, Internal, "g_signal_handler_block");
 
    begin
-      Internal (Obj => Get_Object (Obj), Id  => Id);
+      Internal (Obj => Get_Object (Obj), Id  => Id.Signal);
    end Handler_Block;
 
    ----------------------
@@ -1652,10 +1652,10 @@ package body Gtk.Handlers is
      (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id)
    is
-      procedure Internal (Obj : System.Address; Id : Handler_Id);
+      procedure Internal (Obj : System.Address; Id : Signal_Id);
       pragma Import (C, Internal, "g_signal_handler_unblock");
    begin
-      Internal (Obj => Get_Object (Obj), Id  => Id);
+      Internal (Obj => Get_Object (Obj), Id  => Id.Signal);
    end Handler_Unblock;
 
 end Gtk.Handlers;
