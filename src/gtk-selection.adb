@@ -63,13 +63,14 @@ package body Gtk.Selection is
    -- Target_List_New --
    ---------------------
 
-   function Target_List_New (Targets : in Target_Entry_Array)
-                            return Target_List
+   function Target_List_New
+     (Targets : in Target_Entry_Array) return Target_List
    is
-      function Internal (Targets   : System.Address;
-                         N_Targets : Guint)
-                        return Target_List;
+      function Internal
+        (Targets   : System.Address;
+         N_Targets : Guint) return Target_List;
       pragma Import (C, Internal, "gtk_target_list_new");
+
    begin
       return Internal (Targets'Address, Targets'Length);
    end Target_List_New;
@@ -78,15 +79,18 @@ package body Gtk.Selection is
    -- Target_List_Add_Table --
    ---------------------------
 
-   procedure Target_List_Add_Table (List    : in out Target_List;
-                                    Targets : in Target_Entry_Array)
+   procedure Target_List_Add_Table
+     (List    : in Target_List;
+      Targets : in Target_Entry_Array)
    is
-      procedure Internal (List      : Target_List;
-                          Targets   : System.Address;
-                          N_Targets : Guint);
+      procedure Internal
+        (List      : Target_List;
+         Targets   : System.Address;
+         N_Targets : Guint);
       pragma Import (C, Internal, "gtk_target_list_add_table");
+
    begin
-      Internal (List, Targets (Targets'First)'Address, Targets'Length);
+      Internal (List, Targets'Address, Targets'Length);
    end Target_List_Add_Table;
 
    ----------------------

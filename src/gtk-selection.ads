@@ -223,7 +223,7 @@ package Gtk.Selection is
    --  done transparently by GtkAda.
    --  As usual, the list is freed when the reference count reaches 0.
 
-   procedure Target_List_Add (List   : in out Target_List;
+   procedure Target_List_Add (List   : in Target_List;
                               Target : in Gdk.Types.Gdk_Atom;
                               Flags  : in Guint;
                               Info   : in Guint);
@@ -231,11 +231,11 @@ package Gtk.Selection is
    --  You can for instance use the result of Get_Targets (Drag_Context) for
    --  the value of Target.
 
-   procedure Target_List_Add_Table (List    : in out Target_List;
+   procedure Target_List_Add_Table (List    : in Target_List;
                                     Targets : in Target_Entry_Array);
    --  Add a new set of targets to the list.
 
-   procedure Target_List_Remove (List   : in out Target_List;
+   procedure Target_List_Remove (List   : in Target_List;
                                  Target : in Gdk.Types.Gdk_Atom);
    --  Remove a specific target from the list.
 
