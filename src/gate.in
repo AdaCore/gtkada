@@ -71,9 +71,8 @@ cd $tmp
 if gnatchop gate.ada > /dev/null 2>&1; then
   true
 else
-  echo "Couldn't call gnatchop, aborting."
-  exit 1
-fi
+  echo "Warning: gnatchop returned non zero status."
+fi 
 
 /bin/rm -f gate.ada
 files=`echo *`
