@@ -233,8 +233,8 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_event");
 
    begin
-      return To_Boolean
-        (Internal (Get_Object (Widget), Gdk.Event.To_Address (Event)));
+      return
+        Internal (Get_Object (Widget), Gdk.Event.To_Address (Event)) /= 0;
    end Event;
 
    ---------------------------
@@ -601,7 +601,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_hide_on_delete");
 
    begin
-      return To_Boolean (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget)) /= 0;
    end Hide_On_Delete;
 
    -----------------------

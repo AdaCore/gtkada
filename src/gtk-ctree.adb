@@ -154,7 +154,7 @@ package body Gtk.Ctree is
                          Child : in Gtk_Ctree_Node) return Gboolean;
       pragma Import (C, Internal, "gtk_ctree_find");
    begin
-      return To_Boolean (Internal (Get_Object (Ctree), Node, Child));
+      return Internal (Get_Object (Ctree), Node, Child) /= 0;
    end Find;
 
    -------------------
@@ -234,7 +234,7 @@ package body Gtk.Ctree is
       Tmp_Mask_Opened : aliased Gdk.Bitmap.Gdk_Bitmap;
 
    begin
-      Success := To_Boolean (Internal
+      Success := Internal
         (Get_Object (Ctree),
          Node,
          Text'Address,
@@ -244,13 +244,13 @@ package body Gtk.Ctree is
          Tmp_Pixmap_Opened'Address,
          Tmp_Mask_Opened'Address,
          Tmp_Is_Leaf'Address,
-         Tmp_Expanded'Address));
+         Tmp_Expanded'Address) /= 0;
       Pixmap_Closed := Tmp_Pixmap_Closed;
       Mask_Closed := Tmp_Mask_Closed;
       Pixmap_Opened := Tmp_Pixmap_Opened;
       Mask_Opened := Tmp_Mask_Opened;
-      Is_Leaf := To_Boolean (Tmp_Is_Leaf);
-      Expanded := To_Boolean (Tmp_Expanded);
+      Is_Leaf := Tmp_Is_Leaf /= 0;
+      Expanded := Tmp_Expanded /= 0;
    end Get_Node_Info;
 
    -------------------
@@ -318,7 +318,7 @@ package body Gtk.Ctree is
       function Internal (Ctree : in System.Address) return Gboolean;
       pragma Import (C, Internal, "ada_ctree_get_show_stub");
    begin
-      return To_Boolean (Internal (Get_Object (Ctree)));
+      return Internal (Get_Object (Ctree)) /= 0;
    end Get_Show_Stub;
 
    ---------------------
@@ -492,7 +492,7 @@ package body Gtk.Ctree is
       pragma Import (C, Internal, "gtk_ctree_is_ancestor");
 
    begin
-      return To_Boolean (Internal (Get_Object (Ctree), Node, Child));
+      return Internal (Get_Object (Ctree), Node, Child) /= 0;
    end Is_Ancestor;
 
    ----------------
@@ -519,7 +519,7 @@ package body Gtk.Ctree is
                          return      Gboolean;
       pragma Import (C, Internal, "gtk_ctree_is_hot_spot");
    begin
-      return To_Boolean (Internal (Get_Object (Ctree), X, Y));
+      return Internal (Get_Object (Ctree), X, Y) /= 0;
    end Is_Hot_Spot;
 
    -----------------
@@ -536,7 +536,7 @@ package body Gtk.Ctree is
       pragma Import (C, Internal, "gtk_ctree_is_viewable");
 
    begin
-      return To_Boolean (Internal (Get_Object (Ctree), Node));
+      return Internal (Get_Object (Ctree), Node) /= 0;
    end Is_Viewable;
 
    ----------
@@ -636,9 +636,9 @@ package body Gtk.Ctree is
       Mask_Address : aliased Gdk.Bitmap.Gdk_Bitmap;
 
    begin
-      Success := To_Boolean (Internal
+      Success := Internal
         (Get_Object (Ctree), Node, Column,
-         Pixmap_Address'Address, Mask_Address'Address));
+         Pixmap_Address'Address, Mask_Address'Address) /= 0;
       Pixmap := Pixmap_Address;
       Mask := Mask_Address;
    end Node_Get_Pixmap;
@@ -671,9 +671,9 @@ package body Gtk.Ctree is
       Mask_Address : aliased Gdk.Bitmap.Gdk_Bitmap;
 
    begin
-      Success := To_Boolean (Internal
+      Success := Internal
         (Get_Object (Ctree), Node, Column, Text'Address, Spacing'Address,
-         Pixmap_Address'Address, Mask_Address'Address));
+         Pixmap_Address'Address, Mask_Address'Address) /= 0;
       Pixmap := Pixmap_Address;
       Mask := Mask_Address;
    end Node_Get_Pixtext;
@@ -709,7 +709,7 @@ package body Gtk.Ctree is
       pragma Import (C, Internal, "gtk_ctree_node_get_selectable");
 
    begin
-      return To_Boolean (Internal (Get_Object (Ctree), Node));
+      return Internal (Get_Object (Ctree), Node) /= 0;
    end Node_Get_Selectable;
 
    -------------------
@@ -1040,7 +1040,7 @@ package body Gtk.Ctree is
       function Internal (Row : in Gtk_Ctree_Row) return Guint;
       pragma Import (C, Internal, "ada_ctree_row_get_expanded");
    begin
-      return To_Boolean (Internal (Row));
+      return Internal (Row) /= 0;
    end Row_Get_Expanded;
 
    ---------------------
@@ -1051,7 +1051,7 @@ package body Gtk.Ctree is
       function Internal (Row : in Gtk_Ctree_Row) return Guint;
       pragma Import (C, Internal, "ada_ctree_row_get_is_leaf");
    begin
-      return To_Boolean (Internal (Row));
+      return Internal (Row) /= 0;
    end Row_Get_Is_Leaf;
 
    ----------------------

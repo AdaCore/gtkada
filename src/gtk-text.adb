@@ -45,7 +45,7 @@ package body Gtk.Text is
       pragma Import (C, Internal, "gtk_text_backward_delete");
 
    begin
-      return To_Boolean (Internal (Get_Object (Text), Nchars));
+      return Internal (Get_Object (Text), Nchars) /= 0;
    end Backward_Delete;
 
    --------------------
@@ -64,7 +64,7 @@ package body Gtk.Text is
       pragma Import (C, Internal, "gtk_text_forward_delete");
 
    begin
-      return To_Boolean (Internal (Get_Object (Text), Nchars));
+      return Internal (Get_Object (Text), Nchars) /= 0;
    end Forward_Delete;
 
    ------------

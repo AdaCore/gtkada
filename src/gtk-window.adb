@@ -55,7 +55,7 @@ package body Gtk.Window is
       pragma Import (C, Internal, "gtk_window_activate_default");
 
    begin
-      return To_Boolean (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Activate_Default;
 
    --------------------
@@ -69,7 +69,7 @@ package body Gtk.Window is
       pragma Import (C, Internal, "gtk_window_activate_focus");
 
    begin
-      return To_Boolean (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Activate_Focus;
 
    ---------------------
@@ -178,7 +178,7 @@ package body Gtk.Window is
       pragma Import (C, Internal, "gtk_window_get_resizable");
 
    begin
-      return To_Boolean (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Resizable;
 
    -----------------------

@@ -49,7 +49,7 @@ package body Gdk.Rectangle is
       Dest_Rec : aliased Gdk_Rectangle;
 
    begin
-      Intersect := To_Boolean (Internal (Src1, Src2, Dest_Rec'Address));
+      Intersect := Internal (Src1, Src2, Dest_Rec'Address) /= 0;
       Dest := Dest_Rec;
    end Intersect;
 

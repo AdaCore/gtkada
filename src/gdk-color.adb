@@ -196,7 +196,7 @@ package body Gdk.Color is
       Color : aliased Gdk_Color;
 
    begin
-      if not To_Boolean (Internal (Colormap, Color'Address)) then
+      if Internal (Colormap, Color'Address) = 0 then
          raise Wrong_Color;
       end if;
 
@@ -238,7 +238,7 @@ package body Gdk.Color is
       --  the parameter is passed in a register for instance.
 
    begin
-      Succeeded := To_Boolean (Internal (Colormap, Col'Address));
+      Succeeded := Internal (Colormap, Col'Address) /= 0;
       Color := Col;
    end Change;
 
@@ -348,7 +348,7 @@ package body Gdk.Color is
       Color : aliased Gdk_Color;
 
    begin
-      if not To_Boolean (Internal (Spec & ASCII.NUL, Color'Address)) then
+      if Internal (Spec & ASCII.NUL, Color'Address) = 0 then
          raise Wrong_Color;
       end if;
 
@@ -445,7 +445,7 @@ package body Gdk.Color is
       Color : aliased Gdk_Color;
 
    begin
-      if not To_Boolean (Internal (Colormap, Color'Address)) then
+      if Internal (Colormap, Color'Address) = 0 then
          raise Wrong_Color;
       end if;
 

@@ -69,7 +69,7 @@ package body Gdk.Main is
       function Internal return Gint;
       pragma Import (C, Internal, "gdk_get_use_xshm");
    begin
-      return To_Boolean (Internal);
+      return Internal /= 0;
    end Get_Use_Xshm;
 
    -------------------
@@ -145,7 +145,7 @@ package body Gdk.Main is
       pragma Import (C, Internal, "gdk_pointer_is_grabbed");
 
    begin
-      return To_Boolean (Internal);
+      return Internal /= 0;
    end Pointer_Is_Grabbed;
 
    --------------------

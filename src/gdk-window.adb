@@ -126,7 +126,7 @@ package body Gdk.Window is
       Tmp : aliased Gdk_Wm_Decoration;
 
    begin
-      Success := To_Boolean (Internal (Window, Tmp'Access));
+      Success := Internal (Window, Tmp'Access) /= 0;
 
       if Success then
          Decorations := Tmp;
@@ -156,7 +156,7 @@ package body Gdk.Window is
       Result := Internal (Window, X_Out'Address, Y_Out'Address);
       X := X_Out;
       Y := Y_Out;
-      Success := To_Boolean (Result);
+      Success := Result /= 0;
    end Get_Desk_Relative_Origin;
 
    ----------------
@@ -178,7 +178,7 @@ package body Gdk.Window is
       --  the parameter is passed in a register for instance.
 
    begin
-      Success := To_Boolean (Internal (Window, X_Out'Address, Y_Out'Address));
+      Success := Internal (Window, X_Out'Address, Y_Out'Address) /= 0;
       X := X_Out;
       Y := Y_Out;
    end Get_Origin;
@@ -404,7 +404,7 @@ package body Gdk.Window is
       pragma Import (C, Internal, "gdk_window_set_static_gravities");
 
    begin
-      return To_Boolean (Internal (Window, To_Gboolean (Use_Static)));
+      return Internal (Window, To_Gboolean (Use_Static)) /= 0;
    end Set_Static_Gravities;
 
    ---------------
