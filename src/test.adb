@@ -23,19 +23,16 @@ with Gtk.Vbox;   use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Interfaces.C.Strings;
 
 package body Test is
 
-   package String_Cb is new Callback (String, Gtk_Button);
+   package String_Cb is new Callback (Gtk_Button, String);
    package Void_Cb   is new Void_Callback (Gtk.Window.Gtk_Window);
    package Void_Cb_Button is new Void_Callback (Gtk.Button.Gtk_Button);
 --   package ColSel_Cb is new Object_Callback (Gtk_Color_Selection_Dialog);
 --   package ColSel_Widget_Cb is new Object_Callback (Gtk_Object);
-   package Gamma_Cb is new Callback (Gtk_Gamma_Curve, Gtk_Button);
+   package Gamma_Cb is new Callback (Gtk_Button, Gtk_Gamma_Curve);
    use Gtk.Combo.String_List;
-
-   package ICS renames Interfaces.C.Strings;
 
    Status   : Gtk_Status_Bar;
 
@@ -242,16 +239,16 @@ package body Test is
       Show (A_Button);
 
       --  Combo Box
-      Append (List, ICS.New_String ("item0"));
-      Append (List, ICS.New_String ("item1 item1"));
-      Append (List, ICS.New_String ("item2 item2 item2"));
-      Append (List, ICS.New_String ("item3 item3 item3 item3"));
-      Append (List, ICS.New_String ("item4 item4 item4 item4 item4"));
-      Append (List, ICS.New_String ("item5 item5 item5 item5 item5 item5"));
-      Append (List, ICS.New_String ("item6 item6 item6 item6 item6"));
-      Append (List, ICS.New_String ("item7 item7 item7 item7"));
-      Append (List, ICS.New_String ("item8 item8 item8"));
-      Append (List, ICS.New_String ("item9 item9"));
+      Append (List, "item0");
+      Append (List, "item1 item1");
+      Append (List, "item2 item2 item2");
+      Append (List, "item3 item3 item3 item3");
+      Append (List, "item4 item4 item4 item4 item4");
+      Append (List, "item5 item5 item5 item5 item5 item5");
+      Append (List, "item6 item6 item6 item6 item6");
+      Append (List, "item7 item7 item7 item7");
+      Append (List, "item8 item8 item8");
+      Append (List, "item9 item9");
 
       Gtk_New (Combo);
       Set_Popdown_Strings (Combo, List);
