@@ -319,12 +319,11 @@ package Gtk.Tree_View is
    --  Find the path at the point (X, Y) relative to Window.
    --  If Window is null, then the point is found relative to the widget
    --  coordinates. This function is expected to be called after an event.
-   --  It is primarily for things like popup menus. If Path is non-null, then
-   --  it will be filled with the Gtk_Tree_Path at that point.
-   --  This path should be freed with Tree_Path_Free. If Column is non-null,
-   --  then it will be filled with the column at that point. Cell_X and Cell_Y
-   --  return the coordinates relative to the cell background (i.e. the
-   --  background_area passed to gtk_cell_renderer_render()).
+   --  It is primarily for things like popup menus. Path will be filled
+   --  with the Gtk_Tree_Path at that point. It should be freed with
+   --  Tree_Path_Free. Column will be filled with the column at that point.
+   --  Cell_X and Cell_Y return the coordinates relative to the cell background
+   --  (i.e. the background_area passed to gtk_cell_renderer_render()).
    --  This function only works if Tree_View is realized.
    --  Row_Found is set to True if a row exists at that coordinate.
 
