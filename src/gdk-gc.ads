@@ -184,6 +184,7 @@ package Gdk.GC is
    --  Only the points that are drawn inside this rectangle will be displayed
    --  on the screen. Note that you might have to modify the Clip origin first
    --  with Set_Clip_Origin.
+   --  See Set_Clip_Mask to delete the current clip mask.
 
    procedure Set_Clip_Region (GC     : in Gdk_GC;
                               Region : in Gdk.Region.Gdk_Region);
