@@ -85,36 +85,36 @@ package body Gtk.Paned is
       Set_Object (Widget, Internal);
    end Gtk_New_Vpaned;
 
-   -----------------
-   -- Gutter_Size --
-   -----------------
+   ---------------------
+   -- Set_Gutter_Size --
+   ---------------------
 
-   procedure Gutter_Size
+   procedure Set_Gutter_Size
       (Paned : in Gtk_Paned;
        Size  : in Guint16)
    is
       procedure Internal
          (Paned : in System.Address;
           Size  : in Gint);
-      pragma Import (C, Internal, "gtk_paned_gutter_size");
+      pragma Import (C, Internal, "gtk_paned_set_gutter_size");
    begin
       Internal (Get_Object (Paned), Guint16'Pos (Size));
-   end Gutter_Size;
+   end Set_Gutter_Size;
 
-   -----------------
-   -- Handle_Size --
-   -----------------
+   ---------------------
+   -- Set_Handle_Size --
+   ---------------------
 
-   procedure Handle_Size
+   procedure Set_Handle_Size
       (Paned : in Gtk_Paned;
        Size  : in Guint16)
    is
       procedure Internal
          (Paned : in System.Address;
           Size  : in Gint);
-      pragma Import (C, Internal, "gtk_paned_handle_size");
+      pragma Import (C, Internal, "gtk_paned_set_handle_size");
    begin
       Internal (Get_Object (Paned), Guint16'Pos (Size));
-   end Handle_Size;
+   end Set_Handle_Size;
 
 end Gtk.Paned;
