@@ -244,13 +244,11 @@ package body Gtk.GEntry is
       Child_Name : Node_Ptr := Find_Tag (N.Child, "child_name");
    begin
       if Child_Name = null then
-         if not N.Specific_Data.Created then
-            Gen_New (N, "GEntry", File => File);
-            N.Specific_Data.Created := True;
-         end if;
+         Gen_New (N, "GEntry", File => File);
       else
          Gen_Child (N, Child_Name, File);
       end if;
+
       Editable.Generate (N, File);
       Gen_Set (N, "GEntry", "editable", File);
       Gen_Set (N, "GEntry", "Max_Length", "text_max_length", "", "", "", File);
