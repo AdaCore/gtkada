@@ -127,7 +127,7 @@ package Glib.Generic_Properties is
       function Get_Type return Glib.GType;
       --  Return the internal gtk+ type associated with the Ada enumeration
       --  Enumeration. You don't need to use such a function for the types
-      --  defined in standard in GtkAda. Use Glib.Gobjects.Type_From_Name
+      --  defined in standard in GtkAda. Use Glib.Type_From_Name
       --  instead.
 
       function Gnew_Enum
