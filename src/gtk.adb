@@ -30,8 +30,6 @@
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
---  with Ada.Text_IO;
---  with Ada.Tags; use Ada.Tags;
 
 package body Gtk is
 
@@ -52,16 +50,9 @@ package body Gtk is
         (System.Address, Root_Type_Access);
       procedure Free is new Unchecked_Deallocation
         (Root_Type'Class, Root_Type_Access);
---        pragma Warnings (Off);
---        function Convert is new Unchecked_Conversion
---          (System.Address, Integer);
---        pragma Warnings (On);
       Obj : Root_Type_Access := Convert (Data);
+
    begin
---        Ada.Text_IO.Put_Line
---          ("Free_User_Data " & External_Tag (Obj.all'Tag)
---           & " size=" & Integer'Image (Obj'Size)
---           & " Address=" & Integer'Image (Convert (Obj.all'Address)));
       Free (Obj);
    end Free_User_Data;
 
@@ -114,10 +105,7 @@ package body Gtk is
                                Destroy : System.Address);
       pragma Import (C, Set_User_Data, "gtk_object_set_data_by_id_full");
 
---        function Convert is new Unchecked_Conversion (System.Address,
---                                                      Integer);
    begin
-
       if GtkAda_String_Quark = Glib.Unknown_Quark then
          GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
       end if;
@@ -125,18 +113,7 @@ package body Gtk is
       if Internal (Get_Object (Obj), GtkAda_String_Quark) = null then
          Set_User_Data (Get_Object (Obj), GtkAda_String_Quark,
                         Obj.all'Address, Free_User_Data'Address);
---           Ada.Text_IO.Put_Line
---             ("Initialize_User_Data " & External_Tag (Obj.all'Tag)
---              & " size=" & Integer'Image (Obj'Size)
---              & " Address=" & Integer'Image (Convert (Obj.all'Address)));
       end if;
-
-      --  Make sure the object is sinked (otherwise, if the object was
-      --  never given a parent in the user code, there would be a memory leak,
-      --  since Destroy would never bring the ref-count down to 0).
-
-      --  Ref (Obj);
-      --  Sink (Obj);
    end Initialize_User_Data;
 
    -----------------------
