@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,20 +29,14 @@
 
 package Glib.Enums is
 
-   type Glib_Traverse_Flags is new Guint;
-   Traverse_Leafs     : constant Glib_Traverse_Flags;
-   Traverse_Non_Leafs : constant Glib_Traverse_Flags;
-   Traverse_All       : constant Glib_Traverse_Flags;
-   Traverse_Flags     : constant Glib_Traverse_Flags;
-
-   type Glib_Traverse_Type is (In_Order, Pre_Order, Post_Order, Level_Order);
-
-private
-
+   type Glib_Traverse_Flags is mod 2 ** 32;
    Traverse_Leafs     : constant Glib_Traverse_Flags := 2 ** 0;
    Traverse_Non_Leafs : constant Glib_Traverse_Flags := 2 ** 1;
    Traverse_All       : constant Glib_Traverse_Flags :=
      Traverse_Leafs or Traverse_Non_Leafs;
    Traverse_Flags     : constant Glib_Traverse_Flags := 16#03#;
+
+   type Glib_Traverse_Type is (In_Order, Pre_Order, Post_Order, Level_Order);
+   for Glib_Traverse_Type'Size use Gint'Size;
 
 end Glib.Enums;

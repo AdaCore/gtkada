@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -84,11 +84,12 @@ package body Glib.Gnodes is
 
    function N_Nodes (Root  : in Gnode;
                      Flags : in Glib_Traverse_Flags) return Guint is
-      function Internal (Root  : in Gnode;
-                         Flags : in Gint) return Guint;
+      function Internal
+        (Root : Gnode; Flags : Glib_Traverse_Flags) return Guint;
       pragma Import (C, Internal, "g_node_n_nodes");
+
    begin
-      return Internal (Root, Glib_Traverse_Flags'Pos (Flags));
+      return Internal (Root, Flags);
    end N_Nodes;
 
    ----------------
