@@ -141,6 +141,19 @@ package Gtk.Enums is
    type Gtk_Metric_Type is (Pixels, Inches, Centimeters);
    for Gtk_Metric_Type'Size use Gint'Size;
 
+   type Gtk_Movement_Step is
+     (Movement_Logical_Positions, --  move by forw/back graphemes
+      Movement_Visual_Positions,  --  move by left/right graphemes
+      Movement_Words,             --  move by forward/back words
+      Movement_Display_Lines,     --  move up/down lines (wrapped lines)
+      Movement_Display_Line_Ends, --  move up/down lines (wrapped lines)
+      Movement_Paragraphs,        --  move up/down paragraphs
+      Movement_Paragraph_Ends,    --  move to either end of a paragraph
+      Movement_Pages,             --  move by pages
+      Movement_Buffer_Ends);      --  move to ends of the buffer
+   for Gtk_Movement_Step'Size use Gint'Size;
+   --  Note that a paragraph is defined as a new-line ended line.
+
    type Gtk_Orientation is (Orientation_Horizontal, Orientation_Vertical);
    for Gtk_Orientation'Size use Gint'Size;
 
