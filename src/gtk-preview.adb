@@ -8,21 +8,21 @@ package body Gtk.Preview is
 
    procedure Draw_Row
       (Preview : in Gtk_Preview'Class;
-       Data    : in String;
+       Data    : in Guchar_Array;
        X       : in Gint;
        Y       : in Gint;
        W       : in Gint)
    is
       procedure Internal
          (Preview : in System.Address;
-          Data    : in String;
+          Data    : in System.Address;
           X       : in Gint;
           Y       : in Gint;
           W       : in Gint);
       pragma Import (C, Internal, "gtk_preview_draw_row");
    begin
       Internal (Get_Object (Preview),
-                Data & Ascii.NUL,
+                Data'Address,
                 X,
                 Y,
                 W);
@@ -128,24 +128,24 @@ package body Gtk.Preview is
 
    procedure Put_Row
       (Preview : in Gtk_Preview'Class;
-       Src     : in String;
-       Dest    : in String;
+       Src     : in Guchar_Array;
+       Dest    : in Guchar_Array;
        X       : in Gint;
        Y       : in Gint;
        W       : in Gint)
    is
       procedure Internal
          (Preview : in System.Address;
-          Src     : in String;
-          Dest    : in String;
+          Src     : in System.Address;
+          Dest    : in System.Address;
           X       : in Gint;
           Y       : in Gint;
           W       : in Gint);
       pragma Import (C, Internal, "gtk_preview_put_row");
    begin
       Internal (Get_Object (Preview),
-                Src & Ascii.NUL,
-                Dest & Ascii.NUL,
+                Src'Address,
+                Dest'Address,
                 X,
                 Y,
                 W);

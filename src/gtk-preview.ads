@@ -13,10 +13,16 @@ package Gtk.Preview is
 
    procedure Draw_Row
       (Preview : in Gtk_Preview'Class;
-       Data    : in String;
+       Data    : in Guchar_Array;
        X       : in Gint;
        Y       : in Gint;
        W       : in Gint);
+   --  The size required for Data depends of the color depth of the
+   --  preview. No verification is done by Ada, everything is left to
+   --  gtk. You might get some segmentation fault !
+   --  for a color preview, Data'Length = W * 3  (for R, G ,B)
+   --  for a grey preview, Data'Length = W;
+
    function Get_Cmap return Gdk.Colormap.Gdk_Colormap'Class;
    function Get_Info return Gtk_Preview_Info;
    function Get_Visual return Gdk.Visual.Gdk_Visual'Class;
@@ -34,11 +40,15 @@ package Gtk.Preview is
        Height  : in Gint);
    procedure Put_Row
       (Preview : in Gtk_Preview'Class;
-       Src     : in String;
-       Dest    : in String;
+       Src     : in Guchar_Array;
+       Dest    : in Guchar_Array;
        X       : in Gint;
        Y       : in Gint;
        W       : in Gint);
+   --  For a color preview, Src'Length = W * 3
+   --  For a grey preview, Src'Length = W
+   --  The size of depth depends of the depth of the screen
+
    procedure Reset;
    procedure Set_Color_Cube
       (Nred_Shades   : in Guint;
