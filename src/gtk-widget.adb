@@ -572,6 +572,42 @@ package body Gtk.Widget is
       return To_Boolean (Internal (Get_Object (Widget)));
    end Parent_Sensitive_Is_Set;
 
+   -------------------
+   -- Push_Colormap --
+   -------------------
+
+   procedure Push_Colormap (Cmap   : Gdk_Colormap) is
+      procedure Internal (Cmap : System.Address);
+      pragma Internal (C, Internal, "gtk_widget_push_colormap");
+   begin
+      Internal (Get_Object (Cmap));
+   end Push_Colormap;
+
+   -----------------
+   -- Push_Visual --
+   -----------------
+
+   procedure Push_Visual (Visual : Gdk_Visual) is
+      procedure Internal (Visual : System.Address);
+      pragma Internal (C, Internal, "gtk_widget_push_visual");
+   begin
+      Internal (Get_Object (Visual));
+   end Push_Visual;
+
+   ----------------
+   -- Push_Style --
+   ----------------
+
+   procedure Push_Style (Style  : Gtk_Style) is
+      procedure Internal (Style : System.Address);
+      pragma Internal (C, Internal, "gtk_widget_push_style");
+   begin
+      Internal (Get_Object (Style));
+   end Push_Style;
+
+
+
+
    -----------
    -- Popup --
    -----------
@@ -1117,34 +1153,34 @@ package body Gtk.Widget is
                end if;
 
                Put (File, ", ");
- 
+
                Flag_Set := False;
- 
+
                if Boolean'Value (Get_Field (Child, "yexpand").all) then
                   Put (File, "Expand");
                   Flag_Set := True;
                end if;
- 
+
                if Boolean'Value (Get_Field (Child, "yshrink").all) then
                   if Flag_Set then
                      Put (File, " or ");
                   else
                      Flag_Set := True;
                   end if;
- 
+
                   Put (File, "Shrink");
                end if;
- 
+
                if Boolean'Value (Get_Field (Child, "yfill").all) then
                   if Flag_Set then
                      Put (File, " or ");
                   else
                      Flag_Set := True;
                   end if;
- 
+
                   Put (File, "Fill");
                end if;
- 
+
                if not Flag_Set then
                   Put_Line (File, "0,");
                else
@@ -1255,7 +1291,7 @@ package body Gtk.Widget is
               2 ** Gdk_Event_Mask_Enum'Pos
                 (Gdk_Event_Mask_Enum'Value (S (The_First .. S'Last)));
          end if;
- 
+
          return Events;
       end Decode_Events;
 

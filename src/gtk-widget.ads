@@ -40,6 +40,7 @@ with Gdk.Visual;      use Gdk.Visual;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Enums;
+with Gtk.Style;
 with Gtk.Object;
 with Glib.Glist;
 with Glib.GSlist;
@@ -182,6 +183,18 @@ package Gtk.Widget is
                            Cmap : Gdk_Colormap);
    procedure Set_Default_Colormap (Cmap : Gdk_Colormap);
 
+   --  The following functions change the default values (generally just before
+   --  creating a widget) for some parameters. You should use them in pair
+   --  (Push the new value, create the widget then pop the value)
+
+   procedure Push_Colormap (Cmap   : Gdk_Colormap);
+   procedure Push_Visual   (Visual : Gdk_Visual);
+   procedure Push_Style    (Style  : Gtk_Style);
+   procedure Pop_Colormap;
+   procedure Pop_Visual;
+   procedure Pop_Style;
+
+
    --  The following four functions get the size and position of the widget
 
    function Get_Allocation_Width (Widget : access Gtk_Widget_Record)
@@ -291,5 +304,11 @@ package Gtk.Widget is
    function Convert (W : System.Address) return Gtk_Widget;
    package Widget_List is new Glib.Glist.Generic_List (Gtk_Widget);
    package Widget_SList is new Glib.GSlist.Generic_SList (Gtk_Widget);
+
+private
+
+   pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
+   pragma Import (C, Pop_Visual, "gtk_widget_pop_visual");
+   pragma Import (C, Pop_Style, "gtk_widget_pop_style");
 
 end Gtk.Widget;
