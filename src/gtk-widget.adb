@@ -197,7 +197,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "ada_widget_drawable");
 
    begin
-      return To_Boolean (Internal (Get_Object (Widget)));
+      return Boolean'Val (Internal (Get_Object (Widget)));
    end Drawable_Is_Set;
 
    -----------
@@ -824,7 +824,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "ada_widget_is_sensitive");
 
    begin
-      return To_Boolean (Internal (Get_Object (Widget)));
+      return Boolean'Val (Internal (Get_Object (Widget)));
    end Is_Sensitive;
 
    -----------------
