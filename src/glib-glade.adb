@@ -968,7 +968,7 @@ package body Glib.Glade is
 
          if Prev_SR.Widget = null or else SR.Widget /= Prev_SR.Widget then
             Prev_SR := SR;
-            Put_Line (File, "with Glib.Values;");
+            Put_Line (File, "with Gtk.Arguments;");
             Put_Line (File, "with Gtk.Widget; use Gtk.Widget;");
             New_Line (File);
             Put_Line (File, "package " &
@@ -1001,7 +1001,7 @@ package body Glib.Glade is
 
                   if Params (Q)'Length > 0 then
                      Put_Line (File, ";");
-                     Put (File, "      Params : Glib.Values.GValues)");
+                     Put (File, "      Params : Gtk.Arguments.Gtk_Args)");
                   else
                      Put (File, ")");
                   end if;
@@ -1034,7 +1034,7 @@ package body Glib.Glade is
               To_Ada (Get_Field (SR.Widget, "name").all) &
               "_Pkg.Callbacks is");
             New_Line (File);
-            Put_Line (File, "   use Glib.Values;");
+            Put_Line (File, "   use Gtk.Arguments;");
             New_Line (File);
 
             for J in Signal_Range'First .. Num_Signals loop
@@ -1081,7 +1081,7 @@ package body Glib.Glade is
                         if P'Length > 0 then
                            Put_Line (File, ";");
                            Put (File,
-                                "      Params : Glib.Values.GValues)");
+                                "      Params : Gtk.Arguments.Gtk_Args)");
                         else
                            Put (File, ")");
                         end if;
