@@ -50,6 +50,10 @@
 --  scrolled window. The convenience function Add_With_Viewport does exactly
 --  this, so you can ignore the presence of the viewport.
 --
+--  If you want to create your own new widget type that can be inserted
+--  directly into a scrolled_window, you need to specify a signal for
+--  Set_Scroll_Adjustments in the call to Gtk.Object.Initialize_Class_Record.
+--
 --  </description>
 --  <c_version>1.2.7</c_version>
 
