@@ -52,7 +52,7 @@ package body Gtk.Font_Selection is
    -- Get_Ok_Button --
    -------------------
 
-   function Get_Ok_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
+   function Get_OK_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
                                return Gtk.Button.Gtk_Button is
       function Internal (Fsd : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_font_selection_dialog_get_ok");
@@ -60,7 +60,7 @@ package body Gtk.Font_Selection is
    begin
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Fsd)), Stub));
-   end Get_Ok_Button;
+   end Get_OK_Button;
 
    ----------------------
    -- Get_Apply_Button --
