@@ -742,6 +742,23 @@ package Gtk.Widget is
    --  If both the new parent and the widget are shown, then the widget is
    --  visually redrawn in its new parent.
 
+   procedure Translate_Coordinates
+     (Src_Widget  : Gtk_Widget;
+      Dest_Widget : Gtk_Widget;
+      Src_X       : Gint;
+      Src_Y       : Gint;
+      Dest_X      : out Gint;
+      Dest_Y      : out Gint;
+      Result      : out Boolean);
+   --  Translate coordinates relative to Src_Widget's allocation to coordinates
+   --  relative to Dest_Widget's allocations. In order to perform this
+   --  operation, both widgets must be realized, and must share a common
+   --  toplevel.
+   --
+   --  Result is set to False if either widget was not realized, or there
+   --  was no common ancestor. In this case, nothing is stored in Dest_X and
+   --  Dest_Y. Otherwise True.
+
    --------------------
    -- Misc functions --
    --------------------
