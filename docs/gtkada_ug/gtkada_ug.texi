@@ -1,12 +1,12 @@
 \input texinfo   @c -*-texinfo-*-
 @c %**start of header
-@setfilename gtkada.info
+@setfilename gtkada_ug.info
 @settitle GtkAda User's Guide
 @syncodeindex fn cp
 
-@titlepage
-
 @set GtkAdaVersion 1.2.11
+
+@titlepage
 
 @title GtkAda User's Guide
 @subtitle Version @value{GtkAdaVersion}
@@ -1472,19 +1472,15 @@ following procedure body, giving access to the arguments of this callback:
 a @code{Gtk_Window_Record} (Object) and a @code{Gdk_Event} (Arg1)
 
 @example
-   @b{procedure} On_Main_Window_Delete_Event
+   @b{function} On_Main_Window_Delete_Event
      (Object : @b{access} Gtk_Window_Record'Class;
-      Params : Gtk.Arguments.Gtk_Args)
+      Params : Gtk.Arguments.Gtk_Args) return Boolean
    @b{is}
       Arg1 : Gdk_Event := To_Event (Params, 1);
    @b{begin}
-      null;
+      return False;
    @b{end} On_Main_Window_Delete_Event;
 @end example
-
-The only limitation is that currently Gate does not handle callbacks which
-return values, which means that you have to modify the code by hand. This
-limitation should however be fixed in future versions of GtkAda.
 
 @subsection Modifying generated files
 Note that you can easily go back to Glade any time, modify your interface,
@@ -1493,30 +1489,32 @@ kept in the new files. For that, Gate creates a directory @code{.gate} in the
 current directory. Please do not delete it if you want Gate to be able to
 keep your changes from one version to the next.
 
-Also note that to keep track of your modifications, gate relies on
-@code{patch} and @code{diff} being available on your system. If you
-don't have a working set of @code{diff/patch}, @code{configure} will
+Also note that to keep track of your modifications, gate relies on either
+@code{merge}, or @code{patch} and @code{diff} being available on your system.
+If you don't have a working set of @code{diff/patch}, @code{configure} will
 simply replace them by null operations, which means that regenerated
 files will override the previous ones.
 
 Under Win32 based systems, GtkAda now comes with a set of unix-like tools
 (including @code{patch} and @code{diff}) that provide the same functionality.
 Note that these tools are provided as is, and we recommend using your own
-supported set of utilities. You can find the complete package of the GNU
+supported set of utilities. In particular, these tools have known defficiencies
+under Windows 95 and Windows 98. You can find the complete package of the GNU
 utilities provided at
 @url{http://www.weihenstephan.de/~syring/win32/UnxUtils.html}.
 
 In some cases, due to major changes in the project file, Gate may not be
 able to merge all the changes. In this case, it will notify you so, and
-files with a @code{.rej} extension will be generated to help you do the merge
-manually.
+will either keep the old and new sections in the files (if you are using
+@code{merge}), or files with a @code{.rej} extension will be generated to help
+you do the merge manually.
 
 @subsection Adding Gate support for new widgets
 
 This section is intended for developpers that wish to add support for new
 GtkAda widgets in Gate. Note that this section is not complete yet.
 
-@subsubsection Implementing ``Generate'' procedures
+@subsubsection Implementing the ``Generate'' procedure
 To provide support for a new widget, you first need to write a ``Generate''
 procedure that will take care of generating the piece of code related to
 the widget's properties. Note that the parents properties do not
@@ -1535,36 +1533,23 @@ automate most of the work for common widgets.
   @end itemize
 @item Registering ``Generate'' functions
   Gtk.Glade.Register_Generate (Widget, Func)
-This procedure associates a given Genrate procedure with a given widget name
-(not available yet).
+This procedure associates a given Generate procedure with a given widget C name.
 @end itemize
 
-@section Dgate (Dynamic Gate)
-@subsection Introduction to Dgate
-Dgate is the dynamic version of our support. This is an Ada program that takes
-the XML file in argument. It also provides default callbacks for your
-application. We recommand using it while you are trying to design your
-interface to get a rapid look and feel of your GUI without having to compile
-any files.
-
-@subsection Using Dgate
-As with Gate you can simply invoke Dgate by specifying a Glade project file.
-Note that Dgate is actually a very simple GtkAda application that takes
-advantage of powerful features of GtkAda: the ability to dynamically create
-widgets given a XML specification from a file or memory.
-
-@subsection Gtk.Glade
-
-@itemize @bullet
-@item Loading an XML file
-@item Registering signals
-@item Retrieving widgets
-@end itemize
-
-@c @subsection A complete example
+@section Dynamic loading of XML files
+@subsection Introduction to Libglade
+Libglade is an external library provided by default on some systems (e.g
+Linux, Gnome) that supports dynamic loading of XML files and creation of
+widgets at run time. The advantage of using libglade is that you do not need
+to recompile your application to change your user interface. On the other
+hand, everything is done at run time, meaning less compile checks, and also the
+inability to take advantage of the object oriented features of GtkAda and Ada
+such as deriving from a widget creating using the GUI builder, to add fields
+and properties.
+See packages Glade and Glade.XML for more information.
 
 @section Limitations
-Gate and Dgate currently support all Gtk+ widgets and properties available
+Gate currently support all Gtk+ widgets and properties available
 under Glade. But, to help you identify widgets that may not be supported (e.g
 Gnome widgets), Gate will generate a warning on the standard error:
 
@@ -1592,13 +1577,6 @@ Feel free to send us (see @ref{How to report bugs}) the XML file that
 causes this problem. We don't guarantee a rapid fix for each particular
 problem but receiving real examples of missing functionnalities will
 certainly help implementing them faster.
-
-Similarly, Dgate generates a warning to standard error when encountering
-an unsupported widget:
-
-@smallexample
-GtkAda-WARNING **: Unsupported widget GnomeCanvas (canvas1)
-@end smallexample
 
 @node How to report bugs
 @chapter How to report bugs
