@@ -44,8 +44,8 @@ package Pango.Attributes is
 
    type Pango_Attribute is new Glib.C_Proxy;
 
-   function Attr_Underline_New (Underline : Pango.Enums.Underline)
-      return Pango_Attribute;
+   function Attr_Underline_New
+     (Underline : Pango.Enums.Underline) return Pango_Attribute;
    --  Create a new underline attribute
 
    ---------------------
