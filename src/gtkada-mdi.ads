@@ -240,13 +240,16 @@ package Gtkada.MDI is
 
    function Get_Focus_Child
      (MDI : access MDI_Window_Record) return MDI_Child;
-   --  Return the child that currently has the focus.
+   --  Return the child that currently has the MDI focus.
    --  null is returned if no child has the focus.
 
    procedure Set_Focus_Child
      (MDI : access MDI_Window_Record;
       Containing : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Give the focus to the child containing Containing.
+   --  Give the focus to the child containing Containing. This will not
+   --  Grab_Focus for the child in all cases, since you might want to give the
+   --  focus to some specific part of your widget (an entry field,...) in some
+   --  cases.
 
    procedure Set_Focus_Child (Child : access MDI_Child_Record'Class);
    --  Make Child the active widget, and raise it at the top.
@@ -480,6 +483,21 @@ package Gtkada.MDI is
    --  <signals>
    --  The following new signals are defined for this widget:
    --
+   --  - "child_selected"
+   --    procedure Handler
+   --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
+   --
+   --    This signal is emitted when a new child has gained the focus. Convert
+   --    Child to a MDI_Child by calling Gtk.Arguments.To_Object. This can be
+   --    used to change some global information at the MDI level. You should
+   --    connect to "selected" (see below) instead if you want to change some
+   --    information at the child level.
+   --
+   --  </signals>
+   --
+   --  <signals>
+   --  The following new signals are defined for the MDI_Child_Record object:
+   --
    --  - "delete_event"
    --    function Handler (Child : access Gtk_Widget_Record'Class)
    --                     return Boolean;
@@ -492,12 +510,15 @@ package Gtkada.MDI is
    --    Note that this is also the signal to use to prevent top level
    --    Gtk_Window from being destroyed.
    --
-   --  - "child_selected"
-   --    procedure Handler
-   --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
+   --  - "selected"
+   --    procedure Handler (Child : access MDI_Child_Record'Class);
    --
-   --    This signal is emitted when a new child has gained the focus. Convert
-   --    Child to a MDI_Child by calling Gtk.Arguments.To_Object
+   --    This is emitted when the child is selected, ie gains the
+   --    MDI focus. You should probably also connect to the "grab_focus" signal
+   --    to be informed when the child gets the keyboard focus. This can be
+   --    used to transfer the focus to some specific part of the
+   --    widget. Connecting to "grab_focus" should be done with the After
+   --    parameter set to True.
    --
    --  - "float_child"
    --    procedure Handler (Child : access MDI_Child_Record'Class);

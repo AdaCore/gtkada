@@ -151,7 +151,8 @@ package body Gtkada.MDI is
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String ("float_child"),
-      2 => New_String ("unfloat_child"));
+      2 => New_String ("unfloat_child"),
+      3 => New_String ("selected"));
 
    Close_Xpm : constant Interfaces.C.Strings.chars_ptr_array :=
      (New_String ("13 11 3 1"),
@@ -2205,8 +2206,9 @@ package body Gtkada.MDI is
       Flags   : Child_Flags)
    is
       Signal_Parameters : constant Signal_Parameter_Types :=
-        (1 => (1 => GType_Pointer),
-         2 => (1 => GType_Pointer));
+        (1 => (1 => GType_None),
+         2 => (1 => GType_None),
+         3 => (1 => GType_None));
       Button    : Gtk_Button;
       Box       : Gtk_Box;
       Pix       : Gdk_Pixmap;
@@ -2317,7 +2319,6 @@ package body Gtkada.MDI is
 
       --  The child widget
 
-      Child.Initial := Gtk_Widget (Widget);
       Add (Event, Widget);
 
       Widget_Callback.Object_Connect
@@ -2670,6 +2671,15 @@ package body Gtkada.MDI is
               (Get_Window (Gtk_Window (Get_Toplevel (Child.Initial))));
          end if;
       end if;
+
+      --  Work around a problem with the notebook: changing the current page in
+      --  the notebook changes the current focus child, therefore the user can
+      --  not force the focus when the item is selected.
+
+      if Child.MDI.Focus_Child = Child then
+         Grab_Focus (Child.Initial);
+      end if;
+
       return False;
    end Raise_Child_Idle;
 
@@ -2790,11 +2800,11 @@ package body Gtkada.MDI is
       --  focus_in events will always be sent the next time the user selects a
       --  widget.
 
-      Set_Flags (C.Initial, Can_Focus);
       Grab_Focus (C.Initial);
 
       Highlight_Child (C, False);
 
+      Widget_Callback.Emit_By_Name (C, "selected");
       Emit_By_Name_Child (Get_Object (C.MDI), "child_selected" & ASCII.NUL,
                           Get_Object (C));
    end Set_Focus_Child;
