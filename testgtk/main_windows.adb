@@ -80,6 +80,8 @@ with Create_Font_Selection;
 with Create_Gamma_Curve;
 with Create_Gc;
 with Create_Handle_Box;
+with Create_Label;
+with Create_Layout;
 with Create_List;
 with Create_Main_Loop;
 with Create_Menu;
@@ -236,7 +238,7 @@ package body Main_Windows is
                                          Create_Fixed.Help'Access),
       (NS ("font selection"),   Gimp,    Create_Font_Selection.Run'Access,
                                          Create_Font_Selection.Help'Access),
-      (NS ("frame/aspect frame"), Box, Create_Frame.Run'Access,
+      (NS ("frame/aspect frame"), Box,   Create_Frame.Run'Access,
                                          Create_Frame.Help'Access),
       (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access,
                                          Create_Gamma_Curve.Help'Access),
@@ -245,8 +247,10 @@ package body Main_Windows is
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
                                          Create_Handle_Box.Help'Access),
       (NS ("item factory"),     Complex, null, null),
-      (NS ("labels"),           Base,    null, null),
-      (NS ("layout"),           Box,     null, null),
+      (NS ("labels"),           Base,    Create_Label.Run'Access,
+                                         Create_Label.Help'Access),
+      (NS ("layout"),           Box,     Create_Layout.Run'Access,
+                                         Create_Layout.Help'Access),
       (NS ("list"),             Base,    Create_List.Run'Access,
                                          Create_List.Help'Access),
       (NS ("menus"),            Base,    Create_Menu.Run'Access,
