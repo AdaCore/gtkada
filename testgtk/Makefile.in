@@ -20,7 +20,7 @@ MALLOC_FLAGS=
 
 GTKADA_CONFIG=gtkadaconfig
 GNATCC = gcc
-GNATFLAGS = -O2 -g -gnata
+GNATFLAGS = -O2 -gnata
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(GNATFLAGS)
@@ -36,7 +36,7 @@ $(target): *.ad[sb]
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
 	@if [ -f ../.devel ]; then \
-	   $(GNATMAKE) $(GNATFLAGS) $(target) -aO../lib-obj $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) $(GNATFLAGS) $(target) -g -aO../lib-obj $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS); \
 	else \
 	   $(GNATMAKE) $(GNATFLAGS) $(target) $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS); \
 	fi
@@ -46,7 +46,7 @@ static: force
 	@if [ -f ../.devel ]; then \
 	  $(GNATMAKE) $(GNATMAKEFLAGS) $(target) -g -I../ -I../lib-obj -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC); \
 	else \
-	  $(GNATMAKE) $(GNATMAKEFLAGS) $(target) -g -I../ -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC); \
+	  $(GNATMAKE) $(GNATMAKEFLAGS) $(target) -I../ -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC); \
 	fi
 
 

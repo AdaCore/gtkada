@@ -18,7 +18,7 @@ CFLAGS = @CFLAGS@ -Wall
 ALL_CFLAGS = $(CFLAGS) @GTK_CFLAGS@ -shared -fPIC
 
 GNATCC = gcc
-GNATFLAGS = -O2 -g -gnatga
+GNATFLAGS = -O2 -gnatga
 ALL_GNATFLAGS = $(GNATFLAGS) -shared -fPIC
 
 GNATMAKE = gnatmake
@@ -90,14 +90,14 @@ install_ali::
 
 $(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 	if [ -f .devel ]; then \
-	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
+	  $(GNATMAKE) -aO$(LIB_DIR) -g $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	else \
 	  $(GNATMAKE) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	fi
 
 $(DGATE):: $(DGATE).adb $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 	if [ -f .devel ]; then \
-	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) -aO$(LIB_DIR) -g $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
 	else \
 	   $(GNATMAKE) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
 	fi
@@ -106,8 +106,12 @@ testgtk::
 	$(MAKE) -C testgtk
 
 $(LIB_DIR)/$(TEST_LINK).o::
-	test -f $(LIB_DIR)/$(TEST_LINK).adb || perl ./create_test_link.pl > $(LIB_DIR)/$(TEST_LINK).adb
-	$(CD) $(LIB_DIR); $(GNATMAKE) -c -I.. $(TEST_LINK) -shared -fPIC $(GNATFLAGS)
+	test -f $(LIB_DIR)/$(TEST_LINK).adb || @PERL@ ./create_test_link.pl > $(LIB_DIR)/$(TEST_LINK).adb
+	@if [ -f .devel ]; then \
+	  $(CD) $(LIB_DIR); $(GNATMAKE) -c -g -I.. $(TEST_LINK) -shared -fPIC $(GNATFLAGS); \
+	else \
+	  $(CD) $(LIB_DIR); $(GNATMAKE) -c -I.. $(TEST_LINK) -shared -fPIC $(GNATFLAGS); \
+	fi
 
 install: $(ARCHIVENAME) $(LIBNAME)
 	@if [ "$(prefix)" != `pwd` ]; then \
