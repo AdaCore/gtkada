@@ -48,6 +48,8 @@ package Gtk.Combo is
                         GEntry    : Gtk.GEntry.Gtk_Entry);
    --  Get or sets the entry fields for the combo box.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Sheet.
 
    function Get_List (Combo_Box : access Gtk_Combo_Record)
      return Gtk.List.Gtk_List;
@@ -85,5 +87,5 @@ package Gtk.Combo is
 private
 
    type Gtk_Combo_Record is new Gtk.Box.Gtk_Box_Record with null record;
-
+   pragma Import (C, Get_Type, "gtk_combo_get_type");
 end Gtk.Combo;
