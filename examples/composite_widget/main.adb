@@ -17,6 +17,12 @@ procedure Main is
    package Button_Cb is new Callback (Gtk_Button_Record);
    package Dialog_Cb is new Callback (Gtk_Widget_Record);
 
+   procedure On_Main_Window_Delete_Event
+     (Object : access Gtk_Widget_Record'Class) is
+   begin
+      Gtk.Main.Gtk_Exit (0);
+   end On_Main_Window_Delete_Event;
+
    procedure Open_Dialog (B : access Gtk_Button_Record'Class) is
       Dialog : My_Dialog.My_Dialog;
       Button : Gtk_Button;
@@ -55,6 +61,10 @@ begin
    Button_Cb.Connect (Ok, "clicked",
                       Button_Cb.To_Marshaller (Open_Dialog'Access));
    Show (Ok);
+
+   Dialog_Cb.Connect
+     (Main_W, "delete_event",
+      Dialog_Cb.To_Marshaller (On_Main_Window_Delete_Event'Access));
 
    Show (Main_W);
 

@@ -17,6 +17,14 @@ procedure Main is
    package Target_Cb is new Gtk.Handlers.User_Callback
      (Target_Widget_Record, String);
 
+   package Window_Cb is new Gtk.Handlers.Callback (Gtk_Window_Record);
+
+   procedure On_Main_Window_Delete_Event
+     (Object : access Gtk_Window_Record'Class) is
+   begin
+      Gtk.Main.Gtk_Exit (0);
+   end On_Main_Window_Delete_Event;
+
    procedure Won (Widget : access Target_Widget_Record'Class;
                   Message : String) is
    begin
@@ -48,6 +56,10 @@ begin
                       Target_Cb.To_Marshaller (Won'Access), "I won");
    Target_Cb.Connect (Ok, "missed",
                       Target_Cb.To_Marshaller (Won'Access), "I lost");
+
+   Window_Cb.Connect
+     (Main_W, "delete_event",
+      Window_Cb.To_Marshaller (On_Main_Window_Delete_Event'Access));
 
    Show_All (Main_W);
 

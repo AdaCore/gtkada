@@ -71,8 +71,14 @@ procedure Dynamic is
       end if;
    end Change_Label;
 
+   procedure On_Main_Window_Delete_Event
+     (Object : access Gtk_Window_Record'Class) is
+   begin
+      Gtk.Main.Gtk_Exit (0);
+   end On_Main_Window_Delete_Event;
 
    package Widget_Cb is new Handlers.Callback (Gtk_Button_Record);
+   package Window_Cb is new Handlers.Callback (Gtk_Window_Record);
 
    Window    : Gtk_Window;
    Box1,
@@ -146,6 +152,10 @@ begin
       Slot_Object => Button2);
    Pack_Start (Box1, Button1, True, True, 0);
    Show (Button1);
+
+   Window_Cb.Connect
+     (Window, "delete_event",
+      Window_Cb.To_Marshaller (On_Main_Window_Delete_Event'Access));
 
    Show (Window);
 
