@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -134,8 +134,14 @@ package body Gtk.Tree_View is
          Model     : System.Address);
       pragma Import (C, Internal, "gtk_tree_view_set_model");
 
+      use type Gtk.Tree_Model.Gtk_Tree_Model;
+
    begin
-      Internal (Get_Object (Tree_View), Get_Object (Model));
+      if Model = null then
+         Internal (Get_Object (Tree_View), System.Null_Address);
+      else
+         Internal (Get_Object (Tree_View), Get_Object (Model));
+      end if;
    end Set_Model;
 
    -------------------
