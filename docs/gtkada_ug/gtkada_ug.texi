@@ -1148,15 +1148,16 @@ performed automatically.
 @node Tasking with GtkAda
 @chapter Tasking with GtkAda
 
-The Glib library can be used in a task-safe mode by calling Gdk.Thread.Init
-before making any other Glib calls. In this mode Glib automatically locks all
+The Glib library can be used in a task-safe mode by calling Gdk.Thread.G_Init
+and Gdk.Thread.Init before making any other Glib/Gdk calls.
+In this mode Gdk automatically locks all
 internal data structures as needed. This does not mean that two tasks can
 simultaneously access, for example, a single hash table, but they can access
 two different hash tables simultaneously. If two different tasks need to
 access the same hash table, the application is responsible for locking itself
 (e.g by using protected objects).
 
-When Glib is initialized to be task-safe, GtkAda is task aware. There is
+When Gdk is initialized to be task-safe, GtkAda is task aware. There is
 a single global lock that you must acquire with Gdk.Threads.Enter before
 making any Gdk/Gtk call, and which you must release with Gdk.Threads.Leave
 afterwards.
@@ -1183,6 +1184,7 @@ A minimal main program for a tasking GtkAda application looks like:
 @b{procedure} GtkAda_With_Tasks @b{is}
    Window : Gtk_Window;
 @b{begin}
+   Gdk.Threads.G_Init;
    Gdk.Threads.Init;
    Gtk.Main.Init;
 
