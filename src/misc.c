@@ -454,6 +454,15 @@ ada_check_menu_item_get_active (GtkCheckMenuItem* item) {
 }
 
 /********************
+ * Menu_Item
+ ********************/
+
+GtkWidget*
+ada_gtk_menu_item_get_submenu (GtkMenuItem* item) {
+  return item->submenu;
+}
+
+/********************
  * Paned
  ********************/
 

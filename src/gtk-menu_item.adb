@@ -112,6 +112,21 @@ package body Gtk.Menu_Item is
       Initialize_User_Data (Menu_Item);
    end Initialize;
 
+   -----------------
+   -- Get_Submenu --
+   -----------------
+
+   function Get_Submenu (Menu_Item : access Gtk_Menu_Item_Record)
+                        return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Menu_Item : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gtk_menu_item_get_submenu");
+      Stub : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Menu_Item)), Stub));
+   end Get_Submenu;
+
    --------------------
    -- Remove_Submenu --
    --------------------

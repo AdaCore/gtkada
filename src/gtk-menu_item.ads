@@ -48,6 +48,9 @@ package Gtk.Menu_Item is
 
    procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
 
+   function Get_Submenu (Menu_Item : access Gtk_Menu_Item_Record)
+                        return Gtk.Widget.Gtk_Widget;
+
    procedure Set_Placement (Menu_Item : access Gtk_Menu_Item_Record;
                             Placement : in     Enums.Gtk_Submenu_Placement);
 
