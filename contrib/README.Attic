@@ -99,6 +99,12 @@ files into a directory.
    $ cd <your_directory>
    $ chmod a-w *.ali
 
+You can also compile the testgtk example with the following commands :
+
+   $ cd testgtk
+   $ make
+   $ ./testgtk
+
 Then, when you want to compile your application, use the -I switch
 for gnatmake (see the Makefile in testgtk/ for an example)
 
@@ -192,7 +198,6 @@ either your program or the binding. Please check your program
 carefully, and if you think this is a problem in the binding, send us
 a mail.
 
-
 To report errors, send a mail to both authors (see the email addresses
 at the end of this document) explaining exactly what your are doing,
 what it the expected result and what you actually get. Please include
@@ -201,6 +206,8 @@ the required sources to reproduced the problem, in a format usable by
 the mail). Please try to provide a subset of your sources as small as
 possible.
 
+Of course, we will welcome any patch you can provide, so that this
+binding is as useful as possible...
 
 AUTHORS
 =======
