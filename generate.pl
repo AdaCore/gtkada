@@ -45,6 +45,7 @@ my ($current_package) = &create_ada_name ($file);
 $file = uc ($file);
 
 $file = "GTKFILESELECTION" if ($file eq "GTKFILESEL");
+$file = "GTKFONTSELECTION" if ($file eq "GTKFONTSEL");
 $file = "GTK$1BUTTONBOX" if ($file =~ /GTK([VH]?)BBOX/);
 
 
@@ -753,7 +754,7 @@ sub convert_c_type
       }
       return "Gint$1";
     } elsif ($type eq "gboolean") {
-      return "gint";
+      return "Gint";
     } elsif ($type =~ /guint([^*]*)(\*?)/) {
       if ($2 ne "") {
 	return "out Guint$1";
