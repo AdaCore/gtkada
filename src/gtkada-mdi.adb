@@ -1551,6 +1551,8 @@ package body Gtkada.MDI is
          return False;
       end if;
 
+      MDI.In_Drag := No_Drag;
+
       --  Double-click in the title bar of a child in the main area should
       --  maximize or unmaximize the children
 
