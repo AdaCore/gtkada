@@ -41,7 +41,7 @@ package Gtk.Dialog is
    function Get_Vbox (Dialog : access Gtk_Dialog_Record)
                       return      Gtk.Box.Gtk_Box;
    procedure Gtk_New (Dialog : out Gtk_Dialog);
-   procedure Initialize (Dialog : access Gtk_Dialog_Record);
+   procedure Initialize (Dialog : access Gtk_Dialog_Record'Class);
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
