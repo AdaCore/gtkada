@@ -19,8 +19,30 @@
 #ifndef __GDK_GL_H__
 #define __GDK_GL_H__
 
-#include <gdk/gdk.h>
+#if defined(_WIN32) || defined(_WIN32_) || defined(WIN32)
 
+ /* gl/gl.h needs WIN32 defined */
+ #ifndef WIN32
+  #define WIN32
+ #endif
+
+ /* win32 gl/gl.h needs APIENTRY and WINGDIAPI defined properly */
+ #if defined(i386) && defined(__GNUC__)
+  #define STDCALL     __attribute__ ((stdcall))
+  #define CDECL       __cdecl
+  #define CALLBACK    WINAPI
+  #define PASCAL      WINAPI
+  #define WINAPI      STDCALL
+  #define APIENTRY    STDCALL
+  #define WINGDIAPI
+ #else
+  #include <windows.h>
+ #endif
+
+#endif
+
+
+#include <gdk/gdk.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,9 +50,9 @@ extern "C" {
 
 /*
  * These definitions are duplicated from GL/glx.h that comes with Mesa.
- * I don't want every program to include GL/glx.h, that might  become
- * problem if GtkGLArea is ever ported to non X environments like
- * (horror!) Windows.
+ * I don't want every program to include GL/glx.h because GtkGLArea
+ * supports lecacy systems like Windows. You can still use GLX_xxxx
+ * attributes with these, but then you lose portability.
  */
 enum _GDK_GL_CONFIGS {
         GDK_GL_NONE             = 0,
@@ -67,12 +89,14 @@ typedef struct _GdkGLContext GdkGLContext;
 
 
 gint          gdk_gl_query(void);
+gchar        *gdk_gl_get_info(void);
 
-GdkVisual    *gdk_gl_choose_visual(int *attrList);
+GdkVisual    *gdk_gl_choose_visual(int *attrlist);
 int           gdk_gl_get_config(GdkVisual *visual, int attrib);
 
 GdkGLContext *gdk_gl_context_new(GdkVisual *visual);
 GdkGLContext *gdk_gl_context_share_new(GdkVisual *visual, GdkGLContext *sharelist, gint direct);
+GdkGLContext *gdk_gl_context_attrlist_share_new(int *attrlist, GdkGLContext *sharelist, gint direct);
 
 GdkGLContext *gdk_gl_context_ref(GdkGLContext *context);
 void          gdk_gl_context_unref(GdkGLContext *context);

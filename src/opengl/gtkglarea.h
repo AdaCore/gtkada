@@ -63,7 +63,8 @@ gint       gtk_gl_area_make_current(GtkGLArea *glarea);
 gint       gtk_gl_area_begingl    (GtkGLArea *glarea); /* deprecated, use gtk_gl_area_make_current */
 void       gtk_gl_area_endgl      (GtkGLArea *glarea); /* deprecated */
 
-void       gtk_gl_area_swapbuffers(GtkGLArea *glarea);
+void       gtk_gl_area_swapbuffers(GtkGLArea *glarea); /* deprecated */
+void       gtk_gl_area_swap_buffers(GtkGLArea *glarea);
 
 void       gtk_gl_area_size       (GtkGLArea *glarea,  /* deprecated, use gtk_drawing_area_size() */
 				   gint width,

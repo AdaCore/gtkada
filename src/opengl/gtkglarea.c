@@ -77,7 +77,7 @@ gtk_gl_area_new_vargs(GtkGLArea *share, ...)
   GtkWidget *glarea;
   va_list ap;
   int i;
-  gint *attrList;
+  gint *attrlist;
 
   va_start(ap, share);
   i=1;
@@ -85,41 +85,44 @@ gtk_gl_area_new_vargs(GtkGLArea *share, ...)
     i++;
   va_end(ap);
 
-  attrList = g_new(int,i);
+  attrlist = g_new(int,i);
 
   va_start(ap,share);
   i=0;
-  while ( (attrList[i] = va_arg(ap, int)) != GDK_GL_NONE) /* copy args to list */
+  while ( (attrlist[i] = va_arg(ap, int)) != GDK_GL_NONE) /* copy args to list */
     i++;
   va_end(ap);
   
-  glarea = gtk_gl_area_share_new(attrList, share);
+  glarea = gtk_gl_area_share_new(attrlist, share);
 
-  g_free(attrList);
+  g_free(attrlist);
 
   return glarea;
 }
 
 GtkWidget*
-gtk_gl_area_new (int *attrList)
+gtk_gl_area_new (int *attrlist)
 {
-  return gtk_gl_area_share_new(attrList, NULL);
+  return gtk_gl_area_share_new(attrlist, NULL);
 }
 
 GtkWidget*
-gtk_gl_area_share_new (int *attrList, GtkGLArea *share)
+gtk_gl_area_share_new (int *attrlist, GtkGLArea *share)
 {
+
+#if !defined(WIN32)
+
   GdkVisual *visual;
   GdkGLContext *glcontext;
   GtkGLArea *gl_area;
 
   g_return_val_if_fail(share == NULL || GTK_IS_GL_AREA(share), NULL);
 
-  visual = gdk_gl_choose_visual(attrList);
+  visual = gdk_gl_choose_visual(attrlist);
   if (visual == NULL)
     return NULL;
 
-  glcontext = gdk_gl_context_share_new(visual, share ? share->glcontext : NULL , TRUE);
+  glcontext = gdk_gl_context_share_new(visual, share ? share->glcontext : NULL, TRUE);
   if (glcontext == NULL)
     return NULL;
 
@@ -134,8 +137,25 @@ gtk_gl_area_share_new (int *attrList, GtkGLArea *share)
   gtk_widget_pop_visual();
   gtk_widget_pop_colormap();
 
+#else
+
+  GdkGLContext *glcontext;
+  GtkGLArea *gl_area;
+
+  g_return_val_if_fail(share == NULL || GTK_IS_GL_AREA(share), NULL);
+
+  glcontext = gdk_gl_context_attrlist_share_new(attrlist, share ? share->glcontext : NULL, TRUE);
+  if (glcontext == NULL)
+    return NULL;
+
+  gl_area = gtk_type_new (gtk_gl_area_get_type());
+  gl_area->glcontext = glcontext;
+
+#endif
+
   return GTK_WIDGET(gl_area);
 }
+
 
 static void
 gtk_gl_area_destroy(GtkObject *object)
@@ -180,7 +200,12 @@ void gtk_gl_area_endgl(GtkGLArea *gl_area)
   glFlush();
 }
 
+/* deprecated, use gtk_gl_area_swap_buffers */
 void gtk_gl_area_swapbuffers(GtkGLArea *gl_area)
+{
+  gtk_gl_area_swap_buffers(gl_area);
+}
+void gtk_gl_area_swap_buffers(GtkGLArea *gl_area)
 {
   g_return_if_fail(gl_area != NULL);
   g_return_if_fail(GTK_IS_GL_AREA(gl_area));
