@@ -1,6 +1,5 @@
+with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Separator; use Gtk.Separator;
-with Gtk.Label; use Gtk.Label;
 with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
 with Gtk.Item_Factory; use Gtk.Item_Factory;
@@ -10,10 +9,13 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body Create_Item_Factory is
 
-   procedure Ifactory_Cb;
-
    package Factory_Data is new Data_Item (Integer);
    use Factory_Data;
+
+   procedure Ifactory_Cb
+     (Callback_Data   : Integer;
+      Callback_Action : Guint;
+      Widget          : Limited_Widget);
 
    Menu_Items : Gtk_Item_Factory_Entry_Array :=
      (Gtk_New ("/_File", Item_Type => Branch),
@@ -41,13 +43,13 @@ package body Create_Item_Factory is
       Gtk_New ("/_Help", Item_Type => Last_Branch),
       Gtk_New ("/Help/_About", "", Ifactory_Cb'Access));
 
-   procedure Ifactory_Cb is
-   --  (gpointer             callback_data,
-   --   guint                callback_action,
-   --   GtkWidget           *widget)
+   procedure Ifactory_Cb
+     (Callback_Data   : Integer;
+      Callback_Action : Guint;
+      Widget          : Limited_Widget) is
    begin
-      Put_Line ("ItemFactory: activated ");
-      --  Path_From_Widget (Widget)
+      Put_Line ("ItemFactory: activated " &
+        Path_From_Widget (To_Widget (Widget)));
    end Ifactory_Cb;
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
