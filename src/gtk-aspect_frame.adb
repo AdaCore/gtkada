@@ -147,26 +147,35 @@ package body Gtk.Aspect_Frame is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type) is
       S : String_Ptr;
    begin
       S := Get_Field (N, "label");
 
       if S /= null then
-         Gen_New (N, "Aspect_Frame", S.all,
-           To_Float (Get_Field (N, "xalign").all),
-           To_Float (Get_Field (N, "yalign").all),
-           To_Float (Get_Field (N, "ratio").all),
-           Get_Field (N, "obey_child").all,
-           File, '"');
+         if Gettext_Support (N) then
+            Gen_New (N, "Aspect_Frame", S.all,
+              To_Float (Get_Field (N, "xalign").all),
+              To_Float (Get_Field (N, "yalign").all),
+              To_Float (Get_Field (N, "ratio").all),
+              Get_Field (N, "obey_child").all,
+              File, "-""", """");
+         else
+            Gen_New (N, "Aspect_Frame", S.all,
+              To_Float (Get_Field (N, "xalign").all),
+              To_Float (Get_Field (N, "yalign").all),
+              To_Float (Get_Field (N, "ratio").all),
+              Get_Field (N, "obey_child").all,
+              File, """", """");
+         end if;
       else
          Gen_New (N, "Aspect_Frame", "",
            To_Float (Get_Field (N, "xalign").all),
            To_Float (Get_Field (N, "yalign").all),
            To_Float (Get_Field (N, "ratio").all),
            Get_Field (N, "obey_child").all,
-           File, '"');
+           File, """", """");
       end if;
 
       Frame.Generate (N, File);

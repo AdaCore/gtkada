@@ -109,8 +109,15 @@ package body Gtk.Accel_Label is
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
    begin
-      Gen_New (N, "Accel_Label", Adjust (Get_Field (N, "label").all),
-        File => File, Delim => '"');
+      if Gettext_Support (N) then
+         Gen_New (N, "Accel_Label", Adjust (Get_Field (N, "label").all),
+           File => File,
+           Prefix => "-(""", Postfix => """)");
+      else
+         Gen_New (N, "Accel_Label", Adjust (Get_Field (N, "label").all),
+           File => File, Prefix => """", Postfix => """");
+      end if;
+
       Label.Generate (N, File);
    end Generate;
 

@@ -167,7 +167,14 @@ package body Gtk.Button is
             if Label = null then
                Gen_New (N, "Button", File => File);
             else
-               Gen_New (N, "Button", Label.all, File => File, Delim => '"');
+               if Gettext_Support (N) then
+                  Gen_New (N, "Button", Label.all, File => File,
+                    Prefix => "-""", Postfix => """");
+               else
+                  Gen_New (N, "Button", Label.all, File => File,
+                    Prefix => """", Postfix => """");
+               end if;
+
             end if;
          else
             Gen_Child (N, Child_Name, File);

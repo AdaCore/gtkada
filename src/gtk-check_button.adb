@@ -75,7 +75,13 @@ package body Gtk.Check_Button is
          if Label = null then
             Gen_New (N, "Check_Button", File => File);
          else
-            Gen_New (N, "Check_Button", Label.all, File => File, Delim => '"');
+            if Gettext_Support (N) then
+               Gen_New (N, "Check_Button", Label.all, File => File,
+                 Prefix => "-""", Postfix => """");
+            else
+               Gen_New (N, "Check_Button", Label.all, File => File,
+                 Prefix => """", Postfix => """");
+            end if;
          end if;
       end if;
 
