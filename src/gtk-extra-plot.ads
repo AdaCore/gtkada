@@ -51,7 +51,7 @@
 --  a postscript file.
 --
 --  </description>
---  <c_version>gtk+extra 0.99.1<c_version>
+--  <c_version>gtk+extra 0.99.4<c_version>
 
 with Glib;           use Glib;
 with Glib.Glist;
@@ -213,12 +213,14 @@ package Gtk.Extra.Plot is
                            );
    --  The type of connection between two adjacent points in a graph.
 
-   type Plot_Label_Pos is (Label_None,
-                           Label_Left,
-                           Label_Right,
-                           Label_Top,
-                           Label_Bottom);
+   type Plot_Label_Pos is new Integer;
    --  Position of labels along an axis.
+
+   Label_None   : constant Plot_Label_Pos;
+   Label_Left   : constant Plot_Label_Pos;
+   Label_Right  : constant Plot_Label_Pos;
+   Label_Top    : constant Plot_Label_Pos;
+   Label_Bottom : constant Plot_Label_Pos;
 
    type Plot_Error is (Error_Div_Zero,
                        Error_Log_Neg);
@@ -231,7 +233,8 @@ package Gtk.Extra.Plot is
    --  Where the axis should be put
 
    type Plot_Label_Style is (Label_Float,
-                             Label_Exp);
+                             Label_Exp,
+                             Label_Pow);
    --  The style of labels (floating point, or scientific notation)
 
    type Plot_Angle is (Angle_0,
@@ -405,6 +408,9 @@ package Gtk.Extra.Plot is
                         Ymax : in Gdouble := 1.0);
    --  Set both ranges at the same time
 
+   procedure Autoscale (Plot : access Gtk_Plot_Record);
+   --  Calculate automically the appropriate ranges for the plot.
+
    procedure Get_Xrange (Plot : access Gtk_Plot_Record;
                          Xmin : out Gdouble;
                          Xmax : out Gdouble);
@@ -503,15 +509,28 @@ package Gtk.Extra.Plot is
 
    procedure Axis_Set_Ticks (Plot        : access Gtk_Plot_Record;
                              Orientation : in Gtk.Enums.Gtk_Orientation;
-                             Major_Ticks : in Gdouble;
-                             Minor_Ticks : in Gdouble);
+                             Major_Step  : in Gdouble;
+                             Num_Minor   : in Gint);
    --  Set up ticks for a specific orientation.
    --  A horizontal orientation will match the left and right sides, whereas
    --  a vertical orientation will match the top and bottom sides.
-   --  Major_Ticks and Minor_Ticks are percentage values of the widget size,
-   --  and indicate the step between each big ticks (resp. small ticks).
-   --  For instance, if Major_Ticks has a value of 0.2, there will be 5
-   --  big ticks drawn along the axis.
+   --  Major_Step is a percentage value of the widget size, and indicate the
+   --  step between each big ticks. For instance, if Major_Step has a value
+   --  of 0.2, there will be 5 big ticks drawn along the axis.
+   --  Num_Minor is the number of minor ticks between each major one.
+
+   procedure Axis_Set_Major_Ticks (Plot        : access Gtk_Plot_Record;
+                                   Orientation : in Gtk.Enums.Gtk_Orientation;
+                                   Major_Step  : in Gdouble);
+   --  Modify the step for major ticks.
+   --  This is a percentage value that indicates how many major ticks are
+   --  drawn along the axis. See also Axis_Set_Ticks.
+
+   procedure Axis_Set_Minor_Ticks (Plot        : access Gtk_Plot_Record;
+                                   Orientation : in Gtk.Enums.Gtk_Orientation;
+                                   Num_Minor   : in Gint);
+   --  Modify the number of minor ticks between each major one.
+   --  See also Axis_Set_Ticks.
 
    procedure Axis_Set_Ticks_Length (Plot   : access Gtk_Plot_Record;
                                     Axis   : in Plot_Axis_Pos;
@@ -582,6 +601,22 @@ package Gtk.Extra.Plot is
    --  This indicates whether the labels should be displayed as floating
    --  point values or in the scientific notation.
    --  Precision is the number of digits to be printed.
+
+   procedure Axis_Set_Tick_Labels (Plot   : access Gtk_Plot_Record;
+                                   Axis   : in Plot_Axis_Pos;
+                                   Labels : in Gtk.Enums.String_List.Glist);
+   --  Modify the labels associated with each major ticks.
+   --  There should be as many items in Labels as there are major ticks along
+   --  that axis, altought this is not checked.
+   --  Note also that for these items to be visible you should call
+   --  Axis_Use_Custom_Tick_Labels below.
+
+   procedure Axis_Use_Custom_Tick_Labels (Plot   : access Gtk_Plot_Record;
+                                          Axis   : in Plot_Axis_Pos;
+                                          Custom : in Boolean := True);
+   --  Indicate which kind of labels should be used for major ticks.
+   --  If Custom is True, then the labels set by Axis_Set_Tick_Labels will
+   --  be used.
 
    -----------
    -- Grids --
@@ -729,9 +764,11 @@ package Gtk.Extra.Plot is
    --  specify any. Font should be the name of a postscript font, the list of
    --  which can be found in Gtk.Plot.Psfont.
 
-   procedure Text_Get_Size (Text   : in Gtk_Plot_Text;
-                            Width  : out Gint;
-                            Height : out Gint);
+   procedure Text_Get_Size (Text    : in Gtk_Plot_Text;
+                            Width   : out Gint;
+                            Height  : out Gint;
+                            Ascent  : out Gint;
+                            Descent : out Gint);
    --  Return the size in pixels occupied by a text in the plot.
    --  @pxref{Package_Gtk.Extra.Plot_Canvas} for a function that returns
    --  a Gtk_Plot_Text.
@@ -1063,11 +1100,12 @@ private
    type Gtk_Plot_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
    pragma Import (C, Get_Type, "gtk_plot_get_type");
 
-   for Plot_Label_Pos use (Label_None   => 0,
-                           Label_Left   => 1,
-                           Label_Right  => 2,
-                           Label_Top    => 4,
-                           Label_Bottom => 8);
+   Label_None   : constant Plot_Label_Pos := 0;
+   Label_Left   : constant Plot_Label_Pos := 1;
+   Label_Right  : constant Plot_Label_Pos := 2;
+   Label_Top    : constant Plot_Label_Pos := 4;
+   Label_Bottom : constant Plot_Label_Pos := 8;
+
    Ticks_None  : constant Plot_Ticks_Pos := 0;
    Ticks_Left  : constant Plot_Ticks_Pos := 1;
    Ticks_Right : constant Plot_Ticks_Pos := 2;

@@ -415,6 +415,17 @@ package body Gtk.Extra.Plot is
       Internal (Get_Object (Plot), Xmin, Xmax, Ymin, Ymax);
    end Set_Range;
 
+   ---------------
+   -- Autoscale --
+   ---------------
+
+   procedure Autoscale (Plot : access Gtk_Plot_Record) is
+      procedure Internal (Plot : in System.Address);
+      pragma Import (C, Internal, "gtk_plot_autoscale");
+   begin
+      Internal (Get_Object (Plot));
+   end Autoscale;
+
    ----------------
    -- Get_Xrange --
    ----------------
@@ -734,19 +745,55 @@ package body Gtk.Extra.Plot is
 
    procedure Axis_Set_Ticks (Plot        : access Gtk_Plot_Record;
                              Orientation : in Gtk.Enums.Gtk_Orientation;
-                             Major_Ticks : in Gdouble;
-                             Minor_Ticks : in Gdouble)
+                             Major_Step  : in Gdouble;
+                             Num_Minor   : in Gint)
    is
       procedure Internal (Plot        : in System.Address;
                           Orientation : in Gint;
-                          Major_Ticks : in Gdouble;
-                          Minor_Ticks : in Gdouble);
+                          Major_Step  : in Gdouble;
+                          Num_Minor   : in Gint);
       pragma Import (C, Internal, "gtk_plot_axis_set_ticks");
    begin
       Internal (Get_Object (Plot),
                 Gtk.Enums.Gtk_Orientation'Pos (Orientation),
-                Major_Ticks, Minor_Ticks);
+                Major_Step, Num_Minor);
    end Axis_Set_Ticks;
+
+   --------------------------
+   -- Axis_Set_Major_Ticks --
+   --------------------------
+
+   procedure Axis_Set_Major_Ticks (Plot        : access Gtk_Plot_Record;
+                                   Orientation : in Gtk.Enums.Gtk_Orientation;
+                                   Major_Step  : in Gdouble)
+   is
+      procedure Internal (Plot        : in System.Address;
+                          Orientation : in Gint;
+                          Major_Step  : in Gdouble);
+      pragma Import (C, Internal, "gtk_plot_axis_set_major_ticks");
+   begin
+      Internal (Get_Object (Plot),
+                Gtk.Enums.Gtk_Orientation'Pos (Orientation),
+                Major_Step);
+   end Axis_Set_Major_Ticks;
+
+   --------------------------
+   -- Axis_Set_Minor_Ticks --
+   --------------------------
+
+   procedure Axis_Set_Minor_Ticks (Plot        : access Gtk_Plot_Record;
+                                   Orientation : in Gtk.Enums.Gtk_Orientation;
+                                   Num_Minor   : in Gint)
+   is
+      procedure Internal (Plot        : in System.Address;
+                          Orientation : in Gint;
+                          Num_Minor   : in Gint);
+      pragma Import (C, Internal, "gtk_plot_axis_set_minor_ticks");
+   begin
+      Internal (Get_Object (Plot),
+                Gtk.Enums.Gtk_Orientation'Pos (Orientation),
+                Num_Minor);
+   end Axis_Set_Minor_Ticks;
 
    ---------------------------
    -- Axis_Set_Ticks_Length --
@@ -956,6 +1003,42 @@ package body Gtk.Extra.Plot is
                 Plot_Label_Style'Pos (Style),
                 Precision);
    end Axis_Labels_Set_Numbers;
+
+   --------------------------
+   -- Axis_Set_Tick_Labels --
+   --------------------------
+
+   procedure Axis_Set_Tick_Labels (Plot   : access Gtk_Plot_Record;
+                                   Axis   : in Plot_Axis_Pos;
+                                   Labels : in Gtk.Enums.String_List.Glist)
+   is
+      procedure Internal (Plot   : in System.Address;
+                          Axis   : in Gint;
+                          Labels : in System.Address);
+      pragma Import (C, Internal, "gtk_plot_axis_set_tick_labels");
+   begin
+      Internal (Get_Object (Plot),
+                Plot_Axis_Pos'Pos (Axis),
+                Gtk.Enums.String_List.Get_Object (Labels));
+   end Axis_Set_Tick_Labels;
+
+   ---------------------------------
+   -- Axis_Use_Custom_Tick_Labels --
+   ---------------------------------
+
+   procedure Axis_Use_Custom_Tick_Labels (Plot   : access Gtk_Plot_Record;
+                                          Axis   : in Plot_Axis_Pos;
+                                          Custom : in Boolean := True)
+   is
+      procedure Internal (Plot   : in System.Address;
+                          Axis   : in Gint;
+                          Custom : in Gint);
+      pragma Import (C, Internal, "gtk_plot_axis_set_tick_labels");
+   begin
+      Internal (Get_Object (Plot),
+                Plot_Axis_Pos'Pos (Axis),
+                Boolean'Pos (Custom));
+   end Axis_Use_Custom_Tick_Labels;
 
    --------------------
    -- X0_Get_Visible --
