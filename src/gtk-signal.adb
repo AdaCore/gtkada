@@ -353,7 +353,7 @@ package body Gtk.Signal is
          type Acc is access all Base_Type;
          type Acc2 is access all Cb_Type;
          Stub   : Base_Type;
-         Stub2  : aliased Cb_Type;
+         Stub2  : Cb_Type;
          Data   : Data_Type_Access := Convert (User_Data);
          Tmp    : System.Address := Internal (Params, 0);
       begin
@@ -363,15 +363,9 @@ package body Gtk.Signal is
                "Wrong number of arguments in Two_Callback");
          end if;
          if Data.Func /= null then
-            if Tmp = System.Null_Address then
-               Data.Func (Acc (Get_User_Data (Object, Stub)),
-                          Stub2'Access,
-                          Data.Data.all);
-            else
-               Data.Func (Acc (Get_User_Data (Object, Stub)),
-                          Acc2 (Get_User_Data (Tmp, Stub2)),
-                          Data.Data.all);
-            end if;
+            Data.Func (Acc (Get_User_Data (Object, Stub)),
+                       Acc2 (Get_User_Data (Tmp, Stub2)),
+                       Data.Data.all);
          end if;
       end Marshaller;
 
