@@ -196,7 +196,7 @@ tar xzvf pango-1.2.5.tar.gz
 cd pango-1.2.5
 
 # Apply this patch if you want to ease distributing stand alone executables:
-patch -p0 < .../GtkAda/contrib/pango-1.2.1.diff
+patch -p0 < .../GtkAda/contrib/pango-1.2.5.diff
 
 # Note: to get all modules included, we could use --with-included-modules=yes
 # but basic-x should be all we need. In the future, we may want to also
