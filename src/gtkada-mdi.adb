@@ -1726,6 +1726,7 @@ package body Gtkada.MDI is
       Cursor : Gdk.Cursor.Gdk_Cursor;
       Tmp    : Gdk_Grab_Status;
       Curs   : Gdk_Cursor_Type;
+      List    : Target_List;
 
    begin
       --  It sometimes happens that widgets let events pass through (for
@@ -1744,6 +1745,26 @@ package body Gtkada.MDI is
       elsif Get_Button (Event) /= 1 then
          return False;
       end if;
+
+      --  Do we have a drag-and-drop operation ? This is true if we are
+      --  pressing control, or simply clicking in a maximized or docked child
+      --  (otherwise, moving items in the layout would interfer with dnd).
+
+      if (Get_State (Event) and Control_Mask) /= 0
+        or else C.State /= Normal
+        or else Children_Are_Maximized (C.MDI)
+      then
+         List := Target_List_New (Source_Target_Table);
+         Set_Icon_Default
+           (Gtk.Dnd.Drag_Begin
+            (Widget  => C,
+             Targets => List,
+             Actions => Action_Copy,
+             Button  => Gint (Get_Button (Event)),
+             Event   => Event));
+         Target_List_Unref (List);
+      end if;
+
 
       Set_Focus_Child (C);
 
@@ -2113,7 +2134,8 @@ package body Gtkada.MDI is
 
    begin
       Gtk.Event_Box.Initialize (Child);
-      Set_Dnd_Source (Child, Child);
+      Widget_Callback.Connect
+        (Child, "drag_data_get", Source_Drag_Data_Get'Access);
 
       Child.Initial := Gtk_Widget (Widget);
       Child.Uniconified_Width := -1;
