@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib.Object; use Glib.Object;
+with Gtk.Widget;  use Gtk.Widget;
 
 package body Gdk.Window is
 
@@ -431,6 +432,22 @@ package body Gdk.Window is
    begin
       Internal (Window, Get_Object (Widget));
    end Set_User_Data;
+
+   -------------------
+   -- Get_User_Data --
+   -------------------
+
+   function Get_User_Data
+     (Window : Gdk.Gdk_Window) return Glib.Object.GObject
+   is
+      procedure Internal (Window : Gdk_Window; Widget : System.Address);
+      pragma Import (C, Internal, "gdk_window_get_user_data");
+      Data : aliased System.Address;
+      Stub : Gtk_Widget_Record;
+   begin
+      Internal (Window, Data'Address);
+      return GObject (Get_User_Data (Data, Stub));
+   end Get_User_Data;
 
    -----------------------
    -- Window_At_Pointer --

@@ -217,6 +217,12 @@ package Gdk.Window is
    --  You almost always need to call this function after creating a new
    --  Gdk_Window yourself, or you won't be able to handle the events.
 
+   function Get_User_Data
+     (Window : Gdk.Gdk_Window) return Glib.Object.GObject;
+   --  Return the widget to which events are reported when they happen on
+   --  Window. This is the widget that was set through the call to
+   --  Set_User_data.
+
    function Get_Type return Glib.GType;
    --  Return the internal lue associated with Gdk_Window.
 
