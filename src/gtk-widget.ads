@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -229,14 +229,6 @@ package Gtk.Widget is
    --  Emit a "draw" signal for a specific area of the widget.
    --  The visual aspect might be different whether the widget has the focus
    --  or not.
-
-   procedure Draw_Focus (Widget : access Gtk_Widget_Record);
-   --  Emit a "draw_focus" signal for the widget.
-   --  The widget will be painted as it appears when it has the focus.
-
-   procedure Draw_Default (Widget : access Gtk_Widget_Record);
-   --  Emit a "draw_default" signal for the widget.
-   --  The widget will be painted as it appears when it doesn't have the focus.
 
    -----------------------
    -- Size and position --
@@ -590,13 +582,6 @@ package Gtk.Widget is
    --  Gtk.Object.Initialize_Class_Record).
    --  The handler creates the adjustments if null is passed as argument, and
    --  makes sure both adjustments are in the correct range.
-
-   procedure Popup (Widget : access Gtk_Widget_Record; X, Y : in Gint);
-   --  Realize the widget (see Realize above), moves it to the screen position
-   --  (X, Y), and shows the widget.
-   --  This should only be used for toplevel windows and dialogs, as you can
-   --  no modify the position of a widget that has a parent (the parent is
-   --  then responsible for its position).
 
    function Intersect
      (Widget       : access Gtk_Widget_Record;

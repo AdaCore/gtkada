@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -175,28 +175,6 @@ package body Gtk.Widget is
          Internal (Get_Object (Widget), Rec'Address);
       end if;
    end Draw;
-
-   ----------------
-   -- Draw_Focus --
-   ----------------
-
-   procedure Draw_Focus (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_draw_focus");
-   begin
-      Internal (Get_Object (Widget));
-   end Draw_Focus;
-
-   ------------------
-   -- Draw_Default --
-   ------------------
-
-   procedure Draw_Default (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_draw_default");
-   begin
-      Internal (Get_Object (Widget));
-   end Draw_Default;
 
    ---------------------
    -- Drawable_Is_Set --
@@ -532,14 +510,15 @@ package body Gtk.Widget is
    -----------------------
 
    procedure Initialize_Widget (Widget : access Gtk_Widget_Record'Class) is
-      function Internal
-        (The_Type : in Gtk_Type;
-         Nargs    : in Guint;
-         Args     : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_widget_newv");
+      --  XXX function Internal
+      --    (The_Type : in Gtk_Type;
+      --     Nargs    : in Guint;
+      --     Args     : System.Address) return System.Address;
+      --  pragma Import (C, Internal, "gtk_widget_newv");
    begin
-      Set_Object (Widget, Internal (Get_Type, 0, System.Null_Address));
-      Initialize_User_Data (Widget);
+      raise Program_Error;
+      --  Set_Object (Widget, Internal (Get_Type, 0, System.Null_Address));
+      --  Initialize_User_Data (Widget);
    end Initialize_Widget;
 
    ---------------
@@ -625,18 +604,6 @@ package body Gtk.Widget is
    begin
       return Gtk.Widget.Flag_Is_Set (Widget, No_Window);
    end No_Window_Is_Set;
-
-   -----------
-   -- Popup --
-   -----------
-
-   procedure Popup (Widget : access Gtk_Widget_Record; X, Y : in Gint) is
-      procedure Internal (Widget : in System.Address; X, Y : in Gint);
-      pragma Import (C, Internal, "gtk_widget_popup");
-
-   begin
-      Internal (Get_Object (Widget), X, Y);
-   end Popup;
 
    ----------------
    -- Queue_Draw --
