@@ -266,8 +266,8 @@ package body Gtk.Glade is
          exit when M = null;
          P := Get_Field (M, "name");
          Q := Get_Field (M, "class");
-         Put_Line ("with " & To_Ada (Q.all, '.') & "; use " &
-           To_Ada (Q.all, '.') & ";");
+         Put_Line ("with Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) &
+           "; use Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) & ";");
          Put_Line ("with Create_" & To_Ada (P.all) & ";");
          M := M.Next;
       end loop;
@@ -311,8 +311,8 @@ package body Gtk.Glade is
          P := Get_Field (M, "name");
          Q := Get_Field (M, "class");
          New_Line;
-         Put_Line ("with " & To_Ada (Q.all, '.') & "; use " &
-           To_Ada (Q.all, '.') & ";");
+         Put_Line ("with Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) &
+           "; use Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) & ";");
          New_Line;
          Put_Line ("function Create_" & To_Ada (P.all) & " return " &
            To_Ada (Q.all) & ";");
@@ -385,6 +385,7 @@ package body Gtk.Glade is
          Put_Line ("with Glib;");
          Put_Line ("with Gtk; use Gtk;");
          Put_Line ("with Gtk.Enums; use Gtk.Enums;");
+         Put_Line ("with Gtk.Button; use Gtk.Button;");
          Put_Line ("with Callbacks; use Callbacks;");
          Gen_Packages (Standard_Output);
          Reset_Packages;
@@ -465,7 +466,7 @@ begin
    SHT.Set (new String '("GtkCList"), new Gtk.CList.Gtk_CList);
    SHT.Set (new String '("GtkColorSelection"),
             new Gtk.Color_Selection.Gtk_Color_Selection);
-   SHT.Set (new String '("GtkColorSelection_Dialog"),
+   SHT.Set (new String '("GtkColorSelectionDialog"),
             new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog);
    SHT.Set (new String '("GtkCombo"), new Gtk.Combo.Gtk_Combo);
    SHT.Set (new String '("GtkContainer"), new Gtk.Container.Gtk_Container);
