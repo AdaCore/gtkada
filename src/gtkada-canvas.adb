@@ -382,11 +382,13 @@ package body Gtkada.Canvas is
       --  We want to be sure to get all the mouse events, that are required
       --  for the animation.
 
-      Add_Events (Canvas, Gdk.Types.Button_Press_Mask
-                  or Gdk.Types.Button_Motion_Mask
-                  or Gdk.Types.Button_Release_Mask
-                  or Gdk.Types.Key_Press_Mask
-                  or Gdk.Types.Key_Release_Mask);
+      Add_Events
+        (Canvas,
+         Button_Press_Mask
+           or Button_Motion_Mask
+           or Button_Release_Mask
+           or Key_Press_Mask
+           or Key_Release_Mask);
       Set_Flags (Canvas, Can_Focus);
 
       --  Configure with default values
@@ -1490,7 +1492,7 @@ package body Gtkada.Canvas is
       end loop;
 
       if Use_Double_Buffer then
-         Draw_Pixmap
+         Draw_Drawable
            (Get_Window (Canvas),
             GC     => Canvas.Black_GC,
             Src    => Pix,
@@ -1718,7 +1720,7 @@ package body Gtkada.Canvas is
          Canvas.Selection.Item);
 
       --  Change the cursor to give visual feedback
-      Gdk_New (Cursor, Gdk.Types.Fleur);
+      Gdk_New (Cursor, Fleur);
       Set_Cursor (Get_Window (Canvas), Cursor);
       Destroy (Cursor);
 
@@ -1758,7 +1760,7 @@ package body Gtkada.Canvas is
       end if;
 
       --  restore the standard cursor
-      Gdk_New (Cursor, Gdk.Types.Left_Ptr);
+      Gdk_New (Cursor, Left_Ptr);
       Set_Cursor (Get_Window (Canvas), Cursor);
       Destroy (Cursor);
 
@@ -2800,12 +2802,14 @@ package body Gtkada.Canvas is
    -- Draw --
    ----------
 
-   procedure Draw (Item : access Buffered_Item_Record;
-                   Canvas : access Interactive_Canvas_Record'Class;
-                   Dest : Gdk.Pixmap.Gdk_Pixmap;
-                   Xdest, Ydest : Glib.Gint) is
+   procedure Draw
+     (Item   : access Buffered_Item_Record;
+      Canvas : access Interactive_Canvas_Record'Class;
+      Dest   : Gdk.Pixmap.Gdk_Pixmap;
+      Xdest  : Glib.Gint;
+      Ydest  : Glib.Gint) is
    begin
-      Draw_Pixmap (Dest, Canvas.Black_GC, Item.Pixmap, 0, 0, Xdest, Ydest);
+      Draw_Drawable (Dest, Canvas.Black_GC, Item.Pixmap, 0, 0, Xdest, Ydest);
    end Draw;
 
    --------------------------------

@@ -28,7 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk.Types; use Gdk.Types;
+with Gdk.Window;       use Gdk.Window;
 with Gtk.Accel_Group;  use Gtk.Accel_Group;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Widget;       use Gtk.Widget;
@@ -98,9 +98,10 @@ package body Gtk.Window is
    -----------------
 
    function Get_Gravity
-     (Window : access Gtk_Window_Record) return Gdk.Types.Gdk_Gravity
+     (Window : access Gtk_Window_Record) return Gdk.Window.Gdk_Gravity
    is
-      function Internal (Window : System.Address) return Gdk.Types.Gdk_Gravity;
+      function Internal
+        (Window : System.Address) return Gdk.Window.Gdk_Gravity;
       pragma Import (C, Internal, "gtk_window_get_gravity");
 
    begin
@@ -361,10 +362,10 @@ package body Gtk.Window is
 
    procedure Set_Gravity
      (Window  : access Gtk_Window_Record;
-      Gravity : Gdk.Types.Gdk_Gravity)
+      Gravity : Gdk.Window.Gdk_Gravity)
    is
       procedure Internal
-        (Window : System.Address; Gravity : Gdk.Types.Gdk_Gravity);
+        (Window : System.Address; Gravity : Gdk.Window.Gdk_Gravity);
       pragma Import (C, Internal, "gtk_window_set_gravity");
 
    begin
@@ -502,10 +503,10 @@ package body Gtk.Window is
 
    procedure Set_Type_Hint
      (Window : access Gtk_Window_Record;
-      Hint   : Gdk.Types.Gdk_Window_Type_Hint)
+      Hint   : Gdk.Window.Gdk_Window_Type_Hint)
    is
       procedure Internal
-        (Widget : System.Address; Hint : Gdk.Types.Gdk_Window_Type_Hint);
+        (Widget : System.Address; Hint : Gdk.Window.Gdk_Window_Type_Hint);
       pragma Import (C, Internal, "gtk_window_set_type_hint");
 
    begin

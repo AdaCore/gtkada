@@ -50,7 +50,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
-with Gdk.Types;
+with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Bin;
 with Gtk.Enums;
@@ -172,7 +172,7 @@ package Gtk.Window is
 
    procedure Set_Type_Hint
      (Window : access Gtk_Window_Record;
-      Hint   : Gdk.Types.Gdk_Window_Type_Hint);
+      Hint   : Gdk.Window.Gdk_Window_Type_Hint);
    --  allow the window manager to decorate and handle the window in a way
    --  which is suitable to the function of the window in your application.
    --  This function should be called before the window becomes visible.
@@ -196,7 +196,7 @@ package Gtk.Window is
 
    procedure Set_Gravity
      (Window  : access Gtk_Window_Record;
-      Gravity : Gdk.Types.Gdk_Gravity);
+      Gravity : Gdk.Window.Gdk_Gravity);
    --  Window gravity defines the "reference point" to be used when
    --  positioning or resizing a window. Calls to
    --  Gtk.Widget.Set_UPosition will position a different point on the
@@ -216,14 +216,14 @@ package Gtk.Window is
    --  The default window gravity is Gravity_North_West.
 
    function Get_Gravity
-     (Window : access Gtk_Window_Record) return Gdk.Types.Gdk_Gravity;
+     (Window : access Gtk_Window_Record) return Gdk.Window.Gdk_Gravity;
    --  Return the value set by Set_Gravity.
 
    procedure Set_Geometry_Hints
      (Window          : access Gtk_Window_Record;
       Geometry_Widget : Gtk.Widget.Gtk_Widget;
-      Geometry        : Gdk.Types.Gdk_Geometry;
-      Geom_Mask       : Gdk.Types.Gdk_Window_Hints);
+      Geometry        : Gdk.Window.Gdk_Geometry;
+      Geom_Mask       : Gdk.Window.Gdk_Window_Hints);
    --  Specify some geometry hints for the window.
    --  This includes its minimal and maximal sizes, ...
    --  These attributes are specified in Geometry.
