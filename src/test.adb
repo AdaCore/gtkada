@@ -41,21 +41,21 @@ package body Test is
    Status   : Gtk_Status_Bar;
 
    procedure Hello (Widget : in out Gtk.Button.Gtk_Button'Class;
-                    S      : in     String7);
+                    S      : in out String7);
    procedure App_Destroy (Object : in out Gtk.Window.Gtk_Window'Class);
    procedure Launch_Dialog (Object : in out Gtk.Button.Gtk_Button'Class);
    procedure Launch_Drawing (Object : in out Gtk.Button.Gtk_Button'Class);
    procedure Launch_Gamma (Object : in out Gtk.Button.Gtk_Button'Class);
    procedure Print_Color (Dialog : in out Gtk_Color_Selection_Dialog'Class);
    procedure Print_Gamma_Vector (Button : in out Gtk_Button'Class;
-                                 Gamma  : in Gtk_Gamma_Curve);
+                                 Gamma  : in out Gtk_Gamma_Curve);
 
    -----------
    -- Hello --
    -----------
 
    procedure Hello (Widget : in out Gtk.Button.Gtk_Button'Class;
-                    S      : in     String7) is
+                    S      : in out String7) is
       Message : Message_Id;
    begin
       Ada.Text_IO.Put_Line ("Hello World  => String was=" & S);
@@ -146,7 +146,7 @@ package body Test is
    ------------------------
 
    procedure Print_Gamma_Vector (Button : in out Gtk_Button'Class;
-                                 Gamma  : in Gtk_Gamma_Curve)
+                                 Gamma  : in out Gtk_Gamma_Curve)
    is
       Vector : Curve_Vector (10);
    begin
