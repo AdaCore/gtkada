@@ -49,17 +49,17 @@ package body Gtk.Style is
 
    procedure Draw_Arrow (Style       : in Gtk_Style;
                          Window      : in Gdk.Types.Gdk_Window;
-                         State_Type  : in Enums.State_Type;
-                         Shadow_Type : in Enums.Shadow_Type;
-                         Arrow_Type  : in Enums.Arrow_Type;
+                         State_Type  : in Enums.Gtk_State_Type;
+                         Shadow_Type : in Enums.Gtk_Shadow_Type;
+                         Arrow_Type  : in Enums.Gtk_Arrow_Type;
                          Fill        : in Gint;
                          X, Y        : in Gint;
                          Width       : in Gint;
                          Height      : in Gint) is
       procedure Internal (Style, Window : in System.Address;
-                          State_Type  : in Enums.State_Type;
-                          Shadow_Type : in Enums.Shadow_Type;
-                          Arrow_Type  : in Enums.Arrow_Type;
+                          State_Type  : in Enums.Gtk_State_Type;
+                          Shadow_Type : in Enums.Gtk_Shadow_Type;
+                          Arrow_Type  : in Enums.Gtk_Arrow_Type;
                           Fill        : in Gint;
                           X, Y        : in Gint;
                           Width       : in Gint;
@@ -78,14 +78,14 @@ package body Gtk.Style is
 
    procedure Draw_Diamond (Style       : in Gtk_Style;
                            Window      : in Gdk.Types.Gdk_Window;
-                           State_Type  : in Enums.State_Type;
-                           Shadow_Type : in Enums.Shadow_Type;
+                           State_Type  : in Enums.Gtk_State_Type;
+                           Shadow_Type : in Enums.Gtk_Shadow_Type;
                            X, Y        : in Gint;
                            Width       : in Gint;
                            Height      : in Gint) is
       procedure Internal (Style, Window : in System.Address;
-                          State_Type  : in Enums.State_Type;
-                          Shadow_Type : in Enums.Shadow_Type;
+                          State_Type  : in Enums.Gtk_State_Type;
+                          Shadow_Type : in Enums.Gtk_Shadow_Type;
                           X, Y        : in Gint;
                           Width       : in Gint;
                           Height      : in Gint);
@@ -102,11 +102,11 @@ package body Gtk.Style is
 
    procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Types.Gdk_Window;
-                         State_Type : in Enums.State_Type;
+                         State_Type : in Enums.Gtk_State_Type;
                          X1, X2     : in Gint;
                          Y          : in Gint) is
       procedure Internal (Style, Window : in System.Address;
-                          State_Type    : in Enums.State_Type;
+                          State_Type    : in Enums.Gtk_State_Type;
                           X1, X2, Y     : in Gint);
       pragma Import (C, Internal, "gtk_draw_hline");
    begin
@@ -121,14 +121,14 @@ package body Gtk.Style is
 
    procedure Draw_Oval (Style       : in Gtk_Style;
                         Window      : in Gdk.Types.Gdk_Window;
-                        State_Type  : in Enums.State_Type;
-                        Shadow_Type : in Enums.Shadow_Type;
+                        State_Type  : in Enums.Gtk_State_Type;
+                        Shadow_Type : in Enums.Gtk_Shadow_Type;
                         X, Y        : in Gint;
                         Width       : in Gint;
                         Height      : in Gint) is
       procedure Internal (Style, Window : in System.Address;
-                          State_Type  : in Enums.State_Type;
-                          Shadow_Type : in Enums.Shadow_Type;
+                          State_Type  : in Enums.Gtk_State_Type;
+                          Shadow_Type : in Enums.Gtk_Shadow_Type;
                           X, Y        : in Gint;
                           Width       : in Gint;
                           Height      : in Gint);
@@ -145,13 +145,13 @@ package body Gtk.Style is
 
    procedure Draw_Polygon (Style       : in Gtk_Style;
                            Window      : in Gdk.Types.Gdk_Window;
-                           State_Type  : in Enums.State_Type;
-                           Shadow_Type : in Enums.Shadow_Type;
+                           State_Type  : in Enums.Gtk_State_Type;
+                           Shadow_Type : in Enums.Gtk_Shadow_Type;
                            Points      : in Points_Array;
                            Fill        : in Gint) is
       procedure Internal (Style, Window : in System.Address;
-                          State_Type    : in Enums.State_Type;
-                          Shadow_Type   : in Enums.Shadow_Type;
+                          State_Type    : in Enums.Gtk_State_Type;
+                          Shadow_Type   : in Enums.Gtk_Shadow_Type;
                           Points        : in Points_Array;
                           Npoints       : in Gint;
                           Fill          : in Gint);
@@ -168,14 +168,14 @@ package body Gtk.Style is
 
    procedure Draw_Shadow (Style       : in Gtk_Style;
                           Window      : in Gdk.Types.Gdk_Window;
-                          State_Type  : in Enums.State_Type;
-                          Shadow_Type : in Enums.Shadow_Type;
+                          State_Type  : in Enums.Gtk_State_Type;
+                          Shadow_Type : in Enums.Gtk_Shadow_Type;
                           X, Y        : in Gint;
                           Width       : in Gint;
                           Height      : in Gint) is
       procedure Internal (Style, Window       : in System.Address;
-                          State_Type          : in Enums.State_Type;
-                          Shadow_Type         : in Enums.Shadow_Type;
+                          State_Type          : in Enums.Gtk_State_Type;
+                          Shadow_Type         : in Enums.Gtk_Shadow_Type;
                           X, Y, Width, Height : Gint);
       pragma Import (C, Internal, "gtk_draw_shadow");
    begin
@@ -190,11 +190,11 @@ package body Gtk.Style is
 
    procedure Draw_String (Style       : in Gtk_Style;
                           Window      : in Gdk.Types.Gdk_Window;
-                          State_Type  : in Enums.State_Type;
+                          State_Type  : in Enums.Gtk_State_Type;
                           X, Y        : in Gint;
                           Str         : in String) is
       procedure Internal (Style, Window : in System.Address;
-                          State_Type    : in Enums.State_Type;
+                          State_Type    : in Enums.Gtk_State_Type;
                           X, Y          : in Gint;
                           Str           : in String);
       pragma Import (C, Internal, "gtk_draw_string");
@@ -210,11 +210,11 @@ package body Gtk.Style is
 
    procedure Draw_Vline (Style      : in Gtk_Style;
                          Window     : in Gdk.Types.Gdk_Window;
-                         State_Type : in Enums.State_Type;
+                         State_Type : in Enums.Gtk_State_Type;
                          Y1, Y2     : in Gint;
                          X          : in Gint) is
       procedure Internal (Style, Window : in System.Address;
-                          State_Type    : in Enums.State_Type;
+                          State_Type    : in Enums.Gtk_State_Type;
                           Y1, Y2, X     : in Gint);
       pragma Import (C, Internal, "gtk_draw_vline");
    begin
@@ -241,10 +241,10 @@ package body Gtk.Style is
 
    procedure Set_Background (Style      : in out Gtk_Style;
                              Window     : in     Gdk.Types.Gdk_Window;
-                             State_Type : in     Enums.State_Type) is
+                             State_Type : in     Enums.Gtk_State_Type) is
       procedure Internal (Style      : in System.Address;
                           Window     : in System.Address;
-                          State_Type : in Enums.State_Type);
+                          State_Type : in Enums.Gtk_State_Type);
       pragma Import (C, Internal, "gtk_style_set_background");
    begin
       Internal (Get_Object (Style), Gdk.Get_Object (Window), State_Type);

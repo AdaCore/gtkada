@@ -26,7 +26,7 @@ package body Gtk.Scrolled_Window is
 
    procedure Get_Hadjustement
      (Scrolled_Window : in     Gtk_Scrolled_Window'Class;
-      Hadjustment     :    out Adjustment.Gtk_adjustment'Class) is
+      Hadjustment     :    out Adjustment.Gtk_Adjustment'Class) is
       function Internal (Scrolled_Window : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_hadjustment");
@@ -41,7 +41,7 @@ package body Gtk.Scrolled_Window is
 
    procedure Get_Vadjustement
      (Scrolled_Window : in     Gtk_Scrolled_Window'Class;
-      Vadjustment     :    out Adjustment.Gtk_adjustment'Class) is
+      Vadjustment     :    out Adjustment.Gtk_Adjustment'Class) is
       function Internal (Scrolled_Window : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_vadjustment");
@@ -69,11 +69,11 @@ package body Gtk.Scrolled_Window is
    end Gtk_New;
 
    procedure Set_Policy (Scrolled_Window    : in out Gtk_Scrolled_Window'Class;
-                         H_Scrollbar_Policy : in     Enums.Policy_Type;
-                         V_Scrollbar_Policy : in     Enums.Policy_Type) is
+                         H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
+                         V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type) is
       procedure Internal (Scrolled_Window : in System.Address;
-                          H_Scrollbar_Policy : in Enums.Policy_Type;
-                          V_Scrollbar_Policy : in Enums.Policy_Type);
+                          H_Scrollbar_Policy : in Enums.Gtk_Policy_Type;
+                          V_Scrollbar_Policy : in Enums.Gtk_Policy_Type);
       pragma Import (C, Internal, "gtk_scrolled_window_set_policy");
    begin
       Internal (Get_Object (Scrolled_Window),

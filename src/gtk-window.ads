@@ -1,18 +1,13 @@
 with Gtk.Bin;
-with Gtk.Enums;
+with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Window is
 
-   type Window_Type is (Window_Toplevel,
-                        Window_Dialog,
-                        Window_Popup);
-   --  mapping: Window_Type gtkenums.h GtkWindowType
-
    type Gtk_Window is new Bin.Gtk_Bin with private;
 
    procedure Gtk_New (Window   : out Gtk_Window;
-                      The_Type : in  Window_Type);
+                      The_Type : in  Gtk_Window_Type);
    --  mapping: New gtkwindow.h gtk_window_new
 
    procedure Set_Title (Window : in out Gtk_Window;
@@ -33,7 +28,7 @@ package Gtk.Window is
    --  mapping: Set_Policy gtkwindow.h gtk_window_set_policy
 
    procedure Position (Window   : in out Gtk_Window'Class;
-                       Position : in     Enums.Window_Position);
+                       Position : in     Enums.Gtk_Window_Position);
    --  mapping: Position gtkwindow.h gtk_window_position
 
    function Activate_Focus (Window : in Gtk_Window'Class) return Boolean;

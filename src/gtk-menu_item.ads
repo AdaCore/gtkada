@@ -21,7 +21,7 @@ package Gtk.Menu_Item is
    --  mapping: Remove_Submenu gtkmenuitem.h gtk_menu_item_remove_submenu
 
    procedure Set_Placement (Menu_Item : in out Gtk_Menu_Item'Class;
-                            Placement : in     Enums.Submenu_Placement);
+                            Placement : in     Enums.Gtk_Submenu_Placement);
    --  mapping: Set_Placement gtkmenuitem.h gtk_menu_item_set_placement
 
    procedure Accelerator_Size (Menu_Item : in out Gtk_Menu_Item'Class);

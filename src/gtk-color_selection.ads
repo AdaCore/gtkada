@@ -24,7 +24,7 @@ package Gtk.Color_Selection is
    --  mapping: Set_Opacity gtkcolorsel.h gtk_color_selection_set_opacity
 
    procedure Set_Update_Policy (Colorsel : in Gtk_Color_Selection'Class;
-                                Policy   : in Enums.Update_Type);
+                                Policy   : in Enums.Gtk_Update_Type);
    --  mapping: Set_Update_Policy gtkcolorsel.h \
    --  mapping: gtk_color_selection_set_update_policy
 

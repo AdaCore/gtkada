@@ -60,13 +60,13 @@ package body Gtk.Color_Selection is
    -----------------------
 
    procedure Set_Update_Policy (Colorsel : in Gtk_Color_Selection'Class;
-                                Policy   : in Enums.Update_Type)
+                                Policy   : in Enums.Gtk_Update_Type)
    is
       procedure Internal (Colorsel : in System.Address;
                           Policy   : in Gint);
       pragma Import (C, Internal, "gtk_color_selection_set_update_policy");
    begin
-      Internal (Get_Object (Colorsel), Enums.Update_Type'Pos (Policy));
+      Internal (Get_Object (Colorsel), Enums.Gtk_Update_Type'Pos (Policy));
    end Set_Update_Policy;
 
 end Gtk.Color_Selection;

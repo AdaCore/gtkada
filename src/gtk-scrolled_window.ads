@@ -24,19 +24,19 @@ package Gtk.Scrolled_Window is
 
    procedure Get_Hadjustement
      (Scrolled_Window : in     Gtk_Scrolled_Window'Class;
-      Hadjustment     :    out Adjustment.Gtk_adjustment'Class);
+      Hadjustment     :    out Adjustment.Gtk_Adjustment'Class);
    --  mapping: Get_Hadjustement gtkscrolledwindow.h \
    --  mapping:                  gtk_scrolled_window_get_hadjustment
 
    procedure Get_Vadjustement
      (Scrolled_Window : in     Gtk_Scrolled_Window'Class;
-      Vadjustment     :    out Adjustment.Gtk_adjustment'Class);
+      Vadjustment     :    out Adjustment.Gtk_Adjustment'Class);
    --  mapping: Get_Vadjustement gtkscrolledwindow.h \
    --  mapping:                  gtk_scrolled_window_get_vadjustment
 
    procedure Set_Policy (Scrolled_Window    : in out Gtk_Scrolled_Window'Class;
-                         H_Scrollbar_Policy : in     Enums.Policy_Type;
-                         V_Scrollbar_Policy : in     Enums.Policy_Type);
+                         H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
+                         V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type);
    --  mapping: Set_Policy gtkscrolledwindow.h gtk_scrolled_window_set_policy
 
 private

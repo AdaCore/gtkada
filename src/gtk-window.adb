@@ -30,11 +30,11 @@ package body Gtk.Window is
    -------------
 
    procedure Gtk_New (Window   : out Gtk_Window;
-                      The_Type : in  Window_Type) is
+                      The_Type : in  Gtk_Window_Type) is
       function Internal (T : in Integer) return System.Address;
       pragma Import (C, Internal, "gtk_window_new");
    begin
-      Set_Object (Window, Internal (Window_Type'Pos (The_Type)));
+      Set_Object (Window, Internal (Gtk_Window_Type'Pos (The_Type)));
    end Gtk_New;
 
 
@@ -43,9 +43,9 @@ package body Gtk.Window is
    ----------------
 
    procedure Position (Window   : in out Gtk_Window'Class;
-                       Position : in     Enums.Window_Position) is
+                       Position : in     Gtk_Window_Position) is
       procedure Internal (Window : in System.Address;
-                          Position : in Enums.Window_Position);
+                          Position : in Gtk_Window_Position);
       pragma Import (C, Internal, "gtk_window_position");
    begin
       Internal (Get_Object (Window), Position);
