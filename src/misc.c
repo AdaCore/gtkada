@@ -810,10 +810,10 @@ ada_gdk_gc_set_ts_origin (GdkGCValues* values,
 
 #ifdef _WIN32
 #define ada_gdk_invalid_gdouble_value 1.79769313486232e308
-#define ada_gdk_invalid_gint_value (2<<31-1)
-#define ada_gdk_invalid_guint_value (2<<32-1)
-#define ada_gdk_invalid_guint32_value (2<<32-1)
-#define ada_gdk_invalid_gulong_value (2<<32-1)
+#define ada_gdk_invalid_gint_value ((2<<31) - 1)
+#define ada_gdk_invalid_guint_value (guint)((2LL<<32) - 1)
+#define ada_gdk_invalid_guint32_value (guint32)((2LL<<32) - 1)
+#define ada_gdk_invalid_gulong_value (gulong)((2LL<<32) - 1)
 
 #else
 extern const gdouble ada_gdk_invalid_gdouble_value;
