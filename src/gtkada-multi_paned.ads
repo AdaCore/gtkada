@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;
+with Glib;       use Glib;
 with Gdk.GC;
 with Gtk.Enums;
 with Gtk.Fixed;
@@ -75,7 +75,7 @@ package Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True);
    --  Add new child, splitting as needed.
    --  This should be used when there is no child yet
@@ -94,7 +94,7 @@ package Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True);
    --  Split the pane containing Ref_Widget, and add New_Child
    --  in the new pane (on the right or at the bottom if After is True, on the
@@ -103,7 +103,7 @@ package Gtkada.Multi_Paned is
    procedure Set_Size
      (Win           : access Gtkada_Multi_Paned_Record;
       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       Fixed_Size    : Boolean := False);
    --  Force a specific size for Widget
 
@@ -127,7 +127,7 @@ package Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True);
    --  Split Ref_Pane to display New_Child to one of its sides.
    --  See the comments for Root_Pane above.
@@ -191,7 +191,7 @@ package Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True);
    --  This is similar to Split, except Ref_Widget and all its siblings in the
    --  pane are left together in the new pane.

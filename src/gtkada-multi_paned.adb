@@ -154,7 +154,7 @@ package body Gtkada.Multi_Paned is
       New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation : Gtk_Orientation;
       Fixed_Size  : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After       : Boolean := True;
       Include_Siblings : Boolean := False);
    --  Internal version of Split_Horizontal and Split_Vertical.
@@ -1211,7 +1211,7 @@ package body Gtkada.Multi_Paned is
      (Paned : System.Address; Alloc : Gtk_Allocation)
    is
       Split        : constant Gtkada_Multi_Paned :=
-        Gtkada_Multi_Paned (Gtk.Widget.Convert (Paned));
+          Gtkada_Multi_Paned (Gtk.Widget.Convert (Paned));
       Iter         : Child_Iterator := Start (Split);
       Current, Tmp : Child_Description_Access;
       Position     : Gtk_Allocation;
@@ -1246,6 +1246,9 @@ package body Gtkada.Multi_Paned is
                   if Current.Height = -1 then
                      Current.Height := Requisition.Height;
                   end if;
+
+               --  Do not try to reset Width and Height if they are 0,
+               --  otherwise resizing panes will no longer be possible
                end if;
 
             elsif not Current.Is_Widget then
@@ -1270,10 +1273,6 @@ package body Gtkada.Multi_Paned is
                   Tmp := Tmp.Next;
                end loop;
             end if;
-         end if;
-         if Traces then
-            Put_Line ("Compute_Requisition, at end");
-            Dump (Split, Split.Children);
          end if;
       end Compute_Requisition;
 
@@ -1418,11 +1417,16 @@ package body Gtkada.Multi_Paned is
          Next (Iter);
       end loop;
 
-      if Traces then
-         Put_Line ("Size_Allocate_Multi_Paned: Recomputed children sizes");
-      end if;
       Compute_Requisition (Split.Children);
+      if Traces then
+         Put_Line ("## Compute_Requisition, at end");
+         Dump (Split, Split.Children);
+      end if;
       Propagate_Sizes (Split.Children, Alloc.Width, Alloc.Height);
+      if Traces then
+         Put_Line ("## Propagate_Sizes, at end");
+         Dump (Split, Split.Children);
+      end if;
 
       --  Move the handles first, in case some need to be moved to make enough
       --  space for the children. This must be a separate loop from above,
@@ -1440,8 +1444,6 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       --  Then reposition the children
-      --  Since we have a no_window widget, we need to add the coordinates for
-      --  the ones of all children.
 
       Iter := Start (Split);
       loop
@@ -1629,7 +1631,7 @@ package body Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True;
       Include_Siblings : Boolean := False)
    is
@@ -1696,8 +1698,8 @@ package body Gtkada.Multi_Paned is
             Is_Widget   => False,
             Orientation => Orientation,
             First_Child => Current,
-            Width       => 0,
-            Height      => 0,
+            Width       => -1,
+            Height      => -1,
             Handles     => null);
 
          Current.Parent := Pane;
@@ -1921,8 +1923,8 @@ package body Gtkada.Multi_Paned is
             Next        => null,
             Is_Widget   => False,
             Orientation => Orientation,
-            Width       => 0,
-            Height      => 0,
+            Width       => -1,
+            Height      => -1,
             First_Child => Tmp2,
             Handles     => new Handles_Array (1 .. 0));
          Tmp2.Parent := Win.Children;
@@ -1969,7 +1971,7 @@ package body Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True) is
    begin
       Split_Internal
@@ -1987,7 +1989,7 @@ package body Gtkada.Multi_Paned is
       New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation : Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After       : Boolean := True) is
    begin
       Split_Internal
@@ -2005,7 +2007,7 @@ package body Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True)
    is
    begin
@@ -2025,7 +2027,7 @@ package body Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       After         : Boolean := True) is
    begin
       Split_Internal
@@ -2040,7 +2042,7 @@ package body Gtkada.Multi_Paned is
    procedure Set_Size
      (Win           : access Gtkada_Multi_Paned_Record;
       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Width, Height : Glib.Gint := 0;
+      Width, Height : Glib.Gint := -1;
       Fixed_Size    : Boolean := False)
    is
       Iter    : Child_Iterator := Start (Win);
