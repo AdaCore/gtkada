@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -226,20 +226,6 @@ package body Gtk.Paned is
                 Boolean'Pos (Resize), Boolean'Pos (Shrink));
    end Pack2;
 
-   ---------------------
-   -- Set_Handle_Size --
-   ---------------------
-
-   procedure Set_Handle_Size (Paned : access Gtk_Paned_Record;
-                              Size  : in Guint16)
-   is
-      procedure Internal (Paned : in System.Address;
-                          Size  : in Gint);
-      pragma Import (C, Internal, "gtk_paned_set_handle_size");
-   begin
-      Internal (Get_Object (Paned), Guint16'Pos (Size));
-   end Set_Handle_Size;
-
    ------------------
    -- Set_Position --
    ------------------
@@ -252,16 +238,5 @@ package body Gtk.Paned is
    begin
       Internal (Get_Object (Paned), Position);
    end Set_Position;
-
-   ---------------------
-   -- Get_Handle_Size --
-   ---------------------
-
-   function Get_Handle_Size (Paned : access Gtk_Paned_Record) return Guint16 is
-      function Internal (Paned : System.Address) return Guint16;
-      pragma Import (C, Internal, "ada_gtk_paned_get_handle_size");
-   begin
-      return Internal (Get_Object (Paned));
-   end Get_Handle_Size;
 
 end Gtk.Paned;

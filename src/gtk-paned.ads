@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -144,15 +144,6 @@ package Gtk.Paned is
    --  children.
    --  Position is in fact the size (either vertically or horizontally,
    --  depending on the container) set for the first child.
-
-   procedure Set_Handle_Size (Paned : access Gtk_Paned_Record;
-                              Size  : Guint16);
-   --  Set the handle size to Size x Size pixels.
-   --  This is the small handle that the user has to drag to resize the
-   --  panes.
-
-   function Get_Handle_Size (Paned : access Gtk_Paned_Record) return Guint16;
-   --  Return the current size in pixels of the handle.
 
    function Get_Child1 (Paned : access Gtk_Paned_Record)
                        return Gtk.Widget.Gtk_Widget;
