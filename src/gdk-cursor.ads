@@ -30,6 +30,7 @@ with Glib; use Glib;
 with Gdk.Color;
 with Gdk.Pixmap;
 with Gdk.Types;
+with Gdk.Window;
 
 package Gdk.Cursor is
 
@@ -38,6 +39,12 @@ package Gdk.Cursor is
    procedure Gdk_New (Widget      : out Gdk_Cursor;
                       Cursor_Type : in  Gdk.Types.Gdk_Cursor_Type);
    --  mapping: Gdk_New gdk.h gdk_cursor_new
+
+   procedure Gdk_New (Widget      : out Gdk_Cursor;
+                      Cursor_Type : in  Guint);
+   --  mapping: Gdk_New gdk.h gdk_cursor_new
+   --  NOTE: we do not recommand to use this function, but it might be
+   --  convenient in certain cases
 
    procedure Gdk_New
       (Widget : out Gdk_Cursor;
@@ -51,6 +58,11 @@ package Gdk.Cursor is
 
    procedure Destroy (Cursor : in out Gdk_Cursor'Class);
    --  mapping: Destroy gdk.h gdk_cursor_destroy
+
+   procedure Set_Cursor (Window : in Gdk.Window.Gdk_Window'Class;
+                         Cursor : in Gdk_Cursor'Class);
+   --  mapping: Set_Cursor gdk.h gdk_window_set_cursor
+
 
 private
 

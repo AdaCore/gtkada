@@ -32,8 +32,7 @@ package Gdk.Types is
 
    type Gdk_Cap_Style is (Not_Last, Butt, Round, Projecting);
 
-   type Gdk_Cursor_Type is (Num_Glyphs,
-                            X_Cursor,
+   type Gdk_Cursor_Type is (X_Cursor,
                             Arrow,
                             Based_Arrow_Down,
                             Based_Arrow_Up,
@@ -109,9 +108,7 @@ package Gdk.Types is
                             Umbrella,
                             Ur_Angle,
                             Watch,
-                            Xterm,
-                            Last_Cursor,
-                            Cursor_Is_Pixmap);
+                            Xterm);
 
    type Gdk_Event_Mask is new Guint;
    Exposure_Mask            : constant Gdk_Event_Mask := 2 ** 1;
@@ -226,7 +223,7 @@ package Gdk.Types is
    Button3_Mask : constant Gdk_Modifier_Mask := 2 ** 10;
    Button4_Mask : constant Gdk_Modifier_Mask := 2 ** 11;
    Button5_Mask : constant Gdk_Modifier_Mask := 2 ** 12;
-   
+
    ------------------------------
    --  Representation clauses  --
    ------------------------------
@@ -270,5 +267,86 @@ package Gdk.Types is
 
    for Gdk_Subwindow_Mode use (Clip_By_Children  => 0,
                                Include_Inferiors => 1);
+
+private
+      --  Warning : these values should be kept synchronized with
+   --  gdk/gdcursors.h
+   for Gdk_Cursor_Type use (X_Cursor => 0,
+                            Arrow    => 2,
+                            Based_Arrow_Down => 4,
+                            Based_Arrow_Up => 6,
+                            Boat => 8,
+                            Bogosity => 10,
+                            Bottom_Left_Corner => 12,
+                            Bottom_Right_Corner => 14,
+                            Bottom_Side => 16,
+                            Bottom_Tee => 18,
+                            Box_Spiral => 20,
+                            Center_Ptr => 22,
+                            Circle => 24,
+                            Clock => 26,
+                            Coffee_Mug => 28,
+                            Cross => 30,
+                            Cross_Reverse => 32,
+                            Crosshair => 34,
+                            Diamond_Cross => 36,
+                            Dot => 38,
+                            Dotbox => 40,
+                            Double_Arrow => 42,
+                            Draft_Large => 44,
+                            Draft_Small => 46,
+                            Draped_Box => 48,
+                            Exchange => 50,
+                            Fleur => 52,
+                            Gobbler => 54,
+                            Gumby => 56,
+                            Hand1 => 58,
+                            Hand2 => 60,
+                            Heart => 62,
+                            Icon => 64,
+                            Iron_Cross => 66,
+                            Left_Ptr => 68,
+                            Left_Side => 70,
+                            Left_Tee => 72,
+                            Leftbutton => 74,
+                            Ll_Angle => 76,
+                            Lr_Angle => 78,
+                            Man => 80,
+                            Middlebutton => 82,
+                            Mouse => 84,
+                            Pencil => 86,
+                            Pirate => 88,
+                            Plus => 90,
+                            Question_Arrow => 92,
+                            Right_Ptr => 94,
+                            Right_Side => 96,
+                            Right_Tee => 98,
+                            Rightbutton => 100,
+                            Rtl_Logo => 102,
+                            Sailboat => 104,
+                            Sb_Down_Arrow => 106,
+                            Sb_H_Double_Arrow => 108,
+                            Sb_Left_Arrow => 110,
+                            Sb_Right_Arrow => 112,
+                            Sb_Up_Arrow => 114,
+                            Sb_V_Double_Arrow => 116,
+                            Shuttle => 118,
+                            Sizing => 120,
+                            Spider => 122,
+                            Spraycan => 124,
+                            Star => 126,
+                            Target => 128,
+                            Tcross => 130,
+                            Top_Left_Arrow => 132,
+                            Top_Left_Corner => 134,
+                            Top_Right_Corner => 136,
+                            Top_Side => 138,
+                            Top_Tee => 140,
+                            Trek => 142,
+                            Ul_Angle => 144,
+                            Umbrella => 146,
+                            Ur_Angle => 148,
+                            Watch => 150,
+                            Xterm => 152);
 
 end Gdk.Types;

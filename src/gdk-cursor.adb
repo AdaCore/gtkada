@@ -50,12 +50,26 @@ package body Gdk.Cursor is
                       Cursor_Type : in Gdk.Types.Gdk_Cursor_Type)
    is
       function Internal (Cursor_Type : in Gdk.Types.Gdk_Cursor_Type)
-                         return           System.Address;
+                         return System.Address;
+      pragma Import (C, Internal, "ada_gdk_cursor_new");
+   begin
+      Set_Object (Widget,
+                  Internal (Cursor_Type));
+   end Gdk_New;
+
+   -------------
+   -- Gdk_New --
+   -------------
+
+   procedure Gdk_New (Widget      : out Gdk_Cursor;
+                      Cursor_Type : in Guint)
+   is
+      function Internal (Cursor_Type : in Guint)
+                         return System.Address;
       pragma Import (C, Internal, "ada_gdk_cursor_new");
    begin
       Set_Object (Widget, Internal (Cursor_Type));
    end Gdk_New;
-
 
    -------------
    -- Gdk_New --
@@ -87,5 +101,19 @@ package body Gdk.Cursor is
                                     X,
                                     Y));
    end Gdk_New;
+
+   ----------------
+   -- Set_Cursor --
+   ----------------
+
+   procedure Set_Cursor (Window : in Gdk.Window.Gdk_Window'Class;
+                         Cursor : in Gdk_Cursor'Class)
+   is
+      procedure Internal (Window : System.Address; Cursor : System.Address);
+      pragma Import (C, Internal, "gdk_window_set_cursor");
+   begin
+      Internal (Get_Object (Window), Get_Object (Cursor));
+   end Set_Cursor;
+
 
 end Gdk.Cursor;
