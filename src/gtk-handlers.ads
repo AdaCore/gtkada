@@ -136,6 +136,8 @@ with Glib.Values;
 with Gdk.Event;
 with Gtk.Object;
 with Gtk.Marshallers;
+pragma Elaborate_All (Gtk.Marshallers);
+
 with Gtk.Notebook;
 with Gtk.Widget;
 
