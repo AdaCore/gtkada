@@ -29,8 +29,19 @@
 
 with System;
 with Interfaces.C.Strings;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.GEntry is
+
+   -----------------------
+   -- Local Subprograms --
+   -----------------------
+
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    -----------------
    -- Append_Text --
@@ -190,4 +201,19 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Width);
    end Set_Width_Chars;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkEntry" then
+         return new Gtk_Entry_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.GEntry;
