@@ -12,12 +12,12 @@ package Gtk.Signal is
    ---------------------------------------------------------------
 
    generic
+      type Widget_Type is new Gtk.Object.Gtk_Object with private;
+
       type Data_Type (<>) is private;
       --  The type of the data for the callback
       --  This type need not be an access type (as opposed as what happens in
       --  C). A new access is created by the connect function.
-
-      type Widget_Type is new Gtk.Object.Gtk_Object with private;
 
    package Callback is
 
@@ -36,6 +36,38 @@ package Gtk.Signal is
       --  mapping: Connect gtksignal.h gtk_signal_connect
       --  mapping: Connect gtksignal.h gtk_signal_connect_after
    end Callback;
+
+   ---------------------------------------------------------------
+   --  The following package is for callbacks requiring two data to
+   --  be passed to the callback function
+   --  The second data will be given by gtk itself
+   ---------------------------------------------------------------
+
+   generic
+      type Widget_Type is new Gtk.Object.Gtk_Object with private;
+
+      type Data_Type (<>) is private;
+
+      type Cb_Type is new Gtk.Object.Gtk_Object with private;
+
+   package Two_Callback is
+
+      type Callback is access procedure
+        (Widget  : in out Widget_Type'Class;
+         Cb_Data : in out Cb_Type'Class;
+         Data    : in out Data_Type);
+      --  Callback function for Signal_Connect below
+
+      function Connect
+        (Obj       : in Widget_Type'Class;
+         Name      : in String;
+         Func      : in Callback;
+         Func_Data : in Data_Type;
+         After     : in Boolean := False)
+         return Guint;
+      --  mapping: Connect gtksignal.h gtk_signal_connect
+      --  mapping: Connect gtksignal.h gtk_signal_connect_after
+   end Two_Callback;
 
    -----------------------------------------------------------------
    --  The following functions are for callbacks requiring no data to be

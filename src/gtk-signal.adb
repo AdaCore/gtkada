@@ -70,9 +70,9 @@ package body Gtk.Signal is
                        Boolean'Pos (After));
    end Do_Signal_Connect;
 
-   ---------------
-   --  Callback --
-   ---------------
+   --------------
+   -- Callback --
+   --------------
 
    package body Callback is
 
@@ -146,8 +146,8 @@ package body Gtk.Signal is
          return Guint
       is
          D : Data_Type_Access :=
-          new Data_Type_Record'(Data         => new Data_Type'(Func_Data),
-                                Func         => Func);
+          new Data_Type_Record'(Data => new Data_Type'(Func_Data),
+                                Func => Func);
       begin
          return Do_Signal_Connect (Obj,
                                    Name & Ascii.NUL,
@@ -157,6 +157,105 @@ package body Gtk.Signal is
                                    After);
       end Connect;
    end Callback;
+
+   ------------------
+   -- Two_Callback --
+   ------------------
+
+   package body Two_Callback is
+
+      type Data_Access is access Data_Type;
+      type Data_Type_Record is
+         record
+            Data   : Data_Access;
+            Func   : Callback;
+         end record;
+      type Data_Type_Access is access all Data_Type_Record;
+      pragma Convention (C, Data_Type_Access);
+
+      function Convert is new Unchecked_Conversion (Data_Type_Access,
+                                                    System.Address);
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Data_Type_Access);
+
+      procedure Free (Data : in System.Address);
+      pragma Convention (C, Free);
+      --  Free the memory associated with the callback's data
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray);
+      pragma Convention (C, Marshaller);
+
+      ----------
+      -- Free --
+      ----------
+
+      procedure Free (Data : in System.Address) is
+         procedure Internal is new Unchecked_Deallocation
+           (Data_Type_Record, Data_Type_Access);
+         procedure Internal_2 is new Unchecked_Deallocation
+           (Data_Type, Data_Access);
+         D : Data_Type_Access := Convert (Data);
+      begin
+         Internal_2 (D.Data);
+         Internal (D);
+      end Free;
+
+      ----------------
+      -- Marshaller --
+      ----------------
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray)
+      is
+         function Internal (Params : in GtkArgArray;
+                            Num    : in Guint)
+                            return System.Address;
+         pragma Import (C, Internal, "ada_gtkarg_value_object");
+         use type System.Address;
+         Data   : Data_Type_Access := Convert (User_Data);
+         Widget : Widget_Type;
+         Widget2 : Cb_Type;
+         Tmp    : System.Address := Internal (Params, 0);
+      begin
+         if Nparams = 0 or Tmp = System.Null_Address then
+            raise Constraint_Error;
+         end if;
+         if Data.Func /= null then
+            Set_Object (Widget, Object);
+            Set_Object (Widget2, Tmp);
+            Data.Func (Widget, Widget2, Data.Data.all);
+         end if;
+      end Marshaller;
+
+      -------------
+      -- Connect --
+      -------------
+
+      function Connect
+        (Obj       : in Widget_Type'Class;
+         Name      : in String;
+         Func      : in Callback;
+         Func_Data : in Data_Type;
+         After     : in Boolean := False)
+         return Guint
+      is
+         D : Data_Type_Access :=
+          new Data_Type_Record'(Data => new Data_Type'(Func_Data),
+                                Func => Func);
+      begin
+         return Do_Signal_Connect (Obj,
+                                   Name & Ascii.NUL,
+                                   Marshaller'Address,
+                                   Convert (D),
+                                   Free'Address,
+                                   After);
+      end Connect;
+   end Two_Callback;
 
    ------------------------------------------------------------
    -- Void_Callback                                          --
