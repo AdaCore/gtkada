@@ -3,25 +3,64 @@ Here are the API changes that occured between GtkAda 1.2 and GtkAda 2.0:
 Glib:
   GType_* constants replace Gtk.Gtk_Type_*
 Glib.GObjects: new package
-Gdk.Color_Context: removed
+Gdk.Color_Context: removed, use Gdk.Color instead.
+Gdk.Cursor:
+  Destroy: deprecated, use Unref instead.
+  Ref/Unref: new procedures.
+Gdk.Drawable:
+  Get_Type, Get_Size: new functions.
+  Get_Size, Set/Get_Colormap, Get_Visual: moved from Gdk.Window.
+  Draw_Pixmap, Copy_Area: removed, use Draw_Drawable.
+  Get_Depth, Ref, Unref: new procedures.
 Gdk.Event:
+  Gdk_Event_Scroll: new type.
   Get_Pressure, Get_Xtilt, Get_Ytilt, Get_Source: removed
   Get_Type: replace Gtk.Gtk_Type_Gdk_Event
   Get_Event: replace Gtk.Arguments.To_Event
+Gdk.Font:
+  Text_*: Removed, use String_* instead.
+Gdk.Gc:
+  Destroy: deprecated, use Unref instead.
+  Set_Values: new procedure.
+Gdk.Image:
+  Destroy: deprecated, use Unref instead.
+  Ref/Unref: new procedures.
+Gdk.Main:
+  Time_Get: removed.
+  Timer_Get/Set/Enable/Disable: removed.
+  Key_Repeat/Disable: removed.
+  Set_Double_Click_Time: new procedure.
 Gdk.Pixbuf:
   now part of libgtkada
   upgrade to gdk pixbuf 0.8, now part of Gtk+
   rendering functions have been suppressed.
   see gdk-pixbuf.ads for the complete list of new functions.
+Gdk.Pixmap:
+  Destroy: deprecated, use Unref instead.
 Gdk.Rectangle:
   Gdk_Rectangle now takes gint instead of gint16 and guint16.
 Gdk.Region:
   Union_With_Rect, Intersect, Union, Substract, Gdk_Xor: Profile changed,
     Source1 is now in out (both source and result).
+  Copy, Rectangle, Get_Rectangles: new functions.
 Gdk.Rgb:
   Init: removed, not longer needed.
   Gtk_New: renamed Gdk_New.
   Get_8, Set_8: removed
+Gdk.Types:
+  Gdk_Point, Gdk_Segment: fields are now Gint instead of Gint16.
+Gdk.Visual:
+  Get_Best_Depth, Get_Best_Type, Get_System, Get_Best: now functions.
+Gdk.Window:
+  Get_Type: renamed Get_Window_Type.
+  Focus, Scroll, Shape_Combine_Mask/Region,
+  Get_State, Set_Static_Gravities, Set_Type_Hint, Set_Modal_Hint,
+  Get_Frame_Extents, Iconify, Deiconify, Stick, Unstick,
+  Maximize, Unmaximize, Register_Dnd, Get_Update_Area,
+  Freeze/thaw_Updates, Process_All_Updates, Process_Updates,
+  Set_Debug_Updates : new procedures.
+  Copy_Area: obsolete. use Gdk.Drawable.Draw_Drawable instead.
+  Get_Size, Set/Get_Colormap, Get_Visual: moved to Gdk.Drawable.
 Gtk:
   Gtk_Type_* constants replaced by Glib.GType_*
   Gtk_Type_Gdk_Event: replace by Gdk.Event.Get_Type
@@ -202,8 +241,17 @@ Gtk.Window:
 
 Not bound yet:
 gerror.h
+gdk.h: see "missing" section.
+gdkdnd.h
+gdkdrawable.h: see "missing pango" section in gdk-drawable.ads
+gdkinput.h: does not correspond to Gdk.Input.
+gdkkeys.h: see "missing" section in gdk-keyval.ads
+gdkpango.h
+gdkproperty.h: see "missing" section in gdk-property.ads
+gdkregion.h: see "missing" section in gdk-region.ads
+gdkselection.h
 gdk-pixbuf-loader.h
-gdkwindow.h: recheck. need at least invalidate_* and process_updates.
+gdkwindow.h: see "missing" section.
 gtkarg.h
 gtkbindings.h
 gtkcellrenderer.h
@@ -278,4 +326,3 @@ pango-font.h:
   Recommend to the pango folks to get rid of the numbers, and use the
   enum values instead. This breaks pango_font_description_from_string ().
   
- 
