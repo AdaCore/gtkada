@@ -212,6 +212,7 @@ with Gtkada.Pixmaps;
 with Gtkada.Types;
 
 with Pango;
+with Pango.Attributes;
 with Pango.Context;
 with Pango.Layout;
 with Pango.Enums;
