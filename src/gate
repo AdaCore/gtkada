@@ -1,0 +1,39 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+  echo "Usage: gate project"
+  exit 1
+fi
+
+echo Generating Ada files...
+
+prj=`gate.ex -p $*`
+gt=".gate/$prj"
+mkdir -p $gt > /dev/null 2>&1
+tmp=$gt/tmp
+/bin/rm -rf $tmp
+mkdir $tmp
+wd=`pwd`
+gate.ex $* > $tmp/gate.ada
+cd $tmp
+gnatchop gate.ada > /dev/null 2>&1
+/bin/rm -f gate.ada
+files=`echo *`
+cd $wd
+/bin/rm -f $gt/gate.difs
+for j in $files; do
+  diff -u $gt/$j $j >> $gt/gate.difs 2>/dev/null
+done
+/bin/cp -f $tmp/* .
+/bin/rm -f *.rej *.orig
+if cat $gt/gate.difs | patch -f > $gt/patch.out 2>&1; then
+  echo "The following files have been created/updated:"
+  echo $files
+  echo done.
+else
+  echo "The following files have been updated:"
+  echo $files
+  echo Merge of some changes failed. Some .rej files have been generated to help
+  echo merging manually if needed.
+fi
+/bin/mv -f $tmp/* $gt/
