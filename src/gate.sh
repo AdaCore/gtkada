@@ -8,9 +8,8 @@ fi
 dir=`dirname $1`
 file=$1
 info=`gate-in.exe -p -s -x $file`
-status=$?
 
-if [ $status != 0 ]; then
+if [ $? != 0 ]; then
   echo "Couldn't parse $file. Exiting." | gdialog error justify_left
   exit 1
 fi

@@ -10,10 +10,10 @@ echo Generating Ada files...
 dir=`dirname $1`
 file=`cd $dir; pwd`/`basename $1`
 info=`gate-in.exe -p -s -x $file`
-status=$?
+stat=$?
 
-if [ $status != 0 ]; then
-  if [ $status = 2 ]; then
+if [ $stat != 0 ]; then
+  if [ $stat = 2 ]; then
      echo $info
   fi
 
