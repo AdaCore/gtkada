@@ -12,8 +12,9 @@ close (FILE);
 
 my (@output) = ();
 my (%with_list) = ();
+my ($directory);
 
-($file) = ($file =~ /\/([^\/]+)\.h$/);
+($directory, $file) = ($file =~ /^(.*)\/([^\/]+)\.h$/);
 my ($hfile) = $file . ".h";
 $file = uc ($file);
 
@@ -21,16 +22,11 @@ $file = uc ($file);
 my ($line) = 0;
 for ($line = 0; $line < $#cfile; $line ++)
 {
-  last if (uc ($cfile[$line]) =~ /^STRUCT _$file/);
+  last if (uc ($cfile[$line]) =~ /^STRUCT _$file\s*$/);
 }
 my ($current_package);
 $cfile[$line] =~ /struct _(.*)/;
 $current_package = &create_ada_name ($1);
-
-#print "Name of the created package ? [$current_package] :";
-#my ($real_name) = scalar (<STDIN>);
-#$current_package = $real_name if ($real_name !~ /^$/);
-
 
 my ($in_comment) = 0;
 $line += 2;  ## skip the '{' line
@@ -50,18 +46,19 @@ while ($cfile[$line] !~ /\}/)
   {
     if ($cfile[$line] =~ /\/\*/) ## If we have a comment, skip it
       {
-	1 while ($cfile[++$line] !~ /\*\//);
+	1 while ($cfile[$line] !~ /\*\//);
 	$line++;
       }
     $line++ while ($cfile[$line] =~ /^\s*$/);
     chop ($cfile[$line]);
-    $cfile[$line] =~ s/\s+/ /;
+    $cfile[$line] =~ s/\s+/ /g;
+    $cfile[$line] =~ s/ $//;
     $cfile[$line] =~ s/^ //;
     $cfile[$line] =~ s/ \*/\* /;  ## attach the pointer to the type not to the field
     $cfile[$line] =~ s/;//;
     my ($type, $field) = split (/ /, $cfile[$line]);
 
-    print "Create a function for the field $field (of type $type) [n]?";
+    print STDERR "Create a function for the field $field (of type $type) [n]?";
     my ($answer) = scalar (<STDIN>);
     if ($answer =~ /^y/)
       {
@@ -74,10 +71,12 @@ while ($cfile[$line] !~ /\}/)
 my (%functions) = &parse_functions;
 
 ## Create some new functions for every field to get
+my ($ctype_package) = "Gtk$current_package*";
+$ctype_package =~ s/_//g;
 foreach (keys %fields)
   {
     push (@{$functions{"ada_" . lc ($current_package) . "_get_$_"}},
-	  $fields{$_}, "Gtk_$current_package Widget");
+	  $fields{$_}, "$ctype_package Widget");
   }
 
 &generate_specifications;
@@ -137,8 +136,11 @@ sub generate_body
     
     push (@output, "end Gtk.$current_package;\n");
 
-    print "\n";
-    print "\n", join ("", @output);
+    ## If there is indeed a body
+    if ($#output > 3) {
+      print "\n";
+      print "\n", join ("", @output);
+    }
   }
 
 #######################
@@ -187,6 +189,9 @@ sub create_ada_name
 	  }
       }
     $entity =~ s/^Gtk_?//;
+
+    return "The_Type" if ($entity eq "Type");
+    return "The_End" if ($entity eq "End");
     return $entity;
   }
 
@@ -217,11 +222,14 @@ sub parse_functions
     while ($_ = shift @cfile)
       {
 	chop;
+	s/ \*/\* /g;
 	if (/^(\S+)\s+(gtk_\S+)\s+\((.*)/)
 	  {
 	    $func_name = $2;
 	    $return = $1;
-	    @arguments = ($3);
+	    my ($tmp) = $3;
+	    $tmp =~ s/,\s*$//;
+	    @arguments = split (/,/, $tmp);
 	    if ($3 !~ /\);/)
 	      {
 		while ($_ = shift @cfile)
@@ -253,11 +261,11 @@ sub print_new_declaration
     my ($string);
     my ($indent) = "";
 
-    $string = "   function Gtk_New ";
+    $string = "   procedure Gtk_New";
     push (@output, $string);
     $indent = ' ' x (length ($string));
-    &print_arguments ($indent, "Gtk_$current_package", \&convert_ada_type,
-		      3, @arguments);
+    &print_arguments ($indent, "void", \&convert_ada_type,
+		      3, 1, @arguments);
   }
 
 #########################
@@ -267,6 +275,7 @@ sub print_new_declaration
 ##           C return type for the function
 ##           A reference to the function to be used for type conversion
 ##           The base indentation of the line (3 for Ada fonction, 6 for Internal)
+##           1 if we are generating the list for Gtk_New, 0 sinon
 ##           An array containing the arguments to the function
 #########################
 sub print_arguments
@@ -275,22 +284,36 @@ sub print_arguments
     my ($return) = shift;
     my ($convert) = shift;
     my ($baseindent) = shift;
+    my ($for_gtk_new) = shift;
     my (@arguments) = @_;
-    my ($longest) = 6;
+    my ($longest) = ($return ne "void") ? 6 : 0;
 
-    if ($arguments[0] !~ /void/)
+    if ($#arguments != 0
+	|| ($for_gtk_new && $#arguments > 0))   ## More than one argument ?
       {
-	if ($#arguments != 0)   ## More than one argument ?
-	  {
-	    $indent = (' ' x $baseindent) . "   ";
+	$indent = (' ' x $baseindent) . "   ";
 	    push (@output, "\n$indent");
-	  }
+      }
+    else {
+      push (@output, " ");
+      $indent .= ' ';
+    }
+    
+    if ($arguments[0] !~ /void/ || $for_gtk_new)
+      {
 	push (@output, "(");
 	$indent .= ' ';
 	my (@variables) = ();
 	my (@types) = ();
+	if ($for_gtk_new)
+	  {
+	    push (@variables, "Widget");
+	    push (@types, "out Gtk_$current_package");
+	  }
+	
 	foreach (@arguments)
 	  {
+	    last if (/void/);
 	    s/\s+/ /g;
 	    s/,//;
 	    s/\);//;
@@ -355,6 +378,18 @@ sub print_arguments_call
 		push (@output, "Get_Object ("
 		      .  &create_ada_name ($name) . ")");
 	      }
+	    elsif (&convert_c_type ($type) eq "String")
+	      {
+		push (@output, &create_ada_name ($name)
+		     . " & Ascii.NUL");
+	      }
+	    elsif (&convert_c_type ($type) eq "Gint"
+		  && lc ($type) ne "gint")
+	      {
+		push (@output, &convert_ada_type ($type)
+		     . "'Pos (" . &create_ada_name ($name)
+		     . ")");
+	      }
 	    else
 	      {
 		push (@output, &create_ada_name ($name));
@@ -387,13 +422,13 @@ sub print_declaration
       }
     else
       {
-	$string = ($return eq "void" ? "procedure " : "function ");
-	$string .=  "$adaname ";
+	$string = ($return eq "void" ? "procedure" : "function");
+	$string .=  " $adaname";
 	push (@output, "   $string");
 	$indent = ' ' x (length ($string) + 3);
 	
 	&print_arguments ($indent, $return, \&convert_ada_type,
-			  3, @arguments);
+			  3, 0, @arguments);
       }
     push (@output, ";\n");
   }
@@ -428,48 +463,60 @@ sub print_body
     else
       {
 	$string = ($return eq "void" ? "procedure " : "function ");
-	$string .=  "$adaname ";
+	$string .=  "$adaname";
 	push (@output, "   $string");
 	$indent = ' ' x (length ($string) + 3);
 	&print_arguments ($indent, $return, \&convert_ada_type,
-			  3, @arguments);
+			  3, 0, @arguments);
       }
     push (@output, "\n   is\n");
 
     $string = "      ";
-    $string .= ($return eq "void" ? "procedure Internal " :
-	       "function Internal ");
+    $string .= ($return eq "void" ? "procedure Internal" :
+	       "function Internal");
     push (@output, $string);
     $indent = ' ' x (length ($string));
     &print_arguments ($indent, $return, \&convert_c_type,
-		      6, @arguments);
+		      6, 0, @arguments);
     push (@output, ";\n");
 
     push (@output, "      pragma Import (C, Internal, \"$func_name\");\n");
     if ($adaname =~ /New/)
       {
-	push (@output, "      Widget : Gtk_$current_package;\n");
 	push (@output, "   begin\n");
 	$string = "      Set_Object (Widget, Internal";
 	push (@output, $string);
 	&print_arguments_call (' ' x length ($string), @arguments);
-	push (@output, ");\n      return Widget;\n");
+	push (@output, ");\n");
       }
     else
       {
-	push (@output, "   begin\n");
-	if ($return ne "void")
+	if (&convert_ada_type ($return) =~ /\'Class/)
 	  {
+	    my ($tmp) = &convert_ada_type ($return);
+	    $tmp =~ s/\'Class//;
+	    push (@output, "      Widget : $tmp;\n   begin\n");
+	    $string = "      Set_Object (Widget, Internal";
+	  }
+	elsif ($return ne "void")
+	  {
+	    push (@output, "   begin\n");
 	    $string = "      return Internal";
 	  }
 	else
 	  {
+	    push (@output, "   begin\n");
 	    $string = "      Internal";
 	  }
 	push (@output, $string);
 	
 	&print_arguments_call (' ' x length ($string), @arguments);
-	push (@output, ";\n");
+	if (&convert_ada_type ($return) =~ /\'Class/) {
+	  push (@output, ");\n      return Widget;\n");
+	}
+	else {
+	  push (@output, ";\n");
+	}
       }
     push (@output, "   end $adaname;\n\n");
   }
@@ -488,6 +535,7 @@ sub ada_func_name
     $c_func_name =~ s/^$type\_//;
 
     $type = &create_ada_name ($c_func_name);
+    return "Gtk_Select" if ($type eq "Select");
     return "Gtk_New" if ($type =~ /New/);
     return $type;
   }
@@ -501,13 +549,13 @@ sub convert_ada_type
   {
     my ($type) = shift;
     
-    if ($type eq "gint") {
-      return "Gint";
-    } elsif ($type eq "guint") {
-      return "Guint";
+    if ($type =~ /^gint(.*)/) {
+      return "Gint$1";
+    } elsif ($type =~ /^guint(.*)/) {
+      return "Guint$1";
     } elsif ($type eq "gfloat") {
       return "Gfloat";
-    } elsif ($type eq "constgchar*") {
+    } elsif ($type =~ /(const)?(g?)char\*/) {
       return "String";
     } elsif ($type =~ /(Gtk|Gdk)([^*]+)\*/) {
       my ($t) = $2;
@@ -524,8 +572,11 @@ sub convert_ada_type
 	  return "$prefix\_$t\'Class";
 	}
     } else {
+      if ($type ne "Gtk_$current_package") {
+	$with_list {"with Gtk.Enums; use Gtk.Enums"} ++;
+      }
       $type =~ s/([^_])([A-Z])/$1_$2/g;
-      return $type;
+      return "$type";
     }
   }
 
@@ -538,16 +589,20 @@ sub convert_c_type
   {
     my ($type) = shift;
     
-    if ($type eq "gint") {
-      return "Gint";
-    } elsif ($type eq "guint") {
-      return "Guint";
+    if ($type =~ /gint(.*)/) {
+      return "Gint$1";
+    } elsif ($type =~ /guint(.*)/) {
+      return "Guint$1";
     } elsif ($type eq "gfloat") {
       return "Gfloat";
-    } elsif ($type =~ /(const)?gchar*/) {
+    } elsif ($type =~ /(const)?g?char\*/) {
       return "String";
     } else {
-      return "System.Address";
+      ## If it is a pointer, we have an object, otherwise we have an enum
+      if ($type =~ /\*/) {
+	return "System.Address";
+      }
+      return "Gint";
     }
   }
 
