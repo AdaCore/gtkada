@@ -128,9 +128,9 @@ package body Gtk.Type_Conversion is
    ---------------------
 
    function Full_Conversion (Obj  : System.Address; Stub : Root_Type'Class)
-                             return Root_Type_Access is
-      function Get_Type (Obj : System.Address) return Gint;
-      pragma Import (C, Get_Type, "ada_get_type");
+                            return Root_Type_Access is
+      function Get_Type (Obj : System.Address) return Gtk_Type;
+      pragma Import (C, Get_Type, "ada_object_get_type");
 
       Type_Name : String := Gtk.Type_Name (Get_Type (Obj));
    begin

@@ -37,7 +37,7 @@ package Gtk.Object is
 
    procedure Destroy (Object : access Gtk_Object_Record);
 
-   function Get_Type (Object : access Gtk_Object_Record) return Gint;
+   function Get_Type (Object : access Gtk_Object_Record) return Gtk_Type;
 
    procedure Ref (Object : access Gtk_Object_Record);
 
