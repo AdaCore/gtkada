@@ -1,32 +1,34 @@
-with Ada.Text_IO;    use Ada.Text_IO;
-with Unchecked_Deallocation;
-with Interfaces.C.Strings;
-with Gdk.Color;      use Gdk.Color;
-with Gdk.Event;      use Gdk.Event;
-with Gdk.Types;      use Gdk.Types;
-with Gdk.Window;     use Gdk.Window;
-with System;         use System;
-with Gtk.Container;  use Gtk.Container;
-with Gtk.Enums;      use Gtk.Enums;
-with Gtk.Widget;     use Gtk.Widget;
-with Gtk.Window;     use Gtk.Window;
-with Gtk.Box;        use Gtk.Box;
-with Gtk.Button;     use Gtk.Button;
-with Gtk.Handlers;   use Gtk.Handlers;
-with Gtk.Main;       use Gtk.Main;
-with Gtk.Label;      use Gtk.Label;
-with Gtk.List;       use Gtk.List;
-with Gtk.List_Item;  use Gtk.List_Item;
-with Gtk.Pixmap;     use Gtk.Pixmap;
-with Gdk.Pixmap;     use Gdk.Pixmap;
-with Gdk.Bitmap;     use Gdk.Bitmap;
-with Gtk.Toolbar;    use Gtk.Toolbar;
-with Gtk.Toggle_Button; use Gtk.Toggle_Button;
+with Gdk.Pixmap;
+with Gdk.Window;
+
+with Gdk.Color;          use Gdk.Color;
+with Gdk.Event;          use Gdk.Event;
+with Gdk.Types;          use Gdk.Types;
+
+with Gtk.Container;      use Gtk.Container;
+with Gtk.Enums;          use Gtk.Enums;
+with Gtk.Widget;         use Gtk.Widget;
+with Gtk.Window;         use Gtk.Window;
+with Gtk.Box;            use Gtk.Box;
+with Gtk.Button;         use Gtk.Button;
+with Gtk.Handlers;       use Gtk.Handlers;
+with Gtk.Main;           use Gtk.Main;
+with Gtk.Label;          use Gtk.Label;
+with Gtk.List;           use Gtk.List;
+with Gtk.List_Item;      use Gtk.List_Item;
+with Gtk.Pixmap;         use Gtk.Pixmap;
+with Gtk.Toolbar;        use Gtk.Toolbar;
+with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
 with Gtk.File_Selection; use Gtk.File_Selection;
-with GNAT.Directory_Operations;  use GNAT.Directory_Operations;
 
 with Gtk.Type_Conversion;
 pragma Warnings (Off, Gtk.Type_Conversion);
+
+with GNAT.Directory_Operations;  use GNAT.Directory_Operations;
+with Ada.Text_IO;                use Ada.Text_IO;
+with System;                     use System;
+with Unchecked_Deallocation;
+with Interfaces.C.Strings;
 
 package body Gtk.Macro is
 
@@ -225,28 +227,28 @@ package body Gtk.Macro is
       ICS.New_String (".@......................"));
 
 
-   type Recorder_Record is new Gtk_Toolbar_Record with
-      record
-         Record_Button : Gtk_Toggle_Button;
-         List          : Gtk_List;
-      end record;
+   type Recorder_Record is new Gtk_Toolbar_Record with record
+      Record_Button : Gtk_Toggle_Button;
+      List          : Gtk_List;
+   end record;
    type Recorder is access all Recorder_Record'Class;
-   procedure Initialize (Rec : access Recorder_Record'Class;
-                         Win : Gdk_Window);
+
+   procedure Initialize
+     (Rec : access Recorder_Record'Class;
+      Win : Gdk_Window);
 
    Global_Rec : Recorder;
 
    procedure My_Event_Handler (Event : System.Address);
 
-   function Get_Widget_From_Name (Name : String;
-                                  List : Widget_List.Glist)
-                                 return Gtk_Widget;
+   function Get_Widget_From_Name
+     (Name : String; List : Widget_List.Glist) return Gtk_Widget;
    --  Finds the widget whose name is NAME in the application
 
-   function Child_From_Coordinates (Widget    : access Gtk_Widget_Record'Class;
-                                    Max_Depth : Natural;
-                                    X, Y      : Gint)
-                                   return Gtk_Widget;
+   function Child_From_Coordinates
+     (Widget    : access Gtk_Widget_Record'Class;
+      Max_Depth : Natural;
+      X, Y      : Gint) return Gtk_Widget;
    --  Returns the child (or grand-* child) which is at the coordinates (X, Y)
    --  in WIDGET, or WIDGET itself if there is none.
    --  The search is no deeper than MAX_DEPTH
@@ -262,14 +264,13 @@ package body Gtk.Macro is
    --  DEPTH is the number of level we had to go up to find this PARENT.
    --  PARENT is null if there was no named parent.
 
-   type Macro is
-      record
-         Current_Read : Macro_Item_Access := null;
-         Item_List    : Macro_Item_Access := null;
-         Last_Item    : Macro_Item_Access := null;
-         Macro_Size   : Natural := 0;
-         Current_Item : Natural := 1;
-      end record;
+   type Macro is record
+      Current_Read : Macro_Item_Access := null;
+      Item_List    : Macro_Item_Access := null;
+      Last_Item    : Macro_Item_Access := null;
+      Macro_Size   : Natural := 0;
+      Current_Item : Natural := 1;
+   end record;
 
    Record_Macro : Boolean := False;
    --  True if we should record the events in the current macro
@@ -279,19 +280,11 @@ package body Gtk.Macro is
    procedure Free is new Unchecked_Deallocation
      (Macro_Item'Class, Macro_Item_Access);
 
-   package Void_Cb is new Gtk.Handlers.Callback (Gtk_Button_Record);
-   package Boolean_Cb is new Gtk.Handlers.Return_Callback
-     (Widget_Type => Gtk_Widget_Record, Return_Type => Boolean);
-   package Event_Cb is new Gtk.Handlers.Return_Callback
-     (Widget_Type => Gtk_Widget_Record, Return_Type => Gint);
-   package List_Cb is new Gtk.Handlers.Callback
-     (Widget_Type => Gtk_List_Record);
-   package Rec_Cb is new Gtk.Handlers.Callback
-     (Widget_Type => Recorder_Record);
-   package File_Cb is new Gtk.Handlers.Callback
-     (Widget_Type => Gtk_File_Selection_Record);
-   package Widget_Cb is new Gtk.Handlers.Callback
-     (Widget_Type => Gtk_Widget_Record);
+   package Widget_Cb is new Gtk.Handlers.Callback (Gtk_Widget_Record);
+   package Button_Cb is new Gtk.Handlers.Callback (Gtk_Button_Record);
+   package List_Cb is new Gtk.Handlers.Callback (Gtk_List_Record);
+   package Rec_Cb is new Gtk.Handlers.Callback (Recorder_Record);
+   package File_Cb is new Gtk.Handlers.Callback (Gtk_File_Selection_Record);
 
    function Get_Real_Name (Widget : System.Address) return System.Address;
    pragma Import (C, Get_Real_Name, "ada_gtk_get_real_name");
@@ -305,16 +298,21 @@ package body Gtk.Macro is
    procedure Add_Item (M : in out Macro; Item : Macro_Item_Access);
    --  Add a new item to the macro list
 
-   procedure Save_Button_Event (Widget : access Gtk_Widget_Record'Class;
-                                  Event  : Gdk_Event_Button);
-   procedure Save_Key_Event (Widget : access Gtk_Widget_Record'Class;
-                               Event  : Gdk_Event_Key);
-   procedure Save_Motion_Event (Widget : access Gtk_Widget_Record'Class;
-                                  Event  : Gdk_Event_Motion);
-   procedure Save_Crossing_Event (Widget : access Gtk_Widget_Record'Class;
-                                    Event  : Gdk_Event_Crossing);
-   procedure Save_Configure_Event (Widget : access Gtk_Widget_Record'Class;
-                                     Event  : Gdk_Event_Configure);
+   procedure Save_Button_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Button);
+   procedure Save_Key_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Key);
+   procedure Save_Motion_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Motion);
+   procedure Save_Crossing_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Crossing);
+   procedure Save_Configure_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Configure);
 
    procedure Record_Macro_Cb (Button : access Gtk_Button_Record'Class);
    --  Starts recording a new macro, with the given name.
@@ -489,7 +487,6 @@ package body Gtk.Macro is
       N : Natural := Num_Steps;
       E : Gdk_Event;
       W : Gtk_Widget;
-      B : Boolean;
    begin
       while N /= 0
         and then Current_Macro.Current_Read /= null
@@ -533,10 +530,12 @@ package body Gtk.Macro is
                          & " x "
                          & Gint'Image (Gint (Get_Y (E))));
             end if;
-            B := Boolean_Cb.Emit_By_Name
+
+            Widget_Cb.Emit_By_Name
               (W, Event_Name_From_Type (Get_Event_Type (E)), E);
             Free (E);
          end if;
+
          Current_Macro.Current_Read := Current_Macro.Current_Read.Next;
          Current_Macro.Current_Item := Current_Macro.Current_Item + 1;
          N := N - 1;
@@ -630,41 +629,41 @@ package body Gtk.Macro is
       Gtk_New (Rec.List);
 
       --  Record button
-      Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Record_Xpm);
+      Gdk.Pixmap.Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Record_Xpm);
       Gtk_New (Pixmap, Pix, Mask);
       Gtk_New (Rec.Record_Button);
       Add (Rec.Record_Button, Pixmap);
       Append_Widget (Rec, Rec.Record_Button, "Record a new macro", "");
-      Void_Cb.Connect (Rec.Record_Button,
+      Button_Cb.Connect (Rec.Record_Button,
                        "toggled",
-                       Void_Cb.To_Marshaller (Record_Macro_Cb'Access));
+                       Button_Cb.To_Marshaller (Record_Macro_Cb'Access));
 
       --  Play button
-      Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Play_Xpm);
+      Gdk.Pixmap.Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Play_Xpm);
       Gtk_New (Pixmap, Pix, Mask);
-      Void_Cb.Connect (Append_Item
+      Button_Cb.Connect (Append_Item
                        (Rec,
                         Text         => "Play",
                         Tooltip_Text => "Play current macro entirely",
                         Tooltip_Private_Text => "",
                         Icon         => Gtk_Widget (Pixmap)),
                        "clicked",
-                       Void_Cb.To_Marshaller (Play_Macro_Cb'Access));
+                       Button_Cb.To_Marshaller (Play_Macro_Cb'Access));
 
       --  Step button
-      Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Step_Xpm);
+      Gdk.Pixmap.Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Step_Xpm);
       Gtk_New (Pixmap, Pix, Mask);
-      Void_Cb.Connect
+      Button_Cb.Connect
         (Append_Item (Rec,
                       Text         => "Step",
                       Tooltip_Text => "Play next event in the macro",
                       Tooltip_Private_Text => "",
                       Icon         => Gtk_Widget (Pixmap)),
          "clicked",
-         Void_Cb.To_Marshaller (Step_Macro_Cb'Access));
+         Button_Cb.To_Marshaller (Step_Macro_Cb'Access));
 
       --  Stop button
-      Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Stop_Xpm);
+      Gdk.Pixmap.Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Stop_Xpm);
       Gtk_New (Pixmap, Pix, Mask);
       Rec_Cb.Object_Connect
         (Append_Item
@@ -681,7 +680,7 @@ package body Gtk.Macro is
       Append_Space (Rec);
 
       --  Load button
-      Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Load_Xpm);
+      Gdk.Pixmap.Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Load_Xpm);
       Gtk_New (Pixmap, Pix, Mask);
       List_Cb.Object_Connect
         (Append_Item (Rec,
@@ -694,16 +693,16 @@ package body Gtk.Macro is
          Slot_Object => Rec.List);
 
       --  Save button
-      Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Save_Xpm);
+      Gdk.Pixmap.Create_From_Xpm_D (Pix, Win, Mask, Null_Color, Save_Xpm);
       Gtk_New (Pixmap, Pix, Mask);
-      Void_Cb.Connect
+      Button_Cb.Connect
         (Append_Item (Rec,
                       Text         => "Save",
                       Tooltip_Text => "Save current macro",
                       Tooltip_Private_Text => "",
                       Icon         => Gtk_Widget (Pixmap)),
          "clicked",
-         Void_Cb.To_Marshaller (Save_Cb'Access));
+         Button_Cb.To_Marshaller (Save_Cb'Access));
 
       Set_Space_Size (Rec, 10);
       Set_Button_Relief (Rec, Relief_None);
@@ -1190,9 +1189,9 @@ package body Gtk.Macro is
    -- Save_Key_Event --
    --------------------
 
-   procedure Save_Key_Event (Widget : access Gtk_Widget_Record'Class;
-                               Event  : Gdk_Event_Key)
-   is
+   procedure Save_Key_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Key) is
    begin
       null;
    end Save_Key_Event;
@@ -1201,9 +1200,9 @@ package body Gtk.Macro is
    -- Save_Motion_Event --
    -----------------------
 
-   procedure Save_Motion_Event (Widget : access Gtk_Widget_Record'Class;
-                                  Event  : Gdk_Event_Motion)
-   is
+   procedure Save_Motion_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Motion) is
    begin
       null;
    end Save_Motion_Event;
@@ -1212,8 +1211,9 @@ package body Gtk.Macro is
    -- Save_Crossing_Event --
    -------------------------
 
-   procedure Save_Crossing_Event (Widget : access Gtk_Widget_Record'Class;
-                                  Event  : Gdk_Event_Crossing)
+   procedure Save_Crossing_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Crossing)
    is
       W    : Gtk_Widget;
       X    : Gint := Gint (Get_X (Event));
