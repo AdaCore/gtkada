@@ -1269,6 +1269,8 @@ package body Gtkada.Multi_Paned is
       procedure Compute_Requisition (Current : Child_Description_Access) is
          Requisition : Gtk_Requisition;
          Tmp         : Child_Description_Access;
+         Force_Zero  : Boolean;
+         Alloc       : Gtk_Allocation;
       begin
          if Current /= null then
             if Current.Is_Widget and then Is_Visible (Current) then
@@ -1289,24 +1291,60 @@ package body Gtkada.Multi_Paned is
             elsif not Current.Is_Widget then
                Current.Width  := 0;
                Current.Height := 0;
+               Force_Zero     := True;
 
                Tmp := Current.First_Child;
                while Tmp /= null loop
                   Compute_Requisition (Tmp);
 
+                  --  If at least one of the children has a specific size
+                  --  requisition, we need to recompute everything, taking into
+                  --  account the currently allocated sizes.
+                  if Tmp.Height /= 0 or else Tmp.Width /= 0 then
+                     Force_Zero := False;
+                  end if;
+
                   case Current.Orientation is
                      when Orientation_Horizontal =>
-                        Current.Width := Current.Width + Tmp.Width;
+                        if Tmp.Width = 0 then
+                           if Tmp.Is_Widget then
+                              Current.Width := Current.Width
+                                + Get_Allocation_Width (Tmp.Widget);
+                           else
+                              Compute_Child_Position (Split, Tmp, Alloc);
+                              Current.Width := Current.Width + Alloc.Width;
+                           end if;
+                        else
+                           Current.Width := Current.Width + Tmp.Width;
+                        end if;
+
                         Current.Height := Gint'Max
                           (Current.Height, Tmp.Height);
+
                      when Orientation_Vertical =>
                         Current.Width := Gint'Max
                           (Current.Width, Tmp.Width);
-                        Current.Height := Current.Height + Tmp.Height;
+
+                        if Tmp.Height = 0 then
+                           if Tmp.Is_Widget then
+                              Current.Height := Current.Height
+                                + Get_Allocation_Height (Tmp.Widget);
+                           else
+                              Compute_Child_Position (Split, Tmp, Alloc);
+                              Current.Height := Current.Height + Alloc.Height;
+                           end if;
+                        else
+                           Current.Height := Current.Height + Tmp.Height;
+                        end if;
                   end case;
 
                   Tmp := Tmp.Next;
                end loop;
+
+               if Force_Zero then
+                  Current.Width := 0;
+                  Current.Height := 0;
+               end if;
             end if;
          end if;
       end Compute_Requisition;
@@ -1331,7 +1369,9 @@ package body Gtkada.Multi_Paned is
 
                case Current.Orientation is
                   when Orientation_Horizontal =>
-                     if Tmp.Width /= 0 then
+                     if Tmp.Width /= 0
+                       and then Current.Width /= 0
+                     then
                         Current.Handles (Handle).Percent :=
                           Float (Tmp.Width) / Float (Current.Width);
                         Changed := True;
@@ -1343,7 +1383,9 @@ package body Gtkada.Multi_Paned is
                         Height);
 
                   when Orientation_Vertical =>
-                     if Tmp.Height /= 0 then
+                     if Tmp.Height /= 0
+                       and then Current.Height /= 0
+                     then
                         Current.Handles (Handle).Percent :=
                           Float (Tmp.Height) / Float (Current.Height);
                         Changed := True;
@@ -1910,6 +1952,10 @@ package body Gtkada.Multi_Paned is
          Current := Child_Description_Access (Ref_Pane);
       elsif Ref_Widget = null then
          if Use_Ref_Pane then
+            if Traces then
+               Put_Line ("Split_Internal: Splitting main window");
+            end if;
+
             --  Split main window
             Current := Win.Children;
          else
