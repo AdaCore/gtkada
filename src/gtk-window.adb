@@ -218,7 +218,7 @@ package body Gtk.Window is
                           T : in String);
       pragma Import (C, Internal, "gtk_window_set_title");
    begin
-      Internal (Get_Object (Window), Title & Ascii.NUL);
+      Internal (Get_Object (Window), Title & ASCII.Nul);
    end Set_Title;
 
    -----------------

@@ -223,7 +223,7 @@ package body Gtk.Progress is
       pragma Import (C, Internal, "gtk_progress_set_format_string");
 
    begin
-      Internal (Get_Object (Progress), Format & Ascii.NUL);
+      Internal (Get_Object (Progress), Format & ASCII.Nul);
    end Set_Format_String;
 
    --------------------

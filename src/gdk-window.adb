@@ -744,7 +744,7 @@ package body Gdk.Window is
                           Role   : in String);
       pragma Import (C, Internal, "gdk_window_set_role");
    begin
-      Internal (Get_Object (Window), Role & Ascii.NUL);
+      Internal (Get_Object (Window), Role & ASCII.Nul);
    end Set_Role;
 
 
@@ -758,7 +758,7 @@ package body Gdk.Window is
                           Title  : in String);
       pragma Import (C, Internal, "gdk_window_set_title");
    begin
-      Internal (Get_Object (Window), Title & Ascii.NUL);
+      Internal (Get_Object (Window), Title & ASCII.Nul);
    end Set_Title;
 
 

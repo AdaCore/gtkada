@@ -103,7 +103,7 @@ begin
    else
       loop
          case Getopt ("timeout:") is
-            when Ascii.NUL => exit;
+            when ASCII.Nul => exit;
 
             when 't' =>
                if Full_Switch = "timeout" then

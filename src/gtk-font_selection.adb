@@ -158,12 +158,12 @@ package body Gtk.Font_Selection is
       Internal (Get_Object (Fsd),
                 Gtk_Font_Filter_Type'Pos (Filter_Type),
                 Gtk_Font_Type'Pos (Font_Type),
-                Foundries & Ascii.NUL,
-                Weights & Ascii.NUL,
-                Slants & Ascii.NUL,
-                Setwidths & Ascii.NUL,
-                Spacings & Ascii.NUL,
-                Charsets & Ascii.NUL);
+                Foundries & ASCII.Nul,
+                Weights & ASCII.Nul,
+                Slants & ASCII.Nul,
+                Setwidths & ASCII.Nul,
+                Spacings & ASCII.Nul,
+                Charsets & ASCII.Nul);
    end Set_Filter;
 
    -------------------
@@ -182,7 +182,7 @@ package body Gtk.Font_Selection is
       pragma Import (C, Internal, "gtk_font_selection_dialog_set_font_name");
    begin
       return Boolean'Val (Internal (Get_Object (Fsd),
-                                    Fontname & Ascii.NUL));
+                                    Fontname & ASCII.Nul));
    end Set_Font_Name;
 
    ----------------------
@@ -200,7 +200,7 @@ package body Gtk.Font_Selection is
                      "gtk_font_selection_dialog_set_preview_text");
    begin
       Internal (Get_Object (Fsd),
-                Text & Ascii.NUL);
+                Text & ASCII.Nul);
    end Set_Preview_Text;
 
 
@@ -282,7 +282,7 @@ package body Gtk.Font_Selection is
                          return      System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_new");
    begin
-      Set_Object (Widget, Internal (Title & Ascii.NUL));
+      Set_Object (Widget, Internal (Title & ASCII.Nul));
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -329,12 +329,12 @@ package body Gtk.Font_Selection is
       Internal (Get_Object (Fontsel),
                 Gtk_Font_Filter_Type'Pos (Filter_Type),
                 Gtk_Font_Type'Pos (Font_Type),
-                Foundries & Ascii.NUL,
-                Weights & Ascii.NUL,
-                Slants & Ascii.NUL,
-                Setwidths & Ascii.NUL,
-                Spacings & Ascii.NUL,
-                Charsets & Ascii.NUL);
+                Foundries & ASCII.Nul,
+                Weights & ASCII.Nul,
+                Slants & ASCII.Nul,
+                Setwidths & ASCII.Nul,
+                Spacings & ASCII.Nul,
+                Charsets & ASCII.Nul);
    end Set_Filter;
 
    -------------------
@@ -353,7 +353,7 @@ package body Gtk.Font_Selection is
       pragma Import (C, Internal, "gtk_font_selection_set_font_name");
    begin
       return Boolean'Val (Internal (Get_Object (Fontsel),
-                                    Fontname & Ascii.NUL));
+                                    Fontname & ASCII.Nul));
    end Set_Font_Name;
 
    ----------------------
@@ -370,7 +370,7 @@ package body Gtk.Font_Selection is
       pragma Import (C, Internal, "gtk_font_selection_set_preview_text");
    begin
       Internal (Get_Object (Fontsel),
-                Text & Ascii.NUL);
+                Text & ASCII.Nul);
    end Set_Preview_Text;
 
    --------------

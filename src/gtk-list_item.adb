@@ -100,7 +100,7 @@ package body Gtk.List_Item is
                          return System.Address;
       pragma Import (C, Internal, "gtk_list_item_new_with_label");
    begin
-      Set_Object (List_Item, Internal (Label & Ascii.NUL));
+      Set_Object (List_Item, Internal (Label & ASCII.Nul));
       Initialize_User_Data (List_Item);
    end Initialize;
 

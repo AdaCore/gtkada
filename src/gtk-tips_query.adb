@@ -89,8 +89,8 @@ package body Gtk.Tips_Query is
       pragma Import (C, Internal, "gtk_tips_query_set_labels");
    begin
       Internal (Get_Object (Tips_Query),
-                Label_Inactive & Ascii.NUL,
-                Label_No_Tip & Ascii.NUL);
+                Label_Inactive & ASCII.Nul,
+                Label_No_Tip & ASCII.Nul);
    end Set_Labels;
 
    -----------------

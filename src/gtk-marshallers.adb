@@ -98,7 +98,7 @@ package body Gtk.Marshallers is
             B : aliased Return_Type;
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul, Param,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul, Param,
                       B'Address);
             return B;
          end Emit_By_Name;
@@ -121,7 +121,7 @@ package body Gtk.Marshallers is
             B : aliased Return_Type;
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul,
                       Conversion (Param),
                       B'Address);
             return B;
@@ -190,7 +190,7 @@ package body Gtk.Marshallers is
             R : aliased Return_Type;
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul,
                       Get_Object (Param.all), R'Address);
             return R;
          end Emit_By_Name;
@@ -246,7 +246,7 @@ package body Gtk.Marshallers is
             R : aliased Return_Type;
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
-            Internal (Get_Object (Object.all), Name & Ascii.NUL, R'Address);
+            Internal (Get_Object (Object.all), Name & ASCII.Nul, R'Address);
             return R;
          end Emit_By_Name;
 
@@ -315,7 +315,7 @@ package body Gtk.Marshallers is
             B : aliased Return_Type;
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul, Param,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul, Param,
                       B'Address);
             return B;
          end Emit_By_Name;
@@ -338,7 +338,7 @@ package body Gtk.Marshallers is
             B : aliased Return_Type;
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul,
                       Conversion (Param), B'Address);
             return B;
          end Emit_By_Name_Generic;
@@ -408,7 +408,7 @@ package body Gtk.Marshallers is
             R : aliased Return_Type;
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul,
                       Get_Object (Param.all), R'Address);
             return R;
          end Emit_By_Name;
@@ -466,7 +466,7 @@ package body Gtk.Marshallers is
             R : aliased Return_Type;
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
-            Internal (Get_Object (Object.all), Name & Ascii.NUL, R'Address);
+            Internal (Get_Object (Object.all), Name & ASCII.Nul, R'Address);
             return R;
          end Emit_By_Name;
 
@@ -530,7 +530,7 @@ package body Gtk.Marshallers is
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul, Param);
+            Internal (Get_Object (Object.all), Name & ASCII.Nul, Param);
          end Emit_By_Name;
 
          --------------------------
@@ -548,7 +548,7 @@ package body Gtk.Marshallers is
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul,
                       Conversion (Param));
          end Emit_By_Name_Generic;
 
@@ -611,7 +611,7 @@ package body Gtk.Marshallers is
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul,
                       Get_Object (Param.all));
          end Emit_By_Name;
 
@@ -662,7 +662,7 @@ package body Gtk.Marshallers is
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul);
+            Internal (Get_Object (Object.all), Name & ASCII.Nul);
          end Emit_By_Name;
 
       end Void_Marshaller;
@@ -727,7 +727,7 @@ package body Gtk.Marshallers is
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul, Param);
+            Internal (Get_Object (Object.all), Name & ASCII.Nul, Param);
          end Emit_By_Name;
 
          --------------------------
@@ -745,7 +745,7 @@ package body Gtk.Marshallers is
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul,
                       Conversion (Param));
          end Emit_By_Name_Generic;
 
@@ -810,7 +810,7 @@ package body Gtk.Marshallers is
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul,
+            Internal (Get_Object (Object.all), Name & ASCII.Nul,
                       Get_Object (Param.all));
          end Emit_By_Name;
 
@@ -863,7 +863,7 @@ package body Gtk.Marshallers is
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
-            Internal (Get_Object (Object.all), Name & Ascii.Nul);
+            Internal (Get_Object (Object.all), Name & ASCII.Nul);
          end Emit_By_Name;
 
       end Void_Marshaller;

@@ -95,7 +95,7 @@ package body Gtk.Handlers is
       pragma Import (C, Internal, "gtk_signal_connect_full");
    begin
       return Internal (Get_Object (Object.all),
-                       Name & Ascii.NUL,
+                       Name & ASCII.Nul,
                        System.Null_Address,
                        Marshaller,
                        Func_Data,
@@ -1091,7 +1091,7 @@ package body Gtk.Handlers is
                           Name   : in String);
       pragma Import (C, Internal, "gtk_signal_emit_stop_by_name");
    begin
-      Internal (Get_Object (Object.all), Name & Ascii.NUL);
+      Internal (Get_Object (Object.all), Name & ASCII.Nul);
    end Emit_Stop_By_Name;
 
    -------------------

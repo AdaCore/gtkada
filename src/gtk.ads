@@ -80,7 +80,7 @@ private
    --  If you use type inheritance for new widgets, you should not need
    --  these functions.
 
-   GtkAda_String : constant String := "_GtkAda" & Ascii.NUL;
+   GtkAda_String : constant String := "_GtkAda" & ASCII.Nul;
    GtkAda_String_Quark : Glib.GQuark := Glib.Unknown_Quark;
    --  The name for the user data that we set in the objects.
    --  The Quark version is to speed up the string lookup (this is done

@@ -102,7 +102,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_add_accelerator");
 
    begin
-      Internal (Get_Object (Widget), Accel_Signal & Ascii.Nul,
+      Internal (Get_Object (Widget), Accel_Signal & ASCII.Nul,
                 Get_Object (Accel_Group),
                 Gdk.Types.Gdk_Key_Type'Pos (Accel_Key),
                 Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods),
@@ -810,7 +810,7 @@ package body Gtk.Widget is
 
    begin
       Internal (Get_Object (Widget),
-                Accel_Signal & Ascii.NUL,
+                Accel_Signal & ASCII.Nul,
                 Boolean'Pos (Visible_Only));
    end Remove_Accelerators;
 
@@ -974,7 +974,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_name");
 
    begin
-      Internal (Get_Object (Widget), Name & Ascii.NUL);
+      Internal (Get_Object (Widget), Name & ASCII.Nul);
    end Set_Name;
 
    ------------------

@@ -68,7 +68,7 @@ package body Gtk.Check_Menu_Item is
       function Internal (Label  : in String) return System.Address;
       pragma Import (C, Internal, "gtk_check_menu_item_new_with_label");
    begin
-      Set_Object (Check_Menu_Item, Internal (Label & Ascii.NUL));
+      Set_Object (Check_Menu_Item, Internal (Label & ASCII.Nul));
       Initialize_User_Data (Check_Menu_Item);
    end Initialize;
 

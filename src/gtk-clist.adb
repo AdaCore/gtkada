@@ -989,7 +989,7 @@ package body Gtk.Clist is
    begin
       Internal (Get_Object (Clist),
                 Column,
-                Title & Ascii.NUL);
+                Title & ASCII.Nul);
    end Set_Column_Title;
 
    ---------------------------
@@ -1188,7 +1188,7 @@ package body Gtk.Clist is
       Internal (Get_Object (Clist),
                 Row,
                 Column,
-                Text & Ascii.NUL,
+                Text & ASCII.Nul,
                 Spacing,
                 Gdk.Get_Object (Pixmap),
                 Gdk.Get_Object (Mask));
@@ -1368,7 +1368,7 @@ package body Gtk.Clist is
       Internal (Get_Object (Clist),
                 Row,
                 Column,
-                Text & Ascii.NUL);
+                Text & ASCII.Nul);
    end Set_Text;
 
    ------------------------

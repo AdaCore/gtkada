@@ -150,7 +150,7 @@ package body Gtk.Combo is
 
    begin
       Internal (Get_Object (Combo_Box), Get_Object (Item),
-                Item_Value & Ascii.NUL);
+                Item_Value & ASCII.Nul);
    end Set_Item_String;
 
    -------------------------

@@ -97,7 +97,7 @@ package body Gtk.Button is
       if Label = "" then
          Set_Object (Button, Internal2);
       else
-         Set_Object (Button, Internal (Label & Ascii.NUL));
+         Set_Object (Button, Internal (Label & ASCII.Nul));
       end if;
       Initialize_User_Data (Button);
    end Initialize;

@@ -68,7 +68,7 @@ package body Gtk.Accel_Label is
       pragma Import (C, Internal, "gtk_accel_label_new");
 
    begin
-      Set_Object (Accel_Label, Internal (Str & Ascii.NUL));
+      Set_Object (Accel_Label, Internal (Str & ASCII.Nul));
       Initialize_User_Data (Accel_Label);
    end Initialize;
 

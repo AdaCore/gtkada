@@ -122,7 +122,7 @@ package body Gtk.Tree_Item is
         return System.Address;
       pragma Import (C, Internal, "gtk_tree_item_new_with_label");
    begin
-      Set_Object (Tree_Item, Internal (Label & Ascii.NUL));
+      Set_Object (Tree_Item, Internal (Label & ASCII.Nul));
       Initialize_User_Data (Tree_Item);
    end Initialize;
 

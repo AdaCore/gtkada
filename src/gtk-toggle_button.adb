@@ -72,7 +72,7 @@ package body Gtk.Toggle_Button is
       if Label = "" then
          Set_Object (Toggle_Button, Internal2);
       else
-         Set_Object (Toggle_Button, Internal (Label & Ascii.NUL));
+         Set_Object (Toggle_Button, Internal (Label & ASCII.Nul));
       end if;
       Initialize_User_Data (Toggle_Button);
    end Initialize;

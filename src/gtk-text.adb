@@ -273,7 +273,7 @@ package body Gtk.Text is
 
       Internal
         (Get_Object (Text), Get_Object (Font), Fore_A, Back_A,
-         Chars & Ascii.NUL, Length);
+         Chars & ASCII.Nul, Length);
    end Insert;
 
    ---------------------

@@ -270,7 +270,7 @@ package body Gtk.Editable is
       --  the parameter is passed in a register for instance.
    begin
       Internal (Get_Object (Editable),
-                New_Text & Ascii.NUL,
+                New_Text & ASCII.Nul,
                 New_Text_Length,
                 Pos'Address);
       Position := Pos;
@@ -318,7 +318,7 @@ package body Gtk.Editable is
    ------------------
 
    procedure Set_Editable (Widget : access Gtk_Editable_Record;
-                           Editable : boolean)
+                           Editable : Boolean)
    is
       procedure Internal (Widget : in System.Address; Editable : Guint);
       pragma Import (C, Internal, "ada_editable_set_editable");

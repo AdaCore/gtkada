@@ -252,7 +252,7 @@ package body Gtk.File_Selection is
         return System.Address;
       pragma Import (C, Internal, "gtk_file_selection_new");
    begin
-      Set_Object (File_Selection, Internal (Title & Ascii.NUL));
+      Set_Object (File_Selection, Internal (Title & ASCII.Nul));
       Initialize_User_Data (File_Selection);
    end Initialize;
 
@@ -270,7 +270,7 @@ package body Gtk.File_Selection is
       pragma Import (C, Internal, "gtk_file_selection_set_filename");
 
    begin
-      Internal (Get_Object (File_Selection), Filename & Ascii.NUL);
+      Internal (Get_Object (File_Selection), Filename & ASCII.Nul);
    end Set_Filename;
 
    -------------------------

@@ -76,7 +76,7 @@ package body Gtk.Status_Bar is
       pragma Import (C, Internal, "gtk_statusbar_get_context_id");
    begin
       return Internal (Get_Object (Statusbar),
-                       Context_Description & Ascii.NUL);
+                       Context_Description & ASCII.Nul);
    end Get_Context_Id;
 
    ------------------
@@ -124,7 +124,7 @@ package body Gtk.Status_Bar is
          return Message_Id;
       pragma Import (C, Internal, "gtk_statusbar_push");
    begin
-      return Internal (Get_Object (Statusbar), Context, Text & Ascii.NUL);
+      return Internal (Get_Object (Statusbar), Context, Text & ASCII.Nul);
    end Push;
 
    ---------

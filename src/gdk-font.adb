@@ -175,7 +175,7 @@ package body Gdk.Font is
       pragma Import (C, Internal, "gdk_string_extents");
    begin
       Internal (Get_Object (Font),
-                Str & Ascii.NUL,
+                Str & ASCII.Nul,
                 Lbearing, Rbearing,
                 Width, Ascent, Descent);
    end String_Extents;

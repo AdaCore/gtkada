@@ -277,7 +277,7 @@ package body Gtk.Object is
          pragma Import (C, Internal, "gtk_object_get_data");
          D : Cb_Record_Access
            := Convert (Internal (Get_Object (Object),
-                                 Id & Ascii.NUL));
+                                 Id & ASCII.Nul));
       begin
          return D.Ptr.all;
       exception

@@ -70,7 +70,7 @@ package body Gdk.Property is
                          return              Gdk.Types.Gdk_Atom;
       pragma Import (C, Internal, "gdk_atom_intern");
    begin
-      return Internal (Atom_Name & Ascii.NUL, To_Gint (Only_If_Exists));
+      return Internal (Atom_Name & ASCII.Nul, To_Gint (Only_If_Exists));
    end Atom_Intern;
 
    ---------------

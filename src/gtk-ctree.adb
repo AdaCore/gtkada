@@ -35,7 +35,7 @@ with Unchecked_Deallocation;
 package body Gtk.CTree is
 
    Compare_Drag_Func_Key :
-     constant String := "_GtkAda_Ctree_Compare_Drag_Func" & Ascii.NUL;
+     constant String := "_GtkAda_Ctree_Compare_Drag_Func" & ASCII.Nul;
    --
    --  The key that will be used to store the address of the Ada
    --  Compare_Drag_Func function.
@@ -952,7 +952,7 @@ package body Gtk.CTree is
       Internal (Get_Object (Ctree),
                 Get_Object (Node),
                 Column,
-                Text & Ascii.NUL,
+                Text & ASCII.Nul,
                 Spacing,
                 Get_Object (Pixmap),
                 Get_Object (Mask));
@@ -1034,7 +1034,7 @@ package body Gtk.CTree is
       Internal (Get_Object (Ctree),
                 Get_Object (Node),
                 Column,
-                Text & Ascii.NUL);
+                Text & ASCII.Nul);
    end Node_Set_Text;
 
    ---------------------------
@@ -1311,7 +1311,7 @@ package body Gtk.CTree is
    begin
       Internal (Get_Object (Ctree),
                 Get_Object (Node),
-                Text & Ascii.NUL,
+                Text & ASCII.Nul,
                 Spacing,
                 Get_Object (Pixmap_Closed),
                 Get_Object (Mask_Closed),

@@ -49,7 +49,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_append_text");
 
    begin
-      Internal (Get_Object (The_Entry), Text & Ascii.NUL);
+      Internal (Get_Object (The_Entry), Text & ASCII.Nul);
    end Append_Text;
 
    --------------
@@ -129,7 +129,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_prepend_text");
 
    begin
-      Internal (Get_Object (The_Entry), Text & Ascii.NUL);
+      Internal (Get_Object (The_Entry), Text & ASCII.Nul);
    end Prepend_Text;
 
    -------------------
@@ -216,7 +216,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_text");
 
    begin
-      Internal (Get_Object (The_Entry), Text & Ascii.NUL);
+      Internal (Get_Object (The_Entry), Text & ASCII.Nul);
    end Set_Text;
 
    --------------------

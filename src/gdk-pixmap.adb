@@ -101,7 +101,7 @@ package body Gdk.Pixmap is
       end if;
       Set_Object (Pixmap, Internal (Get_Object (Window), Tmp'Address,
                                     Transparent_A,
-                                    Filename & Ascii.NUL));
+                                    Filename & ASCII.Nul));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm;
 
@@ -139,7 +139,7 @@ package body Gdk.Pixmap is
                                     Colormap => Get_Object (Colormap),
                                     Mask => Tmp'Address,
                                     Transparent => Transparent_A,
-                                    Filename => Filename & Ascii.NUL));
+                                    Filename => Filename & ASCII.Nul));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm;
 

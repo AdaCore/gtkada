@@ -63,7 +63,7 @@ package Gtk.Editable is
    function Get_Editable (Widget : access Gtk_Editable_Record)
                           return      Boolean;
    procedure Set_Editable (Widget : access Gtk_Editable_Record;
-                           Editable : boolean);
+                           Editable : Boolean);
    function Get_Has_Selection (Widget : access Gtk_Editable_Record)
                                return      Boolean;
    function Get_Selection_End_Pos (Widget : access Gtk_Editable_Record)

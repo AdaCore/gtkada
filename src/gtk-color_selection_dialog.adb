@@ -137,7 +137,7 @@ package body Gtk.Color_Selection_Dialog is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_dialog_new");
    begin
-      Set_Object (Color_Selection_Dialog, Internal (Title & Ascii.NUL));
+      Set_Object (Color_Selection_Dialog, Internal (Title & ASCII.Nul));
       Initialize_User_Data (Color_Selection_Dialog);
    end Initialize;
 
