@@ -69,7 +69,30 @@ package body Create_Clist is
    Style3             : Gtk_Style;
    Clist_Omenu_Group  : Widget_Slist.GSlist;
 
-   procedure Clear_List (List : access Gtk_Clist_Record) is
+   Titles : constant Chars_Ptr_Array (1 .. Clist_Columns) :=
+     --  FIXME : What is this size initialization ???
+     (ICS.New_String ("Auto resize"),
+      ICS.New_String ("Not resizable"),
+      ICS.New_String ("Max width 100"),
+      ICS.New_String ("Min Width 50"),
+      ICS.New_String ("Hide column"),
+      ICS.New_String ("Title 5"),
+      ICS.New_String ("Title 6"),
+      ICS.New_String ("Title 7"),
+      ICS.New_String ("Title 8"),
+      ICS.New_String ("Title 9"),
+      ICS.New_String ("Title 10"),
+      ICS.New_String ("Title 11"));
+   --  Put at the library level to avoid having to allocate/free the
+   --  memory each time "Run" is called...
+
+   Items : constant Chars_Ptr_Array :=
+     (ICS.New_String ("Single"),
+      ICS.New_String ("Browse"),
+      ICS.New_String ("Multiple"),
+      ICS.New_String ("Extended"));
+
+      procedure Clear_List (List : access Gtk_Clist_Record) is
    begin
       Clear (List);
       Clist_Rows := 0;
@@ -230,20 +253,7 @@ package body Create_Clist is
 
 
    procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
-      Items : constant Array_Of_String :=
-        ("Single    ", "Browse    ", "Multiple  ", "Extended  ");
-      Titles : Chars_Ptr_Array (1 .. Clist_Columns) := (ICS.New_String ("Auto resize"),
-                                                  ICS.New_String ("Not resizable"),
-                                                  ICS.New_String ("Max width 100"),
-                                                  ICS.New_String ("Min Width 50"),
-                                                  ICS.New_String ("Hide column"),
-                                                  ICS.New_String ("Title 5"),
-                                                  ICS.New_String ("Title 6"),
-                                                  ICS.New_String ("Title 7"),
-                                                  ICS.New_String ("Title 8"),
-                                                  ICS.New_String ("Title 9"),
-                                                  ICS.New_String ("Title 10"),
-                                                  ICS.New_String ("Title 11"));
+
       Texts     : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Id        : Guint;
       VBox,
@@ -337,6 +347,7 @@ package body Create_Clist is
 
          Clist_Omenu_Group := Widget_Slist.Null_List;
          Build_Option_Menu (Omenu, Clist_Omenu_Group, Items, 0, null);
+         --  FIXME: Add the missing callback (instead of null).
          Pack_Start (Hbox, Omenu, False, True, 0);
 
 
