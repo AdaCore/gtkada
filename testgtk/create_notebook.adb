@@ -32,6 +32,7 @@ with Gdk.Bitmap;          use Gdk.Bitmap;
 with Gdk.Color;           use Gdk.Color;
 with Gdk.Pixmap;          use Gdk.Pixmap;
 with Glib;                use Glib;
+with Gtk.Arguments;       use Gtk.Arguments;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Button;          use Gtk.Button;
 with Gtk.Check_Button;    use Gtk.Check_Button;
@@ -54,8 +55,7 @@ package body Create_Notebook is
    package Note_Cb is new Handlers.Callback (Gtk_Notebook_Record);
    package Button_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Notebook);
-   package Two_Cb is new Handlers.User_Callback
-     (Gtk_Notebook_Record, Gtk_Notebook);
+   package Notebook_Cb is new Handlers.Callback (Gtk_Notebook_Record);
    package Frame_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Frame);
 
@@ -328,29 +328,31 @@ package body Create_Notebook is
 
    procedure Page_Switch
      (Notebook : access Gtk_Notebook_Record'Class;
-      Page     : in Gtk.Gtk_Notebook_Page;
-      Page_Num : in Gtk_Notebook)
+      Params   : Gtk.Arguments.Gtk_Args)
    is
-      pragma Warnings (Off, Page_Num);
-      Old_Page : Gint := Get_Current_Page (Notebook);
-      --  Pixmap   : Gtk_Pixmap;
-   begin
-      null;
-      --  XXX Pixmap := Gtk_Pixmap
-      --    (Get_Child (Gtk_Box (Get_Tab_Label (Page)), 0));
-      --  Set (Pixmap, Book_Open, Book_Open_Mask);
-      --  Pixmap := Gtk_Pixmap
-      --    (Get_Child (Gtk_Box (Get_Menu_Label (Page)), 0));
-      --  Set (Pixmap, Book_Open, Book_Open_Mask);
+      Old_Page : constant Gint := Get_Current_Page (Notebook);
+      Pixmap   : Gtk_Pixmap;
+      Page_Num : constant Gint := Gint (To_Guint (Params, 2));
+      Widget   : Gtk_Widget;
 
-      --  if Old_Page >= 0 then
-      --     Pixmap := Gtk_Pixmap
-      --       (Get_Child (Gtk_Box (Get_Tab_Label (Old_Page)), 0));
-      --     Set (Pixmap, Book_Closed, Book_Closed_Mask);
-      --     Pixmap := Gtk_Pixmap
-      --       (Get_Child (Gtk_Box (Get_Menu_Label (Old_Page)), 0));
-      --     Set (Pixmap, Book_Closed, Book_Closed_Mask);
-      --  end if;
+   begin
+      Widget := Get_Nth_Page (Notebook, Page_Num);
+      Pixmap := Gtk_Pixmap
+        (Get_Child (Gtk_Box (Get_Tab_Label (Notebook, Widget)), 0));
+      Set (Pixmap, Book_Open, Book_Open_Mask);
+      Pixmap := Gtk_Pixmap
+        (Get_Child (Gtk_Box (Get_Menu_Label (Notebook, Widget)), 0));
+      Set (Pixmap, Book_Open, Book_Open_Mask);
+
+      if Old_Page >= 0 then
+         Widget := Get_Nth_Page (Notebook, Old_Page);
+         Pixmap := Gtk_Pixmap
+           (Get_Child (Gtk_Box (Get_Tab_Label (Notebook, Widget)), 0));
+         Set (Pixmap, Book_Closed, Book_Closed_Mask);
+         Pixmap := Gtk_Pixmap
+           (Get_Child (Gtk_Box (Get_Menu_Label (Notebook, Widget)), 0));
+         Set (Pixmap, Book_Closed, Book_Closed_Mask);
+      end if;
    end Page_Switch;
 
    ---------
@@ -376,9 +378,8 @@ package body Create_Notebook is
       Add (Frame, Box1);
 
       Gtk_New (Notebook);
-      Two_Cb.Connect
-        (Notebook, "switch_page",
-         Two_Cb.To_Marshaller (Page_Switch'Access), Notebook);
+      Notebook_Cb.Connect
+        (Notebook, "switch_page", Page_Switch'Access);
       Set_Tab_Pos (Notebook, Pos_Top);
       Pack_Start (Box1, Notebook, False, False, 0);
       Set_Border_Width (Notebook, 10);
