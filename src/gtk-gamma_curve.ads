@@ -77,6 +77,14 @@ package Gtk.Gamma_Curve is
      (Gamma_Curve : in out Object.Gtk_Object; N : in Node_Ptr);
    --  Dgate internal function
 
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
+
 private
 
    type Gtk_Gamma_Curve_Record is new Gtk.Box.Gtk_Box_Record with null record;
