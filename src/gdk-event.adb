@@ -27,10 +27,34 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C;
+with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
 
 package body Gdk.Event is
 
+   package IC  renames Interfaces.C;
+   package ICS renames Interfaces.C.Strings;
+
+   ----------------------------------------------------------------------
+   --  Local Services declarations
+
+   type Local_Short_Array is array (Natural range <>) of aliased IC.short;
+   package Shorts_Ptr is new IC.Pointers (Index => Natural,
+                                          Element => IC.short,
+                                          Element_Array => Local_Short_Array,
+                                          Default_Terminator => 0);
+
+   type Local_Long_Array is array (Natural range <>) of aliased IC.long;
+   package Longs_Ptr is new IC.Pointers (Index => Natural,
+                                         Element => IC.long,
+                                         Element_Array => Local_Long_Array,
+                                         Default_Terminator => 0);
+
+   function Get_Length  (Event : in Gdk_Event_Key) return Gint;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event
 
    ------------
    --  Copy  --
@@ -43,6 +67,19 @@ package body Gdk.Event is
    begin
       Set_Object (Destination, Internal (Get_Object (Source)));
    end Copy;
+
+
+   ----------------------
+   --  Events_Pending  --
+   ----------------------
+
+   function Events_Pending return Boolean is
+      function Internal return Gboolean;
+      pragma Import (C, Internal, "gdk_events_pending");
+   begin
+      return To_Boolean (Internal);
+   end Events_Pending;
+
 
    ------------
    --  Free  --
@@ -68,33 +105,6 @@ package body Gdk.Event is
       Set_Object (Event, Internal);
    end Get;
 
-
-   ----------------
-   --  Get_Area  --
-   ----------------
-
-   function Get_Area (Event : in     Gdk_Event_Expose)
-                      return Rectangle.Gdk_Rectangle
-   is
-      function Internal (Event : in System.Address)
-                         return Gdk.Rectangle.Gdk_Rectangle;
-      pragma Import (C, Internal, "ada_gdk_event_expose_get_area");
-   begin
-      return Internal (Get_Object (Event));
-   end Get_Area;
-
-   -----------------
-   --  Get_Count  --
-   -----------------
-
-   function Get_Count (Event : in Gdk_Event_Expose) return Gint is
-      function Internal (Event : in System.Address) return Gint;
-      pragma Import (C, Internal, "ada_gdk_event_expose_get_count");
-   begin
-      return Internal (Get_Object (Event));
-   end Get_Count;
-
-
    ----------------------
    --  Get_Event_Type  --
    ----------------------
@@ -107,31 +117,6 @@ package body Gdk.Event is
    begin
       return Internal (Get_Object (Event));
    end Get_Event_Type;
-
-
-   ---------------------------
-   --  Get_Graphics_Expose  --
-   ---------------------------
-
-   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose;
-                                  Window : in Gdk.Window.Gdk_Window'Class)
-   is
-      function Internal (Window : in System.Address) return System.Address;
-      pragma Import (C, Internal, "gdk_event_get_graphics_expose");
-   begin
-      Set_Object (Event, Internal (Get_Object (Window)));
-   end Get_Graphics_Expose;
-
-   ------------------
-   --  Get_Height  --
-   ------------------
-
-   function Get_Height (Event : in Gdk_Event_Configure) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
-      pragma Import (C, Internal, "ada_gdk_event_configure_get_height");
-   begin
-      return Internal (Get_Object (Event));
-   end Get_Height;
 
 
    ----------------------
@@ -158,16 +143,16 @@ package body Gdk.Event is
    end Get_Show_Events;
 
 
-   -----------------
-   --  Get_Width  --
-   -----------------
+   --------------
+   -- Get_Time --
+   --------------
 
-   function Get_Width (Event : in Gdk_Event_Configure) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
-      pragma Import (C, Internal, "ada_gdk_event_configure_get_width");
+   function Get_Time (Event  : in Gdk.Event.Gdk_Event) return Guint32 is
+      function Internal (Event  : in System.Address) return Guint32;
+      pragma Import (C, Internal, "gdk_event_get_time");
    begin
       return Internal (Get_Object (Event));
-   end Get_Width;
+   end Get_Time;
 
 
    ------------------
@@ -183,53 +168,6 @@ package body Gdk.Event is
       return Win;
    end Get_Window;
 
-   -------------
-   --  Get_X  --
-   -------------
-
-   function Get_X (Event : in Gdk_Event_Configure) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
-      pragma Import (C, Internal, "ada_gdk_event_configure_get_x");
-   begin
-      return Internal (Get_Object (Event));
-   end Get_X;
-
-
-   -------------
-   --  Get_Y  --
-   -------------
-
-   function Get_Y (Event : in Gdk_Event_Configure) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
-      pragma Import (C, Internal, "ada_gdk_event_configure_get_y");
-   begin
-      return Internal (Get_Object (Event));
-   end Get_Y;
-
-   -----------------
-   --  Get_State  --
-   -----------------
-
-   function Get_State (Event : in Gdk_Event_Button)
-                       return Gdk.Types.Gdk_Modifier_Type is
-      function Internal (Event : in System.Address)
-                         return Gdk.Types.Gdk_Modifier_Type;
-      pragma Import (C, Internal, "ada_gdk_event_button_get_state");
-   begin
-      return Internal (Get_Object (Event));
-   end Get_State;
-
-   ------------------
-   --  Get_Button  --
-   ------------------
-
-   function Get_Button (Event : in Gdk_Event_Button)
-                        return Guint32 is
-      function Internal (Event : in System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_gdk_event_button_get_button");
-   begin
-      return Internal (Get_Object (Event));
-   end Get_Button;
 
    -----------
    --  Put  --
@@ -241,6 +179,20 @@ package body Gdk.Event is
    begin
       Internal (Get_Object (Event));
    end Put;
+
+
+   -------------------------
+   -- Send_Client_Message --
+   -------------------------
+
+   function Send_Client_Message (Event  : in Gdk_Event;
+                                 Xid    : in Guint32) return Boolean is
+      function Internal (Event  : in System.Address;
+                         Xid    : in Guint32) return Gboolean;
+      pragma Import (C, Internal, "gdk_event_send_client_message");
+   begin
+      return To_Boolean (Internal (Get_Object (Event), Xid));
+   end Send_Client_Message;
 
 
    ----------------------------------
@@ -255,32 +207,6 @@ package body Gdk.Event is
    end Send_Client_Message_To_All;
 
 
-   ----------------
-   --  Set_Area  --
-   ----------------
-
-   procedure Set_Area (Event : in out Gdk_Event_Expose;
-                       Area  : in     Rectangle.Gdk_Rectangle) is
-      procedure Internal (Event, Area : in System.Address);
-      pragma Import (C, Internal, "ada_gdk_event_expose_set_area");
-   begin
-      Internal (Get_Object (Event), Area'Address);
-   end Set_Area;
-
-
-   -----------------
-   --  Set_Count  --
-   -----------------
-
-   procedure Set_Count (Event : in out Gdk_Event_Expose;
-                        Count : in     Gint) is
-      procedure Internal (Event : in System.Address; Count : in Gint);
-      pragma Import (C, Internal, "ada_gdk_event_expose_set_count");
-   begin
-      Internal (Get_Object (Event), Count);
-   end Set_Count;
-
-
    ----------------------
    --  Set_Event_Type  --
    ----------------------
@@ -293,19 +219,6 @@ package body Gdk.Event is
    begin
       Internal (Get_Object (Event), Event_Type);
    end Set_Event_Type;
-
-
-   ------------------
-   --  Set_Height  --
-   ------------------
-
-   procedure Set_Height (Event : in out Gdk_Event_Configure;
-                         Height : in Gint16) is
-      procedure Internal (Event : in System.Address; Height : in Gint16);
-      pragma Import (C, Internal, "ada_gdk_event_configure_set_height");
-   begin
-      Internal (Get_Object (Event), Height);
-   end Set_Height;
 
 
    ----------------------
@@ -335,19 +248,6 @@ package body Gdk.Event is
    end Set_Show_Events;
 
 
-   -----------------
-   --  Set_Width  --
-   -----------------
-
-   procedure Set_Width (Event : in out Gdk_Event_Configure;
-                        Width : in Gint16) is
-      procedure Internal (Event : in System.Address; Width : in Gint16);
-      pragma Import (C, Internal, "ada_gdk_event_configure_set_width");
-   begin
-      Internal (Get_Object (Event), Width);
-   end Set_Width;
-
-
    ------------------
    --  Set_Window  --
    ------------------
@@ -359,6 +259,324 @@ package body Gdk.Event is
    begin
       Internal (Get_Object (Event), Get_Object (Window));
    end Set_Window;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Any
+
+   --  No service defined for this type for the moment.
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Button
+
+
+   ------------------
+   --  Get_Button  --
+   ------------------
+
+   function Get_Button (Event : in Gdk_Event_Button) return Guint is
+      function Internal (Event : in System.Address) return Guint;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_button");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Button;
+
+
+   ---------------------
+   --  Get_Device_Id  --
+   ---------------------
+
+   function Get_Device_Id (Event : in Gdk_Event_Button)
+                           return Gdk.Types.Gdk_Device_Id is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Device_Id;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_device_id");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Device_Id;
+
+
+   --------------------
+   --  Get_Pressure  --
+   --------------------
+
+   function Get_Pressure (Event : in Gdk_Event_Button) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_pressure");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Pressure;
+
+
+   ------------------
+   --  Get_Source  --
+   ------------------
+
+   function Get_Source (Event : in Gdk_Event_Button)
+                        return Gdk.Types.Gdk_Input_Source is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Input_Source;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_source");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Source;
+
+
+   -----------------
+   --  Get_State  --
+   -----------------
+
+   function Get_State (Event : in Gdk_Event_Button)
+                       return Gdk.Types.Gdk_Modifier_Type is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Modifier_Type;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_state");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_State;
+
+
+   ----------------
+   --  Get_Time  --
+   ----------------
+
+   function Get_Time (Event : in Gdk_Event_Button) return Guint32 is
+      function Internal (Event : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_time");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Time;
+
+
+   -------------
+   --  Get_X  --
+   -------------
+
+   function Get_X (Event : in Gdk_Event_Button) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_x");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_X;
+
+
+   ------------------
+   --  Get_X_Root  --
+   ------------------
+
+   function Get_X_Root (Event : in Gdk_Event_Button) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_x_root");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_X_Root;
+
+
+   ------------------
+   --  Get_X_Tilt  --
+   ------------------
+
+   function Get_Xtilt (Event : in Gdk_Event_Button) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_xtilt");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Xtilt;
+
+
+   -------------
+   --  Get_Y  --
+   -------------
+
+   function Get_Y (Event : in Gdk_Event_Button) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_y");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Y;
+
+
+   ------------------
+   --  Get_Y_Root  --
+   ------------------
+
+   function Get_Y_Root (Event : in Gdk_Event_Button) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_y_root");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Y_Root;
+
+
+   ------------------
+   --  Get_Y_Tilt  --
+   ------------------
+
+   function Get_Ytilt (Event : in Gdk_Event_Button) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_ytilt");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Ytilt;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Client
+
+
+   ----------------
+   --  Get_Data  --
+   ----------------
+
+   function Get_Data (Event : in Gdk_Event_Client)
+                      return Gdk_Event_Client_Data is
+
+      function Format_Of (Event : in System.Address)
+                          return Gdk_Event_Client_Data_Format;
+      pragma Import (C, Format_Of, "ada_gdk_event_client_get_data_format");
+
+      function B_Of (Event : in System.Address) return ICS.chars_ptr;
+      pragma Import (C, B_Of, "ada_gdk_event_client_get_b");
+
+      function S_Of (Event : in System.Address) return Shorts_Ptr.Pointer;
+      pragma Import (C, S_Of, "ada_gdk_event_client_get_s");
+
+      function L_Of (Event : in System.Address) return Longs_Ptr.Pointer;
+      pragma Import (C, L_Of, "ada_gdk_event_client_get_l");
+
+      Result : Gdk_Event_Client_Data
+        (Format => Format_Of (Get_Object (Event)));
+
+   begin
+
+      case Result.Format is
+
+         when Char_Array =>
+            Result.B :=
+              IC.To_Ada (ICS.Value (Item => B_Of (Get_Object (Event)),
+                                    Length => Number_Of_Characters),
+                         Trim_Nul => False);
+
+         when Short_Array =>
+            declare
+               Tmp : constant Local_Short_Array :=
+                 Shorts_Ptr.Value (Ref => S_Of (Get_Object (Event)),
+                                   Length => Number_Of_Shorts);
+            begin
+               for Index in 1 .. Number_Of_Shorts loop
+                  Result.S (Index) := Gshort (Tmp (Index));
+               end loop;
+            end;
+
+         when Long_Array =>
+            declare
+               Tmp : constant Local_Long_Array :=
+                 Longs_Ptr.Value (Ref => L_Of (Get_Object (Event)),
+                                  Length => Number_Of_Longs);
+            begin
+               for Index in 1 .. Number_Of_Shorts loop
+                  Result.L (Index) := Glong (Tmp (Index));
+               end loop;
+            end;
+
+      end case;
+
+      return Result;
+
+   end Get_Data;
+
+
+   ------------------------
+   --  Get_Message_Type  --
+   ------------------------
+
+   function Get_Message_Type (Event : in Gdk_Event_Client)
+                              return Gdk.Types.Gdk_Atom is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Atom;
+      pragma Import (C, Internal, "ada_gdk_event_client_get_message_type");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Message_Type;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Configure
+
+
+   ------------------
+   --  Get_Height  --
+   ------------------
+
+   function Get_Height (Event : in Gdk_Event_Configure) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_configure_get_height");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Height;
+
+
+   -----------------
+   --  Get_Width  --
+   -----------------
+
+   function Get_Width (Event : in Gdk_Event_Configure) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_configure_get_width");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Width;
+
+
+   -------------
+   --  Get_X  --
+   -------------
+
+   function Get_X (Event : in Gdk_Event_Configure) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_configure_get_x");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_X;
+
+
+   -------------
+   --  Get_Y  --
+   -------------
+
+   function Get_Y (Event : in Gdk_Event_Configure) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_configure_get_y");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Y;
+
+
+   ------------------
+   --  Set_Height  --
+   ------------------
+
+   procedure Set_Height (Event : in out Gdk_Event_Configure;
+                         Height : in Gint16) is
+      procedure Internal (Event : in System.Address; Height : in Gint16);
+      pragma Import (C, Internal, "ada_gdk_event_configure_set_height");
+   begin
+      Internal (Get_Object (Event), Height);
+   end Set_Height;
+
+
+   -----------------
+   --  Set_Width  --
+   -----------------
+
+   procedure Set_Width (Event : in out Gdk_Event_Configure;
+                        Width : in Gint16) is
+      procedure Internal (Event : in System.Address; Width : in Gint16);
+      pragma Import (C, Internal, "ada_gdk_event_configure_set_width");
+   begin
+      Internal (Get_Object (Event), Width);
+   end Set_Width;
 
 
    -------------
@@ -373,7 +591,6 @@ package body Gdk.Event is
    end Set_X;
 
 
-
    -------------
    --  Set_Y  --
    -------------
@@ -385,26 +602,99 @@ package body Gdk.Event is
       Internal (Get_Object (Event), Y);
    end Set_Y;
 
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Crossing
+
+
+   ------------------
+   --  Get_Detail  --
+   ------------------
+
+   function Get_Detail (Event : in Gdk_Event_Crossing)
+                        return Gdk.Types.Gdk_Notify_Type is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Notify_Type;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_detail");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Detail;
+
+
+   -----------------
+   --  Get_Focus  --
+   -----------------
+
+   function Get_Focus (Event : in Gdk_Event_Crossing) return Boolean is
+      function Internal (Event : in System.Address) return Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_focus");
+   begin
+      return To_Boolean (Internal (Get_Object (Event)));
+   end Get_Focus;
+
+
+   ----------------
+   --  Get_Mode  --
+   ----------------
+
+   function Get_Mode (Event : in Gdk_Event_Crossing)
+                      return Gdk.Types.Gdk_Crossing_Mode is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Crossing_Mode;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_mode");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Mode;
+
+
    -----------------
    --  Get_State  --
    -----------------
 
-   function Get_State (Event : in Gdk_Event_Motion)
+   function Get_State (Event : in Gdk_Event_Crossing)
                        return Gdk.Types.Gdk_Modifier_Type is
       function Internal (Event : in System.Address)
                          return Gdk.Types.Gdk_Modifier_Type;
-      pragma Import (C, Internal, "ada_gdk_event_motion_get_state");
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_state");
    begin
       return Internal (Get_Object (Event));
    end Get_State;
 
+
+   ---------------------
+   --  Get_Subwindow  --
+   ---------------------
+
+   function Get_Subwindow (Event : in Gdk_Event_Crossing)
+                           return Gdk.Window.Gdk_Window is
+      function Internal (Event : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_subwindow");
+      Result : Gdk.Window.Gdk_Window;
+   begin
+      Set_Object (Result, Internal (Get_Object (Event)));
+      return Result;
+   end Get_Subwindow;
+
+
+   ----------------
+   --  Get_Time  --
+   ----------------
+
+   function Get_Time (Event : in Gdk_Event_Crossing) return Guint32 is
+      function Internal (Event : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_time");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Time;
+
+
    -------------
    --  Get_X  --
    -------------
 
-   function Get_X (Event : in Gdk_Event_Button) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
-      pragma Import (C, Internal, "ada_gdk_event_button_get_x");
+   function Get_X (Event : in Gdk_Event_Crossing) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_x");
    begin
       return Internal (Get_Object (Event));
    end Get_X;
@@ -414,35 +704,141 @@ package body Gdk.Event is
    --  Get_Y  --
    -------------
 
-   function Get_Y (Event : in Gdk_Event_Button) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
-      pragma Import (C, Internal, "ada_gdk_event_button_get_y");
+   function Get_Y (Event : in Gdk_Event_Crossing) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_y");
    begin
       return Internal (Get_Object (Event));
    end Get_Y;
 
-   -------------
-   --  Get_X  --
-   -------------
 
-   function Get_X (Event : in Gdk_Event_Motion) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
-      pragma Import (C, Internal, "ada_gdk_event_motion_get_x");
+   ------------------
+   --  Get_X_Root  --
+   ------------------
+
+   function Get_X_Root (Event : in Gdk_Event_Crossing) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_x_root");
    begin
       return Internal (Get_Object (Event));
-   end Get_X;
+   end Get_X_Root;
 
 
-   -------------
-   --  Get_Y  --
-   -------------
+   ------------------
+   --  Get_Y_Root  --
+   ------------------
 
-   function Get_Y (Event : in Gdk_Event_Motion) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
-      pragma Import (C, Internal, "ada_gdk_event_motion_get_y");
+   function Get_Y_Root (Event : in Gdk_Event_Crossing) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_crossing_get_y_root");
    begin
       return Internal (Get_Object (Event));
-   end Get_Y;
+   end Get_Y_Root;
+
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Expose
+
+
+   ----------------
+   --  Get_Area  --
+   ----------------
+
+   function Get_Area (Event : in     Gdk_Event_Expose)
+                      return Rectangle.Gdk_Rectangle
+   is
+      function Internal (Event : in System.Address)
+                         return Gdk.Rectangle.Gdk_Rectangle;
+      pragma Import (C, Internal, "ada_gdk_event_expose_get_area");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Area;
+
+
+   -----------------
+   --  Get_Count  --
+   -----------------
+
+   function Get_Count (Event : in Gdk_Event_Expose) return Gint is
+      function Internal (Event : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_expose_get_count");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Count;
+
+
+   ---------------------------
+   --  Get_Graphics_Expose  --
+   ---------------------------
+
+   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose;
+                                  Window : in Gdk.Window.Gdk_Window'Class)
+   is
+      function Internal (Window : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_graphics_expose");
+   begin
+      Set_Object (Event, Internal (Get_Object (Window)));
+   end Get_Graphics_Expose;
+
+
+   ----------------
+   --  Set_Area  --
+   ----------------
+
+   procedure Set_Area (Event : in out Gdk_Event_Expose;
+                       Area  : in     Rectangle.Gdk_Rectangle) is
+      procedure Internal (Event, Area : in System.Address);
+      pragma Import (C, Internal, "ada_gdk_event_expose_set_area");
+   begin
+      Internal (Get_Object (Event), Area'Address);
+   end Set_Area;
+
+
+   -----------------
+   --  Set_Count  --
+   -----------------
+
+   procedure Set_Count (Event : in out Gdk_Event_Expose;
+                        Count : in     Gint) is
+      procedure Internal (Event : in System.Address; Count : in Gint);
+      pragma Import (C, Internal, "ada_gdk_event_expose_set_count");
+   begin
+      Internal (Get_Object (Event), Count);
+   end Set_Count;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Focus
+
+
+   --------------
+   --  Get_In  --
+   --------------
+
+   function Get_In (Event : in Gdk_Event_Focus) return Boolean is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_focus_get_in");
+   begin
+      return To_Boolean (Internal (Get_Object (Event)));
+   end Get_In;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Key
+
+
+   ------------------
+   --  Get_Length  --
+   ------------------
+
+   function Get_Length (Event : in Gdk_Event_Key) return Gint is
+      function Internal (Event : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_key_get_length");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Length;
+
 
    -----------------
    --  Get_State  --
@@ -457,6 +853,34 @@ package body Gdk.Event is
       return Internal (Get_Object (Event));
    end Get_State;
 
+
+   ------------------
+   --  Get_String  --
+   ------------------
+
+   function Get_String (Event : in Gdk_Event_Key) return String is
+      function Internal (Event : in System.Address)
+                         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "ada_gdk_event_key_get_string");
+   begin
+      return IC.To_Ada (ICS.Value (Item => Internal (Get_Object (Event)),
+                                   Length => IC.size_t (Get_Length (Event))),
+                        Trim_Nul => False);
+   end Get_String;
+
+
+   ----------------
+   --  Get_Time  --
+   ----------------
+
+   function Get_Time (Event : in Gdk_Event_Key) return Guint32 is
+      function Internal (Event : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_gdk_event_key_get_time");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Time;
+
+
    -------------------
    --  Get_Key_Val  --
    -------------------
@@ -470,27 +894,343 @@ package body Gdk.Event is
       return Internal (Get_Object (Event));
    end Get_Key_Val;
 
-   ------------------
-   --  Get_Length  --
-   ------------------
 
-   function Get_Length (Event : in Gdk_Event_Key) return Gint is
-      function Internal (Event : in System.Address) return Gint;
-      pragma Import (C, Internal, "ada_gdk_event_key_get_length");
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Motion
+
+
+   ---------------------
+   --  Get_Device_Id  --
+   ---------------------
+
+   function Get_Device_Id (Event : in Gdk_Event_Motion)
+                           return Gdk.Types.Gdk_Device_Id is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Device_Id;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_deviceid");
    begin
       return Internal (Get_Object (Event));
-   end Get_Length;
+   end Get_Device_Id;
 
-   -----------------
-   --  Get_String  --
-   -----------------
 
-   function Get_String (Event : in Gdk_Event_Key) return String is
-      function Internal (Event : in System.Address)
-                         return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_gdk_event_key_get_string");
+   -------------------
+   --  Get_Is_Hint  --
+   -------------------
+
+   function Get_Is_Hint (Event : in Gdk_Event_Motion) return Boolean is
+      function Internal (Event : in System.Address) return Guint16;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_is_hint");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Event)));
-   end Get_String;
+      return To_Boolean (Internal (Get_Object (Event)));
+   end Get_Is_Hint;
+
+
+   --------------------
+   --  Get_Pressure  --
+   --------------------
+
+   function Get_Pressure (Event : in Gdk_Event_Motion) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_pressure");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Pressure;
+
+
+   ------------------
+   --  Get_Source  --
+   ------------------
+
+   function Get_Source (Event : in Gdk_Event_Motion)
+                        return Gdk.Types.Gdk_Input_Source is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Input_Source;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_source");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Source;
+
+
+   -----------------
+   --  Get_State  --
+   -----------------
+
+   function Get_State (Event : in Gdk_Event_Motion)
+                       return Gdk.Types.Gdk_Modifier_Type is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Modifier_Type;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_state");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_State;
+
+
+   ----------------
+   --  Get_Time  --
+   ----------------
+
+   function Get_Time (Event : in Gdk_Event_Motion) return Guint32 is
+      function Internal (Event : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_time");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Time;
+
+
+   -------------
+   --  Get_X  --
+   -------------
+
+   function Get_X (Event : in Gdk_Event_Motion) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_x");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_X;
+
+
+   ------------------
+   --  Get_X_Root  --
+   ------------------
+
+   function Get_X_Root (Event : in Gdk_Event_Motion) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_x_root");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_X_Root;
+
+
+   -----------------
+   --  Get_Xtilt  --
+   -----------------
+
+   function Get_Xtilt (Event : in Gdk_Event_Motion) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_xtilt");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Xtilt;
+
+
+   -------------
+   --  Get_Y  --
+   -------------
+
+   function Get_Y (Event : in Gdk_Event_Motion) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_y");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Y;
+
+
+   ------------------
+   --  Get_Y_Root  --
+   ------------------
+
+   function Get_Y_Root (Event : in Gdk_Event_Motion) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_y_root");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Y_Root;
+
+
+   -----------------
+   --  Get_Ytilt  --
+   -----------------
+
+   function Get_Ytilt (Event : in Gdk_Event_Motion) return Gdouble is
+      function Internal (Event : in System.Address) return Gdouble;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_ytilt");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Ytilt;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_No_Expose
+
+   --  No service defined for this type for the moment.
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Property
+
+
+   ----------------
+   --  Get_Atom  --
+   ----------------
+
+   function Get_Atom (Event : in Gdk_Event_Property) return Gdk.Types.Gdk_Atom
+   is
+      function Internal (Event : in System.Address) return Gdk.Types.Gdk_Atom;
+      pragma Import (C, Internal, "ada_gdk_event_property_get_atom");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Atom;
+
+
+   -----------------
+   --  Get_State  --
+   -----------------
+
+   function Get_State (Event : in Gdk_Event_Property)
+                       return Gdk.Types.Gdk_Modifier_Type is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Modifier_Type;
+      pragma Import (C, Internal, "ada_gdk_event_property_get_state");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_State;
+
+
+   ----------------
+   --  Get_Time  --
+   ----------------
+
+   function Get_Time (Event : in Gdk_Event_Property) return Guint32 is
+      function Internal (Event : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_gdk_event_property_get_time");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Time;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Proximity
+
+
+   ---------------------
+   --  Get_Device_Id  --
+   ---------------------
+
+   function Get_Device_Id (Event : in Gdk_Event_Proximity)
+                           return Gdk.Types.Gdk_Device_Id is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Device_Id;
+      pragma Import (C, Internal, "ada_gdk_event_proximity_get_deviceid");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Device_Id;
+
+
+   ------------------
+   --  Get_Source  --
+   ------------------
+
+   function Get_Source (Event : in Gdk_Event_Proximity)
+                        return Gdk.Types.Gdk_Input_Source is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Input_Source;
+      pragma Import (C, Internal, "ada_gdk_event_proximity_get_source");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Source;
+
+
+   ----------------
+   --  Get_Time  --
+   ----------------
+
+   function Get_Time (Event : in Gdk_Event_Proximity) return Guint32 is
+      function Internal (Event : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_gdk_event_proximity_get_time");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Time;
+
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Selection
+
+
+   --------------------
+   --  Get_Property  --
+   --------------------
+
+   function Get_Property (Event : in Gdk_Event_Selection)
+                           return Gdk.Types.Gdk_Atom is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Atom;
+      pragma Import (C, Internal, "ada_gdk_event_selection_get_property");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Property;
+
+
+   ---------------------
+   --  Get_Requestor  --
+   ---------------------
+
+   function Get_Requestor (Event : in Gdk_Event_Selection) return Guint32 is
+      function Internal (Event : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_gdk_event_selection_get_requestor");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Requestor;
+
+
+   ---------------------
+   --  Get_Selection  --
+   ---------------------
+
+   function Get_Selection (Event : in Gdk_Event_Selection)
+                           return Gdk.Types.Gdk_Atom is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Atom;
+      pragma Import (C, Internal, "ada_gdk_event_selection_get_selection");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Selection;
+
+
+   ------------------
+   --  Get_Target  --
+   ------------------
+
+   function Get_Target (Event : in Gdk_Event_Selection)
+                           return Gdk.Types.Gdk_Atom is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Atom;
+      pragma Import (C, Internal, "ada_gdk_event_selection_get_target");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Target;
+
+
+   ----------------
+   --  Get_Time  --
+   ----------------
+
+   function Get_Time (Event : in Gdk_Event_Selection) return Guint32 is
+      function Internal (Event : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_gdk_event_selection_get_time");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Time;
+
+
+   ----------------------------------------------------------------------
+   --  Gdk_Event_Visibility
+
+
+   ----------------------------
+   --  Get_Visibility_State  --
+   ----------------------------
+
+   function Get_Visibility_State (Event : in Gdk_Event_Visibility)
+     return Gdk.Types.Gdk_Visibility_State
+   is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Visibility_State;
+      pragma Import (C, Internal,
+                     "ada_gdk_event_visibility_get_visibility_state");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Visibility_State;
+
 
 end Gdk.Event;

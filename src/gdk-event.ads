@@ -44,7 +44,7 @@ package Gdk.Event is
    --  Should probably be abstract but it would oblige us to
    --  define some of the following services as abstract.
 
-   function Events_Pending return Gint;
+   function Events_Pending return Boolean;
 
    procedure Get (Event : out Gdk_Event);
 
@@ -54,6 +54,8 @@ package Gdk.Event is
                    Destination : out Gdk_Event);
 
    procedure Free (Event : in out Gdk_Event);
+
+   function Get_Time (Event  : in Gdk.Event.Gdk_Event) return Guint32;
 
    procedure Set_Show_Events (Show_Events : in Boolean := True);
 
@@ -80,28 +82,86 @@ package Gdk.Event is
 
    procedure Send_Client_Message_To_All (Event : in Gdk_Event);
 
-
-   ---------------------
-   --  Gdk_Event_Key  --
-   ---------------------
-
-   type Gdk_Event_Key is new Gdk_Event with private;
-
-   function Get_State (Event : in Gdk_Event_Key)
-                       return Gdk.Types.Gdk_Modifier_Type;
-
-   function Get_Key_Val (Event : in Gdk_Event_Key)
-                         return Gdk.Types.Gdk_Key_Type;
-
-   function Get_Length  (Event : in Gdk_Event_Key) return Gint;
-
-   function Get_String  (Event : in Gdk_Event_Key) return String;
+   function Send_Client_Message (Event : in Gdk_Event;
+                                 Xid   : in Guint32)
+                                 return Boolean;
 
    ---------------------
    --  Gdk_Event_Any  --
    ---------------------
 
    type Gdk_Event_Any is new Gdk_Event with private;
+
+
+   ------------------------
+   --  Gdk_Event_Button  --
+   ------------------------
+
+   type Gdk_Event_Button is new Gdk_Event with private;
+
+   function Get_Time (Event : in Gdk_Event_Button) return Guint32;
+
+   function Get_X (Event : in Gdk_Event_Button) return Gdouble;
+
+   function Get_Y (Event : in Gdk_Event_Button) return Gdouble;
+
+   function Get_Pressure (Event : in Gdk_Event_Button) return Gdouble;
+
+   function Get_Xtilt (Event : in Gdk_Event_Button) return Gdouble;
+
+   function Get_Ytilt (Event : in Gdk_Event_Button) return Gdouble;
+
+   function Get_State (Event : in Gdk_Event_Button)
+                       return Gdk.Types.Gdk_Modifier_Type;
+
+   function Get_Button (Event : in Gdk_Event_Button) return Guint;
+
+   function Get_Source (Event : in Gdk_Event_Button)
+                        return Gdk.Types.Gdk_Input_Source;
+
+   function Get_Device_Id (Event : in Gdk_Event_Button)
+                           return Gdk.Types.Gdk_Device_Id;
+
+   function Get_X_Root (Event : in Gdk_Event_Button) return Gdouble;
+
+   function Get_Y_Root (Event : in Gdk_Event_Button) return Gdouble;
+
+
+   ------------------------
+   --  Gdk_Event_Client  --
+   ------------------------
+
+   type Gdk_Event_Client_Data_Format is (Char_Array,
+                                         Short_Array,
+                                         Long_Array);
+   for Gdk_Event_Client_Data_Format use (Char_Array  => 8,
+                                         Short_Array => 16,
+                                         Long_Array  => 32);
+   --  Values extracted from the XClientMessageEvent man page.
+
+   Number_Of_Characters : constant := 20;
+   Number_Of_Shorts     : constant := 10;
+   Number_Of_Longs      : constant := 5;
+
+   type Gdk_Event_Client_Data (Format : Gdk_Event_Client_Data_Format) is
+      record
+         case Format is
+            when Char_Array =>
+               B : String (1 .. Number_Of_Characters);
+            when Short_Array =>
+               S : Gshort_Array (1 .. Number_Of_Shorts);
+            when Long_Array =>
+               L : Glong_Array (1 .. Number_Of_Longs);
+         end case;
+      end record;
+
+   type Gdk_Event_Client is new Gdk_Event with private;
+
+   function Get_Message_Type (Event : in Gdk_Event_Client)
+                              return Gdk.Types.Gdk_Atom;
+
+   function Get_Data (Event : in Gdk_Event_Client)
+                      return Gdk_Event_Client_Data;
 
    ---------------------------
    --  Gdk_Event_Configure  --
@@ -129,6 +189,38 @@ package Gdk.Event is
    procedure Set_Height (Event  : in out Gdk_Event_Configure;
                          Height : in     Gint16);
 
+
+   --------------------------
+   --  Gdk_Event_Crossing  --
+   --------------------------
+
+   type Gdk_Event_Crossing is new Gdk_Event with private;
+
+   function Get_Subwindow (Event : in Gdk_Event_Crossing)
+                           return Gdk.Window.Gdk_Window;
+
+   function Get_Time (Event : in Gdk_Event_Crossing) return Guint32;
+
+   function Get_X (Event : in Gdk_Event_Crossing) return Gdouble;
+
+   function Get_Y (Event : in Gdk_Event_Crossing) return Gdouble;
+
+   function Get_X_Root (Event : in Gdk_Event_Crossing) return Gdouble;
+
+   function Get_Y_Root (Event : in Gdk_Event_Crossing) return Gdouble;
+
+   function Get_Mode (Event : in Gdk_Event_Crossing)
+                      return Gdk.Types.Gdk_Crossing_Mode;
+
+   function Get_Detail (Event : in Gdk_Event_Crossing)
+                        return Gdk.Types.Gdk_Notify_Type;
+
+   function Get_Focus (Event : in Gdk_Event_Crossing) return Boolean;
+
+   function Get_State (Event : in Gdk_Event_Crossing)
+                       return Gdk.Types.Gdk_Modifier_Type;
+
+
    ------------------------
    --  Gdk_Event_Expose  --
    ------------------------
@@ -151,20 +243,30 @@ package Gdk.Event is
                         Count : in     Gint);
 
 
-   ------------------------
-   --  Gdk_Event_Button  --
-   ------------------------
+   -----------------------
+   --  Gdk_Event_Focus  --
+   -----------------------
 
-   type Gdk_Event_Button is new Gdk_Event with private;
+   type Gdk_Event_Focus is new Gdk_Event with private;
 
-   function Get_X (Event : in Gdk_Event_Button) return Gint16;
+   function Get_In (Event : in Gdk_Event_Focus) return Boolean;
 
-   function Get_Y (Event : in Gdk_Event_Button) return Gint16;
 
-   function Get_State (Event : in Gdk_Event_Button)
+   ---------------------
+   --  Gdk_Event_Key  --
+   ---------------------
+
+   type Gdk_Event_Key is new Gdk_Event with private;
+
+   function Get_Time (Event : in Gdk_Event_Key) return Guint32;
+
+   function Get_State (Event : in Gdk_Event_Key)
                        return Gdk.Types.Gdk_Modifier_Type;
 
-   function Get_Button (Event : in Gdk_Event_Button) return Guint32;
+   function Get_Key_Val (Event : in Gdk_Event_Key)
+                         return Gdk.Types.Gdk_Key_Type;
+
+   function Get_String  (Event : in Gdk_Event_Key) return String;
 
 
    ------------------------
@@ -173,23 +275,116 @@ package Gdk.Event is
 
    type Gdk_Event_Motion is new Gdk_Event with private;
 
-   function Get_X (Event : in Gdk_Event_Motion) return Gint16;
+   function Get_Time (Event : in Gdk_Event_Motion) return Guint32;
 
-   function Get_Y (Event : in Gdk_Event_Motion) return Gint16;
+   function Get_X (Event : in Gdk_Event_Motion) return Gdouble;
+
+   function Get_Y (Event : in Gdk_Event_Motion) return Gdouble;
+
+   function Get_Pressure (Event : in Gdk_Event_Motion) return Gdouble;
+
+   function Get_Xtilt (Event : in Gdk_Event_Motion) return Gdouble;
+
+   function Get_Ytilt (Event : in Gdk_Event_Motion) return Gdouble;
 
    function Get_State (Event : in Gdk_Event_Motion)
                        return Gdk.Types.Gdk_Modifier_Type;
+
+   function Get_Is_Hint (Event : in Gdk_Event_Motion) return Boolean;
+
+   function Get_Source (Event : in Gdk_Event_Motion)
+                        return Gdk.Types.Gdk_Input_Source;
+
+   function Get_Device_Id (Event : in Gdk_Event_Motion)
+                           return Gdk.Types.Gdk_Device_Id;
+
+   function Get_X_Root (Event : in Gdk_Event_Motion) return Gdouble;
+
+   function Get_Y_Root (Event : in Gdk_Event_Motion) return Gdouble;
+
+
+   ---------------------------
+   --  Gdk_Event_No_Expose  --
+   ---------------------------
+
+   type Gdk_Event_No_Expose is new Gdk_Event with private;
+
+
+   --------------------------
+   --  Gdk_Event_Property  --
+   --------------------------
+
+   type Gdk_Event_Property is new Gdk_Event with private;
+
+   function Get_Atom (Event : in Gdk_Event_Property) return Gdk.Types.Gdk_Atom;
+
+   function Get_Time (Event : in Gdk_Event_Property) return Guint32;
+
+   function Get_State (Event : in Gdk_Event_Property)
+                       return Gdk.Types.Gdk_Modifier_Type;
+
+
+   ---------------------------
+   --  Gdk_Event_Proximity  --
+   ---------------------------
+
+   type Gdk_Event_Proximity is new Gdk_Event with private;
+
+   function Get_Time (Event : in Gdk_Event_Proximity) return Guint32;
+
+   function Get_Source (Event : in Gdk_Event_Proximity)
+                        return Gdk.Types.Gdk_Input_Source;
+
+   function Get_Device_Id (Event : in Gdk_Event_Proximity)
+                           return Gdk.Types.Gdk_Device_Id;
+
+
+   ---------------------------
+   --  Gdk_Event_Selection  --
+   ---------------------------
+
+   type Gdk_Event_Selection is new Gdk_Event with private;
+
+   function Get_Selection (Event : in Gdk_Event_Selection)
+                           return Gdk.Types.Gdk_Atom;
+
+   function Get_Target (Event : in Gdk_Event_Selection)
+                        return Gdk.Types.Gdk_Atom;
+
+   function Get_Property (Event : in Gdk_Event_Selection)
+                          return Gdk.Types.Gdk_Atom;
+
+   function Get_Requestor (Event : in Gdk_Event_Selection) return Guint32;
+
+   function Get_Time (Event : in Gdk_Event_Selection) return Guint32;
+
+
+   ----------------------------
+   --  Gdk_Event_Visibility  --
+   ----------------------------
+
+   type Gdk_Event_Visibility is new Gdk_Event with private;
+
+   function Get_Visibility_State (Event : in Gdk_Event_Visibility)
+     return Gdk.Types.Gdk_Visibility_State;
+
 
 private
 
    type Gdk_Event is new Root_Type with null record;
    type Gdk_Event_Any is new Gdk_Event with null record;
-   type Gdk_Event_Configure is new Gdk_Event with null record;
-   type Gdk_Event_Expose is new Gdk_Event with null record;
    type Gdk_Event_Button is new Gdk_Event with null record;
-   type Gdk_Event_Motion is new Gdk_Event with null record;
+   type Gdk_Event_Client is new Gdk_Event with null record;
+   type Gdk_Event_Configure is new Gdk_Event with null record;
+   type Gdk_Event_Crossing is new Gdk_Event with null record;
+   type Gdk_Event_Expose is new Gdk_Event with null record;
+   type Gdk_Event_Focus is new Gdk_Event with null record;
    type Gdk_Event_Key is new Gdk_Event with null record;
-
-   pragma Import (C, Events_Pending, "gdk_events_pending");
+   type Gdk_Event_Motion is new Gdk_Event with null record;
+   type Gdk_Event_No_Expose is new Gdk_Event with null record;
+   type Gdk_Event_Property is new Gdk_Event with null record;
+   type Gdk_Event_Proximity is new Gdk_Event with null record;
+   type Gdk_Event_Selection is new Gdk_Event with null record;
+   type Gdk_Event_Visibility is new Gdk_Event with null record;
 
 end Gdk.Event;
