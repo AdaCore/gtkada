@@ -64,6 +64,16 @@ package Gtk.Object is
    --  Flags  --
    -------------
 
+   --  GtkObject only uses the first 4 bits of the flags field.
+   --  Derived objects may use the remaining bits. Though this
+   --  is a kinda nasty break up, it does make the size of
+   --  derived objects smaller.
+
+   Destroyed   : constant := 2 ** 0;
+   Floating    : constant := 2 ** 1;
+   Connected   : constant := 2 ** 2;
+   Constructed : constant := 2 ** 3;
+
    function Flags (Object : in Gtk_Object) return Guint32;
 
    procedure Set_Flags (Object : in out Gtk_Object;
@@ -72,12 +82,13 @@ package Gtk.Object is
    procedure Unset_Flags (Object : in out Gtk_Object;
                           Flags  : in     Guint32);
 
+   function Destroyed_Is_Set (Object : in Gtk_Object'Class) return Boolean;
 
-   function Destroyed (Object : in Gtk_Object) return Boolean;
+   function Floating_Is_Set (Object : in Gtk_Object'Class) return Boolean;
 
-   function Floating (Object : in Gtk_Object) return Boolean;
+   function Connected_Is_Set (Object : in Gtk_Object'Class) return Boolean;
 
-   function Connected (Object : in Gtk_Object) return Boolean;
+   function Constructed_Is_Set (Object : in Gtk_Object'Class) return Boolean;
 
    procedure Generate (Object : in Gtk_Object;
                        N      : in Node_Ptr;

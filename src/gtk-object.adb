@@ -38,12 +38,23 @@ package body Gtk.Object is
    -- Connected --
    ---------------
 
-   function Connected (Object : in Gtk_Object) return Boolean is
+   function Connected_Is_Set (Object : in Gtk_Object'Class) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_connected");
    begin
       return To_Boolean (Internal (Get_Object (Object)));
-   end Connected;
+   end Connected_Is_Set;
+
+   -----------------
+   -- Constructed --
+   -----------------
+
+   function Constructed_Is_Set (Object : in Gtk_Object'Class) return Boolean is
+      function Internal (Object : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_object_constructed");
+   begin
+      return To_Boolean (Internal (Get_Object (Object)));
+   end Constructed_Is_Set;
 
    -------------
    -- Destroy --
@@ -61,12 +72,12 @@ package body Gtk.Object is
    -- Destroyed --
    ---------------
 
-   function Destroyed (Object : in Gtk_Object) return Boolean is
+   function Destroyed_Is_Set (Object : in Gtk_Object'Class) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_destroyed");
    begin
       return To_Boolean (Internal (Get_Object (Object)));
-   end Destroyed;
+   end Destroyed_Is_Set;
 
    -----------
    -- Flags --
@@ -83,12 +94,12 @@ package body Gtk.Object is
    -- Floating --
    --------------
 
-   function Floating (Object : in Gtk_Object) return Boolean is
+   function Floating_Is_Set (Object : in Gtk_Object'Class) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_floating");
    begin
       return To_Boolean (Internal (Get_Object (Object)));
-   end Floating;
+   end Floating_Is_Set;
 
    --------------
    -- Get_Type --
