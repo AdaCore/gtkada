@@ -1,0 +1,46 @@
++ Mapping des noms de fonction :
+    on supprime le gtk_ et aussi le nom de la widget.
+
+    mais cela pose un probleme pour gtk_*_new, car new est un mot
+    reserve d'Ada.
+
++ Les commentaires se feront en anglais.
+
++ On n'implemente que les fonctions qui sont correctement documentees.
+  Pour tester le binding, on va refaire le test_gtk.
+
++ Ne pas mettre les fonctions ou les macros C qui sont la pour emuler
+  la programmation OO.
+
++ Faire attention a la portabilite.
+
++ On oublie le Inline des differentes fonctions du mapping pour le moment,
+  mais on n'est pas tout a fait sur. (en plus la compilation est plus longue).
+
+
+ + Pour les desoeuvres : Manu -> Debut a gtk_notebook
+                         Joel -> gtk_object a la fin
+   Envoyer un mail a l'autre si on veut commencer une nouvelle widget.
+
+A FAIRE :
+=========
+
+Joel :
+------
+
++ Regarder comment passer la ligne de commande a gtk_init, et comment
+  recuperer la ligne de commande epuree apres gtk_init
+
++ Faire les GtkButtons
+
++ Jeter un oeil au mapping de gdk
+
+Manu :
+------
+
++ Liberation de la memoire pour les callback.
+
++ Faire les GtkBox
+
++ Demander a Dewar pour l'histoire des inline.
+
