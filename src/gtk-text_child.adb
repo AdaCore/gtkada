@@ -36,34 +36,29 @@ package body Gtk.Text_Child is
    -- Get_Deleted --
    -----------------
 
-   function Get_Deleted (Anchor : access Gtk_Text_Child_Anchor_Record)
-     return Boolean is
+   function Get_Deleted
+     (Anchor : access Gtk_Text_Child_Anchor_Record) return Boolean
+   is
       function Internal (Anchor : System.Address) return Gboolean;
       pragma Import  (C, Internal, "gtk_text_child_anchor_get_deleted");
+
    begin
       return To_Boolean (Internal (Get_Object (Anchor)));
    end Get_Deleted;
-
-   --------------
-   -- Get_Type --
-   --------------
-
-   function Get_Type return Gtk.Gtk_Type is
-      function Internal return Gtk.Gtk_Type;
-      pragma Import (C, Internal, "gtk_text_child_anchor_get_type");
-   begin
-      return Internal;
-   end Get_Type;
 
    -----------------
    -- Get_Widgets --
    -----------------
 
-   function Get_Widgets (Anchor : access Gtk_Text_Child_Anchor_Record)
-     return Gtk.Widget.Widget_List.Glist is
+   function Get_Widgets
+     (Anchor : access Gtk_Text_Child_Anchor_Record)
+      return Gtk.Widget.Widget_List.Glist
+   is
       function Internal (Anchor : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_child_anchor_get_deleted");
+
       List : Gtk.Widget.Widget_List.Glist;
+
    begin
       Gtk.Widget.Widget_List.Set_Object
         (List, Internal (Get_Object (Anchor)));
@@ -87,6 +82,7 @@ package body Gtk.Text_Child is
    procedure Initialize (Widget : access Gtk_Text_Child_Anchor_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_text_child_anchor_new");
+
    begin
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);

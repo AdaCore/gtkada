@@ -27,38 +27,50 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;
-with Gtk.Object;
+--  <description>
+--  A table is a collection of tags where you can Add, Remove, Lookup
+--  or traverse (Foreach) a tag.
+--  </description>
+--  <c_version>1.3.4</c_version>
+
 with Gtk.Text_Tag;
 
 package Gtk.Text_Tag_Table is
 
-   type Gtk_Text_Tag_Table_Record is
-     new Gtk.Object.Gtk_Object_Record with private;
+   type Gtk_Text_Tag_Table_Record is new GObject_Record with private;
    type Gtk_Text_Tag_Table is access all Gtk_Text_Tag_Table_Record'Class;
 
    procedure Gtk_New (Table : out Gtk_Text_Tag_Table);
+   --  Create a new Text_Tag_Table.
 
    procedure Initialize (Table : access Gtk_Text_Tag_Table_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Glib.GType;
+   --  Return the internal value associated with a Gtk_Text_Tag_Table.
 
    procedure Add
      (Table : access Gtk_Text_Tag_Table_Record;
       Tag   : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+   --  Add a tag to the table.
+   --  The tag is assigned the highest priority in the table.
 
    procedure Remove
      (Table : access Gtk_Text_Tag_Table_Record;
       Tag   : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-   --  ??? Check what happens when Tag not found.
+   --  Remove a tag from the table.
+   --  This will remove the table's reference to the tag, so be careful - the
+   --  tag will end up destroyed if you don't have a reference to it.
 
    function Lookup
-     (Table  : access Gtk_Text_Tag_Table_Record;
-      Name   : String)
-      return Gtk.Text_Tag.Gtk_Text_Tag;
+     (Table : access Gtk_Text_Tag_Table_Record;
+      Name  : String) return Gtk.Text_Tag.Gtk_Text_Tag;
+   --  Look up a named tag.
+   --  Return the tag or null if none by that name is in the table.
 
-   function Size (Table  : access Gtk_Text_Tag_Table_Record)
-                  return Gint;
+   function Size (Table : access Gtk_Text_Tag_Table_Record) return Gint;
+   --  Return the size of the table (number of tags).
 
    generic
       type Data_Type (<>) is private;
@@ -74,6 +86,7 @@ package Gtk.Text_Tag_Table is
         (Table : access Gtk_Text_Tag_Table_Record;
          Proc  : Gtk_Text_Tag_Table_Proc;
          Data  : Data_Type_Access);
+      --  Call Proc on each tag in Table, with user data Data.
 
    end Iterator;
 
@@ -85,23 +98,25 @@ package Gtk.Text_Tag_Table is
    --  The following new signals are defined for this widget:
    --
    --  - "tag_changed"
-   --    procedure Handler (Widget : access Gtk_Text_Tag_Table_Record'Class;
-   --       Tag : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+   --    procedure Handler
+   --      (Widget       : access Gtk_Text_Tag_Table_Record'Class;
+   --       Tag          : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
    --       Size_Changed : Boolean);
    --
    --  - "tag_added"
-   --    procedure Handler (Widget : access Gtk_Text_Tag_Table_Record'Class;
-   --       Tag : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+   --    procedure Handler
+   --      (Widget : access Gtk_Text_Tag_Table_Record'Class;
+   --       Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
    --
    --  - "tag_removed"
-   --    procedure Handler (Widget : access Gtk_Text_Tag_Table_Record'Class;
-   --       Tag : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+   --    procedure Handler
+   --      (Widget : access Gtk_Text_Tag_Table_Record'Class;
+   --       Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
    --
    --  </signals>
 
 private
-   type Gtk_Text_Tag_Table_Record is
-     new Gtk.Object.Gtk_Object_Record with null record;
+   type Gtk_Text_Tag_Table_Record is new GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_text_tag_table_get_type");
 

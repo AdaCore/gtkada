@@ -48,6 +48,7 @@ package body Gtk.Text_Tag_Table is
    procedure Initialize (Table : access Gtk_Text_Tag_Table_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_text_tag_table_new");
+
    begin
       Set_Object (Table, Internal);
       Initialize_User_Data (Table);
@@ -61,13 +62,11 @@ package body Gtk.Text_Tag_Table is
      (Table : access Gtk_Text_Tag_Table_Record;
       Tag   : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class)
    is
-      procedure Internal
-        (Table : System.Address;
-         Tag   : System.Address);
+      procedure Internal (Table : System.Address; Tag : System.Address);
       pragma Import (C, Internal, "gtk_text_tag_table_add");
+
    begin
-      Internal (Get_Object (Table),
-                Get_Object (Tag));
+      Internal (Get_Object (Table), Get_Object (Tag));
    end Add;
 
    ------------
@@ -78,13 +77,11 @@ package body Gtk.Text_Tag_Table is
      (Table : access Gtk_Text_Tag_Table_Record;
       Tag   : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class)
    is
-      procedure Internal
-        (Table : System.Address;
-         Tag   : System.Address);
+      procedure Internal (Table : System.Address; Tag : System.Address);
       pragma Import (C, Internal, "gtk_text_tag_table_remove");
+
    begin
-      Internal (Get_Object (Table),
-                Get_Object (Tag));
+      Internal (Get_Object (Table), Get_Object (Tag));
    end Remove;
 
    ------------
@@ -92,20 +89,21 @@ package body Gtk.Text_Tag_Table is
    ------------
 
    function Lookup
-     (Table  : access Gtk_Text_Tag_Table_Record;
-      Name   : String)
-      return Gtk.Text_Tag.Gtk_Text_Tag
+     (Table : access Gtk_Text_Tag_Table_Record;
+      Name  : String) return Gtk.Text_Tag.Gtk_Text_Tag
    is
       function Internal
-        (Table  : System.Address;
-         Name   : String)
-         return System.Address;
+        (Table : System.Address; Name : String) return System.Address;
       pragma Import (C, Internal, "gtk_text_tag_table_lookup");
+
       Stub : Gtk.Text_Tag.Gtk_Text_Tag_Record;
+
       S : System.Address;
       use type System.Address;
+
    begin
       S := Internal (Get_Object (Table), Name & ASCII.NUL);
+
       if S = System.Null_Address then
          return null;
       else
@@ -117,10 +115,10 @@ package body Gtk.Text_Tag_Table is
    -- Size --
    ----------
 
-   function Size (Table  : access Gtk_Text_Tag_Table_Record) return Gint
-   is
-      function Internal (Table  : System.Address) return Gint;
+   function Size (Table : access Gtk_Text_Tag_Table_Record) return Gint is
+      function Internal (Table : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_tag_table_size");
+
    begin
       return Internal (Get_Object (Table));
    end Size;
@@ -131,17 +129,17 @@ package body Gtk.Text_Tag_Table is
 
    package body Iterator is
 
-      type Foreach_Proc_Record is
-      record
+      type Foreach_Proc_Record is record
          Proc : Gtk_Text_Tag_Table_Proc;
          Data : Data_Type_Access;
       end record;
+
       type Foreach_Proc_Record_Access is
         access all Foreach_Proc_Record;
 
       procedure C_Gtk_Text_Tag_Table_Foreach_Proc
-        (C_Tag  : in System.Address;
-         C_Data : in Foreach_Proc_Record_Access);
+        (C_Tag  : System.Address;
+         C_Data : Foreach_Proc_Record_Access);
       pragma Convention (C, C_Gtk_Text_Tag_Table_Foreach_Proc);
 
       ---------------------------------------
@@ -149,12 +147,13 @@ package body Gtk.Text_Tag_Table is
       ---------------------------------------
 
       procedure C_Gtk_Text_Tag_Table_Foreach_Proc
-        (C_Tag  : in System.Address;
-         C_Data : in Foreach_Proc_Record_Access)
+        (C_Tag  : System.Address;
+         C_Data : Foreach_Proc_Record_Access)
       is
-         Stub : Gtk_Text_Tag_Table_Record;
+         Stub      : Gtk_Text_Tag_Table_Record;
          Tag_Table : constant Gtk_Text_Tag_Table :=
            Gtk_Text_Tag_Table (Get_User_Data (C_Tag, Stub));
+
       begin
          C_Data.Proc (Tag_Table, C_Data.Data);
       end C_Gtk_Text_Tag_Table_Foreach_Proc;
@@ -184,6 +183,7 @@ package body Gtk.Text_Tag_Table is
          else
             C_Proc_Address := C_Gtk_Text_Tag_Table_Foreach_Proc'Address;
          end if;
+
          Internal (Get_Object (Table), C_Proc_Address, Local_Data'Address);
       end Foreach;
 

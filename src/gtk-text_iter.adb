@@ -56,13 +56,15 @@ package body Gtk.Text_Iter is
    --  'Address of the parameter should not be done anymore. In that case,
    --  the proper method is to use the 'Address of a local Gtk_Text_Iter.
 
+   use Gtk.Text_Tag;
+
    --------------
    -- Get_Char --
    --------------
 
-   --  function Get_Char (Iter   : access Gtk_Text_Iter) return gunichar
+   --  function Get_Char (Iter : access Gtk_Text_Iter) return gunichar
    --  is
-   --     function Internal (Iter   : System.Address) return Gint;
+   --     function Internal (Iter : System.Address) return Gint;
    --     pragma Import (C, Internal, "gtk_text_iter_get_char");
    --  begin
    --     return Internal (Iter);
@@ -74,16 +76,22 @@ package body Gtk.Text_Iter is
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter)
-      return String
+      The_End : Gtk_Text_Iter) return String
    is
       function Internal
         (Start   : Gtk_Text_Iter;
-         The_End : Gtk_Text_Iter)
-         return Interfaces.C.Strings.chars_ptr;
+         The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_slice");
+
+      Str : Interfaces.C.Strings.chars_ptr := Internal (Start, The_End);
+
    begin
-      return Interfaces.C.Strings.Value (Internal (Start, The_End));
+      declare
+         S : constant String := Interfaces.C.Strings.Value (Str);
+      begin
+         Interfaces.C.Strings.Free (Str);
+         return S;
+      end;
    end Get_Slice;
 
    --------------
@@ -92,16 +100,23 @@ package body Gtk.Text_Iter is
 
    function Get_Text
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter)
-      return String
+      The_End : Gtk_Text_Iter) return String
    is
       function Internal
         (Start   : Gtk_Text_Iter;
          The_End : Gtk_Text_Iter)
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_text");
+
+      Str : Interfaces.C.Strings.chars_ptr := Internal (Start, The_End);
+
    begin
-      return Interfaces.C.Strings.Value (Internal (Start, The_End));
+      declare
+         S : constant String := Interfaces.C.Strings.Value (Str);
+      begin
+         Interfaces.C.Strings.Free (Str);
+         return S;
+      end;
    end Get_Text;
 
    -----------------------
@@ -110,16 +125,22 @@ package body Gtk.Text_Iter is
 
    function Get_Visible_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter)
-      return String
+      The_End : Gtk_Text_Iter) return String
    is
       function Internal
         (Start   : Gtk_Text_Iter;
-         The_End : Gtk_Text_Iter)
-         return Interfaces.C.Strings.chars_ptr;
+         The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_visible_slice");
+
+      Str : Interfaces.C.Strings.chars_ptr := Internal (Start, The_End);
+
    begin
-      return Interfaces.C.Strings.Value (Internal (Start, The_End));
+      declare
+         S : constant String := Interfaces.C.Strings.Value (Str);
+      begin
+         Interfaces.C.Strings.Free (Str);
+         return S;
+      end;
    end Get_Visible_Slice;
 
    ----------------------
@@ -128,25 +149,30 @@ package body Gtk.Text_Iter is
 
    function Get_Visible_Text
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter)
-      return String
+      The_End : Gtk_Text_Iter) return String
    is
       function Internal
         (Start   : Gtk_Text_Iter;
-         The_End : Gtk_Text_Iter)
-         return Interfaces.C.Strings.chars_ptr;
+         The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_visible_text");
+
+      Str : Interfaces.C.Strings.chars_ptr := Internal (Start, The_End);
+
    begin
-      return Interfaces.C.Strings.Value (Internal (Start, The_End));
+      declare
+         S : constant String := Interfaces.C.Strings.Value (Str);
+      begin
+         Interfaces.C.Strings.Free (Str);
+         return S;
+      end;
    end Get_Visible_Text;
 
    ---------------
    -- Get_Marks --
    ---------------
 
-   --  function Get_Marks (Iter   : access Gtk_Text_Iter) return GSList
-   --  is
-   --     function Internal (Iter   : System.Address) return System.Address;
+   --  function Get_Marks (Iter : access Gtk_Text_Iter) return GSList is
+   --     function Internal (Iter : System.Address) return System.Address;
    --     pragma Import (C, Internal, "gtk_text_iter_get_marks");
    --  begin
    --     return Internal (Iter);
@@ -162,7 +188,9 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return System.Address;
       pragma Import (C, Internal, "gtk_text_iter_get_child_anchor");
+
       Stub : Gtk.Text_Child.Gtk_Text_Child_Anchor_Record;
+
    begin
       return Gtk.Text_Child.Gtk_Text_Child_Anchor
                (Get_User_Data (Internal (Iter), Stub));
@@ -192,16 +220,18 @@ package body Gtk.Text_Iter is
 
    function Begins_Tag
      (Iter : Gtk_Text_Iter;
-      Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class)
-      return Boolean
+      Tag  : Gtk.Text_Tag.Gtk_Text_Tag := null) return Boolean
    is
       function Internal
-        (Iter : Gtk_Text_Iter;
-         Tag  : System.Address)
-         return Gboolean;
+        (Iter : Gtk_Text_Iter; Tag : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_begins_tag");
+
    begin
-      return To_Boolean (Internal (Iter, Get_Object (Tag)));
+      if Tag = null then
+         return To_Boolean (Internal (Iter, System.Null_Address));
+      else
+         return To_Boolean (Internal (Iter, Get_Object (Tag)));
+      end if;
    end Begins_Tag;
 
    --------------
@@ -210,16 +240,18 @@ package body Gtk.Text_Iter is
 
    function Ends_Tag
      (Iter   : Gtk_Text_Iter;
-      Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class)
-      return Boolean
+      Tag    : Gtk.Text_Tag.Gtk_Text_Tag := null) return Boolean
    is
       function Internal
-        (Iter : Gtk_Text_Iter;
-         Tag  : System.Address)
-         return Gboolean;
+        (Iter : Gtk_Text_Iter; Tag : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_ends_tag");
+
    begin
-      return To_Boolean (Internal (Iter, Get_Object (Tag)));
+      if Tag = null then
+         return To_Boolean (Internal (Iter, System.Null_Address));
+      else
+         return To_Boolean (Internal (Iter, Get_Object (Tag)));
+      end if;
    end Ends_Tag;
 
    -----------------
@@ -228,16 +260,19 @@ package body Gtk.Text_Iter is
 
    function Toggles_Tag
      (Iter : Gtk_Text_Iter;
-      Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class)
-      return Boolean
+      Tag  : Gtk.Text_Tag.Gtk_Text_Tag := null) return Boolean
    is
       function Internal
         (Iter : Gtk_Text_Iter;
-         Tag  : System.Address)
-         return Gboolean;
+         Tag  : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_toggles_tag");
+
    begin
-      return To_Boolean (Internal (Iter, Get_Object (Tag)));
+      if Tag = null then
+         return To_Boolean (Internal (Iter, System.Null_Address));
+      else
+         return To_Boolean (Internal (Iter, Get_Object (Tag)));
+      end if;
    end Toggles_Tag;
 
    -------------
@@ -246,25 +281,26 @@ package body Gtk.Text_Iter is
 
    function Has_Tag
      (Iter : Gtk_Text_Iter;
-      Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class)
-      return Boolean
+      Tag  : Gtk.Text_Tag.Gtk_Text_Tag := null) return Boolean
    is
       function Internal
-        (Iter : Gtk_Text_Iter;
-         Tag  : System.Address)
-         return Gboolean;
+        (Iter : Gtk_Text_Iter; Tag : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_has_tag");
+
    begin
-      return To_Boolean (Internal (Iter, Get_Object (Tag)));
+      if Tag = null then
+         return To_Boolean (Internal (Iter, System.Null_Address));
+      else
+         return To_Boolean (Internal (Iter, Get_Object (Tag)));
+      end if;
    end Has_Tag;
 
    --------------
    -- Get_Tags --
    --------------
 
-   --  function Get_Tags (Iter   : access Gtk_Text_Iter) return GSList
-   --  is
-   --     function Internal (Iter   : System.Address) return System.Address;
+   --  function Get_Tags (Iter : access Gtk_Text_Iter) return GSList is
+   --     function Internal (Iter : System.Address) return System.Address;
    --     pragma Import (C, Internal, "gtk_text_iter_get_tags");
    --  begin
    --     return Internal (Iter);
@@ -276,14 +312,13 @@ package body Gtk.Text_Iter is
 
    function Editable
      (Iter            : Gtk_Text_Iter;
-      Default_Setting : Boolean := True)
-      return Boolean
+      Default_Setting : Boolean := True) return Boolean
    is
       function Internal
         (Iter            : Gtk_Text_Iter;
-         Default_Setting : Gboolean)
-         return Gboolean;
+         Default_Setting : Gboolean) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_editable");
+
    begin
       return To_Boolean (Internal (Iter, To_Gboolean (Default_Setting)));
    end Editable;
@@ -292,10 +327,10 @@ package body Gtk.Text_Iter is
    -- Starts_Word --
    -----------------
 
-   function Starts_Word (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Starts_Word (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_starts_word");
+
    begin
       return To_Boolean (Internal (Iter));
    end Starts_Word;
@@ -304,10 +339,10 @@ package body Gtk.Text_Iter is
    -- Ends_Word --
    ---------------
 
-   function Ends_Word (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Ends_Word (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_ends_word");
+
    begin
       return To_Boolean (Internal (Iter));
    end Ends_Word;
@@ -316,10 +351,10 @@ package body Gtk.Text_Iter is
    -- Inside_Word --
    -----------------
 
-   function Inside_Word (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Inside_Word (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_inside_word");
+
    begin
       return To_Boolean (Internal (Iter));
    end Inside_Word;
@@ -328,10 +363,10 @@ package body Gtk.Text_Iter is
    -- Starts_Sentence --
    ---------------------
 
-   function Starts_Sentence (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Starts_Sentence (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_starts_sentence");
+
    begin
       return To_Boolean (Internal (Iter));
    end Starts_Sentence;
@@ -340,10 +375,10 @@ package body Gtk.Text_Iter is
    -- Ends_Sentence --
    -------------------
 
-   function Ends_Sentence (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Ends_Sentence (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_ends_sentence");
+
    begin
       return To_Boolean (Internal (Iter));
    end Ends_Sentence;
@@ -352,10 +387,10 @@ package body Gtk.Text_Iter is
    -- Inside_Sentence --
    ---------------------
 
-   function Inside_Sentence (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Inside_Sentence (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_inside_sentence");
+
    begin
       return To_Boolean (Internal (Iter));
    end Inside_Sentence;
@@ -364,10 +399,10 @@ package body Gtk.Text_Iter is
    -- Starts_Line --
    -----------------
 
-   function Starts_Line (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Starts_Line (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_starts_line");
+
    begin
       return To_Boolean (Internal (Iter));
    end Starts_Line;
@@ -376,10 +411,10 @@ package body Gtk.Text_Iter is
    -- Ends_Line --
    ---------------
 
-   function Ends_Line (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Ends_Line (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_ends_line");
+
    begin
       return To_Boolean (Internal (Iter));
    end Ends_Line;
@@ -388,10 +423,10 @@ package body Gtk.Text_Iter is
    -- Is_Cursor_Position --
    ------------------------
 
-   function Is_Cursor_Position (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Is_Cursor_Position (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_is_cursor_position");
+
    begin
       return To_Boolean (Internal (Iter));
    end Is_Cursor_Position;
@@ -418,24 +453,30 @@ package body Gtk.Text_Iter is
    -- Get_Language --
    ------------------
 
-   function Get_Language (Iter : Gtk_Text_Iter) return String
-   is
+   function Get_Language (Iter : Gtk_Text_Iter) return String is
       function Internal
-        (Iter : Gtk_Text_Iter)
-         return Interfaces.C.Strings.chars_ptr;
+        (Iter : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_language");
+
+      Str : Interfaces.C.Strings.chars_ptr := Internal (Iter);
+
    begin
-      return Interfaces.C.Strings.Value (Internal (Iter));
+      declare
+         S : constant String := Interfaces.C.Strings.Value (Str);
+      begin
+         Interfaces.C.Strings.Free (Str);
+         return S;
+      end;
    end Get_Language;
 
    ------------
    -- Is_End --
    ------------
 
-   function Is_End (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Is_End (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_is_end");
+
    begin
       return To_Boolean (Internal (Iter));
    end Is_End;
@@ -444,10 +485,10 @@ package body Gtk.Text_Iter is
    -- Is_First --
    --------------
 
-   function Is_First (Iter : Gtk_Text_Iter) return Boolean
-   is
+   function Is_First (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_is_first");
+
    begin
       return To_Boolean (Internal (Iter));
    end Is_First;
@@ -462,6 +503,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_char");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Forward_Char;
@@ -476,6 +518,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_char");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Backward_Char;
@@ -826,16 +869,18 @@ package body Gtk.Text_Iter is
 
    procedure Forward_To_Tag_Toggle
      (Iter   : in out Gtk_Text_Iter;
-      Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+      Tag    : Gtk.Text_Tag.Gtk_Text_Tag := null;
       Result : out Boolean)
    is
       function Internal
-        (Iter : Gtk_Text_Iter;
-         Tag  : System.Address)
-         return Gboolean;
+        (Iter : Gtk_Text_Iter; Tag : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_to_tag_toggle");
    begin
-      Result := To_Boolean (Internal (Iter, Get_Object (Tag)));
+      if Tag = null then
+         Result := To_Boolean (Internal (Iter, System.Null_Address));
+      else
+         Result := To_Boolean (Internal (Iter, Get_Object (Tag)));
+      end if;
    end Forward_To_Tag_Toggle;
 
    ----------------------------
@@ -844,16 +889,19 @@ package body Gtk.Text_Iter is
 
    procedure Backward_To_Tag_Toggle
      (Iter   : in out Gtk_Text_Iter;
-      Tag    : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+      Tag    : Gtk.Text_Tag.Gtk_Text_Tag := null;
       Result : out Boolean)
    is
       function Internal
-        (Iter : Gtk_Text_Iter;
-         Tag  : System.Address)
-         return Gboolean;
+        (Iter : Gtk_Text_Iter; Tag : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_to_tag_toggle");
+
    begin
-      Result := To_Boolean (Internal (Iter, Get_Object (Tag)));
+      if Tag = null then
+         Result := To_Boolean (Internal (Iter, System.Null_Address));
+      else
+         Result := To_Boolean (Internal (Iter, Get_Object (Tag)));
+      end if;
    end Backward_To_Tag_Toggle;
 
    -----------------------
@@ -931,13 +979,15 @@ package body Gtk.Text_Iter is
          return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_search");
    begin
-      Result := To_Boolean (Internal (Iter,
-                                      Str & ASCII.NUL,
-                                      To_Gboolean (Visible_Only),
-                                      To_Gboolean (Slice),
-                                      Match_Start'Address,
-                                      Match_End'Address,
-                                      Limit));
+      Result := To_Boolean
+        (Internal
+          (Iter,
+           Str & ASCII.NUL,
+           To_Gboolean (Visible_Only),
+           To_Gboolean (Slice),
+           Match_Start'Address,
+           Match_End'Address,
+           Limit));
    end Forward_Search;
 
    ---------------------
@@ -961,33 +1011,30 @@ package body Gtk.Text_Iter is
          Slice        : Gboolean;
          Match_Start  : System.Address;
          Match_End    : System.Address;
-         Limit        : Gtk_Text_Iter)
-         return Gboolean;
+         Limit        : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_search");
+
    begin
-      Result := To_Boolean (Internal (Iter,
-                                      Str & ASCII.NUL,
-                                      To_Gboolean (Visible_Only),
-                                      To_Gboolean (Slice),
-                                      Match_Start'Address,
-                                      Match_End'Address,
-                                      Limit));
+      Result := To_Boolean
+        (Internal
+          (Iter,
+           Str & ASCII.NUL,
+           To_Gboolean (Visible_Only),
+           To_Gboolean (Slice),
+           Match_Start'Address,
+           Match_End'Address,
+           Limit));
    end Backward_Search;
 
    -----------
    -- Equal --
    -----------
 
-   function Equal
-     (Lhs : Gtk_Text_Iter;
-      Rhs : Gtk_Text_Iter)
-      return Boolean
-   is
+   function Equal (Lhs : Gtk_Text_Iter; Rhs : Gtk_Text_Iter) return Boolean is
       function Internal
-        (Lhs : Gtk_Text_Iter;
-         Rhs : Gtk_Text_Iter)
-         return Gboolean;
+        (Lhs : Gtk_Text_Iter; Rhs : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_equal");
+
    begin
       return To_Boolean (Internal (Lhs, Rhs));
    end Equal;
@@ -999,31 +1046,16 @@ package body Gtk.Text_Iter is
    function In_Range
      (Iter    :  Gtk_Text_Iter;
       Start   :  Gtk_Text_Iter;
-      The_End :  Gtk_Text_Iter)
-      return Boolean
+      The_End :  Gtk_Text_Iter) return Boolean
    is
       function Internal
         (Iter    : Gtk_Text_Iter;
          Start   : Gtk_Text_Iter;
-         The_End : Gtk_Text_Iter)
-         return Gboolean;
+         The_End : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_in_range");
+
    begin
       return To_Boolean (Internal (Iter, Start, The_End));
    end In_Range;
-
-   ----------
-   -- Spew --
-   ----------
-
-   procedure Spew
-     (Iter : Gtk_Text_Iter;
-      Desc : String)
-   is
-      procedure Internal (Iter : Gtk_Text_Iter; Desc : String);
-      pragma Import (C, Internal, "gtk_text_iter_spew");
-   begin
-      Internal (Iter, Desc & ASCII.NUL);
-   end Spew;
 
 end Gtk.Text_Iter;

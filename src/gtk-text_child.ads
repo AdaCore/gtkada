@@ -27,14 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.GObjects;
+--  <c_version>1.3.4</c_version>
+
 with Gtk; use Gtk;
 with Gtk.Widget;
 
 package Gtk.Text_Child is
 
-   type Gtk_Text_Child_Anchor_Record is
-     new Glib.GObjects.GObject_Record with private;
+   type Gtk_Text_Child_Anchor_Record is new GObject_Record with private;
    type Gtk_Text_Child_Anchor is access all Gtk_Text_Child_Anchor_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Text_Child_Anchor);
@@ -44,18 +44,20 @@ package Gtk.Text_Child is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Text_Child_Anchor
 
-   function Get_Widgets (Anchor : access Gtk_Text_Child_Anchor_Record)
-     return Gtk.Widget.Widget_List.Glist;
+   function Get_Widgets
+     (Anchor : access Gtk_Text_Child_Anchor_Record)
+      return Gtk.Widget.Widget_List.Glist;
 
-   function Get_Deleted (Anchor : access Gtk_Text_Child_Anchor_Record)
-     return Boolean;
+   function Get_Deleted
+     (Anchor : access Gtk_Text_Child_Anchor_Record) return Boolean;
 
 private
 
-   type Gtk_Text_Child_Anchor_Record is
-     new Glib.GObjects.GObject_Record with null record;
+   type Gtk_Text_Child_Anchor_Record is new GObject_Record with null record;
+
+   pragma Import (C, Get_Type, "gtk_text_child_anchor_get_type");
 
 end Gtk.Text_Child;

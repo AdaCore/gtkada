@@ -27,42 +27,55 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.GObjects;
+--  <description>
+--  The Gtk_Text_Mark data type.
+--  </description>
+--  <c_version>1.3.4</c_version>
 
 package Gtk.Text_Mark is
 
-   type Gtk_Text_Mark_Record is new Glib.GObjects.GObject_Record with private;
+   type Gtk_Text_Mark_Record is new GObject_Record with private;
    type Gtk_Text_Mark is access all Gtk_Text_Mark_Record'Class;
 
-   --  ??? There is no _new function!
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with a Gtk_Label.
 
-   function Get_Type return Gtk.Gtk_Type;
+   procedure Set_Visible
+     (Mark    : access Gtk_Text_Mark_Record;
+      Setting : Boolean := True);
+   --  Set the visibility of Mark.
+   --  The insertion point is normally visible, i.e. you can see it as a
+   --  vertical bar. Also, the text widget uses a visible mark to indicate
+   --  where a drop will occur when dragging-and-dropping text. Most other
+   --  marks are not visible.
+   --  Marks are not visible by default.
 
-   procedure Set_Visible (Mark    : access Gtk_Text_Mark_Record;
-                          Setting :        Boolean := True);
+   function Get_Visible
+     (Mark : access Gtk_Text_Mark_Record) return Boolean;
+   --  Return True if the mark is visible.
+   --  i.e. a cursor is displayed for it.
 
-   function Get_Visible (Mark   : access Gtk_Text_Mark_Record)
-                         return Boolean;
+   function Get_Name (Mark : access Gtk_Text_Mark_Record) return String;
+   --  Return the mark name; Return "" for anonymous marks.
 
-   function Get_Name (Mark : access Gtk_Text_Mark_Record)
-                      return String;
-   --  ??? Check that this procedure does not cause any memory leak.
-
-   function Get_Deleted (Mark   : access Gtk_Text_Mark_Record)
-                         return Boolean;
+   function Get_Deleted (Mark : access Gtk_Text_Mark_Record) return Boolean;
+   --  Returns True if the mark has been removed from its buffer with
+   --  Gtk.Text_Buffer.Delete_Mark. Marks can't be used once deleted.
 
    --  function Get_Buffer (Mark   : access Gtk_Text_Mark_Record)
    --                       return Gtk.Text_Buffer.Gtk_Text_Buffer;
    --  ??? Can not be bound here to avoid circular dependency with
    --  ??? Gtk.Text_Buffer.
+   --  Get the buffer this mark is located inside, or null if the mark is
+   --  deleted.
 
-   function Get_Left_Gravity (Mark   : access Gtk_Text_Mark_Record)
-                              return Boolean;
+   function Get_Left_Gravity
+     (Mark : access Gtk_Text_Mark_Record) return Boolean;
+   --  Return True if the mark has left gravity, False otherwise.
 
 private
 
-   type Gtk_Text_Mark_Record is new Glib.GObjects.GObject_Record with
-     null record;
+   type Gtk_Text_Mark_Record is new GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_text_mark_get_type");
 

@@ -36,9 +36,7 @@ package body Gtk.Text_Tag is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Text_Tag;
-                      Name   :     String := "")
-   is
+   procedure Gtk_New (Widget : out Gtk_Text_Tag; Name : String := "") is
    begin
       Widget := new Gtk_Text_Tag_Record;
       Initialize (Widget, Name);
@@ -48,21 +46,21 @@ package body Gtk.Text_Tag is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Text_Tag_Record'Class;
-                         Name   :        String := "")
+   procedure Initialize
+     (Widget : access Gtk_Text_Tag_Record'Class;
+      Name   : String := "")
    is
       function Internal (Name : String) return System.Address;
+      function Internal (Name : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_attributes_new");
-      function Internal_No_Name (Dummy : System.Address) return System.Address;
-      pragma Import (C, Internal_No_Name, "gtk_text_attributes_new");
-      --  Same as Internal except that we need to pass a null address for
-      --  the name.
+
    begin
       if Name = "" then
-         Set_Object (Widget, Internal_No_Name (System.Null_Address));
+         Set_Object (Widget, Internal (System.Null_Address));
       else
          Set_Object (Widget, Internal (Name & ASCII.NUL));
       end if;
+
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -95,11 +93,10 @@ package body Gtk.Text_Tag is
    -- Get_Priority --
    ------------------
 
-   function Get_Priority (Tag    : access Gtk_Text_Tag_Record)
-                          return Gint
-   is
-      function Internal (Tag    : System.Address) return Gint;
+   function Get_Priority (Tag : access Gtk_Text_Tag_Record) return Gint is
+      function Internal (Tag : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_tag_get_priority");
+
    begin
       return Internal (Get_Object (Tag));
    end Get_Priority;
@@ -109,13 +106,11 @@ package body Gtk.Text_Tag is
    ------------------
 
    procedure Set_Priority
-     (Tag      : access Gtk_Text_Tag_Record;
-      Priority : Gint)
+     (Tag : access Gtk_Text_Tag_Record; Priority : Gint)
    is
-      procedure Internal
-        (Tag      : System.Address;
-         Priority : Gint);
+      procedure Internal (Tag : System.Address; Priority : Gint);
       pragma Import (C, Internal, "gtk_text_tag_set_priority");
+
    begin
       Internal (Get_Object (Tag), Priority);
    end Set_Priority;

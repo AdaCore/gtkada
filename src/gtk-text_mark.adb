@@ -40,10 +40,10 @@ package body Gtk.Text_Mark is
    -- Get_Deleted --
    -----------------
 
-   function Get_Deleted (Mark   : access Gtk_Text_Mark_Record) return Boolean
-   is
-      function Internal (Mark   : System.Address) return Gboolean;
+   function Get_Deleted (Mark : access Gtk_Text_Mark_Record) return Boolean is
+      function Internal (Mark : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_mark_get_deleted");
+
    begin
       return To_Boolean (Internal (Get_Object (Mark)));
    end Get_Deleted;
@@ -52,11 +52,12 @@ package body Gtk.Text_Mark is
    -- Get_Left_Gravity --
    ----------------------
 
-   function Get_Left_Gravity (Mark : access Gtk_Text_Mark_Record)
-                              return Boolean
+   function Get_Left_Gravity
+     (Mark : access Gtk_Text_Mark_Record) return Boolean
    is
-      function Internal (Mark   : System.Address) return Gboolean;
+      function Internal (Mark : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_mark_get_left_gravity");
+
    begin
       return To_Boolean (Internal (Get_Object (Mark)));
    end Get_Left_Gravity;
@@ -65,24 +66,31 @@ package body Gtk.Text_Mark is
    -- Get_Name --
    --------------
 
-   function Get_Name (Mark : access Gtk_Text_Mark_Record) return String
-   is
+   function Get_Name (Mark : access Gtk_Text_Mark_Record) return String is
       function Internal (Mark : System.Address) return ICS.chars_ptr;
       pragma Import (C, Internal, "gtk_text_mark_get_name");
       --  Note: Do not free the chars_ptr returned by this function.
+
+      Str : constant ICS.chars_ptr := Internal (Get_Object (Mark));
+
+      use type ICS.chars_ptr;
+
    begin
-      return ICS.Value (Internal (Get_Object (Mark)));
+      if Str = ICS.Null_Ptr then
+         return "";
+      else
+         return ICS.Value (Str);
+      end if;
    end Get_Name;
 
    -----------------
    -- Get_Visible --
    -----------------
 
-   function Get_Visible (Mark   : access Gtk_Text_Mark_Record)
-                         return Boolean
-   is
-      function Internal (Mark   : System.Address) return Gboolean;
+   function Get_Visible (Mark : access Gtk_Text_Mark_Record) return Boolean is
+      function Internal (Mark : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_mark_get_visible");
+
    begin
       return To_Boolean (Internal (Get_Object (Mark)));
    end Get_Visible;
@@ -91,11 +99,13 @@ package body Gtk.Text_Mark is
    -- Set_Visible --
    -----------------
 
-   procedure Set_Visible (Mark    : access Gtk_Text_Mark_Record;
-                          Setting :        Boolean := True)
+   procedure Set_Visible
+     (Mark    : access Gtk_Text_Mark_Record;
+      Setting : Boolean := True)
    is
       procedure Internal (Mark : System.Address; Setting : Gboolean);
       pragma Import (C, Internal, "gtk_text_mark_set_visible");
+
    begin
       Internal (Get_Object (Mark), To_Gboolean (Setting));
    end Set_Visible;
