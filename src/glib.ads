@@ -4,23 +4,23 @@ with System;
 package Glib is
 
    package C renames Interfaces.C;
-   use type C.Int;
-   use type C.Unsigned;
+   use type C.int;
+   use type C.unsigned;
 
    ----------------------------------------
    --  The basic types  defined by glib  --
    ----------------------------------------
 
-   type Gshort is new C.Short;
-   type Glong  is new C.Long;
-   type Gint   is new C.Int;
+   type Gshort is new C.short;
+   type Glong  is new C.long;
+   type Gint   is new C.int;
 
-   type Gushort is new C.Unsigned_Short;
-   type Gulong  is new C.Unsigned_Long;
-   type Guint   is new C.Unsigned;
+   type Gushort is new C.unsigned_short;
+   type Gulong  is new C.unsigned_long;
+   type Guint   is new C.unsigned;
 
-   type Gfloat  is new C.C_Float;
-   type Gdouble is new C.Double;
+   type Gfloat  is new C.C_float;
+   type Gdouble is new C.double;
 
    subtype Gint32 is Gint range -(2 ** 16) .. (2 ** 16 - 1);
 

@@ -10,7 +10,7 @@ package body Gtk.Main is
    ------------------
 
    function Set_Locale return String is
-      function Internal return C.Strings.Chars_Ptr;
+      function Internal return C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_set_locale");
    begin
       return C.Strings.Value (Internal);
