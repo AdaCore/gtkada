@@ -54,8 +54,13 @@ package Gdk is
    --  of the variables with 'null'.
 
    --  <doc_ignore>
-
    pragma Convention (C, C_Proxy);
+
+   type Gdk_GC is new C_Proxy;
+   type Gdk_Window is new C_Proxy;
+   subtype Gdk_Drawable is Gdk_Window;
+   subtype Gdk_Pixmap is Gdk_Drawable;
+   subtype Gdk_Bitmap is Gdk_Drawable;
 
    function Convert is new Unchecked_Conversion (System.Address, C_Proxy);
    function Convert is new Unchecked_Conversion (C_Proxy, System.Address);
