@@ -31,7 +31,7 @@ package gl_h is
    subtype GLclampd        is Long_Float;  --  double precision float in [0;1]
 
    type GLenum is new Integer;
-   for GLenum 'Size use 32;
+   for GLenum'Size use 32;
 
 
    --   Boolean values
@@ -86,7 +86,7 @@ package gl_h is
    GL_EDGE_FLAG_ARRAY_STRIDE      : constant GLenum := 16#808C#;
    GL_VERTEX_ARRAY_POINTER        : constant GLenum := 16#808E#;
    GL_NORMAL_ARRAY_POINTER        : constant GLenum := 16#808F#;
-   GL_COLOR_ARRAY_POINTER         : constant GLenum := 16#8090#
+   GL_COLOR_ARRAY_POINTER         : constant GLenum := 16#8090#;
    GL_INDEX_ARRAY_POINTER         : constant GLenum := 16#8091#;
    GL_TEXTURE_COORD_ARRAY_POINTER : constant GLenum := 16#8092#;
    GL_EDGE_FLAG_ARRAY_POINTER     : constant GLenum := 16#8093#;
@@ -570,7 +570,7 @@ package gl_h is
    GL_OUT_OF_MEMORY     : constant GLenum := 1285;
 
    --  glPush/PopAttrib bits
-   type GLbitfield is mod 16#fffff#;
+   type GLbitfield is mod 16#100000#;
    GL_CURRENT_BIT         : constant Glbitfield := 16#00000001#;
    GL_POINT_BIT           : constant Glbitfield := 16#00000002#;
    GL_LINE_BIT            : constant Glbitfield := 16#00000004#;
@@ -636,8 +636,6 @@ package gl_h is
    GL_RGBA16                  : constant GLenum := 32859;
    GL_CLIENT_PIXEL_STORE_BIT  : constant GLenum := 16#00000001#;
    GL_CLIENT_VERTEX_ARRAY_BIT : constant GLenum := 16#00000002#;
-   GL_ALL_CLIENT_ATTRIB_BITS  : constant GLenum := 16#FFFFFFFF#;
-   GL_CLIENT_ALL_ATTRIB_BITS  : constant GLenum := 16#FFFFFFFF#;
 
    --   GL 1.2 texturing
    GL_RESCALE_NORMAL                : constant GLenum := 16#803A#;
@@ -665,13 +663,13 @@ package gl_h is
    GL_TEXTURE_MAX_LOD               : constant GLenum := 33083;
    GL_TEXTURE_BASE_LEVEL            : constant GLenum := 33084;
    GL_TEXTURE_MAX_LEVEL             : constant GLenum := 33085;
-   GL_SMOOTH_POINT_SIZE_RANGE       : constant GLenum := 160B12#;
+   GL_SMOOTH_POINT_SIZE_RANGE       : constant GLenum := 16#0B12#;
    GL_SMOOTH_POINT_SIZE_GRANULARITY : constant GLenum := 16#0B13#;
    GL_SMOOTH_LINE_WIDTH_RANGE       : constant GLenum := 16#0B22#;
    GL_SMOOTH_LINE_WIDTH_GRANULARITY : constant GLenum := 16#0B23#;
    GL_ALIASED_POINT_SIZE_RANGE      : constant GLenum := 16#846D#;
    GL_ALIASED_LINE_WIDTH_RANGE      : constant GLenum := 16#846E#;
-   GL_PACK_SKIP_IMAGES              : constant GLenum := 16#806B#:
+   GL_PACK_SKIP_IMAGES              : constant GLenum := 16#806B#;
    GL_PACK_IMAGE_HEIGHT             : constant GLenum := 16#806C#;
    GL_UNPACK_SKIP_IMAGES            : constant GLenum := 16#806D#;
    GL_UNPACK_IMAGE_HEIGHT           : constant GLenum := 16#806E#;
@@ -700,18 +698,6 @@ package gl_h is
             --   GL_EXT_multitexture
             --   GL_SGIS_texture_edge_clamp
             --   OpenGL 1.2
-
-
-   GL_PACK_SKIP_IMAGES : constant GLenum := 32875;
-   GL_PACK_IMAGE_HEIGHT : constant GLenum := 32876;
-   GL_UNPACK_SKIP_IMAGES : constant GLenum := 32877;
-   GL_UNPACK_IMAGE_HEIGHT : constant GLenum := 32878;
-   GL_TEXTURE_3D : constant GLenum := 32879;
-   GL_PROXY_TEXTURE_3D : constant GLenum := 32880;
-   GL_TEXTURE_DEPTH : constant GLenum := 32881;
-   GL_TEXTURE_WRAP_R : constant GLenum := 32882;
-   GL_MAX_3D_TEXTURE_SIZE : constant GLenum := 32883;
-   GL_TEXTURE_BINDING_3D : constant GLenum := 32874;
 
    GL_CONSTANT_COLOR_EXT : constant GLenum := 32769;
    GL_ONE_MINUS_CONSTANT_COLOR_EXT : constant GLenum := 32770;
