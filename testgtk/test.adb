@@ -153,7 +153,9 @@ package body Test is
       (US ("statusbar"), Create_Status.Run'Access),
       (US ("test idle"), Create_Test_Idle.Run'Access),
       (US ("test mainloop"), Create_Main_Loop.Run'Access),
-      (US ("test scrolling"), Create_Scroll_Test.Run'Access),
+      (US ("test scrolling"), null),
+      --  (US ("test scrolling"), Create_Scroll_Test.Run'Access),
+      --  Not finished yet.
       (US ("test selection"), null),
       (US ("test timeout"), Create_Test_Timeout.Run'Access),
       (US ("text"), Create_Text.Run'Access),
@@ -291,7 +293,7 @@ package body Test is
       begin
          return Ada.Strings.Fixed.Trim (Guint'Image (I), Ada.Strings.Left);
       end Image_Of;
-      Temp : constant String := "Gtk+ " & Image_Of (Gtk.Major_Version) & "." &
+      Temp : constant String := "(Ada95)Gtk " & Image_Of (Gtk.Major_Version) & "." &
         Image_Of (Gtk.Minor_Version);
    begin
       if Gtk.Micro_Version > 0 then
