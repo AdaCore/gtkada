@@ -44,10 +44,13 @@ c_extra_objects = gtkextra/gtk*.o
 
 all: dirs libs gates
 
-libs: extra $(LIBNAME) $(ARCHIVENAME) opengl install_ali
+libs: extra $(LIBNAME) $(ARCHIVENAME) opengl pixbuf install_ali
 
 opengl: force
 	$(MAKE) -C opengl
+
+pixbuf: force
+	$(MAKE) -C pixbuf
 
 extra: force
 	$(MAKE) -C gtkextra
@@ -122,6 +125,7 @@ install: all
            $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
            $(INSTALL_PROGRAM) $(DGATE) $(bindir); \
            $(MAKE) -C opengl install; \
+           $(MAKE) -C pixbuf install; \
 	fi
 	@echo '------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                              --'
@@ -129,9 +133,6 @@ install: all
 	@echo '--  LD_LIBRARY_PATH or to run ldconfig. You may also need to    --'
 	@echo '--  update your PATH to include gtkada-config in it.            --'
 	@echo '------------------------------------------------------------------'
-
-opengl-install:
-	$(MAKE) -C opengl install
 
 clean-generic:
 	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
@@ -148,18 +149,22 @@ mostlyclean-generic: clean-generic
 clean: clean-generic
 	$(MAKE) -C gtkextra clean
 	$(MAKE) -C opengl clean
+	$(MAKE) -C pixbuf clean
 
 distclean: mostlyclean-generic
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
+	$(MAKE) -C pixbuf distclean
 
 mostlyclean: mostlyclean-generic
 	$(MAKE) -C gtkextra mostlyclean
 	$(MAKE) -C opengl mostlyclean
+	$(MAKE) -C pixbuf mostlyclean
 
 maintainer-clean: mostlyclean-generic
 	$(MAKE) -C gtkextra maintainer-clean
 	$(MAKE) -C opengl maintainer-clean
+	$(MAKE) -C pixbuf maintainer-clean
 
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
