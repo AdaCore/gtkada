@@ -151,35 +151,6 @@ package body Gtk.Preview is
                 Height);
    end Put;
 
-   -------------
-   -- Put_Row --
-   -------------
-
-   procedure Put_Row
-      (Preview : in Gtk_Preview;
-       Src     : in Guchar_Array;
-       Dest    : in Guchar_Array;
-       X       : in Gint;
-       Y       : in Gint;
-       W       : in Gint)
-   is
-      procedure Internal
-         (Preview : in System.Address;
-          Src     : in System.Address;
-          Dest    : in System.Address;
-          X       : in Gint;
-          Y       : in Gint;
-          W       : in Gint);
-      pragma Import (C, Internal, "gtk_preview_put_row");
-   begin
-      Internal (Get_Object (Preview),
-                Src'Address,
-                Dest'Address,
-                X,
-                Y,
-                W);
-   end Put_Row;
-
    -----------
    -- Reset --
    -----------

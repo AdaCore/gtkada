@@ -65,16 +65,6 @@ package Gtk.Preview is
        Desty   : in Gint;
        Width   : in Gint;
        Height  : in Gint);
-   procedure Put_Row
-      (Preview : in Gtk_Preview;
-       Src     : in Guchar_Array;
-       Dest    : in Guchar_Array;
-       X       : in Gint;
-       Y       : in Gint;
-       W       : in Gint);
-   --  For a color preview, Src'Length = W * 3
-   --  For a grey preview, Src'Length = W
-   --  The size of depth depends of the depth of the screen
 
    procedure Reset;
    procedure Set_Color_Cube
