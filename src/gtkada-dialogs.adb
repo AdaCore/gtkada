@@ -110,9 +110,12 @@ package body Gtkada.Dialogs is
       for J in Button_Range loop
          if (Buttons and 2 ** Integer (J)) /= 0 then
             --  Use Gtk_Response_Cancel for the Cancel or No buttons, so that
-            --  Esc can be used to close the dialog
+            --  Esc can be used to close the dialog. Likewise, if none of these
+            --  two was provided, simply use Cancel for the OK button
             if J = 4
               or else (J = 1 and then (Buttons and Button_Cancel) = 0)
+              or else (J = 3 and then (Buttons and Button_Cancel) = 0
+                       and then (Buttons and Button_No) = 0)
             then
                Response := Gtk_Response_Cancel;
             else
@@ -150,8 +153,10 @@ package body Gtkada.Dialogs is
             Destroy (Dialog);
             if (Buttons and Button_Cancel) /= 0 then
                return Button_Cancel;
-            else
+            elsif (Buttons and Button_No) /= 0 then
                return Button_No;
+            else
+               return Button_OK;
             end if;
 
          elsif Response in 0 .. Gtk_Response_Type'Last then
