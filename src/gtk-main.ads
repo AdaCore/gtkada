@@ -39,24 +39,50 @@ package Gtk.Main is
    pragma Import (C, Main_Quit, "gtk_main_quit");
    pragma Import (C, Main_Iteration, "gtk_main_iteration");
 
+   ----------
+   -- Idle --
+   ----------
 
    generic
       type Data_Type (<>) is private;
-   package Idle_Func is
+   package Idle is
       type Callback is access function (D : in Data_Type) return Boolean;
 
       function Add (Cb : in Callback;  D : in Data_Type) return Guint;
       --  mapping: Idle_Func.Add gtkmain.h gtk_idle_add
 
-   end Idle_Func;
+   end Idle;
    --  !!Warning!! The instances of this package must be declared at library
    --  level, as they are some accesses to internal functions that happen
    --  when the callback is called.
 
-
    procedure Idle_Remove (Id : in Guint);
    pragma Import (C, Idle_Remove, "gtk_idle_remove");
    --  mapping: Idle_Remove gtkmain.h gtk_idle_remove
+
+   -------------
+   -- Timeout --
+   -------------
+
+   generic
+      type Data_Type (<>) is private;
+   package Timeout is
+      type Callback is access function (D : in Data_Type) return Boolean;
+
+      function Add (Interval : in Guint32;
+                    Func     : in Callback;
+                    D        : in Data_Type)
+                    return      Guint;
+      --  mapping: Timeout.Add gtkmain.h gtk_timeout_add
+
+   end Timeout;
+   --  !!Warning!! The instances of this package must be declared at library
+   --  level, as they are some accesses to internal functions that happen
+   --  when the callback is called.
+
+   procedure Timeout_Remove (Id : in Guint);
+   pragma Import (C, Timeout_Remove, "gtk_timeout_remove");
+   --  mapping: Timeout_Remove gtkmain.h gtk_timeout_remove
 
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_main_iteration_do
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_true
@@ -71,9 +97,7 @@ package Gtk.Main is
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_quit_remove
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_quit_remove_by_data
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_timeout_add_full
-   --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_timeout_add
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_timeout_add_interp
-   --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_timeout_remove
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_idle_add_priority
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_idle_add_full
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_idle_add_interp
