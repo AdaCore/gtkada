@@ -14,7 +14,7 @@ MINOR   = @GTKADA_MINOR_VERSION@
 MICRO   = @GTKADA_MICRO_VERSION@
 
 CP = cp -p -f
-LN = ln -s -f
+LN = ln -f -s
 CHMOD = chmod
 ARFLAGS = cr
 
