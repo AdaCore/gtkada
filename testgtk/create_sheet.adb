@@ -87,7 +87,7 @@ package body Create_Sheet is
    function Ns (S : String) return Interfaces.C.Strings.chars_ptr
                renames Interfaces.C.Strings.New_String;
    function To_Range is new Unchecked_Conversion
-     (System.Address, Gtk_Sheet_Range_Access);
+     (System.Address, Gtk_Sheet_Range);
 
    type Gint_Access is access Gint;
    function To_Gint_Access is new Unchecked_Conversion
@@ -531,8 +531,8 @@ package body Create_Sheet is
                              Params : Gtk.Arguments.Gtk_Args)
    is
       pragma Warnings (Off, Widget);
-      Old_Range : Gtk_Sheet_Range_Access := To_Range (Get_Nth (Params, 1));
-      New_Range : Gtk_Sheet_Range_Access := To_Range (Get_Nth (Params, 2));
+      Old_Range : Gtk_Sheet_Range := To_Range (Get_Nth (Params, 1));
+      New_Range : Gtk_Sheet_Range := To_Range (Get_Nth (Params, 2));
    begin
       Put_Line ("Resize: Old selection: "
                 & Gint'Image (Old_Range.Row0)
@@ -554,8 +554,8 @@ package body Create_Sheet is
                            Params : Gtk.Arguments.Gtk_Args)
    is
       pragma Warnings (Off, Widget);
-      Old_Range : Gtk_Sheet_Range_Access := To_Range (Get_Nth (Params, 1));
-      New_Range : Gtk_Sheet_Range_Access := To_Range (Get_Nth (Params, 2));
+      Old_Range : Gtk_Sheet_Range := To_Range (Get_Nth (Params, 1));
+      New_Range : Gtk_Sheet_Range := To_Range (Get_Nth (Params, 2));
    begin
       Put_Line ("Move: Old selection: "
                 & Gint'Image (Old_Range.Row0)
@@ -809,31 +809,33 @@ package body Create_Sheet is
    --------------------
 
    procedure Build_Example2 (Sheet : access Gtk_Sheet_Record'Class) is
-      R : Gtk_Sheet_Range;
+      R : aliased Gtk_Sheet_Range_Record;
+      R2 : Gtk_Sheet_Range := R'Unchecked_Access;
       Color : Gdk_Color;
       Tmp   : Boolean;
    begin
       Sheet_Unset_Flags (Sheet, Auto_Scroll);
       Set_Selection_Mode (Sheet, Selection_Single);
 
-      R := (Row0 => 0, Rowi => 2, Col0 => 0, Coli => Get_Maxcol (Sheet));
-      Range_Set_Editable (Sheet, R, False);
+      R :=
+        (Row0 => 0, Rowi => 2, Col0 => 0, Coli => Get_Columns_Count (Sheet));
+      Range_Set_Editable (Sheet, R2, False);
       Color := Parse ("light gray");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Background (Sheet, R, Color);
+      Range_Set_Background (Sheet, R2, Color);
       Color := Parse ("blue");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Foreground (Sheet, R, Color);
+      Range_Set_Foreground (Sheet, R2, Color);
 
       R.Row0 := 1;
       Color := Parse ("red");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Foreground (Sheet, R, Color);
+      Range_Set_Foreground (Sheet, R2, Color);
 
       R.Row0 := 2;
       Color := Parse ("black");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Foreground (Sheet, R, Color);
+      Range_Set_Foreground (Sheet, R2, Color);
 
       --  The first three rows can not be edited
       Row_Set_Sensitivity (Sheet, 0, False);
@@ -860,48 +862,50 @@ package body Create_Sheet is
    --------------------
 
    procedure Build_Example3 (Sheet : access Gtk_Sheet_Record'Class) is
-      R : Gtk_Sheet_Range;
+      R : aliased Gtk_Sheet_Range_Record;
+      R2 : Gtk_Sheet_Range := R'Unchecked_Access;
       Color : Gdk_Color;
    begin
       R := (Row0 => 0, Rowi => 10, Col0 => 0, Coli => 6);
       Color := Parse ("orange");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Background (Sheet, R, Color);
+      Range_Set_Background (Sheet, R2, Color);
 
       Color := Parse ("Violet");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Foreground (Sheet, R, Color);
+      Range_Set_Foreground (Sheet, R2, Color);
 
       R.Row0 := 1;
       Color := Parse ("blue");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Background (Sheet, R, Color);
+      Range_Set_Background (Sheet, R2, Color);
 
       R.Coli := 0;
       Color := Parse ("dark green");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Background (Sheet, R, Color);
+      Range_Set_Background (Sheet, R2, Color);
 
       R.Row0 := 0;
       Color := Parse ("dark blue");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Border_Color (Sheet, R, Color);
-      Range_Set_Border (Sheet, R, Right_Border, 4, Line_Double_Dash);
+      Range_Set_Border_Color (Sheet, R2, Color);
+      Range_Set_Border (Sheet, R2, Right_Border, 4, Line_Double_Dash);
 
       R.Coli := 0;
       R.Col0 := 0;
       R.Rowi := 0;
       Color := Parse ("red");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Border (Sheet, R, Right_Border + Bottom_Border, 4, Line_Solid);
+      Range_Set_Border
+        (Sheet, R2, Right_Border + Bottom_Border, 4, Line_Solid);
 
       R.Rowi := 0;
       R.Col0 := 1;
       R.Coli := 6;
       Color := Parse ("dark blue");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Border_Color (Sheet, R, Color);
-      Range_Set_Border (Sheet, R, Bottom_Border, 4, Line_Double_Dash);
+      Range_Set_Border_Color (Sheet, R2, Color);
+      Range_Set_Border (Sheet, R2, Bottom_Border, 4, Line_Double_Dash);
 
       Sheet_Set_Flags (Sheet, Auto_Resize);
 
@@ -919,7 +923,8 @@ package body Create_Sheet is
       Font_Name2 : constant String
         := "-bitstream-charter-bold-r-normal--28-280-72-72-p-0-iso8859-1";
       Colormap : Gdk.Color.Gdk_Colormap := Gdk.Color.Get_System;
-      R : Gtk_Sheet_Range;
+      R : aliased Gtk_Sheet_Range_Record;
+      R2 : Gtk_Sheet_Range := R'Unchecked_Access;
       Font  : Gdk_Font;
       Color : Gdk_Color;
       Pixmap : Gdk_Pixmap;
@@ -927,7 +932,7 @@ package body Create_Sheet is
       Mask   : Gdk_Bitmap;
       Show_Button : Gtk_Button;
    begin
-      for I in 0 .. Get_Maxcol (Sheet) loop
+      for I in 0 .. Get_Columns_Count (Sheet) loop
          Column_Button_Add_Label (Sheet, I, "A" & Gint'Image (I));
          Set_Column_Title (Sheet, I, "A" & Gint'Image (I));
       end loop;
@@ -938,31 +943,31 @@ package body Create_Sheet is
       Row_Button_Justify (Sheet, 0, Justify_Right);
 
       R := (Row0 => 1, Rowi => 2, Col0 => 1, Coli => 3);
-      Clip_Range (Sheet, R);
+      Clip_Range (Sheet, R2);
       Load (Font, Font_Name2);
-      Range_Set_Font (Sheet, R, Font);
+      Range_Set_Font (Sheet, R2, Font);
       Color := Parse ("red");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Foreground (Sheet, R, Color);
+      Range_Set_Foreground (Sheet, R2, Color);
 
       Set_Cell (Sheet, 1, 2, Justify_Center, "Welcome to");
 
       R.Row0 := 2;
       Load (Font, Font_Name1);
-      Range_Set_Font (Sheet, R, Font);
+      Range_Set_Font (Sheet, R2, Font);
       Color := Parse ("blue");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Foreground (Sheet, R, Color);
+      Range_Set_Foreground (Sheet, R2, Color);
 
       Set_Cell (Sheet, 2, 2, Justify_Center, "GtkSheet");
 
       R := (Row0 => 3, Rowi => 3, Col0 => 0, Coli => 4);
       Color := Parse ("dark gray");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Background (Sheet, R, Color);
+      Range_Set_Background (Sheet, R2, Color);
       Color := Parse ("green");
       Alloc (Get_Colormap (Sheet), Color);
-      Range_Set_Foreground (Sheet, R, Color);
+      Range_Set_Foreground (Sheet, R2, Color);
 
       Set_Cell (Sheet, 3, 2, Justify_Center, "a Matrix widget for GtkAda");
 
@@ -1108,7 +1113,7 @@ package body Create_Sheet is
       R           : Gtk_Sheet_Range;
       Width       : constant Gint := 3;
       Auxcol      : Gint;
-      Auxrange    : Gtk_Sheet_Range;
+      Auxrange    : aliased Gtk_Sheet_Range_Record;
    begin
       Cur_Page := Get_Current_Page (Notebook);
       Current  := Sheets (Cur_Page);
@@ -1182,8 +1187,8 @@ package body Create_Sheet is
                      Border_Mask := Border_Mask - Left_Border;
                   end if;
                   if Border_Mask /= All_Borders then
-                     Range_Set_Border (Current, Auxrange, Border_Mask,
-                                       Width, Line_Solid);
+                     Range_Set_Border (Current, Auxrange'Unchecked_Access,
+                                       Border_Mask, Width, Line_Solid);
                   end if;
                end loop;
             end loop;
@@ -1206,8 +1211,8 @@ package body Create_Sheet is
                      Border_Mask := Border_Mask + Left_Border;
                   end if;
                   if Border_Mask /= No_Border then
-                     Range_Set_Border (Current, Auxrange, Border_Mask,
-                                       Width, Line_Solid);
+                     Range_Set_Border (Current, Auxrange'Unchecked_Access,
+                                       Border_Mask, Width, Line_Solid);
                   end if;
                end loop;
             end loop;

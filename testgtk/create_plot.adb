@@ -41,6 +41,7 @@ with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Extra.Plot;        use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Canvas; use Gtk.Extra.Plot_Canvas;
 with Gtk.Extra.Plot_Ps;     use Gtk.Extra.Plot_Ps;
+with Gtk.Extra.PsFont;      use Gtk.Extra.PsFont;
 with Gtk.Frame;             use Gtk.Frame;
 with Gtk.Scrolled_Window;   use Gtk.Scrolled_Window;
 with Gtk.Style;             use Gtk.Style;
@@ -451,7 +452,10 @@ package body Create_Plot is
       Button      : Gtk_Button;
       Text        : Gtk_Plot_Canvas_Child;
       Child       : Gtk_Plot_Canvas_Child;
+      Tmp         : Gint;
    begin
+      Tmp := Gtk.Extra.PsFont.Init;
+
       Num_Layers := 0;
       Gtk_New_Vbox (Vbox1, False, 0);
       Add (Frame, Vbox1);
@@ -512,6 +516,8 @@ package body Create_Plot is
 
       Event_Cb.Connect (Canvas, "select_item",
                         Select_Item'Access);
+
+      Show_All (Frame);
 
       Text := Put_Text
         (Canvas, 0.40, 0.02, 0,

@@ -99,17 +99,6 @@ EXPORTS
 	gtk_plot_grids_set_visible
 	gtk_plot_hide_dataset
 	gtk_plot_hide_legends
-	gtk_plot_layout_add_plot
-	gtk_plot_layout_export_ps
-	gtk_plot_layout_export_ps_with_size
-	gtk_plot_layout_get_pixel
-	gtk_plot_layout_get_position
-	gtk_plot_layout_get_type
-	gtk_plot_layout_new
-	gtk_plot_layout_put_text
-	gtk_plot_layout_refresh
-	gtk_plot_layout_set_background
-	gtk_plot_layout_set_size
 	gtk_plot_legends_get_allocation
 	gtk_plot_legends_get_position
 	gtk_plot_legends_move

@@ -169,6 +169,31 @@ gtk_plot_canvas_get_type (void)
   return plot_canvas_type;
 }
 
+GtkType
+gtk_plot_canvas_child_get_type (void)
+{
+  static GtkType plot_canvas_child_type = 0;
+
+  if (!plot_canvas_child_type)
+    {
+      GtkTypeInfo plot_canvas_child_info =
+      {
+       "GtkPlotCanvasChild",
+       0,
+       0,
+       (GtkClassInitFunc) NULL,
+       (GtkObjectInitFunc) NULL,
+       /* reserved 1*/ NULL,
+        /* reserved 2 */ NULL,
+        (GtkClassInitFunc) NULL,
+      };
+
+      plot_canvas_child_type = gtk_type_unique (GTK_TYPE_BOXED,
+                                              &plot_canvas_child_info);
+    }
+  return plot_canvas_child_type;
+}
+
 static void
 gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
 {
@@ -188,7 +213,8 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, select_item),
                     gtk_plot_canvas_marshal_select_item,
-                    GTK_TYPE_BOOL, 2, GTK_TYPE_GDK_EVENT, GTK_TYPE_POINTER);
+                    GTK_TYPE_BOOL, 2, GTK_TYPE_GDK_EVENT, 
+                    GTK_TYPE_PLOT_CANVAS_CHILD);
 
   canvas_signals[MOVE_ITEM] =
     gtk_signal_new ("move_item",
@@ -196,7 +222,7 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, move_item),
                     gtk_plot_canvas_marshal_move_resize,
-                    GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER, 
+                    GTK_TYPE_BOOL, 3, GTK_TYPE_PLOT_CANVAS_CHILD, 
                     GTK_TYPE_DOUBLE,
                     GTK_TYPE_DOUBLE);
 
@@ -206,7 +232,7 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, resize_item),
                     gtk_plot_canvas_marshal_move_resize,
-                    GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER,
+                    GTK_TYPE_BOOL, 3, GTK_TYPE_PLOT_CANVAS_CHILD,
                     GTK_TYPE_DOUBLE,
                     GTK_TYPE_DOUBLE);
 
@@ -383,7 +409,9 @@ gtk_plot_canvas_finalize (GtkObject *object)
 
     child = (GtkPlotCanvasChild *) list->data;
 
-    g_free(child->data);
+    if(child->data)
+         g_free(child->data);
+
     g_free(child);
 
     plot_canvas->childs = g_list_remove_link(plot_canvas->childs, list);
@@ -856,7 +884,7 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                                 child_text->x, child_text->y,
                                 &tx, &ty);
 
-      gtk_plot_text_get_area(*child_text, m, &rx, &ry, &twidth, &theight); 
+      gtk_plot_text_get_area(child_text, m, &rx, &ry, &twidth, &theight); 
 
       area.x = tx + rx;
       area.y = ty + ry;
@@ -894,7 +922,7 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
             gtk_plot_canvas_get_real_pixel(GTK_WIDGET(plot), 
                                            child_text->x, child_text->y,
                                            &tx, &ty);
-            gtk_plot_text_get_area(*child_text, m, &rx, &ry, &twidth, &theight);
+            gtk_plot_text_get_area(child_text, m, &rx, &ry, &twidth, &theight);
 
             area.x = tx + rx;
             area.y = ty + ry;
@@ -1564,7 +1592,7 @@ gtk_plot_canvas_get_active_plot(GtkPlotCanvas *canvas)
 
 
 GtkPlotData *
-gtk_plot_canvas_get_active_dataset(GtkPlotCanvas *canvas)
+gtk_plot_canvas_get_active_data(GtkPlotCanvas *canvas)
 {
   return canvas->active_data;
 }
@@ -2142,12 +2170,13 @@ gtk_plot_canvas_child_new(GtkPlotCanvasType type)
         break;    
     case GTK_PLOT_CANVAS_CUSTOM:
         child->flags = GTK_PLOT_CANVAS_CAN_MOVE;
+        child->data = NULL;
     default:
 	break;
   }
   
-  child->draw = NULL;
-  child->print = NULL;
+  child->draw_child = NULL;
+  child->print_child = NULL;
   return child;
 }
 
@@ -2345,7 +2374,7 @@ gtk_plot_canvas_draw_child(GtkPlotCanvas *canvas,
         break;
     case GTK_PLOT_CANVAS_CUSTOM:
     default:
-        if(child->draw) child->draw(canvas, child);
+        if(child->draw_child) child->draw_child(canvas, child);
         break;
   }
 
@@ -2376,9 +2405,9 @@ gtk_plot_canvas_draw_text(GtkPlotCanvas *canvas,
   x = text->x * canvas->pixmap_width;
   y = text->y * canvas->pixmap_height;
 
-  gtk_plot_text_get_size(*text, m, &width, &height, &ascent, &descent);
+  gtk_plot_text_get_size(text, m, &width, &height, &ascent, &descent);
 
-  gtk_plot_text_get_area(*text, m, &tx, &ty, &twidth, &theight);
+  gtk_plot_text_get_area(text, m, &tx, &ty, &twidth, &theight);
 
   tx += x;
   ty += y;
@@ -2507,7 +2536,7 @@ rotate_text(GtkPlotCanvas *canvas,
   cc = gdk_color_context_new(visual, colormap);
   gc = gdk_gc_new (window);
 
-  gtk_plot_text_get_size(text, m, width, height, &ascent, &descent);
+  gtk_plot_text_get_size(&text, m, width, height, &ascent, &descent);
   old_width = *width;
   old_height = *height;
   if(text.angle == 90 || text.angle == 270)
@@ -2542,50 +2571,59 @@ rotate_text(GtkPlotCanvas *canvas,
        case '0': case '1': case '2': case '3':
        case '4': case '5': case '6': case '7': case '9':
            tmp_font = gtk_psfont_find_by_family((gchar *)g_list_nth_data(family, atoi(aux)), italic, bold);
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case '8': case 'g':
            tmp_font = gtk_psfont_find_by_family("Symbol", italic, bold);
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case 'B':
            bold = TRUE;
-           tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
+           tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);
+           gdk_font_unref(font);
+           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case 'i':
            italic = TRUE;
-           tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
+           tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);
+           gdk_font_unref(font);
+           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case 'S': case '^':
            fontsize = (int)((gdouble)fontsize * 0.6 + 0.5);
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            y -= font->ascent;
            aux++;
            break;
        case 's': case '_':
            fontsize = (int)((gdouble)fontsize * 0.6 + 0.5);
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            y += font->descent;
            aux++;
            break;
        case '+':
            fontsize += 3;
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case '-':
            fontsize -= 3;
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case 'N':
-/*
            tmp_font = psfont;
-*/
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, text.height);
            y = y0;
            italic = psfont->italic;
@@ -2688,6 +2726,7 @@ rotate_text(GtkPlotCanvas *canvas,
   gdk_gc_unref(mask_gc);
   gdk_color_context_free(cc);
   gdk_image_destroy(image);
+  gdk_pixmap_unref(old_pixmap);
 
   return;
 }

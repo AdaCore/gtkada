@@ -70,8 +70,12 @@ enum
   GTK_SHEET_CLIP_TEXT     = 1 << 11, /* clip text to cell */
   GTK_SHEET_ROW_TITLES_VISIBLE = 1 << 12,
   GTK_SHEET_COL_TITLES_VISIBLE = 1 << 13,
-  GTK_SHEET_AUTO_SCROLL     = 1 << 14
+  GTK_SHEET_AUTO_SCROLL     = 1 << 14,
+  GTK_SHEET_JUSTIFY_ENTRY    = 1 << 15
 }; 
+
+#define GTK_TYPE_SHEET_RANGE (gtk_sheet_range_get_type ())
+#define GTK_TYPE_SHEET (gtk_sheet_get_type ())
 
 #define GTK_SHEET(obj)          GTK_CHECK_CAST (obj, gtk_sheet_get_type (), GtkSheet)
 #define GTK_SHEET_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gtk_sheet_get_type (), GtkSheetClass)
@@ -96,6 +100,7 @@ enum
 #define GTK_SHEET_ROW_TITLES_VISIBLE(sheet)   (GTK_SHEET_FLAGS (sheet) & GTK_SHEET_ROW_TITLES_VISIBLE)
 #define GTK_SHEET_COL_TITLES_VISIBLE(sheet)   (GTK_SHEET_FLAGS (sheet) & GTK_SHEET_COL_TITLES_VISIBLE)
 #define GTK_SHEET_AUTO_SCROLL(sheet)   (GTK_SHEET_FLAGS (sheet) & GTK_SHEET_AUTO_SCROLL)
+#define GTK_SHEET_JUSTIFY_ENTRY(sheet)   (GTK_SHEET_FLAGS (sheet) & GTK_SHEET_JUSTIFY_ENTRY)
 
 typedef struct _GtkSheet GtkSheet;
 typedef struct _GtkSheetClass GtkSheetClass;
@@ -367,6 +372,7 @@ struct _GtkSheetClass
 };
   
 GtkType gtk_sheet_get_type (void);
+GtkType gtk_sheet_range_get_type (void);
 
 /* create a new sheet */
 GtkWidget *
@@ -403,10 +409,10 @@ gtk_sheet_get_state 			(GtkSheet *sheet);
 /* Returns sheet's ranges 
  * Added by Murray Cumming */
 gint
-gtk_sheet_get_maxcol 			(GtkSheet *sheet);
+gtk_sheet_get_columns_count 		(GtkSheet *sheet);
 
 gint
-gtk_sheet_get_maxrow 			(GtkSheet *sheet);
+gtk_sheet_get_rows_count 		(GtkSheet *sheet);
 
 gint
 gtk_sheet_get_max_alloc_col 		(GtkSheet *sheet);
@@ -544,7 +550,7 @@ gtk_sheet_select_column 		(GtkSheet * sheet,
 
 /* save selected range to "clipboard" */
 void
-gtk_sheet_clip_range 			(GtkSheet *sheet, GtkSheetRange range);
+gtk_sheet_clip_range 			(GtkSheet *sheet, GtkSheetRange *range);
 /* free clipboard */
 void
 gtk_sheet_unclip_range			(GtkSheet *sheet);
@@ -560,8 +566,7 @@ void gtk_sheet_select_range		(GtkSheet *sheet,
 					 const GtkSheetRange *range); 
 
 /* obvious */
-void gtk_sheet_unselect_range		(GtkSheet *sheet, 
-                                         const GtkSheetRange *range); 
+void gtk_sheet_unselect_range		(GtkSheet *sheet); 
 
 /* set active cell where the entry will be displayed 
  * returns FALSE if current cell can't be deactivated or
@@ -673,13 +678,13 @@ gtk_sheet_delete_columns		(GtkSheet *sheet, gint col, gint ncols);
 /* set abckground color of the given range */
 void
 gtk_sheet_range_set_background		(GtkSheet *sheet, 
-					GtkSheetRange range, 
+					GtkSheetRange *range, 
 					GdkColor *color);
 
 /* set foreground color (text color) of the given range */
 void
 gtk_sheet_range_set_foreground		(GtkSheet *sheet, 
-					GtkSheetRange range, 
+					GtkSheetRange *range, 
 					GdkColor *color);
 
 /* set text justification (GTK_JUSTIFY_LEFT, RIGHT, CENTER) of the given range.
@@ -687,7 +692,7 @@ gtk_sheet_range_set_foreground		(GtkSheet *sheet,
  * default justification for numbers is GTK_JUSTIFY_RIGHT */
 void
 gtk_sheet_range_set_justification	(GtkSheet *sheet, 
-					GtkSheetRange range, 
+					GtkSheetRange *range, 
 					GtkJustification justification);
 void
 gtk_sheet_column_set_justification      (GtkSheet *sheet,
@@ -697,14 +702,14 @@ gtk_sheet_column_set_justification      (GtkSheet *sheet,
  * accepted values are TRUE or FALSE. */
 void
 gtk_sheet_range_set_editable		(GtkSheet *sheet, 
-					GtkSheetRange range, 
+					GtkSheetRange *range, 
 					gint editable);
 
 /* set if cell contents are visible or not in the given range:
  * accepted values are TRUE or FALSE.*/
 void
 gtk_sheet_range_set_visible		(GtkSheet *sheet, 
-					GtkSheetRange range, 
+					GtkSheetRange *range, 
 					gint visible);
 
 /* set cell border style in the given range.
@@ -714,7 +719,7 @@ gtk_sheet_range_set_visible		(GtkSheet *sheet,
  * line_style is the line_style for the border line */
 void
 gtk_sheet_range_set_border		(GtkSheet *sheet, 
-					GtkSheetRange range, 
+					GtkSheetRange *range, 
 					gint mask, 
 					gint width, 
 					gint line_style);
@@ -722,13 +727,13 @@ gtk_sheet_range_set_border		(GtkSheet *sheet,
 /* set border color for the given range */
 void
 gtk_sheet_range_set_border_color	(GtkSheet *sheet, 
-					GtkSheetRange range, 
+					GtkSheetRange *range, 
 					GdkColor *color);
 
 /* set font for the given range */
 void
 gtk_sheet_range_set_font		(GtkSheet *sheet, 
-					GtkSheetRange range, 
+					GtkSheetRange *range, 
 					GdkFont *font);
 
 /* get cell attributes of the given cell */

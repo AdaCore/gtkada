@@ -87,7 +87,7 @@ ada_gtk_plot_canvas_set_draw_func
 (GtkPlotCanvasChild* item,
  void (*draw) (GtkPlotCanvas *canvas, GtkPlotCanvasChild *child))
 {
-  item->draw = draw;
+  item->draw_child = draw;
 }
 
 guint
@@ -153,9 +153,9 @@ ada_gtk_sheet_get_widget (GtkSheetChild* child) {
   return child->widget;
 }
 
-void
-ada_gtk_sheet_get_range (GtkSheet* sheet, GtkSheetRange* range) {
-  *range = sheet->range;
+GtkSheetRange*
+ada_gtk_sheet_get_range (GtkSheet* sheet) {
+  return &(sheet->range);
 }
 
 gchar*

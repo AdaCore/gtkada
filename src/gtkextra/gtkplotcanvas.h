@@ -108,6 +108,8 @@ typedef enum
 #define GTK_PLOT_CANVAS_CAN_SELECT_POINT(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_SELECT_POINT)
 #define GTK_PLOT_CANVAS_CAN_SELECT_ITEM(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_SELECT_ITEM)
 #define GTK_PLOT_CANVAS_CAN_SELECT(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_SELECT)
+#define GTK_TYPE_PLOT_CANVAS (gtk_plot_canvas_get_type ())
+#define GTK_TYPE_PLOT_CANVAS_CHILD (gtk_plot_canvas_child_get_type ())
 
 
 typedef struct _GtkPlotCanvas	GtkPlotCanvas;
@@ -131,8 +133,8 @@ struct _GtkPlotCanvasChild
 
   gpointer data;
 
-  void (*draw) (GtkPlotCanvas *canvas, GtkPlotCanvasChild *child);
-  void (*print) (gpointer *pc, GtkPlotCanvasChild *child);
+  void (*draw_child) (GtkPlotCanvas *canvas, GtkPlotCanvasChild *child);
+  void (*print_child) (gpointer *pc, GtkPlotCanvasChild *child);
 };
 
 struct _GtkPlotCanvasLine
@@ -229,6 +231,7 @@ struct _GtkPlotCanvasClass
 
 
 GtkType		gtk_plot_canvas_get_type	(void);
+GtkType		gtk_plot_canvas_child_get_type	(void);
 GtkWidget*	gtk_plot_canvas_new		(gint width, gint height,
                                                  gdouble magnification);
 void		gtk_plot_canvas_refresh         (GtkPlotCanvas *canvas);
@@ -277,8 +280,8 @@ GtkPlotCanvasChild *
                                                  GdkColor *bg,
 						 gboolean transparent,
                                                  GtkJustification justification,                                                 const gchar *text);
-gboolean        gtk_plot_canvas_remove_text     (GtkPlotCanvas *canvas,
-                                                 GtkPlotText *text);
+gboolean        gtk_plot_canvas_remove_child    (GtkPlotCanvas *canvas,
+                                                 GtkPlotCanvasChild *child);
 GtkPlotCanvasChild * 
 		gtk_plot_canvas_put_line	(GtkPlotCanvas *canvas,
                          			 gdouble x1, gdouble y1,

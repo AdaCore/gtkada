@@ -116,6 +116,8 @@ gtk_font_combo_class_init (GtkFontComboClass * klass)
 static void
 gtk_font_combo_destroy (GtkObject * font_combo)
 {
+  gdk_font_unref(GTK_FONT_COMBO(font_combo)->font);
+
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (*GTK_OBJECT_CLASS (parent_class)->destroy) (font_combo);
 
@@ -269,6 +271,7 @@ new_font(GtkEntry *entry, gpointer data)
 
   height = atoi(size);
   font_combo->psfont = psfont = gtk_psfont_find_by_family(text, italic, bold);
+  gdk_font_unref(font_combo->font);
   font_combo->font = gtk_psfont_get_gdkfont(psfont->fontname, height);
   font_combo->height = height;
   font_combo->italic = italic;

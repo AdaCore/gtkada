@@ -31,7 +31,7 @@
 --  A Gtk_Sheet is a table like the one you can find in most spreadsheets.
 --  Each cell can contain some text or any kind of widgets.
 --  </description>
---  <c_version>gtk+extra 0.99.5</c_version>
+--  <c_version>gtk+extra 0.99.9</c_version>
 
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Container;
@@ -48,19 +48,16 @@ package Gtk.Extra.Sheet is
      with private;
    type Gtk_Sheet is access all Gtk_Sheet_Record'Class;
 
-   type Gtk_Sheet_Range is
-      record
-         Row0, Col0 : Gint;  --  Upper-left cell
-         Rowi, Coli : Gint;  --  Lower-right cell
-      end record;
+   type Gtk_Sheet_Range_Record is record
+      Row0, Col0 : Gint;  --  Upper-left cell
+      Rowi, Coli : Gint; --  Lower-Right cell
+   end record;
+
+   type Gtk_Sheet_Range is access all Gtk_Sheet_Range_Record;
    --  A range in the sheet.
    --  This is a part of the sheet represented by its upper-left cell and
    --  its lower-right cell.
    --  Most operations below apply to such ranges.
-
-   --  <doc_ignore>
-   type Gtk_Sheet_Range_Access is access all Gtk_Sheet_Range;
-   --  </doc_ignore>
 
    type Gtk_Sheet_Child is new Gdk.C_Proxy;
    --  A widget insert in the sheet.
@@ -227,8 +224,7 @@ package Gtk.Extra.Sheet is
                            The_Range : in Gtk_Sheet_Range);
    --  Select a new range of cells.
 
-   procedure Unselect_Range (Sheet     : access Gtk_Sheet_Record;
-                             The_Range : in Gtk_Sheet_Range_Access := null);
+   procedure Unselect_Range (Sheet     : access Gtk_Sheet_Record);
    --  Unselect a specific range of cells.
    --  If null is passed, the current selected range is used.
 
@@ -351,11 +347,8 @@ package Gtk.Extra.Sheet is
       Justification : in Gtk.Enums.Gtk_Justification);
    --  Set the default justification for the cells in the specific column.
 
-   function Get_Maxcol (Sheet : access Gtk_Sheet_Record) return Gint;
+   function Get_Columns_Count (Sheet : access Gtk_Sheet_Record) return Gint;
    --  Return the maximum column number of the displayed cells.
-
-   function Get_Max_Alloc_Col (Sheet : access Gtk_Sheet_Record) return Gint;
-   --  Return the maximum column of allocated cells.
 
    ----------
    -- Rows --
@@ -448,22 +441,22 @@ package Gtk.Extra.Sheet is
                           Nrows : in Gint);
    --  Delete Nrows rows starting from Row.
 
-   function Get_Maxrow (Sheet : access Gtk_Sheet_Record) return Gint;
+   function Get_Rows_Count (Sheet : access Gtk_Sheet_Record) return Gint;
    --  Return the maximum row number of displayed cells.
-
-   function Get_Max_Alloc_Row (Sheet : access Gtk_Sheet_Record) return Gint;
-   --  Return the maximum row of allocated cells.
 
    -----------
    -- Range --
    -----------
+
+   function Range_Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associate with a Gtk_Sheet_Range
 
    procedure Range_Clear (Sheet     : access Gtk_Sheet_Record;
                           The_Range : in Gtk_Sheet_Range);
    --  Clear the content of the range.
 
    procedure Range_Delete (Sheet     : access Gtk_Sheet_Record;
-                           The_Range : in Gtk_Sheet_Range_Access);
+                           The_Range : in Gtk_Sheet_Range);
    --  Clear the content of the range and delete all the links (user_data)
 
    procedure Range_Set_Background (Sheet     : access Gtk_Sheet_Record;
@@ -723,6 +716,10 @@ package Gtk.Extra.Sheet is
    --  - "Auto_Scroll"
    --    Set when the sheet should automatically scroll to show the active
    --    cell at all times.
+   --
+   --  - "Justify_Entry"
+   --    Set when the justification attribute for entries should be taken into
+   --    account
 
    Is_Locked             : constant := 2 ** 0;
    Is_Frozen             : constant := 2 ** 1;
@@ -739,6 +736,7 @@ package Gtk.Extra.Sheet is
    Row_Titles_Visible    : constant := 2 ** 12;
    Column_Titles_Visible : constant := 2 ** 13;
    Auto_Scroll           : constant := 2 ** 14;
+   Justify_Entry         : constant := 2 ** 15;
 
    function Sheet_Flag_Is_Set (Sheet : access Gtk_Sheet_Record;
                                Flag  : Guint16)
@@ -895,6 +893,7 @@ private
    type Gtk_Sheet_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
    pragma Import (C, Get_Type, "gtk_sheet_get_type");
+   pragma Import (C, Range_Get_Type, "gtk_sheet_range_get_type");
 
    No_Border     : constant Gtk_Sheet_Border := 0;
    Left_Border   : constant Gtk_Sheet_Border := 1;

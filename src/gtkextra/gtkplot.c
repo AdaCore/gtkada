@@ -63,7 +63,8 @@ static void gtk_plot_draw_labels		(GtkPlot *plot,
 static void gtk_plot_real_draw_data		(GtkPlot *plot, 
 						 GdkRectangle *area, 
 						 GdkGC *gc,
-						 GtkPlotData *dataset);
+						 GtkPlotData *dataset,
+						 gint npoints);
 static void gtk_plot_draw_point			(GtkPlot *plot, 
 						 GdkRectangle area,
 						 GdkGC *gc,
@@ -127,7 +128,8 @@ static void gtk_plot_draw_star			(GtkPlot *plot,
 static void gtk_plot_connect_points		(GtkPlot *plot, 
 						 GdkRectangle area,
 						 GdkGC *gc,
-						 GtkPlotData *data);
+						 GtkPlotData *data,
+						 gint npoints);
 
 static void gtk_plot_draw_line			(GtkPlot *plot, 
 						 GdkGC *gc, 
@@ -743,7 +745,8 @@ gtk_plot_paint (GtkPlot *plot, GdkRectangle *drawing_area)
   dataset = plot->data_sets;
   while(dataset)
    {
-     gtk_plot_real_draw_data(plot, &area, gc, (GtkPlotData *)dataset->data);
+     gtk_plot_real_draw_data(plot, &area, gc, (GtkPlotData *)dataset->data,
+                             ((GtkPlotData *)dataset->data)->num_points);
      dataset = dataset->next;
    }
 
@@ -1238,7 +1241,8 @@ static void
 gtk_plot_real_draw_data   (GtkPlot *plot,  
                            GdkRectangle *drawing_area, 
 		  	   GdkGC *gc,
-                           GtkPlotData *dataset)
+                           GtkPlotData *dataset,
+			   gint npoints)
 {
   GtkWidget *widget;
   GtkPlotData function;
@@ -1258,6 +1262,8 @@ gtk_plot_real_draw_data   (GtkPlot *plot,
 
   plot->active_data = dataset;
 
+  npoints = MIN(npoints, dataset->num_points);
+
   if(drawing_area == NULL){
      area.x = widget->allocation.x;
      area.y = widget->allocation.y;
@@ -1269,10 +1275,10 @@ gtk_plot_real_draw_data   (GtkPlot *plot,
 
   if(!dataset->is_function)
     {
-       gtk_plot_connect_points (plot, area, gc, dataset);
+       gtk_plot_connect_points (plot, area, gc, dataset, npoints+1);
        gtk_plot_draw_xy(plot, area, gc, dataset);
        gtk_plot_draw_errbars(plot, area, gc, dataset); 
-       for(n=0; n<=dataset->num_points-1; n++)
+       for(n=dataset->num_points-npoints; n<=dataset->num_points-1; n++)
          {
            x = dataset->x[n];
            y = dataset->y[n];
@@ -1321,7 +1327,7 @@ gtk_plot_real_draw_data   (GtkPlot *plot,
                  function.y = fy;
 		 function.num_points--;
                  if(function.num_points > 1)
-                       gtk_plot_connect_points (plot, area, gc, &function);
+                       gtk_plot_connect_points (plot, area, gc, &function, function.num_points);
                  function.num_points = 0;
               }
             else
@@ -1334,7 +1340,7 @@ gtk_plot_real_draw_data   (GtkPlot *plot,
                           function.x = fx;
                           function.y = fy;
 			  function.num_points--;
-                          gtk_plot_connect_points(plot, area, gc, &function);
+                          gtk_plot_connect_points(plot, area, gc, &function, function.num_points);
                           function.num_points = 1;
                        }
                       if(y < plot->ymin && 
@@ -1343,7 +1349,7 @@ gtk_plot_real_draw_data   (GtkPlot *plot,
                           function.x = fx;
                           function.y = fy;
 			  function.num_points--;
-                          gtk_plot_connect_points(plot, area, gc, &function);
+                          gtk_plot_connect_points(plot, area, gc, &function, function.num_points);
                           function.num_points = 1;
                        }
                    }
@@ -1355,7 +1361,7 @@ gtk_plot_real_draw_data   (GtkPlot *plot,
          {
             function.x = fx;
             function.y = fy;
-            gtk_plot_connect_points (plot, area, gc, &function);
+            gtk_plot_connect_points (plot, area, gc, &function, function.num_points);
          }
        g_free(fx);
        g_free(fy);
@@ -1743,7 +1749,8 @@ static void
 gtk_plot_connect_points(GtkPlot *plot, 
                         GdkRectangle area, 
                         GdkGC *gc,
-                        GtkPlotData *dataset)
+                        GtkPlotData *dataset,
+			gint npoints)
 {
   GtkWidget *widget;
   GdkRectangle clip_area;
@@ -1752,7 +1759,7 @@ gtk_plot_connect_points(GtkPlot *plot,
   GdkPoint *spline_points;
   gdouble *spline_coef;
   gdouble x, y;
-  gint n;
+  gint n, n0;
   gint px, py;
   gint x1, y1;
   gint num_points = dataset->num_points;
@@ -1765,22 +1772,27 @@ gtk_plot_connect_points(GtkPlot *plot,
 
   if(dataset->line.line_style == GTK_PLOT_LINE_NONE) return;
 
+  
+  npoints = MIN(npoints, dataset->num_points);
+  n0 = dataset->num_points - npoints;
+
   points = (GdkPoint *)g_malloc( 2*dataset->num_points*sizeof(GdkPoint) );
 
   gdk_gc_set_clip_rectangle(gc, &clip_area);
 
   gtk_plot_set_line_attributes(plot, dataset->line, gc);
-
+ 
   switch(dataset->line_connector){
    case GTK_PLOT_CONNECT_STRAIGHT:
-      if(dataset->num_points == 1) break;
-      for(n=0; n<dataset->num_points; n++)
+      if(npoints == 1) break;
+      num_points = npoints;
+      for(n=n0; n<dataset->num_points; n++)
         {
           x = dataset->x[n];
           y = dataset->y[n];
           gtk_plot_get_real_pixel(plot, x, y, &px, &py, area);
-          points[n].x = px;
-          points[n].y = py;
+          points[n-n0].x = px;
+          points[n-n0].y = py;
         }
       break;
    case GTK_PLOT_CONNECT_HV_STEP:
@@ -2011,7 +2023,7 @@ gtk_plot_draw_legends (GtkPlot *plot, GdkRectangle area)
          ldescent = font->descent;
          if(dataset->legend){
             legend.text = dataset->legend;
-            gtk_plot_text_get_size(legend, m, &lwidth, &lheight, 
+            gtk_plot_text_get_size(&legend, m, &lwidth, &lheight, 
                                    &lascent, &ldescent);
             width = MAX(width, lwidth); 
          } 
@@ -2053,7 +2065,7 @@ gtk_plot_draw_legends (GtkPlot *plot, GdkRectangle area)
          ldescent = font->descent;
          if(dataset->legend){
             legend.text = dataset->legend;
-            gtk_plot_text_get_size(legend, m, &lwidth, &lheight, 
+            gtk_plot_text_get_size(&legend, m, &lwidth, &lheight, 
                                    &lascent, &ldescent);
          } 
          x = x0 + roundint(4 * m);
@@ -2314,7 +2326,7 @@ gtk_plot_draw_text(GtkPlot *plot,
   x = text.x * GTK_WIDGET(plot)->allocation.width;
   y = text.y * GTK_WIDGET(plot)->allocation.height;
 
-  gtk_plot_text_get_area(text, plot->magnification, 
+  gtk_plot_text_get_area(&text, plot->magnification, 
                          &tx, &ty, &twidth, &theight);
 
   x += tx;
@@ -2393,7 +2405,7 @@ rotate_text(GtkPlot *plot,
   cc = gdk_color_context_new(visual, colormap);
   gc = gdk_gc_new (plot->drawable);
 
-  gtk_plot_text_get_size(text, m, width, height, &ascent, &descent);
+  gtk_plot_text_get_size(&text, m, width, height, &ascent, &descent);
   old_width = *width;
   old_height = *height;
   if(text.angle == 90 || text.angle == 270)
@@ -2428,50 +2440,59 @@ rotate_text(GtkPlot *plot,
        case '0': case '1': case '2': case '3':
        case '4': case '5': case '6': case '7': case '9':
            tmp_font = gtk_psfont_find_by_family((gchar *)g_list_nth_data(family, atoi(aux)), italic, bold);
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case '8': case 'g':
            tmp_font = gtk_psfont_find_by_family("Symbol", italic, bold);
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case 'B':
            bold = TRUE;
-           tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
+           tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);
+           gdk_font_unref(font);
+           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case 'i':
            italic = TRUE;
-           tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
+           tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);
+           gdk_font_unref(font);
+           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case 'S': case '^':
            fontsize = (int)((gdouble)fontsize * 0.6 + 0.5);
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            y -= font->ascent;
            aux++;
            break;
        case 's': case '_':
            fontsize = (int)((gdouble)fontsize * 0.6 + 0.5);
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            y += font->descent;
            aux++;
            break;
        case '+':
            fontsize += 3;
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case '-':
            fontsize -= 3;
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
        case 'N':
-/*
            tmp_font = psfont;
-*/
+           gdk_font_unref(font);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, text.height);
            y = y0;
            italic = psfont->italic;
@@ -2575,17 +2596,19 @@ rotate_text(GtkPlot *plot,
   gdk_gc_unref(mask_gc);
   gdk_color_context_free(cc);
   gdk_image_destroy(image);
+  gdk_pixmap_unref(old_pixmap);
 
   return;
 
 }
 
 void
-gtk_plot_text_get_size(GtkPlotText text, gdouble magnification, 
+gtk_plot_text_get_size(GtkPlotText *text_attr, gdouble magnification, 
                        gint *width, gint *height,
                        gint *ascent, gint *descent)
 {
   GdkFont *font;
+  GtkPlotText text;
   GtkPSFont *psfont, *tmp_font;
   gint old_width, old_height;
   gboolean italic, bold;
@@ -2597,6 +2620,9 @@ gtk_plot_text_get_size(GtkPlotText text, gdouble magnification,
   gchar *lastchar = NULL;
   gdouble m = magnification;
 
+  if(text_attr == NULL) return;
+
+  text = *text_attr;
   gtk_psfont_get_families(&family, &numf);
   font = gtk_psfont_get_gdkfont(text.font, roundint(text.height * m));
   old_width = gdk_string_width (font, text.text);
@@ -2724,13 +2750,18 @@ gtk_plot_text_get_size(GtkPlotText text, gdouble magnification,
 }
 
 void
-gtk_plot_text_get_area(GtkPlotText text, gdouble magnification, 
+gtk_plot_text_get_area(GtkPlotText *text_attr, gdouble magnification, 
                        gint *x, gint *y,
                        gint *width, gint *height)
 {
+  GtkPlotText text;
   gint ascent, descent;
 
-  gtk_plot_text_get_size(text, magnification, 
+  if(text_attr == NULL) return;
+
+  text = *text_attr;
+
+  gtk_plot_text_get_size(&text, magnification, 
                          width, height, &ascent, &descent);
 
   *x = 0;
@@ -4076,10 +4107,26 @@ gtk_plot_draw_data(GtkPlot *plot, GdkGC *gc, GtkPlotData *dataset)
       gc = gdk_gc_new(GTK_WIDGET(plot)->window);
   } 
 
-  gtk_plot_real_draw_data(plot, NULL, gc, dataset);
+  gtk_plot_real_draw_data(plot, NULL, gc, dataset, dataset->num_points);
 
   if(new_gc) gdk_gc_unref(gc);
 }
+
+void
+gtk_plot_data_draw_points(GtkPlot *plot, GdkGC *gc, GtkPlotData *dataset, gint npoints)
+{
+  gboolean new_gc = FALSE;
+
+  if(gc == NULL){
+      new_gc = TRUE;
+      gc = gdk_gc_new(GTK_WIDGET(plot)->window);
+  } 
+
+  gtk_plot_real_draw_data(plot, NULL, gc, dataset, npoints);
+
+  if(new_gc) gdk_gc_unref(gc);
+}
+
 
 void
 gtk_plot_data_set_points(GtkPlotData *data, 
@@ -4373,6 +4420,24 @@ gtk_plot_data_hide(GtkPlotData *dataset)
   dataset->is_visible = FALSE;
 }
 
+void
+gtk_plot_data_set_link(GtkPlotData *dataset, gpointer link)
+{
+  dataset->link = link; 
+}
+
+gpointer
+gtk_plot_data_get_link(GtkPlotData *dataset)
+{
+  return(dataset->link); 
+}
+
+void
+gtk_plot_data_remove_link(GtkPlotData *dataset)
+{
+  dataset->link = NULL; 
+}
+
 gint
 gtk_plot_remove_data(GtkPlot *plot, GtkPlotData *dataset)
 {
@@ -4585,13 +4650,7 @@ gtk_plot_calc_ticks(GtkPlot *plot, gint orientation)
             tick += major_step; 
             break;
         case GTK_PLOT_SCALE_LOG10:
-/********************************************************************/
-/***** The following line makes gcc2.8.1 core dump              ****/
-#if 0
-           tick = pow(10., log10(absmin)+nmajor*major_step);
-#endif
-/********************************************************************/
-            tick = absmin * pow(10., nmajor*major_step);
+            tick = absmin * pow(10., nmajor*major_step); 
             break;
      }
    }

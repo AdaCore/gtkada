@@ -775,14 +775,12 @@ package body Gtk.Extra.Sheet is
    -- Unselect_Range --
    --------------------
 
-   procedure Unselect_Range (Sheet     : access Gtk_Sheet_Record;
-                             The_Range : in Gtk_Sheet_Range_Access := null)
+   procedure Unselect_Range (Sheet     : access Gtk_Sheet_Record)
    is
-      procedure Internal (Sheet     : in System.Address;
-                          The_Range : in Gtk_Sheet_Range_Access);
+      procedure Internal (Sheet     : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_unselect_range");
    begin
-      Internal (Get_Object (Sheet), The_Range);
+      Internal (Get_Object (Sheet));
    end Unselect_Range;
 
    ---------------------
@@ -957,10 +955,10 @@ package body Gtk.Extra.Sheet is
    ------------------
 
    procedure Range_Delete (Sheet     : access Gtk_Sheet_Record;
-                           The_Range : in Gtk_Sheet_Range_Access)
+                           The_Range : in Gtk_Sheet_Range)
    is
       procedure Internal (Sheet     : in System.Address;
-                          The_Range : in Gtk_Sheet_Range_Access);
+                          The_Range : in Gtk_Sheet_Range);
       pragma Import (C, Internal, "gtk_sheet_range_delete");
    begin
       Internal (Get_Object (Sheet), The_Range);
@@ -1515,59 +1513,33 @@ package body Gtk.Extra.Sheet is
    function Get_Range
      (Sheet : access Gtk_Sheet_Record) return Gtk_Sheet_Range
    is
-      procedure Internal
-        (Sheet : System.Address; The_Range : access Gtk_Sheet_Range);
+      function Internal (Sheet : System.Address) return Gtk_Sheet_Range;
       pragma Import (C, Internal, "ada_gtk_sheet_get_range");
-
-      R : aliased Gtk_Sheet_Range;
    begin
-      Internal (Get_Object (Sheet), R'Access);
-      return R;
+      return Internal (Get_Object (Sheet));
    end Get_Range;
 
-   ----------------
-   -- Get_Maxcol --
-   ----------------
-
-   function Get_Maxcol (Sheet : access Gtk_Sheet_Record) return Gint is
-      function Internal (Sheet : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_sheet_get_maxcol");
-   begin
-      return Internal (Get_Object (Sheet));
-   end Get_Maxcol;
-
    -----------------------
-   -- Get_Max_Alloc_Col --
+   -- Get_Columns_Count --
    -----------------------
 
-   function Get_Max_Alloc_Col (Sheet : access Gtk_Sheet_Record) return Gint is
+   function Get_Columns_Count (Sheet : access Gtk_Sheet_Record) return Gint is
       function Internal (Sheet : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_sheet_get_max_alloc_col");
+      pragma Import (C, Internal, "gtk_sheet_get_columns_count");
    begin
       return Internal (Get_Object (Sheet));
-   end Get_Max_Alloc_Col;
+   end Get_Columns_Count;
 
-   ----------------
-   -- Get_Maxrow --
-   ----------------
+   --------------------
+   -- Get_Rows_Count --
+   --------------------
 
-   function Get_Maxrow (Sheet : access Gtk_Sheet_Record) return Gint is
+   function Get_Rows_Count (Sheet : access Gtk_Sheet_Record) return Gint is
       function Internal (Sheet : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_sheet_get_maxrow");
+      pragma Import (C, Internal, "gtk_sheet_get_rows_count");
    begin
       return Internal (Get_Object (Sheet));
-   end Get_Maxrow;
-
-   -----------------------
-   -- Get_Max_Alloc_Row --
-   -----------------------
-
-   function Get_Max_Alloc_Row (Sheet : access Gtk_Sheet_Record) return Gint is
-      function Internal (Sheet : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_sheet_get_max_alloc_row");
-   begin
-      return Internal (Get_Object (Sheet));
-   end Get_Max_Alloc_Row;
+   end Get_Rows_Count;
 
    ----------------------
    -- Get_Column_Title --

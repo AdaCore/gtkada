@@ -413,6 +413,8 @@ gtk_entry_size_allocate (GtkWidget     *widget,
 {
   GtkEntry *entry;
   GtkEditable *editable;
+  gint width = 0, nwidth = 0, height = 0, nheight = 0;
+
 
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_ITEM_ENTRY (widget));
@@ -424,6 +426,7 @@ gtk_entry_size_allocate (GtkWidget     *widget,
 
   if (GTK_WIDGET_REALIZED (widget))
     {
+      gdk_window_get_size (entry->text_area, &width, &height);
       gdk_window_move_resize (widget->window,
 			      allocation->x + INNER_BORDER,
 			      allocation->y + INNER_BORDER,
@@ -435,18 +438,19 @@ gtk_entry_size_allocate (GtkWidget     *widget,
 			      allocation->width - 2 * INNER_BORDER,
 			      allocation->height - 2 * INNER_BORDER);
 
-      entry->scroll_offset = 0;
-      entry_adjust_scroll (entry);
+    
+      gdk_window_get_size (entry->text_area, &nwidth, &nheight);
+      if(nwidth != width || nheight != height){
+        entry->scroll_offset = 0;
+        entry_adjust_scroll (entry);
+      }
 
 #ifdef USE_XIM
       if (editable->ic &&
 	  (gdk_ic_get_style (editable->ic) & GDK_IM_PREEDIT_POSITION))
 	{
-	  gint width, height;
-
-	  gdk_window_get_size (entry->text_area, &width, &height);
-	  editable->ic_attr->preedit_area.width = width;
-	  editable->ic_attr->preedit_area.height = height;
+	  editable->ic_attr->preedit_area.width = nwidth;
+	  editable->ic_attr->preedit_area.height = nheight;
 	  gdk_ic_set_attr (editable->ic, editable->ic_attr,
 	      		   GDK_IC_PREEDIT_AREA);
 	}

@@ -523,7 +523,7 @@ psdrawstring(GtkPlotPC *pc,
   ptext.height = height;
   ptext.text = text;
   ptext.angle = angle;
-  gtk_plot_text_get_size(ptext, 1., &twidth, &theight, &tascent, &tdescent);
+  gtk_plot_text_get_size(&ptext, 1., &twidth, &theight, &tascent, &tdescent);
 
   if(angle == 90 || angle == 270) angle = 360 - angle;
 

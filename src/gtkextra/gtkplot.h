@@ -274,6 +274,8 @@ struct _GtkPlotData
   GtkPlotText labels_attr;
   GtkPlotFunc function;
   gint x_step;
+
+  gpointer link;
 };
 
 struct _GtkPlot
@@ -425,11 +427,11 @@ GtkPlotText *	gtk_plot_put_text		(GtkPlot *plot,
                                                  const gchar *text); 
 gint 		gtk_plot_remove_text		(GtkPlot *plot,
 						 GtkPlotText *text);
-void		gtk_plot_text_get_size		(GtkPlotText text,
+void		gtk_plot_text_get_size		(GtkPlotText *text,
 						 gdouble magnification,
 						 gint *width, gint *height,
 						 gint *ascent, gint *descent);
-void		gtk_plot_text_get_area		(GtkPlotText text,
+void		gtk_plot_text_get_area		(GtkPlotText *text,
 						 gdouble magnification,
 						 gint *x, gint *y,
 						 gint *width, gint *height);
@@ -598,6 +600,11 @@ GtkPlotData * 	gtk_plot_add_function		(GtkPlot *plot,
 void 		gtk_plot_draw_data		(GtkPlot *plot,
 					         GdkGC *gc,
 						 GtkPlotData *data);
+/* draw last n points */
+void 		gtk_plot_data_draw_points	(GtkPlot *plot,
+					         GdkGC *gc,
+						 GtkPlotData *data,
+						 gint n);
 void 		gtk_plot_data_set_points	(GtkPlotData *data,
 						 gdouble *x, gdouble *y,
 						 gdouble *dx, gdouble *dy,
@@ -680,6 +687,10 @@ void		gtk_plot_data_set_name       		(GtkPlotData *data,
                                                 	 const gchar *name);
 void		gtk_plot_data_show			(GtkPlotData *data);
 void		gtk_plot_data_hide			(GtkPlotData *data);
+void		gtk_plot_data_set_link			(GtkPlotData *data,
+							 gpointer link);
+gpointer	gtk_plot_data_get_link			(GtkPlotData *data);
+void		gtk_plot_data_remove_link		(GtkPlotData *data);
 
 
 #ifdef __cplusplus

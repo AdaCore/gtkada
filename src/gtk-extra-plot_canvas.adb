@@ -78,7 +78,7 @@ package body Gtk.Extra.Plot_Canvas is
    is
       function Internal (Canvas : in System.Address)
                          return      Gtk.Extra.Plot.Gtk_Plot_Data;
-      pragma Import (C, Internal, "gtk_plot_canvas_get_active_dataset");
+      pragma Import (C, Internal, "gtk_plot_canvas_get_active_data");
    begin
       return Internal (Get_Object (Canvas));
    end Get_Active_Data;

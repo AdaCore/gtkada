@@ -38,7 +38,7 @@
 --  Like any child of Gtk_Layout, this widget can have an almost unlimited
 --  size for its children, and provides scrolling.
 --  </description>
---  <c_version>gtk+extra 0.99.5</c_version>
+--  <c_version>gtk+extra 0.99.9</c_version>
 
 with Gdk;
 with Gdk.Pixmap;
@@ -122,6 +122,9 @@ package Gtk.Extra.Plot_Canvas is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Plot_Canvas.
+
+   function Child_Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Plot_Canvas_Child.
 
    procedure Refresh (Canvas : access Gtk_Plot_Canvas_Record);
    --  Force a refresh of the canvas on the screen.
@@ -537,6 +540,7 @@ private
    type Gtk_Plot_Canvas_Record is new Gtk.Fixed.Gtk_Fixed_Record
      with null record;
    pragma Import (C, Get_Type, "gtk_plot_canvas_get_type");
+   pragma Import (C, Child_Get_Type, "gtk_plot_canvas_child_get_type");
    pragma Import (C, Get_Item_Type, "ada_gtk_plot_canvas_get_item_type");
    pragma Import (C, Child_New, "gtk_plot_canvas_child_new");
    pragma Import (C, Set_Draw_Func, "ada_gtk_plot_canvas_set_draw_func");

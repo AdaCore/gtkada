@@ -1506,6 +1506,26 @@ package body Gtk.Extra.Plot is
       Internal (Get_Object (Plot), Gc, Data);
    end Draw_Data;
 
+   ---------------
+   -- Draw_Data --
+   ---------------
+
+   procedure Draw_Data
+     (Plot : access Gtk_Plot_Record;
+      Gc   : in Gdk.GC.Gdk_GC;
+      Data : in Gtk_Plot_Data;
+      Num  : in Gint)
+   is
+      procedure Internal
+        (Plot : in System.Address;
+         Gc   : in Gdk.GC.Gdk_GC;
+         Data : in Gtk_Plot_Data;
+         Num  : in Gint);
+      pragma Import (C, Internal, "gtk_plot_data_draw_points");
+   begin
+      Internal (Get_Object (Plot), Gc, Data, Num);
+   end Draw_Data;
+
    ---------------------
    -- Data_Set_Points --
    ---------------------

@@ -51,7 +51,7 @@
 --  a postscript file.
 --
 --  </description>
---  <c_version>gtk+extra 0.99.5<c_version>
+--  <c_version>gtk+extra 0.99.9<c_version>
 
 with Glib;           use Glib;
 with Glib.Glist;
@@ -63,6 +63,7 @@ with Gtk.Enums;
 with Gtk.Misc;
 with Gtk.Widget;
 with Unchecked_Conversion;
+with System;
 
 package Gtk.Extra.Plot is
 
@@ -881,6 +882,13 @@ package Gtk.Extra.Plot is
    --  request for Plot itself, which will also redraw all the other sets
    --  associated with the plot.
 
+   procedure Draw_Data
+     (Plot : access Gtk_Plot_Record;
+      Gc   : in Gdk.GC.Gdk_GC;
+      Data : in Gtk_Plot_Data;
+      Num  : in Gint);
+   --  Same as above, but draw only the last Num points
+
    procedure Data_Set_Points (Data : in Gtk_Plot_Data;
                               X    : in Gdouble_Array_Access;
                               Y    : in Gdouble_Array_Access;
@@ -1074,6 +1082,18 @@ package Gtk.Extra.Plot is
    procedure Data_Hide (Data : in Gtk_Plot_Data);
    --  Hide the dataset when the plot is displayed.
 
+   procedure Set_Link (Data : in Gtk_Plot_Data; Link : System.Address);
+   --  Associate some user data with Data.
+   --  It is the responsability of the user to do some convert converstion to
+   --  System.Address.
+
+   function Get_Link (Data : in Gtk_Plot_Data) return System.Address;
+   --  Return the user data associated with Data, or Null_Address if there is
+   --  none.
+
+   procedure Remove_Link (Data : in Gtk_Plot_Data);
+   --  Remove the user data associated with Data.
+
    -----------
    -- Flags --
    -----------
@@ -1175,4 +1195,7 @@ private
    pragma Import (C, Text_Get_Size, "gtk_plot_text_get_size");
    pragma Import (C, Get_Text_Position, "ada_gtk_plot_get_text_position");
    pragma Import (C, Text_Get_Area, "gtk_plot_text_get_area");
+   pragma Import (C, Set_Link, "gtk_plot_data_set_link");
+   pragma Import (C, Get_Link, "gtk_plot_data_get_link");
+   pragma Import (C, Remove_Link, "gtk_plot_data_remove_link");
 end Gtk.Extra.Plot;

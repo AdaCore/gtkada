@@ -1771,7 +1771,7 @@ static void gtk_plot_print_draw_child		(GtkWidget *widget,
         break;
     case GTK_PLOT_CANVAS_CUSTOM:
     default:
-        if(child->print) child->print((gpointer)pc, child);
+        if(child->print_child) child->print_child((gpointer)pc, child);
         break;
   }
 
@@ -2062,12 +2062,6 @@ gtk_plot_print_calc_ticks(GtkPlot *plot, gint orientation)
             tick += major_step;
             break;
         case GTK_PLOT_SCALE_LOG10:
-/********************************************************************/
-/***** The following line makes gcc2.8.1 core dump              ****/
-#if 0
-           tick = pow(10., log10(absmin)+nmajor*major_step);
-#endif
- /********************************************************************/
             tick = absmin * pow(10., nmajor*major_step);
             break;
      }
