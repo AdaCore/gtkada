@@ -82,7 +82,7 @@ package body Gtkada.File_Selection is
    --------------------
 
    function File_Selection_Dialog
-     (Title : String := "Select File";
+     (Title       : String := "Select File";
       Default_Dir : String := "";
       Dir_Only    : Boolean := False;
       Must_Exist  : Boolean := False) return String
@@ -123,12 +123,21 @@ package body Gtkada.File_Selection is
       loop
          if Dialog.File_Selected then
             declare
-               S : String := Get_Filename (Dialog);
+               S    : constant String := Get_Filename (Dialog);
+               Last : Positive := S'Last;
+
             begin
+               while Last > S'First
+                 and then S (Last) = Directory_Separator
+               loop
+                  Last := Last - 1;
+               end loop;
+
                if S = ""
                  or else not Must_Exist
-                 or else (Dir_Only and then Is_Directory (S))
-                 or else Is_Regular_File (S)
+                 or else
+                   (Dir_Only and then Is_Directory (S (S'First .. Last)))
+                 or else Is_Regular_File (S (S'First .. Last))
                then
                   Destroy (Dialog);
                   return S;
