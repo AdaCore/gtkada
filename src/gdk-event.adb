@@ -875,10 +875,15 @@ package body Gdk.Event is
       function Internal (Event : in System.Address)
                          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gdk_event_key_get_string");
+      use type Interfaces.C.Strings.chars_ptr;
+      Str : constant Interfaces.C.Strings.chars_ptr
+        := Internal (Get_Object (Event));
    begin
-      return IC.To_Ada (ICS.Value (Item => Internal (Get_Object (Event)),
-                                   Length => IC.size_t (Get_Length (Event))),
-                        Trim_Nul => False);
+      if Str = Interfaces.C.Strings.Null_Ptr then
+         return "";
+      else
+         return ICS.Value (Str);
+      end if;
    end Get_String;
 
 
