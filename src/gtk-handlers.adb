@@ -154,9 +154,6 @@ package body Gtk.Handlers is
          After     : Gint := 0) return Signal_Id;
       pragma Import (C, Internal, "g_signal_connect_closure_by_id");
 
-      function Get_Type (Object : System.Address) return GType;
-      pragma Import (C, Get_Type, "ada_gobject_get_type");
-
       use type System.Address;
       Id      : Handler_Id;
       Signal  : Guint;
