@@ -5,7 +5,7 @@ with Gtk.HSeparator;
 with Gtk.Signal;
 with Gtk.Vbox;
 with Gtk.Widget;
-with Gtk.Window;
+with Gtk.Window;use Gtk.Window;
 
 package body Create_Check_Buttons is
 

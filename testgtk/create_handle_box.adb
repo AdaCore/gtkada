@@ -26,7 +26,7 @@ package body Create_Handle_Box is
 
 
    procedure Child_Signal (Handle : in out Gtk_Handle_Box'Class;
-                           Child  : in out Gtk_Widget'Class;
+                           Child  : in out Gtk_Widget;
                            Data   : in out String) is
    begin
       Ada.Text_IO.Put_Line (Type_Name (Handle)

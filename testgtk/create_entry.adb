@@ -14,7 +14,6 @@ with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Interfaces.C.Strings;
 
 package body Create_Entry is
 
@@ -34,7 +33,6 @@ package body Create_Entry is
 
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
-      package ICS renames Interfaces.C.Strings;
       use Gtk.Combo.String_List;
 
       List      : Glist;
@@ -49,16 +47,16 @@ package body Create_Entry is
    begin
       if not Is_Created (Window) then
 
-         Append (List, ICS.New_String ("item0"));
-         Append (List, ICS.New_String ("item1 item1"));
-         Append (List, ICS.New_String ("item2 item2 item2"));
-         Append (List, ICS.New_String ("item3 item3 item3 item3"));
-         Append (List, ICS.New_String ("item4 item4 item4 item4 item4"));
-         Append (List, ICS.New_String ("item5 item5 item5 item5 item5 item5"));
-         Append (List, ICS.New_String ("item6 item6 item6 item6 item6"));
-         Append (List, ICS.New_String ("item7 item7 item7 item7"));
-         Append (List, ICS.New_String ("item8 item8 item8"));
-         Append (List, ICS.New_String ("item9 item9"));
+         Append (List, "item0");
+         Append (List, "item1 item1");
+         Append (List, "item2 item2 item2");
+         Append (List, "item3 item3 item3 item3");
+         Append (List, "item4 item4 item4 item4 item4");
+         Append (List, "item5 item5 item5 item5 item5 item5");
+         Append (List, "item6 item6 item6 item6 item6");
+         Append (List, "item7 item7 item7 item7");
+         Append (List, "item8 item8 item8");
+         Append (List, "item9 item9");
 
          Gtk_New (Window, Window_Toplevel);
          Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
