@@ -106,6 +106,12 @@ package Gtk.Enums is
    type Gtk_Orientation is (Orientation_Horizontal,
                             Orientation_Vertical);
 
+   type Gtk_Spin_Button_Update_Policy is new Glib.Gint;
+   Update_Always        : constant Gtk_Spin_Button_Update_Policy := 1;
+   Update_If_Valid      : constant Gtk_Spin_Button_Update_Policy := 2;
+   Update_Snap_To_Ticks : constant Gtk_Spin_Button_Update_Policy := 4;
+                                         
+
    type Gtk_Toolbar_Style is (Toolbar_Icons,
                               Toolbar_Text,
                               Toolbar_Both);
