@@ -2418,15 +2418,15 @@ package body Gtkada.MDI is
       if Child.State = Docked then
          Num := Page_Num (Child.MDI.Docks (Child.Dock), Child) + 1;
          if Get_Nth_Page (Child.MDI.Docks (Child.Dock), Num) = null then
-            Set_Page (Child.MDI.Docks (Child.Dock), 0);
+            Set_Current_Page (Child.MDI.Docks (Child.Dock), 0);
          else
-            Set_Page (Child.MDI.Docks (Child.Dock), Num);
+            Set_Current_Page (Child.MDI.Docks (Child.Dock), Num);
          end if;
 
       elsif Child.State = Normal
         and then Children_Are_Maximized (Child.MDI)
       then
-         Set_Page
+         Set_Current_Page
            (Child.MDI.Docks (None), Page_Num (Child.MDI.Docks (None), Child));
 
       elsif Realized_Is_Set (Child) then
@@ -2460,14 +2460,14 @@ package body Gtkada.MDI is
       --  and make sure the current page in that dock is the correct one.
 
       if Child.State = Docked then
-         Set_Page
+         Set_Current_Page
            (Child.MDI.Docks (Child.Dock),
             Page_Num (Child.MDI.Docks (Child.Dock), Child));
 
       elsif Child.State = Normal
         and then Children_Are_Maximized (Child.MDI)
       then
-         Set_Page
+         Set_Current_Page
            (Child.MDI.Docks (None),
             Page_Num (Child.MDI.Docks (None), Child));
 
@@ -3474,7 +3474,7 @@ package body Gtkada.MDI is
             First_Child := MDI_Child (Get_Data (Tmp));
 
             if First_Child.Menu_Item /= null then
-               G := Group (First_Child.Menu_Item);
+               G := Get_Group (First_Child.Menu_Item);
                exit;
             end if;
 
