@@ -374,6 +374,9 @@ package body Gtkada.MDI is
    --  for instance because the child hasn't been resized yet. This would
    --  result in a lot of flickering otherwise.
 
+   procedure Destroy_Raise_Child_Idle (D : in out Raise_Idle_Data);
+   --  Called when the idle for Raise_Child_Idle is destroyed.
+
    package Widget_Idle is new Gtk.Main.Idle (Raise_Idle_Data);
 
    -------------------------
@@ -1373,6 +1376,10 @@ package body Gtkada.MDI is
             Set_Show_Tabs
               (C.MDI.Docks (None),
                Get_Nth_Page (C.MDI.Docks (None), 1) /= null);
+         end if;
+
+         if C.MDI.Raise_Id /= 0 then
+            Idle_Remove (C.MDI.Raise_Id);
          end if;
       end if;
 
@@ -2446,15 +2453,30 @@ package body Gtkada.MDI is
       --  and make sure the current page in that dock is the correct one.
 
       if Child.State = Docked then
-         Set_Page
-           (Child.MDI.Docks (Child.Dock),
-            Page_Num (Child.MDI.Docks (Child.Dock), Child));
+         if not Gtk.Object.Destroyed_Is_Set (Child.MDI.Docks (Child.Dock)) then
+            Gtk.Handlers.Handler_Block
+              (Child.MDI.Docks (Child.Dock),
+               Child.MDI.Switch_Page_Id (Child.Dock));
+            Set_Page
+              (Child.MDI.Docks (Child.Dock),
+               Page_Num (Child.MDI.Docks (Child.Dock), Child));
+            Gtk.Handlers.Handler_Unblock
+              (Child.MDI.Docks (Child.Dock),
+               Child.MDI.Switch_Page_Id (Child.Dock));
+         end if;
 
       elsif Child.State = Normal
         and then Children_Are_Maximized (Child.MDI)
       then
-         Set_Page
-           (Child.MDI.Docks (None), Page_Num (Child.MDI.Docks (None), Child));
+         if not Gtk.Object.Destroyed_Is_Set (Child.MDI.Docks (None)) then
+            Gtk.Handlers.Handler_Block
+              (Child.MDI.Docks (None), Child.MDI.Switch_Page_Id (None));
+            Set_Page
+              (Child.MDI.Docks (None),
+               Page_Num (Child.MDI.Docks (None), Child));
+            Gtk.Handlers.Handler_Unblock
+              (Child.MDI.Docks (None), Child.MDI.Switch_Page_Id (None));
+         end if;
 
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
@@ -2509,6 +2531,15 @@ package body Gtkada.MDI is
       end if;
    end Update_Float_Menu;
 
+   ------------------------------
+   -- Destroy_Raise_Child_Idle --
+   ------------------------------
+
+   procedure Destroy_Raise_Child_Idle (D : in out Raise_Idle_Data) is
+   begin
+      D.MDI.Raise_Id := 0;
+   end Destroy_Raise_Child_Idle;
+
    ---------------------
    -- Set_Focus_Child --
    ---------------------
@@ -2520,7 +2551,6 @@ package body Gtkada.MDI is
 
       Old : constant MDI_Child := Child.MDI.Focus_Child;
       C   : constant MDI_Child := MDI_Child (Child);
-      Id  : Idle_Handler_Id;
 
    begin
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
@@ -2535,7 +2565,13 @@ package body Gtkada.MDI is
       --  The actual raise is done in an idle loop. Otherwise, if the child
       --  hasn't been properly resized yet, there would be a lot of
       --  flickering.
-      Id := Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C));
+      if Child.MDI.Raise_Id /= 0 then
+         Idle_Remove (Child.MDI.Raise_Id);
+      end if;
+
+      Child.MDI.Raise_Id :=
+        Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C),
+                         Destroy => Destroy_Raise_Child_Idle'Access);
 
       if Old /= null
         and then Realized_Is_Set (Old)
@@ -2891,7 +2927,7 @@ package body Gtkada.MDI is
          --  Coordinates don't matter, they are set in Size_Allocate_MDI.
 
          Put (MDI, MDI.Docks (Side), 0, 0);
-         Widget_Callback.Connect
+         MDI.Switch_Page_Id (Side) := Widget_Callback.Connect
            (MDI.Docks (Side), "switch_page",
             Docked_Switch_Page'Access);
 
