@@ -70,6 +70,7 @@ package body Gtk.Enums is
       end loop;
 
       String_List.Free (List);
+      List := String_List.Null_List;
    end Free_String_List;
 
 end Gtk.Enums;
