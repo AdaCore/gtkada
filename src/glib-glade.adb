@@ -367,11 +367,43 @@ package body Glib.Glade is
    --------------
 
    function To_Float (S : String) return String is
+      Exponentiated  : constant Boolean := Index (S, "e") /= 0;
+      Mantissa_Start : Natural := 0;
    begin
-      if Index (S, ".") /= 0 then
-         return S;
+      --  If the value is a power of 10 and >= 1_000_000 (which means it's
+      --  being
+      --  represented as "1e+06" or +07 or +08, etc.), insert a decimal point
+      --  after the 1 to make it conform to Ada floating point syntax.
+      --
+      --  NOTE: This is _very_ Glade-specific, depending on exactly how Glade
+      --  represents large (> 1_000_000) numbers.  When it uses exponential
+      --  notation, it always normalizes the number, ie., makes it a single
+      --  digit followed by a decimal point, and correspondingly adjusts the
+      --  exponent.  However, powers of 10 are not provided with a decimal
+      --  point, so their string representation will start off with "1e" or
+      --  "-1e".  Meaning that if the value is exponentiated, and the "1e"
+      --  substring starts in the first or second character, it must be a power
+      --  of ten.
+      --  If that string is not present (such as in 2.3e+09) or does not start
+      --  at index S'First or S'First + 1 (as in 1.1e+06), then it is a
+      --  valid number as is.
+
+      if Exponentiated then
+         Mantissa_Start := Index (S, "1e");
+         if Mantissa_Start not in S'First .. S'First + 1 then
+            --  This is not a power of ten.
+            return S;
+         else
+            return Replace_Slice
+              (S, Mantissa_Start, Mantissa_Start + 1, "1.0e");
+         end if;
+
       else
-         return S & ".0";
+         if Index (S, ".") /= 0 then
+            return S;
+         else
+            return S & ".0";
+         end if;
       end if;
    end To_Float;
 
