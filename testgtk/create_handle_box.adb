@@ -34,7 +34,6 @@ with Gtk.Handle_Box;  use Gtk.Handle_Box;
 with Gtk.Label;       use Gtk.Label;
 with Gtk.Separator;   use Gtk.Separator;
 with Gtk.Handlers;    use Gtk.Handlers;
-with Gtk.Style;       use Gtk.Style;
 with Gtk.Toolbar;     use Gtk.Toolbar;
 with Gtk.Widget;      use Gtk.Widget;
 with Gtk;             use Gtk;

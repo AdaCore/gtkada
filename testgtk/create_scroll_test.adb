@@ -189,8 +189,7 @@ package body Create_Scroll_Test is
         Gdk.Event.Gdk_Event_Expose (Event);
       Area : Gdk.Rectangle.Gdk_Rectangle;
       Imin, Imax, Jmin, Jmax : Gint;
-      Sty : Gtk.Style.Gtk_Style
-        := Gtk.Style.Get_Style (Widget);
+      Sty : Gtk.Style.Gtk_Style := Get_Style (Widget);
    begin
       Area := Gdk.Event.Get_Area (Expose_Event);
 
