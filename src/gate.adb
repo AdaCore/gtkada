@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---                   GATE - GtkAda Components                        --
+--                   Gate - GtkAda Components                        --
 --                                                                   --
 --                   Copyright (C) 1999-2000                         --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
@@ -18,7 +18,6 @@
 -- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
 -----------------------------------------------------------------------
 
---  GATE stands for Glade Ada Translator and Evaluator
 --  Parse a Glade's XML project file and generate the corresponding Ada code
 
 with Gtk.Main; use Gtk.Main;
