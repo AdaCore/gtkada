@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                   Copyright (C) 2000-2001                         --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,7 +33,7 @@ with Interfaces.C.Strings;
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
 
-package body Gnome.App.Helper is
+package body Gnome.App_Helper is
 
    function New_String (Str : String) return Chars_Ptr
      renames Interfaces.C.Strings.New_String;
@@ -1110,4 +1110,4 @@ package body Gnome.App.Helper is
          Gint (Accelerator_Key), Ac_Mods, Null_Address);
    end UI_New_Subtree;
 
-end Gnome.App.Helper;
+end Gnome.App_Helper;

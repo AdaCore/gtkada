@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2000-2001                          --
---                            ACT-Europe                             --
+--                   Copyright (C) 2000-2001                         --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,7 +42,7 @@ with Gtkada.Types; use Gtkada.Types;
 with Gtkada.Intl; use Gtkada.Intl;
 with System; use System;
 
-package Gnome.App.Helper is
+package Gnome.App_Helper is
 
    type UI_Info_Configurable_Types is
      (Configurable_Item_New,
@@ -590,4 +590,4 @@ private
      (UI_Separator, Null_Ptr, Null_Ptr, Null_Address, null,
       Null_Address, Pixmap_None, Null_Address, 0, 0, Null_Address);
 
-end Gnome.App.Helper;
+end Gnome.App_Helper;
