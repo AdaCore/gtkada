@@ -110,4 +110,27 @@ package body Gtk.Text_Mark is
       Internal (Get_Object (Mark), To_Gboolean (Setting));
    end Set_Visible;
 
+   -------------------
+   -- Set_Text_Mark --
+   -------------------
+
+   procedure Set_Text_Mark
+     (Val  : in out Glib.Values.GValue;
+      Mark : access Gtk_Text_Mark_Record) is
+   begin
+      Glib.Values.Set_Address (Val, Get_Object (Mark));
+   end Set_Text_Mark;
+
+   -------------------
+   -- Get_Text_Mark --
+   -------------------
+
+   function Get_Text_Mark (Val  : Glib.Values.GValue) return Gtk_Text_Mark
+   is
+      Stub : Gtk_Text_Mark_Record;
+   begin
+      return Gtk_Text_Mark
+               (Get_User_Data (Glib.Values.Get_Address (Val), Stub));
+   end Get_Text_Mark;
+
 end Gtk.Text_Mark;

@@ -32,6 +32,8 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Values;
+
 package Gtk.Text_Mark is
 
    type Gtk_Text_Mark_Record is new GObject_Record with private;
@@ -77,6 +79,18 @@ package Gtk.Text_Mark is
    function Get_Left_Gravity
      (Mark : access Gtk_Text_Mark_Record) return Boolean;
    --  Return True if the mark has left gravity, False otherwise.
+
+   -------------------------------
+   -- Converting to/from GValue --
+   -------------------------------
+
+   procedure Set_Text_Mark
+     (Val  : in out Glib.Values.GValue;
+      Mark : access Gtk_Text_Mark_Record);
+   --  Set the value of the given GValue to Mark.
+
+   function Get_Text_Mark (Val  : Glib.Values.GValue) return Gtk_Text_Mark;
+   --  Extract the iterator from the given GValue.
 
    ----------------
    -- Properties --
