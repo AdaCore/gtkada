@@ -1637,22 +1637,28 @@ package body Gtkada.MDI is
          return False;
       end if;
 
-      --  Focus and raise the child. Raise_Child must be called explicitely
-      --  since Set_Focus_Child won't do it if the child already has the focus.
-      Set_Focus_Child (C);
-      Raise_Child (C, False);
-
       --  Do we have a drag-and-drop operation ? This is true if we are
       --  pressing control, or simply clicking in a maximized or docked
       --  child (otherwise, moving items in the layout would interfer with
       --  dnd).
+      --  Drag-and-drop can only start for the focus child. Otherwise, it
+      --  might happen that the widget that would gain the focus also tries
+      --  to grab the mouse as part of the focus_in callback, and the dnd
+      --  would fail.
 
-      if (Get_State (Event) and Control_Mask) /= 0
-        or else (C.State /= Normal and then C.State /= Iconified)
-        or else C.MDI.Central.Children_Are_Maximized
-      then
-         return Child_Drag_Begin (C, Event);
+      if C.MDI.Focus_Child = C then
+         if (Get_State (Event) and Control_Mask) /= 0
+           or else (C.State /= Normal and then C.State /= Iconified)
+           or else C.MDI.Central.Children_Are_Maximized
+         then
+            return Child_Drag_Begin (C, Event);
+         end if;
       end if;
+
+      --  Focus and raise the child. Raise_Child must be called explicitely
+      --  since Set_Focus_Child won't do it if the child already has the focus.
+      Set_Focus_Child (C);
+      Raise_Child (C, False);
 
       --  Can't move items inside a notebook
       if C.State = Docked
