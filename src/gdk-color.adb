@@ -47,7 +47,11 @@ package body Gdk.Color is
       pragma Import (C, Internal, "gdk_color_copy");
       C2 : aliased Gdk_Color := C;
    begin
-      return Internal (C2'Address);
+      if C /= Null_Color then
+         return Internal (C2'Address);
+      else
+         return System.Null_Address;
+      end if;
    end Internal_Copy;
 
    -----------
