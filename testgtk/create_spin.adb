@@ -111,7 +111,7 @@ package body Create_Spin is
       if Data = 1 then
          Set_Text (Widget.Label, Gint'Image (Get_Value_As_Int (Spin)));
       else
-         Set_Text (Widget.Label, Gdouble'Image (Get_Value_As_Float (Spin)));
+         Set_Text (Widget.Label, Gdouble'Image (Get_Value (Spin)));
       end if;
    end Get_Value;
 
