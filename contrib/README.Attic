@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------
 --                                                                  --
---		  GtkAda . An Ada95 binding for Gtk+                --
+--        GtkAda . An Ada95 graphical toolkit based on Gtk+         --
 --                                                                  --
 ----------------------------------------------------------------------
 
@@ -22,15 +22,14 @@ The home page for gtk is
      
 This home page will always contain the latest news for this binding.
 
-This is GtkAda version 1.2.0. This package is an Ada95 binding for
-the Gimp Toolkit, which means this is a set of packages to allow you
-to easily create some graphical interfaces under X11, using Ada95 as a
-programming language.
+This is GtkAda version 1.2.0. This package is an Ada95 graphical library
+for the Gimp Toolkit, which means this is a set of packages to allow you
+to easily create some graphical interfaces under X11 and Win32, using Ada95
+as a programming language.
 
-This is the first stable version of this binding. From now on, major
-version numbers will follow Gtk+ (e.g 1.2, 1.3), meaning that stable
-versions of GtkAda will have major number 1.2 and development versions
-will have number 1.3.
+From now on, major version numbers will follow Gtk+ (e.g 1.2, 1.3),
+meaning that stable versions of GtkAda will have major number 1.2 and
+development versions will have number 1.3.
 
 Every widget from gtk 1.2 has been implemented, and the test
 program found in the gtk release has been reimplemented in Ada (have a
@@ -42,16 +41,16 @@ These functions were tested on the following systems :
    - Dec Unix 4.0b
    - SGI IRIX 6.5
 using the following compilers:
-   - Gnat 3.11p
    - Gnat 3.12b2
+   - Gnat 3.11p
 
 the following versions of gtk:
-   - Gtk 1.2.0
    - Gtk 1.2.1
+   - Gtk 1.2.0
 
 and the following versions of glade:
-   - Glade 0.4.0
    - Glade 0.4.1
+   - Glade 0.4.0
 
 Although versions up to 0.2.1 were compatible with Gtk1.0, this one is
 Gtk-1.2 specific. If you are looking for a binding to Gtk1.0, please consider
@@ -81,7 +80,7 @@ any way for this binding, and can not provide any support for it.
 Content
 =======
 
-The full set of widget that comes with gtk 1.2 have been bound,
+The full set of widget that comes with Gtk+ 1.2 have been bound,
 and you should be able to use all of them from your Ada program.
 
 Although it is not quite complete yet, the Gdk binding (the low level
