@@ -30,6 +30,7 @@
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
 with Gtk.Object; use Gtk.Object;
+with System;
 
 package body Gtk.Handlers is
 

@@ -33,7 +33,6 @@ with Gtk.Marshallers;
 with Gtk.Notebook;
 with Gtk.Object;
 with Gtk.Widget;
-with System;
 
 --  This package is made of four sub-packages.
 --
