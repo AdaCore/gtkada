@@ -1,0 +1,245 @@
+2003-11-27	Arnaud Charlet	<charlet@adacore.com>
+
+	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
+	of characters validated at each call, this gives a better behavior
+	when loading big files.
+
+	* gtk/gtktextbtree.c, gtk/gtktextiter.c: Remove some function calls
+	when assertions are disabled.
+
+	* gtk/gtktextlayout.c: Use local buffer to avoid dynamic memory
+	allocation.
+
+2002-11-25	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/win32/Makefile.in: Remove gdk-win32res.lo dependency,
+	since we do not want to use the default Gtk+ icon.
+
+2003-03-27	Arnaud Charlet <charlet@adacore.com>
+
+	* gdk/win32/gdkwindow-win32.c: Bring parent window on top when
+	destroying a modal window. Fixes unexpected lost focus.
+
+2002-09-12	Florent Duguet	<duguet@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c: Force an update when paint message
+	is received, otherwise windows in background are not immediately
+	refreshed when moving a modal window on top of them.
+	Add handling of WM_NCPAINT message to refresh some areas when a window
+	from another application is moved on top of the current app.
+
+--- gtk/gtktextview.c	2003/11/22 12:54:08	1.2
++++ gtk/gtktextview.c	2003/11/27 17:54:03
+@@ -3150,7 +3150,7 @@ incremental_validate_callback (gpointer 
+   
+   DV(g_print(G_STRLOC"\n"));
+   
+-  gtk_text_layout_validate (text_view->layout, 2000);
++  gtk_text_layout_validate (text_view->layout, 20000);
+ 
+   gtk_text_view_update_adjustments (text_view);
+   
+--- gtk/gtktextbtree.c	2003/11/22 00:11:14	1.1
++++ gtk/gtktextbtree.c	2003/11/22 00:40:42
+@@ -3149,13 +3149,9 @@ ensure_end_iter_line (GtkTextBTree *tree
+ {
+   if (tree->end_iter_line_stamp != tree->chars_changed_stamp)
+     {
+-      int n_lines;
+       int real_line;
+ 
+-      /* n_lines is without the magic line at the end */
+-      n_lines = _gtk_text_btree_line_count (tree);
+- 
+-      g_assert (n_lines >= 1);
++      g_assert (_gtk_text_btree_line_count (tree) >= 1);
+ 
+       tree->end_iter_line = _gtk_text_btree_get_line_no_last (tree, -1, &real_line);
+       
+--- gtk/gtktextiter.c	2003/11/21 23:46:35	1.1
++++ gtk/gtktextiter.c	2003/11/22 00:07:39
+@@ -150,6 +150,11 @@ iter_set_from_segment (GtkTextRealIter *
+    truly computed lazily; often we don't need to do the full make_real
+    work. This ensures the btree and line are valid, but doesn't
+    update the segments. */
++
++#ifdef G_DISABLE_ASSERT
++#define gtk_text_iter_make_surreal(iter) ((GtkTextRealIter*)iter)
++
++#else
+ static GtkTextRealIter*
+ gtk_text_iter_make_surreal (const GtkTextIter *_iter)
+ {
+@@ -188,6 +193,7 @@ gtk_text_iter_make_surreal (const GtkTex
+ 
+   return iter;
+ }
++#endif
+ 
+ static GtkTextRealIter*
+ gtk_text_iter_make_real (const GtkTextIter *_iter)
+@@ -385,15 +391,15 @@ is_segment_start (GtkTextRealIter *real)
+   return real->segment_byte_offset == 0 || real->segment_char_offset == 0;
+ }
+ 
+-#if 1
++#ifdef G_DISABLE_ASSERT
++#define check_invariants(iter)
++#else
+ static void
+ check_invariants (const GtkTextIter *iter)
+ {
+   if (gtk_debug_flags & GTK_DEBUG_TEXT)
+     _gtk_text_iter_check (iter);
+ }
+-#else
+-#define check_invariants (x)
+ #endif
+ 
+ /**
+--- gtk/gtktextlayout.c.orig	2004-03-14 00:28:14.000000000 +0100
++++ gtk/gtktextlayout.c	2004-10-19 14:34:24.000000000 +0100
+@@ -1783,12 +1783,15 @@
+                                   GtkTextLine   *line,
+                                   gboolean       size_only)
+ {
++#define TEXT_CACHE_SIZE 256
++  static gchar cached_text[TEXT_CACHE_SIZE];
++
+   GtkTextLayoutPrivate *priv = GTK_TEXT_LAYOUT_GET_PRIVATE (layout);
+   GtkTextLineDisplay *display;
+   GtkTextLineSegment *seg;
+   GtkTextIter iter;
+   GtkTextAttributes *style;
+-  gchar *text;
++  gchar *text = cached_text;
+   PangoAttrList *attrs;
+   gint text_allocated, layout_byte_offset, buffer_byte_offset;
+   PangoRectangle extents;
+@@ -1845,7 +1848,9 @@
+   /* Allocate space for flat text for buffer
+    */
+   text_allocated = _gtk_text_line_byte_count (line);
+-  text = g_malloc (text_allocated);
++
++  if (text_allocated > TEXT_CACHE_SIZE)
++    text = g_malloc (text_allocated);
+ 
+   attrs = pango_attr_list_new ();
+ 
+@@ -2007,7 +2012,15 @@
+ 	      if (layout->preedit_len > 0)
+ 		{
+ 		  text_allocated += layout->preedit_len;
+-		  text = g_realloc (text, text_allocated);
++
++		  if (text_allocated > TEXT_CACHE_SIZE)
++		    if (text == cached_text)
++		      {
++			text = g_malloc (text_allocated);
++			memcpy (text, cached_text, text_allocated - layout->preedit_len);
++		      }
++		    else
++		      text = g_realloc (text, text_allocated);
+ 
+ 		  style = get_style (layout, &iter);
+ 		  add_preedit_attrs (layout, style, attrs, layout_byte_offset, size_only);
+@@ -2115,7 +2128,8 @@
+   if (layout->wrap_loop_count == 0)
+     invalidate_cached_style (layout);
+ 
+-  g_free (text);
++  if (text != cached_text)
++    g_free (text);
+   pango_attr_list_unref (attrs);
+ 
+   layout->one_display_cache = display;
+--- gdk/win32/Makefile.in.old	2004-10-19 14:20:42.000000000 +0100
++++ gdk/win32/Makefile.in	2004-10-19 14:21:00.000000000 +0100
+@@ -346,7 +346,7 @@
+ 	gdkwin32.h
+ 
+ 
+-libgdk_win32_la_LIBADD = rc/gdk-win32res.lo
++libgdk_win32_la_LIBADD =
+ subdir = gdk/win32
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+@@ -355,7 +355,7 @@
+ LTLIBRARIES = $(noinst_LTLIBRARIES)
+ 
+ libgdk_win32_la_LDFLAGS =
+-libgdk_win32_la_DEPENDENCIES = rc/gdk-win32res.lo
++libgdk_win32_la_DEPENDENCIES =
+ am_libgdk_win32_la_OBJECTS = gdkcolor-win32.lo gdkcursor-win32.lo \
+ 	gdkdisplay-win32.lo gdkdnd-win32.lo gdkdrawable-win32.lo \
+ 	gdkevents-win32.lo gdkfont-win32.lo gdkgc-win32.lo \
+--- gdk/win32/gdkevents-win32.c.orig	2004-09-03 02:30:03.000000000 +0100
++++ gdk/win32/gdkevents-win32.c	2004-10-19 14:38:35.000000000 +0100
+@@ -2036,6 +2036,12 @@
+   _gdk_window_process_expose (window, update_region);
+   gdk_region_destroy (update_region);
+ 
++  /* Force a process_updates to refresh visible windows
++   * when receiving a paint message. */
++
++  if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
++    gdk_window_process_updates (window, FALSE);
++
+   DeleteObject (hrgn);
+ }
+ 
+@@ -2862,6 +2868,35 @@
+       *ret_valp = 1;
+       break;
+ 
++    case WM_NCPAINT:
++      if (msg->wParam < 1)
++	break;
++
++      {
++      HRGN hrgn;
++
++      hrgn = CreateRectRgn (0, 0, 0, 0);
++      if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
++	{
++	  WIN32_GDI_FAILED ("GetUpdateRgn");
++	  break;
++	}
++
++      {
++        GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
++
++	_gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
++	gdk_region_offset (update_region, xoffset, yoffset);
++
++	_gdk_window_process_expose (window, update_region);
++	gdk_region_destroy (update_region);
++
++	DeleteObject (hrgn);
++	return_val = FALSE;
++      }
++      }
++      break;
++
+     case WM_PAINT:
+       handle_wm_paint (msg, window, FALSE, NULL);
+       break;
+--- gdk/win32/gdkwindow-win32.c	2003/03/27 14:43:01	1.1
++++ gdk/win32/gdkwindow-win32.c	2003/04/13 09:22:48
+@@ -742,6 +742,15 @@
+   GDK_NOTE (MISC, g_print ("_gdk_windowing_window_destroy %p\n",
+ 			   GDK_WINDOW_HWND (window)));
+ 
++  if (private->modal_hint)
++    {
++      HWND parent = (HWND) GetWindowLong
++	(GDK_WINDOW_HWND (window), GWL_HWNDPARENT);
++
++      if ((long)parent > 1 && !BringWindowToTop (parent))
++	WIN32_API_FAILED ("BringWindowToTop");
++    }
++
+   if (private->extension_events != 0)
+     _gdk_input_window_destroy (window);
+ 
