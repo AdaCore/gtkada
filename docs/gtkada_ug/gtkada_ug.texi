@@ -645,9 +645,8 @@ they were connected.
 
 @noindent
 Widgets, depending on their type, may define zero or more different signals.
-These signals, like everything else, are inherited from their parents;
+The signals defined for the parent widget are also automatically inherited;
 thus every widget answers many signals.
-@c ??? "like everything else" is vague.
 
 The easiest way to find out which signals can be emitted by a widget is to
 look at the GtkAda reference manual. Every widget will
@@ -1073,7 +1072,7 @@ the @code{Create_Window} procedure looks like
 @node Resource files
 @chapter Resource files
 
-Resource files let you parametize aspects of the widgets in a GtkAda
+Resource files let you parametrize aspects of the widgets in a GtkAda
 application without having to recompile it.
 
 A resource file needs to be loaded (@code{Gtk.Rc.Parse}) @var{before} setting
@@ -1224,14 +1223,14 @@ existing widgets or even create your own.
 
 @subsection Why should I use object-oriented programing ?
 Every widget in GtkAda is a tagged type and has a number of
-primitive subprograms which are known to all its children.
+primitive subprograms which all its children inherit.
 
-This means that, as opposed to what you see in C code, you don't have
-(well most of the time you don't) to explictly cast types and, even
-when you have to, Ada always makes sure that the conversion is valid.
+This means that most of the time, as opposed to what you see in C
+code, you don't have to explicitly cast types and, even when you have
+to, Ada always makes sure that the conversion is valid.
 
 Thus your programs are much safer and most errors are found at compile
-time, as is usually the case with Ada.
+time, as usual with Ada.
 
 For instance, if you create a table, put some widgets in it, and then,
 later in your program, try to access those widgets, then you do not need
@@ -1244,7 +1243,7 @@ type.
 This makes GtkAda a very powerful tool for designing graphical interfaces.
 
 If you think one of the standard widgets is nice, but would be even
-better if it was drawing itself in a slighlty different way, of if it could
+better if it was drawing itself in a slighlty different way, or if it could
 contain some other data that you need in your application, there is a very
 simple way to do it: just create a new type that extends the
 current one (see the section @ref{Using tagged types to extend Gtk widgets}
@@ -1267,7 +1266,7 @@ oriented features of GtkAda
 These are the widgets that are part of the standard gtk+ and GtkAda
 distributions. This include all the basic widgets you need to build
 advanced interfaces.
-@item @i{imported C widgets}
+@item @i{third party C widgets}
 These are widgets that were created in C, and for which you (or someone else)
 created an Ada binding. This is most probably the kind of widgets you will
 have if you want to use third party widgets.
@@ -1302,10 +1301,10 @@ use of Gtk.Unchecked_Cast:
 @b{end};
 @end smallexample
 
-In the third case (imported C widgets), GtkAda is not, by default, able to
+In the third case (third party C widgets), GtkAda is not, by default, able to
 create the corresponding Ada type.
 
-The solution we suggest to solve these two issues is to 'with' the
+The solution we suggest to solve the first issue is to 'with' the
 @b{Gtk.Type_Conversion} unit. In that case, every standard widget, no matter who
 created them, will always be correctly converted to an appropriate Ada type.
 So, basically, if you put the following in your main unit:
@@ -1315,7 +1314,6 @@ So, basically, if you put the following in your main unit:
 
 @b{begin}
    Gtk.Main.Init;
-   Gtk.Type_Conversion.Init;
    ...
 @b{end}
 @end smallexample
@@ -1329,15 +1327,15 @@ package of GtkAda, which is a little bit heavier, and explains why this is not
 the default. We do recommend you use it if it is not extremely important
 whether your application depends on all the packages of GtkAda.
 
-The case of imported C widgets is a little bit trickier. Since GtkAda does not
+The case of third party C widgets is a little bit trickier. Since GtkAda does not
 know anything about them when it is built, it can't magically convert the C
 widgets to Ada widgets. This is your job to teach GtkAda how to do the
 conversion.
 
 We thus provide a 'hook' function which you need to modify. This function is
-defined in the package @b{Gtk.Type_Conversion}. It is a function that takes
-a string with the name of the C widget (ex/ "GtkButton"), and expects a newly
-allocated pointer in return. If you don't know this type either, simply
+defined in the package @b{Gtk.Type_Conversion}. This function takes
+a string with the name of the C widget (ex/ "GtkButton"), and should return a newly
+allocated pointer. If you don't know this type either, simply
 return @b{null}.
 
 @node Using tagged types to extend Gtk widgets
@@ -1597,8 +1595,6 @@ read the GtkAda reference manual before considering using Gtk_Fixed.
 Note that we only recommend using version 0.5.9 of Glade, as some previous
 versions are not compatible. Using this version you can directly create Ada
 files from Glade by selecting Ada95 as the language under project options.
-By doing so, you will tell Glade to call Gate internally when using the
-``Write Source Code'' functionality.
 Glade saves your interface in a project file whose syntax is XML
 based. In the following sections, we will refer to this file as either
 ``the XML file'' or ``the project file'' interchangeably.
@@ -1632,12 +1628,18 @@ items.
 
 @section Gate
 @subsection Invoking Gate
-Gate is the static version of our support. This tool
-takes the Glade XML file as an argument and generates a set of Ada files that,
-when compiled, will recreate the interface you just designed with Glade.
-To invoke it, simply call gate will a Glade project file This will generate
-Ada files in the directory set as the ``Source Directory'' project option,
-or otherwise in the current working directory.
+Gate is a program that is delivered with GtkAda. Gate
+takes the Glade XML file as an argument and generates a set of Ada files.
+When compiled, these files will recreate the interface you just designed with
+Glade.
+
+Gate is generally invoked through the ``Write source code'' button in
+Glade's menu bar.
+
+However, you can also invoke it from the command line by providing a
+Glade project file. This will generate Ada files in the directory set
+as the ``Source Directory'' project option, or otherwise in the
+current working directory.
 
 @subsection Structure of the generated files
 @subsubsection The main file
@@ -1649,7 +1651,7 @@ this initialization.
 
 @subsubsection Top level widget files
 For each top level widget, Gate will generate a package
-@code{<widget>_Pkg.Callbacks} in the files @code{<widget>_pkg-callbacks.ads} and
+@code{<widget>_Pkg} in the files @code{<widget>_pkg.ads} and
 @code{.adb}. These packages contain all the GtkAda calls needed to create the
 widgets you designed within Glade. You will usually not need to modify these
 files yourself.
