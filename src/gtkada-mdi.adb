@@ -604,12 +604,12 @@ package body Gtkada.MDI is
       Set_Child_Visible (MDI.Docks (Left), False);
 
       Gtk_New (MDI.Central.Container);
-      Set_Child_Visible (MDI.Central.Container, False);
       Split
         (MDI.Main_Pane, MDI.Docks (Left), MDI.Central.Container,
          Orientation_Horizontal);
 
       Add_Child (MDI.Central.Container, Create_Notebook);
+      Set_Child_Visible (MDI.Central.Container, False);
 
       Gtk_New (MDI.Central.Layout);
       Set_Dnd_Target (MDI_Window (MDI).Central.Layout);
