@@ -754,7 +754,6 @@ private
 
    type Buffered_Item_Record is new Canvas_Item_Record with record
       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf;
    end record;
 
    pragma Inline (To_Canvas_Coordinates);

@@ -3110,10 +3110,20 @@ package body Gtkada.Canvas is
       Xdest  : Glib.Gint;
       Ydest  : Glib.Gint)
    is
-      Tmp : Gdk_Pixbuf;
+      Tmp, Tmp2 : Gdk_Pixbuf;
    begin
-      if Item.Pixbuf = null then
-         Item.Pixbuf := Get_From_Drawable
+      if Canvas.Zoom = 100 then
+         Draw_Pixmap
+           (Drawable => Dest,
+            Gc       => Canvas.Black_GC,
+            Src      => Item.Pixmap,
+            Xsrc     => 0,
+            Ysrc     => 0,
+            Xdest    => Xdest,
+            Ydest    => Ydest);
+
+      else
+         Tmp2 := Get_From_Drawable
            (Dest   => null,
             Src    => Item.Pixmap,
             Cmap   => Get_Colormap (Canvas),
@@ -3123,30 +3133,24 @@ package body Gtkada.Canvas is
             Dest_Y => 0,
             Width  => Item.Coord.Width,
             Height => Item.Coord.Height);
-      end if;
 
-      if Canvas.Zoom = 100 then
-         Tmp := Item.Pixbuf;
-      else
          Tmp := Scale_Simple
-           (Src         => Item.Pixbuf,
-            Dest_Width  => Get_Width (Item.Pixbuf) * Gint (Canvas.Zoom) / 100,
-            Dest_Height =>
-              Get_Height (Item.Pixbuf) * Gint (Canvas.Zoom) / 100);
-      end if;
+           (Src         => Tmp2,
+            Dest_Width  => Get_Width (Tmp2) * Gint (Canvas.Zoom) / 100,
+            Dest_Height => Get_Height (Tmp2) * Gint (Canvas.Zoom) / 100);
 
-      Render_To_Drawable
-        (Pixbuf   => Tmp,
-         Drawable => Dest,
-         GC       => Canvas.Black_GC,
-         Src_X    => 0,
-         Src_Y    => 0,
-         Dest_X   => Xdest,
-         Dest_Y   => Ydest,
-         Width    => Get_Width (Tmp),
-         Height   => Get_Height (Tmp));
+         Render_To_Drawable
+           (Pixbuf   => Tmp,
+            Drawable => Dest,
+            GC       => Canvas.Black_GC,
+            Src_X    => 0,
+            Src_Y    => 0,
+            Dest_X   => Xdest,
+            Dest_Y   => Ydest,
+            Width    => Get_Width (Tmp),
+            Height   => Get_Height (Tmp));
 
-      if Canvas.Zoom /= 100 then
+         Unref (Tmp2);
          Unref (Tmp);
       end if;
    end Draw;
@@ -3164,11 +3168,6 @@ package body Gtkada.Canvas is
 
       if Item.Pixmap /= null then
          Gdk.Pixmap.Unref (Item.Pixmap);
-      end if;
-
-      if Item.Pixbuf /= null then
-         Unref (Item.Pixbuf);
-         Item.Pixbuf := null;
       end if;
 
       Gdk_New (Item.Pixmap, Win, Width, Height);
