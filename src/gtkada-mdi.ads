@@ -305,7 +305,9 @@ package Gtkada.MDI is
    type Child_Iterator is private;
 
    function First_Child (MDI : access MDI_Window_Record) return Child_Iterator;
-   --  Return an access to the first child of the MDI
+   --  Return an access to the first child of the MDI.
+   --  It is garanteed that the first child is the one that currently has the
+   --  focus in the MDI.
 
    procedure Next (Iterator : in out Child_Iterator);
    --  Move to the next child in the MDI
