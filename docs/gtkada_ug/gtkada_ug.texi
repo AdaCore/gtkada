@@ -6,7 +6,7 @@
 
 @titlepage
 
-@set GtkAdaVersion 1.2.5
+@set GtkAdaVersion 1.2.6
 
 @title GtkAda User's Guide
 @subtitle Version @value{GtkAdaVersion}
@@ -2098,7 +2098,7 @@ have to be handled by this function.
 
 @itemize @bullet
 @item Glib.Glade API
-The Glide.Glade package contains a self documented API that will help you
+The Glib.Glade package contains a self documented API that will help you
 automate most of the work for common widgets.
 @item Most common mapping
   @itemize @bullet
