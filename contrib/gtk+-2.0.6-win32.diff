@@ -373,7 +373,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
   * @hdc:     the device context
   * @font:    the font in which to draw the string
   * @glyphs:  the glyph string to draw
-@@ -230,9 +231,11 @@
+@@ -230,9 +231,12 @@
   * @y:       the y position of baseline (in pixels)
   *
   * Render a PangoGlyphString onto a Windows DC
@@ -382,23 +382,23 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
   */
 -void 
 -pango_win32_render (HDC                hdc,
++HFONT	pango_win32_render_offset_previous_font ;
 +static int
 +pango_win32_render_offset (HDC         hdc,
  		    PangoFont         *font,
  		    PangoGlyphString  *glyphs,
  		    int                x, 
-@@ -240,38 +243,78 @@
+@@ -240,38 +244,78 @@
  {
    HFONT old_hfont = NULL;
    HFONT hfont;
--  int i;
+-  int i, idx ;
 +  int i, idx, rendered_width, tmp ;
    guint16 *glyph_indexes;
    INT *dX;
 +  /* temporary static storage for runs of less than 256 glyphes */
 +  static guint16	stat_glyph_indices [256] ;
 +  static INT		stat_dX [256] ;
-+  static HFONT		previous_set_font = NULL ;
 +  /* */
  
 -  g_return_if_fail (glyphs != NULL);
@@ -413,10 +413,10 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 -		
 -  glyph_indexes = g_new (guint16, glyphs->num_glyphs);
 -  dX = g_new (INT, glyphs->num_glyphs);
-+  if (previous_set_font != hfont)
++  if (pango_win32_render_offset_previous_font != hfont)
 +    {
 +      old_hfont = SelectObject (hdc, hfont);
-+      previous_set_font = hfont ;
++      pango_win32_render_offset_previous_font = hfont ;
 +    }
  
 +  if (glyphs->num_glyphs > 256)
@@ -428,29 +428,24 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 +    dX = stat_dX ;
 +  }
 +
-+  idx = 0 ;
+   idx = 0 ;
 +  rendered_width = 0 ;
    for (i = 0; i <glyphs->num_glyphs; i++)
      {
--      glyph_indexes[i] = glyphs->glyphs[i].glyph;
--      dX[i] = glyphs->glyphs[i].geometry.width / PANGO_SCALE;
-+      /* prevent from displaying squares */
-+      if (glyphs->glyphs[i].glyph != 0)
-+        {
-+          /* glyph is actually handled */
-+	  tmp = glyphs->glyphs[i].geometry.width / PANGO_SCALE ;
-+          glyph_indexes[idx] = glyphs->glyphs[i].glyph ;
-+	  dX[idx] = tmp ;
-+	  rendered_width += tmp ;
-+	  ++idx ;
-+	}
+       /* fduguet : skips the zero glyphs */
+       if (glyphs->glyphs[i].glyph != 0)
+         {
+           /* glyph is handeled */
+           glyph_indexes[idx] = glyphs->glyphs[i].glyph ;
+           dX[idx] = glyphs->glyphs[i].geometry.width / PANGO_SCALE ;
+           ++idx ;
+         }
      }
  
    ExtTextOutW (hdc, x, y,
  	       ETO_GLYPH_INDEX,
  	       NULL,
--	       glyph_indexes, glyphs->num_glyphs,
-+	       glyph_indexes, idx,
+	       glyph_indexes, idx,
  	       dX);
  
 -  SelectObject (hdc, old_hfont); /* restore */
@@ -471,6 +466,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 +		    gint               x, 
 +		    gint               y)
 +{
++	pango_win32_render_offset_previous_font = NULL ;
 +	/* ignore the offset */
 +	(void) pango_win32_render_offset (hdc, font, glyphs, x,y);
  }
@@ -479,7 +475,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
  static void
  pango_win32_font_get_glyph_extents (PangoFont      *font,
  				    PangoGlyph      glyph,
-@@ -531,6 +574,9 @@
+@@ -531,6 +575,9 @@
  
  /**
   * pango_win32_render_layout_line:
@@ -489,7 +485,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
   * @hdc:       HDC to use for uncolored drawing
   * @line:      a #PangoLayoutLine
   * @x:         the x position of start of string (in pixels)
-@@ -545,18 +591,14 @@
+@@ -545,18 +592,16 @@
  				int               y)
  {
    GSList *tmp_list = line->runs;
@@ -501,6 +497,8 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
    
 -  int x_off = 0;
 +  int x_off = 0, tmp_off ;
++
++  pango_win32_render_offset_previous_font = NULL ;
  
 -  pango_layout_line_get_extents (line,NULL, &overall_rect);
 -  
@@ -511,7 +509,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
        POINT points[2];
        PangoUnderline uline = PANGO_UNDERLINE_NONE;
        PangoLayoutRun *run = tmp_list->data;
-@@ -567,69 +609,60 @@
+@@ -567,69 +612,60 @@
  
        pango_win32_get_item_properties (run->item, &uline, &fg_color, &fg_set, &bg_color, &bg_set);
  
@@ -626,7 +624,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
      }
  }
  
-@@ -654,6 +687,16 @@
+@@ -654,6 +690,16 @@
    int indent;
    int width;
    int y_offset = 0;
@@ -643,7 +641,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
  
    gboolean first = TRUE;
    
-@@ -714,6 +757,13 @@
+@@ -714,6 +760,13 @@
        y_offset += logical_rect.height;
        tmp_list = tmp_list->next;
      }
