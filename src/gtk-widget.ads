@@ -272,6 +272,7 @@ package Gtk.Widget is
    --  This clears the widget, and its parent if any, so that everything is
    --  correctly redrawn.
    --  You should not have to call this function directly.
+   --  For a Gtk_Window, check the procedure Gtk.Window.Resize instead.
 
    procedure Draw
      (Widget : access Gtk_Widget_Record;
