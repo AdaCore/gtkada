@@ -112,12 +112,12 @@ with Gtk.Widget;
 with Gtk.Window;
 pragma Warnings (On);
 
-with Gtk.Type_Conversion_Hooks;
-pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Type_Conversion is
 
-   function Full_Conversion (Type_Name : String) return Root_Type_Access;
+   function Full_Conversion (Type_Name : String) return GObject;
    --  This function knows about all base widgets present in GtkAda.
    --  One noticeable difference is Gtk_Label that is recognized by default,
    --  to avoid the need of this package for the common usage.
@@ -137,7 +137,7 @@ package body Gtk.Type_Conversion is
    -- Full_Conversion --
    ---------------------
 
-   function Full_Conversion (Type_Name : String) return Root_Type_Access is
+   function Full_Conversion (Type_Name : String) return GObject is
    begin
       case Type_Name (Type_Name'First + 3) is
          when 'A' =>
@@ -355,5 +355,5 @@ package body Gtk.Type_Conversion is
    end Full_Conversion;
 
 begin
-   Gtk.Type_Conversion_Hooks.Add_Hook (Full_Conversion'Access);
+   Glib.Type_Conversion_Hooks.Add_Hook (Full_Conversion'Access);
 end Gtk.Type_Conversion;
