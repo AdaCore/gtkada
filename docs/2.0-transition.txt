@@ -190,9 +190,9 @@ Gtk.Notebook:
   Set_Page : replace by Set_Current_Page
 Gtk.Option_Menu:
   Get_History: new function.
-Gtk.Packer: deprecated.
+Gtk.Packer: deprecated, removed.
 Gtk.Paned:
-  Set/Get_Gutter_Size: stubs provided for compatbility only.
+  Set/Get_Gutter_Size: stubs provided for compatibility only.
   Set/Get_Handle_Size: stubs provided for compatibility only.
   Get_Position: new function.
 Gtk.Pixmap: deprecated.
