@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;                  use System;
 with System.Storage_Elements; use System.Storage_Elements;
 with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
@@ -179,7 +180,11 @@ package body Glib.Unicode is
    begin
       Result := Internal (Str'Address + Storage_Offset (Index),
                           Str'Address + Storage_Offset (Str'Length));
-      return Natural (Result - Str'Address);
+      if Result = System.Null_Address then
+         return Str'Last + 1;
+      else
+         return Natural (Result - Str'Address);
+      end if;
    end UTF8_Find_Next_Char;
 
    -------------------------
@@ -196,7 +201,11 @@ package body Glib.Unicode is
    begin
       Result := Internal (Str'Address,
                           Str'Address + Storage_Offset (Index));
-      return Natural (Result - Str'Address);
+      if Result = System.Null_Address then
+         return Str'First - 1;
+      else
+         return Natural (Result - Str'Address);
+      end if;
    end UTF8_Find_Prev_Char;
 
    ---------------------
