@@ -30,6 +30,13 @@ End
 
 New features in 1.2.4 include:
 
+- Handling of Gdk events has been rewritten, so that:
+    * It is now much easier to convert from one event type to another
+    * It is possible to create events directly from GtkAda, and then send them
+      to any widget.
+- Handling of signals has been modified, so that GtkAda now tests that the handler
+  provided are compatible argument-wise with what is expected in gtk+. The same test
+  is done when emitting a signal.
 - New code generation in GATE:
     * take advantage of the composite types
     * generate a child package for callbacks related to each composite widget
