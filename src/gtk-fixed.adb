@@ -43,7 +43,7 @@ package body Gtk.Fixed is
                          return      System.Address;
       pragma Import (C, Internal, "ada_fixed_get_children");
       use Gtk.Widget.Widget_List;
-      Children : Glist;
+      Children : Gtk.Widget.Widget_List.Glist;
    begin
       Set_Object (Children, Internal (Get_Object (Widget)));
       return Children;

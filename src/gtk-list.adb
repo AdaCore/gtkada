@@ -102,7 +102,7 @@ package body Gtk.List is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_list_get_children");
-      List : Glist;
+      List : Gtk.Widget.Widget_List.Glist;
    begin
       Set_Object (List, Internal (Get_Object (Widget)));
       return List;
@@ -118,7 +118,7 @@ package body Gtk.List is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_list_get_selection");
-      List : Glist;
+      List : Gtk.Widget.Widget_List.Glist;
    begin
       Set_Object (List, Internal (Get_Object (Widget)));
       return List;
