@@ -507,6 +507,24 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Boolean'Pos (Show_Tabs));
    end Set_Show_Tabs;
 
+   -------------
+   -- Set_Tab --
+   -------------
+
+   procedure Set_Tab
+     (Notebook  : access Gtk_Notebook_Record;
+      Page_Num  : Gint;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      Page : Gtk_Widget;
+   begin
+      Page := Get_Nth_Page (Notebook, Page_Num);
+
+      if Page /= null then
+         Set_Tab_Label (Notebook, Page, Tab_Label);
+      end if;
+   end Set_Tab;
+
    --------------------
    -- Set_Tab_Border --
    --------------------
