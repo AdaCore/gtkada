@@ -8,17 +8,11 @@ package body Gtk is
    -- Destroy --
    -----------------
 
-   procedure Destroy (Obj : in Object'Class)
+   procedure Destroy (Obj : in Gtk_Object'Class)
    is
       procedure Internal  (Obj : in System.Address);
       pragma Import (C, Internal, "gtk_object_destroy");
    begin
-      --  When the widget is destroyed, the callbacks are automatically
-      --  destroyed too.
-      --  In this binding, we have to make sure the memory allocated for
-      --  the data is freed. The simple way is to call
-      Gtk.Signal.Handlers_Destroy (Obj);
-
       Internal (Get_Object (Obj));
    end Destroy;
 
@@ -27,7 +21,7 @@ package body Gtk is
    -- Get_Object --
    ----------------
 
-   function Get_Object (Obj : in Object'Class)
+   function Get_Object (Obj : in Gtk_Object'Class)
                         return System.Address is
    begin
       return Obj.Ptr;
@@ -74,7 +68,7 @@ package body Gtk is
    -- Set_Object --
    ----------------
 
-   procedure Set_Object (Obj   : in out Object'Class;
+   procedure Set_Object (Obj   : in out Gtk_Object'Class;
                          Value : in     System.Address) is
       use type System.Address;
    begin
