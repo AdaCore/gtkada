@@ -80,7 +80,7 @@ package Gtk.Socket is
      (Socket : access Gtk_Socket_Record;
       Wid    : in     Guint32);
    --  Reparent a pre-existing toplevel window into a GtkSocket.
-   --  Wid is the XID of an existing toplevel window. 
+   --  Wid is the XID of an existing toplevel window.
 
 private
 
@@ -90,7 +90,7 @@ private
 end Gtk.Socket;
 
 --  <example>
---  Obtaining the XID of a socket 
+--  Obtaining the XID of a socket
 --
 --  with Gtk.Socket;
 --  use Gtk.Socket;

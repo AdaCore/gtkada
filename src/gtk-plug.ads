@@ -62,7 +62,7 @@ package Gtk.Plug is
    --  Finish the creation of a Gtk_Plug widget.
    --  This function will generally only be used by classes deriving from
    --  Gtk_Plug.
-   --  Socket_Id is the XID of the socket's window. 
+   --  Socket_Id is the XID of the socket's window.
 
 private
 
