@@ -619,20 +619,14 @@ package body Glib.Glade is
       Prefix   : String := "";
       Postfix  : String := "")
    is
-      P   : String_Ptr;
-      Cur : String_Ptr;
-      Top : String_Ptr;
-
+      Top : constant String := Get_Name (Find_Top_Widget (N));
+      Cur : constant String := Get_Name (N);
    begin
       if N.Specific_Data.Created then
          return;
       end if;
 
-      P := Get_Field (N, "name");
-      Cur := Get_Field (N, "name");
-      Top := Get_Field (Find_Top_Widget (N), "name");
-
-      if P /= null then
+      if Cur /= "" then
          Add_Package (Class);
 
          if Cur = Top then
@@ -644,10 +638,10 @@ package body Glib.Glade is
          Put (File, "     (");
 
          if Cur /= Top then
-            Put (File, To_Ada (Top.all) & ".");
+            Put (File, To_Ada (Top) & ".");
          end if;
 
-         Put (File, To_Ada (P.all) & ", ");
+         Put (File, To_Ada (Cur) & ", ");
 
          if Prefix /= "" then
             Put (File, Prefix & Param1 & Postfix);
