@@ -152,7 +152,7 @@ package Gtkada.MDI is
    Destroy_Button       : constant Child_Flags := 2 ** 2;
    Float_As_Transient   : constant Child_Flags := 2 ** 3;
    Always_Destroy_Float : constant Child_Flags := 2 ** 4;
-   All_Buttons        : constant Child_Flags :=
+   All_Buttons          : constant Child_Flags :=
      Iconify_Button or Maximize_Button or Destroy_Button;
    --  Special flags to set up the widgets:
    --  The first three list the buttons that should be displayed in the title
@@ -214,7 +214,7 @@ package Gtkada.MDI is
    --  To do that, you should call Set_Focus_Child.
 
    procedure Close
-     (MDI : access MDI_Window_Record;
+     (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
       Force : Boolean := False);
    --  Close the child that contains Child, and remove its window from the
@@ -225,8 +225,8 @@ package Gtkada.MDI is
    --  Force is set to True.
 
    procedure Set_Title
-     (Child : access MDI_Child_Record;
-      Title : UTF8_String;
+     (Child       : access MDI_Child_Record;
+      Title       : UTF8_String;
       Short_Title : UTF8_String := "");
    --  Set the title for a child. Title is the title put in titlebar of
    --  the children, whereas Short_Title is the name of the notebook tab when
@@ -273,8 +273,8 @@ package Gtkada.MDI is
    -- Menus --
    -----------
 
-   function Create_Menu (MDI   : access MDI_Window_Record)
-      return Gtk.Menu.Gtk_Menu;
+   function Create_Menu
+     (MDI : access MDI_Window_Record) return Gtk.Menu.Gtk_Menu;
    --  Create a dynamic menu that can then be inserted into a menu bar. This
    --  menu is dynamic, ie its content will changed based on the focus
    --  child.
@@ -323,8 +323,8 @@ package Gtkada.MDI is
    --  Make Child the active widget, and raise it at the top.
 
    procedure Check_Interactive_Selection_Dialog
-     (MDI    : access MDI_Window_Record;
-      Event  : Gdk.Event.Gdk_Event;
+     (MDI          : access MDI_Window_Record;
+      Event        : Gdk.Event.Gdk_Event;
       Move_To_Next : Boolean;
       Visible_In_Central_Only : Boolean := False);
    --  Open the interactive dialog for selecting windows.
@@ -379,8 +379,8 @@ package Gtkada.MDI is
    --  Return the first child matching Tag
 
    function Find_MDI_Child_By_Name
-     (MDI    : access MDI_Window_Record;
-      Name   : String) return MDI_Child;
+     (MDI  : access MDI_Window_Record;
+      Name : String) return MDI_Child;
    --  Return the first child matching Name.
 
    type Child_Iterator is private;
