@@ -1,14 +1,14 @@
 GtkAda 2.0.0 release
 --------------------
 
-GtkAda is an Ada95 graphical toolkit based on Gtk+ version >= 2.0.0. It
-allows you to develop graphical applications in Ada95 using Gtk+.
+GtkAda is an Ada95 graphical toolkit based on Gtk+. It allows you
+to develop graphical applications in Ada95 using Gtk+.
 
 The primary download site is http://libre.act-europe.fr/GtkAda
 
-This version represents a major update to the Gtk+ 2.0.0 API.
-Most of the new features of Gtk+ 2.0.0 have been bound at this stage.
-Most of the GtkExtra package has not been ported to Gtk+ 2.0.0 yet (this
+This version represents a major update to the Gtk+ 2.0 API.
+Most of the new features of Gtk+ 2.0 have been bound at this stage.
+Most of the GtkExtra package has not been ported to Gtk+ 2.0 yet (this
 is work in progress), so these widgets are currently disabled.
 
 GtkAda 2.0.0 also comes with a new widget which is not fully stabilized
@@ -20,7 +20,7 @@ LSM entry follows:
 Begin4
 Title:  GtkAda
 Version: 2.0.0
-Entered-date: 2001-03-08
+Entered-date: 2001-03-12
 Description: Ada95 graphical toolkit based on Gtk+ (version >= 2.0.0) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <brobecker@gnat.com> and Arnaud Charlet <charlet@gnat.com>
