@@ -5,6 +5,15 @@ package Gtk.Object is
    procedure Destroy (Object : in out Gtk_Object'Class);
    --  mapping: Destroy gtkobject.h gtk_object_destroy
 
+   function Is_Created (Object : in Gtk_Object) return Boolean;
+
+   procedure Ref (Object : in out Gtk_Object);
+   --  mapping: Ref gtkobject.h gtk_object_ref
+
+   procedure Unref (Object : in out Gtk_Object);
+   --  mapping: Unref gtkobject.h gtk_object_unref
+
+
    -------------
    --  Flags  --
    -------------
@@ -27,6 +36,11 @@ package Gtk.Object is
 private
 
    type Gtk_Object is new Root_Type with null record;
+
+   procedure Adjust (Object : in out Gtk_Object);
+   procedure Finalize (Object : in out Gtk_Object);
+   procedure Initialize (Object : in out Gtk_Object);
+
 
    --  Functions which are not implemented because they are probably not needed
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_add_arg_type
