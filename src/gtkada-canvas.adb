@@ -46,6 +46,7 @@ with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Adjustment;   use Gtk.Adjustment;
+with Gtk.Arguments;    use Gtk.Arguments;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Handlers;
@@ -143,8 +144,8 @@ package body Gtkada.Canvas is
    --  Redraw all the links in the canvas.
    --  If Item is not null, only the links to or from Item are redrawn.
 
-   function Configure_Handler
-     (Canv : access Gtk_Widget_Record'Class) return Boolean;
+   procedure Size_Allocate
+     (Canv : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  When the item is resized.
 
    function Button_Pressed
@@ -383,9 +384,8 @@ package body Gtkada.Canvas is
       Return_Callback.Connect
         (Canvas, "key_press_event",
          Return_Callback.To_Marshaller (Key_Press'Access));
-      Return_Callback.Connect
-        (Canvas, "configure_event",
-         Return_Callback.To_Marshaller (Configure_Handler'Access));
+      Widget_Callback.Connect
+        (Canvas, "size_allocate", Size_Allocate'Access);
       Widget_Callback.Connect
         (Canvas, "set_scroll_adjustments", Set_Scroll_Adjustments'Access);
       Widget_Callback.Connect
@@ -528,34 +528,33 @@ package body Gtkada.Canvas is
       Canvas.Motion_Threshold := Motion_Threshold;
    end Configure;
 
-   -----------------------
-   -- Configure_Handler --
-   -----------------------
+   -------------------
+   -- Size_Allocate --
+   -------------------
 
-   function Configure_Handler
-     (Canv : access Gtk_Widget_Record'Class) return Boolean
+   procedure Size_Allocate
+     (Canv : access Gtk_Widget_Record'Class;
+      Args   : Gtk_Args)
    is
+      Alloc : Gtk_Allocation_Access := To_Allocation (Args, 1);
       Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
    begin
-      Set_Page_Size (Canvas.Hadj, Gdouble (Get_Allocation_Width (Canvas)));
+      Set_Page_Size (Canvas.Hadj, Gdouble (Alloc.Width));
       Set_Step_Increment (Canvas.Hadj, 10.0);
       Set_Page_Increment (Canvas.Hadj, Get_Page_Size (Canvas.Hadj) / 2.0);
 
-      Set_Page_Size (Canvas.Vadj, Gdouble (Get_Allocation_Height (Canvas)));
+      Set_Page_Size (Canvas.Vadj, Gdouble (Alloc.Height));
       Set_Step_Increment (Canvas.Vadj, 10.0);
       Set_Page_Increment (Canvas.Vadj, Get_Page_Size (Canvas.Vadj) / 2.0);
 
       Update_Adjustments (Canvas);
 
-      if Canvas.Double_Buffer /= null then
+      if Use_Double_Buffer and then Canvas.Double_Buffer /= null then
          Gdk.Pixmap.Unref (Canvas.Double_Buffer);
       end if;
-      Gdk_New
-        (Canvas.Double_Buffer, Get_Window (Canvas),
-         Gint (Get_Allocation_Width (Canvas)),
-         Gint (Get_Allocation_Height (Canvas)));
-      return False;
-   end Configure_Handler;
+
+      Canvas.Double_Buffer := null;
+   end Size_Allocate;
 
    -------------------
    -- Align_On_Grid --
@@ -1554,6 +1553,13 @@ package body Gtkada.Canvas is
 
    begin
       if Use_Double_Buffer then
+         if Canvas.Double_Buffer = null then
+            Gdk_New
+              (Canvas.Double_Buffer, Get_Window (Canvas),
+               Gint (Get_Allocation_Width (Canvas)),
+               Gint (Get_Allocation_Height (Canvas)));
+         end if;
+
          Pix := Canvas.Double_Buffer;
       else
          Pix := Get_Window (Canvas);
