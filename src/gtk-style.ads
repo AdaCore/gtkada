@@ -40,6 +40,7 @@ with Gtk.Widget;
 package Gtk.Style is
 
    type Gtk_Style is new Root_Type with private;
+   type Gtk_Style_Access is access all Gtk_Style'Class;
 
    --  NOTE: Gtk_Style is not an access type, since there is no easy
    --  way to automatically deallocate memory when the C widget is
