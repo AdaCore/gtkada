@@ -31,7 +31,6 @@ with Gtk; use Gtk;
 with Gnome.UI_Defs; use Gnome.UI_Defs;
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
-with Unchecked_Deallocation;
 
 package body Gnome.App_Helper is
 
@@ -49,10 +48,6 @@ package body Gnome.App_Helper is
    pragma Convention (C, First_Marshaller);
    --  First level marshaller. This is the function that is actually
    --  called by Gnome. It then calls the Ada functions as required.
-
-   procedure Free_Data (Data : Data_Type_Access);
-   pragma Convention (C, Free_Data);
-   --  Free the memory associated with the callback's data
 
    ----------------------
    -- First_Marshaller --
@@ -72,19 +67,6 @@ package body Gnome.App_Helper is
          User_Data.Func (User_Data.Object);
       end if;
    end First_Marshaller;
-
-   ---------------
-   -- Free_Data --
-   ---------------
-
-   procedure Free_Data (Data : Data_Type_Access) is
-      procedure Internal is new Unchecked_Deallocation
-        (Data_Type_Record, Data_Type_Access);
-      D : Data_Type_Access := Data;
-
-   begin
-      Internal (D);
-   end Free_Data;
 
    ----------------
    -- New_String --
