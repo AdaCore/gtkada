@@ -381,6 +381,8 @@ foreach $source_file (@source_files) {
 					    0)),
 		     "\n\@end example\n");
 	}
+    } else {  # No <description> tag
+#	print "no description tag for $source_file\n";
     }
 }
 
@@ -493,9 +495,11 @@ sub find_type_in_package () {
 		}
 		$p =~ s/_Record//;
 		$p =~ s/.*\.([^.]+)/$1/;
-		$parent{$origin} = $p;
 	    }
 	}
+    }
+    if ($p ne "") {
+	$parent{$origin} = $p;
     }
     return $origin;
 }
@@ -570,7 +574,6 @@ sub find_signals () {
     }
 
     my ($ada_signals) = &get_tag_value ("signals", @content);
-
     # If the tag is found in the Ada file, use it
     if ($ada_signals ne "") {
 	my ($signal, $descr);
@@ -618,7 +621,6 @@ sub find_signals () {
 	    if (keys %c_signals);
 	return %c_signals;
     }
-
     return %signals;
 }
 
@@ -644,11 +646,16 @@ sub find_hierarchy_array () {
 
     unless ($parent{$type}) {
 	my ($filename) = $type;
-	$filename =~ s/Gtk_/Gtk-/;
+	$filename =~ s/Gtk_//;
 	$filename =~ tr/A-Z/a-z/;
 	$filename .= ".ads";
-
-	open (FILE, $src_dir . "/" . $filename);
+	if (-f $src_dir . "/gtk-" . $filename) {
+	    open (FILE, $src_dir . "/gtk-" . $filename);
+	} elsif (-f $src_dir . "/gtk-extra-" . $filename) {
+	    open (FILE, $src_dir . "/gtk-extra-" . $filename);
+	} else {
+	    die "file not found for type $type\n";
+	}
 	my ($origin) = &find_type_in_package (<FILE>);
 	close (FILE);
 	return (&find_hierarchy_array ($parent{$type}), $type);
@@ -665,6 +672,10 @@ sub package_from_type () {
 	return "Gtk.Extra.Plot";
     } elsif ($string eq "Gtk_Check_Item") {
 	return "Gtk.Extra.Check_Item";
+    } elsif ($string eq "Gtk_Plot_Layout") {
+	return "Gtk.Extra.Plot_Layout";
+    } elsif ($string eq "Gtk_Plot_Canvas") {
+	return "Gtk.Extra.Plot_Canvas";
     } else {
 	$string =~ s/(G[td]k)_/$1./;
     }
