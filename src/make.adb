@@ -144,9 +144,11 @@ with Gtk.Style;
 with Gtk.Table;
 with Gtk.Tearoff_Menu_Item;
 with Gtk.Text;
+with Gtk.Text_Attributes;
 with Gtk.Text_Buffer;
 with Gtk.Text_Child;
 with Gtk.Text_Iter;
+with Gtk.Text_Layout;
 with Gtk.Text_Mark;
 with Gtk.Text_Tag;
 with Gtk.Text_Tag_Table;
@@ -188,7 +190,9 @@ with Gtkada.Pixmaps;
 with Gtkada.Types;
 
 with Pango;
+with Pango.Context;
 with Pango.Enums;
+with Pango.Font;
 
 procedure Make is
 begin
