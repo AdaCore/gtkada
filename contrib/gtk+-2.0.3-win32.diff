@@ -1,0 +1,7 @@
+This is a patch against Gtk+ 2.0.3 sources that fixes Windows specific
+problems.
+
+Problems already included in the Gtk+ CVS:
+
+Problems not included in CVS:
+
