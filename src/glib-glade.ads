@@ -96,10 +96,14 @@ package Glib.Glade is
    --  Get the Part-th part of S delimited by Separator.
 
    procedure Gen_Set
-     (N : Node_Ptr; Class, Name : String;
-      File : File_Type; Delim : Character := ' '; Is_Float : Boolean := False);
+     (N        : Node_Ptr;
+      Class, Name : String;
+      File     : File_Type;
+      Prefix   : String := "";
+      Postfix  : String := "";
+      Is_Float : Boolean := False);
    --  Generate a Set_<Name> call in File.
-   --  If Delim is not a space, Name is surrounded by it.
+   --  Name is surrounded by Prefix and Postfix.
    --  If Is_Float is true, call To_Float on the field <Name>.
 
    procedure Gen_Set
@@ -118,22 +122,27 @@ package Glib.Glade is
    procedure Gen_New
      (N : Node_Ptr; Class : String;
       Param1, Param2, New_Name : String := "";
-      File : File_Type; Delim : Character := ' ');
+      File : File_Type;
+      Prefix   : String := "";
+      Postfix  : String := "");
    --  Output a call to <Class>.Gtk_New in File.
    --  N is the node containing the widget to create.
    --  If Param<n> is not null, it represents a parameter of Gtk_New.
    --  New_Name if not null is a name appended to Gtk_New_,
    --  e.g Gtk_New_Vbox if New_Name = Vbox.
-   --  If Delim is not a space, Param1 is surrounded by it.
+   --  Param1 is surrounded by Prefix and Postfix.
 
    procedure Gen_New
-     (N : Node_Ptr; Class, Param1, Param2, Param3, Param4, Param5 : String;
-      File : File_Type; Delim : Character := ' ');
+     (N        : Node_Ptr;
+      Class, Param1, Param2, Param3, Param4, Param5 : String;
+      File     : File_Type;
+      Prefix   : String := "";
+      Postfix  : String := "");
    --  Output a call to <Class>.Gtk_New in File.
    --  N is the node containing the widget to create.
    --  Each Param<n> represents a parameter of Gtk_New, except Param5
    --  which is omitted if null.
-   --  If Delim is not a space, Param1 is surrounded by it.
+   --  Param1 is surrounded by Prefix and Postfix.
 
    procedure Gen_Child (N, Child : Node_Ptr; File : File_Type);
    --  Output an assignment in File of the form:
@@ -189,6 +198,9 @@ package Glib.Glade is
    --  Return the number of instantiations generated.
    --  The instantiations are all generated in a package called
    --  Callbacks_<Project>
+
+   function Gettext_Support (N : Node_Ptr) return Boolean;
+   --  Return True if the project's parameter "gettext_support" is True.
 
    function To_Package_Name (S : String) return String;
    --  Transform the name of a given Gtk+ widget into the corresponding GtkAda
