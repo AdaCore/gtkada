@@ -1,0 +1,9 @@
+Known problems fixed in GtkAda 1.2.12/1.3.12
+
+- Declaring new signals for widgets with a common parent
+  Problem:    When declaring new signals (with Initialize_Class_Record) for
+              two widget types that extend the same Gtk parent, the first one
+              is not taken into account and the signal is not accessible.
+  Workaround: Declare a first child of the Gtk parent, and make the two other
+              widgets inherit from it. Declare the signals for this first
+              child.
