@@ -1452,9 +1452,9 @@ package body Gtk.CTree is
 
    end Ctree_Gnode;
 
-   ---------------
+   --------------
    -- Row_Data --
-   ---------------
+   --------------
 
    package body Row_Data is
 
@@ -1468,8 +1468,11 @@ package body Gtk.CTree is
          end record;
       type Ctree_Func_Record_Access is access all Ctree_Func_Record;
 
-      procedure Free_Data (Data : in out Data_Type_Access);
+      procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
+      --  Note that Data is *not* an in out parameter here, since Free_Data
+      --  will be used as a callback, and when called, the original variable
+      --  holding the pointer no longer exists.
 
       procedure C_Ctree_Func (C_Ctree : in System.Address;
                               C_Node  : in Gtk_Ctree_Node;
@@ -1533,9 +1536,10 @@ package body Gtk.CTree is
       -- Free_Data --
       ---------------
 
-      procedure Free_Data (Data : in out Data_Type_Access) is
+      procedure Free_Data (Data : Data_Type_Access) is
+         Local_Data : Data_Type_Access;
       begin
-         Deallocate_Data_Type (Data);
+         Deallocate_Data_Type (Local_Data);
       end Free_Data;
 
       ----------------------
@@ -1645,15 +1649,17 @@ package body Gtk.CTree is
                                    Node  : in     Gtk_Ctree_Node;
                                    Data  : in     Data_Type)
       is
-         procedure Internal (Object  : in System.Address;
-                             Node    : in Gtk_Ctree_Node;
-                             Data    : in Data_Type_Access;
-                             Destroy : in System.Address);
+         procedure Internal
+           (Object  : in System.Address;
+            Node    : in Gtk_Ctree_Node;
+            Data    : in Data_Type_Access;
+            Destroy : in System.Address);
          pragma Import (C, Internal, "gtk_ctree_node_set_row_data_full");
-         D : Data_Type_Access := new Data_Type' (Data);
 
       begin
-         Internal (Get_Object (Ctree), Node, D, Free_Data'Address);
+         Internal
+           (Get_Object (Ctree),
+            Node, new Data_Type' (Data), Free_Data'Address);
       end Node_Set_Row_Data;
 
       --------------------
