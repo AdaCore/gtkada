@@ -78,7 +78,7 @@ private
    --  C type is.  It can be set to another function that will convert
    --  to the appropriate type (this is not the default since this will
    --  slow down initializations a little bit, and will 'with' all the
-   --  package from GtkAda).
+   --  packages from GtkAda).
    --  Stub is the expect type (it is used by the simple conversion
    --  function only).
 
