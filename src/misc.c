@@ -34,6 +34,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
 gint
 convert_a (void* a)
@@ -1048,28 +1049,76 @@ ada_adjustment_set_page_size (GtkAdjustment * adjustment,
  *
  */
 
-GdkGC *
-ada_gtk_style_get_black_gc (GtkStyle * style)
+void
+ada_style_set_fg (GtkStyle* style, gint state, GdkColor* color)
 {
-  return style->black_gc;
+  style->fg[state] = *color;
 }
 
-GdkGC *
-ada_gtk_style_get_bg_gc (GtkStyle * style, gint state)
+GdkColor*
+ada_style_get_fg (GtkStyle* style, gint state)
 {
-  return style->bg_gc [state];
-}
-
-GdkGC *
-ada_gtk_style_get_white_gc (GtkStyle * style)
-{
-  return style->white_gc;
+  return style->fg + state;
 }
 
 void
-ada_style_set_foreground (GtkStyle* style, gint state, GdkColor* color)
+ada_style_set_bg (GtkStyle* style, gint state, GdkColor* color)
 {
-  style->fg[state] = *color;
+  style->bg[state] = *color;
+}
+
+GdkColor*
+ada_style_get_bg (GtkStyle* style, gint state)
+{
+  return style->bg + state;
+}
+
+void
+ada_style_set_light (GtkStyle* style, gint state, GdkColor* color)
+{
+  style->light[state] = *color;
+}
+
+GdkColor*
+ada_style_get_light (GtkStyle* style, gint state)
+{
+  return style->light + state;
+}
+
+void
+ada_style_set_dark (GtkStyle* style, gint state, GdkColor* color)
+{
+  style->dark[state] = *color;
+}
+
+GdkColor*
+ada_style_get_dark (GtkStyle* style, gint state)
+{
+  return style->dark + state;
+}
+
+void
+ada_style_set_mid (GtkStyle* style, gint state, GdkColor* color)
+{
+  style->mid[state] = *color;
+}
+
+GdkColor*
+ada_style_get_mid (GtkStyle* style, gint state)
+{
+  return style->mid + state;
+}
+
+void
+ada_style_set_text (GtkStyle* style, gint state, GdkColor* color)
+{
+  style->text[state] = *color;
+}
+
+GdkColor*
+ada_style_get_text (GtkStyle* style, gint state)
+{
+  return style->text + state;
 }
 
 void
@@ -1078,10 +1127,176 @@ ada_style_set_base (GtkStyle* style, gint state, GdkColor* color)
   style->base[state] = *color;
 }
 
+GdkColor*
+ada_style_get_base (GtkStyle* style, gint state)
+{
+  return style->base + state;
+}
+
+
+
+
+
+void
+ada_style_set_black (GtkStyle* style, GdkColor* color)
+{
+  style->black = *color;
+}
+
+GdkColor*
+ada_style_get_black (GtkStyle* style)
+{
+  return &style->black;
+}
+
+void
+ada_style_set_white (GtkStyle* style, GdkColor* color)
+{
+  style->white = *color;
+}
+
+GdkColor*
+ada_style_get_white (GtkStyle* style)
+{
+  return &style->white;
+}
+
 void
 ada_style_set_font (GtkStyle* style, GdkFont* font)
 {
   style->font = font;
+}
+
+GdkFont*
+ada_style_get_font (GtkStyle* style)
+{
+  return style->font;
+}
+
+
+
+
+void
+ada_style_set_fg_gc (GtkStyle* style, gint state, GdkGC* gc)
+{
+  style->fg_gc[state] = gc;
+}
+
+GdkGC*
+ada_style_get_fg_gc (GtkStyle * style, gint state)
+{
+  return style->fg_gc [state];
+}
+
+void
+ada_style_set_bg_gc (GtkStyle* style, gint state, GdkGC* gc)
+{
+  style->bg_gc[state] = gc;
+}
+
+GdkGC*
+ada_style_get_bg_gc (GtkStyle * style, gint state)
+{
+  return style->bg_gc [state];
+}
+
+void
+ada_style_set_light_gc (GtkStyle* style, gint state, GdkGC* gc)
+{
+  style->light_gc[state] = gc;
+}
+
+GdkGC*
+ada_style_get_light_gc (GtkStyle * style, gint state)
+{
+  return style->light_gc [state];
+}
+
+void
+ada_style_set_dark_gc (GtkStyle* style, gint state, GdkGC* gc)
+{
+  style->dark_gc[state] = gc;
+}
+
+GdkGC*
+ada_style_get_dark_gc (GtkStyle * style, gint state)
+{
+  return style->dark_gc[state];
+}
+
+void
+ada_style_set_mid_gc (GtkStyle* style, gint state, GdkGC* gc)
+{
+  style->mid_gc[state] = gc;
+}
+
+GdkGC*
+ada_style_get_mid_gc (GtkStyle * style, gint state)
+{
+  return style->mid_gc [state];
+}
+
+void
+ada_style_set_text_gc (GtkStyle* style, gint state, GdkGC* gc)
+{
+  style->text_gc[state] = gc;
+}
+
+GdkGC*
+ada_style_get_text_gc (GtkStyle * style, gint state)
+{
+  return style->text_gc [state];
+}
+
+void
+ada_style_set_base_gc (GtkStyle* style, gint state, GdkGC* gc)
+{
+  style->base_gc[state] = gc;
+}
+
+GdkGC*
+ada_style_get_base_gc (GtkStyle * style, gint state)
+{
+  return style->base_gc [state];
+}
+
+void
+ada_style_set_black_gc (GtkStyle* style, GdkGC* gc)
+{
+  style->black_gc = gc;
+}
+
+GdkGC*
+ada_style_get_black_gc (GtkStyle * style)
+{
+  return style->black_gc;
+}
+
+
+void
+ada_style_set_white_gc (GtkStyle* style, GdkGC* gc)
+{
+  style->white_gc = gc;
+}
+
+GdkGC*
+ada_style_get_white_gc (GtkStyle * style)
+{
+  return style->white_gc;
+}
+
+
+
+void
+ada_style_set_bg_pixmap (GtkStyle* style, gint state, GdkPixmap *pix)
+{
+	style->bg_pixmap[state] = pix;
+}
+
+GdkPixmap*
+ada_style_get_bg_pixmap (GtkStyle* style, gint state)
+{
+	return style->bg_pixmap[state];
 }
 
 /***************************************************
@@ -1443,28 +1658,6 @@ GtkWidget*
 ada_combo_get_list (GtkCombo* widget)
 {
   return widget->list;
-}
-
-/*******************************************
- ** Functions for Style
- *******************************************/
-
-GdkColor*
-ada_style_get_bg (GtkStyle* style, gint state)
-{
-  return (style->bg + state);
-}
-
-GdkColor*
-ada_style_get_black (GtkStyle* style)
-{
-  return &(style->black);
-}
-
-GdkColor*
-ada_style_get_white (GtkStyle* style)
-{
-  return &(style->white);
 }
 
 /********************************************

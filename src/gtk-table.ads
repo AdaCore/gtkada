@@ -66,6 +66,10 @@ package Gtk.Table is
       Rows        : in Gint;
       Columns     : in Gint;
       Homogeneous : in Boolean);
+   procedure Resize
+     (Table       : access Gtk_Table_Record;
+      Rows        : in Gint;
+      Columns     : in Gint);
    procedure Set_Col_Spacing
      (Table   : access Gtk_Table_Record;
       Column  : in Gint;

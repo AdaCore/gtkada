@@ -132,6 +132,24 @@ package body Gtk.Table is
       Initialize_User_Data (Widget);
    end Initialize;
 
+   ------------
+   -- Resize --
+   ------------
+
+   procedure Resize
+     (Table      : access Gtk_Table_Record;
+     Rows        : in Gint;
+     Columns     : in Gint)
+   is
+      procedure Internal
+        (Table   : in System.Address;
+         Column  : in Gint;
+         Spacing : in Gint);
+      pragma Import (C, Internal, "gtk_table_resize");
+   begin
+      Internal (Get_Object (Table), Rows, Columns);
+   end Resize;
+
    ---------------------
    -- Set_Col_Spacing --
    ---------------------
