@@ -1,5 +1,5 @@
 
-SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/pixbuf/*.ads
+SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/pixbuf/*.ads ../../src/glade/*.ads
 
 gtkada_rm: ps html info partial_clean
 
