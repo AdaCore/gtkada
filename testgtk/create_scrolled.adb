@@ -32,7 +32,6 @@ with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Table;           use Gtk.Table;
 with Gtk.Toggle_Button;   use Gtk.Toggle_Button;
-with Gtk.Widget;          use Gtk.Widget;
 with Gtk.Window;          use Gtk.Window;
 with Gtk;                 use Gtk;
 
