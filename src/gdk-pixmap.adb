@@ -135,6 +135,30 @@ package body Gdk.Pixmap is
       S := Internal (Get_Object (Pixmap));
    end Ref_Pixmap;
 
+   -------------------
+   --  Set_Stipple  --
+   -------------------
+
+   procedure Set_Stipple (GC      : in out Gdk.GC.Gdk_GC'Class;
+                          Stipple : in     Gdk_Pixmap) is
+      procedure Internal (GC, Stipple : in System.Address);
+      pragma Import (C, Internal, "gdk_gc_set_stipple");
+   begin
+      Internal (Get_Object (GC), Get_Object (Stipple));
+   end Set_Stipple;
+
+   ----------------
+   --  Set_Tile  --
+   ----------------
+
+   procedure Set_Tile (GC   : in out Gdk.GC.Gdk_GC'Class;
+                       Tile : in     Gdk_Pixmap) is
+      procedure Internal (GC, Tile : in System.Address);
+      pragma Import (C, Internal, "gdk_gc_set_tile");
+   begin
+      Internal (Get_Object (GC), Get_Object (Tile));
+   end Set_Tile;
+ 
    ------------------
    -- Unref_Pixmap --
    ------------------

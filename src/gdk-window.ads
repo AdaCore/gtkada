@@ -28,6 +28,7 @@
 
 with Glib; use Glib;
 with Gdk;
+with Gdk.Color;
 
 package Gdk.Window is
 
@@ -38,6 +39,9 @@ package Gdk.Window is
                          Y      : in Gint;
                          Width  : in Gint;
                          Height : in Gint);
+
+   function Get_Colormap (Window : in Gdk_Window)
+                          return Gdk.Color.Gdk_Colormap;
 
 private
    type Gdk_Window is new Root_Type with null record;

@@ -120,19 +120,6 @@ package body Gdk.GC is
    end Set_Background;
 
 
-   ---------------------
-   --  Set_Clip_Mask  --
-   ---------------------
-
-   procedure Set_Clip_Mask (GC    : in out Gdk_GC;
-                            Mask  : in     Bitmap.Gdk_Bitmap'Class) is
-      procedure Internal (GC, Mask : in System.Address);
-      pragma Import (C, Internal, "gdk_gc_set_clip_mask");
-   begin
-      Internal (Get_Object (GC), Get_Object (Mask));
-   end Set_Clip_Mask;
-
-
    -----------------------
    --  Set_Clip_Origin  --
    -----------------------
@@ -260,19 +247,6 @@ package body Gdk.GC is
    end Set_Line_Attributes;
 
 
-   -------------------
-   --  Set_Stipple  --
-   -------------------
-
-   procedure Set_Stipple (GC      : in out Gdk_GC;
-                          Stipple : in     Pixmap.Gdk_Pixmap'Class) is
-      procedure Internal (GC, Stipple : in System.Address);
-      pragma Import (C, Internal, "gdk_gc_set_stipple");
-   begin
-      Internal (Get_Object (GC), Get_Object (Stipple));
-   end Set_Stipple;
-
-
    ---------------------
    --  Set_Subwindow  --
    ---------------------
@@ -285,19 +259,6 @@ package body Gdk.GC is
    begin
       Internal (Get_Object (GC), Mode);
    end Set_Subwindow;
-
-
-   ----------------
-   --  Set_Tile  --
-   ----------------
-
-   procedure Set_Tile (GC   : in out Gdk_GC;
-                       Tile : in     Pixmap.Gdk_Pixmap'Class) is
-      procedure Internal (GC, Tile : in System.Address);
-      pragma Import (C, Internal, "gdk_gc_set_tile");
-   begin
-      Internal (Get_Object (GC), Get_Object (Tile));
-   end Set_Tile;
 
 
    ---------------------

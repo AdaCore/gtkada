@@ -46,5 +46,17 @@ package body Gdk.Bitmap is
                                     Width, Height));
    end Create_From_Data;
 
+   ---------------------
+   --  Set_Clip_Mask  --
+   ---------------------
+
+   procedure Set_Clip_Mask (GC    : in out Gdk.GC.Gdk_GC'Class;
+                            Mask  : in     Gdk_Bitmap) is
+      procedure Internal (GC, Mask : in System.Address);
+      pragma Import (C, Internal, "gdk_gc_set_clip_mask");
+   begin
+      Internal (Get_Object (GC), Get_Object (Mask));
+   end Set_Clip_Mask;
+
 
 end Gdk.Bitmap;

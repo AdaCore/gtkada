@@ -44,4 +44,19 @@ package body Gdk.Window is
       Internal (Get_Object (Window), X, Y, Width, Height);
    end Clear_Area;
 
+   ------------------
+   -- Get_Colormap --
+   ------------------
+
+   function Get_Colormap (Window : in Gdk_Window)
+                          return Gdk.Color.Gdk_Colormap
+   is
+      function Internal (Window : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_window_get_colormap");
+      Cmap : Gdk.Color.Gdk_Colormap;
+   begin
+      Set_Object (Cmap, Internal (Get_Object (Window)));
+      return Cmap;
+   end Get_Colormap;
+
 end Gdk.Window;

@@ -28,11 +28,13 @@
 
 with Glib; use Glib;
 
+with Gdk.Drawable;
+with Gdk.GC;
 with Gdk.Window;
 
 package Gdk.Bitmap is
 
-   type Gdk_Bitmap is new Root_Type with private;
+   type Gdk_Bitmap is new Gdk.Drawable.Gdk_Drawable with private;
 
    procedure Create_From_Data (Bitmap :    out Gdk_Bitmap;
                                Window : in     Gdk.Window.Gdk_Window'Class;
@@ -40,10 +42,12 @@ package Gdk.Bitmap is
                                Width  : in     Gint;
                                Height : in     Gint);
 
+   procedure Set_Clip_Mask (GC    : in out Gdk.GC.Gdk_GC'Class;
+                            Mask  : in     Gdk_Bitmap);
 
 private
 
-   type Gdk_Bitmap is new Root_Type with null record;
+   type Gdk_Bitmap is new Gdk.Drawable.Gdk_Drawable with null record;
 
 
 end Gdk.Bitmap;

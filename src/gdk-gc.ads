@@ -27,10 +27,8 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Font;
-with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Region;
 with Gdk.Types;
@@ -71,20 +69,11 @@ package Gdk.GC is
    procedure Set_Fill (GC   : in out Gdk_GC;
                        Fill : in     Types.Gdk_Fill);
 
-   procedure Set_Tile (GC   : in out Gdk_GC;
-                       Tile : in     Pixmap.Gdk_Pixmap'Class);
-
-   procedure Set_Stipple (GC      : in out Gdk_GC;
-                          Stipple : in     Pixmap.Gdk_Pixmap'Class);
-
    procedure Set_Ts_Origin (GC   : in out Gdk_GC;
                             X, Y : in     Gint);
 
    procedure Set_Clip_Origin (GC   : in out Gdk_GC;
                               X, Y : in     Gint);
-
-   procedure Set_Clip_Mask (GC    : in out Gdk_GC;
-                            Mask  : in     Bitmap.Gdk_Bitmap'Class);
 
    procedure Set_Clip_Rectangle
      (GC        : in out Gdk_GC;
