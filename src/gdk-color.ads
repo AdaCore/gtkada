@@ -51,6 +51,10 @@ package Gdk.Color is
 
    procedure Unref (Colormap : in out Gdk_Colormap);
 
+   procedure Get_System (Colormap : out Gdk_Colormap);
+
+   function Get_System_Size return Gint;
+
    procedure Change (Colormap : in Gdk_Colormap;
                      Ncolors  : in Gint);
 
@@ -82,6 +86,12 @@ package Gdk.Color is
    procedure Change (Colormap  : in out Gdk_Colormap;
                     Color     : in out Gdk_Color;
                     Succeeded :    out Boolean);
+
+   procedure Get_Visual (Colormap : in     Gdk_Colormap;
+                         Visual   :    out Gdk.Visual.Gdk_Visual);
+
+   procedure Copy (Source      : in     Gdk_Color;
+                   Destination :    out Gdk_Color);
 
    function "=" (Colora, Colorb : in Gdk_Color) return Boolean;
 
@@ -122,5 +132,7 @@ private
    pragma Inline (Green);
    pragma Inline (Blue);
    pragma Inline (Pixel);
+
+   pragma Import (C, Get_System_Size, "gdk_colormap_get_system_size");
 
 end Gdk.Color;

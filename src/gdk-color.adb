@@ -129,6 +129,20 @@ package body Gdk.Color is
    end Change;
 
    ----------
+   -- Copy --
+   ----------
+
+   procedure Copy (Source      : in     Gdk_Color;
+                   Destination :    out Gdk_Color) is
+      function Internal (Source : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_color_copy");
+      Result : Gdk_Color;
+      for Result'Address use Internal (Source'Address);
+   begin
+      Destination := Result;
+   end Copy;
+
+   ----------
    -- Free --
    ----------
 
@@ -157,6 +171,29 @@ package body Gdk.Color is
    begin
       Set_Object (Colormap, Internal (Get_Object (Visual), Private_Cmap));
    end Gdk_New;
+
+   ------------------
+   --  Get_System  --
+   ------------------
+
+   procedure Get_System (Colormap : out Gdk_Colormap) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gdk_colormap_get_system");
+   begin
+      Set_Object (Colormap, Internal);
+   end Get_System;
+
+   ------------------
+   --  Get_Visual  --
+   ------------------
+
+   procedure Get_Visual (Colormap : in     Gdk_Colormap;
+                         Visual   :    out Gdk.Visual.Gdk_Visual) is
+      function Internal (Colormap : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_colormap_get_visual");
+   begin
+      Set_Object (Visual, Internal (Get_Object (Colormap)));
+   end Get_Visual;
 
    -----------
    -- Green --
