@@ -102,8 +102,8 @@ package body Gdk.Color is
    procedure Alloc_Color
      (Colormap   : in Gdk_Colormap;
       Color      : in out Gdk_Color;
-      Writeable  : in Boolean;
-      Best_Match : in Boolean;
+      Writeable  : in Boolean := False;
+      Best_Match : in Boolean := True;
       Success    :    out Boolean)
    is
       function Internal
@@ -133,8 +133,8 @@ package body Gdk.Color is
    procedure Alloc_Colors
      (Colormap   : in     Gdk_Colormap;
       Colors     : in out Gdk_Color_Array;
-      Writeable  : in     Boolean;
-      Best_Match : in     Boolean;
+      Writeable  : in     Boolean := False;
+      Best_Match : in     Boolean := True;
       Success    :    out Boolean_Array;
       Result     :    out Gint)
    is
