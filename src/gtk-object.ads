@@ -311,11 +311,10 @@ package Gtk.Object is
    --  </doc_ignore>
 
    ----------------------------
-   -- Support for GATE/DGATE --
+   -- Support for Gate/Dgate --
    ----------------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
 
    procedure Generate (Object : in out Gtk_Object; N : in Node_Ptr);
