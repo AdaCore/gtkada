@@ -129,17 +129,10 @@ package Glib is
 
 private
 
-   type Object_Type is
-     record
-        Ptr : System.Address := System.Null_Address;
-     end record;
+   type Object_Type is record
+      Ptr : System.Address := System.Null_Address;
+   end record;
 
    Null_Object_Type : constant Object_Type := (Ptr => System.Null_Address);
 
 end Glib;
-
-
-
-
-
-
