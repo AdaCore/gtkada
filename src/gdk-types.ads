@@ -111,32 +111,27 @@ package Gdk.Types is
                             Xterm);
 
    type Gdk_Event_Mask is new Guint;
-   Null_Event_Mask          : constant Gdk_Event_Mask := 0;
-   Exposure_Mask            : constant Gdk_Event_Mask := 2 ** 1;
-   Pointer_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 2;
-   Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask := 2 ** 3;
-   Button_Motion_Mask       : constant Gdk_Event_Mask := 2 ** 4;
-   Button_1_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 5;
-   Button_2_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 6;
-   Button_3_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 7;
-   Button_Press_Mask        : constant Gdk_Event_Mask := 2 ** 8;
-   Button_Release_Mask      : constant Gdk_Event_Mask := 2 ** 9;
-   Key_Press_Mask           : constant Gdk_Event_Mask := 2 ** 10;
-   Key_Release_Mask         : constant Gdk_Event_Mask := 2 ** 11;
-   Enter_Notify_Mask        : constant Gdk_Event_Mask := 2 ** 12;
-   Leave_Notify_Mask        : constant Gdk_Event_Mask := 2 ** 13;
-   Focus_Change_Mask        : constant Gdk_Event_Mask := 2 ** 14;
-   Structure_Mask           : constant Gdk_Event_Mask := 2 ** 15;
-   Property_Change_Mask     : constant Gdk_Event_Mask := 2 ** 16;
-   Visibility_Notify_Mask   : constant Gdk_Event_Mask := 2 ** 17;
-   Proximity_In_Mask        : constant Gdk_Event_Mask := 2 ** 18;
-   Proximity_Out_Mask       : constant Gdk_Event_Mask := 2 ** 19;
-   All_Events_Mask          : constant Gdk_Event_Mask := 16#7FFFF#;
-   --  FIXME: Move all the constants values to the private part.
-   --  FIXME: Only define some private constants...
-   --  FIXME: However, make sure it does not affect the "and" and "or"
-   --  FIXME: binary operators...
-   --  FIXME: DO NOT FORGET TO DO THE SAME FOR THE OTHER CONSTANTS!
+   Null_Event_Mask          : constant Gdk_Event_Mask;
+   Exposure_Mask            : constant Gdk_Event_Mask;
+   Pointer_Motion_Mask      : constant Gdk_Event_Mask;
+   Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask;
+   Button_Motion_Mask       : constant Gdk_Event_Mask;
+   Button_1_Motion_Mask     : constant Gdk_Event_Mask;
+   Button_2_Motion_Mask     : constant Gdk_Event_Mask;
+   Button_3_Motion_Mask     : constant Gdk_Event_Mask;
+   Button_Press_Mask        : constant Gdk_Event_Mask;
+   Button_Release_Mask      : constant Gdk_Event_Mask;
+   Key_Press_Mask           : constant Gdk_Event_Mask;
+   Key_Release_Mask         : constant Gdk_Event_Mask;
+   Enter_Notify_Mask        : constant Gdk_Event_Mask;
+   Leave_Notify_Mask        : constant Gdk_Event_Mask;
+   Focus_Change_Mask        : constant Gdk_Event_Mask;
+   Structure_Mask           : constant Gdk_Event_Mask;
+   Property_Change_Mask     : constant Gdk_Event_Mask;
+   Visibility_Notify_Mask   : constant Gdk_Event_Mask;
+   Proximity_In_Mask        : constant Gdk_Event_Mask;
+   Proximity_Out_Mask       : constant Gdk_Event_Mask;
+   All_Events_Mask          : constant Gdk_Event_Mask;
 
    type Gdk_Event_Type is (Nothing,
                            Delete,
@@ -183,26 +178,146 @@ package Gdk.Types is
 
    type Gdk_Line_Style is (Solid, On_Off_Dash, Double_Dash);
 
-   type Gdk_Modifier_Mask is new Guint;
-   Shift_Mask   : constant Gdk_Modifier_Mask := 2 ** 0;
-   Lock_Mask    : constant Gdk_Modifier_Mask := 2 ** 1;
-   Control_Mask : constant Gdk_Modifier_Mask := 2 ** 2;
-   Mod1_Mask    : constant Gdk_Modifier_Mask := 2 ** 3;
-   Mod2_Mask    : constant Gdk_Modifier_Mask := 2 ** 4;
-   Mod3_Mask    : constant Gdk_Modifier_Mask := 2 ** 5;
-   Mod4_Mask    : constant Gdk_Modifier_Mask := 2 ** 6;
-   Mod5_Mask    : constant Gdk_Modifier_Mask := 2 ** 7;
-   Button1_Mask : constant Gdk_Modifier_Mask := 2 ** 8;
-   Button2_Mask : constant Gdk_Modifier_Mask := 2 ** 9;
-   Button3_Mask : constant Gdk_Modifier_Mask := 2 ** 10;
-   Button4_Mask : constant Gdk_Modifier_Mask := 2 ** 11;
-   Button5_Mask : constant Gdk_Modifier_Mask := 2 ** 12;
+   type Gdk_Modifier_Type is new Guint;
+   Shift_Mask   : constant Gdk_Modifier_Type;
+   Lock_Mask    : constant Gdk_Modifier_Type;
+   Control_Mask : constant Gdk_Modifier_Type;
+   Mod1_Mask    : constant Gdk_Modifier_Type;
+   Mod2_Mask    : constant Gdk_Modifier_Type;
+   Mod3_Mask    : constant Gdk_Modifier_Type;
+   Mod4_Mask    : constant Gdk_Modifier_Type;
+   Mod5_Mask    : constant Gdk_Modifier_Type;
+   Button1_Mask : constant Gdk_Modifier_Type;
+   Button2_Mask : constant Gdk_Modifier_Type;
+   Button3_Mask : constant Gdk_Modifier_Type;
+   Button4_Mask : constant Gdk_Modifier_Type;
+   Button5_Mask : constant Gdk_Modifier_Type;
 
    type Gdk_Overlap_Type is (Rectangle_In, Rectangle_Out, Rectangle_Part);
+
+   type Gdk_Window_Attributes_Type is new Guint;
+   Wa_Title    : constant Gdk_Window_Attributes_Type;
+   Wa_X        : constant Gdk_Window_Attributes_Type;
+   Wa_Y        : constant Gdk_Window_Attributes_Type;
+   Wa_Cursor   : constant Gdk_Window_Attributes_Type;
+   Wa_Colormap : constant Gdk_Window_Attributes_Type;
+   Wa_Visual   : constant Gdk_Window_Attributes_Type;
+   Wa_Wmclass  : constant Gdk_Window_Attributes_Type;
+   Wa_Noredir  : constant Gdk_Window_Attributes_Type;
 
    type Gdk_Subwindow_Mode is (Clip_By_Children, Include_Inferiors);
 
    type Gdk_Values_Mask is new Guint;
+   Foreground    : constant Gdk_Values_Mask;
+   Background    : constant Gdk_Values_Mask;
+   Font          : constant Gdk_Values_Mask;
+   GC_Function   : constant Gdk_Values_Mask;
+   Fill          : constant Gdk_Values_Mask;
+   Tile          : constant Gdk_Values_Mask;
+   Stipple       : constant Gdk_Values_Mask;
+   Clip_Mask     : constant Gdk_Values_Mask;
+   Subwindow     : constant Gdk_Values_Mask;
+   Ts_X_Origin   : constant Gdk_Values_Mask;
+   Tx_Y_Origin   : constant Gdk_Values_Mask;
+   Clip_X_Origin : constant Gdk_Values_Mask;
+   Clip_Y_Origin : constant Gdk_Values_Mask;
+   Exposures     : constant Gdk_Values_Mask;
+   Line_Width    : constant Gdk_Values_Mask;
+   Line_Style    : constant Gdk_Values_Mask;
+   Cap_Style     : constant Gdk_Values_Mask;
+   Join_Style    : constant Gdk_Values_Mask;
+
+   type Gdk_Visual_Type is (Static_Gray,
+                            Grayscale,
+                            Static_Color,
+                            Pseudo_Color,
+                            True_Color,
+                            Direct_Color);
+
+   type Gdk_Window_Class is (Input_Output,
+                             Input_Only);
+
+   type Gdk_Window_Hint is new Guint;
+   Gdk_Hint_Pos      : constant Gdk_Window_Hint;
+   Gdk_Hint_Min_Size : constant Gdk_Window_Hint;
+   Gdk_Hint_Max_Size : constant Gdk_Window_Hint;
+
+   type Gdk_Window_Type is (Root,
+                            Toplevel,
+                            Child,
+                            Dialog,
+                            Temp,
+                            Pixmap,
+                            Foreign);
+
+   type Gdk_Wm_Decoration is new Guint;
+   Decor_All      : constant Gdk_Wm_Decoration;
+   Decor_Border   : constant Gdk_Wm_Decoration;
+   Decor_Resize_H : constant Gdk_Wm_Decoration;
+   Decor_Title    : constant Gdk_Wm_Decoration;
+   Decor_Menu     : constant Gdk_Wm_Decoration;
+   Decor_Minimize : constant Gdk_Wm_Decoration;
+   Decor_Maximize : constant Gdk_Wm_Decoration;
+
+   type Gdk_Wm_Function is new Guint;
+   Func_All      : constant Gdk_Wm_Function;
+   Func_Resize   : constant Gdk_Wm_Function;
+   Func_Move     : constant Gdk_Wm_Function;
+   Func_Minimize : constant Gdk_Wm_Function;
+   Func_Maximize : constant Gdk_Wm_Function;
+   Func_Close    : constant Gdk_Wm_Function;
+
+private
+
+   -------------------------
+   --  Private constants  --
+   -------------------------
+
+   Null_Event_Mask          : constant Gdk_Event_Mask := 0;
+   Exposure_Mask            : constant Gdk_Event_Mask := 2 ** 1;
+   Pointer_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 2;
+   Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask := 2 ** 3;
+   Button_Motion_Mask       : constant Gdk_Event_Mask := 2 ** 4;
+   Button_1_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 5;
+   Button_2_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 6;
+   Button_3_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 7;
+   Button_Press_Mask        : constant Gdk_Event_Mask := 2 ** 8;
+   Button_Release_Mask      : constant Gdk_Event_Mask := 2 ** 9;
+   Key_Press_Mask           : constant Gdk_Event_Mask := 2 ** 10;
+   Key_Release_Mask         : constant Gdk_Event_Mask := 2 ** 11;
+   Enter_Notify_Mask        : constant Gdk_Event_Mask := 2 ** 12;
+   Leave_Notify_Mask        : constant Gdk_Event_Mask := 2 ** 13;
+   Focus_Change_Mask        : constant Gdk_Event_Mask := 2 ** 14;
+   Structure_Mask           : constant Gdk_Event_Mask := 2 ** 15;
+   Property_Change_Mask     : constant Gdk_Event_Mask := 2 ** 16;
+   Visibility_Notify_Mask   : constant Gdk_Event_Mask := 2 ** 17;
+   Proximity_In_Mask        : constant Gdk_Event_Mask := 2 ** 18;
+   Proximity_Out_Mask       : constant Gdk_Event_Mask := 2 ** 19;
+   All_Events_Mask          : constant Gdk_Event_Mask := 16#7FFFF#;
+
+   Shift_Mask   : constant Gdk_Modifier_Type := 2 ** 0;
+   Lock_Mask    : constant Gdk_Modifier_Type := 2 ** 1;
+   Control_Mask : constant Gdk_Modifier_Type := 2 ** 2;
+   Mod1_Mask    : constant Gdk_Modifier_Type := 2 ** 3;
+   Mod2_Mask    : constant Gdk_Modifier_Type := 2 ** 4;
+   Mod3_Mask    : constant Gdk_Modifier_Type := 2 ** 5;
+   Mod4_Mask    : constant Gdk_Modifier_Type := 2 ** 6;
+   Mod5_Mask    : constant Gdk_Modifier_Type := 2 ** 7;
+   Button1_Mask : constant Gdk_Modifier_Type := 2 ** 8;
+   Button2_Mask : constant Gdk_Modifier_Type := 2 ** 9;
+   Button3_Mask : constant Gdk_Modifier_Type := 2 ** 10;
+   Button4_Mask : constant Gdk_Modifier_Type := 2 ** 11;
+   Button5_Mask : constant Gdk_Modifier_Type := 2 ** 12;
+
+   Wa_Title    : constant Gdk_Window_Attributes_Type := 2 ** 1;
+   Wa_X        : constant Gdk_Window_Attributes_Type := 2 ** 2;
+   Wa_Y        : constant Gdk_Window_Attributes_Type := 2 ** 3;
+   Wa_Cursor   : constant Gdk_Window_Attributes_Type := 2 ** 4;
+   Wa_Colormap : constant Gdk_Window_Attributes_Type := 2 ** 5;
+   Wa_Visual   : constant Gdk_Window_Attributes_Type := 2 ** 6;
+   Wa_Wmclass  : constant Gdk_Window_Attributes_Type := 2 ** 7;
+   Wa_Noredir  : constant Gdk_Window_Attributes_Type := 2 ** 8;
+
    Foreground    : constant Gdk_Values_Mask := 2 ** 0;
    Background    : constant Gdk_Values_Mask := 2 ** 1;
    Font          : constant Gdk_Values_Mask := 2 ** 2;
@@ -222,25 +337,9 @@ package Gdk.Types is
    Cap_Style     : constant Gdk_Values_Mask := 2 ** 16;
    Join_Style    : constant Gdk_Values_Mask := 2 ** 17;
 
-   type Gdk_Visual_Type is (Static_Gray,
-                            Grayscale,
-                            Static_Color,
-                            Pseudo_Color,
-                            True_Color,
-                            Direct_Color);
-
-   type Gdk_Window_Class is (Input_Output,
-                             Input_Only);
-
-   type Gdk_Window_Type is (Root,
-                            Toplevel,
-                            Child,
-                            Dialog,
-                            Temp,
-                            Pixmap,
-                            Foreign);
-
-private
+   Gdk_Hint_Pos      : constant Gdk_Window_Hint := 2 ** 0;
+   Gdk_Hint_Min_Size : constant Gdk_Window_Hint := 2 ** 1;
+   Gdk_Hint_Max_Size : constant Gdk_Window_Hint := 2 ** 2;
 
    ------------------------------
    --  Representation clauses  --
@@ -365,5 +464,20 @@ private
                             Ur_Angle => 148,
                             Watch => 150,
                             Xterm => 152);
+
+   Decor_All      : constant Gdk_Wm_Decoration := 2 ** 0;
+   Decor_Border   : constant Gdk_Wm_Decoration := 2 ** 1;
+   Decor_Resize_H : constant Gdk_Wm_Decoration := 2 ** 2;
+   Decor_Title    : constant Gdk_Wm_Decoration := 2 ** 3;
+   Decor_Menu     : constant Gdk_Wm_Decoration := 2 ** 4;
+   Decor_Minimize : constant Gdk_Wm_Decoration := 2 ** 5;
+   Decor_Maximize : constant Gdk_Wm_Decoration := 2 ** 6;
+
+   Func_All      : constant Gdk_Wm_Function := 2 ** 0;
+   Func_Resize   : constant Gdk_Wm_Function := 2 ** 1;
+   Func_Move     : constant Gdk_Wm_Function := 2 ** 2;
+   Func_Minimize : constant Gdk_Wm_Function := 2 ** 3;
+   Func_Maximize : constant Gdk_Wm_Function := 2 ** 4;
+   Func_Close    : constant Gdk_Wm_Function := 2 ** 5;
 
 end Gdk.Types;
