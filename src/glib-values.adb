@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -60,7 +60,7 @@ package body Glib.Values is
    function Get_String (Value : GValue) return String is
       function Internal (Value : GValue) return chars_ptr;
       pragma Import (C, Internal, "g_value_get_string");
-      C : chars_ptr := Internal (Value);
+      C : constant chars_ptr := Internal (Value);
    begin
       if C = Null_Ptr then
          return "";
@@ -76,7 +76,7 @@ package body Glib.Values is
    function Get_String (Value : GValue; Length : Gint) return String is
       function Internal (Value : GValue) return chars_ptr;
       pragma Import (C, Internal, "g_value_get_string");
-      C : chars_ptr := Internal (Value);
+      C : constant chars_ptr := Internal (Value);
    begin
       if C = Null_Ptr then
          return "";

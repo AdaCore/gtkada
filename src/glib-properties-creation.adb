@@ -654,7 +654,7 @@ package body Glib.Properties.Creation is
    function Default (Param : Param_Spec_String) return String is
       function Internal (Param : Param_Spec_String) return chars_ptr;
       pragma Import (C, Internal, "ada_gparam_default_string");
-      C : chars_ptr := Internal (Param);
+      C : constant chars_ptr := Internal (Param);
    begin
       if C /= Null_Ptr then
          return Value (C);
@@ -670,7 +670,7 @@ package body Glib.Properties.Creation is
    function Cset_First (Param : Param_Spec_String) return String is
       function Internal (Param : Param_Spec_String) return chars_ptr;
       pragma Import (C, Internal, "ada_gparam_cset_first_string");
-      C : chars_ptr := Internal (Param);
+      C : constant chars_ptr := Internal (Param);
    begin
       if C /= Null_Ptr then
          return Value (C);
@@ -686,7 +686,7 @@ package body Glib.Properties.Creation is
    function Cset_Nth (Param : Param_Spec_String) return String is
       function Internal (Param : Param_Spec_String) return chars_ptr;
       pragma Import (C, Internal, "ada_gparam_cset_nth_string");
-      C : chars_ptr := Internal (Param);
+      C : constant chars_ptr := Internal (Param);
    begin
       if C /= Null_Ptr then
          return Value (C);
@@ -921,12 +921,12 @@ package body Glib.Properties.Creation is
       Value         : GValue;
       Property_Spec : Param_Spec)
    is
-      function Real (Object : System.Address) return Set_Property_Handler;
-      pragma Import (C, Real, "ada_real_set_property_handler");
+      function Internl (Object : System.Address) return Set_Property_Handler;
+      pragma Import (C, Internl, "ada_real_set_property_handler");
       Stub : GObject_Record;
-      Obj : GObject := Get_User_Data (Object, Stub);
+      Obj : constant GObject := Get_User_Data (Object, Stub);
    begin
-      Real (Object) (Obj, Prop_Id, Value, Property_Spec);
+      Internl (Object) (Obj, Prop_Id, Value, Property_Spec);
    end Internal_Set_Property_Handler;
 
    -----------------------------------
@@ -939,12 +939,12 @@ package body Glib.Properties.Creation is
       Value         : out GValue;
       Property_Spec : Param_Spec)
    is
-      function Real (Object : System.Address) return Get_Property_Handler;
-      pragma Import (C, Real, "ada_real_get_property_handler");
+      function Internal (Object : System.Address) return Get_Property_Handler;
+      pragma Import (C, Internal, "ada_real_get_property_handler");
       Stub : GObject_Record;
-      Obj : GObject := Get_User_Data (Object, Stub);
+      Obj : constant GObject := Get_User_Data (Object, Stub);
    begin
-      Real (Object) (Obj, Prop_Id, Value, Property_Spec);
+      Internal (Object) (Obj, Prop_Id, Value, Property_Spec);
    end Internal_Get_Property_Handler;
 
    -----------------------------
