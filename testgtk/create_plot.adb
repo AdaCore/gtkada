@@ -378,8 +378,8 @@ package body Create_Plot is
       Set_Legends_Border (Active_Plot, Border_None, 0);
       Axis_Hide_Title (Active_Plot, Axis_Top);
       Axis_Show_Ticks (Active_Plot, Axis_Top, Ticks_All, Ticks_All);
-      Axis_Set_Ticks (Active_Plot,  Orientation_Horizontal, 1.0, 0.5);
-      Axis_Set_Ticks (Active_Plot,  Orientation_Vertical, 1.0, 0.5);
+      Axis_Set_Ticks (Active_Plot,  Orientation_Horizontal, 1.0, 2);
+      Axis_Set_Ticks (Active_Plot,  Orientation_Vertical, 1.0, 2);
       Axis_Set_Visible (Active_Plot, Axis_Top, True);
       Axis_Set_Visible (Active_Plot, Axis_Right, True);
       X0_Set_Visible (Active_Plot, True);
