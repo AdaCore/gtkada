@@ -160,13 +160,7 @@ mostlyclean: mostlyclean-generic
 maintainer-clean: mostlyclean-generic
 
 $(LIB_DIR)/misc.o: misc.c
-	$(CD) $(LIB_DIR); $(CC) -c $(ALL_CFLAGS) ../$<
-
-.ads.o:
-	$(CC) -c $(ALL_GNATFLAGS) $<
-
-.adb.o:
-	$(CC) -c $(ALL_GNATFLAGS) $<
+	$(CD) $(LIB_DIR); $(CC) -c $(ALL_CFLAGS) ../misc.c
 
 force:
 
