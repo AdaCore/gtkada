@@ -54,23 +54,9 @@ libdir        = $(prefix)/lib
 incdir        = $(prefix)/include/gtkada
 alidir        = $(incdir)
 
-HAVE_OPENGL=@HAVE_OPENGL@
-
-ifeq ($(HAVE_OPENGL),True)
-OPENGL_C_OBJECTS=$(LIB_DIR)/gtkglarea.o $(LIB_DIR)/gdkgl.o
-OPENGL_SOURCES=gdk-gl.adb gtk-glarea.adb
-OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=$(LIB_DIR)/%.o)
-OPENGL_LIBS=@GL_LIBS@
-OPENGL_FLAGS=@GL_CFLAGS@
-MESA_SPECS=gl_h.ads glu_h.ads
-else
-OPENGL_C_OBJECTS=
-OPENGL_SOURCES=
-OPENGL_OBJECTS=
-OPENGL_LIBS=
-OPENGL_FLAGS=
-MESA_SPECS=
-endif
+export INSTALL INSTALL_PROGRAM INSTALL_DATA FPIC GNATFLAGS GNATFLAGS_DEVEL
+export CC GNATMAKE OS_SPECIFIC_LINK_OPTIONS CP CHMOD ARFLAGS RANLIB
+export prefix exec_prefix bindir libdir incdir alidir
 
 c_objects = $(LIB_DIR)/misc.o $(LIB_DIR)/misc_extra.o
 c_extra_objects = gtkextra/gtk*.o
@@ -79,7 +65,10 @@ c_extra_objects = gtkextra/gtk*.o
 
 all: dirs libs gates
 
-libs: extra $(LIBNAME) $(ARCHIVENAME) install_ali
+libs: extra $(LIBNAME) $(ARCHIVENAME) opengl install_ali
+
+opengl: force
+	$(MAKE) -C opengl
 
 extra: force
 	$(MAKE) -C gtkextra
@@ -92,14 +81,13 @@ dirs:: force
 	-$(MKDIR) $(LIB_DIR)
 	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
-
-$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
-	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects) @GTK_LIBS@ $(OPENGL_LIBS) -lm
+$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
+	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects) @GTK_LIBS@ -lm
 	-@if [ ! -f .devel ]; then \
 	  strip $(LIBNAME); \
 	fi
 
-$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
+$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
@@ -136,9 +124,6 @@ $(LIB_DIR)/$(MAKE_ADB).o::
 	  $(GNATMAKE) -c ../$(MAKE_ADB) $(GNATFLAGS) $(FPIC); \
 	fi
 
-$(OPENGL_OBJECTS):: force
-	$(CD) $(LIB_DIR); $(GNATMAKE) $(GNATFLAGS) $(FPIC) -c -q ../$(notdir $(patsubst %.o,%.adb,$@))
-
 install: all
 	@if [ "$(prefix)" != `pwd` ]; then \
 	   echo Installing GtkAda in $(prefix); \
@@ -157,6 +142,7 @@ install: all
            $(INSTALL_PROGRAM) $(GATE) $(bindir); \
            $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
            $(INSTALL_PROGRAM) $(DGATE) $(bindir); \
+           $(MAKE) -C opengl install; \
 	fi
 	@echo '------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                              --'
@@ -178,24 +164,26 @@ mostlyclean-generic: clean-generic
 	-${RM} $(GTKADA_CONFIG)
 
 clean: clean-generic
+	$(MAKE) -C gtkextra clean
+	$(MAKE) -C opengl clean
 
 distclean: mostlyclean-generic
+	$(MAKE) -C gtkextra distclean
+	$(MAKE) -C opengl distclean
 
 mostlyclean: mostlyclean-generic
+	$(MAKE) -C gtkextra mostlyclean
+	$(MAKE) -C opengl mostlyclean
 
 maintainer-clean: mostlyclean-generic
+	$(MAKE) -C gtkextra maintainer-clean
+	$(MAKE) -C opengl maintainer-clean
 
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
 
 $(c_objects): $(LIB_DIR)/%.o : %.c
-	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) $(OPENGL_FLAGS) ../$<
-
-$(LIB_DIR)/gtkglarea.o: gtkglarea.h gtkglarea.c
-	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) $(OPENGL_FLAGS) ../gtkglarea.c
-$(LIB_DIR)/gdkgl.o:     gdkgl.h gdkgl.c
-	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) $(OPENGL_FLAGS) ../gdkgl.c
-
+	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) ../$<
 
 force:
 
