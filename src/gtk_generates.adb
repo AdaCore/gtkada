@@ -1780,21 +1780,22 @@ package body Gtk_Generates is
    -- Toolbar_Generate --
    ----------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Toolbar_Generate (N : Node_Ptr; File : File_Type) is
       P, Child   : Node_Ptr;
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
-      Top  : constant String_Ptr := Get_Field (Top_Widget, "name");
-      Cur  : constant String_Ptr := Get_Field (N, "name");
+      Top  : constant String := Get_Name (Top_Widget);
+      Cur  : constant String := Get_Name (N);
       S, T : String_Ptr;
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_toolbar_get_type");
 
    begin
       Widget := Widget_New (Build_Type);
-      Gen_New (N, "Toolbar", Get_Field (N, "orientation").all,
-        Get_Field (N, "type").all, File => File);
+      Gen_New (N, "Toolbar",
+               To_Ada (Get_Property
+                         (N, "orientation", "GTK_ORIENTATION_HORIZONTAL")),
+               To_Ada (Get_Property (N, "toolbar_style", "GTK_TOOLBAR_BOTH")),
+               File => File);
       Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "space_size", File);
@@ -1804,92 +1805,130 @@ package body Gtk_Generates is
 
       --  Now look for widgets that should be added to this toolbar
 
-      P := N.Child;
+
+      P := Find_Child (N, "child");
+      P := P.Child;
 
       while P /= null loop
          if P.Tag.all = "widget" then
-            S := Get_Field (P, "class");
+            declare
+               Child_Class : constant String := Get_Class (P);
+            begin
+               if Child_Class = "GtkButton"
+                 or else Child_Class = "GtkToggleButton"
+                 or else Child_Class = "GtkRadioButton"
+               then
+                  Child := Find_Child (P, "child");
 
-            if S.all = "GtkButton" or else S.all = "GtkToggleButton"
-              or else S.all = "GtkRadioButton"
-            then
-               Child := Find_Child (P, "child");
-
-               if Child /= null then
-                  T := Get_Field (Child, "new_group");
-               else
-                  T := null;
-               end if;
-
-               if T /= null and then T.all = "True" then
-                  Put_Line (File, "   Append_Space (" & To_Ada (Top.all) &
-                    "." & To_Ada (Cur.all) & ");");
-               end if;
-
-               Put_Line (File, "   " & To_Ada (Top.all) & "." &
-                 To_Ada (Get_Field (P, "name").all) &
-                 " := Append_Element");
-               Put (File, "     (Toolbar => ");
-
-               if Top /= Cur then
-                  Put (File, To_Ada (Top.all) & ".");
-               end if;
-
-               Put_Line (File, To_Ada (Cur.all) & ",");
-               Put (File, "      The_Type => Toolbar_Child_" &
-                 S (S'First + 3 .. S'Last));
-               S := Get_Field (P, "label");
-
-               if S /= null then
-                  Put_Line (File, ",");
-
-                  if Gettext_Support (Top_Widget) then
-                     Put (File, "      Text => -""" & S.all & '"');
-                  else
-                     Put (File, "      Text => """ & S.all & '"');
-                  end if;
-               end if;
-
-               S := Get_Field (P, "tooltip");
-
-               if S /= null then
-                  Put_Line (File, ",");
-
-                  if Gettext_Support (Top_Widget) then
-                     Put (File, "      Tooltip_Text => -""" & S.all & '"');
-                  else
-                     Put (File, "      Tooltip_Text => """ & S.all & '"');
-                  end if;
-               end if;
-
-               T := Get_Field (P, "icon");
-
-               if T /= null then
-                  Add_Package ("Pixmap");
-                  Put_Line (File, ",");
-                  Put (File, "      Icon => Gtk_Widget (Create_Pixmap (");
-
-                  if Index (T.all, ".") /= 0 then
-                     Put (File, '"' & T.all & '"');
-                  else
-                     Put (File, T.all);
+                  if Get_Property (Child, "new_group") = "True" then
+                     Put_Line (File, "   Append_Space (" & To_Ada (Top) &
+                               "." & To_Ada (Cur) & ");");
                   end if;
 
-                  Put_Line (File, ", " & To_Ada (Top.all) & ")));");
-               else
-                  Put_Line (File, ");");
+                  if Get_Property (P, "use_stock", "") = "True" then
+                     Put_Line (File, "   " & To_Ada (Top) & "." &
+                               To_Ada (Get_Name (P)) &
+                               " := Insert_Stock");
+
+                     Put (File, "     (Toolbar  => ");
+
+                     if Top /= Cur then
+                        Put (File, To_Ada (Top) & ".");
+                     end if;
+
+                     Put_Line (File, To_Ada (Cur) & ",");
+
+                     Put (File, "      Stock_Id => """);
+                     Put_Line (File, Get_Property (P, "label", "") & """,");
+
+                     Put (File, "      Tooltip_Text => """);
+                     Put_Line
+                       (File, Get_Property (P, "tooltip", "") & """,");
+
+                     Put (File, "      Tooltip_Private_Text => """);
+                     Put_Line
+                       (File, Get_Property (P, "tooltip", "") & """);");
+
+                  else
+                     Put_Line (File, "   " & To_Ada (Top) & "." &
+                               To_Ada (Get_Name (P)) &
+                               " := Gtk_Button (Append_Element");
+                     Put (File, "     (Toolbar => ");
+
+                     if Top /= Cur then
+                        Put (File, To_Ada (Top) & ".");
+                     end if;
+
+                     Put_Line (File, To_Ada (Cur) & ",");
+
+                     Put (File, "      The_Type => Toolbar_Child_" &
+                       Child_Class
+                         (Child_Class'First + 3 .. Child_Class'Last));
+                     S := Get_Property (P, "label");
+
+                     if S /= null then
+                        Put_Line (File, ",");
+
+                        if Gettext_Support (Top_Widget) then
+                           Put (File,
+                                "      Text => -(""" & Adjust (S.all) & """)");
+                        else
+                           Put (File,
+                                "      Text => """ & Adjust (S.all) & """");
+                        end if;
+                     end if;
+
+                     S := Get_Property (P, "tooltip");
+
+                     if S /= null then
+                        Put_Line (File, ",");
+
+                        if Gettext_Support (Top_Widget) then
+                           Put (File,
+                                "      Tooltip_Text => -("""
+                                & Adjust (S.all) & """)");
+                        else
+                           Put (File,
+                                "      Tooltip_Text => """
+                                & Adjust (S.all) & '"');
+                        end if;
+                     end if;
+
+                     T := Get_Property (P, "icon");
+
+                     if T /= null then
+                        Add_Package ("Pixmap");
+                        Put_Line (File, ",");
+                        Put
+                          (File, "      Icon => Gtk_Widget (Create_Pixmap (");
+
+                        if Index (T.all, ".") /= 0 then
+                           Put (File, '"' & T.all & '"');
+                        else
+                           Put (File, T.all);
+                        end if;
+
+                        Put_Line (File, ", " & To_Ada (Top) & ")));");
+                     else
+                        Put_Line (File, "));");
+                     end if;
+                  end if;
+
+                  Add_Package ("Widget");
+                  Gen_Signal (P, File, "GtkWidget");
+
+                  P.Specific_Data.Created := True;
+                  P.Specific_Data.Initialized := True;
+                  P.Specific_Data.Has_Container := True;
                end if;
-
-               Add_Package ("Widget");
-               Gen_Signal (P, File, "GtkWidget");
-
-               P.Specific_Data.Created := True;
-               P.Specific_Data.Initialized := True;
-               P.Specific_Data.Has_Container := True;
-            end if;
+            end;
          end if;
 
-         P := P.Next;
+         P := P.Parent.Next;
+
+         if P /= null then
+            P := P.Child;
+         end if;
       end loop;
    end Toolbar_Generate;
 
