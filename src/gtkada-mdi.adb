@@ -1989,7 +1989,6 @@ package body Gtkada.MDI is
             when Bottom_Right_Corner =>
                W := Gint'Max (Min_Width, W + Delta_X);
                H := Gint'Max (Min_Height, H + Delta_Y);
-
             when others => null;
          end case;
 
@@ -2007,14 +2006,14 @@ package body Gtkada.MDI is
          then
             Alloc := (C.X, C.Y, Allocation_Int (W), Allocation_Int (H));
             Size_Allocate (Child, Alloc);
-         end if;
 
-         if not Children_Are_Maximized (MDI)
-           and then
-           ((not MDI.Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
-            or else (not MDI.Opaque_Move
-                       and then MDI.Current_Cursor = Left_Ptr))
-         then
+            --  Need to set these, or when the mouse is outside of the layout,
+            --  the MDI will try to resize the child to the old dimensions even
+            --  while the mouse is moving.
+            C.Uniconified_Width  := Gint (Alloc.Width);
+            C.Uniconified_Height := Gint (Alloc.Height);
+
+         elsif not Children_Are_Maximized (MDI) then
             MDI.Current_W := W;
             MDI.Current_H := H;
             Draw_Rectangle
