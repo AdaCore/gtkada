@@ -7,6 +7,8 @@ allows you to develop graphical applications in Ada95 using Gtk+.
 The primary download site is http://gtkada.eu.org
 
 New features in 1.2.9/1.3.9 include:
+- Gtkada.Canvas: better positionning of items; links can be attached anywhere
+  in the items, not necessarily the middle
 
 New features in 1.2.8/1.3.8 include:
 
