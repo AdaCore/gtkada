@@ -938,7 +938,7 @@ package body Gtkada.Canvas is
       Canvas.Children := Items;
 
       if Canvas.Auto_Layout then
-         Layout (Canvas);
+         Layout (Canvas, Force => True);
       end if;
       Update_Adjustments (Canvas);
    end Set_Items;
