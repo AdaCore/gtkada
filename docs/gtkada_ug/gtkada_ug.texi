@@ -149,10 +149,16 @@ using the following compilers:
 @item Gnat 3.11p
 @end itemize
 
-and the following versions of gtk:
+the following versions of gtk:
 @itemize @bullet
 @item Gtk 1.2.0
 @item Gtk 1.2.1
+@end itemize
+
+and the following versions of glade:
+@itemize @bullet
+@item Glade 0.4.0
+@item Glade 0.4.1
 @end itemize
 
 Although versions up to 0.2.1 were compatible with Gtk-1.0, this one is
