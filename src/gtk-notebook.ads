@@ -85,6 +85,11 @@ package Gtk.Notebook is
    --  with a pixmap in it for instance.
    --  No entry is associated with the page in the contextual menu.
 
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Same as above, but no label is specified.
+
    procedure Append_Page_Menu
      (Notebook   : access Gtk_Notebook_Record;
       Child      : access Gtk.Widget.Gtk_Widget_Record'Class;

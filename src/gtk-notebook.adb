@@ -56,6 +56,24 @@ package body Gtk.Notebook is
                 Get_Object (Tab_Label));
    end Append_Page;
 
+   -----------------
+   -- Append_Page --
+   -----------------
+
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Notebook  : System.Address;
+         Child     : System.Address;
+         Tab_Label : System.Address := System.Null_Address);
+      pragma Import (C, Internal, "gtk_notebook_append_page");
+
+   begin
+      Internal (Get_Object (Notebook), Get_Object (Child));
+   end Append_Page;
+
    ----------------------
    -- Append_Page_Menu --
    ----------------------
