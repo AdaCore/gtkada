@@ -65,7 +65,6 @@ with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
 with Gtk.Container;    use Gtk.Container;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Dialog;       use Gtk.Dialog;
-with Gtk.Dnd;          use Gtk.Dnd;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Event_Box;    use Gtk.Event_Box;
 with Gtk.Frame;        use Gtk.Frame;
@@ -130,6 +129,11 @@ package body Gtkada.MDI is
 
    Max_Drag_Border_Width : constant Gint := 30;
    --  Width or height of the drag-and-drop borders for each notebook
+
+   Drag_Threshold : constant Gint := 20;
+   --  Our own threshold (instead of Gtk.Dnd.Check_Threshold), since on
+   --  Windows the later seems to be set to 0, and thus we can't change a
+   --  notebook page by clicking on its tab without splitting the notebook
 
    MDI_Class_Record        : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
@@ -1736,10 +1740,16 @@ package body Gtkada.MDI is
             return True;
 
          when In_Pre_Drag =>
-            if Gtk.Dnd.Check_Threshold
-              (C, C.MDI.Drag_Start_X, C.MDI.Drag_Start_Y,
-               Gint (Get_X (Event)), Gint (Get_Y (Event)))
+            if abs (C.MDI.Drag_Start_X - Gint (Get_X_Root (Event))) >
+               Drag_Threshold
+              or else abs (C.MDI.Drag_Start_Y - Gint (Get_Y_Root (Event))) >
+               Drag_Threshold
             then
+               Put_Line ("Entering In_Drag state "
+                         & C.MDI.Drag_Start_X'Img
+                         & Get_X_Root (Event)'Img
+                         & C.MDI.Drag_Start_Y'Img
+                         & Get_Y_Root (Event)'Img);
                C.MDI.In_Drag := In_Drag;
                C.MDI.Dnd_Rectangle_Owner := null;
                Pointer_Ungrab (Time => 0);
@@ -4459,8 +4469,8 @@ package body Gtkada.MDI is
          Button_Press_Mask or Button_Motion_Mask or Button_Release_Mask,
          Cursor => null,
          Time   => 0);
-      C.MDI.Drag_Start_X := Gint (Get_X (Event));
-      C.MDI.Drag_Start_Y := Gint (Get_Y (Event));
+      C.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
+      C.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
       C.MDI.In_Drag := In_Pre_Drag;
 
 
