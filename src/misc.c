@@ -1415,7 +1415,6 @@ gint ada_gdk_event_set_message_type (GdkEvent * event, gulong type)
   return 0;
 }
 
-
 /********************
  * GtkAdjustment
  ********************/

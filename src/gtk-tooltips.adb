@@ -107,7 +107,7 @@ package body Gtk.Tooltips is
       Fore : aliased Gdk.Color.Gdk_Color := Foreground;
       Back : aliased Gdk.Color.Gdk_Color := Background;
    begin
-      Internal (Get_Object (Tooltips), Fore'Address, Back'Address);
+      Internal (Get_Object (Tooltips), Back'Address, Fore'Address);
    end Set_Colors;
 
    -------------

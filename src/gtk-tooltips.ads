@@ -101,6 +101,20 @@ package Gtk.Tooltips is
                          Background : Gdk.Color.Gdk_Color);
    --  Modify the color scheme for the tooltips in the group Tooltips.
 
+   --  This function does not seem to do anything useful. This should anyway
+   --  be left to the user, who might want a different scheme for the colors.
+   --  This can be configured through a configuration file (see Gdk.RC), with
+   --  lines like:
+   --     style "postie"
+   --     {
+   --        bg[NORMAL]={1.0, 0.93, 0.22}
+   --     }
+   --     widget "gtk-tooltips*" style "postie"
+
+   --  Note: the C library gtk+ has since then changed the order of the
+   --  parameters. This does not have any impact for you, except if you are
+   --  translating C code to Ada.
+
    function Get_Data (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
                      return Tooltips_Data;
    --  Return the tooltip data associated with the Widget.
