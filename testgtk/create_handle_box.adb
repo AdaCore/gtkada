@@ -6,6 +6,7 @@ with Gtk.Handle_Box; use Gtk.Handle_Box;
 with Gtk.Hbox; use Gtk.Hbox;
 with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Label; use Gtk.Label;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Toolbar; use Gtk.Toolbar;
 with Gtk.Vbox; use Gtk.Vbox;
@@ -29,9 +30,9 @@ package body Create_Handle_Box is
                            Child  : in out Gtk_Widget;
                            Data   : in out String) is
    begin
-      Ada.Text_IO.Put_Line (Type_Name (Handle)
+      Ada.Text_IO.Put_Line (Type_Name (Get_Type (Handle))
                             & ": child <"
-                            & Type_Name (Child)
+                            & Type_Name (Get_Type (Child))
                             & "> "
                             & Data);
    end Child_Signal;
