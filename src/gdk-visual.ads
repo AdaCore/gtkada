@@ -64,6 +64,8 @@ package Gdk.Visual is
 
    function Get_Best return Gdk_Visual;
 
+   procedure Get_Best (Visual : out Gdk_Visual);
+
    function Get_Best (Depth  : Gint) return Gdk_Visual;
 
    function Get_Best (Visual_Type : Gdk_Visual_Type) return Gdk_Visual;

@@ -56,6 +56,11 @@ package body Gdk.Visual is
       return Internal;
    end Get_Best;
 
+   procedure Get_Best (Visual : out Gdk_Visual) is
+   begin
+      Visual := Get_Best;
+   end Get_Best;
+
    function Get_Best (Depth : Gint) return Gdk_Visual is
       function Internal (Depth : Gint) return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_best_with_depth");
