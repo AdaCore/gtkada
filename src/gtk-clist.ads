@@ -67,10 +67,9 @@ package Gtk.Clist is
      with private;
    type Gtk_Clist is access all Gtk_Clist_Record'Class;
 
-   type Gtk_Clist_Row is new Object_Type;
+   type Gtk_Clist_Row is access System.Address;
 
    type Gtk_Sort_Type is (Ascending, Descending);
-
 
    --  <doc_ignore>
    function Convert (C : in Gtk_Clist_Row) return System.Address;
@@ -79,7 +78,6 @@ package Gtk.Clist is
    package Row_List is new Glib.Glist.Generic_List (Gtk_Clist_Row);
 
    --  </doc_ignore>
-
 
    type Gtk_Clist_Compare_Func is access
      function (Clist : access Gtk_Clist_Record'Class;
@@ -877,9 +875,9 @@ package Gtk.Clist is
    --  </signals>
 
 private
-   type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record
-     with record
-        Sort_Func : Gtk_Clist_Compare_Func := null;
-     end record;
+   type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record with record
+      Sort_Func : Gtk_Clist_Compare_Func := null;
+   end record;
+
    pragma Import (C, Get_Type, "gtk_clist_get_type");
 end Gtk.Clist;

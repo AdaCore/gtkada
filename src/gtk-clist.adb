@@ -157,20 +157,20 @@ package body Gtk.Clist is
    --  Convert  --
    ---------------
 
+   function To_Address is
+     new Unchecked_Conversion (Gtk_Clist_Row, System.Address);
+
    function Convert (C : in Gtk_Clist_Row) return System.Address is
    begin
-      return Get_Object (C);
+      return To_Address (C);
    end Convert;
 
-   ---------------
-   --  Convert  --
-   ---------------
+   function To_Clist_Row is
+     new Unchecked_Conversion (System.Address, Gtk_Clist_Row);
 
    function Convert (W : System.Address) return Gtk_Clist_Row is
-      Result : Gtk_Clist_Row;
    begin
-      Set_Object (Result, W);
-      return Result;
+      return To_Clist_Row (W);
    end Convert;
 
    ------------
@@ -371,7 +371,7 @@ package body Gtk.Clist is
    is
       function Internal
         (Clist  : in System.Address;
-         Row    : in System.Address;
+         Row    : in Gtk_Clist_Row;
          Column : in Gint;
          Pixmap : in System.Address;
          Mask   : in System.Address)
@@ -379,9 +379,10 @@ package body Gtk.Clist is
       pragma Import (C, Internal, "ada_gtk_clist_get_pixmap");
       Pix : aliased System.Address;
       Msk : aliased System.Address;
+
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
-                                         Get_Object (Row),
+                                         Row,
                                          Column,
                                          Pix'Address,
                                          Msk'Address));
@@ -599,7 +600,7 @@ package body Gtk.Clist is
    is
       function Internal
         (Clist  : in System.Address;
-         Row    : in System.Address;
+         Row    : in Gtk_Clist_Row;
          Column : in Gint;
          Text   : in System.Address)
          return      Gint;
@@ -608,12 +609,12 @@ package body Gtk.Clist is
       S : aliased Interfaces.C.Strings.chars_ptr;
       Is_Valid : Gint;
    begin
-      Is_Valid := Internal (Get_Object (Clist), Get_Object (Row),
-                            Column, S'Address);
+      Is_Valid := Internal (Get_Object (Clist), Row, Column, S'Address);
+
       if Is_Valid /= 0 then
          return Interfaces.C.Strings.Value (S);
       else
-         return String'(1 .. 0 => ' ');
+         return "";
       end if;
    end Get_Text;
 
@@ -1499,7 +1500,7 @@ package body Gtk.Clist is
                                 Mask      : Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal (Clist     : System.Address;
-                          Row       : System.Address;
+                          Row       : Gtk_Clist_Row;
                           Column    : Gint;
                           Cell_Type : Gtk_Cell_Type;
                           Text      : System.Address;
@@ -1512,7 +1513,7 @@ package body Gtk.Clist is
       if Text /= "" then
          T := T'Address;
       end if;
-      Internal (Get_Object (Clist), Get_Object (Row), Column,
+      Internal (Get_Object (Clist), Row, Column,
                 Cell_Type, T, Spacing, Get_Object (Pixmap), Get_Object (Mask));
    end Set_Cell_Contents;
 
@@ -1573,14 +1574,15 @@ package body Gtk.Clist is
 
       function Get (Object : access Gtk_Clist_Record'Class;
                     Row    : in     Gtk_Clist_Row)
-                   return Data_Type
+                    return Data_Type
       is
          function Internal (Object : in System.Address;
-                            Row    : in System.Address)
+                            Row    : in Gtk_Clist_Row)
                             return System.Address;
          pragma Import (C, Internal, "ada_gtk_clist_get_row_data");
-         D : Cb_Record_Access
-           := Convert (Internal (Get_Object (Object), Get_Object (Row)));
+         D : Cb_Record_Access :=
+           Convert (Internal (Get_Object (Object), Row));
+
       begin
          return D.Ptr.all;
       end Get;
@@ -1619,18 +1621,15 @@ package body Gtk.Clist is
          function Convert is new Unchecked_Conversion (Cb_Record_Access,
                                                        System.Address);
          procedure Internal (Object  : in System.Address;
-                             Row     : in System.Address;
+                             Row     : in Gtk_Clist_Row;
                              Data    : in System.Address;
                              Destroy : in System.Address);
          pragma Import (C, Internal, "ada_gtk_clist_set_row_data_full");
          D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
-      begin
-         Internal (Get_Object (Object),
-                   Get_Object (Row),
-                   Convert (D),
-                   Free_Data'Address);
-      end Set;
 
+      begin
+         Internal (Get_Object (Object), Row, Convert (D), Free_Data'Address);
+      end Set;
    end Row_Data;
 
    --------------
