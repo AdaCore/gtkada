@@ -1,49 +1,105 @@
-TARGET= main
-CC= gcc
-CFLAGS= -O2 -c -g -Wall `gtk-config --cflags`
+SHELL = /bin/sh
 
-GNATMAKE= gnatmake
-GNATFLAGS= -g -gnatg -O2 
-GNATLARGS= `gtk-config --libs` $(OBJECTS) -lgtkada
-AR=ar
-ARFLAGS=rc
-RANLIB=ranlib
+# INSTALL = install
+# INSTALL_PROGRAM = $(INSTALL)
+# INSTALL_DATA = $(INSTALL)
 
-C_OBJECTS= misc.o misc-gnat.o 
+prefix = /usr/local
+exec_prefix = $(prefix)
+libdir = $(exec_prefix)/lib
+infodir = $(prefix)/info
+mandir = $(prefix)/man
+man1dir = $(mandir)/man1
+man3dir = $(mandir)man3
+man1ext = .1
+man3ext = .3
 
-libgtkada.so: test_link.o $(C_OBJECTS)
-	$(CC) -shared -o libgtkada.so g*.o $(C_OBJECTS)
+.SUFFIXES:
+.SUFFIXES: .c .o .ads .adb .ali
 
-libgtkada.a: test_link.o $(C_OBJECTS)
-	$(AR) $(ARFLAGS) libgtkada.a g*.o $(C_OBJECTS)
-	if [ -f /usr/bin/ranlib -o -f /bin/ranlib ]; then \
+.PHONY:
+.PHONY: clean distclean mostlyclean maintainer-clean
+
+c_objects = misc.o misc-gnat.o
+
+TEST_LINK = test_link
+
+CC = gcc
+CFLAGS = -O2 -g -Wall
+ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags` -shared -fPIC
+
+GNATCC = gcc
+GNATFLAGS = -O2 -g -gnatg
+ALL_GNATFLAGS = $(GNATFLAGS) -shared -fPIC
+
+GNATMAKE = gnatmake
+GNATMAKEFLAGS = $(GNATFLAGS)
+GNATMAKELDFLAGS = -largs `gtk-config --libs` $(c_objects) -lgtkada
+
+ARFLAGS = r
+
+RANLIB = ranlib
+
+all: libgtkada.so libgtkada.a
+
+libgtkada.so: $(TEST_LINK).o $(c_objects)
+	$(CC) -shared -o libgtkada.so g*.o $(c_objects)
+
+libgtkada.a: $(TEST_LINK).o $(c_objects)
+	$(AR) $(ARFLAGS) libgtkada.a g*.o $(c_objects)
+	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) libgtkada.a; \
-	fi 
+	fi \
 
-main: main.adb test.adb test.ads libgtkada.so
-	gnatmake main.adb $(GNATFLAGS) -largs $(GNATLARGS) 
-
-install: libgtkada.a
-	@echo To Install, copy libgtkada.a *.ads *.ali to a new directory
-	@echo and then do a 'chmod a-w *.ali' so that Gnat will not
-	@echo try to recompile your files
-
-.c.o:
-	$(CC) $(CFLAGS) $< -shared -fPIC
-.adb.o:
-	$(CC) -c $(GNATFLAGS) $<
-.ads.o:
-	$(CC) -c $(GNATFLAGS) $<
-
-misc.o: misc.c misc-manu.c misc-joel.c
-
-clean:
-	-${RM} *.o *.ali *~ main b_main.c core
-	-${RM} test_link b_test_link.c libgtkada.a libgtkada.so
-
-test_link.o:: 
+test_link.o: 
 	#perl ./create_test_link.pl > test_link.adb
 	$(GNATMAKE) -c test_link -shared -fPIC $(GNATFLAGS)
 	-$(RM) test_link.o 
 
+main: main.adb test.adb test.ads libgtkada.so
+	$(GNATMAKE) $@ $(GNATMAKEFLAGS) $(GNATMAKELDFLAGS) 
 
+install: libgtkada.a libgtkada.so
+	@echo To Install, copy libgtkada.a *.ads *.ali to a new directory
+	@echo and then do a 'chmod a-w *.ali' so that Gnat will not
+	@echo try to recompile your files
+
+uninstall:
+
+install-strip:
+
+clean:
+	-${RM} *.o *.ali *~ main b_main.c core
+	-${RM} test_link b_test_link.c libgtkada.a libgtkada.so
+	-cd testgtk && make clean
+
+distclean: clean
+
+mostlyclean: clean
+
+maintainer-clean: clean
+
+
+TAGS: ;
+
+info: ;
+
+dvi: ;
+
+dist: ;
+
+check: ;
+
+installcheck: ;
+
+installdirs: ;
+
+.c.o:
+	$(CC) -c $(ALL_CFLAGS) $<
+.ads.o:
+	$(CC) -c $(ALL_GNATFLAGS) $<
+
+.adb.o:
+	$(CC) -c $(ALL_GNATFLAGS) $<
+
+misc.o: misc.c misc-manu.c misc-joel.c
