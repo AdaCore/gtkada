@@ -451,6 +451,9 @@ package Gtkada.MDI is
    --  Note that this does not give the focus to this child, unless
    --  Give_Focus is set to True
 
+   function Is_Raised (Child : access MDI_Child_Record'Class) return Boolean;
+   --  Whether the child is currently raised, ie fully visible to the user
+
    procedure Lower_Child (Child : access MDI_Child_Record'Class);
    --  Put Child in the background.
    --  If the children are maximized, this selected the next page from the

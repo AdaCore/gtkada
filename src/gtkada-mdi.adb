@@ -2827,7 +2827,8 @@ package body Gtkada.MDI is
       loop
          Child := Get (Iter);
          exit when Child = null
-           or else Child.Title.all = Name;
+           or else Child.Title.all = Name
+           or else Child.Short_Title.all = Name;
          Next (Iter);
       end loop;
 
@@ -2873,6 +2874,36 @@ package body Gtkada.MDI is
          end if;
       end if;
    end Lower_Child;
+
+   ---------------
+   -- Is_Raised --
+   ---------------
+
+   function Is_Raised (Child : access MDI_Child_Record'Class) return Boolean is
+      Note : Gtk_Notebook;
+   begin
+      case Child.State is
+         when Floating =>
+            return True;
+
+         when Docked =>
+            Note := Get_Notebook (Child);
+            return Get_Nth_Page (Note, Get_Current_Page (Note)) =
+              Gtk_Widget (Child);
+
+         when Normal =>
+            if Child.MDI.Central.Children_Are_Maximized then
+               Note := Get_Notebook (Child);
+               return Get_Nth_Page (Note, Get_Current_Page (Note)) =
+                 Gtk_Widget (Child);
+            else
+               return True;
+            end if;
+
+         when Iconified =>
+            return False;
+      end case;
+   end Is_Raised;
 
    -----------------
    -- Raise_Child --
