@@ -696,6 +696,9 @@ package Gtk.Widget is
    --  Although the core subprogram for creating new widgets is
    --  Glib.Gobjects.Initialize_Class_Record, it is often useful to override
    --  some internal pointers to functions.
+   --  The functions below are not needed unless you are writting your own
+   --  widgets, and should be reserved for advanced customization of the
+   --  standard widgets.
 
    procedure Set_Scroll_Adjustments_Signal
      (Widget : Glib.Object.GObject_Class; Signal : String);
@@ -710,6 +713,36 @@ package Gtk.Widget is
    --  addition to the widget (the horizontal and vertical adjustments to be
    --  used). See Gtk.Scrolled_Window and Gtk.Widget.Set_Scroll_Adjustment for
    --  more information on this signal.
+
+   type Size_Allocate_Handler is access procedure
+     (Widget : System.Address; Allocation : Gtk_Allocation);
+   pragma Convention (C, Size_Allocate_Handler);
+   --  Widget is the gtk+ C widget, that needs to be converted to Ada through
+   --  a call to:
+   --    declare
+   --       Stub : Gtk_Widget_Record; --  or the exact type you expect
+   --    begin
+   --       My_Widget := Gtk_Widget (Glib.Object.Get_User_Data (Widget, Stub);
+   --    end;
+
+   procedure Set_Default_Size_Allocate_Handler
+     (Widget : Glib.Object.GObject_Class;
+      Handler : Size_Allocate_Handler);
+   --  Override the default size_allocate handler for this class. This handler
+   --  is automatically called in several cases (when a widget is dynamically
+   --  resized for instance), not through a signal. Thus, if you need to
+   --  override the default behavior provided by one of the standard
+   --  containers, you can not simply use Gtk.Handlers.Emit_Stop_By_Name, and
+   --  you must override the default handler. Note also that this handler
+   --  is automatically inherited by children of this class.
+
+   procedure Set_Allocation
+     (Widget : access Gtk_Widget_Record'Class; Alloc : Gtk_Allocation);
+   --  Modifies directly the internal field of Widget to register the new
+   --  allocation.
+   --  Beware that the only use of this method is inside a callback set
+   --  by Set_Default_Size_Allocate_Handler. If you simply want to resize
+   --  or reposition a widget, use Size_Allocate instead.
 
    -----------
    -- Flags --
@@ -1474,6 +1507,8 @@ private
    pragma Import (C, Get_Default_Visual, "gtk_widget_get_default_visual");
    pragma Import (C, Push_Colormap, "gtk_widget_push_colormap");
    pragma Import (C, Set_Default_Colormap, "gtk_widget_set_default_colormap");
+   pragma Import (C, Set_Default_Size_Allocate_Handler,
+                  "ada_gtk_widget_set_default_size_allocate_handler");
    pragma Inline (Toplevel_Is_Set);
    pragma Inline (No_Window_Is_Set);
    pragma Inline (Realized_Is_Set);

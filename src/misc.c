@@ -310,6 +310,19 @@ ada_widget_set_scroll_adjustments_signal (gpointer klass, char* name)
     }
 }
 
+void
+ada_gtk_widget_set_default_size_allocate_handler
+   (gpointer klass, void (*handler)(GtkWidget        *widget,
+				    GtkAllocation    *allocation))
+{
+  GTK_WIDGET_CLASS (klass)->size_allocate = handler;
+}
+
+void
+ada_gtk_widget_set_allocation (GtkWidget* widget, GtkAllocation* allocation) {
+  widget->allocation = *allocation;
+}
+
 /*********************************************************************
  **  Gdk.RGB functions
  *********************************************************************/
@@ -2808,11 +2821,7 @@ ada_gdk_window_attr_destroy (GdkWindowAttr *window_attr)
   g_return_if_fail (window_attr != NULL);
 
   if (window_attr->title) g_free (window_attr->title);
-  if (window_attr->visual) gdk_visual_unref (window_attr->visual);
-  if (window_attr->colormap) gdk_colormap_unref (window_attr->colormap);
-  if (window_attr->cursor) gdk_cursor_destroy (window_attr->cursor);
   if (window_attr->wmclass_name) g_free (window_attr->wmclass_name);
-  if (window_attr->wmclass_class) g_free (window_attr->wmclass_class);
 
   g_free (window_attr);
 }
@@ -2822,8 +2831,9 @@ ada_gdk_window_attr_set_title (GdkWindowAttr *window_attr,
 			       gchar * title)
 {
   g_return_if_fail (window_attr != NULL);
-  
-  window_attr->title = title;
+
+  if (window_attr->title) g_free (window_attr->title);
+  window_attr->title = g_strdup (title);
 }
 
 gchar*
@@ -3005,8 +3015,9 @@ ada_gdk_window_attr_set_wmclass_name (GdkWindowAttr *window_attr,
 				      gchar *wmclass_name)
 {
   g_return_if_fail (window_attr != NULL);
-  
-  window_attr->wmclass_name = wmclass_name;
+
+  if (window_attr->wmclass_name) g_free (window_attr->wmclass_name);
+  window_attr->wmclass_name = g_strdup (wmclass_name);
 }
 
 gchar*
