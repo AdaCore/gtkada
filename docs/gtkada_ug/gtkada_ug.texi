@@ -617,26 +617,36 @@ In GtkAda, the interaction between the interface and the core
 application is done via signals. Most user actions on the graphical
 application trigger some signals to be @samp{emitted}. 
 
-A signal is a kind of message that an object wants to broadcast. It is
-identified by its name, and each one is associated to certain event
-happening during its life. For instance, when the user clicks on a
-button, a "clicked" signal is emitted by this button.
+A signal is a message that an object wants to broadcast. It is
+identified by its name, and each one is associated to certain events
+happening during the widget's life. For instance, when the user clicks on a
+Gtk_Button, a "clicked" signal is emitted by this button. More examples
+of signals can be found in the GtkAda reference manual.
 
 It is possible for the application to react to such events by
-@samp{connecting} to a signal a special kind of procedure called
-@samp{handler} or @samp{callback}.  The handler will then be called back
-when this signal is emitted, allowing the application to do any form of
-processing. More than one handler can be connected to the same signal on
-the same object, in wich case each handler will be invoked in the order
-of connection.
+@samp{connecting} to a signal a special procedure called a
+@samp{handler} or @samp{callback}.  This handler will be called 
+every time that signal is emitted, giving a chance to the application to do
+any processing it needs. More than one handler can be connected to the
+same signal on the same object; the handlers are invoked in the order
+they were connected.
 
-Depending on their type, the widgets can emit zero (e.g
-@code{Gtk_Label}), one or several different signals. The easiest way to
-find out what signals can be emitted by a widget is to look at the C
-header files.  Each widget is described in its own C file, and has two C
-structures associated with it. One of them is the ``class'' structure,
-and contains a series of pointers to functions. Each of these functions
-has the same name as the signal name.
+Depending on their type, the widgets define zero (e.g
+@code{Gtk_Label}), one or several different signals. Of course, the signals,
+as every thing else, are inherited from the parents, thus every widget answers
+to a lot of signals.
+
+The easiest way to find out what signals can be emitted by a widget is to
+look at the GtkAda reference manual. Hopefully, every widget will finally
+be documented there. That document explains when the signal is emitted,
+and the general form that handlers should have (although you can always add
+a User_Data is you wish).
+
+In the meanwhile, you can also look directly at the C header files,
+distributed with the gtk+ library. Each widget is described in its own C
+file, and has two C structures associated with it. One of them is the
+``class'' structure, and contains a series of pointers to
+functions. Each of these functions has the same name as the signal name.
 
 For instance, consider the following extract from gtkbutton.h:
 @example
@@ -664,25 +674,40 @@ handler when the signal is raised.
 
 Therefore, the profile of a handler should look like:
 @example
-   procedure Pressed_Handler (Button : access Gtk_Button_Record;
+   procedure Pressed_Handler (Button : access Gtk_Button_Record'Class;
                               User_Data   : ...);
 @end example
 
-It is also legal to use a procedure that "drops" some of the last
-arguments. It is very common, for example, to drop the User_Data
-parameter. The profile would then look like:
-@example
-   procedure Pressed_Handler (Button : access Gtk_Button_Record);
-@end example
-Any number of arguments can be dropped, as long as those arguments are
-the last ones in the list. For instance, in the handler for the
-"pressed" signal, it is legal to drop the User_Data parameter, or both
-the Button and User_Data parameter. However, it is not possible to drop
-the Button parameter while keeping the User_Data.
+The callback does not need to use all the arguments. It is legal to use
+a procedure that "drops" some of the last arguments.
+The User_Data is a special case, since you decide at connection time whether
+you want it or not. If you decided to have it, then you callback must
+accept it, and this is checked by the compiler.
 
-Beware that adding new arguments is not possible! When connecting a
-handler, GtkAda will not verify that your handler does not have more
-arguments than expected, so caution is recommended. 
+Any number of arguments can be dropped, as long as those arguments are
+the last ones in the list, and that you keep the first one. For instance,
+the signal "button_press_event" signal normally can be connected to a
+handler with any of the following profile:
+
+@example
+   --  with a user_data
+   procedure Handler (Widget    : access Gtk_Widget_Record'Class;
+                      Event     : Gdk.Event.Gdk_Event;
+                      User_Data : ...);
+   procedure Handler (Widget    : access Gtk_Widget_Record'Class;
+                      User_Data : ...);
+
+   --  without a user_data
+   procedure Handler (Widget    : access Gtk_Widget_Record'Class;
+                      Event     : Gdk.Event.Gdk_Event);
+   procedure Handler (Widget    : access Gtk_Widget_Record'Class);
+@end example
+
+Beware that adding new arguments is not possible, since no value would
+be provided for them. When connecting a handler, GtkAda will not always
+verify that your handler does not have more arguments than expected, so
+caution is recommended (it only does so if you use the @code{Gtk.Marshallers}
+package, see below).
 
 All the signal-handling work is performed by using the services provided
 by the Gtk.Handlers package. This package is completely self-documented,
@@ -704,7 +729,8 @@ called Gtk_File_Selection which can be used in this case:
 @end example
 
 When the "OK" button is pressed, the application needs to retrieve the
-file selected, and then close the dialog. This can be achieved by the
+file selected, and then close the dialog. All we need to know in that
+procedure in what widget to operate on. This can be achieved by the
 following handler:
 
 @example
@@ -717,30 +743,77 @@ following handler:
    end Ok;
 @end example
 
-To connect this handler to the "OK" button, Gtk.Handlers.Callbacks needs
-to be instantiated with the
-Gtk_File_Selection_Record type:
+We know need to connect the object we created in the first part, and this
+new callback we just defined. As documented in the reference manual,
+Gtk.Handlers defines four types of generic packages, depending on the
+arguments one expect in the callback, and whether the callback returns a
+value or not. Note that you can not choose arbitrarily to return a value,
+this depends on the signal, as explained above.
+
+In our case, since our callback does not return any value, and does not
+have any User_Data (ie we don't need to pass it extra values, defined
+at connection time), the appropriate package is Gtk.Handlers.Callback.
+
+We thus instantiate that package. Once again, remember that the generic
+packages in GtkAda need to be present at all time in memory, since they
+take care of freeing the memory they are using when finished. They must
+be instantiated at library level, and not inside a subprogram.
+
 @example
    package Files_Cb is new 
       Handlers.Callback (Gtk_File_Selection_Record);
 @end example
 
-This gives access to the services needed to connect the
-handler. Connecting the handler is achieved by doing the following:
+As you can see in @code{Gtk.Handlers}, this package now provides a set
+of Connect subprograms than can be used to establish a permanent tie
+between a widget and a handler. It also provides a set of other
+subprograms which one can use to emit the signals manually, although
+most of the time the signals are simply emitted internally by GtkAda. We
+will not discuss this Emit_By_Name subprograms here.
+
+The general form of handlers as used in @code{Gtk.Handlers} expect some
+handlers that take two or three arguments, the widget on which the
+signal was applied, an array of all the extra arguments sent internally
+by GtkAda, and possibly some user data given by the user when the
+connection was made.
+
+This is the most general form of handlers, and it covers all the possible
+cases. However, it also expects the user to extract manually the needed
+values from the array of arguments. This is not always the most convenient
+solution. This is why GtkAda provides a second package related to signals,
+@code{Gtk.Marshallers}.
+
+This package provides a set of functions that can be used as callbacks
+directly for GtkAda, and that will call your own handlers after extracting
+the required values from the array of arguments. Although this might sound
+a little bit complicated, this is in fact a really powerful mechanism, in fact
+similar to what is done internally by gtk+ in C. This does not add any
+overhead compared to C programs, since we do basically the same thing, but at
+the Ada level.
+
+A set of functions @code{To_Marshaller} is found in every generic package
+in @code{Gtk.Handlers}. They take a single argument, the name of the function
+you want to call, and return a handler that can be used directly in
+@code{Connect}.
+
+The connection is then done with the following piece of code. Note that this
+can be done just after creating the widget, in the same block. As soon as it
+is created, a widget is ready to accept connection (although no signal will
+be emitted before the widget is shown on the screen).
+
+Note the two following things: we use @code{To_Marshaller} since our
+handler does not accept the array of arguments as a parameter, and we use the
+special @code{Object_Connect} procedure. This means that the parameter to
+our callback (Files) will be the Slot_Object given in Object_Connect, instead
+of being the button itself.
+
 @example
    Files_Cb.Object_Connect
-     (Get_Ok_Button (Window),              --  The object to which we
-                                           --  connect the handler
- 
-      "clicked",                           --  The name of the signal
-
+     (Get_Ok_Button (Window),  --  The object to which we connect the handler
+      "clicked",               --  The name of the signal
       Files_Cb.To_Marshaller (Ok'Access),  --  The signal handler
-
       Slot_Object => Window);
 @end example
-
-For more in-depth information on how signals work, reading Havoc
-Pennington's book[1] is recommended.
 
 
 @c ----------------------------------------------------------------------
