@@ -31,6 +31,20 @@ with Gdk; use Gdk;
 
 package body Gtk.Scrolled_Window is
 
+   -----------------------
+   -- Add_With_Viewport --
+   -----------------------
+
+   procedure Add_With_Viewport
+     (Scrolled_Window : in out Gtk_Scrolled_Window;
+      Child           : in     Gtk.Widget.Gtk_Widget'Class) is
+      procedure Internal (Scrolled_Window : System.Address;
+                          Child           : System.Address);
+      pragma Import (C, Internal, "gtk_scrolled_window_add_with_viewport");
+   begin
+      Internal (Get_Object (Scrolled_Window), Get_Object (Child));
+   end Add_With_Viewport;
+
    ---------------
    -- Construct --
    ---------------

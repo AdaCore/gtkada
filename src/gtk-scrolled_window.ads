@@ -29,6 +29,7 @@
 with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums;
+with Gtk.Widget;
 
 package Gtk.Scrolled_Window is
 
@@ -40,6 +41,10 @@ package Gtk.Scrolled_Window is
         Adjustment.Null_Adjustment;
       Vadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
         Adjustment.Null_Adjustment);
+
+   procedure Add_With_Viewport
+     (Scrolled_Window : in out Gtk_Scrolled_Window;
+      Child           : in     Gtk.Widget.Gtk_Widget'Class);
 
    procedure Construct
      (Scrolled_Window : in out Gtk_Scrolled_Window;
