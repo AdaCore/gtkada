@@ -56,10 +56,8 @@ package Gdk.Rectangle is
 
    procedure Intersect (Src1      : in     Gdk_Rectangle;
                         Src2      : in     Gdk_Rectangle;
-                        Dest      : in out Gdk_Rectangle;
+                        Dest      :    out Gdk_Rectangle;
                         Intersect :    out Boolean);
-   --
-   --  NOTE : Dest needs to be allocated first.
 
    ----------------------
    --  Gets the fields --

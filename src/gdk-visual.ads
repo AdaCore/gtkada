@@ -37,6 +37,8 @@ package Gdk.Visual is
    --  This type is not private because we need the full declaration
    --  to instanciate Glib.Glist.Generic_List with it.
 
+   Null_Visual : constant Gdk_Visual;
+
    type Gdk_Visual_Type_Array is array (Natural range <>)
      of Types.Gdk_Visual_Type;
 
@@ -74,6 +76,8 @@ package Gdk.Visual is
 
 
 private
+
+   Null_Visual : constant Gdk_Visual := (Ptr => System.Null_Address);
 
    pragma Import (C, Get_Best_Depth, "gdk_visual_get_best_depth");
    pragma Import (C, Get_Best_Type, "gdk_visual_get_best_type");

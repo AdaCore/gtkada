@@ -78,6 +78,7 @@ package Glib is
    function To_Boolean (Value : in Gboolean) return Boolean;
    function To_Boolean (Value : in Gint) return Boolean;
    function To_Boolean (Value : in Guint) return Boolean;
+   function To_Gboolean (Bool : in Boolean) return Gboolean;
    function To_Gint (Bool : in Boolean) return Gint;
 
 end Glib;

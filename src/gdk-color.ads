@@ -39,6 +39,9 @@ package Gdk.Color is
 
    type Gdk_Colormap is new Root_Type with private;
 
+   Null_Colormap : constant Gdk_Colormap;
+
+
    procedure Gdk_New (Colormap     :    out Gdk_Colormap;
                       Visual       : in     Gdk.Visual.Gdk_Visual;
                       Private_Cmap : in     Gint);
@@ -88,10 +91,13 @@ package Gdk.Color is
    function Red (Color : in Gdk_Color) return Gushort;
    function Green (Color : in Gdk_Color) return Gushort;
    function Blue (Color : in Gdk_Color) return Gushort;
+   function Pixel (Color : in Gdk_Color) return Gulong;
 
 private
 
    type Gdk_Colormap is new Root_Type with null record;
+
+   Null_Colormap : constant Gdk_Colormap := (Ptr => System.Null_Address);
 
    type Gdk_Color is
       record
@@ -110,5 +116,6 @@ private
    pragma Inline (Red);
    pragma Inline (Green);
    pragma Inline (Blue);
+   pragma Inline (Pixel);
 
 end Gdk.Color;

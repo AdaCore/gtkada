@@ -36,6 +36,9 @@ package Gdk.Cursor is
 
    type Gdk_Cursor is new Root_Type with private;
 
+   Null_Cursor : constant Gdk_Cursor;
+
+
    procedure Gdk_New (Widget      : out Gdk_Cursor;
                       Cursor_Type : in  Gdk.Types.Gdk_Cursor_Type);
 
@@ -62,5 +65,7 @@ package Gdk.Cursor is
 private
 
    type Gdk_Cursor is new Root_Type with null record;
+
+   Null_Cursor : constant Gdk_Cursor := (Ptr => System.Null_Address);
 
 end Gdk.Cursor;

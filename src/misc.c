@@ -1177,3 +1177,283 @@ ada_clist_get_clist_window (GtkCList* widget)
 }
 
 
+/*
+ *
+ * GdkWindowAttr
+ *
+ */
+
+GdkWindowAttr*
+ada_gdk_window_attr_new (void)
+{
+  GdkWindowAttr *result;
+  
+  result = (GdkWindowAttr*) g_new (GdkWindowAttr, 1);
+
+  if (result)
+    {
+      result->title = NULL;
+      result->visual = NULL;
+      result->colormap = NULL;
+      result->cursor = NULL;
+      result->wmclass_name = NULL;
+      result->wmclass_class = NULL;
+      /* 
+       * Here, we only set the pointers to NULL to avoid any dangling
+       * pointer. All the other values are left as is. It is the
+       * responsibility of the client to make sure they are properly
+       * set before they are accessed.
+       */
+    }
+
+  return result;
+}
+
+void
+ada_gdk_window_attr_destroy (GdkWindowAttr *window_attr)
+{
+  g_return_if_fail (window_attr != NULL);
+
+  if (window_attr->title) g_free (window_attr->title);
+  if (window_attr->visual) gdk_visual_unref (window_attr->visual);
+  if (window_attr->colormap) gdk_colormap_unref (window_attr->colormap);
+  if (window_attr->cursor) gdk_cursor_destroy (window_attr->cursor);
+  if (window_attr->wmclass_name) g_free (window_attr->wmclass_name);
+  if (window_attr->wmclass_class) g_free (window_attr->wmclass_class);
+
+  g_free (window_attr);
+}
+
+void
+ada_gdk_window_attr_set_title (GdkWindowAttr *window_attr,
+			       gchar * title)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->title = title;
+}
+
+gchar*
+ada_gdk_window_attr_get_title (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, NULL);
+  
+  return window_attr->title;
+}
+
+void
+ada_gdk_window_attr_set_event_mask (GdkWindowAttr *window_attr,
+				    gint event_mask)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->event_mask = event_mask;
+}
+
+gint
+ada_gdk_window_attr_get_event_mask (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, 0);
+  
+  return window_attr->event_mask;
+}
+
+void
+ada_gdk_window_attr_set_x (GdkWindowAttr * window_attr, gint16 x)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->x = x;
+}
+
+gint16
+ada_gdk_window_attr_get_x (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, 0);
+  
+  return window_attr->x;
+}
+
+void
+ada_gdk_window_attr_set_y (GdkWindowAttr * window_attr, gint16 y)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->y = y;
+}
+  
+gint16
+ada_gdk_window_attr_get_y (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, 0);
+  
+  return window_attr->y;
+}
+
+void
+ada_gdk_window_attr_set_width (GdkWindowAttr * window_attr, gint16 width)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->width = width;
+}
+  
+gint16
+ada_gdk_window_attr_get_width (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, 0);
+  
+  return window_attr->width;
+}
+
+void
+ada_gdk_window_attr_set_height (GdkWindowAttr * window_attr, gint16 height)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->height = height;
+}
+  
+gint16
+ada_gdk_window_attr_get_height (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, 0);
+  
+  return window_attr->height;
+}
+
+void
+ada_gdk_window_attr_set_wclass (GdkWindowAttr *window_attr,
+				GdkWindowClass wclass)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->wclass = wclass;
+}
+
+GdkWindowClass
+ada_gdk_window_attr_get_wclass (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, GDK_INPUT_OUTPUT);
+  
+  return window_attr->wclass;
+}
+
+void
+ada_gdk_window_attr_set_visual (GdkWindowAttr *window_attr,
+				GdkVisual *visual)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->visual = visual;
+}
+
+GdkVisual*
+ada_gdk_window_attr_get_visual (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, NULL);
+  
+  return window_attr->visual;
+}
+
+void
+ada_gdk_window_attr_set_colormap (GdkWindowAttr *window_attr,
+				  GdkColormap *colormap)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->colormap = colormap;
+}
+
+GdkColormap*
+ada_gdk_window_attr_get_colormap (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, NULL);
+  
+  return window_attr->colormap;
+}
+
+void
+ada_gdk_window_attr_set_window_type (GdkWindowAttr *window_attr,
+				     GdkWindowType window_type)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->window_type = window_type;
+}
+
+GdkWindowType
+ada_gdk_window_attr_get_window_type (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, GDK_WINDOW_ROOT);
+  
+  return window_attr->window_type;
+}
+
+void
+ada_gdk_window_attr_set_cursor (GdkWindowAttr *window_attr,
+				GdkCursor *cursor)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->cursor = cursor;
+}
+
+GdkCursor*
+ada_gdk_window_attr_get_cursor (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, NULL);
+  
+  return window_attr->cursor;
+}
+
+void
+ada_gdk_window_attr_set_wmclass_name (GdkWindowAttr *window_attr,
+				      gchar *wmclass_name)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->wmclass_name = wmclass_name;
+}
+
+gchar*
+ada_gdk_window_attr_get_wmclass_name (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, NULL);
+  
+  return window_attr->wmclass_name;
+}
+
+void
+ada_gdk_window_attr_set_wmclass_class (GdkWindowAttr *window_attr,
+				      gchar *wmclass_class)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->wmclass_class = wmclass_class;
+}
+
+gchar*
+ada_gdk_window_attr_get_wmclass_class (GdkWindowAttr *window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, NULL);
+  
+  return window_attr->wmclass_class;
+}
+
+void
+ada_gdk_window_attr_set_override_redirect (GdkWindowAttr *window_attr,
+					   gboolean override_redirect)
+{
+  g_return_if_fail (window_attr != NULL);
+  
+  window_attr->override_redirect = override_redirect;
+}
+
+gboolean
+ada_gdk_window_attr_get_override_redirect (GdkWindowAttr * window_attr)
+{
+  g_return_val_if_fail (window_attr != NULL, FALSE);
+  
+  return window_attr->override_redirect;
+}

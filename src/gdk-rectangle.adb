@@ -70,7 +70,7 @@ package body Gdk.Rectangle is
 
    procedure Intersect (Src1      : in     Gdk_Rectangle;
                         Src2      : in     Gdk_Rectangle;
-                        Dest      : in out Gdk_Rectangle;
+                        Dest      :    out Gdk_Rectangle;
                         Intersect :    out Boolean) is
       function Internal (Src1, Src2, Dest : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_rectangle_intersect");

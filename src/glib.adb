@@ -35,7 +35,7 @@ package body Glib is
 
    function To_Boolean (Value : in Gboolean) return Boolean is
    begin
-      return Value /= Gboolean (C.nul);
+      return Value /= Gboolean (Gboolean'Val (0));
    end To_Boolean;
 
 
@@ -57,6 +57,20 @@ package body Glib is
    begin
       return Value /= 0;
    end To_Boolean;
+
+
+   -------------------
+   --  To_Gboolean  --
+   -------------------
+
+   function To_Gboolean (Bool : in Boolean) return Gboolean is
+   begin
+      if Bool then
+         return Gboolean'Val (1);
+      else
+         return Gboolean'Val (0);
+      end if;
+   end To_Gboolean;
 
 
    ---------------

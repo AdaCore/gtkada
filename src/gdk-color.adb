@@ -183,6 +183,15 @@ package body Gdk.Color is
       return Color;
    end Parse;
 
+   -----------
+   -- Pixel --
+   -----------
+
+   function Pixel (Color : in Gdk_Color) return Gulong is
+   begin
+      return Color.Pixel;
+   end Pixel;
+ 
    ---------
    -- Red --
    ---------

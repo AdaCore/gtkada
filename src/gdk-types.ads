@@ -111,6 +111,7 @@ package Gdk.Types is
                             Xterm);
 
    type Gdk_Event_Mask is new Guint;
+   Null_Event_Mask          : constant Gdk_Event_Mask := 0;
    Exposure_Mask            : constant Gdk_Event_Mask := 2 ** 1;
    Pointer_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 2;
    Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask := 2 ** 3;
@@ -131,7 +132,11 @@ package Gdk.Types is
    Proximity_In_Mask        : constant Gdk_Event_Mask := 2 ** 18;
    Proximity_Out_Mask       : constant Gdk_Event_Mask := 2 ** 19;
    All_Events_Mask          : constant Gdk_Event_Mask := 16#7FFFF#;
-
+   --  FIXME: Move all the constants values to the private part.
+   --  FIXME: Only define some private constants...
+   --  FIXME: However, make sure it does not affect the "and" and "or"
+   --  FIXME: binary operators...
+   --  FIXME: DO NOT FORGET TO DO THE SAME FOR THE OTHER CONSTANTS!
 
    type Gdk_Event_Type is (Nothing,
                            Delete,
@@ -178,6 +183,21 @@ package Gdk.Types is
 
    type Gdk_Line_Style is (Solid, On_Off_Dash, Double_Dash);
 
+   type Gdk_Modifier_Mask is new Guint;
+   Shift_Mask   : constant Gdk_Modifier_Mask := 2 ** 0;
+   Lock_Mask    : constant Gdk_Modifier_Mask := 2 ** 1;
+   Control_Mask : constant Gdk_Modifier_Mask := 2 ** 2;
+   Mod1_Mask    : constant Gdk_Modifier_Mask := 2 ** 3;
+   Mod2_Mask    : constant Gdk_Modifier_Mask := 2 ** 4;
+   Mod3_Mask    : constant Gdk_Modifier_Mask := 2 ** 5;
+   Mod4_Mask    : constant Gdk_Modifier_Mask := 2 ** 6;
+   Mod5_Mask    : constant Gdk_Modifier_Mask := 2 ** 7;
+   Button1_Mask : constant Gdk_Modifier_Mask := 2 ** 8;
+   Button2_Mask : constant Gdk_Modifier_Mask := 2 ** 9;
+   Button3_Mask : constant Gdk_Modifier_Mask := 2 ** 10;
+   Button4_Mask : constant Gdk_Modifier_Mask := 2 ** 11;
+   Button5_Mask : constant Gdk_Modifier_Mask := 2 ** 12;
+
    type Gdk_Overlap_Type is (Rectangle_In, Rectangle_Out, Rectangle_Part);
 
    type Gdk_Subwindow_Mode is (Clip_By_Children, Include_Inferiors);
@@ -209,20 +229,18 @@ package Gdk.Types is
                             True_Color,
                             Direct_Color);
 
-   type Gdk_Modifier_Mask is new Guint;
-   Shift_Mask   : constant Gdk_Modifier_Mask := 2 ** 0;
-   Lock_Mask    : constant Gdk_Modifier_Mask := 2 ** 1;
-   Control_Mask : constant Gdk_Modifier_Mask := 2 ** 2;
-   Mod1_Mask    : constant Gdk_Modifier_Mask := 2 ** 3;
-   Mod2_Mask    : constant Gdk_Modifier_Mask := 2 ** 4;
-   Mod3_Mask    : constant Gdk_Modifier_Mask := 2 ** 5;
-   Mod4_Mask    : constant Gdk_Modifier_Mask := 2 ** 6;
-   Mod5_Mask    : constant Gdk_Modifier_Mask := 2 ** 7;
-   Button1_Mask : constant Gdk_Modifier_Mask := 2 ** 8;
-   Button2_Mask : constant Gdk_Modifier_Mask := 2 ** 9;
-   Button3_Mask : constant Gdk_Modifier_Mask := 2 ** 10;
-   Button4_Mask : constant Gdk_Modifier_Mask := 2 ** 11;
-   Button5_Mask : constant Gdk_Modifier_Mask := 2 ** 12;
+   type Gdk_Window_Class is (Input_Output,
+                             Input_Only);
+
+   type Gdk_Window_Type is (Root,
+                            Toplevel,
+                            Child,
+                            Dialog,
+                            Temp,
+                            Pixmap,
+                            Foreign);
+
+private
 
    ------------------------------
    --  Representation clauses  --
@@ -268,9 +286,8 @@ package Gdk.Types is
    for Gdk_Subwindow_Mode use (Clip_By_Children  => 0,
                                Include_Inferiors => 1);
 
-private
-      --  Warning : these values should be kept synchronized with
-   --  gdk/gdcursors.h
+   --  FIXME: Warning : these values should be kept synchronized with
+   --  FIXME: gdk/gdcursors.h
    for Gdk_Cursor_Type use (X_Cursor => 0,
                             Arrow    => 2,
                             Based_Arrow_Down => 4,
