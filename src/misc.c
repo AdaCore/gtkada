@@ -45,6 +45,24 @@
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkwidget.h>
 
+#include <gtk/gtktreemodel.h>
+
+void
+ada_tree_model_get_value
+  (GtkTreeModel *tree_model,
+   GtkTreeIter  *iter,
+   gint          column,
+   GValue       *value)
+{
+  g_return_if_fail (GTK_IS_TREE_MODEL (tree_model));
+  g_return_if_fail (iter != NULL);
+  g_return_if_fail (value != NULL);
+  g_return_if_fail (GTK_TREE_MODEL_GET_IFACE (tree_model)->get_value != NULL);
+
+  (* GTK_TREE_MODEL_GET_IFACE (tree_model)->get_value)
+    (tree_model, iter, column, value);
+}
+
 gint
 convert_a (gpointer a)
 {
