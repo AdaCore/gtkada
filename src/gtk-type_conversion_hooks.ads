@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
 --  This package provides an implementation for hooks used in the package
 --  Gtk.Type_Conversion. These hooks should be used when you import a new
 --  C widget, so that GtkAda can recreate the Ada structure from the
@@ -40,6 +42,8 @@
 --
 --  @THREAD_STATUS@: This package is not thread safe. You should call the
 --  function Add_Hook from the elaboration part of your packages.
+--
+--  <description>
 
 package Gtk.Type_Conversion_Hooks is
 
@@ -51,21 +55,19 @@ package Gtk.Type_Conversion_Hooks is
 
    type Hook_List;
    type Hook_List_Access is access Hook_List;
-   type Hook_List is
-      record
-         Func : File_Conversion_Hook_Type;
-         Next : Hook_List_Access := null;
-      end record;
+   type Hook_List is record
+      Func : File_Conversion_Hook_Type;
+      Next : Hook_List_Access := null;
+   end record;
    --  Internal structure used for the list.
 
    procedure Add_Hook (Func : File_Conversion_Hook_Type);
-   --  Add a new function to the list of hooks for file conversions. All the
-   --  hooks are called when GtkAda finds a type which is not one of the
-   --  standard types.
+   --  Add a new function to the list of hooks for file conversions.
+   --  All the hooks are called when GtkAda finds a type which is not one of
+   --  the standard types.
 
    function Conversion_Hooks return Hook_List_Access;
    --  Return the head of the hook list.
-
 
 private
    File_Conversion_Hook : Hook_List_Access := null;
