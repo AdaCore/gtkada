@@ -205,11 +205,11 @@ package body Gdk.Rgb is
    -- Get --
    ---------
 
-   function Get (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index) return Rgb_Item
+   function Get (Cmap  : in Gdk_Rgb_Cmap;
+                 Index : in Rgb_Cmap_Index) return Rgb_Item
    is
-      function Internal (Cmap : Gdk_Rgb_Cmap;
-                         Index : Rgb_Cmap_Index)
-                        return Rgb_Item;
+      function Internal (Cmap  : in Gdk_Rgb_Cmap;
+                         Index : in Rgb_Cmap_Index) return Rgb_Item;
       pragma Import (C, Internal, "ada_rgb_cmap_get");
    begin
       return Internal (Cmap, Index);
@@ -219,11 +219,11 @@ package body Gdk.Rgb is
    -- Get_8 --
    -----------
 
-   function Get_8 (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index)
-                  return Glib.Guchar
+   function Get_8 (Cmap  : in Gdk_Rgb_Cmap;
+                   Index : in Rgb_Cmap_Index) return Glib.Guchar
    is
-      function Internal (Cmap : Gdk_Rgb_Cmap;
-                         Index : Rgb_Cmap_Index)
+      function Internal (Cmap  : in Gdk_Rgb_Cmap;
+                         Index : in Rgb_Cmap_Index)
                         return Glib.Guchar;
       pragma Import (C, Internal, "ada_rgb_cmap_get8");
    begin
@@ -275,12 +275,13 @@ package body Gdk.Rgb is
    -- Set --
    ---------
 
-   procedure Set
-     (Cmap : in out Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Rgb_Item)
+   procedure Set (Cmap  : in out Gdk_Rgb_Cmap;
+                  Index : in     Rgb_Cmap_Index;
+                  Value : in     Rgb_Item)
    is
-      procedure Internal (Cmap : Gdk_Rgb_Cmap;
-                          Index : Rgb_Cmap_Index;
-                          Value : Rgb_Item);
+      procedure Internal (Cmap  : in Gdk_Rgb_Cmap;
+                          Index : in Rgb_Cmap_Index;
+                          Value : in Rgb_Item);
       pragma Import (C, Internal, "ada_rgb_cmap_set");
    begin
       Internal (Cmap, Index, Value);
@@ -290,12 +291,13 @@ package body Gdk.Rgb is
    -- Set_8 --
    -----------
 
-   procedure Set_8
-     (Cmap : in out Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Glib.Guchar)
+   procedure Set_8 (Cmap  : in out Gdk_Rgb_Cmap;
+                    Index : in     Rgb_Cmap_Index;
+                    Value : in     Glib.Guchar)
    is
-      procedure Internal (Cmap : Gdk_Rgb_Cmap;
-                          Index : Rgb_Cmap_Index;
-                          Value : Glib.Guchar);
+      procedure Internal (Cmap  : in Gdk_Rgb_Cmap;
+                          Index : in Rgb_Cmap_Index;
+                          Value : in Glib.Guchar);
       pragma Import (C, Internal, "ada_rgb_cmap_set8");
    begin
       Internal (Cmap, Index, Value);
