@@ -1,5 +1,10 @@
 This is a patch against Gtk+ 2.2.1 sources that fixes Windows specific problems
 
+Mon May  5 01:34:32 2003	Arnaud Charlet <charlet@gnat.com>
+
+	* gtk+/gdk/win32/gdkwindow-win32.c (gdk_window_move): Revert to
+	simple implementation: fixes top level windows going out of screen.
+
 Thu Mar 27 18:16:10 2003	Arnaud Charlet <charlet@gnat.com>
 
 	* gtk+/gdk/win32/gdkwindow-win32.c: Bring parent window on top when
@@ -56,7 +61,7 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
  	  gdk_region_destroy (update_region);
  	  return_val = FALSE;
 +
-+          /* Force a process_all_updates to refresh visible windows
++          /* Force a process_updates to refresh visible windows
 +           * when receiving a paint message. */
 + 
 +          if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
@@ -437,3 +442,26 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
    if (private->extension_events != 0)
      _gdk_input_window_destroy (window);
  
+--- gtk+/gdk/win32/gdkwindow-win32.c	2003/05/04 21:27:07	1.2
++++ gtk+/gdk/win32/gdkwindow-win32.c	2003/05/04 21:28:25
+@@ -986,6 +986,7 @@
+ 				       impl->width, impl->height);
+       else
+ 	{
++#if 0
+ 	  /* SetWindowPos uses non-client coordinates, we have client
+ 	   * coordinates. Thus offset them.
+ 	   */
+@@ -998,6 +999,12 @@
+ 	                     x + rect.left, y + rect.top, 0, 0,
+ 	                     SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER))
+ 	    WIN32_API_FAILED ("SetWindowPos");
++#else
++	  if (!SetWindowPos (GDK_WINDOW_HWND (window), NULL,
++			     x, y, impl->width, impl->height,
++			     SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER))
++	    WIN32_API_FAILED ("SetWindowPos");
++#endif
+ 	}
+     }
+ }
