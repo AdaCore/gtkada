@@ -90,14 +90,15 @@ package Gdk.Color is
    --  raised.
    --  The string can be one of :
    --
-   --  - "RBG: FF/FF/FF" where the "FF" substrings are respectively the value
-   --    of the red, green and blue components. Some other prefixes than RBG
+   --  - "RBG:FF/FF/FF" where the "FF" substrings are respectively the value
+   --    of the red, green and blue components. Some other prefixes than RGB
    --    are defined in the X11 definition, please see some X11 documentation
    --    (or the man page XParseColor on unix systems).
    --
    --  - "color_name" which can be any color name defined in the file rgb.txt
    --    of the user's system. You should always check that Wrong_Color was not
-   --    raised, in case the color was not known on the user's system.
+   --    raised, in case the color was not known on the user's system. This
+   --    string is case insensitive.
 
    procedure Alloc_Color (Colormap   : in     Gdk_Colormap;
                           Color      : in out Gdk_Color;
