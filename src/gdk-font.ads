@@ -83,6 +83,30 @@ package Gdk.Font is
    function Char_Height (Font : in Gdk_Font;
                          Char : in Character) return Gint;
 
+   procedure Text_Extents (Font        : in     Gdk_Font;
+                           Text        : in     String;
+                           Lbearing    :    out Gint;
+                           Rbearing    :    out Gint;
+                           Width       :    out Gint;
+                           Ascent      :    out Gint;
+                           Descent     :    out Gint);
+
+   procedure Text_Extents (Font        : in     Gdk_Font;
+                           Text        : in     Gdk.Types.Gdk_WString;
+                           Lbearing    :    out Gint;
+                           Rbearing    :    out Gint;
+                           Width       :    out Gint;
+                           Ascent      :    out Gint;
+                           Descent     :    out Gint);
+
+   procedure String_Extents (Font     : in     Gdk.Font.Gdk_Font;
+                             Str      : in     String;
+                             Lbearing :    out Gint;
+                             Rbearing :    out Gint;
+                             Width    :    out Gint;
+                             Ascent   :    out Gint;
+                             Descent  :    out Gint);
+
 private
 
    type Gdk_Font is new Root_Type with null record;

@@ -153,6 +153,33 @@ package body Gdk.Font is
    end Ref;
 
 
+   --------------------
+   -- String_Extents --
+   --------------------
+
+   procedure String_Extents (Font     : in      Gdk.Font.Gdk_Font;
+                             Str      : in      String;
+                             Lbearing :     out Gint;
+                             Rbearing :     out Gint;
+                             Width    :     out Gint;
+                             Ascent   :     out Gint;
+                             Descent  :     out Gint) is
+      procedure Internal (Font     : in     System.Address;
+                          Str      : in     String;
+                          Lbearing :    out Gint;
+                          Rbearing :    out Gint;
+                          Width    :    out Gint;
+                          Ascent   :    out Gint;
+                          Descent  :    out Gint);
+      pragma Import (C, Internal, "gdk_string_extents");
+   begin
+      Internal (Get_Object (Font),
+                Str & Ascii.NUL,
+                Lbearing, Rbearing,
+                Width, Ascent, Descent);
+   end String_Extents;
+
+
    ---------------------
    --  String_Height  --
    ---------------------
@@ -193,6 +220,62 @@ package body Gdk.Font is
    begin
       return Internal (Get_Object (Font), Str & ASCII.NUL);
    end String_Width;
+
+
+   ------------------
+   -- Text_Extents --
+   ------------------
+
+   procedure Text_Extents (Font        : in Gdk_Font;
+                           Text        : in String;
+                           Lbearing    :    out Gint;
+                           Rbearing    :    out Gint;
+                           Width       :    out Gint;
+                           Ascent      :    out Gint;
+                           Descent     :    out Gint) is
+      procedure Internal (Font        : in System.Address;
+                          Text        : in String;
+                          Text_Length : in Gint;
+                          Lbearing    :    out Gint;
+                          Rbearing    :    out Gint;
+                          Width       :    out Gint;
+                          Ascent      :    out Gint;
+                          Descent     :    out Gint);
+      pragma Import (C, Internal, "gdk_text_extents");
+   begin
+      Internal (Get_Object (Font),
+                Text, Text'Length,
+                Lbearing, Rbearing,
+                Width, Ascent, Descent);
+   end Text_Extents;
+
+
+   ------------------
+   -- Text_Extents --
+   ------------------
+
+   procedure Text_Extents (Font        : in Gdk_Font;
+                           Text        : in Gdk.Types.Gdk_WString;
+                           Lbearing    :    out Gint;
+                           Rbearing    :    out Gint;
+                           Width       :    out Gint;
+                           Ascent      :    out Gint;
+                           Descent     :    out Gint) is
+      procedure Internal (Font        : in System.Address;
+                          Text        : in Gdk.Types.Gdk_WString;
+                          Text_Length : in Gint;
+                          Lbearing    :    out Gint;
+                          Rbearing    :    out Gint;
+                          Width       :    out Gint;
+                          Ascent      :    out Gint;
+                          Descent     :    out Gint);
+      pragma Import (C, Internal, "gdk_text_extents_wc");
+   begin
+      Internal (Get_Object (Font),
+                Text, Text'Length,
+                Lbearing, Rbearing,
+                Width, Ascent, Descent);
+   end Text_Extents;
 
 
    --------------------
