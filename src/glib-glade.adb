@@ -830,7 +830,7 @@ package body Glib.Glade is
            and then Class (Class'First + 4) in 'A' .. 'Z'
            and then Class (Class'First + 4 .. Class'Last) /= "Button_Box"
          then
-            return new String' ("Gtk" & Class (Class'First + 4 .. Class'Last));
+            return new String'("Gtk" & Class (Class'First + 4 .. Class'Last));
          else
             return Class;
          end if;
@@ -931,7 +931,7 @@ package body Glib.Glade is
 
       for J in Signal_Range'First .. Num_Signal_Instantiations loop
          if Signal_Instantiations (J).Rename = null then
-            S := new String' (To_Package_Name
+            S := new String'(To_Package_Name
               (Signal_Instantiations (J).Instantiation.all));
             Put_Line (File, "with " & S.all & "; use " & S.all & ";");
             Free (S);
@@ -1094,15 +1094,15 @@ package body Glib.Glade is
                         Put_Line (File, "   is");
 
                         for K in P'Range loop
-                           Kind := new String' (To_Ada (Type_Name (P (K))));
+                           Kind := new String'(To_Ada (Type_Name (P (K))));
 
                            if Kind.all = "Gpointer" then
                               Free (Kind);
-                              Kind := new String' ("Address");
+                              Kind := new String'("Address");
 
                            elsif Kind.all = "Gtk_String" then
                               Free (Kind);
-                              Kind := new String' ("String");
+                              Kind := new String'("String");
                            end if;
 
                            Put (File, "      Arg" &

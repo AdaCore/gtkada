@@ -112,7 +112,7 @@ package body Glib.XML is
          Index := Index + 1;
       end loop;
 
-      S := new String' (Translate (Buf (Start .. Index - 1)));
+      S := new String'(Translate (Buf (Start .. Index - 1)));
       Index := Index + 1;
 
       if Index < Buf'Last then
@@ -156,12 +156,12 @@ package body Glib.XML is
 
       if Index <= Tag'Last then
          if Empty_Node then
-            Attributes := new String' (Tag (Index .. Tag'Last - 1));
+            Attributes := new String'(Tag (Index .. Tag'Last - 1));
          else
-            Attributes := new String' (Tag (Index .. Tag'Last));
+            Attributes := new String'(Tag (Index .. Tag'Last));
          end if;
 
-         S := new String' (Tag (Tag'First .. Index_Last_Of_Tag));
+         S := new String'(Tag (Tag'First .. Index_Last_Of_Tag));
          Free (Tag);
          Tag := S;
       end if;
@@ -200,7 +200,7 @@ package body Glib.XML is
                Index := Index + 1;
             end loop;
 
-            Word := new String' (Translate (Buf (Start_Index .. Index - 1)));
+            Word := new String'(Translate (Buf (Start_Index .. Index - 1)));
          end;
       end if;
 
@@ -335,13 +335,13 @@ package body Glib.XML is
          --  <tag /> or <tag attrib='xyyzy'/>
 
          if Empty_Node then
-            N.Value := new String' ("");
+            N.Value := new String'("");
          else
             if Buf (Index.all) = '<' then
                if Buf (Index.all + 1) = '/' then
                   --  No value contained on this node
 
-                  N.Value := new String' ("");
+                  N.Value := new String'("");
                   Index.all := Index.all + 1;
 
                else
@@ -662,15 +662,15 @@ package body Glib.XML is
             return null;
          else
             if N.Attributes /= null then
-               Attr := new String' (N.Attributes.all);
+               Attr := new String'(N.Attributes.all);
             end if;
 
             if N.Value /= null then
-               Value := new String' (N.Value.all);
+               Value := new String'(N.Value.all);
             end if;
 
             return new Node'
-              (Tag => new String' (N.Tag.all),
+              (Tag => new String'(N.Tag.all),
                Attributes => Attr,
                Value => Value,
                Parent => Parent,
