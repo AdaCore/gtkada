@@ -708,19 +708,19 @@ package body Gtkada.Multi_Paned is
       Event : Gdk_Event) return Boolean
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      Handle : Resize_Handle renames Split.Selected_Handle_Parent.Handles
-        (Split.Selected_Handle_Index);
    begin
       if Split.Selected_Handle_Parent /= null then
          Draw_Resize_Line (Split);
 
          case Split.Selected_Handle_Parent.Orientation is
             when Orientation_Horizontal =>
-               Split.Selected_Handle_Pos.X :=
-                 Handle.Position.X + Gint (Get_X (Event));
+               Split.Selected_Handle_Pos.X := Gint (Get_X (Event))
+                 + Split.Selected_Handle_Parent.Handles
+                   (Split.Selected_Handle_Index).Position.X;
             when Orientation_Vertical =>
-               Split.Selected_Handle_Pos.Y :=
-                 Handle.Position.Y + Gint (Get_Y (Event));
+               Split.Selected_Handle_Pos.Y := Gint (Get_Y (Event))
+                 + Split.Selected_Handle_Parent.Handles
+                   (Split.Selected_Handle_Index).Position.Y;
          end case;
 
          Draw_Resize_Line (Split);
