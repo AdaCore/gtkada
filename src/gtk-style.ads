@@ -42,9 +42,19 @@ package Gtk.Style is
    type Gtk_Style is access all Gtk_Style_Record'Class;
 
    procedure Gtk_New (Style : out Gtk_Style);
+   --  IMPORTANT NOTE: for this widget, this is your own responsability
+   --  to free the memory. No automatic work is done here !!!
+
    procedure Initialize (Style : access Gtk_Style_Record);
 
    function Copy (Source : access Gtk_Style_Record) return Gtk_Style;
+   --  This function allocates a new pointer, and initialize it with the
+   --  value of Source. Freeing the memory is your responsability (use Free
+   --  below to destroy the associated C widget at the same time)
+
+   procedure Free (Source : in out Gtk_Style);
+   --  This function is not part of gtk+ itself, this is provided for
+   --  conveniance only
 
    function Attach (Style  : access Gtk_Style_Record;
                     Window : in Gdk.Window.Gdk_Window) return Gtk_Style;
@@ -74,7 +84,10 @@ package Gtk.Style is
                        return Gdk.Color.Gdk_Color;
 
    function Get_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-                       return Gtk.Style.Gtk_Style;
+                       return Gtk.Style.Gtk_Style_Record;
+   --  Warning: We return a record, not a pointer, since there is no way
+   --  for us to automatically free the memory that would be associated with
+   --  a pointer
 
    function Get_Black_GC (Style : access Gtk_Style_Record)
                           return Gdk.GC.Gdk_GC;

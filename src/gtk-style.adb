@@ -29,6 +29,7 @@
 
 with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
+with Unchecked_Deallocation;
 with System;
 
 package body Gtk.Style is
@@ -259,6 +260,18 @@ package body Gtk.Style is
                 State_Type, Y1, Y2, X);
    end Draw_Vline;
 
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Source : in out Gtk_Style) is
+      procedure Internal is new Unchecked_Deallocation
+        (Object => Gtk_Style_Record'Class, Name => Gtk_Style);
+   begin
+      Unref (Source);
+      Internal (Source);
+   end Free;
+
    ------------
    -- Get_Bg --
    ------------
@@ -269,11 +282,14 @@ package body Gtk.Style is
    is
       function Internal (Style      : in System.Address;
                          State_Type : in Gint)
-                        return Gdk.Color.Gdk_Color;
+                        return System.Address;
       pragma Import (C, Internal, "ada_style_get_bg");
+      Add : System.Address := Internal (Get_Object (Style),
+                                        Gtk_State_Type'Pos (State_Type));
+      Col : Gdk.Color.Gdk_Color;
+      for Col'Address use Add;
    begin
-      return Internal (Get_Object (Style),
-                       Gtk_State_Type'Pos (State_Type));
+      return Col;
    end Get_Bg;
 
    ---------------
@@ -284,10 +300,13 @@ package body Gtk.Style is
                        return Gdk.Color.Gdk_Color
    is
       function Internal (Style      : in System.Address)
-                        return Gdk.Color.Gdk_Color;
+                        return System.Address;
       pragma Import (C, Internal, "ada_style_get_black");
+      Add : System.Address := Internal (Get_Object (Style));
+      Col : Gdk.Color.Gdk_Color;
+      for Col'Address use Add;
    begin
-      return Internal (Get_Object (Style));
+      return Col;
    end Get_Black;
 
 
@@ -347,10 +366,13 @@ package body Gtk.Style is
                        return Gdk.Color.Gdk_Color
    is
       function Internal (Style      : in System.Address)
-                        return Gdk.Color.Gdk_Color;
+                        return System.Address;
       pragma Import (C, Internal, "ada_style_get_white");
+      Add : System.Address := Internal (Get_Object (Style));
+      Col : Gdk.Color.Gdk_Color;
+      for Col'Address use Add;
    begin
-      return Internal (Get_Object (Style));
+      return Col;
    end Get_White;
 
    ---------------
@@ -368,15 +390,19 @@ package body Gtk.Style is
    ---------------
 
    function Get_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-                      return       Gtk.Style.Gtk_Style
+                      return       Gtk.Style.Gtk_Style_Record
    is
       function Internal (Widget : System.Address)
                         return    System.Address;
       pragma Import (C, Internal, "ada_widget_get_style");
+      --  Note: a GtkStyle is not a descendant from GtkObject, and has no
+      --  user data associated with it. We need to create a new instance
+      --  everytime. We can't return a pointer, since we have no way to
+      --  free the memory afterward.
       Stub : Gtk.Style.Gtk_Style_Record;
    begin
-      return Gtk.Style.Gtk_Style
-        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
+      Set_Object (Stub, Internal (Get_Object (Widget)));
+      return Stub;
    end Get_Style;
 
    ----------------
@@ -388,7 +414,6 @@ package body Gtk.Style is
       pragma Import (C, Internal, "gtk_style_new");
    begin
       Set_Object (Style, Internal);
-      Initialize_User_Data (Style);
    end Initialize;
 
    ---------
@@ -414,11 +439,12 @@ package body Gtk.Style is
                        Color      : in     Gdk.Color.Gdk_Color)
    is
       procedure Internal
-        (Style : System.Address; State : Gint; Color : Gdk.Color.Gdk_Color);
+        (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_base");
    begin
       Internal
-        (Get_Object (Style), Enums.Gtk_State_Type'Pos (State_Type), Color);
+        (Get_Object (Style), Enums.Gtk_State_Type'Pos (State_Type),
+         Color'Address);
    end Set_Base;
 
    ----------------------
@@ -459,11 +485,12 @@ package body Gtk.Style is
                              Color      : in     Gdk.Color.Gdk_Color)
    is
       procedure Internal
-        (Style : System.Address; State : Gint; Color : Gdk.Color.Gdk_Color);
+        (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_foreground");
    begin
       Internal
-        (Get_Object (Style), Enums.Gtk_State_Type'Pos (State_Type), Color);
+        (Get_Object (Style), Enums.Gtk_State_Type'Pos (State_Type),
+         Color'Address);
    end Set_Foreground;
 
    -----------
