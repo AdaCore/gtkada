@@ -31,7 +31,6 @@ with Gdk;                  use Gdk;
 with Gtk.Box;              use Gtk.Box;
 with Gtk.Util;             use Gtk.Util;
 with Gtk.Fixed;            use Gtk.Fixed;
-with Gtk.Scrolled_Window;  use Gtk.Scrolled_Window;
 with Gtk.Layout;           use Gtk.Layout;
 with Gtk.Packer;           use Gtk.Packer;
 with Gtk.Container;        use Gtk.Container;
@@ -1621,11 +1620,7 @@ package body Gtk.Widget is
             S := Get_Field (N.Parent, "class");
 
             if S /= null then
-               if S.all = "GtkScrolledWindow" then
-                  Gen_Call_Child (N, null, "Scrolled_Window",
-                    "Add_With_Viewport", File => File);
-
-               elsif S.all = "GtkFixed" then
+               if S.all = "GtkFixed" then
                   Gen_Call_Child (N, N, "Fixed",
                     "Put", "x", "y", File => File);
 
@@ -1925,13 +1920,7 @@ package body Gtk.Widget is
             S := Get_Field (N.Parent, "class");
 
             if S /= null then
-               if S.all = "GtkScrolledWindow" then
-                  Scrolled_Window.Add_With_Viewport
-                    (Gtk_Scrolled_Window
-                      (Get_Object (Get_Field (N.Parent, "name"))),
-                     Gtk_Widget (Widget));
-
-               elsif S.all = "GtkFixed" then
+               if S.all = "GtkFixed" then
                   Fixed.Put
                     (Gtk_Fixed (Get_Object (Get_Field (N.Parent, "name"))),
                      Gtk_Widget (Widget),
