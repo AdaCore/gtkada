@@ -281,11 +281,15 @@ package body Gtkada.MDI is
    procedure Put_In_Notebook
      (MDI      : access MDI_Window_Record'Class;
       Child    : access MDI_Child_Record'Class;
-      Notebook : Gtk_Notebook := null);
+      Notebook : Gtk_Notebook := null;
+      Force_Parent_Destruction : Boolean := True);
    --  Remove Child from MDI, and put it under control of a notebook.
    --  Notebook can be used to specify a specific notebook to which the child
    --  should be added. If null, this function will compute what notebook
    --  should be used or created depending on the Child's position attribute.
+   --  If Force_Parent_Destruction is True, then the notebook containing the
+   --  Child will always be destroyed if Child was its last child. Otherwise,
+   --  it is possible that the notebook will be kept, albeit empty.
 
    function Get_Notebook
      (Child : access MDI_Child_Record'Class) return Gtk_Notebook;
@@ -1610,13 +1614,15 @@ package body Gtkada.MDI is
                      begin
                         while L /= Null_List loop
                            Put_In_Notebook
-                             (C.MDI, MDI_Child (Get_Data (L)), Note);
+                             (C.MDI, MDI_Child (Get_Data (L)), Note,
+                              Force_Parent_Destruction => False);
                            L := Next (L);
                         end loop;
                         Free (Children);
                      end;
                   else
-                     Put_In_Notebook (C.MDI, C2, Note);
+                     Put_In_Notebook
+                       (C.MDI, C2, Note, Force_Parent_Destruction => False);
                   end if;
 
                   case Position is
@@ -1682,10 +1688,6 @@ package body Gtkada.MDI is
    begin
       if Get_Window (Child) /= Get_Window (Event) then
          return False;
-      end if;
-
-      if Traces then
-         Put_Line ("Button motion drag=" & C.MDI.In_Drag'Img);
       end if;
 
       case C.MDI.In_Drag is
@@ -2786,7 +2788,8 @@ package body Gtkada.MDI is
    procedure Put_In_Notebook
      (MDI      : access MDI_Window_Record'Class;
       Child    : access MDI_Child_Record'Class;
-      Notebook : Gtk_Notebook := null)
+      Notebook : Gtk_Notebook := null;
+      Force_Parent_Destruction : Boolean := True)
    is
       Note, Old_Note : Gtk_Notebook;
       Destroy_Old : Boolean := False;
@@ -2824,11 +2827,8 @@ package body Gtkada.MDI is
          --  putting the item elsewhere anyway, there will still be
          --  a notebook for items in the same position.
 
-         Destroy_Old := Get_Nth_Page (Old_Note, 1) = null;
-               --  and then
-               --  (Get_Nth_Page (Note, 0) = null
-               --  or else MDI_Child (Get_Nth_Page (Note, 0)).Position >
-               --   Position_Right);
+         Destroy_Old := Force_Parent_Destruction
+           and then Get_Nth_Page (Old_Note, 1) = null;
 
          Weak_Ref (Old_Note, Note_Notify'Unrestricted_Access);
          Remove (Old_Note, Child);
