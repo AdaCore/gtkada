@@ -681,10 +681,6 @@ package Gtk.Handlers is
       Id     : in Handler_Id);
    --  Disconnect the handler identified by the given Handler_Id.
 
-   --  FIXME: Bind Disconnect_By_Name
-
-   --  FIXME: Bind Emit_Stop
-
    procedure Emit_Stop_By_Name
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
       Name   : in String);
