@@ -368,6 +368,9 @@ package Gtkada.MDI is
       --  This function calls each of the registered function for the children
       --  of the MDI.
 
+      procedure Free_Registered_Desktop_Functions;
+      --  Free the memory allocated for the registered functions.
+
    private
       type Register_Node_Record;
       type Register_Node is access Register_Node_Record;

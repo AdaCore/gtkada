@@ -1198,6 +1198,10 @@ package body Gtkada.MDI is
       N   : Widget_List.Glist;
 
    begin
+      if Children_Are_Maximized (MDI_Window (MDI)) then
+         Unref (MDI_Window (MDI).Layout);
+      end if;
+
       --  Note: we only destroy the floating children. Other children will be
       --  destroyed when their parent container is destroyed, so we have
       --  nothing to do for them.
@@ -3926,6 +3930,22 @@ package body Gtkada.MDI is
 
          return Root;
       end Save_Desktop;
+
+      ---------------------------------------
+      -- Free_Registered_Desktop_Functions --
+      ---------------------------------------
+
+      procedure Free_Registered_Desktop_Functions is
+         procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+           (Register_Node_Record, Register_Node);
+         Next : Register_Node;
+      begin
+         while Registers /= null loop
+            Next := Registers.Next;
+            Unchecked_Free (Registers);
+            Registers := Next;
+         end loop;
+      end Free_Registered_Desktop_Functions;
 
    end Desktop;
 
