@@ -31,6 +31,7 @@ with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Interfaces.C.Strings;
+with Gtk.Object;   use Gtk.Object;
 
 package body Gtk.File_Selection is
 
@@ -65,6 +66,20 @@ package body Gtk.File_Selection is
       return Gtk.Box.Gtk_Box
         (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Button_Area;
+
+   --------------
+   -- Complete --
+   --------------
+
+   procedure Complete (File_Selection : access Gtk_File_Selection_Record;
+                       Pattern        : in String)
+   is
+      procedure Internal (File_Selection : System.Address;
+                          Pattern        : String);
+      pragma Import (C, Internal, "gtk_file_selection_complete");
+   begin
+      Internal (Get_Object (File_Selection), Pattern & ASCII.Nul);
+   end Complete;
 
    -----------------------
    -- Get_Cancel_Button --
