@@ -238,6 +238,7 @@ package Gdk.Pixbuf is
       Quality  : Image_Quality := Image_Quality'Last);
    --  Save pixbuf to a file.
    --  Quality is only taken into account for JPEG images.
+   --  Error is set to null on success, and set to a GError otherwise.
 
    function Add_Alpha
      (Pixbuf           : Gdk_Pixbuf;
@@ -400,7 +401,7 @@ package Gdk.Pixbuf is
    --
    --  If the specified drawable is a pixmap, then the requested source
    --  rectangle must be completely contained within the pixmap, otherwise the
-   --  function will Null_Pixbuf
+   --  function will return Null_Pixbuf.
    --
    --  If the specified drawable is a window, then it must be viewable, i.e.
    --  all of its ancestors up to the root window must be mapped.  Also, the

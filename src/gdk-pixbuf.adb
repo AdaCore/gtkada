@@ -256,7 +256,8 @@ package body Gdk.Pixbuf is
         (Pixbuf   : Gdk_Pixbuf;
          Filename : String;
          Format   : String;
-         Error    : out GError);
+         Error    : out GError;
+         Term     : System.Address := System.Null_Address);
 
       procedure Internal
         (Pixbuf   : Gdk_Pixbuf;
@@ -269,6 +270,8 @@ package body Gdk.Pixbuf is
       pragma Import (C, Internal, "gdk_pixbuf_save");
 
    begin
+      Error := null;
+
       case Format is
          when JPEG =>
             Internal
