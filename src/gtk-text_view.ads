@@ -39,6 +39,7 @@ with Gtk.Enums;
 with Gtk.Text_Buffer;
 with Gtk.Text_Child;
 with Gtk.Text_Iter;
+with Gtk.Text_Layout;
 with Gtk.Text_Mark;
 with Gtk.Widget;
 
@@ -395,6 +396,13 @@ package Gtk.Text_View is
    --  function Get_Tabs (Text_View : access Gtk_Text_View_Record)
    --                     return Pango_Tab_Array;
    --  ??? Needs pango binding to be bound. Is this procedure essential?
+
+   function Get_Layout (Text_View : access Gtk_Text_View_Record)
+     return Gtk.Text_Layout.Gtk_Text_Layout;
+   --  Return the associated Gtk_Text_Layout. This can be useful to set the
+   --  default font, for instance. The layout is only created when the widget
+   --  is realized.
+   --  ??? Verify that the layout is really created at this instant...
 
    -------------
    -- Signals --
