@@ -17,7 +17,7 @@
 @page
 @vskip 0pt plus 1filll
 
-Copyright @copyright{} 1998-1999, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
+Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
 This document may be copied, in whole or in part, in any form or by any
 means, as is or with alterations, provided that (1) alterations are clearly
