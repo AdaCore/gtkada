@@ -573,6 +573,12 @@ package Gtkada.Canvas is
    function Is_Visible (Item : access Canvas_Item_Record) return Boolean;
    --  Return True if the item is currently visible.
 
+   function Is_From_Auto_Layout
+     (Item : access Canvas_Item_Record) return Boolean;
+   --  Return True if the current location of the item is the result from the
+   --  auto layout algorithm.
+   --  False is returned if the item was moved manually by the user.
+
    --------------------
    -- Buffered items --
    --------------------
@@ -742,6 +748,10 @@ private
    type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with record
       Coord   : Gdk.Rectangle.Gdk_Rectangle := (0, 0, 10, 10);
       Visible : Boolean := True;
+
+      From_Auto_Layout : Boolean := False;
+      --  True if the item's current location is the result of the automatic
+      --  layout algorithm.
    end record;
 
    type Buffered_Item_Record is new Canvas_Item_Record with record

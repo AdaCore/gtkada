@@ -707,10 +707,7 @@ package body Gtkada.Canvas is
       Items := First (Graph);
       while not At_End (Items) loop
          Item := Canvas_Item (Get (Items));
-         if Item.Coord.X = Gint'First
-           and then Item.Coord.Y = Gint'First
-         then
-
+         if Force or else Item.From_Auto_Layout then
             --  Check if there is any link that has for destination or source
             --  the widget we are adding.
 
@@ -839,7 +836,7 @@ package body Gtkada.Canvas is
       Force  : Boolean := False;
       Vertical_Layout : Boolean := False)
    is
-      Step  : Gint := Gint (Canvas.Grid_Size);
+      Step  : constant Gint := Gint (Canvas.Grid_Size);
       Items : Vertex_Iterator;
       Item : Canvas_Item;
       Min_X, Min_Y : Gint := Gint'Last;
@@ -851,30 +848,28 @@ package body Gtkada.Canvas is
          Item := Canvas_Item (Get (Items));
          Min_X := Gint'Min (Min_X, Item.Coord.X);
          Min_Y := Gint'Min (Min_Y, Item.Coord.Y);
+
+         if Force then
+            Item.From_Auto_Layout := True;
+         end if;
          Next (Items);
       end loop;
 
       Items := First (Canvas.Children);
       while not At_End (Items) loop
          Item := Canvas_Item (Get (Items));
-         Item.Coord.X := Item.Coord.X - Min_X + Gint (Canvas.Grid_Size);
-         Item.Coord.Y := Item.Coord.Y - Min_Y + Gint (Canvas.Grid_Size);
+         if Item.From_Auto_Layout then
+            Item.Coord.X := Item.Coord.X - Min_X;
+            Item.Coord.Y := Item.Coord.Y - Min_Y;
+
+            if Canvas.Align_On_Grid then
+               Item.Coord.X := Item.Coord.X - Item.Coord.X mod Step;
+               Item.Coord.Y := Item.Coord.Y - Item.Coord.Y mod Step;
+            end if;
+         end if;
+
          Next (Items);
       end loop;
-
-      if Canvas.Align_On_Grid then
-         Items := First (Canvas.Children);
-         while not At_End (Items) loop
-            Item := Canvas_Item (Get (Items));
-            if Item.Coord.X mod Step /= 0 then
-               Item.Coord.X := Item.Coord.X + Step - Item.Coord.X mod Step;
-            end if;
-            if Item.Coord.Y mod Step /= 0 then
-               Item.Coord.Y := Item.Coord.Y + Step - Item.Coord.Y mod Step;
-            end if;
-            Next (Items);
-         end loop;
-      end if;
    end Layout;
 
    --------------------------
@@ -915,9 +910,13 @@ package body Gtkada.Canvas is
       Add_Vertex (Canvas.Children, Item);
       Move_To (Canvas, Item, X, Y);
 
+      --  Make sure that the item will be properly moved by the layout
+      --  algorithm.
+      Item.From_Auto_Layout :=
+        X = Gint'First and then Y = Gint'First;
+
       if Canvas.Auto_Layout
-        and then X = Gint'First
-        and then Y = Gint'First
+        and then Item.From_Auto_Layout
       then
          Layout (Canvas);
       end if;
@@ -1171,6 +1170,98 @@ package body Gtkada.Canvas is
       end if;
    end Draw_Annotation;
 
+   ----------------------
+   -- Compute_Line_Pos --
+   ----------------------
+
+   function Compute_Line_Pos
+     (Canvas : access Interactive_Canvas_Record'Class)
+     return Gint_Array;
+
+   function Compute_Line_Pos
+     (Canvas : access Interactive_Canvas_Record'Class)
+     return Gint_Array
+   is
+      type Graph_Range is record
+         From, To : Gint;
+      end record;
+
+      type Range_Array is array (Positive range <>) of Graph_Range;
+      type Range_Array_Access is access all Range_Array;
+
+      procedure Free is new Unchecked_Deallocation
+        (Range_Array, Range_Array_Access);
+
+      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
+
+      Free_Ranges : Range_Array_Access := new Range_Array (1 .. 1000);
+      Tmp : Range_Array_Access;
+      Last_Range : Positive := Free_Ranges'First;
+      Iter : Vertex_Iterator := First (Canvas.Children);
+      E : Canvas_Item;
+      Right : Gint;
+   begin
+      Free_Ranges (Free_Ranges'First) := (From => Gint'First, To => Gint'Last);
+
+      while not At_End (Iter) loop
+         E := Canvas_Item (Get (Iter));
+         Right := E.Coord.X + Gint (E.Coord.Width);
+
+         for R in Free_Ranges'First .. Last_Range loop
+            if Free_Ranges (R).From <= E.Coord.X
+              and then Free_Ranges (R).To >= E.Coord.X
+              and then Free_Ranges (R).To <= Right
+            then
+               Free_Ranges (R) :=
+                 (From => Free_Ranges (R).From, To => E.Coord.X - 1);
+
+            elsif Free_Ranges (R).From <= E.Coord.X
+              and then Free_Ranges (R).To >= Right
+            then
+               if Last_Range >= Free_Ranges'Last then
+                  Tmp := new Range_Array (1 .. Free_Ranges'Last * 2);
+                  Tmp (1 .. Free_Ranges'Last) := Free_Ranges.all;
+                  Free (Free_Ranges);
+                  Free_Ranges := Tmp;
+               end if;
+
+               Free_Ranges (R + 1 .. Last_Range + 1) :=
+                 Free_Ranges (R .. Last_Range);
+               Free_Ranges (R + 1) :=
+                 (From => Right + 1, To => Free_Ranges (R).To);
+               Free_Ranges (R) :=
+                 (From => Free_Ranges (R).From, To => E.Coord.X - 1);
+               Last_Range := Last_Range + 1;
+
+            elsif Free_Ranges (R).From >= E.Coord.X
+              and then Free_Ranges (R).From <= Right
+              and then Free_Ranges (R).To >= Right
+            then
+               Free_Ranges (R) :=
+                 (From => Right + 1, To => Free_Ranges (R).To);
+            end if;
+
+            exit when Free_Ranges (R).From > Right;
+         end loop;
+
+         Next (Iter);
+      end loop;
+
+      declare
+         Result : Gint_Array (1 .. Last_Range);
+      begin
+         for R in Result'Range loop
+            --  ??? Should handle vertical layout and horizontal layout
+            Result (R) := To_Canvas_Coordinates
+              (Canvas, (Free_Ranges (R).From + Free_Ranges (R).To) / 2)
+              - Xbase;
+         end loop;
+
+         Free (Free_Ranges);
+         return Result;
+      end;
+   end Compute_Line_Pos;
+
    --------------------------
    -- Draw_Orthogonal_Link --
    --------------------------
@@ -1189,6 +1280,8 @@ package body Gtkada.Canvas is
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
       Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest : Canvas_Item := Canvas_Item (Get_Dest (Link));
+
+      Line_Pos : Gint_Array := Compute_Line_Pos (Canvas);
    begin
       X1 := To_Canvas_Coordinates (Canvas, Src.Coord.X) - Xbase;
       Y1 := To_Canvas_Coordinates (Canvas, Src.Coord.Y) - Ybase;
@@ -1224,20 +1317,40 @@ package body Gtkada.Canvas is
       --  then we try and display the vertical line at equal distance of the
       --  adjacent edges of A and B
 
-      X3 := (X1 + Xp1 + X2 + Xp2) / 4;
-      X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
+      X3 := Gint'First;
 
-      if ((X1 <= X3 and then X3 <= Xp1)
-          or else (X2 <= X3 and then X3 <= Xp2))
-        and then (Xp1 <= X2 or else Xp2 <= X1)
-      then
-         X3 := (Xp1 + X2) / 2;
-         X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
-      end if;
+      --  Put_Line ("Xp1=" & Xp1'Img & " X2=" & X2'Img);
 
-      if (X3 >= Xp1 and then X3 <= X2)
-        or else (X3 <= X1 and then X3 >= Xp2)
-      then
+      for L in Line_Pos'Range loop
+         if Line_Pos (L) >= Xp1
+           and then Line_Pos (L) <= X2
+         then
+            X3 := Line_Pos (L);
+            exit;
+
+         elsif Line_Pos (L) >= Xp2
+           and then Line_Pos (L) <= X1
+         then
+            X3 := Line_Pos (L);
+            exit;
+         end if;
+      end loop;
+
+      --  X3 := (X1 + Xp1 + X2 + Xp2) / 4;
+      --  X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
+
+      --  if ((X1 <= X3 and then X3 <= Xp1)
+      --      or else (X2 <= X3 and then X3 <= Xp2))
+      --    and then (Xp1 <= X2 or else Xp2 <= X1)
+      --  then
+      --     X3 := (Xp1 + X2) / 2;
+      --     X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
+      --  end if;
+
+      if X3 /= Gint'First then
+      --  if (X3 >= Xp1 and then X3 <= X2)
+      --    or else (X3 <= X1 and then X3 >= Xp2)
+      --  then
          Draw_Line (Window, GC, X3, Yc1, X3, (Y2 + Yp2) / 2);
          Yarr_Start := Yc1;
          Yarr_End := Yc2;
@@ -1266,29 +1379,29 @@ package body Gtkada.Canvas is
       --  with the vertical line drawn at the same location as in the first
       --  algorithm.
 
-      elsif X3 >= Xp1 or else X3 <= X1 then
-         if X3 >= Xp1 then
-            Draw_Line (Window, GC, Xp1, Yc1, X3, Yc1);
-            Xarr_Start := Xp1;
-            Angle_Arr_Start := -Ada.Numerics.Pi;
-         else
-            Draw_Line (Window, GC, X1, Yc1, X3, Yc1);
-            Xarr_Start := X1;
-            Angle_Arr_Start := 0.0;
-         end if;
+      --  elsif X3 >= Xp1 or else X3 <= X1 then
+      --     if X3 >= Xp1 then
+      --        Draw_Line (Window, GC, Xp1, Yc1, X3, Yc1);
+      --        Xarr_Start := Xp1;
+      --        Angle_Arr_Start := -Ada.Numerics.Pi;
+      --     else
+      --        Draw_Line (Window, GC, X1, Yc1, X3, Yc1);
+      --        Xarr_Start := X1;
+      --        Angle_Arr_Start := 0.0;
+      --     end if;
 
-         Yarr_Start := Yc1;
-         Xarr_End := X3;
+      --     Yarr_Start := Yc1;
+      --     Xarr_End := X3;
 
-         if Y2 < Yc1 then
-            Draw_Line (Window, GC, X3, Yc1, X3, Yp2);
-            Yarr_End := Yp2;
-            Angle_Arr_End := Ada.Numerics.Pi / 2.0;
-         else
-            Draw_Line (Window, GC, X3, Yc1, X3, Y2);
-            Yarr_End := Y2;
-            Angle_Arr_End := -Ada.Numerics.Pi / 2.0;
-         end if;
+      --     if Y2 < Yc1 then
+      --        Draw_Line (Window, GC, X3, Yc1, X3, Yp2);
+      --        Yarr_End := Yp2;
+      --        Angle_Arr_End := Ada.Numerics.Pi / 2.0;
+      --     else
+      --        Draw_Line (Window, GC, X3, Yc1, X3, Y2);
+      --        Yarr_End := Y2;
+      --        Angle_Arr_End := -Ada.Numerics.Pi / 2.0;
+      --     end if;
 
       --  Second case is when one of the item is below the other one. In that
       --  case, the layout should look like
@@ -1299,9 +1412,10 @@ package body Gtkada.Canvas is
       --  ie the link connects the top side of one item and the bottom side of
       --  the other item.
 
-      elsif (X1 <= X2 and then X2 <= Xp1)
-        or else (X2 <= X1 and then X1 <= Xp2)
-      then
+      else
+      --  elsif (X1 <= X2 and then X2 <= Xp1)
+      --    or else (X2 <= X1 and then X1 <= Xp2)
+      --  then
          Y3 := (Y1 + Yp1 + Y2 + Yp2) / 4;
          Y3 := Y3 - Y3 mod Gint (Canvas.Grid_Size);
          Xarr_Start := Xc1;
@@ -2210,6 +2324,7 @@ package body Gtkada.Canvas is
                Tmp.Item.Coord.X := Tmp.X;
                Tmp.Item.Coord.Y := Tmp.Y;
             end if;
+            Tmp.Item.From_Auto_Layout := False;
             Tmp := Tmp.Next;
          end loop;
 
@@ -3131,5 +3246,15 @@ package body Gtkada.Canvas is
    begin
       return Canvas.Orthogonal_Links;
    end Get_Orthogonal_Links;
+
+   -------------------------
+   -- Is_From_Auto_Layout --
+   -------------------------
+
+   function Is_From_Auto_Layout
+     (Item : access Canvas_Item_Record) return Boolean is
+   begin
+      return Item.From_Auto_Layout;
+   end Is_From_Auto_Layout;
 
 end Gtkada.Canvas;
