@@ -64,13 +64,13 @@ package Glib is
    type Gfloat  is new C.C_float;
    type Gdouble is new C.double;
 
-   subtype Gint8  is Gint range -(2 ** 7) .. (2 ** 7 - 1);
-   subtype Gint16 is Gint range -(2 ** 15) .. (2 ** 15 - 1);
-   subtype Gint32 is Gint range -(2 ** 31) .. (2 ** 31 - 1);
+   type Gint8  is range -(2 ** 7) .. (2 ** 7 - 1);
+   type Gint16 is range -(2 ** 15) .. (2 ** 15 - 1);
+   type Gint32 is range -(2 ** 31) .. (2 ** 31 - 1);
 
-   subtype Guint8  is Guint range Guint'First .. (2 ** 8 - 1);
-   subtype Guint16 is Guint range Guint'First .. (2 ** 16 - 1);
-   subtype Guint32 is Guint range Guint'First .. (2 ** 32 - 1);
+   type Guint8  is mod 2 ** 8;
+   type Guint16 is mod 2 ** 16;
+   type Guint32 is mod 2 ** 32;
 
    ----------------------
    -- Some Array types --
