@@ -71,7 +71,7 @@ dirs:: force
 
 
 $(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
-	$(CC) -shared -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) @GTK_LIBS@ -lm
+	$(CC) -shared -fPIC -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) @GTK_LIBS@ -lm
 
 $(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects)
