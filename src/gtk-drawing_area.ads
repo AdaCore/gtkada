@@ -41,9 +41,9 @@
 --    Gtk.Widget.Get_Window. Note that the event mask is automatically set up
 --    to accept expose_events.
 --
---  * Connect it to "button_press" and "button_release" events, when you want
---    it to react to user input. Note that you need to set up the event mask
---    with a call to Gtk.Widget.Set_Events.
+--  * Connect it to "button_press_event" and "button_release_event" events,
+--    when you want it to react to user input. Note that you need to set up the
+--    event mask with a call to Gtk.Widget.Set_Events.
 --
 --  See also the Double_Buffer widget provided in the GtkAda examples for an
 --  advanced example that demonstrates how to use double buffering, to avoid
