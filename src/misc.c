@@ -46,24 +46,24 @@
 #include <gtk/gtkwidget.h>
 
 gint
-convert_a (void* a)
+convert_a (gpointer a)
 {
    return GPOINTER_TO_INT (a);
 }
 
-void*
+gpointer
 convert_i (gint s)
 {
    return GINT_TO_POINTER (s);
 }
 
 guint
-convert_ua (void* a)
+convert_ua (gpointer a)
 {
    return GPOINTER_TO_UINT (a);
 }
 
-void*
+gpointer
 convert_ui (guint s)
 {
    return GUINT_TO_POINTER (s);
