@@ -292,13 +292,6 @@ package Gtkada.MDI is
    --  If this function is called several times, the same menu is returned
    --  every time.
 
-   function Create_Child_Menu
-     (Child : access MDI_Child_Record'Class) return Gtk.Menu.Gtk_Menu;
-   --  Create and return a static menu that should be put in a child-specific
-   --  menu bar. The recommended way to use this is to put this menu in the
-   --  menu bar for a floating child. This will allow the child to be
-   --  unfloated.
-
    ------------------------
    -- Selecting children --
    ------------------------
