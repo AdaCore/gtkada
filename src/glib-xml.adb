@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,16 +27,51 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
-with Ada.Direct_IO;
 with Glib.Convert;  use Glib.Convert;
 with Glib.Error;    use Glib.Error;
 with Glib.Messages; use Glib.Messages;
 
 package body Glib.XML is
 
-   package Dir is new Ada.Direct_IO (Character);
+   function File_Length (FD : Integer) return Long_Integer;
+   pragma Import (C, File_Length, "__gnat_file_length");
+   --  Get length of file from file descriptor FD
+
+   function Open_Read
+     (Name  : String;
+      Fmode : Integer := 0) return Integer;
+   pragma Import (C, Open_Read, "__gnat_open_read");
+   --  Open file Name and return a file descriptor
+
+   function Create_File
+     (Name  : String;
+      Fmode : Integer := 0) return Integer;
+   pragma Import (C, Create_File, "__gnat_open_create");
+   --  Creates new file with given name for writing, returning file descriptor
+   --  for subsequent use in Write calls. File descriptor returned is
+   --  negative if file cannot be successfully created.
+
+   function Read
+     (FD   : Integer;
+      A    : System.Address;
+      N    : Integer) return Integer;
+   pragma Import (C, read, "read");
+   --  Read N bytes to address A from file referenced by FD. Returned value is
+   --  count of bytes actually read, which can be less than N at EOF.
+
+   procedure Write
+     (FD   : Integer;
+      S    : String;
+      N    : Integer);
+   pragma Import (C, write, "write");
+   --  Write N bytes from address A to file referenced by FD. The returned
+   --  value is the number of bytes written, which can be less than N if a
+   --  disk full condition was detected.
+
+   procedure Close (FD : Integer);
+   pragma Import (C, Close, "close");
+   --  Close file referenced by FD
 
    procedure Skip_Blanks (Buf : String; Index : in out Natural);
    --  Skip blanks, LF and CR, starting at Index. Index is updated to the
@@ -529,7 +564,7 @@ package body Glib.XML is
    -----------
 
    procedure Print (N : Node_Ptr; File_Name : String := "") is
-      File : File_Type;
+      File : Integer := 1;
 
       procedure Do_Indent (Indent : Natural);
       --  Print a string made of Indent blank characters.
@@ -540,6 +575,30 @@ package body Glib.XML is
 
       procedure Print_Node (N : Node_Ptr; Indent : Natural);
       --  Write a node and its children to File
+
+      procedure Put (S : String);
+      --  Write S to File
+
+      procedure Put_Line (S : String);
+      --  Write S & LF to File
+
+      ---------
+      -- Put --
+      ---------
+
+      procedure Put (S : String) is
+      begin
+         Write (File, S, S'Length);
+      end Put;
+
+      --------------
+      -- Put_Line --
+      --------------
+
+      procedure Put_Line (S : String) is
+      begin
+         Put (S & ASCII.LF);
+      end Put_Line;
 
       ---------------
       -- Do_Indent --
@@ -563,7 +622,7 @@ package body Glib.XML is
                when '&' => Put ("&amp;");
                when ''' => Put ("&apos;");
                when '"' => Put ("&quot;");
-               when others => Put (S (J));
+               when others => Put ((1 => S (J)));
             end case;
          end loop;
       end Print_String;
@@ -612,15 +671,14 @@ package body Glib.XML is
 
    begin
       if File_Name /= "" then
-         Create (File, Out_File, File_Name);
-         Set_Output (File);
+         File := Create_File (File_Name & ASCII.NUL);
       end if;
+
       Put_Line ("<?xml version=""1.0""?>");
       Print_Node (N, 0);
 
       if File_Name /= "" then
          Close (File);
-         Set_Output (Standard_Output);
       end if;
    end Print;
 
@@ -630,57 +688,44 @@ package body Glib.XML is
 
    function Parse (File : String) return Node_Ptr is
 
-      procedure Fast_Read (The_File : in String;
-                           Buf      : in out String_Ptr);
-      --  Read Buf'length characters in The_File and store it in Buf.
-      --  This procedure performs a single call to Read, so it is supposed to
-      --  be more efficient than the previous implementation (read character
-      --  by character).
+      function Read_File (The_File : String) return String_Ptr;
+      --  Return the contents of an entire file.
+      --  If the file cannot be found, return null.
+      --  The caller is responsible for freeing the returned memory.
 
-      procedure Fast_Read (The_File : in String;
-                           Buf      : in out String_Ptr) is
-         type Fixed_String is new String (Buf'Range);
+      ---------------
+      -- Read_File --
+      ---------------
 
-         package Dir_Fast is new Ada.Direct_IO (Fixed_String);
-         use Dir_Fast;
-
-         F : Dir_Fast.File_Type;
+      function Read_File (The_File : String) return String_Ptr is
+         FD     : Integer;
+         Buffer : String_Ptr;
+         Length : Integer;
 
       begin
-         Dir_Fast.Open (F, In_File, The_File);
-         Dir_Fast.Read (F, Fixed_String (Buf.all));
-         Dir_Fast.Close (F);
-      exception
-         when others =>
-            Free (Buf);
-            Dir_Fast.Close (F);
-            raise;
-      end Fast_Read;
+         FD := Open_Read (The_File & ASCII.NUL);
 
-      use Dir;
+         if FD < 0 then
+            return null;
+         end if;
 
-      F           : Dir.File_Type;
-      Buf         : String_Ptr;
-      Result      : Node_Ptr;
+         Length := Integer (File_Length (FD));
+         Buffer := new String (1 .. Length);
+         Length := Read (FD, Buffer.all'Address, Length);
+         Close (FD);
+         return Buffer;
+      end Read_File;
+
+      Buf    : String_Ptr;
+      Result : Node_Ptr;
 
    begin
-      begin
-         Open (F, In_File, File);
-         Buf := new String (1 .. Natural (Size (F)));
-         Close (F);
-      exception
-         when others =>
-            Free (Buf);
-            Close (F);
-            raise;
-      end;
+      Buf := Read_File (File);
 
-      if Buf'Length = 0 then
-         Free (Buf);
+      if Buf = null then
          return null;
       end if;
 
-      Fast_Read (File, Buf);
       Result := Parse_Buffer (Buf.all);
       Free (Buf);
       return Result;
