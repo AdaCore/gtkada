@@ -59,6 +59,7 @@ with Glib.Properties;
 with Glib.Glist;
 with Glib.GSlist;
 with System;
+with Pango.Font;
 pragma Elaborate_All (Glib.GSlist);
 
 package Gtk.Widget is
@@ -679,6 +680,15 @@ package Gtk.Widget is
    --  available on your system. If this library is not available, your program
    --  will still work.
    --  See the manual page for XShapeCombineMask(3x) for more information.
+
+   ------------
+   -- Styles --
+   ------------
+
+   procedure Modify_Font
+     (Widget : access Gtk_Widget_Record;
+      Desc   : Pango.Font.Pango_Font_Description);
+   --  Modify the font used for the widget.
 
    --------------------------
    -- Creating new widgets --
@@ -1502,7 +1512,6 @@ end Gtk.Widget;
 --  - gtk_widget_modify_bg
 --  - gtk_widget_modify_text
 --  - gtk_widget_modify_base
---  - gtk_widget_modify_font
 --  - gtk_widget_create_pango_context
 --  - gtk_widget_get_pango_context
 --  - gtk_widget_create_pango_layout

@@ -978,6 +978,21 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Style);
    end Modify_Style;
 
+   -----------------
+   -- Modify_Font --
+   -----------------
+
+   procedure Modify_Font
+     (Widget : access Gtk_Widget_Record;
+      Desc   : Pango.Font.Pango_Font_Description)
+   is
+      procedure Internal (Widget : System.Address;
+                          Desc : Pango.Font.Pango_Font_Description);
+      pragma Import (C, Internal, "gtk_widget_modify_font");
+   begin
+      Internal (Get_Object (Widget), Desc);
+   end Modify_Font;
+
    --------------------------
    -- Get_Extension_Events --
    --------------------------
