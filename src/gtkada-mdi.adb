@@ -1852,7 +1852,7 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event) return Boolean
    is
-      MDI  : MDI_Window := MDI_Child (Child).MDI;
+      MDI   : MDI_Window := MDI_Child (Child).MDI;
       Alloc : Gtk_Allocation;
    begin
       if Get_Window (Child) /= Get_Window (Event)
@@ -2033,6 +2033,8 @@ package body Gtkada.MDI is
            and then (W /= Gint (Get_Allocation_Width (C))
                      or else H /= Gint (Get_Allocation_Height (C)))
          then
+            MDI.Current_W := W;
+            MDI.Current_H := H;
             Alloc := (MDI.Current_X, MDI.Current_Y,
                       Allocation_Int (W), Allocation_Int (H));
             Size_Allocate (Child, Alloc);
