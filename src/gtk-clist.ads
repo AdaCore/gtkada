@@ -616,9 +616,9 @@ package Gtk.Clist is
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gint;
       Column   : in Gint;
-      Spacing  : in out Guint8;
-      Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : in out Gdk.Bitmap.Gdk_Bitmap;
+      Spacing  : out Guint8;
+      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : out Gdk.Bitmap.Gdk_Bitmap;
       Is_Valid : out Boolean);
    --  The result is not meaningful if Is_Valid is False.
    --  The only way to get the string is to use Get_Text, since a String is
