@@ -121,7 +121,8 @@ package body Gtk.Handlers is
       return Guint
    is
       Q : Signal_Query;
-      Id : Signal_Id := Lookup (Get_Type (Object), Signal & ASCII.Nul);
+      Id : constant Signal_Id :=
+        Lookup (Get_Type (Object), Signal & ASCII.Nul);
    begin
       if Id = Invalid_Signal_Id then
          return 0;
@@ -396,7 +397,7 @@ package body Gtk.Handlers is
          Marsh   : Marshallers.Marshaller;
          After   : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
+         D : constant Data_Type_Access :=
            new Data_Type_Record'
              (Func     => To_Handler (Marsh.Func),
               Proxy    => Marsh.Proxy,
@@ -430,7 +431,7 @@ package body Gtk.Handlers is
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
+         D : constant Data_Type_Access :=
            new Data_Type_Record'
              (Func     => To_Handler (Marsh.Func),
               Proxy    => Marsh.Proxy,
@@ -465,7 +466,7 @@ package body Gtk.Handlers is
          Cb      : Handler;
          After   : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
+         D : constant Data_Type_Access :=
            new Data_Type_Record'
              (Func     => Cb,
               Proxy    => null,
@@ -500,7 +501,7 @@ package body Gtk.Handlers is
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
+         D : constant Data_Type_Access :=
            new Data_Type_Record'
              (Func     => Cb,
               Proxy    => null,
@@ -754,7 +755,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
         return Handler_Id
       is
-         D : Data_Type_Access := new Data_Type_Record'
+         D : constant Data_Type_Access := new Data_Type_Record'
            (Func     => To_Handler (Marsh.Func),
             Proxy    => Marsh.Proxy,
             User     => new User_Type'(User_Data),
@@ -789,7 +790,7 @@ package body Gtk.Handlers is
          User_Data   : User_Type;
          After       : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access := new Data_Type_Record'
+         D : constant Data_Type_Access := new Data_Type_Record'
            (Func     => To_Handler (Marsh.Func),
             Proxy    => Marsh.Proxy,
             User     => new User_Type'(User_Data),
@@ -823,7 +824,7 @@ package body Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access := new Data_Type_Record'
+         D : constant Data_Type_Access := new Data_Type_Record'
            (Func     => Cb,
             Proxy    => null,
             User     => new User_Type'(User_Data),
@@ -858,7 +859,7 @@ package body Gtk.Handlers is
          User_Data   : User_Type;
          After       : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access := new Data_Type_Record'
+         D : constant Data_Type_Access := new Data_Type_Record'
            (Func     => Cb,
             Proxy    => null,
             User     => new User_Type'(User_Data),
@@ -1090,7 +1091,7 @@ package body Gtk.Handlers is
          After   : Boolean := False)
         return Handler_Id
       is
-         D : Data_Type_Access :=
+         D : constant Data_Type_Access :=
            new Data_Type_Record'
              (Func  => To_Handler (Marsh.Func),
               Proxy => Marsh.Proxy,
@@ -1125,7 +1126,7 @@ package body Gtk.Handlers is
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
+         D : constant Data_Type_Access :=
            new Data_Type_Record'
              (Func  => To_Handler (Marsh.Func),
               Proxy => Marsh.Proxy,
@@ -1161,7 +1162,7 @@ package body Gtk.Handlers is
          After   : Boolean := False)
         return Handler_Id
       is
-         D : Data_Type_Access :=
+         D : constant Data_Type_Access :=
            new Data_Type_Record' (Func => Cb, Proxy => null, Object => null);
 
       begin
@@ -1193,7 +1194,7 @@ package body Gtk.Handlers is
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
+         D : constant Data_Type_Access :=
            new Data_Type_Record'
              (Func   => Cb,
               Proxy  => null,
@@ -1439,7 +1440,7 @@ package body Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access := new Data_Type_Record'
+         D : constant Data_Type_Access := new Data_Type_Record'
            (Func   => To_Handler (Marsh.Func),
             Proxy  => Marsh.Proxy,
             User   => new User_Type'(User_Data),
@@ -1474,7 +1475,7 @@ package body Gtk.Handlers is
          User_Data   : User_Type;
          After       : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access := new Data_Type_Record'
+         D : constant Data_Type_Access := new Data_Type_Record'
            (Func  => To_Handler (Marsh.Func),
             Proxy => Marsh.Proxy,
             User  => new User_Type'(User_Data),
@@ -1508,7 +1509,7 @@ package body Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access := new Data_Type_Record'
+         D : constant Data_Type_Access := new Data_Type_Record'
            (Func   => Cb,
             Proxy  => null,
             User   => new User_Type'(User_Data),
@@ -1544,7 +1545,7 @@ package body Gtk.Handlers is
          User_Data   : User_Type;
          After       : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access := new Data_Type_Record'
+         D : constant Data_Type_Access := new Data_Type_Record'
            (Func   => Cb,
             Proxy  => null,
             User   => new User_Type'(User_Data),

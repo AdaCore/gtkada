@@ -415,7 +415,7 @@ package body Gtkada.MDI is
    procedure Initialize (MDI : access MDI_Window_Record'Class) is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => GType_Pointer));
-      No_Signals : chars_ptr_array (1 .. 0) := (others => Null_Ptr);
+      No_Signals : constant chars_ptr_array (1 .. 0) := (others => Null_Ptr);
    begin
       Gtk.Fixed.Initialize (MDI);
       Set_Has_Window (MDI, True);
@@ -592,9 +592,9 @@ package body Gtkada.MDI is
      (MDI : access Gtk_Widget_Record'Class; Args : Gtk_Args)
      return Boolean
    is
-      M                 : MDI_Window := MDI_Window (MDI);
-      Event             : Gdk_Event := To_Event (Args, 1);
-      Area              : Gdk_Rectangle := Get_Area (Event);
+      M                 : constant MDI_Window := MDI_Window (MDI);
+      Event             : constant Gdk_Event := To_Event (Args, 1);
+      Area              : constant Gdk_Rectangle := Get_Area (Event);
       Orientation       : Gtk_Orientation;
       First, Last       : Gint;
       X, Y, W, H, Depth : Gint;
@@ -931,7 +931,7 @@ package body Gtkada.MDI is
    procedure Size_Allocate_MDI_Layout
      (Layout : System.Address; Alloc : Gtk_Allocation)
    is
-      L : Gtk_Widget := Convert (Layout);
+      L : constant Gtk_Widget := Convert (Layout);
    begin
       --  First, register the new size of the MDI itself
 
@@ -1139,7 +1139,7 @@ package body Gtkada.MDI is
    is
       use type Widget_List.Glist;
 
-      M     : MDI_Window := MDI_Window (Gtk.Widget.Convert (MDI));
+      M     : constant MDI_Window := MDI_Window (Gtk.Widget.Convert (MDI));
       Alloc : Gtk_Allocation;
       Req   : Gtk_Requisition;
       List  : Widget_List.Glist;
@@ -1218,7 +1218,7 @@ package body Gtkada.MDI is
    -------------------
 
    procedure Iconify_Child (Child : access Gtk_Widget_Record'Class) is
-      C : MDI_Child := MDI_Child (Child);
+      C : constant MDI_Child := MDI_Child (Child);
    begin
       Minimize_Child (C, not (C.State = Iconified));
       Set_Focus_Child (C);
@@ -1239,7 +1239,7 @@ package body Gtkada.MDI is
      (MDI : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
-      C : MDI_Child := Find_MDI_Child (MDI, Child);
+      C : constant MDI_Child := Find_MDI_Child (MDI, Child);
    begin
       if C /= null then
          Close_Child (C);
@@ -1251,7 +1251,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Close_Child (Child : access Gtk_Widget_Record'Class) is
-      C          : MDI_Child := MDI_Child (Child);
+      C          : constant MDI_Child := MDI_Child (Child);
       Event      : Gdk_Event;
       Old_Parent : Gtk_Widget;
       Result     : Boolean;
@@ -1389,7 +1389,7 @@ package body Gtkada.MDI is
    ----------------------------
 
    procedure Destroy_Initial_Window (Child : access Gtk_Widget_Record'Class) is
-      C : MDI_Child := MDI_Child (Child);
+      C : constant MDI_Child := MDI_Child (Child);
    begin
       if not Gtk.Object.Destroyed_Is_Set (C) then
          Destroy (C);
@@ -1406,7 +1406,7 @@ package body Gtkada.MDI is
       use Widget_List;
       pragma Unreferenced (Area);
 
-      F  : Gdk.Font.Gdk_Font :=
+      F  : constant Gdk.Font.Gdk_Font :=
         Get_Gdkfont (Title_Font_Name, Title_Font_Height);
       GC : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
 
@@ -1642,7 +1642,7 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event) return Boolean
    is
-      C      : MDI_Child := MDI_Child (Child);
+      C      : constant MDI_Child := MDI_Child (Child);
       MDI    : MDI_Window := C.MDI;
       Cursor : Gdk.Cursor.Gdk_Cursor;
       Tmp    : Boolean;
@@ -1781,7 +1781,7 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event) return Boolean
    is
-      C       : MDI_Child := MDI_Child (Child);
+      C       : constant MDI_Child := MDI_Child (Child);
       MDI     : MDI_Window := C.MDI;
       Delta_X : Gint;
       Delta_Y : Gint;
@@ -2498,8 +2498,8 @@ package body Gtkada.MDI is
         (Object : System.Address; Name : String; Child : System.Address);
       pragma Import (C, Emit_By_Name_Child, "gtk_signal_emit_by_name");
 
-      Old : MDI_Child := Child.MDI.Focus_Child;
-      C   : MDI_Child := MDI_Child (Child);
+      Old : constant MDI_Child := Child.MDI.Focus_Child;
+      C   : constant MDI_Child := MDI_Child (Child);
       Id  : Idle_Handler_Id;
 
    begin
@@ -2838,7 +2838,7 @@ package body Gtkada.MDI is
    procedure Docked_Switch_Page
      (Docked_Child : access Gtk_Widget_Record'Class; Args : Gtk_Args)
    is
-      Page_Num : Guint := To_Guint (Args, 2);
+      Page_Num : constant Guint := To_Guint (Args, 2);
    begin
       if Page_Num /= -1 then
          Set_Focus_Child
@@ -2943,7 +2943,7 @@ package body Gtkada.MDI is
    procedure Remove_From_Notebook
      (Child : access MDI_Child_Record'Class; Side : Dock_Side)
    is
-      Note : Gtk_Notebook := Child.MDI.Docks (Side);
+      Note : constant Gtk_Notebook := Child.MDI.Docks (Side);
       Page : constant Gint := Page_Num (Note, Child);
       MDI  : constant MDI_Window := MDI_Window (Child.MDI);
    begin
@@ -2980,7 +2980,7 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class;
       Dock  : Boolean := True)
    is
-      MDI   : MDI_Window := Child.MDI;
+      MDI   : constant MDI_Window := Child.MDI;
       Alloc : Gtk_Allocation;
    begin
       Show_All (Child);
@@ -3037,7 +3037,7 @@ package body Gtkada.MDI is
    is
       use type Widget_List.Glist;
 
-      MDI         : MDI_Window := Child.MDI;
+      MDI         : constant MDI_Window := Child.MDI;
       Icon_Height : constant Gint := Title_Bar_Height + 2 * Border_Thickness;
       List        : Widget_List.Glist;
       C2          : MDI_Child;
@@ -3262,7 +3262,7 @@ package body Gtkada.MDI is
    -----------------------
 
    procedure Maximize_Child_Cb (Child : access Gtk_Widget_Record'Class) is
-      M : MDI_Window := MDI_Child (Child).MDI;
+      M : constant MDI_Window := MDI_Child (Child).MDI;
    begin
       Maximize_Children (M, not Children_Are_Maximized (M));
       Set_Focus_Child (MDI_Child (Child));
@@ -3379,7 +3379,7 @@ package body Gtkada.MDI is
    --------------
 
    procedure Focus_Cb (Child : access Gtk_Widget_Record'Class) is
-      C : MDI_Child := MDI_Child (Child);
+      C : constant MDI_Child := MDI_Child (Child);
    begin
       if Get_Active (C.Menu_Item) then
          Set_Focus_Child (C);

@@ -150,7 +150,8 @@ package body Gtk.Marshallers is
             use Gtk.Widget;
 
             Func : constant Handler := To_Handler (Cb);
-            Obj  : Gtk_Widget := Convert (Get_Address (Nth (Params, 1)));
+            Obj  : constant Gtk_Widget :=
+              Convert (Get_Address (Nth (Params, 1)));
             B    : aliased Base_Type;
 
          begin
@@ -377,7 +378,8 @@ package body Gtk.Marshallers is
          is
             use Gtk.Widget;
             Func : constant Handler := To_Handler (Cb);
-            Obj  : Gtk_Widget := Convert (Get_Address (Nth (Params, 1)));
+            Obj  : constant Gtk_Widget :=
+              Convert (Get_Address (Nth (Params, 1)));
             B    : aliased Base_Type;
 
          begin
@@ -597,7 +599,8 @@ package body Gtk.Marshallers is
             use Gtk.Widget;
 
             Func : constant Handler := To_Handler (Cb);
-            Obj  : Gtk_Widget := Convert (Get_Address (Nth (Params, 1)));
+            Obj  : constant Gtk_Widget :=
+              Convert (Get_Address (Nth (Params, 1)));
             B    : aliased Base_Type;
 
          begin
@@ -809,7 +812,8 @@ package body Gtk.Marshallers is
             use Gtk.Widget;
 
             Func : constant Handler := To_Handler (Cb);
-            Obj  : Gtk_Widget := Convert (Get_Address (Nth (Params, 1)));
+            Obj  : constant Gtk_Widget :=
+              Convert (Get_Address (Nth (Params, 1)));
             B    : aliased Base_Type;
 
          begin
