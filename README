@@ -36,13 +36,16 @@ program found in the gtk release has been reimplemented in Ada (have a
 look at the testgtk/ directory).
      
 These functions were tested on the following systems :
-   - Linux version 2.0.35
-   - SunOS 5.5.1
+   - Linux/x86
+   - Solaris/sparc
+   - Solaris/x86
    - Dec Unix 4.0b
    - SGI IRIX 6.5
    - HP/UX 10.20
+   - NT 4.0
 using the following compilers:
-   - Gnat 3.12b2
+   - Gnat 3.12a
+   - Gnat 3.11b2
    - Gnat 3.11p
 
 the following versions of gtk:

@@ -15,7 +15,7 @@ re-implemented and is also distributed.
 LSM entry follows :
 Begin3
 Title:  GtkAda
-Version: 1.2.1
+Version: 1.2.2
 Entered-date: 06MAY99
 Description: Ada95 graphical toolkit based on Gtk+ (version 1.2.x) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade
@@ -23,10 +23,15 @@ Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheo
 Maintained-by: gtkada@ada.eu.org
 Primary-site:  http://ada.eu.org/gtkada/
 Original-site: http://ada.eu.org/gtkada/ 
-Platforms: SunOS-5.5.1 Linux-2.0.35 Linux-2.0.36 DECUnix-4.0b IRIX-6.5 HP/UX-10.20
+Platforms: SunOS-5.5.1 Linux-2.0.35 Linux-2.0.36 DECUnix-4.0b IRIX-6.5 HP/UX-10.20 NT-4.0
 Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
 
+
+New features in 1.2.2 include:
+
+- Ported to Win32
+- Tested on Solaris/x86
 
 New features in 1.2.1 include:
 
