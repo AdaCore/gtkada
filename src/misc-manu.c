@@ -431,3 +431,41 @@ ada_progress_bar_get_percentage (GtkProgressBar* widget)
 {
   return widget->percentage;
 }
+
+/**********************************************
+ ** Functions for Glib.Glist
+ **********************************************/
+
+GList*
+ada_list_next (GList* list)
+{
+  if (list)
+    return list->next;
+  else
+    return NULL;
+}
+
+
+GList*
+ada_list_prev (GList* list)
+{
+  if (list)
+    return list->prev;
+  else
+    return NULL;
+}
+
+
+/**********************************************
+ ** Functions for Glib.GSlist
+ **********************************************/
+
+GSList*
+ada_gslist_next (GSList* list)
+{
+  if (list)
+    return list->next;
+  else
+    return NULL;
+}
+
