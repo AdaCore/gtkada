@@ -1,8 +1,21 @@
+TARGET= main
+CC= gcc
+CFLAGS= -c -g -Wall `gtk-config --cflags`
 
-main: misc.o *.adb *.ads
-	gnatmake main -g -gnatg -largs misc.o misc-gnat.o -lglib -lgdk -lgtk -lX11 -lXext -lm
+GNATMAKE= gnatmake
+GNATFLAGS= -g -gnatg
+GNATLARGS= `gtk-config --libs` $(OBJECTS)
+
+OBJECTS= misc.o misc-gnat.o
+
+$(TARGET):: $(OBJECTS) *.ad[sb]
+	$(GNATMAKE) $(TARGET) $(GNATFLAGS) -largs $(GNATLARGS)
+
+.c.o:
+	$(CC) $(CFLAGS) $<
+
 clean::
 	${RM} *.o *.ali *~ main b_main.c
-.c.o:
-	gcc -c -O2 $< -o $@ -I../include/ -I../lib/glib/include
 
+test_link: test_link.adb $(OBJECTS)
+	$(GNATMAKE) test_link $(GNATFLAGS) -largs $(GNATLARGS)
