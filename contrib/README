@@ -6,12 +6,6 @@ Contents
 pango-1.2.1.diff: a patch against pango 1.2.1 sources to ease distributing
 gtk+ executables with no pango install.
 
-gtk+-2.2.1.diff: a patch against Gtk+ 2.2.1 sources to ease distributing
-gtk+ executables with no gtk+ install.
-
-gtk+-2.2.1-solaris2.5.1.diff: a patch against Gtk+ 2.2.1 sources that allows
-Gtk+ to build under Solaris 2.5.1.
-
 gtk+-2.2.1-win32.diff: a patch against Gtk+ 2.2.1 sources that fixes
 Windows specific problems.
 
