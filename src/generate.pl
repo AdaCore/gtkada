@@ -312,7 +312,7 @@ sub generate_specifications
     push (@output, "   type $prefix\_$current_package\_Record is "
 	  . ($abstract ? "abstract " : "")
 	  . "new ".
-	  &package_name ($parent). ".$prefix\_", &create_ada_name ($parent).
+	  &package_name ($parent). ".$parent_prefix\_", &create_ada_name ($parent).
 	  "_Record with null record;\n\n");
     
     push (@output, "end $prefix.$current_package;\n");
@@ -411,9 +411,7 @@ sub package_name
     $entity =~ s/([a-z])([A-Z])/$1_$2/g;
     $entity =~ s/Gtk\.Range/Gtk\.GRange/;
     $entity =~ s/Gtk\.Entry/Gtk\.GEntry/;    
-    $entity =~ s/Gnome\.Entry/Gnome\.GEntry/;    
-    $entity =~ s/Gnome\.File\.Entry/Gnome\.File\.GEntry/;    
-    $entity =~ s/Gnome\.Icon\.Entry/Gnome\.Icon\.GEntry/;    
+    $entity =~ s/Gnome(.*)\.Entry/Gnome$1\.GEntry/;    
     return $entity;
   }
 
