@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <gtk/gtksignal.h>
 
 gint
 convert_a (void* a)
@@ -48,16 +49,56 @@ convert_i (gint s)
    return (void*)s;
 }
 
+/********************************************************************
+ **  This function checks the number of arguments for a given signal
+ **  and a specific widget.
+ ********************************************************************/
+
 guint
-ada_get_type (GtkObject* object)
+ada_signal_count_arguments (GtkObject* object, char* signal_name)
 {
-  return object->klass->type;
+  /* Implementation note: using gtk_signal_query adds an extra call to
+     malloc and free, but using the internal variables/macros for
+     gtksignal.c would make this too dependent from the exact implementation
+     of gtk+ */
+  guint signal_id = gtk_signal_lookup (signal_name, GTK_OBJECT_TYPE (object));
+  GtkSignalQuery * signal = gtk_signal_query (signal_id);
+  guint nparams = signal->nparams;
+  g_free (signal);
+  return nparams;
 }
 
-/*
- * Creating new widgets
- *
- */
+/********************************************************************
+ **  Returns the type of the num-th argument to the handlers for
+ **  signal_name.
+ **  If num is negative, returns the type returned by the handler
+ ********************************************************************/
+
+GtkType
+ada_signal_argument_type (GtkObject* object, char* signal_name, guint num)
+{
+  /* Implementation note: using gtk_signal_query adds an extra call to
+     malloc and free, but using the internal variables/macros for
+     gtksignal.c would make this too dependent from the exact implementation
+     of gtk+ */
+  guint signal_id = gtk_signal_lookup (signal_name, GTK_OBJECT_TYPE (object));
+  GtkSignalQuery * signal = gtk_signal_query (signal_id);
+
+  if (num >= signal->nparams)
+    return GTK_TYPE_NONE;
+  else if (num < 0)
+    return signal->return_val;
+  else
+    {
+      GtkType params = signal->params [num];
+      g_free (signal);
+      return params;
+    }
+}
+
+/*********************************************************************
+ ** Creating new widgets
+ *********************************************************************/
 
 void*
 ada_initialize_class_record (GtkObject*  object,
