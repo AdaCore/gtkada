@@ -80,7 +80,7 @@ package body Gtk.GEntry is
      (The_Entry : access Gtk_Entry_Record; Char : Gunichar)
    is
       procedure Internal (The_Entry : System.Address; Char : Gunichar);
-      pragma Import (C, Internal, "gtk_entry_get_invisible_char");
+      pragma Import (C, Internal, "gtk_entry_set_invisible_char");
 
    begin
       Internal (Get_Object (The_Entry), Char);
