@@ -3702,6 +3702,82 @@ package body Gtkada.MDI is
    -- Desktop Handling --
    ----------------------
 
+   procedure Add_To_Tree
+     (MDI         : access MDI_Window_Record'Class;
+      Tree        : in out Glib.Xml_Int.Node_Ptr;
+      ID_Node     : Glib.Xml_Int.Node_Ptr;
+      X           : Integer := 100;
+      Y           : Integer := 100;
+      Width       : Integer := 100;
+      Height      : Integer := 100;
+      Short_Title : String := "";
+      Title       : String := "";
+      State       : State_Type := Normal;
+      Dock        : Dock_Side := None;
+      Focus       : Boolean := False)
+   is
+      --  ??? some code duplication from Save_Desktop, see below.
+
+      Child_Node : Node_Ptr;
+
+      procedure Add (Name, Value : String);
+      --  Add a new child to Child_Node
+
+      procedure Add (Name, Value : String) is
+         N : Node_Ptr;
+      begin
+         N := new Node;
+         N.Tag := new String' (Name);
+         N.Value := new String' (Value);
+         Add_Child (Child_Node, N);
+      end Add;
+
+   begin
+      if Tree = null then
+         Tree := new Node;
+         Tree.Tag := new String' ("MDI");
+         Child_Node := Tree;
+         Add ("Maximized", Boolean'Image (Children_Are_Maximized (MDI)));
+      else
+         Child_Node := Tree;
+      end if;
+
+      --  ??? we could improve the cases where nodes override
+      --  older nodes.
+
+      case Dock is
+         when Left =>
+            Add ("Left", Integer'Image (Width));
+         when Right =>
+            Add ("Right", Integer'Image (Width));
+         when Top =>
+            Add ("Top", Integer'Image (Height));
+         when Bottom =>
+            Add ("Bottom", Integer'Image (Height));
+         when None =>
+            null;
+      end case;
+
+      Child_Node := new Node;
+      Child_Node.Tag := new String' ("Child");
+
+      Add ("Focus", Boolean'Image (Focus));
+      Add ("Dock", Dock_Side'Image (Dock));
+      Add ("State", State_Type'Image (State));
+      Add ("Title", Title);
+      Add ("Short_Title", Short_Title);
+      Add ("Height", Integer'Image (Height));
+      Add ("Width", Integer'Image (Width));
+      Add ("Y", Integer'Image (Y));
+      Add ("X", Integer'Image (X));
+
+      if ID_Node /= null then
+         Add_Child (Child_Node, ID_Node);
+      end if;
+
+      Add_Child (Tree, Child_Node);
+   end Add_To_Tree;
+
    package body Desktop is
 
       --------------------------------
