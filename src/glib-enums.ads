@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,6 +37,6 @@ package Glib.Enums is
    Traverse_Flags     : constant Glib_Traverse_Flags := 16#03#;
 
    type Glib_Traverse_Type is (In_Order, Pre_Order, Post_Order, Level_Order);
-   for Glib_Traverse_Type'Size use Gint'Size;
+   pragma Convention (C, Glib_Traverse_Type);
 
 end Glib.Enums;

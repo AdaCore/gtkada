@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                 Copyright (C) 2001-2002 ACT-Europe                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -84,7 +84,7 @@ package body Glib.Generic_Properties is
            (1 .. Enumeration'Pos (Enumeration'Last) + 2);
          for E in Enumeration'Range loop
             declare
-               S : aliased String := Enumeration'Image (E) & ASCII.Nul;
+               S : aliased String := Enumeration'Image (E) & ASCII.NUL;
             begin
                C_Create_Enum_Value (Conv (E), S'Address, S'Address, Arr (J));
             end;
@@ -93,7 +93,7 @@ package body Glib.Generic_Properties is
          C_Create_Enum_Value
            (0, System.Null_Address, System.Null_Address, Arr (Arr'Last));
 
-         The_Type := C_Register_Static (Name & ASCII.Nul, Arr.all'Address);
+         The_Type := C_Register_Static (Name & ASCII.NUL, Arr.all'Address);
          return The_Type;
       end Get_Type;
 
@@ -115,7 +115,7 @@ package body Glib.Generic_Properties is
          pragma Import (C, Internal, "g_param_spec_enum");
       begin
          return Internal
-           (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+           (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
             Enum_Type => Get_Type,
             Default   => Default,
             Flags     => Flags);
@@ -133,7 +133,6 @@ package body Glib.Generic_Properties is
          Internal (Value, Enum);
       end Set_Enum;
    end Generic_Enumeration_Property;
-
 
    ----------------------------------------
    -- Generic_Internal_Discrete_Property --
