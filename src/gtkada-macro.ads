@@ -28,18 +28,14 @@
 
 --  This package provides low level support for event recording and replay.
 
+with Glib; use Glib;
 with Gdk.Event;
 with Gdk.Types;
-with Glib; use Glib;
+with Gtk.Widget; use Gtk.Widget;
 with GNAT.OS_Lib;
 with Ada.Text_IO;
 
 package Gtkada.Macro is
-
-   type File_Buffer is record
-      Buffer : GNAT.OS_Lib.String_Access;
-      Index  : Natural;
-   end record;
 
    type Identifier_Type is (None, Name, Title, Transient, Label);
    --  The different ways we have to identify a widget.
@@ -70,37 +66,38 @@ package Gtkada.Macro is
    end record;
    --  An identifier for a widget
 
-   type Macro_Item;
-   type Macro_Item_Access is access all Macro_Item'Class;
-
-   --  These types have to be in the specs so that the operations below
-   --  are dispatching
+   type File_Buffer is record
+      Buffer : GNAT.OS_Lib.String_Access;
+      Index  : Natural;
+   end record;
+   --  Buffer used by Load_Macro procedures.
 
    ----------------
    -- Macro_Item --
    ----------------
 
-   type Macro_Item is abstract tagged record
-      Id           : Identifier;
-      Event_Type   : Gdk.Event.Gdk_Event_Type;
-      Next         : Macro_Item_Access;
-      Widget_Depth : Natural := 0;
-      X            : Gint := 0;
-      Y            : Gint := 0;
-      Time         : Guint32 := 0;
-   end record;
-   --  Widget_Depth is 0 if the event was actually sent to the widget
-   --  whose name is Widget_Name, and not to one of its children.
-   --  (X, Y) are used to find the child in case Widget_Depth is not null.
-   --  This might not be relevant for some events, in which case
-   --  Widget_Depth should absolutely be 0.
-   --  The search for the actual widget is done in Widget_Name and its children
-   --  no deeper than Widget_Depth, and while (X, Y) is in a child.
+   type Macro_Item;
+   type Macro_Item_Access is access all Macro_Item'Class;
 
-   function Create_Event
-     (Item : Macro_Item) return Gdk.Event.Gdk_Event is abstract;
-   --  Creates the matching event. The event is considered to have been
-   --  send to Widget.
+   type Macro_Item is abstract tagged record
+      Event_Type : Gdk.Event.Gdk_Event_Type;
+      Id         : Identifier := (None, null);
+      Prev       : Macro_Item_Access;
+      Next       : Macro_Item_Access;
+      X          : Gint := 0;
+      Y          : Gint := 0;
+      Time       : Guint32 := 0;
+      --  To ease concatenating macro lists, time is a relative time
+      --  since the previous item.
+   end record;
+
+   function Play_Event
+     (Item           : Macro_Item;
+      Default_Widget : Gtk_Widget := null) return Boolean is abstract;
+   --  Play the event stored in item.
+   --  Default_Widget is the default widget, if any, where the event should be
+   --  replayed if it can't be retrieved automatically.
+   --  Return True if the event could be replayed, False otherwise.
 
    procedure Free (Item : in out Macro_Item_Access);
    --  Free the memory associated with an item
@@ -108,63 +105,51 @@ package Gtkada.Macro is
    procedure Free_List (List : in out Macro_Item_Access);
    --  Free the memory associated with List and all its siblings.
 
+   function Save_List (Name : String; Item : Macro_Item_Access) return Boolean;
+   --  Save the list of macro items in file Name.
+   --  Return whether the items could be saved successfully.
+
+   procedure Load_List
+     (Buffer  : String;
+      Item    : out Macro_Item_Access;
+      Success : out Boolean);
+   --  Load a list of events from buffer.
+
    procedure Save_To_Disk (File : Ada.Text_IO.File_Type; Item : Macro_Item);
    --  Saves the item to the disk
 
-   procedure Load_From_Disk (File : access File_Buffer; Item : out Macro_Item);
+   procedure Load_Macro (File : access File_Buffer; Item : out Macro_Item);
    --  Load an item from the disk
 
-   ----------------------------
-   -- Macro_Item_Mouse_Press --
-   ----------------------------
+   ----------------------
+   -- Macro_Item_Mouse --
+   ----------------------
 
-   type Macro_Item_Mouse_Press is new Macro_Item with record
+   type Macro_Item_Mouse is new Macro_Item with record
       Button : Guint;
       State  : Gdk.Types.Gdk_Modifier_Type;
+      X_Root : Gint;
+      Y_Root : Gint;
+      Window : Gdk.Gdk_Window;
    end record;
-
-   type Macro_Item_Mouse_Press_Access is
-     access all Macro_Item_Mouse_Press'Class;
+   type Macro_Item_Mouse_Access is access all Macro_Item_Mouse'Class;
 
    function Create_Item
-     (Event : Gdk.Event.Gdk_Event_Button)
-      return Macro_Item_Mouse_Press_Access;
+     (Event     : Gdk.Event.Gdk_Event_Button;
+      Prev_Time : Guint32 := 0) return Macro_Item_Mouse_Access;
+   --  Create a mouse item corresponding to Event.
+   --  Prev_Time must be the time of the previous event recorded, if any so
+   --  that Item.Time can be computed properly.
 
-   function Create_Event
-     (Item : Macro_Item_Mouse_Press) return Gdk.Event.Gdk_Event;
-
-   procedure Save_To_Disk
-     (File : Ada.Text_IO.File_Type; Item : Macro_Item_Mouse_Press);
-
-   procedure Load_From_Disk
-     (File : access File_Buffer; Item : out Macro_Item_Mouse_Press);
-
-   -------------------------
-   -- Macro_Item_Crossing --
-   -------------------------
-
-   type Macro_Item_Crossing is new Macro_Item with record
-      Mode   : Gdk.Event.Gdk_Crossing_Mode;
-      State  : Gdk.Types.Gdk_Modifier_Type;
-      Detail : Gdk.Event.Gdk_Notify_Type;
-      Focus  : Boolean;
-   end record;
-   type Macro_Item_Crossing_Access is access all Macro_Item_Crossing'Class;
-
-   function Create_Item
-     (Event : Gdk.Event.Gdk_Event_Crossing)
-      return Macro_Item_Crossing_Access;
-
-   function Create_Event
-     (Item : Macro_Item_Crossing) return Gdk.Event.Gdk_Event;
+   function Play_Event
+     (Item           : Macro_Item_Mouse;
+      Default_Widget : Gtk_Widget := null) return Boolean;
 
    procedure Save_To_Disk
-     (File : Ada.Text_IO.File_Type;
-      Item : Macro_Item_Crossing);
+     (File : Ada.Text_IO.File_Type; Item : Macro_Item_Mouse);
 
-   procedure Load_From_Disk
-     (File : access File_Buffer;
-      Item : out Macro_Item_Crossing);
+   procedure Load_Macro
+     (File : access File_Buffer; Item : out Macro_Item_Mouse);
 
    --------------------
    -- Macro_Item_Key --
@@ -173,23 +158,24 @@ package Gtkada.Macro is
    type Macro_Item_Key is new Macro_Item with record
       State            : Gdk.Types.Gdk_Modifier_Type;
       Keyval           : Gdk.Types.Gdk_Key_Type;
-      Str              : GNAT.OS_Lib.String_Access;
       Group            : Guint8;
       Hardware_Keycode : Guint16;
    end record;
    type Macro_Item_Key_Access is access all Macro_Item_Key'Class;
 
    function Create_Item
-     (Event : Gdk.Event.Gdk_Event_Key) return Macro_Item_Key_Access;
+     (Event     : Gdk.Event.Gdk_Event_Key;
+      Prev_Time : Guint32 := 0) return Macro_Item_Key_Access;
 
-   function Create_Event
-     (Item : Macro_Item_Key) return Gdk.Event.Gdk_Event;
+   function Play_Event
+     (Item           : Macro_Item_Key;
+      Default_Widget : Gtk_Widget := null) return Boolean;
 
    procedure Save_To_Disk
      (File : Ada.Text_IO.File_Type;
       Item : Macro_Item_Key);
 
-   procedure Load_From_Disk
+   procedure Load_Macro
      (File : access File_Buffer;
       Item : out Macro_Item_Key);
 
@@ -203,17 +189,70 @@ package Gtkada.Macro is
    type Macro_Item_Motion_Access is access all Macro_Item_Motion'Class;
 
    function Create_Item
-     (Event : Gdk.Event.Gdk_Event_Motion) return Macro_Item_Motion_Access;
+     (Event     : Gdk.Event.Gdk_Event_Motion;
+      Prev_Time : Guint32 := 0) return Macro_Item_Motion_Access;
 
-   function Create_Event
-     (Item : Macro_Item_Motion) return Gdk.Event.Gdk_Event;
+   function Play_Event
+     (Item           : Macro_Item_Motion;
+      Default_Widget : Gtk_Widget := null) return Boolean;
 
    procedure Save_To_Disk
      (File : Ada.Text_IO.File_Type;
       Item : Macro_Item_Motion);
 
-   procedure Load_From_Disk
+   procedure Load_Macro
      (File : access File_Buffer;
       Item : out Macro_Item_Motion);
+
+   -------------------------
+   -- Macro_Item_Crossing --
+   -------------------------
+
+   type Macro_Item_Crossing is new Macro_Item with record
+      Mode   : Gdk.Event.Gdk_Crossing_Mode;
+      Detail : Gdk.Event.Gdk_Notify_Type;
+      State  : Gdk.Types.Gdk_Modifier_Type;
+   end record;
+   type Macro_Item_Crossing_Access is access all Macro_Item_Crossing'Class;
+
+   function Create_Item
+     (Event     : Gdk.Event.Gdk_Event_Crossing;
+      Prev_Time : Guint32 := 0) return Macro_Item_Crossing_Access;
+
+   function Play_Event
+     (Item           : Macro_Item_Crossing;
+      Default_Widget : Gtk_Widget := null) return Boolean;
+
+   procedure Save_To_Disk
+     (File : Ada.Text_IO.File_Type;
+      Item : Macro_Item_Crossing);
+
+   procedure Load_Macro
+     (File : access File_Buffer;
+      Item : out Macro_Item_Crossing);
+
+   -----------------------
+   -- Macro_Item_Scroll --
+   -----------------------
+
+   type Macro_Item_Scroll is new Macro_Item with record
+      State     : Gdk.Types.Gdk_Modifier_Type;
+      Direction : Gdk.Event.Gdk_Scroll_Direction;
+   end record;
+   type Macro_Item_Scroll_Access is access all Macro_Item_Scroll'Class;
+
+   function Create_Item
+     (Event     : Gdk.Event.Gdk_Event_Scroll;
+      Prev_Time : Guint32 := 0) return Macro_Item_Scroll_Access;
+
+   function Play_Event
+     (Item           : Macro_Item_Scroll;
+      Default_Widget : Gtk_Widget := null) return Boolean;
+
+   procedure Save_To_Disk
+     (File : Ada.Text_IO.File_Type; Item : Macro_Item_Scroll);
+
+   procedure Load_Macro
+     (File : access File_Buffer; Item : out Macro_Item_Scroll);
 
 end Gtkada.Macro;
