@@ -30,6 +30,7 @@ my ($file) = $ARGV [0] || die "must give a filename!!\n";
 my ($directory);
 my ($unit_name) = "";
 my ($definition_file) = $file;
+my ($has_get_type_subprogram) = 0;
 
 ($directory, $file) = ($file =~ /^(.*\/)?([^\/]+)\.h$/);
 my ($hfile) = $file . ".h";
@@ -338,6 +339,13 @@ sub generate_specifications
 	  &package_name ($parent). ".$parent_prefix\_", &create_ada_name ($parent).
 	  "_Record with null record;\n\n");
 
+    if ($has_get_type_subprogram) {
+      push (@output,
+	    "   pragma Import (C, Get_Type, \""
+	    . lc ("$prefix\_$current_package\_get_type") . "\");"
+	    . "\n");
+    }
+
     push (@output, "end $prefix.$current_package;\n");
 
     print "\n", join (";\n", sort keys %with_list), ";\n"; 
@@ -483,6 +491,13 @@ sub parse_functions
 
 	  # We do not want to generate bindings for some functions
 	  $func_name = "" if ($func_name =~ /$unit_name\_construct$/);
+
+	  # Get_Type subprograms are handled specially, since they are
+	  # implemented with a simple pragma Import.
+	  if ($func_name =~ /$unit_name\_get_type/) {
+	    $func_name = "";
+	    $has_get_type_subprogram = 1;
+	  }
 
 	  if (($unit_name eq "" && $func_name ne "")
 	      || $func_name =~ /$prefix\_$unit_name/i) {
@@ -646,9 +661,6 @@ sub print_arguments
 	    push (@output, "Interfaces.C.Strings.chars_ptr");
 	    $with_list {"with Interfaces.C.Strings"} ++;
 	}
-	elsif ($return eq "Gtk.Gtk_Type") {
-	    push (@output, $return);
-	}
 	else {
 	    push (@output, &{$convert} ($return));
 	}
@@ -745,6 +757,11 @@ sub print_declaration
 	&print_new_declaration ($func_name, @arguments);
 	push (@output, ";\n\n");
 	&print_initialize_declaration ($func_name, @arguments);
+	if ($has_get_type_subprogram) {
+	  push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
+	  push (@output, "   --  Return the internal value associated with"
+		. " this widget.\n\n");
+	}
       }
     else
       {
@@ -752,7 +769,6 @@ sub print_declaration
 	$string .=  " $adaname";
 	push (@output, "   $string");
 	$indent = ' ' x (length ($string) + 3);
-	$return = "Gtk.Gtk_Type" if ($adaname eq "Get_Type");
 	&print_arguments ($indent, $return, \&convert_ada_type,
 			  3, 0, @arguments);
 	push (@output, ";\n\n");
@@ -803,7 +819,6 @@ sub print_body
 	$string .=  " $adaname";
 	push (@output, "   $string");
 	$indent = ' ' x (length ($string) + 3);
-	$return = "Gtk.Gtk_Type" if ($adaname eq "Get_Type");
 	&print_arguments ($indent, $return, \&convert_ada_type,
 			  3, 0, @arguments);
       }
@@ -844,11 +859,6 @@ sub print_body
 	    push (@output, "   begin\n");
 	    $string = "      return Interfaces.C.Strings.Value (Internal";
 	    $terminate = ");\n";
-	  }
-	elsif ($return eq "Gtk.Gtk_Type")
-	  {
-	    push (@output, "   begin\n");
-	    $string = "      return Internal";
 	  }
 	elsif ($return =~ /^(G[dt]k|Gnome)/) {
 	  push (@output, "   begin\n");
