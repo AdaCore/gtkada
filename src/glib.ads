@@ -285,20 +285,22 @@ package Glib is
    GType_Interface : constant GType := 2;
    GType_Char      : constant GType := 3;
    GType_Uchar     : constant GType := 4;
-   GType_Bool      : constant GType := 5;
+   GType_Boolean   : constant GType := 5;
    GType_Int       : constant GType := 6;
    GType_Uint      : constant GType := 7;
    GType_Long      : constant GType := 8;
    GType_Ulong     : constant GType := 9;
-   GType_Enum      : constant GType := 10;
-   GType_Flags     : constant GType := 11;
-   GType_Float     : constant GType := 12;
-   GType_Double    : constant GType := 13;
-   GType_String    : constant GType := 14; --  Null terminated string.
-   GType_Pointer   : constant GType := 15; --  A general pointer type.
-   GType_Boxed     : constant GType := 16;
-   GType_Param     : constant GType := 17;
-   GType_Object    : constant GType := 18; --  One of the widgets/objects
+   GType_Int64     : constant Gtype := 10;
+   GType_UInt64    : constant Gtype := 11;
+   GType_Enum      : constant GType := 12;
+   GType_Flags     : constant GType := 13;
+   GType_Float     : constant GType := 14;
+   GType_Double    : constant GType := 15;
+   GType_String    : constant GType := 16; --  Null terminated string.
+   GType_Pointer   : constant GType := 17; --  A general pointer type.
+   GType_Boxed     : constant GType := 18;
+   GType_Param     : constant GType := 19;
+   GType_Object    : constant GType := 20; --  One of the widgets/objects
 
    GType_Param_Char        : constant GType := GType_Param + 1 * 256;
    GType_Param_Uchar       : constant GType := GType_Param + 2 * 256;
@@ -307,18 +309,20 @@ package Glib is
    GType_Param_Uint        : constant GType := GType_Param + 5 * 256;
    GType_Param_Long        : constant GType := GType_Param + 6 * 256;
    GType_Param_Ulong       : constant GType := GType_Param + 7 * 256;
-   GType_Param_Unichar     : constant GType := GType_Param + 8 * 256;
-   GType_Param_Enum        : constant GType := GType_Param + 9 * 256;
-   GType_Param_Flags       : constant GType := GType_Param + 10 * 256;
-   GType_Param_Float       : constant GType := GType_Param + 11 * 256;
-   GType_Param_Double      : constant GType := GType_Param + 12 * 256;
-   GType_Param_String      : constant GType := GType_Param + 13 * 256;
-   GType_Param_Param       : constant GType := GType_Param + 14 * 256;
-   GType_Param_Boxed       : constant GType := GType_Param + 15 * 256;
-   GType_Param_Pointer     : constant GType := GType_Param + 16 * 256;
-   GType_Param_Value_Array : constant GType := GType_Param + 17 * 256;
-   GType_Param_Closure     : constant GType := GType_Param + 18 * 256;
-   GType_Param_Object      : constant GType := GType_Param + 19 * 256;
+   GType_Param_Int64       : constant GType := GType_Param + 8 * 256;
+   GType_Param_UInt64      : constant GType := GType_Param + 9 * 256;
+   GType_Param_Unichar     : constant GType := GType_Param + 10 * 256;
+   GType_Param_Enum        : constant GType := GType_Param + 11 * 256;
+   GType_Param_Flags       : constant GType := GType_Param + 12 * 256;
+   GType_Param_Float       : constant GType := GType_Param + 13 * 256;
+   GType_Param_Double      : constant GType := GType_Param + 14 * 256;
+   GType_Param_String      : constant GType := GType_Param + 15 * 256;
+   GType_Param_Param       : constant GType := GType_Param + 16 * 256;
+   GType_Param_Boxed       : constant GType := GType_Param + 17 * 256;
+   GType_Param_Pointer     : constant GType := GType_Param + 18 * 256;
+   GType_Param_Value_Array : constant GType := GType_Param + 19 * 256;
+   GType_Param_Closure     : constant GType := GType_Param + 20 * 256;
+   GType_Param_Object      : constant GType := GType_Param + 21 * 256;
 
 private
    type C_Dummy is null record;
