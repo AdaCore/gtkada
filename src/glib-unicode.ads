@@ -34,15 +34,58 @@
 --  </description>
 --  <c_version>2.2.1</c_version>
 
+with Interfaces.C.Strings;
+
 package Glib.Unicode is
    pragma Preelaborate;
+
+   package ICS renames Interfaces.C.Strings;
 
    procedure UTF8_Validate
      (Str         : UTF8_String;
       Valid       : out Boolean;
       Invalid_Pos : out Natural);
    --  Validate a UTF8 string.
-   --  Set Valid to True if valid, set Invalid_Pos to first invalid char.
+   --  Set Valid to True if valid, set Invalid_Pos to first invalid byte.
+
+   -----------------------
+   -- Character classes --
+   -----------------------
+
+   type G_Unicode_Type is
+     (Unicode_Control,
+      Unicode_Format,
+      Unicode_Unassigned,
+      Unicode_Private_Use,
+      Unicode_Surrogate,
+      Unicode_Lowercase_Letter,
+      Unicode_Modifier_Letter,
+      Unicode_Other_Letter,
+      Unicode_Titlecase_Letter,
+      Unicode_Uppercase_Letter,
+      Unicode_Combining_Mark,
+      Unicode_Enclosing_Mark,
+      Unicode_Non_Spacing_Mark,
+      Unicode_Decimal_Number,
+      Unicode_Letter_Number,
+      Unicode_Other_Number,
+      Unicode_Connect_Punctuation,
+      Unicode_Dash_Punctuation,
+      Unicode_Close_Punctuation,
+      Unicode_Final_Punctuation,
+      Unicode_Initial_Punctuation,
+      Unicode_Other_Punctuation,
+      Unicode_Open_Punctuation,
+      Unicode_Currency_Symbol,
+      Unicode_Modifier_Symbol,
+      Unicode_Math_Symbol,
+      Unicode_Other_Symbol,
+      Unicode_Line_Separator,
+      Unicode_Paragraph_Separator,
+      Unicode_Space_Separator);
+   --  The possible character classifications.
+   --  See http://www.unicode.org/Public/UNIDATA/UnicodeData.html
+
 
    function Is_Space (Char : Gunichar) return Boolean;
    --  True if Char is a space character
@@ -65,13 +108,116 @@ package Glib.Unicode is
    function Is_Punct (Char : Gunichar) return Boolean;
    --  True if Char is a punctuation character
 
+   function Unichar_Type (Char : Gunichar) return G_Unicode_Type;
+   --  Return the unicode character type of a given character
+
+   -------------------
+   -- Case handling --
+   -------------------
+
    function To_Lower (Char : Gunichar) return Gunichar;
    --  Convert Char to lower cases
 
    function To_Upper (Char : Gunichar) return Gunichar;
    --  Convert Char to upper cases
 
+   function Utf8_Strdown
+     (Str : ICS.chars_ptr; Len : Integer) return ICS.chars_ptr;
+   pragma Import (C, Utf8_Strdown, "g_utf8_strdown");
+   --  Convert all characters in Str to lowercase. The resulting string
+   --  must be freed by the user. It can have a different length than
+   --  Str.
+
+   function Utf8_Strdown (Str : UTF8_String) return UTF8_String;
+   --  Convert Str to lower cases
+
+   function Utf8_Strup
+     (Str : ICS.chars_ptr; Len : Integer) return ICS.chars_ptr;
+   pragma Import (C, Utf8_Strup, "g_utf8_strup");
+   --  Convert all characters in Str to uppercase. The resulting string is
+   --  newly allocated, and can have a different length than Str (for
+   --  instance, the german ess-zet is converted to SS).
+   --  The returned string must be freed by the caller.
+
+   function Utf8_Strup (Str : UTF8_String) return UTF8_String;
+   --  Convert Str to upper cases
+
+   ---------------------------
+   --  Manipulating strings --
+   ---------------------------
+
+   function Utf8_Strlen
+     (Str : ICS.chars_ptr; Max : Integer := -1) return Glong;
+   pragma Import (C, Utf8_Strlen, "g_utf8_strlen");
+   --  Return the length of a utf8-encoded string.
+   --  Max is the maximal number of bytes to examine. If it is negative, then
+   --  the string is assumed to be nul-terminated.
+
+   function Utf8_Strlen (Str : UTF8_String) return Glong;
+   --  Return the number of characters in Str
+
+   function Utf8_Find_Next_Char
+     (Str     : ICS.chars_ptr;
+      Str_End : ICS.chars_ptr := ICS.Null_Ptr) return ICS.chars_ptr;
+   pragma Import (C, Utf8_Find_Next_Char, "g_utf8_find_next_char");
+   --  Find the start of the next UTF8 character after Str.
+   --  Str_End points to the end of the string. If Null_Ptr, the string must
+   --  be nul-terminated
+
+   function Utf8_Find_Next_Char
+     (Str : UTF8_String; Index : Natural) return Natural;
+   --  Find the start of the next UTF8 character after the Index-th byte.
+   --  Index doesn't need to be on the start of a character.
+   --  Index is set to a value greater than Str'Last if there is no more
+   --  character.
+   --  Null_Ptr is returned if there is no previous character
+
+   function Utf8_Find_Prev_Char
+     (Str_Start : ICS.chars_ptr; Str : ICS.chars_ptr) return ICS.chars_ptr;
+   pragma Import (C, Utf8_Find_Prev_Char, "g_utf8_find_prev_char");
+   --  Find the start of the previous UTF8 character before Str.
+   --  Str_Start is a pointer to the beginning of the string.
+   --  Null_Ptr is returned if there is no previous character
+
+   function Utf8_Find_Prev_Char
+     (Str : UTF8_String; Index : Natural) return Natural;
+   --  Find the start of the previous UTF8 character after the Index-th byte.
+   --  Index doesn't need to be on the start of a character.
+   --  Index is set to a value smaller than Str'First if there is no
+   --  previous character.
+
+   -----------------
+   -- Conversions --
+   -----------------
+
+   function Unichar_To_UTF8
+     (C : Gunichar; Buffer : ICS.chars_ptr := ICS.Null_Ptr) return Natural;
+   pragma Import (C, Unichar_To_UTF8, "g_unichar_to_utf8");
+   --  Encode C into Buffer, which must have at least 6 bytes free.
+   --  Return the number of bytes written in Buffer.
+   --  If Buffer is Null_Ptr, then the only effect is to compute the number of
+   --  bytes to encode C.
+
+   function Unichar_To_UTF8
+     (C : Gunichar; Buffer : UTF8_String) return Natural;
+   --  Encode C into Buffer. Buffer must have at least 6 bytes free.
+   --  Return the number of bytes written in Buffer.
+
+   function Utf8_Get_Char (Str : UTF8_String) return Gunichar;
+   --  Converts a sequence of bytes encoded as UTF8 to a unicode character.
+   --  If Str doesn't point to a valid UTF8 encoded character, the result is
+   --  undefined.
+
+   function Utf8_Get_Char_Validated (Str : UTF8_String) return Gunichar;
+   --  Same as above. However, if the sequence if an incomplete start of a
+   --  possibly valid character, it returns -2. If the sequence is invalid,
+   --  returns -1.
+
+   --  ??? Gunichar is unsigned, how can we test -2 or -1 ?
+
 private
+   pragma Convention (C, G_Unicode_Type);
    pragma Import (C, To_Upper, "g_unichar_toupper");
    pragma Import (C, To_Lower, "g_unichar_tolower");
+   pragma Import (C, Unichar_Type, "g_unichar_type");
 end Glib.Unicode;

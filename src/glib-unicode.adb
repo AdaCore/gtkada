@@ -27,8 +27,13 @@
 -----------------------------------------------------------------------
 
 with System.Storage_Elements; use System.Storage_Elements;
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 package body Glib.Unicode is
+
+   -------------------
+   -- UTF8_Validate --
+   -------------------
 
    procedure UTF8_Validate
      (Str         : UTF8_String;
@@ -129,4 +134,115 @@ package body Glib.Unicode is
    begin
       return Boolean'Val (Internal (Char));
    end Is_Punct;
+
+   ------------------
+   -- Utf8_Strdown --
+   ------------------
+
+   function Utf8_Strdown (Str : UTF8_String) return UTF8_String is
+      function Internal (Str : UTF8_String) return ICS.chars_ptr;
+      pragma Import (C, Internal, "g_utf8_strdown");
+
+      S : chars_ptr := Internal (Str & ASCII.NUL);
+      Result : constant String := Value (S);
+   begin
+      Free (S);
+      return Result;
+   end Utf8_Strdown;
+
+   ----------------
+   -- Utf8_Strup --
+   ----------------
+
+   function Utf8_Strup (Str : UTF8_String) return UTF8_String is
+      function Internal (Str : UTF8_String) return ICS.chars_ptr;
+      pragma Import (C, Internal, "g_utf8_strup");
+
+      S : chars_ptr := Internal (Str & ASCII.NUL);
+      Result : constant String := Value (S);
+   begin
+      Free (S);
+      return Result;
+   end Utf8_Strup;
+
+   -------------------------
+   -- Utf8_Find_Next_Char --
+   -------------------------
+
+   function Utf8_Find_Next_Char
+     (Str : UTF8_String; Index : Natural) return Natural
+   is
+      function Internal (Str, Str_End : System.Address) return System.Address;
+      pragma Import (C, Internal, "g_utf8_find_next_char");
+
+      Result : System.Address;
+   begin
+      Result := Internal (Str'Address + Storage_Offset (Index),
+                          Str'Address + Storage_Offset (Str'Length));
+      return Natural (Result - Str'Address);
+   end Utf8_Find_Next_Char;
+
+   -------------------------
+   -- Utf8_Find_Prev_Char --
+   -------------------------
+
+   function Utf8_Find_Prev_Char
+     (Str : UTF8_String; Index : Natural) return Natural
+   is
+      function Internal (Start, Str : System.Address) return System.Address;
+      pragma Import (C, Internal, "g_utf8_find_prev_char");
+
+      Result : System.Address;
+   begin
+      Result := Internal (Str'Address,
+                          Str'Address + Storage_Offset (Index));
+      return Natural (Result - Str'Address);
+   end Utf8_Find_Prev_Char;
+
+   ---------------------
+   -- Unichar_To_UTF8 --
+   ---------------------
+
+   function Unichar_To_UTF8
+     (C : Gunichar; Buffer : UTF8_String) return Natural
+   is
+      function Internal (C : Gunichar; Buffer : System.Address) return Natural;
+      pragma Import (C, Internal, "g_unichar_to_utf8");
+   begin
+      return Internal (C, Buffer'Address);
+   end Unichar_To_UTF8;
+
+   -------------------
+   -- Utf8_Get_Char --
+   -------------------
+
+   function Utf8_Get_Char (Str : UTF8_String) return Gunichar is
+      function Internal (Str : System.Address) return Gunichar;
+      pragma Import (C, Internal, "g_utf8_get_char");
+   begin
+      return Internal (Str'Address);
+   end Utf8_Get_Char;
+
+   -----------------------------
+   -- Utf8_Get_Char_Validated --
+   -----------------------------
+
+   function Utf8_Get_Char_Validated (Str : UTF8_String) return Gunichar is
+      function Internal (Str : System.Address) return Gunichar;
+      pragma Import (C, Internal, "g_utf8_get_char_validated");
+   begin
+      return Internal (Str'Address);
+   end Utf8_Get_Char_Validated;
+
+   -----------------
+   -- Utf8_Strlen --
+   -----------------
+
+   function Utf8_Strlen (Str : UTF8_String) return Glong is
+      function Internal (Str : System.Address; Max : Integer) return Glong;
+      pragma Import (C, Internal, "g_utf8_strlen");
+   begin
+      return Internal (Str'Address, Str'Length);
+   end Utf8_Strlen;
+
 end Glib.Unicode;
