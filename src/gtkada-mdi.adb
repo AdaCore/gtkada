@@ -2836,11 +2836,6 @@ package body Gtkada.MDI is
       Note : Gtk_Notebook;
       Current_Focus : MDI_Child;
    begin
-      Ref (Child);
-      Remove (Child.MDI.Items, Gtk_Widget (Child));
-      Prepend (Child.MDI.Items, Gtk_Widget (Child));
-      Unref (Child);
-
       --  For an docked item, we in fact want to raise its parent dock,
       --  and make sure the current page in that dock is the correct one.
 
@@ -2930,6 +2925,11 @@ package body Gtkada.MDI is
       end if;
 
       Child.MDI.Focus_Child := C;
+
+      Ref (C);
+      Remove (C.MDI.Items, Gtk_Widget (Child));
+      Prepend (C.MDI.Items, Gtk_Widget (Child));
+      Unref (C);
 
       --  Make sure the page containing Child in a notebook is put on top.
       --  Do not raise floating children, since this is the role of the window
@@ -3177,6 +3177,7 @@ package body Gtkada.MDI is
         and then not MDI_Child (Child).MDI.All_Floating_Mode
       then
          Float_Child (MDI_Child (Child), False);
+         Raise_Child (MDI_Child (Child), False);
          return True;
       else
          return Return_Callback.Emit_By_Name
@@ -3336,8 +3337,6 @@ package body Gtkada.MDI is
          Update_Float_Menu (Child);
          Unref (Child);
          Widget_Callback.Emit_By_Name (Child, "unfloat_child");
-
-         Raise_Child (Child);
       end if;
    end Float_Child;
 
