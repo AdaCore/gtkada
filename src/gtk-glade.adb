@@ -509,10 +509,10 @@ package body Gtk.Glade is
                if Gettext then
                   Put_Line
                     (Output, "with " & Project_Name & "_Intl; use " &
-                    Project_Name & "_Intl;");
+                     Project_Name & "_Intl;");
                end if;
 
-               if Find_Child (M.Child, "handler") /= null then
+               if Find_Child (M.Child, "signal") /= null then
                   Put_Line (Output, "with " & To_Ada (Name) &
                     "_Pkg.Callbacks; use " & To_Ada (Name) &
                     "_Pkg.Callbacks;");
@@ -598,7 +598,6 @@ package body Gtk.Glade is
       Num_Signals := Gen_Signal_Instantiations (Project_Name, Standard_Output);
 
    end Generate;
-
 
 
    --------------
