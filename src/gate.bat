@@ -1,1 +1,1 @@
-@sh PREFIX/gate.sh %1
+@sh "PREFIX"/gate.sh %1
