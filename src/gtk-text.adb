@@ -81,6 +81,10 @@ package body Gtk.Text is
    package Text_Callback is new Gtk.Handlers.Callback
      (Widget_Type => Gtk_Text_Record);
 
+   package Buffer_Callback is new Gtk.Handlers.User_Callback
+     (Widget_Type => Text_Buffer.Gtk_Text_Buffer_Record,
+      User_Type   => Gtk_Text);
+
    package Text_Callback_Boolean_Marshaller is
      new Text_Callback.Marshallers.Generic_Marshaller
        (Boolean, Glib.Values.Get_Boolean);
@@ -114,15 +118,19 @@ package body Gtk.Text is
    --  Signal handlers...
    --
 
-   procedure Changed_Cb (Widget : access Gtk_Text_Record'Class);
+   procedure Changed_Cb
+     (Widget : access Text_Buffer.Gtk_Text_Buffer_Record'Class;
+      Text   : Gtk_Text);
 
    procedure Delete_Range_Handler
-     (Widget : access Gtk_Text_Record'Class;
-      Params : Glib.Values.GValues);
+     (Widget : access Text_Buffer.Gtk_Text_Buffer_Record'Class;
+      Params : Glib.Values.GValues;
+      Text   : Gtk_Text);
 
    procedure Insert_Text_Handler
-     (Widget : access Gtk_Text_Record'Class;
-      Params : Glib.Values.GValues);
+     (Widget : access Text_Buffer.Gtk_Text_Buffer_Record'Class;
+      Params : Glib.Values.GValues;
+      Text   : Gtk_Text);
 
    procedure Move_Cursor_Handler
      (Widget : access Gtk_Text_Record'Class;
@@ -198,9 +206,10 @@ package body Gtk.Text is
    ----------------
 
    procedure Changed_Cb
-     (Widget : access Gtk_Text_Record'Class) is
+     (Widget : access Text_Buffer.Gtk_Text_Buffer_Record'Class;
+      Text   : Gtk_Text) is
    begin
-      Text_Callback.Emit_By_Name (Object => Widget, Name => "changed");
+      Text_Callback.Emit_By_Name (Object => Text, Name => "changed");
    end Changed_Cb;
 
    --------------------------
@@ -208,8 +217,9 @@ package body Gtk.Text is
    --------------------------
 
    procedure Delete_Range_Handler
-     (Widget : access Gtk_Text_Record'Class;
-      Params : Glib.Values.GValues)
+     (Widget : access Text_Buffer.Gtk_Text_Buffer_Record'Class;
+      Params : Glib.Values.GValues;
+      Text   : Gtk_Text)
    is
       Start_Pos : constant Gint :=
         Text_Iter.Get_Offset
@@ -226,7 +236,8 @@ package body Gtk.Text is
       pragma Import (C, Emit_By_Name, "g_signal_emit_by_name");
 
    begin
-      Emit_By_Name (Get_Object (Widget), "delete_text", Start_Pos, End_Pos);
+      Emit_By_Name
+        (Get_Object (Text), "delete_text" & ASCII.NUL, Start_Pos, End_Pos);
    end Delete_Range_Handler;
 
    -------------------------
@@ -234,12 +245,13 @@ package body Gtk.Text is
    -------------------------
 
    procedure Insert_Text_Handler
-     (Widget : access Gtk_Text_Record'Class;
-      Params : Glib.Values.GValues)
+     (Widget : access Text_Buffer.Gtk_Text_Buffer_Record'Class;
+      Params : Glib.Values.GValues;
+      Text   : Gtk_Text)
    is
       Text_Length : constant Gint :=
         Glib.Values.Get_Int (Value => Glib.Values.Nth (Params, 3));
-      Text        : constant String :=
+      Str         : constant String :=
         Glib.Values.Get_String
           (Value => Glib.Values.Nth (Params, 2), Length => Text_Length);
       Position    : aliased Gint;
@@ -257,8 +269,8 @@ package body Gtk.Text is
         Text_Iter.Get_Offset
           (Text_Iter.Get_Text_Iter (Glib.Values.Nth (Params, 1)));
       Emit_By_Name
-        (Get_Object (Widget), "insert_text",
-         Text, Text_Length, Position'Address);
+        (Get_Object (Text), "insert_text" & ASCII.NUL,
+         Str, Text_Length, Position'Address);
    end Insert_Text_Handler;
 
    -------------------------
@@ -353,18 +365,14 @@ package body Gtk.Text is
       Set_Editable (Widget, Is_Editable);
    end Set_Editable_Cb;
 
-   --
-   --  Exported services...
-   --
-
    -------------
    -- Gtk_New --
    -------------
 
    procedure Gtk_New
      (Text : out Gtk_Text;
-      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
+      Hadj : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadj : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
    begin
       Text := new Gtk_Text_Record;
       Initialize (Text, Hadj, Vadj);
@@ -376,66 +384,75 @@ package body Gtk.Text is
 
    procedure Initialize
      (Text : access Gtk_Text_Record'Class;
-      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
+      Hadj : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadj : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment)
+   is
+      H_Adj : Gtk.Adjustment.Gtk_Adjustment := Hadj;
+      V_Adj : Gtk.Adjustment.Gtk_Adjustment := Vadj;
+      use type Adjustment.Gtk_Adjustment;
    begin
-      Text_View.Initialize (Text, null);
+      Text_View.Initialize (Text, Buffer => null);
 
-      --  ??? The following code is commented out for the moment because
-      --  ??? it fout ze bordel in the signal handling of all widgets.
-      --
       --  The following call is required to initialize the class record,
       --  and the new signals created for this widget.
       --  Note also that we keep Class_Record, so that the memory allocation
       --  is done only once.
-      --  Gtk.Object.Initialize_Class_Record
-      --    (Text, Signals, Class_Record, Signal_Parameters);
+      Gtk.Object.Initialize_Class_Record
+        (Text, Signals, Class_Record, Signal_Parameters);
 
-      --  Text.Hadj := Hadj;
-      --  Text.Vadj := Vadj;
+      --  If no Adjustment specified, then create new ones
+      if H_Adj = Adjustment.Null_Adjustment then
+         Adjustment.Gtk_New (H_Adj, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+      end if;
 
-      --  Text_Callback.Object_Connect
-      --    (Widget => Get_Buffer (Text),
-      --     Name => "changed",
-      --     Marsh => Text_Callback.To_Marshaller (Changed_Cb'Access),
-      --     Slot_Object => Text);
+      if V_Adj = Adjustment.Null_Adjustment then
+         Adjustment.Gtk_New (V_Adj, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+      end if;
 
-      --  Text_Callback.Object_Connect
-      --    (Widget => Get_Buffer (Text),
-      --     Name => "insert_text",
-      --     Cb => Insert_Text_Handler'Access,
-      --     Slot_Object => Text,
-      --     After => False);
+      Set_Adjustments (Text, Hadj => H_Adj, Vadj => V_Adj);
 
-      --  Text_Callback.Object_Connect
-      --    (Widget => Get_Buffer (Text),
-      --     Name => "delete_range",
-      --     Cb => Delete_Range_Handler'Access,
-      --     Slot_Object => Text,
-      --     After => False);
+      Buffer_Callback.Connect
+        (Widget    => Get_Buffer (Text),
+         Name      => "changed",
+         Marsh     => Buffer_Callback.To_Marshaller (Changed_Cb'Access),
+         User_Data => Text.all'Access);
 
-      --  Text_Callback.Connect
-      --    (Widget => Text,
-      --     Name => "set-editable",
-      --     Marsh => Text_Callback_Boolean_Marshaller.To_Marshaller
-      --                (Set_Editable_Cb'Access),
-      --     After => True);
-      --  --  Connecting after will give the user a chance to override
-      --  --  the default behavior. [1]
+      Buffer_Callback.Connect
+        (Widget    => Get_Buffer (Text),
+         Name      => "insert_text",
+         Cb        => Insert_Text_Handler'Access,
+         User_Data => Text.all'Access,
+         After     => False);
 
-      --  Text_Callback.Connect
-      --    (Widget => Text,
-      --     Name => "move_cursor",
-      --     Cb => Move_Cursor_Handler'Access,
-      --     After => True);
-      --  --  See [1] above.
+      Buffer_Callback.Connect
+        (Widget    => Get_Buffer (Text),
+         Name      => "delete_range",
+         Cb        => Delete_Range_Handler'Access,
+         User_Data => Text.all'Access,
+         After     => False);
 
-      --  Text_Callback.Connect
-      --    (Widget => Text,
-      --     Name => "move_word",
-      --     Marsh => Text_Callback.To_Marshaller (Move_Word_Cb'Access),
-      --     After => True);
-      --  --  See [1] above.
+      Text_Callback.Connect
+        (Widget => Text,
+         Name   => "set-editable",
+         Marsh  => Text_Callback_Boolean_Marshaller.To_Marshaller
+                     (Set_Editable_Cb'Access),
+         After  => True);
+      --  Connecting after will give the user a chance to override
+      --  the default behavior. [1]
+
+      Text_Callback.Connect
+        (Widget => Text,
+         Name   => "move_cursor_compat",
+         Cb     => Move_Cursor_Handler'Access,
+         After  => True);
+      --  See [1] above.
+
+      Text_Callback.Connect
+        (Widget => Text,
+         Name   => "move_word",
+         Marsh  => Text_Callback.To_Marshaller (Move_Word_Cb'Access),
+         After  => True);
+      --  See [1] above.
 
       --  "move_page" signal handling not supported for the moment.???
 
@@ -457,7 +474,7 @@ package body Gtk.Text is
 
    procedure Copy_Clipboard
      (Editable : access Gtk_Text_Record;
-      Time     : in Guint32) is
+      Time     : Guint32) is
    begin
       Text_Buffer.Copy_Clipboard (Get_Buffer (Editable));
    end Copy_Clipboard;
@@ -468,7 +485,7 @@ package body Gtk.Text is
 
    procedure Cut_Clipboard
      (Editable : access Gtk_Text_Record;
-      Time     : in Guint32) is
+      Time     : Guint32) is
    begin
       Text_Buffer.Cut_Clipboard
         (Get_Buffer (Editable), Default_Editable => True);
@@ -494,8 +511,8 @@ package body Gtk.Text is
 
    procedure Delete_Text
      (Editable  : access Gtk_Text_Record;
-      Start_Pos : in Gint := 0;
-      End_Pos   : in Gint := -1)
+      Start_Pos : Gint := 0;
+      End_Pos   : Gint := -1)
    is
       Start_Iter     : Gtk.Text_Iter.Gtk_Text_Iter;
       End_Iter       : Gtk.Text_Iter.Gtk_Text_Iter;
@@ -516,8 +533,8 @@ package body Gtk.Text is
 
    function Get_Chars
      (Editable  : access Gtk_Text_Record;
-      Start_Pos : in Gint := 0;
-      End_Pos   : in Gint := -1) return String
+      Start_Pos : Gint := 0;
+      End_Pos   : Gint := -1) return String
    is
       Start_Iter     : Gtk.Text_Iter.Gtk_Text_Iter;
       End_Iter       : Gtk.Text_Iter.Gtk_Text_Iter;
@@ -594,7 +611,7 @@ package body Gtk.Text is
 
    procedure Insert_Text
      (Editable : access Gtk_Text_Record;
-      New_Text : in String;
+      New_Text : String;
       Position : in out Gint)
    is
       Buffer     : constant Text_Buffer.Gtk_Text_Buffer :=
@@ -612,7 +629,7 @@ package body Gtk.Text is
 
    procedure Paste_Clipboard
      (Editable : access Gtk_Text_Record;
-      Time     : in Guint32) is
+      Time     : Guint32) is
    begin
       Text_Buffer.Paste_Clipboard
         (Get_Buffer (Editable), Default_Editable => True);
@@ -624,8 +641,8 @@ package body Gtk.Text is
 
    procedure Select_Region
      (Editable : access Gtk_Text_Record;
-      Start    : in Gint;
-      The_End  : in Gint := -1)
+      Start    : Gint;
+      The_End  : Gint := -1)
    is
       Buffer         : constant Text_Buffer.Gtk_Text_Buffer :=
         Get_Buffer (Editable);
@@ -775,9 +792,14 @@ package body Gtk.Text is
    --------------
 
    function Get_Hadj
-     (Text : access Gtk_Text_Record) return Gtk.Adjustment.Gtk_Adjustment is
+     (Text : access Gtk_Text_Record) return Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Text : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_text_view_get_hadj");
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Text.Hadj;
+      return Gtk.Adjustment.Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (Text)), Stub));
    end Get_Hadj;
 
    --------------
@@ -785,9 +807,14 @@ package body Gtk.Text is
    --------------
 
    function Get_Vadj
-     (Text : access Gtk_Text_Record) return Gtk.Adjustment.Gtk_Adjustment is
+     (Text : access Gtk_Text_Record) return Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Text : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_text_view_get_vadj");
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      return Text.Vadj;
+      return Gtk.Adjustment.Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (Text)), Stub));
    end Get_Vadj;
 
    ----------------
@@ -798,6 +825,17 @@ package body Gtk.Text is
    begin
       return Guint (Text_Buffer.Get_Char_Count (Get_Buffer (Text)));
    end Get_Length;
+
+   ---------------
+   -- Set_Point --
+   ---------------
+
+   procedure Set_Point
+     (Text  : access Gtk_Text_Record;
+      Index : Guint) is
+   begin
+      Set_Position (Text, Gint (Index));
+   end Set_Point;
 
    ---------------
    -- Get_Point --
@@ -818,11 +856,11 @@ package body Gtk.Text is
 
    procedure Insert
      (Text   : access Gtk_Text_Record;
-      Font   : in Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
-      Fore   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Back   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Chars  : in String := "";
-      Length : in Gint := -1)
+      Font   : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+      Fore   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Back   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Chars  : String := "";
+      Length : Gint := -1)
    is
       Buffer        : constant Text_Buffer.Gtk_Text_Buffer :=
         Get_Buffer (Text);
@@ -892,10 +930,26 @@ package body Gtk.Text is
    procedure Set_Adjustments
      (Text : access Gtk_Text_Record;
       Hadj : Gtk.Adjustment.Gtk_Adjustment;
-      Vadj : Gtk.Adjustment.Gtk_Adjustment) is
+      Vadj : Gtk.Adjustment.Gtk_Adjustment)
+   is
+      procedure Internal
+        (Text : System.Address;
+         Hadj : System.Address;
+         Vadj : System.Address);
+      pragma Import (C, Internal, "ada_text_view_set_adjustments");
+      Hadj_Addr : System.Address := System.Null_Address;
+      Vadj_Addr : System.Address := System.Null_Address;
+      use type Adjustment.Gtk_Adjustment;
    begin
-      Text.Hadj := Hadj;
-      Text.Vadj := Vadj;
+      if Hadj /= Adjustment.Null_Adjustment then
+         Hadj_Addr := Get_Object (Hadj);
+      end if;
+      if Vadj /= Adjustment.Null_Adjustment then
+         Vadj_Addr := Get_Object (Vadj);
+      end if;
+      Internal (Get_Object (Text), Hadj_Addr, Vadj_Addr);
+      --  ??? It is very easy to do this directly in Ada... So why don't
+      --  ??? you just do it?
    end Set_Adjustments;
 
    -------------------
@@ -904,7 +958,7 @@ package body Gtk.Text is
 
    procedure Set_Line_Wrap
      (Text      : access Gtk_Text_Record;
-      Line_Wrap : in Boolean := True)
+      Line_Wrap : Boolean := True)
    is
       Wrap_Mode : Gtk.Enums.Gtk_Wrap_Mode := Get_Wrap_Mode (Text);
    begin
@@ -930,7 +984,7 @@ package body Gtk.Text is
 
    procedure Set_Word_Wrap
      (Text      : access Gtk_Text_Record;
-      Word_Wrap : in Boolean := True)
+      Word_Wrap : Boolean := True)
    is
       Wrap_Mode : Gtk.Enums.Gtk_Wrap_Mode := Get_Wrap_Mode (Text);
    begin

@@ -54,20 +54,16 @@ package Gtk.Text is
 
    procedure Gtk_New
      (Text : out Gtk_Text;
-      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+      Hadj : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadj : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
    --  Create a new text widget.
    --  You need to insert the Gtk_Text in a Gtk_Scrolled_Window to make
    --  the scrollbars visible.
-   --
-   --  The given adjustment will have no effect on the text widget, these
-   --  parameters are only for upward compatibility. They are just stored
-   --  in the Gtk_Text for later retrieval, when using Get_Hadj or Get_Vadj.
 
    procedure Initialize
      (Text : access Gtk_Text_Record'Class;
-      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+      Hadj : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadj : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -86,13 +82,13 @@ package Gtk.Text is
 
    procedure Copy_Clipboard
      (Editable : access Gtk_Text_Record;
-      Time     : in Guint32);
+      Time     : Guint32);
    --  Copy the characters in the current selection to the clipboard.
    --  Time is ignored.
 
    procedure Cut_Clipboard
      (Editable : access Gtk_Text_Record;
-      Time     : in Guint32);
+      Time     : Guint32);
    --  Copy the characters in the current selection to the clipboard.
    --  The selection is then deleted.
    --  Time is ignored.
@@ -102,16 +98,16 @@ package Gtk.Text is
 
    procedure Delete_Text
      (Editable  : access Gtk_Text_Record;
-      Start_Pos : in Gint := 0;
-      End_Pos   : in Gint := -1);
+      Start_Pos : Gint := 0;
+      End_Pos   : Gint := -1);
    --  Delete the characters from Start_Pos to End_Pos.
    --  If End_Pos is negative, the characters are deleted from Start_Pos to the
    --  end of the text.
 
    function Get_Chars
       (Editable  : access Gtk_Text_Record;
-       Start_Pos : in Gint := 0;
-       End_Pos   : in Gint := -1) return String;
+       Start_Pos : Gint := 0;
+       End_Pos   : Gint := -1) return String;
    --  Get the text from Start_Pos to End_Pos.
    --  If End_Pos is negative, the text from Start_Pos to the end is returned.
 
@@ -133,22 +129,22 @@ package Gtk.Text is
 
    procedure Insert_Text
      (Editable : access Gtk_Text_Record;
-      New_Text : in String;
+      New_Text : String;
       Position : in out Gint);
    --  Insert the given string at the given position.
    --  Position is set to the new cursor position.
 
    procedure Paste_Clipboard
      (Editable : access Gtk_Text_Record;
-      Time     : in Guint32);
+      Time     : Guint32);
    --  The contents of the clipboard is pasted into the given widget at
    --  the current cursor position.
    --  Time is ignored.
 
    procedure Select_Region
      (Editable : access Gtk_Text_Record;
-      Start    : in Gint;
-      The_End  : in Gint := -1);
+      Start    : Gint;
+      The_End  : Gint := -1);
    --  Select the region of text from Start to The_End.
    --  The characters that are selected are those characters at positions
    --  from Start up to, but not including The_End. If The_End_Pos is
@@ -184,7 +180,7 @@ package Gtk.Text is
    --  Note that null will be returned while Text hasn't been realized.
 
    function Backward_Delete (Text : access Gtk_Text_Record;
-                             Nchars : in Guint)
+                             Nchars : Guint)
                             return Boolean;
    --  Backward delete Nchars characters from the current cursor position.
    --  There must be at least Nchars characters to delete before the
@@ -192,7 +188,7 @@ package Gtk.Text is
    --  Return True if the operation was successful, False otherwise.
 
    function Forward_Delete (Text : access Gtk_Text_Record;
-                            Nchars : in Guint)
+                            Nchars : Guint)
                            return Boolean;
    --  Forward delete Nchars characters from the current point position.
    --  There must be at least Nchars characters to delete after the
@@ -234,6 +230,10 @@ package Gtk.Text is
    --  Return the total length of the text (the number of characters)
    --  contained within the text widget.
 
+   procedure Set_Point
+     (Text  : access Gtk_Text_Record;
+      Index : Guint);
+
    function Get_Point (Text : access Gtk_Text_Record) return Guint;
    --  Get the current position of the insertion point (cursor).
    --  Return the number of characters from the upper left corner of the
@@ -245,11 +245,11 @@ package Gtk.Text is
 
    procedure Insert
      (Text   : access Gtk_Text_Record;
-      Font   : in Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
-      Fore   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Back   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Chars  : in String := "";
-      Length : in Gint := -1);
+      Font   : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+      Fore   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Back   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Chars  : String := "";
+      Length : Gint := -1);
    --  Insert the given string (Chars) inside the text of the text widget.
    --  Use the specified Font, foreground (Fore) and background
    --  (Back) colors. Only the first "Length" characters are inserted,
@@ -265,16 +265,14 @@ package Gtk.Text is
    procedure Set_Adjustments (Text : access Gtk_Text_Record;
                               Hadj : Gtk.Adjustment.Gtk_Adjustment;
                               Vadj : Gtk.Adjustment.Gtk_Adjustment);
-   --  This procedure is provided for upward compatibility with GtkAda-1.2
-   --  only. It has no effect except saving the given adjustments for later
-   --  retrieval.
+   --  Set the horizontal and vertical adjustments associated with Text.
 
    --  procedure Set_Editable (Text     : access Gtk_Text_Record;
    --                          Editable : in Boolean := True);
    --  Inherited from Gtk_Text_View.
 
    procedure Set_Line_Wrap (Text      : access Gtk_Text_Record;
-                            Line_Wrap : in Boolean := True);
+                            Line_Wrap : Boolean := True);
    --  Set the Line_Wrap state of the given text widget.
    --  If set to True, the line is broken when it reaches the extent of the
    --  widget viewing area and the rest is displayed on the next line. If set
@@ -282,7 +280,7 @@ package Gtk.Text is
    --  viewing area.
 
    procedure Set_Word_Wrap (Text      : access Gtk_Text_Record;
-                            Word_Wrap : in Boolean := True);
+                            Word_Wrap : Boolean := True);
    --  Set the Word_Wrap state of the given text widget.
    --  If set to True, words are wrapped down to the next line if they can't
    --  be completed on the current line.
@@ -299,12 +297,8 @@ package Gtk.Text is
    --  Not implemented.
 
 private
-   type Gtk_Text_Record is new Gtk.Text_View.Gtk_Text_View_Record with record
-      Hadj : Gtk.Adjustment.Gtk_Adjustment;
-      Vadj : Gtk.Adjustment.Gtk_Adjustment;
-      --  The Hadj and Vadj are explicitely stored here as they are not used
-      --  at all with the current implementation. They are kept for better
-      --  compatibility with applications using the 1.2.* series of GtkAda
-   end record;
+
+   type Gtk_Text_Record is
+     new Gtk.Text_View.Gtk_Text_View_Record with null record;
 
 end Gtk.Text;
