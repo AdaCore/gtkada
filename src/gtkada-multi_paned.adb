@@ -787,9 +787,30 @@ package body Gtkada.Multi_Paned is
    is
       pragma Unreferenced (Event);
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
+      C : Child_Description_Access;
    begin
       if Split.Selected_Handle_Parent /= null then
          Draw_Resize_Line (Split);
+
+         --  Make sure none of the widgets doesn't have a fixed size, or
+         --  the resizing won't take place.
+
+         C := Split.Selected_Handle_Parent.First_Child;
+         for H in 1 .. Split.Selected_Handle_Index - 1 loop
+            C := C.Next;
+         end loop;
+
+         if C.Is_Widget then
+            C.Fixed_Size := False;
+            C.Width := 0;
+            C.Height := 0;
+         end if;
+
+         if C.Next /= null and then C.Next.Is_Widget then
+            C.Next.Fixed_Size := False;
+            C.Next.Width := 0;
+            C.Next.Height := 0;
+         end if;
 
          if not Split.Opaque_Resizing then
             Compute_Resize_Handle_Percent (Split);
