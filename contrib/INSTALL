@@ -1,0 +1,36 @@
+Installing and compiling your programs 
+======================================
+
+Since version 0.6, GtkAda comes with a configure script that should
+simplify the installation. We have tested it on as many machines as
+possible, please report any problem ou might have.
+
+To install GtkAda, please try the following :
+   $ ./configure --prefix=<installation_directory>
+   $ make
+   $ make install
+     
+This will create (and install) two files, libgtkada.a and libgtkada.so
+and then compile the testgtk example.
+     
+Note that you might have to be root to install GtkAda on your system.
+
+You should also modify your PATH variable to include the installation
+directory, or copy the gtkada-config script somewhere in your path
+     
+   $ setenv PATH <installation_directory>:$PATH
+or
+   $ export PATH=<installation_directory>:$PATH
+     
+Finally, update your LD_LIBRARY_PATH variable to include that
+directory, so that the linker can find the libraries.  The other
+alternative if you have access to root priviledges is to add this
+'prefix' directory added in /etc/ld.conf and then run ldconfig.
+     
+Then, when you want to compile your application, simply use the
+gtkada-config script:
+     
+   $ gnatmake <your_application> <your_switches> `gtkada-config`
+
+This will automatically submit the correct paths to gnatmake so that
+the gtk and gtkada libraries are found.

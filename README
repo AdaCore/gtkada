@@ -4,6 +4,11 @@
 --                                                                  --
 ----------------------------------------------------------------------
 
+Installation
+============
+ 
+See the file 'INSTALL'
+
 General Information
 ===================
      
@@ -16,7 +21,7 @@ The home page for gtk is
      http://www.gtk.org
      
 This home page will always contain the latest news for this binding.
-     
+
 This is GtkAda version 0.6-beta. This package is an Ada95 binding for
 the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11, using Ada95 as a
@@ -113,46 +118,8 @@ internal structures. This  memory is freed  by gtk itself,  by calling
 some Ada functions. Thus the generic packages  have to be instanciated
 at library level, not  inside a subprogram,  so that the functions are
 still defined when gtk needs to free the memory.
-     
-     
-Installing and compiling your programs 
-======================================
 
-Since version 0.6, GtkAda comes with a configure script that should
-simplify the installation. We have tested it on as many machines as
-possible, please report any problem ou might have.
 
-To install GtkAda, please try the following :
-   $ ./configure --prefix=<installation_directory>
-   $ make
-   $ make install
-     
-This will create (and install) two files, libgtkada.a and libgtkada.so
-and then compile the testgtk example.
-     
-Note that you might have to be root to install GtkAda on your system.
-
-You should also modify your PATH variable to include the installation
-directory, or copy the gtkada-config script somewhere in your path
-     
-   $ setenv PATH <installation_directory>:$PATH
-or
-   $ export PATH=<installation_directory>:$PATH
-     
-Finally, update your LD_LIBRARY_PATH variable to include that
-directory, so that the linker can find the libraries.  The other
-alternative if you have access to root priviledges is to add this
-'prefix' directory added in /etc/ld.conf and then run ldconfig.
-     
-Then, when you want to compile your application, simply use the
-gtkada-config script:
-     
-   $ gnatmake <your_application> <your_switches> `gtkada-config`
-
-This will automatically submit the correct paths to gnatmake so that
-the gtk and gtkada libraries are found.
-     
-     
 Creating and Binding new widgets
 ================================
 
@@ -375,10 +342,3 @@ keep your changes from one version to the next.
 Also note that to be able to keep track of your modifications, gate relies on
 patch and diff being available on your system. If you don't have a working set
 of diff/patch, configure will simply replace them by null operations.
-
-AUTHORS
-=======
-     
-Emmanuel Briot <briot@gnat.com>
-Joel Brobecker <jbrobecker@west.raytheon.com>
-Arnaud Charlet <charlet@gnat.com>
