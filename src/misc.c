@@ -862,7 +862,7 @@ ada_text_get_gap_size (GtkText* widget)
 guchar*
 ada_text_get_text (GtkText* widget)
 {
-   return widget->text;
+   return widget->text.ch;
 }
 
 guint
