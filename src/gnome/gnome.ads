@@ -26,14 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Glade; use Glib.Glade, Glib.Glade.Glib_XML;
-with Ada.Text_IO; use Ada.Text_IO;
-pragma Warnings (Off, Glib.Glade);
-pragma Warnings (Off, Glib_XML);
-pragma Warnings (Off, Ada.Text_IO);
---  Text_IO is required by almost all the package for Gate and,
---  so we put the 'with' here.
-
 package Gnome is
    pragma Elaborate_Body;
 
