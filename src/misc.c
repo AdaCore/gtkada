@@ -428,19 +428,6 @@ ada_widget_allocation_y (GtkWidget* widget)
 }
 
 /*
- * 
- * toggle_buttons
- *
- */
-
-gint 
-ada_toggle_button_get_state (GtkToggleButton *toggle_button)
-{
-  return toggle_button->active;
-}
-
-
-/*
  *
  * radio_menu_item
  *
@@ -1994,16 +1981,6 @@ ada_dialog_get_vbox (GtkDialog* widget)
 }
 
 /******************************************
- ** Functions for Toggle_Button
- ******************************************/
-
-guint
-ada_toggle_button_get_active (GtkToggleButton* widget)
-{
-   return widget->active;
-}
-
-/******************************************
  ** Functions for Combo
  ******************************************/
 
@@ -2050,10 +2027,8 @@ ada_widget_get_parent (GtkWidget* widget)
 gint
 ada_widget_get_motion_notify (GtkWidget* widget, GdkEvent* event)
 {
-  GtkSignalFunc func =
-    (GtkSignalFunc)(GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)
-		    ->motion_notify_event);
-  func (widget, event);
+  return (GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)
+	  ->motion_notify_event)(widget, (GdkEventMotion*)event);
 }
 
 /******************************************
