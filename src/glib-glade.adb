@@ -700,7 +700,7 @@ package body Glib.Glade is
          if S'Length > 9
            and then S (S'First .. S'First + 9) = "Interfaces"
          then
-            Put_Line (File, "with " & Packages (J).all & "; use" &
+            Put_Line (File, "with " & Packages (J).all & "; use " &
               Packages (J).all & ";");
          else
             Put_Line (File, "with Gtk." & Packages (J).all & "; use Gtk." &
