@@ -478,22 +478,22 @@ package body Gtk.CList is
                 Color'Address);
    end Set_Background;
 
-   ----------------
-   -- Set_Border --
-   ----------------
+   ---------------------
+   -- Set_Shadow_Type --
+   ---------------------
 
-   procedure Set_Border
-      (Clist  : in Gtk_CList;
-       Border : in Gtk_Shadow_Type)
+   procedure Set_Shadow_Type
+      (Clist    : in Gtk_CList;
+       The_Type : in Gtk_Shadow_Type)
    is
       procedure Internal
-         (Clist  : in System.Address;
-          Border : in Gint);
-      pragma Import (C, Internal, "gtk_clist_set_border");
+         (Clist    : in System.Address;
+          The_Type : in Gint);
+      pragma Import (C, Internal, "gtk_clist_set_shadow_type");
    begin
       Internal (Get_Object (Clist),
-                Gtk_Shadow_Type'Pos (Border));
-   end Set_Border;
+                Gtk_Shadow_Type'Pos (The_Type));
+   end Set_Shadow_Type;
 
    ------------------------------
    -- Set_Column_Justification --

@@ -157,8 +157,6 @@ package Gtk.CList is
        Row   : in Gint;
        Color : in Gdk.Color.Gdk_Color);
 
-   procedure Set_Border (Clist : in Gtk_CList; Border : in Gtk_Shadow_Type);
-
    procedure Set_Column_Justification
       (Clist         : in Gtk_CList;
        Column        : in Gint;
@@ -204,6 +202,9 @@ package Gtk.CList is
 
    procedure Set_Selection_Mode (Clist : in Gtk_CList;
                                  Mode  : in Gtk_Selection_Mode);
+
+   procedure Set_Shadow_Type (Clist    : in Gtk_CList;
+                              The_Type : in Gtk_Shadow_Type);
 
    procedure Set_Shift
       (Clist      : in Gtk_CList;
