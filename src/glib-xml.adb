@@ -291,7 +291,7 @@ package body Glib.XML is
 
    begin
       if N = null or else N.Attributes = null then
-         return "";
+         return Default;
       end if;
 
       Index := N.Attributes'First;
