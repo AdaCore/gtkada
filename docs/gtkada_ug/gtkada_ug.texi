@@ -114,12 +114,12 @@ Description of the GDK hierarchy
 The home page for GtkAda, that will always contain the latest news for
 this binding, is
 
-     @cite{http://ada.eu.org/gtkada/}
+     @uref{http://ada.eu.org/gtkada/}
 
 @noindent     
 The home page for gtk is
 
-     @cite{http://www.gtk.org}
+     @uref{http://www.gtk.org}
 
 This is GtkAda version 1.2.0. This package is an Ada95 binding for the
 Gimp Toolkit, which means this is a set of packages to allow you to
@@ -2350,7 +2350,7 @@ in your program or in the binding.  Please check your program carefully,
 and if you think this is a problem in the binding, send us an e-mail.
 @end itemize
 
-To report errors, send a mail to the authors (@code{gtkada@@ada.eu.org})
+To report errors, send a mail to the authors (@uref{mailto:gtkada@@ada.eu.org})
 explaining exactly what your
 are  doing,  what  is  the  expected  result  and  what  you  actually
 get. Please include the required sources to reproduce the problem, in
