@@ -61,7 +61,7 @@ package Gtk.Event_Box is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Event_Box internally.
+   --  Return the internal value associated with a Gtk_Event_Box.
 
    ----------------------------
    -- Support for GATE/DGATE --
