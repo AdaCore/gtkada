@@ -32,7 +32,7 @@ with System;
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
 
-package body Gtk.CTree is
+package body Gtk.Ctree is
 
    Compare_Drag_Func_Key : constant String :=
      "_GtkAda_Ctree_Compare_Drag_Func" & ASCII.NUL;
@@ -1805,4 +1805,4 @@ package body Gtk.CTree is
       end Pre_Recursive_To_Depth;
    end Row_Data;
 
-end Gtk.CTree;
+end Gtk.Ctree;

@@ -104,7 +104,7 @@ package body Gtk.Check_Menu_Item is
                           Is_Active       : in Gint);
       pragma Import (C, Internal, "gtk_check_menu_item_set_active");
    begin
-      Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Is_active));
+      Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Is_Active));
    end Set_Active;
 
    -------------

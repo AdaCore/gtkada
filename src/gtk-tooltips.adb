@@ -93,7 +93,7 @@ package body Gtk.Tooltips is
 
    procedure Set_Delay
      (Tooltips : access Gtk_Tooltips_Record;
-      duration : in Guint := 500)
+      Duration : in Guint := 500)
    is
       procedure Internal (Tooltips : System.Address;
                           Duration : Guint);

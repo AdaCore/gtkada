@@ -75,7 +75,7 @@ package Gtk.Check_Menu_Item is
 
    procedure Set_Active
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-      Is_active       : in Boolean);
+      Is_Active       : in Boolean);
    --  Set the active state of the menu item's check box.
 
    procedure Toggled (Check_Menu_Item : access Gtk_Check_Menu_Item_Record);
