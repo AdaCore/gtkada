@@ -397,3 +397,4 @@ EXPORTS
 	ada_gtk_sheet_get_widget
 	ada_gtk_socket_get_plug_window
 	ada_gtk_window_get_title
+	ada_gtk_window_get_transient_parent
