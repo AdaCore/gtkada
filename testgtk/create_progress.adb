@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -93,13 +93,14 @@ package body Create_Progress is
       Adj     : Gtk_Adjustment := Get_Adjustment (Pdata.Pbar);
 
    begin
-      New_Val := Get_Value (Adj) + 1.0;
+      New_Val := Get_Value (Adj) + 5.0;
 
       if New_Val > Get_Upper (Adj) then
          New_Val := Get_Lower (Adj);
       end if;
 
-      Set_Fraction (Pdata.Pbar, New_Val);
+      Set_Value (Adj, New_Val);
+
       return True;
    end Progress_Timeout;
 
@@ -334,11 +335,6 @@ package body Create_Progress is
       Adj_Handler.Connect
         (Adj, "value_changed",
          Adj_Handler.To_Marshaller (Adjust_Align'Access));
-
-      Gtk_New (Label, "Bar Style :");
-      Attach (Tab, Label, 0, 1, 3, 4, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-      Set_Alignment (Label, 0.0, 0.5);
 
       Gtk_New (Label, "Block count :");
       Attach (Tab, Label, 0, 1, 4, 5, Enums.Expand or Enums.Fill,
