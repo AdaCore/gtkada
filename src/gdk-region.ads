@@ -40,6 +40,9 @@ package Gdk.Region is
 
    procedure Destroy (Region : in out Gdk_Region);
 
+   procedure Get_Clipbox (Region    : in     Gdk_Region;
+                          Rectangle :    out Gdk.Rectangle.Gdk_Rectangle);
+
    function Empty (Region : in Gdk_Region) return Boolean;
 
    function "=" (Left, Right : in Gdk_Region) return Boolean;

@@ -66,6 +66,19 @@ package body Gdk.Region is
    end Empty;
 
 
+   -------------------
+   --  Get_Clipbox  --
+   -------------------
+
+   procedure Get_Clipbox (Region    : in     Gdk_Region;
+                          Rectangle :    out Gdk.Rectangle.Gdk_Rectangle) is
+      procedure Internal (Region    : in System.Address;
+                          Rectangle : in System.Address);
+      pragma Import (C, Internal, "gdk_region_get_clipbox");
+   begin
+      Internal (Get_Object (Region), Rectangle'Address);
+   end Get_Clipbox;
+
    ---------------
    --  Gdk_New  --
    ---------------
