@@ -140,6 +140,13 @@ package body Create_Canvas is
    begin
 
       Gtkada.Canvas.Initialize (Item, Win, Width, Height);
+      Draw_Rectangle (Pixmap (Item),
+                      GC     => Grey_GC,
+                      Filled => True,
+                      X      => 0,
+                      Y      => 0,
+                      Width  => Width - 1,
+                      Height => Height - 1);
       Draw_Arc (Pixmap (Item),
                 GC     => White_GC,
                 Filled => True,
