@@ -397,21 +397,21 @@ package body Gtk.Menu is
 
    procedure Generate (N    : in Node_Ptr;
                        File : in File_Type) is
-      S : String_Ptr;
+      S : String_Ptr := Get_Field (N.Parent, "class");
    begin
       Gen_New (N, "Menu", File => File);
-      Menu_Shell.Generate (N, File);
-
-      S := Get_Field (N.Parent, "class");
 
       if S /= null and then S.all = "GtkMenuItem" then
          Gen_Call_Child (N, null, "Menu_Item", "Set_Submenu", File => File);
+         N.Specific_Data.Has_Container := True;
       end if;
+
+      Menu_Shell.Generate (N, File);
    end Generate;
 
    procedure Generate (Menu : in out Gtk_Object;
                        N    : in Node_Ptr) is
-      S : String_Ptr;
+      S : String_Ptr := Get_Field (N.Parent, "class");
    begin
       if not N.Specific_Data.Created then
          Gtk_New (Gtk_Menu (Menu));
@@ -419,14 +419,14 @@ package body Gtk.Menu is
          N.Specific_Data.Created := True;
       end if;
 
-      Menu_Shell.Generate (Menu, N);
-      S := Get_Field (N.Parent, "class");
-
       if S /= null and then S.all = "GtkMenuItem" then
          Menu_Item.Set_Submenu
            (Gtk_Menu_Item (Get_Object (Get_Field (N.Parent, "name"))),
             Widget.Gtk_Widget (Menu));
+         N.Specific_Data.Has_Container := True;
       end if;
+
+      Menu_Shell.Generate (Menu, N);
    end Generate;
 
 end Gtk.Menu;
