@@ -173,6 +173,26 @@ package body Gdk.GC is
    end Set_Clip_Region;
 
 
+   ----------------
+   -- Set_Dashes --
+   ----------------
+
+   procedure Set_Dashes (Gc          : in out Gdk_GC;
+                         Dash_Offset : in     Gint;
+                         Dash_List   : in     Gint_Array) is
+      procedure Internal (Gc          : in System.Address;
+                          Dash_Offset : in Gint;
+                          Dash_List   : in Gint_Array;
+                          N           : in Gint);
+      pragma Import (C, Internal, "gdk_gc_set_dashes");
+   begin
+      Internal (Get_Object (Gc),
+                Dash_Offset,
+                Dash_List,
+                Dash_List'Length);
+   end Set_Dashes;
+
+
    ---------------------
    --  Set_Exposures  --
    ---------------------

@@ -104,6 +104,10 @@ package Gdk.GC is
                                   Cap_Style  : in     Types.Gdk_Cap_Style;
                                   Join_Style : in     Types.Gdk_Join_Style);
 
+   procedure Set_Dashes (Gc          : in out Gdk_GC;
+                         Dash_Offset : in     Gint;
+                         Dash_List   : in     Gint_Array);
+
    procedure Copy (Dst_GC :    out Gdk_GC;
                    Src_GC : in     Gdk_GC);
 
