@@ -30,7 +30,6 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
-with Gtk.Container; use Gtk.Container;
 
 package body Gtk.Check_Menu_Item is
 
