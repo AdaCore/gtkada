@@ -141,7 +141,7 @@ package body Gdk.Region is
       Rect   : Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal
-        (Region : in out Gdk_Region;
+        (Region : Gdk_Region;
          Rect   : Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gdk_region_union_with_rect");
 
@@ -154,6 +154,7 @@ package body Gdk.Region is
       Region : Gdk_Region;
       Rect   : Gdk.Rectangle.Gdk_Rectangle) is
    begin
+      pragma Assert (Region = Result);
       Union_With_Rect (Result, Rect);
    end Union_With_Rect;
 
