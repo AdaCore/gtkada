@@ -14,7 +14,7 @@ General Information
      
 The home page for GtkAda is
      
-     http://gtkada.eu.org
+     http://libre.act-europe.fr/GtkAda
 
 The home page for gtk is
     
@@ -22,7 +22,7 @@ The home page for gtk is
      
 This home page will always contain the latest news for this toolkit.
 
-This is GtkAda version 1.2.11. This package is an Ada95 graphical library
+This is GtkAda version 2.0.0. This package is an Ada95 graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada95
 as a programming language.
@@ -31,38 +31,19 @@ From now on, major version numbers will follow Gtk+ (e.g 1.2, 1.3),
 meaning that stable versions of GtkAda will have major number 1.2 and
 development versions will have number 1.3.
 
-Every widget from gtk 1.2 has been implemented, and the test
+Every widget from gtk 2.0 has been implemented, and the test
 program found in the gtk release has been reimplemented in Ada (have a
 look at the testgtk/ directory).
      
 These functions were tested on the following systems :
    - Linux/x86
-   - Linux/sparc
-   - Linux/ppc
    - Solaris/sparc
-   - Solaris/x86
-   - Dec Unix 4.0
-   - SGI IRIX 6.5
-   - HP/UX
-   - NT 4.0
-   - Windows 2000
-   - AiX 4.3.2
-   - SCO UnixWare 7.1
-   - FreeBSD 3.2
 using the following compilers:
-   - Gnat 3.14a
-   - Gnat 3.13a1
-   - Gnat 3.13p
+   - Gnat 3.15a
+   - Gnat 3.14p
 
 the following versions of gtk:
-   - Gtk+ 1.2.2 -> 1.2.8
-
-and the following versions of glade:
-   - Glade 0.5.9
-
-Although versions up to 0.2.1 were compatible with Gtk1.0, this one is
-Gtk-1.2 specific. If you are looking for a binding to Gtk1.0, please consider
-downloading GtkAda 0.2.1.
+   - Gtk+ 2.0.0
 
 If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
