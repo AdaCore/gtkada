@@ -262,7 +262,6 @@ Gtk.Style:
   Draw_Oval: removed.
   Set_Font, Get_Font: deprecated
   Set_Font_Description, Get_Font_Description: new functions
-Gtk.Text: Emulated, using Gtk_Text_View.
 Gtk.Text_Buffer: new package.
 Gtk.Text_Child: new package.
 Gtk.Text_Iter: new package.
