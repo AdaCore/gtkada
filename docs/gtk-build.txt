@@ -31,21 +31,20 @@ prefix=/opt/gtk-2.0
 ##############
 tar xzvf pkgconfig-0.14.0.tar.gz
 cd pkgconfig-0.14.0
-./configure --prefix=$prefix
-make
 
-# IRIX: The SGI C compiler is detecting an error in one of the source files.
-# Apply the following patch to avoid the build failure.
+# IRIX: Apply the following patch to avoid an error with SGI cc:
 # patch -p0 < .../GtkAda/contrib/pkgconfig-0.14.0.diff
 
-make install
+./configure --prefix=$prefix
+make all install
 cd ..
 
 PATH=$prefix/bin:$PATH
 LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH
 LDFLAGS=-L$prefix/lib
+PKG_CONFIG_PATH=$prefix/lib/pkgconfig:/usr/lib/pkgconfig
 
-export PATH LDFLAGS LD_LIBRARY_PATH
+export PATH LDFLAGS LD_LIBRARY_PATH PKG_CONFIG_PATH
 
 # Needed so that gcc finds libiconv.h (and libpng.h, ...) when configuring
 # and building subsequent packages
@@ -73,7 +72,7 @@ make install
 # zlib #
 ########
 
-# Not needed on Tru64 5.1a nor IRIX 6.5
+# Not needed on Linux, Tru64 5.1a nor IRIX 6.5
 
 # AiX 5.1: although this library seems to be provided by the system, building
 # it is still needed, as the headers were not installed.
@@ -173,12 +172,12 @@ cd ..
 tar xzvf glib-2.2.3.tar.gz
 cd glib-2.2.3
 
-# On IRIX, when using the SGI C compiler, configure verfies that
+# On IRIX, when using the SGI C compiler, configure verifies that
 # the preprocessor accepts the libintl.h include. Unfortunately,
 # the default expression to call the preprocessor is not honoring
 # the C_INCLUDE_PATH. So we need to give configure a small hand:
-CPP="cc -E -I$C_INCLUDE_PATH"
-export CPP
+# CPP="cc -E -I$C_INCLUDE_PATH"
+# export CPP
 
 # On x86-solaris, there is a dependency on libgcc_s.so for which GCC didn't
 # add a rpath, so we need to help the loader find it by adding
@@ -196,12 +195,11 @@ export CPP
 # --enable-gc-friendly --disable-mem-pools
 
 # on Tru64:
-make CFLAGS="-g -O2 -mieee -DTRIO_COMPILER_DECC"
+make CFLAGS="-g -O2 -mieee -DTRIO_COMPILER_DECC" all install
 
 # on other systems:
-make
+make all install
 
-make install
 cd ..
 
 #######
@@ -211,8 +209,7 @@ tar xzvf atk-1.2.4.tar.gz
 cd atk-1.2.4
 
 ./configure --prefix=$prefix
-make
-make install
+make all install
 cd ..
 
 #########
@@ -223,6 +220,7 @@ cd pango-1.2.5
 
 # Apply this patch if you want to ease distributing stand alone executables:
 patch -p0 < .../GtkAda/contrib/pango-1.2.5.diff
+touch -r aclocal.m4 configure.in
 
 # Note: to get all modules included, we could use --with-included-modules=yes
 # but basic-x should be all we need. In the future, we may want to also
@@ -231,10 +229,16 @@ patch -p0 < .../GtkAda/contrib/pango-1.2.5.diff
 # hangul-x,tamil-x,tamil-xft,thai-x,gurmukhi-x,bengali-x,gujarati-x,
 # devanagari-x,myanmar-x
 
+# Under Linux:
+./configure --prefix=$prefix \
+	--with-included-modules=basic-x,basic-xft --disable-debug
+
+# On other platforms:
 # Replace /bin/sh by /bin/bash in order to work around a sh bug under some
 # systems (e.g. HP-UX, IRIX):
 
-bash ./configure --prefix=$prefix --with-included-modules=basic-x --disable-debug
+bash ./configure --prefix=$prefix \
+	--with-included-modules=basic-x --disable-debug
 
 # On x86-solaris 2.6, the patch above seems to be disturbing the dependencies
 # between several automatically generated files.  This causes the
@@ -256,8 +260,7 @@ bash ./configure --prefix=$prefix --with-included-modules=basic-x --disable-debu
 #      CFLAGS='-g -O2 -DNeedFunctionPrototypes' all install
 
 # On all other platforms, simply do:
-make
-make install
+make all install
 cd ..
 
 #######
@@ -285,8 +288,7 @@ patch -p0 < .../GtkAda/contrib/gtk+-2.2.4.diff
 
 # For debugging Gtk+ and enable Gtk+ traces, use --enable-debug=full
 
-make
-make install
+make all install
 cd ..
 
 #####################
