@@ -31,6 +31,8 @@ with System;
 
 package body Gtk.Toolbar is
 
+   use type Gtk.Widget.Gtk_Widget;
+
    --------------------
    -- Append_Element --
    --------------------
@@ -65,8 +67,6 @@ package body Gtk.Toolbar is
       TPTA : System.Address := TPT'Address;
       W    : System.Address;
       I    : System.Address;
-
-      use type Gtk.Widget.Gtk_Widget;
 
    begin
       if Text'Length = 0 then
@@ -132,8 +132,6 @@ package body Gtk.Toolbar is
       TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
       I    : System.Address;
-
-      use type Gtk.Widget.Gtk_Widget;
 
    begin
       if Text'Length = 0 then
@@ -324,7 +322,7 @@ package body Gtk.Toolbar is
       Text                 : String := "";
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
@@ -346,6 +344,7 @@ package body Gtk.Toolbar is
       TTA  : System.Address := TT'Address;
       TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
+      I    : System.Address;
 
    begin
       if Text'Length = 0 then
@@ -360,12 +359,18 @@ package body Gtk.Toolbar is
          TPTA := System.Null_Address;
       end if;
 
+      if Icon = null then
+         I := System.Null_Address;
+      else
+         I := Get_Object (Icon);
+      end if;
+
       return Gtk.Widget.Convert
         (Internal
           (Get_Object (Toolbar),
            The_Type,
            Get_Object (Widget),
-           TA, TTA, TPTA, Get_Object (Icon),
+           TA, TTA, TPTA, I,
            System.Null_Address,
            System.Null_Address,
            Position));
@@ -380,7 +385,7 @@ package body Gtk.Toolbar is
       Text                 : String := "";
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint) return Gtk.Button.Gtk_Button
    is
       function Internal
@@ -401,6 +406,7 @@ package body Gtk.Toolbar is
       TTA  : System.Address := TT'Address;
       TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
+      I    : System.Address;
 
    begin
       if Text'Length = 0 then
@@ -415,12 +421,17 @@ package body Gtk.Toolbar is
          TPTA := System.Null_Address;
       end if;
 
+      if Icon = null then
+         I := System.Null_Address;
+      else
+         I := Get_Object (Icon);
+      end if;
+
       return Gtk.Button.Gtk_Button
         (Get_User_Data
           (Internal
             (Get_Object (Toolbar),
-             TA, TTA, TPTA,
-             Get_Object (Icon),
+             TA, TTA, TPTA, I,
              System.Null_Address, System.Null_Address,
              Position),
            Stub));
@@ -480,8 +491,6 @@ package body Gtk.Toolbar is
       TTA  : System.Address := TT'Address;
       TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
-
-      use type Gtk.Widget.Gtk_Widget;
 
    begin
       if Tooltip_Text'Length = 0 then
@@ -547,7 +556,7 @@ package body Gtk.Toolbar is
       Text                 : String := "";
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget
    is
       function Internal
@@ -568,6 +577,7 @@ package body Gtk.Toolbar is
       TTA  : System.Address := TT'Address;
       TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
+      I    : System.Address;
 
    begin
       if Text'Length = 0 then
@@ -582,13 +592,18 @@ package body Gtk.Toolbar is
          TPTA := System.Null_Address;
       end if;
 
+      if Icon = null then
+         I := System.Null_Address;
+      else
+         I := Get_Object (Icon);
+      end if;
+
       return Gtk.Widget.Convert
         (Internal
           (Get_Object (Toolbar),
            The_Type,
            Get_Object (Widget),
-           TA, TTA, TPTA,
-           Get_Object (Icon),
+           TA, TTA, TPTA, I,
            System.Null_Address, System.Null_Address));
    end Prepend_Element;
 
@@ -601,7 +616,7 @@ package body Gtk.Toolbar is
       Text                 : String := "";
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button
    is
       function Internal
@@ -622,6 +637,7 @@ package body Gtk.Toolbar is
       TTA  : System.Address := TT'Address;
       TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
+      I    : System.Address;
 
    begin
       if Text'Length = 0 then
@@ -636,12 +652,17 @@ package body Gtk.Toolbar is
          TPTA := System.Null_Address;
       end if;
 
+      if Icon = null then
+         I := System.Null_Address;
+      else
+         I := Get_Object (Icon);
+      end if;
+
       return Gtk.Button.Gtk_Button
         (Get_User_Data
           (Internal
             (Get_Object (Toolbar),
-             TA, TTA, TPTA,
-             Get_Object (Icon),
+             TA, TTA, TPTA, I,
              System.Null_Address, System.Null_Address),
            Stub));
    end Prepend_Item;

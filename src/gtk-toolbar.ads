@@ -85,7 +85,7 @@ package Gtk.Toolbar is
       Text                 : String := "";
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button;
 
    function Insert_Item
@@ -93,7 +93,7 @@ package Gtk.Toolbar is
       Text                 : String := "";
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint)
       return Gtk.Button.Gtk_Button;
 
@@ -145,7 +145,7 @@ package Gtk.Toolbar is
       Text                 : String := "";
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget;
 
    function Insert_Element
@@ -155,7 +155,7 @@ package Gtk.Toolbar is
       Text                 : String := "";
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint)
       return Gtk.Widget.Gtk_Widget;
    --  Note : you have to set the callback yourself, as opposed to what is
