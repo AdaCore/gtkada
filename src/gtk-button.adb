@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -31,6 +31,7 @@ with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Container; use Gtk.Container;
 with Gtk.File_Selection; use Gtk.File_Selection;
 with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
