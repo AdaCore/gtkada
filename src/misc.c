@@ -1782,6 +1782,12 @@ ada_style_get_white (GtkStyle* style)
   return &style->white;
 }
 
+GdkFont*
+ada_style_get_font (GtkStyle* style)
+{
+  return style->font;
+}
+
 void
 ada_style_set_fg_gc (GtkStyle* style, gint state, GdkGC* gc)
 {

@@ -34,6 +34,7 @@
 
 with Gdk; use Gdk;
 with Gdk.Color;
+with Gdk.Font;
 with Gdk.GC;
 with Gdk.Types;
 with Gdk.Pixmap;
@@ -232,6 +233,8 @@ package Gtk.Style is
    procedure Set_White (Style : Gtk_Style; Color : Gdk.Color.Gdk_Color);
 
    function Get_White (Style : Gtk_Style) return Gdk.Color.Gdk_Color;
+
+   function Get_Font (Style : Gtk_Style) return Gdk.Font.Gdk_Font;
 
    procedure Set_Font_Description
      (Style : Gtk_Style; Desc : Pango.Font.Pango_Font_Description);
@@ -487,6 +490,7 @@ private
    pragma Import (C, Y_Thickness, "ada_style_get_y_thickness");
    pragma Import (C, Set_Font_Description, "ada_style_set_font_description");
    pragma Import (C, Get_Font_Description, "ada_style_get_font_description");
+   pragma Import (C, Get_Font, "ada_style_get_font");
 end Gtk.Style;
 
 --  missing:
