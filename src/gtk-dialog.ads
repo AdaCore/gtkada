@@ -51,6 +51,7 @@
 
 with Glib.Properties;
 with Gtk.Box;
+with Gtk.Widget;
 with Gtk.Window;
 
 package Gtk.Dialog is
@@ -62,17 +63,17 @@ package Gtk.Dialog is
    -- Enumeration types --
    -----------------------
 
-   type Gtk_Dialog_Flags is
-     (Gtk_Dialog_Modal,
-      --  Call Gtk.Window.Set_Modal (Win, True)
-
-      Gtk_Dialog_Destroy_With_Parent,
-      --  Call Gtk.Window.Set_Destroy_With_Parent
-
-      Gtk_Dialog_No_Separator
-      --  No separator bar above buttons
-     );
-   --  Parameters for dialog construction
+   type Gtk_Dialog_Flags is mod 3;
+   for Gtk_Dialog_Flags'Size use Gint'Size;
+   Modal               : constant Gtk_Dialog_Flags := 0;
+   Destroy_With_Parent : constant Gtk_Dialog_Flags := 1;
+   No_Separator        : constant Gtk_Dialog_Flags := 2;
+   --  Various flags that can be set for the dialog, with the following
+   --  implications:
+   --     - Modal : the dialog is modal, see Gtk.Window.Set_Modal
+   --     - Destroy_With_Parent: The dialog is destroyed if its parent is
+   --       destroyed. See Gtk.Window.Set_Destroy_With_Parent
+   --     - No_Separator: No separator bar above the buttons.
 
    type Gtk_Response_Type is new Gint;
    --  Type used for Response_Id's.
@@ -96,7 +97,7 @@ package Gtk.Dialog is
    --  for your convenience.
 
    Gtk_Response_Delete_Event : constant Gtk_Response_Type := -4;
-   --  If the dialog is deleted.
+   --  If the dialog is deleted through the button in the titlebar
 
    Gtk_Response_OK     : constant Gtk_Response_Type := -5;
    Gtk_Response_Cancel : constant Gtk_Response_Type := -6;
@@ -117,7 +118,25 @@ package Gtk.Dialog is
    --  Widgets should not be packed into this widget directly, but into the
    --  vbox and action_area, as described above.
 
+   procedure Gtk_New
+     (Dialog : out Gtk_Dialog;
+      Title  : String;
+      Parent : access Gtk.Window.Gtk_Window_Record'Class;
+      Flags  : Gtk_Dialog_Flags);
+   --  Create a new dialog with a specific title, and specific attributes.
+   --  Parent is the transient parent for the dialog (ie the one that is
+   --  used for reference for the flag Destroy_With_Parent, or to compute the
+   --  initial position of the dialog).
+
    procedure Initialize (Dialog : access Gtk_Dialog_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Initialize
+     (Dialog : access Gtk_Dialog_Record'Class;
+      Title  : String;
+      Parent : access Gtk.Window.Gtk_Window_Record'Class;
+      Flags  : Gtk_Dialog_Flags);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -131,6 +150,59 @@ package Gtk.Dialog is
    function Get_Vbox
      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Return the vertical box associated with a Dialog.
+
+   procedure Add_Action_Widget
+     (Dialog      : access Gtk_Dialog_Record;
+      Child       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Response_Id : Gtk_Response_Type);
+   --  Add an activatable widget to the action area of Dialog.
+   --  When the widget is activated (ie emits the "activate" signal), Dialog
+   --  will emit the "response" signal with Response_Id.
+
+   function Add_Button
+     (Dialog      : access Gtk_Dialog_Record;
+      Text        : String;
+      Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
+   --  Add a button with the given text to the dialog. Note that you can also
+   --  pass one of the constants defined in Gtk.Stock for the predefined
+   --  buttons.
+   --  When the button is clicked, Dialog will emit the "response" signal.
+   --  The button widget is returned.
+
+   procedure Set_Response_Sensitive
+     (Dialog      : access Gtk_Dialog_Record;
+      Response_Id : Gtk_Response_Type;
+      Setting     : Boolean);
+   --  Call Gtk.Widget.Set_Sensitive for all the buttons in the dialog
+   --  associated with Response_Id.
+
+   procedure Set_Default_Response
+     (Dialog : access Gtk_Dialog_Record; Response_Id : Gtk_Response_Type);
+   --  Set the last widget in the dialog's action area with the given
+   --  Response_Id as the default widget for Dialog.
+   --  Pressing Enter will activate this default widget.
+
+   procedure Set_Has_Separator
+     (Dialog : access Gtk_Dialog_Record; Setting : Boolean);
+   --  Set whether the dialog has a separator above the buttons.
+
+   function Get_Has_Separator (Dialog : access Gtk_Dialog_Record)
+      return Boolean;
+   --  Return True if the dialog has a separator above the buttons.
+
+   function Run (Dialog : access Gtk_Dialog_Record) return Gtk_Response_Type;
+   --  Block in a recursive main loop until Dialog emits the "response"
+   --  signal, or is destroyed. If the dialog is destroyed, Gtk_Response_None
+   --  is returned. Otherwise, the response_id from the "response" signal is
+   --  returned.
+   --  Run will call Show on the dialog automatically. However, it is your
+   --  responsability to call Show for anyu child you have inserted in the
+   --  dialog.
+   --  The dialog is automatically set to modal when this function is
+   --  called. You can exit at any time from this function by emitting the
+   --  "response" signal directly.
+   --  When Run returns, you are responsible for hiding or destroying the
+   --  dialog if necessary.
 
    ----------------
    -- Properties --
@@ -162,8 +234,15 @@ package Gtk.Dialog is
    --      (Dialog      : access Gtk_Fialog_Record'Class;
    --       Response_Id : Gint);
    --
-   --    The user has selected a response for the dialog.
+   --  - "close"
+   --    procedure Handler (Dialog : access Gtk_Fialog_Record'Class);
+   --
+   --    Emit this signal to force a closing of the dialog.
    --  </signals>
+
+   procedure Response
+     (Dialog : access Gtk_Dialog_Record; Response_Id : Gtk_Response_Type);
+   --  Emit the "response" signal
 
 private
    type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with null record;
@@ -175,48 +254,7 @@ private
 end Gtk.Dialog;
 
 --  missing:
---  GtkWidget* Gtk_New
---    (const gchar     *title,
---     GtkWindow       *parent,
---     GtkDialogFlags   flags,
---     const gchar     *first_button_text,
---     ...);
-
---  procedure add_action_widget
---    (GtkDialog   *dialog,
---     GtkWidget   *child,
---     Gtk_Response_Type response_id);
-
---  GtkWidget* add_button
---    (GtkDialog   *dialog,
---     const gchar *button_text,
---     Gtk_Response_Type response_id);
-
 --  procedure add_buttons
 --    (GtkDialog   *dialog,
 --     const gchar *first_button_text,
 --     ...);
-
---  procedure set_response_sensitive
---    (GtkDialog *dialog,
---     Gtk_Response_Type response_id,
---     gboolean   setting);
-
---  procedure set_default_response
---    (GtkDialog *dialog,
---     Gtk_Response_Type response_id);
-
---  procedure set_has_separator
---    (GtkDialog *dialog,
---     gboolean   setting);
-
---  gboolean get_has_separator (GtkDialog *dialog);
-
---  procedure Response
---    (GtkDialog *dialog,
---     Gtk_Response_Type response_id);
---  Emit response signal
-
---  function Run (GtkDialog *dialog) return Gtk_Response_Type;
---  Return response_id
-
