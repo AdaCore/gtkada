@@ -33,6 +33,7 @@
 --  </description>
 --  <c_version>1.3.6</c_version>
 
+with Gtkada.Types;
 with Gdk.Pixbuf;
 with Gtk.Text_Child;
 with Gtk.Text_Iter;
@@ -205,6 +206,16 @@ package Gtk.Text_Buffer is
    --  indexes into the buffer. Contrast with Get_Slice.
    --  Return value: an allocated UTF-8 string
 
+   function Get_Text
+     (Buffer               : access Gtk_Text_Buffer_Record;
+      Start                : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
+      Include_Hidden_Chars : Boolean := False) return Gtkada.Types.Chars_Ptr;
+   --  Same as Get_Text above, but return a pointer to a C string, for
+   --  efficiency.
+   --  The caller is responsible for freeing (using Gtkada.Types.g_free) the
+   --  returned pointer.
+
    function Get_Slice
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
@@ -220,6 +231,16 @@ package Gtk.Text_Buffer is
    --  normal text as well, so it is not a reliable indicator that a pixbuf or
    --  widget is in the buffer.
    --  Return value: an allocated UTF-8 string
+
+   function Get_Slice
+     (Buffer               : access Gtk_Text_Buffer_Record;
+      Start                : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
+      Include_Hidden_Chars : Boolean := False) return Gtkada.Types.Chars_Ptr;
+   --  Same as Get_Slice above, but return a pointer to a C string, for
+   --  efficiency.
+   --  The caller is responsible for freeing (using Gtkada.Types.g_free) the
+   --  returned pointer.
 
    procedure Insert_Pixbuf
      (Buffer : access Gtk_Text_Buffer_Record;

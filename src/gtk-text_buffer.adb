@@ -32,9 +32,6 @@ with System;
 
 package body Gtk.Text_Buffer is
 
-   procedure g_free (Mem : Interfaces.C.Strings.chars_ptr);
-   pragma Import (C, g_free, "g_free");
-
    -------------
    -- Gtk_New --
    -------------
@@ -324,7 +321,7 @@ package body Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False) return String
+      Include_Hidden_Chars : Boolean := False) return Gtkada.Types.Chars_Ptr
    is
       function Internal
         (Buffer               : System.Address;
@@ -334,18 +331,27 @@ package body Gtk.Text_Buffer is
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_buffer_get_text");
 
-      Str : Interfaces.C.Strings.chars_ptr :=
-         Internal
-           (Get_Object (Buffer),
-            Start,
-            The_End,
-            To_Gboolean (Include_Hidden_Chars));
+   begin
+      return Internal
+        (Get_Object (Buffer),
+         Start,
+         The_End,
+         To_Gboolean (Include_Hidden_Chars));
+   end Get_Text;
 
+   function Get_Text
+     (Buffer               : access Gtk_Text_Buffer_Record;
+      Start                : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
+      Include_Hidden_Chars : Boolean := False) return String is
    begin
       declare
+         Str : Interfaces.C.Strings.chars_ptr :=
+           Get_Text (Buffer, Start, The_End, Include_Hidden_Chars);
          S : constant String := Interfaces.C.Strings.Value (Str);
+
       begin
-         g_free (Str);
+         Gtkada.Types.g_free (Str);
          return S;
       end;
    end Get_Text;
@@ -358,7 +364,7 @@ package body Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False) return String
+      Include_Hidden_Chars : Boolean := False) return Gtkada.Types.Chars_Ptr
    is
       function Internal
         (Buffer               : System.Address;
@@ -368,18 +374,27 @@ package body Gtk.Text_Buffer is
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_buffer_get_slice");
 
-      Str : Interfaces.C.Strings.chars_ptr :=
-         Internal
-           (Get_Object (Buffer),
-            Start,
-            The_End,
-            To_Gboolean (Include_Hidden_Chars));
+   begin
+      return Internal
+        (Get_Object (Buffer),
+         Start,
+         The_End,
+         To_Gboolean (Include_Hidden_Chars));
+   end Get_Slice;
 
+   function Get_Slice
+     (Buffer               : access Gtk_Text_Buffer_Record;
+      Start                : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
+      Include_Hidden_Chars : Boolean := False) return String is
    begin
       declare
-         S : constant String := Interfaces.C.Strings.Value (Str);
+         Str : Interfaces.C.Strings.chars_ptr :=
+           Get_Slice (Buffer, Start, The_End, Include_Hidden_Chars);
+         S   : constant String := Interfaces.C.Strings.Value (Str);
+
       begin
-         g_free (Str);
+         Gtkada.Types.g_free (Str);
          return S;
       end;
    end Get_Slice;
