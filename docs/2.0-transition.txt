@@ -273,6 +273,8 @@ Gtk.Widget:
   Get_Parent_Window, Hide_On_Delete, Get_Modifer_Style: new function.
   Set_Default_Visual, Push/Pop_Visual, Get_Visual, Set_Rc_Style: removed
   Draw_Default, Draw_Focus, Popup: removed
+  Set_USize: deprecated
+  Set_Size_Request: new function
 Gtk.Window:
   Set_Role, Set_Destroy_With_Parent,
   Set/Get_Resizable, Set_Has_Frame, Set_Frame_Dimensions,
