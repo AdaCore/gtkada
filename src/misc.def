@@ -196,6 +196,10 @@ EXPORTS
 	ada_gtk_clist_get_text
 	ada_gtk_clist_set_cell_contents
 	ada_gtk_clist_set_row_data_full
+	ada_gtk_combo_box_get_arrow
+	ada_gtk_combo_box_get_button
+	ada_gtk_combo_box_get_frame
+	ada_gtk_dataset_get_name
 	ada_gtk_dnd_context_get_action
 	ada_gtk_dnd_context_get_actions
 	ada_gtk_dnd_context_get_suggested_action
@@ -206,10 +210,28 @@ EXPORTS
 	ada_gtk_dnd_get_selection
 	ada_gtk_dnd_get_target
 	ada_gtk_dnd_get_type
+	ada_gtk_extra_color_combo_get_column
+	ada_gtk_extra_color_combo_get_ncols
+	ada_gtk_extra_color_combo_get_nrows
+	ada_gtk_extra_color_combo_get_row
+	ada_gtk_extra_color_combo_set_column
+	ada_gtk_extra_color_combo_set_row
+	ada_gtk_extra_plot_flag_is_set
+	ada_gtk_extra_plot_set_flags
+	ada_gtk_extra_plot_unset_flags
+	ada_gtk_extra_sheet_flag_is_set
+	ada_gtk_extra_sheet_set_flags
+	ada_gtk_extra_sheet_unset_flags
+	ada_gtk_font_combo_get_bold_button
+	ada_gtk_font_combo_get_font
+	ada_gtk_font_combo_get_italic_button
+	ada_gtk_font_combo_get_name_combo
+	ada_gtk_font_combo_get_size_combo
 	ada_gtk_font_selection_dialog_get_apply
 	ada_gtk_font_selection_dialog_get_cancel
 	ada_gtk_font_selection_dialog_get_ok
 	ada_gtk_get_real_name
+	ada_gtk_item_entry_get_justification
 	ada_gtk_layout_get_bin_window
 	ada_gtk_layout_get_height
 	ada_gtk_layout_get_width
@@ -230,8 +252,35 @@ EXPORTS
 	ada_gtk_paned_get_gutter_size
 	ada_gtk_paned_get_handle_size
 	ada_gtk_parse_cmd_line
+	ada_gtk_plot_canvas_flag_is_set
+	ada_gtk_plot_canvas_get_alloc_height
+	ada_gtk_plot_canvas_get_alloc_width
+	ada_gtk_plot_canvas_get_alloc_x
+	ada_gtk_plot_canvas_get_alloc_y
+	ada_gtk_plot_canvas_get_item_type
+	ada_gtk_plot_canvas_get_pixmap
+	ada_gtk_plot_canvas_set_draw_func
+	ada_gtk_plot_canvas_set_flags
+	ada_gtk_plot_canvas_unset_flags
+	ada_gtk_plot_get_datasets
+	ada_gtk_plot_get_text_position
+	ada_gtk_plot_get_text_string
+	ada_gtk_plot_get_texts
+	ada_gtk_plot_set_color
+	ada_gtk_plot_set_line_style
+	ada_gtk_plot_set_line_width
+	ada_gtk_psfont_get_psname
+	ada_gtk_sheet_get_column_title
+	ada_gtk_sheet_get_column_width
+	ada_gtk_sheet_get_range
+	ada_gtk_sheet_get_row_height
+	ada_gtk_sheet_get_row_title
+	ada_gtk_sheet_get_widget
+	ada_gtk_socket_get_plug_window
 	ada_gtk_type_gdk_event
 	ada_gtk_viewport_get_bin_window
+	ada_gtk_window_get_title
+	ada_gtk_window_get_transient_parent
 	ada_gtkarg_value_object
 	ada_initialize_class_record
 	ada_list_get_children
@@ -244,11 +293,11 @@ EXPORTS
 	ada_notebook_get_menu_label
 	ada_notebook_get_tab_label
 	ada_notebook_get_tab_pos
-	ada_notebook_page_get_child
 	ada_notebook_page_allocation_height
 	ada_notebook_page_allocation_width
 	ada_notebook_page_allocation_x
 	ada_notebook_page_allocation_y
+	ada_notebook_page_get_child
 	ada_object_flag_is_set
 	ada_object_flags
 	ada_object_get_type
@@ -326,9 +375,9 @@ EXPORTS
 	ada_text_get_gap_size
 	ada_text_get_hadj
 	ada_text_get_text
+	ada_text_get_text_area
 	ada_text_get_text_end
 	ada_text_get_vadj
-	ada_text_get_text_area
 	ada_tree_get_children
 	ada_tree_get_selection
 	ada_tree_item_get_subtree
@@ -366,49 +415,3 @@ EXPORTS
 	gdk_window_set_colormap
 	gdk_window_unref
 	gtk_container_set_reallocate_redraws
-	ada_gtk_combo_box_get_arrow
-	ada_gtk_combo_box_get_button
-	ada_gtk_combo_box_get_frame
-	ada_gtk_dataset_get_name
-	ada_gtk_extra_plot_flag_is_set
-	ada_gtk_extra_plot_set_flags
-	ada_gtk_extra_plot_unset_flags
-	ada_gtk_extra_sheet_flag_is_set
-	ada_gtk_extra_sheet_set_flags
-	ada_gtk_extra_sheet_unset_flags
-	ada_gtk_extra_color_combo_get_column
-	ada_gtk_extra_color_combo_get_row
-	ada_gtk_extra_color_combo_get_ncols
-	ada_gtk_extra_color_combo_get_nrows
-	ada_gtk_extra_color_combo_set_row
-	ada_gtk_extra_color_combo_set_column
-	ada_gtk_font_combo_get_bold_button
-	ada_gtk_font_combo_get_font
-	ada_gtk_font_combo_get_italic_button
-	ada_gtk_font_combo_get_name_combo
-	ada_gtk_font_combo_get_size_combo
-	ada_gtk_item_entry_get_justification
-	ada_gtk_plot_canvas_get_pixmap
-	ada_gtk_plot_canvas_get_alloc_height
-	ada_gtk_plot_canvas_get_alloc_width
-	ada_gtk_plot_canvas_get_alloc_x
-	ada_gtk_plot_canvas_get_alloc_y
-	ada_gtk_plot_canvas_flag_is_set
-	ada_gtk_plot_canvas_get_item_type
-	ada_gtk_plot_canvas_set_draw_func
-	ada_gtk_plot_canvas_set_flags
-	ada_gtk_plot_canvas_unset_flags
-	ada_gtk_plot_get_datasets
-	ada_gtk_plot_get_text_position
-	ada_gtk_plot_get_text_string
-	ada_gtk_plot_get_texts
-	ada_gtk_psfont_get_psname
-	ada_gtk_sheet_get_column_title
-	ada_gtk_sheet_get_column_width
-	ada_gtk_sheet_get_range
-	ada_gtk_sheet_get_row_height
-	ada_gtk_sheet_get_row_title
-	ada_gtk_sheet_get_widget
-	ada_gtk_socket_get_plug_window
-	ada_gtk_window_get_title
-	ada_gtk_window_get_transient_parent
