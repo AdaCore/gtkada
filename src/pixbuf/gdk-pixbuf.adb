@@ -49,24 +49,25 @@ package body Gdk.Pixbuf is
    -- Gdk_New --
    -------------
 
-   function Gdk_New (Width           : in Gint;
-                     Height          : in Gint;
-                     Format          : in Gdk.Art.Pixbuf.Art_Pix_Format :=
-                       Gdk.Art.Pixbuf.Art_Pix_RGB;
-                     Has_Alpha       : in Boolean := False;
-                     Bits_Per_Sample : in Gint := 8)
-                    return Gdk_Pixbuf
+   function Gdk_New
+     (Width           : in Gint;
+      Height          : in Gint;
+      Format          : in Gdk.Art.Pixbuf.Art_Pix_Format :=
+        Gdk.Art.Pixbuf.Art_Pix_RGB;
+      Has_Alpha       : in Boolean := False;
+      Bits_Per_Sample : in Gint := 8) return Gdk_Pixbuf
    is
-      function Internal (Format          : in Art_Pix_Format;
-                         Has_Alpha       : in Gint;
-                         Bits_Per_Sample : in Gint;
-                         Width           : in Gint;
-                         Height          : in Gint)
-                        return Gdk_Pixbuf;
+      function Internal
+        (Format          : in Art_Pix_Format;
+         Has_Alpha       : in Gint;
+         Bits_Per_Sample : in Gint;
+         Width           : in Gint;
+         Height          : in Gint) return Gdk_Pixbuf;
       pragma Import (C, Internal, "gdk_pixbuf_new");
+
    begin
-      return Internal (Format, Boolean'Pos (Has_Alpha),
-                       Bits_Per_Sample, Width, Height);
+      return Internal
+        (Format, Boolean'Pos (Has_Alpha), Bits_Per_Sample, Width, Height);
    end Gdk_New;
 
    -------------------
@@ -84,23 +85,24 @@ package body Gdk.Pixbuf is
    -- Add_Alpha --
    ---------------
 
-   function Add_Alpha (Pixbuf           : in Gdk_Pixbuf;
-                       Substitute_Color : in Boolean;
-                       Red              : in Guchar := 0;
-                       Green            : in Guchar := 0;
-                       Blue             : in Guchar := 0)
-                      return Gdk_Pixbuf
+   function Add_Alpha
+     (Pixbuf           : in Gdk_Pixbuf;
+      Substitute_Color : in Boolean;
+      Red              : in Guchar := 0;
+      Green            : in Guchar := 0;
+      Blue             : in Guchar := 0) return Gdk_Pixbuf
    is
-      function Internal (Pixbuf           : in Gdk_Pixbuf;
-                         Substitute_Color : in Gboolean;
-                         Red              : in Guchar;
-                         Green            : in Guchar;
-                         Blue             : in Guchar)
-                        return Gdk_Pixbuf;
+      function Internal
+        (Pixbuf           : in Gdk_Pixbuf;
+         Substitute_Color : in Gboolean;
+         Red              : in Guchar;
+         Green            : in Guchar;
+         Blue             : in Guchar) return Gdk_Pixbuf;
       pragma Import (C, Internal, "gdk_pixbuf_add_alpha");
+
    begin
-      return Internal (Pixbuf, Boolean'Pos (Substitute_Color),
-                       Red, Green, Blue);
+      return Internal
+        (Pixbuf, Boolean'Pos (Substitute_Color), Red, Green, Blue);
    end Add_Alpha;
 
    ------------------------
@@ -121,24 +123,27 @@ package body Gdk.Pixbuf is
       X_Dither : in Gint := 0;
       Y_Dither : in Gint := 0)
    is
-      procedure Internal (Pixbuf   : in Gdk_Pixbuf;
-                          Drawable : in Gdk.Drawable.Gdk_Drawable;
-                          Gc       : in Gdk.GC.Gdk_GC;
-                          Src_X    : in Gint;
-                          Src_Y    : in Gint;
-                          Dest_X   : in Gint;
-                          Dest_Y   : in Gint;
-                          Width    : in Gint;
-                          Height   : in Gint;
-                          Dither   : in Gint;
-                          X_Dither : in Gint;
-                          Y_Dither : in Gint);
+      procedure Internal
+        (Pixbuf   : in Gdk_Pixbuf;
+         Drawable : in Gdk.Drawable.Gdk_Drawable;
+         Gc       : in Gdk.GC.Gdk_GC;
+         Src_X    : in Gint;
+         Src_Y    : in Gint;
+         Dest_X   : in Gint;
+         Dest_Y   : in Gint;
+         Width    : in Gint;
+         Height   : in Gint;
+         Dither   : in Gint;
+         X_Dither : in Gint;
+         Y_Dither : in Gint);
       pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable");
+
    begin
-      Internal (Pixbuf, Drawable, Gc,
-                Src_X, Src_Y, Dest_X, Dest_Y, Width, Height,
-                Gdk.Rgb.Gdk_Rgb_Dither'Pos (Dither),
-                X_Dither, Y_Dither);
+      Internal
+        (Pixbuf, Drawable, Gc,
+         Src_X, Src_Y, Dest_X, Dest_Y, Width, Height,
+         Gdk.Rgb.Gdk_Rgb_Dither'Pos (Dither),
+         X_Dither, Y_Dither);
    end Render_To_Drawable;
 
    ------------------------------
@@ -160,27 +165,30 @@ package body Gdk.Pixbuf is
       X_Dither        : in Gint := 0;
       Y_Dither        : in Gint := 0)
    is
-      procedure Internal (Pixbuf          : in Gdk_Pixbuf;
-                          Drawable        : in Gdk.Drawable.Gdk_Drawable;
-                          Src_X           : in Gint;
-                          Src_Y           : in Gint;
-                          Dest_X          : in Gint;
-                          Dest_Y          : in Gint;
-                          Width           : in Gint;
-                          Height          : in Gint;
-                          Alpha           : in Gint;
-                          Alpha_Threshold : in Gint;
-                          Dither          : in Gint;
-                          X_Dither        : in Gint;
-                          Y_Dither        : in Gint);
+      procedure Internal
+        (Pixbuf          : in Gdk_Pixbuf;
+         Drawable        : in Gdk.Drawable.Gdk_Drawable;
+         Src_X           : in Gint;
+         Src_Y           : in Gint;
+         Dest_X          : in Gint;
+         Dest_Y          : in Gint;
+         Width           : in Gint;
+         Height          : in Gint;
+         Alpha           : in Gint;
+         Alpha_Threshold : in Gint;
+         Dither          : in Gint;
+         X_Dither        : in Gint;
+         Y_Dither        : in Gint);
       pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable_alpha");
+
    begin
-      Internal (Pixbuf, Drawable,
-                Src_X, Src_Y, Dest_X, Dest_Y, Width, Height,
-                Alpha_Mode'Pos (Alpha),
-                Alpha_Threshold,
-                Gdk.Rgb.Gdk_Rgb_Dither'Pos (Dither),
-                X_Dither, Y_Dither);
+      Internal
+        (Pixbuf, Drawable,
+         Src_X, Src_Y, Dest_X, Dest_Y, Width, Height,
+         Alpha_Mode'Pos (Alpha),
+         Alpha_Threshold,
+         Gdk.Rgb.Gdk_Rgb_Dither'Pos (Dither),
+         X_Dither, Y_Dither);
    end Render_To_Drawable_Alpha;
 
 end Gdk.Pixbuf;

@@ -65,8 +65,7 @@ package Gdk.Pixbuf is
 
    Null_Pixbuf : constant Gdk_Pixbuf;
 
-   type Alpha_Mode is (Alpha_Bilevel,
-                       Alpha_Full);
+   type Alpha_Mode is (Alpha_Bilevel, Alpha_Full);
    --  Alpha compositing mode.
    --  This indicates how the alpha channel (for opacity) is handled when
    --  rendering.
@@ -75,8 +74,8 @@ package Gdk.Pixbuf is
    -- Accessing the fields --
    --------------------------
 
-   function Get_Format (Pixbuf : in Gdk_Pixbuf)
-                       return Gdk.Art.Pixbuf.Art_Pix_Format;
+   function Get_Format
+     (Pixbuf : in Gdk_Pixbuf) return Gdk.Art.Pixbuf.Art_Pix_Format;
    --  Return the format of the image.
    --  This can currently be only RGB, but extensions will be implemented
    --  for gray, cmyk, lab,...
@@ -90,8 +89,8 @@ package Gdk.Pixbuf is
    function Get_Bits_Per_Sample (Pixbuf : in Gdk_Pixbuf) return Gint;
    --  Number of bits per color sample.
 
-   function Get_Pixels (Pixbuf : in Gdk_Pixbuf)
-                       return Gdk.Rgb.Rgb_Buffer_Access;
+   function Get_Pixels
+     (Pixbuf : in Gdk_Pixbuf) return Gdk.Rgb.Rgb_Buffer_Access;
    --  Return a pointer to the pixel data of the image.
 
    function Get_Width (Pixbuf : in Gdk_Pixbuf) return Gint;
@@ -120,22 +119,18 @@ package Gdk.Pixbuf is
    -- Libart interface --
    ----------------------
 
-   function Get_Art_Pixbuf (Pixbuf : in Gdk_Pixbuf)
-                           return Gdk.Art.Pixbuf.Art_Pixbuf;
-   --  Return the underlying structure from libart.
-
-   function New_From_Art_Pixbuf (Pixbuf : in Gdk.Art.Pixbuf.Art_Pixbuf)
-                                return Gdk_Pixbuf;
+   function New_From_Art_Pixbuf
+     (Pixbuf : in Gdk.Art.Pixbuf.Art_Pixbuf) return Gdk_Pixbuf;
    --  Wrap an art_pixbuf.
    --  The reference counting is initialized to 1.
 
-   function Gdk_New (Width           : in Gint;
-                     Height          : in Gint;
-                     Format          : in Gdk.Art.Pixbuf.Art_Pix_Format :=
-                       Gdk.Art.Pixbuf.Art_Pix_RGB;
-                     Has_Alpha       : in Boolean := False;
-                     Bits_Per_Sample : in Gint := 8)
-                    return Gdk_Pixbuf;
+   function Gdk_New
+     (Width           : in Gint;
+      Height          : in Gint;
+      Format          : in Gdk.Art.Pixbuf.Art_Pix_Format :=
+        Gdk.Art.Pixbuf.Art_Pix_RGB;
+      Has_Alpha       : in Boolean := False;
+      Bits_Per_Sample : in Gint := 8) return Gdk_Pixbuf;
    --  Create a blank pixbuf with an optimal row stride and a new buffer.
    --  The buffer is allocated, but not cleared.
    --  The reference counting is initialized to 1.
@@ -147,16 +142,16 @@ package Gdk.Pixbuf is
    function New_From_File (Filename : in String) return Gdk_Pixbuf;
    --  Load an image from file.
 
-   function New_From_Xpm_Data (Data : in Interfaces.C.Strings.chars_ptr_array)
-                              return Gdk_Pixbuf;
+   function New_From_Xpm_Data
+     (Data : in Interfaces.C.Strings.chars_ptr_array) return Gdk_Pixbuf;
    --  Create an image from a XPM data.
 
-   function Add_Alpha (Pixbuf           : in Gdk_Pixbuf;
-                       Substitute_Color : in Boolean;
-                       Red              : in Guchar := 0;
-                       Green            : in Guchar := 0;
-                       Blue             : in Guchar := 0)
-                      return Gdk_Pixbuf;
+   function Add_Alpha
+     (Pixbuf           : in Gdk_Pixbuf;
+      Substitute_Color : in Boolean;
+      Red              : in Guchar := 0;
+      Green            : in Guchar := 0;
+      Blue             : in Guchar := 0) return Gdk_Pixbuf;
    --  Return a newly allocated image copied from Pixbuf, but with an
    --  extra alpha channel.
    --  If Pixbuf already had an alpha channel, the two images have exactly
@@ -170,15 +165,16 @@ package Gdk.Pixbuf is
    -- Rendering --
    ---------------
 
-   procedure Render_Threshold_Alpha (Pixbuf : in Gdk_Pixbuf;
-                                     Bitmap : in Gdk.Bitmap.Gdk_Bitmap;
-                                     Src_X  : in Gint;
-                                     Src_Y  : in Gint;
-                                     Dest_X : in Gint;
-                                     Dest_Y : in Gint;
-                                     Width  : in Gint;
-                                     Height : in Gint;
-                                     Alpha_Threshold : in Gint);
+   procedure Render_Threshold_Alpha
+     (Pixbuf : in Gdk_Pixbuf;
+      Bitmap : in Gdk.Bitmap.Gdk_Bitmap;
+      Src_X  : in Gint;
+      Src_Y  : in Gint;
+      Dest_X : in Gint;
+      Dest_Y : in Gint;
+      Width  : in Gint;
+      Height : in Gint;
+      Alpha_Threshold : in Gint);
    --  Take the opacity values in a rectangular portion of a pixbuf and
    --  thresholds them to produce a bi-level alpha mask that can be used as
    --  a clipping mask for a drawable.
@@ -250,8 +246,7 @@ package Gdk.Pixbuf is
       Dest_X : in Gint;
       Dest_Y : in Gint;
       Width  : in Gint;
-      Height : in Gint)
-     return Gdk_Pixbuf;
+      Height : in Gint) return Gdk_Pixbuf;
    --  Transfer image data from a Gdk drawable and converts it to an RGB(A)
    --  representation inside a Gdk_Pixbuf.
    --
@@ -285,14 +280,15 @@ package Gdk.Pixbuf is
    --  newly-created pixbuf with a reference count of 1 if no destination
    --  pixbuf was specified.
 
-   procedure Copy_Area (Src_Pixbuf  : in Gdk_Pixbuf;
-                        Src_X       : in Gint;
-                        Src_Y       : in Gint;
-                        Width       : in Gint;
-                        Height      : in Gint;
-                        Dest_Pixbuf : in Gdk_Pixbuf;
-                        Dest_X      : in Gint;
-                        Dest_Y      : in Gint);
+   procedure Copy_Area
+     (Src_Pixbuf  : in Gdk_Pixbuf;
+      Src_X       : in Gint;
+      Src_Y       : in Gint;
+      Width       : in Gint;
+      Height      : in Gint;
+      Dest_Pixbuf : in Gdk_Pixbuf;
+      Dest_X      : in Gint;
+      Dest_Y      : in Gint);
    --  Copy a rectangular area from Src_pixbuf to Dest_pixbuf.
    --  Conversion of pixbuf formats is done automatically.
 
@@ -300,37 +296,39 @@ package Gdk.Pixbuf is
    -- Scaling --
    -------------
 
-   procedure Scale (Src          : in Gdk_Pixbuf;
-                    Dest         : in Gdk_Pixbuf;
-                    Dest_X       : in Gint;
-                    Dest_Y       : in Gint;
-                    Dest_Width   : in Gint;
-                    Dest_Height  : in Gint;
-                    Offset_X     : in Gdouble := 0.0;
-                    Offset_Y     : in Gdouble := 0.0;
-                    Scale_X      : in Gdouble := 1.0;
-                    Scale_Y      : in Gdouble := 1.0;
-                    Filter_Level : in Gdk.Art.Pixbuf.Art_Filter_Level :=
-                      Gdk.Art.Pixbuf.Filter_Bilinear);
+   procedure Scale
+     (Src          : in Gdk_Pixbuf;
+      Dest         : in Gdk_Pixbuf;
+      Dest_X       : in Gint;
+      Dest_Y       : in Gint;
+      Dest_Width   : in Gint;
+      Dest_Height  : in Gint;
+      Offset_X     : in Gdouble := 0.0;
+      Offset_Y     : in Gdouble := 0.0;
+      Scale_X      : in Gdouble := 1.0;
+      Scale_Y      : in Gdouble := 1.0;
+      Filter_Level : in Gdk.Art.Pixbuf.Art_Filter_Level :=
+        Gdk.Art.Pixbuf.Filter_Bilinear);
    --  Transform the source image by scaling by Scale_x and Scale_y then
    --  translating by Offset_x and Offset_y.
    --  The image is then rendered in the rectangle (Dest_x, Dest_y,
    --  Dest_width, Dest_height) of the resulting image onto the destination
    --  drawable replacing the previous contents.
 
-   procedure Composite (Src           : in Gdk_Pixbuf;
-                        Dest          : in Gdk_Pixbuf;
-                        Dest_X        : in Gint;
-                        Dest_Y        : in Gint;
-                        Dest_Width    : in Gint;
-                        Dest_Height   : in Gint;
-                        Offset_X      : in Gdouble := 0.0;
-                        Offset_Y      : in Gdouble := 0.0;
-                        Scale_X       : in Gdouble := 1.0;
-                        Scale_Y       : in Gdouble := 1.0;
-                        Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level :=
-                          Gdk.Art.Pixbuf.Filter_Bilinear;
-                        Overall_Alpha : in Gint := 128);
+   procedure Composite
+     (Src           : in Gdk_Pixbuf;
+      Dest          : in Gdk_Pixbuf;
+      Dest_X        : in Gint;
+      Dest_Y        : in Gint;
+      Dest_Width    : in Gint;
+      Dest_Height   : in Gint;
+      Offset_X      : in Gdouble := 0.0;
+      Offset_Y      : in Gdouble := 0.0;
+      Scale_X       : in Gdouble := 1.0;
+      Scale_Y       : in Gdouble := 1.0;
+      Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level :=
+        Gdk.Art.Pixbuf.Filter_Bilinear;
+      Overall_Alpha : in Gint := 128);
    --  Transform the source image by scaling by Scale_x and Scale_y then
    --  translating by Offset_x and Offset_y, then composite the rectangle
    --  (Dest_X, Dest_Y, Dest_Width, Dest_Height) of the resulting image onto
@@ -363,12 +361,12 @@ package Gdk.Pixbuf is
    --  The origin of checkboard is at (Check_x, Check_y)
    --  Color1 is the color at the upper left of the check.
 
-   function Scale_Simple (Src           : in Gdk_Pixbuf;
-                          Dest_Width    : in Gint;
-                          Dest_Height   : in Gint;
-                          Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level :=
-                            Gdk.Art.Pixbuf.Filter_Bilinear)
-                         return Gdk_Pixbuf;
+   function Scale_Simple
+     (Src           : in Gdk_Pixbuf;
+      Dest_Width    : in Gint;
+      Dest_Height   : in Gint;
+      Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level :=
+        Gdk.Art.Pixbuf.Filter_Bilinear) return Gdk_Pixbuf;
    --  Scale the Src image to Dest_width x Dest_height and render the result
    --  into a new pixbuf.
 
@@ -380,8 +378,7 @@ package Gdk.Pixbuf is
         Gdk.Art.Pixbuf.Filter_Bilinear;
       Overall_Alpha : in Gint := 128;
       Color1        : in Gdk.Art.Pixbuf.Art_U32 := 0;
-      Color2        : in Gdk.Art.Pixbuf.Art_U32 := 0)
-     return Gdk_Pixbuf;
+      Color2        : in Gdk.Art.Pixbuf.Art_U32 := 0) return Gdk_Pixbuf;
    --  Scale Src to Dest_width x Dest_height and composite the result with
    --  a checkboard of colors Color1 and Color2 and render the result into
    --  a new pixbuf.
@@ -390,7 +387,6 @@ private
    type Gdk_Pixbuf is new System.Address;
    Null_Pixbuf : constant Gdk_Pixbuf := Gdk_Pixbuf (System.Null_Address);
 
-   pragma Import (C, Get_Art_Pixbuf, "ada_gdk_pixbuf_get_art_pixbuf");
    pragma Import (C, Get_Format, "gdk_pixbuf_get_format");
    pragma Import (C, Get_N_Channels, "gdk_pixbuf_get_n_channels");
    pragma Import (C, Get_Bits_Per_Sample, "gdk_pixbuf_get_bits_per_sample");
@@ -407,10 +403,10 @@ private
    pragma Import (C, Composite, "gdk_pixbuf_composite");
    pragma Import (C, Composite_Color, "gdk_pixbuf_composite_color");
    pragma Import (C, Scale_Simple, "gdk_pixbuf_scale_simple");
-   pragma Import (C, Composite_Color_Simple,
-                    "gdk_pixbuf_composite_color_simple");
-   pragma Import (C, Render_Threshold_Alpha,
-                    "gdk_pixbuf_render_threshold_alpha");
+   pragma Import
+     (C, Composite_Color_Simple, "gdk_pixbuf_composite_color_simple");
+   pragma Import
+     (C, Render_Threshold_Alpha, "gdk_pixbuf_render_threshold_alpha");
    pragma Import (C, Get_From_Drawable, "gdk_pixbuf_get_from_drawable");
 end Gdk.Pixbuf;
 
