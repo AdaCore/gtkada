@@ -188,9 +188,6 @@ package Gdk.Color is
    procedure Copy (Source : Gdk_Color; Destination : out Gdk_Color);
    --  Copy the Source color to Destination.
 
-   procedure Free (Color : Gdk_Color);
-   --  Free Color.
-
    function Parse (Spec : String) return Gdk_Color;
    --  Parse the string Spec, and get its Red/Green/Blue components.
    --  The color is not allocated, and you need to call Alloc_Color.
@@ -340,3 +337,4 @@ end Gdk.Color;
 --  missing:
 --  gdk_color_get_type
 --  gdk_colormap_get_type
+--  gdk_color_free,  not needed in Ada

@@ -257,14 +257,6 @@ package body Gdk.Color is
    -- Free --
    ----------
 
-   procedure Free (Color : Gdk_Color) is
-      procedure Internal (Color : Gdk_Color);
-      pragma Import (C, Internal, "gdk_color_free");
-
-   begin
-      Internal (Color);
-   end Free;
-
    procedure Free
      (Colormap : Gdk_Colormap;
       Pixels   : Gulong_Array;
