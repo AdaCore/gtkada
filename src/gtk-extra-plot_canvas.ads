@@ -168,14 +168,15 @@ package Gtk.Extra.Plot_Canvas is
    procedure Plot_Canvas_Set_Flags
      (Plot_Canvas  : access Gtk_Plot_Canvas_Record;
       Flags        : in Guint16);
-   --  Set the flags for a Gtk_Plot_Canvas widget or its children. Note that
-   --  the flags currently set are not touched by this function. This can only
-   --  be used for the flags defined in the Gtk.Extra.Gtk_Plot_Canvas package.
+   --  Set the flags for a Gtk_Plot_Canvas widget or its children.
+   --  Note that the flags currently set are not touched by this function.
+   --  This can only be used for the flags defined in the
+   --  Gtk.Extra.Gtk_Plot_Canvas package.
 
    procedure Plot_Canvas_Unset_Flags
      (Plot_Canvas  : access Gtk_Plot_Canvas_Record;
       Flags        : in Guint16);
-   --  Unset the falgs for a Gtk_Plot_Canvas.
+   --  Unset the flags for a Gtk_Plot_Canvas.
 
    -------------
    -- Signals --
