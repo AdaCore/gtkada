@@ -26,6 +26,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  This is the root of the Gnome hierarchy.
+--  It provides initialization routines.
+--  </description>
+
 package Gnome is
    pragma Elaborate_Body;
 
