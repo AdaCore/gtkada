@@ -885,7 +885,6 @@ package body Glib.XML is
    ---------------
 
    function Deep_Copy (N : Node_Ptr) return Node_Ptr is
-
       New_N : Node_Ptr;
 
       function Deep_Copy_Internal
