@@ -523,16 +523,16 @@ package body Gtk.Text_Iter is
    end Is_End;
 
    --------------
-   -- Is_First --
+   -- Is_Start --
    --------------
 
-   function Is_First (Iter : Gtk_Text_Iter) return Boolean is
+   function Is_Start (Iter : Gtk_Text_Iter) return Boolean is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
-      pragma Import (C, Internal, "gtk_text_iter_is_first");
+      pragma Import (C, Internal, "gtk_text_iter_is_start");
 
    begin
       return To_Boolean (Internal (Iter));
-   end Is_First;
+   end Is_Start;
 
    ------------------
    -- Forward_Char --

@@ -32,7 +32,7 @@
 --  the characters/pixmaps/widgets (indexable objects) in the text buffer
 --  are changed.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib.Values;
 with Gdk.Pixbuf;
@@ -75,6 +75,10 @@ package Gtk.Text_Iter is
    --  newline-terminated line.
    --  Remember that Gtk_Text_Buffer encodes text in UTF-8, and that characters
    --  can require a variable number of bytes to represent.
+
+   function Get_Visible_Line_Offset (Iter : Gtk_Text_Iter) return Gint;
+
+   function Get_Visible_Line_Index (Iter : Gtk_Text_Iter) return Gint;
 
    ---------------------------
    -- Dereference operators --
@@ -287,7 +291,7 @@ package Gtk.Text_Iter is
    --  This is the most efficient way to check whether an iterator is the end
    --  iterator.
 
-   function Is_First (Iter : Gtk_Text_Iter) return Boolean;
+   function Is_Start (Iter : Gtk_Text_Iter) return Boolean;
    --  Return True if Iter is the first iterator in the buffer, that is
    --  if Iter has a character offset of 0.
 
@@ -588,7 +592,7 @@ package Gtk.Text_Iter is
    --  Start and End must be in order, unlike most text buffer functions, for
    --  efficiency reasons. Return True if Iter falls in the range [Start, End)
 
-   procedure Reorder
+   procedure Order
      (First  : in out Gtk_Text_Iter;
       Second : in out Gtk_Text_Iter);
    --  Swap the value of First and Second if Second comes before First in the
@@ -652,11 +656,15 @@ private
    pragma Import (C, Get_Line, "gtk_text_iter_get_line");
    pragma Import (C, Get_Line_Offset, "gtk_text_iter_get_line_offset");
    pragma Import (C, Get_Line_Index, "gtk_text_iter_get_line_index");
+   pragma Import
+     (C, Get_Visible_Line_Offset, "gtk_text_iter_set_visible_line_offset");
+   pragma Import
+     (C, Get_Visible_Line_Index, "gtk_text_iter_set_visible_line_index");
    pragma Import (C, Get_Chars_In_Line, "gtk_text_iter_get_chars_in_line");
    pragma Import (C, Get_Bytes_In_Line, "gtk_text_iter_get_bytes_in_line");
    pragma Import (C, Forward_To_End, "gtk_text_iter_forward_to_end");
    pragma Import (C, Compare, "gtk_text_iter_compare");
-   pragma Import (C, Reorder, "gtk_text_iter_reorder");
+   pragma Import (C, Order, "gtk_text_iter_order");
    pragma Import (C, Get_Pixbuf, "gtk_text_iter_get_pixbuf");
    pragma Import (C, Set_Text_Iter, "g_value_set_pointer");
 
