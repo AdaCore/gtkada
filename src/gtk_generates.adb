@@ -853,6 +853,38 @@ package body Gtk_Generates is
       Misc_Generate (N, File);
    end Image_Generate;
 
+   ------------------------------
+   -- Image_Menu_Item_Generate --
+   ------------------------------
+
+   procedure Image_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
+      Label     : constant String := Get_Property (N, "label", "");
+      Use_Stock : constant String := Get_Property (N, "use_stock", "True");
+      function Build_Type return Glib.GType;
+      pragma Import (C, Build_Type, "gtk_image_menu_item_get_type");
+
+      --  ??? What about the "Visible" property ?
+
+   begin
+      Widget := Widget_New (Build_Type);
+
+      if Use_Stock = "True"
+        or else not Gettext_Support (N)
+      then
+         Gen_New
+           (N, "Image_Menu_Item", Label,
+            File => File, Prefix => """", Postfix => """",
+            New_Name => "From_Stock");
+      else
+         Gen_New
+           (N, "Image_Menu_Item", Label,
+            File => File, Prefix => "-""", Postfix => """");
+      end if;
+
+      Widget_Destroy (Widget);
+      Item_Generate (N, File);
+   end Image_Menu_Item_Generate;
+
    ---------------------------
    -- Input_Dialog_Generate --
    ---------------------------
@@ -882,7 +914,6 @@ package body Gtk_Generates is
       P          : Node_Ptr;
       Packing    : Node_Ptr := null;
       Num        : Gint;
-      Is_Tab     : Boolean := False;
 
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_label_get_type");
@@ -915,48 +946,54 @@ package body Gtk_Generates is
             S := Get_Property (Packing, "type");
 
             if S /= null and then S.all = "tab" then
-               Is_Tab := True;
-            end if;
-         end if;
+               --  This label is part of a notebook (tab) or a clist (title)
 
-         if Is_Tab then
-            --  This label is part of a notebook (tab) or a clist (title)
+               Num := 0;
 
-            Num := 0;
+               P := Parent.Child;
+               P := Find_Tag (P, "child");
+               P := P.Child;
 
-            P := Parent.Child;
-            P := Find_Tag (P, "child");
-            P := P.Child;
+               while P /= null and then P /= N loop
+                  --  Count the widgets that are not tabs.
+                  Packing := Find_Tag (P, "packing");
 
-            while P /= null and then P /= N loop
-               --  Count the widgets that are not tabs.
-               Packing := Find_Tag (P, "packing");
+                  if Packing /= null then
+                     S := Get_Property (Packing, "type");
 
-               if Packing /= null then
-                  S := Get_Property (Packing, "type");
-
-                  if S = null or else S.all /= "tab" then
-                     Num := Num + 1;
+                     if S = null or else S.all /= "tab" then
+                        Num := Num + 1;
+                     end if;
                   end if;
-               end if;
 
-               if P.Parent.Next /= null then
-                  P := P.Parent.Next.Child;
-               else
-                  P := null;
-               end if;
-            end loop;
+                  if P.Parent.Next /= null then
+                     P := P.Parent.Next.Child;
+                  else
+                     P := null;
+                  end if;
+               end loop;
 
-            Num := Num - 1;
+               Num := Num - 1;
 
-            Add_Package ("Notebook");
-            Put (File, "   Set_Tab (");
+               Add_Package ("Notebook");
+               Put (File, "   Set_Tab (");
 
-            Put_Line
-              (File,
-               Top & "." & To_Ada (Get_Name (Parent)) & "," &
-               Gint'Image (Num) & ", " &
-               Top & "." & Name & ");");
+               Put_Line
+                 (File,
+                  Top & "." & To_Ada (Get_Name (Parent)) & "," &
+                  Gint'Image (Num) & ", " &
+                  Top & "." & Name & ");");
+
+            elsif S /= null and then S.all = "label_item" then
+               --  This label is the title of a frame
+
+               Put_Line
+                 (File,
+                  "   Set_Label_Widget (" &
+                  Top & "." & To_Ada (Get_Name (Parent)) & "," &
+                  Top & "." & Name & ");");
+
+            end if;
          end if;
       end if;
    end Label_Generate;
@@ -1078,21 +1115,23 @@ package body Gtk_Generates is
    ------------------------
 
    procedure Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
-      S  : constant String_Ptr := Get_Field (N, "label");
+      S  : constant String := Get_Property (N, "label", "");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_menu_item_get_type");
 
    begin
       Widget := Widget_New (Build_Type);
-      if S = null then
+      if S = "" then
          Gen_New (N, "Menu_Item", File => File);
       else
          if Gettext_Support (N) then
-            Gen_New (N, "Menu_Item", S.all,
-              File => File, Prefix => "-""", Postfix => """");
+            Gen_New (N, "Menu_Item", S,
+                     File => File, Prefix => "-""", Postfix => """",
+                     New_Name => "With_Mnemonic");
          else
-            Gen_New (N, "Menu_Item", S.all,
-              File => File, Prefix => """", Postfix => """");
+            Gen_New (N, "Menu_Item", S,
+                     File => File, Prefix => """", Postfix => """",
+                     New_Name => "With_Mnemonic");
          end if;
       end if;
 
@@ -1566,6 +1605,20 @@ package body Gtk_Generates is
       Widget_Generate (N, File);
    end Separator_Generate;
 
+   ----------------------------------
+   -- Separator_Menu_Item_Generate --
+   ----------------------------------
+
+   procedure Separator_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
+      function Build_Type return Glib.GType;
+      pragma Import (C, Build_Type, "gtk_separator_menu_item_get_type");
+
+   begin
+      Widget := Widget_New (Build_Type);
+      Gen_New (N, "Separator_Menu_Item", File => File);
+      Widget_Destroy (Widget);
+   end Separator_Menu_Item_Generate;
+
    --------------------------
    -- Spin_Button_Generate --
    --------------------------
@@ -1617,8 +1670,6 @@ package body Gtk_Generates is
    -------------------------
    -- Status_Bar_Generate --
    -------------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Status_Bar_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -2333,6 +2384,20 @@ package body Gtk_Generates is
                      --  ??? Need to handle tooltip
                      Gen_Call_Child (N, null, Parent, "Toolbar",
                                   "Append_Widget", File => File);
+
+                  elsif S = "GtkMenuBar"
+                    or else S = "GtkMenuShell"
+                  then
+                     Gen_Call_Child
+                       (N, null, Parent, "Menu_Shell", "Append", File => File);
+
+                  elsif S = "GtkMenuItem"
+                    or else S = "GtkSeparatorMenuItem"
+                    or else S = "GtkImageMenuItem"
+                  then
+                     Gen_Call_Child
+                       (N, null, Parent,
+                        "Menu_Item", "Set_Submenu", File => File);
 
                   else
                      Gen_Call_Child
