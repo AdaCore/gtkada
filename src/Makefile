@@ -43,7 +43,7 @@ RANLIB = ranlib
 all: libgtkada.so libgtkada.a testgtk
 
 libgtkada.so:: $(TEST_LINK).o $(c_objects)
-	$(CC) -shared -Wl,-soname,libgtkada.so.0 -o libgtkada.so g*.o $(c_objects) `gtk-config --libs` -lc -lm
+	$(CC) -shared -Wl,-soname,libgtkada.so -o libgtkada.so g*.o $(c_objects) `gtk-config --libs` -lc -lm
 
 libgtkada.a::
 	$(AR) $(ARFLAGS) libgtkada.a g*.o $(c_objects)
