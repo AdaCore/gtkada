@@ -641,7 +641,7 @@ begin
    SHT.Set (new String'("GtkCList"), Clist_Generate'Access);
    SHT.Set (new String'("GtkColorSelection"), Color_Selection_Generate'Access);
    SHT.Set (new String'("GtkColorSelectionDialog"),
-     Color_Selection_Dialog_Generate'Access);
+            Color_Selection_Dialog_Generate'Access);
    SHT.Set (new String'("GtkCombo"), Combo_Generate'Access);
    SHT.Set (new String'("GtkCTree"), Ctree_Generate'Access);
    SHT.Set (new String'("GtkCurve"), Curve_Generate'Access);
@@ -653,13 +653,14 @@ begin
    SHT.Set (new String'("GtkFixed"), Fixed_Generate'Access);
    SHT.Set (new String'("GtkFontSelection"), Font_Selection_Generate'Access);
    SHT.Set (new String'("GtkFontSelectionDialog"),
-     Font_Selection_Dialog_Generate'Access);
+            Font_Selection_Dialog_Generate'Access);
    SHT.Set (new String'("GtkFrame"), Frame_Generate'Access);
    SHT.Set (new String'("GtkGammaCurve"), Gamma_Curve_Generate'Access);
    SHT.Set (new String'("GtkEntry"), GEntry_Generate'Access);
    SHT.Set (new String'("GtkHandleBox"), Handle_Box_Generate'Access);
    SHT.Set (new String'("GtkHButtonBox"), Hbutton_Box_Generate'Access);
    SHT.Set (new String'("GtkImage"), Image_Generate'Access);
+   SHT.Set (new String'("GtkImageMenuItem"), Image_Menu_Item_Generate'Access);
    SHT.Set (new String'("GtkInputDialog"), Input_Dialog_Generate'Access);
    SHT.Set (new String'("GtkItem"), Item_Generate'Access);
    SHT.Set (new String'("GtkLabel"), Label_Generate'Access);
@@ -689,6 +690,8 @@ begin
    SHT.Set (new String'("GtkScrolledWindow"), Scrolled_Window_Generate'Access);
    SHT.Set (new String'("GtkHSeparator"), Separator_Generate'Access);
    SHT.Set (new String'("GtkVSeparator"), Separator_Generate'Access);
+   SHT.Set (new String'("GtkSeparatorMenuItem"),
+            Separator_Menu_Item_Generate'Access);
    SHT.Set (new String'("GtkSpinButton"), Spin_Button_Generate'Access);
    SHT.Set (new String'("GtkStatusbar"), Status_Bar_Generate'Access);
    SHT.Set (new String'("GtkTable"), Table_Generate'Access);
