@@ -121,13 +121,13 @@ package Gtk.Text is
    --  Return the total length of the text contained within the text widget.
 
    function Get_Point (Text : access Gtk_Text_Record) return Guint;
-   --  Get the current position of the cursor.
+   --  Get the current position of the insertion point (cursor).
    --  Return the number of characters from the upper left corner of the
    --  widget.
 
    procedure Set_Point (Text  : access Gtk_Text_Record;
                         Index : in Guint);
-   --  Set the cursor position.
+   --  Set the insertion point (cursor) position.
 
    --  <doc_ignore>
    function Get_Text (Text : access Gtk_Text_Record) return String;
@@ -137,10 +137,10 @@ package Gtk.Text is
 
    procedure Insert
      (Text   : access Gtk_Text_Record;
-      Font   : in Gdk.Font.Gdk_Font;
-      Fore   : in Gdk.Color.Gdk_Color;
-      Back   : in Gdk.Color.Gdk_Color;
-      Chars  : in String;
+      Font   : in Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+      Fore   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Back   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Chars  : in String := "";
       Length : in Gint := -1);
    --  Insert the given string (Chars) inside the text of the text widget.
    --  Use the specified Font, foreground (Fore) and background
@@ -148,6 +148,9 @@ package Gtk.Text is
    --  unless Length is set to -1, in which case the complete string is
    --  inserted.
    --  Note that the colors must be allocated first, and the font loaded.
+   --  If the default parameters are passed for font and colors, the text
+   --  widget will use the ones defined in the style for Text (see Gtk.Style
+   --  for more information about styles).
 
    procedure Set_Adjustments (Text : access Gtk_Text_Record;
                               Hadj : Gtk.Adjustment.Gtk_Adjustment;

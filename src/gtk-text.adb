@@ -239,10 +239,10 @@ package body Gtk.Text is
 
    procedure Insert
      (Text   : access Gtk_Text_Record;
-      Font   : in Gdk.Font.Gdk_Font;
-      Fore   : in Gdk.Color.Gdk_Color;
-      Back   : in Gdk.Color.Gdk_Color;
-      Chars  : in String;
+      Font   : in Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+      Fore   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Back   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Chars  : in String := "";
       Length : in Gint := -1)
    is
       procedure Internal
