@@ -920,6 +920,9 @@ package body Gtk_Generates is
 
       Gen_Set (N, "justify", File);
       Gen_Set (N, "line_wrap", File, Property_Name => "wrap");
+      Gen_Set (N, "selectable", File);
+      Gen_Set (N, "use_markup", File);
+      Gen_Set (N, "use_underline", File);
 
       Packing := Find_Tag (N, "packing");
 
