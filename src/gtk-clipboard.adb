@@ -29,8 +29,17 @@
 --  <c_version>2.0.0</c_version>
 
 with Gdk.Types;
+with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package body Gtk.Clipboard is
+
+   use Interfaces.C.Strings;
+
+   --------------
+   -- Set_Text --
+   --------------
+
    procedure Set_Text
      (Clipboard : Gtk_Clipboard;
       Text      : UTF8_String)
@@ -44,5 +53,42 @@ package body Gtk.Clipboard is
    begin
       Internal (Clipboard, Text, Text'Length);
    end Set_Text;
+
+   -------------------
+   -- Wait_For_Text --
+   -------------------
+
+   function Wait_For_Text (Clipboard : Gtk_Clipboard) return UTF8_String is
+      function Internal (Clipboard : Gtk_Clipboard) return chars_ptr;
+      pragma Import (C, Internal, "gtk_clipboard_wait_for_text");
+
+      S : constant chars_ptr := Internal (Clipboard);
+
+   begin
+      if S /= Null_Ptr then
+         declare
+            Result : constant UTF8_String := Value (S);
+         begin
+            Gtkada.Types.g_free (S);
+            return Result;
+         end;
+      end if;
+
+      return "";
+   end Wait_For_Text;
+
+   ----------------------------
+   -- Wait_Is_Text_Available --
+   ----------------------------
+
+   function Wait_Is_Text_Available
+     (Clipboard : Gtk_Clipboard) return Boolean
+   is
+      function Internal
+        (Clipboard : Gtk_Clipboard) return Gboolean;
+      pragma Import (C, Internal, "gtk_clipboard_wait_for_text");
+   begin
+      return Internal (Clipboard) /= 0;
+   end Wait_Is_Text_Available;
 
 end Gtk.Clipboard;
