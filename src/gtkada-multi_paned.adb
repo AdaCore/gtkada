@@ -562,11 +562,15 @@ package body Gtkada.Multi_Paned is
             Handle_Index := Handle_Index + 1;
          end loop;
 
-         if Handle_Index = 1 then
-            X_Offset := 0;
-         else
-            X_Offset := Handle_Half_Width;
-         end if;
+         X_Offset := 0;
+         for H in 1 .. Handle_Index - 1 loop
+            if Child.Parent.Handles (H).Win /= null
+              and then Is_Visible (Child.Parent.Handles (H).Win)
+            then
+               X_Offset := Handle_Half_Width;
+               exit;
+            end if;
+         end loop;
 
          while Handle_Index <= Child.Parent.Handles'Last
            and then not Is_Visible (Child.Parent.Handles (Handle_Index).Win)
@@ -579,6 +583,9 @@ package body Gtkada.Multi_Paned is
             W_Offset := X_Offset;
          else
             Percent_End := Child.Parent.Handles (Handle_Index).Percent;
+
+            --  If this is the first visible child, do not add the handle
+            --  width
             W_Offset := X_Offset + Handle_Half_Width;
          end if;
 
