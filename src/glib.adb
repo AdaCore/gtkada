@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -131,5 +131,27 @@ package body Glib is
          return 0;
       end if;
    end To_Gint;
+
+   -----------------------
+   -- Quark_From_String --
+   -----------------------
+
+   function Quark_From_String (Id : in String) return GQuark is
+      function Internal (Id : String) return GQuark;
+      pragma Import (C, Internal, "g_quark_from_string");
+   begin
+      return Internal (Id & ASCII.NUL);
+   end Quark_From_String;
+
+   ----------------------
+   -- Quark_Try_String --
+   ----------------------
+
+   function Quark_Try_String (Id : in String) return GQuark is
+      function Internal (Id : String) return GQuark;
+      pragma Import (C, Internal, "g_quark_try_string");
+   begin
+      return Internal (Id & ASCII.NUL);
+   end Quark_Try_String;
 
 end Glib;

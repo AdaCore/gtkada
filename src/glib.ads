@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -105,6 +105,29 @@ package Glib is
      (Object => Guchar_Array, Name => Guchar_Array_Access);
 
    type String_Ptr is access all String;
+
+   ------------
+   -- Quarks --
+   ------------
+
+   type GQuark is new Guint32;
+   --  Represents a string internally in GtkAda. Once you know the
+   --  equivalent for a string, you can always use it instead of the string,
+   --  which provides a faster access for all the functions that use htables
+   --  in GtkAda.
+   --  There is a global htable that contains all the quarks defined in
+   --  your application and GtkAda itself.
+
+   Unknown_Quark : constant GQuark := 0;
+
+   function Quark_From_String (Id : in String) return GQuark;
+   --  Returns, or create, the quark associated with the string. Not that
+   --  if the quark does not already exist, an entry is created for it is
+   --  created in the global htable for quarks.
+
+   function Quark_Try_String (Id : in String) return GQuark;
+   --  Returns the quark associated with the string, if it exists.
+   --  If it does not exist, returns Unknown_Quark.
 
    -------------------
    --  Object_Type  --
