@@ -192,7 +192,7 @@ Gtk.Menu_Bar:
   Prepend : removed.
 Gtk.Menu_Item:
   Gtk_New_With_Mnemonic: new function.
-  Configure : removed.
+  Configure, Set_Placement : removed.
 Gtk.Notebook:
   Get_Notebook_Page: replace Gtk.Arguments.To_Notebook_Page
   Get_Cur_Page, Get_Tab_Label, Get_Allocation_*, Get_Child: removed
