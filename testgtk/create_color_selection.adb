@@ -41,22 +41,21 @@ with Common; use Common;
 
 package body Create_Color_Selection is
 
-   type Gtk_Dialog_Access is access all Gtk_Color_Selection_Dialog;
+   type Gtk_Color_Dialog_Access is access all Gtk_Color_Selection_Dialog;
    package Destroy_Dialog_Cb is new Signal.Callback
-     (Gtk_Color_Selection_Dialog_Record, Gtk_Dialog_Access);
-   procedure Destroy_Window
-     (Win : access Gtk_Color_Selection_Dialog_Record;
-      Ptr : in Gtk_Dialog_Access);
+     (Gtk_Color_Selection_Dialog_Record, Gtk_Color_Dialog_Access);
+   procedure Destroy_Dialog (Win : access Gtk_Color_Selection_Dialog_Record;
+                             Ptr : in Gtk_Color_Dialog_Access);
+
+   procedure Destroy_Dialog (Win : access Gtk_Color_Selection_Dialog_Record;
+                             Ptr : in Gtk_Color_Dialog_Access) is
+   begin
+      Ptr.all := null;
+   end Destroy_Dialog;
 
    package Color_Sel_Cb is new Signal.Object_Callback
      (Gtk_Color_Selection_Dialog_Record);
    --  Must be instanciated at library level !
-
-   procedure Destroy_Window (Win : access Gtk_Color_Selection_Dialog_Record;
-                             Ptr : in Gtk_Dialog_Access) is
-   begin
-      Ptr.all := null;
-   end Destroy_Window;
 
    procedure Color_Ok (Dialog : access Gtk_Color_Selection_Dialog_Record)
    is
@@ -86,7 +85,7 @@ package body Create_Color_Selection is
          Set_Position (Dialog, Enums.Win_Pos_Mouse);
 
          Cb_Id := Destroy_Dialog_Cb.Connect
-           (Dialog, "destroy", Destroy_Window'Access, Dialog'Access);
+           (Dialog, "destroy", Destroy_Dialog'Access, Dialog'Access);
 
          Cb_Id := Color_Sel_Cb.Connect (Get_OK_Button (Dialog),
                                         "clicked",

@@ -119,9 +119,10 @@ package body Create_Clist is
       Mask   : Gdk_Bitmap;
       Texts  : Line_Data (0 .. Clist_Columns - 1);
       Row    : Gint;
+      Style  : aliased Gtk_Style_Record := Get_Style (List);
    begin
       Create_From_Xpm_D (Pixmap, Get_Clist_Window (List),
-                         Mask, Get_White (Get_Style (List)),
+                         Mask, Get_White (Style'Access),
                          Gtk_Mini_Xpm);
       for I in 4 .. Clist_Columns - 1 loop
          Texts (I) := ICS.New_String ("Column" & Gint'Image (I));
@@ -187,6 +188,7 @@ package body Create_Clist is
       Col2 : Gdk_Color;
       Row  : Gint;
       Font : Gdk_Font;
+      Style : aliased Gtk_Style_Record := Get_Style (List);
    begin
 
       Row := Prepend (List, Texts);
@@ -194,15 +196,17 @@ package body Create_Clist is
          Set_Rgb (Col1, 0, 56000, 0);
          Set_Rgb (Col2, 32000, 0, 56000);
 
-         Style1 := Copy (Get_Style (List));
+         --  Note that the memory allocated here is never freed in this
+         --  small example!
+         Style1 := Copy (Style'Access);
          Set_Base (Style1, State_Normal, Col1);
          Set_Base (Style2, State_Selected, Col2);
 
-         Style2 := Copy (Get_Style (List));
+         Style2 := Copy (Style'Access);
          Set_Foreground (Style2, State_Normal, Col1);
          Set_Foreground (Style2, State_Selected, Col2);
 
-         Style3 := Copy (Get_Style (List));
+         Style3 := Copy (Style'Access);
          Set_Foreground (Style3, State_Normal, Col1);
          Set_Base (Style3, State_Normal, Col2);
 

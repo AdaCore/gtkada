@@ -46,46 +46,49 @@ with Common; use Common;
 
 package body Create_Spin is
 
-   package Label_User is new User_Data (Gtk_Label);
-   package Spin_O_Cb is new Signal.Object_Callback (Gtk_Spin_Button);
-   package Spin_Cb is new Signal.Callback (Gtk_Toggle_Button,
-                                           Gtk_Spin_Button);
-   package Button_Cb is new Signal.Callback (Gtk_Button, Gint);
+   type My_Button_Record is new Gtk_Button_Record with record
+      Label : Gtk_Label;
+   end record;
+   type My_Button is access all My_Button_Record;
+
+   package Spin_O_Cb is new Signal.Object_Callback (Gtk_Spin_Button_Record);
+   package Spin_Cb is new Signal.Callback
+     (Gtk_Toggle_Button_Record, Gtk_Spin_Button);
+   package Button_Cb is new Signal.Callback (My_Button_Record, Gint);
 
    Window   : aliased Gtk.Window.Gtk_Window;
    Spinner1 : Gtk_Spin_Button;
 
-   procedure Change_Digits (Spin : in out Gtk_Spin_Button) is
+   procedure Change_Digits (Spin : access Gtk_Spin_Button_Record) is
    begin
       Set_Digits (Spinner1, Get_Value_As_Int (Spin));
    end Change_Digits;
 
-   procedure Toggle_Snap (Widget : in out Gtk_Toggle_Button;
-                          Spin : in out Gtk_Spin_Button) is
+   procedure Toggle_Snap (Widget : access Gtk_Toggle_Button_Record;
+                          Spin : in Gtk_Spin_Button) is
    begin
       Set_Snap_To_Ticks (Spin, Is_Active (Widget));
    end Toggle_Snap;
 
-   procedure Toggle_Numeric (Widget : in out Gtk_Toggle_Button;
-                             Spin : in out Gtk_Spin_Button) is
+   procedure Toggle_Numeric (Widget : access Gtk_Toggle_Button_Record;
+                             Spin : in Gtk_Spin_Button) is
    begin
       Set_Numeric (Spin, Is_Active (Widget));
    end Toggle_Numeric;
 
-   procedure Get_Value (Widget : in out Gtk_Button;
-                        Data   : in out Gint)
+   procedure Get_Value (Widget : access My_Button_Record;
+                        Data   : in Gint)
    is
-      Label : Gtk_Label := Label_User.Get (Widget);
       Spin  : Gtk_Spin_Button := Spinner1;
    begin
       if Data = 1 then
-         Set_Text (Label, Gint'Image (Get_Value_As_Int (Spin)));
+         Set_Text (Widget.Label, Gint'Image (Get_Value_As_Int (Spin)));
       else
-         Set_Text (Label, Gfloat'Image (Get_Value_As_Float (Spin)));
+         Set_Text (Widget.Label, Gfloat'Image (Get_Value_As_Float (Spin)));
       end if;
    end Get_Value;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id       : Guint;
       Main_Box : Gtk_Box;
       VBox      : Gtk_Box;
@@ -98,13 +101,13 @@ package body Create_Spin is
       Frame    : Gtk_Frame;
       Check    : Gtk_Check_Button;
       Button   : Gtk_Button;
+      Myb      : My_Button;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy",
-                                   Gtk.Widget.Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "spin buttons");
          Set_Border_Width (Window, Border_Width => 0);
 
@@ -208,15 +211,17 @@ package body Create_Spin is
          Gtk_New_Hbox (Hbox, False, 0);
          Pack_Start (Vbox, Hbox, False, True, 5);
 
-         Gtk_New (Button, "Value as Int");
-         Label_User.Set (Button, Label);
-         Id := Button_Cb.Connect (Button, "clicked", Get_Value'Access, 1);
-         Pack_Start (Hbox, Button, True, True, 5);
+         Myb := new My_Button_Record;
+         Initialize (Myb, "Value as Int");
+         Myb.Label := Label;
+         Id := Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 1);
+         Pack_Start (Hbox, Myb, True, True, 5);
 
-         Gtk_New (Button, "Value as Float");
-         Label_User.Set (Button, Label);
-         Id := Button_Cb.Connect (Button, "clicked", Get_Value'Access, 2);
-         Pack_Start (Hbox, Button, True, True, 5);
+         Myb := new My_Button_Record;
+         Initialize (Myb, "Value as Float");
+         Myb.Label := Label;
+         Id := Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 2);
+         Pack_Start (Hbox, Myb, True, True, 5);
 
          Pack_Start (Vbox, Label, True, True, 0);
          Set_Text (Label, "0");
@@ -227,9 +232,6 @@ package body Create_Spin is
          Gtk_New (Button, "Close");
          Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
          Pack_Start (Hbox, Button, True, True, 5);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show_All (Window);
       else
          Destroy (Window);

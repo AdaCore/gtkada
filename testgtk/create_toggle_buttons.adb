@@ -43,7 +43,7 @@ with Common;             use Common;
 package body Create_Toggle_Buttons is
 
    package Exit_Cb is new Signal.Object_Callback
-     (Widget_Type => Gtk.Widget.Gtk_Widget);
+     (Base_Type => Gtk.Widget.Gtk_Widget_Record);
    --  Must be instanciated at library level !
 
 
@@ -52,21 +52,18 @@ package body Create_Toggle_Buttons is
 
    ----------------------------------------------------------------------
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Box1, Box2 : Box.Gtk_Box;
       A_Button : Button.Gtk_Button;
       A_Toggle_Button : Toggle_Button.Gtk_Toggle_Button;
       A_Separator : Separator.Gtk_Separator;
       Cb_Id : Guint;
    begin
-
-      if not Is_Created (New_Window) then
+      if New_Window = null then
          Window.Gtk_New (Window => New_Window,
                          The_Type => Enums.Window_Toplevel);
-         Cb_Id := Widget2_Cb.Connect (New_Window,
-                                      "destroy",
-                                      Destroyed'Access,
-                                      New_Window'Access);
+         Cb_Id := Destroy_Cb.Connect
+           (New_Window, "destroy", Destroy_Window'Access, New_Window'Access);
          Window.Set_Title (Window => New_Window,
                            Title => "Toggle buttons");
          Set_Border_Width (Container => New_Window, Border_Width => 0);
@@ -111,10 +108,6 @@ package body Create_Toggle_Buttons is
          Set_Flags (Object => A_Button, Flags => Gtk.Widget.Can_Default);
          Grab_Default (A_Button);
          Show (A_Button);
-
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (New_Window) then
          Show (New_Window);
       else
          Destroy (New_Window);

@@ -34,6 +34,7 @@ with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 with Common; use Common;
 
@@ -44,29 +45,22 @@ package body Create_Main_Loop is
 
    Window : aliased Gtk.Dialog.Gtk_Dialog;
 
-   procedure Loop_Destroy (Window : in out Gtk_Widget) is
+   procedure Loop_Destroy (Win : access Gtk_Widget_Record) is
    begin
-      Gtk.Widget.Destroy (Window);
+      Window := null;
       Main_Quit;
    end Loop_Destroy;
 
-   procedure Loop_Destroy (Window : in out Gtk_Widget;
-                           Widget : in out Gtk_Widget_Access) is
-   begin
-      Loop_Destroy (Window);
-      Destroyed (Window, Widget);
-   end Loop_Destroy;
- 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id     : Guint;
       Label  : Gtk_Label;
       Button : Gtk_Button;
   begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window);
-         Id := Widget2_Cb.Connect (Window, "destroy", Loop_Destroy'Access,
-                                   Window'Access);
+         Id := Widget3_Cb.Connect
+           (Gtk_Window (Window), "destroy", Loop_Destroy'Access);
          Set_Title (Window, "test_main_loop");
          Set_Border_Width (Window, Border_Width => 0);
 
@@ -77,13 +71,10 @@ package body Create_Main_Loop is
 
          Gtk_New (Button, "Leave");
          Pack_Start (Get_Action_Area (Window), Button, False, True, 0);
-         Id := Widget_Cb.Connect (Button, "clicked", Loop_Destroy'Access, Window);
+         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
          Show (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
          Ada.Text_IO.Put_Line ("Create_Mainloop: start");
          Gtk.Main.Main;

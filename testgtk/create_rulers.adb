@@ -31,6 +31,7 @@ with Glib; use Glib;
 with Gdk.Types; use Gdk.Types;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Ruler; use Gtk.Ruler;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
@@ -41,20 +42,20 @@ with Common; use Common;
 
 package body Create_Rulers is
 
-   package Ruler_Cb is new Signal.Object_Callback (Gtk_Ruler);
+   package Ruler_Cb is new Signal.Object_Callback (Gtk_Ruler_Record);
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id        : Guint;
       Ruler     : GTk_Ruler;
       Table     : Gtk_Table;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "Ruler");
          Set_Border_Width (Window, Border_Width => 0);
          Set_Usize (Window, 300, 300);
@@ -66,24 +67,19 @@ package body Create_Rulers is
 
          Gtk_New_Hruler (Ruler);
          Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
-         Id := C_Unsafe_Connect (Window, "motion_notify_event",
+         Id := C_Unsafe_Connect (Gtk_Object (Window), "motion_notify_event",
                                  Get_Default_Motion_Notify_Event (Ruler),
-                                 Ruler);
+                                 Gtk_Object (Ruler));
          Attach (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
          Show (Ruler);
 
          Gtk_New_Vruler (Ruler);
          Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
-         Id := C_Unsafe_Connect (Window, "motion_notify_event",
+         Id := C_Unsafe_Connect (Gtk_Object (Window), "motion_notify_event",
                                  Get_Default_Motion_Notify_Event (Ruler),
-                                 Ruler);
+                                 Gtk_Object (Ruler));
          Attach (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
          Show (Ruler);
-
-
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

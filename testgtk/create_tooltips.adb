@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk;  use Gdk;
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
@@ -49,12 +50,14 @@ with Ada.Text_IO;
 package body Create_Tooltips is
 
    package Tooltips_Data is new User_Data (Gtk_Tooltips);
-   package Query_Cb is new Object_Callback (Gtk_Tips_Query);
-   package Entered_Cb is new Tips_Query_Callback (Gtk_Toggle_Button);
+   --  This is required to set tooltips for a widget.
+
+   package Query_Cb is new Object_Callback (Gtk_Tips_Query_Record);
+   package Entered_Cb is new Tips_Query_Callback (Gtk_Toggle_Button_Record);
 
    Window  : aliased Gtk.Window.Gtk_Window;
 
-   procedure Tooltips_Destroy (Widget : in out Gtk_Widget) is
+   procedure Tooltips_Destroy (Widget : access Gtk_Widget_Record) is
       Tt : Gtk_Tooltips;
    begin
       Tt := Tooltips_Data.Get (Widget, "tooltips");
@@ -62,11 +65,11 @@ package body Create_Tooltips is
       Destroy (Widget);
    end Tooltips_Destroy;
 
-   procedure Widget_Entered (Tips_Query  : in out Gtk_Tips_Query;
-                             Widget      : in out Gtk_Widget;
+   procedure Widget_Entered (Tips_Query  : access Gtk_Tips_Query_Record;
+                             Widget      : access Gtk_Widget_Record'Class;
                              Tip_Text    : in String;
                              Tip_Private : in String;
-                             Toggle      : in out Gtk_Toggle_Button)
+                             Toggle      : access Gtk_Toggle_Button_Record'Class)
    is
       pragma Warnings (Off, Widget);
       pragma Warnings (Off, Tip_Private);
@@ -82,17 +85,17 @@ package body Create_Tooltips is
       end if;
    end Widget_Entered;
 
-   procedure Widget_Selected (Tips_Query  : in out Gtk_Tips_Query;
-                              Widget      : in out Gtk_Widget;
+   procedure Widget_Selected (Tips_Query  : access Gtk_Tips_Query_Record;
+                              Widget      : access Gtk_Widget_Record'Class;
                               Tip_Text    : in String;
                               Tip_Private : in String;
-                              Data        : in out Gtk_Toggle_Button)
+                              Data        : access Gtk_Toggle_Button_Record'Class)
    is
       pragma Warnings (Off, Tips_Query);
       pragma Warnings (Off, Tip_Text);
       pragma Warnings (Off, Data);
    begin
-      if Is_Created (Widget) then
+      if Is_Created (Widget.all) then
          Ada.Text_IO.Put ("Help ");
          if Tip_Private'Length = 0 then
             Ada.Text_IO.Put ("None");
@@ -102,10 +105,9 @@ package body Create_Tooltips is
          Ada.Text_IO.Put_Line (" requested for "
                                & Type_Name (Get_Type (Widget)));
       end if;
---      return True;
    end Widget_Selected;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id         : Guint;
       Box1,
         Box2,
@@ -119,11 +121,10 @@ package body Create_Tooltips is
 
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy",
-                                   Gtk.Widget.Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "Tooltips");
          Set_Border_Width (Window, Border_Width => 0);
          Set_Policy (Window, True, False, False);
@@ -209,9 +210,6 @@ package body Create_Tooltips is
 
          Set_Tip (Tooltips, Button, "Push this button to close window",
                   "ContextHelp/buttons/Close");
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

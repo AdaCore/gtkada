@@ -36,7 +36,7 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Fixed; use Gtk.Fixed;
-with Gtk.Hseparator; use Gtk.Hseparator;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Table; use Gtk.Table;

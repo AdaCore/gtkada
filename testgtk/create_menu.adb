@@ -37,6 +37,7 @@ with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Option_Menu; use Gtk.Option_Menu;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Separator; use Gtk.Separator;
+with Gtk.Tearoff_Menu_Item; use Gtk.Tearoff_Menu_Item;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -46,16 +47,23 @@ package body Create_Menu is
 
    Window : aliased Gtk_Window;
 
-   function Create_Menu (Depth : Integer) return Gtk_Menu is
+   function Create_Menu
+     (Depth : Integer; Tearoff : Boolean) return Gtk_Menu is
       Menu      : Gtk_Menu;
       Group     : Widget_SList.GSlist;
       Menu_Item : Gtk_Radio_Menu_Item;
    begin
-      if Depth < 1 then
-         return Menu;
-      end if;
-
       Gtk_New (Menu);
+
+      if Tearoff then
+         declare
+            Tear_Menu : Gtk_Tearoff_Menu_Item;
+         begin
+            Gtk_New (Tear_Menu);
+            Append (Menu, Tear_Menu);
+            Show (Tear_Menu);
+         end;
+      end if;
 
       for I in 0 .. 5 loop
          Gtk_New (Menu_Item, Group, "Item" & Integer'Image (Depth)
@@ -69,12 +77,14 @@ package body Create_Menu is
          if I = 3 then
             Set_Sensitive (Menu_Item, False);
          end if;
-         Set_Submenu (Menu_Item, Create_Menu (Depth - 1));
+         if Depth > 1 then
+            Set_Submenu (Menu_Item, Create_Menu (Depth - 1, Tearoff));
+         end if;
       end loop;
       return Menu;
    end Create_Menu;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id   : Guint;
       Box1 : Gtk_Box;
       Box2 : Gtk_Box;
@@ -86,11 +96,11 @@ package body Create_Menu is
       Button : Gtk_Button;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
          Set_Title (Window, "Menus");
          Set_Border_Width (Window, 0);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
                                    Window'Access);
 
          Gtk_New_Vbox (Box1, False, 0);
@@ -101,7 +111,7 @@ package body Create_Menu is
          Pack_Start (Box1, Menu_Bar, False, True, 0);
          Show (Menu_Bar);
 
-         Menu := Create_Menu (2);
+         Menu := Create_Menu (2, True);
 
          Gtk_New (Menu_Item, "test" & Ascii.LF & "line2");
          Set_Submenu (Menu_Item, Menu);
@@ -109,12 +119,13 @@ package body Create_Menu is
          Show (Menu_Item);
 
          Gtk_New (Menu_Item, "foo");
-         Set_Submenu (Menu_Item, Create_Menu (3));
+         Set_Submenu (Menu_Item, Create_Menu (3, True));
          Append (Menu_Bar, Menu_Item);
          Show (Menu_Item);
 
          Gtk_New (Menu_Item, "bar");
-         Set_Submenu (Menu_Item, Create_Menu (4));
+         Set_Submenu (Menu_Item, Create_Menu (4, true));
+         Right_Justify (Menu_Item);
          Append (Menu_Bar, Menu_Item);
          Show (Menu_Item);
 
@@ -124,8 +135,8 @@ package body Create_Menu is
          Show (Box2);
 
          Gtk_New (Option_Menu);
-         Set_Menu (Option_Menu, Create_Menu (1));
-         Set_History (Option_Menu, 4);
+         Set_Menu (Option_Menu, Create_Menu (1, False));
+         Set_History (Option_Menu, 3);
          Pack_Start (Box2, Option_Menu, True, True, 0);
          Show (Option_Menu);
 
@@ -145,9 +156,6 @@ package body Create_Menu is
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
          Show (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

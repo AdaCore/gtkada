@@ -65,25 +65,23 @@ package body Create_Preview_Color is
       return True;
    end Color_Idle_Func;
 
-   procedure Preview_Destroy (Dummy : in out Gtk_Widget;
-                              Widget: in out Gtk_Widget_Access) is
+   procedure Preview_Destroy (Dummy : access Gtk_Widget_Record) is
       pragma Warnings (Off, Dummy);
    begin
       Idle_Remove (Color_Idle);
       Color_Idle := 0;
-      Gtk.Widget.Destroy (Widget.all);
+      Window := null;
    end Preview_Destroy;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id      : Guint;
       Preview : Gtk_Preview;
       Buf     : Guchar_Array (0 .. 767);
       K       : Natural;
    begin
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Preview_Destroy'Access,
-                                   Window'Access);
+         Id := Widget3_Cb.Connect (Window, "destroy", Preview_Destroy'Access);
          Set_Title (Window, "test");
          Set_Border_Width (Window, Border_Width => 10);
 
@@ -104,9 +102,6 @@ package body Create_Preview_Color is
          end loop;
 
          Color_Idle := Preview_Idle.Add (Color_Idle_Func'Access, Preview);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

@@ -59,29 +59,29 @@ with Create_Font_Selection;
 with Create_Gamma_Curve;
 with Create_Handle_Box;
 with Create_List;
---  with Create_Main_Loop;
---  with Create_Menu;
---  with Create_Notebook;
---  with Create_Paned;
---  with Create_Pixmap;
---  with Create_Preview_Color;
---  with Create_Preview_Gray;
+with Create_Main_Loop;
+with Create_Menu;
+with Create_Notebook;
+with Create_Paned;
+with Create_Pixmap;
+with Create_Preview_Color;
+with Create_Preview_Gray;
 with Create_Progress;
---  with Create_Radio_Button;
---  with Create_Range;
---  with Create_Reparent;
---  with Create_Rulers;
---  with Create_Scroll_Test;
---  with Create_Scrolled;
---  with Create_Spin;
---  with Create_Status;
---  with Create_Test_Idle;
---  with Create_Test_Timeout;
---  with Create_Text;
---  with Create_Toggle_Buttons;
+with Create_Radio_Button;
+with Create_Range;
+with Create_Reparent;
+with Create_Rulers;
+with Create_Scroll_Test;
+with Create_Scrolled;
+with Create_Spin;
+with Create_Status;
+with Create_Test_Idle;
+with Create_Test_Timeout;
+with Create_Text;
+with Create_Toggle_Buttons;
 with Create_Toolbar;
---  with Create_Tooltips;
---  with Create_Tree;
+with Create_Tooltips;
+with Create_Tree;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
 
@@ -138,41 +138,49 @@ package body Test is
       (US ("calendar"), Create_Calendar.Run'Access),
       (US ("check buttons"), Create_Check_Buttons.Run'Access),
       (US ("clist"), Create_Clist.Run'Access),
+      (US ("ctree"), null),
       (US ("color selection"), Create_Color_Selection.Run'Access),
       (US ("cursors"), Create_Cursors.Run'Access),
       (US ("dialog"), Create_Dialog.Run'Access),
       (US ("dnd"), null),
       (US ("entry"), Create_Entry.Run'Access),
+      (US ("event watcher"), null),
       (US ("file selection"), Create_File_Selection.Run'Access),
       (US ("font selection"), Create_Font_Selection.Run'Access),
       (US ("gamma curve"), Create_Gamma_Curve.Run'Access),
       (US ("handle box"), Create_Handle_Box.Run'Access),
+      (US ("item factory"), null),
+      (US ("labels"), null),
+      (US ("layout"), null),
       (US ("list"), Create_List.Run'Access),
---         (US ("menus"), Create_Menu.Run'Access),
---         (US ("notebook"), Create_Notebook.Run'Access),
---         (US ("panes"), Create_Paned.Run'Access),
---         (US ("pixmap"), Create_Pixmap.Run'Access),
---         (US ("preview color"), Create_Preview_Color.Run'Access),
---         (US ("preview gray"), Create_Preview_Gray.Run'Access),
+      (US ("menus"), Create_Menu.Run'Access),
+      (US ("modal window"), null),
+      (US ("notebook"), Create_Notebook.Run'Access),
+      (US ("panes"), Create_Paned.Run'Access),
+      (US ("pixmap"), Create_Pixmap.Run'Access),
+      (US ("preview color"), Create_Preview_Color.Run'Access),
+      (US ("preview gray"), Create_Preview_Gray.Run'Access),
       (US ("progress bar"), Create_Progress.Run'Access),
---         (US ("radio buttons"), Create_Radio_Button.Run'Access),
---         (US ("range controls"), Create_Range.Run'Access),
---         (US ("reparent"), Create_Reparent.Run'Access),
---         (US ("rulers"), Create_Rulers.Run'Access),
---         (US ("scrolled windows"), Create_Scrolled.Run'Access),
---         (US ("shapes"), null),
---         (US ("spinbutton"), Create_Spin.Run'Access),
---         (US ("statusbar"), Create_Status.Run'Access),
---         (US ("test idle"), Create_Test_Idle.Run'Access),
---         (US ("test mainloop"), Create_Main_Loop.Run'Access),
---         (US ("test scrolling"), Create_Scroll_Test.Run'Access),
---         (US ("test selection"), null),
---         (US ("test timeout"), Create_Test_Timeout.Run'Access),
---         (US ("text"), Create_Text.Run'Access),
---         (US ("toggle buttons"), Create_Toggle_Buttons.Run'Access),
+      (US ("radio buttons"), Create_Radio_Button.Run'Access),
+      (US ("range controls"), Create_Range.Run'Access),
+      (US ("rc file"), null),
+      (US ("reparent"), Create_Reparent.Run'Access),
+      (US ("rulers"), Create_Rulers.Run'Access),
+      (US ("saved position"), null),
+      (US ("scrolled windows"), Create_Scrolled.Run'Access),
+      (US ("shapes"), null),
+      (US ("spinbutton"), Create_Spin.Run'Access),
+      (US ("statusbar"), Create_Status.Run'Access),
+      (US ("test idle"), Create_Test_Idle.Run'Access),
+      (US ("test mainloop"), Create_Main_Loop.Run'Access),
+      (US ("test scrolling"), Create_Scroll_Test.Run'Access),
+      (US ("test selection"), null),
+      (US ("test timeout"), Create_Test_Timeout.Run'Access),
+      (US ("text"), Create_Text.Run'Access),
+      (US ("toggle buttons"), Create_Toggle_Buttons.Run'Access),
       (US ("toolbar"), Create_Toolbar.Run'Access),
---         (US ("tooltips"), Create_Tooltips.Run'Access),
---         (US ("tree"), Create_Tree.Run'Access),
+      (US ("tooltips"), Create_Tooltips.Run'Access),
+      (US ("tree"), Create_Tree.Run'Access),
       (US ("WM hints"), null)
       );
 

@@ -52,8 +52,6 @@ with Common; use Common;
 
 package body Create_Tree is
 
-   package Tree_Cb is new Signal.Object_Callback (Gtk_Tree);
-
    Window : aliased Gtk.Window.Gtk_Window;
 
    Default_Number_Of_Item  : Gfloat := 3.0;
@@ -70,22 +68,24 @@ package body Create_Tree is
    Nb_Item_Spinner     : Gtk_Spin_Button;
    Recursion_Spinner   : Gtk_Spin_Button;
 
-   function Convert is new Unchecked_Cast (Gtk_Tree_Item);
+   type My_Tree_Record is new Gtk_Tree_Record with record
+      Nb_Item_Add    : Guint;
+      Add_Button     : Gtk_Button;
+      Remove_Button  : Gtk_Button;
+      Subtree_Button : Gtk_Button;
+   end record;
+   type My_Tree is access all My_Tree_Record'Class;
 
-   type STreeButtons is
-      record
-         Nb_Item_Add    : Guint;
-         Add_Button     : Gtk_Button;
-         Remove_Button  : Gtk_Button;
-         Subtree_Button : Gtk_Button;
-      end record;
-   type STreeButtons_Access is access all STreeButtons;
-   package Tree_Data is new User_Data (STreeButtons_Access);
+   package Tree_Cb is new Signal.Object_Callback (My_Tree_Record);
+
+   package To_Tree is new Unchecked_Cast
+     (Gtk_Tree_Record, Gtk_Tree);
+   package From_Tree is new Unchecked_Cast
+     (Gtk_Tree_Item_Record, Gtk_Tree_Item);
 
 
-   procedure Cb_Tree_Changed (Tree : in out Gtk_Tree) is
+   procedure Cb_Tree_Changed (Tree : access My_Tree_Record) is
       use Widget_List;
-      Tree_Buttons  : STreeButtons_Access := Tree_Data.Get (Tree);
       Selected_List : Widget_List.Glist;
       Nb_Selected   : Guint;
    begin
@@ -93,30 +93,19 @@ package body Create_Tree is
       Nb_Selected   := Length (Selected_List);
 
       if Nb_Selected = 0 then
-         Set_Sensitive (Tree_Buttons.Add_Button,
+         Set_Sensitive (Tree.Add_Button,
                         Get_Children (Tree) = Null_List);
-         Set_Sensitive (Tree_Buttons.Remove_Button, False);
-         Set_Sensitive (Tree_Buttons.Subtree_Button, False);
+         Set_Sensitive (Tree.Remove_Button, False);
+         Set_Sensitive (Tree.Subtree_Button, False);
       else
-         Set_Sensitive (Tree_Buttons.Add_Button, Nb_Selected = 1);
-         Set_Sensitive (Tree_Buttons.Remove_Button, True);
-         Set_Sensitive (Tree_Buttons.Subtree_Button, Nb_Selected = 1);
+         Set_Sensitive (Tree.Add_Button, Nb_Selected = 1);
+         Set_Sensitive (Tree.Remove_Button, True);
+         Set_Sensitive (Tree.Subtree_Button, Nb_Selected = 1);
       end if;
    end Cb_Tree_Changed;
 
-   procedure Tree_Destroy (Widget : in out Gtk_Widget) is
-      Tree_Buttons  : STreeButtons_Access := Tree_Data.Get (widget);
-      procedure Free is new Unchecked_Deallocation (STreeButtons,
-                                                    STreeButtons_Access);
-   begin
-      Free (Tree_Buttons);
-      Gtk.Widget.Destroy (Widget);
-   end Tree_Destroy;
-
-
-   procedure Cb_Add_New_Item (Tree : in out Gtk_Tree) is
+   procedure Cb_Add_New_Item (Tree : access My_Tree_Record) is
       use Widget_List;
-      Tree_Buttons  : STreeButtons_Access := Tree_Data.Get (Tree);
       Selected_List : Widget_List.Glist;
       Selected_Item : Gtk_Tree_Item;
       Subtree       : Gtk_Tree;
@@ -127,21 +116,21 @@ package body Create_Tree is
       if Selected_List = Null_List then
          Subtree := Gtk_Tree (Tree);
       else
-         Selected_Item := Convert (Get_Data (Selected_List));
+         Selected_Item := From_Tree.Convert (Get_Data (Selected_List));
          Subtree := Get_Subtree (Selected_Item);
-         if not Is_Created (Subtree) then
+         if Subtree = null then
             Gtk_New (Subtree);
             Set_Subtree (Selected_Item, Subtree);
          end if;
       end if;
 
-      Gtk_New (Item_New, "Item add" & Guint'Image (Tree_Buttons.Nb_Item_Add));
+      Gtk_New (Item_New, "Item add" & Guint'Image (Tree.Nb_Item_Add));
       Append (Subtree, Item_New);
       Show (Item_New);
-      Tree_Buttons.Nb_Item_Add := Tree_Buttons.Nb_Item_Add + 1;
+      Tree.Nb_Item_Add := Tree.Nb_Item_Add + 1;
    end Cb_Add_New_Item;
 
-   procedure Cb_Remove_Item (Tree : in out Gtk_Tree) is
+   procedure Cb_Remove_Item (Tree : access My_Tree_Record) is
       use Widget_List;
       Selected_List : Widget_List.Glist;
       Clear_List    : Widget_List.Glist;
@@ -157,15 +146,15 @@ package body Create_Tree is
       Free (Clear_List);
    end Cb_Remove_Item;
 
-   procedure Cb_Remove_Subtree (Tree : in out Gtk_Tree) is
+   procedure Cb_Remove_Subtree (Tree : access My_Tree_Record) is
       use Widget_List;
       Selected_List : Widget_List.Glist;
       Item          : Gtk_Tree_Item;
    begin
       Selected_List := Get_Selection (Tree);
       if Selected_List /= Null_List then
-        Item := Convert (Get_Data (Selected_List));
-        if Is_Created (Item) then
+        Item := From_Tree.Convert (Get_Data (Selected_List));
+        if Is_Created (Item.all) then
            Remove_Subtree (Item);
         end if;
       end if;
@@ -187,7 +176,7 @@ package body Create_Tree is
 
       if Level = -1 then
          The_Level := 0;
-         Item_Subtree := To_Tree (Item);
+         Item_Subtree := To_Tree.Convert (Item);
          No_Root_Item := True;
       else
          declare
@@ -222,21 +211,17 @@ package body Create_Tree is
                                  Recursion_Level_Max : in Gint)
    is
       Id           : Guint;
-      Tree_Buttons : STreeButtons_Access := new StreeButtons;
       Window       : Gtk_Window;
       Box1,
         Box2       : Gtk_Box;
       Scrolled     : Gtk_Scrolled_Window;
-      Root_Tree    : Gtk_Tree;
+      Root_Tree    : My_Tree;
       Root_Item    : Gtk_Tree_Item;
       Button       : Gtk_Button;
       Sep          : Gtk_Separator;
    begin
-      Tree_Buttons.Nb_Item_Add := 0;
       Gtk_New (Window, Window_Toplevel);
       Set_Title (Window, "Tree Sample");
-      Id := Widget_Cb.Connect (Window, "destroy", Tree_Destroy'Access, Window);
-      Tree_Data.Set (Window, Tree_Buttons);
 
       Gtk_New_Vbox (Box1, False, 0);
       Add (Window, Box1);
@@ -254,11 +239,12 @@ package body Create_Tree is
       Show (Scrolled);
 
       --  Create root tree widget
-      Gtk_New (Root_Tree);
+      Root_Tree := new My_Tree_Record;
+      Initialize (Root_Tree);
+      Root_Tree.Nb_Item_Add := 0;
       Id := Tree_Cb.Connect (Root_Tree, "selection_changed",
                              Cb_Tree_Changed'Access, Root_Tree);
-      Tree_Data.Set (Root_Tree, Tree_Buttons);
-      Add (Scrolled, Root_Tree);
+      Add_With_Viewport (Scrolled, Root_Tree);
       Set_Selection_Mode (Root_Tree, Selection_Mode);
       Set_View_Lines (Root_Tree, Draw_Line);
       if View_Line then
@@ -269,7 +255,7 @@ package body Create_Tree is
       Show (Root_Tree);
 
       if No_Root_Item then
-         Root_Item := From_Tree (Root_Tree);
+         Root_Item := From_Tree.Convert (Root_Tree);
       else
          Gtk_New (Root_Item, "root item");
          Append (Root_Tree, Root_Item);
@@ -284,26 +270,26 @@ package body Create_Tree is
       Set_Border_Width (Box2, 5);
       Show (Box2);
 
-      Gtk_New (Tree_Buttons.Add_Button, "Add Item");
-      Set_Sensitive (Tree_Buttons.Add_Button, False);
-      Id := Tree_Cb.Connect (Tree_Buttons.Add_Button, "clicked",
+      Gtk_New (Root_Tree.Add_Button, "Add Item");
+      Set_Sensitive (Root_Tree.Add_Button, False);
+      Id := Tree_Cb.Connect (Root_Tree.Add_Button, "clicked",
                              Cb_Add_New_Item'Access, Root_Tree);
-      Pack_Start (Box2, Tree_Buttons.Add_Button, True, True, 0);
-      Show (Tree_Buttons.Add_Button);
+      Pack_Start (Box2, Root_Tree.Add_Button, True, True, 0);
+      Show (Root_Tree.Add_Button);
 
-      Gtk_New (Tree_Buttons.Remove_Button, "Remove Item(s)");
-      Set_Sensitive (Tree_Buttons.Remove_Button, False);
-      Id := Tree_Cb.Connect (Tree_Buttons.Remove_Button, "clicked",
+      Gtk_New (Root_Tree.Remove_Button, "Remove Item(s)");
+      Set_Sensitive (Root_Tree.Remove_Button, False);
+      Id := Tree_Cb.Connect (Root_Tree.Remove_Button, "clicked",
                              Cb_Remove_Item'Access, Root_Tree);
-      Pack_Start (Box2, Tree_Buttons.Remove_Button, True, True, 0);
-      Show (Tree_Buttons.Remove_Button);
+      Pack_Start (Box2, Root_Tree.Remove_Button, True, True, 0);
+      Show (Root_Tree.Remove_Button);
 
-      Gtk_New (Tree_Buttons.Subtree_Button, "Remove Subtree");
-      Set_Sensitive (Tree_Buttons.Subtree_Button, False);
-      Id := Tree_Cb.Connect (Tree_Buttons.Subtree_Button, "clicked",
+      Gtk_New (Root_Tree.Subtree_Button, "Remove Subtree");
+      Set_Sensitive (Root_Tree.Subtree_Button, False);
+      Id := Tree_Cb.Connect (Root_Tree.Subtree_Button, "clicked",
                              Cb_Remove_Subtree'Access, Root_Tree);
-      Pack_Start (Box2, Tree_Buttons.Subtree_Button, True, True, 0);
-      Show (Tree_Buttons.Subtree_Button);
+      Pack_Start (Box2, Root_Tree.Subtree_Button, True, True, 0);
+      Show (Root_Tree.Subtree_Button);
 
       --  Create Separator
       Gtk_New_Hseparator (Sep);
@@ -324,7 +310,7 @@ package body Create_Tree is
       Show (Window);
    end Create_Tree_Sample;
 
-   procedure Cb_Create_Tree (Button : in out Gtk_Widget) is
+   procedure Cb_Create_Tree (Button : access Gtk_Widget_Record) is
       pragma Warnings (Off, Button);
       Selection_Mode  : Gtk_Selection_Mode := Selection_Single;
       View_Line       : Boolean;
@@ -355,7 +341,7 @@ package body Create_Tree is
                           No_Root_Item, Nb_Item, Recursion_Level);
    end Cb_Create_Tree;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id       : Guint;
       Box1,
         Box2,
@@ -369,11 +355,10 @@ package body Create_Tree is
       Label    : Gtk_Label;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy",
-                                   Gtk.Widget.Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "Tree Mode Selection Window");
          Set_Border_Width (Window, Border_Width => 0);
 
@@ -500,10 +485,6 @@ package body Create_Tree is
          Pack_Start (Box2, Button, True, True, 0);
          Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
          Show (Button);
-      end if;
-
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

@@ -205,6 +205,7 @@ package body Create_List is
                      Fill    => True,
                      Padding => 0);
 
+         Omenu_Group := Widget_Slist.Null_List;
          Create_Progress.Build_Option_Menu (List_Omenu,
                                             Omenu_Group,
                                             Items,

@@ -104,7 +104,8 @@ package body Create_Progress is
       Pdata.Omenu1_Group := Widget_Slist.Null_List;
       Pdata.Omenu2_Group := Widget_Slist.Null_List;
       Pdata.Timer := 0;
-      Destroy (Pdata.Window);
+      --  Note: we are in a callback for destroy, so the window will be
+      --  destroyed elsewhere. No need to do that here.
       Pdata.Window := null;
    end Destroy_Progress;
 

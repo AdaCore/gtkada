@@ -53,47 +53,39 @@ package body Create_Test_Timeout is
       return True;
    end Timeout_Test;
 
-   procedure Stop_Timeout (Label : in out Gtk_Label) is
-      pragma Warnings (Off, Label);
+   procedure Stop_Timeout (Object : access Gtk_Widget_Record) is
+      pragma Warnings (Off, Object);
    begin
       if Timeout /= 0 then
          Timeout_Remove (Timeout);
          Timeout := 0;
+         Count := 0;
       end if;
    end Stop_Timeout;
 
-   procedure Destroy_Timeout (Window : in out Gtk_Widget) is
-      Dummy_Label : Gtk_Label;
+   procedure Destroy_Timeout (Window : access Gtk_Widget_Record) is
    begin
-      Stop_Timeout (Dummy_Label);
-      Gtk.Widget.Destroy (Window);
-      Count := 0;
+      Stop_Timeout (Window);
+      Dialog := null;
    end Destroy_Timeout;
 
-   procedure Destroy_Timeout (Window : in out Gtk_Widget;
-                              Widget : in out Gtk_Widget_Access) is
-   begin
-      Destroy_Timeout (Window);
-      Destroyed (Window, Widget);
-   end Destroy_Timeout;
-
-   procedure Start_Timeout (Label : in out Gtk_Label) is
+   procedure Start_Timeout (Label : access Gtk_Label_Record) is
    begin
       if Timeout = 0 then
-         Timeout := Label_Timeout.Add (100, Timeout_Test'Access, Label);
+         Timeout := Label_Timeout.Add (100, Timeout_Test'Access,
+                                       Gtk_Label (Label));
       end if;
    end Start_Timeout;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id       : Guint;
       Button   : Gtk_Button;
       Label    : Gtk_Label;
    begin
 
-      if not Is_Created (Dialog) then
+      if Dialog = null then
          Gtk_New (Dialog);
-         Id := Widget2_Cb.Connect (Dialog, "destroy", Destroy_Timeout'Access,
-                                   Dialog'Access);
+         Id := Widget3_Cb.Connect (Dialog, "destroy", Destroy_Timeout'Access);
          Set_Title (Dialog, "Timeout Test");
          Set_Border_Width (Dialog, Border_Width => 0);
 
@@ -103,8 +95,7 @@ package body Create_Test_Timeout is
          Show (Label);
 
          Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy_Timeout'Access,
-                                  Dialog);
+         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Dialog);
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
@@ -117,13 +108,11 @@ package body Create_Test_Timeout is
          Show (Button);
 
          Gtk_New (Button, "stop");
-         Id := Label_Cb.Connect (Button, "clicked", Stop_Timeout'Access, Label);
+         Id := Widget_Cb.Connect
+           (Button, "clicked", Destroy_Timeout'Access, Dialog);
          Set_Flags (Button, Can_Default);
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Show (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Dialog) then
          Show (Dialog);
       else
          Destroy (Dialog);

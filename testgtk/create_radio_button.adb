@@ -43,7 +43,7 @@ package body Create_Radio_Button is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id        : Guint;
       Box1,
         Box2    : Gtk_Box;
@@ -52,10 +52,10 @@ package body Create_Radio_Button is
       Button2   : Gtk_Button;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "radio buttons");
          Set_Border_Width (Window, Border_Width => 0);
 
@@ -97,9 +97,6 @@ package body Create_Radio_Button is
          Grab_Default (Button2);
          Show (Button2);
 
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

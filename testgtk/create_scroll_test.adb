@@ -29,6 +29,7 @@
 
 with Glib; use Glib;
 
+with Gdk;           use Gdk;
 with Gdk.Drawable;  use Gdk.Drawable;
 with Gdk.Event;     use Gdk.Event;
 with Gdk.GC;        use Gdk.GC;
@@ -51,16 +52,16 @@ with Common;           use Common;
 package body Create_Scroll_Test is
 
    package Adjustment_Cb is new Signal.Callback
-     (Widget_Type => Adjustment.Gtk_Adjustment,
+     (Base_Type => Adjustment.Gtk_Adjustment_Record,
       Data_Type => Drawing_Area.Gtk_Drawing_Area);
 
    package Event_Configure_Cb is new Signal.Two_Callback
-     (Widget_Type => Drawing_Area.Gtk_Drawing_Area,
+     (Base_Type => Drawing_Area.Gtk_Drawing_Area_Record,
       Data_Type => Adjustment.Gtk_Adjustment,
       Cb_Type => Gdk.Event.Gdk_Event_Configure);
 
    package Event_Expose_Cb is new Signal.Two_Callback
-     (Widget_Type => Drawing_Area.Gtk_Drawing_Area,
+     (Base_Type => Drawing_Area.Gtk_Drawing_Area_Record,
       Data_Type => Adjustment.Gtk_Adjustment,
       Cb_Type => Gdk.Event.Gdk_Event_Expose);
 
@@ -74,8 +75,8 @@ package body Create_Scroll_Test is
    -------------------------
 
    procedure Adjustment_Change
-     (Adj : in out Adjustment.Gtk_Adjustment;
-      Widget   : in out Drawing_Area.Gtk_Drawing_Area)
+     (Adj : access Adjustment.Gtk_Adjustment_Record;
+      Widget   : in Drawing_Area.Gtk_Drawing_Area)
    is
       Source_Min : Gint := Gint (Get_Value (Adj)) - Scroll_Test_Pos;
       Source_Max : Gint := Source_Min + Gint (Get_Allocation_Height (Widget));
@@ -106,14 +107,14 @@ package body Create_Scroll_Test is
                 Gint'Max (0, 2 * Gint (Get_Allocation_Height (Widget))
                           - Source_Max);
          Rect.Width := Get_Allocation_Width (Widget);
-         Rect.Height := 
+         Rect.Height :=
                   Get_Allocation_Height (Widget) - Guint (Rect.Y);
          Source_Max := Gint (Get_Allocation_Height (Widget));
          Dest_Max := Rect.Y;
       end if;
 
       if Source_Min /= Source_Max then
-         if not Is_Created (Scroll_Test_GC) then
+         if not Is_Created (Scroll_Test_Gc) then
             Gdk_New (Scroll_Test_GC, Get_Window (Widget));
             Set_Exposures (Scroll_Test_GC, True);
          end if;
@@ -150,9 +151,9 @@ package body Create_Scroll_Test is
    --  Configure  --
    -----------------
 
-   procedure Configure (Widget  : in out Drawing_Area.Gtk_Drawing_Area;
-                        Cb_Data : in out Gdk.Event.Gdk_Event_Configure;
-                        Adj     : in out Adjustment.Gtk_Adjustment) is
+   procedure Configure (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record;
+                        Cb_Data : in Gdk.Event.Gdk_Event_Configure;
+                        Adj     : in Adjustment.Gtk_Adjustment) is
       pragma Warnings (Off, Cb_Data);
    begin
       Set_Page_Increment (Adj, 0.9 * Gfloat (Get_Allocation_Height (Widget)));
@@ -164,11 +165,13 @@ package body Create_Scroll_Test is
    --  Expose  --
    --------------
 
-   procedure Expose (Widget  : in out Drawing_Area.Gtk_Drawing_Area;
-                     Event   : in out Gdk.Event.Gdk_Event_Expose;
-                     Adj     : in out Adjustment.Gtk_Adjustment) is
+   procedure Expose (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record;
+                     Event   : in Gdk.Event.Gdk_Event_Expose;
+                     Adj     : in Adjustment.Gtk_Adjustment) is
       Area : Gdk.Rectangle.Gdk_Rectangle;
       Imin, Imax, Jmin, Jmax : Gint;
+      Sty : aliased Gtk.Style.Gtk_Style_Record
+        := Gtk.Style.Get_Style (Widget);
    begin
       Area := Gdk.Event.Get_Area (Event);
 
@@ -189,7 +192,7 @@ package body Create_Scroll_Test is
             if ((I + J) mod 2 /= 0) then
                Gdk.Drawable.Draw_Rectangle
                  (Drawable => Get_Window (Widget),
-                  GC => Style.Get_Black_Gc (Style.Get_Style (Widget)),
+                  GC => Gtk.Style.Get_Black_Gc (Sty'Access),
                   Filled => True,
                   X => 10 * I, Y => 10 * J - Gint (Adjustment.Get_Value (Adj)),
                   Width => 1 + I mod 10, Height => 1 + J mod 10);
@@ -204,7 +207,7 @@ package body Create_Scroll_Test is
    --  Run  --
    -----------
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id : Guint;
       Hbox : Box.Gtk_Box;
       Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
@@ -212,12 +215,11 @@ package body Create_Scroll_Test is
       Scrollbar : Gtk.Scrollbar.Gtk_Scrollbar;
       Button : Gtk.Button.Gtk_Button;
    begin
-      if not Is_Created (Dialog) then
+      if Dialog = null then
 
          Gtk.Dialog.Gtk_New (Dialog);
-         Id := Widget2_Cb.Connect (Dialog, "destroy",
-                                   Destroyed'Access,
-                                   Dialog'Access);
+         Id := Destroy_Dialog_Cb.Connect
+           (Dialog, "destroy", Destroy_Dialog'Access, Dialog'Access);
          Set_Title (Window => Dialog, Title => "Scroll Test");
          Set_Border_Width (Dialog, 0);
 
@@ -267,10 +269,6 @@ package body Create_Scroll_Test is
                                   Gtk.Widget.Destroy'Access,
                                   Dialog);
          Show (Button);
-
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Dialog) then
          Show (Dialog);
       else
          Destroy (Dialog);

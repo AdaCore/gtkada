@@ -44,7 +44,7 @@ package body Create_Range is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id         : Guint;
       Box1       : Gtk_Box;
       Box2       : Gtk_Box;
@@ -55,10 +55,10 @@ package body Create_Range is
       Button     : Gtk_Button;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "range");
          Set_Border_Width (Window, Border_Width => 0);
 
@@ -100,9 +100,6 @@ package body Create_Range is
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
          Show (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

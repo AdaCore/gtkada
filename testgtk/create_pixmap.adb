@@ -46,23 +46,23 @@ package body Create_Pixmap is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id        : Guint;
       Box1      : Gtk_Box;
       Box2      : Gtk_Box;
       Box3      : Gtk_Box;
       Button    : Gtk_Button;
-      Style     : Gtk_Style;
+      Style     : aliased Gtk_Style_Record;
       Pixmap    : Gdk_Pixmap;
       Mask      : Gdk_Bitmap;
       PixmapWid : Gtk_Pixmap;
       Label     : Gtk_Label;
       Separator : Gtk_Separator;
    begin
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "pixmap");
          Set_Border_Width (Window, Border_Width => 0);
          Realize (Window);
@@ -82,7 +82,7 @@ package body Create_Pixmap is
 
          Style := Get_Style (Button);
          Create_From_Xpm (Pixmap, Get_Window (Window), Mask,
-                          Get_Bg (Style, State_Normal), "test.xpm");
+                          Get_Bg (Style'Access, State_Normal), "test.xpm");
          Gtk_New (PixmapWid, Pixmap, Mask);
 
          Gtk_New (Label, "Pixmap" & Ascii.LF & "test");
@@ -110,9 +110,6 @@ package body Create_Pixmap is
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
          Show (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

@@ -65,8 +65,8 @@ package body Create_Dialog is
       Ptr.all := null;
    end Destroyed;
 
-   procedure Label_Toggle (Label : access Gtk_Label_Record) is
-      pragma Warnings (Off, Label);
+   procedure Label_Toggle (Button : access Gtk_Widget_Record) is
+      pragma Warnings (Off, Button);
       Id : Guint;
    begin
       if Global_Label = null then
@@ -90,8 +90,9 @@ package body Create_Dialog is
          Gtk_New (Dialog);
          Id := Dialog_Destroy.Connect
            (Dialog, "destroy", Destroyed'Access, Dialog'Access);
-         Set_Title (Dialog, "dialog");
+         Set_Title (Dialog, "Gtk_Dialog");
          Set_Border_Width (Dialog, 0);
+         Set_Usize (Dialog, 200, 110);
 
          Gtk_New (Button, "OK");
          Set_Flags (Button, Can_Default);
@@ -100,9 +101,7 @@ package body Create_Dialog is
          Show (Button);
 
          Gtk_New (Button, "Toggle");
-         Id := Label_Cb.Connect (Button, "clicked", Label_Toggle'Access,
-                                 Global_Label);
-         Set_Flags (Button, Can_Default);
+         Id := Widget3_Cb.Connect (Button, "clicked", Label_Toggle'Access);
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Show (Button);
          Show (Dialog);

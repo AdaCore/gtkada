@@ -55,6 +55,20 @@ package body Create_Entry is
       Set_Editable (The_Entry, Is_Active (Button));
    end Toggle_Editable;
 
+   procedure Toggle_Sensitive (Button : access Gtk_Check_Button_Record;
+                               The_Entry : in Gtk_Entry)
+   is
+   begin
+      Set_Sensitive (The_Entry, Is_Active (Button));
+   end Toggle_Sensitive;
+
+   procedure Toggle_Visibility (Button : access Gtk_Check_Button_Record;
+                                The_Entry : in Gtk_Entry)
+   is
+   begin
+      Set_Visibility (The_Entry, Is_Active (Button));
+   end Toggle_Visibility;
+
    procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       use String_List;
 
@@ -98,7 +112,7 @@ package body Create_Entry is
 
          Gtk_New (The_Entry);
          Set_Text (The_Entry, "Hello world");
-         Gtk.GEntry.Select_Region (The_Entry, 0, -1);
+         Select_Region (The_Entry, 0, 5);
          Pack_Start (Box2, The_Entry, True, True, 0);
          Show (The_Entry);
 
@@ -113,6 +127,20 @@ package body Create_Entry is
          Pack_Start (Box2, Check, False, True, 0);
          Id := Entry_Cb.Connect
            (Check, "toggled", Toggle_Editable'Access, The_Entry);
+         Set_Active (Check, True);
+         Show (Check);
+
+         Gtk_New (Check, "Visible");
+         Pack_Start (Box2, Check, False, True, 0);
+         Id := Entry_Cb.Connect
+           (Check, "toggled", Toggle_Visibility'Access, The_Entry);
+         Set_Active (Check, True);
+         Show (Check);
+
+         Gtk_New (Check, "Sensitive");
+         Pack_Start (Box2, Check, False, True, 0);
+         Id := Entry_Cb.Connect
+           (Check, "toggled", Toggle_Sensitive'Access, The_Entry);
          Set_Active (Check, True);
          Show (Check);
 

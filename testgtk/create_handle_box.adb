@@ -153,9 +153,9 @@ package body Create_Handle_Box is
          Gtk_New (Label, "Fooo!");
          Add (Handle2, Label);
          Show (Label);
-         Destroy (Window);
-      else
          Show (Window);
+      else
+         Destroy (Window);
       end if;
    end Run;
 

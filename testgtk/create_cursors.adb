@@ -54,11 +54,16 @@ with Gtk; use Gtk;
 
 package body Create_Cursors is
 
-   package Spin_Cb is new Signal.Object_Callback (Gtk_Spin_Button_Record);
-   package Spin2_Cb is new Signal.Callback (Gtk_Spin_Button_Record,
+   type My_Spin_Button_Record is new Gtk_Spin_Button_Record with record
+      Label : Gtk_Label;
+   end record;
+   type My_Spin_Button is access all My_Spin_Button_Record;
+
+   package Spin_Cb is new Signal.Object_Callback (My_Spin_Button_Record);
+   package Spin2_Cb is new Signal.Callback (My_Spin_Button_Record,
                                             Gtk_Drawing_Area);
    package Spin3_Cb is new Signal.Two_Callback (Gtk_Widget_Record,
-                                                Gtk_Spin_Button,
+                                                My_Spin_Button,
                                                 Gdk_Event_Button);
    package Da_Cb is new Signal.Object_Callback (Gtk_Drawing_Area_Record);
 
@@ -66,10 +71,11 @@ package body Create_Cursors is
 
 
    procedure Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record) is
+      Style      : aliased Gtk_Style_Record := Get_Style (Darea);
       Draw       : Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
-      White_GC   : Gdk_GC := Get_White_GC (Get_Style (Darea));
-      Black_GC   : Gdk_GC := Get_Black_GC (Get_Style (Darea));
-      Gray_GC    : Gdk_GC := Get_Bg_GC (Get_Style (Darea), State_Normal);
+      White_GC   : Gdk_GC := Get_White_GC (Style'Access);
+      Black_GC   : Gdk_GC := Get_Black_GC (Style'Access);
+      Gray_GC    : Gdk_GC := Get_Bg_GC (Style'Access, State_Normal);
       Max_Width  : Guint  := Get_Allocation_Width (Darea);
       Max_Height : Guint  := Get_Allocation_Height (Darea);
 
@@ -84,7 +90,7 @@ package body Create_Cursors is
    end Cursor_Expose_Event;
 
 
-   procedure Set_Cursor (Spinner : access Gtk_Spin_Button_Record;
+   procedure Set_Cursor (Spinner : access My_Spin_Button_Record;
                          Widget  : in Gtk_Drawing_Area)
    is
       pragma Warnings (Off);
@@ -99,12 +105,13 @@ package body Create_Cursors is
       C := C mod 154;
       Gdk_New (Cursor, To_Cursor (C));
       Set_Cursor (Window, Cursor);
+      Set_Text (Spinner.Label, Gdk_Cursor_Type'Image (To_Cursor (C)));
       Destroy (Cursor);
    end Set_Cursor;
 
    procedure Cursor_Event (Darea   : access Gtk_Widget_Record;
                            Event   : in Gdk_Event_Button;
-                           Spinner : in Gtk_Spin_Button) is
+                           Spinner : in My_Spin_Button) is
       pragma Warnings (Off, Darea);
    begin
       if Get_Button (Event) = 1 then
@@ -123,7 +130,7 @@ package body Create_Cursors is
       Label   : Gtk_Label;
       Adj     : Gtk_Adjustment;
       Button  : Gtk_Button;
-      Spinner : Gtk_Spin_Button;
+      Spinner : My_Spin_Button;
       Frame   : Gtk_Frame;
       Darea   : Gtk_Drawing_Area;
    begin
@@ -151,10 +158,11 @@ package body Create_Cursors is
          Set_Alignment (Label, 0.0, 0.5);
          Pack_Start (Hbox, Label, False, True, 0);
 
-         Gtk_New (Adj, 0.0, 0.0, 154.0,
+         Gtk_New (Adj, 0.0, 0.0, 152.0,
                   2.0, 10.0, 0.0);
 
-         Gtk_New (Spinner, Adj, 0.0, 0);
+         Spinner := new My_Spin_Button_Record;
+         Initialize (Spinner, Adj, 0.0, 0);
          Pack_Start (Hbox, Spinner, True, True, 0);
 
          Gtk_New (Frame, "Cursor Area");
@@ -175,6 +183,10 @@ package body Create_Cursors is
          Show (Darea);
 
          Id := Spin2_Cb.Connect (Spinner, "changed", Set_Cursor'Access, Darea);
+
+         Gtk_New (Spinner.Label, "XXX");
+         Pack_Start (Vbox, Spinner.Label, False, False, 0);
+         Show (Spinner.Label);
 
          Gtk_New_Hseparator (Sep);
          Pack_Start (Main_Box, Sep, False, True, 0);

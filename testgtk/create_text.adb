@@ -50,7 +50,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body Create_Text is
 
-   package Text_Cb is new Signal.Callback (Gtk_Toggle_Button, Gtk_Text);
+   package Text_Cb is new Signal.Callback (Gtk_Toggle_Button_Record, Gtk_Text);
 
    Window : aliased Gtk_Window;
 
@@ -72,21 +72,21 @@ package body Create_Text is
       (16#FFFF#, 16#0#,    16#FFFF#, new String'("magenta")),
       (16#FFFF#, 16#FFFF#, 16#0#,    new String'("yellow")));
 
-   procedure Toggle_Editable (Toggle : in out Gtk_Toggle_Button;
-                              Text   : in out Gtk_Text)
+   procedure Toggle_Editable (Toggle : access Gtk_Toggle_Button_Record;
+                              Text   : in Gtk_Text)
    is
    begin
       Set_Editable (Text, Is_Active (Toggle));
    end Toggle_Editable;
 
-   procedure Word_Wrap (Toggle : in out Gtk_Toggle_Button;
-                        Text   : in out Gtk_Text)
+   procedure Word_Wrap (Toggle : access Gtk_Toggle_Button_Record;
+                        Text   : in Gtk_Text)
    is
    begin
       Set_Word_Wrap (Text, Is_Active (Toggle));
    end Word_Wrap;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id           : Guint;
       Box1,
         Box2       : Gtk_Box;
@@ -100,10 +100,10 @@ package body Create_Text is
       Color_I, Color_J : Gdk_Color;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                  Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Name (Window, "text window");
          Set_Title (Window, "test");
          Set_Usize (Window, 500, 500);
@@ -201,9 +201,6 @@ package body Create_Text is
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
          Show (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

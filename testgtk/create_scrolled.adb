@@ -44,7 +44,8 @@ with Common; use Common;
 
 package body Create_Scrolled is
 
-   package Scrolled_Cb is new Signal.Object_Callback (Gtk_Scrolled_Window);
+   package Scrolled_Cb is new Signal.Object_Callback
+     (Gtk_Scrolled_Window_Record);
 
    Window : aliased Gtk.Dialog.Gtk_Dialog;
 
@@ -52,7 +53,9 @@ package body Create_Scrolled is
    Parent       : Gtk_Widget;
    Float_Parent : Gtk_Window;
 
-   procedure Scrolled_Windows_Remove (Win : in out Gtk_Scrolled_Window) is
+   procedure Scrolled_Windows_Remove
+     (Win : access Gtk_Scrolled_Window_Record)
+   is
    begin
       if Has_Parent then
          Reparent (Win, New_Parent => Parent);
@@ -68,7 +71,7 @@ package body Create_Scrolled is
    end Scrolled_Windows_Remove;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id        : Guint;
       Button    : Gtk_Button;
       Table     : Gtk_Table;
@@ -76,10 +79,10 @@ package body Create_Scrolled is
       Toggle    : Gtk_Toggle_Button;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                  Window'Access);
+         Id := Destroy_Dialog_Cb.Connect
+           (Window, "destroy", Destroy_Dialog'Access, Window'Access);
          Set_Title (Window, "Scrolled Window");
          Set_Border_Width (Window, Border_Width => 0);
 
@@ -130,9 +133,6 @@ package body Create_Scrolled is
          Show (Button);
 
          Set_Default_Size (Window, 300, 300);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);
