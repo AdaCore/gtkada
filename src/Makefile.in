@@ -160,7 +160,7 @@ install: all
 	   $(CP) gtk*.ads gtk*.adb $(incdir); \
 	   $(CP) pango*.ads pango*.adb $(incdir); \
 	   $(CP) $(LIB_DIR)/glib*.ali $(LIB_DIR)/gdk*.ali $(LIB_DIR)/gtk*.ali $(LIB_DIR)/pango*.ali $(alidir); \
-	   $(CHMOD) -w $(alidir)/*.ali; \
+	   $(CHMOD) ugo-w $(alidir)/*.ali; \
 	   $(INSTALL_SCRIPT) $(GTKADA_CONFIG) $(bindir); \
            $(INSTALL_SCRIPT) $(GATE) $(bindir); \
            $(INSTALL_SCRIPT) $(GENERATE) $(bindir); \
