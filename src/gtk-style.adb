@@ -48,7 +48,6 @@ package body Gtk.Style is
       Result := new Gtk_Style_Record;
       Set_Object (Result, Internal (Get_Object (Style),
                                     Get_Object (Window)));
-      Initialize_User_Data (Result);
       return Result;
    end Attach;
 
@@ -64,7 +63,6 @@ package body Gtk.Style is
    begin
       Destination := new Gtk_Style_Record;
       Set_Object (Destination, Internal (Get_Object (Source)));
-      Initialize_User_Data (Destination);
       return Destination;
    end Copy;
 
