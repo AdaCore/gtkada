@@ -3,15 +3,16 @@ Installing and compiling your programs
 
 Since version 0.6, GtkAda comes with a configure script that should
 simplify the installation. We have tested it on as many machines as
-possible, please report any problem ou might have.
+possible, please report any problem you might have.
 
-To install GtkAda, please try the following :
+To install GtkAda, you first need to install glib and gtk+, then
+try the following :
    $ ./configure --prefix=<installation_directory>
    $ make
    $ make install
-     
-This will create (and install) two files, libgtkada.a and libgtkada.so
-and then compile the testgtk example.
+
+This will create (and install) the GtkAda library and then compile the
+testgtk example.
 
 IMPORTANT Note: On some systems (e.g Digital Unix), make will generate
 warnings when creating the libgtkada.so shared library. You can usually
