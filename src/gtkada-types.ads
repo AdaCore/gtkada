@@ -41,10 +41,11 @@ package Gtkada.Types is
 
    Data_Error : exception;
 
-   --  <doc_ignore>
    subtype Chars_Ptr is Interfaces.C.Strings.chars_ptr;
    subtype Chars_Ptr_Array is Interfaces.C.Strings.chars_ptr_array;
-   --  </doc_ignore>
+
+   procedure g_free (Mem : Chars_Ptr);
+   --  Free a C string returned from Gtk.
 
    Null_Ptr : Chars_Ptr renames Interfaces.C.Strings.Null_Ptr;
 
@@ -96,4 +97,6 @@ package Gtkada.Types is
    procedure Free (A : in out Chars_Ptr_Array);
    --  Free all the strings in A.
 
+private
+   pragma Import (C, g_free, "g_free");
 end Gtkada.Types;
