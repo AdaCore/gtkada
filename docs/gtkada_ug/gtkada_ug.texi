@@ -56,9 +56,9 @@ unmodified in any copy.
 * Description of the Glib hierarchy::
 * Resource files::
 * Tasks::
-* How to report bugs::
 * Object-oriented features::
 * Support for Glade the Gtk GUI builder::
+* How to report bugs::
 * Bibliography::
 
 @detailmenu
@@ -1758,61 +1758,6 @@ and idle functions) are made outside of the GtkAda lock. So, within a signal
 handler you do not need to call Gtk.Threads.Enter, but within the other types
 of callbacks, you do.
 
-@node How to report bugs
-@chapter How to report bugs
-
-GtkAda is becoming more and more stable due to its increasing use, but
-you may still find bugs while using it. We have tried to test it as much
-as possible, essentially by converting the testgtk.c file found in the gtk
-distribution, as well as with generating a significant number of interfaces
-using the GUI builder and Gate.
-We stronly suggest to have a look at the testgtk, which gives
-a lot of examples on how to use this toolkit.
-
-There are two kinds of problems you can encounter:
-@itemize @bullet
-@item If the gtk library itself was compiled with warnings turned on, you
-may get some  warnings messages,  mainly because of types problems.
-These warnings should not appear, as we have tried to be as type safe
-as possible  in this package. To know exactly where the problem is,
-compile your program with debug information, run gdb, and set a
-breakpoint on the function @code{g_log}. Then run your program as usual,
-using the @code{run} command. Then send us the result of the @code{where}
-command. Here is a summary:
-
-@example
-@c @group
-@c @cartouche
-$ gnatmake -f -g <your_program_name> `gtkada-config`
-$ gdb <your_program_name>
-(gdb) break main
-(gdb) run
-(gdb) break g_log
-(gdb) continue
-....
-(gdb) where
-@c @end cartouche
-@c @end group
-@end example
-
-@item In  some  (hopefully) rare cases,   you can even get a  segmentation
-fault within gtk.  That means there is definitly something wrong either
-in your program or in the toolkit.  Please check your program carefully,
-and if you think this is a problem in GtkAda itself, send us an e-mail.
-@end itemize
-
-If you are a supported user of GNAT, send a mail to
-@uref{mailto:report@@gnat.com} to report errors, otherwise send a mail to the
-authors (@uref{mailto:gtkada@@ada.eu.org}) explaining exactly what your
-are  doing,  what  is  the  expected  result  and  what  you  actually
-get. Please include the required sources to reproduce the problem, in
-a  format usable  by @code{gnatchop}  (basically, insert  all  the required
-sources at  the end of  the mail). Please  try to provide a  subset of
-your sources as small as possible.
-
-Of course, we will  welcome any patch   you can provide, so  that this
-toolkit is as useful as possible.
-
 @node Object-oriented features
 @chapter Object-oriented features
 
@@ -2239,7 +2184,7 @@ The following files have been created/updated in src:
 and add a comment in the @code{<widget>_pkg.adb} file that looks like:
 
 @smallexample
-   --  WARNING: Unsupported widget GnomeCanvas (canvas1)
+--  WARNING: Unsupported widget GnomeCanvas (canvas1)
 @end smallexample
 
 Which means that while generating the file, Gate detected an unsupported
@@ -2258,6 +2203,61 @@ an unsupported widget:
 @smallexample
 GtkAda-WARNING **: Unsupported widget GnomeCanvas (canvas1)
 @end smallexample
+
+@node How to report bugs
+@chapter How to report bugs
+
+GtkAda is becoming more and more stable due to its increasing use, but
+you may still find bugs while using it. We have tried to test it as much
+as possible, essentially by converting the testgtk.c file found in the gtk
+distribution, as well as with generating a significant number of interfaces
+using the GUI builder and Gate.
+We stronly suggest to have a look at the testgtk, which gives
+a lot of examples on how to use this toolkit.
+
+There are two kinds of problems you can encounter:
+@itemize @bullet
+@item If the gtk library itself was compiled with warnings turned on, you
+may get some  warnings messages,  mainly because of types problems.
+These warnings should not appear, as we have tried to be as type safe
+as possible  in this package. To know exactly where the problem is,
+compile your program with debug information, run gdb, and set a
+breakpoint on the function @code{g_log}. Then run your program as usual,
+using the @code{run} command. Then send us the result of the @code{where}
+command. Here is a summary:
+
+@example
+@c @group
+@c @cartouche
+$ gnatmake -f -g <your_program_name> `gtkada-config`
+$ gdb <your_program_name>
+(gdb) break main
+(gdb) run
+(gdb) break g_log
+(gdb) continue
+....
+(gdb) where
+@c @end cartouche
+@c @end group
+@end example
+
+@item In  some  (hopefully) rare cases,   you can even get a  segmentation
+fault within gtk.  That means there is definitly something wrong either
+in your program or in the toolkit.  Please check your program carefully,
+and if you think this is a problem in GtkAda itself, send us an e-mail.
+@end itemize
+
+If you are a supported user of GNAT, send a mail to
+@uref{mailto:report@@gnat.com} to report errors, otherwise send a mail to the
+authors (@uref{mailto:gtkada@@ada.eu.org}) explaining exactly what your
+are  doing,  what  is  the  expected  result  and  what  you  actually
+get. Please include the required sources to reproduce the problem, in
+a  format usable  by @code{gnatchop}  (basically, insert  all  the required
+sources at  the end of  the mail). Please  try to provide a  subset of
+your sources as small as possible.
+
+Of course, we will  welcome any patch   you can provide, so  that this
+toolkit is as useful as possible.
 
 @c --------------------------------------------------------------
 @node Bibliography
