@@ -362,8 +362,8 @@ package Gtkada.Canvas is
    procedure Destroy (Link : access Canvas_Link_Record);
    --  Method called every time a link is destroyed. You should override this
    --  if you define your own link types.
-   --  Note that Link should first be removed from the canvas, but this is
-   --  your responsability to do so.
+   --  Note that the link might already have been removed from the canvas
+   --  when this subprogram is called.
    --  This shouldn't free the link itself, only its fields.
 
    ---------------
