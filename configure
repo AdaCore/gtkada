@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.41 
+# From configure.in Revision: 1.42 
 #############################################################
 #
 #  Adding some OS specific flags and parameters
@@ -83,7 +83,7 @@ result_file="conftest.res"
 
 #############################################################
 #
-#  Checking for gnome
+#  Checking for gnome2
 #
 #############################################################
 
@@ -2224,54 +2224,22 @@ fi
 
 # try to find gnome if present
    
-  # Extract the first word of "gnome-config", so it can be a program name with args.
-set dummy gnome-config; ac_word=$2
-echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2231: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_path_GNOME_CONFIG'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  case "$GNOME_CONFIG" in
-  /*)
-  ac_cv_path_GNOME_CONFIG="$GNOME_CONFIG" # Let the user override the test with a path.
-  ;;
-  ?:/*)			 
-  ac_cv_path_GNOME_CONFIG="$GNOME_CONFIG" # Let the user override the test with a dos path.
-  ;;
-  *)
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
-  ac_dummy="$PATH"
-  for ac_dir in $ac_dummy; do 
-    test -z "$ac_dir" && ac_dir=.
-    if test -f $ac_dir/$ac_word; then
-      ac_cv_path_GNOME_CONFIG="$ac_dir/$ac_word"
-      break
-    fi
-  done
-  IFS="$ac_save_ifs"
-  test -z "$ac_cv_path_GNOME_CONFIG" && ac_cv_path_GNOME_CONFIG="no"
-  ;;
-esac
-fi
-GNOME_CONFIG="$ac_cv_path_GNOME_CONFIG"
-if test -n "$GNOME_CONFIG"; then
-  echo "$ac_t""$GNOME_CONFIG" 1>&6
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-
-  if test "$GNOME_CONFIG" = "no" ; then
+  if test "$PKG_CONFIG" = "no" ; then
     HAVE_GNOME="False"
     GNOME_CFLAGS=""
     GNOME_LIBS=""
     GNOME_STATIC_LIBS=""
   else
-    HAVE_GNOME="True"
-    GNOME_PREFIX=`$GNOME_CONFIG --prefix`
-    GNOME_CFLAGS=`$GNOME_CONFIG --cflags gnomeui`
-    GNOME_LIBS="-L$GNOME_PREFIX/lib -lgnomeui -lgnome -lart_lgpl -lpopt"
-    GNOME_STATIC_LIBS="$GNOME_PREFIX/lib/libgnomeui.a $GNOME_PREFIX/lib/libgnome.a $GNOME_PREFIX/lib/libart_lgpl.a $GNOME_PREFIX/lib/lib/libpopt.a"
+    GNOMEUI="libgnomeui-2.0"
+    GNOME_PREFIX=`$PKG_CONFIG $GNOMEUI --variable=prefix`
+    if test "x$GNOME_PREFIX" = "x"; then
+      HAVE_GNOME="False"
+    else
+      HAVE_GNOME="True"
+      GNOME_CFLAGS=`$PKG_CONFIG $GNOMEUI --cflags gnomeui`
+      GNOME_LIBS=`$PKG_CONFIG $GNOMEUI --libs`
+      GNOME_STATIC_LIBS="$GNOME_PREFIX/lib/libgnomeui-2.a $GNOME_PREFIX/lib/libgnome-2.a $GNOME_PREFIX/lib/libart_lgpl.a $GNOME_PREFIX/lib/lib/libpopt.a $GNOME_PREFIX/lib/libbonoboui-2.a" 
+    fi
   fi
 
   
@@ -2483,7 +2451,6 @@ s%@LIBGLADE_CFLAGS@%$LIBGLADE_CFLAGS%g
 s%@LIBGLADE_LIBS@%$LIBGLADE_LIBS%g
 s%@LIBGLADE_STATIC_LIBS@%$LIBGLADE_STATIC_LIBS%g
 s%@HAVE_LIBGLADE@%$HAVE_LIBGLADE%g
-s%@GNOME_CONFIG@%$GNOME_CONFIG%g
 s%@GNOME_CFLAGS@%$GNOME_CFLAGS%g
 s%@GNOME_LIBS@%$GNOME_LIBS%g
 s%@GNOME_STATIC_LIBS@%$GNOME_STATIC_LIBS%g
