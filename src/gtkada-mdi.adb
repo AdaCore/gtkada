@@ -3255,7 +3255,7 @@ package body Gtkada.MDI is
                --  Remove from middle notebook and put in layout
                Ref (C);
                Remove (Gtk_Container (Get_Parent (C)), C);
-               Put (MDI.Central.Layout, C, 0, 0);
+               Put (MDI.Central.Layout, C, C.X, C.Y);
                Unref (C);
             end if;
             List := Prev (List);
