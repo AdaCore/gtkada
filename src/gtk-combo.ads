@@ -33,6 +33,7 @@ with Gtk.List;
 with Gtk.Box;
 with Gtk.Item;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Object;
 
 package Gtk.Combo is
 
@@ -42,13 +43,13 @@ package Gtk.Combo is
    procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record);
 
    function Get_Entry (Combo_Box : access Gtk_Combo_Record)
-                       return Gtk.GEntry.Gtk_Entry;
+     return Gtk.GEntry.Gtk_Entry;
 
    function Get_List (Combo_Box : access Gtk_Combo_Record)
-                      return Gtk.List.Gtk_List;
+     return Gtk.List.Gtk_List;
 
-   procedure Gtk_New (Widget : out Gtk_Combo);
-   procedure Initialize (Widget : access Gtk_Combo_Record);
+   procedure Gtk_New (Combo_Box : out Gtk_Combo);
+   procedure Initialize (Combo_Box : access Gtk_Combo_Record);
 
    procedure Set_Case_Sensitive (Combo_Box : access Gtk_Combo_Record;
                                  Val : in Boolean);
@@ -69,6 +70,13 @@ package Gtk.Combo is
    procedure Set_Value_In_List (Combo_Box   : access Gtk_Combo_Record;
                                 Val         : in Gint;
                                 Ok_If_Empty : in Boolean);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate (Combo_Box : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
 

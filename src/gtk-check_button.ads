@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object;
 with Gtk.Toggle_Button;
 
 package Gtk.Check_Button is
@@ -35,11 +36,19 @@ package Gtk.Check_Button is
      with private;
    type Gtk_Check_Button is access all Gtk_Check_Button_Record'Class;
 
-   procedure Gtk_New (Widget : out Gtk_Check_Button;
-                      With_Label : in String := "");
+   procedure Gtk_New (Check_Button : out Gtk_Check_Button;
+                      With_Label   : in String := "");
 
-   procedure Initialize (Widget : access Gtk_Check_Button_Record;
-                         With_Label : in String := "");
+   procedure Initialize (Check_Button : access Gtk_Check_Button_Record;
+                         With_Label   : in String := "");
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate
+     (Check_Button : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
 

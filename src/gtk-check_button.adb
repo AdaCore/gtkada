@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Check_Button is
 
@@ -36,26 +37,64 @@ package body Gtk.Check_Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Check_Button;
-                      With_Label : in String := "")
-   is
+   procedure Gtk_New (Check_Button : out Gtk_Check_Button;
+                      With_Label   : in String := "") is
    begin
-      Widget := new Gtk_Check_Button_Record;
-      Initialize (Widget, With_Label);
+      Check_Button := new Gtk_Check_Button_Record;
+      Initialize (Check_Button, With_Label);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Check_Button_Record;
-                         With_Label : in String := "")
-   is
+   procedure Initialize (Check_Button : access Gtk_Check_Button_Record;
+                         With_Label   : in String := "") is
       function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_label");
+
    begin
-      Set_Object (Widget, Internal (With_Label & ASCII.NUL));
-      Initialize_User_Data (Widget);
+      Set_Object (Check_Button, Internal (With_Label & ASCII.NUL));
+      Initialize_User_Data (Check_Button);
    end Initialize;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Label : String_Ptr := Get_Field (N, "label");
+
+   begin
+      if not N.Specific_Data.Created then
+         if Label = null then
+            Gen_New (N, "Check_Button", File => File);
+         else
+            Gen_New (N, "Check_Button", Label.all, File => File, Delim => '"');
+         end if;
+      end if;
+
+      Toggle_Button.Generate (N, File);
+   end Generate;
+
+   procedure Generate
+     (Check_Button : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S : String_Ptr := Get_Field (N, "label");
+
+   begin
+      if not N.Specific_Data.Created then
+         if S = null then
+            Gtk_New (Gtk_Check_Button (Check_Button));
+         else
+            Gtk_New (Gtk_Check_Button (Check_Button), S.all);
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Check_Button);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Toggle_Button.Generate (Check_Button, N);
+   end Generate;
 
 end Gtk.Check_Button;

@@ -29,6 +29,7 @@
 
 with Gdk; use Gdk;
 with Gtk.Adjustment;
+with Gtk.Util; use Gtk.Util;
 with System;
 
 package body Gtk.Progress_Bar is
@@ -37,27 +38,38 @@ package body Gtk.Progress_Bar is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget     : out Gtk_Progress_Bar;
-                      Adjustment : in Gtk.Adjustment.Gtk_Adjustment := null)
-   is
+   procedure Gtk_New
+     (Progress_Bar : out Gtk_Progress_Bar;
+      Adjustment   : in Gtk.Adjustment.Gtk_Adjustment := null) is
    begin
-      Widget := new Gtk_Progress_Bar_Record;
-      Initialize (Widget, Adjustment);
+      Progress_Bar := new Gtk_Progress_Bar_Record;
+      Initialize (Progress_Bar, Adjustment);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget     : access Gtk_Progress_Bar_Record;
-                         Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+   procedure Initialize (Progress_Bar : access Gtk_Progress_Bar_Record;
+                         Adjustment   : in Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Adjustment : in System.Address)
-                         return          System.Address;
-      pragma Import (C, Internal, "gtk_progress_bar_new_with_adjustment");
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_progress_bar_new");
+
+      function Internal2 (Adjustment : in System.Address)
+        return System.Address;
+      pragma Import (C, Internal2, "gtk_progress_bar_new_with_adjustment");
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Adjustment)));
-      Initialize_User_Data (Widget);
+      if Adjustment = null then
+         Set_Object (Progress_Bar, Internal);
+      else
+         Set_Object (Progress_Bar, Internal2 (Get_Object (Adjustment)));
+      end if;
+
+      Initialize_User_Data (Progress_Bar);
    end Initialize;
 
    -------------------------
@@ -65,16 +77,16 @@ package body Gtk.Progress_Bar is
    -------------------------
 
    procedure Set_Activity_Blocks
-      (Pbar   : access Gtk_Progress_Bar_Record;
-       Blocks : in Guint)
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Blocks       : in Guint)
    is
       procedure Internal
-         (Pbar   : in System.Address;
-          Blocks : in Guint);
+        (Progress_Bar : in System.Address;
+         Blocks       : in Guint);
       pragma Import (C, Internal, "gtk_progress_bar_set_activity_blocks");
+
    begin
-      Internal (Get_Object (Pbar),
-                Blocks);
+      Internal (Get_Object (Progress_Bar), Blocks);
    end Set_Activity_Blocks;
 
    -----------------------
@@ -82,16 +94,16 @@ package body Gtk.Progress_Bar is
    -----------------------
 
    procedure Set_Activity_Step
-      (Pbar : access Gtk_Progress_Bar_Record;
-       Step : in Guint)
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Step         : in Guint)
    is
       procedure Internal
-         (Pbar : in System.Address;
-          Step : in Guint);
+        (Progress_Bar : in System.Address;
+         Step         : in Guint);
       pragma Import (C, Internal, "gtk_progress_bar_set_activity_step");
+
    begin
-      Internal (Get_Object (Pbar),
-                Step);
+      Internal (Get_Object (Progress_Bar), Step);
    end Set_Activity_Step;
 
    -------------------
@@ -99,16 +111,16 @@ package body Gtk.Progress_Bar is
    -------------------
 
    procedure Set_Bar_Style
-      (Pbar  : access Gtk_Progress_Bar_Record;
-       Style : in Gtk_Progress_Bar_Style)
+     (Progress_Bar  : access Gtk_Progress_Bar_Record;
+      Style         : in Gtk_Progress_Bar_Style)
    is
       procedure Internal
-         (Pbar  : in System.Address;
-          Style : in Gint);
+        (Progress_Bar : in System.Address;
+         Style        : in Gint);
       pragma Import (C, Internal, "gtk_progress_bar_set_bar_style");
+
    begin
-      Internal (Get_Object (Pbar),
-                Gtk_Progress_Bar_Style'Pos (Style));
+      Internal (Get_Object (Progress_Bar), Gtk_Progress_Bar_Style'Pos (Style));
    end Set_Bar_Style;
 
    -------------------------
@@ -116,16 +128,16 @@ package body Gtk.Progress_Bar is
    -------------------------
 
    procedure Set_Discrete_Blocks
-      (Pbar   : access Gtk_Progress_Bar_Record;
-       Blocks : in Guint)
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Blocks       : in Guint)
    is
       procedure Internal
-         (Pbar   : in System.Address;
-          Blocks : in Guint);
+        (Progress_Bar : in System.Address;
+         Blocks       : in Guint);
       pragma Import (C, Internal, "gtk_progress_bar_set_discrete_blocks");
+
    begin
-      Internal (Get_Object (Pbar),
-                Blocks);
+      Internal (Get_Object (Progress_Bar), Blocks);
    end Set_Discrete_Blocks;
 
    ---------------------
@@ -133,15 +145,16 @@ package body Gtk.Progress_Bar is
    ---------------------
 
    procedure Set_Orientation
-      (Pbar        : access Gtk_Progress_Bar_Record;
-       Orientation : in Gtk_Progress_Bar_Orientation)
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Orientation  : in Gtk_Progress_Bar_Orientation)
    is
       procedure Internal
-         (Pbar        : in System.Address;
-          Orientation : in Gint);
+        (Progress_Bar : in System.Address;
+         Orientation  : in Gint);
       pragma Import (C, Internal, "gtk_progress_bar_set_orientation");
+
    begin
-      Internal (Get_Object (Pbar),
+      Internal (Get_Object (Progress_Bar),
                 Gtk_Progress_Bar_Orientation'Pos (Orientation));
    end Set_Orientation;
 
@@ -150,16 +163,58 @@ package body Gtk.Progress_Bar is
    ------------
 
    procedure Update
-      (Pbar       : access Gtk_Progress_Bar_Record;
-       Percentage : in Gfloat)
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Percentage   : in Gfloat)
    is
       procedure Internal
-         (Pbar       : in System.Address;
-          Percentage : in Gfloat);
+        (Progress_Bar : in System.Address;
+         Percentage   : in Gfloat);
       pragma Import (C, Internal, "gtk_progress_bar_update");
+
    begin
-      Internal (Get_Object (Pbar),
-                Percentage);
+      Internal (Get_Object (Progress_Bar), Percentage);
    end Update;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "Progress_Bar", File => File);
+      Progress.Generate (N, File);
+      Gen_Set (N, "Progress_Bar", "bar_style", File => File);
+      Gen_Set (N, "Progress_Bar", "orientation", File => File);
+   end Generate;
+
+   procedure Generate
+     (Progress_Bar : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Progress_Bar (Progress_Bar));
+         Set_Object (Get_Field (N, "name"), Progress_Bar);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Progress.Generate (Progress_Bar, N);
+
+      S := Get_Field (N, "bar_style");
+
+      if S /= null then
+         Set_Bar_Style
+           (Gtk_Progress_Bar (Progress_Bar),
+            Gtk_Progress_Bar_Style'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "orientation");
+
+      if S /= null then
+         Set_Orientation
+           (Gtk_Progress_Bar (Progress_Bar),
+            Gtk_Progress_Bar_Orientation'Value (S (S'First + 4 .. S'Last)));
+      end if;
+   end Generate;
 
 end Gtk.Progress_Bar;

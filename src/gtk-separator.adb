@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Separator is
 
@@ -36,48 +37,77 @@ package body Gtk.Separator is
    -- Gtk_New_Hseparator --
    ------------------------
 
-   procedure Gtk_New_Hseparator (Widget : out Gtk_Separator)
-   is
+   procedure Gtk_New_Hseparator (Separator : out Gtk_Separator) is
    begin
-      Widget := new Gtk_Separator_Record;
-      Initialize_Hseparator (Widget);
+      Separator := new Gtk_Separator_Record;
+      Initialize_Hseparator (Separator);
    end Gtk_New_Hseparator;
 
    ------------------------
    -- Gtk_New_Vseparator --
    ------------------------
 
-   procedure Gtk_New_Vseparator (Widget : out Gtk_Separator)
-   is
+   procedure Gtk_New_Vseparator (Separator : out Gtk_Separator) is
    begin
-      Widget := new Gtk_Separator_Record;
-      Initialize_Vseparator (Widget);
+      Separator := new Gtk_Separator_Record;
+      Initialize_Vseparator (Separator);
    end Gtk_New_Vseparator;
 
    ---------------------------
    -- Initialize_Hseparator --
    ---------------------------
 
-   procedure Initialize_Hseparator (Widget : access Gtk_Separator_Record)
-   is
+   procedure Initialize_Hseparator (Separator : access Gtk_Separator_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hseparator_new");
+
    begin
-      Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
+      Set_Object (Separator, Internal);
+      Initialize_User_Data (Separator);
    end Initialize_Hseparator;
 
    ------------------------
    -- Initialize_Vseparator --
    ------------------------
 
-   procedure Initialize_Vseparator (Widget : access Gtk_Separator_Record)
-   is
+   procedure Initialize_Vseparator (Separator : access Gtk_Separator_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vseparator_new");
+
    begin
-      Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
+      Set_Object (Separator, Internal);
+      Initialize_User_Data (Separator);
    end Initialize_Vseparator;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Class : String_Ptr := Get_Field (N, "class");
+   begin
+      Gen_New (N, "Separator", "", "",
+        Class (Class'First + 3) & "separator", File);
+      Widget.Generate (N, File);
+   end Generate;
+
+   procedure Generate
+     (Separator : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      Class : String_Ptr := Get_Field (N, "class");
+   begin
+      if not N.Specific_Data.Created then
+         if Class (Class'First + 3) = 'H' then
+            Gtk_New_Hseparator (Gtk_Separator (Separator));
+         else
+            Gtk_New_Vseparator (Gtk_Separator (Separator));
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Separator);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Widget.Generate (Separator, N);
+   end Generate;
 
 end Gtk.Separator;

@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Check_Button;
+with Gtk.Object;
 with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Radio_Button is
@@ -36,29 +37,37 @@ package Gtk.Radio_Button is
      with private;
    type Gtk_Radio_Button is access all Gtk_Radio_Button_Record'Class;
 
-   function Group (Button : access Gtk_Radio_Button_Record)
-                   return Widget_SList.GSlist;
+   function Group (Radio_Button : access Gtk_Radio_Button_Record)
+     return Widget_SList.GSlist;
 
-   procedure Gtk_New (Button : out Gtk_Radio_Button;
-                      Group  : in Widget_SList.GSlist;
-                      Label  : in String := "");
+   procedure Gtk_New (Radio_Button : out Gtk_Radio_Button;
+                      Group        : in Widget_SList.GSlist;
+                      Label        : in String := "");
 
    procedure Gtk_New
-     (Button : out Gtk_Radio_Button;
-      Group  : in Gtk_Radio_Button;
-      Label  : in String := "");
+     (Radio_Button : out Gtk_Radio_Button;
+      Group        : in Gtk_Radio_Button;
+      Label        : in String := "");
 
-   procedure Initialize (Button : access Gtk_Radio_Button_Record;
-                         Group  : in Widget_SList.GSlist;
-                         Label  : in String);
+   procedure Initialize (Radio_Button : access Gtk_Radio_Button_Record;
+                         Group        : in Widget_SList.GSlist;
+                         Label        : in String);
 
    procedure Initialize
-     (Button : access Gtk_Radio_Button_Record;
-      Group  : in Gtk_Radio_Button;
-      Label  : in String);
+     (Radio_Button : access Gtk_Radio_Button_Record;
+      Group        : in Gtk_Radio_Button;
+      Label        : in String);
 
-   procedure Set_Group (Button : access Gtk_Radio_Button_Record;
-                        Group  : in Widget_SList.GSlist);
+   procedure Set_Group (Radio_Button : access Gtk_Radio_Button_Record;
+                        Group        : in Widget_SList.GSlist);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate
+     (Radio_Button : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Radio_Button_Record is new Check_Button.Gtk_Check_Button_Record

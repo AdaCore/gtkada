@@ -29,6 +29,7 @@
 
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Object;
 with Gtk.Progress;
 
 package Gtk.Progress_Bar is
@@ -37,28 +38,36 @@ package Gtk.Progress_Bar is
      with private;
    type Gtk_Progress_Bar is access all Gtk_Progress_Bar_Record'Class;
 
-   procedure Gtk_New (Widget     : out Gtk_Progress_Bar;
-                      Adjustment : in Gtk.Adjustment.Gtk_Adjustment := null);
-   procedure Initialize (Widget     : access Gtk_Progress_Bar_Record;
-                         Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+   procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar;
+                      Adjustment   : in Gtk.Adjustment.Gtk_Adjustment := null);
+   procedure Initialize (Progress_Bar : access Gtk_Progress_Bar_Record;
+                         Adjustment   : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Activity_Blocks
-      (Pbar   : access Gtk_Progress_Bar_Record;
-       Blocks : in Guint);
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Blocks       : in Guint);
    procedure Set_Activity_Step
-      (Pbar : access Gtk_Progress_Bar_Record;
-       Step : in Guint);
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Step         : in Guint);
    procedure Set_Bar_Style
-      (Pbar  : access Gtk_Progress_Bar_Record;
-       Style : in Gtk_Progress_Bar_Style);
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Style        : in Gtk_Progress_Bar_Style);
    procedure Set_Discrete_Blocks
-      (Pbar   : access Gtk_Progress_Bar_Record;
-       Blocks : in Guint);
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Blocks       : in Guint);
    procedure Set_Orientation
-      (Pbar        : access Gtk_Progress_Bar_Record;
-       Orientation : in Gtk_Progress_Bar_Orientation);
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Orientation  : in Gtk_Progress_Bar_Orientation);
    procedure Update
-      (Pbar       : access Gtk_Progress_Bar_Record;
-       Percentage : in Gfloat);
+     (Progress_Bar : access Gtk_Progress_Bar_Record;
+      Percentage   : in Gfloat);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate
+     (Progress_Bar : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record

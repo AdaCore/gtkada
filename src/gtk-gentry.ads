@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Editable;
+with Gtk.Object;
 
 package Gtk.GEntry is
 
@@ -38,7 +39,7 @@ package Gtk.GEntry is
      (The_Entry : access Gtk_Entry_Record;
       Text      : in String);
    function Get_Text (The_Entry : access Gtk_Entry_Record)
-                      return      String;
+     return String;
    procedure Gtk_New (Widget : out Gtk_Entry;
                       Max    : in Guint16);
    procedure Gtk_New (Widget : out Gtk_Entry);
@@ -47,27 +48,36 @@ package Gtk.GEntry is
    procedure Initialize (Widget : access Gtk_Entry_Record);
 
    procedure Prepend_Text
-      (The_Entry : access Gtk_Entry_Record;
-       Text      : in String);
+     (The_Entry : access Gtk_Entry_Record;
+      Text      : in String);
    procedure Select_Region
-      (The_Entry : access Gtk_Entry_Record;
-       Start     : in Gint;
-       The_End   : in Gint);
+     (The_Entry : access Gtk_Entry_Record;
+      Start     : in Gint;
+      The_End   : in Gint);
    procedure Set_Editable
-      (The_Entry : access Gtk_Entry_Record;
-       Editable  : in Boolean);
+     (The_Entry : access Gtk_Entry_Record;
+      Editable  : in Boolean);
    procedure Set_Max_Length
-      (The_Entry : access Gtk_Entry_Record;
-       Max       : in Guint16);
+     (The_Entry : access Gtk_Entry_Record;
+      Max       : in Guint16);
    procedure Set_Position
-      (The_Entry : access Gtk_Entry_Record;
-       Position  : in Gint);
+     (The_Entry : access Gtk_Entry_Record;
+      Position  : in Gint);
    procedure Set_Text
-      (The_Entry : access Gtk_Entry_Record;
-       Text      : in String);
+     (The_Entry : access Gtk_Entry_Record;
+      Text      : in String);
    procedure Set_Visibility
-      (The_Entry : access Gtk_Entry_Record;
-       Visible   : in Boolean);
+     (The_Entry : access Gtk_Entry_Record;
+      Visible   : in Boolean);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type)
+     renames Gtk.Editable.Generate;
+
+   procedure Generate (The_Entry : in out Object.Gtk_Object; N : in Node_Ptr)
+     renames Gtk.Editable.Generate;
 
 private
    type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record

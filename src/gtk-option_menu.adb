@@ -29,6 +29,8 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Gtk.Option_Menu is
 
@@ -106,5 +108,93 @@ package body Gtk.Option_Menu is
    begin
       Internal (Get_Object (Option_Menu), Get_Object (Menu));
    end Set_Menu;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S : String_Ptr;
+      First, Last : Natural;
+
+   begin
+      Gen_New (N, "Option_Menu", File => File);
+      Button.Generate (N, File);
+
+      S := Get_Field (N, "items");
+
+      if S /= null then
+         First := S'First;
+
+         Add_Package ("Menu");
+         Add_Package ("Menu_Item");
+         Put_Line (File, "   Menu.Gtk_New (" &
+           To_Ada (Get_Field (N, "name").all) & "_Menu);");
+
+         loop
+            Last := Index (S (First .. S'Last), ASCII.LF & "");
+
+            if Last = 0 then
+               Last := S'Last + 1;
+            end if;
+
+            Put_Line (File, "   Menu_Item.Gtk_New (Menu_Item, """ &
+              S (First .. Last - 1) & """);");
+            Put_Line (File, "   Menu.Append (" &
+              To_Ada (Get_Field (N, "name").all) & "_Menu, Menu_Item);");
+
+            exit when Last >= S'Last;
+
+            First := Last + 1;
+         end loop;
+
+         Put_Line (File, "   Option_Menu.Set_Menu (Gtk_Option_Menu (" &
+           To_Ada (Get_Field (N, "name").all) & "), " &
+           To_Ada (Get_Field (N, "name").all) & "_Menu);");
+      end if;
+   end Generate;
+
+   procedure Generate
+     (Option_Menu : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S             : String_Ptr;
+      The_Menu      : Menu.Gtk_Menu;
+      The_Menu_Item : Menu_Item.Gtk_Menu_Item;
+      First, Last   : Natural;
+
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Option_Menu (Option_Menu));
+         Set_Object (Get_Field (N, "name"), Option_Menu);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Button.Generate (Option_Menu, N);
+
+      S := Get_Field (N, "items");
+
+      if S /= null then
+         First := S'First;
+
+         Menu.Gtk_New (The_Menu);
+
+         loop
+            Last := Index (S (First .. S'Last), ASCII.LF & "");
+
+            if Last = 0 then
+               Last := S'Last + 1;
+            end if;
+
+            Menu_Item.Gtk_New (The_Menu_Item, S (First .. Last - 1));
+            Menu.Append (The_Menu, The_Menu_Item);
+
+            exit when Last >= S'Last;
+
+            First := Last + 1;
+         end loop;
+
+         Set_Menu (Gtk_Option_Menu (Option_Menu), The_Menu);
+      end if;
+   end Generate;
 
 end Gtk.Option_Menu;

@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object;
 with Gtk.GRange;
 with Gtk.Adjustment;
 
@@ -34,6 +35,8 @@ package Gtk.Scrollbar is
 
    type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record with private;
    type Gtk_Scrollbar is access all Gtk_Scrollbar_Record'Class;
+   subtype Gtk_Hscrollbar is Gtk_Scrollbar;
+   subtype Gtk_Vscrollbar is Gtk_Scrollbar;
 
    procedure Gtk_New_Hscrollbar
      (Widget     : out Gtk_Scrollbar;
@@ -47,6 +50,13 @@ package Gtk.Scrollbar is
    procedure Initialize_Vscrollbar
      (Widget     : access Gtk_Scrollbar_Record;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate (Scrollbar : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record

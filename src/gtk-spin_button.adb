@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Spin_Button is
 
@@ -267,5 +268,101 @@ package body Gtk.Spin_Button is
                 Gtk.Enums.Gtk_Arrow_Type'Pos (Direction),
                 Step);
    end Spin;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "name");
+         Add_Package ("Adjustment");
+         Put_Line
+           (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
+            To_Float (Get_Field (N, "hvalue").all) & ", " &
+            To_Float (Get_Field (N, "hlower").all) & ", " &
+            To_Float (Get_Field (N, "hupper").all) & ", " &
+            To_Float (Get_Field (N, "hstep").all)  & ", " &
+            To_Float (Get_Field (N, "hpage").all)  & ", " &
+            To_Float (Get_Field (N, "hpage_size").all) & ");");
+         Add_Package ("Spin_Button");
+         Put_Line (File, "   Spin_Button.Gtk_New (" & To_Ada (S.all) & ", " &
+           To_Ada (S.all) & "_Adj, " &
+           To_Float (Get_Field (N, "climb_rate").all) & ", " &
+           Get_Field (N, "digits").all & ");");
+         N.Specific_Data.Created := True;
+      end if;
+
+      GEntry.Generate (N, File);
+
+      Gen_Set (N, "Spin_Button", "numeric", File);
+      Gen_Set (N, "Spin_Button", "Snap_To_Ticks", "snap", "", "", "", File);
+      Gen_Set (N, "Spin_Button", "update_policy", File);
+      Gen_Set (N, "Spin_Button", "value", File, Is_Float => True);
+      Gen_Set (N, "Spin_Button", "wrap", File);
+   end Generate;
+
+   procedure Generate
+     (Spin_Button : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      use Gtk.Adjustment;
+
+      S   : String_Ptr;
+      Adj : Gtk_Adjustment;
+
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New
+           (Adj,
+            Gfloat'Value (Get_Field (N, "hvalue").all),
+            Gfloat'Value (Get_Field (N, "hlower").all),
+            Gfloat'Value (Get_Field (N, "hupper").all),
+            Gfloat'Value (Get_Field (N, "hstep").all),
+            Gfloat'Value (Get_Field (N, "hpage").all),
+            Gfloat'Value (Get_Field (N, "hpage_size").all));
+         Gtk_New (Gtk_Spin_Button (Spin_Button), Adj,
+           Gfloat'Value (Get_Field (N, "climb_rate").all),
+           Gint'Value (Get_Field (N, "digits").all));
+         Set_Object (Get_Field (N, "name"), Spin_Button);
+         N.Specific_Data.Created := True;
+      end if;
+
+      GEntry.Generate (Spin_Button, N);
+
+      S := Get_Field (N, "numeric");
+
+      if S /= null then
+         Set_Numeric (Gtk_Spin_Button (Spin_Button), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "snap");
+
+      if S /= null then
+         Set_Snap_To_Ticks
+           (Gtk_Spin_Button (Spin_Button), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "update_policy");
+
+      if S /= null then
+         Set_Update_Policy
+           (Gtk_Spin_Button (Spin_Button),
+            Gtk_Spin_Button_Update_Policy'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "value");
+
+      if S /= null then
+         Set_Value (Gtk_Spin_Button (Spin_Button), Gfloat'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "wrap");
+
+      if S /= null then
+         Set_Wrap (Gtk_Spin_Button (Spin_Button), Boolean'Value (S.all));
+      end if;
+   end Generate;
 
 end Gtk.Spin_Button;

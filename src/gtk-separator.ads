@@ -27,17 +27,28 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Separator is
 
    type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Separator is access all Gtk_Separator_Record'Class;
+   subtype Gtk_Hseparator is Gtk_Separator;
+   subtype Gtk_Vseparator is Gtk_Separator;
 
-   procedure Gtk_New_Hseparator (Widget : out Gtk_Separator);
-   procedure Gtk_New_Vseparator (Widget : out Gtk_Separator);
-   procedure Initialize_Hseparator (Widget : access Gtk_Separator_Record);
-   procedure Initialize_Vseparator (Widget : access Gtk_Separator_Record);
+   procedure Gtk_New_Hseparator (Separator : out Gtk_Separator);
+   procedure Gtk_New_Vseparator (Separator : out Gtk_Separator);
+   procedure Initialize_Hseparator (Separator : access Gtk_Separator_Record);
+   procedure Initialize_Vseparator (Separator : access Gtk_Separator_Record);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate
+     (Separator : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record

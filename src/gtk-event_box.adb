@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Event_Box is
 
@@ -36,24 +37,44 @@ package body Gtk.Event_Box is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Event_Box)
-   is
+   procedure Gtk_New (Event_Box : out Gtk_Event_Box) is
    begin
-      Widget := new Gtk_Event_Box_Record;
-      Initialize (Widget);
+      Event_Box := new Gtk_Event_Box_Record;
+      Initialize (Event_Box);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Event_Box_Record)
-   is
+   procedure Initialize (Event_Box : access Gtk_Event_Box_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_event_box_new");
    begin
-      Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
+      Set_Object (Event_Box, Internal);
+      Initialize_User_Data (Event_Box);
    end Initialize;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "Event_Box", File => File);
+      Bin.Generate (N, File);
+   end Generate;
+
+   procedure Generate
+     (Event_Box : in out Object.Gtk_Object; N : in Node_Ptr) is
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Event_Box (Event_Box));
+         Set_Object (Get_Field (N, "name"), Event_Box);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Bin.Generate (Event_Box, N);
+   end Generate;
 
 end Gtk.Event_Box;

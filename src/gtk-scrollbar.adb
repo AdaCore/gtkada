@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Scrollbar is
 
@@ -87,5 +88,63 @@ package body Gtk.Scrollbar is
       Set_Object (Widget, Internal (Get_Object (Adjustment)));
       Initialize_User_Data (Widget);
    end Initialize_Vscrollbar;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S     : String_Ptr;
+      Class : String_Ptr := Get_Field (N, "class");
+
+   begin
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "name");
+         Add_Package ("Adjustment");
+         Put_Line
+           (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
+            To_Float (Get_Field (N, "hvalue").all) & ", " &
+            To_Float (Get_Field (N, "hlower").all) & ", " &
+            To_Float (Get_Field (N, "hupper").all) & ", " &
+            To_Float (Get_Field (N, "hstep").all)  & ", " &
+            To_Float (Get_Field (N, "hpage").all)  & ", " &
+            To_Float (Get_Field (N, "hpage_size").all) & ");");
+
+         Gen_New (N, "Scrollbar", S.all & "Adj", "",
+           Class (Class'First + 3) & "scrollbar", File => File);
+      end if;
+
+      GRange.Generate (N, File);
+   end Generate;
+
+   procedure Generate
+     (Scrollbar : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      Adj : Adjustment.Gtk_Adjustment;
+      Class : String_Ptr := Get_Field (N, "class");
+
+   begin
+      if not N.Specific_Data.Created then
+         Adjustment.Gtk_New
+           (Adj,
+            Gfloat'Value (Get_Field (N, "hvalue").all),
+            Gfloat'Value (Get_Field (N, "hlower").all),
+            Gfloat'Value (Get_Field (N, "hupper").all),
+            Gfloat'Value (Get_Field (N, "hstep").all),
+            Gfloat'Value (Get_Field (N, "hpage").all),
+            Gfloat'Value (Get_Field (N, "hpage_size").all));
+
+         if Class (Class'First + 3) = 'H' then
+            Gtk_New_Hscrollbar (Gtk_Scrollbar (Scrollbar), Adj);
+         else
+            Gtk_New_Vscrollbar (Gtk_Scrollbar (Scrollbar), Adj);
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Scrollbar);
+         N.Specific_Data.Created := True;
+      end if;
+
+      GRange.Generate (Scrollbar, N);
+   end Generate;
 
 end Gtk.Scrollbar;

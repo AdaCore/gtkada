@@ -30,6 +30,7 @@
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.GEntry;
+with Gtk.Object;
 
 package Gtk.Spin_Button is
 
@@ -95,6 +96,14 @@ package Gtk.Spin_Button is
      (Spin_Button : access Gtk_Spin_Button_Record;
       Direction   : in Gtk.Enums.Gtk_Arrow_Type;
       Step        : in Gfloat);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate
+     (Spin_Button : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Spin_Button_Record is new Gtk.GEntry.Gtk_Entry_Record

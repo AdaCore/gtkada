@@ -29,36 +29,46 @@
 
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Object;
 with Gtk.GRange;
 
 package Gtk.Scale is
 
    type Gtk_Scale_Record is new Gtk.GRange.Gtk_Range_Record with private;
    type Gtk_Scale is access all Gtk_Scale_Record'Class;
+   subtype Gtk_Hscale is Gtk_Scale;
+   subtype Gtk_Vscale is Gtk_Scale;
 
    procedure Draw_Value (Scale : access Gtk_Scale_Record);
    procedure Gtk_New_Hscale
-     (Widget     : out Gtk_Scale;
+     (Scale      : out Gtk_Scale;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Gtk_New_Vscale
-     (Widget     : out Gtk_Scale;
+     (Scale      : out Gtk_Scale;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Initialize_Hscale
-     (Widget     : access Gtk_Scale_Record;
+     (Scale      : access Gtk_Scale_Record;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Initialize_Vscale
-     (Widget     : access Gtk_Scale_Record;
+     (Scale      : access Gtk_Scale_Record;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Digits
-      (Scale      : access Gtk_Scale_Record;
-       The_Digits : in Gint);
+     (Scale      : access Gtk_Scale_Record;
+      The_Digits : in Gint);
    procedure Set_Draw_Value
-      (Scale      : access Gtk_Scale_Record;
-       Draw_Value : in Boolean);
+     (Scale      : access Gtk_Scale_Record;
+      Draw_Value : in Boolean);
    procedure Set_Value_Pos
-      (Scale : access Gtk_Scale_Record;
-       Pos   : in Gtk_Position_Type);
+     (Scale : access Gtk_Scale_Record;
+      Pos   : in Gtk_Position_Type);
    function Get_Value_Width (Scale  : access Gtk_Scale_Record) return Gint;
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate (Scale : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Scale_Record is new Gtk.GRange.Gtk_Range_Record with null record;

@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Scale is
 
@@ -36,10 +37,10 @@ package body Gtk.Scale is
    -- Draw_Value --
    ----------------
 
-   procedure Draw_Value (Scale : access Gtk_Scale_Record)
-   is
+   procedure Draw_Value (Scale : access Gtk_Scale_Record) is
       procedure Internal (Scale : in System.Address);
       pragma Import (C, Internal, "gtk_scale_draw_value");
+
    begin
       Internal (Get_Object (Scale));
    end Draw_Value;
@@ -49,9 +50,9 @@ package body Gtk.Scale is
    ---------------------
 
    function Get_Value_Width (Scale  : access Gtk_Scale_Record) return Gint is
-      function Internal (Scale  : in System.Address)
-                         return      Gint;
+      function Internal (Scale  : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_scale_get_value_width");
+
    begin
       return Internal (Get_Object (Scale));
    end Get_Value_Width;
@@ -61,12 +62,11 @@ package body Gtk.Scale is
    --------------------
 
    procedure Gtk_New_Hscale
-     (Widget     : out Gtk_Scale;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
-   is
+     (Scale      : out Gtk_Scale;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment) is
    begin
-      Widget := new Gtk_Scale_Record;
-      Initialize_Hscale (Widget, Adjustment);
+      Scale := new Gtk_Scale_Record;
+      Initialize_Hscale (Scale, Adjustment);
    end Gtk_New_Hscale;
 
    --------------------
@@ -74,12 +74,11 @@ package body Gtk.Scale is
    --------------------
 
    procedure Gtk_New_Vscale
-     (Widget     : out Gtk_Scale;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
-   is
+     (Scale      : out Gtk_Scale;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment) is
    begin
-      Widget := new Gtk_Scale_Record;
-      Initialize_Vscale (Widget, Adjustment);
+      Scale := new Gtk_Scale_Record;
+      Initialize_Vscale (Scale, Adjustment);
    end Gtk_New_Vscale;
 
    -----------------------
@@ -87,15 +86,15 @@ package body Gtk.Scale is
    -----------------------
 
    procedure Initialize_Hscale
-     (Widget     : access Gtk_Scale_Record;
+     (Scale      : access Gtk_Scale_Record;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Adjustment : in System.Address)
-                         return          System.Address;
+      function Internal (Adjustment : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_hscale_new");
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Adjustment)));
-      Initialize_User_Data (Widget);
+      Set_Object (Scale, Internal (Get_Object (Adjustment)));
+      Initialize_User_Data (Scale);
    end Initialize_Hscale;
 
    -----------------------
@@ -103,15 +102,15 @@ package body Gtk.Scale is
    -----------------------
 
    procedure Initialize_Vscale
-     (Widget     : access Gtk_Scale_Record;
+     (Scale      : access Gtk_Scale_Record;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Adjustment : in System.Address)
-                         return          System.Address;
+      function Internal (Adjustment : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_vscale_new");
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Adjustment)));
-      Initialize_User_Data (Widget);
+      Set_Object (Scale, Internal (Get_Object (Adjustment)));
+      Initialize_User_Data (Scale);
    end Initialize_Vscale;
 
    ----------------
@@ -119,16 +118,16 @@ package body Gtk.Scale is
    ----------------
 
    procedure Set_Digits
-      (Scale      : access Gtk_Scale_Record;
-       The_Digits : in Gint)
+     (Scale      : access Gtk_Scale_Record;
+      The_Digits : in Gint)
    is
       procedure Internal
-         (Scale      : in System.Address;
-          The_Digits : in Gint);
+        (Scale      : in System.Address;
+         The_Digits : in Gint);
       pragma Import (C, Internal, "gtk_scale_set_digits");
+
    begin
-      Internal (Get_Object (Scale),
-                The_Digits);
+      Internal (Get_Object (Scale), The_Digits);
    end Set_Digits;
 
    --------------------
@@ -136,16 +135,16 @@ package body Gtk.Scale is
    --------------------
 
    procedure Set_Draw_Value
-      (Scale      : access Gtk_Scale_Record;
-       Draw_Value : in Boolean)
+     (Scale      : access Gtk_Scale_Record;
+      Draw_Value : in Boolean)
    is
       procedure Internal
-         (Scale      : in System.Address;
-          Draw_Value : in Gint);
+        (Scale      : in System.Address;
+         Draw_Value : in Gint);
       pragma Import (C, Internal, "gtk_scale_set_draw_value");
+
    begin
-      Internal (Get_Object (Scale),
-                Boolean'Pos (Draw_Value));
+      Internal (Get_Object (Scale), Boolean'Pos (Draw_Value));
    end Set_Draw_Value;
 
    -------------------
@@ -153,16 +152,98 @@ package body Gtk.Scale is
    -------------------
 
    procedure Set_Value_Pos
-      (Scale : access Gtk_Scale_Record;
-       Pos   : in Gtk_Position_Type)
+     (Scale : access Gtk_Scale_Record;
+      Pos   : in Gtk_Position_Type)
    is
       procedure Internal
-         (Scale : in System.Address;
-          Pos   : in Gint);
+        (Scale : in System.Address;
+         Pos   : in Gint);
       pragma Import (C, Internal, "gtk_scale_set_value_pos");
+
    begin
-      Internal (Get_Object (Scale),
-                Gtk_Position_Type'Pos (Pos));
+      Internal (Get_Object (Scale), Gtk_Position_Type'Pos (Pos));
    end Set_Value_Pos;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S     : String_Ptr;
+      Class : String_Ptr := Get_Field (N, "class");
+
+   begin
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "name");
+         Add_Package ("Adjustment");
+         Put_Line
+           (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
+            To_Float (Get_Field (N, "hvalue").all) & ", " &
+            To_Float (Get_Field (N, "hlower").all) & ", " &
+            To_Float (Get_Field (N, "hupper").all) & ", " &
+            To_Float (Get_Field (N, "hstep").all)  & ", " &
+            To_Float (Get_Field (N, "hpage").all)  & ", " &
+            To_Float (Get_Field (N, "hpage_size").all) & ");");
+
+         Gen_New (N, "Scale", S.all & "Adj", "",
+           Class (Class'First + 3) & "scale", File => File);
+      end if;
+
+      GRange.Generate (N, File);
+      Gen_Set (N, "Scale", "digits", File => File);
+      Gen_Set (N, "Scale", "draw_value", File => File);
+      Gen_Set (N, "Scale", "value_pos", File => File);
+   end Generate;
+
+   procedure Generate (Scale : in out Object.Gtk_Object; N : in Node_Ptr) is
+      S   : String_Ptr;
+      Adj : Adjustment.Gtk_Adjustment;
+      Class : String_Ptr := Get_Field (N, "class");
+
+   begin
+      if not N.Specific_Data.Created then
+         Adjustment.Gtk_New
+           (Adj,
+            Gfloat'Value (Get_Field (N, "hvalue").all),
+            Gfloat'Value (Get_Field (N, "hlower").all),
+            Gfloat'Value (Get_Field (N, "hupper").all),
+            Gfloat'Value (Get_Field (N, "hstep").all),
+            Gfloat'Value (Get_Field (N, "hpage").all),
+            Gfloat'Value (Get_Field (N, "hpage_size").all));
+
+         if Class (Class'First + 3) = 'H' then
+            Gtk_New_Hscale (Gtk_Scale (Scale), Adj);
+         else
+            Gtk_New_Vscale (Gtk_Scale (Scale), Adj);
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Scale);
+         N.Specific_Data.Created := True;
+      end if;
+
+      GRange.Generate (Scale, N);
+
+      S := Get_Field (N, "digits");
+
+      if S /= null then
+         Set_Digits
+           (Gtk_Scale (Scale), Gint'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "draw_value");
+
+      if S /= null then
+         Set_Draw_Value
+           (Gtk_Scale (Scale), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "value_pos");
+
+      if S /= null then
+         Set_Value_Pos
+           (Gtk_Scale (Scale),
+            Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
+   end Generate;
 
 end Gtk.Scale;

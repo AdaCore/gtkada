@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Button;
+with Gtk.Object;
 
 package Gtk.Toggle_Button is
 
@@ -35,19 +36,27 @@ package Gtk.Toggle_Button is
      with private;
    type Gtk_Toggle_Button is access all Gtk_Toggle_Button_Record'Class;
 
-   function Is_Active (Widget : access Gtk_Toggle_Button_Record)
-                        return      Boolean;
-   procedure Gtk_New (Widget : out Gtk_Toggle_Button;
-                      Label  : in String := "");
-   procedure Initialize (Widget : access Gtk_Toggle_Button_Record;
-                         Label  : in String := "");
+   function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
+     return Boolean;
+   procedure Gtk_New (Toggle_Button : out Gtk_Toggle_Button;
+                      Label         : in String := "");
+   procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record;
+                         Label         : in String := "");
    procedure Set_Mode
-      (Toggle_Button  : access Gtk_Toggle_Button_Record;
-       Draw_Indicator : in Boolean);
+     (Toggle_Button  : access Gtk_Toggle_Button_Record;
+      Draw_Indicator : in Boolean);
    procedure Set_Active
-      (Toggle_Button : access Gtk_Toggle_Button_Record;
-       Is_Active     : in Boolean);
+     (Toggle_Button : access Gtk_Toggle_Button_Record;
+      Is_Active     : in Boolean);
    procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate
+     (Toggle_Button : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Toggle_Button_Record is new Gtk.Button.Gtk_Button_Record

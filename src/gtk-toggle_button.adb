@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Toggle_Button is
 
@@ -36,41 +37,42 @@ package body Gtk.Toggle_Button is
    -- Is_Active --
    ---------------
 
-   function Is_Active (Widget : access Gtk_Toggle_Button_Record)
-                        return      Boolean
+   function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
+     return Boolean
    is
       function Internal (Widget : in System.Address)
-                         return      Integer;
+        return Integer;
       pragma Import (C, Internal, "ada_toggle_button_get_active");
+
    begin
-      return Boolean'Val (Internal (Get_Object (Widget)));
+      return Boolean'Val (Internal (Get_Object (Toggle_Button)));
    end Is_Active;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Toggle_Button;
-                      Label  : in String := "")
-   is
+   procedure Gtk_New (Toggle_Button : out Gtk_Toggle_Button;
+                      Label         : in String := "") is
    begin
-      Widget := new Gtk_Toggle_Button_Record;
-      Initialize (Widget, Label);
+      Toggle_Button := new Gtk_Toggle_Button_Record;
+      Initialize (Toggle_Button, Label);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Toggle_Button_Record;
-                         Label  : in String := "")
+   procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record;
+                         Label         : in String := "")
    is
       function Internal (Label  : in String)
-                         return      System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_toggle_button_new_with_label");
+
    begin
-      Set_Object (Widget, Internal (Label & Ascii.NUL));
-      Initialize_User_Data (Widget);
+      Set_Object (Toggle_Button, Internal (Label & Ascii.NUL));
+      Initialize_User_Data (Toggle_Button);
    end Initialize;
 
    ----------------
@@ -78,13 +80,14 @@ package body Gtk.Toggle_Button is
    ----------------
 
    procedure Set_Active
-      (Toggle_Button : access Gtk_Toggle_Button_Record;
-       Is_Active     : in Boolean)
+     (Toggle_Button : access Gtk_Toggle_Button_Record;
+      Is_Active     : in Boolean)
    is
       procedure Internal
-         (Toggle_Button : in System.Address;
-          Is_Active     : in Gint);
+        (Toggle_Button : in System.Address;
+         Is_Active     : in Gint);
       pragma Import (C, Internal, "gtk_toggle_button_set_active");
+
    begin
       Internal (Get_Object (Toggle_Button), Boolean'Pos (Is_Active));
    end Set_Active;
@@ -94,28 +97,81 @@ package body Gtk.Toggle_Button is
    --------------
 
    procedure Set_Mode
-      (Toggle_Button  : access Gtk_Toggle_Button_Record;
-       Draw_Indicator : in Boolean)
+     (Toggle_Button  : access Gtk_Toggle_Button_Record;
+      Draw_Indicator : in Boolean)
    is
       procedure Internal
-         (Toggle_Button  : in System.Address;
-          Draw_Indicator : in Gint);
+        (Toggle_Button  : in System.Address;
+         Draw_Indicator : in Gint);
       pragma Import (C, Internal, "gtk_toggle_button_set_mode");
+
    begin
-      Internal (Get_Object (Toggle_Button),
-                Boolean'Pos (Draw_Indicator));
+      Internal (Get_Object (Toggle_Button), Boolean'Pos (Draw_Indicator));
    end Set_Mode;
 
    -------------
    -- Toggled --
    -------------
 
-   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record)
-   is
+   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record) is
       procedure Internal (Toggle_Button : in System.Address);
       pragma Import (C, Internal, "gtk_toggle_button_toggled");
    begin
       Internal (Get_Object (Toggle_Button));
    end Toggled;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Label : String_Ptr := Get_Field (N, "label");
+
+   begin
+      if not N.Specific_Data.Created then
+         if Label = null then
+            Gen_New (N, "Toggle_Button", File => File);
+         else
+            Gen_New (N, "Toggle_Button", Label.all, File => File,
+              Delim => '"');
+         end if;
+      end if;
+
+      Button.Generate (N, File);
+      Gen_Set (N, "Toggle_Button", "mode", File);
+      Gen_Set (N, "Toggle_Button", "active", File);
+   end Generate;
+
+   procedure Generate
+     (Toggle_Button : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S : String_Ptr := Get_Field (N, "label");
+
+   begin
+      if not N.Specific_Data.Created then
+         if S = null then
+            Gtk_New (Gtk_Toggle_Button (Toggle_Button));
+         else
+            Gtk_New (Gtk_Toggle_Button (Toggle_Button), S.all);
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Toggle_Button);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Button.Generate (Toggle_Button, N);
+
+      S := Get_Field (N, "mode");
+
+      if S /= null then
+         Set_Mode (Gtk_Toggle_Button (Toggle_Button), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "active");
+
+      if S /= null then
+         Set_Active (Gtk_Toggle_Button (Toggle_Button), Boolean'Value (S.all));
+      end if;
+   end Generate;
 
 end Gtk.Toggle_Button;

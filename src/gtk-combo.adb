@@ -29,6 +29,8 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Gtk.Combo is
 
@@ -39,6 +41,7 @@ package body Gtk.Combo is
    procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record) is
       procedure Internal (Combo_Box  : in System.Address);
       pragma Import (C, Internal, "gtk_combo_disable_activate");
+
    begin
       Internal (Get_Object (Combo_Box));
    end Disable_Activate;
@@ -48,12 +51,14 @@ package body Gtk.Combo is
    ---------------
 
    function Get_Entry (Combo_Box : access Gtk_Combo_Record)
-                       return Gtk.GEntry.Gtk_Entry
+     return Gtk.GEntry.Gtk_Entry
    is
       function Internal (Combo_Box : in System.Address)
-                         return         System.Address;
+        return System.Address;
       pragma Import (C, Internal, "ada_combo_get_entry");
+
       Stub : Gtk.GEntry.Gtk_Entry_Record;
+
    begin
       return Gtk.GEntry.Gtk_Entry
         (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
@@ -64,12 +69,14 @@ package body Gtk.Combo is
    --------------
 
    function Get_List (Combo_Box : access Gtk_Combo_Record)
-                      return         Gtk.List.Gtk_List
+     return Gtk.List.Gtk_List
    is
       function Internal (Combo_Box : in System.Address)
-                         return         System.Address;
+        return System.Address;
       pragma Import (C, Internal, "ada_combo_get_list");
+
       Stub : Gtk.List.Gtk_List_Record;
+
    begin
       return Gtk.List.Gtk_List
         (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
@@ -79,22 +86,23 @@ package body Gtk.Combo is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Combo) is
+   procedure Gtk_New (Combo_Box : out Gtk_Combo) is
    begin
-      Widget := new Gtk_Combo_Record;
-      Initialize (Widget);
+      Combo_Box := new Gtk_Combo_Record;
+      Initialize (Combo_Box);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Combo_Record) is
+   procedure Initialize (Combo_Box : access Gtk_Combo_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_new");
+
    begin
-      Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
+      Set_Object (Combo_Box, Internal);
+      Initialize_User_Data (Combo_Box);
    end Initialize;
 
    ------------------------
@@ -107,6 +115,7 @@ package body Gtk.Combo is
       procedure Internal (Combo_Box : in System.Address;
                           Val       : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_case_sensitive");
+
    begin
       Internal (Get_Object (Combo_Box), Boolean'Pos (Val));
    end Set_Case_Sensitive;
@@ -124,6 +133,7 @@ package body Gtk.Combo is
                           Item       : in System.Address;
                           Item_Value : in String);
       pragma Import (C, Internal, "gtk_combo_set_item_string");
+
    begin
       Internal (Get_Object (Combo_Box), Get_Object (Item),
                 Item_Value & Ascii.NUL);
@@ -140,9 +150,9 @@ package body Gtk.Combo is
       procedure Internal (Combo_Box : in System.Address;
                           Strings   : in System.Address);
       pragma Import (C, Internal, "gtk_combo_set_popdown_strings");
+
    begin
-      Internal (Get_Object (Combo_Box),
-                String_List.Get_Object (Strings));
+      Internal (Get_Object (Combo_Box), String_List.Get_Object (Strings));
    end Set_Popdown_Strings;
 
    --------------------
@@ -154,6 +164,7 @@ package body Gtk.Combo is
    is
       procedure Internal (Combo_Box : in System.Address; Val : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows");
+
    begin
       Internal (Get_Object (Combo_Box), Boolean'Pos (Val));
    end Set_Use_Arrows;
@@ -167,6 +178,7 @@ package body Gtk.Combo is
    is
       procedure Internal (Combo_Box : in System.Address; Val : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows_always");
+
    begin
       Internal (Get_Object (Combo_Box), Boolean'Pos (Val));
    end Set_Use_Arrows_Always;
@@ -184,8 +196,111 @@ package body Gtk.Combo is
                           Val         : in Gint;
                           Ok_If_Empty : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_value_in_list");
+
    begin
       Internal (Get_Object (Combo_Box), Val, Boolean'Pos (Ok_If_Empty));
    end Set_Value_In_List;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S : String_Ptr;
+      First, Last : Natural;
+
+   begin
+      Gen_New (N, "Combo", File => File);
+      Box.Generate (N, File);
+      Gen_Set (N, "Combo", "case_sensitive", File);
+      Gen_Set (N, "Combo", "use_arrows", File);
+      Gen_Set (N, "Combo", "use_arrows_always", File);
+
+      S := Get_Field (N, "items");
+
+      if S /= null then
+         First := S'First;
+
+         loop
+            Last := Index (S (First .. S'Last), ASCII.LF & "");
+
+            if Last = 0 then
+               Last := S'Last + 1;
+            end if;
+
+            Put_Line (File, "   String_List.Append (" &
+              To_Ada (Get_Field (N, "name").all) & "_Items, """ &
+              S (First .. Last - 1) & """);");
+
+            exit when Last >= S'Last;
+
+            First := Last + 1;
+         end loop;
+
+         Put_Line (File, "   Combo.Set_Popdown_Strings (Gtk_Combo (" &
+           To_Ada (Get_Field (N, "name").all) & "), " &
+           To_Ada (Get_Field (N, "name").all) & "_Items);");
+         Put_Line (File, "   String_List.Free (" &
+           To_Ada (Get_Field (N, "name").all) & "_Items);");
+      end if;
+   end Generate;
+
+   procedure Generate
+     (Combo_Box : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S     : String_Ptr;
+      Items : String_List.Glist;
+      First, Last : Natural;
+
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Combo (Combo_Box));
+         Set_Object (Get_Field (N, "name"), Combo_Box);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Box.Generate (Combo_Box, N);
+
+      S := Get_Field (N, "case_sensitive");
+
+      if S /= null then
+         Set_Case_Sensitive (Gtk_Combo (Combo_Box), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "use_arrows");
+
+      if S /= null then
+         Set_Use_Arrows (Gtk_Combo (Combo_Box), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "use_arrows_always");
+
+      if S /= null then
+         Set_Use_Arrows_Always (Gtk_Combo (Combo_Box), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "items");
+
+      if S /= null then
+         First := S'First;
+
+         loop
+            Last := Index (S (First .. S'Last), ASCII.LF & "");
+
+            if Last = 0 then
+               Last := S'Last + 1;
+            end if;
+
+            String_List.Append (Items, S (First .. Last - 1));
+
+            exit when Last >= S'Last;
+
+            First := Last + 1;
+         end loop;
+
+         Set_Popdown_Strings (Gtk_Combo (Combo_Box), Items);
+         String_List.Free (Items);
+      end if;
+   end Generate;
 
 end Gtk.Combo;

@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object;
 with Gtk.Button;
 with Gtk.Menu;
 with Gtk.Widget;
@@ -51,6 +52,13 @@ package Gtk.Option_Menu is
    procedure Set_History (Option_Menu : access Gtk_Option_Menu_Record;
                           Index       : in     Gint);
 
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+
+   procedure Generate
+     (Option_Menu : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Option_Menu_Record is new Button.Gtk_Button_Record
