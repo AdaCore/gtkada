@@ -358,31 +358,31 @@ package body Gtk.CTree is
       return Internal (Get_Object (Widget));
    end Get_Tree_Column;
 
-   ---------------------
-   -- Get_Tree_Indent --
-   ---------------------
+   ----------------
+   -- Get_Indent --
+   ----------------
 
-   function Get_Tree_Indent (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
-                             return          Gint
+   function Get_Indent (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+     return Gint
    is
       function Internal (Widget : in System.Address) return Gint;
       pragma Import (C, Internal, "ada_ctree_get_tree_indent");
    begin
       return Internal (Get_Object (Widget));
-   end Get_Tree_Indent;
+   end Get_Indent;
 
-   ----------------------
-   -- Get_Tree_Spacing --
-   ----------------------
+   -----------------
+   -- Get_Spacing --
+   -----------------
 
-   function Get_Tree_Spacing (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
-                              return          Gint
+   function Get_Spacing (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+     return Gint
    is
       function Internal (Widget : in System.Address) return Gint;
       pragma Import (C, Internal, "ada_ctree_get_tree_spacing");
    begin
       return Internal (Get_Object (Widget));
-   end Get_Tree_Spacing;
+   end Get_Spacing;
 
    -------------
    -- Gtk_New --
@@ -1144,11 +1144,11 @@ package body Gtk.CTree is
    end Select_Recursive;
 
 
-   -----------------------------
-   --  Set_Compare_Drag_Func  --
-   -----------------------------
+   ---------------------------
+   -- Set_Drag_Compare_Func --
+   ---------------------------
 
-   --  Note : Inside Set_Compare_Drag_Func, the type of the data stored
+   --  Note : Inside Set_Drag_Compare_Func, the type of the data stored
    --         by Set_User_Data should be System.Address. It is assumed
    --         that it is ok to replace it by a Gtk_Ctree_Compare_Drag_Func.
    --
@@ -1199,9 +1199,7 @@ package body Gtk.CTree is
                                     New_Sibling => Local_New_Sibling));
    end C_Compare_Drag_Func;
 
-   --
-
-   procedure Set_Compare_Drag_Func
+   procedure Set_Drag_Compare_Func
      (Ctree    : access Gtk_Ctree_Record;
       Cmp_Func : in     Gtk_Ctree_Compare_Drag_Func) is
 
@@ -1235,8 +1233,7 @@ package body Gtk.CTree is
          --  GtkAda structures, and then invoke it.
 
       end if;
-   end Set_Compare_Drag_Func;
-
+   end Set_Drag_Compare_Func;
 
    ------------------------
    -- Set_Expander_Style --
