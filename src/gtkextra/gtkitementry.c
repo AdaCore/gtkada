@@ -1917,26 +1917,6 @@ gtk_entry_set_selection (GtkEditable       *editable,
   gtk_entry_queue_draw (GTK_ENTRY (editable));
 }
 
-void       
-gtk_entry_select_region  (GtkEntry       *entry,
-			  gint            start,
-			  gint            end)
-{
-  gtk_editable_select_region (GTK_EDITABLE (entry), start, end);
-}
-
-void
-gtk_entry_set_max_length (GtkEntry     *entry,
-                          guint16       max)
-{
-  g_return_if_fail (entry != NULL);
-  g_return_if_fail (GTK_IS_ENTRY (entry));
-
-  if (max && entry->text_length > max)
-  	gtk_editable_delete_text(GTK_EDITABLE(entry), max, -1);
-  entry->text_max_length = max;
-}
-
 #ifdef USE_XIM
 static void
 gtk_entry_update_ic_attr (GtkWidget *widget)
