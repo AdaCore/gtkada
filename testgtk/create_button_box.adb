@@ -18,7 +18,6 @@ package body Create_Button_Box is
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
    package Void_Cb is new Signal.Void_Callback (Gtk_Button);
 
-
    Window : Gtk_Window;
 
    procedure Create_Bbox_Window (Horizontal : in Boolean;

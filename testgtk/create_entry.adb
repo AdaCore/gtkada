@@ -18,7 +18,8 @@ with Interfaces.C.Strings;
 
 package body Create_Entry is
 
-   package Entry_Cb is new Signal.Callback (Gtk_Entry, Gtk_Check_Button);
+   package Entry_Cb is new Signal.Callback (Widget_Type => Gtk_Check_Button,
+                                            Data_Type   => Gtk_Entry);
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
 
    Window : Gtk_Window;

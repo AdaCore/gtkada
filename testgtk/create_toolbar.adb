@@ -1,0 +1,155 @@
+
+with Gdk.Bitmap; use Gdk.Bitmap;
+with Gdk.Color; use Gdk.Color;
+with Gdk.Pixmap; use Gdk.Pixmap;
+with Gdk.Window; use Gdk.Window;
+with Glib; use Glib;
+with Gtk.Enums; use Gtk.Enums;
+with Gtk.Pixmap; use Gtk.Pixmap;
+with Gtk.Signal; use Gtk.Signal;
+with Gtk.Style; use Gtk.Style;
+with Gtk.Widget; use Gtk.Widget;
+with Gtk; use Gtk;
+
+package body Create_Toolbar is
+
+   package Toolbar_Cb is new Signal.Object_Callback (Gtk_Toolbar);
+
+
+   function New_Pixmap (Filename   : in String;
+                        Window     : in Gdk_Window'Class;
+                        Background : in Gdk_Color)
+                        return Gtk_Pixmap
+   is
+      Pixmap    : Gdk_Pixmap;
+      Mask      : Gdk_Bitmap;
+      GtkPixmap : Gtk_Pixmap;
+   begin
+      Create_From_Xpm (Pixmap, Window, Mask, Background, Filename);
+      Gtk_New (GtkPixmap, Pixmap, Mask);
+      return GtkPixmap;
+   end New_Pixmap;
+
+   procedure Set_Horizontal (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Orientation (Toolbar, Orientation_Horizontal);
+   end Set_Horizontal;
+
+   procedure Set_Vertical (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Orientation (Toolbar, Orientation_Vertical);
+   end Set_Vertical;
+
+   procedure Set_Icons (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Style (Toolbar, Toolbar_Icons);
+   end Set_Icons;
+
+   procedure Set_Text (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Style (Toolbar, Toolbar_Text);
+   end Set_Text;
+
+   procedure Set_Both (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Style (Toolbar, Toolbar_Both);
+   end Set_Both;
+
+   procedure Set_Small_Space (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Space_Size (Toolbar, 5);
+   end Set_Small_Space;
+
+   procedure Set_Big_Space (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Space_Size (Toolbar, 10);
+   end Set_Big_Space;
+
+   procedure Set_Enable (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Tooltips (Toolbar, True);
+   end Set_Enable;
+
+   procedure Set_Disable (Toolbar : in out Gtk_Toolbar'Class) is
+   begin
+      Set_Tooltips (Toolbar, False);
+   end Set_Disable;
+
+   procedure Make_Toolbar (Toolbar  : out Gtk_Toolbar;
+                           Toplevel : in out Gtk_Window)
+   is
+      Id      : Guint;
+      Pixmap : Gtk_Pixmap;
+   begin
+      if not Realized_Is_Set (Toplevel) then
+         Realize (Toplevel);
+      end if;
+
+      Gtk_New (Toolbar, Orientation_Horizontal, Toolbar_Both);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar,
+                      Text => "Horizontal",
+                      Tooltip_Text => "Horizontal_toolbar_layout",
+                      Tooltip_Private_Text => "",
+                      Icon => New_Pixmap ("test.xpm",
+                                          Get_Window (Toplevel),
+                                          Get_Bg (Get_Style (Toplevel),
+                                                  State_Normal))),
+         "clicked", Set_Horizontal'Access, Toolbar);
+
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Vertical", "Vertical_toolbar_layout", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Set_Vertical'Access, Toolbar);
+      Append_Space (Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Icons", "Only show toolbar icons", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Set_Icons'Access, Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Text", "Only show toolbar text", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Set_Text'Access, Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Both", "Show toolbar icons and text", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Set_Both'Access, Toolbar);
+      Append_Space (Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Small", "Use small spaces", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Set_Small_Space'Access, Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Big", "Use big spaces", "Toolbar/Big",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Set_Big_Space'Access, Toolbar);
+      Append_Space (Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Enable", "Enable_Tooltips", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Set_Enable'Access, Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Disable", "Disable_Tooltips", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Set_Disable'Access, Toolbar);
+
+   end Make_Toolbar;
+
+end Create_Toolbar;
+
