@@ -71,7 +71,7 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
        break;
 --- gtk+/gdk/win32/gdkevents-win32.c	2003/04/13 09:25:27	1.3
 +++ gtk+/gdk/win32/gdkevents-win32.c	2003/04/13 09:49:57
-@@ -2823,6 +2823,42 @@
+@@ -2823,6 +2823,31 @@
        *ret_valp = 1;
        break;
  
@@ -83,17 +83,6 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
 +      if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
 +	{
 +	  WIN32_GDI_FAILED ("GetUpdateRgn");
-+	  break;
-+	}
-+
-+      hdc = BeginPaint (msg->hwnd, &paintstruct);
-+      EndPaint (msg->hwnd, &paintstruct);
-+
-+      if ((paintstruct.rcPaint.right == paintstruct.rcPaint.left)
-+          || (paintstruct.rcPaint.bottom == paintstruct.rcPaint.top))
-+	{
-+	  GDK_NOTE (EVENTS, g_print ("...empty paintstruct, ignored\n"));
-+	  DeleteObject (hrgn);
 +	  break;
 +	}
 +
