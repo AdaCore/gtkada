@@ -727,6 +727,7 @@ package body Gtk.Widget is
          if Q = null or else Q.Value.all /= "GTK_PACK_END" then
             Gen_Call_Child (N, Child, "Box", "Pack_Start",
               "expand", "fill", "padding", File);
+            N.Specific_Data.Has_Container := True;
          end if;
       end if;
 
@@ -803,6 +804,7 @@ package body Gtk.Widget is
                   Gtk_Widget (Get_Object (Get_Field (N, "name"))),
                   Boolean'Value (S.all), Boolean'Value (S2.all),
                   Gint'Value (S3.all));
+               N.Specific_Data.Has_Container := True;
             end if;
          end if;
       end if;

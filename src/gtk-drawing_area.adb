@@ -82,7 +82,11 @@ package body Gtk.Drawing_Area is
    begin
       Gen_New (N, "Drawing_Area", File => File);
       Widget.Generate (N, File);
-      Gen_Call_Child (N, null, "Container", "Add", File => File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
    procedure Generate (Drawing_Area : in out Gtk_Object;
@@ -95,9 +99,13 @@ package body Gtk.Drawing_Area is
       end if;
 
       Widget.Generate (Drawing_Area, N);
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-         Widget.Gtk_Widget (Drawing_Area));
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Widget.Gtk_Widget (Drawing_Area));
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
 end Gtk.Drawing_Area;

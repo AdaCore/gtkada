@@ -320,7 +320,11 @@ package body Gtk.Tree is
       Gen_Set (N, "Tree", "selection_mode", File);
       Gen_Set (N, "Tree", "view_lines", File);
       Gen_Set (N, "Tree", "view_mode", File);
-      Gen_Call_Child (N, null, "Container", "Add", File => File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
    procedure Generate (Tree : in out Gtk_Object;
@@ -357,9 +361,12 @@ package body Gtk.Tree is
             Gtk_Tree_View_Mode'Value (S (S'First + 4 .. S'Last)));
       end if;
 
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-         Widget.Gtk_Widget (Tree));
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Gtk_Widget (Tree));
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
 end Gtk.Tree;

@@ -141,8 +141,9 @@ package body Gtk.Label is
               To_Ada (Get_Field (N, "name").all) & ");");
          end if;
 
-      else
+      elsif not N.Specific_Data.Has_Container then
          Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
@@ -190,10 +191,11 @@ package body Gtk.Label is
                   "name").Value)), Page_Num, Widget.Gtk_Widget (Label));
          end if;
 
-      else
+      elsif not N.Specific_Data.Has_Container then
          Container.Add
            (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
             Widget.Gtk_Widget (Label));
+         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 

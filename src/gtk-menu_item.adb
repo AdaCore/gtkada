@@ -165,7 +165,11 @@ package body Gtk.Menu_Item is
       Gen_New (N, "Menu_Item", Get_Field (N, "label").all,
         File => File, Delim => '"');
       Item.Generate (N, File);
-      Gen_Call_Child (N, null, "Container", "Add", File => File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
    procedure Generate (Menu_Item : in out Gtk_Object;
@@ -186,9 +190,13 @@ package body Gtk.Menu_Item is
       end if;
 
       Item.Generate (Menu_Item, N);
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-         Widget.Gtk_Widget (Menu_Item));
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Widget.Gtk_Widget (Menu_Item));
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
 end Gtk.Menu_Item;

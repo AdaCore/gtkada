@@ -45,8 +45,7 @@ package Gtk.Check_Menu_Item is
       Always          : in Boolean);
    procedure Set_Always_Show_Toggle
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-      Always          : in Boolean)
-      renames Set_Show_Toggle;
+      Always          : in Boolean);
 
    procedure Set_Active (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
                          Is_active       : in Boolean);

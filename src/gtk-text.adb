@@ -343,7 +343,11 @@ package body Gtk.Text is
       Gen_Set (N, "Text", "editable", File);
       Gen_Set (N, "Text", "point", File);
       Gen_Set (N, "Text", "word_wrap", File);
-      Gen_Call_Child (N, null, "Container", "Add", File => File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
    procedure Generate (Text : in out Gtk_Object;
@@ -376,9 +380,12 @@ package body Gtk.Text is
          Set_Word_Wrap (Gtk_Text (Text), Boolean'Value (S.all));
       end if;
 
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-         Widget.Gtk_Widget (Text));
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Widget.Gtk_Widget (Text));
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
 end Gtk.Text;

@@ -35,6 +35,9 @@ package Glib.Glade is
    type XML_Data is record
       Created : Boolean := False;
       --  True if the corresponding object has been created
+
+      Has_Container : Boolean := False;
+      --  True if object has a container
    end record;
 
    package Glib_XML is new Glib.XML (XML_Data);

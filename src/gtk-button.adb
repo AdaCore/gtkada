@@ -30,6 +30,7 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Widget; use Gtk.Widget;
 with Gtk.Container; use Gtk.Container;
 with Gtk.File_Selection; use Gtk.File_Selection;
 with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
@@ -168,6 +169,11 @@ package body Gtk.Button is
 
       Container.Generate (N, File);
       Gen_Set (N, "Button", "relief", File);
+
+      if Child_Name = null and then not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
    procedure Generate (Button : in out Gtk_Object;
@@ -230,6 +236,13 @@ package body Gtk.Button is
       if S /= null then
          Set_Relief
            (Gtk_Button (Button), Gtk.Enums.Gtk_Relief_Style'Value (S.all));
+      end if;
+
+      if Child_Name = null and then not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Gtk_Widget (Button));
+         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 

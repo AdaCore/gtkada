@@ -84,6 +84,14 @@ package body Gtk.Check_Menu_Item is
       Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Always));
    end Set_Show_Toggle;
 
+   ----------------------------
+   -- Set_Always_Show_Toggle --
+   ----------------------------
+
+   procedure Set_Always_Show_Toggle
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+      Always          : in Boolean) renames Set_Show_Toggle;
+
    ----------------
    -- Set_Active --
    ----------------

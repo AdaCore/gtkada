@@ -526,7 +526,7 @@ package body Gtk.Toolbar is
          S2 := Get_Field (N, "type");
          Gtk_New (Gtk_Toolbar (Toolbar),
            Gtk_Orientation'Value (S (S'First + 4 .. S'Last)),
-           Gtk_Toolbar_Style'Value (S2 (S2'First + 4 .. S'Last)));
+           Gtk_Toolbar_Style'Value (S2 (S2'First + 4 .. S2'Last)));
          Set_Object (Get_Field (N, "name"), Toolbar);
          N.Specific_Data.Created := True;
       end if;

@@ -113,7 +113,11 @@ package body Gtk.Menu_Bar is
    begin
       Gen_New (N, "Menu_Bar", File => File);
       Menu_Shell.Generate (N, File);
-      Gen_Call_Child (N, null, "Container", "Add", File => File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
    procedure Generate (Menu_Bar : in out Gtk_Object;
@@ -126,9 +130,13 @@ package body Gtk.Menu_Bar is
       end if;
 
       Menu_Shell.Generate (Menu_Bar, N);
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-         Widget.Gtk_Widget (Menu_Bar));
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Widget.Gtk_Widget (Menu_Bar));
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
 end Gtk.Menu_Bar;
