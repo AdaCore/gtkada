@@ -497,6 +497,12 @@ package body Gtk_Generates is
             "   Set_Has_Frame (Get_Entry ("
             & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & "), "
             & Get_Property (P, "has_frame", "False") & ");");
+
+         Gen_Signal
+           (P, File,
+            The_Object =>
+              "Get_Entry ("
+              & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & ")");
       end if;
 
       --  Generate the list of items.
