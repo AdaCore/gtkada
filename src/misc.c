@@ -187,48 +187,52 @@ ada_signal_argument_type (GType type, char* signal_name, gint num)
  *********************************************************************/
 
 void*
-ada_initialize_class_record (GObject*  object,
-			     gint      nsignals,
-			     char*     signals[],
-			     GType     parameters[],
-			     gint      max_parameters,
-			     void*     old_class_record,
-			     guint     scroll_adj_signals)
+ada_initialize_class_record
+  (GObject*      object,
+   gint          nsignals,
+   char*         signals[],
+   GType         parameters[],
+   gint          max_parameters,
+   GObjectClass* old_class_record,
+   guint         scroll_adj_signals,
+   gchar*        type_name)
 {
   if (old_class_record)
     {
       G_OBJECT_GET_CLASS (object) = old_class_record;
-      return old_class_record;
+      return g_type_class_ref (GTK_CLASS_TYPE (old_class_record));
     }
   else
     {
+      /* Note: The memory allocated in this function is never freed. No need
+	 to worry, since this is only allocated once per user's widget type,
+	 and might be used until the end of the application */
+
       int j;
       GObjectClass* klass;
+      GtkTypeInfo *class_info = malloc (sizeof (GtkTypeInfo));
+      GTypeQuery query;
 
       /* Right now, object->klass points to the ancestor's class */
       GObjectClass* ancestor = G_OBJECT_GET_CLASS (object);
 
-      /* We need to know the ancestor's class size */
-      GTypeQuery query;
-
+      /* We need to know the ancestor's class/instance sizes */
       g_type_query (GTK_CLASS_TYPE (ancestor), &query);
 
-      /* Note: The memory allocated here is never freed. No need to worry,
-	 since this is only allocated once per user's widget type, and
-	 might be used until the end of the application */
+      class_info->type_name = g_strdup (type_name);
+      class_info->object_size = query.instance_size;
+      class_info->class_size = query.class_size + nsignals * sizeof (void*);
+      class_info->class_init_func = NULL;
+      class_info->object_init_func = NULL;
+      class_info->reserved_1 = NULL;
+      class_info->reserved_2 = NULL;
+      class_info->base_class_init_func = NULL;
 
-      klass = (GObjectClass*) malloc
-	(query.class_size + nsignals * sizeof (void*));
-      memcpy (klass, ancestor, query.class_size);
-
+      /* Need to create a new type, otherwise Gtk+ won't free objects of
+         this type */
+      klass = g_type_class_ref
+        (gtk_type_unique (GTK_CLASS_TYPE (ancestor), class_info));
       G_OBJECT_GET_CLASS (object) = klass;
-
-      /* Implementation Note: We are actually cheating here: we should
-	 really create a new type, instead of reusing the parent class's type.
-	 This would be cleaner for some things, but since it seems to work
-	 fine that way, no need to make things more complicated.
-	 The important thing to test is whether the new signals are also
-	 known in the ancestor's class or not (they should not, of course!) */
 
       for (j = 0; j < nsignals; j++)
 	{
@@ -265,7 +269,7 @@ ada_initialize_class_record (GObject*  object,
 void
 ada_widget_set_realize (GtkObject *widget, void (* realize) (GtkWidget *))
 {
-  (GTK_WIDGET_CLASS (G_OBJECT_GET_CLASS (widget)))->realize = realize;
+  GTK_WIDGET_GET_CLASS (widget)->realize = realize;
 }
 /*********************************************************************
  **  Gdk.RGB functions
@@ -1855,13 +1859,13 @@ ada_style_get_white_gc (GtkStyle * style)
 void
 ada_style_set_bg_pixmap (GtkStyle* style, gint state, GdkPixmap *pix)
 {
-	style->bg_pixmap[state] = pix;
+  style->bg_pixmap[state] = pix;
 }
 
 GdkPixmap*
 ada_style_get_bg_pixmap (GtkStyle* style, gint state)
 {
-	return style->bg_pixmap[state];
+  return style->bg_pixmap[state];
 }
 
 gint
