@@ -220,44 +220,47 @@ package body Glib.XML is
       In_String : Boolean  := False;
 
    begin
-      J := Str'First;
+      if S'Length = 0 then
+         return S;
+      else
+         J := Str'First;
 
-      loop
-         if In_String or else S (Index) /= '&' then
-            Str (J) := S (Index);
-         else
-            Index := Index + 1;
-            Start := Index;
-
-            while S (Index) /= ';' loop
+         loop
+            if In_String or else S (Index) /= '&' then
+               Str (J) := S (Index);
+            else
                Index := Index + 1;
-               pragma Assert (Index <= S'Last);
-            end loop;
+               Start := Index;
 
-            if S (Start .. Index - 1) = "quot" then
-               Str (J) := '"';
-            elsif S (Start .. Index - 1) = "gt" then
-               Str (J) := '>';
-            elsif S (Start .. Index - 1) = "lt" then
-               Str (J) := '<';
-            elsif S (Start .. Index - 1) = "amp" then
-               Str (J) := '&';
-            elsif S (Start .. Index - 1) = "apos" then
-               Str (J) := ''';
+               while S (Index) /= ';' loop
+                  Index := Index + 1;
+                  pragma Assert (Index <= S'Last);
+               end loop;
+
+               if S (Start .. Index - 1) = "quot" then
+                  Str (J) := '"';
+               elsif S (Start .. Index - 1) = "gt" then
+                  Str (J) := '>';
+               elsif S (Start .. Index - 1) = "lt" then
+                  Str (J) := '<';
+               elsif S (Start .. Index - 1) = "amp" then
+                  Str (J) := '&';
+               elsif S (Start .. Index - 1) = "apos" then
+                  Str (J) := ''';
+               end if;
             end if;
-         end if;
 
-         exit when Index = S'Last;
+            exit when Index = S'Last;
 
-         if S (Index) = '"' then
-            In_String := not In_String;
-         end if;
+            if S (Index) = '"' then
+               In_String := not In_String;
+            end if;
 
-         Index := Index + 1;
-         J     := J + 1;
-      end loop;
-
-      return Str (1 .. J);
+            Index := Index + 1;
+            J     := J + 1;
+         end loop;
+         return Str (1 .. J);
+      end if;
    end Translate;
 
    -------------------
