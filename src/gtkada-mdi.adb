@@ -1728,6 +1728,7 @@ package body Gtkada.MDI is
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class) is
       use type Widget_SList.GSlist;
       C : MDI_Child := MDI_Child (Child);
+      MDI : constant MDI_Window := C.MDI;
 
    begin
       --  We know at that stage that Child has already been unparent-ed
@@ -1779,19 +1780,6 @@ package body Gtkada.MDI is
          end if;
       end if;
 
-      --  Reset the focus child, but only after we have finished manipulating
-      --  the notebooks. Otherwise, we get a switch_page event, that calls
-      --  Set_Focus_Child again
-
-      if C = C.MDI.Focus_Child then
-         C.MDI.Focus_Child := null;
-
-         --  Give the focus back to the last child that had it.
-         if C.MDI.Items /= Widget_List.Null_List then
-            Set_Focus_Child (MDI_Child (Get_Data (First (C.MDI.Items))));
-         end if;
-      end if;
-
       --  Destroy the child, unless the user has explicitely kept a Ref on it
       --  (therefore, do not use Destroy, only Unref). In all cases, it should
       --  be hidden on the screen
@@ -1805,7 +1793,23 @@ package body Gtkada.MDI is
       Free (C.Title);
       Free (C.Short_Title);
 
-      Unref (C);
+      --  Reset the focus child, but only after we have finished manipulating
+      --  the notebooks. Otherwise, we get a switch_page event, that calls
+      --  Set_Focus_Child again.
+      --  Also send the signal only after destroying the child, so that the
+      --  signal is not sent to C
+
+      if C = MDI.Focus_Child then
+         Unref (C);
+         MDI.Focus_Child := null;
+
+         --  Give the focus back to the last child that had it.
+         if MDI.Items /= Widget_List.Null_List then
+            Set_Focus_Child (MDI_Child (Get_Data (First (MDI.Items))));
+         end if;
+      else
+         Unref (C);
+      end if;
    end Destroy_Child;
 
    ---------------------------
@@ -3737,8 +3741,7 @@ package body Gtkada.MDI is
 
       Create_Notebook (MDI, Side);
 
-      Gtk_New (Label, "");
-      Append_Page (MDI.Docks (Side), Child, Label);
+      Append_Page (MDI.Docks (Side), Child);
       Update_Tab_Label (Child);
 
       Unref (Child);
