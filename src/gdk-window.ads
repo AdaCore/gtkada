@@ -73,7 +73,7 @@ package Gdk.Window is
 
    procedure Ref (Window : in Gdk_Window);
 
-   procedure Unref (Window : in out Gdk_Window);
+   procedure Unref (Window : in Gdk_Window);
 
    procedure Window_At_Pointer (Win_X  : out Gint;
                                 Win_Y  : out Gint;

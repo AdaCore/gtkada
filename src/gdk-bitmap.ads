@@ -65,7 +65,7 @@ package Gdk.Bitmap is
    procedure Ref (Bitmap : in Gdk_Bitmap);
    --  Add a reference to a bitmap.
 
-   procedure Unref (Bitmap : in out Gdk_Bitmap);
+   procedure Unref (Bitmap : in Gdk_Bitmap);
    --  This is the usual way to destroy a bitmap. The memory is freed when
    --  there is no more reference
 

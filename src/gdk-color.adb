@@ -85,9 +85,9 @@ package body Gdk.Color is
    end Alloc;
 
 
-   --------------------
-   --  Alloc_Colors  --
-   --------------------
+   -----------------
+   -- Alloc_Color --
+   -----------------
 
    procedure Alloc_Color (Colormap   : in Gdk_Colormap;
                           Color      : in out Gdk_Color;
@@ -111,9 +111,9 @@ package body Gdk.Color is
       Color := Col;
    end Alloc_Color;
 
-   --------------------
-   --  Alloc_Colors  --
-   --------------------
+   ------------------
+   -- Alloc_Colors --
+   ------------------
 
    procedure Alloc_Colors (Colormap   : in     Gdk_Colormap;
                            Colors     : in out Gdk_Color_Array;

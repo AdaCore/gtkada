@@ -164,7 +164,7 @@ package Gdk.Color is
    --  colormap won't be modifiable outside this scope. This might result in
    --  some strange colors on the display...
 
-   procedure Unref (Colormap : in out Gdk_Colormap);
+   procedure Unref (Colormap : in Gdk_Colormap);
    --  Unref is the only way to destroy a colormap once you no longer need it.
    --  Note that because gtk+ uses reference counts, the colormap will not
    --  be actually destroyed while at least one object is using it.
