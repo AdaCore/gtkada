@@ -1,5 +1,25 @@
 #############################################################
 #
+#  Adding some OS specific flags to the compiler
+#
+############################################################
+
+AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
+[
+
+   case $build_os in
+   aix)
+      OS_SPECIFIC_LINK_OPTIONS=-Wl,-bexpall,-berok
+      ;;
+   esac
+
+  AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
+
+]
+)
+
+#############################################################
+#
 #  Checking for Gnat
 #
 #############################################################
