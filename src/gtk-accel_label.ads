@@ -93,6 +93,15 @@ package Gtk.Accel_Label is
    --  whenever accelerators are added or removed from the associated widget.
    --  Always return False.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

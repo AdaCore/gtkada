@@ -55,6 +55,7 @@ with Gtk.Enums;
 with Gtk.Object;
 with Gtk.Style;
 with Glib.Object;
+with Glib.Properties;
 with Glib.Glist;
 with Glib.GSlist;
 with System;
@@ -770,14 +771,15 @@ package Gtk.Widget is
    --    the user.
    --
    --  - "Composite_Child":
-   --    ???
+   --    This indicates whether the widget is composed of other widgets
    --
    --  - "No_Reparent":
    --    This flags is never used in gtk+.
    --
    --  - "App_Paintable":
    --    For some containers (including Gtk_Window and Gtk_Layout), this is
-   --    unset when the container itself has some special drawing routines.
+   --    unset when the container itself has some special drawing routines. It
+   --    indicates whether the application will paint directly on the widget.
    --
    --  - "Receives_Default":
    --    Set when the widget receives the default at the time it receives the
@@ -868,6 +870,148 @@ package Gtk.Widget is
    package Widget_SList is new Glib.GSlist.Generic_SList (Gtk_Widget);
 
    --  </doc_ignore>
+
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Name_Property
+   --    Type:  String
+   --    Flags: read-write
+   --    Descr: The name of the widget
+   --    See also:  Set_Name procedure
+   --
+   --  - Name:  Parent_Property
+   --    Type:  Gtk_Container'Class
+   --    Flags: read-write
+   --    Descr: The parent widget of this widget.
+   --    See also:  Set_Parent or Add procecures
+   --
+   --  - Name:  X_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: The x coordinate of the top-left corner of the widget,
+   --           or -1 if not set
+   --
+   --  - Name:  Y_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: The y coordinate of the top-left corner of the widget,
+   --           or -1 if not set
+   --
+   --  - Name:  Width_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: The width of the widget or -1 if not set
+   --    See also:  Set_USize
+   --
+   --  - Name:  Height_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: The height of the widget or -1 if not set
+   --    See also:  Set_USize
+   --
+   --  - Name:  Visible_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the widget is visible
+   --    See also:  Hide and Show procedures
+   --
+   --  - Name:  Sensitive_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the widget responds to input
+   --    See also: Set_Sensitive
+   --
+   --  - Name:  App_Paintable_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the application will paint directly on the widget
+   --    See also: Set_App_Paintable
+   --
+   --  - Name:  Can_Focus_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the widget can accept the input focus (keyboard)
+   --    See also: Set or unset the flag Can_Focus
+   --
+   --  - Name:  Has_Focus_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the widget has the input focus
+   --    See also: Grab_Focus
+   --
+   --  - Name:  Can_Default_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the widget can be the default widget
+   --    See also: Set or unset the flag Can_Default
+   --
+   --  - Name:  Has_Default_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the widget is the default widget
+   --    See also: Grab_Default
+   --
+   --  - Name:  Receives_Default_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If True, the widget will receive the default action when
+   --           it is focused
+   --    See also: Set or unset the flag Receives_Default
+   --
+   --  - Name:  Composite_Child_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the widget is composed of other widgets
+   --    See also: Set or unset the flag Composite_Child
+   --
+   --  - Name:  Style_Property
+   --    Type:  Gtk_Style
+   --    Flags: read-write
+   --    Descr: The style of the widget, which contains information about how
+   --           it will look (colors etc).
+   --    See also: Set_Style
+   --
+   --  - Name:  Events_Property
+   --    Type:  flags
+   --    Flags: read-write
+   --    Descr: The event mask that decides what kind of GdkEvents this widget
+   --           gets.
+   --    See also: Set_Events
+   --
+   --  - Name:  Prop_Extensions_Events_Property
+   --    Type:  flags
+   --    Flags: read-write
+   --    Descr: The mask that decides what kind of extension events this widget
+   --           gets.
+   --    See also: Set_Extension_Events
+   --
+   --  </properties>
+
+   Name_Property                  : constant Glib.Properties.Property_String;
+   Parent_Property                : constant Glib.Properties.Property_Object;
+   X_Property                     : constant Glib.Properties.Property_Int;
+   Y_Property                     : constant Glib.Properties.Property_Int;
+   Width_Property                 : constant Glib.Properties.Property_Int;
+   Height_Property                : constant Glib.Properties.Property_Int;
+   Visible_Property               : constant Glib.Properties.Property_Boolean;
+   Sensitive_Property             : constant Glib.Properties.Property_Boolean;
+   App_Paintable_Property         : constant Glib.Properties.Property_Boolean;
+   Can_Focus_Property             : constant Glib.Properties.Property_Boolean;
+   Has_Focus_Property             : constant Glib.Properties.Property_Boolean;
+   Can_Default_Property           : constant Glib.Properties.Property_Boolean;
+   Has_Default_Property           : constant Glib.Properties.Property_Boolean;
+   Receives_Default_Property      : constant Glib.Properties.Property_Boolean;
+   Composite_Child_Property       : constant Glib.Properties.Property_Boolean;
+   Style_Property                 : constant Glib.Properties.Property_Object;
+   Events_Property                : constant Gdk.Event.Property_Gdk_Event_Mask;
+   Prop_Extensions_Events_Property :
+     constant Gdk.Types.Property_Gdk_Extension_Mode;
 
    -------------
    -- Signals --
@@ -1266,9 +1410,48 @@ package Gtk.Widget is
    --    ???
    --
    --  </signals>
+
 private
 
    type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
+
+   Name_Property                : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("name");
+   Parent_Property              : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("parent");
+   X_Property                   : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("x");
+   Y_Property                   : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("y");
+   Width_Property               : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width");
+   Height_Property              : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("height");
+   Visible_Property             : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible");
+   Sensitive_Property           : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("sensitive");
+   App_Paintable_Property       : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("app_paintable");
+   Can_Focus_Property           : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("can_focus");
+   Has_Focus_Property           : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has_focus");
+   Can_Default_Property         : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("can_default");
+   Has_Default_Property         : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has_default");
+   Receives_Default_Property    : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("receives_default");
+   Composite_Child_Property     : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("composite_child");
+   Style_Property               : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("style");
+   Events_Property              : constant Gdk.Event.Property_Gdk_Event_Mask :=
+     Gdk.Event.Build ("events");
+   Prop_Extensions_Events_Property :
+     constant Gdk.Types.Property_Gdk_Extension_Mode :=
+     Gdk.Types.Build ("extension_events");
 
    pragma Import (C, Push_Style, "gtk_widget_push_style");
    pragma Import (C, Pop_Style, "gtk_widget_pop_style");

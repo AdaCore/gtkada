@@ -43,6 +43,16 @@ package Gtk.Input_Dialog is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Input_Dialog.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    --  signals
    --  - "enable_device"
    --  - "disable_device"

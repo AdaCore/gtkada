@@ -43,7 +43,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;
 with Gtk.Misc;
 
 package Gtk.Arrow is
@@ -53,14 +53,14 @@ package Gtk.Arrow is
 
    procedure Gtk_New
      (Arrow       : out Gtk_Arrow;
-      Arrow_Type  : Gtk_Arrow_Type;
-      Shadow_Type : Gtk_Shadow_Type);
+      Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+      Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Create a new arrow widget.
 
    procedure Initialize
      (Arrow       : access Gtk_Arrow_Record'Class;
-      Arrow_Type  : Gtk_Arrow_Type;
-      Shadow_Type : Gtk_Shadow_Type);
+      Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+      Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -69,9 +69,34 @@ package Gtk.Arrow is
 
    procedure Set
      (Arrow       : access Gtk_Arrow_Record;
-      Arrow_Type  : Gtk_Arrow_Type;
-      Shadow_Type : Gtk_Shadow_Type);
+      Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
+      Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Set the direction and style of the Arrow.
+
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Arrow_Type_Property
+   --    Type:  Gtk_Arrow_Type
+   --    Flags: read-write
+   --    Descr: The direction the arrow should point
+   --    See also: Set
+   --
+   --  - Name:  Shadow_Type_Property
+   --    Type:  Gtk_Shadow_Type
+   --    Flags: read-write
+   --    Descr: Appearance of the shadow surrounding the arrow
+   --    See also: Set
+   --
+   --  </properties>
+
+   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type;
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
    -------------
    -- Signals --
@@ -83,6 +108,11 @@ package Gtk.Arrow is
 
 private
    type Gtk_Arrow_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
+
+   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type :=
+     Gtk.Enums.Build ("arrow_type");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow_type");
 
    pragma Import (C, Get_Type, "gtk_arrow_get_type");
 end Gtk.Arrow;

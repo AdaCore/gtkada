@@ -133,6 +133,16 @@ package Gtk.Status_Bar is
      (Statusbar : access Gtk_Status_Bar_Record) return Boolean;
    --  Return the value of the resize_grip attribute for a given status bar.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

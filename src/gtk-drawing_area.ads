@@ -80,6 +80,16 @@ package Gtk.Drawing_Area is
    --  This queues a resize request for the area.
    --  pragma Deprecated (Size);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

@@ -415,4 +415,29 @@ package body Gdk.Color is
       return Color;
    end White;
 
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Gdk_Color;
+      Value  : Gdk_Color) is
+   begin
+      Color_Properties.Set_Property
+        (Object, Color_Properties.Property (Name), Value);
+   end Set_Property;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Gdk_Color) return Gdk_Color is
+   begin
+      return Color_Properties.Get_Property
+        (Object, Color_Properties.Property (Name));
+   end Get_Property;
+
 end Gdk.Color;

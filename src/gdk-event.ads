@@ -41,6 +41,8 @@
 
 with System;
 with Glib; use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 with Glib.Values;
 with Gdk.Rectangle;
 with Gdk.Types;
@@ -665,6 +667,17 @@ package Gdk.Event is
 
    function Get_Event (Value : Glib.Values.GValue) return Gdk_Event;
    --  Convert a value into a Gdk_Event.
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following packages and types are used to represent properties of
+   --  the given type. They are used in the packages that use these properties
+
+   package Event_Mask_Properties is new Generic_Internal_Discrete_Property
+     (Gdk_Event_Mask);
+
+   type Property_Gdk_Event_Mask is new Event_Mask_Properties.Property;
 
    -------------------
    -- Design issues --

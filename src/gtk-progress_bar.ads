@@ -33,6 +33,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Progress;
 
@@ -99,9 +100,68 @@ package Gtk.Progress_Bar is
       return Gtk_Progress_Bar_Orientation;
    --  Return the current progress bar orientation.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Orientation_Property
+   --    Type:  Gtk_Orientation
+   --    Flags: read-write
+   --    Descr: Orientation and growth of the progress bar
+   --    See also: Set_Orientation and Get_Orientation
+   --
+   --  - Name:  Discrete_Blocks_Property
+   --    Type:  Guint
+   --    Flags: read-write
+   --    Descr: The number of discrete blocks in a progress bar (when shown
+   --           in the discrete Style)
+   --    See also: <none>
+   --
+   --  - Name:  Fraction_Property
+   --    Type:  Gdouble
+   --    Flags: read-write
+   --    Descr: The fraction of total work that has been completed
+   --    See also: Set_Fraction and Get_Fraction
+   --
+   --  - Name:  Pulse_Step_Property
+   --    Type:  Gdouble
+   --    Flags: read-write
+   --    Descr: The fraction of total progress to move the bouncing block when
+   --           pulsed
+   --    See also: Set_Pulse_Step and Get_Pulse_Step
+   --
+   --  - Name:  Text_Property
+   --    Type:  String
+   --    Flags: read-write
+   --    Descr: Text to be displayed in the progress bar
+   --    See also: Set_Text and Get_Text
+   --
+   --  </properties>
+
+   Orientation_Property     : constant Gtk.Enums.Property_Gtk_Orientation;
+   Discrete_Blocks_Property : constant Glib.Properties.Property_Uint;
+   Fraction_Property        : constant Glib.Properties.Property_Double;
+   Pulse_Step_Property      : constant Glib.Properties.Property_Double;
+   Text_Property            : constant Glib.Properties.Property_String;
+
 private
    type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record
      with null record;
+
+   Orientation_Property     : constant Gtk.Enums.Property_Gtk_Orientation :=
+     Gtk.Enums.Build ("orientation");
+   Discrete_Blocks_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("discrete_blocks");
+   Fraction_Property        : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("fraction");
+   Pulse_Step_Property      : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("pulse_step");
+   Text_Property            : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("text");
 
    pragma Import (C, Get_Type, "gtk_progress_bar_get_type");
 end Gtk.Progress_Bar;

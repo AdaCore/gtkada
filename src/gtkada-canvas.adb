@@ -95,7 +95,7 @@ package body Gtkada.Canvas is
      (1 => New_String ("background_click"),
       2 => New_String ("item_selected"),
       3 => New_String ("zoomed"),
-      4 => New_String ("set_scroll_adjustments"));
+      4 => New_String ("my_set_scroll_adjustments"));
    --  Array of the signals created for this widget
 
    -----------------
@@ -334,7 +334,7 @@ package body Gtkada.Canvas is
         (1 => (1 => Gdk.Event.Get_Type, 2 => GType_None),
          2 => (1 => GType_Pointer,      2 => GType_None),
          3 => (1 => GType_Uint,         2 => GType_None),
-         4 => (1 => GType_Object,       2 => GType_Object));
+         4 => (1 => Gtk.Adjustment.Get_Type, 2 => Gtk.Adjustment.Get_Type));
       --  the parameters for the above signals.
       --  This must be defined in this function rather than at the
       --  library-level, or the value of Gdk_Event.Get_Type is not yet
@@ -350,7 +350,8 @@ package body Gtkada.Canvas is
       Initialize_Class_Record
         (Canvas, Signals, Class_Record,
          "GtkAdaCanvas", Signal_Parameters);
-      Set_Scroll_Adjustments_Signal (Class_Record, "set_scroll_adjustments");
+      Set_Scroll_Adjustments_Signal
+        (Class_Record, "my_set_scroll_adjustments");
 
       Return_Callback.Connect
         (Canvas, "expose_event",

@@ -49,6 +49,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Box;
 with Gtk.Window;
 
@@ -56,6 +57,10 @@ package Gtk.Dialog is
 
    type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with private;
    type Gtk_Dialog is access all Gtk_Dialog_Record'Class;
+
+   -----------------------
+   -- Enumeration types --
+   -----------------------
 
    type Gtk_Dialog_Flags is
      (Gtk_Dialog_Modal,
@@ -103,6 +108,10 @@ package Gtk.Dialog is
    --  These are returned from dialogs, and you can also use them
    --  yourself if you like.
 
+   -----------------
+   -- Subprograms --
+   -----------------
+
    procedure Gtk_New (Dialog : out Gtk_Dialog);
    --  Create a new dialog.
    --  Widgets should not be packed into this widget directly, but into the
@@ -123,6 +132,24 @@ package Gtk.Dialog is
      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Return the vertical box associated with a Dialog.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Has_Separator_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: The dialog has a separator bar above its buttons
+   --    See also:
+   --
+   --  </properties>
+
+   Has_Separator_Property : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -140,6 +167,9 @@ package Gtk.Dialog is
 
 private
    type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with null record;
+
+   Has_Separator_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has_separator");
 
    pragma Import (C, Get_Type, "gtk_dialog_get_type");
 end Gtk.Dialog;

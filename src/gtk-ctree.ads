@@ -764,6 +764,15 @@ package Gtk.Ctree is
    --  !! Warning !! No type verification is made to check if you are
    --  using the appropriate function Get. This is your own responsability
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

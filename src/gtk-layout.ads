@@ -44,6 +44,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gdk.Window;
 with Gtk.Adjustment;
 with Gtk.Container;
@@ -145,6 +146,45 @@ package Gtk.Layout is
    function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
    --  Get the height in pixels of the layout.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Hadjustment_Property
+   --    Type:  Gtk_Adjustment_Record'Class
+   --    Flags: read-write
+   --    Descr: The GtkAdjustment for the horizontal position.
+   --    See also: Set_Hadjustment and Get_Hadjustment
+   --
+   --  - Name:  Vadjustment_Property
+   --    Type:  Gtk_Adjustment_Record'Class
+   --    Flags: read-write
+   --    Descr: The GtkAdjustment for the vertical position.
+   --    See also: Set_Vadjustment and Get_Vadjustment
+   --
+   --  - Name:  Width_Property
+   --    Type:  Guint
+   --    Flags: read-write
+   --    Descr: The width of the layout.
+   --    See also: Set_Size and Get_Width
+   --
+   --  - Name:  Height_Property
+   --    Type:  Guint
+   --    Flags: read-write
+   --    Descr: The height of the layout.
+   --    See also: Set_Size and Get_Height
+   --
+   --  </properties>
+
+   Hadjustment_Property : constant Glib.Properties.Property_Object;
+   Vadjustment_Property : constant Glib.Properties.Property_Object;
+   Width_Property       : constant Glib.Properties.Property_Uint;
+   Height_Property      : constant Glib.Properties.Property_Uint;
+
    -------------
    -- Signals --
    -------------
@@ -163,5 +203,15 @@ package Gtk.Layout is
 private
    type Gtk_Layout_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
+
+   Hadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("hadjustment");
+   Vadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("vadjustment");
+   Width_Property       : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("width");
+   Height_Property      : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("height");
+
    pragma Import (C, Get_Type, "gtk_layout_get_type");
 end Gtk.Layout;

@@ -78,6 +78,16 @@ package Gtk.Text_Mark is
      (Mark : access Gtk_Text_Mark_Record) return Boolean;
    --  Return True if the mark has left gravity, False otherwise.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
 
    type Gtk_Text_Mark_Record is new GObject_Record with null record;

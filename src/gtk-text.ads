@@ -296,6 +296,16 @@ package Gtk.Text is
    --     Time  : Guint32);
    --  Not implemented.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
 
    type Gtk_Text_Record is

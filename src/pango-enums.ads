@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 
 package Pango.Enums is
 
@@ -131,4 +133,22 @@ package Pango.Enums is
       Pango_Wrap_Char);
    for Wrap_Mode'Size use Gint'Size;
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  See the package Glib.Properties for more information on how to
+   --  use properties
+
+   package Style_Properties is new Generic_Internal_Discrete_Property (Style);
+   package Variant_Properties is new Generic_Internal_Discrete_Property
+     (Variant);
+   package Stretch_Properties is new Generic_Internal_Discrete_Property
+     (Stretch);
+   package Underline_Properties is new Generic_Internal_Discrete_Property
+     (Underline);
+
+   type Property_Style is new Style_Properties.Property;
+   type Property_Variant is new Variant_Properties.Property;
+   type Property_Stretch is new Stretch_Properties.Property;
+   type Property_Underline is new Underline_Properties.Property;
 end Pango.Enums;

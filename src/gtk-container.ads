@@ -33,6 +33,7 @@
 --  <c_version>1.3.4</c_version>
 
 with Gdk.Event;
+with Glib.Properties;
 with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -195,6 +196,44 @@ package Gtk.Container is
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Emit a "set_focus_child" signal.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Border_Width_Property
+   --    Type:  Guint
+   --    Flags: read-write
+   --    Descr: The width of the empty border outside the containers children.
+   --    See also:  Set_Border_Width
+   --
+   --  - Name:  Resize_Mode_Property
+   --    Type:  Gtk_Resize_Mode
+   --    Flags: read-write
+   --    Descr: Specify how resize events are handled
+   --    See also:  Set_Resize_Mode
+   --
+   --  - Name:  Child_Property
+   --    Type:  Widget
+   --    Flags: writable
+   --    Descr: Can be used to add a new child to the container.
+   --    See also:  Add
+   --
+   --  - Name:  Reallocate_Redraws_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether redraws should be reallocated
+   --    See also: Set_Reallocate_Redraws
+   --  </properties>
+
+   Border_Width_Property       : constant Glib.Properties.Property_Uint;
+   Resize_Mode_Property        : constant Gtk.Enums.Property_Gtk_Resize_Mode;
+   Child_Property              : constant Glib.Properties.Property_Object_WO;
+   Reallocate_Redraws_Property : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -239,6 +278,15 @@ private
    type Gtk_Container_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
 
+   Border_Width_Property       : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("border_width");
+   Resize_Mode_Property        : constant Gtk.Enums.Property_Gtk_Resize_Mode :=
+     Gtk.Enums.Build ("resize_mode");
+   Child_Property              : constant Glib.Properties.Property_Object_WO :=
+     Glib.Properties.Build ("child");
+   Reallocate_Redraws_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("reallocate_redraws");
+
    pragma Import (C, Get_Type, "gtk_container_get_type");
 end Gtk.Container;
 
@@ -250,4 +298,3 @@ end Gtk.Container;
 --  - gtk_container_add_with_args
 --  - gtk_container_addv
 --  - gtk_container_child_set
-

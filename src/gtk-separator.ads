@@ -54,6 +54,16 @@ package Gtk.Separator is
    procedure Initialize_Vseparator
      (Separator : access Gtk_Separator_Record'Class);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Separator_Record is new
      Gtk.Widget.Gtk_Widget_Record with null record;

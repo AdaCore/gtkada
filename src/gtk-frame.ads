@@ -44,6 +44,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Bin;
 with Gtk.Widget;
 with Gtk.Enums; use Gtk.Enums;
@@ -95,6 +96,52 @@ package Gtk.Frame is
       The_Type : Gtk_Shadow_Type);
    --  Change the visual aspect of the frame.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Label_Property
+   --    Type:  String
+   --    Flags: read-write
+   --    Descr: Text of the frame's label.
+   --    See also: Set_Label and Get_Label
+   --
+   --  - Name:  Xalign_Property
+   --    Type:  Gdouble
+   --    Flags: read-write
+   --    Descr: The horizontal alignment of the label.
+   --    See also: Set_Label_Align
+   --
+   --  - Name:  Yalign_Property
+   --    Type:  Gdouble
+   --    Flags: read-write
+   --    Descr: The vertical alignment of the label.
+   --    See also: Set_Label_Align
+   --
+   --  - Name:  Shadow_Property
+   --    Type:  Gtk_Shadow_Type
+   --    Flags: read-write
+   --    Descr: Appearance of the frameborder.
+   --    See also: Set_Shadow_Type
+   --
+   --  - Name:  Label_Widget_Property
+   --    Type:  Gtk_Widget'Class
+   --    Flags: read-write
+   --    Descr: A widget to display in place of the usual frame label.
+   --    See also: Set_Label_Widget
+   --
+   --  </properties>
+
+   Label_Property        : constant Glib.Properties.Property_String;
+   Xalign_Property       : constant Glib.Properties.Property_Double;
+   Yalign_Property       : constant Glib.Properties.Property_Double;
+   Shadow_Property       : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+   Label_Widget_Property : constant Glib.Properties.Property_Object;
+
    -------------
    -- Signals --
    -------------
@@ -105,5 +152,17 @@ package Gtk.Frame is
 
 private
    type Gtk_Frame_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
+
+   Label_Property        : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Xalign_Property       : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("label_xalign");
+   Yalign_Property       : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("label_yalign");
+   Shadow_Property       : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow");
+   Label_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("label_widget");
+
    pragma Import (C, Get_Type, "gtk_frame_get_type");
 end Gtk.Frame;

@@ -38,6 +38,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Enums;
 with Gtk.Misc;
 
@@ -110,6 +111,93 @@ package Gtk.Label is
    --  then the widget's size. If Wrap is False, then the text is simply
    --  cut off.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Label_Property
+   --    Type:  String
+   --    Flags: read-write
+   --    Descr: The text of the label.
+   --    See also: Set_Text and Get_Text
+   --
+   --  - Name:  Attributes_Property
+   --    Type:  Pango_Type_Attr_List
+   --    Flags: read-write
+   --    Descr: A list of style attributes to apply to the text of the label.
+   --    See also: ??? Unsupported yet
+   --
+   --  - Name:  Use_Markup_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: The text of the label includes XML markup.
+   --           See pango_parse_markup().
+   --    See also: <none>
+   --
+   --  - Name:  Use_Underline_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If set, an underline in the text indicates the next character
+   --           should be used for the mnemonic accelerator key
+   --    See also: <none>
+   --
+   --  - Name:  Justify_Property
+   --    Type:  Gtk_Justification
+   --    Flags: read-write
+   --    Descr: The alignment of the lines in the text of the label relative to
+   --           each other. This does NOT affect the alignment of the label
+   --           within its allocation.
+   --    See also: Set_Justify
+   --
+   --  - Name:  Pattern_Property
+   --    Type:  String
+   --    Flags: read-write
+   --    Descr: A string with _ characters in positions correspond to
+   --           characters in the text to underline.
+   --    See also: Set_Pattern
+   --
+   --  - Name:  Wrap_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If set, wrap lines if the text becomes too wide.
+   --    See also: Set_Line_Wrap
+   --
+   --  - Name:  Selectable_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the label text can be selected with the mouse.
+   --    See also: <none>
+   --
+   --  - Name:  Mnemonic_Keyval_Property
+   --    Type:  Guint
+   --    Flags: readable
+   --    Descr: The mnemonic accelerator key for this label.
+   --    See also: Gtk_New_With_Mnemonic
+   --
+   --  - Name:  Mnemonic_Widget_Property
+   --    Type:  Gtk_Widget_Record'Class
+   --    Flags: read-write
+   --    Descr: The widget to be activated when the label's mnemonic key is
+   --           pressed
+   --    See also:
+   --
+   --  </properties>
+
+   Label_Property           : constant Glib.Properties.Property_String;
+   --  Attributes_Property : constant ???
+   Use_Markup_Property      : constant Glib.Properties.Property_Boolean;
+   Use_Underline_Property   : constant Glib.Properties.Property_Boolean;
+   Justify_Property         : constant Gtk.Enums.Property_Gtk_Justification;
+   Pattern_Property         : constant Glib.Properties.Property_String;
+   Wrap_Property            : constant Glib.Properties.Property_Boolean;
+   Selectable_Property      : constant Glib.Properties.Property_Boolean;
+   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint_RO;
+   Mnemonic_Widget_Property : constant Glib.Properties.Property_Object;
+
    -------------
    -- Signals --
    -------------
@@ -120,6 +208,26 @@ package Gtk.Label is
 
 private
    type Gtk_Label_Record is new Misc.Gtk_Misc_Record with null record;
+
+   Label_Property           : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Use_Markup_Property      : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use_markup");
+   Use_Underline_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use_underline");
+   Justify_Property         : constant Gtk.Enums.Property_Gtk_Justification :=
+     Gtk.Enums.Build ("justify");
+   Pattern_Property         : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("pattern");
+   Wrap_Property            : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("wrap");
+   Selectable_Property      : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("selectable");
+   Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint_RO :=
+     Glib.Properties.Build ("mnemonic_keyval");
+   Mnemonic_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("mnemonic_widget");
+
    pragma Import (C, Get_Type, "gtk_label_get_type");
 end Gtk.Label;
 

@@ -38,16 +38,15 @@
 --  The modification of the value is left to the user, who should
 --  call Value_Changed or Changed to emit the relevant signals.
 --
---  </description>
---  <example>
---
 --  The meaning of the most important fields can be explained on the
 --  following figure (imagine this is a scrollbar):
 --
+--  <example>
 --     [-------|=================|-------------------]
 --    lower    value        value + page_size       upper
 --
 --  </example>
+--  </description>
 --  <c_version>1.3.4</c_version>
 
 with Gtk.Object;
@@ -187,6 +186,15 @@ package Gtk.Adjustment is
    procedure Value_Changed (Adjustment : access Gtk_Adjustment_Record);
    --  Emit the "value_changed" signal on Adjustment.
    --  This warns any listener that the value has been changed.
+
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --  </properties>
 
    -------------
    -- Signals --

@@ -45,6 +45,16 @@ package Gtk.Item is
 
    procedure Toggle (Item : access Gtk_Item_Record);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    --  signals:
    --  - "select"
    --  - "deselect"

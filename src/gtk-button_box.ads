@@ -97,6 +97,16 @@ package Gtk.Button_Box is
    --  Obsolete no-op procedure.
    --  </doc_ignore>
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

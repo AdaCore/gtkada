@@ -65,6 +65,16 @@ package Gtk.Text_Layout is
    procedure Default_Style_Changed (Layout : access Gtk_Text_Layout_Record);
    --  Signal the layout that the default style has changed.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
 
    type Gtk_Text_Layout_Record is new Glib.Object.GObject_Record

@@ -103,6 +103,16 @@ package Gtk.List is
      (List : access Gtk_List_Record;
       Item : in Gint);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record
      with null record;

@@ -47,6 +47,9 @@
 --  <c_version>1.3.4</c_version>
 
 with Glib; use Glib;
+with Glib.Object;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 with Gdk.Visual;
 
 package Gdk.Color is
@@ -78,6 +81,12 @@ package Gdk.Color is
    Wrong_Color : exception;
    --  Exception raised when some functions below could not find or allocate
    --  a color on the user's system.
+
+   function Gdk_Color_Type return Glib.GType;
+   --  Return the internal gtk+ types associated with a color
+
+   function Gdk_Colormap_Type return Glib.GType;
+   --  Return the internal gtk+ types associated with a colormap
 
    ---------------------------------------------
    -- Setting/Getting the fields of Gdk_Color --
@@ -259,6 +268,14 @@ package Gdk.Color is
    --  The new value is the one contained in the Red, Green and Blue
    --  fields of Color.
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  See the package Glib.Properties for more information on how to
+   --  use properties
+
+   type Property_Gdk_Color is new Glib.Property;
+
    --  </doc_ignore>
 
 private
@@ -279,16 +296,34 @@ private
    --  System.Null_Address should be passed to C instead of Null_Color'Address
    --  so that gtk+ can provide a default value for colors.
 
+   pragma Import (C, Gdk_Color_Type, "gdk_color_get_type");
+
+   package Color_Properties is new Generic_Internal_Boxed_Property
+     (Gdk_Color, Gdk_Color_Type);
+--   type Property_Gdk_Color is Color_Properties.Property;
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Gdk_Color;
+      Value  : Gdk_Color);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Gdk_Color) return Gdk_Color;
+
    pragma Inline (Set_Rgb);
    pragma Inline (Set_Pixel);
    pragma Inline (Red);
    pragma Inline (Green);
    pragma Inline (Blue);
    pragma Inline (Pixel);
+   pragma Inline (Set_Property);
+   pragma Inline (Get_Property);
    pragma Import (C, Get_System_Size, "gdk_colormap_get_system_size");
    pragma Import (C, Get_System, "gdk_colormap_get_system");
    pragma Import (C, Ref, "gdk_colormap_ref");
    pragma Import (C, Unref, "gdk_colormap_unref");
+   pragma Import (C, Gdk_Colormap_Type, "gdk_colormap_get_type");
 end Gdk.Color;
 
 --  <example>

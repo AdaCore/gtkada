@@ -46,6 +46,7 @@
 --  <c_version>1.3.4</c_version>
 
 with Gtk.Bin;
+with Glib.Properties;
 
 package Gtk.Alignment is
 
@@ -98,6 +99,44 @@ package Gtk.Alignment is
    --  Return the Y expansion value, in the range 0.0 .. 1.0
    --  0.0 means no expansion while 1.0 means full expansion.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Xalign_Property
+   --    Type:  Float
+   --    Flags: read-write
+   --    Descr: Value between 0.0 and 1.0 to indicate X alignment
+   --    See also: Set and Get_Xalign
+   --
+   --  - Name:  Yalign_Property
+   --    Type:  Float
+   --    Flags: read-write
+   --    Descr: Value between 0.0 and 1.0 to indicate Y alignment
+   --    See also: Set and Get_Yalign
+   --
+   --  - Name:  Xscale_Property
+   --    Type:  Float
+   --    Flags: read-write
+   --    Descr: Value between 0.0 and 1.0 to indicate X scale
+   --    See also: Set and Get_Xscale
+   --
+   --  - Name:  Yscale_Property
+   --    Type:  Float
+   --    Flags: read-write
+   --    Descr: Value between 0.0 and 1.0 to indicate Y scale
+   --    See also: Set and Get_Yscale
+   --  </properties>
+
+   Xalign_Property : constant Glib.Properties.Property_Float;
+   Yalign_Property : constant Glib.Properties.Property_Float;
+   Xscale_Property : constant Glib.Properties.Property_Float;
+   Yscale_Property : constant Glib.Properties.Property_Float;
+
    -------------
    -- Signals --
    -------------
@@ -108,5 +147,15 @@ package Gtk.Alignment is
 
 private
    type Gtk_Alignment_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
+
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Yalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("yalign");
+   Xscale_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xscale");
+   Yscale_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("yscale");
+
    pragma Import (C, Get_Type, "gtk_alignment_get_type");
 end Gtk.Alignment;

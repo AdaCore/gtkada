@@ -66,6 +66,7 @@
 with Glib.Object;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
+with System;
 
 package Glib.Properties is
 
@@ -78,6 +79,8 @@ package Glib.Properties is
      Generic_Internal_Discrete_Property (Glib.Gint);
    package Uint_Properties is new
      Generic_Internal_Discrete_Property (Glib.Guint);
+   package Unichar_Properties is new
+     Generic_Internal_Discrete_Property (Glib.Gunichar);
 
    --  </doc_ignore>
 
@@ -87,9 +90,19 @@ package Glib.Properties is
    --  your own types (see Glib.Properties).
 
    type Property_Int       is new Int_Properties.Property;
-   type Property_Uint      is new Int_Properties.Property;
+   type Property_Uint_RO   is new Uint_Properties.Property_RO;
+   type Property_Uint      is new Uint_Properties.Property;
+   type Property_Unichar   is new Unichar_Properties.Property;
+   type Property_C_Proxy   is new Glib.Property;
    type Property_String_RO is new Glib.Property;
+   type Property_String_WO is new Glib.Property;
    type Property_String    is new Glib.Property;
+   type Property_Boolean   is new Glib.Property;
+   type Property_Object    is new Glib.Property;
+   type Property_Object_WO is new Glib.Property;
+   type Property_Address   is new Glib.Property;
+   type Property_Float     is new Glib.Property;
+   type Property_Double    is new Glib.Property;
 
    --  Special handling of string properties
 
@@ -98,13 +111,89 @@ package Glib.Properties is
       Name : Property_String;
       Value : String);
 
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_String_WO;
+      Value : String);
+
    function Get_Property
      (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_String) return String;
-   pragma Inline (Get_Property);
 
    function Get_Property
      (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_String_RO) return String;
+
+   --  Special handling of boolean properties
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Boolean;
+      Value  : Boolean);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Boolean) return Boolean;
+
+   --  Special handling of object properties
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Object;
+      Value  : access Glib.Object.GObject_Record'Class);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Object) return Glib.Object.GObject;
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Object_WO;
+      Value  : access Glib.Object.GObject_Record'Class);
+
+   --  Special handling of address properties
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Address;
+      Value  : System.Address);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Address) return System.Address;
+
+   --  Special handling of float properties
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Float;
+      Value  : Gfloat);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Float) return Gfloat;
+
+   --  Special handling of double properties
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Double;
+      Value  : Gdouble);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Double) return Gdouble;
+
+   --  Special handling of c_proxy properties
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_C_Proxy;
+      Value  : C_Proxy);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_C_Proxy) return C_Proxy;
+
 end Glib.Properties;
 

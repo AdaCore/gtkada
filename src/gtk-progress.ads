@@ -32,6 +32,7 @@
 
 with Gtk.Adjustment;
 with Gtk.Widget;
+with Glib.Properties;
 
 package Gtk.Progress is
 
@@ -99,9 +100,62 @@ package Gtk.Progress is
      (Progress : access Gtk_Progress_Record;
       Value    : Gdouble);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Activity_Mode_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If true the Gtk_Progress is in activity mode, meaning that
+   --           it signals something is happening, but not how much of the
+   --           activity is finished. This is used when you're doing something
+   --           that you don't know how long it will take.
+   --    See also: Set_Activity_Mode and Get_Activity_Mode
+   --
+   --  - Name:  Show_Text_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the progress is shown as text
+   --    See also: Set_Show_Text
+   --
+   --  - Name:  Text_Xalign_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: A number between 0.0 and 1.0 specifying the horizontal
+   --           alignment of the text in the progress widget
+   --    See also: Set_Set_Text_Alignment
+   --
+   --  - Name:  Text_Yalign_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: A number between 0.0 and 1.0 specifying the vertical alignment
+   --           of the text in the progress widget
+   --    See also: Set_Set_Text_Alignment
+   --
+   --  </properties>
+
+   Activity_Mode_Property : constant Glib.Properties.Property_Boolean;
+   Show_Text_Property     : constant Glib.Properties.Property_Boolean;
+   Text_Xalign_Property   : constant Glib.Properties.Property_Float;
+   Text_Yalign_Property   : constant Glib.Properties.Property_Float;
+
 private
    type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
+
+   Activity_Mode_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("activity_mode");
+   Show_Text_Property     : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show_text");
+   Text_Xalign_Property   : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("text_xalign");
+   Text_Yalign_Property   : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("text_xalign");
 
    pragma Import (C, Get_Type, "gtk_progress_get_type");
 end Gtk.Progress;

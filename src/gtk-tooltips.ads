@@ -114,6 +114,16 @@ package Gtk.Tooltips is
    --  This is useful if you want to modify some characteristics of that
    --  window.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

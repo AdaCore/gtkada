@@ -50,6 +50,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Bin;
@@ -424,6 +425,91 @@ package Gtk.Window is
    --  This has no effect on Popup windows (set in call to Gtk_New).
    --  pragma Deprecated (Set_Default_Size);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Type_Property
+   --    Type:  Gtk_Window_Type
+   --    Flags: read-write (construct only)
+   --    Descr: The type of the window
+   --    See also:  Gtk_New
+   --
+   --  - Name:  Title_Property
+   --    Type:  String
+   --    Flags: read-write
+   --    Descr: The title of the window
+   --    See also:  Set_Title and Get_Title
+   --
+   --  - Name:  Auto_Shrink_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If TRUE, the window automatically shrinks to its size request
+   --           anytime a resize occurs. Don't use this feature, it makes no
+   --           sense.
+   --    See also:  Set_Policy
+   --
+   --  - Name:  Allow_Shrink_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If TRUE, the window has no mimimum size. Don't use this
+   --           feature, it makes no sense
+   --    See also:  Set_Policy
+   --
+   --  - Name:  Allow_Grow_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If TRUE, users can expand the window beyond its minimum size.
+   --    See also:  Set_Policy
+   --
+   --  - Name:  Modal_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If TRUE, the window is modal (other windows are not usable
+   --           while this one is up)
+   --    See also:  Set_Modal
+   --
+   --  - Name:  Win_Pos_Property
+   --    Type:  Gtk_Window_Position
+   --    Flags: read-write
+   --    Descr: The initial position of the window.
+   --    See also:  Set_Position
+   --
+   --  - Name:  Default_Width_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: The default width of the window, or 0 to use the size request.
+   --    See also:  Set_Default_Size
+   --
+   --  - Name:  Default_Height_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: The default height of the window, or 0 to use the size request.
+   --    See also:  Set_Default_Size
+   --
+   --  - Name:  Destroy_With_Parent_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If this window should be destroyed when the parent is destroyed
+   --    See also:  Set_Destroy_With_Parent
+   --
+   --  </properties>
+
+   Type_Property             : constant Gtk.Enums.Property_Gtk_Window_Type;
+   Title_Property            : constant Glib.Properties.Property_String;
+   Auto_Shrink_Property      : constant Glib.Properties.Property_Boolean;
+   Allow_Shrink_Property     : constant Glib.Properties.Property_Boolean;
+   Allow_Grow_Property       : constant Glib.Properties.Property_Boolean;
+   Modal_Property            : constant Glib.Properties.Property_Boolean;
+   Win_Pos_Property          : constant Gtk.Enums.Property_Gtk_Window_Position;
+   Default_Width_Property    : constant Glib.Properties.Property_Int;
+   Default_Height_Property   : constant Glib.Properties.Property_Int;
+   Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -455,6 +541,28 @@ package Gtk.Window is
 
 private
    type Gtk_Window_Record is new Bin.Gtk_Bin_Record with null record;
+
+   Type_Property              : constant Gtk.Enums.Property_Gtk_Window_Type :=
+     Gtk.Enums.Build ("type");
+   Title_Property               : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("title");
+   Auto_Shrink_Property         : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("auto_shrink");
+   Allow_Shrink_Property        : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("allow_shrink");
+   Allow_Grow_Property          : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("allow_grow");
+   Modal_Property               : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("modal");
+   Win_Pos_Property       : constant Gtk.Enums.Property_Gtk_Window_Position :=
+     Gtk.Enums.Build ("window_position");
+   Default_Width_Property       : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("default_width");
+   Default_Height_Property      : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("default_height");
+   Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("destroy_with_parent");
+
    pragma Import (C, Get_Type, "gtk_window_get_type");
 end Gtk.Window;
 

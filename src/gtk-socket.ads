@@ -99,6 +99,16 @@ package Gtk.Socket is
    function Get_XWindow (Window : Gdk.Window.Gdk_Window) return Guint32;
    --  Return the X window associated with a Gdk_Window, 0 under Win32.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
 
    type Gtk_Socket_Record is new Gtk.Container.Gtk_Container_Record

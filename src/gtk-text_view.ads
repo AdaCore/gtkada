@@ -404,6 +404,15 @@ package Gtk.Text_View is
    --  is realized.
    --  ??? Verify that the layout is really created at this instant...
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

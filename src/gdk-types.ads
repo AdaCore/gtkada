@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 
 package Gdk.Types is
 
@@ -154,6 +156,17 @@ package Gdk.Types is
    --  Gdk does not define a Gdk_WString type, but uses pointers
    --  to Gdk_WChar instead.
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following packages and types are used to represent properties of
+   --  the given type. They are used in the packages that use these properties
+
+   package Extension_Mode_Properties is new Generic_Internal_Discrete_Property
+     (Gdk_Extension_Mode);
+
+   type Property_Gdk_Extension_Mode is new Extension_Mode_Properties.Property;
+
 private
 
    -------------------------
@@ -226,7 +239,6 @@ private
      (Input_Read      => 2 ** 0,
       Input_Write     => 2 ** 1,
       Input_Exception => 2 ** 2);
-
 end Gdk.Types;
 
 --  The following types were not bound because it did not seem

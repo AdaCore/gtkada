@@ -42,6 +42,9 @@
 --  <c_version>1.3.4</c_version>
 
 with Gtk.Drawing_Area;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
+with Glib.Properties;
 
 package Gtk.Curve is
 
@@ -106,6 +109,56 @@ package Gtk.Curve is
    --  to a linear or spline curve, in which case the curve will be changed as
    --  little as possible.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Curve_Type_Property
+   --    Type:  Gtk_Curve_Type
+   --    Flags: read-write
+   --    Descr: Is this curve linear, spline interpolated, or free-form
+   --    See also: Set_Curve_Type
+   --
+   --  - Name:  Min_X_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: Minimum possible value for X
+   --    See also: Set_Range
+   --
+   --  - Name:  Min_Y_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: Minimum possible value for Y
+   --    See also: Set_Range
+   --
+   --  - Name:  Max_X_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: Maximum possible value for X
+   --    See also: Set_Range
+   --
+   --  - Name:  Max_Y_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: Maximum possible value for Y
+   --    See also: Set_Range
+   --
+   --  </properties>
+
+   package Curve_Type_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Curve_Type);
+   type Property_Gtk_Curve_Type   is new Curve_Type_Properties.Property;
+
+   Curve_Type_Property : constant Property_Gtk_Curve_Type;
+   Min_X_Property      : constant Glib.Properties.Property_Float;
+   Max_X_Property      : constant Glib.Properties.Property_Float;
+   Min_Y_Property      : constant Glib.Properties.Property_Float;
+   Max_Y_Property      : constant Glib.Properties.Property_Float;
+
    -------------
    -- Signals --
    -------------
@@ -121,9 +174,19 @@ package Gtk.Curve is
    --  </signals>
 
 private
-
    type Gtk_Curve_Record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record
      with null record;
+
+   Curve_Type_Property : constant Property_Gtk_Curve_Type :=
+     Build ("curve_type");
+   Min_X_Property      : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("min_x");
+   Max_X_Property      : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("max_x");
+   Min_Y_Property      : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("min_y");
+   Max_Y_Property      : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("max_y");
 
    pragma Import (C, Get_Type, "gtk_curve_get_type");
 end Gtk.Curve;

@@ -158,4 +158,40 @@ package Glib.Generic_Properties is
       pragma Import (C, Get_Enum, "g_value_get_enum");
    end Generic_Enumeration_Property;
 
+   -------------------------------------------------
+   -- Generic package for record types properties --
+   -------------------------------------------------
+   --  This package should be used to implement the
+   --  Get_Property and Set_Property subprograms for all
+   --  properties related to record type, like Gdk_Color and
+   --  Gdk_Rectangle.
+   --  This should be used only for types defined in GtkAda
+   --  or gtk+ themselves, not for types that you define
+   --  yourself.
+
+   generic
+      type Boxed_Type is private;
+      with function Get_Type return Glib.GType;
+   package Generic_Internal_Boxed_Property is
+      type Property_RO is new Glib.Property;
+      type Property    is new Glib.Property;
+
+      procedure Set_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property;
+         Value  : Boxed_Type);
+      --  Set a property of Object based on Enumeration_Type.
+
+      function Get_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property) return Boxed_Type;
+      pragma Inline (Get_Property);
+
+      function Get_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property_RO) return Boxed_Type;
+      --  Get a property from Object
+
+   end Generic_Internal_Boxed_Property;
+
 end Glib.Generic_Properties;

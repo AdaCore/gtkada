@@ -65,6 +65,16 @@ package Gtk.Gamma_Curve is
      (Gamma_Curve : access Gtk_Gamma_Curve_Record) return Gfloat;
    --  Return the Gamma value associated with a Gamma_Curve.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

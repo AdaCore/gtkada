@@ -76,6 +76,16 @@ package Gtk.Check_Button is
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Check_Button.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

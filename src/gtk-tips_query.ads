@@ -53,6 +53,16 @@ package Gtk.Tips_Query is
    procedure Start_Query (Tips_Query : access Gtk_Tips_Query_Record);
    procedure Stop_Query (Tips_Query : access Gtk_Tips_Query_Record);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Tips_Query_Record is new Gtk.Label.Gtk_Label_Record
      with null record;

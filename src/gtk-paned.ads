@@ -172,6 +172,16 @@ package Gtk.Paned is
    function Get_Child2_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the shrink attribute for the second child.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

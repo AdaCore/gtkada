@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 with Pango.Enums;
 
 with Interfaces.C.Strings;
@@ -51,6 +53,9 @@ package Pango.Font is
 
    type Pango_Font_Description is access all Pango_Font_Description_Record;
    pragma Convention (C, Pango_Font_Description);
+
+   function Get_Type return Glib.GType;
+   --  Return the internal gtk+ type associated with font descriptions.
 
    function Copy (Desc : Pango_Font_Description) return Pango_Font_Description;
    --  Return a newly allocated font description.
@@ -114,8 +119,18 @@ package Pango.Font is
    --  the chars_ptr stored in the font description record. It also takes
    --  care of the memory management.
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  See the package Glib.Properties for more information on how to
+   --  use properties
+
+   pragma Import (C, Get_Type, "pango_font_get_type");
+   package Desc_Properties is new Generic_Internal_Boxed_Property
+     (Pango_Font_Description, Get_Type);
+
+   type Property_Font_Description is new Desc_Properties.Property;
+
 private
-
    pragma Import (C, Copy, "pango_font_description_copy");
-
 end Pango.Font;

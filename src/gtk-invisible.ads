@@ -42,6 +42,16 @@ package Gtk.Invisible is
 
    function Get_Type return Gtk.Gtk_Type;
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
 
    type Gtk_Invisible_Record is new

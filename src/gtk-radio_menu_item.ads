@@ -64,6 +64,16 @@ package Gtk.Radio_Menu_Item is
    --  Note: This function is not part of Gtk+ itself, but is provided as a
    --  convenient function
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Radio_Menu_Item_Record is new
      Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with null record;

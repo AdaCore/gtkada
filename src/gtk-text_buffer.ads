@@ -538,6 +538,16 @@ package Gtk.Text_Buffer is
                         return Gtk_Text_Buffer;
    --  Return the buffer associated to the given Gtk_Text_Iterator.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

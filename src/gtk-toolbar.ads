@@ -206,6 +206,16 @@ package Gtk.Toolbar is
    function Get_Button_Relief
      (Toolbar : access Gtk_Toolbar_Record) return Gtk_Relief_Style;
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Toolbar_Record is
      new Gtk.Container.Gtk_Container_Record with null record;

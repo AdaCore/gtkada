@@ -109,6 +109,16 @@ package Gtk.Toggle_Button is
    --  Note that the state of the button is not changed, only the callbacks
    --  are called.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

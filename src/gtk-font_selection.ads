@@ -175,6 +175,16 @@ package Gtk.Font_Selection is
    --  The callback on this button should temporarily apply the font, but
    --  should be able to cancel its effect if the Cancel button is selected.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

@@ -40,6 +40,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Frame;
 
 package Gtk.Aspect_Frame is
@@ -100,6 +101,45 @@ package Gtk.Aspect_Frame is
    --  Return the current Y alignment for the frame.
    --  1.0 means the child is top aligned, 1.0 that it is bottom aligned.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Xalign_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: X alignment of the child
+   --    See also: Set and Get_Xalign
+   --
+   --  - Name:  Yalign_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: Y alignment of the child
+   --    See also: Set and Get_Xalign
+   --
+   --  - Name:  Ratio_Property
+   --    Type:  Gfloat
+   --    Flags: read-write
+   --    Descr: Aspect ratio if obey_child is FALSE
+   --    See also: Set and Get_Ratio
+   --
+   --  - Name:  Obey_Child_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Force aspect ratio to match that of the frame's child
+   --    See also: Set and Get_Ratio
+   --
+   --  </properties>
+
+   Xalign_Property     : constant Glib.Properties.Property_Float;
+   Yalign_Property     : constant Glib.Properties.Property_Float;
+   Radio_Property      : constant Glib.Properties.Property_Float;
+   Obey_Child_Property : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -111,5 +151,15 @@ package Gtk.Aspect_Frame is
 private
    type Gtk_Aspect_Frame_Record is new Gtk.Frame.Gtk_Frame_Record
      with null record;
+
+   Xalign_Property     : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Yalign_Property     : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Radio_Property      : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("ratio");
+   Obey_Child_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("obey_child");
+
    pragma Import (C, Get_Type, "gtk_aspect_frame_get_type");
 end Gtk.Aspect_Frame;

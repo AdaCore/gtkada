@@ -55,6 +55,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -217,6 +218,31 @@ package Gtk.Box is
      (Box : access Gtk_Box_Record; Num : Gint) return Gtk.Widget.Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Spacing_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: The amount of space between children.
+   --    See also: Set_Spacing and Get_Spacing
+   --
+   --  - Name:  Homogeneous_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the childrenshould all be the same size.
+   --    See also: Set_Homogeneous
+   --
+   --  </properties>
+
+   Spacing_Property : constant Glib.Properties.Property_Int;
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -228,6 +254,12 @@ package Gtk.Box is
 private
    type Gtk_Box_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
+
+   Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("spacing");
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("homogeneous");
+
    pragma Import (C, Get_Type,      "gtk_box_get_type");
    pragma Import (C, Get_Hbox_Type, "gtk_hbox_get_type");
    pragma Import (C, Get_Vbox_Type, "gtk_vbox_get_type");

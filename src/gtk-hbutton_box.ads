@@ -77,6 +77,16 @@ package Gtk.Hbutton_Box is
    --  Return the default layout to use for all the hbutton_boxes.
    --  pragma Deprecated (Get_Layout_Default);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

@@ -42,7 +42,7 @@ package body Glib.Properties is
 
    procedure Set_Property
      (Object : access GObject_Record'Class;
-      Name   : Property_String;
+      Name   : Property_String_WO;
       Value  : String)
    is
       procedure Internal
@@ -55,6 +55,17 @@ package body Glib.Properties is
       Internal (Get_Object (Object), Property (Name),  Value & ASCII.Nul);
    end Set_Property;
 
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access GObject_Record'Class;
+      Name   : Property_String;
+      Value  : String) is
+   begin
+      Set_Property (Object, Property_String_WO (Name), Value);
+   end Set_Property;
 
    ------------------
    -- Get_Property --
@@ -85,6 +96,229 @@ package body Glib.Properties is
       Name   : Property_String) return String is
    begin
       return Get_Property (Object, Property_String_RO (Name));
+   end Get_Property;
+
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Boolean;
+      Value  : Boolean)
+   is
+      procedure Internal
+        (Object : System.Address;
+         Name   : Property;
+         Value  : Gint;
+         Null_Arg : System.Address := System.Null_Address);
+      pragma Import (C, Internal, "g_object_set");
+   begin
+      Internal (Get_Object (Object), Property (Name),  Boolean'Pos (Value));
+   end Set_Property;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Boolean) return Boolean
+   is
+      Value : GValue;
+      B : Boolean;
+   begin
+      Init (Value, GType_String);
+      Get (Get_Object (Object), Property (Name), Value);
+      B := Get_Boolean (Value);
+      Unset (Value);
+      return B;
+   end Get_Property;
+
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Object;
+      Value  : access Glib.Object.GObject_Record'Class) is
+   begin
+      Set_Property (Object, Property_Address (Name), Get_Object (Value));
+   end Set_Property;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Object) return Glib.Object.GObject
+   is
+      A     : System.Address := Get_Property (Object, Property_Address (Name));
+      Stub  : GObject_Record;
+   begin
+      return Get_User_Data (A, Stub);
+   end Get_Property;
+
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Object_WO;
+      Value  : access Glib.Object.GObject_Record'Class) is
+   begin
+      Set_Property (Object, Property_Address (Name), Get_Object (Value));
+   end Set_Property;
+
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Address;
+      Value  : System.Address)
+   is
+      procedure Internal
+        (Object : System.Address;
+         Name   : Property;
+         Value  : System.Address;
+         Null_Arg : System.Address := System.Null_Address);
+      pragma Import (C, Internal, "g_object_set");
+   begin
+      Internal (Get_Object (Object), Property (Name), Value);
+   end Set_Property;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Address) return System.Address
+   is
+      Value : GValue;
+      A     : System.Address;
+   begin
+      Init (Value, GType_String);
+      Get (Get_Object (Object), Property (Name), Value);
+      A := Get_Address (Value);
+      Unset (Value);
+      return A;
+   end Get_Property;
+
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Float;
+      Value  : Gfloat)
+   is
+      procedure Internal
+        (Object : System.Address;
+         Name   : Property;
+         Value  : Gfloat;
+         Null_Arg : System.Address := System.Null_Address);
+      pragma Import (C, Internal, "g_object_set");
+   begin
+      Internal (Get_Object (Object), Property (Name), Value);
+   end Set_Property;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Float) return Gfloat
+   is
+      Value : GValue;
+      A     : Gfloat;
+   begin
+      Init (Value, GType_String);
+      Get (Get_Object (Object), Property (Name), Value);
+      A := Get_Float (Value);
+      Unset (Value);
+      return A;
+   end Get_Property;
+
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Double;
+      Value  : Gdouble)
+   is
+      procedure Internal
+        (Object : System.Address;
+         Name   : Property;
+         Value  : Gdouble;
+         Null_Arg : System.Address := System.Null_Address);
+      pragma Import (C, Internal, "g_object_set");
+   begin
+      Internal (Get_Object (Object), Property (Name), Value);
+   end Set_Property;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Double) return Gdouble
+   is
+      Value : GValue;
+      A     : Gdouble;
+   begin
+      Init (Value, GType_String);
+      Get (Get_Object (Object), Property (Name), Value);
+      A := Get_Double (Value);
+      Unset (Value);
+      return A;
+   end Get_Property;
+
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_C_Proxy;
+      Value  : C_Proxy)
+   is
+      procedure Internal
+        (Object : System.Address;
+         Name   : Property;
+         Value  : C_Proxy;
+         Null_Arg : System.Address := System.Null_Address);
+      pragma Import (C, Internal, "g_object_set");
+   begin
+      Internal (Get_Object (Object), Property (Name), Value);
+   end Set_Property;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_C_Proxy) return C_Proxy
+   is
+      Value : GValue;
+      A     : C_Proxy;
+   begin
+      Init (Value, GType_String);
+      Get (Get_Object (Object), Property (Name), Value);
+      A := Get_Proxy (Value);
+      Unset (Value);
+      return A;
    end Get_Property;
 
 end Glib.Properties;

@@ -77,6 +77,16 @@ package Gtk.Menu_Bar is
       The_Type : Gtk_Shadow_Type);
    --  Set the shadow type to use on the Gtk_Menu_Bar.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

@@ -78,6 +78,16 @@ package Gtk.Menu_Item is
    --  Call Right_Justify when Justify. Noop otherwise
    --  This procedure is needed by Gate to automate the code generation.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with null record;
 

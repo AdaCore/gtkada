@@ -193,6 +193,16 @@ package Gtk.Spin_Button is
    procedure Update (Spin_Button : access Gtk_Spin_Button_Record);
    --  Manually force an update of the spin button.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Spin_Button_Record is new Gtk.GEntry.Gtk_Entry_Record
      with null record;

@@ -88,6 +88,16 @@ package Gtk.Color_Selection_Dialog is
       return Gtk.Button.Gtk_Button;
    --  Get the help button widget contained within the dialog.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

@@ -36,6 +36,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Widget;
@@ -172,6 +173,32 @@ package Gtk.File_Selection is
       return Gtk.Widget.Gtk_Widget;
    --  Return the text displayed just above the Selection_Entry.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Filename_Property
+   --    Type:  String
+   --    Flags: read-write
+   --    Descr: The currently selected filename.
+   --    See also: Set_Filename and Get_Filename
+   --
+   --  - Name:  Show_Fileops_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether buttons for creating/manipulating files should
+   --           be displayed.
+   --    See also: Show_Fileop_Buttons and Hide_Fileop_Buttons
+   --
+   --  </properties>
+
+   Filename_Property     : constant Glib.Properties.Property_String;
+   Show_Fileops_Property : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -183,5 +210,11 @@ package Gtk.File_Selection is
 private
    type Gtk_File_Selection_Record is new
      Gtk.Dialog.Gtk_Dialog_Record with null record;
+
+   Filename_Property     : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("filename");
+   Show_Fileops_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show_fileops");
+
    pragma Import (C, Get_Type, "gtk_file_selection_get_type");
 end Gtk.File_Selection;

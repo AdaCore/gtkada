@@ -41,6 +41,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Widget;
 
 package Gtk.GEntry is
@@ -104,6 +105,69 @@ package Gtk.GEntry is
    --  Insert some text at the beginning of the entry.
    --  pragma Deprecated (Prepend_Text);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Text_Position_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: The current position of the insertion point
+   --    See also:  ???
+   --
+   --  - Name:  Editable_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the entry contents can be edited
+   --    See also:  Set_Editable
+   --
+   --  - Name:  Max_Length_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: Maximum number of characters for this entry
+   --    See also:  Set_Max_Length
+   --
+   --  - Name:  Visibility_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: FALSE displays the "invisible char" instead of the actual
+   --           text (password mode)
+   --    See also:  Set_Visibility
+   --
+   --  - Name:  Invisible_Char_Property
+   --    Type:  Gunichar
+   --    Flags: read-write
+   --    Descr: The character to use when masking entry contents
+   --           (in "password mode")
+   --    See also: <none>
+   --
+   --  - Name:  Activates_Default_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether to activate the default widget (such as the default
+   --           button in a dialog) when Enter is pressed.)
+   --    See also: <none>
+   --
+   --  - Name:  Width_Chars_Property
+   --    Type:  Gint
+   --    Flags: read-write
+   --    Descr: Number of characters to leave space for in the entry.
+   --    See also: <none>
+   --
+   --  </properties>
+
+   Text_Position_Property : constant Glib.Properties.Property_Int;
+   Editable_Property : constant Glib.Properties.Property_Boolean;
+   Max_Length_Property : constant Glib.Properties.Property_Int;
+   Visibility_Property : constant Glib.Properties.Property_Boolean;
+   Invisible_Char_Property : constant Glib.Properties.Property_Unichar;
+   Activates_Default_Property : constant Glib.Properties.Property_Boolean;
+   Width_Chars_Property : constant Glib.Properties.Property_Int;
+
    -------------
    -- Signals --
    -------------
@@ -127,6 +191,22 @@ package Gtk.GEntry is
 private
    type Gtk_Entry_Record is new
      Gtk.Widget.Gtk_Widget_Record with null record;
+
+   Text_Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("text_position");
+   Editable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("editable");
+   Max_Length_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max_length");
+   Visibility_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visibility");
+   Invisible_Char_Property : constant Glib.Properties.Property_Unichar :=
+     Glib.Properties.Build ("invisible_char");
+   Activates_Default_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("activates_default");
+   Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width_chars");
+
    pragma Import (C, Get_Type, "gtk_entry_get_type");
 end Gtk.GEntry;
 

@@ -76,6 +76,16 @@ package Gtk.Ruler is
       Position : Gdouble;
       Max_Size : Gdouble);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
 

@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Enums; use Gtk.Enums;
 
 package body Gtk.Arrow is
 

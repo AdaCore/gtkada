@@ -240,6 +240,17 @@ package Gtk.Item_Factory is
       type Limited_Widget is new System.Address;
    end Data_Item;
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
+
 private
    type Gtk_Item_Factory_Record is new Gtk.Object.Gtk_Object_Record
      with null record;

@@ -95,6 +95,7 @@
 --  <c_version>1.3.4</c_version>
 
 with Glib.Object;
+with Glib.Properties;
 
 package Gtk.Object is
 
@@ -259,6 +260,24 @@ package Gtk.Object is
 
    --  </doc_ignore>
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  User_Data_Property
+   --    Type:  Pointer
+   --    Flags: read-write
+   --    Descr: Anonymous User Data Pointer
+   --    See also: User_Data.Set, using the default Id "user_data"
+   --
+   --  </properties>
+
+   User_Data_Property : constant Glib.Properties.Property_Address;
+
    -------------
    -- Signals --
    -------------
@@ -279,6 +298,9 @@ package Gtk.Object is
 
 private
    type Gtk_Object_Record is new Glib.Object.GObject_Record with null record;
+
+   User_Data_Property : constant Glib.Properties.Property_Address :=
+     Glib.Properties.Build ("user_data");
 
    pragma Inline (Destroyed_Is_Set);
    pragma Inline (Floating_Is_Set);

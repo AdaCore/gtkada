@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with Glib;
+with Glib.Generic_Properties;  use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 
@@ -329,5 +331,51 @@ package Gtk.Enums is
    pragma Import (C, Convert_UA, "convert_ua");
    package Guint_List is new
      Glib.Glist.Generic_List (Guint, Convert_UI, Convert_UA);
+
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following packages and types are used to represent properties of
+   --  the given type. They are used in the packages that use these properties
+
+   package Relief_Style_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Relief_Style);
+   package Resize_Mode_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Resize_Mode);
+   package Arrow_Type_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Arrow_Type);
+   package Shadow_Type_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Shadow_Type);
+   package Update_Type_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Update_Type);
+   package Position_Type_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Position_Type);
+   package Justification_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Justification);
+   package Orientation_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Orientation);
+   package Window_Type_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Window_Type);
+   package Window_Position_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Window_Position);
+   package Text_Direction_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Text_Direction);
+   package Wrap_Mode_Properties is new Generic_Internal_Discrete_Property
+     (Gtk_Text_Direction);
+
+   type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
+   type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
+   type Property_Gtk_Arrow_Type    is new Arrow_Type_Properties.Property;
+   type Property_Gtk_Shadow_Type   is new Shadow_Type_Properties.Property;
+   type Property_Gtk_Update_Type   is new Update_Type_Properties.Property;
+   type Property_Gtk_Position_Type is new Position_Type_Properties.Property;
+   type Property_Gtk_Justification is new Justification_Properties.Property;
+   type Property_Gtk_Orientation   is new Orientation_Properties.Property;
+   type Property_Gtk_Window_Type   is new Window_Type_Properties.Property;
+   type Property_Gtk_Window_Position is new
+     Window_Position_Properties.Property;
+   type Property_Gtk_Text_Direction is new Text_Direction_Properties.Property;
+   type Property_Gtk_Wrap_Mode     is new Wrap_Mode_Properties.Property;
 
 end Gtk.Enums;

@@ -109,6 +109,16 @@ package Gtk.Preview is
 
    procedure Uninit;
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;

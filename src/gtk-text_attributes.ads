@@ -72,6 +72,16 @@ package Gtk.Text_Attributes is
    --  Set the Pango_Font_Description associated to the given
    --  Gtk_Text_Attributes.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
 
    pragma Import (C, Ref, "gtk_text_attributes_ref");

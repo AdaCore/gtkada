@@ -32,9 +32,39 @@
 --  be clicked on by the user to start any action.
 --  This button does not have multiple states, it can just be temporarily
 --  pressed while the mouse is on it, but does not keep its pressed state.
+--
+--  The gtk+ sources provide the following drawing that explains the role of
+--  the various spacings that can be set for a button:
+--
+--  <example>
+--  +------------------------------------------------+
+--  |                   BORDER                       |
+--  |  +------------------------------------------+  |
+--  |  |\\\\\\\\\\\\\\\\DEFAULT\\\\\\\\\\\\\\\\\  |  |
+--  |  |\\+------------------------------------+  |  |
+--  |  |\\| |           SPACING       3      | |  |  |
+--  |  |\\| +--------------------------------+ |  |  |
+--  |  |\\| |########## FOCUS ###############| |  |  |
+--  |  |\\| |#+----------------------------+#| |  |  |
+--  |  |\\| |#|         RELIEF            \|#| |  |  |
+--  |  |\\| |#|  +-----------------------+\|#| |  |  |
+--  |  |\\|1|#|  +     THE TEXT          +\|#|2|  |  |
+--  |  |\\| |#|  +-----------------------+\|#| |  |  |
+--  |  |\\| |#| \\\\\ ythickness \\\\\\\\\\|#| |  |  |
+--  |  |\\| |#+----------------------------+#| |  |  |
+--  |  |\\| |########### 1 ##################| |  |  |
+--  |  |\\| +--------------------------------+ |  |  |
+--  |  |\\| |        default spacing   4     | |  |  |
+--  |  |\\+------------------------------------+  |  |
+--  |  |\            ythickness                   |  |
+--  |  +------------------------------------------+  |
+--  |                border_width                    |
+--  +------------------------------------------------+
+--  </example>
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Bin;
 with Gtk.Enums;
 
@@ -57,6 +87,7 @@ package Gtk.Button is
    --  Some stock ids have predefined contants like Gtk_Stock_Button_OK and
    --  Gtk_Stock_Button_Apply.
    --  Stock_Id: the name of the stock item
+   --  ??? Where do we get the stock Id from ???
 
    procedure Gtk_New_With_Mnemonic
      (Button : out Gtk_Button; Label : String);
@@ -115,6 +146,33 @@ package Gtk.Button is
    procedure Leave    (Button : access Gtk_Button_Record);
    --  Send the "leave" signal to the button
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Label_Property
+   --    Type:  String
+   --    Flags: read-write
+   --    Descr: Changes the text contained in the button.
+   --    See also:
+   --      Change the text of the single child of the button, that is
+   --      a Gtk_Label
+   --
+   --  - Name:  Relief_Property
+   --    Type:  Gtk_Relief_Style
+   --    Flags: read-write
+   --    Descr: Changes the relief used to draw the border of the button.
+   --    See also: Same as calling Set_Relief directly.
+   --
+   --  </properties>
+
+   Label_Property  : constant Glib.Properties.Property_String;
+   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style;
+
    -------------
    -- Signals --
    -------------
@@ -158,5 +216,11 @@ package Gtk.Button is
 
 private
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with null record;
+
+   Label_Property  : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
+     Gtk.Enums.Build ("relief");
+
    pragma Import (C, Get_Type, "gtk_button_get_type");
 end Gtk.Button;

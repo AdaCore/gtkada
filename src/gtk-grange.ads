@@ -60,8 +60,29 @@ package Gtk.GRange is
 
    function Get_Inverted (The_Range : access Gtk_Range_Record) return Boolean;
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Update_Policy_Property
+   --    Type:  Gtk_Update_Type
+   --    Flags: read-write
+   --    Descr: How the range should be updated on the screen
+   --    See also: Set_Update_Policy
+   --
+   --  </properties>
+
+   Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type;
+
 private
    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
+
+   Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type :=
+     Gtk.Enums.Build ("update_policy");
 
    pragma Import (C, Get_Type, "gtk_range_get_type");
 end Gtk.GRange;

@@ -93,6 +93,39 @@ package Gtk.Handle_Box is
    --  Pos_Left, then the snap edge will be Pos_Top, otherwise it will be
    --  Pos_Left.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Shadow_Property
+   --    Type:  Gtk_Shadow_Type
+   --    Flags: read-write
+   --    Descr: Appearance of the shadow that surrounds the container.
+   --    See also: Set_Shadow_Type
+   --
+   --  - Name:  Handle_Position_Property
+   --    Type:  Gtk_Position_Type
+   --    Flags: read-write
+   --    Descr: Position of the handle relative to the child widget.
+   --    See also: Set_Handle_Position
+   --
+   --  - Name:  Snap_Edge_Property
+   --    Type:  Gtk_Position_Type
+   --    Flags: read-write
+   --    Descr: Side of the handlebox that's lined up with the docking point
+   --           to dock the handlebox.
+   --    See also: Set_Snap_Edge
+   --
+   --  </properties>
+
+   Shadow_Property          : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+   Handle_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
+   Snap_Edge_Property       : constant Gtk.Enums.Property_Gtk_Position_Type;
+
    -------------
    -- Signals --
    -------------
@@ -122,6 +155,12 @@ package Gtk.Handle_Box is
 private
    type Gtk_Handle_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
-   pragma Import (C, Get_Type, "gtk_handle_box_get_type");
+   Shadow_Property          : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow");
+   Handle_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
+     Gtk.Enums.Build ("handle_position");
+   Snap_Edge_Property       : constant Gtk.Enums.Property_Gtk_Position_Type :=
+     Gtk.Enums.Build ("snap_edge");
 
+   pragma Import (C, Get_Type, "gtk_handle_box_get_type");
 end Gtk.Handle_Box;

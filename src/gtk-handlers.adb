@@ -33,6 +33,7 @@ with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
 with Gtk.Widget;
 with System;
+with Text_IO; use Text_IO;
 
 package body Gtk.Handlers is
 
@@ -120,12 +121,15 @@ package body Gtk.Handlers is
       return Glib.GType
    is
       Q : Signal_Query;
-      Id : Handler_Id := Lookup (Get_Type (Object), Signal);
+      Id : Handler_Id := Lookup (Get_Type (Object), Signal & ASCII.Nul);
    begin
       if Id = Invalid_Handler_Id then
          return GType_Invalid;
       else
          Query (Id, Q);
+         Put_Line ("Type_Of_Return for signal " & Signal
+                   & " is " & Return_Type (Q)'Img
+                   & " or " & Type_Name (Return_Type (Q)));
          return Return_Type (Q);
       end if;
    end Type_Of_Return;
@@ -139,7 +143,7 @@ package body Gtk.Handlers is
       return Guint
    is
       Q : Signal_Query;
-      Id : Handler_Id := Lookup (Get_Type (Object), Signal);
+      Id : Handler_Id := Lookup (Get_Type (Object), Signal & ASCII.Nul);
    begin
       if Id = Invalid_Handler_Id then
          return 0;

@@ -29,6 +29,7 @@
 with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
 with Unchecked_Conversion;
+with System;      use System;
 
 package body Glib.Generic_Properties is
 
@@ -189,5 +190,77 @@ package body Glib.Generic_Properties is
          Internal (Get_Object (Object), Name, Value);
       end Set_Property;
    end Generic_Internal_Discrete_Property;
+
+   -------------------------------------
+   -- Generic_Internal_Boxed_Property --
+   -------------------------------------
+
+   package body Generic_Internal_Boxed_Property is
+
+      type Boxed_Access is access all Boxed_Type;
+      function Conv is new Unchecked_Conversion
+        (System.Address, Boxed_Access);
+
+      ------------------
+      -- Set_Property --
+      ------------------
+
+      procedure Set_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property;
+         Value  : Boxed_Type)
+      is
+         procedure Internal
+           (Object : System.Address;
+            Name   : Property;
+            Value  : in out GValue);
+         pragma Import (C, Internal, "g_object_set_property");
+
+         Boxed : Boxed_Access;
+         Val : GValue;
+      begin
+         Init (Val, Get_Type);
+         Boxed := new Boxed_Type' (Value);
+         --  Memory is freed automatically by gtk+, see g_value_unset and
+         --  gdk_color_get_type, where the free() function is registered
+
+         Set_Address (Val, Boxed.all'Address);
+         Internal (Get_Object (Object), Name, Val);
+      end Set_Property;
+
+      ------------------
+      -- Get_Property --
+      ------------------
+
+      function Get_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property) return Boxed_Type is
+      begin
+         return Get_Property (Object, Property_RO (Name));
+      end Get_Property;
+
+      ------------------
+      -- Get_Property --
+      ------------------
+
+      function Get_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property_RO) return Boxed_Type
+      is
+         procedure Internal
+           (Object : System.Address;
+            Name   : Property_RO;
+            Value  : in out GValue);
+         pragma Import (C, Internal, "g_object_get_property");
+
+         Boxed : Boxed_Access;
+         Value : GValue;
+      begin
+         Init (Value, Get_Type);
+         Internal (Get_Object (Object), Name, Value);
+         Boxed := Conv (Get_Address (Value));
+         return Boxed.all;
+      end Get_Property;
+   end Generic_Internal_Boxed_Property;
 
 end Glib.Generic_Properties;

@@ -45,6 +45,16 @@ package Gtk.Tearoff_Menu_Item is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Tearoff_Menu_Item.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Tearoff_Menu_Item_Record is new Menu_Item.Gtk_Menu_Item_Record
      with null record;

@@ -247,6 +247,16 @@ package Gtk.Menu is
    --  Return the widget to which the menu was attached.
    --  If the menu was not attached, this function returns null.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

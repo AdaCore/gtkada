@@ -278,6 +278,16 @@ package Gtk.Packer is
    function Get_I_Pad_Y (Child : Gtk_Packer_Child) return Guint;
    --  Return the Y i_padding for the child (when not on the borders).
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Packer_Record is new Gtk.Container.Gtk_Container_Record
      with null record;

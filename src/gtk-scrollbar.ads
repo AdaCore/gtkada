@@ -61,6 +61,16 @@ package Gtk.Scrollbar is
      (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record
      with null record;

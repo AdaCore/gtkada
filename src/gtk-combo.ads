@@ -52,6 +52,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.GEntry;
 with Gtk.List;
 with Gtk.Box;
@@ -137,6 +138,39 @@ package Gtk.Combo is
    --  If the value entered must match one of the values in the list, val
    --  should be True.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Enable_Arrow_Keys_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the arrow keys move through the list of items
+   --    See also:  Set_Use_Arrows
+   --
+   --  - Name:  Enable_Arrow_Always_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the arrow keys work, even if the entry contents are
+   --           not in the list
+   --    See also:  Set_Use_Arrows_Always
+   --
+   --  - Name:  Case_Sensitive_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether list item matching is case sensitive
+   --    See also:  Set_Case_Sensitive
+   --
+   --  </properties>
+
+   Enable_Arrow_Keys_Property   : constant Glib.Properties.Property_Boolean;
+   Enable_Arrow_Always_Property : constant Glib.Properties.Property_Boolean;
+   Case_Sensitive_Property      : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -146,8 +180,15 @@ package Gtk.Combo is
    --  </signals>
 
 private
-
    type Gtk_Combo_Record is new Gtk.Box.Gtk_Box_Record with null record;
+
+   Enable_Arrow_Keys_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("enable_arrow_keys");
+   Enable_Arrow_Always_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("enable_arrow_always");
+   Case_Sensitive_Property      : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("case_sensitive");
+
    pragma Import (C, Get_Type, "gtk_combo_get_type");
 end Gtk.Combo;
 

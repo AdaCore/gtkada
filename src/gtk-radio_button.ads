@@ -105,6 +105,16 @@ package Gtk.Radio_Button is
    --  Modify the group to which the button belongs.
    --  This will not change anything visually.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

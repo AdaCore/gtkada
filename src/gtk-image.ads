@@ -184,6 +184,16 @@ package Gtk.Image is
       Icon_Set : out Gtk_Icon_Set;
       Size     : out Gtk.Enums.Gtk_Icon_Size);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

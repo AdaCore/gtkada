@@ -106,6 +106,16 @@ package Gtk.Menu_Shell is
    --  Menu_Shell and all its parent menus are deactivated and erased from
    --  the screen.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

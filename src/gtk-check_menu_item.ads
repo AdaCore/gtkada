@@ -38,6 +38,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Menu_Item;
 
 package Gtk.Check_Menu_Item is
@@ -88,6 +89,31 @@ package Gtk.Check_Menu_Item is
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean;
    --  Return True if the Item is inconsistent.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Active_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether the menu item is checked.
+   --    See also:  Set_Active and Get_Active
+   --
+   --  - Name:  Inconsistent_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: Whether to display an "inconsistent" state.
+   --    See also:  Set_Inconsistent and Get_Inconsistent
+   --
+   --  </properties>
+
+   Active_Property : constant Glib.Properties.Property_Boolean;
+   Inconsistent_Property : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -105,6 +131,11 @@ package Gtk.Check_Menu_Item is
 private
    type Gtk_Check_Menu_Item_Record is new Gtk.Menu_Item.Gtk_Menu_Item_Record
      with null record;
+
+   Active_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("active");
+   Inconsistent_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inconsistent");
 
    pragma Import (C, Get_Type, "gtk_check_menu_item_get_type");
 end Gtk.Check_Menu_Item;

@@ -40,6 +40,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -141,6 +142,53 @@ package Gtk.Table is
    --  If Homogeneous is True, the rows and columns of the table will all
    --  be allocated the same width or height.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  N_Rows_Property
+   --    Type:  Guint
+   --    Flags: read-write
+   --    Descr: The number of rows in the table
+   --    See also: Resize
+   --
+   --  - Name:  N_Columns_Property
+   --    Type:  Guint
+   --    Flags: read-write
+   --    Descr: The number of columns in the table
+   --    See also: Resize
+   --
+   --  - Name:  Row_Spacing_Property
+   --    Type:  Guint
+   --    Flags: read-write
+   --    Descr: The amount of space between two consecutive rows
+   --    See also: Set_Row_Spacing
+   --
+   --  - Name:  Column_Spacing_Property
+   --    Type:  Guint
+   --    Flags: read-write
+   --    Descr: The amount of space between two consecutive columns
+   --    See also: Set_Row_Spacing
+   --
+   --  - Name:  Homogeneous_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If TRUE this means the table cells are all the same
+   --           width/height
+   --    See also: Set_Homogeneous
+   --
+   --  </properties>
+
+   N_Rows_Property         : constant Glib.Properties.Property_Uint;
+   N_Columns_Property      : constant Glib.Properties.Property_Uint;
+   Row_Spacing_Property    : constant Glib.Properties.Property_Uint;
+   Column_Spacing_Property : constant Glib.Properties.Property_Uint;
+   Homogeneous_Property    : constant Glib.Properties.Property_Boolean;
+
    -------------
    -- Signals --
    -------------
@@ -152,5 +200,17 @@ package Gtk.Table is
 private
    type Gtk_Table_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
+
+   N_Rows_Property         : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("n_rows");
+   N_Columns_Property      : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("n_columns");
+   Row_Spacing_Property    : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("row_spacing");
+   Column_Spacing_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("column_spacing");
+   Homogeneous_Property    : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("homogeneous");
+
    pragma Import (C, Get_Type, "gtk_table_get_type");
 end Gtk.Table;

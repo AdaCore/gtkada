@@ -54,6 +54,16 @@ package Gtk.Text_Child is
    function Get_Deleted
      (Anchor : access Gtk_Text_Child_Anchor_Record) return Boolean;
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
 
    type Gtk_Text_Child_Anchor_Record is new GObject_Record with null record;

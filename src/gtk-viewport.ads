@@ -29,6 +29,7 @@
 
 --  <c_version>1.3.4</c_version>
 
+with Glib.Properties;
 with Glib;
 with Gdk;
 with Gtk.Adjustment;
@@ -76,8 +77,49 @@ package Gtk.Viewport is
      (Viewport : access Gtk_Viewport_Record;
       The_Type : Gtk_Shadow_Type);
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Hadjustment_Property
+   --    Type:  Gtk_Adjustment_Record'Class
+   --    Flags: read-write
+   --    Descr: The Gtk_Adjustment that determines the values of the horizontal
+   --           position for this viewport
+   --    See also:  Set_Hadjustment and Get_Hadjustment
+   --
+   --  - Name:  Vadjustment_Property
+   --    Type:  Gtk_Adjustment_Record'Class
+   --    Flags: read-write
+   --    Descr: The Gtk_Adjustment that determines the values of the vertical
+   --           position for this viewport
+   --    See also:  Set_Vadjustment and Get_Vadjustment
+   --
+   --  - Name:  Shadow_Type_Property
+   --    Type:  Gtk_Shadow_Type
+   --    Flags: read-write
+   --    Descr: Determines how the shadowed box around the viewport is drawn.
+   --    See also:  Set_Shadow_Type
+   --
+   --  </properties>
+
+   Hadjustment_Property : constant Glib.Properties.Property_Object;
+   Vadjustment_Property : constant Glib.Properties.Property_Object;
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+
 private
    type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
+
+   Hadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("hadjustment");
+   Vadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("vadjustment");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow_type");
 
    pragma Import (C, Get_Type, "gtk_viewport_get_type");
 end Gtk.Viewport;

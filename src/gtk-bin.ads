@@ -47,6 +47,15 @@ package Gtk.Bin is
    function Get_Child (Bin : access Gtk_Bin_Record) return Gtk_Widget;
    --  Return the child associated with Bin.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

@@ -80,6 +80,16 @@ package Gtk.Pixmap is
       Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
    --  Create a pixmap given a window and a buffer.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
 private
    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
 

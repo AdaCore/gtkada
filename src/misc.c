@@ -304,7 +304,7 @@ ada_widget_set_scroll_adjustments_signal (gpointer klass, char* name)
 {
   if (GTK_IS_WIDGET_CLASS (klass))
     {
-      int id = g_signal_lookup (name, G_TYPE_FROM_CLASS (klass));
+      guint id = g_signal_lookup (name, G_TYPE_FROM_CLASS (klass));
       GTK_WIDGET_CLASS (klass)->set_scroll_adjustments_signal = id;
     }
 }

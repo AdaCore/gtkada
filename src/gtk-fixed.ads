@@ -81,6 +81,16 @@ package Gtk.Fixed is
    --  X indicates the horizontal position to place the widget at.
    --  Y is the vertical position to place the widget at.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------

@@ -165,6 +165,16 @@ package Gtk.Scrolled_Window is
    --  A widget supports scrolling natively if it contains a valid
    --  "set_scroll_adjustments" signal.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  </properties>
+
    -------------
    -- Signals --
    -------------
