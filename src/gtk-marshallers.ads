@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gtk.Object;
-with System;
 with Gtk.Arguments;
 
 --  This package simplifies the use of the callbacks. It has to be used
