@@ -296,6 +296,9 @@ package body Gtk.Handlers is
                                                             -1));
       begin
          pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
@@ -329,6 +332,9 @@ package body Gtk.Handlers is
                                     -1));
       begin
          pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
@@ -359,6 +365,9 @@ package body Gtk.Handlers is
                                                             Name,
                                                             -1));
       begin
+         pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
@@ -392,6 +401,9 @@ package body Gtk.Handlers is
                                      Name,
                                      -1));
       begin
+         pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
@@ -589,6 +601,9 @@ package body Gtk.Handlers is
                                     -1));
       begin
          pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
@@ -621,6 +636,9 @@ package body Gtk.Handlers is
                                     Name,
                                     -1));
       begin
+         pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
@@ -831,6 +849,9 @@ package body Gtk.Handlers is
                                  Object => null);
       begin
          pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
@@ -860,6 +881,9 @@ package body Gtk.Handlers is
                                  Object => Acc (Slot_Object));
       begin
          pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
@@ -887,6 +911,9 @@ package body Gtk.Handlers is
                                  Proxy  => null,
                                  Object => null);
       begin
+         pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
@@ -916,6 +943,9 @@ package body Gtk.Handlers is
                                  Proxy  => null,
                                  Object => Acc (Slot_Object));
       begin
+         pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
@@ -1087,6 +1117,9 @@ package body Gtk.Handlers is
                                  User  => new User_Type'(User_Data));
       begin
          pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
@@ -1115,6 +1148,9 @@ package body Gtk.Handlers is
                                  Proxy => null,
                                  User  => new User_Type'(User_Data));
       begin
+         pragma Assert
+           (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
+            "Invalid signal for this widget");
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
