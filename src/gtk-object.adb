@@ -36,30 +36,24 @@ with Gtkada.Types;
 
 package body Gtk.Object is
 
-   ---------------
-   -- Connected --
-   ---------------
+   ----------------------
+   -- Connected_Is_Set --
+   ----------------------
 
    function Connected_Is_Set (Object : access Gtk_Object_Record'Class)
-     return Boolean
-   is
-      function Internal (Object : in System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_object_connected");
+                             return Boolean is
    begin
-      return To_Boolean (Internal (Get_Object (Object.all)));
+      return Flag_Is_Set (Object, Connected);
    end Connected_Is_Set;
 
-   -----------------
-   -- Constructed --
-   -----------------
+   ------------------------
+   -- Constructed_Is_Set --
+   ------------------------
 
    function Constructed_Is_Set (Object : access Gtk_Object_Record'Class)
-     return Boolean
-   is
-      function Internal (Object : in System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_object_constructed");
+                               return Boolean is
    begin
-      return To_Boolean (Internal (Get_Object (Object.all)));
+      return Flag_Is_Set (Object, Constructed);
    end Constructed_Is_Set;
 
    -------------
@@ -83,12 +77,9 @@ package body Gtk.Object is
    ---------------
 
    function Destroyed_Is_Set (Object : access Gtk_Object_Record'Class)
-     return Boolean
-   is
-      function Internal (Object : in System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_object_destroyed");
+                             return Boolean is
    begin
-      return To_Boolean (Internal (Get_Object (Object.all)));
+      return Flag_Is_Set (Object, Destroyed);
    end Destroyed_Is_Set;
 
    -----------
@@ -107,12 +98,9 @@ package body Gtk.Object is
    --------------
 
    function Floating_Is_Set (Object : access Gtk_Object_Record'Class)
-     return Boolean
-   is
-      function Internal (Object : in System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_object_floating");
+                            return Boolean is
    begin
-      return To_Boolean (Internal (Get_Object (Object.all)));
+      return Flag_Is_Set (Object, Floating);
    end Floating_Is_Set;
 
    --------------
@@ -200,8 +188,24 @@ package body Gtk.Object is
                           Flags  : in Guint32);
       pragma Import (C, Internal, "ada_object_unset_flags");
    begin
-      Internal (Get_Object (Object.all), Flags);
+      Internal (Get_Object (Object), Flags);
    end Unset_Flags;
+
+   -----------------
+   -- Flag_Is_Set --
+   -----------------
+
+   function Flag_Is_Set (Object : access Gtk_Object_Record;
+                         Flag   : in     Guint32)
+                        return Boolean
+   is
+      function Internal (Object : in System.Address;
+                         Flag   : in Guint32)
+                        return Gint;
+      pragma Import (C, Internal, "ada_object_flag_is_set");
+   begin
+      return Boolean'Val (Internal (Get_Object (Object), Flag));
+   end Flag_Is_Set;
 
    ---------------
    -- User_Data --
@@ -240,7 +244,8 @@ package body Gtk.Object is
       ---------
 
       function Get (Object : access Gtk_Object_Record'Class;
-                    Id     : in String := "user_data") return Data_Type is
+                    Id     : in String := "user_data") return Data_Type
+      is
          function Internal (Object : in System.Address;
                             Key    : in String)
                             return System.Address;
@@ -248,6 +253,26 @@ package body Gtk.Object is
          D : Cb_Record_Access
            := Convert (Internal (Get_Object (Object),
                                  Id & Ascii.NUL));
+      begin
+         return D.Ptr.all;
+      exception
+         when Constraint_Error =>
+            raise Gtkada.Types.Data_Error;
+      end Get;
+
+      ---------
+      -- Get --
+      ---------
+
+      function Get (Object : access Gtk_Object_Record'Class;
+                    Id     : in Glib.GQuark)
+                   return Data_Type
+      is
+         function Internal (Object : in System.Address;
+                            Key    : in Glib.GQuark)
+                            return System.Address;
+         pragma Import (C, Internal, "gtk_object_get_data_by_id");
+         D : Cb_Record_Access := Convert (Internal (Get_Object (Object), Id));
       begin
          return D.Ptr.all;
       exception
@@ -273,12 +298,63 @@ package body Gtk.Object is
          D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
       begin
          Internal (Get_Object (Object.all),
-                   Id & Ascii.NUL,
+                   Id & ASCII.NUL,
                    Convert (D),
                    Free_Data'Address);
       end Set;
-   end User_Data;
 
+      ---------
+      -- Set --
+      ---------
+
+      procedure Set (Object : access Gtk_Object_Record'Class;
+                     Data   : in Data_Type;
+                     Id     : in Glib.GQuark)
+      is
+         function Convert is new Unchecked_Conversion (Cb_Record_Access,
+                                                       System.Address);
+         procedure Internal (Object  : in System.Address;
+                             Key     : in Glib.GQuark;
+                             Data    : in System.Address;
+                             Destroy : in System.Address);
+         pragma Import (C, Internal, "gtk_object_set_data_by_id_full");
+         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+      begin
+         Internal (Get_Object (Object.all),
+                   Id,
+                   Convert (D),
+                   Free_Data'Address);
+      end Set;
+
+      ------------
+      -- Remove --
+      ------------
+
+      procedure Remove (Object : access Gtk_Object_Record'Class;
+                        Id     : in String := "user_data")
+      is
+         procedure Internal (Object : System.Address;
+                             Id     : String);
+         pragma Import (C, Internal, "gtk_object_remove_data");
+      begin
+         Internal (Get_Object (Object), Id & ASCII.NUL);
+      end Remove;
+
+      ------------
+      -- Remove --
+      ------------
+
+      procedure Remove (Object : access Gtk_Object_Record'Class;
+                        Id     : in Glib.GQuark)
+      is
+         procedure Internal (Object : System.Address;
+                             Id     : Glib.GQuark);
+         pragma Import (C, Internal, "gtk_object_remove_data_by_id");
+      begin
+         Internal (Get_Object (Object), Id);
+      end Remove;
+
+   end User_Data;
 
    --------------
    -- Generate --
