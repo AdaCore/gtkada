@@ -495,7 +495,7 @@ package body Glib.XML is
          Put ("<" & N.Tag.all);
 
          if N.Attributes /= null then
-            Print_String (" " & N.Attributes.all);
+            Put (" " & N.Attributes.all);
          end if;
 
          if N.Child /= null then
