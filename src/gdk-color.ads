@@ -41,17 +41,22 @@ package Gdk.Color is
 
    Null_Colormap : constant Gdk_Colormap;
 
+   Wrong_Color : exception;
 
    procedure Gdk_New (Colormap     :    out Gdk_Colormap;
                       Visual       : in     Gdk.Visual.Gdk_Visual;
                       Private_Cmap : in     Gint);
+
+   procedure Ref (Colormap : in out Gdk_Colormap);
+
+   procedure Unref (Colormap : in out Gdk_Colormap);
 
    procedure Change (Colormap : in Gdk_Colormap;
                      Ncolors  : in Gint);
 
    procedure Store (Colormap : in out Gdk_Colormap;
                     Colors   : in     Gdk_Color_Array);
-   --  Store the colors in the colormap
+   --  Stores the colors in the colormap
 
    procedure Alloc (Colormap   : in out Gdk_Colormap;
                     Contiguous : in     Boolean;
@@ -71,7 +76,7 @@ package Gdk.Color is
    --  The four previous functions raise Wrong_Color if the color could not
    --  be created
    --
-   --  we usual way to allocate a new color is :
+   --  The usual way to allocate a new color is :
    --  Alloc (Get_Default_Colormap (Widget), Parse ("colorname"));
 
    procedure Change (Colormap  : in out Gdk_Colormap;
@@ -79,8 +84,6 @@ package Gdk.Color is
                     Succeeded :    out Boolean);
 
    function "=" (Colora, Colorb : in Gdk_Color) return Boolean;
-
-   Wrong_Color : exception;
 
    --------------------------------------
    --  Getting the fields of Gdk_Color --

@@ -201,6 +201,20 @@ package body Gdk.Color is
       return Color.Red;
    end Red;
 
+
+   -----------
+   --  Ref  --
+   -----------
+
+   procedure Ref (Colormap : in out Gdk_Colormap) is
+      function Internal (Colormap : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_colormap_ref");
+      S : System.Address;
+   begin
+      S := Internal (Get_Object (Colormap));
+   end Ref;
+
+
    ---------------
    -- Set_Pixel --
    ---------------
@@ -237,6 +251,19 @@ package body Gdk.Color is
    begin
       Internal (Get_Object (Colormap), Colors'Address, Colors'Length);
    end Store;
+
+   -------------
+   --  Unref  --
+   -------------
+
+   procedure Unref (Colormap : in out Gdk_Colormap) is
+      procedure Internal (Colormap : in System.Address);
+      pragma Import (C, Internal, "gdk_colormap_unref");
+   begin
+      Internal (Get_Object (Colormap));
+      Set_Object (Colormap, System.Null_Address);
+   end Unref;
+
 
    -----------
    -- White --
