@@ -2717,6 +2717,7 @@ package body Gtkada.MDI is
       --  The actual raise is done in an idle loop. Otherwise, if the child
       --  hasn't been properly resized yet, there would be a lot of
       --  flickering.
+
       if Child.MDI.Raise_Id /= 0 then
          Idle_Remove (Child.MDI.Raise_Id);
       end if;
