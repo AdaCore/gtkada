@@ -106,16 +106,13 @@ package Gtk.Object is
    procedure Ref (Object : access Gtk_Object_Record);
    --  Increment the reference count on the object.
    --  Since an object is not deleted while its reference count is not null,
-   --  this is a way to keep an object in memory.
-   --  GtkAda mostly takes care of everything, and you should not need this
-   --  function except in special cases.
+   --  this is a way to keep an object in memory, in particular when you
+   --  want to temporarily remove a widget from its parent.
 
    procedure Unref (Object : access Gtk_Object_Record);
    --  Decrement the reference count for an object.
    --  If it passed from 1 to 0, then the memory allocated for the object is
    --  freed, and the object no longer usable.
-   --  It is better to use Destroy than Unref to destroy an object, although
-   --  both might be acceptable.
 
    procedure Sink (Object : access Gtk_Object_Record);
    --  Sink the object.
@@ -140,9 +137,9 @@ package Gtk.Object is
    --  compatibility only. Use Glib.Object.Get_Type instead.
    --  ???
 
-   -------------
-   --  Flags  --
-   -------------
+   -----------
+   -- Flags --
+   -----------
    --  Each object is associated with a set of flags, that reports the state
    --  of the object.
    --  The following flags are known by all objects:
