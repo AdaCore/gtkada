@@ -350,7 +350,8 @@ package body Glib.Object is
       type Guint_Access is access all Guint;
 
       function Internal
-        (Q : Signal_Query; N_Ids : Guint_Access) return Flat_GType_Array_Access;
+        (Q     : Signal_Query;
+         N_Ids : Guint_Access) return Flat_GType_Array_Access;
       pragma Import (C, Internal, "ada_gsignal_query_params");
 
       N_Ids  : aliased Guint;
