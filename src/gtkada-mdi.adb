@@ -2810,15 +2810,6 @@ package body Gtkada.MDI is
             Focus_Widget);
       end if;
 
-      --  Force the child to accept the keyboard focus.
-      --  If this wasn't the case, it might happen that sometimes the keyboard
-      --  focus and the active child would not match (since grab_focus is a
-      --  noop for widgets that don't have this flag.
-      --  In addition, if the widget doesn't know what to do with the focus,
-      --  the latter will be assigned to the MDI itself
-
-      Set_Flags (C, Can_Focus);
-
       --  Restore the keyboard focus, which might have been stolen if the new
       --  child was added to a notebook.
 
@@ -4856,12 +4847,6 @@ package body Gtkada.MDI is
                Raise_Child (Current_Pages (J));
             end if;
          end loop;
-
-         --  Use a default focus child, in case none was saved in the desktop
-
-         if Focus_Child = null then
-            Focus_Child := Child;
-         end if;
 
          if Focus_Child /= null then
             Set_Focus_Child (Focus_Child);
