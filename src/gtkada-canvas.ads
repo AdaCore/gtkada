@@ -269,13 +269,13 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record) return Glib.Guint;
    --  Return the current zoom level
 
-   function To_Canvas
+   function To_Canvas_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
       X      : Glib.Gint) return Glib.Gint;
    --  Scale the scalar X depending by the zoom level (map from world
    --  coordinates to canvas coordinates)
 
-   function To_World
+   function To_World_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
       X      : Glib.Gint) return Glib.Gint;
    --  Scale the scalar X depending by the zoom level (map from canvas
@@ -610,6 +610,6 @@ private
       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
    end record;
 
-   pragma Inline (To_Canvas);
-   pragma Inline (To_World);
+   pragma Inline (To_Canvas_Coordinates);
+   pragma Inline (To_World_Coordinates);
 end Gtkada.Canvas;

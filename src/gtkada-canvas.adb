@@ -292,27 +292,27 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class; Percent : Guint);
    --  Internal function to implement zooming
 
-   ---------------
-   -- To_Canvas --
-   ---------------
+   ---------------------------
+   -- To_Canvas_Coordinates --
+   ---------------------------
 
-   function To_Canvas
+   function To_Canvas_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
       X      : Gint) return Gint is
    begin
       return X * Gint (Canvas.Zoom) / 100;
-   end To_Canvas;
+   end To_Canvas_Coordinates;
 
-   --------------
-   -- To_World --
-   --------------
+   --------------------------
+   -- To_World_Coordinates --
+   --------------------------
 
-   function To_World
+   function To_World_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
       X      : Gint) return Gint is
    begin
       return X * 100 / Gint (Canvas.Zoom);
-   end To_World;
+   end To_World_Coordinates;
 
    -------------
    -- Gtk_New --
@@ -588,8 +588,8 @@ package body Gtkada.Canvas is
 
          while Current /= null loop
             if Current.Item.Visible then
-               X := To_Canvas (Canvas, Current.Item.Coord.X);
-               Y := To_Canvas (Canvas, Current.Item.Coord.Y);
+               X := To_Canvas_Coordinates (Canvas, Current.Item.Coord.X);
+               Y := To_Canvas_Coordinates (Canvas, Current.Item.Coord.Y);
                X_Max := Gint'Max (X_Max,  X + Gint (Current.Item.Coord.Width));
                X_Min := Gint'Min (X_Min, X);
                Y_Max := Gint'Max (Y_Max, Y + Gint (Current.Item.Coord.Height));
@@ -675,8 +675,8 @@ package body Gtkada.Canvas is
             if Tmp.Item.Visible
               and then Tmp.Item /= Canvas_Item (Item)
             then
-               X_Tmp := To_Canvas (Canvas, Tmp.Item.Coord.X);
-               Y_Tmp := To_Canvas (Canvas, Tmp.Item.Coord.Y);
+               X_Tmp := To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.X);
+               Y_Tmp := To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.Y);
                Intersect ((X_Tmp,
                            Y_Tmp,
                            Tmp.Item.Coord.Width,
@@ -714,7 +714,7 @@ package body Gtkada.Canvas is
       if Step = 0 then
          Step := Gint (Default_Grid_Size);
       end if;
-      Zoom_Step := To_Canvas (Canvas, Step);
+      Zoom_Step := To_Canvas_Coordinates (Canvas, Step);
 
       if X /= Gint'First and then Y /= Gint'First then
          Item.Coord.X := X;
@@ -742,9 +742,10 @@ package body Gtkada.Canvas is
             declare
                Num : Gint := 0;
                Next_Y : array (Gint range 0 .. 2) of Gint;
-               X3 : constant Gint := To_Canvas (Canvas, Src_Item.Coord.X);
+               X3 : constant Gint :=
+                 To_Canvas_Coordinates (Canvas, Src_Item.Coord.X);
             begin
-               Y1 := To_Canvas (Canvas, Src_Item.Coord.Y)
+               Y1 := To_Canvas_Coordinates (Canvas, Src_Item.Coord.Y)
                  + Gint (Src_Item.Coord.Height) + Zoom_Step;
                Next_Y := (others => Y1);
 
@@ -782,8 +783,8 @@ package body Gtkada.Canvas is
             end loop;
          end if;
 
-         Item.Coord.X := To_World (Canvas, X1);
-         Item.Coord.Y := To_World (Canvas, Y1);
+         Item.Coord.X := To_World_Coordinates (Canvas, X1);
+         Item.Coord.Y := To_World_Coordinates (Canvas, Y1);
       end if;
 
       if Canvas.Align_On_Grid then
@@ -951,7 +952,7 @@ package body Gtkada.Canvas is
       Angle  : in Float)
    is
       Length : constant Float :=
-        Float (To_Canvas (Canvas, Canvas.Arrow_Length));
+        Float (To_Canvas_Coordinates (Canvas, Canvas.Arrow_Length));
    begin
       Draw_Polygon
         (Window,
@@ -1007,10 +1008,10 @@ package body Gtkada.Canvas is
       Dx : constant Gint := Link.Dest.Coord.X;
       Dy : constant Gint := Link.Dest.Coord.Y;
    begin
-      Link.Src.Coord.X := To_Canvas (Canvas, Sx) - Xbase;
-      Link.Src.Coord.Y := To_Canvas (Canvas, Sy) - Ybase;
-      Link.Dest.Coord.X := To_Canvas (Canvas, Dx) - Xbase;
-      Link.Dest.Coord.Y := To_Canvas (Canvas, Dy) - Ybase;
+      Link.Src.Coord.X := To_Canvas_Coordinates (Canvas, Sx) - Xbase;
+      Link.Src.Coord.Y := To_Canvas_Coordinates (Canvas, Sy) - Ybase;
+      Link.Dest.Coord.X := To_Canvas_Coordinates (Canvas, Dx) - Xbase;
+      Link.Dest.Coord.Y := To_Canvas_Coordinates (Canvas, Dy) - Ybase;
       Clip_Line
         (Link.Src.Coord,
          Link.Dest.Coord.X
@@ -1093,15 +1094,15 @@ package body Gtkada.Canvas is
       Xbase      : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase      : constant Gint := Gint (Get_Value (Canvas.Vadj));
       Arc_Offset : constant Float :=
-        Float (To_Canvas (Canvas, Canvas.Arc_Link_Offset));
+        Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
       Right_Angle : constant Float := Ada.Numerics.Pi / 2.0;
       X1, Y1, X3, Y3, Xc, Yc, Radius : Gint;
 
    begin
       pragma Assert (Link.Src = Link.Dest);
-      Xc := To_Canvas
+      Xc := To_Canvas_Coordinates
         (Canvas, Link.Src.Coord.X) + Gint (Link.Src.Coord.Width) - Xbase;
-      Yc := To_Canvas (Canvas, Link.Src.Coord.Y) - Ybase;
+      Yc := To_Canvas_Coordinates (Canvas, Link.Src.Coord.Y) - Ybase;
       Radius := Gint (Arc_Offset) / 2 * Offset;
 
       --  Location of the arrow and the annotation
@@ -1205,7 +1206,7 @@ package body Gtkada.Canvas is
       Xbase       : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase       : constant Gint := Gint (Get_Value (Canvas.Vadj));
       Arc_Offset  : constant Float :=
-        Float (To_Canvas (Canvas, Canvas.Arc_Link_Offset));
+        Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
       Sx          : constant Gint := Link.Src.Coord.X;
       Sy          : constant Gint := Link.Src.Coord.Y;
       Dx          : constant Gint := Link.Dest.Coord.X;
@@ -1217,10 +1218,10 @@ package body Gtkada.Canvas is
       --  and the two lines from the centers to the middle point. This extra
       --  point is used as a control point for the Bezier curve.
 
-      Link.Src.Coord.X := To_Canvas (Canvas, Sx) - Xbase;
-      Link.Src.Coord.Y := To_Canvas (Canvas, Sy) - Ybase;
-      Link.Dest.Coord.X := To_Canvas (Canvas, Dx) - Xbase;
-      Link.Dest.Coord.Y := To_Canvas (Canvas, Dy) - Ybase;
+      Link.Src.Coord.X := To_Canvas_Coordinates (Canvas, Sx) - Xbase;
+      Link.Src.Coord.Y := To_Canvas_Coordinates (Canvas, Sy) - Ybase;
+      Link.Dest.Coord.X := To_Canvas_Coordinates (Canvas, Dx) - Xbase;
+      Link.Dest.Coord.Y := To_Canvas_Coordinates (Canvas, Dy) - Ybase;
 
       X1 := Link.Src.Coord.X +
         Gint (Gfloat (Link.Src.Coord.Width) * Link.Src_X_Pos);
@@ -1397,7 +1398,8 @@ package body Gtkada.Canvas is
       Inters : Boolean;
       Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      Grid  : constant Gint := To_Canvas (Canvas, Gint (Canvas.Grid_Size));
+      Grid  : constant Gint :=
+        To_Canvas_Coordinates (Canvas, Gint (Canvas.Grid_Size));
       Pix : Gdk_Pixmap;
 
    begin
@@ -1462,16 +1464,18 @@ package body Gtkada.Canvas is
 
       while Tmp /= null loop
          if Tmp.Item.Visible then
-            Intersect (Rect,
-                       (To_Canvas (Canvas, Tmp.Item.Coord.X) - Xbase,
-                        To_Canvas (Canvas, Tmp.Item.Coord.Y) - Ybase,
-                        Tmp.Item.Coord.Width,
-                        Tmp.Item.Coord.Height),
-                       Dest, Inters);
+            Intersect
+              (Rect,
+               (To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.X) - Xbase,
+                To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.Y) - Ybase,
+                Tmp.Item.Coord.Width,
+                Tmp.Item.Coord.Height),
+               Dest, Inters);
             if Inters then
-               Draw (Tmp.Item, Canvas, Pix,
-                     To_Canvas (Canvas, Tmp.Item.Coord.X) - Xbase,
-                     To_Canvas (Canvas, Tmp.Item.Coord.Y) - Ybase);
+               Draw
+                 (Tmp.Item, Canvas, Pix,
+                  To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.X) - Xbase,
+                  To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.Y) - Ybase);
             end if;
          end if;
 
@@ -1659,8 +1663,8 @@ package body Gtkada.Canvas is
       --  on top, and thus the one the user really wanted to select
 
       while Tmp /= null loop
-         X2 := To_Canvas (Canvas, Tmp.Item.Coord.X);
-         Y2 := To_Canvas (Canvas, Tmp.Item.Coord.Y);
+         X2 := To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.X);
+         Y2 := To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.Y);
          if Tmp.Item.Visible
            and then X >= X2
            and then X <= X2 + Gint (Tmp.Item.Coord.Width)
@@ -1688,9 +1692,11 @@ package body Gtkada.Canvas is
         or else Get_Button (Event) /= 1
       then
          Set_X (Event, Gdouble (Xbase) + Get_X (Event)
-                - Gdouble (To_Canvas (Canvas, Canvas.Selection.Item.Coord.X)));
+                - Gdouble (To_Canvas_Coordinates
+                           (Canvas, Canvas.Selection.Item.Coord.X)));
          Set_Y (Event, Gdouble (Ybase) + Get_Y (Event)
-                - Gdouble (To_Canvas (Canvas, Canvas.Selection.Item.Coord.Y)));
+                - Gdouble (To_Canvas_Coordinates
+                           (Canvas, Canvas.Selection.Item.Coord.Y)));
          --  ??? Should do so for each item in the selection
          On_Button_Click (Canvas.Selection.Item, Event);
          return False;
@@ -1710,8 +1716,10 @@ package body Gtkada.Canvas is
 
       --  Initialize the move
 
-      Canvas.Last_X_Event := To_World (Canvas, Gint (Get_X_Root (Event)));
-      Canvas.Last_Y_Event := To_World (Canvas, Gint (Get_Y_Root (Event)));
+      Canvas.Last_X_Event :=
+        To_World_Coordinates (Canvas, Gint (Get_X_Root (Event)));
+      Canvas.Last_Y_Event :=
+        To_World_Coordinates (Canvas, Gint (Get_Y_Root (Event)));
       Canvas.Mouse_Has_Moved := False;
 
       --  Make sure that no other widget steal the events while we are
@@ -1776,9 +1784,11 @@ package body Gtkada.Canvas is
 
       else
          Set_X (Event, Gdouble (Get_Value (Canvas.Hadj)) +  Get_X (Event)
-                - Gdouble (To_Canvas (Canvas, Canvas.Selection.Item.Coord.X)));
+                - Gdouble (To_Canvas_Coordinates
+                           (Canvas, Canvas.Selection.Item.Coord.X)));
          Set_Y (Event, Gdouble (Get_Value (Canvas.Vadj)) + Get_Y (Event)
-                - Gdouble (To_Canvas (Canvas, Canvas.Selection.Item.Coord.Y)));
+                - Gdouble (To_Canvas_Coordinates
+                           (Canvas, Canvas.Selection.Item.Coord.Y)));
          On_Button_Click (Canvas.Selection.Item, Event);
       end if;
 
@@ -1846,8 +1856,8 @@ package body Gtkada.Canvas is
             Canvas.Scrolling_Timeout_Id := 0;
          end if;
 
-         X_Scroll := To_World (Canvas, Gint (Get_X_Root (Event)));
-         Y_Scroll := To_World (Canvas, Gint (Get_Y_Root (Event)));
+         X_Scroll := To_World_Coordinates (Canvas, Gint (Get_X_Root (Event)));
+         Y_Scroll := To_World_Coordinates (Canvas, Gint (Get_Y_Root (Event)));
          if Move_Selection
            (Canvas, X_Scroll - Canvas.Last_X_Event,
             Y_Scroll - Canvas.Last_Y_Event)
@@ -1911,8 +1921,8 @@ package body Gtkada.Canvas is
               (Get_Window (Canvas),
                GC     => Canvas.Anim_GC,
                Filled => False,
-               X      => To_Canvas (Canvas, Selected.X) - Xbase,
-               Y      => To_Canvas (Canvas, Selected.Y) - Ybase,
+               X      => To_Canvas_Coordinates (Canvas, Selected.X) - Xbase,
+               Y      => To_Canvas_Coordinates (Canvas, Selected.Y) - Ybase,
                Width  => Gint (Selected.Item.Coord.Width),
                Height => Gint (Selected.Item.Coord.Height));
 
@@ -1988,8 +1998,8 @@ package body Gtkada.Canvas is
       if Item.Visible then
          Queue_Draw_Area
            (Canvas,
-            To_Canvas (Canvas, Item.Coord.X) - Xbase,
-            To_Canvas (Canvas, Item.Coord.Y) - Ybase,
+            To_Canvas_Coordinates (Canvas, Item.Coord.X) - Xbase,
+            To_Canvas_Coordinates (Canvas, Item.Coord.Y) - Ybase,
             Gint (Item.Coord.Width), Gint (Item.Coord.Height));
       end if;
    end Item_Updated;
@@ -2228,8 +2238,8 @@ package body Gtkada.Canvas is
                         Item   : access Canvas_Item_Record'Class;
                         X, Y   : Gint)
    is
-      X1 : constant Gint := To_Canvas (Canvas, X);
-      Y1 : constant Gint := To_Canvas (Canvas, Y);
+      X1 : constant Gint := To_Canvas_Coordinates (Canvas, X);
+      Y1 : constant Gint := To_Canvas_Coordinates (Canvas, Y);
       X2 : constant Gint := X1 + Gint (Item.Coord.Width);
       Y2 : constant Gint := Y1 + Gint (Item.Coord.Height);
    begin
@@ -2655,7 +2665,7 @@ package body Gtkada.Canvas is
          Unref (Canvas.Font);
       end if;
 
-      Font_Size := To_Canvas (Canvas, Canvas.Annotation_Height);
+      Font_Size := To_Canvas_Coordinates (Canvas, Canvas.Annotation_Height);
       if Font_Size >= 4 then
          Canvas.Font := Get_Gdkfont (Canvas.Annotation_Font.all, Font_Size);
       else
