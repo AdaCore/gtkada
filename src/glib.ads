@@ -181,7 +181,7 @@ package Glib is
    -- GType --
    -----------
 
-   type GType is new Guint;
+   type GType is new Guint32;
    --  This type describes an internal type in Glib.
    --  You shouldn't have to use it in your own applications, however it might
    --  be useful sometimes.
