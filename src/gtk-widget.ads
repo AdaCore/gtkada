@@ -54,6 +54,7 @@ with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Object;
 with Gtk.Style;
+with Glib.GObjects;
 with Glib.Glist;
 with Glib.GSlist;
 with System;
@@ -677,6 +678,26 @@ package Gtk.Widget is
    --  available on your system. If this library is not available, your program
    --  will still work.
    --  See the manual page for XShapeCombineMask(3x) for more information.
+
+   --------------------------
+   -- Creating new widgets --
+   --------------------------
+   --  Although the core subprogram for creating new widgets is
+   --  Glib.Gobjects.Initialize_Class_Record, it is often useful to override
+   --  some internal pointers to functions.
+
+   procedure Set_Scroll_Adjustments_Signal
+     (Widget : Glib.GObjects.GObject_Class; Signal : String);
+   --  Modifies the signal to be sent when the adjustments are modified. This
+   --  is only useful when you are rewritting your own widget that can be
+   --  embedded directly in a Gtk_Scrolled_Window, without any Gtk_Viewport.
+   --
+   --  Signal is the name of the signal that will be emitted when
+   --
+   --  Note that the handlers for this signal must take two arguments in
+   --  addition to the widget (the horizontal and vertical adjustments to be
+   --  used). See Gtk.Scrolled_Window and Gtk.Widget.Set_Scroll_Adustment for
+   --  more information on this signal.
 
    -----------
    -- Flags --

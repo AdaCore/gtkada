@@ -1334,6 +1334,19 @@ package body Gtk.Widget is
 
    end Realize_Handling;
 
+   -----------------------------------
+   -- Set_Scroll_Adjustments_Signal --
+   -----------------------------------
+
+   procedure Set_Scroll_Adjustments_Signal
+     (Widget : GObject_Class; Signal : String)
+   is
+      procedure Internal (Widget : GObject_Class; Signal : String);
+      pragma Import (C, Internal, "ada_widget_set_scroll_adjustments_signal");
+   begin
+      Internal (Widget, Signal & ASCII.Nul);
+   end Set_Scroll_Adjustments_Signal;
+
    ------------------------
    -- Shape_Combine_Mask --
    ------------------------
