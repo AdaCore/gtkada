@@ -318,6 +318,7 @@ EXPORTS
 	ada_text_get_text
 	ada_text_get_text_end
 	ada_text_get_vadj
+	ada_text_get_area
 	ada_tree_get_children
 	ada_tree_get_selection
 	ada_tree_item_get_subtree
