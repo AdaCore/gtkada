@@ -38,8 +38,9 @@
 --  Like any child of Gtk_Layout, this widget can have an almost unlimited
 --  size for its children, and provides scrolling.
 --  </description>
---  <c_version>gtk+extra 0.99.4</c_version>
+--  <c_version>gtk+extra 0.99.5</c_version>
 
+with Gdk;
 with Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Layout;
 
@@ -48,6 +49,48 @@ package Gtk.Extra.Plot_Canvas is
    type Gtk_Plot_Canvas_Record is
      new Gtk.Extra.Plot_Layout.Gtk_Plot_Layout_Record with private;
    type Gtk_Plot_Canvas is access all Gtk_Plot_Canvas_Record'Class;
+
+   ----------------
+   -- Enum types --
+   ----------------
+
+   type Plot_Canvas_Action is (Action_Inactive,
+                               Action_Selection,
+                               Action_Drag,
+                               Action_Resize);
+   --  The action being performed on the canvas.
+
+   type Plot_Canvas_Flag is (Frozen,
+                             Can_Move,
+                             Can_X_Resize,
+                             Can_Y_Resize);
+   --  Flags used by the canvas
+
+   type Plot_Canvas_Type is (None,
+                             Plot,
+                             Axis,
+                             Legends,
+                             Title,
+                             Text,
+                             Data);
+   --  The type of data that can be put in a canvas.
+   --  A 'plot' is specifically a Gtk.Extra.Plot.Gtk_Plot.
+
+   type Plot_Canvas_Pos is (Canvas_Out,
+                            Canvas_In,
+                            Canvas_Left,
+                            Canvas_Right,
+                            Canvas_Top,
+                            Canvas_Bottom,
+                            Canvas_Top_Left,
+                            Canvas_Top_Right,
+                            Canvas_Bottom_Left,
+                            Canvas_Bottom_Right);
+   --  The position of the items in the canvas.
+
+   ------------------------------------------
+   -- Creating and manipulating the canvas --
+   ------------------------------------------
 
    procedure Gtk_New (Widget : out Gtk_Plot_Canvas;
                       Width  : in Gint;
@@ -85,10 +128,11 @@ package Gtk.Extra.Plot_Canvas is
    --  event (drag-and-drop, etc.). This should be set before emitting any
    --  of the signals in this class.
 
-   procedure Cancel_Action (Plot_Canvas : access Gtk_Plot_Canvas_Record);
+   --  procedure Cancel_Action (Plot_Canvas : access Gtk_Plot_Canvas_Record);
    --  Cancel the current action.
    --  This can be called in the user callbacks to ignore temporarily some of
    --  the signals below.
+   --  !! This function is defined but has no body in gtk+extra !!
 
    function Get_Active_Plot (Canvas : access Gtk_Plot_Canvas_Record)
                             return      Gtk.Extra.Plot.Gtk_Plot;
@@ -108,16 +152,30 @@ package Gtk.Extra.Plot_Canvas is
    --  active dataset.
    --  This is the one that was last clicked on.
 
-   function Get_Active_Text (Canvas : access Gtk_Plot_Canvas_Record)
-                            return      Gtk.Extra.Plot.Gtk_Plot_Text;
-   --  Return the active text.
-   --  This is the one that was last clicked on.
-
    procedure Set_Size (Canvas  : access Gtk_Plot_Canvas_Record;
                        Width   : in Gint;
                        Height  : in Gint);
    --  Modify the size allocated for the canvas, and the size of the pixmap
    --  the plots are displayed on.
+
+   procedure Unselect (Canvas : access Gtk_Plot_Canvas_Record);
+   --  Unselect the currently selected item.
+
+   ------------------
+   -- Canvas items --
+   ------------------
+   --  There are several different types of items that can be put on the
+   --  canvas, and then manipulated interactively by the user.
+
+   type Gtk_Plot_Canvas_Item is new Gdk.C_Proxy;
+
+   function Get_Item_Type (Item : Gtk_Plot_Canvas_Item)
+                          return Plot_Canvas_Type;
+   --  Return the type of the item.
+
+   function Get_Active_Item (Canvas  : access Gtk_Plot_Canvas_Record)
+                            return Gtk_Plot_Canvas_Item;
+   --  Return the currently selected item.
 
    -----------
    -- Flags --
@@ -126,41 +184,32 @@ package Gtk.Extra.Plot_Canvas is
    --  the usual interface in Gtk.Object.Flag_Is_Set since this widget is not
    --  part of the standard gtk+ packages. Instead, use the functions below.
    --
-   --  - "can_resize_plot"
-   --    True if the plots in the canvas can be resized.
+   --  - "can_select"
+   --    True if it is possible to select a region of the canvas
    --
-   --  - "can_move_plot"
-   --    True if the plots can be moved within the canvas.
+   --  - "can_select_item"
+   --    True if it is possible to select any of the item on the canvas.
    --
-   --  - "can_move_legends"
-   --    True if the plots'legends can be moved.
+   --  - "can_select_point"
+   --    True if the individual points in the plots can be selected and
+   --    interactively moved by the user.
    --
-   --  - "can_move_titles"
-   --    True if the plots'titles can be moved.
-   --
-   --  - "can_move_text"
-   --    True if the plots'text or the canvas's texts can be moved.
+   --  - "can_dnd"
+   --    True if it is possible to drag an item on the canvas.
    --
    --  - "can_dnd_point"
    --    True if the points of the plots can be moved interactively.
    --
-   --  - "allocate_titles"
-   --    Should be set if the plot have titles associated with their axis,
-   --    since this provides a better position for the titles.
 
-   Can_Resize_Plot  : constant := 2 ** 0;
-   Can_Move_Plot    : constant := 2 ** 1;
-   Can_Move_Legends : constant := 2 ** 2;
-   Can_Move_Titles  : constant := 2 ** 3;
-   Can_Move_Text    : constant := 2 ** 4;
-   Can_Dnd_Point    : constant := 2 ** 5;
-   Allocate_Titles  : constant := 2 ** 6;
+   Can_Select       : constant := 2 ** 0;
+   Can_Select_Item  : constant := 2 ** 1;
+   Can_Select_Point : constant := 2 ** 2;
+   Can_Dnd          : constant := 2 ** 3;
+   Can_Dnd_Point    : constant := 2 ** 4;
 
-   Dnd_Flags        : constant := Can_Resize_Plot
-                                  + Can_Move_Plot
-                                  + Can_Move_Legends
-                                  + Can_Move_Titles
-                                  + Can_Move_Text
+   Dnd_Flags        : constant := Can_Select_Item
+                                  + Can_Select_Point
+                                  + Can_Dnd
                                   + Can_Dnd_Point;
 
    function Plot_Canvas_Flag_Is_Set
@@ -190,105 +239,59 @@ package Gtk.Extra.Plot_Canvas is
    --  <signals>
    --  The following new signals are defined for this widget:
    --
-   --  - "click_on_plot"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      Event  : Gdk_Button_Event)
-   --                     return Boolean;
-   --
-   --    Called when a plot (any area of it) was clicked on.
-   --    See Get_Active_Plot to get the exact plot that was clicked on.
-   --    Should return False if the event should not be propagated.
-   --
-   --  - "click_on_point"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      Event  : Gdk_Button_Event)
-   --                     return Boolean;
-   --
-   --    Called when a point was clicked on.
-   --    See Get_Active_Plot and Get_Active_Point to find which one was
-   --    clicked on.
-   --    The handler should return False if the event should not be propagated.
-   --
-   --  - "click_on_legends"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      Event  : Gdk_Button_Event)
-   --                     return Boolean;
-   --
-   --    Called when a plot's legend was clicked on.
-   --    Should return False if the event should not be propagated.
-   --
-   --  - "click_on_axis"
+   --  - "select_item"
    --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
    --                      Event  : Gdk_Button_Event;
-   --                      Axis   : Gtk.Extra.Plot.Gtk_Plot_Axis)
+   --                      Item   : Gtk_Plot_Canvas_Item)
    --                     return Boolean;
    --
-   --    Called when one of the axis of a plot was clicked on.
-   --    Should return False if the event should not be propagated.
+   --    Called when an item was selected.
+   --    An item can be anything, from a text to a plot
+   --    When this signal is called, the item was simply selected, but not
+   --    dragged.
+   --    The handler should return False if the item can not be selected.
    --
-   --  - "click_on_title"
+   --  - "move_item"
    --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      Event  : Gdk_Button_Event;
-   --                      Axis   : Gtk.Extra.Plot.Gtk_Plot_Axis)
+   --                      Item   : Gtk_Plot_Canvas_Item;
+   --                      New_X  : Gdouble;
+   --                      New_Y  : Gdouble)
    --                     return Boolean;
    --
-   --    Called when the title of one of the axis was clicked on.
-   --    Should return False if the event should not be propagated.
+   --    An item was moved on the canvas.
+   --    Its coordinates have not changed yet, but if the handler returns True
+   --    they will become (New_X, New_Y). If the handler returns False,
+   --    nothing happens.
    --
-   --  - "click_on_text"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      Event  : Gdk_Button_Event)
+   --  - "resize_item"
+   --    function Handler (Canvas     : access Gtk_Plot_Canvas_Record'Class;
+   --                      Item       : Gtk_Plot_Canvas_Item;
+   --                      New_Width  : Gdouble;
+   --                      New_Height : Gdouble)
    --                     return Boolean;
    --
-   --    Called when one of the texts of the canvas was clicked on.
-   --    Should return False if the event should not be propagated.
+   --    An item is being resized.
+   --    Its size has not changed yet, but if the handler returns True
+   --    it will become (New_Width, New_Height). If the handler returns False,
+   --    nothing happens.
    --
    --  - "select_region"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      Xmin, Xmax : Gdouble;
-   --                      Ymin, Ymax : Gdouble)
-   --                     return Boolean;
+   --    procedure Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
+   --                       X_Min  : Gdouble;
+   --                       X_Max  : Gdouble;
+   --                       Y_Min  : Gdouble;
+   --                       Y_Max  : Gdouble);
    --
-   --    Called when the user selected a region of a plot.
-   --    Should return False if the event should not be propagated.
-   --
-   --  - "move_text"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      X, Y : Gdouble)
-   --                     return Boolean;
-   --
-   --    Called when a title was moved by the user.
-   --    The text moved is returned by Get_Active_Text, and X, Y are its
-   --    new position.
-   --    Should return False if the text should not be moved to that location.
-   --
-   --  - "move_legends"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      X, Y : Gdouble)
-   --                     return Boolean;
-   --
-   --    Called just before moving Get_Active_Legend to a new location.
-   --    Should return False if the legend should not be moved.
-   --
-   --  - "move_plot"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      X, Y : Gdouble)
-   --                     return Boolean;
-   --
-   --    Called just before moving Get_Active_Plot to a new location.
-   --    Should return False if the plot should not be moved.
-   --
-   --  - "resize_plot"
-   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
-   --                      Width, Height : Gdouble)
-   --                     return Boolean;
-   --
-   --    Called just before resizing Get_Active_Plot.
-   --    Should return False if the plot should not be resized.
+   --    A region of the canvas was selected by the user.
    --  </signals>
 
 private
    type Gtk_Plot_Canvas_Record is
      new Gtk.Extra.Plot_Layout.Gtk_Plot_Layout_Record with null record;
    pragma Import (C, Get_Type, "gtk_plot_canvas_get_type");
+   pragma Import (C, Get_Item_Type, "ada_gtk_plot_canvas_get_item_type");
+   for Plot_Canvas_Flag use (Frozen        => 0,
+                             Can_Move      => 1,
+                             Can_X_Resize  => 2,
+                             Can_Y_Resize  => 4);
 end Gtk.Extra.Plot_Canvas;

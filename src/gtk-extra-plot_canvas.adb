@@ -59,13 +59,13 @@ package body Gtk.Extra.Plot_Canvas is
    -- Cancel_Action --
    -------------------
 
-   procedure Cancel_Action (Plot_Canvas : access Gtk_Plot_Canvas_Record)
-   is
-      procedure Internal (Plot_Canvas : in System.Address);
-      pragma Import (C, Internal, "gtk_plot_canvas_cancel_action");
-   begin
-      Internal (Get_Object (Plot_Canvas));
-   end Cancel_Action;
+--     procedure Cancel_Action (Plot_Canvas : access Gtk_Plot_Canvas_Record)
+--     is
+--        procedure Internal (Plot_Canvas : in System.Address);
+--        pragma Import (C, Internal, "gtk_plot_canvas_cancel_action");
+--     begin
+--        Internal (Get_Object (Plot_Canvas));
+--     end Cancel_Action;
 
    ------------------------
    -- Get_Active_Dataset --
@@ -112,20 +112,6 @@ package body Gtk.Extra.Plot_Canvas is
    begin
       Internal (Get_Object (Canvas), X, Y);
    end Get_Active_Point;
-
-   ---------------------
-   -- Get_Active_Text --
-   ---------------------
-
-   function Get_Active_Text (Canvas : access Gtk_Plot_Canvas_Record)
-                             return      Gtk.Extra.Plot.Gtk_Plot_Text
-   is
-      function Internal (Canvas : in System.Address)
-                         return      Gtk.Extra.Plot.Gtk_Plot_Text;
-      pragma Import (C, Internal, "gtk_plot_canvas_get_active_text");
-   begin
-      return Internal (Get_Object (Canvas));
-   end Get_Active_Text;
 
    -------------
    -- Gtk_New --
@@ -234,5 +220,29 @@ package body Gtk.Extra.Plot_Canvas is
    begin
       Internal (Get_Object (Canvas), Width, Height);
    end Set_Size;
+
+   --------------
+   -- Unselect --
+   --------------
+
+   procedure Unselect (Canvas : access Gtk_Plot_Canvas_Record) is
+      procedure Internal (Canvas : System.Address);
+      pragma Import (C, Internal, "gtk_plot_canvas_unselect");
+   begin
+      Internal (Get_Object (Canvas));
+   end Unselect;
+
+   ---------------------
+   -- Get_Active_Item --
+   ---------------------
+
+   function Get_Active_Item (Canvas  : access Gtk_Plot_Canvas_Record)
+                            return Gtk_Plot_Canvas_Item
+   is
+      function Internal (Canvas : System.Address) return Gtk_Plot_Canvas_Item;
+      pragma Import (C, Internal, "gtk_plot_canvas_get_active_item");
+   begin
+      return Internal (Get_Object (Canvas));
+   end Get_Active_Item;
 
 end Gtk.Extra.Plot_Canvas;

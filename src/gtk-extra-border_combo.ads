@@ -32,7 +32,7 @@
 --  user to select the border to apply to cells in a spreadsheet.
 --  Its main usage seems to be with a Gtk_Sheet.
 --  </description>
---  <c_version>gtk+extra 0.99.4</c_version>
+--  <c_version>gtk+extra 0.99.5</c_version>
 
 with Gtk.Extra.Combo_Box;
 

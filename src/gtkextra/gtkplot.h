@@ -414,9 +414,14 @@ GtkPlotText *	gtk_plot_put_text		(GtkPlot *plot,
 						 GdkColor *background,
 						 GtkJustification justification,
                                                  const gchar *text); 
+gint 		gtk_plot_remove_text		(GtkPlot *plot,
+						 GtkPlotText *text);
 void		gtk_plot_text_get_size		(GtkPlotText text,
 						 gint *width, gint *height,
 						 gint *ascent, gint *descent);
+void		gtk_plot_text_get_area		(GtkPlotText text,
+						 gint *x, gint *y,
+						 gint *width, gint *height);
 /* Axis */
 
 GtkPlotAxis *   gtk_plot_get_axis               (GtkPlot *plot, 

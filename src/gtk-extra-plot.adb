@@ -1971,4 +1971,18 @@ package body Gtk.Extra.Plot is
       return Interfaces.C.Strings.Value (Internal (Text));
    end Get_Text_String;
 
+   -----------------
+   -- Remove_Text --
+   -----------------
+
+   procedure Remove_Text (Plot : access Gtk_Plot_Record;
+                          Text : in Gtk_Plot_Text)
+   is
+      procedure Internal (Plot : System.Address;
+                          Text : Gtk_Plot_Text);
+      pragma Import (C, Internal, "gtk_plot_remove_text");
+   begin
+      Internal (Get_Object (Plot), Text);
+   end Remove_Text;
+
 end Gtk.Extra.Plot;

@@ -31,34 +31,59 @@ extern "C" {
 /* canvas flags */
 enum
 {
-      GTK_PLOT_CANVAS_CAN_RESIZE_PLOT	=	1 << 0,
-      GTK_PLOT_CANVAS_CAN_MOVE_PLOT	=	1 << 1,
-      GTK_PLOT_CANVAS_CAN_MOVE_LEGENDS	=	1 << 2,
-      GTK_PLOT_CANVAS_CAN_MOVE_TITLES	=	1 << 3,
-      GTK_PLOT_CANVAS_CAN_MOVE_TEXT	=	1 << 4,
-      GTK_PLOT_CANVAS_CAN_DND_POINT	=	1 << 5,
-      GTK_PLOT_CANVAS_ALLOCATE_TITLES	=	1 << 6
+      GTK_PLOT_CANVAS_CAN_SELECT	=	1 << 0, /* Select region */
+      GTK_PLOT_CANVAS_CAN_SELECT_ITEM	=	1 << 1, /* Select item */
+      GTK_PLOT_CANVAS_CAN_SELECT_POINT	=	1 << 2, /* Select point */
+      GTK_PLOT_CANVAS_CAN_DND		=	1 << 3, /* DnD item */
+      GTK_PLOT_CANVAS_CAN_DND_POINT	=	1 << 4, /* DnD point */
 };
 
 
 /* canvas actions */
-enum
+typedef enum
 {
-      GTK_PLOT_CANVAS_INACTIVE,
-      GTK_PLOT_CANVAS_RESIZE_PLOT,
-      GTK_PLOT_CANVAS_MOVE_PLOT,
-      GTK_PLOT_CANVAS_MOVE_LEGENDS,
-      GTK_PLOT_CANVAS_MOVE_TITLE,
-      GTK_PLOT_CANVAS_MOVE_TEXT,
-      GTK_PLOT_CANVAS_DND_POINT,
-      GTK_PLOT_CANVAS_IN_SELECTION
-};
+      GTK_PLOT_CANVAS_ACTION_INACTIVE,
+      GTK_PLOT_CANVAS_ACTION_SELECTION,
+      GTK_PLOT_CANVAS_ACTION_DRAG,
+      GTK_PLOT_CANVAS_ACTION_RESIZE,
+} GtkPlotCanvasAction;
 
-#define GTK_PLOT_CANVAS_DND_FLAGS      (GTK_PLOT_CANVAS_CAN_RESIZE_PLOT |  \
-                                        GTK_PLOT_CANVAS_CAN_MOVE_PLOT |    \
-                                        GTK_PLOT_CANVAS_CAN_MOVE_LEGENDS | \
-                                        GTK_PLOT_CANVAS_CAN_MOVE_TITLES |  \
-                                        GTK_PLOT_CANVAS_CAN_MOVE_TEXT |    \
+typedef enum
+{
+      GTK_PLOT_CANVAS_FROZEN            = 0,
+      GTK_PLOT_CANVAS_CAN_MOVE          = 1 << 0,
+      GTK_PLOT_CANVAS_CAN_X_RESIZE	= 1 << 1,
+      GTK_PLOT_CANVAS_CAN_Y_RESIZE	= 1 << 2,
+} GtkPlotCanvasFlag;
+
+typedef enum
+{
+      GTK_PLOT_CANVAS_NONE,
+      GTK_PLOT_CANVAS_PLOT,
+      GTK_PLOT_CANVAS_AXIS,
+      GTK_PLOT_CANVAS_LEGENDS,
+      GTK_PLOT_CANVAS_TITLE,
+      GTK_PLOT_CANVAS_TEXT,
+      GTK_PLOT_CANVAS_DATA,
+} GtkPlotCanvasType;
+
+typedef enum
+{
+      GTK_PLOT_CANVAS_OUT,
+      GTK_PLOT_CANVAS_IN,
+      GTK_PLOT_CANVAS_LEFT,
+      GTK_PLOT_CANVAS_RIGHT,
+      GTK_PLOT_CANVAS_TOP,
+      GTK_PLOT_CANVAS_BOTTOM,
+      GTK_PLOT_CANVAS_TOP_LEFT,
+      GTK_PLOT_CANVAS_TOP_RIGHT,
+      GTK_PLOT_CANVAS_BOTTOM_LEFT,
+      GTK_PLOT_CANVAS_BOTTOM_RIGHT,
+} GtkPlotCanvasPos;
+
+#define GTK_PLOT_CANVAS_DND_FLAGS      (GTK_PLOT_CANVAS_CAN_SELECT_ITEM |  \
+                                        GTK_PLOT_CANVAS_CAN_SELECT_POINT | \
+                                        GTK_PLOT_CANVAS_CAN_DND | \
                                         GTK_PLOT_CANVAS_CAN_DND_POINT)
 
 
@@ -69,30 +94,45 @@ enum
 #define GTK_PLOT_CANVAS_SET_FLAGS(canvas, flags)  (GTK_PLOT_CANVAS_FLAGS(canvas) |= (flags))
 #define GTK_PLOT_CANVAS_UNSET_FLAGS(canvas, flags)  (GTK_PLOT_CANVAS_FLAGS(canvas) &= ~(flags))
 #define GTK_PLOT_CANVAS_CAN_DND_POINT(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_DND_POINT)
-#define GTK_PLOT_CANVAS_CAN_RESIZE_PLOT(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_RESIZE_PLOT)
-#define GTK_PLOT_CANVAS_CAN_MOVE_PLOT(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_MOVE_PLOT)
-#define GTK_PLOT_CANVAS_CAN_MOVE_TITLES(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_MOVE_TITLES)
-#define GTK_PLOT_CANVAS_CAN_MOVE_TEXT(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_MOVE_TEXT)
-#define GTK_PLOT_CANVAS_CAN_MOVE_LEGENDS(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas)& GTK_PLOT_CANVAS_CAN_MOVE_LEGENDS)
-#define GTK_PLOT_CANVAS_ALLOCATE_TITLES(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas)& GTK_PLOT_CANVAS_ALLOCATE_TITLES)
+#define GTK_PLOT_CANVAS_CAN_DND(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_DND)
+#define GTK_PLOT_CANVAS_CAN_SELECT_POINT(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_SELECT_POINT)
+#define GTK_PLOT_CANVAS_CAN_SELECT_ITEM(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_SELECT_ITEM)
+#define GTK_PLOT_CANVAS_CAN_SELECT(canvas)  (GTK_PLOT_CANVAS_FLAGS(canvas) & GTK_PLOT_CANVAS_CAN_SELECT)
 
 
 typedef struct _GtkPlotCanvas	GtkPlotCanvas;
+typedef struct _GtkPlotCanvasItem	GtkPlotCanvasItem;
 typedef struct _GtkPlotCanvasClass	GtkPlotCanvasClass;
+
+struct _GtkPlotCanvasItem
+{
+  GdkRectangle area, new_area;
+
+  gint min_width, min_height;
+
+  GtkPlotCanvasType type;
+  GtkPlotCanvasFlag flags;
+  guint state;
+
+  gpointer data;
+};
 
 struct _GtkPlotCanvas
 {
   GtkPlotLayout plot_layout;
 
   guint16 flags;
-  guint16 action;
+  guint state;
+  GtkPlotCanvasAction action;
 
   GtkPlot *active_plot;
   GtkPlotData *active_data;
-  GtkPlotText *active_text;
   gint active_point;
   gdouble active_x, active_y;
 
+  GtkPlotCanvasItem active_item;
+
+  GtkPlotCanvasPos drag_point;
   gint drag_x, drag_y;
   gint pointer_x, pointer_y;
 
@@ -102,41 +142,21 @@ struct _GtkPlotCanvasClass
 {
   GtkPlotLayoutClass parent_class;
 
-  gint (*click_on_plot)		(GtkPlotCanvas *canvas,
-				 GdkEventButton *event);
-
-  gint (*click_on_point)	(GtkPlotCanvas *canvas,
-				 GdkEventButton *event);
-
-  gint (*click_on_legends)	(GtkPlotCanvas *canvas,
-				 GdkEventButton *event);
-
-  gint (*click_on_axis)		(GtkPlotCanvas *canvas,
+  gint (*select_item)		(GtkPlotCanvas *canvas,
 				 GdkEventButton *event,
-                                 GtkPlotAxis *axis);
+                                 GtkPlotCanvasItem *item);
 
-  gint (*click_on_title)	(GtkPlotCanvas *canvas,
-				 GdkEventButton *event,
-                                 GtkPlotAxis *axis);
+  gint (*move_item)		(GtkPlotCanvas *canvas,
+                                 GtkPlotCanvasItem *item,
+				 gdouble new_x, gdouble new_y);
 
-  gint (*click_on_text)		(GtkPlotCanvas *canvas,
-				 GdkEventButton *event);
+  gint (*resize_item)		(GtkPlotCanvas *canvas,
+                                 GtkPlotCanvasItem *item,
+				 gdouble new_width, gdouble new_height);
 
   void (*select_region)		(GtkPlotCanvas *canvas,
 				 gdouble xmin, gdouble xmax,
 				 gdouble ymin, gdouble ymax);
-
-  gint (*move_text)		(GtkPlotCanvas *canvas,
-				 gdouble x, gdouble y);
-
-  gint (*move_legends)		(GtkPlotCanvas *canvas,
-				 gdouble x, gdouble y);
-
-  gint (*move_plot)		(GtkPlotCanvas *canvas,
-				 gdouble x, gdouble y);
-
-  gint (*resize_plot)		(GtkPlotCanvas *canvas,
-				 gdouble width, gdouble height);
 
 };
 
@@ -149,11 +169,12 @@ void 		gtk_plot_canvas_add_plot 	(GtkPlotCanvas *plot_canvas,
 void		gtk_plot_canvas_set_active_plot (GtkPlotCanvas *plot_canvas,
 						 GtkPlot *plot);
 void		gtk_plot_canvas_cancel_action	(GtkPlotCanvas *plot_canvas);
+void		gtk_plot_canvas_unselect	(GtkPlotCanvas *plot_canvas);
 GtkPlot *       gtk_plot_canvas_get_active_plot (GtkPlotCanvas *canvas);
 GtkPlotData *   gtk_plot_canvas_get_active_dataset (GtkPlotCanvas *canvas);
 void  		gtk_plot_canvas_get_active_point (GtkPlotCanvas *canvas,
 						  gdouble *x, gdouble *y);
-GtkPlotText *   gtk_plot_canvas_get_active_text (GtkPlotCanvas *canvas);
+GtkPlotCanvasItem *   gtk_plot_canvas_get_active_item (GtkPlotCanvas *canvas);
 void            gtk_plot_canvas_set_size        (GtkPlotCanvas *canvas,
                                                  gint width, gint height);
 

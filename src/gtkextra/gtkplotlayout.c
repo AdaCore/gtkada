@@ -393,11 +393,26 @@ static void
 gtk_plot_layout_finalize (GtkObject *object)
 {
   GtkPlotLayout *plot_layout;
+  GList *list;
 
   g_return_if_fail (object != NULL);
   g_return_if_fail (GTK_IS_PLOT_LAYOUT (object));
 
   plot_layout = GTK_PLOT_LAYOUT (object);
+
+  list = plot_layout->text;
+  while(list){
+    GtkPlotText *text;
+
+    text = (GtkPlotText *) list->data;
+    if(text->text) g_free(text->text);
+    if(text->font) g_free(text->font);
+
+    g_free(text);
+    plot_layout->text = g_list_remove_link(plot_layout->text, list);
+    g_list_free_1(list);
+    list = plot_layout->text;
+  }
 
   if (GTK_OBJECT_CLASS (parent_class)->finalize)
     (*GTK_OBJECT_CLASS (parent_class)->finalize) (object);
@@ -507,6 +522,29 @@ gtk_plot_layout_put_text (GtkPlotLayout *layout,
   gtk_plot_layout_draw_text(layout, *text_attr);
 
   return text_attr;
+}
+
+gint
+gtk_plot_layout_remove_text(GtkPlotLayout *layout, GtkPlotText *text)
+{
+  GList *list;
+  gpointer data;
+
+  list = layout->text;
+
+  while(list)
+   {
+     data = list->data;
+    
+     if((GtkPlotText *)data == text){
+              layout->text = g_list_remove_link(layout->text, list);
+              g_list_free_1(list);
+              return TRUE;
+     }
+     list = list->next;
+   }
+
+   return FALSE;
 }
 
 static void

@@ -32,7 +32,7 @@
 --  Instead, if provides postscript support for Gtk_Plot widgets, and can
 --  create a postscript file from any Gtk_Plot widget.
 --  </description>
---  <c_version>gtk+extra 0.99.4</c_version>
+--  <c_version>gtk+extra 0.99.5</c_version>
 
 with Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Layout;  use Gtk.Extra.Plot_Layout;

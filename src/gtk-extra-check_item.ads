@@ -43,7 +43,7 @@
 --  to the user of your application through configuration files.
 --
 --  </description>
---  <c_version>gtk+extra0.99.4</c_version>
+--  <c_version>gtk+extra0.99.5</c_version>
 
 with Gtk.Toggle_Button;
 

@@ -84,6 +84,8 @@ GtkPlotText * 	gtk_plot_layout_put_text 	(GtkPlotLayout *layout,
 						 GdkColor *bg, 
 						 GtkJustification justification,
 						 const gchar *text);
+gint 		gtk_plot_layout_remove_text	(GtkPlotLayout *layout, 
+						 GtkPlotText *text);
 void 		gtk_plot_layout_get_pixel	(GtkPlotLayout *plot_layout, 
 						 gdouble px, gdouble py,
                           			 gint *x, gint *y);

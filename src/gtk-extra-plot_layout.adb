@@ -223,4 +223,18 @@ package body Gtk.Extra.Plot_Layout is
       Internal (Get_Object (Plot_Layout), Width, Height);
    end Set_Size;
 
+   -----------------
+   -- Remove_Text --
+   -----------------
+
+   procedure Remove_Text (Layout : access Gtk_Plot_Layout_Record;
+                          Text   : Gtk.Extra.Plot.Gtk_Plot_Text)
+   is
+      procedure Internal (Layout : System.Address;
+                          Text   : Gtk.Extra.Plot.Gtk_Plot_Text);
+      pragma Import (C, Internal, "gtk_plot_layout_remove_text");
+   begin
+      Internal (Get_Object (Layout), Text);
+   end Remove_Text;
+
 end Gtk.Extra.Plot_Layout;

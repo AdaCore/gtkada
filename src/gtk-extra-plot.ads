@@ -51,7 +51,7 @@
 --  a postscript file.
 --
 --  </description>
---  <c_version>gtk+extra 0.99.4<c_version>
+--  <c_version>gtk+extra 0.99.5<c_version>
 
 with Glib;           use Glib;
 with Glib.Glist;
@@ -764,6 +764,20 @@ package Gtk.Extra.Plot is
    --  specify any. Font should be the name of a postscript font, the list of
    --  which can be found in Gtk.Plot.Psfont.
 
+   procedure Remove_Text (Plot : access Gtk_Plot_Record;
+                          Text : in Gtk_Plot_Text);
+   --  Remove some text that is currently visible on the plot.
+   --  Nothing is done if Text is currently not visible.
+
+   procedure Text_Get_Area (Text   : in  Gtk_Plot_Text;
+                            X      : out Gint;
+                            Y      : out Gint;
+                            Width  : out Gint;
+                            Height : out Gint);
+   --  Return the area currently occupied by a text.
+   --  The coordinates are relative to the top-left corner of the plot in
+   --  which the text was put.
+
    procedure Text_Get_Size (Text    : in Gtk_Plot_Text;
                             Width   : out Gint;
                             Height  : out Gint;
@@ -1133,5 +1147,5 @@ private
    pragma Import (C, Hide_Dataset, "gtk_plot_hide_dataset");
    pragma Import (C, Text_Get_Size, "gtk_plot_text_get_size");
    pragma Import (C, Get_Text_Position, "ada_gtk_plot_get_text_position");
-
+   pragma Import (C, Text_Get_Area, "gtk_plot_text_get_area");
 end Gtk.Extra.Plot;

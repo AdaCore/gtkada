@@ -354,13 +354,16 @@ GdkFont *
 gtk_psfont_get_gdkfont(gchar *name, gint height)
 {
   GtkPSFont *fontdata;
-  GdkFont *gdk_font = NULL;
+  GdkFont *gdk_font = NULL, *aux_font = NULL;
   gchar *x11_font;
-  gint bufsize;
-  gchar *buffer = NULL;
-  gint i;
+  gint bufsize, auxbufsize;
+  gchar *buffer = NULL, *auxbuffer = NULL;
+  gint i, j;
   gint auxheight;
   gint min_height = 8;
+  gchar **x11_fontset;
+  gint n;
+  gboolean ok = FALSE;
 
   if (height <= 0) height = 1;
  
@@ -369,20 +372,47 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
   for (i = 0; i < NUM_X11_FONTS; i++) {
     x11_font = fontdata->xfont[i];
     if (x11_font != NULL) {
-     bufsize = strlen(x11_font)+25;  /* Should be enought*/
-     buffer = (gchar *)g_malloc(bufsize);
-
-     for(auxheight = MAX(height, min_height); auxheight >= min_height; auxheight--){
-      g_snprintf(buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
-    
-      gdk_font = gdk_font_load(buffer);
-      if (gdk_font != NULL) {
-         g_free(buffer);
-         break;
+      x11_fontset = g_strsplit(x11_font, ",", 0);
+      bufsize = 0;
+      for (n = 0 ; x11_fontset[n] != NULL ; n++) {
+	/* Should be enought*/
+	bufsize += strlen(x11_fontset[n]) + 25;
       }
-     }
+      buffer = (gchar *)g_malloc(bufsize);
 
-     if(gdk_font != NULL) break;
+      for (j = 0 ; j < n ; j++) {
+	ok = FALSE;
+	auxbufsize = strlen(x11_fontset[j]) + 25;
+	auxbuffer = (gchar*)g_malloc(auxbufsize);
+	for (auxheight = MAX(height, min_height);
+	     auxheight >= min_height;
+	     auxheight--){
+	  g_snprintf(auxbuffer, auxbufsize, 
+		     "%s-*-%d-*-*-*-*-*-*-*", 
+		     g_strstrip(x11_fontset[j]), auxheight);
+	  if((aux_font = gdk_font_load(auxbuffer)) != NULL) {
+	    if (j == 0) {
+	      g_snprintf(buffer, bufsize, "%s", auxbuffer);
+	    } else {
+	      g_snprintf(buffer, bufsize, "%s,%s", buffer, auxbuffer);
+	    }
+	    ok = TRUE;
+	    gdk_font_unref(aux_font);
+	    break;
+	  }
+	}
+	g_free(auxbuffer);
+	if (!ok) break;
+      }
+      if (ok) {
+	gdk_font = (n == 1) ? gdk_font_load(buffer) : gdk_fontset_load(buffer);
+	if (gdk_font != NULL) {
+	  g_free(buffer);
+	  break;
+	}
+      }
+      g_strfreev(x11_fontset);
+      if(gdk_font != NULL) break;
     }
 
     g_free(buffer);
@@ -391,17 +421,44 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
   if (gdk_font == NULL) {
     for (i=0; i < NUM_LAST_RESORT_FONTS; i++) {
       x11_font = last_resort_fonts[i];
-      bufsize = strlen(x11_font)+25;  /* Should be enought*/
-      buffer = (char *)g_malloc(bufsize);
-      
-      for(auxheight = MAX(height, min_height); auxheight >= min_height; auxheight--){
-       g_snprintf(buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
-    
-       gdk_font = gdk_font_load(buffer);
-        if (gdk_font != NULL) {
-          g_free(buffer);
-          break;
-       }
+      x11_fontset = g_strsplit(x11_font, ",", 0);
+      bufsize = 0;
+      for (n = 0 ; x11_fontset[n] != NULL ; n++) {
+	/* Should be enought*/
+	bufsize += strlen(x11_fontset[n]) + 25;
+      }
+      buffer = (gchar *)g_malloc(bufsize);
+
+      for (j = 0 ; j < n ; j++) {
+	ok = FALSE;
+	auxbufsize = strlen(x11_fontset[j]) + 25;
+	auxbuffer = (gchar*)g_malloc(auxbufsize);
+	for (auxheight = MAX(height, min_height);
+	     auxheight >= min_height;
+	     auxheight--){
+	  g_snprintf(auxbuffer, auxbufsize, 
+		     "%s-*-%d-*-*-*-*-*-*-*", 
+		     g_strstrip(x11_fontset[j]), auxheight);
+	  if((aux_font = gdk_font_load(auxbuffer)) != NULL) {
+	    if (j == 0) {
+	      g_snprintf(buffer, bufsize, "%s", auxbuffer);
+	    } else {
+	      g_snprintf(buffer, bufsize, "%s,%s", buffer, auxbuffer);
+	    }
+	    ok = TRUE;
+	    gdk_font_unref(aux_font);
+	    break;
+	  }
+	}
+	g_free(auxbuffer);
+	if (!ok) break;
+      }
+      if (ok) {
+	gdk_font = (n == 1) ? gdk_font_load(buffer) : gdk_fontset_load(buffer);
+	if (gdk_font != NULL) {
+	  g_free(buffer);
+	  break;
+	}
       }
 
       if (gdk_font != NULL) {
@@ -410,6 +467,7 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
 	break;
       }
 
+      g_strfreev(x11_fontset);
       g_free(buffer);
     }
   }

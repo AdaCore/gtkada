@@ -541,6 +541,7 @@ static void
 gtk_plot_finalize (GtkObject *object)
 {
   GtkPlot *plot;
+  GList *list;
  
   g_return_if_fail (object != NULL);
   g_return_if_fail (GTK_IS_PLOT (object));
@@ -573,6 +574,31 @@ gtk_plot_finalize (GtkObject *object)
   g_free (plot->yticks.major_values);
   g_free (plot->yticks.minor);
   g_free (plot->yticks.minor_values);
+
+  list = plot->text;
+  while(list){
+    GtkPlotText *text;
+
+    text = (GtkPlotText *) list->data;
+    if(text->text) g_free(text->text);
+    if(text->font) g_free(text->font);
+
+    g_free(text);
+    plot->text = g_list_remove_link(plot->text, list);
+    g_list_free_1(list);
+    list = plot->text;
+  }
+
+  list = plot->data_sets;
+  while(list){
+    GtkPlotData *data;
+
+    data = (GtkPlotData *) list->data;
+
+    plot->data_sets = g_list_remove_link(plot->data_sets, list);
+    g_list_free_1(list);
+    list = plot->data_sets;
+  }
 
   if ( GTK_OBJECT_CLASS (parent_class)->destroy )
     (* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -2223,8 +2249,7 @@ gtk_plot_draw_text(GtkPlot *plot,
                    GtkPlotText text) 
 {
   gint x, y;
-  gint width, height;
-  gint ascent, descent;
+  gint tx, ty, twidth, theight;
 
   if(!text.text) return;
   if(strlen(text.text) == 0) return;
@@ -2233,66 +2258,10 @@ gtk_plot_draw_text(GtkPlot *plot,
   x = text.x * GTK_WIDGET(plot)->allocation.width;
   y = text.y * GTK_WIDGET(plot)->allocation.height;
 
-  gtk_plot_text_get_size(text, &width, &height, &ascent, &descent);
+  gtk_plot_text_get_area(text, &tx, &ty, &twidth, &theight);
 
-  switch(text.justification){
-    case GTK_JUSTIFY_LEFT:
-      switch(text.angle){
-        case 0:
-            y -= ascent;
-            break;
-        case 90:
-            y -= height;
-            x -= ascent;
-            break;
-        case 180:
-            x -= width;
-            y -= descent;
-            break;
-        case 270:
-            x -= descent;
-            break;
-      }
-      break;
-    case GTK_JUSTIFY_RIGHT:
-      switch(text.angle){
-        case 0:
-            x -= width;
-            y -= ascent;
-            break;
-        case 90:
-            x -= ascent;
-            break;
-        case 180:
-            y -= descent; 
-            break;
-        case 270:
-            y -= height;
-            x -= descent; 
-            break;
-      }
-      break;
-    case GTK_JUSTIFY_CENTER:
-    default:
-      switch(text.angle){
-        case 0:
-            x -= width / 2.;
-            y -= ascent;
-	    break;
-        case 90:
-            x -= ascent;
-            y -= height / 2.;
-	    break;
-        case 180:
-            x -= width / 2.;
-            y -= descent;
-            break;
-        case 270:
-            x -= descent;
-            y -= height / 2.;
-            break;
-      }
-  }
+  x += tx;
+  y += ty;
 
   gtk_plot_paint_text(plot, area, x, y, text);
 }
@@ -2693,6 +2662,78 @@ gtk_plot_text_get_size(GtkPlotText text,
     }
 
   gdk_font_unref(font);
+}
+
+void
+gtk_plot_text_get_area(GtkPlotText text, 
+                       gint *x, gint *y,
+                       gint *width, gint *height)
+{
+  gint ascent, descent;
+
+  gtk_plot_text_get_size(text, width, height, &ascent, &descent);
+
+  *x = 0;
+  *y = 0;
+
+  switch(text.justification){
+    case GTK_JUSTIFY_LEFT:
+      switch(text.angle){
+        case 0:
+            *y -= ascent;
+            break;
+        case 90:
+            *y -= *height;
+            *x -= ascent;
+            break;
+        case 180:
+            *x -= *width;
+            *y -= descent;
+            break;
+        case 270:
+            *x -= descent;
+            break;
+      }
+      break;
+    case GTK_JUSTIFY_RIGHT:
+      switch(text.angle){
+        case 0:
+            *x -= *width;
+            *y -= ascent;
+            break;
+        case 90:
+            *x -= ascent;
+            break;
+        case 180:
+            *y -= descent; 
+            break;
+        case 270:
+            *y -= *height;
+            *x -= descent; 
+            break;
+      }
+      break;
+    case GTK_JUSTIFY_CENTER:
+    default:
+      switch(text.angle){
+        case 0:
+            *x -= *width / 2.;
+            *y -= ascent;
+	    break;
+        case 90:
+            *x -= ascent;
+            *y -= *height / 2.;
+	    break;
+        case 180:
+            *x -= *width / 2.;
+            *y -= descent;
+            break;
+        case 270:
+            *x -= descent;
+            *y -= *height / 2.;
+            break;
+      }
+  }
 }
 
 /******************************************
@@ -3810,6 +3851,7 @@ gtk_plot_legends_set_attributes(GtkPlot *plot, const gchar *font, gint height,
  * gtk_plot_show_dataset
  * gtk_plot_hide_dataset
  * gtk_plot_remove_dataset
+ * gtk_plot_remove_text
  ******************************************/
 
 GtkPlotData *
@@ -4175,6 +4217,30 @@ gtk_plot_remove_dataset(GtkPlot *plot, GtkPlotData *dataset)
 
    return FALSE;
 }
+
+gint
+gtk_plot_remove_text(GtkPlot *plot, GtkPlotText *text)
+{
+  GList *list;
+  gpointer data;
+
+  list = plot->text;
+
+  while(list)
+   {
+     data = list->data;
+     
+     if((GtkPlotText *)data == text){
+              plot->text = g_list_remove_link(plot->text, list);
+              g_list_free_1(list);
+	      return TRUE;
+     }
+     list = list->next;
+   }
+
+   return FALSE;
+}
+
 
 /* Solve the tridiagonal equation system that determines the second
    derivatives for the interpolation points.  (Based on Numerical

@@ -39,7 +39,7 @@
 --  These relative coordinates makes it really easy to handle the resizing
 --  of this container.
 --  </description>
---  <c_version>gtk+extra 0.99.4</c_version>
+--  <c_version>gtk+extra 0.99.5</c_version>
 
 with Gdk.Color;
 with Gtk.Enums;
@@ -97,6 +97,10 @@ package Gtk.Extra.Plot_Layout is
    --  Ps_Font should be the name of a postscript font.
    --  (X, Y) are the relative coordinates to which the text should be drawn.
    --  The only legal values for Angle are 0, 90, 180 and 270 degrees.
+
+   procedure Remove_Text (Layout : access Gtk_Plot_Layout_Record;
+                          Text   : Gtk.Extra.Plot.Gtk_Plot_Text);
+   --  Remove a text that was added with Put_Text from the display.
 
    procedure Get_Pixel (Plot_Layout : access Gtk_Plot_Layout_Record;
                         Px          : in Gdouble;
