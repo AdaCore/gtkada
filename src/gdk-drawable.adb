@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C;
+with System;
+with Glib.Object; use Glib.Object;
 
 package body Gdk.Drawable is
 
@@ -221,5 +223,26 @@ package body Gdk.Drawable is
          C.To_C (Item => Wide_Text, Append_Nul => False),
          Wide_Text'Length);
    end Draw_Text;
+
+   -----------------
+   -- Draw_Layout --
+   -----------------
+
+   procedure Draw_Layout
+     (Drawable : Gdk_Drawable;
+      GC       : Gdk.Gdk_GC;
+      X        : Gint;
+      Y        : Gint;
+      Layout   : Pango.Layout.Pango_Layout)
+   is
+      procedure Internal
+        (Drawable : Gdk_Drawable;
+         GC       : Gdk.Gdk_GC;
+         X, Y     : Gint;
+         Layout   : System.Address);
+      pragma Import (C, Internal, "gdk_draw_layout");
+   begin
+      Internal (Drawable, GC, X, Y, Get_Object (Layout));
+   end Draw_Layout;
 
 end Gdk.Drawable;

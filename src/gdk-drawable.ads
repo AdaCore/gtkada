@@ -44,6 +44,7 @@
 
 with Glib; use Glib;
 with Gdk.Types;
+with Pango.Layout;
 
 package Gdk.Drawable is
 
@@ -155,6 +156,9 @@ package Gdk.Drawable is
    --  Draw a string in the given font or fontset.
    --  X is the x coordinate of the left edge of the text.
    --  Y is the y coordinate of the baseline of the text.
+   --
+   --  You should use Gtk.Widget.Create_Pango_Layout instead to handle
+   --  internationalization.
 
    procedure Draw_Text
      (Drawable    : Gdk_Drawable;
@@ -187,6 +191,15 @@ package Gdk.Drawable is
    --  extend to the right edge of the source pixmap.
    --  Height is the height of the area to be copied, or -1 to make the area
    --  extend to the bottom edge of the source pixmap.
+
+   procedure Draw_Layout
+     (Drawable : Gdk_Drawable;
+      GC       : Gdk.Gdk_GC;
+      X        : Gint;
+      Y        : Gint;
+      Layout   : Pango.Layout.Pango_Layout);
+   --  Display the layout and its text in Drawable. This method should be
+   --  preferred over Draw_Text.
 
    procedure Draw_Pixmap
      (Drawable : Gdk_Drawable;
@@ -281,6 +294,5 @@ end Gdk.Drawable;
 --  missing pango related functions:
 --  gdk_draw_glyphs
 --  gdk_draw_layout_line
---  gdk_draw_layout
 --  gdk_draw_layout_line_with_colors
 --  gdk_draw_layout_with_colors
