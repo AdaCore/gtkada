@@ -48,6 +48,25 @@ package body Gtk.Text is
       return To_Boolean (Internal (Get_Object (Text), Nchars));
    end Backward_Delete;
 
+   ---------------------
+   -- Claim_Selection --
+   ---------------------
+
+   procedure Claim_Selection
+     (Text  : access Gtk_Text_Record;
+      Claim : Boolean := True;
+      Time  : Guint32)
+   is
+      procedure Internal
+        (Editable : System.Address;
+         Claim    : Gint;
+         Time     : Guint32);
+      pragma Import (C, Internal, "gtk_old_editable_claim_selection");
+
+   begin
+      Internal (Get_Object (Text), Boolean'Pos (Claim), Time);
+   end Claim_Selection;
+
    --------------------
    -- Forward_Delete --
    --------------------

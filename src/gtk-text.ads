@@ -192,6 +192,16 @@ package Gtk.Text is
    --  If set to True, words are wrapped down to the next line if they can't
    --  be completed on the current line.
 
+   procedure Claim_Selection
+     (Text  : access Gtk_Text_Record;
+      Claim : Boolean := True;
+      Time  : Guint32);
+   --  If Claim is set to True, claim the ownership of the primary X selection.
+   --  Otherwise, release it. "Time" should be set to the
+   --  time of the last-change time for the specified selection. It is
+   --  discarded if it is earlier than the current last-change time, or
+   --  later than the current X server time.
+
 private
    type Gtk_Text_Record is new Gtk.Editable.Gtk_Editable_Record
      with null record;
