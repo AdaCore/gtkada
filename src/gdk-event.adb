@@ -103,13 +103,13 @@ package body Gdk.Event is
    Invalid_Guint32_Value : constant Guint32 := Guint32'Last - 1;
    Invalid_Gulong_Value  : constant Gulong  := Gulong'Last - 1;
 
-   pragma Export (C, Invalid_Gdouble_Value, "invalid_gdouble_value");
-   pragma Export (C, Invalid_Gint_Value, "invalid_gint_value");
-   pragma Export (C, Invalid_Gint16_Value, "invalid_gint16_value");
-   pragma Export (C, Invalid_Guint_Value, "invalid_guint_value");
-   pragma Export (C, Invalid_Guint16_Value, "invalid_guint16_value");
-   pragma Export (C, Invalid_Guint32_Value, "invalid_guint32_value");
-   pragma Export (C, Invalid_Gulong_Value, "invalid_gulong_value");
+   pragma Export (C, Invalid_Gdouble_Value, "ada_gdk_invalid_gdouble_value");
+   pragma Export (C, Invalid_Gint_Value, "ada_gdk_invalid_gint_value");
+   pragma Export (C, Invalid_Gint16_Value, "ada_gdk_invalid_gint16_value");
+   pragma Export (C, Invalid_Guint_Value, "ada_gdk_invalid_guint_value");
+   pragma Export (C, Invalid_Guint16_Value, "ada_gdk_invalid_guint16_value");
+   pragma Export (C, Invalid_Guint32_Value, "ada_gdk_invalid_guint32_value");
+   pragma Export (C, Invalid_Gulong_Value, "ada_gdk_invalid_gulong_value");
 
    --------------------
    -- Get_Event_Type --
