@@ -207,8 +207,8 @@ package Gtk.Widget is
 
    procedure Set_Child_Visible
      (Widget : access Gtk_Widget_Record; Is_Visible : Boolean);
-   --  Sets whether Widget should be mapped along with its when its parent
-   --  is mapped and Widget has been shown with Show.
+   --  Sets whether Widget should be mapped along with its parent when its
+   --  parent is mapped and Widget has been shown with Show.
    --
    --  The child visibility can be set for widget before it is added to a
    --  container with Set_Parent, to avoid mapping children unnecessary before
