@@ -71,11 +71,13 @@ dirs:: force
 	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
 $(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
+ifeq ($(BUILD_SHARED),yes)
 	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects) @GTK_LIBS@
 	-@if [ ! -f .devel ]; then \
 	  strip $(LIBNAME); \
 	  $(CHMOD) +x $(LIBNAME); \
 	fi
+endif
 
 $(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects)
@@ -91,21 +93,21 @@ install_ali::
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
 	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
 
-$(GATE_EX):: $(GATE_SRC) $(ARCHIVE_NAME)
+$(GATE_EX):: $(GATE_SRC) $(LIBNAME)
 	@if [ -f .devel ]; then \
 	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
 	  $(GNATMAKE) $(GNATFLAGS) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
-$(DGATE):: $(DGATE).adb $(ARCHIVE_NAME)
+$(DGATE):: $(DGATE).adb $(LIBNAME)
 	@if [ -f .devel ]; then \
 	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
 	   $(GNATMAKE) $(GNATFLAGS) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
-$(GDIALOG):: $(GDIALOG).adb $(ARCHIVE_NAME)
+$(GDIALOG):: $(GDIALOG).adb $(LIBNAME)
 	@if [ -f .devel ]; then \
 	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(GDIALOG) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
