@@ -695,7 +695,7 @@ begin
    SHT.Set (new String'("GtkSpinButton"), Spin_Button_Generate'Access);
    SHT.Set (new String'("GtkStatusbar"), Status_Bar_Generate'Access);
    SHT.Set (new String'("GtkTable"), Table_Generate'Access);
-   SHT.Set (new String'("GtkText"), Text_Generate'Access);
+   SHT.Set (new String'("GtkTextView"), Text_View_Generate'Access);
    SHT.Set (new String'("GtkToggleButton"), Toggle_Button_Generate'Access);
    SHT.Set (new String'("GtkToolbar"), Toolbar_Generate'Access);
    SHT.Set (new String'("GtkTree"), Tree_Generate'Access);
