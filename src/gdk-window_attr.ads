@@ -64,6 +64,9 @@ package Gdk.Window_Attr is
       Wmclass_Name      : String := "";
       Wmclass_Class     : String := "";
       Override_Redirect : Boolean := True);
+   --  Creates a new Gdk_Window_Attr structure.
+   --  It is your responsability to free the visual, colormap, cursor,... field
+   --  when they are no longer needed.
 
    procedure Destroy (Window_Attr : in out Gdk_Window_Attr);
 
