@@ -36,10 +36,12 @@ with Gdk; use Gdk;
 with Gdk.Color;
 with Gdk.Font;
 with Gdk.GC;
+with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Pixmap;
 with Gdk.Window;
 with Gtk.Enums;
+with Gtk.Object;
 with Pango.Font;
 
 package Gtk.Style is
@@ -130,6 +132,27 @@ package Gtk.Style is
       X, Y        : Gint;
       Str         : String);
    --  pragma Deprecated (Draw_String);
+
+   procedure Paint_Handle
+     (Style               : Gtk_Style;
+      Window              : Gdk.Gdk_Window;
+      State_Type          : Gtk.Enums.Gtk_State_Type;
+      Shadow_Type         : Gtk.Enums.Gtk_Shadow_Type;
+      Area                : Gdk.Rectangle.Gdk_Rectangle;
+      Widget              : access Gtk.Object.Gtk_Object_Record'Class;
+      Detail              : String := "paned";
+      X, Y, Width, Height : Gint;
+      Orientation         : Gtk.Enums.Gtk_Orientation);
+   --  Paint the handles as is done in the Gtk_Paned widget (ie a series of
+   --  small dots in Window, that indicate that Window can be manipulated and
+   --  resized.
+   --  If Detail is "paned", only a few dots are painted in the middle of
+   --  window (aligned either horizontally or vertically depending on
+   --  Orientation). Any other value for Detail draws points on the whole
+   --  length of Window.
+   --  (X, Y, Width, Height) is the area in which the dots should be painted.
+   --  For the whole window, use (0, 0, -1, -1).
+   --  Only the area that intersect Area is drawn.
 
    procedure Set_Foreground
      (Style      : Gtk_Style;
@@ -527,7 +550,6 @@ end Gtk.Style;
 --  gtk_paint_extension
 --  gtk_paint_focus
 --  gtk_paint_slider
---  gtk_paint_handle
 --  gtk_paint_expander
 --  gtk_paint_layout
 --  gtk_paint_resize_grip

@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib.Object; use Glib.Object;
+with Gdk.Rectangle; use Gdk.Rectangle;
 with Gtk.Enums; use Gtk.Enums;
 with System;
 
@@ -842,5 +844,40 @@ package body Gtk.Style is
    begin
       return Internal (Style, State_Type);
    end Get_Bg_Pixmap;
+
+   ------------------
+   -- Paint_Handle --
+   ------------------
+
+   procedure Paint_Handle
+     (Style               : Gtk_Style;
+      Window              : Gdk.Gdk_Window;
+      State_Type          : Gtk.Enums.Gtk_State_Type;
+      Shadow_Type         : Gtk.Enums.Gtk_Shadow_Type;
+      Area                : Gdk_Rectangle;
+      Widget              : access Gtk.Object.Gtk_Object_Record'Class;
+      Detail              : String := "paned";
+      X, Y, Width, Height : Gint;
+      Orientation         : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal
+        (Style               : Gtk_Style;
+         Window              : Gdk.Gdk_Window;
+         State_Type          : Gtk.Enums.Gtk_State_Type;
+         Shadow_Type         : Gtk.Enums.Gtk_Shadow_Type;
+         Area                : Gdk_Rectangle;
+         Widget              : System.Address;
+         Detail              : String;
+         X, Y, Width, Height : Gint;
+         Orientation         : Gtk.Enums.Gtk_Orientation);
+      pragma Import (C, Internal, "gtk_paint_handle");
+   begin
+      Internal
+        (Style, Window, State_Type, Shadow_Type,
+         Area, Get_Object (Widget), Detail & ASCII.Nul,
+         X, Y, Width, Height, Orientation);
+   end Paint_Handle;
+
+
 
 end Gtk.Style;
