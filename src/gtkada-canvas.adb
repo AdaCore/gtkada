@@ -287,7 +287,7 @@ package body Gtkada.Canvas is
       return Gdk_Rectangle;
    --  Return the coordinates of the rectangle representing the background
    --  selection (when the user clicks in the background and drags the mouse).
-   --  Return coordinates are in canvas coordinates
+   --  Return coordinates are in world coordinates
 
    procedure Emit_By_Name_Item
      (Object : System.Address;
@@ -2300,7 +2300,7 @@ package body Gtkada.Canvas is
       Canvas.Mouse_Has_Moved := False;
       Canvas.Surround_Box_Scroll := Scrolling_Amount_Min;
 
-      --  Make sure that no other widget steal the events while we are
+      --  Make sure that no other widget steals the events while we are
       --  moving an item.
 
       Grab_Add (Canvas);
@@ -2321,8 +2321,8 @@ package body Gtkada.Canvas is
    is
       X : Gint := 0;
       Y : Gint := 0;
-      W : Gint := Canvas.Bg_Selection_Width;
-      H : Gint := Canvas.Bg_Selection_Height;
+      W : Gint := To_Canvas_Coordinates (Canvas, Canvas.Bg_Selection_Width);
+      H : Gint := To_Canvas_Coordinates (Canvas, Canvas.Bg_Selection_Height);
 
    begin
       if Canvas.Event_Press /= null then
@@ -2680,10 +2680,8 @@ package body Gtkada.Canvas is
          Selected := Selected.Next;
       end loop;
 
-      Canvas.Bg_Selection_Width  := Canvas.Bg_Selection_Width
-        + To_Canvas_Coordinates (Canvas, Delta_X);
-      Canvas.Bg_Selection_Height := Canvas.Bg_Selection_Height
-        + To_Canvas_Coordinates (Canvas, Delta_Y);
+      Canvas.Bg_Selection_Width  := Canvas.Bg_Selection_Width + Delta_X;
+      Canvas.Bg_Selection_Height := Canvas.Bg_Selection_Height + Delta_Y;
 
       Draw_Dashed_Selection (Canvas);
 
