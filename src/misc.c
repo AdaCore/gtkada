@@ -2378,42 +2378,42 @@ ada_packer_get_nth_child (GtkPacker* packer, guint n) {
 }
 
 GtkAnchorType
-ada_packer_get_anchor (GtkPackerChild* child) {
+ada_gtk_packer_get_anchor (GtkPackerChild* child) {
   return child->anchor;
 }
 
 GtkSideType
-ada_packer_get_side (GtkPackerChild* child) {
+ada_gtk_packer_get_side (GtkPackerChild* child) {
   return child->side;
 }
 
 GtkPackerOptions
-ada_packer_get_options (GtkPackerChild* child) {
+ada_gtk_packer_get_options (GtkPackerChild* child) {
   return child->options;
 }
 
 guint
-ada_packer_get_border_width (GtkPackerChild* child) {
+ada_gtk_packer_get_border_width (GtkPackerChild* child) {
   return child->border_width;
 }
 
 guint
-ada_packer_get_pad_x (GtkPackerChild* child) {
+ada_gtk_packer_get_pad_x (GtkPackerChild* child) {
   return child->pad_x;
 }
 
 guint
-ada_packer_get_pad_y (GtkPackerChild* child) {
+ada_gtk_packer_get_pad_y (GtkPackerChild* child) {
   return child->pad_y;
 }
 
 guint
-ada_packer_get_i_pad_x (GtkPackerChild* child) {
+ada_gtk_packer_get_i_pad_x (GtkPackerChild* child) {
   return child->i_pad_x;
 }
 
 guint
-ada_packer_get_i_pad_y (GtkPackerChild* child) {
+ada_gtk_packer_get_i_pad_y (GtkPackerChild* child) {
   return child->i_pad_y;
 }
 
