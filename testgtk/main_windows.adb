@@ -681,7 +681,6 @@ package body Main_Windows is
    is
       Frame    : Gtk.Frame.Gtk_Frame;
       Label    : Gtk.Label.Gtk_Label;
-      Box      : Gtk.Box.Gtk_Box;
       Tree     : Gtk.Ctree.Gtk_Ctree;
       Scrolled : Gtk_Scrolled_Window;
       Paned    : Gtk_Paned;

@@ -3,7 +3,6 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
 with Gtk.Item_Factory; use Gtk.Item_Factory;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Menu_Bar;
 with Ada.Text_IO; use Ada.Text_IO;
 
