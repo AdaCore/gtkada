@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -125,6 +125,14 @@ package Gtk.Menu_Item is
    --  activate_item
    --  toggle_size_request
    --  toggle_size_allocate
+
+   --  If you want to get a signal every time the menu item is made visible
+   --  on screen, for instance because you want to dynamically set its
+   --  sensitive state, you should connect to the "map" signal of the
+   --  toplevel menu, as in:
+   --     Gtkada.Handlers.Widget_Callback.Object_Connect
+   --        (Get_Toplevel (Item), "map",
+   --         Slot_Object => Item);
 
    ----------------
    -- Properties --
