@@ -323,6 +323,15 @@ ada_rgb_cmap_set8 (GdkRgbCmap* cmap, gint index, guchar value)
   cmap->lut [index] = value;
 }
 
+/******************************************************
+ **  Gtk.Socket
+ ******************************************************/
+
+GdkWindow*
+ada_gtk_socket_get_plug_window (GtkSocket* socket) {
+  return socket->plug_window;
+}
+
 /*****************************************************
  ** Gtk.Selection and Gtk.Dnd functions
  *****************************************************/

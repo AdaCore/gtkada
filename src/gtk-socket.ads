@@ -62,6 +62,7 @@
 --  <c_version>1.2.8</c_version>
 
 with Gtk.Container;
+with Gdk.Window;
 
 package Gtk.Socket is
 
@@ -81,6 +82,10 @@ package Gtk.Socket is
       Wid    : in     Guint32);
    --  Reparent a pre-existing toplevel window into a Gtk_Socket.
    --  Wid is the XID of an existing toplevel window.
+
+   function Get_Plug_Window (Socket : access Gtk_Socket_Record)
+                            return Gdk.Window.Gdk_Window;
+   --  Return the id of the embedded window.
 
 private
 
