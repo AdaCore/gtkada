@@ -393,9 +393,9 @@ package body Glib.XML is
          end if;
       else
          Child.Next := N.Child;
-         Child.Parent := N;
          N.Child := Child;
       end if;
+      Child.Parent := N;
    end Add_Child;
 
    --------------
