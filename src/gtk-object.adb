@@ -1,4 +1,4 @@
-with Gtk.Signal;
+with Ada.Text_IO;
 
 package body Gtk.Object is
 
@@ -24,16 +24,13 @@ package body Gtk.Object is
       procedure Internal  (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_destroy");
    begin
-      --  When the widget is destroyed, the callbacks are automatically
-      --  destroyed too.
-      --  In this binding, we have to make sure the memory allocated for
-      --  the data is freed. The simple way is to call
-      Gtk.Signal.Handlers_Destroy (Object);
-
+      if Object.Data.Num_Ref /= 1 then
+         Ada.Text_IO.Put_Line
+           ("Destroying an object with multiple references");
+      end if;
       Internal (Get_Object (Object));
-      Set_Object (Object, System.Null_Address);
+      Object.Data.Ptr := System.Null_Address;
    end Destroy;
-
 
    ----------------
    --  Destroyed --

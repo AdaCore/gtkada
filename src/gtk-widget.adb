@@ -1,3 +1,5 @@
+with Ada.Text_IO;
+
 package body Gtk.Widget is
 
    ----------------
@@ -45,8 +47,16 @@ package body Gtk.Widget is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_destroy");
    begin
+      if Widget.Data = null then
+         return;
+      end if;
+      if Widget.Data.Num_Ref /= 1 then
+         Ada.Text_IO.Put_Line ("Destroying a widget with multiple references ("
+                               & Natural'Image (Widget.Data.Num_Ref)
+                               & ")");
+      end if;
       Internal (Get_Object (Widget));
-      Set_Object (Widget, System.Null_Address);
+      Widget.Data.Ptr := System.Null_Address;
    end Destroy;
 
 

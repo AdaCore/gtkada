@@ -1,5 +1,6 @@
 with System;
 with Glib;
+with Ada.Finalization;
 
 with Glib; use Glib;
 
@@ -22,10 +23,26 @@ package Gtk is
 
 private
 
-   type Root_Type is tagged
+   type Root_Type_Value is
       record
-         Ptr : System.Address := System.Null_Address;
+         Ptr     : System.Address := System.Null_Address;
+         Num_Ref : Natural := 0;
       end record;
+
+   type Root_Type_Ptr is access all Root_Type_Value;
+   type Root_Type is new Ada.Finalization.Controlled with
+      record
+         Data : Root_Type_Ptr := null;
+      end record;
+
+   procedure Adjust (Object : in out Root_Type);
+   procedure Finalize (Object : in out Root_Type);
+
+   procedure Free_Object (Object : in out Root_Type'Class);
+
+   function Get_Data (Object : in Root_Type'Class)
+                      return Root_Type_Ptr;
+   pragma Inline (Get_Data);
 
    function Get_Object (Object : in Root_Type'Class)
                         return System.Address;
@@ -34,6 +51,10 @@ private
    function Get_Type (Object : in Root_Type'Class)
                       return Gint;
    pragma Inline (Get_Type);
+
+   procedure Set_Data (Object : in out Root_Type'Class;
+                       Data   : in Root_Type_Ptr);
+   pragma Inline (Set_Data);
 
    procedure Set_Object (Object : in out Root_Type'Class;
                          Value  : in     System.Address);
