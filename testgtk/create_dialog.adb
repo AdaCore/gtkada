@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -57,7 +58,9 @@ package body Create_Dialog is
    end Help;
 
    procedure Destroyed (Lab : access Gtk_Label_Record'Class;
-                        Ptr : in Gtk_Label_Access) is
+                        Ptr : in Gtk_Label_Access)
+   is
+      pragma Warnings (Off, Lab);
    begin
       Ptr.all := null;
    end Destroyed;

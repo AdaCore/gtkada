@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -268,6 +269,7 @@ package body Create_Pixbuf is
    ----------------
 
    procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class) is
+      pragma Warnings (Off, Widget);
    begin
       Timeout_Remove (Timeout_Id);
       Timeout_Id := 0;
