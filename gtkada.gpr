@@ -4,4 +4,11 @@ project GtkAda is
    for Source_Dirs use ("src/", "src/glade/", "src/gnome/", "src/gtkextra/",
                         "src/opengl", "src/pixbuf/");
    for Object_Dir use "src/lib-obj";
+
+   package IDE is
+      for VCS_Kind use "cvs";
+      for VCS_Log_Check use "log_check";
+      for VCS_File_Check use "ci_check";
+   end IDE;
+
 end GtkAda;
