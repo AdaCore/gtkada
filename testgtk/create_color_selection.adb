@@ -105,6 +105,7 @@ package body Create_Color_Selection is
    ---------
 
    procedure Run (Frame : access Gtk_Frame_Record'Class) is
+      pragma Warnings (Off, Frame);
    begin
       if Dialog = null then
          Gtk_New (Dialog, Title => "Color Selection Dialog");
