@@ -19,6 +19,7 @@ my ($hfile) = $file . ".h";
 $file = uc ($file);
 
 $file = "GTKFILESELECTION" if ($file eq "GTKFILESEL");
+$file = "GTK$1BUTTONBOX" if ($file =~ /GTK([VH]?)BBOX/);
 
 ### Look for the structure representing the unit in the C file
 my ($line) = 0;
@@ -71,7 +72,9 @@ while ($cfile[$line] !~ /\}/)
 
 
 my (%functions) = &parse_functions;
-my ($abstract) = 1;  # 1 if the type is an abstract type
+my ($abstract) = 0;
+# 1 if the type is an abstract type
+# Set 1 on the previous line if you want to eventually create abstract types.
 
 ## Create some new functions for every field to get
 my ($ctype_package) = "Gtk$current_package*";
@@ -211,7 +214,9 @@ sub package_name
   {
     my ($entity) = shift;
     
-    $entity =~ s/(.)([A-Z])/$1.$2/g;
+#    $entity =~ s/(.)([A-Z])/$1.$2/g;
+    $entity =~ s/(G[td]k)/$1./;
+    $entity =~ s/([a-z])([A-Z])/$1_$2/g;
     $entity =~ s/Gtk\.Range/Gtk\.Gtk_Range/;
     $entity =~ s/Gtk\.Entry/Gtk\.Gtk_Entry/;    
     return $entity;
@@ -246,7 +251,7 @@ sub parse_functions
 		  {
 		    chop;
 		    /\s+(.*)/;
-		    push (@arguments, $1);
+		    push (@arguments, grep ($_ !~ /^$/, split (/,/, $1)));
 		    last if ($1 =~ /\);/);
 		  }
 	      }
@@ -526,6 +531,11 @@ sub print_body
 	    push (@output, "   begin\n");
 	    $string = "      return Interfaces.C.Strings.Value (Internal";
 	  }
+	elsif ($return =~ /^Gtk/) {
+	  push (@output, "   begin\n");
+	  $string = "      return " . &convert_ada_type ($return)
+	    . "'Val (Internal";
+	}
 	elsif ($return ne "void")
 	  {
 	    push (@output, "   begin\n");
@@ -542,7 +552,8 @@ sub print_body
 	if (&convert_ada_type ($return) =~ /\'Class/) {
 	  push (@output, ");\n      return Tmp;\n");
 	}
-	elsif (&convert_ada_type ($return) eq "String") {
+	elsif (&convert_ada_type ($return) eq "String"
+	      || $return =~ /^Gtk/) {
 	  push (@output, ");\n");
 	}
 	else {
@@ -580,9 +591,20 @@ sub convert_ada_type
   {
     my ($type) = shift;
 
-    if ($type =~ /^gint(.*)/) {
+    if ($type =~ /^gint([^*]*)(\*?)/) {
+      if ($2 ne "") {
+	return "out Gint$1";
+      }
       return "Gint$1";
-    } elsif ($type =~ /^guint(.*)/) {
+    } elsif ($type =~ /^int(\*?)/) {
+      if ($1 ne "") {
+	return "out Integer";
+      }
+      return "Integer";
+    } elsif ($type =~ /^guint([^*]*)(\*?)/) {
+      if ($2 ne "") {
+	return "out Guint$1";
+      }
       return "Guint$1";
     } elsif ($type eq "gfloat") {
       return "Gfloat";
@@ -620,9 +642,20 @@ sub convert_c_type
   {
     my ($type) = shift;
     
-    if ($type =~ /gint(.*)/) {
+    if ($type =~ /gint([^*]*)(\*?)/) {
+      if ($2 ne "") {
+	return "out Gint$1";
+      }
       return "Gint$1";
-    } elsif ($type =~ /guint(.*)/) {
+    } elsif ($type =~ /int(\*?)/) {
+      if ($1 ne "") {
+	return "out Integer";
+      }
+      return "Integer";
+    } elsif ($type =~ /guint([^*]*)(\*?)/) {
+      if ($2 ne "") {
+	return "out Guint$1";
+      }
       return "Guint$1";
     } elsif ($type eq "gfloat") {
       return "Gfloat";
@@ -642,26 +675,34 @@ sub print_comment
   {
     my ($func_name) = shift;
     my ($ada) = &ada_func_name ($func_name);
-
-    push (@output, "   --  mapping: ");
+    my ($string) = "";
+    
+    $string = "   --  mapping: ";
     if ($ada eq "Get_Type")
       {
-	push (@output, "NOT_IMPLEMENTED");
+	$string .= "NOT_IMPLEMENTED";
       }
     else
       {
-	push (@output, &ada_func_name ($func_name));
+	$string .= &ada_func_name ($func_name);
       }
-    push (@output," $hfile ");
+    $string .= " $hfile ";
     if ($func_name =~ /^gtk/)
       {
-	push (@output, "$func_name\n");
+	if (length ($string) + length ($func_name) > 79) {
+	  $string .= "\\\n   --  mapping:      ";
+	}
+	$string .= "$func_name\n";
       }
     else
       {
 	my ($entity) = $current_package;
 	my ($field) = ($func_name =~ /get_(.*)$/);
 	$entity =~ s/_//g;
-	push (@output, "Gtk$entity->$field\n");
+	if (length ($string) + length ("Gtk$entity->$field") > 79) {
+	  $string .= "\\\n   --  mapping:      ";
+	}
+	$string .= "Gtk$entity->$field\n";
       }
+    push (@output, $string);
   }
