@@ -46,6 +46,9 @@ package Gtk.Editable is
    type Gtk_Editable_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Editable is access all Gtk_Editable_Record'Class;
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Editable.
+
    procedure Changed (Editable : access Gtk_Editable_Record);
    --  Cause the "changed" signal to be emitted.
 
@@ -278,8 +281,7 @@ package Gtk.Editable is
    --  </signals>
 
 private
-
    type Gtk_Editable_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
-
+   pragma Import (C, Get_Type, "gtk_editable_get_type");
 end Gtk.Editable;
