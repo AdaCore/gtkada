@@ -71,11 +71,6 @@ Getting started with GtkAda
 * Architecture of the toolkit::
 * Widgets Hierarchy::
 
-Description of the GDK hierarchy
-
-* Package Gdk.Drawable::
-* Draw in a widget::
-
 Object-oriented features
 * Using tagged types to extend Gtk widgets::
 * Creating new widgets in Ada::
@@ -835,7 +830,7 @@ You need to perform some initializations to start a GtkAda application:
    --  Initializes GtkAda
    Gtk.Main.Init;
 
-   --  Load the resources
+   --  Load the resources. Note that this part is optional.
    Gtk.Rc.Parse ("application.rc");
 
    --  Create the main window
@@ -869,176 +864,6 @@ the @code{Create_Window} procedure looks like
       ...
       Gtk.Window.Show_All (Main_Window);
    @b{end} Create_Window;
-@c @end cartouche
-@c @end group
-@end example
-
-@node Description of the GDK hierarchy
-@chapter Description of the GDK hierarchy
-GTK is based on a lower level layer called GDK that contains some simple
-drawing and window primitives.
-
-@menu
-* Package Gdk.Drawable::
-* Draw in a widget::
-@end menu
-
-@node Package Gdk.Drawable
-@section Package Gdk.Drawable
-@example
-@c @group
-@c @cartouche
-@b{subtype} Gdk_Drawable @b{is} Gdk.Window.Gdk_Window;
-@c @end cartouche
-@c @end group
-@end example
-
-@example
-@c @group
-@c @cartouche
-   @b{procedure} Draw_Rectangle (Drawable : @b{in} Gdk_Drawable'@b{Class};
-                             Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
-                             Filled   : @b{in} Boolean := False;
-                             X        : @b{in} Gint;
-                             Y        : @b{in} Gint;
-                             Width    : @b{in} Gint;
-                             Height   : @b{in} Gint);
- 
-   @b{procedure} Draw_Point (Drawable : @b{in} Gdk_Drawable'@b{Class};
-                         Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
-                         X        : @b{in} Gint;
-                         Y        : @b{in} Gint);
- 
-   @b{procedure} Draw_Line (Drawable : @b{in} Gdk_Drawable'@b{Class};
- 
-   @b{procedure} Draw_Line (Drawable : @b{in} Gdk_Drawable'@b{Class};
-                        Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
-                        X1       : @b{in} Gint;
-                        Y1       : @b{in} Gint;
-                        X2       : @b{in} Gint;
-                        Y2       : @b{in} Gint);
- 
-   @b{procedure} Draw_Arc (Drawable : @b{in} Gdk_Drawable'@b{Class};
-                       Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
-                       Filled   : @b{in} Boolean := False;
-                       X        : @b{in} Gint;
-                       Y        : @b{in} Gint;
-                       Width    : @b{in} Gint;
-                       Height   : @b{in} Gint;
-                       Angle1   : @b{in} Gint;
-                       Angle2   : @b{in} Gint);
- 
-   @b{procedure} Draw_Polygon (Drawable : @b{in} Gdk_Drawable'@b{Class};
-                           Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
-                           Filled   : @b{in} Boolean;
-                           Points   : @b{in} Gdk.Point.Gdk_Points_Array);
-   @b{procedure} Draw_Text
-     (Drawable    : @b{in} Gdk_Drawable'@b{Class};
-      Font        : @b{in} Gdk.Font.Gdk_Font;
-      Gc          : @b{in} Gdk.GC.Gdk_GC;
-      X           : @b{in} Glib.Gint;
-      Y           : @b{in} Glib.Gint;
-      Text        : @b{in} String);
-@c @end cartouche
-@c @end group
-@end example
-
-for all the procedures (in particular @code{Draw_Arc}), the parameters are:
-@itemize @bullet
- 
-@item [X, Y] Position of the point or of the upper left corner or the rectangle.
- 
-@item [Width, Height] Width and height of the rectangle or of the rectangle
-containing an ellipse.
- 
-@item [Angle1]  Starting angle of the arc in 1/64th degrees.
- 
-@item [Angle2]  Ending angle relative to Angle1 in 1/64th degrees.
-
-@item [Font]  A font, that can be loaded using @code{Gdk.Font.Load}.
-              For example:
-@example
-@c @group
-@c @cartouche
-   Gdk.Font.Load
-     (Font, "-adobe-courier-medium-i-*-*-15-*-*-*-*-*-*-*");
-@c @end cartouche
-@c @end group
-@end example
-@end itemize
-
-@node Draw in a widget
-@section Draw in a widget
-
-To select a drawing area, use a @code{Gtk_Drawing_Area} widget.
-The drawing procedures apply to the Gdk window
-(see @code{Gdk_Window} and @code{Gdk_Drawable}) of the
-@code{Gtk_Drawing_Area} widget via a graphic context (see @code{Gtk_Gc}).
-
-Typically the code will look like:
-
-@example
-@c @group
-@c @cartouche
-@b{with} Glib;
-@b{with} Gdk.Window;
-@b{with} Gdk.Drawable;
-@b{with} Gdk.GC;
-@b{with} Gdk.Font;
-
-@b{procedure} Draw (Drawing : @b{in} @b{out} Gtk.Drawing_Area.Gtk_Drawing_Area) @b{is}
-   Gdkw : Gdk.Window.Gdk_Window;
-   GC   : Gdk.GC.Gdk_GC;
-   Font : Gdk.Font.Gdk_Font;
-   @b{use} @b{type} Glib.Gint;
-
-@b{begin}
-   -- Get the Gdk window
-
-   Gdkw := Gtk.Drawing_Area.Get_Window (Drawing) ;
-
-   -- Clear the window
-
-   GDK.Window.Clear (Gdkw) ;
-
-   -- Create a graphic context associated with this window
-
-   Gdk.GC.Gdk_New (GC, Gdkw);
-
-   -- Draw a line in this window
-
-   Gdk.Drawable.Draw_Line
-     (Drawable => Gdkw,
-      GC => GC,
-      X1 =>   0, Y1 =>   0,
-      X2 => 100, Y2 => 100);
-
-   -- Draw an arc
-
-   Gdk.Drawable.Draw_Arc
-     (Drawable => Gdkw,
-      Gc       => gc,
-      Filled   => True,
-      X        => 100,
-      Y        => 100,
-      Width    => 200,
-      Height   => 100,
-      Angle1   => 0 * 64,
-      Angle2   => 270 * 64);
-
-   -- Ask for a given font
-
-   Gdk.Font.Load (Font, "-adobe-courier-medium-i-*-*-15-*-*-*-*-*-*-*");
-   Gdk.Drawable.Draw_Text
-     (Drawable    => Gdkw,
-      Font        => Font,
-      Gc          => gc,
-      X           => 50,
-      Y           => 50,
-      Text        => "Hello World");
-   Gdk.Font.Destroy (Font);
-   Gdk.GC.Destroy (GC);
-@b{end} Draw;
 @c @end cartouche
 @c @end group
 @end example
