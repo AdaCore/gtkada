@@ -77,12 +77,18 @@ package Gtk.File_Selection is
    procedure Show_Fileop_Buttons
      (File_Selection : access Gtk_File_Selection_Record);
 
+   procedure Set_Show_File_Op_Buttons
+     (File_Selection : access Gtk_File_Selection_Record;
+      Flag           : Boolean);
+   --  If Flag is true, call Show_Fileop_Buttons, otherwise call
+   --  Hide_Fileop_Buttons.
+
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (File_Selection : in out Gtk_Object; N : in Node_Ptr);
 
 private

@@ -286,6 +286,21 @@ package body Gtk.File_Selection is
       Internal (Get_Object (File_Selection));
    end Show_Fileop_Buttons;
 
+   ------------------------------
+   -- Set_Show_File_Op_Buttons --
+   ------------------------------
+
+   procedure Set_Show_File_Op_Buttons
+     (File_Selection : access Gtk_File_Selection_Record;
+      Flag           : Boolean)  is
+   begin
+      if Flag then
+         Show_Fileop_Buttons (File_Selection);
+      else
+         Hide_Fileop_Buttons (File_Selection);
+      end if;
+   end Set_Show_File_Op_Buttons;
+
    --------------
    -- Generate --
    --------------
@@ -295,6 +310,7 @@ package body Gtk.File_Selection is
    begin
       Gen_New (N, "File_Selection", Get_Field (N, "title").all,
         File => File, Delim => '"');
+      Gen_Set (N, "File_Selection", "show_file_op_buttons", File);
       Window.Generate (N, File);
    end Generate;
 
@@ -306,6 +322,10 @@ package body Gtk.File_Selection is
            (Gtk_File_Selection (File_Selection), Get_Field (N, "title").all);
          Set_Object (Get_Field (N, "name"), File_Selection);
          N.Specific_Data.Created := True;
+      end if;
+
+      if not Boolean'Value (Get_Field (N, "show_file_op_buttons").all) then
+         Hide_Fileop_Buttons (Gtk_File_Selection (File_Selection));
       end if;
 
       Window.Generate (File_Selection, N);
