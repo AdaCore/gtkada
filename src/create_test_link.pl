@@ -11,13 +11,19 @@ foreach (<g*.ads>)
        }
        close (FILE);
        $line =~ /package\s+(\S+)/;
+       push (@list, $1);
        print "with $1;\n";
+       print "pragma Warnings (off, $1);\n";
     }
 }
 
-print << "EOF"
-
-procedure Test_Link is
+print "procedure Test_Link is\n";
+#foreach (@list)
+#{
+#   s/\./_/;
+#   print "Widget_$_ : $_;\n";
+#} 
+print << "EOF";
 begin
    null;
 end Test_Link;
