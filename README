@@ -41,13 +41,17 @@ These functions were tested on the following systems :
    - SunOS 5.5.1
    - Dec Unix 4.0b
    - SGI IRIX 6.5
-using the following compilers :
+using the following compilers:
    - Gnat 3.11p
    - Gnat 3.12b2
 
-and the following versions of gtk :
+the following versions of gtk:
    - Gtk 1.2.0
    - Gtk 1.2.1
+
+and the following versions of glade:
+   - Glade 0.4.0
+   - Glade 0.4.1
 
 Although versions up to 0.2.1 were compatible with Gtk1.0, this one is
 Gtk-1.2 specific. If you are looking for a binding to Gtk1.0, please consider
