@@ -530,7 +530,7 @@ ada_gdk_cursor_new (AdaGdkCursorType   cursor_type)
 
 /*
  *
- * GdkEvent
+ * GdkEventAny
  *
  */
 
@@ -573,3 +573,90 @@ ada_gdk_event_any_set_send_event (GdkEventAny * event, gint8 send_event)
 {
   event->send_event = send_event;
 }
+
+/*
+ *
+ *  GdkEventExpose
+ *
+ */
+
+GdkRectangle *
+ada_gdk_event_expose_get_area (GdkEventExpose * event)
+{
+  return &event->area;
+}
+
+void
+ada_gdk_event_expose_set_area (GdkEventExpose * event,
+			       GdkRectangle * area)
+{
+  event->area = *area;
+}
+
+gint
+ada_gdk_event_expose_get_count (GdkEventExpose * event)
+{
+  return event->count;
+}
+
+void
+ada_gdk_event_expose_set_count (GdkEventExpose * event, gint count)
+{
+  event->count = count;
+}
+
+
+/*
+ *
+ * GdkEventConfigure
+ *
+ */
+
+gint16
+ada_gdk_event_configure_get_x (GdkEventConfigure * event)
+{
+  return event->x;
+}
+
+void
+ada_gdk_event_configure_set_x (GdkEventConfigure * event, gint16 x)
+{
+  event->x = x;
+}
+
+gint16
+ada_gdk_event_configure_get_y (GdkEventConfigure * event)
+{
+  return event->y;
+}
+
+void
+ada_gdk_event_configure_set_y (GdkEventConfigure * event, gint16 y)
+{
+  event->y = y;
+}
+
+gint16
+ada_gdk_event_configure_get_width (GdkEventConfigure * event)
+{
+  return event->width;
+}
+
+void
+ada_gdk_event_configure_set_width (GdkEventConfigure * event, gint16 width)
+{
+  event->width = width;
+}
+
+gint16
+ada_gdk_event_configure_get_height (GdkEventConfigure * event)
+{
+  return event->height;
+}
+
+void
+ada_gdk_event_configure_set_height (GdkEventConfigure * event, gint16 height)
+{
+  event->height = height;
+}
+
