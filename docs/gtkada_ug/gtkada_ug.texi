@@ -1941,7 +1941,7 @@ To clear a window (e.g before drawing ):
 @c @end group
 @end example
 
-for all the @b{procedure}s (in particular @code{Draw_Arc}), the parameters are:
+for all the procedures (in particular @code{Draw_Arc}), the parameters are:
 @itemize @bullet
  
 @item [X, Y] Position of the point or of the upper left corner or the rectangle.
@@ -2587,7 +2587,9 @@ main window.
 
 @b{procedure} Example @b{is}
 
-   @b{procedure} Fix_Label (Box : @b{access} Gtk.Box.Gtk_Box_Record; Str : String) @b{is}
+   @b{procedure} Fix_Label
+     (Box : @b{access} Gtk.Box.Gtk_Box_Record; Str : String)
+   @b{is}
       Label : Gtk.Label.Gtk_Label;
    @b{begin}
       Gtk.Label.Gtk_New (Label => Label, Str => Str);
