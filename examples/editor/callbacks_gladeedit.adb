@@ -9,8 +9,12 @@ with Create_Open_File_Selection;
 with Create_Save_File_Selection;
 with Create_About_Dialog;
 with GNAT.OS_Lib; use GNAT.OS_Lib;
+with Unchecked_Deallocation;
 
 package body Callbacks_Gladeedit is
+
+   procedure Free is new Unchecked_Deallocation
+     (Object => String, Name => String_Access);
 
    --  Complicated dialog boxes can be slow to create, so we create them once
    --  and keep pointers to them in static variables so we can reuse them.
