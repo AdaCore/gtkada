@@ -219,7 +219,7 @@ package Gtk.Object is
    --  Each event defined with Initialize_Class_Record below should have an
    --  entry in this table. If Gtk_Type_None is found in the table, it is
    --  ignored. For instance, a Signal_Parameter_Type like:
-   --    (1 => (1 => Gdk_Type_Gdk_Event, 2 => Gdk_Type_Nonde),
+   --    (1 => (1 => Gdk_Type_Gdk_Event, 2 => Gdk_Type_None),
    --     2 => (1 => Gdk_Type_Int,       2 => Gdk_Type_Int));
    --  defines two signals, the first with a single Gdk_Event parameter, the
    --  second with two ints parameters.
