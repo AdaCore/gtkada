@@ -355,5 +355,5 @@ package Gtk.Extra.Plot_3D is
 private
    type Gtk_Plot_3D_Record is new Gtk.Extra.Plot.Gtk_Plot_Record
      with null record;
-   pragma Import (C, Get_Type, "gtk_plot_3d_get_type");
+   pragma Import (C, Get_Type, "gtk_plot3d_get_type");
 end Gtk.Extra.Plot_3D;
