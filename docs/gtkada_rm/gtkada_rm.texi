@@ -25,27 +25,8 @@ Copyright @copyright{} 1999-2000 E.Briot, J.Brobecker, A. Charlet
 @node Top
 @top GtkAda Reference Manual
 
-@menu
-* The detailed documentation for packages::
-* Index::
-
-@detailmenu
- --- The Detailed Node Listing ---
-
-The detailed documentation for packages
 @include generated_menu.texi
-
-@end detailmenu
-@end menu
 @end ifinfo
-
-@node The detailed documentation for packages
-@chapter  The detailed documentation for packages
-
-This section describes all the packages included in GtkAda.
-All the widgets are described, as well as their associated subprograms
-
-@include generated_submenu.texi
 
 @include generated.texi
 

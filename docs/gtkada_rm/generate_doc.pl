@@ -84,7 +84,6 @@ $gtk_src_dir = "../..";
 
 $output_file_name  = "generated.texi";
 $menu_file_name    = "generated_menu.texi";
-$submenu_file_name = "generated_submenu.texi";
 
 @source_files = @ARGV;
 
@@ -156,7 +155,7 @@ foreach $source_file (@source_files) {
 	&output ("\@page\n",
 		 "\@cindex $package_name\n",
 		 "\@node Package $package_name\n",
-		 "\@section Package $package_name\n",
+		 "\@chapter Package $package_name\n",
 		 "\n\@noindent\n");
 
 	my ($description) = &clean_comment_marks
@@ -165,8 +164,6 @@ foreach $source_file (@source_files) {
 	$description = &process_list ($description);
 	    
 	&output ("$description\n");
-	#	 "See also \@uref{http://www.gtk.org/docs/$cfile.html,$cfile.html} ",
-	#	 "for more information.\n");
 
 	if (&get_tag_value ("screenshot", @content)) {
 	    &output ("\@iftex\n\@image{",
@@ -195,7 +192,7 @@ foreach $source_file (@source_files) {
 	
 	if (@hierarchy) {
 	    &output ("\@node $package_name Widget Hierarchy\n",
-		     "\@subsection Widget Hierarchy\n",
+		     "\@section Widget Hierarchy\n",
 		     "\@multitable \@columnfractions .4 .6\n",
 		     "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
 	    
@@ -215,7 +212,7 @@ foreach $source_file (@source_files) {
 
 	if (keys %signals) {
 	    &output ("\@node $package_name Signals\n",
-		     "\@subsection Signals\n\n",
+		     "\@section Signals\n\n",
 		     "\@itemize \@bullet\n\n");
 	    
 	    foreach $signal (sort keys %signals) {
@@ -230,7 +227,7 @@ foreach $source_file (@source_files) {
 	if (@subprogs) {
 	    my ($has_itemize) = 0;
 	    &output ("\@node $package_name Subprograms\n",
-		     "\@subsection Subprograms\n\n");
+		     "\@section Subprograms\n\n");
 	    
 	    foreach $subprog (@subprogs) {
 		my ($name, $return, $comment, @params)
@@ -241,7 +238,7 @@ foreach $source_file (@source_files) {
 			&output ("\@end itemize\n");
 			$has_itemize = 0;
 		    }
-		    &output ("\@subsubsection $name\n\n");
+		    &output ("\@subsection $name\n\n");
 		    next;
 		}
 
@@ -289,7 +286,7 @@ foreach $source_file (@source_files) {
 
 	if (&get_tag_value ("example", @content)) {
 	    &output ("\@node $package_name Example\n",
-		     "\@subsection Example\n\n\@example\n",
+		     "\@section Example\n\n\@example\n",
 		     &highlight_keywords
 		     (&clean_comment_marks (&get_tag_value
 					    ("example", @content),
@@ -309,7 +306,7 @@ foreach $package_name (keys %parent) {
 
 	&output ("\@cindex $package_name\n",
 		 "\@node Package $package_name\n",
-		 "\@section Package $package_name\n\n");
+		 "\@chapter Package $package_name\n\n");
     }
 }
 
@@ -324,14 +321,11 @@ foreach (keys %parent) {
 }
 
 open (MENU, ">$menu_file_name");
+print MENU "\@menu\n";
 print MENU "* Package ", join ("::\n* Package ", sort keys %packages), "::\n";
+print MENU "* Index::\n";
+print MENU "\@end menu\n";
 close MENU;
-
-open (SUBMENU, ">$submenu_file_name");
-print SUBMENU "\@menu\n",
-      "* Package ", join ("::\n* Package ", sort keys %packages),
-      "::\n\@end menu\n";
-close SUBMENU;
 
 open (OUT, ">$output_file_name");
 foreach $package_name (sort keys %output) {
