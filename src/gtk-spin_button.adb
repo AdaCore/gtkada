@@ -131,7 +131,7 @@ package body Gtk.Spin_Button is
 
    procedure Set_Numeric
       (Spin_Button : in Gtk_Spin_Button'Class;
-       Numeric     : in Gint)
+       Numeric     : in Boolean)
    is
       procedure Internal
          (Spin_Button : in System.Address;
@@ -139,7 +139,7 @@ package body Gtk.Spin_Button is
       pragma Import (C, Internal, "gtk_spin_button_set_numeric");
    begin
       Internal (Get_Object (Spin_Button),
-                Numeric);
+                Boolean'Pos (Numeric));
    end Set_Numeric;
 
    -----------------------
@@ -182,7 +182,7 @@ package body Gtk.Spin_Button is
 
    procedure Set_Wrap
       (Spin_Button : in Gtk_Spin_Button'Class;
-       Wrap        : in Gint)
+       Wrap        : in Boolean)
    is
       procedure Internal
          (Spin_Button : in System.Address;
@@ -190,7 +190,7 @@ package body Gtk.Spin_Button is
       pragma Import (C, Internal, "gtk_spin_button_set_wrap");
    begin
       Internal (Get_Object (Spin_Button),
-                Wrap);
+                Boolean'Pos (Wrap));
    end Set_Wrap;
 
    ----------

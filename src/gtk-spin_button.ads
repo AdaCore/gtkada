@@ -31,7 +31,7 @@ package Gtk.Spin_Button is
        The_Digits  : in Gint);
    procedure Set_Numeric
       (Spin_Button : in Gtk_Spin_Button'Class;
-       Numeric     : in Gint);
+       Numeric     : in Boolean);
    procedure Set_Update_Policy
       (Spin_Button : in Gtk_Spin_Button'Class;
        Policy      : in Gtk_Spin_Button_Update_Policy);
@@ -40,7 +40,7 @@ package Gtk.Spin_Button is
        Value       : in Gfloat);
    procedure Set_Wrap
       (Spin_Button : in Gtk_Spin_Button'Class;
-       Wrap        : in Gint);
+       Wrap        : in Boolean);
    procedure Spin
       (Spin_Button : in Gtk_Spin_Button'Class;
        Direction   : in Guint;
