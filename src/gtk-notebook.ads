@@ -39,14 +39,14 @@ package Gtk.Notebook is
    type Gtk_Notebook_Page is new Root_Type with private;
 
    procedure Append_Page
-      (Notebook  : in Gtk_Notebook;
-       Child     : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label : in Gtk.Box.Gtk_Box'Class);
+     (Notebook  : in Gtk_Notebook;
+      Child     : in Gtk.Widget.Gtk_Widget'Class;
+      Tab_Label : in Gtk.Box.Gtk_Box'Class);
    procedure Append_Page_Menu
-      (Notebook   : in Gtk_Notebook;
-       Child      : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label  : in Gtk.Box.Gtk_Box'Class;
-       Menu_Label : in Gtk.Box.Gtk_Box'Class);
+     (Notebook   : in Gtk_Notebook;
+      Child      : in Gtk.Widget.Gtk_Widget'Class;
+      Tab_Label  : in Gtk.Box.Gtk_Box'Class;
+      Menu_Label : in Gtk.Box.Gtk_Box'Class);
    function Get_Current_Page (Notebook : in Gtk_Notebook) return Gint;
    function Get_Children (Widget : in Gtk_Notebook) return Widget_List.Glist;
    function Get_Cur_Page (Widget : in Gtk_Notebook'Class)
@@ -56,50 +56,60 @@ package Gtk.Notebook is
    function Get_Tab_Pos (Widget : in Gtk_Notebook) return Gtk_Position_Type;
    procedure Gtk_New (Widget : out Gtk_Notebook);
    procedure Insert_Page
-      (Notebook  : in Gtk_Notebook;
-       Child     : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label : in Gtk.Box.Gtk_Box'Class;
-       Position  : in Gint);
+     (Notebook  : in Gtk_Notebook;
+      Child     : in Gtk.Widget.Gtk_Widget'Class;
+      Tab_Label : in Gtk.Box.Gtk_Box'Class;
+      Position  : in Gint);
    procedure Insert_Page_Menu
-      (Notebook   : in Gtk_Notebook;
-       Child      : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label  : in Gtk.Box.Gtk_Box'Class;
-       Menu_Label : in Gtk.Box.Gtk_Box'Class;
-       Position   : in Gint);
+     (Notebook   : in Gtk_Notebook;
+      Child      : in Gtk.Widget.Gtk_Widget'Class;
+      Tab_Label  : in Gtk.Box.Gtk_Box'Class;
+      Menu_Label : in Gtk.Box.Gtk_Box'Class;
+      Position   : in Gint);
    procedure Next_Page (Notebook : in out Gtk_Notebook);
    procedure Popup_Disable (Notebook : in Gtk_Notebook);
    procedure Popup_Enable (Notebook : in Gtk_Notebook);
    procedure Prepend_Page
-      (Notebook  : in Gtk_Notebook;
-       Child     : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label : in Gtk.Box.Gtk_Box'Class);
+     (Notebook  : in Gtk_Notebook;
+      Child     : in Gtk.Widget.Gtk_Widget'Class;
+      Tab_Label : in Gtk.Box.Gtk_Box'Class);
    procedure Prepend_Page_Menu
-      (Notebook   : in Gtk_Notebook;
-       Child      : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label  : in Gtk.Box.Gtk_Box'Class;
-       Menu_Label : in Gtk.Box.Gtk_Box'Class);
+     (Notebook   : in Gtk_Notebook;
+      Child      : in Gtk.Widget.Gtk_Widget'Class;
+      Tab_Label  : in Gtk.Box.Gtk_Box'Class;
+      Menu_Label : in Gtk.Box.Gtk_Box'Class);
    procedure Prev_Page (Notebook : in out Gtk_Notebook);
    procedure Remove_Page
-      (Notebook : in Gtk_Notebook;
-       Page_Num : in Gint);
+     (Notebook : in Gtk_Notebook;
+      Page_Num : in Gint);
    procedure Set_Page
-      (Notebook : in Gtk_Notebook;
-       Page_Num : in Gint);
+     (Notebook : in Gtk_Notebook;
+      Page_Num : in Gint);
    procedure Set_Scrollable
-      (Notebook   : in Gtk_Notebook;
-       Scrollable : in Boolean);
+     (Notebook   : in Gtk_Notebook;
+      Scrollable : in Boolean);
    procedure Set_Show_Border
-      (Notebook    : in Gtk_Notebook;
-       Show_Border : in Boolean);
+     (Notebook    : in Gtk_Notebook;
+      Show_Border : in Boolean);
    procedure Set_Show_Tabs
-      (Notebook  : in Gtk_Notebook;
-       Show_Tabs : in Boolean);
+     (Notebook  : in Gtk_Notebook;
+      Show_Tabs : in Boolean);
    procedure Set_Tab_Border
-      (Notebook     : in Gtk_Notebook;
-       Border_Width : in Gint);
+     (Notebook     : in Gtk_Notebook;
+      Border_Width : in Gint);
    procedure Set_Tab_Pos
-      (Notebook : in Gtk_Notebook;
-       Pos      : in Gtk_Position_Type);
+     (Notebook : in Gtk_Notebook;
+      Pos      : in Gtk_Position_Type);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (Notebook : in Gtk_Notebook;
+                       N        : in Node_Ptr;
+                       File     : in File_Type);
+ 
+   procedure Generate (Notebook : in out Gtk_Notebook;
+                       N        : in Node_Ptr);
 
 private
    type Gtk_Notebook is new Gtk.Container.Gtk_Container with null record;

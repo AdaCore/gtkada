@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Notebook is
 
@@ -380,5 +381,70 @@ package body Gtk.Notebook is
    begin
       Internal (Get_Object (Notebook), Gtk_Position_Type'Pos (Pos));
    end Set_Tab_Pos;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Notebook : in Gtk_Notebook;
+                       N        : in Node_Ptr;
+                       File     : in File_Type) is
+      use Container;
+   begin
+      Gen_New (N, "Notebook", File => File);
+      Generate (Gtk_Container (Notebook), N, File);
+      Gen_Set (N, "Notebook", "scrollable", File);
+      Gen_Set (N, "Notebook", "show_border", File);
+      Gen_Set (N, "Notebook", "show_tabs", File);
+      Gen_Set (N, "Notebook", "tab_border", File);
+      Gen_Set (N, "Notebook", "tab_pos", File);
+   end Generate;
+ 
+   procedure Generate (Notebook : in out Gtk_Notebook;
+                       N        : in Node_Ptr) is
+      use Container;
+
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Notebook);
+         Set_Object (Get_Field (N, "name"), Notebook'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+ 
+      Generate (Gtk_Container (Notebook), N);
+ 
+      S := Get_Field (N, "scrollable");
+ 
+      if S /= null then
+         Set_Scrollable (Notebook, Boolean'Value (S.all));
+      end if;
+ 
+      S := Get_Field (N, "show_border");
+ 
+      if S /= null then
+         Set_Show_Border (Notebook, Boolean'Value (S.all));
+      end if;
+ 
+      S := Get_Field (N, "show_tabs");
+ 
+      if S /= null then
+         Set_Show_Tabs (Notebook, Boolean'Value (S.all));
+      end if;
+ 
+      S := Get_Field (N, "tab_border");
+ 
+      if S /= null then
+         Set_Tab_Border (Notebook, Gint'Value (S.all));
+      end if;
+ 
+      S := Get_Field (N, "tab_pos");
+ 
+      if S /= null then
+         Set_Tab_Pos
+           (Notebook,
+            Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
+   end Generate;
 
 end Gtk.Notebook;
