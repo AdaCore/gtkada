@@ -1,41 +1,41 @@
 SHELL = /bin/sh
+@SET_MAKE@
 
 .SUFFIXES:
 .SUFFIXES: .c .o .ads .adb .ali
 
 .PHONY:
-.PHONY: clean distclean mostlyclean maintainer-clean
-
-@SET_MAKE@
+.PHONY: clean-generic mostlyclean-generic \
+	clean distclean mostlyclean maintainer-clean \
+	force
 
 target = testgtk
 
-CC = gcc
-CFLAGS = -O2 -g -Wall
-
+CC = @CC@
+CFLAGS = @CFLAGS@ -Wall
 ALL_CFLAGS = $(CFLAGS) -I../
 
-GTKADA_CONFIG=gtkadaconfig
-GNATCC = gcc
-GNATFLAGS = -g
-
-GNATMAKE = gnatmake
-GNATMAKEFLAGS = $(GNATFLAGS)
-GNATMAKELDFLAGS = `gtk-config --libs` -L.. -lgtkada
-GNATMAKELDFLAGS_STATIC =  ../libgtkada.a `gtk-config --prefix`/lib/libgtk.a \
-   `gtk-config --prefix`/lib/libglib.a \
-   `gtk-config --libs | sed 's/-lglib//' | sed 's/-lgtk//'`
 #MALLOC_FLAGS= ../debug/wrap.o -Wl,--wrap=malloc -Wl,--wrap=free -Wl,--wrap=strdup
 MALLOC_FLAGS=
 
+GTKADA_CONFIG=gtkadaconfig
+GNATCC = gcc
+GNATFLAGS = -O2 -g -gnata
+
+GNATMAKE = gnatmake
+GNATMAKEFLAGS = $(GNATFLAGS)
+GNATMAKELDFLAGS = -largs -L.. @GTK_LIBS@ -lgtkada
+GNATMAKELDFLAGS_STATIC =  -largs $(MALLOC_FLAGS) -L.. \
+	@GTK_PREFIX@/lib/libgtk.a @GTK_PREFIX@/lib/libglib.a ../libgtkada.a \
+	`echo '@GTK_LIBS@' | sed 's/-lglib//' | sed 's/-lgtk//'`
 
 all: $(target)
 
-$(target): ../*.ad[sb] *.ad[sb]
+$(target): *.ad[sb]
 	@echo "-------------------------------------"
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
-	if [ -f ../.devel ]; then \
+	@if [ -f ../.devel ]; then \
 	   $(GNATMAKE) $(GNATFLAGS) $(target) -aO../lib-obj $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS); \
 	else \
 	   $(GNATMAKE) $(GNATFLAGS) $(target) $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS); \
@@ -58,10 +58,13 @@ clean:
 	-${RM} .\#*
 
 distclean: clean
+	-${RM} Makefile
 
 mostlyclean: clean
+	-${RM} Makefile
 
 maintainer-clean: clean
+	-${RM} Makefile
 
 
 .adb.o:
