@@ -51,7 +51,6 @@ unmodified in any copy.
 * Hierarchical composition of a window::
 * Signal handling::
 * Starting an application with GtkAda::
-* General GTK documentation::
 * Description of the GDK hierarchy::
 * Resource files::
 * Memory management::
@@ -71,10 +70,6 @@ Getting started with GtkAda
 * How to compile an application with GtkAda::
 * Architecture of the toolkit::
 * Widgets Hierarchy::
-
-General GTK documentation
-
-* Package Gtk.Text::
 
 Description of the GDK hierarchy
 
@@ -880,126 +875,6 @@ the @code{Create_Window} procedure looks like
 @c @end cartouche
 @c @end group
 @end example
-
-@node General GTK documentation
-@chapter General GTK documentation
-
-This section briefly describes how to use the GTK toolset.
-It is only here until the GtkAda reference manual is fully completed, and
-documents some widgets that are not yet in the reference manual.
-You should preferably look at the reference manual for more information.
-
-The GTK toolkit is based on two lower level layers: GDK and Glib.  It is
-sometimes necessary to call these layers directly. For a brief
-description of these packages, @ref{Description of the GDK hierarchy}.
-
-Each widget is declared in a separate package.  The file, package and
-type names can be automatically retrieved from one another. For example,
-the type @code{Gtk_Text} is defined in the package @code{Gtk.Text} which
-is defined in the file @code{gtk-text.ads}.
-
-You may want to look at the sources themselves to find information on a
-specific widget.
-
-@menu
-* Package Gtk.Text::
-@end menu
-
-@node Package Gtk.Text
-@section Package Gtk.Text
-To manipulate text.
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Text_Record @b{is new}
-  Gtk.Editable.Gtk_Editable_Record @b{with private};
-@b{type} Gtk_Text @b{is access} all Gtk_Text_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-End of line are marked by a @code{Ascii.LF}.  When the application
-modifies the text (using, e.g @code{Insert}), it can first freeze it
-(@code{Freeze}) to prevent any changes by the user or any automatic
-update of the display, and then unfreeze it (@code{Thaw}) to allow the user
-to interact again.
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Gtk_New
-  (Widget : @b{out} Gtk_Text;
-   Hadj   : @b{access} Gtk.Adjustment.Gtk_Adjustment_Record'@b{Class}
-     := Gtk.Adjustment.Null_Adjustment;
-   Vadj   : @b{access} Gtk.Adjustment.Gtk_Adjustment_Record'@b{Class}
-     := Gtk.Adjustment.Null_Adjustment);
-
-@b{procedure} Freeze (Text : @b{access} Gtk_Text_Record);
-
-@b{procedure} Thaw (Text : @b{access} Gtk_Text_Record);
-
-@b{function} Get_Hadj (Widget : @b{access} Gtk_Text_Record)
-  @b{return} Gtk.Adjustment.Gtk_Adjustment;
-
-@b{function} Get_Vadj (Widget : @b{access} Gtk_Text_Record)
-  @b{return} Gtk.Adjustment.Gtk_Adjustment;
-
-@b{function} Get_Length (Text : @b{in} Gtk_Text) @b{return} Guint;
-
-@b{procedure} Insert
-  (Text   : @b{access} Gtk_Text_Record;
-   Font   : @b{in} Gdk.Font.Gdk_Font'@b{Class};
-   Fore   : @b{in} Gdk.Color.Gdk_Color;
-   Back   : @b{in} Gdk.Color.Gdk_Color;
-   Chars  : @b{in} String;
-   Length : @b{in} Gint);
-@c @end cartouche
-@c @end group
-@end example
-
-By default, the text shown is not modifiable by the user. To change this,
-use the @code{Set_Editable} procedure:
-@example
-@c @group
-@c @cartouche
-@b{procedure} Set_Editable
-  (Text : @b{access} Gtk_Text_Record; Editable : @b{in} Boolean);
-@c @end cartouche
-@c @end group
-@end example
-
-To avoid cutting words at the end of a line:
-@example
-@c @group
-@c @cartouche
-@b{procedure} Set_Word_Wrap
-  (Text      : @b{access} Gtk_Text_Record;
-   Word_Wrap : @b{in} Boolean);
-@c @end cartouche
-@c @end group
-@end example
-
-Also inherits primitives from @code{Gtk.Editable.Gtk_Editable}:
-@itemize @bullet
-
-@item Destroy a text section
-@example
-@c @group
-@c @cartouche
-@b{procedure} Delete_Text
-  (Editable  : @b{access} Gtk_Editable_Record;
-   Start_Pos : @b{in} Gint;
-   End_Pos   : @b{in} Gint);   --  e.g Glib.Gint (Get_Length (...))
-@c @end cartouche
-@c @end group
-@end example
-
-@item Get the current postion of the cursor
-@example
-@b{function} Get_Current_Pos (Widget : access Gtk_Editable_Record)
-  return Guint;
-@end example
-@end itemize
 
 @node Description of the GDK hierarchy
 @chapter Description of the GDK hierarchy
