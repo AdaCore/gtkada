@@ -102,8 +102,8 @@ package Gtkada.Canvas is
    --  Length of the arrows in pixels.
 
    Default_Motion_Threshold  : constant := 4;
-   --  Mimimum motion the mouse must have before we start moving the select
-   --  item. If the mouse has moved less than that amount of pixel in any
+   --  Mimimum motion the mouse must have before we start moving the selected
+   --  item. If the mouse has moved less than that amount of pixels in any
    --  direction, then the mouse click is considered as being a selection
    --  only and is transfered to the item itself.
 
