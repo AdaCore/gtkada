@@ -1212,6 +1212,13 @@ package body Gtkada.MDI is
          N := Next (Tmp);
          if MDI_Child (Get_Data (Tmp)).State = Floating then
             Destroy (Get_Data (Tmp));
+         else
+            --  Pretend the child is not docked or floating. Otherwise,
+            --  Destroy_Child would try to undock the child. Standard gtk+
+            --  containers handle this by having this destroy callback called
+            --  last, but it isn't doable from GtkAda since it means modifying
+            --  the pointer-to-subprogram in the Class struct.
+            MDI_Child (Get_Data (Tmp)).State := Normal;
          end if;
          Tmp := N;
       end loop;
