@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                        Copyright (C) 2000                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,7 +53,7 @@
 --          the message object filename without .mo suffix.
 --
 --    - TEXTDOMAINDIR
---          Specifies the pathname to the message database, and  if
+--          Specifies the pathname to the message database, and if
 --          present replaces the default (e.g /usr/lib/locale on Solaris,
 --          /usr/share/locale on Linux).
 --
