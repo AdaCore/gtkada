@@ -306,14 +306,14 @@ package body Gtk.Item_Factory is
            (Ifactory      : System.Address;
             N_Entries     : Guint;
             Entries       : System.Address;
-            Callback_Data : System.Address);
+            Callback_Data : Data_Type_Access);
          pragma Import (C, Internal, "gtk_item_factory_create_items");
 
       begin
          Internal (Get_Object (Ifactory),
                    Entries'Length,
                    Entries'Address,
-                   Callback_Data'Address);
+                   Callback_Data);
       end Create_Items;
 
       ----------
