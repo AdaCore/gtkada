@@ -604,13 +604,13 @@ package Gtk.Widget is
 
    procedure Ensure_Style (Widget : access Gtk_Widget_Record);
    --  Make sure that the widget has a style associated to it.
-   --  Either the default one as set by Set_Rc_Style above or one set by the
-   --  user with Set_Style.
+   --  Either the default one as set by Set_Default_Style above or one set by
+   --  the user with Set_Style.
 
    procedure Restore_Default_Style (Widget : access Gtk_Widget_Record);
    --  Restore the default style that was set for the widget.
    --  The default style is the first one that was set either by a call
-   --  to Set_Style or Set_Rc_Style.
+   --  to Set_Style or Set_Default_Style.
 
    procedure Reset_Rc_Styles (Widget : access Gtk_Widget_Record);
    --  Restore the Rc style recursively for widget and its children.
@@ -1300,7 +1300,7 @@ package Gtk.Widget is
    --
    --    The widget's style has been changed (this is not call when some
    --    settings in the style are changed, only when the style itself is
-   --    completely changed with a call to Set_Style or Set_Rc_Style).
+   --    completely changed with a call to Set_Style or Set_Default_Style).
    --
    --  - "add_accelerator"
    --
