@@ -135,7 +135,7 @@ package body Gtk.Handlers is
          Marsh    : Marshallers.Marshaller := null;  --  Marshaller to use
          Object   : Acc        := null;  --  Slot Object for Object_Connect
          Ret_Type : Gtk_Type;            --  The C constant used to indicate
-                                         --    the return type.
+         --                              --  the return type.
       end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
@@ -439,7 +439,7 @@ package body Gtk.Handlers is
          Marsh    : Marshallers.Marshaller  := null; --  Marshaller to use
          User     : User_Access  := null;
          Ret_Type : Gtk_Type;            --  The C constant used to indicate
-                                         --    the return type.
+         --                              --  the return type.
       end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
