@@ -119,7 +119,7 @@ package body Gtk.Menu is
    is
    begin
       Widget := new Gtk_Menu_Record;
-      Initialize_User_Data (Widget);
+      Initialize (Widget);
    end Gtk_New;
 
    ----------------
