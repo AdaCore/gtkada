@@ -1,5 +1,6 @@
 pragma Warnings (Off);
 with Gtk.Type_Conversion;
+with Gtk.Type_Conversion_Hooks;
 with Gtk.Accel_Group;
 with Gtk.Accel_Label;
 with Gtk.Adjustment;

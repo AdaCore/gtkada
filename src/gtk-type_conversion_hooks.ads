@@ -27,23 +27,44 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-package Gtk.Type_Conversion is
+--  This package provides an implementation for hooks used in the package
+--  Gtk.Type_Conversion. These hooks should be used when you import a new
+--  C widget, so that GtkAda can recreate the Ada structure from the
+--  underlying C structure.
+--  Note that when you create a widget directly in Ada, you do not need to
+--  provide any hook.
+--
+--  Implementation note: This is a separate package from Gtk.Type_Conversion
+--  so that adding a hook does not necessarily mean the user has to 'with'
+--  Gtk.Type_Conversion, and thus all the packages from GtkAda.
 
-   procedure Init;
-   --  This function has to be called to enable the full capacity for type
-   --  conversions in GtkAda. If this function is not called, then
-   --  converting a C widget to an Ada type will not be as exact (for
-   --  instance, most C widget will get converted to a Gtk.Object, instead
-   --  of the matching Ada widget).
-   --  On the other hand, if you call this function (or with this package),
-   --  then your application will 'with' all the GtkAda packages, and the
-   --  initialization will be a little bit slower).
+package Gtk.Type_Conversion_Hooks is
+
+   type File_Conversion_Hook_Type is
+     access function (Type_Name : String) return Root_Type_Access;
+   --  This variable can be point to one of your functions.
+   --  It gets the name of a C widget (ex/ "GtkButton") and should return
+   --  a newly allocated Ada widget.
+
+   type Hook_List;
+   type Hook_List_Access is access Hook_List;
+   type Hook_List is
+      record
+         Func : File_Conversion_Hook_Type;
+         Next : Hook_List_Access := null;
+      end record;
+   --  Internal structure used for the list.
+
+   procedure Add_Hook (Func : File_Conversion_Hook_Type);
+   --  Add a new function to the list of hooks for file conversions. All the
+   --  hooks are called when GtkAda finds a type which is not one of the
+   --  standard types.
+
+   function Conversion_Hooks return Hook_List_Access;
+   --  Return the head of the hook list.
+
 
 private
-   function Full_Conversion (Obj  : System.Address; Stub : Root_Type'Class)
-                             return Root_Type_Access;
-   --  This function converts a C widget type to the correct Ada type.
-   --  It has to be in a separate package so that its use is not mandatory
-   --  (users who need this feature will simply 'with' this package).
+   File_Conversion_Hook : Hook_List_Access := null;
 
-end Gtk.Type_Conversion;
+end Gtk.Type_Conversion_Hooks;

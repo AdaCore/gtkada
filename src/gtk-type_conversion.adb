@@ -59,7 +59,6 @@ with Gtk.Font_Selection_Dialog;
 with Gtk.Frame;
 with Gtk.Gamma_Curve;
 with Gtk.GEntry;
-with Gtk.GLArea;
 with Gtk.GRange;
 with Gtk.Handle_Box;
 with Gtk.Hbutton_Box;
@@ -106,6 +105,7 @@ with Gtk.Toolbar;
 with Gtk.Tooltips;
 with Gtk.Tree;
 with Gtk.Tree_Item;
+with Gtk.Type_Conversion_Hooks; use Gtk.Type_Conversion_Hooks;
 with Gtk.Vbutton_Box;
 with Gtk.Viewport;
 with Gtk.Widget;
@@ -121,6 +121,8 @@ package body Gtk.Type_Conversion is
    procedure Init is
    begin
       null;
+      --  This function is only used to force the 'with' of this unit. All the
+      --  actual work is done in the elaboration part of this package.
    end Init;
 
    ---------------------
@@ -133,6 +135,7 @@ package body Gtk.Type_Conversion is
       pragma Import (C, Get_Type, "ada_object_get_type");
 
       Type_Name : String := Gtk.Type_Name (Get_Type (Obj));
+      Hooks     : Gtk.Type_Conversion_Hooks.Hook_List_Access;
    begin
       case Type_Name (Type_Name'First + 3) is
          when 'A' =>
@@ -212,8 +215,6 @@ package body Gtk.Type_Conversion is
          when 'G' =>
             if Type_Name = "GtkGammaCurve" then
                return new Gtk.Gamma_Curve.Gtk_Gamma_Curve_Record;
-            elsif Type_Name = "GtkGlArea" then
-               return new Gtk.GLArea.Gtk_GLArea_Record;
             end if;
          when 'H' =>
             if Type_Name = "GtkHBox" then
@@ -346,15 +347,17 @@ package body Gtk.Type_Conversion is
          when others => null;
       end case;
 
-      if File_Conversion_Hook /= null then
+      Hooks := Gtk.Type_Conversion_Hooks.Conversion_Hooks;
+      while Hooks /= null loop
          declare
-            R : Root_Type_Access := File_Conversion_Hook (Type_Name);
+            R : Root_Type_Access := Hooks.Func (Type_Name);
          begin
             if R /= null then
                return R;
             end if;
          end;
-      end if;
+         Hooks := Hooks.Next;
+      end loop;
       Put_Line ("GtkAda: Unknown type in Full_Conversion: " & Type_Name);
       Put_Line ("Please report it to <gtkada@ada.eu.org>");
       return new Root_Type'Class'(Stub);

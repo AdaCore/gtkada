@@ -27,23 +27,25 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-package Gtk.Type_Conversion is
+package body Gtk.Type_Conversion_Hooks is
 
-   procedure Init;
-   --  This function has to be called to enable the full capacity for type
-   --  conversions in GtkAda. If this function is not called, then
-   --  converting a C widget to an Ada type will not be as exact (for
-   --  instance, most C widget will get converted to a Gtk.Object, instead
-   --  of the matching Ada widget).
-   --  On the other hand, if you call this function (or with this package),
-   --  then your application will 'with' all the GtkAda packages, and the
-   --  initialization will be a little bit slower).
+   --------------
+   -- Add_Hook --
+   --------------
 
-private
-   function Full_Conversion (Obj  : System.Address; Stub : Root_Type'Class)
-                             return Root_Type_Access;
-   --  This function converts a C widget type to the correct Ada type.
-   --  It has to be in a separate package so that its use is not mandatory
-   --  (users who need this feature will simply 'with' this package).
+   procedure Add_Hook (Func : File_Conversion_Hook_Type) is
+   begin
+      File_Conversion_Hook := new Hook_List'(Func => Func,
+                                             Next => File_Conversion_Hook);
+   end Add_Hook;
 
-end Gtk.Type_Conversion;
+   ----------------------
+   -- Conversion_Hooks --
+   ----------------------
+
+   function Conversion_Hooks return Hook_List_Access is
+   begin
+      return File_Conversion_Hook;
+   end Conversion_Hooks;
+
+end Gtk.Type_Conversion_Hooks;
