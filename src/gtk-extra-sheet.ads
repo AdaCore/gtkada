@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -81,7 +81,7 @@ package Gtk.Extra.Sheet is
    --  Attributes that can be set for the sheet.
    --  No function is provided at the Ada level to modify these attributes
    --  directly.
-   for Sheet_Attr_Type'Size use Gint'Size;
+   pragma Convention (C, Sheet_Attr_Type);
    --  </doc_ignore>
 
    type Sheet_State is
@@ -90,7 +90,7 @@ package Gtk.Extra.Sheet is
       Sheet_Column_Selected,
       Sheet_Range_Selected);
    --  The state of the selection.
-   for Sheet_State'Size use Gint'Size;
+   pragma Convention (C, Sheet_State);
 
    type Gtk_Sheet_Border is new Integer;
    --  Mask that indicates which borders should be visible in a cell.

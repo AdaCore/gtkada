@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,16 +46,16 @@ package Gtk.Extra.Plot_Ps is
       Plot_Executive,
       Plot_Custom);
    --  The formats that can be used for paper sizes.
-   for Ps_Page_Size'Size use Gint'Size;
+   pragma Convention (C, Ps_Page_Size);
 
    type Ps_Orientation is (Plot_Portrait, Plot_Landscape);
    --  Portrait format means that the vertical size is longer than
    --  the horizontal size. Landscape is the reverse.
-   for Ps_Orientation'Size use Gint'Size;
+   pragma Convention (C, Ps_Orientation);
 
    type Ps_Units is (Plot_Inches, Plot_Mm, Plot_Cm, Plot_Pspoints);
    --  Units of measure for paper sizes.
-   for Ps_Units'Size use Gint'Size;
+   pragma Convention (C, Ps_Units);
 
    procedure Plot_Export_Ps
       (Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;

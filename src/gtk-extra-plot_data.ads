@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -102,7 +102,7 @@ package Gtk.Extra.Plot_Data is
       --  Split in the middle
      );
    --  The type of connection between two adjacent points in a graph.
-   for Plot_Connector'Size use Gint'Size;
+   pragma Convention (C, Plot_Connector);
 
    type Plot_Gradient is new Integer;
    --  Indicate which color components vary along the gradient
@@ -126,14 +126,14 @@ package Gtk.Extra.Plot_Data is
       Symbol_Dot,
       Symbol_Impulse);
    --  Type of symbol used to represent the points in a graph.
-   for Plot_Symbol_Type'Size use Gint'Size;
+   pragma Convention (C, Plot_Symbol_Type);
 
    type Plot_Symbol_Style is
      (Symbol_Empty,
       Symbol_Filled,
       Symbol_Opaque);
    --  Style used to draw the points in a graph.
-   for Plot_Symbol_Style'Size use Gint'Size;
+   pragma Convention (C, Plot_Symbol_Style);
 
    type Plot_Line_Style is
      (Line_None,
@@ -144,7 +144,7 @@ package Gtk.Extra.Plot_Data is
       Line_Dot_Dot_Dash,
       Line_Dot_Dash_Dash);
    --  Lines used to connect two adjacent points in a graph.
-   for Plot_Line_Style'Size use Gint'Size;
+   pragma Convention (C, Plot_Line_Style);
 
    --------------------
    -- Plot functions --

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -63,7 +63,7 @@ package Gtk.Extra.Plot_Canvas is
       Action_Drag,
       Action_Resize);
    --  The action being performed on the canvas.
-   for Plot_Canvas_Action'Size use Gint'Size;
+   pragma Convention (C, Plot_Canvas_Action);
 
    type Plot_Canvas_Flag is new Gint;
    Frozen       : constant Plot_Canvas_Flag;
@@ -85,7 +85,7 @@ package Gtk.Extra.Plot_Canvas is
       Custom);
    --  The type of data that can be put in a canvas.
    --  Plot is only for a Gtk.Extra.Plot.Gtk_Plot widget.
-   for Plot_Canvas_Type'Size use Gint'Size;
+   pragma Convention (C, Plot_Canvas_Type);
 
    type Plot_Canvas_Pos is
      (Canvas_Out,
@@ -99,7 +99,7 @@ package Gtk.Extra.Plot_Canvas is
       Canvas_Bottom_Left,
       Canvas_Bottom_Right);
    --  The position of the items in the canvas.
-   for Plot_Canvas_Pos'Size use Gint'Size;
+   pragma Convention (C, Plot_Canvas_Pos);
 
    type Plot_Canvas_Arrow is new Gint;
    Arrow_None   : constant Plot_Canvas_Arrow;

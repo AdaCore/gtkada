@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -153,7 +153,7 @@ package Gtk.Extra.Plot is
 
    type Plot_Scale is (Scale_Linear, Scale_Log10);
    --  Type of scale used for each axis of a graph.
-   for Plot_Scale'Size use Gint'Size;
+   pragma Convention (C, Plot_Scale);
 
    type Plot_Border_Style is
      (Border_None,
@@ -167,7 +167,7 @@ package Gtk.Extra.Plot is
       --  thicker
      );
    --  Border types used for legends.
-   for Plot_Border_Style'Size use Gint'Size;
+   pragma Convention (C, Plot_Border_Style);
 
    type Plot_Label_Pos is new Integer;
    --  Position of labels along an axis.
@@ -178,23 +178,23 @@ package Gtk.Extra.Plot is
 
    type Plot_Error is (Error_Div_Zero, Error_Log_Neg);
    --  Errors that can be encountered while calculating a graph.
-   for Plot_Error'Size use Gint'Size;
+   pragma Convention (C, Plot_Error);
 
    type Plot_Axis_Pos is (Axis_Left, Axis_Right, Axis_Top, Axis_Bottom);
    --  Where the axis should be put
-   for Plot_Axis_Pos'Size use Gint'Size;
+   pragma Convention (C, Plot_Axis_Pos);
 
    type Plot_Orientation is (Axis_X, Axis_Y, Axis_Z);
    --  How to reference axis in 3D plots
-   for Plot_Orientation'Size use Gint'Size;
+   pragma Convention (C, Plot_Orientation);
 
    type Plot_Label_Style is (Label_Float, Label_Exp, Label_Pow);
    --  The style of labels (floating point, or scientific notation)
-   for Plot_Label_Style'Size use Gint'Size;
+   pragma Convention (C, Plot_Label_Style);
 
    type Plot_Angle is (Angle_0, Angle_90, Angle_180, Angle_270);
    --  Valid values for the angles of texts and titles.
-   for Plot_Angle'Size use Gint'Size;
+   pragma Convention (C, Plot_Angle);
 
    type Plot_Ticks_Pos is new Integer;
    --  The position and orientation of the ticks along an axis.
