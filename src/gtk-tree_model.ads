@@ -260,8 +260,8 @@ package Gtk.Tree_Model is
       Iter       : Gtk_Tree_Iter;
       Column     : Gint;
       Value      : out Glib.Values.GValue);
-   --  Sets initializes and sets Value to that at Column.
-   --  Value must be freed by the user.
+   --  Get a value from the model, at column Column and line Iter.
+   --  Value must be freed by the caller.
 
    procedure Iter_Next
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
@@ -341,28 +341,18 @@ package Gtk.Tree_Model is
 
    generic
       type Data_Type is private;
-   package Model_Data is
-
-      type Data_Access is access Data_Type;
-
-      function Get
-        (Tree_Model : access Gtk_Tree_Model_Record'Class;
-         Iter       : Gtk_Tree_Iter;
-         Column     : Gint)
-        return Data_Type;
-      --  Gets the value of one cell in the row referenced by Iter.
-
-   end Model_Data;
+   function Model_Data_Get
+     (Tree_Model : access Gtk_Tree_Model_Record'Class;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint)
+      return Data_Type;
+   --  Gets the value of one cell in the row referenced by Iter.
 
    function Get_String
-        (Tree_Model : access Gtk_Tree_Model_Record'Class;
-         Iter       : Gtk_Tree_Iter;
-         Column     : Gint)
-        return String;
-   --  procedure Get_Valist
-   --  (Tree_Model : access Gtk_Tree_Model_Record'Class;
-   --   Iter       : Gtk_Tree_Iter;
-   --   Var_Args   : va_list);
+     (Tree_Model : access Gtk_Tree_Model_Record'Class;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint)
+      return String;
 
    --    procedure Foreach
    --      (Model     : access Gtk_Tree_Model_Record'Class;
