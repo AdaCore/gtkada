@@ -108,6 +108,17 @@ package body Gtk.Adjustment is
       return Result;
    end Null_Adjustment;
 
+   ---------------
+   -- Set_Lower --
+   ---------------
+
+   procedure Set_Lower (Adjustment : in out Gtk_Adjustment; Lower : Gfloat) is
+      procedure Internal (Adj : System.Address; Lower : Gfloat);
+      pragma Import (C, Internal, "ada_gtk_adjustment_set_lower");
+   begin
+      Internal (Get_Object (Adjustment), Lower);
+   end Set_Lower;
+
    ------------------------
    -- Set_Page_Increment --
    ------------------------
@@ -133,6 +144,17 @@ package body Gtk.Adjustment is
    begin
       Internal (Get_Object (Adjustment), Page_Size);
    end Set_Page_Size;
+
+   ---------------
+   -- Set_Upper --
+   ---------------
+
+   procedure Set_Upper (Adjustment : in out Gtk_Adjustment; Upper : Gfloat) is
+      procedure Internal (Adj : System.Address; Upper : Gfloat);
+      pragma Import (C, Internal, "ada_gtk_adjustment_set_upper");
+   begin
+      Internal (Get_Object (Adjustment), Upper);
+   end Set_Upper;
 
    ---------------
    -- Set_Value --

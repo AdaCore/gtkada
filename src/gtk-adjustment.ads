@@ -46,6 +46,9 @@ package Gtk.Adjustment is
 
    function Get_Step_Increment (Adjustment : in Gtk_Adjustment) return Gfloat;
 
+   procedure Set_Upper (Adjustment : in out Gtk_Adjustment; Upper : Gfloat);
+   procedure Set_Lower (Adjustment : in out Gtk_Adjustment; Lower : Gfloat);
+
    procedure Set_Value (Adjustment : in out Gtk_Adjustment; Value : in Gfloat);
 
    procedure Clamp_Page (Adjustment : in out Gtk_Adjustment;

@@ -491,6 +491,18 @@ ada_adjustment_set_page_increment (GtkAdjustment * adjustment,
   adjustment->page_increment = value;
 }
 
+void
+ada_gtk_adjustment_set_lower (GtkAdjustment * adjustment, gfloat lower)
+{
+  adjustment->lower = lower;
+}
+
+void
+ada_gtk_adjustment_set_upper (GtkAdjustment * adjustment, gfloat upper)
+{
+  adjustment->upper = upper;
+}
+
 gfloat
 gtk_adjustment_get_step_increment (GtkAdjustment * adjustment)
 {
