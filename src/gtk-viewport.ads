@@ -37,19 +37,23 @@ package Gtk.Viewport is
    type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with private;
    type Gtk_Viewport is access all Gtk_Viewport_Record'Class;
 
-   function Get_Hadjustment (Viewport : access Gtk_Viewport_Record)
-     return Gtk.Adjustment.Gtk_Adjustment;
-   function Get_Vadjustment (Viewport : access Gtk_Viewport_Record)
-     return Gtk.Adjustment.Gtk_Adjustment;
    procedure Gtk_New
-     (Viewport     : out Gtk_Viewport;
+     (Viewport    : out Gtk_Viewport;
       Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
       Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
 
    procedure Initialize
-     (Viewport     : access Gtk_Viewport_Record'Class;
+     (Viewport    : access Gtk_Viewport_Record'Class;
       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
+   function Get_Hadjustment
+     (Viewport : access Gtk_Viewport_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
+
+   function Get_Vadjustment
+     (Viewport : access Gtk_Viewport_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
 
    procedure Set_Hadjustment
      (Viewport   : access Gtk_Viewport_Record;
