@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -222,16 +222,6 @@ package Gtk.Menu is
    function Get_Accel_Group (Menu : access Gtk_Menu_Record)
                             return Accel_Group.Gtk_Accel_Group;
    --  Get the accelerator group used to set the key bindings in the menu.
-
-   function Get_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
-                                  return Accel_Group.Gtk_Accel_Group;
-   --  Get the accelerator group that is used internally by the menu for
-   --  underline accelerators while the menu is popped up.
-
-   function Ensure_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
-                                     return Accel_Group.Gtk_Accel_Group;
-   --  Make sure there exists a group of accelerators for the underline
-   --  characters when the menu is popped up.
 
    ----------------------------------
    -- Attaching a menu to a widget --

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -62,19 +62,6 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu));
    end Detach;
 
-   --------------------------------
-   --  Ensure_Uline_Accel_Group  --
-   --------------------------------
-
-   function Ensure_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
-                                      return Accel_Group.Gtk_Accel_Group is
-      function Internal (Menu : in System.Address)
-                        return Accel_Group.Gtk_Accel_Group;
-      pragma Import (C, Internal, "gtk_menu_ensure_uline_accel_group");
-   begin
-      return Internal (Get_Object (Menu));
-   end Ensure_Uline_Accel_Group;
-
    -----------------------
    --  Get_Accel_Group  --
    -----------------------
@@ -124,33 +111,17 @@ package body Gtk.Menu is
    -- Get_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Menu)
-   is
+   procedure Gtk_New (Widget : out Gtk_Menu) is
    begin
       Widget := new Gtk_Menu_Record;
       Initialize (Widget);
    end Gtk_New;
 
-   -----------------------------
-   --  Get_Uline_Accel_Group  --
-   -----------------------------
-
-   function Get_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
-                                   return Accel_Group.Gtk_Accel_Group is
-      function Internal (Menu : in System.Address)
-                        return Accel_Group.Gtk_Accel_Group;
-      pragma Import (C, Internal, "gtk_menu_get_uline_accel_group");
-   begin
-      return Internal (Get_Object (Menu));
-   end Get_Uline_Accel_Group;
-
-
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Menu_Record'Class)
-   is
+   procedure Initialize (Widget : access Gtk_Menu_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_new");
    begin
@@ -162,8 +133,7 @@ package body Gtk.Menu is
    -- Popdown --
    -------------
 
-   procedure Popdown (Menu : access Gtk_Menu_Record)
-   is
+   procedure Popdown (Menu : access Gtk_Menu_Record) is
       procedure Internal (Menu : System.Address);
       pragma Import (C, Internal, "gtk_menu_popdown");
    begin
