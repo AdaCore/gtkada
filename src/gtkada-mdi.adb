@@ -2016,7 +2016,8 @@ package body Gtkada.MDI is
            and then (W /= Gint (Get_Allocation_Width (C))
                      or else H /= Gint (Get_Allocation_Height (C)))
          then
-            Alloc := (C.X, C.Y, Allocation_Int (W), Allocation_Int (H));
+            Alloc := (MDI.Current_X, MDI.Current_Y,
+                      Allocation_Int (W), Allocation_Int (H));
             Size_Allocate (Child, Alloc);
 
             --  Need to set these, or when the mouse is outside of the layout,
