@@ -142,6 +142,7 @@ with Gtk.Extra.Sheet;
 
 with Gtkada.Canvas;
 with Gtkada.Dialogs;
+with Gtkada.File_Selection;
 with Gtkada.Handlers;
 with Gtkada.Intl;
 with Gtkada.Pixmaps;
