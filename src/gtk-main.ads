@@ -135,6 +135,7 @@ package Gtk.Main is
    --  loops. Each of these loops is exited through a call to Main_Quit.
    --  This is the recommended technics to use when you want to popup a dialog
    --  and wait for the user answer before going any further.
+   --  Note that this procedure can only be called within a single task.
 
    function Main_Level return Guint;
    --  Returns the level of the current main loop
