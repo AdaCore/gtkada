@@ -154,6 +154,11 @@ $chapter_fg="#000000";
 $section_bg="#FFD0D0";
 $section_fg="#000000";
 $subprog_bg="#D6E8FF";
+$hierarchy_bg="#FFF0D0";
+$tab1_width="7%";
+$tab2_width="30%";
+$tab3_width="63%";
+$tab23_width="93%";  # $tab2_width + $tab3_witdh
 
 # Prepares the menu
 
@@ -181,9 +186,8 @@ foreach $source_file (@source_files) {
 
 	&output ("\@page\n",
 		 "\@cindex $package_name\n");
-	&color_output ($chapter_bg, $chapter_fg,
-		       "\@node Package $package_name\n",
-		       "\@chapter Package $pack\n");
+	&output ("\@node Package $package_name\n",
+		 "\@chapter Package $pack\n");
 	&output ("\n\@noindent\n");
 
 	my ($description) = &clean_comment_marks
@@ -222,6 +226,8 @@ foreach $source_file (@source_files) {
 	    &color_output ($section_bg, $section_fg,
 			   "\@node $package_name Widget Hierarchy\n",
 			   "\@section Widget Hierarchy\n");
+	    &html_output ("<TABLE WIDTH=100%><TR><TD WIDTH=$tab1_width></TD>",
+			  "<TD BGCOLOR=$hierarchy_bg>");
 	    &output ("\@multitable \@columnfractions .4 .6\n",
 		     "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
 	    
@@ -233,6 +239,7 @@ foreach $source_file (@source_files) {
 	    }
 	
 	    &output ("\@end multitable\n\n");
+	    &html_output ("</TD></TR></TABLE>");
 	} else {
 	    $parent{$package_name} = "<>";
 	}
@@ -260,7 +267,8 @@ foreach $source_file (@source_files) {
 			   "\@node $package_name Subprograms\n",
 			   "\@section Subprograms\n\n");
 
-	    &html_output ("<TABLE WIDTH=\"100%\">");
+	    &html_output ("<TABLE width=100% border=0 ",
+			  "CELLSPACING=0>");
 	    foreach $subprog (@subprogs) {
 		my ($name, $return, $comment, @params)
 		    = ($$subprog[1], $$subprog[0], $$subprog[2],
@@ -270,7 +278,7 @@ foreach $source_file (@source_files) {
 			&output ("\@end itemize\n");
 			$has_itemize = 0;
 		    }
-		    &html_output ("<TR><TD colspan=2>");
+		    &html_output ("<TR><TD colspan=3>");
 		    &output ("\@subsection $name\n\n");
 		    &html_output ("</TD></TR>");
 		    $comment =~ s/^\s*//;
@@ -284,41 +292,51 @@ foreach $source_file (@source_files) {
 		    &output ("\@itemize \@bullet\n\n");
 		    $has_itemize = 1;
 		}
-		&html_output ("<TR><TD WIDTH=\"40\"></TD><TD BGCOLOR=$subprog_bg>",
-			      "<TABLE><TR><TD valign=top>");
-		&tex_output ("\\begin{tabular}{ll}");
+		&html_output ("<TR>",
+			      "<TD WIDTH=$tab1_width></TD>",
+			      "<TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab2_width>");
+#		&tex_output ("\\settabs 2 \\columns\n\\+");
 		&output ("\@findex $name (\@i{in} $package_name)\n",
 			 "\@item \@b{",
 			 ($return eq "")? "procedure $name} " : "function $name} ");
+		if (scalar (@params) == 0) {
+		    &output ("\n");
+		}
+		&html_output ("</TD><TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab3_width>");
+#		&tex_output (" & ");
+		
 		if (scalar (@params) > 0) {
-		    &output ("( \@*");
-		    &html_output ("</TD><TD>");
-		    &tex_output (" & ");
 		    my ($i);
+		    &output ("(");
+		    &output ("\n\@tex\n\\hfil\\break\n\@end tex\n");
+		    &output ("\@ifinfo\n\@*  \n\@end ifinfo\n");
 		    for ($i=0; $i<@params; $i++) {
-			&output ("\@                    \@var{",
+			&output ("\@	 		\@var{",
 				 $params[$i][0], "} : ",
 				 $params[$i][1], " ",
 				 $params[$i][2],
 				 ($i == $#params) ? ")" : ";\@*\n");
 		    }
-		} else {
-		    &output ("\n");
 		}
 		if ($return eq "") {
 		    &output (";\@*\n");
 		} else {
-		    &output ("\@*\n\@	 		\@b{return} $return;\@*\n");
+		    if (scalar (@params) > 0) {
+			&output ("\@*\n");
+		    }
+		    &output ("\@	 		\@b{return} $return;\@*\n");
 		}
-		&html_output ("</TD></TR></TABLE>");
-		&tex_output ("\\end{tabular}");
+		&html_output ("</TD></TR>");
+#		&tex_output ("&\\cr");
 		
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
-		&html_output ("</TD></TR><TR><TD WIDTH=\"40\"></TD><TD>");
+		&html_output ("<TR>",
+			      "<TD WIDTH=$tab1_width></TD>",
+			      "<TD colspan=2 WIDTH=$tab23_width>");
 		&output ($comment, "\n\n",
 			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
-		&html_output ("</TD></TR><TR><TD></TD></TR>");
+		&html_output ("</TD></TR>");
 	    }
 	    if ($has_itemize == 1)  {
 		&output ("\@end itemize\n\n");
@@ -395,7 +413,7 @@ sub html_output () {
 # Outputs the block, only for tex
 
 sub tex_output () {
-#    &output ("\n\@tex\n", @_, "\n\@end tex\n");
+    &output ("\n\@tex\n", @_, "\n\@end tex\n");
 }
 
 # Print some output with special colors
