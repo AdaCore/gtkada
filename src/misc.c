@@ -46,6 +46,7 @@ convert_i (gint s)
 {
    return (void*)s;
 }
+
  
 /*
  *
@@ -278,6 +279,40 @@ ada_gtk_font_selection_dialog_get_apply (GtkFontSelectionDialog* fsd)
 guint
 ada_check_menu_item_get_active (GtkCheckMenuItem* item) {
   return item->active;
+}
+
+/********************
+ * Paned
+ ********************/
+
+gint
+ada_paned_get_child1_resize (GtkPaned* widget) {
+  return widget->child1_resize;
+}
+
+gint
+ada_paned_get_child2_resize (GtkPaned* widget) {
+  return widget->child2_resize;
+}
+
+gint
+ada_paned_get_child1_shrink (GtkPaned* widget) {
+  return widget->child1_shrink;
+}
+
+gint
+ada_paned_get_child2_shrink (GtkPaned* widget) {
+  return widget->child2_shrink;
+}
+
+GtkWidget*
+ada_paned_get_child1 (GtkPaned* widget) {
+  return widget->child1;
+}
+
+GtkWidget*
+ada_paned_get_child2 (GtkPaned* widget) {
+  return widget->child2;
 }
 
 /********************
@@ -934,15 +969,15 @@ ada_gtk_style_get_white_gc (GtkStyle * style)
 }
 
 void
-ada_style_set_foreground (GtkStyle* style, gint state, GdkColor color)
+ada_style_set_foreground (GtkStyle* style, gint state, GdkColor* color)
 {
-  style->fg[state] = color;
+  style->fg[state] = *color;
 }
 
 void
-ada_style_set_base (GtkStyle* style, gint state, GdkColor color)
+ada_style_set_base (GtkStyle* style, gint state, GdkColor* color)
 {
-  style->base[state] = color;
+  style->base[state] = *color;
 }
 
 void
@@ -1316,22 +1351,22 @@ ada_combo_get_list (GtkCombo* widget)
  ** Functions for Style
  *******************************************/
 
-GdkColor
+GdkColor*
 ada_style_get_bg (GtkStyle* style, gint state)
 {
-  return (style->bg [state]);
+  return (style->bg + state);
 }
 
-GdkColor
+GdkColor*
 ada_style_get_black (GtkStyle* style)
 {
-  return (style->black);
+  return &(style->black);
 }
 
-GdkColor
+GdkColor*
 ada_style_get_white (GtkStyle* style)
 {
-  return (style->white);
+  return &(style->white);
 }
 
 /********************************************
