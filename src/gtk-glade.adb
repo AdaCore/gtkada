@@ -610,12 +610,10 @@ begin
    SHT.Set (new String'("GtkCalendar"), Calendar_Generate'Access);
    SHT.Set (new String'("GtkCheckButton"), Check_Button_Generate'Access);
    SHT.Set (new String'("GtkCheckMenuItem"), Check_Menu_Item_Generate'Access);
-   SHT.Set (new String'("GtkCList"), Clist_Generate'Access);
    SHT.Set (new String'("GtkColorSelection"), Color_Selection_Generate'Access);
    SHT.Set (new String'("GtkColorSelectionDialog"),
             Color_Selection_Dialog_Generate'Access);
    SHT.Set (new String'("GtkCombo"), Combo_Generate'Access);
-   SHT.Set (new String'("GtkCTree"), Ctree_Generate'Access);
    SHT.Set (new String'("GtkCurve"), Curve_Generate'Access);
    SHT.Set (new String'("GtkDialog"), Dialog_Generate'Access);
    SHT.Set (new String'("GtkDrawingArea"), Drawing_Area_Generate'Access);

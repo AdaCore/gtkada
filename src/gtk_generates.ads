@@ -36,12 +36,10 @@ package Gtk_Generates is
    procedure Calendar_Generate               (N : Node_Ptr; File : File_Type);
    procedure Check_Button_Generate           (N : Node_Ptr; File : File_Type);
    procedure Check_Menu_Item_Generate        (N : Node_Ptr; File : File_Type);
-   procedure Clist_Generate                  (N : Node_Ptr; File : File_Type);
    procedure Color_Selection_Generate        (N : Node_Ptr; File : File_Type);
    procedure Color_Selection_Dialog_Generate (N : Node_Ptr; File : File_Type);
    procedure Combo_Generate                  (N : Node_Ptr; File : File_Type);
    procedure Container_Generate              (N : Node_Ptr; File : File_Type);
-   procedure Ctree_Generate                  (N : Node_Ptr; File : File_Type);
    procedure Curve_Generate                  (N : Node_Ptr; File : File_Type);
    procedure Dialog_Generate                 (N : Node_Ptr; File : File_Type);
    procedure Drawing_Area_Generate           (N : Node_Ptr; File : File_Type);
