@@ -59,6 +59,38 @@
 --  of course be done much more conveniently in Ada. Therefore most of these
 --  functions are not needed.
 --
+--  Here is a brief explanation on how the reference counting and destruction
+--  process work. You should not have to understand all this to use GtkAda, but
+--  it might help anyway.
+--
+--  When an object (descendant of Gtk.Object) is created, it has initially a
+--  ref_count of 1. A flag is set to say the object is "floating".  See the
+--  Flags functions in this package for how to retrieve the status of this
+--  flag.
+--
+--  When the object gets a parent (ie Gtk.Widget.Set_Parent is called, possibly
+--  from other subprograms like Gtk.Container.Add, Gtk.Box.Pack_Start, ...),
+--  the ref_count of the object is incremented to 2.
+--  If the object was still "floating", it is also "sinked", ie its ref_count
+--  is decremented to 1, and the "floating" flag is cleared.
+--
+--  The same behavior as above happens when the object is registered as a
+--  top-level widget (ie we know it won't have any parent).
+--
+--  Thus the normal life cycle of an object is to have a ref_count to 1, and
+--  not be a "floating" object.
+--
+--  When the object is destroyed, the following happens:
+--     A temporary reference to the object is created (call to Ref), and
+--        ref_count to 2.
+--     The object is shutdown:
+--        It is removed from its parent (if any), and its ref_count is
+--          decremented to 1.
+--        The "destroy" signal is emitted, the user's handlers are called,
+--          and then all the handlers connected to the object are destroyed.
+--     The object is unref-red. If its ref_count goes down to 0 (normal case),
+--        the memory used by the object and its user_data is freed.
+--
 --  </description>
 --  <c_version>1.2.6</c_version>
 
@@ -78,13 +110,20 @@ package Gtk.Object is
    --  function except in special cases.
 
    procedure Unref (Object : access Gtk_Object_Record);
-   --  Decrements the reference count for an object. If it reaches 0, then
-   --  the memory allocated for the object is freed, and the object no
+   --  Decrements the reference count for an object. If it passed from 1 to 0,
+   --  then the memory allocated for the object is freed, and the object no
    --  longer usable.
+   --  It is better to use Destroy than Unref to destroy an object, although
+   --  both might be acceptable.
 
    procedure Destroy (Object : access Gtk_Object_Record);
-   --  Marks the object for destruction.
-   --  ???  Should explain the 3-steps destruction process.
+   --  Destroys the object.
+   --  This emits a "destroy" signal, calls all your handlers, and then
+   --  unconnects them all. The object is then unref-ed, and if its reference
+   --  count goes down to 0, the memory associated with the object and its
+   --  user data is freed.
+   --  Note that when you destroy handlers are called, the user_data is still
+   --  available.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Returns the internal value associated with a Gtk_Object internally.
@@ -114,7 +153,10 @@ package Gtk.Object is
    --     anyway).
    --
    --  - "Floating":
-   --     The objet has no parent yet.  ??? explain the "sink" process.
+   --     The objet has no parent yet, since it was just created. Its reference
+   --     count is still 1 (as it was initially). This flag is cleared as soon
+   --     as Set_Parent is called on the widget or the widget is qualified as
+   --     a toplevel widget (see Gtk.Container.Register_Toplevel).
    --
    --  - "Connected":
    --     Set if the object is connected to at least one handler
@@ -267,6 +309,8 @@ package Gtk.Object is
    --    Raised when the object is about to be destroyed. The "destroyed"
    --    flag has been set on the object first. Handlers should not keep
    --    a reference on the object.
+   --    Note that when you destroy handlers are called, the user_data is still
+   --    available.
    --    The default implementation destroys all the handlers.
    --  </signals>
 
