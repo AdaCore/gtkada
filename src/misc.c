@@ -371,185 +371,10 @@ ada_gdk_point_destroy (GdkPoint * point)
  *
  */
 
-typedef enum
-{
-  ADA_GDK_NUM_GLYPHS,
-  ADA_GDK_X_CURSOR,
-  ADA_GDK_ARROW,
-  ADA_GDK_BASED_ARROW_DOWN,
-  ADA_GDK_BASED_ARROW_UP,
-  ADA_GDK_BOAT,
-  ADA_GDK_BOGOSITY,
-  ADA_GDK_BOTTOM_LEFT_CORNER,
-  ADA_GDK_BOTTOM_RIGHT_CORNER,
-  ADA_GDK_BOTTOM_SIDE,
-  ADA_GDK_BOTTOM_TEE,
-  ADA_GDK_BOX_SPIRAL,
-  ADA_GDK_CENTER_PTR,
-  ADA_GDK_CIRCLE,
-  ADA_GDK_CLOCK,
-  ADA_GDK_COFFEE_MUG,
-  ADA_GDK_CROSS,
-  ADA_GDK_CROSS_REVERSE,
-  ADA_GDK_CROSSHAIR,
-  ADA_GDK_DIAMOND_CROSS,
-  ADA_GDK_DOT,
-  ADA_GDK_DOTBOX,
-  ADA_GDK_DOUBLE_ARROW,
-  ADA_GDK_DRAFT_LARGE,
-  ADA_GDK_DRAFT_SMALL,
-  ADA_GDK_DRAPED_BOX,
-  ADA_GDK_EXCHANGE,
-  ADA_GDK_FLEUR,
-  ADA_GDK_GOBBLER,
-  ADA_GDK_GUMBY,
-  ADA_GDK_HAND1,
-  ADA_GDK_HAND2,
-  ADA_GDK_HEART,
-  ADA_GDK_ICON,
-  ADA_GDK_IRON_CROSS,
-  ADA_GDK_LEFT_PTR,
-  ADA_GDK_LEFT_SIDE,
-  ADA_GDK_LEFT_TEE,
-  ADA_GDK_LEFTBUTTON,
-  ADA_GDK_LL_ANGLE,
-  ADA_GDK_LR_ANGLE,
-  ADA_GDK_MAN,
-  ADA_GDK_MIDDLEBUTTON,
-  ADA_GDK_MOUSE,
-  ADA_GDK_PENCIL,
-  ADA_GDK_PIRATE,
-  ADA_GDK_PLUS,
-  ADA_GDK_QUESTION_ARROW,
-  ADA_GDK_RIGHT_PTR,
-  ADA_GDK_RIGHT_SIDE,
-  ADA_GDK_RIGHT_TEE,
-  ADA_GDK_RIGHTBUTTON,
-  ADA_GDK_RTL_LOGO,
-  ADA_GDK_SAILBOAT,
-  ADA_GDK_SB_DOWN_ARROW,
-  ADA_GDK_SB_H_DOUBLE_ARROW,
-  ADA_GDK_SB_LEFT_ARROW,
-  ADA_GDK_SB_RIGHT_ARROW,
-  ADA_GDK_SB_UP_ARROW,
-  ADA_GDK_SB_V_DOUBLE_ARROW,
-  ADA_GDK_SHUTTLE,
-  ADA_GDK_SIZING,
-  ADA_GDK_SPIDER,
-  ADA_GDK_SPRAYCAN,
-  ADA_GDK_STAR,
-  ADA_GDK_TARGET,
-  ADA_GDK_TCROSS,
-  ADA_GDK_TOP_LEFT_ARROW,
-  ADA_GDK_TOP_LEFT_CORNER,
-  ADA_GDK_TOP_RIGHT_CORNER,
-  ADA_GDK_TOP_SIDE,
-  ADA_GDK_TOP_TEE,
-  ADA_GDK_TREK,
-  ADA_GDK_UL_ANGLE,
-  ADA_GDK_UMBRELLA,
-  ADA_GDK_UR_ANGLE,
-  ADA_GDK_WATCH,
-  ADA_GDK_XTERM,
-  ADA_GDK_LAST_CURSOR,
-  ADA_GDK_CURSOR_IS_PIXMAP
-} AdaGdkCursorType;
-
-
-
-GdkCursorType
-ada_gdk_cursor_of (AdaGdkCursorType cursor_type)
-{
-  switch (cursor_type)
-  {
-  case ADA_GDK_NUM_GLYPHS : return GDK_NUM_GLYPHS; break;
-  case ADA_GDK_X_CURSOR : return GDK_X_CURSOR; break;
-  case ADA_GDK_ARROW : return GDK_ARROW; break;
-  case ADA_GDK_BASED_ARROW_DOWN : return GDK_BASED_ARROW_DOWN; break;
-  case ADA_GDK_BASED_ARROW_UP : return GDK_BASED_ARROW_UP; break;
-  case ADA_GDK_BOAT : return GDK_BOAT; break;
-  case ADA_GDK_BOGOSITY : return GDK_BOGOSITY; break;
-  case ADA_GDK_BOTTOM_LEFT_CORNER : return GDK_BOTTOM_LEFT_CORNER; break;
-  case ADA_GDK_BOTTOM_RIGHT_CORNER : return GDK_BOTTOM_RIGHT_CORNER; break;
-  case ADA_GDK_BOTTOM_SIDE : return GDK_BOTTOM_SIDE; break;
-  case ADA_GDK_BOTTOM_TEE : return GDK_BOTTOM_TEE; break;
-  case ADA_GDK_BOX_SPIRAL : return GDK_BOX_SPIRAL; break;
-  case ADA_GDK_CENTER_PTR : return GDK_CENTER_PTR; break;
-  case ADA_GDK_CIRCLE : return GDK_CIRCLE; break;
-  case ADA_GDK_CLOCK : return GDK_CLOCK; break;
-  case ADA_GDK_COFFEE_MUG : return GDK_COFFEE_MUG; break;
-  case ADA_GDK_CROSS : return GDK_CROSS; break;
-  case ADA_GDK_CROSS_REVERSE : return GDK_CROSS_REVERSE; break;
-  case ADA_GDK_CROSSHAIR : return GDK_CROSSHAIR; break;
-  case ADA_GDK_DIAMOND_CROSS : return GDK_DIAMOND_CROSS; break;
-  case ADA_GDK_DOT : return GDK_DOT; break;
-  case ADA_GDK_DOTBOX : return GDK_DOTBOX; break;
-  case ADA_GDK_DOUBLE_ARROW : return GDK_DOUBLE_ARROW; break;
-  case ADA_GDK_DRAFT_LARGE : return GDK_DRAFT_LARGE; break;
-  case ADA_GDK_DRAFT_SMALL : return GDK_DRAFT_SMALL; break;
-  case ADA_GDK_DRAPED_BOX : return GDK_DRAPED_BOX; break;
-  case ADA_GDK_EXCHANGE : return GDK_EXCHANGE; break;
-  case ADA_GDK_FLEUR : return GDK_FLEUR; break;
-  case ADA_GDK_GOBBLER : return GDK_GOBBLER; break;
-  case ADA_GDK_GUMBY : return GDK_GUMBY; break;
-  case ADA_GDK_HAND1 : return GDK_HAND1; break;
-  case ADA_GDK_HAND2 : return GDK_HAND2; break;
-  case ADA_GDK_HEART : return GDK_HEART; break;
-  case ADA_GDK_ICON : return GDK_ICON; break;
-  case ADA_GDK_IRON_CROSS : return GDK_IRON_CROSS; break;
-  case ADA_GDK_LEFT_PTR : return GDK_LEFT_PTR; break;
-  case ADA_GDK_LEFT_SIDE : return GDK_LEFT_SIDE; break;
-  case ADA_GDK_LEFT_TEE : return GDK_LEFT_TEE; break;
-  case ADA_GDK_LEFTBUTTON : return GDK_LEFTBUTTON; break;
-  case ADA_GDK_LL_ANGLE : return GDK_LL_ANGLE; break;
-  case ADA_GDK_LR_ANGLE : return GDK_LR_ANGLE; break;
-  case ADA_GDK_MAN : return GDK_MAN; break;
-  case ADA_GDK_MIDDLEBUTTON : return GDK_MIDDLEBUTTON; break;
-  case ADA_GDK_MOUSE : return GDK_MOUSE; break;
-  case ADA_GDK_PENCIL : return GDK_PENCIL; break;
-  case ADA_GDK_PIRATE : return GDK_PIRATE; break;
-  case ADA_GDK_PLUS : return GDK_PLUS; break;
-  case ADA_GDK_QUESTION_ARROW : return GDK_QUESTION_ARROW; break;
-  case ADA_GDK_RIGHT_PTR : return GDK_RIGHT_PTR; break;
-  case ADA_GDK_RIGHT_SIDE : return GDK_RIGHT_SIDE; break;
-  case ADA_GDK_RIGHT_TEE : return GDK_RIGHT_TEE; break;
-  case ADA_GDK_RIGHTBUTTON : return GDK_RIGHTBUTTON; break;
-  case ADA_GDK_RTL_LOGO : return GDK_RTL_LOGO; break;
-  case ADA_GDK_SAILBOAT : return GDK_SAILBOAT; break;
-  case ADA_GDK_SB_DOWN_ARROW : return GDK_SB_DOWN_ARROW; break;
-  case ADA_GDK_SB_H_DOUBLE_ARROW : return GDK_SB_H_DOUBLE_ARROW; break;
-  case ADA_GDK_SB_LEFT_ARROW : return GDK_SB_LEFT_ARROW; break;
-  case ADA_GDK_SB_RIGHT_ARROW : return GDK_SB_RIGHT_ARROW; break;
-  case ADA_GDK_SB_UP_ARROW : return GDK_SB_UP_ARROW; break;
-  case ADA_GDK_SB_V_DOUBLE_ARROW : return GDK_SB_V_DOUBLE_ARROW; break;
-  case ADA_GDK_SHUTTLE : return GDK_SHUTTLE; break;
-  case ADA_GDK_SIZING : return GDK_SIZING; break;
-  case ADA_GDK_SPIDER : return GDK_SPIDER; break;
-  case ADA_GDK_SPRAYCAN : return GDK_SPRAYCAN; break;
-  case ADA_GDK_STAR : return GDK_STAR; break;
-  case ADA_GDK_TARGET : return GDK_TARGET; break;
-  case ADA_GDK_TCROSS : return GDK_TCROSS; break;
-  case ADA_GDK_TOP_LEFT_ARROW : return GDK_TOP_LEFT_ARROW; break;
-  case ADA_GDK_TOP_LEFT_CORNER : return GDK_TOP_LEFT_CORNER; break;
-  case ADA_GDK_TOP_RIGHT_CORNER : return GDK_TOP_RIGHT_CORNER; break;
-  case ADA_GDK_TOP_SIDE : return GDK_TOP_SIDE; break;
-  case ADA_GDK_TOP_TEE : return GDK_TOP_TEE; break;
-  case ADA_GDK_TREK : return GDK_TREK; break;
-  case ADA_GDK_UL_ANGLE : return GDK_UL_ANGLE; break;
-  case ADA_GDK_UMBRELLA : return GDK_UMBRELLA; break;
-  case ADA_GDK_UR_ANGLE : return GDK_UR_ANGLE; break;
-  case ADA_GDK_WATCH : return GDK_WATCH; break;
-  case ADA_GDK_XTERM : return GDK_XTERM; break;
-  case ADA_GDK_LAST_CURSOR : return GDK_LAST_CURSOR; break;
-  case ADA_GDK_CURSOR_IS_PIXMAP : return GDK_CURSOR_IS_PIXMAP; break;
-  default : return GDK_XTERM; break;
-  }
-};
-
 GdkCursor* 
-ada_gdk_cursor_new (AdaGdkCursorType   cursor_type)
+ada_gdk_cursor_new (gint cursor_type)
 {
-  return gdk_cursor_new (ada_gdk_cursor_of (cursor_type));
+  return gdk_cursor_new (cursor_type);
 }
 
 
@@ -766,6 +591,12 @@ ada_adjustment_set_page_increment (GtkAdjustment * adjustment,
   adjustment->page_increment = value;
 }
 
+gfloat
+gtk_adjustment_get_step_increment (GtkAdjustment * adjustment)
+{
+  return adjustment->step_increment;
+}
+
 void
 ada_adjustment_set_page_size (GtkAdjustment * adjustment,
                                   gfloat value)
@@ -790,6 +621,18 @@ GdkGC *
 ada_gtk_style_get_black_gc (GtkStyle * style)
 {
   return style->black_gc;
+}
+
+GdkGC *
+ada_gtk_style_get_bg_gc (GtkStyle * style, gint state)
+{
+  return style->bg_gc [state];
+}
+
+GdkGC *
+ada_gtk_style_get_white_gc (GtkStyle * style)
+{
+  return style->white_gc;
 }
 
 /*
