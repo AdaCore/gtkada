@@ -48,8 +48,8 @@ package body Create_Text is
 
    type String_Access is access String;
    type Text_Colors_Type is record
-      Red, Green, Blue : Gushort;
-      Name  : String_Access;
+      Red, Green, Blue : Guint;
+      Name : String_Access;
    end record;
    type Text_Colors_Type_Array is array (Natural range <>) of
      Text_Colors_Type;

@@ -32,7 +32,6 @@ with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.GC;           use Gdk.GC;
 with Gdk.Rectangle;    use Gdk.Rectangle;
-with Gdk.Types;
 with Gdk.Window;       use Gdk.Window;
 with Gdk;              use Gdk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
@@ -129,12 +128,13 @@ package body Create_Scroll_Test is
             Set_Exposures (Scroll_Test_GC, True);
          end if;
 
-         Draw_Pixmap (Get_Window (Widget), Scroll_Test_GC,
-                      Get_Window (Widget),
-                      0, Source_Min,
-                      0, Dest_Min,
-                      Gint (Get_Allocation_Width (Widget)),
-                      Source_Max - Source_Min);
+         Draw_Drawable
+           (Get_Window (Widget), Scroll_Test_GC,
+            Get_Window (Widget),
+            0, Source_Min,
+            0, Dest_Min,
+            Gint (Get_Allocation_Width (Widget)),
+            Source_Max - Source_Min);
 
          --  Make sure graphics expose events are processed before
          --  scrolling again
@@ -245,8 +245,7 @@ package body Create_Scroll_Test is
       Box.Pack_Start (In_Box => Hbox, Child => Drawing_Area);
 
       Unrealize (Drawing_Area); --  Required for Set_Events
-      Set_Events (Widget => Drawing_Area,
-                  Events => Gdk.Types.Exposure_Mask);
+      Set_Events (Widget => Drawing_Area, Events => Exposure_Mask);
 
       Adjustment.Gtk_New (Adjustment => Adj, Value => 0.0, Lower => 0.0,
                           Upper => 1000.0, Step_Increment => 1.0,

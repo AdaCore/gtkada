@@ -30,7 +30,6 @@
 with Gdk.Drawable;        use Gdk.Drawable;
 with Gdk.Event;           use Gdk.Event;
 with Gdk.Rectangle;       use Gdk.Rectangle;
-with Gdk.Types;           use Gdk.Types;
 with Gdk.Window;          use Gdk.Window;
 with Glib;                use Glib;
 with Gtk.Adjustment;      use Gtk.Adjustment;

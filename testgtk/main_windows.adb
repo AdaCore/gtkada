@@ -29,6 +29,7 @@
 
 with Glib;                use Glib;
 with Gtk;                 use Gtk;
+with Gdk;                 use Gdk;
 with Gdk.Bitmap;          use Gdk.Bitmap;
 with Gdk.Color;           use Gdk.Color;
 with Gdk.Font;            use Gdk.Font;
@@ -536,8 +537,8 @@ package body Main_Windows is
      (Icon   : Interfaces.C.Strings.chars_ptr_array;
       Window : access Gtk_Widget_Record'Class) return Gtk_Pixmap
    is
-      Pixmap    : Gdk_Pixmap;
-      Mask      : Gdk_Bitmap;
+      Pixmap    : Gdk.Gdk_Pixmap;
+      Mask      : Gdk.Gdk_Bitmap;
       GtkPixmap : Gtk_Pixmap;
    begin
       Create_From_Xpm_D (Pixmap, Get_Window (Window), Mask, Null_Color, Icon);
@@ -692,6 +693,7 @@ package body Main_Windows is
       --  Label
       Style := Copy (Get_Style (Win));
       Load (Font, "-adobe-helvetica-bold-*-*-*-*-180-*-*-*-*-*-*");
+
       if Font /= null then
          Set_Font (Style, Font);
       end if;

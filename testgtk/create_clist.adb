@@ -232,7 +232,7 @@ package body Create_Clist is
       Col1 : Gdk_Color;
       Col2 : Gdk_Color;
       Row  : Gint;
-      Font : Gdk_Font;
+      Font : Gdk.Gdk_Font;
       Style : Gtk_Style := Get_Style (List);
 
    begin
@@ -326,7 +326,7 @@ package body Create_Clist is
       Col1      : Gdk_Color;
       Col2      : Gdk_Color;
       Style     : Gtk_Style;
-      Font      : Gdk_Font;
+      Font      : Gdk.Gdk_Font;
 
    begin
 

@@ -34,7 +34,6 @@ with Gdk.Cursor;       use Gdk.Cursor;
 with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.GC;           use Gdk.GC;
-with Gdk.Types;        use Gdk.Types;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Box;          use Gtk.Box;

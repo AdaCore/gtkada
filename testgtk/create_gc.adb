@@ -87,44 +87,44 @@ package body Create_Gc is
 
       Set_Line_Attributes (Gc,
                            Line_Width => 8,
-                           Line_Style => Gdk.Types.Line_Solid,
-                           Cap_Style  => Gdk.Types.Cap_Butt,
-                           Join_Style => Gdk.Types.Join_Miter);
+                           Line_Style => Line_Solid,
+                           Cap_Style  => Cap_Butt,
+                           Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 15, "Cap_Style = Cap_Butt");
 
       Set_Line_Attributes (Gc,
                            Line_Width => 8,
-                           Line_Style => Gdk.Types.Line_Solid,
-                           Cap_Style  => Gdk.Types.Cap_Projecting,
-                           Join_Style => Gdk.Types.Join_Miter);
+                           Line_Style => Line_Solid,
+                           Cap_Style  => Cap_Projecting,
+                           Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 45, "Cap_Style = Cap_Projecting");
 
       Set_Line_Attributes (Gc,
                            Line_Width => 8,
-                           Line_Style => Gdk.Types.Line_Solid,
-                           Cap_Style  => Gdk.Types.Cap_Round,
-                           Join_Style => Gdk.Types.Join_Miter);
+                           Line_Style => Line_Solid,
+                           Cap_Style  => Cap_Round,
+                           Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 75, "Cap_Style = Cap_Round");
 
       Set_Line_Attributes (Gc,
                            Line_Width => 4,
-                           Line_Style => Gdk.Types.Line_On_Off_Dash,
-                           Cap_Style  => Gdk.Types.Cap_Butt,
-                           Join_Style => Gdk.Types.Join_Miter);
+                           Line_Style => Line_On_Off_Dash,
+                           Cap_Style  => Cap_Butt,
+                           Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 105, "Line_Style = Line_On_Off_Dash");
 
       Set_Line_Attributes (Gc,
                            Line_Width => 4,
-                           Line_Style => Gdk.Types.Line_Double_Dash,
-                           Cap_Style  => Gdk.Types.Cap_Butt,
-                           Join_Style => Gdk.Types.Join_Miter);
+                           Line_Style => Line_Double_Dash,
+                           Cap_Style  => Cap_Butt,
+                           Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 135, "Line_Style = Line_Double_Dash");
 
       Set_Line_Attributes (Gc,
                            Line_Width => 4,
-                           Line_Style => Gdk.Types.Line_On_Off_Dash,
-                           Cap_Style  => Gdk.Types.Cap_Butt,
-                           Join_Style => Gdk.Types.Join_Miter);
+                           Line_Style => Line_On_Off_Dash,
+                           Cap_Style  => Cap_Butt,
+                           Join_Style => Join_Miter);
       Set_Dashes (Gc,
                   Dash_Offset => 0,
                   Dash_List   => (2, 2, 4, 4, 6, 6));
@@ -137,23 +137,23 @@ package body Create_Gc is
 
       Set_Line_Attributes (Gc,
                            Line_Width => 8,
-                           Line_Style => Gdk.Types.Line_Solid,
-                           Cap_Style  => Gdk.Types.Cap_Butt,
-                           Join_Style => Gdk.Types.Join_Miter);
+                           Line_Style => Line_Solid,
+                           Cap_Style  => Cap_Butt,
+                           Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 250, "Join_Style = Join_Miter", 2);
 
       Set_Line_Attributes (Gc,
                            Line_Width => 8,
-                           Line_Style => Gdk.Types.Line_Solid,
-                           Cap_Style  => Gdk.Types.Cap_Butt,
-                           Join_Style => Gdk.Types.Join_Round);
+                           Line_Style => Line_Solid,
+                           Cap_Style  => Cap_Butt,
+                           Join_Style => Join_Round);
       Draw_Text_And_Line (Area, 300, "Join_Style = Join_Round", 2);
 
       Set_Line_Attributes (Gc,
                            Line_Width => 8,
-                           Line_Style => Gdk.Types.Line_Solid,
-                           Cap_Style  => Gdk.Types.Cap_Butt,
-                           Join_Style => Gdk.Types.Join_Bevel);
+                           Line_Style => Line_Solid,
+                           Cap_Style  => Cap_Butt,
+                           Join_Style => Join_Bevel);
       Draw_Text_And_Line (Area, 350, "Join_Style = Join_Bevel", 2);
 
       return False;
