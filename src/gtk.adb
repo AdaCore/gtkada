@@ -1,6 +1,6 @@
-with Unchecked_Deallocation;
-
 package body Gtk is
+
+   use type System.Address;
 
    ------------
    -- Adjust --
@@ -8,7 +8,7 @@ package body Gtk is
 
    procedure Adjust (Object : in out Root_Type) is
    begin
-      Object.Data.Num_Ref := Object.Data.Num_Ref + 1;
+      Ref (Object);
    end Adjust;
 
    --------------
@@ -17,33 +17,8 @@ package body Gtk is
 
    procedure Finalize (Object : in out Root_Type) is
    begin
-      if Object.Data /= null then
-         Object.Data.Num_Ref := Object.Data.Num_Ref - 1;
-      end if;
+      Unref (Object);
    end Finalize;
-
-   ----------
-   -- Free --
-   ----------
-
-   procedure Free_Object (Object : in out Root_Type'Class) is
-      procedure Internal is new Unchecked_Deallocation (Root_Type_Value,
-                                                        Root_Type_Ptr);
-   begin
-      Internal (Object.Data);
-      Object.Data := null;
-   end Free_Object;
-
-   --------------
-   -- Get_Data --
-   --------------
-
-   function Get_Data (Object : in Root_Type'Class)
-                      return Root_Type_Ptr
-   is
-   begin
-      return Object.Data;
-   end Get_Data;
 
    ----------------
    -- Get_Object --
@@ -52,21 +27,17 @@ package body Gtk is
    function Get_Object (Object : in Root_Type'Class)
                         return System.Address is
    begin
-      return Object.Data.Ptr;
+      return Object.Ptr;
    end Get_Object;
 
-   --------------
-   -- Get_Type --
-   --------------
+   ----------------
+   -- Initialize --
+   ----------------
 
-   function Get_Type (Object : in Root_Type'Class)
-                      return Gint is
-      function Internal (Object : System.Address)
-                         return Gint;
-      pragma Import (C, Internal, "ada_object_get_type");
+   procedure Initialize (Object : in out Root_Type) is
    begin
-      return Internal (Get_Object (Object));
-   end Get_Type;
+      Ref (Object);
+   end Initialize;
 
    ------------------
    --  Is_Created  --
@@ -74,9 +45,11 @@ package body Gtk is
 
    function Is_Created (Object : in Root_Type'Class) return Boolean is
       use type System.Address;
+      function Destroyed (Object : in System.Address) return Guint32;
+      pragma Import (C, Destroyed, "ada_object_destroyed");
    begin
-      return Get_Data (Object) /= null
-        and then Get_Object (Object) /= System.Null_Address;
+      return Get_Object (Object) /= System.Null_Address
+        and then not To_Boolean (Destroyed (Get_Object (Object)));
    end Is_Created;
 
    -------------------
@@ -113,21 +86,18 @@ package body Gtk is
       return Number;
    end Minor_Version;
 
-   --------------
-   -- Set_Data --
-   --------------
+   ---------
+   -- Ref --
+   ---------
 
-   procedure Set_Data (Object : in out Root_Type'Class;
-                       Data   : in Root_Type_Ptr)
-   is
+   procedure Ref (Object : in out Root_Type'Class) is
+      procedure Internal (Object : in System.Address);
+      pragma Import (C, Internal, "gtk_object_ref");
    begin
-      if Object.Data /= null then
-         Object.Data.Num_Ref := Object.Data.Num_Ref - 1;
+      if Get_Object (Object) /= System.Null_Address then
+         Internal (Get_Object (Object));
       end if;
-
-      Object.Data := Data;
-      Object.Data.Num_Ref := Object.Data.Num_Ref + 1;
-   end Set_Data;
+   end Ref;
 
    ----------------
    -- Set_Object --
@@ -137,12 +107,22 @@ package body Gtk is
                          Value  : in     System.Address) is
       use type System.Address;
    begin
-      if Object.Data /= null then
-         Object.Data.Num_Ref := Object.Data.Num_Ref - 1;
-      end if;
-      Object.Data := new Root_Type_Value'(Ptr     => Value,
-                                          Num_Ref => 1);
+      Unref (Object);
+      Object.Ptr := Value;
+      Ref (Object);
    end Set_Object;
 
+   -----------
+   -- Unref --
+   -----------
+
+   procedure Unref (Object : in out Root_Type'Class) is
+      procedure Internal (Object : in System.Address);
+      pragma Import (C, Internal, "gtk_object_unref");
+   begin
+      if Get_Object (Object) /= System.Null_Address then
+         Internal (Get_Object (Object));
+      end if;
+   end Unref;
 
 end Gtk;

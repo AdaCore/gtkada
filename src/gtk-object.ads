@@ -8,7 +8,6 @@ package Gtk.Object is
    procedure Destroy (Object : in out Gtk_Object'Class);
    --  mapping: Destroy gtkobject.h gtk_object_destroy
 
-
    -------------
    --  Flags  --
    -------------
@@ -44,11 +43,9 @@ private
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_new
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_newv
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_query_args
-   --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_ref
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_set
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_setv
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_sink
-   --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_unref
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_weakref
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_weakunref
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_trace_referencing

@@ -1,5 +1,3 @@
-with Ada.Text_IO;
-
 package body Gtk.Object is
 
 
@@ -24,12 +22,7 @@ package body Gtk.Object is
       procedure Internal  (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_destroy");
    begin
-      if Object.Data.Num_Ref /= 1 then
-         Ada.Text_IO.Put_Line
-           ("Destroying an object with multiple references");
-      end if;
       Internal (Get_Object (Object));
-      Object.Data.Ptr := System.Null_Address;
    end Destroy;
 
    ----------------
@@ -67,7 +60,6 @@ package body Gtk.Object is
       return To_Boolean (Internal (Get_Object (Object)));
    end Floating;
 
-
    -----------------
    --  Set_Flags  --
    -----------------
@@ -80,7 +72,6 @@ package body Gtk.Object is
    begin
       Internal (Get_Object (Object), Flags);
    end Set_Flags;
-
 
    -------------------
    --  Unset_Flags  --
