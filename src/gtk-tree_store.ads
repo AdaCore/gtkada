@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -188,6 +188,7 @@ package Gtk.Tree_Store is
    --  child of Parent, otherwise it will prepend a row to the top level. Iter
    --  will be changed to point to this new row. The row will be empty after
    --  this function is called. To fill in values, you need to call Set_Value.
+   --  The efficiency of this procedure is O(N).
 
    procedure Append
      (Tree_Store : access Gtk_Tree_Store_Record;
@@ -198,6 +199,7 @@ package Gtk.Tree_Store is
    --  child of Parent, otherwise it will append a row to the top level. Iter
    --  will be changed to point to this new row. The row will be empty after
    --  this function is called. To fill in values, you need to call Set_Value.
+   --  The efficiency of this procedure is O(N^2).
 
    function Is_Ancestor
      (Tree_Store : access Gtk_Tree_Store_Record;
