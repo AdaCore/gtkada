@@ -32,23 +32,6 @@ with System;
 
 package body Gtk.Progress_Bar is
 
-   ---------------
-   -- Construct --
-   ---------------
-
-   procedure Construct
-      (Pbar       : in Gtk_Progress_Bar;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
-   is
-      procedure Internal
-         (Pbar       : in System.Address;
-          Adjustment : in System.Address);
-      pragma Import (C, Internal, "gtk_progress_bar_construct");
-   begin
-      Internal (Get_Object (Pbar),
-                Get_Object (Adjustment));
-   end Construct;
-
    -------------
    -- Gtk_New --
    -------------

@@ -34,10 +34,6 @@ package Gtk.Progress_Bar is
 
    type Gtk_Progress_Bar is new Gtk.Progress.Gtk_Progress with private;
 
-   procedure Construct
-      (Pbar       : in Gtk_Progress_Bar;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
-
    procedure Gtk_New (Widget     : out Gtk_Progress_Bar;
                       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Gtk_New (Widget : out Gtk_Progress_Bar);
