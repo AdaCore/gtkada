@@ -47,80 +47,6 @@ package body Gtk.Color_Selection is
       Internal (Get_Object (Colorsel), Color);
    end Get_Color;
 
-   -------------------
-   -- Get_Old_Color --
-   -------------------
-
-   procedure Get_Old_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      Color    : out Color_Array)
-   is
-      procedure Internal (Colorsel : System.Address; Color : out Color_Array);
-      pragma Import (C, Internal, "gtk_color_selection_get_old_color");
-
-   begin
-      Color (Opacity) := 0.0;
-      Internal (Get_Object (Colorsel), Color);
-   end Get_Old_Color;
-
-   -----------------------
-   -- Get_Palette_Color --
-   -----------------------
-
-   procedure Get_Palette_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      X        : Gint;
-      Y        : Gint;
-      Color    : out Color_Array;
-      Status   : out Boolean)
-   is
-      function Internal
-        (Colorsel : System.Address;
-         X        : Gint;
-         Y        : Gint;
-         Color    : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_color_selection_get_palette_color");
-
-      Tmp : aliased Color_Array;
-
-   begin
-      Tmp (Opacity) := 0.0;
-      Status := To_Boolean
-        (Internal (Get_Object (Colorsel), X, Y, Tmp'Address));
-
-      if Status then
-         Color := Tmp;
-      end if;
-   end Get_Palette_Color;
-
-   ---------------------
-   -- Get_Use_Opacity --
-   ---------------------
-
-   function Get_Use_Opacity
-     (Colorsel : access Gtk_Color_Selection_Record) return Boolean
-   is
-      function Internal (Colorsel : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_color_selection_get_use_opacity");
-
-   begin
-      return To_Boolean (Internal (Get_Object (Colorsel)));
-   end Get_Use_Opacity;
-
-   ---------------------
-   -- Get_Use_Palette --
-   ---------------------
-
-   function Get_Use_Palette
-     (Colorsel : access Gtk_Color_Selection_Record) return Boolean
-   is
-      function Internal (Colorsel : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_color_selection_get_use_palette");
-
-   begin
-      return To_Boolean (Internal (Get_Object (Colorsel)));
-   end Get_Use_Palette;
-
    -------------
    -- Gtk_New --
    -------------
@@ -172,72 +98,6 @@ package body Gtk.Color_Selection is
       Internal (Get_Object (Colorsel), Color'Address);
    end Set_Color;
 
-   -------------------
-   -- Set_Old_Color --
-   -------------------
-
-   procedure Set_Old_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      Color    : Color_Array)
-   is
-      procedure Internal (Colorsel : System.Address; Color : System.Address);
-      pragma Import (C, Internal, "gtk_color_selection_set_old_color");
-
-   begin
-      Internal (Get_Object (Colorsel), Color'Address);
-   end Set_Old_Color;
-
-   -----------------------
-   -- Set_Palette_Color --
-   -----------------------
-
-   procedure Set_Palette_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      X        : Gint;
-      Y        : Gint;
-      Color    : Color_Array)
-   is
-      procedure Internal
-        (Colorsel : System.Address;
-         X        : Gint;
-         Y        : Gint;
-         Color    : System.Address);
-      pragma Import (C, Internal, "gtk_color_selection_set_palette_color");
-
-   begin
-      Internal (Get_Object (Colorsel), X, Y, Color'Address);
-   end Set_Palette_Color;
-
-   ---------------------
-   -- Set_Use_Opacity --
-   ---------------------
-
-   procedure Set_Use_Opacity
-     (Colorsel    : access Gtk_Color_Selection_Record;
-      Use_Opacity : Boolean)
-   is
-      procedure Internal (Colorsel : System.Address; Use_Opacity : Gboolean);
-      pragma Import (C, Internal, "gtk_color_selection_set_use_opacity");
-
-   begin
-      Internal (Get_Object (Colorsel), To_Gboolean (Use_Opacity));
-   end Set_Use_Opacity;
-
-   ---------------------
-   -- Set_Use_Palette --
-   ---------------------
-
-   procedure Set_Use_Palette
-     (Colorsel    : access Gtk_Color_Selection_Record;
-      Use_Palette : Boolean)
-   is
-      procedure Internal (Colorsel : System.Address; Use_Opacity : Gboolean);
-      pragma Import (C, Internal, "gtk_color_selection_set_use_palette");
-
-   begin
-      Internal (Get_Object (Colorsel), To_Gboolean (Use_Palette));
-   end Set_Use_Palette;
-
    -----------------------
    -- Set_Update_Policy --
    -----------------------
@@ -253,6 +113,192 @@ package body Gtk.Color_Selection is
    begin
       Internal (Get_Object (Colorsel), Policy);
    end Set_Update_Policy;
+
+   -----------------------------
+   -- Get_Has_Opacity_Control --
+   -----------------------------
+
+   function Get_Has_Opacity_Control
+     (Colorsel : access Gtk_Color_Selection_Record) return Boolean
+   is
+      function Internal (Colorsel : System.Address) return Gboolean;
+      pragma Import
+        (C, Internal, "gtk_color_selection_get_has_opacity_control");
+   begin
+      return To_Boolean (Internal (Get_Object (Colorsel)));
+   end Get_Has_Opacity_Control;
+
+   -----------------------------
+   -- Set_Has_Opacity_Control --
+   -----------------------------
+
+   procedure Set_Has_Opacity_Control
+     (Colorsel    : access Gtk_Color_Selection_Record;
+      Has_Opacity : Boolean)
+   is
+      procedure Internal
+        (Colorsel    : System.Address;
+         Has_Opacity : Gboolean);
+      pragma Import
+        (C, Internal, "gtk_color_selection_set_has_opacity_control");
+   begin
+      Internal (Get_Object (Colorsel), To_Gboolean (Has_Opacity));
+   end Set_Has_Opacity_Control;
+
+   ---------------------
+   -- Get_Has_Palette --
+   ---------------------
+
+   function Get_Has_Palette
+     (Colorsel : access Gtk_Color_Selection_Record) return Boolean
+   is
+      function Internal (Colorsel : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_color_selection_get_has_palette");
+   begin
+      return To_Boolean (Internal (Get_Object (Colorsel)));
+   end Get_Has_Palette;
+
+   ---------------------
+   -- Set_Has_Palette --
+   ---------------------
+
+   procedure Set_Has_Palette
+     (Colorsel    : access Gtk_Color_Selection_Record;
+      Has_Palette : Boolean)
+   is
+      procedure Internal
+        (Colorsel    : System.Address;
+         Has_Palette : Gboolean);
+      pragma Import (C, Internal, "gtk_color_selection_set_has_palette");
+   begin
+      Internal (Get_Object (Colorsel), To_Gboolean (Has_Palette));
+   end Set_Has_Palette;
+
+   -----------------------
+   -- Set_Current_Color --
+   -----------------------
+
+   procedure Set_Current_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Colorsel : System.Address;
+         Color    : Gdk.Color.Gdk_Color);
+      pragma Import (C, Internal, "gtk_color_selection_set_current_color");
+   begin
+      Internal (Get_Object (Colorsel), Color);
+   end Set_Current_Color;
+
+   -----------------------
+   -- Set_Current_Alpha --
+   -----------------------
+
+   procedure Set_Current_Alpha
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Alpha    : Guint16)
+   is
+      procedure Internal
+        (Colorsel : System.Address;
+         Alpha    : Guint16);
+      pragma Import (C, Internal, "gtk_color_selection_set_current_alpha");
+   begin
+      Internal (Get_Object (Colorsel), Alpha);
+   end Set_Current_Alpha;
+
+   -----------------------
+   -- Get_Current_Color --
+   -----------------------
+
+   procedure Get_Current_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : out Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Colorsel : System.Address;
+         Color    : System.Address);
+      pragma Import (C, Internal, "gtk_color_selection_get_current_color");
+      Col : aliased Gdk.Color.Gdk_Color;
+   begin
+      Internal (Get_Object (Colorsel), Col'Address);
+      Color := Col;
+   end Get_Current_Color;
+
+   -----------------------
+   -- Get_Current_Alpha --
+   -----------------------
+
+   function Get_Current_Alpha
+     (Colorsel : access Gtk_Color_Selection_Record) return Guint16
+   is
+      function Internal (Colorsel : System.Address) return Guint16;
+      pragma Import (C, Internal, "gtk_color_selection_get_current_alpha");
+   begin
+      return Internal (Get_Object (Colorsel));
+   end Get_Current_Alpha;
+
+   ------------------------
+   -- Set_Previous_Color --
+   ------------------------
+
+   procedure Set_Previous_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Colorsel : System.Address;
+         Color    : Gdk.Color.Gdk_Color);
+      pragma Import (C, Internal, "gtk_color_selection_set_previous_color");
+   begin
+      Internal (Get_Object (Colorsel), Color);
+   end Set_Previous_Color;
+
+   ------------------------
+   -- Set_Previous_Alpha --
+   ------------------------
+
+   procedure Set_Previous_Alpha
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Alpha    : Guint16)
+   is
+      procedure Internal
+        (Colorsel : System.Address;
+         Alpha    : Guint16);
+      pragma Import (C, Internal, "gtk_color_selection_set_previous_alpha");
+   begin
+      Internal (Get_Object (Colorsel), Alpha);
+   end Set_Previous_Alpha;
+
+   ------------------------
+   -- Get_Previous_Color --
+   ------------------------
+
+   procedure Get_Previous_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : out Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Colorsel : System.Address;
+         Color    : System.Address);
+      pragma Import (C, Internal, "gtk_color_selection_get_previous_color");
+      Col : aliased Gdk.Color.Gdk_Color;
+   begin
+      Internal (Get_Object (Colorsel), Col'Address);
+      Color := Col;
+   end Get_Previous_Color;
+
+   ------------------------
+   -- Get_Previous_Alpha --
+   ------------------------
+
+   function Get_Previous_Alpha
+     (Colorsel : access Gtk_Color_Selection_Record) return Guint16
+   is
+      function Internal (Colorsel : System.Address) return Guint16;
+      pragma Import (C, Internal, "gtk_color_selection_get_previous_alpha");
+   begin
+      return Internal (Get_Object (Colorsel));
+   end Get_Previous_Alpha;
 
    -----------------
    -- To_Absolute --
@@ -271,22 +317,5 @@ package body Gtk.Color_Selection is
    begin
       return Gdouble (Color) / Gdouble (Gushort'Last);
    end To_Percent;
-
-   -------------------------
-   -- Unset_Palette_Color --
-   -------------------------
-
-   procedure Unset_Palette_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      X        : Gint;
-      Y        : Gint)
-   is
-      procedure Internal
-        (Colorsel : System.Address; X, Y : Gint);
-      pragma Import (C, Internal, "gtk_color_selection_unset_palette_color");
-
-   begin
-      Internal (Get_Object (Colorsel), X, Y);
-   end Unset_Palette_Color;
 
 end Gtk.Color_Selection;

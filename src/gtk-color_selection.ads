@@ -39,8 +39,9 @@
 --
 --  @pxref{Package_Gtk.Extra.Color_Combo} for a different way to select colors.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
+with Gdk.Color;
 with Gtk.Enums;
 with Gtk.Box;
 
@@ -79,24 +80,84 @@ package Gtk.Color_Selection is
    --  color only when the mouse is released and Update_Delayed to update when
    --  the mouse is released or has been motionless for a while.
 
-   function Get_Use_Opacity
+   function Get_Has_Opacity_Control
      (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
-   --  Whether the Colorsel can use opacity.
+   --  Return True if the Colorsel has an opacity control.
 
-   procedure Set_Use_Opacity
+   procedure Set_Has_Opacity_Control
      (Colorsel    : access Gtk_Color_Selection_Record;
-      Use_Opacity : Boolean);
+      Has_Opacity : Boolean);
    --  Set the Colorsel to use or not use opacity.
-   --  Use_Opacity: True if Colorsel can set the opacity, False otherwise.
 
-   function Get_Use_Palette
+   function Get_Has_Palette
      (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
-   --  Whether the palette is used.
+   --  Return True if the Colorsel has a palette.
 
-   procedure Set_Use_Palette
+   procedure Set_Has_Palette
      (Colorsel    : access Gtk_Color_Selection_Record;
-      Use_Palette : Boolean);
-   --  Show and hide the palette, depending on Use_Palette.
+      Has_Palette : Boolean);
+   --  If Has_Palette is True, then set the Colorsel to show the palette.
+   --  Hide the palette otherwise.
+
+   procedure Set_Current_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : Gdk.Color.Gdk_Color);
+   --  Set the current color of the Colorsel. When called for the first time,
+   --  the original color will the set to Color as well.
+
+   procedure Set_Current_Alpha
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Alpha    : Guint16);
+   --  Set the current opacity to be Alpha. When called for the first time,
+   --  the original opacity will be set too.
+
+   procedure Get_Current_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : out Gdk.Color.Gdk_Color);
+   --  Set Color to the value of the current color in the Colorsel.
+
+   function Get_Current_Alpha
+     (Colorsel : access Gtk_Color_Selection_Record) return Guint16;
+   --  Return the current opacity.
+
+   procedure Set_Previous_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : Gdk.Color.Gdk_Color);
+   --  Set the previous color. This procedure should not be called without
+   --  analysis, as it might seem confusing to see that color change.
+   --  Calling Set_Current_Color for the first time will also set this
+   --  color.
+
+   procedure Set_Previous_Alpha
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Alpha    : Guint16);
+   --  Set the previous opacity to Alpha. This procedure should not be called
+   --  without analysis, as it might seem confusing to see that value change.
+
+   procedure Get_Previous_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : out Gdk.Color.Gdk_Color);
+   --  Set Color to the original color value.
+
+   function Get_Previous_Alpha
+     (Colorsel : access Gtk_Color_Selection_Record) return Guint16;
+   --  Return the previous alpha value.
+
+   function Is_Adjusting
+      (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
+   --  Get the current state of the Colorsel.
+   --  Return TRue if the user is currently dragging a color around, False if
+   --  the selection has stopped.
+
+
+   --  procedure Palette_From_String
+   --  ??? Not implemented yet.
+
+   --  function Palette_To_String
+   --  ??? Not implemented yet.
+
+   --  Set_Change_Palette_Hook
+   --  ??? Not implemented yet.
 
    procedure Set_Color
      (Colorsel : access Gtk_Color_Selection_Record;
@@ -111,49 +172,6 @@ package Gtk.Color_Selection is
    --  Get the current color.
    --  Note that Color is an array of percentages, between 0.0 and 1.0, not
    --  absolute values.
-
-   procedure Set_Old_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      Color    : Color_Array);
-   --  Set the 'original' color to be Color.
-   --  This function should be called with some hesitations, as it might seem
-   --  confusing to have that color change.
-   --  Calling Set_Color will also set this color the first time it is called.
-
-   procedure Get_Old_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      Color    : out Color_Array);
-   --  Fill Color in with the original color value.
-
-   procedure Set_Palette_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      X        : Gint;
-      Y        : Gint;
-      Color    : Color_Array);
-   --  Set the palette located at (x, y) to have Color set as its color.
-
-   procedure Get_Palette_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      X        : Gint;
-      Y        : Gint;
-      Color    : out Color_Array;
-      Status   : out Boolean);
-   --  Set Color to have the color found in the palette located at (x, y).
-   --  If the palette is unset, it will leave the color unset.
-   --  Status is set to True if the palette located at (x, y) has a color set,
-   --  False if it doesn't.
-
-   procedure Unset_Palette_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      X        : Gint;
-      Y        : Gint);
-   --  Change the palette located at (x, y) to have no color set.
-
-   function Is_Adjusting
-     (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
-   --  Get the current state of the Colorsel.
-   --  Return TRue if the user is currently dragging a color around, False if
-   --  the selection has stopped.
 
    function To_Absolute (Color : Gdouble) return Gushort;
    --  Convert from a percentage value as returned by Get_Color to an
