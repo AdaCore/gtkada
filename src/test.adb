@@ -15,7 +15,7 @@ with Gtk.Main; use Gtk.Main;
 with Gtk.Menu; use Gtk.Menu;
 with Gtk.Menu_Bar; use Gtk.Menu_Bar;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
-with Gtk.Object; use Gtk.Object;
+--  with Gtk.Object; use Gtk.Object;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Tooltips; use Gtk.Tooltips;
@@ -27,11 +27,11 @@ with Interfaces.C.Strings;
 
 package body Test is
 
-   package String_Cb is new Callback (String, Gtk.Button.Gtk_Button);
+   package String_Cb is new Callback (String, Gtk_Button);
    package Void_Cb   is new Void_Callback (Gtk.Window.Gtk_Window);
    package Void_Cb_Button is new Void_Callback (Gtk.Button.Gtk_Button);
-   package ColSel_Cb is new Object_Callback (Gtk_Color_Selection_Dialog);
-   package ColSel_Widget_Cb is new Object_Callback (Gtk_Object);
+--   package ColSel_Cb is new Object_Callback (Gtk_Color_Selection_Dialog);
+--   package ColSel_Widget_Cb is new Object_Callback (Gtk_Object);
    package Gamma_Cb is new Callback (Gtk_Gamma_Curve, Gtk_Button);
    use Gtk.Combo.String_List;
 
@@ -59,6 +59,7 @@ package body Test is
    begin
       Ada.Text_IO.Put_Line ("Hello World  => String was=" & S);
       Message := Push (Status, 1, S);
+      Destroy (Widget);
    end Hello;
 
    -----------------
@@ -82,15 +83,15 @@ package body Test is
 
    procedure Launch_Dialog (Object : in out Gtk.Button.Gtk_Button'Class) is
       Dialog : Gtk_Color_Selection_Dialog;
-      Id     : Guint;
+--      Id     : Guint;
    begin
-      Gtk_New (Dialog);
+      Gtk_New (Dialog, Title => "Test Color_Selection");
       Hide (Get_Help_Button (Dialog));
       Show (Dialog);
-      Id := ColSel_Cb.Connect (Get_OK_Button (Dialog), "clicked",
-                               Print_Color'Access, Dialog);
-      Id := ColSel_Widget_Cb.Connect (Get_Cancel_Button (Dialog), "clicked",
-                                      Gtk.Object.Destroy'Access, Dialog);
+--       Id := ColSel_Cb.Connect (Get_OK_Button (Dialog), "clicked",
+--                                Print_Color'Access, Dialog);
+--      Id := ColSel_Widget_Cb.Connect (Get_Cancel_Button (Dialog), "clicked",
+--                                      Gtk.Object.Destroy'Access, Dialog);
    end Launch_Dialog;
 
    --------------------
@@ -196,6 +197,7 @@ package body Test is
       Set_Title (A_Window, "Hello buttons");
       Border_Width (A_Window, 10);
       Id := Void_Cb.Connect (A_Window, "destroy", App_Destroy'Access);
+      Id := Void_Cb.Connect (A_Window, "delete_event", App_Destroy'Access);
 
       --  Create the box to store the buttons
       Gtk_New (V_Box, False, 0);
