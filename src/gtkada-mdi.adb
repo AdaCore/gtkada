@@ -3435,7 +3435,10 @@ package body Gtkada.MDI is
          if Created then
             Ref (MDI.Layout);
             Remove (MDI, MDI.Layout);
-         elsif Visible_Is_Set (MDI.Layout) then
+
+         elsif MDI.Docks (None) /= null
+           and then Visible_Is_Set (MDI.Layout)
+         then
             Hide (MDI.Layout);
          end if;
 
