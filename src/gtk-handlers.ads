@@ -338,6 +338,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
    --  These handlers should return a value
    --  They require a User_Data
+   --  See also the package User_Callback_With_Setup
    ---------------------------------------------------------
 
    generic
@@ -494,6 +495,160 @@ package Gtk.Handlers is
          return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
    end User_Return_Callback;
 
+   -------------------------------------
+   -- User_Return_Callback_With_Setup --
+   -------------------------------------
+   --  This package is basically the same as User_Return_Callback, except that
+   --  an extra function (Setup) is called after a handler has been
+   --  connected. Typical usage is to automatically call Add_Watch (see below)
+   --  in case the User_Type is (or contains) widgets.
+
+   generic
+      type Widget_Type is new Glib.Object.GObject_Record with private;
+      type Return_Type is (<>);
+      type User_Type (<>) is private;
+      with procedure Setup (User_Data : User_Type; Id : Handler_Id);
+   package User_Return_Callback_With_Setup is
+
+      package Internal_Cb is new User_Return_Callback
+        (Widget_Type, Return_Type, User_Type);
+
+      subtype Handler is Internal_Cb.Handler;
+      package Marshallers renames Internal_Cb.Marshallers;
+
+      --  Connecting a handler to an object
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False);
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False);
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
+      pragma Inline (Connect);
+
+      function Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id;
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id;
+
+      function Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id;
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id;
+
+      --  Some convenient functions to create marshallers
+
+      package Gint_Marshaller renames Internal_Cb.Gint_Marshaller;
+      package Guint_Marshaller renames Internal_Cb.Guint_Marshaller;
+      package Event_Marshaller renames Internal_Cb.Event_Marshaller;
+      package Widget_Marshaller renames Internal_Cb.Widget_Marshaller;
+      package Notebook_Page_Marshaller
+        renames Internal_Cb.Notebook_Page_Marshaller;
+
+      function To_Marshaller
+        (Cb : Gint_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Guint_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Event_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Widget_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Internal_Cb.Marshallers.Void_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Notebook_Page_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+
+      --  Emitting a signal
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gint) return Return_Type renames Internal_Cb.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Guint) return Return_Type renames Internal_Cb.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event) return Return_Type
+         renames Internal_Cb.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
+         return Return_Type renames Internal_Cb.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String) return Return_Type renames Internal_Cb.Emit_By_Name;
+
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gtk.Notebook.Gtk_Notebook_Page) return Return_Type
+         renames Internal_Cb.Emit_By_Name;
+   end User_Return_Callback_With_Setup;
+
    ---------------------------------------------------------
    --  These handlers do not return a value
    --  They do not have a User_Data
@@ -644,6 +799,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
    --  These handlers do not return a value
    --  They require a User_Data
+   --  See also the package User_Callback_With_Setup
    ---------------------------------------------------------
 
    generic
@@ -796,6 +952,157 @@ package Gtk.Handlers is
          renames Notebook_Page_Marshaller.Emit_By_Name;
 
    end User_Callback;
+
+   ------------------------------
+   -- User_Callback_With_Setup --
+   ------------------------------
+   --  This package is basically the same as User_Callback, except that an
+   --  extra function (Setup) is called after a handler has been
+   --  connected. Typical usage is to automatically call Add_Watch (see below)
+   --  in case the User_Type is (or contains) widgets.
+
+   generic
+      type Widget_Type is new Glib.Object.GObject_Record with private;
+      type User_Type (<>) is private;
+      with procedure Setup (User_Data : User_Type; Id : Handler_Id);
+   package User_Callback_With_Setup is
+
+      package Internal_Cb is new User_Callback (Widget_Type, User_Type);
+      package Marshallers renames Internal_Cb.Marshallers;
+
+      subtype Handler is Internal_Cb.Handler;
+
+      --  Connecting a handler to an object
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False);
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False);
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
+      pragma Inline (Connect);
+
+      function Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id;
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id;
+
+      function Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id;
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id;
+
+      --  Some convenient functions to create marshallers
+
+      package Gint_Marshaller renames Internal_Cb.Gint_Marshaller;
+      package Guint_Marshaller renames Internal_Cb.Guint_Marshaller;
+      package Event_Marshaller renames Internal_Cb.Event_Marshaller;
+      package Widget_Marshaller renames Internal_Cb.Widget_Marshaller;
+      package Notebook_Page_Marshaller
+        renames Internal_Cb.Notebook_Page_Marshaller;
+
+      function To_Marshaller
+        (Cb : Gint_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Guint_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Event_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Widget_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Internal_Cb.Marshallers.Void_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+      function To_Marshaller
+        (Cb : Notebook_Page_Marshaller.Handler)
+         return Internal_Cb.Marshallers.Marshaller
+         renames Internal_Cb.To_Marshaller;
+
+      --  Emitting a signal
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gint) renames Internal_Cb.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Guint) renames Internal_Cb.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event) renames Internal_Cb.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
+         renames Internal_Cb.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String) renames Internal_Cb.Emit_By_Name;
+
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gtk.Notebook.Gtk_Notebook_Page)
+         renames Internal_Cb.Emit_By_Name;
+   end User_Callback_With_Setup;
 
    ------------------------------------------------------------------
    --  General functions

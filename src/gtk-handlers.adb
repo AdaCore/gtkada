@@ -1597,6 +1597,306 @@ package body Gtk.Handlers is
 
    end User_Callback;
 
+   -------------------------------------
+   -- User_Return_Callback_With_Setup --
+   -------------------------------------
+
+   package body User_Return_Callback_With_Setup is
+
+      -------------
+      -- Connect --
+      -------------
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Marsh     : Internal_Cb.Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Connect (Widget, Name, Marsh, User_Data, After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Internal_Cb.Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Object_Connect
+           (Widget, Name, Marsh, Slot_Object, User_Data, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Connect (Widget, Name, Cb, User_Data, After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Object_Connect
+           (Widget, Name, Cb, Slot_Object, User_Data, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
+      function Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Marsh     : Internal_Cb.Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id
+      is
+         Id : constant Handler_Id := Internal_Cb.Connect
+           (Widget, Name, Marsh, User_Data, After);
+      begin
+         Setup (User_Data, Id);
+         return Id;
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Internal_Cb.Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id
+      is
+         Id : constant Handler_Id := Internal_Cb.Object_Connect
+           (Widget, Name, Marsh, Slot_Object, User_Data, After);
+      begin
+         Setup (User_Data, Id);
+         return Id;
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
+      function Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id
+      is
+         Id : constant Handler_Id := Internal_Cb.Connect
+           (Widget, Name, Cb, User_Data, After);
+      begin
+         Setup (User_Data, Id);
+         return Id;
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id
+      is
+         Id : constant Handler_Id := Internal_Cb.Object_Connect
+           (Widget, Name, Cb, Slot_Object, User_Data, After);
+      begin
+         Setup (User_Data, Id);
+         return Id;
+      end Object_Connect;
+
+   end User_Return_Callback_With_Setup;
+
+   ------------------------------
+   -- User_Callback_With_Setup --
+   ------------------------------
+
+   package body User_Callback_With_Setup is
+
+      -------------
+      -- Connect --
+      -------------
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Marsh     : Internal_Cb.Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Connect (Widget, Name, Marsh, User_Data, After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Internal_Cb.Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Object_Connect
+           (Widget, Name, Marsh, Slot_Object, User_Data, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Connect (Widget, Name, Cb, User_Data, After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Object_Connect
+           (Widget, Name, Cb, Slot_Object, User_Data, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
+      function Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Marsh     : Internal_Cb.Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id
+      is
+         Id : constant Handler_Id := Internal_Cb.Connect
+           (Widget, Name, Marsh, User_Data, After);
+      begin
+         Setup (User_Data, Id);
+         return Id;
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Internal_Cb.Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id
+      is
+         Id : constant Handler_Id := Internal_Cb.Object_Connect
+           (Widget, Name, Marsh, Slot_Object, User_Data, After);
+      begin
+         Setup (User_Data, Id);
+         return Id;
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
+      function Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id
+      is
+         Id : constant Handler_Id := Internal_Cb.Connect
+           (Widget, Name, Cb, User_Data, After);
+      begin
+         Setup (User_Data, Id);
+         return Id;
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id
+      is
+         Id : constant Handler_Id := Internal_Cb.Object_Connect
+           (Widget, Name, Cb, Slot_Object, User_Data, After);
+      begin
+         Setup (User_Data, Id);
+         return Id;
+      end Object_Connect;
+
+   end User_Callback_With_Setup;
+
    ----------------
    -- Disconnect --
    ----------------
