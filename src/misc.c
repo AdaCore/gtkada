@@ -1910,12 +1910,6 @@ ada_gclosure_get_data (GClosure *closure)
  *  Functions for GValue
  ***************************************************/
 
-void
-ada_gtkarg_value_object ()
-{
-  /* XXX */
-}
-
 GValue*
 ada_gvalue_nth (GValue* value, guint num)
 {
