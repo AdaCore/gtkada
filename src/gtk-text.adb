@@ -39,14 +39,14 @@ package body Gtk.Text is
    ---------------------
 
    function Backward_Delete (Text : access Gtk_Text_Record; Nchars : in Guint)
-      return Gint
+      return Boolean
    is
       function Internal (Text : in System.Address; Nchars : in Guint)
          return Gint;
       pragma Import (C, Internal, "gtk_text_backward_delete");
 
    begin
-      return Internal (Get_Object (Text), Nchars);
+      return To_Boolean (Internal (Get_Object (Text), Nchars));
    end Backward_Delete;
 
    --------------------
@@ -56,7 +56,7 @@ package body Gtk.Text is
    function Forward_Delete
      (Text   : access Gtk_Text_Record;
       Nchars : in Guint)
-      return Gint
+      return Boolean
    is
       function Internal
         (Text   : in System.Address;
@@ -65,7 +65,7 @@ package body Gtk.Text is
       pragma Import (C, Internal, "gtk_text_forward_delete");
 
    begin
-      return Internal (Get_Object (Text), Nchars);
+      return To_Boolean (Internal (Get_Object (Text), Nchars));
    end Forward_Delete;
 
    ------------
