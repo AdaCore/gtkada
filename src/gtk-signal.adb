@@ -32,6 +32,7 @@ with Unchecked_Deallocation;
 with Gtk.Object;  use Gtk.Object;
 with Interfaces.C.Strings;
 with Gdk; use Gdk;
+with System;
 with Ada.Text_IO;
 
 with Gtk.Handlers; use Gtk.Handlers;

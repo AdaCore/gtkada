@@ -31,7 +31,6 @@ with Gdk;
 with Gtk.Object;
 with Gtk.Widget;
 with Gtk.Tips_Query;
-with System;
 
 --  !! Important Note !!
 --  This package is obsolete. It is provided only for backward compatibility
