@@ -38,10 +38,8 @@ with Gdk.Rectangle;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Box;
-with Gtk.Button;
 with Gtk.Drawing_Area;
 with Gtk.Enums;
-with Gtk.Fixed;
 with Gtk.Event_Box;
 with Gtk.Handlers;
 with Gtk.Label;
@@ -488,8 +486,7 @@ package Gtkada.MDI is
    --  merged into a single XML tree if needed.
 
    procedure Add_To_Tree
-     (MDI         : access MDI_Window_Record'Class;
-      Tree        : in out Glib.Xml_Int.Node_Ptr;
+     (Tree        : in out Glib.Xml_Int.Node_Ptr;
       ID_Node     : Glib.Xml_Int.Node_Ptr;
       X           : Integer := 100;
       Y           : Integer := 100;
@@ -687,14 +684,6 @@ private
       Dock : Dock_Side := None;
       --  The size on which the item should be docked. If None, then the item
       --  can not be docked, and nothing will happen when calling Dock_Child.
-
-      Uniconified_Width, Uniconified_Height : Glib.Gint;
-      --  The size of the window, when not iconified. When in normal state,
-      --  this represents the size of the window, since we can not rely on
-      --  Get_Allocation_Width and Get_Allocation_Height (in case for instance
-      --  we just resized the widget but didn't go back to the main gtk loop).
-      --  If these are set to -1, the child will be assigned its requested
-      --  size.
 
       Uniconified_State : State_Type;
       --  The state the child had before being floated

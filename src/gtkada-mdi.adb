@@ -71,7 +71,6 @@ with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Dnd;          use Gtk.Dnd;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Event_Box;    use Gtk.Event_Box;
-with Gtk.Fixed;        use Gtk.Fixed;
 with Gtk.Frame;        use Gtk.Frame;
 with Gtk.GEntry;       use Gtk.GEntry;
 with Gtk.Table;        use Gtk.Table;
@@ -134,20 +133,6 @@ package body Gtkada.MDI is
 
    Max_Drag_Border_Width : constant Gint := 30;
    --  Width or height of the drag-and-drop borders for each notebook
-
-   Icons_Width : constant Gint := 200;
-   --  Width to use for icons
-
-   Min_Width  : constant Gint := 40;
-   --  Minimal size for all windows
-
-   Threshold : constant Gint := 40;
-   --  Threshold used to reset coordinates when putting items in the MDI.
-
-   Corner_Size : constant Gint := Border_Thickness * 2;
-   --  Extra tolerance when the user selects a corner for resizing (if the
-   --  pointer is within Corner_Size in both coordinates, then we are clicking
-   --  on the corner)
 
    MDI_Class_Record        : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
@@ -239,12 +224,6 @@ package body Gtkada.MDI is
       Force : Boolean := False);
    --  Change the background color of the notebook tab containing child,
    --  depending on whether the child is selected or not.
-
-   function Side
-     (Child : access MDI_Child_Record'Class; X, Y : Gint)
-      return Gdk_Cursor_Type;
-   --  Return the cursor to use depending on the coordinates (X, Y) inside
-   --  child.
 
    function Delete_Child
      (Child : access Gtk_Widget_Record'Class;
@@ -1611,11 +1590,6 @@ package body Gtkada.MDI is
       C     : constant MDI_Child := MDI_Child (Child);
       C2    : MDI_Child;
       MDI   : constant MDI_Window := C.MDI;
-
-      Buttons_Width : constant := 100;
-      --  Approximative width of the three title bar buttons
-
-      Minimal : constant := 10;
       Side    : Dock_Side;
       Current : Gtk_Widget;
       Note    : Gtk_Notebook;
@@ -1754,10 +1728,7 @@ package body Gtkada.MDI is
       Event  : Gdk_Event) return Boolean
    is
       C       : constant MDI_Child := MDI_Child (Child);
-      MDI     : constant MDI_Window := C.MDI;
       Cursor  : Gdk_Cursor;
-      Min_Height : constant Gint :=
-        2 * Border_Thickness + MDI.Title_Bar_Height;
       Current : Gtk_Widget;
       S       : Dock_Side;
       C2, C3  : MDI_Child;
@@ -1905,68 +1876,6 @@ package body Gtkada.MDI is
       return MDI_Child (Child);
    end Dnd_Data;
 
-   ----------
-   -- Side --
-   ----------
-
-   function Side
-     (Child : access MDI_Child_Record'Class; X, Y  : Gint)
-      return Gdk_Cursor_Type
-   is
-      X_Side, Y_Side : Gint;
-   begin
-      if X <= Border_Thickness then
-         X_Side := -2;
-      elsif X <= Corner_Size then
-         X_Side := -1;
-      elsif X >= Gint (Get_Allocation_Width (Child)) - Border_Thickness then
-         X_Side := 2;
-      elsif X >= Gint (Get_Allocation_Width (Child)) - Corner_Size then
-         X_Side := 1;
-      else
-         X_Side := 0;
-      end if;
-
-      if Y <= Border_Thickness then
-         Y_Side := -2;
-      elsif Y <= Corner_Size then
-         Y_Side := -1;
-      elsif Y >= Gint (Get_Allocation_Height (Child)) - Border_Thickness then
-         Y_Side := 2;
-      elsif Y >= Gint (Get_Allocation_Height (Child)) - Corner_Size then
-         Y_Side := 1;
-      else
-         Y_Side := 0;
-      end if;
-
-      if X_Side <= -1 and then Y_Side <= -1 then
-         return Top_Left_Corner;
-
-      elsif X_Side <= -1 and then Y_Side >= 1 then
-         return Bottom_Left_Corner;
-
-      elsif X_Side >= 1 and then Y_Side <= -1 then
-         return Top_Right_Corner;
-
-      elsif X_Side >= 1 and then Y_Side >= 1 then
-         return Bottom_Right_Corner;
-
-      elsif X_Side = -2 and then Y_Side in -1 .. 1 then
-         return Left_Side;
-
-      elsif X_Side = 2 and then Y_Side in -1 .. 1 then
-         return Right_Side;
-
-      elsif Y_Side = -2 and then X_Side in -1 .. 1 then
-         return Top_Side;
-
-      elsif Y_Side = 2 and then X_Side in -1 .. 1 then
-         return Bottom_Side;
-      end if;
-
-      return Left_Ptr;
-   end Side;
-
    -------------
    -- Gtk_New --
    -------------
@@ -2014,7 +1923,6 @@ package body Gtkada.MDI is
       Set_Border_Width (Child, 0);
 
       Child.Initial := Gtk_Widget (Widget);
-      Child.Uniconified_Width := -1;
 
       Child.State := Normal;
       Child.Flags := Flags;
@@ -2752,17 +2660,6 @@ package body Gtkada.MDI is
          --  Ref is removed when the child is unfloated.
          Ref (Child);
 
-         if Realized_Is_Set (Child) then
-            Child.Uniconified_Width  :=
-              Gint (Get_Allocation_Width (Get_Widget (Child)));
-            Child.Uniconified_Height :=
-              Gint (Get_Allocation_Height (Get_Widget (Child)));
-         else
-            Size_Request (Child, Requisition);
-            Child.Uniconified_Width  := Requisition.Width;
-            Child.Uniconified_Height := Requisition.Height;
-         end if;
-
          Child.Uniconified_State := Child.State;
 
          Dock_Child (Child, False);
@@ -2864,8 +2761,9 @@ package body Gtkada.MDI is
             Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
 
          Reparent (Get_Parent (Child.Initial), Cont);
-         Set_Default_Size
-           (Win, Child.Uniconified_Width, Child.Uniconified_Height);
+
+         Size_Request (Child, Requisition);
+         Set_Default_Size (Win, Requisition.Width, Requisition.Height);
          Show_All (Win);
 
          Child.State := Floating;
@@ -3871,8 +3769,7 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Add_To_Tree
-     (MDI         : access MDI_Window_Record'Class;
-      Tree        : in out Glib.Xml_Int.Node_Ptr;
+     (Tree        : in out Glib.Xml_Int.Node_Ptr;
       ID_Node     : Glib.Xml_Int.Node_Ptr;
       X           : Integer := 100;
       Y           : Integer := 100;
@@ -4110,12 +4007,6 @@ package body Gtkada.MDI is
             elsif N.Tag.all = "Dock" then
                Child.Dock := Dock_Side'Value (N.Value.all);
 
-            elsif N.Tag.all = "Uniconified_Width" then
-               Child.Uniconified_Width := Gint'Value (N.Value.all);
-
-            elsif N.Tag.all = "Uniconified_Height" then
-               Child.Uniconified_Height := Gint'Value (N.Value.all);
-
             elsif N.Tag.all = "Focus"
               and then Boolean'Value (N.Value.all)
             then
@@ -4223,8 +4114,6 @@ package body Gtkada.MDI is
          Child_Node : Node_Ptr;
          Width, Height : Guint;
          State      : State_Type;
-         Icons_Height : constant Gint :=
-           MDI.Title_Bar_Height - 2 * Border_Thickness;
          Raised     : Boolean;
          Current_Pages : array (Dock_Side) of MDI_Child :=
            (others => null);
@@ -4282,8 +4171,6 @@ package body Gtkada.MDI is
                      when Normal =>
                         Float_Child (Child, False);
                         Dock_Child (Child, False);
-                        Child.Uniconified_Width := Gint (Width);
-                        Child.Uniconified_Height := Gint (Height);
                   end case;
                end if;
 
