@@ -123,7 +123,7 @@ package body Gtk.GLArea is
 
    procedure Swap_Buffers (Glarea : access Gtk_GLArea_Record'Class) is
       procedure Internal (Glarea : System.Address);
-      pragma Import (C, Internal, "gtk_gl_area_swapbuffers");
+      pragma Import (C, Internal, "gtk_gl_area_swap_buffers");
    begin
       Internal (Get_Object (Glarea));
    end Swap_Buffers;
