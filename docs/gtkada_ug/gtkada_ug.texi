@@ -2401,7 +2401,7 @@ primitive subprograms, that are known by all its children.
 
 This means that, as opposed to what you see in C code, you don't have
 (well most of the time you don't) to explictly cast types, and even
-when you have to Ada always makes sure that the conversion is valid.
+when you have to, Ada always makes sure that the conversion is valid.
 
 Thus your programs are much safer, and most errors are found at compile
 time, as is usually the case with Ada.
@@ -2486,12 +2486,13 @@ widget to something else.
 
 However, 'with'ing this unit means that your application will depend on every
 package of GtkAda, which is a little bit heavier, and explains why this is not
-the default. We do recommend to use if it is not extremely important for you
+the default. We do recommend to use it if it is not extremely important for you
 whether your application depends on all the packages of GtkAda.
 
 The case of imported C widgets is a little bit trickier. Since GtkAda does not
-anything about them when it it build, it can't convert magically the C widgets
-to Ada widgets. This is your job to teach GtkAda how to do the conversion.
+know anything about them when it is build, it can't convert magically the C
+widgets to Ada widgets. This is your job to teach GtkAda how to do the
+conversion.
 
 We thus provide a 'hook' function, that you need to modify. This function is
 defined in the package @b{Gtk.Type_Conversion}. It is a function that takes
