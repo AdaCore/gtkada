@@ -156,7 +156,7 @@ Gtk.Style:
   significant additions. see spec for details.
   Draw_String: deprecated.
   Draw_Oval: removed.
-Gtk.Text: broken. Use Gtk_Text_View instead.
+Gtk.Text: Emulated, using Gtk_Text_View.
 Gtk.Text_Buffer: new package.
 Gtk.Text_Child: new package.
 Gtk.Text_Iter: new package.
@@ -240,3 +240,11 @@ gtktreeview.h
 gtktreeviewcolumn.h
 gtkwidget.h: see "missing" section. check signals.
 gtkwindow.h: see "missing" section.
+
+=======
+Here are some problems found while binding Pango:
+pango-font.h: 
+ pango_font_description_copy (): is currently a function that returns a
+  PangoFontDescription rather than a procedure.
+ pango_font_description_from_string (): should also be a procedure.
+ 
