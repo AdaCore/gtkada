@@ -23,6 +23,9 @@ with Gtk_Generates; use Gtk_Generates;
 
 package body Gtk.Glade is
 
+   procedure OS_Exit (Return_Code : Integer);
+   pragma Import (C, OS_Exit, "exit");
+
    subtype Hash_Header is Natural range 0 .. 300;
    --  Number of hash headers, related (for efficiency purposes only)
    --  to the maximum number of widgets.
@@ -405,8 +408,15 @@ package body Gtk.Glade is
       Gettext     : Boolean;
 
    begin
-      Print_Header (N, Standard_Output);
       M := N.Child.Next;
+
+      if M = null then
+         Put_Line ("no code to generate. exiting.");
+         OS_Exit (1);
+         return;
+      end if;
+
+      Print_Header (N, Standard_Output);
       Gettext := Gettext_Support (M);
 
       loop
