@@ -1227,17 +1227,12 @@ package body Gtkada.Canvas is
       X3 := (X1 + Xp1 + X2 + Xp2) / 4;
       X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
 
-      if X3 > Xp1
-        and then X3 >= X2
-        and then Xp1 < X2
+      if ((X1 <= X3 and then X3 <= Xp1)
+          or else (X2 <= X3 and then X3 <= Xp2))
+        and then (Xp1 <= X2 or else Xp2 <= X1)
       then
          X3 := (Xp1 + X2) / 2;
-
-      elsif X3 < X1
-        and then X3 < Xp2
-        and then X1 > Xp2
-      then
-         X3 := (X1 + Xp2) / 2;
+         X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
       end if;
 
       if (X3 >= Xp1 and then X3 <= X2)
