@@ -11,6 +11,7 @@ SHELL=/bin/sh
 src_dir     = src
 testgtk_dir = testgtk
 doc_dir     = docs
+example_dir = examples
 
 all:
 	${MAKE} -C $(src_dir)
@@ -20,6 +21,7 @@ install:
 	${MAKE} -C $(src_dir) install
 	${MAKE} -C $(testgtk_dir) install
 	${MAKE} -C $(doc_dir) install
+	${MAKE} -C $(example_dir) install
 
 clean-generic:
 	-${RM} core
@@ -31,6 +33,7 @@ mostlyclean-generic: clean-generic
 clean: clean-generic
 	-${MAKE} -C $(src_dir) clean
 	-${MAKE} -C $(testgtk_dir) clean
+	-${MAKE} -C $(example_dir) clean
 
 distclean: mostlyclean-generic
 	-${RM} config.cache config.log config.status
