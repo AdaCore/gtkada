@@ -589,6 +589,37 @@ package body Gtk.Extra.Sheet is
       Internal (Get_Object (Sheet), Column, Boolean'Pos (Visible));
    end Column_Set_Visibility;
 
+   ---------------------------------
+   -- Column_Label_Set_Visibility --
+   ---------------------------------
+
+   procedure Column_Label_Set_Visibility (Sheet   : access Gtk_Sheet_Record;
+                                          Column  : in Gint;
+                                          Visible : in Boolean := True)
+   is
+      procedure Internal (Sheet   : in System.Address;
+                          Column  : in Gint;
+                          Visible : in Gint);
+      pragma Import (C, Internal, "gtk_sheet_column_label_set_visibility");
+   begin
+      Internal (Get_Object (Sheet), Column, Boolean'Pos (Visible));
+   end Column_Label_Set_Visibility;
+
+   -----------------------------------
+   -- Columns_Labels_Set_Visibility --
+   -----------------------------------
+
+   procedure Columns_Labels_Set_Visibility
+     (Sheet   : access Gtk_Sheet_Record;
+      Visible : Boolean := True)
+   is
+      procedure Internal (Sheet   : in System.Address;
+                          Visible : in Gint);
+      pragma Import (C, Internal, "gtk_sheet_columns_labels_set_visibility");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Visible));
+   end Columns_Labels_Set_Visibility;
+
    ------------------------
    -- Row_Set_Visibility --
    ------------------------
@@ -604,6 +635,37 @@ package body Gtk.Extra.Sheet is
    begin
       Internal (Get_Object (Sheet), Row, Boolean'Pos (Visible));
    end Row_Set_Visibility;
+
+   ------------------------------
+   -- Row_Label_Set_Visibility --
+   ------------------------------
+
+   procedure Row_Label_Set_Visibility (Sheet   : access Gtk_Sheet_Record;
+                                       Row     : in Gint;
+                                       Visible : in Boolean := True)
+   is
+      procedure Internal (Sheet   : in System.Address;
+                          Row  : in Gint;
+                          Visible : in Gint);
+      pragma Import (C, Internal, "gtk_sheet_row_label_set_visibility");
+   begin
+      Internal (Get_Object (Sheet), Row, Boolean'Pos (Visible));
+   end Row_Label_Set_Visibility;
+
+   --------------------------------
+   -- Rows_Labels_Set_Visibility --
+   --------------------------------
+
+   procedure Rows_Labels_Set_Visibility
+     (Sheet   : access Gtk_Sheet_Record;
+      Visible : Boolean := True)
+   is
+      procedure Internal (Sheet   : in System.Address;
+                          Visible : in Gint);
+      pragma Import (C, Internal, "gtk_sheet_rows_labels_set_visibility");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Visible));
+   end Rows_Labels_Set_Visibility;
 
    -------------------
    -- Select_Column --
@@ -1469,10 +1531,21 @@ package body Gtk.Extra.Sheet is
 
    function Get_Maxcol (Sheet : access Gtk_Sheet_Record) return Gint is
       function Internal (Sheet : System.Address) return Gint;
-      pragma Import (C, Internal, "ada_gtk_sheet_get_maxcol");
+      pragma Import (C, Internal, "gtk_sheet_get_maxcol");
    begin
       return Internal (Get_Object (Sheet));
    end Get_Maxcol;
+
+   -----------------------
+   -- Get_Max_Alloc_Col --
+   -----------------------
+
+   function Get_Max_Alloc_Col (Sheet : access Gtk_Sheet_Record) return Gint is
+      function Internal (Sheet : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_sheet_get_max_alloc_col");
+   begin
+      return Internal (Get_Object (Sheet));
+   end Get_Max_Alloc_Col;
 
    ----------------
    -- Get_Maxrow --
@@ -1480,10 +1553,21 @@ package body Gtk.Extra.Sheet is
 
    function Get_Maxrow (Sheet : access Gtk_Sheet_Record) return Gint is
       function Internal (Sheet : System.Address) return Gint;
-      pragma Import (C, Internal, "ada_gtk_sheet_get_maxrow");
+      pragma Import (C, Internal, "gtk_sheet_get_maxrow");
    begin
       return Internal (Get_Object (Sheet));
    end Get_Maxrow;
+
+   -----------------------
+   -- Get_Max_Alloc_Row --
+   -----------------------
+
+   function Get_Max_Alloc_Row (Sheet : access Gtk_Sheet_Record) return Gint is
+      function Internal (Sheet : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_sheet_get_max_alloc_row");
+   begin
+      return Internal (Get_Object (Sheet));
+   end Get_Max_Alloc_Row;
 
    ----------------------
    -- Get_Column_Title --

@@ -114,11 +114,25 @@ package Gtk.Extra.PsFont is
    --  procedure Get_Families (Family : out Gtkada.Types.Chars_Ptr_Array;
    --                          Numf   : out Gint);
    --  Return the list of all the font families recognized in that package.
+   --  This returns a pointer to an internal list, that exists only between
+   --  the first call to Init, and the matching call to Unref.
 
    function Get_Psname (Font : Gtk_PsFont) return String;
    --  Return the name of the font.
    --  This name can be give to Get_GdkFont above to get a font that can be
    --  used anywhere in GtkAda.
+
+   function Init return Gint;
+   --  Initialize the internal list for Get_Families.
+   --  This function needs to be called before any call to Get_Families can
+   --  succeed. This list is reference counted, thus you need to call Unref
+   --  as many times as you called Init to free the memory correctly.
+   --  This function returns 0 if it did not do anything (because the list was
+   --  already initialized), or 1 if it had to allocate some memory.
+
+   procedure Unref;
+   --  Free the memory used by the internal lists for Get_Families.
+   --  This procedure does not need to be call if you don't call Get_Families.
 
    -------------
    -- Signals --
@@ -128,4 +142,7 @@ package Gtk.Extra.PsFont is
    --  The following new signals are defined in this package:
    --  </signals>
 
+private
+   pragma Import (C, Init,  "gtk_psfont_init");
+   pragma Import (C, Unref, "gtk_psfont_unref");
 end Gtk.Extra.PsFont;

@@ -34,7 +34,6 @@
 #include "gtkplotpc.h"
 #include "gtkplot.h"
 #include "gtkpsfont.h"
-#include "gtkplotlayout.h"
 #include "gtkplotcanvas.h"
 #include "gtkplotprint.h"
 
@@ -61,7 +60,10 @@ static void psdrawpolygon			(GtkPlotPC *pc,
 static void psdrawcircle			(GtkPlotPC *pc,
                                                  gint x, gint y, 
 						 gint size, gint filled);
-
+static void psdrawellipse			(GtkPlotPC *pc, 
+						 gint x, gint y, 
+						 gint width, gint height, 
+              					 gint filled);
 static void pssetcolor				(GtkPlotPC *pc, 
 						 GdkColor *color); 
 static void pssetlinewidth			(GtkPlotPC *pc, 
@@ -70,7 +72,7 @@ static void pssetlinecaps			(GtkPlotPC *pc,
 						 gint caps);
 static void psdrawstring			(GtkPlotPC *pc,
              					 gint x, gint y,
-             					 gint justification,
+             					 GtkJustification justification,
              					 gint angle,
 						 gchar *font,
 						 gint height,
@@ -283,6 +285,7 @@ gtk_plot_export_ps			        (GtkPlot *plot,
   pc->drawlines = psdrawlines;
   pc->drawpolygon = psdrawpolygon;
   pc->drawcircle = psdrawcircle;
+  pc->drawellipse = psdrawellipse;
   pc->setfont = pssetfont;
   pc->drawstring = psdrawstring;
 
@@ -322,6 +325,7 @@ gtk_plot_export_ps_with_size			(GtkPlot *plot,
   pc->drawlines = psdrawlines;
   pc->drawpolygon = psdrawpolygon;
   pc->drawcircle = psdrawcircle;
+  pc->drawellipse = psdrawellipse;
   pc->setfont = pssetfont;
   pc->drawstring = psdrawstring;
 
@@ -332,7 +336,7 @@ gtk_plot_export_ps_with_size			(GtkPlot *plot,
 }
 
 void 
-gtk_plot_layout_export_ps			(GtkPlotLayout *layout, 
+gtk_plot_canvas_export_ps			(GtkPlotCanvas *canvas, 
 					 	 char *pcname, 
 						 int orient, 
 						 int epsflag, 
@@ -355,10 +359,11 @@ gtk_plot_layout_export_ps			(GtkPlotLayout *layout,
   pc->drawlines = psdrawlines;
   pc->drawpolygon = psdrawpolygon;
   pc->drawcircle = psdrawcircle;
+  pc->drawellipse = psdrawellipse;
   pc->setfont = pssetfont;
   pc->drawstring = psdrawstring;
 
-  gtk_plot_layout_print(layout, pc);
+  gtk_plot_canvas_print(canvas, pc);
 
   g_free(pc->pcname);
   g_free(pc);
@@ -366,7 +371,7 @@ gtk_plot_layout_export_ps			(GtkPlotLayout *layout,
 
 
 void 
-gtk_plot_layout_export_ps_with_size		(GtkPlotLayout *layout, 
+gtk_plot_canvas_export_ps_with_size		(GtkPlotCanvas *canvas, 
 					 	 char *pcname, 
 						 gint orient, 
 						 gint epsflag, 
@@ -393,10 +398,11 @@ gtk_plot_layout_export_ps_with_size		(GtkPlotLayout *layout,
   pc->drawlines = psdrawlines;
   pc->drawpolygon = psdrawpolygon;
   pc->drawcircle = psdrawcircle;
+  pc->drawellipse = psdrawellipse;
   pc->setfont = pssetfont;
   pc->drawstring = psdrawstring;
  
-  gtk_plot_layout_print(layout, pc);
+  gtk_plot_canvas_print(canvas, pc);
 
   g_free(pc->pcname);
   g_free(pc);
@@ -461,9 +467,27 @@ psdrawcircle(GtkPlotPC *pc, gint x, gint y, gint size, gint filled)
 }
 
 static void
+psdrawellipse(GtkPlotPC *pc, gint x, gint y, gint width, gint height, 
+              gint filled)
+{
+  FILE *psout = pc->pcfile;
+
+  fprintf(psout,"n %f %f %f %f 0 360 ellipse\n", 
+          (gdouble)x+width/2, (gdouble)y+height/2, 
+          (gdouble)width/2, (gdouble)height/2);
+
+  if(filled)
+     fprintf(psout,"f\n");
+  else
+     fprintf(psout,"cp\n");
+
+  fprintf(psout,"s\n");
+}
+
+static void
 psdrawstring(GtkPlotPC *pc,
              gint x, gint y,
-             gint justification, 
+             GtkJustification justification, 
              gint angle,
              gchar *font,
              gint height,
@@ -478,7 +502,7 @@ psdrawstring(GtkPlotPC *pc,
   gchar *lastchar = NULL;
   gint curcnt = 0, offset = 0;
   gint numf;
-  gdouble scale = 1.0;
+  gdouble scale;
   gboolean italic, bold;
   GList *family;
   FILE *psout = pc->pcfile;
@@ -499,7 +523,7 @@ psdrawstring(GtkPlotPC *pc,
   ptext.height = height;
   ptext.text = text;
   ptext.angle = angle;
-  gtk_plot_text_get_size(ptext, &twidth, &theight, &tascent, &tdescent);
+  gtk_plot_text_get_size(ptext, 1., &twidth, &theight, &tascent, &tdescent);
 
   if(angle == 90 || angle == 270) angle = 360 - angle;
 
@@ -529,6 +553,7 @@ psdrawstring(GtkPlotPC *pc,
   }
 
   aux = text;
+  scale = height;
 
   while(aux && *aux != '\0' && *aux != '\n') {
      if(*aux == '\\'){

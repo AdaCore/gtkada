@@ -41,8 +41,8 @@ enum {
 };
 
 
-static void gtk_entry_class_init          (GtkIentryClass     *klass);
-static void gtk_entry_init                (GtkIentry          *entry);
+static void gtk_entry_class_init          (GtkItemEntryClass     *klass);
+static void gtk_entry_init                (GtkItemEntry          *entry);
 static void gtk_entry_set_position_from_editable 
                                           (GtkEditable *editable,
 			                   gint      position);
@@ -211,9 +211,9 @@ gtk_item_entry_get_type (void)
     {
       static const GtkTypeInfo entry_info =
       {
-	"GtkIentry",
-	sizeof (GtkIentry),
-	sizeof (GtkIentryClass),
+	"GtkItemEntry",
+	sizeof (GtkItemEntry),
+	sizeof (GtkItemEntryClass),
 	(GtkClassInitFunc) gtk_entry_class_init,
 	(GtkObjectInitFunc) gtk_entry_init,
 	/* reserved_1 */ NULL,
@@ -228,15 +228,15 @@ gtk_item_entry_get_type (void)
 }
 
 static void
-gtk_entry_class_init (GtkIentryClass *class)
+gtk_entry_class_init (GtkItemEntryClass *klass)
 {
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
   GtkEditableClass *editable_class;
 
-  object_class = (GtkObjectClass*) class;
-  widget_class = (GtkWidgetClass*) class;
-  editable_class = (GtkEditableClass*) class;
+  object_class = (GtkObjectClass*) klass;
+  widget_class = (GtkWidgetClass*) klass;
+  editable_class = (GtkEditableClass*) klass;
   parent_class = gtk_type_class (GTK_TYPE_ENTRY);
 
   widget_class->realize = gtk_entry_realize;
@@ -272,7 +272,7 @@ gtk_entry_class_init (GtkIentryClass *class)
 
 
 static void
-gtk_entry_init (GtkIentry *entry)
+gtk_entry_init (GtkItemEntry *entry)
 {
 }
 
@@ -289,14 +289,14 @@ gtk_item_entry_new ()
 GtkWidget*
 gtk_item_entry_new_with_max_length (guint16 max)
 {
-  GtkIentry *item_entry;
+  GtkItemEntry *item_entry;
   item_entry = gtk_type_new (gtk_item_entry_get_type ());
   GTK_ENTRY (item_entry)->text_max_length = max;
   return GTK_WIDGET (item_entry);
 }
 
 void
-gtk_item_entry_set_text (GtkIentry *item_entry,
+gtk_item_entry_set_text (GtkItemEntry *item_entry,
 		      const gchar *text,
                       GtkJustification justification )
 {
@@ -306,7 +306,7 @@ gtk_item_entry_set_text (GtkIentry *item_entry,
   GtkEntry *entry;
 
   g_return_if_fail (item_entry != NULL);
-  g_return_if_fail (GTK_IS_IENTRY (item_entry));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (item_entry));
   g_return_if_fail (text != NULL);
 
   editable = GTK_EDITABLE (item_entry);
@@ -346,28 +346,29 @@ gtk_entry_set_position_from_editable (GtkEditable *editable,
 }
 
 void
-gtk_item_entry_set_justification (GtkIentry *item_entry, GtkJustification justification)
+gtk_item_entry_set_justification (GtkItemEntry *item_entry, GtkJustification justification)
 {
   g_return_if_fail (item_entry != NULL);
-  g_return_if_fail (GTK_IS_IENTRY (item_entry));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (item_entry));
 
   item_entry->justification = justification;
-  gtk_widget_queue_draw(GTK_WIDGET(item_entry));
+  entry_adjust_scroll (GTK_ENTRY(item_entry));
+  gtk_widget_draw(GTK_WIDGET(item_entry), NULL);
 }
 
 
 static void
 gtk_entry_realize (GtkWidget *widget)
 {
-  GtkIentry *item_entry;
+  GtkItemEntry *item_entry;
 
   g_return_if_fail (widget != NULL);
-  g_return_if_fail (GTK_IS_IENTRY (widget));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (widget));
 
   if (GTK_WIDGET_CLASS (parent_class)->realize)
     (* GTK_WIDGET_CLASS (parent_class)->realize) (widget);
 
-  item_entry = GTK_IENTRY (widget);
+  item_entry = GTK_ITEM_ENTRY (widget);
 
   item_entry->fg_gc = gdk_gc_new (widget->window);  
   item_entry->bg_gc = gdk_gc_new (widget->window);  
@@ -379,12 +380,12 @@ gtk_entry_realize (GtkWidget *widget)
 static void
 gtk_entry_unrealize (GtkWidget *widget)
 {
-  GtkIentry *item_entry;
+  GtkItemEntry *item_entry;
 
   g_return_if_fail (widget != NULL);
-  g_return_if_fail (GTK_IS_IENTRY (widget));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (widget));
 
-  item_entry = GTK_IENTRY (widget);
+  item_entry = GTK_ITEM_ENTRY (widget);
 
   gdk_gc_destroy (item_entry->fg_gc);
   gdk_gc_destroy (item_entry->bg_gc);
@@ -397,7 +398,7 @@ static void
 gtk_entry_draw_focus (GtkWidget *widget)
 {
   g_return_if_fail (widget != NULL);
-  g_return_if_fail (GTK_IS_IENTRY (widget));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (widget));
 
   if (GTK_WIDGET_DRAWABLE (widget))
     {
@@ -414,7 +415,7 @@ gtk_entry_size_allocate (GtkWidget     *widget,
   GtkEditable *editable;
 
   g_return_if_fail (widget != NULL);
-  g_return_if_fail (GTK_IS_IENTRY (widget));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (widget));
   g_return_if_fail (allocation != NULL);
 
   widget->allocation = *allocation;
@@ -458,10 +459,10 @@ static void
 gtk_entry_size_request (GtkWidget     *widget,
 			GtkRequisition *requisition)
 {
-  GtkIentry *entry;
+  GtkItemEntry *entry;
 
   g_return_if_fail (widget != NULL);
-  g_return_if_fail (GTK_IS_IENTRY (widget));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (widget));
   g_return_if_fail (requisition != NULL);
 
   requisition->width = MIN_ENTRY_WIDTH + (widget->style->klass->xthickness + INNER_BORDER) * 2;
@@ -469,7 +470,7 @@ gtk_entry_size_request (GtkWidget     *widget,
                          widget->style->font->descent +
                          (widget->style->klass->ythickness + INNER_BORDER) * 2);
 
-  entry = GTK_IENTRY(widget);
+  entry = GTK_ITEM_ENTRY(widget);
 
   if(entry->text_max_size > 0 && 
      requisition->width > entry->text_max_size)
@@ -908,7 +909,7 @@ static void
 gtk_entry_draw_text (GtkEntry *entry)
 {
   GtkWidget *widget;
-  GtkIentry *item_entry;
+  GtkItemEntry *item_entry;
   GtkEditable *editable;
   GtkStateType selected_state;
   gint start_pos;
@@ -927,9 +928,9 @@ gtk_entry_draw_text (GtkEntry *entry)
 
   g_return_if_fail (entry != NULL);
   g_return_if_fail (GTK_IS_ENTRY (entry));
-  g_return_if_fail (GTK_IS_IENTRY (entry));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (entry));
 
-  item_entry = GTK_IENTRY (entry);
+  item_entry = GTK_ITEM_ENTRY (entry);
 
   if (entry->timer)
     {
@@ -1107,7 +1108,7 @@ gtk_entry_draw_cursor_on_drawable (GtkEntry *entry, GdkDrawable *drawable)
 
   g_return_if_fail (entry != NULL);
   g_return_if_fail (GTK_IS_ENTRY (entry));
-  g_return_if_fail (GTK_IS_IENTRY (entry));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (entry));
 
   if (GTK_WIDGET_DRAWABLE (entry))
     {
@@ -1172,7 +1173,7 @@ gtk_entry_queue_draw (GtkEntry *entry)
 {
   g_return_if_fail (entry != NULL);
   g_return_if_fail (GTK_IS_ENTRY (entry));
-  g_return_if_fail (GTK_IS_IENTRY (entry));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (entry));
 
   if (!entry->timer)
     entry->timer = gtk_timeout_add (DRAW_TIMEOUT, gtk_entry_timer, entry);
@@ -1234,16 +1235,16 @@ gtk_entry_position (GtkEntry *entry,
 static void
 entry_adjust_scroll (GtkEntry *entry)
 {
-  GtkIentry *item_entry;
+  GtkItemEntry *item_entry;
   gint xoffset;
   gint text_area_width, text_area_height;
   gint char_width, text_width;
 
   g_return_if_fail (entry != NULL);
   g_return_if_fail (GTK_IS_ENTRY (entry));
-  g_return_if_fail (GTK_IS_IENTRY (entry));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (entry));
 
-  item_entry = GTK_IENTRY (entry);
+  item_entry = GTK_ITEM_ENTRY (entry);
 
   if (!entry->text_area)
     return;
@@ -1362,7 +1363,7 @@ gtk_entry_grow_text (GtkEntry *entry)
 
   g_return_if_fail (entry != NULL);
   g_return_if_fail (GTK_IS_ENTRY (entry));
-  g_return_if_fail (GTK_IS_IENTRY (entry));
+  g_return_if_fail (GTK_IS_ITEM_ENTRY (entry));
 
   previous_size = entry->text_size;
   if (!entry->text_size)
@@ -1915,6 +1916,26 @@ gtk_entry_set_selection (GtkEditable       *editable,
   editable->selection_end_pos = end;
 
   gtk_entry_queue_draw (GTK_ENTRY (editable));
+}
+
+void       
+gtk_entry_select_region  (GtkEntry       *entry,
+			  gint            start,
+			  gint            end)
+{
+  gtk_editable_select_region (GTK_EDITABLE (entry), start, end);
+}
+
+void
+gtk_entry_set_max_length (GtkEntry     *entry,
+                          guint16       max)
+{
+  g_return_if_fail (entry != NULL);
+  g_return_if_fail (GTK_IS_ENTRY (entry));
+
+  if (max && entry->text_length > max)
+  	gtk_editable_delete_text(GTK_EDITABLE(entry), max, -1);
+  entry->text_max_length = max;
 }
 
 #ifdef USE_XIM

@@ -33,6 +33,7 @@
 #define FONTCACHE_SIZE 17
 #define NUM_X11_FONTS 2
 
+
 static GtkPSFont font_data[] = 
 {
   { "Times-Roman",
@@ -328,8 +329,100 @@ gchar *last_resort_fonts[] = {
 #define NUM_LAST_RESORT_FONTS 2
 
 static GList *user_fonts;
+static gboolean psfont_init = FALSE;
+static GList *psfont_families;
+static gint numf;
+static gint psfont_refcount = 0;
 
 static GtkPSFont *find_psfont		(gchar *name);
+
+gint 
+gtk_psfont_init()
+{
+  GtkPSFont *data = NULL;
+  GList *fonts;
+  gint i, j;
+  gboolean new_family = TRUE;
+
+  psfont_refcount++;
+
+/*  if(psfont_refcount > 1) printf("PS fonts already initilized\n");;
+*/
+  if(psfont_refcount > 1) return FALSE;
+
+/*  printf("Initializing PS fonts\n");;
+*/
+
+  psfont_init = TRUE;
+/*
+  for(i = 0; i < NUM_FONTS; i++){
+    gtk_psfont_add_font(font_data[i].fontname,
+			font_data[i].psname,
+			font_data[i].family,
+			font_data[i].xfont,
+			font_data[i].italic,
+			font_data[i].bold);
+  }
+*/  
+  psfont_families = NULL;
+  numf = 0;
+
+  for(i = 0; i < NUM_FONTS; i++){
+    new_family = TRUE;
+    for(j = 0; j < numf; j++){
+       if(strcmp(font_data[i].family, (gchar *)g_list_nth_data(psfont_families, j)) == 0)
+         new_family = FALSE;
+    }
+    if(new_family){
+         numf = numf + 1;
+         psfont_families = g_list_append(psfont_families, font_data[i].family);
+    }     
+  }
+
+  fonts = user_fonts;
+  while(fonts){
+    data = (GtkPSFont *) fonts->data;
+    new_family = TRUE;
+    for(j = 0; j < numf; j++){
+       if(strcmp(data->family, (gchar *)g_list_nth_data(psfont_families, j)) == 0) 
+         new_family = FALSE;
+    }
+    if(new_family){
+         numf = numf + 1;
+         psfont_families = g_list_append(psfont_families, data->family);
+    }     
+    fonts = fonts->next;
+  }
+
+  return TRUE;
+}
+
+
+void 
+gtk_psfont_unref()
+{
+  GList *list;
+
+  psfont_refcount--;
+
+  if(psfont_refcount > 0) return;
+
+  list = psfont_families;
+  while(list){
+    psfont_families = g_list_remove_link(psfont_families, list);
+    g_list_free_1(list);
+    list = psfont_families;
+  }
+
+  list = user_fonts;
+  while(list){
+    user_fonts = g_list_remove_link(user_fonts, list);
+    g_list_free_1(list);
+    list = user_fonts;
+  }
+
+  psfont_init = FALSE;
+}
 
 GtkPSFont *
 gtk_psfont_get_font(gchar *name)
@@ -341,9 +434,9 @@ gtk_psfont_get_font(gchar *name)
   if (font == NULL) {
     font = find_psfont("Courier");
     if (font == NULL) {
-      g_warning ("Error, couldn't locate font. Shouldn't happend.\n");
+      g_warning ("Error, couldn't locate font. Shouldn't happend.");
     } else {
-      g_message ("Font %s not found, using Courier instead.\n", name);
+      g_message ("Font %s not found, using Courier instead.", name);
     }
   }
 
@@ -354,16 +447,13 @@ GdkFont *
 gtk_psfont_get_gdkfont(gchar *name, gint height)
 {
   GtkPSFont *fontdata;
-  GdkFont *gdk_font = NULL, *aux_font = NULL;
+  GdkFont *gdk_font = NULL;
   gchar *x11_font;
-  gint bufsize, auxbufsize;
-  gchar *buffer = NULL, *auxbuffer = NULL;
-  gint i, j;
+  gint bufsize;
+  gchar *buffer = NULL;
+  gint i;
   gint auxheight;
   gint min_height = 8;
-  gchar **x11_fontset;
-  gint n;
-  gboolean ok = FALSE;
 
   if (height <= 0) height = 1;
  
@@ -372,47 +462,20 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
   for (i = 0; i < NUM_X11_FONTS; i++) {
     x11_font = fontdata->xfont[i];
     if (x11_font != NULL) {
-      x11_fontset = g_strsplit(x11_font, ",", 0);
-      bufsize = 0;
-      for (n = 0 ; x11_fontset[n] != NULL ; n++) {
-	/* Should be enought*/
-	bufsize += strlen(x11_fontset[n]) + 25;
-      }
-      buffer = (gchar *)g_malloc(bufsize);
+     bufsize = strlen(x11_font)+25;  /* Should be enought*/
+     buffer = (gchar *)g_malloc(bufsize);
 
-      for (j = 0 ; j < n ; j++) {
-	ok = FALSE;
-	auxbufsize = strlen(x11_fontset[j]) + 25;
-	auxbuffer = (gchar*)g_malloc(auxbufsize);
-	for (auxheight = MAX(height, min_height);
-	     auxheight >= min_height;
-	     auxheight--){
-	  g_snprintf(auxbuffer, auxbufsize, 
-		     "%s-*-%d-*-*-*-*-*-*-*", 
-		     g_strstrip(x11_fontset[j]), auxheight);
-	  if((aux_font = gdk_font_load(auxbuffer)) != NULL) {
-	    if (j == 0) {
-	      g_snprintf(buffer, bufsize, "%s", auxbuffer);
-	    } else {
-	      g_snprintf(buffer, bufsize, "%s,%s", buffer, auxbuffer);
-	    }
-	    ok = TRUE;
-	    gdk_font_unref(aux_font);
-	    break;
-	  }
-	}
-	g_free(auxbuffer);
-	if (!ok) break;
+     for(auxheight = MAX(height, min_height); auxheight >= min_height; auxheight--){
+      g_snprintf(buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
+    
+      gdk_font = gdk_font_load(buffer);
+      if (gdk_font != NULL) {
+         g_free(buffer);
+         break;
       }
-      if (ok) {
-	gdk_font = (n == 1) ? gdk_font_load(buffer) : gdk_fontset_load(buffer);
-	if (gdk_font != NULL) {
-	  g_free(buffer);
-	  break;
-	}
-      }
-      g_strfreev(x11_fontset);
-      if(gdk_font != NULL) break;
+     }
+
+     if(gdk_font != NULL) break;
     }
 
     g_free(buffer);
@@ -421,53 +484,25 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
   if (gdk_font == NULL) {
     for (i=0; i < NUM_LAST_RESORT_FONTS; i++) {
       x11_font = last_resort_fonts[i];
-      x11_fontset = g_strsplit(x11_font, ",", 0);
-      bufsize = 0;
-      for (n = 0 ; x11_fontset[n] != NULL ; n++) {
-	/* Should be enought*/
-	bufsize += strlen(x11_fontset[n]) + 25;
-      }
-      buffer = (gchar *)g_malloc(bufsize);
-
-      for (j = 0 ; j < n ; j++) {
-	ok = FALSE;
-	auxbufsize = strlen(x11_fontset[j]) + 25;
-	auxbuffer = (gchar*)g_malloc(auxbufsize);
-	for (auxheight = MAX(height, min_height);
-	     auxheight >= min_height;
-	     auxheight--){
-	  g_snprintf(auxbuffer, auxbufsize, 
-		     "%s-*-%d-*-*-*-*-*-*-*", 
-		     g_strstrip(x11_fontset[j]), auxheight);
-	  if((aux_font = gdk_font_load(auxbuffer)) != NULL) {
-	    if (j == 0) {
-	      g_snprintf(buffer, bufsize, "%s", auxbuffer);
-	    } else {
-	      g_snprintf(buffer, bufsize, "%s,%s", buffer, auxbuffer);
-	    }
-	    ok = TRUE;
-	    gdk_font_unref(aux_font);
-	    break;
-	  }
-	}
-	g_free(auxbuffer);
-	if (!ok) break;
-      }
-      if (ok) {
-	gdk_font = (n == 1) ? gdk_font_load(buffer) : gdk_fontset_load(buffer);
-	if (gdk_font != NULL) {
-	  g_free(buffer);
-	  break;
-	}
+      bufsize = strlen(x11_font)+25;  /* Should be enought*/
+      buffer = (char *)g_malloc(bufsize);
+      
+      for(auxheight = MAX(height, min_height); auxheight >= min_height; auxheight--){
+       g_snprintf(buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
+    
+       gdk_font = gdk_font_load(buffer);
+        if (gdk_font != NULL) {
+          g_free(buffer);
+          break;
+       }
       }
 
       if (gdk_font != NULL) {
-	g_warning("Could not find X Font for %s, using %s instead.\n",
+	g_warning("Could not find X Font for %s, using %s instead.",
 		  name, x11_font);
 	break;
       }
 
-      g_strfreev(x11_fontset);
       g_free(buffer);
     }
   }
@@ -591,41 +626,13 @@ gtk_psfont_find_by_family(gchar *name, gboolean italic, gboolean bold)
 
 
 void
-gtk_psfont_get_families(GList **family, gint *numf)
+gtk_psfont_get_families(GList **families, gint *num_families)
 {
-  GtkPSFont *data = NULL;
-  GList *fonts;
-  gint i, j;
-  gboolean new_family = TRUE;
-  
-  *family = NULL;
-  *numf = 0;
-
-  for(i = 0; i < NUM_FONTS; i++){
-    new_family = TRUE;
-    for(j = 0; j < *numf; j++){
-       if(strcmp(font_data[i].family, (gchar *)g_list_nth_data(*family, j)) == 0)
-         new_family = FALSE;
-    }
-    if(new_family){
-         *numf = *numf + 1;
-         *family = g_list_append(*family, font_data[i].family);
-    }     
+  if(!psfont_init || psfont_refcount == 0){
+    g_warning("PS fonts have not been initialized. Use gtk_psfont_init first.");
+    return;
   }
 
-  fonts = user_fonts;
-  while(fonts){
-    data = (GtkPSFont *) fonts->data;
-    new_family = TRUE;
-    for(j = 0; j < *numf; j++){
-       if(strcmp(data->family, (gchar *)g_list_nth_data(*family, j)) == 0) 
-         new_family = FALSE;
-    }
-    if(new_family){
-         *numf = *numf + 1;
-         *family = g_list_append(*family, data->family);
-    }     
-    fonts = fonts->next;
-  }
-
+  *families = psfont_families;
+  *num_families = numf;
 }

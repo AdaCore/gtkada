@@ -19,8 +19,8 @@
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef __GTK_IENTRY_H__
-#define __GTK_IENTRY_H__
+#ifndef __GTK_ITEM_ENTRY_H__
+#define __GTK_ITEM_ENTRY_H__
 
 
 #ifdef __cplusplus
@@ -28,17 +28,17 @@ extern "C" {
 #endif /* __cplusplus */
 
 
-#define GTK_TYPE_IENTRY            (gtk_item_entry_get_type ())
-#define GTK_IENTRY(obj)            (GTK_CHECK_CAST (obj, gtk_item_entry_get_type (), GtkIentry))
-#define GTK_IENTRY_CLASS(klass)    (GTK_CHECK_CLASS_CAST (klass, gtk_item_entry_get_type (), GtkIentryClass))
-#define GTK_IS_IENTRY(obj)         (GTK_CHECK_TYPE (obj, gtk_item_entry_get_type ()))
-#define GTK_IS_IENTRY_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_ENTRY))
+#define GTK_TYPE_ITEM_ENTRY            (gtk_item_entry_get_type ())
+#define GTK_ITEM_ENTRY(obj)            (GTK_CHECK_CAST (obj, gtk_item_entry_get_type (), GtkItemEntry))
+#define GTK_ITEM_ENTRY_CLASS(klass)    (GTK_CHECK_CLASS_CAST (klass, gtk_item_entry_get_type (), GtkItemEntryClass))
+#define GTK_IS_ITEM_ENTRY(obj)         (GTK_CHECK_TYPE (obj, gtk_item_entry_get_type ()))
+#define GTK_IS_ITEM_ENTRY_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_ENTRY))
 
 
-typedef struct _GtkIentry       GtkIentry;
-typedef struct _GtkIentryClass  GtkIentryClass;
+typedef struct _GtkItemEntry       GtkItemEntry;
+typedef struct _GtkItemEntryClass  GtkItemEntryClass;
 
-struct _GtkIentry
+struct _GtkItemEntry
 {
   GtkEntry parent;
 
@@ -50,7 +50,7 @@ struct _GtkIentry
   GtkJustification justification;
 };
 
-struct _GtkIentryClass
+struct _GtkItemEntryClass
 {
   GtkEntryClass parent_class;
 };
@@ -58,10 +58,10 @@ struct _GtkIentryClass
 GtkType    gtk_item_entry_get_type       (void);
 GtkWidget* gtk_item_entry_new            (void);
 GtkWidget* gtk_item_entry_new_with_max_length (guint16   max);
-void       gtk_item_entry_set_text            (GtkIentry *item_entry, 
+void       gtk_item_entry_set_text            (GtkItemEntry *item_entry, 
                                                const gchar *text,
                                                GtkJustification justification);
-void       gtk_item_entry_set_justification (GtkIentry        *item_entry,
+void       gtk_item_entry_set_justification (GtkItemEntry        *item_entry,
 					     GtkJustification   justification);
 
 
@@ -70,4 +70,4 @@ void       gtk_item_entry_set_justification (GtkIentry        *item_entry,
 #endif /* __cplusplus */
 
 
-#endif /* __GTK_IENTRY_H__ */
+#endif /* __GTK_ITEM_ENTRY_H__ */

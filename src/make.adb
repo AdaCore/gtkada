@@ -134,7 +134,6 @@ with Gtk.Extra.Combo_Box;
 with Gtk.Extra.Font_Combo;
 with Gtk.Extra.Item_Entry;
 with Gtk.Extra.Plot;
-with Gtk.Extra.Plot_Layout;
 with Gtk.Extra.Plot_Canvas;
 with Gtk.Extra.Plot_Ps;
 with Gtk.Extra.PsFont;

@@ -243,10 +243,10 @@ create_border_pixmap(GtkBorderCombo *border_combo, gchar *border[18])
 }
 
 
-guint
+GtkType
 gtk_border_combo_get_type ()
 {
-  static guint border_combo_type = 0;
+  static GtkType border_combo_type = 0;
 
   if (!border_combo_type)
     {

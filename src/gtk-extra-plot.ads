@@ -322,6 +322,12 @@ package Gtk.Extra.Plot is
    --  have to call this function yourself, since queuing a draw request is
    --  more efficient.
 
+   procedure Set_Magnification (Plot          : access Gtk_Plot_Record;
+                                Magnification : Gdouble);
+   --  Change the magnification level of the plot.
+   --  1.0 is the default magnification, higher values will zoom in while lower
+   --  values will zoom out.
+
    ----------------------------
    --  Coordinates and sizes --
    ----------------------------
@@ -753,6 +759,7 @@ package Gtk.Extra.Plot is
       Font_Height   : in Gint := 10;
       Foreground    : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Background    : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Transparent   : in Boolean := False;
       Justification : in Gtk.Enums.Gtk_Justification
         := Gtk.Enums.Justify_Center;
       Text          : in String := "");
@@ -763,27 +770,31 @@ package Gtk.Extra.Plot is
    --  will be used. Likewise, default colors will be used if you don't
    --  specify any. Font should be the name of a postscript font, the list of
    --  which can be found in Gtk.Plot.Psfont.
+   --  If Transparent is True, then no background will be drawn for the text.
 
    procedure Remove_Text (Plot : access Gtk_Plot_Record;
                           Text : in Gtk_Plot_Text);
    --  Remove some text that is currently visible on the plot.
    --  Nothing is done if Text is currently not visible.
 
-   procedure Text_Get_Area (Text   : in  Gtk_Plot_Text;
-                            X      : out Gint;
-                            Y      : out Gint;
-                            Width  : out Gint;
-                            Height : out Gint);
-   --  Return the area currently occupied by a text.
+   procedure Text_Get_Area (Text          : in  Gtk_Plot_Text;
+                            Magnification : in Gdouble;
+                            X             : out Gint;
+                            Y             : out Gint;
+                            Width         : out Gint;
+                            Height        : out Gint);
+   --  Return the area currently occupied by a text for a given magnification.
    --  The coordinates are relative to the top-left corner of the plot in
    --  which the text was put.
 
-   procedure Text_Get_Size (Text    : in Gtk_Plot_Text;
-                            Width   : out Gint;
-                            Height  : out Gint;
-                            Ascent  : out Gint;
-                            Descent : out Gint);
-   --  Return the size in pixels occupied by a text in the plot.
+   procedure Text_Get_Size (Text          : in Gtk_Plot_Text;
+                            Magnification : in Gdouble;
+                            Width         : out Gint;
+                            Height        : out Gint;
+                            Ascent        : out Gint;
+                            Descent       : out Gint);
+   --  Return the size in pixels occupied by a text in the plot, for a given
+   --  magnification (1.0 is the default value, see Set_Magnification).
    --  @pxref{Package_Gtk.Extra.Plot_Canvas} for a function that returns
    --  a Gtk_Plot_Text.
 
@@ -799,6 +810,20 @@ package Gtk.Extra.Plot is
    function Get_Text_String (Text : in Gtk_Plot_Text) return String;
    --  Return the string of the text.
 
+   procedure Text_Set_Attributes
+     (Text          : in Gtk_Plot_Text;
+      Font          : in String;
+      Height        : in Gint;
+      Angle         : in Plot_Angle;
+      Fg            : in Gdk.Color.Gdk_Color;
+      Bg            : in Gdk.Color.Gdk_Color;
+      Transparent   : in Boolean := False;
+      Justification : in Gtk.Enums.Gtk_Justification :=
+        Gtk.Enums.Justify_Center;
+      Str           : in String := "");
+   --  Change the attributes of Text.
+
+
    --------------
    -- Datasets --
    --------------
@@ -810,7 +835,7 @@ package Gtk.Extra.Plot is
    --  by connectors, which are either straight lines, splines, sets, ...
    --  Multiple data sets can of course be printed on a single graph.
 
-   function Gtk_Dataset_New return Gtk_Plot_Data;
+   function Gtk_Data_New return Gtk_Plot_Data;
    --  Return a newly allocated dataset.
    --  This set has to be freed manually by your application, by calling the
    --  Free subprogram below.
@@ -821,15 +846,15 @@ package Gtk.Extra.Plot is
    procedure Free (Widget : in out Gtk_Plot_Data);
    --  Free the memory allocated for a dataset.
 
-   procedure Add_Dataset (Plot    : access Gtk_Plot_Record;
-                          Dataset : in     Gtk_Plot_Data);
+   procedure Add_Data (Plot : access Gtk_Plot_Record;
+                       Data : in     Gtk_Plot_Data);
    --  Add an existing set of data to the plot.
    --  This set will automatically be drawn the next time the Plot itself is
    --  drawn.
 
-   function Remove_Dataset (Plot    : access Gtk_Plot_Record;
-                            Dataset : in     Gtk_Plot_Data)
-                           return       Boolean;
+   function Remove_Data (Plot : access Gtk_Plot_Record;
+                         Data : in     Gtk_Plot_Data)
+                        return       Boolean;
    --  Remove the dataset from Plot.
    --  This function returns True if the dataset was indeed found and could be
    --  removed, False otherwise.
@@ -848,19 +873,19 @@ package Gtk.Extra.Plot is
                          return Datasets_List.Glist;
    --  Return the list of all the datasets associated with Plot.
 
-   procedure Draw_Dataset (Plot : access Gtk_Plot_Record;
-                           Gc   : in Gdk.GC.Gdk_GC;
-                           Data : in Gtk_Plot_Data);
+   procedure Draw_Data (Plot : access Gtk_Plot_Record;
+                        Gc   : in Gdk.GC.Gdk_GC;
+                        Data : in Gtk_Plot_Data);
    --  Force a redraw of the dataset.
    --  The set is redrawn immediately. You should probably rather queue a draw
    --  request for Plot itself, which will also redraw all the other sets
    --  associated with the plot.
 
-   procedure Dataset_Set_Points (Data : in Gtk_Plot_Data;
-                                 X    : in Gdouble_Array_Access;
-                                 Y    : in Gdouble_Array_Access;
-                                 Dx   : in Gdouble_Array_Access;
-                                 Dy   : in Gdouble_Array_Access);
+   procedure Data_Set_Points (Data : in Gtk_Plot_Data;
+                              X    : in Gdouble_Array_Access;
+                              Y    : in Gdouble_Array_Access;
+                              Dx   : in Gdouble_Array_Access;
+                              Dy   : in Gdouble_Array_Access);
    --  Set some explicit points in the set.
    --  Note that the set must not be associated with a function, or the points
    --  will simply be ignored.
@@ -870,18 +895,18 @@ package Gtk.Extra.Plot is
    --  Dx and Dy are the list of size (precision) of these points. A bigger
    --  symbol will be displayed for the point whose (Dx, Dy) value is bigger.
 
-   procedure Dataset_Get_Points (Data       : in Gtk_Plot_Data;
-                                 X          : out Points_Array;
-                                 Y          : out Points_Array;
-                                 Dx         : out Points_Array;
-                                 Dy         : out Points_Array);
+   procedure Data_Get_Points (Data       : in Gtk_Plot_Data;
+                              X          : out Points_Array;
+                              Y          : out Points_Array;
+                              Dx         : out Points_Array;
+                              Dy         : out Points_Array);
    --  Return the value of the points in the set.
    --  Null-length arrays are returned if the set is associated with a
    --  function, since no explicit point has been set.
    --  See Dataset_Set_Points for a definition of X, Y, Dx and Dy.
 
-   procedure Dataset_Set_X (Data : in Gtk_Plot_Data;
-                            X    : in Gdouble_Array_Access);
+   procedure Data_Set_X (Data : in Gtk_Plot_Data;
+                         X    : in Gdouble_Array_Access);
    --  Set the X coordinates of the points in the set.
    --  The array must have a length of Dataset_Get_Numpoints (if GtkAda was
    --  compiled with assertions enabled, an exception will be raised if the
@@ -889,8 +914,8 @@ package Gtk.Extra.Plot is
    --  No copy of the array is made for efficiency reasons, thus modifying
    --  the array content later on will also modify the plot.
 
-   procedure Dataset_Set_Y (Data : in Gtk_Plot_Data;
-                            Y    : in Gdouble_Array_Access);
+   procedure Data_Set_Y (Data : in Gtk_Plot_Data;
+                         Y    : in Gdouble_Array_Access);
    --  Set the Y coordinates of the points in the set.
    --  The array must have a length of Dataset_Get_Numpoints (if GtkAda was
    --  compiled with assertions enabled, an exception will be raised if the
@@ -898,8 +923,8 @@ package Gtk.Extra.Plot is
    --  No copy of the array is made for efficiency reasons, thus modifying
    --  the array content later on will also modify the plot.
 
-   procedure Dataset_Set_Dx (Data : in Gtk_Plot_Data;
-                             Dx   : in Gdouble_Array_Access);
+   procedure Data_Set_Dx (Data : in Gtk_Plot_Data;
+                          Dx   : in Gdouble_Array_Access);
    --  Set the width of the points in the set.s
    --  The array must have a length of Dataset_Get_Numpoints (if GtkAda was
    --  compiled with assertions enabled, an exception will be raised if the
@@ -907,8 +932,8 @@ package Gtk.Extra.Plot is
    --  No copy of the array is made for efficiency reasons, thus modifying
    --  the array content later on will also modify the plot.
 
-   procedure Dataset_Set_Dy (Data : in Gtk_Plot_Data;
-                             Dy   : in Gdouble_Array_Access);
+   procedure Data_Set_Dy (Data : in Gtk_Plot_Data;
+                          Dy   : in Gdouble_Array_Access);
    --  Set the height of the points in the set.
    --  The array must have a length of Dataset_Get_Numpoints (if GtkAda was
    --  compiled with assertions enabled, an exception will be raised if the
@@ -916,85 +941,85 @@ package Gtk.Extra.Plot is
    --  No copy of the array is made for efficiency reasons, thus modifying
    --  the array content later on will also modify the plot.
 
-   function Dataset_Get_X (Data       : in Gtk_Plot_Data)
-                          return     Points_Array;
+   function Data_Get_X (Data       : in Gtk_Plot_Data)
+                       return     Points_Array;
    --  Return the list of X coordinates for the points in the set.
    --  This is a direct access to the underlying C array, thus modifying this
    --  array's contents also modifies the graph.
 
-   function Dataset_Get_Y (Data       : in Gtk_Plot_Data)
-                          return     Points_Array;
+   function Data_Get_Y (Data       : in Gtk_Plot_Data)
+                       return     Points_Array;
    --  Return the list of Y coordinates for the points in the set.
    --  This is a direct access to the underlying C array, thus modifying this
    --  array's contents also modifies the graph.
 
-   function Dataset_Get_Dx (Data      : in Gtk_Plot_Data)
-                           return    Points_Array;
+   function Data_Get_Dx (Data      : in Gtk_Plot_Data)
+                        return    Points_Array;
    --  Return the list of Dx coordinates for the points in the set.
    --  This is a direct access to the underlying C array, thus modifying this
    --  array's contents also modifies the graph.
 
-   function Dataset_Get_Dy (Data   : in Gtk_Plot_Data)
-                           return    Points_Array;
+   function Data_Get_Dy (Data   : in Gtk_Plot_Data)
+                        return    Points_Array;
    --  Return the list of Dy coordinates for the points in the set.
    --  This is a direct access to the underlying C array, thus modifying this
    --  array's contents also modifies the graph.
 
-   procedure Dataset_Set_Numpoints (Data       : in Gtk_Plot_Data;
-                                    Num_Points : in Gint);
+   procedure Data_Set_Numpoints (Data       : in Gtk_Plot_Data;
+                                 Num_Points : in Gint);
    --  Set the number of points that should be expected in the graph.
    --  Note that this does not automatically resize all the internal structure,
    --  it just indicates what size the parameters to Dataset_Set_X,
    --  Dataset_Set_Y, ... should have.
 
-   function Dataset_Get_Numpoints (Data   : in Gtk_Plot_Data)
-                                  return  Gint;
+   function Data_Get_Numpoints (Data   : in Gtk_Plot_Data)
+                               return  Gint;
    --  Return the number of points expected in the graph.
 
-   procedure Dataset_Set_Symbol (Data       : in Gtk_Plot_Data;
-                                 The_Type   : in Plot_Symbol_Type;
-                                 Style      : in Plot_Symbol_Style;
-                                 Size       : in Gint;
-                                 Line_Width : in Gint;
-                                 Color      : in Gdk.Color.Gdk_Color);
+   procedure Data_Set_Symbol (Data       : in Gtk_Plot_Data;
+                              The_Type   : in Plot_Symbol_Type;
+                              Style      : in Plot_Symbol_Style;
+                              Size       : in Gint;
+                              Line_Width : in Gint;
+                              Color      : in Gdk.Color.Gdk_Color);
    --  Set the visual aspect of the symbols.
    --  Each point you explicitly set in a dataset is associated visually with
    --  a symbol, that can be represented in many different ways.
 
-   procedure Dataset_Get_Symbol (Data       : in Gtk_Plot_Data;
-                                 The_Type   : out Plot_Symbol_Type;
-                                 Style      : out Plot_Symbol_Style;
-                                 Size       : out Gint;
-                                 Line_Width : out Gint;
-                                 Color      : out Gdk.Color.Gdk_Color);
+   procedure Data_Get_Symbol (Data       : in Gtk_Plot_Data;
+                              The_Type   : out Plot_Symbol_Type;
+                              Style      : out Plot_Symbol_Style;
+                              Size       : out Gint;
+                              Line_Width : out Gint;
+                              Color      : out Gdk.Color.Gdk_Color);
    --  Return the visual characteristics of the symbols.
 
-   procedure Dataset_Set_Connector (Data      : in Gtk_Plot_Data;
-                                    Connector : in Plot_Connector);
+   procedure Data_Set_Connector (Data      : in Gtk_Plot_Data;
+                                 Connector : in Plot_Connector);
    --  Set the style of the connectors.
    --  Each symbol/point in the graph is connect to the next one by such
    --  connectors.
 
-   function Dataset_Get_Connector (Data   : in Gtk_Plot_Data)
-                                  return      Plot_Connector;
+   function Data_Get_Connector (Data   : in Gtk_Plot_Data)
+                               return      Plot_Connector;
    --  Return the connector style used for the data set.
 
-   procedure Dataset_Set_Line_Attributes (Data  : in Gtk_Plot_Data;
-                                          Style : in Plot_Line_Style;
-                                          Width : in Gint;
-                                          Color : in Gdk.Color.Gdk_Color);
-   --  Set the line style used for the connectors in that data set.
-
-   procedure Dataset_Get_Line_Attributes (Data  : in Gtk_Plot_Data;
-                                          Style : out Plot_Line_Style;
-                                          Width : out Gint;
-                                          Color : out Gdk.Color.Gdk_Color);
-   --  Return the line attributes used for the connectors.
-
-   procedure Dataset_Set_X_Attributes (Data  : in Gtk_Plot_Data;
+   procedure Data_Set_Line_Attributes (Data  : in Gtk_Plot_Data;
                                        Style : in Plot_Line_Style;
                                        Width : in Gint;
                                        Color : in Gdk.Color.Gdk_Color);
+   --  Set the line style used for the connectors in that data set.
+
+   procedure Data_Get_Line_Attributes (Data  : in Gtk_Plot_Data;
+                                       Style : out Plot_Line_Style;
+                                       Width : out Gint;
+                                       Color : out Gdk.Color.Gdk_Color);
+   --  Return the line attributes used for the connectors.
+
+   procedure Data_Set_X_Attributes (Data  : in Gtk_Plot_Data;
+                                    Style : in Plot_Line_Style;
+                                    Width : in Gint;
+                                    Color : in Gdk.Color.Gdk_Color);
    --  Set the style of the lines used to connect the symbols to the two main
    --  axis.
    --  Each symbol, in addition to being connected to the next one with a
@@ -1002,51 +1027,51 @@ package Gtk.Extra.Plot is
    --  easier to read its coordinates. This function set the style of the
    --  lines used to connect to the line Y=0.
 
-   procedure Dataset_Set_Y_Attributes (Data  : in Gtk_Plot_Data;
-                                       Style : in Plot_Line_Style;
-                                       Width : in Gint;
-                                       Color : in Gdk.Color.Gdk_Color);
+   procedure Data_Set_Y_Attributes (Data  : in Gtk_Plot_Data;
+                                    Style : in Plot_Line_Style;
+                                    Width : in Gint;
+                                    Color : in Gdk.Color.Gdk_Color);
    --  Same as Dataset_Set_X_Attributes, for the line X=0.
 
-   procedure Dataset_Show_Xerrbars (Data : in Gtk_Plot_Data);
+   procedure Data_Show_Xerrbars (Data : in Gtk_Plot_Data);
    --  Indicate that each symbol should be connected to the (Y=0) line.
 
-   procedure Dataset_Show_Yerrbars (Data : in Gtk_Plot_Data);
+   procedure Data_Show_Yerrbars (Data : in Gtk_Plot_Data);
    --  Indicate that each symbol should be connected to the (X=0) line.
 
-   procedure Dataset_Hide_Xerrbars (Data : in Gtk_Plot_Data);
+   procedure Data_Hide_Xerrbars (Data : in Gtk_Plot_Data);
    --  Indicate that no symbol should be connected to the (Y=0) line.
    --  This is the default behavior.
 
-   procedure Dataset_Hide_Yerrbars (Data : in Gtk_Plot_Data);
+   procedure Data_Hide_Yerrbars (Data : in Gtk_Plot_Data);
    --  Indicate that no symbol should be connected to the (X=0) line.
    --  This is the default behavior.
 
-   procedure Dataset_Set_Legend (Data   : in Gtk_Plot_Data;
-                                 Legend : in String);
+   procedure Data_Set_Legend (Data   : in Gtk_Plot_Data;
+                              Legend : in String);
    --  Set the string printed in the legend for that dataset.
    --  Note that an entry can exist in the legend even if there is no name
    --  associated with the graph.
 
-   procedure Dataset_Show_Legend (Data : in Gtk_Plot_Data);
+   procedure Data_Show_Legend (Data : in Gtk_Plot_Data);
    --  An entry will be made in the plot's legend for that dataset.
 
-   procedure Dataset_Hide_Legend (Data : in Gtk_Plot_Data);
+   procedure Data_Hide_Legend (Data : in Gtk_Plot_Data);
    --  No entry will appear in the plot's legend for that dataset.
 
-   procedure Dataset_Set_Name (Data : in Gtk_Plot_Data;
-                               Name : in String);
+   procedure Data_Set_Name (Data : in Gtk_Plot_Data;
+                            Name : in String);
    --  Set the name used internally for that dataset.
    --  This name does not appear anywhere on the screen, but it is easier to
    --  find the dataset afterward by using this mail.
 
-   function Dataset_Get_Name (Data : in Gtk_Plot_Data) return String;
+   function Data_Get_Name (Data : in Gtk_Plot_Data) return String;
    --  Return the name associated with that data set.
 
-   procedure Show_Dataset (Data : in Gtk_Plot_Data);
+   procedure Data_Show (Data : in Gtk_Plot_Data);
    --  Show the dataset when the plot is displayed.
 
-   procedure Hide_Dataset (Data : in Gtk_Plot_Data);
+   procedure Data_Hide (Data : in Gtk_Plot_Data);
    --  Hide the dataset when the plot is displayed.
 
    -----------
@@ -1093,17 +1118,19 @@ package Gtk.Extra.Plot is
    --    widget is moved or resized.
    --
    --  - "moved"
-   --    procedure Handler (Plot : access Gtk_Plot_Record'Class;
-   --                       X    : Gdouble;
-   --                       Y    : Gdouble);
+   --    function Handler (Plot : access Gtk_Plot_Record'Class;
+   --                      X    : Gdouble;
+   --                      Y    : Gdouble)
+   --                     return Boolean;
    --
    --    Called when the widget has been moved relative to its drawable.
    --    Its new position is given in parameters.
    --
    --  - "resized"
-   --    procedure Handler (Plot   : access Gtk_Plot_Record'Class;
-   --                       Width  : Gdouble;
-   --                       Height : Gdouble);
+   --    function Handler (Plot   : access Gtk_Plot_Record'Class;
+   --                      Width  : Gdouble;
+   --                      Height : Gdouble)
+   --                     return Boolean;
    --
    --    Called when the widget has been resized relative to its drawable.
    --    Its new size is given in parameters.
@@ -1132,19 +1159,19 @@ private
                        Angle_180 => 180,
                        Angle_270 => 270);
 
-   pragma Import (C, Gtk_Dataset_New, "gtk_plot_dataset_new");
-   pragma Import (C, Dataset_Set_Numpoints, "gtk_plot_dataset_set_numpoints");
-   pragma Import (C, Dataset_Get_Numpoints, "gtk_plot_dataset_get_numpoints");
-   pragma Import (C, Dataset_Set_Connector, "gtk_plot_dataset_set_connector");
-   pragma Import (C, Dataset_Get_Connector, "gtk_plot_dataset_get_connector");
-   pragma Import (C, Dataset_Show_Xerrbars, "gtk_plot_dataset_show_xerrbars");
-   pragma Import (C, Dataset_Show_Yerrbars, "gtk_plot_dataset_show_yerrbars");
-   pragma Import (C, Dataset_Hide_Xerrbars, "gtk_plot_dataset_hide_xerrbars");
-   pragma Import (C, Dataset_Hide_Yerrbars, "gtk_plot_dataset_hide_yerrbars");
-   pragma Import (C, Dataset_Show_Legend, "gtk_plot_dataset_show_legend");
-   pragma Import (C, Dataset_Hide_Legend, "gtk_plot_dataset_hide_legend");
-   pragma Import (C, Show_Dataset, "gtk_plot_show_dataset");
-   pragma Import (C, Hide_Dataset, "gtk_plot_hide_dataset");
+   pragma Import (C, Gtk_Data_New, "gtk_plot_data_new");
+   pragma Import (C, Data_Set_Numpoints, "gtk_plot_data_set_numpoints");
+   pragma Import (C, Data_Get_Numpoints, "gtk_plot_data_get_numpoints");
+   pragma Import (C, Data_Set_Connector, "gtk_plot_data_set_connector");
+   pragma Import (C, Data_Get_Connector, "gtk_plot_data_get_connector");
+   pragma Import (C, Data_Show_Xerrbars, "gtk_plot_data_show_xerrbars");
+   pragma Import (C, Data_Show_Yerrbars, "gtk_plot_data_show_yerrbars");
+   pragma Import (C, Data_Hide_Xerrbars, "gtk_plot_data_hide_xerrbars");
+   pragma Import (C, Data_Hide_Yerrbars, "gtk_plot_data_hide_yerrbars");
+   pragma Import (C, Data_Show_Legend, "gtk_plot_data_show_legend");
+   pragma Import (C, Data_Hide_Legend, "gtk_plot_data_hide_legend");
+   pragma Import (C, Data_Show, "gtk_plot_data_show");
+   pragma Import (C, Data_Hide, "gtk_plot_data_hide");
    pragma Import (C, Text_Get_Size, "gtk_plot_text_get_size");
    pragma Import (C, Get_Text_Position, "ada_gtk_plot_get_text_position");
    pragma Import (C, Text_Get_Area, "gtk_plot_text_get_area");

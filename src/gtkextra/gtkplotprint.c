@@ -28,8 +28,9 @@
 #include "gtkplotpc.h"
 #include "gtkplot.h"
 #include "gtkpsfont.h"
-#include "gtkplotlayout.h"
 #include "gtkplotcanvas.h"
+
+#define ARROW_LENGTH 12
 
 static void gtk_plot_print_calc_ticks		(GtkPlot *plot, 
 						 gint orientation);
@@ -67,6 +68,9 @@ static void gtk_plot_print_draw_symbol          (GtkPlot *plot,
 static void gtk_plot_print_draw_text		(GtkWidget *widget, 
 						 GtkPlotPC *pc,
 						 GtkPlotText text);
+static void gtk_plot_print_draw_child		(GtkWidget *widget, 
+						 GtkPlotPC *pc,
+						 GtkPlotCanvasChild *child);
 static void gtk_plot_print_draw_rectangle	(GtkPlotPC *pc,
                                                  gint x, gint y, 
 						 gint x1, gint y1, 
@@ -345,14 +349,14 @@ gtk_plot_print_draw_labels(GtkPlot *plot,
   width = roundint(plot->width * widget->allocation.width);
   height = roundint(plot->height * widget->allocation.height);
 
-  pc->setcolor (pc, &axis.label_attr.fg);
+  pc->setcolor (pc, &axis.labels_attr.fg);
 
-  font = gtk_psfont_get_gdkfont(axis.label_attr.font, axis.label_attr.height);
-  psfont = gtk_psfont_get_psfontname(axis.label_attr.font);
-  pc->setfont(pc, psfont, axis.label_attr.height);
-  text_height = axis.label_attr.height;
+  font = gtk_psfont_get_gdkfont(axis.labels_attr.font, axis.labels_attr.height);
+  psfont = gtk_psfont_get_psfontname(axis.labels_attr.font);
+  pc->setfont(pc, psfont, axis.labels_attr.height);
+  text_height = axis.labels_attr.height;
 
-  switch(axis.label_attr.angle){
+  switch(axis.labels_attr.angle){
     case 0:
            y += text_height / 2.;
            break;
@@ -389,16 +393,16 @@ gtk_plot_print_draw_labels(GtkPlot *plot,
                 pc->drawstring(pc,
                              x-axis.labels_offset, 
                              y-yy, 
-                             axis.label_attr.justification, 
-                             axis.label_attr.angle,
+                             axis.labels_attr.justification, 
+                             axis.labels_attr.angle,
                              psfont, text_height,
                              label);
            if(axis.label_mask & GTK_PLOT_LABEL_RIGHT)
                 pc->drawstring(pc,
                              x+axis.labels_offset, 
                              y-yy, 
-                             axis.label_attr.justification,
-                             axis.label_attr.angle,
+                             axis.labels_attr.justification,
+                             axis.labels_attr.angle,
                              psfont, text_height,
                              label);
          }
@@ -431,8 +435,8 @@ gtk_plot_print_draw_labels(GtkPlot *plot,
                 pc->drawstring(pc,
                              x+xx, 
                              y-axis.labels_offset, 
-                             axis.label_attr.justification,
-                             axis.label_attr.angle,
+                             axis.labels_attr.justification,
+                             axis.labels_attr.angle,
                              psfont, text_height,
                              label);
   
@@ -440,8 +444,8 @@ gtk_plot_print_draw_labels(GtkPlot *plot,
                 pc->drawstring(pc,
                              x+xx, 
                              y+axis.labels_offset, 
-                             axis.label_attr.justification,
-                             axis.label_attr.angle,
+                             axis.labels_attr.justification,
+                             axis.labels_attr.angle,
                              psfont, text_height,
                              label);
          }
@@ -697,59 +701,71 @@ gtk_plot_print(GtkPlot *plot, GtkPlotPC *pc)
 }
 
 void
-gtk_plot_layout_print(GtkPlotLayout *layout, GtkPlotPC *pc)
+gtk_plot_canvas_print(GtkPlotCanvas *canvas, GtkPlotPC *pc)
 {
   GList *plots;
   GtkPlot *plot;
   GtkPlotPC *plot_pc;
-  GList *text;
-  GtkPlotText *child_text;
-  gfloat scalex, scaley;
+  GList *childs;
+  GtkPlotCanvasChild *child;
   GtkAllocation allocation;
+  gfloat scalex, scaley;
 
   if(pc->orientation == GTK_PLOT_PORTRAIT){
-    scalex = (gfloat)pc->page_width / (gfloat)layout->width;
-    scaley = (gfloat)pc->page_height / (gfloat)layout->height;
+    scalex = (gfloat)pc->page_width / (gfloat)canvas->width;
+    scaley = (gfloat)pc->page_height / (gfloat)canvas->height;
   }else{
-    scalex = (gfloat)pc->page_width / (gfloat)layout->height;
-    scaley = (gfloat)pc->page_height / (gfloat)layout->width;
+    scalex = (gfloat)pc->page_width / (gfloat)canvas->height;
+    scaley = (gfloat)pc->page_height / (gfloat)canvas->width;
   }
 
   pc->init(pc, scalex, scaley);
 
-  pc->setcolor(pc, &layout->background);
+  pc->setcolor(pc, &canvas->background);
   gtk_plot_print_draw_rectangle(pc, 
                              0, 0,
-                             layout->width, layout->height,
+                             canvas->width, 
+                             canvas->height,
                              TRUE);
 
-  plots = layout->plots;
+  plots = canvas->plots;
   while(plots)
    {
      plot = GTK_PLOT(plots->data);
      plot_pc = plot->pc;
      plot->pc = pc;
+
+     allocation = GTK_WIDGET(plot)->allocation;
+     GTK_WIDGET(plot)->allocation.x = 0;
+     GTK_WIDGET(plot)->allocation.y = 0;
+     GTK_WIDGET(plot)->allocation.width = canvas->width;
+     GTK_WIDGET(plot)->allocation.height = canvas->height;
+
      gtk_plot_print_draw(plot);
+
+     GTK_WIDGET(plot)->allocation = allocation;
+
      plot->pc = plot_pc;
 
      plots = plots->next;
    }
 
-  allocation = GTK_WIDGET(layout)->allocation;
-  GTK_WIDGET(layout)->allocation.x = 0;
-  GTK_WIDGET(layout)->allocation.y = 0;
-  GTK_WIDGET(layout)->allocation.width = layout->width;
-  GTK_WIDGET(layout)->allocation.height = layout->height;
+  allocation = GTK_WIDGET(canvas)->allocation;
+  GTK_WIDGET(canvas)->allocation.x = 0;
+  GTK_WIDGET(canvas)->allocation.y = 0;
+  GTK_WIDGET(canvas)->allocation.width = canvas->width;
+  GTK_WIDGET(canvas)->allocation.height = canvas->height;
 
-  text = layout->text;
-  while(text)
+  childs = canvas->childs;
+  while(childs)
    {
-     child_text = (GtkPlotText *) text->data;
-     gtk_plot_print_draw_text(GTK_WIDGET(layout), pc, *child_text);
-     text = text->next;
+     child = (GtkPlotCanvasChild *) childs->data;
+     gtk_plot_print_draw_child(GTK_WIDGET(canvas), pc, child);
+     childs = childs->next;
    }
 
-  GTK_WIDGET(layout)->allocation = allocation;
+
+  GTK_WIDGET(canvas)->allocation = allocation;
 
   pc->leave(pc);
 
@@ -760,8 +776,6 @@ gtk_plot_print_draw(GtkPlot *plot)
 {
   GtkWidget *widget;
   GList *dataset;
-  GList *text;
-  GtkPlotText *child_text;
   gint xoffset, yoffset;
   gint width, height;
 
@@ -834,13 +848,6 @@ gtk_plot_print_draw(GtkPlot *plot)
      dataset = dataset->next;
    }
 
-  text = plot->text;
-  while(text)
-   {
-     child_text = (GtkPlotText *) text->data;
-     gtk_plot_print_draw_text(GTK_WIDGET(plot), plot->pc, *child_text);
-     text = text->next;
-   }
 
   gtk_plot_print_draw_legends(plot);
 
@@ -849,6 +856,7 @@ gtk_plot_print_draw(GtkPlot *plot)
 static void
 gtk_plot_print_draw_dataset(GtkPlot *plot, GtkPlotData *dataset)
 {
+  GtkPlotPC *pc = plot->pc;
   GtkPlotData function;
   gint n;
   gdouble x, y, dx = 0;
@@ -880,6 +888,26 @@ gtk_plot_print_draw_dataset(GtkPlot *plot, GtkPlotData *dataset)
                                         dataset->symbol.symbol_style,
                                         dataset->symbol.size,
                                         dataset->symbol.line_width);
+                 if(dataset->show_labels){
+                    if(dataset->labels && dataset->labels[n]){
+                          GtkPlotText label;
+			  gchar *psfont;
+
+                          label = dataset->labels_attr;
+                          label.text = dataset->labels[n];
+                          label.x = px;
+                          label.y = py - dataset->labels_offset - 
+                                    dataset->symbol.size;
+                          psfont = gtk_psfont_get_psfontname(label.font);
+                          pc->setcolor(pc, &label.fg);
+                          pc->setfont(pc, psfont, label.height);
+                          pc->drawstring(pc, label.x, label.y, 
+                                         label.justification, 
+                                         label.angle, psfont, label.height, 
+                                         label.text); 
+                    }
+                 }
+
            }
          }
     }
@@ -1047,7 +1075,6 @@ gtk_plot_print_connect_points(GtkPlot *plot, GtkPlotData *dataset)
   clip.height = roundint(plot->height * (gdouble)widget->allocation.height);
 
   points = (GdkPoint *)g_malloc(2*num_points*sizeof(GdkPoint));
-
 
   plot->pc->gsave(plot->pc);
   plot->pc->clip(plot->pc, clip);
@@ -1620,6 +1647,136 @@ gtk_plot_print_draw_text(GtkWidget *widget, GtkPlotPC *pc, GtkPlotText text)
   pc->drawstring(pc, x, y, text.justification, text.angle, psfont, text.height, text.text); 
 }
 
+static void gtk_plot_print_draw_child		(GtkWidget *widget, 
+						 GtkPlotPC *pc,
+						 GtkPlotCanvasChild *child)
+{
+  GtkPlotCanvas *canvas;
+  GtkPlotCanvasLine *line = NULL;
+  GtkPlotCanvasRectangle *rectangle = NULL;
+  GtkPlotCanvasEllipse *ellipse = NULL;
+  GtkPlotText *text = NULL;
+  GdkPoint arrow[3];
+  gint rx1 = 0, ry1 = 0, rx2 = 0, ry2 = 0;
+  gint xmin, xmax, ymin, ymax;
+  gint width = 0, height = 0;
+  gint xm = 0, ym = 0;
+  gdouble angle = 0.;
+  gint arrow_width = ARROW_LENGTH / 3;
+
+  canvas = GTK_PLOT_CANVAS(widget);
+
+  rx1 = child->rx1 * widget->allocation.width;
+  ry1 = child->ry1 * widget->allocation.height;
+  rx2 = child->rx2 * widget->allocation.width;
+  ry2 = child->ry2 * widget->allocation.height;
+
+  xmin = MIN(rx1, rx2);
+  xmax = MAX(rx1, rx2);
+  ymin = MIN(ry1, ry2);
+  ymax = MAX(ry1, ry2);
+
+  width = abs(rx2 - rx1);
+  height = abs(ry2 - ry1);
+
+  switch(child->type){
+    case GTK_PLOT_CANVAS_LINE:
+        line = (GtkPlotCanvasLine *)child->data;
+
+        if(width == 0 && height == 0) return;
+        if(width != 0)
+            angle = atan2((gdouble)(ry2-ry1), (gdouble)(rx2 - rx1));
+        else  
+            angle = asin((ry2 - ry1)/height);
+        arrow_width = line->arrow_length / 3;
+        gtk_plot_print_set_line_style(pc, 
+                                      line->line.line_style,
+                                      line->line.line_width,
+                                      line->line.color);
+        pc->drawline(pc, rx1, ry1, rx2, ry2);
+        if(line->arrow_mask & GTK_PLOT_ARROW_END){
+           arrow[1].x = rx2;
+           arrow[1].y = ry2;
+           xm = rx2 - roundint(cos(angle) * line->arrow_length);
+           ym = ry2 - roundint(sin(angle) * line->arrow_length);
+           arrow[0].x = xm + roundint(sin(angle)* arrow_width);
+           arrow[0].y = ym - roundint(cos(angle)* arrow_width);
+           arrow[2].x = xm - roundint(sin(angle)* arrow_width);
+           arrow[2].y = ym + roundint(cos(angle)* arrow_width);
+           pc->drawpolygon (pc, arrow, 3, TRUE);
+        }
+        if(line->arrow_mask & GTK_PLOT_ARROW_ORIGIN){
+           arrow[1].x = rx1;
+           arrow[1].y = ry1;
+           xm = rx1 + roundint(cos(angle) * line->arrow_length);
+           ym = ry1 + roundint(sin(angle) * line->arrow_length);
+           arrow[0].x = xm + roundint(sin(angle)* arrow_width);
+           arrow[0].y = ym - roundint(cos(angle)* arrow_width);
+           arrow[2].x = xm - roundint(sin(angle)* arrow_width);
+           arrow[2].y = ym + roundint(cos(angle)* arrow_width);
+           pc->drawpolygon (pc, arrow, 3, TRUE);
+        }
+        break;  
+    case GTK_PLOT_CANVAS_RECTANGLE:
+        rectangle = (GtkPlotCanvasRectangle *)child->data;
+        if(rectangle->filled){
+           pc->setcolor(pc, &rectangle->bg);
+           gtk_plot_print_draw_rectangle(pc, 
+                              xmin, ymin, xmin+width, ymin+height, TRUE);
+        }
+        if(rectangle->line.line_style != GTK_PLOT_LINE_NONE &&
+           rectangle->border != GTK_PLOT_BORDER_NONE){
+
+            gtk_plot_print_set_line_style(pc, 
+                                          rectangle->line.line_style,
+                                          rectangle->line.line_width,
+                                          rectangle->line.color);
+            gtk_plot_print_draw_rectangle(pc, 
+                                  xmin, ymin, xmin+width, ymin+height, FALSE);
+
+            if(rectangle->border == GTK_PLOT_BORDER_SHADOW){
+              gtk_plot_print_draw_rectangle(pc,
+                                            xmin + rectangle->shadow_width,
+                                            ymin + height,
+                                            xmin + rectangle->shadow_width + width, 
+                                            ymin + rectangle->shadow_width + height, 
+                                            TRUE);
+              gtk_plot_print_draw_rectangle(pc,
+                                            xmin + width,
+                                            ymin + rectangle->shadow_width,
+                                            xmin + rectangle->shadow_width + width, 
+                                            ymin + rectangle->shadow_width + height,
+                                            TRUE);
+            }
+        }
+        break;  
+    case GTK_PLOT_CANVAS_ELLIPSE:
+        ellipse = (GtkPlotCanvasEllipse *)child->data;
+        if(ellipse->filled){
+           pc->setcolor(pc, &ellipse->bg);
+           pc->drawellipse(pc, xmin, ymin, width, height, TRUE);
+        }
+        if(ellipse->line.line_style != GTK_PLOT_LINE_NONE){
+          gtk_plot_print_set_line_style(pc, 
+                                        ellipse->line.line_style,
+                                        ellipse->line.line_width,
+                                        ellipse->line.color);
+          pc->drawellipse(pc, xmin, ymin, width, height, FALSE);
+        }
+        break;  
+        break;  
+    case GTK_PLOT_CANVAS_TEXT:
+        text = (GtkPlotText *)child->data;
+        gtk_plot_print_draw_text(GTK_WIDGET(canvas), pc, *text);
+        break;
+    case GTK_PLOT_CANVAS_CUSTOM:
+    default:
+        if(child->print) child->print((gpointer)pc, child);
+        break;
+  }
+
+}
+
 static void
 parse_label(gdouble val, gint precision, gint style, gchar *label)
 {
@@ -1749,9 +1906,10 @@ gtk_plot_print_draw_legends (GtkPlot *plot)
                 pc->setcolor(pc, &plot->legends_attr.fg);
                 pc->setfont(pc, psfont, plot->legends_attr.height);
                 pc->drawstring (pc,
-                              x + plot->legends_line_width + 4, y,
-                              GTK_JUSTIFY_LEFT, 0, psfont, plot->legends_attr.height,
-                              dataset->legend);
+                                x + plot->legends_line_width + 4, y,
+                                GTK_JUSTIFY_LEFT, 0, psfont, 
+                                plot->legends_attr.height,
+                                dataset->legend);
          }
        }
      datasets=datasets->next;
@@ -1904,12 +2062,12 @@ gtk_plot_print_calc_ticks(GtkPlot *plot, gint orientation)
             tick += major_step;
             break;
         case GTK_PLOT_SCALE_LOG10:
-/*************************************************************/
-/******* gcc 2.8.1 core dumps on the following line     *****/
+/********************************************************************/
+/***** The following line makes gcc2.8.1 core dump              ****/
 #if 0
-            tick = pow(10., log10(absmin)+nmajor*major_step);
+           tick = pow(10., log10(absmin)+nmajor*major_step);
 #endif
-/*************************************************************/	    
+ /********************************************************************/
             tick = absmin * pow(10., nmajor*major_step);
             break;
      }

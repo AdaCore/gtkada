@@ -239,10 +239,10 @@ gtk_combobox_init (GtkComboBox * combobox)
 
 }
 
-guint
+GtkType
 gtk_combobox_get_type ()
 {
-  static guint combobox_type = 0;
+  static GtkType combobox_type = 0;
 
   if (!combobox_type)
     {
@@ -341,6 +341,7 @@ gtk_combobox_size_allocate (GtkWidget     *widget,
   combobox = GTK_COMBO_BOX (widget);
 
   button_allocation = combobox->button->allocation;
+/*
   button_allocation.width = MIN(button_allocation.width, 
                                 combobox->button->requisition.width);
   button_allocation.height = MIN(button_allocation.height, 
@@ -349,6 +350,7 @@ gtk_combobox_size_allocate (GtkWidget     *widget,
                         button_allocation.width) / 2;
   button_allocation.y += (combobox->button->allocation.height-
                         button_allocation.height) / 2;
+*/
 
   gtk_widget_size_allocate (combobox->button, &button_allocation);
 

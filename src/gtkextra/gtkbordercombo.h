@@ -54,7 +54,7 @@ struct _GtkBorderComboClass {
         void (*changed) (GtkBorderCombo *border_combo, gint selection);
 };
 
-guint      gtk_border_combo_get_type              (void);
+GtkType      gtk_border_combo_get_type              (void);
 
 GtkWidget *gtk_border_combo_new                   (void);
 

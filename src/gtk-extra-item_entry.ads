@@ -43,6 +43,11 @@ package Gtk.Extra.Item_Entry is
    type Gtk_IEntry_Record is new Gtk.GEntry.Gtk_Entry_Record with private;
    type Gtk_IEntry is access all Gtk_IEntry_Record'Class;
 
+   subtype Gtk_Item_Entry_Record is Gtk_IEntry_Record;
+   subtype Gtk_Item_Entry is Gtk_IEntry;
+   --  This type is provided so as to be compatible with the new name used
+   --  in gtk+extra. Both names are kept for backward compatibility.
+
    procedure Gtk_New (Widget : out Gtk_IEntry;
                       Max    : in Guint16 := 0);
    --  Create a new entry item.

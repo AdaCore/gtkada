@@ -128,13 +128,19 @@ struct _GtkPlotPC
                                                  	 gint size, 
 							 gint filled);
 
+   void  (* drawellipse) 	                        (GtkPlotPC *pc,
+                                                 	 gint x, gint y,
+                                                 	 gint width, 
+                                                 	 gint height, 
+							 gint filled);
+
    void  (* setfont)					(GtkPlotPC *pc,
 							 gchar *font,
 							 gint height);
 
    void  (* drawstring)   	                        (GtkPlotPC *pc,
                                    	             	 gint x, gint y,
-                                        	         gint justification,
+                                        	         GtkJustification justification,
                                                 	 gint angle,
 							 gchar *font,
 							 gint height,
@@ -207,7 +213,7 @@ void gtk_plot_pc_setfont				(GtkPlotPC *pc,
 
 void gtk_plot_pc_drawstring   	                        (GtkPlotPC *pc,
                                    	             	 gint x, gint y,
-                                        	         gint justification,
+                                        	         GtkJustification justification,
                                                 	 gint angle,
 							 gchar *font,
 							 gint height,

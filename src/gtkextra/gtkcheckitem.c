@@ -40,17 +40,17 @@ static void gtk_check_item_draw                (GtkWidget           *widget,
 						  GdkRectangle        *area);
 static void gtk_check_item_draw_focus          (GtkWidget           *widget);
 static void gtk_check_item_size_request        (GtkWidget           *widget,
-						  GtkRequisition      *requisition);
+						GtkRequisition      *requisition);
 static void gtk_check_item_size_allocate       (GtkWidget           *widget,
-						  GtkAllocation       *allocation);
-static gint gtk_check_item_expose              (GtkWidget           *widget,
-						  GdkEventExpose      *event);
+						GtkAllocation       *allocation);
+static gboolean gtk_check_item_expose          (GtkWidget           *widget,
+						GdkEventExpose      *event);
 static void gtk_check_item_paint               (GtkWidget           *widget,
-						  GdkRectangle        *area);
+						GdkRectangle        *area);
 static void gtk_check_item_draw_indicator      (GtkCheckItem      *check_item,
-						  GdkRectangle        *area);
+						GdkRectangle        *area);
 static void gtk_real_check_item_draw_indicator (GtkCheckItem      *check_item,
-						  GdkRectangle        *area);
+						GdkRectangle        *area);
 
 static GtkToggleButtonClass *parent_class = NULL;
 
@@ -81,11 +81,11 @@ gtk_check_item_get_type (void)
 }
 
 static void
-gtk_check_item_class_init (GtkCheckItemClass *class)
+gtk_check_item_class_init (GtkCheckItemClass *klass)
 {
   GtkWidgetClass *widget_class;
   
-  widget_class = (GtkWidgetClass*) class;
+  widget_class = (GtkWidgetClass*) klass;
   parent_class = gtk_type_class (gtk_toggle_button_get_type ());
   
   widget_class->draw = gtk_check_item_draw;
@@ -94,9 +94,9 @@ gtk_check_item_class_init (GtkCheckItemClass *class)
   widget_class->size_allocate = gtk_check_item_size_allocate;
   widget_class->expose_event = gtk_check_item_expose;
   
-  class->indicator_size = INDICATOR_SIZE;
-  class->indicator_spacing = INDICATOR_SPACING;
-  class->draw_indicator = gtk_real_check_item_draw_indicator;
+  klass->indicator_size = INDICATOR_SIZE;
+  klass->indicator_spacing = INDICATOR_SPACING;
+  klass->draw_indicator = gtk_real_check_item_draw_indicator;
 }
 
 static void
@@ -289,7 +289,7 @@ gtk_check_item_size_allocate (GtkWidget     *widget,
     }
 }
 
-static gint
+static gboolean
 gtk_check_item_expose (GtkWidget      *widget,
 			 GdkEventExpose *event)
 {
@@ -332,15 +332,15 @@ static void
 gtk_check_item_draw_indicator (GtkCheckItem *check_item,
 				 GdkRectangle   *area)
 {
-  GtkCheckItemClass *class;
+  GtkCheckItemClass *klass;
   
   g_return_if_fail (check_item != NULL);
   g_return_if_fail (GTK_IS_CHECK_ITEM (check_item));
   
-  class = CHECK_ITEM_CLASS (check_item);
+  klass = CHECK_ITEM_CLASS (check_item);
   
-  if (class->draw_indicator)
-    (* class->draw_indicator) (check_item, area);
+  if (klass->draw_indicator)
+    (* klass->draw_indicator) (check_item, area);
 }
 
 static void

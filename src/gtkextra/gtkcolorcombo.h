@@ -59,7 +59,7 @@ struct _GtkColorComboClass {
                          gint selection, gchar *color_name);
 };
 
-guint      gtk_color_combo_get_type              (void);
+GtkType      gtk_color_combo_get_type              (void);
 
 GtkWidget *gtk_color_combo_new                   (void);
 

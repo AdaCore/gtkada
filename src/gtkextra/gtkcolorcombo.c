@@ -360,10 +360,10 @@ color_to_hex(gint color, gchar string[5])
 }     
 
 
-guint
+GtkType
 gtk_color_combo_get_type ()
 {
-  static guint color_combo_type = 0;
+  static GtkType color_combo_type = 0;
 
   if (!color_combo_type)
     {

@@ -78,9 +78,54 @@ ada_gtk_plot_canvas_unset_flags (GtkPlotCanvas* canvas, guint16 flags) {
 }
 
 GtkPlotCanvasType
-ada_gtk_plot_canvas_get_item_type (GtkPlotCanvasItem * item) {
+ada_gtk_plot_canvas_get_item_type (GtkPlotCanvasChild * item) {
   return item->type;
 }
+
+void
+ada_gtk_plot_canvas_set_draw_func
+(GtkPlotCanvasChild* item,
+ void (*draw) (GtkPlotCanvas *canvas, GtkPlotCanvasChild *child))
+{
+  item->draw = draw;
+}
+
+guint
+ada_gtk_plot_canvas_get_alloc_width (GtkPlotCanvasChild* child) {
+  return child->allocation.width;
+}
+
+guint
+ada_gtk_plot_canvas_get_alloc_height (GtkPlotCanvasChild* child) {
+  return child->allocation.height;
+}
+
+gint
+ada_gtk_plot_canvas_get_alloc_x (GtkPlotCanvasChild* child) {
+  return child->allocation.x;
+}
+
+gint
+ada_gtk_plot_canvas_get_alloc_y (GtkPlotCanvasChild* child) {
+  return child->allocation.x;
+}
+
+GdkPixmap*
+ada_gtk_plot_canvas_get_pixmap (GtkPlotCanvas* canvas) {
+  return canvas->pixmap;
+}
+
+GtkPlotCanvasFlag
+ada_gtk_plot_canvas_get_child_flags (GtkPlotCanvasChild* child) {
+  return child->flags;
+}
+
+void
+ada_gtk_plot_canvas_set_child_flags (GtkPlotCanvasChild* child,
+				     GtkPlotCanvasFlag flags) {
+  child->flags = flags;
+}
+
 
 /********************************************************************
  **
@@ -111,16 +156,6 @@ ada_gtk_sheet_get_widget (GtkSheetChild* child) {
 void
 ada_gtk_sheet_get_range (GtkSheet* sheet, GtkSheetRange* range) {
   *range = sheet->range;
-}
-
-gint
-ada_gtk_sheet_get_maxcol (GtkSheet* sheet) {
-  return sheet->maxcol;
-}
-
-gint
-ada_gtk_sheet_get_maxrow (GtkSheet* sheet) {
-  return sheet->maxrow;
 }
 
 gchar*
@@ -202,7 +237,7 @@ ada_gtk_font_combo_get_font (GtkFontCombo* combo) {
  ********************************************************************/
 
 gint
-ada_gtk_item_entry_get_justification (GtkIentry* item) {
+ada_gtk_item_entry_get_justification (GtkItemEntry* item) {
   return item->justification;
 }
 

@@ -28,7 +28,6 @@
 #include "gtkplotpc.h"
 #include "gtkplot.h"
 #include "gtkpsfont.h"
-#include "gtkplotlayout.h"
 #include "gtkplotcanvas.h"
 
 void
@@ -210,7 +209,7 @@ void gtk_plot_pc_setfont                                (GtkPlotPC *pc,
 
 void gtk_plot_pc_drawstring                             (GtkPlotPC *pc,
                                                          gint x, gint y,
-                                                         gint justification,
+                                                         GtkJustification justification,
                                                          gint angle,
 							 gchar *font,
 							 gint height,

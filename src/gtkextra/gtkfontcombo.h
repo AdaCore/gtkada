@@ -59,7 +59,7 @@ struct _GtkFontComboClass {
         void (* changed)      (GtkFontCombo *font_combo);
 };
 
-guint      gtk_font_combo_get_type              (void);
+GtkType      gtk_font_combo_get_type              (void);
 
 GtkWidget *gtk_font_combo_new                   (void);
 

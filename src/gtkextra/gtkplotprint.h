@@ -29,9 +29,8 @@ extern "C" {
 void            gtk_plot_print                      	(GtkPlot *plot,
                                                          GtkPlotPC *pc);
 
-void            gtk_plot_layout_print       		(GtkPlotLayout *layout,
+void            gtk_plot_canvas_print       		(GtkPlotCanvas *canvas,
                                                  	 GtkPlotPC *pc);
-
 
 #ifdef __cplusplus
 }

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gtk.Extra.Plot;        use Gtk.Extra.Plot;
-with Gtk.Extra.Plot_Layout; use Gtk.Extra.Plot_Layout;
 with System;
 
 package body Gtk.Extra.Plot_Ps is
@@ -92,37 +91,37 @@ package body Gtk.Extra.Plot_Ps is
    end Plot_Export_Ps_With_Size;
 
    ---------------------------
-   -- Plot_Layout_Export_Ps --
+   -- Plot_Canvas_Export_Ps --
    ---------------------------
 
-   procedure Plot_Layout_Export_Ps
-      (Layout      : access Gtk.Extra.Plot_Layout.Gtk_Plot_Layout_Record'Class;
+   procedure Plot_Canvas_Export_Ps
+      (Canvas      : access Gtk.Extra.Plot_Canvas.Gtk_Plot_Canvas_Record'Class;
        File_Name   : in String;
        Orientation : in Ps_Orientation;
        Epsflag     : in Boolean;
        Page_Size   : in Ps_Page_Size)
    is
       procedure Internal
-         (Layout      : in System.Address;
+         (Canvas      : in System.Address;
           File_Name   : in String;
           Orientation : in Gint;
           Epsflag     : in Gint;
           Page_Size   : in Gint);
-      pragma Import (C, Internal, "gtk_plot_layout_export_ps");
+      pragma Import (C, Internal, "gtk_plot_canvas_export_ps");
    begin
-      Internal (Get_Object (Layout),
+      Internal (Get_Object (Canvas),
                 File_Name & ASCII.Nul,
                 Ps_Orientation'Pos (Orientation),
                 Boolean'Pos (Epsflag),
                 Ps_Page_Size'Pos (Page_Size));
-   end Plot_Layout_Export_Ps;
+   end Plot_Canvas_Export_Ps;
 
    -------------------------------------
-   -- Plot_Layout_Export_Ps_With_Size --
+   -- Plot_Canvas_Export_Ps_With_Size --
    -------------------------------------
 
-   procedure Plot_Layout_Export_Ps_With_Size
-      (Layout      : access Gtk.Extra.Plot_Layout.Gtk_Plot_Layout_Record'Class;
+   procedure Plot_Canvas_Export_Ps_With_Size
+      (Canvas      : access Gtk.Extra.Plot_Canvas.Gtk_Plot_Canvas_Record'Class;
        File_Name   : in String;
        Orientation : in Ps_Orientation;
        Epsflag     : in Boolean;
@@ -131,22 +130,22 @@ package body Gtk.Extra.Plot_Ps is
        Height      : in Gint)
    is
       procedure Internal
-         (Layout      : in System.Address;
+         (Canvas      : in System.Address;
           File_Name   : in String;
           Orientation : in Gint;
           Epsflag     : in Gint;
           Units       : in Gint;
           Width       : in Gint;
           Height      : in Gint);
-      pragma Import (C, Internal, "gtk_plot_layout_export_ps_with_size");
+      pragma Import (C, Internal, "gtk_plot_canvas_export_ps_with_size");
    begin
-      Internal (Get_Object (Layout),
+      Internal (Get_Object (Canvas),
                 File_Name & ASCII.Nul,
                 Ps_Orientation'Pos (Orientation),
                 Boolean'Pos (Epsflag),
                 Ps_Units'Pos (Units),
                 Width,
                 Height);
-   end Plot_Layout_Export_Ps_With_Size;
+   end Plot_Canvas_Export_Ps_With_Size;
 
 end Gtk.Extra.Plot_Ps;

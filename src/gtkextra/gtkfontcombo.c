@@ -116,10 +116,10 @@ gtk_font_combo_class_init (GtkFontComboClass * klass)
 static void
 gtk_font_combo_destroy (GtkObject * font_combo)
 {
-
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (*GTK_OBJECT_CLASS (parent_class)->destroy) (font_combo);
 
+  gtk_psfont_unref();
 }
 
 
@@ -136,6 +136,8 @@ gtk_font_combo_init (GtkFontCombo * font_combo)
   GList *family = NULL;
   GList *size = NULL;
   gint numf, i;
+
+  gtk_psfont_init();
 
   widget=GTK_WIDGET(font_combo);
 
@@ -212,10 +214,10 @@ gtk_font_combo_init (GtkFontCombo * font_combo)
   gtk_list_select_item(GTK_LIST(GTK_COMBO(font_combo->size_combo)->list), 3);
 }
 
-guint
+GtkType
 gtk_font_combo_get_type ()
 {
-  static guint font_combo_type = 0;
+  static GtkType font_combo_type = 0;
 
   if (!font_combo_type)
     {

@@ -310,6 +310,17 @@ package Gtk.Extra.Sheet is
                                     Visible : in Boolean);
    --  Change the visibility of a column.
 
+   procedure Column_Label_Set_Visibility
+     (Sheet   : access Gtk_Sheet_Record;
+      Column  : in Gint;
+      Visible : in Boolean := True);
+   --  Change the visibility of the label in a given column.
+
+   procedure Columns_Labels_Set_Visibility
+     (Sheet   : access Gtk_Sheet_Record;
+      Visible : Boolean := True);
+   --  Change the visibility for all the column labels.
+
    procedure Set_Column_Width (Sheet  : access Gtk_Sheet_Record;
                                Column : in Gint;
                                Width  : in Gint);
@@ -341,7 +352,10 @@ package Gtk.Extra.Sheet is
    --  Set the default justification for the cells in the specific column.
 
    function Get_Maxcol (Sheet : access Gtk_Sheet_Record) return Gint;
-   --  Return the maximum column number in the sheet.
+   --  Return the maximum column number of the displayed cells.
+
+   function Get_Max_Alloc_Col (Sheet : access Gtk_Sheet_Record) return Gint;
+   --  Return the maximum column of allocated cells.
 
    ----------
    -- Rows --
@@ -399,6 +413,17 @@ package Gtk.Extra.Sheet is
                                  Visible : in Boolean);
    --  Modify the visibility of a specific row
 
+   procedure Row_Label_Set_Visibility
+     (Sheet   : access Gtk_Sheet_Record;
+      Row    : in Gint;
+      Visible : in Boolean := True);
+   --  Change the visibility of the label in a given Row.
+
+   procedure Rows_Labels_Set_Visibility
+     (Sheet   : access Gtk_Sheet_Record;
+      Visible : Boolean := True);
+   --  Change the visibility for all the row labels.
+
    procedure Set_Row_Height (Sheet  : access Gtk_Sheet_Record;
                              Row    : in Gint;
                              Height : in Gint);
@@ -424,7 +449,10 @@ package Gtk.Extra.Sheet is
    --  Delete Nrows rows starting from Row.
 
    function Get_Maxrow (Sheet : access Gtk_Sheet_Record) return Gint;
-   --  Return the maximum row number in the sheet.
+   --  Return the maximum row number of displayed cells.
+
+   function Get_Max_Alloc_Row (Sheet : access Gtk_Sheet_Record) return Gint;
+   --  Return the maximum row of allocated cells.
 
    -----------
    -- Range --

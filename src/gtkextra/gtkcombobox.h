@@ -47,7 +47,7 @@ struct _GtkComboBoxClass {
 	GtkHBoxClass parent_class;
 };
 
-guint      gtk_combobox_get_type              (void);
+GtkType      gtk_combobox_get_type              (void);
 
 GtkWidget *gtk_combobox_new                   (void);
 

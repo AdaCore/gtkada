@@ -29,8 +29,10 @@
 
 with Gdk.Color;             use Gdk.Color;
 with Gdk.Event;             use Gdk.Event;
+with Gdk.Drawable;          use Gdk.Drawable;
+with Gdk.Pixmap;            use Gdk.Pixmap;
+with Gdk.Bitmap;            use Gdk.Bitmap;
 with Glib;                  use Glib;
-with Gtk.Adjustment;        use Gtk.Adjustment;
 with Gtk.Arguments;         use Gtk.Arguments;
 with Gtk.Box;               use Gtk.Box;
 with Gtk.Button;            use Gtk.Button;
@@ -45,6 +47,8 @@ with Gtk.Style;             use Gtk.Style;
 with Gtk.Handlers;          use Gtk.Handlers;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Text_IO;
+with System;
+with Gtkada.Types;          use Gtkada.Types;
 
 package body Create_Plot is
 
@@ -82,6 +86,63 @@ package body Create_Plot is
    package Layout_Cb is new Gtk.Handlers.Callback
      (Gtk_Plot_Canvas_Record);
 
+   Plot_Icons2 : Chars_Ptr_Array :=
+     "48 48 5 1" +
+     "       c #FFFFFFFFFFFF" +
+     ".      c #000000000000" +
+     "X      c #00000000FFFF" +
+     "o      c #FFFF00000000" +
+     "O      c #0000FFFFFFFF" +
+     "                                                " +
+     "     ..                                         " +
+     "     .  .................................       " +
+     "     .. .                  ..           .       " +
+     "        .               . ...           .       " +
+     "        ..               ...            .       " +
+     "        .               ...             .       " +
+     "     .. .       ....   ...              .       " +
+     "     .. ...   ..X   .....               .       " +
+     "      . .    .   X    ..           XX   .       " +
+     " . .    .   X.    X   ...         X  X o.       " +
+     " . .    .. X.     X    .         X   oo .       " +
+     "  .     .  X. O    X   ..        X  o X .       " +
+     "  .  .. . X . OO   X   .        X  o   X.       " +
+     "      . ..X .  O   X   ..       X o    X.       " +
+     "      . . X .  OO   X  .        oo     X.       " +
+     "        .X   .  OO  X . .      o        .       " +
+     "        .X   .      X .       oX        .       " +
+     "     .. .X    ..    ..  .    o X        .       " +
+     "     .. X       ....       oo X         .       " +
+     "      . ... . . . .X. . . o . X . . . . .       " +
+     "        .          X     o    X         .       " +
+     "        .           X  oo    X          .       " +
+     "        ..          X o      X          .       " +
+     "        .            o  .    X          .       " +
+     "     .. .          oo       X           .       " +
+     "      . ..        o  X  .   X.........  .       " +
+     "     .. .        o   X      X.       .  .       " +
+     "        .      oo     X .  X . X ... .. .       " +
+     "        ..    o       X    X .       .. .       " +
+     "        .    o         X. X  .       .. .       " +
+     "     .. .  oo           XX   . o ... .. .       " +
+     "      . ..o             .    .       .. .       " +
+     "      . .o                   .......... .       " +
+     "        .               .      ........ .       " +
+     "        ..                              .       " +
+     "        .   .   .   .   .   .   .   .   .       " +
+     "     .  . . . . . . . . . . . . . . . . .       " +
+     "    . . .................................       " +
+     "     .                                          " +
+     "        .   .   ..  ..  ..  .   .   .   .       " +
+     "       . .  .   ..  ..  .   .  ..   .  ..       " +
+     "        .   .   .    .   .  .  ...  .   .       " +
+     "                                                " +
+     "                       . .                      " +
+     "                        .                       " +
+     "                       . .                      " +
+     "                                                ";
+
+
    ----------
    -- Help --
    ----------
@@ -113,7 +174,7 @@ package body Create_Plot is
                           return Boolean
    is
       pragma Warnings (Off, Event);
-      Arr : Points_Array := Dataset_Get_Y (Get_Active_Dataset (Canvas));
+      Arr : Points_Array := Data_Get_Y (Get_Active_Data (Canvas));
    begin
       Ada.Text_IO.Put_Line ("Current values of points in the dataset:");
       for Num in 0 .. Integer (Arr.Num_Points) - 1 loop
@@ -181,7 +242,7 @@ package body Create_Plot is
          end if;
          Queue_Draw (Buttons (N));
       end loop;
-      return False;
+      return True;
    end Activate_Plot;
 
    -----------
@@ -204,8 +265,8 @@ package body Create_Plot is
                          Args   : Gtk_Args)
                         return Boolean
    is
-      Item  : Gtk_Plot_Canvas_Item
-        := Gtk_Plot_Canvas_Item (To_C_Proxy (Args, 2));
+      Item  : Gtk_Plot_Canvas_Child
+        := Gtk_Plot_Canvas_Child (To_C_Proxy (Args, 2));
       Tmp : Boolean;
    begin
       Ada.Text_IO.Put_Line (Plot_Canvas_Type'Image (Get_Item_Type (Item)));
@@ -267,45 +328,45 @@ package body Create_Plot is
    begin
       --  Create the first set of data
 
-      Dataset (0) := Gtk_Dataset_New;
-      Add_Dataset (Active_Plot, Dataset (0));
-      Dataset_Set_Points (Dataset (0), Px1'Access, Py1'Access,
+      Dataset (0) := Gtk_Data_New;
+      Add_Data (Active_Plot, Dataset (0));
+      Data_Set_Points (Dataset (0), Px1'Access, Py1'Access,
                           Pdx1'Access, Pdy1'Access);
       Color := Parse ("red");
       Alloc (Gdk.Color.Get_System, Color);
 
-      Dataset_Set_Symbol (Dataset (0),
-                          Symbol_Diamond,
-                          Symbol_Opaque,
-                          10, 2, Color);
-      Dataset_Set_Line_Attributes (Dataset (0),
-                                   Line_Solid,
-                                   1, Color);
-      Dataset_Set_Connector (Dataset (0), Connect_Spline);
-      Dataset_Show_Yerrbars (Dataset (0));
-      Dataset_Set_Legend (Dataset (0), "Spline + EY");
+      Data_Set_Symbol (Dataset (0),
+                       Symbol_Diamond,
+                       Symbol_Opaque,
+                       10, 2, Color);
+      Data_Set_Line_Attributes (Dataset (0),
+                                Line_Solid,
+                                1, Color);
+      Data_Set_Connector (Dataset (0), Connect_Spline);
+      Data_Show_Yerrbars (Dataset (0));
+      Data_Set_Legend (Dataset (0), "Spline + EY");
 
 
       --  Create the second set of data
-      Dataset (3) := Gtk_Dataset_New;
-      Add_Dataset (Active_Plot, Dataset (3));
-      Dataset_Set_Points (Dataset (3), Px2'Access, Py2'Access,
-                          Pdx2'Access, Pdy2'Access);
-      Dataset_Set_Symbol (Dataset (3),
-                          Symbol_Square,
-                          Symbol_Opaque,
-                          8, 2, Get_Black (Get_Style (Active_Plot)));
-      Dataset_Set_Line_Attributes (Dataset (3),
-                                   Line_Solid,
-                                   4, Color);
-      Dataset_Set_Connector (Dataset (3), Connect_Straight);
-      Dataset_Set_X_Attributes (Dataset (3),
+      Dataset (3) := Gtk_Data_New;
+      Add_Data (Active_Plot, Dataset (3));
+      Data_Set_Points (Dataset (3), Px2'Access, Py2'Access,
+                       Pdx2'Access, Pdy2'Access);
+      Data_Set_Symbol (Dataset (3),
+                       Symbol_Square,
+                       Symbol_Opaque,
+                       8, 2, Get_Black (Get_Style (Active_Plot)));
+      Data_Set_Line_Attributes (Dataset (3),
                                 Line_Solid,
-                                0, Get_Black (Get_Style (Active_Plot)));
-      Dataset_Set_Y_Attributes (Dataset (3),
-                                Line_Solid,
-                                0, Get_Black (Get_Style (Active_Plot)));
-      Dataset_Set_Legend (Dataset (3), "Line + Symbol");
+                                4, Color);
+      Data_Set_Connector (Dataset (3), Connect_Straight);
+      Data_Set_X_Attributes (Dataset (3),
+                             Line_Solid,
+                             0, Get_Black (Get_Style (Active_Plot)));
+      Data_Set_Y_Attributes (Dataset (3),
+                             Line_Solid,
+                             0, Get_Black (Get_Style (Active_Plot)));
+      Data_Set_Legend (Dataset (3), "Line + Symbol");
 
 
       --  Create the third set of data
@@ -313,8 +374,8 @@ package body Create_Plot is
       Alloc (Gdk.Color.Get_System, Color);
 
       Dataset (1) := Add_Function (Active_Plot, My_Func'Access);
-      Dataset_Set_Line_Attributes (Dataset (1), Line_Solid, 0, Color);
-      Dataset_Set_Legend (Dataset (1), "Function Plot");
+      Data_Set_Line_Attributes (Dataset (1), Line_Solid, 0, Color);
+      Data_Set_Legend (Dataset (1), "Function Plot");
    end Build_Example1;
 
    --------------------
@@ -327,27 +388,56 @@ package body Create_Plot is
       Dataset (4) := Add_Function (Active_Plot, Gauss'Access);
       Color := Parse ("dark green");
       Alloc (Gdk.Color.Get_System, Color);
-      Dataset_Set_Line_Attributes (Dataset (4),
-                                   Line_Dashed,
-                                   2, Color);
-      Dataset_Set_Legend (Dataset (4), "Gaussian");
+      Data_Set_Line_Attributes (Dataset (4),
+                                Line_Dashed,
+                                2, Color);
+      Data_Set_Legend (Dataset (4), "Gaussian");
 
       Color := Parse ("blue");
       Alloc (Gdk.Color.Get_System, Color);
-      Dataset (2) := Gtk_Dataset_New;
-      Add_Dataset (Active_Plot, Dataset (2));
-      Dataset_Set_Points (Dataset (2), Px3'Access, Py3'Access,
-                          Pdx3'Access, Pdy3'Access);
-      Dataset_Set_Symbol (Dataset (2),
-                          Symbol_Impulse,
-                          Symbol_Filled,
-                          10, 5, Color);
-      Dataset_Set_Line_Attributes (Dataset (2),
-                                   Line_Solid,
-                                   5, Color);
-      Dataset_Set_Connector (Dataset (2), Connect_None);
-      Dataset_Set_Legend (Dataset (2), "Impulses");
+      Dataset (2) := Gtk_Data_New;
+      Add_Data (Active_Plot, Dataset (2));
+      Data_Set_Points (Dataset (2), Px3'Access, Py3'Access,
+                       Pdx3'Access, Pdy3'Access);
+      Data_Set_Symbol (Dataset (2),
+                       Symbol_Impulse,
+                       Symbol_Filled,
+                       10, 5, Color);
+      Data_Set_Line_Attributes (Dataset (2),
+                                Line_Solid,
+                                5, Color);
+      Data_Set_Connector (Dataset (2), Connect_None);
+      Data_Set_Legend (Dataset (2), "Impulses");
    end Build_Example2;
+
+   ----------------
+   -- Draw_Child --
+   ----------------
+
+   procedure Draw_Child (C_Canvas : System.Address;
+                         Child    : Gtk_Plot_Canvas_Child)
+   is
+      Canvas : Gtk_Plot_Canvas := Convert (C_Canvas);
+      Pixmap : Gdk_Pixmap;
+      Mask   : Gdk_Bitmap;
+   begin
+      Create_From_Xpm_D (Pixmap,
+                         Get_Window (Canvas),
+                         Get_System,
+                         Mask,
+                         Null_Color,
+                         Plot_Icons2);
+      Draw_Pixmap (Get_Pixmap (Canvas),
+                   Get_Fg_Gc (Get_Style (Canvas), State_Normal),
+                   Pixmap,
+                   0, 0,
+                   Get_Allocation_X (Child),
+                   Get_Allocation_Y (Child),
+                   Gint (Get_Allocation_Width (Child)),
+                   Gint (Get_Allocation_Height (Child)));
+      Gdk.Pixmap.Unref (Pixmap);
+      Gdk.Bitmap.Unref (Mask);
+   end Draw_Child;
 
    ---------
    -- Run --
@@ -359,6 +449,8 @@ package body Create_Plot is
       Active_Plot : Gtk_Plot;
       Color       : Gdk_Color;
       Button      : Gtk_Button;
+      Text        : Gtk_Plot_Canvas_Child;
+      Child       : Gtk_Plot_Canvas_Child;
    begin
       Num_Layers := 0;
       Gtk_New_Vbox (Vbox1, False, 0);
@@ -373,12 +465,10 @@ package body Create_Plot is
       Pack_Start (Vbox1, Scrollw1, True, True, 0);
 
       --  Create the canvas in which the plot will be drawn
-      Gtk_New (Canvas, 612, 792);
+      Gtk_New (Canvas, 612, 792, 1.0);
       Set_Size (Canvas => Canvas, Width => 612, Height => 792);
       Plot_Canvas_Set_Flags (Canvas, Dnd_Flags);
-      Add (Scrollw1, Canvas);
-      Set_Step_Increment (Get_Hadjustment (Canvas), 5.0);
-      Set_Step_Increment (Get_Vadjustment (Canvas), 5.0);
+      Add_With_Viewport (Scrollw1, Canvas);
 
       Active_Plot := New_Layer (Canvas);
       Set_Range (Active_Plot, -1.0, 1.0, -1.0, 1.4);
@@ -423,9 +513,10 @@ package body Create_Plot is
       Event_Cb.Connect (Canvas, "select_item",
                         Select_Item'Access);
 
-      Put_Text (Canvas, 0.40, 0.02, 0,
-                "Times-BoldItalic", 16, Null_Color, Null_Color,
-                Justify_Center, "Dnd titles, legends and plots");
+      Text := Put_Text
+        (Canvas, 0.40, 0.02, 0,
+         "Times-BoldItalic", 16, Null_Color, Null_Color, True,
+         Justify_Center, "Dnd titles, legends and plots");
 
       Gtk_New (Button, "Print");
       Put (Canvas, Button, 0, 40);
@@ -434,16 +525,24 @@ package body Create_Plot is
                                 Layout_Cb.To_Marshaller (Print'Access),
                                 Slot_Object => Canvas);
 
-      Put_Text (Canvas, 0.4, 0.72, 0,
-                "Times-Roman", 16, Null_Color, Null_Color,
-                Justify_Center,
-                "You can use \ssubscripts\b\b\b\b\b\b\b\b"
-                & "\b\b\N\Ssuperscripts");
-      Put_Text (Canvas, 0.4, 0.745, 0,
-                "Times-Roman", 16, Null_Color, Null_Color,
-                Justify_Center,
-                "Format text mixing \Bbold \N\i, italics, \ggreek \4\N "
-                & "and \+different fonts");
+      Text := Put_Text
+        (Canvas, 0.4, 0.72, 0,
+         "Times-Roman", 16, Null_Color, Null_Color, False,
+         Justify_Center,
+         "You can use \ssubscripts\b\b\b\b\b\b\b\b"
+         & "\b\b\N\Ssuperscripts");
+      Text := Put_Text
+        (Canvas, 0.4, 0.745, 0,
+         "Times-Roman", 16, Null_Color, Null_Color, True,
+         Justify_Center,
+         "Format text mixing \Bbold \N\i, italics, \ggreek \4\N "
+         & "and \+different fonts");
+
+
+      -- Insert a customer item --
+      Child := Child_New (Custom);
+      Set_Draw_Func (Child, Draw_Child'Access);
+      Put_Child (Canvas, Child, 0.5, 0.5, 0.58, 0.56);
 
       Show_All (Frame);
    end Run;

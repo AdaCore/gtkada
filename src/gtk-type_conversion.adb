@@ -54,7 +54,6 @@ with Gtk.Editable;
 with Gtk.Event_Box;
 with Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Canvas;
-with Gtk.Extra.Plot_Layout;
 with Gtk.Extra.Sheet;
 with Gtk.Extra.Combo_Box;
 with Gtk.Extra.Color_Combo;
@@ -247,7 +246,7 @@ package body Gtk.Type_Conversion is
                return new Gtk.Paned.Gtk_Paned_Record;
             end if;
          when 'I' =>
-            if Type_Name = "GtkIentry" then
+            if Type_Name = "GtkItemEntry" then
                return new Gtk.Extra.Item_Entry.Gtk_IEntry_Record;
             elsif Type_Name = "GtkImage" then
                return new Gtk.Image.Gtk_Image_Record;
@@ -303,8 +302,6 @@ package body Gtk.Type_Conversion is
                return new Gtk.Extra.Plot.Gtk_Plot_Record;
             elsif Type_Name = "GtkPlotCanvas" then
                return new Gtk.Extra.Plot_Canvas.Gtk_Plot_Canvas_Record;
-            elsif Type_Name = "GtkPlotLayout" then
-               return new Gtk.Extra.Plot_Layout.Gtk_Plot_Layout_Record;
             elsif Type_Name = "GtkPreview" then
                return new Gtk.Preview.Gtk_Preview_Record;
             elsif Type_Name = "GtkProgress" then

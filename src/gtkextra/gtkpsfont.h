@@ -84,6 +84,8 @@ struct _GtkPSFont {
   gboolean bold;
 };
 
+gint		gtk_psfont_init			();
+void		gtk_psfont_unref		();
 GtkPSFont* 	gtk_psfont_get_font 		(gchar *name);
 GdkFont*	gtk_psfont_get_gdkfont 		(gchar *name, gint height);
 gchar *		gtk_psfont_get_psfontname	(gchar *name);
