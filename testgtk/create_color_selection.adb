@@ -34,9 +34,7 @@ with Gtk.Button;           use Gtk.Button;
 with Gtk.Color_Selection;  use Gtk.Color_Selection;
 with Gtk.Enums;
 with Gtk.Signal;
-with Gtk.Widget;           use Gtk.Widget;
 with Ada.Text_IO;
-with Common; use Common;
 
 package body Create_Color_Selection is
 
