@@ -470,7 +470,7 @@ package body Glib.XML is
          Create (File, Out_File, File_Name);
          Set_Output (File);
       end if;
-      Put_Line (File, "<?xml version=""1.0""?>");
+      Put_Line ("<?xml version=""1.0""?>");
       Print_Node (N, 0);
 
       if File_Name /= "" then
