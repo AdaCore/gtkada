@@ -1,0 +1,10 @@
+.devel
+Makefile
+Makefile.common
+b~*
+gate
+gdialog
+gtkada-config
+gtkada-intl.adb
+gtkada.gpr
+libgtkada*.so*
