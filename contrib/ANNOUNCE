@@ -11,6 +11,7 @@ New features in 1.2.6/1.3.6 include:
 - Fixed to be compatible with Gtk+ 1.2.2 instead of requiring 1.2.4
 - Fixed an installation problem on some Linux versions.
 - Multiple redraws under Win32 are now handled properly.
+- The HTML reference manual now contains nice colored boxes.
 
 New features in 1.2.5/1.3.5 include:
 
