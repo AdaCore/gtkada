@@ -22,13 +22,14 @@
 --  Parse a Glade's XML project file and generate the corresponding Ada code
 
 with Gtk.Glade; use Gtk.Glade;
-with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
+with Glib.Glade; use Glib; use Glib.Glade; use Glib.Glade.Glib_XML;
 with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.OS_Lib;
 
 procedure Gate is
    N                     : Node_Ptr;
+   S                     : String_Ptr;
    Arg                   : Natural;
    Flag_Project          : Boolean := False;
    Flag_Source_Directory : Boolean := False;
@@ -69,12 +70,23 @@ begin
 
       if Flag_Project or else Flag_Source_Directory then
          if Flag_Project then
-            Put_Line (Get_Field (Find_Tag (N.Child, "project"), "name").all);
+            S := Get_Field (Find_Tag (N.Child, "project"), "name");
+
+            if S = null then
+               New_Line;
+            else
+               Put_Line (S.all);
+            end if;
          end if;
 
          if Flag_Source_Directory then
-            Put_Line (Get_Field (Find_Tag (N.Child, "project"),
-              "source_directory").all);
+            S := Get_Field (Find_Tag (N.Child, "project"), "source_directory");
+
+            if S = null then
+               New_Line;
+            else
+               Put_Line (S.all);
+            end if;
          end if;
 
       else
