@@ -157,29 +157,20 @@ package Gtkada.MDI is
    --  Child mustn't be a Gtk_Window (or one of its children). Otherwise,
    --  Program_Error is raised.
    --
-   --  In the former case, only the child of the window is inserted into MDI.
-   --  However, every time the child is set as floating (ie in its own
-   --  toplevel window), we reuse the window you give in parameter to Put.
-   --  Likewise, before the child is destroyed, a "delete_event" is emitted
-   --  on the window you give in parameter to Put).
-   --
    --  Flags indicates which buttons should be made visible in the title bar.
    --
-   --  In that case, you shouldn't access Child directly afterwards, but should
-   --  manipulate its child instead. However, as a special exception, you can
+   --  You shouldn't access Child directly afterwards, but should manipulate
+   --  its MDI_Child instead. However, as a special exception, you can
    --  still pass Child as a parameter to the subprograms in this package to
-   --  manipulate it (for instance in Raise_Child,...)
+   --  manipulate it (e.g. in Raise_Child, ...)
    --
-   --  On the other hand, if you insert any other widget, toplevel windows
-   --  are created on the fly when needed, and destroyed automatically.
-   --
-   --  Note: You might have to call Set_USize on Child to set its initial
-   --  size. This won't prevent it from being resized by the user.
+   --  Note: You might have to call Set_Size_Request on Child to set its
+   --  initial size. This won't prevent it from being resized by the user.
    --
    --  If Child is a MDI_Child, its location is recomputed automatically.
    --
-   --  You shouldn't call Show_All on the return child, since some of the title
-   --  bar buttons are hidden
+   --  You shouldn't call Show_All on the returned child, since some of the
+   --  title bar buttons are hidden.
 
    procedure Close
      (MDI : access MDI_Window_Record;
