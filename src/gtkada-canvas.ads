@@ -58,6 +58,7 @@ with Gdk.Window;
 with Glib;
 with Gtk.Drawing_Area;
 with Gtk.Viewport;
+with Gdk.Rectangle;
 
 package Gtkada.Canvas is
 
@@ -105,6 +106,24 @@ package Gtkada.Canvas is
    --  direction, then the mouse click is considered as being a selection
    --  only and is transfered to the item itself.
 
+   ----------------
+   -- Enum types --
+   ----------------
+
+   type Arrow_Type is (No_Arrow,
+                        --  the link does not have an arrow
+
+                       Start_Arrow,
+                        --  the link has an arrow at its beginning
+
+                       End_Arrow,
+                        --  the link has an arrow at the end
+
+                       Both_Arrow
+                        --  the link has an arrow on both sides
+                       );
+   --  Indicate whether the links have an arrow or not.
+
    -----------------------
    -- Creating a canvas --
    -----------------------
@@ -136,6 +155,7 @@ package Gtkada.Canvas is
    procedure Add_Link (Canvas : access Interactive_Canvas_Record;
                        Src    : access Canvas_Item_Record'Class;
                        Dest   : access Canvas_Item_Record'Class;
+                       Arrow  : in Arrow_Type := End_Arrow;
                        Descr  : in String := "");
    --  Add an oriented link between two items.
    --  If Descr is not the empty string, it will be displayed in the middle
@@ -146,15 +166,32 @@ package Gtkada.Canvas is
 
    procedure Put (Canvas : access Interactive_Canvas_Record;
                   Item   : access Canvas_Item_Record'Class;
-                  X, Y   : Glib.Gint);
+                  X, Y   : Glib.Gint := Glib.Gint'First);
    --  Add a new item to the canvas.
    --  The item is added at a specific location.
+   --  If at least one of X or Y has the default value, then the item
+   --  is placed automatically in a free area of the canvas.
+   --  Its new position depends on whether it has links to other existing
+   --  items (in which case it is placed to the right of it), or not (in which
+   --  case it is placed at the bottom of the leftmost column).
 
    procedure Remove (Canvas : access Interactive_Canvas_Record;
                      Item   : access Canvas_Item_Record'Class);
    --  Remove an item and all the links to and from it from the canvas.
    --  The item itself is not freed.
    --  Nothing is done if the item is not part of the canvas.
+
+   procedure Item_Updated (Canvas : access Interactive_Canvas_Record;
+                           Item   : access Canvas_Item_Record'Class);
+   --  This should be called when Item has changed the contents of its
+   --  pixmap, and thus the Canvas should be updated.
+
+   procedure Item_Resized (Canvas : access Interactive_Canvas_Record;
+                           Item   : access Canvas_Item_Record'Class);
+   --  This should be called when Item has been resized, and the canvas
+   --  should be updated (ie the arrow should be redrawn for instance).
+   --  However, Item should resize its pixmap and redraw itself before
+   --  calling this procedure.
 
    ------------------------
    -- Items manipulation --
@@ -207,6 +244,8 @@ private
          Dest   : Canvas_Item;
          Descr  : String_Access;
 
+         Arrow  : Arrow_Type;
+
          Side   : Link_Side;
          Offset : Glib.Gint;
          --  How the link is drawn.
@@ -231,6 +270,9 @@ private
          Links             : Link_Access := null;
          Children          : Canvas_Item_List := null;
          Selected_Child    : Canvas_Item;
+
+         Xmax, Ymax        : Glib.Gint := 0;
+         --  Maximal coordinates in the canvas.
 
          Last_X_Event      : Glib.Gint;
          Last_Y_Event      : Glib.Gint;
@@ -262,10 +304,7 @@ private
 
    type Canvas_Item_Record is abstract tagged
       record
-         X         : Glib.Gint;
-         Y         : Glib.Gint;
-         Width     : Glib.Gint;
-         Height    : Glib.Gint;
+         Coord     : Gdk.Rectangle.Gdk_Rectangle;
          Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
       end record;
 
