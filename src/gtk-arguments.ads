@@ -28,6 +28,10 @@
 -----------------------------------------------------------------------
 
 --  <description>
+--  This package is obsolete and replaced by Glib.Values
+--  (@pxref{Package_Glib.Values}.
+--  Future versions of GtkAda will no longer provide this package.
+--
 --  This package provides a convenient interface to C, providing easy
 --  conversion from a C's (void*) pointer to any Ada type used in
 --  GtkAda.  Although this package has been designed to be easily
@@ -40,8 +44,7 @@
 --  package provides functions to extract the values from this type.
 --  </description>
 
-
-with System;
+with Glib.Values;
 with Gdk.Event;
 with Gtk.Object;
 with Gtk.Widget;
@@ -50,20 +53,16 @@ package Gtk.Arguments is
 
    --  <doc_ignore>Do not create automatic documentation for this package
 
-   type Gtk_Args is private;
+   subtype Gtk_Args is Glib.Values.GValues;
    --  This type represents a table of arguments. Each argument of the
    --  table can be of any type. You can access them through one of the
    --  To_* functions found below. The index of the first element is
    --  always 1.
 
-
-   function Make_Args (Nb : Guint; Args : System.Address) return Gtk_Args;
+   function Make_Args (Nb : Guint; Args : System.Address) return Gtk_Args
+     renames Glib.Values.Make_Values;
    --  Build a Gtk_Args structure from the given C array. Nb should be the
    --  number of elements in the Args array.
-
-   function Get_Nth   (Args : Gtk_Args; Num : Positive) return System.Address;
-   --  Returns the Num-th element from Args. You should only have to use it if
-   --  you write your own conversion functions.
 
    ---------------------------------------------------
    -- Conversion functions, interfacing to Gtk_Args --
@@ -87,36 +86,8 @@ package Gtk.Arguments is
    function To_Allocation
      (Args : Gtk_Args; Num : Positive) return Gtk.Widget.Gtk_Allocation_Access;
 
-   ----------------------------------
-   -- General conversion functions --
-   ----------------------------------
-
-   function To_Gint          (C : System.Address) return Gint;
-   function To_Guint         (C : System.Address) return Guint;
-   function To_Boolean       (C : System.Address) return Boolean;
-   function To_Event         (C : System.Address) return Gdk.Event.Gdk_Event
-                             renames Gdk.Event.From_Address;
-   function To_String        (C : System.Address) return String;
-   function To_Notebook_Page (C : System.Address)
-     return Gtk_Notebook_Page;
-   function To_Object        (C : System.Address) return Gtk.Object.Gtk_Object;
-   function To_C_Proxy       (C : System.Address) return Gdk.C_Proxy;
-
-   ----------------------------------
-   -- Reverse conversion functions --
-   ----------------------------------
-
-   function To_Address (E : Gdk.Event.Gdk_Event) return System.Address
-     renames Gdk.Event.To_Address;
-
 private
-   type Gtk_Args is record
-      Nb  : Guint;
-      Arr : System.Address;
-   end record;
-
    pragma Inline (Make_Args);
-   pragma Inline (Get_Nth);
    pragma Inline (To_Gint);
    pragma Inline (To_Guint);
    pragma Inline (To_Boolean);

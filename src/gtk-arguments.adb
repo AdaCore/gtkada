@@ -28,113 +28,56 @@
 -----------------------------------------------------------------------
 
 with Unchecked_Conversion;
-with Interfaces.C.Strings;   use Interfaces.C.Strings;
 
 package body Gtk.Arguments is
 
-   ---------------
-   -- Make_Args --
-   ---------------
-
-   function Make_Args (Nb : Guint; Args : System.Address) return Gtk_Args is
-   begin
-      return (Nb => Nb, Arr => Args);
-   end Make_Args;
-
-   -------------
-   -- Get_Nth --
-   -------------
-
-   function Get_Nth (Args : Gtk_Args; Num : Positive) return System.Address is
-      function Internal (Args : System.Address; Num : Natural)
-                        return System.Address;
-      pragma Import (C, Internal, "ada_gtkarg_value_object");
-   begin
-      pragma Assert (Guint (Num) <= Args.Nb);
-      return Internal (Args.Arr, Num - 1);
-   end Get_Nth;
+   use Glib.Values;
 
    -------------
    -- To_Gint --
    -------------
 
-   function To_Gint (C : System.Address) return Gint is
-      function Internal is new Unchecked_Conversion (System.Address, Gint);
-   begin
-      return Internal (C);
-   end To_Gint;
-
    function To_Gint (Args : Gtk_Args; Num : Positive) return Gint is
    begin
-      return To_Gint (Get_Nth (Args, Num));
+      return Get_Int (Nth (Args, Guint (Num)));
    end To_Gint;
 
    --------------
    -- To_Guint --
    --------------
 
-   function To_Guint (C : System.Address) return Guint is
-      function Internal is new Unchecked_Conversion (System.Address, Guint);
-   begin
-      return Internal (C);
-   end To_Guint;
-
    function To_Guint (Args : Gtk_Args; Num : Positive) return Guint is
    begin
-      return To_Guint (Get_Nth (Args, Num));
+      return Get_Uint (Nth (Args, Guint (Num)));
    end To_Guint;
 
    ----------------
    -- To_Boolean --
    ----------------
 
-   function To_Boolean (C : System.Address) return Boolean is
-      function Convert is new Unchecked_Conversion (System.Address, Integer);
-   begin
-      return Boolean'Val (Convert (C));
-   end To_Boolean;
-
    function To_Boolean (Args : Gtk_Args; Num : Positive) return Boolean is
    begin
-      return To_Boolean (Get_Nth (Args, Num));
+      return Get_Boolean (Nth (Args, Guint (Num)));
    end To_Boolean;
 
    ---------------
    -- To_Object --
    ---------------
 
-   function To_Object  (C : System.Address) return Gtk.Object.Gtk_Object is
-      use type System.Address;
-      Stub : Gtk.Object.Gtk_Object_Record;
-
-   begin
-      if C = System.Null_Address then
-         return null;
-      else
-         return Gtk.Object.Gtk_Object (Get_User_Data (C, Stub));
-      end if;
-   end To_Object;
-
    function To_Object (Args : Gtk_Args; Num : Positive)
      return Gtk.Object.Gtk_Object is
    begin
-      return To_Object (Get_Nth (Args, Num));
+      return Gtk.Object.Gtk_Object
+        (Gtk.Widget.Convert (Get_Address (Nth (Args, Guint (Num)))));
    end To_Object;
 
    ----------------
    -- To_C_Proxy --
    ----------------
 
-   function To_C_Proxy (C : System.Address) return Gdk.C_Proxy is
-      function Internal is new Unchecked_Conversion
-        (System.Address, Gdk.C_Proxy);
-   begin
-      return Internal (C);
-   end To_C_Proxy;
-
    function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy is
    begin
-      return To_C_Proxy (Get_Nth (Args, Num));
+      return Get_Proxy (Nth (Args, Guint (Num)));
    end To_C_Proxy;
 
    --------------
@@ -144,22 +87,17 @@ package body Gtk.Arguments is
    function To_Event (Args : Gtk_Args; Num : Positive)
      return Gdk.Event.Gdk_Event is
    begin
-      return To_Event (Get_Nth (Args, Num));
+      return Gdk.Event.Gdk_Event (Get_Proxy (Nth (Args, Guint (Num))));
    end To_Event;
 
    ----------------------
    -- To_Notebook_Page --
    ----------------------
 
-   function To_Notebook_Page (C : System.Address) return Gtk_Notebook_Page is
-   begin
-      return Gtk_Notebook_Page (Glib.Convert (C));
-   end To_Notebook_Page;
-
    function To_Notebook_Page
      (Args : Gtk_Args; Num : Positive) return Gtk_Notebook_Page is
    begin
-      return To_Notebook_Page (Get_Nth (Args, Num));
+      return Gtk_Notebook_Page (Get_Proxy (Nth (Args, Guint (Num))));
    end To_Notebook_Page;
 
    ----------------
@@ -169,12 +107,12 @@ package body Gtk.Arguments is
    function To_Address (Args : Gtk_Args; Num : Positive)
      return System.Address is
    begin
-      return Get_Nth (Args, Num);
+      return Get_Address (Nth (Args, Guint (Num)));
    end To_Address;
 
-   ----------------
-   -- To_Address --
-   ----------------
+   --------------------
+   -- To_Requisition --
+   --------------------
 
    function To_Requisition (Args : Gtk_Args; Num : Positive)
      return Gtk.Widget.Gtk_Requisition_Access
@@ -183,7 +121,7 @@ package body Gtk.Arguments is
         Unchecked_Conversion
           (System.Address, Gtk.Widget.Gtk_Requisition_Access);
    begin
-      return Internal (Get_Nth (Args, Num));
+      return Internal (Get_Address (Nth (Args, Guint (Num))));
    end To_Requisition;
 
    ----------------
@@ -197,28 +135,16 @@ package body Gtk.Arguments is
         Unchecked_Conversion
           (System.Address, Gtk.Widget.Gtk_Allocation_Access);
    begin
-      return Internal (Get_Nth (Args, Num));
+      return Internal (Get_Address (Nth (Args, Guint (Num))));
    end To_Allocation;
 
    ---------------
    -- To_String --
    ---------------
 
-   function To_String  (C : System.Address) return String is
-      use type Interfaces.C.Strings.chars_ptr;
-      function Convert is new Unchecked_Conversion (System.Address, chars_ptr);
-      Char : chars_ptr := Convert (C);
-   begin
-      if Char /= Interfaces.C.Strings.Null_Ptr then
-         return Value (Char);
-      else
-         return "";
-      end if;
-   end To_String;
-
    function To_String  (Args : Gtk_Args; Num : Positive) return String is
    begin
-      return To_String (Get_Nth (Args, Num));
+      return Get_String (Nth (Args, Guint (Num)));
    end To_String;
 
 end Gtk.Arguments;
