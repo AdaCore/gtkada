@@ -129,7 +129,7 @@ package body Gtkada.MDI is
    Max_Drag_Border_Width : constant Gint := 30;
    --  Width or height of the drag-and-drop borders for each notebook
 
-   Icons_Width : constant Gint := 100;
+   Icons_Width : constant Gint := 200;
    --  Width to use for icons
 
    Min_Width  : constant Gint := 40;
@@ -3522,7 +3522,6 @@ package body Gtkada.MDI is
       MDI         : constant MDI_Window := Child.MDI;
       List        : Widget_List.Glist;
       C2          : MDI_Child;
-      Alloc       : Gtk_Allocation;
       Icons_Height : constant Gint :=
         MDI.Title_Bar_Height + 2 * Border_Thickness;
 
@@ -3568,10 +3567,12 @@ package body Gtkada.MDI is
             List := Next (List);
          end loop;
 
-         Alloc := (Child.X, Child.Y,
-                   Allocation_Int (Icons_Width),
-                   Allocation_Int (Icons_Height));
-         Size_Allocate (Child, Alloc);
+         Set_Size_Request
+           (Child,
+            Allocation_Int (Icons_Width),
+            Allocation_Int (Icons_Height));
+         Move (MDI.Central.Layout, Child, Child.X, Child.Y);
+         Queue_Resize (MDI.Central.Layout);
 
          if Child.Maximize_Button /= null then
             Set_Sensitive (Child.Maximize_Button, False);
@@ -3581,10 +3582,12 @@ package body Gtkada.MDI is
          Child.State := Normal;
          Child.X := Child.Uniconified_X;
          Child.Y := Child.Uniconified_Y;
-         Alloc := (Child.Uniconified_X, Child.Uniconified_Y,
-                   Allocation_Int (Child.Uniconified_Width),
-                   Allocation_Int (Child.Uniconified_Height));
-         Size_Allocate (Child, Alloc);
+         Set_Size_Request
+           (Child,
+            Allocation_Int (Child.Uniconified_Width),
+            Allocation_Int (Child.Uniconified_Height));
+         Move (MDI.Central.Layout, Child, Child.X, Child.Y);
+         Queue_Resize (MDI.Central.Layout);
 
          if Child.Maximize_Button /= null then
             Set_Sensitive (Child.Maximize_Button, True);
