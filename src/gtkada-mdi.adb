@@ -1355,6 +1355,7 @@ package body Gtkada.MDI is
       if not Return_Callback.Emit_By_Name
         (C.Initial, "delete_event", Event)
       then
+         Float_Child (C, False);
          Destroy (C);
       end if;
 
