@@ -60,6 +60,11 @@
 --
 --  Note that some properties are read-only, and thus do not have the
 --  Set_Property subprogram defined.
+--
+--  When a property is modified, the signal "notify::<property" is emitted (for
+--  instance, "notify::label" for a gtk_button. This is a standard gtk+ signal
+--  to which you can connect with the subprograms in gtk-handlers.ads
+
 --  </description>
 --  <c_version>1.3.4</c_version>
 

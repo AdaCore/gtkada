@@ -101,6 +101,7 @@ package Glib.XML is
    function Get_Field (N : Node_Ptr; Field : String) return String_Ptr;
    --  Return the value of the field 'Field' if present in the children of N.
    --  Return null otherwise.
+   --  Do not free the returned value.
 
    procedure Add_Child (N : Node_Ptr; Child : Node_Ptr);
    --  Add a new child to a node.

@@ -202,8 +202,12 @@ package Gtk.Tree_View_Column is
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Func        : Cell_Data_Func);
-   --  Set a general callback function that will be called every time some even
-   --  happen inside the renderer Cell.
+   --  Sets the function to use for the column.  This function is used instead
+   --  of the standard attributes mapping for setting the column value, and
+   --  should set the value of @tree_column's cell renderer as appropriate.
+   --  Func may be null to remove an older one.
+   --  It should be used when values from the model should be computed from
+   --  application-specific data structures rather than stored in the model.
 
    generic
       type Data_Type is (<>);

@@ -59,6 +59,7 @@ package Gtk.Accel_Group is
    --  Return the internal value associated with a Gtk_Accel_Group.
 
    procedure Gtk_New (Accel_Group : out Gtk_Accel_Group);
+   --  Remember to call Gtk.Window.Add_Accel_Group to active the group.
 
    procedure Initialize (Accel_Group : access Gtk_Accel_Group_Record'Class);
 
