@@ -44,6 +44,7 @@
 --  </description>
 
 with Glib; use Glib;
+with Glib.Object;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Pango.Enums;
@@ -156,11 +157,12 @@ package Pango.Font is
 
    type Pango_Font_Metrics is new Glib.C_Proxy;
 
-   type Pango_Font is new Glib.C_Proxy;
-   --  ??? How do we create one from a pango_font_description
+   type Pango_Font_Record is new Glib.Object.GObject_Record with null record;
+   type Pango_Font is access all Pango_Font_Record'Class;
+   --  Created through Pango.Context.Load_Font
 
    function Get_Metrics
-     (Font : Pango_Font;
+     (Font : access Pango_Font_Record'Class;
       Language : Pango_Language := null) return Pango_Font_Metrics;
    --  Gets overall metric information for a font. Since the metrics may be
    --  substantially different for different scripts, a language tag can be
@@ -212,7 +214,7 @@ package Pango.Font is
    --  merely a representative value useful, for example, for determining the
    --  initial size for a window. Actual digits in text can be wider and
    --  narrower than this, though this value is generally somewhat more
-   --  accurate than the result of Get_Approximate_Digit_Width.
+   --  accurate than the result of Get_Approximate_Char_Width.
    --
    --  The returned value is expressed in pango units, and must be divided by
    --  Pango_Scale to get the value in pixels.
@@ -244,7 +246,6 @@ private
    pragma Import (C, Pango_Language_Get_Type, "pango_language_get_type");
    pragma Import
      (C, Font_Metrics_Get_Type, "pango_font_metrics_get_type");
-   pragma Import (C, Get_Metrics, "pango_font_get_metrics");
    pragma Import (C, Ref, "pango_font_metrics_ref");
    pragma Import (C, Unref, "pango_font_metrics_unref");
    pragma Import (C, Get_Ascent, "pango_font_metrics_get_ascent");

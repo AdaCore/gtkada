@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C.Strings;
+with Glib.Object; use Glib.Object;
 
 package body Pango.Font is
 
@@ -209,5 +210,21 @@ package body Pango.Font is
    begin
       return Internal (Language & ASCII.NUL);
    end From_String;
+
+   -----------------
+   -- Get_Metrics --
+   -----------------
+
+   function Get_Metrics
+     (Font : access Pango_Font_Record'Class;
+      Language : Pango_Language := null) return Pango_Font_Metrics
+   is
+      function Internal (Font : System.Address; Lang : Pango_Language)
+         return Pango_Font_Metrics;
+      pragma Import (C, Internal, "pango_font_get_metrics");
+   begin
+      return Internal (Get_Object (Font), Language);
+   end Get_Metrics;
+
 
 end Pango.Font;
