@@ -186,11 +186,6 @@ package Gdk.Window is
       Pixmap          : Gdk.Gdk_Pixmap;
       Parent_Relative : Boolean);
 
-   procedure Set_Back_Pixmap
-     (Window          : Gdk_Window;
-      Pixmap          : Gdk.Gdk_Pixmap;
-      Parent_Relative : Gint);
-
    procedure Set_Cursor
      (Window : in Gdk_Window; Cursor : in Gdk.Cursor.Gdk_Cursor);
    --  Note: the window must be realized first, ie have an associated X11/Win32
