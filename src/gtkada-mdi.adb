@@ -1745,11 +1745,6 @@ package body Gtkada.MDI is
               or else abs (C.MDI.Drag_Start_Y - Gint (Get_Y_Root (Event))) >
                Drag_Threshold
             then
-               Put_Line ("Entering In_Drag state "
-                         & C.MDI.Drag_Start_X'Img
-                         & Get_X_Root (Event)'Img
-                         & C.MDI.Drag_Start_Y'Img
-                         & Get_Y_Root (Event)'Img);
                C.MDI.In_Drag := In_Drag;
                C.MDI.Dnd_Rectangle_Owner := null;
                Pointer_Ungrab (Time => 0);
