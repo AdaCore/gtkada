@@ -20,7 +20,6 @@ ARCHIVENAME   = libgtkada_art.a
 HAVE_PIXBUF=@HAVE_PIXBUF@
  
 ifeq ($(HAVE_PIXBUF),True)
-PIXBUF_C_OBJECTS=misc_pixbuf.o
 PIXBUF_SOURCES=gdk-art-pixbuf.ads gdk-art.ads gdk-pixbuf.adb
 PIXBUF_OBJECTS=gdk-art-pixbuf.o gdk-art.o gdk-pixbuf.o
 PIXBUF_LIBS=@PIXBUF_LIBS@
@@ -35,7 +34,6 @@ install: all
 	$(CHMOD) -w $(alidir)/*.ali
 
 else
-PIXBUF_C_OBJECTS=
 PIXBUF_SOURCES=
 PIXBUF_OBJECTS=
 PIXBUF_LIBS=
@@ -45,14 +43,14 @@ all:
 install:
 endif
 
-$(LIBNAME): $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
-	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS) @GTK_LIBS@ -L.. -lgtkada $(PIXBUF_LIBS)
+$(LIBNAME): $(PIXBUF_OBJECTS)
+	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(PIXBUF_OBJECTS) @GTK_LIBS@ -L.. -lgtkada $(PIXBUF_LIBS)
 	-@if [ ! -f ../.devel ]; then \
 	   strip $(LIBNAME); \
 	fi
  
-$(ARCHIVENAME): $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
+$(ARCHIVENAME): $(PIXBUF_OBJECTS)
+	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(PIXBUF_OBJECTS)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	   $(RANLIB) $(ARCHIVENAME); \
 	fi
@@ -63,9 +61,6 @@ $(PIXBUF_OBJECTS):: force
 	else \
 	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS) $(FPIC) ${@:%.o=%}; \
 	fi
-
-misc_pixbuf.o: misc_pixbuf.c
-	$(CC) -c $(CFLAGS) $(PIXBUF_FLAGS) misc_pixbuf.c
 
 clean-generic:
 	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
