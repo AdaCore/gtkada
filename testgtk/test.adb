@@ -36,6 +36,7 @@ with Create_Radio_Button;
 with Create_Range;
 with Create_Reparent;
 with Create_Rulers;
+with Create_Scrolled;
 with Create_Toolbar;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
@@ -113,7 +114,7 @@ package body Test is
       (US ("range controls"), Create_Range.Run'Access),
       (US ("reparent"), Create_Reparent.Run'Access),
       (US ("rulers"), Create_Rulers.Run'Access),
-      (US ("scrolled windows"), null),
+      (US ("scrolled windows"), Create_Scrolled.Run'Access),
       (US ("shapes"), null),
       (US ("spinbutton"), null),
       (US ("statusbar"), null),
@@ -182,8 +183,7 @@ package body Test is
       Vbox.Gtk_New (Widget => Box2, Homogeneous => False, Spacing => 0);
       Container.Border_Width (Container => Box2, Border_Width => 10);
       Container.Add (Container => A_Scrolled_Window, Widget => Box2);
-      Scrolled_Window.Get_Vadjustement (Scrolled_Window => A_Scrolled_Window,
-                                        Vadjustment => Temp);
+      Temp := Scrolled_Window.Get_Vadjustment (Scrolled_Window => A_Scrolled_Window);
       Container.Set_Focus_Vadjustment (Container => Box2, Adjustment => Temp);
       Widget.Show (Box2);
 
