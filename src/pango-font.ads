@@ -36,9 +36,10 @@ package Pango.Font is
 
    type Pango_Font_Description_Record is record
       Family_Name : Interfaces.C.Strings.chars_ptr;
-      --  It is highly recommended to access to this field via the
+      --  The syntax of this field is detailed in the description of
+      --  the [FAMILY-NAME] passed to From_String.
+      --  Note that is highly recommended to access to this field via the
       --  Get/Set_Family_Name routines (see below).
-
       Style       : Pango.Enums.Style;
       Variant     : Pango.Enums.Variant;
       Weight      : Pango.Enums.Weight;
@@ -69,9 +70,9 @@ package Pango.Font is
    --  Create a new font description from the given string representation
    --  of the given form: "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]". Any one
    --  of the options may be omitted.
-   --    - FAMILY-LIST is a comma separated list of font families optionally
-   --      terminated by a comma. If absent, the font family of the font
-   --      that will be used is unspecified.
+   --    - FAMILY-LIST is a comma separated list (spaces are not allowed)
+   --      of font families optionally terminated by a comma. If absent,
+   --      the font family of the font that will be used is unspecified.
    --    - STYLE_OPTIONS is a whitespace separated list of words where each
    --      word describes either style, variant, weight, or stretch. Any
    --      unspecified style option is defaulted to "Normal", which
@@ -79,6 +80,17 @@ package Pango.Font is
    --      Pango_Variant_Normal, and Pango_Stretch_Normal.
    --    - SIZE is a decimal number describing the size of the font in points.
    --      If unspecified, a size of 0 will be used.
+   --  ??? Note that From_String is broken wrt the Weight. This bug should
+   --  ??? be reported to the pango team.
+
+   function To_Font_Description
+     (Family_Name : String := "";
+      Style       : Pango.Enums.Style := Pango.Enums.Pango_Style_Normal;
+      Variant     : Pango.Enums.Variant := Pango.Enums.Pango_Variant_Normal;
+      Weight      : Pango.Enums.Weight := Pango.Enums.Pango_Weight_Normal;
+      Stretch     : Pango.Enums.Stretch := Pango.Enums.Pango_Stretch_Normal;
+      Size        : Gint := 0) return Pango_Font_Description;
+   --  Create a new font decription from the given parameters.
 
    function To_String (Desc : Pango_Font_Description) return String;
    --  Create a string representation of a font description. The format
