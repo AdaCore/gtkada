@@ -118,6 +118,12 @@ package Gtk.Layout is
    --  This is not the size on the screen, but the internal size of the widget.
    --  The screen's size can be set with Gtk.Widget.Set_Usize.
 
+   procedure Get_Size
+     (Layout : access Gtk_Layout_Record;
+      Width  : out Guint;
+      Height : out Guint);
+   --  Get the current size in pixels of the layout, as set with Set_Size
+
    function Get_Hadjustment
      (Layout : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment that indicate the horizontal visual area
@@ -144,13 +150,15 @@ package Gtk.Layout is
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    --  Specify a new adjustment to use for the vertical visual area.
 
-   function Get_Width (Layout : access Gtk_Layout_Record) return Guint;
-   --  Get the width in pixels of the layout, as set with Set_Size
 
-   function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
-   --  Get the height in pixels of the layout, as set with Set_Size
 
    --  <doc_ignore>
+
+   function Get_Width (Layout : access Gtk_Layout_Record) return Guint;
+   --  Deprecated, only provided for compatibility, see Get_Size
+
+   function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
+   --  Deprecated, only provided for compatibility, see Get_Size
 
    procedure Freeze (Layout : access Gtk_Layout_Record);
    --  Deprecated, only provided for compatibility.

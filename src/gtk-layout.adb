@@ -276,4 +276,19 @@ package body Gtk.Layout is
       null;
    end Thaw;
 
+   --------------
+   -- Get_Size --
+   --------------
+
+   procedure Get_Size
+     (Layout : access Gtk_Layout_Record;
+      Width  : out Guint;
+      Height : out Guint)
+   is
+      procedure Internal (Layout : System.Address; W, H : out Guint);
+      pragma Import (C, Internal, "gtk_layout_get_size");
+   begin
+      Internal (Get_Object (Layout), Width, Height);
+   end Get_Size;
+
 end Gtk.Layout;
