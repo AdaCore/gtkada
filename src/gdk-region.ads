@@ -137,7 +137,7 @@ private
    pragma Import (C, Shrink, "gdk_region_shrink");
    pragma Import (C, Intersect, "gdk_region_intersect");
    pragma Import (C, Union, "gdk_region_union");
-   pragma Import (C, Substract, "gdk_region_substract");
+   pragma Import (C, Substract, "gdk_region_subtract");
    pragma Import (C, Gdk_Xor, "gdk_region_xor");
 end Gdk.Region;
 
