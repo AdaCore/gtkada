@@ -145,6 +145,27 @@ package Gtk.Widget is
    --  mapping: Set_Events gtkwidget.h gtk_widget_set_events
 
 
+   --------------------
+   --  Widget flags  --
+   --------------------
+
+   function Toplevel_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function No_Window_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Realized_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Mapped_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Visible_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Drawable_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Sensitive_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Parent_Sensitive_Is_Set (Widget : in Gtk_Widget'Class)
+                                     return Boolean;
+   function Is_Sensitive_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Can_Focus_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Has_Focus_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Has_Default_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Has_Grab_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Basic_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Rc_Style_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+
    --  Drag'n drop stuff, will be implemented later.
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_data_set
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_drag_add
