@@ -88,6 +88,7 @@ with Create_Main_Loop;
 with Create_Menu;
 with Create_Notebook;
 with Create_Paned;
+with Create_Pixbuf;
 with Create_Pixmap;
 --  XXX ???
 --  with Create_Plot;
@@ -102,6 +103,7 @@ with Create_Rulers;
 with Create_Scrolled;
 with Create_Scroll_Test;
 with Create_Selection;
+with Create_Size_Groups;
 --  with Create_Sheet;
 with Create_Spin;
 with Create_Status;
@@ -122,7 +124,8 @@ package body Main_Windows is
 
    procedure Fill_Gtk_Tree
      (Tree         : in out Gtk.Ctree.Gtk_Ctree;
-      Gtkada_Demos : Boolean := False);
+      Gtkada_Demos : Boolean := False;
+      Pixbuf_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
 
    function New_Pixmap
@@ -140,7 +143,7 @@ package body Main_Windows is
    Help_Text   : Gtk.Text.Gtk_Text;
    --  The dialog used to display the help window
 
-   Gtk_Demo_Frames  : array (1 .. 2) of Gtk.Frame.Gtk_Frame;
+   Gtk_Demo_Frames  : array (1 .. 3) of Gtk.Frame.Gtk_Frame;
    --  Frames where the gtk demos should be displayed.
 
    type Demo_Function is
@@ -176,7 +179,7 @@ package body Main_Windows is
    function Delete_Event
      (Object : access Gtk_Widget_Record'Class) return Boolean;
 
-   type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc);
+   type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc, Pixbuf);
    --  The available types for demos.
    --  Each of them is a tree item, whose subitems are the matching demos.
    --  Box:     Containers
@@ -184,6 +187,8 @@ package body Main_Windows is
    --  Complex: More interesting widgets
    --  Gimp:    Widgets developped for gimp, that could be reused
    --  Misc:    Demonstrates some features that are not widgets
+   --  Gtkada:  Widgets specific to GtkAda
+   --  Pixbuf:  Demonstrate the use of images
 
    type Tree_Item_Information is record
       Label  : chars_ptr;
@@ -198,6 +203,10 @@ package body Main_Windows is
    Gtk_Demos : constant Tree_Item_Array :=
      ((NS ("alignment"),        Box,     Create_Alignment.Run'Access,
                                          Create_Alignment.Help'Access),
+      (NS ("animation"),        Pixbuf,  Create_Pixbuf.Run'Access,
+                                         Create_Pixbuf.Help'Access),
+      (NS ("animated gif"),     Pixbuf,  Create_Pixbuf.Run_Gif'Access,
+                                         Create_Pixbuf.Help_Gif'Access),
       (NS ("arrow"),            Base,    Create_Arrow.Run'Access,
                                          Create_Arrow.Help'Access),
       (NS ("box"),              Box,     Create_Box.Run'Access,
@@ -262,12 +271,14 @@ package body Main_Windows is
       --                                     Create_Plot.Help'Access),
       --  (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
       --                                     Create_Plot_3D.Help'Access),
+      (NS ("properties"),       Misc,    null, null),
       (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
                                          Create_Preview_Color.Help'Access),
       (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access,
                                          Create_Preview_Gray.Help'Access),
       (NS ("progress bar"),     Complex, Create_Progress.Run'Access,
                                          Create_Progress.Help'Access),
+      (NS ("progressive loading"), Pixbuf, null, null),
       (NS ("radio buttons"),    Base,    Create_Radio_Button.Run'Access,
                                          Create_Radio_Button.Help'Access),
       (NS ("range controls"),   Base,    Create_Range.Run'Access,
@@ -278,6 +289,8 @@ package body Main_Windows is
       (NS ("rulers"),           Gimp,    Create_Rulers.Run'Access,
                                          Create_Rulers.Help'Access),
       (NS ("saved position"),   Misc,    null, null),
+      (NS ("scaling/composing"), Pixbuf,  Libart_Demo.Run'Access,
+                                         Libart_Demo.Help'Access),
       (NS ("scrolled windows"), Base,    Create_Scrolled.Run'Access,
                                          Create_Scrolled.Help'Access),
       (NS ("selection"),        Complex, Create_Selection.Run'Access,
@@ -285,10 +298,13 @@ package body Main_Windows is
       (NS ("shapes"),           Misc,    null, null),
       --  (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
       --                                     Create_Sheet.Help'Access),
+      (NS ("size groups"),      Box,     Create_Size_Groups.Run'Access,
+                                         Create_Size_Groups.Help'Access),
       (NS ("spinbutton"),       Base,    Create_Spin.Run'Access,
                                          Create_Spin.Help'Access),
       (NS ("statusbar"),        Base,    Create_Status.Run'Access,
                                          Create_Status.Help'Access),
+      (NS ("stock icons"),      Pixbuf,  null, null),
       (NS ("test idle"),        Misc,    Create_Test_Idle.Run'Access,
                                          Create_Test_Idle.Help'Access),
       (NS ("test mainloop"),    Misc,    Create_Main_Loop.Run'Access,
@@ -300,6 +316,7 @@ package body Main_Windows is
                                          Create_Test_Timeout.Help'Access),
       (NS ("text"),             Complex, Create_Text.Run'Access,
                                          Create_Text.Help'Access),
+      (NS ("text view"),        Complex, null, null),
       (NS ("toggle buttons"),   Base,    Create_Toggle_Buttons.Run'Access,
                                          Create_Toggle_Buttons.Help'Access),
       (NS ("toolbar"),          Box,     Create_Toolbar.Run'Access,
@@ -317,7 +334,8 @@ package body Main_Windows is
 
    procedure Fill_Gtk_Tree
      (Tree         : in out Gtk.Ctree.Gtk_Ctree;
-      Gtkada_Demos : Boolean := False)
+      Gtkada_Demos : Boolean := False;
+      Pixbuf_Demos : Boolean := False)
    is
       Sibling   : Gtk.Ctree.Gtk_Ctree_Node;
       Subtree   : Gtk.Ctree.Gtk_Ctree_Node;
@@ -325,8 +343,12 @@ package body Main_Windows is
       Frame_Num : Integer := 1;
    begin
       for Typ in Demo_Type'Range loop
-         if ((not Gtkada_Demos)  and then Typ /= Gtkada)
+         if ((not Gtkada_Demos)
+             and then not Pixbuf_Demos
+             and then Typ /= Gtkada
+             and then Typ /= Pixbuf)
            or else (Gtkada_Demos and then Typ = Gtkada)
+           or else (Pixbuf_Demos and then Typ = Pixbuf)
          then
             case Typ is
                when Box     => Text := New_String ("Containers");
@@ -338,6 +360,9 @@ package body Main_Windows is
                when Gtkada  =>
                   Text := New_String ("GtkAda Widgets");
                   Frame_Num := 2;
+               when Pixbuf  =>
+                  Text := New_String ("Images");
+                  Frame_Num := 3;
                when others  =>
                   Text := New_String (Demo_Type'Image (Typ));
             end case;
@@ -660,6 +685,64 @@ package body Main_Windows is
       end if;
    end Switch_Page;
 
+   -----------------------
+   -- Create_Demo_Frame --
+   -----------------------
+
+   procedure Create_Demo_Frame
+     (Win   : access Main_Window_Record'Class;
+      Page  : Integer;
+      Title : String;
+      Gtkada_Demo, Pixbuf_Demo : Boolean)
+   is
+      Frame    : Gtk.Frame.Gtk_Frame;
+      Label    : Gtk.Label.Gtk_Label;
+      Box      : Gtk.Box.Gtk_Box;
+      Vbox2    : Gtk.Box.Gtk_Box;
+      Tree     : Gtk.Ctree.Gtk_Ctree;
+      Scrolled : Gtk_Scrolled_Window;
+
+   begin
+      Gtk_New (Frame);
+      Gtk_New (Label, Title);
+      Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
+
+      Gtk.Box.Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 0);
+      Gtk.Frame.Add (Frame, Widget => Box);
+
+      Gtk_New_Vbox (Vbox2, Homogeneous => False, Spacing => 0);
+      Pack_Start (In_Box  => Box,
+                  Child   => Vbox2,
+                  Expand  => True,
+                  Fill    => True,
+                  Padding => 0);
+
+      Gtk_New (Scrolled);
+      Set_Policy (Scrolled,
+                  Gtk.Enums.Policy_Automatic,
+                  Gtk.Enums.Policy_Always);
+      Pack_Start (In_Box  => VBox2,
+                  Child   => Scrolled,
+                  Expand  => True,
+                  Fill    => True,
+                  Padding => 0);
+      Set_Usize (Scrolled, 170, 500);
+
+      Gtk_New (Tree, 1);
+      Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
+      Add_With_Viewport (Scrolled, Tree);
+      Fill_Gtk_Tree (Tree, Gtkada_Demo, Pixbuf_Demo);
+
+      Gtk_New (Gtk_Demo_Frames (Page));
+      Set_Shadow_Type (Gtk_Demo_Frames (Page), The_Type => Gtk.Enums.Shadow_None);
+      Pack_End (In_Box  => Box,
+                Child   => Gtk_Demo_Frames (Page),
+                Expand  => True,
+                Fill    => True,
+                Padding => 0);
+      Set_Usize (Gtk_Demo_Frames (Page), 550, 500);
+   end Create_Demo_Frame;
+
    ----------------
    -- Initialize --
    ----------------
@@ -667,11 +750,7 @@ package body Main_Windows is
    procedure Initialize (Win : access Main_Window_Record'Class) is
       Frame    : Gtk.Frame.Gtk_Frame;
       Label    : Gtk.Label.Gtk_Label;
-      Box      : Gtk.Box.Gtk_Box;
-      Vbox,
-      Vbox2    : Gtk.Box.Gtk_Box;
-      Tree     : Gtk.Ctree.Gtk_Ctree;
-      Scrolled : Gtk_Scrolled_Window;
+      Vbox     : Gtk.Box.Gtk_Box;
       Style    : Gtk_Style;
       Button   : Gtk.Button.Gtk_Button;
       Bbox     : Gtk.Hbutton_Box.Gtk_Hbutton_Box;
@@ -706,93 +785,9 @@ package body Main_Windows is
          After => True);
 
       --  First page: Gtk demos
-      Gtk_New (Frame);
-      Gtk_New (Label, "Gtk demo");
-      Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
-
-      Gtk.Box.Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 0);
-      Gtk.Frame.Add (Frame, Widget => Box);
-
-      Gtk_New_Vbox (Vbox2, Homogeneous => False, Spacing => 0);
-      Pack_Start (In_Box  => Box,
-                  Child   => Vbox2,
-                  Expand  => True,
-                  Fill    => True,
-                  Padding => 0);
-
-      Gtk_New (Scrolled);
-      Set_Policy (Scrolled,
-                  Gtk.Enums.Policy_Automatic,
-                  Gtk.Enums.Policy_Always);
-      Pack_Start (In_Box  => VBox2,
-                  Child   => Scrolled,
-                  Expand  => True,
-                  Fill    => True,
-                  Padding => 0);
-      Set_Usize (Scrolled, 170, 500);
-
-      Gtk_New (Tree, 1);
-      Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
-      Add_With_Viewport (Scrolled, Tree);
-      Fill_Gtk_Tree (Tree);
-
-      Gtk_New (Gtk_Demo_Frames (1));
-      Set_Shadow_Type (Gtk_Demo_Frames (1), The_Type => Gtk.Enums.Shadow_None);
-      Pack_End (In_Box  => Box,
-                Child   => Gtk_Demo_Frames (1),
-                Expand  => True,
-                Fill    => True,
-                Padding => 0);
-      Set_Usize (Gtk_Demo_Frames (1), 550, 500);
-
-      --  Second page: GtkAda widgets
-
-      Gtk_New (Frame);
-      Gtk_New (Label, "GtkAda demo");
-      Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
-
-      Gtk.Box.Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 0);
-      Gtk.Frame.Add (Frame, Widget => Box);
-
-      Gtk_New_Vbox (Vbox2, Homogeneous => False, Spacing => 0);
-      Pack_Start (In_Box  => Box,
-                  Child   => Vbox2,
-                  Expand  => True,
-                  Fill    => True,
-                  Padding => 0);
-
-      Gtk_New (Scrolled);
-      Set_Policy (Scrolled,
-                  Gtk.Enums.Policy_Automatic,
-                  Gtk.Enums.Policy_Always);
-      Pack_Start (In_Box  => VBox2,
-                  Child   => Scrolled,
-                  Expand  => True,
-                  Fill    => True,
-                  Padding => 0);
-      Set_Usize (Scrolled, 170, 500);
-
-      Gtk_New (Tree, 1);
-      Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
-      Add_With_Viewport (Scrolled, Tree);
-      Fill_Gtk_Tree (Tree, True);
-
-      Gtk_New (Gtk_Demo_Frames (2));
-      Set_Shadow_Type (Gtk_Demo_Frames (2), The_Type => Gtk.Enums.Shadow_None);
-      Pack_End (In_Box  => Box,
-                Child   => Gtk_Demo_Frames (2),
-                Expand  => True,
-                Fill    => True,
-                Padding => 0);
-      Set_Usize (Gtk_Demo_Frames (2), 550, 500);
-
-      --  Third page: Libartdemos
-
-      Gtk_New (Frame);
-      Gtk_New (Label, "Image manipulation");
-      Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
-
-      Libart_Demo.Run (Frame);
+      Create_Demo_Frame (Win, 1, "Gtk demo", False, False);
+      Create_Demo_Frame (Win, 2, "GtkAda demo", True, False);
+      Create_Demo_Frame (Win, 3, "Image manipulation", False, True);
 
       --  Fourth page: OpenGL demos
       Gtk_New (Frame);
