@@ -44,6 +44,14 @@ with Interfaces.C.Strings;
 
 package body Create_Status is
 
+   type Do_Not_Use_This_Type is new Gtk_Status_Bar_Record with null record;
+   package Do_Not_Use_This_Package is
+     new Signal.Object_Callback (Do_Not_Use_This_Type);
+   --
+   -- FIXME : The previous two lines are there to prevent a small technical
+   -- FIMXE : problem found in GNAT-3.11p (a.k.a a bug) during compilation.
+   -- FIXME : Remove them when GNAT-3.12p is released.
+
    package Status_Cb is new Signal.Object_Callback (Gtk_Status_Bar_Record);
 
    Window  : aliased Gtk.Window.Gtk_Window;
