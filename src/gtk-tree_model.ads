@@ -354,6 +354,11 @@ package Gtk.Tree_Model is
 
    end Model_Data;
 
+   function Get_String
+        (Tree_Model : access Gtk_Tree_Model_Record'Class;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint)
+        return String;
    --  procedure Tree_Model_Get_Valist
    --  (Tree_Model : access Gtk_Tree_Model_Record'Class;
    --   Iter       : Gtk_Tree_Iter;

@@ -31,6 +31,8 @@ with Gtk; use Gtk;
 with Interfaces.C.Strings;
 with System;
 
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+
 package body Gtk.Tree_Model is
 
    -------------
@@ -852,6 +854,28 @@ package body Gtk.Tree_Model is
       end Get;
 
    end Model_Data;
+
+   function Get_String
+     (Tree_Model : access Gtk_Tree_Model_Record'Class;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint)
+     return String
+   is
+      A : Chars_Ptr := New_String ("");
+      procedure Internal
+        (Tree_Model : System.Address;
+         Iter       : System.Address;
+         Column     : Gint;
+         Value      : System.Address);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get");
+   begin
+      Internal (Get_Object (Tree_Model),
+                Iter'Address,
+                Column,
+                A'Address);
+
+      return Value (A);
+   end Get_String;
 
 --    ---------------------------
 --    -- Tree_Model_Get_Valist --
