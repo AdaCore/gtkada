@@ -67,8 +67,7 @@ package Gdk.Event is
    procedure Set_Event_Type (Event      : in out Gdk_Event;
                              Event_Type : in     Types.Gdk_Event_Type);
 
-   procedure Get_Window (Event  : in     Gdk_Event;
-                         Window :    out Gdk_Window'Class);
+   function Get_Window (Event  : in     Gdk_Event) return Gdk_Window;
 
    procedure Set_Window (Event  : in out Gdk_Event;
                          Window : in     Gdk.Window.Gdk_Window'Class);

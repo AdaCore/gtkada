@@ -184,14 +184,14 @@ package body Gdk.Event is
    --  Get_Window  --
    ------------------
 
-   procedure Get_Window (Event  : in     Gdk_Event;
-                         Window :    out Gdk_Window'Class) is
+   function Get_Window (Event  : in Gdk_Event) return Gdk_Window is
       function Internal (Event : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gdk_event_any_get_window");
+      Win : Gdk_Window;
    begin
-      Set_Object (Window, Internal (Get_Object (Event)));
+      Set_Object (Win, Internal (Get_Object (Event)));
+      return Win;
    end Get_Window;
-
 
    -------------
    --  Get_X  --
