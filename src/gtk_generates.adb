@@ -859,6 +859,7 @@ package body Gtk_Generates is
             Put_Line (File, '"' & S (First .. Last - 1) & """);");
             Put_Line (File, "   Menu.Append (" &
               To_Ada (Get_Field (N, "name").all) & "_Menu, The_Menu_Item);");
+            Put_Line (File, "   Show (The_Menu_Item);");
 
             exit when Last >= S'Last;
 
