@@ -61,7 +61,7 @@ $(PIXBUF_OBJECTS):: force
 	@if [ -f ../.devel ]; then \
 	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) ${@:%.o=%} ;\
 	else \
-	   $(GNATMAKE) -I.. $(GNATFLAGS) $(FPIC) ${@:%.o=%}; \
+	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS) $(FPIC) ${@:%.o=%}; \
 	fi
 
 misc_pixbuf.o: misc_pixbuf.c

@@ -65,7 +65,7 @@ $(OPENGL_OBJECTS):: force
 	@if [ -f ../.devel ]; then \
 	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) -c $(patsubst %.o,%.adb,$@); \
 	else \
-	   $(GNATMAKE) -I.. $(GNATFLAGS) $(FPIC) -c $(patsubst %.o,%.adb,$@); \
+	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS) $(FPIC) -c $(patsubst %.o,%.adb,$@); \
 	fi
  
 gtkglarea.o: gtkglarea.h gtkglarea.c
