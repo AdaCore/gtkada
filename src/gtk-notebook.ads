@@ -275,6 +275,18 @@ package Gtk.Notebook is
    -- Page properties --
    ---------------------
 
+   function Get_Allocation_Width (Page : Gtk_Notebook_Page) return Guint;
+   --  Return the current width of the page.
+
+   function Get_Allocation_Height (Page : Gtk_Notebook_Page) return Guint;
+   --  Return the current height of the page.
+
+   function Get_Allocation_X (Page : Gtk_Notebook_Page) return Gint;
+   --  Return the current position of the page, relative to its parent.
+
+   function Get_Allocation_Y (Page : Gtk_Notebook_Page) return Gint;
+   --  Return the current position of the page, relative to its parent.
+
    function Get_Tab_Label
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
@@ -394,4 +406,11 @@ private
    type Gtk_Notebook_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
    pragma Import (C, Get_Type, "gtk_notebook_get_type");
+   pragma Import
+     (C, Get_Allocation_Width, "ada_notebook_page_allocation_width");
+   pragma Import
+     (C, Get_Allocation_Height, "ada_notebook_page_allocation_height");
+   pragma Import (C, Get_Allocation_X, "ada_notebook_page_allocation_x");
+   pragma Import (C, Get_Allocation_Y, "ada_notebook_page_allocation_y");
+
 end Gtk.Notebook;
