@@ -149,14 +149,21 @@ package body Gtk.Editable is
 
       procedure Internal_G_Free (Mem : in Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal_G_Free, "g_free");
+      use type Interfaces.C.Strings.chars_ptr;
 
       Temp : constant Interfaces.C.Strings.chars_ptr :=
-         Internal (Get_Object (Editable), Start_Pos, End_Pos);
-      Result : constant String := Interfaces.C.Strings.Value (Temp);
-
+        Internal (Get_Object (Editable), Start_Pos, End_Pos);
    begin
-      Internal_G_Free (Temp);
-      return Result;
+      if Temp /= Interfaces.C.Strings.Null_Ptr then
+         declare
+            Result : constant String := Interfaces.C.Strings.Value (Temp);
+         begin
+            Internal_G_Free (Temp);
+            return Result;
+         end;
+      else
+         return "";
+      end if;
    end Get_Chars;
 
    ------------------------
