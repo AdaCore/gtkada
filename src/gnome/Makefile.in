@@ -44,7 +44,7 @@ ifeq ($(BUILD_SHARED),yes)
 endif
 
 $(ARCHIVENAME): gnome
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) gnome.o gnome-*.o gtk-clock.o 
+	$(AR) $(ARFLAGS) $(ARCHIVENAME) gnome.o gnome-*.o gtk-clock.o \
 	  gtk-dial.o gtk-pixmap_menu_item.o
 
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
