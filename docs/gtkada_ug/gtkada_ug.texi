@@ -2773,7 +2773,7 @@ Then start a new project (or edit an old one). It is easy enough to use,
 simply select the widget you want to add to your interface, and click!
 
 Starting from version 0.4.1 of Glade, you can directly create Ada files from
-Glade by selection Ada95 as the language for your project. By doing so,
+Glade by selecting Ada95 as the language for your project. By doing so,
 you will tell Glade to call gate internally when using the "Write Source Code"
 functionality.
 
