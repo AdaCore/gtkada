@@ -346,10 +346,13 @@ package Gtkada.Canvas is
 
    procedure For_Each_Link
      (Canvas  : access Interactive_Canvas_Record;
-      Execute : Link_Processor);
+      Execute : Link_Processor;
+      From, To : Canvas_Item := null);
    --  Execute an action on each of the links contained in the canvas.
    --  If Execute returns False, we stop traversing the list of links.
    --  It is safe to remove the link from the list in Link_Processor.
+   --
+   --  (From, To) can be used to limit what links are looked for.
    --
    --  ??? Would be nicer to give direct access to the Graph iterators
 

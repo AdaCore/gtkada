@@ -838,12 +838,12 @@ package body Gtkada.Canvas is
 
          Gdk_New (Canv.Anim_GC, Get_Window (Canvas));
          Set_Function (Canv.Anim_GC, Invert);
-         Set_Line_Attributes
-           (Canv.Anim_GC,
-            Line_Width => 0,
-            Line_Style => Line_On_Off_Dash,
-            Cap_Style  => Cap_Butt,
-            Join_Style => Join_Miter);
+         --  Set_Line_Attributes
+         --    (Canv.Anim_GC,
+         --     Line_Width => 0,
+         --     Line_Style => Line_On_Off_Dash,
+         --     Cap_Style  => Cap_Butt,
+         --     Join_Style => Join_Miter);
          Set_Exposures (Canv.Anim_GC, False);
       end if;
    end Realized;
@@ -2338,9 +2338,11 @@ package body Gtkada.Canvas is
 
    procedure For_Each_Link
      (Canvas  : access Interactive_Canvas_Record;
-      Execute : Link_Processor)
+      Execute : Link_Processor;
+      From, To : Canvas_Item := null)
    is
-      Iter : Edge_Iterator := First (Canvas.Children);
+      Iter : Edge_Iterator := First
+        (Canvas.Children, Vertex_Access (From), Vertex_Access (To));
       Link : Canvas_Link;
    begin
       while not At_End (Iter) loop
