@@ -228,7 +228,8 @@ package body My_Widget is
       Widget.Radius := 60;
 
       --  We want to get Button_Release events
-      Set_Events (Widget, Exposure_Mask or Button_Release_Mask);
+      Set_Events (Widget, Exposure_Mask or Button_Release_Mask
+                  or Button_Press_Mask);
 
       --  Set up the appropriate callbacks to redraw, ...
       Draw_Cb.Connect (Widget, "expose_event",
