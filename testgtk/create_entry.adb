@@ -112,7 +112,7 @@ package body Create_Entry is
          Pack_Start (Box2, Check, False, True, 0);
          Id := Entry_Cb.Connect (Check, "toggled", Toggle_Editable'Access,
                                  The_Entry);
-         Set_State (Check, True);
+         Set_Active (Check, True);
          Show (Check);
 
          Gtk_New_Hseparator (Separator);

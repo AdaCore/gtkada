@@ -72,7 +72,7 @@ package body Create_Radio_Button is
          Show (Button);
 
          Gtk_New (Button, Group (Button), "button2");
-         Set_State (Button, True);
+         Set_Active (Button, True);
          Pack_Start (Box2, Button, True, True, 0);
          Show (Button);
 

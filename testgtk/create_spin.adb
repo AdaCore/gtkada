@@ -198,13 +198,13 @@ package body Create_Spin is
          Id := Spin_Cb.Connect (Check, "clicked", Toggle_Snap'Access,
                                 Spinner1);
          Pack_Start (Vbox, Check, True, True, 0);
-         Set_State (Check, True);
+         Set_Active (Check, True);
 
          Gtk_New (Check, "Snap Numeric only input mode");
          Id := Spin_Cb.Connect (Check, "clicked", Toggle_Numeric'Access,
                                 Spinner1);
          Pack_Start (Vbox, Check, True, True, 0);
-         Set_State (Check, True);
+         Set_Active (Check, True);
 
          Gtk_New (Label, "");
          Gtk_New_Hbox (Hbox, False, 0);

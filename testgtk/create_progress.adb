@@ -221,7 +221,7 @@ package body Create_Progress is
          Gr := Group (Menu_Item);
          Append (Menu, Menu_Item);
          if I = History then
-            Set_State (Menu_Item, True);
+            Set_Active (Menu_Item, True);
          end if;
          Show (Menu_Item);
       end loop;

@@ -424,17 +424,17 @@ package body Create_Tree is
 
          Gtk_New (Draw_Line_Button, "Draw Line");
          Pack_Start (Box4, Draw_Line_Button, True, True, 0);
-         Set_State (Draw_Line_Button, True);
+         Set_Active (Draw_Line_Button, True);
          Show (Draw_Line_Button);
 
          Gtk_New (View_Line_Button, "View line mode");
          Pack_Start (Box4, View_Line_Button, True, True, 0);
-         Set_State (View_Line_Button, True);
+         Set_Active (View_Line_Button, True);
          Show (View_Line_Button);
 
          Gtk_New (No_Root_Item_Button, "Without Root Item");
          Pack_Start (Box4, No_Root_Item_Button, True, True, 0);
-         Set_State (No_Root_Item_Button, True);
+         Set_Active (No_Root_Item_Button, True);
          Show (No_Root_Item_Button);
 
          --  Create recursion parameter

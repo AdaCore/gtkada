@@ -161,13 +161,13 @@ package body Create_Text is
          Gtk_New (Check, "Editable");
          Pack_Start (Hbox, Check, False, False, 0);
          Id := Text_Cb.Connect (Check, "toggled", Toggle_Editable'Access, Text);
-         Set_State (Check, True);
+         Set_Active (Check, True);
          Show (Check);
 
          Gtk_New (Check, "Wrap Words");
          Pack_Start (Hbox, Check, False, False, 0);
          Id := Text_Cb.Connect (Check, "toggled", Word_Wrap'Access, Text);
-         Set_State (Check, False);
+         Set_Active (Check, False);
          Show (Check);
 
          Gtk_New_Hseparator (Separator);
