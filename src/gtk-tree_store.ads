@@ -145,8 +145,8 @@ package Gtk.Tree_Store is
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
      return Gint;
-   --  Returns the depth of Iter.  This will be 0 for anything on the root level,
-   --  1 for anything down a level, etc.
+   --  Returns the depth of Iter.  This will be 0 for anything on the root
+   --  level, 1 for anything down a level, etc.
 
    procedure Clear (Tree_Store : access Gtk_Tree_Store_Record);
    --  Removes all rows from Tree_Store

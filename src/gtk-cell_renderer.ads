@@ -32,7 +32,6 @@ with Gdk.Rectangle;
 with Gdk.Window;
 with Gtk;
 with Gtk.Cell_Editable;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Object;
 with Gtk.Widget;
 with Glib.Glist;
