@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,24 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  A Gtk_Alignment controls the size and alignment of its single child inside
+--  the area allocated to the alignment widget.
+--
+--  The scale/size settings indicates how much the child will expand to fill
+--  the container. The values should be in the range 0.0 (no expansion) to 1.0
+--  (full expansion). Note that the scale only indicates the minimal size for
+--  the child, it does not force an absolute size.
+--
+--  The alignment settings indicates where in the alignment widget the child
+--  should be located. The values are in the range 0.0 (top or left) to 1.0
+--  (bottom or right). These settings are irrelevant if the child is fully
+--  expanded.
+--
+--  </description>
+--  <c_version>1.2.6</c_version>
+
 with Gtk.Object;
 with Gtk.Bin;
 
@@ -35,38 +53,70 @@ package Gtk.Alignment is
    type Gtk_Alignment_Record is new Gtk.Bin.Gtk_Bin_Record with private;
    type Gtk_Alignment is access all Gtk_Alignment_Record'Class;
 
+   procedure Gtk_New (Alignment : out Gtk_Alignment;
+                      Xalign    : in Gfloat;
+                      Yalign    : in Gfloat;
+                      Xscale    : in Gfloat;
+                      Yscale    : in Gfloat);
+   --  Creates a new alignment widget, with initial values for the settings.
+   --  See the description of the settings above.
+
+   procedure Initialize (Alignment : access Gtk_Alignment_Record'Class;
+                         Xalign    : in Gfloat;
+                         Yalign    : in Gfloat;
+                         Xscale    : in Gfloat;
+                         Yscale    : in Gfloat);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Alignment internally.
+
+   procedure Set (Alignment : access Gtk_Alignment_Record;
+                  Xalign    : in Gfloat;
+                  Yalign    : in Gfloat;
+                  Xscale    : in Gfloat;
+                  Yscale    : in Gfloat);
+   --  Modifies the settings for the alignment. See the description of the
+   --  settings above.
+
    function Get_Xalign (Alignment : access Gtk_Alignment_Record) return Gfloat;
-   function Get_Xscale (Alignment : access Gtk_Alignment_Record) return Gfloat;
+   --  Returns the X alignment value. Its value is in the range 0.0 .. 1.0,
+   --  from left to right.
+
    function Get_Yalign (Alignment : access Gtk_Alignment_Record) return Gfloat;
+   --  Returns the Y alignment value. Its value is in the range 0.0 .. 1.0,
+   --  from top to bottom.
+
+   function Get_Xscale (Alignment : access Gtk_Alignment_Record) return Gfloat;
+   --  Returns the X expansion value, in the range 0.0 .. 1.0, from no
+   --  expansion to full expansion.
+
    function Get_Yscale (Alignment : access Gtk_Alignment_Record) return Gfloat;
-   procedure Gtk_New
-     (Alignment : out Gtk_Alignment;
-      Xalign    : in Gfloat;
-      Yalign    : in Gfloat;
-      Xscale    : in Gfloat;
-      Yscale    : in Gfloat);
-   procedure Initialize
-     (Alignment : access Gtk_Alignment_Record'Class;
-      Xalign    : in Gfloat;
-      Yalign    : in Gfloat;
-      Xscale    : in Gfloat;
-      Yscale    : in Gfloat);
-   procedure Set
-     (Alignment : access Gtk_Alignment_Record;
-      Xalign    : in Gfloat;
-      Yalign    : in Gfloat;
-      Xscale    : in Gfloat;
-      Yscale    : in Gfloat);
+   --  Returns the Y expansion value, in the range 0.0 .. 1.0, from no
+   --  expansion to full expansion.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
 
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type);
+   --  Gate internal function
 
-   procedure Generate
-     (Alignment : in out Object.Gtk_Object; N : in Node_Ptr);
+   procedure Generate (Alignment : in out Object.Gtk_Object;
+                       N         : in Node_Ptr);
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
    type Gtk_Alignment_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
-
+   pragma Import (C, Get_Type, "gtk_alignment_get_type");
 end Gtk.Alignment;
