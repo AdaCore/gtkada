@@ -8,6 +8,12 @@ fi
 echo Generating Ada files...
 
 prj=`gate.ex -p $*`
+
+if [ $? != 0 ]; then
+  echo "Couldn't parse $*. Exiting."
+  exit 1
+fi
+
 gt=".gate/$prj"
 mkdir -p $gt > /dev/null 2>&1
 tmp=$gt/tmp
