@@ -2894,6 +2894,11 @@ package body Gtkada.MDI is
             then
                Note := Get_Notebook (C);
                if Note /= null then
+                  if Traces then
+                     Put_Line ("Find_Current_In_Central Position="
+                               & Position'Img
+                               & " Found existing notebook");
+                  end if;
                   return Note;
                end if;
             elsif C.Position >= Position_Default then
@@ -2907,21 +2912,29 @@ package body Gtkada.MDI is
          List := Next (List);
       end loop;
 
-      Note := First_Non_Side;
+      if Child_Position (Position)
+         not in Position_Bottom .. Position_Right
+      then
+         Note := First_Non_Side;
+      end if;
 
       --  Look for an empty notebook if there is any, unless we are using a
       --  position on one of the sides
       if Note = null then
          Empty := Find_Empty_Notebook (MDI);
-      end if;
 
-      if Child_Position (Position)
-         not in Position_Bottom .. Position_Right
-      then
-         Note := Empty;
+         if Child_Position (Position)
+            not in Position_Bottom .. Position_Right
+         then
+            Note := Empty;
+         end if;
       end if;
 
       if Note = null then
+         if Traces then
+            Put_Line ("Find_Current_In_Central Position=" & Position'Img
+                      & " Creating new notebook");
+         end if;
          Note := Create_Notebook (MDI);
 
          if MDI.Items = Widget_List.Null_List
