@@ -68,28 +68,6 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Border_Width);
    end Border_Width;
 
-   --------------------
-   -- Disable_Resize --
-   --------------------
-
-   procedure Disable_Resize (Container : in out Gtk_Container) is
-      procedure Internal (Container : in System.Address);
-      pragma Import (C, Internal, "gtk_container_disable_resize");
-   begin
-      Internal (Get_Object (Container));
-   end Disable_Resize;
-
-   -------------------
-   -- Enable_Resize --
-   -------------------
-
-   procedure Enable_Resize (Container : in out Gtk_Container) is
-      procedure Internal (Container : in System.Address);
-      pragma Import (C, Internal, "gtk_container_enable_resize");
-   begin
-      Internal (Get_Object (Container));
-   end Enable_Resize;
-
    -----------------
    -- Need_Resize --
    -----------------

@@ -42,10 +42,6 @@ package Gtk.Container is
    procedure Remove (Container : in out Gtk_Container;
                      Widget : in Gtk.Widget.Gtk_Widget'Class);
 
-   procedure Disable_Resize (Container : in out Gtk_Container);
-
-   procedure Enable_Resize (Container : in out Gtk_Container);
-
    procedure Block_Resize (Container : in out Gtk_Container);
 
    procedure Unblock_Resize (Container : in out Gtk_Container);
