@@ -5,14 +5,9 @@ with Gdk.Types;    use Gdk.Types;
 with Gdk.Window;   use Gdk.Window;
 with Gdk.Window_Attr; use Gdk.Window_Attr;
 
-with Gtk.Object;    use Gtk.Object;
 with Gtk.Widget;    use Gtk.Widget;
-with Gtk.Window;    use Gtk.Window;
-with Gtk.Arguments; use Gtk.Arguments;
 with Gtk.Style;     use Gtk.Style;
 with Gtk.Handlers;  use Gtk.Handlers;
-
-with Gtkada.Types;  use Gtkada.Types;
 
 with System;
 
@@ -329,7 +324,7 @@ package body Gtk_Dial is
       if Get_Count (Event) > 0 then
          return False;
       end if;
-  
+
       Gdk.Window.Clear_Area (Get_Window (Dial),
         0, 0,
         Gint (Get_Allocation_Width (Dial)),
@@ -381,7 +376,7 @@ package body Gtk_Dial is
          return False;
       end if;
 
-      Increment := (100.0 * PI) / (Gdouble (Dial.Radius * Dial.Radius));
+      Increment := (100.0 * Pi) / (Gdouble (Dial.Radius * Dial.Radius));
       Inc := Upper - Lower;
 
       while Inc < 100 loop
@@ -395,7 +390,7 @@ package body Gtk_Dial is
       Last := -1.0;
 
       for J in 0 .. Inc loop
-         Theta := Gdouble (J) * PI / (18.0 * Gdouble (Inc) / 24.0) - PI / 6.0;
+         Theta := Gdouble (J) * Pi / (18.0 * Gdouble (Inc) / 24.0) - Pi / 6.0;
 
          if Theta - Last >= Increment then
             Last := Theta;
@@ -457,20 +452,21 @@ package body Gtk_Dial is
       D_Perpendicular : Gdouble;
 
    begin
-      --  Determine if button press was within pointer region - we 
+      --  Determine if button press was within pointer region - we
       --  do this by computing the parallel and perpendicular distance of
       --  the point where the mouse was pressed from the line passing through
       --  the pointer
-  
+
       Dx := Gint (Get_X (Event) - Gdouble (Get_Allocation_Width (Dial)) / 2.0);
-      Dy := Gint (Gdouble (Get_Allocation_Height (Dial)) / 2.0 - Get_Y (Event));
-  
+      Dy :=
+        Gint (Gdouble (Get_Allocation_Height (Dial)) / 2.0 - Get_Y (Event));
+
       S := Sin (Dial.Angle);
       C := Cos (Dial.Angle);
-  
+
       D_Parallel := S * Gdouble (Dy) + C * Gdouble (Dx);
       D_Perpendicular := abs (S * Gdouble (Dx) - C * Gdouble (Dy));
-  
+
       if Dial.Button = 0 and then
         D_Perpendicular < Gdouble (Dial.Pointer_Width) / 2.0 and then
         D_Parallel > Gdouble (-Dial.Pointer_Width)
@@ -498,13 +494,13 @@ package body Gtk_Dial is
          Dial.Button := 0;
 
          if Dial.Policy = Update_Delayed then
-	    Timeout_Remove (Dial.Timer);
+            Timeout_Remove (Dial.Timer);
          end if;
-      
+
          if Dial.Policy /= Update_Continuous and then
-	   Dial.Old_Value /= Get_Value (Dial.Adjustment)
+           Dial.Old_Value /= Get_Value (Dial.Adjustment)
          then
-	    Adj_Cb.Emit_By_Name (Dial.Adjustment, "value_changed");
+            Adj_Cb.Emit_By_Name (Dial.Adjustment, "value_changed");
          end if;
       end if;
 
@@ -516,7 +512,7 @@ package body Gtk_Dial is
    -- Motion_Notify --
    -------------------
 
-   function Motion_notify
+   function Motion_Notify
      (Dial : access Gtk_Dial_Record'Class; Event : Gdk_Event)
       return Boolean
    is
@@ -533,18 +529,18 @@ package body Gtk_Dial is
          if Get_Is_Hint (Event)
            or else Get_Window (Event) /= Get_Window (Dial)
          then
-	    Get_Pointer (Get_Window (Dial), X, Y, Mods, Window);
+            Get_Pointer (Get_Window (Dial), X, Y, Mods, Window);
          end if;
 
          case Dial.Button is
-	    when 1 => Mask := Button1_Mask;
-	    when 2 => Mask := Button2_Mask;
-	    when 3 => Mask := Button3_Mask;
-	    when others => Mask := 0;
+            when 1 => Mask := Button1_Mask;
+            when 2 => Mask := Button2_Mask;
+            when 3 => Mask := Button3_Mask;
+            when others => Mask := 0;
          end case;
 
          if (Mods and Mask) /= 0 then
-	    Update_Mouse (Dial, X, Y);
+            Update_Mouse (Dial, X, Y);
          end if;
       end if;
 
@@ -580,24 +576,24 @@ package body Gtk_Dial is
       Old_Value := Get_Value (Dial.Adjustment);
       Dial.Angle := Arctan (Gdouble (Yc - Y), Gdouble (X - Xc));
 
-      if Dial.Angle < -PI / 2.0 then
-         Dial.Angle := Dial.Angle + 2.0 * PI;
+      if Dial.Angle < -Pi / 2.0 then
+         Dial.Angle := Dial.Angle + 2.0 * Pi;
       end if;
 
-      if Dial.Angle < -PI / 6.0 then
-         Dial.Angle := -PI / 6.0;
+      if Dial.Angle < -Pi / 6.0 then
+         Dial.Angle := -Pi / 6.0;
       end if;
 
-      if Dial.Angle > 7.0 * PI/6.0 then
-         Dial.Angle := 7.0 * PI/6.0;
+      if Dial.Angle > 7.0 * Pi/6.0 then
+         Dial.Angle := 7.0 * Pi/6.0;
       end if;
 
       Set_Value
         (Dial.Adjustment,
          Get_Lower (Dial.Adjustment) +
-           (7.0 * PI / 6.0 - Dial.Angle) *
+           (7.0 * Pi / 6.0 - Dial.Angle) *
              (Get_Upper (Dial.Adjustment) - Get_Lower (Dial.Adjustment)) /
-               (4.0 * PI / 3.0));
+               (4.0 * Pi / 3.0));
 
       if Get_Value (Dial.Adjustment) /= Old_Value then
          if Dial.Policy = Update_Continuous then
@@ -613,7 +609,7 @@ package body Gtk_Dial is
                Dial.Timer := Timeout.Add
                  (Scroll_Delay_Length, Timer'Access, Gtk_Dial (Dial));
             end if;
-          end if;
+         end if;
       end if;
 
       exception
@@ -628,7 +624,7 @@ package body Gtk_Dial is
       New_Value : Gdouble;
    begin
       New_Value := Get_Value (Dial.Adjustment);
-  
+
       if New_Value < Get_Lower (Dial.Adjustment) then
          New_Value := Get_Lower (Dial.Adjustment);
       end if;
@@ -642,8 +638,8 @@ package body Gtk_Dial is
          Adj_Cb.Emit_By_Name (Dial.Adjustment, "value_changed");
       end if;
 
-      Dial.Angle := 7.0 * PI / 6.0 -
-        (Gdouble (New_Value - Get_Lower (Dial.Adjustment))) * 4.0 * PI / 3.0 /
+      Dial.Angle := 7.0 * Pi / 6.0 -
+        (Gdouble (New_Value - Get_Lower (Dial.Adjustment))) * 4.0 * Pi / 3.0 /
           Gdouble (Get_Upper (Dial.Adjustment) - Get_Lower (Dial.Adjustment));
       Draw (Dial);
    end Update;

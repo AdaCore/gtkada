@@ -7,6 +7,7 @@ package body Packbox is
    function Delete_Event
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean
    is
+      pragma Unreferenced (Widget);
    begin
       Gtk.Main.Main_Quit;
       return False;
@@ -66,6 +67,7 @@ package body Packbox is
    end Make_Box;
 
    procedure Quit (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Widget);
    begin
       Gtk.Main.Main_Quit;
    end Quit;

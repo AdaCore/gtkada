@@ -6,13 +6,13 @@ use  Gtk.Window, Gtk.Button, Gtk.Box, Gtk.Separator, Gtk.Label, Gtk.Box;
 with Packbox; use Packbox;
 
 procedure Packbox_Test is
-    Window     : Gtk_Window;
-    Button     : Gtk_Button;
-    Box1, Box2 : Gtk_Box;
-    Separator  : Gtk_Separator;
-    Label      : Gtk_Label;
-    Quit_Box   : Gtk_Box;
-    Which      : Integer;
+   Window     : Gtk_Window;
+   Button     : Gtk_Button;
+   Box1, Box2 : Gtk_Box;
+   Separator  : Gtk_Separator;
+   Label      : Gtk_Label;
+   Quit_Box   : Gtk_Box;
+   Which      : Integer;
 
 begin
    Gtk.Main.Init;

@@ -1,4 +1,3 @@
-with Glib; use Glib;
 with Gtk.Main;
 with Ada.Float_Text_IO;
 
@@ -7,7 +6,7 @@ package body Dial_Handlers is
    use Gtk.Adjustment, Gtk.Label;
 
    procedure Value_Changed
-     (Adjustment : access Gtk_Adjustment_Record'Class; 
+     (Adjustment : access Gtk_Adjustment_Record'Class;
       Label : Gtk_Label)
    is
       Buffer : String (1 .. 5) := (others => ' ');
@@ -18,6 +17,7 @@ package body Dial_Handlers is
    end Value_Changed;
 
    procedure Destroy (Window : access Gtk.Window.Gtk_Window_Record'Class) is
+      pragma Unreferenced (Window);
    begin
       Gtk.Main.Gtk_Exit (0);
    end Destroy;
