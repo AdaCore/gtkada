@@ -39,8 +39,8 @@
 with Glib;                use Glib;
 with Gdk;                 use Gdk;
 with System;
-with Glib.Glade;          use Glib.Glade, Glib.Glade.Glib_XML;
-with Ada.Text_IO;         use Ada.Text_IO;
+with Glib.Glade; use Glib.Glade, Glib.Glade.Glib_XML;
+with Ada.Text_IO; use Ada.Text_IO;
 pragma Warnings (Off, Glib.Glade);
 pragma Warnings (Off, Glib_XML);
 pragma Warnings (Off, Ada.Text_IO);
@@ -108,6 +108,11 @@ package Gtk is
    Gtk_Type_Pointer : constant Gtk_Type := 15;  --  a general pointer type.
    Gtk_Type_Object  : constant Gtk_Type := 21;  --  One of the widgets/objects
 
+   type Gtk_Notebook_Page is new Gdk.C_Proxy;
+   --  A page of the notebook.
+   --  It can contain a single child, and is also associated with a tab
+   --  label used to select that page in the notebook.
+
    function Gtk_Type_Gdk_Event return Gtk_Type;
    --  Return the type corresponding to a Gdk_Event.
    --  Note that this function must be called after Gtk+ has been initialized.
@@ -128,14 +133,51 @@ package Gtk is
    --  any of the widgets) is "null", since this relates to the underlying
    --  C object.
 
+   ------------------------
+   -- Interfacing with C --
+   ------------------------
+   --  The following functions are made public so that one can easily create
+   --  new widgets outside the Gtk package hierarchy.
+   --  Only experienced users should make use of these functions.
+
    function Get_Object (Object : access Root_Type'Class) return System.Address;
    --  Access the underlying C pointer.
-   --  This function needs to be public so that one can easily create new
-   --  widgets, not in the Gtk package hierarchy.
 
-   procedure Set_Object (Object : access Root_Type'Class;
-                         Value  : in     System.Address);
+   procedure Set_Object
+     (Object : access Root_Type'Class;
+      Value  : in     System.Address);
    --  Modify the underlying C pointer.
+
+   procedure Initialize_User_Data (Obj : access Root_Type'Class);
+   --  Sets a user data field for the C object associated with Obj.
+   --  This field will be used so that it is possible, knowing a
+   --  C object, to get the full ada object.
+
+   function Get_User_Data
+     (Obj  : in System.Address;
+      Stub : in Root_Type'Class) return Root_Type_Access;
+   --  Get the user data that was set by GtkAda.
+   --  If the Data is not set, return a new access type, that points to
+   --  a structure with the same tag as Stub.
+
+   function Count_Arguments
+     (The_Type : Gtk_Type; Name : in String) return Guint;
+   --  Return the number of arguments used in the handlers for the signal.
+   --  Note that in the Connect functions, we always test whether the user
+   --  has asked for *at most* the number of arguments defined by gtk+ for the
+   --  callback. This is because having less argument is authorized (the
+   --  extra parameters passed by gtk+ will simply be ignored), whereas having
+   --  more arguments is impossible (they would never be set).
+   --  Note that we provide this procedure here to avoid circularities.
+
+   function Argument_Type
+     (The_Type : Gtk_Type;
+      Name     : in String;
+      Num      : in Gint) return Gtk_Type;
+   --  Return the type of the num-th argument for the handlers of signal name.
+   --  If Num is negative, return the type returned by the handlers for this
+   --  signal.
+   --  Note that we provide this procedure here to avoid circularities.
 
 private
 
@@ -156,23 +198,12 @@ private
    --  The Quark version is to speed up the string lookup (this is done
    --  only once).
 
-   procedure Initialize_User_Data (Obj : access Root_Type'Class);
-   --  Sets a user data field for the C object associated with Obj.
-   --  This field will be used so that it is possible, knowing a
-   --  C object, to get the full ada object.
-
-   function Get_User_Data (Obj : in System.Address; Stub : in Root_Type'Class)
-                           return Root_Type_Access;
-   --  Get the user data that was set by GtkAda.
-   --  If the Data is not set, then returns a new access type, that points to
-   --  a structure with the same tag as Stub.
-
    function Conversion_Function
      (Obj : System.Address; Stub : Root_Type'Class) return Root_Type_Access;
    --  This function has to convert a C object to an Ada object.
    --  It will first try all the registered functions (in
-   --  Gtk.Type_Conversion_Hooks) and by default, will create a Gtk.Object,
-   --  no matter what the real C type is.
+   --  Gtk.Type_Conversion_Hooks) and by default, will create a Stub'Class
+   --  object, no matter what the real C type is.
    --  Stub is the expected type.
 
    --  </doc_ignore>
