@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Button;
+with Gtk.Menu;
 with Gtk.Widget;
 
 package Gtk.Option_Menu is
@@ -36,8 +37,8 @@ package Gtk.Option_Menu is
 
    procedure Gtk_New (Option_Menu : out Gtk_Option_Menu);
 
-   procedure Get_Menu (Option_Menu : in  Gtk_Option_Menu;
-                       Menu        : out Widget.Gtk_Widget'Class);
+   function Get_Menu (Option_Menu : in  Gtk_Option_Menu)
+                      return Gtk.Menu.Gtk_Menu;
 
    procedure Set_Menu (Option_Menu : in out Gtk_Option_Menu;
                        Menu        : in     Widget.Gtk_Widget'Class);

@@ -35,13 +35,16 @@ package body Gtk.Option_Menu is
    -- Get_Menu --
    --------------
 
-   procedure Get_Menu (Option_Menu : in  Gtk_Option_Menu;
-                       Menu        : out Widget.Gtk_Widget'Class) is
+   function Get_Menu (Option_Menu : in  Gtk_Option_Menu)
+                      return Gtk.Menu.Gtk_Menu
+   is
       function Internal (Option_Menu : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_option_menu_get_menu");
+      Menu : Gtk.Menu.Gtk_Menu;
    begin
       Set_Object (Menu, Internal (Get_Object (Option_Menu)));
+      return Menu;
    end Get_Menu;
 
    -------------
