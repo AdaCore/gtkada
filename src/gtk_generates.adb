@@ -20,17 +20,28 @@
 
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Strings.Maps;  use Ada.Strings.Maps;
+with System;
 
 package body Gtk_Generates is
 
    use Glib;
 
+   Widget : System.Address;
+
+   function Widget_New
+     (T : Glib.GType; Addr : System.Address := System.Null_Address)
+      return System.Address;
+   pragma Import (C, Widget_New, "gtk_widget_new");
+
+   procedure Widget_Destroy (Widget : System.Address);
+   pragma Import (C, Widget_Destroy, "gtk_widget_destroy");
+
    procedure Accel_Label_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_accel_label_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
          Gen_New (N, "Accel_Label", Adjust (Get_Field (N, "label").all),
            File => File,
@@ -40,15 +51,16 @@ package body Gtk_Generates is
            File => File, Prefix => """", Postfix => """");
       end if;
 
+      Widget_Destroy (Widget);
       Label_Generate (N, File);
    end Accel_Label_Generate;
 
    procedure Alignment_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_alignment_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New
         (N, "Alignment",
          To_Float (Get_Field (N, "xalign").all),
@@ -56,27 +68,29 @@ package body Gtk_Generates is
          To_Float (Get_Field (N, "xscale").all),
          To_Float (Get_Field (N, "xscale").all), "",
          File => File);
+      Widget_Destroy (Widget);
       Bin_Generate (N, File);
    end Alignment_Generate;
 
    procedure Arrow_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_arrow_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Arrow", Get_Field (N, "arrow_type").all,
         Get_Field (N, "shadow_type").all, File => File);
+      Widget_Destroy (Widget);
       Misc_Generate (N, File);
    end Arrow_Generate;
 
    procedure Aspect_Frame_Generate (N : Node_Ptr; File : File_Type) is
       S  : String_Ptr;
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_aspect_frame_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       S := Get_Field (N, "label");
 
       if S /= null then
@@ -104,17 +118,18 @@ package body Gtk_Generates is
            File, """", """");
       end if;
 
+      Widget_Destroy (Widget);
       Frame_Generate (N, File);
    end Aspect_Frame_Generate;
 
    procedure Box_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
       Class      : constant String_Ptr := Get_Field (N, "class");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_box_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Child_Name = null then
          if not N.Specific_Data.Created then
             Gen_New (N, "Box", Get_Field (N, "homogeneous").all,
@@ -126,6 +141,7 @@ package body Gtk_Generates is
          Gen_Child (N, Child_Name, File);
       end if;
 
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
 
       if Child_Name /= null then
@@ -137,11 +153,11 @@ package body Gtk_Generates is
    procedure Button_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr   := Find_Tag (N.Child, "child_name");
       Label      : constant String_Ptr := Get_Field (N, "label");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_button_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if N.Specific_Data.Initialized then
          return;
       end if;
@@ -165,16 +181,18 @@ package body Gtk_Generates is
          end if;
       end if;
 
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "relief", File);
    end Button_Generate;
 
    procedure Button_Box_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_button_box_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
+      Widget_Destroy (Widget);
       Box_Generate (N, File);
       Gen_Set (N, "spacing", File);
       Gen_Set (N, "Layout", "layout_style", "", "", "", File);
@@ -185,22 +203,23 @@ package body Gtk_Generates is
    end Button_Box_Generate;
 
    procedure Calendar_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_calendar_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Calendar", File => File);
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
    end Calendar_Generate;
 
    procedure Check_Button_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String_Ptr := Get_Field (N, "label");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_check_button_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          if Label = null then
             Gen_New (N, "Check_Button", File => File);
@@ -215,15 +234,16 @@ package body Gtk_Generates is
          end if;
       end if;
 
+      Widget_Destroy (Widget);
       Toggle_Button_Generate (N, File);
    end Check_Button_Generate;
 
    procedure Check_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_check_menu_item_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
          Gen_New (N, "Check_Menu_Item", Get_Field (N, "label").all,
            File => File, Prefix => "-""", Postfix => """");
@@ -232,6 +252,7 @@ package body Gtk_Generates is
            File => File, Prefix => """", Postfix => """");
       end if;
 
+      Widget_Destroy (Widget);
       Menu_Item_Generate (N, File);
       Gen_Set (N, "active", File);
       Gen_Set (N, "always_show_toggle", File => File);
@@ -241,11 +262,11 @@ package body Gtk_Generates is
       Columns, S : String_Ptr;
       Cur : constant String_Ptr := Get_Field (N, "name");
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_clist_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Columns := Get_Field (N, "columns");
 
       if not N.Specific_Data.Created then
@@ -256,6 +277,7 @@ package body Gtk_Generates is
          end if;
       end if;
 
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "selection_mode", File => File);
       Gen_Set (N, "shadow_type", File => File);
@@ -278,24 +300,25 @@ package body Gtk_Generates is
    end Clist_Generate;
 
    procedure Color_Selection_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_color_selection_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Color_Selection", File => File);
       Gen_Set (N, "Update_Policy", "policy", File => File);
+      Widget_Destroy (Widget);
       Box_Generate (N, File);
    end Color_Selection_Generate;
 
    procedure Color_Selection_Dialog_Generate
      (N : Node_Ptr; File : File_Type)
    is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_color_selection_dialog_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
          Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
            File => File, Prefix => "-""", Postfix => """");
@@ -304,6 +327,7 @@ package body Gtk_Generates is
            File => File, Prefix => """", Postfix => """");
       end if;
 
+      Widget_Destroy (Widget);
       Window_Generate (N, File);
    end Color_Selection_Dialog_Generate;
 
@@ -313,11 +337,11 @@ package body Gtk_Generates is
       Top_Widget  : constant Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
       Child : Node_Ptr := Find_Tag (N.Child, "widget");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_combo_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Combo", File => File);
 
       --  The child is the entry field associated with the combo box. It only
@@ -327,6 +351,7 @@ package body Gtk_Generates is
          Child.Specific_Data.Has_Container := True;
       end if;
 
+      Widget_Destroy (Widget);
       Box_Generate (N, File);
       Gen_Set (N, "case_sensitive", File);
       Gen_Set (N, "use_arrows", File);
@@ -369,32 +394,35 @@ package body Gtk_Generates is
    end Combo_Generate;
 
    procedure Container_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_container_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "border_width", File);
       Gen_Set (N, "resize_mode", File);
    end Container_Generate;
 
    procedure Ctree_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_ctree_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
+      Widget_Destroy (Widget);
       Clist_Generate (N, File);
    end Ctree_Generate;
 
    procedure Curve_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_curve_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Curve", File => File);
+      Widget_Destroy (Widget);
       Drawing_Area_Generate (N, File);
       Gen_Set (N, "curve_type", File => File);
       Gen_Set (N, "Range", "min_x", "max_x", "min_y", "max_y",
@@ -402,41 +430,44 @@ package body Gtk_Generates is
    end Curve_Generate;
 
    procedure Dialog_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_dialog_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Dialog", File => File);
+      Widget_Destroy (Widget);
       Window_Generate (N, File);
    end Dialog_Generate;
 
    procedure Drawing_Area_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_drawing_area_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Drawing_Area", File => File);
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
    end Drawing_Area_Generate;
 
    procedure Event_Box_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_event_box_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Event_Box", File => File);
+      Widget_Destroy (Widget);
       Bin_Generate (N, File);
    end Event_Box_Generate;
 
    procedure File_Selection_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_file_selection_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
          Gen_New (N, "File_Selection", Get_Field (N, "title").all,
            File => File, Prefix => "-""", Postfix => """");
@@ -446,35 +477,38 @@ package body Gtk_Generates is
       end if;
 
       Gen_Set (N, "show_file_op_buttons", File);
+      Widget_Destroy (Widget);
       Window_Generate (N, File);
    end File_Selection_Generate;
 
    procedure Fixed_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_fixed_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Fixed", File => File);
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
    end Fixed_Generate;
 
    procedure Font_Selection_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_font_selection_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Font_Selection", File => File);
+      Widget_Destroy (Widget);
       Notebook_Generate (N, File);
    end Font_Selection_Generate;
 
    procedure Font_Selection_Dialog_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_font_selection_dialog_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
          Gen_New (N, "Font_Selection_Dialog", Get_Field (N, "title").all,
            File => File, Prefix => "-""", Postfix => """");
@@ -483,16 +517,17 @@ package body Gtk_Generates is
            File => File, Prefix => """", Postfix => """");
       end if;
 
+      Widget_Destroy (Widget);
       Window_Generate (N, File);
    end Font_Selection_Dialog_Generate;
 
    procedure Frame_Generate (N : Node_Ptr; File : File_Type) is
       S  : String_Ptr;
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_frame_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       S := Get_Field (N, "label");
 
       if S /= null then
@@ -507,6 +542,7 @@ package body Gtk_Generates is
          Gen_New (N, "Frame", File => File);
       end if;
 
+      Widget_Destroy (Widget);
       Bin_Generate (N, File);
       Gen_Set
         (N, "Label_Align",
@@ -516,12 +552,13 @@ package body Gtk_Generates is
    end Frame_Generate;
 
    procedure Gamma_Curve_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_gamma_curve_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Gamma_Curve", File => File);
+      Widget_Destroy (Widget);
       Box_Generate (N, File);
       Add_Package ("Curve");
       Put_Line (File, "   Set_Range (Get_Curve (" &
@@ -535,17 +572,18 @@ package body Gtk_Generates is
 
    procedure GEntry_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_entry_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Child_Name = null then
          Gen_New (N, "GEntry", File => File);
       else
          Gen_Child (N, Child_Name, File);
       end if;
 
+      Widget_Destroy (Widget);
       Editable_Generate (N, File);
       Gen_Set (N, "editable", File);
       Gen_Set (N, "Max_Length", "text_max_length", "", "", "", File);
@@ -561,22 +599,24 @@ package body Gtk_Generates is
    end GEntry_Generate;
 
    procedure GRange_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_range_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "Update_Policy", "policy", File => File);
    end GRange_Generate;
 
    procedure Handle_Box_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_handle_box_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Handle_Box", File => File);
+      Widget_Destroy (Widget);
       Bin_Generate (N, File);
       Gen_Set (N, "shadow_type", File);
       Gen_Set (N, "handle_position", File);
@@ -584,21 +624,22 @@ package body Gtk_Generates is
    end Handle_Box_Generate;
 
    procedure Hbutton_Box_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_hbutton_box_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Hbutton_Box", File => File);
+      Widget_Destroy (Widget);
       Button_Box_Generate (N, File);
    end Hbutton_Box_Generate;
 
    procedure Image_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_image_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          Add_Package ("Gdk.Image");
          Add_Package ("Gdk.Bitmap");
@@ -612,16 +653,18 @@ package body Gtk_Generates is
          Gen_New (N, "Image", "The_Image", "Null_Bitmap", File => File);
       end if;
 
+      Widget_Destroy (Widget);
       Misc_Generate (N, File);
    end Image_Generate;
 
    procedure Input_Dialog_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_input_dialog_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Input_Dialog", File => File);
+      Widget_Destroy (Widget);
       Dialog_Generate (N, File);
    end Input_Dialog_Generate;
 
@@ -634,11 +677,11 @@ package body Gtk_Generates is
       Num        : Gint;
       Is_Tab,
       Is_Title   : Boolean;
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_label_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
          Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
            File => File, Prefix => "-(""", Postfix => """)");
@@ -647,6 +690,7 @@ package body Gtk_Generates is
            File => File, Prefix => """", Postfix => """");
       end if;
 
+      Widget_Destroy (Widget);
       Misc_Generate (N, File);
       Gen_Set (N, "justify", File);
       Gen_Set (N, "Line_Wrap", "wrap", File);
@@ -696,12 +740,13 @@ package body Gtk_Generates is
    procedure Layout_Generate (N : Node_Ptr; File : File_Type) is
       Cur : constant String_Ptr := Get_Field (N, "name");
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_layout_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Layout", File => File);
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
 
       Gen_Set (N, "Size", "area_width", "area_height", "", "",
@@ -716,22 +761,23 @@ package body Gtk_Generates is
    end Layout_Generate;
 
    procedure List_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_list_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "List", File => File);
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "selection_mode", File => File);
    end List_Generate;
 
    procedure List_Item_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_list_item_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
          Gen_New (N, "List_Item", Get_Field (N, "label").all,
            File => File, Prefix => "-""", Postfix => """");
@@ -740,16 +786,17 @@ package body Gtk_Generates is
            File => File, Prefix => """", Postfix => """");
       end if;
 
+      Widget_Destroy (Widget);
       Item_Generate (N, File);
    end List_Item_Generate;
 
    procedure Menu_Generate (N : Node_Ptr; File : File_Type) is
       S  : constant String_Ptr := Get_Field (N.Parent, "class");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_menu_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Menu", File => File);
 
       if S /= null and then S.all = "GtkMenuItem" then
@@ -757,27 +804,29 @@ package body Gtk_Generates is
          N.Specific_Data.Has_Container := True;
       end if;
 
+      Widget_Destroy (Widget);
       Menu_Shell_Generate (N, File);
    end Menu_Generate;
 
    procedure Menu_Bar_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_menu_bar_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Menu_Bar", File => File);
+      Widget_Destroy (Widget);
       Menu_Shell_Generate (N, File);
       Gen_Set (N, "shadow_type", File => File);
    end Menu_Bar_Generate;
 
    procedure Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
       S  : constant String_Ptr := Get_Field (N, "label");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_menu_item_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if S = null then
          Gen_New (N, "Menu_Item", File => File);
       else
@@ -790,16 +839,18 @@ package body Gtk_Generates is
          end if;
       end if;
 
+      Widget_Destroy (Widget);
       Item_Generate (N, File);
       Gen_Set (N, "right_justify", File);
    end Menu_Item_Generate;
 
    procedure Misc_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_misc_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "Alignment", "xalign", "yalign", "", "", File,
         Is_Float => True);
@@ -807,12 +858,13 @@ package body Gtk_Generates is
    end Misc_Generate;
 
    procedure Notebook_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_notebook_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Notebook", File => File);
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "scrollable", File);
       Gen_Set (N, "show_border", File);
@@ -826,12 +878,13 @@ package body Gtk_Generates is
    procedure Option_Menu_Generate (N : Node_Ptr; File : File_Type) is
       S  : String_Ptr;
       First, Last : Natural;
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_option_menu_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Option_Menu", File => File);
+      Widget_Destroy (Widget);
       Button_Generate (N, File);
 
       S := Get_Field (N, "items");
@@ -878,16 +931,17 @@ package body Gtk_Generates is
 
    procedure Paned_Generate (N : Node_Ptr; File : File_Type) is
       Class : constant String_Ptr := Get_Field (N, "class");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_paned_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New
         (N, "Paned",
          New_Name => Class (Class'First + 3) & "paned",
          File => File);
 
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "handle_size", File);
       Gen_Set (N, "gutter_size", File);
@@ -898,11 +952,11 @@ package body Gtk_Generates is
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       Cur : constant String_Ptr := Get_Field (N, "name");
       S   : String_Ptr;
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_pixmap_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          Add_Package ("Pixmap");
 
@@ -918,42 +972,46 @@ package body Gtk_Generates is
          N.Specific_Data.Created := True;
       end if;
 
+      Widget_Destroy (Widget);
       Misc_Generate (N, File);
    end Pixmap_Generate;
 
    procedure Preview_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_preview_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Get_Field (N, "type").all = "True" then
          Gen_New (N, "Preview", "Preview_Color", File => File);
          Gen_New (N, "Preview", "Preview_Grayscale", File => File);
       end if;
 
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "expand", File);
    end Preview_Generate;
 
    procedure Progress_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_progress_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "activity_mode", File => File);
       Gen_Set (N, "show_text", File => File);
    end Progress_Generate;
 
    procedure Progress_Bar_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_progress_bar_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Progress_Bar", File => File);
+      Widget_Destroy (Widget);
       Progress_Generate (N, File);
       Gen_Set (N, "bar_style", File => File);
       Gen_Set (N, "orientation", File => File);
@@ -964,11 +1022,11 @@ package body Gtk_Generates is
       Name  : constant String_Ptr := Get_Field (N, "name");
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_radio_button_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if N.Specific_Data.Initialized then
          return;
       end if;
@@ -996,6 +1054,7 @@ package body Gtk_Generates is
          N.Specific_Data.Created := True;
       end if;
 
+      Widget_Destroy (Widget);
       Check_Button_Generate (N, File);
    end Radio_Button_Generate;
 
@@ -1009,11 +1068,11 @@ package body Gtk_Generates is
       Name  : constant String_Ptr := Get_Field (N, "name");
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_radio_menu_item_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          Add_Package ("Radio_Menu_Item");
          Put (File, "   Gtk_New (" &
@@ -1037,17 +1096,19 @@ package body Gtk_Generates is
          N.Specific_Data.Created := True;
       end if;
 
+      Widget_Destroy (Widget);
       Check_Menu_Item_Generate (N, File);
    end Radio_Menu_Item_Generate;
 
    procedure Ruler_Generate (N : Node_Ptr; File : File_Type) is
       Class : constant String_Ptr := Get_Field (N, "class");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_ruler_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Ruler", "", "", Class (Class'First + 3) & "ruler", File);
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "metric", File);
       Gen_Set
@@ -1058,11 +1119,11 @@ package body Gtk_Generates is
    procedure Scale_Generate (N : Node_Ptr; File : File_Type) is
       S     : String_Ptr;
       Class : constant String_Ptr := Get_Field (N, "class");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_scale_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          S := Get_Field (N, "name");
          Add_Package ("Adjustment");
@@ -1079,6 +1140,7 @@ package body Gtk_Generates is
            Class (Class'First + 3) & "scale", File => File);
       end if;
 
+      Widget_Destroy (Widget);
       GRange_Generate (N, File);
       Gen_Set (N, "digits", File => File);
       Gen_Set (N, "draw_value", File => File);
@@ -1088,11 +1150,11 @@ package body Gtk_Generates is
    procedure Scrollbar_Generate (N : Node_Ptr; File : File_Type) is
       S     : String_Ptr;
       Class : constant String_Ptr := Get_Field (N, "class");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_scrollbar_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          S := Get_Field (N, "name");
          Add_Package ("Adjustment");
@@ -1124,16 +1186,18 @@ package body Gtk_Generates is
          end if;
       end if;
 
+      Widget_Destroy (Widget);
       GRange_Generate (N, File);
    end Scrollbar_Generate;
 
    procedure Scrolled_Window_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_scrolled_window_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Scrolled_Window", File => File);
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "Policy", "hscrollbar_policy",
         "vscrollbar_policy", "", "", File);
@@ -1141,24 +1205,25 @@ package body Gtk_Generates is
 
    procedure Separator_Generate (N : Node_Ptr; File : File_Type) is
       Class : constant String_Ptr := Get_Field (N, "class");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_separator_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Separator", "", "",
         Class (Class'First + 3) & "separator", File);
+      Widget_Destroy (Widget);
       Widget_Generate (N, File);
    end Separator_Generate;
 
    procedure Spin_Button_Generate (N : Node_Ptr; File : File_Type) is
       S   : String_Ptr;
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_spin_button_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          S := Get_Field (N, "name");
          Add_Package ("Adjustment");
@@ -1178,6 +1243,7 @@ package body Gtk_Generates is
          N.Specific_Data.Created := True;
       end if;
 
+      Widget_Destroy (Widget);
       GEntry_Generate (N, File);
 
       Gen_Set (N, "numeric", File);
@@ -1188,23 +1254,24 @@ package body Gtk_Generates is
    end Spin_Button_Generate;
 
    procedure Status_Bar_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_statusbar_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Status_Bar", File => File);
+      Widget_Destroy (Widget);
       Box_Generate (N, File);
    end Status_Bar_Generate;
 
    procedure Table_Generate (N : Node_Ptr; File : File_Type) is
       P   : Node_Ptr;
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_table_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          P := Find_Tag (N.Child, "name");
 
@@ -1220,19 +1287,21 @@ package body Gtk_Generates is
          end if;
       end if;
 
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "Row_Spacings", "row_spacing", File);
       Gen_Set (N, "Col_Spacings", "column_spacing", File);
    end Table_Generate;
 
    procedure Text_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_text_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Text", File => File);
 
+      Widget_Destroy (Widget);
       Editable_Generate (N, File);
 
       Gen_Set (N, "editable", File);
@@ -1242,11 +1311,11 @@ package body Gtk_Generates is
 
    procedure Toggle_Button_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String_Ptr := Get_Field (N, "label");
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_toggle_button_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if N.Specific_Data.Initialized then
          return;
       end if;
@@ -1265,6 +1334,7 @@ package body Gtk_Generates is
          end if;
       end if;
 
+      Widget_Destroy (Widget);
       Button_Generate (N, File);
       Gen_Set (N, "mode", File);
       Gen_Set (N, "active", File);
@@ -1278,13 +1348,14 @@ package body Gtk_Generates is
       Top  : constant String_Ptr := Get_Field (Top_Widget, "name");
       Cur  : constant String_Ptr := Get_Field (N, "name");
       S, T : String_Ptr;
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_toolbar_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Toolbar", Get_Field (N, "orientation").all,
         Get_Field (N, "type").all, File => File);
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "space_size", File);
       Gen_Set (N, "space_style", File);
@@ -1383,12 +1454,13 @@ package body Gtk_Generates is
    end Toolbar_Generate;
 
    procedure Tree_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_tree_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Tree", File => File);
+      Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "selection_mode", File);
       Gen_Set (N, "view_lines", File);
@@ -1396,11 +1468,11 @@ package body Gtk_Generates is
    end Tree_Generate;
 
    procedure Tree_Item_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_tree_item_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
          Gen_New (N, "Tree_Item", Get_Field (N, "label").all,
            File => File, Prefix => "-""", Postfix => """");
@@ -1409,26 +1481,29 @@ package body Gtk_Generates is
            File => File, Prefix => """", Postfix => """");
       end if;
 
+      Widget_Destroy (Widget);
       Item_Generate (N, File);
    end Tree_Item_Generate;
 
    procedure Vbutton_Box_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_vbutton_box_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Vbutton_Box", File => File);
+      Widget_Destroy (Widget);
       Button_Box_Generate (N, File);
    end Vbutton_Box_Generate;
 
    procedure Viewport_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_viewport_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Viewport", File => File);
+      Widget_Destroy (Widget);
       Bin_Generate (N, File);
       Gen_Set (N, "shadow_type", File => File);
    end Viewport_Generate;
@@ -1441,12 +1516,13 @@ package body Gtk_Generates is
    end Widget_Generate;
 
    procedure Window_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
+      function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_window_get_type");
 
    begin
-      Build_Type;
+      Widget := Widget_New (Build_Type);
       Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
+      Widget_Destroy (Widget);
       Bin_Generate (N, File);
 
       if Gettext_Support (N) then
