@@ -319,6 +319,7 @@ EXPORTS
 	ada_gparam_get_name
 	ada_gparam_get_flags
 	ada_gparam_get_value_type
+	ada_gparam_set_value_type
 	ada_gparam_get_minimum_char
 	ada_gparam_get_maximum_char
 	ada_gparam_get_default_char
