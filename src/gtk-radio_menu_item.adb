@@ -1,26 +1,19 @@
 
 package body Gtk.Radio_Menu_Item is
 
-   ----------------
-   -- Get_Object --
-   ----------------
-
-   function Get_Object (Group : in Group_List) return System.Address is
-   begin
-      return Group.Ptr;
-   end Get_Object;
+   use Widget_SList;
 
    -----------
    -- Group --
    -----------
 
    function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class)
-                   return               Group_List
+                   return               Widget_SList.GSlist
    is
       function Internal (Radio_Menu_Item : in System.Address)
                          return               System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_group");
-      Group : Group_List;
+      Group : Widget_SList.GSlist;
    begin
       Set_Object (Group, Internal (Get_Object (Radio_Menu_Item)));
       return Group;
@@ -32,7 +25,7 @@ package body Gtk.Radio_Menu_Item is
 
    procedure Gtk_New
       (Widget : out Gtk_Radio_Menu_Item;
-       Group  : in Group_List;
+       Group  : in Widget_SList.GSlist;
        Label  : in String)
    is
       function Internal
@@ -50,7 +43,7 @@ package body Gtk.Radio_Menu_Item is
    -------------
 
    procedure Gtk_New (Widget : out Gtk_Radio_Menu_Item;
-                      Group  : in Group_List)
+                      Group  : in Widget_SList.GSlist)
    is
       function Internal (Group  : in System.Address)
                          return      System.Address;
@@ -59,23 +52,13 @@ package body Gtk.Radio_Menu_Item is
       Set_Object (Widget, Internal (Get_Object (Group)));
    end Gtk_New;
 
-   ----------------
-   -- Set_Object --
-   ----------------
-
-   procedure Set_Object (Group : out Group_List;
-                         Value : in System.Address) is
-   begin
-      Group.Ptr := Value;
-   end Set_Object;
-
    ---------------
    -- Set_Group --
    ---------------
 
    procedure Set_Group
       (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class;
-       Group           : in Group_List)
+       Group           : in Widget_SList.GSlist)
    is
       procedure Internal
          (Radio_Menu_Item : in System.Address;

@@ -1,35 +1,29 @@
 with Gtk.Check_Menu_Item;
+with Glib.GSlist; use Glib.GSlist;
+with Gtk.Widget;
 
 package Gtk.Radio_Menu_Item is
 
    type Gtk_Radio_Menu_Item is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item
      with private;
-   type Group_List is private;
+   package Widget_SList is new Glib.GSlist.Generic_SList
+     (Gtk.Widget.Gtk_Widget'Class);
 
    function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class)
-                   return               Group_List;
+                   return               Widget_SList.GSlist;
    procedure Gtk_New
       (Widget : out Gtk_Radio_Menu_Item;
-       Group  : in Group_List;
+       Group  : in Widget_SList.GSlist;
        Label  : in String);
    procedure Gtk_New (Widget : out Gtk_Radio_Menu_Item;
-                      Group  : in Group_List);
+                      Group  : in Widget_SList.GSlist);
    procedure Set_Group
       (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class;
-       Group           : in Group_List);
+       Group           : in Widget_SList.GSlist);
 
 private
    type Gtk_Radio_Menu_Item is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item
      with null record;
-   type Group_List is record
-      Ptr : System.Address := System.Null_Address;
-   end record;
-
-   function Get_Object (Group : in Group_List) return System.Address;
-   pragma Inline (Get_Object);
-   procedure Set_Object (Group : out Group_List;
-                         Value : in System.Address);
-   pragma Inline (Set_Object);
 
    --  mapping: NOT_IMPLEMENTED gtkradiomenuitem.h gtk_radio_menu_item_get_type
    --  mapping: Group gtkradiomenuitem.h gtk_radio_menu_item_group
