@@ -31,6 +31,43 @@ with Interfaces.C.Strings;
 
 package body Pango.Font is
 
+   subtype String7 is String (1 .. 7);
+   Style_Map : constant array (Enums.Style) of String7 :=
+     (Enums.Pango_Style_Normal  => "       ",
+      Enums.Pango_Style_Oblique => "Oblique",
+      Enums.Pango_Style_Italic  => "Italic ");
+
+   subtype String10 is String (1 .. 10);
+   Variant_Map : constant array (Enums.Variant) of String10 :=
+     (Enums.Pango_Variant_Normal     => "          ",
+      Enums.Pango_Variant_Small_Caps => "Small-Caps");
+
+   subtype String15 is String (1 .. 15);
+   Stretch_Map : constant array (Enums.Stretch) of String15 :=
+     (Enums.Pango_Stretch_Ultra_Condensed => "Ultra-Condensed",
+      Enums.Pango_Stretch_Extra_Condensed => "Extra-Condensed",
+      Enums.Pango_Stretch_Condensed       => "Condensed      ",
+      Enums.Pango_Stretch_Semi_Condensed  => "Semi-Condensed ",
+      Enums.Pango_Stretch_Normal          => "               ",
+      Enums.Pango_Stretch_Semi_Expanded   => "Semi-Expanded  ",
+      Enums.Pango_Stretch_Expanded        => "Expanded       ",
+      Enums.Pango_Stretch_Extra_Expanded  => "Extra-Expanded ",
+      Enums.Pango_Stretch_Ultra_Expanded  => "Ultra-Expanded ");
+
+   --  Some of the values are not directly supported by pango.
+   --  ??? See fonts.c in pango
+
+   subtype String9 is String (1 .. 9);
+   Weight_Map : constant array (Enums.Weight) of String9 :=
+     (Enums.Pango_Weight_Ultralight  => "Light    ",
+      Enums.Pango_Weight_Light       => "Light    ",
+      Enums.Pango_Weight_Normal      => "         ",
+      Enums.Pango_Weight_Medium      => "Medium   ",
+      Enums.Pango_Weight_Semi_Bold   => "Semi-Bold",
+      Enums.Pango_Weight_Bold        => "Bold     ",
+      Enums.Pango_Weight_Ultrabold   => "Bold     ",
+      Enums.Pango_Weight_Heavy       => "Heavy    ");
+
    procedure g_free (c_str : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, g_free, "g_free");
 
@@ -88,19 +125,12 @@ package body Pango.Font is
       Stretch     : Enums.Stretch := Enums.Pango_Stretch_Normal;
       Size        : Gint := 0) return Pango_Font_Description
    is
-      --  The only function provided by Pango to build a new font descriptiion
-      --  is From_String. But it is an overkill to format the given parameters
-      --  into a string that From_String will then parse back! The approach
-      --  used here is to build a font description using the Family_Name only,
-      --  and then to set directly the other different parameters...
-
       Result : Pango_Font_Description :=
-        From_String (Family_Name & Gint'Image (Size) & " " &
-                     Enums.Style'Image (Style) & " " &
-                     Enums.Variant'Image (Variant) & " " &
-                     Enums.Weight'Image (Weight) & " " &
-                     Enums.Stretch'Image (Stretch));
-
+        From_String (Family_Name & " " &
+                     Style_Map (Style) & " " &
+                     Variant_Map (Variant) &
+                     Weight_Map (Weight) & " " &
+                     Stretch_Map (Stretch) & Gint'Image (Size));
    begin
       return Result;
    end To_Font_Description;
