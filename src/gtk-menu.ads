@@ -41,6 +41,23 @@
 --  them from their parent (either a menu bar or another menu) to keep them
 --  visible on the screen at all times).
 --
+--  It is worth noting that by default, the user of your application will be
+--  able to dynamically modify the shortcuts associated with each menu item.
+--  For instance, selecting a menu item and pressing a key will assign this
+--  new shortcut to the item, possibly removing the shortcut from any other
+--  item it was associated with.
+--
+--  Note that pressing <backspace> will simply remove the shortcut.
+--
+--  This default behavior, somewhat unexpected, can be canceled.
+--  There are two ways to control this behavior: you can lock a specific menu
+--  item by calling Gtk.Widget.Lock_Accelerators on it. But you can also
+--  lock all the menu items at once by calling Gtk.Accel_Group.Lock for all
+--  the accelerator groups that were used (the GUI builder gate generally
+--  creates a single one), as well as on the group returned by
+--  Gtk.Accel_Group.Get_Default, which is the one used for items that don't
+--  initially have a shortcut.
+--
 --  </description>
 --  <c_version> 1.2.6 </c_version>
 
