@@ -4842,9 +4842,6 @@ package body Gtkada.MDI is
                                    Allocation_Int (Width),
                                    Allocation_Int (Height)));
                         Float_Child (Child, True);
-                        Move
-                          (Get_Window (Gtk_Window (Get_Toplevel (Child))),
-                           Child.X, Child.Y);
 
                      when Normal =>
                         Float_Child (Child, False);
