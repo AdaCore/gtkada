@@ -27,6 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  This package provides the capability to create predefined mouse cursors
+--  as well as user defined ones.
+--  </description>
+--  <c_version>1.2.8</c_version>
+
 with Glib;
 with Gdk.Types;
 with Gdk.Color;
@@ -39,6 +45,7 @@ package Gdk.Cursor is
    procedure Gdk_New
      (Widget      : out Gdk_Cursor;
       Cursor_Type : in  Gdk.Types.Gdk_Cursor_Type);
+   --  Create a new standard cursor.
 
    procedure Gdk_New
      (Widget : out Gdk_Cursor;
@@ -48,8 +55,12 @@ package Gdk.Cursor is
       Bg     : in Gdk.Color.Gdk_Color;
       X      : in Glib.Gint;
       Y      : in Glib.Gint);
+   --  Create a new cursor from a given pixmap and mask.
+   --  Both the pixmap and mask must have a depth of 1 (i.e. each pixel has
+   --  only 2 values - on or off). The standard cursor size is 16 by 16 pixels.
 
    procedure Destroy (Cursor : in Gdk_Cursor);
+   --  Destroy a cursor, freeing any resources allocated for it.
 
 private
    Null_Cursor : constant Gdk_Cursor := null;

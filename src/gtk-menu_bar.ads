@@ -27,6 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  Gtk_Menu_Bar is a subclass of Gtk_Menu_Shell which contains one to many
+--  Gtk_Menu_Item. The result is a standard menu bar which can hold many menu
+--  items. Gtk_Menu_Bar allows for a shadow type to be set for aesthetic
+--  purposes. The shadow types are defined in the Set_Shadow_Type function.
+--  </description>
+--  <c_version>1.2.8</c_version>
+
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Shell;
@@ -39,35 +47,54 @@ package Gtk.Menu_Bar is
    type Gtk_Menu_Bar is access all Gtk_Menu_Bar_Record'Class;
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
+   --  Create a menu bar.
 
    procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Option_Menu.
+   --  Return the internal value associated with a Gtk_Menu_Bar.
 
    procedure Append
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+   --  Add a new Gtk_Menu_Item to the end of the Gtk_Menu_Bar.
 
    procedure Insert
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
       Position : in Gint);
+   --  Add a new Gtk_Menu_Item to the Gtk_Menu_Bar at a specified position.
+   --  The first element of a menu bar is at position 0.
 
    procedure Prepend
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+   --  Add a new Gtk_Menu_Item to the beginning of the Gtk_Menu_Bar.
 
    procedure Set_Shadow_Type
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       The_Type : in Gtk_Shadow_Type);
+   --  Set the shadow type to use on the Gtk_Menu_Bar.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------------
+   -- Support for Gate/Dgate --
+   ----------------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate (Menu_Bar : in out Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
 
