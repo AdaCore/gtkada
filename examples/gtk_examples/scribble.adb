@@ -41,7 +41,7 @@ procedure Scribble is
       Win: GDK_Window;
       Width: Gint;
       Height: Gint;
-      Sty : Gtk.Style.Gtk_Style:= Gtk.Style.Get_Style (Drawing_Area);
+      Sty : Gtk.Style.Gtk_Style := Get_Style (Drawing_Area);
       Gc: Gdk_GC;
 
    begin
