@@ -67,10 +67,8 @@ package Gdk.Types is
    type Gdk_Segments_Array is array (Positive range <>) of Gdk_Segment;
    pragma Pack (Gdk_Segments_Array);
 
-   --
    --  See at the end of the package a list of all the types that
    --  have not been "bound".
-   --
 
    type Gdk_Atom is new Gulong;
    --  This type represents a property of the X-server, that can be
@@ -85,12 +83,16 @@ package Gdk.Types is
       Axis_X_Tilt,
       Axis_Y_Tilt,
       Axis_Last);
+   for Gdk_Axis_Use'Size use Gint'Size;
 
    type Gdk_Byte_Order is (Lsb_First, Msb_First);
+   for Gdk_Byte_Order'Size use Gint'Size;
 
    type Gdk_Cap_Style is (Cap_Not_Last, Cap_Butt, Cap_Round, Cap_Projecting);
+   for Gdk_Cap_Style'Size use Gint'Size;
 
    type Gdk_Crossing_Mode is (Crossing_Normal, Crossing_Grab, Crossing_Ungrab);
+   for Gdk_Crossing_Mode'Size use Gint'Size;
 
    type Gdk_Cursor_Type is
      (X_Cursor,
@@ -170,11 +172,12 @@ package Gdk.Types is
       Ur_Angle,
       Watch,
       Xterm);
+   for Gdk_Cursor_Type'Size use Gint'Size;
 
    type Gdk_Device_Id is new Guint32;
    --  This type is specific to GtkAda. In Gdk, guint32 is used instead.
 
-   type Gdk_Event_Mask is mod 2 ** 21;
+   type Gdk_Event_Mask is mod 2 ** 32;
    --  Note that you need to change the event mask of a widget if you want
    --  to be able to get some events. To change this mask, the widget
    --  must first be Unrealized.
@@ -246,13 +249,17 @@ package Gdk.Types is
       Client_Event,
       Visibility_Notify,
       No_Expose);
+   for Gdk_Event_Type'Size use Gint'Size;
 
    type Gdk_Extension_Mode is
      (Extension_Events_None, Extension_Events_All, Extension_Events_Cursor);
+   for Gdk_Extension_Mode'Size use Gint'Size;
 
    type Gdk_Fill is (Solid, Tiled, Stippled, Opaque_Stippled);
+   for Gdk_Fill'Size use Gint'Size;
 
    type Gdk_Fill_Rule is (Even_Odd_Rule, Winding_Rule);
+   for Gdk_Fill_Rule'Size use Gint'Size;
 
    type Gdk_Function is
      (Copy,
@@ -270,8 +277,10 @@ package Gdk.Types is
       Or_Invert,
       Nand,
       Set);
+   for Gdk_Function'Size use Gint'Size;
 
    type Gdk_Join_Style is (Join_Miter, Join_Round, Join_Bevel);
+   for Gdk_Join_Style'Size use Gint'Size;
 
    type Gdk_IC_Attributes_Type is new Guint;
    Ic_Style                : constant Gdk_IC_Attributes_Type;
@@ -314,19 +323,23 @@ package Gdk.Types is
    Im_Status_Mask       : constant Gdk_IM_Style;
 
    type Gdk_Input_Condition is (Input_Read, Input_Write, Input_Exception);
+   for Gdk_Input_Condition'Size use Gint'Size;
 
    type Gdk_Input_Mode is (Mode_Disabled, Mode_Screen, Mode_Window);
+   for Gdk_Input_Mode'Size use Gint'Size;
 
    type Gdk_Input_Source is
      (Source_Mouse,
       Source_Pen,
       Source_Eraser,
       Source_Cursor);
+   for Gdk_Input_Source'Size use Gint'Size;
 
    type Gdk_Key_Type is new Guint;
    --  see Gdk.Types.Keysyms for key type constants
 
    type Gdk_Line_Style is (Line_Solid, Line_On_Off_Dash, Line_Double_Dash);
+   for Gdk_Line_Style'Size use Gint'Size;
 
    type Gdk_Modifier_Type is new Guint;
    Shift_Mask    : constant Gdk_Modifier_Type;
@@ -352,16 +365,20 @@ package Gdk.Types is
       Notify_Non_Linear,
       Notify_Non_Linear_Virtual,
       Notify_Unknown);
+   for Gdk_Notify_Type'Size use Gint'Size;
 
    type Gdk_Overlap_Type is
      (Overlap_Rectangle_In,
       Overlap_Rectangle_Out,
       Overlap_Rectangle_Part);
+   for Gdk_Overlap_Type'Size use Gint'Size;
 
    type Gdk_Prop_Mode is
      (Prop_Mode_Replace, Prop_Mode_Prepend, Prop_Mode_Append);
+   for Gdk_Prop_Mode'Size use Gint'Size;
 
    type Gdk_Subwindow_Mode is (Clip_By_Children, Include_Inferiors);
+   for Gdk_Subwindow_Mode'Size use Gint'Size;
 
    type Gdk_GC_Values_Mask is new Guint;
    GC_Foreground    : constant Gdk_GC_Values_Mask;
@@ -387,6 +404,7 @@ package Gdk.Types is
      (Visibility_Unobscured,
       Visibility_Partial,
       Visibility_Fully_Obscured);
+   for Gdk_Visibility_State'Size use Gint'Size;
 
    type Gdk_Visual_Type is
      (Visual_Static_Gray,
@@ -395,6 +413,7 @@ package Gdk.Types is
       Visual_Pseudo_Color,
       Visual_True_Color,
       Visual_Direct_Color);
+   for Gdk_Visual_Type'Size use Gint'Size;
 
    type Gdk_Window_Attributes_Type is new Guint;
    Wa_Title    : constant Gdk_Window_Attributes_Type;
@@ -407,6 +426,7 @@ package Gdk.Types is
    Wa_Noredir  : constant Gdk_Window_Attributes_Type;
 
    type Gdk_Window_Class is (Input_Output, Input_Only);
+   for Gdk_Window_Class'Size use Gint'Size;
 
    type Gdk_Window_Hints is new Guint;
    Gdk_Hint_Pos        : constant Gdk_Window_Hints;
@@ -416,6 +436,25 @@ package Gdk.Types is
    Gdk_Hint_Aspect     : constant Gdk_Window_Hints;
    Gdk_Hint_Resize_Inc : constant Gdk_Window_Hints;
 
+   type Gdk_Window_Type_Hint is
+     (Window_Type_Hint_Normal,
+      --  Normal toplevel window
+
+      Window_Type_Hint_Dialog,
+      --  Dialog window
+
+      Window_Type_Hint_Menu,
+      --  Window used to implement a menu.
+
+      Window_Type_Hint_Toolbar
+      --  Toolbar: Window used to implement toolbars.
+     );
+   --  Hints for the window manager that indicate what type of function the
+   --  window has. The window manager can use this when determining decoration
+   --  and behaviour of the window. The hint must be set before mapping the
+   --  window.
+   for Gdk_Window_Type_Hint'Size use Gint'Size;
+
    type Gdk_Window_Type is
      (Window_Root,
       Window_Toplevel,
@@ -424,6 +463,7 @@ package Gdk.Types is
       Window_Temp,
       Window_Pixmap,
       Window_Foreign);
+   for Gdk_Window_Type'Size use Gint'Size;
 
    type Gdk_Wm_Decoration is new Guint;
    Decor_All      : constant Gdk_Wm_Decoration;
@@ -441,6 +481,19 @@ package Gdk.Types is
    Func_Minimize : constant Gdk_Wm_Function;
    Func_Maximize : constant Gdk_Wm_Function;
    Func_Close    : constant Gdk_Wm_Function;
+
+   type Gdk_Gravity is
+     (Gravity_North_West,
+      Gravity_North,
+      Gravity_North_East,
+      Gravity_West,
+      Gravity_Center,
+      Gravity_East,
+      Gravity_South_West,
+      Gravity_South,
+      Gravity_South_East,
+      Gravity_Static);
+   for Gdk_Gravity'Size use Gint'Size;
 
    subtype Gdk_WChar is Standard.Wide_Character;
    subtype Gdk_WString is Standard.Wide_String;
@@ -711,6 +764,18 @@ private
    Func_Minimize : constant Gdk_Wm_Function := 2 ** 3;
    Func_Maximize : constant Gdk_Wm_Function := 2 ** 4;
    Func_Close    : constant Gdk_Wm_Function := 2 ** 5;
+
+   for Gdk_Gravity use
+     (Gravity_North_West => 1,
+      Gravity_North      => 2,
+      Gravity_North_East => 3,
+      Gravity_West       => 4,
+      Gravity_Center     => 5,
+      Gravity_East       => 6,
+      Gravity_South_West => 7,
+      Gravity_South      => 8,
+      Gravity_South_East => 9,
+      Gravity_Static     => 10);
 end Gdk.Types;
 
 --  The following types were not bound because it did not seem
