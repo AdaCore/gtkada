@@ -80,11 +80,6 @@ package Gdk is
    --  any of the widgets) is "null", since this relates to the underlying
    --  C object.
 
-   function Is_Created (Object : in C_Proxy) return Boolean;
-   --  Provided for backward compatibility only.
-   --  You should test directly that Object is not null, this makes the
-   --  code clearer.
-
    --  The following services are for INTERNAL use only. They are not
    --  declared inside the private part for visibility issues. Do NOT
    --  use them outside of the binding.
