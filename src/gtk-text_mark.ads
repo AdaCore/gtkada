@@ -37,6 +37,11 @@ package Gtk.Text_Mark is
    type Gtk_Text_Mark_Record is new GObject_Record with private;
    type Gtk_Text_Mark is access all Gtk_Text_Mark_Record'Class;
 
+   --  ??? How are the marks destroyed? Is this automatic when the
+   --  ??? associated buffer is destroyed? Is this automatic when
+   --  ??? the text area where the mark is located is destroyed?
+   --  ??? More investigation needed.
+
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Label.
 
