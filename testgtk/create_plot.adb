@@ -93,7 +93,14 @@ package body Create_Plot is
         & ASCII.LF
         & "In this demo, the @bGtk_Plot@B is put in a @bGtk_Plot_Canvas@B"
         & " container, so as to provide drag-and-drop capabilities for its"
-        & " legends, points, graphs,...";
+        & " legends, points, graphs,..."
+        & ASCII.LF
+        & "The ""Print"" button at the top-left corner generates a"
+        & " postscript file, called plotdemo.ps, that contains the exact"
+        & " same content that you can see in this demo."
+        & ASCII.LF
+        & "The two buttons 1 and 2 indicate which plot is considered the"
+        & " active one, as returned by the subprogram Get_Active_Plot.";
    end Help;
 
    -------------------
