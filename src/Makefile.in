@@ -17,8 +17,8 @@ CC = @CC@
 FPIC = -fPIC
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ $(FPIC)
 
-GNATFLAGS = -O2 -gnatn
-GNATFLAGS_DEVEL = -O2 -gnatgawl -g
+GNATFLAGS = -O2 -gnatny
+GNATFLAGS_DEVEL = -O2 -gnatawly -g
 
 GNATMAKE = gnatmake
 GNATMAKELDFLAGS = -largs -L. @GTK_LIBS@ -lgtkada
@@ -88,14 +88,14 @@ install_ali::
 	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
 
 $(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
-	if [ -f .devel ]; then \
+	@if [ -f .devel ]; then \
 	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	else \
 	  $(GNATMAKE) $(GNATFLAGS) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	fi
 
 $(DGATE):: $(DGATE).adb $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
-	if [ -f .devel ]; then \
+	@if [ -f .devel ]; then \
 	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKELDFLAGS); \
 	else \
 	   $(GNATMAKE) $(GNATFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
