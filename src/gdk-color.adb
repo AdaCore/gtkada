@@ -191,7 +191,7 @@ package body Gdk.Color is
    begin
       return Color.Pixel;
    end Pixel;
- 
+
    ---------
    -- Red --
    ---------
@@ -200,6 +200,15 @@ package body Gdk.Color is
    begin
       return Color.Red;
    end Red;
+
+   ---------------
+   -- Set_Pixel --
+   ---------------
+
+   procedure Set_Pixel (Color : in out Gdk_Color; Pixel : Gulong) is
+   begin
+      Color.Pixel := Pixel;
+   end Set_Pixel;
 
    -------------
    -- Set_Rgb --
