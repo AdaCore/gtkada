@@ -482,3 +482,13 @@ ada_gslist_next (GSList* list)
     return NULL;
 }
 
+/******************************************
+ ** Functions for Fixed
+ ******************************************/
+
+GList*
+ada_fixed_get_children (GtkFixed* widget)
+{
+   return widget->children;
+}
+
