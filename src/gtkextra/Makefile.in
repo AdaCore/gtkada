@@ -7,7 +7,7 @@ PIC=-fPIC
 
 all: $(OBJ)
 
-%.o: %.c
+%.o: %.c %.h
 	$(CC) -c $(CFLAGS) $(PIC) $< `gtk-config --cflags`
 
 clean:
