@@ -31,7 +31,7 @@ my ($directory);
 my ($unit_name) = "";
 my ($definition_file) = $file;
 
-($directory, $file) = ($file =~ /^(.*)\/([^\/]+)\.h$/);
+($directory, $file) = ($file =~ /^(.*\/)?([^\/]+)\.h$/);
 my ($hfile) = $file . ".h";
 my ($prefix) = ($file =~ /(g[dt]k)/);
 substr ($prefix, 0, 1) = uc (substr ($prefix, 0, 1));
@@ -281,19 +281,26 @@ sub generate_specifications
 	&print_declaration ($_, @{$functions{$_}});
       }
     my ($parent_string) = &package_name ($parent). ".$prefix\_" . &create_ada_name ($parent);
-    $parent_string = "Root_Type" if ($parent eq "Root_Type");
+    if ($parent eq "Root_Type") {
+	$parent_string = "Root_Type";
+    }
+    else {
+	$parent_string = "$parent_string\_Record";
+    }
 
-    unshift (@output, "   type $prefix\_$current_package is "
+    unshift (@output, "   type $prefix\_$current_package is access all "
+	     . "$prefix\_$current_package\_Record'Class;\n\n");
+    unshift (@output, "   type $prefix\_$current_package\_Record is "
 	     . ($abstract ? "abstract " : "")
-	     . "new " . $parent_string . " with private;\n\n");
+	     . "new " . $parent_string . " with private;\n");
     unshift (@output, "package $prefix.$current_package is\n\n");
     
     push (@output, "\nprivate\n");
-    push (@output, "   type $prefix\_$current_package is "
+    push (@output, "   type $prefix\_$current_package\_Record is "
 	  . ($abstract ? "abstract " : "")
 	  . "new ".
 	  &package_name ($parent). ".$prefix\_", &create_ada_name ($parent).
-	  " with null record;\n\n");
+	  "_Record with null record;\n\n");
     
     push (@output, "end $prefix.$current_package;\n");
     
@@ -440,23 +447,39 @@ sub parse_functions
 
 #########################
 ## Print the declaration for a subprogram corresponding to a gtk_..._new
+## The second function is used to generate the equivalent Initialize function
 ## Entries : C function name
 ##           An array containing the arguments to the function
 #########################
 sub print_new_declaration
-  {
+{
     my ($func_name) = shift;
     my (@arguments) = @_;
     my ($string);
     my ($indent) = "";
-
+    
     $string = "   procedure $prefix\_New";
     push (@output, $string);
     $indent = ' ' x (length ($string));
     &print_arguments ($indent, "void", \&convert_ada_type,
 		      3, 1, @arguments);
     $abstract = 0;
-  }
+}
+
+sub print_initialize_declaration
+{
+    my ($func_name) = shift;
+    my (@arguments) = @_;
+    my ($string);
+    my ($indent) = "";
+
+    $string = "   procedure Initialize";
+    push (@output, $string);
+    $indent = ' ' x (length ($string));
+    &print_arguments ($indent, "void", \&convert_ada_type,
+		      3, 2, @arguments);
+
+}
 
 #########################
 ## Print the argument list for a subprogram, and the return statement if any
@@ -465,7 +488,7 @@ sub print_new_declaration
 ##           C return type for the function
 ##           A reference to the function to be used for type conversion
 ##           The base indentation of the line (3 for Ada fonction, 6 for Internal)
-##           1 if we are generating the list for Gtk_New, 0 sinon
+##           1 if we are generating the list for Gtk_New, 2 for Initialize, 0 otherwise
 ##           An array containing the arguments to the function
 #########################
 sub print_arguments
@@ -496,10 +519,15 @@ sub print_arguments
 	$indent .= ' ';
 	my (@variables) = ();
 	my (@types) = ();
-	if ($for_gtk_new)
+	if ($for_gtk_new == 1)
 	  {
 	    push (@variables, "Widget");
 	    push (@types, "out $prefix\_$current_package");
+	  }
+	elsif ($for_gtk_new == 2)
+	  {
+	    push (@variables, "Widget");
+	    push (@types, "access $prefix\_$current_package\_Record");
 	  }
 	
 	foreach (@arguments)
@@ -512,8 +540,21 @@ sub print_arguments
 	    $type =~ s/\s//g;
 	    push (@variables, &create_ada_name ($name));
 	    $type = &{$convert} ($type);
-	    $type =~ s/\'Class//;
-	    push (@types, "in " . $type);
+	    if ($type =~ /\'Class/) {
+		$type =~ s/\'Class//;
+		if ($type eq "$prefix\_$current_package") {
+		    $type = "access $type\_Record";
+		}
+		else
+		{
+		    $type = "access $type\_Record'Class";
+		}
+	    }
+	    else
+	    {
+		$type = "in $type";
+	    }
+	    push (@types, $type);
 	  }
 
 	foreach (@variables)
@@ -603,6 +644,25 @@ sub print_arguments_call
       }
   }
 
+sub print_arguments_call_for_gtk_new
+{
+    my (@arguments) = @_;
+    
+    if ($arguments[0] !~ /void/)
+    {
+	foreach (@arguments)
+	  {
+	    s/\s+/ /g;
+	    s/,//;
+	    s/\);//;
+	    my ($type, $name) = /^(.*[ *])(\w+)\s*$/;
+	    $type =~ s/\s//g;
+	    push (@output, ",");
+	    push (@output, " " . &create_ada_name ($name));
+	  }
+      }
+}
+
 #########################
 ## Print the declaration for a subprogram
 ## Entries : C function name
@@ -623,6 +683,8 @@ sub print_declaration
     if ($adaname =~ /New/)
       {
 	&print_new_declaration ($func_name, @arguments);
+	push (@output, ";\n");
+	&print_initialize_declaration ($func_name, @arguments);
       }
     else
       {
@@ -663,6 +725,19 @@ sub print_body
     if ($adaname =~ /New/)
       {
 	&print_new_declaration ($func_name, @arguments);
+	push (@output, "\n   is\n   begin\n");
+	push (@output, "      Widget := new $prefix\_$current_package\_Record;\n");
+	push (@output, "      Initialize (Widget");
+	&print_arguments_call_for_gtk_new (@arguments);
+	push (@output, ");\n");
+	push (@output, "   end $prefix\_New;\n\n");
+
+ 	$string = "-- Initialize --";
+ 	push (@output, "   " . '-' x length ($string) . "\n");
+ 	push (@output, "   " . $string . "\n");
+ 	push (@output, "   " . '-' x length ($string) . "\n\n");
+ 	&print_initialize_declaration ($func_name, @arguments);
+ 	$adaname = "Initialize";
       }
     else
       {
@@ -685,7 +760,7 @@ sub print_body
     push (@output, ";\n");
 
     push (@output, "      pragma Import (C, Internal, \"$func_name\");\n");
-    if ($adaname =~ /New/)
+    if ($adaname eq "Initialize")
       {
 	push (@output, "   begin\n");
 	$string = "      Set_Object (Widget, Internal";
