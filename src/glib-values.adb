@@ -87,10 +87,6 @@ package body Glib.Values is
       return (Nb => Nb, Arr => Internal (Nb));
    end Make_Values;
 
-   -----------------
-   -- Make_Values --
-   -----------------
-
    function Make_Values (Nb : Guint; Val : System.Address) return GValues is
    begin
       return (Nb => Nb, Arr => Val);
