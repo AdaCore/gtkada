@@ -82,8 +82,7 @@ package Gtk.Font_Selection is
      (Fontsel : access Gtk_Font_Selection_Record) return String;
    --  Return the name of the font selected by the user.
    --  It returns an empty string if not font is selected.
-   --  The string has the same format as excepted in the Gdk.Font package.
-   --  This is also the standard format on X11 systems.
+   --  The string has the same format as in Pango.Font.
 
    --  <doc_ignore>
    function Get_Font
@@ -99,8 +98,7 @@ package Gtk.Font_Selection is
      (Fontsel  : access Gtk_Font_Selection_Record;
       Fontname : String) return Boolean;
    --  Set the name and attributes of the selected font in Fontsel.
-   --  Fontname should have the standard format on X11 systems, that fully
-   --  describe the family, weight, size, slant, etc. of the font.
+   --  Fontname should have the format described in Pango.Font.
 
    function Get_Preview_Text
      (Fontsel : access Gtk_Font_Selection_Record) return String;
