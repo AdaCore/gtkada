@@ -1,6 +1,11 @@
 This is a patch against Gtk+ 2.0.6 sources that fixes Windows specific
 problems.
 
+Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkevents-win32.c: handle WM_NCPAINT. Fixes the
+	bad window display update when window is in backrgound
+
 Mon Sep 16 12:39:09  2002	Florent Duguet <duguet@gnat.com>
 
 	* pango/pangowin32.c: optimization of the pango rendering through
@@ -31,11 +36,6 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 	* gtk+/gdk/win32/gdkgeometry-win32.c: ask for a repaint of the
 	invalidate zone to address smoothness issues
 
-Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
-
-	* gtk+/gdk/win32/gdkevents-win32.c: handle WM_NCPAINT. Fixes the
-	bad window display update when window is in backrgound
-
 #########################################
 # Ctrl-C
 #########################################
@@ -48,7 +48,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
  {
 +  if ((c >= 1) && (c <=26))
 +    {
-+      return (c - 1 + 'A') ;
++      return (c - 1 + 'A');
 +    }
    switch (c)
      {
@@ -83,7 +83,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
  {
    GdkPixmapImplWin32 *impl = GDK_PIXMAP_IMPL_WIN32 (object);
    GdkPixmap *wrapper = GDK_PIXMAP (GDK_DRAWABLE_IMPL_WIN32 (impl)->wrapper);
-+  GdkImage *image = impl->image ;
++  GdkImage *image = impl->image;
  
    GDK_NOTE (PIXMAP, g_print ("gdk_pixmap_impl_win32_finalize: %p\n",
  			     GDK_PIXMAP_HBITMAP (wrapper)));
@@ -92,8 +92,8 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
  
    gdk_win32_handle_table_remove (GDK_PIXMAP_HBITMAP (wrapper));
 +
-+  image->windowing_data = NULL ; /* avoiding loop in unref */
-+  g_object_unref (image) ;
++  image->windowing_data = NULL; /* avoiding loop in unref */
++  g_object_unref (image);
  
    G_OBJECT_CLASS (parent_class)->finalize (object);
  }
@@ -111,19 +111,19 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
  static void
 +gdk_window_queue_append (GdkWindow *window, GdkWindowQueueItem *item)
 +{
-+  int i ;
++  int i;
 +
 +  if (g_slist_length (translate_queue) >= 128)
 +    {
-+      GdkWindowImplWin32 * impl = GDK_WINDOW_IMPL_WIN32 (GDK_WINDOW_OBJECT (window)->impl) ;
-+      GdkRegion * whole_region = gdk_region_rectangle (&impl->position_info.clip_rect) ;
++      GdkWindowImplWin32 * impl = GDK_WINDOW_IMPL_WIN32 (GDK_WINDOW_OBJECT (window)->impl);
++      GdkRegion * whole_region = gdk_region_rectangle (&impl->position_info.clip_rect);
 +      _gdk_window_process_expose (window,
 +                          GetCurrentTime (),
-+                          whole_region ) ;
-+      gdk_region_destroy (whole_region) ;
++                          whole_region );
++      gdk_region_destroy (whole_region);
 +    }
 +
-+  translate_queue = g_slist_append (translate_queue, item) ;
++  translate_queue = g_slist_append (translate_queue, item);
 +}
 +
 +static void
@@ -215,7 +215,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
                             SW_INVALIDATE))
 -        WIN32_API_FAILED ("ScrollWindowEx");
 +      {
-+	  PostMessage (GDK_WINDOW_HWND (window), WM_PAINT, 0,0) ;
++	  PostMessage (GDK_WINDOW_HWND (window), WM_PAINT, 0,0);
 +      } else {
 +          WIN32_API_FAILED ("ScrollWindowEx");
 +      }
@@ -233,7 +233,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 +	   * -> only do this if window is visible */
 +          if (!GDK_WINDOW_DESTROYED (window))
 +            if (gdk_window_is_visible (window))
-+              gdk_window_process_updates (window, FALSE) ;
++              gdk_window_process_updates (window, FALSE);
          }
        break;
 
@@ -253,16 +253,16 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 -	  g_string_append_c (result, '\n');
 +      if (*p == '\r')
 +        {
-+          p++ ;
++          p++;
 +          if (*p == '\n')
 +            {
-+              p++ ;
-+	      g_string_append_c (result, '\n') ; /* win32 new-line */
++              p++;
++	      g_string_append_c (result, '\n'); /* win32 new-line */
 +	    }
 +	}
 +      else if (*p == '\n')
 +        {
-+          p++ ;
++          p++;
 +	  g_string_append_c (result, '\n'); /* unix new-line */
  	}
        else
@@ -343,7 +343,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
   */
 -void 
 -pango_win32_render (HDC                hdc,
-+static HFONT	pango_win32_render_offset_previous_font ;
++static HFONT	pango_win32_render_offset_previous_font;
 +static int
 +pango_win32_render_offset (HDC         hdc,
  		    PangoFont         *font,
@@ -354,16 +354,16 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
    HFONT old_hfont = NULL;
    HFONT hfont;
 -  int i;
-+  int i, idx, rendered_width, tmp ;
++  int i, idx, rendered_width, tmp;
    guint16 *glyph_indexes;
    INT *dX;
 +  /* temporary static storage for runs of less than 256 glyphes */
-+  static guint16	stat_glyph_indices [256] ;
-+  static INT		stat_dX [256] ;
++  static guint16	stat_glyph_indices [256];
++  static INT		stat_dX [256];
 +  /* */
  
 -  g_return_if_fail (glyphs != NULL);
-+  if (glyphs == NULL) return 0 ;
++  if (glyphs == NULL) return 0;
  
    hfont = pango_win32_get_hfont (font);
    if (!hfont)
@@ -377,20 +377,20 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 +  if (pango_win32_render_offset_previous_font != hfont)
 +    {
 +      old_hfont = SelectObject (hdc, hfont);
-+      pango_win32_render_offset_previous_font = hfont ;
++      pango_win32_render_offset_previous_font = hfont;
 +    }
  
 +  if (glyphs->num_glyphs > 256)
 +  {
-+    glyph_indexes = g_new (guint16, glyphs->num_glyphs) ;
-+    dX = g_new (INT, glyphs->num_glyphs) ;
++    glyph_indexes = g_new (guint16, glyphs->num_glyphs);
++    dX = g_new (INT, glyphs->num_glyphs);
 +  } else {
-+    glyph_indexes = stat_glyph_indices ;
-+    dX = stat_dX ;
++    glyph_indexes = stat_glyph_indices;
++    dX = stat_dX;
 +  }
 +
-+  idx = 0 ;
-+  rendered_width = 0 ;
++  idx = 0;
++  rendered_width = 0;
    for (i = 0; i <glyphs->num_glyphs; i++)
      {
 -      glyph_indexes[i] = glyphs->glyphs[i].glyph;
@@ -399,11 +399,11 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 +      if (glyphs->glyphs[i].glyph != 0)
 +        {
 +          /* glyph is actually handled */
-+	  tmp = glyphs->glyphs[i].geometry.width / PANGO_SCALE ;
-+          glyph_indexes[idx] = glyphs->glyphs[i].glyph ;
-+	  dX[idx] = tmp ;
-+	  rendered_width += tmp ;
-+	  ++idx ;
++	  tmp = glyphs->glyphs[i].geometry.width / PANGO_SCALE;
++          glyph_indexes[idx] = glyphs->glyphs[i].glyph;
++	  dX[idx] = tmp;
++	  rendered_width += tmp;
++	  ++idx;
 +	}
      }
  
@@ -423,7 +423,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 +    g_free (dX);
 +  }
 +
-+  return rendered_width ;
++  return rendered_width;
 +}
 +void
 +pango_win32_render (HDC                hdc,
@@ -432,7 +432,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 +		    gint               x, 
 +		    gint               y)
 +{
-+	pango_win32_render_offset_previous_font = NULL ;
++	pango_win32_render_offset_previous_font = NULL;
 +	/* ignore the offset */
 +	(void) pango_win32_render_offset (hdc, font, glyphs, x,y);
  }
@@ -462,9 +462,9 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 +  COLORREF saved_bk_color;
    
 -  int x_off = 0;
-+  int x_off = 0, tmp_off ;
++  int x_off = 0, tmp_off;
 +
-+  pango_win32_render_offset_previous_font = NULL ;
++  pango_win32_render_offset_previous_font = NULL;
  
 -  pango_layout_line_get_extents (line,NULL, &overall_rect);
 -  
@@ -553,9 +553,9 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 -			  x + x_off / PANGO_SCALE, y);
 +      /* really necessary in the context of pango ?? */
 +      if (bg_set)
-+	      SetBkColor (hdc, saved_bk_color) ;
++	      SetBkColor (hdc, saved_bk_color);
 +      if (fg_set)
-+	      SetTextColor (hdc, saved_fg_color) ;
++	      SetTextColor (hdc, saved_fg_color);
  
 -      switch (uline)
 -	{
@@ -578,7 +578,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 -	  Polyline (hdc, points, 2);
 -	  break;
 -	}
-+      x_off += tmp_off ;
++      x_off += tmp_off;
  
 -      if (fg_set)
 -	{
@@ -595,14 +595,14 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
    int width;
    int y_offset = 0;
 +  /* save colors */
-+  COLORREF	saved_foreground_color ;
-+  COLORREF	saved_background_color ;
-+  HFONT		saved_font ;
++  COLORREF	saved_foreground_color;
++  COLORREF	saved_background_color;
++  HFONT		saved_font;
 +  /* */
 +
-+  saved_foreground_color = GetTextColor (hdc) ;
-+  saved_background_color = GetTextColor (hdc) ;
-+  saved_font = SelectObject (hdc, NULL) ;
++  saved_foreground_color = GetTextColor (hdc);
++  saved_background_color = GetTextColor (hdc);
++  saved_font = SelectObject (hdc, NULL);
 +
  
    gboolean first = TRUE;
@@ -613,9 +613,9 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
      }
 +
 +  /* restore colors */
-+  SetTextColor (hdc, saved_foreground_color) ;
-+  SetTextColor (hdc, saved_background_color) ;
-+  SelectObject (hdc, saved_font) ;
++  SetTextColor (hdc, saved_foreground_color);
++  SetTextColor (hdc, saved_background_color);
++  SelectObject (hdc, saved_font);
 +  /* */
 +
  }
@@ -634,7 +634,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
    gchar buf[256];
    gboolean return_val = FALSE;
    
-+  HRGN	ncPaintRGN ;
++  HRGN	ncPaintRGN;
 +
    if (ret_val_flagp)
      *ret_val_flagp = FALSE;
@@ -645,18 +645,18 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
        break;
 +    case WM_NCPAINT:
 +      /* gets the region to be updated */
-+      ncPaintRGN = (HRGN) (msg->wParam) ;
++      ncPaintRGN = (HRGN) (msg->wParam);
 +      if (ncPaintRGN == 0)
-+        break ;
++        break;
 +      if (ncPaintRGN == 1)
 +        {
-+          GetClientRect (msg->hwnd, &rect) ;
++          GetClientRect (msg->hwnd, &rect);
 +	} else {
 +          /* get the update region, and deduce a rectangle....*/
-+          hrgn = CreateRectRgn (0,0,0,0) ;
-+          GetUpdateRgn (msg->hwnd, hrgn, FALSE) ;
-+          GetRgnBox (hrgn, &rect) ;
-+	  DeleteObject (hrgn) ;
++          hrgn = CreateRectRgn (0,0,0,0);
++          GetUpdateRgn (msg->hwnd, hrgn, FALSE);
++          GetRgnBox (hrgn, &rect);
++	  DeleteObject (hrgn);
 +        }
 +      /* then, if region is not empty, notify the */
 +      if ((rect.left != rect.right) && (rect.top != rect.bottom))
@@ -673,7 +673,7 @@ Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
 +
 +	    return_val = FALSE;
 +	 }
-+      break ;
++      break;
      case WM_PAINT:
        if (!GetUpdateRect (msg->hwnd, NULL, FALSE))
  	{
