@@ -390,6 +390,7 @@ package body Gtkada.Canvas is
            or Key_Press_Mask
            or Key_Release_Mask);
       Set_Flags (Canvas, Can_Focus);
+      Set_Double_Buffered (Canvas, False);
 
       --  Configure with default values
       Configure (Canvas);
