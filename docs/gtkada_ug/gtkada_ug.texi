@@ -185,6 +185,7 @@ This binding was tested on the following systems:
 @item NT 4.0
 @item AiX 4.3.2
 @item SCO UnixWare 7.1
+@item FreeBSD 3.2
 @end itemize
 
 with the latest version of the @code{GNAT} compiler, developed by
