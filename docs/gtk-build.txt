@@ -271,7 +271,13 @@ cd glade-2.0.0
 patch -p0 < .../GtkAda/contrib/glade-2.0.0.diff
 autoconf
 ./configure --prefix=$prefix --disable-gnome
+
+# Under Tru64:
+make CFLAGS="-g -O2 -mieee -DTRIO_COMPILER_DECC"
+
+# On other platforms:
 make
+
 make install
 cd ..
 
