@@ -421,7 +421,6 @@ sub package_name
     $entity =~ s/([a-z])([A-Z])/$1_$2/g;
     $entity =~ s/Gtk\.Range/Gtk\.GRange/;
     $entity =~ s/Gtk\.Entry/Gtk\.GEntry/;
-    $entity =~ s/Gtk\.Entry/Gtk\.GEntry/;    
     $entity =~ s/Gnome(.*)\.Entry/Gnome$1\.GEntry/;    
     return $entity;
   }
