@@ -1987,14 +1987,14 @@ package body Gtkada.MDI is
 
             when Left_Side =>
                W := Gint'Max (Min_Width, W - Delta_X);
-               MDI.Current_X := MDI.Current_X + MDI.Initial_Width - W;
+               MDI.Current_X := C.X + Delta_X;
 
             when Right_Side =>
                W := Gint'Max (Min_Width, W + Delta_X);
 
             when Top_Side =>
                H := Gint'Max (Min_Height, H - Delta_Y);
-               MDI.Current_Y := C.Y + MDI.Initial_Height - H;
+               MDI.Current_Y := C.Y + Delta_Y;
 
             when Bottom_Side =>
                H := Gint'Max (Min_Height, H + Delta_Y);
@@ -2002,18 +2002,18 @@ package body Gtkada.MDI is
             when Top_Left_Corner =>
                W := Gint'Max (Min_Width, W - Delta_X);
                H := Gint'Max (Min_Height, H - Delta_Y);
-               MDI.Current_X := C.X + MDI.Initial_Width - W;
-               MDI.Current_Y := C.Y + MDI.Initial_Height - H;
+               MDI.Current_X := C.X + Delta_X;
+               MDI.Current_Y := C.Y + Delta_Y;
 
             when Top_Right_Corner =>
                W := Gint'Max (Min_Width, W + Delta_X);
                H := Gint'Max (Min_Height, H - Delta_Y);
-               MDI.Current_Y := C.Y + MDI.Initial_Height - H;
+               MDI.Current_Y := C.Y + Delta_Y;
 
             when Bottom_Left_Corner =>
                W := Gint'Max (Min_Width, W - Delta_X);
                H := Gint'Max (Min_Height, H + Delta_Y);
-               MDI.Current_X := C.X + MDI.Initial_Width - W;
+               MDI.Current_X := C.X + Delta_X;
 
             when Bottom_Right_Corner =>
                W := Gint'Max (Min_Width, W + Delta_X);
@@ -2021,29 +2021,23 @@ package body Gtkada.MDI is
             when others => null;
          end case;
 
-         if MDI.Current_Cursor = Left_Ptr and then MDI.Opaque_Move then
+         if MDI.Opaque_Move or else MDI.Opaque_Resize then
+            if MDI.Current_Cursor /= Left_Ptr then
+               MDI.Current_W := W;
+               MDI.Current_H := H;
+
+               --  Need to set these, or when the mouse is outside of the
+               --  layout, the MDI will try to resize the child to the old
+               --  dimensions even while the mouse is moving.
+               C.Uniconified_Width  := W;
+               C.Uniconified_Height := H;
+            end if;
+
             Alloc :=
               (MDI.Current_X, MDI.Current_Y,
                Allocation_Int (MDI.Current_W),
                Allocation_Int (MDI.Current_H));
             Size_Allocate (Child, Alloc);
-
-         elsif MDI.Current_Cursor /= Left_Ptr
-           and then MDI.Opaque_Resize
-           and then (W /= Gint (Get_Allocation_Width (C))
-                     or else H /= Gint (Get_Allocation_Height (C)))
-         then
-            MDI.Current_W := W;
-            MDI.Current_H := H;
-            Alloc := (MDI.Current_X, MDI.Current_Y,
-                      Allocation_Int (W), Allocation_Int (H));
-            Size_Allocate (Child, Alloc);
-
-            --  Need to set these, or when the mouse is outside of the layout,
-            --  the MDI will try to resize the child to the old dimensions even
-            --  while the mouse is moving.
-            C.Uniconified_Width  := Gint (Alloc.Width);
-            C.Uniconified_Height := Gint (Alloc.Height);
 
          elsif not Children_Are_Maximized (MDI) then
             MDI.Current_W := W;
