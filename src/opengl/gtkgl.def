@@ -1,0 +1,6 @@
+EXPORTS
+	gdk_gl_query
+	gtk_gl_area_new
+	gtk_gl_area_share_new
+	gtk_gl_area_make_current
+	gtk_gl_area_swap_buffers
