@@ -438,7 +438,7 @@ package body Gtkada.MDI is
       --  All the resizing for the children is handled by the MDI itself, and
       --  resize events should not be propagated to the parent of the MDI.
 
-      Set_Resize_Mode (MDI, Resize_Queue);
+      --  Set_Resize_Mode (MDI, Resize_Queue);
 
       Put (MDI, MDI.Layout, 0, 0);
 
@@ -1156,13 +1156,18 @@ package body Gtkada.MDI is
       end if;
 
       --  Resize the children that haven't been initialized yet.
+      --  We also need to resize the unmaximized children, in case they have
+      --  requested a resize (and that would be the reason we got the resize on
+      --  the MDI).
 
       List := First (M.Items);
 
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
 
-         if C.Uniconified_Width = -1 or else C.Uniconified_Height = -1 then
+         if (not Children_Are_Maximized (M) and then C.State = Normal)
+           or else (C.Uniconified_Width = -1 or else C.Uniconified_Height = -1)
+         then
             Req := Get_Child_Requisition (C);
             C.Uniconified_Width := Req.Width;
             C.Uniconified_Height := Req.Height;
@@ -2123,8 +2128,6 @@ package body Gtkada.MDI is
       Child : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child
    is
       C     : MDI_Child;
-      Req   : Gtk_Requisition;
-      Alloc : Gtk_Allocation;
 
    begin
       if Child.all in MDI_Child_Record'Class then
@@ -2174,16 +2177,6 @@ package body Gtkada.MDI is
       if Children_Are_Maximized (MDI) then
          Put_In_Notebook (MDI, None, C);
       else
-         --  Compute the initial size right away, since we cannot rely on
-         --  Queue_Resize, which is called too late. This results in some
-         --  widgets being incorrectly scrolled.
-         Size_Request (C, Req);
-         Alloc := (C.X, C.Y, Allocation_Int (Req.Width),
-                   Allocation_Int (Req.Height));
-         C.Uniconified_Width  := Alloc.Width;
-         C.Uniconified_Height := Alloc.Height;
-         Size_Allocate (C, Alloc);
-
          Put (MDI.Layout, C, 0, 0);
       end if;
 
