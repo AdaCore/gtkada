@@ -128,7 +128,7 @@ package body Glib is
    function Type_Name (Type_Num : in GType) return String is
       function Internal (Type_Num : GType) return chars_ptr;
       pragma Import (C, Internal, "g_type_name");
-      Ret : chars_ptr := Internal (Type_Num);
+      Ret : constant chars_ptr := Internal (Type_Num);
    begin
       if Ret = Null_Ptr then
          return "";
