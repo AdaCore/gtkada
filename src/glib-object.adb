@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -623,5 +623,39 @@ package body Glib.Object is
    begin
       return GObject (Get_User_Data (W, Stub));
    end Convert;
+
+   --------------
+   -- Weak_Ref --
+   --------------
+
+   procedure Weak_Ref
+     (Object : access GObject_Record'Class;
+      Notify : Weak_Notify;
+      Data   : System.Address := System.Null_Address)
+   is
+      procedure Internal (Object : System.Address;
+                          Notify : Weak_Notify;
+                          Data   : System.Address);
+      pragma Import (C, Internal, "g_object_weak_ref");
+   begin
+      Internal (Get_Object (Object), Notify, Data);
+   end Weak_Ref;
+
+   ----------------
+   -- Weak_Unref --
+   ----------------
+
+   procedure Weak_Unref
+     (Object : access GObject_Record'Class;
+      Notify : Weak_Notify;
+      Data   : System.Address := System.Null_Address)
+   is
+      procedure Internal (Object : System.Address;
+                          Notify : Weak_Notify;
+                          Data   : System.Address);
+      pragma Import (C, Internal, "g_object_weak_unref");
+   begin
+      Internal (Get_Object (Object), Notify, Data);
+   end Weak_Unref;
 
 end Glib.Object;
