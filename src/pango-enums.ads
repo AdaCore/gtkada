@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -44,7 +43,7 @@ package Pango.Enums is
      (Pango_Alignment_Left,
       Pango_Alignment_Center,
       Pango_Alignment_Right);
-   for Alignment'Size use Gint'Size;
+   pragma Convention (C, Alignment);
 
    type Attr_Type is
      (Pango_Attr_Invalid,
@@ -63,24 +62,24 @@ package Pango.Enums is
       Pango_Attr_Rise,
       Pango_Attr_Shape,
       Pango_Attr_Scale);
-   for Attr_Type'Size use Gint'Size;
+   pragma Convention (C, Attr_Type);
 
    type Coverage_Level is
      (Pango_Underline_None,
       Pango_Underline_Fallback,
       Pango_Underline_Approximate,
       Pango_Underline_Exact);
-   for Coverage_Level'Size use Gint'Size;
+   pragma Convention (C, Coverage_Level);
 
    type Direction is
      (Pango_Direction_Ltr,
       Pango_Direction_Rtl,
       Pango_Direction_Ttb_Ltr,
       Pango_Direction_Ttb_Rtl);
-   for Direction'Size use Gint'Size;
+   pragma Convention (C, Direction);
 
-   --  ??? There are some PANGO_SCALE_* macros in pango-font.h that are
-   --  ??? not bound yet. Are they needed ???
+   --  There are some PANGO_SCALE_* macros in pango-font.h that are not
+   --  bound yet. Are they needed ???
 
    type Stretch is
      (Pango_Stretch_Ultra_Condensed,
@@ -92,25 +91,25 @@ package Pango.Enums is
       Pango_Stretch_Expanded,
       Pango_Stretch_Extra_Expanded,
       Pango_Stretch_Ultra_Expanded);
-   for Stretch'Size use Gint'Size;
+   pragma Convention (C, Stretch);
 
    type Style is
      (Pango_Style_Normal,
       Pango_Style_Oblique,
       Pango_Style_Italic);
-   for Style'Size use Gint'Size;
+   pragma Convention (C, Style);
 
    type Underline is
      (Pango_Underline_None,
       Pango_Underline_Single,
       Pango_Underline_Double,
       Pango_Underline_Low);
-   for Underline'Size use Gint'Size;
+   pragma Convention (C, Underline);
 
    type Variant is
      (Pango_Variant_Normal,
       Pango_Variant_Small_Caps);
-   for Variant'Size use Gint'Size;
+   pragma Convention (C, Variant);
 
    type Weight is new Gint;
    Pango_Weight_Ultralight : constant Weight := 200;
@@ -123,7 +122,7 @@ package Pango.Enums is
    type Wrap_Mode is
      (Pango_Wrap_Word,
       Pango_Wrap_Char);
-   for Wrap_Mode'Size use Gint'Size;
+   pragma Convention (C, Wrap_Mode);
 
    ----------------
    -- Properties --
