@@ -12,6 +12,22 @@ package body Gtk.Combo is
       Internal (Get_Object (Combo_Box));
    end Disable_Activate;
 
+   ---------------
+   -- Get_Entry --
+   ---------------
+
+   function Get_Entry (Combo_Box : in Gtk_Combo'Class)
+                       return         Gtk.GEntry.Gtk_Entry
+   is
+      function Internal (Combo_Box : in System.Address)
+                         return         System.Address;
+      pragma Import (C, Internal, "ada_combo_get_entry");
+      Tmp : Gtk.GEntry.Gtk_Entry;
+   begin
+      Set_Object (Tmp, Internal (Get_Object (Combo_Box)));
+      return Tmp;
+   end Get_Entry;
+
    -------------
    -- Gtk_New --
    -------------

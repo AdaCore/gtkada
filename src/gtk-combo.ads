@@ -1,4 +1,5 @@
 
+with Gtk.GEntry;
 with Gtk.Hbox;
 with Gtk.Item;
 with Glib.Glist;
@@ -14,6 +15,10 @@ package Gtk.Combo is
 
    procedure Disable_Activate (Combo_Box : in Gtk_Combo'Class);
    --  mapping: Disable_Activate gtkcombo.h gtk_combo_disable_activate
+
+   function Get_Entry (Combo_Box : in Gtk_Combo'Class)
+                       return         Gtk.GEntry.Gtk_Entry;
+   --  mapping: Get_Entry gtkcombo.h GtkCombo->entry
 
    procedure Gtk_New (Widget      : out Gtk_Combo);
    --  mapping: Gtk_New gtkcombo.h gtk_combo_new
