@@ -246,3 +246,65 @@ ada_text_get_text_end (GtkText* widget)
    return widget->text_end;
 }
 
+/******************************************
+ ** Functions for File_Selection
+ ******************************************/
+
+GtkWidget*
+ada_file_selection_get_action_area (GtkFileSelection* widget)
+{
+   return widget->action_area;
+}
+GtkWidget*
+ada_file_selection_get_button_area (GtkFileSelection* widget)
+{
+   return widget->button_area;
+}
+GtkWidget*
+ada_file_selection_get_cancel_button (GtkFileSelection* widget)
+{
+   return widget->cancel_button;
+}
+
+GtkWidget*
+ada_file_selection_get_dir_list (GtkFileSelection* widget)
+{
+   return widget->dir_list;
+}
+
+GtkWidget*
+ada_file_selection_get_file_list (GtkFileSelection* widget)
+{
+   return widget->file_list;
+}
+
+GtkWidget*
+ada_file_selection_get_help_button (GtkFileSelection* widget)
+{
+   return widget->help_button;
+}
+
+GtkWidget*
+ada_file_selection_get_history_pulldown (GtkFileSelection* widget)
+{
+   return widget->history_pulldown;
+}
+
+GtkWidget*
+ada_file_selection_get_ok_button (GtkFileSelection* widget)
+{
+   return widget->ok_button;
+}
+
+GtkWidget*
+ada_file_selection_get_selection_entry (GtkFileSelection* widget)
+{
+   return widget->selection_entry;
+}
+
+GtkWidget*
+ada_file_selection_get_selection_text (GtkFileSelection* widget)
+{
+   return widget->selection_text;
+}
+
