@@ -23,9 +23,7 @@ args=$*
 set $info
 prj=$1
 
-if [ "$2" != "" ]; then
-  cd $2
-fi
+cd "`dirname $args`/$2"
 
 gt=".gate/$prj"
 mkdir -p $gt > /dev/null 2>&1
