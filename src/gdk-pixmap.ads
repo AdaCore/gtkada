@@ -73,7 +73,7 @@ package Gdk.Pixmap is
    procedure Ref (Pixmap : in Gdk_Pixmap);
    --  Add a reference to a pixmap.
 
-   procedure Unref (Pixmap : in out Gdk_Pixmap);
+   procedure Unref (Pixmap : in Gdk_Pixmap);
    --  This is the usual way to destroy a pixmap. The memory is freed when
    --  there is no more reference
 
