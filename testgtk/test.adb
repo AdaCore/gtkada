@@ -5,6 +5,7 @@ with Gtk; use Gtk;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Container;
+with Gtk.Enums;
 with Gtk.HSeparator;
 with Gtk.Label;
 with Gtk.Main;
@@ -23,12 +24,14 @@ package body Test is
    package ASU renames Ada.Strings.Unbounded;
 
 
-   procedure Create_Main_Window;
+   ----------------------
+   --  Local services  --
+   ----------------------
 
+   procedure Create_Main_Window;
    procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
                       Data : in out Window.Gtk_Window);
    procedure Exit_Main (Object : in out Window.Gtk_Window'Class);
-
    function Gtk_Version_Number return String;
 
 
@@ -46,7 +49,6 @@ package body Test is
    package Window_Callback is new Signal.Void_Callback
      (Widget_Type => Window.Gtk_Window);
 
-
    ----------------------
    --  The buttons...  --
    ----------------------
@@ -59,10 +61,24 @@ package body Test is
 
    type Buttons_Array is array (Positive range <>) of Button_Information;
 
+   -------------------------------
+   --  Gtk+ Example procedures  --
+   -------------------------------
+
+   procedure Create_Check_Buttons (Widget : in out Button.Gtk_Button'Class);
+
+   procedure Create_Check_Buttons (Widget : in out Button.Gtk_Button'Class)
+   is separate;
+
+
+   ---------------------------
+   --  The list of buttons  --
+   ---------------------------
+
    Buttons : constant Buttons_Array :=
      ((ASU.To_Unbounded_String ("button box"), null),
       (ASU.To_Unbounded_String ("buttons"), null),
-      (ASU.To_Unbounded_String ("check buttons"), null),
+      (ASU.To_Unbounded_String ("check buttons"), Create_Check_Buttons'Access),
       (ASU.To_Unbounded_String ("clist"), null),
       (ASU.To_Unbounded_String ("color selection"), null),
       (ASU.To_Unbounded_String ("cursors"), null),
