@@ -129,7 +129,7 @@ package body Double_Buffer is
          Buffer.Triple_Buffer := Create_Internal_Pixmap (Buffer);
       end if;
 
-      if Gdk.Is_Created (Old_Pixmap) then
+      if Old_Pixmap /= null then
 
          --  If Back_Store is True, then we want to keep the content
          --  of the old pixmap, and thus we copy it to the new one.
@@ -168,7 +168,7 @@ package body Double_Buffer is
          Gdk.Pixmap.Unref (Old_Pixmap);
       end if;
 
-      if Gdk.Is_Created (Old_Triple) then
+      if Old_Triple /= null then
 
          --  If Back_Store is True, then we want to keep the content
          --  of the old pixmap, and thus we copy it to the new one.
@@ -216,11 +216,11 @@ package body Double_Buffer is
 
    procedure Destroy_Cb (Buffer : access Gtk_Double_Buffer_Record'Class) is
    begin
-      if Gdk.Is_Created (Buffer.Pixmap) then
+      if Buffer.Pixmap /= null then
          Gdk.Pixmap.Unref (Buffer.Pixmap);
       end if;
 
-      if Gdk.Is_Created (Buffer.Triple_Buffer) then
+      if Buffer.Triple_Buffer /= null then
          Gdk.Pixmap.Unref (Buffer.Triple_Buffer);
       end if;
    end Destroy_Cb;
@@ -343,7 +343,7 @@ package body Double_Buffer is
 
       --  If we do not want triple_buffer but already have one, delete it
       if not Use_Triple_Buffer
-        and then Gdk.Is_Created (Buffer.Triple_Buffer)
+        and then Buffer.Triple_Buffer /= null
       then
          Gdk.Pixmap.Unref (Buffer.Triple_Buffer);
       end if;

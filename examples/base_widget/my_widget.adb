@@ -4,6 +4,7 @@ with Gtk;             use Gtk;
 with Gdk.Color;       use Gdk.Color;
 with Gdk.Drawable;    use Gdk.Drawable;
 with Gdk.Event;       use Gdk.Event;
+with Gdk.GC;          use Gdk.GC;
 with Gdk.Rectangle;   use Gdk.Rectangle;
 with Gdk.Types;       use Gdk.Types;
 with Gtk.Widget;      use Gtk.Widget;
@@ -111,7 +112,7 @@ package body My_Widget is
       Width, Height : Gint;
       Win  : Gdk.Window.Gdk_Window := Get_Window (Widget);
    begin
-      if not Is_Created (Widget.GC_In) then
+      if Widget.Gc_In = null then
          declare
             Color : Gdk_Color;
          begin
