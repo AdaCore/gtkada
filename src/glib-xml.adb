@@ -58,8 +58,9 @@ package body Glib.XML is
 
    procedure Skip_Blanks (Buf : String; Index : in out Natural) is
    begin
-      while Buf (Index) = ' '  or else Buf (Index) = ASCII.LF
-        or else Buf (Index) = ASCII.CR
+      while Index < Buf'Last and then
+        (Buf (Index) = ' '  or else Buf (Index) = ASCII.LF
+          or else Buf (Index) = ASCII.CR)
       loop
          Index := Index + 1;
       end loop;
