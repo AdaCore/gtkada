@@ -578,7 +578,7 @@ package body Gtk.Widget is
 
    procedure Push_Colormap (Cmap   : Gdk_Colormap) is
       procedure Internal (Cmap : System.Address);
-      pragma Internal (C, Internal, "gtk_widget_push_colormap");
+      pragma Import (C, Internal, "gtk_widget_push_colormap");
    begin
       Internal (Get_Object (Cmap));
    end Push_Colormap;
@@ -589,24 +589,10 @@ package body Gtk.Widget is
 
    procedure Push_Visual (Visual : Gdk_Visual) is
       procedure Internal (Visual : System.Address);
-      pragma Internal (C, Internal, "gtk_widget_push_visual");
+      pragma Import (C, Internal, "gtk_widget_push_visual");
    begin
       Internal (Get_Object (Visual));
    end Push_Visual;
-
-   ----------------
-   -- Push_Style --
-   ----------------
-
-   procedure Push_Style (Style  : Gtk_Style) is
-      procedure Internal (Style : System.Address);
-      pragma Internal (C, Internal, "gtk_widget_push_style");
-   begin
-      Internal (Get_Object (Style));
-   end Push_Style;
-
-
-
 
    -----------
    -- Popup --

@@ -351,6 +351,17 @@ package body Gtk.Style is
       return Col;
    end Get_Foreground;
 
+   ----------------
+   -- Push_Style --
+   ----------------
+
+   procedure Push_Style (Style  : Gtk_Style) is
+      procedure Internal (Style : System.Address);
+      pragma Import (C, Internal, "gtk_widget_push_style");
+   begin
+      Internal (Get_Object (Style));
+   end Push_Style;
+
    --------------------
    -- Set_Foreground --
    --------------------

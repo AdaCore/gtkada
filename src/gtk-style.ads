@@ -66,6 +66,16 @@ package Gtk.Style is
    --  a pointer
 
 
+   --  The following functions change the default values (generally just before
+   --  creating a widget) for styles. You should use them in pair
+   --  (Push the new value, create the widget then pop the value)
+
+   procedure Push_Style (Style  : Gtk_Style);
+   procedure Pop_Style;
+   pragma Import (C, Pop_Style, "gtk_widget_pop_style");
+
+
+
    procedure Set_Background (Style      : in Gtk_Style;
                              Window     : in Gdk.Window.Gdk_Window;
                              State_Type : in Enums.Gtk_State_Type);

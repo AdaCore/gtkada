@@ -40,7 +40,6 @@ with Gdk.Visual;      use Gdk.Visual;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Enums;
-with Gtk.Style;
 with Gtk.Object;
 with Glib.Glist;
 with Glib.GSlist;
@@ -189,11 +188,8 @@ package Gtk.Widget is
 
    procedure Push_Colormap (Cmap   : Gdk_Colormap);
    procedure Push_Visual   (Visual : Gdk_Visual);
-   procedure Push_Style    (Style  : Gtk_Style);
    procedure Pop_Colormap;
    procedure Pop_Visual;
-   procedure Pop_Style;
-
 
    --  The following four functions get the size and position of the widget
 
@@ -309,6 +305,5 @@ private
 
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Pop_Visual, "gtk_widget_pop_visual");
-   pragma Import (C, Pop_Style, "gtk_widget_pop_style");
 
 end Gtk.Widget;
