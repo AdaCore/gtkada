@@ -1752,6 +1752,18 @@ package body Gtk_Generates is
                Put_Line (File, ");");
                N.Specific_Data.Has_Container := True;
             end if;
+
+         elsif Q.Value.all = "GTK_PACK_END" then
+            if Get_Field (Child, "fill") /= null
+              and then Get_Field (N, "child_name").all /= "Dialog:action_area"
+            then
+               --  This widget is part of a Gtk_Box, but not one of the
+               --  internal components of the box
+
+               Gen_Call_Child (N, Child, "Box", "Pack_End",
+                               "expand", "fill", "padding", File);
+               N.Specific_Data.Has_Container := True;
+            end if;
          end if;
       end if;
 
