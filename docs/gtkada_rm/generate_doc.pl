@@ -333,7 +333,7 @@ foreach $source_file (@source_files) {
 		&html_output ("<TR>",
 			      "<TD WIDTH=$tab1_width></TD>",
 			      "<TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab23_width>");
-		&output ("\@smallexample\@exdent $profile\n\@end smallexample");
+		&output ("\@smallexample\n\@exdent $profile\n\@end smallexample");
 		
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
