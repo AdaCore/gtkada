@@ -2593,8 +2593,12 @@ package body Gtkada.MDI is
       if Child.MDI.Dock_Menu_Item /= null then
          Gtk.Handlers.Handler_Block
            (Child.MDI.Dock_Menu_Item, Child.MDI.Dock_Menu_Item_Id);
-         Set_Active (Child.MDI.Dock_Menu_Item, Child.State = Docked);
-         Set_Sensitive (Child.MDI.Dock_Menu_Item, Child.Dock /= None);
+         Set_Active
+           (Child.MDI.Dock_Menu_Item,
+            not Child.MDI.All_Floating_Mode and then Child.State = Docked);
+         Set_Sensitive
+           (Child.MDI.Dock_Menu_Item,
+            not Child.MDI.All_Floating_Mode and then Child.Dock /= None);
          Gtk.Handlers.Handler_Unblock
            (Child.MDI.Dock_Menu_Item, Child.MDI.Dock_Menu_Item_Id);
       end if;
@@ -2936,6 +2940,8 @@ package body Gtkada.MDI is
             Child.Uniconified_Height := Requisition.Height;
          end if;
 
+         Child.Uniconified_State := Child.State;
+
          Minimize_Child (Child, False);
          Dock_Child (Child, False);
 
@@ -3015,6 +3021,10 @@ package body Gtkada.MDI is
                       Allocation_Int (Child.Uniconified_Width),
                       Allocation_Int (Child.Uniconified_Height));
             Size_Allocate (Child, Alloc);
+         end if;
+
+         if Child.Uniconified_State = Docked then
+            Dock_Child (Child, True);
          end if;
 
          Update_Float_Menu (Child);
@@ -3438,6 +3448,8 @@ package body Gtkada.MDI is
          --  immediately, resulting in a change in the order of children in the
          --  list, even though not all windows have been floated yet.
 
+         MDI.All_Floating_Mode := All_Floating;
+
          loop
             List := First (MDI.Items);
 
@@ -3459,9 +3471,9 @@ package body Gtkada.MDI is
          Set_Sensitive (MDI.Dock_Menu_Item, not All_Floating);
          Set_Sensitive (MDI.Float_Menu_Item, not All_Floating);
 
-         MDI.All_Floating_Mode := All_Floating;
          Set_Child_Visible (MDI, not All_Floating);
 
+         --  Force a recomputation of the size
          Resize (Gtk_Window (Get_Toplevel (MDI)), -1, -1);
       end if;
    end Set_All_Floating_Mode;

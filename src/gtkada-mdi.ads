@@ -694,6 +694,9 @@ private
       --  Initial coordinates of the item when it is not iconified. These
       --  fields are only relevant while the item is iconified.
 
+      Uniconified_State : State_Type;
+      --  The state the child had before being floated
+
       MDI : MDI_Window;
       --  The MDI to which the child belongs. We cannot get this information
       --  directly from Get_Parent since some children are actually embedded
