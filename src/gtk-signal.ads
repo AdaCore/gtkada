@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Gdk;
+with Gdk.Rectangle;
 with Gtk.Object;
 with Gtk.Widget;
 with Gtk.Tips_Query;
@@ -126,6 +127,26 @@ package Gtk.Signal is
       --  Intended to be used when Cb_Type is a type from Gtk
 
    end Two_Callback_Gtk;
+
+   -----------------------------------------------------------------
+   --  The following package should be used in the callbacks for  --
+   --  the "draw" function when creating new widgets              --
+   -----------------------------------------------------------------
+
+   generic
+      type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
+   package Draw_Callback is
+      type Callback is access procedure
+        (Widget  : access Base_Type;
+         Area    : in Gdk.Rectangle.Gdk_Rectangle);
+
+      function Connect
+        (Obj       : access Base_Type'Class;
+         Name      : in String;
+         Func      : in Callback;
+         After     : in Boolean := False)
+        return Guint;
+   end Draw_Callback;
 
    -----------------------------------------------------------------
    --  The following functions are for callbacks requiring no data to be

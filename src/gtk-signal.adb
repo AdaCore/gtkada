@@ -400,6 +400,97 @@ package body Gtk.Signal is
       end Connect;
 
    end Two_Callback_Gtk;
+
+   -------------------
+   -- Draw_Callback --
+   -------------------
+
+   package body Draw_Callback is
+
+      type Data_Type_Record is
+         record
+            Func   : Callback;
+         end record;
+      type Data_Type_Access is access all Data_Type_Record;
+      pragma Convention (C, Data_Type_Access);
+
+      function Convert is new Unchecked_Conversion (Data_Type_Access,
+                                                    System.Address);
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Data_Type_Access);
+
+      procedure Free_Data (Data : in System.Address);
+      pragma Convention (C, Free_Data);
+      --  Free the memory associated with the callback's data
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray);
+      pragma Convention (C, Marshaller);
+
+      ---------------
+      -- Free_Data --
+      ---------------
+
+      procedure Free_Data (Data : in System.Address) is
+         procedure Internal is new Unchecked_Deallocation
+           (Data_Type_Record, Data_Type_Access);
+         D : Data_Type_Access := Convert (Data);
+      begin
+         Internal (D);
+      end Free_Data;
+
+      ----------------
+      -- Marshaller --
+      ----------------
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray)
+      is
+         function Internal (Params : in GtkArgArray;
+                            Num    : in Guint)
+                            return System.Address;
+         pragma Import (C, Internal, "ada_gtkarg_value_object");
+         use type System.Address;
+         type Acc is access all Base_Type;
+         Stub   : Base_Type;
+         Data   : Data_Type_Access := Convert (User_Data);
+         Tmp    : System.Address := Internal (Params, 0);
+
+         Widget2 : Gdk.Rectangle.Gdk_Rectangle;
+         for Widget2'Address use Tmp;
+      begin
+         if Data.Func /= null then
+            Data.Func (Acc (Get_User_Data (Object, Stub)), Widget2);
+         end if;
+      end Marshaller;
+
+      -------------
+      -- Connect --
+      -------------
+
+      function Connect
+        (Obj       : access Base_Type'Class;
+         Name      : in String;
+         Func      : in Callback;
+         After     : in Boolean := False)
+         return Guint
+      is
+         D : Data_Type_Access := new Data_Type_Record'(Func => Func);
+      begin
+         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
+                                   Name,
+                                   Marshaller'Address,
+                                   Convert (D),
+                                   Free_Data'Address,
+                                   After);
+      end Connect;
+
+   end Draw_Callback;
+
    -------------------------
    -- Tips_Query_Callback --
    -------------------------
