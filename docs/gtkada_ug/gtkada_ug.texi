@@ -1092,9 +1092,12 @@ correct Ada type.
 If the widget was created implicitly (for instance every time you
 create a Gtk_Button, a Gtk_Label is also created for the text displayed), then
 GtkAda will only be able to create the corresponding type by default for the
-following widgets: Gtk_Label, Gtk_Menu_Item and Gtk_Button.
-For other widgets, it will instead create a Gtk_Widget, and you will thus have
-to do an Uncheck_Cast to convert it back to the type you want and expect.
+following widgets: Gtk_Label, Gtk_Item, Gtk_List_Item, Gtk_Menu_Item,
+Gtk_Check_Menu_Item, Gtk_Radio_Menu_Item, Gtk_Tearoff_Menu_Item, Gtk_Tree_Item
+and Gtk_Button.
+For other widgets, it will instead create a Gtk_Widget, and you will have
+to either call Gtk.Unchecked_Cast to convert it back to the type you expect,
+or use @b{Gtk.Type_Conversion} as described below.
 
 In the third case (imported C widgets), GtkAda is not, by default, able to
 create the corresponding Ada type.
