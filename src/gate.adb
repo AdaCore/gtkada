@@ -99,7 +99,7 @@ begin
          end if;
 
       else
-         --  Instanciate (i.e create Gtk Widgets) N to ensure that the gtk+
+         --  Instantiate (i.e create Gtk Widgets) N to ensure that the gtk+
          --  library will know about the internal structures of the generated
          --  widgets. This is needed in particular to retrieve the argument
          --  count and types for the various signals.
