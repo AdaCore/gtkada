@@ -84,7 +84,8 @@ You then have to make sure that the dynamic library \verb:libgtkada:
 is known by your system, by typically running \verb:ldconfig:,
 editing \verb:/etc/ld.conf: or add the path that contains libgtkada
 (by default \verb:/usr/local/lib:, or \verb:$prefix/lib: if you specified
-the --prefix option during the configure step) to your \verb:LD_LIBRARY_PATH:
+the \verb:--prefix: option during the configure step) to your 
+\verb:LD_LIBRARY_PATH:
 
 \subsection{How to compile an application with GtkAda}
 
@@ -139,7 +140,7 @@ functions are implemented.
 
 {\bf WARNING:} all the generic functions allocate some memory for
 internal structures. This  memory is freed  by gtk itself,  by calling
-some Ada functions. Thus the generic packages  have to be instanciated
+some Ada functions. Therefore the generic packages  have to be instanciated
 at library level, not  inside a subprogram,  so that the functions are
 still defined when gtk needs to free the memory.
 
@@ -252,7 +253,7 @@ of the application.
 
 You need to perform some initializations to start a GtkAda application:
 \begin{quote}\begin{verbatim}
---  unites predefinies de la librairies
+--  predefined units of the library
 with Gtk.Rc;
 with Gtk.Main;
 with Gtk.Enums;
@@ -360,7 +361,7 @@ The GTK toolkit is based on two lower level layers: GDK and Glib.
 It is sometimes needed to call these layers directly. A brief description
 of these packages is provided in sections ???\\
 
-Each widget is delcared in a separate package.
+Each widget is declared in a separate package.
 The file, package and type names can be automatically retrieved one from each
 other. For example, the type \verb:Gtk_Text: is defined in the package
 \verb:Gtk.Text: which is defined in the file \verb:gtk-text.ads:.\\
@@ -388,7 +389,7 @@ procedure Init;
 \end{verbatim}\end{quote}
 
 \item
-The signal handling loop: call it once the interface has been set up.
+The signal handling loop: call it once the interface has been set-up.
 \begin{quote}\begin{verbatim}
 procedure Main;
 \end{verbatim}\end{quote}
@@ -550,8 +551,8 @@ type Gtk_Adjustment_Record is new Data.Gtk_Data_Record with private;
 type Gtk_Adjustment is access all Gtk_Adjustment_Record'Class;
 \end{verbatim}\end{quote}
 
-These objects let you link between a scrollbar and a scrollable widget
-(text, scrolled\_window).
+These objects allow you to create a link between a scrollbar and a
+scrollable widget (text, scrolled\_window).
 
 \subsection{Package Gtk.Widget}
 \begin{quote}\begin{verbatim}
@@ -965,7 +966,7 @@ type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
 \end{verbatim}\end{quote}
 
 The NoteBook Widget is a collection of {\em pages} that overlap each other,
-each page contains different information.
+each page containing different information.
 This widget has become more common lately in GUI programming,
 and it is a good way to show blocks similar information that warrant
 separation in their display. 
@@ -1231,50 +1232,50 @@ procedure Hide_Fileop_Buttons
 %   type Gtk_Alignment is access Gtk_Alignment_Record'Class;
 
 \subsection{Package Gtk.Enums}
-This package defines all the enumerated types used by the GTK hierarchy:
+This package defines all the enumerated types used by the GTK hierarchy.
 
-\begin{quote}\begin{verbatim}
-type Gtk_State_Type is (State_Normal,
-type Gtk_Window_Type is (Window_Toplevel,
-type Gtk_Button_Action is new Guint;
-type Gtk_Button_Box_Style is (Default_Style, Spread,
-type Gtk_Direction_Type is (Dir_Tab_Forward,
-type Gtk_Shadow_Type is (Shadow_None,
-type Gtk_Arrow_Type is (Arrow_Up,
-type Gtk_Cell_Type is (Cell_Empty,
-type Gtk_Pack_Type is (Pack_Start, Pack_End);
-type Gtk_Policy_Type is (Policy_Always,
-type Gtk_Update_Type is (Update_Continuous,
-type Gtk_Relief_Style is (Relief_Normal,
-type Gtk_Attach_Options is new Glib.Guint32;
-type Gtk_Window_Position is (Win_Pos_None,
-type Gtk_Submenu_Direction is (Direction_Left,
-type Gtk_Submenu_Placement is (Top_Bottom,
-type Gtk_Menu_Factory_Type is (Menu_Factory_Menu,
-type Gtk_Resize_Mode is (Resize_Parent,
-type Gtk_Metric_Type is (Pixels,
-type Gtk_Scroll_Type is (Scroll_None,
-type Gtk_Trough_Type is (Trough_None,
-type Gtk_Position_Type is (Pos_Left,
-type Gtk_Preview_Type is (Preview_Color,
-type Gtk_Justification is (Justify_Left,
-type Gtk_Selection_Mode is (Selection_Single,
-type Gtk_Orientation is (Orientation_Horizontal,
-type Gtk_Spin_Button_Update_Policy is (Update_Always,
-type Gtk_Toolbar_Child_Type is (Toolbar_Child_Space,
-type Gtk_Toolbar_Style is (Toolbar_Icons,
-type Gtk_Toolbar_Space_Style is (Toolbar_Space_Empty,
-type Gtk_Tree_View_Mode is (Tree_View_Line,
-type Gtk_Visibility is (Visibility_None,
-type Gtk_Progress_Bar_Style is (Progress_Continuous,
-type Gtk_Progress_Bar_Orientation is (Progress_Left_To_Right,
-\end{verbatim}\end{quote}
+%\begin{quote}\begin{verbatim}
+% type Gtk_State_Type is (State_Normal,
+% type Gtk_Window_Type is (Window_Toplevel,
+% type Gtk_Button_Action is new Guint;
+% type Gtk_Button_Box_Style is (Default_Style, Spread,
+% type Gtk_Direction_Type is (Dir_Tab_Forward,
+% type Gtk_Shadow_Type is (Shadow_None,
+% type Gtk_Arrow_Type is (Arrow_Up,
+% type Gtk_Cell_Type is (Cell_Empty,
+% type Gtk_Pack_Type is (Pack_Start, Pack_End);
+% type Gtk_Policy_Type is (Policy_Always,
+% type Gtk_Update_Type is (Update_Continuous,
+% type Gtk_Relief_Style is (Relief_Normal,
+% type Gtk_Attach_Options is new Glib.Guint32;
+% type Gtk_Window_Position is (Win_Pos_None,
+% type Gtk_Submenu_Direction is (Direction_Left,
+% type Gtk_Submenu_Placement is (Top_Bottom,
+% type Gtk_Menu_Factory_Type is (Menu_Factory_Menu,
+% type Gtk_Resize_Mode is (Resize_Parent,
+% type Gtk_Metric_Type is (Pixels,
+% type Gtk_Scroll_Type is (Scroll_None,
+% type Gtk_Trough_Type is (Trough_None,
+% type Gtk_Position_Type is (Pos_Left,
+% type Gtk_Preview_Type is (Preview_Color,
+% type Gtk_Justification is (Justify_Left,
+% type Gtk_Selection_Mode is (Selection_Single,
+% type Gtk_Orientation is (Orientation_Horizontal,
+% type Gtk_Spin_Button_Update_Policy is (Update_Always,
+% type Gtk_Toolbar_Child_Type is (Toolbar_Child_Space,
+% type Gtk_Toolbar_Style is (Toolbar_Icons,
+% type Gtk_Toolbar_Space_Style is (Toolbar_Space_Empty,
+% type Gtk_Tree_View_Mode is (Tree_View_Line,
+% type Gtk_Visibility is (Visibility_None,
+% type Gtk_Progress_Bar_Style is (Progress_Continuous,
+% type Gtk_Progress_Bar_Orientation is (Progress_Left_To_Right,
+%\end{verbatim}\end{quote}
 
 \section{Description of the GDK hierarchy}
 GTK is based on a lower level layer called GDK that contains some simple
 drawing and window primitives.
 
-Color types and table of colors:
+%Color types and table of colors:
 \subsection{Package Gdk.Color}
 \begin{quote}\begin{verbatim}
 type Gdk_Color is private;
@@ -1305,16 +1306,17 @@ widgets directly in Ada (although you can't create your own signals
 yet, we are still working on it).
 
 Since GtkAda has an Object Oriented conception (well, at least you can
-program by extension), it is easy, if you want to associat your
-own data with a widget, to create your own type. See below for examples.
-You should also have a look at the testgtk/ directory.
+program by extension), it is easy, if you want to associate your
+own data with a widget, to create your own type. Please see the
+examples below. You should also have a look at the \verb:testgtk/:
+ directory.
 
 We provide a Perl script to help you create a binding to a C widget
 (this is the script we have used ourselves).  This will not fully
 automate the process, although it should really speed things up. You
 will probably need less than 15 min to create a new binding once you
 will get used to the way GtkAda works. Note that your C file should
-have the same format as is used by Gtk+ itself.
+have the same format as the one used by Gtk+ itself.
 
 Here are the steps to create a new binding:
 
@@ -1404,7 +1406,7 @@ an e-mail.
 To  report errors,  send a  mail  to all  the authors  (see the AUTHORS
 file distributed with GtkAda) explaining exactly what your
 are  doing,  what  it  the  expected  result  and  what  you  actually
-get. Please include the required sources to reproduced the problem, in
+get. Please include the required sources to reproduce the problem, in
 a  format usable  by {\em gnatchop}  (basically, insert  all  the required
 sources at  the end of  the mail). Please  try to provide a  subset of
 your sources as small as possible.\\
@@ -1433,8 +1435,8 @@ about that, this is for the better!).
   automatically taken care of by gtk itself, which is one of the
   strong points of the new scheme.
 \item The only part of your code that is actually modified are the
-  callbacks. The changes should be easy to handle though (We did it
-  for testgtk itself :-)
+  callbacks. The changes should be easy to handle (We did it
+  for testgtk itself :-).
   When instanciating a callback generic, the first parameter should be
   modified like this:
 
@@ -1454,7 +1456,7 @@ procedure My_Func (Button : access Gtk.Button.Gtk_Button_Record;
   type, and the second parameter is an "in" parameter.
 \end{itemize}
 
-Last thing that has changed in this new version of the binding are some
+The last things that have changed in this new version of the binding are some
 of the names of the parameters in the subprograms of the bindings. This
 is part of a major cleanup we are doing so that things can be more
 homogeneous within GtkAda.
@@ -1495,7 +1497,7 @@ begin
 end;
 \end{verbatim}\end{quote}
 
-The first line create the Ada type, whereas the {\em Initialize} call
+The first line creates the Ada type, whereas the {\em Initialize} call
 actually creates the C widget and associate with the Ada type.
 
 \section{Support for Glade, the Gtk GUI builder}
@@ -1536,9 +1538,10 @@ kept in the new files. For that, GATE creates a directory \verb:.gate/: in the
 current directory. Please do not delete it if you want GATE to be able to
 keep your changes from one version to the next.\\
 
-Also note that to be able to keep track of your modifications, gate relies on
-patch and diff being available on your system. If you don't have a working set
-of diff/patch, configure will simply replace them by null operations.\\
+Also note that to be able to keep track of your modifications, gate
+relies on \verb:patch: and \verb:diff: being available on your system.
+If you don't have a working set of \verb:diff:/\verb:patch:, \verb:configure:
+will simply replace them by null operations.\\
 
 \section{A complete example}
 A window is created with 3 buttons that shows the 3 different types of
