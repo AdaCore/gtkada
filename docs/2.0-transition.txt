@@ -244,7 +244,23 @@ gtkwindow.h: see "missing" section.
 =======
 Here are some problems found while binding Pango:
 pango-font.h: 
+ field PangoFontDescription.size should be Gint, not int.
  pango_font_description_copy (): is currently a function that returns a
-  PangoFontDescription rather than a procedure.
+  PangoFontDescription rather than a procedure. Also: it allocates the
+  memory, but does not check the result => if memory exhausted, then SEGV.
+  suggested patch:
+<<
+*** fonts.c.orig        Wed Jun  6 14:39:22 2001
+--- fonts.c     Wed Jun  6 14:39:39 2001
+*************** PangoFontDescription *
+*** 41,46 ****
+--- 41,47 ----
+  pango_font_description_copy  (const PangoFontDescription  *desc)
+  {
+    PangoFontDescription *result = g_new (PangoFontDescription, 1);
++   g_return_val_if_fail (result != NULL, NULL);
+
+    *result = *desc;
+>>
  pango_font_description_from_string (): should also be a procedure.
  
