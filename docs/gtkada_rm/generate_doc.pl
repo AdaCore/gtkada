@@ -149,9 +149,9 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 $package_name="";
 
 ## Colors used
-$chapter_bg="#FFD0D0";
+$chapter_bg="#FFF0D0";
 $chapter_fg="#000000";
-$section_bg="#FFF0D0";
+$section_bg="#FFD0D0";
 $section_fg="#000000";
 $subprog_bg="#D6E8FF";
 
