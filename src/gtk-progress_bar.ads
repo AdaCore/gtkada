@@ -38,9 +38,6 @@ package Gtk.Progress_Bar is
       (Pbar       : in Gtk_Progress_Bar;
        Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
-   function Get_Adjustment (Widget : in Gtk_Progress_Bar)
-                            return Gtk.Adjustment.Gtk_Adjustment;
-
    procedure Gtk_New (Widget     : out Gtk_Progress_Bar;
                       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Gtk_New (Widget : out Gtk_Progress_Bar);

@@ -49,20 +49,6 @@ package body Gtk.Progress_Bar is
                 Get_Object (Adjustment));
    end Construct;
 
-   --------------------
-   -- Get_Adjustment --
-   --------------------
-
-   function Get_Adjustment (Widget : in Gtk_Progress_Bar)
-                            return Gtk.Adjustment.Gtk_Adjustment is
-      function Internal (Widget : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_progress_bar_get_adjustment");
-      Adj : Gtk.Adjustment.Gtk_Adjustment;
-   begin
-      Set_Object (Adj, Internal (Get_Object (Widget)));
-      return Adj;
-   end Get_Adjustment;
-
    -------------
    -- Gtk_New --
    -------------
