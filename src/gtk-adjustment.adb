@@ -128,7 +128,7 @@ package body Gtk.Adjustment is
      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
-      pragma Import (C, Internal, "ada_gtk_adjustment_get_value");
+      pragma Import (C, Internal, "gtk_adjustment_get_value");
 
    begin
       return Internal (Get_Object (Adjustment));
