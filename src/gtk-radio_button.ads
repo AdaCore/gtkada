@@ -40,7 +40,7 @@
 --  this group
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Check_Button;
 with Gtk.Widget; use Gtk.Widget;
@@ -75,6 +75,31 @@ package Gtk.Radio_Button is
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
 
+   procedure Gtk_New_With_Mnemonic
+     (Radio_Button : out Gtk_Radio_Button;
+      Group        : Widget_SList.GSlist := Widget_SList.Null_List;
+      Label        : String);
+   --  Create a new Gtk_Radio_Button containing a Label. The Label is created
+   --  using Gtk.Label.New_With_Mnemonic, so underscores in Label indicate
+   --  the mnemonic for the button.
+   --
+   --  To initialize a new group (when creating the first button), you should
+   --  pass it null or a button that has not been created with Gtk_New, as in
+   --  the example below.
+
+   procedure Gtk_New_With_Mnemonic
+     (Radio_Button : out Gtk_Radio_Button;
+      Group        : Gtk_Radio_Button;
+      Label        : String);
+   --  Create a new radio button in the same group as Group. The label is
+   --  created using Gtk.Label.New_With_Mnemonic, so underscores in Label
+   --  indicate the mnemonic for the button.
+   --
+   --  To initialize a new group (when creating the first button), you should
+   --  pass it null or a button that has not been created with Gtk_New, as in
+   --  the example below.
+
+
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Widget_SList.GSlist;
@@ -88,6 +113,16 @@ package Gtk.Radio_Button is
       Label        : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Initialize_With_Mnemonic
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Widget_SList.GSlist;
+      Label        : String);
+
+   procedure Initialize_With_Mnemonic
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Gtk_Radio_Button;
+      Label        : String);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Button.

@@ -76,6 +76,32 @@ package body Gtk.Radio_Button is
       Initialize (Radio_Button, Group, Label);
    end Gtk_New;
 
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic
+     (Radio_Button : out Gtk_Radio_Button;
+      Group        : Widget_SList.GSlist := Widget_SList.Null_List;
+      Label        : String) is
+   begin
+      Radio_Button := new Gtk_Radio_Button_Record;
+      Initialize_With_Mnemonic (Radio_Button, Group, Label);
+   end Gtk_New_With_Mnemonic;
+
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic
+     (Radio_Button : out Gtk_Radio_Button;
+      Group        : Gtk_Radio_Button;
+      Label        : String) is
+   begin
+      Radio_Button := new Gtk_Radio_Button_Record;
+      Initialize_With_Mnemonic (Radio_Button, Group, Label);
+   end Gtk_New_With_Mnemonic;
+
    ----------------
    -- Initialize --
    ----------------
@@ -135,6 +161,43 @@ package body Gtk.Radio_Button is
 
       Initialize_User_Data (Radio_Button);
    end Initialize;
+
+   ------------------------------
+   -- Initialize_With_Mnemonic --
+   ------------------------------
+
+   procedure Initialize_With_Mnemonic
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Widget_SList.GSlist;
+      Label        : String)
+   is
+      function Internal
+        (Group : System.Address; Label : String) return System.Address;
+      pragma Import (C, Internal, "gtk_radio_button_new_with_mnemonic");
+   begin
+      Set_Object
+        (Radio_Button, Internal (Get_Object (Group), Label & ASCII.NUL));
+      Initialize_User_Data (Radio_Button);
+   end Initialize_With_Mnemonic;
+
+   ------------------------------
+   -- Initialize_With_Mnemonic --
+   ------------------------------
+
+   procedure Initialize_With_Mnemonic
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Gtk_Radio_Button;
+      Label        : String)
+   is
+      function Internal
+        (Group : System.Address; Label : String) return System.Address;
+      pragma Import
+        (C, Internal, "gtk_radio_button_new_with_mnemonic_from_widget");
+   begin
+      Set_Object
+        (Radio_Button, Internal (Get_Object (Group), Label & ASCII.NUL));
+      Initialize_User_Data (Radio_Button);
+   end Initialize_With_Mnemonic;
 
    ---------------
    -- Set_Group --
