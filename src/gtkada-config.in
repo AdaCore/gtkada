@@ -35,7 +35,7 @@ while test $# -gt 0; do
       exit 1
       ;;
     --static)
-      gtkada_libs="-largs /usr/local/lib/libgtkada"
+      gtkada_libs="-largs @prefix@/lib/libgtkada.a"
       gtk_conf_pre=`gtk-config --prefix`
       glib_conf_pre=`glib-config --prefix`
       my_gtk_flags=`gtk-config --libs | sed -e 's/-lglib//g' -e 's/-lgtk//g' -e 's/-lgdk//g'`
