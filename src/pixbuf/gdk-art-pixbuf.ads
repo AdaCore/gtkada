@@ -48,10 +48,11 @@ package Gdk.Art.Pixbuf is
    --  A buffer that contains the image.
    --  It supports alpha channels (transparency).
 
-   type Art_Filter_Level is (Filter_Nearest,
-                             Filter_Tiles,
-                             Filter_Bilinear,
-                             Filter_Hyper);
+   type Art_Filter_Level is
+     (Filter_Nearest,
+      Filter_Tiles,
+      Filter_Bilinear,
+      Filter_Hyper);
    --  Filter_Nearest is nearest neighbor. It is the fastest and lowest
    --  quality.
    --

@@ -89,23 +89,20 @@ package Gtk.Status_Bar is
 
    function Get_Context_Id
      (Statusbar           : access Gtk_Status_Bar_Record;
-      Context_Description : in String)
-     return Context_Id;
+      Context_Description : in String) return Context_Id;
    --  Create the context id associated with a special name.
    --  If no context is currently associated with Context_Description, then
    --  a new context is created.
 
    function Get_Messages
-     (Statusbar : access Gtk_Status_Bar_Record)
-     return Messages_List.GSlist;
+     (Statusbar : access Gtk_Status_Bar_Record) return Messages_List.GSlist;
    --  Return a list of all the messages currently stored in the queue.
    --  The first item in the list is the most recent message.
 
    function Push
      (Statusbar : access Gtk_Status_Bar_Record;
       Context   : in Context_Id;
-      Text      : in String)
-     return Message_Id;
+      Text      : in String) return Message_Id;
    --  Push a new message on the queue, associated with a specific context.
    --  This message is directly displayed in the status bar.
    --  A new unique message id is associated with this message.
@@ -117,23 +114,22 @@ package Gtk.Status_Bar is
    --  contexts are ignored, and no error is raised if there is no message in
    --  Context.
 
-   procedure Remove (Statusbar  : access Gtk_Status_Bar_Record;
-                     Context    : in Context_Id;
-                     Message    : in Message_Id);
+   procedure Remove
+     (Statusbar  : access Gtk_Status_Bar_Record;
+      Context    : in Context_Id;
+      Message    : in Message_Id);
    --  Remove a message from the list.
    --  The message is only removed if it is in a specific context.
    --  Nothing happens if no matching message is found.
 
    ----------------------------
-   -- Support for GATE/DGATE --
+   -- Support for Gate/Dgate --
    ----------------------------
 
-   procedure Generate (N         : in Node_Ptr;
-                       File      : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
 
-   procedure Generate (Statusbar : in out Gtk_Object;
-                       N         : in Node_Ptr);
+   procedure Generate (Statusbar : in out Gtk_Object; N : in Node_Ptr);
    --  Dgate internal function
 
    -------------

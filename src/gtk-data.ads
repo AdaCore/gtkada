@@ -48,11 +48,10 @@ package Gtk.Data is
    --  Return the internal value associated with a Gtk_Data.
 
    ----------------------------
-   -- Support for GATE/DGATE --
+   -- Support for Gate/Dgate --
    ----------------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type)
+   procedure Generate (N : in Node_Ptr; File : in File_Type)
      renames Gtk.Object.Generate;
    --  Gate internal function
 
