@@ -56,6 +56,7 @@ unmodified in any copy.
 * Tasking with GtkAda::
 * Object-oriented features::
 * Support for Glade the Gtk GUI builder::
+* Binding new widgets::
 * How to report bugs::
 * Bibliography::
 
@@ -1577,6 +1578,50 @@ Feel free to send us (see @ref{How to report bugs}) the XML file that
 causes this problem. We don't guarantee a rapid fix for each particular
 problem but receiving real examples of missing functionnalities will
 certainly help implementing them faster.
+
+@node Binding new widgets
+@chapter Binding new widgets
+
+GtkAda comes with a Perl script to help you create a binding to a C widget
+(this is the script we have used ourselves).  This will not fully
+automate the process, although it should really speed things up. You
+will probably need less than 15 min to create a new binding once you
+will get used to the way GtkAda works. Note that your C file should
+have the same format as is used by Gtk+ itself.
+
+Here are the steps to create a new binding :
+
+@itemize @bullet
+@item Give the 'generate.pl' script the C header file
+       
+@item The perl script should ask you for every field in the C structure if
+you want to create a function to make it accessible from Ada. Answer
+@i{y} or @i{n} (the default value is @i{n}, just press ENTER).
+
+@smallexample
+   $ generate.pl ../include/gtk/gtkbutton.h > temporary
+     Create a function for the field child (of type GtkWidget*) [n]? 
+     Create a function for the field in_button (of type guint) [n]? 
+     Create a function for the field button_down (of type guint) [n]?
+@end smallexample
+
+@item If you answered yes to at least one of the above questions, create a
+new C file, and move  the C part   of the @i{temporary} file created  by
+generate.pl to this C file.
+
+@item Do a gnatchop on the @i{temporary} file created by generate.pl
+
+@smallexample
+   $ gnatchop temporary
+@end smallexample
+       
+  This should create two Ada files (specification and body)
+
+@item Edit these two files if needed (generally to change some parameters
+  from Gint to Boolean for instance). It can be a little bit tricky 
+  when one of your functions returns a GList* or a GSList*. Please have 
+  a look at @code{gtk-combo.ads} for examples how to do this.
+@end itemize
 
 @node How to report bugs
 @chapter How to report bugs
