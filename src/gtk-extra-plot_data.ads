@@ -206,8 +206,13 @@ package Gtk.Extra.Plot_Data is
    --  Emits the "draw_data" signal to request a redrawing of the data set.
 
    procedure Draw_Points (Data : access Gtk_Plot_Data_Record; N : Gint);
-   --  Draw at most N values of the Data set on the screen. If N is greater
-   --  than the actual number of values in Data, then they are all displayed.
+   --  Draw the N last (most recent) values of the Data set on the screen.
+   --  If N is greater than the actual number of values in Data, then they are
+   --  all displayed. This subprogram should be used when you want to
+   --  periodically update the contents of a dataset (you would then modify
+   --  the number of points in the dataset with a call to Set_Numpoints, then
+   --  register the new points with Set_X and Set_Y, and finally refresh the
+   --  dataset with a call to Draw_Points and Gtk.Plot.Refresh).
 
    procedure Draw_Symbol (Data : access Gtk_Plot_Data_Record; X, Y : Gdouble);
    --  Draw the current symbol (see Set_Symbol) at specific coordinates on
