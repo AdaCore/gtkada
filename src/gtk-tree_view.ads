@@ -202,20 +202,19 @@ package Gtk.Tree_View is
 
    function Get_Expander_Column
      (Tree_View : access Gtk_Tree_View_Record)
-     return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-   --  Return the column that is the current expander column.  This
-   --  column has the expander arrow drawn next to it.
+      return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
+   --  Return the column that is the current expander column.
+   --  This column has the expander arrow drawn next to it.
 
-   --  ??? Must implement this.
    procedure Scroll_To_Point
      (Tree_View : access Gtk_Tree_View_Record;
       Tree_X    : Gint;
       Tree_Y    : Gint);
    --  Scroll the tree view such that the top-left corner of the visible
    --  area is Tree_X, Tree_Y, where Tree_X and Tree_Y are specified
-   --  in tree window coordinates.  The Tree_View must be realized before
-   --  this function is called.  If it isn't, you probably want ot be
-   --  using gtk_tree_view_scroll_to_cell.
+   --  in tree window coordinates. The Tree_View must be realized before
+   --  this function is called. If it isn't, you probably want to be
+   --  using Scroll_To_Cell.
 
    procedure Scroll_To_Cell
      (Tree_View : access Gtk_Tree_View_Record;
