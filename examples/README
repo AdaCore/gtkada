@@ -1,8 +1,9 @@
-This is the GtkAda Examples Directory. Our goal is to provide the GtkAda user
-some pieces of code that are easy to understand, easy to modify and to play
-with.
+This is the GtkAda Examples Directory. Our goal is to provide the
+GtkAda user with some pieces of code that are easy to understand, easy
+to modify and to play with.
+
 If you are insterested in sharing your own programs with the GtkAda community,
-please tune them with the latest GtkAda version and send it with appropriate
+please tune them with the latest GtkAda version and send them with appropriate
 documentation (and bug reports) to the authors.
 
 Note that you need to first install GtkAda to use these examples.
@@ -20,8 +21,8 @@ Note that you need to first install GtkAda to use these examples.
 
     $ gate menu.glade
 
-  This will generate a set of files. Eventually modify callbacks_menu.adb
-  to customize it, the compile and run it:
+  This will generate a set of files. Optionaly modify callbacks_menu.adb
+  to customize it, then compile and run it:
 
     $ gnatmake menu `gtkada-config`
     $ menu
