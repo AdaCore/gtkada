@@ -248,7 +248,7 @@ package Gtk.Main is
    function Timeout_Add (Interval : in Guint32;
                          Func : Timeout_Callback)
                         return Timeout_Handler_Id;
-   --  Adds a new timeout. FUNC will be called after INTERNAL milliseconds.
+   --  Adds a new timeout. FUNC will be called after INTERVAL milliseconds.
    --  The function will be as long as it returns TRUE.
 
    --  <doc_ignore>
@@ -300,6 +300,4 @@ private
    pragma Import (C, Quit_Remove, "gtk_main_quit_remove");
 end Gtk.Main;
 
---  <example>
 --  Should show how to start a new main loop to wait for a dialog's answer
---  </example>
