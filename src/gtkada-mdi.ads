@@ -264,7 +264,7 @@ package Gtkada.MDI is
    --  Note that if you put a toplevel Gtk_Window initially, this returns the
    --  child of the window.
 
-   function Get_Window
+   function Get_Initial_Window
      (Child : access MDI_Child_Record) return Gtk.Window.Gtk_Window;
    --  If you initially Put() a Gtk_Window in the MDI, this returns that
    --  window, although with no child (see Get_Widget instead).
@@ -477,9 +477,21 @@ package Gtkada.MDI is
    --
    --  - "child_selected"
    --    procedure Handler
-   --       (MDI : access MDI_Window_Record'Class; Child : MDI_Child);
+   --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
    --
-   --    This signal is emitted when a new child has gained the focus.
+   --    This signal is emitted when a new child has gained the focus. Convert
+   --    Child to a MDI_Child by calling Gtk.Arguments.To_Object
+   --
+   --  - "float_child"
+   --    procedure Handler (Child : access MDI_Child_Record'Class);
+   --
+   --    Emitted when a child is set as floating
+   --
+   --  - "unfloat_child"
+   --    procedure Handler (Child : access MDI_Child_Record'Class);
+   --
+   --    Emitted when a child is put back in the main MDI window
+   --
    --  </signals>
 
 private
