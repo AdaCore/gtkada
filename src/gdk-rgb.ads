@@ -129,13 +129,16 @@ package Gdk.Rgb is
 
    type Rgb_Cmap_Index is new Natural range 0 .. 255;
 
-   function Get (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index) return Rgb_Item;
-   function Get_8 (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index)
-                  return Glib.Guchar;
-   procedure Set
-     (Cmap : in out Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Rgb_Item);
-   procedure Set_8
-     (Cmap : in out Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Glib.Guchar);
+   function Get (Cmap  : in Gdk_Rgb_Cmap;
+                 Index : in Rgb_Cmap_Index) return Rgb_Item;
+   function Get_8 (Cmap  : in Gdk_Rgb_Cmap;
+                   Index : in Rgb_Cmap_Index) return Glib.Guchar;
+   procedure Set (Cmap  : in out Gdk_Rgb_Cmap;
+                  Index : in     Rgb_Cmap_Index;
+                  Value : in     Rgb_Item);
+   procedure Set_8 (Cmap  : in out Gdk_Rgb_Cmap;
+                    Index : in     Rgb_Cmap_Index;
+                    Value : in     Glib.Guchar);
    --  Access items of the colormap
    --  The *_8 functions should be used with 8-bit displays
 
@@ -158,8 +161,9 @@ package Gdk.Rgb is
       Rgb_Buf       : in Rgb_Buffer;
       Rowstride     : in Glib.Gint);
    --  Renders a Gdb buffer with 24 bit Data. Such a buffer is a one
-   --  dimensional array of bytes, where every byte triplet makes up a pixel
-   --  (byte 0 is red, byte 1 is green and byte 2 is blue).
+   --  dimensional array of bytes, where every byte triplet makes up a
+   --  pixel (byte 0 is red, byte 1 is green and byte 2 is blue).
+   --
    --  Width: Number of pixels (byte triplets) per row of the image
    --  Height: Number of rows in the image
    --  RowStride: Number of bytes between rows... (row n+1 will start at byte
