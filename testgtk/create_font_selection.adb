@@ -30,62 +30,18 @@
 with Glib; use Glib;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Font_Selection;  use Gtk.Font_Selection;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Common; use Common;
 with Gtk; use Gtk;
 
-with Text_IO; use Text_IO;
-
 package body Create_Font_Selection is
-
-   type Gtk_Font_Selection_Access is access all Gtk_Font_Selection_Dialog;
-   package Destroy_Cb is new Signal.Callback
-     (Gtk_Font_Selection_Dialog_Record, Gtk_Font_Selection_Access);
-   procedure Destroyed (Win : access Gtk_Font_Selection_Dialog_Record;
-                        Ptr : in Gtk_Font_Selection_Access);
-
-   procedure Destroyed (Win : access Gtk_Font_Selection_Dialog_Record;
-                        Ptr : in Gtk_Font_Selection_Access) is
-   begin
-      Ptr.all := null;
-   end Destroyed;
-
-   package Fs_Cb is new Signal.Object_Callback
-     (Gtk_Font_Selection_Dialog_Record);
-
-   Window : aliased Gtk_Font_Selection_Dialog;
-
-
-   procedure Selection_OK (Fs : access Gtk_Font_Selection_Dialog_Record) is
-   begin
-      Put_Line (Get_Font_Name (Fs));
-      Destroy (Fs);
-   end Selection_OK;
-
-
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id      : Guint;
+      Font    : Gtk_Font_Selection;
    begin
 
       Set_Label (Frame, "Font Selection");
 
-      if Window = null then
-         Gtk_New (Window, "Font Selection Dialog");
-         Set_Position (Window, Win_Pos_Mouse);
-
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroyed'Access, Window'Access);
-         Id := Fs_Cb.Connect
-           (Get_Ok_Button (Window), "clicked", Selection_Ok'Access, Window);
-         Id := Widget_Cb.Connect
-           (Get_Cancel_Button (Window), "clicked", Gtk.Widget.Destroy'Access,
-            Window);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Gtk_New (Font);
+      Add (Frame, Font);
+      Show_All (Frame);
    end Run;
 
 end Create_Font_Selection;

@@ -29,76 +29,69 @@
 
 with Gtk; use Gtk;
 with Glib; use Glib;
-with Gtk.Widget;
-with Gtk.Color_Selection;        use Gtk.Color_Selection;
-with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
+with Gtk.Box;              use Gtk.Box;
+with Gtk.Button;           use Gtk.Button;
+with Gtk.Color_Selection;  use Gtk.Color_Selection;
 with Gtk.Enums;
 with Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
+with Gtk.Widget;           use Gtk.Widget;
 with Ada.Text_IO;
 with Common; use Common;
 
 package body Create_Color_Selection is
 
-   type Gtk_Color_Dialog_Access is access all Gtk_Color_Selection_Dialog;
-   package Destroy_Dialog_Cb is new Signal.Callback
-     (Gtk_Color_Selection_Dialog_Record, Gtk_Color_Dialog_Access);
-   procedure Destroy_Dialog (Win : access Gtk_Color_Selection_Dialog_Record;
-                             Ptr : in Gtk_Color_Dialog_Access);
-
-   procedure Destroy_Dialog (Win : access Gtk_Color_Selection_Dialog_Record;
-                             Ptr : in Gtk_Color_Dialog_Access) is
-   begin
-      Ptr.all := null;
-   end Destroy_Dialog;
-
    package Color_Sel_Cb is new Signal.Object_Callback
-     (Gtk_Color_Selection_Dialog_Record);
+     (Gtk_Color_Selection_Record);
    --  Must be instanciated at library level !
 
-   procedure Color_Ok (Dialog : access Gtk_Color_Selection_Dialog_Record)
+   --------------
+   -- Color_Ok --
+   --------------
+
+   procedure Color_Ok (Dialog : access Gtk_Color_Selection_Record)
    is
       Color : Color_Array;
    begin
-      Get_Color (Get_Colorsel (Dialog), Color);
+      Get_Color (Dialog, Color);
       for I in Red .. Opacity loop
          Ada.Text_IO.Put_Line (Color_Index'Image (I)
                                & " => "
                                & Gdouble'Image (Color (I)));
       end loop;
-      Set_Color (Get_Colorsel (Dialog), Color);
+      Set_Color (Dialog, Color);
    end Color_Ok;
 
-   Dialog : aliased Gtk_Color_Selection_Dialog;
+   ---------
+   -- Run --
+   ---------
 
    procedure Run
      (Frame : access Gtk_Frame_Record'Class)
    is
-      Cb_Id  : Guint;
+      Cb_Id     : Guint;
+      Color     : Gtk_Color_Selection;
+      Box, Hbox : Gtk_Box;
+      Button    : Gtk_Button;
+
    begin
 
       Set_Label (Frame, "Color Selection");
-      if Dialog = null then
-         Gtk_New (Dialog, Title => "Color Selection Dialog");
-         Set_Opacity (Get_Colorsel (Dialog), True);
-         Set_Update_Policy (Get_Colorsel (Dialog), Enums.Update_Continuous);
-         Set_Position (Dialog, Enums.Win_Pos_Mouse);
+      Gtk_New_Vbox (Box, Homogeneous => False);
+      Add (Frame, Box);
 
-         Cb_Id := Destroy_Dialog_Cb.Connect
-           (Dialog, "destroy", Destroy_Dialog'Access, Dialog'Access);
+      Gtk_New (Color);
+      Set_Opacity (Color, True);
+      Pack_Start (Box, Color, Expand => False, Fill => False);
 
-         Cb_Id := Color_Sel_Cb.Connect (Get_OK_Button (Dialog),
-                                        "clicked",
-                                        Color_Ok'Access,
-                                        Dialog);
-         Cb_Id := Widget_Cb.Connect (Get_Cancel_Button (Dialog),
-                                   "clicked",
-                                   Gtk.Widget.Destroy'Access,
-                                   Dialog);
-         Show (Dialog);
-      else
-         Destroy (Dialog);
-      end if;
+      Gtk_New_Hbox (Hbox, Homogeneous => True);
+      Pack_Start (Box, Hbox, Expand => False, Fill => True);
+
+      Gtk_New (Button, "Print Color Value");
+      Pack_Start (Hbox, Button, Expand => False, Fill => True);
+      Cb_Id := Color_Sel_Cb.Connect
+        (Button, "clicked", Color_Ok'Access, Color);
+
+      Show_All (Frame);
    end Run;
 
 end Create_Color_Selection;
