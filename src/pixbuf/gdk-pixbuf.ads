@@ -123,7 +123,7 @@ package Gdk.Pixbuf is
    function Gdk_New (Width           : in Gint;
                      Height          : in Gint;
                      Format          : in Gdk.Art.Pixbuf.Art_Pix_Format :=
-                       Gdk.Art.Pixbuf.Art_Pix_Rgb;
+                       Gdk.Art.Pixbuf.Art_Pix_RGB;
                      Has_Alpha       : in Boolean := False;
                      Bits_Per_Sample : in Gint := 8)
                     return Gdk_Pixbuf;
