@@ -126,7 +126,9 @@ EXPORTS
 	ada_gdk_event_set_width
 	ada_gdk_event_set_window
 	ada_gdk_event_set_x
+	ada_gdk_event_set_xroot
 	ada_gdk_event_set_y
+	ada_gdk_event_set_yroot
 	ada_gdk_font_get_ascent
 	ada_gdk_font_get_descent
 	ada_gdk_gc_free_values
@@ -173,6 +175,7 @@ EXPORTS
 	ada_gdk_window_attr_set_wmclass_name
 	ada_gdk_window_attr_set_x
 	ada_gdk_window_attr_set_y
+	ada_get_xwindow
 	ada_gnode_first_child
 	ada_gnode_is_leaf
 	ada_gnode_is_root
@@ -373,6 +376,12 @@ EXPORTS
 	ada_gtk_extra_sheet_flag_is_set
 	ada_gtk_extra_sheet_set_flags
 	ada_gtk_extra_sheet_unset_flags
+	ada_gtk_extra_color_combo_get_column
+	ada_gtk_extra_color_combo_get_row
+	ada_gtk_extra_color_combo_get_ncols
+	ada_gtk_extra_color_combo_get_nrows
+	ada_gtk_extra_color_combo_set_row
+	ada_gtk_extra_color_combo_set_column
 	ada_gtk_font_combo_get_bold_button
 	ada_gtk_font_combo_get_font
 	ada_gtk_font_combo_get_italic_button
