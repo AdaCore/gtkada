@@ -29,16 +29,26 @@
 
 package body Glade is
 
-   -----------------
-   -- Load_Module --
-   -----------------
+   -------------
+   -- Provide --
+   -------------
 
-   procedure Load_Module (Module : String) is
-      procedure Internal (Module : String);
-      pragma Import (C, Internal, "glade_load_module");
-
+   procedure Provide (Library : String) is
+      procedure Internal (Library : String);
+      pragma Import (C, Internal, "glade_provide");
    begin
-      Internal (Module & ASCII.NUL);
-   end Load_Module;
+      Internal (Library & ASCII.NUL);
+   end Provide;
+
+   -------------
+   -- Require --
+   -------------
+
+   procedure Require (Library : String) is
+      procedure Internal (Library : String);
+      pragma Import (C, Internal, "glade_require");
+   begin
+      Internal (Library & ASCII.NUL);
+   end Require;
 
 end Glade;

@@ -39,27 +39,12 @@ package Glade is
 
    pragma Linker_Options ("-lgtkada_glade");
 
-   procedure Init;
-   --  must be called before use of libglade
+   --------------------------------------------
+   -- dynamic loading of libglade extensions --
+   --------------------------------------------
 
-   procedure Gnome_Init;
-   --  This is defined in libglade-gnome.
-   --  It should be used instead of Glade_Init if you want to use the
-   --  GNOME widget set with libglade.
+   procedure Require (Library : String);
 
-   procedure Bonobo_Init;
-   --  This is defined in libglade-bonobo
-   --  It should be used instead of Glade_Init if you want to use the GNOME
-   --  widget set with included Bonobo controls with libglade.
+   procedure Provide (Library : String);
 
-   procedure Load_Module (Module : String);
-   --  Load the named dynamic module.
-   --  Basically it is loaded, and the glade_init_module function is called.
-   --  This function should do any library initialisation and call
-   --  glade_register_widgets.
-
-private
-   pragma Import (C, Init, "glade_init");
-   pragma Import (C, Gnome_Init, "glade_gnome_init");
-   pragma Import (C, Bonobo_Init, "glade_bonobo_init");
 end Glade;

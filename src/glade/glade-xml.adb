@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                    Copyright (C) 2000-2001                        --
+--                    Copyright (C) 2000-2003                        --
 --                           ACT-Europe                              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -54,37 +54,6 @@ package body Glade.XML is
       return Convert (Internal (Get_Object (XML), Name & ASCII.NUL));
    end Get_Widget;
 
-   -----------------------------
-   -- Get_Widget_By_Long_Name --
-   -----------------------------
-
-   function Get_Widget_By_Long_Name
-     (XML      : access Glade_XML_Record;
-      Longname : String) return Gtk_Widget
-   is
-      function Internal
-        (XML  : System.Address;
-         Name : String) return System.Address;
-      pragma Import (C, Internal, "glade_xml_get_widget_by_long_name");
-
-   begin
-      return Convert (Internal (Get_Object (XML), Longname & ASCII.NUL));
-   end Get_Widget_By_Long_Name;
-
-   --------------------------
-   -- Get_Widget_Long_Name --
-   --------------------------
-
-   function Get_Widget_Long_Name
-     (Widget : access Gtk_Widget_Record'Class) return String
-   is
-      function Internal (Widget : System.Address) return chars_ptr;
-      pragma Import (C, Internal, "glade_get_widget_long_name");
-
-   begin
-      return Value (Internal (Get_Object (Widget)));
-   end Get_Widget_Long_Name;
-
    ---------------------
    -- Get_Widget_Name --
    ---------------------
@@ -130,18 +99,18 @@ package body Glade.XML is
    end Gtk_New;
 
    -------------------------
-   -- Gtk_New_From_Memory --
+   -- Gtk_New_From_Buffer --
    -------------------------
 
-   procedure Gtk_New_From_Memory
+   procedure Gtk_New_From_Buffer
      (XML    : out Glade_XML;
       Buffer : String;
       Root   : String := "";
       Domain : String := "") is
    begin
       XML := new Glade_XML_Record;
-      Initialize_From_Memory (XML, Buffer, Root, Domain);
-   end Gtk_New_From_Memory;
+      Initialize_From_Buffer (XML, Buffer, Root, Domain);
+   end Gtk_New_From_Buffer;
 
    ----------------
    -- Initialize --
@@ -155,36 +124,33 @@ package body Glade.XML is
    is
       function Internal
         (Fname  : String;
-         Root   : System.Address) return System.Address;
+         Root   : System.Address;
+         Domain : System.Address) return System.Address;
       pragma Import (C, Internal, "glade_xml_new");
 
-      function Internal2
-        (Fname  : String;
-         Root   : System.Address;
-         Domain : String) return System.Address;
-      pragma Import (C, Internal2, "glade_xml_new_with_domain");
-
-      Str1  : aliased constant String := Root & ASCII.NUL;
-      Addr1 : System.Address := Str1'Address;
+      Str1           : aliased constant String := Root & ASCII.NUL;
+      Root_Address   : System.Address := Str1'Address;
+      Str2           : aliased constant String := Domain & ASCII.NUL;
+      Domain_Address : System.Address := Str2'Address;
 
    begin
       if Root = "" then
-         Addr1 := System.Null_Address;
+         Root_Address := System.Null_Address;
       end if;
 
       if Domain = "" then
-         Set_Object (XML, Internal (Fname & ASCII.NUL, Addr1));
-      else
-         Set_Object
-           (XML, Internal2 (Fname & ASCII.NUL, Addr1, Domain & ASCII.NUL));
+         Domain_Address := System.Null_Address;
       end if;
+
+      Set_Object
+        (XML, Internal (Fname & ASCII.NUL, Root_Address, Domain_Address));
    end Initialize;
 
    ----------------------------
-   -- Initialize_From_Memory --
+   -- Initialize_From_Buffer --
    ----------------------------
 
-   procedure Initialize_From_Memory
+   procedure Initialize_From_Buffer
      (XML    : access Glade_XML_Record'Class;
       Buffer : String;
       Root   : String := "";
@@ -195,7 +161,7 @@ package body Glade.XML is
          Size   : Integer;
          Root   : System.Address;
          Domain : System.Address) return System.Address;
-      pragma Import (C, Internal, "glade_xml_new_from_memory");
+      pragma Import (C, Internal, "glade_xml_new_from_buffer");
 
       Str1  : aliased constant String := Root & ASCII.NUL;
       Addr1 : System.Address := Str1'Address;
@@ -212,7 +178,7 @@ package body Glade.XML is
       end if;
 
       Set_Object (XML, Internal (Buffer, Buffer'Length, Addr1, Addr2));
-   end Initialize_From_Memory;
+   end Initialize_From_Buffer;
 
    -------------------
    -- Relative_File --
@@ -229,28 +195,6 @@ package body Glade.XML is
    begin
       return Value (Internal (Get_Object (XML), Filename & ASCII.NUL));
    end Relative_File;
-
-   ------------------------
-   -- Set_Custom_Handler --
-   ------------------------
-
-   procedure Set_Custom_Handler (Handler : Custom_Widget_Handler) is
-   begin
-      raise Program_Error;
-   end Set_Custom_Handler;
-
-   ------------------------
-   -- Signal_Autoconnect --
-   ------------------------
-
-   procedure Signal_Autoconnect (XML : access Glade_XML_Record) is
-      procedure Internal
-        (Widget : System.Address);
-      pragma Import (C, Internal, "glade_xml_signal_autoconnect");
-
-   begin
-      Internal (Get_Object (XML));
-   end Signal_Autoconnect;
 
    --------------------
    -- Signal_Connect --
