@@ -12,7 +12,7 @@ is on the various Gtk+ lists.
 On linux systems, you can skip the steps from libiconv to libjpeg, and
 ignore the special comments.
 
-Under HP-UX, a recent version of GCC (e.g 3.2) should be used.
+Under HP-UX, a recent version of GCC (e.g 3.2) should be used
 
 Under AiX, the vendor C compiler is used:
 # CC=cc
@@ -36,6 +36,7 @@ cd ..
 PATH=$prefix/bin:$PATH
 LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH
 LDFLAGS=-L$prefix/lib
+
 export PATH LDFLAGS LD_LIBRARY_PATH
 
 # Needed so that gcc finds libiconv.h (and libpng.h, ...) when configuring
@@ -161,10 +162,10 @@ tar xzvf glib-2.2.3.tar.gz
 cd glib-2.2.3
 
 # on Linux:
-./configure --prefix=$prefix --enable-debug=minimum
+./configure --prefix=$prefix --disable-debug
 
 # on other systems:
-./configure --prefix=$prefix --enable-debug=minimum --with-libiconv
+./configure --prefix=$prefix --disable-debug --with-libiconv
 
 # possible switches for debugging:
 # --enable-gc-friendly --disable-mem-pools
@@ -208,7 +209,7 @@ patch -p0 < .../GtkAda/contrib/pango-1.2.5.diff
 # Replace /bin/sh by /bin/bash in order to work around a sh bug under some
 # systems (e.g. HP-UX, IRIX):
 
-bash ./configure --prefix=$prefix --with-included-modules=basic-x
+bash ./configure --prefix=$prefix --with-included-modules=basic-x --disable-debug
 make
 make install
 cd ..
@@ -234,8 +235,7 @@ patch -p0 < .../GtkAda/contrib/gtk+-2.2.4.diff
 # under e.g /usr/lib
 
 ./configure --disable-modules --without-libtiff \
-  --with-included-loaders=xpm,png,gif,jpeg --prefix=$prefix \
-  --enable-debug=minimum
+  --with-included-loaders=xpm,png,gif,jpeg --prefix=$prefix --disable-debug
 
 # For debugging Gtk+ and enable Gtk+ traces, use --enable-debug=full
 
