@@ -39,7 +39,7 @@ procedure DGate is
    N : Node_Ptr;
  
    type String_Access is access all String;
-   for String_Access'Size use System.Word_Size;
+   for String_Access'Size use Standard'Address_Size;
 
    function To_Address is new Unchecked_Conversion
      (String_Access, System.Address);

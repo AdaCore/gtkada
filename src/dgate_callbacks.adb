@@ -26,7 +26,7 @@ with Unchecked_Conversion;
 package body DGate_Callbacks is
  
    type String_Ptr is access all String;
-   for String_Ptr'Size use System.Word_Size;
+   for String_Ptr'Size use Standard'Address_Size;
  
    function To_String is new Unchecked_Conversion
      (System.Address, String_Ptr);
