@@ -464,7 +464,7 @@ package body Gtk.CList is
    procedure Set_Background
       (Clist : in Gtk_CList;
        Row   : in Gint;
-       Color : in Gdk.Color.Gdk_Color'Class)
+       Color : in Gdk.Color.Gdk_Color)
    is
       procedure Internal
          (Clist : in System.Address;
@@ -474,7 +474,7 @@ package body Gtk.CList is
    begin
       Internal (Get_Object (Clist),
                 Row,
-                Gdk.Get_Object (Color));
+                Color'Address);
    end Set_Background;
 
    ----------------
@@ -581,7 +581,7 @@ package body Gtk.CList is
    procedure Set_Foreground
       (Clist : in Gtk_CList;
        Row   : in Gint;
-       Color : in Gdk.Color.Gdk_Color'Class)
+       Color : in Gdk.Color.Gdk_Color)
    is
       procedure Internal
          (Clist : in System.Address;
@@ -591,7 +591,7 @@ package body Gtk.CList is
    begin
       Internal (Get_Object (Clist),
                 Row,
-                Gdk.Get_Object (Color));
+                Color'Address);
    end Set_Foreground;
 
    ----------------

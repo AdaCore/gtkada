@@ -263,13 +263,11 @@ package body Gtk.Style is
    is
       function Internal (Style      : in System.Address;
                          State_Type : in Gint)
-                        return System.Address;
+                        return Gdk.Color.Gdk_Color;
       pragma Import (C, Internal, "ada_style_get_bg");
-      Color : Gdk.Color.Gdk_Color;
    begin
-      Set_Object (Color, Internal (Get_Object (Style),
-                                   Gtk_State_Type'Pos (State_Type)));
-      return Color;
+      return Internal (Get_Object (Style),
+                       Gtk_State_Type'Pos (State_Type));
    end Get_Bg;
 
    ---------------
@@ -278,12 +276,10 @@ package body Gtk.Style is
 
    function Get_Black (Style : in Gtk_Style) return Gdk.Color.Gdk_Color is
       function Internal (Style      : in System.Address)
-                        return System.Address;
+                        return Gdk.Color.Gdk_Color;
       pragma Import (C, Internal, "ada_style_get_black");
-      Color : Gdk.Color.Gdk_Color;
    begin
-      Set_Object (Color, Internal (Get_Object (Style)));
-      return Color;
+      return Internal (Get_Object (Style));
    end Get_Black;
 
 
@@ -337,12 +333,10 @@ package body Gtk.Style is
 
    function Get_White (Style : in Gtk_Style) return Gdk.Color.Gdk_Color is
       function Internal (Style      : in System.Address)
-                        return System.Address;
+                        return Gdk.Color.Gdk_Color;
       pragma Import (C, Internal, "ada_style_get_white");
-      Color : Gdk.Color.Gdk_Color;
    begin
-      Set_Object (Color, Internal (Get_Object (Style)));
-      return Color;
+      return Internal (Get_Object (Style));
    end Get_White;
 
    ---------------

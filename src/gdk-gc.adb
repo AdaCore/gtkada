@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -93,7 +93,7 @@ package body Gdk.GC is
    --------------
 
    procedure Gdk_New (GC          :    out Gdk_GC;
-                      Window      : in     Gdk.Window.Gdk_Window;
+                      Window      : in     Gdk.Window.Gdk_Window'Class;
                       Values      : in     Gdk_GC_Values'Class;
                       Values_Mask : in     Types.Gdk_Values_Mask) is
       function Internal (Window : in System.Address;
@@ -116,7 +116,7 @@ package body Gdk.GC is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_background");
    begin
-      Internal (Get_Object (GC), Get_Object (Color));
+      Internal (Get_Object (GC), Color'Address);
    end Set_Background;
 
 
@@ -125,7 +125,7 @@ package body Gdk.GC is
    ---------------------
 
    procedure Set_Clip_Mask (GC    : in out Gdk_GC;
-                            Mask  : in     Bitmap.Gdk_Bitmap) is
+                            Mask  : in     Bitmap.Gdk_Bitmap'Class) is
       procedure Internal (GC, Mask : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_clip_mask");
    begin
@@ -156,7 +156,7 @@ package body Gdk.GC is
       procedure Internal (GC, Rectangle : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_clip_rectangle");
    begin
-      Internal (Get_Object (GC), Get_Object (Rectangle));
+      Internal (Get_Object (GC), Rectangle'Address);
    end Set_Clip_Rectangle;
 
 
@@ -165,7 +165,7 @@ package body Gdk.GC is
    -----------------------
 
    procedure Set_Clip_Region (GC     : in out Gdk_GC;
-                              Region : in     Gdk.Region.Gdk_Region) is
+                              Region : in     Gdk.Region.Gdk_Region'Class) is
       procedure Internal (GC, Region : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_clip_region");
    begin
@@ -204,7 +204,7 @@ package body Gdk.GC is
    ----------------
 
    procedure Set_Font (GC   : in out Gdk_GC;
-                       Font : in     Gdk.Font.Gdk_Font) is
+                       Font : in     Gdk.Font.Gdk_Font'Class) is
       procedure Internal (GC, Font : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_font");
    begin
@@ -221,7 +221,7 @@ package body Gdk.GC is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_foreground");
    begin
-      Internal (Get_Object (GC), Get_Object (Color));
+      Internal (Get_Object (GC), Color'Address);
    end Set_Foreground;
 
 
@@ -265,7 +265,7 @@ package body Gdk.GC is
    -------------------
 
    procedure Set_Stipple (GC      : in out Gdk_GC;
-                          Stipple : in     Pixmap.Gdk_Pixmap) is
+                          Stipple : in     Pixmap.Gdk_Pixmap'Class) is
       procedure Internal (GC, Stipple : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_stipple");
    begin
@@ -292,7 +292,7 @@ package body Gdk.GC is
    ----------------
 
    procedure Set_Tile (GC   : in out Gdk_GC;
-                       Tile : in     Pixmap.Gdk_Pixmap) is
+                       Tile : in     Pixmap.Gdk_Pixmap'Class) is
       procedure Internal (GC, Tile : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_tile");
    begin

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -32,7 +32,7 @@ package body Gdk.Cursor is
    -- Destroy --
    -------------
 
-   procedure Destroy (Cursor : in out Gdk_Cursor'Class)
+   procedure Destroy (Cursor : in out Gdk_Cursor)
    is
       procedure Internal (Cursor : in System.Address);
       pragma Import (C, Internal, "gdk_cursor_destroy");
@@ -79,8 +79,8 @@ package body Gdk.Cursor is
       (Widget : out Gdk_Cursor;
        Source : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Fg     : in Gdk.Color.Gdk_Color'Class;
-       Bg     : in Gdk.Color.Gdk_Color'Class;
+       Fg     : in Gdk.Color.Gdk_Color;
+       Bg     : in Gdk.Color.Gdk_Color;
        X      : in Gint;
        Y      : in Gint)
    is
@@ -96,8 +96,8 @@ package body Gdk.Cursor is
    begin
       Set_Object (Widget, Internal (Get_Object (Source),
                                     Get_Object (Mask),
-                                    Get_Object (Fg),
-                                    Get_Object (Bg),
+                                    Fg'Address,
+                                    Bg'Address,
                                     X,
                                     Y));
    end Gdk_New;
@@ -107,7 +107,7 @@ package body Gdk.Cursor is
    ----------------
 
    procedure Set_Cursor (Window : in Gdk.Window.Gdk_Window'Class;
-                         Cursor : in Gdk_Cursor'Class)
+                         Cursor : in Gdk_Cursor)
    is
       procedure Internal (Window : System.Address; Cursor : System.Address);
       pragma Import (C, Internal, "gdk_window_set_cursor");

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -45,17 +45,17 @@ package Gdk.Visual is
 
    function Get_Best_Type return Types.Gdk_Visual_Type;
 
-   procedure Get_System (Visual : out Gdk_Visual'Class);
+   procedure Get_System (Visual : out Gdk_Visual);
 
-   procedure Get_Best (Visual : out Gdk_Visual'Class);
+   procedure Get_Best (Visual : out Gdk_Visual);
 
-   procedure Get_Best (Visual :    out Gdk_Visual'Class;
+   procedure Get_Best (Visual :    out Gdk_Visual;
                        Depth  : in     Gint);
 
-   procedure Get_Best (Visual      :    out Gdk_Visual'Class;
+   procedure Get_Best (Visual      :    out Gdk_Visual;
                        Visual_Type : in     Types.Gdk_Visual_Type);
 
-   procedure Get_Best (Visual      :    out Gdk_Visual'Class;
+   procedure Get_Best (Visual      :    out Gdk_Visual;
                        Depth       : in     Gint;
                        Visual_Type : in     Types.Gdk_Visual_Type);
 
@@ -77,8 +77,5 @@ private
 
    pragma Import (C, Get_Best_Depth, "gdk_visual_get_best_depth");
    pragma Import (C, Get_Best_Type, "gdk_visual_get_best_type");
-
-   --  probably not needed.
-   --
 
 end Gdk.Visual;

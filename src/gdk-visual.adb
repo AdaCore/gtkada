@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -51,7 +51,7 @@ package body Gdk.Visual is
    --  Get_Best  --
    ----------------
 
-   procedure Get_Best (Visual : out Gdk_Visual'Class) is
+   procedure Get_Best (Visual : out Gdk_Visual) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gdk_visual_get_system");
    begin
@@ -63,7 +63,7 @@ package body Gdk.Visual is
    --  Get_Best  --
    ----------------
 
-   procedure Get_Best (Visual :    out Gdk_Visual'Class;
+   procedure Get_Best (Visual :    out Gdk_Visual;
                        Depth  : in     Gint) is
       function Internal (Depth : in Gint) return System.Address;
       pragma Import (C, Internal, "gdk_visual_get_best_with_depth");
@@ -76,7 +76,7 @@ package body Gdk.Visual is
    --  Get_Best  --
    ----------------
 
-   procedure Get_Best (Visual      :    out Gdk_Visual'Class;
+   procedure Get_Best (Visual      :    out Gdk_Visual;
                        Visual_Type : in     Types.Gdk_Visual_Type) is
       function Internal (Visual_Type : in Types.Gdk_Visual_Type)
                          return System.Address;
@@ -90,7 +90,7 @@ package body Gdk.Visual is
    --  Get_Best  --
    ----------------
 
-   procedure Get_Best (Visual      :    out Gdk_Visual'Class;
+   procedure Get_Best (Visual      :    out Gdk_Visual;
                        Depth       : in     Gint;
                        Visual_Type : in     Types.Gdk_Visual_Type) is
       function Internal (Depth       : in Gint;
@@ -106,7 +106,7 @@ package body Gdk.Visual is
    --  Get_System  --
    ------------------
 
-   procedure Get_System (Visual : out Gdk_Visual'Class) is
+   procedure Get_System (Visual : out Gdk_Visual) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gdk_visual_get_system");
    begin

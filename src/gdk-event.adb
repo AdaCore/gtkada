@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -33,8 +33,8 @@ package body Gdk.Event is
    --  Copy  --
    ------------
 
-   procedure Copy (Source : in Gdk_Event'Class;
-                   Destination : out Gdk_Event'Class) is
+   procedure Copy (Source : in Gdk_Event;
+                   Destination : out Gdk_Event) is
       function Internal (Source : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_event_copy");
    begin
@@ -46,19 +46,19 @@ package body Gdk.Event is
    -----------
 
    procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
-                    Event  : Gdk_Event'Class)
+                    Event  : Gdk_Event)
    is
       procedure Internal (Widget : System.Address; Event : System.Address);
       pragma Import (C, Internal, "gtk_widget_event");
    begin
       Internal (Get_Object (Widget), Get_Object (Event));
    end Event;
- 
+
    ------------
    --  Free  --
    ------------
 
-   procedure Free (Event : in out Gdk_Event'Class) is
+   procedure Free (Event : in out Gdk_Event) is
       procedure Internal (Event : in System.Address);
       pragma Import (C, Internal, "gdk_event_free");
    begin
@@ -71,7 +71,7 @@ package body Gdk.Event is
    --  Get  --
    -----------
 
-   procedure Get (Event : out Gdk_Event'Class) is
+   procedure Get (Event : out Gdk_Event) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gdk_event_get");
    begin
@@ -86,14 +86,12 @@ package body Gdk.Event is
    function Get_Area (Event : in     Gdk_Event_Expose)
                       return Rectangle.Gdk_Rectangle
    is
-      function Internal (Event : in System.Address) return System.Address;
+      function Internal (Event : in System.Address)
+                         return Gdk.Rectangle.Gdk_Rectangle;
       pragma Import (C, Internal, "ada_gdk_event_expose_get_area");
-      Area : Rectangle.Gdk_Rectangle;
    begin
-      Set_Object (Area, Internal (Get_Object (Event)));
-      return Area;
+      return Internal (Get_Object (Event));
    end Get_Area;
-
 
    -----------------
    --  Get_Count  --
@@ -125,7 +123,7 @@ package body Gdk.Event is
    --  Get_Graphics_Expose  --
    ---------------------------
 
-   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose'Class;
+   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose;
                                   Window : in Gdk_Window'Class)
    is
       function Internal (Window : in System.Address) return System.Address;
@@ -240,12 +238,12 @@ package body Gdk.Event is
    begin
       return Internal (Get_Object (Event));
    end Get_Button;
- 
+
    -----------
    --  Put  --
    -----------
 
-   procedure Put (Event : in Gdk_Event'Class) is
+   procedure Put (Event : in Gdk_Event) is
       procedure Internal (Event : in System.Address);
       pragma Import (C, Internal, "gdk_event_put");
    begin
@@ -258,11 +256,11 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_Area (Event : in out Gdk_Event_Expose;
-                       Area  : in     Rectangle.Gdk_Rectangle'Class) is
+                       Area  : in     Rectangle.Gdk_Rectangle) is
       procedure Internal (Event, Area : in System.Address);
       pragma Import (C, Internal, "ada_gdk_event_expose_set_area");
    begin
-      Internal (Get_Object (Event), Get_Object (Area));
+      Internal (Get_Object (Event), Area'Address);
    end Set_Area;
 
 
@@ -371,7 +369,7 @@ package body Gdk.Event is
    end Set_X;
 
 
-  
+
    -------------
    --  Set_Y  --
    -------------

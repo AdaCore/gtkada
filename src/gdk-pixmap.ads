@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -37,7 +37,7 @@ package Gdk.Pixmap is
    type Gdk_Pixmap is new Gdk.Window.Gdk_Window with private;
 
    procedure Gtk_New (Pixmap :    out Gdk_Pixmap;
-                      Window : in     Gdk.Window.Gdk_Window;
+                      Window : in     Gdk.Window.Gdk_Window'Class;
                       Width  : in     Gint;
                       Height : in     Gint;
                       Depth  : in     Gint);
@@ -56,20 +56,20 @@ package Gdk.Pixmap is
                                Width  : in     Gint;
                                Height : in     Gint;
                                Depth  : in     Gint;
-                               Fg     : in     Color.Gdk_Color'Class;
-                               Bg     : in     Color.Gdk_Color'Class);
+                               Fg     : in     Color.Gdk_Color;
+                               Bg     : in     Color.Gdk_Color);
 
    procedure Create_From_Xpm (Pixmap      : out Gdk_Pixmap;
                               Window      : in  Gdk.Window.Gdk_Window'Class;
                               Mask        : out Gdk.Bitmap.Gdk_Bitmap;
-                              Transparent : in  Gdk.Color.Gdk_Color'Class;
+                              Transparent : in  Gdk.Color.Gdk_Color;
                               Filename    : in  String);
 
    procedure Create_From_Xpm_D
      (Pixmap      : out Gdk_Pixmap;
       Window      : in  Gdk.Window.Gdk_Window'Class;
       Mask        : out Gdk.Bitmap.Gdk_Bitmap;
-      Transparent : in  Gdk.Color.Gdk_Color'Class;
+      Transparent : in  Gdk.Color.Gdk_Color;
       Data        : in  Interfaces.C.Strings.chars_ptr_array);
 
 

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -47,14 +47,14 @@ package Gdk.Event is
 
    function Events_Pending return Gint;
 
-   procedure Get (Event : out Gdk_Event'Class);
+   procedure Get (Event : out Gdk_Event);
 
-   procedure Put (Event : in Gdk_Event'Class);
+   procedure Put (Event : in Gdk_Event);
 
-   procedure Copy (Source : in Gdk_Event'Class;
-                   Destination : out Gdk_Event'Class);
+   procedure Copy (Source : in Gdk_Event;
+                   Destination : out Gdk_Event);
 
-   procedure Free (Event : in out Gdk_Event'Class);
+   procedure Free (Event : in out Gdk_Event);
 
    procedure Set_Show_Events (Show_Events : in Boolean := True);
 
@@ -117,14 +117,14 @@ package Gdk.Event is
 
    type Gdk_Event_Expose is new Gdk_Event with private;
 
-   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose'Class;
+   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose;
                                   Window : in Gdk_Window'Class);
 
    function Get_Area (Event : in     Gdk_Event_Expose)
                       return Rectangle.Gdk_Rectangle;
 
    procedure Set_Area (Event : in out Gdk_Event_Expose;
-                       Area  : in     Rectangle.Gdk_Rectangle'Class);
+                       Area  : in     Rectangle.Gdk_Rectangle);
 
    function Get_Count (Event : in Gdk_Event_Expose) return Gint;
 
@@ -145,7 +145,7 @@ package Gdk.Event is
    function Get_State (Event : in Gdk_Event_Button) return Gdk_Modifier_Mask;
    function Get_Button (Event : in Gdk_Event_Button) return Guint32;
 
- 
+
    ------------------------
    --  Gdk_Event_Motion  --
    ------------------------
@@ -163,7 +163,7 @@ package Gdk.Event is
    ----------------
 
    procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
-                    Event  : Gdk_Event'Class);
+                    Event  : Gdk_Event);
 
 
 private

@@ -35,6 +35,7 @@ with Gdk.Color;       use Gdk.Color;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Visual;      use Gdk.Visual;
+with Gdk.Window;
 with Gtk.Enums;
 with Gtk.Object;
 with Glib.Glist;
@@ -62,6 +63,9 @@ package Gtk.Widget is
 
    type Gtk_Widget is new Object.Gtk_Object with null record;
    type Gtk_Widget_Access is access all Gtk_Widget'Class;
+
+   function Get_Window (Widget : in Gtk_Widget)
+                        return Gdk.Window.Gdk_Window'Class;
 
    procedure Activate (Widget : in out Gtk_Widget);
 

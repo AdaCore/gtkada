@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -30,35 +30,11 @@ with Glib; use Glib;
 
 package Gdk.Rectangle is
 
-   type Gdk_Rectangle is new Root_Type with private;
+   type Gdk_Rectangle is private;
 
    Full_Area : constant Gdk_Rectangle;
    --  The constant above can be used in Gtk.Widget.Draw when you want to
    --  redraw the whole widget
-
-   procedure Gdk_New (Rectangle :    out Gdk_Rectangle;
-                      X         : in     Gint16 := 0;
-                      Y         : in     Gint16 := 0;
-                      Width     : in     Guint16 := 0;
-                      Height    : in     Guint16 := 0);
-
-   procedure Destroy (Rectangle : in out Gdk_Rectangle'Class);
-
-
-   procedure Get_Values (Rectangle : in     Gdk_Rectangle;
-                         X         :    out Gint16;
-                         Y         :    out Gint16;
-                         Width     :    out Guint16;
-                         Height    :    out Guint16);
-
-   function Get_X (Rectangle : in Gdk_Rectangle) return Gint16;
-
-   function Get_Y (Rectangle : in Gdk_Rectangle) return Gint16;
-
-   function Get_Width (Rectangle : in Gdk_Rectangle) return Guint16;
-
-   function Get_Height (Rectangle : in Gdk_Rectangle) return Guint16;
-
 
    procedure Set_X (Rectangle : in out Gdk_Rectangle;
                     X         : in     Gint16);
@@ -84,9 +60,36 @@ package Gdk.Rectangle is
                         Intersect :    out Boolean);
    --
    --  NOTE : Dest needs to be allocated first.
+
+   ----------------------
+   --  Gets the fields --
+   ----------------------
+
+   function Get_X (Rect : Gdk_Rectangle) return Gint16;
+   function Get_Y (Rect : Gdk_Rectangle) return Gint16;
+   function Get_Width (Rect : Gdk_Rectangle) return Guint16;
+   function Get_Height (Rect : Gdk_Rectangle) return Guint16;
+
 private
 
-   type Gdk_Rectangle is new Root_Type with null record;
-   Full_Area : constant Gdk_Rectangle := (Ptr => System.Null_Address);
+   type Gdk_Rectangle is
+      record
+         X      : Gint16;
+         Y      : Gint16;
+         Width  : Guint16;
+         Height : Guint16;
+      end record;
+   pragma Pack (Gdk_Rectangle);
+   for Gdk_Rectangle'Size use 64;
+
+   Full_Area : constant Gdk_Rectangle := (Gint16'First,
+                                          Gint16'First,
+                                          Guint16'Last,
+                                          Guint16'Last);
+
+   pragma Inline (Get_X);
+   pragma Inline (Get_Y);
+   pragma Inline (Get_Width);
+   pragma Inline (Get_Height);
 
 end Gdk.Rectangle;

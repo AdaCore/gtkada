@@ -155,7 +155,7 @@ package Gtk.CList is
    procedure Set_Background
       (Clist : in Gtk_CList;
        Row   : in Gint;
-       Color : in Gdk.Color.Gdk_Color'Class);
+       Color : in Gdk.Color.Gdk_Color);
 
    procedure Set_Border (Clist : in Gtk_CList; Border : in Gtk_Shadow_Type);
 
@@ -182,7 +182,7 @@ package Gtk.CList is
    procedure Set_Foreground
       (Clist : in Gtk_CList;
        Row   : in Gint;
-       Color : in Gdk.Color.Gdk_Color'Class);
+       Color : in Gdk.Color.Gdk_Color);
 
    procedure Set_Pixmap
       (Clist  : in Gtk_CList;

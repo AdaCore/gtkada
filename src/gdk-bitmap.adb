@@ -33,7 +33,7 @@ package body Gdk.Bitmap is
    ------------------------
 
    procedure Create_From_Data (Bitmap :    out Gdk_Bitmap;
-                               Window : in     Gdk.Window.Gdk_Window;
+                               Window : in     Gdk.Window.Gdk_Window'Class;
                                Data   : in     String;
                                Width  : in     Gint;
                                Height : in     Gint) is

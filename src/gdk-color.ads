@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -32,13 +32,12 @@ with Gdk.Visual;
 
 package Gdk.Color is
 
-   type Gdk_Color is new Root_Type with private;
-   type Gdk_Colormap is new Root_Type with private;
+   type Gdk_Color is private;
+   type Gdk_Color_Array is array (Natural range <>) of Gdk_Color;
 
    Null_Color : constant Gdk_Color;
 
-
-   function Gdk_New return Gdk_Color;
+   type Gdk_Colormap is new Root_Type with private;
 
    procedure Gdk_New (Colormap     :    out Gdk_Colormap;
                       Visual       : in     Gdk.Visual.Gdk_Visual;
@@ -48,8 +47,8 @@ package Gdk.Color is
                      Ncolors  : in Gint);
 
    procedure Store (Colormap : in out Gdk_Colormap;
-                    Colors   : in     Gdk_Color'Class;
-                    Ncolors  : in     Gint);
+                    Colors   : in     Gdk_Color_Array);
+   --  Store the colors in the colormap
 
    procedure Alloc (Colormap   : in out Gdk_Colormap;
                     Contiguous : in     Boolean;
@@ -61,34 +60,55 @@ package Gdk.Color is
                    Pixels   : in     Gulong_Array;
                    Planes   : in     Gulong);
 
-   procedure White (Colormap  : in out Gdk_Colormap;
-                    Color     : in out Gdk_Color'Class;
-                    Succeeded :    out Boolean);
-
-   procedure Black (Colormap  : in out Gdk_Colormap;
-                    Color     : in out Gdk_Color'Class;
-                    Succeeded :    out Boolean);
-
-   procedure Parse (Spec      : in     String;
-                    Color     : in out Gdk_Color'Class;
-                    Succeeded :    out Boolean);
-
-   procedure Alloc (Colormap  : in out Gdk_Colormap;
-                    Color     : in out Gdk_Color'Class;
-                    Succeeded :    out Boolean);
+   function White (Colormap  : in Gdk_Colormap) return Gdk_Color;
+   function Black (Colormap  : in Gdk_Colormap) return Gdk_Color;
+   function Parse (Spec      : in String) return Gdk_Color;
+   procedure Alloc (Colormap  : in Gdk_Colormap;
+                    Color     : in out Gdk_Color);
+   --  The four previous functions raise Wrong_Color if the color could not
+   --  be created
+   --
+   --  we usual way to allocate a new color is :
+   --  Alloc (Get_Default_Colormap (Widget), Parse ("colorname"));
 
    procedure Change (Colormap  : in out Gdk_Colormap;
-                    Color     : in out Gdk_Color'Class;
+                    Color     : in out Gdk_Color;
                     Succeeded :    out Boolean);
 
-   function "=" (Colora, Colorb : in Gdk_Color'Class) return Boolean;
+   function "=" (Colora, Colorb : in Gdk_Color) return Boolean;
+
+   Wrong_Color : exception;
+
+   --------------------------------------
+   --  Getting the fields of Gdk_Color --
+   --------------------------------------
+
+   procedure Set_Rgb (Color   : out Gdk_Color;
+                      R, G, B : in Gushort);
+   function Red (Color : in Gdk_Color) return Gushort;
+   function Green (Color : in Gdk_Color) return Gushort;
+   function Blue (Color : in Gdk_Color) return Gushort;
 
 private
 
-   type Gdk_Color is new Root_Type with null record;
    type Gdk_Colormap is new Root_Type with null record;
 
-   Null_Color : constant Gdk_Color := (Ptr => System.Null_Address);
+   type Gdk_Color is
+      record
+         Pixel : Gulong;
+         Red   : Gushort;
+         Green : Gushort;
+         Blue  : Gushort;
+      end record;
+   --  The fields are to be chosen between 0 and 65535, not 0 and 255!!!
 
+   for Gdk_Color'Size use 96;
+
+   Null_Color : constant Gdk_Color := (Gulong'Last, 0, 0, 0);
+
+   pragma Inline (Set_Rgb);
+   pragma Inline (Red);
+   pragma Inline (Green);
+   pragma Inline (Blue);
 
 end Gdk.Color;

@@ -208,106 +208,6 @@ ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
   return gtk_radio_menu_item_new_with_label (l, label);
 }
 
-/*
- *
- * GdkRectangle
- *
- */
-
-GdkRectangle *
-ada_gdk_rectangle_new_with_data (gint16 x, gint16 y, 
-				guint16 width, guint16 height)
-{
-  GdkRectangle * result;
-
-  result = g_new (GdkRectangle, 1);
-  if (result)
-    {
-      result->x = x;
-      result->y = y;
-      result->width = width;
-      result->height = height;
-    }
-  
-  return result;
-}
-
-gint16
-ada_gdk_rectangle_get_x (GdkRectangle * rectangle)
-{
-  g_return_val_if_fail (rectangle != NULL, 0);
-
-  return rectangle->x;
-}
-
-gint16
-ada_gdk_rectangle_get_y (GdkRectangle * rectangle) 
-{
-  g_return_val_if_fail (rectangle != NULL, 0);
-
-  return rectangle->y;
-}
-
-guint16
-ada_gdk_rectangle_get_width (GdkRectangle * rectangle)
-{
-  g_return_val_if_fail (rectangle != NULL, 0);
-  
-  return rectangle->width;
-}
-
-guint16
-ada_gdk_rectangle_get_height (GdkRectangle * rectangle)
-{
-  g_return_val_if_fail (rectangle != NULL, 0);
-  
-  return rectangle->height;
-}
-
-void 
-ada_gdk_rectangle_set_x (GdkRectangle * rectangle,
-			 gint16 x)
-{
-  g_return_if_fail (rectangle != NULL);
-  
-  rectangle->x = x;
-}
-
-
-void 
-ada_gdk_rectangle_set_y (GdkRectangle * rectangle,
-			 gint16 y)
-{
-  g_return_if_fail (rectangle != NULL);
-  
-  rectangle->y = y;
-}
-
-
-void
-ada_gdk_rectangle_set_width (GdkRectangle * rectangle,
-			     guint16 width)
-{
-  g_return_if_fail (rectangle != NULL);
-  
-  rectangle->width = width;
-}
-
-
-void
-ada_gdk_rectangle_set_height (GdkRectangle * rectangle,
-			      guint16 height)
-{
-  g_return_if_fail (rectangle != NULL);
-  
-  rectangle->height = height;
-}
-
-void 
-ada_gdk_rectangle_destroy (GdkRectangle * rectangle)
-{
-  g_free (rectangle);
-}
 
 /*
  *
@@ -430,10 +330,10 @@ ada_gdk_event_any_set_send_event (GdkEventAny * event, gint8 send_event)
  *
  */
 
-GdkRectangle *
+GdkRectangle
 ada_gdk_event_expose_get_area (GdkEventExpose * event)
 {
-  return &event->area;
+  return event->area;
 }
 
 void
@@ -635,16 +535,22 @@ ada_gtk_style_get_white_gc (GtkStyle * style)
   return style->white_gc;
 }
 
-/*
- *
+/*************************************
  * GdkColor
- *
- */
+ ************************************/
 
-GdkColor *
-ada_gdk_color_new_color (void)
-{
-  return (GdkColor *) g_malloc (sizeof(GdkColor));
+guint
+ada_gdk_color_size () {
+  return sizeof (GdkColor);
+}
+
+/*************************************
+ * GdkRectangle
+ ************************************/
+
+guint
+ada_gdk_rectangle_size () {
+  return sizeof (GdkRectangle);
 }
 
 /***************************************************
@@ -1012,22 +918,22 @@ ada_combo_get_list (GtkCombo* widget)
  ** Functions for Style
  *******************************************/
 
-GdkColor*
+GdkColor
 ada_style_get_bg (GtkStyle* style, gint state)
 {
-  return &(style->bg [state]);
+  return (style->bg [state]);
 }
 
-GdkColor*
+GdkColor
 ada_style_get_black (GtkStyle* style)
 {
-  return &(style->black);
+  return (style->black);
 }
 
-GdkColor*
+GdkColor
 ada_style_get_white (GtkStyle* style)
 {
-  return &(style->white);
+  return (style->white);
 }
 
 /********************************************

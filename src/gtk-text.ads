@@ -64,8 +64,8 @@ package Gtk.Text is
    procedure Insert
       (Text   : in Gtk_Text;
        Font   : in Gdk.Font.Gdk_Font'Class;
-       Fore   : in Gdk.Color.Gdk_Color'Class;
-       Back   : in Gdk.Color.Gdk_Color'Class;
+       Fore   : in Gdk.Color.Gdk_Color;
+       Back   : in Gdk.Color.Gdk_Color;
        Chars  : in String;
        Length : in Gint);
    procedure Set_Adjustments

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -47,7 +47,7 @@ package Gdk.GC is
                       Window : in     Gdk.Window.Gdk_Window'Class);
 
    procedure Gdk_New (GC          :    out Gdk_GC;
-                      Window      : in     Gdk.Window.Gdk_Window;
+                      Window      : in     Gdk.Window.Gdk_Window'Class;
                       Values      : in     Gdk_GC_Values'Class;
                       Values_Mask : in     Types.Gdk_Values_Mask);
 
@@ -63,7 +63,7 @@ package Gdk.GC is
                              Color  : in     Gdk.Color.Gdk_Color);
 
    procedure Set_Font (GC   : in out Gdk_GC;
-                       Font : in     Gdk.Font.Gdk_Font);
+                       Font : in     Gdk.Font.Gdk_Font'Class);
 
    procedure Set_Function (GC   : in out Gdk_GC;
                            Func : in     Types.Gdk_Function);
@@ -72,10 +72,10 @@ package Gdk.GC is
                        Fill : in     Types.Gdk_Fill);
 
    procedure Set_Tile (GC   : in out Gdk_GC;
-                       Tile : in     Pixmap.Gdk_Pixmap);
+                       Tile : in     Pixmap.Gdk_Pixmap'Class);
 
    procedure Set_Stipple (GC      : in out Gdk_GC;
-                          Stipple : in     Pixmap.Gdk_Pixmap);
+                          Stipple : in     Pixmap.Gdk_Pixmap'Class);
 
    procedure Set_Ts_Origin (GC   : in out Gdk_GC;
                             X, Y : in     Gint);
@@ -84,14 +84,14 @@ package Gdk.GC is
                               X, Y : in     Gint);
 
    procedure Set_Clip_Mask (GC    : in out Gdk_GC;
-                            Mask  : in     Bitmap.Gdk_Bitmap);
+                            Mask  : in     Bitmap.Gdk_Bitmap'Class);
 
    procedure Set_Clip_Rectangle
      (GC        : in out Gdk_GC;
       Rectangle : in     Gdk.Rectangle.Gdk_Rectangle);
 
    procedure Set_Clip_Region (GC     : in out Gdk_GC;
-                              Region : in     Gdk.Region.Gdk_Region);
+                              Region : in     Gdk.Region.Gdk_Region'Class);
 
    procedure Set_Subwindow (GC   : in out Gdk_GC;
                             Mode : in     Types.Gdk_Subwindow_Mode);

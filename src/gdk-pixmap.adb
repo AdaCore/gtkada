@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -39,8 +39,8 @@ package body Gdk.Pixmap is
                                Width  : in     Gint;
                                Height : in     Gint;
                                Depth  : in     Gint;
-                               Fg     : in     Color.Gdk_Color'Class;
-                               Bg     : in     Color.Gdk_Color'Class) is
+                               Fg     : in     Color.Gdk_Color;
+                               Bg     : in     Color.Gdk_Color) is
       function Internal (Window : in System.Address;
                          Data   : in String;
                          Width  : in Gint;
@@ -52,7 +52,7 @@ package body Gdk.Pixmap is
    begin
       Set_Object (Pixmap, Internal (Get_Object (Window), Data & ASCII.NUL,
                                     Width, Height, Depth,
-                                    Get_Object (Fg), Get_Object (Bg)));
+                                    Fg'Address, Bg'Address));
    end Create_From_Data;
 
    ---------------------
@@ -62,7 +62,7 @@ package body Gdk.Pixmap is
    procedure Create_From_Xpm (Pixmap      : out Gdk_Pixmap;
                               Window      : in  Gdk.Window.Gdk_Window'Class;
                               Mask        : out Gdk.Bitmap.Gdk_Bitmap;
-                              Transparent : in  Gdk.Color.Gdk_Color'Class;
+                              Transparent : in  Gdk.Color.Gdk_Color;
                               Filename    : in  String)
    is
       function Internal (Window      : in System.Address;
@@ -74,7 +74,7 @@ package body Gdk.Pixmap is
       Tmp : System.Address;
    begin
       Set_Object (Pixmap, Internal (Get_Object (Window), Tmp'Address,
-                                    Get_Object (Transparent),
+                                    Transparent'Address,
                                     Filename & Ascii.NUL));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm;
@@ -87,7 +87,7 @@ package body Gdk.Pixmap is
      (Pixmap      : out Gdk_Pixmap;
       Window      : in  Gdk.Window.Gdk_Window'Class;
       Mask        : out Gdk.Bitmap.Gdk_Bitmap;
-      Transparent : in  Gdk.Color.Gdk_Color'Class;
+      Transparent : in  Gdk.Color.Gdk_Color;
       Data        : in  Interfaces.C.Strings.chars_ptr_array)
    is
       function Internal (Window      : in System.Address;
@@ -99,7 +99,7 @@ package body Gdk.Pixmap is
       Tmp : System.Address;
    begin
       Set_Object (Pixmap, Internal (Get_Object (Window), Tmp'Address,
-                                    Get_Object (Transparent),
+                                    Transparent'Address,
                                     Data (0)'Address));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm_D;
@@ -109,7 +109,7 @@ package body Gdk.Pixmap is
    ---------------
 
    procedure Gtk_New (Pixmap :    out Gdk_Pixmap;
-                      Window : in     Gdk.Window.Gdk_Window;
+                      Window : in     Gdk.Window.Gdk_Window'Class;
                       Width  : in     Gint;
                       Height : in     Gint;
                       Depth  : in     Gint) is

@@ -28,14 +28,10 @@
 
 with Glib; use Glib;
 with Gdk;
-with Gtk.Widget;
 
 package Gdk.Window is
 
    type Gdk_Window is new Root_Type with private;
-
-   function Get_Window (Widget : in Gtk.Widget.Gtk_Widget'Class)
-                        return Gdk.Window.Gdk_Window'Class;
 
    procedure Clear_Area (Window : in Gdk_Window;
                          X      : in Gint;

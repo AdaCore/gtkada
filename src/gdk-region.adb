@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -169,7 +169,7 @@ package body Gdk.Region is
                          return Types.Gdk_Overlap_Type;
       pragma Import (C, Internal, "gdk_region_rect_in");
    begin
-      return Internal (Get_Object (Region), Get_Object (Rect));
+      return Internal (Get_Object (Region), Rect'Address);
    end Rect_In;
 
 
@@ -230,7 +230,7 @@ package body Gdk.Region is
                          return System.Address;
       pragma Import (C, Internal, "gdk_region_union_with_rect");
    begin
-      Set_Object (Result, Internal (Get_Object (Region), Get_Object (Rect)));
+      Set_Object (Result, Internal (Get_Object (Region), Rect'Address));
    end Union_With_Rect;
 
 

@@ -29,7 +29,7 @@ CFLAGS = -O2 -g -Wall
 ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags` -shared -fPIC
 
 GNATCC = gcc
-GNATFLAGS = -O2 -g -gnatg
+GNATFLAGS = -O2 -g -gnatg -gnata
 ALL_GNATFLAGS = $(GNATFLAGS) -shared -fPIC
 
 GNATMAKE = gnatmake
@@ -40,7 +40,7 @@ ARFLAGS = r
 
 RANLIB = ranlib
 
-all: libgtkada.so libgtkada.a
+all: libgtkada.so libgtkada.a testgtk
 
 libgtkada.so:: $(TEST_LINK).o $(c_objects)
 	$(CC) -shared -Wl,-soname,libgtkada.so.0 -o libgtkada.so g*.o $(c_objects) `gtk-config --libs` -lc -lm
@@ -50,6 +50,9 @@ libgtkada.a::
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) libgtkada.a; \
 	fi \
+
+testgtk::
+	$(MAKE) -C testgtk
 
 $(TEST_LINK).o::
 	test -f $(TEST_LINK).adb || perl ./create_test_link.pl > $(TEST_LINK).adb

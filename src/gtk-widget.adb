@@ -121,7 +121,7 @@ package body Gtk.Widget is
                           Area   : in System.Address);
       pragma Import (C, Internal, "gtk_widget_draw");
    begin
-      Internal (Get_Object (Widget), Gdk.Get_Object (Area));
+      Internal (Get_Object (Widget), Area'Address);
    end Draw;
 
    -----------------------
@@ -228,6 +228,22 @@ package body Gtk.Widget is
       Set_Object (Result, Internal (Get_Object (Widget)));
       return Result;
    end Get_Toplevel;
+
+   ----------------
+   -- Get_Window --
+   ----------------
+
+   function Get_Window (Widget : in Gtk_Widget)
+                        return Gdk.Window.Gdk_Window'Class
+   is
+      function Internal (Widget : System.Address)
+                        return    System.Address;
+      pragma Import (C, Internal, "ada_widget_get_window");
+      Window : Gdk.Window.Gdk_Window;
+   begin
+      Set_Object (Window, Internal (Get_Object (Widget)));
+      return Window;
+   end Get_Window;
 
    --------------------
    --  Grab_Default  --
