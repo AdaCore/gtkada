@@ -34,7 +34,7 @@
 --
 --  This is only a base class for Gtk_Hbutton_Box and Gtk_Vbutton_Box which
 --  provide a way to arrange their children horizontally (resp. vertically).
---  You can not instanciate a Gtk_Button_Box directly, and have to use one the
+--  You can not instantiate a Gtk_Button_Box directly, and have to use one the
 --  above two instead.
 --
 --  </description>
@@ -50,83 +50,86 @@ package Gtk.Button_Box is
    type Gtk_Button_Box is access all Gtk_Button_Box_Record'Class;
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Button_Box internally.
+   --  Return the internal value associated with a Gtk_Button_Box internally.
 
    procedure Set_Child_Size_Default (Min_Width  : in Gint;
                                      Min_Height : in Gint);
-   --  Sets the default size for the children of the box.
+   --  Set the default size for the children of the button boxes.
    --  This is the minimal size that the children will have (in pixels).
    --  These default values apply to all the Button_Boxes created in your
-   --  application, unless for boxes where Set_Child_Size has been called.
+   --  application, expcet for boxes where Set_Child_Size has been called.
 
    procedure Get_Child_Size_Default (Min_Width  : out Gint;
                                      Min_Height : out Gint);
-   --  Returns the default size for the children of the button_boxes in your
-   --  application.
+   --  Return the default size for the children of the button_boxes.
 
    procedure Set_Child_Ipadding_Default (Ipad_X : in Gint;
                                          Ipad_Y : in Gint);
-   --  Sets the default padding (the empty space left around all children) for
-   --  all the button_box in your application, except those for which
-   --  Set_Child_Ipadding has been used.
+   --  Set the default padding (the empty space left around all children).
+   --  This is done for all the button boxes in your application, except those
+   --  for which Set_Child_Ipadding has been used.
 
    procedure Get_Child_Ipadding_Default (Ipad_X : out Gint;
                                          Ipad_Y : out Gint);
-   --  Returns the default padding for all the button_boxes in your
-   --  application.
+   --  Return the default padding of the button boxes.
 
    procedure Set_Spacing (Button_Box : access Gtk_Button_Box_Record;
                           Spacing    : in Gint);
-   --  Sets the spacing (ie the space left between two adjacent children) for
-   --  the button box. Note that there is a default spacing set for
-   --  Gtk_Hbutton_boxes and Gtk_Vbutton_boxes.
+   --  Set the spacing (the space left between two adjacent children).
+   --  This is done for all the button boxes. Note that there is a default
+   --  spacing set for Gtk_Hbutton_boxes and Gtk_Vbutton_boxes.
 
    function Get_Spacing (Button_Box : access Gtk_Button_Box_Record)
                         return Gint;
-   --  Returns the spacing use for the button box.
+   --  Return the spacing used for the button box.
 
    procedure Set_Layout (Button_Box   : access Gtk_Button_Box_Record;
                          Layout_Style : in Enums.Gtk_Button_Box_Style);
-   --  Sets the layout to use for the box.
+   --  Set the layout to use for the box.
    --  There are four such styles:
+   --
    --    Buttonbox_Spread: The children are spread regularly across the box
+   --
    --    Buttonbox_Edge  : Same as Spread, except that the first and last
    --                      children are aligned on the border of the box.
+   --
    --    Buttonbox_Start : The children are put as much to the left (resp. top)
    --                      as possible in the box.
+   --
    --    Buttonbox_End   : The children are put as much to the right
    --                      (resp. bottom) as possible in the box.
 
    function Get_Layout (Button_Box : access Gtk_Button_Box_Record)
                        return Enums.Gtk_Button_Box_Style;
-   --  Returns the layout used in the box.
+   --  Return the layout used in the box.
 
    procedure Set_Child_Size (Button_Box : access Gtk_Button_Box_Record;
                              Min_Width  : in Gint;
                              Min_Height : in Gint);
-   --  Sets the size to use for children of this specific box. You can modify
-   --  the size for all the boxes at once by using Set_Child_Size_Default.
+   --  Set the size to use for children of this specific box.
+   --  You can modify the size for all the boxes at once by using
+   --  Set_Child_Size_Default.
 
    procedure Get_Child_Size (Button_Box : access Gtk_Button_Box_Record;
                              Min_Width  : out Gint;
                              Min_Height : out Gint);
-   --  Returns the size to use for children of this specific box.
-   --  MIN_WIDTH and MIN_HEIGHT are set to -1 if this widget uses the default
-   --  size set by Set_Child_Size_Default.
+   --  Return the size to use for children of this specific box.
+   --  Min_Width and Min_Height are set to -1 if this widget uses the default
+   --  sizes that are set by Set_Child_Size_Default.
 
    procedure Set_Child_Ipadding (Button_Box : access Gtk_Button_Box_Record;
                                  Ipad_X     : in Gint;
                                  Ipad_Y     : in Gint);
-   --  Sets the padding to use for the children of this specific box. You can
-   --  modify the default padding to use for all the boxes by using
-   --  Set_Child_Ipadding_Default.
+   --  Set the padding to use for the children of this specific box.
+   --  Note that you can modify the default padding to use for all the boxes
+   --  by using Set_Child_Ipadding_Default.
 
    procedure Get_Child_Ipadding (Button_Box : access Gtk_Button_Box_Record;
                                  Ipad_X     : out Gint;
                                  Ipad_Y     : out Gint);
-   --  Returns the padding to use for children of this specific box.
-   --  IPAD_X and IPAD_Y are set to -1 if this widget uses the default
-   --  values set by Set_Child_Ipadding_Default.
+   --  Return the padding to use for children of this specific box.
+   --  Ipad_X and Ipad_Y are set to -1 if this widget uses the default
+   --  values that are set by Set_Child_Ipadding_Default.
 
    ----------------------------
    -- Support for GATE/DGATE --

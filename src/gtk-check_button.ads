@@ -29,8 +29,8 @@
 
 --  <description>
 
---  A GtkCheckButton places a discrete GtkToggleButton next to a widget,
---  (usually a GtkLabel).
+--  A Gtk_Check_Button places a discrete Gtk_Toggle_Button next to a widget,
+--  (usually a Gtk_Label).
 
 --  </description>
 --  <c_version> 1.2.6 </c_version>
@@ -47,8 +47,8 @@ package Gtk.Check_Button is
 
    procedure Gtk_New (Check_Button : out Gtk_Check_Button;
                       With_Label   : in String := "");
-   --  Initializes a button.
-   --  if WITH_LABEL is "", then no widget is associated with the button, and
+   --  Initialize a button.
+   --  if With_Label is "", then no widget is associated with the button, and
    --  any widget can be added to the button (with Gtk.Container.Add).
 
    procedure Initialize (Check_Button : access Gtk_Check_Button_Record'Class;
@@ -57,8 +57,7 @@ package Gtk.Check_Button is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Check_Button
-   --  internally.
+   --  Return the internal value associated with a Gtk_Check_Button internally.
 
    ----------------------------
    -- Support for GATE/DGATE --
