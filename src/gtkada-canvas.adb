@@ -1028,12 +1028,6 @@ package body Gtkada.Canvas is
 
       Canvas.Selected_Child := null;
 
-      --  Only left mouse button clicks can select an item
-
-      if Get_Button (Event) /= 1 then
-         return False;
-      end if;
-
       --  Find the selected item.
 
       while Tmp /= null loop
@@ -1047,6 +1041,23 @@ package body Gtkada.Canvas is
          end if;
          Tmp := Tmp.Next;
       end loop;
+
+      --  Double-click events are transmitted directly to the item, and are
+      --  not used to move an item.
+
+      if Get_Event_Type (Event) = Gdk_2button_Press then
+         Set_X (Event,
+                Get_X (Event) - Gdouble (Canvas.Selected_Child.Coord.X));
+         Set_Y (Event,
+                Get_Y (Event) - Gdouble (Canvas.Selected_Child.Coord.Y));
+         On_Button_Click (Canvas.Selected_Child, Event);
+      end if;
+
+      --  Only left mouse button clicks can select an item
+
+      if Get_Button (Event) /= 1 then
+         return False;
+      end if;
 
       --  If there was none, nothing to do...
 
@@ -1157,10 +1168,11 @@ package body Gtkada.Canvas is
       --  because he only wanted to select the item.
 
       if not Canvas.Mouse_Has_Moved then
-         On_Button_Click (Canvas.Selected_Child,
-                          Get_Button (Event),
-                          Gint (Get_X (Event)),
-                          Gint (Get_Y (Event)));
+         Set_X (Event,
+                Get_X (Event) - Gdouble (Canvas.Selected_Child.Coord.X));
+         Set_Y (Event,
+                Get_Y (Event) - Gdouble (Canvas.Selected_Child.Coord.Y));
+         On_Button_Click (Canvas.Selected_Child, Event);
       end if;
 
       Redraw_Canvas (Canvas);
@@ -1369,11 +1381,21 @@ package body Gtkada.Canvas is
    ---------------------
 
    procedure On_Button_Click (Item   : access Canvas_Item_Record;
-                              Button : Guint;
-                              X, Y   : Gint)
+                              Event  : Gdk.Event.Gdk_Event_Button)
    is
    begin
       null;
    end On_Button_Click;
+
+   ---------------
+   -- Get_Coord --
+   ---------------
+
+   function Get_Coord (Item : access Canvas_Item_Record)
+                      return Gdk.Rectangle.Gdk_Rectangle
+   is
+   begin
+      return Item.Coord;
+   end Get_Coord;
 
 end Gtkada.Canvas;

@@ -51,6 +51,7 @@
 --  many items.
 --  </description>
 
+with Gdk.Event;
 with Gdk.Font;
 with Gdk.GC;
 with Gdk.Pixmap;
@@ -211,13 +212,20 @@ package Gtkada.Canvas is
    --  Drawing is left to the end-user.
 
    procedure On_Button_Click (Item   : access Canvas_Item_Record;
-                              Button : Glib.Guint;
-                              X, Y   : Glib.Gint);
+                              Event  : Gdk.Event.Gdk_Event_Button);
    --  Function called whenever the item was clicked on.
    --  Note that this function is not called when the item is moved, and thus
    --  is only called when the click was short.
    --  If it returns True, the canvas it redrawn afterwards (in case the item
    --  has changed for instance).
+   --  This procedure is called in two cases: on button release, or on
+   --  double-clicks.
+   --  The coordinates (X, Y) in the Event are relative to the top-left corner
+   --  of Item.
+
+   function Get_Coord (Item : access Canvas_Item_Record)
+                      return Gdk.Rectangle.Gdk_Rectangle;
+   --  Return the coordinates and size of the item.
 
    -------------
    -- Signals --
