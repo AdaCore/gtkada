@@ -2772,9 +2772,10 @@ both cases, you first need to get and install glade (http://glade.pn.org).
 Then start a new project (or edit an old one). It is easy enough to use,
 simply select the widget you want to add to your interface, and click!
 
-For now, you can not directly create Ada files from Glade (although this
-should be in the next version). In the meanwhile, save your project as
-an XML file.
+Starting from version 0.4.1 of Glade, you can directly create Ada files from
+Glade by selection Ada95 as the language for your project. By doing so,
+you will tell Glade to call gate internally when using the "Write Source Code"
+functionality.
 
 @itemize @bullet
 @item DGATE (Dynamic Glade Ada Translator and Evaluator) is the dynamic
@@ -2801,6 +2802,28 @@ Also note that to be able to keep track of your modifications, gate
 relies on @code{patch} and @code{diff} being available on your system.
 If you don't have a working set of @code{diff/patch}, @code{configure}
 will simply replace them by null operations.
+
+GATE and DGATE currently don't support all widgets and properties available
+under Glade. To help you identify which widgets are not supported, GATE will
+generate a comment in the @code{create_<widget>.adb} file that looks like:
+
+@smallexample
+   --  WARNING: Unsupported widget
+   --  GtkRadioButton (radiobutton4)
+@end smallexample
+
+Which means that while generating the file, GATE detected an unsupported
+widget (in this case GtkRadioButton) whose name is radiobutton4.
+If you get such warnings, your file may or may not compile properly, but
+you won't get the complete widget hierarchy at run time.
+
+Feel free to send us (@uref{mailto:gtkada@@ada.eu.org}) the XML file that
+causes this problem. We don't guarantee a rapid fix for each particular
+problem, but receiving real examples of missing functionnalities will
+certainly help implementing them faster.
+
+Similarly, DGATE generates a warning to the standard output when encountering
+an unsupported widget.
 
 @node A complete example
 @chapter A complete example
