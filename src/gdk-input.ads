@@ -49,7 +49,7 @@ package Gdk.Input is
    package Input_Add is
 
       type Data_Access is access all Data_Type;
-      for Data_Access'Size use System.Word_Size;
+      pragma Convention (C, Data_Access);
 
       type Gdk_Input_Function is access procedure
         (Data      : Data_Access;
