@@ -46,7 +46,7 @@ package Gtk.Accel_Label is
 
    procedure Set_Accel_Widget
      (Accel_Label  : access Gtk_Accel_Label_Record;
-      Accel_Widget : access Gtk.Widget.Gtk_Widget_Record);
+      Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    function Refetch (Accel_Label : access Gtk_Accel_Label_Record)
                      return               Boolean;

@@ -39,7 +39,7 @@ package body Gtk.Packer is
    ---------
 
    procedure Add (Packer       : access Gtk_Packer_Record;
-                  Child        : access Gtk.Widget.Gtk_Widget_Record;
+                  Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
                   Side         : in     Gtk_Side_Type;
                   Anchor       : in     Gtk_Anchor_Type;
                   Options      : in     Gtk_Packer_Options;
@@ -76,11 +76,13 @@ package body Gtk.Packer is
    -- Add_Defaults --
    ------------------
 
-   procedure Add_Defaults (Packer  : access Gtk_Packer_Record;
-                           Child   : access Gtk.Widget.Gtk_Widget_Record;
-                           Side    : in     Gtk_Side_Type;
-                           Anchor  : in     Gtk_Anchor_Type;
-                           Options : in     Gtk_Packer_Options) is
+   procedure Add_Defaults
+     (Packer  : access Gtk_Packer_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Side    : in     Gtk_Side_Type;
+      Anchor  : in     Gtk_Anchor_Type;
+      Options : in     Gtk_Packer_Options)
+   is
       procedure Internal (Packer  : in System.Address;
                           Child   : in System.Address;
                           Side    : in Gint;
@@ -121,9 +123,10 @@ package body Gtk.Packer is
    -- Reorder_Child --
    -------------------
 
-   procedure Reorder_Child (Packer   : access Gtk_Packer_Record;
-                            Child    : access Gtk.Widget.Gtk_Widget_Record;
-                            Position : in     Gint) is
+   procedure Reorder_Child
+     (Packer   : access Gtk_Packer_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : in     Gint) is
       procedure Internal (Packer   : in System.Address;
                           Child    : in System.Address;
                           Position : in Gint);
@@ -140,7 +143,7 @@ package body Gtk.Packer is
 
    procedure Set_Child_Packing
      (Packer       : access Gtk_Packer_Record;
-      Child        : access Gtk.Widget.Gtk_Widget_Record;
+      Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
       Side         : in     Gtk_Side_Type;
       Anchor       : in     Gtk_Anchor_Type;
       Options      : in     Gtk_Packer_Options;

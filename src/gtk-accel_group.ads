@@ -67,16 +67,16 @@ package Gtk.Accel_Group is
                       return               Boolean;
 
    function Accel_Groups_Activate
-     (Object     : access Gtk.Object.Gtk_Object_Record;
+     (Object     : access Gtk.Object.Gtk_Object_Record'Class;
       Accel_Key  : in     Gdk.Types.Gdk_Key_Type;
       Accel_Mods : in     Gdk.Types.Gdk_Modifier_Type)
       return              Boolean;
 
    procedure Attach (Accel_Group : access Gtk_Accel_Group_Record;
-                     Object      : access Gtk.Object.Gtk_Object_Record);
+                     Object      : access Gtk.Object.Gtk_Object_Record'Class);
 
    procedure Detach (Accel_Group : access Gtk_Accel_Group_Record;
-                     Object      : access Gtk.Object.Gtk_Object_Record);
+                     Object      : access Gtk.Object.Gtk_Object_Record'Class);
 
    procedure Lock (Accel_Group : access Gtk_Accel_Group_Record);
 
@@ -104,30 +104,32 @@ package Gtk.Accel_Group is
                   Accel_Key    : in     Gdk.Types.Gdk_Key_Type;
                   Accel_Mods   : in     Gdk.Types.Gdk_Modifier_Type;
                   Accel_Flags  : in     Gtk_Accel_Flags;
-                  Object       : access Gtk.Object.Gtk_Object_Record;
+                  Object       : access Gtk.Object.Gtk_Object_Record'Class;
                   Accel_Signal : in     String);
 
    procedure Remove (Accel_Group : access Gtk_Accel_Group_Record;
                      Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
                      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type;
-                     Object      : access Gtk.Object.Gtk_Object_Record);
+                     Object      : access Gtk.Object.Gtk_Object_Record'Class);
 
 
    ---------------------------
    --  Accelerator Signals  --
    ---------------------------
 
-   procedure Handle_Add (Object          : access Gtk.Object.Gtk_Object_Record;
-                         Accel_Signal_Id : in     Guint;
-                         Accel_Group     : access Gtk_Accel_Group_Record;
-                         Accel_Key       : in     Gdk.Types.Gdk_Key_Type;
-                         Accel_Mods      : in     Gdk.Types.Gdk_Modifier_Type;
-                         Accel_Flags     : in     Gtk_Accel_Flags);
+   procedure Handle_Add
+     (Object          : access Gtk.Object.Gtk_Object_Record'Class;
+      Accel_Signal_Id : in     Guint;
+      Accel_Group     : access Gtk_Accel_Group_Record;
+      Accel_Key       : in     Gdk.Types.Gdk_Key_Type;
+      Accel_Mods      : in     Gdk.Types.Gdk_Modifier_Type;
+      Accel_Flags     : in     Gtk_Accel_Flags);
 
-   procedure Handle_Remove (Object      : access Gtk.Object.Gtk_Object_Record;
-                            Accel_Group : access Gtk_Accel_Group_Record;
-                            Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                            Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type);
+   procedure Handle_Remove
+     (Object      : access Gtk.Object.Gtk_Object_Record'Class;
+      Accel_Group : access Gtk_Accel_Group_Record;
+      Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
+      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type);
 
    --  function Create_Add
    --  function Create_Remove

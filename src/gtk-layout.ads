@@ -39,20 +39,22 @@ package Gtk.Layout is
    type Gtk_Layout is access all Gtk_Layout_Record'Class;
 
 
-   procedure Gtk_New (Widget      : out Gtk_Layout;
-                      Hadjustment : in  Gtk.Adjustment.Gtk_Adjustment;
-                      Vadjustment : in  Gtk.Adjustment.Gtk_Adjustment);
-   procedure Initialize (Widget : access Gtk_Layout_Record;
-                         Hadjustment : in  Gtk.Adjustment.Gtk_Adjustment;
-                         Vadjustment : in  Gtk.Adjustment.Gtk_Adjustment);
+   procedure Gtk_New
+     (Widget      : out Gtk_Layout;
+      Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+   procedure Initialize
+     (Widget      : access Gtk_Layout_Record;
+      Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    procedure Put (Layout : access Gtk_Layout_Record;
-                  Widget : access Gtk.Widget.Gtk_Widget_Record;
+                  Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
                   X      : in     Gint;
                   Y      : in     Gint);
 
    procedure Move (Layout : access Gtk_Layout_Record;
-                   Widget : access Gtk.Widget.Gtk_Widget_Record;
+                   Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
                    X      : in     Gint;
                    Y      : in     Gint);
 
@@ -68,11 +70,11 @@ package Gtk.Layout is
 
    procedure Set_Hadjustment
      (Layout     : access Gtk_Layout_Record;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    procedure Set_Vadjustment
      (Layout     : access Gtk_Layout_Record;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    --  procedure Freeze
    --  procedure Thaw

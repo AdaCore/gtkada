@@ -75,10 +75,10 @@ package body Gtk.Accel_Label is
    function Refetch (Accel_Label : access Gtk_Accel_Label_Record)
                      return               Boolean
    is
-      function Internal (Accel_Label : in System.Address) return Gboolean;
+      function Internal (Accel_Label : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_accel_label_refetch");
    begin
-      return To_Boolean (Internal (Get_Object (Accel_Label)));
+      return Boolean'Val (Internal (Get_Object (Accel_Label)));
    end Refetch;
 
    ----------------------
@@ -87,14 +87,13 @@ package body Gtk.Accel_Label is
 
    procedure Set_Accel_Widget
      (Accel_Label  : access Gtk_Accel_Label_Record;
-      Accel_Widget : access Gtk.Widget.Gtk_Widget_Record)
+      Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Accel_Label  : in System.Address;
                           Accel_Widget : in System.Address);
       pragma Import (C, Internal, "gtk_accel_label_set_accel_widget");
    begin
-      Internal (Get_Object (Accel_Label),
-                Get_Object (Accel_Widget));
+      Internal (Get_Object (Accel_Label), Get_Object (Accel_Widget));
    end Set_Accel_Widget;
 
 end Gtk.Accel_Label;

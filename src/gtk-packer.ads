@@ -68,7 +68,7 @@ package Gtk.Packer is
 
 
    procedure Add (Packer       : access Gtk_Packer_Record;
-                  Child        : access Gtk.Widget.Gtk_Widget_Record;
+                  Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
                   Side         : in     Gtk_Side_Type;
                   Anchor       : in     Gtk_Anchor_Type;
                   Options      : in     Gtk_Packer_Options;
@@ -78,22 +78,24 @@ package Gtk.Packer is
                   I_Pad_X      : in     Guint;
                   I_Pad_Y      : in     Guint);
 
-   procedure Add_Defaults (Packer  : access Gtk_Packer_Record;
-                           Child   : access Gtk.Widget.Gtk_Widget_Record;
-                           Side    : in     Gtk_Side_Type;
-                           Anchor  : in     Gtk_Anchor_Type;
-                           Options : in     Gtk_Packer_Options);
+   procedure Add_Defaults
+     (Packer  : access Gtk_Packer_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Side    : in     Gtk_Side_Type;
+      Anchor  : in     Gtk_Anchor_Type;
+      Options : in     Gtk_Packer_Options);
 
    procedure Gtk_New (Widget : out Gtk_Packer);
    procedure Initialize (Widget : access Gtk_Packer_Record);
 
-   procedure Reorder_Child (Packer   : access Gtk_Packer_Record;
-                            Child    : access Gtk.Widget.Gtk_Widget_Record;
-                            Position : in     Gint);
+   procedure Reorder_Child
+     (Packer   : access Gtk_Packer_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : in     Gint);
 
    procedure Set_Child_Packing
      (Packer       : access Gtk_Packer_Record;
-      Child        : access Gtk.Widget.Gtk_Widget_Record;
+      Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
       Side         : in     Gtk_Side_Type;
       Anchor       : in     Gtk_Anchor_Type;
       Options      : in     Gtk_Packer_Options;

@@ -40,11 +40,10 @@ package body Gtk.Layout is
    is
       function Internal (Layout : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_get_hadjustment");
-      Tmp : Gtk.Adjustment.Gtk_Adjustment;
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      Tmp := new Gtk.Adjustment.Gtk_Adjustment_Record;
-      Set_Object (Tmp, Internal (Get_Object (Layout)));
-      return Tmp;
+      return Gtk.Adjustment.Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (Layout)), Stub));
    end Get_Hadjustment;
 
    ---------------------
@@ -56,20 +55,20 @@ package body Gtk.Layout is
    is
       function Internal (Layout : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_get_vadjustment");
-      Tmp : Gtk.Adjustment.Gtk_Adjustment;
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      Tmp := new Gtk.Adjustment.Gtk_Adjustment_Record;
-      Set_Object (Tmp, Internal (Get_Object (Layout)));
-      return Tmp;
+      return Gtk.Adjustment.Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (Layout)), Stub));
    end Get_Vadjustment;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget      : out Gtk_Layout;
-                      Hadjustment : in  Gtk.Adjustment.Gtk_Adjustment;
-                      Vadjustment : in  Gtk.Adjustment.Gtk_Adjustment)
+   procedure Gtk_New
+     (Widget      : out Gtk_Layout;
+      Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
    begin
       Widget := new Gtk_Layout_Record;
@@ -80,9 +79,11 @@ package body Gtk.Layout is
    -- Initialize  --
    -----------------
 
-   procedure Initialize (Widget : access Gtk_Layout_Record;
-                         Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
-                         Vadjustment : in Gtk.Adjustment.Gtk_Adjustment) is
+   procedure Initialize
+     (Widget : access Gtk_Layout_Record;
+      Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
       function Internal (Hadjustment : in System.Address;
                          Vadjustment : in System.Address)
                          return           System.Address;
@@ -98,7 +99,7 @@ package body Gtk.Layout is
    ----------
 
    procedure Move (Layout : access Gtk_Layout_Record;
-                   Widget : access Gtk.Widget.Gtk_Widget_Record;
+                   Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
                    X      : in     Gint;
                    Y      : in     Gint) is
       procedure Internal (Layout : in System.Address;
@@ -115,7 +116,7 @@ package body Gtk.Layout is
    ---------
 
    procedure Put (Layout : access Gtk_Layout_Record;
-                  Widget : access Gtk.Widget.Gtk_Widget_Record;
+                  Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
                   X      : in     Gint;
                   Y      : in     Gint)
    is
@@ -134,7 +135,7 @@ package body Gtk.Layout is
 
    procedure Set_Hadjustment
      (Layout     : access Gtk_Layout_Record;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal (Layout     : in System.Address;
                           Adjustment : in System.Address);
@@ -165,7 +166,7 @@ package body Gtk.Layout is
 
    procedure Set_Vadjustment
      (Layout     : access Gtk_Layout_Record;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal (Layout     : in System.Address;
                           Adjustment : in System.Address);
