@@ -80,10 +80,34 @@ package body Gtk.Adjustment is
                                 return Gfloat
    is
       function Internal (Adj : in System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtk_adjustment_get_step_increment");
+      pragma Import (C, Internal, "ada_gtk_adjustment_get_step_increment");
    begin
       return Internal (Get_Object (Adjustment));
    end Get_Step_Increment;
+
+   ------------------------
+   -- Get_Page_Increment --
+   ------------------------
+
+   function Get_Page_Increment (Adjustment : access Gtk_Adjustment_Record)
+                               return Gfloat is
+      function Internal (Adj : in System.Address) return Gfloat;
+      pragma Import (C, Internal, "ada_gtk_adjustment_get_page_increment");
+   begin
+      return Internal (Get_Object (Adjustment));
+   end Get_Page_Increment;
+
+   -------------------
+   -- Get_Page_Size --
+   -------------------
+
+   function Get_Page_Size (Adjustment : access Gtk_Adjustment_Record)
+                          return Gfloat is
+      function Internal (Adj : in System.Address) return Gfloat;
+      pragma Import (C, Internal, "ada_gtk_adjustment_get_page_size");
+   begin
+      return Internal (Get_Object (Adjustment));
+   end Get_Page_Size;
 
    ---------------
    -- Get_Value --
@@ -167,6 +191,19 @@ package body Gtk.Adjustment is
       Internal (Get_Object (Adjustment), Page_Increment);
    end Set_Page_Increment;
 
+   ------------------------
+   -- Set_Step_Increment --
+   ------------------------
+
+   procedure Set_Step_Increment (Adjustment : access Gtk_Adjustment_Record;
+                                 Step_Increment : in Gfloat)
+   is
+      procedure Internal (Adj : System.Address; Value : Gfloat);
+      pragma Import (C, Internal, "ada_adjustment_set_step_increment");
+   begin
+      Internal (Get_Object (Adjustment), Step_Increment);
+   end Set_Step_Increment;
+
    -------------------
    -- Set_Page_Size --
    -------------------
@@ -205,5 +242,27 @@ package body Gtk.Adjustment is
    begin
       Internal (Get_Object (Adjustment), Value);
    end Set_Value;
+
+   -------------
+   -- Changed --
+   -------------
+
+   procedure Changed (Adjustment : access Gtk_Adjustment_Record) is
+      procedure Internal (Adjustment : in System.Address);
+      pragma Import (C, Internal, "gtk_adjustment_changed");
+   begin
+      Internal (Get_Object (Adjustment));
+   end Changed;
+
+   -------------------
+   -- Value_Changed --
+   -------------------
+
+   procedure Value_Changed (Adjustment : access Gtk_Adjustment_Record) is
+      procedure Internal (Adjustment : in System.Address);
+      pragma Import (C, Internal, "gtk_adjustment_value_changed");
+   begin
+      Internal (Get_Object (Adjustment));
+   end Value_Changed;
 
 end Gtk.Adjustment;
