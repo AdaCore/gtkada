@@ -134,7 +134,7 @@ package body Create_Tree is
       if Selected_List = Null_List then
          Subtree := Gtk_Tree (Tree);
       else
-         Selected_Item := From_Tree (Gtk_Tree (Get_Data (Selected_List)));
+         Selected_Item := Gtk_Tree_Item (Get_Data (Selected_List));
          Subtree := Get_Subtree (Selected_Item);
          if Subtree = null then
             Gtk_New (Subtree);
