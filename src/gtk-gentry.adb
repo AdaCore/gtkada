@@ -177,4 +177,17 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Boolean'Pos (Visible));
    end Set_Visibility;
 
+   ---------------------
+   -- Set_Width_Chars --
+   ---------------------
+
+   procedure Set_Width_Chars
+     (The_Entry : access Gtk_Entry_Record'Class; Width : Natural)
+   is
+      procedure Internal (The_Entry : System.Address; Width : Natural);
+      pragma Import (C, Internal, "gtk_entry_set_width_chars");
+   begin
+      Internal (Get_Object (The_Entry), Width);
+   end Set_Width_Chars;
+
 end Gtk.GEntry;

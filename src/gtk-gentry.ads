@@ -86,6 +86,12 @@ package Gtk.GEntry is
    --  Set the maximum length for the text.
    --  The current text is truncated if needed.
 
+   procedure Set_Width_Chars
+     (The_Entry : access Gtk_Entry_Record'Class; Width : Natural);
+   --  Number of characters to leave space for in the entry, on the screen.
+   --  This is the number of visible characters, not the maximal number of
+   --  characters the entry can contain
+
    procedure Set_Text (The_Entry : access Gtk_Entry_Record; Text : String);
    --  Modify the text in the entry.
    --  The text is cut at the maximum length that was set when the entry was
@@ -160,6 +166,13 @@ package Gtk.GEntry is
    --    Type:  Gint
    --    Flags: read-write
    --    Descr: Number of characters to leave space for in the entry.
+   --    See also: Set_Width_Chars
+   --
+   --  - Name:  Scroll_Offset_Property
+   --    Type:  Gint
+   --    Flags: read only
+   --    Descr: Number of pixels of the entry scrolled off the screen to the
+   --           left
    --    See also: <none>
    --
    --  </properties>
@@ -171,6 +184,7 @@ package Gtk.GEntry is
    Invisible_Char_Property : constant Glib.Properties.Property_Unichar;
    Activates_Default_Property : constant Glib.Properties.Property_Boolean;
    Width_Chars_Property : constant Glib.Properties.Property_Int;
+   Scroll_Offset_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -210,6 +224,8 @@ private
      Glib.Properties.Build ("activates_default");
    Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width_chars");
+   Scroll_Offset_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("scroll_offset");
 
    pragma Import (C, Get_Type, "gtk_entry_get_type");
 end Gtk.GEntry;
@@ -227,9 +243,6 @@ end Gtk.GEntry;
 --    (GtkEntry *entry, gboolean setting);
 
 --  function Get_Activates_Default (GtkEntry *entry) return Boolean;
-
---  procedure Set_Width_Chars
---    (GtkEntry *entry, gint n_chars);
 
 --  function Get_Width_Chars (GtkEntry *entry) return Gint;
 
