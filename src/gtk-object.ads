@@ -5,6 +5,9 @@ package Gtk.Object is
    procedure Destroy (Object : in out Gtk_Object'Class);
    --  mapping: Destroy gtkobject.h gtk_object_destroy
 
+   function Get_Type (Object : in Gtk_Object'Class) return Gint;
+   --  mapping Get_Type gtkobject.h GTK_OBJECT_TYPE
+
    function Is_Created (Object : in Gtk_Object) return Boolean;
 
    procedure Ref (Object : in out Gtk_Object);
@@ -13,6 +16,24 @@ package Gtk.Object is
    procedure Unref (Object : in out Gtk_Object);
    --  mapping: Unref gtkobject.h gtk_object_unref
 
+   ---------------
+   -- User_Data --
+   ---------------
+
+   generic
+      type Data_Type (<>) is private;
+   package User_Data is
+      function Get (Object : in Gtk_Object'Class) return Data_Type;
+      --  mapping: User_Data.Get gtkobject.h gtk_object_get_user_data
+
+      procedure Set (Object : in Gtk_Object'Class;
+                     Data   : in Data_Type);
+      --  mapping: User_Data.Set gtkobject.h gtk_object_set_user_data
+   end User_Data;
+
+   --  The previous package implements the User_Data stuff.
+   --  !! Warning !! No type verification is made to check if you are
+   --  using the appropriate function Get. This is your own responsability
 
    -------------
    --  Flags  --

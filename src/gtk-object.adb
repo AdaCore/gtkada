@@ -1,3 +1,7 @@
+with Unchecked_Conversion;
+with Unchecked_Deallocation;
+with Ada.Text_IO;
+
 package body Gtk.Object is
 
    ------------
@@ -76,6 +80,17 @@ package body Gtk.Object is
       return To_Boolean (Internal (Get_Object (Object)));
    end Floating;
 
+   --------------
+   -- Get_Type --
+   --------------
+
+   function Get_Type (Object : in Gtk_Object'Class) return Gint is
+      function Internal (Object : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_object_get_type");
+   begin
+      return Internal (Get_Object (Object));
+   end Get_Type;
+
    ----------------
    -- Initialize --
    ----------------
@@ -111,7 +126,6 @@ package body Gtk.Object is
          Internal (Get_Object (Object));
       end if;
    end Ref;
-
 
    -----------------
    --  Set_Flags  --
@@ -152,5 +166,80 @@ package body Gtk.Object is
    begin
       Internal (Get_Object (Object), Flags);
    end Unset_Flags;
+
+   ---------------
+   -- User_Data --
+   ---------------
+
+   package body User_Data is
+      type Data_Access is access all Data_Type;
+      type Cb_Record is
+         record
+            Ptr      : Data_Access;
+         end record;
+      type Cb_Record_Access is access all Cb_Record;
+
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Cb_Record_Access);
+      procedure Free (Data : in System.Address);
+      pragma Convention (C, Free);
+
+      ----------
+      -- Free --
+      ----------
+
+      procedure Free (Data : in System.Address) is
+         procedure Internal is new Unchecked_Deallocation (Cb_Record,
+                                                           Cb_Record_Access);
+         procedure Internal2 is new Unchecked_Deallocation (Data_Type,
+                                                            Data_Access);
+         D : Cb_Record_Access := Convert (Data);
+      begin
+         Internal2 (D.Ptr);
+         Internal (D);
+         Ada.Text_IO.Put_Line ("Free user_Data");
+      end Free;
+
+      ---------
+      -- Get --
+      ---------
+
+      function Get (Object : in Gtk_Object'Class) return Data_Type is
+         function Internal (Object : in System.Address;
+                            Key    : in String)
+                            return System.Address;
+         pragma Import (C, Internal, "gtk_object_get_data");
+         D : Cb_Record_Access
+           := Convert (Internal (Get_Object (Object),
+                                 "user_data" & Ascii.NUL));
+      begin
+         if D = null then
+            raise Constraint_Error;
+         end if;
+         return D.Ptr.all;
+      end Get;
+
+      ---------
+      -- Set --
+      ---------
+
+      procedure Set (Object : in Gtk_Object'Class;
+                     Data   : in Data_Type)
+      is
+         function Convert is new Unchecked_Conversion (Cb_Record_Access,
+                                                       System.Address);
+         procedure Internal (Object  : in System.Address;
+                             Key     : in String;
+                             Data    : in System.Address;
+                             Destroy : in System.Address);
+         pragma Import (C, Internal, "gtk_object_set_data_full");
+         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+      begin
+         Internal (Get_Object (Object),
+                   "user_data" & Ascii.NUL,
+                   Convert (D),
+                   Free'Address);
+      end Set;
+   end User_Data;
 
 end Gtk.Object;
