@@ -1,102 +1,106 @@
 
 with Gtk; use Gtk;
 
-generic
-   type Data_Type is private;
-package Glib.GList is
+package Glib.Glist is
 
-   type GList is private;
-   type Gpointer is access all Data_Type;
+   generic
+--      type Data_Type is limited private;
+      type Gpointer is private; --  access all Data_Type;
+   package Generic_List is
 
-   procedure Alloc (List : out GList);
-   --  mapping: Alloc glib.h g_list_alloc
+      type Glist is private;
 
-   procedure Append (List : in out GList;
-                     Data : in Gpointer);
-   --  mapping: Append glib.h g_list_append
+      procedure Alloc (List : out Glist);
+      --  mapping: Alloc glib.h g_list_alloc
 
-   function Concat (List1 : in GList;
-                    List2 : in GList)
-                    return GList;
-   --  mapping: Concat glib.h g_list_concat
+      procedure Append (List : in out Glist;
+                        Data : in Gpointer);
+      --  mapping: Append glib.h g_list_append
 
-   procedure Insert (List : in out GList;
-                     Data : in Gpointer;
-                     Position : in GInt);
-   --  mapping: Insert glib.h g_list_insert
+      function Concat (List1 : in Glist;
+                       List2 : in Glist)
+                       return Glist;
+      --  mapping: Concat glib.h g_list_concat
 
-   function Find (List : in GList;
-                  Data : in Gpointer)
-                  return GList;
-   --  mapping: Find glib.h g_list_find
+      procedure Insert (List : in out Glist;
+                        Data : in Gpointer;
+                        Position : in Gint);
+      --  mapping: Insert glib.h g_list_insert
 
-   function First (List : in GList)
-                   return GList;
-   --  mapping: First glib.h g_list_first
+      function Find (List : in Glist;
+                     Data : in Gpointer)
+                     return Glist;
+      --  mapping: Find glib.h g_list_find
 
-   procedure Free (List : in out GList);
-   --  mapping: Free glib.h g_list_free
+      function First (List : in Glist)
+                      return Glist;
+      --  mapping: First glib.h g_list_first
 
-   function Index (List : in GList;
-                   Data : in Gpointer)
-                   return GInt;
-   --  mapping: Index glib.h g_list_index
+      procedure Free (List : in out Glist);
+      --  mapping: Free glib.h g_list_free
 
-   function Last (List : in GList)
-                  return GList;
-   --  mapping: Last glib.h g_list_last
+      function Get_Object (Obj : in Glist)
+                           return System.Address;
+      pragma Inline (Get_Object);
 
-   function Length (List : in GList)
-                    return GUint;
-   --  mapping: Length glib.h g_list_length
+      function Index (List : in Glist;
+                      Data : in Gpointer)
+                      return Gint;
+      --  mapping: Index glib.h g_list_index
 
-   function Nth (List : in GList;
-                 N    : in GUint)
-                 return GList;
-   --  mapping: Nth glib.h g_list_nth
+      function Last (List : in Glist)
+                     return Glist;
+      --  mapping: Last glib.h g_list_last
 
-   function Nth_Data (List : in GList;
-                      N : in GUint)
-                      return Gpointer;
-   --  mapping: Nth_Data glib.h g_list_nth_data
+      function Length (List : in Glist)
+                       return Guint;
+      --  mapping: Length glib.h g_list_length
 
-   function Position (List : in GList;
-                      Link : in GList)
-                      return GInt;
-   --  mapping: Position glib.h g_list_position
+      procedure List_Reverse (List : in out Glist);
+      --  mapping: List_Reverse glib.h g_list_reverse
 
-   procedure Prepend (List : in out GList;
-                      Data : in Gpointer);
-   --  mapping: Prepend glib.h g_list_prepend
+      function Nth (List : in Glist;
+                    N    : in Guint)
+                    return Glist;
+      --  mapping: Nth glib.h g_list_nth
 
-   procedure Remove (List : in out GList;
-                     Data : in Gpointer);
-   --  mapping: Remove glib.h g_list_remove
+      function Nth_Data (List : in Glist;
+                         N : in Guint)
+                         return Gpointer;
+      --  mapping: Nth_Data glib.h g_list_nth_data
 
-   procedure Remove_Link (List : in out GList;
-                          Link : in GList);
-   --  mapping: Remove_Link glib.h g_list_remove_link
+      function Position (List : in Glist;
+                         Link : in Glist)
+                         return Gint;
+      --  mapping: Position glib.h g_list_position
 
-   procedure List_Reverse (List : in out GList);
-   --  mapping: List_Reverse glib.h g_list_reverse
+      procedure Prepend (List : in out Glist;
+                         Data : in Gpointer);
+      --  mapping: Prepend glib.h g_list_prepend
+
+      procedure Remove (List : in out Glist;
+                        Data : in Gpointer);
+      --  mapping: Remove glib.h g_list_remove
+
+      procedure Remove_Link (List : in out Glist;
+                             Link : in Glist);
+      --  mapping: Remove_Link glib.h g_list_remove_link
+
+      procedure Set_Object (Obj    : in out Glist;
+                            Value  : in     System.Address);
+      pragma Inline (Set_Object);
+
+   private
+
+      type Glist is
+         record
+            Ptr : System.Address := System.Null_Address;
+         end record;
+
+   end Generic_List;
 
    --  mapping: NOT_IMPLEMENTED glib.h g_list_free_1
    --  mapping: NOT_IMPLEMENTED glib.h g_list_foreach
    --  mapping: NOT_IMPLEMENTED glib.h g_list_previous(list)
 
-private
-
-   type GList is tagged
-      record
-         Ptr : System.Address := System.Null_Address;
-      end record;
-
-   function Get_Object (Obj : in Object'Class)
-                        return System.Address;
-   pragma Inline (Get_Object);
-
-   procedure Set_Object (Obj    : in out Object'Class;
-                         Value  : in     System.Address);
-   pragma Inline (Set_Object);
-
-end Glib.GList;
+end Glib.Glist;
