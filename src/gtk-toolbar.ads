@@ -39,6 +39,9 @@ package Gtk.Toolbar is
      with private;
    type Gtk_Toolbar is access all Gtk_Toolbar_Record'Class;
 
+   --  In all the following functions, "Tooltip_Text" can be a empty String.
+   --  In that case, no tooltip will be created
+
    function Append_Element
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : in Gtk_Toolbar_Child_Type;
