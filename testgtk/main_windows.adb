@@ -45,12 +45,10 @@ with Gtk.Label;           use Gtk.Label;
 with Gtk.Main;            use Gtk.Main;
 with Gtk.Notebook;        use Gtk.Notebook;
 with Gtk.Pixmap;          use Gtk.Pixmap;
-with Gtk.Radio_Button;    use Gtk.Radio_Button;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Style;           use Gtk.Style;
 with Gtk.Text;            use Gtk.Text;
-with Gtk.Toolbar;         use Gtk.Toolbar;
 with Gtk.Tree;            use Gtk.Tree;
 with Gtk.Tree_Item;       use Gtk.Tree_Item;
 with Gtk.Widget;          use Gtk.Widget;
@@ -65,6 +63,7 @@ with Create_Box;
 with Create_Button_Box;
 with Create_Buttons;
 with Create_Calendar;
+with Create_Canvas;
 with Create_Check_Buttons;
 with Create_Clist;
 with Create_Ctree;
@@ -95,7 +94,8 @@ with Create_Preview_Gray;
 with Create_Progress;
 with Create_Radio_Button;
 with Create_Range;
-with Create_Reparent;with Create_Rulers;
+with Create_Reparent;
+with Create_Rulers;
 with Create_Scrolled;
 with Create_Scroll_Test;
 with Create_Sheet;
@@ -108,7 +108,6 @@ with Create_Toggle_Buttons;
 with Create_Toolbar;
 with Create_Tooltips;
 with Create_Tree;
-with Xpm;
 with Common; use Common;
 with View_GL; use View_GL;
 
@@ -117,12 +116,9 @@ with Libart_Demo;  use Libart_Demo;
 
 package body Main_Windows is
 
-   procedure Fill_Gtk_Tree (Tree : in out Gtk.Tree.Gtk_Tree);
+   procedure Fill_Gtk_Tree (Tree : in out Gtk.Tree.Gtk_Tree;
+                            Gtkada_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
-
-   function Create_Gdk_Toolbar (Frame : Gtk.Frame.Gtk_Frame)
-                               return Gtk_Toolbar;
-   --  Create the toolbar used for the gdk demo
 
    function New_Pixmap (Icon   : Interfaces.C.Strings.chars_ptr_array;
                         Window : access Gtk_Widget_Record'Class)
@@ -186,7 +182,7 @@ package body Main_Windows is
    function Delete_Event (Object : access Gtk_Widget_Record'Class)
                          return Boolean;
 
-   type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Misc);
+   type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc);
    --  The available types for demos. Each of them is a tree item, whose subitems
    --  are the matching demos.
    --  Box:     Containers
@@ -219,6 +215,8 @@ package body Main_Windows is
                                          Create_Buttons.Help'Access),
       (NS ("calendar"),         Base,    Create_Calendar.Run'Access,
                                          Create_Calendar.Help'Access),
+      (Ns ("canvas"),           Gtkada,  Create_Canvas.Run'Access,
+                                         Create_Canvas.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,
                                          Create_Check_Buttons.Help'Access),
       (NS ("clist"),            Complex, Create_Clist.Run'Access,
@@ -322,43 +320,49 @@ package body Main_Windows is
    -- Fill_Gtk_Tree --
    -------------------
 
-   procedure Fill_Gtk_Tree (Tree : in out Gtk.Tree.Gtk_Tree) is
+   procedure Fill_Gtk_Tree (Tree : in out Gtk.Tree.Gtk_Tree;
+                            Gtkada_Demos : Boolean := False) is
       Item_Subtree : Gtk_Tree;
       Item_New     : Demo_Tree_Item;
       Item         : Gtk_Tree_Item;
 
    begin
       for Typ in Demo_Type'Range loop
-         case Typ is
-            when Box     => Gtk_New (Item, "Containers");
-            when Base    => Gtk_New (Item, "Basic Widgets");
-            when Complex => Gtk_New (Item, "Composite Widgets");
-            when Gimp    => Gtk_New (Item, "Gimp Widgets");
-            when Misc    => Gtk_New (Item, "Misc. Demos");
-            when GdkD    => Gtk_New (Item, "Gdk demos");
-            when others  => Gtk_New (Item, Demo_Type'Image (Typ));
-         end case;
-         Append (Tree, Item);
+         if ((not Gtkada_Demos)  and then Typ /= Gtkada)
+           or else (Gtkada_Demos and then Typ = Gtkada)
+         then
+            case Typ is
+               when Box     => Gtk_New (Item, "Containers");
+               when Base    => Gtk_New (Item, "Basic Widgets");
+               when Complex => Gtk_New (Item, "Composite Widgets");
+               when Gimp    => Gtk_New (Item, "Gimp Widgets");
+               when Misc    => Gtk_New (Item, "Misc. Demos");
+               when GdkD    => Gtk_New (Item, "Gdk demos");
+               when Gtkada  => Gtk_New (Item, "GtkAda Widgets");
+               when others  => Gtk_New (Item, Demo_Type'Image (Typ));
+            end case;
+            Append (Tree, Item);
 
-         Gtk_New (Item_Subtree);
+            Gtk_New (Item_Subtree);
 
-         for Item_Num in Gtk_Demos'Range loop
-            if Gtk_Demos (Item_Num).Typ = Typ
-              and then Gtk_Demos (Item_Num).Func /= null
-            then
-               Gtk_New (Item_New,
-                        Label => Gtk_Demos (Item_Num).Label.all,
-                        Num   => Item_Num);
-               Append (Item_Subtree, Item_New);
-               Show (Item_New);
-            end if;
-         end loop;
+            for Item_Num in Gtk_Demos'Range loop
+               if Gtk_Demos (Item_Num).Typ = Typ
+                 and then Gtk_Demos (Item_Num).Func /= null
+               then
+                  Gtk_New (Item_New,
+                           Label => Gtk_Demos (Item_Num).Label.all,
+                           Num   => Item_Num);
+                  Append (Item_Subtree, Item_New);
+                  Show (Item_New);
+               end if;
+            end loop;
 
-         Set_Subtree (Item, Item_Subtree);
-         Tree_Cb.Connect
-           (Item_Subtree, "select_child",
-            Tree_Cb.To_Marshaller (Tree_Select_Child'Access),
-            0);
+            Set_Subtree (Item, Item_Subtree);
+            Tree_Cb.Connect
+              (Item_Subtree, "select_child",
+               Tree_Cb.To_Marshaller (Tree_Select_Child'Access),
+               0);
+         end if;
       end loop;
    end Fill_Gtk_Tree;
 
@@ -611,61 +615,6 @@ package body Main_Windows is
       end if;
    end Tree_Select_Child;
 
-   ------------------------
-   -- Create_Gdk_Toolbar --
-   ------------------------
-
-   function Create_Gdk_Toolbar (Frame : Gtk.Frame.Gtk_Frame)
-                               return Gtk_Toolbar
-   is
-
-      Tool_Group : Widget_SList.GSlist;
-      Toolbox    : Gtk_Toolbar;
-
-      procedure Add_Tool (Toolbar   : access Gtk_Toolbar_Record'Class;
-                          Tooltips  : String;
-                          Icon_File : Interfaces.C.Strings.chars_ptr_array)
-      is
-         Button : Gtk_Radio_Button;
-         Widget : Gtk_Widget;
-         --  Id     : Guint;
-         Pixmap : Gtk_Pixmap;
-
-      begin
-         Gtk_New (Button, Tool_Group);
-         Tool_Group := Gtk.Radio_Button.Group (Button);
-         Set_Mode (Button, Draw_Indicator => False);
-         Set_Active (Button, Is_Active => False);
-         Set_Border_Width (Button, 0);
-
-         Pixmap := New_Pixmap (Icon_File, Frame);
-         Show (Pixmap);
-
-         Add (Button, Pixmap);
-         Show (Button);
-
-         Widget := Append_Element
-           (Toolbar, Toolbar_Child_Widget, Gtk_Widget (Button), "",
-            Tooltips, "", Gtk_Widget (Pixmap));
-
-         --  Id := Tool_Cb.Connect (Button, "clicked", Execute_Tool_Cb'Access, Cmd);
-      end Add_Tool;
-
-   begin
-      Realize (Frame);
-      Gtk_New (Toolbox,
-               Orientation => Gtk.Enums.Orientation_Horizontal,
-               Style       => Gtk.Enums.Toolbar_Icons);
-      Add_Tool (Toolbox, "Select object", Xpm.Select_Xpm);
-      Add_Tool (Toolbox, "Rotate object", Xpm.Rotate_Xpm);
-      Add_Tool (Toolbox, "Insert text", Xpm.Text_Xpm);
-      Add_Tool (Toolbox, "insert line", Xpm.Line_Xpm);
-      Add_Tool (Toolbox, "Insert ellispe", Xpm.Ellipse_Xpm);
-      Add_Tool (Toolbox, "Insert circle", Xpm.Circle_Xpm);
-      Add_Tool (Toolbox, "Insert rectangle", Xpm.Rectangle_Xpm);
-      return Toolbox;
-   end Create_Gdk_Toolbar;
-
    -------------
    -- Gtk_New --
    -------------
@@ -802,31 +751,57 @@ package body Main_Windows is
                 Padding => 0);
       Set_Usize (Gtk_Demo_Frame, 550, 500);
 
-      --  Second page: Libartdemos
+      --  Second page: GtkAda widgets
+
+      Gtk_New (Frame);
+      Gtk_New (Label, "GtkAda demo");
+      Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
+
+      Gtk.Box.Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 0);
+      Gtk.Frame.Add (Frame, Widget => Box);
+
+      Gtk_New_Vbox (Vbox2, Homogeneous => False, Spacing => 0);
+      Pack_Start (In_Box  => Box,
+                  Child   => Vbox2,
+                  Expand  => True,
+                  Fill    => True,
+                  Padding => 0);
+
+      Gtk_New (Scrolled);
+      Set_Policy (Scrolled,
+                  Gtk.Enums.Policy_Automatic,
+                  Gtk.Enums.Policy_Always);
+      Pack_Start (In_Box  => VBox2,
+                  Child   => Scrolled,
+                  Expand  => True,
+                  Fill    => True,
+                  Padding => 0);
+      Set_Usize (Scrolled, 170, 500);
+
+      Gtk_New (Tree);
+      Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
+      Set_View_Lines (Tree, True);
+      Add_With_Viewport (Scrolled, Tree);
+      Fill_Gtk_Tree (Tree, True);
+
+      Gtk_New (Gtk_Demo_Frame);
+      Set_Shadow_Type (Gtk_Demo_Frame, The_Type => Gtk.Enums.Shadow_None);
+      Pack_End (In_Box  => Box,
+                Child   => Gtk_Demo_Frame,
+                Expand  => True,
+                Fill    => True,
+                Padding => 0);
+      Set_Usize (Gtk_Demo_Frame, 550, 500);
+
+      --  Third page: Libartdemos
+
       Gtk_New (Frame);
       Gtk_New (Label, "Image manipulation");
       Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
 
       Libart_Demo.Run (Frame);
 
-      --  Second page: Gdk demos
---        Gtk_New (Frame);
---        Gtk_New (Label, "Gdk demo");
---        Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
-
---        Gtk_New_Vbox (Box, Homogeneous => False, Spacing => 0);
---        Add (Frame, Box);
-
---        Pack_Start (Box, Create_Gdk_Toolbar (Frame),
---                    Expand => False, Fill => False);
-
---        Gtk_New (Frame, "Drawing Demo");
---        Pack_Start (Box, Frame, Expand => True, Fill => True);
-
---        Gtk_New (Drawing_Area);
---        Add (Frame, Drawing_Area);
-
-      --  Third page: OpenGL demos
+      --  Fourth page: OpenGL demos
       Gtk_New (Frame);
       Gtk_New (Label, "OpenGL demo");
       Append_Page (Win.Notebook, Frame, Label);
