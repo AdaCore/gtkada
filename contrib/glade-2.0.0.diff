@@ -1,3 +1,7 @@
+Tue Jun 17 14:28:40 CEST 2003	Arnaud Charlet	<charlet@act-europe.fr>
+
+	glade/utils.c: Remove wrong/unneeded Win32 specific code.
+
 Mon Jun 16 16:12:18 CEST 2003	Arnaud Charlet	<charlet@act-europe.fr>
 
 	glade/main.c: Disable gail and non portable nls calls.
@@ -69,3 +73,19 @@ Thu Jun 12 12:05:57 CEST 2003	Nicolas Setton	<setton@act-europe.fr>
  dnl Debugging - defines GLADE_DEBUG if --enable-debug option is used.
  dnl ***************************************************************************
  
+--- glade/utils.c.old	2003-06-17 14:26:50.000000000 +0100
++++ glade/utils.c	2003-06-17 14:26:57.000000000 +0100
+@@ -21,13 +21,8 @@
+ #include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#ifdef _WIN32
+-#include <ctype.h>
+-#include <direct.h>
+-#else
+ #include <unistd.h>
+ #include <dirent.h>
+-#endif
+ #include <errno.h>
+ 
+ #include <gtk/gtk.h>
