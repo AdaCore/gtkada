@@ -138,7 +138,7 @@ package Gtk.Editable is
    --  Select the region of text from Start to The_End.
    --  The characters that are selected are those characters at positions
    --  from Start up to, but not including The_End. If The_End_Pos is
-   --  negative, then the the characters selected will be those characters
+   --  negative, then the characters selected will be those characters
    --  from Start to the end of the text.
 
    procedure Set_Position (Editable : access Gtk_Editable_Record;
