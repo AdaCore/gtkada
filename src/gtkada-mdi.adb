@@ -3184,7 +3184,7 @@ package body Gtkada.MDI is
             Remove (MDI, MDI.Layout);
          end if;
 
-      elsif Children_Are_Maximized (MDI) then
+      elsif not Maximize and then Children_Are_Maximized (MDI) then
          --  The middle notebook was already destroyed by the last call to
          --  Remove_From_Notebook in the above loop
 
