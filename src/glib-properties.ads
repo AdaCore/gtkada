@@ -33,7 +33,7 @@
 --  subprogram). However, the properties provide a general scheme to modify
 --  these attributes.
 --  For instance, they can be used to provide introspection on the widget
---  (to automatically retrive the attributes that can be modified), or if
+--  (to automatically retrieve the attributes that can be modified), or if
 --  you need to implement a tool like a GUI-Builder that is able to
 --  manipulate any widget, even those that didn't exist when the tool was
 --  written.
