@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -348,7 +348,7 @@ package body Gtkada.Canvas is
    is
    begin
       Canvas := new Interactive_Canvas_Record;
-      Gtkada.Canvas.Initialize (Canvas, True);
+      Gtkada.Canvas.Initialize (Canvas, Auto_Layout);
    end Gtk_New;
 
    ----------------
@@ -356,7 +356,7 @@ package body Gtkada.Canvas is
    ----------------
 
    procedure Initialize
-     (Canvas : access Interactive_Canvas_Record'Class;
+     (Canvas      : access Interactive_Canvas_Record'Class;
       Auto_Layout : Boolean := True)
    is
       Signal_Parameters : constant Signal_Parameter_Types :=
@@ -892,7 +892,9 @@ package body Gtkada.Canvas is
    procedure Move_To
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class;
-      X, Y   : Glib.Gint := Glib.Gint'First) is
+      X, Y   : Glib.Gint := Glib.Gint'First)
+   is
+      pragma Unreferenced (Canvas);
    begin
       Item.Coord.X := X;
       Item.Coord.Y := Y;
@@ -1757,7 +1759,9 @@ package body Gtkada.Canvas is
       Window      : Gdk_Window;
       Invert_Mode : Boolean;
       GC          : Gdk.GC.Gdk_GC;
-      Edge_Number : Gint) is
+      Edge_Number : Gint)
+   is
+      pragma Unreferenced (Invert_Mode);
    begin
       --  Self-referencing links
       if Get_Src (Link) = Get_Dest (Link) then
@@ -2600,7 +2604,9 @@ package body Gtkada.Canvas is
 
    procedure On_Button_Click
      (Item   : access Canvas_Item_Record;
-      Event  : Gdk.Event.Gdk_Event_Button) is
+      Event  : Gdk.Event.Gdk_Event_Button)
+   is
+      pragma Unreferenced (Item, Event);
    begin
       null;
    end On_Button_Click;
@@ -2946,10 +2952,12 @@ package body Gtkada.Canvas is
       if Link.Pixbuf /= null then
          Unref (Link.Pixbuf);
       end if;
+
       Free (Link.Descr);
    end Destroy;
 
    procedure Destroy (Item : in out Canvas_Item_Record) is
+      pragma Unreferenced (Item);
    begin
       null;
    end Destroy;
