@@ -45,7 +45,7 @@ with Gnome.UI_Defs;
 with Gnome.Window;
 pragma Warnings (On);
 
-procedure Make is
+procedure Make_Gnome is
 begin
    null;
-end Make;
+end Make_Gnome;
