@@ -37,7 +37,7 @@ package body Gdk.Window_Attr is
 
    procedure Destroy (Window_Attr : in out Gdk_Window_Attr) is
       procedure Internal (Window_Attr : in System.Address);
-      pragma Import (C, Internal, "gdk_window_attr_destroy");
+      pragma Import (C, Internal, "ada_gdk_window_attr_destroy");
    begin
       Internal (Get_Object (Window_Attr));
       Set_Object (Window_Attr, System.Null_Address);
