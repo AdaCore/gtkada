@@ -382,7 +382,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
   */
 -void 
 -pango_win32_render (HDC                hdc,
-+HFONT	pango_win32_render_offset_previous_font ;
++static HFONT	pango_win32_render_offset_previous_font ;
 +static int
 +pango_win32_render_offset (HDC         hdc,
  		    PangoFont         *font,
