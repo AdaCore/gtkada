@@ -755,10 +755,20 @@ package body Gtk.Tree_View is
          Start_Editing : Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_cursor");
 
+      Column_Address : System.Address;
+
+      use type Gtk.Tree_View_Column.Gtk_Tree_View_Column;
+
    begin
+      if Focus_Column = null then
+         Column_Address := System.Null_Address;
+      else
+         Column_Address := Get_Object (Focus_Column);
+      end if;
+
       Internal (Get_Object (Tree_View),
                 Path,
-                Get_Object (Focus_Column),
+                Column_Address,
                 To_Gboolean (Start_Editing));
    end Set_Cursor;
 
