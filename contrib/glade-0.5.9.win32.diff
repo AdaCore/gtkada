@@ -12,6 +12,62 @@
   
   #include <gtk/gtk.h>
   
+***************
+*** 2324,2331 ****
+        light_gc = widget->style->light_gc[GTK_STATE_NORMAL];
+        dark_gc = widget->style->dark_gc[GTK_STATE_NORMAL];
+        gdk_window_get_size (widget->window, &w, &h);
+!       /* This should not be needed. */
+!       /*gdk_window_clear (widget->window); */
+        gdk_draw_line (widget->window, light_gc, 0, 0, w - 1, 0);
+        gdk_draw_line (widget->window, light_gc, 0, 0, 0, h - 1);
+        gdk_draw_line (widget->window, dark_gc, 0, h - 1, w - 1, h - 1);
+--- 2326,2333 ----
+        light_gc = widget->style->light_gc[GTK_STATE_NORMAL];
+        dark_gc = widget->style->dark_gc[GTK_STATE_NORMAL];
+        gdk_window_get_size (widget->window, &w, &h);
+!       /* This should not be needed, but is under windows. */
+!       gdk_window_clear (widget->window);
+        gdk_draw_line (widget->window, light_gc, 0, 0, w - 1, 0);
+        gdk_draw_line (widget->window, light_gc, 0, 0, 0, h - 1);
+        gdk_draw_line (widget->window, dark_gc, 0, h - 1, w - 1, h - 1);
+***************
+*** 2402,2408 ****
+  	      y = 0;
+  	      gdk_window_get_size (window, &w, &h);
+  	    }
+! 	  paint_selection (window, gc, x, y, w, h);
+  	}
+        /* SPECIAL CODE: Don't try to paint selection boxes around ancestors of
+  	 a viewport, as the coordinates are completely different. */
+--- 2404,2410 ----
+  	      y = 0;
+  	      gdk_window_get_size (window, &w, &h);
+  	    }
+! 	  paint_selection (ancestor->window, gc, 0, 0, w, h);
+  	}
+        /* SPECIAL CODE: Don't try to paint selection boxes around ancestors of
+  	 a viewport, as the coordinates are completely different. */
+***************
+*** 2642,2647 ****
+--- 2644,2650 ----
+  				GDK_WINDOW_XWINDOW (child_window),
+  				&xwa);
+  	  if (xwa.class != InputOnly)
++ #endif
+  	    {
+  	      /* Convert to the child's coordinate space. */
+  	      intersection.x -= child.x;
+***************
+*** 2652,2658 ****
+  				   intersection.x, intersection.y,
+  				   intersection.width, intersection.height);
+  	    }
+- #endif
+  	}
+        children = children->next;
+      }
+--- 2657,2662 ----
 *** glade/save.c.old	Tue Jul 11 16:55:18 2000
 --- glade/save.c	Tue Jul 11 16:56:18 2000
 ***************
