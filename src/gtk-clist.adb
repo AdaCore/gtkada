@@ -1493,7 +1493,7 @@ package body Gtk.Clist is
       T : System.Address := System.Null_Address;
    begin
       if Text /= "" then
-         T := T'Address;
+         T := Text'Address;
       end if;
       Internal (Get_Object (Clist), Row, Column,
                 Cell_Type, T, Spacing, Pixmap, Mask);
