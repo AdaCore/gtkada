@@ -149,7 +149,7 @@ package body Gtkada.MDI is
    --  pointer is within Corner_Size in both coordinates, then we are clicking
    --  on the corner)
 
-   Draw_Title_Bars : constant Boolean := True;
+   Draw_Title_Bars : constant Boolean := False;
    --  Whether title bars should be drawn when in maximized mode. They are
    --  always visible in non-maximized mode
 
@@ -1491,49 +1491,51 @@ package body Gtkada.MDI is
          GC := Child.MDI.Focus_GC;
       end if;
 
-      Draw_Rectangle
-        (Get_Window (Child.Title_Area),
-         GC, True, 0, 0,
-         Gint (Get_Allocation_Width (Child.Title_Area)),
-         Child.MDI.Title_Bar_Height);
+      if Realized_Is_Set (Child.Title_Area) then
+         Draw_Rectangle
+           (Get_Window (Child.Title_Area),
+            GC, True, 0, 0,
+            Gint (Get_Allocation_Width (Child.Title_Area)),
+            Child.MDI.Title_Bar_Height);
 
-      if Child.Icon /= null then
-         W := Get_Width (Child.Icon);
-         H := Get_Height (Child.Icon);
+         if Child.Icon /= null then
+            W := Get_Width (Child.Icon);
+            H := Get_Height (Child.Icon);
 
-         Render_To_Drawable_Alpha
-           (Child.Icon,
-            Get_Window (Child.Title_Area),
-            Src_X  => 0,
-            Src_Y  => 0,
-            Dest_X => X,
-            Dest_Y => (Child.MDI.Title_Bar_Height - H) / 2,
-            Width  => W,
-            Height => H,
-            Alpha  => Alpha_Full,
-            Alpha_Threshold => 128);
+            Render_To_Drawable_Alpha
+              (Child.Icon,
+               Get_Window (Child.Title_Area),
+               Src_X  => 0,
+               Src_Y  => 0,
+               Dest_X => X,
+               Dest_Y => (Child.MDI.Title_Bar_Height - H) / 2,
+               Width  => W,
+               Height => H,
+               Alpha  => Alpha_Full,
+               Alpha_Threshold => 128);
 
-         X := X + W + 1;
-      end if;
+            X := X + W + 1;
+         end if;
 
-      Set_Text (Child.MDI.Title_Layout, Child.Title.all);
-      Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
-      Draw_Layout
-        (Get_Window (Child.Title_Area),
-         Get_White_GC (Get_Style (Child.MDI)),
-         X,
-         0,
-         Child.MDI.Title_Layout);
+         Set_Text (Child.MDI.Title_Layout, Child.Title.all);
+         Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
+         Draw_Layout
+           (Get_Window (Child.Title_Area),
+            Get_White_GC (Get_Style (Child.MDI)),
+            X,
+            0,
+            Child.MDI.Title_Layout);
 
-      if Border_Thickness /= 0 then
-         Draw_Shadow
-           (Get_Style (Child),
-            Get_Window (Child),
-            State_Normal,
-            Shadow_Out,
-            0, 0,
-            Gint (Get_Allocation_Width (Child)),
-            Gint (Get_Allocation_Height (Child)));
+         if Border_Thickness /= 0 then
+            Draw_Shadow
+              (Get_Style (Child),
+               Get_Window (Child),
+               State_Normal,
+               Shadow_Out,
+               0, 0,
+               Gint (Get_Allocation_Width (Child)),
+               Gint (Get_Allocation_Height (Child)));
+         end if;
       end if;
    end Draw_Child;
 
