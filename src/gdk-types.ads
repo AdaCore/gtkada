@@ -176,9 +176,9 @@ package Gdk.Types is
    Pointer_Motion_Mask      : constant Gdk_Event_Mask;
    Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask;
    Button_Motion_Mask       : constant Gdk_Event_Mask;
-   Button_1_Motion_Mask     : constant Gdk_Event_Mask;
-   Button_2_Motion_Mask     : constant Gdk_Event_Mask;
-   Button_3_Motion_Mask     : constant Gdk_Event_Mask;
+   Button1_Motion_Mask      : constant Gdk_Event_Mask;
+   Button2_Motion_Mask      : constant Gdk_Event_Mask;
+   Button3_Motion_Mask      : constant Gdk_Event_Mask;
    Button_Press_Mask        : constant Gdk_Event_Mask;
    Button_Release_Mask      : constant Gdk_Event_Mask;
    Key_Press_Mask           : constant Gdk_Event_Mask;
@@ -438,9 +438,9 @@ private
    Pointer_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 2;
    Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask := 2 ** 3;
    Button_Motion_Mask       : constant Gdk_Event_Mask := 2 ** 4;
-   Button_1_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 5;
-   Button_2_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 6;
-   Button_3_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 7;
+   Button1_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 5;
+   Button2_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 6;
+   Button3_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 7;
    Button_Press_Mask        : constant Gdk_Event_Mask := 2 ** 8;
    Button_Release_Mask      : constant Gdk_Event_Mask := 2 ** 9;
    Key_Press_Mask           : constant Gdk_Event_Mask := 2 ** 10;
