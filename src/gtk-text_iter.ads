@@ -44,6 +44,7 @@ with System;
 package Gtk.Text_Iter is
 
    type Gtk_Text_Iter is limited private;
+   type Gtk_Text_Iter_Access is access all Gtk_Text_Iter;
 
    procedure Copy
      (Source : Gtk_Text_Iter;
