@@ -46,10 +46,9 @@ These functions were tested on the following systems :
    - NT 4.0
    - AiX 4.3.2
    - SCO UnixWare 7.1
+   - FreeBSD 3.2
 using the following compilers:
    - Gnat 3.12
-   - Gnat 3.11b2
-   - Gnat 3.11p
 
 the following versions of gtk:
    - Gtk+ 1.2.0 -> 1.2.6
