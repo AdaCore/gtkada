@@ -428,7 +428,7 @@ package body Glib.Graphs is
    ----------
 
    procedure Next (E : in out Edge_Iterator) is
-      Save : Edge_Access := E.Current_Edge.E;
+      Save : constant Edge_Access := E.Current_Edge.E;
    begin
       E.Current_Edge := E.Current_Edge.Next;
       Move_To_Next (E);
@@ -603,7 +603,7 @@ package body Glib.Graphs is
                --  Make the graph acyclic by reversing the edge.
                if Reverse_Edge_Cb /= null then
                   declare
-                     E : Edge_Access := Get (Eit);
+                     E : constant Edge_Access := Get (Eit);
                   begin
                      --  We need to first move the iterator, otherwise it will
                      --  become invalid when the two edges have been reversed.
@@ -927,8 +927,8 @@ package body Glib.Graphs is
    procedure Revert_Edge (G : Graph; E : Edge_Access) is
       pragma Unreferenced (G);
 
-      Src  : Vertex_Access := E.Src;
-      Dest : Vertex_Access := E.Dest;
+      Src  : constant Vertex_Access := E.Src;
+      Dest : constant Vertex_Access := E.Dest;
 
    begin
       Remove (E.Src.Out_Edges, E);

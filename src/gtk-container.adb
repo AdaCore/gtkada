@@ -412,7 +412,7 @@ package body Gtk.Container is
       function Internal (Container : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_container_get_focus_child");
 
-      Child : System.Address := Internal (Get_Object (Container));
+      Child : constant System.Address := Internal (Get_Object (Container));
    begin
       if Child = System.Null_Address then
          return null;

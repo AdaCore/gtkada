@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
+--                     Copyright (C) 1998-2002                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -1566,7 +1566,7 @@ package body Gtk.Clist is
                             Row    : in Gint)
                             return System.Address;
          pragma Import (C, Internal, "gtk_clist_get_row_data");
-         D : Cb_Record_Access
+         D : constant Cb_Record_Access
            := Convert (Internal (Get_Object (Object), Row));
       begin
          return D.Ptr.all;
@@ -1584,7 +1584,7 @@ package body Gtk.Clist is
                             Row    : in Gtk_Clist_Row)
                             return System.Address;
          pragma Import (C, Internal, "ada_gtk_clist_get_row_data");
-         D : Cb_Record_Access :=
+         D : constant Cb_Record_Access :=
            Convert (Internal (Get_Object (Object), Row));
 
       begin
@@ -1606,7 +1606,8 @@ package body Gtk.Clist is
                              Data    : in System.Address;
                              Destroy : in System.Address);
          pragma Import (C, Internal, "gtk_clist_set_row_data_full");
-         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+         D : constant Cb_Record_Access :=
+           new Cb_Record'(Ptr => new Data_Type'(Data));
       begin
          Internal (Get_Object (Object),
                    Row,
@@ -1629,7 +1630,8 @@ package body Gtk.Clist is
                              Data    : in System.Address;
                              Destroy : in System.Address);
          pragma Import (C, Internal, "ada_gtk_clist_set_row_data_full");
-         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+         D : constant Cb_Record_Access :=
+           new Cb_Record'(Ptr => new Data_Type'(Data));
 
       begin
          Internal (Get_Object (Object), Row, Convert (D), Free_Data'Address);

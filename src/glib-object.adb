@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -58,7 +58,7 @@ package body Glib.Object is
 
       while Hooks /= null loop
          declare
-            R : GObject := Hooks.Func (Name);
+            R : constant GObject := Hooks.Func (Name);
          begin
             if R /= null then
                return R;
@@ -312,14 +312,14 @@ package body Glib.Object is
       pragma Import (C, Internal, "g_signal_list_ids");
 
       N_Ids  : aliased Guint;
-      Result : Flat_Id_Array_Access := Internal (Typ, N_Ids'Access);
+      Result : constant Flat_Id_Array_Access := Internal (Typ, N_Ids'Access);
 
    begin
       if N_Ids = 0 then
          return (1 .. 0 => 0);
       else
          declare
-            Res : Signal_Id_Array (0 .. N_Ids - 1) :=
+            Res : constant Signal_Id_Array (0 .. N_Ids - 1) :=
               Signal_Id_Array (Result (0 .. N_Ids - 1));
          begin
             return Res;
@@ -355,14 +355,14 @@ package body Glib.Object is
       pragma Import (C, Internal, "ada_gsignal_query_params");
 
       N_Ids  : aliased Guint;
-      Result : Flat_GType_Array_Access := Internal (Q, N_Ids'Access);
+      Result : constant Flat_GType_Array_Access := Internal (Q, N_Ids'Access);
 
    begin
       if N_Ids = 0 then
          return (1 .. 0 => GType_Invalid);
       else
          declare
-            Res : GType_Array (0 .. N_Ids - 1) :=
+            Res : constant GType_Array (0 .. N_Ids - 1) :=
               GType_Array (Result (0 .. N_Ids - 1));
          begin
             return Res;
@@ -505,7 +505,8 @@ package body Glib.Object is
       is
          function Convert is new
            Unchecked_Conversion (Cb_Record_Access, System.Address);
-         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+         D : constant Cb_Record_Access :=
+           new Cb_Record'(Ptr => new Data_Type'(Data));
 
       begin
          Set_Data_Internal
@@ -526,7 +527,8 @@ package body Glib.Object is
       is
          function Convert is new
            Unchecked_Conversion (Cb_Record_Access, System.Address);
-         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+         D : constant Cb_Record_Access :=
+           new Cb_Record'(Ptr => new Data_Type'(Data));
 
       begin
          Set_Data_Internal_Id
