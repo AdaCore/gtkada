@@ -1422,6 +1422,8 @@ package Gtk.Widget is
    --    The widget has just gained the focus.
    --    If the handler returns False, the event might be pass to the parent
    --    of widget (if no other handler of widget has returned True).
+   --    This event is only emitted if you called Add_Events with a
+   --    Enter_Notify_Mask parameter
    --
    --  - "focus_out_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
@@ -1431,6 +1433,8 @@ package Gtk.Widget is
    --    The widget has just lost the focus.
    --    If the handler returns False, the event might be pass to the parent
    --    of widget (if no other handler of widget has returned True).
+   --    This event is only emitted if you called Add_Events with a
+   --    Leave_Notify_Mask parameter
    --
    --  - "map_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
