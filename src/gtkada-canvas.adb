@@ -656,6 +656,7 @@ package body Gtkada.Canvas is
       Force : Boolean;
       Vertical_Layout : Boolean)
    is
+      pragma Unreferenced (Force);
       Step       : Gint := Gint (Canvas.Grid_Size);
       Region     : Gdk_Region;
       Items      : Vertex_Iterator;
@@ -689,7 +690,7 @@ package body Gtkada.Canvas is
       Items := First (Graph);
       while not At_End (Items) loop
          Item := Canvas_Item (Get (Items));
-         if Force or else Item.From_Auto_Layout then
+         if Item.Coord.X = Gint'First or else Item.Coord.Y = Gint'First then
             --  Check if there is any link that has for destination or source
             --  the widget we are adding.
 
