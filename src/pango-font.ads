@@ -112,7 +112,7 @@ package Pango.Font is
    --  See the package Glib.Properties for more information on how to
    --  use properties
 
-   pragma Import (C, Get_Type, "pango_font_get_type");
+   pragma Import (C, Get_Type, "pango_font_description_get_type");
 
    function Internal_Copy (F : Pango_Font_Description) return System.Address;
    pragma Import (C, Internal_Copy, "pango_font_description_copy");
