@@ -562,7 +562,7 @@ private
       --  The various graphic contexts used to draw the titles of the
       --  children.
 
-      Current_Cursor : Gdk_Cursor_Type;
+      Current_Cursor : Gdk_Cursor_Type := Left_Ptr;
       --  The cursor currently used within the MDI. It also indicates which
       --  kind of operation is processing (moving, resizing a corner, ...)
 
