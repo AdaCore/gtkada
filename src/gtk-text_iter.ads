@@ -86,6 +86,10 @@ package Gtk.Text_Iter is
    --  ??? gunichar (and maybe all unicode.h) needs to be bound
    --  ??? first, before this function can be bound.
 
+   function Get_Char (Iter : Gtk_Text_Iter) return Character;
+   --  Return the character immediately following Iter. If Iter is at the
+   --  end of the buffer, then return ASCII.NUL.
+
    function Get_Slice
      (Start   : Gtk_Text_Iter;
       The_End : Gtk_Text_Iter) return String;
@@ -599,17 +603,25 @@ package Gtk.Text_Iter is
    -------------------------------
 
    procedure Set_Text_Iter
-     (Val  : Glib.Values.GValue;
+     (Val  : in out Glib.Values.GValue;
       Iter : Gtk_Text_Iter);
    --  Set the value of the given GValue to Iter.
    --  Note that Iter is stored by reference, which means no copy of Iter
    --  is made. Iter should remain allocated as long as Val is being used.
 
-   function Get_Text_Iter (Val  : Glib.Values.GValue) return Gtk_Text_Iter;
+   procedure Get_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Text_Iter);
    --  Extract the iterator from the given GValue.
    --  Note that the iterator returned is a copy of the iterator referenced
    --  by the give GValue. Modifying the iterator returned does not modify
    --  the iterator referenced by the GValue.
+
+   function Get_Text_Iter (Val : Glib.Values.GValue) return Gtk_Text_Iter;
+   --  This is the function equivalent of procedure Get_Text_Iter above. It is
+   --  sometimes more convenient that then procedure, but its use is limited by
+   --  the fact that the result returned can not be stored in a variable, since
+   --  Gtk_Text_Iter is limited.
 
 private
 

@@ -90,6 +90,27 @@ package body Gtk.Text_Iter is
    --     return Internal (Iter);
    --  end Get_Char;
 
+   --------------
+   -- Get_Char --
+   --------------
+
+   function Get_Char (Iter : Gtk_Text_Iter) return Character is
+      End_Iter : Gtk_Text_Iter;
+      Success : Boolean;
+   begin
+      Copy (Source => Iter, Dest => End_Iter);
+      Forward_Char (End_Iter, Success);
+      if not Success then
+         return ASCII.NUL;
+      else
+         declare
+            Slice : constant String := Get_Slice (Iter, End_Iter);
+         begin
+            return Slice (Slice'First);
+         end;
+      end if;
+   end Get_Char;
+
    ---------------
    -- Get_Slice --
    ---------------
@@ -1081,10 +1102,24 @@ package body Gtk.Text_Iter is
    -- Get_Text_Iter --
    -------------------
 
-   function Get_Text_Iter (Val  : Glib.Values.GValue) return Gtk_Text_Iter is
+   procedure Get_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Text_Iter) is
+   begin
+      Copy
+        (Source =>  Iter_Access_Address_Conversions.To_Pointer
+                      (Glib.Values.Get_Address (Val)).all,
+         Dest => Iter);
+   end Get_Text_Iter;
+
+   -------------------
+   -- Get_Text_Iter --
+   -------------------
+
+   function Get_Text_Iter (Val : Glib.Values.GValue) return Gtk_Text_Iter is
    begin
       return Iter_Access_Address_Conversions.To_Pointer
-                (Glib.Values.Get_Address (Val)).all;
+               (Glib.Values.Get_Address (Val)).all;
    end Get_Text_Iter;
 
 end Gtk.Text_Iter;
