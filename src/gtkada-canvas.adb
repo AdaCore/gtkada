@@ -407,8 +407,8 @@ package body Gtkada.Canvas is
       begin
          Item.Coord.X := X - Gint (Canvas.Grid_Size);
          Item.Coord.Y := Y - Gint (Canvas.Grid_Size);
-         Item.Coord.Width := Item.Coord.Width + 2 * Canvas.Grid_Size;
-         Item.Coord.Height := Item.Coord.Height + 2 * Canvas.Grid_Size;
+         Item.Coord.Width := Item.Coord.Width + 2 * Canvas.Grid_Size - 1;
+         Item.Coord.Height := Item.Coord.Height + 2 * Canvas.Grid_Size - 1;
 
          while not Inter and then Tmp /= null loop
 
@@ -419,8 +419,8 @@ package body Gtkada.Canvas is
             end if;
             Tmp := Tmp.Next;
          end loop;
-         Item.Coord.Width := Item.Coord.Width - 2 * Canvas.Grid_Size;
-         Item.Coord.Height := Item.Coord.Height - 2 * Canvas.Grid_Size;
+         Item.Coord.Width := Item.Coord.Width - 2 * Canvas.Grid_Size + 1;
+         Item.Coord.Height := Item.Coord.Height - 2 * Canvas.Grid_Size + 1;
          return not Inter;
       end Location_Is_Free;
 
@@ -435,7 +435,7 @@ package body Gtkada.Canvas is
          Item.Coord.Y := Y;
       else
 
-         --  Check if there is any link that has for destination we widget we
+         --  Check if there is any link that has for destination the widget we
          --  are adding.
 
          while Links /= null loop
@@ -457,15 +457,15 @@ package body Gtkada.Canvas is
                Num : Gint := 0;
             begin
                loop
-                  Num := Num + 1;
                   X1 := Src_Item.Coord.X + ((Num + 1) mod 3 - 1)
-                    * Gint (Canvas.Grid_Size + Item.Coord.Width);
-                  Y1 := Src_Item.Coord.Y + (Num / 3)
-                    * Gint (Canvas.Grid_Size + Item.Coord.Height);
+                    * Gint (Canvas.Grid_Size * 2 + Src_Item.Coord.Width);
+                  Y1 := Src_Item.Coord.Y + (1 + Num / 3)
+                    * Gint (Canvas.Grid_Size * 2 + Src_Item.Coord.Height);
                   if X1 < 0 then
-                     X1 := Src_Item.Coord.Y;
+                     X1 := Src_Item.Coord.X;
                   end if;
                   exit when Location_Is_Free (X1, Y1);
+                  Num := Num + 1;
                end loop;
             end;
 
@@ -1348,7 +1348,7 @@ package body Gtkada.Canvas is
             Selected := Selected.Next;
          end loop;
 
-         if Delta_X = 0 and then Delta_Y = 0 then
+         if Delta_X = 0 or else Delta_Y = 0 then
             Tmp := Canvas.Children;
             while Tmp /= null loop
                if Tmp.Item.Coord.X < Min_X then
@@ -1359,8 +1359,12 @@ package body Gtkada.Canvas is
                end if;
                Tmp := Tmp.Next;
             end loop;
-            Delta_X := Gint (Canvas.Grid_Size) - Min_X;
-            Delta_Y := Gint (Canvas.Grid_Size) - Min_Y;
+            if Delta_X = 0 then
+               Delta_X := Gint (Canvas.Grid_Size) - Min_X;
+            end if;
+            if Delta_Y = 0 then
+               Delta_Y := Gint (Canvas.Grid_Size) - Min_Y;
+            end if;
          end if;
 
          if Delta_X /= 0 or else Delta_Y /= 0 then
