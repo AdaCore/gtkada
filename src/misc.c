@@ -33,6 +33,19 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
+
+
+gint
+convert_a (void* a)
+{
+   return (gint)a;
+}
+
+void*
+convert_i (gint s)
+{
+   return (void*)s;
+}
  
 /*
  *

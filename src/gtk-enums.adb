@@ -51,18 +51,4 @@ package body Gtk.Enums is
       return Interfaces.C.Strings.Value (Internal (S));
    end Convert;
 
-   pragma Warnings (Off);
-   function Convert (I : Gint) return System.Address is
-      function Internal is new Unchecked_Conversion (Gint, System.Address);
-   begin
-      return Internal (I);
-   end Convert;
-
-   function Convert (S : System.Address) return Gint is
-      function Internal is new Unchecked_Conversion
-        (System.Address, Gint);
-   begin
-      return Internal (S);
-   end Convert;
-   pragma Warnings (On);
 end Gtk.Enums;
