@@ -82,33 +82,31 @@ package body Gtk.Text_Iter is
    -- Get_Char --
    --------------
 
-   --  function Get_Char (Iter : access Gtk_Text_Iter) return gunichar
-   --  is
-   --     function Internal (Iter : System.Address) return Gint;
-   --     pragma Import (C, Internal, "gtk_text_iter_get_char");
-   --  begin
-   --     return Internal (Iter);
-   --  end Get_Char;
+   function Get_Char (Iter : Gtk_Text_Iter) return Gunichar
+   is
+      function Internal (Iter : Gtk_Text_Iter) return Gunichar;
+      pragma Import (C, Internal, "gtk_text_iter_get_char");
+      --  Note that the Get_Char function could have been directly imported
+      --  from C, rather than going through this Internal function. This
+      --  solution was prefered for cosmetic reasons: Having several different
+      --  Get_Char functions, the "Import C" pragma would need to be located
+      --  close to the function declaration, which we would like to avoid.
+   begin
+      return Internal (Iter);
+   end Get_Char;
 
    --------------
    -- Get_Char --
    --------------
 
    function Get_Char (Iter : Gtk_Text_Iter) return Character is
-      End_Iter : Gtk_Text_Iter;
-      Success : Boolean;
+      Result : constant Gunichar := Get_Char (Iter);
+      Eight_LSB_Mask : constant := 2#1111_1111#;
    begin
-      Copy (Source => Iter, Dest => End_Iter);
-      Forward_Char (End_Iter, Success);
-      if not Success then
-         return ASCII.NUL;
-      else
-         declare
-            Slice : constant String := Get_Slice (Iter, End_Iter);
-         begin
-            return Slice (Slice'First);
-         end;
-      end if;
+      --  This function relies on the Get_Char function provided by gtk+,
+      --  which returns a gunichar value. Only the 8 least significant bits
+      --  are then kept to deduce the associated character.
+      return Character'Val (Result and Eight_LSB_Mask);
    end Get_Char;
 
    ---------------
