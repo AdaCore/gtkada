@@ -74,6 +74,19 @@ package Gtkada.MDI is
    --  You can easily convert from this to the initial widget using the
    --  functions Find_MDI_Child and Get_Widget.
 
+   type State_Type is (Normal, Iconified, Floating, Docked);
+   --  This type indicates the state of an item in the MDI:
+   --  - Normal: the item can be manipulated (moved and resized) by the user.
+   --      It is found either in the middle notebook (maximized items), or
+   --      in the layout.
+   --  - Iconified: the item has been minimized, and can only be moved by the
+   --      user. No resize is taken into account. The item is also to be
+   --      found in the middle notebook or layout.
+   --  - Floating: the item has its own toplevel window, and is thus managed
+   --      by the window manager.
+   --  - Docked: The item has been put in one of the notebooks on the sides.
+   --      (the middle notebook only contains Normal items).
+
    type Dock_Side is (Left, Right, Top, Bottom, None);
    --  Side on which a child will be docked. If None, the child cannot be
    --  docked.
@@ -317,6 +330,24 @@ package Gtkada.MDI is
    --  save the whole contents of the MDI. The resulting XML nodes can then be
    --  merged into a single XML tree if needed.
 
+   procedure Add_To_Tree
+     (MDI         : access MDI_Window_Record'Class;
+      Tree        : in out Glib.Xml_Int.Node_Ptr;
+      ID_Node     : Glib.Xml_Int.Node_Ptr;
+      X           : Integer := 100;
+      Y           : Integer := 100;
+      Width       : Integer := 100;
+      Height      : Integer := 100;
+      Short_Title : String := "";
+      Title       : String := "";
+      State       : State_Type := Normal;
+      Dock        : Dock_Side := None;
+      Focus       : Boolean := False);
+   --  Add an item to a Tree that can then be loaded through
+   --  a Load_Desktop_Function, see below.
+   --  Tree can be null, in which case it will be initialized with
+   --  values relative to the MDI.
+
    generic
       type User_Data (<>) is private;
       --  Generic type of parameter that is passed to all the children's save
@@ -416,20 +447,6 @@ package Gtkada.MDI is
    --  </signals>
 
 private
-
-   type State_Type is (Normal, Iconified, Floating, Docked);
-   --  This type indicates the state of an item in the MDI:
-   --  - Normal: the item can be manipulated (moved and resized) by the user.
-   --      It is found either in the middle notebook (maximized items), or
-   --      in the layout.
-   --  - Iconified: the item has been minimized, and can only be moved by the
-   --      user. No resize is taken into account. The item is also to be
-   --      found in the middle notebook or layout.
-   --  - Floating: the item has its own toplevel window, and is thus managed
-   --      by the window manager.
-   --  - Docked: The item has been put in one of the notebooks on the sides.
-   --      (the middle notebook only contains Normal items).
-
    type String_Access is access all String;
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with record
