@@ -108,11 +108,11 @@ package body Gtk.Combo is
    -- Set_Case_Sensitive --
    ------------------------
 
-   procedure Set_Case_Sensitive (Combo_Box : access Gtk_Combo_Record;
-                                 Val : in Boolean)
+   procedure Set_Case_Sensitive
+     (Combo_Box : access Gtk_Combo_Record; Val : in Boolean := True)
    is
-      procedure Internal (Combo_Box : in System.Address;
-                          Val       : in Gint);
+      procedure Internal
+        (Combo_Box : in System.Address; Val : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_case_sensitive");
 
    begin
@@ -172,8 +172,8 @@ package body Gtk.Combo is
    -- Set_Use_Arrows --
    --------------------
 
-   procedure Set_Use_Arrows (Combo_Box : access Gtk_Combo_Record;
-                             Val : in Boolean)
+   procedure Set_Use_Arrows
+     (Combo_Box : access Gtk_Combo_Record; Val : in Boolean := True)
    is
       procedure Internal (Combo_Box : in System.Address; Val : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows");
@@ -186,8 +186,8 @@ package body Gtk.Combo is
    -- Set_Use_Arrows_Always --
    ---------------------------
 
-   procedure Set_Use_Arrows_Always (Combo_Box : access Gtk_Combo_Record;
-                                    Val : in Boolean)
+   procedure Set_Use_Arrows_Always
+     (Combo_Box : access Gtk_Combo_Record; Val : in Boolean := True)
    is
       procedure Internal (Combo_Box : in System.Address; Val : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows_always");
