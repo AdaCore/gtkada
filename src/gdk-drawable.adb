@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -55,6 +55,7 @@ package body Gdk.Drawable is
                           Angle1   : in Gint;
                           Angle2   : in Gint);
       pragma Import (C, Internal, "gdk_draw_arc");
+
    begin
       Internal (Drawable, Gc, Boolean'Pos (Filled),
                 X, Y, Width, Height, Angle1, Angle2);
@@ -65,16 +66,17 @@ package body Gdk.Drawable is
    ----------------
 
    procedure Draw_Lines
-      (Drawable : in Gdk_Drawable;
-       Gc       : in Gdk.GC.Gdk_GC;
-       Points   : in Gdk.Types.Gdk_Points_Array)
+     (Drawable : in Gdk_Drawable;
+      Gc       : in Gdk.GC.Gdk_GC;
+      Points   : in Gdk.Types.Gdk_Points_Array)
    is
       procedure Internal
-         (Drawable : in Gdk_Drawable;
-          Gc       : in Gdk.GC.Gdk_GC;
-          Points   : in Gdk.Types.Gdk_Points_Array;
-          Npoints  : in Gint);
+        (Drawable : in Gdk_Drawable;
+         Gc       : in Gdk.GC.Gdk_GC;
+         Points   : in Gdk.Types.Gdk_Points_Array;
+         Npoints  : in Gint);
       pragma Import (C, Internal, "gdk_draw_lines");
+
    begin
       Internal (Drawable, Gc, Points, Points'Length);
    end Draw_Lines;
@@ -84,16 +86,17 @@ package body Gdk.Drawable is
    -----------------
 
    procedure Draw_Points
-      (Drawable : in Gdk_Drawable;
-       Gc       : in Gdk.GC.Gdk_GC;
-       Points   : in Gdk.Types.Gdk_Points_Array)
+     (Drawable : in Gdk_Drawable;
+      Gc       : in Gdk.GC.Gdk_GC;
+      Points   : in Gdk.Types.Gdk_Points_Array)
    is
       procedure Internal
-         (Drawable : in Gdk_Drawable;
-          Gc       : in Gdk.GC.Gdk_GC;
-          Points   : in Gdk.Types.Gdk_Points_Array;
-          Npoints  : in Gint);
+        (Drawable : in Gdk_Drawable;
+         Gc       : in Gdk.GC.Gdk_GC;
+         Points   : in Gdk.Types.Gdk_Points_Array;
+         Npoints  : in Gint);
       pragma Import (C, Internal, "gdk_draw_points");
+
    begin
       Internal (Drawable, Gc, Points, Points'Length);
    end Draw_Points;
@@ -143,72 +146,69 @@ package body Gdk.Drawable is
    -------------------
 
    procedure Draw_Segments
-      (Drawable : in Gdk.Drawable.Gdk_Drawable;
-       Gc       : in Gdk.GC.Gdk_GC;
-       Segs     : in Gdk.Types.Gdk_Segments_Array)
+     (Drawable : in Gdk.Drawable.Gdk_Drawable;
+      Gc       : in Gdk.GC.Gdk_GC;
+      Segs     : in Gdk.Types.Gdk_Segments_Array)
    is
       procedure Internal
-         (Drawable : in Gdk.Drawable.Gdk_Drawable;
-          Gc       : in Gdk.GC.Gdk_GC;
-          Segs     : in Gdk.Types.Gdk_Segments_Array;
-          Nsegs    : in Gint);
+        (Drawable : in Gdk.Drawable.Gdk_Drawable;
+         Gc       : in Gdk.GC.Gdk_GC;
+         Segs     : in Gdk.Types.Gdk_Segments_Array;
+         Nsegs    : in Gint);
       pragma Import (C, Internal, "gdk_draw_segments");
+
    begin
       Internal (Drawable, Gc, Segs, Segs'Length);
    end Draw_Segments;
 
-   -----------------
-   --  Draw_Text  --
-   -----------------
+   ---------------
+   -- Draw_Text --
+   ---------------
 
    procedure Draw_Text
-      (Drawable    : in Gdk_Drawable;
-       Font        : in Gdk.Font.Gdk_Font;
-       Gc          : in Gdk.GC.Gdk_GC;
-       X           : in Gint;
-       Y           : in Gint;
-       Text        : in String) is
+     (Drawable    : in Gdk_Drawable;
+      Font        : in Gdk.Font.Gdk_Font;
+      Gc          : in Gdk.GC.Gdk_GC;
+      X           : in Gint;
+      Y           : in Gint;
+      Text        : in String)
+   is
       procedure Internal
-         (Drawable    : in Gdk_Drawable;
-          Font        : in Gdk.Font.Gdk_Font;
-          Gc          : in Gdk.GC.Gdk_GC;
-          X           : in Gint;
-          Y           : in Gint;
-          Text        : in String;
-          Text_Length : in Gint);
+        (Drawable    : in Gdk_Drawable;
+         Font        : in Gdk.Font.Gdk_Font;
+         Gc          : in Gdk.GC.Gdk_GC;
+         X           : in Gint;
+         Y           : in Gint;
+         Text        : in String;
+         Text_Length : in Gint);
       pragma Import (C, Internal, "gdk_draw_text");
+
    begin
       Internal (Drawable, Font, Gc, X, Y, Text, Text'Length);
    end Draw_Text;
 
-   -----------------
-   --  Draw_Text  --
-   -----------------
-
    procedure Draw_Text
       (Drawable    : in Gdk_Drawable;
        Font        : in Gdk.Font.Gdk_Font;
        Gc          : in Gdk.GC.Gdk_GC;
        X           : in Gint;
        Y           : in Gint;
-       Text        : in Gdk.Types.Gdk_WString) is
+       Text        : in Gdk.Types.Gdk_WString)
+   is
       procedure Internal
-         (Drawable    : in Gdk_Drawable;
-          Font        : in Gdk.Font.Gdk_Font;
-          Gc          : in Gdk.GC.Gdk_GC;
-          X           : in Gint;
-          Y           : in Gint;
-          Text        : in C.wchar_array;
-          Text_Length : in Gint);
+        (Drawable    : in Gdk_Drawable;
+         Font        : in Gdk.Font.Gdk_Font;
+         Gc          : in Gdk.GC.Gdk_GC;
+         X           : in Gint;
+         Y           : in Gint;
+         Text        : in C.wchar_array;
+         Text_Length : in Gint);
       pragma Import (C, Internal, "gdk_draw_text_wc");
+
    begin
-      Internal (Drawable,
-                Font,
-                Gc,
-                X,
-                Y,
-                C.To_C (Item => Text, Append_Nul => False),
-                Text'Length);
+      Internal
+        (Drawable, Font, Gc, X, Y, C.To_C (Item => Text, Append_Nul => False),
+         Text'Length);
    end Draw_Text;
 
 end Gdk.Drawable;
