@@ -58,7 +58,7 @@ opengl/view_gl.adb::
 lw.o: opengl/lw.c opengl/lw.h
 	$(CC) -c opengl/lw.c -Iopengl @GTK_CFLAGS@
 
-install:
+install: all
 	@echo "Nothing to do --  just run the ./testgtk program"
 
 clean:
