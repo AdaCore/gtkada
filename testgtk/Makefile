@@ -28,7 +28,7 @@ CFLAGS = -O2 -g -Wall
 ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags`
 
 GNATCC = gcc
-GNATFLAGS = -O2 -g # -gnatwu
+GNATFLAGS += -O2 -g
 ALL_GNATFLAGS = $(GNATFLAGS) -I..
 
 GNATMAKE = gnatmake
