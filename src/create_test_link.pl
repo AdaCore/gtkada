@@ -1,9 +1,9 @@
 #! /usr/bin/env perl
 
-open (VERSION, "gcc -gnatv gtk.ads 2> /dev/null | ");
-$version=join (" ", <VERSION>);
-close (VERSION);
-$create_warnings = ($version =~ /3\.11w/);
+$version=`gcc -gnatv gtk.ads 2> /dev/null | grep GNAT`;
+$version =~ s/^GNAT (.\...).*$/$1/;
+
+print "pragma Warnings (Off);\n" if $version >= '3.11';
 
 foreach (<g*.ads>)
 {
@@ -18,17 +18,11 @@ foreach (<g*.ads>)
        $line =~ /package\s+(\S+)/;
        push (@list, $1);
        print "with $1;\n";
-       print "pragma Warnings (off, $1);\n" if ($create_warnings);
     }
 }
 
-print "procedure Test_Link is\n";
-#foreach (@list)
-#{
-#   s/\./_/;
-#   print "Widget_$_ : $_;\n";
-#} 
 print << "EOF";
+procedure Test_Link is
 begin
    null;
 end Test_Link;
