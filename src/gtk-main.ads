@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,7 +37,7 @@
 --  main loop.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gdk.Event;
 with Gtk.Widget;
@@ -61,8 +61,10 @@ package Gtk.Main is
    --  Initialize GtkAda's internal structures.
    --  Return False if there was an error (no access to the display, etc.)
 
-   procedure Gtk_Exit (Error_Code : in Gint);
-   --  Terminate GtkAda cleanly, and quits the application.
+   procedure Gtk_Exit (Error_Code : Gint);
+   --  Terminate GtkAda.
+   --  Deprecated, use Main_Quit instead.
+   --  pragma Deprecated (Gtk_Exit);
 
    function Set_Locale return String;
    --  Read and parse the local settings, such as time format, ...
@@ -94,9 +96,8 @@ package Gtk.Main is
    --  It should return False if it should not be called again when another
    --  main loop exits.
 
-   function Quit_Add (Main_Level : Guint;
-                      Func       : Quit_Function)
-                     return Quit_Handler_Id;
+   function Quit_Add
+     (Main_Level : Guint; Func : Quit_Function) return Quit_Handler_Id;
    --  Register a new function to be called when the current main loop exits.
    --  The function will be called once when the current main loop exists.
    --  If it returns False, it will then be deleted from the list of
@@ -111,10 +112,11 @@ package Gtk.Main is
       type Data_Type (<>) is private;
    package Quit is
       type Quit_Function is access function (Data : Data_Type) return Boolean;
-      function Quit_Add (Main_Level : Guint;
-                         Func       : Quit_Function;
-                         Data       : Data_Type)
-                        return Quit_Handler_Id;
+
+      function Quit_Add
+        (Main_Level : Guint;
+         Func       : Quit_Function;
+         Data       : Data_Type) return Quit_Handler_Id;
    end Quit;
    --  !!Warning!!: This package needs to be instantiated at library level
    --  since it calls some internal functions as callback.
@@ -123,7 +125,7 @@ package Gtk.Main is
    function Quit_Add_Destroy
      (Main_Level : Guint;
       Object     : access Gtk.Object.Gtk_Object_Record'Class)
-     return Quit_Handler_Id;
+      return Quit_Handler_Id;
    --  Ensure that Object is destroyed when exiting the main loop at Main_Level
    --  (or the current main loop level is 0).
 
@@ -155,7 +157,7 @@ package Gtk.Main is
    --  If this was the last active main loop, no more events will be processed
    --  by GtkAda.
 
-   function Main_Iteration (Blocking : in Boolean := True) return Boolean;
+   function Main_Iteration (Blocking : Boolean := True) return Boolean;
    --  Do one iteration of the main loop.
    --  Blocking indicates whether GtkAda should wait for an event to be
    --  available, or simply exit if there is none.
@@ -166,19 +168,17 @@ package Gtk.Main is
    --  To do that, you would add a loop like:
    --
    --    while Gtk.Main.Events_Pending loop
-   --
    --        Dead := Gtk.Main.Main_Iteration;
-   --
    --    end loop;
 
-   procedure Do_Event (Event : in Gdk.Event.Gdk_Event);
+   procedure Do_Event (Event : Gdk.Event.Gdk_Event);
    --  Process Event as if it was in the event queue.
    --  This function should almost never be used in your own application, this
    --  is the core function for event processing in GtkAda.
    --  The user should not free Event, this is already done by GtkAda.
 
-   function Get_Event_Widget (Event : in Gdk.Event.Gdk_Event)
-                             return Gtk.Widget.Gtk_Widget;
+   function Get_Event_Widget
+     (Event : Gdk.Event.Gdk_Event) return Gtk.Widget.Gtk_Widget;
    --  Return the widget to which Event applies.
 
    --------------------
@@ -282,9 +282,9 @@ package Gtk.Main is
    --  It should return True if the function should be called again as soon
    --  as possible, False if it should be unregistered.
 
-   function Timeout_Add (Interval : in Guint32;
-                         Func : Timeout_Callback)
-                        return Timeout_Handler_Id;
+   function Timeout_Add
+     (Interval : in Guint32;
+      Func : Timeout_Callback) return Timeout_Handler_Id;
    --  Add a new timeout. Func will be called after Interval milliseconds.
    --  The function will be as long as it returns True.
 
@@ -293,10 +293,11 @@ package Gtk.Main is
       type Data_Type (<>) is private;
    package Timeout is
       type Callback is access function (D : in Data_Type) return Boolean;
-      function Add (Interval : in Guint32;
-                    Func     : in Callback;
-                    D        : in Data_Type)
-                    return      Timeout_Handler_Id;
+
+      function Add
+        (Interval : Guint32;
+         Func     : Callback;
+         D        : Data_Type) return Timeout_Handler_Id;
       --  Adds a new timeout. Func will be called after Interval milliseconds.
    end Timeout;
    --  !!Warning!! The instances of this package must be declared at library
@@ -304,7 +305,7 @@ package Gtk.Main is
    --  when the callback is called.
    --  </doc_ignore>
 
-   procedure Timeout_Remove (Id : in Timeout_Handler_Id);
+   procedure Timeout_Remove (Id : Timeout_Handler_Id);
    --  Unregister a timeout function.
 
    -----------
@@ -316,17 +317,19 @@ package Gtk.Main is
    --  to get the file descriptor for an open file, and there is no standard
    --  socket package.
    --  Instead, you should consider having a separate task that takes care of
-   --  monitoring over sources of input in your application.
+   --  monitoring over sources of input in your application, or use the low
+   --  level Gdk.Input package.
 
    --  gtk_input_add_full
    --  gtk_input_remove
    --  key_snooper_install
    --  key_snooper_remove
+   --  gtk_get_current_event
+   --  gtk_get_current_event_time
+   --  gtk_get_current_event_state
 
 
 private
-   --  Some services can be directly binded...
-
    pragma Import (C, Gtk_Exit, "gtk_exit");
    pragma Import (C, Main_Level, "gtk_main_level");
    pragma Import (C, Main_Quit, "gtk_main_quit");
@@ -336,5 +339,3 @@ private
    pragma Import (C, Init_Add, "gtk_init_add");
    pragma Import (C, Quit_Remove, "gtk_main_quit_remove");
 end Gtk.Main;
-
---  Should show how to start a new main loop to wait for a dialog's answer
