@@ -452,14 +452,14 @@ package body Gtk.Tree_Model is
         (Tree_Model : System.Address;
          Iter       : System.Address;
          Column     : Gint;
-         Value      : access Gint;
+         Value      : out Gint;
          Final      : Gint := -1);
       pragma Import (C, Internal, "gtk_tree_model_get");
 
-      A : aliased Gint;
+      A : Gint;
 
    begin
-      Internal (Get_Object (Tree_Model), Iter'Address, Column, A'Access);
+      Internal (Get_Object (Tree_Model), Iter'Address, Column, A);
       return A;
    end Get_Int;
 
@@ -476,16 +476,41 @@ package body Gtk.Tree_Model is
         (Tree_Model : System.Address;
          Iter       : System.Address;
          Column     : Gint;
-         Value      : access Gboolean;
+         Value      : out Gboolean;
          Final      : Gint := -1);
       pragma Import (C, Internal, "gtk_tree_model_get");
 
-      B : aliased Gboolean;
+      B : Gboolean;
 
    begin
-      Internal (Get_Object (Tree_Model), Iter'Address, Column, B'Access);
+      Internal (Get_Object (Tree_Model), Iter'Address, Column, B);
       return To_Boolean (B);
    end Get_Boolean;
+
+   ----------------
+   -- Get_Object --
+   ----------------
+
+   function Get_Object
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.Object.GObject
+   is
+      procedure Internal
+        (Tree_Model : System.Address;
+         Iter       : System.Address;
+         Column     : Gint;
+         Value      : out System.Address;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_model_get");
+
+      Value : System.Address;
+      Stub  : Glib.Object.GObject_Record;
+
+   begin
+      Internal (Get_Object (Tree_Model), Iter'Address, Column, Value);
+      return Get_User_Data (Value, Stub);
+   end Get_Object;
 
    ----------------
    -- Get_String --
