@@ -29,27 +29,34 @@
 
 with Gtk.Label;
 with Gtk.Widget;
+with Gtk.Object;
 
 package Gtk.Accel_Label is
 
    type Gtk_Accel_Label_Record is new Gtk.Label.Gtk_Label_Record with private;
    type Gtk_Accel_Label is access all Gtk_Accel_Label_Record;
 
-
-   procedure Gtk_New (Widget : out Gtk_Accel_Label;
-                      Str    : in  String);
-   procedure Initialize (Widget : access Gtk_Accel_Label_Record'Class;
-                         Str    : in     String);
+   procedure Gtk_New (Accel_Label : out Gtk_Accel_Label; Str : in  String);
+   procedure Initialize
+     (Accel_Label : access Gtk_Accel_Label_Record'Class;
+      Str         : in String);
 
    function Get_Accel_Width (Accel_Label : access Gtk_Accel_Label_Record)
-                             return               Guint;
+     return Guint;
 
    procedure Set_Accel_Widget
      (Accel_Label  : access Gtk_Accel_Label_Record;
       Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    function Refetch (Accel_Label : access Gtk_Accel_Label_Record)
-                     return               Boolean;
+     return Boolean;
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate
+     (Accel_Label : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
 

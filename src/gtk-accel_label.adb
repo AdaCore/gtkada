@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Accel_Label is
 
@@ -36,10 +37,11 @@ package body Gtk.Accel_Label is
    ---------------------
 
    function Get_Accel_Width (Accel_Label : access Gtk_Accel_Label_Record)
-                             return               Guint
+     return Guint
    is
       function Internal (Accel_Label : in System.Address) return Guint;
       pragma Import (C, Internal, "gtk_accel_label_get_accel_width");
+
    begin
       return Internal (Get_Object (Accel_Label));
    end Get_Accel_Width;
@@ -48,24 +50,26 @@ package body Gtk.Accel_Label is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Accel_Label;
-                      Str    : in  String) is
+   procedure Gtk_New (Accel_Label : out Gtk_Accel_Label; Str : in  String) is
    begin
-      Widget := new Gtk_Accel_Label_Record;
-      Initialize (Widget, Str);
+      Accel_Label := new Gtk_Accel_Label_Record;
+      Initialize (Accel_Label, Str);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Accel_Label_Record'Class;
-                         Str    : in     String) is
+   procedure Initialize
+     (Accel_Label : access Gtk_Accel_Label_Record'Class;
+      Str         : in String)
+   is
       function Internal (Str : in String) return System.Address;
       pragma Import (C, Internal, "gtk_accel_label_new");
+
    begin
-      Set_Object (Widget, Internal (Str & Ascii.NUL));
-      Initialize_User_Data (Widget);
+      Set_Object (Accel_Label, Internal (Str & Ascii.NUL));
+      Initialize_User_Data (Accel_Label);
    end Initialize;
 
    -------------
@@ -73,10 +77,11 @@ package body Gtk.Accel_Label is
    -------------
 
    function Refetch (Accel_Label : access Gtk_Accel_Label_Record)
-                     return               Boolean
+     return Boolean
    is
       function Internal (Accel_Label : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_accel_label_refetch");
+
    begin
       return Boolean'Val (Internal (Get_Object (Accel_Label)));
    end Refetch;
@@ -89,11 +94,36 @@ package body Gtk.Accel_Label is
      (Accel_Label  : access Gtk_Accel_Label_Record;
       Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
-      procedure Internal (Accel_Label  : in System.Address;
-                          Accel_Widget : in System.Address);
+      procedure Internal
+        (Accel_Label  : in System.Address;
+         Accel_Widget : in System.Address);
       pragma Import (C, Internal, "gtk_accel_label_set_accel_widget");
+
    begin
       Internal (Get_Object (Accel_Label), Get_Object (Accel_Widget));
    end Set_Accel_Widget;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "Accel_Label", Adjust (Get_Field (N, "label").all),
+        File => File, Delim => '"');
+      Label.Generate (N, File);
+   end Generate;
+
+   procedure Generate
+     (Accel_Label : in out Object.Gtk_Object; N : in Node_Ptr) is
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Accel_Label (Accel_Label), Get_Field (N, "label").all);
+         Set_Object (Get_Field (N, "name"), Accel_Label);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Label.Generate (Accel_Label, N);
+   end Generate;
 
 end Gtk.Accel_Label;
