@@ -40,8 +40,6 @@ package body Gtk_Generates is
    -- Accel_Label_Generate --
    --------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Accel_Label_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_accel_label_get_type");
@@ -49,11 +47,11 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
-         Gen_New (N, "Accel_Label", Adjust (Get_Field (N, "label").all),
+         Gen_New (N, "Accel_Label", Adjust (Get_Property (N, "label", "")),
            File => File,
            Prefix => "-(""", Postfix => """)");
       else
-         Gen_New (N, "Accel_Label", Adjust (Get_Field (N, "label").all),
+         Gen_New (N, "Accel_Label", Adjust (Get_Property (N, "label", "")),
            File => File, Prefix => """", Postfix => """");
       end if;
 
@@ -65,8 +63,6 @@ package body Gtk_Generates is
    -- Alignment_Generate --
    ------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Alignment_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_alignment_get_type");
@@ -75,10 +71,10 @@ package body Gtk_Generates is
       Widget := Widget_New (Build_Type);
       Gen_New
         (N, "Alignment",
-         To_Float (Get_Field (N, "xalign").all),
-         To_Float (Get_Field (N, "yalign").all),
-         To_Float (Get_Field (N, "xscale").all),
-         To_Float (Get_Field (N, "xscale").all), "",
+         To_Float (Get_Property (N, "xalign", "0.1")),
+         To_Float (Get_Property (N, "yalign", "0.1")),
+         To_Float (Get_Property (N, "xscale", "0.1")),
+         To_Float (Get_Property (N, "xscale", "0.1")), "",
          File => File);
       Widget_Destroy (Widget);
       Bin_Generate (N, File);
@@ -88,16 +84,16 @@ package body Gtk_Generates is
    -- Arrow_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Arrow_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_arrow_get_type");
 
    begin
       Widget := Widget_New (Build_Type);
-      Gen_New (N, "Arrow", Get_Field (N, "arrow_type").all,
-               Get_Field (N, "shadow_type").all, File => File);
+      Gen_New (N, "Arrow",
+               Get_Property (N, "arrow_type", "GTK_ARROW_RIGHT"),
+               Get_Property (N, "shadow_type", "GTK_SHADOW_OUT"),
+               File => File);
       Widget_Destroy (Widget);
       Misc_Generate (N, File);
    end Arrow_Generate;
@@ -219,11 +215,11 @@ package body Gtk_Generates is
                Gen_New (N, "Button", File => File);
             else
                if Gettext_Support (N) then
-                  Gen_New (N, "Button", Adjust (Label.Value.all),
+                  Gen_New (N, "Button", Label.Value.all,
                            File => File,
                            Prefix => "-""", Postfix => """");
                else
-                  Gen_New (N, "Button", Adjust (Label.Value.all),
+                  Gen_New (N, "Button", Label.Value.all,
                            File => File,
                            Prefix => """", Postfix => """");
                end if;
@@ -336,7 +332,7 @@ package body Gtk_Generates is
          else
             if Gettext_Support (N) then
                Gen_New (N, "Check_Button", Label, File => File,
-                 Prefix => "-""", Postfix => """");
+                 Prefix => "-(""", Postfix => """)");
             else
                Gen_New (N, "Check_Button", Label, File => File,
                  Prefix => """", Postfix => """");
@@ -376,8 +372,6 @@ package body Gtk_Generates is
    -- Color_Selection_Generate --
    ------------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Color_Selection_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_color_selection_get_type");
@@ -394,8 +388,6 @@ package body Gtk_Generates is
    -- Color_Selection_Dialog_Generate --
    -------------------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Color_Selection_Dialog_Generate
      (N : Node_Ptr; File : File_Type)
    is
@@ -405,10 +397,10 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
-         Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
+         Gen_New (N, "Color_Selection_Dialog", Get_Property (N, "title", ""),
            File => File, Prefix => "-""", Postfix => """");
       else
-         Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
+         Gen_New (N, "Color_Selection_Dialog", Get_Property (N, "title", ""),
            File => File, Prefix => """", Postfix => """");
       end if;
 
@@ -550,8 +542,6 @@ package body Gtk_Generates is
    -- Container_Generate --
    ------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Container_Generate (N : Node_Ptr; File : File_Type) is
    begin
       Widget_Generate (N, File);
@@ -611,8 +601,6 @@ package body Gtk_Generates is
    -- Event_Box_Generate --
    ------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Event_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_event_box_get_type");
@@ -628,8 +616,6 @@ package body Gtk_Generates is
    -- File_Selection_Generate --
    -----------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure File_Selection_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_file_selection_get_type");
@@ -637,14 +623,15 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
-         Gen_New (N, "File_Selection", Get_Field (N, "title").all,
+         Gen_New (N, "File_Selection", Get_Property (N, "title", ""),
            File => File, Prefix => "-""", Postfix => """");
       else
-         Gen_New (N, "File_Selection", Get_Field (N, "title").all,
+         Gen_New (N, "File_Selection", Get_Property (N, "title", ""),
            File => File, Prefix => """", Postfix => """");
       end if;
 
-      Gen_Set (N, "show_file_op_buttons", File);
+      Gen_Set
+        (N, "show_file_op_buttons", File, Property_Name => "show_fileops");
       Widget_Destroy (Widget);
       Window_Generate (N, File);
    end File_Selection_Generate;
@@ -668,8 +655,6 @@ package body Gtk_Generates is
    -- Font_Selection_Generate --
    -----------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Font_Selection_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_font_selection_get_type");
@@ -685,8 +670,6 @@ package body Gtk_Generates is
    -- Font_Selection_Dialog_Generate --
    ------------------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Font_Selection_Dialog_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_font_selection_dialog_get_type");
@@ -694,10 +677,10 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
-         Gen_New (N, "Font_Selection_Dialog", Get_Field (N, "title").all,
+         Gen_New (N, "Font_Selection_Dialog", Get_Property (N, "title", ""),
            File => File, Prefix => "-""", Postfix => """");
       else
-         Gen_New (N, "Font_Selection_Dialog", Get_Field (N, "title").all,
+         Gen_New (N, "Font_Selection_Dialog", Get_Property (N, "title", ""),
            File => File, Prefix => """", Postfix => """");
       end if;
 
@@ -775,7 +758,7 @@ package body Gtk_Generates is
       Gen_Set (N, "position", File);
 
       if Gettext_Support (N) then
-         Gen_Set (N, "text", File, "-""", """");
+         Gen_Set (N, "text", File, "-(""", """)");
       else
          Gen_Set (N, "text", File, """", """");
       end if;
@@ -794,13 +777,7 @@ package body Gtk_Generates is
    -- GRange_Generate --
    ---------------------
 
-   procedure GRange_Generate (N : Node_Ptr; File : File_Type) is
---        function Build_Type return Glib.GType;
---        pragma Import (C, Build_Type, "gtk_range_get_type");
-
-   begin
---        Widget := Widget_New (Build_Type);
---        Widget_Destroy (Widget);
+   procedure GRange_Generate (N : Node_Ptr; File : File_Type) is begin
       Widget_Generate (N, File);
       Gen_Set (N, "Update_Policy", "policy", File => File);
    end GRange_Generate;
@@ -808,8 +785,6 @@ package body Gtk_Generates is
    -------------------------
    -- Handle_Box_Generate --
    -------------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Handle_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -828,8 +803,6 @@ package body Gtk_Generates is
    --------------------------
    -- Hbutton_Box_Generate --
    --------------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Hbutton_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -900,8 +873,6 @@ package body Gtk_Generates is
    -- Input_Dialog_Generate --
    ---------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Input_Dialog_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_input_dialog_get_type");
@@ -936,10 +907,10 @@ package body Gtk_Generates is
 
       if P /= null then
          if Gettext_Support (N) then
-            Gen_New (N, "Label", Adjust (P.Value.all),
+            Gen_New (N, "Label", P.Value.all,
                File => File, Prefix => "-(""", Postfix => """)");
          else
-            Gen_New (N, "Label", Adjust (P.Value.all),
+            Gen_New (N, "Label", P.Value.all,
                File => File, Prefix => """", Postfix => """");
          end if;
       end if;
@@ -1013,11 +984,9 @@ package body Gtk_Generates is
    -- Layout_Generate --
    ---------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Layout_Generate (N : Node_Ptr; File : File_Type) is
-      Cur : constant String_Ptr := Get_Field (N, "name");
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Name       : constant String := To_Ada (Get_Name (N));
+      Top        : constant String := To_Ada (Get_Name (Find_Top_Widget (N)));
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_layout_get_type");
 
@@ -1028,21 +997,19 @@ package body Gtk_Generates is
       Container_Generate (N, File);
 
       Gen_Set (N, "Size", "area_width", "area_height", "", "",
-        File => File);
+               File => File);
       Add_Package ("Adjustment");
       Put_Line (File, "   Set_Step_Increment (Get_Hadjustment (" &
-        To_Ada (Top.all) & "." & To_Ada (Cur.all) & "), " &
-        To_Float (Get_Field (N, "hstep").all) & ");");
+                Top & "." & Name & "), " &
+                To_Float (Get_Property (N, "hstep", "0.1")) & ");");
       Put_Line (File, "   Set_Step_Increment (Get_Vadjustment (" &
-        To_Ada (Top.all) & "." & To_Ada (Cur.all) & "), " &
-        To_Float (Get_Field (N, "vstep").all) & ");");
+                Top & "." & Name & "), " &
+                To_Float (Get_Property (N, "vstep", "0.1")) & ");");
    end Layout_Generate;
 
    -------------------
    -- List_Generate --
    -------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure List_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1085,10 +1052,8 @@ package body Gtk_Generates is
    -- Menu_Generate --
    -------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Menu_Generate (N : Node_Ptr; File : File_Type) is
-      S  : constant String_Ptr := Get_Field (N.Parent, "class");
+      S  : constant String := Get_Class (N.Parent);
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_menu_get_type");
 
@@ -1096,7 +1061,7 @@ package body Gtk_Generates is
       Widget := Widget_New (Build_Type);
       Gen_New (N, "Menu", File => File);
 
-      if S /= null and then S.all = "GtkMenuItem" then
+      if S = "GtkMenuItem" then
          Gen_Call_Child
            (N, null, N.Parent, "Menu_Item", "Set_Submenu", File => File);
          N.Specific_Data.Has_Container := True;
@@ -1109,8 +1074,6 @@ package body Gtk_Generates is
    -----------------------
    -- Menu_Bar_Generate --
    -----------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Menu_Bar_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1140,7 +1103,7 @@ package body Gtk_Generates is
       else
          if Gettext_Support (N) then
             Gen_New (N, "Menu_Item", S,
-                     File => File, Prefix => "-""", Postfix => """",
+                     File => File, Prefix => "-(""", Postfix => """)",
                      New_Name => "With_Mnemonic");
          else
             Gen_New (N, "Menu_Item", S,
@@ -1157,8 +1120,6 @@ package body Gtk_Generates is
    -------------------
    -- Misc_Generate --
    -------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Misc_Generate (N : Node_Ptr; File : File_Type) is
    begin
@@ -1240,8 +1201,6 @@ package body Gtk_Generates is
    -- Pixmap_Generate --
    ---------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Pixmap_Generate (N : Node_Ptr; File : File_Type) is
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       Cur : constant String_Ptr := Get_Field (N, "name");
@@ -1270,33 +1229,9 @@ package body Gtk_Generates is
       Misc_Generate (N, File);
    end Pixmap_Generate;
 
-   ----------------------
-   -- Preview_Generate --
-   ----------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
-   procedure Preview_Generate (N : Node_Ptr; File : File_Type) is
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_preview_get_type");
-
-   begin
-      Widget := Widget_New (Build_Type);
-      if Get_Field (N, "type").all = "True" then
-         Gen_New (N, "Preview", "Preview_Color", File => File);
-         Gen_New (N, "Preview", "Preview_Grayscale", File => File);
-      end if;
-
-      Widget_Destroy (Widget);
-      Widget_Generate (N, File);
-      Gen_Set (N, "expand", File);
-   end Preview_Generate;
-
    -----------------------
    -- Progress_Generate --
    -----------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Progress_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1314,8 +1249,6 @@ package body Gtk_Generates is
    -- Progress_Bar_Generate --
    ---------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Progress_Bar_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_progress_bar_get_type");
@@ -1323,6 +1256,15 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       Gen_New (N, "Progress_Bar", File => File);
+      Gen_Set (N, "fraction", File => File);
+      Gen_Set (N, "pulse_step", File => File);
+
+      if Gettext_Support (N) then
+         Gen_Set (N, "text", File, "-""", """");
+      else
+         Gen_Set (N, "text", File, """", """");
+      end if;
+
       Widget_Destroy (Widget);
       Progress_Generate (N, File);
       Gen_Set (N, "bar_style", File => File);
@@ -1365,10 +1307,14 @@ package body Gtk_Generates is
             Put (File, ", ");
 
             if Gettext_Support (Top_Widget) then
-               Put (File, '-');
+               Put (File, "-(");
             end if;
 
-            Put (File, '"' & Label & '"');
+            Put (File, '"' & Adjust (Label) & '"');
+
+            if Gettext_Support (Top_Widget) then
+               Put (File, ')');
+            end if;
          end if;
 
          Put_Line (File, ");");
@@ -1532,31 +1478,24 @@ package body Gtk_Generates is
       if not N.Specific_Data.Created then
          Add_Package ("Adjustment");
 
-         if Class = "GtkHScrollbar" then
-            Put_Line
-              (File, "   Adjustment.Gtk_New (" & To_Ada (Name) & "_Adj, " &
-               To_Float (Get_Property (N, "hvalue", "0.0")) & ", " &
-               To_Float (Get_Property (N, "hlower", "0.0")) & ", " &
-               To_Float (Get_Property (N, "hupper", "0.0")) & ", " &
-               To_Float (Get_Property (N, "hstep", "0.0"))  & ", " &
-               To_Float (Get_Property (N, "hpage", "0.0"))  & ", " &
-               To_Float (Get_Property (N, "hpage_size", "0.0")) & ");");
+         declare
+            A : constant String :=
+              Get_Property (N, "adjustment", "1 0 100 1 10 10") & " ";
+            K : Natural := A'First - 1;
+            P : Natural := A'First;
+         begin
+            Put (File, "   Adjustment.Gtk_New (" & Name & "_Adj");
+            for J in 1 .. 6 loop
+               P := K + 1;
+               K := Index (A (P .. A'Last), " ");
+               Put (File, ", " & To_Float (A (P .. K - 1)));
+            end loop;
 
-            Gen_New (N, "Scrollbar", Name & "Adj", "",
-                     Class (Class'First + 3) & "scrollbar", File => File);
-         else
-            Put_Line
-              (File, "   Adjustment.Gtk_New (" & To_Ada (Name) & "_Adj, " &
-               To_Float (Get_Property (N, "vvalue", "0.0")) & ", " &
-               To_Float (Get_Property (N, "vlower", "0.0")) & ", " &
-               To_Float (Get_Property (N, "vupper", "0.0")) & ", " &
-               To_Float (Get_Property (N, "vstep", "0.0"))  & ", " &
-               To_Float (Get_Property (N, "vpage", "0.0"))  & ", " &
-               To_Float (Get_Property (N, "vpage_size", "0.0")) & ");");
+            Put_Line (File, ");");
+         end;
 
-            Gen_New (N, "Scrollbar", Name & "Adj", "",
+         Gen_New (N, "Scrollbar", Name & "Adj", "",
                      Class (Class'First + 3) & "scrollbar", File => File);
-         end if;
       end if;
 
       Widget_Destroy (Widget);
@@ -1684,8 +1623,6 @@ package body Gtk_Generates is
    --------------------
    -- Table_Generate --
    --------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Table_Generate (N : Node_Ptr; File : File_Type) is
       Name     : constant String := To_Ada (Get_Attribute (N, "id"));
@@ -1975,8 +1912,6 @@ package body Gtk_Generates is
    --------------------------
    -- Vbutton_Box_Generate --
    --------------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Vbutton_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -2270,7 +2205,6 @@ package body Gtk_Generates is
 
             --  Put the procedure call.
 
-            --  ??? Should deal with tables here.
             if S = null or else S.all = "GTK_PACK_START" then
                Put
                  (File, "   Pack_Start" & ASCII.LF &
@@ -2377,15 +2311,14 @@ package body Gtk_Generates is
             Put_Line (File, Get_Property (Packing, "shrink", "True") & ");");
 
 
-         elsif Parent_Class = "GtkFixed" then
+         elsif Parent_Class = "GtkFixed"
+           or else Parent_Class = "GtkLayout"
+         then
             Put_Line (File, "   Put (" & Top_Name & "." & Parent_Name & ", "
                       & Top_Name & "." & Cur & ", "
                       & Get_Property (Packing, "x", "0") & ", "
                       & Get_Property (Packing, "y", "0") & ");");
          end if;
-
-         --  ??? Need to implement specific "adding" functions for widgets
-         --  that require it (fixed, etc).
 
          N.Specific_Data.Has_Container := True;
       end if;
