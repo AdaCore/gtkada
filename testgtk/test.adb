@@ -43,6 +43,7 @@ with Create_Test_Timeout;
 with Create_Toggle_Buttons;
 with Create_Tooltips;
 with Create_Main_Loop;
+with Create_Text;
 with Create_Toolbar;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
@@ -129,7 +130,7 @@ package body Test is
       (US ("test scrolling"), null),
       (US ("test selection"), null),
       (US ("test timeout"), Create_Test_Timeout.Run'Access),
-      (US ("text"), null),
+      (US ("text"), Create_Text.Run'Access),
       (US ("toggle buttons"), Create_Toggle_Buttons.Run'Access),
       (US ("toolbar"), Create_Toolbar.Run'Access),
       (US ("tooltips"), Create_Tooltips.Run'Access),
