@@ -16,3 +16,6 @@ gtk+-2.2.1-win32.diff: a patch against Gtk+ 2.2.1 sources that fixes
 Windows specific problems.
 
 gtkada-2.0-win32.diff: a patch to run GtkAda 2.0.x properly under Windows
+
+wimp: an improved version of gtk-wimp, a Gtk+ engine taking advantage of
+the native Windows XP uxtheme dll.
