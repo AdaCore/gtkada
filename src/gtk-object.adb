@@ -123,7 +123,7 @@ package body Gtk.Object is
 
    function Get_Type (Object : access Gtk_Object_Record) return Gtk_Type is
       function Internal (Object : in System.Address) return Gtk_Type;
-      pragma Import (C, Internal, "ada_object_get_type");
+      pragma Import (C, Internal, "ada_gobject_get_type");
    begin
       return Internal (Get_Object (Object));
    end Get_Type;
