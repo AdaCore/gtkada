@@ -222,6 +222,8 @@ Gtk.Style:
   significant additions. see spec for details.
   Draw_String: deprecated.
   Draw_Oval: removed.
+  Set_Font, Get_Font: deprecated
+  Set_Font_Description, Get_Font_Description: new functions
 Gtk.Text: Emulated, using Gtk_Text_View.
 Gtk.Text_Buffer: new package.
 Gtk.Text_Child: new package.
@@ -261,10 +263,20 @@ Gtk.Window:
   Maximize, Unmaximize: new procedures.
   Set_Policy, Set_Default_Size: deprecated.
 ====
+<<<<<<< 2.0-transition.txt
+missing features in gtk+1.3.4:
+
+gtkbbox.h should have a Layout property
+properties should be associated with quarks, for efficiency
+  
+
+====
+=======
 GtkExtra code:
   call to gtk_toolbar_set_space_size commented out in gtkfontcombo.c
    since this procedure is not provided yet.
 ====
+>>>>>>> 1.12
 
 Not bound yet:
 gerror.h
