@@ -74,10 +74,11 @@ ln -s zlib-* zlib
 cd zlib
 ./configure --prefix=$prefix
 
-# Under HP-UX: add -fPIC to CFLAGS in Makefile
+# Under HP-UX and Solaris: add -fPIC to CFLAGS in Makefile
 # make
-# ld -z -b -o libz.sl `ar t libz.a`
-# cp libz.sl $prefix/lib
+# for HP-UX: ld -z -b -o libz.sl `ar t libz.a`
+# for Solaris: gcc -shared -o libz.so `ar t libz.a`
+# cp libz.s? $prefix/lib
 
 make
 make install
@@ -95,10 +96,11 @@ cd libpng-1.0.10
 cp scripts/makefile.gcc makefile
 # check makefile & pngconf.h
 
-# Under HP-UX:
+# Under HP-UX and Solaris:
 # make CFLAGS="-O2 -fPIC"
-# ld -z -b -o libpng.sl `ar t libpng.a` $LDFLAGS -lz
-# cp -p libpng.sl $prefix/lib
+# for HP-UX: ld -z -b -o libpng.sl `ar t libpng.a` $LDFLAGS -lz
+# for Solaris: gcc -shared -o libpng.so `ar t libpng.a` $LDFLAGS -lz
+# cp -p libpng.s? $prefix/lib
 
 make
 mkdir -p $prefix/include $prefix/lib
@@ -117,10 +119,11 @@ tar xzvf jpegsrc.v6b.tar.gz
 cd jpeg-6b
 ./configure --prefix=$prefix
 
-# Under HP-UX:
+# Under HP-UX and Solaris:
 # make CFLAGS="-O2 -fPIC"
-# ld -z -b -o libjpeg.sl `ar t libjpeg.a`
-# cp -p libjpeg.sl $prefix/lib
+# for HP-UX: ld -z -b -o libjpeg.sl `ar t libjpeg.a`
+# for Solaris: gcc -shared -o libjpeg.so `ar t libjpeg.a`
+# cp -p libjpeg.s? $prefix/lib
 
 make
 cp -p libjpeg.a $prefix/lib
@@ -147,7 +150,7 @@ make install
 # On AiX 5.1, the AiX C compiler does not seem to like the _Bool
 # name for the {true, false} enum name. This causes a compilation error
 # in stdbool.h. So before doing a make, update stdbool.h.in around line
-# 34, and replace all instances of _Bool by BOOL .
+# 34, and replace all instances of _Bool by BOOL.
 
 cd ..
 
