@@ -1051,16 +1051,20 @@ gint ada_gdk_event_set_x (GdkEvent * event, gdouble x)
     {
     case GDK_MOTION_NOTIFY:
       event->motion.x = x;
+      break;
     case GDK_BUTTON_PRESS:
     case GDK_2BUTTON_PRESS:
     case GDK_3BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
       event->button.x = x;
+      break;
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.x = x;
+      break;
     case GDK_CONFIGURE:
       event->configure.x = x;
+      break;
     default:
       return 0;
     }
@@ -1072,17 +1076,21 @@ gint ada_gdk_event_set_y (GdkEvent * event, gdouble y)
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
+      break;
       event->motion.y = y;
     case GDK_BUTTON_PRESS:
     case GDK_2BUTTON_PRESS:
     case GDK_3BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
       event->button.y = y;
+      break;
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.y = y;
+      break;
     case GDK_CONFIGURE:
       event->configure.y = y;
+      break;
     default:
       return 0;
     }
@@ -1095,6 +1103,7 @@ gint ada_gdk_event_set_width (GdkEvent * event, gint16 width)
     {
     case GDK_CONFIGURE:
       event->configure.width = width;
+      break;
     default:
       return 0;
     }
@@ -1107,6 +1116,7 @@ gint ada_gdk_event_set_height (GdkEvent * event, gint16 height)
     {
     case GDK_CONFIGURE:
       event->configure.height = height;
+      break;
     default:
       return 0;
     }
@@ -1122,6 +1132,7 @@ gint ada_gdk_event_set_button (GdkEvent * event, guint button)
     case GDK_3BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
       event->button.button = button;
+      break;
     default:
       return 0;
     }
@@ -1134,19 +1145,24 @@ gint ada_gdk_event_set_state (GdkEvent * event, guint state)
     {
     case GDK_MOTION_NOTIFY:
       event->motion.state = state;
+      break;
     case GDK_BUTTON_PRESS:
     case GDK_2BUTTON_PRESS:
     case GDK_3BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
       event->button.state = state;
+      break;
     case GDK_KEY_PRESS:
     case GDK_KEY_RELEASE:
       event->key.state = state;
+      break;
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.state = state;
+      break;
     case GDK_PROPERTY_NOTIFY:
       event->property.state = state;
+      break;
     default:
       return 0;
     }
@@ -1160,6 +1176,7 @@ gint ada_gdk_event_set_subwindow (GdkEvent * event, GdkWindow* win)
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.subwindow = win;
+      break;
     default:
       return 0;
     }
@@ -1173,6 +1190,7 @@ gint ada_gdk_event_set_mode (GdkEvent * event, gint mode)
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.mode = mode;
+      break;
     default:
       return 0;
     }
@@ -1186,6 +1204,7 @@ gint ada_gdk_event_set_detail (GdkEvent * event, gint detail)
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.detail = detail;
+      break;
     default:
       return 0;
     }
@@ -1199,6 +1218,7 @@ gint ada_gdk_event_set_focus (GdkEvent * event, gint focus)
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.focus = focus;
+      break;
     default:
       return 0;
     }
@@ -1241,6 +1261,7 @@ gint ada_gdk_event_set_key_val (GdkEvent * event, gint keyval)
     case GDK_KEY_PRESS:
     case GDK_KEY_RELEASE:
       event->key.keyval = keyval;
+      break;
     default:
       return 0;
     }
