@@ -242,8 +242,7 @@ ada_initialize_class_record (GtkObject*  object,
       for (i = 0; i < nsignals; i++)
 	{
 	  signals_id [i] = gtk_signal_new
-	    (signals[i * 2],  /* Note the 2 here: this is because of the
-				 thick pointers in Ada */
+	    (signals[i],
 	     GTK_RUN_FIRST,
 	     object->klass->type,
 	     query->class_size + i * sizeof (void*) /*offset*/,
