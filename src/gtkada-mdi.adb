@@ -1356,21 +1356,26 @@ package body Gtkada.MDI is
    procedure Close_Child (Child : access MDI_Child_Record'Class) is
       Event      : Gdk_Event;
    begin
-      Allocate (Event, Delete, Get_Window (Child.MDI));
+      --  Don't do anything for now if the MDI isn't realized, since we
+      --  can't send create the event anyway.
 
-      --  For a top-level window, we must rebuild the initial widget
-      --  temporarily, so that the application can do all the test it wants.
-      --  However, we need to restore the initial state before calling
-      --  Dock_Child and Float_Child below
+      if Realized_Is_Set (Child.MDI) then
+         Allocate (Event, Delete, Get_Window (Child.MDI));
 
-      if not Return_Callback.Emit_By_Name
-        (Child.Initial, "delete_event", Event)
-      then
+         --  For a top-level window, we must rebuild the initial widget
+         --  temporarily, so that the application can do all the test it wants.
+         --  However, we need to restore the initial state before calling
+         --  Dock_Child and Float_Child below
+
+         if not Return_Callback.Emit_By_Name
+           (Child.Initial, "delete_event", Event)
+         then
          Float_Child (Child, False);
          Destroy (Child);
-      end if;
+         end if;
 
-      Free (Event);
+         Free (Event);
+      end if;
 
    exception
       when others =>
