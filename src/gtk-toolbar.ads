@@ -36,6 +36,8 @@ package Gtk.Toolbar is
 
    type Gtk_Toolbar is new Gtk.Container.Gtk_Container with private;
 
+   type Space_Style is (Space_Empty, Space_Line);
+
    function Append_Element
       (Toolbar              : in Gtk_Toolbar;
        The_Type             : in Gtk_Toolbar_Child_Type;
@@ -126,12 +128,18 @@ package Gtk.Toolbar is
    procedure Set_Space_Size
       (Toolbar    : in Gtk_Toolbar;
        Space_Size : in Gint);
+   procedure Set_Space_Style
+     (Toolbar : in Gtk_Toolbar;
+      Style   : in Space_Style);
    procedure Set_Style
       (Toolbar : in Gtk_Toolbar;
        Style   : in Gtk_Toolbar_Style);
    procedure Set_Tooltips
       (Toolbar : in Gtk_Toolbar;
        Enable  : in Boolean);
+   procedure Set_Button_Relief (Toolbar : in Gtk_Toolbar;
+                                Relief  : in Gtk_Relief_Style);
+
 
 private
    type Gtk_Toolbar is new Gtk.Container.Gtk_Container with null record;

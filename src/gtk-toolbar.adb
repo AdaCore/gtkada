@@ -387,6 +387,19 @@ package body Gtk.Toolbar is
                 Tooltip_Private_Text & Ascii.NUL);
    end Prepend_Widget;
 
+   -----------------------
+   -- Set_Button_Relief --
+   -----------------------
+
+   procedure Set_Button_Relief (Toolbar : in Gtk_Toolbar;
+                                Relief  : in Gtk_Relief_Style) is
+      procedure Internal (Toolbar : in System.Address;
+                          Relief  : in Gint);
+      pragma Import (C, Internal, "gtk_toolbar_set_button_relief");
+   begin
+      Internal (Get_Object (Toolbar), Gtk_Relief_Style'Pos (Relief));
+   end Set_Button_Relief;
+
    ---------------------
    -- Set_Orientation --
    ---------------------
@@ -420,6 +433,19 @@ package body Gtk.Toolbar is
       Internal (Get_Object (Toolbar),
                 Space_Size);
    end Set_Space_Size;
+
+   ---------------------
+   -- Set_Space_Style --
+   ---------------------
+
+   procedure Set_Space_Style (Toolbar : in Gtk_Toolbar;
+                              Style   : in Space_Style) is
+      procedure Internal (Toolbar : in System.Address;
+                          Style   : in Gint);
+      pragma Import (C, Internal, "gtk_toolbar_set_space_style");
+   begin
+      Internal (Get_Object (Toolbar), Space_Style'Pos (Style));
+   end Set_Space_Style;
 
    ---------------
    -- Set_Style --
