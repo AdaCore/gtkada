@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -817,7 +817,8 @@ package body Glib.Glade is
    procedure Gen_Signal
      (N            : Node_Ptr;
       File         : File_Type;
-      Widget_Class : String := "")
+      Widget_Class : String := "";
+      The_Object   : String := "")
    is
       P        : Node_Ptr := Find_Tag (N.Child, "signal");
       Top      : constant Node_Ptr := Find_Top_Widget (N);
@@ -928,18 +929,22 @@ package body Glib.Glade is
                Put_Line (File, "Connect");
                Put (File, "     (");
 
-               if Connect_To_Buffer then
-                  Put (File, "Get_Buffer (");
-               end if;
+               if The_Object = "" then
+                  if Connect_To_Buffer then
+                     Put (File, "Get_Buffer (");
+                  end if;
 
-               if Top /= N then
-                  Put (File, To_Ada (Get_Name (Top)) & ".");
-               end if;
+                  if Top /= N then
+                     Put (File, To_Ada (Get_Name (Top)) & ".");
+                  end if;
 
-               Put (File, To_Ada (Current));
+                  Put (File, To_Ada (Current));
 
-               if Connect_To_Buffer then
-                  Put (File, ")");
+                  if Connect_To_Buffer then
+                     Put (File, ")");
+                  end if;
+               else
+                  Put (File, The_Object);
                end if;
 
                Put (File, ", """ & Name & """,");
