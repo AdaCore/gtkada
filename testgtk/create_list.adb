@@ -30,8 +30,11 @@ with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Label; use Gtk.Label;
 with Gtk.List; use Gtk.List;
 with Gtk.List_Item; use Gtk.List_Item;
+with Gtk.Option_Menu;  use Gtk.Option_Menu;
+with Gtk.Radio_Menu_Item;  use Gtk.Radio_Menu_Item;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Separator; use Gtk.Separator;
@@ -39,36 +42,44 @@ with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Common; use Common;
 with Gtk; use Gtk;
+with Ada.Text_IO;   use Ada.Text_IO;
+
+with Create_Progress;
 
 package body Create_List is
 
    package List_Cb is new Signal.Object_Callback (Gtk_List);
 
-
    Window : aliased Gtk.Window.Gtk_Window;
 
-   type String10 is new String (1 .. 10);
-   List_Items : array (Positive range <>) of String10 :=
-     ("hello     ",
-      "world     ",
-      "blah      ",
-      "foo       ",
-      "bar       ",
-      "argh      ",
-      "spencer   ",
-      "is a      ",
-      "wussy     ",
-      "programmer");
-
    Num_Item : Natural := 0;
+
+   Items : constant Create_Progress.Array_Of_String :=
+     ("Single    ",
+      "Browse    ",
+      "Multiple  ",
+      "Extended  ");
+
+   List : Gtk_List;
+   Omenu_Group  : Widget_Slist.GSlist;
+
+   procedure Toggle_Sel_Mode (Widget : in out Gtk_Widget) is
+   begin
+      if not Mapped_Is_Set (Widget) then
+         return;
+      end if;
+      Set_Selection_Mode
+        (List,
+         Gtk_Selection_Mode'Val (3 - Selected_Button (Omenu_Group)));
+   end Toggle_Sel_Mode;
 
    procedure List_Add (List : in out Gtk_List) is
       Item : Gtk_List_Item;
    begin
-      Gtk_New (Item, "added item" & Natural'Image (Num_Item));
+      Gtk_New (Item, Label => "added item" & Natural'Image (Num_Item));
       Num_Item := Num_Item + 1;
-      Add (List, Item);
       Show (Item);
+      Add (List, Item);
    end List_Add;
 
    procedure List_Remove (List : in out Gtk_List) is
@@ -89,18 +100,22 @@ package body Create_List is
 
    procedure List_Clear (List : in out Gtk_List) is
    begin
-      Clear_Items (List, 3 - 1, 5 - 1);
+      Clear_Items (List, 0, -1);
    end List_Clear;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
-      Id       : Guint;
-      Box1,
-        Box2   : Gtk_Box;
-      Scrolled : Gtk_Scrolled_Window;
-      List     : Gtk_List;
-      Button   : Gtk_Button;
-      Item     : Gtk_List_Item;
-      Sep      : Gtk_Separator;
+      Id           : Guint;
+      Vbox,
+        Hbox,
+        Cbox       : Gtk_Box;
+      Scrolled     : Gtk_Scrolled_Window;
+      Button       : Gtk_Button;
+      Item         : Gtk_List_Item;
+      Sep          : Gtk_Separator;
+      Scrolled_Win : Gtk_Scrolled_Window;
+      Label        : Gtk_Label;
+      Infile       : Ada.Text_IO.File_Type;
+      List_Omenu   : Gtk_Option_Menu;
    begin
 
       if not Is_Created (Window) then
@@ -110,70 +125,122 @@ package body Create_List is
          Set_Title (Window, "list");
          Set_Border_Width (Window, Border_Width => 0);
 
-         Gtk_New_Vbox (Box1, False, 0);
-         Add (Window, Box1);
-         Show (Box1);
+         Gtk_New_Vbox (VBox, Homogeneous => False, Spacing => 0);
+         Add (Window, VBox);
 
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, True, True, 0);
-         Show (Box2);
-
-         Gtk_New (Scrolled);
-         Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
-         Pack_Start (Box2, Scrolled, True, True, 0);
-         Show (Scrolled);
+         Gtk_New (Scrolled_Win);
+         Set_Border_Width (Scrolled_Win, Border_Width => 5);
+         Set_Usize (Scrolled_Win, Width => -1, Height => 300);
+         Pack_Start (Vbox, Scrolled_Win,
+                     Expand => True,
+                     Fill => True,
+                     Padding => 0);
+         Set_Policy (Scrolled_Win,
+                     H_Scrollbar_Policy => Policy_Automatic,
+                     V_Scrollbar_Policy => Policy_Automatic);
 
          Gtk_New (List);
-         Set_Selection_Mode (List, Selection_Browse);
-         Add (Scrolled, List);
-         Set_Focus_Vadjustment (List, Get_Vadjustment (Scrolled));
-         Show (List);
+         Set_Selection_Mode (List, Mode => Selection_Single);
+         Add_With_Viewport (Scrolled_Win, List);
+         Set_Focus_Vadjustment (List, Get_Vadjustment (Scrolled_Win));
+         Set_Focus_Hadjustment (List, Get_Hadjustment (Scrolled_Win));
 
-         for I in List_Items'Range loop
-            Gtk_New (Item, String (List_Items (I)));
-            Add (List, Item);
-            Show (Item);
-         end loop;
+         Open (Infile, In_File, "create_list.adb");
+         declare
+            S    : String (1 .. 1024);
+            Last : Natural;
+            Item : Gtk_List_Item;
+         begin
+            while not End_Of_File (Infile) loop
+               Get_Line (File => Infile, Item => S, Last => Last);
+               Gtk_New (Item, Label => S (S'First .. Last));
+               Add (List, Item);
+            end loop;
+         end;
+         Close (Infile);
 
-         Gtk_New (Button, "add");
-         Unset_Flags (Button, Can_Focus);
+         Gtk_New_Hbox (Hbox, Homogeneous => True, Spacing => 5);
+         Set_Border_Width (Hbox, Border_Width => 5);
+         Pack_Start (Vbox, Hbox,
+                     Expand => False,
+                     Fill => True,
+                     Padding => 0);
+
+         Gtk_New (Button, Label => "Insert Row");
+         Pack_Start (Hbox, BUtton,
+                     Expand  => True,
+                     Fill    => True,
+                     Padding => 0);
          Id := List_Cb.Connect (Button, "clicked", List_Add'Access, List);
-         Pack_Start (Box2, Button, False, True, 0);
-         Show (Button);
 
-         Gtk_New (Button, "Clear items 3-5");
-         Unset_Flags (Button, Can_Focus);
+         Gtk_New (Button, Label => "Clear List");
+         Pack_Start (Hbox, BUtton,
+                     Expand  => True,
+                     Fill    => True,
+                     Padding => 0);
          Id := List_Cb.Connect (Button, "clicked", List_Clear'Access, List);
-         Pack_Start (Box2, Button, False, True, 0);
-         Show (Button);
 
-         Gtk_New (Button, "Remove");
-         Unset_Flags (Button, Can_Focus);
+         Gtk_New (Button, Label => "Remove Selection");
+         Pack_Start (Hbox, Button,
+                     Expand  => True,
+                     Fill    => True,
+                     Padding => 0);
          Id := List_Cb.Connect (Button, "clicked", List_Remove'Access, List);
-         Pack_Start (Box2, Button, False, True, 0);
-         Show (Button);
+
+         Gtk_New_Hbox (Cbox, Homogeneous => False, Spacing => 0);
+         Pack_Start (Vbox, Cbox,
+                     Expand  => False,
+                     Fill    => True,
+                     Padding => 0);
+
+         Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 5);
+         Set_Border_Width (Hbox, Border_Width => 5);
+         Pack_Start (Cbox, Hbox,
+                     Expand  => True,
+                     Fill    => False,
+                     Padding => 0);
+
+         Gtk_New (Label, Str => "Selection Mode :");
+         Pack_Start (Hbox, Label,
+                     Expand  => False,
+                     Fill    => True,
+                     Padding => 0);
+
+         Create_Progress.Build_Option_Menu (List_Omenu,
+                                            Omenu_Group,
+                                            Items,
+                                            0,
+                                            Toggle_Sel_Mode'Access);
+         Pack_Start (Hbox, List_Omenu,
+                     Expand  => False,
+                     Fill    => True,
+                     Padding => 0);
 
          Gtk_New_Hseparator (Sep);
-         Pack_Start (Box1, Sep, False, True, 0);
-         Show (Sep);
+         Pack_Start (Vbox, Sep,
+                     Expand  => False,
+                     Fill    => True,
+                     Padding => 0);
 
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, False, True, 0);
-         Show (Box2);
+         Gtk_New_Hbox (Cbox, Homogeneous => False, Spacing => 0);
+         Pack_Start (Vbox, Cbox,
+                     Expand  => False,
+                     Fill    => True,
+                     Padding => 0);
 
-         Gtk_New (Button, "close");
+         Gtk_New (Button, Label => "Close");
+         Set_Border_Width (Button, Border_Width => 10);
+         Pack_Start (Cbox, Button,
+                     Expand  => True,
+                     Fill    => True,
+                     Padding => 0);
          Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Pack_Start (Box2, Button, True, True, 0);
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
-         Show (Button);
       end if;
 
-
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Show (Window);
+         Show_All (Window);
       else
          Destroy (Window);
       end if;
