@@ -468,6 +468,11 @@ ada_list_prev (GList* list)
     return NULL;
 }
 
+gpointer
+ada_list_get_data (GList* list)
+{
+  return list->data;
+}
 
 /**********************************************
  ** Functions for Glib.GSlist
@@ -482,6 +487,12 @@ ada_gslist_next (GSList* list)
     return NULL;
 }
 
+gpointer
+ada_gslist_get_data (GSList* list)
+{
+  return list->data;
+}
+
 /******************************************
  ** Functions for Fixed
  ******************************************/
@@ -492,3 +503,12 @@ ada_fixed_get_children (GtkFixed* widget)
    return widget->children;
 }
 
+/******************************************
+ ** Functions for Status bar
+ ******************************************/
+
+GSList *
+ada_status_get_messages (GtkStatusbar* widget)
+{
+  return widget->messages;
+}
