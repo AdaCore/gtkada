@@ -33,8 +33,22 @@ with System;
 
 package body Gdk.Color is
 
+   function Internal_Copy (C : Gdk_Color) return System.Address;
+
    package Color_Properties is new Generic_Internal_Boxed_Property
-     (Gdk_Color, Gdk_Color_Type);
+     (Gdk_Color, Gdk_Color_Type, Internal_Copy);
+
+   -------------------
+   -- Internal_Copy --
+   -------------------
+
+   function Internal_Copy (C : Gdk_Color) return System.Address is
+      function Internal (C : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_color_copy");
+      C2 : aliased Gdk_Color := C;
+   begin
+      return Internal (C2'Address);
+   end Internal_Copy;
 
    -----------
    -- Equal --
