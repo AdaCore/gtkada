@@ -36,7 +36,7 @@ package body Hello2_Package is
 
    procedure Hello_Callback
      (Widget : access Gtk_Widget_Record'Class;
-      Data   : in     String_Access)
+      Data   : String_Access)
    is
       pragma Unreferenced (Widget);
    begin
@@ -45,8 +45,7 @@ package body Hello2_Package is
 
    function Delete_Event
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : in     Gdk_Event)
-     return Boolean
+      Event  : Gdk_Event) return Boolean
    is
       pragma Unreferenced (Event);
       pragma Unreferenced (Widget);
