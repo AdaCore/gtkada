@@ -101,16 +101,26 @@ package body Gtkada.Dialogs is
 
       for J in Button_Range loop
          if (Buttons and 2 ** Integer (J)) /= 0 then
+            --  Use Gtk_Response_Cancel for the Nancel or No buttons, so that
+            --  Esc can be used to close the dialog
+            if J = 4
+              or else (J = 1 and then (Buttons and Button_Cancel) = 0)
+            then
+               Response := Gtk_Response_Cancel;
+            else
+               Response := Gtk_Response_Type (2 ** Integer (J));
+            end if;
+
             if Dialog_Button_Stock (J) = null then
                Button := Add_Button
                  (Dialog,
                   Text => Trim (-Dialog_Button_String (J), Right),
-                  Response_Id => Gtk_Response_Type (2 ** Integer (J)));
+                  Response_Id => Response);
             else
                Button := Add_Button
                  (Dialog,
                   Text => Dialog_Button_Stock (J).all,
-                  Response_Id => Gtk_Response_Type (2 ** Integer (J)));
+                  Response_Id => Response);
             end if;
 
             if Default_Button = 2 ** Integer (J) then
@@ -127,6 +137,14 @@ package body Gtkada.Dialogs is
          if Response = Gtk_Response_Delete_Event then
             Destroy (Dialog);
             return Button_None;
+
+         elsif Response = Gtk_Response_Cancel then
+            Destroy (Dialog);
+            if (Buttons and Button_Cancel) /= 0 then
+               return Button_Cancel;
+            else
+               return Button_No;
+            end if;
 
          elsif Response in 0 .. Gtk_Response_Type'Last then
             Result := Message_Dialog_Buttons (Response);
