@@ -31,7 +31,6 @@
 --  with Gtk.Alignment;
 --  with Gtk.Arrow;
 --  with Gtk.Aspect_Frame;
-with Gtk.Bin;
 with Gtk.Box;
 with Gtk.Button;
 --  with Gtk.Button_Box;
@@ -43,7 +42,6 @@ with Gtk.Check_Menu_Item;
 with Gtk.Color_Selection_Dialog;
 --  with Gtk.Combo;
 --  with Gtk.Curve;
-with Gtk.Data;
 with Gtk.Dialog;
 with Gtk.Drawing_Area;
 with Gtk.Editable;
@@ -67,7 +65,6 @@ with Gtk.Menu;
 with Gtk.Menu_Bar;
 with Gtk.Menu_Item;
 with Gtk.Menu_Shell;
-with Gtk.Misc;
 with Gtk.Notebook;
 --  with Gtk.Option_Menu;
 --  with Gtk.Paned;
@@ -466,8 +463,6 @@ begin
    --    (Gtk.Arrow.Generate'Access, Gtk.Arrow.Generate'Access));
    --  SHT.Set (new String '("GtkAspectFrame"),
    --    (Gtk.Aspect_Frame.Generate'Access, Gtk.Aspect_Frame.Generate'Access));
-   SHT.Set (new String '("GtkBin"),
-     (Gtk.Bin.Generate'Access, Gtk.Bin.Generate'Access));
    SHT.Set (new String '("GtkBox"),
      (Gtk.Box.Generate'Access, Gtk.Box.Generate'Access));
    SHT.Set (new String '("GtkHBox"),
@@ -497,8 +492,6 @@ begin
    --    (Gtk.Combo.Generate'Access, Gtk.Combo.Generate'Access));
    --  SHT.Set (new String '("GtkCurve"),
    --    (Gtk.Curve.Generate'Access, Gtk.Curve.Generate'Access));
-   SHT.Set (new String '("GtkData"),
-     (Gtk.Data.Generate'Access, Gtk.Data.Generate'Access));
    SHT.Set (new String '("GtkDialog"),
      (Gtk.Dialog.Generate'Access, Gtk.Dialog.Generate'Access));
    SHT.Set (new String '("GtkDrawingArea"),
@@ -546,8 +539,6 @@ begin
      (Gtk.Menu_Item.Generate'Access, Gtk.Menu_Item.Generate'Access));
    SHT.Set (new String '("GtkMenuShell"),
      (Gtk.Menu_Shell.Generate'Access, Gtk.Menu_Shell.Generate'Access));
-   SHT.Set (new String '("GtkMisc"),
-     (Gtk.Misc.Generate'Access, Gtk.Misc.Generate'Access));
    SHT.Set (new String '("GtkNotebook"),
      (Gtk.Notebook.Generate'Access, Gtk.Notebook.Generate'Access));
    --  SHT.Set (new String '("GtkOptionMenu"),
@@ -584,7 +575,7 @@ begin
    --    (Gtk.Separator.Generate'Access, Gtk.Separator.Generate'Access));
    --  SHT.Set (new String '("GtkSpinButton"),
    --    (Gtk.Spin_Button.Generate'Access, Gtk.Spin_Button.Generate'Access));
-   SHT.Set (new String '("GtkStatusBar"),
+   SHT.Set (new String '("GtkStatusbar"),
      (Gtk.Status_Bar.Generate'Access, Gtk.Status_Bar.Generate'Access));
    --  SHT.Set (new String '("GtkTable"),
    --    (Gtk.Table.Generate'Access, Gtk.Table.Generate'Access));
