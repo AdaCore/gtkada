@@ -141,19 +141,10 @@ package Gdk.Rgb is
                  Index : in Rgb_Cmap_Index) return Rgb_Item;
    --  Access an item in a colormap.
 
-   function Get_8 (Cmap  : in Gdk_Rgb_Cmap;
-                   Index : in Rgb_Cmap_Index) return Glib.Guchar;
-   --  Same as Get for 8-bit displays.
-
    procedure Set (Cmap  : in Gdk_Rgb_Cmap;
                   Index : in Rgb_Cmap_Index;
                   Value : in Rgb_Item);
    --  Set an item in Cmap.
-
-   procedure Set_8 (Cmap  : in Gdk_Rgb_Cmap;
-                    Index : in Rgb_Cmap_Index;
-                    Value : in Glib.Guchar);
-   --  Same as Set for 8-bit displays
 
    procedure Gtk_New
      (Cmap : out Gdk_Rgb_Cmap; Colors : in Glib.Guint32_Array);

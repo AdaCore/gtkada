@@ -205,21 +205,6 @@ package body Gdk.Rgb is
       return Internal (Cmap, Index);
    end Get;
 
-   -----------
-   -- Get_8 --
-   -----------
-
-   function Get_8
-     (Cmap  : in Gdk_Rgb_Cmap; Index : in Rgb_Cmap_Index) return Glib.Guchar
-   is
-      function Internal (Cmap  : in Gdk_Rgb_Cmap;
-                         Index : in Rgb_Cmap_Index)
-                        return Glib.Guchar;
-      pragma Import (C, Internal, "ada_rgb_cmap_get8");
-   begin
-      return Internal (Cmap, Index);
-   end Get_8;
-
    -------------
    -- Gtk_New --
    -------------
@@ -252,25 +237,6 @@ package body Gdk.Rgb is
    begin
       Internal (Cmap, Index, Value);
    end Set;
-
-   -----------
-   -- Set_8 --
-   -----------
-
-   procedure Set_8
-     (Cmap  : in Gdk_Rgb_Cmap;
-      Index : in Rgb_Cmap_Index;
-      Value : in Glib.Guchar)
-   is
-      procedure Internal
-        (Cmap  : in Gdk_Rgb_Cmap;
-         Index : in Rgb_Cmap_Index;
-         Value : in Glib.Guchar);
-      pragma Import (C, Internal, "ada_rgb_cmap_set8");
-
-   begin
-      Internal (Cmap, Index, Value);
-   end Set_8;
 
    ---------------------
    -- Xpixel_From_Rgb --
