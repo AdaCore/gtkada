@@ -27,6 +27,20 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  A Gtk_Color_Selection widget is a complex dialog that allows the user
+--  to select a color based either on its (Red, Green, Blue) or its
+--  (Hue, Saturation, Value).
+--  An additional field is provided to select the opacity of the color (this
+--  is usually called the alpha channel).
+--
+--  See Gtk.Color_Selection_Dialog for a version of this widget that comes
+--  with its own dialog.
+--
+--  See also Gtk.Extra.Color_Combo for a different way to select colors.
+--  </description>
+--  <c_version>1.2.7</c_version>
+
 with Gtk.Enums;
 with Gtk.Box;
 with Gtk.Object;
@@ -37,22 +51,66 @@ package Gtk.Color_Selection is
    type Gtk_Color_Selection is access all Gtk_Color_Selection_Record'Class;
 
    type Color_Index is (Red, Green, Blue, Opacity);
-   type Color_Array is array (Color_Index'Range) of Gdouble;
+   --  Used as an index to the table used to set and get the currently
+   --  selected color.
 
-   procedure Get_Color (Colorsel : access Gtk_Color_Selection_Record;
-                        Color    : out Color_Array);
+   type Color_Array is array (Color_Index'Range) of Gdouble;
+   --  Array that indicates the currently selected color.
+   --  All the values are between 0.0 and 1.0 (a percentage value).
+   --  They should be converted to absolute values before using them to create
+   --  a new color, with the following piece of code:
+   --    Absolute := To_Absolute (Color_Array (Index))
 
    procedure Gtk_New (Widget : out Gtk_Color_Selection);
+   --  Create a new color selection widget.
+
    procedure Initialize (Widget : access Gtk_Color_Selection_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
-   procedure Set_Color (Colorsel : access Gtk_Color_Selection_Record;
-                        Color    : in Color_Array);
-
-   procedure Set_Opacity (Colorsel    : access Gtk_Color_Selection_Record;
-                          Use_Opacity : in Boolean);
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Color_Selection.
 
    procedure Set_Update_Policy (Colorsel : access Gtk_Color_Selection_Record;
                                 Policy   : in Enums.Gtk_Update_Type);
+   --  Set the behavior of the scales used to select a value (red, green,...)
+   --  Set Policy to Update_Continuous if you want to update the color
+   --  continuously as the slider is mode, Update_Discontinuous to update the
+   --  color only when the mouse is released and Update_Delayed to update when
+   --  the mouse is released or has been motionless for a while.
+
+   procedure Set_Opacity (Colorsel    : access Gtk_Color_Selection_Record;
+                          Use_Opacity : in Boolean);
+   --  Indicate whether the dialog should provide a way to change the
+   --  opacity of the color.
+   --  Since not every application can handle transparent colors, it is better
+   --  to deactivate this feature if you don't intend to use it.
+   --  Note also that if you deactivated that feature, Get_Color will not
+   --  set a valid value for the Opacity index of its return type.
+
+   procedure Set_Color (Colorsel : access Gtk_Color_Selection_Record;
+                        Color    : in Color_Array);
+   --  Modify the current color.
+   --  Note that Color is an array of percentages, between 0.0 and 1.0, not
+   --  absolute values.
+
+   procedure Get_Color (Colorsel : access Gtk_Color_Selection_Record;
+                        Color    : out Color_Array);
+   --  Get the current color.
+   --  Note that Color is an array of percentages, between 0.0 and 1.0, not
+   --  absolute values.
+
+   function To_Absolute (Color : Gdouble) return Gushort;
+   --  Convert from a percentage value as returned by Get_Color to an
+   --  absolute value as can be used with Gdk_Color.
+
+   function To_Percent (Color : Gushort) return Gdouble;
+   --  Convert from an absolute value as used in Gdk_Color to a percentage
+   --  value as used in Set_Color.
+
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
@@ -62,9 +120,16 @@ package Gtk.Color_Selection is
       N        : in Node_Ptr);
    --  Dgate internal function
 
-private
+   -------------
+   -- Signals --
+   -------------
 
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
+
+private
    type Gtk_Color_Selection_Record is new Gtk.Box.Gtk_Box_Record
      with null record;
-
+   pragma Import (C, Get_Type, "gtk_color_selection_get_type");
 end Gtk.Color_Selection;

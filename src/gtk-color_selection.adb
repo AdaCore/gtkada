@@ -98,6 +98,24 @@ package body Gtk.Color_Selection is
       Internal (Get_Object (Colorsel), Boolean'Pos (Use_Opacity));
    end Set_Opacity;
 
+   -----------------
+   -- To_Absolute --
+   -----------------
+
+   function To_Absolute (Color : Gdouble) return Gushort is
+   begin
+      return Gushort (Gdouble (Gushort'Last) * Color);
+   end To_Absolute;
+
+   ----------------
+   -- To_Percent --
+   ----------------
+
+   function To_Percent (Color : Gushort) return Gdouble is
+   begin
+      return Gdouble (Gdouble (Color) / Gdouble (Gushort'Last));
+   end To_Percent;
+
    -----------------------
    -- Set_Update_Policy --
    -----------------------
