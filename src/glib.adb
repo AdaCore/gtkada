@@ -11,6 +11,16 @@ package body Glib is
    end To_Boolean;
 
 
+   ------------------
+   --  To_Boolean  --
+   ------------------
+
+   function To_Boolean (Value : in Guint) return Boolean is
+   begin
+      return Value /= 0;
+   end To_Boolean;
+
+
    ---------------
    --  To_Gint  --
    ---------------

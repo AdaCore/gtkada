@@ -52,6 +52,7 @@ package Glib is
    ---------------------------
 
    function To_Boolean (Value : in Gint) return Boolean;
+   function To_Boolean (Value : in Guint) return Boolean;
    function To_Gint (Bool : in Boolean) return Gint;
 
 end Glib;
