@@ -45,6 +45,7 @@ with Gtk.Tree_Item;       use Gtk.Tree_Item;
 with Gtk.Widget;          use Gtk.Widget;
 with Gtk;                 use Gtk;
 with Common;              use Common;
+with Unchecked_Conversion;
 
 package body Create_Tree is
 
@@ -74,10 +75,10 @@ package body Create_Tree is
 
    package Tree_Cb is new Handlers.Callback (My_Tree_Record);
 
-   package To_Tree is new Unchecked_Cast
-     (Gtk_Tree_Record, Gtk_Tree);
-   package From_Tree is new Unchecked_Cast
-     (Gtk_Tree_Item_Record, Gtk_Tree_Item);
+   function To_Tree is new Unchecked_Conversion
+     (Gtk_Tree_Item, Gtk_Tree);
+   function From_Tree is new Unchecked_Conversion
+     (Gtk_Tree, Gtk_Tree_Item);
 
 
    ----------
@@ -134,7 +135,7 @@ package body Create_Tree is
       if Selected_List = Null_List then
          Subtree := Gtk_Tree (Tree);
       else
-         Selected_Item := From_Tree.Convert (Get_Data (Selected_List));
+         Selected_Item := From_Tree (Gtk_Tree (Get_Data (Selected_List)));
          Subtree := Get_Subtree (Selected_Item);
          if Subtree = null then
             Gtk_New (Subtree);
@@ -179,7 +180,7 @@ package body Create_Tree is
    begin
       Selected_List := Get_Selection (Tree);
       if Selected_List /= Null_List then
-        Item := From_Tree.Convert (Get_Data (Selected_List));
+        Item := From_Tree (Gtk_Tree (Get_Data (Selected_List)));
         if Is_Created (Item.all) then
            Remove_Subtree (Item);
         end if;
@@ -206,7 +207,7 @@ package body Create_Tree is
 
       if Level = -1 then
          The_Level := 0;
-         Item_Subtree := To_Tree.Convert (Item);
+         Item_Subtree := To_Tree (Item);
          No_Root_Item := True;
       else
          declare
@@ -285,7 +286,7 @@ package body Create_Tree is
       end if;
 
       if No_Root_Item then
-         Root_Item := From_Tree.Convert (Root_Tree);
+         Root_Item := From_Tree (Gtk_Tree (Root_Tree));
       else
          Gtk_New (Root_Item, "root item");
          Append (Root_Tree, Root_Item);

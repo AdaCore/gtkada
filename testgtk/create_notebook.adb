@@ -341,7 +341,7 @@ package body Create_Notebook is
         (Get_Child (Gtk_Box (Get_Menu_Label (Page)), 0));
       Set (Pixmap, Book_Open, Book_Open_Mask);
 
-      if Gdk.Is_Created (Old_Page) then
+      if Old_Page /= null then
          Pixmap := Gtk_Pixmap
            (Get_Child (Gtk_Box (Get_Tab_Label (Old_Page)), 0));
          Set (Pixmap, Book_Closed, Book_Closed_Mask);

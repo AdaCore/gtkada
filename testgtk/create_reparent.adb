@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk;          use Gdk;
 with Glib;         use Glib;
 with Gtk.Box;      use Gtk.Box;
 with Gtk.Button;   use Gtk.Button;
@@ -75,7 +74,7 @@ package body Create_Reparent is
    is
    begin
       Ada.Text_IO.Put ("Set_Parent for ");
-      if Gdk.Is_Created (Child.all) then
+      if Is_Created (Child.all) then
          Ada.Text_IO.Put (Type_Name (Get_Type (Child))
                           & " : new parent : ");
          if Get_Parent (Child) /= null then

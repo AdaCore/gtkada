@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Glib;            use Glib;
-with Gdk;             use Gdk;
 with Gtk.Box;         use Gtk.Box;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Handle_Box;  use Gtk.Handle_Box;
@@ -71,7 +70,7 @@ package body Create_Handle_Box is
                            Data   : in String) is
    begin
       Ada.Text_IO.Put_Line ("In Child Signal");
-      if Gdk.Is_Created  (Child.all) then
+      if Is_Created  (Child.all) then
          Ada.Text_IO.Put_Line (Type_Name (Get_Type (Handle))
                                & ": child <"
                                & Type_Name (Get_Type (Child))
