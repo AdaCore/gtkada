@@ -44,29 +44,6 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Widget));
    end Add;
 
-   ------------------
-   -- Block_Resize --
-   ------------------
-
-   procedure Block_Resize (Container : in out Gtk_Container) is
-      procedure Internal (Container : in System.Address);
-      pragma Import (C, Internal, "gtk_container_block_resize");
-   begin
-      Internal (Get_Object (Container));
-   end Block_Resize;
-
-   -----------------
-   -- Need_Resize --
-   -----------------
-
-   function Need_Resize (Container : in Gtk_Container)
-                         return Boolean is
-      function Internal (Container : in System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_container_need_resize");
-   begin
-      return To_Boolean (Internal (Get_Object (Container)));
-   end Need_Resize;
-
    ------------
    -- Remove --
    ------------
@@ -125,15 +102,17 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Adjustment));
    end Set_Focus_Vadjustment;
 
-   --------------------
-   -- Unblock_Resize --
-   --------------------
+   ---------------------
+   -- Set_Resize_Mode --
+   ---------------------
 
-   procedure Unblock_Resize (Container : in out Gtk_Container) is
-      procedure Internal (Container : in System.Address);
-      pragma Import (C, Internal, "gtk_container_unblock_resize");
+   procedure Set_Resize_Mode (Container   : in out Gtk_Container;
+                              Resize_Mode : in Gtk_Resize_Mode) is
+      procedure Internal (Container : in System.Address;
+                          Mode      : in Integer);
+      pragma Import (C, Internal, "gtk_container_set_resize_mode");
    begin
-      Internal (Get_Object (Container));
-   end Unblock_Resize;
+      Internal (Get_Object (Container), Gtk_Resize_Mode'Pos (Resize_Mode));
+   end Set_Resize_Mode;
 
 end Gtk.Container;

@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Adjustment;
+with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Container is
@@ -42,12 +43,6 @@ package Gtk.Container is
    procedure Remove (Container : in out Gtk_Container;
                      Widget : in Gtk.Widget.Gtk_Widget'Class);
 
-   procedure Block_Resize (Container : in out Gtk_Container);
-
-   procedure Unblock_Resize (Container : in out Gtk_Container);
-
-   function Need_Resize (Container : in Gtk_Container) return Boolean;
-
    procedure Set_Focus_Hadjustment
      (Container  : in out Gtk_Container;
       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class);
@@ -55,6 +50,9 @@ package Gtk.Container is
    procedure Set_Focus_Vadjustment
      (Container  : in out Gtk_Container;
       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class);
+
+   procedure Set_Resize_Mode (Container   : in out Gtk_Container;
+                              Resize_Mode : in Gtk_Resize_Mode);
 
 private
 
