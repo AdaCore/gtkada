@@ -1,3 +1,31 @@
+-----------------------------------------------------------------------
+--          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--                                                                   --
+--                     Copyright (C) 2003 ACT Europe                 --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
+
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Accel_Group; use Gtk.Accel_Group;
@@ -45,7 +73,10 @@ package body Create_Item_Factory is
    procedure Ifactory_Cb
      (Callback_Data   : Data_Type_Access;
       Callback_Action : Guint;
-      Widget          : Limited_Widget) is
+      Widget          : Limited_Widget)
+   is
+      pragma Warnings (Off, Callback_Data);
+      pragma Warnings (Off, Callback_Action);
    begin
       Put_Line ("ItemFactory: activated " &
         Path_From_Widget (To_Widget (Widget)));
@@ -55,7 +86,7 @@ package body Create_Item_Factory is
       Box1         : Gtk_Box;
       Accel_Group  : Gtk_Accel_Group;
       Item_Factory : Gtk_Item_Factory;
- 
+
    begin
       --  gtk_signal_connect (GTK_OBJECT (window), "destroy",
       --                      GTK_SIGNAL_FUNC(gtk_widget_destroyed),
@@ -63,7 +94,7 @@ package body Create_Item_Factory is
       --  gtk_signal_connect (GTK_OBJECT (window), "delete-event",
       --                      GTK_SIGNAL_FUNC (gtk_true),
       --                      NULL);
- 
+
       Gtk_New (Accel_Group);
       Gtk_New (Item_Factory, Gtk.Menu_Bar.Get_Type, "<main>", Accel_Group);
       --  gtk_object_set_data_full (GTK_OBJECT (window),
@@ -71,17 +102,17 @@ package body Create_Item_Factory is
       --                            item_factory,
       --                            (GtkDestroyNotify) gtk_object_unref);
       Create_Items (Item_Factory, Menu_Items, null);
- 
+
       --  preselect /Preferences/Shape/Oval over the other radios
       Set_Active (Gtk_Check_Menu_Item (Get_Item
         (Item_Factory, "/Preferences/Shape/Oval")), True);
- 
+
       Gtk_New_Vbox (Box1, False, 0);
       Add (Frame, Box1);
- 
+
       Pack_Start
         (Box1, Get_Widget (Item_Factory, "<main>"), False, False, 0);
- 
+
       Show_All (Frame);
    end Run;
 
