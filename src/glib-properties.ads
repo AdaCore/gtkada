@@ -45,12 +45,12 @@
 --          Button : Gtk_Button;
 --      begin
 --          Gtk_New (Button, "old label");
---          Set_Property (Button, Property_Label, "new label");
+--          Set_Property (Button, Label_Property, "new label");
 --      end;
 --  to modify the label of a button.
 --
 --  Likewise, you can retrieve the current label with:
---      Current : String := Get_Property (Button, Property_label);
+--      Current : String := Get_Property (Button, Label_Property);
 --
 --  Dispatching is used ensure type-safety while using properties. The
 --  appropriate Set_Property/Get_Property functions are called depending
