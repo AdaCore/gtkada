@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with Ada.Numerics.Elementary_Functions;  use Ada.Numerics.Elementary_Functions;
+with Glib;             use Glib;
+with Glib.Values;      use Glib.Values;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Cursor;       use Gdk.Cursor;
 with Gdk.Drawable;     use Gdk.Drawable;
@@ -39,15 +41,15 @@ with Gdk.Types;        use Gdk.Types;
 with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Window;       use Gdk.Window;
-with Glib;             use Glib;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Extra.PsFont; use Gtk.Extra.PsFont;
 with Gtk.Handlers;
 with Gtkada.Handlers;  use Gtkada.Handlers;
-with Gtk.Arguments;    use Gtk.Arguments;
 with Gtk.Main;         use Gtk.Main;
+pragma Elaborate_All (Gtk.Main);
+
 with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
@@ -237,7 +239,7 @@ package body Gtkada.Canvas is
 
    procedure Set_Scroll_Adjustments
      (Canvas : access Gtk_Widget_Record'Class;
-      Args   : Gtk_Args);
+      Args   : GValues);
    --  Change the two adjustments used for the canvas (in a callback)
 
    procedure Scrolled (Canvas : access Gtk_Widget_Record'Class);
@@ -446,12 +448,13 @@ package body Gtkada.Canvas is
 
    procedure Set_Scroll_Adjustments
      (Canvas : access Gtk_Widget_Record'Class;
-      Args   : Gtk_Args)
+      Args   : GValues)
    is
-      Hadj : constant System.Address := To_Address (Args, 1);
-      Vadj : constant System.Address := To_Address (Args, 2);
+      Hadj : constant System.Address := Get_Address (Nth (Args, 1));
+      Vadj : constant System.Address := Get_Address (Nth (Args, 2));
       Canv : Interactive_Canvas := Interactive_Canvas (Canvas);
-      Stub  : Gtk_Adjustment_Record;
+      Stub : Gtk_Adjustment_Record;
+
    begin
       if Canv.Hadj /= null then
          Unref (Canv.Hadj);
