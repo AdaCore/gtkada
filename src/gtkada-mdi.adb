@@ -2856,7 +2856,8 @@ package body Gtkada.MDI is
       elsif Child.State = Floating
         and then Realized_Is_Set (Child.Initial)
       then
-         Present (Gtk_Window (Get_Toplevel (Child.Initial)));
+         Deiconify (Gtk_Window (Get_Toplevel (Child.Initial)));
+         Gdk.Window.Gdk_Raise (Get_Window (Get_Toplevel (Child.Initial)));
 
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
