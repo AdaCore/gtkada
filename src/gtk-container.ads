@@ -1,5 +1,4 @@
 with Gtk.Adjustment;
-with Gtk.Signal;
 with Gtk.Widget;
 
 package Gtk.Container is

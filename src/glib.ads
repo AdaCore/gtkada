@@ -1,6 +1,4 @@
 
-with System;
-
 package Glib is
 
    --  mapping: NOT_IMPLEMENTED glib.h g_slist_free
