@@ -992,6 +992,15 @@ package body Gtkada.Multi_Paned is
       --  Register the new size for the window itself
       Set_Allocation (Split, Alloc);
 
+      if Get_Has_Window (Split) then
+         Gdk.Window.Move_Resize
+           (Get_Window (Split),
+            X      => Alloc.X,
+            Y      => Alloc.Y,
+            Width  => Alloc.Width,
+            Height => Alloc.Height);
+      end if;
+
       if not Realized_Is_Set (Split) then
          return;
       end if;
