@@ -27,6 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides some basic Gtk+ functionalities such as getting the
+--  version number. This is the top level package of the Gtk widget hierarchy.
+--  For general GtkAda initializations, look at the package Gtk.Main.
+--
+--  </description>
+--  <c_version>1.2.7</c_version>
+
 with Glib;                use Glib;
 with Gdk;                 use Gdk;
 with System;
@@ -41,21 +50,25 @@ pragma Warnings (Off, Ada.Text_IO);
 package Gtk is
 
    function Major_Version return Guint;
-   --  Returns the major version number for gtk+ (this is not the same
-   --  as for GtkAda). If the version is 1.2.6, returns 1.
+   --  Return the major version number for Gtk+.
+   --  Note that this is not necessarily the same as for GtkAda.
+   --  If the version is 1.2.6, returns 1.
 
    function Minor_Version return Guint;
-   --  Returns the minor version number for gtk+ (this is not the same
-   --  as for GtkAda). If the version is 1.2.6, returns 2.
+   --  Return the minor version number for Gtk+.
+   --  Note that this is not necessarily the same as for GtkAda.
+   --  If the version is 1.2.6, returns 2.
 
    function Micro_Version return Guint;
-   --  Returns the micro version number for gtk+ (this is not the same
-   --  as for GtkAda). If the version is 1.2.6, returns 6.
+   --  Return the micro version number for Gtk+.
+   --  Note that this is not necessarily the same as for GtkAda.
+   --  If the version is 1.2.6, returns 6.
 
    type Gtk_Type is new Guint;
    Gtk_Type_None : constant Gtk_Type := 1;
-   --  This type describes a type internally in gtk+. You shouldn't have to
-   --  use it in your own applications, however it might be useful sometimes.
+   --  This type describes an internal type in Gtk+.
+   --  You shouldn't have to use it in your own applications, however it might
+   --  be useful sometimes.
    --  Every widget type is associated with a specific value, created
    --  dynamically at run time the first time you instantiate a widget of that
    --  type (thus if you have never used a Gtk_File_Selection, it won't have
@@ -66,14 +79,17 @@ package Gtk is
    --  function Gtk.Object.Get_Type.
 
    function Type_Name (Type_Num : in Gtk_Type) return String;
-   --  Returns the type name corresponding to a Gtk_Type.
+   --  Return the type name corresponding to a Gtk_Type.
    --  This might be useful in debug messages.
 
    function Type_From_Name (Name : in String) return Gtk_Type;
-   --  Converts a string to the matching type. NAME should be the C widget's
-   --  name, such as GtkScrollbar or GtkButton, rather than the Ada name.
+   --  Convert a string to the matching type.
+   --  Name should be the C widget's name, such as GtkScrollbar or GtkButton,
+   --  rather than the Ada name.
 
 private
+
+   <doc_ignore>
 
    --  Note: the following functions and types should only be used
    --  for internal usage, not in the user's applications.
@@ -111,6 +127,8 @@ private
    --  See Gtk.Type_Conversion for its use.
    --  Stub is the expect type (it is used by the simple conversion
    --  function only).
+
+   </doc_ignore>
 
    pragma Import (C, Major_Version, "ada_gtk_major_version");
    pragma Import (C, Minor_Version, "ada_gtk_minor_version");
