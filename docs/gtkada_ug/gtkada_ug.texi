@@ -148,10 +148,9 @@ This toolkit was tested on the following systems:
 @item Linux/ppc
 @item Solaris/sparc
 @item Solaris/x86
-@item Dec Unix 4.0b
+@item Dec Unix 4.0
 @item SGI IRIX 6.5
-@item HP/UX 10.20
-@item HP/UX 11.00
+@item HP/UX
 @item NT 4.0
 @item Windows 2000
 @item AiX 4.3.2
