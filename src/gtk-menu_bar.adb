@@ -40,7 +40,7 @@ package body Gtk.Menu_Bar is
 
    procedure Append
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : in Gtk.Widget.Gtk_Widget)
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Menu_Bar : System.Address;
@@ -56,7 +56,7 @@ package body Gtk.Menu_Bar is
 
    procedure Insert
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : in Gtk.Widget.Gtk_Widget;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position : in Gint)
    is
       procedure Internal (Menu_Bar : System.Address;
@@ -95,7 +95,7 @@ package body Gtk.Menu_Bar is
 
    procedure Prepend
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : in Gtk.Widget.Gtk_Widget)
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Menu_Bar : System.Address;
                           Child    : System.Address);
