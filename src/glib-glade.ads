@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --                   Gate - GtkAda Components                        --
 --                                                                   --
---                   Copyright (C) 1999-2001                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -87,7 +87,7 @@ package Glib.Glade is
 
    procedure Gen_Set
      (N        : Node_Ptr;
-      Class, Name : String;
+      Name     : String;
       File     : File_Type;
       Prefix   : String := "";
       Postfix  : String := "";
@@ -97,11 +97,11 @@ package Glib.Glade is
    --  If Is_Float is true, call To_Float on the field <Name>.
 
    procedure Gen_Set
-     (N : Node_Ptr; Class, Name, Field : String; File : File_Type);
+     (N : Node_Ptr; Name, Field : String; File : File_Type);
    --  Generate a Set_<Name> (Field) call in File.
 
    procedure Gen_Set
-     (N : Node_Ptr; Class, Name, Field1, Field2, Field3, Field4 : String;
+     (N : Node_Ptr; Name, Field1, Field2, Field3, Field4 : String;
       File : File_Type; Is_Float : Boolean := False);
    --  Generate a Set_<Name> (Field1) call in File if Field2 is a null string.
    --  Or Set_<Name> (Field1, Field2) if Field3 is a null
