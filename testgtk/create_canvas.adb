@@ -30,6 +30,7 @@
 with Ada.Numerics.Discrete_Random;
 with Gdk.Color;           use Gdk.Color;
 with Gdk.Drawable;        use Gdk.Drawable;
+with Gdk.Event;           use Gdk.Event;
 with Gdk.GC;              use Gdk.GC;
 with Gdk.Pixbuf;          use Gdk.Pixbuf;
 with Gdk.Rectangle;       use Gdk.Rectangle;
@@ -49,8 +50,8 @@ with Gtkada.Canvas;       use Gtkada.Canvas;
 with Gtk.Spin_Button;     use Gtk.Spin_Button;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Adjustment;      use Gtk.Adjustment;
-with Gtk.Extra.PsFont;    use Gtk.Extra.PsFont;
-with Gdk.Font;            use Gdk.Font;
+with Pango.Font;          use Pango.Font;
+with Pango.Layout;        use Pango.Layout;
 with Gtk.Style;           use Gtk.Style;
 
 package body Create_Canvas is
@@ -100,6 +101,30 @@ package body Create_Canvas is
       X, Y   : Glib.Gint) return Boolean;
    --  Override the inherited subprograms
 
+   ----------------------
+   -- A resizable item --
+   ----------------------
+
+   type Resize_Type is (Bottom, Top, Left, Right);
+   pragma Unreferenced (Top, Left, Right);
+
+   type Resizable_Item_Record is new Canvas_Item_Record with record
+      Initial : Gdk_Rectangle;
+      Typ     : Resize_Type;
+      --  The two fields are set while handling a resize
+   end record;
+   type Resizable_Item is access all Resizable_Item_Record'Class;
+
+   procedure Draw
+     (Item   : access Resizable_Item_Record;
+      Canvas : access Interactive_Canvas_Record'Class;
+      GC     : Gdk.GC.Gdk_GC;
+      Xdest, Ydest : Glib.Gint);
+   procedure On_Button_Click
+     (Item   : access Resizable_Item_Record;
+      Event  : Gdk.Event.Gdk_Event_Button);
+   --  Override the inherited subprograms
+
    ----------------------------------------------------
    -- Our own canvas, with optional background image --
    ----------------------------------------------------
@@ -113,8 +138,7 @@ package body Create_Canvas is
 
    procedure Draw_Background
      (Canvas        : access Image_Canvas_Record;
-      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle;
-      X_Left, Y_Top : Glib.Gint);
+      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle);
    --  Draw the background image
 
    -----------------------------
@@ -138,7 +162,8 @@ package body Create_Canvas is
 
    Start_Spin, End_Spin, Num_Spin : Gtk_Spin_Button;
    Num_Items_Label, Num_Links_Label : Gtk_Label;
-   Font : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+   Font : Pango_Font_Description;
+   Layout : Pango_Layout;
 
    type Color_Type is range 1 .. Max_Colors;
    package Color_Random is new Ada.Numerics.Discrete_Random (Color_Type);
@@ -245,13 +270,14 @@ package body Create_Canvas is
          Width  => Item.W,
          Height => Item.H);
       Set_Foreground (Green_GC, Black (Get_Default_Colormap));
-      Draw_Text
+
+      Set_Text (Layout, "Item" & Positive'Image (Display_Item (Item).Num));
+      Draw_Layout
         (Pixmap (Item),
-         Font,
          Green_GC,
          10,
          10,
-         "Item" & Positive'Image (Display_Item (Item).Num));
+         Layout);
 
       Draw_Shadow
         (Style       => Get_Style (Item.Canvas),
@@ -279,14 +305,112 @@ package body Create_Canvas is
       end if;
    end Draw_To_Double_Buffer;
 
+   ----------
+   -- Draw --
+   ----------
+
+   procedure Draw
+     (Item   : access Resizable_Item_Record;
+      Canvas : access Interactive_Canvas_Record'Class;
+      GC     : Gdk.GC.Gdk_GC;
+      Xdest, Ydest : Glib.Gint)
+   is
+      Rect : constant Gdk_Rectangle := Get_Coord (Item);
+      W    : constant Gint := To_Canvas_Coordinates (Canvas, Rect.Width);
+      H    : constant Gint := To_Canvas_Coordinates (Canvas, Rect.Height);
+      Arrow : constant Gint := To_Canvas_Coordinates (Canvas, 3);
+   begin
+      Set_Foreground (GC, Black (Get_Default_Colormap));
+      Draw_Rectangle
+        (Get_Window (Canvas),
+         GC     => GC,
+         Filled => True,
+         X      => Xdest,
+         Y      => Ydest,
+         Width  => W - 2 * Arrow,
+         Height => H);
+
+      Draw_Line
+        (Get_Window (Canvas),
+         GC,
+         Xdest + W, Ydest,
+         Xdest + W, Ydest + H);
+      Draw_Line
+        (Get_Window (Canvas),
+         GC,
+         Xdest + W, Ydest,
+         Xdest + W - Arrow, Ydest + Arrow);
+      Draw_Line
+        (Get_Window (Canvas),
+         GC,
+         Xdest + W, Ydest,
+         Xdest + W + Arrow, Ydest + Arrow);
+      Draw_Line
+        (Get_Window (Canvas),
+         GC,
+         Xdest + W, Ydest + H,
+         Xdest + W - Arrow, Ydest + H - Arrow);
+      Draw_Line
+        (Get_Window (Canvas),
+         GC,
+         Xdest + W, Ydest + H,
+         Xdest + W + Arrow, Ydest + H - Arrow);
+
+
+      Draw_Line
+        (Get_Window (Canvas),
+         GC,
+         Xdest, Ydest,
+         Xdest + W, Ydest);
+      Draw_Line
+        (Get_Window (Canvas),
+         GC,
+         Xdest, Ydest + H,
+         Xdest + W, Ydest + H);
+   end Draw;
+
+   ---------------------
+   -- On_Button_Click --
+   ---------------------
+
+   procedure On_Button_Click
+     (Item   : access Resizable_Item_Record;
+      Event  : Gdk.Event.Gdk_Event_Button)
+   is
+      Rect : constant Gdk_Rectangle := Get_Coord (Item);
+   begin
+      if Get_Event_Type (Event) = Button_Press then
+         Item.Initial := Rect;
+
+         if Gint (Get_Y (Event)) > Rect.Height - 3 then
+            Item.Typ := Bottom;
+         end if;
+
+      elsif Get_Event_Type (Event) = Button_Release then
+         case Item.Typ is
+            when Bottom =>
+               Set_Screen_Size
+                 (Item, Rect.Width,
+                  Gint (Get_Y (Event)));
+
+            when others =>
+               null;
+         end case;
+
+         --  Item_Updated (Item);
+      end if;
+   end On_Button_Click;
+
    ---------------------
    -- Draw_Background --
    ---------------------
 
    procedure Draw_Background
      (Canvas        : access Image_Canvas_Record;
-      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle;
-      X_Left, Y_Top : Glib.Gint) is
+      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle)
+   is
+      X_Left : constant Glib.Gint := Left_World_Coordinates (Canvas);
+      Y_Top  : constant Glib.Gint := Top_World_Coordinates (Canvas);
    begin
       if Canvas.Background /= null then
          --  This is slightly complex, since we need to properly handle zooming
@@ -348,8 +472,7 @@ package body Create_Canvas is
       end if;
 
       if Canvas.Draw_Grid then
-         Draw_Grid (Interactive_Canvas (Canvas),
-                    Canvas.Grid_GC, Screen_Rect, X_Left, Y_Top);
+         Draw_Grid (Interactive_Canvas (Canvas), Canvas.Grid_GC, Screen_Rect);
       end if;
    end Draw_Background;
 
@@ -633,7 +756,8 @@ package body Create_Canvas is
    procedure Initial_Setup
      (Canvas : access Interactive_Canvas_Record'Class)
    is
-      Item1, Item2, Item3,  Item4    : Display_Item;
+      Item1, Item2, Item3, Item4    : Display_Item;
+      Item5 : Resizable_Item;
       Link  : Canvas_Link;
    begin
       Item1 := new Display_Item_Record;
@@ -651,6 +775,10 @@ package body Create_Canvas is
       Item4 := new Hole_Item_Record;
       Initialize (Item4, Canvas);
       Put (Canvas, Item4, 280, 170);
+
+      Item5 := new Resizable_Item_Record;
+      Set_Screen_Size (Item5, 30, 30);
+      Put (Canvas, Item5, 200, 170);
 
       Add_Canvas_Link (Canvas, Item1, Item1, "From1->2");
       Add_Canvas_Link (Canvas, Item3, Item1, "From3->2");
@@ -903,7 +1031,9 @@ package body Create_Canvas is
          Colors (J) := Parse (Color_Names (J).all);
          Alloc (Gtk.Widget.Get_Default_Colormap, Colors (J));
       end loop;
-      Font := Get_Gdkfont ("Courier", 8);
+
+      Font := From_String ("Courier 8");
+      Layout := Create_Pango_Layout (Frame);
 
       Initial_Setup (Canvas);
       Show_All (Frame);
