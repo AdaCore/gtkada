@@ -44,8 +44,8 @@ package body Full_Test is
    package Gint_Random is new Ada.Numerics.Discrete_Random (My_Gint);
    Gen : Gint_Random.Generator;
 
-   type Color_Index is range 1 .. 5;
-   Colors : array (Color_Index'Range) of Gdk.Color.Gdk_Color;
+   subtype Color_Index is Natural range 1 .. 5;
+   Colors : Gdk_Color_Array (Color_Index'Range);
    package Color_Random is new Ada.Numerics.Discrete_Random (Color_Index);
    Gen_Color : Color_Random.Generator;
 
@@ -220,6 +220,8 @@ package body Full_Test is
       Text   : Gtk_Text;
       Scrolled : Gtk_Scrolled_Window;
       Color   : Gdk.Color.Gdk_Color;
+      Result  : Gint;
+      Success : Boolean_Array (Color_Index'Range);
 
    begin
       Gtk_New (Win, Window_Toplevel);
@@ -287,8 +289,6 @@ package body Full_Test is
       Set_Usize (Text, Pixmap_Width, 250);
       Add (Scrolled, Text);
 
-      Show_All (Win);
-
       Freeze (Text);
       Insert (Text, Null_Font,
               Gdk.Color.Black (Get_Colormap (Text)),
@@ -297,24 +297,30 @@ package body Full_Test is
       Gtk.Adjustment.Set_Value (Get_Vadj (Text), 0.0);
       Thaw (Text);
 
+      Show_All (Win);
+
       Gdk.Gc.Gdk_New (White_Gc, Get_Window (Buffer));
       Color := Gdk.Color.Parse ("black");
-      Gdk.Color.Alloc (Get_Colormap (Buffer), Color);
+      Gdk.Color.Alloc (Gdk.Color.Get_System, Color);
       Gdk.Gc.Set_Foreground (White_Gc, Color);
 
+      Reset (Buffer);
+      Double_Buffer.Draw (Buffer);
+
       Colors (1) := Gdk.Color.Parse ("blue");
-      Gdk.Color.Alloc (Get_Colormap (Buffer), Colors (1));
       Colors (2) := Gdk.Color.Parse ("red");
-      Gdk.Color.Alloc (Get_Colormap (Buffer), Colors (2));
       Colors (3) := Gdk.Color.Parse ("green");
-      Gdk.Color.Alloc (Get_Colormap (Buffer), Colors (3));
       Colors (4) := Gdk.Color.Parse ("yellow");
-      Gdk.Color.Alloc (Get_Colormap (Buffer), Colors (4));
       Colors (5) := Gdk.Color.Parse ("orange");
-      Gdk.Color.Alloc (Get_Colormap (Buffer), Colors (5));
+
+      Alloc_Colors (Gdk.Color.Get_System,
+                    Colors,
+                    Writeable  => False,
+                    Best_Match => True,
+                    Success    => Success,
+                    Result     => Result);
 
       Gdk.Gc.Gdk_New (Black_Gc, Get_Window (Buffer));
-      Reset (Buffer);
    end Init;
 
 end Full_Test;
