@@ -30,15 +30,17 @@
 with System;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Glib; use Glib;
-with Glib.Values;
 with Glib.Object;
+with Glib.Values;
+with Gdk.Color; use Gdk.Color;
 with Gdk.Window; use Gdk.Window;
 with Gtk.Enums;
 with Gtk.Handlers;
 with Gtk.Text_Buffer;
 with Gtk.Text_Iter;
 with Gtk.Text_Mark;
-with Gtk.Text_Tag;
+with Gtk.Text_Tag; use Gtk.Text_Tag;
+with Pango.Font; use Pango.Font;
 
 pragma Elaborate_All (Gtk.Handlers);
 
@@ -107,13 +109,6 @@ package body Gtk.Text is
    --  End_Pos > Start_Pos), then Valid_Range is set to False and the
    --  Iterators returned are undefined.
 
-   procedure Set_Color_Property
-     (Tag           : Text_Tag.Gtk_Text_Tag;
-      Property_Name : String;
-      Color         : Gdk.Color.Gdk_Color);
-   --  Assign Color to the Tag property which name is Property_Name.
-   --  ??? Temporary hack until the final property mechanism is put in place.
-
    --
    --  Signal handlers...
    --
@@ -178,28 +173,6 @@ package body Gtk.Text is
          Text_Buffer.Get_Iter_At_Offset (Buffer, End_Iter, End_Pos);
       end if;
    end Get_Range_Iter;
-
-   ------------------------
-   -- Set_Color_Property --
-   ------------------------
-
-   procedure Set_Color_Property
-     (Tag           : Text_Tag.Gtk_Text_Tag;
-      Property_Name : String;
-      Color         : Gdk.Color.Gdk_Color)
-   is
-      procedure Internal
-        (Object          : System.Address;
-         Property_Name   : String;
-         Color           : Gdk.Color.Gdk_Color;
-         End_List_Marker : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
-      --  Note that the pragma Import ensures that Color is passed by ref,
-      --  which is what we need.
-
-   begin
-      Internal (Get_Object (Tag), Property_Name & ASCII.NUL, Color);
-   end Set_Color_Property;
 
    ----------------
    -- Changed_Cb --
@@ -868,7 +841,25 @@ package body Gtk.Text is
       Fore   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Back   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Chars  : String := "";
-      Length : Gint := -1)
+      Length : Gint := -1) is
+   begin
+      Insert
+        (Text, Font_Desc => null,
+         Fore => Fore, Back => Back,
+         Chars => Chars, Length => Length);
+   end Insert;
+
+   ------------
+   -- Insert --
+   ------------
+
+   procedure Insert
+     (Text      : access Gtk_Text_Record;
+      Font_Desc : Pango.Font.Pango_Font_Description := null;
+      Fore      : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Back      : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Chars     : String := "";
+      Length    : Gint := -1)
    is
       Buffer        : constant Text_Buffer.Gtk_Text_Buffer :=
         Get_Buffer (Text);
@@ -893,7 +884,8 @@ package body Gtk.Text is
       --  to change the color properties of the inserted text. We do this
       --  only if specific colors were specified.
 
-      if Fore /= Gdk.Color.Null_Color
+      if Font_Desc /= null
+        or else Fore /= Gdk.Color.Null_Color
         or else Back /= Gdk.Color.Null_Color
       then
          Text_Buffer.Get_Iter_At_Mark (Buffer, Start_Iter, Insert_Mark);
@@ -907,17 +899,22 @@ package body Gtk.Text is
       --  Create an anonymous tag to change the text properties if necessary.
       --  (note that we ignore the Font since the tags mechanism of the
       --  text_view widget does not support the usage of Gdk_Font).
-      if Fore /= Gdk.Color.Null_Color
+      if Font_Desc /= null
+        or else Fore /= Gdk.Color.Null_Color
         or else Back /= Gdk.Color.Null_Color
       then
          Text_Tag.Gtk_New (Text_Prop_Tag);
 
+         if Font_Desc /= null then
+            Set_Property (Text_Prop_Tag, Font_Desc_Property, Font_Desc);
+         end if;
+
          if Fore /= Gdk.Color.Null_Color then
-            Set_Color_Property (Text_Prop_Tag, "foreground_gdk", Fore);
+            Set_Property (Text_Prop_Tag, Foreground_Gdk_Property, Fore);
          end if;
 
          if Back /= Gdk.Color.Null_Color then
-            Set_Color_Property (Text_Prop_Tag, "background_gdk", Back);
+            Set_Property (Text_Prop_Tag, Background_Gdk_Property, Back);
          end if;
 
          --  Get iter at location before text insertion from saved Start_Mark
@@ -943,9 +940,10 @@ package body Gtk.Text is
    is
       procedure Internal
         (Text : System.Address;
+         Name : String;
          Hadj : System.Address;
          Vadj : System.Address);
-      pragma Import (C, Internal, "ada_text_view_set_adjustments");
+      pragma Import (C, Internal, "g_signal_emit_by_name");
       Hadj_Addr : System.Address := System.Null_Address;
       Vadj_Addr : System.Address := System.Null_Address;
       use type Adjustment.Gtk_Adjustment;
@@ -956,9 +954,9 @@ package body Gtk.Text is
       if Vadj /= Adjustment.Null_Adjustment then
          Vadj_Addr := Get_Object (Vadj);
       end if;
-      Internal (Get_Object (Text), Hadj_Addr, Vadj_Addr);
-      --  ??? It is very easy to do this directly in Ada... So why don't
-      --  ??? you just do it?
+      Internal
+        (Get_Object (Text), "set_scroll_adjustments" & ASCII.NUL,
+         Hadj_Addr, Vadj_Addr);
    end Set_Adjustments;
 
    -------------------
