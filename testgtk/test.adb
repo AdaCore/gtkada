@@ -202,7 +202,7 @@ package body Test is
                                         Name => "delete_event",
                                         Func => Exit_Main'Access);
 
-      Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
+      Box.Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
       Add (Container => Main_Window, Widget => Box1);
       Show (Box1);
 
@@ -225,7 +225,7 @@ package body Test is
                       Expand => True, Fill => True);
       Show (A_Scrolled_Window);
 
-      Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 0);
+      Box.Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
       Set_Border_Width (Container => Box2, Border_Width => 10);
       Add_With_Viewport (Scrolled_Window => A_Scrolled_Window,
                          Child           => Box2);
@@ -235,7 +235,7 @@ package body Test is
 
       for Index in Buttons'Range loop
 
-         Button.Gtk_New (Widget => A_Button,
+         Button.Gtk_New (A_Button,
                          Label => ASU.To_String (Buttons (Index).Label));
          if Buttons (Index).Cb /= null then
             Cb_Id := Button_Callback.Connect (Obj => A_Button,
@@ -253,13 +253,13 @@ package body Test is
       Box.Pack_Start (In_Box => Box1, Child => Separator, Expand => False);
       Show (Separator);
 
-      Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
+      Box.Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 10);
       Set_Border_Width (Container => Box2, Border_Width => 10);
       Box.Pack_Start (In_Box => Box1, Child => Box2,
                        Expand => False, Fill => True);
       Show (Box2);
 
-      Button.Gtk_New (Widget => A_Button, Label => "close");
+      Button.Gtk_New (A_Button, Label => "close");
       Cb_Id := Do_Exit_Callback.Connect (Obj => A_Button, Name => "clicked",
                                         Func => Do_Exit'Access,
                                         Func_Data => Main_Window);

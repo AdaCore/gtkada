@@ -70,11 +70,11 @@ package body Create_Toggle_Buttons is
                            Title => "Toggle buttons");
          Set_Border_Width (Container => New_Window, Border_Width => 0);
 
-         Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
+         Box.Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
          Add (Container => New_Window, Widget => Box1);
          Show (Box1);
 
-         Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
+         Box.Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 10);
          Set_Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2);
          Show (Box2);
@@ -96,12 +96,12 @@ package body Create_Toggle_Buttons is
                          Expand => False);
          Show (A_Separator);
 
-         Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
+         Box.Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 10);
          Set_Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2, Expand => False);
          Show (Box2);
 
-         Button.Gtk_New (Widget => A_Button, Label => "close");
+         Button.Gtk_New (A_Button, Label => "close");
          Cb_Id := Exit_Cb.Connect (Obj => A_Button,
                                    Name => "clicked",
                                    Func => Gtk.Widget.Destroy'Access,

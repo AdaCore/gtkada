@@ -220,7 +220,7 @@ package body Create_Scroll_Test is
          Set_Title (Window => Dialog, Title => "Scroll Test");
          Set_Border_Width (Dialog, 0);
 
-         Box.Gtk_New_Hbox (Widget => Hbox, Homogeneous => False, Spacing => 0);
+         Box.Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 0);
          Box.Pack_Start (In_Box => Gtk.Dialog.Get_Vbox (Dialog), Child => Hbox);
          Show (Hbox);
 
@@ -259,7 +259,7 @@ package body Create_Scroll_Test is
                                       Func => Adjustment_Change'Access,
                                       Func_Data => Drawing_Area);
 
-         Gtk.Button.Gtk_New (Widget => Button, Label => "Quit");
+         Gtk.Button.Gtk_New (Button, Label => "Quit");
          Box.Pack_Start (In_Box => Gtk.Dialog.Get_Action_Area (Dialog),
                          Child => Button);
          Id := Widget_Cb.Connect (Button, "clicked",
