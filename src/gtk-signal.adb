@@ -39,7 +39,7 @@ with Ada.Text_IO;
 --       field in gtk
 --    2) The object passed to the Ada callback must be the same one that was
 --       passed to connect. For this, widgets are defined as pointers to a
---       a structure, the real type beeing know thanks to the generic packages
+--       a structure, the real type beeing known thanks to the generic packages
 --    3) in gtk, callbacks may have different number of arguments, depending
 --       on the signal and the widget. For this, we use a C function with a
 --       variable number of argument as the real callback. This C function in
@@ -120,8 +120,8 @@ package body Gtk.Signal is
       function Convert is new Unchecked_Conversion (System.Address,
                                                     Data_Type_Access);
 
-      procedure Free (Data : in System.Address);
-      pragma Convention (C, Free);
+      procedure Free_Data (Data : in System.Address);
+      pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
 
       procedure Marshaller (Object    : in System.Address;
@@ -130,11 +130,11 @@ package body Gtk.Signal is
                             Params    : in GtkArgArray);
       pragma Convention (C, Marshaller);
 
-      ----------
-      -- Free --
-      ----------
+      ---------------
+      -- Free_Data --
+      ---------------
 
-      procedure Free (Data : in System.Address) is
+      procedure Free_Data (Data : in System.Address) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          procedure Internal_2 is new Unchecked_Deallocation
@@ -143,7 +143,7 @@ package body Gtk.Signal is
       begin
          Internal_2 (D.Data);
          Internal (D);
-      end Free;
+      end Free_Data;
 
       ----------------
       -- Marshaller --
@@ -183,7 +183,7 @@ package body Gtk.Signal is
                                    Name,
                                    Marshaller'Address,
                                    Convert (D),
-                                   Free'Address,
+                                   Free_Data'Address,
                                    After);
       end Connect;
    end Callback;
@@ -208,8 +208,8 @@ package body Gtk.Signal is
       function Convert is new Unchecked_Conversion (System.Address,
                                                     Data_Type_Access);
 
-      procedure Free (Data : in System.Address);
-      pragma Convention (C, Free);
+      procedure Free_Data (Data : in System.Address);
+      pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
 
       procedure Marshaller (Object    : in System.Address;
@@ -218,11 +218,11 @@ package body Gtk.Signal is
                             Params    : in GtkArgArray);
       pragma Convention (C, Marshaller);
 
-      ----------
-      -- Free --
-      ----------
+      ---------------
+      -- Free_Data --
+      ---------------
 
-      procedure Free (Data : in System.Address) is
+      procedure Free_Data (Data : in System.Address) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          procedure Internal_2 is new Unchecked_Deallocation
@@ -231,7 +231,7 @@ package body Gtk.Signal is
       begin
          Internal_2 (D.Data);
          Internal (D);
-      end Free;
+      end Free_Data;
 
       ----------------
       -- Marshaller --
@@ -284,7 +284,7 @@ package body Gtk.Signal is
                                    Name,
                                    Marshaller'Address,
                                    Convert (D),
-                                   Free'Address,
+                                   Free_Data'Address,
                                    After);
       end Connect;
    end Two_Callback;
@@ -309,8 +309,8 @@ package body Gtk.Signal is
       function Convert is new Unchecked_Conversion (System.Address,
                                                     Data_Type_Access);
 
-      procedure Free (Data : in System.Address);
-      pragma Convention (C, Free);
+      procedure Free_Data (Data : in System.Address);
+      pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
 
       procedure Marshaller (Object    : in System.Address;
@@ -319,11 +319,11 @@ package body Gtk.Signal is
                             Params    : in GtkArgArray);
       pragma Convention (C, Marshaller);
 
-      ----------
-      -- Free --
-      ----------
+      ---------------
+      -- Free_Data --
+      ---------------
 
-      procedure Free (Data : in System.Address) is
+      procedure Free_Data (Data : in System.Address) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          procedure Internal_2 is new Unchecked_Deallocation
@@ -332,7 +332,7 @@ package body Gtk.Signal is
       begin
          Internal_2 (D.Data);
          Internal (D);
-      end Free;
+      end Free_Data;
 
       ----------------
       -- Marshaller --
@@ -404,7 +404,7 @@ package body Gtk.Signal is
                                    Name,
                                    Marshaller'Address,
                                    Convert (D),
-                                   Free'Address,
+                                   Free_Data'Address,
                                    After);
       end Connect;
    end Tips_Query_Callback;
@@ -484,8 +484,8 @@ package body Gtk.Signal is
       function Convert is new Unchecked_Conversion (System.Address,
                                                     Data_Type_Access);
 
-      procedure Free (Data : in System.Address);
-      pragma Convention (C, Free);
+      procedure Free_Data (Data : in System.Address);
+      pragma Convention (C, Free_Data);
 
       procedure Marshaller (Object    : in System.Address;
                             User_Data : in System.Address;
@@ -493,17 +493,17 @@ package body Gtk.Signal is
                             Params    : in GtkArgArray);
       pragma Convention (C, Marshaller);
 
-      ----------
-      -- Free --
-      ----------
+      ---------------
+      -- Free_Data --
+      ---------------
 
-      procedure Free (Data : in System.Address) is
+      procedure Free_Data (Data : in System.Address) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          D : Data_Type_Access := Convert (Data);
       begin
          Internal (D);
-      end Free;
+      end Free_Data;
 
       ----------------
       -- Marshaller --
@@ -541,7 +541,7 @@ package body Gtk.Signal is
                                    Name,
                                    Marshaller'Address,
                                    Convert (D),
-                                   Free'Address,
+                                   Free_Data'Address,
                                    After);
       end Connect;
    end Object_Callback;
