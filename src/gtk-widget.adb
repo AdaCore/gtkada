@@ -878,6 +878,8 @@ package body Gtk.Widget is
 
          if not Top.Specific_Data.Has_Accel_Group then
             Put_Line (File, "   Accel_Group.Gtk_New (The_Accel_Group);");
+            Put_Line (File, "   Window.Add_Accel_Group (" &
+              To_Ada (Get_Field (Top, "name").all) & ", The_Accel_Group);");
             Top.Specific_Data.Has_Accel_Group := True;
          end if;
 
