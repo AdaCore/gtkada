@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+with Interfaces.C.Strings;        use Interfaces.C.Strings;
 with Gdk.Visual; use Gdk.Visual;
 with Gdk.Color;  use Gdk.Color;
 with Ada.Unchecked_Conversion;
@@ -1512,6 +1512,26 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Is_Visible));
    end Set_Child_Visible;
+
+   --------------------
+   -- Get_Accel_Path --
+   --------------------
+
+   function Get_Accel_Path (Widget : access Gtk_Widget_Record) return String is
+      function Internal (W : System.Address; Locked : System.Address)
+         return chars_ptr;
+      pragma Import (C, Internal, "_gtk_widget_get_accel_path");
+      --  Do not free the return value
+
+      B : aliased Gboolean;
+      C : constant chars_ptr := Internal (Get_Object (Widget), B'Address);
+   begin
+      if C = Null_Ptr then
+         return "";
+      else
+         return Value (C);
+      end if;
+   end Get_Accel_Path;
 
    -----------------
    -- Child_Focus --
