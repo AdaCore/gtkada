@@ -885,13 +885,8 @@ package body Glib.Glade is
                Put_Line ("   -- Signal " & Name & " invalid for "
                          & To_Ada (Current));
                Put_Line ("   !!!");
-            else
-               --           if Object /= null then
-               --              Class := Gtk_Widget_Class'Access;
-               --           else
-               --              Class := Orig_Class;
-               --           end if;
 
+            else
                Query (Id, Q);
                Returned := Return_Type (Q);
 
