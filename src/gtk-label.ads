@@ -67,8 +67,25 @@ package Gtk.Label is
      (Label : access Gtk_Label_Record'Class; Str : UTF8_String);
    --  Internal initialization function.
 
+   function Get_Justify
+     (Label : access Gtk_Label_Record) return Enums.Gtk_Justification;
+   --  Returns the justification of the label. See Set_Justify.
+
+   function Get_Line_Wrap (Label : access Gtk_Label_Record) return Boolean;
+   --  Returns True if the lines of the label are automatically wrapped.
+
+   function Get_Selectable (Label : access Gtk_Label_Record) return Boolean;
+   --  Returns True if the user can copy text from the label.
+
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Label.
+
+   function Get_Use_Markup (Label : access Gtk_Label_Record) return Boolean;
+   --  Return True if the label's text will be parsed for markup.
+
+   function Get_Use_Underline (Label : access Gtk_Label_Record) return Boolean;
+   --  Return True whether an embedded underline in the label indicates
+   --  the mnemonic accelerator keys.
 
    procedure Set_Text (Label : access Gtk_Label_Record; Str : UTF8_String);
    --  Change the text of the label.
@@ -78,12 +95,24 @@ package Gtk.Label is
    function Get_Text (Label : access Gtk_Label_Record) return UTF8_String;
    --  Get the current value of the text displayed in the label.
 
+   procedure Set_Markup (Label : access Gtk_Label_Record; Str : UTF8_String);
+   --  Parses Str which is marked up with the Pango text markup language,
+   --  setting the label's text and attribute list based on the parse results.
+
    --  <doc_ignore>
    function Get
      (Label : access Gtk_Label_Record) return UTF8_String renames Get_Text;
    --  Same as Get_Text.
    --  pragma Deprecated (Get);
    --  </doc_ignore>
+
+   procedure Select_Region
+     (Label        : access Gtk_Label_Record;
+      Start_Offset : Integer := -1;
+      End_Offset   : Integer := -1);
+   --  Selects a range of characters in the label, if the label is
+   --  selectable.  If Start or End are -1, then the end of the label
+   --  will be substituted.
 
    procedure Set_Justify
      (Label : access Gtk_Label_Record;
@@ -108,11 +137,29 @@ package Gtk.Label is
    --  example: If the text is FooBarBaz and the Pattern is "___   ___"
    --  then both "Foo" and "Baz" will be underlined, but not "Bar".
 
+   procedure Set_Selectable
+     (Label : access Gtk_Label_Record; Selectable : Boolean);
+   --  Selectable labels allow the user to select text from the label,
+   --  for copy-and-paste.
+
    procedure Set_Line_Wrap (Label : access Gtk_Label_Record; Wrap : Boolean);
    --  Toggle line wrapping within Label.
    --  if Wrap is True, then Label will break lines if the text is larger
    --  then the widget's size. If Wrap is False, then the text is simply
    --  cut off.
+
+   procedure Set_Use_Markup
+     (Label  : access Gtk_Label_Record;
+      Markup : Boolean);
+   --  Sets whether the text of the label contains markup in Pango's
+   --  text markup language.  If Markup is True, then Label will be
+   --  parsed for markup.
+
+   procedure Set_Use_Underline
+     (Label     : access Gtk_Label_Record;
+      Underline : Boolean);
+   --  Sets whether the text of the label should be underlined.
+   --  If Underline is True, then Label will be underlined.
 
    ----------------
    -- Properties --
@@ -237,21 +284,11 @@ end Gtk.Label;
 --  missing:
 --  Set_Attributes
 --  Get_Attributes
---  Set_Markup
---      e.g/ gtk_label_set_markup (GTK_LABEL (label),
---                  "<u>Animation loaded from a file</u>")
---           for underlined label.
---  Set_Use_Markup
---  Get_Use_Markup
---  Set_Use_Underline
---  Get_Use_Underline
 --  Set_Markup_With_Mnemonic
 --  Get_Mnemonic_Keyval
 --  Get_Mnemonic_Widget
 --  Set_Mnemonic_Widget
 --  Set_Text_With_Mnemonic
---  Get_Justify
---  Get_Line_Wrap
 --  Set_Selectable
 --  Get_Selectable
 --  Select_Region

@@ -76,6 +76,72 @@ package body Gtk.Label is
       Initialize_With_Mnemonic (Label, Str);
    end Gtk_New_With_Mnemonic;
 
+   -------------------
+   -- Get_Line_Wrap --
+   -------------------
+
+   function Get_Line_Wrap (Label : access Gtk_Label_Record) return Boolean
+   is
+      function Internal (Label : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_label_get_line_wrap");
+
+   begin
+      return Internal (Get_Object (Label)) /= 0;
+   end Get_Line_Wrap;
+
+   -----------------
+   -- Get_Justify --
+   -----------------
+
+   function Get_Justify
+     (Label : access Gtk_Label_Record) return Enums.Gtk_Justification
+   is
+      function Internal
+        (Label : System.Address) return Enums.Gtk_Justification;
+      pragma Import (C, Internal, "gtk_label_get_justify");
+
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Justify;
+
+   --------------------
+   -- Get_Selectable --
+   --------------------
+
+   function Get_Selectable (Label : access Gtk_Label_Record) return Boolean is
+      function Internal (Label : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_label_get_selectable");
+
+   begin
+      return Internal (Get_Object (Label)) /= 0;
+   end Get_Selectable;
+
+   --------------------
+   -- Get_Use_Markup --
+   --------------------
+
+   function Get_Use_Markup (Label : access Gtk_Label_Record) return Boolean is
+      function Internal (Label : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_label_get_use_markup");
+
+   begin
+      return Internal (Get_Object (Label)) /= 0;
+   end Get_Use_Markup;
+
+   -----------------------
+   -- Get_Use_Underline --
+   -----------------------
+
+   function Get_Use_Underline
+     (Label : access Gtk_Label_Record) return Boolean
+   is
+      function Internal (Label : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_label_get_use_underline");
+
+   begin
+      return Internal (Get_Object (Label)) /= 0;
+   end Get_Use_Underline;
+
    ----------------
    -- Initialize --
    ----------------
@@ -103,6 +169,24 @@ package body Gtk.Label is
    begin
       Set_Object (Label, Internal (Str & ASCII.NUL));
    end Initialize_With_Mnemonic;
+
+   -------------------
+   -- Select_Region --
+   -------------------
+
+   procedure Select_Region
+     (Label        : access Gtk_Label_Record;
+      Start_Offset : Integer := -1;
+      End_Offset   : Integer := -1)
+   is
+      procedure Internal (Label : System.Address; Start_Offset : Gint;
+         End_Offset : Gint);
+      pragma Import (C, Internal, "gtk_label_select_region");
+
+   begin
+      Internal (Get_Object (Label), Gint (Start_Offset), Gint
+         (End_Offset));
+   end Select_Region;
 
    -----------------
    -- Set_Justify --
@@ -132,6 +216,18 @@ package body Gtk.Label is
       Internal (Get_Object (Label), Str & ASCII.NUL);
    end Set_Text;
 
+   ----------------
+   -- Set_Markup --
+   ----------------
+
+   procedure Set_Markup (Label : access Gtk_Label_Record; Str : UTF8_String) is
+      procedure Internal (Label : System.Address; Str : UTF8_String);
+      pragma Import (C, Internal, "gtk_label_set_markup");
+
+   begin
+      Internal (Get_Object (Label), Str & ASCII.NUL);
+   end Set_Markup;
+
    -----------------
    -- Set_Pattern --
    -----------------
@@ -157,6 +253,51 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Boolean'Pos (Wrap));
    end Set_Line_Wrap;
+
+   --------------------
+   -- Set_Selectable --
+   --------------------
+
+   procedure Set_Selectable
+     (Label      : access Gtk_Label_Record;
+      Selectable : Boolean)
+   is
+      procedure Internal (Label : System.Address; Setting : Gint);
+      pragma Import (C, Internal, "gtk_label_set_selectable");
+
+   begin
+      Internal (Get_Object (Label), Boolean'Pos (Selectable));
+   end Set_Selectable;
+
+   --------------------
+   -- Set_Use_Markup --
+   --------------------
+
+   procedure Set_Use_Markup
+     (Label  : access Gtk_Label_Record;
+      Markup : Boolean)
+   is
+      procedure Internal (Label : System.Address; Markup : Gint);
+      pragma Import (C, Internal, "gtk_label_set_use_markup");
+
+   begin
+      Internal (Get_Object (Label), Boolean'Pos (Markup));
+   end Set_Use_Markup;
+
+   -----------------------
+   -- Set_Use_Underline --
+   -----------------------
+
+   procedure Set_Use_Underline
+     (Label     : access Gtk_Label_Record;
+      Underline : Boolean)
+   is
+      procedure Internal (Label : System.Address; Underline : Gint);
+      pragma Import (C, Internal, "gtk_label_set_use_underline");
+
+   begin
+      Internal (Get_Object (Label), Boolean'Pos (Underline));
+   end Set_Use_Underline;
 
    ---------------------
    -- Type_Conversion --
