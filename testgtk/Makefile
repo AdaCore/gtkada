@@ -15,10 +15,10 @@ GTKADA_CONFIG=../gtkada-config
 ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags`
 
 GNATCC = gcc
-ALL_GNATFLAGS = $(GNATFLAGS) -I.. -g
+GNATFLAGS = -gnatwu -g
 
 GNATMAKE = gnatmake
-GNATMAKEFLAGS = $(ALL_GNATFLAGS)
+GNATMAKEFLAGS = $(GNATFLAGS)
 GNATMAKELDFLAGS = `gtk-config --libs` ../libgtkada.a
 GNATMAKELDFLAGS_STATIC = `gtk-config --prefix`/lib/libgtk.a \
    `gtk-config --prefix`/lib/libglib.a \
@@ -31,9 +31,9 @@ all: $(target)
 
 $(target): ../*.ad[sb] *.ad[sb]
 	@echo "-------------------------------------"
-	@echo $(GNATMAKE) $(target) '`'$(GTKADA_CONFIG)'`'
+	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
-	@$(GNATMAKE) $(target) `$(GTKADA_CONFIG)`
+	@$(GNATMAKE) $(GNATFLAGS) $(target) `$(GTKADA_CONFIG)`
 
 static: ../*.ad[sb] *.ad[sb]
 	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC)
@@ -54,6 +54,7 @@ maintainer-clean: clean
 
 
 .adb.o:
-	$(CC) -c $(ALL_GNATFLAGS) $<
+	$(CC) -c $(GNATFLAGS) $<
 .ads.o:
-	$(CC) -c $(ALL_GNATFLAGS) $<
+	$(CC) -c $(GNATFLAGS) $<
+
