@@ -5522,19 +5522,7 @@ package body Gtkada.MDI is
             when Widget_Format =>
                Child := MDI_Child (Unchecked_Convert (Get_Data (Data)).all);
 
-               if Gtk_Widget (Notebook) =
-                 Gtk_Widget (Child.MDI.Central.Layout)
-               then
-                  Dock_Child (Child, False);
-                  Set_Focus_Child (Child);
-                  Raise_Child (Child);
-                  Finish
-                    (Context,
-                     Success => True,
-                     Del     => False,
-                     Time    => Guint32 (Time));
-
-               elsif Notebook.all in Gtk_Event_Box_Record'Class then
+               if Notebook.all in Gtk_Event_Box_Record'Class then
                   --  We have to first undock it, or we can't move it to
                   --  another dock
                   Dock_Child (Child, False);
@@ -5555,10 +5543,7 @@ package body Gtkada.MDI is
                      Del     => False,
                      Time    => Guint32 (Time));
 
-               elsif Child.State /= Docked
-                 or else Child.MDI.Docks (Child.Dock) /=
-                    Gtk_Notebook (Notebook)
-               then
+               elsif Get_Notebook (Child) /= Gtk_Notebook (Notebook) then
                   --  We have to first undock it, or we can't move it to
                   --  another dock
                   Dock_Child (Child, False);
