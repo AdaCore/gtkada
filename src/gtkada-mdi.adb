@@ -4390,8 +4390,9 @@ package body Gtkada.MDI is
          --  notebook order.
 
          for J in MDI.Docks'Range loop
-            if MDI.Docks (J) /= null then
-
+            if MDI.Docks (J) /= null
+              and then (J /= None or else MDI.Children_Are_Maximized)
+            then
                for Page_Index in reverse
                  0 .. (Page_List.Length (Get_Children (MDI.Docks (J))) - 1)
                loop
