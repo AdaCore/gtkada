@@ -1,5 +1,14 @@
 #include "gtk/gtk.h"
 
+/***************************************************
+ *  Functions for Objects
+ ***************************************************/
+
+gint
+ada_object_get_type (GtkObject* object)
+{
+  return object->klass->type;
+}
 
 /***************************************************
  *  Functions to get the field of a color selection
