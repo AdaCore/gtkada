@@ -198,11 +198,23 @@ package Gtk.Enums is
       Ctree_Lines_Tabbed
       --  The tree won't be highlighted by lines but by tabs surrounding nodes
      );
+   --  See Gtk.Ctree.Set_Line_Style for more details.
 
-   type Gtk_Ctree_Expander_Style is (Ctree_Expander_None,
-                                     Ctree_Expander_Square,
-                                     Ctree_Expander_Triangle,
-                                     Ctree_Expander_Circular);
+   type Gtk_Ctree_Expander_Style is
+     (Ctree_Expander_None,
+      --  No pixmap will be drawn, you will have to double-click on the node to
+      --  expand it.
+
+      Ctree_Expander_Square,
+      --  The pixmap will be a square
+
+      Ctree_Expander_Triangle,
+      --  The pixmap will be a triangle
+
+      Ctree_Expander_Circular
+      --  The pixmap will be a circle
+     );
+   --  See Gtk.Ctree.Set_Expander_Style for more details.
 
    --  Some Glib instanciations
 
