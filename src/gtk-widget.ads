@@ -693,7 +693,8 @@ package Gtk.Widget is
    --  This is only useful when you are rewritting your own widget that can be
    --  embedded directly in a Gtk_Scrolled_Window, without any Gtk_Viewport.
    --
-   --  Signal is the name of the signal that will be emitted when
+   --  Signal is the name of the signal that will be emitted when Widget is
+   --  put inside a Gtk_Scrolled_Window. 
    --
    --  Note that the handlers for this signal must take two arguments in
    --  addition to the widget (the horizontal and vertical adjustments to be
