@@ -1,11 +1,11 @@
 
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Gtk_Entry;
+with Gtk.GEntry;
 
 package Gtk.Spin_Button is
 
-   type Gtk_Spin_Button is new Gtk.Gtk_Entry.Gtk_Entry with private;
+   type Gtk_Spin_Button is new Gtk.GEntry.Gtk_Entry with private;
 
    procedure Construct
       (Spin_Button : in Gtk_Spin_Button'Class;
@@ -47,7 +47,7 @@ package Gtk.Spin_Button is
        Step        : in Gfloat);
 
 private
-   type Gtk_Spin_Button is new Gtk.Gtk_Entry.Gtk_Entry with null record;
+   type Gtk_Spin_Button is new Gtk.GEntry.Gtk_Entry with null record;
 
    --  mapping: Construct gtkspinbutton.h gtk_spin_button_construct
    --  mapping: Get_Adjustment gtkspinbutton.h gtk_spin_button_get_adjustment
