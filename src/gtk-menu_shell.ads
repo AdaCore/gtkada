@@ -44,7 +44,7 @@
 
 with Gtk.Object;
 with Gtk.Container;
-with Gtk.Menu_Item;
+with Gtk.Menu_Item;   use Gtk.Menu_Item
 
 package Gtk.Menu_Shell is
 
@@ -61,17 +61,17 @@ package Gtk.Menu_Shell is
 
    procedure Append
      (Menu_Shell : access Gtk_Menu_Shell_Record;
-      Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+      Child      : access Gtk_Menu_Item_Record'Class);
    --  Add a new item at the end of the menu.
 
    procedure Prepend
      (Menu_Shell : access Gtk_Menu_Shell_Record;
-      Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+      Child      : access Gtk_Menu_Item_Record'Class);
    --  Add a new item at the beginning of the menu
 
    procedure Insert
      (Menu_Shell : access Gtk_Menu_Shell_Record;
-      Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
+      Child      : access Gtk_Menu_Item_Record'Class;
       Position   : in Gint);
    --  Add a new item at a specific position in the menu.
    --  The first item is at position 0. To insert as the last item in the menu,
@@ -79,7 +79,7 @@ package Gtk.Menu_Shell is
 
    procedure Select_Item
      (Menu_Shell : access Gtk_Menu_Shell_Record;
-      Item       : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+      Item       : access Gtk_Menu_Item_Record'Class);
    --  Select a new item in the menu, after deselecting the current item.
 
    procedure Deselect (Menu_Shell : access Gtk_Menu_Shell_Record);
@@ -87,7 +87,7 @@ package Gtk.Menu_Shell is
 
    procedure Activate_Item
      (Menu_Shell       : access Gtk_Menu_Shell_Record;
-      Item             : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
+      Item             : access Gtk_Menu_Item_Record'Class;
       Force_Deactivate : Boolean);
    --  Activate the item.
    --  If Force_Deactivate is True or the menu_shell sets this property,

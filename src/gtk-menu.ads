@@ -45,8 +45,8 @@
 --  <c_version> 1.2.6 </c_version>
 
 with Gtk.Accel_Group;
-with Gtk.Object; use Gtk.Object;
-with Gtk.Menu_Item;
+with Gtk.Object;
+with Gtk.Menu_Item;   use Gtk.Menu_Item;
 with Gtk.Menu_Shell;
 with Gtk.Widget;
 
@@ -78,13 +78,13 @@ package Gtk.Menu is
 
    procedure Append
      (Menu  : access Gtk_Menu_Record;
-      Child : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+      Child : access Gtk_Menu_Item_Record'Class);
    --  Append a new item to the menu.
    --  The new item is added at the end of the menu.
 
    procedure Insert
      (Menu     : access Gtk_Menu_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
+      Child    : access Gtk_Menu_Item_Record'Class;
       Position : in Gint := 0);
    --  Add a new item to the menu, at a given position.
    --  The first position in the menu is number 0.
@@ -92,7 +92,7 @@ package Gtk.Menu is
 
    procedure Prepend
      (Menu  : access Gtk_Menu_Record;
-      Child : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+      Child : access Gtk_Menu_Item_Record'Class);
    --  Add a new item at the end of a menu.
 
    procedure Reorder_Child
@@ -214,7 +214,7 @@ package Gtk.Menu is
 
    procedure Set_Accel_Group
       (Menu        : access Gtk_Menu_Record;
-       Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group'Class);
+       Accel_Group : access Accel_Group.Gtk_Accel_Group'Class);
    --  Set the Accel_Group that holds the global accelerators and key bindings
    --  for the menu.
 
@@ -266,7 +266,8 @@ package Gtk.Menu is
                        File   : in File_Type);
    --  Gate internal function
 
-   procedure Generate (Menu : in out Gtk_Object; N : in Node_Ptr);
+   procedure Generate (Menu : in out Gtk.Object.Gtk_Object;
+                       N    : in Node_Ptr);
    --  Dgate internal function
 
    -------------
