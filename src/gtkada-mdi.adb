@@ -101,6 +101,7 @@ package body Gtkada.MDI is
    --  <preferences> Height of the font to use in the title bar
 
    Icons_Width : constant Gint := 100;
+   Icons_Height : constant Gint := Title_Bar_Height + 2 * Border_Thickness;
    --  <preferences> Width to use for icons
 
    Opaque_Resize : constant Boolean := False;
@@ -305,7 +306,6 @@ package body Gtkada.MDI is
 
    procedure Draw_Child
      (Child : access MDI_Child_Record'Class; Area : Gdk_Rectangle);
-   procedure Draw_Child (Child : access Gtk_Widget_Record'Class);
    function Draw_Child
      (Child : access Gtk_Widget_Record'Class; Event : Gdk_Event)
       return Boolean;
@@ -1177,6 +1177,15 @@ package body Gtkada.MDI is
             Alloc := (C.X, C.Y, Allocation_Int (C.Uniconified_Width),
                       Allocation_Int (C.Uniconified_Height));
             Size_Allocate (C, Alloc);
+
+         --  The following is required for the iconified children initially
+         --  displayed through the desktop save functions to be propertly
+         --  displayed.
+         --  elsif C.State = Iconified then
+         --     Alloc := (C.X, C.Y,
+         --               Get_Allocation_Width (C),
+         --               Get_Allocation_Height (C));
+         --     Size_Allocate (Get_Child (C), Alloc);
          end if;
 
          List := Widget_List.Next (List);
@@ -1343,26 +1352,29 @@ package body Gtkada.MDI is
 
       Widget_List.Remove (C.MDI.Items, Gtk_Widget (C));
 
-      --  Initial_Child could be null if we are destroying a floating
-      --  child explicitly (by closing its X11 window)
-      if C.State = Floating
-        and then C.Initial_Child /= null
-      then
-         Float_Child (C, False);
-      elsif C.State = Docked then
-         Dock_Child (C, False);
-      end if;
+      if not Gtk.Object.In_Destruction_Is_Set (C.MDI) then
+         --  Initial_Child could be null if we are destroying a floating
+         --  child explicitly (by closing its X11 window)
+         if C.State = Floating
+           and then C.Initial_Child /= null
+         then
+            Float_Child (C, False);
+         elsif C.State = Docked then
+            Dock_Child (C, False);
+         end if;
 
-      --  For maximized children, test whether there are still enough
-      --  pages. Note that if the child is destroyed through its title bar
-      --  button, it has already been unparented, and thus is no longer in the
-      --  notebook.
+         --  For maximized children, test whether there are still enough
+         --  pages. Note that if the child is destroyed through its title bar
+         --  button, it has already been unparented, and thus is no longer in
+         --  the notebook.
 
-      if C.State = Normal
-        and then Children_Are_Maximized (C.MDI)
-      then
-         Set_Show_Tabs
-           (C.MDI.Docks (None), Get_Nth_Page (C.MDI.Docks (None), 1) /= null);
+         if C.State = Normal
+           and then Children_Are_Maximized (C.MDI)
+         then
+            Set_Show_Tabs
+              (C.MDI.Docks (None),
+               Get_Nth_Page (C.MDI.Docks (None), 1) /= null);
+         end if;
       end if;
 
       --  Destroy the toplevel Child is associated with
@@ -1461,16 +1473,6 @@ package body Gtkada.MDI is
          1, 1,
          Gint (Get_Allocation_Width (Child)) - 1,
          Gint (Get_Allocation_Height (Child)) - 1);
-   end Draw_Child;
-
-   ----------------
-   -- Draw_Child --
-   ----------------
-
-   procedure Draw_Child (Child : access Gtk_Widget_Record'Class) is
-   begin
-      Draw_Child (MDI_Child (Child), Full_Area);
-      Gtk.Handlers.Emit_Stop_By_Name (Child, "draw");
    end Draw_Child;
 
    ----------------
@@ -2071,12 +2073,6 @@ package body Gtkada.MDI is
       Return_Callback.Connect
         (Child, "motion_notify_event",
          Return_Callback.To_Marshaller (Button_Motion'Access));
-      if Gtk.Major_Version = 1
-        and then Gtk.Minor_Version <= 2
-      then
-         Widget_Callback.Connect
-           (Child, "draw", Widget_Callback.To_Marshaller (Draw_Child'Access));
-      end if;
       Widget_Callback.Connect
         (Child, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Child'Access));
@@ -2560,7 +2556,7 @@ package body Gtkada.MDI is
       end if;
 
       --  It would be nice to find the first child of C.Initial_Child that
-      --  accepts the keyboard focus. However, in the meanwhile, we at least
+      --  accepts the keyboard focus. However, in the meantime, we at least
       --  want to make sure that no other widget has the focus. As a result,
       --  focus_in events will always be sent the next time the user selects a
       --  widget.
@@ -2937,7 +2933,7 @@ package body Gtkada.MDI is
                end if;
 
             when Iconified =>
-               null;
+               Remove (MDI.Layout, Child);
 
             when Floating =>
                null;
@@ -3060,7 +3056,6 @@ package body Gtkada.MDI is
       use type Widget_List.Glist;
 
       MDI         : constant MDI_Window := Child.MDI;
-      Icon_Height : constant Gint := Title_Bar_Height + 2 * Border_Thickness;
       List        : Widget_List.Glist;
       C2          : MDI_Child;
       Alloc       : Gtk_Allocation;
@@ -3077,7 +3072,8 @@ package body Gtkada.MDI is
 
          List := First (MDI.Items);
          Child.X := 0;
-         Child.Y := Gint (Get_Allocation_Height (MDI.Layout)) - Icon_Height;
+         Child.Y := Gint'Max
+           (0, Gint (Get_Allocation_Height (MDI.Layout)) - Icons_Height);
 
          --  Find the best placement for the icon
 
@@ -3085,12 +3081,12 @@ package body Gtkada.MDI is
             C2 := MDI_Child (Get_Data (List));
 
             if C2 /= MDI_Child (Child) and then C2.State = Iconified then
-               if abs (C2.Y - Child.Y) / Icon_Height <= 1 then
+               if abs (C2.Y - Child.Y) / Icons_Height <= 1 then
                   if C2.X + Icons_Width >=
                     Gint (Get_Allocation_Width (MDI.Layout))
                   then
                      Child.X := 0;
-                     Child.Y := C2.Y - Icon_Height;
+                     Child.Y := C2.Y - Icons_Height;
                   elsif C2.X + Icons_Width > Child.X then
                      Child.X := C2.X + Icons_Width;
                      Child.Y := C2.Y;
@@ -3103,18 +3099,18 @@ package body Gtkada.MDI is
 
          Alloc := (Child.X, Child.Y,
                    Allocation_Int (Icons_Width),
-                   Allocation_Int (Icon_Height));
+                   Allocation_Int (Icons_Height));
          Size_Allocate (Child, Alloc);
          Set_Sensitive (Child.Maximize_Button, False);
 
       elsif Child.State = Iconified and then not Minimize then
+         Child.State := Normal;
          Child.X := Child.Uniconified_X;
          Child.Y := Child.Uniconified_Y;
          Alloc := (Child.Uniconified_X, Child.Uniconified_Y,
                    Allocation_Int (Child.Uniconified_Width),
                    Allocation_Int (Child.Uniconified_Height));
          Size_Allocate (Child, Alloc);
-         Child.State := Normal;
          Set_Sensitive (Child.Maximize_Button, True);
       end if;
    end Minimize_Child;
@@ -3898,29 +3894,23 @@ package body Gtkada.MDI is
                   end loop;
 
                   case State is
-                     when Docked    => Dock_Child (Child, True);
-                     when Iconified => Minimize_Child (Child, True);
-                     when Floating  => Float_Child (Child, True);
-                     when Normal    => null;
-                  end case;
-
-                  case State is
                      when Docked =>
-                        --  Give a minimal size to the child. If we give it the
-                        --  real size, with Set_Size_Request, this forces a
-                        --  minimal size for the MDI window. If we give it a
-                        --  minimal size with Size_Allocate, then the buttons
-                        --  in the title bar will not be shown in the size is
-                        --  smaller than the natural size of the child.
-                        --  If we don't give it a size at all, it seems we get
-                        --  random Constraint_Errors when resizing the MDI
-                        --  interactively.
-                        Size_Allocate
-                          (Child, (-1, -1, 1, 1));
-                     when Floating | Normal =>
+                        Dock_Child (Child, True);
+
+                     when Floating =>
                         Set_Size_Request (Child, Gint (Width), Gint (Height));
+                        Float_Child (Child, True);
+
+                     when Normal =>
+                        Set_Size_Request (Child, Gint (Width), Gint (Height));
+
                      when Iconified =>
-                        null;
+                        Child.State := Iconified;
+                        Set_Sensitive (Child.Maximize_Button, False);
+                        Size_Allocate
+                          (Child, (Child.X, Child.Y,
+                                   Allocation_Int (Icons_Width),
+                                   Allocation_Int (Icons_Height)));
                   end case;
 
                end if;
