@@ -552,6 +552,103 @@ ada_gdk_cursor_new (gint cursor_type)
   return gdk_cursor_new (cursor_type);
 }
 
+
+/**********************************************************
+ **  Graphic contexts
+ **********************************************************/
+
+GdkGCValues*
+ada_gdk_gc_new_values ()
+{
+  return (GdkGCValues*) g_new (GdkGCValues, 1);;
+}
+
+void
+ada_gdk_gc_free_values (GdkGCValues* values)
+{
+  g_free (values);
+}
+
+void
+ada_gdk_gc_set_background (GdkGCValues* values,
+			   GdkColor     color)
+{
+  values->background = color;
+}
+
+void
+ada_gdk_gc_set_foreground (GdkGCValues* values,
+			   GdkColor     color)
+{
+  values->foreground = color;
+}
+
+void
+ada_gdk_gc_set_clip_origin (GdkGCValues* values,
+			    gint x,
+			    gint y)
+{
+  values->clip_x_origin = x;
+  values->clip_y_origin = y;
+}
+
+void
+ada_gdk_gc_set_exposures (GdkGCValues* values,
+			  gint exposures)
+{
+  values->graphics_exposures = exposures;
+}
+
+void
+ada_gdk_gc_set_fill (GdkGCValues* values,
+		     GdkFill      fill)
+{
+  values->fill = fill;
+}
+
+void
+ada_gdk_gc_set_font (GdkGCValues* values,
+		     GdkFont*     font)
+{
+  values->font = font;
+}
+
+void
+ada_gdk_gc_set_function (GdkGCValues* values,
+			 GdkFunction  function)
+{
+  values->function = function;
+}
+
+void
+ada_gdk_gc_set_line_attributes (GdkGCValues* values,
+				gint         line_width,
+				GdkLineStyle line_style,
+				GdkCapStyle  cap_style,
+				GdkJoinStyle join_style)
+{
+  values->line_width = line_width;
+  values->line_style = line_style;
+  values->cap_style  = cap_style;
+  values->join_style = join_style;
+}
+
+void
+ada_gdk_gc_set_subwindow (GdkGCValues*      values,
+			  GdkSubwindowMode  subwindow_mode)
+{
+  values->subwindow_mode = subwindow_mode;
+}
+
+void
+ada_gdk_gc_set_ts_origin (GdkGCValues* values,
+			  gint         x,
+			  gint         y)
+{
+  values->ts_x_origin = x;
+  values->ts_y_origin = y;
+}
+
 /**********************************************************
  **  Support for events
  **********************************************************/
