@@ -71,7 +71,7 @@ package Gtk.Drawing_Area is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Drawing_Area_Record.
+   --  Return the internal value associated with a Gtk_Drawing_Area.
 
    procedure Size (Darea  : access Gtk_Drawing_Area_Record;
                    Width  : in Gint;
