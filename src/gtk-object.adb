@@ -63,6 +63,9 @@ package body Gtk.Object is
    procedure Destroy (Object : access Gtk_Object_Record) is
       procedure Internal  (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_destroy");
+      procedure Unref_Internal (Object : in System.Address);
+      pragma Import (C, Unref_Internal, "gtk_object_unref");
+      Ptr : System.Address := Get_Object (Object);
    begin
       --  Keep a reference on the object, so that the Ada structure is
       --  never automatically deleted when the C object is.
@@ -70,16 +73,17 @@ package body Gtk.Object is
       --  calling the C function, because we want the user's destroy callbacks
       --  to be called with the appropriate object.
       Ref (Object);
-      Internal (Get_Object (Object));
+      Internal (Ptr);
 
       --  We then can make sure that the object won't be referenced any more,
       --  (The Ada structure won't be free before the ref count goes down to
-      --  0, and we don't want the user to use an deleted object...).
+      --  0, and we don't want the user to use a deleted object...).
       Set_Object (Object, System.Null_Address);
 
       --  Free the reference we had. In most cases, this results in the object
-      --  being freed.
-      Unref (Object);
+      --  being freed. We can't use directly Unref, since the Ptr field for
+      --  Object is Null_Address.
+      Unref_Internal (Ptr);
    end Destroy;
 
    ---------------
