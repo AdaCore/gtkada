@@ -43,7 +43,7 @@ package body Gtk.Text_Child is
       pragma Import  (C, Internal, "gtk_text_child_anchor_get_deleted");
 
    begin
-      return To_Boolean (Internal (Get_Object (Anchor)));
+      return Internal (Get_Object (Anchor)) /= 0;
    end Get_Deleted;
 
    -----------------

@@ -177,7 +177,7 @@ package body Gtk.Notebook is
       pragma Import (C, Internal, "gtk_notebook_get_show_border");
 
    begin
-      return To_Boolean (Internal (Get_Object (Notebook)));
+      return Internal (Get_Object (Notebook)) /= 0;
    end Get_Show_Border;
 
    -------------------
@@ -192,7 +192,7 @@ package body Gtk.Notebook is
       pragma Import (C, Internal, "gtk_notebook_get_show_tabs");
 
    begin
-      return To_Boolean (Internal (Get_Object (Notebook)));
+      return Internal (Get_Object (Notebook)) /= 0;
    end Get_Show_Tabs;
 
    --------------------
@@ -207,7 +207,7 @@ package body Gtk.Notebook is
       pragma Import (C, Internal, "gtk_notebook_get_scrollable");
 
    begin
-      return To_Boolean (Internal (Get_Object (Notebook)));
+      return Internal (Get_Object (Notebook)) /= 0;
    end Get_Scrollable;
 
    -------------------

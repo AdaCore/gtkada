@@ -62,7 +62,7 @@ package body Gdk.Drawable is
       pragma Import (C, Internal, "gdk_draw_arc");
 
    begin
-      Internal (Drawable, Gc, To_Gboolean (Filled),
+      Internal (Drawable, Gc, Boolean'Pos (Filled),
                 X, Y, Width, Height, Angle1, Angle2);
    end Draw_Arc;
 
@@ -125,7 +125,7 @@ package body Gdk.Drawable is
       pragma Import (C, Internal, "gdk_draw_polygon");
 
    begin
-      Internal (Drawable, Gc, To_Gboolean (Filled), Points, Points'Length);
+      Internal (Drawable, Gc, Boolean'Pos (Filled), Points, Points'Length);
    end Draw_Polygon;
 
    --------------------
@@ -150,7 +150,7 @@ package body Gdk.Drawable is
       pragma Import (C, Internal, "gdk_draw_rectangle");
 
    begin
-      Internal (Drawable, Gc, To_Gboolean (Filled), X, Y, Width, Height);
+      Internal (Drawable, Gc, Boolean'Pos (Filled), X, Y, Width, Height);
    end Draw_Rectangle;
 
    -------------------

@@ -336,7 +336,7 @@ package body Gtk.Window is
       pragma Import (C, Internal, "gtk_window_set_decorated");
 
    begin
-      Internal (Get_Object (Window), To_Gboolean (Setting));
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
    end Set_Decorated;
 
    ----------------------
@@ -372,7 +372,7 @@ package body Gtk.Window is
       pragma Import (C, Internal, "gtk_window_set_destroy_with_parent");
 
    begin
-      Internal (Get_Object (Window), To_Gboolean (Setting));
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
    end Set_Destroy_With_Parent;
 
    --------------------------
@@ -537,7 +537,7 @@ package body Gtk.Window is
       pragma Import (C, Internal, "gtk_window_set_resizable");
 
    begin
-      Internal (Get_Object (Window), To_Gboolean (Resizable));
+      Internal (Get_Object (Window), Boolean'Pos (Resizable));
    end Set_Resizable;
 
    --------------

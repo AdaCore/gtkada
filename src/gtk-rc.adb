@@ -250,7 +250,7 @@ package body Gtk.Rc is
       pragma Import (C, Internal, "gtk_rc_reparse_all");
 
    begin
-      return To_Boolean (Internal);
+      return Internal /= 0;
    end Reparse_All;
 
    -------------------------

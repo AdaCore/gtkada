@@ -128,12 +128,6 @@ package Glib is
    function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array;
    --  Convert a C-style boolean array into an Ada-style array.
 
-   function To_Boolean (Value : in Gboolean) return Boolean;
-   --  Convert a C boolean into an Ada boolean.
-
-   function To_Gboolean (Bool : in Boolean) return Gboolean;
-   --  Convert an Ada boolean into a C boolean.
-
    function To_Gint (Bool : in Boolean) return Gint;
    --  Convert an Ada boolean into a C int.
 

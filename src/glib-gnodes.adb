@@ -53,7 +53,7 @@ package body Glib.Gnodes is
                          Descendant : in Gnode) return Gboolean;
       pragma Import (C, Internal, "g_node_is_ancestor");
    begin
-      return To_Boolean (Internal (Node, Descendant));
+      return Internal (Node, Descendant) /= 0;
    end Is_Ancestor;
 
    ---------------
@@ -64,7 +64,7 @@ package body Glib.Gnodes is
       function Internal (Node : in Gnode) return Gboolean;
       pragma Import (C, Internal, "ada_gnode_is_leaf");
    begin
-      return To_Boolean (Internal (Node));
+      return Internal (Node) /= 0;
    end Is_Leaf;
 
    ---------------
@@ -75,7 +75,7 @@ package body Glib.Gnodes is
       function Internal (Node : in Gnode) return Gboolean;
       pragma Import (C, Internal, "ada_gnode_is_root");
    begin
-      return To_Boolean (Internal (Node));
+      return Internal (Node) /= 0;
    end Is_Root;
 
    ---------------

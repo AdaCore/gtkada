@@ -229,7 +229,7 @@ package body Gtk.Combo is
 
    begin
       Internal (Get_Object (Combo_Box),
-                To_Gboolean (Val), To_Gboolean (Ok_If_Empty));
+                Boolean'Pos (Val), Boolean'Pos (Ok_If_Empty));
    end Set_Value_In_List;
 
 end Gtk.Combo;

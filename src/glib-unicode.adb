@@ -50,7 +50,7 @@ package body Glib.Unicode is
       Pos : aliased System.Address;
 
    begin
-      Valid := To_Boolean (UTF8_Validate (Str, Str'Length, Pos'Access));
+      Valid := UTF8_Validate (Str, Str'Length, Pos'Access) /= 0;
 
       if Valid then
          Invalid_Pos := 0;

@@ -134,7 +134,7 @@ package body Gtk.Editable is
       pragma Import (C, Internal, "gtk_editable_get_editable");
 
    begin
-      return To_Boolean (Internal (Get_Object (Editable)));
+      return Internal (Get_Object (Editable)) /= 0;
    end Get_Editable;
 
    ------------------
@@ -245,7 +245,7 @@ package body Gtk.Editable is
       pragma Import (C, Internal, "gtk_editable_set_editable");
 
    begin
-      Internal (Get_Object (Widget), To_Gboolean (Editable));
+      Internal (Get_Object (Widget), Boolean'Pos (Editable));
    end Set_Editable;
 
    ------------------

@@ -42,7 +42,7 @@ package body Gtk.Toggle_Button is
       pragma Import (C, Internal, "gtk_toggle_button_get_active");
 
    begin
-      return To_Boolean (Internal (Get_Object (Toggle_Button)));
+      return Internal (Get_Object (Toggle_Button)) /= 0;
    end Get_Active;
 
    ----------------------
@@ -56,7 +56,7 @@ package body Gtk.Toggle_Button is
       pragma Import (C, Internal, "gtk_toggle_button_get_inconsistent");
 
    begin
-      return To_Boolean (Internal (Get_Object (Toggle_Button)));
+      return Internal (Get_Object (Toggle_Button)) /= 0;
    end Get_Inconsistent;
 
    --------------
@@ -70,7 +70,7 @@ package body Gtk.Toggle_Button is
       pragma Import (C, Internal, "gtk_toggle_button_get_mode");
 
    begin
-      return To_Boolean (Internal (Get_Object (Toggle_Button)));
+      return Internal (Get_Object (Toggle_Button)) /= 0;
    end Get_Mode;
 
    -------------
@@ -164,7 +164,7 @@ package body Gtk.Toggle_Button is
       pragma Import (C, Internal, "gtk_toggle_button_set_inconsistent");
 
    begin
-      Internal (Get_Object (Toggle_Button), To_Gboolean (Setting));
+      Internal (Get_Object (Toggle_Button), Boolean'Pos (Setting));
    end Set_Inconsistent;
 
    --------------

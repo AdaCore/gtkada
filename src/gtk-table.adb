@@ -169,7 +169,7 @@ package body Gtk.Table is
       pragma Import (C, Internal, "gtk_table_get_homogeneous");
 
    begin
-      return To_Boolean (Internal (Get_Object (Table)));
+      return Internal (Get_Object (Table)) /= 0;
    end Get_Homogeneous;
 
    -------------

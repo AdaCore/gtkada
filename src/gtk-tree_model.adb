@@ -548,7 +548,7 @@ package body Gtk.Tree_Model is
 
    begin
       Internal (Get_Object (Tree_Model), Iter, Column, B);
-      return To_Boolean (B);
+      return B /= 0;
    end Get_Boolean;
 
    ----------------

@@ -241,7 +241,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_get_headers_visible");
 
    begin
-      return To_Boolean (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Headers_Visible;
 
    -------------------------
@@ -258,7 +258,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_set_headers_visible");
 
    begin
-      Internal (Get_Object (Tree_View), To_Gboolean (Headers_Visible));
+      Internal (Get_Object (Tree_View), Boolean'Pos (Headers_Visible));
    end Set_Headers_Visible;
 
    ----------------------
@@ -287,7 +287,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_set_headers_clickable");
 
    begin
-      Internal (Get_Object (Tree_View), To_Gboolean (Setting));
+      Internal (Get_Object (Tree_View), Boolean'Pos (Setting));
    end Set_Headers_Clickable;
 
    --------------------
@@ -304,7 +304,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_set_rules_hint");
 
    begin
-      Internal (Get_Object (Tree_View), To_Gboolean (Setting));
+      Internal (Get_Object (Tree_View), Boolean'Pos (Setting));
    end Set_Rules_Hint;
 
    --------------------
@@ -318,7 +318,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_get_rules_hint");
 
    begin
-      return To_Boolean (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Rules_Hint;
 
    -------------------
@@ -584,7 +584,7 @@ package body Gtk.Tree_View is
       Internal (Get_Object (Tree_View),
                 Path,
                 Column_Address,
-                To_Gboolean (Use_Align),
+                Boolean'Pos (Use_Align),
                 Row_Align,
                 Col_Align);
    end Scroll_To_Cell;
@@ -648,8 +648,8 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_expand_row");
 
    begin
-      return To_Boolean (Internal
-        (Get_Object (Tree_View), Path, To_Gboolean (Open_All)));
+      return
+         Internal (Get_Object (Tree_View), Path, Boolean'Pos (Open_All)) /= 0;
    end Expand_Row;
 
    ------------------
@@ -667,7 +667,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_collapse_row");
 
    begin
-      return To_Boolean (Internal (Get_Object (Tree_View), Path));
+      return Internal (Get_Object (Tree_View), Path) /= 0;
    end Collapse_Row;
 
 --    -----------------------
@@ -704,7 +704,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_row_expanded");
 
    begin
-      return To_Boolean (Internal (Get_Object (Tree_View), Path));
+      return Internal (Get_Object (Tree_View), Path) /= 0;
    end Row_Expanded;
 
    ---------------------
@@ -721,7 +721,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_set_reorderable");
 
    begin
-      Internal (Get_Object (Tree_View), To_Gboolean (Reorderable));
+      Internal (Get_Object (Tree_View), Boolean'Pos (Reorderable));
    end Set_Reorderable;
 
    ---------------------
@@ -735,7 +735,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_get_reorderable");
 
    begin
-      return To_Boolean (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Reorderable;
 
    ----------------
@@ -769,7 +769,7 @@ package body Gtk.Tree_View is
       Internal (Get_Object (Tree_View),
                 Path,
                 Column_Address,
-                To_Gboolean (Start_Editing));
+                Boolean'Pos (Start_Editing));
    end Set_Cursor;
 
    ----------------
@@ -828,12 +828,12 @@ package body Gtk.Tree_View is
       Stub         : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
 
    begin
-      Row_Found := To_Boolean (Internal
+      Row_Found := Internal
         (Get_Object (Tree_View),
          X, Y,
          Local_Path'Access,
          Local_Column'Access,
-         Local_X'Access, Local_Y'Access));
+         Local_X'Access, Local_Y'Access) /= 0;
       Cell_X := Local_X;
       Cell_Y := Local_Y;
 
@@ -1133,7 +1133,7 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_set_enable_search");
 
    begin
-      Internal (Get_Object (Tree_View), To_Gboolean (Enable_Search));
+      Internal (Get_Object (Tree_View), Boolean'Pos (Enable_Search));
    end Set_Enable_Search;
 
    -----------------------
@@ -1146,7 +1146,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_enable_search");
    begin
-      return To_Boolean (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Enable_Search;
 
    -----------------------

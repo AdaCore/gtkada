@@ -147,7 +147,7 @@ package body Gtk.Tree_Store is
       pragma Import (C, Internal, "gtk_tree_store_set");
 
    begin
-      Internal (Get_Object (Tree_Store), Iter, Column, To_Gboolean (Value));
+      Internal (Get_Object (Tree_Store), Iter, Column, Boolean'Pos (Value));
    end Set;
 
    procedure Set
@@ -398,8 +398,7 @@ package body Gtk.Tree_Store is
       pragma Import (C, Internal, "gtk_tree_store_is_ancestor");
 
    begin
-      return To_Boolean (Internal
-        (Get_Object (Tree_Store), Iter, Descendant));
+      return Internal (Get_Object (Tree_Store), Iter, Descendant) /= 0;
    end Is_Ancestor;
 
    ----------------

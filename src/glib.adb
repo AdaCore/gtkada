@@ -32,15 +32,6 @@ with Ada.Unchecked_Conversion;
 
 package body Glib is
 
-   ----------------
-   -- To_Boolean --
-   ----------------
-
-   function To_Boolean (Value : in Gboolean) return Boolean is
-   begin
-      return Value /= Gboolean (Gboolean'Val (0));
-   end To_Boolean;
-
    ----------------------
    -- To_Boolean_Array --
    ----------------------
@@ -49,24 +40,11 @@ package body Glib is
       Result : Boolean_Array (A'Range);
    begin
       for Index in A'Range loop
-         Result (Index) := To_Boolean (A (Index));
+         Result (Index) := A (Index) /= 0;
       end loop;
 
       return Result;
    end To_Boolean_Array;
-
-   -----------------
-   -- To_Gboolean --
-   -----------------
-
-   function To_Gboolean (Bool : in Boolean) return Gboolean is
-   begin
-      if Bool then
-         return Gboolean'Val (1);
-      else
-         return Gboolean'Val (0);
-      end if;
-   end To_Gboolean;
 
    -------------
    -- To_Gint --

@@ -48,8 +48,7 @@ package body Gtk.Accel_Group is
       pragma Import (C, Internal, "gtk_accel_groups_activate");
 
    begin
-      return To_Boolean
-        (Internal (Get_Object (Object), Accel_Key, Accel_Mods));
+      return Internal (Get_Object (Object), Accel_Key, Accel_Mods) /= 0;
    end Accel_Groups_Activate;
 
    ----------------------

@@ -106,7 +106,7 @@ package body Gtk.Button is
       pragma Import (C, Internal, "gtk_button_get_use_underline");
 
    begin
-      return To_Boolean (Internal (Get_Object (Button)));
+      return Internal (Get_Object (Button)) /= 0;
    end Get_Use_Underline;
 
    -------------------
@@ -120,7 +120,7 @@ package body Gtk.Button is
       pragma Import (C, Internal, "gtk_button_get_use_stock");
 
    begin
-      return To_Boolean (Internal (Get_Object (Button)));
+      return Internal (Get_Object (Button)) /= 0;
    end Get_Use_Stock;
 
    -------------
@@ -291,7 +291,7 @@ package body Gtk.Button is
       pragma Import (C, Internal, "gtk_button_set_use_underline");
 
    begin
-      Internal (Get_Object (Button), To_Gboolean (Use_Underline));
+      Internal (Get_Object (Button), Boolean'Pos (Use_Underline));
    end Set_Use_Underline;
 
    -------------------
@@ -308,7 +308,7 @@ package body Gtk.Button is
       pragma Import (C, Internal, "gtk_button_set_use_stock");
 
    begin
-      Internal (Get_Object (Button), To_Gboolean (Use_Stock));
+      Internal (Get_Object (Button), Boolean'Pos (Use_Stock));
    end Set_Use_Stock;
 
    ---------------------

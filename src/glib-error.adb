@@ -74,7 +74,7 @@ package body Glib.Error is
       pragma Import (C, Internal, "g_error_matches");
 
    begin
-      return To_Boolean (Internal (Error, Domain, Code));
+      return Internal (Error, Domain, Code) /= 0;
    end Error_Matches;
 
    ----------------

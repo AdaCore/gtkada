@@ -203,9 +203,8 @@ package body Gtk.Text_Buffer is
 
    begin
       Result :=
-        To_Boolean
-          (Internal (Get_Object (Buffer), Iter, Text, Text'Length,
-           To_Gboolean (Default_Editable)));
+          Internal (Get_Object (Buffer), Iter, Text, Text'Length,
+           Boolean'Pos (Default_Editable)) /= 0;
    end Insert_Interactive;
 
    ----------------------------------
@@ -226,9 +225,9 @@ package body Gtk.Text_Buffer is
         (C, Internal, "gtk_text_buffer_insert_interactive_at_cursor");
 
    begin
-      return To_Boolean
-        (Internal (Get_Object (Buffer), Text, Text'Length,
-         To_Gboolean (Default_Editable)));
+      return
+        Internal (Get_Object (Buffer), Text, Text'Length,
+         Boolean'Pos (Default_Editable)) /= 0;
    end Insert_Interactive_At_Cursor;
 
    ------------------
@@ -273,12 +272,12 @@ package body Gtk.Text_Buffer is
       pragma Import (C, Internal, "gtk_text_buffer_insert_range_interactive");
 
    begin
-      Result := To_Boolean
-        (Internal (Get_Object (Buffer),
+      Result :=
+        Internal (Get_Object (Buffer),
          Iter,
          Start,
          The_End,
-         To_Gboolean (Default_Editable)));
+         Boolean'Pos (Default_Editable)) /= 0;
    end Insert_Range_Interactive;
 
    ------------
@@ -319,11 +318,11 @@ package body Gtk.Text_Buffer is
       pragma Import (C, Internal, "gtk_text_buffer_delete_interactive");
 
    begin
-      Result := To_Boolean
-        (Internal (Get_Object (Buffer),
+      Result :=
+        Internal (Get_Object (Buffer),
          Start_Iter,
          End_Iter,
-         To_Gboolean (Default_Editable)));
+         Boolean'Pos (Default_Editable)) /= 0;
    end Delete_Interactive;
 
    --------------
@@ -349,7 +348,7 @@ package body Gtk.Text_Buffer is
         (Get_Object (Buffer),
          Start,
          The_End,
-         To_Gboolean (Include_Hidden_Chars));
+         Boolean'Pos (Include_Hidden_Chars));
    end Get_Text;
 
    function Get_Text
@@ -390,7 +389,7 @@ package body Gtk.Text_Buffer is
         (Get_Object (Buffer),
          Start,
          The_End,
-         To_Gboolean (Include_Hidden_Chars));
+         Boolean'Pos (Include_Hidden_Chars));
    end Get_Slice;
 
    function Get_Slice
@@ -501,7 +500,7 @@ package body Gtk.Text_Buffer is
                  (Get_Object (Buffer),
                   Mark_Name & ASCII.NUL,
                   Where,
-                  To_Gboolean (Left_Gravity)),
+                  Boolean'Pos (Left_Gravity)),
                   Stub));
       else
          return
@@ -510,7 +509,7 @@ package body Gtk.Text_Buffer is
                (Internal
                   (Buffer => Get_Object (Buffer),
                    Where => Where,
-                   Left_Gravity => To_Gboolean (Left_Gravity)),
+                   Left_Gravity => Boolean'Pos (Left_Gravity)),
                    Stub));
       end if;
    end Create_Mark;
@@ -949,7 +948,7 @@ package body Gtk.Text_Buffer is
       pragma Import (C, Internal, "gtk_text_buffer_get_modified");
 
    begin
-      return To_Boolean (Internal (Get_Object (Buffer)));
+      return Internal (Get_Object (Buffer)) /= 0;
    end Get_Modified;
 
    ------------------
@@ -964,7 +963,7 @@ package body Gtk.Text_Buffer is
       pragma Import (C, Internal, "gtk_text_buffer_set_modified");
 
    begin
-      Internal (Get_Object (Buffer), To_Gboolean (Setting));
+      Internal (Get_Object (Buffer), Boolean'Pos (Setting));
    end Set_Modified;
 
    -------------------
@@ -984,7 +983,7 @@ package body Gtk.Text_Buffer is
 
    begin
       Internal
-        (Get_Object (Buffer), Clipboard, To_Gboolean (Default_Editable));
+        (Get_Object (Buffer), Clipboard, Boolean'Pos (Default_Editable));
    end Cut_Clipboard;
 
    --------------------
@@ -1023,7 +1022,7 @@ package body Gtk.Text_Buffer is
    begin
       Internal
         (Get_Object (Buffer), Clipboard,
-         Override_Location, To_Gboolean (Default_Editable));
+         Override_Location, Boolean'Pos (Default_Editable));
    end Paste_Clipboard;
 
    ----------------------
@@ -1039,7 +1038,7 @@ package body Gtk.Text_Buffer is
          The_End : System.Address := System.Null_Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_get_selection_bounds");
    begin
-      return To_Boolean (Internal (Get_Object (Buffer)));
+      return Internal (Get_Object (Buffer)) /= 0;
    end Selection_Exists;
 
    --------------------------
@@ -1058,8 +1057,8 @@ package body Gtk.Text_Buffer is
          The_End : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_get_selection_bounds");
    begin
-      Result := To_Boolean
-        (Internal (Get_Object (Buffer), Start'Address, The_End'Address));
+      Result :=
+        Internal (Get_Object (Buffer), Start'Address, The_End'Address) /= 0;
    end Get_Selection_Bounds;
 
    ----------------------
@@ -1078,11 +1077,11 @@ package body Gtk.Text_Buffer is
       pragma Import (C, Internal, "gtk_text_buffer_delete_selection");
 
    begin
-      return To_Boolean
-        (Internal
+      return
+        Internal
           (Get_Object (Buffer),
-           To_Gboolean (Interactive),
-           To_Gboolean (Default_Editable)));
+           Boolean'Pos (Interactive),
+           Boolean'Pos (Default_Editable)) /= 0;
    end Delete_Selection;
 
    -----------------------

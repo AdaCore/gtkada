@@ -200,7 +200,7 @@ package body Glib.Properties.Creation is
       function Internal (Param : Param_Spec_Boolean) return Gboolean;
       pragma Import (C, Internal, "ada_gparam_get_default_boolean");
    begin
-      return To_Boolean (Internal (Param));
+      return Internal (Param) /= 0;
    end Default;
 
    ------------------
@@ -221,7 +221,7 @@ package body Glib.Properties.Creation is
    begin
       return Internal
         (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
-         To_Gboolean (Default), Flags);
+         Boolean'Pos (Default), Flags);
    end Gnew_Boolean;
 
    -------------
@@ -714,7 +714,7 @@ package body Glib.Properties.Creation is
       function Internal (Param : Param_Spec_String) return Gboolean;
       pragma Import (C, Internal, "ada_gparam_ensure_non_null_string");
    begin
-      return To_Boolean (Internal (Param));
+      return Internal (Param) /= 0;
    end Ensure_Non_Null;
 
    -----------------

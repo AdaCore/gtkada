@@ -885,7 +885,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_app_paintable");
 
    begin
-      Internal (Get_Object (Widget), To_Gboolean (App_Paintable));
+      Internal (Get_Object (Widget), Boolean'Pos (App_Paintable));
    end Set_App_Paintable;
 
    ------------------
@@ -1047,7 +1047,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_double_buffered");
 
    begin
-      Internal (Get_Object (Widget), To_Gboolean (Double_Buffered));
+      Internal (Get_Object (Widget), Boolean'Pos (Double_Buffered));
    end Set_Double_Buffered;
 
    --------------

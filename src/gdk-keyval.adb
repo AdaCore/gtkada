@@ -41,9 +41,8 @@ package body Gdk.Keyval is
       pragma Import (C, Internal, "gdk_keyval_is_lower");
 
    begin
-      return To_Boolean (Internal (Keyval));
+      return Internal (Keyval) /= 0;
    end Is_Lower;
-
 
    --------------
    -- Is_Upper --
@@ -54,9 +53,8 @@ package body Gdk.Keyval is
       pragma Import (C, Internal, "gdk_keyval_is_upper");
 
    begin
-      return To_Boolean (Internal (Keyval));
+      return Internal (Keyval) /= 0;
    end Is_Upper;
-
 
    ---------------
    -- From_Name --

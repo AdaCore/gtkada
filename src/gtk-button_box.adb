@@ -85,7 +85,7 @@ package body Gtk.Button_Box is
       Internal
         (Get_Object (Button_Box),
          Get_Object (Child),
-         To_Gboolean (Is_Secondary));
+         Boolean'Pos (Is_Secondary));
    end Set_Child_Secondary;
 
    --------------------

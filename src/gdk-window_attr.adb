@@ -100,7 +100,7 @@ package body Gdk.Window_Attr is
       pragma Import (C, Internal, "ada_gdk_window_attr_get_override_redirect");
 
    begin
-      return Glib.To_Boolean (Internal (Window_Attr));
+      return Internal (Window_Attr) /= 0;
    end Get_Override_Redirect;
 
    ---------------
@@ -160,7 +160,7 @@ package body Gdk.Window_Attr is
       pragma Import (C, Internal, "ada_gdk_window_attr_set_override_redirect");
 
    begin
-      Internal (Window_Attr, Glib.To_Gboolean (Override_Redirect));
+      Internal (Window_Attr, Boolean'Pos (Override_Redirect));
    end Set_Override_Redirect;
 
    ---------------

@@ -124,14 +124,14 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_scroll_to_iter");
 
    begin
-      return To_Boolean
-        (Internal
+      return
+        Internal
           (Get_Object (Text_View),
            Iter,
            Within_Margin,
-           To_Gboolean (Use_Align),
+           Boolean'Pos (Use_Align),
            Xalign,
-           Yalign));
+           Yalign) /= 0;
    end Scroll_To_Iter;
 
    --------------------
@@ -159,7 +159,7 @@ package body Gtk.Text_View is
       Internal (Get_Object (Text_View),
                 Get_Object (Mark),
                 Within_Margin,
-                To_Gboolean (Use_Align),
+                Boolean'Pos (Use_Align),
                 Xalign,
                 Yalign);
    end Scroll_To_Mark;
@@ -194,7 +194,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_move_mark_onscreen");
 
    begin
-      return To_Boolean (Internal (Get_Object (Text_View), Get_Object (Mark)));
+      return Internal (Get_Object (Text_View), Get_Object (Mark)) /= 0;
    end Move_Mark_Onscreen;
 
    ---------------------------
@@ -208,7 +208,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_place_cursor_onscreen");
 
    begin
-      return To_Boolean (Internal (Get_Object (Text_View)));
+      return Internal (Get_Object (Text_View)) /= 0;
    end Place_Cursor_Onscreen;
 
    ----------------------
@@ -240,7 +240,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_set_cursor_visible");
 
    begin
-      Internal (Get_Object (Text_View), To_Gboolean (Setting));
+      Internal (Get_Object (Text_View), Boolean'Pos (Setting));
    end Set_Cursor_Visible;
 
    ------------------------
@@ -254,7 +254,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_get_cursor_visible");
 
    begin
-      return To_Boolean (Internal (Get_Object (Text_View)));
+      return Internal (Get_Object (Text_View)) /= 0;
    end Get_Cursor_Visible;
 
    -----------------------
@@ -459,7 +459,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "ada_text_view_set_disable_scroll_on_focus");
 
    begin
-      Internal (Get_Object (Text_View), To_Gboolean (Set));
+      Internal (Get_Object (Text_View), Boolean'Pos (Set));
    end Set_Disable_Scroll_On_Focus;
 
    ---------------------------------
@@ -472,7 +472,7 @@ package body Gtk.Text_View is
       function Internal (Text_View : System.Address) return Gboolean;
       pragma Import (C, Internal, "ada_text_view_get_disable_scroll_on_focus");
    begin
-      return To_Boolean (Internal (Get_Object (Text_View)));
+      return Internal (Get_Object (Text_View)) /= 0;
    end Get_Disable_Scroll_On_Focus;
 
    --------------------------
@@ -490,7 +490,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_forward_display_line");
 
    begin
-      Result := To_Boolean (Internal (Get_Object (Text_View), Iter));
+      Result := Internal (Get_Object (Text_View), Iter) /= 0;
    end Forward_Display_Line;
 
    ---------------------------
@@ -508,7 +508,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_backward_display_line");
 
    begin
-      Result := To_Boolean (Internal (Get_Object (Text_View), Iter));
+      Result := Internal (Get_Object (Text_View), Iter) /= 0;
    end Backward_Display_Line;
 
    ------------------------------
@@ -526,7 +526,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_forward_display_line_end");
 
    begin
-      Result := To_Boolean (Internal (Get_Object (Text_View), Iter));
+      Result := Internal (Get_Object (Text_View), Iter) /= 0;
    end Forward_Display_Line_End;
 
    ---------------------------------
@@ -544,7 +544,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_backward_display_line_start");
 
    begin
-      Result := To_Boolean (Internal (Get_Object (Text_View), Iter));
+      Result := Internal (Get_Object (Text_View), Iter) /= 0;
    end Backward_Display_Line_Start;
 
    -------------------------
@@ -561,7 +561,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_starts_display_line");
 
    begin
-      return To_Boolean (Internal (Get_Object (Text_View), Iter));
+      return Internal (Get_Object (Text_View), Iter) /= 0;
    end Starts_Display_Line;
 
    -------------------
@@ -581,7 +581,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_move_visually");
 
    begin
-      Result := To_Boolean (Internal (Get_Object (Text_View), Iter, Count));
+      Result := Internal (Get_Object (Text_View), Iter, Count) /= 0;
    end Move_Visually;
 
    -------------------------
@@ -694,7 +694,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_set_editable");
 
    begin
-      Internal (Get_Object (Text_View), To_Gboolean (Setting));
+      Internal (Get_Object (Text_View), Boolean'Pos (Setting));
    end Set_Editable;
 
    ------------------
@@ -708,7 +708,7 @@ package body Gtk.Text_View is
       pragma Import (C, Internal, "gtk_text_view_get_editable");
 
    begin
-      return To_Boolean (Internal (Get_Object (Text_View)));
+      return Internal (Get_Object (Text_View)) /= 0;
    end Get_Editable;
 
    ----------------------------

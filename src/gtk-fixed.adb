@@ -125,7 +125,7 @@ package body Gtk.Fixed is
       pragma Import (C, Internal, "gtk_fixed_set_has_window");
 
    begin
-      Internal (Get_Object (Fixed), To_Gboolean (Has_Window));
+      Internal (Get_Object (Fixed), Boolean'Pos (Has_Window));
    end Set_Has_Window;
 
    --------------------
@@ -139,7 +139,7 @@ package body Gtk.Fixed is
       pragma Import (C, Internal, "gtk_fixed_get_has_window");
 
    begin
-      return To_Boolean (Internal (Get_Object (Fixed)));
+      return Internal (Get_Object (Fixed)) /= 0;
    end Get_Has_Window;
 
 end Gtk.Fixed;

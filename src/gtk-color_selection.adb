@@ -79,7 +79,7 @@ package body Gtk.Color_Selection is
       pragma Import (C, Internal, "gtk_color_selection_is_adjusting");
 
    begin
-      return To_Boolean (Internal (Get_Object (Colorsel)));
+      return Internal (Get_Object (Colorsel)) /= 0;
    end Is_Adjusting;
 
    ---------------
@@ -124,7 +124,7 @@ package body Gtk.Color_Selection is
       pragma Import
         (C, Internal, "gtk_color_selection_get_has_opacity_control");
    begin
-      return To_Boolean (Internal (Get_Object (Colorsel)));
+      return Internal (Get_Object (Colorsel)) /= 0;
    end Get_Has_Opacity_Control;
 
    -----------------------------
@@ -141,7 +141,7 @@ package body Gtk.Color_Selection is
       pragma Import
         (C, Internal, "gtk_color_selection_set_has_opacity_control");
    begin
-      Internal (Get_Object (Colorsel), To_Gboolean (Has_Opacity));
+      Internal (Get_Object (Colorsel), Boolean'Pos (Has_Opacity));
    end Set_Has_Opacity_Control;
 
    ---------------------
@@ -154,7 +154,7 @@ package body Gtk.Color_Selection is
       function Internal (Colorsel : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_color_selection_get_has_palette");
    begin
-      return To_Boolean (Internal (Get_Object (Colorsel)));
+      return Internal (Get_Object (Colorsel)) /= 0;
    end Get_Has_Palette;
 
    ---------------------
@@ -170,7 +170,7 @@ package body Gtk.Color_Selection is
          Has_Palette : Gboolean);
       pragma Import (C, Internal, "gtk_color_selection_set_has_palette");
    begin
-      Internal (Get_Object (Colorsel), To_Gboolean (Has_Palette));
+      Internal (Get_Object (Colorsel), Boolean'Pos (Has_Palette));
    end Set_Has_Palette;
 
    -----------------------

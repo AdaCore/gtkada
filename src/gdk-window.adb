@@ -279,7 +279,7 @@ package body Gdk.Window is
       pragma Import (C, Internal, "gdk_window_process_updates");
 
    begin
-      Internal (Window, To_Gboolean (Update_Children));
+      Internal (Window, Boolean'Pos (Update_Children));
    end Process_Updates;
 
    ---------------------
@@ -333,7 +333,7 @@ package body Gdk.Window is
       pragma Import (C, Internal, "gdk_window_set_debug_updates");
 
    begin
-      Internal (To_Gboolean (Setting));
+      Internal (Boolean'Pos (Setting));
    end Set_Debug_Updates;
 
    -------------------
@@ -360,7 +360,7 @@ package body Gdk.Window is
       pragma Import (C, Internal, "gdk_window_set_modal_hint");
 
    begin
-      Internal (Window, To_Gboolean (Modal));
+      Internal (Window, Boolean'Pos (Modal));
    end Set_Modal_Hint;
 
    ---------------------------
@@ -404,7 +404,7 @@ package body Gdk.Window is
       pragma Import (C, Internal, "gdk_window_set_static_gravities");
 
    begin
-      return Internal (Window, To_Gboolean (Use_Static)) /= 0;
+      return Internal (Window, Boolean'Pos (Use_Static)) /= 0;
    end Set_Static_Gravities;
 
    ---------------

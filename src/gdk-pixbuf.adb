@@ -51,7 +51,7 @@ package body Gdk.Pixbuf is
 
    begin
       return Internal
-        (Pixbuf, To_Gboolean (Substitute_Color), Red, Green, Blue);
+        (Pixbuf, Boolean'Pos (Substitute_Color), Red, Green, Blue);
    end Add_Alpha;
 
    ----------
@@ -87,7 +87,7 @@ package body Gdk.Pixbuf is
 
    begin
       return Internal
-        (Colorspace, To_Gboolean (Has_Alpha), Bits_Per_Sample, Width, Height);
+        (Colorspace, Boolean'Pos (Has_Alpha), Bits_Per_Sample, Width, Height);
    end Gdk_New;
 
    -----------------------
@@ -141,7 +141,7 @@ package body Gdk.Pixbuf is
       pragma Import (C, Internal, "gdk_pixbuf_get_has_alpha");
 
    begin
-      return To_Boolean (Internal (Pixbuf));
+      return Internal (Pixbuf) /= 0;
    end Get_Has_Alpha;
 
    ----------------
@@ -238,7 +238,7 @@ package body Gdk.Pixbuf is
       pragma Import (C, Internal, "gdk_pixbuf_saturate_and_pixelate");
 
    begin
-      Internal (Src, Dest, Saturation, To_Gboolean (Pixelate));
+      Internal (Src, Dest, Saturation, Boolean'Pos (Pixelate));
    end Saturate_And_Pixelate;
 
    ----------
@@ -323,7 +323,7 @@ package body Gdk.Pixbuf is
       pragma Import (C, Internal, "gdk_pixbuf_animation_is_static_image");
 
    begin
-      return To_Boolean (Internal (Animation));
+      return Internal (Animation) /= 0;
    end Is_Static_Image;
 
    --------------------------------
@@ -339,7 +339,7 @@ package body Gdk.Pixbuf is
         (C, Internal, "gdk_pixbuf_animation_iter_on_currently_loading_frame");
 
    begin
-      return To_Boolean (Internal (Iter));
+      return Internal (Iter) /= 0;
    end On_Currently_Loading_Frame;
 
    -------------
@@ -356,7 +356,7 @@ package body Gdk.Pixbuf is
       pragma Import (C, Internal, "gdk_pixbuf_animation_iter_advance");
 
    begin
-      return To_Boolean (Internal (Iter, Current_Timer));
+      return Internal (Iter, Current_Timer) /= 0;
    end Advance;
 
 end Gdk.Pixbuf;

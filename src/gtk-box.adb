@@ -66,7 +66,7 @@ package body Gtk.Box is
       pragma Import (C, Internal, "gtk_box_get_homogeneous");
 
    begin
-      return To_Boolean (Internal (Get_Object (In_Box)));
+      return Internal (Get_Object (In_Box)) /= 0;
    end Get_Homogeneous;
 
    -----------------

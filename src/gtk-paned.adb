@@ -105,7 +105,7 @@ package body Gtk.Paned is
       pragma Import (C, Internal, "ada_paned_get_child1_resize");
 
    begin
-      return To_Boolean (Internal (Get_Object (Paned)));
+      return Internal (Get_Object (Paned)) /= 0;
    end Get_Child1_Resize;
 
    -----------------------
@@ -119,7 +119,7 @@ package body Gtk.Paned is
       pragma Import (C, Internal, "ada_paned_get_child2_resize");
 
    begin
-      return To_Boolean (Internal (Get_Object (Paned)));
+      return Internal (Get_Object (Paned)) /= 0;
    end Get_Child2_Resize;
 
    -----------------------
@@ -133,7 +133,7 @@ package body Gtk.Paned is
       pragma Import (C, Internal, "ada_paned_get_child1_shrink");
 
    begin
-      return To_Boolean (Internal (Get_Object (Paned)));
+      return Internal (Get_Object (Paned)) /= 0;
    end Get_Child1_Shrink;
 
    -----------------------
@@ -147,7 +147,7 @@ package body Gtk.Paned is
       pragma Import (C, Internal, "ada_paned_get_child2_shrink");
 
    begin
-      return To_Boolean (Internal (Get_Object (Paned)));
+      return Internal (Get_Object (Paned)) /= 0;
    end Get_Child2_Shrink;
 
    ------------------

@@ -258,7 +258,7 @@ package body Gtk.Toolbar is
       pragma Import (C, Internal, "gtk_toolbar_get_tooltips");
 
    begin
-      return To_Boolean (Internal (Get_Object (Toolbar)));
+      return Internal (Get_Object (Toolbar)) /= 0;
    end Get_Tooltips;
 
    -------------

@@ -69,7 +69,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_get_visibility");
 
    begin
-      return To_Boolean (Internal (Get_Object (The_Entry)));
+      return Internal (Get_Object (The_Entry)) /= 0;
    end Get_Visibility;
 
    ------------------------
@@ -111,7 +111,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_has_frame");
 
    begin
-      Internal (Get_Object (The_Entry), To_Gboolean (Setting));
+      Internal (Get_Object (The_Entry), Boolean'Pos (Setting));
    end Set_Has_Frame;
 
    -------------------
@@ -125,7 +125,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_get_has_frame");
 
    begin
-      return To_Boolean (Internal (Get_Object (The_Entry)));
+      return Internal (Get_Object (The_Entry)) /= 0;
    end Get_Has_Frame;
 
    --------------------
@@ -151,7 +151,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_activates_default");
 
    begin
-      Internal (Get_Object (The_Entry), To_Gboolean (Setting));
+      Internal (Get_Object (The_Entry), Boolean'Pos (Setting));
    end Set_Activates_Default;
 
    ---------------------------
@@ -165,7 +165,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_get_activates_default");
 
    begin
-      return To_Boolean (Internal (Get_Object (The_Entry)));
+      return Internal (Get_Object (The_Entry)) /= 0;
    end Get_Activates_Default;
 
    ---------------------
@@ -303,7 +303,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_editable");
 
    begin
-      Internal (Get_Object (The_Entry), To_Gboolean (Editable));
+      Internal (Get_Object (The_Entry), Boolean'Pos (Editable));
    end Set_Editable;
 
    --------------------

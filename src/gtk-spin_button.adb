@@ -129,7 +129,7 @@ package body Gtk.Spin_Button is
       pragma Import (C, Internal, "gtk_spin_button_get_numeric");
 
    begin
-      return To_Boolean (Internal (Get_Object (Spin_Button)));
+      return Internal (Get_Object (Spin_Button)) /= 0;
    end Get_Numeric;
 
    --------------
@@ -143,7 +143,7 @@ package body Gtk.Spin_Button is
       pragma Import (C, Internal, "gtk_spin_button_get_wrap");
 
    begin
-      return To_Boolean (Internal (Get_Object (Spin_Button)));
+      return Internal (Get_Object (Spin_Button)) /= 0;
    end Get_Wrap;
 
    -----------------------
@@ -157,7 +157,7 @@ package body Gtk.Spin_Button is
       pragma Import (C, Internal, "gtk_spin_button_get_snap_to_ticks");
 
    begin
-      return To_Boolean (Internal (Get_Object (Spin_Button)));
+      return Internal (Get_Object (Spin_Button)) /= 0;
    end Get_Snap_To_Ticks;
 
    ---------------

@@ -147,7 +147,7 @@ package body Gtk.Menu_Item is
       function Internal (Menu_Item : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_menu_item_get_right_justified");
    begin
-      return To_Boolean (Internal (Get_Object (Menu_Item)));
+      return Internal (Get_Object (Menu_Item)) /= 0;
    end Get_Right_Justified;
 
    -----------------
@@ -232,7 +232,7 @@ package body Gtk.Menu_Item is
       pragma Import (C, Internal, "gtk_menu_item_set_right_justified");
 
    begin
-      Internal (Get_Object (Menu_Item), To_Gboolean (Justify));
+      Internal (Get_Object (Menu_Item), Boolean'Pos (Justify));
    end Set_Right_Justified;
 
    ---------------------

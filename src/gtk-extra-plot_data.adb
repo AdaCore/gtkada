@@ -1316,7 +1316,7 @@ package body Gtk.Extra.Plot_Data is
       procedure Internal (Data : System.Address; Show : Gboolean);
       pragma Import (C, Internal, "gtk_plot_data_show_markers");
    begin
-      Internal (Get_Object (Data), To_Gboolean (Show));
+      Internal (Get_Object (Data), Boolean'Pos (Show));
    end Show_Markers;
 
    ---------------------
@@ -1329,7 +1329,7 @@ package body Gtk.Extra.Plot_Data is
       function Internal (Data : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_plot_data_markers_visible");
    begin
-      return To_Boolean (Internal (Get_Object (Data)));
+      return Internal (Get_Object (Data)) /= 0;
    end Markers_Visible;
 
 end Gtk.Extra.Plot_Data;

@@ -89,7 +89,7 @@ package body Gtk.Status_Bar is
       pragma Import (C, Internal, "gtk_statusbar_get_has_resize_grip");
 
    begin
-      return To_Boolean (Internal (Get_Object (Statusbar)));
+      return Internal (Get_Object (Statusbar)) /= 0;
    end Get_Has_Resize_Grip;
 
    ------------------
@@ -188,7 +188,7 @@ package body Gtk.Status_Bar is
       pragma Import (C, Internal, "gtk_statusbar_set_has_resize_grip");
 
    begin
-      Internal (Get_Object (Statusbar), To_Gboolean (Setting));
+      Internal (Get_Object (Statusbar), Boolean'Pos (Setting));
    end Set_Has_Resize_Grip;
 
 end Gtk.Status_Bar;

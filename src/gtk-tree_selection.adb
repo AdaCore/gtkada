@@ -271,7 +271,7 @@ package body Gtk.Tree_Selection is
       pragma Import (C, Internal, "gtk_tree_selection_path_is_selected");
 
    begin
-      return To_Boolean (Internal (Get_Object (Selection), Path));
+      return Internal (Get_Object (Selection), Path) /= 0;
    end Path_Is_Selected;
 
    ----------------------
@@ -288,7 +288,7 @@ package body Gtk.Tree_Selection is
       pragma Import (C, Internal, "gtk_tree_selection_iter_is_selected");
 
    begin
-      return To_Boolean (Internal (Get_Object (Selection), Iter));
+      return Internal (Get_Object (Selection), Iter) /= 0;
    end Iter_Is_Selected;
 
    ----------------

@@ -125,14 +125,14 @@ package body Gtk.Cell_Renderer is
       pragma Import (C, Internal, "gtk_cell_renderer_activate");
 
    begin
-      return To_Boolean (Internal
+      return Internal
         (Get_Object (Cell),
          Event,
          Get_Object (Widget),
          Path & ASCII.NUL,
          Background_Area,
          Cell_Area,
-         Gtk_Cell_Renderer_State'Pos (Flags)));
+         Gtk_Cell_Renderer_State'Pos (Flags)) /= 0;
    end Activate;
 
    -------------------

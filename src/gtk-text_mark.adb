@@ -43,7 +43,7 @@ package body Gtk.Text_Mark is
       pragma Import (C, Internal, "gtk_text_mark_get_deleted");
 
    begin
-      return To_Boolean (Internal (Get_Object (Mark)));
+      return Internal (Get_Object (Mark)) /= 0;
    end Get_Deleted;
 
    ----------------------
@@ -57,7 +57,7 @@ package body Gtk.Text_Mark is
       pragma Import (C, Internal, "gtk_text_mark_get_left_gravity");
 
    begin
-      return To_Boolean (Internal (Get_Object (Mark)));
+      return Internal (Get_Object (Mark)) /= 0;
    end Get_Left_Gravity;
 
    --------------
@@ -90,7 +90,7 @@ package body Gtk.Text_Mark is
       pragma Import (C, Internal, "gtk_text_mark_get_visible");
 
    begin
-      return To_Boolean (Internal (Get_Object (Mark)));
+      return Internal (Get_Object (Mark)) /= 0;
    end Get_Visible;
 
    -----------------
@@ -105,7 +105,7 @@ package body Gtk.Text_Mark is
       pragma Import (C, Internal, "gtk_text_mark_set_visible");
 
    begin
-      Internal (Get_Object (Mark), To_Gboolean (Setting));
+      Internal (Get_Object (Mark), Boolean'Pos (Setting));
    end Set_Visible;
 
    -------------------

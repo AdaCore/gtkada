@@ -957,7 +957,7 @@ package body Gtk.Ctree is
       pragma Import (C, Internal, "gtk_ctree_node_set_selectable");
 
    begin
-      Internal (Get_Object (Ctree), Node, To_Gboolean (Selectable));
+      Internal (Get_Object (Ctree), Node, Boolean'Pos (Selectable));
    end Node_Set_Selectable;
 
    --------------------
@@ -1111,7 +1111,7 @@ package body Gtk.Ctree is
         Get_User_Data (Object => Ctree, Key => Compare_Drag_Func_Key);
 
    begin
-      return To_Gboolean
+      return Boolean'Pos
         (Cmp_Func (Local_Ctree, Source_Node, New_Parent, New_Sibling));
    end C_Compare_Drag_Func;
 
@@ -1396,7 +1396,7 @@ package body Gtk.Ctree is
          Ctree : constant Gtk_Ctree :=
            Gtk_Ctree (Get_User_Data (C_Ctree, Stub));
       begin
-         return To_Gboolean (C_Data.Func (Ctree, Depth, C_Gnode,
+         return Boolean'Pos (C_Data.Func (Ctree, Depth, C_Gnode,
                                           C_Cnode, C_Data.Data));
       end C_Ctree_Gnode_Func;
 

@@ -130,7 +130,7 @@ package body Gtk.Menu is
       pragma Import (C, Internal, "gtk_menu_get_tearoff_state");
 
    begin
-      return To_Boolean (Internal (Get_Object (Menu)));
+      return Internal (Get_Object (Menu)) /= 0;
    end Get_Tearoff_State;
 
    ---------------
@@ -278,7 +278,7 @@ package body Gtk.Menu is
       pragma Import (C, Internal, "gtk_menu_set_tearoff_state");
 
    begin
-      Internal (Get_Object (Menu), To_Gboolean (Torn_Off));
+      Internal (Get_Object (Menu), Boolean'Pos (Torn_Off));
    end Set_Tearoff_State;
 
    -----------

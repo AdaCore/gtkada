@@ -145,7 +145,7 @@ package body Gdk.Color is
         Boolean'Val
           (Internal
             (Colormap, Col'Address,
-             To_Gboolean (Writeable), To_Gboolean (Best_Match)));
+             Boolean'Pos (Writeable), Boolean'Pos (Best_Match)));
       Color := Col;
    end Alloc_Color;
 
@@ -178,8 +178,8 @@ package body Gdk.Color is
           (Colormap,
            Colors'Address,
            Colors'Length,
-           To_Gboolean (Writeable),
-           To_Gboolean (Best_Match),
+           Boolean'Pos (Writeable),
+           Boolean'Pos (Best_Match),
            Tmp (Tmp'First)'Address);
       Success := To_Boolean_Array (Tmp);
    end Alloc_Colors;
