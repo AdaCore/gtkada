@@ -31,7 +31,7 @@
 --  Base class for containers that have only one child.
 --  This widget can not be instantiated directly.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Container; use Gtk.Container;
