@@ -45,25 +45,25 @@ with Create_Toolbar;
 
 package body Create_Handle_Box is
 
-   package Handle_Cb is new Signal.Two_Callback (Gtk_Handle_Box,
-                                                 String,
-                                                 Gtk_Widget);
+   package Handle_Cb is new Signal.Two_Callback
+     (Gtk_Handle_Box_Record, String, Gtk_Widget_Record);
    Window : aliased Gtk_Window;
 
 
-   procedure Child_Signal (Handle : in out Gtk_Handle_Box;
-                           Child  : in out Gtk_Widget;
-                           Data   : in out String) is
+   procedure Child_Signal (Handle : access Gtk_Handle_Box_Record;
+                           Child  : in Gtk_Widget_Record;
+                           Data   : in String) is
+      Tmp : aliased Gtk_Widget_Record := Child;
    begin
       Ada.Text_IO.Put_Line (Type_Name (Get_Type (Handle))
                             & ": child <"
-                            & Type_Name (Get_Type (Child))
+                            & Type_Name (Get_Type (Tmp'Access))
                             & "> "
                             & Data);
    end Child_Signal;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id        : Guint;
       Vbox      : Gtk_Box;
       Hbox      : Gtk_Box;
@@ -73,17 +73,16 @@ package body Create_Handle_Box is
       Handle2   : Gtk_Handle_Box;
       Toolbar   : Gtk_Toolbar;
    begin
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
          Set_Title (Window, "Handle Box Test");
          Set_Policy (Window,
                      Allow_Shrink => True,
                      Allow_Grow   => True,
                      Auto_Shrink  => False);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
-         Set_Border_Width (Window,
-                           Border_Width => 20);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
+         Set_Border_Width (Window, Border_Width => 20);
 
          Gtk_New_Vbox (Vbox,
                        Homogeneous => False,
@@ -153,9 +152,6 @@ package body Create_Handle_Box is
          Gtk_New (Label, "Fooo!");
          Add (Handle2, Label);
          Show (Label);
-      end if;
-
-      if Visible_Is_Set (Window) then
          Destroy (Window);
       else
          Show (Window);

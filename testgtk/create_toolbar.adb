@@ -44,12 +44,12 @@ with Common; use Common;
 
 package body Create_Toolbar is
 
-   package Toolbar_Cb is new Signal.Object_Callback (Gtk_Toolbar);
+   package Toolbar_Cb is new Signal.Object_Callback (Gtk_Toolbar_Record);
 
    function New_Pixmap (Filename   : in String;
                         Window     : in Gdk_Window'Class;
                         Background : in Gdk_Color)
-                        return Gtk_Pixmap
+                        return Gtk_Widget
    is
       Pixmap    : Gdk_Pixmap;
       Mask      : Gdk_Bitmap;
@@ -57,70 +57,70 @@ package body Create_Toolbar is
    begin
       Create_From_Xpm (Pixmap, Window, Mask, Background, Filename);
       Gtk_New (GtkPixmap, Pixmap, Mask);
-      return GtkPixmap;
+      return Gtk_Widget (GtkPixmap);
    end New_Pixmap;
 
-   procedure Set_Horizontal (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Horizontal (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Orientation (Toolbar, Orientation_Horizontal);
    end Set_Horizontal;
 
-   procedure Set_Vertical (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Vertical (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Orientation (Toolbar, Orientation_Vertical);
    end Set_Vertical;
 
-   procedure Set_Icons (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Icons (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Style (Toolbar, Toolbar_Icons);
    end Set_Icons;
 
-   procedure Set_Text (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Text (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Style (Toolbar, Toolbar_Text);
    end Set_Text;
 
-   procedure Set_Both (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Both (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Style (Toolbar, Toolbar_Both);
    end Set_Both;
 
-   procedure Set_Small_Space (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Small_Space (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Space_Size (Toolbar, 5);
    end Set_Small_Space;
 
-   procedure Set_Big_Space (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Big_Space (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Space_Size (Toolbar, 10);
    end Set_Big_Space;
 
-   procedure Set_Enable (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Enable (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Tooltips (Toolbar, True);
    end Set_Enable;
 
-   procedure Set_Disable (Toolbar : in out Gtk_Toolbar) is
+   procedure Set_Disable (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Tooltips (Toolbar, False);
    end Set_Disable;
 
-   procedure Borders (Toolbar : in out Gtk_Toolbar) is
+   procedure Borders (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Button_Relief (Toolbar, Relief_Normal);
    end Borders;
 
-   procedure Borderless (Toolbar : in out Gtk_Toolbar) is
+   procedure Borderless (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Button_Relief (Toolbar, Relief_None);
    end Borderless;
 
-   procedure Space_Style_Empty (Toolbar : in out Gtk_Toolbar) is
+   procedure Space_Style_Empty (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Space_Style (Toolbar, Toolbar_Space_Empty);
    end Space_Style_Empty;
 
-   procedure Space_Style_Line (Toolbar : in out Gtk_Toolbar) is
+   procedure Space_Style_Line (Toolbar : access Gtk_Toolbar_Record) is
    begin
       Set_Space_Style (Toolbar, Toolbar_Space_Line);
    end Space_Style_Line;
@@ -242,25 +242,23 @@ package body Create_Toolbar is
 
    Window : aliased Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id      : Guint;
       Toolbar : Gtk_Toolbar;
    begin
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
          Set_Title (Window, "Toolbar test");
          Set_Policy (Window, False, True, False);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Border_Width (Window, 0);
-      end if;
-      if Visible_Is_Set (Window) then
-         Destroy (Window);
-      else
          Make_Toolbar (Toolbar, Window, True);
          Add (Window, Toolbar);
          Show (Toolbar);
          Show (Window);
+      else
+         Destroy (Window);
       end if;
    end Run;
 

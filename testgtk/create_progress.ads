@@ -33,7 +33,7 @@ with Common;          use Common;
 
 package Create_Progress is
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button);
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record);
 
    type String10 is new String (1 .. 10);
    type Array_Of_String is array (Natural range <>) of String10;

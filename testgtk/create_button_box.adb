@@ -36,14 +36,13 @@ with Gtk.Frame; use Gtk.Frame;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Vbutton_Box; use Gtk.Vbutton_Box;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Button_Box is
 
-   package Void_Cb is new Signal.Void_Callback (Gtk_Button);
+   package Void_Cb is new Signal.Void_Callback (Gtk_Button_Record);
 
    Window : aliased Gtk_Window;
 
@@ -95,7 +94,7 @@ package body Create_Button_Box is
       return Frame;
    end Create_Bbox;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id     : Guint;
       Vbox   : Gtk_Box;
       Hbox   : Gtk_Box;
@@ -103,11 +102,11 @@ package body Create_Button_Box is
       Frame_Horz : Gtk_Frame;
       Frame_Vert : Gtk_Frame;
    begin
-      if not Is_Created (Window) then
+      if Window = null then
 
          Gtk_New (Window, Window_Toplevel);
          Set_Title (Window, "Button Boxes");
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
                                    Window'Access);
          Set_Border_Width (Window, Border_Width => 10);
 
@@ -161,9 +160,6 @@ package body Create_Button_Box is
          Pack_Start
            (Hbox, Create_Bbox (False, "End", 30, 85, 20, Buttonbox_Style_End),
             True, True, 5);
-      end if;
-
-      if not Visible_Is_Set (Window) then
          Show_All (Window);
       else
          Destroy (Window);

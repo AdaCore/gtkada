@@ -31,38 +31,64 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Label; use Gtk.Label;
+with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Dialog is
+   type Gtk_Label_access is access all Gtk_Label;
+   package Label_Destroy is new Signal.Callback (Gtk_Label_Record,
+                                                 Gtk_Label_Access);
+   procedure Destroyed (Lab : access Gtk_Label_Record;
+                        Ptr : in Gtk_Label_Access);
+
+   type Gtk_Dialog_access is access all Gtk_Dialog;
+   package Dialog_Destroy is new Signal.Callback (Gtk_Dialog_Record,
+                                                  Gtk_Dialog_Access);
+   procedure Destroyed (Lab : access Gtk_Dialog_Record;
+                        Ptr : in Gtk_Dialog_Access);
 
    Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
-   Global_Label : Gtk_Label;
+   Global_Label : aliased Gtk_Label;
 
-   procedure Label_Toggle (Label : in out Gtk_Label) is
+   procedure Destroyed (Lab : access Gtk_Label_Record;
+                        Ptr : in Gtk_Label_Access) is
+   begin
+      Ptr.all := null;
+   end Destroyed;
+
+   procedure Destroyed (Lab : access Gtk_Dialog_Record;
+                        Ptr : in Gtk_Dialog_Access) is
+   begin
+      Ptr.all := null;
+   end Destroyed;
+
+   procedure Label_Toggle (Label : access Gtk_Label_Record) is
+      pragma Warnings (Off, Label);
       Id : Guint;
    begin
-      if not Is_Created (Label) then
-         Gtk_New (Label, "Dialog Test");
-         Id := Widget_Cb.Connect (Label, "destroy", Destroy'Access, Label);
-         Set_Padding (Label, 10, 10);
-         Pack_Start (Get_Vbox (Dialog), Label, True, True, 0);
-         Show (Label);
+      if Global_Label = null then
+         Gtk_New (Global_Label, "Dialog Test");
+         Id := Label_Destroy.Connect
+           (Global_Label, "destroy", Destroyed'Access, Global_Label'Access);
+         Set_Padding (Global_Label, 10, 10);
+         Pack_Start (Get_Vbox (Dialog), Global_Label, True, True, 0);
+         Show (Global_Label);
       else
-         Destroy (Label);
+         Destroy (Global_Label);
       end if;
    end Label_Toggle;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id     : Guint;
       Button : Gtk_Button;
    begin
-      if not Is_Created (Dialog) then
+      if Dialog = null then
          Gtk_New (Dialog);
-         Id := Widget2_Cb.Connect (Dialog, "destroy", Destroyed'Access,
-                                   Dialog'Access);
+         Id := Dialog_Destroy.Connect
+           (Dialog, "destroy", Destroyed'Access, Dialog'Access);
          Set_Title (Dialog, "dialog");
          Set_Border_Width (Dialog, 0);
 
@@ -78,12 +104,9 @@ package body Create_Dialog is
          Set_Flags (Button, Can_Default);
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Show (Button);
-      end if;
-
-      if Visible_Is_Set (Dialog) then
-         Destroy (Dialog);
-      else
          Show (Dialog);
+      else
+         Destroy (Dialog);
       end if;
 
    end Run;

@@ -48,7 +48,7 @@ with Create_Progress;
 
 package body Create_List is
 
-   package List_Cb is new Signal.Object_Callback (Gtk_List);
+   package List_Cb is new Signal.Object_Callback (Gtk_List_Record);
 
    Window : aliased Gtk.Window.Gtk_Window;
 
@@ -63,7 +63,7 @@ package body Create_List is
    List : Gtk_List;
    Omenu_Group  : Widget_Slist.GSlist;
 
-   procedure Toggle_Sel_Mode (Widget : in out Gtk_Widget) is
+   procedure Toggle_Sel_Mode (Widget : access Gtk_Widget_Record) is
    begin
       if not Mapped_Is_Set (Widget) then
          return;
@@ -73,7 +73,7 @@ package body Create_List is
          Gtk_Selection_Mode'Val (3 - Selected_Button (Omenu_Group)));
    end Toggle_Sel_Mode;
 
-   procedure List_Add (List : in out Gtk_List) is
+   procedure List_Add (List : access Gtk_List_Record) is
       Item : Gtk_List_Item;
    begin
       Gtk_New (Item, Label => "added item" & Natural'Image (Num_Item));
@@ -82,7 +82,7 @@ package body Create_List is
       Add (List, Item);
    end List_Add;
 
-   procedure List_Remove (List : in out Gtk_List) is
+   procedure List_Remove (List : access Gtk_List_Record) is
       use Widget_List;
       Tmp_List,
         Clear_List : Widget_List.Glist;
@@ -98,12 +98,12 @@ package body Create_List is
       Free (Clear_List);
    end List_Remove;
 
-   procedure List_Clear (List : in out Gtk_List) is
+   procedure List_Clear (List : access Gtk_List_Record) is
    begin
       Clear_Items (List, 0, -1);
    end List_Clear;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id           : Guint;
       Vbox,
       Hbox,
@@ -116,10 +116,10 @@ package body Create_List is
       List_Omenu   : Gtk_Option_Menu;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect (Window, "destroy",
+                                   Destroy_Window'Access, Window'Access);
          Set_Title (Window, "list");
          Set_Border_Width (Window, Border_Width => 0);
 
@@ -235,14 +235,14 @@ package body Create_List is
          Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show_All (Window);
       else
          Destroy (Window);
       end if;
 
+   exception
+      when Name_Error =>
+         Ada.Text_Io.Put_Line ("File not found: create_list.adb");
    end Run;
 
 end Create_List;

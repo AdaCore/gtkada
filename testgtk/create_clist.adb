@@ -47,36 +47,36 @@ with Interfaces.C.Strings;
 package body Create_Clist is
    package ICS renames Interfaces.C.Strings;
 
-   package Clist_Cb  is new Signal.Object_Callback (Gtk_Clist);
+   package Clist_Cb  is new Signal.Object_Callback (Gtk_Clist_Record);
 
    Window : aliased Gtk.Window.Gtk_Window;
    Clist_Columns      : constant Gint := 7;
    Clist_Rows         : Integer := 0;
    Clist_Selected_Row : Gint:= 0;
 
-   procedure Clear_List (List : in out Gtk_Clist) is
+   procedure Clear_List (List : access Gtk_Clist_Record) is
    begin
       Clear (List);
       Clist_Rows := 0;
    end Clear_List;
 
-   procedure Remove_Row (List : in out Gtk_Clist) is
+   procedure Remove_Row (List : access Gtk_Clist_Record) is
    begin
       Remove (List, Clist_Selected_Row);
       Clist_Rows := Clist_Rows - 1;
    end Remove_Row;
 
-   procedure Show_Titles (List : in out Gtk_Clist) is
+   procedure Show_Titles (List : access Gtk_Clist_Record) is
    begin
       Column_Titles_Show (List);
    end Show_Titles;
 
-   procedure Hide_Titles (List : in out Gtk_Clist) is
+   procedure Hide_Titles (List : access Gtk_Clist_Record) is
    begin
       Column_Titles_Hide (List);
    end Hide_Titles;
 
-   procedure Add1000 (List : in out Gtk_Clist) is
+   procedure Add1000 (List : access Gtk_Clist_Record) is
       Pixmap : Gdk_Pixmap;
       Mask   : Gdk_Bitmap;
       Texts  : Line_Data (0 .. Clist_Columns - 1);
@@ -107,7 +107,7 @@ package body Create_Clist is
       Thaw (List);
    end Add1000;
 
-   procedure Add10000 (List : in out Gtk_Clist) is
+   procedure Add10000 (List : access Gtk_Clist_Record) is
       Texts  : Line_Data (0 .. Clist_Columns - 1);
       Row    : Gint;
    begin
@@ -129,7 +129,7 @@ package body Create_Clist is
       Thaw (List);
    end Add10000;
 
-   procedure Insert_Row (List : in out Gtk_Clist) is
+   procedure Insert_Row (List : access Gtk_Clist_Record) is
       Texts  : Line_Data (0 .. Clist_Columns - 1)
         := (ICS.New_String ("This"),
             ICS.New_String ("is"),
@@ -144,7 +144,7 @@ package body Create_Clist is
       Free_Line_Data (Texts);
    end Insert_Row;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Titles : Line_Data (1 .. Clist_Columns) := (ICS.New_String ("Title 0"),
                                                   ICS.New_String ("Title 1"),
                                                   ICS.New_String ("Title 2"),
@@ -163,9 +163,9 @@ package body Create_Clist is
       Scrolled  : Gtk_Scrolled_Window;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
                                    Window'Access);
          Set_Title (Window, "clist");
          Set_Border_Width (Window, Border_Width => 0);
@@ -278,9 +278,6 @@ package body Create_Clist is
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
          Show (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Clist_Rows := 0;

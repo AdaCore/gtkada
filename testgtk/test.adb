@@ -58,29 +58,29 @@ with Create_Font_Selection;
 with Create_Gamma_Curve;
 with Create_Handle_Box;
 with Create_List;
-with Create_Main_Loop;
-with Create_Menu;
-with Create_Notebook;
-with Create_Paned;
-with Create_Pixmap;
-with Create_Preview_Color;
-with Create_Preview_Gray;
+--  with Create_Main_Loop;
+--  with Create_Menu;
+--  with Create_Notebook;
+--  with Create_Paned;
+--  with Create_Pixmap;
+--  with Create_Preview_Color;
+--  with Create_Preview_Gray;
 with Create_Progress;
-with Create_Radio_Button;
-with Create_Range;
-with Create_Reparent;
-with Create_Rulers;
-with Create_Scroll_Test;
-with Create_Scrolled;
-with Create_Spin;
-with Create_Status;
-with Create_Test_Idle;
-with Create_Test_Timeout;
-with Create_Text;
-with Create_Toggle_Buttons;
+--  with Create_Radio_Button;
+--  with Create_Range;
+--  with Create_Reparent;
+--  with Create_Rulers;
+--  with Create_Scroll_Test;
+--  with Create_Scrolled;
+--  with Create_Spin;
+--  with Create_Status;
+--  with Create_Test_Idle;
+--  with Create_Test_Timeout;
+--  with Create_Text;
+--  with Create_Toggle_Buttons;
 with Create_Toolbar;
-with Create_Tooltips;
-with Create_Tree;
+--  with Create_Tooltips;
+--  with Create_Tree;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
 
@@ -98,9 +98,9 @@ package body Test is
    ----------------------
 
    procedure Create_Main_Window;
-   procedure Do_Exit (Widget : in out Gtk_Widget;
-                      Data : in out Window.Gtk_Window);
-   procedure Exit_Main (Object : in out Gtk_Window);
+   procedure Do_Exit (Widget : access Gtk_Widget_Record;
+                      Data : in Window.Gtk_Window);
+   procedure Exit_Main (Object : access Gtk_Window_Record);
    function Gtk_Version_Number return String;
 
 
@@ -108,15 +108,14 @@ package body Test is
    --  Callback instantiations  --
    -------------------------------
 
-   package Button_Callback is new Signal.Void_Callback
-     (Widget_Type => Button.Gtk_Button);
+   package Button_Callback is new Signal.Void_Callback (Gtk_Button_Record);
    use type Button_Callback.Callback;
 
    package Do_Exit_Callback is new Signal.Callback
-     (Data_Type => Window.Gtk_Window, Widget_Type => Widget.Gtk_Widget);
+     (Data_Type => Window.Gtk_Window, Base_Type => Gtk_Widget_Record);
 
    package Window_Callback is new Signal.Void_Callback
-     (Widget_Type => Window.Gtk_Window);
+     (Base_Type => Window.Gtk_Window_Record);
 
    ----------------------
    --  The buttons...  --
@@ -148,31 +147,31 @@ package body Test is
       (US ("gamma curve"), Create_Gamma_Curve.Run'Access),
       (US ("handle box"), Create_Handle_Box.Run'Access),
       (US ("list"), Create_List.Run'Access),
-      (US ("menus"), Create_Menu.Run'Access),
-      (US ("notebook"), Create_Notebook.Run'Access),
-      (US ("panes"), Create_Paned.Run'Access),
-      (US ("pixmap"), Create_Pixmap.Run'Access),
-      (US ("preview color"), Create_Preview_Color.Run'Access),
-      (US ("preview gray"), Create_Preview_Gray.Run'Access),
+--         (US ("menus"), Create_Menu.Run'Access),
+--         (US ("notebook"), Create_Notebook.Run'Access),
+--         (US ("panes"), Create_Paned.Run'Access),
+--         (US ("pixmap"), Create_Pixmap.Run'Access),
+--         (US ("preview color"), Create_Preview_Color.Run'Access),
+--         (US ("preview gray"), Create_Preview_Gray.Run'Access),
       (US ("progress bar"), Create_Progress.Run'Access),
-      (US ("radio buttons"), Create_Radio_Button.Run'Access),
-      (US ("range controls"), Create_Range.Run'Access),
-      (US ("reparent"), Create_Reparent.Run'Access),
-      (US ("rulers"), Create_Rulers.Run'Access),
-      (US ("scrolled windows"), Create_Scrolled.Run'Access),
-      (US ("shapes"), null),
-      (US ("spinbutton"), Create_Spin.Run'Access),
-      (US ("statusbar"), Create_Status.Run'Access),
-      (US ("test idle"), Create_Test_Idle.Run'Access),
-      (US ("test mainloop"), Create_Main_Loop.Run'Access),
-      (US ("test scrolling"), Create_Scroll_Test.Run'Access),
-      (US ("test selection"), null),
-      (US ("test timeout"), Create_Test_Timeout.Run'Access),
-      (US ("text"), Create_Text.Run'Access),
-      (US ("toggle buttons"), Create_Toggle_Buttons.Run'Access),
+--         (US ("radio buttons"), Create_Radio_Button.Run'Access),
+--         (US ("range controls"), Create_Range.Run'Access),
+--         (US ("reparent"), Create_Reparent.Run'Access),
+--         (US ("rulers"), Create_Rulers.Run'Access),
+--         (US ("scrolled windows"), Create_Scrolled.Run'Access),
+--         (US ("shapes"), null),
+--         (US ("spinbutton"), Create_Spin.Run'Access),
+--         (US ("statusbar"), Create_Status.Run'Access),
+--         (US ("test idle"), Create_Test_Idle.Run'Access),
+--         (US ("test mainloop"), Create_Main_Loop.Run'Access),
+--         (US ("test scrolling"), Create_Scroll_Test.Run'Access),
+--         (US ("test selection"), null),
+--         (US ("test timeout"), Create_Test_Timeout.Run'Access),
+--         (US ("text"), Create_Text.Run'Access),
+--         (US ("toggle buttons"), Create_Toggle_Buttons.Run'Access),
       (US ("toolbar"), Create_Toolbar.Run'Access),
-      (US ("tooltips"), Create_Tooltips.Run'Access),
-      (US ("tree"), Create_Tree.Run'Access),
+--         (US ("tooltips"), Create_Tooltips.Run'Access),
+--         (US ("tree"), Create_Tree.Run'Access),
       (US ("WM hints"), null)
       );
 
@@ -278,8 +277,8 @@ package body Test is
    --  Do_Exit  --
    ---------------
 
-   procedure Do_Exit (Widget : in out Gtk_Widget;
-                      Data : in out Window.Gtk_Window) is
+   procedure Do_Exit (Widget : access Gtk_Widget_Record;
+                      Data : in Window.Gtk_Window) is
    begin
       Destroy (Data);
    end Do_Exit;
@@ -288,7 +287,7 @@ package body Test is
    --  Exit_Main  --
    -----------------
 
-   procedure Exit_Main (Object : in out Gtk_Window) is
+   procedure Exit_Main (Object : access Gtk_Window_Record) is
    begin
       Gtk.Main.Main_Quit;
    end Exit_Main;

@@ -32,6 +32,7 @@ with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Signal;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
 
 Package Common is
 
@@ -39,9 +40,18 @@ Package Common is
     --  generic packages for callbacks. This provides a much smaller
     --  executable
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
-   package Label_Cb is new Signal.Object_Callback (Gtk_Label);
-   package Adj_Cb is new Signal.Void_Callback (Gtk_Adjustment);
-   package Check_Cb is new Signal.Void_Callback (Gtk_Check_Button);
+   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget_Record);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget_Record, Gtk_Widget);
+   package Widget3_Cb is new Signal.Void_Callback (Gtk_Widget_Record);
+   package Label_Cb is new Signal.Object_Callback (Gtk_Label_Record);
+   package Adj_Cb is new Signal.Void_Callback (Gtk_Adjustment_Record);
+   package Check_Cb is new Signal.Void_Callback (Gtk_Check_Button_Record);
+
+
+   type Gtk_Window_Access is access all Gtk_Window;
+   package Destroy_Cb is new Signal.Callback (Gtk_Window_Record,
+                                              Gtk_Window_Access);
+   procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record;
+                             Ptr : in Gtk_Window_Access);
 end Common;
+

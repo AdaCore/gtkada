@@ -40,11 +40,11 @@ with Gtk; use Gtk;
 
 package body Create_Buttons is
 
-   package Button_Cb is new Signal.Object_Callback (Gtk_Button);
+   package Button_Cb is new Signal.Object_Callback (Gtk_Button_Record);
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Button_Window (Widget : in out Gtk_Button) is
+   procedure Button_Window (Widget : access Gtk_Button_Record) is
    begin
       if Visible_Is_Set (Widget) then
          Hide (Widget);
@@ -54,7 +54,7 @@ package body Create_Buttons is
    end Button_Window;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id      : Guint;
       Box1,
         Box2  : Gtk_Box;
@@ -68,9 +68,9 @@ package body Create_Buttons is
       Close   : Gtk_Button;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
                                    Window'Access);
          Set_Title (Window, "buttons");
          Set_Border_Width (Window, Border_Width => 0);
@@ -117,10 +117,6 @@ package body Create_Buttons is
          Set_Flags (Close, Can_Default);
          Grab_Default (Close);
          Show (Close);
-
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

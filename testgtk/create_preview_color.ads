@@ -30,6 +30,6 @@ with Gtk.Button;
 
 package Create_Preview_Color is
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button);
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record);
 
 end Create_Preview_Color;

@@ -60,7 +60,7 @@ package body Create_Progress is
      ("Continuous",
       "Discrete  ");
 
-   type Simple_Cb_Func is access procedure (Wiget : in out Gtk_Widget);
+   type Simple_Cb_Func is access procedure (Wiget : access Gtk_Widget_Record);
 
    type ProgressData is
       record
@@ -96,25 +96,18 @@ package body Create_Progress is
    end Progress_Timeout;
 
 
-   procedure Destroy_Progress (Window : in out Gtk_Widget;
-                               Win : in out Gtk_Widget_Access) is
+   procedure Destroy_Progress (Window : access Gtk_Widget_Record) is
+      pragma Warnings (Off, Window);
    begin
       Timeout_Remove (Pdata.Timer);
       Pdata.Omenu1_Group := Widget_Slist.Null_List;
       Pdata.Omenu2_Group := Widget_Slist.Null_List;
       Pdata.Timer := 0;
       Destroy (Pdata.Window);
-      Destroyed (Window, Win);
+      Pdata.Window := null;
    end Destroy_Progress;
 
-   procedure Destroy_Progress (Window : in out Gtk_Widget) is
-      Win : Gtk_Widget_Access := Pdata.Window'Access;
-   begin
-      Destroy_Progress (Window, Win);
-   end Destroy_Progress;
-
-
-   procedure Toggle_Orientation (Widget : in out Gtk_Widget) is
+   procedure Toggle_Orientation (Widget : access Gtk_Widget_Record) is
       pragma Warnings (Off, Widget);
       I : Natural := Selected_Button (Pdata.Omenu1_Group);
    begin
@@ -123,7 +116,7 @@ package body Create_Progress is
    end Toggle_Orientation;
 
 
-   procedure Toggle_Show_Text (Widget : in out Gtk_Check_Button) is
+   procedure Toggle_Show_Text (Widget : access Gtk_Check_Button_Record) is
    begin
       Set_Show_Text (Progress  => Pdata.Pbar,
                      Show_Text => Is_Active (Widget));
@@ -132,7 +125,7 @@ package body Create_Progress is
       Set_Sensitive (Pdata.Y_Align_Spin, Is_Active (Widget));
    end Toggle_Show_Text;
 
-   procedure Toggle_Bar_Style (Widget : in out Gtk_Widget) is
+   procedure Toggle_Bar_Style (Widget : access Gtk_Widget_Record) is
       pragma Warnings (Off, Widget);
       I : Natural := Selected_Button (Pdata.Omenu2_Group);
    begin
@@ -141,7 +134,7 @@ package body Create_Progress is
    end Toggle_Bar_Style;
 
 
-   procedure Value_Changed (Adj   : in out Gtk_Adjustment) is
+   procedure Value_Changed (Adj   : access Gtk_Adjustment_Record) is
       pragma Warnings (Off, Adj);
    begin
       if Get_Activity_Mode (Pdata.Pbar) then
@@ -154,7 +147,7 @@ package body Create_Progress is
    end Value_Changed;
 
 
-   procedure Adjust_Blocks (Adj   : in out Gtk_Adjustment) is
+   procedure Adjust_Blocks (Adj   : access Gtk_Adjustment_Record) is
       pragma Warnings (Off, Adj);
    begin
       Set_Percentage (Pdata.Pbar, 0.0);
@@ -163,7 +156,7 @@ package body Create_Progress is
    end Adjust_Blocks;
 
 
-   procedure Adjust_Step (Adj   : in out Gtk_Adjustment) is
+   procedure Adjust_Step (Adj   : access Gtk_Adjustment_Record) is
       pragma Warnings (Off, Adj);
    begin
       Set_Activity_Step (Pdata.Pbar,
@@ -171,7 +164,7 @@ package body Create_Progress is
    end Adjust_Step;
 
 
-   procedure Adjust_Act_Blocks (Adj   : in out Gtk_Adjustment) is
+   procedure Adjust_Act_Blocks (Adj   : access Gtk_Adjustment_Record) is
       pragma Warnings (Off, Adj);
    begin
       Set_Activity_Blocks (Pdata.Pbar,
@@ -179,7 +172,7 @@ package body Create_Progress is
    end Adjust_Act_Blocks;
 
 
-   procedure Adjust_Align (Adj   : in out Gtk_Adjustment) is
+   procedure Adjust_Align (Adj   : access Gtk_Adjustment_Record) is
       pragma Warnings (Off, Adj);
    begin
       Set_Text_Alignment (Pdata.Pbar,
@@ -188,7 +181,7 @@ package body Create_Progress is
    end Adjust_Align;
 
 
-   procedure Toggle_Activity_Mode (Widget : in out Gtk_Check_Button) is
+   procedure Toggle_Activity_Mode (Widget : access Gtk_Check_Button_Record) is
    begin
       Set_Activity_Mode (Pdata.Pbar, Is_Active (Widget));
       Set_Sensitive (Pdata.Step_Spin, Is_Active (Widget));
@@ -196,7 +189,7 @@ package body Create_Progress is
    end Toggle_Activity_Mode;
 
 
-   procedure Entry_Changed (Widget : in out Gtk_Widget) is
+   procedure Entry_Changed (Widget : access Gtk_Widget_Record) is
       pragma Warnings (Off, Widget);
    begin
       Set_Format_String (Pdata.Pbar, Get_Text (Pdata.Gentry));
@@ -231,7 +224,7 @@ package body Create_Progress is
    end Build_Option_Menu;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id     : Guint;
       Vbox   : Gtk_Box;
       Vbox2  : Gtk_Box;
@@ -244,16 +237,15 @@ package body Create_Progress is
       Check  : Gtk_Check_Button;
       Button : Gtk_Button;
    begin
-      if not Is_Created (Pdata.Window) then
+      if Pdata.Window = null then
          Gtk_New (Pdata.Window);
          Set_Policy (Pdata.Window,
                      Allow_Shrink => False,
                      Allow_Grow   => False,
                      Auto_Shrink  => True);
 
-         Id := Widget2_Cb.Connect (Pdata.Window, "destroy",
-                                   Destroy_Progress'Access,
-                                   Pdata.Window'Access);
+         Id := Widget3_Cb.Connect
+           (Pdata.Window, "destroy", Destroy_Progress'Access);
          Set_Title (Pdata.Window, "progress bar");
          Set_Border_Width (Pdata.Window, Border_Width => 0);
 
@@ -478,9 +470,6 @@ package body Create_Progress is
          Pack_Start (Get_Action_Area (Pdata.Window), Button, True, True, 0);
          Grab_Default (Button);
          Show (Button);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Pdata.Window) then
          Show_All (Pdata.Window);
       else
          Destroy (Pdata.Window);

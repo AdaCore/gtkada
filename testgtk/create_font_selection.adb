@@ -40,36 +40,46 @@ with Text_IO; use Text_IO;
 
 package body Create_Font_Selection is
 
-   package Fs_Cb is new Signal.Object_Callback (Gtk_Font_Selection_Dialog);
+   type Gtk_Font_Selection_Access is access all Gtk_Font_Selection_Dialog;
+   package Destroy_Cb is new Signal.Callback
+     (Gtk_Font_Selection_Dialog_Record, Gtk_Font_Selection_Access);
+   procedure Destroyed (Win : access Gtk_Font_Selection_Dialog_Record;
+                        Ptr : in Gtk_Font_Selection_Access);
+
+   procedure Destroyed (Win : access Gtk_Font_Selection_Dialog_Record;
+                        Ptr : in Gtk_Font_Selection_Access) is
+   begin
+      Ptr.all := null;
+   end Destroyed;
+
+   package Fs_Cb is new Signal.Object_Callback
+     (Gtk_Font_Selection_Dialog_Record);
 
    Window : aliased Gtk_Font_Selection_Dialog;
 
 
-   procedure Selection_OK (Fs : in out Gtk_Font_Selection_Dialog) is
+   procedure Selection_OK (Fs : access Gtk_Font_Selection_Dialog_Record) is
    begin
       Put_Line (Get_Font_Name (Fs));
       Destroy (Fs);
    end Selection_OK;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id      : Guint;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, "Font Selection Dialog");
          Set_Position (Window, Win_Pos_Mouse);
 
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
-         Id := Fs_Cb.Connect (Get_Ok_Button (Window), "clicked",
-                              Selection_Ok'Access, Window);
-         Id := Widget_Cb.Connect (Get_Cancel_Button (Window), "clicked",
-                                  Destroy'Access, Window);
-
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroyed'Access, Window'Access);
+         Id := Fs_Cb.Connect
+           (Get_Ok_Button (Window), "clicked", Selection_Ok'Access, Window);
+         Id := Widget_Cb.Connect
+           (Get_Cancel_Button (Window), "clicked", Gtk.Widget.Destroy'Access,
+            Window);
          Show (Window);
       else
          Destroy (Window);

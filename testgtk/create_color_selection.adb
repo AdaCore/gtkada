@@ -40,11 +40,24 @@ with Common; use Common;
 
 package body Create_Color_Selection is
 
+   type Gtk_Dialog_Access is access all Gtk_Color_Selection_Dialog;
+   package Destroy_Dialog_Cb is new Signal.Callback
+     (Gtk_Color_Selection_Dialog_Record, Gtk_Dialog_Access);
+   procedure Destroy_Window
+     (Win : access Gtk_Color_Selection_Dialog_Record;
+      Ptr : in Gtk_Dialog_Access);
+
    package Color_Sel_Cb is new Signal.Object_Callback
-     (Gtk_Color_Selection_Dialog);
+     (Gtk_Color_Selection_Dialog_Record);
    --  Must be instanciated at library level !
 
-   procedure Color_Ok (Dialog : in out Gtk_Color_Selection_Dialog)
+   procedure Destroy_Window (Win : access Gtk_Color_Selection_Dialog_Record;
+                             Ptr : in Gtk_Dialog_Access) is
+   begin
+      Ptr.all := null;
+   end Destroy_Window;
+
+   procedure Color_Ok (Dialog : access Gtk_Color_Selection_Dialog_Record)
    is
       Color : Color_Array;
    begin
@@ -60,21 +73,19 @@ package body Create_Color_Selection is
    Dialog : aliased Gtk_Color_Selection_Dialog;
 
    procedure Run
-     (Widget : in out Button.Gtk_Button)
+     (Widget : access Button.Gtk_Button_Record)
    is
       Cb_Id  : Guint;
    begin
 
-      if not Is_Created (Dialog) then
+      if Dialog = null then
          Gtk_New (Dialog, Title => "Color Selection Dialog");
          Set_Opacity (Get_Colorsel (Dialog), True);
          Set_Update_Policy (Get_Colorsel (Dialog), Enums.Update_Continuous);
          Set_Position (Dialog, Enums.Win_Pos_Mouse);
 
-         Cb_Id := Widget2_Cb.Connect (Dialog,
-                                      "destroy",
-                                      Destroyed'Access,
-                                      Dialog'Access);
+         Cb_Id := Destroy_Dialog_Cb.Connect
+           (Dialog, "destroy", Destroy_Window'Access, Dialog'Access);
 
          Cb_Id := Color_Sel_Cb.Connect (Get_OK_Button (Dialog),
                                         "clicked",
@@ -84,9 +95,6 @@ package body Create_Color_Selection is
                                    "clicked",
                                    Gtk.Widget.Destroy'Access,
                                    Dialog);
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Dialog) then
          Show (Dialog);
       else
          Destroy (Dialog);

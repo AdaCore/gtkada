@@ -42,19 +42,19 @@ with Gtk; use Gtk;
 
 package body Create_Entry is
 
-   package Entry_Cb is new Signal.Callback (Widget_Type => Gtk_Check_Button,
-                                            Data_Type   => Gtk_Entry);
+   package Entry_Cb is new Signal.Callback
+     (Base_Type => Gtk_Check_Button_Record, Data_Type => Gtk_Entry);
 
    Window : aliased Gtk_Window;
 
-   procedure Toggle_Editable (Button : in out Gtk_Check_Button;
-                              The_Entry : in out Gtk_Entry)
+   procedure Toggle_Editable (Button : access Gtk_Check_Button_Record;
+                              The_Entry : in Gtk_Entry)
    is
    begin
       Set_Editable (The_Entry, Is_Active (Button));
    end Toggle_Editable;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       use String_List;
 
       List      : Glist;
@@ -67,7 +67,7 @@ package body Create_Entry is
       Separator : Gtk_Separator;
       Button    : Gtk_Button;
    begin
-      if not Is_Created (Window) then
+      if Window = null then
 
          Append (List, "item0");
          Append (List, "item1 item1");
@@ -81,8 +81,8 @@ package body Create_Entry is
          Append (List, "item9 item9");
 
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "entry");
          Set_Border_Width (Window, 0);
 
@@ -110,8 +110,8 @@ package body Create_Entry is
 
          Gtk_New (Check, "Editable");
          Pack_Start (Box2, Check, False, True, 0);
-         Id := Entry_Cb.Connect (Check, "toggled", Toggle_Editable'Access,
-                                 The_Entry);
+         Id := Entry_Cb.Connect
+           (Check, "toggled", Toggle_Editable'Access, The_Entry);
          Set_Active (Check, True);
          Show (Check);
 
@@ -130,9 +130,6 @@ package body Create_Entry is
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
          Show (Button);
-      end if;
-
-      if not Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

@@ -39,20 +39,20 @@ with Gtk; use Gtk;
 
 package body Create_Calendar is
 
-   package Button_Cb is new Signal.Object_Callback (Gtk_Button);
+   package Button_Cb is new Signal.Object_Callback (Gtk_Button_Record);
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id       : Guint;
       Box1     : Gtk_Box;
       Calendar : Gtk_Calendar;
       Close    : Gtk_Button;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
                                    Window'Access);
          Set_Title (Window, "Calendar");
          Set_Border_Width (Window, Border_Width => 0);
@@ -71,10 +71,6 @@ package body Create_Calendar is
          Set_Flags (Close, Can_Default);
          Grab_Default (Close);
          Show (Close);
-
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

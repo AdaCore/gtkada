@@ -47,18 +47,18 @@ package body Create_Gamma_Curve is
    Count  : Gint := 0;
    Curve  : Gtk_Gamma_Curve;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id    : Guint;
       Max   : Gint := 127 + (Count mod 4) * 128;
       Vec   : Gfloat_Array (1 .. Positive (Max));
    begin
 
-      if not Is_Created (Window) then
+      if Window = null  then
          Gtk_New (Window, WIndow_Toplevel);
          Set_Title (Window, "test");
          Set_Border_Width (Window, 10);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Gtk_New (Curve);
          Add (Window, Curve);
          Show (Curve);
@@ -75,7 +75,6 @@ package body Create_Gamma_Curve is
            * Float_P.Sqrt (Gfloat (J));
       end loop;
       Set_Vector (Get_Curve (Curve), Vec);
-
 
       if not Visible_Is_Set (Window) then
          Show (Window);

@@ -53,18 +53,18 @@ with Gtk; use Gtk;
 
 package body Create_Cursors is
 
-   package Spin_Cb is new Signal.Object_Callback (Gtk_Spin_Button);
-   package Spin2_Cb is new Signal.Callback (Gtk_Spin_Button,
+   package Spin_Cb is new Signal.Object_Callback (Gtk_Spin_Button_Record);
+   package Spin2_Cb is new Signal.Callback (Gtk_Spin_Button_Record,
                                             Gtk_Drawing_Area);
-   package Spin3_Cb is new Signal.Two_Callback (Gtk_Widget,
+   package Spin3_Cb is new Signal.Two_Callback (Gtk_Widget_Record,
                                                 Gtk_Spin_Button,
                                                 Gdk_Event_Button);
-   package Da_Cb is new Signal.Object_Callback (Gtk_Drawing_Area);
+   package Da_Cb is new Signal.Object_Callback (Gtk_Drawing_Area_Record);
 
    Window : aliased Gtk.Window.Gtk_Window;
 
 
-   procedure Cursor_Expose_Event (Darea : in out Gtk_Drawing_Area) is
+   procedure Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record) is
       Draw       : Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
       White_GC   : Gdk_GC := Get_White_GC (Get_Style (Darea));
       Black_GC   : Gdk_GC := Get_Black_GC (Get_Style (Darea));
@@ -83,8 +83,8 @@ package body Create_Cursors is
    end Cursor_Expose_Event;
 
 
-   procedure Set_Cursor (Spinner : in out Gtk_Spin_Button;
-                         Widget  : in out Gtk_Drawing_Area)
+   procedure Set_Cursor (Spinner : access Gtk_Spin_Button_Record;
+                         Widget  : in Gtk_Drawing_Area)
    is
       pragma Warnings (Off);
       function To_Cursor is new Unchecked_Conversion (Gint,
@@ -101,9 +101,9 @@ package body Create_Cursors is
       Destroy (Cursor);
    end Set_Cursor;
 
-   procedure Cursor_Event (Darea   : in out Gtk_Widget;
-                           Event   : in out Gdk_Event_Button;
-                           Spinner : in out Gtk_Spin_Button) is
+   procedure Cursor_Event (Darea   : access Gtk_Widget_Record;
+                           Event   : in Gdk_Event_Button;
+                           Spinner : in Gtk_Spin_Button) is
       pragma Warnings (Off, Darea);
    begin
       if Get_Button (Event) = 1 then
@@ -113,7 +113,7 @@ package body Create_Cursors is
       end if;
    end Cursor_Event;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id      : Guint;
       Main_Box,
         Vbox,
@@ -127,10 +127,10 @@ package body Create_Cursors is
       Darea   : Gtk_Drawing_Area;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                   Window'Access);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroy_Window'Access, Window'Access);
          Set_Title (Window, "Cursors");
 
          Gtk_New_Vbox (Main_Box, Homogeneous => False, Spacing => 5);
@@ -187,7 +187,6 @@ package body Create_Cursors is
          Pack_Start (Hbox, Button, True, True, 5);
 
          Show_All (Window);
-         Set_Cursor (Spinner, Darea);
 
       else
          Destroy (Window);

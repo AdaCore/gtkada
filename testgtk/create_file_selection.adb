@@ -40,32 +40,46 @@ with Ada.Text_IO;
 
 package body Create_File_Selection is
 
-   package Files_Cb is new Signal.Object_Callback (Gtk_File_Selection);
+   type Gtk_File_Selection_Access is access all Gtk_File_Selection;
+   package Destroy_Cb is new Signal.Callback
+     (Gtk_File_Selection_Record, Gtk_File_Selection_Access);
+   procedure Destroyed (Win : access Gtk_File_Selection_Record;
+                        Ptr : in Gtk_File_Selection_Access);
+
+   procedure Destroyed (Win : access Gtk_File_Selection_Record;
+                        Ptr : in Gtk_File_Selection_Access) is
+   begin
+      Ptr.all := null;
+   end Destroyed;
+
+   package Files_Cb is new Signal.Object_Callback
+     (Gtk_File_Selection_Record);
 
    Window : aliased Gtk_File_Selection;
 
-   procedure Ok (Files : in out Gtk_File_Selection) is
+   procedure Ok (Files : access Gtk_File_Selection_Record) is
    begin
       Ada.Text_IO.Put_Line ("Selected " & Get_Filename (Files));
       Destroy (Files);
    end Ok;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Id     : Guint;
       Button : Gtk_Button;
    begin
 
-      if not Is_Created (Window) then
+      if Window = null then
          Gtk_New (Window, Title => "File Selection Dialog");
          Hide_Fileop_Buttons (Window);
          Set_Position (Window, Win_Pos_Mouse);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                  Window'Access);
-         Id := Files_Cb.Connect (Get_Ok_Button (Window), "clicked",
-                                 Ok'Access, Window);
-         Id := Widget_Cb.Connect (Get_Cancel_Button (Window), "clicked",
-                                  Gtk.Widget.Destroy'Access, Window);
+         Id := Destroy_Cb.Connect
+           (Window, "destroy", Destroyed'Access, Window'Access);
+         Id := Files_Cb.Connect
+           (Get_Ok_Button (Window), "clicked", Ok'Access, Window);
+         Id := Widget_Cb.Connect
+           (Get_Cancel_Button (Window), "clicked",
+            Gtk.Widget.Destroy'Access, Window);
 
          Gtk_New (Button, Label => "Hide Fileops");
          Id := Files_Cb.Connect (Button, "clicked", Hide_Fileop_Buttons'Access,
@@ -78,10 +92,6 @@ package body Create_File_Selection is
                                  Window);
          Pack_Start (Get_Action_Area (Window), Button, False, False, 0);
          Show (Button);
-
-      end if;
-
-      if not Gtk.Widget.Visible_Is_Set (Window) then
          Show (Window);
       else
          Destroy (Window);

@@ -30,6 +30,6 @@ with Gtk.Button; use Gtk.Button;
 
 package Create_Status is
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button);
+   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record);
 
 end Create_Status;
