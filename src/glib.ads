@@ -76,6 +76,15 @@ package Glib is
 
    type Gunichar is new Guint32;
 
+   type GTime_Val is record
+      TV_Sec  : Glong;
+      TV_Usec : Glong;
+   end record;
+   pragma Convention (C, GTime_Val);
+
+   type GTime_Val_Access is access all GTime_Val;
+   pragma Convention (C, GTime_Val_Access);
+
    subtype Grange_Float is Gdouble;
    --  Needed for better compatibility between GtkAda 1.2 and 2.0
 
