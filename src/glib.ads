@@ -119,12 +119,15 @@ package Glib is
 
    type Guchar_Array_Access is access Guchar_Array;
 
+   type String_Ptr is access all String;
+
    --  <doc_ignore>
    procedure Free is new Ada.Unchecked_Deallocation
      (Object => Guchar_Array, Name => Guchar_Array_Access);
-   --  </doc_ignore>
 
-   type String_Ptr is access all String;
+   procedure Free is new Ada.Unchecked_Deallocation
+     (Object => String, Name => String_Ptr);
+   --  </doc_ignore>
 
    ------------
    -- Quarks --
