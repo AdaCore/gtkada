@@ -542,7 +542,7 @@ AC_DEFUN(AM_CHECK_PIXBUF,
     LIBART_PREFIX=`$LIBART_CONFIG --prefix`
     PIXBUF_CFLAGS=`$PIXBUF_CONFIG --cflags`
     PIXBUF_LIBS="-L$PIXBUF_PREFIX/lib -lgdk_pixbuf -lart_lgpl"
-    PIXBUF_STATIC_LIBS="$PIXBUF_PREFIX/lib/libgdk_pixbuf.a $LIBART_PREFIX/libart_lgpl.a"
+    PIXBUF_STATIC_LIBS="$PIXBUF_PREFIX/lib/libgdk_pixbuf.a $LIBART_PREFIX/lib/libart_lgpl.a"
   fi
 
   AC_SUBST(PIXBUF_CFLAGS)
