@@ -83,7 +83,7 @@ ada_initialize_class_record (GtkObject*  object,
 
       /* Note: The memory allocated here is never freed. No need to worry,
 	 since this is only allocated once per user's widget type, and
-	 might be use till the end of the application */
+	 might be used until the end of the application */
       object->klass = (GtkObjectClass*) malloc (query->class_size
 						+ nsignals * sizeof (void*));
       memcpy (object->klass, ancestor, query->class_size);
