@@ -119,6 +119,10 @@ package Gdk.Color is
                            Result     :    out Gint);
    --  Allocate a set of colors. The parameters are the same as for Alloc_Color
    --  Result is the number of colors successfully allocated.
+   --
+   --  The size of the Boolean_Array is equal to the length of the
+   --  Colors_Array. USAGE OF AN ARRAY OF A DIFFERENT SIZE WILL
+   --  PROBABLY LEAD TO A CONSTRAINT_ERROR.
 
 
    function White (Colormap  : in Gdk_Colormap) return Gdk_Color;
@@ -145,18 +149,20 @@ package Gdk.Color is
    --  some strange colors on the display...
 
 
-   procedure Ref (Colormap : in Gdk_Colormap);
    procedure Unref (Colormap : in out Gdk_Colormap);
+   --  Unref is the only way to destroy a colormap once you no longer need it.
+   --  Note that because gtk+ use reference counts, the colormap will not
+   --  be actually destroyed while at least one object is using it.
+
+
+   procedure Ref (Colormap : in Gdk_Colormap);
+
 
    function Get_System_Size return Gint;
 
    procedure Change (Colormap : in Gdk_Colormap;
                      Ncolors  : in Gint);
 
-   --
-   --  The size of the Boolean_Array is equal to the length of the
-   --  Colors_Array. USAGE OF AN ARRAY OF A DIFFERENT SIZE WILL
-   --  PROBABLY LEAD TO A CONSTRAINT_ERROR.
 
    procedure Free_Colors (Colormap : in Gdk_Colormap;
                           Colors   : in Gdk_Color_Array);
