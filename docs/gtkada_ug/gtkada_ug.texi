@@ -59,6 +59,7 @@ unmodified in any copy.
 * How to report bugs::
 * New tagged type scheme::
 * Using tagged types to extend Gtk widgets::
+* Creating new widgets in Ada::
 * Support for Glade the Gtk GUI builder::
 * A complete example::
 
@@ -2468,6 +2469,153 @@ the following:
 
 The first line creates the Ada type, whereas the @code{Initialize} call
 actually creates the C widget and associates it with the Ada type.
+
+@node Creating new widgets in Ada
+@chapter Creating new widgets in Ada
+
+With GtkAda, you can now create widgets directly in Ada. These new
+widgets can be used directly, as if they were part of gtk itself.
+
+Creating new widgets is a way to create reuseable components. You can
+apply to them the same functions as would for any other widget, such as
+Show, Hide, ...
+
+This section will present how to create two types of widgets, composite
+widgets and widgets created from scratch. Two examples are provided with
+GtkAda, in the directories @file{examples/composite_widget} and
+@file{examples/base_widget}. Please also refer to the gtk+ tutorial,
+that describes the basic mechanisms that you need to know to create
+a widget (even if the Ada code is really different from the C code...)
+
+@menu
+* Creating composite widgets::
+* Creating widgets from scratch::
+@end menu
+
+@node Creating composite widgets
+@section Creating composite widgets
+
+A composite widget is a widget that does not do much by itself. This is
+more a collection of subwidgets, grouped into a more general entity.
+For instance, among the standard widgets, @code{Gtk_File_Selection}
+and @code{Gtk_Font_Selection} belong to this category.
+
+The good news is that there is nothing special to know. Just create a
+new tagged type, that extends one of the standard widgets (or even another
+of your own widgets), provide a @code{Gtk_New} function that allocates
+memory for this widget, and call the @code{Initialize} function that does
+the actual creation of the widget and the subwidgets.
+There is only one thing to do: @code{Initialize} should the call the
+parent class's @code{Initialize} function, to create the underlying C
+widget.
+
+The example directory @file{examples/composite_widget} reimplements the
+@code{Gtk_Dialog} widget as was written in C by the creators of gtk+.
+
+@node Creating widgets from scratch
+@section Creating widgets from scratch
+
+First, an important note: please do not read this if this is your first
+time using GtkAda, or if you don't really understand the signal mechanism.
+Creating a nice and working widget really takes a lot of messing with the
+low level signals.
+
+Creating a widget from scratch is what you want to do if your widget should
+be drawn in a special way, should create and emit new signals, ...
+The example we give in @file{examples/base_widget} is a small target, on
+which the user can click, and that sends one of two signals "bullseye" or
+"missed" depending on where the user has clicked.
+
+Once again, the only two functions that you must create are @code{Gtk_New}
+and @code{Initialize}.
+This time, @code{Initialize} has to do two things:
+
+@example
+   Parent_Package.Initialize
+       (Parent_Widget_Record (Widget.@b{all})'@b{Access});
+
+   --  The above line calls the Initialize function from the parent.
+   --  This creates the underlying C widget, which we are going to
+   --  modify with the following call:
+
+   Gtk.Object.Initialize_Class_Record
+       (Widget, Signals, Class_Record);
+   --  This initializes the "class record" for the widget and
+   --  creates the signals.
+@end example
+
+In the above example, the new part is the second call. It takes three
+arguments:
+@itemize @bullet
+@item Widget
+This is the widget that you want to initialize
+@item Signals
+This is an array of string access that contains the name of the signals
+you want to create. For instance, you could create Signals with
+@example
+   Signals      : Gtk.Object.Signal_Array (0 .. 1) :=
+     (0 => @b{new} String'("bullseye" & Ascii.NUL),
+      1 => @b{new} String'("missed" & Ascii.NUL));
+@end example
+This will create two signals, named "bullseye" and "missed", whose callbacks
+do not take any argument (apart from the usual user's data). This is the only
+restriction from GtkAda compared to gtk+: all the callbacks are created
+automatically, but you can not specify additionnal parameters that are sent
+automatically by GtkAda.
+
+@item Class_Record
+Every widget in C is associated with two records. The first one, which exists
+only once per widget type, is the "class record". It contains the list of
+signals that are known by this widget type, the list of default callbacks for
+the signals, ...; the second record is an "instance record", which contains
+each instance specific data.
+In GtkAda, the "instance record" is simply your tagged type and its fields.
+The call to @code{Initialize_Class_Record} is provided to initialize the
+"class record". As we said, there should be only one such record per widget
+type. This parameter "Class_Record" will point to this records, once it is
+created, and will be reused for every instanciation of the widget.
+
+@end itemize
+
+Then of course @code{Initialize} should set up some signal handlers for
+the functions you want to redefine.
+Three signals are especially useful:
+
+@itemize @bullet
+
+@item "size_request"
+
+This callback is passed one parameter, as in :
+@example
+   @b{procedure} Size_Request
+      (Widget      : @b{access} My_Widget_Record;
+       Requisition : @b{in out} Gtk.Widget.Gtk_Requisition);
+@end example
+This function should modify Requisition to specify what would be the
+ideal size of the widget. This might not be the exact size that will be
+set, since some containers might decide to enlarge or to shrink it.
+
+@item "size_allocate"
+
+This callback is called every time the widget is moved in its parent
+window, or is resize. It is passed one paramater, as in :
+@example
+   @b{procedure} Size_Allocate
+      (Widget     : @b{access} My_Widget_Record;
+       Allocation : @b{in out} Gtk.Widget.Gtk_Allocation)
+@end example
+This function should take the responsability to move the widget, using
+for instance @code{Gdk.Window.Move_Resize}.
+
+@item "expose_event"
+
+This callback is called every time the widget needs to be redrawn.
+It is passed one parameter, the area that is necessary to be redrawn (to
+speed things up, you don't need to redraw the whole widget, just this
+area).
+
+@end itemize
+
 
 @node Support for Glade the Gtk GUI builder
 @chapter Support for Glade, the Gtk GUI builder
