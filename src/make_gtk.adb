@@ -208,6 +208,7 @@ with Gtkada.Dialogs;
 with Gtkada.File_Selection;
 with Gtkada.Handlers;
 with Gtkada.Intl;
+with Gtkada.Macro;
 with Gtkada.MDI;
 with Gtkada.Pixmaps;
 with Gtkada.Types;
