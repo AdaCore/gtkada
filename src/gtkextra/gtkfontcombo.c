@@ -269,12 +269,13 @@ new_font(GtkEntry *entry, gpointer data)
   /* GtkAda team: in gtk+2.0, the "changed" signal is emitted more
   *  often, including with an empty text in the entry.
   *  In that case, we simply exit. */
-  if (!text || text [0] == '\0') {
+  psfont = gtk_psfont_find_by_family(text, italic, bold);
+  if (psfont == NULL) {
      return;
   }
 
   height = atoi(size);
-  font_combo->psfont = psfont = gtk_psfont_find_by_family(text, italic, bold);
+  font_combo->psfont = psfont;
   gdk_font_unref(font_combo->font);
   font_combo->font = gtk_psfont_get_gdkfont(psfont->fontname, height);
   font_combo->height = height;
