@@ -3,9 +3,24 @@ include ../Makefile.common
 LIBNAME       = libgnomeada$(SO_EXT)
 SONAME        = libgnomeada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 ARCHIVENAME   = libgnomeada.a
-GNOME_LIBS    = -lgnomeui -lgnome -lart_lgpl -lpopt
+GNOME_LIBS    = @GNOME_LIBS@
+HAVE_GNOME    = @HAVE_GNOME@
 
+ifeq ($(HAVE_GNOME),True)
 all: $(ARCHIVENAME) $(LIBNAME)
+install: all
+	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
+	$(INSTALL_DATA) $(SONAME) $(libdir)
+	$(RM) $(libdir)/$(LIBNAME)
+	$(LN) $(SONAME) $(libdir)/$(LIBNAME)
+	$(CP) gnome*.ads gnome*.adb $(incdir)
+	$(CP) *.ali $(alidir)
+	$(CHMOD) -w $(alidir)/*.ali
+
+else
+all:
+install:
+endif
 
 gnome:
 	@if [ -f ../.devel ]; then \
@@ -17,7 +32,7 @@ gnome:
 $(LIBNAME): gnome
 ifeq ($(BUILD_SHARED),yes)
 	  $(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
-	  $(SO_OPTS)$(SONAME) gnome.o gnome-*.o $(GTK_LIBS)
+	  $(SO_OPTS)$(SONAME) gnome.o gnome-*.o $(GTK_LIBS) $(GNOME_LIBS)
 	  $(RM) $(LIBNAME)
 	  $(LN) $(SONAME) $(LIBNAME)
 	  -@if [ ! -f ../.devel ]; then \
@@ -32,8 +47,8 @@ $(ARCHIVENAME): gnome
 	  $(RANLIB) $(ARCHIVENAME); \
 	fi
 
-link:
-	gnatmake -gnaty make `gtkada-config` -largs $(GNOME_LIBS)
+link: $(LIBNAME)
+	gnatmake -gnaty make `gtkada-config` -largs -lgnomeada
 
 clean:
 	$(RM) *.o *.ali *~ core
