@@ -588,7 +588,8 @@ package body Gtk.Tree_Model is
          declare
             Result : constant String := Value (A);
          begin
-            Free (A);
+            --  No need to free A, since it returns a handle to the internal
+            --  pointer of gtk.
             return Result;
          end;
       end if;
