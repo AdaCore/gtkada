@@ -47,7 +47,6 @@ with Pango.Font;       use Pango.Font;
 with Gdk;              use Gdk;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Cursor;       use Gdk.Cursor;
-with Gtk.Dialog;       use Gtk.Dialog;
 with Gdk.Dnd;          use Gdk.Dnd;
 with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
@@ -56,6 +55,7 @@ with Gdk.Main;         use Gdk.Main;
 with Gdk.Pixmap;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Types;        use Gdk.Types;
+with Gdk.Types.Keysyms;
 with Gdk.Window;       use Gdk.Window;
 with Gdk.Window_Attr;  use Gdk.Window_Attr;
 with Gtk;              use Gtk;
@@ -67,10 +67,13 @@ with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
 with Gtk.Container;    use Gtk.Container;
+with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Dnd;          use Gtk.Dnd;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Event_Box;    use Gtk.Event_Box;
 with Gtk.Fixed;        use Gtk.Fixed;
+with Gtk.Frame;        use Gtk.Frame;
+with Gtk.GEntry;       use Gtk.GEntry;
 with Gtk.Handlers;
 with Gtk.Label;        use Gtk.Label;
 with Pango.Layout;     use Pango.Layout;
@@ -92,8 +95,12 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Ada.Unchecked_Deallocation;
 with Ada.Unchecked_Conversion;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Tags;         use Ada.Tags;
 with System;           use System;
+
+--  with Ada.Text_IO; use Ada.Text_IO;
 
 package body Gtkada.MDI is
 
@@ -219,6 +226,16 @@ package body Gtkada.MDI is
    --  The various mime types support by the drag-and-drop in the MDI.
 
    use Widget_List;
+
+   type Selection_Dialog_Record is new Gtk_Window_Record with record
+      Current_Child : Widget_List.Glist;
+      Label         : Gtk_Label;
+      Ent           : Gtk_Entry;
+      Length        : Natural := 0;
+   end record;
+   type Selection_Dialog_Access is access all Selection_Dialog_Record'Class;
+
+   type Children_Array is array (Natural range <>) of Widget_List.Glist;
 
    procedure Free is new Ada.Unchecked_Deallocation (String, String_Access);
 
@@ -442,6 +459,21 @@ package body Gtkada.MDI is
    procedure Give_Focus_To_Child (Widget : access Gtk_Widget_Record'Class);
    --  Give the keyboard focus to Widget.
 
+   function Matching_Children
+     (MDI : access MDI_Window_Record'Class; Str : String)
+      return Children_Array;
+   --  Return the list of children of the MDI that match Str
+
+   procedure Update_Selection_Dialog
+     (MDI : access MDI_Window_Record'Class; Increment : Integer);
+   --  Update the currently selected child in the selection dialog, so that it
+   --  matches the filter.
+
+   function Key_Event_In_Floating
+     (Win   : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean;
+   --  Forward the key press event to the Win
+
    -------------------------
    -- Set_Focus_Child_MDI --
    -------------------------
@@ -562,6 +594,209 @@ package body Gtkada.MDI is
          Set_Dnd_Target (MDI.Drop_Sites (S));
       end loop;
    end Initialize;
+
+   -----------------------
+   -- Matching_Children --
+   -----------------------
+
+   function Matching_Children
+     (MDI : access MDI_Window_Record'Class; Str : String) return Children_Array
+   is
+      use type Widget_List.Glist;
+      Count    : constant Natural := Natural (Length (MDI.Items));
+      Children : Children_Array (1 .. Count);
+      L        : Widget_List.Glist := MDI.Items;
+      Ind      : Natural := Children'First;
+      C        : MDI_Child;
+   begin
+      while L /= Null_List loop
+         C := MDI_Child (Get_Data (L));
+         if Str = ""
+           or else Index (To_Lower (Get_Short_Title (C)), Str) /= 0
+         then
+            Children (Ind) := L;
+            Ind := Ind + 1;
+         end if;
+         L := Next (L);
+      end loop;
+      return Children (Children'First .. Ind - 1);
+   end Matching_Children;
+
+   -----------------------------
+   -- Update_Selection_Dialog --
+   -----------------------------
+
+   procedure Update_Selection_Dialog
+     (MDI : access MDI_Window_Record'Class; Increment : Integer)
+   is
+      D : constant Selection_Dialog_Access :=
+        Selection_Dialog_Access (MDI.Selection_Dialog);
+      Str : constant String := Get_Text (D.Ent);
+      Children : constant Children_Array :=
+        Matching_Children (MDI, To_Lower (Str));
+      Index : Integer := Children'First;
+
+   begin
+      --  Update graphically the list of children matching the filter
+
+      D.Length := Str'Length;
+      Append_Text (D.Ent, " {");
+      Set_Position (D.Ent, Gint (D.Length));
+
+      for C in Children'Range loop
+         if C /= Children'First then
+            Append_Text (D.Ent, ",");
+         end if;
+         Append_Text (D.Ent,
+                      Get_Short_Title (MDI_Child (Get_Data (Children (C)))));
+      end loop;
+
+      Append_Text (D.Ent, "}");
+
+      --  Check the list of children matching the filter, and update the
+      --  current child accordingly
+
+      if Children'Length = 0 then
+         D.Current_Child := Null_List;
+      else
+         while Index <= Children'Last loop
+            exit when Children (Index) = D.Current_Child;
+            Index := Index + 1;
+         end loop;
+
+         Index := Index + Increment;
+
+         if Index > Children'Last then
+            Index := Children'First;
+         elsif Index < Children'First then
+            Index := Children'Last;
+         end if;
+
+         D.Current_Child := Children (Index);
+      end if;
+
+      if D.Current_Child = Null_List then
+         Set_Text (D.Label, "");
+      else
+         Set_Text
+           (D.Label, Get_Short_Title (MDI_Child (Get_Data (D.Current_Child))));
+      end if;
+   end Update_Selection_Dialog;
+
+   ----------------------------------------
+   -- Check_Interactive_Selection_Dialog --
+   ----------------------------------------
+
+   function Check_Interactive_Selection_Dialog
+     (MDI                       : access MDI_Window_Record;
+      Event                     : Gdk.Event.Gdk_Event;
+      Switch_Child_Modifier     : Gdk.Types.Gdk_Modifier_Type;
+      Next_Child_Key            : Gdk.Types.Gdk_Key_Type;
+      Previous_Child_Key        : Gdk.Types.Gdk_Key_Type) return Boolean
+   is
+      use type Widget_List.Glist;
+      C : MDI_Child;
+      D : Selection_Dialog_Access;
+      Box : Gtk_Box;
+      Frame : Gtk_Frame;
+      Propagate : Boolean;
+      pragma Unreferenced (Propagate);
+   begin
+      if Get_Event_Type (Event) = Key_Press
+        and then
+        (Get_State (Event) = Switch_Child_Modifier
+         or else Get_State (Event) = (Switch_Child_Modifier or Shift_Mask))
+        and then (Get_Key_Val (Event) = Next_Child_Key
+                  or else Get_Key_Val (Event) = Previous_Child_Key)
+        and then MDI.Items /= Null_List
+      then
+         if MDI.Selection_Dialog = null then
+            D := new Selection_Dialog_Record;
+            Initialize (D, Window_Popup);
+
+            Set_Transient_For (D, Gtk_Window (Get_Toplevel (MDI)));
+            Set_Position (D, Win_Pos_Center_On_Parent);
+            Set_Default_Size (D, 300, 70);
+
+            Gtk_New (Frame);
+            Add (D, Frame);
+
+            --  By default, switch between the last two selected items
+            D.Current_Child := First (MDI.Items);
+
+            Gtk_New_Vbox (Box, Homogeneous => False);
+            Add (Frame, Box);
+
+            Gtk_New (D.Label);
+            Pack_Start (Box, D.Label, Expand => False);
+
+            Gtk_New (D.Ent);
+            Pack_Start (Box, D.Ent, Expand => True);
+
+            Show_All (D);
+
+            MDI.Selection_Dialog := Gtk_Widget (D);
+
+         else
+            D := Selection_Dialog_Access (MDI.Selection_Dialog);
+            Delete_Text (D.Ent, Gint (D.Length), -1);
+         end if;
+
+         if Get_Key_Val (Event) = Next_Child_Key then
+            Update_Selection_Dialog (MDI, +1);
+         else
+            Update_Selection_Dialog (MDI, -1);
+         end if;
+
+         return True;
+
+      elsif Get_Event_Type (Event) = Key_Press
+        and then MDI.Selection_Dialog /= null
+      then
+         D := Selection_Dialog_Access (MDI.Selection_Dialog);
+
+         if Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_BackSpace
+           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Delete
+         then
+            Delete_Text (D.Ent, Gint (D.Length) - 1, -1);
+         else
+            Delete_Text (D.Ent, Gint (D.Length), -1);
+            Set_State (Event, Get_State (Event) and not Switch_Child_Modifier);
+            Propagate := Return_Callback.Emit_By_Name
+              (D.Ent, "key_press_event", Event);
+         end if;
+
+         Update_Selection_Dialog (MDI, 0);
+
+         return True;
+
+      elsif Get_Event_Type (Event) = Key_Release
+        and then
+          ((Switch_Child_Modifier and Control_Mask) = 0
+           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Control_L
+           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Control_R)
+        and then
+          ((Switch_Child_Modifier and Mod1_Mask) = 0
+           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Meta_L
+           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Meta_R
+           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Alt_L
+           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Alt_R)
+        and then MDI.Selection_Dialog /= null
+      then
+         D := Selection_Dialog_Access (MDI.Selection_Dialog);
+         if D.Current_Child /= Null_List then
+            C := MDI_Child (Widget_List.Get_Data (D.Current_Child));
+            Set_Focus_Child (C);
+         end if;
+
+         Destroy (MDI.Selection_Dialog);
+         MDI.Selection_Dialog := null;
+
+         return True;
+      end if;
+
+      return False;
+   end Check_Interactive_Selection_Dialog;
 
    ---------------
    -- Configure --
@@ -1174,12 +1409,13 @@ package body Gtkada.MDI is
          Compute_Size (MDI, None, Alloc, Is_Handle => False);
       end if;
 
-      if MDI.Children_Are_Maximized then
-         Size_Allocate (MDI.Docks (None), Alloc);
-      else
-         Size_Allocate (MDI.Layout, Alloc);
+      if not MDI.All_Floating_Mode then
+         if MDI.Children_Are_Maximized then
+            Size_Allocate (MDI.Docks (None), Alloc);
+         else
+            Size_Allocate (MDI.Layout, Alloc);
+         end if;
       end if;
-
 
       --  Once this is done, we can actually resize the docks
 
@@ -1190,24 +1426,27 @@ package body Gtkada.MDI is
          end if;
       end loop;
 
-      Alloc := (X => 0, Y => 0, Width => MDI_Alloc_Width,
-                Height => Drop_Area_Thickness);
-      Size_Allocate (MDI.Drop_Sites (Top), Alloc);
+      if not MDI.All_Floating_Mode then
+         Alloc := (X => 0, Y => 0, Width => MDI_Alloc_Width,
+                   Height => Drop_Area_Thickness);
+         Size_Allocate (MDI.Drop_Sites (Top), Alloc);
 
-      Alloc := (X => 0, Y => MDI_Alloc_Height - Drop_Area_Thickness,
-                Width => MDI_Alloc_Width,
-                Height => Drop_Area_Thickness);
-      Size_Allocate (MDI.Drop_Sites (Bottom), Alloc);
+         Alloc := (X => 0, Y => MDI_Alloc_Height - Drop_Area_Thickness,
+                   Width => MDI_Alloc_Width,
+                   Height => Drop_Area_Thickness);
+         Size_Allocate (MDI.Drop_Sites (Bottom), Alloc);
 
-      Alloc := (X => 0, Y => Drop_Area_Thickness, Width => Drop_Area_Thickness,
-                Height => MDI_Alloc_Height - 2 * Drop_Area_Thickness);
-      Size_Allocate (MDI.Drop_Sites (Left), Alloc);
+         Alloc := (X => 0, Y => Drop_Area_Thickness,
+                   Width => Drop_Area_Thickness,
+                   Height => MDI_Alloc_Height - 2 * Drop_Area_Thickness);
+         Size_Allocate (MDI.Drop_Sites (Left), Alloc);
 
-      Alloc := (X => MDI_Alloc_Width - Drop_Area_Thickness,
-                Y => Drop_Area_Thickness,
-                Width => Drop_Area_Thickness,
-                Height => MDI_Alloc_Height - 2 * Drop_Area_Thickness);
-      Size_Allocate (MDI.Drop_Sites (Right), Alloc);
+         Alloc := (X => MDI_Alloc_Width - Drop_Area_Thickness,
+                   Y => Drop_Area_Thickness,
+                   Width => Drop_Area_Thickness,
+                   Height => MDI_Alloc_Height - 2 * Drop_Area_Thickness);
+         Size_Allocate (MDI.Drop_Sites (Right), Alloc);
+      end if;
 
       Reposition_Handles (MDI);
    end Compute_Docks_Size;
@@ -1280,10 +1519,6 @@ package body Gtkada.MDI is
       N   : Widget_List.Glist;
 
    begin
-      if MDI_Window (MDI).Children_Are_Maximized then
-         Unref (MDI_Window (MDI).Layout);
-      end if;
-
       MDI_Window (MDI).Prevent_Focus_On_Page_Switch := True;
 
       --  Note: we only destroy the floating children. Other children will be
@@ -1791,9 +2026,26 @@ package body Gtkada.MDI is
       --  instance scrollbars do that), and thus wouldn't be useable anymore
       --  if we do a grab.
 
-      if Get_Window (Child) /= Get_Window (Event)
-        or else Get_Event_Type (Event) /= Button_Press
-      then
+      if Get_Window (Child) /= Get_Window (Event) then
+         return False;
+      end if;
+
+      --  Double-click in the title bar of a child in the main area should
+      --  maximize or unmaximize the children
+
+      if Get_Event_Type (Event) = Gdk_2button_Press then
+         if Gint (Get_Y (Event)) <= MDI.Title_Bar_Height
+           and then (C.State = Normal
+                     or else C.State = Iconified
+                     or else (C.State = Docked and then C.Dock = None))
+         then
+            Maximize_Children (MDI, not MDI.Children_Are_Maximized);
+         end if;
+
+         return False;
+      end if;
+
+      if Get_Event_Type (Event) /= Button_Press then
          return False;
       end if;
 
@@ -2394,7 +2646,7 @@ package body Gtkada.MDI is
       end if;
 
       C.Title       := new String'(" ");
-      C.Short_Title := new String'(C.Title.all);
+      C.Short_Title := new String'(" ");
 
       --  We need to show the widget before inserting it in a notebook,
       --  otherwise the notebook page will not be made visible.
@@ -2403,26 +2655,18 @@ package body Gtkada.MDI is
 
       Widget_List.Prepend (MDI.Items, Gtk_Widget (C));
 
+      --  Set the default size request for C to that of Child.
+      Size_Request (Child, Requisition);
+      Set_Size_Request (C, Requisition.Width, Requisition.Height);
+
       --  If all items are maximized, add Child to the notebook
 
-      if MDI.Children_Are_Maximized then
-         --  As a side effect, putting C in a notebook causes the
-         --  Child widget to have no requisition. Therefore we
-         --  save the requisition, and re-set the size request of
-         --  Child afterwards.
-         Requisition := Get_Child_Requisition (Child);
+      if MDI.All_Floating_Mode then
+         Float_Child (C, True);
+      elsif MDI.Children_Are_Maximized then
          Put_In_Notebook (MDI, None, C);
-         Size_Request (Child, Requisition);
-
       else
          Put (MDI.Layout, C, 0, 0);
-      end if;
-
-      --  Set the default size request for C to that of Child.
-
-      if not MDI.Children_Are_Maximized then
-         Size_Request (Child, Requisition);
-         Set_Size_Request (C, Requisition.Width, Requisition.Height);
       end if;
 
       if MDI.Menu /= null then
@@ -2512,6 +2756,10 @@ package body Gtkada.MDI is
 
       Child.Title := The_Title;
       Child.Short_Title := The_Short_Title;
+
+      if Child.State = Floating then
+         Set_Title (Gtk_Window (Get_Toplevel (Child.Initial)), Title);
+      end if;
 
       Tab := Get_Tab_Label (Child);
       if Tab /= null then
@@ -2689,13 +2937,19 @@ package body Gtkada.MDI is
            (Child.MDI.Docks (None),
             Page_Num (Child.MDI.Docks (None), Child));
 
+      elsif Child.State = Floating
+        and then Realized_Is_Set (Child.Initial)
+      then
+         declare
+            Win : constant Gtk_Window :=
+              Gtk_Window (Get_Toplevel (Child.Initial));
+         begin
+            Gtk.Window.Deiconify (Win);
+            Gdk.Window.Gdk_Raise (Get_Window (Win));
+         end;
+
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
-
-         if Child.State = Floating then
-            Gdk.Window.Gdk_Raise
-              (Get_Window (Gtk_Window (Get_Toplevel (Child.Initial))));
-         end if;
       end if;
 
       Child.MDI.Prevent_Focus_On_Page_Switch := False;
@@ -2815,8 +3069,11 @@ package body Gtkada.MDI is
 
       Update_Dock_Menu (C);
       Update_Float_Menu (C);
-      Set_Sensitive
-        (C.MDI.Close_Menu_Item, (C.Flags and Destroy_Button) /= 0);
+
+      if C.MDI.Close_Menu_Item /= null then
+         Set_Sensitive
+           (C.MDI.Close_Menu_Item, (C.Flags and Destroy_Button) /= 0);
+      end if;
 
       if C.Menu_Item /= null
         and then not Get_Active (C.Menu_Item)
@@ -3024,6 +3281,7 @@ package body Gtkada.MDI is
    begin
       if MDI_Child (Child).MDI.Close_Floating_Is_Unfloat
         and then (MDI_Child (Child).Flags and Always_Destroy_Float) = 0
+        and then not MDI_Child (Child).MDI.All_Floating_Mode
       then
          Float_Child (MDI_Child (Child), False);
          return True;
@@ -3032,6 +3290,30 @@ package body Gtkada.MDI is
            (MDI_Child (Child).Initial, "delete_event", Event);
       end if;
    end Delete_Child;
+
+   ---------------------------
+   -- Key_Event_In_Floating --
+   ---------------------------
+
+   function Key_Event_In_Floating
+     (Win   : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean
+   is
+      pragma Unreferenced (Win, Event);
+   begin
+      --  Only forward special key events. Standard keys must be passed on to
+      --  the widgets, for instance a Gtk_Entry,...
+      --  if Get_State (Event) = 0 then
+      return False;
+      --  else
+      --     return Return_Callback.Emit_By_Name
+      --       (Win), "key_press_event", Event);
+      --  end if;
+
+      --  ??? Ignore for now, this needs to be implemented slightly
+      --  differently.
+
+   end Key_Event_In_Floating;
 
    -----------------
    -- Float_Child --
@@ -3045,6 +3327,7 @@ package body Gtkada.MDI is
       Win   : Gtk_Window;
       Alloc : Gtk_Allocation;
       Cont  : Gtk_Container;
+      Req   : Gtk_Requisition;
    begin
       if Child.State /= Floating and then Float then
          --  Ref is removed when the child is unfloated.
@@ -3062,7 +3345,6 @@ package body Gtkada.MDI is
          else
             Remove (Child.MDI.Layout, Child);
          end if;
-
 
          if (Child.Flags and Float_As_Transient) /= 0 then
             Gtk_New (Diag,
@@ -3086,6 +3368,14 @@ package body Gtkada.MDI is
          Return_Callback.Object_Connect
            (Win, "delete_event",
             Return_Callback.To_Marshaller (Delete_Child'Access), Child);
+
+         --  Forward all key events to the toplevel of the MDI. This provides
+         --  proper handling of menu key shortcuts.
+
+         Return_Callback.Object_Connect
+           (Win, "key_press_event",
+            Return_Callback.To_Marshaller (Key_Event_In_Floating'Access),
+            Gtk_Window (Get_Toplevel (Child.MDI)));
 
          Reparent (Get_Parent (Child.Initial), Cont);
          Set_Default_Size
@@ -3322,15 +3612,18 @@ package body Gtkada.MDI is
       MDI   : constant MDI_Window := Child.MDI;
       Alloc : Gtk_Allocation;
    begin
+      if MDI.All_Floating_Mode then
+         return;
+      end if;
+
       if Dock and then Child.Dock /= None then
          Float_Child (Child, False);
          Minimize_Child (Child, False);
          Put_In_Notebook (MDI, Child.Dock, Child);
-
-         if Child.Maximize_Button /= null then
-            Set_Sensitive (Child.Maximize_Button, False);
-         end if;
          Update_Dock_Menu (Child);
+
+         Set_Child_Visible (Child.Maximize_Button, False);
+         Set_Child_Visible (Child.Minimize_Button, False);
 
       elsif not Dock and then Child.State = Docked then
          Ref (Child);
@@ -3355,9 +3648,9 @@ package body Gtkada.MDI is
          Unref (Child);
          Queue_Resize (Child);
 
-         if Child.Maximize_Button /= null then
-            Set_Sensitive (Child.Maximize_Button, True);
-         end if;
+         Set_Child_Visible (Child.Maximize_Button, True);
+         Set_Child_Visible (Child.Minimize_Button, True);
+
          Update_Dock_Menu (Child);
       end if;
    end Dock_Child;
@@ -3394,6 +3687,10 @@ package body Gtkada.MDI is
         MDI.Title_Bar_Height + 2 * Border_Thickness;
 
    begin
+      if MDI.All_Floating_Mode then
+         return;
+      end if;
+
       --  Items can't be iconified if they are maximized
 
       if Child.State /= Iconified and then Minimize then
@@ -3469,9 +3766,15 @@ package body Gtkada.MDI is
       Created   : Boolean := False;
 
    begin
+      if MDI.All_Floating_Mode then
+         return;
+      end if;
+
       if Maximize and then not MDI.Children_Are_Maximized then
          if MDI.Docks (None) /= null then
-            Show_All (MDI.Docks (None));
+            Set_Child_Visible (MDI.Docks (None), True);
+         else
+            Create_Notebook (MDI, None);
          end if;
 
          while List /= Null_List loop
@@ -3484,26 +3787,14 @@ package body Gtkada.MDI is
             end if;
          end loop;
 
-         if Created then
-            Ref (MDI.Layout);
-            Remove (MDI, MDI.Layout);
-
-         elsif MDI.Docks (None) /= null
-           and then Visible_Is_Set (MDI.Layout)
-         then
-            Hide (MDI.Layout);
-         end if;
-
-         --  Children are not considered as maximized if there are none of
-         --  them.
-         MDI.Children_Are_Maximized := MDI.Docks (None) /= null;
+         Set_Child_Visible (MDI.Layout, False);
+         MDI.Children_Are_Maximized := True;
 
       elsif not Maximize and then MDI.Children_Are_Maximized then
          --  The middle notebook was already destroyed by the last call to
          --  Remove_From_Notebook in the above loop
 
-         Put (MDI, MDI.Layout, 0, 0);
-         Unref (MDI.Layout);
+         Set_Child_Visible (MDI.Layout, True);
 
          loop
             C := MDI_Child (Get_Nth_Page (MDI.Docks (None), 0));
@@ -3516,16 +3807,11 @@ package body Gtkada.MDI is
             Unref (C);
          end loop;
 
-         Hide (MDI.Docks (None));
-         Show (MDI.Layout);
-
          --  If the user has done a Show_All on the MDI, it is possible that
          --  both the layout and the notebook are made visible, so it's time to
          --  hide one of them.
-         if MDI.Docks (None) /= null
-           and then Visible_Is_Set (MDI.Docks (None))
-         then
-            Hide_All (MDI.Docks (None));
+         if MDI.Docks (None) /= null then
+            Set_Child_Visible (MDI.Docks (None), False);
          end if;
          MDI.Children_Are_Maximized := False;
       end if;
@@ -3536,6 +3822,35 @@ package body Gtkada.MDI is
 
       Queue_Resize (MDI);
    end Maximize_Children;
+
+   ---------------------------
+   -- Set_All_Floating_Mode --
+   ---------------------------
+
+   procedure Set_All_Floating_Mode
+     (MDI : access MDI_Window_Record; All_Floating : Boolean)
+   is
+      use Widget_List;
+      List      : Widget_List.Glist := First (MDI.Items);
+
+      procedure Resize (Window : System.Address; Width, Height : Gint);
+      pragma Import (C, Resize, "gtk_window_resize");
+   begin
+      if All_Floating /= MDI.All_Floating_Mode then
+         while List /= Null_List loop
+            Float_Child (MDI_Child (Get_Data (List)), All_Floating);
+            List := Next (List);
+         end loop;
+
+         Set_Sensitive (MDI.Dock_Menu_Item, not All_Floating);
+         Set_Sensitive (MDI.Float_Menu_Item, not All_Floating);
+
+         MDI.All_Floating_Mode := All_Floating;
+         Set_Child_Visible (MDI, not All_Floating);
+
+         Resize (Gtk_Window (Get_Toplevel (MDI)), -1, -1);
+      end if;
+   end Set_All_Floating_Mode;
 
    ----------------
    -- Get_Widget --
@@ -4293,6 +4608,13 @@ package body Gtkada.MDI is
 
             Child_Node := Child_Node.Next;
          end loop;
+
+         --  Remove any idle that would have been set when the notebooks were
+         --  created.
+
+         if MDI.Raise_Id /= 0 then
+            Idle_Remove (MDI.Raise_Id);
+         end if;
 
          for J in Current_Pages'Range loop
             if Current_Pages (J) /= null then
