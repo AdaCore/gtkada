@@ -88,6 +88,7 @@ package Gdk.Color is
 
    procedure Set_Rgb (Color   : out Gdk_Color;
                       R, G, B : in Gushort);
+   procedure Set_Pixel (Color : in out Gdk_Color; Pixel : Gulong);
    function Red (Color : in Gdk_Color) return Gushort;
    function Green (Color : in Gdk_Color) return Gushort;
    function Blue (Color : in Gdk_Color) return Gushort;
@@ -113,6 +114,7 @@ private
    Null_Color : constant Gdk_Color := (Gulong'Last, 0, 0, 0);
 
    pragma Inline (Set_Rgb);
+   pragma Inline (Set_Pixel);
    pragma Inline (Red);
    pragma Inline (Green);
    pragma Inline (Blue);
