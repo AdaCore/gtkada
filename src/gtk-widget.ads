@@ -52,6 +52,7 @@ with Glib.Values;
 
 with Pango.Context;
 with Pango.Font;
+with Pango.Layout;
 
 with Gdk.Color;
 with Gdk.Event;
@@ -553,6 +554,14 @@ package Gtk.Widget is
    --  description, and base direction for drawing text for this widget. See
    --  also Get_Pango_Context.
    --  The returned context must be freed by the caller.
+
+   function Create_Pango_Layout
+     (Widget : access Gtk_Widget_Record; Text : String := "")
+     return Pango.Layout.Pango_Layout;
+   --  Return a new pango_layout that displays Text. This fully handles
+   --  internationalization, and should be the preferred way to display text,
+   --  rather than Gdk.Drawable.Draw_Text
+   --  Text must be a valid Utf8 text, see Glib.Convert.
 
    procedure Modify_Font
      (Widget : access Gtk_Widget_Record;
@@ -1595,7 +1604,6 @@ end Gtk.Widget;
 --  - gtk_widget_modify_bg
 --  - gtk_widget_modify_text
 --  - gtk_widget_modify_base
---  - gtk_widget_create_pango_layout
 --  - gtk_widget_class_install_style_property
 --  - gtk_widget_class_install_style_property_parser
 --  - gtk_widget_style_get_property

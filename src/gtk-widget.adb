@@ -32,6 +32,7 @@ with Gdk.Visual; use Gdk.Visual;
 with Gdk.Color;  use Gdk.Color;
 with Ada.Unchecked_Conversion;
 with Pango.Context; use Pango.Context;
+with Pango.Layout;  use Pango.Layout;
 
 package body Gtk.Widget is
 
@@ -135,6 +136,32 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Create_Pango_Context;
+
+   -------------------------
+   -- Create_Pango_Layout --
+   -------------------------
+
+   function Create_Pango_Layout
+     (Widget : access Gtk_Widget_Record; Text : String := "")
+      return Pango.Layout.Pango_Layout
+   is
+      function Internal (Widget : System.Address; Text : String)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_widget_create_pango_layout");
+
+      function Internal2 (Widget : System.Address; Text : System.Address)
+         return System.Address;
+      pragma Import (C, Internal2, "gtk_widget_create_pango_layout");
+      Stub : Pango_Layout_Record;
+   begin
+      if Text = "" then
+         return Pango_Layout (Get_User_Data
+           (Internal2 (Get_Object (Widget), System.Null_Address), Stub));
+      else
+         return Pango_Layout (Get_User_Data
+           (Internal (Get_Object (Widget), Text & ASCII.NUL), Stub));
+      end if;
+   end Create_Pango_Layout;
 
    ----------------
    -- Destroy_Cb --
@@ -288,10 +315,12 @@ package body Gtk.Widget is
    function Get_Pango_Context (Widget : access Gtk_Widget_Record)
       return Pango.Context.Pango_Context
    is
-      function Internal (Widget : System.Address) return Pango_Context;
+      function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_pango_context");
+      Stub : Pango_Context_Record;
    begin
-      return Internal (Get_Object (Widget));
+      return Pango_Context
+        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Pango_Context;
 
    --------------
@@ -588,7 +617,6 @@ package body Gtk.Widget is
    begin
       raise Program_Error;
       --  Set_Object (Widget, Internal (Get_Type, 0, System.Null_Address));
-      --  Initialize_User_Data (Widget);
    end Initialize_Widget;
 
    ---------------
