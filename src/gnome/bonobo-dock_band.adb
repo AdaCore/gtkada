@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,32 +27,32 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gnome.Dock_Item;
-with Gnome.Dock_Layout;
+with Bonobo.Dock_Item;
+with Bonobo.Dock_Layout;
 with Gtk.Widget;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 with System;
 
-package body Gnome.Dock_Band is
+package body Bonobo.Dock_Band is
 
    ---------------
    -- Gnome_New --
    ---------------
 
-   procedure Gnome_New (Widget : out Gnome_Dock_Band) is
+   procedure Gnome_New (Widget : out Bonobo_Dock_Band) is
    begin
-      Widget := new Gnome_Dock_Band_Record;
-      Gnome.Dock_Band.Initialize (Widget);
+      Widget := new Bonobo_Dock_Band_Record;
+      Bonobo.Dock_Band.Initialize (Widget);
    end Gnome_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gnome_Dock_Band_Record'Class) is
+   procedure Initialize (Widget : access Bonobo_Dock_Band_Record'Class) is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gnome_dock_band_new");
+      pragma Import (C, Internal, "bonobo_dock_band_new");
    begin
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);
@@ -63,7 +63,7 @@ package body Gnome.Dock_Band is
    ------------
 
    function Append
-     (Band   : access Gnome_Dock_Band_Record;
+     (Band   : access Bonobo_Dock_Band_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Offset : Guint)
       return Boolean
@@ -73,7 +73,7 @@ package body Gnome.Dock_Band is
          Child  : System.Address;
          Offset : Guint)
          return Gint;
-      pragma Import (C, Internal, "gnome_dock_band_append");
+      pragma Import (C, Internal, "bonobo_dock_band_append");
    begin
       return Boolean'Val (Internal (Get_Object (Band),
                                     Get_Object (Child),
@@ -85,13 +85,13 @@ package body Gnome.Dock_Band is
    ----------------
 
    procedure Drag_Begin
-     (Band : access Gnome_Dock_Band_Record;
-      Item : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class)
+     (Band : access Bonobo_Dock_Band_Record;
+      Item : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class)
    is
       procedure Internal
         (Band : System.Address;
          Item : System.Address);
-      pragma Import (C, Internal, "gnome_dock_band_drag_begin");
+      pragma Import (C, Internal, "bonobo_dock_band_drag_begin");
    begin
       Internal (Get_Object (Band),
                 Get_Object (Item));
@@ -102,13 +102,13 @@ package body Gnome.Dock_Band is
    --------------
 
    procedure Drag_End
-     (Band : access Gnome_Dock_Band_Record;
-      Item : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class)
+     (Band : access Bonobo_Dock_Band_Record;
+      Item : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class)
    is
       procedure Internal
         (Band : System.Address;
          Item : System.Address);
-      pragma Import (C, Internal, "gnome_dock_band_drag_end");
+      pragma Import (C, Internal, "bonobo_dock_band_drag_end");
    begin
       Internal (Get_Object (Band),
                 Get_Object (Item));
@@ -119,8 +119,8 @@ package body Gnome.Dock_Band is
    -------------
 
    function Drag_To
-     (Band   : access Gnome_Dock_Band_Record;
-      Item   : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
+     (Band   : access Bonobo_Dock_Band_Record;
+      Item   : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class;
       X      : Gint;
       Y      : Gint)
       return Boolean
@@ -131,7 +131,7 @@ package body Gnome.Dock_Band is
          X      : Gint;
          Y      : Gint)
          return Gint;
-      pragma Import (C, Internal, "gnome_dock_band_drag_to");
+      pragma Import (C, Internal, "bonobo_dock_band_drag_to");
    begin
       return Boolean'Val (Internal (Get_Object (Band),
                                     Get_Object (Item),
@@ -144,7 +144,7 @@ package body Gnome.Dock_Band is
    ----------------------
 
    function Get_Child_Offset
-     (Band   : access Gnome_Dock_Band_Record;
+     (Band   : access Bonobo_Dock_Band_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
       return Guint
    is
@@ -152,7 +152,7 @@ package body Gnome.Dock_Band is
         (Band   : System.Address;
          Child  : System.Address)
          return Guint;
-      pragma Import (C, Internal, "gnome_dock_band_get_child_offset");
+      pragma Import (C, Internal, "bonobo_dock_band_get_child_offset");
    begin
       return Internal (Get_Object (Band),
                        Get_Object (Child));
@@ -163,24 +163,24 @@ package body Gnome.Dock_Band is
    ----------------------
 
    procedure Get_Item_By_Name
-     (Band     : access Gnome_Dock_Band_Record;
+     (Band     : access Bonobo_Dock_Band_Record;
       Name     : String;
       Position : out Guint;
       Offset   : out Guint;
-      Item     : out Gnome.Dock_Item.Gnome_Dock_Item)
+      Item     : out Bonobo.Dock_Item.Bonobo_Dock_Item)
    is
       function Internal
         (Band     : System.Address;
          Name     : String;
          Position : access Guint;
          Offset   : access Guint) return System.Address;
-      pragma Import (C, Internal, "gnome_dock_band_get_item_by_name");
+      pragma Import (C, Internal, "bonobo_dock_band_get_item_by_name");
 
       Pos, Off : aliased Guint;
-      Stub     : Gnome.Dock_Item.Gnome_Dock_Item_Record;
+      Stub     : Bonobo.Dock_Item.Bonobo_Dock_Item_Record;
 
    begin
-      Item := Gnome.Dock_Item.Gnome_Dock_Item (Get_User_Data (Internal
+      Item := Bonobo.Dock_Item.Bonobo_Dock_Item (Get_User_Data (Internal
         (Get_Object (Band), Name & ASCII.NUL,
          Pos'Unchecked_Access, Off'Unchecked_Access), Stub));
       Position := Pos;
@@ -191,12 +191,12 @@ package body Gnome.Dock_Band is
    -- Get_Num_Children --
    ----------------------
 
-   function Get_Num_Children (Band   : access Gnome_Dock_Band_Record)
+   function Get_Num_Children (Band   : access Bonobo_Dock_Band_Record)
                               return Guint
    is
       function Internal (Band   : System.Address)
                          return Guint;
-      pragma Import (C, Internal, "gnome_dock_band_get_num_children");
+      pragma Import (C, Internal, "bonobo_dock_band_get_num_children");
    begin
       return Internal (Get_Object (Band));
    end Get_Num_Children;
@@ -205,12 +205,12 @@ package body Gnome.Dock_Band is
    -- Get_Orientation --
    ---------------------
 
-   function Get_Orientation (Band   : access Gnome_Dock_Band_Record)
+   function Get_Orientation (Band   : access Bonobo_Dock_Band_Record)
                              return Gtk_Orientation
    is
       function Internal (Band   : System.Address)
                          return Gint;
-      pragma Import (C, Internal, "gnome_dock_band_get_orientation");
+      pragma Import (C, Internal, "bonobo_dock_band_get_orientation");
    begin
       return Gtk_Orientation'Val (Internal (Get_Object (Band)));
    end Get_Orientation;
@@ -220,7 +220,7 @@ package body Gnome.Dock_Band is
    ------------
 
    function Insert
-     (Band     : access Gnome_Dock_Band_Record;
+     (Band     : access Bonobo_Dock_Band_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Offset   : Guint;
       Position : Gint)
@@ -232,7 +232,7 @@ package body Gnome.Dock_Band is
          Offset   : Guint;
          Position : Gint)
          return Gint;
-      pragma Import (C, Internal, "gnome_dock_band_insert");
+      pragma Import (C, Internal, "bonobo_dock_band_insert");
    begin
       return Boolean'Val (Internal (Get_Object (Band),
                                     Get_Object (Child),
@@ -245,9 +245,9 @@ package body Gnome.Dock_Band is
    ----------------
 
    procedure Layout_Add
-     (Band      : access Gnome_Dock_Band_Record;
-      Layout    : access Gnome.Dock_Layout.Gnome_Dock_Layout_Record'Class;
-      Placement : Gnome.Dock.Gnome_Dock_Placement;
+     (Band      : access Bonobo_Dock_Band_Record;
+      Layout    : access Bonobo.Dock_Layout.Bonobo_Dock_Layout_Record'Class;
+      Placement : Bonobo.Dock.Bonobo_Dock_Placement;
       Band_Num  : Guint)
    is
       procedure Internal
@@ -255,11 +255,11 @@ package body Gnome.Dock_Band is
          Layout    : System.Address;
          Placement : Gint;
          Band_Num  : Guint);
-      pragma Import (C, Internal, "gnome_dock_band_layout_add");
+      pragma Import (C, Internal, "bonobo_dock_band_layout_add");
    begin
       Internal (Get_Object (Band),
                 Get_Object (Layout),
-                Gnome.Dock.Gnome_Dock_Placement'Pos (Placement),
+                Bonobo.Dock.Bonobo_Dock_Placement'Pos (Placement),
                 Band_Num);
    end Layout_Add;
 
@@ -268,7 +268,7 @@ package body Gnome.Dock_Band is
    ----------------
 
    --  procedure Move_Child
-   --    (Band      : access Gnome_Dock_Band_Record;
+   --    (Band      : access Bonobo_Dock_Band_Record;
    --     Old_Child : out GList;
    --     New_Num   : Guint)
    --  is
@@ -276,7 +276,7 @@ package body Gnome.Dock_Band is
    --       (Band      : System.Address;
    --        Old_Child : System.Address;
    --        New_Num   : Guint);
-   --     pragma Import (C, Internal, "gnome_dock_band_move_child");
+   --     pragma Import (C, Internal, "bonobo_dock_band_move_child");
    --  begin
    --     Internal (Get_Object (Band),
    --               Get_Object (Old_Child),
@@ -288,7 +288,7 @@ package body Gnome.Dock_Band is
    -------------
 
    function Prepend
-     (Band   : access Gnome_Dock_Band_Record;
+     (Band   : access Bonobo_Dock_Band_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Offset : Guint)
       return Boolean
@@ -298,7 +298,7 @@ package body Gnome.Dock_Band is
          Child  : System.Address;
          Offset : Guint)
          return Gint;
-      pragma Import (C, Internal, "gnome_dock_band_prepend");
+      pragma Import (C, Internal, "bonobo_dock_band_prepend");
    begin
       return Boolean'Val (Internal (Get_Object (Band),
                                     Get_Object (Child),
@@ -310,7 +310,7 @@ package body Gnome.Dock_Band is
    ----------------------
 
    procedure Set_Child_Offset
-     (Band   : access Gnome_Dock_Band_Record;
+     (Band   : access Bonobo_Dock_Band_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Offset : Guint)
    is
@@ -318,7 +318,7 @@ package body Gnome.Dock_Band is
         (Band   : System.Address;
          Child  : System.Address;
          Offset : Guint);
-      pragma Import (C, Internal, "gnome_dock_band_set_child_offset");
+      pragma Import (C, Internal, "bonobo_dock_band_set_child_offset");
    begin
       Internal (Get_Object (Band),
                 Get_Object (Child),
@@ -330,16 +330,16 @@ package body Gnome.Dock_Band is
    ---------------------
 
    procedure Set_Orientation
-     (Band        : access Gnome_Dock_Band_Record;
+     (Band        : access Bonobo_Dock_Band_Record;
       Orientation : Gtk_Orientation)
    is
       procedure Internal
         (Band        : System.Address;
          Orientation : Gint);
-      pragma Import (C, Internal, "gnome_dock_band_set_orientation");
+      pragma Import (C, Internal, "bonobo_dock_band_set_orientation");
    begin
       Internal (Get_Object (Band),
                 Gtk_Orientation'Pos (Orientation));
    end Set_Orientation;
 
-end Gnome.Dock_Band;
+end Bonobo.Dock_Band;

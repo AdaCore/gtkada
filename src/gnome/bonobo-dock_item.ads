@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -33,28 +33,28 @@ with Gtk.Bin;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget; use Gtk.Widget;
 
-package Gnome.Dock_Item is
+package Bonobo.Dock_Item is
 
-   type Gnome_Dock_Item_Record is new Gtk.Bin.Gtk_Bin_Record with private;
-   type Gnome_Dock_Item is access all Gnome_Dock_Item_Record'Class;
+   type Bonobo_Dock_Item_Record is new Gtk.Bin.Gtk_Bin_Record with private;
+   type Bonobo_Dock_Item is access all Bonobo_Dock_Item_Record'Class;
 
-   type Gnome_Dock_Item_Behavior is mod 2 ** 32;
-   Beh_Normal : constant Gnome_Dock_Item_Behavior := 0;
-   Beh_Exclusive : constant Gnome_Dock_Item_Behavior := 2 ** 0;
-   Beh_Never_Floating : constant Gnome_Dock_Item_Behavior := 2 ** 1;
-   Beh_Never_Vertical : constant Gnome_Dock_Item_Behavior := 2 ** 2;
-   Beh_Never_Horizontal : constant Gnome_Dock_Item_Behavior := 2 ** 3;
-   Beh_Locked : constant Gnome_Dock_Item_Behavior := 2 ** 4;
+   type Bonobo_Dock_Item_Behavior is mod 2 ** 32;
+   Beh_Normal : constant Bonobo_Dock_Item_Behavior := 0;
+   Beh_Exclusive : constant Bonobo_Dock_Item_Behavior := 2 ** 0;
+   Beh_Never_Floating : constant Bonobo_Dock_Item_Behavior := 2 ** 1;
+   Beh_Never_Vertical : constant Bonobo_Dock_Item_Behavior := 2 ** 2;
+   Beh_Never_Horizontal : constant Bonobo_Dock_Item_Behavior := 2 ** 3;
+   Beh_Locked : constant Bonobo_Dock_Item_Behavior := 2 ** 4;
 
-   procedure Gnome_New
-     (Widget   : out Gnome_Dock_Item;
+   procedure Bonobo_New
+     (Widget   : out Bonobo_Dock_Item;
       Name     : String;
-      Behavior : Gnome_Dock_Item_Behavior);
+      Behavior : Bonobo_Dock_Item_Behavior);
 
    procedure Initialize
-     (Widget   : access Gnome_Dock_Item_Record'Class;
+     (Widget   : access Bonobo_Dock_Item_Record'Class;
       Name     : String;
-      Behavior : Gnome_Dock_Item_Behavior);
+      Behavior : Bonobo_Dock_Item_Behavior);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -62,54 +62,58 @@ package Gnome.Dock_Item is
    --  Return the internal value associated with this widget.
 
    procedure Attach
-     (Item   : access Gnome_Dock_Item_Record;
+     (Item   : access Bonobo_Dock_Item_Record;
       Parent : access Gtk.Widget.Gtk_Widget_Record'Class;
       X      : Gint;
       Y      : Gint);
 
    function Detach
-     (Item   : access Gnome_Dock_Item_Record;
+     (Item   : access Bonobo_Dock_Item_Record;
       X      : Gint;
       Y      : Gint)
       return Boolean;
 
    procedure Drag_Floating
-     (Item : access Gnome_Dock_Item_Record;
+     (Item : access Bonobo_Dock_Item_Record;
       X    : Gint;
       Y    : Gint);
 
-   function Get_Child (Dock_Item : access Gnome_Dock_Item_Record)
+   function Get_Child (Dock_Item : access Bonobo_Dock_Item_Record)
                        return Gtk.Widget.Gtk_Widget;
 
    procedure Get_Floating_Position
-     (Item : access Gnome_Dock_Item_Record;
+     (Item : access Bonobo_Dock_Item_Record;
       X    : out Gint;
       Y    : out Gint);
 
-   function Get_Name (Dock_Item : access Gnome_Dock_Item_Record)
+   function Get_Name (Dock_Item : access Bonobo_Dock_Item_Record)
                       return String;
 
-   function Get_Orientation (Dock_Item : access Gnome_Dock_Item_Record)
+   function Get_Orientation (Dock_Item : access Bonobo_Dock_Item_Record)
                              return Gtk_Orientation;
 
-   function Get_Shadow_Type (Dock_Item : access Gnome_Dock_Item_Record)
+   function Get_Shadow_Type (Dock_Item : access Bonobo_Dock_Item_Record)
                              return Gtk_Shadow_Type;
 
-   procedure Grab_Pointer (Item : access Gnome_Dock_Item_Record);
+   procedure Grab_Pointer (Item : access Bonobo_Dock_Item_Record);
 
    procedure Handle_Size_Request
-     (Item        : access Gnome_Dock_Item_Record;
+     (Item        : access Bonobo_Dock_Item_Record;
       Requisition : Gtk_Requisition);
 
    function Set_Orientation
-     (Dock_Item   : access Gnome_Dock_Item_Record;
+     (Dock_Item   : access Bonobo_Dock_Item_Record;
       Orientation : Gtk_Orientation)
       return Boolean;
 
    procedure Set_Shadow_Type
-     (Dock_Item : access Gnome_Dock_Item_Record;
+     (Dock_Item : access Bonobo_Dock_Item_Record;
       The_Type  : Gtk_Shadow_Type);
-
+   
+   function Get_Behavior (Dock_Item : access Bonobo_Dock_Item_Record)
+                          return Bonobo_Dock_Item_Behavior;
+			  
+   
    -------------
    -- Signals --
    -------------
@@ -118,24 +122,24 @@ package Gnome.Dock_Item is
    --  The following new signals are defined for this widget:
    --
    --  - "dock_drag_begin"
-   --    procedure Handler (Widget : access Gnome_Dock_Item_Record'Class);
+   --    procedure Handler (Widget : access Bonobo_Dock_Item_Record'Class);
    --
    --  - "dock_drag_motion"
-   --    procedure Handler (Widget : access Gnome_Dock_Item_Record'Class;
+   --    procedure Handler (Widget : access Bonobo_Dock_Item_Record'Class;
    --       X : Gint;
    --       Y : Gint);
    --
    --  - "dock_drag_end"
-   --    procedure Handler (Widget : access Gnome_Dock_Item_Record'Class);
+   --    procedure Handler (Widget : access Bonobo_Dock_Item_Record'Class);
    --
    --  - "dock_detach"
-   --    procedure Handler (Widget : access Gnome_Dock_Item_Record'Class);
+   --    procedure Handler (Widget : access Bonobo_Dock_Item_Record'Class);
    --
    --  </signals>
 
 private
-   type Gnome_Dock_Item_Record is new
+   type Bonobo_Dock_Item_Record is new
      Gtk.Bin.Gtk_Bin_Record with null record;
 
-   pragma Import (C, Get_Type, "gnome_dock_item_get_type");
-end Gnome.Dock_Item;
+   pragma Import (C, Get_Type, "bonobo_dock_item_get_type");
+end Bonobo.Dock_Item;

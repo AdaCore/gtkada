@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -32,39 +32,39 @@ with Gtk.Enums; use Gtk.Enums;
 with Interfaces.C.Strings;
 with System;
 
-package body Gnome.Dock_Item is
+package body Bonobo.Dock_Item is
 
-   ---------------
-   -- Gnome_New --
-   ---------------
+   ----------------
+   -- Bonobo_New --
+   ----------------
 
-   procedure Gnome_New
-     (Widget   : out Gnome_Dock_Item;
+   procedure Bonobo_New
+     (Widget   : out Bonobo_Dock_Item;
       Name     : String;
-      Behavior : Gnome_Dock_Item_Behavior)
+      Behavior : Bonobo_Dock_Item_Behavior)
    is
    begin
-      Widget := new Gnome_Dock_Item_Record;
+      Widget := new Bonobo_Dock_Item_Record;
       Initialize (Widget, Name, Behavior);
-   end Gnome_New;
+   end Bonobo_New;
 
    ----------------
    -- Initialize --
    ----------------
 
    procedure Initialize
-     (Widget   : access Gnome_Dock_Item_Record'Class;
+     (Widget   : access Bonobo_Dock_Item_Record'Class;
       Name     : String;
-      Behavior : Gnome_Dock_Item_Behavior)
+      Behavior : Bonobo_Dock_Item_Behavior)
    is
       function Internal
         (Name     : String;
          Behavior : Gint)
          return System.Address;
-      pragma Import (C, Internal, "gnome_dock_item_new");
+      pragma Import (C, Internal, "bonobo_dock_item_new");
    begin
       Set_Object (Widget, Internal (Name & ASCII.NUL,
-                                    Gnome_Dock_Item_Behavior'Pos (Behavior)));
+                                    Bonobo_Dock_Item_Behavior'Pos (Behavior)));
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -73,7 +73,7 @@ package body Gnome.Dock_Item is
    ------------
 
    procedure Attach
-     (Item   : access Gnome_Dock_Item_Record;
+     (Item   : access Bonobo_Dock_Item_Record;
       Parent : access Gtk.Widget.Gtk_Widget_Record'Class;
       X      : Gint;
       Y      : Gint)
@@ -83,7 +83,7 @@ package body Gnome.Dock_Item is
          Parent : System.Address;
          X      : Gint;
          Y      : Gint);
-      pragma Import (C, Internal, "gnome_dock_item_attach");
+      pragma Import (C, Internal, "bonobo_dock_item_attach");
    begin
       Internal (Get_Object (Item),
                 Get_Object (Parent),
@@ -96,7 +96,7 @@ package body Gnome.Dock_Item is
    ------------
 
    function Detach
-     (Item   : access Gnome_Dock_Item_Record;
+     (Item   : access Bonobo_Dock_Item_Record;
       X      : Gint;
       Y      : Gint)
       return Boolean
@@ -106,7 +106,7 @@ package body Gnome.Dock_Item is
          X      : Gint;
          Y      : Gint)
          return Gint;
-      pragma Import (C, Internal, "gnome_dock_item_detach");
+      pragma Import (C, Internal, "bonobo_dock_item_detach");
    begin
       return Boolean'Val (Internal (Get_Object (Item), X, Y));
    end Detach;
@@ -116,7 +116,7 @@ package body Gnome.Dock_Item is
    -------------------
 
    procedure Drag_Floating
-     (Item : access Gnome_Dock_Item_Record;
+     (Item : access Bonobo_Dock_Item_Record;
       X    : Gint;
       Y    : Gint)
    is
@@ -124,7 +124,7 @@ package body Gnome.Dock_Item is
         (Item : System.Address;
          X    : Gint;
          Y    : Gint);
-      pragma Import (C, Internal, "gnome_dock_item_drag_floating");
+      pragma Import (C, Internal, "bonobo_dock_item_drag_floating");
    begin
       Internal (Get_Object (Item),
                 X,
@@ -135,12 +135,12 @@ package body Gnome.Dock_Item is
    -- Get_Child --
    ---------------
 
-   function Get_Child (Dock_Item : access Gnome_Dock_Item_Record)
+   function Get_Child (Dock_Item : access Bonobo_Dock_Item_Record)
                        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Dock_Item : System.Address)
                          return System.Address;
-      pragma Import (C, Internal, "gnome_dock_item_get_child");
+      pragma Import (C, Internal, "bonobo_dock_item_get_child");
    begin
       return Widget.Convert (Internal (Get_Object (Dock_Item)));
    end Get_Child;
@@ -150,7 +150,7 @@ package body Gnome.Dock_Item is
    ---------------------------
 
    procedure Get_Floating_Position
-     (Item : access Gnome_Dock_Item_Record;
+     (Item : access Bonobo_Dock_Item_Record;
       X    : out Gint;
       Y    : out Gint)
    is
@@ -158,7 +158,7 @@ package body Gnome.Dock_Item is
         (Item : System.Address;
          X    : out Gint;
          Y    : out Gint);
-      pragma Import (C, Internal, "gnome_dock_item_get_floating_position");
+      pragma Import (C, Internal, "bonobo_dock_item_get_floating_position");
    begin
       Internal (Get_Object (Item), X, Y);
    end Get_Floating_Position;
@@ -167,12 +167,12 @@ package body Gnome.Dock_Item is
    -- Get_Name --
    --------------
 
-   function Get_Name (Dock_Item : access Gnome_Dock_Item_Record)
+   function Get_Name (Dock_Item : access Bonobo_Dock_Item_Record)
                       return String
    is
       function Internal (Dock_Item : System.Address)
                          return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "gnome_dock_item_get_name");
+      pragma Import (C, Internal, "bonobo_dock_item_get_name");
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Dock_Item)));
    end Get_Name;
@@ -181,12 +181,12 @@ package body Gnome.Dock_Item is
    -- Get_Orientation --
    ---------------------
 
-   function Get_Orientation (Dock_Item : access Gnome_Dock_Item_Record)
+   function Get_Orientation (Dock_Item : access Bonobo_Dock_Item_Record)
                              return Gtk_Orientation
    is
       function Internal (Dock_Item : System.Address)
                          return Gint;
-      pragma Import (C, Internal, "gnome_dock_item_get_orientation");
+      pragma Import (C, Internal, "bonobo_dock_item_get_orientation");
    begin
       return Gtk_Orientation'Val (Internal (Get_Object (Dock_Item)));
    end Get_Orientation;
@@ -195,12 +195,12 @@ package body Gnome.Dock_Item is
    -- Get_Shadow_Type --
    ---------------------
 
-   function Get_Shadow_Type (Dock_Item : access Gnome_Dock_Item_Record)
+   function Get_Shadow_Type (Dock_Item : access Bonobo_Dock_Item_Record)
                              return Gtk_Shadow_Type
    is
       function Internal (Dock_Item : System.Address)
                          return Gint;
-      pragma Import (C, Internal, "gnome_dock_item_get_shadow_type");
+      pragma Import (C, Internal, "bonobo_dock_item_get_shadow_type");
    begin
       return Gtk_Shadow_Type'Val (Internal (Get_Object (Dock_Item)));
    end Get_Shadow_Type;
@@ -209,10 +209,10 @@ package body Gnome.Dock_Item is
    -- Grab_Pointer --
    ------------------
 
-   procedure Grab_Pointer (Item : access Gnome_Dock_Item_Record)
+   procedure Grab_Pointer (Item : access Bonobo_Dock_Item_Record)
    is
       procedure Internal (Item : System.Address);
-      pragma Import (C, Internal, "gnome_dock_item_grab_pointer");
+      pragma Import (C, Internal, "bonobo_dock_item_grab_pointer");
    begin
       Internal (Get_Object (Item));
    end Grab_Pointer;
@@ -222,13 +222,13 @@ package body Gnome.Dock_Item is
    -------------------------
 
    procedure Handle_Size_Request
-     (Item        : access Gnome_Dock_Item_Record;
+     (Item        : access Bonobo_Dock_Item_Record;
       Requisition : Gtk_Requisition)
    is
       procedure Internal
         (Item        : System.Address;
          Requisition : Gtk_Requisition);
-      pragma Import (C, Internal, "gnome_dock_item_handle_size_request");
+      pragma Import (C, Internal, "bonobo_dock_item_handle_size_request");
    begin
       Internal (Get_Object (Item), Requisition);
    end Handle_Size_Request;
@@ -238,14 +238,14 @@ package body Gnome.Dock_Item is
    ---------------------
 
    function Set_Orientation
-     (Dock_Item   : access Gnome_Dock_Item_Record;
+     (Dock_Item   : access Bonobo_Dock_Item_Record;
       Orientation : Gtk_Orientation)
       return Boolean
    is
       function Internal
         (Dock_Item   : System.Address;
          Orientation : Gint) return Gint;
-      pragma Import (C, Internal, "gnome_dock_item_set_orientation");
+      pragma Import (C, Internal, "bonobo_dock_item_set_orientation");
    begin
       return Boolean'Val
         (Internal (Get_Object (Dock_Item), Gtk_Orientation'Pos (Orientation)));
@@ -256,16 +256,31 @@ package body Gnome.Dock_Item is
    ---------------------
 
    procedure Set_Shadow_Type
-     (Dock_Item : access Gnome_Dock_Item_Record;
+     (Dock_Item : access Bonobo_Dock_Item_Record;
       The_Type  : Gtk_Shadow_Type)
    is
       procedure Internal
         (Dock_Item : System.Address;
          The_Type  : Gint);
-      pragma Import (C, Internal, "gnome_dock_item_set_shadow_type");
+      pragma Import (C, Internal, "bonobo_dock_item_set_shadow_type");
    begin
       Internal (Get_Object (Dock_Item),
                 Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
 
-end Gnome.Dock_Item;
+   ------------------
+   -- Get_Behavior --
+   ------------------
+
+   function Get_Behavior (Dock_Item : access Bonobo_Dock_Item_Record)
+                         return Bonobo_Dock_Item_Behavior is
+      function Internal
+        (Dock_Item : System.Address)
+        return Bonobo_Dock_Item_Behavior;
+      pragma Import (C, Internal, "bonobo_dock_item_get_behavior");
+   begin
+      return Internal(Get_Object(Dock_Item));
+   end Get_Behavior;
+
+
+end Bonobo.Dock_Item;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -33,25 +33,25 @@ with Gtk.Widget;
 with Gtk.Widget; use Gtk.Widget;
 with System;
 
-package body Gnome.Dock is
+package body Bonobo.Dock is
 
    ---------------
-   -- Gnome_New --
+   -- Bonobo_New --
    ---------------
 
-   procedure Gnome_New (Widget : out Gnome_Dock) is
+   procedure Bonobo_New (Widget : out Bonobo_Dock) is
    begin
-      Widget := new Gnome_Dock_Record;
-      Gnome.Dock.Initialize (Widget);
-   end Gnome_New;
+      Widget := new Bonobo_Dock_Record;
+      Bonobo.Dock.Initialize (Widget);
+   end Bonobo_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gnome_Dock_Record'Class) is
+   procedure Initialize (Widget : access Bonobo_Dock_Record'Class) is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gnome_dock_new");
+      pragma Import (C, Internal, "bonobo_dock_new");
    begin
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);
@@ -62,8 +62,8 @@ package body Gnome.Dock is
    -----------------------
 
    procedure Add_Floating_Item
-     (Dock        : access Gnome_Dock_Record;
-      Widget      : access Gnome_Dock_Item_Record;
+     (Dock        : access Bonobo_Dock_Record;
+      Widget      : access Bonobo_Dock_Item_Record;
       X           : Gint;
       Y           : Gint;
       Orientation : Gtk_Orientation)
@@ -74,7 +74,7 @@ package body Gnome.Dock is
          X           : Gint;
          Y           : Gint;
          Orientation : Gint);
-      pragma Import (C, Internal, "gnome_dock_add_floating_item");
+      pragma Import (C, Internal, "bonobo_dock_add_floating_item");
    begin
       Internal (Get_Object (Dock),
                 Get_Object (Widget),
@@ -88,9 +88,9 @@ package body Gnome.Dock is
    --------------
 
    procedure Add_Item
-     (Dock        : access Gnome_Dock_Record;
-      Item        : access Gnome_Dock_Item_Record;
-      Placement   : Gnome_Dock_Placement;
+     (Dock        : access Bonobo_Dock_Record;
+      Item        : access Bonobo_Dock_Item_Record;
+      Placement   : Bonobo_Dock_Placement;
       Band_Num    : Guint;
       Position    : Gint;
       Offset      : Guint;
@@ -104,11 +104,11 @@ package body Gnome.Dock is
          Position    : Gint;
          Offset      : Guint;
          In_New_Band : Gint);
-      pragma Import (C, Internal, "gnome_dock_add_item");
+      pragma Import (C, Internal, "bonobo_dock_add_item");
    begin
       Internal (Get_Object (Dock),
                 Get_Object (Item),
-                Gnome_Dock_Placement'Pos (Placement),
+                Bonobo_Dock_Placement'Pos (Placement),
                 Band_Num,
                 Position,
                 Offset,
@@ -120,13 +120,13 @@ package body Gnome.Dock is
    --------------------------
 
    procedure Allow_Floating_Items
-     (Dock   : access Gnome_Dock_Record;
+     (Dock   : access Bonobo_Dock_Record;
       Enable : Boolean)
    is
       procedure Internal
         (Dock   : System.Address;
          Enable : Gint);
-      pragma Import (C, Internal, "gnome_dock_allow_floating_items");
+      pragma Import (C, Internal, "bonobo_dock_allow_floating_items");
    begin
       Internal (Get_Object (Dock),
                 Boolean'Pos (Enable));
@@ -136,12 +136,12 @@ package body Gnome.Dock is
    -- Get_Client_Area --
    ---------------------
 
-   function Get_Client_Area (Dock   : access Gnome_Dock_Record)
+   function Get_Client_Area (Dock   : access Bonobo_Dock_Record)
                              return Gtk.Widget.Gtk_Widget
    is
       function Internal (Dock   : System.Address)
                          return System.Address;
-      pragma Import (C, Internal, "gnome_dock_get_client_area");
+      pragma Import (C, Internal, "bonobo_dock_get_client_area");
    begin
       return Convert (Internal (Get_Object (Dock)));
    end Get_Client_Area;
@@ -151,32 +151,32 @@ package body Gnome.Dock is
    ----------------------
 
    procedure Get_Item_By_Name
-     (Dock                 : access Gnome_Dock_Record;
+     (Dock                 : access Bonobo_Dock_Record;
       Name                 : String;
-      Placement            : out Gnome_Dock_Placement;
+      Placement            : out Bonobo_Dock_Placement;
       Num_Band             : out Guint;
       Band_Position        : out Guint;
       Offset               : out Guint;
-      Dock_Item            : out Gnome_Dock_Item)
+      Dock_Item            : out Bonobo_Dock_Item)
    is
       function Internal
         (Dock                 : System.Address;
          Name                 : String;
-         Placement_Return     : access Gnome_Dock_Placement;
+         Placement_Return     : access Bonobo_Dock_Placement;
          Num_Band_Return      : access Guint;
          Band_Position_Return : access Guint;
          Offset_Return        : access Guint)
          return System.Address;
-      pragma Import (C, Internal, "gnome_dock_get_item_by_name");
+      pragma Import (C, Internal, "bonobo_dock_get_item_by_name");
 
-      Local_Placement     : aliased Gnome_Dock_Placement;
+      Local_Placement     : aliased Bonobo_Dock_Placement;
       Local_Num_Band      : aliased Guint;
       Local_Band_Position : aliased Guint;
       Local_Offset        : aliased Guint;
-      Stub                : Gnome_Dock_Item_Record;
+      Stub                : Bonobo_Dock_Item_Record;
 
    begin
-      Dock_Item := Gnome_Dock_Item (Get_User_Data (Internal
+      Dock_Item := Bonobo_Dock_Item (Get_User_Data (Internal
         (Get_Object (Dock),
          Name & ASCII.NUL,
          Local_Placement'Unchecked_Access,
@@ -194,16 +194,16 @@ package body Gnome.Dock is
    ---------------------
 
    procedure Set_Client_Area
-     (Dock   : access Gnome_Dock_Record;
+     (Dock   : access Bonobo_Dock_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Dock   : System.Address;
          Widget : System.Address);
-      pragma Import (C, Internal, "gnome_dock_set_client_area");
+      pragma Import (C, Internal, "bonobo_dock_set_client_area");
    begin
       Internal (Get_Object (Dock),
                 Get_Object (Widget));
    end Set_Client_Area;
 
-end Gnome.Dock;
+end Bonobo.Dock;

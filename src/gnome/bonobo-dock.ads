@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,81 +29,68 @@
 
 with Glib; use Glib;
 with Gtk;
+with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object;
-with Gnome.Dock;
-with Gnome.Dock_Item;
+with Gtk.Widget;
+with Bonobo.Dock_Item; use Bonobo.Dock_Item;
 
-package Gnome.Dock_Layout is
+package Bonobo.Dock is
 
-   type Gnome_Dock_Layout_Record is new
-     Gtk.Object.Gtk_Object_Record with private;
-   type Gnome_Dock_Layout is access all Gnome_Dock_Layout_Record'Class;
+   type Bonobo_Dock_Record is new
+     Gtk.Container.Gtk_Container_Record with private;
+   type Bonobo_Dock is access all Bonobo_Dock_Record'Class;
 
-   procedure Gnome_New (Widget : out Gnome_Dock_Layout);
+   type Bonobo_Dock_Placement is (
+      Top,
+      Right,
+      Bottom,
+      Left,
+      Floating);
 
-   procedure Initialize (Widget : access Gnome_Dock_Layout_Record'Class);
+   procedure Bonobo_New (Widget : out Bonobo_Dock);
+
+   procedure Initialize (Widget : access Bonobo_Dock_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
-   function Add_From_Layout
-     (Dock   : access Gnome.Dock.Gnome_Dock_Record'Class;
-      Layout : access Gnome_Dock_Layout_Record) return Boolean;
-
-   function Add_Floating_Item
-     (Layout      : access Gnome_Dock_Layout_Record;
-      Item        : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
+   procedure Add_Floating_Item
+     (Dock        : access Bonobo_Dock_Record;
+      Widget      : access Bonobo_Dock_Item_Record;
       X           : Gint;
       Y           : Gint;
-      Orientation : Gtk_Orientation)
-      return Boolean;
+      Orientation : Gtk_Orientation);
 
-   function Add_Item
-     (Layout        : access Gnome_Dock_Layout_Record;
-      Item          : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
-      Placement     : Gnome.Dock.Gnome_Dock_Placement;
-      Band_Num      : Gint;
-      Band_Position : Gint;
-      Offset        : Gint)
-      return Boolean;
+   procedure Add_Item
+     (Dock        : access Bonobo_Dock_Record;
+      Item        : access Bonobo_Dock_Item_Record;
+      Placement   : Bonobo_Dock_Placement;
+      Band_Num    : Guint;
+      Position    : Gint;
+      Offset      : Guint;
+      In_New_Band : Boolean);
 
-   function Add_To_Dock
-     (Layout : access Gnome_Dock_Layout_Record;
-      Dock   : access Gnome.Dock.Gnome_Dock_Record'Class)
-      return Boolean;
+   procedure Allow_Floating_Items
+     (Dock   : access Bonobo_Dock_Record;
+      Enable : Boolean);
 
-   function Create_String (Layout : access Gnome_Dock_Layout_Record)
-                           return String;
+   function Get_Client_Area (Dock   : access Bonobo_Dock_Record)
+                             return Gtk.Widget.Gtk_Widget;
 
-   --  function Get_Item
-   --    (Layout : access Gnome_Dock_Layout_Record;
-   --     Item   : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class)
-   --     return Gnome_Dock_Layout_Item;
+   procedure Get_Item_By_Name
+     (Dock                 : access Bonobo_Dock_Record;
+      Name                 : String;
+      Placement            : out Bonobo_Dock_Placement;
+      Num_Band             : out Guint;
+      Band_Position        : out Guint;
+      Offset               : out Guint;
+      Dock_Item            : out Bonobo_Dock_Item);
 
-   --  function Get_Item_By_Name
-   --    (Layout : access Gnome_Dock_Layout_Record;
-   --     Name   : String)
-   --     return Gnome_Dock_Layout_Item;
-
-   function Get_Layout (Dock : access Gnome.Dock.Gnome_Dock_Record'Class)
-                        return Gnome_Dock_Layout;
-
-   function Parse_String
-     (Layout : access Gnome_Dock_Layout_Record;
-      Str    : String) return Boolean;
-
-   function Remove_Item
-     (Layout : access Gnome_Dock_Layout_Record;
-      Item   : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class)
-      return Boolean;
-
-   function Remove_Item_By_Name
-     (Layout : access Gnome_Dock_Layout_Record;
-      Name   : String)
-      return Boolean;
+   procedure Set_Client_Area
+     (Dock   : access Bonobo_Dock_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    -------------
    -- Signals --
@@ -112,11 +99,14 @@ package Gnome.Dock_Layout is
    --  <signals>
    --  The following new signals are defined for this widget:
    --
+   --  - "layout_changed"
+   --    procedure Handler (Widget : access Bonobo_Dock_Record'Class);
+   --
    --  </signals>
 
 private
-   type Gnome_Dock_Layout_Record is new
-     Gtk.Object.Gtk_Object_Record with null record;
+   type Bonobo_Dock_Record is new
+     Gtk.Container.Gtk_Container_Record with null record;
 
-   pragma Import (C, Get_Type, "gnome_dock_layout_get_type");
-end Gnome.Dock_Layout;
+   pragma Import (C, Get_Type, "bonobo_dock_get_type");
+end Bonobo.Dock;

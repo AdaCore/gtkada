@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,22 +28,22 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gnome.Dock;
-with Gnome.Dock_Item;
-with Gnome.Dock_Layout;
+with Bonobo.Dock;
+with Bonobo.Dock_Item;
+with Bonobo.Dock_Layout;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Container;
 with Gtk.Widget;
 
-package Gnome.Dock_Band is
+package Bonobo.Dock_Band is
 
-   type Gnome_Dock_Band_Record is new
+   type Bonobo_Dock_Band_Record is new
      Gtk.Container.Gtk_Container_Record with private;
-   type Gnome_Dock_Band is access all Gnome_Dock_Band_Record'Class;
+   type Bonobo_Dock_Band is access all Bonobo_Dock_Band_Record'Class;
 
-   procedure Gnome_New (Widget : out Gnome_Dock_Band);
+   procedure Gnome_New (Widget : out Bonobo_Dock_Band);
 
-   procedure Initialize (Widget : access Gnome_Dock_Band_Record'Class);
+   procedure Initialize (Widget : access Bonobo_Dock_Band_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -51,75 +51,75 @@ package Gnome.Dock_Band is
    --  Return the internal value associated with this widget.
 
    function Append
-     (Band   : access Gnome_Dock_Band_Record;
+     (Band   : access Bonobo_Dock_Band_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Offset : Guint)
       return Boolean;
 
    procedure Drag_Begin
-     (Band : access Gnome_Dock_Band_Record;
-      Item : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class);
+     (Band : access Bonobo_Dock_Band_Record;
+      Item : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class);
 
    procedure Drag_End
-     (Band : access Gnome_Dock_Band_Record;
-      Item : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class);
+     (Band : access Bonobo_Dock_Band_Record;
+      Item : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class);
 
    function Drag_To
-     (Band   : access Gnome_Dock_Band_Record;
-      Item   : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
+     (Band   : access Bonobo_Dock_Band_Record;
+      Item   : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class;
       X      : Gint;
       Y      : Gint)
       return Boolean;
 
    function Get_Child_Offset
-     (Band   : access Gnome_Dock_Band_Record;
+     (Band   : access Bonobo_Dock_Band_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
       return Guint;
 
    procedure Get_Item_By_Name
-     (Band            : access Gnome_Dock_Band_Record;
-      Name            : String;
+     (Band     : access Bonobo_Dock_Band_Record;
+      Name     : String;
       Position : out Guint;
       Offset   : out Guint;
-      Item     : out Gnome.Dock_Item.Gnome_Dock_Item);
+      Item     : out Bonobo.Dock_Item.Bonobo_Dock_Item);
 
-   function Get_Num_Children (Band   : access Gnome_Dock_Band_Record)
+   function Get_Num_Children (Band   : access Bonobo_Dock_Band_Record)
                               return Guint;
 
-   function Get_Orientation (Band   : access Gnome_Dock_Band_Record)
+   function Get_Orientation (Band   : access Bonobo_Dock_Band_Record)
                              return Gtk_Orientation;
 
    function Insert
-     (Band     : access Gnome_Dock_Band_Record;
+     (Band     : access Bonobo_Dock_Band_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Offset   : Guint;
       Position : Gint)
       return Boolean;
 
    procedure Layout_Add
-     (Band      : access Gnome_Dock_Band_Record;
-      Layout    : access Gnome.Dock_Layout.Gnome_Dock_Layout_Record'Class;
-      Placement : Gnome.Dock.Gnome_Dock_Placement;
+     (Band      : access Bonobo_Dock_Band_Record;
+      Layout    : access Bonobo.Dock_Layout.Bonobo_Dock_Layout_Record'Class;
+      Placement : Bonobo.Dock.Bonobo_Dock_Placement;
       Band_Num  : Guint);
 
    --  procedure Move_Child
-   --    (Band      : access Gnome_Dock_Band_Record;
+   --    (Band      : access Bonobo_Dock_Band_Record;
    --     Old_Child : out GList;
    --     New_Num   : Guint);
 
    function Prepend
-     (Band   : access Gnome_Dock_Band_Record;
+     (Band   : access Bonobo_Dock_Band_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Offset : Guint)
       return Boolean;
 
    procedure Set_Child_Offset
-     (Band   : access Gnome_Dock_Band_Record;
+     (Band   : access Bonobo_Dock_Band_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Offset : Guint);
 
    procedure Set_Orientation
-     (Band        : access Gnome_Dock_Band_Record;
+     (Band        : access Bonobo_Dock_Band_Record;
       Orientation : Gtk_Orientation);
 
    -------------
@@ -132,8 +132,8 @@ package Gnome.Dock_Band is
    --  </signals>
 
 private
-   type Gnome_Dock_Band_Record is new
+   type Bonobo_Dock_Band_Record is new
      Gtk.Container.Gtk_Container_Record with null record;
 
    pragma Import (C, Get_Type, "gnome_dock_band_get_type");
-end Gnome.Dock_Band;
+end Bonobo.Dock_Band;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,32 +27,32 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gnome.Dock; use Gnome.Dock;
-with Gnome.Dock_Item;
+with Bonobo.Dock; use Bonobo.Dock;
+with Bonobo.Dock_Item;
 with Gtk; use Gtk;
 with Gtk.Enums; use Gtk.Enums;
 with Interfaces.C.Strings;
 with System;
 
-package body Gnome.Dock_Layout is
+package body Bonobo.Dock_Layout is
 
    ---------------
    -- Gnome_New --
    ---------------
 
-   procedure Gnome_New (Widget : out Gnome_Dock_Layout) is
+   procedure Bonobo_New (Widget : out Bonobo_Dock_Layout) is
    begin
-      Widget := new Gnome_Dock_Layout_Record;
-      Gnome.Dock_Layout.Initialize (Widget);
-   end Gnome_New;
+      Widget := new Bonobo_Dock_Layout_Record;
+      Bonobo.Dock_Layout.Initialize (Widget);
+   end Bonobo_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gnome_Dock_Layout_Record'Class) is
+   procedure Initialize (Widget : access Bonobo_Dock_Layout_Record'Class) is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gnome_dock_layout_new");
+      pragma Import (C, Internal, "bonobo_dock_layout_new");
    begin
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);
@@ -63,8 +63,8 @@ package body Gnome.Dock_Layout is
    -----------------------
 
    function Add_Floating_Item
-     (Layout      : access Gnome_Dock_Layout_Record;
-      Item        : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
+     (Layout      : access Bonobo_Dock_Layout_Record;
+      Item        : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class;
       X           : Gint;
       Y           : Gint;
       Orientation : Gtk_Orientation)
@@ -76,7 +76,7 @@ package body Gnome.Dock_Layout is
          X           : Gint;
          Y           : Gint;
          Orientation : Gint) return Gint;
-      pragma Import (C, Internal, "gnome_dock_layout_add_floating_item");
+      pragma Import (C, Internal, "bonobo_dock_layout_add_floating_item");
    begin
       return Boolean'Val
         (Internal (Get_Object (Layout), Get_Object (Item),
@@ -88,13 +88,13 @@ package body Gnome.Dock_Layout is
    ---------------------
 
    function Add_From_Layout
-     (Dock   : access Gnome_Dock_Record'Class;
-      Layout : access Gnome_Dock_Layout_Record) return Boolean
+     (Dock   : access Bonobo_Dock_Record'Class;
+      Layout : access Bonobo_Dock_Layout_Record) return Boolean
    is
       function Internal
         (Dock   : System.Address;
          Layout : System.Address) return Gint;
-      pragma Import (C, Internal, "gnome_dock_add_from_layout");
+      pragma Import (C, Internal, "bonobo_dock_add_from_layout");
    begin
       return Boolean'Val (Internal (Get_Object (Dock), Get_Object (Layout)));
    end Add_From_Layout;
@@ -104,9 +104,9 @@ package body Gnome.Dock_Layout is
    --------------
 
    function Add_Item
-     (Layout        : access Gnome_Dock_Layout_Record;
-      Item          : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
-      Placement     : Gnome_Dock_Placement;
+     (Layout        : access Bonobo_Dock_Layout_Record;
+      Item          : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class;
+      Placement     : Bonobo_Dock_Placement;
       Band_Num      : Gint;
       Band_Position : Gint;
       Offset        : Gint)
@@ -120,12 +120,12 @@ package body Gnome.Dock_Layout is
          Band_Position : Gint;
          Offset        : Gint)
          return Gint;
-      pragma Import (C, Internal, "gnome_dock_layout_add_item");
+      pragma Import (C, Internal, "bonobo_dock_layout_add_item");
    begin
       return Boolean'Val (Internal
         (Get_Object (Layout),
          Get_Object (Item),
-         Gnome_Dock_Placement'Pos (Placement),
+         Bonobo_Dock_Placement'Pos (Placement),
          Band_Num,
          Band_Position,
          Offset));
@@ -136,14 +136,14 @@ package body Gnome.Dock_Layout is
    -----------------
 
    function Add_To_Dock
-     (Layout : access Gnome_Dock_Layout_Record;
-      Dock   : access Gnome.Dock.Gnome_Dock_Record'Class) return Boolean
+     (Layout : access Bonobo_Dock_Layout_Record;
+      Dock   : access Bonobo.Dock.Bonobo_Dock_Record'Class) return Boolean
    is
       function Internal
         (Layout : System.Address;
          Dock   : System.Address)
          return Gint;
-      pragma Import (C, Internal, "gnome_dock_layout_add_to_dock");
+      pragma Import (C, Internal, "bonobo_dock_layout_add_to_dock");
    begin
       return Boolean'Val (Internal (Get_Object (Layout), Get_Object (Dock)));
    end Add_To_Dock;
@@ -152,12 +152,12 @@ package body Gnome.Dock_Layout is
    -- Create_String --
    -------------------
 
-   function Create_String (Layout : access Gnome_Dock_Layout_Record)
+   function Create_String (Layout : access Bonobo_Dock_Layout_Record)
                            return String
    is
       function Internal (Layout : System.Address)
                          return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "gnome_dock_layout_create_string");
+      pragma Import (C, Internal, "bonobo_dock_layout_create_string");
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Layout)));
    end Create_String;
@@ -167,17 +167,17 @@ package body Gnome.Dock_Layout is
    --------------
 
    --  function Get_Item
-   --    (Layout : access Gnome_Dock_Layout_Record;
-   --     Item   : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class)
-   --     return Gnome_Dock_Layout_Item
+   --    (Layout : access Bonobo_Dock_Layout_Record;
+   --     Item   : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class)
+   --     return Bonobo_Dock_Layout_Item
    --  is
    --     function Internal
    --       (Layout : System.Address;
    --        Item   : System.Address)
    --        return System.Address;
-   --     pragma Import (C, Internal, "gnome_dock_layout_get_item");
+   --     pragma Import (C, Internal, "bonobo_dock_layout_get_item");
    --  begin
-   --     return Gnome_Dock_Layout_Item (Convert (Internal
+   --     return Bonobo_Dock_Layout_Item (Convert (Internal
    --       (Get_Object (Layout), Get_Object (Item))));
    --  end Get_Item;
 
@@ -186,17 +186,17 @@ package body Gnome.Dock_Layout is
    ----------------------
 
    --  function Get_Item_By_Name
-   --    (Layout : access Gnome_Dock_Layout_Record;
+   --    (Layout : access Bonobo_Dock_Layout_Record;
    --     Name   : String)
-   --     return Gnome_Dock_Layout_Item
+   --     return Bonobo_Dock_Layout_Item
    --  is
    --     function Internal
    --       (Layout : System.Address;
    --        Name   : String)
    --        return System.Address;
-   --     pragma Import (C, Internal, "gnome_dock_layout_get_item_by_name");
+   --     pragma Import (C, Internal, "bonobo_dock_layout_get_item_by_name");
    --  begin
-   --     return Gnome_Dock_Layout_Item (Convert (Internal
+   --     return Bonobo_Dock_Layout_Item (Convert (Internal
    --       (Get_Object (Layout), Name & ASCII.NUL)));
    --  end Get_Item_By_Name;
 
@@ -205,13 +205,13 @@ package body Gnome.Dock_Layout is
    ----------------
 
    function Get_Layout
-     (Dock : access Gnome_Dock_Record'Class) return Gnome_Dock_Layout
+     (Dock : access Bonobo_Dock_Record'Class) return Bonobo_Dock_Layout
    is
       function Internal (Dock : System.Address) return System.Address;
-      pragma Import (C, Internal, "gnome_dock_get_layout");
-      Stub : Gnome_Dock_Layout_Record;
+      pragma Import (C, Internal, "bonobo_dock_get_layout");
+      Stub : Bonobo_Dock_Layout_Record;
    begin
-      return Gnome_Dock_Layout
+      return Bonobo_Dock_Layout
         (Get_User_Data (Internal (Get_Object (Dock)), Stub));
    end Get_Layout;
 
@@ -220,13 +220,13 @@ package body Gnome.Dock_Layout is
    ------------------
 
    function Parse_String
-     (Layout : access Gnome_Dock_Layout_Record;
+     (Layout : access Bonobo_Dock_Layout_Record;
       Str    : String) return Boolean
    is
       function Internal
         (Layout : System.Address;
          Str    : String) return Gint;
-      pragma Import (C, Internal, "gnome_dock_layout_parse_string");
+      pragma Import (C, Internal, "bonobo_dock_layout_parse_string");
    begin
       return Boolean'Val (Internal (Get_Object (Layout), Str & ASCII.NUL));
    end Parse_String;
@@ -236,14 +236,14 @@ package body Gnome.Dock_Layout is
    -----------------
 
    function Remove_Item
-     (Layout : access Gnome_Dock_Layout_Record;
-      Item   : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class)
+     (Layout : access Bonobo_Dock_Layout_Record;
+      Item   : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class)
       return Boolean
    is
       function Internal
         (Layout : System.Address;
          Item   : System.Address) return Gint;
-      pragma Import (C, Internal, "gnome_dock_layout_remove_item");
+      pragma Import (C, Internal, "bonobo_dock_layout_remove_item");
    begin
       return Boolean'Val (Internal (Get_Object (Layout), Get_Object (Item)));
    end Remove_Item;
@@ -253,16 +253,16 @@ package body Gnome.Dock_Layout is
    -------------------------
 
    function Remove_Item_By_Name
-     (Layout : access Gnome_Dock_Layout_Record;
+     (Layout : access Bonobo_Dock_Layout_Record;
       Name   : String)
       return Boolean
    is
       function Internal
         (Layout : System.Address;
          Name   : String) return Gint;
-      pragma Import (C, Internal, "gnome_dock_layout_remove_item_by_name");
+      pragma Import (C, Internal, "bonobo_dock_layout_remove_item_by_name");
    begin
       return Boolean'Val (Internal (Get_Object (Layout), Name & ASCII.NUL));
    end Remove_Item_By_Name;
 
-end Gnome.Dock_Layout;
+end Bonobo.Dock_Layout;
