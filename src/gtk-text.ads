@@ -43,6 +43,7 @@ with Gdk.Font;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Adjustment;
 with Gtk.Editable;
+with Gdk.Window;
 
 package Gtk.Text is
 
@@ -69,6 +70,16 @@ package Gtk.Text is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Text.
+
+   function Get_Text_Area (Text : access Gtk_Text_Record)
+     return Gdk.Window.Gdk_Window;
+   --  Return the specific window into which the text is displayed.
+   --  Note that a Gtk_Text is in fact a complex widget, which includes borders
+   --  on the sides. Thus, whenever you want to convert the mouse coordinates
+   --  to a position in the text, you should use the Gdk.Window.Get_Pointer
+   --  function, passing it this text area as the origin window, rather than
+   --  directly Get_Window (Text).
+   --  Note that null will be returned while Text hasn't been realized.
 
    function Backward_Delete (Text : access Gtk_Text_Record;
                              Nchars : in Guint)

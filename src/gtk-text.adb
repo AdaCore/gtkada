@@ -30,6 +30,7 @@
 with System;
 with Interfaces.C.Strings;
 with Gtk.Util; use Gtk.Util;
+with Gdk.Window; use Gdk.Window;
 
 package body Gtk.Text is
 
@@ -156,6 +157,19 @@ package body Gtk.Text is
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Text)));
    end Get_Text;
+
+   -------------------
+   -- Get_Text_Area --
+   -------------------
+
+   function Get_Text_Area (Text : access Gtk_Text_Record)
+     return Gdk.Gdk_Window
+   is
+      function Internal (Text : in System.Address) return Gdk.Gdk_Window;
+      pragma Import (C, Internal, "ada_text_get_text_area");
+   begin
+      return Internal (Get_Object (Text));
+   end Get_Text_Area;
 
    ------------------
    -- Get_Text_End --

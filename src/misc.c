@@ -2191,6 +2191,12 @@ ada_gtk_layout_get_bin_window (GtkLayout* layout) {
  ** Functions for Text
  ******************************************/
 
+GdkWindow*
+ada_text_get_text_area (GtkText* widget)
+{
+  return widget->text_area;
+}
+
 guint
 ada_text_get_gap_position (GtkText* widget)
 {
