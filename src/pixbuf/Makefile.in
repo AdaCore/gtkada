@@ -7,8 +7,6 @@
 
 include ../Makefile.common
 
-CFLAGS = @CFLAGS@ -Wall @PIXBUF_CFLAGS@ -I. $(FPIC)
- 
 SONAME        = libgtkada_art-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 LIBNAME       = libgtkada_art$(SO_EXT)
 ARCHIVENAME   = libgtkada_art.a
@@ -20,8 +18,6 @@ HAVE_PIXBUF=@HAVE_PIXBUF@
 ifeq ($(HAVE_PIXBUF),True)
 PIXBUF_SOURCES=gdk-art-pixbuf.ads gdk-art.ads gdk-pixbuf.adb
 PIXBUF_OBJECTS=gdk-art-pixbuf.o gdk-art.o gdk-pixbuf.o
-PIXBUF_LIBS=@PIXBUF_LIBS@
-PIXBUF_FLAGS=@PIXBUF_CFLAGS@
 
 all: $(LIBNAME) $(ARCHIVENAME)
 install: all
@@ -36,8 +32,6 @@ install: all
 else
 PIXBUF_SOURCES=
 PIXBUF_OBJECTS=
-PIXBUF_LIBS=
-PIXBUF_FLAGS=
 
 all:
 install:
@@ -45,8 +39,7 @@ endif
 
 $(LIBNAME): $(PIXBUF_OBJECTS)
 	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
-	  $(SO_OPTS)$(SONAME) $(PIXBUF_OBJECTS) @GTK_LIBS@ -L.. -lgtkada \
-	  $(PIXBUF_LIBS)
+	  $(SO_OPTS)$(SONAME) $(PIXBUF_OBJECTS) @GTK_LIBS@ -L.. -lgtkada
 	$(RM) $(LIBNAME)
 	$(LN) $(SONAME) $(LIBNAME)
 	-@if [ ! -f ../.devel ]; then \
