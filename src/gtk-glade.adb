@@ -226,7 +226,7 @@ package body Gtk.Glade is
      (N           : Node_Ptr;
       File        : File_Type;
       Kind        : Variable_Kind) return Boolean
-  is
+   is
       Option_Menu : Boolean := True;
       Accelerator : Boolean := True;
       Tooltip     : Boolean := True;
@@ -461,7 +461,7 @@ package body Gtk.Glade is
          exit when M = null;
 
          declare
-            Name : constant String := Get_Attribute (M, "id");
+            Name  : constant String := Get_Attribute (M, "id");
             Class : constant String := Get_Attribute (M, "class");
          begin
             if Name /= "" and Class /= "" then
