@@ -1,4 +1,3 @@
-with Glib;
 with Gdk.Event;
 with Gtk.Widget;
 with Gdk.Types;
