@@ -53,8 +53,8 @@ package Gtk.Editable is
        End_Pos   : in Gint);
    function Get_Chars
       (Editable  : access Gtk_Editable_Record;
-       Start_Pos : in Gint;
-       End_Pos   : in Gint)
+       Start_Pos : in Gint := 0;
+       End_Pos   : in Gint := -1)
        return         String;
    function Get_Clipboard_Text (Widget : access Gtk_Editable_Record)
                                 return      String;

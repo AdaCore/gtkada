@@ -137,8 +137,8 @@ package body Gtk.Editable is
 
    function Get_Chars
       (Editable  : access Gtk_Editable_Record;
-       Start_Pos : in Gint;
-       End_Pos   : in Gint)
+       Start_Pos : in Gint := 0;
+       End_Pos   : in Gint := -1)
        return         String
    is
       function Internal
@@ -147,11 +147,17 @@ package body Gtk.Editable is
           End_Pos   : in Gint)
           return         Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
+      
+      procedure Internal_G_Free (Mem : in Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal_G_Free, "g_free");
+
+      Temp : constant Interfaces.C.Strings.chars_ptr :=
+         Internal (Get_Object (Editable), Start_Pos, End_Pos);
+      Result : constant String := Interfaces.C.Strings.Value (Temp);
+
    begin
-      return Interfaces.C.Strings.Value
-        (Internal (Get_Object (Editable),
-                   Start_Pos,
-                   End_Pos));
+      Internal_G_Free (Temp);
+      return Result;
    end Get_Chars;
 
    ------------------------
