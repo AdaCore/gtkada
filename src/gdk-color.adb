@@ -27,15 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Ada.Text_IO;              use Ada.Text_IO;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with System;
 
 package body Gdk.Color is
-
-   package Int_IO is new Ada.Text_IO.Integer_IO (Integer);
-   use Int_IO;
 
    function Internal_Copy (C : Gdk_Color) return System.Address;
 
@@ -364,16 +360,21 @@ package body Gdk.Color is
    ---------------
 
    function To_String (Color : Gdk_Color) return String is
-      Result  : String (1 .. 16);
-   begin
-      Put
-        (Result,
-         Integer (Color.Red / 256) * 65536
-           + Integer (Color.Green / 256) * 256
-           + Integer (Color.Blue / 256),
-         16);
+      Result  : aliased String (1 .. 8);
+      Len     : Gint;
 
-      return Result (9 .. 15);
+      function sprintf
+        (S : System.Address; Format : String;
+         Arg1 : Gint; Arg2 : Gint; Arg3 : Gint) return Gint;
+      pragma Import (C, sprintf);
+
+   begin
+      Len := sprintf
+        (Result'Address, "%2X%2X%2X" & ASCII.NUL,
+         Gint (Color.Red / 256),
+         Gint (Color.Green / 256),
+         Gint (Color.Blue / 256));
+      return Result (1 .. Integer (Len));
    end To_String;
 
    -----------
