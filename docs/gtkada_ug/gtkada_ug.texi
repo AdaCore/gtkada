@@ -270,21 +270,61 @@ Here is the complete hierarchy of Gtk widgets:
 2       Gtk_Adjustment
 
 1    Gtk_Widget
-2       Gtk_Separator
-2       Gtk_Ruler
-2       Gtk_Preview
-2       Gtk_Preview_Info
-2       Gtk_Progress_Bar
-2       Gtk_Misc
-3          Gtk_Arrow
-3          Gtk_Image
-3          Gtk_Label
-4             Gtk_Tips_Query
-3          Gtk_Pixmap
+2       Gtk_Calendar
 
-2       Gtk_Range
-3          Gtk_Scale
-3          Gtk_Scrollbar
+2       Gtk_Container
+3          Gtk_Bin
+4             Gtk_Alignment
+4             Gtk_Event_Box
+4             Gtk_Frame
+5                Gtk_Aspect_Frame
+4             Gtk_Handle_Box
+4             Gtk_Invisible
+4             Gtk_Item
+5                Gtk_List_Item
+5                Gtk_Menu_Item
+6                   Gtk_Check_Menu_Item
+7                      Gtk_Radio_Menu_Item
+6                   Gtk_Tearoff_Menu_Item
+5                Gtk_Tree_Item
+4             Gtk_Viewport
+4             Gtk_Window
+5                Gtk_Color_Selection_Dialog
+5                Gtk_Dialog
+6                   Gtk_Input_Dialog
+5                Gtk_File_Selection
+5                Gtk_Font_Selection_Dialog
+5                Gtk_Plug
+3          Gtk_Box
+4             Gtk_Button_Box
+5                Gtk_Vbutton_Box
+5                Gtk_Hbutton_Box
+4             Gtk_Color_Selection
+4             Gtk_Combo
+4             Gtk_Gamma_Curve
+4             Gtk_Status_Bar
+3          Gtk_Button
+4             Gtk_Option_Menu
+4             Gtk_Toggle_Button
+5                Gtk_Check_Button
+6                   Gtk_Radio_Button
+3          Gtk_Clist
+4             Gtk_Ctree
+3          Gtk_Fixed
+3          Gtk_Layout
+3          Gtk_List
+3          Gtk_Menu_Shell
+4             Gtk_Menu
+4             Gtk_Menu_Bar
+3          Gtk_Notebook
+4             Gtk_Font_Selection
+3          Gtk_Packer
+3          Gtk_Paned
+3          Gtk_Scrolled_Window
+3          Gtk_Socket
+3          Gtk_Toolbar
+3          Gtk_Table
+3          Gtk_Tree
 
 2       Gtk_Drawing_Area
 3          Gtk_Curve
@@ -294,50 +334,25 @@ Here is the complete hierarchy of Gtk widgets:
 4             Gtk_Spin_Button
 3          Gtk_Text
 
-2       Gtk_Container
-3          Gtk_Box
-4             Gtk_Button_Box
-5                Gtk_VButton_Box
-5                Gtk_HButton_Box
-4             Gtk_Gamma_Curve
-4             Gtk_Color_Selection
-4             Gtk_Combo
-4             Gtk_Status_Bar
-3          Gtk_Button
-4             Gtk_Option_Menu
-4             Gtk_Toggle_Button
-5                Gtk_Check_Button
-6                   Gtk_Radio_Button
-3          Gtk_Toolbar
-3          Gtk_Table
-3          Gtk_Scrolled_Window
-3          Gtk_Paned
-3          Gtk_Tree
-3          Gtk_Menu_Shell
-4             Gtk_Menu
-4             Gtk_Menu_Bar
-3          Gtk_List
-3          Gtk_Fixed
-3          Gtk_Notebook
-3          Gtk_CList
-3          Gtk_Bin
-4             Gtk_Alignment
-4             Gtk_Event_Box
-4             Gtk_Frame
-5                Gtk_Aspect_Frame
-4             Gtk_Handle_Box
-4             Gtk_Item
-5                Gtk_Tree_Item
-5                Gtk_List_Item
-5                Gtk_Menu_Item
-6                   Gtk_Check_Menu_Item
-7                      Gtk_Radio_Menu_Item
-4             Gtk_Viewport
-4             Gtk_Window
-5                Gtk_Color_Selection_Dialog
-5                Gtk_File_Selection
-5                Gtk_Dialog
-6                   Gtk_Input_Dialog
+2       Gtk_Misc
+3          Gtk_Arrow
+3          Gtk_Image
+3          Gtk_Label
+4             Gtk_Accel_Label
+4             Gtk_Tips_Query
+3          Gtk_Pixmap
+
+2       Gtk_Preview
+2       Gtk_Preview_Info
+2       Gtk_Progress
+3          Gtk_Progress_Bar
+
+2       Gtk_Range
+3          Gtk_Scale
+3          Gtk_Scrollbar
+
+2       Gtk_Ruler
+2       Gtk_Separator
 @end example
 
 The number represents the type's depth in the hierarchy.
@@ -2773,7 +2788,7 @@ Then start a new project (or edit an old one). It is easy enough to use,
 simply select the widget you want to add to your interface, and click!
 
 Starting from version 0.4.1 of Glade, you can directly create Ada files from
-Glade by selecting Ada95 as the language for your project. By doing so,
+Glade by selection Ada95 as the language for your project. By doing so,
 you will tell Glade to call gate internally when using the "Write Source Code"
 functionality.
 
@@ -2808,12 +2823,11 @@ under Glade. To help you identify which widgets are not supported, GATE will
 generate a comment in the @code{create_<widget>.adb} file that looks like:
 
 @smallexample
-   --  WARNING: Unsupported widget
-   --  GtkRadioButton (radiobutton4)
+   --  WARNING: Unsupported widget GtkImage (image1)
 @end smallexample
 
 Which means that while generating the file, GATE detected an unsupported
-widget (in this case GtkRadioButton) whose name is radiobutton4.
+widget (in this case GtkImage) whose name is image1.
 If you get such warnings, your file may or may not compile properly, but
 you won't get the complete widget hierarchy at run time.
 
@@ -2823,7 +2837,45 @@ problem, but receiving real examples of missing functionnalities will
 certainly help implementing them faster.
 
 Similarly, DGATE generates a warning to the standard output when encountering
-an unsupported widget.
+an unsupported widget:
+
+@smallexample
+GtkAda-WARNING *: Unsupported widget GtkImage (image1)
+@end smallexample
+
+Here is the list of widgets that are currently not supported by GATE/DGATE.
+Note that some of these widgets are also not available under Glade.
+
+@itemize @bullet
+@item Gtk_Accel_Label
+@item Gtk_Button_Box
+@item Gtk_Clist
+@item Gtk_Color_Selection
+@item Gtk_Ctree
+@item Gtk_Curve
+@item Gtk_Fixed
+@item Gtk_Font_Selection
+@item Gtk_Font_Selection_Dialog
+@item Gtk_Gamma_Curve
+@item Gtk_Handle_Box
+@item Gtk_Hbutton_Box
+@item Gtk_Image
+@item Gtk_Invisible
+@item Gtk_Layout
+@item Gtk_List
+@item Gtk_Packer
+@item Gtk_Paned
+@item Gtk_Pixmap
+@item Gtk_Plug
+@item Gtk_Preview_Info
+@item Gtk_Radio_Menu_Item
+@item Gtk_Socket
+@item Gtk_Tearoff_Menu_Item
+@item Gtk_Tips_Query
+@item Gtk_Tooltips
+@item Gtk_Vbutton_Box
+@item Gtk_Viewport
+@end itemize
 
 @node A complete example
 @chapter A complete example
