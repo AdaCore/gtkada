@@ -55,9 +55,12 @@
 --  automatically find a font that matches the rest of the string, and won't
 --  care about that specific field.
 --
---  But the easiest way to select a font is by using some external programs,
+--  An easy way to select a font is by using some external programs,
 --  for instance xfontsel, xlsfont, gfontsel, or even the font selection
 --  dialog example in the testgtk/ directory of the GtkAda distribution.
+--
+--  But the easiest way to create a font is to use a Pango_Font_Description.
+--  See package Pango.Font for more details about this structure.
 --
 --  @pxref{Package_Gtk.Extra.PsFont} for a package that processes postscript
 --  fonts, with their more usual names, and can easily convert them to standard
@@ -87,6 +90,7 @@
 
 with Glib; use Glib;
 with Gdk.Types;
+with Pango.Font;
 
 package Gdk.Font is
 
@@ -113,11 +117,21 @@ package Gdk.Font is
    --  loaded, it is not reloaded again. Thus, it does not harm to call
    --  this function multiple times with the same Font_Name.
    --  Null_Font is returned if the font could not be loaded.
+   --
+   --  See From_Description below for another way of creating a Gdk_Font.
 
    procedure Fontset_Load (Font : out Gdk_Font; Fontset_Name : String);
    --  Load a new font set.
    --  Fontset_Name is a comma-separated list of fonts that will be loaded
    --  as part of the fontset.
+
+   procedure From_Description
+     (Font      : out Gdk_Font;
+      Font_Desc : Pango.Font.Pango_Font_Description);
+   --  Create a new Gdk_Font from the given Pango_Font_Description.
+   --  This is a convenient function to create fonts from, because
+   --  a Pango_Font_Description is a higher level description of a font
+   --  attributes.
 
    procedure Ref (Font : Gdk_Font);
    --  Increment the reference counter for the font.
