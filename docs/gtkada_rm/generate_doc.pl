@@ -149,10 +149,11 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 $package_name="";
 
 ## Colors used
-$chapter_bg="#C00000";
-$chapter_fg="#CCCCCC";
-$section_bg="#AAAAAA";
+$chapter_bg="#FFD0D0";
+$chapter_fg="#000000";
+$section_bg="#FFF0D0";
 $section_fg="#000000";
+$subprog_bg="#D6E8FF";
 
 # Prepares the menu
 
@@ -283,7 +284,7 @@ foreach $source_file (@source_files) {
 		    &output ("\@itemize \@bullet\n\n");
 		    $has_itemize = 1;
 		}
-		&html_output ("<TR><TD WIDTH=\"40\"></TD><TD BGCOLOR=\"#AAAAAA\">",
+		&html_output ("<TR><TD WIDTH=\"40\"></TD><TD BGCOLOR=$subprog_bg>",
 			      "<TABLE><TR><TD valign=top>");
 		&tex_output ("\\begin{tabular}{ll}");
 		&output ("\@findex $name (\@i{in} $package_name)\n",
