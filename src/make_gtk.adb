@@ -141,6 +141,7 @@ with Gtk.Scrollbar;
 with Gtk.Scrolled_Window;
 with Gtk.Selection;
 with Gtk.Separator;
+with Gtk.Size_Group;
 with Gtk.Socket;
 with Gtk.Spin_Button;
 with Gtk.Status_Bar;
