@@ -322,7 +322,8 @@ package body Gtk.Tree_Model is
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
          Value      : out Glib.Values.GValue);
-      pragma Import (C, Internal, "gtk_tree_model_get_value");
+      pragma Import (C, Internal, "ada_tree_model_get_value");
+      --  ??? Calling gtk_tree_model_get_value directly crashes under Windows
 
    begin
       Internal (Get_Object (Tree_Model), Iter, Column, Value);
