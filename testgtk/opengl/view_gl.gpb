@@ -229,8 +229,8 @@ package body View_Gl is
       end if;
       Rect.X := 0;
       Rect.Y := 0;
-      Rect.Width  := Get_Allocation_Width (Area);
-      Rect.Height := Get_Allocation_Height (Area);
+      Rect.Width  := Gint (Get_Allocation_Width (Area));
+      Rect.Height := Gint (Get_Allocation_Height (Area));
 
       if (State and Button1_Mask) /= 0 then
          --  Drag in progress, simulate trackball
@@ -314,6 +314,7 @@ package body View_Gl is
          Put_Line ("Can't create Gtk_GLArea widget");
          return;
       end if;
+      Queue_Draw (Area);
 
       --  Setup events and signals
       Set_Events (Area, Exposure_Mask or Button_Press_Mask
