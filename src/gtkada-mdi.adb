@@ -3230,10 +3230,42 @@ package body Gtkada.MDI is
          end if;
 
          if (Child.Flags and Float_As_Transient) /= 0 then
-            Gtk_New (Diag,
-                     Title  => Child.Title.all,
-                     Parent => Gtk_Window (Get_Toplevel (Child.MDI)),
-                     Flags  => No_Separator or Destroy_With_Parent);
+            declare
+               Parent : Gtk_Window;
+               Item   : Widget_List.Glist;
+               It     : MDI_Child;
+            begin
+               --  If the current child is floating, we do not want to float
+               --  the dialog as transiant for the main window, but for the
+               --  current child.
+               --  ??? Should we introduce a flag for childs that are allways
+               --  transient for the main window ?
+
+               Item := Child.MDI.Items;
+               while Item /= Widget_List.Null_List loop
+                  It := MDI_Child (Get_Data (Item));
+
+                  if It /= MDI_Child (Child) then
+                     if It.State = Floating
+                       and then Realized_Is_Set (It.Initial)
+                     then
+                        Parent := Gtk_Window (Get_Toplevel (It.Initial));
+                     else
+                        Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+                     end if;
+
+                     exit;
+                  end if;
+
+                  Item := Widget_List.Next (Item);
+               end loop;
+
+               Gtk_New (Diag,
+                        Title  => Child.Title.all,
+                        Parent => Parent,
+                        Flags  => No_Separator or Destroy_With_Parent);
+            end;
+
             Set_Has_Separator (Diag, False);
             Win  := Gtk_Window (Diag);
             Cont := Gtk_Container (Get_Vbox (Diag));
