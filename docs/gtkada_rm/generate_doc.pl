@@ -136,6 +136,7 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 		       "gtkclist.h/fake_unselect_all"    => 0,
 		       "gtkclist.h/set_cell_contents"    => 0,
 		       "gtkclist.h/resync_selection"     => 0,
+		       "gtkctree.h/change_focus_row_expansion" => 0,  # is a signal
 		       "gtkcheckitem.h/draw_indicator"   => 0,
 		       "gtkeditable.h/set_position"      => 0,
 		       "gtkeditable.h/set_editable"      => 0,
