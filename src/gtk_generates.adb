@@ -1723,27 +1723,48 @@ package body Gtk_Generates is
       Gen_Set (N, "Col_Spacings", "column_spacing", File);
    end Table_Generate;
 
-   -------------------
-   -- Text_Generate --
-   -------------------
+   ------------------------
+   -- Text_View_Generate --
+   ------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
-   procedure Text_Generate (N : Node_Ptr; File : File_Type) is
+   procedure Text_View_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_text_get_type");
+      pragma Import (C, Build_Type, "gtk_text_view_get_type");
+
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
+      Top  : constant String := Get_Name (Top_Widget);
+      Cur  : constant String := Get_Name (N);
 
    begin
       Widget := Widget_New (Build_Type);
-      Gen_New (N, "Text", File => File);
-
+      Gen_New (N, "Text_View", File => File);
       Widget_Destroy (Widget);
-      Editable_Generate (N, File);
 
       Gen_Set (N, "editable", File);
-      Gen_Set (N, "point", File);
-      Gen_Set (N, "word_wrap", File);
-   end Text_Generate;
+      Gen_Set (N, "justification", File);
+      Gen_Set (N, "wrap_mode", File);
+      Gen_Set (N, "cursor_visible", File);
+      Gen_Set (N, "pixels_above_lines", File);
+      Gen_Set (N, "pixels_below_lines", File);
+      Gen_Set (N, "pixels_inside_wrap", File);
+      Gen_Set (N, "left_margin", File);
+      Gen_Set (N, "right_margin", File);
+      Gen_Set (N, "indent", File);
+
+      Add_Package ("Text_Buffer");
+      Add_Package ("Text_Iter");
+
+      Put_Line (File, "   declare");
+      Put_Line (File, "      Iter : Gtk_Text_Iter;");
+      Put_Line (File, "   begin");
+      Put      (File, "      Get_Iter_At_Line (Get_Buffer (");
+      Put_Line (File, To_Ada (Top) & "." & To_Ada (Cur) & "), Iter, 0);");
+      Put      (File, "      Insert (Get_Buffer (");
+      Put_Line (File, To_Ada (Top) & "." & To_Ada (Cur) & "), Iter,");
+      Put      (File, "         -(""");
+      Put_Line (File, Adjust (Get_Property (N, "text", "")) & """));");
+      Put_Line (File, "   end;");
+   end Text_View_Generate;
 
    ----------------------------
    -- Toggle_Button_Generate --

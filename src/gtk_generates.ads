@@ -85,7 +85,7 @@ package Gtk_Generates is
    procedure Spin_Button_Generate            (N : Node_Ptr; File : File_Type);
    procedure Status_Bar_Generate             (N : Node_Ptr; File : File_Type);
    procedure Table_Generate                  (N : Node_Ptr; File : File_Type);
-   procedure Text_Generate                   (N : Node_Ptr; File : File_Type);
+   procedure Text_View_Generate              (N : Node_Ptr; File : File_Type);
    procedure Toggle_Button_Generate          (N : Node_Ptr; File : File_Type);
    procedure Toolbar_Generate                (N : Node_Ptr; File : File_Type);
    procedure Tree_Generate                   (N : Node_Ptr; File : File_Type);
