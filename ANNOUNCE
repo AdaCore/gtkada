@@ -27,12 +27,16 @@ Begin3
  Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
 
+
 New features from 0.6 include:
 
 - All 1.2.0 widgets are now bound
 - New directory structure
 - First version of the documentation
 - Code generation simplified in GATE
+- Support for Accelerators in widgets
+- New examples in the example/ directory: how to create a widget directly
+  in Ada
 
 New features from 0.5 include:
 
