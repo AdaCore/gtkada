@@ -581,6 +581,7 @@ package body Gtk.Glade is
             Put_Line (Output, "procedure Initialize (" &
               To_Ada (Name.all) & " : access " & To_Ada (Name.all) &
               "_Record'Class) is");
+            Put_Line (Output, "   pragma Suppress (All_Checks);");
 
             if Print_Var (M, Output, Local) then
                New_Line (Output);
