@@ -185,15 +185,15 @@ package body Gtk.Viewport is
          Gtk_New (Gtk_Viewport (Viewport));
          Set_Object (Get_Field (N, "name"), Viewport);
 
-         S := Get_Field (N, "shadow_type");
-
-         if S /= null then
-            Set_Shadow_Type
-              (Gtk_Viewport (Viewport),
-               Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
-         end if;
-
          N.Specific_Data.Created := True;
+      end if;
+
+      S := Get_Field (N, "shadow_type");
+
+      if S /= null then
+         Set_Shadow_Type
+           (Gtk_Viewport (Viewport),
+            Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
       end if;
 
       if not N.Specific_Data.Has_Container then
