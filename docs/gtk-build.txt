@@ -192,7 +192,7 @@ cd glib-2.2.3
 # add a rpath, so we need to help the loader find it by adding
 # the path to this library in LD_LIBRARY_PATH. This will be needed
 # throughout the rest of the gtk builds, so let's export the change.
-# LD_LIBRARY_PATH=/opt/gtk-2.0/gcc-2004-02-19/lib:$LD_LIBRARY_PATH
+# LD_LIBRARY_PATH=...gcc-install/lib:$LD_LIBRARY_PATH
 
 # on Linux:
 ./configure --prefix=$prefix --disable-debug
@@ -249,24 +249,12 @@ touch -r aclocal.m4 configure.in
 bash ./configure --prefix=$prefix \
 	--with-included-modules=basic-x --disable-debug
 
-# On x86-solaris 2.6, the patch above seems to be disturbing the dependencies
-# between several automatically generated files.  This causes the
-# Makefile to try to rebuild these file by calling automake, aclocal,
-# etc...  On the x86-solaris machine we have, these tools are either
-# not installed, or too old.  The makefile is equiped to handle the
-# cases when the needed tool is not installed, but causes some files
-# to be trashed when the tool is too old (for instance, config.h.in
-# gets destroyed when autoheader is too old). To work-around that,
-# we replace the calls to these tools by a call to /bin/true.
+# On x86-solaris 2.6, there seems to be something going on with respect to
+# Xlib.h.  When we include this file, there's apparently some macro defined
+# that prevents the XEvent structures from being defined.  These definitions
+# are forced by defining DNeedFunctionPrototypes.
 #
-# In addition, there seems to be something going on with respect to
-# Xlib.h.  When we include this file, there seems to be a certain
-# macro that's define, and that prevents the XEvent structures from
-# being defined.  These definitions are forced by defining
-# DNeedFunctionPrototypes.
-# make ACLOCAL=/bin/true AUTOCONF=/bin/true \
-#      AUTOMAKE=/bin/true AUTOHEADER=/bin/true \
-#      CFLAGS='-g -O2 -DNeedFunctionPrototypes' all install
+# make CFLAGS='-g -O2 -DNeedFunctionPrototypes' all install
 
 # On all other platforms, simply do:
 make all install
