@@ -31,6 +31,7 @@ RMDIR = rmdir
 MV = mv
 
 LIBNAME       = libgtkada$(SO_EXT)
+SONAME        = libgtkada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 ARCHIVENAME   = libgtkada.a
 
 GTKADA_CONFIG = gtkada-config
@@ -72,7 +73,10 @@ dirs:: force
 
 $(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
 ifeq ($(BUILD_SHARED),yes)
-	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects) @GTK_LIBS@
+	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
+	  $(SO_OPTS)$(SONAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o \
+	  $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects) @GTK_LIBS@
+	$(LN) $(SONAME) $(LIBNAME)
 	-@if [ ! -f .devel ]; then \
 	  strip $(LIBNAME); \
 	  $(CHMOD) +x $(LIBNAME); \
@@ -135,7 +139,8 @@ install: all
 	   $(MKDIR) $(incdir); \
 	   $(MKDIR) $(alidir); \
 	   $(INSTALL_DATA) $(ARCHIVENAME) $(libdir); \
-	   $(INSTALL_DATA) $(LIBNAME) $(libdir); \
+	   $(INSTALL_DATA) $(SONAME) $(libdir); \
+	   $(LN) $(SONAME) $(libdir)/$(LIBNAME); \
 	   $(CP) glib*.ads glib*.adb $(MESA_SPECS) $(incdir); \
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \
 	   $(CP) gtk*.ads gtk*.adb $(incdir); \
@@ -159,7 +164,7 @@ install: all
 clean-generic:
 	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
 	-$(RM) $(LIB_DIR)/*
-	-${RM} $(ARCHIVENAME) $(LIBNAME)
+	-${RM} $(ARCHIVENAME) $(LIBNAME) $(SONAME)
 	-${RM} $(GATE_EX) $(DGATE) $(GDIALOG)
 	-${RM} .\#*
 

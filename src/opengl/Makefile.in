@@ -13,7 +13,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I. $(FPIC)
  
-SONAME        = libgtkada_gl$(SO_EXT)
+SONAME        = libgtkada_gl-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 LIBNAME       = libgtkada_gl$(SO_EXT)
 ARCHIVENAME   = libgtkada_gl.a
 
@@ -30,7 +30,8 @@ MESA_SPECS=gl_h.ads glu_h.ads
 all: $(LIBNAME) $(ARCHIVENAME)
 install: all
 	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
-	$(INSTALL_DATA) $(LIBNAME) $(libdir)
+	$(INSTALL_DATA) $(SONAME) $(libdir)
+        $(LN) $(SONAME) $(libdir)/$(LIBNAME)
 	$(CP) $(MESA_SPECS) $(incdir)
 	$(CP) gdk*.ads gdk*.adb $(incdir)
 	$(CP) gtk*.ads gtk*.adb $(incdir)
@@ -50,7 +51,10 @@ install:
 endif
 
 $(LIBNAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
-	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS) @GTK_LIBS@ -L.. -lgtkada $(OPENGL_LIBS)
+	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
+	  $(SO_OPTS)$(SONAME) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS) \
+	  @GTK_LIBS@ -L.. -lgtkada $(OPENGL_LIBS)
+	$(LN) $(SONAME) $(LIBNAME)
 	-@if [ ! -f ../.devel ]; then \
 	   strip $(LIBNAME); \
 	fi
@@ -75,13 +79,11 @@ gdkgl.o:     gdkgl.h gdkgl.c
 
 clean-generic:
 	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
-	-${RM} $(ARCHIVENAME) $(LIBNAME)
+	-${RM} $(ARCHIVENAME) $(LIBNAME) $(SONAME)
 	-${RM} .\#*
  
 mostlyclean-generic: clean-generic
 	-${RM} Makefile
-	-${RM} $(GATE)
-	-${RM} $(GTKADA_CONFIG)
  
 clean: clean-generic
  
