@@ -169,7 +169,7 @@ GType ada_gsignal_query_return_type (GSignalQuery* query) {
  **
  **  struct NewClassRecord {
  **     struct AncestorClass ancestor_class;   // the ancestor
- **     void (*handler1) (...);                // handler for first signal   
+ **     void (*handler1) (...);                // handler for first signal
  **     void (*handler2) (...);                // handler for second signal
  **     ...
  **     void (*handlern) (...);                // handler for nth signal
@@ -199,7 +199,7 @@ void* ada_get_nth_virtual_function (GObjectClass* class, gint num)
 {
   GTypeQuery query;
   gpointer * virtual_functions;
-  
+
   g_type_query (G_TYPE_FROM_CLASS (class), &query);
   virtual_functions = (gpointer*)((char*)(class)
 				  + query.class_size
@@ -222,7 +222,7 @@ ada_initialize_class_record
    gpointer*     virtual_functions)
 {
   GObjectClass* klass;
-  
+
   if (!old_class_record)
     {
       /* Note: The memory allocated in this function is never freed. No need
@@ -277,10 +277,10 @@ ada_initialize_class_record
 	      count++;
 	    }
 
-  
+
 	  closure = g_signal_type_cclosure_new
 	    (new_type, query.class_size + j * sizeof (void*)); /* offset */
-	  
+
 	  id = g_signal_newv
 	    (signals[j],                       /* signal_name */
 	     new_type,                         /* itype */
@@ -309,12 +309,12 @@ ada_initialize_class_record
       for (j = 0; j < num_virtual_functions; j++) {
 	virtual [j] = virtual_functions [j];
       }
-      
+
     }
   else
     {
       klass = g_type_class_ref (G_TYPE_FROM_CLASS (old_class_record));
-      
+
     }
 
   G_OBJECT_GET_CLASS (object) = klass;
@@ -487,7 +487,7 @@ ada_object_flag_is_set (GtkObject * object, guint32 flag)
   return ((GTK_OBJECT_FLAGS (object) & flag) != 0);
 }
 
-void 
+void
 ada_object_unset_flags (GtkObject * object, guint32 flags)
 {
   GTK_OBJECT_UNSET_FLAGS (object, flags);
@@ -499,7 +499,7 @@ ada_object_unset_flags (GtkObject * object, guint32 flags)
  *
  */
 
-guint32 
+guint32
 ada_widget_is_sensitive (GtkWidget * widget)
 {
   return GTK_WIDGET_IS_SENSITIVE (widget);
@@ -667,7 +667,7 @@ ada_gdk_point_size () {
  *
  */
 
-GdkCursor* 
+GdkCursor*
 ada_gdk_cursor_new (gint cursor_type)
 {
   return gdk_cursor_new (cursor_type);
@@ -1034,7 +1034,7 @@ gint ada_gdk_event_get_count (GdkEvent * event)
 
 gint ada_gdk_event_get_in (GdkEvent * event)
 {
-  if (event->type == GDK_FOCUS_CHANGE) 
+  if (event->type == GDK_FOCUS_CHANGE)
     return event->focus_change.in;
   return ada_gdk_invalid_gint_value;
 }
@@ -1061,15 +1061,8 @@ gint ada_gdk_event_get_key_val (GdkEvent * event)
 
 char* ada_gdk_event_get_string (GdkEvent * event)
 {
-  switch (event->type)
-    {
-    case GDK_KEY_PRESS:
-    case GDK_KEY_RELEASE:
-      return event->key.string;
-    default:
-      break;
-    }
-  return NULL;
+  /* The type of the event is checked in gdk-event.adb */
+  return event->key.string;
 }
 
 GdkAtom ada_gdk_event_get_atom (GdkEvent * event)
@@ -1132,7 +1125,7 @@ GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
 {
   GdkEvent static_event;
   GdkEvent* event;
-  
+
   static_event.any.type   = type;
   static_event.any.window = win;
   gdk_window_ref (win);
@@ -1309,32 +1302,32 @@ gint ada_gdk_event_set_time (GdkEvent * event, guint32 time)
     case GDK_MOTION_NOTIFY:
       event->motion.time = time;
       break;
-      
+
     case GDK_BUTTON_PRESS:
     case GDK_2BUTTON_PRESS:
     case GDK_3BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
       event->button.time = time;
       break;
-      
+
     case GDK_KEY_PRESS:
     case GDK_KEY_RELEASE:
       event->key.time = time;
       break;
-      
+
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.time = time;
       break;
-      
+
     case GDK_PROPERTY_NOTIFY:
       event->property.time = time;
       break;
-      
+
     case GDK_SELECTION_NOTIFY:
       event->selection.time = time;
       break;
-      
+
     case GDK_PROXIMITY_IN:
     case GDK_PROXIMITY_OUT:
       event->proximity.time = time;
@@ -2150,7 +2143,7 @@ ada_text_attributes_set_font (GtkTextAttributes* text_attr,
 
   /* Free the family name pointer if already allocated */
   pango_font_description_free (text_attr->font);
-  
+
   /* set the font. Make sure to strdup the font->family_name field
      to avoid dangling pointers. This memory will be deallocated
      during the final unref */
@@ -2652,7 +2645,7 @@ GdkWindowAttr*
 ada_gdk_window_attr_new (void)
 {
   GdkWindowAttr *result;
-  
+
   result = (GdkWindowAttr*) g_new (GdkWindowAttr, 1);
 
   if (result)
@@ -2663,7 +2656,7 @@ ada_gdk_window_attr_new (void)
       result->cursor = NULL;
       result->wmclass_name = NULL;
       result->wmclass_class = NULL;
-      /* 
+      /*
        * Here, we only set the pointers to NULL to avoid any dangling
        * pointer. All the other values are left as is. It is the
        * responsibility of the client to make sure they are properly
@@ -2700,7 +2693,7 @@ gchar*
 ada_gdk_window_attr_get_title (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, NULL);
-  
+
   return window_attr->title;
 }
 
@@ -2709,7 +2702,7 @@ ada_gdk_window_attr_set_event_mask (GdkWindowAttr *window_attr,
 				    gint event_mask)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->event_mask = event_mask;
 }
 
@@ -2717,7 +2710,7 @@ gint
 ada_gdk_window_attr_get_event_mask (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
-  
+
   return window_attr->event_mask;
 }
 
@@ -2725,7 +2718,7 @@ void
 ada_gdk_window_attr_set_x (GdkWindowAttr * window_attr, gint x)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->x = x;
 }
 
@@ -2733,7 +2726,7 @@ gint
 ada_gdk_window_attr_get_x (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
-  
+
   return window_attr->x;
 }
 
@@ -2741,15 +2734,15 @@ void
 ada_gdk_window_attr_set_y (GdkWindowAttr * window_attr, gint y)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->y = y;
 }
-  
+
 gint
 ada_gdk_window_attr_get_y (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
-  
+
   return window_attr->y;
 }
 
@@ -2757,15 +2750,15 @@ void
 ada_gdk_window_attr_set_width (GdkWindowAttr * window_attr, gint width)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->width = width;
 }
-  
+
 gint
 ada_gdk_window_attr_get_width (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
-  
+
   return window_attr->width;
 }
 
@@ -2773,15 +2766,15 @@ void
 ada_gdk_window_attr_set_height (GdkWindowAttr * window_attr, gint height)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->height = height;
 }
-  
+
 gint
 ada_gdk_window_attr_get_height (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
-  
+
   return window_attr->height;
 }
 
@@ -2790,7 +2783,7 @@ ada_gdk_window_attr_set_wclass (GdkWindowAttr *window_attr,
 				GdkWindowClass wclass)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->wclass = wclass;
 }
 
@@ -2798,7 +2791,7 @@ GdkWindowClass
 ada_gdk_window_attr_get_wclass (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, GDK_INPUT_OUTPUT);
-  
+
   return window_attr->wclass;
 }
 
@@ -2807,7 +2800,7 @@ ada_gdk_window_attr_set_visual (GdkWindowAttr *window_attr,
 				GdkVisual *visual)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->visual = visual;
 }
 
@@ -2815,7 +2808,7 @@ GdkVisual*
 ada_gdk_window_attr_get_visual (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, NULL);
-  
+
   return window_attr->visual;
 }
 
@@ -2824,7 +2817,7 @@ ada_gdk_window_attr_set_colormap (GdkWindowAttr *window_attr,
 				  GdkColormap *colormap)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->colormap = colormap;
 }
 
@@ -2832,7 +2825,7 @@ GdkColormap*
 ada_gdk_window_attr_get_colormap (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, NULL);
-  
+
   return window_attr->colormap;
 }
 
@@ -2841,7 +2834,7 @@ ada_gdk_window_attr_set_window_type (GdkWindowAttr *window_attr,
 				     GdkWindowType window_type)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->window_type = window_type;
 }
 
@@ -2849,7 +2842,7 @@ GdkWindowType
 ada_gdk_window_attr_get_window_type (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, GDK_WINDOW_ROOT);
-  
+
   return window_attr->window_type;
 }
 
@@ -2858,7 +2851,7 @@ ada_gdk_window_attr_set_cursor (GdkWindowAttr *window_attr,
 				GdkCursor *cursor)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->cursor = cursor;
 }
 
@@ -2866,7 +2859,7 @@ GdkCursor*
 ada_gdk_window_attr_get_cursor (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, NULL);
-  
+
   return window_attr->cursor;
 }
 
@@ -2884,7 +2877,7 @@ gchar*
 ada_gdk_window_attr_get_wmclass_name (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, NULL);
-  
+
   return window_attr->wmclass_name;
 }
 
@@ -2893,7 +2886,7 @@ ada_gdk_window_attr_set_wmclass_class (GdkWindowAttr *window_attr,
 				      gchar *wmclass_class)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   if (window_attr->wmclass_class) g_free (window_attr->wmclass_class);
   window_attr->wmclass_class = g_strdup (wmclass_class);
 }
@@ -2902,7 +2895,7 @@ gchar*
 ada_gdk_window_attr_get_wmclass_class (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, NULL);
-  
+
   return window_attr->wmclass_class;
 }
 
@@ -2911,7 +2904,7 @@ ada_gdk_window_attr_set_override_redirect (GdkWindowAttr *window_attr,
 					   gboolean override_redirect)
 {
   g_return_if_fail (window_attr != NULL);
-  
+
   window_attr->override_redirect = override_redirect;
 }
 
@@ -2919,7 +2912,7 @@ gboolean
 ada_gdk_window_attr_get_override_redirect (GdkWindowAttr * window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, FALSE);
-  
+
   return window_attr->override_redirect;
 }
 
