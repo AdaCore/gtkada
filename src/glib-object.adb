@@ -9,6 +9,20 @@ package body Glib.GObjects is
    procedure Free_User_Data (Data : in System.Address);
    --  Free the user data Data. This function should not be called directly
 
+   -------------------
+   -- Argument_Type --
+   -------------------
+
+   function Argument_Type
+     (The_Type : GType; Name : in String; Num : in Gint) return GType
+   is
+      function Internal
+        (The_Type : GType; Name : String; Num  : Gint) return GType;
+      pragma Import (C, Internal, "ada_signal_argument_type");
+   begin
+      return Internal (The_Type, Name & ASCII.NUL, Num);
+   end Argument_Type;
+
    -------------------------
    -- Conversion_Function --
    -------------------------
@@ -41,6 +55,20 @@ package body Glib.GObjects is
 
       return new GObject_Record'Class' (Stub);
    end Conversion_Function;
+
+   ---------------------
+   -- Count_Arguments --
+   ---------------------
+
+   function Count_Arguments
+     (The_Type : GType; Name : in String) return Guint
+   is
+      function Internal (The_Type : GType; Name : String) return Guint;
+      pragma Import (C, Internal, "ada_signal_count_arguments");
+
+   begin
+      return Internal (The_Type, Name & ASCII.NUL);
+   end Count_Arguments;
 
    --------------------
    -- Free_User_Data --
