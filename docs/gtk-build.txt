@@ -14,7 +14,7 @@ ignore the special comments.
 
 On HP-UX, a recent version of GCC (e.g 3.2) should be used
 
-On x86-solaris, use GCC 3.4, since earlier version have lots of subtle
+On x86-solaris, use GCC 3.4, since earlier versions have lots of subtle
 problems related e.g. to include files.
 
 On AiX and IRIX, the vendor C compiler is used:
