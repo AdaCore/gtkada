@@ -28,6 +28,32 @@
 
 package body Gdk.Drawable is
 
+   ---------------
+   -- Copy_Area --
+   ---------------
+
+   procedure Copy_Area (To       : in out Gdk_Drawable;
+                        GC       : in Gdk.GC.Gdk_GC;
+                        To_X     : in Gint;
+                        To_Y     : in Gint;
+                        From     : in Gdk.Window.Gdk_Window'Class;
+                        Source_X : in Gint;
+                        Source_Y : in Gint;
+                        Width    : in Gint;
+                        Height   : in Gint)
+   is
+      procedure Internal (To : System.Address;
+                          GC : System.Address;
+                          To_X, To_Y : Gint;
+                          From : System.Address;
+                          Source_X, Source_Y, Width, Height : Gint);
+      pragma Import (C, Internal, "gdk_window_copy_area");
+   begin
+      Internal (Get_Object (To), Get_Object (GC), To_X, To_Y,
+                Get_Object (From), Source_X, Source_Y,
+                Width, Height);
+   end Copy_Area;
+
    --------------------
    -- Draw_Rectangle --
    --------------------

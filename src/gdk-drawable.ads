@@ -34,6 +34,16 @@ package Gdk.Drawable is
 
    subtype Gdk_Drawable is Window.Gdk_Window;
 
+   procedure Copy_Area (To       : in out Gdk_Drawable;
+                        GC       : in Gdk.GC.Gdk_GC;
+                        To_X     : in Gint;
+                        To_Y     : in Gint;
+                        From     : in Gdk.Window.Gdk_Window'Class;
+                        Source_X : in Gint;
+                        Source_Y : in Gint;
+                        Width    : in Gint;
+                        Height   : in Gint);
+
    procedure Draw_Rectangle (Drawable : in Gdk_Drawable'Class;
                              Gc       : in Gdk.GC.Gdk_GC'Class;
                              Filled   : in Boolean := False;
@@ -76,3 +86,6 @@ package Gdk.Drawable is
        Height   : in Gint);
 
 end Gdk.Drawable;
+
+
+
