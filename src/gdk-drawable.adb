@@ -36,7 +36,7 @@ package body Gdk.Drawable is
    -- Copy_Area --
    ---------------
 
-   procedure Copy_Area (To       : in Gdk_Drawable;
+   procedure Copy_Area (To       : in Gdk_Drawable'Class;
                         GC       : in Gdk.GC.Gdk_GC;
                         To_X     : in Gint;
                         To_Y     : in Gint;
@@ -62,7 +62,7 @@ package body Gdk.Drawable is
    -- Draw_Arc --
    --------------
 
-   procedure Draw_Arc (Drawable : in Gdk_Drawable;
+   procedure Draw_Arc (Drawable : in Gdk_Drawable'Class;
                        Gc       : in Gdk.GC.Gdk_GC;
                        Filled   : in Boolean := False;
                        X        : in Gint;
@@ -92,7 +92,7 @@ package body Gdk.Drawable is
    ----------------
 
    procedure Draw_Image
-      (Drawable : in Gdk_Drawable;
+      (Drawable : in Gdk_Drawable'Class;
        Gc       : in Gdk.GC.Gdk_GC;
        Image    : in Gdk.Image.Gdk_Image;
        Xsrc     : in Gint;
@@ -129,7 +129,7 @@ package body Gdk.Drawable is
    -- Draw_Line --
    ---------------
 
-   procedure Draw_Line (Drawable : in Gdk_Drawable;
+   procedure Draw_Line (Drawable : in Gdk_Drawable'Class;
                              Gc       : in Gdk.GC.Gdk_GC;
                              X1, Y1   : in Gint;
                              X2, Y2   : in Gint) is
@@ -149,7 +149,7 @@ package body Gdk.Drawable is
    ----------------
 
    procedure Draw_Lines
-      (Drawable : in Gdk_Drawable;
+      (Drawable : in Gdk_Drawable'Class;
        Gc       : in Gdk.GC.Gdk_GC;
        Points   : in Gdk.Types.Gdk_Points_Array)
    is
@@ -170,7 +170,7 @@ package body Gdk.Drawable is
    -- Draw_Pixmap --
    -----------------
 
-   procedure Draw_Pixmap (Drawable : in Gdk.Drawable.Gdk_Drawable;
+   procedure Draw_Pixmap (Drawable : in Gdk.Drawable.Gdk_Drawable'Class;
                           Gc       : in Gdk.GC.Gdk_GC;
                           Src      : in Gdk.Drawable.Gdk_Drawable;
                           Xsrc     : in Gint;
@@ -198,7 +198,7 @@ package body Gdk.Drawable is
    -- Draw_Point --
    ----------------
 
-   procedure Draw_Point (Drawable : in Gdk_Drawable;
+   procedure Draw_Point (Drawable : in Gdk_Drawable'Class;
                          Gc       : in Gdk.GC.Gdk_GC;
                          X        : in Gint;
                          Y        : in Gint) is
@@ -217,7 +217,7 @@ package body Gdk.Drawable is
    -----------------
 
    procedure Draw_Points
-      (Drawable : in Gdk_Drawable;
+      (Drawable : in Gdk_Drawable'Class;
        Gc       : in Gdk.GC.Gdk_GC;
        Points   : in Gdk.Types.Gdk_Points_Array)
    is
@@ -238,7 +238,7 @@ package body Gdk.Drawable is
    -- Draw_Polygon --
    ------------------
 
-   procedure Draw_Polygon (Drawable : in Gdk_Drawable;
+   procedure Draw_Polygon (Drawable : in Gdk_Drawable'Class;
                            Gc       : in Gdk.GC.Gdk_GC;
                            Filled   : in Boolean;
                            Points   : in Gdk.Types.Gdk_Points_Array)
@@ -258,7 +258,7 @@ package body Gdk.Drawable is
    -- Draw_Rectangle --
    --------------------
 
-   procedure Draw_Rectangle (Drawable : in Gdk_Drawable;
+   procedure Draw_Rectangle (Drawable : in Gdk_Drawable'Class;
                              Gc       : in Gdk.GC.Gdk_GC;
                              Filled   : in Boolean := False;
                              X, Y     : in Gint;
@@ -283,7 +283,7 @@ package body Gdk.Drawable is
    -------------------
 
    procedure Draw_Segments
-      (Drawable : in Gdk.Drawable.Gdk_Drawable;
+      (Drawable : in Gdk.Drawable.Gdk_Drawable'Class;
        Gc       : in Gdk.GC.Gdk_GC;
        Segs     : in Gdk.Types.Gdk_Segments_Array)
    is
@@ -305,7 +305,7 @@ package body Gdk.Drawable is
    -----------------
 
    procedure Draw_Text
-      (Drawable    : in Gdk_Drawable;
+      (Drawable    : in Gdk_Drawable'Class;
        Font        : in Gdk.Font.Gdk_Font;
        Gc          : in Gdk.GC.Gdk_GC;
        X           : in Gint;
@@ -335,7 +335,7 @@ package body Gdk.Drawable is
    -----------------
 
    procedure Draw_Text
-      (Drawable    : in Gdk_Drawable;
+      (Drawable    : in Gdk_Drawable'Class;
        Font        : in Gdk.Font.Gdk_Font;
        Gc          : in Gdk.GC.Gdk_GC;
        X           : in Gint;
