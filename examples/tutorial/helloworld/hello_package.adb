@@ -34,31 +34,38 @@ package body Hello_Package is
 
    --  This is a callback function.
 
-   procedure Hello_Callback (Widget : access Gtk_Widget_Record'Class) is
+   procedure Hello_Callback (Widget : access Gtk_Widget_Record'Class)
+   is
+      pragma Unreferenced (Widget);
    begin
-       Put_Line ("Hello World");
+      Put_Line ("Hello World");
    end Hello_Callback;
 
    function Delete_Event
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean is
+      Event  : Gdk_Event)
+     return Boolean
+   is
+      pragma Unreferenced (Event);
+      pragma Unreferenced (Widget);
    begin
-       --  If you return False in the "delete_event" signal handler,
-       --  GtkAda will emit the "destroy" signal. Returning True means
-       --  you don't want the window to be destroyed.
-       --  This is useful for popping up 'are you sure you want to quit?'
-       --  type dialogs.
+      --  If you return False in the "delete_event" signal handler,
+      --  GtkAda will emit the "destroy" signal. Returning True means
+      --  you don't want the window to be destroyed. This is useful
+      --  for popping up 'are you sure you want to quit?' type
+      --  dialogs.
 
-       Put_Line ("delete event occurred");
+      Put_Line ("delete event occurred");
 
-       --  Change True to False and the main window will be destroyed with
-       --  a "delete_event".
+      --  Change True to False and the main window will be destroyed
+      --  with a "delete_event".
 
-       return True;
+      return True;
    end Delete_Event;
 
    --   Another callback
    procedure Destroy (Widget : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Widget);
    begin
       Gtk.Main.Main_Quit;
    end Destroy;
