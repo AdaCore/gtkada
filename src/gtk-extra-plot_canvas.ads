@@ -56,7 +56,7 @@ package Gtk.Extra.Plot_Canvas is
    --  Since the widget can have an unlimited internal size, it does not try
    --  to set its size to accomodate all of its children.
 
-   procedure Initialize (Widget : access Gtk_Plot_Canvas_Record;
+   procedure Initialize (Widget : access Gtk_Plot_Canvas_Record'Class;
                          Width  : in Gint;
                          Height : in Gint);
    --  Internal initialization function.

@@ -49,7 +49,7 @@ package body Gtk.Extra.Item_Entry is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_IEntry_Record;
+   procedure Initialize (Widget : access Gtk_IEntry_Record'Class;
                          Max    : in Guint16)
    is
       function Internal (Max    : in Guint16)

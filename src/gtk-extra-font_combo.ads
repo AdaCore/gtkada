@@ -50,7 +50,7 @@ package Gtk.Extra.Font_Combo is
    procedure Gtk_New (Widget : out Gtk_Font_Combo);
    --  Create a new combo box
 
-   procedure Initialize (Widget : access Gtk_Font_Combo_Record);
+   procedure Initialize (Widget : access Gtk_Font_Combo_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

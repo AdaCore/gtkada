@@ -227,12 +227,12 @@ package Gtk.Extra.Plot is
                         Gdk.Drawable.Null_Drawable);
    --  Create a new plot with a specific size.
 
-   procedure Initialize (Plot     : access Gtk_Plot_Record;
+   procedure Initialize (Plot     : access Gtk_Plot_Record'Class;
                          Drawable : in Gdk.Drawable.Gdk_Drawable);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   procedure Initialize (Plot     : access Gtk_Plot_Record;
+   procedure Initialize (Plot     : access Gtk_Plot_Record'Class;
                          Drawable : in Gdk.Drawable.Gdk_Drawable;
                          Width    : in Gdouble;
                          Height   : in Gdouble);

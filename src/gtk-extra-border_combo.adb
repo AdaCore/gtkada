@@ -46,7 +46,7 @@ package body Gtk.Extra.Border_Combo is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Border_Combo_Record)
+   procedure Initialize (Widget : access Gtk_Border_Combo_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_border_combo_new");

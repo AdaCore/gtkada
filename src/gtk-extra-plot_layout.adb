@@ -113,7 +113,7 @@ package body Gtk.Extra.Plot_Layout is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Plot_Layout_Record;
+   procedure Initialize (Widget : access Gtk_Plot_Layout_Record'Class;
                          Width  : in Gint;
                          Height : in Gint)
    is

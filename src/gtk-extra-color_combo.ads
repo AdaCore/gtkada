@@ -51,7 +51,7 @@ package Gtk.Extra.Color_Combo is
    --  Create a new default combo box.
    --  It shows a list of 40 default colors.
 
-   procedure Initialize (Widget : access Gtk_Color_Combo_Record);
+   procedure Initialize (Widget : access Gtk_Color_Combo_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

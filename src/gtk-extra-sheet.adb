@@ -95,7 +95,7 @@ package body Gtk.Extra.Sheet is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Sheet   : access Gtk_Sheet_Record;
+   procedure Initialize (Sheet   : access Gtk_Sheet_Record'Class;
                          Rows    : in Gint;
                          Columns : in Gint;
                          Title   : in String := "";
@@ -144,7 +144,7 @@ package body Gtk.Extra.Sheet is
    -- Initialize_Browser --
    ------------------------
 
-   procedure Initialize_Browser (Sheet   : access Gtk_Sheet_Record;
+   procedure Initialize_Browser (Sheet   : access Gtk_Sheet_Record'Class;
                                  Rows    : in Gint;
                                  Columns : in Gint;
                                  Title   : in String := "")

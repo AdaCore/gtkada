@@ -59,7 +59,7 @@ package Gtk.Extra.Plot_Layout is
    --  Initially, this widget is empty, and will simply modify its background
    --  color, depending on the choice made by Set_Background.
 
-   procedure Initialize (Widget : access Gtk_Plot_Layout_Record;
+   procedure Initialize (Widget : access Gtk_Plot_Layout_Record'Class;
                          Width  : in Gint;
                          Height : in Gint);
    --  Internal initialization function.

@@ -48,7 +48,7 @@ package body Gtk.Extra.Check_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Item  : access Gtk_Check_Item_Record;
+   procedure Initialize (Item  : access Gtk_Check_Item_Record'Class;
                          Label : in String := "")
    is
       function Internal return System.Address;

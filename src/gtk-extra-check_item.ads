@@ -60,7 +60,7 @@ package Gtk.Extra.Check_Item is
    --  you will have to provide your own child through a call to
    --  Gtk.Container.Add.
 
-   procedure Initialize (Item : access Gtk_Check_Item_Record;
+   procedure Initialize (Item : access Gtk_Check_Item_Record'Class;
                          Label  : in     String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.

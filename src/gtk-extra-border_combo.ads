@@ -46,7 +46,7 @@ package Gtk.Extra.Border_Combo is
    --  Create a new border combo.
    --  The button contains the currently selected border.
 
-   procedure Initialize (Widget : access Gtk_Border_Combo_Record);
+   procedure Initialize (Widget : access Gtk_Border_Combo_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

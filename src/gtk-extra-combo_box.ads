@@ -53,7 +53,7 @@ package Gtk.Extra.Combo_Box is
    --  this is your responsability to put something inside the button or
    --  the popup window.
 
-   procedure Initialize (Widget : access Gtk_Combo_Box_Record);
+   procedure Initialize (Widget : access Gtk_Combo_Box_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

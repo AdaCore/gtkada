@@ -72,7 +72,7 @@ package body Gtk.Extra.Color_Combo is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Color_Combo_Record) is
+   procedure Initialize (Widget : access Gtk_Color_Combo_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_color_combo_new");
    begin

@@ -47,7 +47,7 @@ package body Gtk.Extra.Combo_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Combo_Box_Record)
+   procedure Initialize (Widget : access Gtk_Combo_Box_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combobox_new");

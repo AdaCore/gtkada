@@ -100,7 +100,7 @@ package Gtk.Extra.Sheet is
    --  of the Get_Type subprograms in the GtkAda packages.
    --  The Title is internal, and does not appear on the screen.
 
-   procedure Initialize (Sheet      : access Gtk_Sheet_Record;
+   procedure Initialize (Sheet      : access Gtk_Sheet_Record'Class;
                          Rows       : in Gint;
                          Columns    : in Gint;
                          Title      : in String := "";
@@ -116,7 +116,7 @@ package Gtk.Extra.Sheet is
    --  This is a standard Gtk_Sheet, except that it is read-only and that its
    --  cells will automatically resize themselves depending on their contents.
 
-   procedure Initialize_Browser (Sheet   : access Gtk_Sheet_Record;
+   procedure Initialize_Browser (Sheet   : access Gtk_Sheet_Record'Class;
                                  Rows    : in Gint;
                                  Columns : in Gint;
                                  Title   : in String := "");

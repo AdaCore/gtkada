@@ -101,7 +101,7 @@ package body Gtk.Extra.Plot is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Plot     : access Gtk_Plot_Record;
+   procedure Initialize (Plot     : access Gtk_Plot_Record'Class;
                          Drawable : in Gdk.Drawable.Gdk_Drawable)
    is
       function Internal (Drawable : in System.Address)
@@ -131,7 +131,7 @@ package body Gtk.Extra.Plot is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Plot     : access Gtk_Plot_Record;
+   procedure Initialize (Plot     : access Gtk_Plot_Record'Class;
                          Drawable : in Gdk.Drawable.Gdk_Drawable;
                          Width    : in Gdouble;
                          Height   : in Gdouble)

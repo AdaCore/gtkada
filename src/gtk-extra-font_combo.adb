@@ -95,7 +95,7 @@ package body Gtk.Extra.Font_Combo is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Font_Combo_Record)
+   procedure Initialize (Widget : access Gtk_Font_Combo_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_combo_new");
