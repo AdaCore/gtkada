@@ -1762,16 +1762,13 @@ of callbacks, you do.
 @node How to report bugs
 @chapter How to report bugs
 
-This library is still considered beta code, and it is thus likely that
-you will  find bugs.  We  have tried to  test it as much  as possible,
-essentially  by  converting  the  testgtk.c  file  found  in  the  gtk
-distribution.   We   have  been  able   to  rewrite  nearly   all  the
-tests. Please have a look at the  testgtk, which can give you a lot of
-examples of how to use this toolkit.
-
-For more general questions about gtk itself, please ask your questions
-to the  gtk  mailing list. The  authors of  this toolkit  are far from
-being specialists of gtk, as it was one of our first projects with gtk.
+GtkAda is becoming more and more stable due to its increasing use, but
+you may still find bugs while using it. We have tried to test it as much
+as possible, essentially by converting the testgtk.c file found in the gtk
+distribution, as well as with generating a significant number of interfaces
+using the GUI builder and Gate.
+We stronly suggest to have a look at the testgtk, which gives
+a lot of examples on how to use this toolkit.
 
 There are two kinds of problems you can encounter:
 @itemize @bullet
