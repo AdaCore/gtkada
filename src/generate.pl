@@ -622,7 +622,8 @@ sub generate_specifications
 ###################################
 sub generate_body
   {
-    %with_list = ("with Gdk; use Gdk" => 1,
+    %with_list = ("with Gtk; use Gtk" => 1,
+                  "with Gdk; use Gdk" => 1,
 		  "with System" => 1);
     @output = ();
     push (@output, "package body $prefix.$current_package is\n\n");
