@@ -125,6 +125,7 @@ install: $(ARCHIVENAME) $(LIBNAME)
 
 clean-generic:
 	-${RM} *.o *.ali *~ b_*.c core
+	-$(RM) $(LIB_DIR)/*
 	-${RM} $(ARCHIVENAME) $(LIBNAME)
 	-${RM} $(GATE_EX) $(DGATE)
 	-${RM} $(TEST_LINK) $(TEST_LINK).adb
