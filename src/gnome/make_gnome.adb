@@ -1,7 +1,6 @@
 pragma Warnings (Off);
 with Gtk.Dial;
 with Gtk.Clock;
-with Gtk.Pixmap_Menu_Item;
 with Gnome.About;
 with Gnome.Animator;
 with Gnome.App;

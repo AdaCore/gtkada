@@ -7,7 +7,7 @@ GNOME_LIBS    = @GNOME_LIBS@
 HAVE_GNOME    = @HAVE_GNOME@
 INSTALL       = @INSTALL@
 INSTALL_DATA  = @INSTALL_DATA@
-GTK_OBJECTS   = gtk-clock.o gtk-dial.o gtk-pixmap_menu_item.o
+GTK_OBJECTS   = gtk-clock.o gtk-dial.o
 
 ifeq ($(HAVE_GNOME),True)
 all: $(ARCHIVENAME) $(LIBNAME)
