@@ -2253,17 +2253,26 @@ package body Gtkada.MDI is
       Title       : String;
       Short_Title : String := "")
    is
-      Label : Gtk_Accel_Label;
+      The_Title       : String_Access;
+      The_Short_Title : String_Access;
+      --  Those pointers are used to prevent problems when
+      --  Title is in fact Child.Title
+
+      Label           : Gtk_Accel_Label;
    begin
-      Free (Child.Title);
-      Free (Child.Short_Title);
-      Child.Title := new String' (Title);
+      The_Title := new String' (Title);
 
       if Short_Title /= "" then
-         Child.Short_Title := new String' (Short_Title);
+         The_Short_Title := new String' (Short_Title);
       else
-         Child.Short_Title := new String' (Title);
+         The_Short_Title := new String' (Title);
       end if;
+
+      Free (Child.Title);
+      Free (Child.Short_Title);
+
+      Child.Title := The_Title;
+      Child.Short_Title := The_Short_Title;
 
       if Child.Initial.all in Gtk_Window_Record'Class then
          Set_Title (Gtk_Window (Child.Initial), Title);
