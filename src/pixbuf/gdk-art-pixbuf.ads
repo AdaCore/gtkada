@@ -27,6 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides a minimal interface to the libart library.
+--  It gives access to the basic types used by Gdk.Pixbuf.
+--
+--  </description>
+
 with Glib;
 with System;
 
@@ -70,6 +77,7 @@ package Gdk.Art.Pixbuf is
    --  not to be implemented.
 
    subtype Art_U32 is Glib.Guint32;
+   --  32 bits unsigned integer used within libart.
 
 private
    type Art_Pixbuf is new System.Address;
