@@ -198,10 +198,12 @@ package Glib.Unicode is
    --  If Buffer is Null_Ptr, then the only effect is to compute the number of
    --  bytes to encode C.
 
-   function Unichar_To_UTF8
-     (C : Gunichar; Buffer : UTF8_String) return Natural;
+   procedure Unichar_To_UTF8
+     (C      : Gunichar;
+      Buffer : out UTF8_String;
+      Last   : out Natural);
    --  Encode C into Buffer. Buffer must have at least 6 bytes free.
-   --  Return the number of bytes written in Buffer.
+   --  Return the index of the last byte written in Buffer.
 
    function UTF8_Get_Char (Str : UTF8_String) return Gunichar;
    --  Converts a sequence of bytes encoded as UTF8 to a unicode character.

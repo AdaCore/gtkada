@@ -177,13 +177,17 @@ package body Glib.Unicode is
       pragma Import (C, Internal, "g_utf8_find_next_char");
 
       Result : System.Address;
+      First  : constant Natural := Str'First;
+
    begin
-      Result := Internal (Str'Address + Storage_Offset (Index),
-                          Str'Address + Storage_Offset (Str'Length));
+      Result := Internal
+        (Str (First)'Address + Storage_Offset (Index - First),
+         Str (First)'Address + Storage_Offset (Str'Length - 1));
+
       if Result = System.Null_Address then
          return Str'Last + 1;
       else
-         return Natural (Result - Str'Address);
+         return Natural (Result - Str'Address + Storage_Offset (First));
       end if;
    end UTF8_Find_Next_Char;
 
@@ -198,13 +202,17 @@ package body Glib.Unicode is
       pragma Import (C, Internal, "g_utf8_find_prev_char");
 
       Result : System.Address;
+      First  : constant Natural := Str'First;
+
    begin
-      Result := Internal (Str'Address,
-                          Str'Address + Storage_Offset (Index));
+      Result := Internal
+        (Str (First)'Address,
+         Str (First)'Address + Storage_Offset (Index - First));
+
       if Result = System.Null_Address then
-         return Str'First - 1;
+         return First - 1;
       else
-         return Natural (Result - Str'Address);
+         return Natural (Result - Str'Address + Storage_Offset (First));
       end if;
    end UTF8_Find_Prev_Char;
 
@@ -212,13 +220,15 @@ package body Glib.Unicode is
    -- Unichar_To_UTF8 --
    ---------------------
 
-   function Unichar_To_UTF8
-     (C : Gunichar; Buffer : UTF8_String) return Natural
+   procedure Unichar_To_UTF8
+     (C      : Gunichar;
+      Buffer : out UTF8_String;
+      Last   : out Natural)
    is
       function Internal (C : Gunichar; Buffer : System.Address) return Integer;
       pragma Import (C, Internal, "g_unichar_to_utf8");
    begin
-      return Internal (C, Buffer'Address);
+      Last := Internal (C, Buffer (Buffer'First)'Address) + Buffer'First - 1;
    end Unichar_To_UTF8;
 
    -------------------
