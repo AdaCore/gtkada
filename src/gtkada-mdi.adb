@@ -4271,7 +4271,7 @@ package body Gtkada.MDI is
          --  in a notebook.
 
          procedure Save_Notebook
-           (Parent : Node_Ptr; Note : Gtk_Notebook);
+           (Current : Node_Ptr; Note : Gtk_Notebook);
          --  save all pages of the notebook
 
          ---------
@@ -4353,10 +4353,13 @@ package body Gtkada.MDI is
          -- Save_Notebook --
          -------------------
 
-         procedure Save_Notebook (Parent : Node_Ptr; Note : Gtk_Notebook) is
+         procedure Save_Notebook (Current : Node_Ptr; Note : Gtk_Notebook) is
             Length : constant Guint := Page_List.Length (Get_Children (Note));
             Current_Page : constant Gint := Get_Current_Page (Note);
+            Parent : Node_Ptr;
          begin
+            Parent := new Node;
+            Parent.Tag := new String'("Notebook");
             --  +4 is to take into account the border of the notebook
             Set_Attribute
               (Parent, "Width",
@@ -4372,6 +4375,14 @@ package body Gtkada.MDI is
                        (Get_Nth_Page (Note, Gint (Page_Index))),
                      Current_Page = Gint (Page_Index));
                end loop;
+            end if;
+
+            --  Do not append the Notebook node to the parent if no child in
+            --  the notebook was found, unless the number of pages is 0, in
+            --  which case this is a real empty space which should be saved
+            --  in the desktop
+            if Length = 0 or else Parent.Child /= null then
+               Add_Child (Current, Parent, Append => True);
             end if;
          end Save_Notebook;
 
@@ -4394,10 +4405,7 @@ package body Gtkada.MDI is
                end loop;
 
                if Get_Widget (Iter) /= null then
-                  N := new Node;
-                  N.Tag := new String'("Notebook");
-                  Add_Child (Current, N, Append => True);
-                  Save_Notebook (N, Gtk_Notebook (Get_Widget (Iter)));
+                  Save_Notebook (Current, Gtk_Notebook (Get_Widget (Iter)));
                else
                   N := new Node;
                   N.Tag := new String'("Pane");
@@ -4411,6 +4419,36 @@ package body Gtkada.MDI is
                Depth := Get_Depth (Iter);
                Next (Iter);
             end loop;
+         end;
+
+         --  A pass to eliminate all empty Panes.
+
+         declare
+            procedure Prune_Empty (N : in out Node_Ptr);
+            --  Prunes empty panes below N.
+
+            procedure Prune_Empty (N : in out Node_Ptr) is
+               C : Node_Ptr;
+            begin
+               if N.Tag.all = "Pane" then
+                  C := N.Child;
+
+                  while C /= null loop
+                     Prune_Empty (C);
+
+                     if C /= null then
+                        C := C.Next;
+                     end if;
+                  end loop;
+
+                  if N.Child = null then
+                     Free (N);
+                  end if;
+               end if;
+            end Prune_Empty;
+
+         begin
+            Prune_Empty (Root.Child);
          end;
 
          --  Save the floating and non-maximized widgets.
