@@ -27,7 +27,7 @@ CP = cp -f
 
 ## This variable should be set to "True" if the opengl directories
 ## have been installed on the system.
-HAVE_OPENGL=@HAVE_OPENGL@
+HAVE_OPENGL=False
 
 ifeq ($(HAVE_OPENGL),True)
 OPENGL_C_OBJECTS=lw.o
@@ -40,7 +40,7 @@ endif
 ## This variable should be set to True if the libart directories
 ## have been installed on the system.
 
-HAVE_LIBART=@HAVE_PIXBUF@
+HAVE_LIBART=False
 
 all: opengl/view_gl.adb pixbuf/libart_demo.adb $(OPENGL_C_OBJECTS) $(target) 
 
