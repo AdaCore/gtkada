@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -282,10 +282,10 @@ private
    Null_Colormap : constant Gdk_Colormap := null;
 
    type Gdk_Color is record
-      Pixel : Guint32;
-      Red   : Guint16;
-      Green : Guint16;
-      Blue  : Guint16;
+      Pixel : Guint32 := Guint32'Last;
+      Red   : Guint16 := 1;
+      Green : Guint16 := 0;
+      Blue  : Guint16 := 0;
    end record;
    pragma Convention (C, Gdk_Color);
    --  The fields are to be chosen between 0 and 65535, not 0 and 255!!!
