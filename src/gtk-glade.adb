@@ -173,6 +173,22 @@ package body Gtk.Glade is
 
       New_Line;
       Put_Line ("procedure " & To_Ada (Q.all) & " is");
+
+      M := N.Child.Next;
+
+      loop
+         exit when M = null;
+         P := Get_Field (M, "name");
+
+         if P /= null then
+            Put_Line
+              ("   " & To_Ada (P.all) & " : " & To_Ada (P.all) & "_Access;");
+         end if;
+
+         M := M.Next;
+      end loop;
+
+      New_Line;
       Put_Line ("begin");
       Put_Line ("   Gtk.Main.Set_Locale;");
       Put_Line ("   Gtk.Main.Init;");
@@ -406,9 +422,6 @@ package body Gtk.Glade is
               " : out " & To_Ada (Name.all) & "_Access);");
             Put_Line (Output, "   procedure Initialize (" & To_Ada (Name.all) &
               " : access " & To_Ada (Name.all) & "_Record'Class);");
-            New_Line (Output);
-            Put_Line (Output, "   " & To_Ada (Name.all) & " : " &
-              To_Ada (Name.all) & "_Access;");
             New_Line (Output);
             Put_Line (Output, "end " & To_Ada (Name.all) & "_Pkg;");
 
