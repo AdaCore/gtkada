@@ -1,21 +1,24 @@
-with Gtk; use Gtk;
+with Ada.Text_IO;
+with Gtk.Box;    use Gtk.Box;
+with Gtk.Button; use Gtk.Button;
+with Gtk.Color_Selection; use Gtk.Color_Selection;
+with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
+with Gtk.Combo;  use Gtk.Combo;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Curve; use Gtk.Curve;
+with Gtk.Drawing_Area; use Gtk.Drawing_Area;
+with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;
+with Gtk.Hbox;   use Gtk.Hbox;
+with Gtk.Menu; use Gtk.Menu;
+with Gtk.Menu_Bar; use Gtk.Menu_Bar;
+with Gtk.Menu_Item; use Gtk.Menu_Item;
+with Gtk.Signal; use Gtk.Signal;
+with Gtk.Status_Bar; use Gtk.Status_Bar;
+with Gtk.Vbox;   use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
-with Gtk.Container; use Gtk.Container;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Box;    use Gtk.Box;
-with Gtk.Hbox;   use Gtk.Hbox;
-with Gtk.Vbox;   use Gtk.Vbox;
-with Gtk.Combo;  use Gtk.Combo;
-with Ada.Text_IO;
-with Gtk.Status_Bar; use Gtk.Status_Bar;
-with Gtk.Color_Selection; use Gtk.Color_Selection;
+with Gtk; use Gtk;
 with Interfaces.C.Strings;
-with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
-with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;
-with Gtk.Drawing_Area; use Gtk.Drawing_Area;
-with Gtk.Curve; use Gtk.Curve;
 
 package body Test is
 
@@ -31,37 +34,36 @@ package body Test is
 
    Status   : Gtk_Status_Bar;
 
-   procedure Hello (Widget : access Gtk.Button.Gtk_Button'Class;
+   procedure Hello (Widget : in out Gtk.Button.Gtk_Button'Class;
                     S      : in     String7);
-   procedure App_Destroy (Object : access Gtk.Window.Gtk_Window'Class);
-   procedure Launch_Dialog (Object : access Gtk.Button.Gtk_Button'Class);
-   procedure Launch_Drawing (Object : access Gtk.Button.Gtk_Button'Class);
-   procedure Launch_Gamma (Object : access Gtk.Button.Gtk_Button'Class);
-   procedure Print_Color (Dialog : access Gtk_Color_Selection_Dialog'Class);
-   procedure Print_Gamma_Vector (Button : access Gtk_Button'Class;
+   procedure App_Destroy (Object : in out Gtk.Window.Gtk_Window'Class);
+   procedure Launch_Dialog (Object : in out Gtk.Button.Gtk_Button'Class);
+   procedure Launch_Drawing (Object : in out Gtk.Button.Gtk_Button'Class);
+   procedure Launch_Gamma (Object : in out Gtk.Button.Gtk_Button'Class);
+   procedure Print_Color (Dialog : in out Gtk_Color_Selection_Dialog'Class);
+   procedure Print_Gamma_Vector (Button : in out Gtk_Button'Class;
                                  Gamma  : in Gtk_Gamma_Curve);
 
    -----------
    -- Hello --
    -----------
 
-   procedure Hello (Widget : access Gtk.Button.Gtk_Button'Class;
+   procedure Hello (Widget : in out Gtk.Button.Gtk_Button'Class;
                     S      : in     String7) is
       Message : Message_Id;
    begin
       Ada.Text_IO.Put_Line ("Hello World  => String was=" & S);
       Message := Push (Status, 1, S);
---      Gtk.Destroy (Widget);
    end Hello;
 
    -----------------
    -- Print_Color --
    -----------------
 
-   procedure Print_Color (Dialog : access Gtk_Color_Selection_Dialog'Class) is
+   procedure Print_Color (Dialog : in out Gtk_Color_Selection_Dialog'Class) is
       Color : Color_Array;
    begin
-      Get_Color (Get_Colorsel (Dialog.all), Color);
+      Get_Color (Get_Colorsel (Dialog), Color);
       for I in Red .. Opacity loop
          Ada.Text_IO.Put_Line (Color_Index'Image (I)
                                & " => "
@@ -73,7 +75,7 @@ package body Test is
    -- Launch_Dialog --
    -------------------
 
-   procedure Launch_Dialog (Object : access Gtk.Button.Gtk_Button'Class) is
+   procedure Launch_Dialog (Object : in out Gtk.Button.Gtk_Button'Class) is
       Dialog : Gtk_Color_Selection_Dialog;
       Id     : Guint;
    begin
@@ -90,7 +92,7 @@ package body Test is
    -- Launch_Drawing --
    --------------------
 
-   procedure Launch_Drawing (Object : access Gtk.Button.Gtk_Button'Class) is
+   procedure Launch_Drawing (Object : in out Gtk.Button.Gtk_Button'Class) is
       Drawing  : Gtk_Drawing_Area;
       Dialog : Gtk_Window;
    begin
@@ -105,7 +107,7 @@ package body Test is
    -- Lauch_Gamma --
    -----------------
 
-   procedure Launch_Gamma (Object : access Gtk.Button.Gtk_Button'Class) is
+   procedure Launch_Gamma (Object : in out Gtk.Button.Gtk_Button'Class) is
       Gamma  : Gtk_Gamma_Curve;
       Dialog : Gtk_Window;
       Box    : Gtk_Vbox;
@@ -137,7 +139,7 @@ package body Test is
    -- Print_Gamma_Vector --
    ------------------------
 
-   procedure Print_Gamma_Vector (Button : access Gtk_Button'Class;
+   procedure Print_Gamma_Vector (Button : in out Gtk_Button'Class;
                                  Gamma  : in Gtk_Gamma_Curve)
    is
       Vector : Curve_Vector (10);
@@ -155,7 +157,7 @@ package body Test is
    -- Destroy --
    -------------
 
-   procedure App_Destroy (Object : access Gtk.Window.Gtk_Window'Class) is
+   procedure App_Destroy (Object : in out Gtk.Window.Gtk_Window'Class) is
    begin
       Ada.Text_IO.Put_Line ("Destroy");
       Main_Quit;
@@ -167,14 +169,17 @@ package body Test is
 
    procedure Main is
 
-      A_Window : aliased Gtk.Window.Gtk_Window;
-      A_Box    : Gtk_Hbox;
-      A_Button : Gtk.Button.Gtk_Button;
-      V_Box    : Gtk_Vbox;
-      Id       : Guint;
-      Combo    : Gtk_Combo;
-      List     : Glist;
-
+      A_Window  : aliased Gtk.Window.Gtk_Window;
+      A_Box     : Gtk_Hbox;
+      A_Button  : Gtk.Button.Gtk_Button;
+      V_Box     : Gtk_Vbox;
+      Id        : Guint;
+      Combo     : Gtk_Combo;
+      List      : Glist;
+      Menu_Bar  : Gtk_Menu_Bar;
+      Menu      : Gtk_Menu;
+      Root_Item : Gtk_Menu_Item;
+      Menu_Item : Gtk_Menu_Item;
    begin
       Init;
       --  Initialize the library (how can we pass the command line arguments ?)
@@ -189,6 +194,27 @@ package body Test is
       Gtk_New (V_Box, False, 0);
       Add (A_Window, V_Box);
 
+      --  Create the menu bar
+      Gtk_New (Menu_Bar);
+      Pack_Start (V_Box, Menu_Bar, True, True, 5);
+      Show (Menu_Bar);
+
+      Gtk_New (Menu);
+      Gtk_New (Root_Item, Label => "File");
+      Show (Root_Item);
+
+      Gtk_New (Menu_Item, Label => "Save");
+      Append (Menu, Menu_Item);
+      Show (Menu_Item);
+
+      Gtk_New (Menu_Item, Label => "Load");
+      Append (Menu, Menu_Item);
+      Show (Menu_Item);
+
+      Set_Submenu (Root_Item, Menu);
+      Append (Menu_Bar, Root_Item);
+
+      --  Create the horizontal box
       Gtk_New (A_Box, False, 0);
       Pack_Start (V_Box, A_Box);
 
