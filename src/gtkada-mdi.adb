@@ -1620,8 +1620,6 @@ package body Gtkada.MDI is
       N   : Widget_List.Glist;
 
    begin
-      MDI_Window (MDI).Prevent_Focus_On_Page_Switch := True;
-
       --  Note: we only destroy the floating children. Other children will be
       --  destroyed when their parent container is destroyed, so we have
       --  nothing to do for them.
@@ -3127,9 +3125,6 @@ package body Gtkada.MDI is
       Prepend (Child.MDI.Items, Gtk_Widget (Child));
       Unref (Child);
 
-      --  We want to be able to raise children without giving them the focus.
-      Child.MDI.Prevent_Focus_On_Page_Switch := True;
-
       --  For an docked item, we in fact want to raise its parent dock,
       --  and make sure the current page in that dock is the correct one.
 
@@ -3159,8 +3154,6 @@ package body Gtkada.MDI is
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
       end if;
-
-      Child.MDI.Prevent_Focus_On_Page_Switch := False;
 
       --  Give the focus to the Focus_Child, since the notebook page switch
       --  might have changed that.
@@ -3235,9 +3228,7 @@ package body Gtkada.MDI is
    begin
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
 
-      if C = Old
-        or else Child.MDI.Prevent_Focus_On_Page_Switch
-      then
+      if C = Old then
          return;
       end if;
 
@@ -3655,10 +3646,6 @@ package body Gtkada.MDI is
 
       Child := MDI_Child
         (Get_Nth_Page (Gtk_Notebook (Docked_Child), Gint (Page_Num)));
-
-      if Child.MDI.Prevent_Focus_On_Page_Switch then
-         return;
-      end if;
 
       Set_Focus_Child (Child);
    end Docked_Switch_Page;
@@ -4828,10 +4815,8 @@ package body Gtkada.MDI is
                      then
                         Focus_Child := Child;
 
-                     elsif N.Tag.all = "Raised"
-                       and then Boolean'Value (N.Value.all)
-                     then
-                        Raised := True;
+                     elsif N.Tag.all = "Raised" then
+                        Raised := Boolean'Value (N.Value.all);
 
                      else
                         --  ??? Unknown node, just ignore for now
@@ -4887,15 +4872,19 @@ package body Gtkada.MDI is
             Idle_Remove (MDI.Raise_Id);
          end if;
 
+         --  Need to set the focus child before raising the notebook pages,
+         --  since Raise_Child_Idle will restore the focus child, and thus
+         --  might prevent one of the notebooks to be properly raised
+
+         if Focus_Child /= null then
+            Set_Focus_Child (Focus_Child);
+         end if;
+
          for J in Current_Pages'Range loop
             if Current_Pages (J) /= null then
                Raise_Child (Current_Pages (J));
             end if;
          end loop;
-
-         if Focus_Child /= null then
-            Set_Focus_Child (Focus_Child);
-         end if;
 
          Queue_Resize (MDI);
       end Restore_Desktop;
