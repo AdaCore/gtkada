@@ -5,6 +5,10 @@ libs=`./gtkada-config --libs`
 cat << EOF > gtkada.gpr
 project GtkAda is
 
+   package Compiler is
+      for Default_Switches ("Ada") use ("-O2", "-gnatn");
+   end Compiler;
+
    package Linker is
       for Linker_Options use
 EOF
