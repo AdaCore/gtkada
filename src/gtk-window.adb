@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gdk.Types;        use Gdk.Types;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Accel_Group;  use Gtk.Accel_Group;
 with Gtk.Enums;        use Gtk.Enums;
@@ -80,6 +81,23 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window), Get_Object (Accel_Group));
    end Add_Accel_Group;
+
+   ------------------
+   -- Add_Mnemonic --
+   ------------------
+
+   procedure Add_Mnemonic
+     (Window : access Gtk_Window_Record;
+      Keyval : Gdk.Types.Gdk_Key_Type;
+      Target : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Window : System.Address;
+                          Keyval : Gdk_Key_Type;
+                          Target : System.Address);
+      pragma Import (C, Internal, "gtk_window_add_mnemonic");
+   begin
+      Internal (Get_Object (Window), Keyval, Get_Object (Target));
+   end Add_Mnemonic;
 
    ---------------
    -- Deiconify --

@@ -51,6 +51,7 @@
 --  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
+with Gdk.Types;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Bin;
@@ -437,6 +438,14 @@ package Gtk.Window is
    --  size for the widget.
    --  This has no effect on Popup windows (set in call to Gtk_New).
 
+   procedure Add_Mnemonic
+     (Window : access Gtk_Window_Record;
+      Keyval : Gdk.Types.Gdk_Key_Type;
+      Target : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Add a mnemonic to this window.
+   --  Target will receive the "activate" signal when Keyval is pressed inside
+   --  the window.
+
    ----------------
    -- Properties --
    ----------------
@@ -598,7 +607,6 @@ end Gtk.Window;
 --  Set_Default_Icon_List
 --  Get_Default_Icon_List
 --  Get_Modal
---  Add_Mnemonic
 --  Remove_Mnemonic
 --  Mnemonic_Activate
 --  Set_Mnemonic_Modifier
