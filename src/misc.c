@@ -1585,32 +1585,32 @@ gint ada_gdk_event_set_message_type (GdkEvent * event, gulong type)
  * GtkAdjustment
  ********************/
 
-gfloat
+gdouble
 ada_gtk_adjustment_get_value (GtkAdjustment * adjustment)
 {
   return adjustment->value;
 }
 
 
-gfloat
+gdouble
 ada_gtk_adjustment_get_page_size (GtkAdjustment * adjustment)
 {
   return adjustment->page_size;
 }
 
-gfloat
+gdouble
 ada_gtk_adjustment_get_page_increment (GtkAdjustment * adjustment)
 {
   return adjustment->page_increment;
 }
 
-gfloat
+gdouble
 ada_adjustment_get_lower (GtkAdjustment * adjustment)
 {
   return adjustment->lower;
 }
 
-gfloat
+gdouble
 ada_adjustment_get_upper (GtkAdjustment * adjustment)
 {
   return adjustment->upper;
@@ -1618,31 +1618,31 @@ ada_adjustment_get_upper (GtkAdjustment * adjustment)
 
 void
 ada_adjustment_set_page_increment (GtkAdjustment * adjustment,
-                                       gfloat value)
+				   gdouble value)
 {
   adjustment->page_increment = value;
 }
 
 void
 ada_adjustment_set_step_increment (GtkAdjustment * adjustment,
-				   gfloat value)
+				   gdouble value)
 {
   adjustment->step_increment = value;
 }
 
 void
-ada_gtk_adjustment_set_lower (GtkAdjustment * adjustment, gfloat lower)
+ada_gtk_adjustment_set_lower (GtkAdjustment * adjustment, gdouble lower)
 {
   adjustment->lower = lower;
 }
 
 void
-ada_gtk_adjustment_set_upper (GtkAdjustment * adjustment, gfloat upper)
+ada_gtk_adjustment_set_upper (GtkAdjustment * adjustment, gdouble upper)
 {
   adjustment->upper = upper;
 }
 
-gfloat
+gdouble
 ada_gtk_adjustment_get_step_increment (GtkAdjustment * adjustment)
 {
   return adjustment->step_increment;
@@ -1650,7 +1650,7 @@ ada_gtk_adjustment_get_step_increment (GtkAdjustment * adjustment)
 
 void
 ada_adjustment_set_page_size (GtkAdjustment * adjustment,
-                                  gfloat value)
+			      gdouble value)
 {
   adjustment->page_size = value;
 }
@@ -2086,25 +2086,25 @@ ada_bin_get_child (GtkBin* widget)
  ** Functions for Ruler
  ******************************************/
 
-gfloat
+gdouble
 ada_ruler_get_lower (GtkRuler* widget)
 {
    return widget->lower;
 }
 
-gfloat
+gdouble
 ada_ruler_get_max_size (GtkRuler* widget)
 {
    return widget->max_size;
 }
 
-gfloat
+gdouble
 ada_ruler_get_position (GtkRuler* widget)
 {
    return widget->position;
 }
 
-gfloat
+gdouble
 ada_ruler_get_upper (GtkRuler* widget)
 {
    return widget->upper;
