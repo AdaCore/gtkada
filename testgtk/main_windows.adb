@@ -70,11 +70,13 @@ with Create_Ctree;
 with Create_Color_Selection;
 with Create_Cursors;
 with Create_Dialog;
+--  with Create_Dnd;
 with Create_Entry;
 with Create_File_Selection;
 with Create_Fixed;
 with Create_Font_Selection;
 with Create_Gamma_Curve;
+with Create_Gc;
 with Create_Handle_Box;
 with Create_List;
 with Create_Main_Loop;
@@ -174,7 +176,7 @@ package body Main_Windows is
    function Delete_Event (Object : access Gtk_Widget_Record'Class)
                          return Boolean;
 
-   type Demo_Type is (Box, Base, Complex, Gimp, Misc);
+   type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Misc);
    --  The available types for demos. Each of them is a tree item, whose subitems
    --  are the matching demos.
    --  Box:     Containers
@@ -218,6 +220,8 @@ package body Main_Windows is
       (NS ("dialog"),           Base,    Create_Dialog.Run'Access,
                                          Create_Dialog.Help'Access),
       (NS ("dnd"),              Complex, null, null),
+                                         --  Create_Dnd.Run'Access,
+                                         --  Create_Dnd.Help'Access),
       (NS ("entry"),            Base,    Create_Entry.Run'Access,
                                          Create_Entry.Help'Access),
       (NS ("event watcher"),    Misc,    null, null),
@@ -229,6 +233,8 @@ package body Main_Windows is
                                          Create_Font_Selection.Help'Access),
       (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access,
                                          Create_Gamma_Curve.Help'Access),
+      (Ns ("graphic contexts"), GdkD,    Create_Gc.Run'Access,
+                                         Create_Gc.Help'Access),
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
                                          Create_Handle_Box.Help'Access),
       (NS ("item factory"),     Complex, null, null),
@@ -307,6 +313,7 @@ package body Main_Windows is
             when Complex => Gtk_New (Item, "Composite Widgets");
             when Gimp    => Gtk_New (Item, "Gimp Widgets");
             when Misc    => Gtk_New (Item, "Misc. Demos");
+            when GdkD    => Gtk_New (Item, "Gdk demos");
             when others  => Gtk_New (Item, Demo_Type'Image (Typ));
          end case;
          Append (Tree, Item);
