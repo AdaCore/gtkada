@@ -284,7 +284,7 @@ package body Glib.XML is
       Key, Value : String_Ptr;
 
    begin
-      if N.Attributes = null then
+      if N = null or else N.Attributes = null then
          return "";
       end if;
 
@@ -695,6 +695,36 @@ package body Glib.XML is
 
       return null;
    end Find_Tag;
+
+   -----------------------------
+   -- Find_Tag_With_Attribute --
+   -----------------------------
+
+   function Find_Tag_With_Attribute
+     (N : Node_Ptr; Tag : String; Key :
+      String; Value : String := "") return Node_Ptr
+   is
+      P : Node_Ptr := N;
+   begin
+      while P /= null loop
+         if P.Tag.all = Tag then
+            declare
+               The_Value : constant String := Get_Attribute (P, Key);
+            begin
+               if The_Value /= "" then
+                  if Value = "" or The_Value = Value then
+                     --  if Value is not given when calling the
+                     --  the function only the Key need to match
+                     return P;
+                  end if;
+               end if;
+            end;
+         end if;
+         P := P.Next;
+      end loop;
+
+      return null;
+   end Find_Tag_With_Attribute;
 
    ---------------
    -- Get_Field --

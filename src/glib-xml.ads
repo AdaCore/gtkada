@@ -123,10 +123,15 @@ package Glib.XML is
    function Get_Attribute
      (N : in Node_Ptr; Attribute_Name : in String) return String;
    --  Return the value of the attribute 'Attribute_Name' if present.
-   --  Return null otherwise.
+   --  Return "" otherwise.
 
    procedure Set_Attribute
      (N : Node_Ptr; Attribute_Name, Attribute_Value : String);
    --  Create a new attribute, or replace an existing one
+
+   function Find_Tag_With_Attribute
+     (N : Node_Ptr; Tag : String; Key : String; Value : String := "")
+     return Node_Ptr;
+   --  Find a tag Tag in N that has a given key (and value if given).
 
 end Glib.XML;
