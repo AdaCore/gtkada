@@ -35,7 +35,7 @@
 --  <c_version>gtk+extra 0.99</c_version>
 
 with Gtk.Extra.Plot;
-with Gtk.Extra.Plot_Layout;
+with Gtk.Extra.Plot_Layout;  use Gtk.Extra.Plot_Layout;
 
 package Gtk.Extra.Plot_Ps is
 
@@ -80,7 +80,7 @@ package Gtk.Extra.Plot_Ps is
    --  The page has a custom size.
 
    procedure Plot_Layout_Export_Ps
-      (Layout      : access Gtk.Extra.Plot_Layout.Gtk_Plot_Layout_Record'Class;
+      (Layout      : access Gtk_Plot_Layout_Record'Class;
        File_Name   : in String;
        Orientation : in Ps_Orientation;
        Epsflag     : in Boolean;
@@ -91,7 +91,7 @@ package Gtk.Extra.Plot_Ps is
    --  Encapsulated Postscript format instead of simple Postscript.
 
    procedure Plot_Layout_Export_Ps_With_Size
-      (Layout      : access Gtk.Extra.Plot_Layout.Gtk_Plot_Layout_Record'Class;
+      (Layout      : access Gtk_Plot_Layout_Record'Class;
        File_Name   : in String;
        Orientation : in Ps_Orientation;
        Epsflag     : in Boolean;
