@@ -13,38 +13,11 @@ New features in 1.2.12 include
   For efficiency, the items in the canvas are no longer double-buffered. Use
   Buffered_Items if you want to keep the old behavior.
 
-New features in 1.2.11 include:
-
-- Support for GNOME is detected and handled automatically by configure
-- Many additional GNOME widgets bound (but are provided as is: they have not
-  been tested).
-- A new utility is provided to ease the automatic generation of bindings for
-  new Gtk+/GNOME widgets. See the GtkAda User's Guide for more details.
-- Under Windows, non ASCII characters are now displayed instead of being
-  truncated.
-- New routines to update and copy XML trees easliy in Glib.XML
-- Documentation additions
-- various refreshing/displaying problems fixed in the GUI builder under Windows
-- new functions Gtk.Viewport.Get_Bin_Window,
-   Gtk.Notebook.Get_Allocation_[Height, Width, X, Y]
-- gmodule is now bound in Glib.Module
-- libglade is now bound in Glade and Glade.XML, and obsoletes the capability
-  previousely provided in Gtk.Glade
-- Gtk.Glade.Register_Generate allows to add easily support for new widgets
-  in Gate
-- The following widgets are now recognized automatically and no longer require
-  the use of Gtk.Type_Conversion: Gtk_Item, Gtk_Check_Menu_Item,
-  Gtk_Radio_Menu_Item, Gtk_Tearoff_Menu_Item, Gtk_Tree_Item.
-- A new function, Gtk.Unchecked_Cast, provides an alternative to
-  Gtk.Type_Conversion.
-- The Gtkada.Canvas has been partly rewritten and now uses less memory. It also
-  provides scrolling while moving items.
-
 LSM entry follows:
 Begin4
 Title:  GtkAda
-Version: 1.2.11
-Entered-date: 2001-02-28
+Version: 1.2.12
+Entered-date: 2001-04-28
 Description: Ada95 graphical toolkit based on Gtk+ (version >= 1.2.2) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
