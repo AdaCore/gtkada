@@ -144,10 +144,13 @@ package body Glib.Unicode is
       function Internal (Str : UTF8_String) return ICS.chars_ptr;
       pragma Import (C, Internal, "g_utf8_strdown");
 
-      S : chars_ptr := Internal (Str & ASCII.NUL);
+      procedure C_Free (S : ICS.chars_ptr);
+      pragma Import (C, C_Free, "free");
+
+      S : constant chars_ptr := Internal (Str & ASCII.NUL);
       Result : constant String := Value (S);
    begin
-      Free (S);
+      C_Free (S);
       return Result;
    end UTF8_Strdown;
 
