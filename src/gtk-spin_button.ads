@@ -42,7 +42,7 @@
 --  @pxref{Package_Gtk.GEntry} for a text editing widget without spin buttons.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Adjustment;
 with Gtk.GEntry;
@@ -146,7 +146,7 @@ package Gtk.Spin_Button is
       Max         : Gdouble);
    --  Set number of decimals of the spin button.
 
-   function Get_Value_As_Float
+   function Get_Value
      (Spin_Button : access Gtk_Spin_Button_Record) return Gdouble;
    --  Return the current value of the spin button in a float.
 

@@ -49,19 +49,19 @@ package body Gtk.Spin_Button is
         (Get_User_Data (Internal (Get_Object (Spin_Button)), Stub));
    end Get_Adjustment;
 
-   ------------------------
-   -- Get_Value_As_Float --
-   ------------------------
+   ---------------
+   -- Get_Value --
+   ---------------
 
-   function Get_Value_As_Float
+   function Get_Value
      (Spin_Button : access Gtk_Spin_Button_Record) return Gdouble
    is
       function Internal (Spin_Button : System.Address) return Gdouble;
-      pragma Import (C, Internal, "gtk_spin_button_get_value_as_float");
+      pragma Import (C, Internal, "gtk_spin_button_get_value");
 
    begin
       return Internal (Get_Object (Spin_Button));
-   end Get_Value_As_Float;
+   end Get_Value;
 
    ----------------------
    -- Get_Value_As_Int --
