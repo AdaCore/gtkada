@@ -1,35 +1,33 @@
-GtkAda 1.2.12 release
----------------------
+GtkAda 2.0.0 release
+--------------------
 
-GtkAda is an Ada95 graphical toolkit based on Gtk+ version >= 1.2.2. It
+GtkAda is an Ada95 graphical toolkit based on Gtk+ version >= 2.0.0. It
 allows you to develop graphical applications in Ada95 using Gtk+.
 
 The primary download site is http://libre.act-europe.fr/GtkAda
 
-New features in 1.3.x include
+This version represents a major update to the Gtk+ 2.0.0 API.
+Most of the new features of Gtk+ 2.0.0 have been bound at this stage.
+Most of the GtkExtra package has not been ported to Gtk+ 2.0.0 yet (this
+is work in progress), so these widgets are currently disabled.
 
-- New demo in testgtk on how to animate images.
-- New widget: Gtk.Size_Group
-
-New features in 1.2.12 include
-
-- Update to GtkExtra 0.99.14, including a new 3D Plot widget.
-- The GtkAda.Canvas now provides zooming capabilities. It also draws curve
-  links with Bezier splines instead of circles.
-  For efficiency, the items in the canvas are no longer double-buffered. Use
-  Buffered_Items if you want to keep the old behavior.
+GtkAda 2.0.0 also comes with two new widgets which are not fully stabilized
+yet, and on which feedbacks and comments will be welcome:
+- GtkAda.File_Selector:  a new file selector widget
+- GtkAda.MDI:            a fully featured multiple document interface suitable
+                         for use in IDE-like applications.
 
 LSM entry follows:
 Begin4
 Title:  GtkAda
-Version: 1.2.12
-Entered-date: 2001-04-28
-Description: Ada95 graphical toolkit based on Gtk+ (version >= 1.2.2) 
+Version: 2.0.0
+Entered-date: 2001-03-08
+Description: Ada95 graphical toolkit based on Gtk+ (version >= 2.0.0) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
-Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
-Maintained-by: gtkada@ada.eu.org
-Primary-site:  http://gtkada.eu.org
+Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <brobecker@gnat.com> and Arnaud Charlet <charlet@gnat.com>
+Maintained-by: gtkada@lists.act-europe.fr
+Primary-site:  http://libre.act-europe.fr/GtkAda
 Original-site: http://ada.eu.org/gtkada/ 
-Platforms: Solaris Linux Tru64 IRIX HP/UX NT AiX FreeBSD UnixWare
+Platforms: Solaris Linux Tru64 IRIX HP/UX NT AiX FreeBSD
 Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
