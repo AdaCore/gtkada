@@ -42,7 +42,6 @@ with Gtk.Fixed;
 with Gtk.Event_Box;
 with Gtk.Handlers;
 with Gtk.Label;
-with Gtk.Main;
 with Gtk.Menu;
 with Gtk.Notebook;
 with Gtk.Menu_Item;
@@ -275,11 +274,8 @@ package Gtkada.MDI is
    --  focus to some specific part of your widget (an entry field,...) in some
    --  cases.
 
-   procedure Set_Focus_Child
-     (Child       : access MDI_Child_Record'Class;
-      Force_Focus : Boolean := True);
+   procedure Set_Focus_Child (Child : access MDI_Child_Record'Class);
    --  Make Child the active widget, and raise it at the top.
-   --  If Force_Focus is True, Grab_Focus on that child.
 
    procedure Check_Interactive_Selection_Dialog
      (MDI    : access MDI_Window_Record;
@@ -703,9 +699,6 @@ private
       Drop_Sites : Event_Array := (others => null);
       --  The drop sites on each side of the MDI, where items can be dropped to
       --  create new docks
-
-      Raise_Id : Gtk.Main.Idle_Handler_Id := 0;
-      --  The id of the Raise_Child_Idle handler.
 
       Layout : Gtk.Fixed.Gtk_Fixed;
       --  The layout in the middle. It will be hidden when the items are
