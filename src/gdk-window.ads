@@ -45,6 +45,7 @@ package Gdk.Window is
                          Height : in Gint);
    --  mapping: Clear_Area gdk.h gdk_window_clear_area
 
+
 private
 
    type Gdk_Window is new Root_Type with null record;
