@@ -51,6 +51,7 @@ package body Glib.XML is
    --  On return, S will contain the String starting at Buf (Index) and
    --  terminating before the first 'Terminator' character. Index will also
    --  point to the next non blank character.
+   --  The special XML '&' characters are translated appropriately in S.
 
    procedure Extract_Attrib
      (Tag        : in out String_Ptr;
@@ -59,14 +60,24 @@ package body Glib.XML is
    --  Extract the attributes as a string, if the tag contains blanks ' '
    --  On return, Tag is unchanged and Attributes contains the string
    --  If the last character in Tag is '/' then the node is empty and
-   --  Empty_Node is set to True
+   --  Empty_Node is set to True.
 
    procedure Get_Next_Word
      (Buf     : String;
       Index   : in out Natural;
       Word    : out String_Ptr);
    --  extract the next textual word from Buf and return it.
-   --  return null if no word left
+   --  return null if no word left.
+   --  The special XML '&' characters are translated appropriately in S.
+
+   function Translate (S : String) return String;
+   --  Translate S by replacing the XML '&' special characters by the
+   --  actual ASCII character.
+   --  This function currently handles:
+   --   - &quot;
+   --   - &gt;
+   --   - &lt;
+   --   - &amp;
 
    -----------------
    -- Skip_Blanks --
@@ -100,7 +111,7 @@ package body Glib.XML is
          Index := Index + 1;
       end loop;
 
-      S := new String' (Buf (Start .. Index - 1));
+      S := new String' (Translate (Buf (Start .. Index - 1)));
       Index := Index + 1;
 
       if Index < Buf'Last then
@@ -113,28 +124,28 @@ package body Glib.XML is
    ------------------------
 
    procedure Extract_Attrib
-     (Tag : in out String_Ptr;
+     (Tag        : in out String_Ptr;
       Attributes : out String_Ptr;
       Empty_Node : out Boolean)
    is
-      Index : Natural := Tag'First;
+      Index             : Natural := Tag'First;
       Index_Last_Of_Tag : Natural;
-      S : String_Ptr;
+      S                 : String_Ptr;
 
    begin
       --  First decide if the node is empty
 
-      if Tag.all (Tag.all'Last) = '/' then
+      if Tag (Tag'Last) = '/' then
          Empty_Node := True;
       else
          Empty_Node := False;
       end if;
 
-      while Index <= Tag.all'Last and then
+      while Index <= Tag'Last and then
         not
-          (Tag.all (Index) = ' '  or else Tag.all (Index) = ASCII.LF
-           or else Tag.all (Index) = ASCII.HT
-           or else Tag.all (Index) = ASCII.CR)
+          (Tag (Index) = ' '  or else Tag (Index) = ASCII.LF
+           or else Tag (Index) = ASCII.HT
+           or else Tag (Index) = ASCII.CR)
       loop
          Index := Index + 1;
       end loop;
@@ -142,14 +153,14 @@ package body Glib.XML is
       Index_Last_Of_Tag := Index - 1;
       Skip_Blanks (Tag.all, Index);
 
-      if Index <= Tag.all'Last then
+      if Index <= Tag'Last then
          if Empty_Node then
             Attributes := new String' (Tag (Index .. Tag'Last - 1));
          else
             Attributes := new String' (Tag (Index .. Tag'Last));
          end if;
 
-         S := new String' (Tag.all (Tag.all'First .. Index_Last_Of_Tag));
+         S := new String' (Tag (Tag'First .. Index_Last_Of_Tag));
          Free (Tag);
          Tag := S;
       end if;
@@ -182,12 +193,13 @@ package body Glib.XML is
          declare
             Start_Index : constant Natural := Index;
          begin
-            while Buf (Index) /= ' ' and
-              Buf (Index) /= '=' loop
+            while Buf (Index) /= ' '
+              and then Buf (Index) /= '='
+            loop
                Index := Index + 1;
             end loop;
 
-            Word := new String' (Buf (Start_Index .. Index - 1));
+            Word := new String' (Translate (Buf (Start_Index .. Index - 1)));
          end;
       end if;
 
@@ -195,6 +207,55 @@ package body Glib.XML is
          Skip_Blanks (Buf, Index);
       end if;
    end Get_Next_Word;
+
+   ---------------
+   -- Translate --
+   ---------------
+
+   function Translate (S : String) return String is
+      Str       : String (1 .. S'Length);
+      Start, J  : Positive;
+      Index     : Positive := S'First;
+      In_String : Boolean  := False;
+
+   begin
+      J := Str'First;
+
+      loop
+         if In_String or else S (Index) /= '&' then
+            Str (J) := S (Index);
+         else
+            Index := Index + 1;
+            Start := Index;
+
+            while S (Index) /= ';' loop
+               Index := Index + 1;
+               pragma Assert (Index <= S'Last);
+            end loop;
+
+            if S (Start .. Index - 1) = "quot" then
+               Str (J) := '"';
+            elsif S (Start .. Index - 1) = "gt" then
+               Str (J) := '>';
+            elsif S (Start .. Index - 1) = "lt" then
+               Str (J) := '<';
+            elsif S (Start .. Index - 1) = "amp" then
+               Str (J) := '&';
+            end if;
+         end if;
+
+         exit when Index = S'Last;
+
+         if S (Index) = '"' then
+            In_String := not In_String;
+         end if;
+
+         Index := Index + 1;
+         J     := J + 1;
+      end loop;
+
+      return Str (1 .. J);
+   end Translate;
 
    -------------------
    -- Get_Attribute --
@@ -204,11 +265,11 @@ package body Glib.XML is
      (N : in Node_Ptr;
       Attribute_Name : in String) return String_Ptr
    is
-      Index : Natural := N.Attributes.all'First;
+      Index      : Natural := N.Attributes'First;
       Key, Value : String_Ptr;
 
    begin
-      while Index < N.Attributes.all'Last loop
+      while Index < N.Attributes'Last loop
          Get_Next_Word (N.Attributes.all, Index, Key);
          Get_Buf (N.Attributes.all, Index, '=', Value);
          Get_Next_Word (N.Attributes.all, Index, Value);
@@ -220,6 +281,7 @@ package body Glib.XML is
             Free (Value);
          end if;
       end loop;
+
       return Value;
    end Get_Attribute;
 
