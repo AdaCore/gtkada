@@ -4,9 +4,3 @@ concern GtkAda directly.
 Contents
 ========
 
-glade-0.4.0.gtkada.diff: A patch against glade 0.4.0 that provides Ada 95
-support. It means that if you select "Ada 95" as the language for your project,
-gate will be called automatically when you will write the source code.
-To apply it, run the following command under the glade-0.4.0 directory:
-
-glade-0.4.0$ patch -p0 < glade-0.4.0.gtkada.diff
