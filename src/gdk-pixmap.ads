@@ -2,6 +2,7 @@ with Glib; use Glib;
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Window;
+with Interfaces.C.Strings;
 
 package Gdk.Pixmap is
 
@@ -31,13 +32,15 @@ package Gdk.Pixmap is
                               Filename    : in  String);
    --  mapping: Create_From_Xpm gdk.h gdk_pixmap_create_from_xpm
 
-   --  mapping: NOT_IMPLEMENTED gdk.h gdk_pixmap_create_from_xpm_d
-   --  mapping: NOT_IMPLEMENTED gdk.h gdk_pixmap_colormap_create_from_xpm_d
-   --
-   --  FIXME : Can not implement for the moment due to a parameter
-   --  FIXME : beeing GdkBitmap ** mask.
-   --  FIXME : How should we do this?
+   procedure Create_From_Xpm_D
+     (Pixmap      : out Gdk_Pixmap;
+      Window      : in  Gdk.Window.Gdk_Window'Class;
+      Mask        : out Gdk.Bitmap.Gdk_Bitmap;
+      Transparent : in  Gdk.Color.Gdk_Color'Class;
+      Data        : in  Interfaces.C.Strings.chars_ptr_array);
+   --  mapping: Create_From_Xpm_D gdk.h gdk_pixmap_create_from_xpm_d
 
+   --  mapping: NOT_IMPLEMENTED gdk.h gdk_pixmap_colormap_create_from_xpm_d
 
 private
 
