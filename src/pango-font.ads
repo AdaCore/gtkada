@@ -31,27 +31,9 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Pango.Enums;
 
-with Interfaces.C.Strings;
-
 package Pango.Font is
 
-   type Pango_Font_Description_Record is record
-      Family_Name : Interfaces.C.Strings.chars_ptr;
-      --  The syntax of this field is detailed in the description of
-      --  the [FAMILY-NAME] passed to From_String.
-      --  Note that is highly recommended to access to this field via the
-      --  Get/Set_Family_Name routines (see below).
-      Style       : Pango.Enums.Style;
-      Variant     : Pango.Enums.Variant;
-      Weight      : Pango.Enums.Weight;
-      Stretch     : Pango.Enums.Stretch;
-      Size        : Gint;
-      --  Strictly, should be Interfaces.C.int, but Gint is simpler to use.
-   end record;
-   pragma Convention (C, Pango_Font_Description_Record);
-
-   type Pango_Font_Description is access all Pango_Font_Description_Record;
-   pragma Convention (C, Pango_Font_Description);
+   type Pango_Font_Description is new Glib.C_Proxy;
 
    function Get_Type return Glib.GType;
    --  Return the internal gtk+ type associated with font descriptions.
@@ -108,18 +90,14 @@ package Pango.Font is
    --  instead of characters that are untypical in filenames, and in lower
    --  case only.
 
-   function Get_Family_Name (Desc : Pango_Font_Description) return String;
-   --  Returns the Family_Name of the given Pango_Font_Description. This is
-   --  a convenience function that converts the chars_ptr into a String.
+   function Get_Family (Desc : Pango_Font_Description) return String;
+   --  Return the Family_Name of the given Pango_Font_Description. This is
 
-   procedure Set_Family_Name (Desc : Pango_Font_Description; Name : String);
-   --  Sets the Family_Name of the given Pango_Font_Description. This is
-   --  a convenience functions that transforms the given string into
-   --  the chars_ptr stored in the font description record. It also takes
-   --  care of the memory management.
+   procedure Set_Family (Desc : Pango_Font_Description; Name : String);
+   --  Set the Family_Name of the given Pango_Font_Description.
 
    function Get_Size (Desc : Pango_Font_Description) return Gint;
-   --  Return value: the size field for the font description in pango units.
+   --  Return value: the size for the font description in pango units.
    --  (PANGO_SCALE pango units equals one point). Returns 0 if Desc hasn't
    --  been initialized.
 

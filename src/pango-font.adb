@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,19 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Interfaces.C.Strings;
+
 package body Pango.Font is
-
-   --  When managing the Family_Name field of Pango_Font_Description_Record,
-   --  we prefer to use the memory allocation routines provided by gtk+ (ie
-   --  g_strdup and g_free) rather than manage it using the routines provided
-   --  in Interfaces.C.Strings. This is necessary to avoid mixing the use of
-   --  both Ada and C memory allocation/deallocation routines, which can
-   --  confuse their memory tracking mechanism, and which might even lead to
-   --  failures in certains OSes.
-
-   function g_strndup
-     (str : String; len : Integer) return Interfaces.C.Strings.chars_ptr;
-   pragma Import (C, g_strndup, "g_strndup");
 
    procedure g_free (c_str : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, g_free, "g_free");
@@ -92,10 +82,10 @@ package body Pango.Font is
 
    function To_Font_Description
      (Family_Name : String := "";
-      Style       : Pango.Enums.Style := Pango.Enums.Pango_Style_Normal;
-      Variant     : Pango.Enums.Variant := Pango.Enums.Pango_Variant_Normal;
-      Weight      : Pango.Enums.Weight := Pango.Enums.Pango_Weight_Normal;
-      Stretch     : Pango.Enums.Stretch := Pango.Enums.Pango_Stretch_Normal;
+      Style       : Enums.Style := Enums.Pango_Style_Normal;
+      Variant     : Enums.Variant := Enums.Pango_Variant_Normal;
+      Weight      : Enums.Weight := Enums.Pango_Weight_Normal;
+      Stretch     : Enums.Stretch := Enums.Pango_Stretch_Normal;
       Size        : Gint := 0) return Pango_Font_Description
    is
       --  The only function provided by Pango to build a new font descriptiion
@@ -103,16 +93,15 @@ package body Pango.Font is
       --  into a string that From_String will then parse back! The approach
       --  used here is to build a font description using the Family_Name only,
       --  and then to set directly the other different parameters...
+
       Result : Pango_Font_Description :=
-        From_String (Family_Name & Gint'Image (Size));
+        From_String (Family_Name & Gint'Image (Size) & " " &
+                     Enums.Style'Image (Style) & " " &
+                     Enums.Variant'Image (Variant) & " " &
+                     Enums.Weight'Image (Weight) & " " &
+                     Enums.Stretch'Image (Stretch));
+
    begin
-      Result.all :=
-        (Family_Name => Result.Family_Name,
-         Style => Style,
-         Variant => Variant,
-         Weight => Weight,
-         Stretch => Stretch,
-         Size => Result.Size);
       return Result;
    end To_Font_Description;
 
@@ -150,30 +139,34 @@ package body Pango.Font is
       return Result;
    end To_Filename;
 
-   ---------------------
-   -- Get_Family_Name --
-   ---------------------
+   ----------------
+   -- Get_Family --
+   ----------------
 
-   function Get_Family_Name (Desc : Pango_Font_Description) return String is
+   function Get_Family (Desc : Pango_Font_Description) return String is
+      function Internal
+        (Desc : Pango_Font_Description) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "pango_font_description_get_family");
+
    begin
-      return Interfaces.C.Strings.Value (Desc.Family_Name);
-   end Get_Family_Name;
+      return Interfaces.C.Strings.Value (Internal (Desc));
+   end Get_Family;
 
-   ---------------------
-   -- Set_Family_Name --
-   ---------------------
+   ----------------
+   -- Set_Family --
+   ----------------
 
-   procedure Set_Family_Name
+   procedure Set_Family
      (Desc : Pango_Font_Description;
       Name : String)
    is
-      use type Interfaces.C.Strings.chars_ptr;
-   begin
-      if Desc.Family_Name /= Interfaces.C.Strings.Null_Ptr then
-         g_free (Desc.Family_Name);
-      end if;
+      procedure Internal
+        (Desc : Pango_Font_Description;
+         Name : String);
+      pragma Import (C, Internal, "pango_font_description_set_family");
 
-      Desc.Family_Name := g_strndup (Name, Name'Length);
-   end Set_Family_Name;
+   begin
+      Internal (Desc, Name & ASCII.NUL);
+   end Set_Family;
 
 end Pango.Font;
