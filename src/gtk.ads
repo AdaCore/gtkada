@@ -89,7 +89,7 @@ package Gtk is
 
 private
 
-   <doc_ignore>
+   --  <doc_ignore>
 
    --  Note: the following functions and types should only be used
    --  for internal usage, not in the user's applications.
@@ -128,7 +128,7 @@ private
    --  Stub is the expect type (it is used by the simple conversion
    --  function only).
 
-   </doc_ignore>
+   --  </doc_ignore>
 
    pragma Import (C, Major_Version, "ada_gtk_major_version");
    pragma Import (C, Minor_Version, "ada_gtk_minor_version");
