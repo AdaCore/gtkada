@@ -48,7 +48,11 @@ package body Glib.Messages is
       Message    : chars_ptr;
       Ada_Func   : Log_Function) is
    begin
-      Ada_Func (Value (Log_Domain), Log_Level, Value (Message));
+      if Log_Domain = Null_Ptr then
+         Ada_Func ("", Log_Level, Value (Message));
+      else
+         Ada_Func (Value (Log_Domain), Log_Level, Value (Message));
+      end if;
    end C_Log_Func;
 
    ---------------------
