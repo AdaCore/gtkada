@@ -339,7 +339,7 @@ sub parse_signals {
 	    . "return " . &create_ada_name ($return);
 	}
 
-	$signals .= "\n   --\n";
+	$signals .= ";\n   --\n";
       }
     $line++;
   }
