@@ -136,6 +136,9 @@ package Gtk.Widget is
    --  If Widget was visible, it is immediately hidden.
    --  If one of its ancestor is later shown on the screen, Widget won't
    --  appear.
+   --  Note that on some window managers, including CDE, hiding an iconified
+   --  window will not do anything. You should in addition call
+   --  Gdk.Window.Withdraw to make sure the window is properly hidden.
 
    procedure Show_All (Widget : access Gtk_Widget_Record);
    --  Show Widget and all its children recursively.
@@ -187,7 +190,7 @@ package Gtk.Widget is
 
    end Realize_Handling;
 
-   function Hide_On_Delete (Widget : access Gtk_Widget_Record) return Boolean;
+   function Hide_On_Delete (Widget : access Gtk_Widget_Record'Class) return Boolean;
    --  Hide widget and return True.
    --  This function is intended to be used as a callback.
 

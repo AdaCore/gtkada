@@ -539,7 +539,7 @@ package body Gtk.Widget is
    --------------------
 
    function Hide_On_Delete
-     (Widget : access Gtk_Widget_Record) return Boolean
+     (Widget : access Gtk_Widget_Record'Class) return Boolean
    is
       function Internal (Widget : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_widget_hide_on_delete");
