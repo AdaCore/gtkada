@@ -152,10 +152,16 @@ foreach $source_file (@source_files) {
 	$package_name = &get_package_name (@content);
 	my ($cfile) = &get_c_file ($package_name);
 
+	# Underscores are incorrectly written in the table of contents
+	# because of the font that is used in there. We thus use another
+	# font just for them...
+	local ($pack) = $package_name;
+	$pack =~ s/_/\@code{_}/g;
+	
 	&output ("\@page\n",
 		 "\@cindex $package_name\n",
 		 "\@node Package $package_name\n",
-		 "\@chapter Package $package_name\n",
+		 "\@chapter Package $pack\n",
 		 "\n\@noindent\n");
 
 	my ($description) = &clean_comment_marks
