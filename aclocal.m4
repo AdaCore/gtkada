@@ -353,10 +353,10 @@ EOF
 	    MERGE_AVAIL=True
 	    AC_MSG_RESULT(yes)
 	 else
-	    AC_MSG_RESULT(yes)
+	    AC_MSG_RESULT(no)
 	 fi
       else
-	 AC_MSG_RESULT(yes)
+	 AC_MSG_RESULT(no)
       fi
    fi
 

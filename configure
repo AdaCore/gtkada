@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.21 
+# From configure.in Revision: 1.22 
 #############################################################
 #
 #  Adding some OS specific flags to the compiler
@@ -871,10 +871,10 @@ echo "configure:868: checking whether merge works correctly..." >&5
 	    MERGE_AVAIL=True
 	    echo "$ac_t""yes" 1>&6
 	 else
-	    echo "$ac_t""yes" 1>&6
+	    echo "$ac_t""no" 1>&6
 	 fi
       else
-	 echo "$ac_t""yes" 1>&6
+	 echo "$ac_t""no" 1>&6
       fi
    fi
 
