@@ -30,6 +30,8 @@ End
 
 New features in 1.2.5 include:
 
+- Extensive documentation update. GtkAda now comes with both a User's Guide
+  and a Reference Manual.
 - New scheme for callbacks. This is much more complete than the old scheme,
   and will permit for instance the creation of callbacks that return a
   value (such as for the signal "delete_event"). It is also much more
