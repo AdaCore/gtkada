@@ -19,7 +19,7 @@ GNATFLAGS = -gnatwu -g
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(GNATFLAGS)
-GNATMAKELDFLAGS = `gtk-config --libs` ../libgtkada.a
+GNATMAKELDFLAGS = ../libgtkada.a `gtk-config --libs` 
 GNATMAKELDFLAGS_STATIC = `gtk-config --prefix`/lib/libgtk.a \
    `gtk-config --prefix`/lib/libglib.a \
    `gtk-config --libs | sed 's/-lglib//' | sed 's/-lgtk//'` ../libgtkada.a
