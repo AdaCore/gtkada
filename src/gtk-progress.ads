@@ -47,6 +47,10 @@ package Gtk.Progress is
       return        String;
    function Get_Value (Progress : in Gtk_Progress)
                        return        Gfloat;
+
+   function Get_Adjustment (Widget : in Gtk_Progress)
+                            return Gtk.Adjustment.Gtk_Adjustment;
+
    procedure Configure
      (Progress : in Gtk_Progress;
       Value    : in Gfloat;

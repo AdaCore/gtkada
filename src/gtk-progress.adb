@@ -67,6 +67,20 @@ package body Gtk.Progress is
       return Boolean'Val (Internal (Get_Object (Progress)));
    end Get_Activity_Mode;
 
+   --------------------
+   -- Get_Adjustment --
+   --------------------
+
+   function Get_Adjustment (Widget : in Gtk_Progress)
+                            return Gtk.Adjustment.Gtk_Adjustment is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_progress_get_adjustment");
+      Adj : Gtk.Adjustment.Gtk_Adjustment;
+   begin
+      Set_Object (Adj, Internal (Get_Object (Widget)));
+      return Adj;
+   end Get_Adjustment;
+
    ----------------------------
    -- Get_Current_Percentage --
    ----------------------------
