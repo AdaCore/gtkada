@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --     Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet      --
---               Copyright (C) 2001-2002 ACT-Europe                  --
+--               Copyright (C) 2001-2003 ACT-Europe                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,7 +35,6 @@ with Gtk.Dialog;        use Gtk.Dialog;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Pixmap;        use Gtk.Pixmap;
-with Gtk.Stock;         use Gtk.Stock;
 with Gtk.Widget;        use Gtk.Widget;
 with Ada.Strings;       use Ada.Strings;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
@@ -58,16 +57,25 @@ package body Gtkada.Dialogs is
       "Ignore",
       "Help  ");
 
+   Yes    : aliased constant String := "gtk-yes";
+   No     : aliased constant String := "gtk-no";
+   Ok     : aliased constant String := "gtk-ok";
+   Cancel : aliased constant String := "gtk-cancel";
+   Help   : aliased constant String := "gtk-help";
+
+   --  ??? We used to reference Gtk.Stock.Stock_* instead, but there is
+   --  apparently a bug in GCC when generating 'Access to these variables.
+
    Dialog_Button_Stock : constant array (Button_Range) of String_Const_Ptr :=
-     (Stock_Yes'Access,
-      Stock_No'Access,
+     (Yes'Access,
+      No'Access,
       null,
-      Stock_Ok'Access,
-      Stock_Cancel'Access,
+      Ok'Access,
+      Cancel'Access,
       null,
       null,
       null,
-      Stock_Help'Access);
+      Help'Access);
 
    --------------------
    -- Message_Dialog --
@@ -101,7 +109,7 @@ package body Gtkada.Dialogs is
 
       for J in Button_Range loop
          if (Buttons and 2 ** Integer (J)) /= 0 then
-            --  Use Gtk_Response_Cancel for the Nancel or No buttons, so that
+            --  Use Gtk_Response_Cancel for the Cancel or No buttons, so that
             --  Esc can be used to close the dialog
             if J = 4
               or else (J = 1 and then (Buttons and Button_Cancel) = 0)
