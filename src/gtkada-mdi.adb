@@ -229,6 +229,12 @@ package body Gtkada.MDI is
    --  Called when the user has pressed the mouse button in the canvas.
    --  Test whether an item was selected.
 
+   function Button_Pressed_Forced
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean;
+   --  Same as above, except we also act even if the event wasn't started in
+   --  Child's window.
+
    function Button_Release
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
@@ -388,6 +394,11 @@ package body Gtkada.MDI is
    procedure Give_Focus_To_Child (Child : MDI_Child);
    --  Give the focus to a specific MDI child
    --  You should never call Grab_Focus directly
+
+   procedure Give_Focus_To_Previous_Child
+     (Child : access MDI_Child_Record'Class);
+   --  Give focus to the last child in the same area/notebook as Child, and
+   --  which is not Child itself.
 
    function Matching_Children
      (MDI : access MDI_Window_Record'Class; Str : String)
@@ -1328,9 +1339,6 @@ package body Gtkada.MDI is
    is
       MDI    : constant MDI_Window := MDI_Window (Child.MDI);
       Event  : Gdk_Event;
-      Item   : Widget_List.Glist;
-      It     : MDI_Child;
-      Dock   : Dock_Side;
    begin
       --  Don't do anything for now if the MDI isn't realized, since we
       --  can't send create the event anyway.
@@ -1346,34 +1354,10 @@ package body Gtkada.MDI is
          if Force or else not Return_Callback.Emit_By_Name
            (Child.Initial, "delete_event", Event)
          then
-            case Child.State is
-               when Normal | Iconified | Floating => Dock := None;
-               when Docked                        => Dock := Child.Dock;
-            end case;
-
             Float_Child (Child, False);
 
             if MDI_Child (Child) = MDI.Focus_Child then
-               --  Set the focus on the child that had the focus just before,
-               --  and in the same notebook.
-
-               Item := MDI.Items;
-               while Item /= Widget_List.Null_List loop
-                  It := MDI_Child (Get_Data (Item));
-
-                  if It /= MDI_Child (Child)
-                    and then
-                      ((Dock = None and then It.State = Normal)
-                       or else (Dock /= None
-                                and then It.State = Docked
-                                and then It.Dock = Dock))
-                  then
-                     Set_Focus_Child (It);
-                     exit;
-                  end if;
-
-                  Item := Widget_List.Next (Item);
-               end loop;
+               Give_Focus_To_Previous_Child (Child);
             end if;
 
             Destroy (Child);
@@ -1596,6 +1580,25 @@ package body Gtkada.MDI is
 
    function Button_Pressed
      (Child : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event) return Boolean is
+   begin
+      --  It sometimes happens that widgets let events pass through (for
+      --  instance scrollbars do that), and thus wouldn't be useable anymore
+      --  if we do a grab.
+
+      if Get_Window (Child) /= Get_Window (Event) then
+         return False;
+      end if;
+
+      return Button_Pressed_Forced (Child, Event);
+   end Button_Pressed;
+
+   ---------------------------
+   -- Button_Pressed_Forced --
+   ---------------------------
+
+   function Button_Pressed_Forced
+     (Child : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event) return Boolean
    is
       C      : constant MDI_Child := MDI_Child (Child);
@@ -1606,14 +1609,6 @@ package body Gtkada.MDI is
       Curs   : Gdk_Cursor_Type;
 
    begin
-      --  It sometimes happens that widgets let events pass through (for
-      --  instance scrollbars do that), and thus wouldn't be useable anymore
-      --  if we do a grab.
-
-      if Get_Window (Child) /= Get_Window (Event) then
-         return False;
-      end if;
-
       MDI.In_Drag := No_Drag;
 
       --  Double-click in the title bar of a child in the main area should
@@ -1712,7 +1707,7 @@ package body Gtkada.MDI is
       end if;
 
       return True;
-   end Button_Pressed;
+   end Button_Pressed_Forced;
 
    --------------------
    -- Button_Release --
@@ -2435,6 +2430,45 @@ package body Gtkada.MDI is
          end if;
       end if;
    end Give_Focus_To_Child;
+
+   ----------------------------------
+   -- Give_Focus_To_Previous_Child --
+   ----------------------------------
+
+   procedure Give_Focus_To_Previous_Child
+     (Child : access MDI_Child_Record'Class)
+   is
+      Item   : Widget_List.Glist;
+      It     : MDI_Child;
+      Dock   : Dock_Side;
+   begin
+      case Child.State is
+         when Normal | Iconified | Floating => Dock := None;
+         when Docked                        => Dock := Child.Dock;
+      end case;
+
+      --  Set the focus on the child that had the focus just before,
+      --  and in the same notebook.
+
+      Item := Child.MDI.Items;
+      while Item /= Widget_List.Null_List loop
+         It := MDI_Child (Get_Data (Item));
+
+         if It /= MDI_Child (Child)
+           and then
+             ((Dock = None and then It.State = Normal
+               and then Get_Parent (It) = Get_Parent (Child))
+              or else (Dock /= None
+                       and then It.State = Docked
+                       and then It.Dock = Dock))
+         then
+            Set_Focus_Child (It);
+            exit;
+         end if;
+
+         Item := Widget_List.Next (Item);
+      end loop;
+   end Give_Focus_To_Previous_Child;
 
    ---------
    -- Put --
@@ -3901,6 +3935,7 @@ package body Gtkada.MDI is
                    After       => After);
          end if;
 
+         Give_Focus_To_Previous_Child (Child);
          Remove (Note, Child);
          Put_In_Notebook (MDI, None, Child, Note2);
          Unref (Child);
@@ -5380,7 +5415,7 @@ package body Gtkada.MDI is
       Add_Events (Widget, Button_Press_Mask);
       Return_Callback.Object_Connect
         (Widget, "button_press_event",
-         Return_Callback.To_Marshaller (Child_Drag_Begin'Access),
+         Return_Callback.To_Marshaller (Button_Pressed_Forced'Access),
          Child);
    end Set_Dnd_Source;
 
@@ -5432,6 +5467,7 @@ package body Gtkada.MDI is
       C.MDI.Drag_Start_X := Gint (Get_X (Event));
       C.MDI.Drag_Start_Y := Gint (Get_Y (Event));
       C.MDI.In_Drag := In_Pre_Drag;
+
 
       --  Let the event through, the drag hasn't started yet
       return False;
