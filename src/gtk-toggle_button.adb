@@ -138,6 +138,10 @@ package body Gtk.Toggle_Button is
       Label : String_Ptr := Get_Field (N, "label");
 
    begin
+      if N.Specific_Data.Initialized then
+         return;
+      end if;
+
       if not N.Specific_Data.Created then
          if Label = null then
             Gen_New (N, "Toggle_Button", File => File);
@@ -158,6 +162,10 @@ package body Gtk.Toggle_Button is
       S : String_Ptr := Get_Field (N, "label");
 
    begin
+      if N.Specific_Data.Initialized then
+         return;
+      end if;
+
       if not N.Specific_Data.Created then
          if S = null then
             Gtk_New (Gtk_Toggle_Button (Toggle_Button));

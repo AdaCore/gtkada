@@ -159,6 +159,10 @@ package body Gtk.Radio_Button is
       Top   : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
 
    begin
+      if N.Specific_Data.Initialized then
+         return;
+      end if;
+
       if not N.Specific_Data.Created then
          Add_Package ("Radio_Button");
          Put (File, "   Gtk_New (" &
@@ -212,6 +216,10 @@ package body Gtk.Radio_Button is
       end Find_Prev_Radio_Button;
 
    begin
+      if N.Specific_Data.Initialized then
+         return;
+      end if;
+
       if not N.Specific_Data.Created then
          if S = null then
             Gtk_New

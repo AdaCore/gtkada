@@ -34,6 +34,7 @@ with Gtk.Fixed;            use Gtk.Fixed;
 with Gtk.Layout;           use Gtk.Layout;
 with Gtk.Packer;           use Gtk.Packer;
 with Gtk.Container;        use Gtk.Container;
+with Gtk.Toolbar;          use Gtk.Toolbar;
 with Interfaces.C.Strings;
 with Gtk.Table;            use Gtk.Table;
 with Ada.Strings.Fixed;    use Ada.Strings.Fixed;
@@ -1628,6 +1629,11 @@ package body Gtk.Widget is
                   Gen_Call_Child (N, N, "Layout",
                     "Put", "x", "y", File => File);
 
+               elsif S.all = "GtkToolbar" then
+                  --  ??? Need to handle tooltip
+                  Gen_Call_Child (N, null, "Toolbar",
+                    "Append_Widget", File => File);
+
                else
                   Gen_Call_Child (N, null, "Container", "Add", File => File);
                end if;
@@ -1933,6 +1939,12 @@ package body Gtk.Widget is
                      Gtk_Widget (Widget),
                      Gint16'Value (Get_Field (N, "x").all),
                      Gint16'Value (Get_Field (N, "y").all));
+
+               elsif S.all = "GtkToolbar" then
+                  --  ??? Need to handle tooltip
+                  Toolbar.Append_Widget (Gtk_Toolbar
+                    (Get_Object (Get_Field (N.Parent, "name"))),
+                     Gtk_Widget (Widget));
 
                else
                   Container.Add

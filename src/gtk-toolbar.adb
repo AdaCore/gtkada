@@ -607,7 +607,7 @@ package body Gtk.Toolbar is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      P    : Node_Ptr;
+      P, Child : Node_Ptr;
       Top  : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       Cur  : constant String_Ptr := Get_Field (N, "name");
       S, T : String_Ptr;
@@ -627,37 +627,63 @@ package body Gtk.Toolbar is
 
       while P /= null loop
          if P.Tag.all = "widget" then
-            S := Get_Field (P, "child_name");
+            S := Get_Field (P, "class");
 
-            if S /= null and then Get_Part (S.all, 1) = "Toolbar" then
-               Put (File, "   " & To_Ada (Top.all) & "." &
+            if S.all = "GtkButton" or else S.all = "GtkToggleButton"
+              or else S.all = "GtkRadioButton"
+            then
+               Child := Find_Child (P, "child");
+
+               if Child /= null then
+                  T := Get_Field (Child, "new_group");
+               else
+                  T := null;
+               end if;
+
+               if T /= null and then T.all = "True" then
+                  Put_Line (File, "   Append_Space (" & To_Ada (Top.all) &
+                    "." & To_Ada (Cur.all) & ");");
+               end if;
+
+               Put_Line (File, "   " & To_Ada (Top.all) & "." &
                  To_Ada (Get_Field (P, "name").all) &
-                 " := Append_Item (");
+                 " := Append_Element");
+               Put (File, "     (Toolbar => ");
 
                if Top /= Cur then
                   Put (File, To_Ada (Top.all) & ".");
                end if;
 
-               Add_Package ("Pixmap");
-               Put_Line (File, To_Ada (Cur.all) & ", """ &
-                 Get_Field (P, "label").all & """,");
+               Put (File, To_Ada (Cur.all) &
+                 ", The_Type => Toolbar_Child_" & S (S'First + 3 .. S'Last));
+
+               S := Get_Field (P, "label");
+
+               if S /= null then
+                  Put_Line (File, ",");
+                  Put (File, "      Text => """ & S.all & '"');
+               end if;
+
                S := Get_Field (P, "tooltip");
 
                if S /= null then
-                  Put (File, "     """ & S.all & '"');
-               else
-                  Put (File, "     """"");
+                  Put_Line (File, ",");
+                  Put (File, "      Tooltip_Text => """ & S.all & '"');
                end if;
 
                T := Get_Field (P, "icon");
-               Put (File, ", """", Create_Pixmap (" & '"');
 
                if T /= null then
-                  Put (File, T.all);
+                  Add_Package ("Pixmap");
+                  Put_Line (File, ",");
+                  Put_Line (File, "      Icon => Create_Pixmap (""" & T.all &
+                    """, " & To_Ada (Top.all) & "));");
+               else
+                  Put_Line (File, ");");
                end if;
 
-               Put_Line (File, """, " & To_Ada (Top.all) & "));");
                P.Specific_Data.Created := True;
+               P.Specific_Data.Initialized := True;
                P.Specific_Data.Has_Container := True;
             end if;
          end if;
@@ -667,9 +693,10 @@ package body Gtk.Toolbar is
    end Generate;
 
    procedure Generate (Toolbar : in out Gtk_Object; N : in Node_Ptr) is
-      P, Top : Node_Ptr;
-      S, S2  : String_Ptr;
-      Null_String : aliased String := "";
+      P, Top        : Node_Ptr;
+      S, S1, S2, S3 : String_Ptr;
+      Object        : Gtk.Object.Gtk_Object;
+      Widget        : Gtk.Widget.Gtk_Widget;
 
       use Gtk.Widget;
 
@@ -719,35 +746,39 @@ package body Gtk.Toolbar is
 
       while P /= null loop
          if P.Tag.all = "widget" then
-            S := Get_Field (P, "child_name");
+            S := Get_Field (P, "class");
+ 
+            if S.all = "GtkButton" or else S.all = "GtkToggleButton"
+              or else S.all = "GtkRadioButton"
+            then
+               Top := Find_Top_Widget (N);
+               S1 := Get_Field (P, "tooltip");
+               S2 := Get_Field (P, "icon");
+               S3 := Get_Field (P, "label");
 
-            if S /= null and then Get_Part (S.all, 1) = "Toolbar" then
-               begin
-                  Top := Find_Top_Widget (N);
-                  S := Get_Field (P, "tooltip");
-                  S2 := Get_Field (P, "icon");
+               if S2 /= null then
+                  Widget := Gtk_Widget (Create_Pixmap (S2.all,
+                    (Gtk_Window (Get_Object (Get_Field (Top, "name"))))));
+               end if;
 
-                  if S = null then
-                     S := Null_String'Unchecked_Access;
-                  end if;
+               if S1 /= null then
+                  Object := Gtk_Object (
+                    Append_Element (Gtk_Toolbar (Toolbar),
+                      Gtk_Toolbar_Child_Type'Value
+                        ("Toolbar_Child_" & S (S'First + 3 .. S'Last)),
+                      Text => S3.all, Tooltip_Text => S1.all, Icon => Widget));
+               else
+                  Object := Gtk_Object (
+                    Append_Element (Gtk_Toolbar (Toolbar),
+                      Gtk_Toolbar_Child_Type'Value
+                        ("Toolbar_Child_" & S (S'First + 3 .. S'Last)),
+                      Text => S3.all, Icon => Widget));
+               end if;
 
-                  if S2 = null then
-                     S2 := Null_String'Unchecked_Access;
-                  end if;
-
-                  Set_Object (Get_Field (P, "name"),
-                    Gtk_Object (
-                      Append_Item (Gtk_Toolbar (Toolbar),
-                        Get_Field (P, "label").all, S.all, "",
-                        Gtk.Widget.Gtk_Widget (Create_Pixmap (S2.all,
-                          (Gtk_Window
-                            (Get_Object (Get_Field (Top, "name")))))))));
-                  P.Specific_Data.Created := True;
-                  P.Specific_Data.Has_Container := True;
-               exception
-                  --  Ignore null pointers for now ???
-                  when Constraint_Error => null;
-               end;
+               Set_Object (Get_Field (P, "name"), Object);
+               P.Specific_Data.Created := True;
+               P.Specific_Data.Initialized := True;
+               P.Specific_Data.Has_Container := True;
             end if;
          end if;
 

@@ -159,6 +159,10 @@ package body Gtk.Button is
       Label      : String_Ptr := Get_Field (N, "label");
 
    begin
+      if N.Specific_Data.Initialized then
+         return;
+      end if;
+
       if not N.Specific_Data.Created then
          if Child_Name = null then
             if Label = null then
@@ -184,6 +188,10 @@ package body Gtk.Button is
       Font_Selection  : Gtk_Font_Selection_Dialog;
 
    begin
+      if N.Specific_Data.Initialized then
+         return;
+      end if;
+
       if not N.Specific_Data.Created then
          if Child_Name = null then
             if S = null then
