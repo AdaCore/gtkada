@@ -1341,7 +1341,6 @@ package body Gtkada.MDI is
       else
          Show (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, True);
-         Set_USize (Child.Title_Box, -1, 0);
       end if;
    end Set_Child_Title_Bar;
 
