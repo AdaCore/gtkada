@@ -88,8 +88,14 @@ package body Gtk.Button is
    is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
+      function Internal2 return System.Address;
+      pragma Import (C, Internal2, "gtk_button_new");
    begin
-      Set_Object (Button, Internal (Label & Ascii.NUL));
+      if Label = "" then
+         Set_Object (Button, Internal2);
+      else
+         Set_Object (Button, Internal (Label & Ascii.NUL));
+      end if;
       Initialize_User_Data (Button);
    end Initialize;
 
