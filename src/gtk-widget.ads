@@ -434,12 +434,6 @@ package Gtk.Widget is
    --  Modify the colormap of the widget.
    --  The widget must not have been realized.
 
-   procedure Set_Visual
-     (Widget : access Gtk_Widget_Record;
-      Visual : Gdk.Visual.Gdk_Visual);
-   --  Modify the visual of the widget.
-   --  The widget must not have been realized.
-
    procedure Push_Colormap (Cmap : Gdk.Color.Gdk_Colormap);
    --  Modify temporarily the default colormap set for newly created widgets.
    --  You should use this in pair with Pop_Colormap below (Push the new value,
