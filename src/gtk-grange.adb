@@ -210,8 +210,6 @@ package body Gtk.GRange is
       function Internal (The_Range  : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_range_get_adjustment");
 
-      Widget : Gtk.Adjustment.Gtk_Adjustment;
-
    begin
       Set_Object (Widget, Internal (Get_Object (The_Range)));
       return Widget;
