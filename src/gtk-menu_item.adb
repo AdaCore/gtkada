@@ -161,9 +161,14 @@ package body Gtk.Menu_Item is
 
    procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type) is
+      S : String_Ptr := Get_Field (N, "label");
    begin
-      Gen_New (N, "Menu_Item", Get_Field (N, "label").all,
-        File => File, Delim => '"');
+      if S = null then
+         Gen_New (N, "Menu_Item", File => File, Delim => '"');
+      else
+         Gen_New (N, "Menu_Item", S.all, File => File, Delim => '"');
+      end if;
+
       Item.Generate (N, File);
 
       if not N.Specific_Data.Has_Container then

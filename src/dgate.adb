@@ -59,11 +59,14 @@ procedure DGate is
       if N.Tag.all = "signal" then
          Name := Get_Field (N, "name");
          Handler := Get_Field (N, "handler");
-         S := new String '(Name.all & ':' & Handler.all);
-         Gtk.Util.Set_Signal
-           (Handler.all, DGate_Callbacks.Generic_Callback'Access,
-            To_Address (S));
-         return;
+
+         if Name /= null then
+            S := new String '(Name.all & ':' & Handler.all);
+            Gtk.Util.Set_Signal
+              (Handler.all, DGate_Callbacks.Generic_Callback'Access,
+               To_Address (S));
+            return;
+         end if;
       end if;
  
       if N.Child /= null then

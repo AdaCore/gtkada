@@ -291,9 +291,11 @@ package body Gtk.Box is
 
    begin
       if Child_Name = null then
-         Gen_New (N, "Box", Get_Field (N, "homogeneous").all,
-           Get_Field (N, "spacing").all,
-           Class (Class'First + 3) & "box", File);
+         if not N.Specific_Data.Created then
+            Gen_New (N, "Box", Get_Field (N, "homogeneous").all,
+              Get_Field (N, "spacing").all,
+              Class (Class'First + 3) & "box", File);
+         end if;
 
       else
          Gen_Child (N, Child_Name, File);

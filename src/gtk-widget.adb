@@ -806,11 +806,16 @@ package body Gtk.Widget is
       Q := Find_Tag (N.Child, "signal");
 
       while Q /= null loop
-         Get_Signal (Get_Field (Q, "handler").all, Func, Data);
-         Signal_Connect
-           (Gdk.Get_Object (Widget.all),
-            Get_Field (Q, "name").all & ASCII.Nul,
-            Func, Data);
+         S := Get_Field (Q, "handler");
+
+         if S /= null then
+            Get_Signal (S.all, Func, Data);
+            Signal_Connect
+              (Gdk.Get_Object (Widget.all),
+               Get_Field (Q, "name").all & ASCII.Nul,
+               Func, Data);
+         end if;
+
          Q := Find_Tag (Q.Next, "signal");
       end loop;
    end Generate;

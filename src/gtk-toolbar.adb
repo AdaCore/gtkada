@@ -510,7 +510,8 @@ package body Gtk.Toolbar is
    procedure Generate (N       : in Node_Ptr;
                        File    : in File_Type) is
    begin
-      Gen_New (N, "Toolbar", "orientation", "type", File => File);
+      Gen_New (N, "Toolbar", Get_Field (N, "orientation").all,
+        Get_Field (N, "type").all, File => File);
       Container.Generate (N, File);
       Gen_Set (N, "Toolbar", "space_size", File);
       Gen_Set (N, "Toolbar", "space_style", File);

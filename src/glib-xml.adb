@@ -60,6 +60,7 @@ package body Glib.XML is
    begin
       while Index < Buf'Last and then
         (Buf (Index) = ' '  or else Buf (Index) = ASCII.LF
+          or else Buf (Index) = ASCII.HT
           or else Buf (Index) = ASCII.CR)
       loop
          Index := Index + 1;
