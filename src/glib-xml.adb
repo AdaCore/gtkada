@@ -167,9 +167,9 @@ package body Glib.XML is
       end if;
    end Extract_Attrib;
 
-   --------------------
-   --  Get_Next_Word --
-   --------------------
+   -------------------
+   -- Get_Next_Word --
+   -------------------
 
    procedure Get_Next_Word
      (Buf     : String;
@@ -259,6 +259,7 @@ package body Glib.XML is
             Index := Index + 1;
             J     := J + 1;
          end loop;
+
          return Str (1 .. J);
       end if;
    end Translate;
