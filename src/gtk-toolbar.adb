@@ -416,6 +416,8 @@ package body Gtk.Toolbar is
          Stock_Id             : String;
          Tooltip_Text         : System.Address;
          Tooltip_Private_Text : System.Address;
+         Callback             : System.Address;
+         User_Data            : System.Address;
          Position             : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_insert_stock");
 
@@ -438,7 +440,8 @@ package body Gtk.Toolbar is
 
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Toolbar),
-                                  Stock_Id & ASCII.NUL, TTA, TPTA, Position),
+          Stock_Id & ASCII.NUL, TTA, TPTA,
+          System.Null_Address, System.Null_Address, Position),
                         Stub));
    end Insert_Stock;
 
