@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Gtk; use Gtk;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
@@ -36,18 +37,20 @@ with Gtk.List; use Gtk.List;
 with Gtk.List_Item; use Gtk.List_Item;
 with Gtk.Option_Menu;  use Gtk.Option_Menu;
 with Gtk.Radio_Menu_Item;  use Gtk.Radio_Menu_Item;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Separator; use Gtk.Separator;
+with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
-with Common; use Common;
-with Gtk; use Gtk;
-with Ada.Text_IO;   use Ada.Text_IO;
+with Gtkada.Types; use Gtkada.Types;
 
-with Create_Progress;
+with Ada.Text_IO;   use Ada.Text_IO;
+with Common; use Common;
+with Interfaces.C.Strings;
 
 package body Create_List is
+
+   package ICS renames Interfaces.C.Strings;
 
    package List_Cb is new Signal.Object_Callback (Gtk_List_Record);
 
@@ -55,11 +58,11 @@ package body Create_List is
 
    Num_Item : Natural := 0;
 
-   Items : constant Create_Progress.Array_Of_String :=
-     ("Single    ",
-      "Browse    ",
-      "Multiple  ",
-      "Extended  ");
+   Items : constant Chars_Ptr_Array :=
+     (ICS.New_String ("Single"),
+      ICS.New_String ("Browse"),
+      ICS.New_String ("Multiple"),
+      ICS.New_String ("Extended"));
 
    List : Gtk_List;
    Omenu_Group  : Widget_Slist.GSlist;
@@ -206,11 +209,11 @@ package body Create_List is
                      Padding => 0);
 
          Omenu_Group := Widget_Slist.Null_List;
-         Create_Progress.Build_Option_Menu (List_Omenu,
-                                            Omenu_Group,
-                                            Items,
-                                            0,
-                                            Toggle_Sel_Mode'Access);
+         Build_Option_Menu (List_Omenu,
+                            Omenu_Group,
+                            Items,
+                            0,
+                            Toggle_Sel_Mode'Access);
          Pack_Start (Hbox, List_Omenu,
                      Expand  => False,
                      Fill    => True,
