@@ -136,8 +136,7 @@ package Gtk.Tree_Store is
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Remove Iter from Tree_Store.
-   --  After being removed, Iter is set to the next valid row at that level, or
-   --  invalidated if it previeously pointed to the last one.
+   --  After being removed, Iter is set to Null_Iter.
 
    procedure Insert
      (Tree_Store : access Gtk_Tree_Store_Record;
