@@ -236,10 +236,6 @@ package body Gtk.Macro is
 
    Global_Rec : Recorder;
 
-   type Event_Handler_Func is access procedure (Event : System.Address);
-   procedure Event_Handler_Set (Func : Event_Handler_Func);
-   --  Set our new event handler, called before dispatching events to GtkAda
-
    procedure My_Event_Handler (Event : System.Address);
 
    function Get_Widget_From_Name (Name : String;
@@ -566,19 +562,6 @@ package body Gtk.Macro is
             return "event";
       end case;
    end Event_Name_From_Type;
-
-   -----------------------
-   -- Event_Handler_Set --
-   -----------------------
-
-   procedure Event_Handler_Set (Func : Event_Handler_Func) is
-      procedure Internal (Func : Event_Handler_Func;
-                          Data : System.Address;
-                          Destroy_Notify : System.Address);
-      pragma Import (C, Internal, "gdk_event_handler_set");
-   begin
-      Internal (Func, System.Null_Address, System.Null_Address);
-   end Event_Handler_Set;
 
    ----------------------
    -- My_Event_Handler --

@@ -383,6 +383,23 @@ package Gdk.Event is
    --  call this function only if the event was created through Allocate, not
    --  if it was created by GtkAda itself.
 
+   type Event_Handler_Func is access procedure (Event : System.Address);
+   --  Function that can used as a new event handler.
+   --  Use From_Address below to convert to a real event type.
+   --  This function should dispatch all the events properly, since it replaces
+   --  completly the default event handler. However, it can call
+   --  Gtk.Main.Do_Event to take care of the events it does not know how to
+   --  handle.
+
+   procedure Event_Handler_Set (Func : Event_Handler_Func);
+   --  Set up a new event handler.
+   --  This handler replaces the default GtkAda event handler, and thus should
+   --  make sure that all events are correctly handled.
+
+   --  Note that the C version of Event_Handler_Set allows extra data to be
+   --  passed to the handler, but since this function will rarely be used
+   --  anyway, it has not been implemented as a generic package.
+
    function From_Address (C : System.Address) return Gdk_Event;
    --  Convert a C handler to the matching Event structure.
 

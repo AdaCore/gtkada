@@ -1202,4 +1202,17 @@ package body Gdk.Event is
       return E.Ptr /= null;
    end Is_Created;
 
+   -----------------------
+   -- Event_Handler_Set --
+   -----------------------
+
+   procedure Event_Handler_Set (Func : Event_Handler_Func) is
+      procedure Internal (Func : Event_Handler_Func;
+                          Data : System.Address;
+                          Destroy_Notify : System.Address);
+      pragma Import (C, Internal, "gdk_event_handler_set");
+   begin
+      Internal (Func, System.Null_Address, System.Null_Address);
+   end Event_Handler_Set;
+
 end Gdk.Event;
