@@ -85,8 +85,8 @@ package Gtk.Cell_Renderer_Text is
    --   "attributes"          PangoAttrList             Read / Write
    --   "background"          String                    Write
    --   "foreground"          String                    Write
-   --   "background-gdk"      Gdk_Color                 Read / Write
-   --   "foreground-gdk"      Gdk_Color                 Read / Write
+   --   "background_gdk"      Gdk_Color                 Read / Write
+   --   "foreground_gdk"      Gdk_Color                 Read / Write
    --   "font"                String                    Read / Write
    --   "font-desc"           Pango_Font_Description    Read / Write
    --   "family"              String                    Read / Write
