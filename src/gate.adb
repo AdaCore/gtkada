@@ -26,6 +26,7 @@ with Glib.Glade; use Glib; use Glib.Glade; use Glib.Glade.Glib_XML;
 with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.OS_Lib;
+with Ada.Exceptions; use Ada.Exceptions;
 
 procedure Gate is
    N                     : Node_Ptr;
@@ -38,11 +39,11 @@ procedure Gate is
 
    procedure Usage is
    begin
-      Put_Line ("Usage: gate.ex switches project-file");
+      Put_Line ("Usage: " & Command_Name & " switches project-file");
       New_Line;
       Put_Line ("  -p    Output the name of the project and exit");
       Put_Line ("  -s    Output the name of the source directory and exit");
-      GNAT.OS_Lib.OS_Exit (1);
+      Set_Exit_Status (1);
    end Usage;
 
 begin
@@ -68,7 +69,8 @@ begin
 
       if not GNAT.OS_Lib.Is_Regular_File (Argument (Arg)) then
          Put_Line (Argument (Arg) & " is not a regular file");
-         GNAT.OS_Lib.OS_Exit (2);
+         Set_Exit_Status (2);
+         return;
       end if;
 
       N := Parse (Argument (Arg));
@@ -97,14 +99,13 @@ begin
       else
          Generate (N);
       end if;
-
-      GNAT.OS_Lib.OS_Exit (0);
    end if;
 
 exception
-   when others =>
+   when E : others =>
+      Put_Line ("Exception = " & Exception_Name (E));
       Put_Line ("GATE: Internal error. Please send a bug report with the XML");
       Put_Line ("file " & Argument (Arg) & " and the GtkAda version to " &
         "gtkada@ada.eu.org");
-      GNAT.OS_Lib.OS_Exit (2);
+      Set_Exit_Status (2);
 end Gate;
