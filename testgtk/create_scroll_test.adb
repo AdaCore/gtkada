@@ -20,8 +20,14 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+
+with Gdk.Drawable;
+with Gdk.Event;
 with Gdk.GC;
+with Gdk.Rectangle; use Gdk.Rectangle;
 with Gdk.Types;
+with Gdk.Window;
+
 with Gtk; use Gtk;
 with Gtk.Adjustment;
 with Gtk.Box;
@@ -31,16 +37,97 @@ with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Drawing_Area;
 with Gtk.Scrollbar;
 with Gtk.Signal;
+with Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
 
 package body Create_Scroll_Test is
 
    package Widget_Cb is new Signal.Object_Callback (Widget.Gtk_Widget);
+
+   package Adjustment_Cb is new Signal.Callback
+     (Widget_Type => Adjustment.Gtk_Adjustment,
+      Data_Type => Drawing_Area.Gtk_Drawing_Area);
+
+   package Event_Configure_Cb is new Signal.Two_Callback
+     (Widget_Type => Drawing_Area.Gtk_Drawing_Area,
+      Data_Type => Adjustment.Gtk_Adjustment,
+      Cb_Type => Gdk.Event.Gdk_Event_Configure);
+
+   package Event_Expose_Cb is new Signal.Two_Callback
+     (Widget_Type => Drawing_Area.Gtk_Drawing_Area,
+      Data_Type => Adjustment.Gtk_Adjustment,
+      Cb_Type => Gdk.Event.Gdk_Event_Expose);
+
    package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
+
 
    Scroll_Test_Pos : Integer := 0;
    Scroll_Test_GC : Gdk.GC.Gdk_GC;
    Dialog : aliased Gtk.Dialog.Gtk_Dialog;
+
+
+   -------------------------
+   --  Adjustment_Change  --
+   -------------------------
+
+   procedure Adjustment_Change
+     (Widget : in out Adjustment.Gtk_Adjustment'Class;
+      Data   : in out Drawing_Area.Gtk_Drawing_Area) is
+   begin
+      null;
+   end Adjustment_Change;
+
+
+   -----------------
+   --  Configure  --
+   -----------------
+
+   procedure Configure (Widget  : in out Drawing_Area.Gtk_Drawing_Area'Class;
+                        Cb_Data : in out Gdk.Event.Gdk_Event_Configure;
+                        Data    : in out Adjustment.Gtk_Adjustment) is
+   begin
+      null;
+   end Configure;
+
+
+   --------------
+   --  Expose  --
+   --------------
+
+   procedure Expose (Widget  : in out Drawing_Area.Gtk_Drawing_Area'Class;
+                     Event   : in out Gdk.Event.Gdk_Event_Expose;
+                     Adj     : in out Adjustment.Gtk_Adjustment) is
+      Area : Gdk.Rectangle.Gdk_Rectangle;
+      Imin, Imax, Jmin, Jmax : Gint;
+   begin
+      Gdk.Event.Get_Area (Event => Event, Area => Area);
+
+      Imin := Get_X (Area) / 10;
+      Imax := (Get_X (Area) + Gint (Get_Width (Area)) + 9) / 10;
+
+      Jmin := (Gint (Adjustment.Get_Value (Adj)) + Get_Y (Area)) / 10;
+      Jmax := (Gint (Adjustment.Get_Value (Adj)) + Get_Y (Area)
+               + Gint (Get_Height (Area)) + 9) / 10;
+
+      Gdk.Window.Clear_Area (Window => Gdk.Window.Get_Window (Widget),
+                             X => Get_X (Area), Y => Get_Y (Area),
+                             Width => Gint (Get_Width (Area)),
+                             Height => Gint (Get_Height (Area)));
+
+      for I in Imin .. Imax loop
+         for J in Jmin .. Jmax loop
+            if ((I + J) mod 2 /= 0) then
+               Gdk.Drawable.Draw_Rectangle
+                 (Drawable => Gdk.Window.Get_Window (Widget),
+                  GC => Style.Get_Black_Gc (Style.Get_Style (Widget)),
+                  Filled => True,
+                  X => 10 * I, Y => 10 * J - Gint (Adjustment.Get_Value (Adj)),
+                  Width => 1 + 10 mod I, Height => 1 + 10 mod J);
+            end if;
+         end loop; --  J
+      end loop;  --  I
+
+   end Expose;
 
 
    -----------
@@ -88,9 +175,20 @@ package body Create_Scroll_Test is
                          Expand => False, Fill => False);
          Gtk.Widget.Show (Scrollbar);
 
-         --
-         --  FIXME : Connect the event related callbacks
-         --
+         Id := Event_Expose_Cb.Connect (Obj => Drawing_Area,
+                                        Name => "expose_event",
+                                        Func => Expose'Access,
+                                        Func_Data => Adj);
+
+         Id := Event_Configure_Cb.Connect (Obj => Drawing_Area,
+                                           Name => "configure_event",
+                                           Func => Configure'Access,
+                                           Func_Data => Adj);
+
+         Id := Adjustment_Cb.Connect (Obj => Adj,
+                                      Name => "value_changed",
+                                      Func => Adjustment_Change'Access,
+                                      Func_Data => Drawing_Area);
 
          Gtk.Button.Gtk_New (Widget => Button, Label => "Quit");
          Box.Pack_Start (In_Box => Gtk.Dialog.Get_Action_Area (Dialog),
