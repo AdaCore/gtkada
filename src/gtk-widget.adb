@@ -1494,12 +1494,19 @@ package body Gtk.Widget is
    is
       procedure Internal
         (Widget     : System.Address;
-         Accel_Path : UTF8_String;
+         Accel_Path : Interfaces.C.Strings.chars_ptr;
          Group      : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_accel_path");
+
+      S : Interfaces.C.Strings.chars_ptr;
    begin
-      Internal (Get_Object (Widget), Accel_Path & ASCII.NUL,
-                Get_Object (Group));
+      if Accel_Path = "" then
+         Internal (Get_Object (Widget), Null_Ptr, Get_Object (Group));
+      else
+         S := New_String (Accel_Path);
+         Internal (Get_Object (Widget), S, Get_Object (Group));
+         Free (S);
+      end if;
    end Set_Accel_Path;
 
    -----------------------
