@@ -19,6 +19,7 @@ using the following compilers :
    - Gnat 3.11p
 and the following version of gtk :
    - Gtk 1.0.4 
+   - Gtk 1.0.5
 
 If you  manage to use  it on other systems   (which should probably be
 straight forward - just recompile GtkAda),  please let us know so that
@@ -90,10 +91,9 @@ Installing and compiling your programs
 ======================================
 
 This is still alpha software, so the installation is very basic : just
-use the makefile, after copying the gtk-config file distributed with
-gtk in the current directory
+use the makefile, after making sure that the gtk-config program
+distributed with gtk is located in your PATH.
 
-   $ cp <directoy>/gtk-config .
    $ make
 
 This will create two files, libgtkada.a and libgtkada.so
@@ -165,6 +165,12 @@ generate.pl to this C file.
   a look at gtk-combo.ads for instance for how to do this.
 
 
+Threads
+=======
+
+The current stable version of Gtk+ (1.0.5) is not thread-safe. Therefore, the
+usage of tasks inside programs using this binding is not recommended.
+
 
 How to report bugs
 ==================
@@ -218,6 +224,7 @@ binding is as useful as possible...
 AUTHORS
 =======
 
-Emmanuel Briot  <Emmanuel.Briot@enst-bretagne.fr>, <briot@gnat.com>
+Emmanuel Briot  <Emmanuel.Briot@enst-bretagne.fr>, 
+                <briot@gnat.com>
 Joel Brobecker  <Joel.Brobecker@enst-bretagne.fr>, 
                 <jbrobecker@west.raytheon.com>
