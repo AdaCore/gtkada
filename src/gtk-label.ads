@@ -72,7 +72,9 @@ package Gtk.Label is
    --  The default value is Justify_Center, which means that the text will be
    --  centered in the label. Note that this setting has an impact only when
    --  the Gtk_Label is larger than the text (its default width is the same
-   --  as the text).
+   --  as the text) and contains multiple lines.
+   --  To justify a single line label, you should instead change the properties
+   --  of the container handling the label (box, table, ...).
 
    procedure Set_Pattern (Label   : access Gtk_Label_Record;
                           Pattern : in String);
