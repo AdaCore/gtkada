@@ -151,15 +151,13 @@ package body Gtk.Arguments is
    -- To_Notebook_Page --
    ----------------------
 
-   function To_Notebook_Page (C : System.Address)
-                             return Gtk.Notebook.Gtk_Notebook_Page
-   is
+   function To_Notebook_Page (C : System.Address) return Gtk_Notebook_Page is
    begin
-      return Gtk.Notebook.Gtk_Notebook_Page (Gdk.Convert (C));
+      return Gtk_Notebook_Page (Gdk.Convert (C));
    end To_Notebook_Page;
 
-   function To_Notebook_Page (Args : Gtk_Args; Num : Positive)
-     return Gtk.Notebook.Gtk_Notebook_Page is
+   function To_Notebook_Page
+     (Args : Gtk_Args; Num : Positive) return Gtk_Notebook_Page is
    begin
       return To_Notebook_Page (Get_Nth (Args, Num));
    end To_Notebook_Page;

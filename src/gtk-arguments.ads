@@ -45,7 +45,6 @@ with System;
 with Gdk.Event;
 with Gtk.Object;
 with Gtk.Widget;
-with Gtk.Notebook;
 
 package Gtk.Arguments is
 
@@ -77,7 +76,7 @@ package Gtk.Arguments is
      return Gdk.Event.Gdk_Event;
    function To_String  (Args : Gtk_Args; Num : Positive) return String;
    function To_Notebook_Page
-     (Args : Gtk_Args; Num : Positive) return Gtk.Notebook.Gtk_Notebook_Page;
+     (Args : Gtk_Args; Num : Positive) return Gtk_Notebook_Page;
    function To_Address (Args : Gtk_Args; Num : Positive) return System.Address;
    function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy;
    function To_Object
@@ -99,7 +98,7 @@ package Gtk.Arguments is
                              renames Gdk.Event.From_Address;
    function To_String        (C : System.Address) return String;
    function To_Notebook_Page (C : System.Address)
-     return Gtk.Notebook.Gtk_Notebook_Page;
+     return Gtk_Notebook_Page;
    function To_Object        (C : System.Address) return Gtk.Object.Gtk_Object;
    function To_C_Proxy       (C : System.Address) return Gdk.C_Proxy;
 
