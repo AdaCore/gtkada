@@ -1,6 +1,11 @@
-diff -r -c ./glade/glade_project.c ../../glade-2.0.0/glade/glade_project.c
-*** ./glade/glade_project.c	Mon Apr  7 13:27:50 2003
---- ../../glade-2.0.0/glade/glade_project.c	Fri May 16 11:49:46 2003
+Thu Jun 12 12:05:57 CEST 2003	Nicolas Setton	<setton@act-europe.fr>
+     
+      glade/glade_project.c:
+      Generate Ada95 language as well as C and C++.
+
+diff -r -c glade/glade_project.c ../../glade-2.0.0/glade/glade_project.c
+*** glade/glade_project.c	Mon Apr  7 13:27:50 2003
+--- glade/glade_project.c	Fri May 16 11:49:46 2003
 ***************
 *** 46,52 ****
   /* The order must match the GladeLanguageType enum in glade_project.h. */
