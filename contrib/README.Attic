@@ -79,6 +79,12 @@ Object. In these cases, we have used generic package to provide type
 safety. Please have a look at the files in testgtk to see how these
 functions are implemented.
 
+!!WARNING!! All the generic functions allocate some memory for
+internal structures. This memory is freed by gtk itself, by calling
+some Ada functions. Thus the generic packages have to be instanciated
+at library level, not inside a subprogram, so that the functions are
+still defined when gtk wants to free the memory.
+
 
 Installing and compiling your programs
 ======================================
