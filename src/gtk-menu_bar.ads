@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Enums; use Gtk.Enums;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Shell;
 with Gtk.Widget;
@@ -49,6 +50,10 @@ package Gtk.Menu_Bar is
    procedure Prepend
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   procedure Set_Shadow_Type
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      The_Type : in Gtk_Shadow_Type);
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.

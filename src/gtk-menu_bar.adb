@@ -104,6 +104,22 @@ package body Gtk.Menu_Bar is
       Internal (Get_Object (Menu_Bar), Get_Object (Child));
    end Prepend;
 
+   ---------------------
+   -- Set_Shadow_Type --
+   ---------------------
+
+   procedure Set_Shadow_Type
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      The_Type : in Gtk_Shadow_Type)
+   is
+      procedure Internal
+        (Menu_Bar : in System.Address;
+         The_Type : in Gint);
+      pragma Import (C, Internal, "gtk_menu_bar_set_shadow_type");
+   begin
+      Internal (Get_Object (Menu_Bar), Gtk_Shadow_Type'Pos (The_Type));
+   end Set_Shadow_Type;
+
    --------------
    -- Generate --
    --------------
@@ -113,6 +129,7 @@ package body Gtk.Menu_Bar is
    begin
       Gen_New (N, "Menu_Bar", File => File);
       Menu_Shell.Generate (N, File);
+      Gen_Set (N, "Menu_Bar", "shadow_type", File => File);
 
       if not N.Specific_Data.Has_Container then
          Gen_Call_Child (N, null, "Container", "Add", File => File);
@@ -122,6 +139,7 @@ package body Gtk.Menu_Bar is
 
    procedure Generate (Menu_Bar : in out Gtk_Object;
                        N        : in Node_Ptr) is
+      S : String_Ptr;
    begin
       if not N.Specific_Data.Created then
          Gtk_New (Gtk_Menu_Bar (Menu_Bar));
@@ -130,6 +148,13 @@ package body Gtk.Menu_Bar is
       end if;
 
       Menu_Shell.Generate (Menu_Bar, N);
+
+      S := Get_Field (N, "shadow_type");
+
+      if S /= null then
+         Set_Shadow_Type (Gtk_Menu_Bar (Menu_Bar),
+           Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
 
       if not N.Specific_Data.Has_Container then
          Container.Add
