@@ -675,8 +675,9 @@ package body Gtk.Toolbar is
                if T /= null then
                   Add_Package ("Pixmap");
                   Put_Line (File, ",");
-                  Put_Line (File, "      Icon => Create_Pixmap (""" & T.all &
-                    """, " & To_Ada (Top.all) & "));");
+                  Put_Line (File,
+                    "      Icon => Gtk_Widget (Create_Pixmap (""" & T.all &
+                    """, " & To_Ada (Top.all) & ")));");
                else
                   Put_Line (File, ");");
                end if;
