@@ -84,8 +84,8 @@ package Gtk.Text is
 
    procedure Set_Adjustments
      (Text : access Gtk_Text_Record;
-      Hadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Vadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+      Hadj : Gtk.Adjustment.Gtk_Adjustment;
+      Vadj : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Set_Editable
      (Text : access Gtk_Text_Record; Editable : in Boolean);

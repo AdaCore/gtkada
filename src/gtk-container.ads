@@ -113,7 +113,7 @@ package Gtk.Container is
 
    procedure Set_Focus_Vadjustment
      (Container  : access Gtk_Container_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    --  ADJUSTMENT should have been created and displayed at some other
    --  place in your application.
    --  CONTAINER will make sure that ADJUSTMENT always matches the range
@@ -121,7 +121,7 @@ package Gtk.Container is
 
    procedure Set_Focus_Hadjustment
      (Container  : access Gtk_Container_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    --  ADJUSTMENT should have been created and displayed at some other
    --  place in your application.
    --  CONTAINER will make sure that ADJUSTMENT always matches the range

@@ -174,6 +174,17 @@ package body Gtk.Object is
       Internal (Get_Object (Object.all), Flags);
    end Set_Flags;
 
+   ----------
+   -- Sink --
+   ----------
+
+   procedure Sink (Object : access Gtk_Object_Record) is
+      procedure Internal (Object : in System.Address);
+      pragma Import (C, Internal, "gtk_object_sink");
+   begin
+      Internal (Get_Object (Object));
+   end Sink;
+
    -----------
    -- Unref --
    -----------

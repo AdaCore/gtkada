@@ -39,7 +39,7 @@ package Gtk.Spin_Button is
 
    procedure Configure
      (Spin_Button : access Gtk_Spin_Button_Record;
-      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Adjustment  : Gtk.Adjustment.Gtk_Adjustment;
       Climb_Rate  : in Gfloat;
       The_Digits  : in Gint);
 
@@ -54,19 +54,19 @@ package Gtk.Spin_Button is
 
    procedure Gtk_New
      (Spin_Button : out Gtk_Spin_Button;
-      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Adjustment  : Gtk.Adjustment.Gtk_Adjustment;
       Climb_Rate  : in Gfloat;
       The_Digits  : in Gint);
 
    procedure Initialize
      (Spin_Button : access Gtk_Spin_Button_Record'Class;
-      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Adjustment  : Gtk.Adjustment.Gtk_Adjustment;
       Climb_Rate  : in Gfloat;
       The_Digits  : in Gint);
 
    procedure Set_Adjustment
      (Spin_Button : access Gtk_Spin_Button_Record;
-      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+      Adjustment  : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Set_Digits
      (Spin_Button : access Gtk_Spin_Button_Record;

@@ -148,14 +148,18 @@ package body Gtk.Container is
 
    procedure Set_Focus_Hadjustment
      (Container  : access Gtk_Container_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal (Container : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_container_set_focus_hadjustment");
-
+      use type Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Internal (Get_Object (Container), Get_Object (Adjustment));
+      if Adjustment = null then
+         Internal (Get_Object (Container), System.Null_Address);
+      else
+         Internal (Get_Object (Container), Get_Object (Adjustment));
+      end if;
    end Set_Focus_Hadjustment;
 
    ---------------------------
@@ -164,14 +168,18 @@ package body Gtk.Container is
 
    procedure Set_Focus_Vadjustment
      (Container  : access Gtk_Container_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal (Container : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_container_set_focus_vadjustment");
-
+      use type Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Internal (Get_Object (Container), Get_Object (Adjustment));
+      if Adjustment = null then
+         Internal (Get_Object (Container), System.Null_Address);
+      else
+         Internal (Get_Object (Container), Get_Object (Adjustment));
+      end if;
    end Set_Focus_Vadjustment;
 
    ----------------------------

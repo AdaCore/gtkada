@@ -39,6 +39,8 @@ with Interfaces.C.Strings;
 with Gtk.Table;            use Gtk.Table;
 with Ada.Strings.Fixed;    use Ada.Strings.Fixed;
 with Ada.Strings.Maps;     use Ada.Strings.Maps;
+with Gdk.Visual;           use Gdk.Visual;
+with Gdk.Color;            use Gdk.Color;
 
 package body Gtk.Widget is
 

@@ -31,7 +31,6 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Shell;
 with Gtk.Menu_Item;
-with Gtk.Widget;
 
 package Gtk.Menu_Bar is
 

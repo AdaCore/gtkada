@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -276,7 +276,7 @@ package Gtk.Clist is
 
    procedure Set_Hadjustment
       (Clist      : access Gtk_Clist_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Set_Pixmap
      (Clist  : access Gtk_Clist_Record;
@@ -338,7 +338,7 @@ package Gtk.Clist is
 
    procedure Set_Vadjustment
      (Clist      : access Gtk_Clist_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    --  gtk_clist_sort
 

@@ -953,14 +953,18 @@ package body Gtk.Clist is
 
    procedure Set_Hadjustment
      (Clist      : access Gtk_Clist_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal (Clist      : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_hadjustment");
-
+      use type Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Internal (Get_Object (Clist), Get_Object (Adjustment));
+      if Adjustment = null then
+         Internal (Get_Object (Clist), System.Null_Address);
+      else
+         Internal (Get_Object (Clist), Get_Object (Adjustment));
+      end if;
    end Set_Hadjustment;
 
    ----------------
@@ -1189,14 +1193,18 @@ package body Gtk.Clist is
 
    procedure Set_Vadjustment
       (Clist      : access Gtk_Clist_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+       Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal (Clist      : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_vadjustment");
-
+      use type Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Internal (Get_Object (Clist), Get_Object (Adjustment));
+      if Adjustment = null then
+         Internal (Get_Object (Clist), System.Null_Address);
+      else
+         Internal (Get_Object (Clist), Get_Object (Adjustment));
+      end if;
    end Set_Vadjustment;
 
    ---------------

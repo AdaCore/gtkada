@@ -67,11 +67,11 @@ package Gtk.Scrolled_Window is
 
    procedure Set_Hadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
-      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class);
+      Hadjustment     : Adjustment.Gtk_Adjustment);
 
    procedure Set_Vadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
-      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class);
+      Vadjustment     : Adjustment.Gtk_Adjustment);
 
    procedure Set_Policy
      (Scrolled_Window    : access Gtk_Scrolled_Window_Record;

@@ -116,6 +116,11 @@ package Gtk.Object is
    --  It is better to use Destroy than Unref to destroy an object, although
    --  both might be acceptable.
 
+   procedure Sink (Object : access Gtk_Object_Record);
+   --  Sinks the object.
+   --  If the object is floating (does not have a parent yet), it is unref-ed
+   --  once and the floating flag is cleared.
+
    procedure Destroy (Object : access Gtk_Object_Record);
    --  Destroys the object.
    --  This emits a "destroy" signal, calls all your handlers, and then
@@ -331,7 +336,6 @@ end Gtk.Object;
 --  - gtk_object_newv
 --  - gtk_object_default_construct
 --  - gtk_object_constructed
---  - gtk_object_sink
 --  - gtk_object_weakref
 --  - gtk_object_weakunref
 --  - gtk_object_getv

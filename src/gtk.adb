@@ -130,6 +130,13 @@ package body Gtk is
 --              & " size=" & Integer'Image (Obj'Size)
 --              & " Address=" & Integer'Image (Convert (Obj.all'Address)));
       end if;
+
+      --  Make sure the object is sinked (otherwise, if the object was
+      --  never given a parent in the user code, there would be a memory leak,
+      --  since Destroy would never bring the ref-count down to 0).
+
+      --  Ref (Obj);
+      --  Sink (Obj);
    end Initialize_User_Data;
 
    -------------------

@@ -161,13 +161,18 @@ package body Gtk.Layout is
 
    procedure Set_Hadjustment
      (Layout     : access Gtk_Layout_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal (Layout     : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_layout_set_hadjustment");
+      use type Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Internal (Get_Object (Layout), Get_Object (Adjustment));
+      if Adjustment = null then
+         Internal (Get_Object (Layout), System.Null_Address);
+      else
+         Internal (Get_Object (Layout), Get_Object (Adjustment));
+      end if;
    end Set_Hadjustment;
 
    --------------
@@ -192,13 +197,18 @@ package body Gtk.Layout is
 
    procedure Set_Vadjustment
      (Layout     : access Gtk_Layout_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal (Layout     : in System.Address;
                           Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_layout_set_vadjustment");
+      use type Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Internal (Get_Object (Layout), Get_Object (Adjustment));
+      if Adjustment = null then
+         Internal (Get_Object (Layout), System.Null_Address);
+      else
+         Internal (Get_Object (Layout), Get_Object (Adjustment));
+      end if;
    end Set_Vadjustment;
 
    --------------

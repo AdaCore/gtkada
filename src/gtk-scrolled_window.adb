@@ -143,13 +143,18 @@ package body Gtk.Scrolled_Window is
 
    procedure Set_Hadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
-      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class)
+      Hadjustment     : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal (Scrolled_Window : in System.Address;
                           Hadjustment     : in System.Address);
       pragma Import (C, Internal, "gtk_scrolled_window_set_hadjustment");
+      use type Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Internal (Get_Object (Scrolled_Window), Get_Object (Hadjustment));
+      if Hadjustment = null then
+         Internal (Get_Object (Scrolled_Window), System.Null_Address);
+      else
+         Internal (Get_Object (Scrolled_Window), Get_Object (Hadjustment));
+      end if;
    end Set_Hadjustment;
 
    ----------------
@@ -177,13 +182,18 @@ package body Gtk.Scrolled_Window is
 
    procedure Set_Vadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
-      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class)
+      Vadjustment     : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal (Scrolled_Window : in System.Address;
                           Vadjustment     : in System.Address);
       pragma Import (C, Internal, "gtk_scrolled_window_set_vadjustment");
+      use type Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Internal (Get_Object (Scrolled_Window), Get_Object (Vadjustment));
+      if Vadjustment = null then
+         Internal (Get_Object (Scrolled_Window), System.Null_Address);
+      else
+         Internal (Get_Object (Scrolled_Window), Get_Object (Vadjustment));
+      end if;
    end Set_Vadjustment;
 
    --------------

@@ -70,11 +70,11 @@ package Gtk.Layout is
 
    procedure Set_Hadjustment
      (Layout     : access Gtk_Layout_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Set_Vadjustment
      (Layout     : access Gtk_Layout_Record;
-      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    --  procedure Freeze
    --  procedure Thaw

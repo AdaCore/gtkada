@@ -282,17 +282,24 @@ package body Gtk.Text is
 
    procedure Set_Adjustments
      (Text : access Gtk_Text_Record;
-      Hadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Vadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      Hadj : Gtk.Adjustment.Gtk_Adjustment;
+      Vadj : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal
         (Text : in System.Address;
          Hadj : in System.Address;
          Vadj : in System.Address);
       pragma Import (C, Internal, "gtk_text_set_adjustments");
-
+      use type Gtk.Adjustment.Gtk_Adjustment;
+      Ha, Va : System.Address := System.Null_Address;
    begin
-      Internal (Get_Object (Text), Get_Object (Hadj), Get_Object (Vadj));
+      if Hadj /= null then
+         Ha := Get_Object (Hadj);
+      end if;
+      if Vadj /= null then
+         Va := Get_Object (Vadj);
+      end if;
+      Internal (Get_Object (Text), Ha, Va);
    end Set_Adjustments;
 
    ------------------
