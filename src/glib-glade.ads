@@ -44,6 +44,9 @@ package Glib.Glade is
 
       Has_Radio_Group : Boolean := False;
       --  True if object has created a radio button/menu_item group
+
+      Has_Tooltip : Boolean := False;
+      --  True if object has created a tooltip group
    end record;
    --  Extra Data added to each node of the XML tree when parsing a
    --  Glade file. This node summarizes the characteristics of the widget

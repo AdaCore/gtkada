@@ -1808,6 +1808,27 @@ package body Gtk_Generates is
          end if;
       end if;
 
+      S := Get_Field (N, "tooltip");
+
+      if S /= null then
+         if not Top.Specific_Data.Has_Tooltip then
+            Add_Package ("Tooltips");
+            Put_Line (File, "   Gtk_New (Tooltips);");
+            Top.Specific_Data.Has_Tooltip := True;
+         end if;
+
+         if Gettext_Support (N) then
+            Put_Line (File, "   Set_Tip (Tooltips, " &
+               To_Ada (Top_Name.all) & "." &
+               To_Ada (Cur.all) & ", -""" & S.all & """);");
+
+         else
+            Put_Line (File, "   Set_Tip (Tooltips, " &
+               To_Ada (Top_Name.all) & "." &
+               To_Ada (Cur.all) & ", """ & S.all & """);");
+         end if;
+      end if;
+
       if not N.Specific_Data.Initialized then
          Gen_Signal (N, File);
       end if;

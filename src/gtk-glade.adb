@@ -221,6 +221,7 @@ package body Gtk.Glade is
   is
       Option_Menu : Boolean := True;
       Accelerator : Boolean := True;
+      Tooltip     : Boolean := True;
       Image       : Boolean := True;
       Printed     : Boolean := False;
 
@@ -230,7 +231,8 @@ package body Gtk.Glade is
          Kind  : Variable_Kind;
          First : Boolean;
          Option_Menu : in out Boolean;
-         Accelerator : in out Boolean);
+         Accelerator : in out Boolean;
+         Tooltip     : in out Boolean);
       --  Internal recursive version of this procedure
 
       procedure Print_Var
@@ -239,7 +241,8 @@ package body Gtk.Glade is
          Kind  : Variable_Kind;
          First : Boolean;
          Option_Menu : in out Boolean;
-         Accelerator : in out Boolean)
+         Accelerator : in out Boolean;
+         Tooltip     : in out Boolean)
       is
          P : Node_Ptr := N;
          Q : Node_Ptr;
@@ -349,10 +352,22 @@ package body Gtk.Glade is
                            Printed := True;
                         end if;
                      end if;
+
+                     --  Declare a Tooltip if any tooltip needs to be
+                     --  set up in this widget
+
+                     if Find_Tag (P.Child, "tooltip") /= null then
+                        if Tooltip then
+                           Put_Line (File,
+                             "   Tooltips : Gtk_Tooltips;");
+                           Tooltip := False;
+                           Printed := True;
+                        end if;
+                     end if;
                   end if;
 
                   Print_Var (P.Child, File, Kind, False, Option_Menu,
-                    Accelerator);
+                    Accelerator, Tooltip);
                end if;
             end if;
 
@@ -363,7 +378,7 @@ package body Gtk.Glade is
       end Print_Var;
 
    begin
-      Print_Var (N, File, Kind, True, Option_Menu, Accelerator);
+      Print_Var (N, File, Kind, True, Option_Menu, Accelerator, Tooltip);
       return Printed;
    end Print_Var;
 
