@@ -583,8 +583,6 @@ package Gtk.Widget is
    -----------
    -- Flags --
    -----------
-   --  <description>
-   --
    --  Some additional flags are defined for all the visual objects (widgets).
    --  They are defined in addition to the ones defined in Gtk.Object.
    --  These flags are important in that they define exactly the different
@@ -666,8 +664,6 @@ package Gtk.Widget is
    --    Set when the widget receives the default at the time it receives the
    --    focus. This is how the default button in a dialog is automatically
    --    changed when you press another button.
-   --
-   --  </description>
 
    Toplevel         : constant := 2 ** 4;
    No_Window        : constant := 2 ** 5;
