@@ -35,6 +35,8 @@
 --  Just like a Gtk_Viewport, its visible area is indicated by two
 --  Gtk_Adjustment widgets, and thus a Gtk_Layout can be put as is in a
 --  Gtk_Scrolled_Window.
+--  In fact, due to a bug in gtk+1.2.6, you will have to do put in a scrolled
+--  window. This of course will be fixed in later versions.
 --  As for Gtk_Fixed containers, the children can be located anywhere in the
 --  layout (no automatic organization is done). But, as opposed to Gtk_Fixed
 --  widgets, a Gtk_Layout does not try to resize itself to show all its
