@@ -1,6 +1,6 @@
 #############################################################
 #
-#  Adding some OS specific flags to the compiler
+#  Adding some OS specific flags and parameters
 #
 ############################################################
 
@@ -18,11 +18,22 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
 ]
 )
 
-#############################################################
-#
-#  Define some OS specific parameters
-#
-############################################################
+AC_DEFUN(AM_ADD_GTKADA_LINK,
+[
+
+   case $build_os in
+   hp*)
+      GTKADA_LINK=libgtkada.a
+      ;;
+   *)
+      GTKADA_LINK=-lgtkada
+      ;;
+   esac
+
+  AC_SUBST(GTKADA_LINK)
+
+]
+)
 
 AC_DEFUN(AM_ADD_SO_EXT,
 [
