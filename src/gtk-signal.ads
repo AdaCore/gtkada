@@ -1,4 +1,6 @@
 with Gtk.Object;
+with Gtk.Widget;
+with Gtk.Tips_Query;
 
 package Gtk.Signal is
 
@@ -114,6 +116,30 @@ package Gtk.Signal is
       --  mapping: Connect gtksignal.h gtk_signal_connect_object_after
    end Object_Callback;
 
+   ------------------------------------------------------------------
+   --  The following functions are for callbacks for tips query
+   ------------------------------------------------------------------
+
+   generic
+      type Data_Type is new Object.Gtk_Object with private;
+
+   package Tips_Query_Callback is
+      type Callback is access procedure
+        (Tips_Query  : in out Gtk.Tips_Query.Gtk_Tips_Query'Class;
+         Widget      : in out Gtk.Widget.Gtk_Widget;
+         Tip_Text    : in String;
+         Tip_Private : in String;
+         Data        : in out Data_Type);
+
+      function Connect
+        (Obj         : in Gtk.Tips_Query.Gtk_Tips_Query'Class;
+         Name        : in String;
+         Func        : in Callback;
+         Data        : in Data_Type;
+         After       : in Boolean := False)
+         return Guint;
+   end Tips_Query_Callback;
+
    ----------------------------------------------------------------
    --  The following function for connecting a default C callback
    ----------------------------------------------------------------
@@ -133,6 +159,10 @@ package Gtk.Signal is
    procedure Disconnect (Object     : in Gtk.Object.Gtk_Object'Class;
                          Handler_Id : in Guint);
    --  mapping: Disconnect gtksignal.h gtk_signal_disconnect
+
+   procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
+                                Name   : in String);
+   --  mapping: Emit_Stop_By_Name gtksignal.h gtk_signal_emit_stop_by_name
 
    procedure Handler_Block (Obj        : in Gtk.Object.Gtk_Object'Class;
                             Handler_Id : in Guint);

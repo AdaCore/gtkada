@@ -1,6 +1,9 @@
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
 with Gtk.Object;
+with Interfaces.C.Strings;
+
+with Ada.Text_IO;
 
 --  This package tries to handle three problems encountered with callbacks
 --    1) the memory allocated internally by our Ada functions must be freed
@@ -223,7 +226,9 @@ package body Gtk.Signal is
          Tmp    : System.Address := Internal (Params, 0);
       begin
          if Nparams = 0 then
-            raise Constraint_Error;
+            Ada.Text_IO.Put_Line
+              (Ada.Text_IO.Standard_Error,
+               "Wrong number of arguments in Two_Callback");
          end if;
          if Data.Func /= null then
             Set_Object (Widget, Object);
@@ -256,6 +261,126 @@ package body Gtk.Signal is
                                    After);
       end Connect;
    end Two_Callback;
+
+   -------------------------
+   -- Tips_Query_Callback --
+   -------------------------
+
+   package body Tips_Query_Callback is
+
+      type Data_Access is access Data_Type;
+      type Data_Type_Record is
+         record
+            Data   : Data_Access;
+            Func   : Callback;
+         end record;
+      type Data_Type_Access is access all Data_Type_Record;
+      pragma Convention (C, Data_Type_Access);
+
+      function Convert is new Unchecked_Conversion (Data_Type_Access,
+                                                    System.Address);
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Data_Type_Access);
+
+      procedure Free (Data : in System.Address);
+      pragma Convention (C, Free);
+      --  Free the memory associated with the callback's data
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray);
+      pragma Convention (C, Marshaller);
+
+      ----------
+      -- Free --
+      ----------
+
+      procedure Free (Data : in System.Address) is
+         procedure Internal is new Unchecked_Deallocation
+           (Data_Type_Record, Data_Type_Access);
+         procedure Internal_2 is new Unchecked_Deallocation
+           (Data_Type, Data_Access);
+         D : Data_Type_Access := Convert (Data);
+      begin
+         Internal_2 (D.Data);
+         Internal (D);
+      end Free;
+
+      ----------------
+      -- Marshaller --
+      ----------------
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray)
+      is
+         function Internal (Params : in GtkArgArray;
+                            Num    : in Guint)
+                            return System.Address;
+         pragma Import (C, Internal, "ada_gtkarg_value_object");
+         use type System.Address;
+
+         function To_String (S : System.Address) return String;
+
+         function To_String (S : System.Address) return String is
+            function Convert is new Unchecked_Conversion
+              (System.Address, Interfaces.C.Strings.chars_ptr);
+            use type System.Address;
+         begin
+            if S /= System.Null_Address then
+               return Interfaces.C.Strings.Value (Convert (S));
+            else
+               return String'(1 .. 0 => ' ');
+            end if;
+         end To_String;
+
+         Data    : Data_Type_Access;
+         Widget  : Gtk.Tips_Query.Gtk_Tips_Query;
+         Widget2 : Gtk.Widget.Gtk_Widget;
+      begin
+         if Nparams < 3 then
+            Ada.Text_IO.Put_Line
+              (Ada.Text_IO.Standard_Error,
+               "Wrong number of arguments in Tips_Query_Callback");
+            return;
+         end if;
+         Data := Convert (User_Data);
+         if Data.Func /= null then
+            Set_Object (Widget, Object);
+            Set_Object (Widget2, Internal (Params, 0));
+            Data.Func (Widget, Widget2,
+                       To_String (Internal (Params, 1)),
+                       To_String (Internal (Params, 2)),
+                       Data.Data.all);
+         end if;
+      end Marshaller;
+
+      -------------
+      -- Connect --
+      -------------
+
+      function Connect
+        (Obj   : in Gtk.Tips_Query.Gtk_Tips_Query'Class;
+         Name  : in String;
+         Func  : in Callback;
+         Data  : in Data_Type;
+         After : in Boolean := False)
+         return Guint
+      is
+         D : Data_Type_Access :=
+          new Data_Type_Record'(Data => new Data_Type'(Data),
+                                Func => Func);
+      begin
+         return Do_Signal_Connect (Obj,
+                                   Name,
+                                   Marshaller'Address,
+                                   Convert (D),
+                                   Free'Address,
+                                   After);
+      end Connect;
+   end Tips_Query_Callback;
 
    ------------------------------------------------------------
    -- Void_Callback                                          --
@@ -439,6 +564,20 @@ package body Gtk.Signal is
       Internal (Obj => Get_Object (Object),
                 Id  => Handler_Id);
    end Disconnect;
+
+   -----------------------
+   -- Emit_Stop_By_Name --
+   -----------------------
+
+   procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
+                                Name   : in String)
+   is
+      procedure Internal (Object : in System.Address;
+                          Name   : in String);
+      pragma Import (C, Internal, "gtk_signal_emit_stop_by_name");
+   begin
+      Internal (Get_Object (Object), Name & Ascii.NUL);
+   end Emit_Stop_By_Name;
 
    -------------------
    -- Handler_Block --
