@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -557,6 +557,11 @@ package Gdk.Window is
    procedure Unref (Window : Gdk_Window);
    --  Decrement the reference counter associated with window.
 
+   function Get_Window_Id (Window : Gdk_Window) return System.Address;
+   --  Return the target specific window id.
+   --  Under Windows, this returns a HWND object.
+   --  Under X, this returns a Window object.
+
 private
 
    Null_Window : constant Gdk_Window := null;
@@ -615,6 +620,7 @@ private
    pragma Import (C, Set_Cursor, "gdk_window_set_cursor");
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
    pragma Import (C, Invalidate_Rect, "gdk_window_invalidate_rect");
+   pragma Import (C, Get_Window_Id, "ada_gdk_get_window_id");
 
    pragma Convention (C, Gdk_Gravity);
    for Gdk_Gravity use
