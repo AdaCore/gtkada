@@ -116,6 +116,11 @@ package body Gtk.Signal is
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
 
+      type Acc is access all Base_Type;
+      --  This type has to be declared at library level, otherwise
+      --  Program_Error might be raised when trying to cast from the
+      --  parameter of Marshaller to another type.
+
       function Convert is new Unchecked_Conversion (Data_Type_Access,
                                                     System.Address);
       function Convert is new Unchecked_Conversion (System.Address,
@@ -155,7 +160,6 @@ package body Gtk.Signal is
                             Nparams   : in Guint;
                             Params    : in GtkArgArray)
       is
-         type Acc is access all Base_Type;
          Data : Data_Type_Access := Convert (User_Data);
          Stub : Base_Type;
       begin
@@ -203,6 +207,7 @@ package body Gtk.Signal is
          end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
+      type Acc is access all Base_Type;
 
       function Convert is new Unchecked_Conversion (Data_Type_Access,
                                                     System.Address);
@@ -248,11 +253,10 @@ package body Gtk.Signal is
                             return System.Address;
          pragma Import (C, Internal, "ada_gtkarg_value_object");
          use type System.Address;
-         type Acc is access all Base_Type;
-         Stub   : Base_Type;
-         Data   : Data_Type_Access := Convert (User_Data);
+         Stub    : Base_Type;
+         Data    : Data_Type_Access := Convert (User_Data);
          Widget2 : Cb_Type;
-         Tmp    : System.Address := Internal (Params, 0);
+         Tmp     : System.Address := Internal (Params, 0);
       begin
          if Nparams = 0 then
             Ada.Text_IO.Put_Line
@@ -306,6 +310,9 @@ package body Gtk.Signal is
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
 
+      type Acc is access all Base_Type;
+      type Acc2 is access all Cb_Type;
+
       function Convert is new Unchecked_Conversion
         (Data_Type_Access, System.Address);
       function Convert is new Unchecked_Conversion
@@ -350,8 +357,6 @@ package body Gtk.Signal is
                             return System.Address;
          pragma Import (C, Internal, "ada_gtkarg_value_object");
          use type System.Address;
-         type Acc is access all Base_Type;
-         type Acc2 is access all Cb_Type;
          Stub   : Base_Type;
          Stub2  : aliased Cb_Type;
          Data   : Data_Type_Access := Convert (User_Data);
@@ -413,6 +418,8 @@ package body Gtk.Signal is
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
 
+      type Acc is access all Base_Type;
+
       function Convert is new Unchecked_Conversion (Data_Type_Access,
                                                     System.Address);
       function Convert is new Unchecked_Conversion (System.Address,
@@ -454,7 +461,6 @@ package body Gtk.Signal is
                             return System.Address;
          pragma Import (C, Internal, "ada_gtkarg_value_object");
          use type System.Address;
-         type Acc is access all Base_Type;
          Stub   : Base_Type;
          Data   : Data_Type_Access := Convert (User_Data);
          Tmp    : System.Address := Internal (Params, 0);
@@ -622,6 +628,8 @@ package body Gtk.Signal is
                             Params    : in GtkArgArray);
       pragma Convention (C, Marshaller);
 
+      type Acc is access all Base_Type;
+
       function Convert is new Unchecked_Conversion (System.Address,
                                                     Callback);
       function Convert is new Unchecked_Conversion (Callback,
@@ -636,7 +644,6 @@ package body Gtk.Signal is
                             Nparams   : in Guint;
                             Params    : in GtkArgArray)
       is
-         type Acc is access all Base_Type;
          Data : Callback := Convert (User_Data);
          Stub : Base_Type;
       begin
