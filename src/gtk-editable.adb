@@ -51,7 +51,7 @@ package body Gtk.Editable is
 
    procedure Claim_Selection
       (Editable : access Gtk_Editable_Record;
-       Claim    : in Boolean;
+       Claim    : in Boolean := True;
        Time     : in Guint32)
    is
       procedure Internal
@@ -117,8 +117,8 @@ package body Gtk.Editable is
 
    procedure Delete_Text
       (Editable  : access Gtk_Editable_Record;
-       Start_Pos : in Gint;
-       End_Pos   : in Gint)
+       Start_Pos : in Gint := 0;
+       End_Pos   : in Gint := -1)
    is
       procedure Internal
          (Editable  : in System.Address;
@@ -173,20 +173,6 @@ package body Gtk.Editable is
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
    end Get_Clipboard_Text;
-
-   ---------------------
-   -- Get_Current_Pos --
-   ---------------------
-
-   function Get_Current_Pos (Widget : access Gtk_Editable_Record)
-                             return      Guint
-   is
-      function Internal (Widget : in System.Address)
-                         return      Guint;
-      pragma Import (C, Internal, "ada_editable_get_current_pos");
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Current_Pos;
 
    ------------------
    -- Get_Editable --
@@ -262,7 +248,6 @@ package body Gtk.Editable is
    procedure Insert_Text
       (Editable        : access Gtk_Editable_Record;
        New_Text        : in String;
-       New_Text_Length : in Gint;
        Position        : in out Gint)
    is
       procedure Internal
@@ -277,7 +262,7 @@ package body Gtk.Editable is
    begin
       Internal (Get_Object (Editable),
                 New_Text & ASCII.Nul,
-                New_Text_Length,
+                New_Text'Length,
                 Pos'Address);
       Position := Pos;
    end Insert_Text;
@@ -306,7 +291,7 @@ package body Gtk.Editable is
    procedure Select_Region
       (Editable : access Gtk_Editable_Record;
        Start    : in Gint;
-       The_End  : in Gint)
+       The_End  : in Gint := -1)
    is
       procedure Internal
          (Editable : in System.Address;
@@ -324,7 +309,7 @@ package body Gtk.Editable is
    ------------------
 
    procedure Set_Editable (Widget : access Gtk_Editable_Record;
-                           Editable : Boolean)
+                           Editable : in Boolean := True)
    is
       procedure Internal (Widget : in System.Address; Editable : Guint);
       pragma Import (C, Internal, "ada_editable_set_editable");
