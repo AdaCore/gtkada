@@ -112,7 +112,10 @@ package Glib is
 
    type Object_Type is private;
    Null_Object_Type : constant Object_Type;
-
+   --  This type is basically the same as Gdk.Root_Type, except this is not
+   --  a tagged type, and thus it can not be extended. It is used as the
+   --  common ancestor for all the types that interface to C but that can
+   --  not be extended in Ada.
 
    function Is_Created (Object : in Object_Type) return Boolean;
    --  Returns True if the associated C object has been created.
