@@ -620,9 +620,9 @@ For instance, a typical dialog is basically a Gtk_Window, that in turns
 contains a Gtk_Box, itself divided into two boxes and a Gtk_Separator,
 and so on.
 
-@c @iftex
-@c @image{boxes, 15cm}
-@c @end iftex
+@iftex
+@image{boxes, 15cm}
+@end iftex
 
 Altough this may seem more complicated than setting absolute positions
 for children, this is the simplest way to automatically handle the
