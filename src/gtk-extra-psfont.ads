@@ -81,7 +81,7 @@ package Gtk.Extra.PsFont is
    type Gtk_PsFont is private;
 
    function Getfont (Name   : in String) return Gtk_PsFont;
-   --  Return the font structure associated with the font NAME.
+   --  Return the font structure associated with the font Name.
 
    function Get_Gdkfont (Name   : in String;
                          Height : in Gint)
@@ -91,8 +91,8 @@ package Gtk.Extra.PsFont is
    --  on your system.
 
    function Get_Psfontname (Name   : in String) return String;
-   --  Return the real postscript of the font.
-   --  In most cases this is the same a Name, expect for a few cases.
+   --  Return the real postscript name of the font.
+   --  In most cases this is the same as Name, except for a few cases.
 
    procedure Add (Fontname : in String;
                   Psname   : in String;
@@ -100,8 +100,8 @@ package Gtk.Extra.PsFont is
                   Xstring  : in Gtkada.Types.Chars_Ptr_Array;
                   Italic   : in Boolean;
                   Bold     : in Boolean);
-   --  Add a new font to the list of recognized font.
-   --  The items in XString should be the standard X11 names for the fonts
+   --  Add a new font to the list of recognized fonts.
+   --  The items in Xstring should be the standard X11 names for the fonts
    --  that match that postscript font (and are used to convert from a
    --  Gtk_PsFont to a Gdk_Font. This should be a Null terminated array.
 
