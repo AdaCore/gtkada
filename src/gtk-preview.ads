@@ -70,7 +70,7 @@ package Gtk.Preview is
      (Preview  : access Gtk_Preview_Record'Class;
       The_Type : Gtk_Preview_Type);
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Preview.
 
    procedure Put
@@ -124,7 +124,5 @@ private
    pragma Import (C, Set_Install_Cmap, "gtk_preview_set_install_cmap");
    pragma Import (C, Set_Reserved, "gtk_preview_set_reserved");
    pragma Import (C, Uninit, "gtk_preview_uninit");
-
-
 
 end Gtk.Preview;
