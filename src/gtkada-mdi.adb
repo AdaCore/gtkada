@@ -3828,7 +3828,18 @@ package body Gtkada.MDI is
                      when Normal    => null;
                   end case;
 
-                  Set_Size_Request (Child, Gint (Width), Gint (Height));
+                  case State is
+                     when Docked =>
+                        Size_Allocate (Child,
+                                       (-1, -1,
+                                        Allocation_Int (Width),
+                                        Allocation_Int (Height)));
+                     when Floating | Normal =>
+                        Set_Size_Request (Child, Gint (Width), Gint (Height));
+                     when Iconified =>
+                        null;
+                  end case;
+
                end if;
             end if;
 
