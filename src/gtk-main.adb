@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,12 +35,6 @@ with System;
 package body Gtk.Main is
 
    package C renames Interfaces.C;
-
-   function Convert is new Unchecked_Conversion
-     (Timeout_Callback, System.Address);
-
-   function Convert is new Unchecked_Conversion
-     (Idle_Callback, System.Address);
 
    function Timeout_Marshaller (Func : Timeout_Callback) return Gint;
    --  Marshaller for Timeout_Callbacks.
@@ -208,15 +202,14 @@ package body Gtk.Main is
         (Priority : Idle_Priority;
          Func     : System.Address;
          Marshal  : System.Address := System.Null_Address;
-         Data     : System.Address := System.Null_Address;
+         Data     : Idle_Callback;
          Destroy  : System.Address := System.Null_Address)
          return Idle_Handler_Id;
       pragma Import (C, Internal, "gtk_idle_add_full");
 
    begin
       return Internal
-        (Priority, Idle_Marshaller'Address,
-         System.Null_Address, Convert (Cb), System.Null_Address);
+        (Priority, Idle_Marshaller'Address, System.Null_Address, Cb);
    end Idle_Add;
 
    ----------
@@ -359,15 +352,14 @@ package body Gtk.Main is
         (Interval : Guint32;
          Func     : System.Address;
          Marshal  : System.Address := System.Null_Address;
-         Data     : System.Address := System.Null_Address;
+         Data     : Timeout_Callback;
          Destroy  : System.Address := System.Null_Address)
          return Timeout_Handler_Id;
       pragma Import (C, Internal, "gtk_timeout_add_full");
 
    begin
       return Internal
-        (Interval, Timeout_Marshaller'Address,
-         System.Null_Address, Convert (Func));
+        (Interval, Timeout_Marshaller'Address, System.Null_Address, Func);
    end Timeout_Add;
 
    ----------
