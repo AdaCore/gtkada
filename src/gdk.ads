@@ -32,7 +32,7 @@ with System;
 package Gdk is
    pragma Elaborate_Body;
 
-   type Root_Type is abstract tagged private;
+   type Root_Type is tagged private;
    type Root_Type_Access is access all Root_Type'Class;
 
    generic
@@ -72,9 +72,8 @@ package Gdk is
 
 private
 
-   type Root_Type is abstract tagged
-     record
-        Ptr : System.Address := System.Null_Address;
-     end record;
+   type Root_Type is tagged record
+      Ptr : System.Address := System.Null_Address;
+   end record;
 
 end Gdk;
