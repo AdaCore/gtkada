@@ -1842,6 +1842,12 @@ package body Gtkada.MDI is
    is
       MDI   : MDI_Window := MDI_Child (Child).MDI;
       Alloc : Gtk_Allocation;
+
+      Buttons_Width : constant := 100;
+      --  Approximative width of the three title bar buttons
+
+      Minimal : constant := 10;
+
    begin
       if Get_Window (Child) /= Get_Window (Event)
         or else MDI.Selected_Child = null
@@ -1854,6 +1860,18 @@ package body Gtkada.MDI is
       Alloc :=
         (MDI.Current_X, MDI.Current_Y,
          Allocation_Int (MDI.Current_W), Allocation_Int (MDI.Current_H));
+
+      if Alloc.X + Alloc.Width < Buttons_Width then
+         Alloc.X := Buttons_Width - Alloc.Width;
+      elsif Alloc.X > Get_Allocation_Width (MDI.Layout) - Minimal then
+         Alloc.X := Get_Allocation_Width (MDI.Layout) - Minimal;
+      end if;
+
+      if Alloc.Y + MDI.Title_Bar_Height < Minimal then
+         Alloc.Y := Minimal - MDI.Title_Bar_Height;
+      elsif Alloc.Y > Get_Allocation_Height (MDI.Layout) - Minimal then
+         Alloc.Y := Get_Allocation_Height (MDI.Layout) - Minimal;
+      end if;
 
       if not Children_Are_Maximized (MDI)
         and then ((not MDI.Opaque_Resize
