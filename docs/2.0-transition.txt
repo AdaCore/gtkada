@@ -35,6 +35,7 @@ Gdk.Pixbuf:
   upgrade to gdk pixbuf 0.8, now part of Gtk+
   rendering functions have been suppressed.
   see gdk-pixbuf.ads for the complete list of new functions.
+  Get_Frames, Copy (Gdk_Pixbuf_Animation): Removed.
 Gdk.Pixmap:
   Destroy: deprecated, use Unref instead.
 Gdk.Rectangle:
@@ -87,10 +88,11 @@ Gtk.Check_Menu_Item:
   new procedures: Set_Inconsistent, Get_Inconsistent.
 Gtk.Clist: deprecated, use Gtk_Tree_View instead.
 Gtk.Color_Selection:
-  Set_Opacity: removed
-Gtk.Color_Selection:
-  new functions Set/Get_Use_Opacity, Set/Get_Use_Palette,
-   Set/Get_Old_Color, Set/Get_Palette_Color, Unset_Palette_Color, Is_Adjusting.
+  new functions Set/Get_Use_Opacity, Get/Set_Has_Opacity_Control,
+   Get/Set_Has_Palette, Get/Set_Current_Color, Get/Set_Current_Alpha,
+   Set/Get_Previous_Color, Get/Set_Previous_Alpha, Palette_From_String,
+   Palette_To_String, Set_Change_Palette_Hook.
+  Set_Opacity, Get/Set_Use_Opacity, Get/Set_Use_Palette: removed
 Gtk.Color_Selection_Dialog:
   now a child of Gtk_Dialog.
   Get_Reset_Button: removed
@@ -98,6 +100,7 @@ Gtk.Container:
   Get_Toplevels, Register_Toplevel, Unregister_Toplevel: removed, use
    Gtk.Window.List_Toplevels instead.
   new functions: Propagate_Expose, Set/Unset_Focus_Chain, Resize_Children.
+  Focus: Removed.
 Gtk.Ctree: deprecated, use Gtk_Tree_View instead.
 Gtk.Data: removed, obsolete.
 Gtk.Editable:
@@ -112,7 +115,10 @@ Gtk.Enums:
   Gtk_Scroll_Type has new values
   Gtk_Window_Position has a new value
   The Window_Dialog value has been removed from Gtk_Window_Type
-  New type Gtk_Text_Direction
+  Gtk_Scroll_Type has new values.
+  New type Gtk_Text_Direction, Gtk_Anchor_Type, Gtk_Side_Type,
+   Gtk_Wrap_Mode
+  Gtk_Trough_Type: removed.
 Gtk.File_Selection:
   now a child of Gtk_Dialog
 Gtk.Font_Selection:
@@ -149,6 +155,7 @@ Gtk.Image:
   Gtk_Image_Type: new type.
   Get_Storage_Type,
   Get/Set from Pixmap, File, Pixbuf, Stock, Icon_Set: new functions.
+  Gtk_New (From_Animation), Get/Set (From_Animation): new functions.
 Gtk.Invisible:
   now a child of Gtk.Widget.
 Gtk.Label:
@@ -162,6 +169,10 @@ Gtk.Marshallers:
 Gtk.Menu:
   Append, Insert, Prepend: removed since redundant with Gtk.Menu_Shell
   Ensure_Uline_Accel_Group, Get_Uline_Accel_Group: removed
+Gtk.Menu_bar:
+  Set_Shadow_Type: removed.
+Gtk.Menu_Item:
+  Gtk_New_With_Mnemonic: new function.
 Gtk.Notebook:
   Get_Notebook_Page: replace Gtk.Arguments.To_Notebook_Page
   Get_Cur_Page, Get_Tab_Label, Get_Allocation_*, Get_Child: removed
@@ -169,6 +180,8 @@ Gtk.Notebook:
     Gtk_Notebook_Page
 Gtk.Option_Menu:
   Get_History: new function.
+Gtk.Packer:
+  Gtk_Anchor_Type, Gtk_Side_Type: enumerated types moved to Gtk.Enums
 Gtk.Paned:
   Set/Get_Gutter_Size: stubs provided for compatbility only.
   Set/Get_Handle_Size: stubs provided for compatibility only.
@@ -178,10 +191,18 @@ Gtk.Preview: deprecated.
 Gtk.Progress: deprecated.
   All functions but Set_Text_Alignment now take Gdouble instead of Gfloat.
 Gtk.Progress_Bar: major API changes, see spec. Previous API wasn't usable.
+Gtk.Radio_Button:
+  New/Initialize_With_Mnemonic: new functions
+Gtk.Radio_Menu_Item:
+  New/Initialize_With_Mnemonic: new functions
+Gtk.Range:
+  Set_Increments, Set_Range, Get/Set_Value: new subprograms.
 Gtk.Ruler:
   all functions now take/return Gdouble instead of Gfloat.
 Gtk.Scale:
-  new function Get_Value_Size
+  Gtk_New_Hscale, Get_Value_Size, Get_Digits, Get_Draw_Value,
+   Get_Value_Pos: new functions.
+  Draw_Value, Get_Value_Size, Get_Value_Width: removed.
 Gtk.Scrolled_Window:
   new a child of Gtk_Bin (instead of Gtk_Container).
   Set_Shadow_Type: new function.
@@ -194,6 +215,7 @@ Gtk.Spin_Button:
   Spin: now takes a Gtk_Spin_Type and a Gdouble as parameters.
   Set_Digits: now takes a Guint instead of a Gint.
   Gtk_New (with range), Set_Increments, Set_Range, Update: new procedures.
+  Get_Value_As_Float: removed, use Get_Value instead.
 Gtk.Status_Bar:
   Set/Get_Has_Resize_Grip: new functions.
 Gtk.Style:
@@ -210,10 +232,12 @@ Gtk.Text_Tag_Table: new package.
 Gtk.Text_View: new package.
 Gtk.Tips_Query: deprecated.
 Gtk.Toggle_Button:
-  Set/Get_Inconsistent: new functions.
+  New_With_Mnemonic, Set/Get_Inconsistent: new functions.
   Is_Active: removed, was deprecated. Use Get_Active instead.
 Gtk.Toolbar:
-  Set_Icon_Size, Insert_Stock: new functions.
+  Gtk_New, Initialize: function profile modified.
+  Remove_Space, Set/Unset_Icon_Size, Insert_Stock, Unset_Style : new functions.
+  Set_Space_Size, Set_Space_Style, Get/Set_Button_Relief: removed.
 Gtk.Tooltips:
   now a child of Gtk_Object.
   Set_Colors: removed, was deprecated. The colors for tooltips are now taken
@@ -236,7 +260,10 @@ Gtk.Window:
   Iconify, Deiconify, Stick, Unstick,
   Maximize, Unmaximize: new procedures.
   Set_Policy, Set_Default_Size: deprecated.
-
+====
+GtkExtra code:
+  call to gtk_toolbar_set_space_size commented out in gtkfontcombo.c
+   since this procedure is not provided yet.
 ====
 
 Not bound yet:
@@ -252,6 +279,7 @@ gdkregion.h: see "missing" section in gdk-region.ads
 gdkselection.h
 gdk-pixbuf-loader.h
 gdkwindow.h: see "missing" section.
+gtkaccessible.h (derives from AtkObject)
 gtkarg.h
 gtkbindings.h
 gtkcellrenderer.h
@@ -280,6 +308,7 @@ gtkrc.h: only partly bound.
 gtkselection.h: see "missing" section in gtk-selection.ads
 gtkseparatormenuitem.h
 gtksettings.h
+gtksizegroup.h
 gtkstock.h (will replace Gtkada.Pixmaps)
 gtkstyle.h: now a GObject with signals. see "missing" section.
             need to update field accessors.
@@ -325,4 +354,4 @@ pango-font.h:
  weight_map[]: This map seems out of sync the actual PangoWeight enum...
   Recommend to the pango folks to get rid of the numbers, and use the
   enum values instead. This breaks pango_font_description_from_string ().
-  
+
