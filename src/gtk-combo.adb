@@ -257,7 +257,7 @@ package body Gtk.Combo is
                    To_Ada (Top.all) & "." &
                    To_Ada (Get_Field (N, "name").all) & ", " &
                    To_Ada (Get_Field (N, "name").all) & "_Items);");
-         Put_Line (File, "   String_List.Free (" &
+         Put_Line (File, "   Free_String_List (" &
            To_Ada (Get_Field (N, "name").all) & "_Items);");
       end if;
 
