@@ -30,7 +30,6 @@
 with Gdk.Font;
 with Interfaces.C.Strings;
 with System;
-with Gtkada.Types; use Gtkada.Types;
 
 package body Gtk.Font_Selection is
 
@@ -124,52 +123,6 @@ package body Gtk.Font_Selection is
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Fsd)));
    end Get_Preview_Text;
-
-   ----------------
-   -- Set_Filter --
-   ----------------
-
-   procedure Set_Filter
-     (Fsd         : access Gtk_Font_Selection_Dialog_Record;
-      Filter_Type : in Gtk_Font_Filter_Type;
-      Font_Type   : in Gtk_Font_Type := Font_All;
-      Foundries   : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Weights     : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Slants      : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Setwidths   : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Spacings    : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Charsets    : in Gtkada.Types.Chars_Ptr_Array := Null_Array)
-   is
-      procedure Internal
-         (Fsd         : in System.Address;
-          Filter_Type : in Gint;
-          Font_Type   : in Gint;
-          Foundries   : in System.Address;
-          Weights     : in System.Address;
-          Slants      : in System.Address;
-          Setwidths   : in System.Address;
-          Spacings    : in System.Address;
-          Charsets    : in System.Address);
-      pragma Import (C, Internal, "gtk_font_selection_dialog_set_filter");
-
-      Fo : Chars_Ptr_Array := Foundries + Null_Ptr;
-      We : Chars_Ptr_Array := Weights + Null_Ptr;
-      Sl : Chars_Ptr_Array := Slants + Null_Ptr;
-      Se : Chars_Ptr_Array := Setwidths + Null_Ptr;
-      Sp : Chars_Ptr_Array := Spacings + Null_Ptr;
-      Ch : Chars_Ptr_Array := Charsets + Null_Ptr;
-
-   begin
-      Internal (Get_Object (Fsd),
-                Gtk_Font_Filter_Type'Pos (Filter_Type),
-                Gtk_Font_Type'Pos (Font_Type),
-                Fo'Address,
-                We'Address,
-                Sl'Address,
-                Se'Address,
-                Sp'Address,
-                Ch'Address);
-   end Set_Filter;
 
    -------------------
    -- Set_Font_Name --
@@ -305,53 +258,6 @@ package body Gtk.Font_Selection is
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);
    end Initialize;
-
-   ----------------
-   -- Set_Filter --
-   ----------------
-
-   procedure Set_Filter
-     (Fsd         : access Gtk_Font_Selection_Record;
-      Filter_Type : in Gtk_Font_Filter_Type;
-      Font_Type   : in Gtk_Font_Type := Font_All;
-      Foundries   : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Weights     : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Slants      : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Setwidths   : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Spacings    : in Gtkada.Types.Chars_Ptr_Array := Null_Array;
-      Charsets    : in Gtkada.Types.Chars_Ptr_Array := Null_Array)
-   is
-      procedure Internal
-         (Fsd         : in System.Address;
-          Filter_Type : in Gint;
-          Font_Type   : in Gint;
-          Foundries   : in System.Address;
-          Weights     : in System.Address;
-          Slants      : in System.Address;
-          Setwidths   : in System.Address;
-          Spacings    : in System.Address;
-          Charsets    : in System.Address);
-      pragma Import (C, Internal, "gtk_font_selection_set_filter");
-      use type Interfaces.C.size_t;
-
-      Fo : Chars_Ptr_Array := Foundries + Null_Ptr;
-      We : Chars_Ptr_Array := Weights + Null_Ptr;
-      Sl : Chars_Ptr_Array := Slants + Null_Ptr;
-      Se : Chars_Ptr_Array := Setwidths + Null_Ptr;
-      Sp : Chars_Ptr_Array := Spacings + Null_Ptr;
-      Ch : Chars_Ptr_Array := Charsets + Null_Ptr;
-
-   begin
-      Internal (Get_Object (Fsd),
-                Gtk_Font_Filter_Type'Pos (Filter_Type),
-                Gtk_Font_Type'Pos (Font_Type),
-                Fo'Address,
-                We'Address,
-                Sl'Address,
-                Se'Address,
-                Sp'Address,
-                Ch'Address);
-   end Set_Filter;
 
    -------------------
    -- Set_Font_Name --

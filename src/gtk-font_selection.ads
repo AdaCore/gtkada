@@ -51,7 +51,6 @@ with Gdk.Font;
 with Gtk.Button;
 with Gtk.Notebook;
 with Gtk.Window;
-with Gtkada.Types;
 
 package Gtk.Font_Selection is
 
@@ -120,31 +119,6 @@ package Gtk.Font_Selection is
    --  Fontname should have the standard format on X11 systems, that fully
    --  describe the family, weight, size, slant, etc. of the font.
 
-   procedure Set_Filter
-     (Fsd        : access Gtk_Font_Selection_Record;
-      Filter_Type : in Gtk_Font_Filter_Type;
-      Font_Type  : in Gtk_Font_Type := Font_All;
-      Foundries  : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Weights    : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Slants     : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Setwidths  : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Spacings   : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Charsets   : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array);
-   --  Set up one of the filters used to display the fonts.
-   --  As described above, there are two types of filters, one of which,
-   --  Font_Filter_Base, can not be modified by the user.
-   --  All the properties are given in an array (no need to have a NULL
-   --  terminated array as in C).
-   --  See the example in the testgtk/ directory in the GtkAda distribution for
-   --  the possible values you can give to the parameters. The strings are
-   --  case sensitive.
-   --  You can also free the strings when you are done with them, since gtk+
-   --  keeps a copy of the information it needs.
-   --  The default values for parameters are set so that there is in fact no
-   --  filter.
-   --  Note that this call will succeed only if Fsd has been added to a window
-   --  first.
-
    function Get_Preview_Text (Fontsel : access Gtk_Font_Selection_Record)
                              return String;
    --  Return the string used to preview the selected font in the dialog.
@@ -193,29 +167,6 @@ package Gtk.Font_Selection is
    --  Set the name and attributes of the selected font in Fontsel.
    --  Fontname should have the standard format on X11 systems, that fully
    --  describe the family, weight, size, slant, etc. of the font.
-
-   procedure Set_Filter
-     (Fsd        : access Gtk_Font_Selection_Dialog_Record;
-      Filter_Type : in Gtk_Font_Filter_Type;
-      Font_Type  : in Gtk_Font_Type := Font_All;
-      Foundries  : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Weights    : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Slants     : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Setwidths  : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Spacings   : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array;
-      Charsets   : in Gtkada.Types.Chars_Ptr_Array := Gtkada.Types.Null_Array);
-   --  Set up one of the filters used to display the fonts.
-   --  As described above, there are two types of filters, one of which,
-   --  Font_Filter_Base, can not be modified by the user.
-   --  All the properties are given in an array (no need to have a NULL
-   --  terminated array as in C).
-   --  See the example in the testgtk/ directory in the GtkAda distribution for
-   --  the possible values you can give to the parameters. The strings are
-   --  case sensitive.
-   --  You can also free the strings when you are done with them, since gtk+
-   --  keeps a copy of the information it needs.
-   --  The default values for parameters are set so that there is in fact no
-   --  filter.
 
    function Get_Preview_Text (Fsd : access Gtk_Font_Selection_Dialog_Record)
                              return String;
