@@ -82,6 +82,42 @@ package Gtkada.Multi_Paned is
       Width, Height : Glib.Gint := 0);
    --  Force a specific size for Widget
 
+   ---------------
+   -- Iterators --
+   ---------------
+
+   type Child_Iterator is private;
+
+   function Start
+     (Win : access Gtkada_Multi_Paned_Record) return Child_Iterator;
+   --  Return an iterator to the first child of the window. This also returns
+   --  children which are not widget, but are used to organize the window into
+   --  horizontal and vertical panes
+
+   function At_End (Iter : Child_Iterator) return Boolean;
+   --  True if there is no more child to be returned
+
+   procedure Next (Iter : in out Child_Iterator);
+   --  Move to the next child of Iterator
+
+   function Get_Widget (Iter : Child_Iterator) return Gtk.Widget.Gtk_Widget;
+   --  Return the widget embedded in the current child. This returns null if
+   --  the current child is only used as a pane separator (horizontal or
+   --  vertical). You mustn't remove the widget from the paned widget, or the
+   --  iterator becomes invalid.
+
+   function Get_Orientation
+     (Iter : Child_Iterator) return Gtk.Enums.Gtk_Orientation;
+   --  Return the orientation of the current child. This is only relevant if
+   --  the child doesn't contain a widget (and therefore Get_Widget has
+   --  returned null).
+
+   function Get_Depth (Iter : Child_Iterator) return Natural;
+   --  Return the depth of the current child (0 means the child is at the
+   --  toplevel, 1 that this is a child directly underneath,...).
+   --  This can be used to detect when the Iter has finished traversing one
+   --  of the panes.
+
 private
    type Resize_Handle is record
       Position : Gtk.Widget.Gtk_Allocation;
@@ -106,6 +142,11 @@ private
             First_Child : Child_Description_Access;
             Handles     : Handles_Array_Access;
       end case;
+   end record;
+
+   type Child_Iterator is record
+      Current : Child_Description_Access;
+      Depth   : Natural := 0;
    end record;
 
    type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with record

@@ -102,19 +102,6 @@ package body Gtkada.Multi_Paned is
    --  Compute the position of a specific child
 
 
-   type Child_Iterator is record
-      Current : Child_Description_Access;
-   end record;
-
-   function Start
-     (Win : access Gtkada_Multi_Paned_Record'Class) return Child_Iterator;
-   --  Start iterating over all the children of Win. This is a depth-first
-   --  iterator, so that children can be removed when the iterator is
-   --  traversed
-
-   procedure Next (Iter : in out Child_Iterator);
-   --  Move to the next child
-
    function Get (Iter : Child_Iterator) return Child_Description_Access;
    --  Return the current child. You must move to Next before destroying
    --  the returned value, if you need to.
@@ -185,18 +172,9 @@ package body Gtkada.Multi_Paned is
    -----------
 
    function Start
-     (Win : access Gtkada_Multi_Paned_Record'Class) return Child_Iterator
-   is
-      C : Child_Description_Access := Win.Children;
+     (Win : access Gtkada_Multi_Paned_Record) return Child_Iterator is
    begin
-      while C /= null
-        and then not C.Is_Widget
-        and then C.First_Child /= null
-      loop
-         C := C.First_Child;
-      end loop;
-
-      return (Current => C);
+      return (Current => Win.Children, Depth => 0);
    end Start;
 
    ---------
@@ -208,6 +186,52 @@ package body Gtkada.Multi_Paned is
       return Iter.Current;
    end Get;
 
+   ---------------
+   -- Get_Depth --
+   ---------------
+
+   function Get_Depth (Iter : Child_Iterator) return Natural is
+   begin
+      return Iter.Depth;
+   end Get_Depth;
+
+   ------------
+   -- At_End --
+   ------------
+
+   function At_End (Iter : Child_Iterator) return Boolean is
+   begin
+      return Iter.Current = null;
+   end At_End;
+
+   ----------------
+   -- Get_Widget --
+   ----------------
+
+   function Get_Widget (Iter : Child_Iterator) return Gtk.Widget.Gtk_Widget is
+   begin
+      if Iter.Current /= null and then Iter.Current.Is_Widget then
+         return Iter.Current.Widget;
+      else
+         return null;
+      end if;
+   end Get_Widget;
+
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
+
+   function Get_Orientation
+     (Iter : Child_Iterator) return Gtk.Enums.Gtk_Orientation is
+   begin
+      if Iter.Current /= null and then not Iter.Current.Is_Widget then
+         return Iter.Current.Orientation;
+      else
+         return Orientation_Horizontal;
+      end if;
+   end Get_Orientation;
+
+
    ----------
    -- Next --
    ----------
@@ -216,15 +240,25 @@ package body Gtkada.Multi_Paned is
    begin
       if Iter.Current = null then
          null;
-      elsif Iter.Current.Next = null then
-         Iter.Current := Iter.Current.Parent;
+      elsif not Iter.Current.Is_Widget
+        and then Iter.Current.First_Child /= null
+      then
+         Iter.Current := Iter.Current.First_Child;
+         Iter.Depth   := Iter.Depth + 1;
       else
-         Iter.Current := Iter.Current.Next;
-         while not Iter.Current.Is_Widget
-           and then Iter.Current.First_Child /= null
+         while Iter.Current /= null
+           and then Iter.Current.Next = null
          loop
-            Iter.Current := Iter.Current.First_Child;
+            Iter.Current := Iter.Current.Parent;
+
+            if Iter.Current /= null then
+               Iter.Depth   := Iter.Depth - 1;
+            end if;
          end loop;
+
+         if Iter.Current /= null then
+            Iter.Current := Iter.Current.Next;
+         end if;
       end if;
    end Next;
 
@@ -283,17 +317,18 @@ package body Gtkada.Multi_Paned is
    procedure Destroy_Paned
      (Paned : access Gtk_Widget_Record'Class)
    is
+      use type Widget_List.Glist;
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      Iter : Child_Iterator := Start (Split);
-      Current : Child_Description_Access;
+      Items, Tmp : Widget_List.Glist := Get_Children (Split);
    begin
-      loop
-         Current := Get (Iter);
-         exit when Current = null;
-
-         Next (Iter);
-         Free (Current);
+      while Tmp /= Widget_List.Null_List loop
+         Remove (Split, Widget_List.Get_Data (Tmp));
+         Tmp := Widget_List.Next (Tmp);
       end loop;
+
+      Widget_List.Free (Items);
+
+      Free (Split.Children);
 
       if Split.GC /= null then
          Unref (Split.GC);
@@ -406,10 +441,6 @@ package body Gtkada.Multi_Paned is
       Current, Tmp, Parent : Child_Description_Access;
 
    begin
-      if In_Destruction_Is_Set (Split) then
-         return;
-      end if;
-
       Iter := Start (Split);
 
       loop
@@ -1079,7 +1110,7 @@ package body Gtkada.Multi_Paned is
          Current := Get (Iter);
          exit when Current = null;
 
-         if Current.Is_Widget then
+         if Current.Is_Widget and then Is_Visible (Current) then
             if Current.Width = -1 or else Current.Height = -1 then
                Size_Request (Current.Widget, Requisition);
                if Current.Width = -1 then
