@@ -142,6 +142,7 @@ package body Gtkada.Multi_Paned is
       Ref_Widget  : Gtk_Widget;
       New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation : Gtk_Orientation;
+      Fixed_Size    : Boolean := False;
       Width, Height : Glib.Gint := 0;
       After       : Boolean := True);
    --  Internal version of Split_Horizontal and Split_Vertical
@@ -1091,7 +1092,6 @@ package body Gtkada.Multi_Paned is
       Iter         : Child_Iterator := Start (Split);
       Current, Tmp : Child_Description_Access;
       Position     : Gtk_Allocation;
-      Last_Visible : Integer;
       Requisition  : Gtk_Requisition;
       Parent_Pos   : Gtk_Allocation;
 
@@ -1120,12 +1120,20 @@ package body Gtkada.Multi_Paned is
          exit when Current = null;
 
          if not Current.Is_Widget then
-            Last_Visible := Current.Handles'Last;
             Tmp := Current.First_Child;
+
+            --  For GPS's sake, we handle the following configuration
+            --      child visible / child invisible / child visible
+            --  by allocating the maximum space for the first child, and less
+            --  for the last child (think of the docks in GPS)
+
+            if Tmp /= null then
+               Tmp := Tmp.Next;
+            end if;
+
             for H in Current.Handles'Range loop
                if Is_Visible (Tmp) then
                   Show (Current.Handles (H).Win);
-                  Last_Visible := H;
                else
                   Hide (Current.Handles (H).Win);
                end if;
@@ -1133,8 +1141,11 @@ package body Gtkada.Multi_Paned is
                Tmp := Tmp.Next;
             end loop;
 
-            if Current.Handles'Last /= 0 and then not Is_Visible (Tmp) then
-               Hide (Current.Handles (Last_Visible).Win);
+            if Current.Handles'Last /= 0
+              and then Current.First_Child /= null
+              and then not Is_Visible (Current.First_Child)
+            then
+               Hide (Current.Handles (Current.Handles'First).Win);
             end if;
          end if;
 
@@ -1217,8 +1228,10 @@ package body Gtkada.Multi_Paned is
                   end if;
                end if;
 
-               Current.Width := 0;
-               Current.Height := 0;
+               if not Current.Fixed_Size then
+                  Current.Width := 0;
+                  Current.Height := 0;
+               end if;
             end if;
          end if;
 
@@ -1352,6 +1365,7 @@ package body Gtkada.Multi_Paned is
       Ref_Widget    : Gtk_Widget;
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk_Orientation;
+      Fixed_Size    : Boolean := False;
       Width, Height : Glib.Gint := 0;
       After         : Boolean := True)
    is
@@ -1373,6 +1387,7 @@ package body Gtkada.Multi_Paned is
               (Parent      => Current.Parent,
                Next        => Current.Next,
                Is_Widget   => True,
+               Fixed_Size  => Fixed_Size,
                Width       => Width,
                Height      => Height,
                Widget      => Gtk_Widget (New_Child));
@@ -1381,6 +1396,8 @@ package body Gtkada.Multi_Paned is
                Current.Widget := Gtk_Widget (New_Child);
                Tmp2.Width     := Current.Width;
                Tmp2.Height    := Current.Height;
+               Tmp2.Fixed_Size := Current.Fixed_Size;
+               Current.Fixed_Size := Fixed_Size;
                Current.Width  := Width;
                Current.Height := Height;
             end if;
@@ -1417,6 +1434,7 @@ package body Gtkada.Multi_Paned is
               (Parent      => Pane,
                Next        => null,
                Is_Widget   => True,
+               Fixed_Size  => Fixed_Size,
                Width       => Width,
                Height      => Height,
                Widget      => Gtk_Widget (New_Child));
@@ -1425,6 +1443,8 @@ package body Gtkada.Multi_Paned is
                Current.Widget      := Gtk_Widget (New_Child);
                Current.Next.Width  := Current.Width;
                Current.Next.Height := Current.Height;
+               Current.Next.Fixed_Size := Current.Fixed_Size;
+               Current.Fixed_Size := Fixed_Size;
                Current.Width  := Width;
                Current.Height := Height;
             end if;
@@ -1436,6 +1456,7 @@ package body Gtkada.Multi_Paned is
            (Parent      => null,
             Next        => null,
             Is_Widget   => True,
+            Fixed_Size  => Fixed_Size,
             Width       => Width,
             Height      => Height,
             Widget      => Gtk_Widget (New_Child));
@@ -1453,6 +1474,7 @@ package body Gtkada.Multi_Paned is
            (Parent      => Win.Children,
             Next        => null,
             Is_Widget   => True,
+            Fixed_Size  => Fixed_Size,
             Width       => Width,
             Height      => Height,
             Widget      => Gtk_Widget (New_Child));
@@ -1482,12 +1504,13 @@ package body Gtkada.Multi_Paned is
       Ref_Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
       New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation : Gtk_Orientation;
+      Fixed_Size    : Boolean := False;
       Width, Height : Glib.Gint := 0;
       After       : Boolean := True) is
    begin
       Split_Internal
         (Win, Gtk_Widget (Ref_Widget), New_Child, Orientation,
-         Width, Height, After);
+         Fixed_Size, Width, Height, After);
    end Split;
 
    ---------------
@@ -1499,9 +1522,11 @@ package body Gtkada.Multi_Paned is
       New_Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
+      Fixed_Size    : Boolean := False;
       Width, Height : Glib.Gint := 0) is
    begin
-      Split_Internal (Win, null, New_Child, Orientation, Width, Height);
+      Split_Internal
+        (Win, null, New_Child, Orientation, Fixed_Size, Width, Height);
    end Add_Child;
 
    --------------
