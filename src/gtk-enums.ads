@@ -275,6 +275,10 @@ package Gtk.Enums is
    --  second one will be placed on the left of the first.
    for Gtk_Side_Type'Size use Gint'Size;
 
+   type Gtk_Sort_Type is
+     (Sort_Ascending,
+      Sort_Descending);
+
    type Gtk_State_Type is
      (State_Normal,
       State_Active,
