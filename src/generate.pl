@@ -381,7 +381,7 @@ sub parse_enums
 
     # If there is a representation clause, use an Integer type instead
     if ($enum =~ /<</) {
-      $enumerates .= "mod 2 ** 16;\n";
+      $enumerates .= "mod 2 ** 32;\n";
       foreach (split (/,/, $enum)) {
 	my ($value, $num) = lc ($_);
 	$value =~ s/G[td]k_|Gnome_//i;
