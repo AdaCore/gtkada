@@ -77,7 +77,7 @@ package Gtk.Text_Tag is
    --     Event        : Gdk.Event.Gdk_Event;
    --     Iter         : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
    --  ??? Can not be bound here. Circular dependency problem with
-   --  Gtk_Text_Iter.
+   --  ??? Gtk_Text_Iter.
    --  Emit the "event" signal on Tag.
    --  Event_Object: object that received the event, such as a widget.
    --  Event: the event.
@@ -554,7 +554,7 @@ private
    Background_Property         : constant Glib.Properties.Property_String_WO :=
      Glib.Properties.Build ("background");
    Background_Gdk_Property     : constant Gdk.Color.Property_Gdk_Color :=
-     Gdk.Color.Build ("background_gdb");
+     Gdk.Color.Build ("background_gdk");
    Background_Stipple_Property : constant Glib.Properties.Property_C_Proxy :=
      Glib.Properties.Build ("background_stipple");
    Foreground_Property         : constant Glib.Properties.Property_String_WO :=
