@@ -36,6 +36,7 @@ Gdk.Pixbuf:
   rendering functions have been suppressed.
   see gdk-pixbuf.ads for the complete list of new functions.
   Get_Frames, Copy (Gdk_Pixbuf_Animation): Removed.
+  Gdk_New_From_Inline : Removed.
 Gdk.Pixmap:
   Destroy: deprecated, use Unref instead.
 Gdk.Rectangle:
@@ -68,6 +69,8 @@ Gtk:
   Gtk_Type_Gdk_Event: replace by Gdk.Event.Get_Type
   Root_Type replaced by Glib.GObjects.GObject_Record
   All subprograms related to Root_Type moved to Glib.GObjects as well.
+Gtk.Accel_Label:
+  Set_Accel_Widget: replace by Set_Accel_Object
 Gtk.Adjustments:
   all Gfloat replaced by Gdouble
 Gtk.Arguments obsolete, use Glib.Values instead
@@ -102,6 +105,7 @@ Gtk.Container:
    Gtk.Window.List_Toplevels instead.
   new functions: Propagate_Expose, Set/Unset_Focus_Chain, Resize_Children.
   Focus: Removed.
+  Children: replace by Get_Children
 Gtk.Ctree: deprecated, use Gtk_Tree_View instead.
 Gtk.Data: removed, obsolete.
 Gtk.Editable:
@@ -170,19 +174,23 @@ Gtk.Marshallers:
 Gtk.Menu:
   Append, Insert, Prepend: removed since redundant with Gtk.Menu_Shell
   Ensure_Uline_Accel_Group, Get_Uline_Accel_Group: removed
-Gtk.Menu_bar:
+Gtk.Menu_Bar:
   Set_Shadow_Type: removed.
+  Append : removed.
+  Insert : removed.
+  Prepend : removed.
 Gtk.Menu_Item:
   Gtk_New_With_Mnemonic: new function.
+  Configure : removed.
 Gtk.Notebook:
   Get_Notebook_Page: replace Gtk.Arguments.To_Notebook_Page
   Get_Cur_Page, Get_Tab_Label, Get_Allocation_*, Get_Child: removed
   Get_Menu_Label: spec modified to take a notebook+widget instead of a
     Gtk_Notebook_Page
+  Set_Page : replace by Set_Current_Page
 Gtk.Option_Menu:
   Get_History: new function.
-Gtk.Packer:
-  Gtk_Anchor_Type, Gtk_Side_Type: enumerated types moved to Gtk.Enums
+Gtk.Packer: deprecated.
 Gtk.Paned:
   Set/Get_Gutter_Size: stubs provided for compatbility only.
   Set/Get_Handle_Size: stubs provided for compatibility only.
@@ -194,8 +202,10 @@ Gtk.Progress: deprecated.
 Gtk.Progress_Bar: major API changes, see spec. Previous API wasn't usable.
 Gtk.Radio_Button:
   New/Initialize_With_Mnemonic: new functions
+  Group : replace by Get_Group.
 Gtk.Radio_Menu_Item:
   New/Initialize_With_Mnemonic: new functions
+  Group : replace by Get_Group.
 Gtk.Range:
   Set_Increments, Set_Range, Get/Set_Value: new subprograms.
 Gtk.Ruler:
@@ -254,11 +264,11 @@ Gtk.Widget:
   Gtk_Requisition, Gtk_Allocation: now takes gint insstead of gint16.
   Double_Buffered_Is_Set, Set_Double_Buffered,
   Get_Parent_Window, Hide_On_Delete, Get_Modifer_Style: new function.
-  Set_Default_Visual, Push/Pop_Visual, Get_Visual: removed
+  Set_Default_Visual, Push/Pop_Visual, Get_Visual, Set_Rc_Style: removed
   Draw_Default, Draw_Focus, Popup: removed
 Gtk.Window:
   Set_Role, Set_Destroy_With_Parent,
-  Set/Get_Resizeable, Set_Has_Frame, Set_Frame_Dimensions,
+  Set/Get_Resizable, Set_Has_Frame, Set_Frame_Dimensions,
   Set_Decorated, List_Toplevels, Present,
   Iconify, Deiconify, Stick, Unstick,
   Maximize, Unmaximize: new procedures.
