@@ -14,10 +14,15 @@ Mon Nov 25 12:00:14  2002	Arnaud Charlet <charlet@gnat.com>
 	* gtk+/gdk/win32/Makefile.am: Remove gdk-win32res.lo dependency,
 	since we do not want to use the default Gtk+ icon.
 
+Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkevents-win32.c: Force an update when paint message
+	is received, otherwise windows in background are not immediately
+	refreshed when moving a modal window on top of them.
+
 #########################################
 # Selection problem B430-008
 #########################################
-
 
 --- gtk+/gtk/gtktextview.c.old	2002-11-05 11:11:07 +0100
 +++ gtk+/gtk/gtktextview.c	2002-11-05 11:11:25 +0100
@@ -33,6 +38,21 @@ Mon Nov 25 12:00:14  2002	Arnaud Charlet <charlet@gnat.com>
    if (event->button == 1)
      {
 
+--- gtk+/gdk/win32/gdkevents-win32.c	2003/03/27 11:08:56	1.2
++++ gtk+/gdk/win32/gdkevents-win32.c	2003/03/27 14:11:31
+@@ -2910,6 +2910,12 @@
+ 	  _gdk_window_process_expose (window, update_region);
+ 	  gdk_region_destroy (update_region);
+ 	  return_val = FALSE;
++
++          /* Force a process_all_updates to refresh visible windows
++           * when receiving a paint message. */
++ 
++          if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
++            gdk_window_process_updates (window, FALSE);
+         }
+       DeleteObject (hrgn);
+       break;
 --- gtk+/gdk/win32/Makefile.am	2002/11/25 10:58:36	1.1
 +++ gtk+/gdk/win32/Makefile.am	2002/11/25 10:59:18
 @@ -79,4 +79,4 @@
