@@ -722,7 +722,7 @@ package body Gtkada.Multi_Paned is
       if Split.Selected_Handle_Parent /= null then
          Draw_Resize_Line (Split);
 
-         if Split.Opaque_Resizing then
+         if not Split.Opaque_Resizing then
             Compute_Resize_Handle_Percent (Split);
          end if;
 
