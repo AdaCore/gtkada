@@ -28,8 +28,10 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Gdk; use Gdk;
 with Gdk.Bitmap;
 with Gdk.Color;
+with Gdk.Font;
 with Gdk.Pixmap;
 with Gtk; use Gtk;
 with Gtk.Adjustment;
@@ -89,6 +91,9 @@ package body Create_Ctree is
    Book_Label, Page_Label, Sel_Label, Vis_Label : Gtk.Label.Gtk_Label;
    Spin1, Spin2, Spin3 : Gtk.Spin_Button.Gtk_Spin_Button;
 
+   Style1 : Gtk.Style.Gtk_Style;
+   Style2 : Gtk.Style.Gtk_Style;
+
    Books : Gint := 0;
    Pages : Gint := 0;
 
@@ -139,6 +144,22 @@ package body Create_Ctree is
    begin
       After_Press (Ctree);
    end After_Press_Cb;
+
+   -------------------------------------------------------------------
+
+   procedure Count_Items
+     (Ctree      : access Gtk.Ctree.Gtk_Ctree_Record'Class;
+      Node       : in     Gtk.Ctree.Gtk_Ctree_Node;
+      Dummy_Data : in     Ctree_Style_Row_Data.Data_Type_Access) is
+      pragma Warnings (Off, Ctree);
+      pragma Warnings (Off, Dummy_Data);
+   begin
+      if Gtk.Ctree.Row_Get_Is_Leaf (Gtk.Ctree.Node_Get_Row (Node)) then
+         Pages := Pages - 1;
+      else
+         Books := Books - 1;
+      end if;
+   end Count_Items;
 
    -------------------------------------------------------------------
 
@@ -208,6 +229,137 @@ package body Create_Ctree is
       Gtk.Ctree.Unselect_Recursive (Ctree);
       After_Press_Cb (Ctree);
    end Unselect_All;
+
+   -------------------------------------------------------------------
+
+   procedure Change_Style (Ctree : access Gtk.Ctree.Gtk_Ctree_Record)
+   is
+
+      Node : Gtk.Ctree.Gtk_Ctree_Node;
+      Child : Gtk.Ctree.Gtk_Ctree_Node;
+      Col1, Col2 : Gdk.Color.Gdk_Color;
+      Pos : Gint := Gtk.Ctree.Get_Focus_Row (Ctree);
+
+   begin
+
+      if Pos < 0 then
+         Pos := 0;
+      end if;
+
+      Node := Gtk.Ctree.Node_List.Get_Gpointer
+        (Gtk.Ctree.Node_List.Nth (Gtk.Ctree.Get_Node_List (Ctree),
+                                  Guint (Pos)));
+
+      if not Gtk.Ctree.Is_Created (Node) then
+         return;
+      end if;
+
+      if not Gdk.Is_Created (Style1) then
+         Gdk.Color.Set_Rgb (Color => Col1,
+                            Red => 0,
+                            Green => 56_000,
+                            Blue => 0);
+         Gdk.Color.Set_Rgb (Color => Col2,
+                            Red => 32_000,
+                            Green => 0,
+                            Blue => 56_000);
+
+         Gtk.Style.Gtk_New (Style1);
+         Gtk.Style.Set_Base (Style      => Style1,
+                             State_Type => State_Normal,
+                             Color      => Col1);
+         Gtk.Style.Set_Foreground (Style      => Style1,
+                                   State_Type => State_Selected,
+                                   Color      => Col2);
+
+         Gtk.Style.Gtk_New (Style2);
+         Gtk.Style.Set_Base (Style      => Style2,
+                             State_Type => State_Selected,
+                             Color      => Col2);
+         Gtk.Style.Set_Foreground (Style      => Style2,
+                                   State_Type => State_Normal,
+                                   Color      => Col1);
+         Gtk.Style.Set_Background (Style      => Style2,
+                                   State_Type => State_Normal,
+                                   Color      => Col2);
+
+         declare
+            Tmp_Font : Gdk.Font.Gdk_Font := Gtk.Style.Get_Font (Style2);
+         begin
+            Gdk.Font.Unref (Tmp_Font);
+            Gdk.Font.Load
+              (Font => Tmp_Font,
+               Font_Name => "-*-courier-medium-*-*-*-*-300-*-*-*-*-*-*");
+            Gtk.Style.Set_Font (Style => Style2, Font  => Tmp_Font);
+         end;
+
+      end if;
+
+      Gtk.Ctree.Node_Set_Cell_Style (Ctree, Node,
+                                     Column => 1,
+                                     Style => Style1);
+      Gtk.Ctree.Node_Set_Cell_Style (Ctree, Node,
+                                     Column => 0,
+                                     Style => Style2);
+
+      Child := Gtk.Ctree.Row_Get_Children (Gtk.Ctree.Node_Get_Row (Node));
+      if Gtk.Ctree.Is_Created (Child) then
+         Gtk.Ctree.Node_Set_Row_Style (Ctree, Child, Style2);
+      end if;
+
+
+   end Change_Style;
+
+   -------------------------------------------------------------------
+
+   procedure Remove_Selection (Ctree : access Gtk.Ctree.Gtk_Ctree_Record)
+   is
+      Node : Gtk.Ctree.Gtk_Ctree_Node;
+      Selection : Gtk.Ctree.Node_List.Glist;
+
+      use Gtk.Ctree.Node_List;
+
+   begin
+
+      Gtk.Ctree.Freeze (Ctree);
+
+      loop
+
+         Selection := Gtk.Ctree.Get_Selection (Ctree);
+         exit when Gtk.Ctree.Node_List.Length (Selection) = 0;
+
+         Node := Gtk.Ctree.Node_List.Get_Data (Selection);
+
+         if Gtk.Ctree.Row_Get_Is_Leaf (Gtk.Ctree.Node_Get_Row (Node)) then
+            Pages := Pages - 1;
+         else
+            Ctree_Style_Row_Data.Post_Recursive (Ctree, Node,
+                                                 Count_Items'Access,
+                                                 null);
+         end if;
+
+         Gtk.Ctree.Remove_Node (Ctree, Node);
+
+         exit when Gtk.Ctree.Get_Selection_Mode (Ctree) = Selection_Browse;
+
+      end loop;
+
+      if Gtk.Ctree.Get_Selection_Mode (Ctree) = Selection_Extended and then
+        not Is_Created (Gtk.Ctree.Get_Selection (Ctree)) and then
+        Gtk.Ctree.Get_Focus_Row (Ctree)>= 0 then
+
+         Node := Gtk.Ctree.Node_Nth (Ctree,
+                                     Guint (Gtk.Ctree.Get_Focus_Row (Ctree)));
+         if Gtk.Ctree.Is_Created (Node) then
+            Gtk.Ctree.Gtk_Select (Ctree, Node);
+         end if;
+
+      end if;
+
+      Gtk.Ctree.Thaw (Ctree);
+      After_Press_Cb (Ctree);
+
+   end Remove_Selection;
 
    -------------------------------------------------------------------
 
@@ -787,8 +939,10 @@ package body Create_Ctree is
 
       Gtk.Button.Gtk_New (Button, Label => "Change Style");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
-      --       gtk_signal_connect (GTK_OBJECT (button), "clicked",
-      --                           GTK_SIGNAL_FUNC (change_style), ctree);
+      Id := Ctree_Object_Cb.Connect (Button,
+                                     Name => "clicked",
+                                     Func => Change_Style'Access,
+                                     Slot_Object => Ctree);
 
       Gtk.Button.Gtk_New (Button, Label => "Export Tree");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
@@ -815,8 +969,10 @@ package body Create_Ctree is
 
       Gtk.Button.Gtk_New (Button, Label => "Remove Selection");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
-      --       gtk_signal_connect (GTK_OBJECT (button), "clicked",
-      --                           GTK_SIGNAL_FUNC (remove_selection), ctree);
+      Id := Ctree_Object_Cb.Connect (Button,
+                                     Name => "clicked",
+                                     Func => Remove_Selection'Access,
+                                     Slot_Object => Ctree);
 
       Gtk.Check_Button.Gtk_New (Check, With_Label => "Reorderable");
       Gtk.Box.Pack_Start (Hbox, Child => Check, Expand => False);
