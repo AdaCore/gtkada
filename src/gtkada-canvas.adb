@@ -87,7 +87,7 @@ package body Gtkada.Canvas is
    --  the canvas and the items are fast to draw (for instance if they use
    --  double-buffer themselves).
    --  ??? This could be configurable at the canvas level
-   --  ??? This might be self to False with gtk+2.0
+   --  ??? This might be set to False with gtk+2.0
 
    Scroll_Adj_Signal : constant := 4;
    Signals : constant chars_ptr_array :=
