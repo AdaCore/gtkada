@@ -1,3 +1,10 @@
+Thu Mar 23 2004  Arnaud Charlet  <charlet@act-europe.fr>
+
+	* pango/pangofc-fontmap.cI (_pango_fc_font_desc_from_pattern): Fix
+	code that was only executed when assertion were enabled.
+
+	This change is already included in pango 1.4.
+
 Thu Nov 27 2003  Arnaud Charlet  <charlet@act-europe.fr>
 
 	* configure.in, configure: Add missing G_DISABLE_CAST_CHECKS when
@@ -6,12 +13,16 @@ Thu Nov 27 2003  Arnaud Charlet  <charlet@act-europe.fr>
 	* pango/pango-layout.c: Do not call utf8_validate when assertions
 	are disabled.
 
+	To be submitted.
+
 Thu Apr 3 2003  Arnaud Charlet  <charlet@act-europe.fr>
 
 	Changes to ease distributing gtk+ executables with no gtk+ install:
 
 	* pango/pangox-fontmap.c: Provide a default set of aliases when none
 	was found.
+
+	Core X no longer supported by pango 1.4, so no submission needed.
 
 --- pango/pangox-fontmap.c	2003/04/03 15:16:10	1.1
 +++ pango/pangox-fontmap.c	2003/04/03 15:45:47
@@ -378,3 +389,30 @@ Thu Apr 3 2003  Arnaud Charlet  <charlet@act-europe.fr>
      {
        if (!g_utf8_validate (text, length, &end))
  	g_warning ("Invalid UTF8 string passed to pango_layout_set_text()");
+*** pango/pangofc-fontmap.cI.old	Tue Mar 16 15:50:40 2004
+--- pango/pangofc-fontmap.cI	Tue Mar 16 16:01:10 2004
+*************** _pango_fc_font_desc_from_pattern
+*** 862,871 ****
+    
+    char *s;
+    int i;
+  
+    desc = pango_font_description_new ();
+  
+!   g_assert (FcPatternGetString (pattern, FC_FAMILY, 0, (FcChar8 **) &s) == FcResultMatch);
+  
+    pango_font_description_set_family (desc, s);
+    
+--- 862,873 ----
+    
+    char *s;
+    int i;
++   FcResult res;
+  
+    desc = pango_font_description_new ();
+  
+!   res = FcPatternGetString (pattern, FC_FAMILY, 0, (FcChar8 **) &s);
+!   g_assert (res == FcResultMatch);
+  
+    pango_font_description_set_family (desc, s);
+    
