@@ -46,6 +46,10 @@ package Glib.Glade is
    package Glib_XML is new Glib.XML (XML_Data);
    use Glib_XML;
 
+   procedure Add_Package (S : String);
+   --  Add package S in the list of packages if S isn't already present
+   --  This is used to generate the proper list of "with"ed packages.
+
    function Find_Parent (N : Node_Ptr; Class : String) return Node_Ptr;
    --  Find a node in the ancestors of N with a given class
 
@@ -65,6 +69,10 @@ package Glib.Glade is
       File : File_Type; Delim : Character := ' ');
    --  Generate a Set_<Name> call in File. If Delim is not a space, Name is
    --  surrounded by it.
+
+   procedure Gen_Set
+     (N : Node_Ptr; Class, Name, Field : String; File : File_Type);
+   --  Generate a Set_<Name> (Field) call in File.
 
    procedure Gen_Set
      (N : Node_Ptr; Class, Name, Field1, Field2, Field3, Field4 : String;

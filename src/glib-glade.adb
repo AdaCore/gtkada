@@ -51,9 +51,6 @@ package body Glib.Glade is
    Num_Signals : Natural := 0;
    --  Used by Add_Signal and Gen_Signal_Instanciations
 
-   procedure Add_Package (S : String);
-   --  Add package S in Packages if S isn't already present
-
    procedure Add_Signal (Signal, Class : String_Ptr);
    --  Add widget S in Signals if S isn't already present
 
@@ -285,6 +282,20 @@ package body Glib.Glade is
    end Gen_Set;
 
    procedure Gen_Set
+     (N : Node_Ptr; Class, Name, Field : String; File : File_Type)
+   is
+      P : String_Ptr := Get_Field (N, Field);
+
+   begin
+      if P /= null then
+         Add_Package (Class);
+         Put_Line (File, "   " & Class & ".Set_" & To_Ada (Name) & " (Gtk_" &
+           Class & " (" & To_Ada (Find_Tag (N.Child, "name").Value.all) &
+           "), " & To_Ada (P.all) & ");");
+      end if;
+   end Gen_Set;
+
+   procedure Gen_Set
      (N : Node_Ptr;
       Class, Name, Field1, Field2, Field3, Field4 : String;
       File : File_Type)
@@ -405,6 +416,8 @@ package body Glib.Glade is
          Put (File, "      " & To_Ada (Param4));
          Put (File, ", " & To_Ada (Param5));
          Put_Line (File, ");");
+
+         N.Specific_Data.Created := True;
       end if;
    end Gen_New;
 

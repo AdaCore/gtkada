@@ -29,6 +29,7 @@
 
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Table is
@@ -38,50 +39,58 @@ package Gtk.Table is
    type Gtk_Table is access all Gtk_Table_Record'Class;
 
    procedure Attach
-      (Table         : access Gtk_Table_Record;
-       Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Left_Attach   : in Gint;
-       Right_Attach  : in Gint;
-       Top_Attach    : in Gint;
-       Bottom_Attach : in Gint;
-       Xoptions      : in Gtk_Attach_Options;
-       Yoptions      : in Gtk_Attach_Options;
-       Xpadding      : in Gint;
-       Ypadding      : in Gint);
+     (Table         : access Gtk_Table_Record;
+      Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Left_Attach   : in Gint;
+      Right_Attach  : in Gint;
+      Top_Attach    : in Gint;
+      Bottom_Attach : in Gint;
+      Xoptions      : in Gtk_Attach_Options;
+      Yoptions      : in Gtk_Attach_Options;
+      Xpadding      : in Gint;
+      Ypadding      : in Gint);
    procedure Attach_Defaults
-      (Table         : access Gtk_Table_Record;
-       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Left_Attach   : in Gint;
-       Right_Attach  : in Gint;
-       Top_Attach    : in Gint;
-       Bottom_Attach : in Gint);
+     (Table         : access Gtk_Table_Record;
+      Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Left_Attach   : in Gint;
+      Right_Attach  : in Gint;
+      Top_Attach    : in Gint;
+      Bottom_Attach : in Gint);
    procedure Gtk_New
-      (Widget      : out Gtk_Table;
-       Rows        : in Gint;
-       Columns     : in Gint;
-       Homogeneous : in Boolean);
+     (Widget      : out Gtk_Table;
+      Rows        : in Gint;
+      Columns     : in Gint;
+      Homogeneous : in Boolean);
    procedure Initialize
-      (Widget      : access Gtk_Table_Record;
-       Rows        : in Gint;
-       Columns     : in Gint;
-       Homogeneous : in Boolean);
+     (Widget      : access Gtk_Table_Record;
+      Rows        : in Gint;
+      Columns     : in Gint;
+      Homogeneous : in Boolean);
    procedure Set_Col_Spacing
-      (Table   : access Gtk_Table_Record;
-       Column  : in Gint;
-       Spacing : in Gint);
+     (Table   : access Gtk_Table_Record;
+      Column  : in Gint;
+      Spacing : in Gint);
    procedure Set_Col_Spacings
-      (Table   : access Gtk_Table_Record;
-       Spacing : in Gint);
+     (Table   : access Gtk_Table_Record;
+      Spacing : in Gint);
    procedure Set_Homogeneous
-      (Table       : access Gtk_Table_Record;
-       Homogeneous : in Boolean);
+     (Table       : access Gtk_Table_Record;
+      Homogeneous : in Boolean);
    procedure Set_Row_Spacing
-      (Table   : access Gtk_Table_Record;
-       Row     : in Gint;
-       Spacing : in Gint);
+     (Table   : access Gtk_Table_Record;
+      Row     : in Gint;
+      Spacing : in Gint);
    procedure Set_Row_Spacings
-      (Table   : access Gtk_Table_Record;
-       Spacing : in Gint);
+     (Table   : access Gtk_Table_Record;
+      Spacing : in Gint);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (Table : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Table_Record is new Gtk.Container.Gtk_Container_Record
