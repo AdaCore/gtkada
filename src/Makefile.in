@@ -15,14 +15,16 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CC = @CC@
 CFLAGS = @CFLAGS@ -Wall
-ALL_CFLAGS = $(CFLAGS) @GTK_CFLAGS@ -shared -fPIC
+ALL_CFLAGS = $(CFLAGS) @GTK_CFLAGS@ -fPIC
 
 GNATCC = gcc
-GNATFLAGS = -O2 -gnatga
-ALL_GNATFLAGS = $(GNATFLAGS) -shared -fPIC
+GNATFLAGS = -O2 -gnatgn
+GNATFLAGS_DEVEL = -O2 -gnatga -g
+ALL_GNATFLAGS = $(GNATFLAGS) -fPIC
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(GNATFLAGS)
+GNATMAKEFLAGS_DEVEL = $(GNATFLAGS_DEVEL)
 GNATMAKELDFLAGS = -largs -L. @GTK_LIBS@ -lgtkada
 
 LIB_DIR=lib-obj
@@ -91,14 +93,14 @@ install_ali::
 
 $(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	if [ -f .devel ]; then \
-	  $(GNATMAKE) -aO$(LIB_DIR) -g $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
+	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATMAKEFLAGS_DEVEL) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	else \
 	  $(GNATMAKE) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	fi
 
 $(DGATE):: $(DGATE).adb $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	if [ -f .devel ]; then \
-	   $(GNATMAKE) -aO$(LIB_DIR) -g $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATMAKEFLAGS_DEVEL) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
 	else \
 	   $(GNATMAKE) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
 	fi
@@ -106,10 +108,10 @@ $(DGATE):: $(DGATE).adb $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 $(LIB_DIR)/$(MAKE_ADB).o::
 	@if [ -f .devel ]; then \
 	  $(CD) $(LIB_DIR); \
-	  $(GNATMAKE) -c -g -I.. ../$(MAKE_ADB) -shared -fPIC $(GNATFLAGS); \
+	  $(GNATMAKE) -c -I.. ../$(MAKE_ADB) -fPIC $(GNATFLAGS_DEVEL); \
 	else \
 	  $(CD) $(LIB_DIR); \
-	  $(GNATMAKE) -c -I.. ../$(MAKE_ADB) -shared -fPIC $(GNATFLAGS); \
+	  $(GNATMAKE) -c -I.. ../$(MAKE_ADB) -fPIC $(GNATFLAGS); \
 	fi
 
 install: $(ARCHIVENAME) $(LIBNAME)
