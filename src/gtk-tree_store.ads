@@ -73,39 +73,59 @@ package Gtk.Tree_Store is
    --  Set a new value in the model. The value is added in the column Column,
    --  and in the line Iter.
 
-   procedure Set
-     (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : System.Address);
-   --  General function that can be used to set any data in the model. You
-   --  should just pass a 'Address on the data you want to pass, and it will be
-   --  converted appropriately by the C routine, depending on the type of the
-   --  data in that column of the model.
-   --
-   --  Please see the example at the end for more information on how to create
-   --  your own Set procedures adapted to your model.
+   generic
+      type Data_Type is private;
+   package Generic_Set is
+      type Data_Type_Access is access all Data_Type;
+
+      procedure Set
+        (Tree_Store : access Gtk_Tree_Store_Record;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Data_Type_Access);
+      --  Generic procedure used to store access objects in the model.
+      --  For GObject and all of its descendents (including all widgets),
+      --  you should use the Set procedure below that takes a GObject as
+      --  parameter.
+      --
+      --  Please see the example at the end for more information on how to
+      --  create your own Set procedures adapted to your model.
+   end Generic_Set;
 
    procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
       Value      : String);
-   --  Same as above, but easier to use with a string.
+   --  Same as Generic_Set, but tailored to use with a string.
 
    procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
       Value      : Boolean);
-   --  Same as above, but easier to use with a boolean.
+   --  Same as Generic_Set, but tailored to use with a boolean.
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gint);
+   --  Same as Generic_Set, but tailored to use with an integer.
 
    procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
       Value      : Glib.C_Proxy);
-   --  Same as above, but easier for the types in Gdk.
+   --  Same as Generic_Set, but tailored for Gdk types.
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Glib.Object.GObject);
+   --  Same as Generic_Set, but tailored to objects/widgets.
 
    procedure Remove
      (Tree_Store : access Gtk_Tree_Store_Record;
