@@ -28,18 +28,25 @@ CFLAGS = -O2 -g -Wall
 ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags`
 
 GNATCC = gcc
-GNATFLAGS = -O2 -g 
+GNATFLAGS = -O2 -g -gnatwu
 ALL_GNATFLAGS = $(GNATFLAGS) -I..
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(ALL_GNATFLAGS)
 GNATMAKELDFLAGS = `gtk-config --libs` ../libgtkada.a
-GNATMAKELDFLAGS = -L/nile.d/briot/gtk/lib /nile.d/briot/gtk/lib/libgtk.a -lgtk -lgdk -lglib -lXext -lX11 -lsocket -lnsl -lm ../libgtkada.a
+GNATMAKELDFLAGS_STATIC = `gtk-config --prefix`/lib/libgtk.a \
+   `gtk-config --libs ` ../libgtkada.a
+#MALLOC_FLAGS= ../debug/wrap.o -Wl,--wrap=malloc -Wl,--wrap=free -Wl,--wrap=strdup
+MALLOC_FLAGS=
+
 
 all: $(target)
 
 $(target): ../*.ad[sb] *.ad[sb]
 	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) -largs $(GNATMAKELDFLAGS)
+
+static: ../*.ad[sb] *.ad[sb]
+	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC)
 
 
 install: ;
