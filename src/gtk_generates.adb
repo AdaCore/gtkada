@@ -88,7 +88,7 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       Gen_New (N, "Arrow", Get_Field (N, "arrow_type").all,
-      Get_Field (N, "shadow_type").all, File => File);
+               Get_Field (N, "shadow_type").all, File => File);
       Widget_Destroy (Widget);
       Misc_Generate (N, File);
    end Arrow_Generate;
@@ -175,7 +175,6 @@ package body Gtk_Generates is
       Child_Name : constant Node_Ptr   := Find_Tag (N.Child, "child_name");
       Label      : constant Node_Ptr := Find_Tag_With_Attribute
          (N.Child, "property", "name", "label");
-      --  Label      : constant String_Ptr := Get_Field (N, "label");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_button_get_type");
 
