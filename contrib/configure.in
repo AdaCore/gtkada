@@ -20,7 +20,7 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 # checking for gtk
-AM_PATH_GTK(1.2.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+AM_PATH_GTK(1.2.2,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 # try to find OpenGL if present
 AM_CHECK_OPENGL

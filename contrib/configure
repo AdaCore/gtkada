@@ -1377,7 +1377,7 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-  min_gtk_version=1.2.0
+  min_gtk_version=1.2.2
   echo $ac_n "checking for GTK - version >= $min_gtk_version""... $ac_c" 1>&6
 echo "configure:1383: checking for GTK - version >= $min_gtk_version" >&5
   no_gtk=""
