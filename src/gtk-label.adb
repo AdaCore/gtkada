@@ -122,12 +122,13 @@ package body Gtk.Label is
          for J in S'Range loop
             if S (J) = ASCII.LF then
                T (K .. K + 15) := """ & ASCII.LF & """;
-               K := K + 15;
-            else
-               T (K) := S (J);
-            end if;
+               K := K + 16;
 
-            K := K + 1;
+            --  Skip additional CR present on Win32
+            elsif S (J) /= ASCII.CR then
+               T (K) := S (J);
+               K := K + 1;
+            end if;
          end loop;
 
          return T (1 .. K - 1);
