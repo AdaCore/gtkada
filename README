@@ -17,32 +17,39 @@ The home page for gtk is
      
 This home page will always contain the latest news for this binding.
      
-This is GtkAda version 0.5-beta. This package is  an Ada95 binding for
-the Gimp Toolkit,  which means this is a  set of packages to allow you
+This is GtkAda version 0.6-beta. This package is an Ada95 binding for
+the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11, using Ada95 as a
 programming language.
-     
-This is still  a beta version, although  it is already pretty  usable.
-Every widget from gtk 1.1.14 as been implemented,  and the test program
-found in the gtk release has been reimplemented in Ada (have a look at
-the testgtk/ directory).
+
+This is a beta version. If you have been using previous versions of
+GtkAda, please note that this version (0.6) is an almost complete
+rewrite of GtkAda, and so you might encounter problems that you did
+not have before (see below for a list of changes). Nevertheless,
+testgtk is still fully working, so this version should be pretty stable.
+
+Almost every widget from gtk 1.2 as been implemented, and the test
+program found in the gtk release has been reimplemented in Ada (have a
+look at the testgtk/ directory).
      
 These functions were tested on the following systems :
    - Linux version 2.0.35
    - SunOS 5.5.1
+   - Dec Unix
 using the following compilers :
-   - Gnat 3.10p
    - Gnat 3.11p
+   - Gnat 3.12w
      
 and the following version of gtk :
-   - Gtk 1.1.14
+   - Gtk 1.1.16
+   - Gtk 1.2
      
-   Although versions up to 0.2.1 were compatible with Gtk1.0, this one
-   is Gtk-1.1  specific.  If you are  looking for a binding to Gtk1.0,
-   please consider downloading GtkAda 0.2.1.
+Although versions up to 0.2.1 were compatible with Gtk1.0, this one is
+Gtk-1.1 (or Gtk-1.2) specific.  If you are looking for a binding to
+Gtk1.0, please consider downloading GtkAda 0.2.1.
      
-If you manage to  use it on other systems   (which should probably  be
-straightforward - just  recompile GtkAda), please let  us know so that
+If you manage to use it on other systems (which should probably be
+straightforward - just recompile GtkAda), please let us know so that
 we can add to the above list.
      
 Disclaimer
@@ -65,17 +72,20 @@ any way for this binding, and can not provide any support for it.
 Content
 =======
      
-The full set of widget that comes with gtk 1.1.12 have been bound, and
-you should be able to use all of them from  your Ada program.  The Gdk
-binding is not complete yet, although a big part  of it is done. It is
-important to know that  only a subset of this  part of the binding has
-been actually tested, and therefore errors are still likely to appear.
+The almost full set of widget that comes with gtk 1.2 have been bound,
+and you should be able to use all of them from your Ada program.
 
-It is also important to understand  that the specs are still evolving,
-especially  in the  Gdk binding,  and   some of the modifications  are
-likely to break some code that is  using this binding. We do apologize
-for this, and   we  are trying to  identify   our errors as  early  as
-possible in order to avoid that.
+Although it is not quite complete yet, the Gdk binding (the low level
+layer) will probably not evolve soon, unless some people (why not
+you?) send us patches, or at least ask for specific functions.
+
+It is important to know that only a subset of the gdk binding has
+actually been tested, and therefore errors are still likely to appear.
+
+The specs have been evolving a lot since version 0.5, but things
+should really stabilize now. We hope that the changes in the next
+versions will not break your code, but we certainly can not guaranty
+anything. 
 
 We have tried to adopt a consistent naming scheme for Ada identifiers :
      
@@ -92,80 +102,82 @@ and the widget name
      
 - All the enum types have been grouped in the gtk-enums.ads file
      
--  The only tricky  part is for  the callbacks, the timeout functions,
-the  idle functions,  and  the  data  that can  be   attached to every
-Object. In these  cases, we have  used generic package to provide type
-safety. Please  have a look  at the files in testgtk  to see how these
+- The only tricky part is for the callbacks, the timeout functions,
+the idle functions, and the data that can be attached to every
+Object. In these cases, we have used generic package to provide type
+safety. Please have a look at the files in testgtk to see how these
 functions are implemented.
      
 !!WARNING!!  All  the  generic   functions allocate   some  memory for
 internal structures. This  memory is freed  by gtk itself,  by calling
 some Ada functions. Thus the generic packages  have to be instanciated
 at library level, not  inside a subprogram,  so that the functions are
-still defined when gtk wants to free the memory.
+still defined when gtk needs to free the memory.
      
      
 Installing and compiling your programs 
 ======================================
-     
-This is still beta software, so the installation is  very basic : just
-use  the makefile,  after   making sure  that the gtk-config   program
-distributed with gtk is located in your PATH. Someday, we will provide
-a configure script that  will automate this.  Any volunteer is welcome
-:-).
-     
+
+Since version 0.6, GtkAda comes with a configure script that should
+simplify the installation. We have tested it on as many machines as
+possible, please report any problem ou might have.
+
+To install GtkAda, please try the following :
+   $ ./configure --prefix=<installation_directory>
    $ make
-     
-This will   create two files,  libgtkada.a  and  libgtkada.so and then
-compile the testgtk example.
-     
-To install, first edit the first line  in the Makefile, and modify the
-'prefix'  variable to reflect the directory  were you want to copy the
-files.   WARNING:  The  files will be    directly   installed in  that
-directory, so  for instance do  not  specify directly /usr/local/, but
-rather /usr/local/GtkAda.
-     
-Then do a
-     
    $ make install
      
-You should  also modify your PATH  variable to include that directory,
-or copy the gtkada-config script somewhere in your path
+This will create (and install) two files, libgtkada.a and libgtkada.so
+and then compile the testgtk example.
+     
+Note that you might have to be root to install GtkAda on your system.
+
+You should also modify your PATH variable to include the installation
+directory, or copy the gtkada-config script somewhere in your path
      
    $ setenv PATH <installation_directory>:$PATH
 or
    $ export PATH=<installation_directory>:$PATH
      
-Finally, update  your   LD_LIBRARY_PATH  variable   to  include   that
-directory, so   that the linker  can  find  the libraries.   The other
-alternative  if you  have access to  root  priviledges is  to add this
+Finally, update your LD_LIBRARY_PATH variable to include that
+directory, so that the linker can find the libraries.  The other
+alternative if you have access to root priviledges is to add this
 'prefix' directory added in /etc/ld.conf and then run ldconfig.
      
-Then,  when you  want to  compile  your  application,  simply use  the
+Then, when you want to compile your application, simply use the
 gtkada-config script:
      
    $ gnatmake <your_application> <your_switches> `gtkada-config`
+
+This will automatically submit the correct paths to gnatmake so that
+the gtk and gtkada libraries are found.
      
      
 Creating and Binding new widgets
 ================================
-     
-There is currently no support in this binding for creating new widgets
-directly from Ada. You will have to do it in C, and then create an Ada
-binding for your new widget.
-     
-we provide a Perl script to help you  create this binding (this is the
-script  we have  used ourselves).   This  will not  fully automate the
-process, although it should really  speed things up. You will probably
-need less than 15 min  to create a new binding  once you will get used
-to the way GtkAda works.
+
+New since version 0.6, GtkAda has now a basic support for creating new
+widgets directly in Ada (although you can't create your own signals
+yet, we are still working on it).
+
+Since GtkAda has an Object Oriented conception (well, at least you can
+program by extension :-), it is easy, if you want to associated your
+own data with a widget, to create your own type. See below for examples.
+You should also have a look at the testgtk/ directory.
+
+We provide a Perl script to help you create a binding to a C widget
+(this is the script we have used ourselves).  This will not fully
+automate the process, although it should really speed things up. You
+will probably need less than 15 min to create a new binding once you
+will get used to the way GtkAda works. Note that your C file should
+have the same format as is used by Gtk+ itself.
      
 Here are the steps to create a new binding :
      
 - Give the 'generate.pl' script the C header file
      
 - The perl script should ask you for every field in the C structure if
-you want to  create a function to  make it accessible from Ada. Answer
+you want to create a function to make it accessible from Ada. Answer
 'y' or 'n' (the default value is 'n', just press ENTER).
      
    $ perl generate.pl ../include/gtk/gtkbutton.h > temporary
@@ -186,44 +198,44 @@ generate.pl to this C file.
 - Edit these two files if needed (generally to change some parameters
   from Gint to Boolean for instance). It can be a little bit tricky 
   when one of your functions returns a GList* or a GSList*. Please have 
-  a look at gtk-combo.ads for instance for how to do this.
+  a look at gtk-combo.ads for examples how to do this.
      
      
 Threads
 =======
 
-The 1.1  series   of Gtk+ should   be thread  safe  provided that  you
-compiled it with  thread-safe   enabled.  The usage of   tasks  inside
-programs using  this binding should  not cause any problem although we
-have not tested it ourselves.
+The 1.1 series of Gtk+ should be thread safe provided that you
+compiled it with thread-safe enabled (this is now the default). The
+usage of tasks inside programs using this binding should not cause any
+problem although we have not tested it ourselves.
 
      
 How to report bugs
 ==================
      
 This library is still considered beta code, and it is thus likely that
-you will  find bugs.  We  have tried to test it  as much  as possible,
-essentially  by  converting   the testgtk.c  file   found  in  the gtk
-distribution.    We  have  been  able    to  rewrite  nearly   all the
-tests. Please have a look at the testgtk, which can  give you a lot of
+you will  find bugs.  We  have tried to  test it as much  as possible,
+essentially  by  converting  the  testgtk.c  file  found  in  the  gtk
+distribution.   We   have  been  able   to  rewrite  nearly   all  the
+tests. Please have a look at the  testgtk, which can give you a lot of
 examples of how to use this binding.
      
 For more general questions about gtk itself, please ask your questions
 to the  gtk  mailing list. The  authors of  this binding  are far from
-beeing specialists of gtk, as it was our first project with gtk.
+beeing specialists of gtk, as it was one of our first project with gtk.
      
 There are two kinds of problems you can encounter :
      
-- If the gtk library itself was  compiled with warnings turned on, you
-may  get some warnings  messages,  mainly  because of types  problems.
-These warnings should not appear, as we have tried  to be as type safe
-as  possible in this  package.  To know  exactly  were the problem is,
-please recompile a static version of your  program, run gdb, and set a
-breakpoint on  the function  'g_warning'.  Then   run your program  as
-usual, using  the 'run' command. Then send  us the result  of the 'bt'
+- If the gtk library itself  was compiled with warnings turned on, you
+may  get some  warnings messages,  mainly because  of  types problems.
+These warnings should not appear, as  we have tried to be as type safe
+as possible  in this package.  To  know exactly where  the problem is,
+please recompile a static version of  your program, run gdb, and set a
+breakpoint on the  function 'g_log'.  Then run your  program as usual,
+using  the  'run'  command.  Then  send  us the  result  of  the  'bt'
 command. Here is a summary :
      
-   $ make static
+   $ make static   (see testgtk/Makefile if needed)
    $ gdb <your_program_name>
    gdb> break g_warning
    gdb> run
@@ -234,21 +246,135 @@ command. Here is a summary :
 fault  within gtk.  That  means there is  definitevly  something wrong
 either  your program  or   the  binding.  Please  check   your program
 carefully, and if you think this is a problem in  the binding, send us
-a mail.
+an email.
      
-To report errors, send a mail to both authors (see the email addresses
-at the end of  this document) explaining  exactly what your are doing,
-what it the expected result and what  you actually get. Please include
-the required sources to reproduced the problem,  in a format usable by
-'gnatchop' (basically, insert all  the required sources  at the end of
-the mail). Please try to provide a subset of your  sources as small as
-possible.
+To  report errors,  send a  mail  to all  the authors  (see the  email
+addresses at  the end of  this document) explaining exactly  what your
+are  doing,  what  it  the  expected  result  and  what  you  actually
+get. Please include the required sources to reproduced the problem, in
+a  format usable  by 'gnatchop'  (basically, insert  all  the required
+sources at  the end of  the mail). Please  try to provide a  subset of
+your sources as small as possible.
      
 Of course, we will  welcome any patch   you can provide, so  that this
 binding is as useful as possible...
-     
+
+NEW TAGGED TYPE SCHEME
+======================
+
+GtkAda 0.6 is an almost complete rewrite of GtkAda. Whereas widgets
+used to be record types, they now are implemented as access types.
+This change has two benefits:
+- It is now clearer, when you pass an object to a function or as
+  an argument to a callback, that you are still working with the
+  widget you created before.
+- Most important, it is now possible to extend existing types directly
+  in Ada (see the section below).
+
+Your existing code might have to be modified a little though (sorry
+about that, this is for the better!).
+- Although Gtk_New now creates access types (and allocate memory for
+  them), you do not have to free this memory yourself. This is
+  automatically taken care of by gtk itself, which is one of the
+  strong points of the new scheme.
+- The only part of your code that is actually modified are the
+  callbacks. The changes should be easy to handle though (We did it
+  for testgtk itself :-)
+  When instanciating a callback generic, the first parameter should be
+  modified like this:
+     package My_Cb is new Signal.Void_Callback (Gtk_Widget_Record);
+                                                          ^^^^^^^
+
+  Then you have to modify the spec of the subprogram iself :
+
+     procedure My_Func (Button : access Gtk.Button.Gtk_Button_Record;
+                        Data   : in Gint);
+
+  Note that the first parameter is an anonymous access to a record
+  type, and the second parameter is an "in" parameter.
+
+
+Last thing that has changed in this new version of the binding are some
+of the names of the parameters in the subprograms of the bindings. This
+is part of a major cleanup we are doing so that things can be more
+homogeneous within GtkAda.
+
+USING TAGGED TYPES TO EXTEND GTK WIDGETS
+========================================
+
+Since version 0.6 of this binding, it is possible to associate your
+own data with existing widgets, simply by creating new types. This
+file will show you a simple example, but you should rather read the
+source code in testgtk/ where we used this feature instead of using
+'user_data' as in the C version.
+
+   type My_Button_Record is new Gtk_Button_Record with record
+       --  whatever data you want to associate with your button
+   end record;
+   type My_Button is access all My_Button_Record'Class;
+
+With the above statements, your new type is defined. Every function
+available for Gtk_Button is also available for My_Button. Of course,
+as with every tagged type in Ada, you can create your own
+primitive functions, with the following prototype :
+
+   procedure My_Primitive_Func (Myb : access My_Button_Record);
+
+To instanciate an object of type My_Button in your application, do
+the following:
+
+   declare
+      Myb : My_Button;
+   begin
+      Myb := new My_Button_Record;
+      Initialize (Myb);   --  from Gtk.Button
+   end;
+
+The first line create the Ada type, whereas the 'Initialize' call
+actually creates the C widget and associate with the Ada type.
+
+SUPPORT FOR GLADE, THE GUI BUILDER
+==================================
+
+GtkAda now comes with a support for the GUI builder Glade (this is not
+the glade released with Gnat for distributed systems).
+Not all widgets are supported yet, but we eventually hope to have all
+of them. If you really need one, it is easy to add the two required
+functions...
+
+We actually provide two versions: a dynamic one and a static one. In
+both cases, you first need to get and install glade (go to
+www.gtk.org and follow the links).
+Then start a new project (or edit an old one). It is easy enough to use,
+simply select the widget you want to add to your interface, and click!
+
+For now, you can not directly create Ada files from Glade (although this
+should be in the next version). In the meanwhile, save your project as
+an XML file.
+
+DGATE is the dynamic version of our support. This is a shell script,
+that takes the XML file in argument. It also provides default
+callbacks for your application. We recommand using it while you are
+trying to design your interface.
+If you want, you can also use your own callbacks instead of using the
+default ones provided by dgate.
+
+GATE is the static version of oyr support. This is an Ada program that
+takes the XML file in argument. It will generate a set of Ada files that,
+when compiled, will recreate the interface you just designed in Glade.
+
+The most import file created by Gate is called callback_<project_name>.adb.
+It contains stubs for all the callbacks you declared in Glade.
+
+Note that you can easily go back to Glade anytime, modify your interface,
+and have GATE re-generate a set of files. All your modifications will be
+kept in the new files. For that, GATE creates a directory .gate/ in the
+current directory. Please do not delete it if you want GATE to be able to
+keep your changes from one version to the next.
+
 AUTHORS
 =======
      
 Emmanuel Briot <briot@gnat.com>
 Joel Brobecker <jbrobecker@west.raytheon.com>
+Arnaud Charlet <charlet@gnat.com>
