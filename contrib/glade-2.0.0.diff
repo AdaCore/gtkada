@@ -1,0 +1,20 @@
+diff -r -c ./glade/glade_project.c ../../glade-2.0.0/glade/glade_project.c
+*** ./glade/glade_project.c	Mon Apr  7 13:27:50 2003
+--- ../../glade-2.0.0/glade/glade_project.c	Fri May 16 11:49:46 2003
+***************
+*** 46,52 ****
+  /* The order must match the GladeLanguageType enum in glade_project.h. */
+  gchar *GladeLanguages[] = { "C", "C++" , "Ada 95", "Perl", "Eiffel" };
+  #if 1
+! gint GladeNumLanguages = 2; /* Only C and C++ for now. */
+  #else
+  gint GladeNumLanguages = sizeof (GladeLanguages) / sizeof (GladeLanguages[0]);
+  #endif
+--- 46,52 ----
+  /* The order must match the GladeLanguageType enum in glade_project.h. */
+  gchar *GladeLanguages[] = { "C", "C++" , "Ada 95", "Perl", "Eiffel" };
+  #if 1
+! gint GladeNumLanguages = 3; /* Only C, C++ and Ada 95 for now. */
+  #else
+  gint GladeNumLanguages = sizeof (GladeLanguages) / sizeof (GladeLanguages[0]);
+  #endif
