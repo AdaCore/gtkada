@@ -843,6 +843,11 @@ private
       Selection_Dialog : Gtk.Widget.Gtk_Widget;
       --  The interactive dialog for selecting new children.
 
+      Dnd_Window       : Gtk.Window.Gtk_Window;
+      Dnd_Window_Label : Gtk.Label.Gtk_Label;
+      --  The small window displayed while a drag-and-drop operation is
+      --  taking place.
+
       Group : Gtk.Accel_Group.Gtk_Accel_Group;
 
       All_Floating_Mode : Boolean := False;
