@@ -34,17 +34,6 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
  
-
-void* 
-convert_i (gint i) {
-  return (void*)i;
-}
-
-gint
-convert_a (void* i) {
-  return (gint)i;
-}
-
 /*
  *
  * object macros
