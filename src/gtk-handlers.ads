@@ -69,6 +69,42 @@ with Gtk.Widget;
 --
 --  You should also look at the package Gtk.Marshallers which gives a
 --  more natural way to use callbacks.
+--
+--  FIXME: The following was taken out of Gtk.Marshallers.
+--  FIXME: Add thi to the future documentation of Gtk.Handlers.
+--  Here is an example:
+--     We want to connect the "delete_event" signal to a widget. The
+--     handlers for this signal get an extra new argument that is the
+--     Gdk_Event that generated the signal.
+--     Here is how to do it:
+--
+--         with Gtk.Handlers;    use Gtk.Handlers;
+--         with Gtk.Marshallers; use Gtk.Marshallers;
+--
+--         function My_Cb (Widget : access Gtk_Widget_Record'Class;
+--                         Event  : Gdk.Event.Gdk_Event)
+--                         return Gint;
+--         --  your own function
+--
+--         package Return_Widget_Cb is new Gtk.Handlers.Return_Callback
+--            (Gtk.Widget.Gtk_Widget_Record, Gint);
+--
+--         Return_Widget_Cb.Connect (W, "delete_event",
+--            Return_Widget_Cb.To_Event_Marshaller (My_Cb'Access));
+--
+--  The real handler in gtk+ should expect at least as many arguments as
+--  in the marshaller you are using (i.e if your marshaller has one
+--  argument (as in the Generic_Marshaller or Generic_Widget_Marshaller
+--  below, the C handler must have at least one argument too).
+--
+--  There are four generic packages here, the same organization as in
+--  Gtk.Handlers (i.e there is one for callbacks returning values, but
+--  with no
+--  user data, for callbacks returning values and with a user callbacks,
+--  for
+--  callbacks not returning any value and with no user data, and for
+--  callbacks
+--  returning values and with a user data.
 
 package Gtk.Handlers is
    pragma Elaborate_Body;
@@ -98,13 +134,13 @@ package Gtk.Handlers is
       procedure Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
-         Marsh   : in     Marshallers.Connection;
+         Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False);
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in     String;
-         Marsh       : in     Marshallers.Connection;
+         Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False);
 
@@ -127,14 +163,14 @@ package Gtk.Handlers is
       function Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
-         Marsh   : in     Marshallers.Connection;
+         Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False)
         return Handler_Id;
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in     String;
-         Marsh       : in     Marshallers.Connection;
+         Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False)
         return Handler_Id;
@@ -168,22 +204,22 @@ package Gtk.Handlers is
         (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Arguments.To_Notebook_Page);
 
       function To_Marshaller (Cb : Gint_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Gint_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Guint_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Guint_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Event_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Event_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Widget_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Widget_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Marshallers.Void_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Marshallers.Void_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Notebook_Page_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
@@ -240,7 +276,7 @@ package Gtk.Handlers is
       procedure Connect
         (Widget    : access Widget_Type'Class;
          Name      : in     String;
-         Marsh     : in     Marshallers.Connection;
+         Marsh     : in     Marshallers.Marshaller;
          User_Data : in     User_Type;
          After     : in     Boolean := False);
 
@@ -256,7 +292,7 @@ package Gtk.Handlers is
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : in     String;
-         Marsh     : in     Marshallers.Connection;
+         Marsh     : in     Marshallers.Marshaller;
          User_Data : in     User_Type;
          After     : in     Boolean := False)
         return Handler_Id;
@@ -283,22 +319,22 @@ package Gtk.Handlers is
         (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Arguments.To_Notebook_Page);
 
       function To_Marshaller (Cb : Gint_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Gint_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Guint_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Guint_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Event_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Event_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Widget_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Widget_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Marshallers.Void_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Marshallers.Void_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Notebook_Page_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
@@ -350,13 +386,13 @@ package Gtk.Handlers is
       procedure Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
-         Marsh   : in     Marshallers.Connection;
+         Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False);
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in     String;
-         Marsh       : in     Marshallers.Connection;
+         Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False);
 
@@ -379,14 +415,14 @@ package Gtk.Handlers is
       function Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
-         Marsh   : in     Marshallers.Connection;
+         Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False)
         return Handler_Id;
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in     String;
-         Marsh       : in     Marshallers.Connection;
+         Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False)
         return Handler_Id;
@@ -420,22 +456,22 @@ package Gtk.Handlers is
         (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Arguments.To_Notebook_Page);
 
       function To_Marshaller (Cb : Gint_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Gint_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Guint_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Guint_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Event_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Event_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Widget_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Widget_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Marshallers.Void_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Marshallers.Void_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Notebook_Page_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
@@ -490,7 +526,7 @@ package Gtk.Handlers is
       procedure Connect
         (Widget    : access Widget_Type'Class;
          Name      : in     String;
-         Marsh     : in     Marshallers.Connection;
+         Marsh     : in     Marshallers.Marshaller;
          User_Data : in     User_Type;
          After     : in     Boolean := False);
 
@@ -506,7 +542,7 @@ package Gtk.Handlers is
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : in     String;
-         Marsh     : in     Marshallers.Connection;
+         Marsh     : in     Marshallers.Marshaller;
          User_Data : in     User_Type;
          After     : in     Boolean := False)
         return Handler_Id;
@@ -533,22 +569,22 @@ package Gtk.Handlers is
         (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Arguments.To_Notebook_Page);
 
       function To_Marshaller (Cb : Gint_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Gint_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Guint_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Guint_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Event_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Event_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Widget_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Widget_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Marshallers.Void_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Marshallers.Void_Marshaller.To_Marshaller;
       function To_Marshaller (Cb : Notebook_Page_Marshaller.Handler)
-                             return Marshallers.Connection
+                             return Marshallers.Marshaller
                              renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal

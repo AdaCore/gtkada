@@ -133,7 +133,7 @@ package body Gtk.Handlers is
 
       type Data_Type_Record is record
          Func     : Handler;             --  User's callback
-         Marsh    : Marshallers.Marshaller := null;  --  Marshaller to use
+         Marsh    : Marshallers.Handler_Proxy := null;  -- Handler_Proxy to use
          Object   : Acc        := null;  --  Slot Object for Object_Connect
          Ret_Type : Gtk_Type;            --  The C constant used to indicate
          --                              --  the return type.
@@ -166,7 +166,7 @@ package body Gtk.Handlers is
       procedure Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
-         Marsh   : in     Marshallers.Connection;
+         Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False)
       is
          Id : Handler_Id;
@@ -181,7 +181,7 @@ package body Gtk.Handlers is
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in     String;
-         Marsh       : in     Marshallers.Connection;
+         Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False)
       is
@@ -242,7 +242,7 @@ package body Gtk.Handlers is
                                   Nparams   : in Guint;
                                   Params    : in System.Address)
       is
-         use type Marshallers.Marshaller;
+         use type Marshallers.Handler_Proxy;
 
          Data  : Data_Type_Access := Convert (User_Data);
          Stub  : Widget_Type;
@@ -283,7 +283,7 @@ package body Gtk.Handlers is
       function Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
-         Marsh   : in     Marshallers.Connection;
+         Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False)
         return Handler_Id
       is
@@ -314,7 +314,7 @@ package body Gtk.Handlers is
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in     String;
-         Marsh       : in     Marshallers.Connection;
+         Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False)
         return Handler_Id
@@ -437,7 +437,7 @@ package body Gtk.Handlers is
       type User_Access is access User_Type;
       type Data_Type_Record is record
          Func     : Handler;             --  User's callback
-         Marsh    : Marshallers.Marshaller  := null; --  Marshaller to use
+         Marsh    : Marshallers.Handler_Proxy := null; --  Handler_Proxy to use
          User     : User_Access  := null;
          Ret_Type : Gtk_Type;            --  The C constant used to indicate
          --                              --  the return type.
@@ -487,7 +487,7 @@ package body Gtk.Handlers is
                                   Nparams   : in Guint;
                                   Params    : in System.Address)
       is
-         use type Marshallers.Marshaller;
+         use type Marshallers.Handler_Proxy;
 
          Data  : Data_Type_Access := Convert (User_Data);
          Stub  : Widget_Type;
@@ -518,7 +518,7 @@ package body Gtk.Handlers is
       procedure Connect
         (Widget    : access Widget_Type'Class;
          Name      : in     String;
-         Marsh     : in     Marshallers.Connection;
+         Marsh     : in     Marshallers.Marshaller;
          User_Data : in     User_Type;
          After     : in     Boolean := False)
       is
@@ -550,7 +550,7 @@ package body Gtk.Handlers is
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : in     String;
-         Marsh     : in     Marshallers.Connection;
+         Marsh     : in     Marshallers.Marshaller;
          User_Data : in     User_Type;
          After     : in     Boolean := False)
         return Handler_Id
@@ -629,7 +629,7 @@ package body Gtk.Handlers is
 
       type Data_Type_Record is record
          Func   : Handler;             --  User's callback
-         Marsh  : Marshallers.Marshaller := null;  --  Marshaller to use
+         Marsh  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
          Object : Acc        := null;  --  Slot Object for Object_Connect
       end record;
       type Data_Type_Access is access all Data_Type_Record;
@@ -674,7 +674,7 @@ package body Gtk.Handlers is
                                   Nparams   : in Guint;
                                   Params    : in System.Address)
       is
-         use type Marshallers.Marshaller;
+         use type Marshallers.Handler_Proxy;
 
          Data : Data_Type_Access := Convert (User_Data);
          Stub : Widget_Type;
@@ -711,7 +711,7 @@ package body Gtk.Handlers is
       procedure Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
-         Marsh   : in     Marshallers.Connection;
+         Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False)
       is
          Id : Handler_Id;
@@ -726,7 +726,7 @@ package body Gtk.Handlers is
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in     String;
-         Marsh       : in     Marshallers.Connection;
+         Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False)
       is
@@ -773,7 +773,7 @@ package body Gtk.Handlers is
       function Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
-         Marsh   : in     Marshallers.Connection;
+         Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False)
         return Handler_Id
       is
@@ -801,7 +801,7 @@ package body Gtk.Handlers is
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in     String;
-         Marsh       : in     Marshallers.Connection;
+         Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False)
         return Handler_Id
@@ -902,7 +902,7 @@ package body Gtk.Handlers is
       type User_Access is access User_Type;
       type Data_Type_Record is record
          Func   : Handler;             --  User's callback
-         Marsh  : Marshallers.Marshaller  := null;  --  Marshaller to use
+         Marsh  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
          User   : User_Access := null;
       end record;
       type Data_Type_Access is access all Data_Type_Record;
@@ -950,7 +950,7 @@ package body Gtk.Handlers is
                                   Nparams   : in Guint;
                                   Params    : in System.Address)
       is
-         use type Marshallers.Marshaller;
+         use type Marshallers.Handler_Proxy;
 
          Data : Data_Type_Access := Convert (User_Data);
          Stub : Widget_Type;
@@ -978,7 +978,7 @@ package body Gtk.Handlers is
       procedure Connect
         (Widget    : access Widget_Type'Class;
          Name      : in     String;
-         Marsh     : in     Marshallers.Connection;
+         Marsh     : in     Marshallers.Marshaller;
          User_Data : in     User_Type;
          After     : in     Boolean := False)
       is
@@ -1010,7 +1010,7 @@ package body Gtk.Handlers is
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : in     String;
-         Marsh     : in     Marshallers.Connection;
+         Marsh     : in     Marshallers.Marshaller;
          User_Data : in     User_Type;
          After     : in     Boolean := False)
         return Handler_Id
