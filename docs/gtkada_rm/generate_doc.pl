@@ -245,6 +245,7 @@ foreach $source_file (@source_files) {
 			$has_itemize = 0;
 		    }
 		    &output ("\@subsection $name\n\n");
+		    &output (&clean_comment_marks ($comment, 1), "\n\n");
 		    next;
 		}
 
@@ -723,8 +724,15 @@ sub get_subprograms () {
 
 	$line = shift @content;
 	$line =~ /-- (.*) --/;
-	push (@result, ['--', $1, "", ()]);
+	my ($comments) = "";
+	my ($section) = $1;
 	$line = shift @content;
+
+	while ($content [0] =~ /^\s*--/) {
+	    $comments .= shift @content;
+	}
+	
+	push (@result, ['--', $section, "$comments", ()]);
 	$last_was_section = 1;
 	
     } elsif ($line =~ /^\s*(procedure|function)\s+(\w+)\s*(.*)/) {
