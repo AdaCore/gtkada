@@ -140,6 +140,7 @@ install: all
 	   $(MKDIR) $(alidir); \
 	   $(INSTALL_DATA) $(ARCHIVENAME) $(libdir); \
 	   $(INSTALL_DATA) $(SONAME) $(libdir); \
+	   $(RM) $(libdir)/$(LIBNAME); \
 	   $(LN) $(SONAME) $(libdir)/$(LIBNAME); \
 	   $(CP) glib*.ads glib*.adb $(MESA_SPECS) $(incdir); \
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \

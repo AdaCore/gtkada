@@ -31,6 +31,7 @@ all: $(LIBNAME) $(ARCHIVENAME)
 install: all
 	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
 	$(INSTALL_DATA) $(SONAME) $(libdir)
+	$(RM) $(libdir)/$(LIBNAME)
 	$(LN) $(SONAME) $(libdir)/$(LIBNAME)
 	$(CP) $(MESA_SPECS) $(incdir)
 	$(CP) gdk*.ads gdk*.adb $(incdir)
