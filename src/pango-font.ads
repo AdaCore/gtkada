@@ -26,6 +26,23 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides high-level, system-independent handling of fonts. It
+--  supercedes the old Gdk.Font package, which should no longer be used.
+--
+--  Fonts are defined through several attributes, like their family, weight,
+--  size, style, ...
+--
+--  The Pango_Font_Description objects created by this package can either be
+--  used directly to draw text through Pango.Layout.Pango_Layout objects (and
+--  the associated Gdk.Drawable.Draw_Layout procedure), or by converting them
+--  to a Gdk_Font. The first method is the preferred one, and provides
+--  high-level handling of multi-line texts or tabs, when you have to handle
+--  this yourself in the second case.
+--
+--  </description>
+
 with Glib; use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
@@ -67,8 +84,6 @@ package Pango.Font is
    --      Pango_Variant_Normal, and Pango_Stretch_Normal.
    --    - SIZE is a decimal number describing the size of the font in points.
    --      If unspecified, a size of 0 will be used.
-   --  ??? Note that From_String is broken wrt the Weight. This bug should be
-   --  reported to the pango team.
 
    function To_Font_Description
      (Family_Name : String := "";
@@ -106,6 +121,106 @@ package Pango.Font is
    --  Set the size for the font description in pango units.  (PANGO_SCALE
    --  pango units equals one point)
 
+   ---------------
+   -- Languages --
+   ---------------
+   --  The following section provides types and subprograms to identify a
+   --  specific script and language inside a font (Not all characters of a font
+   --  are used for all languages)
+
+   type Pango_Language is new Glib.C_Proxy;
+
+   function Pango_Language_Get_Type return Glib.GType;
+   --  Return the internal value used to identify a Pango_Language
+
+   function From_String (Language : String) return Pango_Language;
+   --  Take a RFC-3066 format language tag as a string and convert it to a
+   --  Pango_Language pointer that can be efficiently copied (copy the pointer)
+   --  and compared with other language tags (compare the pointer). Language is
+   --  something like "fr" (french), "ar" (arabic), "en" (english), "ru"
+   --  (russian), ...
+   --
+   --  This function first canonicalizes the string by converting it to
+   --  lowercase, mapping '_' to '-', and stripping all characters other than
+   --  letters and '-'.
+   --
+   --  The returned value need not be freed, it is stored internally by gtk+ in
+   --  a hash-table.
+
+   -------------
+   -- Metrics --
+   -------------
+   --  The following subprograms can be used to retrieve the metrics associated
+   --  with the font. Note that such metrics might depend on the specific
+   --  script/language in use.
+
+   type Pango_Font_Metrics is new Glib.C_Proxy;
+
+   type Pango_Font is new Glib.C_Proxy;
+   --  ??? How do we create one from a pango_font_description
+
+   function Get_Metrics
+     (Font : Pango_Font;
+      Language : Pango_Language := null) return Pango_Font_Metrics;
+   --  Gets overall metric information for a font. Since the metrics may be
+   --  substantially different for different scripts, a language tag can be
+   --  provided to indicate that the metrics should be retrieved that
+   --  correspond to the script(s) used by that language.
+   --
+   --  The returned value must be Unref'ed by the caller.
+   --
+   --  Language determines which script to get the metrics for, or null to
+   --  indicate the metrics for the entire font.
+
+   procedure Ref (Metrics : Pango_Font_Metrics);
+   procedure Unref (Metrics : Pango_Font_Metrics);
+   --  Ref or unref Metrics When the reference counter reaches 0, the memory is
+   --  deallocated.
+
+   function Get_Ascent (Metrics : Pango_Font_Metrics) return Gint;
+   --  Gets the ascent from a font metrics structure. The ascent is the
+   --  distance from the baseline to the logical top of a line of text. (The
+   --  logical top may be above or below the top of the actual drawn ink. It is
+   --  necessary to lay out the text to figure where the ink will be).
+   --
+   --  The returned value is expressed in pango units, and must be divided by
+   --  Pango_Scale to get the value in pixels.
+
+   function Get_Descent (Metrics : Pango_Font_Metrics) return Gint;
+   --  Gets the descent from a font metrics structure. The descent is the
+   --  distance from the baseline to the logical bottom of a line of text. (The
+   --  logical bottom may be above or below the bottom of the actual drawn
+   --  ink. It is necessary to lay out the text to figure where the ink will
+   --  be.)
+   --
+   --  The returned value is expressed in pango units, and must be divided by
+   --  Pango_Scale to get the value in pixels.
+
+   function Get_Approximate_Char_Width (Metrics : Pango_Font_Metrics)
+      return Gint;
+   --  Gets the approximate character width for a font metrics structure.  This
+   --  is merely a representative value useful, for example, for determining
+   --  the initial size for a window. Actual characters in text will be wider
+   --  and narrower than this.
+   --
+   --  The returned value is expressed in pango units, and must be divided by
+   --  Pango_Scale to get the value in pixels.
+
+   function Get_Approximate_Digit_Width (Metrics : Pango_Font_Metrics)
+      return Gint;
+   --  Gets the approximate digit width for a font metrics structure.  This is
+   --  merely a representative value useful, for example, for determining the
+   --  initial size for a window. Actual digits in text can be wider and
+   --  narrower than this, though this value is generally somewhat more
+   --  accurate than the result of Get_Approximate_Digit_Width.
+   --
+   --  The returned value is expressed in pango units, and must be divided by
+   --  Pango_Scale to get the value in pixels.
+
+   function Font_Metrics_Get_Type return Glib.GType;
+   --  Return the internal value associated with a Pango_Font_Metrics
+
+
    ----------------
    -- Properties --
    ----------------
@@ -126,4 +241,19 @@ private
    pragma Import (C, Copy, "pango_font_description_copy");
    pragma Import (C, Get_Size, "pango_font_description_get_size");
    pragma Import (C, Set_Size, "pango_font_description_set_size");
+   pragma Import (C, Pango_Language_Get_Type, "pango_language_get_type");
+   pragma Import
+     (C, Font_Metrics_Get_Type, "pango_font_metrics_get_type");
+   pragma Import (C, Get_Metrics, "pango_font_get_metrics");
+   pragma Import (C, Ref, "pango_font_metrics_ref");
+   pragma Import (C, Unref, "pango_font_metrics_unref");
+   pragma Import (C, Get_Ascent, "pango_font_metrics_get_ascent");
+   pragma Import (C, Get_Descent, "pango_font_metrics_get_descent");
+   pragma Import (C, Get_Approximate_Char_Width,
+                  "pango_font_metrics_get_approximate_char_width");
+   pragma Import (C, Get_Approximate_Digit_Width,
+                  "pango_font_metrics_get_approximate_digit_width");
 end Pango.Font;
+
+--  Missing:
+--  pango_language_matches

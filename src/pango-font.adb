@@ -199,4 +199,15 @@ package body Pango.Font is
       Internal (Desc, Name & ASCII.NUL);
    end Set_Family;
 
+   -----------------
+   -- From_String --
+   -----------------
+
+   function From_String (Language : String) return Pango_Language is
+      function Internal (Language : String) return Pango_Language;
+      pragma Import (C, Internal, "pango_language_from_string");
+   begin
+      return Internal (Language & ASCII.NUL);
+   end From_String;
+
 end Pango.Font;
