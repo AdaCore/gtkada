@@ -332,7 +332,7 @@ package body Create_Notebook is
    is
       pragma Warnings (Off, Page_Num);
       Old_Page : Gint := Get_Current_Page (Notebook);
-      Pixmap   : Gtk_Pixmap;
+      --  Pixmap   : Gtk_Pixmap;
    begin
       null;
       --  XXX Pixmap := Gtk_Pixmap
