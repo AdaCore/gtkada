@@ -1258,6 +1258,21 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Width, Height);
    end Set_USize;
 
+   ----------------------
+   -- Set_Size_Request --
+   ----------------------
+
+   procedure Set_Size_Request
+     (Widget      : access Gtk_Widget_Record;
+      Width, Height : Gint := -1)
+   is
+      procedure Internal (Widget : System.Address; Width, Height : Gint);
+      pragma Import (C, Internal, "gtk_widget_set_size_request");
+
+   begin
+      Internal (Get_Object (Widget), Width, Height);
+   end Set_Size_Request;
+
    ----------
    -- Show --
    ----------
