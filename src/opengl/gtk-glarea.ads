@@ -33,36 +33,36 @@ with Gdk.GL; use Gdk.GL;
 
 package Gtk.GLArea is
 
-   type Gtk_GLArea_Record is 
+   type Gtk_GLArea_Record is
      new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
    type Gtk_GLArea is access all Gtk_GLArea_Record'Class;
-   
+
    type Attributes_Array is array (Natural range <>) of GL_Configs;
    --  Note: as opposed to what exists in C, you don't need to have
    --  the last element in the array be GDK_GL_NONE. This is done
    --  transparently by GtkAda itself.
-   
+
    procedure Gtk_New (Widget    : out Gtk_GLArea;
-		      Attr_List : in  Attributes_Array);
+                      Attr_List : in  Attributes_Array);
    procedure Initialize (Widget    : access Gtk_GLArea_Record;
-			 Attr_List : in     Attributes_Array);
+                         Attr_List : in     Attributes_Array);
    procedure Gtk_New
-     (Widget	:    out Gtk_GLArea;
-      Attr_List	: in     Attributes_Array;
-      Share	: access Gtk_GLArea_Record'Class);
+     (Widget    :    out Gtk_GLArea;
+      Attr_List : in     Attributes_Array;
+      Share     : access Gtk_GLArea_Record'Class);
    procedure Initialize
-     (Widget	: access Gtk_GLArea_Record;
-      Attr_List	: in     Attributes_Array;
-      Share	: access Gtk_GLArea_Record'Class);
-   
+     (Widget    : access Gtk_GLArea_Record;
+      Attr_List : in     Attributes_Array;
+      Share     : access Gtk_GLArea_Record'Class);
+
    function Make_Current
      (Glarea : access Gtk_GLArea_Record'Class)
      return Boolean;
-   
-   procedure Swap_Buffers (Glarea : access Gtk_Glarea_Record'Class);
-   
+
+   procedure Swap_Buffers (Glarea : access Gtk_GLArea_Record'Class);
+
 private
-   type Gtk_GLArea_Record is 
+   type Gtk_GLArea_Record is
      new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with null record;
 
 end Gtk.GLArea;

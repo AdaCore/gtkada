@@ -29,68 +29,38 @@
 
 package Gdk.GL is
 
-   type Gl_Configs is
-     (Gdk_GL_None,
-      Gdk_GL_Use_Gl,
-      Gdk_GL_Buffer_Size,
-      Gdk_GL_Level,
-      Gdk_GL_Rgba,
-      Gdk_GL_Doublebuffer,
-      Gdk_GL_Stereo,
-      Gdk_GL_Aux_Buffers,
-      Gdk_GL_Red_Size,
-      Gdk_GL_Green_Size,
-      Gdk_GL_Blue_Size,
-      Gdk_GL_Alpha_Size,
-      Gdk_GL_Depth_Size,
-      Gdk_GL_Stencil_Size,
-      Gdk_GL_Accum_Red_Size,
-      Gdk_GL_Accum_Green_Size,
-      Gdk_GL_Accum_Blue_Size,
-      Gdk_GL_Accum_Alpha_Size,
+   type GL_Configs is new Integer;
+   for GL_Configs'Size use Integer'Size;
 
-      --  Extensions
-      Gdk_GL_X_Visual_Type_Ext,
-      Gdk_GL_Transparent_Type_Ext,
-      Gdk_GL_Transparent_Index_Value_Ext,
-      Gdk_GL_Transparent_Red_Value_Ext,
-      Gdk_GL_Transparent_Green_Value_Ext,
-      Gdk_GL_Transparent_Blue_Value_Ext,
-      Gdk_GL_Transparent_Alpha_Value_Ext);
+   Gdk_GL_None : constant GL_Configs := 0;
+   Gdk_GL_Use_Gl : constant GL_Configs := 1;
+   Gdk_GL_Buffer_Size : constant GL_Configs := 2;
+   Gdk_GL_Level : constant GL_Configs := 3;
+   Gdk_GL_Rgba : constant GL_Configs := 4;
+   Gdk_GL_Doublebuffer : constant GL_Configs := 5;
+   Gdk_GL_Stereo : constant GL_Configs := 6;
+   Gdk_GL_Aux_Buffers : constant GL_Configs := 7;
+   Gdk_GL_Red_Size : constant GL_Configs := 8;
+   Gdk_GL_Green_Size : constant GL_Configs := 9;
+   Gdk_GL_Blue_Size : constant GL_Configs := 10;
+   Gdk_GL_Alpha_Size : constant GL_Configs := 11;
+   Gdk_GL_Depth_Size : constant GL_Configs := 12;
+   Gdk_GL_Stencil_Size : constant GL_Configs := 13;
+   Gdk_GL_Accum_Red_Size : constant GL_Configs := 14;
+   Gdk_GL_Accum_Green_Size : constant GL_Configs := 15;
+   Gdk_GL_Accum_Blue_Size : constant GL_Configs := 16;
+   Gdk_GL_Accum_Alpha_Size : constant GL_Configs := 17;
+
+   --  Extensions
+   Gdk_GL_X_Visual_Type_Ext : constant GL_Configs := 16#22#;
+   Gdk_GL_Transparent_Type_Ext : constant GL_Configs := 16#23#;
+   Gdk_GL_Transparent_Index_Value_Ext : constant GL_Configs := 16#24#;
+   Gdk_GL_Transparent_Red_Value_Ext : constant GL_Configs := 16#25#;
+   Gdk_GL_Transparent_Green_Value_Ext : constant GL_Configs := 16#26#;
+   Gdk_GL_Transparent_Blue_Value_Ext : constant GL_Configs := 16#27#;
+   Gdk_GL_Transparent_Alpha_Value_Ext : constant GL_Configs := 16#28#;
 
    function Query return Boolean;
    --  Returns true if OpenGL is supported
 
-private
-
-   for Gl_Configs'Size use Integer'Size;
-   for Gl_Configs use
-     (Gdk_GL_None => 0,
-      Gdk_GL_Use_Gl => 1,
-      Gdk_GL_Buffer_Size => 2,
-      Gdk_GL_Level => 3,
-      Gdk_GL_Rgba => 4,
-      Gdk_GL_Doublebuffer => 5,
-      Gdk_GL_Stereo => 6,
-      Gdk_GL_Aux_Buffers => 7,
-      Gdk_GL_Red_Size => 8,
-      Gdk_GL_Green_Size => 9,
-      Gdk_GL_Blue_Size => 10,
-      Gdk_GL_Alpha_Size => 11,
-      Gdk_GL_Depth_Size => 12,
-      Gdk_GL_Stencil_Size => 13,
-      Gdk_GL_Accum_Red_Size => 14,
-      Gdk_GL_Accum_Green_Size => 15,
-      Gdk_GL_Accum_Blue_Size => 16,
-      Gdk_GL_Accum_Alpha_Size => 17,
-
-      --  Extensions
-      Gdk_GL_X_Visual_Type_Ext => 16#22#,
-      Gdk_GL_Transparent_Type_Ext => 16#23#,
-      Gdk_GL_Transparent_Index_Value_Ext => 16#24#,
-      Gdk_GL_Transparent_Red_Value_Ext => 16#25#,
-      Gdk_GL_Transparent_Green_Value_Ext => 16#26#,
-      Gdk_GL_Transparent_Blue_Value_Ext => 16#27#,
-      Gdk_GL_Transparent_Alpha_Value_Ext => 16#28#);
-
-end Gdk.gl;
+end Gdk.GL;

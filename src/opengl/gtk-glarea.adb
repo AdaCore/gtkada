@@ -40,7 +40,7 @@ package body Gtk.GLArea is
                       Attr_List : in  Attributes_Array)
    is
    begin
-      Widget := new Gtk_Glarea_Record;
+      Widget := new Gtk_GLArea_Record;
       Initialize (Widget, Attr_List);
    end Gtk_New;
 
@@ -77,7 +77,7 @@ package body Gtk.GLArea is
       Share     : access Gtk_GLArea_Record'Class)
    is
    begin
-      Widget := new Gtk_Glarea_Record;
+      Widget := new Gtk_GLArea_Record;
       Initialize (Widget, Attr_List, Share);
    end Gtk_New;
 
@@ -121,7 +121,7 @@ package body Gtk.GLArea is
    -- Swap_Buffers --
    ------------------
 
-   procedure Swap_Buffers (Glarea : access Gtk_Glarea_Record'Class)
+   procedure Swap_Buffers (Glarea : access Gtk_GLArea_Record'Class)
    is
       procedure Internal (Glarea : System.Address);
       pragma Import (C, Internal, "gtk_gl_area_swapbuffers");
