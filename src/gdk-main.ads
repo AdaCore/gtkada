@@ -28,6 +28,10 @@
 
 with Glib; use Glib;
 
+with Gdk.Cursor;
+with Gdk.Types;
+with Gdk.Window;
+
 package Gdk.Main is
 
    procedure Init;
@@ -70,6 +74,27 @@ package Gdk.Main is
 
    procedure Key_Repeat_Restore;
 
+
+   function Pointer_Grab
+     (Window       : in Gdk.Window.Gdk_Window;
+      Owner_Events : in Boolean := True;
+      Event_Mask   : in Gdk.Types.Gdk_Event_Mask;
+      Confine_To   : in Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
+      Cursor       : in Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
+      Time         : in Guint32)
+      return Boolean;
+
+   procedure Pointer_Ungrab (Time : in Guint32);
+
+   function Pointer_Is_Grabbed return Boolean;
+
+
+   function Keyboard_Grab (Window       : in Gdk.Window.Gdk_Window;
+                           Owner_Events : in Boolean := True;
+                           Time         : in Guint32)
+                           return Boolean;
+
+   procedure Keyboard_Ungrab (Time : in Guint32);
 
    ----------------------------------------------------------------------
 

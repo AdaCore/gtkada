@@ -54,6 +54,95 @@ package body Gdk.Main is
    end Get_Use_Xshm;
 
 
+   -------------------
+   -- Keyboard_Grab --
+   -------------------
+
+   function Keyboard_Grab (Window       : in Gdk.Window.Gdk_Window;
+                           Owner_Events : in Boolean := True;
+                           Time         : in Guint32)
+                           return Boolean
+   is
+      function Internal
+         (Window       : in System.Address;
+          Owner_Events : in Gint;
+          Time         : in Guint32)
+          return            Gint;
+      pragma Import (C, Internal, "gdk_keyboard_grab");
+   begin
+      return To_Boolean (Internal (Get_Object (Window),
+                                   To_Gint (Owner_Events),
+                                   Time));
+   end Keyboard_Grab;
+
+
+   ---------------------
+   -- Keyboard_Ungrab --
+   ---------------------
+
+   procedure Keyboard_Ungrab (Time : in Guint32)
+   is
+      procedure Internal (Time : in Guint32);
+      pragma Import (C, Internal, "gdk_keyboard_ungrab");
+   begin
+      Internal (Time);
+   end Keyboard_Ungrab;
+
+
+   ------------------
+   -- Pointer_Grab --
+   ------------------
+
+   function Pointer_Grab
+     (Window       : in Gdk.Window.Gdk_Window;
+      Owner_Events : in Boolean := True;
+      Event_Mask   : in Gdk.Types.Gdk_Event_Mask;
+      Confine_To   : in Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
+      Cursor       : in Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
+      Time         : in Guint32) return Boolean
+   is
+      function Internal (Window       : in System.Address;
+                         Owner_Events : in Gint;
+                         Event_Mask   : in Gint;
+                         Confine_To   : in System.Address;
+                         Cursor       : in System.Address;
+                         Time         : in Guint32) return Gint;
+      pragma Import (C, Internal, "gdk_pointer_grab");
+   begin
+      return To_Boolean (Internal (Get_Object (Window),
+                                   To_Gint (Owner_Events),
+                                   Gint (Event_Mask),
+                                   Get_Object (Confine_To),
+                                   Get_Object (Cursor),
+                                   Time));
+   end Pointer_Grab;
+
+
+   ------------------------
+   -- Pointer_Is_Grabbed --
+   ------------------------
+
+   function Pointer_Is_Grabbed return Boolean
+   is
+      function Internal return Gint;
+      pragma Import (C, Internal, "gdk_pointer_is_grabbed");
+   begin
+      return To_Boolean (Internal);
+   end Pointer_Is_Grabbed;
+
+
+   --------------------
+   -- Pointer_Ungrab --
+   --------------------
+
+   procedure Pointer_Ungrab (Time : in Guint32) is
+      procedure Internal (Time : in Guint32);
+      pragma Import (C, Internal, "gdk_pointer_ungrab");
+   begin
+      Internal (Time);
+   end Pointer_Ungrab;
+
+
    ------------------
    --  Set_Locale  --
    ------------------
