@@ -20,7 +20,7 @@ package Gtk.Color_Selection is
    --  mapping: Set_Color gtkcolorsel.h gtk_color_selection_set_color
 
    procedure Set_Opacity (Colorsel    : in Gtk_Color_Selection'Class;
-                          Use_Opacity : in Gint);
+                          Use_Opacity : in Boolean);
    --  mapping: Set_Opacity gtkcolorsel.h gtk_color_selection_set_opacity
 
    procedure Set_Update_Policy (Colorsel : in Gtk_Color_Selection'Class;

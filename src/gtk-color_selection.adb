@@ -46,13 +46,13 @@ package body Gtk.Color_Selection is
    -----------------
 
    procedure Set_Opacity (Colorsel    : in Gtk_Color_Selection'Class;
-                          Use_Opacity : in Gint)
+                          Use_Opacity : in Boolean)
    is
       procedure Internal (Colorsel    : in System.Address;
                           Use_Opacity : in Gint);
       pragma Import (C, Internal, "gtk_color_selection_set_opacity");
    begin
-      Internal (Get_Object (Colorsel), Use_Opacity);
+      Internal (Get_Object (Colorsel), Boolean'Pos (Use_Opacity));
    end Set_Opacity;
 
    -----------------------
