@@ -434,7 +434,7 @@ package body Gtk.Glade is
    -- Generate --
    --------------
 
-   procedure Generate (Project : Node_Ptr; Interface : Node_Ptr) is
+   procedure Generate (Project : Node_Ptr; Window : Node_Ptr) is
       M              : Node_Ptr;
       Tmp            : Node_Ptr;
       Buffer         : String (1 .. 256);
@@ -445,12 +445,12 @@ package body Gtk.Glade is
       Project_Name   : constant String :=
        To_Ada (Get_Field (Find_Tag (Project, "glade-project"), "name").all);
          --  I_Name   : constant String :=
-         --     To_Ada (Get_Field (Find_Tag (Interface, "glade-interface"),
+         --     To_Ada (Get_Field (Find_Tag (Window, "glade-interface"),
          --    "child").all);
       Gettext        : Boolean := True;
 
    begin
-      M := Interface;
+      M := Window;
 
       if M = null then
          Put_Line ("no code to generate. exiting.");
@@ -458,7 +458,7 @@ package body Gtk.Glade is
          return;
       end if;
 
-      Print_Header (Interface, Standard_Output);
+      Print_Header (Window, Standard_Output);
       Tmp := Find_Tag (Project, "gettext_support");
 
       Gettext := Tmp = null or else Tmp.Value.all /= "FALSE";

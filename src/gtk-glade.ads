@@ -49,9 +49,9 @@ package Gtk.Glade is
    --  output. Note the .glade file should be passed here and not the
    --  .gladep file.
 
-   procedure Generate (Project : Node_Ptr; Interface : Node_Ptr);
+   procedure Generate (Project : Node_Ptr; Window : Node_Ptr);
    --  Generate the Ada code corresponding the creation of to
-   --  Project and Interface and its children on
+   --  Project and Window and its children on
    --  standard input.
 
    procedure Register_Generate (Widget : String; Generate : Generate_Ptr);
