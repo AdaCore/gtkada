@@ -3125,6 +3125,7 @@ package body Gtkada.MDI is
          --  Do not use Remove() below, since it will generate random SE in dnd
          --  operations.
          Unparent (Child);
+
          Remove_Page (Note, Page);
       end if;
 
