@@ -38,6 +38,18 @@ package body Gtk.Handlers is
 
    use Gtk.Object;
 
+   function Type_Of_Return
+     (Object : access GObject_Record'Class; Signal : String)
+      return Glib.GType;
+   --  Convenience function that groups together a call to Lookup, Query and
+   --  Return_Type.
+
+   function Count_Arguments
+     (Object : access GObject_Record'Class; Signal : String)
+      return Guint;
+   --  Convenience function that returns the number of arguments for this
+   --  signal
+
    function Do_Signal_Connect
      (Object      : Glib.GObjects.GObject;
       Name        : String;
@@ -98,6 +110,44 @@ package body Gtk.Handlers is
 
    function Get_Data (Closure : GClosure) return System.Address;
    pragma Import (C, Get_Data, "ada_gclosure_get_data");
+
+   --------------------
+   -- Type_Of_Return --
+   --------------------
+
+   function Type_Of_Return
+     (Object : access GObject_Record'Class; Signal : String)
+      return Glib.GType
+   is
+      Q : Signal_Query;
+      Id : Handler_Id := Lookup (Get_Type (Object), Signal);
+   begin
+      if Id = Invalid_Handler_Id then
+         return GType_Invalid;
+      else
+         Query (Id, Q);
+         return Return_Type (Q);
+      end if;
+   end Type_Of_Return;
+
+   ---------------------
+   -- Count_Arguments --
+   ---------------------
+
+   function Count_Arguments
+     (Object : access GObject_Record'Class; Signal : String)
+      return Guint
+   is
+      Q : Signal_Query;
+      Id : Handler_Id := Lookup (Get_Type (Object), Signal);
+   begin
+      if Id = Invalid_Handler_Id then
+         return 0;
+      else
+         Query (Id, Q);
+         return Params (Q)'Length;
+      end if;
+   end Count_Arguments;
 
    ------------------
    -- Destroy_Func --
@@ -379,14 +429,13 @@ package body Gtk.Handlers is
              (Func     => To_Handler (Marsh.Func),
               Proxy    => Marsh.Proxy,
               Object   => null);
-
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_None,
-            "Handlers for this signal should not return a value.");
+           (Type_Of_Return (Widget, Name) /= GType_None,
+            "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -417,13 +466,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
-              GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
-              GType_None,
-            "Handlers for this signal should not return a value.");
+           (Type_Of_Return (Widget, Name) /= GType_None,
+            "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -454,11 +501,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_None,
-            "Handlers for this signal should not return a value.");
+           (Type_Of_Return (Widget, Name) /= GType_None,
+            "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -489,13 +536,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
-              GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
-              GType_None,
-            "Handlers for this signal should not return a value.");
+           (Type_Of_Return (Widget, Name) /= GType_None,
+            "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -526,7 +571,7 @@ package body Gtk.Handlers is
 
          B : Return_Type;
       begin
-         pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+         pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
            (Get_Object (Object), Name & ASCII.NUL,
             Gdk.Event.To_Address (Param), B);
@@ -698,11 +743,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_None,
-            "Handlers for this signal should not return a value.");
+           (Type_Of_Return (Widget, Name) /= GType_None,
+            "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -733,11 +778,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_None,
-            "Handlers for this signal should not return a value.");
+           (Type_Of_Return (Widget, Name) /= GType_None,
+            "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -768,7 +813,7 @@ package body Gtk.Handlers is
          B : Return_Type;
 
       begin
-         pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+         pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
            (Get_Object (Object), Name & ASCII.NUL,
             Gdk.Event.To_Address (Param), B);
@@ -965,11 +1010,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) = GType_None,
-            "Handlers for this signal should return a value.");
+           (Type_Of_Return (Widget, Name) = GType_None,
+            "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -1000,12 +1045,10 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
-              GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type
-             (Get_Type (GObject (Widget)), Name, -1) = GType_None,
+           (Type_Of_Return (Widget, Name) = GType_None,
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
@@ -1035,11 +1078,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) = GType_None,
-            "Handlers for this signal should return a value.");
+           (Type_Of_Return (Widget, Name) = GType_None,
+            "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -1070,12 +1113,10 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
-              GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type
-              (Get_Type (GObject (Widget)), Name, -1) = GType_None,
+           (Type_Of_Return (Widget, Name) = GType_None,
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
@@ -1104,7 +1145,7 @@ package body Gtk.Handlers is
             Param  : System.Address);
          pragma Import (C, Internal, "g_signal_emit_by_name");
       begin
-         pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+         pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
            (Get_Object (Object), Name & ASCII.NUL,
             Gdk.Event.To_Address (Param));
@@ -1268,11 +1309,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) = GType_None,
-            "Handlers for this signal should return a value.");
+           (Type_Of_Return (Widget, Name) = GType_None,
+            "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -1301,11 +1342,11 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) = GType_None,
-            "Handlers for this signal should return a value.");
+           (Type_Of_Return (Widget, Name) = GType_None,
+            "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -1333,7 +1374,7 @@ package body Gtk.Handlers is
          pragma Import (C, Internal, "g_signal_emit_by_name");
 
       begin
-         pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+         pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
            (Get_Object (Object), Name & ASCII.NUL,
             Gdk.Event.To_Address (Param));

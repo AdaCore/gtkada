@@ -145,7 +145,7 @@ package Gtk.Handlers is
 
    pragma Elaborate_Body;
 
-   type Handler_Id is new Guint;
+   subtype Handler_Id is Glib.Handler_Id;
    --  This uniquely identifies a connection widget<->signal.
 
    ---------------------------------------------------------
