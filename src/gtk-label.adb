@@ -142,6 +142,20 @@ package body Gtk.Label is
       return Internal (Get_Object (Label)) /= 0;
    end Get_Use_Underline;
 
+   -------------------------
+   -- Get_Mnemonic_Keyval --
+   -------------------------
+
+   function Get_Mnemonic_Keyval
+     (Label : access Gtk_Label_Record) return Gdk.Types.Gdk_Key_Type
+   is
+      function Internal (Label : System.Address) return Gdk.Types.Gdk_Key_Type;
+      pragma Import (C, Internal, "gtk_label_get_mnemonic_keyval");
+
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Mnemonic_Keyval;
+
    ----------------
    -- Initialize --
    ----------------
@@ -216,6 +230,21 @@ package body Gtk.Label is
       Internal (Get_Object (Label), Str & ASCII.NUL);
    end Set_Text;
 
+   ----------------------------
+   -- Set_Text_With_Mnemonic --
+   ----------------------------
+
+   procedure Set_Text_With_Mnemonic
+     (Label : access Gtk_Label_Record;
+      Str   : UTF8_String)
+   is
+      procedure Internal (Label : System.Address; Str : UTF8_String);
+      pragma Import (C, Internal, "gtk_label_set_text_with_mnemonic");
+
+   begin
+      Internal (Get_Object (Label), Str & ASCII.NUL);
+   end Set_Text_With_Mnemonic;
+
    ----------------
    -- Set_Markup --
    ----------------
@@ -227,6 +256,36 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Str & ASCII.NUL);
    end Set_Markup;
+
+   ------------------------------
+   -- Set_Markup_With_Mnemonic --
+   ------------------------------
+
+   procedure Set_Markup_With_Mnemonic
+     (Label : access Gtk_Label_Record;
+      Str   : UTF8_String)
+   is
+      procedure Internal (Label : System.Address; Str : UTF8_String);
+      pragma Import (C, Internal, "gtk_label_set_markup_with_mnemonic");
+
+   begin
+      Internal (Get_Object (Label), Str & ASCII.NUL);
+   end Set_Markup_With_Mnemonic;
+
+   -------------------------
+   -- Set_Mnemonic_Widget --
+   -------------------------
+
+   procedure Set_Mnemonic_Widget
+     (Label  : access Gtk_Label_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Label : System.Address; Widget : System.Address);
+      pragma Import (C, Internal, "gtk_label_set_mnemonic_widget");
+
+   begin
+      Internal (Get_Object (Label), Get_Object (Widget));
+   end Set_Mnemonic_Widget;
 
    -----------------
    -- Set_Pattern --

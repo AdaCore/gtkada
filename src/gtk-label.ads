@@ -38,9 +38,11 @@
 --  </description>
 --  <c_version>1.3.11</c_version>
 
+with Gdk.Types;
 with Glib.Properties;
 with Gtk.Enums;
 with Gtk.Misc;
+with Gtk.Widget;
 
 package Gtk.Label is
 
@@ -87,10 +89,24 @@ package Gtk.Label is
    --  Return True whether an embedded underline in the label indicates
    --  the mnemonic accelerator keys.
 
+   function Get_Mnemonic_Keyval
+     (Label : access Gtk_Label_Record) return Gdk.Types.Gdk_Key_Type;
+   --  Return the key value of the mnemonic accelerator key indicated by an
+   --  embedded underline in the label. If there is no mnemonic set up it
+   --  returns Gdk.Types.Keysyms.GDK_VoidSymbol.
+
    procedure Set_Text (Label : access Gtk_Label_Record; Str : UTF8_String);
    --  Change the text of the label.
    --  The new text is visible on the screen at once. Note that the underline
    --  pattern is not modified.
+
+   procedure Set_Text_With_Mnemonic
+     (Label : access Gtk_Label_Record;
+      Str   : UTF8_String);
+   --  Change the text and mnemonic key of the label.
+   --  The new text and mnemonic are visible on the screen at once.
+   --  The mnemonic key can be used to activate another widget, chosen
+   --  automatically or explicitely using Set_Mnemonic_Widget.
 
    function Get_Text (Label : access Gtk_Label_Record) return UTF8_String;
    --  Get the current value of the text displayed in the label.
@@ -98,6 +114,30 @@ package Gtk.Label is
    procedure Set_Markup (Label : access Gtk_Label_Record; Str : UTF8_String);
    --  Parses Str which is marked up with the Pango text markup language,
    --  setting the label's text and attribute list based on the parse results.
+
+   procedure Set_Markup_With_Mnemonic
+     (Label : access Gtk_Label_Record;
+      Str   : UTF8_String);
+   --  Parse Str which is marked up with the Pango text markup language,
+   --  setting the label's text and attribute list based on the parse results.
+   --  If characters in Str are preceded by an underscore, they are underlined
+   --  indicating that they represent a mnemonic.
+   --  The mnemonic key can be used to activate another widget, chosen
+   --  automatically or explicitely using Set_Mnemonic_Widget.
+
+   procedure Set_Mnemonic_Widget
+     (Label  : access Gtk_Label_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  If the label has been set so that it has an mnemonic key, the label can
+   --  be associated with a widget that is the target of the mnemonic.
+   --  When the label is inside a widget (like a Gtk_Button or a Gtk_Notebook
+   --  tab), it is automatically associated with the correct widget, but
+   --  sometimes (i.e. when the target is a Gtk_Entry next to the label),
+   --  you need to set it explicitly using this procedure.
+   --  The target widget will be accelerated by emitting "mnemonic_activate"
+   --  on it. The default handler for this signal will activate the widget if
+   --  there are no mnemonic collisions and toggle focus between the colliding
+   --  widgets otherwise.
 
    --  <doc_ignore>
    function Get
@@ -284,14 +324,7 @@ end Gtk.Label;
 --  missing:
 --  Set_Attributes
 --  Get_Attributes
---  Set_Markup_With_Mnemonic
---  Get_Mnemonic_Keyval
 --  Get_Mnemonic_Widget
---  Set_Mnemonic_Widget
---  Set_Text_With_Mnemonic
---  Set_Selectable
---  Get_Selectable
---  Select_Region
 --  Get_Selection_Bounds
 --  Get_Layout
 --  Get_Layout_Offsets
