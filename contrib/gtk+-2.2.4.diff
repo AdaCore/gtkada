@@ -115,6 +115,7 @@ Wed Oct 15 2003  Arnaud Charlet  <charlet@act-europe.fr>
  #endif
  
  /**
+--- gtk/gtktextlayout.c	2003/11/22 14:54:29
 +++ gtk/gtktextlayout.c	2003/11/22 14:54:29
 @@ -1686,11 +1686,14 @@ gtk_text_layout_get_line_display (GtkTex
                                    GtkTextLine   *line,
