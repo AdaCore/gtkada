@@ -61,7 +61,7 @@ package body Gtk.Box is
    -- Gtk_New_Vbox --
    ------------------
 
-   procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
+   procedure Gtk_New_Vbox (Box         : out Gtk_Box;
                            Homogeneous : in  Boolean := False;
                            Spacing     : in  Gint := 0)
    is
@@ -74,7 +74,7 @@ package body Gtk.Box is
    -- Gtk_New_Hbox --
    ------------------
 
-   procedure Gtk_New_Hbox (Box         : in out Gtk_Box;
+   procedure Gtk_New_Hbox (Box         : out Gtk_Box;
                            Homogeneous : in  Boolean := False;
                            Spacing     : in  Gint := 0)
    is

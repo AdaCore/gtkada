@@ -124,7 +124,7 @@ package body Gtk.Adjustment is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Adjustment     : in out Gtk_Adjustment;
+   procedure Gtk_New (Adjustment     : out Gtk_Adjustment;
                       Value          : in     Gfloat;
                       Lower          : in     Gfloat;
                       Upper          : in     Gfloat;
