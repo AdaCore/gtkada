@@ -52,7 +52,7 @@ while test $# -gt 0; do
       exit 1
       ;;
     --libs)
-      echo $gtkada_libs $gtk_libs $gtkada_lflags
+      echo $gtkada_libs $gtkada_lflags $gtk_libs
       generic_output=0
       ;;
     --cflags)
@@ -68,6 +68,6 @@ while test $# -gt 0; do
 done
 
 if [ $generic_output = 1 ]; then
-    echo $gtkada_cflags $gtkada_libs $gtk_libs $gtkada_lflags
+    echo $gtkada_cflags $gtkada_libs $gtkada_lflags $gtk_libs
 fi
 

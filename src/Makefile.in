@@ -21,7 +21,7 @@ GNATFLAGS = -O2 -gnatn -gnatwuwewl
 GNATFLAGS_DEVEL = -O2 -gnatag -gnatwuwewl -g
 
 GNATMAKE = gnatmake
-GNATMAKELDFLAGS = -largs -L. @GTK_LIBS@ -lgtkada
+GNATMAKELDFLAGS = -largs -L. -lgtkada @GTK_LIBS@
 
 LIB_DIR=lib-obj
 
@@ -83,8 +83,8 @@ gates: $(GATE_EX) $(DGATE)
 ## Private targets
 
 dirs:: force
-	$(MKDIR) $(LIB_DIR)
-	$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
+	-$(MKDIR) $(LIB_DIR)
+	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
 
 $(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
