@@ -138,6 +138,7 @@ package body Gtk.Object is
    begin
       if Get_Object (Object) /= System.Null_Address then
          Internal (Get_Object (Object));
+         Set_Object (Object, System.Null_Address);
       end if;
    end Unref;
 
