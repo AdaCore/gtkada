@@ -29,6 +29,7 @@
 --  <description>
 --
 --  This package provides a minimal binding to the GObject type in Glib.
+--  See Glib.Properties for information on how to manipulate properties
 --
 --  </description>
 
@@ -58,15 +59,6 @@ package Glib.GObjects is
    --     if Object in Gtk_Button_Record'Class then ...
    --
    --  which is easier.
-
-   function Type_Name (Type_Num : in GType) return String;
-   --  Return the type name corresponding to a GType.
-   --  This might be useful in debug messages.
-
-   function Type_From_Name (Name : in String) return GType;
-   --  Convert a string to the matching type.
-   --  Name should be the C GObject name rather than the Ada name: thus,
-   --  use names such as GtkScrollbar or GtkButton for widgets.
 
    ------------------------
    -- Interfacing with C --
@@ -102,22 +94,54 @@ package Glib.GObjects is
    --  Cast Obj in an object of tag Stub'Class.
    --  Return the resulting object and free the memory pointed by Obj.
 
-   function Count_Arguments
-     (The_Type : GType; Name : in String) return Guint;
-   --  Return the number of arguments used in the handlers for the signal.
-   --  Note that in the Connect functions, we always test whether the user
-   --  has asked for *at most* the number of arguments defined by gtk+ for the
-   --  callback. This is because having less argument is authorized (the
-   --  extra parameters passed by glib will simply be ignored), whereas having
-   --  more arguments is impossible (they would never be set).
+   -------------
+   -- Signals --
+   -------------
+   --  Any child of GObject can be associated with any number of signals. The
+   --  mechanism for signals is fully generic, and any number of arguments can
+   --  be associated with signals.
+   --  See the function Initialize_Class_Record for more information on how
+   --  to create new signals for your own new widgets.
+   --  The subprograms below are provided for introspection: they make it
+   --  possible to query the list of signals defined for a specific widget,
+   --  as well as their parameters and return types.
 
-   function Argument_Type
-     (The_Type : GType;
-      Name     : in String;
-      Num      : in Gint) return GType;
-   --  Return the type of the num-th argument for the handlers of signal name.
-   --  If Num is negative, return the type returned by the handlers for this
+   type Handler_Id_Array is array (Guint range <>) of Glib.Handler_Id;
+
+   type Signal_Query is private;
+
+   function Lookup (Object : Glib.GType; Signal : String)
+      return Glib.Handler_Id;
+   --  Returns the signal Id associated with a specific Object/Signal pair.
+   --  Invalid_Handler_Id is returned if no such signal exists for Object.
+   --  You can then use the Query procedure to get more information on the
    --  signal.
+
+   function List_Ids (Typ : Glib.GType) return Handler_Id_Array;
+   --  Return the list of signals defined for Typ. You can get more information
+   --  on each of this signals by using the Query function below.
+   --  See also the function Get_Type above to convert from an object instance
+   --  to its type. Using a GType as the parameter makes it easier to find the
+   --  signals for a widget and its ancestors (using Glib.Parent).
+
+   procedure Query (Id : Glib.Handler_Id; Result : out Signal_Query);
+   --  Return the description associated with the signal Id. You can get the
+   --  various fields from Query with one of the functions below.
+   --  Result is undefined if Id is Invalid_Handler_Id
+
+   function Id (Q : Signal_Query) return Glib.Handler_Id;
+   --  Return the signal Id. Each Id is specific to a widget/signal name pair.
+   --  These Ids can then be used to temporarily block a signal for instance,
+   --  through the subprograms in Gtk.Handlers.
+
+   function Signal_Name (Q : Signal_Query) return String;
+   --  Return the name of the signal, as should be used in a call to Connect.
+
+   function Return_Type (Q : Signal_Query) return Glib.GType;
+   --  Return the type of object returned by the handlers for this signal.
+
+   function Params (Q : Signal_Query) return GType_Array;
+   --  Return the list of parameters for the handlers for this signal
 
    --------------------------
    -- Creating new widgets --
@@ -178,6 +202,28 @@ package Glib.GObjects is
    --  Return the internal gtk+ type that describes the newly created
    --  Class_Record
 
+   -------------
+   -- Signals --
+   -------------
+   --  ??? This section is incomplete.
+
+   --  <signals>
+   --  The following new signals are defined for this object:
+   --
+   --  - "notify"
+   --    procedure Handler
+   --      (Object : access GObject_Record'Class; Name : String);
+   --
+   --    Emitted when the property Name has been modified
+   --  </signals>
+
+   procedure Notify
+     (Object : access Glib.GObjects.GObject_Record;
+      Property_Name : String);
+   --  Emits the "notify" signal, to signal every listener that the property
+   --  has been changed.
+
+
 private
 
    type GObject_Record is tagged record
@@ -187,6 +233,12 @@ private
    type GObject_Class is new System.Address;
    Uninitialized_Class : constant GObject_Class :=
      GObject_Class (System.Null_Address);
+
+   type Byte is range 0 .. 255;
+   for Byte'Size use 8;
+   function C_Signal_Query_Size return Natural;
+   pragma Import (C, C_Signal_Query_Size);
+   type Signal_Query is array (1 .. C_Signal_Query_Size) of Byte;
 
    --  <doc_ignore>
 
@@ -215,4 +267,7 @@ private
    pragma Inline (Get_Object);
    pragma Inline (Set_Object);
    pragma Import (C, Type_From_Class, "ada_type_from_class");
+   pragma Import (C, Query, "g_signal_query");
+   pragma Import (C, Id, "ada_gsignal_query_id");
+   pragma Import (C, Return_Type, "ada_gsignal_query_return_type");
 end Glib.GObjects;

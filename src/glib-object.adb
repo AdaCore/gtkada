@@ -38,20 +38,6 @@ package body Glib.GObjects is
    procedure Free_User_Data (Data : in System.Address);
    --  Free the user data Data. This function should not be called directly
 
-   -------------------
-   -- Argument_Type --
-   -------------------
-
-   function Argument_Type
-     (The_Type : GType; Name : in String; Num : in Gint) return GType
-   is
-      function Internal
-        (The_Type : GType; Name : String; Num  : Gint) return GType;
-      pragma Import (C, Internal, "ada_signal_argument_type");
-   begin
-      return Internal (The_Type, Name & ASCII.NUL, Num);
-   end Argument_Type;
-
    -------------------------
    -- Conversion_Function --
    -------------------------
@@ -84,20 +70,6 @@ package body Glib.GObjects is
 
       return new GObject_Record'Class' (Stub);
    end Conversion_Function;
-
-   ---------------------
-   -- Count_Arguments --
-   ---------------------
-
-   function Count_Arguments
-     (The_Type : GType; Name : in String) return Guint
-   is
-      function Internal (The_Type : GType; Name : String) return Guint;
-      pragma Import (C, Internal, "ada_signal_count_arguments");
-
-   begin
-      return Internal (The_Type, Name & ASCII.NUL);
-   end Count_Arguments;
 
    --------------------
    -- Free_User_Data --
@@ -221,35 +193,6 @@ package body Glib.GObjects is
       Object.Ptr := Value;
    end Set_Object;
 
-   ---------------
-   -- Type_Name --
-   ---------------
-
-   function Type_Name (Type_Num : in GType) return String is
-      use type Interfaces.C.Strings.chars_ptr;
-      function Internal (Type_Num : in GType)
-                         return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "g_type_name");
-      Ret : Interfaces.C.Strings.chars_ptr := Internal (Type_Num);
-   begin
-      if Ret = Null_Ptr then
-         return "";
-      else
-         return Interfaces.C.Strings.Value (Ret);
-      end if;
-   end Type_Name;
-
-   --------------------
-   -- Type_From_Name --
-   --------------------
-
-   function Type_From_Name (Name : in String) return GType is
-      function Internal (Name : String) return GType;
-      pragma Import (C, Internal, "g_type_from_name");
-   begin
-      return Internal (Name & ASCII.NUL);
-   end Type_From_Name;
-
    --------------------
    -- Unchecked_Cast --
    --------------------
@@ -322,5 +265,95 @@ package body Glib.GObjects is
            Class_Record,
            Type_Name & ASCII.NUL);
    end Initialize_Class_Record;
+
+   --------------
+   -- List_Ids --
+   --------------
+
+   function List_Ids (Typ : Glib.GType) return Handler_Id_Array is
+      type Flat_Id_Array is array (Guint) of Handler_Id;
+      type Flat_Id_Array_Access is access Flat_Id_Array;
+      type Guint_Access is access all Guint;
+      function Internal (Typ : GType; N_Ids : Guint_Access)
+         return Flat_Id_Array_Access;
+      pragma Import (C, Internal, "g_signal_list_ids");
+      N_Ids : aliased Guint;
+      Result : Flat_Id_Array_Access := Internal (Typ, N_Ids'Access);
+   begin
+      if N_Ids = 0 then
+         return (1 .. 0 => 0);
+      else
+         declare
+            Res : Handler_Id_Array (0 .. N_Ids - 1) :=
+              Handler_Id_Array (Result (0 .. N_Ids - 1));
+         begin
+            return Res;
+         end;
+      end if;
+   end List_Ids;
+
+   -----------------
+   -- Signal_Name --
+   -----------------
+
+   function Signal_Name (Q : Signal_Query) return String is
+      function Internal (Q : Signal_Query)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "ada_gsignal_query_signal_name");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Q));
+   end Signal_Name;
+
+   ------------
+   -- Params --
+   ------------
+
+   function Params (Q : Signal_Query) return GType_Array is
+      type Flat_GType_Array is array (Guint) of GType;
+      type Flat_GType_Array_Access is access Flat_GType_Array;
+      type Guint_Access is access all Guint;
+      function Internal (Q : Signal_Query; N_Ids : Guint_Access)
+         return Flat_GType_Array_Access;
+      pragma Import (C, Internal, "ada_gsignal_query_params");
+      N_Ids : aliased Guint;
+      Result : Flat_GType_Array_Access := Internal (Q, N_Ids'Access);
+   begin
+      if N_Ids = 0 then
+         return (1 .. 0 => GType_Invalid);
+      else
+         declare
+            Res : GType_Array (0 .. N_Ids - 1) :=
+              GType_Array (Result (0 .. N_Ids - 1));
+         begin
+            return Res;
+         end;
+      end if;
+   end Params;
+
+   ------------
+   -- Lookup --
+   ------------
+
+   function Lookup (Object : GType; Signal : String) return Glib.Handler_Id
+   is
+      function Internal (Signal : String; Object : GType) return Handler_Id;
+      pragma Import (C, Internal, "g_signal_lookup");
+   begin
+      return Internal (Signal & ASCII.Nul, Object);
+   end Lookup;
+
+   ------------
+   -- Notify --
+   ------------
+
+   procedure Notify
+     (Object : access Glib.GObjects.GObject_Record;
+      Property_Name : String)
+   is
+      procedure Internal (Object : System.Address; Name : String);
+      pragma Import (C, Internal, "g_object_notify");
+   begin
+      Internal (Glib.GObjects.Get_Object (Object), Property_Name & ASCII.Nul);
+   end Notify;
 
 end Glib.GObjects;
