@@ -3102,7 +3102,8 @@ package body Gtkada.Canvas is
 
       --  Do we want smooth scrolling ?
       if Steps > 1 then
-         Canvas.Zoom_Step := (Gint (Percent - Canvas.Zoom) / Gint (Steps));
+         Canvas.Zoom_Step :=
+           (Gint (Percent) - Gint (Canvas.Zoom)) / Gint (Steps);
          if Canvas.Zoom_Step = 0 then
             if Percent > Canvas.Zoom then
                Canvas.Zoom_Step := 1;
