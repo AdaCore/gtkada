@@ -40,8 +40,15 @@ with System;
 
 package Gdk.Threads is
 
+   procedure G_Init (Vtable : System.Address := System.Null_Address);
+   --  Initialize the Glib internal threading support.
+   --  This procedure must be called before any call to Enter or Leave.
+   --  The parameter Vtable should never be used for now.
+
    procedure Init;
    --  Initialize the Gdk internal threading support.
+   --  This function must be called after G_Init and before any call to
+   --  Enter or Leave.
 
    procedure Enter;
    --  Take the GtkAda global lock.
@@ -57,6 +64,8 @@ private
    pragma Linker_Options ("-lgthread-2.0");
    --  This is needed to resolve g_thread_init
 
+   pragma Import (C, G_Init, "g_thread_init");
+   pragma Import (C, Init, "gdk_threads_init");
    pragma Import (C, Enter, "gdk_threads_enter");
    pragma Import (C, Leave, "gdk_threads_leave");
 end Gdk.Threads;
