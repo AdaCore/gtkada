@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -227,6 +227,14 @@ package body Gtk.Combo is
 
    begin
       Gen_New (N, "Combo", File => File);
+
+      --  The child is the entry field associated with the combo box. It only
+      --  exists for Glade >= 0.5. Do not generate any "Add"
+
+      if Child /= null then
+         Child.Specific_Data.Has_Container := True;
+      end if;
+
       Box.Generate (N, File);
       Gen_Set (N, "Combo", "case_sensitive", File);
       Gen_Set (N, "Combo", "use_arrows", File);
@@ -260,14 +268,6 @@ package body Gtk.Combo is
          Put_Line (File, "   Free_String_List (" &
            To_Ada (Get_Field (N, "name").all) & "_Items);");
       end if;
-
-      --  The child is the entry field associated with the combo box. It only
-      --  exists for Glade >= 0.5. Do not generate any "Add"
-
-      if Child /= null then
-         Child.Specific_Data.Has_Container := True;
-      end if;
-
    end Generate;
 
    procedure Generate
@@ -283,6 +283,13 @@ package body Gtk.Combo is
          Gtk_New (Gtk_Combo (Combo_Box));
          Set_Object (Get_Field (N, "name"), Combo_Box);
          N.Specific_Data.Created := True;
+      end if;
+
+      --  The child is the entry field associated with the combo box. It only
+      --  exists for Glade >= 0.5. Do not generate any "Add"
+
+      if Child /= null then
+         Child.Specific_Data.Has_Container := True;
       end if;
 
       Box.Generate (Combo_Box, N);
@@ -327,14 +334,6 @@ package body Gtk.Combo is
          Set_Popdown_Strings (Gtk_Combo (Combo_Box), Items);
          String_List.Free (Items);
       end if;
-
-      --  The child is the entry field associated with the combo box. It only
-      --  exists for Glade >= 0.5. Do not generate any "Add"
-
-      if Child /= null then
-         Child.Specific_Data.Has_Container := True;
-      end if;
-
    end Generate;
 
 end Gtk.Combo;
