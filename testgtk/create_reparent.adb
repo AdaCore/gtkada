@@ -28,7 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib;          use Glib;
-with Glib.GObjects; use Glib.GObjects;
+with Glib.Object;   use Glib.Object;
 with Gtk.Box;       use Gtk.Box;
 with Gtk.Button;    use Gtk.Button;
 with Gtk.Frame;     use Gtk.Frame;
