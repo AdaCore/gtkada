@@ -59,7 +59,7 @@ c_objects = $(LIB_DIR)/misc.o $(LIB_DIR)/misc-gnat.o
 
 ## General and public targets
 
-all: dirs libs gates testgtk 
+all: dirs libs gates
 
 libs: $(LIBNAME) $(ARCHIVENAME) install_ali
 
@@ -102,9 +102,6 @@ $(DGATE):: $(DGATE).adb $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 	else \
 	   $(GNATMAKE) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
 	fi
-
-testgtk::
-	$(MAKE) -C testgtk
 
 $(LIB_DIR)/$(TEST_LINK).o::
 	test -f $(LIB_DIR)/$(TEST_LINK).adb || @PERL@ ./create_test_link.pl > $(LIB_DIR)/$(TEST_LINK).adb
@@ -155,19 +152,12 @@ mostlyclean-generic: clean-generic
 	-${RM} $(GTKADA_CONFIG)
 
 clean: clean-generic
-	-cd testgtk && ${MAKE} clean
 
 distclean: mostlyclean-generic
-	-${RM} config.cache config.log config.status
-	-cd testgtk && ${MAKE} distclean
 
 mostlyclean: mostlyclean-generic
-	-cd testgtk && ${MAKE} mostlyclean
 
 maintainer-clean: mostlyclean-generic
-	-${RM} config.cache config.log config.status
-	-${RM} configure
-	-cd testgtk && ${MAKE} maintainer-clean
 
 $(LIB_DIR)/misc.o: misc.c
 	$(CD) $(LIB_DIR); $(CC) -c $(ALL_CFLAGS) ../$<
