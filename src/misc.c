@@ -1098,6 +1098,15 @@ ada_gdk_event_get_area (GdkEvent *event, GdkRectangle *area)
     }
 }
 
+GdkRegion*
+ada_gdk_event_get_region (GdkEvent *event)
+{
+  if (event->type == GDK_EXPOSE)
+    return event->expose.region;
+  else
+    return NULL;
+}
+
 gint ada_gdk_event_get_count (GdkEvent * event)
 {
   if (!event)
@@ -2525,17 +2534,6 @@ gpointer
 ada_gslist_get_data (GSList* list)
 {
   return list->data;
-}
-
-/******************************************
- ** Functions for Fixed
- ******************************************/
-
-GList*
-ada_fixed_get_children (GtkFixed* widget)
-{
-  /** ??? Should use gtk_container_get_children instead **/
-   return widget->children;
 }
 
 /******************************************
