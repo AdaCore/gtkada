@@ -136,20 +136,27 @@ package body Create_Cursors is
    -- Cursor_Event --
    ------------------
 
-   function Cursor_Event (Darea   : access Gtk_Widget_Record'Class;
-                           Event   : in Gdk_Event;
-                           Spinner : in My_Spin_Button)
-                         return Gint
+   function Cursor_Event
+     (Darea   : access Gtk_Widget_Record'Class;
+      Event   : Gdk_Event;
+      Spinner : My_Spin_Button) return Gint
    is
       pragma Warnings (Off, Darea);
    begin
       if Get_Button (Event) = 1 then
-         Spin (Spinner, Arrow_Up, Get_Step_Increment (Get_Adjustment (Spinner)));
+         Spin
+           (Spinner, Spin_Step_Forward,
+            Get_Step_Increment (Get_Adjustment (Spinner)));
+
       elsif Get_Button (Event) = 3 then
-         Spin (Spinner, Arrow_Down, Get_Step_Increment (Get_Adjustment (Spinner)));
+         Spin
+           (Spinner, Spin_Step_Backward,
+            Get_Step_Increment (Get_Adjustment (Spinner)));
+
       else
          Put_Line ("Unknown button : " & Guint'Image (Get_Button (Event)));
       end if;
+
       return 0;
    end Cursor_Event;
 

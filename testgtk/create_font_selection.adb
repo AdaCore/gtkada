@@ -29,7 +29,6 @@
 
 with Gtk.Font_Selection;   use Gtk.Font_Selection;
 with Gtk;                  use Gtk;
-with Gtkada.Types;         use Gtkada.Types;
 
 package body Create_Font_Selection is
 

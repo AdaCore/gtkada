@@ -1023,7 +1023,7 @@ package body Create_Ctree is
          Marsh => Ctree_Cb.To_Marshaller (Remove_Selection'Access),
          Slot_Object => Ctree);
 
-      Gtk.Check_Button.Gtk_New (Check, With_Label => "Reorderable");
+      Gtk.Check_Button.Gtk_New (Check, Label => "Reorderable");
       Gtk.Box.Pack_Start (Hbox, Child => Check, Expand => False);
       Gtk.Tooltips.Set_Tip
         (Tooltips,

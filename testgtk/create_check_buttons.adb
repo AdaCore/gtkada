@@ -64,13 +64,13 @@ package body Create_Check_Buttons is
                       Expand => False,
                       Fill   => False);
 
-      Check_Button.Gtk_New (A_Check_Button, With_Label => "button1");
+      Check_Button.Gtk_New (A_Check_Button, "button1");
       Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
 
-      Check_Button.Gtk_New (A_Check_Button, With_Label => "button2");
+      Check_Button.Gtk_New (A_Check_Button, "button2");
       Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
 
-      Check_Button.Gtk_New (A_Check_Button, With_Label => "button3");
+      Check_Button.Gtk_New (A_Check_Button, "button3");
       Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
 
       Show_All (Box1);

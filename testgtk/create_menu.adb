@@ -72,18 +72,17 @@ package body Create_Menu is
          end;
       end if;
 
-      for I in 0 .. 5 loop
+      for J in 0 .. 5 loop
          Gtk_New (Menu_Item, Group, "Item" & Integer'Image (Depth)
-                  & " -" & Integer'Image (I + 1));
+                  & " -" & Integer'Image (J + 1));
          Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
-         if Depth mod 2 /= 0 then
-            Set_Show_Toggle (Menu_Item, True);
-         end if;
          Append (Menu, Menu_Item);
          Show (Menu_Item);
-         if I = 3 then
+
+         if J = 3 then
             Set_Sensitive (Menu_Item, False);
          end if;
+
          if Depth > 1 then
             Set_Submenu (Menu_Item, Create_Menu (Depth - 1, Tearoff));
          end if;

@@ -32,7 +32,6 @@ with Gtk.Adjustment;    use Gtk.Adjustment;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Button;        use Gtk.Button;
 with Gtk.Check_Button;  use Gtk.Check_Button;
-with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Label;         use Gtk.Label;
@@ -77,7 +76,7 @@ package body Create_Spin is
 
    procedure Change_Digits (Spin : access Gtk_Spin_Button_Record'Class) is
    begin
-      Set_Digits (Spinner1, Get_Value_As_Int (Spin));
+      Set_Digits (Spinner1, Guint (Get_Value_As_Int (Spin)));
    end Change_Digits;
 
    -----------------
@@ -112,7 +111,7 @@ package body Create_Spin is
       if Data = 1 then
          Set_Text (Widget.Label, Gint'Image (Get_Value_As_Int (Spin)));
       else
-         Set_Text (Widget.Label, Gfloat'Image (Get_Value_As_Float (Spin)));
+         Set_Text (Widget.Label, Gdouble'Image (Get_Value_As_Float (Spin)));
       end if;
    end Get_Value;
 
@@ -122,7 +121,7 @@ package body Create_Spin is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Main_Box : Gtk_Box;
-      VBox      : Gtk_Box;
+      VBox     : Gtk_Box;
       Hbox     : Gtk_Box;
       Vbox2    : Gtk_Box;
       Label    : Gtk_Label;

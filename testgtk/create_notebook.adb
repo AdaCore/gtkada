@@ -326,9 +326,10 @@ package body Create_Notebook is
    -- Page_Switch --
    -----------------
 
-   procedure Page_Switch (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : in Gtk.Gtk_Notebook_Page;
-                          Page_Num : in Gtk_Notebook)
+   procedure Page_Switch
+     (Notebook : access Gtk_Notebook_Record'Class;
+      Page     : in Gtk.Gtk_Notebook_Page;
+      Page_Num : in Gtk_Notebook)
    is
       pragma Warnings (Off, Page_Num);
       Old_Page : Gint := Get_Current_Page (Notebook);

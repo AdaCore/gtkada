@@ -96,49 +96,60 @@ package body Create_Packer is
    --------------------
 
    procedure Toggle_Options (Button : access Gtk_Toggle_Button_Record'Class) is
-      Option : Gtk_Packer_Options;
-      Fillx  : Gtk_Packer_Options := Gtk_No_Options;
-      Filly  : Gtk_Packer_Options := Gtk_No_Options;
-      Expand : Gtk_Packer_Options := Gtk_No_Options;
+      Option  : Gtk_Packer_Options;
+      Fillx   : Gtk_Packer_Options := Gtk_No_Options;
+      Filly   : Gtk_Packer_Options := Gtk_No_Options;
+      Expand  : Gtk_Packer_Options := Gtk_No_Options;
       Tbutton : Gtk_Toggle_Button := Gtk_Toggle_Button (Button);
+
    begin
-      if Is_Active (Button) then
+      if Get_Active (Button) then
          Option := Options_User_Data.Get (Button, "option");
-         if Is_Active (Info.Button_Fillx) then
+
+         if Get_Active (Info.Button_Fillx) then
             Fillx := Gtk_Fill_X;
          end if;
-         if Is_Active (Info.Button_Filly) then
+
+         if Get_Active (Info.Button_Filly) then
             Filly := Gtk_Fill_Y;
          end if;
-         if Is_Active (Info.Button_Expand) then
+
+         if Get_Active (Info.Button_Expand) then
             Expand := Gtk_Pack_Expand;
          end if;
-         Gtk.Packer.Set_Child_Packing (Info.Packer,
-                                       Info.Current,
-                                       Get_Side (Info.Pchild),
-                                       Get_Anchor (Info.Pchild),
-                                       Fillx + Filly + Expand,
-                                       Get_Border_Width (Info.Pchild),
-                                       Get_Pad_X (Info.Pchild),
-                                       Get_Pad_Y (Info.Pchild),
-                                       Get_I_Pad_X (Info.Pchild),
-                                       Get_I_Pad_Y (Info.Pchild));
+
+         Gtk.Packer.Set_Child_Packing
+           (Info.Packer,
+            Info.Current,
+            Get_Side (Info.Pchild),
+            Get_Anchor (Info.Pchild),
+            Fillx + Filly + Expand,
+            Get_Border_Width (Info.Pchild),
+            Get_Pad_X (Info.Pchild),
+            Get_Pad_Y (Info.Pchild),
+            Get_I_Pad_X (Info.Pchild),
+            Get_I_Pad_Y (Info.Pchild));
+
          if TButton /= Info.Button_Top then
             Set_Active (Info.Button_Top, False);
             Set_Sensitive (Info.Button_Top, True);
          end if;
+
          if TButton /= Info.Button_Bottom then
             Set_Active (Info.Button_Bottom, False);
             Set_Sensitive (Info.Button_Bottom, True);
          end if;
+
          if TButton /= Info.Button_Left then
             Set_Active (Info.Button_Left, False);
             Set_Sensitive (Info.Button_Left, True);
          end if;
+
          if TButton /= Info.Button_Right then
             Set_Active (Info.Button_Right, False);
             Set_Sensitive (Info.Button_Right, True);
          end if;
+
          Set_Sensitive (Button, False);
       end if;
    end Toggle_Options;
@@ -148,10 +159,11 @@ package body Create_Packer is
    -------------------
 
    procedure Toggle_Anchor (Button : access Gtk_Toggle_Button_Record'Class) is
-      Anchor : Gtk_Anchor_Type;
+      Anchor  : Gtk_Anchor_Type;
       Tbutton : Gtk_Toggle_Button := Gtk_Toggle_Button (Button);
+
    begin
-      if Is_Active (Button) then
+      if Get_Active (Button) then
          Anchor := Anchor_User_Data.Get (Button, "anchor");
          Gtk.Packer.Set_Child_Packing (Info.Packer,
                                        Info.Current,
@@ -211,34 +223,40 @@ package body Create_Packer is
       Side : Gtk_Side_Type;
       Tbutton : Gtk_Toggle_Button := Gtk_Toggle_Button (Button);
    begin
-      if Is_Active (Button) then
+      if Get_Active (Button) then
          Side := Side_User_Data.Get (Button, "side");
-         Gtk.Packer.Set_Child_Packing (Info.Packer,
-                                       Info.Current,
-                                       Side,
-                                       Get_Anchor (Info.Pchild),
-                                       Get_Options (Info.Pchild),
-                                       Get_Border_Width (Info.Pchild),
-                                       Get_Pad_X (Info.Pchild),
-                                       Get_Pad_Y (Info.Pchild),
-                                       Get_I_Pad_X (Info.Pchild),
-                                       Get_I_Pad_Y (Info.Pchild));
+         Gtk.Packer.Set_Child_Packing
+           (Info.Packer,
+            Info.Current,
+            Side,
+            Get_Anchor (Info.Pchild),
+            Get_Options (Info.Pchild),
+            Get_Border_Width (Info.Pchild),
+            Get_Pad_X (Info.Pchild),
+            Get_Pad_Y (Info.Pchild),
+            Get_I_Pad_X (Info.Pchild),
+            Get_I_Pad_Y (Info.Pchild));
+
          if TButton /= Info.Button_Top then
             Set_Active (Info.Button_Top, False);
             Set_Sensitive (Info.Button_Top, True);
          end if;
+
          if TButton /= Info.Button_Bottom then
             Set_Active (Info.Button_Bottom, False);
             Set_Sensitive (Info.Button_Bottom, True);
          end if;
+
          if TButton /= Info.Button_Left then
             Set_Active (Info.Button_Left, False);
             Set_Sensitive (Info.Button_Left, True);
          end if;
+
          if TButton /= Info.Button_Right then
             Set_Active (Info.Button_Right, False);
             Set_Sensitive (Info.Button_Right, True);
          end if;
+
          Set_Sensitive (Button, False);
       end if;
    end Toggle_Side;
@@ -254,7 +272,7 @@ package body Create_Packer is
       List    : Gtk.Widget.Widget_List.Glist;
       Toggle  : Gtk_Toggle_Button;
    begin
-      if Is_Active (Button) then
+      if Get_Active (Button) then
          Info.Current := Gtk_Toggle_Button (Button);
          Child := Find_Child (Info.Packer, Info.Current);
          if Child = Null_Packer_Child then

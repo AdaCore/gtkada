@@ -84,8 +84,8 @@ package body Create_Scroll_Test is
    -------------------------
 
    procedure Adjustment_Change
-     (Adj : access Adjustment.Gtk_Adjustment_Record'Class;
-      Widget   : in Drawing_Area.Gtk_Drawing_Area)
+     (Adj    : access Adjustment.Gtk_Adjustment_Record'Class;
+      Widget : Drawing_Area.Gtk_Drawing_Area)
    is
       Source_Min : Gint := Gint (Get_Value (Adj)) - Scroll_Test_Pos;
       Source_Max : Gint := Source_Min + Gint (Get_Allocation_Height (Widget));
@@ -93,7 +93,7 @@ package body Create_Scroll_Test is
       Dest_Max   : Gint := Gint (Get_Allocation_Height (Widget));
       Rect       : Gdk_Rectangle;
       Event      : Gdk_Event_Expose;
-      Tmp        : Gint;
+      Tmp        : Boolean;
 
    begin
       Scroll_Test_Pos := Gint (Get_Value (Adj));
@@ -107,18 +107,18 @@ package body Create_Scroll_Test is
       --  create a C's GdkRectangle, only a C's GdkRectangle*
 
       if Source_Min < 0 then
-         Rect.Width := Get_Allocation_Width (Widget);
-         Rect.Height := Guint'Min (Guint (-Source_Min),
-                                   Get_Allocation_Height (Widget));
+         Rect.Width := Gint (Get_Allocation_Width (Widget));
+         Rect.Height :=
+           Gint'Min (-Source_Min, Gint (Get_Allocation_Height (Widget)));
          Source_Min := 0;
-         Dest_Min   := Gint (Rect.Height);
+         Dest_Min   := Rect.Height;
+
       else
          Rect.Y :=
                 Gint'Max (0, 2 * Gint (Get_Allocation_Height (Widget))
                           - Source_Max);
-         Rect.Width := Get_Allocation_Width (Widget);
-         Rect.Height :=
-                  Get_Allocation_Height (Widget) - Guint (Rect.Y);
+         Rect.Width := Gint (Get_Allocation_Width (Widget));
+         Rect.Height := Gint (Get_Allocation_Height (Widget)) - Rect.Y;
          Source_Max := Gint (Get_Allocation_Height (Widget));
          Dest_Max := Rect.Y;
       end if;
@@ -164,13 +164,12 @@ package body Create_Scroll_Test is
    function Configure
      (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record'Class;
       Event   : Gdk.Event.Gdk_Event;
-      Adj     : in Adjustment.Gtk_Adjustment)
-     return Gint
+      Adj     : in Adjustment.Gtk_Adjustment) return Gint
    is
       pragma Warnings (Off, Event);
    begin
-      Set_Page_Increment (Adj, 0.9 * Gfloat (Get_Allocation_Height (Widget)));
-      Set_Page_Size (Adj, Gfloat (Get_Allocation_Height (Widget)));
+      Set_Page_Increment (Adj, 0.9 * Gdouble (Get_Allocation_Height (Widget)));
+      Set_Page_Size (Adj, Gdouble (Get_Allocation_Height (Widget)));
       --  FIXME Emit_By_Name (Adj, "changed");
       return 0;
    end Configure;

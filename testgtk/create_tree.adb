@@ -49,8 +49,8 @@ with Unchecked_Conversion;
 
 package body Create_Tree is
 
-   Default_Number_Of_Item  : Gfloat := 3.0;
-   Default_Recursion_Level : Gfloat := 3.0;
+   Default_Number_Of_Item  : Gdouble := 3.0;
+   Default_Recursion_Level : Gdouble := 3.0;
 
    Tree_Area : Gtk_Box;
 

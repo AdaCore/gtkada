@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;             use Glib;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Combo;        use Gtk.Combo;
@@ -56,9 +55,9 @@ package body Create_Entry is
    -- Toggle_Editable --
    ---------------------
 
-   procedure Toggle_Editable (Button : access Gtk_Check_Button_Record'Class;
-                              The_Entry : in Gtk_Entry)
-   is
+   procedure Toggle_Editable
+     (Button    : access Gtk_Check_Button_Record'Class;
+      The_Entry : Gtk_Entry) is
    begin
       Set_Editable (The_Entry, Get_Active (Button));
    end Toggle_Editable;
@@ -67,8 +66,9 @@ package body Create_Entry is
    -- Toggle_Sensitive --
    ----------------------
 
-   procedure Toggle_Sensitive (Button : access Gtk_Check_Button_Record'Class;
-                               The_Entry : in Gtk_Entry)
+   procedure Toggle_Sensitive
+     (Button    : access Gtk_Check_Button_Record'Class;
+      The_Entry : Gtk_Entry)
    is
    begin
       Set_Sensitive (The_Entry, Get_Active (Button));
@@ -122,13 +122,11 @@ package body Create_Entry is
 
       Gtk_New (The_Entry);
       Set_Text (The_Entry, "Hello world");
-      Select_Region (The_Entry, 0, 5);
       Pack_Start (Box2, The_Entry, True, True, 0);
 
       Gtk_New (Combo);
       Set_Popdown_Strings (Combo, List);
       Set_Text (Get_Entry (Combo), "hello world");
-      Gtk.GEntry.Select_Region (Get_Entry (Combo), 0, -1);
       Pack_Start (Box2, Combo, True, True, 0);
 
       Gtk_New (Check, "Editable");
