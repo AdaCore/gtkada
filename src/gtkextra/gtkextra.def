@@ -9,7 +9,7 @@ EXPORTS
 	gtk_color_combo_get_type
 	gtk_color_combo_new
 	gtk_color_combo_new_with_values
-	gtk_combo_box_get_type
+	gtk_combobox_get_type
 	gtk_combobox_hide_popdown_window
 	gtk_combobox_new
 	gtk_font_combo_get_type
