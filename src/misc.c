@@ -38,6 +38,8 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktextlayout.h>
 #include <gtk/gtktypeutils.h>
+#include <gobject/gsignal.h>
+#include <gobject/gtype.h>
 
 #ifndef _WIN32  /* Assuming X11 */
 #include <gdk/gdkx.h>
@@ -185,7 +187,26 @@ ada_signal_argument_type (GType type, char* signal_name, gint num)
 
 /*********************************************************************
  ** Creating new widgets
+ ** For each new widget created by the user, we create a new
+ ** class record, that has the following layout:
+ **
+ **  struct NewClassRecord {
+ **     struct AncestorClass ancestor_class;   // the ancestor
+ **     void (*handler1) (...);                // handler for first signal   
+ **     void (*handler2) (...);                // handler for second signal
+ **     ...
+ **     void (*handlern) (...);                // handler for nth signal
+ **     GObjectGetPropertyFunc real_get_property;
+ **                                            // pointer to the get_property
+ **                                            // in user's code
+ **     GObjectSetPropertyFunc real_set_property;
+ **                                            // likewise for set_property
+ **  };
  *********************************************************************/
+
+GType ada_type_from_class (gpointer klass) {
+  return G_TYPE_FROM_CLASS (klass);
+}
 
 void*
 ada_initialize_class_record
@@ -195,50 +216,54 @@ ada_initialize_class_record
    GType         parameters[],
    gint          max_parameters,
    GObjectClass* old_class_record,
-   guint         scroll_adj_signals,
    gchar*        type_name)
 {
-  if (old_class_record)
-    {
-      G_OBJECT_GET_CLASS (object) = old_class_record;
-      return g_type_class_ref (GTK_CLASS_TYPE (old_class_record));
-    }
-  else
+  GObjectClass* klass;
+  
+  if (!old_class_record)
     {
       /* Note: The memory allocated in this function is never freed. No need
 	 to worry, since this is only allocated once per user's widget type,
 	 and might be used until the end of the application */
 
-      int j;
-      GObjectClass* klass;
-      GtkTypeInfo *class_info = malloc (sizeof (GtkTypeInfo));
-      GTypeQuery query;
-
       /* Right now, object->klass points to the ancestor's class */
-      GObjectClass* ancestor = G_OBJECT_GET_CLASS (object);
+      GType ancestor = G_TYPE_FROM_CLASS (G_OBJECT_GET_CLASS (object));
+      GTypeInfo * class_info = g_new (GTypeInfo, 1);
+      GTypeQuery query;
+      GType new_type;
+      int j;
 
       /* We need to know the ancestor's class/instance sizes */
-      g_type_query (GTK_CLASS_TYPE (ancestor), &query);
+      g_type_query (ancestor, &query);
 
-      class_info->type_name = g_strdup (type_name);
-      class_info->object_size = query.instance_size;
-      class_info->class_size = query.class_size + nsignals * sizeof (void*);
-      class_info->class_init_func = NULL;
-      class_info->object_init_func = NULL;
-      class_info->reserved_1 = NULL;
-      class_info->reserved_2 = NULL;
-      class_info->base_class_init_func = NULL;
+      class_info->class_size = query.class_size
+	+ nsignals * sizeof (void*)
+	+ sizeof (GObjectGetPropertyFunc)
+	+ sizeof (GObjectSetPropertyFunc);
+      class_info->base_init = NULL;
+      class_info->base_finalize = NULL;
+      class_info->class_init = NULL;
+      class_info->class_finalize = NULL;
+      class_info->class_data = NULL; /* Would be nice to use this for the set_property???*/
+      class_info->instance_size = query.instance_size;  /* ??? should be parameter */
+      class_info->n_preallocs = 0;
+      class_info->instance_init = NULL;
+      class_info->value_table = NULL;
 
       /* Need to create a new type, otherwise Gtk+ won't free objects of
          this type */
-      klass = g_type_class_ref
-        (gtk_type_unique (GTK_CLASS_TYPE (ancestor), class_info));
-      G_OBJECT_GET_CLASS (object) = klass;
+      new_type = g_type_register_static
+	(ancestor, g_strdup (type_name), class_info, 0);
+      klass = g_type_class_ref (new_type);
 
+      g_assert (klass != NULL);
+
+      /* Initialize signals */
       for (j = 0; j < nsignals; j++)
 	{
 	  int count = 0;
 	  guint id;
+	  GClosure *closure;
 
 	  while (count < max_parameters
 		 &&
@@ -247,24 +272,35 @@ ada_initialize_class_record
 	      count++;
 	    }
 
-	  id = gtk_signal_newv
-	    (signals[j],
-	     GTK_RUN_LAST,
-	     GTK_CLASS_TYPE (klass),
-	     query.class_size + j * sizeof (void*) /*offset*/,
-	     gtk_marshal_NONE__NONE,  /* default marshaller, unused at the
-					 Ada level */
-	     GTK_TYPE_NONE, count,
-	     parameters + j * max_parameters);
-
-	  if (scroll_adj_signals && (scroll_adj_signals - 1 == j))
-	    ((GtkWidgetClass*)klass)->set_scroll_adjustments_signal = id;
+  
+	  closure = g_signal_type_cclosure_new
+	    (new_type, query.class_size + j * sizeof (void*)); /* offset */
+	  
+	  id = g_signal_newv
+	    (signals[j],                       /* signal_name */
+	     new_type,                         /* itype */
+	     G_SIGNAL_RUN_LAST,                /* signal_flags */
+	     closure,                          /* class_closure */
+	     NULL,                             /* accumulator */
+	     NULL,                             /* accu_data */
+	     g_cclosure_marshal_VOID__VOID,    /* c_marshaller, unused at the
+	       Ada level ??? This probably makes the widget unusable from C */
+	     G_TYPE_NONE,                      /* return_type */
+	     count,                            /* n_params */
+	     parameters + j * max_parameters); /* param_types */
 	}
 
       /* Initialize the function pointers for the new signals to NULL */
       memset ((char*)(klass) + query.class_size, 0, nsignals * sizeof (void*));
-      return klass;
     }
+  else
+    {
+      klass = g_type_class_ref (G_TYPE_FROM_CLASS (old_class_record));
+      
+    }
+
+  G_OBJECT_GET_CLASS (object) = klass;
+  return klass;
 }
 
 void
@@ -272,6 +308,17 @@ ada_widget_set_realize (GtkObject *widget, void (* realize) (GtkWidget *))
 {
   GTK_WIDGET_GET_CLASS (widget)->realize = realize;
 }
+
+void
+ada_widget_set_scroll_adjustments_signal (gpointer klass, char* name)
+{
+  if (GTK_IS_WIDGET_CLASS (klass))
+    {
+      int id = g_signal_lookup (name, G_TYPE_FROM_CLASS (klass));
+      GTK_WIDGET_CLASS (klass)->set_scroll_adjustments_signal = id;
+    }
+}
+
 /*********************************************************************
  **  Gdk.RGB functions
  *********************************************************************/
