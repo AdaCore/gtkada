@@ -36,7 +36,7 @@
 --  the ASCII.LF character. However, this is not the recommended way
 --  to display long texts (see the Gtk_Text widget instead)
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib.Properties;
 with Gtk.Enums;
@@ -241,5 +241,7 @@ end Gtk.Label;
 --  Set_Selectable
 --  Get_Selectable
 --  Select_Region
+--  Get_Selection_Bounds
+--  Get_Layout
 --  Get_Layout_Offsets
 
