@@ -43,11 +43,11 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
---  <doc_ignore>
-
 with System;
 
 package Glib.GSlist is
+
+   --  <doc_ignore>
 
    generic
       type Gpointer (<>) is private;
@@ -113,6 +113,6 @@ package Glib.GSlist is
       Null_List : constant GSlist := (Ptr => System.Null_Address);
    end Generic_SList;
 
-end Glib.GSlist;
+   --  </doc_ignore>
 
---  </doc_ignore>
+end Glib.GSlist;

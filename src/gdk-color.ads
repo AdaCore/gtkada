@@ -39,7 +39,7 @@
 --  to always use the system default Colormap. All the functions to get
 --  these colormap are found in Gtk.Widget.
 --
---  Here is an example how you can allocate a new color, if you already know
+--  Here is an example how you can allocate a new color, when you know
 --  its red/green/blue components:
 --     Color   : Gdk_Color;
 --     Success : Boolean;
