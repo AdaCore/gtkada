@@ -3749,7 +3749,10 @@ package body Gtkada.MDI is
    -----------
 
    procedure Split
-     (MDI : access MDI_Window_Record; Orientation : Gtk_Orientation)
+     (MDI               : access MDI_Window_Record;
+      Orientation       : Gtk_Orientation;
+      Reuse_If_Possible : Boolean := False;
+      After             : Boolean := False)
    is
       Note, Note2 : Gtk_Notebook;
       Child : MDI_Child;
@@ -3759,19 +3762,27 @@ package body Gtkada.MDI is
 
       --  Only split if there are at least two children
       if Note /= null and then Get_Nth_Page (Note, 1) /= null then
-         Note2 := Create_Notebook;
+
          Child := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
          Ref (Child);
+
+         Note2 := Gtk_Notebook (Splitted_Area
+           (MDI.Central.Container, Note, Orientation, After));
+
+         if not Reuse_If_Possible or else Note2 = null then
+            Note2 := Create_Notebook;
+            Split (MDI.Central.Container,
+                   Ref_Widget  => Note,
+                   New_Child   => Note2,
+                   Orientation => Orientation,
+                   After       => After);
+         end if;
+
          Remove (Note, Child);
          Put_In_Notebook (MDI, None, Child, Note2);
          Unref (Child);
          Set_Focus_Child (Child);
 
-         Split (MDI.Central.Container,
-                Ref_Widget  => Note,
-                New_Child   => Note2,
-                Orientation => Orientation,
-                After       => False);
          Show_All (Note2);
       end if;
    end Split;

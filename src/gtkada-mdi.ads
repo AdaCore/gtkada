@@ -479,10 +479,17 @@ package Gtkada.MDI is
    --  Gtk_Vbox and Gtk_Hbox
 
    procedure Split
-     (MDI         : access MDI_Window_Record;
-      Orientation : Gtk.Enums.Gtk_Orientation);
+     (MDI               : access MDI_Window_Record;
+      Orientation       : Gtk.Enums.Gtk_Orientation;
+      Reuse_If_Possible : Boolean := False;
+      After             : Boolean := False);
    --  Split the central area. The split starting from either the currently
    --  selected child or the last child that had the focus in that area.
+   --  If Reuse_If_Possible is True, and the current child is already splitted
+   --  in the right directory, we reuse that area.
+   --  If After is true, then the currently selected child is put below or
+   --  to the right in the splitted area, otherwise it is left on the top or
+   --  left of that area).
 
    ----------------------
    -- Desktop Handling --
