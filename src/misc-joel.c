@@ -526,3 +526,50 @@ ada_gdk_cursor_new (AdaGdkCursorType   cursor_type)
 {
   return gdk_cursor_new (ada_gdk_cursor_of (cursor_type));
 }
+
+
+/*
+ *
+ * GdkEvent
+ *
+ */
+
+GdkEventType
+ada_gdk_event_any_get_event_type (GdkEventAny * event)
+{
+  return event->type;
+}
+
+
+void
+ada_gdk_event_any_set_event_type (GdkEventAny * event, GdkEventType type)
+{
+  event->type = type;
+}
+
+
+GdkWindow *
+ada_gdk_event_any_get_window (GdkEventAny * event)
+{
+  return event->window;
+}
+
+void
+ada_gdk_event_any_set_window (GdkEventAny * event,
+			      GdkWindow * window)
+{
+  event->window = window;
+}
+
+
+gint8
+ada_gdk_event_any_get_send_event (GdkEventAny * event)
+{
+  return event->send_event;
+}
+
+void
+ada_gdk_event_any_set_send_event (GdkEventAny * event, gint8 send_event)
+{
+  event->send_event = send_event;
+}
