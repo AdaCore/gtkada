@@ -4,6 +4,18 @@ concern GtkAda directly.
 Contents
 ========
 
-glade-0.5.x.win32.diff: this is the source patch used to build Glade 0.5.0
- and 0.5.5 under Windows NT.
-Note that this patch has been integrated in Glade 0.5.6.
+glade-0.5.9.win32.diff: this is the source patch used to build Glade 0.5.9
+under Windows NT.
+
+To build Glade under NT:
+- extract glade-0.5.9.tar.gz
+  tar xzvf glade-0.5.9.tar.gz
+
+- apply glade-0.5.9.win32.diff
+  cd glade-0.5.9
+  patch -p0 < ../glade-0.5.9.win32.diff
+
+- configure and make using a unix emulation layer, assuming you have a proper
+  gtk+ C set up (with a working gtk-config script)
+  CC="gcc -fnative-struct -mno-cygwin -mwindows" ./configure
+  make
