@@ -37,6 +37,9 @@ package body Gtkada.Canvas is
    -----------------
 
    procedure Free is new Unchecked_Deallocation (String, String_Access);
+   procedure Free is new Unchecked_Deallocation (Link, Link_Access);
+   procedure Free is new Unchecked_Deallocation
+     (Canvas_Item_List_Record, Canvas_Item_List);
 
    package Event_Handler is new Gtk.Handlers.Return_Callback
      (Widget_Type => Interactive_Canvas_Record, Return_Type => Boolean);
@@ -165,11 +168,13 @@ package body Gtkada.Canvas is
       --  Gtk-WARNING **: gtk_signal_collect_params(): invalid untyped argument
       --  at runtime when emitting the signal ???
       Signals : constant chars_ptr_array
-        := (1 => New_String ("background_click"));
+        := (1 => New_String ("background_click"),
+            2 => New_String ("item_selected"));
       --  Array of the signals created for this widget
 
       Signal_Parameters : constant Signal_Parameter_Types :=
-        (1 => (1 => Gtk.Gtk_Type_Gdk_Event));
+        (1 => (1 => Gtk.Gtk_Type_Gdk_Event),
+         2 => (1 => Gtk.Gtk_Type_Pointer));
       --  the parameters for the above signals.
       --  This must be defined in this function rather than at the
       --  library-level, or the value of Gtk_Type_Gdk_Event is not yet
@@ -320,11 +325,15 @@ package body Gtkada.Canvas is
       --  coordinates, which we thus forbid in Button_Motion.
 
       while Current /= null loop
-         if Current.Item.Coord.X + Gint (Current.Item.Coord.Width) > X_Max then
+         if Current.Item.Visible
+           and then Current.Item.Coord.X + Gint (Current.Item.Coord.Width)
+           > X_Max
+         then
             X_Max := Current.Item.Coord.X + Gint16 (Current.Item.Coord.Width);
          end if;
 
-         if Current.Item.Coord.Y + Gint (Current.Item.Coord.Height)
+         if Current.Item.Visible
+           and then Current.Item.Coord.Y + Gint (Current.Item.Coord.Height)
            > Y_Max
          then
             Y_Max := Current.Item.Coord.Y + Gint16 (Current.Item.Coord.Height);
@@ -390,7 +399,9 @@ package body Gtkada.Canvas is
 
          while not Inter and then Tmp /= null loop
 
-            if Tmp.Item /= Canvas_Item (Item) then
+            if Tmp.Item.Visible
+              and then Tmp.Item /= Canvas_Item (Item)
+            then
                Intersect (Tmp.Item.Coord, Item.Coord, Dest, Inter);
                Tmp := Tmp.Next;
             end if;
@@ -1084,13 +1095,15 @@ package body Gtkada.Canvas is
       --  Draw each of the items.
 
       while Tmp /= null loop
-         Draw_Pixmap (Canvas.Double_Pixmap,
-                      GC      => Canvas.Black_GC,
-                      Src     => Pixmap (Tmp.Item),
-                      Xsrc    => 0,
-                      Ysrc    => 0,
-                      Xdest   => Tmp.Item.Coord.X,
-                      Ydest   => Tmp.Item.Coord.Y);
+         if Tmp.Item.Visible then
+            Draw_Pixmap (Canvas.Double_Pixmap,
+                         GC      => Canvas.Black_GC,
+                         Src     => Pixmap (Tmp.Item),
+                         Xsrc    => 0,
+                         Ysrc    => 0,
+                         Xdest   => Tmp.Item.Coord.X,
+                         Ydest   => Tmp.Item.Coord.Y);
+         end if;
          Tmp := Tmp.Next;
       end loop;
 
@@ -1256,22 +1269,30 @@ package body Gtkada.Canvas is
       Tmp : Canvas_Item_List := Canvas.Children;
       X : Gint := Gint (Get_X (Event));
       Y : Gint := Gint (Get_Y (Event));
+
+      procedure Emit_By_Name_Item
+        (Object : in System.Address;
+         Name   : in String;
+         Param  : in Canvas_Item);
+      pragma Import (C, Emit_By_Name_Item, "gtk_signal_emit_by_name");
+
    begin
 
       Grab_Focus (Canvas.Drawing_Area);
       Set_Flags (Canvas.Drawing_Area, Has_Focus);
 
-      Canvas.Selected_Child := null;
+      Clear_Selection (Canvas);
 
       --  Find the selected item.
 
       while Tmp /= null loop
-         if X >= Tmp.Item.Coord.X
+         if Tmp.Item.Visible
+           and then X >= Tmp.Item.Coord.X
            and then X <= Tmp.Item.Coord.X + Gint (Tmp.Item.Coord.Width)
            and then Y >= Tmp.Item.Coord.Y
            and then Y <= Tmp.Item.Coord.Y + Gint (Tmp.Item.Coord.Height)
          then
-            Canvas.Selected_Child := Tmp.Item;
+            Add_To_Selection (Canvas, Tmp.Item);
             exit;
          end if;
          Tmp := Tmp.Next;
@@ -1279,7 +1300,7 @@ package body Gtkada.Canvas is
 
       --  If there was none, nothing to do...
 
-      if Canvas.Selected_Child = null then
+      if Canvas.Selection = null then
          Realize_Handler.Emit_By_Name (Canvas, "background_click", Event);
          return False;
       end if;
@@ -1289,11 +1310,11 @@ package body Gtkada.Canvas is
 
       if Get_Event_Type (Event) = Gdk_2button_Press then
          Set_X (Event,
-                Get_X (Event) - Gdouble (Canvas.Selected_Child.Coord.X));
+                Get_X (Event) - Gdouble (Canvas.Selection.Item.Coord.X));
          Set_Y (Event,
-                Get_Y (Event) - Gdouble (Canvas.Selected_Child.Coord.Y));
-         On_Button_Click (Canvas.Selected_Child, Event);
-         Canvas.Selected_Child := null;
+                Get_Y (Event) - Gdouble (Canvas.Selection.Item.Coord.Y));
+         On_Button_Click (Canvas.Selection.Item, Event);
+         Clear_Selection (Canvas);
          return False;
       end if;
 
@@ -1303,15 +1324,18 @@ package body Gtkada.Canvas is
          --  Call the callbacks
 
          Set_X (Event,
-                Get_X (Event) - Gdouble (Canvas.Selected_Child.Coord.X));
+                Get_X (Event) - Gdouble (Canvas.Selection.Item.Coord.X));
          Set_Y (Event,
-                Get_Y (Event) - Gdouble (Canvas.Selected_Child.Coord.Y));
-         On_Button_Click (Canvas.Selected_Child, Event);
-
-         Canvas.Selected_Child := null;
-
+                Get_Y (Event) - Gdouble (Canvas.Selection.Item.Coord.Y));
+         On_Button_Click (Canvas.Selection.Item, Event);
+         Clear_Selection (Canvas);
          return False;
       end if;
+
+      --  Warn the user that a selection has been made
+
+      Emit_By_Name_Item
+        (Gtk.Get_Object (Canvas), "item_selected", Canvas.Selection.Item);
 
       --  Initialize the move
 
@@ -1335,39 +1359,49 @@ package body Gtkada.Canvas is
                             Event : Gdk_Event)
                            return Boolean
    is
-      Item    : Canvas_Item renames Canvas.Selected_Child;
       Tmp : Canvas_Item_List := Canvas.Children;
       Delta_X, Delta_Y : Gint := 0;
       Min_X, Min_Y : Gint := Gint'Last;
+      Item : Canvas_Item;
+      Selected : Canvas_Item_List;
    begin
 
       Grab_Remove (Canvas.Drawing_Area);
 
-      if Canvas.Selected_Child = null then
+      if Canvas.Selection = null then
          Realize_Handler.Emit_By_Name (Canvas, "background_click", Event);
          return False;
       end if;
 
       if Canvas.Mouse_Has_Moved then
 
-         --  Make sure the item is aligned on the grid if required.
+         Selected := Canvas.Selection;
+         while Selected /= null loop
+            Item := Selected.Item;
 
-         if Canvas.Align_On_Grid then
-            Item.Coord.X := Item.Coord.X
-              - Item.Coord.X mod Gint (Canvas.Grid_Size);
-            Item.Coord.Y := Item.Coord.Y
-              - Item.Coord.Y mod Gint (Canvas.Grid_Size);
-         end if;
+            --  Make sure the items are aligned on the grid if required.
 
-         --  Move the items if the new one was moved out of the canvas.
+            if Canvas.Align_On_Grid then
+               Item.Coord.X := Item.Coord.X
+                 - Item.Coord.X mod Gint (Canvas.Grid_Size);
+               Item.Coord.Y := Item.Coord.Y
+                 - Item.Coord.Y mod Gint (Canvas.Grid_Size);
+            end if;
 
-         if Item.Coord.X < Gint (Canvas.Grid_Size) then
-            Delta_X := -Item.Coord.X + Gint (Canvas.Grid_Size);
-         end if;
+            --  Move the items if the new one was moved out of the canvas.
 
-         if Item.Coord.Y < Gint (Canvas.Grid_Size) then
-            Delta_Y := -Item.Coord.Y + Gint (Canvas.Grid_Size);
-         end if;
+            if Item.Coord.X < Gint (Canvas.Grid_Size) then
+               Delta_X :=
+                 Gint'Max (Delta_X, -Item.Coord.X + Gint (Canvas.Grid_Size));
+            end if;
+
+            if Item.Coord.Y < Gint (Canvas.Grid_Size) then
+               Delta_Y :=
+                 Gint'Max (Delta_Y, -Item.Coord.Y + Gint (Canvas.Grid_Size));
+            end if;
+
+            Selected := Selected.Next;
+         end loop;
 
          if Delta_X = 0 and then Delta_Y = 0 then
             Tmp := Canvas.Children;
@@ -1401,26 +1435,35 @@ package body Gtkada.Canvas is
 
          --  Align the items on the grid.
 
-         if Canvas.Align_On_Grid then
-            Item.Coord.X := Item.Coord.X
-              - Item.Coord.X mod Gint (Canvas.Grid_Size);
-            Item.Coord.Y := Item.Coord.Y
-              - Item.Coord.Y mod Gint (Canvas.Grid_Size);
-         end if;
+         Selected := Canvas.Selection;
+         while Selected /= null loop
+            Item := Selected.Item;
+            if Canvas.Align_On_Grid then
+               Item.Coord.X := Item.Coord.X
+                 - Item.Coord.X mod Gint (Canvas.Grid_Size);
+               Item.Coord.Y := Item.Coord.Y
+                 - Item.Coord.Y mod Gint (Canvas.Grid_Size);
+            end if;
+            Selected := Selected.Next;
+         end loop;
 
          Update_Adjustments (Canvas);
          Draw_On_Double_Buffer (Canvas);
-
 
       --  If the user did not move the mouse while it was pressed, this is
       --  because he only wanted to select the item.
 
       else
-         Set_X (Event,
-                Get_X (Event) - Gdouble (Canvas.Selected_Child.Coord.X));
-         Set_Y (Event,
-                Get_Y (Event) - Gdouble (Canvas.Selected_Child.Coord.Y));
-         On_Button_Click (Canvas.Selected_Child, Event);
+         Selected := Canvas.Selection;
+         while Selected /= null loop
+            Set_X (Event,
+                   Get_X (Event) - Gdouble (Selected.Item.Coord.X));
+            Set_Y (Event,
+                   Get_Y (Event) - Gdouble (Selected.Item.Coord.Y));
+            On_Button_Click (Selected.Item, Event);
+
+            Selected := Selected.Next;
+         end loop;
       end if;
 
       --  Other widgets can now receive events as well.
@@ -1439,20 +1482,80 @@ package body Gtkada.Canvas is
       use type Gdk.Window.Gdk_Window;
       Delta_X : Gint;
       Delta_Y : Gint;
-      Item    : constant Canvas_Item := Canvas.Selected_Child;
+      Selected : Canvas_Item_List;
+      Item    : Canvas_Item;
       X, Y    : Gint;
 
    begin
-      if Item = null then
+      if Canvas.Selection = null then
          return False;
       end if;
 
       Delta_X := Gint (Get_X_Root (Event)) - Canvas.Last_X_Event;
       Delta_Y := Gint (Get_Y_Root (Event)) - Canvas.Last_Y_Event;
 
-      --  Delete the currently dashed lines
+      if not Canvas.Mouse_Has_Moved then
+         --  Should this be considered as a mouse motion, or simply an item
+         --  selection ?
 
-      if Canvas.Mouse_Has_Moved then
+         if abs (Delta_X) <= Canvas.Motion_Threshold
+           and then abs (Delta_Y) <= Canvas.Motion_Threshold
+         then
+            return False;
+         end if;
+
+      else
+         Selected := Canvas.Selection;
+         while Selected /= null loop
+            Item := Selected.Item;
+
+            --  Delete the currently dashed lines
+
+            if Canvas.Align_On_Grid then
+               X := Item.Coord.X;
+               Y := Item.Coord.Y;
+               Item.Coord.X := Item.Coord.X
+                 - Item.Coord.X mod Gint (Canvas.Grid_Size);
+               Item.Coord.Y := Item.Coord.Y
+                 - Item.Coord.Y mod Gint (Canvas.Grid_Size);
+            end if;
+
+            Draw_Rectangle (Get_Window (Canvas.Drawing_Area),
+                            GC     => Canvas.Anim_GC,
+                            Filled => False,
+                            X      => Item.Coord.X,
+                            Y      => Item.Coord.Y,
+                            Width  => Gint (Item.Coord.Width) - 1,
+                            Height => Gint (Item.Coord.Height) - 1);
+            Update_Links
+              (Canvas, Get_Window (Canvas.Drawing_Area), Canvas.Anim_GC, Item);
+
+            if Canvas.Align_On_Grid then
+               Item.Coord.X := X;
+               Item.Coord.Y := Y;
+            end if;
+
+            Selected := Selected.Next;
+         end loop;
+      end if;
+
+      Canvas.Mouse_Has_Moved := True;
+
+      Selected := Canvas.Selection;
+      while Selected /= null loop
+         Item := Selected.Item;
+
+         --  Move everything
+
+         Canvas.Last_X_Event := Gint (Get_X_Root (Event));
+         Canvas.Last_Y_Event := Gint (Get_Y_Root (Event));
+         Item.Coord.X := Item.Coord.X + Delta_X;
+         Item.Coord.Y := Item.Coord.Y + Delta_Y;
+
+         --  Redraw the dashed lines in a new position
+         --  Note that in the case of Align_On_Grid, we do not want to
+         --  constrain the item location now, since this wouldn't work.
+
          if Canvas.Align_On_Grid then
             X := Item.Coord.X;
             Y := Item.Coord.Y;
@@ -1477,56 +1580,8 @@ package body Gtkada.Canvas is
             Item.Coord.Y := Y;
          end if;
 
-      --  Mouse has never been moved before
-
-      else
-
-         --  Should this be considered as a mouse motion, or simply an item
-         --  selection ?
-
-         if abs (Delta_X) <= Canvas.Motion_Threshold
-           and then abs (Delta_Y) <= Canvas.Motion_Threshold
-         then
-            return False;
-         end if;
-      end if;
-
-      Canvas.Mouse_Has_Moved := True;
-
-      --  Move everything
-
-      Canvas.Last_X_Event := Gint (Get_X_Root (Event));
-      Canvas.Last_Y_Event := Gint (Get_Y_Root (Event));
-      Item.Coord.X := Item.Coord.X + Delta_X;
-      Item.Coord.Y := Item.Coord.Y + Delta_Y;
-
-      --  Redraw the dashed lines in a new position
-      --  Note that in the case of Align_On_Grid, we do not want to constrain
-      --  the item location now, since this wouldn't work.
-
-      if Canvas.Align_On_Grid then
-         X := Item.Coord.X;
-         Y := Item.Coord.Y;
-         Item.Coord.X := Item.Coord.X
-           - Item.Coord.X mod Gint (Canvas.Grid_Size);
-         Item.Coord.Y := Item.Coord.Y
-           - Item.Coord.Y mod Gint (Canvas.Grid_Size);
-      end if;
-
-      Draw_Rectangle (Get_Window (Canvas.Drawing_Area),
-                      GC     => Canvas.Anim_GC,
-                      Filled => False,
-                      X      => Item.Coord.X,
-                      Y      => Item.Coord.Y,
-                      Width  => Gint (Item.Coord.Width) - 1,
-                      Height => Gint (Item.Coord.Height) - 1);
-      Update_Links
-        (Canvas, Get_Window (Canvas.Drawing_Area), Canvas.Anim_GC, Item);
-
-      if Canvas.Align_On_Grid then
-         Item.Coord.X := X;
-         Item.Coord.Y := Y;
-      end if;
+         Selected := Selected.Next;
+      end loop;
 
       return False;
    end Button_Motion;
@@ -1550,16 +1605,18 @@ package body Gtkada.Canvas is
                            Item   : access Canvas_Item_Record'Class)
    is
    begin
-      Draw_Pixmap (Canvas.Double_Pixmap,
-                   GC      => Canvas.Black_GC,
-                   Src     => Pixmap (Item),
-                   Xsrc    => 0,
-                   Ysrc    => 0,
-                   Xdest   => Item.Coord.X,
-                   Ydest   => Item.Coord.Y);
-      Queue_Draw_Area (Canvas.Drawing_Area,
-                       Item.Coord.X, Item.Coord.Y,
-                       Gint (Item.Coord.Width), Gint (Item.Coord.Height));
+      if Item.Visible then
+         Draw_Pixmap (Canvas.Double_Pixmap,
+                      GC      => Canvas.Black_GC,
+                      Src     => Pixmap (Item),
+                      Xsrc    => 0,
+                      Ysrc    => 0,
+                      Xdest   => Item.Coord.X,
+                      Ydest   => Item.Coord.Y);
+         Queue_Draw_Area (Canvas.Drawing_Area,
+                          Item.Coord.X, Item.Coord.Y,
+                          Gint (Item.Coord.Width), Gint (Item.Coord.Height));
+      end if;
    end Item_Updated;
 
    ------------------
@@ -1581,9 +1638,6 @@ package body Gtkada.Canvas is
    procedure Remove (Canvas : access Interactive_Canvas_Record;
                      Item   : access Canvas_Item_Record'Class)
    is
-      procedure Free is new Unchecked_Deallocation (Link, Link_Access);
-      procedure Free is new Unchecked_Deallocation
-        (Canvas_Item_List_Record, Canvas_Item_List);
       Previous     : Canvas_Item_List := null;
       Current      : Canvas_Item_List := Canvas.Children;
       Previous_Link : Link_Access;
@@ -1814,5 +1868,101 @@ package body Gtkada.Canvas is
    begin
       return Canvas.Align_On_Grid;
    end Get_Align_On_Grid;
+
+   --------------------
+   -- Set_Visibility --
+   --------------------
+
+   procedure Set_Visibility
+     (Item    : access Canvas_Item_Record;
+      Visible : Boolean)
+   is
+   begin
+      Item.Visible := Visible;
+   end Set_Visibility;
+
+   ----------------
+   -- Is_Visible --
+   ----------------
+
+   function Is_Visible (Item : access Canvas_Item_Record) return Boolean is
+   begin
+      return Item.Visible;
+   end Is_Visible;
+
+   --------------------
+   -- Refresh_Canvas --
+   --------------------
+
+   procedure Refresh_Canvas (Canvas : access Interactive_Canvas_Record) is
+   begin
+      Update_Adjustments (Canvas);
+      Draw_On_Double_Buffer (Canvas);
+   end Refresh_Canvas;
+
+   ---------------------
+   -- Clear_Selection --
+   ---------------------
+
+   procedure Clear_Selection (Canvas : access Interactive_Canvas_Record) is
+      Tmp : Canvas_Item_List;
+   begin
+      while Canvas.Selection /= null loop
+         Tmp := Canvas.Selection;
+         Canvas.Selection := Canvas.Selection.Next;
+         Free (Tmp);
+      end loop;
+   end Clear_Selection;
+
+   ----------------------
+   -- Add_To_Selection --
+   ----------------------
+
+   procedure Add_To_Selection
+     (Canvas : access Interactive_Canvas_Record;
+      Item : access Canvas_Item_Record'Class)
+   is
+      Tmp : Canvas_Item_List := Canvas.Selection;
+   begin
+      --  Is the item already in the selection ?
+      while Tmp /= null loop
+         if Tmp.Item = Canvas_Item (Item) then
+            return;
+         end if;
+         Tmp := Tmp.Next;
+      end loop;
+
+      --  No => Add it
+      Canvas.Selection := new Canvas_Item_List_Record'
+        (Item => Canvas_Item (Item),
+         Next => Canvas.Selection);
+   end Add_To_Selection;
+
+   ---------------------------
+   -- Remove_From_Selection --
+   ---------------------------
+
+   procedure Remove_From_Selection
+     (Canvas : access Interactive_Canvas_Record;
+      Item : access Canvas_Item_Record'Class)
+   is
+      Tmp : Canvas_Item_List := Canvas.Selection;
+      Previous : Canvas_Item_List := null;
+   begin
+      while Tmp /= null loop
+         if Tmp.Item = Canvas_Item (Item) then
+            if Previous = null then
+               Canvas.Selection := Tmp.Next;
+            else
+               Previous.Next := Tmp.Next;
+            end if;
+            Free (Tmp);
+            return;
+         else
+            Previous := Tmp;
+            Tmp := Tmp.Next;
+         end if;
+      end loop;
+   end Remove_From_Selection;
 
 end Gtkada.Canvas;

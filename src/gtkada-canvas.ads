@@ -198,6 +198,9 @@ package Gtkada.Canvas is
    --  However, Item should resize its pixmap and redraw itself before
    --  calling this procedure.
 
+   procedure Refresh_Canvas (Canvas : access Interactive_Canvas_Record);
+   --  Redraw the whole canvas (both in the double buffer and on the screen).
+
    type Item_Processor is access
      function (Canvas : access Interactive_Canvas_Record'Class;
                Item   : access Canvas_Item_Record'Class)
@@ -234,6 +237,27 @@ package Gtkada.Canvas is
                         Item   : access Canvas_Item_Record'Class);
    --  Scroll the canvas so that Item is visible.
 
+   ---------------
+   -- Selection --
+   ---------------
+
+   procedure Clear_Selection (Canvas : access Interactive_Canvas_Record);
+   --  Clear the list of currently selected items.
+
+   procedure Add_To_Selection
+     (Canvas : access Interactive_Canvas_Record;
+      Item : access Canvas_Item_Record'Class);
+   --  Add Item to the selection.  This is only meaningful during a drag
+   --  operation (ie during a button press and the matching button
+   --  release). Item will be moved at the same time that the selection is
+   --  moved.
+   --  Item is not added again if it is already in the selection.
+
+   procedure Remove_From_Selection
+     (Canvas : access Interactive_Canvas_Record;
+      Item : access Canvas_Item_Record'Class);
+   --  Remove Item from the selection.
+
    ------------------------
    -- Items manipulation --
    ------------------------
@@ -268,6 +292,16 @@ package Gtkada.Canvas is
                       return Gdk.Rectangle.Gdk_Rectangle;
    --  Return the coordinates and size of the item.
 
+   procedure Set_Visibility
+     (Item    : access Canvas_Item_Record;
+      Visible : Boolean);
+   --  Set the visibility status of the item.
+   --  The canvas is not refreshed (this is your responsibility to do it after
+   --  you have finished doing all the modifications).
+
+   function Is_Visible (Item : access Canvas_Item_Record) return Boolean;
+   --  Return True if the item is currently visible.
+
    -------------
    -- Signals --
    -------------
@@ -275,7 +309,7 @@ package Gtkada.Canvas is
    --  <signals>
    --  The following new signals are defined for this widget:
    --
-   --  "background_click"
+   --  - "background_click"
    --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class;
    --                     Event  : Gdk.Event.Gdk_Event);
    --
@@ -284,6 +318,14 @@ package Gtkada.Canvas is
    --  This is called both on Button_Release and Button_Press events.
    --  The coordinates (X, Y) in the Event are relative to the top-left corner
    --  of Canvas.
+   --
+   --  - "item_selected"
+   --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class;
+   --                     Item   : Canvas_Item);
+   --
+   --  Called when the user has clicked on an item to select it, ie before any
+   --  drag even has occured. This is a good time to add other items to the
+   --  selection if you need.
    --
    --  </signals>
 
@@ -329,7 +371,10 @@ private
       record
          Links             : Link_Access := null;
          Children          : Canvas_Item_List := null;
-         Selected_Child    : Canvas_Item;
+
+         Selection         : Canvas_Item_List := null;
+         --  List of currently selected items that will be moved when the mouse
+         --  is dragged
 
          Xmax, Ymax        : Glib.Gint := 0;
          --  Maximal coordinates in the canvas.
@@ -367,6 +412,7 @@ private
       record
          Coord     : Gdk.Rectangle.Gdk_Rectangle;
          Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
+         Visible   : Boolean := True;
       end record;
 
    pragma Inline (Pixmap);
