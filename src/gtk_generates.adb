@@ -464,6 +464,11 @@ package body Gtk_Generates is
             & Get_Property (P, "editable", "True") & ");");
          Put_Line
            (File,
+            "   Set_Has_Frame (Get_Entry ("
+            & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & "), "
+            & Get_Property (P, "has_frame", "True") & ");");
+         Put_Line
+           (File,
             "   Set_Max_Length (Get_Entry ("
             & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & "), "
             & Get_Property (P, "max_length", "0") & ");");
@@ -770,6 +775,10 @@ package body Gtk_Generates is
 
       if Get_Property (N, "width_chars", "0") /= "0" then
          Gen_Set (N, "width_chars", File);
+      end if;
+
+      if Get_Property (N, "has_frame", "True") /= "True" then
+         Gen_Set (N, "has_frame", File);
       end if;
 
       Gen_Set (N, "position", File);
