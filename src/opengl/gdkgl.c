@@ -18,17 +18,7 @@
 
 
 #include "gdkgl.h"
-
-/* support for gtk+1.2 should be removed once gtk+1.4 is released */
-#include <gtk/gtkfeatures.h>
-#if GTK_MAJOR_VERSION == 1 && GTK_MINOR_VERSION == 2
 #include <gdk/gdkx.h>
-#define GDK_DRAWABLE_XID GDK_WINDOW_XWINDOW
-
-#else
-#include <gdk/x11/gdkx.h>
-#endif
-
 
 #include <GL/gl.h>
 #include <GL/glx.h>
@@ -261,7 +251,6 @@ GdkGLPixmap *gdk_gl_pixmap_new(GdkVisual *visual, GdkPixmap *pixmap)
 
   g_return_val_if_fail(pixmap != NULL, NULL);
   g_return_val_if_fail(visual != NULL, NULL);
-  g_return_val_if_fail(gdk_window_get_type(pixmap) == GDK_WINDOW_PIXMAP, NULL);
 
   dpy = GDK_DISPLAY();
   xpixmap = (Pixmap)GDK_DRAWABLE_XID(pixmap);
