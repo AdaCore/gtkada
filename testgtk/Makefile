@@ -10,19 +10,19 @@ target = testgtk
 
 CC = gcc
 CFLAGS = -O2 -g -Wall
-GTKADA_CONFIG=../gtkada-config
 
-ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags`
+ALL_CFLAGS = $(CFLAGS) -I../
 
+GTKADA_CONFIG=gtkadaconfig
 GNATCC = gcc
 GNATFLAGS = -g
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(GNATFLAGS)
-GNATMAKELDFLAGS = ../libgtkada.a `gtk-config --libs` 
+GNATMAKELDFLAGS = `gtk-config --libs` -L.. -lgtkada
 GNATMAKELDFLAGS_STATIC = `gtk-config --prefix`/lib/libgtk.a \
    `gtk-config --prefix`/lib/libglib.a \
-   `gtk-config --libs | sed 's/-lglib//' | sed 's/-lgtk//'` ../libgtkada.a
+   `gtk-config --libs | sed 's/-lglib//' | sed 's/-lgtk//'` -L.. -lgtkada
 #MALLOC_FLAGS= ../debug/wrap.o -Wl,--wrap=malloc -Wl,--wrap=free -Wl,--wrap=strdup
 MALLOC_FLAGS=
 
@@ -33,7 +33,7 @@ $(target): ../*.ad[sb] *.ad[sb]
 	@echo "-------------------------------------"
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
-	@$(GNATMAKE) $(GNATFLAGS) $(target) `$(GTKADA_CONFIG)`
+	@$(GNATMAKE) $(GNATFLAGS) $(target) $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS)
 
 static: ../*.ad[sb] *.ad[sb]
 	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC)
