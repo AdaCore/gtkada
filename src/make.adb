@@ -56,6 +56,7 @@ with Gtk.Image;
 with Gtk.Input_Dialog;
 with Gtk.Invisible;
 with Gtk.Item;
+with Gtk.Item_Factory;
 with Gtk.Label;
 with Gtk.Layout;
 with Gtk.List;
