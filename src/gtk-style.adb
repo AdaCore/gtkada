@@ -43,36 +43,6 @@ package body Gtk.Style is
       Style := Internal;
    end Gtk_New;
 
-   ---------------
-   -- Get_Style --
-   ---------------
-
-   function Get_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-                      return       Gtk_Style
-   is
-      function Internal (Widget : System.Address)
-                        return    Gtk_Style;
-      pragma Import (C, Internal, "ada_widget_get_style");
-      --  Note: a GtkStyle is not a descendant from GtkObject, and has no
-      --  user data associated with it. We need to create a new instance
-      --  everytime. We can't return a pointer, since we have no way to
-      --  free the memory afterward.
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Style;
-
-   ---------------
-   -- Set_Style --
-   ---------------
-   procedure Set_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-                        Style : in Gtk_Style)
-   is
-      procedure Internal (Widget : System.Address; Style : Gtk_Style);
-      pragma Import (C, Internal, "gtk_widget_set_style");
-   begin
-      Internal (Get_Object (Widget), Style);
-   end Set_Style;
-
    ----------------
    -- Draw_Arrow --
    ----------------
@@ -194,16 +164,16 @@ package body Gtk.Style is
         (Style : Gtk_Style; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_fg");
       use type Gdk.Color.Gdk_Color;
-      Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
+
+      Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
-      Internal
-        (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
+
+      Internal (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
    end Set_Foreground;
 
    --------------------
@@ -238,16 +208,16 @@ package body Gtk.Style is
         (Style : Gtk_Style; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_bg");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
-      Internal
-        (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
+
+      Internal (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
    end Set_Background;
 
    ---------------
@@ -284,15 +254,14 @@ package body Gtk.Style is
       use type Gdk.Color.Gdk_Color;
 
       Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
-      Internal
-        (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
+
+      Internal (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
    end Set_Light;
 
    --------------
@@ -327,14 +296,15 @@ package body Gtk.Style is
         (Style : Gtk_Style; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_dark");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
+
       Internal (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
    end Set_Dark;
 
@@ -370,16 +340,16 @@ package body Gtk.Style is
         (Style : Gtk_Style; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_mid");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
-      Internal
-        (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
+
+      Internal (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
    end Set_Middle;
 
    --------------
@@ -414,16 +384,16 @@ package body Gtk.Style is
         (Style : Gtk_Style; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_text");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
-      Internal
-        (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
+
+      Internal (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
    end Set_Text;
 
    --------------
@@ -458,31 +428,30 @@ package body Gtk.Style is
         (Style : Gtk_Style; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_base");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
-      Internal
-        (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
+
+      Internal (Style, Enums.Gtk_State_Type'Pos (State_Type), Color_A);
    end Set_Base;
 
    ---------------
    -- Get_Black --
    ---------------
 
-   function Get_Black (Style : in Gtk_Style)
-     return Gdk.Color.Gdk_Color
-   is
-      function Internal (Style      : in Gtk_Style)
-        return System.Address;
+   function Get_Black (Style : in Gtk_Style) return Gdk.Color.Gdk_Color is
+      function Internal (Style : in Gtk_Style) return System.Address;
       pragma Import (C, Internal, "ada_style_get_black");
+
       Add : System.Address := Internal (Style);
       Col : Gdk.Color.Gdk_Color;
       for Col'Address use Add;
+
    begin
       return Col;
    end Get_Black;
@@ -498,14 +467,15 @@ package body Gtk.Style is
         (Style : Gtk_Style; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_black");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
+
       Internal (Style, Color_A);
    end Set_Black;
 
@@ -537,14 +507,15 @@ package body Gtk.Style is
         (Style : Gtk_Style; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_white");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
+
       Internal (Style, Color_A);
    end Set_White;
 
@@ -552,13 +523,14 @@ package body Gtk.Style is
    --  Get_Background_GC  --
    -------------------------
 
-   function Get_Background_GC (Style : in Gtk_Style;
-                               State_Type : in Enums.Gtk_State_Type)
-                              return Gdk.GC.Gdk_GC
+   function Get_Background_GC
+     (Style : in Gtk_Style;
+      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
    is
-      function Internal (Style : in Gtk_Style; State : Gint)
-                        return Gdk.GC.Gdk_GC;
+      function Internal
+        (Style : in Gtk_Style; State : Gint) return Gdk.GC.Gdk_GC;
       pragma Import (C, Internal, "ada_style_get_bg_gc");
+
    begin
       return Internal (Style, Enums.Gtk_State_Type'Pos (State_Type));
    end Get_Background_GC;
