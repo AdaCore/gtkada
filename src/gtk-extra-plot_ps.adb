@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gdk;                   use Gdk;
-with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Extra.Plot;        use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Layout; use Gtk.Extra.Plot_Layout;
 with System;

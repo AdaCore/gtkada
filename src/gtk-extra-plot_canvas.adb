@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gdk; use Gdk;
-with Gtk.Enums;
 with Gtk.Extra.Plot;
 with System;
 
