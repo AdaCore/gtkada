@@ -51,9 +51,9 @@ package Gtk.Main is
 
    function Main_Iteration return Gint;
 
-   procedure Grab_Add (Widget : Gtk.Widget.Gtk_Widget);
+   procedure Grab_Add (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   procedure Grab_Remove (Widget : Gtk.Widget.Gtk_Widget);
+   procedure Grab_Remove (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    ----------
    -- Idle --
