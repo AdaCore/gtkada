@@ -4,6 +4,8 @@ Mon May  5 01:34:32 2003	Arnaud Charlet <charlet@gnat.com>
 
 	* gtk+/gdk/win32/gdkwindow-win32.c (gdk_window_move): Revert to
 	simple implementation: fixes top level windows going out of screen.
+	* gtk+/gdk/win32/gdkevents-win32.c (build_keypress_event): Properly
+	differenciate between Control-<key> and Shift-Control-<key>.
 
 Thu Mar 27 18:16:10 2003	Arnaud Charlet <charlet@gnat.com>
 
@@ -454,3 +456,37 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
  	}
      }
  }
+--- gtk+/gdk/win32/gdkevents-win32.c	2003/05/05 10:28:49	1.5
++++ gtk+/gdk/win32/gdkevents-win32.c	2003/05/05 10:44:46
+@@ -883,6 +883,8 @@
+   event->key.group = 0;		/* ??? */
+   event->key.keyval = GDK_VoidSymbol;
+   
++  build_key_event_state (event);
++
+   if (msg->message == WM_IME_COMPOSITION)
+     {
+       himc = ImmGetContext (msg->hwnd);
+@@ -906,7 +908,12 @@
+ 	      /* For ASCII control chars, the keyval should be the
+ 	       * corresponding ASCII character.
+ 	       */
+-	      event->key.keyval = msg->wParam + '@';
++
++	      if ((event->key.state & GDK_SHIFT_MASK) == 0)
++		event->key.keyval = gdk_keyval_to_lower (msg->wParam + '@');
++	      else
++		event->key.keyval = msg->wParam + '@';
++
+ 	      /* This is needed in case of Alt+nnn or Alt+0nnn (on the numpad)
+ 	       * where nnn<32
+ 	       */
+@@ -940,8 +947,6 @@
+ 				    wbuf, G_N_ELEMENTS (wbuf));
+     }
+ 
+-  build_key_event_state (event);
+-
+   /* Build UTF-8 string */
+   if (ucount > 0)
+     {
