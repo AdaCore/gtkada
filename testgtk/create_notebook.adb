@@ -331,24 +331,25 @@ package body Create_Notebook is
                           Page_Num : in Gtk_Notebook)
    is
       pragma Warnings (Off, Page_Num);
-      Old_Page : Gtk.Gtk_Notebook_Page := Get_Cur_Page (Notebook);
+      Old_Page : Gint := Get_Current_Page (Notebook);
       Pixmap   : Gtk_Pixmap;
    begin
-      Pixmap := Gtk_Pixmap
-        (Get_Child (Gtk_Box (Get_Tab_Label (Page)), 0));
-      Set (Pixmap, Book_Open, Book_Open_Mask);
-      Pixmap := Gtk_Pixmap
-        (Get_Child (Gtk_Box (Get_Menu_Label (Page)), 0));
-      Set (Pixmap, Book_Open, Book_Open_Mask);
+      null;
+      --  XXX Pixmap := Gtk_Pixmap
+      --    (Get_Child (Gtk_Box (Get_Tab_Label (Page)), 0));
+      --  Set (Pixmap, Book_Open, Book_Open_Mask);
+      --  Pixmap := Gtk_Pixmap
+      --    (Get_Child (Gtk_Box (Get_Menu_Label (Page)), 0));
+      --  Set (Pixmap, Book_Open, Book_Open_Mask);
 
-      if Old_Page /= null then
-         Pixmap := Gtk_Pixmap
-           (Get_Child (Gtk_Box (Get_Tab_Label (Old_Page)), 0));
-         Set (Pixmap, Book_Closed, Book_Closed_Mask);
-         Pixmap := Gtk_Pixmap
-           (Get_Child (Gtk_Box (Get_Menu_Label (Old_Page)), 0));
-         Set (Pixmap, Book_Closed, Book_Closed_Mask);
-      end if;
+      --  if Old_Page >= 0 then
+      --     Pixmap := Gtk_Pixmap
+      --       (Get_Child (Gtk_Box (Get_Tab_Label (Old_Page)), 0));
+      --     Set (Pixmap, Book_Closed, Book_Closed_Mask);
+      --     Pixmap := Gtk_Pixmap
+      --       (Get_Child (Gtk_Box (Get_Menu_Label (Old_Page)), 0));
+      --     Set (Pixmap, Book_Closed, Book_Closed_Mask);
+      --  end if;
    end Page_Switch;
 
    ---------
