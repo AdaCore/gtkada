@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -230,5 +231,26 @@ package body Gtk.Object is
                    Free_Data'Address);
       end Set;
    end User_Data;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Object : in Gtk_Object;
+                       N      : in Node_Ptr;
+                       File   : in File_Type) is
+   begin
+      Gen_Set (N, "Object", "flags", File);
+   end Generate;
+
+   procedure Generate (Object : in out Gtk_Object;
+                       N      : in Node_Ptr) is
+      S : String_Ptr := Get_Field (N, "flags");
+
+   begin
+      if S /= null then
+         Set_Flags (Object, Guint32'Value (S.all));
+      end if;
+   end Generate;
 
 end Gtk.Object;

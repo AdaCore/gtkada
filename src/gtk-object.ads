@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -77,6 +78,13 @@ package Gtk.Object is
    function Floating (Object : in Gtk_Object) return Boolean;
 
    function Connected (Object : in Gtk_Object) return Boolean;
+
+   procedure Generate (Object : in Gtk_Object;
+                       N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (Object : in out Gtk_Object;
+                       N      : in Node_Ptr);
 
 private
    type Gtk_Object is new Root_Type with null record;

@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,8 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Drawing_Area is
 
@@ -35,11 +38,11 @@ package body Gtk.Drawing_Area is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Drawing_Area) is
+   procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_drawing_area_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Drawing_Area, Internal);
    end Gtk_New;
 
    ----------
@@ -58,5 +61,35 @@ package body Gtk.Drawing_Area is
    begin
       Internal (Get_Object (Darea), Width, Height);
    end Size;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Drawing_Area : in Gtk_Drawing_Area;
+                       N            : in Node_Ptr;
+                       File         : in File_Type) is
+      use Widget;
+   begin
+      Gen_New (N, "Drawing_Area", File => File);
+      Generate (Gtk_Widget (Drawing_Area), N, File);
+      Gen_Call_Child (N, null, "Container", "Add", File => File);
+   end Generate;
+
+   procedure Generate (Drawing_Area : in out Gtk_Drawing_Area;
+                       N            : in Node_Ptr) is
+      use Widget;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Drawing_Area);
+         Set_Object (Get_Field (N, "name"), Drawing_Area'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Widget (Drawing_Area), N);
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+         Drawing_Area);
+   end Generate;
 
 end Gtk.Drawing_Area;

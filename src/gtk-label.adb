@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,6 +30,7 @@
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Label is
 
@@ -84,5 +86,43 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Str & ASCII.NUL);
    end Set_Text;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Label : in Gtk_Label;
+                       N     : in Node_Ptr;
+                       File  : in File_Type) is
+      use Misc;
+   begin
+      Gen_New (N, "Label", Find_Tag (N.Child, "label").Value.all,
+        File => File, Delim => '"');
+      Generate (Gtk_Misc (Label), N, File);
+      Gen_Set (N, "Label", "justify", File);
+   end Generate;
+
+   procedure Generate (Label : in out Gtk_Label;
+                       N     : in Node_Ptr) is
+      use Misc;
+
+      S : String_Ptr;
+
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Label, Get_Field (N, "label").all);
+         Set_Object (Get_Field (N, "name"), Label'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Misc (Label), N);
+
+      S := Get_Field (N, "justify");
+
+      if S /= null then
+         Set_Justify (Label,
+           Enums.Gtk_Justification'Value (S (S'First + 4 .. S'Last)));
+      end if;
+   end Generate;
 
 end Gtk.Label;

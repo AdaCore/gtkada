@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Window is
 
@@ -131,5 +133,61 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window), Title & Ascii.NUL);
    end Set_Title;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Window : in Gtk_Window;
+                       N      : in Node_Ptr;
+                       File   : in File_Type) is
+      use Bin;
+   begin
+      Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
+      Generate (Gtk_Bin (Window), N, File);
+      Gen_Set (N, "Window", "title", File, '"');
+      --  ??? Missing Set_Default
+      Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
+        "auto_shrink", File);
+      Gen_Set (N, "Window", "position", File);
+   end Generate;
+
+   procedure Generate (Window : in out Gtk_Window;
+                       N      : in Node_Ptr) is
+      use Bin;
+
+      S, S2, S3 : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "type");
+         Gtk_New (Window, Gtk_Window_Type'Value (S (S'First + 4 .. S'Last)));
+         Set_Object (Get_Field (N, "name"), Window'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Bin (Window), N);
+
+      S := Get_Field (N, "title");
+
+      if S /= null then
+         Set_Title (Window, S.all);
+      end if;
+
+      S := Get_Field (N, "allow_shrink");
+      S2 := Get_Field (N, "allow_grow");
+      S3 := Get_Field (N, "auto_shrink");
+
+      if S /= null and then S2 /= null and then S3 /= null then
+         Set_Policy (Window, Boolean'Value (S.all), Boolean'Value (S2.all),
+           Boolean'Value (S3.all));
+      end if;
+
+      S := Get_Field (N, "position");
+
+      if S /= null then
+         Set_Position (Window,
+           Enums.Gtk_Window_Position'Value (S (S'First + 4 .. S'Last)));
+      end if;
+   end Generate;
 
 end Gtk.Window;

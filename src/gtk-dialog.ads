@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,11 +34,18 @@ package Gtk.Dialog is
 
    type Gtk_Dialog is new Gtk.Window.Gtk_Window with private;
 
-   function Get_Action_Area (Widget : in Gtk_Dialog)
+   function Get_Action_Area (Dialog : in Gtk_Dialog)
                              return      Gtk.Box.Gtk_Box;
-   function Get_Vbox (Widget : in Gtk_Dialog)
+   function Get_Vbox (Dialog : in Gtk_Dialog)
                       return      Gtk.Box.Gtk_Box;
-   procedure Gtk_New (Widget : out Gtk_Dialog);
+   procedure Gtk_New (Dialog : out Gtk_Dialog);
+
+   procedure Generate (Dialog : in Gtk_Dialog;
+                       N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (Dialog : in out Gtk_Dialog;
+                       N      : in Node_Ptr);
 
 private
    type Gtk_Dialog is new Gtk.Window.Gtk_Window with null record;

@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,6 +34,13 @@ package Gtk.Input_Dialog is
    type Gtk_Input_Dialog is new Dialog.Gtk_Dialog with private;
 
    procedure Gtk_New (Input_Dialog : out Gtk_Input_Dialog);
+
+   procedure Generate (Input_Dialog : in Gtk_Input_Dialog;
+                       N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (Input_Dialog : in out Gtk_Input_Dialog;
+                       N      : in Node_Ptr);
 
 private
 

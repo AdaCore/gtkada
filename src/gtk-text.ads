@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -78,6 +79,13 @@ package Gtk.Text is
       (Text      : in Gtk_Text;
        Word_Wrap : in Boolean);
    procedure Thaw (Text : in Gtk_Text);
+
+   procedure Generate (Text : in Gtk_Text;
+                       N    : in Node_Ptr;
+                       File : in File_Type);
+
+   procedure Generate (Text : in out Gtk_Text;
+                       N    : in Node_Ptr);
 
 private
    type Gtk_Text is new Gtk.Editable.Gtk_Editable with null record;

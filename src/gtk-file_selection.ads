@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,35 +36,42 @@ package Gtk.File_Selection is
 
    type Gtk_File_Selection is new Gtk.Window.Gtk_Window with private;
 
-   function Get_Action_Area (Widget : in Gtk_File_Selection)
-                             return      Gtk.Box.Gtk_Box;
-   function Get_Button_Area (Widget : in Gtk_File_Selection)
-                             return      Gtk.Box.Gtk_Box;
-   function Get_Cancel_Button (Widget : in Gtk_File_Selection)
-                               return      Gtk.Button.Gtk_Button;
-   function Get_Dir_List (Widget : in Gtk_File_Selection)
-                          return      Gtk.Widget.Gtk_Widget'Class;
-   function Get_File_List (Widget : in Gtk_File_Selection)
-                           return      Gtk.Widget.Gtk_Widget'Class;
-   function Get_Filename (Filesel : in Gtk_File_Selection)
-                          return       String;
-   function Get_Help_Button (Widget : in Gtk_File_Selection)
-                             return      Gtk.Button.Gtk_Button;
-   function Get_History_Pulldown (Widget : in Gtk_File_Selection)
-                                  return      Gtk.Widget.Gtk_Widget'Class;
-   function Get_Ok_Button (Widget : in Gtk_File_Selection)
-                           return      Gtk.Button.Gtk_Button;
-   function Get_Selection_Entry (Widget : in Gtk_File_Selection)
-                                 return      Gtk.Widget.Gtk_Widget'Class;
-   function Get_Selection_Text (Widget : in Gtk_File_Selection)
-                                return      Gtk.Widget.Gtk_Widget'Class;
-   procedure Gtk_New (Widget : out Gtk_File_Selection;
+   function Get_Action_Area (File_Selection : in Gtk_File_Selection)
+     return Gtk.Box.Gtk_Box;
+   function Get_Button_Area (File_Selection : in Gtk_File_Selection)
+     return Gtk.Box.Gtk_Box;
+   function Get_Cancel_Button (File_Selection : in Gtk_File_Selection)
+     return Gtk.Button.Gtk_Button;
+   function Get_Dir_List (File_Selection : in Gtk_File_Selection)
+     return Gtk.Widget.Gtk_Widget'Class;
+   function Get_File_List (File_Selection : in Gtk_File_Selection)
+     return Gtk.Widget.Gtk_Widget'Class;
+   function Get_Filename (File_Selection : in Gtk_File_Selection)
+     return String;
+   function Get_Help_Button (File_Selection : in Gtk_File_Selection)
+     return Gtk.Button.Gtk_Button;
+   function Get_History_Pulldown (File_Selection : in Gtk_File_Selection)
+     return Gtk.Widget.Gtk_Widget'Class;
+   function Get_Ok_Button (File_Selection : in Gtk_File_Selection)
+     return Gtk.Button.Gtk_Button;
+   function Get_Selection_Entry (File_Selection : in Gtk_File_Selection)
+     return Gtk.Widget.Gtk_Widget'Class;
+   function Get_Selection_Text (File_Selection : in Gtk_File_Selection)
+     return Gtk.Widget.Gtk_Widget'Class;
+   procedure Gtk_New (File_Selection : out Gtk_File_Selection;
                       Title  : in String);
-   procedure Hide_Fileop_Buttons (Filesel : in out Gtk_File_Selection);
+   procedure Hide_Fileop_Buttons (File_Selection : in out Gtk_File_Selection);
    procedure Set_Filename
-      (Filesel  : in Gtk_File_Selection;
-       Filename : in String);
-   procedure Show_Fileop_Buttons (Filesel : in out Gtk_File_Selection);
+     (File_Selection  : in Gtk_File_Selection;
+      Filename : in String);
+   procedure Show_Fileop_Buttons (File_Selection : in out Gtk_File_Selection);
+
+   procedure Generate (File_Selection : in Gtk_File_Selection;
+                       N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (File_Selection : in out Gtk_File_Selection;
+                       N        : in Node_Ptr);
 
 private
    type Gtk_File_Selection is new Gtk.Window.Gtk_Window with null record;

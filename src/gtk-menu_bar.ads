@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,7 +34,7 @@ package Gtk.Menu_Bar is
 
    type Gtk_Menu_Bar is new Gtk.Menu_Shell.Gtk_Menu_Shell with private;
 
-   procedure Gtk_New (Widget : out Gtk_Menu_Bar);
+   procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
    procedure Append
      (Menu_Bar : in Gtk_Menu_Bar;
       Child    : in Gtk.Widget.Gtk_Widget'Class);
@@ -44,6 +45,13 @@ package Gtk.Menu_Bar is
    procedure Prepend
      (Menu_Bar : in Gtk_Menu_Bar;
       Child    : in Gtk.Widget.Gtk_Widget'Class);
+
+   procedure Generate (Menu_Bar : in Gtk_Menu_Bar;
+                       N        : in Node_Ptr;
+                       File     : in File_Type);
+
+   procedure Generate (Menu_Bar : in out Gtk_Menu_Bar;
+                       N        : in Node_Ptr);
 
 private
 

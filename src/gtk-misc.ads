@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,6 +40,13 @@ package Gtk.Misc is
    procedure Set_Padding (Misc : in out Gtk_Misc;
                           Xpad : in     Gint;
                           Ypad : in     Gint);
+
+   procedure Generate (Misc : in Gtk_Misc;
+                       N    : in Node_Ptr;
+                       File : in File_Type);
+
+   procedure Generate (Misc : in out Gtk_Misc;
+                       N    : in Node_Ptr);
 
 private
    type Gtk_Misc is new Widget.Gtk_Widget with null record;

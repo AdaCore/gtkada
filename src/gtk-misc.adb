@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -58,5 +59,43 @@ package body Gtk.Misc is
    begin
       Internal (Get_Object (Misc), Xpad, Ypad);
    end Set_Padding;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Misc : in Gtk_Misc;
+                       N    : in Node_Ptr;
+                       File : in File_Type) is
+      use Widget;
+   begin
+      Generate (Gtk_Widget (Misc), N, File);
+      Gen_Set (N, "Misc", "Alignment", "xalign", "yalign", "", File);
+      Gen_Set (N, "Misc", "Padding", "xpad", "ypad", "", File);
+   end Generate;
+
+   procedure Generate (Misc : in out Gtk_Misc;
+                       N    : in Node_Ptr) is
+      use Widget;
+
+      S, S2 : String_Ptr;
+
+   begin
+      Generate (Gtk_Widget (Misc), N);
+
+      S := Get_Field (N, "xalign");
+      S2 := Get_Field (N, "yalign");
+
+      if S /= null and then S2 /= null then
+         Set_Alignment (Misc, Gfloat'Value (S.all), Gfloat'Value (S2.all));
+      end if;
+
+      S := Get_Field (N, "xpad");
+      S2 := Get_Field (N, "ypad");
+
+      if S /= null and then S2 /= null then
+         Set_Padding (Misc, Gint'Value (S.all), Gint'Value (S2.all));
+      end if;
+   end Generate;
 
 end Gtk.Misc;

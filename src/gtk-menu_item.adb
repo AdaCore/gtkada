@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,8 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Item is
 
@@ -150,5 +153,45 @@ package body Gtk.Menu_Item is
    begin
       Internal (Get_Object (Menu_Item), Get_Object (Submenu));
    end Set_Submenu;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Menu_Item : in Gtk_Menu_Item;
+                       N         : in Node_Ptr;
+                       File      : in File_Type) is
+      use Item;
+
+   begin
+      Gen_New (N, "Menu_Item", "label", File => File);
+      Generate (Gtk_Item (Menu_Item), N, File);
+      Gen_Call_Child (N, null, "Container", "Add", File => File);
+   end Generate;
+
+   procedure Generate (Menu_Item : in out Gtk_Menu_Item;
+                       N         : in Node_Ptr) is
+      use Item;
+
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "label");
+
+         if S = null then
+            Gtk_New (Menu_Item);
+         else
+            Gtk_New (Menu_Item, S.all);
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Menu_Item'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Item (Menu_Item), N);
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+         Menu_Item);
+   end Generate;
 
 end Gtk.Menu_Item;

@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Bar is
 
@@ -68,11 +70,11 @@ package body Gtk.Menu_Bar is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Menu_Bar) is
+   procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_bar_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Menu_Bar, Internal);
    end Gtk_New;
 
    -------------
@@ -89,5 +91,31 @@ package body Gtk.Menu_Bar is
    begin
       Internal (Get_Object (Menu_Bar), Get_Object (Child));
    end Prepend;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Menu_Bar : in Gtk_Menu_Bar;
+                       N    : in Node_Ptr;
+                       File : in File_Type) is
+      use Menu_Shell;
+   begin
+      Gen_New (N, "Menu_Bar", File => File);
+      Generate (Gtk_Menu_Shell (Menu_Bar), N, File);
+   end Generate;
+
+   procedure Generate (Menu_Bar : in out Gtk_Menu_Bar;
+                       N    : in Node_Ptr) is
+      use Menu_Shell;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Menu_Bar);
+         Set_Object (Get_Field (N, "name"), Menu_Bar'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Menu_Shell (Menu_Bar), N);
+   end Generate;
 
 end Gtk.Menu_Bar;

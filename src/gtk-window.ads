@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -56,6 +57,13 @@ package Gtk.Window is
    function Activate_Focus (Window : in Gtk_Window) return Boolean;
 
    function Activate_Default (Window : in Gtk_Window) return Boolean;
+
+   procedure Generate (Window : in Gtk_Window;
+                       N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (Window : in out Gtk_Window;
+                       N      : in Node_Ptr);
 
 private
    type Gtk_Window is new Bin.Gtk_Bin with null record;

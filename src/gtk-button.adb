@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Button is
 
@@ -35,103 +37,150 @@ package body Gtk.Button is
    -- Clicked --
    -------------
 
-   procedure Clicked (Widget : in Gtk_Button) is
+   procedure Clicked (Button : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_clicked");
    begin
-      Internal (Get_Object (Widget));
+      Internal (Get_Object (Button));
    end Clicked;
 
    -----------
    -- Enter --
    -----------
 
-   procedure Enter (Widget : in Gtk_Button) is
+   procedure Enter (Button : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_enter");
    begin
-      Internal (Get_Object (Widget));
+      Internal (Get_Object (Button));
    end Enter;
 
    ----------------
    -- Get_Relief --
    ----------------
 
-   function Get_Relief (Widget : in Gtk_Button)
+   function Get_Relief (Button : in Gtk_Button)
                         return Gtk.Enums.Gtk_Relief_Style is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Button : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_button_get_relief");
    begin
-      return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Get_Object (Widget)));
+      return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Get_Object (Button)));
    end Get_Relief;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Button) is
+   procedure Gtk_New (Button : out Gtk_Button) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_button_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Button, Internal);
    end Gtk_New;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Button; Label  : in String) is
+   procedure Gtk_New (Button : out Gtk_Button; Label  : in String) is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
    begin
-      Set_Object (Widget, Internal (Label & Ascii.NUL));
+      Set_Object (Button, Internal (Label & Ascii.NUL));
    end Gtk_New;
 
    -----------
    -- Leave --
    -----------
 
-   procedure Leave (Widget : in Gtk_Button) is
+   procedure Leave (Button : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_enter");
    begin
-      Internal (Get_Object (Widget));
+      Internal (Get_Object (Button));
    end Leave;
 
    -------------
    -- Pressed --
    -------------
 
-   procedure Pressed (Widget : in Gtk_Button) is
+   procedure Pressed (Button : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_pressed");
    begin
-      Internal (Get_Object (Widget));
+      Internal (Get_Object (Button));
    end Pressed;
 
    --------------
    -- Released --
    --------------
 
-   procedure Released (Widget : in Gtk_Button) is
+   procedure Released (Button : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_released");
    begin
-      Internal (Get_Object (Widget));
+      Internal (Get_Object (Button));
    end Released;
 
    ----------------
    -- Set_Relief --
    ----------------
 
-   procedure Set_Relief (Widget   : in out Gtk_Button;
+   procedure Set_Relief (Button   : in out Gtk_Button;
                          NewStyle : in Gtk.Enums.Gtk_Relief_Style) is
-      procedure Internal (Widget : in System.Address;
+      procedure Internal (Button : in System.Address;
                           NewStyle : in Gint);
       pragma Import (C, Internal, "gtk_button_set_relief");
    begin
-      Internal (Get_Object (Widget),
+      Internal (Get_Object (Button),
                 Gtk.Enums.Gtk_Relief_Style'Pos (NewStyle));
    end Set_Relief;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Button : in Gtk_Button;
+                       N      : in Node_Ptr;
+                       File   : in File_Type) is
+      use Container;
+
+      P : Node_Ptr := Find_Tag (N.Child, "label");
+   begin
+      if P = null then
+         Gen_New (N, "Button", File => File);
+      else
+         Gen_New (N, "Button", P.Value.all, File => File, Delim => '"');
+      end if;
+
+      Generate (Gtk_Container (Button), N, File);
+      Gen_Set (N, "Button", "relief", File);
+   end Generate;
+
+   procedure Generate (Button : in out Gtk_Button;
+                       N      : in Node_Ptr) is
+      use Container;
+
+      S : String_Ptr := Get_Field (N, "label");
+   begin
+      if not N.Specific_Data.Created then
+         if S = null then
+            Gtk_New (Button);
+         else
+            Gtk_New (Button, S.all);
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Button'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Container (Button), N);
+
+      S := Get_Field (N, "relief");
+
+      if S /= null then
+         Set_Relief (Button, Gtk.Enums.Gtk_Relief_Style'Value (S.all));
+      end if;
+   end Generate;
 
 end Gtk.Button;

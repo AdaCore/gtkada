@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 with System;
 
 package body Gtk.Calendar is
@@ -205,5 +207,31 @@ package body Gtk.Calendar is
       return Internal (Get_Object (Calendar),
                        Day);
    end Unmark_Day;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Calendar : in Gtk_Calendar;
+                       N        : in Node_Ptr;
+                       File     : in File_Type) is
+      use Widget;
+   begin
+      Gen_New (N, "Calendar", File => File);
+      Generate (Gtk_Widget (Calendar), N, File);
+   end Generate;
+
+   procedure Generate (Calendar : in out Gtk_Calendar;
+                       N        : in Node_Ptr) is
+      use Widget;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Calendar);
+         Set_Object (Get_Field (N, "name"), Calendar'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Widget (Calendar), N);
+   end Generate;
 
 end Gtk.Calendar;

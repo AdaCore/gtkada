@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu is
 
@@ -179,7 +181,6 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu), Index);
    end Set_Active;
 
-
    package body Menu_Popup is
 
       -----------
@@ -213,5 +214,31 @@ package body Gtk.Menu is
                    Activate_Time);
       end Popup;
    end Menu_Popup;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Menu : in Gtk_Menu;
+                       N    : in Node_Ptr;
+                       File : in File_Type) is
+      use Menu_Shell;
+   begin
+      Gen_New (N, "Menu", File => File);
+      Generate (Gtk_Menu_Shell (Menu), N, File);
+   end Generate;
+
+   procedure Generate (Menu : in out Gtk_Menu;
+                       N    : in Node_Ptr) is
+      use Menu_Shell;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Menu);
+         Set_Object (Get_Field (N, "name"), Menu'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Menu_Shell (Menu), N);
+   end Generate;
 
 end Gtk.Menu;

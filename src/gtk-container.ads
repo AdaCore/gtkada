@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,13 +36,13 @@ package Gtk.Container is
    type Gtk_Container is new Gtk.Widget.Gtk_Widget with private;
 
    procedure Add (Container : in out Gtk_Container;
-                  Widget       : in Gtk.Widget.Gtk_Widget'Class);
+                  Widget    : in Gtk.Widget.Gtk_Widget'Class);
 
    procedure Set_Border_Width (Container : in Gtk_Container;
                                Border_Width : in Gint);
 
    procedure Remove (Container : in out Gtk_Container;
-                     Widget : in Gtk.Widget.Gtk_Widget'Class);
+                     Widget    : in Gtk.Widget.Gtk_Widget'Class);
 
    procedure Set_Focus_Hadjustment
      (Container  : in out Gtk_Container;
@@ -53,6 +54,13 @@ package Gtk.Container is
 
    procedure Set_Resize_Mode (Container   : in out Gtk_Container;
                               Resize_Mode : in Gtk_Resize_Mode);
+
+   procedure Generate (Container : in Gtk_Container;
+                       N         : in Node_Ptr;
+                       File      : in File_Type);
+
+   procedure Generate (Container : in out Gtk_Container;
+                       N         : in Node_Ptr);
 
 private
 

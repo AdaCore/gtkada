@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with Gdk; use Gdk;
+with Gtk.Box; use Gtk.Box;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Widget is
 
@@ -667,10 +670,123 @@ package body Gtk.Widget is
       return To_Boolean (Internal (Get_Object (Widget)));
    end Visible_Is_Set;
 
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Widget : in Gtk_Widget;
+                       N      : in Node_Ptr;
+                       File   : in File_Type) is
+      use Object;
+
+      Child : Node_Ptr := Find_Tag (N.Child, "child");
+      Q     : Node_Ptr;
+
+   begin
+      Generate (Gtk_Object (Widget), N, File);
+      Gen_Set (N, "Widget", "name", File, '"');
+      Gen_Set (N, "Widget", "sensitive", File);
+      Gen_Set (N, "Widget", "UPosition", "x", "y", "", File);
+      Gen_Set (N, "Widget", "USize", "width", "height", "", File);
+      --  ??? Missing Set_Parent
+      --  ??? Missing Set_Events
+      --  ??? Missing Set_Default_Visual
+      --  ??? Missing Set_Default_Colormap
+      Gen_Set (N, "Widget", "state", File);
+
+      --  ??? Need to find a better way to call Pack_Start
+
+      if Child /= null then
+         Q := Find_Tag (Child.Child, "pack");
+
+         if Q = null or else Q.Value.all /= "GTK_PACK_END" then
+            Gen_Call_Child (N, Child, "Box", "Pack_Start",
+              "expand", "fill", "padding", File);
+         end if;
+      end if;
+
+      Gen_Signal (N, File);
+   end Generate;
+
+   procedure Generate (Widget : in out Gtk_Widget;
+                       N      : in Node_Ptr) is
+      use Object;
+
+      S, S2, S3  : String_Ptr;
+      Child      : Node_Ptr := Find_Tag (N.Child, "child");
+      Q          : Node_Ptr;
+
+      procedure Signal_Connect
+        (Object        : System.Address;
+         Name          : String;
+         Func          : System.Address;
+         Func_Data     : System.Address := System.Null_Address);
+      pragma Import (C, Signal_Connect, "gtk_signal_connect");
+
+   begin
+      Generate (Gtk_Object (Widget), N);
+      S := Get_Field (N, "name");
+
+      if S /= null then
+         Set_Name (Widget, S.all);
+      end if;
+
+      S := Get_Field (N, "sensitive");
+
+      if S /= null then
+         Set_Sensitive (Widget, Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "x");
+      S2 := Get_Field (N, "y");
+
+      if S /= null and then S2 /= null then
+         Set_UPosition (Widget, Gint'Value (S.all), Gint'Value (S2.all));
+      end if;
+
+      S := Get_Field (N, "width");
+      S2 := Get_Field (N, "height");
+
+      if S /= null and then S2 /= null then
+         Set_USize (Widget, Gint'Value (S.all), Gint'Value (S2.all));
+      end if;
+
+      S := Get_Field (N, "state");
+
+      if S /= null then
+         Set_State (Widget, Enums.Gtk_State_Type'Value (S.all));
+      end if;
+
+      --  ??? Need to find a better way to call Pack_Start
+
+      if Child /= null then
+         Q := Find_Tag (Child.Child, "pack");
+
+         if Q = null or else Q.Value.all /= "GTK_PACK_END" then
+            S := Get_Field (Child, "expand");
+            S2 := Get_Field (Child, "fill");
+            S3 := Get_Field (Child, "padding");
+
+            if S /= null and then S2 /= null and then S3 /= null then
+               Gtk.Box.Pack_Start
+                 (Gtk_Box (Get_Object (Find_Tag
+                   (Find_Parent (N.Parent, "Box"), "name").Value).all),
+                  Get_Object (Get_Field (N, "name")).all,
+                  Boolean'Value (S.all), Boolean'Value (S2.all),
+                  Gint'Value (S3.all));
+            end if;
+         end if;
+      end if;
+
+      Q := Find_Tag (N.Child, "signal");
+
+      while Q /= null loop
+         Signal_Connect
+           (Gdk.Get_Object (Widget),
+            Get_Field (Q, "name").all & ASCII.Nul,
+            Get_Signal (Get_Field (Q, "handler")));
+         Q := Find_Tag (Q.Next, "signal");
+      end loop;
+   end Generate;
 
 end Gtk.Widget;
-
-
-
-
-

@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,13 +34,20 @@ package Gtk.Button is
 
    type Gtk_Button is new Container.Gtk_Container with private;
 
-   procedure Gtk_New (Widget : out Gtk_Button);
-   procedure Gtk_New (Widget :    out Gtk_Button;
-                      Label  : in     String);
-   procedure Set_Relief (Widget   : in out Gtk_Button;
-                         NewStyle : in     Enums.Gtk_Relief_Style);
-   function Get_Relief (Widget : in Gtk_Button)
+   procedure Gtk_New (Button : out Gtk_Button);
+   procedure Gtk_New (Button : out Gtk_Button; Label  : in String);
+
+   procedure Set_Relief (Button   : in out Gtk_Button;
+                         NewStyle : in     Gtk.Enums.Gtk_Relief_Style);
+   function Get_Relief (Button : in Gtk_Button)
                         return Gtk.Enums.Gtk_Relief_Style;
+
+   procedure Generate (Button : in Gtk_Button;
+                       N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (Button : in out Gtk_Button;
+                       N      : in Node_Ptr);
 
    ---------------
    --  Signals  --
@@ -47,11 +55,11 @@ package Gtk.Button is
 
    --  The following functions send signals to the widget.
 
-   procedure Pressed  (Widget : in Gtk_Button);
-   procedure Released (Widget : in Gtk_Button);
-   procedure Clicked  (Widget : in Gtk_Button);
-   procedure Enter    (Widget : in Gtk_Button);
-   procedure Leave    (Widget : in Gtk_Button);
+   procedure Pressed  (Button : in Gtk_Button);
+   procedure Released (Button : in Gtk_Button);
+   procedure Clicked  (Button : in Gtk_Button);
+   procedure Enter    (Button : in Gtk_Button);
+   procedure Leave    (Button : in Gtk_Button);
 
 private
 

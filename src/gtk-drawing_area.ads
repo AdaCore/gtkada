@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,11 +33,18 @@ package Gtk.Drawing_Area is
 
    type Gtk_Drawing_Area is new Gtk.Widget.Gtk_Widget with private;
 
-   procedure Gtk_New (Widget : out Gtk_Drawing_Area);
+   procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
    procedure Size
      (Darea  : in Gtk_Drawing_Area;
       Width  : in Gint;
       Height : in Gint);
+
+   procedure Generate (Drawing_Area : in Gtk_Drawing_Area;
+                       N            : in Node_Ptr;
+                       File         : in File_Type);
+
+   procedure Generate (Drawing_Area : in out Gtk_Drawing_Area;
+                       N            : in Node_Ptr);
 
 private
 

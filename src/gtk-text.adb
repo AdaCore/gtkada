@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,6 +30,8 @@
 with System;
 with Interfaces.C.Strings;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
+with Gtk.Container; use Gtk.Container;
 
 package body Gtk.Text is
 
@@ -311,5 +314,58 @@ package body Gtk.Text is
    begin
       Internal (Get_Object (Text));
    end Thaw;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Text : in Gtk_Text;
+                       N    : in Node_Ptr;
+                       File : in File_Type) is
+      use Editable;
+   begin
+      Gen_New (N, "Text", File => File);
+      Generate (Gtk_Editable (Text), N, File);
+      Gen_Set (N, "Text", "editable", File);
+      Gen_Set (N, "Text", "point", File);
+      Gen_Set (N, "Text", "word_wrap", File);
+      Gen_Call_Child (N, null, "Container", "Add", File => File);
+   end Generate;
+
+   procedure Generate (Text : in out Gtk_Text;
+                       N    : in Node_Ptr) is
+      use Editable;
+
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Text);
+         Set_Object (Get_Field (N, "name"), Text'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Editable (Text), N);
+
+      S := Get_Field (N, "editable");
+
+      if S /= null then
+         Set_Editable (Text, Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "point");
+
+      if S /= null then
+         Set_Point (Text, Guint'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "word_wrap");
+
+      if S /= null then
+         Set_Word_Wrap (Text, Boolean'Value (S.all));
+      end if;
+
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all), Text);
+   end Generate;
 
 end Gtk.Text;

@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Dialog is
 
@@ -35,15 +37,13 @@ package body Gtk.Dialog is
    -- Get_Action_Area --
    ---------------------
 
-   function Get_Action_Area (Widget : in Gtk_Dialog)
-                             return      Gtk.Box.Gtk_Box
-   is
-      function Internal (Widget : in System.Address)
-                         return      System.Address;
+   function Get_Action_Area (Dialog : in Gtk_Dialog) return Gtk.Box.Gtk_Box is
+      function Internal (Dialog : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_dialog_get_action_area");
       Tmp : Gtk.Box.Gtk_Box;
+
    begin
-      Set_Object (Tmp, Internal (Get_Object (Widget)));
+      Set_Object (Tmp, Internal (Get_Object (Dialog)));
       return Tmp;
    end Get_Action_Area;
 
@@ -51,15 +51,13 @@ package body Gtk.Dialog is
    -- Get_Vbox --
    --------------
 
-   function Get_Vbox (Widget : in Gtk_Dialog)
-                      return      Gtk.Box.Gtk_Box
-   is
-      function Internal (Widget : in System.Address)
-                         return      System.Address;
+   function Get_Vbox (Dialog : in Gtk_Dialog) return Gtk.Box.Gtk_Box is
+      function Internal (Dialog : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_dialog_get_vbox");
       Tmp : Gtk.Box.Gtk_Box;
+
    begin
-      Set_Object (Tmp, Internal (Get_Object (Widget)));
+      Set_Object (Tmp, Internal (Get_Object (Dialog)));
       return Tmp;
    end Get_Vbox;
 
@@ -67,12 +65,38 @@ package body Gtk.Dialog is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Dialog)
+   procedure Gtk_New (Dialog : out Gtk_Dialog)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_dialog_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Dialog, Internal);
    end Gtk_New;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Dialog : in Gtk_Dialog;
+                       N      : in Node_Ptr;
+                       File   : in File_Type) is
+      use Window;
+   begin
+      Gen_New (N, "Dialog", File => File);
+      Generate (Gtk_Window (Dialog), N, File);
+   end Generate;
+
+   procedure Generate (Dialog : in out Gtk_Dialog;
+                       N      : in Node_Ptr) is
+      use Window;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Dialog);
+         Set_Object (Get_Field (N, "name"), Dialog'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Window (Dialog), N);
+   end Generate;
 
 end Gtk.Dialog;
