@@ -77,6 +77,17 @@ package body Gtk.Tooltips is
       Initialize_User_Data (Widget);
    end Initialize;
 
+   ------------------
+   -- Force_Window --
+   ------------------
+
+   procedure Force_Window (Widget : access Gtk_Tooltips_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_tooltips_force_window");
+   begin
+      Internal (Get_Object (Widget));
+   end Force_Window;
+
    ---------------
    -- Set_Delay --
    ---------------

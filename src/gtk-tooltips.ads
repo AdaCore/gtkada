@@ -37,6 +37,9 @@
 --  time. Likewise, the colors and style of a tooltip can be set on a group
 --  basis.
 --
+--  See the example at the end for how to change the default colors used
+--  for tooltips.
+--
 --  </description>
 --  <c_version>1.2.6</c_version>
 
@@ -64,6 +67,12 @@ package Gtk.Tooltips is
    procedure Initialize (Widget : access Gtk_Tooltips_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Force_Window (Widget : access Gtk_Tooltips_Record);
+   --  Make sure the window in which the tooltips will be displayed is
+   --  created.
+   --  This is useful if you want to modify some characteristics of that
+   --  window.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Tooltips.
@@ -96,20 +105,16 @@ package Gtk.Tooltips is
    --  Gtk_Tips_Query widget through the "widget_selected" signal.
    --  In most cases, Tip_Private should simply keep its default empty value.
 
+   --  <doc_ignore>
    procedure Set_Colors (Tooltips   : access Gtk_Tooltips_Record;
                          Foreground : Gdk.Color.Gdk_Color;
                          Background : Gdk.Color.Gdk_Color);
    --  Modify the color scheme for the tooltips in the group Tooltips.
-
    --  This function does not seem to do anything useful. This should anyway
    --  be left to the user, who might want a different scheme for the colors.
-   --  This can be configured through a configuration file (see Gdk.RC), with
-   --  lines like:
-   --     style "postie"
-   --     {
-   --        bg[NORMAL]={1.0, 0.93, 0.22}
-   --     }
-   --     widget "gtk-tooltips*" style "postie"
+   --  See the example below for how to modify the color scheme of a
+   --  Gtk_Tooltips.
+   --  </doc_ignore>
 
    --  Note: the C library gtk+ has since then changed the order of the
    --  parameters. This does not have any impact for you, except if you are
@@ -135,6 +140,6 @@ private
    pragma Import (C, Get_Type, "gtk_tooltips_get_type");
 end Gtk.Tooltips;
 
---  The following functions have no Ada equivalent:
---  gtk_tooltips_force_window: internal function for gtk+, makes sure the group
---     has a window associated with you.
+--  <example>
+--  <include>../examples/documentation/tooltips.adb</include>
+--  </example>
