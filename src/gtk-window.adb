@@ -34,6 +34,7 @@ with Gtk.Accel_Group;  use Gtk.Accel_Group;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Object;       use Gtk.Object;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Window is
 
@@ -239,6 +240,38 @@ package body Gtk.Window is
                 Wmclass_Name & ASCII.NUL,
                 Wmclass_Class & ASCII.NUL);
    end Set_Wmclass;
+
+   --------------------------
+   -- Get_Transient_Parent --
+   --------------------------
+
+   function Get_Transient_Parent (Window : access Gtk_Window_Record)
+      return Gtk_Window
+   is
+      function Internal (Window : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gtk_window_get_transient_parent");
+      Stub : Gtk_Window_Record;
+   begin
+      return Gtk_Window (Get_User_Data (Internal (Get_Object (Window)), Stub));
+   end Get_Transient_Parent;
+
+   ---------------
+   -- Get_Title --
+   ---------------
+
+   function Get_Title (Window : access Gtk_Window_Record) return String is
+      function Internal (Window : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "ada_gtk_window_get_title");
+      S : constant chars_ptr := Internal (Get_Object (Window));
+
+   begin
+      if S /= Null_Ptr then
+         return Value (S);
+      else
+         return "";
+      end if;
+   end Get_Title;
 
    --------------
    -- Generate --

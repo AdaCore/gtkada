@@ -88,6 +88,9 @@ package Gtk.Window is
    --  Change the title of the window, as it appears in the title bar.
    --  Note that on some systems you might not be able to change it.
 
+   function Get_Title (Window : access Gtk_Window_Record) return String;
+   --  Return the title of the window, or "" if there is none
+
    procedure Set_Wmclass
      (Window        : access Gtk_Window_Record;
       Wmclass_Name  : in String;
@@ -166,6 +169,11 @@ package Gtk.Window is
    --
    --     Gtk.Widget.Grab_Default (Widget);
 
+   function Get_Transient_Parent (Window : access Gtk_Window_Record)
+      return Gtk_Window;
+   --  Return the window for which this one is a temporary window.
+   --  See Set_Transient_For below for more information on transient windows.
+   --  null is returned if there is no such window.
 
    procedure Set_Transient_For
      (Window : access Gtk_Window_Record;
