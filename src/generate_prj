@@ -1,0 +1,29 @@
+#!/bin/sh
+
+libs=`./gtkada-config --libs`
+
+cat << EOF > gtkada.gpr
+project GtkAda is
+
+   package Linker is
+      for Default_Switches ("Ada") use
+EOF
+
+cpt=0
+
+for j in $libs; do
+   if [ $cpt -eq 0 ]; then
+      echo -n "        (\"$j\"" >> gtkada.gpr
+      cpt=1
+   else
+      echo "," >> gtkada.gpr
+      echo -n "         \"$j\"" >> gtkada.gpr
+   fi
+done
+
+cat << EOF >> gtkada.gpr
+);
+   end Linker;
+
+end GtkAda;
+EOF
