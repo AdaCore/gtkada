@@ -204,16 +204,20 @@ package body Gdk.Pixbuf is
       Internal (Pixbuf);
    end Ref;
 
-   ---------
-   -- Ref --
-   ---------
-
    procedure Ref (Animation : Gdk_Pixbuf_Animation) is
       procedure Internal (Pixbuf : Gdk_Pixbuf_Animation);
       pragma Import (C, Internal, "gdk_pixbuf_animation_ref");
 
    begin
       Internal (Animation);
+   end Ref;
+
+   procedure Ref (Iter : Gdk_Pixbuf_Animation_Iter) is
+      procedure Internal (Iter : Gdk_Pixbuf_Animation_Iter);
+      pragma Import (C, Internal, "g_object_ref");
+
+   begin
+      Internal (Iter);
    end Ref;
 
    ---------------------------
@@ -292,10 +296,6 @@ package body Gdk.Pixbuf is
       Internal (Pixbuf);
    end Unref;
 
-   -----------
-   -- Unref --
-   -----------
-
    procedure Unref (Animation : Gdk_Pixbuf_Animation) is
       procedure Internal (Pixbuf : Gdk_Pixbuf_Animation);
       pragma Import (C, Internal, "gdk_pixbuf_animation_unref");
@@ -304,5 +304,59 @@ package body Gdk.Pixbuf is
       Internal (Animation);
    end Unref;
 
-end Gdk.Pixbuf;
+   procedure Unref (Iter : Gdk_Pixbuf_Animation_Iter) is
+      procedure Internal (Iter : Gdk_Pixbuf_Animation_Iter);
+      pragma Import (C, Internal, "g_object_unref");
 
+   begin
+      Internal (Iter);
+   end Unref;
+
+   ---------------------
+   -- Is_Static_Image --
+   ---------------------
+
+   function Is_Static_Image
+     (Animation : Gdk_Pixbuf_Animation) return Boolean
+   is
+      function Internal (Animation : Gdk_Pixbuf_Animation) return Gboolean;
+      pragma Import (C, Internal, "gdk_pixbuf_animation_is_static_image");
+
+   begin
+      return To_Boolean (Internal (Animation));
+   end Is_Static_Image;
+
+   --------------------------------
+   -- On_Currently_Loading_Frame --
+   --------------------------------
+
+   function On_Currently_Loading_Frame
+     (Iter : Gdk_Pixbuf_Animation_Iter) return Boolean
+   is
+      function Internal
+        (Animation : Gdk_Pixbuf_Animation_Iter) return Gboolean;
+      pragma Import
+        (C, Internal, "gdk_pixbuf_animation_iter_on_currently_loading_frame");
+
+   begin
+      return To_Boolean (Internal (Iter));
+   end On_Currently_Loading_Frame;
+
+   -------------
+   -- Advance --
+   -------------
+
+   function Advance
+     (Iter          : Gdk_Pixbuf_Animation_Iter;
+      Current_Timer : GTime_Val_Access := null) return Boolean
+   is
+      function Internal
+        (Iter          : Gdk_Pixbuf_Animation_Iter;
+         Current_Timer : GTime_Val_Access) return Gboolean;
+      pragma Import (C, Internal, "gdk_pixbuf_animation_iter_advance");
+
+   begin
+      return To_Boolean (Internal (Iter, Current_Timer));
+   end Advance;
+
+end Gdk.Pixbuf;

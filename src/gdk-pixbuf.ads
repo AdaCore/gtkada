@@ -41,12 +41,9 @@
 --  Different filters are provided, depending on the quality of output you
 --  expect and the speed you need.
 --  </description>
---  <c_version>gdk-pixbuf 0.8.0</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib; use Glib;
-with Glib.Glist;
-pragma Elaborate_All (Glib.Glist);
-
 with Gdk.Bitmap;
 with Gdk.Drawable;
 with Gdk.Color;
@@ -69,11 +66,8 @@ package Gdk.Pixbuf is
    type Gdk_Pixbuf_Animation is new Glib.C_Proxy;
    --  Type used for animations.
 
-   type Gdk_Pixbuf_Frame is new Glib.C_Proxy;
-   --  An animation is composed of frames.
-
-   type Frame_Action is (Frame_Retain, Frame_Dispose, Frame_Revert);
-   --  GIF-like animation overlay modes for frames.
+   type Gdk_Pixbuf_Animation_Iter is new Glib.C_Proxy;
+   --  Type used to iterate through an animation.
 
    type Alpha_Mode is (Alpha_Bilevel, Alpha_Full);
    --  Alpha compositing mode.
@@ -126,8 +120,8 @@ package Gdk.Pixbuf is
       Insufficient_Memory,
       --  no mem to load image
 
-      Bad_Option_Value,
-      --  bad option value passed to save routine
+      Bad_Option,
+      --  bad option passed to save routine
 
       Unknown_Type,
       --  unsupported image type
@@ -149,9 +143,6 @@ package Gdk.Pixbuf is
    type Alpha_Range is range 0 .. 255;
    --  Valid values for alpha parameters.
    for Alpha_Range'Size use Gint'Size;
-
-   package Frame_List is new Glib.Glist.Generic_List (Gdk_Pixbuf_Frame);
-   --  Handling of list of Pixbuf_Frames.
 
    --------------
    -- Get_Type --
@@ -235,6 +226,9 @@ package Gdk.Pixbuf is
    function Gdk_New_From_Xpm_Data
      (Data : Interfaces.C.Strings.chars_ptr_array) return Gdk_Pixbuf;
    --  Create an image from a XPM data.
+
+   procedure Fill (Pixbuf : Gdk_Pixbuf; Pixel : Guint32);
+   --  Fill pixbuf with a given pixel value.
 
    procedure Save
      (Pixbuf   : Gdk_Pixbuf;
@@ -525,47 +519,128 @@ package Gdk.Pixbuf is
    function Get_Height (Animation : Gdk_Pixbuf_Animation) return Gint;
    --  Return the height of the bounding box of a pixbuf animation.
 
-   function Get_Num_Frames (Animation : Gdk_Pixbuf_Animation) return Gint;
-   --  Return the number of frames in a pixbuf animation.
+   function Is_Static_Image (Animation : Gdk_Pixbuf_Animation) return Boolean;
+   --  If you load a file with Gdk_New_From_File and it turns out to be a
+   --  plain, unanimated image, then this function will return True.
+   --  Use Get_Static_Image to retrieve the image.
 
-   ---------------------
-   -- Frame Accessors --
-   ---------------------
+   function Get_Static_Image
+     (Animation : Gdk_Pixbuf_Animation) return Gdk_Pixbuf;
+   --  If an animation is really just a plain image (has only one frame),
+   --  this function returns that image. If the animation is an animation,
+   --  this function returns a reasonable thing to display as a static
+   --  unanimated image, which might be the first frame, or something more
+   --  sophisticated. If an animation hasn't loaded any frames yet, this
+   --  function will return null.
 
-   function Get_Pixbuf (Frame : Gdk_Pixbuf_Frame) return Gdk_Pixbuf;
-   --  Return the pixbuf of an animation frame.
+   function Get_Iter
+     (Animation  : Gdk_Pixbuf_Animation;
+      Start_Time : GTime_Val_Access := null)
+      return Gdk_Pixbuf_Animation_Iter;
+   --  Get an iterator for displaying an animation. The iterator provides
+   --  the frames that should be displayed at a given time.
+   --  It should be freed after use with Unref.
+   --
+   --  Start_Time would normally come from G_Get_Current_Time, and marks the
+   --  beginning of animation playback. After creating an iterator, you should
+   --  immediately display the pixbuf returned by Get_Pixbuf. Then, you should
+   --  install a timeout (with Timeout_Add) or by some other mechanism to
+   --  ensure that you'll update the image after Get_Delay_Time milliseconds.
+   --  Each time the image is updated, you should reinstall the timeout with
+   --  the new, possibly-changed delay time.
+   --
+   --  As a shortcut, if Start_Time is equal to null, the result of
+   --  G_Get_Current_Time will be used automatically.
+   --
+   --  To update the image (i.e. possibly change the result of Get_Pixbuf to a
+   --  new frame of the animation), call Advance.
+   --
+   --  If you're using Gdk_Pixbuf_Loader, in addition to updating the image
+   --  after the delay time, you should also update it whenever you
+   --  receive the area_updated signal and On_Currently_Loading_Frame returns
+   --  True. In this case, the frame currently being fed into the loader
+   --  has received new data, so needs to be refreshed. The delay time for
+   --  a frame may also be modified after an area_updated signal, for
+   --  example if the delay time for a frame is encoded in the data after
+   --  the frame itself. So your timeout should be reinstalled after any
+   --  area_updated signal.
+   --
+   --  A delay time of -1 is possible, indicating "infinite."
 
-   function Get_X_Offset (Frame : Gdk_Pixbuf_Frame) return Gint;
-   --  Return the X offset from the top left corner of an animation frame.
+   ---------------
+   -- Iterators --
+   ---------------
 
-   function Get_Y_Offset (Frame : Gdk_Pixbuf_Frame) return Gint;
-   --  Return the Y offset from the top left corner of an animation frame.
+   function Get_Type_Animation_Iter return Glib.GType;
+   --  Return the internal value associated with a Gdk_Pixbuf_Animation_Iter.
 
-   function Get_Delay_Time (Frame : Gdk_Pixbuf_Frame) return Gint;
-   --  Return the delay time in milliseconds of an animation frame.
+   procedure Ref (Iter : Gdk_Pixbuf_Animation_Iter);
+   --  Increment the reference counting on the iterator.
 
-   function Get_Action (Frame : Gdk_Pixbuf_Frame) return Frame_Action;
-   --  Return the overlay action of an animation frame.
+   procedure Unref (Iter : Gdk_Pixbuf_Animation_Iter);
+   --  Decrement the reference counting on the iterator.
 
-   procedure Free (Frame : Gdk_Pixbuf_Frame);
-   --  Free a Gdk_Pixbuf_Frame.
-   --  Don't do this with frames you got from Gdk_Pixbuf_Animation, usually
-   --  the animation owns those (it doesn't make a copy before returning the
-   --  frame).
+   function Get_Delay_Time (Iter : Gdk_Pixbuf_Animation_Iter) return Gint;
+   --  Return the number of milliseconds the current pixbuf should be displayed
+   --  or -1 if the current pixbuf should be displayed forever. Timeout_Add
+   --  conveniently takes a timeout in milliseconds, so you can use a timeout
+   --  to schedule the next update.
 
-   function Get_Type_Frame return Glib.GType;
-   --  Return the internal values associated with a Gdk_Pixbuf_Frame.
+   function Get_Pixbuf (Iter : Gdk_Pixbuf_Animation_Iter) return Gdk_Pixbuf;
+   --  Return the current pixbuf which should be displayed.
+   --  The pixbuf will be the same size as the animation itself (Get_Width,
+   --  Get_Height). This pixbuf should be displayed for Get_Delay_Time
+   --  milliseconds. The caller of this function does not own a reference to
+   --  the returned pixbuf; the returned pixbuf will become invalid when the
+   --  iterator advances to the next frame, which may happen anytime you call
+   --  Advance. Copy the pixbuf to keep it (don't just add a reference), as it
+   --  may get recycled as you advance the iterator.
+
+   function On_Currently_Loading_Frame
+     (Iter : Gdk_Pixbuf_Animation_Iter) return Boolean;
+   --  Used to determine how to respond to the area_updated signal on
+   --  Gdk_Pixbuf_Loader when loading an animation. area_updated is emitted
+   --  for an area of the frame currently streaming in to the loader. So if
+   --  you're on the currently loading frame, you need to redraw the screen for
+   --  the updated area.
+
+   function Advance
+     (Iter          : Gdk_Pixbuf_Animation_Iter;
+      Current_Timer : GTime_Val_Access := null) return Boolean;
+   --  Possibly advance an animation to a new frame.
+   --  Chooses the frame based on the start time passed to Get_Iter.
+   --
+   --  Current_Time would normally come from G_Get_Current_Time, and
+   --  must be greater than or equal to the time passed to Get_Iter,
+   --  and must increase or remain unchanged each time Get_Pixbuf is
+   --  called. That is, you can't go backward in time; animations only
+   --  play forward.
+   --
+   --  As a shortcut, pass null for the current time and G_Get_Current_Time
+   --  will be invoked on your behalf. So you only need to explicitly pass
+   --  Current_Time if you're doing something odd like playing the animation
+   --  at double speed.
+   --
+   --  If this function returns False, there's no need to update the animation
+   --  display, assuming the display had been rendered prior to advancing;
+   --  if True, you need to call Get_Pixbuf and update the display with the new
+   --  pixbuf.
 
 private
 
    pragma Import (C, Get_Type, "gdk_pixbuf_get_type");
    pragma Import (C, Get_Type_Animation, "gdk_pixbuf_animation_get_type");
-   pragma Import (C, Get_Type_Frame, "gdk_pixbuf_frame_get_type");
+   pragma Import
+     (C, Get_Type_Animation_Iter, "gdk_pixbuf_animation_iter_get_type");
+   pragma Import (C, Fill, "gdk_pixbuf_fill");
    pragma Import (C, Get_Colorspace, "gdk_pixbuf_get_colorspace");
    pragma Import (C, Get_N_Channels, "gdk_pixbuf_get_n_channels");
    pragma Import (C, Get_Bits_Per_Sample, "gdk_pixbuf_get_bits_per_sample");
    pragma Import (C, Get_Pixels, "gdk_pixbuf_get_pixels");
    pragma Import (C, Get_Rowstride, "gdk_pixbuf_get_rowstride");
+   pragma Import
+     (C, Get_Static_Image, "gdk_pixbuf_animation_get_static_image");
+   pragma Import (C, Get_Iter, "gdk_pixbuf_animation_get_iter");
    pragma Import (C, Gdk_New_Subpixbuf, "gdk_pixbuf_new_subpixbuf");
    pragma Import (C, Gdk_New_From_Xpm_Data, "gdk_pixbuf_new_from_xpm_data");
    pragma Import (C, Copy_Area, "gdk_pixbuf_copy_area");
@@ -583,13 +658,9 @@ private
    pragma Import
      (C, Render_Threshold_Alpha, "gdk_pixbuf_render_threshold_alpha");
    pragma Import (C, Get_From_Drawable, "gdk_pixbuf_get_from_drawable");
-   pragma Import (C, Get_Num_Frames, "gdk_pixbuf_animation_get_num_frames");
-   pragma Import (C, Get_Pixbuf, "gdk_pixbuf_frame_get_pixbuf");
-   pragma Import (C, Get_X_Offset, "gdk_pixbuf_frame_get_x_offset");
-   pragma Import (C, Get_Y_Offset, "gdk_pixbuf_frame_get_y_offset");
-   pragma Import (C, Get_Delay_Time, "gdk_pixbuf_frame_get_delay_time");
-   pragma Import (C, Get_Action, "gdk_pixbuf_frame_get_action");
-   pragma Import (C, Free, "gdk_pixbuf_frame_free");
+   pragma Import (C, Get_Pixbuf, "gdk_pixbuf_animation_iter_get_pixbuf");
+   pragma Import
+     (C, Get_Delay_Time, "gdk_pixbuf_animation_iter_get_delay_time");
 
 end Gdk.Pixbuf;
 
