@@ -32,7 +32,6 @@ with Gtk;           use Gtk;
 with Gtk.Alignment; use Gtk.Alignment;
 with Gtk.Box;       use Gtk.Box;
 with Gtk.Button;    use Gtk.Button;
-with Gtk.Enums;     use Gtk.Enums;
 with Gtk.Frame;     use Gtk.Frame;
 
 package body Create_Alignment is
