@@ -587,9 +587,11 @@ package Gtk.Ctree is
    --  This procedure only sorts the first level of the tree.
 
    procedure Sort_Recursive (Ctree : access Gtk_Ctree_Record;
-                             Node  : in     Gtk_Ctree_Node);
+                             Node  : in     Gtk_Ctree_Node := null);
    --  Sort the nodes of a given Ctree recursively.
    --  This procedure sorts the whole tree and subtrees associated with Ctree.
+   --  Set Node to null if you want to sort the whole tree starting from its
+   --  root.
 
    --------------------------
    -- Ctree_Gnode handling --

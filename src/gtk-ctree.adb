@@ -1286,7 +1286,7 @@ package body Gtk.CTree is
    --------------------
 
    procedure Sort_Recursive (Ctree : access Gtk_Ctree_Record;
-                             Node  : in     Gtk_Ctree_Node)
+                             Node  : in     Gtk_Ctree_Node := null)
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in Gtk_Ctree_Node);
