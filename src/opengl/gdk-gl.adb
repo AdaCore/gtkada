@@ -29,7 +29,9 @@
 
 with Glib; use Glib;
 
-package body Gdk.gl is
+package body Gdk.GL is
+
+   pragma Linker_Options ("-lgtkada_gl");
 
    -----------
    -- Query --
@@ -43,4 +45,4 @@ package body Gdk.gl is
       return Boolean'Val (Internal);
    end Query;
 
-end Gdk.gl;
+end Gdk.GL;
