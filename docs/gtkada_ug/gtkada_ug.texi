@@ -300,7 +300,7 @@ would do one of the following:
 @c ----------------------------------------------------------------------
 
 In addition to the full sources, the GtkAda package contains a lot of
-heavily commented examples. If you haven't visited those examples, we
+heavily commented examples. If you haven't been through those examples, we
 really recommend that you look at them and try to understand them, since
 they contain some examples of code that you might find interesting for
 your own application.
@@ -313,24 +313,24 @@ This directory contains an application that tests all the widgets in GtkAda.
 It gives you a quick overview of what can be found in the toolkit, as well
 as some detailed information on the widgets and their parameters.
 
-All the demos are associated with a contextual help that points to its
-aspects that are worth studying.
+Each demo is associated with contextual help pointing to aspects worth
+studying.
 
-It also contains an OpenGL demo if GtkAda was compiled with support for
+It also contains an OpenGL demo, if GtkAda was compiled with support for
 OpenGL.
 
 This program is far more extensive that its C counterpart, and the GtkAda
-team has added a lot of new examples in there.
+team has added a lot of new examples.
 
 @item @file{examples/} directory:
 
 This directory contains some small examples, unrelated to testgtk.  For
-instance, this is were you will find some sample XML files for
+instance, this is where you will find some sample XML files for
 @code{Gate} and @code{Dgate}, as well as some new widgets created
-directly in Ada, or examples on how to create your own callback
+directly in Ada, as examples of how to create your own callback
 marshallers.
 
-On the whole, these examples are a little more complex than testgtk, but
+On the whole these examples are a little more complex than testgtk but,
 since they focus on demonstrating a precise concept, they are still quite
 easy to understand.
 
@@ -398,7 +398,7 @@ switches (chosen to be compatible with the ones set by @code{gtk-config}):
 
 @subsection Windows systems
 
-Things are somewhat easier on windows systems. You don't have access to the
+Things are somewhat easier on Windows systems. You don't have access to the
 @code{gtkada-config} script. However, the good news is that you also don't
 have to specify which libraries to use or where to find them.
 
@@ -425,7 +425,7 @@ It is made of three libraries, @code{gtk}, @code{gdk} and @code{glib}.
 
 @code{Glib} is a non-graphical library, that includes support for lists,
 h-tables, threads, etc@dots{} It is a highly optimized,
-platform-independent library. Since most of its contents is already
+platform-independent library. Since most of its contents are already
 available in Ada (or in the @file{GNAT.*} hierarchy in the GNAT
 distribution), GtkAda does not include a binding to it, except for a few
 required packages. These are the @file{Glib.*} packages in the GtkAda
@@ -466,8 +466,8 @@ Although the packages have been evolving a lot since the first versions
 of GtkAda, the specs are stabilizing now. We will try as much as possible
 to provide backward compatibility whenever possible.
 
-Since GtkAda is based on gtk+, we have tried to stay as close as possible
-from it, while using high-level features of the Ada95 language. It is
+Since GtkAda is based on gtk+ we have tried to stay as close to it as possible
+while using high-level features of the Ada95 language. It is
 thus relatively easy to convert external examples from C to Ada.
 
 We have tried to adopt a consistent naming scheme for Ada identifiers:
@@ -527,13 +527,13 @@ All widgets in @code{GtkAda} are implemented as tagged types. They all have
 a common ancestor, called @code{Gtk.Object.Gtk_Object}. All visual objects
 have a common ancestor called @code{Gtk.Widget.Gtk_Widget}.
 
-The following table describes the list of objects, and their inheritance
+The following table describes the list of objects and their inheritance
 tree. As usual with tagged types, all the primitive subprograms defined
 for a type are also known for all of its children. This is a very
 powerful way to create new widgets, as will be explained in
 @ref{Creating new widgets in Ada}.
 
-Although gtk+ was written in C, its design is object-oriented, and thus
+Although gtk+ was written in C its design is object-oriented, and thus
 GtkAda has the same structure. The following rules have been applied to
 convert from C names to Ada names: a widget @code{Gtk_XXX} is defined in
 the Ada package @code{Gtk.XXX}, in the file @file{gtk-xxx.ads}. This
@@ -561,8 +561,8 @@ in the @file{testgtk/} directory in the GtkAda distribution.
 @c ----------------------------------------------------------------------
 
 @noindent
-Interfaces in GtkAda are built through layers, as in Motif.
-For instance, a typical dialog is basically a Gtk_Window, that in turns
+Interfaces in GtkAda are built in layers, as in Motif.
+For instance, a typical dialog is basically a Gtk_Window, that in turn
 contains a Gtk_Box, itself divided into two boxes and a Gtk_Separator,
 and so on.
 
@@ -572,37 +572,37 @@ and so on.
 
 Altough this may seem more complicated than setting absolute positions
 for children, this is the simplest way to automatically handle the
-resizing of windows. Each container that makes a layer knows how it
+resizing of windows. Each container that creates a layer knows how it
 should behave when it is resized, and how it should move its children.
-Thus almost everything is handled automatically, and you don't have
-anything to do to support resizing.
+Thus almost everything is handled automatically, and you don't have to do
+anything to support resizing.
 
-If you really insist on moving the children at a specific position, look
+If you really insist on moving the children to a specific position, look
 at the @code{Gtk_Fixed} widget and its demo in @file{testgtk/}. But you
-really should not use this container, since you then have to do
+really should not use this container, since you will then have to do
 everything by hand.
 
 All the containers are demonstrated in @file{testgtk/}, in the GtkAda
 distribution. This should help you understand all the parameters
 associated with the containers. It is very important to master these
-containers, since this ease the building of interfaces a lot if you
-use the appropriate one.
+containers, since using the appropriate containers will make building
+interfaces a lot easier.
 
 If you look at the widget hierarchy (@pxref{Widgets Hierarchy}),
 you can see that a Gtk_Window inherits from Gtk_Bin, and thus can have
 only one child. In most cases, the child of a Gtk_Window will thus
 be a Gtk_Box, which can have any number of children.
 
-Some widgets in GtkAda itself are built with this strategy, from the
+Some widgets in GtkAda itself are built using this strategy, from the
 very basic @code{Gtk_Button} to the more advanced
 @code{Gtk_File_Selection}.
 
-For example, a Gtk_Button contains a Gtk_Label by default, that displays the
-text in the button (like ``OK'' or ``Cancel'').
+For example, by default a Gtk_Button contains a Gtk_Label, which
+displays the text of the button (like ``OK'' or ``Cancel'').
 
 However, it is easy to put a pixmap in a button instead. When you
 create the button, do not specify any label. Thus, no child will be
-added, and you can give your own. See @file{testgtk/create_pixmap.adb}
+added, and you can give it your own. See @file{testgtk/create_pixmap.adb}
 for an example on how to do that.
 
 
@@ -617,16 +617,17 @@ application is done via signals. Most user actions on the graphical
 application trigger some signals to be @samp{emitted}. 
 
 A signal is a message that an object wants to broadcast. It is
-identified by its name, and each one is associated to certain events
-happening during the widget's life. For instance, when the user clicks on a
-Gtk_Button, a "clicked" signal is emitted by this button. More examples
-of signals can be found in the GtkAda reference manual.
+identified by its name, and each one is associated with certain events
+which happen during the widget's lifetime. For instance, when the user
+clicks on a Gtk_Button, a "clicked" signal is emitted by that
+button.More examples of signals can be found in the GtkAda reference
+manual.
 
-It is possible for the application to react to such events by
+It is possible to cause the application to react to such events by
 @samp{connecting} to a signal a special procedure called a
-@samp{handler} or @samp{callback}.  This handler will be called 
-every time that signal is emitted, giving a chance to the application to do
-any processing it needs. More than one handler can be connected to the
+@samp{handler} or @samp{callback}.  This handler will be called every
+time that signal is emitted, giving the application a chance to do any
+processing it needs. More than one handler can be connected to the
 same signal on the same object; the handlers are invoked in the order
 they were connected.
 
@@ -641,9 +642,9 @@ be documented there. That document explains when the signal is emitted,
 and the general form that handlers should have (although you can always add
 a User_Data is you wish).
 
-In the meanwhile, you can also look directly at the C header files,
+In the meantime, you can also look directly at the C header files,
 distributed with the gtk+ library. Each widget is described in its own C
-file, and has two C structures associated with it. One of them is the
+file and has two C structures associated with it. One of them is the
 ``class'' structure, and contains a series of pointers to
 functions. Each of these functions has the same name as the signal name.
 
@@ -664,7 +665,7 @@ For instance, consider the following extract from gtkbutton.h:
 This means that the Gtk_Button widget redefines five new signals, called
 respectively @code{"pressed"}, @code{"release"}, ...
 
-The profile of the handler can also be deducted from those pointers :
+The profile of the handler can also be deduced from those pointers:
 The handler has the same arguments, plus an optional User_Data parameter
 that can be used to pass any kind of data to the handler.  When the
 User_Data parameter is used, the value of this data is specified when
@@ -680,13 +681,13 @@ Therefore, the profile of a handler should look like:
 The callback does not need to use all the arguments. It is legal to use
 a procedure that "drops" some of the last arguments.
 The User_Data is a special case, since you decide at connection time whether
-you want it or not. If you decided to have it, then you callback must
+you want it or not. If you decided to have it then you callback must
 accept it, and this is checked by the compiler.
 
-Any number of arguments can be dropped, as long as those arguments are
-the last ones in the list, and that you keep the first one. For instance,
-the signal "button_press_event" signal normally can be connected to a
-handler with any of the following profile:
+Any number of arguments can be dropped as long as those arguments are
+the last ones in the list and you keep the first one. For instance,
+the signal "button_press_event" normally can be connected to a
+handler with any of the following profiles:
 
 @example
    --  with a user_data
@@ -703,15 +704,15 @@ handler with any of the following profile:
 @end example
 
 Beware that adding new arguments is not possible, since no value would
-be provided for them. When connecting a handler, GtkAda will not always
+be provided for them. When connecting a handler GtkAda will not always
 verify that your handler does not have more arguments than expected, so
 caution is recommended (it only does so if you use the @code{Gtk.Marshallers}
 package, see below).
 
 All the signal-handling work is performed by using the services provided
 by the Gtk.Handlers package. This package is completely self-documented,
-so please check the documentation on this package either in the GtkAda
-Reference Manual, or in the specifications themselves.
+so please check the documentation for this package either in the GtkAda
+Reference Manual or in the specifications themselves.
 
 Here is a commented example of how to use it; the complete example can
 be found in create_file_selection.adb (inside the testgtk/
@@ -728,8 +729,8 @@ called Gtk_File_Selection which can be used in this case:
 @end example
 
 When the "OK" button is pressed, the application needs to retrieve the
-file selected, and then close the dialog. All we need to know in that
-procedure in what widget to operate on. This can be achieved by the
+file selected and then close the dialog. All we need to know in that
+procedure is what widget to operate on. This can be achieved by the
 following handler:
 
 @need 3000
@@ -743,21 +744,21 @@ following handler:
    end Ok;
 @end smallexample
 
-We now need to connect the object we created in the first part, and this
+We now need to connect the object we created in the first part and this
 new callback we just defined. As documented in the reference manual,
 Gtk.Handlers defines four types of generic packages, depending on the
-arguments one expect in the callback, and whether the callback returns a
-value or not. Note that you can not choose arbitrarily to return a value,
+arguments one expects in the callback and whether the callback returns a
+value or not. Note that you can not arbitrarily choose to return a value,
 this depends on the signal, as explained above.
 
-In our case, since our callback does not return any value, and does not
+In our case, since our callback does not return any value and does not
 have any User_Data (ie we don't need to pass it extra values, defined
 at connection time), the appropriate package is Gtk.Handlers.Callback.
 
 We thus instantiate that package. Once again, remember that the generic
-packages in GtkAda need to be present at all time in memory, since they
+packages in GtkAda need to be present in memory at all time, since they
 take care of freeing the memory they are using when finished. They must
-be instantiated at library level, and not inside a subprogram.
+be instantiated at library level and not inside a subprogram.
 
 @example
    package Files_Cb is new 
@@ -769,16 +770,16 @@ of Connect subprograms than can be used to establish a permanent tie
 between a widget and a handler. It also provides a set of other
 subprograms which one can use to emit the signals manually, although
 most of the time the signals are simply emitted internally by GtkAda. We
-will not discuss this Emit_By_Name subprograms here.
+will not discuss the Emit_By_Name subprograms here.
 
-The general form of handlers as used in @code{Gtk.Handlers} expect some
-handlers that take two or three arguments, the widget on which the
+The general form of handler, as used in @code{Gtk.Handlers}, expects some
+handlers that take two or three arguments: the widget on which the
 signal was applied, an array of all the extra arguments sent internally
-by GtkAda, and possibly some user data given by the user when the
-connection was made.
+by GtkAda, and possibly some user data given when the connection was
+made.
 
-This is the most general form of handlers, and it covers all the possible
-cases. However, it also expects the user to extract manually the needed
+This is the most general form of handler and it covers all the possible
+cases. However, it also expects the user to manually extract the needed
 values from the array of arguments. This is not always the most convenient
 solution. This is why GtkAda provides a second package related to signals,
 @code{Gtk.Marshallers}.
@@ -786,9 +787,9 @@ solution. This is why GtkAda provides a second package related to signals,
 This package provides a set of functions that can be used as callbacks
 directly for GtkAda, and that will call your own handlers after extracting
 the required values from the array of arguments. Although this might sound
-a little bit complicated, this is in fact a really powerful mechanism, in fact
+a little bit complicated, this is in fact a very powerful mechanism, in fact
 similar to what is done internally by gtk+ in C. This does not add any
-overhead compared to C programs, since we do basically the same thing, but at
+overhead compared to C programs, since we do basically the same thing but at
 the Ada level.
 
 A set of functions @code{To_Marshaller} is found in every generic package
@@ -798,7 +799,7 @@ you want to call, and return a handler that can be used directly in
 
 The connection is then done with the following piece of code. Note that this
 can be done just after creating the widget, in the same block. As soon as it
-is created, a widget is ready to accept connection (although no signal will
+is created, a widget is ready to accept connections (although no signals will
 be emitted before the widget is shown on the screen).
 
 Note the two following things: we use @code{To_Marshaller} since our
@@ -885,21 +886,21 @@ the @code{Create_Window} procedure looks like
 @node General GTK documentation
 @chapter General GTK documentation
 
-This section describes briefly how to use the GTK toolset.
-It is here only until the GtkAda reference manual is fully completed, and
+This section briefly describes how to use the GTK toolset.
+It is only here until the GtkAda reference manual is fully completed, and
 documents some widgets that are not yet in the reference manual.
 You should preferably look at the reference manual for more information.
 
 The GTK toolkit is based on two lower level layers: GDK and Glib.  It is
-sometimes needed to call these layers directly. For a brief description of
-these packages, @ref{Description of the GDK hierarchy}.
+sometimes necessary to call these layers directly. For a brief
+description of these packages, @ref{Description of the GDK hierarchy}.
 
 Each widget is declared in a separate package.  The file, package and
 type names can be automatically retrieved from one another. For example,
 the type @code{Gtk_Text} is defined in the package @code{Gtk.Text} which
 is defined in the file @code{gtk-text.ads}.
 
-You may want to look at the sources themselves to find informations on a
+You may want to look at the sources themselves to find information on a
 specific widget.
 
 @menu
@@ -926,8 +927,8 @@ To manipulate text.
 
 End of line are marked by a @code{Ascii.LF}.  When the application
 modifies the text (using, e.g @code{Insert}), it can first freeze it
-(@code{Freeze}) to prevent any change from the user and any automatic
-update of the display, then unfreeze it (@code{Thaw}) to allow the user
+(@code{Freeze}) to prevent any changes by the user or any automatic
+update of the display, and then unfreeze it (@code{Thaw}) to allow the user
 to interact again.
 
 @example
@@ -1553,7 +1554,7 @@ Typically the code will look like:
 @node Resource files
 @chapter Resource files
 
-Resource files let you parametrize the aspect of the widgets of a GtkAda
+Resource files let you parametize aspects of the widgets in a GtkAda
 application without having to recompile it.
 
 A resource file needs to be loaded (@code{Gtk.Rc.Parse}) @var{before} setting
@@ -1611,15 +1612,16 @@ internal data structures as needed. This does not mean that two tasks can
 simultaneously access, for example, a single hash table, but they can access
 two different hash tables simultaneously. If two different tasks need to
 access the same hash table, the application is responsible for locking itself
-(by e.g using protected objects).
+(e.g by using protected objects).
 
-When Glib is initialized to be task-safe, GtkAda is task aware. There is a
-single global lock that you must acquire with Gdk.Threads.Enter before making
-any Gdk/Gtk call, and release with Gdk.Threads.Leave afterwards. 
+When Glib is initialized to be task-safe, GtkAda is task aware. There is
+a single global lock that you must acquire with Gdk.Threads.Enter before
+making any Gdk/Gtk call, and which you must release with
+Gdk.Threads.Leave afterwards. 
 
 Beware that the GtkAda main loop (Gtk.Main.Main) can only be be run inside
-one specific tasks. In other words, you cannot call Gtk.Main.Main from a
-different task that the one that started the outer level main loop.
+one specific tasks. In other words, you cannot call Gtk.Main.Main from
+any task other than the one that started the outer level main loop.
 
 Note that Gdk.Threads assumes that you are using a tasking run time that maps
 Ada tasks to native threads. For example under Linux with GNAT, you need to
@@ -1649,7 +1651,7 @@ A minimal main program for a tasking GtkAda application looks like:
 @end example
 
 Callbacks require a bit of attention. Callbacks from GtkAda (signals) are made
-within the GtkAda lock. However callbacks from Glib (timeouts, IO callbacks,
+within the GtkAda lock. However, callbacks from Glib (timeouts, IO callbacks,
 and idle functions) are made outside of the GtkAda lock. So, within a signal
 handler you do not need to call Gtk.Threads.Enter, but within the other types
 of callbacks, you do.
@@ -1675,18 +1677,18 @@ existing widgets or even create your own.
 @section General description of the tagged types
 
 @subsection Why should I use object-oriented programing ?
-Every widget in GtkAda is a tagged type, which has a number of
-primitive subprograms, that are known by all its children.
+Every widget in GtkAda is a tagged type and has a number of
+primitive subprograms which are known to all its children.
 
 This means that, as opposed to what you see in C code, you don't have
-(well most of the time you don't) to explictly cast types, and even
+(well most of the time you don't) to explictly cast types and, even
 when you have to, Ada always makes sure that the conversion is valid.
 
-Thus your programs are much safer, and most errors are found at compile
+Thus your programs are much safer and most errors are found at compile
 time, as is usually the case with Ada.
 
 For instance, if you create a table, put some widgets in it, and then,
-later in your program, try to access these widgets, then you do not need
+later in your program, try to access those widgets, then you do not need
 to know beforehand what their type is, when and by whom they were
 created, ... You simply ask for the children of the table, and you get
 in return a tagged type that contains all the information you need. You
@@ -1731,14 +1733,14 @@ was created automatically by gtk+. For instance, if you created a widget
 in Ada, put it in a table, and later on extracted it from the table, then you
 will still have the same widget.
 
-The second case above is twofold: if the widget was explictly created by you,
+There are two issues: if the widget was explictly created by you,
 or at least by GtkAda, then it will always be and remain associated with a
 correct Ada type.
 
 However, if the widget was created implicitly (for instance every time you
 create a Gtk_Button, a Gtk_Label is also created for the text displayed), then
-GtkAda is not, by default, able to create the corresponding Ada type. Instead,
-it will create a Gtk_Widget, and you will thus have to do some Uncheck_Cast
+GtkAda is not, by default, able to create the corresponding Ada type. Instead
+it will create a Gtk_Widget, and you will thus have to do an Uncheck_Cast
 to convert it back to the type you want and expect.
 
 In the third case (imported C widgets), GtkAda is not, by default, able to
@@ -1765,15 +1767,15 @@ widget to something else.
 
 However, 'with'ing this unit means that your application will depend on every
 package of GtkAda, which is a little bit heavier, and explains why this is not
-the default. We do recommend to use it if it is not extremely important for you
+the default. We do recommend you use it if it is not extremely important
 whether your application depends on all the packages of GtkAda.
 
 The case of imported C widgets is a little bit trickier. Since GtkAda does not
-know anything about them when it is build, it can't convert magically the C
+know anything about them when it is built, it can't magically convert the C
 widgets to Ada widgets. This is your job to teach GtkAda how to do the
 conversion.
 
-We thus provide a 'hook' function, that you need to modify. This function is
+We thus provide a 'hook' function which you need to modify. This function is
 defined in the package @b{Gtk.Type_Conversion}. It is a function that takes
 a string with the name of the C widget (ex/ "GtkButton"), and expects a newly
 allocated pointer in return. If you don't know this type either, simply
@@ -1783,10 +1785,10 @@ return @b{null}.
 @section Using tagged types to extend Gtk widgets
 
 Since version 0.6 of this toolkit, it is possible to associate your
-own data with existing widgets, simply by creating new types. This
+own data with existing widgets simply by creating new types. This
 section will show you a simple example, but you should rather read the
 source code in testgtk/ where we used this feature instead of using
-@code{user_data} as in the C version.
+@code{user_data} as is used in the C version.
 
 @example
 @c @group
@@ -1802,7 +1804,7 @@ source code in testgtk/ where we used this feature instead of using
 With the above statements, your new type is defined. Every function
 available for @code{Gtk_Button} is also available for @code{My_Button}.
 Of course, as with every tagged type in Ada, you can create your own
-primitive functions, with the following prototype:
+primitive functions with the following prototype:
 
 @example
 @c @group
@@ -1841,11 +1843,11 @@ Creating new widgets is a way to create reuseable components. You can
 apply to them the same functions as would for any other widget, such as
 Show, Hide, ...
 
-This section will present how to create two types of widgets, composite
+This section will explain how to create two types of widgets: composite
 widgets and widgets created from scratch. Two examples are provided with
 GtkAda, in the directories @file{examples/composite_widget} and
 @file{examples/base_widget}. Please also refer to the gtk+ tutorial,
-that describes the basic mechanisms that you need to know to create
+which describes the basic mechanisms that you need to know to create
 a widget (even if the Ada code is really different from the C code...)
 
 @menu
@@ -1856,13 +1858,13 @@ a widget (even if the Ada code is really different from the C code...)
 @node Creating composite widgets
 @subsection Creating composite widgets
 
-A composite widget is a widget that does not do much by itself. This is
-more a collection of subwidgets, grouped into a more general entity.
-For instance, among the standard widgets, @code{Gtk_File_Selection}
-and @code{Gtk_Font_Selection} belong to this category.
+A composite widget is a widget that does not do much by itself. Rather,
+this is a collection of subwidgets grouped into a more general entity.
+For instance, among the standard widgets, @code{Gtk_File_Selection} and
+@code{Gtk_Font_Selection} belong to this category.
 
 The good news is that there is nothing special to know. Just create a
-new tagged type, that extends one of the standard widgets (or even another
+new tagged type, extending one of the standard widgets (or even another
 of your own widgets), provide a @code{Gtk_New} function that allocates
 memory for this widget, and call the @code{Initialize} function that does
 the actual creation of the widget and the subwidgets.
@@ -1871,21 +1873,21 @@ parent class's @code{Initialize} function, to create the underlying C
 widget.
 
 The example directory @file{examples/composite_widget} reimplements the
-@code{Gtk_Dialog} widget as was written in C by the creators of gtk+.
+@code{Gtk_Dialog} widget as written in C by the creators of gtk+.
 
 @node Creating widgets from scratch
 @subsection Creating widgets from scratch
 
 First, an important note: please do not read this if this is your first
-time using GtkAda, or if you don't really understand the signal mechanism.
+time using GtkAda or if you don't really understand the signal mechanism.
 Creating a nice and working widget really takes a lot of messing with the
 low level signals.
 
 Creating a widget from scratch is what you want to do if your widget should
 be drawn in a special way, should create and emit new signals, ...
-The example we give in @file{examples/base_widget} is a small target, on
+The example we give in @file{examples/base_widget} is a small target on
 which the user can click, and that sends one of two signals "bullseye" or
-"missed" depending on where the user has clicked.
+"missed", depending on where the user has clicked.
 
 Once again, the only two functions that you must create are @code{Gtk_New}
 and @code{Initialize}.
@@ -1910,7 +1912,7 @@ arguments:
 @item Widget
 This is the widget that you want to initialize
 @item Signals
-This is an array of string access that contains the name of the signals
+This is an array of string access containing the name of the signals
 you want to create. For instance, you could create Signals with
 @example
    Signals      : Gtk.Object.Signal_Array (0 .. 1) :=
@@ -1920,7 +1922,7 @@ you want to create. For instance, you could create Signals with
 This will create two signals, named "bullseye" and "missed", whose callbacks
 do not take any argument (apart from the usual user's data). This is the only
 restriction from GtkAda compared to gtk+: all the callbacks are created
-automatically, but you can not specify additionnal parameters that are sent
+automatically, but you can not specify additional parameters to be sent
 automatically by GtkAda.
 
 @item Class_Record
@@ -1928,7 +1930,7 @@ Every widget in C is associated with two records. The first one, which exists
 only once per widget type, is the ``class record''. It contains the list of
 signals that are known by this widget type, the list of default callbacks for
 the signals, ...; the second record is an ``instance record'', which contains
-each instance specific data.
+data specific to a particular instance.
 In GtkAda, the ``instance record'' is simply your tagged type and its fields.
 The call to @code{Initialize_Class_Record} is provided to initialize the
 ``class record''. As we said, there should be only one such record per widget
@@ -1951,14 +1953,14 @@ This callback is passed one parameter, as in :
       (Widget      : @b{access} My_Widget_Record;
        Requisition : @b{in out} Gtk.Widget.Gtk_Requisition);
 @end example
-This function should modify Requisition to specify what would be the
-ideal size of the widget. This might not be the exact size that will be
-set, since some containers might decide to enlarge or to shrink it.
+This function should modify Requisition to specify the widget's ideal
+size. This might not be the exact size that will be set, since some
+containers might decide to enlarge or to shrink it.
 
 @item "size_allocate"
 
 This callback is called every time the widget is moved in its parent
-window, or is resize. It is passed one paramater, as in :
+window, or it is resized. It is passed one paramater, as in :
 @example
    @b{procedure} Size_Allocate
       (Widget     : @b{access} My_Widget_Record;
@@ -1969,10 +1971,9 @@ for instance @code{Gdk.Window.Move_Resize}.
 
 @item "expose_event"
 
-This callback is called every time the widget needs to be redrawn.
-It is passed one parameter, the area that is necessary to be redrawn (to
-speed things up, you don't need to redraw the whole widget, just this
-area).
+This callback is called every time the widget needs to be redrawn. It
+is passed one parameter, the area to be redrawn (to speed things up, you
+don't need to redraw the whole widget, just this area).
 
 @end itemize
 
@@ -1981,44 +1982,44 @@ area).
 @chapter Support for Glade, the Gtk GUI builder
 
 @section Introduction
-GtkAda now comes with a support for the GUI builder Glade (this is not
+GtkAda now comes with support for the GUI builder Glade (this is not
 the glade released with Gnat for distributed systems).
-Using Glade itself is straightforward: it is an intuitive click and point
-GUI builder. The main difference with other builders is that since GtkAda
+Using Glade itself is straightforward: it is an intuitive point and click
+GUI builder. The main difference from other builders is that, since GtkAda
 builds a UI with blocks by default, you will not be asked to set the size and
 position of your windows by default. If you are looking for this kind of
-interaction, you should consider using the Gtk_Fixed container. Please
-read the GtkAda reference manual before considering using Gtk_Fixed however.
+interaction you should consider using the Gtk_Fixed container. However, please
+read the GtkAda reference manual before considering using Gtk_Fixed.
 
 @section Using Glade
-Note that we only recommend to use version 0.5.5 of Glade, as some previous
-versions are not compatible. Using this version, you can directly create Ada
-files from Glade by selecting Ada95 as the language in the project options.
+Note that we only recommend using version 0.5.5 of Glade, as some previous
+versions are not compatible. Using this version you can directly create Ada
+files from Glade by selecting Ada95 as the language under project options.
 By doing so, you will tell Glade to call Gate internally when using the
 ``Write Source Code'' functionality.
-Glade saves your interface in a project file whose syntax is XML based. In
-the following sections, we will refer to this file indifferently as
-``the XML file'' or ``the project file''.
+Glade saves your interface in a project file whose syntax is XML
+based. In the following sections, we will refer to this file as either
+``the XML file'' or ``the project file'' interchangeably.
 
 @section Gate
 @subsection Invoking Gate
 Gate is the static version of our support. This tool
-takes the Glade XML file in argument and generates a set of Ada files that,
+takes the Glade XML file as an argument and generates a set of Ada files that,
 when compiled, will recreate the interface you just designed with Glade.
-To invoke it, simply call gate will a Glade project file, this will generate
-Ada files in the directory set in the ``Source Directory'' project option,
-or in the current directory otherwise.
+To invoke it, simply call gate will a Glade project file This will generate
+Ada files in the directory set as the ``Source Directory'' project option,
+or otherwise in the current working directory.
 
 @subsection Structure of the generated files
 @subsubsection The main file
 The main file is the name of the program name specified in the XML Glade file:
-@code{<program name>.adb}. It contains initialization and creation code of
+@code{<program name>.adb}. It contains initialization and creation code for
 each top level widget contained in the XML file. This is intended as a
 convenient default to visualize your GUI, but you will usually want to modify
 this initialization.
 
 @subsubsection Top level widget files
-In each top level widget, Gate will generate a package
+For each top level widget, Gate will generate a package
 @code{<widget>_Pkg.Callbacks} in the files @code{<widget_pkg-callbacks.ads} and
 @code{.adb}. These packages contain all the GtkAda calls needed to create the
 widgets you designed within Glade. You will usually not need to modify these
@@ -2030,25 +2031,25 @@ package instantiations needed by your application. You will usually not need
 to modify it.
 
 @subsubsection Top level widget signal files
-These are the most important files created by Gate. They are called
+These are the most important files created by Gate. Each is called
 @code{<widget_name>_pkg-callbacks.adb}.
 They contain stubs for all the callbacks related to a top level widget
 you declared in Glade. With the main file, this the only files you should modify
-yourself. Note that it is recommended to structure your application so that
+yourself. Note that it is recommended that you structure your application such that
 the real code is put in separate packages (i.e not generated files) as much
 as possible, to avoid potential merging problems when your interface is
 significantly changed within Glade. See next section for more details.
 
-Currently, Gate will generate callback stubs procedures that can
+Currently, Gate will generate callback stub procedures that can
 handle the expected number of arguments for each signal. This is done using
 a relatively low level mechanism explained in the reference manual
 (package Gtk.Handlers). Basically, callbacks expecting arguments will take
-a Gtk_Argument as the only parameter, and Gate will generate the appropriate
+a Gtk_Argument as their only parameter, and Gate will generate the appropriate
 variable declaration and conversion calls to provide the expected GtkAda
 arguments. You should not modify this code by hand unless you know what
 you are doing.
 
-for example, given a signal @code{delete_event}, Gate will generate the
+For example, given a signal @code{delete_event}, Gate will generate the
 following procedure body, giving access to the arguments of this callback:
 a @code{Gtk_Window_Record} (Object) and a @code{Gdk_Event} (Arg1)
 
@@ -2063,9 +2064,9 @@ a @code{Gtk_Window_Record} (Object) and a @code{Gdk_Event} (Arg1)
    @b{end} On_Main_Window_Delete_Event;
 @end example
 
-The only limitation is that currently Gate does not handle callbacks that
+The only limitation is that currently Gate does not handle callbacks which
 return values, which means that you have to modify the code by hand. This
-limitation should howver be fixed in future versions of GtkAda.
+limitation should however be fixed in future versions of GtkAda.
 
 @subsection Modifying generated files
 Note that you can easily go back to Glade any time, modify your interface,
@@ -2074,10 +2075,10 @@ kept in the new files. For that, Gate creates a directory @code{.gate} in the
 current directory. Please do not delete it if you want Gate to be able to
 keep your changes from one version to the next.
 
-Also note that to be able to keep track of your modifications, gate
-relies on @code{patch} and @code{diff} being available on your system.
-If you don't have a working set of @code{diff/patch}, @code{configure}
-will simply replace them by null operations, which means that regeneration of
+Also note that to keep track of your modifications, gate relies on
+@code{patch} and @code{diff} being available on your system. If you
+don't have a working set of @code{diff/patch}, @code{configure} will
+simply replace them by null operations, which means that regenerated
 files will override the previous ones.
 
 Under Win32 based systems, GtkAda now comes with a set of unix-like tools
@@ -2124,12 +2125,12 @@ This procedure associates a given Genrate procedure with a given widget name
 @subsection Introduction to Dgate
 Dgate is the dynamic version of our support. This is an Ada program that takes
 the XML file in argument. It also provides default callbacks for your
-application, we recommand using it while you are trying to design your
-interface, to get a rapid look and feel of your GUI without having to compile
-files.
+application. We recommand using it while you are trying to design your
+interface to get a rapid look and feel of your GUI without having to compile
+any files.
 
 @subsection Using Dgate
-As for Gate you can simply invoke Dgate by specifying a Glade project file.
+As with Gate you can simply invoke Dgate by specifying a Glade project file.
 Note that Dgate is actually a very simple GtkAda application that takes
 advantage of powerful features of GtkAda: the ability to dynamically create
 widgets given a XML specification from a file or memory.
@@ -2146,7 +2147,7 @@ widgets given a XML specification from a file or memory.
 
 @section Limitations
 Gate and Dgate currently support all Gtk+ widgets and properties available
-under Glade. But to help you identify widgets that may not be supported (e.g
+under Glade. But, to help you identify widgets that may not be supported (e.g
 Gnome widgets), Gate will generate a warning on the standard error:
 
 @smallexample
@@ -2164,17 +2165,17 @@ and add a comment in the @code{<widget>_pkg.adb} file that looks like:
 --  WARNING: Unsupported widget GnomeCanvas (canvas1)
 @end smallexample
 
-Which means that while generating the file, Gate detected an unsupported
+This means that while generating the file Gate detected an unsupported
 widget (in this case GnomeCanvas) whose name is canvas1.
-If you get such warnings, your file may or may not compile properly, but
+If you get such a warning your file may or may not compile properly, but
 you won't get the complete widget hierarchy at run time.
 
 Feel free to send us (see @ref{How to report bugs}) the XML file that
 causes this problem. We don't guarantee a rapid fix for each particular
-problem, but receiving real examples of missing functionnalities will
+problem but receiving real examples of missing functionnalities will
 certainly help implementing them faster.
 
-Similarly, Dgate generates a warning to the standard error when encountering
+Similarly, Dgate generates a warning to standard error when encountering
 an unsupported widget:
 
 @smallexample
@@ -2189,8 +2190,8 @@ you may still find bugs while using it. We have tried to test it as much
 as possible, essentially by converting the testgtk.c file found in the gtk
 distribution, as well as with generating a significant number of interfaces
 using the GUI builder and Gate.
-We strongly suggest to have a look at the testgtk, which gives
-a lot of examples on how to use this toolkit.
+We strongly suggest that you have a look at testgtk, which gives
+a lot of examples of how to use this toolkit.
 
 There are two kinds of problems you can encounter:
 @itemize @bullet
@@ -2220,34 +2221,34 @@ $ gdb <your_program_name>
 
 @item In  some  (hopefully) rare cases,   you can even get a  segmentation
 fault within gtk.  That means there is definitly something wrong either
-in your program or in the toolkit.  Please check your program carefully,
-and if you think this is a problem in GtkAda itself, send us an e-mail.
+in your program or in the toolkit.  Please check your program carefully
+and, if you think this is a problem in GtkAda itself, send us an e-mail.
 @end itemize
 
-If you are a supported user of GNAT, send a mail to
-@uref{mailto:report@@gnat.com} to report errors, otherwise send a mail to the
-authors (@uref{mailto:gtkada@@ada.eu.org}) explaining exactly what your
-are  doing,  what  is  the  expected  result  and  what  you  actually
-get. Please include the required sources to reproduce the problem, in
-a  format usable  by @code{gnatchop}  (basically, insert  all  the required
-sources at  the end of  the mail). Please  try to provide a  subset of
-your sources as small as possible.
+If you are a supported user of GNAT, send mail to
+@uref{mailto:report@@gnat.com} to report errors, otherwise send mail
+to the authors (@uref{mailto:gtkada@@ada.eu.org}) explaining exactly
+what your are  doing,  what  is  the  expected  result  and  what  you
+actually get. Please include the required sources to reproduce the
+problem, in a  format usable  by @code{gnatchop}  (basically, insert
+all  the required sources at  the end of  the mail). Please  try to
+provide as small as possible a  subset of your sources.
 
 Of course, we will  welcome any patch   you can provide, so  that this
-toolkit is as useful as possible.
+toolkit may be as useful as possible.
 
 @c --------------------------------------------------------------
 @node Bibliography
 @chapter Bibliography
 
 We recommand the following documents. Most of them were written with C
-in mind, but should be easily adapted most of the time after you read
-the rest of this document.
+in mind, but should be easily adapted after you've read the rest of
+this document.
 
 @itemize @bullet
 @item [1] "Gtk+/Gome Application Development" -- Havoc Pennington
 This book, by one of the main authors of the the GNOME environment,
-describes in detail some of the inner mechanism of gtk+, including the
+describes in detail some of the inner mechanisms of gtk+, including
 signal handling, and a complete description of all the widgets and all
 the events found in @code{Gdk.Event}.
 
