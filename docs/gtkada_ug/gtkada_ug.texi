@@ -55,7 +55,6 @@ unmodified in any copy.
 * Description of the GDK hierarchy::
 * Description of the Glib hierarchy::
 * Resource files::
-* Creating and Binding new widgets::
 * Threads::
 * How to report bugs::
 * Object-oriented features::
@@ -75,9 +74,6 @@ Getting started with GtkAda
 
 General GTK documentation
 
-* Package Gtk.Handlers - connecting callbacks::
-* Package Gtk.Scrollbar::
-* Package Gtk.Drawing_Area::
 * Package Gtk.Text::
 * Package Gtk.Table::
 * Package Gtk.Scrolled_Window::
@@ -497,7 +493,7 @@ The following table described the list of objects, and their inheritance
 tree. As usual with tagged types, all the primitive subprograms defined
 for a type are also known for all of its children. This is a very
 powerful way to create new widgets, as will be explained in
-@ref{Creating and Binding new widgets}.
+@ref{Creating new widgets in Ada}.
 
 Although gtk+ was written in C, its design is object-oriented, and thus
 GtkAda has the same structure. The following rules have been applied to
@@ -891,9 +887,6 @@ You may want to look at the sources themselves to find informations on a
 specific widget.
 
 @menu
-* Package Gtk.Handlers - connecting callbacks::
-* Package Gtk.Scrollbar::
-* Package Gtk.Drawing_Area::
 * Package Gtk.Text::
 * Package Gtk.Table::
 * Package Gtk.Scrolled_Window::
@@ -902,317 +895,6 @@ specific widget.
 * Package Gtk.File_Selection::
 * Package Gtk.Enums::
 @end menu
-
-@c ----------------------------------------------------------------------
-@node Package Gtk.Handlers - connecting callbacks
-@section Package Gtk.Handlers - connecting callbacks
-@c ----------------------------------------------------------------------
-
-@noindent
-This section describes three of the generic packages provided by
-@code{Gtk.Signal}.
-You can connect as many callback per signal and widgets as needed.
-For a given widget and signal, the various callbacks will be executed
-in the order in which they have been connected.
-
-On the other hand, a same callback routine can be connected to several
-widgets and signals.
-The @code{Connect} function returns an integer (@code{Glib.Guint}) that
-identifies the connection, allowing you to destroy it later by giving
-this identifier and the appropriate widget.
-It is also possible to destroy all the connections to a widget.
-
-The first package (@code{Void_Callback}) provides a way to create callbacks
-that have no specific parameter other than the emitting widget:
-@example
-@c @group
-@c @cartouche
-@b{generic}
-   @b{type} Base_Type @b{is} new Gtk.Object.Gtk_Object_Record @b{with} @b{private};
-
-@b{package} Void_Callback @b{is}
-
-   @b{type} Callback @b{is} @b{access} @b{procedure} (Widget : @b{access} Base_Type);
-
-   @b{function} Connect
-     (Obj    : @b{access} Base_Type'Class;
-      Name   : @b{in} String;
-      Func   : @b{in} Callback;
-      After  : @b{in} Boolean := False)
-      @b{return} Guint;
-@b{end} Void_Callback;
-@c @end cartouche
-@c @end group
-@end example
-
-The callback procedure that can be connected with the @code{Connect} function
-must follow the profile defined by the @code{Callback} type.
-The object parameter will be the widget that emitted the signal.
-For the @code{Connect} function, the parameters are:
-
-@itemize @bullet
-@item [Obj] The widget associated with the signal,
-@item [Name] The signal name (@code{"clicked", "destroy", "delete_event"}, @dots{}),
-@item [Func] A pointer to the callback routine,
-@item [After] Indicates whether the callback should be executed before or after
- the widget's automatic class behavior.
-@end itemize
-
-The second package (@code{Callback}) whose callbacks accept an additional
-data dynamically allocated during the call to @code{Connect} and whose
-initial value is set by the @code{Func_Data} parameter
-
-@example
-@c @group
-@c @cartouche
-@b{generic}
-   @b{type} Base_Type @b{is new} Gtk.Object.Gtk_Object_Record @b{with private};
-
-   @b{type} Data_Type (<>) @b{is private};
-   --  The type of the data for the callback
-   --  This type need not be an access type (as opposed as what
-   --  happens in C). A new access is created by the connect function.
-
-@b{package} Callback @b{is}
-
-   @b{type} Callback @b{is access procedure}
-     (Widget : @b{access} Base_Type;
-      Data   : @b{in} Data_Type);
-   --  Callback function for Signal_Connect below
-
-   @b{function} Connect
-     (Obj       : @b{access} Base_Type'@b{Class};
-      Name      : @b{in} String;
-      Func      : @b{in} Callback;
-      Func_Data : @b{in} Data_Type;
-      After     : @b{in} Boolean := False)
-      @b{return} Guint;
-@b{end} Callback;
-@c @end cartouche
-@c @end group
-@end example
-
-The last package @code{Object_Callback}
-provides callbacks that can be connected to any kind of widget.
-(the @code{Obj} parameter can be any kind of object),
-but the callback parameter, as for previous packages will still have to
-be the same as the one specified during the instanciation.
-
-At run time, the callback will get the widget parameter
-@code{Slot_Object} that has been given to @code{Connect}.
-
-This is for example useful when you need to handle a button click
-depending on the window that contains the button instead of the button itself.
-
-@example
-@c @group
-@c @cartouche
-@b{generic}
-   @b{type} Base_Type @b{is new} Gtk.Object.Gtk_Object_Record @b{with private};
-
-@b{package} Object_Callback @b{is}
-   @b{type} Callback @b{is access procedure} (Object : @b{access} Base_Type);
-
-   @b{function} Connect
-     (Obj         : @b{access} Gtk.Object.Gtk_Object_Record'@b{Class};
-      Name        : @b{in} String;
-      Func        : @b{in} Callback;
-      Slot_Object : @b{access} Base_Type'@b{Class};
-      After       : @b{in} Boolean := False)
-      @b{return} Guint;
-@b{end} Object_Callback;
-@c @end cartouche
-@c @end group
-@end example
-
-Here a sample code extracted from a text editor that corresponds to the
-text loading operation.
-The @code{Callbacks.Load} procedure is a callback executed when the user
-clicks on the ``Load'' button. This callback will create the file selection
-window (@code{Gtk_File_Selection}) and make it modal to force the user to
-select a file before continuing to work.
-When the user clicks on the ``Ok'' button of the file selection window,
-the @code{Callbacks.Ok} procedure is called with the parameter selection
-window.
-
-@smallexample
-@b{with} Gtk.Button;
-@b{package} Callbacks @b{is}
-
-   @b{procedure} Load (Widget : @b{in out} Gtk.Button.Gtk_Button);
-   --  Callback for the ``Load'' button of the text editor
-
-@b{end} Callbacks;
-
-@b{with} Gtk.Signal, Gtk.Window, Gtk.Main;
-@b{with} Gtk.Widget, Gtk.File_Selection, Glib;
-@b{with} Editor;
-
-@b{package body} Callbacks @b{is}
-
-   @b{package} Files_Cb @b{is new} Gtk.Signal.Object_Callback
-     (Gtk.File_Selection.Gtk_File_Selection);
-
-   --  A callback of type File_Cb.Callback corresponding to the
-   --  Cancel button of the file selection window.
-
-   @b{procedure} Cancel
-     (Files : @b{access} Gtk.File_Selection.Gtk_File_Selection_Record) @b{is}
-   @b{begin}
-      --  Hide the file selection window
-
-      Gtk.File_Selection.Hide (Files);
-
-      --  This window is no longer modal
-
-      Gtk.Main.Grab_Remove (Files);
-   @b{end} Cancel;
-
-   -- A callback of type File_Cb.Callback corresponding to the ``OK''
-   -- button of the file selection window.
-
-   @b{procedure} Ok
-     (Files : @b{access} Gtk.File_Selection.Gtk_File_Selection_Record) @b{is}
-   @b{begin}
-      Editor.Load (Gtk.File_Selection.Get_Filename (Files));
-      Gtk.File_Selection.Hide (Files);
-      Gtk.Main.Grab_Remove (Files);
-   @b{end} Ok;
-
-   -- Internal procedure to initialize a Gtk_File_Selection
-
-   @b{procedure} Initialize_File_Selection
-     (Files : @b{access} Gtk.File_Selection.Gtk_File_Selection_Record;
-      Label : String;
-      OK_CB : Files_Cb.Callback)
-   @b{is}
-      Cb_Id : Glib.Guint;
-   @b{begin}
-      Gtk.File_Selection.Gtk_New (Files, Label);
-
-      --  Hide the create/remove buttons
-
-      Gtk.File_Selection.Hide_Fileop_Buttons (Files);
-      Cb_Id := Files_Cb.Connect (
-         Obj         => Gtk.File_Selection.Get_Ok_Button (Files),
-         --  The signal applies to the OK button
-
-         Name        => "clicked", -- Event to detect
-         Func        => OK_CB,     -- Callback procedure
-         Slot_Object => Files);    -- Parameter given to the callback
-
-      Cb_Id := Files_Cb.Connect (
-         Obj         => Gtk.File_Selection.Get_Cancel_Button (Files),
-         Name        => "clicked",
-         Func        => Cancel'access,
-         Slot_Object => Files);
-   @b{end} Initialize_File_Selection;
-
-   -- The file selection window
-
-   Input_File_Sel : Gtk.File_Selection.Gtk_File_Selection;
-   Input_File_Sel_Existe : Boolean := False;
-
-   -- The ``Load'' callback body
-
-   @b{procedure} Load (Widget : @b{access} Gtk.Button.Gtk_Button_Record) @b{is}
-   @b{begin}
-      @b{if not} Input_File_Sel_Existe @b{then}
-         Initialize_File_Selection
-           (Input_File_Sel, "File to load ?", OK'Access);
-         Input_File_Sel_Existe := True;
-      @b{end if};
-
-      Gtk.Main.Grab_Add (Input_File_Sel);
-
-      --  Show the file selection window
-
-      Gtk.File_Selection.Show (Input_File_Sel);
-   @b{end} Load;
-
-@b{end} Callbacks;
-@c @end cartouche
-@c @end group
-@end smallexample
-
-Two procedures to destroy a specific or any connection.
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Disconnect
-  (Object     : @b{access} Gtk.Object.Gtk_Object_Record'@b{Class};
-   Handler_Id : @b{in} Guint);
-
-@b{procedure} Handlers_Destroy
-  (Obj : @b{access} Object.Gtk_Object_Record'@b{Class});
-@c @end cartouche
-@c @end group
-@end example
-
-@node Package Gtk.Scrollbar
-@section Package Gtk.Scrollbar
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Scrollbar_Record @b{is new} Gtk.GRange.Gtk_Range_Record @b{with private};
-@b{type} Gtk_Scrollbar @b{is access all} Gtk_Scrollbar_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-Horizontal or vertical scrollbars that can be associated with the
-@code{Widget} you want to scroll using
-@code{Adjustment} (see, eg @code{Gtk.Text.Get_Vadj}).
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Gtk_New_Hscrollbar
-  (Widget     : @b{out} Gtk_Scrollbar;
-   Adjustment : @b{in} Gtk.Adjustment.Gtk_Adjustment);
-
-@b{procedure} Gtk_New_Vscrollbar
-  (Widget     : @b{out} Gtk_Scrollbar;
-   Adjustment : @b{in} Gtk.Adjustment.Gtk_Adjustment);
-@c @end cartouche
-@c @end group
-@end example
-
-@node Package Gtk.Drawing_Area
-@section Package Gtk.Drawing_Area
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Drawing_Area_Record @b{is new} Gtk.Widget.Gtk_Widget_Record
-  @b{with private};
-@b{type} Gtk_Drawing_Area @b{is access all} Gtk_Drawing_Area_Record'@b{Class};
-
-@b{procedure} Gtk_New (Widget : @b{out} Gtk_Drawing_Area);
-@b{procedure} Size
-  (Darea  : @b{access} Gtk_Drawing_Area_Record;
-   Width  : @b{in} Glib.Gint;
-   Height : @b{in} Glib.Gint);
-@c @end cartouche
-@c @end group
-@end example
-
-You can get the @code{Gdk_Window} associated with a widget to draw in it
-using the GDK primitives of @code{Gdk_Drawable} which is a @code{subtype}
-of @code{Gdk_Window}, see the GDK section.
-
-This window exists only when the widget is actually realized, e.g after the
-call to @code{Realize} or @code{Show} of the @code{Gtk_Drawing_Area}.
-
-It is possible to draw in the initialization procedure after the procedure
-@code{Show} or when the @code{Gtk.Main.Main} loop is running,
-on the @code{"configure_event"} signal.
-
-A @code{Gtk_Drawing_Area} is a very low level object,
-in particular when it is hidden by another window and then exposed, it
-is not redrawn automatically. It is up to the application to handle the
-expose event, by connecting a callback on the
-@code{"expose_event"} signal.
 
 @node Package Gtk.Text
 @section Package Gtk.Text
@@ -2028,70 +1710,6 @@ style "text"
 widget_class "*GtkText" style "text"
 @end example
 
-
-@node Creating and Binding new widgets
-@chapter Creating and Binding new widgets
-
-New since version 0.6, GtkAda has now a basic support for creating new
-widgets directly in Ada (although you can't create your own signals
-yet, we are still working on it).
-
-Since GtkAda has an object oriented conception (well, at least you can
-program by extension), it is easy, if you want to associate your
-own data with a widget, to create your own type. See the
-examples below. You should also have a look at the @code{testgtk/}
- directory.
-
-We provide a Perl script to help you create a binding to a C widget
-(this is the script we have used ourselves).  This will not fully
-automate the process, although it should really speed things up. You
-will probably need less than 15 min to create a new binding once you
-will get used to the way GtkAda works. Note that your C file should have
-the same format as the one used by Gtk+ itself, as far as indentation
-and style are concerned.
-
-Here are the steps to create a new binding:
-
-@itemize @bullet
-@item Give the @code{generate.pl} script the C header file
-
-@item The perl script should ask you for every field in the C structure if
-you want to create a function to make it accessible from Ada. Answer
-@var{y} or @var{n} (the default value is @var{n}, just press ENTER).
-
-@example
-@c @group
-@c @cartouche
-$ perl generate.pl ../include/gtk/gtkbutton.h > temporary
-  Create a function for the field child (of type GtkWidget*) [n]?
-  Create a function for the field in_button (of type guint) [n]?
-  Create a function for the field button_down (of type guint) [n]?
-@c @end cartouche
-@c @end group
-@end example
-
-@item If you answered yes to at least one of the above questions, create a
-new C file, and move the C part of the @var{temporary} file created by
-generate.pl to this C file.
-
-@item Do a gnatchop on the @var{temporary} file created by generate.pl, after
-deleting the C part from above.
-
-@example
-@c @group
-@c @cartouche
-$ gnatchop temporary
-@c @end cartouche
-@c @end group
-@end example
-
-This should create two Ada files (specification and body)
-
-@item Edit these two files if needed (to change some parameters
-  from Gint to Boolean for instance). It can be a little bit tricky
-  when one of your functions returns a GList* or a GSList*. Please have
-  a look at gtk-combo.ads for examples how to do this.
-@end itemize
 
 @node Threads
 @chapter Threads
