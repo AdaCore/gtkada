@@ -196,7 +196,7 @@ package Gtk.Dialog is
    --  is returned. Otherwise, the response_id from the "response" signal is
    --  returned.
    --  Run will call Show on the dialog automatically. However, it is your
-   --  responsability to call Show for anyu child you have inserted in the
+   --  responsability to call Show for any child you have inserted in the
    --  dialog.
    --  The dialog is automatically set to modal when this function is
    --  called. You can exit at any time from this function by emitting the
