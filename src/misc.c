@@ -73,7 +73,8 @@ ada_initialize_class_record (GtkObject*  object,
   else
     {
       int i;
-      guint signals_id [nsignals];
+      guint *signals_id = malloc (nsignals * sizeof (guint));
+
       /* Right now, object->klass points to the ancestor's class */
       GtkObjectClass* ancestor = (GtkObjectClass*)(object->klass);
 
@@ -112,6 +113,7 @@ ada_initialize_class_record (GtkObject*  object,
 	      nsignals * sizeof (void*));
 
       g_free (query);
+      free (signals_id);
       return object->klass;
     }
 }
