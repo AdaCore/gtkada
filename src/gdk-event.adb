@@ -26,6 +26,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Interfaces.C;
+with Interfaces.C.Strings;
+
 package body Gdk.Event is
 
 
@@ -436,5 +439,50 @@ package body Gdk.Event is
    begin
       return Internal (Get_Object (Event));
    end Get_Y;
+
+   -----------------
+   --  Get_State  --
+   -----------------
+
+   function Get_State (Event : in Gdk_Event_Key) return Gdk_Modifier_Type is
+      function Internal (Event : in System.Address) return Gdk_Modifier_Type;
+      pragma Import (C, Internal, "ada_gdk_event_key_get_state");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_State;
+
+   -------------------
+   --  Get_Key_Val  --
+   -------------------
+
+   function Get_Key_Val (Event : in Gdk_Event_Key) return Gdk_Key_Type is
+      function Internal (Event : in System.Address) return Gdk_Key_Type;
+      pragma Import (C, Internal, "ada_gdk_event_key_get_key_val");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Key_Val;
+
+   ------------------
+   --  Get_Length  --
+   ------------------
+
+   function Get_Length (Event : in Gdk_Event_Key) return Gint is
+      function Internal (Event : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_key_get_length");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Length;
+
+   -----------------
+   --  Get_String  --
+   -----------------
+
+   function Get_String (Event : in Gdk_Event_Key) return String is
+      function Internal (Event : in System.Address)
+                         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "ada_gdk_event_key_get_string");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Event)));
+   end Get_String;
 
 end Gdk.Event;

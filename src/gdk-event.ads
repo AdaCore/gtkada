@@ -79,6 +79,21 @@ package Gdk.Event is
 
    procedure Send_Client_Message_To_All (Event : in Gdk_Event);
 
+
+   ---------------------
+   --  Gdk_Event_Key  --
+   ---------------------
+ 
+   type Gdk_Event_Key is new Gdk_Event with private;
+ 
+   function Get_State (Event : in Gdk_Event_Key) return Gdk_Modifier_Type;
+ 
+   function Get_Key_Val (Event : in Gdk_Event_Key) return Gdk_Key_Type;
+ 
+   function Get_Length  (Event : in Gdk_Event_Key) return Gint;
+ 
+   function Get_String  (Event : in Gdk_Event_Key) return String;
+ 
    ---------------------
    --  Gdk_Event_Any  --
    ---------------------
@@ -166,6 +181,7 @@ private
    type Gdk_Event_Expose is new Gdk_Event with null record;
    type Gdk_Event_Button is new Gdk_Event with null record;
    type Gdk_Event_Motion is new Gdk_Event with null record;
+   type Gdk_Event_Key is new Gdk_Event with null record;
 
    pragma Import (C, Events_Pending, "gdk_events_pending");
 
