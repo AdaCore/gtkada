@@ -79,19 +79,19 @@ package body Gtk.Check_Menu_Item is
       Internal (Get_Object (Menu_Item), Boolean'Pos (Always));
    end Set_Show_Toggle;
 
-   ---------------
-   -- Set_State --
-   ---------------
+   ----------------
+   -- Set_Active --
+   ----------------
 
-   procedure Set_State (Check_Menu_Item : in Gtk_Check_Menu_Item;
-                        State           : in Boolean)
+   procedure Set_Active (Check_Menu_Item : in Gtk_Check_Menu_Item;
+                         Is_Active       : in Boolean)
    is
       procedure Internal (Check_Menu_Item : in System.Address;
-                          State           : in Gint);
-      pragma Import (C, Internal, "gtk_check_menu_item_set_state");
+                          Is_Active       : in Gint);
+      pragma Import (C, Internal, "gtk_check_menu_item_set_active");
    begin
-      Internal (Get_Object (Check_Menu_Item), Boolean'Pos (State));
-   end Set_State;
+      Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Is_active));
+   end Set_Active;
 
    -------------
    -- Toggled --
