@@ -114,4 +114,19 @@ package body Gtk.Fixed is
       Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);
    end Put;
 
+   --------------------
+   -- Set_Has_Window --
+   --------------------
+
+   procedure Set_Has_Window
+     (Fixed      : access Gtk_Fixed_Record;
+      Has_Window : Boolean := False)
+   is
+      procedure Set_Has_Window (Fixed : System.Address; Has_Window : Boolean);
+
+      pragma Import (C, Set_Has_Window, "gtk_fixed_set_has_window");
+   begin
+      Set_Has_Window (Get_Object (Fixed), Has_Window);
+   end Set_Has_Window;
+
 end Gtk.Fixed;

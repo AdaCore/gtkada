@@ -81,6 +81,14 @@ package Gtk.Fixed is
    --  X indicates the horizontal position to place the widget at.
    --  Y is the vertical position to place the widget at.
 
+   procedure Set_Has_Window
+     (Fixed      : access Gtk_Fixed_Record;
+      Has_Window : Boolean := False);
+   --  Sets whether a Gtk_Fixed widget is created with a separate
+   --  Gdk_Window for or not. (By default, it will be created with no
+   --  separate Gdk_Window). This function must be called while the widget
+   --  is not realized, for instance, immediately after the window is created.
+
    ----------------
    -- Properties --
    ----------------
