@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.11</c_version>
+
 with Glib.Values;
 with Gtk;
 with Gtk.Tree_Model;
@@ -37,87 +38,84 @@ package Gtk.List_Store is
      new Gtk.Tree_Model.Gtk_Tree_Model_Record with private;
    type Gtk_List_Store is access all Gtk_List_Store_Record'Class;
 
-   --  gtk_list_store_new not bound: variable number of arguments
-
    procedure Gtk_New
-     (Widget    : out Gtk_List_Store;
-      N_Columns : Gint;
-      Types     : GType_Array);
-   --  Creates a new list store as with N_Columns columns each of the
-   --  types passed in.
+     (List_Store : out Gtk_List_Store;
+      Types      : GType_Array);
+   --  Creates a new list store using Types to fill the columns.
 
    procedure Initialize
-     (Widget    : access Gtk_List_Store_Record'Class;
-      N_Columns : Gint;
-      Types     : GType_Array);
+     (List_Store : access Gtk_List_Store_Record'Class;
+      Types      : GType_Array);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
-   procedure Set_Value
+   procedure Set_Column_Types
      (List_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : System.Address);
+      Types      : GType_Array);
 
    procedure Set_Value
      (List_Store : access Gtk_List_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
-      Value      : in out Glib.Values.GValue);
-   --  Sets the data in the cell specified by Iter and Column. The type
-   --  of Value must be convertible to the type of the column.
+      Value      : Glib.Values.GValue);
+   --  Set the data in the cell specified by Iter and Column.
+   --  The type of Value must be convertible to the type of the column.
 
    procedure Remove
      (List_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Removes the given row from the list store.  After being removed,
-   --  Iter is set to be the next valid row, or invalidated if it pointed
-   --  to the last row in List_Store.
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Remove the given row from the list store.
+   --  After being removed, Iter is set to be the next valid row, or
+   --  invalidated if it pointed to the last row in List_Store.
 
    procedure Insert
      (List_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Position   : Gint);
-   --  Creates a new row at Position.  Iter will be changed to point to
-   --  this new row.  If Position is larger than the number of rows on
-   --  the list, then the new row will be appended to the list.  The row
-   --  will be empty before this function is called.  To fill in values,
-   --  you need to call Set_Value.
+   --  Create a new row at Position.
+   --  Iter will be changed to point to this new row.
+   --  If Position is larger than the number of rows on the list, then the new
+   --  row will be appended to the list. The row will be empty before this
+   --  function is called. To fill in values, you need to call Set_Value.
 
    procedure Insert_Before
      (List_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Sibling    : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Inserts a new row before Sibling. If Sibling is Null_Iter, then the
-   --  row will be appended to the end of the list. Iter will be changed to
-   --  point to this new row. The row will be empty before this function is
-   --  called. To fill in values, you need to call Set_Value.
+   --  Insert a new row before Sibling.
+   --  If Sibling is Null_Iter, then the row will be appended to the end of the
+   --  list. Iter will be changed to point to this new row. The row will be
+   --  empty before this function is called. To fill in values, you need to
+   --  call Set_Value.
 
    procedure Insert_After
      (List_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Sibling    : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Inserts a new row after Sibling. If Sibling is Null_Iter, then the row
-   --  will be prepended to the beginning of the list. Iter will be changed
-   --  to point to this new row. The row will be empty after this function is
-   --  called. To fill in values, you need to call Set_Value.
+   --  Insert a new row after Sibling.
+   --  If Sibling is Null_Iter, then the row will be prepended to the beginning
+   --  of the list. Iter will be changed to point to this new row. The row will
+   --  be empty after this function is called. To fill in values, you need to
+   --  call Set_Value.
 
    procedure Prepend
      (List_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Prepend a new row to List_Store. Iter will be changed to point to this
-   --  new row. The row will be empty after this function is called. To fill
-   --  in values, you need to call Set_Value.
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Prepend a new row to List_Store.
+   --  Iter will be changed to point to this new row. The row will be empty
+   --  after this function is called. To fill in values, you need to call
+   --  Set_Value.
 
    procedure Append
      (List_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Appends a new row to List_Store.  Iter will be changed to point to
-   --  this new row.  The row will be empty after this function is called.
-   --  To fill in values, you need to call Set_Value.
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Append a new row to List_Store.
+   --  Iter will be changed to point to this new row. The row will be empty
+   --  after this function is called. To fill in values, you need to call
+   --  Set_Value.
 
    procedure Clear (List_Store : access Gtk_List_Store_Record);
    --  Remove all the rows in List_Store.
