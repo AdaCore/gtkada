@@ -2140,16 +2140,6 @@ ada_text_iter_copy (const GtkTextIter *source,
 }
 
 /******************************************
- ** Functions for Text_Layout
- ******************************************/
-
-/*  GtkTextAttributes* */
-/*  ada_text_layout_get_default_style (GtkTextLayout* layout) */
-/*  { */
-/*    return layout->default_style; */
-/*  } */
-
-/******************************************
  ** Functions for Text_View
  ******************************************/
 
@@ -2164,12 +2154,6 @@ ada_text_view_get_vadj (GtkTextView* widget)
 {
   return widget->vadjustment;
 }
-
-/*  GtkTextLayout* */
-/*  ada_text_view_get_layout (GtkTextView* widget) */
-/*  { */
-/*    return widget->layout; */
-/*  } */
 
 /******************************************
  ** Functions for File_Selection
@@ -3251,11 +3235,3 @@ void ada_gtk_tree_model_get (GtkTreeModel *tree_model,
 {
    gtk_tree_model_get (tree_model, iter, column, Value, -1);
 }
-
-/*  void ada_gtk_tree_model_set (GtkTreeModel *tree_model, */
-/*  			     GtkTreeIter *iter, */
-/*  			     gint column, */
-/*  			     void *Value) */
-/*  { */
-/*     gtk_tree_model_set (tree_model, iter, column, Value, -1); */
-/*  } */
