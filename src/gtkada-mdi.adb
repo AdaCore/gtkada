@@ -2840,7 +2840,12 @@ package body Gtkada.MDI is
    is
       Page_Num : constant Guint := To_Guint (Args, 2);
    begin
-      if Page_Num /= -1 then
+      --  Unfortunately, "switch_page" is emitted when the notebooks are
+      --  destroyed, although every will fail later on. So we have to check for
+      --  this special case.
+      if Page_Num /= -1
+        and then not Gtk.Object.In_Destruction_Is_Set (Docked_Child)
+      then
          Set_Focus_Child
            (MDI_Child (Get_Nth_Page
                        (Gtk_Notebook (Docked_Child), Gint (Page_Num))));
