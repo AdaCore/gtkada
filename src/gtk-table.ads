@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  Check out the Gtk_Sheet widget for a different kind of table that can
 --  also contain text and images in a more efficient way.
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Container;
 with Gtk.Enums;
@@ -48,46 +48,49 @@ package Gtk.Table is
 
    use Gtk.Enums;
 
-   type Gtk_Table_Record is new Gtk.Container.Gtk_Container_Record
-     with private;
+   type Gtk_Table_Record is new
+     Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Table is access all Gtk_Table_Record'Class;
 
-   procedure Gtk_New (Widget      : out Gtk_Table;
-                      Rows        : in Guint;
-                      Columns     : in Guint;
-                      Homogeneous : in Boolean);
+   procedure Gtk_New
+     (Widget      : out Gtk_Table;
+      Rows        : Guint;
+      Columns     : Guint;
+      Homogeneous : Boolean);
    --  Create a new table.
    --  The width allocated to the table is divided into Columns columns, which
    --  all have the same width if Homogeneous is True. If Homogeneous is False,
    --  the width will be calculated with the children contained in the table.
    --  Same behavior for the rows.
 
-   procedure Initialize (Widget      : access Gtk_Table_Record'Class;
-                         Rows        : in Guint;
-                         Columns     : in Guint;
-                         Homogeneous : in Boolean);
+   procedure Initialize
+     (Widget      : access Gtk_Table_Record'Class;
+      Rows        : Guint;
+      Columns     : Guint;
+      Homogeneous : Boolean);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Table.
 
-   procedure Resize (Table       : access Gtk_Table_Record;
-                     Rows        : in Guint;
-                     Columns     : in Guint);
+   procedure Resize
+     (Table       : access Gtk_Table_Record;
+      Rows        : Guint;
+      Columns     : Guint);
    --  Modify the number of rows and columns in the table.
 
    procedure Attach
      (Table         : access Gtk_Table_Record;
       Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Left_Attach   : in Guint;
-      Right_Attach  : in Guint;
-      Top_Attach    : in Guint;
-      Bottom_Attach : in Guint;
-      Xoptions      : in Gtk_Attach_Options := Expand or Fill;
-      Yoptions      : in Gtk_Attach_Options := Expand or Fill;
-      Xpadding      : in Guint := 0;
-      Ypadding      : in Guint := 0);
+      Left_Attach   : Guint;
+      Right_Attach  : Guint;
+      Top_Attach    : Guint;
+      Bottom_Attach : Guint;
+      Xoptions      : Gtk_Attach_Options := Expand or Fill;
+      Yoptions      : Gtk_Attach_Options := Expand or Fill;
+      Xpadding      : Guint := 0;
+      Ypadding      : Guint := 0);
    --  Insert a new widget in the table.
    --  All the attachments are relative to the separations between columns and
    --  rows (for instance, to insert a widget spanning the first two columns
@@ -101,37 +104,39 @@ package Gtk.Table is
    procedure Attach_Defaults
      (Table         : access Gtk_Table_Record;
       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Left_Attach   : in Guint;
-      Right_Attach  : in Guint;
-      Top_Attach    : in Guint;
-      Bottom_Attach : in Guint);
+      Left_Attach   : Guint;
+      Right_Attach  : Guint;
+      Top_Attach    : Guint;
+      Bottom_Attach : Guint);
    --  Insert a new widget in the table, with default values.
    --  No padding is put around the child, and the options are set to
    --  Expand and Fill.
    --  This call is similar to Attach with default values and is only provided
    --  for compatibility.
 
-   procedure Set_Row_Spacing (Table   : access Gtk_Table_Record;
-                              Row     : in Guint;
-                              Spacing : in Guint);
+   procedure Set_Row_Spacing
+     (Table   : access Gtk_Table_Record;
+      Row     : Guint;
+      Spacing : Guint);
    --  Set the spacing insert between Row and the next one.
    --  Spacing is in pixels.
 
-   procedure Set_Row_Spacings (Table   : access Gtk_Table_Record;
-                               Spacing : in Guint);
-   --  Set the spacing for all the rows.
-
-   procedure Set_Col_Spacing (Table   : access Gtk_Table_Record;
-                              Column  : in Guint;
-                              Spacing : in Guint);
+   procedure Set_Col_Spacing
+     (Table   : access Gtk_Table_Record;
+      Column  : Guint;
+      Spacing : Guint);
    --  Set the spacing in pixels between Column and the next one.
 
-   procedure Set_Col_Spacings (Table   : access Gtk_Table_Record;
-                               Spacing : in Guint);
+   procedure Set_Row_Spacings
+     (Table : access Gtk_Table_Record; Spacing : Guint);
+   --  Set the spacing for all the rows.
+
+   procedure Set_Col_Spacings
+     (Table : access Gtk_Table_Record; Spacing : Guint);
    --  Set the spacing for all the columns.
 
-   procedure Set_Homogeneous (Table       : access Gtk_Table_Record;
-                              Homogeneous : in Boolean);
+   procedure Set_Homogeneous
+     (Table : access Gtk_Table_Record; Homogeneous : Boolean);
    --  Indicate the homogeneous status of the table.
    --  If Homogeneous is True, the rows and columns of the table will all
    --  be allocated the same width or height.

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,11 +36,11 @@ package body Gtk.Rc is
    ----------------------------
 
    procedure Add_Widget_Class_Style
-     (Style   : in Gtk_Rc_Style;
-      Pattern : in String)
+     (Style   : Gtk_Rc_Style;
+      Pattern : String)
    is
       procedure Internal
-        (Style : in Gtk_Rc_Style; Pattern : in String);
+        (Style : Gtk_Rc_Style; Pattern : String);
       pragma Import (C, Internal, "gtk_rc_add_widget_class_style");
 
    begin
@@ -52,11 +52,10 @@ package body Gtk.Rc is
    ---------------------------
 
    procedure Add_Widget_Name_Style
-     (Style   : in Gtk_Rc_Style;
-      Pattern : in String)
+     (Style   : Gtk_Rc_Style;
+      Pattern : String)
    is
-      procedure Internal
-        (Style : in Gtk_Rc_Style; Pattern : in String);
+      procedure Internal (Style : Gtk_Rc_Style; Pattern : String);
       pragma Import (C, Internal, "gtk_rc_add_widget_name_style");
 
    begin
@@ -70,7 +69,7 @@ package body Gtk.Rc is
    function Get_Style
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Gtk_Rc_Style
    is
-      function Internal (Widget : in System.Address) return Gtk_Rc_Style;
+      function Internal (Widget : System.Address) return Gtk_Rc_Style;
       pragma Import (C, Internal, "gtk_rc_get_style");
 
    begin
@@ -81,9 +80,10 @@ package body Gtk.Rc is
    -- Parse --
    -----------
 
-   procedure Parse (Filename : in String) is
-      procedure Internal (Filename : in String);
+   procedure Parse (Filename : String) is
+      procedure Internal (Filename : String);
       pragma Import (C, Internal, "gtk_rc_parse");
+
    begin
       Internal (Filename & ASCII.NUL);
    end Parse;
@@ -92,9 +92,10 @@ package body Gtk.Rc is
    -- Parse_String --
    ------------------
 
-   procedure Parse_String (Rc_String : in String) is
-      procedure Internal (Rc_String : in String);
+   procedure Parse_String (Rc_String : String) is
+      procedure Internal (Rc_String : String);
       pragma Import (C, Internal, "gtk_rc_parse_string");
+
    begin
       Internal (Rc_String & ASCII.NUL);
    end Parse_String;

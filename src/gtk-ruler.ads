@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,6 +26,8 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
+
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
@@ -51,28 +53,28 @@ package Gtk.Ruler is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Ruler.
 
-   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
-
    procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
 
-   function Get_Lower (Ruler : access Gtk_Ruler_Record) return Gfloat;
+   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
 
-   function Get_Max_Size (Ruler : access Gtk_Ruler_Record) return Gfloat;
+   function Get_Lower (Ruler : access Gtk_Ruler_Record) return Gdouble;
 
-   function Get_Position (Ruler : access Gtk_Ruler_Record) return Gfloat;
+   function Get_Max_Size (Ruler : access Gtk_Ruler_Record) return Gdouble;
 
-   function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gfloat;
+   function Get_Position (Ruler : access Gtk_Ruler_Record) return Gdouble;
+
+   function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gdouble;
 
    procedure Set_Metric
      (Ruler  : access Gtk_Ruler_Record;
-      Metric : in Gtk_Metric_Type);
+      Metric : Gtk_Metric_Type);
 
    procedure Set_Range
      (Ruler    : access Gtk_Ruler_Record;
-      Lower    : in Gfloat;
-      Upper    : in Gfloat;
-      Position : in Gfloat;
-      Max_Size : in Gfloat);
+      Lower    : Gdouble;
+      Upper    : Gdouble;
+      Position : Gdouble;
+      Max_Size : Gdouble);
 
 private
    type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with null record;

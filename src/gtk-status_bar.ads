@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,7 +48,7 @@
 --  error messages). You can then selectively remove the most recent message
 --  of each category.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Box;
 with Interfaces.C.Strings;
@@ -91,7 +91,7 @@ package Gtk.Status_Bar is
 
    function Get_Context_Id
      (Statusbar           : access Gtk_Status_Bar_Record;
-      Context_Description : in String) return Context_Id;
+      Context_Description : String) return Context_Id;
    --  Create the context id associated with a special name.
    --  If no context is currently associated with Context_Description, then
    --  a new context is created.
@@ -103,26 +103,35 @@ package Gtk.Status_Bar is
 
    function Push
      (Statusbar : access Gtk_Status_Bar_Record;
-      Context   : in Context_Id;
-      Text      : in String) return Message_Id;
+      Context   : Context_Id;
+      Text      : String) return Message_Id;
    --  Push a new message on the queue, associated with a specific context.
    --  This message is directly displayed in the status bar.
    --  A new unique message id is associated with this message.
 
    procedure Pop
      (Statusbar : access Gtk_Status_Bar_Record;
-      Context   : in Context_Id);
+      Context   : Context_Id);
    --  Remove the most recent message from a specific context. All other
    --  contexts are ignored, and no error is raised if there is no message in
    --  Context.
 
    procedure Remove
      (Statusbar  : access Gtk_Status_Bar_Record;
-      Context    : in Context_Id;
-      Message    : in Message_Id);
+      Context    : Context_Id;
+      Message    : Message_Id);
    --  Remove a message from the list.
    --  The message is only removed if it is in a specific context.
    --  Nothing happens if no matching message is found.
+
+   procedure Set_Has_Resize_Grip
+     (Statusbar  : access Gtk_Status_Bar_Record;
+      Setting    : Boolean);
+   --  Set the value of the resize_grip attribute for a given status bar.
+
+   function Get_Has_Resize_Grip
+     (Statusbar : access Gtk_Status_Bar_Record) return Boolean;
+   --  Return the value of the resize_grip attribute for a given status bar.
 
    -------------
    -- Signals --

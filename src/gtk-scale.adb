@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,19 +36,38 @@ package body Gtk.Scale is
    ----------------
 
    procedure Draw_Value (Scale : access Gtk_Scale_Record) is
-      procedure Internal (Scale : in System.Address);
+      procedure Internal (Scale : System.Address);
       pragma Import (C, Internal, "gtk_scale_draw_value");
 
    begin
       Internal (Get_Object (Scale));
    end Draw_Value;
 
+   --------------------
+   -- Get_Value_Size --
+   --------------------
+
+   procedure Get_Value_Size
+     (Scale  : access Gtk_Scale_Record;
+      Width  : out Gint;
+      Height : out Gint)
+   is
+      procedure Internal
+        (Scale  : System.Address;
+         Width  : out Gint;
+         Height : out Gint);
+      pragma Import (C, Internal, "gtk_scale_get_value_size");
+
+   begin
+      Internal (Get_Object (Scale), Width, Height);
+   end Get_Value_Size;
+
    ---------------------
    -- Get_Value_Width --
    ---------------------
 
-   function Get_Value_Width (Scale  : access Gtk_Scale_Record) return Gint is
-      function Internal (Scale  : in System.Address) return Gint;
+   function Get_Value_Width (Scale : access Gtk_Scale_Record) return Gint is
+      function Internal (Scale : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_scale_get_value_width");
 
    begin
@@ -61,7 +80,7 @@ package body Gtk.Scale is
 
    procedure Gtk_New_Hscale
      (Scale      : out Gtk_Scale;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment) is
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment) is
    begin
       Scale := new Gtk_Scale_Record;
       Initialize_Hscale (Scale, Adjustment);
@@ -73,7 +92,7 @@ package body Gtk.Scale is
 
    procedure Gtk_New_Vscale
      (Scale      : out Gtk_Scale;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment) is
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment) is
    begin
       Scale := new Gtk_Scale_Record;
       Initialize_Vscale (Scale, Adjustment);
@@ -85,9 +104,9 @@ package body Gtk.Scale is
 
    procedure Initialize_Hscale
      (Scale      : access Gtk_Scale_Record'Class;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Adjustment : in System.Address) return System.Address;
+      function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_hscale_new");
 
       Adj : System.Address;
@@ -111,9 +130,9 @@ package body Gtk.Scale is
 
    procedure Initialize_Vscale
      (Scale      : access Gtk_Scale_Record'Class;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Adjustment : in System.Address) return System.Address;
+      function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_vscale_new");
 
       Adj : System.Address;
@@ -135,13 +154,8 @@ package body Gtk.Scale is
    -- Set_Digits --
    ----------------
 
-   procedure Set_Digits
-     (Scale      : access Gtk_Scale_Record;
-      The_Digits : in Gint)
-   is
-      procedure Internal
-        (Scale      : in System.Address;
-         The_Digits : in Gint);
+   procedure Set_Digits (Scale : access Gtk_Scale_Record; The_Digits : Gint) is
+      procedure Internal (Scale : System.Address; The_Digits : Gint);
       pragma Import (C, Internal, "gtk_scale_set_digits");
 
    begin
@@ -153,12 +167,9 @@ package body Gtk.Scale is
    --------------------
 
    procedure Set_Draw_Value
-     (Scale      : access Gtk_Scale_Record;
-      Draw_Value : in Boolean)
+     (Scale : access Gtk_Scale_Record; Draw_Value : Boolean)
    is
-      procedure Internal
-        (Scale      : in System.Address;
-         Draw_Value : in Gint);
+      procedure Internal (Scale : System.Address; Draw_Value : Gint);
       pragma Import (C, Internal, "gtk_scale_set_draw_value");
 
    begin
@@ -170,16 +181,13 @@ package body Gtk.Scale is
    -------------------
 
    procedure Set_Value_Pos
-     (Scale : access Gtk_Scale_Record;
-      Pos   : in Gtk_Position_Type)
+     (Scale : access Gtk_Scale_Record; Pos : Gtk_Position_Type)
    is
-      procedure Internal
-        (Scale : in System.Address;
-         Pos   : in Gint);
+      procedure Internal (Scale : System.Address; Pos : Gtk_Position_Type);
       pragma Import (C, Internal, "gtk_scale_set_value_pos");
 
    begin
-      Internal (Get_Object (Scale), Gtk_Position_Type'Pos (Pos));
+      Internal (Get_Object (Scale), Pos);
    end Set_Value_Pos;
 
 end Gtk.Scale;

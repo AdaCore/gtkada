@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -61,9 +60,9 @@
 --  representing the number of bits per item).
 --
 --  </description>
---  <c_synchro>1.2.7</c_synchro>
+--  <c_version>1.3.4</c_version>
 
-with Glib;          use Glib;
+with Glib; use Glib;
 with Gdk.Types;
 with Gtk.Widget;
 with Gtkada.Types;
@@ -208,41 +207,44 @@ package Gtk.Selection is
    --  A list of targets.
    --  You can only manipulate this list through the functions below.
 
-   function Target_List_New (Targets : in Target_Entry_Array)
-                            return Target_List;
+   function Target_List_New (Targets : Target_Entry_Array) return Target_List;
    --  Create a new list of target, starting from an array.
 
-   procedure Target_List_Ref (List : in Target_List);
+   procedure Target_List_Ref (List : Target_List);
    --  Increment the reference count for the list.
    --  You should almost never have to use this function, this is done
    --  transparently by GtkAda.
 
-   procedure Target_List_Unref (List : in Target_List);
+   procedure Target_List_Unref (List : Target_List);
    --  Decrement the reference count for the list.
    --  You should almost never have to use this function, since everything is
    --  done transparently by GtkAda.
    --  As usual, the list is freed when the reference count reaches 0.
 
-   procedure Target_List_Add (List   : in Target_List;
-                              Target : in Gdk.Types.Gdk_Atom;
-                              Flags  : in Guint;
-                              Info   : in Guint);
+   procedure Target_List_Add
+     (List   : Target_List;
+      Target : Gdk.Types.Gdk_Atom;
+      Flags  : Guint;
+      Info   : Guint);
    --  Add a new target to the list.
    --  You can for instance use the result of Get_Targets (Drag_Context) for
    --  the value of Target.
 
-   procedure Target_List_Add_Table (List    : in Target_List;
-                                    Targets : in Target_Entry_Array);
+   procedure Target_List_Add_Table
+     (List    : Target_List;
+      Targets : Target_Entry_Array);
    --  Add a new set of targets to the list.
 
-   procedure Target_List_Remove (List   : in Target_List;
-                                 Target : in Gdk.Types.Gdk_Atom);
+   procedure Target_List_Remove
+     (List   : Target_List;
+      Target : Gdk.Types.Gdk_Atom);
    --  Remove a specific target from the list.
 
-   procedure Target_List_Find (List   : in Target_List;
-                               Target : in Gdk.Types.Gdk_Atom;
-                               Info   : out Guint;
-                               Found  : out Boolean);
+   procedure Target_List_Find
+     (List   : Target_List;
+      Target : Gdk.Types.Gdk_Atom;
+      Info   : out Guint;
+      Found  : out Boolean);
    --  Search for a specific target in the list.
    --  If the target was found, Found is set to True and Info contains the
    --  integer that was associated with the target when it was created.
@@ -261,31 +263,27 @@ package Gtk.Selection is
    --     contains the data itself.
    --   - Time gives the timestamp at which the data was sent.
 
-   function Get_Selection (Selection : in Selection_Data)
-                          return Gdk_Selection;
+   function Get_Selection (Selection : Selection_Data) return Gdk_Selection;
    --  Return the selection used (primary, clipboard, ...)
 
-   function Get_Target (Selection : in Selection_Data)
-                       return Gdk.Types.Gdk_Atom;
+   function Get_Target (Selection : Selection_Data) return Gdk.Types.Gdk_Atom;
    --  Return the target of the selection (ie a MIME string that identifies
    --  the selection).
 
-   function Get_Type (Selection : in Selection_Data)
-                     return Gdk.Types.Gdk_Atom;
+   function Get_Type (Selection : Selection_Data) return Gdk.Types.Gdk_Atom;
    --  Return the type of the selection, as defined in Gdk_Selection_Type,
    --  ie for compatibility with older X11 applications.
 
-   function Get_Format (Selection : in Selection_Data) return Gint;
+   function Get_Format (Selection : Selection_Data) return Gint;
    --  Return the format of the data.
    --  The semantics depends on the type of data. For instance, for strings
    --  this is the number of bits per character.
 
-   function Get_Data (Selection : in Selection_Data) return System.Address;
+   function Get_Data (Selection : Selection_Data) return System.Address;
    --  Return the data of the selection.
    --  This should be ignored if Get_Length returns a value < 0.
 
-   function Get_Data_As_String (Selection : in Selection_Data)
-                               return String;
+   function Get_Data_As_String (Selection : Selection_Data) return String;
    --  Return the data as a string.
    --  This is only a convenience function, since it simply creates a string
    --  from the return of Get_Data.
@@ -293,20 +291,22 @@ package Gtk.Selection is
    function Get_Length (Selection : in Selection_Data) return Gint;
    --  Return the length of the data.
 
-   procedure Selection_Data_Set (Selection : in Selection_Data;
-                                 The_Type  : in Gdk.Types.Gdk_Atom;
-                                 Format    : in Gint;
-                                 Data      : in System.Address;
-                                 Length    : in Gint);
+   procedure Selection_Data_Set
+     (Selection : Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : System.Address;
+      Length    : Gint);
    --  General form of Selection_Data_Set.
    --  Any data can be transmitted. Length is the number of bytes in Data.
 
    pragma Import (C, Selection_Data_Set, "gtk_selection_data_set");
 
-   procedure Selection_Data_Set (Selection : in Selection_Data;
-                                 The_Type  : in Gdk.Types.Gdk_Atom;
-                                 Format    : in Gint;
-                                 Data      : in String);
+   procedure Selection_Data_Set
+     (Selection : Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : String);
    --  Set the data for a selection (special case for strings)
    --  This function is generally called when a drag-and-drop operation
    --  ask the source widget for the data to be transmitted. In that case,
@@ -314,21 +314,21 @@ package Gtk.Selection is
    --  parameter for the signal "drag_data_get". The_Type can simply be
    --  extracted from the Selection_Data.
 
-   function Selection_Data_Copy (Selection : in Selection_Data)
-                                return Selection_Data;
+   function Selection_Data_Copy
+     (Selection : Selection_Data) return Selection_Data;
    --  Make a copy of a selection data.
 
-   procedure Selection_Data_Free (Selection : in Selection_Data);
+   procedure Selection_Data_Free (Selection : Selection_Data);
    --  Free a Selection_Data structure returned from Selection_Data_Copy.
 
    --------------------------------
    -- Manipulating the selection --
    --------------------------------
 
-   function Owner_Set (Widget    : in Gtk.Widget.Gtk_Widget;
-                       Selection : in Gdk_Selection := Selection_Primary;
-                       Time      : in Guint32 := 0)
-                      return Boolean;
+   function Owner_Set
+     (Widget    : Gtk.Widget.Gtk_Widget;
+      Selection : Gdk_Selection := Selection_Primary;
+      Time      : Guint32 := 0) return Boolean;
    --  Claim ownership of a given selection for a particular widget,
    --  or, if widget is null, release ownership of the selection.
    --
@@ -339,10 +339,11 @@ package Gtk.Selection is
    --  time).
    --  This function returns True if the operation succeeded.
 
-   procedure Add_Target (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-                         Selection : in Gdk_Selection;
-                         Target    : in Gdk.Types.Gdk_Atom;
-                         Info      : in Guint);
+   procedure Add_Target
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Selection : Gdk_Selection;
+      Target    : Gdk.Types.Gdk_Atom;
+      Info      : Guint);
    --  Add specified target to the list of supported targets for a given
    --  widget and selection.
    --  Info is an integer which will be passed back to the application instead
@@ -350,16 +351,21 @@ package Gtk.Selection is
 
    procedure Add_Targets
      (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Selection : in Gdk_Selection;
-      Targets   : in Target_Entry_Array);
+      Selection : Gdk_Selection;
+      Targets   : Target_Entry_Array);
    --  Add a set of targets to the list of supported targets for a given widget
    --  and selection.
 
-   function Convert (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-                     Selection : in Gdk_Selection := Selection_Primary;
-                     Target    : in Gdk.Types.Gdk_Atom;
-                     Time      : in Guint32 := 0)
-                    return Boolean;
+   procedure Clear_Targets
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Selection : Gdk_Selection);
+   --  Clear the list of supported targets for a given widget and selection.
+
+   function Convert
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Selection : Gdk_Selection := Selection_Primary;
+      Target    : Gdk.Types.Gdk_Atom;
+      Time      : Guint32 := 0) return Boolean;
    --  Request the contents of a selection.
    --  When received, a "selection_received" signal will be generated, and the
    --  widget needs to have a handler for it.
@@ -436,6 +442,7 @@ private
    pragma Import (C, Get_Format,    "ada_gtk_dnd_get_format");
    pragma Import (C, Get_Data,      "ada_gtk_dnd_get_data");
    pragma Import (C, Get_Length,    "ada_gtk_dnd_get_length");
+
    pragma Import (C, Selection_Data_Copy, "gtk_selection_data_copy");
    pragma Import (C, Selection_Data_Free, "gtk_selection_data_free");
 
@@ -461,3 +468,10 @@ private
    Target_Pixmap   : constant Gdk_Target := 20;
    Target_String   : constant Gdk_Target := 31;
 end Gtk.Selection;
+
+--  missing:
+--  gtk_selection_clear
+--  gtk_selection_request
+--  gtk_selection_incr_event
+--  gtk_selection_notify
+--  gtk_selection_property_notify

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2001 ACT-Europe                    --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,12 +48,14 @@ package body Gtk.Radio_Menu_Item is
    -- Group --
    -----------
 
-   function Group (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
-     return Widget_SList.GSlist
+   function Group
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
+      return Widget_SList.GSlist
    is
-      function Internal (Radio_Menu_Item : in System.Address)
-        return System.Address;
+      function Internal
+        (Radio_Menu_Item : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_group");
+
       Group : Widget_SList.GSlist;
 
    begin
@@ -67,8 +69,8 @@ package body Gtk.Radio_Menu_Item is
 
    procedure Gtk_New
      (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
-      Group           : in Widget_SList.GSlist;
-      Label           : in String := "") is
+      Group           : Widget_SList.GSlist;
+      Label           : String := "") is
    begin
       Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
       Initialize (Radio_Menu_Item, Group, Label);
@@ -80,12 +82,11 @@ package body Gtk.Radio_Menu_Item is
 
    procedure Initialize
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
-      Group  : in Widget_SList.GSlist;
-      Label  : in String := "")
+      Group           : Widget_SList.GSlist;
+      Label           : String := "")
    is
       function Internal
-        (Group  : in System.Address;
-         Label  : in String) return System.Address;
+        (Group : System.Address; Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_new_with_label");
 
    begin
@@ -98,8 +99,8 @@ package body Gtk.Radio_Menu_Item is
    -- Selected_Button --
    ---------------------
 
-   function Selected_Button (In_Group : in Widget_SList.GSlist)
-     return Natural
+   function Selected_Button
+     (In_Group : Widget_SList.GSlist) return Natural
    is
       J   : Natural := 0;
       Tmp : Widget_SList.GSlist := In_Group;
@@ -119,11 +120,10 @@ package body Gtk.Radio_Menu_Item is
 
    procedure Set_Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
-      Group           : in Widget_SList.GSlist)
+      Group           : Widget_SList.GSlist)
    is
       procedure Internal
-        (Radio_Menu_Item : in System.Address;
-         Group           : in System.Address);
+        (Radio_Menu_Item : System.Address; Group : System.Address);
       pragma Import (C, Internal, "gtk_radio_menu_item_set_group");
 
    begin

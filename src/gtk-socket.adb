@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,6 +48,7 @@ package body Gtk.Socket is
    procedure Initialize (Widget : access Gtk_Socket_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_socket_new");
+
    begin
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);
@@ -57,9 +58,10 @@ package body Gtk.Socket is
    -- Steal --
    -----------
 
-   procedure Steal (Socket : access Gtk_Socket_Record; Wid : in Guint32) is
-      procedure Internal (Socket : in System.Address; Wid : in Guint32);
+   procedure Steal (Socket : access Gtk_Socket_Record; Wid : Guint32) is
+      procedure Internal (Socket : System.Address; Wid : Guint32);
       pragma Import (C, Internal, "gtk_socket_steal");
+
    begin
       Internal (Get_Object (Socket), Wid);
    end Steal;
@@ -71,8 +73,7 @@ package body Gtk.Socket is
    function Get_Plug_Window
      (Socket : access Gtk_Socket_Record) return Gdk.Window.Gdk_Window
    is
-      function Internal
-        (Socket : in System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Socket : System.Address) return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "ada_gtk_socket_get_plug_window");
 
    begin

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,7 +40,7 @@
 --  this group
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Check_Button;
 with Gtk.Widget; use Gtk.Widget;
@@ -53,8 +53,8 @@ package Gtk.Radio_Button is
 
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
-      Group        : in Widget_SList.GSlist := Widget_SList.Null_List;
-      Label        : in String := "");
+      Group        : Widget_SList.GSlist := Widget_SList.Null_List;
+      Label        : String := "");
    --  Create a new radio button, belonging to Group.
    --  If Label is left as the empty string, then the button will not have any
    --  child and you are free to put any thing you want in it, including a
@@ -65,8 +65,8 @@ package Gtk.Radio_Button is
 
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
-      Group        : in Gtk_Radio_Button;
-      Label        : in String := "");
+      Group        : Gtk_Radio_Button;
+      Label        : String := "");
    --  Create a new radio button in the same group as Group.
    --  If Label is left as the empty string, Radio_Button is created without
    --  any child and you can put whatever you want in it, including a pixmap.
@@ -75,30 +75,33 @@ package Gtk.Radio_Button is
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
 
-   procedure Initialize (Radio_Button : access Gtk_Radio_Button_Record'Class;
-                         Group        : in Widget_SList.GSlist;
-                         Label        : in String);
+   procedure Initialize
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Widget_SList.GSlist;
+      Label        : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
-      Group        : in Gtk_Radio_Button;
-      Label        : in String);
+      Group        : Gtk_Radio_Button;
+      Label        : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Button.
 
-   function Group (Radio_Button : access Gtk_Radio_Button_Record)
-                  return Widget_SList.GSlist;
+   function Group
+     (Radio_Button : access Gtk_Radio_Button_Record)
+      return Widget_SList.GSlist;
    --  Return the group to which Radio_Button belongs.
    --  This can be used as an argument to the first version of Gtk_New above,
    --  or the list can also be traversed to get all the buttons.
 
-   procedure Set_Group (Radio_Button : access Gtk_Radio_Button_Record;
-                        Group        : in Widget_SList.GSlist);
+   procedure Set_Group
+     (Radio_Button : access Gtk_Radio_Button_Record;
+      Group        : Widget_SList.GSlist);
    --  Modify the group to which the button belongs.
    --  This will not change anything visually.
 

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Gtk.GRange;
 with Gtk.Adjustment;
 
@@ -42,22 +44,22 @@ package Gtk.Scrollbar is
 
    procedure Gtk_New_Hscrollbar
      (Widget     : out Gtk_Scrollbar;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Gtk_New_Vscrollbar
      (Widget     : out Gtk_Scrollbar;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Scrollbar.
 
    procedure Initialize_Hscrollbar
      (Widget     : access Gtk_Scrollbar_Record'Class;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Initialize_Vscrollbar
      (Widget     : access Gtk_Scrollbar_Record'Class;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
 private
    type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record

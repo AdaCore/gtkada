@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Gdk; use Gdk;
 with Gdk.Color;
 with Gdk.GC;
@@ -46,427 +48,424 @@ package Gtk.Style is
 
    procedure Gtk_New (Style : out Gtk_Style);
 
-   function Copy (Source : in Gtk_Style) return Gtk_Style;
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Style.
+
+   function Copy (Source : Gtk_Style) return Gtk_Style;
 
    function Attach
-     (Style  : in Gtk_Style;
-      Window : in Gdk.Window.Gdk_Window) return Gtk_Style;
+     (Style  : Gtk_Style;
+      Window : Gdk.Window.Gdk_Window) return Gtk_Style;
 
-   procedure Detach (Style : in Gtk_Style);
+   procedure Detach (Style : Gtk_Style);
+
+   procedure Ref (Object : Gtk_Style);
+
+   procedure Unref (Object : Gtk_Style);
 
    procedure Set_Background
-     (Style      : in Gtk_Style;
-      Window     : in Gdk.Window.Gdk_Window;
-      State_Type : in Enums.Gtk_State_Type);
+     (Style      : Gtk_Style;
+      Window     : Gdk.Window.Gdk_Window;
+      State_Type : Enums.Gtk_State_Type);
+
+   procedure Draw_Hline
+     (Style      : Gtk_Style;
+      Window     : Gdk.Window.Gdk_Window;
+      State_Type : Enums.Gtk_State_Type;
+      X1, X2     : Gint;
+      Y          : Gint);
+
+   procedure Draw_Vline
+     (Style      : Gtk_Style;
+      Window     : Gdk.Window.Gdk_Window;
+      State_Type : Enums.Gtk_State_Type;
+      Y1, Y2     : Gint;
+      X          : Gint);
+
+   procedure Draw_Shadow
+     (Style       : Gtk_Style;
+      Window      : Gdk.Window.Gdk_Window;
+      State_Type  : Enums.Gtk_State_Type;
+      Shadow_Type : Enums.Gtk_Shadow_Type;
+      X, Y        : Gint;
+      Width       : Gint;
+      Height      : Gint);
+
+   procedure Draw_Polygon
+     (Style       : Gtk_Style;
+      Window      : Gdk.Window.Gdk_Window;
+      State_Type  : Enums.Gtk_State_Type;
+      Shadow_Type : Enums.Gtk_Shadow_Type;
+      Points      : Gdk.Types.Gdk_Points_Array;
+      Fill        : Boolean);
+
+   procedure Draw_Arrow
+     (Style       : Gtk_Style;
+      Window      : Gdk.Window.Gdk_Window;
+      State_Type  : Enums.Gtk_State_Type;
+      Shadow_Type : Enums.Gtk_Shadow_Type;
+      Arrow_Type  : Enums.Gtk_Arrow_Type;
+      Fill        : Boolean;
+      X, Y        : Gint;
+      Width       : Gint;
+      Height      : Gint);
+
+   procedure Draw_Diamond
+     (Style       : Gtk_Style;
+      Window      : Gdk.Window.Gdk_Window;
+      State_Type  : Enums.Gtk_State_Type;
+      Shadow_Type : Enums.Gtk_Shadow_Type;
+      X, Y        : Gint;
+      Width       : Gint;
+      Height      : Gint);
+
+   procedure Draw_String
+     (Style       : Gtk_Style;
+      Window      : Gdk.Window.Gdk_Window;
+      State_Type  : Enums.Gtk_State_Type;
+      X, Y        : Gint;
+      Str         : String);
+   --  pragma Deprecated (Draw_String);
 
    procedure Set_Foreground
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
 
    procedure Set_Fg
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color) renames Set_Foreground;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color) renames Set_Foreground;
 
    function Get_Foreground
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
 
    function Get_Fg
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color
       renames Get_Foreground;
 
    procedure Set_Background
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
 
    procedure Set_Bg
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color) renames Set_Background;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color) renames Set_Background;
 
    function Get_Background
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
 
    function Get_Bg
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color
       renames Get_Background;
 
    procedure Set_Light
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
 
    function Get_Light
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
 
    procedure Set_Dark
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
 
    function Get_Dark
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
 
    procedure Set_Middle
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
 
    procedure Set_Mid
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color) renames Set_Middle;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color) renames Set_Middle;
 
    function Get_Middle
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
 
    function Get_Mid
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color
       renames Get_Middle;
 
    procedure Set_Text
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
 
    function Get_Text
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
 
    procedure Set_Base
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Color      : in Gdk.Color.Gdk_Color);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
 
    function Get_Base
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Color.Gdk_Color;
 
    procedure Set_Black
-     (Style : in Gtk_Style;
-      Color : in Gdk.Color.Gdk_Color);
+     (Style : Gtk_Style;
+      Color : Gdk.Color.Gdk_Color);
 
-   function Get_Black (Style : in Gtk_Style) return Gdk.Color.Gdk_Color;
+   function Get_Black (Style : Gtk_Style) return Gdk.Color.Gdk_Color;
 
-   procedure Set_White (Style : in Gtk_Style; Color : in Gdk.Color.Gdk_Color);
+   procedure Set_White (Style : Gtk_Style; Color : Gdk.Color.Gdk_Color);
 
-   function Get_White (Style : in Gtk_Style) return Gdk.Color.Gdk_Color;
+   function Get_White (Style : Gtk_Style) return Gdk.Color.Gdk_Color;
 
-   procedure Set_Font (Style : in Gtk_Style; Font : in Gdk.Font.Gdk_Font);
+   procedure Set_Font (Style : Gtk_Style; Font : Gdk.Font.Gdk_Font);
 
-   function Get_Font (Style : in Gtk_Style) return Gdk.Font.Gdk_Font;
+   function Get_Font (Style : Gtk_Style) return Gdk.Font.Gdk_Font;
 
-   procedure Set_Black_GC (Style : in Gtk_Style; GC : in Gdk.GC.Gdk_GC);
+   procedure Set_Black_GC (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC);
 
-   function Get_Black_GC (Style : in Gtk_Style) return Gdk.GC.Gdk_GC;
+   function Get_Black_GC (Style : Gtk_Style) return Gdk.GC.Gdk_GC;
 
    procedure Set_Black
-     (Style : in Gtk_Style; GC : in Gdk.GC.Gdk_GC) renames Set_Black_GC;
+     (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC) renames Set_Black_GC;
 
    function Get_Black
-     (Style : in Gtk_Style) return Gdk.GC.Gdk_GC renames Get_Black_GC;
+     (Style : Gtk_Style) return Gdk.GC.Gdk_GC renames Get_Black_GC;
 
-   procedure Set_White_GC (Style : in Gtk_Style; GC : in Gdk.GC.Gdk_GC);
+   procedure Set_White_GC (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC);
 
-   function Get_White_GC (Style : in Gtk_Style) return Gdk.GC.Gdk_GC;
+   function Get_White_GC (Style : Gtk_Style) return Gdk.GC.Gdk_GC;
 
    procedure Set_White
-     (Style : in Gtk_Style; GC : in Gdk.GC.Gdk_GC) renames Set_White_GC;
+     (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC) renames Set_White_GC;
 
    function Get_White
-     (Style : in Gtk_Style) return Gdk.GC.Gdk_GC renames Get_White_GC;
+     (Style : Gtk_Style) return Gdk.GC.Gdk_GC renames Get_White_GC;
 
    procedure Set_Foreground_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC);
 
    function Get_Foreground_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
 
    procedure Set_Foreground
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
 
    function Get_Foreground
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Foreground_GC;
 
    procedure Set_Fg
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
 
    function Get_Fg
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Foreground_GC;
 
    procedure Set_Fg_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Foreground_GC;
 
    function Get_Fg_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Foreground_GC;
 
    procedure Set_Background_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC);
 
    function Get_Background_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
 
    procedure Set_Background
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Background_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Background_GC;
 
    function Get_Background
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Background_GC;
 
    procedure Set_Bg
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Background_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Background_GC;
 
    function Get_Bg
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Background_GC;
 
    procedure Set_Bg_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Background_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Background_GC;
 
    function Get_Bg_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Background_GC;
 
    procedure Set_Light_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC);
 
    function Get_Light_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
 
    procedure Set_Light
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Light_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Light_GC;
 
    function Get_Light
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Light_GC;
 
    procedure Set_Dark_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC);
 
    function Get_Dark_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
 
    procedure Set_Dark
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Dark_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Dark_GC;
 
    function Get_Dark
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Dark_GC;
 
    procedure Set_Middle_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC);
 
    function Get_Middle_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
 
    procedure Set_Middle
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Middle_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Middle_GC;
 
    function Get_Middle
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Middle_GC;
 
    procedure Set_Mid_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Middle_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Middle_GC;
 
    function Get_Mid_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Middle_GC;
 
    procedure Set_Mid
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Middle_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Middle_GC;
 
    function Get_Mid
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Middle_GC;
 
    procedure Set_Text_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC);
 
    function Get_Text_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
 
    procedure Set_Text
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Text_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Text_GC;
 
    function Get_Text
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Text_GC;
 
    procedure Set_Base_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC);
 
    function Get_Base_GC
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC;
 
    procedure Set_Base
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      GC         : in Gdk.GC.Gdk_GC) renames Set_Base_GC;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      GC         : Gdk.GC.Gdk_GC) renames Set_Base_GC;
 
    function Get_Base
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.GC.Gdk_GC
       renames Get_Base_GC;
 
    procedure Set_Bg_Pixmap
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type;
-      Pixmap     : in Gdk.Pixmap.Gdk_Pixmap);
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type;
+      Pixmap     : Gdk.Pixmap.Gdk_Pixmap);
 
    function Get_Bg_Pixmap
-     (Style      : in Gtk_Style;
-      State_Type : in Enums.Gtk_State_Type) return Gdk.Pixmap.Gdk_Pixmap;
+     (Style      : Gtk_Style;
+      State_Type : Enums.Gtk_State_Type) return Gdk.Pixmap.Gdk_Pixmap;
 
-   function X_Thickness (Style : in Gtk_Style) return Gint;
+   function X_Thickness (Style : Gtk_Style) return Gint;
    --  Width of the vertical scrollbars and ranges when Style is applied.
    --  In fact, this thickness is used for a lot of widgets whose width
    --  does not depend on their content, such as rulers,...
 
-   function Y_Thickness (Style : in Gtk_Style) return Gint;
+   function Y_Thickness (Style : Gtk_Style) return Gint;
    --  Height of the horizontal scrollbars and ranges when Style is applied.
 
-   procedure Draw_Hline
-     (Style      : in Gtk_Style;
-      Window     : in Gdk.Window.Gdk_Window;
-      State_Type : in Enums.Gtk_State_Type;
-      X1, X2     : in Gint;
-      Y          : in Gint);
-
-   procedure Draw_Vline
-     (Style      : in Gtk_Style;
-      Window     : in Gdk.Window.Gdk_Window;
-      State_Type : in Enums.Gtk_State_Type;
-      Y1, Y2     : in Gint;
-      X          : in Gint);
-
-   procedure Draw_Shadow
-     (Style       : in Gtk_Style;
-      Window      : in Gdk.Window.Gdk_Window;
-      State_Type  : in Enums.Gtk_State_Type;
-      Shadow_Type : in Enums.Gtk_Shadow_Type;
-      X, Y        : in Gint;
-      Width       : in Gint;
-      Height      : in Gint);
-
-   procedure Draw_Polygon
-     (Style      : in Gtk_Style;
-      Window     : in Gdk.Window.Gdk_Window;
-      State_Type : in Enums.Gtk_State_Type;
-      Shadow_Type : in Enums.Gtk_Shadow_Type;
-      Points     : in Gdk.Types.Gdk_Points_Array;
-      Fill       : in Boolean);
-
-   procedure Draw_Arrow
-     (Style       : in Gtk_Style;
-      Window      : in Gdk.Window.Gdk_Window;
-      State_Type  : in Enums.Gtk_State_Type;
-      Shadow_Type : in Enums.Gtk_Shadow_Type;
-      Arrow_Type  : in Enums.Gtk_Arrow_Type;
-      Fill        : in Boolean;
-      X, Y        : in Gint;
-      Width       : in Gint;
-      Height      : in Gint);
-
-   procedure Draw_Diamond
-     (Style       : in Gtk_Style;
-      Window      : in Gdk.Window.Gdk_Window;
-      State_Type  : in Enums.Gtk_State_Type;
-      Shadow_Type : in Enums.Gtk_Shadow_Type;
-      X, Y        : in Gint;
-      Width       : in Gint;
-      Height      : in Gint);
-
-   procedure Draw_Oval
-     (Style       : in Gtk_Style;
-      Window      : in Gdk.Window.Gdk_Window;
-      State_Type  : in Enums.Gtk_State_Type;
-      Shadow_Type : in Enums.Gtk_Shadow_Type;
-      X, Y        : in Gint;
-      Width       : in Gint;
-      Height      : in Gint);
-
-   procedure Draw_String
-     (Style       : in Gtk_Style;
-      Window      : in Gdk.Window.Gdk_Window;
-      State_Type  : in Enums.Gtk_State_Type;
-      X, Y        : in Gint;
-      Str         : in String);
-
-   procedure Ref (Object : in Gtk_Style);
-   procedure Unref (Object : in Gtk_Style);
-
 private
+   pragma Import (C, Get_Type, "gtk_style_get_type");
    pragma Import (C, Attach, "gtk_style_attach");
    pragma Import (C, Copy, "gtk_style_copy");
    pragma Import (C, Detach, "gtk_style_detach");
@@ -474,7 +473,6 @@ private
    pragma Import (C, Unref, "gtk_style_unref");
    pragma Import (C, Draw_Diamond, "gtk_draw_diamond");
    pragma Import (C, Draw_Hline, "gtk_draw_hline");
-   pragma Import (C, Draw_Oval, "gtk_draw_oval");
    pragma Import (C, Draw_Shadow, "gtk_draw_shadow");
    pragma Import (C, Draw_Vline, "gtk_draw_vline");
    pragma Import (C, Set_Font, "ada_style_set_font");
@@ -486,3 +484,44 @@ private
    pragma Import (C, X_Thickness, "ada_style_get_x_thickness");
    pragma Import (C, Y_Thickness, "ada_style_get_y_thickness");
 end Gtk.Style;
+
+--  missing:
+--  gtk_style_apply_default_background
+--  gtk_style_lookup_icon_set
+--  gtk_style_render_icon
+--  gtk_draw_box
+--  gtk_draw_flat_box
+--  gtk_draw_check
+--  gtk_draw_option
+--  gtk_draw_tab
+--  gtk_draw_shadow_gap
+--  gtk_draw_box_gap
+--  gtk_draw_extension
+--  gtk_draw_focus
+--  gtk_draw_slider
+--  gtk_draw_handle
+--  gtk_draw_expander
+--  gtk_draw_layout
+--  gtk_draw_resize_grip
+--  gtk_paint_hline
+--  gtk_paint_vline
+--  gtk_paint_shadow
+--  gtk_paint_polygon
+--  gtk_paint_arrow
+--  gtk_paint_diamond
+--  gtk_paint_box
+--  gtk_paint_flat_box
+--  gtk_paint_check
+--  gtk_paint_option
+--  gtk_paint_tab
+--  gtk_paint_shadow_gap
+--  gtk_paint_box_gap
+--  gtk_paint_extension
+--  gtk_paint_focus
+--  gtk_paint_slider
+--  gtk_paint_handle
+--  gtk_paint_expander
+--  gtk_paint_layout
+--  gtk_paint_resize_grip
+--  gtk_boder_copy
+--  gtk_boder_free

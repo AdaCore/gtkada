@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -67,15 +67,15 @@
 --  you start with visible windows, some window managers will not be able to
 --  correctly merge the two windows (Enlightenment for instance).
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Container;
 with Gdk.Window;
 
 package Gtk.Socket is
 
-   type Gtk_Socket_Record is new Gtk.Container.Gtk_Container_Record
-     with private;
+   type Gtk_Socket_Record is new
+     Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Socket is access all Gtk_Socket_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Socket);
@@ -85,9 +85,10 @@ package Gtk.Socket is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   procedure Steal
-     (Socket : access Gtk_Socket_Record;
-      Wid    : in     Guint32);
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with a Gtk_Socket.
+
+   procedure Steal (Socket : access Gtk_Socket_Record; Wid : Guint32);
    --  Reparent a pre-existing toplevel window into a Gtk_Socket.
    --  Wid is the XID of an existing toplevel window.
 
@@ -103,6 +104,7 @@ private
    type Gtk_Socket_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_socket_get_type");
 end Gtk.Socket;
 
 --  <example>

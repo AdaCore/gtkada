@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,20 +33,20 @@ package Gtk.Rc is
 
    procedure Init;
 
-   procedure Parse (Filename : in String);
+   procedure Parse (Filename : String);
 
-   procedure Parse_String (Rc_String : in String);
+   procedure Parse_String (Rc_String : String);
 
    function Get_Style
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Gtk_Rc_Style;
 
    procedure Add_Widget_Name_Style
-     (Style   : in Gtk_Rc_Style;
-      Pattern : in String);
+     (Style   : Gtk_Rc_Style;
+      Pattern : String);
 
    procedure Add_Widget_Class_Style
-     (Style   : in Gtk_Rc_Style;
-      Pattern : in String);
+     (Style   : Gtk_Rc_Style;
+      Pattern : String);
 
 private
 

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,11 +37,12 @@ package body Gtk.Radio_Button is
    -- Group --
    -----------
 
-   function Group (Radio_Button : access Gtk_Radio_Button_Record)
-     return Widget_SList.GSlist
+   function Group
+     (Radio_Button : access Gtk_Radio_Button_Record) return Widget_SList.GSlist
    is
-      function Internal (Button : in System.Address) return System.Address;
+      function Internal (Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_radio_button_group");
+
       Group : Widget_SList.GSlist;
 
    begin
@@ -55,8 +56,8 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
-      Group        : in  Widget_SList.GSlist := Widget_SList.Null_List;
-      Label        : in String := "") is
+      Group        : Widget_SList.GSlist := Widget_SList.Null_List;
+      Label        : String := "") is
    begin
       Radio_Button := new Gtk_Radio_Button_Record;
       Initialize (Radio_Button, Group, Label);
@@ -68,8 +69,8 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
-      Group        : in Gtk_Radio_Button;
-      Label        : in String := "") is
+      Group        : Gtk_Radio_Button;
+      Label        : String := "") is
    begin
       Radio_Button := new Gtk_Radio_Button_Record;
       Initialize (Radio_Button, Group, Label);
@@ -81,15 +82,14 @@ package body Gtk.Radio_Button is
 
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
-      Group        : in Widget_SList.GSlist;
-      Label        : in String)
+      Group        : Widget_SList.GSlist;
+      Label        : String)
    is
-      function Internal (Group : in System.Address;
-                         Label : in String)
-                        return System.Address;
+      function Internal
+        (Group : System.Address; Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_radio_button_new_with_label");
-      function Internal2 (Group : in System.Address)
-                         return System.Address;
+
+      function Internal2 (Group : System.Address) return System.Address;
       pragma Import (C, Internal2, "gtk_radio_button_new");
 
    begin
@@ -109,21 +109,24 @@ package body Gtk.Radio_Button is
 
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
-      Group        : in Gtk_Radio_Button;
-      Label        : in String)
+      Group        : Gtk_Radio_Button;
+      Label        : String)
    is
-      function Internal (Group : in System.Address;
-                         Label : in String) return System.Address;
-      pragma Import (C, Internal,
-                     "gtk_radio_button_new_with_label_from_widget");
-      function Internal2 (Group : in System.Address) return System.Address;
+      function Internal
+        (Group : System.Address; Label : String) return System.Address;
+      pragma Import
+        (C, Internal, "gtk_radio_button_new_with_label_from_widget");
+
+      function Internal2 (Group : System.Address) return System.Address;
       pragma Import (C, Internal2, "gtk_radio_button_new_from_widget");
 
       S : System.Address := System.Null_Address;
+
    begin
       if Group /= null then
          S := Get_Object (Group);
       end if;
+
       if Label = "" then
          Set_Object (Radio_Button, Internal2 (S));
       else
@@ -137,10 +140,11 @@ package body Gtk.Radio_Button is
    -- Set_Group --
    ---------------
 
-   procedure Set_Group (Radio_Button : access Gtk_Radio_Button_Record;
-                        Group        : in Widget_SList.GSlist) is
-      procedure Internal (Button : in System.Address;
-                          Group  : in System.Address);
+   procedure Set_Group
+     (Radio_Button : access Gtk_Radio_Button_Record;
+      Group        : Widget_SList.GSlist)
+   is
+      procedure Internal (Button : System.Address; Group : System.Address);
       pragma Import (C, Internal, "gtk_radio_button_set_group");
 
    begin

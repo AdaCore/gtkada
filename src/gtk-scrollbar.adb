@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,7 +37,7 @@ package body Gtk.Scrollbar is
 
    procedure Gtk_New_Hscrollbar
      (Widget     : out Gtk_Scrollbar;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment) is
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment) is
    begin
       Widget := new Gtk_Scrollbar_Record;
       Initialize_Hscrollbar (Widget, Adjustment);
@@ -49,7 +49,7 @@ package body Gtk.Scrollbar is
 
    procedure Gtk_New_Vscrollbar
      (Widget     : out Gtk_Scrollbar;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment) is
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment) is
    begin
       Widget := new Gtk_Scrollbar_Record;
       Initialize_Vscrollbar (Widget, Adjustment);
@@ -61,10 +61,9 @@ package body Gtk.Scrollbar is
 
    procedure Initialize_Hscrollbar
      (Widget     : access Gtk_Scrollbar_Record'Class;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Adjustment : in System.Address)
-        return System.Address;
+      function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_hscrollbar_new");
 
       Adj : System.Address;
@@ -88,10 +87,9 @@ package body Gtk.Scrollbar is
 
    procedure Initialize_Vscrollbar
      (Widget     : access Gtk_Scrollbar_Record'Class;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Adjustment : in System.Address)
-        return System.Address;
+      function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_vscrollbar_new");
 
       Adj : System.Address;

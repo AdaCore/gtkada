@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,34 +55,33 @@
 --  Set_Scroll_Adjustments in the call to Gtk.Object.Initialize_Class_Record.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
-with Gtk.Adjustment;
-with Gtk.Container;
+with Gtk.Adjustment; use Gtk.Adjustment;
+with Gtk.Bin;
 with Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Scrolled_Window is
 
-   type Gtk_Scrolled_Window_Record is new Container.Gtk_Container_Record
-     with private;
+   type Gtk_Scrolled_Window_Record is new Bin.Gtk_Bin_Record with private;
    type Gtk_Scrolled_Window is access all Gtk_Scrolled_Window_Record'Class;
 
-   type Gtk_Corner_Type is (Corner_Top_Left,
-                            Corner_Bottom_Left,
-                            Corner_Top_Right,
-                            Corner_Bottom_Right);
+   type Gtk_Corner_Type is
+     (Corner_Top_Left,
+      Corner_Bottom_Left,
+      Corner_Top_Right,
+      Corner_Bottom_Right);
    --  Type used by Set_Placement below to determine the location of the
    --  child widget with respect to the scrollbars.
    --  Corner_Top_Left means the child is in the top left, with the scrollbars
    --  underneath and to the right.
+   for Gtk_Corner_Type'Size use Gint'Size;
 
    procedure Gtk_New
-     (Scrolled_Window :    out Gtk_Scrolled_Window;
-      Hadjustment     : Adjustment.Gtk_Adjustment :=
-        Adjustment.Null_Adjustment;
-      Vadjustment     : Adjustment.Gtk_Adjustment :=
-        Adjustment.Null_Adjustment);
+     (Scrolled_Window : out Gtk_Scrolled_Window;
+      Hadjustment     : Gtk_Adjustment := Null_Adjustment;
+      Vadjustment     : Gtk_Adjustment := Null_Adjustment);
    --  Create a new scrolled window.
    --  The two arguments are the scrolled window's horizontal and vertical
    --  adjustments; these will be shared with the scrollbars and the child
@@ -92,15 +91,60 @@ package Gtk.Scrolled_Window is
 
    procedure Initialize
      (Scrolled_Window : access Gtk_Scrolled_Window_Record'Class;
-      Hadjustment     : Adjustment.Gtk_Adjustment :=
-        Adjustment.Null_Adjustment;
-      Vadjustment     : Adjustment.Gtk_Adjustment :=
-        Adjustment.Null_Adjustment);
+      Hadjustment     : Gtk_Adjustment := Null_Adjustment;
+      Vadjustment     : Gtk_Adjustment := Null_Adjustment);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Scrolled_Window.
+
+   procedure Set_Hadjustment
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+      Hadjustment     : Gtk_Adjustment);
+   --  Set the Gtk_Adjustment for the horizontal scrollbar.
+
+   procedure Set_Vadjustment
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+      Vadjustment     : Gtk_Adjustment);
+   --  Set the Gtk_Adjustment for the vertical scrollbar.
+
+   function Get_Hadjustment
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk_Adjustment;
+   --  Return the horizontal scrollbar's adjustment.
+   --  This adjustment is used to connect the horizontal scrollbar to the child
+   --  widget's horizontal scroll functionality.
+
+   function Get_Vadjustment
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk_Adjustment;
+   --  Return the vertical scrollbar's adjustment.
+   --  This adjustment is used to connect the vertical scrollbar to the child
+   --  widget's vertical scroll functionality.
+
+   procedure Set_Policy
+     (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
+      H_Scrollbar_Policy : Enums.Gtk_Policy_Type;
+      V_Scrollbar_Policy : Enums.Gtk_Policy_Type);
+   --  Set the scrollbar policy for the horizontal and vertical scrollbars.
+   --  It determines when the scrollbar should appear; it is a value
+   --  from the Gtk_Policy_Type enumeration. If Policy_Always, the scrollbar is
+   --  always present; if Policy_Never, the scrollbar is never present; if
+   --  Policy_Automatic, the scrollbar is present only if needed (that is, if
+   --  the slider part of the bar would be smaller than the trough - the
+   --  display is larger than the page size).
+
+   procedure Set_Placement
+     (Scrolled_Window  : access Gtk_Scrolled_Window_Record;
+      Window_Placement : Gtk_Corner_Type);
+   --  Determine the location of the widget with respect to the scrollbars.
+   --  The default is Corner_Top_Left.
+
+   procedure Set_Shadow_Type
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+      Shadow_Type     : Gtk.Enums.Gtk_Shadow_Type);
+   --  Change the type of shadow drawn around the contents of Scrolled_Window.
 
    procedure Add_With_Viewport
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
@@ -121,48 +165,6 @@ package Gtk.Scrolled_Window is
    --  A widget supports scrolling natively if it contains a valid
    --  "set_scroll_adjustments" signal.
 
-   function Get_Hadjustment
-     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
-      return Adjustment.Gtk_Adjustment;
-   --  Return the horizontal scrollbar's adjustment.
-   --  This adjustment is used to connect the horizontal scrollbar to the child
-   --  widget's horizontal scroll functionality.
-
-   function Get_Vadjustment
-     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
-      return Adjustment.Gtk_Adjustment;
-   --  Return the vertical scrollbar's adjustment.
-   --  This adjustment is used to connect the vertical scrollbar to the child
-   --  widget's vertical scroll functionality.
-
-   procedure Set_Hadjustment
-     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
-      Hadjustment     : Adjustment.Gtk_Adjustment);
-   --  Set the Gtk_Adjustment for the horizontal scrollbar.
-
-   procedure Set_Vadjustment
-     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
-      Vadjustment     : Adjustment.Gtk_Adjustment);
-   --  Set the Gtk_Adjustment for the vertical scrollbar.
-
-   procedure Set_Placement
-     (Scrolled_Window  : access Gtk_Scrolled_Window_Record;
-      Window_Placement : Gtk_Corner_Type);
-   --  Determine the location of the widget with respect to the scrollbars.
-   --  The default is Corner_Top_Left.
-
-   procedure Set_Policy
-     (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
-      H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
-      V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type);
-   --  Set the scrollbar policy for the horizontal and vertical scrollbars.
-   --  It determines when the scrollbar should appear; it is a value
-   --  from the Gtk_Policy_Type enumeration. If Policy_Always, the scrollbar is
-   --  always present; if Policy_Never, the scrollbar is never present; if
-   --  Policy_Automatic, the scrollbar is present only if needed (that is, if
-   --  the slider part of the bar would be smaller than the trough - the
-   --  display is larger than the page size).
-
    -------------
    -- Signals --
    -------------
@@ -172,8 +174,7 @@ package Gtk.Scrolled_Window is
    --  </signals>
 
 private
-   type Gtk_Scrolled_Window_Record is new Container.Gtk_Container_Record
-     with null record;
+   type Gtk_Scrolled_Window_Record is new Bin.Gtk_Bin_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_scrolled_window_get_type");
 end Gtk.Scrolled_Window;

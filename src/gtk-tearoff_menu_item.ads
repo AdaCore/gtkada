@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,12 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Gtk.Menu_Item;
 
 package Gtk.Tearoff_Menu_Item is
 
-   type Gtk_Tearoff_Menu_Item_Record is new Menu_Item.Gtk_Menu_Item_Record
-     with private;
+   type Gtk_Tearoff_Menu_Item_Record is
+     new Menu_Item.Gtk_Menu_Item_Record with private;
    type Gtk_Tearoff_Menu_Item is access all Gtk_Tearoff_Menu_Item_Record'Class;
 
    procedure Gtk_New (Menu_Item : out Gtk_Tearoff_Menu_Item);

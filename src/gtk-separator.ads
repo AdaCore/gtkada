@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,6 +26,8 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
+
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Widget;
 
@@ -53,8 +55,8 @@ package Gtk.Separator is
      (Separator : access Gtk_Separator_Record'Class);
 
 private
-   type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record
-     with null record;
+   type Gtk_Separator_Record is new
+     Gtk.Widget.Gtk_Widget_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_separator_get_type");
 end Gtk.Separator;

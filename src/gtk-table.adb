@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,26 +40,28 @@ package body Gtk.Table is
    procedure Attach
      (Table         : access Gtk_Table_Record;
       Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Left_Attach   : in Guint;
-      Right_Attach  : in Guint;
-      Top_Attach    : in Guint;
-      Bottom_Attach : in Guint;
-      Xoptions      : in Gtk_Attach_Options := Expand or Fill;
-      Yoptions      : in Gtk_Attach_Options := Expand or Fill;
-      Xpadding      : in Guint := 0;
-      Ypadding      : in Guint := 0)
+      Left_Attach   : Guint;
+      Right_Attach  : Guint;
+      Top_Attach    : Guint;
+      Bottom_Attach : Guint;
+      Xoptions      : Gtk_Attach_Options := Expand or Fill;
+      Yoptions      : Gtk_Attach_Options := Expand or Fill;
+      Xpadding      : Guint := 0;
+      Ypadding      : Guint := 0)
    is
-      procedure Internal (Table         : in System.Address;
-                          Child         : in System.Address;
-                          Left_Attach   : in Guint;
-                          Right_Attach  : in Guint;
-                          Top_Attach    : in Guint;
-                          Bottom_Attach : in Guint;
-                          Xoptions      : in Gint;
-                          Yoptions      : in Gint;
-                          Xpadding      : in Guint;
-                          Ypadding      : in Guint);
+      procedure Internal
+        (Table         : System.Address;
+         Child         : System.Address;
+         Left_Attach   : Guint;
+         Right_Attach  : Guint;
+         Top_Attach    : Guint;
+         Bottom_Attach : Guint;
+         Xoptions      : Gint;
+         Yoptions      : Gint;
+         Xpadding      : Guint;
+         Ypadding      : Guint);
       pragma Import (C, Internal, "gtk_table_attach");
+
    begin
       Internal
         (Get_Object (Table), Get_Object (Child), Left_Attach, Right_Attach,
@@ -74,19 +76,20 @@ package body Gtk.Table is
    procedure Attach_Defaults
      (Table         : access Gtk_Table_Record;
       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Left_Attach   : in Guint;
-      Right_Attach  : in Guint;
-      Top_Attach    : in Guint;
-      Bottom_Attach : in Guint)
+      Left_Attach   : Guint;
+      Right_Attach  : Guint;
+      Top_Attach    : Guint;
+      Bottom_Attach : Guint)
    is
       procedure Internal
-        (Table         : in System.Address;
-         Widget        : in System.Address;
-         Left_Attach   : in Guint;
-         Right_Attach  : in Guint;
-         Top_Attach    : in Guint;
-         Bottom_Attach : in Guint);
+        (Table         : System.Address;
+         Widget        : System.Address;
+         Left_Attach   : Guint;
+         Right_Attach  : Guint;
+         Top_Attach    : Guint;
+         Bottom_Attach : Guint);
       pragma Import (C, Internal, "gtk_table_attach_defaults");
+
    begin
       Internal
         (Get_Object (Table), Get_Object (Widget), Left_Attach, Right_Attach,
@@ -97,10 +100,11 @@ package body Gtk.Table is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget      : out Gtk_Table;
-                      Rows        : in Guint;
-                      Columns     : in Guint;
-                      Homogeneous : in Boolean) is
+   procedure Gtk_New
+     (Widget      : out Gtk_Table;
+      Rows        : Guint;
+      Columns     : Guint;
+      Homogeneous : Boolean) is
    begin
       Widget := new Gtk_Table_Record;
       Initialize (Widget, Rows, Columns, Homogeneous);
@@ -110,16 +114,18 @@ package body Gtk.Table is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget      : access Gtk_Table_Record'Class;
-                         Rows        : in Guint;
-                         Columns     : in Guint;
-                         Homogeneous : in Boolean)
+   procedure Initialize
+     (Widget      : access Gtk_Table_Record'Class;
+      Rows        : Guint;
+      Columns     : Guint;
+      Homogeneous : Boolean)
    is
-      function Internal (Rows        : in Guint;
-                         Columns     : in Guint;
-                         Homogeneous : in Gint)
-         return System.Address;
+      function Internal
+        (Rows        : Guint;
+         Columns     : Guint;
+         Homogeneous : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_table_new");
+
    begin
       Set_Object (Widget, Internal (Rows, Columns, Boolean'Pos (Homogeneous)));
       Initialize_User_Data (Widget);
@@ -129,14 +135,17 @@ package body Gtk.Table is
    -- Resize --
    ------------
 
-   procedure Resize (Table      : access Gtk_Table_Record;
-                     Rows        : in Guint;
-                     Columns     : in Guint)
+   procedure Resize
+     (Table   : access Gtk_Table_Record;
+      Rows    : Guint;
+      Columns : Guint)
    is
-      procedure Internal (Table   : in System.Address;
-                          Column  : in Guint;
-                          Spacing : in Guint);
+      procedure Internal
+        (Table   : System.Address;
+         Column  : Guint;
+         Spacing : Guint);
       pragma Import (C, Internal, "gtk_table_resize");
+
    begin
       Internal (Get_Object (Table), Rows, Columns);
    end Resize;
@@ -145,14 +154,17 @@ package body Gtk.Table is
    -- Set_Col_Spacing --
    ---------------------
 
-   procedure Set_Col_Spacing (Table   : access Gtk_Table_Record;
-                              Column  : in Guint;
-                              Spacing : in Guint)
+   procedure Set_Col_Spacing
+     (Table   : access Gtk_Table_Record;
+      Column  : Guint;
+      Spacing : Guint)
    is
-      procedure Internal (Table   : in System.Address;
-                          Column  : in Guint;
-                          Spacing : in Guint);
+      procedure Internal
+        (Table   : System.Address;
+         Column  : Guint;
+         Spacing : Guint);
       pragma Import (C, Internal, "gtk_table_set_col_spacing");
+
    begin
       Internal (Get_Object (Table), Column, Spacing);
    end Set_Col_Spacing;
@@ -161,12 +173,12 @@ package body Gtk.Table is
    -- Set_Col_Spacings --
    ----------------------
 
-   procedure Set_Col_Spacings (Table   : access Gtk_Table_Record;
-                               Spacing : in Guint)
+   procedure Set_Col_Spacings
+     (Table : access Gtk_Table_Record; Spacing : Guint)
    is
-      procedure Internal (Table   : in System.Address;
-                          Spacing : in Guint);
+      procedure Internal (Table : System.Address; Spacing : Guint);
       pragma Import (C, Internal, "gtk_table_set_col_spacings");
+
    begin
       Internal (Get_Object (Table), Spacing);
    end Set_Col_Spacings;
@@ -177,12 +189,11 @@ package body Gtk.Table is
 
    procedure Set_Homogeneous
      (Table       : access Gtk_Table_Record;
-      Homogeneous : in Boolean)
+      Homogeneous : Boolean)
    is
-      procedure Internal
-        (Table       : in System.Address;
-         Homogeneous : in Gint);
+      procedure Internal (Table : System.Address; Homogeneous : Gint);
       pragma Import (C, Internal, "gtk_table_set_homogeneous");
+
    begin
       Internal (Get_Object (Table), Boolean'Pos (Homogeneous));
    end Set_Homogeneous;
@@ -191,14 +202,17 @@ package body Gtk.Table is
    -- Set_Row_Spacing --
    ---------------------
 
-   procedure Set_Row_Spacing (Table   : access Gtk_Table_Record;
-                              Row     : in Guint;
-                              Spacing : in Guint)
+   procedure Set_Row_Spacing
+     (Table   : access Gtk_Table_Record;
+      Row     : Guint;
+      Spacing : Guint)
    is
-      procedure Internal (Table   : in System.Address;
-                          Row     : in Guint;
-                          Spacing : in Guint);
+      procedure Internal
+        (Table   : System.Address;
+         Row     : Guint;
+         Spacing : Guint);
       pragma Import (C, Internal, "gtk_table_set_row_spacing");
+
    begin
       Internal (Get_Object (Table), Row, Spacing);
    end Set_Row_Spacing;
@@ -207,12 +221,13 @@ package body Gtk.Table is
    -- Set_Row_Spacings --
    ----------------------
 
-   procedure Set_Row_Spacings (Table   : access Gtk_Table_Record;
-                               Spacing : in Guint)
+   procedure Set_Row_Spacings
+     (Table   : access Gtk_Table_Record;
+      Spacing : Guint)
    is
-      procedure Internal (Table   : in System.Address;
-                          Spacing : in Guint);
+      procedure Internal (Table : System.Address; Spacing : Guint);
       pragma Import (C, Internal, "gtk_table_set_row_spacings");
+
    begin
       Internal (Get_Object (Table), Spacing);
    end Set_Row_Spacings;

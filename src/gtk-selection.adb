@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,9 +34,7 @@ package body Gtk.Selection is
    -- Get_Data_As_String --
    ------------------------
 
-   function Get_Data_As_String
-     (Selection : in Selection_Data) return String
-   is
+   function Get_Data_As_String (Selection : Selection_Data) return String is
       function Internal
         (Selection : Selection_Data) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gtk_dnd_get_data");
@@ -51,14 +48,13 @@ package body Gtk.Selection is
    ------------------------
 
    procedure Selection_Data_Set
-     (Selection : in Selection_Data;
-      The_Type  : in Gdk.Types.Gdk_Atom;
-      Format    : in Gint;
-      Data      : in String) is
+     (Selection : Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : String) is
    begin
       Selection_Data_Set
-        (Selection, The_Type, Format,
-         Data (Data'First)'Address, Data'Length);
+        (Selection, The_Type, Format, Data'Address, Data'Length);
    end Selection_Data_Set;
 
    ---------------------
@@ -66,11 +62,10 @@ package body Gtk.Selection is
    ---------------------
 
    function Target_List_New
-     (Targets : in Target_Entry_Array) return Target_List
+     (Targets : Target_Entry_Array) return Target_List
    is
       function Internal
-        (Targets   : System.Address;
-         N_Targets : Guint) return Target_List;
+        (Targets : System.Address; N_Targets : Guint) return Target_List;
       pragma Import (C, Internal, "gtk_target_list_new");
 
    begin
@@ -82,8 +77,8 @@ package body Gtk.Selection is
    ---------------------------
 
    procedure Target_List_Add_Table
-     (List    : in Target_List;
-      Targets : in Target_Entry_Array)
+     (List    : Target_List;
+      Targets : Target_Entry_Array)
    is
       procedure Internal
         (List      : Target_List;
@@ -100,8 +95,8 @@ package body Gtk.Selection is
    ----------------------
 
    procedure Target_List_Find
-     (List   : in Target_List;
-      Target : in Gdk.Types.Gdk_Atom;
+     (List   : Target_List;
+      Target : Gdk.Types.Gdk_Atom;
       Info   : out Guint;
       Found  : out Boolean)
    is
@@ -123,9 +118,9 @@ package body Gtk.Selection is
    ---------------
 
    function Owner_Set
-     (Widget    : in Gtk.Widget.Gtk_Widget;
-      Selection : in Gdk_Selection := Selection_Primary;
-      Time      : in Guint32 := 0) return Boolean
+     (Widget    : Gtk.Widget.Gtk_Widget;
+      Selection : Gdk_Selection := Selection_Primary;
+      Time      : Guint32 := 0) return Boolean
    is
       function Internal
         (Widget    : System.Address;
@@ -143,15 +138,15 @@ package body Gtk.Selection is
 
    procedure Add_Target
      (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Selection : in Gdk_Selection;
-      Target    : in Gdk.Types.Gdk_Atom;
-      Info      : in Guint)
+      Selection : Gdk_Selection;
+      Target    : Gdk.Types.Gdk_Atom;
+      Info      : Guint)
    is
       procedure Internal
         (Widget    : System.Address;
-         Selection : in Gdk_Selection;
-         Target    : in Gdk.Types.Gdk_Atom;
-         Info      : in Guint);
+         Selection : Gdk_Selection;
+         Target    : Gdk.Types.Gdk_Atom;
+         Info      : Guint);
       pragma Import (C, Internal, "gtk_selection_add_target");
 
    begin
@@ -164,8 +159,8 @@ package body Gtk.Selection is
 
    procedure Add_Targets
      (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Selection : in Gdk_Selection;
-      Targets   : in Target_Entry_Array)
+      Selection : Gdk_Selection;
+      Targets   : Target_Entry_Array)
    is
       procedure Internal
         (Widget    : System.Address;
@@ -185,9 +180,9 @@ package body Gtk.Selection is
 
    function Convert
      (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Selection : in Gdk_Selection := Selection_Primary;
-      Target    : in Gdk.Types.Gdk_Atom;
-      Time      : in Guint32 := 0) return Boolean
+      Selection : Gdk_Selection := Selection_Primary;
+      Target    : Gdk.Types.Gdk_Atom;
+      Time      : Guint32 := 0) return Boolean
    is
       function Internal
         (Widget    : System.Address;
@@ -201,6 +196,23 @@ package body Gtk.Selection is
                                     Target, Time));
    end Convert;
 
+   -------------------
+   -- Clear_Targets --
+   -------------------
+
+   procedure Clear_Targets
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Selection : Gdk_Selection)
+   is
+      procedure Internal
+        (Widget    : System.Address;
+         Selection : Gdk_Selection);
+      pragma Import (C, Internal, "gtk_selection_clear_targets");
+
+   begin
+      Internal (Get_Object (Widget), Selection);
+   end Clear_Targets;
+
    ----------------
    -- Remove_All --
    ----------------
@@ -208,6 +220,7 @@ package body Gtk.Selection is
    procedure Remove_All (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_selection_remove_all");
+
    begin
       Internal (Get_Object (Widget));
    end Remove_All;
