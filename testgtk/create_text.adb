@@ -48,7 +48,7 @@ package body Create_Text is
 
    type String_Access is access String;
    type Text_Colors_Type is record
-      Red, Green, Blue : Guint;
+      Red, Green, Blue : Guint16;
       Name : String_Access;
    end record;
    type Text_Colors_Type_Array is array (Natural range <>) of
@@ -129,7 +129,7 @@ package body Create_Text is
 
       Gtk_New (Scrolled);
       Pack_Start (Box2, Scrolled, True, True, 0);
-      Set_Policy (Scrolled, Policy_Never, Policy_Always);
+      Set_Policy (Scrolled, Policy_Always, Policy_Always);
       Show (Scrolled);
 
       Gtk_New (Text);
