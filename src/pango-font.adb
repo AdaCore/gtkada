@@ -1,0 +1,146 @@
+-----------------------------------------------------------------------
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
+--                                                                   --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
+
+package body Pango.Font is
+
+   --  When managing the Family_Name field of Pango_Font_Description_Record,
+   --  we prefer to use the memory allocation routines provided by gtk+ (ie
+   --  g_strdup and g_free) rather than manage it using the routines provided
+   --  in Interfaces.C.Strings. This is necessary to avoid mixing the use of
+   --  both Ada and C memory allocation/deallocation routines, which can
+   --  confuse their memory tracking mechanism, and which might even lead to
+   --  failures in certains OSes.
+
+   function G_Strdup (Str : String) return Interfaces.C.Strings.chars_ptr;
+   pragma Import (C, G_Strdup, "g_strdup");
+
+   procedure G_Free (C_Str : Interfaces.C.Strings.chars_ptr);
+   pragma Import (C, G_Free, "g_free");
+
+   -----------
+   -- Equal --
+   -----------
+
+   function Equal
+     (Desc1 : Pango_Font_Description;
+      Desc2 : Pango_Font_Description)
+     return Boolean
+   is
+      function Internal
+        (Desc1 : Pango_Font_Description;
+         Desc2 : Pango_Font_Description)
+        return Gboolean;
+      pragma Import (C, Internal, "pango_font_description_equal");
+   begin
+      return Boolean'Val (Internal (Desc1, Desc2));
+   end Equal;
+
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Desc : in out Pango_Font_Description)
+   is
+      procedure Internal (Desc : Pango_Font_Description);
+      pragma Import (C, Internal, "pango_font_description_free");
+   begin
+      Internal (Desc);
+      Desc := null;
+   end Free;
+
+   -----------------
+   -- From_String --
+   -----------------
+
+   function From_String (Str : String) return Pango_Font_Description
+   is
+      function Internal (Str : String) return Pango_Font_Description;
+      pragma Import (C, Internal, "pango_font_description_from_string");
+   begin
+      return Internal (Str & ASCII.NUL);
+   end From_String;
+
+   ---------------
+   -- To_String --
+   ---------------
+
+   function To_String (Desc : Pango_Font_Description) return String
+   is
+      function Internal (Desc : Pango_Font_Description)
+        return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "pango_font_description_to_string");
+      C_Result : Interfaces.C.Strings.chars_ptr := Internal (Desc);
+      Result : constant String := Interfaces.C.Strings.Value (C_Result);
+   begin
+      G_Free (C_Result);
+      return Result;
+   end To_String;
+
+   -----------------
+   -- To_Filename --
+   -----------------
+
+   function To_Filename (Desc : Pango_Font_Description) return String
+   is
+      function Internal (Desc : Pango_Font_Description)
+        return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "pango_font_description_to_filename");
+      C_Result : Interfaces.C.Strings.chars_ptr := Internal (Desc);
+      Result : constant String := Interfaces.C.Strings.Value (C_Result);
+   begin
+      G_Free (C_Result);
+      return Result;
+   end To_Filename;
+
+   ---------------------
+   -- Get_Family_Name --
+   ---------------------
+
+   function Get_Family_Name (Desc : Pango_Font_Description) return String is
+   begin
+      return Interfaces.C.Strings.Value (Desc.Family_Name);
+   end Get_Family_Name;
+
+   ---------------------
+   -- Set_Family_Name --
+   ---------------------
+
+   procedure Set_Family_Name
+     (Desc : Pango_Font_Description;
+      Name : String)
+   is
+      use type Interfaces.C.Strings.chars_ptr;
+   begin
+      if Desc.Family_Name /= Interfaces.C.Strings.Null_Ptr then
+         G_Free (Desc.Family_Name);
+      end if;
+      Desc.Family_Name := G_Strdup (Name & ASCII.NUL);
+   end Set_Family_Name;
+
+end Pango.Font;
