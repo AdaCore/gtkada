@@ -2719,7 +2719,8 @@ package body Gtkada.MDI is
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags : Child_Flags := All_Buttons;
-      Focus_Widget : Gtk.Widget.Gtk_Widget := null) return MDI_Child
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null;
+      Default_Width, Default_Height : Gint := -1) return MDI_Child
    is
       C           : MDI_Child;
       Requisition : Gtk_Requisition;
@@ -2767,6 +2768,15 @@ package body Gtkada.MDI is
 
       --  Set the default size request for C to that of Child.
       Size_Request (Child, Requisition);
+
+      if Default_Width /= -1 then
+         Requisition.Width := Default_Width;
+      end if;
+
+      if Default_Height /= -1 then
+         Requisition.Height := Default_Height;
+      end if;
+
       Set_Size_Request (C, Requisition.Width, Requisition.Height);
 
       --  If all items are maximized, add Child to the notebook

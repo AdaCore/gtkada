@@ -27,7 +27,7 @@
 -----------------------------------------------------------------------
 
 with Ada.Tags;
-with Glib;
+with Glib;        use Glib;
 with Glib.Xml_Int;
 with Gdk.GC;
 with Gdk.Color;
@@ -154,12 +154,16 @@ package Gtkada.MDI is
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags : Child_Flags := All_Buttons;
-      Focus_Widget : Gtk.Widget.Gtk_Widget := null) return MDI_Child;
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null;
+      Default_Width, Default_Height : Glib.Gint := -1) return MDI_Child;
    --  Add a new child to the MDI window, and return its embedding widget.
    --  Child mustn't be a Gtk_Window (or one of its children). Otherwise,
    --  Program_Error is raised.
    --
    --  Flags indicates which buttons should be made visible in the title bar.
+   --
+   --  (Default_Width, Default_Height) indicate the default size of the
+   --  widget. If they are set to -1, the size request of the widget is used.
    --
    --  You shouldn't access Child directly afterwards, but should manipulate
    --  its MDI_Child instead. However, as a special exception, you can
