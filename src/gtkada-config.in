@@ -4,8 +4,8 @@
 prefix=@prefix@
 
 gtk_libs="@GTK_LIBS@ @GL_LIBS@"
-gtkada_libs="-L@prefix@/include/gtkada -L@prefix@/lib"
-gtkada_cflags="-I@prefix@/include/gtkada"
+gtkada_libs="-L$prefix/include/gtkada -L$prefix/lib"
+gtkada_cflags="-I$prefix/include/gtkada"
 gtkada_lflags="-lgtkada"
 
 usage()
@@ -41,7 +41,7 @@ while test $# -gt 0; do
       exit 1
       ;;
     --static)
-      gtkada_libs="@prefix@/lib/libgtkada.a"
+      gtkada_libs="$prefix/lib/libgtkada.a"
       gtk_conf_pre=`gtk-config --prefix`
       glib_conf_pre=`glib-config --prefix`
       my_gtk_flags=`gtk-config --libs | sed -e 's/-lglib//g' -e 's/-lgtk//g' -e 's/-lgdk//g'`
