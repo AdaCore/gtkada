@@ -70,8 +70,11 @@ gtk_combobox_class_init (GtkComboBoxClass * klass)
 static void
 gtk_combobox_destroy (GtkObject * combobox)
 {
-  gtk_widget_destroy (GTK_COMBO_BOX (combobox)->popwin);
-  gtk_widget_unref (GTK_COMBO_BOX (combobox)->popwin);
+  if (GTK_COMBO_BOX (combobox)->popwin) {
+    gtk_widget_destroy (GTK_COMBO_BOX (combobox)->popwin);
+    gtk_widget_unref (GTK_COMBO_BOX (combobox)->popwin);
+    GTK_COMBO_BOX (combobox)->popwin = NULL;
+  }
 
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (*GTK_OBJECT_CLASS (parent_class)->destroy) (combobox);
