@@ -3249,11 +3249,16 @@ package body Gtkada.MDI is
             Put_In_Notebook (MDI, None, Child);
 
          else
-            Alloc := (Child.X, Child.Y,
-                      Allocation_Int (Child.Uniconified_Width),
-                      Allocation_Int (Child.Uniconified_Height));
             Put (MDI.Layout, Child, 0, 0);
-            Size_Allocate (Child, Alloc);
+
+            --  If the child was at least allocated once before (which doesn't
+            --  happen if we are destroying the MDI when it hasn't been mapped
+            if Child.Uniconified_Width /= -1 then
+               Alloc := (Child.X, Child.Y,
+                         Allocation_Int (Child.Uniconified_Width),
+                         Allocation_Int (Child.Uniconified_Height));
+               Size_Allocate (Child, Alloc);
+            end if;
          end if;
 
          Unref (Child);
