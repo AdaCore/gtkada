@@ -1,5 +1,5 @@
 
-GtkAda 1.2.3 release
+GtkAda 1.2.4 release
 --------------------
 
 GtkAda is an Ada95 graphical toolkit based on Gtk+ version 1.2.x. It
@@ -15,8 +15,8 @@ re-implemented and is also distributed.
 LSM entry follows :
 Begin3
 Title:  GtkAda
-Version: 1.2.3
-Entered-date: 05JUL99
+Version: 1.2.4
+Entered-date: 05AUG99
 Description: Ada95 graphical toolkit based on Gtk+ (version 1.2.x) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
@@ -28,9 +28,11 @@ Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
 
 
+New features in 1.2.4 include:
+
 New features in 1.2.3 include:
 
-- Minor bug fixes
+- Minor bug fixes in GATE code generation
 - Cosmetic fixes
 - Screen_Width_MM & Screen_Height_MM are now bound in Gdk.Main
 - New widgets supported by GATE/DGATE: Gtk_Button_*Box, Gtk_Entry
