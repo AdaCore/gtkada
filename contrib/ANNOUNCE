@@ -8,6 +8,7 @@ The primary download site is http://gtkada.eu.org
 
 New features in 1.2.8/1.3.8 include:
 
+- Significant documentation updates.
 - A new tool, Gdialog, provides an easy way to display dialog boxes from shell
   scripts. 
 - Gtkada.Intl is a new package that provides support for gettext (handling
