@@ -202,9 +202,10 @@ package Gtkada.Canvas is
    --  Execute an action on each of the items contained in the canvas.
 
    function Has_Link (Canvas   : access Interactive_Canvas_Record;
-                      From, To : access Canvas_Item_Record'Class)
+                      From, To : access Canvas_Item_Record'Class;
+                      Name     : String)
                      return Boolean;
-   --  Test whether there is a link from From to To.
+   --  Test whether there is a link from From to To, with the same name.
 
    ------------------------
    -- Items manipulation --
@@ -303,6 +304,7 @@ private
          --  to distinguish between item motion and item selection.
 
          Drawing_Area      : Gtk.Drawing_Area.Gtk_Drawing_Area;
+         Double_Pixmap     : Gdk.Pixmap.Gdk_Pixmap;
 
          Grid_Size         : Glib.Guint := Default_Grid_Size;
          Annotation_Font   : String_Access;
