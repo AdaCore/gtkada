@@ -7,7 +7,7 @@ package Gtk.Frame is
    type Gtk_Frame is new Gtk.Bin.Gtk_Bin with private;
 
    procedure Gtk_New (Widget : out Gtk_Frame;
-                      Label  : in String);
+                      Label  : in String := "");
    procedure Set_Label
       (Frame : in Gtk_Frame'Class;
        Label : in String);

@@ -7,7 +7,7 @@ package body Gtk.Frame is
    -------------
 
    procedure Gtk_New (Widget : out Gtk_Frame;
-                      Label  : in String)
+                      Label  : in String := "")
    is
       function Internal (Label  : in String)
                          return      System.Address;

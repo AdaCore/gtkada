@@ -268,7 +268,7 @@ package body Gtk.Style is
    ---------------
 
    function Get_Style (Widget : in Gtk.Widget.Gtk_Widget'Class)
-                      return       Gtk.Style.Gtk_Style'Class
+                      return       Gtk.Style.Gtk_Style
    is
       function Internal (Widget : System.Address)
                         return    System.Address;

@@ -35,7 +35,7 @@ package Gtk.Style is
                     return          Gdk.Color.Gdk_Color;
 
    function Get_Style (Widget : in Gtk.Widget.Gtk_Widget'Class)
-                       return Gtk.Style.Gtk_Style'Class;
+                       return Gtk.Style.Gtk_Style;
 
    procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
