@@ -195,18 +195,6 @@ package body Gtk.Editable is
       return Internal (Get_Object (Widget)) /= 0;
    end Get_Editable;
 
-   ------------------
-   -- Set_Editable --
-   ------------------
-
-   procedure Set_Editable (Widget : in Gtk_Editable; Editable : boolean)
-   is
-      procedure Internal (Widget : in System.Address; Editable : Guint);
-      pragma Import (C, Internal, "ada_editable_set_editable");
-   begin
-      Internal (Get_Object (Widget), Boolean'Pos (Editable));
-   end Set_Editable;
-
    -----------------------
    -- Get_Has_Selection --
    -----------------------
@@ -220,6 +208,17 @@ package body Gtk.Editable is
    begin
       return Internal (Get_Object (Widget)) /= 0;
    end Get_Has_Selection;
+
+   ------------------
+   -- Get_Position --
+   ------------------
+
+   function Get_Position (Editable : Gtk_Editable) return Gint is
+      function Internal (Editable : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_editable_get_position");
+   begin
+      return Internal (Get_Object (Editable));
+   end Get_Position;
 
    ---------------------------
    -- Get_Selection_End_Pos --
@@ -308,5 +307,30 @@ package body Gtk.Editable is
                 Start,
                 The_End);
    end Select_Region;
+
+   ------------------
+   -- Set_Editable --
+   ------------------
+
+   procedure Set_Editable (Widget : in Gtk_Editable; Editable : boolean)
+   is
+      procedure Internal (Widget : in System.Address; Editable : Guint);
+      pragma Import (C, Internal, "ada_editable_set_editable");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (Editable));
+   end Set_Editable;
+
+   ------------------
+   -- Set_Position --
+   ------------------
+
+   procedure Set_Position (Editable : Gtk_Editable;
+                           Position : Gint) is
+      procedure Internal (Editable : System.Address;
+                          Position : Gint);
+      pragma Import (C, Internal, "gtk_editable_set_position");
+   begin
+      Internal (Get_Object (Editable), Position);
+   end Set_Position;
 
 end Gtk.Editable;

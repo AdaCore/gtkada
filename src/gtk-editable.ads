@@ -79,6 +79,11 @@ package Gtk.Editable is
        Start    : in Gint;
        The_End  : in Gint);
 
+   procedure Set_Position (Editable : Gtk_Editable;
+                           Position : Gint);
+
+   function Get_Position (Editable : Gtk_Editable) return Gint;
+
 private
    type Gtk_Editable is new Gtk.Widget.Gtk_Widget with null record;
 
