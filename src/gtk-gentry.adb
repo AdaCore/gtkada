@@ -189,10 +189,12 @@ package body Gtk.GEntry is
    function Get_Layout (The_Entry : access Gtk_Entry_Record)
       return Pango.Layout.Pango_Layout
    is
-      function Internal (The_Entry : System.Address) return Pango_Layout;
+      function Internal (The_Entry : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_get_layout");
+      Stub : Pango_Layout_Record;
    begin
-      return Internal (Get_Object (The_Entry));
+      return Pango_Layout
+        (Get_User_Data (Internal (Get_Object (The_Entry)), Stub));
    end Get_Layout;
 
    ------------------------
@@ -260,7 +262,6 @@ package body Gtk.GEntry is
 
    begin
       Set_Object (Widget, Internal (Max));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------
@@ -273,7 +274,6 @@ package body Gtk.GEntry is
 
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------------
