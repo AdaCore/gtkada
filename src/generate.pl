@@ -26,12 +26,13 @@ if ($ARGV[0] eq "-l") {
 
 
 my ($file) = $ARGV [0] || die "must give a filename!!\n";
-
 my ($directory);
 my ($unit_name) = "";
 my ($definition_file) = $file;
 my ($has_get_type_subprogram) = 0;
 my ($enumerates) = "";   # Extra string to print for enumeration types
+my ($enumerates_clauses) = "";  # Representation clauses to add
+my ($signals) = ""; # List of all the signals for the widget
 
 ($directory, $file) = ($file =~ /^(.*\/)?([^\/]+)\.h$/);
 my ($hfile) = $file . ".h";
@@ -58,6 +59,7 @@ $file = uc ($file);
 $file = "GTKFILESELECTION" if ($file eq "GTKFILESEL");
 $file = "GTKFONTSELECTION" if ($file eq "GTKFONTSEL");
 $file = "GTK$1BUTTONBOX" if ($file =~ /GTK([VH]?)BBOX/);
+$file =~ s/-//g;  # Handle Gnome naming convention, e.g gnome-dock-band
 
 my (@cfile);
 
@@ -205,75 +207,297 @@ EOF
 }
 
 ######################################
-## Parse the enumeration types, and stop when the first
-## struct is encountered
-##   arg 1 = contents of the file (array)
+## Parse a list of parameters, and return
+##   Arg 1 = string: list of parameters as read in the C file
+##   Return= array that contains one element per parameter. See arg_to_ada
+##           for printing it to Ada.
+######################################
+
+sub parse_param_list {
+  my ($args) = shift;
+
+  # Associate pointers (return value) with the type instead of the
+  # name. Preserve comments indications (*/)
+  $args =~ s/(\w+)\s*\[\]/* $1/g;   # "*argv[]" arguments (see gnome-client.h)
+  $args =~ s/\s*\*(([^\/]|$))/* $1/g;
+
+  # Arrays are not fully supported (we would need to create a separate
+  # type. Instead, we just make sure that the file can be
+  # gnatchop-ed, and leave the responsability to the user for creating
+  # the type.
+  $args =~ s/(\w+)\s*(\w+)\s*\[(\d+)\]/Array_$1_$3 $2/g;
+
+  # Cleanup initial spaces and remove comments from the arguments list
+  $args =~ s/\/\*.*?\*\///g;
+  $args =~ s/\s+/ /g;
+  $args =~ s/(^|, ?)const /$1/g; # gnome-calculator.h
+
+  # Access-To-Subprograms are not supported, but at least we want to
+  # get some code that can be gnatchop-ed (gnome-procbar.h)
+  $args =~ s/, (\w+) \(\* *(\w+)\) *\([^\)]*\)/, Function_$1 $2/g;
+
+  return grep ($_ !~ /^\s*$/, split (/, ?/, $args));
+}
+
+#######################################
+##  Convert a C declaration for one parameter ("int a") to the equivalent
+##  Ada string
+##    Arg 1 = the string representing the C declaration
+##    Arg 2 = parameter number
+##    Arg 3 = conversion function to use
+##    return= ($name, $type)
+#######################################
+
+sub arg_to_ada {
+  $_ = shift;
+  my ($arg_num) = shift;
+  my ($convert) = shift;
+
+  return "" if ($_ eq "void");
+  s/\s+/ /g;
+  s/,//;
+  s/\);//;
+  my ($type, $name) = &parse_c_decl ($_, $arg_num);
+
+  $arg_num ++;
+
+  $type = &{$convert} ($type);
+
+  # Handling of widget parameters
+
+  if ($type =~ /\'Class/) {
+    $type =~ s/\'Class//;
+    if ($type =~ /$prefix\_$current_package/i) {
+      $type = "access $type\_Record";
+    }
+    else {
+      $type = "access $type\_Record'Class";
+    }
+
+    # Pointers arguments in C map to "out" parameters in Ada.
+    # However, pointers to pointers (char**) map to "out" parameters
+    # to the access type.
+  } elsif ($type =~ /(.*)\*$/) {
+    $type = $1;
+    if ($type !~ /^Gdk/) {
+      $type = "$1_Access" if ($type =~ /(.*)\*$/);
+      $type = "out $type";
+    }
+  }
+
+  return (&create_ada_name ($name), $type);
+}
+
+######################################
+## Parse the list of signals
+##   arg 1 = first line in the Class structure
+##   arg 2 = contents of the file (array)
+##   return= last line we reached while parsing the structure
+######################################
+
+sub parse_signals {
+  my ($line) = shift;
+  my (@deffile) = @_;
+  my ($return, $name, $params);
+
+  $signals = "   -------------\n"
+    . "   -- Signals --\n"
+    . "   -------------\n\n"
+    . "   --  <signals>\n"
+    . "   --  The following new signals are defined for this widget:\n"
+    . "   --\n";
+
+  while ($deffile[$line] !~ /};/) {
+    if ($deffile[$line] =~ /^\s*(\w+(\s*\*)?)\s*\(\*\s*(\w+)\)\s*\(([^\)]+)/)
+      {
+	($return, $name, $params) = ($1, $3, $4);
+	while ($deffile[$line] !~ /\);/) {
+	  $line++;
+	  $params .= $deffile[$line];
+	}
+
+	$params =~ s/\s+/ /g;
+	$params =~ s/\);\s*$//;
+	$signals .= "   --  - \"$name\"\n   --    ";
+	$signals .= ($return eq "void")? "procedure " : "function ";
+	$signals .=
+	  "Handler (Widget : $prefix\_$current_package\_Record'Class";
+	$params =~ s/^[^,]+//;
+
+	if ($params ne "") {
+	  my ($arg_num) = 1;
+	  foreach (&parse_param_list ($params)) {
+	    my ($var, $type) = &arg_to_ada ($_, $arg_num, \&convert_ada_type);
+	    $arg_num++;
+	    $signals .= ";\n   --       $var : $type";
+	  }
+	}
+
+        $signals .= ")";
+	if ($return ne "void") {
+	  $signals .= "\n   --       "
+	    . "return " . &create_ada_name ($return);
+	}
+
+	$signals .= "\n   --\n";
+      }
+    $line++;
+  }
+
+  $signals .= "   --  </signals>\n";
+
+  return $line;
+}
+
+######################################
+## Parse the enumeration type pointed to by the first parameters,
+##   arg 1 = first line in the Class structure
+##   arg 2 = contents of the file (array)
 ##   return: line at which we stopped
 ######################################
 
 sub parse_enums
   {
+    my ($line) = shift;
     my (@deffile) = @_;
     my ($enum, $enum_name);
-    my ($line) = 0;
 
-    for ($line = 0; $line < $#deffile; $line ++)
-      {
-	last if ($deffile[$line] =~ /^STRUCT\s+_$file($|\s)/i);
+    $enum = $deffile[$line];
+    while ($deffile[$line] !~ /;/) {
+      $line++;
+      $enum .= $deffile[$line];
+      chop $enum;  # so that multi-lines comments are correctly handled
+    }
 
-	# Do we have an enumerated type ?
-	if ($deffile[$line] =~ /^typedef enum/) {
-	  $enum = $deffile[$line];
-	  while ($deffile[$line] !~ /;/) {
-	    $line++;
-	    $enum .= $deffile[$line];
-	    chop $enum;  # so that multi-lines comments are correctly handled
-	  }
+    # Remove comments
+    $enum =~ s/\/\*.*?\*\///g;
+    $enum =~ s/\s+/ /g;
 
-	  # Remove comments
-	  $enum =~ s/\/\*.*?\*\///g;
-	  $enum =~ s/\s+/ /g;
+    ($enum, $enum_name) =
+      ($enum =~ /typedef enum {([^\}]*)}\s*([\w_]+)/);
+    $enum_name = &create_ada_name ($enum_name);
+    $enumerates .= "   type $enum_name is ";
+    $enum =~ s/\s//g;
 
-	  ($enum, $enum_name) =
-	    ($enum =~ /typedef enum {([^\}]*)}\s*([\w_]+)/);
-	  $enum_name = &create_ada_name ($enum_name);
-	  $enumerates .= "   type $enum_name is ";
-	  $enum =~ s/\s//g;
+    # If there is a representation clause, use an Integer type instead
+    if ($enum =~ /<</) {
+      $enumerates .= "mod 2 ** 16;\n";
+      foreach (split (/,/, $enum)) {
+	my ($value, $num) = lc ($_);
+	$value =~ s/G[td]k_|Gnome_//i;
+	$value =~ s/^$current_package\_//i;
+	($value, $num) = ($value =~ /^([^=]+)=(.*)/);
+	$num = "2 ** $1" if ($num =~ /<<(\d*)\)?/);
 
-	  # If there is a representation clause, use an Integer type instead
-	  if ($enum =~ /=/) {
-	    $enumerates .= "mod 2 ** 16;\n";
-	    foreach (split (/,/, $enum)) {
-	      my ($value, $num) = lc ($_);
-	      $value =~ s/G[td]k_|Gnome_//i;
-	      $value =~ s/^$current_package\_//i;
-	      ($value, $num) = ($value =~ /^([^=]+)=(.*)/);
-	      $num = "2 ** $1" if ($num =~ /<<(.*)/);
-
-	      $enumerates .= "   " . &create_ada_name ($value)
-		. " : constant $enum_name := $num;\n";
-	    }
-	    $enumerates .= "\n";
-
-	  # Else create an enumeration to match the C enum
-	  } else {
-	    $enumerates .= "(\n";
-	    my ($first) = 1;
-	    foreach (split (/,/, $enum)) {
-	      my ($value) = lc ($_);
-	      $value =~ s/G[td]k|Gnome_//i;
-	      $value =~ s/^$current_package\_//i;
-	      $enumerates .= ",\n" unless ($first);
-	      $first = 0;
-	      $enumerates .= "      " . &create_ada_name ($value);
-	    }
-	    $enumerates .= ");\n\n";
-	  }
-	}
+	$enumerates .= "   " . &create_ada_name ($value)
+	  . " : constant $enum_name := $num;\n";
       }
+      $enumerates .= "\n";
+
+      # Else create an enumeration to match the C enum
+    } else {
+      $enumerates .= "(\n";
+      my ($first) = 1;
+      my ($has_representation) = 0;
+      foreach (split (/,/, $enum)) {
+	my ($value) = lc ($_);
+	$has_representation = 1 if ($value =~ s/=.*//);
+	$value =~ s/G[td]k_|Gnome_//i;
+	$value =~ s/^$current_package\_//i;
+	$enumerates .= ",\n" unless ($first);
+	$first = 0;
+	$enumerates .= "      " . &create_ada_name ($value);
+      }
+      $enumerates .= ");\n\n";
+
+      # Print the representation clause if necessary
+      if ($has_representation) {
+	$enumerates_clauses .= "   for $enum_name use (\n";
+	$first = 0;
+	foreach (split (/,/, $enum)) {
+	  my ($value, $repres) = lc ($_);
+	  $value =~ s/=([^,\)]*)//;
+	  $repres = $1 || $first;
+	  $value =~ s/G[td]k|Gnome_//i;
+	  $value =~ s/^$current_package\_//i;
+	  $enumerates_clauses .= ",\n" unless ($first == 0);
+	  $first = $value + 1;
+	  $enumerates_clauses .= "      " . &create_ada_name ($value)
+	    . " => $repres";
+	}
+	$enumerates_clauses .= ");\n\n";
+      }
+    }
     return $line;
   }
 
+######################################
+## Parse the definition of the widget, and check which fields should be
+## mapped to Ada
+##   arg 1 = first line in the Class structure
+##   arg 2 = contents of the file (array)
+##   return: line at which we stopped
+######################################
+
+sub parse_fields {
+  my ($line) = shift;
+  my (@deffile) = @_;
+
+  $line++ while ($deffile[$line] !~ /\{/);
+  $line++;
+  if ($deffile[$line] =~ /\/\*/) ## If we have a comment, skip it
+    {
+      while ($deffile[++$line] !~ /\*\//) {};
+      $line++;
+    }
+
+  ## Look for the parent widget.
+  ## This is the first non-blank line in the definition of the widget
+  ## structure. Note that this will be converted later on to Ada style,
+  ## we currently only store the C name
+
+  $line++ while ($deffile[$line] =~ /^\s*$/);
+  $parent = (split (/\s+/, $deffile[$line])) [1];
+
+  $line++;
+
+  ## Check all the fields (ie until the end of the structure)
+
+  while ($deffile[$line] !~ /\}/) {
+    my ($field);
+
+    # Search for the new field. Ignore empty lines and comments
+    while ($field =~ /^\s*$/) {
+      $field = $deffile[$line];
+
+      if ($field =~ /\/\*/) {
+	while ($deffile[$line] !~ /\*\//) {
+	  $line++;
+	  $field .= $deffile[$line];
+	}
+	$field =~ s$/\*.*\*/$$g;
+      }
+      $line++;
+    }
+
+    $field =~ s/\s+/ /g;
+    $field =~ s/ $//;
+    $field =~ s/^ //;
+    $field =~ s/\s\*/\* /g; ## attach the pointer to the type not to the field
+    $field =~ s/;//;
+    $field =~ s/:\s*\d+//;  ##  <type> <name> : <width>
+
+    # Types must be a single word, or split below will be confused
+    $field =~ s/unsigned ((g)?int)/$1/;
+    my ($type, $field) = split (/\s+/, $field);
+
+    print STDERR
+      "Create a function for the field $field (of type $type) [n]?";
+    my ($answer) = scalar (<STDIN>);
+    $fields {$field} = $type if ($answer =~ /^y/);
+  }
+  return $line;
+}
 
 ######################################
 ## Parse the definition file
@@ -285,85 +509,41 @@ sub parse_definition_file
   {
     my ($filename) = shift;
     local (*FILE);
-    my (@deffile);
+    my (@deffile, $line);
     open (FILE, $filename);
     @deffile = <FILE>;
     close (FILE);
-    $file =~ s/-//g;  # Handle Gnome naming convention, e.g gnome-dock-band
 
-    my ($line) = &parse_enums (@deffile);
+    while ($line < $#deffile) {
 
-    if ($line < $#deffile) {
-      $deffile[$line] =~ /struct\s+_(\w*)/;
+      # The Class record defines signals
+      if ($deffile[$line] =~ /^STRUCT\s+_${file}Class($|\s)/i) {
+	$line = &parse_signals ($line, @deffile);
+      }
 
-      # Get the package name from the name of the structure. Given the
-      # various casing used in Gtk+/Gnome, there are a few exceptions that
-      # we need to handle manually
+      # Enumeration types should also be visible in the Ada specs
+      elsif ($deffile[$line] =~ /^typedef enum/) {
+	$line = &parse_enums ($line, @deffile);
+      }
 
-      $current_package = ($1 eq "GnomeDEntryEdit") ? "Dentry_Edit" :$1;
-      $current_package = &create_ada_name ($current_package);
+      # The widget record defines all the fields
+      elsif ($deffile[$line] =~ /^struct\s+_($file)($|\s)/i) {
 
-      my ($in_comment) = 0;
-      $line++ while ($deffile[$line] !~ /\{/);
-      $line++;
-      if ($deffile[$line] =~ /\/\*/) ## If we have a comment, skip it
-	{
-	  while ($deffile[++$line] !~ /\*\//) {};
-	  $line++;
-	}
+	# Get the package name from the name of the structure. Given the
+	# various casing used in Gtk+/Gnome, there are a few exceptions that
+	# we need to handle manually
 
-      ## Look for the parent widget.
-      ## This is the first statement line in the definition of the widget
-      ## structure. Note that this will be converted later on to Ada style,
-      ## we currently only store the C name
+	$current_package = $1;
+	$current_package = "Dentry_Edit" if ($1 eq "GnomeDEntryEdit");
+	$current_package = "Ui_Info"     if ($1 eq "GnomeUIInfo");
+	$current_package = "Mdi"         if ($1 eq "GnomeMDI");
+	$current_package = "Mdi_$1"      if ($1 =~ /GnomeMDI(.+)/);
+	$current_package = &create_ada_name ($current_package);
 
-      $parent = (split (/\s+/, $deffile[$line])) [1];
+	$line = &parse_fields ($line, @deffile);
+      }
 
-      $line++;
-
-      ## Check all the fields (ie until the end of the structure)
-
-      while ($deffile[$line] !~ /\}/)
-	{
-	  my ($in_comment) = 0;
-
-	  # Search for the new field. Ignore empty lines and comments
-	  while (1) {
-	    $deffile[$line] =~ s$/\*.*\*/$$g;
-	    if ($deffile[$line] =~ /\/\*/) {
-	      $in_comment = 1;
-	      $deffile[$line] =~ s/\/*.*$//;
-	    }
-	    if ($in_comment && $deffile[$line] =~ /\*\//) {
-	      $deffile[$line] =~ s/.*\*\///;
-	      $in_comment = 0;
-	    }
-
-	    last if (!$in_comment && $deffile[$line] !~ /^\s*$/);
-	    $line++;
-	  }
-
-	  chop ($deffile[$line]);
-	  $deffile[$line] =~ s/\s+/ /g;
-	  $deffile[$line] =~ s/ $//;
-	  $deffile[$line] =~ s/^ //;
-	  $deffile[$line] =~ s/\s\*/\* /g; ## attach the pointer to the type not to the field
-	  $deffile[$line] =~ s/;//;
-	  $deffile[$line] =~ s/:\s*\d+//; ##  <type> <name> : <width>
-
-	  # Types must be a single word, or split below will be confused
-	  $deffile[$line] =~ s/unsigned ((g)?int)/$1/;
-	  my ($type, $field) = split (/\s+/, $deffile[$line]);
-
-	  print STDERR
-	    "Create a function for the field $field (of type $type) [n]?";
-	  my ($answer) = scalar (<STDIN>);
-	  if ($answer =~ /^y/)
-	    {
-	      $fields {$field} = $type;
-	    }
-	  $line ++;
-	}
+      $line ++;
     }
   }
 
@@ -372,9 +552,9 @@ sub parse_definition_file
 ###################################
 
 sub func_sort () {
-
-  return (-1) if ($a =~ /_new$/ || $a =~ /_new_/);
-  return (1)  if ($b =~ /_new$/ || $b =~ /_new_/);
+  # "_newv" must be supported as well (gnome-canvas.h)
+  return (-1) if ($a =~ /_newv?$/ || $a =~ /_newv?_/);
+  return (1)  if ($b =~ /_newv?$/ || $b =~ /_newv?_/);
 
   return &ada_func_name ($a) cmp &ada_func_name ($b);
 }
@@ -413,6 +593,7 @@ sub generate_specifications
 	     . "new " . $parent_string . " with private;\n");
     unshift (@output, "package $prefix.$current_package is\n\n");
 
+    push (@output, $signals);
     push (@output, "\nprivate\n");
     push (@output, "   type $prefix\_$current_package\_Record is "
 	  . ($abstract ? "abstract " : "")
@@ -420,6 +601,8 @@ sub generate_specifications
 	  $parent_string = ($parent eq "Root_Type") ?
 	      "Root_Type" : "$parent_string\_Record",
 	  " with null record;\n\n");
+
+    push (@output, $enumerates_clauses);
 
     if ($has_get_type_subprogram) {
       push (@output,
@@ -514,6 +697,8 @@ sub create_ada_name
     return "GRange" if ($entity eq "Range");     # gtk-range.h
     return "GEntry" if ($entity eq "Entry");     # gnome-entry.h
     return "Accepted" if ($entity eq "Accept");  # gnome-icon-item.h
+    return "Modifier" if ($entity eq "Mod");     # gnome-stock.h
+    return "Sub_Type" if ($entity eq "Subtype"); # gnome-stock.h
 
     return $entity;
   }
@@ -538,7 +723,7 @@ sub package_name
 #######################
 sub parse_functions
   {
-    my ($func_name, $return, $args);
+    my ($func_name, $return);
     my (@arguments);
     my (%functions);
 
@@ -558,26 +743,14 @@ sub parse_functions
 	    chop;
 	  }
 
-	  # Associate pointers (return value) with the type instead of the
-	  # name. Preserve comments indications (*/)
-	  s/(\w+)\s*\[\]/* $1/g;   # "*argv[]" arguments (see gnome-client.h)
-	  s/\s*\*([^\/])/* $1/g;
-
-	  # Parse the definition
-
-	  /^(\w\S+(\s+\*)?)\s+((g[dt]k|gnome)_\S+)\s*\((.*)\);/;
-	  $return = $1;
+	  /^(\w\S+(\s+\*)?)\s*(\S+)\s*\((.*)\);/;
+	  $return = (&parse_param_list ($1)) [0];
 	  $func_name = $3;
-	  $args = $5;
-
-	  # Cleanup initial spaces and remove comments from the arguments list
-	  $args =~ s/\/\*.*?\*\///g;
-	  $args =~ s/[ ,\(]const //g; # gnome-calculator.h
-	  $args =~ s/\s+/ /g;
-	  @arguments = grep ($_ !~ /^\s*$/, split (/,/, $args));
+	  @arguments = &parse_param_list ($4);
 
 	  # We do not want to generate bindings for some functions
-	  $func_name = "" if ($func_name =~ /$unit_name\_construct$/);
+	  # We need to filter out "constructv" as well (gnome-canvas.h)
+	  $func_name = "" if ($func_name =~ /$unit_name\_constructv?$/);
 
 	  # Get_Type subprograms are handled specially, since they are
 	  # implemented with a simple pragma Import.
@@ -639,6 +812,26 @@ sub print_initialize_declaration
 }
 
 #########################
+## Return the type and name of a C parameter/variable declaration
+##   Arg 1 = type definition
+##   Arg 2 = argument number
+##   Result= ($type, $name)
+#########################
+
+sub parse_c_decl {
+  my ($decl, $arg_num) = (shift, shift);
+
+  my ($type, $name) = ($decl =~ /^(.*[ *])(\w+)\s*$/);
+  if ($type eq "") {
+    $type = $_;
+    $name = "arg$arg_num";
+  }
+  $type =~ s/\s//g;
+
+  return ($type, $name);
+}
+
+#########################
 ## Print the argument list for a subprogram, and the return statement if any
 ## Entries : A string of blank space indicating the position on the current
 ##               line
@@ -657,6 +850,7 @@ sub print_arguments
     my ($for_gtk_new) = shift;
     my (@arguments) = @_;
     my ($longest) = ($return ne "void") ? 6 : 0;
+    my ($arg_num) = 1;
 
     if ($#arguments != 0
 	|| ($for_gtk_new && $#arguments > 0))   ## More than one argument ?
@@ -684,52 +878,20 @@ sub print_arguments
 	elsif ($for_gtk_new == 2)
 	  {
 	    push (@variables, "Widget");
-	    push (@types, "access $prefix\_$current_package\_Record");
+	    push (@types, "access $prefix\_$current_package\_Record'Class");
 	  }
 
-	foreach (@arguments)
-	  {
-	    last if (/void/);
-	    s/\s+/ /g;
-	    s/,//;
-	    s/\);//;
-	    my ($type, $name) = /^(.*[ *])(\w+)\s*$/;
-	    $type =~ s/\s//g;
-	    push (@variables, &create_ada_name ($name));
-	    $type = &{$convert} ($type);
-
-	    # Handling of widget parameters
-
-	    if ($type =~ /\'Class/) {
-	      $type =~ s/\'Class//;
-	      if ($type eq "$prefix\_$current_package") {
-		$type = "access $type\_Record";
-	      }
-	      else {
-		$type = "access $type\_Record'Class";
-	      }
-
-	    # Pointers arguments in C map to "in out" parameters in Ada.
-	    # However, pointers to pointers (char**) map to "in out" parameters
-	    # to the access type.
-	    } elsif ($type =~ /(.*)\*$/) {
-	      $type = $1;
-	      if ($type !~ /^Gdk/) {
-		$type = "$1_Access" if ($type =~ /(.*)\*$/);
-		$type = "out $type";
-	      }
-
-	    # Else, simply an "in" parameter
-	    } else {
-	      $type = "$type";
+	if ($arguments[0] !~ /void/) {
+	  foreach (@arguments)
+	    {
+	      my ($var, $type) = &arg_to_ada ($_, $arg_num, $convert);
+	      $arg_num ++;
+	      push (@variables, $var);
+	      $longest = length ($var) if (length ($var) > $longest);
+	      push (@types, $type);
 	    }
-	    push (@types, $type);
-	  }
+	}
 
-	foreach (@variables)
-	  {
-	    $longest = length ($_) if (length ($_) > $longest);
-	  }
 	my ($first) = 1;
 	foreach (@variables)
 	  {
@@ -746,7 +908,6 @@ sub print_arguments
       {
 	push (@output, "\n$indent") if ($arguments[0] !~ /void/);
 	push (@output, "return ");
-	push (@output, ' ' x ($longest - 1)) if  ($arguments[0] !~ /void/);
 	if ($convert == \&convert_c_type
 	    && &{$convert} ($return) eq "String")
 	{
@@ -769,7 +930,7 @@ sub print_arguments_call
   {
     my ($indent) = shift;
     my (@arguments) = @_;
-    my ($first) = 1;
+    my ($arg_num) = 1;
 
     if ($arguments[0] !~ /void/)
       {
@@ -780,10 +941,9 @@ sub print_arguments_call
 	    s/\s+/ /g;
 	    s/,//;
 	    s/\);//;
-	    my ($type, $name) = /^(.*[ *])(\w+)\s*$/;
-	    $type =~ s/\s//g;
-	    push (@output, ",\n$indent") unless ($first);
-	    $first = 0;
+	    my ($type, $name) = &parse_c_decl ($_, $arg_num);
+	    push (@output, ",\n$indent") unless ($arg_num == 1);
+	    $arg_num++;
 	    if (&convert_c_type ($type) eq "System.Address")
 	      {
 		push (@output, "Get_Object ("
@@ -813,6 +973,7 @@ sub print_arguments_call
 sub print_arguments_call_for_gtk_new
 {
     my (@arguments) = @_;
+    my ($arg_num) = 1;
 
     if ($arguments[0] !~ /void/)
     {
@@ -821,8 +982,8 @@ sub print_arguments_call_for_gtk_new
 	    s/\s+/ /g;
 	    s/,//;
 	    s/\);//;
-	    my ($type, $name) = /^(.*[ *])(\w+)\s*$/;
-	    $type =~ s/\s//g;
+	    my ($type, $name) = &parse_c_decl ($_, $arg_num);
+	    $arg_num++;
 	    push (@output, ",");
 	    push (@output, " " . &create_ada_name ($name));
 	  }
@@ -997,6 +1158,7 @@ sub ada_func_name
 
     $type = &create_ada_name ($c_func_name);
     return "Gtk_Select" if ($type eq "Select");
+    return "Gtk_Abort" if ($type eq "Abort");
     return "$prefix\_New" if ($type =~ /New/);
     return $type;
   }
@@ -1011,26 +1173,28 @@ sub convert_ada_type
     my ($type) = shift;
 
     if ($type =~ /^gint([^*]*)(\*?)/) {
-      if ($2 ne "") {
-	return "out Gint$1";
-      }
-      return "Gint$1";
-    } elsif ($type =~ /^int(\*?)/) {
-      if ($1 ne "") {
-	return "out Integer";
-      }
-      return "Integer";
+      return ($2 ne "") ? "out Gint$1" : "Gint$1";
+
     } elsif ($type =~ /^guint([^*]*)(\*?)/) {
-      if ($2 ne "") {
-	return "out Guint$1";
-      }
-      return "Guint$1";
+      return ($2 ne "") ? "out Guint$1" : "Guint$1";
+
+    } elsif ($type =~ /^gdouble([^*]*)(\*?)/) {
+      return ($2 ne "") ? "out Gdouble$1" : "Gdouble$1";
+
+    } elsif ($type =~ /^double([^*]*)(\*?)/) {
+      return ($2 ne "") ? "out Double$1" : "Double$1";
+
+    } elsif ($type =~ /^int(\*?)/) {
+      return ($1 ne "") ? "out Integer" : "Integer";
+
     } elsif ($type eq "gboolean") {
       return "Boolean";
+
     } elsif ($type eq "gfloat") {
       return "Gfloat";
+
     } elsif ($type =~ /(const)?(g?)char\*(\*?)/) {
-      return (defined $3) ? "Chars_Ptr_Array" : "String";
+      return ($3 eq "*") ? "Chars_Ptr_Array" : "String";
 
     } elsif ($type eq "Root_Type") {
 	return "Root_Type";
@@ -1047,13 +1211,20 @@ sub convert_ada_type
 
       if ($t eq "DEntryEdit") {
 	$t = "Dentry_Edit";
+      } elsif ($t eq "MDI") {
+	$t = "MDI";
+      } elsif ($t eq "UIInfo") {
+	$t = "UI_Info";
+      } elsif ($t =~ /MDI(.+)/) {
+	$t = "MDI_$1";
+      } elsif ($t eq "Entry") {
+	$t = "GEntry";
       } elsif ($t ne "GC") {
 	$t =~ s/(.)([A-Z])/$1_$2/g;
       }
-      if ("$prefix\_$t" eq "$prefix\_$current_package") {
+      if ($t =~ /$current_package/i) {
 	return "$prefix\_$t\'Class";
-      }
-      else {
+      } else {
 	$with_list {"with $prefix.$t"} ++;
 	return "$prefix.$t.$prefix\_$t\'Class";
       }
