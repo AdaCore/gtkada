@@ -1552,7 +1552,7 @@ you can add widgets from
    Homogeneous : @b{in}  Boolean;
    Spacing     : @b{in}  Gint);
 @b{procedure} Initialize_Vbox
-  (Box         : @b{access} Gtk_Box_Record;
+  (Box         : @b{access} Gtk_Box_Record'Class;
    Homogeneous : @b{in}  Boolean;
    Spacing     : @b{in}  Gint);
 
@@ -1561,7 +1561,7 @@ you can add widgets from
    Homogeneous : @b{in}  Boolean;
    Spacing     : @b{in}  Gint);
 @b{procedure} Initialize_Hbox
-  (Box         : @b{access} Gtk_Box_Record;
+  (Box         : @b{access} Gtk_Box_Record'Class;
    Homogeneous : @b{in}  Boolean;
    Spacing     : @b{in}  Gint);
 
@@ -2688,8 +2688,7 @@ and @code{Initialize}.
 This time, @code{Initialize} has to do two things:
 
 @example
-   Parent_Package.Initialize
-       (Parent_Widget_Record (Widget.@b{all})'@b{Access});
+   Parent_Package.Initialize (Widget);
 
    --  The above line calls the Initialize function from the parent.
    --  This creates the underlying C widget, which we are going to
