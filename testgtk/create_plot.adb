@@ -237,9 +237,6 @@ package body Create_Plot is
       Gtk_New (Plots (Num_Layers), Width => 0.5, Height => 0.25);
       Show (Plots (Num_Layers));
 
-      Event_Cb.Connect (Canvas, "click_on_plot",
-                        Event_Cb.To_Marshaller (Activate_Plot'Access));
-
       Dummy := Activate_Plot (Canvas);
       return Plots (Num_Layers);
    end New_Layer;
@@ -360,17 +357,13 @@ package body Create_Plot is
       Show (Scrollw1);
 
       --  Create the canvas in which the plot will be drawn
-      Gtk_New (Canvas, 600, 700);
-      Set_Usize (Canvas, 600, 700);
+      Gtk_New (Canvas, 612, 792);
+      Set_Usize (Canvas, 612, 792);
       Plot_Canvas_Set_Flags (Canvas, Dnd_Flags);
-      Plot_Canvas_Set_Flags (Canvas, Allocate_Titles);
       Add (Scrollw1, Canvas);
       Set_Step_Increment (Get_Hadjustment (Canvas), 5.0);
       Set_Step_Increment (Get_Vadjustment (Canvas), 5.0);
       Show (Canvas);
-
-      Event_Cb.Connect (Canvas, "click_on_point",
-                        Event_Cb.To_Marshaller (Print_Dataset'Access));
 
       Active_Plot := New_Layer (Canvas);
       Set_Range (Active_Plot, -1.0, 1.0, -1.0, 1.4);
@@ -411,7 +404,10 @@ package body Create_Plot is
       Show (Active_Plot);
       Build_Example2 (Active_Plot);
 
-      Put_Text (Canvas, 0.40, 0.005, 0,
+--        gtk_signal_connect(GTK_OBJECT(canvas), "select_item",
+--                       (GtkSignalFunc) select_item, NULL);
+
+      Put_Text (Canvas, 0.40, 0.02, 0,
                 "Times-BoldItalic", 16, Null_Color, Null_Color,
                 Justify_Center, "Dnd titles, legends and plots");
 
@@ -421,6 +417,18 @@ package body Create_Plot is
                                 "clicked",
                                 Layout_Cb.To_Marshaller (Print'Access),
                                 Slot_Object => Canvas);
+
+      Put_Text (Canvas, 0.4, 0.72, 0,
+                "Times-Roman", 16, Null_Color, Null_Color,
+                Justify_Center,
+                "You can use \ssubscripts\b\b\b\b\b\b\b\b"
+                & "\b\b\N\Ssuperscripts");
+      Put_Text (Canvas, 0.4, 0.745, 0,
+                "Times-Roman", 16, Null_Color, Null_Color,
+                Justify_Center,
+                "Format text mixing \Bbold \N\i, italics, \ggreek \4\N "
+                & "and \+different fonts");
+
       Show_All (Frame);
    end Run;
 
