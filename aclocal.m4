@@ -282,11 +282,11 @@ EOF
 
       AC_MSG_CHECKING(the correct diff option)
 
-      if $DIFF -u $file_to_patch $file_to_patch >& /dev/null ; then
+      if $DIFF -u $file_to_patch $file_to_patch > /dev/null 2>&1 ; then
          AC_MSG_RESULT(-u)
          DIFF="$DIFF -u"
 
-      elif $DIFF -c $file_to_patch $file_to_patch >& /dev/null ; then
+      elif $DIFF -c $file_to_patch $file_to_patch > /dev/null 2>&1 ; then
          AC_MSG_RESULT(-c)
          DIFF="$DIFF -c"
       
@@ -294,11 +294,10 @@ EOF
          AC_MSG_RESULT(** none **);
 	 DIFF=true
 	 AC_MSG_WARN([--------------------------------------------------------])
-	 AC_MSG_WARN([--  $DIFF does not accept the -u nor -c option, which is])
-	 AC_MSG_WARN([--  need by gate to perform merges, so merges have been])
-	 AC_MSG_WARN([--  disabled])
+	 AC_MSG_WARN([--  diff does not accept the -u nor -c option, which is])
+	 AC_MSG_WARN([--  needed by gate to perform merges, so merges have])
+	 AC_MSG_WARN([--  been disabled])
 	 AC_MSG_WARN([--------------------------------------------------------])
-
       fi
 
    fi
@@ -331,7 +330,7 @@ EOF
  This is the second line
 EOF
 
-	 if $PATCH -f < $patch_file  >/dev/null 2>/dev/null ; then
+	 if $PATCH -f < $patch_file  >/dev/null 2>&1 ; then
 	    AC_MSG_RESULT(-f)
 	    PATCH="$PATCH -f"
 
