@@ -76,7 +76,6 @@ General GTK documentation
 
 * Package Gtk.Text::
 * Package Gtk.Table::
-* Package Gtk.Scrolled_Window::
 * Package Gtk.Notebook::
 * Package Gtk.Event_Box::
 * Package Gtk.File_Selection::
@@ -909,7 +908,6 @@ specific widget.
 @menu
 * Package Gtk.Text::
 * Package Gtk.Table::
-* Package Gtk.Scrolled_Window::
 * Package Gtk.Notebook::
 * Package Gtk.Event_Box::
 * Package Gtk.File_Selection::
@@ -1106,52 +1104,6 @@ several values:
 For the @code{Attach_Defaults} procedure, the default values of @code{Xoptions}
 and @code{Yoptions} are equals to @code{Expand or Fill} and those of
 @code{Xpadding} and @code{Ypadding} are 0.
-
-@node Package Gtk.Scrolled_Window
-@section Package Gtk.Scrolled_Window
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Scrolled_Window_Record @b{is new} Container.Gtk_Container_Record
-  @b{with private};
-@b{type} Gtk_Scrolled_Window @b{is access all} Gtk_Scrolled_Window_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-To create a scrollable zone in which you can put any kind of widget, like
-e.g a table of buttons.
-If the window is too small, all the widgets won't be visible, but they will
-remain accessible using the scrollbars.
-@example
-@c @group
-@c @cartouche
-@b{procedure} Gtk_New
-  (Scrolled_Window :    @b{out} Gtk_Scrolled_Window;
-   Hadjustment     : @b{access} Adjustment.Gtk_Adjustment_Record'@b{Class}
-     := Adjustment.Null_Adjustment;
-   Vadjustment     : @b{access} Adjustment.Gtk_Adjustment_Record'@b{Class}
-     := Adjustment.Null_Adjustment);
-@c @end cartouche
-@c @end group
-@end example
-
-Create a @code{Gtk_Scrolled_Window} by optionally specifying adjustment rules.
-
-To get the adjustment rules (to attach scrollbars).
-@example
-@c @group
-@c @cartouche
-@b{function} Get_Hadjustment
-  (Scrolled_Window : @b{access} Gtk_Scrolled_Window_Record)
-   @b{return} Adjustment.Gtk_Adjustment;
-
-@b{function} Get_Vadjustment
-  (Scrolled_Window : @b{access} Gtk_Scrolled_Window_Record)
-   @b{return} Adjustment.Gtk_Adjustment;
-@c @end cartouche
-@c @end group
-@end example
 
 @node Package Gtk.Notebook
 @section Package Gtk.Notebook
