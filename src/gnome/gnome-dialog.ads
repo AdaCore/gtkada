@@ -54,52 +54,6 @@ package Gnome.Dialog is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gnome_Dialog
 
-   procedure Set_Parent
-     (Dialog : access Gnome_Dialog_Record;
-      Parent : access Gtk.Window.Gtk_Window_Record'Class);
-   --  Set the parent over which this dialog can be centered.
-
-   function Run (Dialog : access Gnome_Dialog_Record) return Gint;
-
-   function Run_And_Close (Dialog : access Gnome_Dialog_Record) return Gint;
-   --  Runs this dialog box, and return button # pressed
-
-   procedure Set_Default
-     (Dialog : access Gnome_Dialog_Record;
-      Button :        Gint);
-   --  Set the default dialog button
-
-   procedure Set_Sensitive
-     (Dialog  : access Gnome_Dialog_Record;
-      Button  : Gint;
-      Setting : Boolean);
-   --  Set button sensitivity
-
-   procedure Set_Accelerator
-     (Dialog     : access Gnome_Dialog_Record;
-      Button     : Gint;
-      Accel_Key  : Gdk.Types.Gdk_Key_Type;
-      Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
-   --  Set accelerators for a button
-
-   procedure Close (Dialog : access Gnome_Dialog_Record);
-   --  Close this dialog
-
-   procedure Close_Hides
-     (Dialog    : access Gnome_Dialog_Record;
-      Just_Hide : Boolean);
-   --  Set whether close hides or destroys
-
-   procedure Set_Close
-     (Dialog       : access Gnome_Dialog_Record;
-      Click_Closes : Boolean);
-   --  Whether to close after emitting clicked signal
-
-   procedure Editable_Enters
-     (Dialog   : access Gnome_Dialog_Record;
-      Editable : access Gtk.Editable.Gtk_Editable_Record'Class);
-   --  Connect activate signal from editable to return
-
    procedure Append_Button
      (Dialog : access Gnome_Dialog_Record;
       Name   : String);
@@ -111,7 +65,94 @@ package Gnome.Dialog is
       Pixmap : String);
    --  Append button with pixmap
 
-   --  ??? Need Gate support
+   procedure Append_Buttons
+     (Dialog  : access Gnome_Dialog_Record;
+      Buttons : Chars_Ptr_Array);
+
+   procedure Append_Buttons
+     (Dialog  : access Gnome_Dialog_Record;
+      Names   : Chars_Ptr_Array;
+      Pixmaps : Chars_Ptr_Array);
+
+   --  procedure Button_Connect
+   --    (Dialog   : access Gnome_Dialog_Record;
+   --     Button   : Gint;
+   --     Callback : Gtk_Signal_Func;
+   --     Data     : gpointer);
+
+   --  procedure Button_Connect_Object
+   --    (Dialog   : access Gnome_Dialog_Record;
+   --     Button   : Gint;
+   --     Callback : Gtk_Signal_Func;
+   --     Obj      : access Object_Record'Class);
+
+   procedure Close (Dialog : access Gnome_Dialog_Record);
+   --  Close this dialog
+
+   procedure Close_Hides
+     (Dialog    : access Gnome_Dialog_Record;
+      Just_Hide : Boolean);
+   --  Set whether close hides or destroys
+
+   procedure Editable_Enters
+     (Dialog   : access Gnome_Dialog_Record;
+      Editable : access Gtk.Editable.Gtk_Editable_Record'Class);
+   --  Connect activate signal from editable to return
+
+   procedure Grab_Focus
+     (Dialog : access Gnome_Dialog_Record;
+      Button : Gint);
+
+   function Run (Dialog : access Gnome_Dialog_Record) return Gint;
+
+   function Run_And_Close (Dialog : access Gnome_Dialog_Record) return Gint;
+   --  Runs this dialog box, and return button # pressed
+
+   procedure Set_Accelerator
+     (Dialog     : access Gnome_Dialog_Record;
+      Button     : Gint;
+      Accel_Key  : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
+   --  Set accelerators for a button
+
+   procedure Set_Close
+     (Dialog       : access Gnome_Dialog_Record;
+      Click_Closes : Boolean);
+   --  Whether to close after emitting clicked signal
+
+   procedure Set_Default
+     (Dialog : access Gnome_Dialog_Record;
+      Button :        Gint);
+   --  Set the default dialog button
+
+   procedure Set_Parent
+     (Dialog : access Gnome_Dialog_Record;
+      Parent : access Gtk.Window.Gtk_Window_Record'Class);
+   --  Set the parent over which this dialog can be centered.
+
+   procedure Set_Sensitive
+     (Dialog  : access Gnome_Dialog_Record;
+      Button  : Gint;
+      Setting : Boolean);
+   --  Set button sensitivity
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "clicked"
+   --    procedure Handler
+   --      (Widget : access Gnome_Dialog_Record'Class;
+   --       Button_Number : Gint)
+   --
+   --  - "close"
+   --    function Handler
+   --      (Widget : access Gnome_Dialog_Record'Class) return Boolean
+   --
+   --  </signals>
 
 private
    type Gnome_Dialog_Record is new Gtk.Window.Gtk_Window_Record

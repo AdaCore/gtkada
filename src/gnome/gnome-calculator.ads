@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,22 +27,53 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  This is the root of the Gnome hierarchy.
---  It provides initialization routines.
---  </description>
+with Glib; use Glib;
+with Gtk;
+with Gtk.Box;
 
-package Gnome is
-   pragma Elaborate_Body;
+package Gnome.Calculator is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   type Gnome_Calculator_Record is new Gtk.Box.Gtk_Vbox_Record with private;
+   type Gnome_Calculator is access all Gnome_Calculator_Record'Class;
 
-   type Gnome_Preferences_Type is
-     (Preferences_Never, Preferences_User, Preferences_Always);
-   --  Do something never, only when the user wants, or always.
+   type Calculator_Mode is (
+      Deg,
+      Rad,
+      Grad);
 
-end Gnome;
+   procedure Gnome_New (Widget : out Gnome_Calculator);
+
+   procedure Initialize (Widget : access Gnome_Calculator_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with this widget.
+
+   procedure Clear
+     (Gc    : access Gnome_Calculator_Record;
+      Reset : Boolean);
+
+   procedure Set
+     (Gc     : access Gnome_Calculator_Record;
+      Result : Gdouble);
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "result_changed"
+   --    procedure Handler (Widget : access Gnome_Calculator_Record'Class;
+   --       Result : Gdouble);
+   --
+   --  </signals>
+
+private
+   type Gnome_Calculator_Record is
+     new Gtk.Box.Gtk_Vbox_Record with null record;
+
+   pragma Import (C, Get_Type, "gnome_calculator_get_type");
+end Gnome.Calculator;

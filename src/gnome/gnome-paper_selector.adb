@@ -29,6 +29,7 @@
 
 with System;
 with Gtk; use Gtk;
+with Interfaces.C.Strings;
 
 package body Gnome.Paper_Selector is
 
@@ -98,6 +99,21 @@ package body Gnome.Paper_Selector is
    begin
       return Internal (Get_Object (Paper_Selector));
    end Get_Left_Margin;
+
+   --------------
+   -- Get_Name --
+   --------------
+
+   function Get_Name
+     (Paper_Selector : access Gnome_Paper_Selector_Record) return String
+   is
+      function Internal (Gspaper : System.Address)
+                         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gnome_paper_selector_get_name");
+   begin
+      return
+        Interfaces.C.Strings.Value (Internal (Get_Object (Paper_Selector)));
+   end Get_Name;
 
    ----------------------
    -- Get_Right_Margin --

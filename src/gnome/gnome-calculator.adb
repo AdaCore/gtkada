@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,22 +27,64 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  This is the root of the Gnome hierarchy.
---  It provides initialization routines.
---  </description>
+with Gtk; use Gtk;
+with System;
 
-package Gnome is
-   pragma Elaborate_Body;
+package body Gnome.Calculator is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   ---------------
+   -- Gnome_New --
+   ---------------
 
-   type Gnome_Preferences_Type is
-     (Preferences_Never, Preferences_User, Preferences_Always);
-   --  Do something never, only when the user wants, or always.
+   procedure Gnome_New (Widget : out Gnome_Calculator) is
+   begin
+      Widget := new Gnome_Calculator_Record;
+      Initialize (Widget);
+   end Gnome_New;
 
-end Gnome;
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gnome_Calculator_Record'Class) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gnome_calculator_new");
+   begin
+      Set_Object (Widget, Internal);
+   end Initialize;
+
+   -----------
+   -- Clear --
+   -----------
+
+   procedure Clear
+     (Gc    : access Gnome_Calculator_Record;
+      Reset : Boolean)
+   is
+      procedure Internal
+        (Gc    : System.Address;
+         Reset : Gint);
+      pragma Import (C, Internal, "gnome_calculator_clear");
+   begin
+      Internal (Get_Object (Gc),
+                Boolean'Pos (Reset));
+   end Clear;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Gc     : access Gnome_Calculator_Record;
+      Result : Gdouble)
+   is
+      procedure Internal
+        (Gc     : System.Address;
+         Result : Gdouble);
+      pragma Import (C, Internal, "gnome_calculator_set");
+   begin
+      Internal (Get_Object (Gc),
+                Result);
+   end Set;
+
+end Gnome.Calculator;

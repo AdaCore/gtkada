@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000 Helix Code, Inc.                 --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,56 +30,54 @@
 with Glib; use Glib;
 with Gtk;
 with Gtk.Box;
+with Gtk.Widget;
 
-package Gnome.Paper_Selector is
+package Gnome.Pixmap_Entry is
 
-   type Gnome_Paper_Selector_Record is new Gtk.Box.Gtk_Vbox_Record
-     with private;
-   type Gnome_Paper_Selector is access all Gnome_Paper_Selector_Record'Class;
+   type Gnome_Pixmap_Entry_Record is new Gtk.Box.Gtk_Vbox_Record with private;
+   type Gnome_Pixmap_Entry is access all Gnome_Pixmap_Entry_Record'Class;
 
-   procedure Gnome_New (Paper_Selector : out Gnome_Paper_Selector);
-   --  Create a new paper selector.
+   procedure Gnome_New
+     (Widget              : out Gnome_Pixmap_Entry;
+      History_Id          : String;
+      Browse_Dialog_Title : String;
+      Do_Preview          : Boolean);
 
    procedure Initialize
-     (Paper_Selector : access Gnome_Paper_Selector_Record'Class);
+     (Widget              : access Gnome_Pixmap_Entry_Record'Class;
+      History_Id          : String;
+      Browse_Dialog_Title : String;
+      Do_Preview          : Boolean);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gnome_Paper_Selector.
+   --  Return the internal value associated with this widget.
 
-   function Get_Bottom_Margin
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   function File_Entry (Pentry : access Gnome_Pixmap_Entry_Record)
+                        return Gtk.Widget.Gtk_Widget;
 
-   function Get_Height
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   function Gtk_Entry
+     (Pentry : access Gnome_Pixmap_Entry_Record) return Gtk.Widget.Gtk_Widget;
 
-   function Get_Left_Margin
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   function Gnome_Entry
+     (Pentry : access Gnome_Pixmap_Entry_Record) return Gtk.Widget.Gtk_Widget;
 
-   function Get_Name
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return String;
+   function Get_Filename (Pentry : access Gnome_Pixmap_Entry_Record)
+                          return String;
 
-   function Get_Right_Margin
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   procedure Set_Pixmap_Subdir
+     (Pentry : access Gnome_Pixmap_Entry_Record;
+      Subdir : String);
 
-   function Get_Top_Margin
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   procedure Set_Preview
+     (Pentry     : access Gnome_Pixmap_Entry_Record;
+      Do_Preview : Boolean);
 
-   function Get_Width
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
-
-   procedure Set_Height
-     (Paper_Selector : access Gnome_Paper_Selector_Record;
-      Height         : Gfloat);
-
-   procedure Set_Name
-     (Paper_Selector : access Gnome_Paper_Selector_Record;
-      Name           : String);
-
-   procedure Set_Width
-     (Paper_Selector : access Gnome_Paper_Selector_Record;
-      Width          : Gfloat);
+   procedure Set_Preview_Size
+     (Pentry    : access Gnome_Pixmap_Entry_Record;
+      Preview_W : Gint;
+      Preview_H : Gint);
 
    -------------
    -- Signals --
@@ -91,7 +89,8 @@ package Gnome.Paper_Selector is
    --  </signals>
 
 private
-   type Gnome_Paper_Selector_Record is new Gtk.Box.Gtk_Vbox_Record
-     with null record;
-   pragma Import (C, Get_Type, "gnome_paper_selector_get_type");
-end Gnome.Paper_Selector;
+   type Gnome_Pixmap_Entry_Record is new
+     Gtk.Box.Gtk_Vbox_Record with null record;
+
+   pragma Import (C, Get_Type, "gnome_pixmap_entry_get_type");
+end Gnome.Pixmap_Entry;

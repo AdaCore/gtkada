@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000 Helix Code, Inc.                 --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,57 +29,49 @@
 
 with Glib; use Glib;
 with Gtk;
-with Gtk.Box;
+with Gtk.Combo;
+with Gtk.Widget;
 
-package Gnome.Paper_Selector is
+package Gnome.GEntry is
 
-   type Gnome_Paper_Selector_Record is new Gtk.Box.Gtk_Vbox_Record
-     with private;
-   type Gnome_Paper_Selector is access all Gnome_Paper_Selector_Record'Class;
+   type Gnome_GEntry_Record is new Gtk.Combo.Gtk_Combo_Record with private;
+   type Gnome_GEntry is access all Gnome_GEntry_Record'Class;
 
-   procedure Gnome_New (Paper_Selector : out Gnome_Paper_Selector);
-   --  Create a new paper selector.
+   procedure Gnome_New (Widget     : out Gnome_GEntry;
+                        History_Id : String);
 
-   procedure Initialize
-     (Paper_Selector : access Gnome_Paper_Selector_Record'Class);
+   procedure Initialize (Widget     : access Gnome_GEntry_Record'Class;
+                         History_Id : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gnome_Paper_Selector.
+   --  Return the internal value associated with this widget.
 
-   function Get_Bottom_Margin
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   procedure Entry_Append_History
+     (Gentry : access Gnome_GEntry_Record;
+      Save   : Gint;
+      Text   : String);
 
-   function Get_Height
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   function Entry_Gtk_Entry (Gentry : access Gnome_GEntry_Record)
+                             return Gtk.Widget.Gtk_Widget;
 
-   function Get_Left_Margin
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   procedure Entry_Load_History (Gentry : access Gnome_GEntry_Record);
 
-   function Get_Name
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return String;
+   procedure Entry_Prepend_History
+     (Gentry : access Gnome_GEntry_Record;
+      Save   : Gint;
+      Text   : String);
 
-   function Get_Right_Margin
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   procedure Entry_Save_History (Gentry : access Gnome_GEntry_Record);
 
-   function Get_Top_Margin
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+   procedure Entry_Set_History_Id
+     (Gentry     : access Gnome_GEntry_Record;
+      History_Id : String);
 
-   function Get_Width
-     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
-
-   procedure Set_Height
-     (Paper_Selector : access Gnome_Paper_Selector_Record;
-      Height         : Gfloat);
-
-   procedure Set_Name
-     (Paper_Selector : access Gnome_Paper_Selector_Record;
-      Name           : String);
-
-   procedure Set_Width
-     (Paper_Selector : access Gnome_Paper_Selector_Record;
-      Width          : Gfloat);
+   procedure Entry_Set_Max_Saved
+     (Gentry    : access Gnome_GEntry_Record;
+      Max_Saved : Guint);
 
    -------------
    -- Signals --
@@ -91,7 +83,7 @@ package Gnome.Paper_Selector is
    --  </signals>
 
 private
-   type Gnome_Paper_Selector_Record is new Gtk.Box.Gtk_Vbox_Record
-     with null record;
-   pragma Import (C, Get_Type, "gnome_paper_selector_get_type");
-end Gnome.Paper_Selector;
+   type Gnome_GEntry_Record is new Gtk.Combo.Gtk_Combo_Record with null record;
+
+   pragma Import (C, Get_Type, "gnome_gentry_get_type");
+end Gnome.GEntry;

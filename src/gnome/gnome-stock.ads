@@ -47,213 +47,327 @@
 --  icon.
 --  </description>
 
+with Glib; use Glib;
+with Gdk.Pixmap;
+with Gdk.Types;
 with Gtk.Button;
 with Gtk.Menu_Item;
+with Gtk.Widget;
+with Gnome.Pixmap;
 
 package Gnome.Stock is
+
+   type Gnome_Stock_Record is new
+     Gnome.Pixmap.Gnome_Pixmap_Record with private;
+   type Gnome_Stock is access all Gnome_Stock_Record'Class;
 
    --  The names of `well known' icons. I define these strings mainly to
    --  prevent errors due to typos.
 
-   Pixmap_New         : constant String := "New" & ASCII.NUL;
-   Pixmap_Open        : constant String := "Open" & ASCII.NUL;
-   Pixmap_Close       : constant String := "Close" & ASCII.NUL;
-   Pixmap_Revert      : constant String := "Revert" & ASCII.NUL;
-   Pixmap_Save        : constant String := "Save" & ASCII.NUL;
-   Pixmap_Save_As     : constant String := "Save As" & ASCII.NUL;
-   Pixmap_Cut         : constant String := "Cut" & ASCII.NUL;
-   Pixmap_Copy        : constant String := "Copy" & ASCII.NUL;
-   Pixmap_Paste       : constant String := "Paste" & ASCII.NUL;
-   Pixmap_Clear       : constant String := "Clear" & ASCII.NUL;
-   Pixmap_Properties  : constant String := "Properties" & ASCII.NUL;
-   Pixmap_Preferences : constant String := "Preferences" & ASCII.NUL;
-   Pixmap_Help        : constant String := "Help" & ASCII.NUL;
-   Pixmap_Scores      : constant String := "Scores" & ASCII.NUL;
-   Pixmap_Print       : constant String := "Print" & ASCII.NUL;
-   Pixmap_Search      : constant String := "Search" & ASCII.NUL;
-   Pixmap_Srchrpl     : constant String := "Search/Replace" & ASCII.NUL;
-   Pixmap_Back        : constant String := "Back" & ASCII.NUL;
-   Pixmap_Forward     : constant String := "Forward" & ASCII.NUL;
-   Pixmap_First       : constant String := "First" & ASCII.NUL;
-   Pixmap_Last        : constant String := "Last" & ASCII.NUL;
-   Pixmap_Home        : constant String := "Home" & ASCII.NUL;
-   Pixmap_Stop        : constant String := "Stop" & ASCII.NUL;
-   Pixmap_Refresh     : constant String := "Refresh" & ASCII.NUL;
-   Pixmap_Undo        : constant String := "Undo" & ASCII.NUL;
-   Pixmap_Redo        : constant String := "Redo" & ASCII.NUL;
-   Pixmap_Timer       : constant String := "Timer" & ASCII.NUL;
-   Pixmap_Timer_Stop  : constant String := "Timer Stopped" & ASCII.NUL;
-   Pixmap_Mail        : constant String := "Mail" & ASCII.NUL;
-   Pixmap_Mail_Rcv    : constant String := "Receive Mail" & ASCII.NUL;
-   Pixmap_Mail_Snd    : constant String := "Send Mail" & ASCII.NUL;
-   Pixmap_Mail_Rpl    : constant String := "Reply to Mail" & ASCII.NUL;
-   Pixmap_Mail_Fwd    : constant String := "Forward Mail" & ASCII.NUL;
-   Pixmap_Mail_New    : constant String := "New Mail" & ASCII.NUL;
-   Pixmap_Trash       : constant String := "Trash" & ASCII.NUL;
-   Pixmap_Trash_Full  : constant String := "Trash Full" & ASCII.NUL;
-   Pixmap_Undelete    : constant String := "Undelete" & ASCII.NUL;
-   Pixmap_Spellcheck  : constant String := "Spellchecker" & ASCII.NUL;
-   Pixmap_Mic         : constant String := "Microphone" & ASCII.NUL;
-   Pixmap_Line_In     : constant String := "Line In" & ASCII.NUL;
-   Pixmap_Cdrom       : constant String := "Cdrom" & ASCII.NUL;
-   Pixmap_Volume      : constant String := "Volume" & ASCII.NUL;
-   Pixmap_Midi        : constant String := "Midi" & ASCII.NUL;
-   Pixmap_Book_Red    : constant String := "Book Red" & ASCII.NUL;
-   Pixmap_Book_Green  : constant String := "Book Green" & ASCII.NUL;
-   Pixmap_Book_Blue   : constant String := "Book Blue" & ASCII.NUL;
-   Pixmap_Book_Yellow : constant String := "Book Yellow" & ASCII.NUL;
-   Pixmap_Book_Open   : constant String := "Book Open" & ASCII.NUL;
-   Pixmap_About       : constant String := "About" & ASCII.NUL;
-   Pixmap_Quit        : constant String := "Quit" & ASCII.NUL;
-   Pixmap_Multiple    : constant String := "Multiple" & ASCII.NUL;
-   Pixmap_Not         : constant String := "Not" & ASCII.NUL;
-   Pixmap_Convert     : constant String := "Convert" & ASCII.NUL;
-   Pixmap_Jump_To     : constant String := "Jump To" & ASCII.NUL;
-   Pixmap_Up          : constant String := "Up" & ASCII.NUL;
-   Pixmap_Down        : constant String := "Down" & ASCII.NUL;
-   Pixmap_Top         : constant String := "Top" & ASCII.NUL;
-   Pixmap_Bottom      : constant String := "Bottom" & ASCII.NUL;
-   Pixmap_Attach      : constant String := "Attach" & ASCII.NUL;
-   Pixmap_Index       : constant String := "Index" & ASCII.NUL;
-   Pixmap_Font        : constant String := "Font" & ASCII.NUL;
-   Pixmap_Exec        : constant String := "Exec" & ASCII.NUL;
+   Pixmap_New         : constant String := "New";
+   Pixmap_Open        : constant String := "Open";
+   Pixmap_Close       : constant String := "Close";
+   Pixmap_Revert      : constant String := "Revert";
+   Pixmap_Save        : constant String := "Save";
+   Pixmap_Save_As     : constant String := "Save As";
+   Pixmap_Cut         : constant String := "Cut";
+   Pixmap_Copy        : constant String := "Copy";
+   Pixmap_Paste       : constant String := "Paste";
+   Pixmap_Clear       : constant String := "Clear";
+   Pixmap_Properties  : constant String := "Properties";
+   Pixmap_Preferences : constant String := "Preferences";
+   Pixmap_Help        : constant String := "Help";
+   Pixmap_Scores      : constant String := "Scores";
+   Pixmap_Print       : constant String := "Print";
+   Pixmap_Search      : constant String := "Search";
+   Pixmap_Srchrpl     : constant String := "Search/Replace";
+   Pixmap_Back        : constant String := "Back";
+   Pixmap_Forward     : constant String := "Forward";
+   Pixmap_First       : constant String := "First";
+   Pixmap_Last        : constant String := "Last";
+   Pixmap_Home        : constant String := "Home";
+   Pixmap_Stop        : constant String := "Stop";
+   Pixmap_Refresh     : constant String := "Refresh";
+   Pixmap_Undo        : constant String := "Undo";
+   Pixmap_Redo        : constant String := "Redo";
+   Pixmap_Timer       : constant String := "Timer";
+   Pixmap_Timer_Stop  : constant String := "Timer Stopped";
+   Pixmap_Mail        : constant String := "Mail";
+   Pixmap_Mail_Rcv    : constant String := "Receive Mail";
+   Pixmap_Mail_Snd    : constant String := "Send Mail";
+   Pixmap_Mail_Rpl    : constant String := "Reply to Mail";
+   Pixmap_Mail_Fwd    : constant String := "Forward Mail";
+   Pixmap_Mail_New    : constant String := "New Mail";
+   Pixmap_Trash       : constant String := "Trash";
+   Pixmap_Trash_Full  : constant String := "Trash Full";
+   Pixmap_Undelete    : constant String := "Undelete";
+   Pixmap_Spellcheck  : constant String := "Spellchecker";
+   Pixmap_Mic         : constant String := "Microphone";
+   Pixmap_Line_In     : constant String := "Line In";
+   Pixmap_Cdrom       : constant String := "Cdrom";
+   Pixmap_Volume      : constant String := "Volume";
+   Pixmap_Midi        : constant String := "Midi";
+   Pixmap_Book_Red    : constant String := "Book Red";
+   Pixmap_Book_Green  : constant String := "Book Green";
+   Pixmap_Book_Blue   : constant String := "Book Blue";
+   Pixmap_Book_Yellow : constant String := "Book Yellow";
+   Pixmap_Book_Open   : constant String := "Book Open";
+   Pixmap_About       : constant String := "About";
+   Pixmap_Quit        : constant String := "Quit";
+   Pixmap_Multiple    : constant String := "Multiple";
+   Pixmap_Not         : constant String := "Not";
+   Pixmap_Convert     : constant String := "Convert";
+   Pixmap_Jump_To     : constant String := "Jump To";
+   Pixmap_Up          : constant String := "Up";
+   Pixmap_Down        : constant String := "Down";
+   Pixmap_Top         : constant String := "Top";
+   Pixmap_Bottom      : constant String := "Bottom";
+   Pixmap_Attach      : constant String := "Attach";
+   Pixmap_Index       : constant String := "Index";
+   Pixmap_Font        : constant String := "Font";
+   Pixmap_Exec        : constant String := "Exec";
 
-   Pixmap_Align_Left     : constant String := "Left" & ASCII.NUL;
-   Pixmap_Align_Right    : constant String := "Right" & ASCII.NUL;
-   Pixmap_Align_Center   : constant String := "Center" & ASCII.NUL;
-   Pixmap_AlIgn_Justify  : constant String := "Justify" & ASCII.NUL;
+   Pixmap_Align_Left     : constant String := "Left";
+   Pixmap_Align_Right    : constant String := "Right";
+   Pixmap_Align_Center   : constant String := "Center";
+   Pixmap_AlIgn_Justify  : constant String := "Justify";
 
-   Pixmap_Text_Bold      : constant String := "Bold" & ASCII.NUL;
-   Pixmap_Text_Italic    : constant String := "Italic" & ASCII.NUL;
-   Pixmap_Text_Underline : constant String := "Underline" & ASCII.NUL;
-   Pixmap_Text_Strikeout : constant String := "Strikeout" & ASCII.NUL;
+   Pixmap_Text_Bold      : constant String := "Bold";
+   Pixmap_Text_Italic    : constant String := "Italic";
+   Pixmap_Text_Underline : constant String := "Underline";
+   Pixmap_Text_Strikeout : constant String := "Strikeout";
 
-   Pixmap_Text_Indent    : constant String := "Text Indent" & ASCII.NUL;
-   Pixmap_Text_Unindent  : constant String := "Text Unindent" & ASCII.NUL;
+   Pixmap_Text_Indent    : constant String := "Text Indent";
+   Pixmap_Text_Unindent  : constant String := "Text Unindent";
 
    Pixmap_Exit           : constant String := Pixmap_Quit;
 
-   Pixmap_Colorselector  : constant String := "Color Select" & ASCII.NUL;
+   Pixmap_Colorselector  : constant String := "Color Select";
 
-   Pixmap_Add            : constant String := "Add" & ASCII.NUL;
-   Pixmap_Remove         : constant String := "Remove" & ASCII.NUL;
+   Pixmap_Add            : constant String := "Add";
+   Pixmap_Remove         : constant String := "Remove";
 
-   Pixmap_Table_Borders  : constant String := "Table Borders" & ASCII.NUL;
-   Pixmap_Table_Fill     : constant String := "Table Fill" & ASCII.NUL;
+   Pixmap_Table_Borders  : constant String := "Table Borders";
+   Pixmap_Table_Fill     : constant String := "Table Fill";
 
    Pixmap_Text_Bulleted_List : constant String :=
-     "Text Bulleted List" & ASCII.NUL;
+     "Text Bulleted List";
    Pixmap_Text_Numbered_List : constant String :=
-     "Text Numbered List" & ASCII.NUL;
+     "Text Numbered List";
 
    --  The basic pixmap version of an icon.
 
-   Pixmap_Regular  : constant String := "regular" & ASCII.NUL;
-   Pixmap_Disabled : constant String := "disabled" & ASCII.NUL;
-   Pixmap_Focused  : constant String := "focused" & ASCII.NUL;
+   Pixmap_Regular  : constant String := "regular";
+   Pixmap_Disabled : constant String := "disabled";
+   Pixmap_Focused  : constant String := "focused";
 
    --  Buttons
 
-   Button_Ok     : constant String := "Button_Ok" & ASCII.NUL;
-   Button_Cancel : constant String := "Button_Cancel" & ASCII.NUL;
-   Button_Yes    : constant String := "Button_Yes" & ASCII.NUL;
-   Button_No     : constant String := "Button_No" & ASCII.NUL;
-   Button_Close  : constant String := "Button_Close" & ASCII.NUL;
-   Button_Apply  : constant String := "Button_Apply" & ASCII.NUL;
-   Button_Help   : constant String := "Button_Help" & ASCII.NUL;
-   Button_Next   : constant String := "Button_Next" & ASCII.NUL;
-   Button_Prev   : constant String := "Button_Prev" & ASCII.NUL;
-   Button_Up     : constant String := "Button_Up" & ASCII.NUL;
-   Button_Down   : constant String := "Button_Down" & ASCII.NUL;
-   Button_Font   : constant String := "Button_Font" & ASCII.NUL;
+   Button_Ok     : constant String := "Button_Ok";
+   Button_Cancel : constant String := "Button_Cancel";
+   Button_Yes    : constant String := "Button_Yes";
+   Button_No     : constant String := "Button_No";
+   Button_Close  : constant String := "Button_Close";
+   Button_Apply  : constant String := "Button_Apply";
+   Button_Help   : constant String := "Button_Help";
+   Button_Next   : constant String := "Button_Next";
+   Button_Prev   : constant String := "Button_Prev";
+   Button_Up     : constant String := "Button_Up";
+   Button_Down   : constant String := "Button_Down";
+   Button_Font   : constant String := "Button_Font";
+
+   --  Menus
+
+   Menu_Blank        : constant String := "Menu_";
+   Menu_New          : constant String := "Menu_New";
+   Menu_Save         : constant String := "Menu_Save";
+   Menu_Save_As      : constant String := "Menu_Save As";
+   Menu_Revert       : constant String := "Menu_Revert";
+   Menu_Open         : constant String := "Menu_Open";
+   Menu_Close        : constant String := "Menu_Close";
+   Menu_Quit         : constant String := "Menu_Quit";
+   Menu_Cut          : constant String := "Menu_Cut";
+   Menu_Copy         : constant String := "Menu_Copy";
+   Menu_Paste        : constant String := "Menu_Paste";
+   Menu_Prop         : constant String := "Menu_Properties";
+   Menu_Pref         : constant String := "Menu_Preferences";
+   Menu_About        : constant String := "Menu_About";
+   Menu_Scores       : constant String := "Menu_Scores";
+   Menu_Undo         : constant String := "Menu_Undo";
+   Menu_Redo         : constant String := "Menu_Redo";
+   Menu_Print        : constant String := "Menu_Print";
+   Menu_Search       : constant String := "Menu_Search";
+   Menu_Srchrpl      : constant String := "Menu_Search/Replace";
+   Menu_Back         : constant String := "Menu_Back";
+   Menu_Forward      : constant String := "Menu_Forward";
+   Menu_First        : constant String := "Menu_First";
+   Menu_Last         : constant String := "Menu_Last";
+   Menu_Home         : constant String := "Menu_Home";
+   Menu_Stop         : constant String := "Menu_Stop";
+   Menu_Refresh      : constant String := "Menu_Refresh";
+   Menu_Mail         : constant String := "Menu_Mail";
+   Menu_Mail_Rcv     : constant String := "Menu_Receive Mail";
+   Menu_Mail_Snd     : constant String := "Menu_Send Mail";
+   Menu_Mail_Rpl     : constant String := "Menu_Reply to Mail";
+   Menu_Mail_Fwd     : constant String := "Menu_Forward Mail";
+   Menu_Mail_New     : constant String := "Menu_New Mail";
+   Menu_Trash        : constant String := "Menu_Trash";
+   Menu_Trash_Full   : constant String := "Menu_Trash Full";
+   Menu_Undelete     : constant String := "Menu_Undelete";
+   Menu_Timer        : constant String := "Menu_Timer";
+   Menu_Timer_Stop   : constant String := "Menu_Timer Stopped";
+   Menu_Spellcheck   : constant String := "Menu_Spellchecker";
+   Menu_Mic          : constant String := "Menu_Microphone";
+   Menu_Line_In      : constant String := "Menu_Line In";
+   Menu_Cdrom        : constant String := "Menu_Cdrom";
+   Menu_Volume       : constant String := "Menu_Volume";
+   Menu_Midi         : constant String := "Menu_Midi";
+   Menu_Book_Red     : constant String := "Menu_Book Red";
+   Menu_Book_Green   : constant String := "Menu_Book Green";
+   Menu_Book_Blue    : constant String := "Menu_Book Blue";
+   Menu_Book_Yellow  : constant String := "Menu_Book Yellow";
+   Menu_Book_Open    : constant String := "Menu_Book Open";
+   Menu_Convert      : constant String := "Menu_Convert";
+   Menu_Jump_To      : constant String := "Menu_Jump To";
+   Menu_Up           : constant String := "Menu_Up";
+   Menu_Down         : constant String := "Menu_Down";
+   Menu_Top          : constant String := "Menu_Top";
+   Menu_Bottom       : constant String := "Menu_Bottom";
+   Menu_Attach       : constant String := "Menu_Attach";
+   Menu_Index        : constant String := "Menu_Index";
+   Menu_Font         : constant String := "Menu_Font";
+   Menu_Exec         : constant String := "Menu_Exec";
+
+   Menu_Align_Left     : constant String := "Menu_Left";
+   Menu_Align_Right    : constant String := "Menu_Right";
+   Menu_Align_Center   : constant String := "Menu_Center";
+   Menu_Align_Justify  : constant String := "Menu_Justify";
+
+   Menu_Text_Bold      : constant String := "Menu_Bold";
+   Menu_Text_Italic    : constant String := "Menu_Italic";
+   Menu_Text_Underline : constant String := "Menu_Underline";
+   Menu_Text_Strikeout : constant String := "Menu_Strikeout";
+
+   Menu_Exit           : constant String := Menu_Quit;
+
+   procedure Gnome_New (Widget : out Gnome_Stock; Icon : String);
+
+   procedure Initialize
+     (Widget : access Gnome_Stock_Record'Class; Icon : String);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Gnome_New (Widget : out Gnome_Stock);
+
+   procedure Initialize (Widget : access Gnome_Stock_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Gnome_New
+     (Widget : out Gnome_Stock;
+      Window : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon   : String);
+
+   procedure Initialize
+     (Widget : access Gnome_Stock_Record'Class;
+      Window : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon   : String);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with this widget.
 
    function Button
      (Button_Type : String;
       Ordinary    : Boolean := False) return Gtk.Button.Gtk_Button;
    --  Return a default button widget for dialogs
-   --  If the Button_Type argument matches a Button_* define, then a stock
+   --  If the Button_Type argument matches a Button_* constant, then a stock
    --  button is created.
    --- Otherwise, if Ordinary is True, an ordinary button is created, and
    --  Button_Type is given as the label. If Ordinary is False, null will
    --  be returned.
 
-   --  Menus
+   procedure Button_Can_Default
+     (Button      : access Gtk.Button.Gtk_Button_Record'Class;
+      Can_Default : Boolean);
 
-   Menu_Blank        : constant String := "Menu_" & ASCII.NUL;
-   Menu_New          : constant String := "Menu_New" & ASCII.NUL;
-   Menu_Save         : constant String := "Menu_Save" & ASCII.NUL;
-   Menu_Save_As      : constant String := "Menu_Save As" & ASCII.NUL;
-   Menu_Revert       : constant String := "Menu_Revert" & ASCII.NUL;
-   Menu_Open         : constant String := "Menu_Open" & ASCII.NUL;
-   Menu_Close        : constant String := "Menu_Close" & ASCII.NUL;
-   Menu_Quit         : constant String := "Menu_Quit" & ASCII.NUL;
-   Menu_Cut          : constant String := "Menu_Cut" & ASCII.NUL;
-   Menu_Copy         : constant String := "Menu_Copy" & ASCII.NUL;
-   Menu_Paste        : constant String := "Menu_Paste" & ASCII.NUL;
-   Menu_Prop         : constant String := "Menu_Properties" & ASCII.NUL;
-   Menu_Pref         : constant String := "Menu_Preferences" & ASCII.NUL;
-   Menu_About        : constant String := "Menu_About" & ASCII.NUL;
-   Menu_Scores       : constant String := "Menu_Scores" & ASCII.NUL;
-   Menu_Undo         : constant String := "Menu_Undo" & ASCII.NUL;
-   Menu_Redo         : constant String := "Menu_Redo" & ASCII.NUL;
-   Menu_Print        : constant String := "Menu_Print" & ASCII.NUL;
-   Menu_Search       : constant String := "Menu_Search" & ASCII.NUL;
-   Menu_Srchrpl      : constant String := "Menu_Search/Replace" & ASCII.NUL;
-   Menu_Back         : constant String := "Menu_Back" & ASCII.NUL;
-   Menu_Forward      : constant String := "Menu_Forward" & ASCII.NUL;
-   Menu_First        : constant String := "Menu_First" & ASCII.NUL;
-   Menu_Last         : constant String := "Menu_Last" & ASCII.NUL;
-   Menu_Home         : constant String := "Menu_Home" & ASCII.NUL;
-   Menu_Stop         : constant String := "Menu_Stop" & ASCII.NUL;
-   Menu_Refresh      : constant String := "Menu_Refresh" & ASCII.NUL;
-   Menu_Mail         : constant String := "Menu_Mail" & ASCII.NUL;
-   Menu_Mail_Rcv     : constant String := "Menu_Receive Mail" & ASCII.NUL;
-   Menu_Mail_Snd     : constant String := "Menu_Send Mail" & ASCII.NUL;
-   Menu_Mail_Rpl     : constant String := "Menu_Reply to Mail" & ASCII.NUL;
-   Menu_Mail_Fwd     : constant String := "Menu_Forward Mail" & ASCII.NUL;
-   Menu_Mail_New     : constant String := "Menu_New Mail" & ASCII.NUL;
-   Menu_Trash        : constant String := "Menu_Trash" & ASCII.NUL;
-   Menu_Trash_Full   : constant String := "Menu_Trash Full" & ASCII.NUL;
-   Menu_Undelete     : constant String := "Menu_Undelete" & ASCII.NUL;
-   Menu_Timer        : constant String := "Menu_Timer" & ASCII.NUL;
-   Menu_Timer_Stop   : constant String := "Menu_Timer Stopped" & ASCII.NUL;
-   Menu_Spellcheck   : constant String := "Menu_Spellchecker" & ASCII.NUL;
-   Menu_Mic          : constant String := "Menu_Microphone" & ASCII.NUL;
-   Menu_Line_In      : constant String := "Menu_Line In" & ASCII.NUL;
-   Menu_Cdrom        : constant String := "Menu_Cdrom" & ASCII.NUL;
-   Menu_Volume       : constant String := "Menu_Volume" & ASCII.NUL;
-   Menu_Midi         : constant String := "Menu_Midi" & ASCII.NUL;
-   Menu_Book_Red     : constant String := "Menu_Book Red" & ASCII.NUL;
-   Menu_Book_Green   : constant String := "Menu_Book Green" & ASCII.NUL;
-   Menu_Book_Blue    : constant String := "Menu_Book Blue" & ASCII.NUL;
-   Menu_Book_Yellow  : constant String := "Menu_Book Yellow" & ASCII.NUL;
-   Menu_Book_Open    : constant String := "Menu_Book Open" & ASCII.NUL;
-   Menu_Convert      : constant String := "Menu_Convert" & ASCII.NUL;
-   Menu_Jump_To      : constant String := "Menu_Jump To" & ASCII.NUL;
-   Menu_Up           : constant String := "Menu_Up" & ASCII.NUL;
-   Menu_Down         : constant String := "Menu_Down" & ASCII.NUL;
-   Menu_Top          : constant String := "Menu_Top" & ASCII.NUL;
-   Menu_Bottom       : constant String := "Menu_Bottom" & ASCII.NUL;
-   Menu_Attach       : constant String := "Menu_Attach" & ASCII.NUL;
-   Menu_Index        : constant String := "Menu_Index" & ASCII.NUL;
-   Menu_Font         : constant String := "Menu_Font" & ASCII.NUL;
-   Menu_Exec         : constant String := "Menu_Exec" & ASCII.NUL;
+   procedure Menu_Accel
+     (The_Type : String;
+      Key      : String;
+      Modifier : out Gdk.Types.Gdk_Modifier_Type;
+      Result   : out Boolean);
 
-   Menu_Align_Left     : constant String := "Menu_Left" & ASCII.NUL;
-   Menu_Align_Right    : constant String := "Menu_Right" & ASCII.NUL;
-   Menu_Align_Center   : constant String := "Menu_Center" & ASCII.NUL;
-   Menu_Align_Justify  : constant String := "Menu_Justify" & ASCII.NUL;
+   procedure Menu_Accel
+     (The_Type : String;
+      Key      : String;
+      Modifier : out Gdk.Types.Gdk_Modifier_Type);
 
-   Menu_Text_Bold      : constant String := "Menu_Bold" & ASCII.NUL;
-   Menu_Text_Italic    : constant String := "Menu_Italic" & ASCII.NUL;
-   Menu_Text_Underline : constant String := "Menu_Underline" & ASCII.NUL;
-   Menu_Text_Strikeout : constant String := "Menu_Strikeout" & ASCII.NUL;
-
-   Menu_Exit           : constant String := Menu_Quit;
+   procedure Menu_Accel_Parse (Section : String);
 
    function Menu_Item
      (Icon : String;
       Text : String) return Gtk.Menu_Item.Gtk_Menu_Item;
    --  Return a Gtk_Menu_Item with a stock icon and text
 
+   function Pixmap_Button
+     (Pixmap : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Text   : String) return Gtk.Widget.Gtk_Widget;
+
+   --  function Pixmap_Change
+   --    (Icon     : String;
+   --     Sub_Type : String;
+   --     GEntry   : access Gnome_Stock_Pixmap_Entry_Record) return Gint;
+
+   --  function Pixmap_Checkfor
+   --    (Icon     : String;
+   --     Sub_Type : String) return Gnome_Stock_Pixmap_Entry;
+
+   procedure Pixmap_Gdk
+     (Icon     : String;
+      Sub_Type : String;
+      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : Gdk.Pixmap.Gdk_Pixmap);
+
+   --  function Pixmap_Register
+   --    (Icon     : String;
+   --     Sub_Type : String;
+   --     GEntry   : access Gnome_Stock_Pixmap_Entry_Record) return Gint;
+
+   function Pixmap_Widget
+     (Window : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon   : String) return Gtk.Widget.Gtk_Widget;
+
+   function Pixmap_Widget_At_Size
+     (Window : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon   : String;
+      Width  : Guint;
+      Height : Guint) return Gtk.Widget.Gtk_Widget;
+
+   procedure Pixmap_Widget_Set_Icon
+     (Widget : access Gnome_Stock_Record;
+      Icon   : String);
+
+   function Set_Icon
+     (Stock  : access Gnome_Stock_Record;
+      Icon   : String) return Boolean;
+
+   function Transparent_Window
+     (Icon     : String;
+      Sub_Type : String) return Gtk.Widget.Gtk_Widget;
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  </signals>
+
+private
+   type Gnome_Stock_Record is new
+     Gnome.Pixmap.Gnome_Pixmap_Record with null record;
+
+   pragma Import (C, Get_Type, "gnome_stock_get_type");
 end Gnome.Stock;

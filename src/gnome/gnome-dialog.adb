@@ -29,6 +29,7 @@
 
 with System;
 with Gtk; use Gtk;
+with Gtkada.Types; use Gtkada.Types;
 
 package body Gnome.Dialog is
 
@@ -54,14 +55,12 @@ package body Gnome.Dialog is
       Title   : String;
       Buttons : Chars_Ptr_Array)
    is
-      Real_Buttons : constant Chars_Ptr_Array := Buttons + Null_Ptr;
-
       function Internal
         (Title : String; Buttons : Chars_Ptr_Array) return System.Address;
       pragma Import (C, Internal, "gnome_dialog_newv");
 
    begin
-      Set_Object (Dialog, Internal (Title & ASCII.NUL, Real_Buttons));
+      Set_Object (Dialog, Internal (Title & ASCII.NUL, Buttons + Null_Ptr));
       Initialize_User_Data (Dialog);
    end Initialize;
 
@@ -94,6 +93,38 @@ package body Gnome.Dialog is
    begin
       Internal (Get_Object (Dialog), Name & ASCII.NUL, Pixmap & ASCII.NUL);
    end Append_Button;
+
+   --------------------
+   -- Append_Buttons --
+   --------------------
+
+   procedure Append_Buttons
+     (Dialog  : access Gnome_Dialog_Record;
+      Names   : Chars_Ptr_Array;
+      Pixmaps : Chars_Ptr_Array)
+   is
+      procedure Internal
+        (Dialog  : System.Address;
+         Names   : Chars_Ptr_Array;
+         Pixmaps : Chars_Ptr_Array);
+      pragma Import (C, Internal, "gnome_dialog_append_buttons_with_pixmaps");
+   begin
+      Internal (Get_Object (Dialog),
+                Names + Null_Ptr,
+                Pixmaps + Null_Ptr);
+   end Append_Buttons;
+
+   procedure Append_Buttons
+     (Dialog  : access Gnome_Dialog_Record;
+      Buttons : Chars_Ptr_Array)
+   is
+      procedure Internal
+        (Dialog  : System.Address;
+         Buttons : Chars_Ptr_Array);
+      pragma Import (C, Internal, "gnome_dialog_append_buttonsv");
+   begin
+      Internal (Get_Object (Dialog), Buttons + Null_Ptr);
+   end Append_Buttons;
 
    -----------
    -- Close --
@@ -140,6 +171,19 @@ package body Gnome.Dialog is
    begin
       Internal (Get_Object (Dialog), Get_Object (Editable));
    end Editable_Enters;
+
+   ----------------
+   -- Grab_Focus --
+   ----------------
+
+   procedure Grab_Focus (Dialog : access Gnome_Dialog_Record; Button : Gint) is
+      procedure Internal
+        (Dialog : System.Address;
+         Button : Gint);
+      pragma Import (C, Internal, "gnome_dialog_grab_focus");
+   begin
+      Internal (Get_Object (Dialog), Button);
+   end Grab_Focus;
 
    ---------
    -- Run --

@@ -33,22 +33,8 @@ with Gtk; use Gtk;
 
 package body Gnome.App is
 
-   --------------------------
-   -- Enable_Layout_Config --
-   --------------------------
-
-   procedure Enable_Layout_Config
-     (App    : access Gnome_App_Record;
-      Enable : Boolean)
-   is
-      procedure Internal
-        (App    : System.Address;
-         Enable : Gboolean);
-      pragma Import (C, Internal, "gnome_app_enable_layout_config");
-
-   begin
-      Internal (Get_Object (App), Boolean'Pos (Enable));
-   end Enable_Layout_Config;
+   use Gnome.Dock;
+   use Gnome.Dock_Item;
 
    ---------------
    -- Gnome_New --
@@ -88,13 +74,157 @@ package body Gnome.App is
       Initialize_User_Data (App);
    end Initialize;
 
+   -------------------
+   -- Add_Dock_Item --
+   -------------------
+
+   procedure Add_Dock_Item
+     (App           : access Gnome_App_Record;
+      Item          : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
+      Placement     : Gnome_Dock_Placement;
+      Band_Num      : Gint;
+      Band_Position : Gint;
+      Offset        : Gint)
+   is
+      procedure Internal
+        (App           : System.Address;
+         Item          : System.Address;
+         Placement     : Gint;
+         Band_Num      : Gint;
+         Band_Position : Gint;
+         Offset        : Gint);
+      pragma Import (C, Internal, "gnome_app_add_dock_item");
+   begin
+      Internal (Get_Object (App),
+                Get_Object (Item),
+                Gnome_Dock_Placement'Pos (Placement),
+                Band_Num,
+                Band_Position,
+                Offset);
+   end Add_Dock_Item;
+
+   ----------------
+   -- Add_Docked --
+   ----------------
+
+   procedure Add_Docked
+     (App           : access Gnome_App_Record;
+      Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Name          : String;
+      Behavior      : Gnome_Dock_Item_Behavior;
+      Placement     : Gnome_Dock_Placement;
+      Band_Num      : Gint;
+      Band_Position : Gint;
+      Offset        : Gint)
+   is
+      procedure Internal
+        (App           : System.Address;
+         Widget        : System.Address;
+         Name          : String;
+         Behavior      : Gint;
+         Placement     : Gint;
+         Band_Num      : Gint;
+         Band_Position : Gint;
+         Offset        : Gint);
+      pragma Import (C, Internal, "gnome_app_add_docked");
+   begin
+      Internal (Get_Object (App),
+                Get_Object (Widget),
+                Name & ASCII.NUL,
+                Gnome_Dock_Item_Behavior'Pos (Behavior),
+                Gnome_Dock_Placement'Pos (Placement),
+                Band_Num,
+                Band_Position,
+                Offset);
+   end Add_Docked;
+
+   -----------------
+   -- Add_Toolbar --
+   -----------------
+
+   procedure Add_Toolbar
+     (App           : access Gnome_App_Record;
+      Toolbar       : access Gtk.Toolbar.Gtk_Toolbar_Record'Class;
+      Name          : String;
+      Behavior      : Gnome_Dock_Item_Behavior;
+      Placement     : Gnome_Dock_Placement;
+      Band_Num      : Gint;
+      Band_Position : Gint;
+      Offset        : Gint)
+   is
+      procedure Internal
+        (App           : System.Address;
+         Toolbar       : System.Address;
+         Name          : String;
+         Behavior      : Gint;
+         Placement     : Gint;
+         Band_Num      : Gint;
+         Band_Position : Gint;
+         Offset        : Gint);
+      pragma Import (C, Internal, "gnome_app_add_toolbar");
+   begin
+      Internal (Get_Object (App),
+                Get_Object (Toolbar),
+                Name & ASCII.NUL,
+                Gnome_Dock_Item_Behavior'Pos (Behavior),
+                Gnome_Dock_Placement'Pos (Placement),
+                Band_Num,
+                Band_Position,
+                Offset);
+   end Add_Toolbar;
+
+   --------------------------
+   -- Enable_Layout_Config --
+   --------------------------
+
+   procedure Enable_Layout_Config
+     (App    : access Gnome_App_Record;
+      Enable : Boolean)
+   is
+      procedure Internal
+        (App    : System.Address;
+         Enable : Gboolean);
+      pragma Import (C, Internal, "gnome_app_enable_layout_config");
+
+   begin
+      Internal (Get_Object (App), Boolean'Pos (Enable));
+   end Enable_Layout_Config;
+
+   --------------
+   -- Get_Dock --
+   --------------
+
+   function Get_Dock (App : access Gnome_App_Record) return Gnome_Dock is
+      function Internal (App : System.Address) return System.Address;
+      pragma Import (C, Internal, "gnome_app_get_dock");
+   begin
+      return Gnome_Dock (Gtk.Widget.Convert (Internal (Get_Object (App))));
+   end Get_Dock;
+
+   ---------------------------
+   -- Get_Dock_Item_By_Name --
+   ---------------------------
+
+   function Get_Dock_Item_By_Name
+     (App    : access Gnome_App_Record;
+      Name   : String) return Gnome.Dock_Item.Gnome_Dock_Item
+   is
+      function Internal
+        (App    : System.Address;
+         Name   : String) return System.Address;
+      pragma Import (C, Internal, "gnome_app_get_dock_item_by_name");
+   begin
+      return Gnome_Dock_Item
+        (Gtk.Widget.Convert (Internal (Get_Object (App), Name & ASCII.NUL)));
+   end Get_Dock_Item_By_Name;
+
    ------------------
    -- Set_Contents --
    ------------------
 
    procedure Set_Contents
      (App      : access Gnome_App_Record;
-      Contents : access Gtk_Widget_Record'Class)
+      Contents : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (App      : System.Address;
@@ -111,7 +241,7 @@ package body Gnome.App is
 
    procedure Set_Menus
      (App     : access Gnome_App_Record;
-      Menubar : access Gtk_Menu_Bar_Record'Class)
+      Menubar : access Gtk.Menu_Bar.Gtk_Menu_Bar_Record'Class)
    is
       procedure Internal
         (App     : System.Address;
@@ -128,7 +258,7 @@ package body Gnome.App is
 
    procedure Set_StatusBar
      (App       : access Gnome_App_Record;
-      Statusbar : access Gtk_Status_Bar_Record'Class)
+      Statusbar : access Gtk.Status_Bar.Gtk_Status_Bar_Record'Class)
    is
       procedure Internal
         (App       : System.Address;
@@ -145,8 +275,8 @@ package body Gnome.App is
 
    procedure Set_Statusbar_Custom
      (App       : access Gnome_App_Record;
-      Container : access Gtk_Container_Record'Class;
-      Statusbar : access Gtk_Status_Bar_Record'Class)
+      Container : access Gtk.Container.Gtk_Container_Record'Class;
+      Statusbar : access Gtk.Status_Bar.Gtk_Status_Bar_Record'Class)
    is
       procedure Internal
         (App       : System.Address;
@@ -165,7 +295,7 @@ package body Gnome.App is
 
    procedure Set_Toolbar
      (App     : access Gnome_App_Record;
-      Toolbar : access Gtk_Toolbar_Record'Class)
+      Toolbar : access Gtk.Toolbar.Gtk_Toolbar_Record'Class)
    is
       procedure Internal
         (App     : System.Address;

@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,22 +27,46 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  This is the root of the Gnome hierarchy.
---  It provides initialization routines.
---  </description>
+with Gtk; use Gtk;
+with System;
 
-package Gnome is
-   pragma Elaborate_Body;
+package body Gnome.Message_Box is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   ---------------
+   -- Gnome_New --
+   ---------------
 
-   type Gnome_Preferences_Type is
-     (Preferences_Never, Preferences_User, Preferences_Always);
-   --  Do something never, only when the user wants, or always.
+   procedure Gnome_New
+     (Widget          : out Gnome_Message_Box;
+      Message         : String;
+      Messagebox_Type : String;
+      Buttons         : Chars_Ptr_Array)
+   is
+   begin
+      Widget := new Gnome_Message_Box_Record;
+      Initialize (Widget, Message, Messagebox_Type, Buttons);
+   end Gnome_New;
 
-end Gnome;
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Widget          : access Gnome_Message_Box_Record'Class;
+      Message         : String;
+      Messagebox_Type : String;
+      Buttons         : Chars_Ptr_Array)
+   is
+      function Internal
+        (Message         : String;
+         Messagebox_Type : String;
+         Buttons         : Chars_Ptr_Array)
+         return System.Address;
+      pragma Import (C, Internal, "gnome_message_box_newv");
+   begin
+      Set_Object (Widget, Internal (Message & ASCII.NUL,
+                                    Messagebox_Type & ASCII.NUL,
+                                    Buttons + Null_Ptr));
+   end Initialize;
+
+end Gnome.Message_Box;

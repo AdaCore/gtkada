@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,22 +27,52 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  This is the root of the Gnome hierarchy.
---  It provides initialization routines.
---  </description>
+with Gtk;
+with Gtk.Button;
 
-package Gnome is
-   pragma Elaborate_Body;
+package Gnome.HRef is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   type Gnome_HRef_Record is new Gtk.Button.Gtk_Button_Record with private;
+   type Gnome_HRef is access all Gnome_HRef_Record'Class;
 
-   type Gnome_Preferences_Type is
-     (Preferences_Never, Preferences_User, Preferences_Always);
-   --  Do something never, only when the user wants, or always.
+   procedure Gnome_New
+     (Widget : out Gnome_HRef;
+      Url    : String;
+      Label  : String);
 
-end Gnome;
+   procedure Initialize
+     (Widget : access Gnome_HRef_Record'Class;
+      Url    : String;
+      Label  : String);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with this widget.
+
+   function Get_Label (Href : access Gnome_HRef_Record) return String;
+
+   function Get_Url (Href : access Gnome_HRef_Record) return String;
+
+   procedure Set_Label
+     (Href  : access Gnome_HRef_Record;
+      Label : String);
+
+   procedure Set_Url
+     (Href : access Gnome_HRef_Record;
+      Url  : String);
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  </signals>
+
+private
+   type Gnome_HRef_Record is new Gtk.Button.Gtk_Button_Record with null record;
+
+   pragma Import (C, Get_Type, "gnome_href_get_type");
+end Gnome.HRef;

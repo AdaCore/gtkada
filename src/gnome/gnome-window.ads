@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,22 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  This is the root of the Gnome hierarchy.
---  It provides initialization routines.
---  </description>
+with Gtk.Window;
 
-package Gnome is
-   pragma Elaborate_Body;
+package Gnome.Window is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   procedure Toplevel_Set_Title
+     (W         : access Gtk.Window.Gtk_Window_Record'Class;
+      Doc_Name  : String;
+      App_Name  : String;
+      Extension : String);
 
-   type Gnome_Preferences_Type is
-     (Preferences_Never, Preferences_User, Preferences_Always);
-   --  Do something never, only when the user wants, or always.
-
-end Gnome;
+end Gnome.Window;

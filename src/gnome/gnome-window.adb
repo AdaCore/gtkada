@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,22 +27,34 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  This is the root of the Gnome hierarchy.
---  It provides initialization routines.
---  </description>
+with System;
+with Gtk; use Gtk;
 
-package Gnome is
-   pragma Elaborate_Body;
+package body Gnome.Window is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   use Gtk.Window;
 
-   type Gnome_Preferences_Type is
-     (Preferences_Never, Preferences_User, Preferences_Always);
-   --  Do something never, only when the user wants, or always.
+   ------------------------
+   -- Toplevel_Set_Title --
+   ------------------------
 
-end Gnome;
+   procedure Toplevel_Set_Title
+     (W         : access Gtk_Window_Record'Class;
+      Doc_Name  : String;
+      App_Name  : String;
+      Extension : String)
+   is
+      procedure Internal
+        (W         : System.Address;
+         Doc_Name  : String;
+         App_Name  : String;
+         Extension : String);
+      pragma Import (C, Internal, "gnome_window_toplevel_set_title");
+   begin
+      Internal (Get_Object (W),
+                Doc_Name & ASCII.NUL,
+                App_Name & ASCII.NUL,
+                Extension & ASCII.NUL);
+   end Toplevel_Set_Title;
+
+end Gnome.Window;

@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,22 +27,56 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  This is the root of the Gnome hierarchy.
---  It provides initialization routines.
---  </description>
+with Glib; use Glib;
+with Gtk;
+with Gtk.Box;
+with Gtk.Widget;
 
-package Gnome is
-   pragma Elaborate_Body;
+package Gnome.Number_Entry is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   type Gnome_Number_Entry_Record is new Gtk.Box.Gtk_Hbox_Record with private;
+   type Gnome_Number_Entry is access all Gnome_Number_Entry_Record'Class;
 
-   type Gnome_Preferences_Type is
-     (Preferences_Never, Preferences_User, Preferences_Always);
-   --  Do something never, only when the user wants, or always.
+   procedure Gnome_New
+     (Widget            : out Gnome_Number_Entry;
+      History_Id        : String;
+      Calc_Dialog_Title : String);
 
-end Gnome;
+   procedure Initialize
+     (Widget            : access Gnome_Number_Entry_Record'Class;
+      History_Id        : String;
+      Calc_Dialog_Title : String);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with this widget.
+
+   function Gtk_Entry
+     (Nentry : access Gnome_Number_Entry_Record) return Gtk.Widget.Gtk_Widget;
+
+   function Gnome_Entry
+     (Nentry : access Gnome_Number_Entry_Record) return Gtk.Widget.Gtk_Widget;
+
+   function Get_Number
+     (Nentry : access Gnome_Number_Entry_Record) return Gdouble;
+
+   procedure Set_Title
+     (Nentry            : access Gnome_Number_Entry_Record;
+      Calc_Dialog_Title : String);
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  </signals>
+
+private
+   type Gnome_Number_Entry_Record is new
+     Gtk.Box.Gtk_Hbox_Record with null record;
+
+   pragma Import (C, Get_Type, "gnome_number_entry_get_type");
+end Gnome.Number_Entry;

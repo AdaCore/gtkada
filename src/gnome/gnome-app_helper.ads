@@ -38,9 +38,13 @@ with Glib; use Glib;
 with Gdk.Types; use Gdk.Types;
 with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
+with Gtk.Status_Bar; use Gtk.Status_Bar;
+with Gtk.Toolbar; use Gtk.Toolbar;
+with Gtk.Widget; use Gtk.Widget;
 with Gtkada.Types; use Gtkada.Types;
 with Gtkada.Intl; use Gtkada.Intl;
 with System; use System;
+with Gnome.App; use Gnome.App;
 
 package Gnome.App_Helper is
 
@@ -473,7 +477,7 @@ package Gnome.App_Helper is
    --  Really? Why can't it be automatic?
 
    procedure Install_Statusbar_Menu_Hints
-     (Bar : Gtk_Statusbar; Info : access UI_Info_Array);
+     (Bar : Gtk_Status_Bar; Info : access UI_Info_Array);
 
    procedure Install_Menu_Hints (App : Gnome_App; Info : access UI_Info_Array);
 

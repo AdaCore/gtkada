@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,22 +27,47 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---  This is the root of the Gnome hierarchy.
---  It provides initialization routines.
---  </description>
+with Gnome.Dialog;
+with Gtk;
+with Gtkada.Types; use Gtkada.Types;
 
-package Gnome is
-   pragma Elaborate_Body;
+package Gnome.Message_Box is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   type Gnome_Message_Box_Record is new
+     Gnome.Dialog.Gnome_Dialog_Record with private;
+   type Gnome_Message_Box is access all Gnome_Message_Box_Record'Class;
 
-   type Gnome_Preferences_Type is
-     (Preferences_Never, Preferences_User, Preferences_Always);
-   --  Do something never, only when the user wants, or always.
+   --  gnome_message_box_new not bound: variable number of arguments
 
-end Gnome;
+   procedure Gnome_New
+     (Widget          : out Gnome_Message_Box;
+      Message         : String;
+      Messagebox_Type : String;
+      Buttons         : Chars_Ptr_Array);
+
+   procedure Initialize
+     (Widget          : access Gnome_Message_Box_Record'Class;
+      Message         : String;
+      Messagebox_Type : String;
+      Buttons         : Chars_Ptr_Array);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with this widget.
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  </signals>
+
+private
+   type Gnome_Message_Box_Record is new
+     Gnome.Dialog.Gnome_Dialog_Record with null record;
+
+   pragma Import (C, Get_Type, "gnome_message_box_get_type");
+end Gnome.Message_Box;
