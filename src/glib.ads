@@ -1,5 +1,4 @@
 with Interfaces.C;
-with System;
 
 package Glib is
 
@@ -22,9 +21,11 @@ package Glib is
    type Gfloat  is new C.C_float;
    type Gdouble is new C.double;
 
+   subtype Gint16 is Gint range -(2 ** 8) .. (2 ** 8 - 1);
    subtype Gint32 is Gint range -(2 ** 16) .. (2 ** 16 - 1);
 
    subtype Guint8  is Guint range Guint'First .. (2 ** 8 - 1);
+   subtype Guint16 is Guint range Guint'First .. (2 ** 16 - 1);
    subtype Guint32 is Guint range Guint'First .. (2 ** 32 - 1);
 
    -------------------------------------------------
