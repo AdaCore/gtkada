@@ -98,6 +98,7 @@ with Create_Range;
 with Create_Reparent;with Create_Rulers;
 with Create_Scrolled;
 with Create_Scroll_Test;
+with Create_Sheet;
 with Create_Spin;
 with Create_Status;
 with Create_Test_Idle;
@@ -286,6 +287,8 @@ package body Main_Windows is
       (NS ("scrolled windows"), Base,    Create_Scrolled.Run'Access,
                                          Create_Scrolled.Help'Access),
       (NS ("shapes"),           Misc,    null, null),
+      (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
+                                         Create_Sheet.Help'Access),
       (NS ("spinbutton"),       Base,    Create_Spin.Run'Access,
                                          Create_Spin.Help'Access),
       (NS ("statusbar"),        Base,    Create_Status.Run'Access,
