@@ -34,6 +34,7 @@ with Gdk.Window;          use Gdk.Window;
 with Glib;                use Glib;
 with Gtk.Adjustment;      use Gtk.Adjustment;
 with Gtk.Button;          use Gtk.Button;
+with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Label;           use Gtk.Label;
@@ -79,12 +80,10 @@ package body Create_Layout is
       Imin, Imax : Guint;
       Jmin, Jmax : Guint;
    begin
-      Imin := (Get_Xoffset (Layout) + Guint (Area.X)) / 10;
-      Imax := (Get_Xoffset (Layout) + Guint (Area.X) + Guint (Area.Width) + 9)
-        / 10;
-      Jmin := (Get_Yoffset (Layout) + Guint (Area.Y)) / 10;
-      Jmax := (Get_Yoffset (Layout) + Guint (Area.Y) + Guint (Area.Height) + 9)
-        / 10;
+      Imin := Guint (Area.X) / 10;
+      Imax := (Guint (Area.X) + Guint (Area.Width) + 9) / 10;
+      Jmin := Guint (Area.Y) / 10;
+      Jmax := (Guint (Area.Y) + Guint (Area.Height) + 9) / 10;
 
       Clear_Area (Get_Window (Layout), Area.X, Area.Y, Gint (Area.Width),
                   Gint (Area.Height));
@@ -95,8 +94,8 @@ package body Create_Layout is
                Draw_Rectangle (Get_Bin_Window (Layout),
                                Get_Black_Gc (Get_Style (Layout)),
                                True,
-                               Gint (10 * I - Get_Xoffset (Layout)),
-                               Gint (10 * J - Get_Yoffset (Layout)),
+                               Gint (10 * I),
+                               Gint (10 * J),
                                Gint (1 + I mod 10),
                                Gint (1 + J mod 10));
             end if;
@@ -117,15 +116,17 @@ package body Create_Layout is
    begin
       Set_Label (Frame, "Layout");
       Gtk_New (Scrolled);
+      Set_Shadow_Type (Scrolled, Shadow_In);
       Add (Frame, Scrolled);
+      Set_Placement (Scrolled, Corner_Top_Right);
 
       Gtk_New (Layout);
+      Set_Events (Layout, Exposure_Mask);
+      Add (Scrolled, Layout);
 
       Set_Step_Increment (Get_Hadjustment (Layout), 10.0);
       Set_Step_Increment (Get_Vadjustment (Layout), 10.0);
 
-      Set_Events (Layout, Exposure_Mask);
-      Add (Scrolled, Layout);
 
       Event_Cb.Connect (Layout, "expose_event",
                         Event_Cb.To_Marshaller (Expose_Handler'Access));
