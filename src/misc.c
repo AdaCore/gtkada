@@ -264,7 +264,6 @@ ada_initialize_class_record (GtkObject*  object,
   else
     {
       int i;
-      guint *signals_id = malloc (nsignals * sizeof (guint));
 
       /* Right now, object->klass points to the ancestor's class */
       GtkObjectClass* ancestor = (GtkObjectClass*)(object->klass);
@@ -275,9 +274,19 @@ ada_initialize_class_record (GtkObject*  object,
       /* Note: The memory allocated here is never freed. No need to worry,
 	 since this is only allocated once per user's widget type, and
 	 might be used until the end of the application */
-      object->klass = (GtkObjectClass*) malloc (query->class_size
-						+ nsignals * sizeof (void*));
+      object->klass = (GtkObjectClass*) malloc
+	(query->class_size + nsignals * sizeof (void*));
       memcpy (object->klass, ancestor, query->class_size);
+
+      /* Note: we *must* reallocate the signals array from scratch, and not
+	 use gtk_object_class_add_signals. Otherwise, if we have two Ada
+	 objects that inherit from the same Gtk+ widget, the first one will
+	 be corrupted through a call to realloc */
+      object->klass->signals =
+	g_new (guint, object->klass->nsignals + nsignals);
+      memcpy (object->klass->signals, ancestor->signals,
+	      ancestor->nsignals * sizeof (guint));
+      
 
       /* Implementation Note: We are actually cheating here: we should
 	 really create a new type, instead of reusing the parent class's type.
@@ -295,8 +304,8 @@ ada_initialize_class_record (GtkObject*  object,
 	    {
 	      count ++;
 	    }
-	  
-	  signals_id [i] = gtk_signal_newv
+
+	  object->klass->signals [i + ancestor->nsignals] = gtk_signal_newv
 	    (signals[i],
 	     GTK_RUN_FIRST,
 	     object->klass->type,
@@ -306,14 +315,14 @@ ada_initialize_class_record (GtkObject*  object,
 	     GTK_TYPE_NONE, count,
 	     parameters  + i * max_parameters);
 	}
-      gtk_object_class_add_signals (object->klass, signals_id, nsignals);
 
+      object->klass->nsignals += nsignals;
+      
       /* Initialize the function pointers for the new signals to NULL */
       memset ((char*)(object->klass) + query->class_size, 0, 
 	      nsignals * sizeof (void*));
 
       g_free (query);
-      free (signals_id);
       return object->klass;
     }
 }
