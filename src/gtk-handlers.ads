@@ -224,30 +224,33 @@ package Gtk.Handlers is
 
       --  Emitting a signal
 
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gint)
-                             renames Gint_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Guint)
-                             renames Guint_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gdk.Event.Gdk_Event)
-                             renames Event_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Gint)
+                            return Return_Type
+                            renames Gint_Marshaller.Emit_By_Name;
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Guint)
+                            return Return_Type
+                            renames Guint_Marshaller.Emit_By_Name;
+      function Emit_By_Name is
+         new Event_Marshaller.Emit_By_Name_Generic (Gtk.Arguments.To_Address);
+      function Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : in String;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
+        return Return_Type
         renames Widget_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String)
-                             renames Marshallers.Void_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gtk.Notebook.Gtk_Notebook_Page)
-                             renames Notebook_Page_Marshaller.Emit_By_Name;
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String)
+                            return Return_Type
+                            renames Marshallers.Void_Marshaller.Emit_By_Name;
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Gtk.Notebook.Gtk_Notebook_Page)
+                            return Return_Type
+                            renames Notebook_Page_Marshaller.Emit_By_Name;
 
    end Return_Callback;
 
@@ -339,31 +342,33 @@ package Gtk.Handlers is
 
       --  Emitting a signal
 
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gint)
-                             renames Gint_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Guint)
-                             renames Guint_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gdk.Event.Gdk_Event)
-                             renames Event_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Gint)
+                            return Return_Type
+                            renames Gint_Marshaller.Emit_By_Name;
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Guint)
+                            return Return_Type
+                            renames Guint_Marshaller.Emit_By_Name;
+      function Emit_By_Name is
+         new Event_Marshaller.Emit_By_Name_Generic (Gtk.Arguments.To_Address);
+      function Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : in String;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
+        return Return_Type
         renames Widget_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String)
-                             renames Marshallers.Void_Marshaller.Emit_By_Name;
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gtk.Notebook.Gtk_Notebook_Page)
-                             renames Notebook_Page_Marshaller.Emit_By_Name;
-
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String)
+                            return Return_Type
+                            renames Marshallers.Void_Marshaller.Emit_By_Name;
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Gtk.Notebook.Gtk_Notebook_Page)
+                            return Return_Type
+                            renames Notebook_Page_Marshaller.Emit_By_Name;
    end User_Return_Callback;
 
    ---------------------------------------------------------
