@@ -27,6 +27,7 @@ with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.OS_Lib;
 with Ada.Exceptions; use Ada.Exceptions;
+with System.Assertions;
 
 procedure Gate is
    N                     : Node_Ptr;
@@ -102,6 +103,11 @@ begin
    end if;
 
 exception
+   when System.Assertions.Assert_Failure =>
+      Put_Line ("GATE: the XML file seems to be corrupted. Please check it");
+      Put_Line ("up manually, and try again");
+      Set_Exit_Status (2);
+
    when E : others =>
       Put_Line ("Exception = " & Exception_Name (E));
       Put_Line ("GATE: Internal error. Please send a bug report with the XML");
