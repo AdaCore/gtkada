@@ -2,7 +2,7 @@ with Gtk.Widget;
 
 package Gtk.Misc is
 
-   type Gtk_Misc is abstract new Widget.Gtk_Widget with private;
+   type Gtk_Misc is new Widget.Gtk_Widget with private;
 
    procedure Set_Alignment (Misc   : in out Gtk_Misc'Class;
                             Xalign : in     Gfloat;
@@ -16,7 +16,7 @@ package Gtk.Misc is
 
 private
 
-   type Gtk_Misc is abstract new Widget.Gtk_Widget with null record;
+   type Gtk_Misc is new Widget.Gtk_Widget with null record;
 
    --  mapping: USE_OBJECT_ORIENTED gtkmisc.h gtk_misc_get_type
 end Gtk.Misc;

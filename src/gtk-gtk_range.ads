@@ -5,7 +5,7 @@ with Gtk.Widget;
 
 package Gtk.Gtk_Range is
 
-   type Gtk_Range is abstract new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Range is new Gtk.Widget.Gtk_Widget with private;
 
    procedure Default_Hmotion
       (The_Range : in Gtk_Range'Class;
@@ -59,7 +59,7 @@ package Gtk.Gtk_Range is
    --  Was a function in C
 
 private
-   type Gtk_Range is abstract new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Range is new Gtk.Widget.Gtk_Widget with null record;
 
    --  mapping: Default_Hmotion gtkrange.h gtk_range_default_hmotion
    --  mapping: Default_Hslider_Update gtkrange.h \

@@ -4,7 +4,7 @@ with Gtk.Gtk_Range;
 
 package Gtk.Scale is
 
-   type Gtk_Scale is abstract new Gtk.Gtk_Range.Gtk_Range with private;
+   type Gtk_Scale is new Gtk.Gtk_Range.Gtk_Range with private;
 
    procedure Draw_Value (Scale : in Gtk_Scale'Class);
    procedure Set_Digits
@@ -20,7 +20,7 @@ package Gtk.Scale is
                          return      Gint;
 
 private
-   type Gtk_Scale is abstract new Gtk.Gtk_Range.Gtk_Range with null record;
+   type Gtk_Scale is new Gtk.Gtk_Range.Gtk_Range with null record;
 
    --  mapping: Draw_Value gtkscale.h gtk_scale_draw_value
    --  mapping: NOT_IMPLEMENTED gtkscale.h gtk_scale_get_type
