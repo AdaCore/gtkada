@@ -2845,11 +2845,9 @@ GtkAda-WARNING **: Unsupported widget GtkImage (image1)
 @end smallexample
 
 Here is the list of widgets that are currently not supported by GATE/DGATE.
-Note that some of these widgets are also not available under Glade.
 
 @itemize @bullet
 @item Gtk_Accel_Label
-@item Gtk_Button_Box
 @item Gtk_Clist
 @item Gtk_Color_Selection
 @item Gtk_Ctree
@@ -2859,7 +2857,6 @@ Note that some of these widgets are also not available under Glade.
 @item Gtk_Font_Selection_Dialog
 @item Gtk_Gamma_Curve
 @item Gtk_Handle_Box
-@item Gtk_Hbutton_Box
 @item Gtk_Image
 @item Gtk_Invisible
 @item Gtk_Layout
@@ -2874,7 +2871,6 @@ Note that some of these widgets are also not available under Glade.
 @item Gtk_Tearoff_Menu_Item
 @item Gtk_Tips_Query
 @item Gtk_Tooltips
-@item Gtk_Vbutton_Box
 @item Gtk_Viewport
 @end itemize
 
