@@ -38,13 +38,16 @@
 --  The modification of the value is left to the user, who should
 --  call Value_Changed or Changed to emit the relevant signals.
 --
+--  </description>
+--  <example>
+--
 --  The meaning of the most important fields can be explained on the
 --  following figure (imagine this is a scrollbar):
 --
 --     [-------|=================|-------------------]
---   lower    value        value + page_size       upper
+--    lower    value        value + page_size       upper
 --
---  </description>
+--  </example>
 --  <c_version>1.2.6</c_version>
 
 with Gtk.Data;
@@ -204,3 +207,4 @@ private
 
    pragma Import (C, Get_Type, "gtk_adjustment_get_type");
 end Gtk.Adjustment;
+
