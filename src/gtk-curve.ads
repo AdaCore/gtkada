@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Drawing_Area;
+with Gtk.Object;
 
 package Gtk.Curve is
 
@@ -35,14 +36,14 @@ package Gtk.Curve is
      with private;
    type Gtk_Curve is access all Gtk_Curve_Record'Class;
 
-   type Gtk_Curve_Type is (Gtk_Curve_Type_Linear,
-                           Gtk_Curve_Type_Spline,
-                           Gtk_Curve_Type_Free);
+   type Gtk_Curve_Type is (Curve_Type_Linear,
+                           Curve_Type_Spline,
+                           Curve_Type_Free);
 
    procedure Get_Vector (Curve  : access Gtk_Curve_Record;
                          Vector : in out Gfloat_Array);
-   procedure Gtk_New (Widget : out Gtk_Curve);
-   procedure Initialize (Widget : access Gtk_Curve_Record'Class);
+   procedure Gtk_New (Curve : out Gtk_Curve);
+   procedure Initialize (Curve : access Gtk_Curve_Record'Class);
    procedure Reset (Curve : access Gtk_Curve_Record);
    procedure Set_Curve_Type (Curve      : access Gtk_Curve_Record;
                              Curve_Type : in Gtk_Curve_Type);
@@ -55,6 +56,13 @@ package Gtk.Curve is
       Max_Y : in Gfloat);
    procedure Set_Vector (Curve  : access Gtk_Curve_Record;
                          Vector : in Gfloat_Array);
+
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate (Curve : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
 

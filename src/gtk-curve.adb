@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Curve is
 
@@ -52,22 +53,22 @@ package body Gtk.Curve is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Curve) is
+   procedure Gtk_New (Curve : out Gtk_Curve) is
    begin
-      Widget := new Gtk_Curve_Record;
-      Initialize (Widget);
+      Curve := new Gtk_Curve_Record;
+      Initialize (Curve);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Curve_Record'Class) is
+   procedure Initialize (Curve : access Gtk_Curve_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_curve_new");
    begin
-      Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
+      Set_Object (Curve, Internal);
+      Initialize_User_Data (Curve);
    end Initialize;
 
    -----------
@@ -143,5 +144,46 @@ package body Gtk.Curve is
       Internal (Get_Object (Curve), Vector'Length,
                 Vector (Vector'First)'Address);
    end Set_Vector;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "Curve", File => File);
+      Drawing_Area.Generate (N, File);
+      Gen_Set (N, "Curve", "curve_type", File => File);
+      Gen_Set (N, "Curve", "Range", "min_x", "max_x", "min_y", "max_y",
+        File => File, Is_Float => True);
+   end Generate;
+
+   procedure Generate
+     (Curve : in out Object.Gtk_Object;
+      N     : in Node_Ptr)
+   is
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Curve (Curve));
+         Set_Object (Get_Field (N, "name"), Curve);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Drawing_Area.Generate (Curve, N);
+
+      S := Get_Field (N, "curve_type");
+
+      if S /= null then
+         Set_Curve_Type (Gtk_Curve (Curve),
+           Gtk_Curve_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      Set_Range (Gtk_Curve (Curve),
+        Gfloat'Value (Get_Field (N, "min_x").all),
+        Gfloat'Value (Get_Field (N, "max_x").all),
+        Gfloat'Value (Get_Field (N, "min_y").all),
+        Gfloat'Value (Get_Field (N, "max_y").all));
+   end Generate;
 
 end Gtk.Curve;
