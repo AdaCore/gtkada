@@ -115,7 +115,7 @@ package body Gtk.Tree_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Tree_Item : access Gtk_Tree_Item_Record;
+   procedure Initialize (Tree_Item : access Gtk_Tree_Item_Record'Class;
                          Label     : in String := "")
    is
       function Internal (Label  : in String)

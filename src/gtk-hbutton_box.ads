@@ -40,7 +40,7 @@ package Gtk.Hbutton_Box is
    function Get_Layout_Default return Gtk_Button_Box_Style;
    function Get_Spacing_Default return Gint;
    procedure Gtk_New (Widget : out Gtk_Hbutton_Box);
-   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record);
+   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class);
    procedure Set_Layout_Default (Layout : in Gtk_Button_Box_Style);
    procedure Set_Spacing_Default (Spacing : in Gint);
 

@@ -73,7 +73,7 @@ package body Gtk.Hbutton_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record)
+   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hbutton_box_new");

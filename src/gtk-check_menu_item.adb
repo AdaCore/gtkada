@@ -61,8 +61,10 @@ package body Gtk.Check_Menu_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-                      Label           : in     String := "") is
+   procedure Initialize
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
+      Label           : in     String := "")
+   is
       function Internal (Label  : in String) return System.Address;
       pragma Import (C, Internal, "gtk_check_menu_item_new_with_label");
    begin

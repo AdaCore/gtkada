@@ -55,7 +55,7 @@ package Gtk.Status_Bar is
    package Messages_List is new Glib.GSlist.Generic_SList (Status_Bar_Msg);
 
    procedure Gtk_New (Statusbar : out Gtk_Status_Bar);
-   procedure Initialize (Statusbar : access Gtk_Status_Bar_Record);
+   procedure Initialize (Statusbar : access Gtk_Status_Bar_Record'Class);
 
    function Get_Context_Id (Statusbar           : access Gtk_Status_Bar_Record;
                             Context_Description : in String)

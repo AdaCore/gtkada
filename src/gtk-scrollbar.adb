@@ -62,7 +62,7 @@ package body Gtk.Scrollbar is
    ---------------------------
 
    procedure Initialize_Hscrollbar
-     (Widget     : access Gtk_Scrollbar_Record;
+     (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address)
@@ -78,7 +78,7 @@ package body Gtk.Scrollbar is
    ---------------------------
 
    procedure Initialize_Vscrollbar
-     (Widget     : access Gtk_Scrollbar_Record;
+     (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address)

@@ -118,7 +118,7 @@ package body Gtk.Adjustment is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Adjustment     : access Gtk_Adjustment_Record;
+   procedure Initialize (Adjustment     : access Gtk_Adjustment_Record'Class;
                          Value          : in     Gfloat;
                          Lower          : in     Gfloat;
                          Upper          : in     Gfloat;

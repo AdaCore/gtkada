@@ -47,7 +47,7 @@ package body Gtk.Handle_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Handle_Box : access Gtk_Handle_Box_Record)
+   procedure Initialize (Handle_Box : access Gtk_Handle_Box_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_handle_box_new");

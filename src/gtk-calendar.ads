@@ -56,7 +56,7 @@ package Gtk.Calendar is
        Month    : in out Guint;
        Day      : in out Guint);
    procedure Gtk_New (Widget : out Gtk_Calendar);
-   procedure Initialize (Widget : access Gtk_Calendar_Record);
+   procedure Initialize (Widget : access Gtk_Calendar_Record'Class);
    function Mark_Day
       (Calendar : access Gtk_Calendar_Record;
        Day      : in Guint)
@@ -77,10 +77,10 @@ package Gtk.Calendar is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Calendar : in out Gtk_Object; N : in Node_Ptr);
 
 private

@@ -274,8 +274,10 @@ package body Gtk.Font_Selection is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Font_Selection_Dialog_Record;
-                         Title : String) is
+   procedure Initialize
+     (Widget : access Gtk_Font_Selection_Dialog_Record'Class;
+      Title : String)
+   is
       function Internal (Title  : in String)
                          return      System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_new");
@@ -288,7 +290,7 @@ package body Gtk.Font_Selection is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Font_Selection_Record)
+   procedure Initialize (Widget : access Gtk_Font_Selection_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_new");

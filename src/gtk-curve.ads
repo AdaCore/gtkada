@@ -42,7 +42,7 @@ package Gtk.Curve is
    procedure Get_Vector (Curve  : access Gtk_Curve_Record;
                          Vector : in out Gfloat_Array);
    procedure Gtk_New (Widget : out Gtk_Curve);
-   procedure Initialize (Widget : access Gtk_Curve_Record);
+   procedure Initialize (Widget : access Gtk_Curve_Record'Class);
    procedure Reset (Curve : access Gtk_Curve_Record);
    procedure Set_Curve_Type (Curve      : access Gtk_Curve_Record;
                              Curve_Type : in Gtk_Curve_Type);

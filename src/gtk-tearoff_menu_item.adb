@@ -46,7 +46,9 @@ package body Gtk.Tearoff_Menu_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Menu_Item : access Gtk_Tearoff_Menu_Item_Record) is
+   procedure Initialize
+     (Menu_Item : access Gtk_Tearoff_Menu_Item_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tearoff_menu_item_new");
    begin

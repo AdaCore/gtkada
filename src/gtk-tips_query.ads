@@ -36,7 +36,7 @@ package Gtk.Tips_Query is
    type Gtk_Tips_Query is access all Gtk_Tips_Query_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Tips_Query);
-   procedure Initialize (Widget : access Gtk_Tips_Query_Record);
+   procedure Initialize (Widget : access Gtk_Tips_Query_Record'Class);
    procedure Set_Caller
       (Tips_Query : access Gtk_Tips_Query_Record;
        Caller     : access Gtk.Widget.Gtk_Widget_Record'Class);

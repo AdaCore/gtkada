@@ -131,7 +131,7 @@ package body Gtk.Color_Selection_Dialog is
    ----------------
 
    procedure Initialize
-     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record'Class;
       Title                  : in     String)
    is
       function Internal (S : String) return System.Address;

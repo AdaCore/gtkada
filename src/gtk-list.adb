@@ -140,7 +140,7 @@ package body Gtk.List is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_List_Record)
+   procedure Initialize (Widget : access Gtk_List_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_list_new");

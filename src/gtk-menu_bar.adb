@@ -81,7 +81,7 @@ package body Gtk.Menu_Bar is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record) is
+   procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_bar_new");
    begin

@@ -62,7 +62,7 @@ package Gtk.Table is
       Columns     : in Gint;
       Homogeneous : in Boolean);
    procedure Initialize
-     (Widget      : access Gtk_Table_Record;
+     (Widget      : access Gtk_Table_Record'Class;
       Rows        : in Gint;
       Columns     : in Gint;
       Homogeneous : in Boolean);

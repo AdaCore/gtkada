@@ -46,7 +46,7 @@ package Gtk.Scrolled_Window is
       Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
         := Adjustment.Null_Adjustment);
    procedure Initialize
-     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record'Class;
       Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
         := Adjustment.Null_Adjustment;
       Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class

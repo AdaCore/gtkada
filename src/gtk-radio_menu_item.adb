@@ -69,7 +69,7 @@ package body Gtk.Radio_Menu_Item is
    ----------------
 
    procedure Initialize
-      (Widget : access Gtk_Radio_Menu_Item_Record;
+      (Widget : access Gtk_Radio_Menu_Item_Record'Class;
        Group  : in Widget_SList.GSlist;
        Label  : in String := "")
    is

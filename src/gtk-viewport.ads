@@ -48,7 +48,7 @@ package Gtk.Viewport is
        Vadjustment : in Gtk.Adjustment.Gtk_Adjustment
          := Adjustment.Null_Adjustment);
    procedure Initialize
-      (Widget      : access Gtk_Viewport_Record;
+      (Widget      : access Gtk_Viewport_Record'Class;
        Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
        Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Hadjustment

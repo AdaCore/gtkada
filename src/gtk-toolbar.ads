@@ -73,7 +73,7 @@ package Gtk.Toolbar is
       Orientation : in Gtk_Orientation;
       Style       : in Gtk_Toolbar_Style);
    procedure Initialize
-     (Widget      : access Gtk_Toolbar_Record;
+     (Widget      : access Gtk_Toolbar_Record'Class;
       Orientation : in Gtk_Orientation;
       Style       : in Gtk_Toolbar_Style);
    function Insert_Element

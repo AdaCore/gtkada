@@ -36,7 +36,7 @@ package Gtk.Event_Box is
    type Gtk_Event_Box is access all Gtk_Event_Box_Record'Class;
 
    procedure Gtk_New (Event_Box : out Gtk_Event_Box);
-   procedure Initialize (Event_Box : access Gtk_Event_Box_Record);
+   procedure Initialize (Event_Box : access Gtk_Event_Box_Record'Class);
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.

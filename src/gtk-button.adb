@@ -85,7 +85,8 @@ package body Gtk.Button is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Button : access Gtk_Button_Record; Label : in String)
+   procedure Initialize (Button : access Gtk_Button_Record'Class;
+                         Label : in String)
    is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");

@@ -169,7 +169,7 @@ package Gtk.Clist is
       Columns : in  Gint;
       Titles  : in  Chars_Ptr_Array);
    procedure Initialize
-     (Widget  : access Gtk_Clist_Record;
+     (Widget  : access Gtk_Clist_Record'Class;
       Columns : in Gint;
       Titles  : in Chars_Ptr_Array);
 

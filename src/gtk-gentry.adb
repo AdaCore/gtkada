@@ -92,7 +92,9 @@ package body Gtk.GEntry is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Entry_Record; Max : in Guint16) is
+   procedure Initialize (Widget : access Gtk_Entry_Record'Class;
+                         Max : in Guint16)
+   is
       function Internal (Max    : in Guint16) return System.Address;
       pragma Import (C, Internal, "gtk_entry_new_with_max_length");
 
@@ -105,7 +107,7 @@ package body Gtk.GEntry is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Entry_Record) is
+   procedure Initialize (Widget : access Gtk_Entry_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_entry_new");
 

@@ -36,7 +36,7 @@ package Gtk.Plug is
 
    procedure Gtk_New (Widget    : out Gtk_Plug;
                       Socket_Id : in Guint32);
-   procedure Initialize (Widget    : access Gtk_Plug_Record;
+   procedure Initialize (Widget    : access Gtk_Plug_Record'Class;
                          Socket_Id : in     Guint32);
 
    procedure Construct (Plug      : access Gtk_Plug_Record;

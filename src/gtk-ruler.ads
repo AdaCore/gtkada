@@ -47,8 +47,8 @@ package Gtk.Ruler is
    function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gfloat;
    procedure Gtk_New_Hruler (Ruler : out Gtk_Ruler);
    procedure Gtk_New_Vruler (Ruler : out Gtk_Ruler);
-   procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record);
-   procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record);
+   procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record'Class);
+   procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record'Class);
    procedure Set_Metric
      (Ruler  : access Gtk_Ruler_Record;
       Metric : in Gtk_Metric_Type);

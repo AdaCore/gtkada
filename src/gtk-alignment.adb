@@ -109,7 +109,7 @@ package body Gtk.Alignment is
    ----------------
 
    procedure Initialize
-     (Alignment : access Gtk_Alignment_Record;
+     (Alignment : access Gtk_Alignment_Record'Class;
       Xalign    : in Gfloat;
       Yalign    : in Gfloat;
       Xscale    : in Gfloat;

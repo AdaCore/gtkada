@@ -59,7 +59,7 @@ package body Gtk.Accel_Label is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Accel_Label_Record;
+   procedure Initialize (Widget : access Gtk_Accel_Label_Record'Class;
                          Str    : in     String) is
       function Internal (Str : in String) return System.Address;
       pragma Import (C, Internal, "gtk_accel_label_new");

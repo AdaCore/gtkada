@@ -38,7 +38,8 @@ package Gtk.Button is
 
    procedure Gtk_New (Button : out Gtk_Button; Label : in String := "");
 
-   procedure Initialize (Button : access Gtk_Button_Record; Label : in String);
+   procedure Initialize (Button : access Gtk_Button_Record'Class;
+                         Label : in String);
 
    procedure Set_Relief (Button   : access Gtk_Button_Record;
                          NewStyle : in     Gtk.Enums.Gtk_Relief_Style);
@@ -47,10 +48,10 @@ package Gtk.Button is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Button : in out Gtk_Object; N : in Node_Ptr);
 
    ---------------

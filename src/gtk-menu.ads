@@ -55,7 +55,7 @@ package Gtk.Menu is
    function Get_Attach_Widget (Menu : access Gtk_Menu_Record)
                                return Gtk.Widget.Gtk_Widget;
    procedure Gtk_New (Widget : out Gtk_Menu);
-   procedure Initialize (Widget : access Gtk_Menu_Record);
+   procedure Initialize (Widget : access Gtk_Menu_Record'Class);
    procedure Insert
      (Menu     : access Gtk_Menu_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -89,10 +89,10 @@ package Gtk.Menu is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Menu : in out Gtk_Object; N : in Node_Ptr);
 
 private

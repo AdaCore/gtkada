@@ -73,7 +73,7 @@ package body Gtk.Vbutton_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Vbutton_Box_Record)
+   procedure Initialize (Widget : access Gtk_Vbutton_Box_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vbutton_box_new");

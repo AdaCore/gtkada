@@ -38,8 +38,9 @@ package Gtk.Check_Menu_Item is
 
    procedure Gtk_New (Check_Menu_Item : out Gtk_Check_Menu_Item;
                       Label  : in String := "");
-   procedure Initialize (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-                         Label  : in String := "");
+   procedure Initialize
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
+      Label  : in String := "");
    procedure Set_Show_Toggle
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
       Always          : in Boolean);

@@ -37,7 +37,8 @@ package Gtk.Tearoff_Menu_Item is
 
    procedure Gtk_New (Menu_Item : out Gtk_Tearoff_Menu_Item);
 
-   procedure Initialize (Menu_Item : access Gtk_Tearoff_Menu_Item_Record);
+   procedure Initialize
+     (Menu_Item : access Gtk_Tearoff_Menu_Item_Record'Class);
 
 private
 

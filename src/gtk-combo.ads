@@ -49,7 +49,7 @@ package Gtk.Combo is
      return Gtk.List.Gtk_List;
 
    procedure Gtk_New (Combo_Box : out Gtk_Combo);
-   procedure Initialize (Combo_Box : access Gtk_Combo_Record);
+   procedure Initialize (Combo_Box : access Gtk_Combo_Record'Class);
 
    procedure Set_Case_Sensitive (Combo_Box : access Gtk_Combo_Record;
                                  Val : in Boolean);

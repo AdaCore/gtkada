@@ -110,7 +110,7 @@ package body Gtk.Packer is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Packer_Record) is
+   procedure Initialize (Widget : access Gtk_Packer_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_packer_new");
    begin

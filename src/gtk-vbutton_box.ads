@@ -40,16 +40,16 @@ package Gtk.Vbutton_Box is
    function Get_Layout_Default return Gtk_Button_Box_Style;
    function Get_Spacing_Default return Gint;
    procedure Gtk_New (Widget : out Gtk_Vbutton_Box);
-   procedure Initialize (Widget : access Gtk_Vbutton_Box_Record);
+   procedure Initialize (Widget : access Gtk_Vbutton_Box_Record'Class);
    procedure Set_Layout_Default (Layout : in Gtk_Button_Box_Style);
    procedure Set_Spacing_Default (Spacing : in Gint);
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
-   
+
    procedure Generate (N    : in Node_Ptr;
                        File : in File_Type);
-   
+
    procedure Generate
      (Vbutton_Box : in out Object.Gtk_Object; N : in Node_Ptr);
 

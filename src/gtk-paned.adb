@@ -173,7 +173,7 @@ package body Gtk.Paned is
    -- Initialize_Hpaned --
    -----------------------
 
-   procedure Initialize_Hpaned (Widget : access Gtk_Paned_Record) is
+   procedure Initialize_Hpaned (Widget : access Gtk_Paned_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hpaned_new");
    begin
@@ -185,7 +185,7 @@ package body Gtk.Paned is
    -- Initialize_Vpaned --
    -----------------------
 
-   procedure Initialize_Vpaned (Widget : access Gtk_Paned_Record) is
+   procedure Initialize_Vpaned (Widget : access Gtk_Paned_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vpaned_new");
    begin

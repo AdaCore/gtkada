@@ -40,7 +40,7 @@ package Gtk.Menu_Item is
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item;
                       Label     : in  String := "");
 
-   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record;
+   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record'Class;
                          Label     : in  String);
 
    procedure Set_Submenu (Menu_Item : access Gtk_Menu_Item_Record;
@@ -71,10 +71,10 @@ package Gtk.Menu_Item is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Menu_Item : in out Gtk_Object; N : in Node_Ptr);
 
 private

@@ -64,7 +64,7 @@ package body Gtk.Option_Menu is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Option_Menu : access Gtk_Option_Menu_Record) is
+   procedure Initialize (Option_Menu : access Gtk_Option_Menu_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_option_menu_new");
    begin

@@ -45,7 +45,7 @@ package Gtk.Image is
        Val    : in Gdk.Image.Gdk_Image'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Initialize
-      (Widget : access Gtk_Image_Record;
+      (Widget : access Gtk_Image_Record'Class;
        Val    : in Gdk.Image.Gdk_Image'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Set

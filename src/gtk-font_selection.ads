@@ -102,8 +102,9 @@ package Gtk.Font_Selection is
 
    procedure Gtk_New (Widget : out Gtk_Font_Selection_Dialog;
                       Title : String);
-   procedure Initialize (Widget : access Gtk_Font_Selection_Dialog_Record;
-                         Title : String);
+   procedure Initialize
+     (Widget : access Gtk_Font_Selection_Dialog_Record'Class;
+      Title : String);
 
    -------------------------------
    --  Font_Selection functions --
@@ -119,7 +120,7 @@ package Gtk.Font_Selection is
      return String;
 
    procedure Gtk_New (Widget : out Gtk_Font_Selection);
-   procedure Initialize (Widget : access Gtk_Font_Selection_Record);
+   procedure Initialize (Widget : access Gtk_Font_Selection_Record'Class);
 
    procedure Set_Filter
      (Fontsel     : access Gtk_Font_Selection_Record;

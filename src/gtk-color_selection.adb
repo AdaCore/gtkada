@@ -61,7 +61,7 @@ package body Gtk.Color_Selection is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Color_Selection_Record) is
+   procedure Initialize (Widget : access Gtk_Color_Selection_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_new");
    begin

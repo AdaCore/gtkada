@@ -75,7 +75,7 @@ package body Gtk.Gamma_Curve is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Gamma_Curve_Record) is
+   procedure Initialize (Widget : access Gtk_Gamma_Curve_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_gamma_curve_new");
    begin

@@ -39,7 +39,7 @@ package Gtk.Fixed is
    function Get_Children (Widget : access Gtk_Fixed_Record)
                           return      Widget.Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_Fixed);
-   procedure Initialize (Widget : access Gtk_Fixed_Record);
+   procedure Initialize (Widget : access Gtk_Fixed_Record'Class);
    procedure Move
       (Fixed  : access Gtk_Fixed_Record;
        Widget : in Gtk.Widget.Gtk_Widget;

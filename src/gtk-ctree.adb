@@ -356,7 +356,7 @@ package body Gtk.CTree is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget      : access Gtk_Ctree_Record;
+   procedure Initialize (Widget      : access Gtk_Ctree_Record'Class;
                          Titles      : in     Chars_Ptr_Array;
                          Tree_Column : in     Gint)
    is
@@ -375,7 +375,7 @@ package body Gtk.CTree is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget      : access Gtk_Ctree_Record;
+   procedure Initialize (Widget      : access Gtk_Ctree_Record'Class;
                          Columns     : in     Gint;
                          Tree_Column : in     Gint)
    is

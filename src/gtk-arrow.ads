@@ -42,7 +42,7 @@ package Gtk.Arrow is
        Arrow_Type  : in Gtk_Arrow_Type;
        Shadow_Type : in Gtk_Shadow_Type);
    procedure Initialize
-      (Arrow       : access Gtk_Arrow_Record;
+      (Arrow       : access Gtk_Arrow_Record'Class;
        Arrow_Type  : in Gtk_Arrow_Type;
        Shadow_Type : in Gtk_Shadow_Type);
    procedure Set
@@ -52,10 +52,10 @@ package Gtk.Arrow is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Arrow  : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
 
 private

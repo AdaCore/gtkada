@@ -45,14 +45,14 @@ package Gtk.Box is
    procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint);
-   procedure Initialize_Vbox (Box         : access Gtk_Box_Record;
+   procedure Initialize_Vbox (Box         : access Gtk_Box_Record'Class;
                               Homogeneous : in  Boolean;
                               Spacing     : in  Gint);
 
    procedure Gtk_New_Hbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint);
-   procedure Initialize_Hbox (Box         : access Gtk_Box_Record;
+   procedure Initialize_Hbox (Box         : access Gtk_Box_Record'Class;
                               Homogeneous : in  Boolean;
                               Spacing     : in  Gint);
 
@@ -106,7 +106,7 @@ package Gtk.Box is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
 

@@ -38,7 +38,7 @@ package Gtk.Label is
 
    procedure Gtk_New (Label :    out Gtk_Label;
                       Str   : in     String);
-   procedure Initialize (Label : access Gtk_Label_Record;
+   procedure Initialize (Label : access Gtk_Label_Record'Class;
                          Str   : in     String);
 
    procedure Set_Text (Label : access Gtk_Label_Record;
@@ -51,10 +51,10 @@ package Gtk.Label is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Label : in out Gtk_Object; N : in Node_Ptr);
 
 private

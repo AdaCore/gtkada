@@ -96,7 +96,7 @@ package body Gtk.Combo is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Combo_Box : access Gtk_Combo_Record) is
+   procedure Initialize (Combo_Box : access Gtk_Combo_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_new");
 

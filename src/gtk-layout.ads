@@ -43,7 +43,7 @@ package Gtk.Layout is
       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    procedure Initialize
-     (Widget      : access Gtk_Layout_Record;
+     (Widget      : access Gtk_Layout_Record'Class;
       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 

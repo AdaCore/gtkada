@@ -40,7 +40,7 @@ package Gtk.Window is
 
    procedure Gtk_New (Window   : in out Gtk_Window;
                       The_Type : in  Gtk_Window_Type);
-   procedure Initialize (Window : access Gtk_Window_Record;
+   procedure Initialize (Window : access Gtk_Window_Record'Class;
                          The_Type : in Gtk_Window_Type);
 
    procedure Set_Title (Window : access Gtk_Window_Record;

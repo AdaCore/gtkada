@@ -47,7 +47,7 @@ package body Gtk.Event_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Event_Box : access Gtk_Event_Box_Record) is
+   procedure Initialize (Event_Box : access Gtk_Event_Box_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_event_box_new");
    begin

@@ -50,7 +50,7 @@ package Gtk.Pixmap is
       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Initialize
-     (Widget : access Gtk_Pixmap_Record;
+     (Widget : access Gtk_Pixmap_Record'Class;
       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Set

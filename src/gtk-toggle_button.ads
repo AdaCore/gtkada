@@ -40,7 +40,7 @@ package Gtk.Toggle_Button is
      return Boolean;
    procedure Gtk_New (Toggle_Button : out Gtk_Toggle_Button;
                       Label         : in String := "");
-   procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record;
+   procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
                          Label         : in String := "");
    procedure Set_Mode
      (Toggle_Button  : access Gtk_Toggle_Button_Record;

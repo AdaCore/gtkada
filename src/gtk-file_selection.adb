@@ -244,8 +244,9 @@ package body Gtk.File_Selection is
    -- Initialize --
    ----------------
 
-   procedure Initialize (File_Selection : access Gtk_File_Selection_Record;
-                         Title  : in String)
+   procedure Initialize
+     (File_Selection : access Gtk_File_Selection_Record'Class;
+      Title  : in String)
    is
       function Internal (Title  : in String)
         return System.Address;

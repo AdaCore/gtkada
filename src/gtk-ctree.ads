@@ -119,14 +119,14 @@ package Gtk.Ctree is
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Titles      : in     Chars_Ptr_Array;
                       Tree_Column : in     Gint);
-   procedure Initialize (Widget      : access Gtk_Ctree_Record;
+   procedure Initialize (Widget      : access Gtk_Ctree_Record'Class;
                          Titles      : in     Chars_Ptr_Array;
                          Tree_Column : in     Gint);
 
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Columns     : in     Gint;
                       Tree_Column : in     Gint);
-   procedure Initialize (Widget      : access Gtk_Ctree_Record;
+   procedure Initialize (Widget      : access Gtk_Ctree_Record'Class;
                          Columns     : in     Gint;
                          Tree_Column : in     Gint);
 

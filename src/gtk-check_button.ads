@@ -39,7 +39,7 @@ package Gtk.Check_Button is
    procedure Gtk_New (Check_Button : out Gtk_Check_Button;
                       With_Label   : in String := "");
 
-   procedure Initialize (Check_Button : access Gtk_Check_Button_Record;
+   procedure Initialize (Check_Button : access Gtk_Check_Button_Record'Class;
                          With_Label   : in String := "");
 
    --  The two following procedures are used to generate and create widgets

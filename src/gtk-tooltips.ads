@@ -38,7 +38,7 @@ package Gtk.Tooltips is
    procedure Enable (Tooltips : access Gtk_Tooltips_Record);
    procedure Disable (Tooltips : access Gtk_Tooltips_Record);
    procedure Gtk_New (Widget : out Gtk_Tooltips);
-   procedure Initialize (Widget : access Gtk_Tooltips_Record);
+   procedure Initialize (Widget : access Gtk_Tooltips_Record'Class);
    procedure Set_Delay
      (Tooltips : access Gtk_Tooltips_Record;
       Duration : in Guint);

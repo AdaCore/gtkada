@@ -123,7 +123,7 @@ package body Gtk.Ruler is
    -- Initialize_Hruler --
    -----------------------
 
-   procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record) is
+   procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hruler_new");
    begin
@@ -135,7 +135,7 @@ package body Gtk.Ruler is
    -- Initialize_Vruler --
    -----------------------
 
-   procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record) is
+   procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vruler_new");
    begin

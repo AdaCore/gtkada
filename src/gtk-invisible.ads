@@ -35,7 +35,7 @@ package Gtk.Invisible is
    type Gtk_Invisible is access all Gtk_Invisible_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Invisible);
-   procedure Initialize (Widget : access Gtk_Invisible_Record);
+   procedure Initialize (Widget : access Gtk_Invisible_Record'Class);
 
 private
 

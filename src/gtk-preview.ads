@@ -61,7 +61,7 @@ package Gtk.Preview is
    function Get_Visual return Gdk.Visual.Gdk_Visual'Class;
    procedure Gtk_New (Preview  : out Gtk_Preview;
                       The_Type : in Gtk_Preview_Type);
-   procedure Initialize (Preview  : access Gtk_Preview_Record;
+   procedure Initialize (Preview  : access Gtk_Preview_Record'Class;
                          The_Type : in Gtk_Preview_Type);
    procedure Put
      (Preview : access Gtk_Preview_Record;

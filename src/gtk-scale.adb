@@ -86,7 +86,7 @@ package body Gtk.Scale is
    -----------------------
 
    procedure Initialize_Hscale
-     (Scale      : access Gtk_Scale_Record;
+     (Scale      : access Gtk_Scale_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address) return System.Address;
@@ -102,7 +102,7 @@ package body Gtk.Scale is
    -----------------------
 
    procedure Initialize_Vscale
-     (Scale      : access Gtk_Scale_Record;
+     (Scale      : access Gtk_Scale_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address) return System.Address;

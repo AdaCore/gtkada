@@ -36,14 +36,14 @@ package Gtk.Input_Dialog is
    type Gtk_Input_Dialog is access all Gtk_Input_Dialog_Record'Class;
 
    procedure Gtk_New (Input_Dialog : out Gtk_Input_Dialog);
-   procedure Initialize (Input_Dialog : access Gtk_Input_Dialog_Record);
+   procedure Initialize (Input_Dialog : access Gtk_Input_Dialog_Record'Class);
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Input_Dialog : in out Gtk_Object; N : in Node_Ptr);
 
 private

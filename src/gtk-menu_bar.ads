@@ -38,7 +38,7 @@ package Gtk.Menu_Bar is
    type Gtk_Menu_Bar is access all Gtk_Menu_Bar_Record'Class;
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
-   procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record);
+   procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record'Class);
    procedure Append
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class);

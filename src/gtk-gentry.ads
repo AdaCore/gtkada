@@ -44,9 +44,9 @@ package Gtk.GEntry is
    procedure Gtk_New (Widget : out Gtk_Entry;
                       Max    : in Guint16);
    procedure Gtk_New (Widget : out Gtk_Entry);
-   procedure Initialize (Widget : access Gtk_Entry_Record;
+   procedure Initialize (Widget : access Gtk_Entry_Record'Class;
                          Max    : in Guint16);
-   procedure Initialize (Widget : access Gtk_Entry_Record);
+   procedure Initialize (Widget : access Gtk_Entry_Record'Class);
 
    procedure Prepend_Text
      (The_Entry : access Gtk_Entry_Record;

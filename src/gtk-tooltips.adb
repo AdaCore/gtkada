@@ -68,7 +68,7 @@ package body Gtk.Tooltips is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Tooltips_Record) is
+   procedure Initialize (Widget : access Gtk_Tooltips_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tooltips_new");
    begin

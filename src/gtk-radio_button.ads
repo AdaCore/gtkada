@@ -49,12 +49,12 @@ package Gtk.Radio_Button is
       Group        : in Gtk_Radio_Button;
       Label        : in String := "");
 
-   procedure Initialize (Radio_Button : access Gtk_Radio_Button_Record;
+   procedure Initialize (Radio_Button : access Gtk_Radio_Button_Record'Class;
                          Group        : in Widget_SList.GSlist;
                          Label        : in String);
 
    procedure Initialize
-     (Radio_Button : access Gtk_Radio_Button_Record;
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : in Gtk_Radio_Button;
       Label        : in String);
 

@@ -115,7 +115,7 @@ package body Gtk.Table is
    ----------------
 
    procedure Initialize
-     (Widget      : access Gtk_Table_Record;
+     (Widget      : access Gtk_Table_Record'Class;
       Rows        : in Gint;
       Columns     : in Gint;
       Homogeneous : in Boolean)

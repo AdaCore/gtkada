@@ -85,7 +85,7 @@ package Gtk.Packer is
       Options : in     Gtk_Packer_Options);
 
    procedure Gtk_New (Widget : out Gtk_Packer);
-   procedure Initialize (Widget : access Gtk_Packer_Record);
+   procedure Initialize (Widget : access Gtk_Packer_Record'Class);
 
    procedure Reorder_Child
      (Packer   : access Gtk_Packer_Record;

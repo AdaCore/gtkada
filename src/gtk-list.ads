@@ -53,7 +53,7 @@ package Gtk.List is
    function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
                            return      Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_List);
-   procedure Initialize (Widget : access Gtk_List_Record);
+   procedure Initialize (Widget : access Gtk_List_Record'Class);
    procedure Insert_Items
       (List     : access Gtk_List_Record;
        Items    : in Widget_List.Glist;

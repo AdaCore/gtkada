@@ -112,7 +112,7 @@ package body Gtk.Preview is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Preview  : access Gtk_Preview_Record;
+   procedure Initialize (Preview  : access Gtk_Preview_Record'Class;
                          The_Type : in Gtk_Preview_Type) is
       function Internal (The_Type : in Gint)
                          return System.Address;

@@ -38,7 +38,7 @@ package Gtk.Accel_Label is
 
    procedure Gtk_New (Widget : out Gtk_Accel_Label;
                       Str    : in  String);
-   procedure Initialize (Widget : access Gtk_Accel_Label_Record;
+   procedure Initialize (Widget : access Gtk_Accel_Label_Record'Class;
                          Str    : in     String);
 
    function Get_Accel_Width (Accel_Label : access Gtk_Accel_Label_Record)

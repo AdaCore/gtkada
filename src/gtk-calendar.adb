@@ -124,7 +124,7 @@ package body Gtk.Calendar is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Calendar_Record)
+   procedure Initialize (Widget : access Gtk_Calendar_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_calendar_new");

@@ -138,7 +138,7 @@ package body Gtk.Tree is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Tree_Record) is
+   procedure Initialize (Widget : access Gtk_Tree_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tree_new");
    begin

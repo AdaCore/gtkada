@@ -42,7 +42,7 @@ package Gtk.Color_Selection is
                         Color    : out Color_Array);
 
    procedure Gtk_New (Widget : out Gtk_Color_Selection);
-   procedure Initialize (Widget : access Gtk_Color_Selection_Record);
+   procedure Initialize (Widget : access Gtk_Color_Selection_Record'Class);
 
    procedure Set_Color (Colorsel : access Gtk_Color_Selection_Record;
                         Color    : in Color_Array);

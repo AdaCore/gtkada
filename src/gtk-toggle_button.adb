@@ -63,7 +63,7 @@ package body Gtk.Toggle_Button is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record;
+   procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
                          Label         : in String := "")
    is
       function Internal (Label  : in String)

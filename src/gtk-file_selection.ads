@@ -67,8 +67,9 @@ package Gtk.File_Selection is
       return Gtk.Widget.Gtk_Widget;
    procedure Gtk_New (File_Selection : out Gtk_File_Selection;
                       Title          : in String);
-   procedure Initialize (File_Selection : access Gtk_File_Selection_Record;
-                         Title          : in String);
+   procedure Initialize
+     (File_Selection : access Gtk_File_Selection_Record'Class;
+      Title          : in String);
    procedure Hide_Fileop_Buttons
      (File_Selection : access Gtk_File_Selection_Record);
    procedure Set_Filename

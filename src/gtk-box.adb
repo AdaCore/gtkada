@@ -81,7 +81,7 @@ package body Gtk.Box is
    -- Initialize_Hbox --
    ---------------------
 
-   procedure Initialize_Hbox (Box         : access Gtk_Box_Record;
+   procedure Initialize_Hbox (Box         : access Gtk_Box_Record'Class;
                               Homogeneous : in  Boolean;
                               Spacing     : in  Gint) is
       function Internal (Homogeneous : Gint;
@@ -96,7 +96,7 @@ package body Gtk.Box is
    -- Initialize_Vbox --
    ---------------------
 
-   procedure Initialize_Vbox (Box         : access Gtk_Box_Record;
+   procedure Initialize_Vbox (Box         : access Gtk_Box_Record'Class;
                               Homogeneous : in  Boolean;
                               Spacing     : in  Gint) is
       function Internal (Homogeneous : Gint;

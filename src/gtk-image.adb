@@ -71,7 +71,7 @@ package body Gtk.Image is
    ----------------
 
    procedure Initialize
-      (Widget : access Gtk_Image_Record;
+      (Widget : access Gtk_Image_Record'Class;
        Val    : in Gdk.Image.Gdk_Image'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is

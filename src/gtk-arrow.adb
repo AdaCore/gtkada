@@ -51,7 +51,7 @@ package body Gtk.Arrow is
    ----------------
 
    procedure Initialize
-     (Arrow       : access Gtk_Arrow_Record;
+     (Arrow       : access Gtk_Arrow_Record'Class;
       Arrow_Type  : in Gtk_Arrow_Type;
       Shadow_Type : in Gtk_Shadow_Type)
    is
@@ -98,7 +98,7 @@ package body Gtk.Arrow is
         Get_Field (N, "shadow_type").all, File => File);
       Misc.Generate (N, File);
    end Generate;
- 
+
    procedure Generate
      (Arrow  : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
    is
@@ -115,7 +115,7 @@ package body Gtk.Arrow is
          Set_Object (Get_Field (N, "name"), Arrow);
          N.Specific_Data.Created := True;
       end if;
- 
+
       Misc.Generate (Arrow, N);
    end Generate;
 

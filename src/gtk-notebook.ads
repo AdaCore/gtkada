@@ -69,7 +69,7 @@ package Gtk.Notebook is
    function Get_Tab_Pos
      (Widget : access Gtk_Notebook_Record) return Gtk_Position_Type;
    procedure Gtk_New (Widget : out Gtk_Notebook);
-   procedure Initialize (Widget : access Gtk_Notebook_Record);
+   procedure Initialize (Widget : access Gtk_Notebook_Record'Class);
    procedure Insert_Page
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;

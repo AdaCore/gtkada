@@ -119,7 +119,7 @@ package body Gtk.Spin_Button is
    ----------------
 
    procedure Initialize
-     (Spin_Button : access Gtk_Spin_Button_Record;
+     (Spin_Button : access Gtk_Spin_Button_Record'Class;
       Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
       Climb_Rate  : in Gfloat;
       The_Digits  : in Gint)

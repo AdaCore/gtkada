@@ -70,7 +70,9 @@ package body Gtk.Input_Dialog is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Input_Dialog : access Gtk_Input_Dialog_Record) is
+   procedure Initialize
+     (Input_Dialog : access Gtk_Input_Dialog_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_input_dialog_new");
    begin

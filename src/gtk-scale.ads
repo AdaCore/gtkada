@@ -47,10 +47,10 @@ package Gtk.Scale is
      (Scale      : out Gtk_Scale;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Initialize_Hscale
-     (Scale      : access Gtk_Scale_Record;
+     (Scale      : access Gtk_Scale_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Initialize_Vscale
-     (Scale      : access Gtk_Scale_Record;
+     (Scale      : access Gtk_Scale_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Digits
      (Scale      : access Gtk_Scale_Record;

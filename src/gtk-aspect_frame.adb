@@ -93,7 +93,7 @@ package body Gtk.Aspect_Frame is
    ----------------
 
    procedure Initialize
-     (Aspect_Frame : access Gtk_Aspect_Frame_Record;
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
       Label        : in String;
       Xalign       : in Gfloat;
       Yalign       : in Gfloat;
@@ -145,13 +145,13 @@ package body Gtk.Aspect_Frame is
    --------------
    -- Generate --
    --------------
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
       S : String_Ptr;
    begin
       S := Get_Field (N, "label");
- 
+
       if S /= null then
          Gen_New (N, "Aspect_Frame", S.all,
            To_Float (Get_Field (N, "xalign").all),
@@ -170,14 +170,14 @@ package body Gtk.Aspect_Frame is
 
       Frame.Generate (N, File);
    end Generate;
- 
+
    procedure Generate (Aspect_Frame : in out Gtk.Object.Gtk_Object;
                        N            : in Node_Ptr) is
       S : String_Ptr;
    begin
       if not N.Specific_Data.Created then
          S := Get_Field (N, "label");
- 
+
          if S /= null then
             Gtk_New (Gtk_Aspect_Frame (Aspect_Frame), S.all,
               Gfloat'Value (Get_Field (N, "xalign").all),
@@ -196,7 +196,7 @@ package body Gtk.Aspect_Frame is
          Set_Object (Get_Field (N, "name"), Aspect_Frame);
          N.Specific_Data.Created := True;
       end if;
- 
+
       Frame.Generate (Aspect_Frame, N);
    end Generate;
 

@@ -65,7 +65,7 @@ package body Gtk.Label is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Label : access Gtk_Label_Record;
+   procedure Initialize (Label : access Gtk_Label_Record'Class;
                          Str   : in     String) is
       function Internal (Str : in String) return System.Address;
       pragma Import (C, Internal, "gtk_label_new");

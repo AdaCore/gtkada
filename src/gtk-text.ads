@@ -62,7 +62,7 @@ package Gtk.Text is
        Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
          := Gtk.Adjustment.Null_Adjustment);
    procedure Initialize
-      (Widget : access Gtk_Text_Record;
+      (Widget : access Gtk_Text_Record'Class;
        Hadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
          := Gtk.Adjustment.Null_Adjustment;
        Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class

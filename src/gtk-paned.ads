@@ -57,8 +57,8 @@ package Gtk.Paned is
                         return Gtk.Widget.Gtk_Widget;
    procedure Gtk_New_Vpaned (Widget : out Gtk_Paned);
    procedure Gtk_New_Hpaned (Widget : out Gtk_Paned);
-   procedure Initialize_Vpaned (Widget : access Gtk_Paned_Record);
-   procedure Initialize_Hpaned (Widget : access Gtk_Paned_Record);
+   procedure Initialize_Vpaned (Widget : access Gtk_Paned_Record'Class);
+   procedure Initialize_Hpaned (Widget : access Gtk_Paned_Record'Class);
    procedure Pack1 (Paned : access Gtk_Paned_Record;
                     Child : access Gtk_Widget_Record'Class;
                     Resize : in Boolean;

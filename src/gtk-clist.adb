@@ -554,7 +554,7 @@ package body Gtk.Clist is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget  : access Gtk_Clist_Record;
+   procedure Initialize (Widget  : access Gtk_Clist_Record'Class;
                          Columns : in     Gint;
                          Titles  : in     Chars_Ptr_Array)
    is

@@ -126,7 +126,7 @@ package body Gtk.Menu is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Menu_Record)
+   procedure Initialize (Widget : access Gtk_Menu_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_new");

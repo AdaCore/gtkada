@@ -53,7 +53,7 @@ package Gtk.Tree is
    function Get_Selection (Widget : access Gtk.Tree.Gtk_Tree_Record)
                            return      Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_Tree);
-   procedure Initialize (Widget : access Gtk_Tree_Record);
+   procedure Initialize (Widget : access Gtk_Tree_Record'Class);
    procedure Insert
      (Tree      : access Gtk_Tree_Record;
       Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class;

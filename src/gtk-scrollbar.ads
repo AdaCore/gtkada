@@ -45,10 +45,10 @@ package Gtk.Scrollbar is
      (Widget     : out Gtk_Scrollbar;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Initialize_Hscrollbar
-     (Widget     : access Gtk_Scrollbar_Record;
+     (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Initialize_Vscrollbar
-     (Widget     : access Gtk_Scrollbar_Record;
+     (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
    --  The two following procedures are used to generate and create widgets

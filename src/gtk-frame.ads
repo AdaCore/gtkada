@@ -38,7 +38,7 @@ package Gtk.Frame is
 
    procedure Gtk_New (Frame : out Gtk_Frame;
                       Label : in String := "");
-   procedure Initialize (Frame : access Gtk_Frame_Record;
+   procedure Initialize (Frame : access Gtk_Frame_Record'Class;
                          Label : in String := "");
    procedure Set_Label
      (Frame : access Gtk_Frame_Record;
@@ -53,10 +53,10 @@ package Gtk.Frame is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Frame : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
 
 private

@@ -49,7 +49,7 @@ package body Gtk.Invisible is
    --  Initialize  --
    ------------------
 
-   procedure Initialize (Widget : access Gtk_Invisible_Record) is
+   procedure Initialize (Widget : access Gtk_Invisible_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_invisible_new");
    begin

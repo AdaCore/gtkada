@@ -87,7 +87,7 @@ package body Gtk.Viewport is
    ----------------
 
    procedure Initialize
-      (Widget      : access Gtk_Viewport_Record;
+      (Widget      : access Gtk_Viewport_Record'Class;
        Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
        Vadjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is

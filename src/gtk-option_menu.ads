@@ -38,7 +38,7 @@ package Gtk.Option_Menu is
    type Gtk_Option_Menu is access all Gtk_Option_Menu_Record'Class;
 
    procedure Gtk_New (Option_Menu : out Gtk_Option_Menu);
-   procedure Initialize (Option_Menu : access Gtk_Option_Menu_Record);
+   procedure Initialize (Option_Menu : access Gtk_Option_Menu_Record'Class);
 
    function Get_Menu (Option_Menu : access Gtk_Option_Menu_Record)
                       return Gtk.Menu.Gtk_Menu;

@@ -188,7 +188,7 @@ package body Gtk.Toolbar is
    ----------------
 
    procedure Initialize
-     (Widget      : access Gtk_Toolbar_Record;
+     (Widget      : access Gtk_Toolbar_Record'Class;
       Orientation : in Gtk_Orientation;
       Style       : in Gtk_Toolbar_Style)
    is

@@ -61,7 +61,7 @@ package body Gtk.Plug is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget    : access Gtk_Plug_Record;
+   procedure Initialize (Widget    : access Gtk_Plug_Record'Class;
                          Socket_Id : in     Guint32) is
       function Internal (Socket_Id : in Guint32) return System.Address;
       pragma Import (C, Internal, "gtk_plug_new");

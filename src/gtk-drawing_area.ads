@@ -37,7 +37,7 @@ package Gtk.Drawing_Area is
    type Gtk_Drawing_Area is access all Gtk_Drawing_Area_Record'Class;
 
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
-   procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record);
+   procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record'Class);
    procedure Size
      (Darea  : access Gtk_Drawing_Area_Record;
       Width  : in Gint;
@@ -45,10 +45,10 @@ package Gtk.Drawing_Area is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Drawing_Area : in out Gtk_Object; N : in Node_Ptr);
 
 private

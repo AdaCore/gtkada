@@ -48,7 +48,8 @@ package body Gtk.Drawing_Area is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record) is
+   procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_drawing_area_new");
    begin

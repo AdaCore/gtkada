@@ -44,7 +44,7 @@ package Gtk.Tree_Item is
      return Gtk.Tree.Gtk_Tree;
    procedure Gtk_New (Tree_Item : out Gtk_Tree_Item;
                       Label     : in String := "");
-   procedure Initialize (Tree_Item : access Gtk_Tree_Item_Record;
+   procedure Initialize (Tree_Item : access Gtk_Tree_Item_Record'Class;
                          Label     : in String := "");
    procedure Gtk_Select (Tree_Item : access Gtk_Tree_Item_Record);
    procedure Remove_Subtree (Tree_Item : access Gtk_Tree_Item_Record);

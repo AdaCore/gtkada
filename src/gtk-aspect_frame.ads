@@ -49,7 +49,7 @@ package Gtk.Aspect_Frame is
       Ratio        : in Gfloat;
       Obey_Child   : in Boolean);
    procedure Initialize
-     (Aspect_Frame : access Gtk_Aspect_Frame_Record;
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
       Label        : in String;
       Xalign       : in Gfloat;
       Yalign       : in Gfloat;
@@ -64,10 +64,10 @@ package Gtk.Aspect_Frame is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate
      (Aspect_Frame : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
 

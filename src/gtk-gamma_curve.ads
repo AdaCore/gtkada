@@ -36,7 +36,7 @@ package Gtk.Gamma_Curve is
    type Gtk_Gamma_Curve is access all Gtk_Gamma_Curve_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Gamma_Curve);
-   procedure Initialize (Widget : access Gtk_Gamma_Curve_Record);
+   procedure Initialize (Widget : access Gtk_Gamma_Curve_Record'Class);
 
    function Get_Curve (Widget : access Gtk_Gamma_Curve_Record)
                        return Gtk.Curve.Gtk_Curve;

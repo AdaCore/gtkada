@@ -50,7 +50,7 @@ package body Gtk.Frame is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Frame : access Gtk_Frame_Record;
+   procedure Initialize (Frame : access Gtk_Frame_Record'Class;
                          Label : in String := "") is
       function Internal (Label  : in System.Address)
         return System.Address;

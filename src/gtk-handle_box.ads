@@ -38,7 +38,7 @@ package Gtk.Handle_Box is
    procedure Gtk_New
      (Handle_Box : out Gtk_Handle_Box);
    procedure Initialize
-     (Handle_Box : access Gtk_Handle_Box_Record);
+     (Handle_Box : access Gtk_Handle_Box_Record'Class);
 
    procedure Set_Shadow_Type
      (Handle_Box : access Gtk_Handle_Box_Record;

@@ -94,7 +94,7 @@ package body Gtk.List_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (List_Item : access Gtk_List_Item_Record;
+   procedure Initialize (List_Item : access Gtk_List_Item_Record'Class;
                          Label     : in String := "") is
       function Internal (Label : in String)
                          return System.Address;

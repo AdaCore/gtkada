@@ -47,7 +47,7 @@ package body Gtk.Tips_Query is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Tips_Query_Record)
+   procedure Initialize (Widget : access Gtk_Tips_Query_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tips_query_new");

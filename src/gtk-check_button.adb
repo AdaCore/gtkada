@@ -48,7 +48,7 @@ package body Gtk.Check_Button is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Check_Button : access Gtk_Check_Button_Record;
+   procedure Initialize (Check_Button : access Gtk_Check_Button_Record'Class;
                          With_Label   : in String := "") is
       function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_label");

@@ -82,7 +82,7 @@ package body Gtk.Radio_Button is
    ----------------
 
    procedure Initialize
-     (Radio_Button : access Gtk_Radio_Button_Record;
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : in Widget_SList.GSlist;
       Label        : in String)
    is
@@ -109,7 +109,7 @@ package body Gtk.Radio_Button is
    ----------------
 
    procedure Initialize
-     (Radio_Button : access Gtk_Radio_Button_Record;
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : in Gtk_Radio_Button;
       Label        : in String)
    is

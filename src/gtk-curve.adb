@@ -62,7 +62,7 @@ package body Gtk.Curve is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Curve_Record) is
+   procedure Initialize (Widget : access Gtk_Curve_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_curve_new");
    begin

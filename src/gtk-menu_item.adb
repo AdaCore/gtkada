@@ -98,7 +98,7 @@ package body Gtk.Menu_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record;
+   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record'Class;
                          Label     : in  String) is
       function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new_with_label");

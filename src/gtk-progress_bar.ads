@@ -40,7 +40,7 @@ package Gtk.Progress_Bar is
 
    procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar;
                       Adjustment   : in Gtk.Adjustment.Gtk_Adjustment := null);
-   procedure Initialize (Progress_Bar : access Gtk_Progress_Bar_Record;
+   procedure Initialize (Progress_Bar : access Gtk_Progress_Bar_Record'Class;
                          Adjustment   : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Activity_Blocks
      (Progress_Bar : access Gtk_Progress_Bar_Record;

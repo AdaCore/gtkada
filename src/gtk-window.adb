@@ -86,7 +86,7 @@ package body Gtk.Window is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Window : access Gtk_Window_Record;
+   procedure Initialize (Window : access Gtk_Window_Record'Class;
                          The_Type : in Gtk_Window_Type) is
       function Internal (T : in Integer) return System.Address;
       pragma Import (C, Internal, "gtk_window_new");

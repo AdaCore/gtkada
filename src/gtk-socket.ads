@@ -36,7 +36,7 @@ package Gtk.Socket is
    type Gtk_Socket is access all Gtk_Socket_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Socket);
-   procedure Initialize (Widget : access Gtk_Socket_Record);
+   procedure Initialize (Widget : access Gtk_Socket_Record'Class);
 
    procedure Steal (Socket : access Gtk_Socket_Record;
                     Wid    : in     Guint32);

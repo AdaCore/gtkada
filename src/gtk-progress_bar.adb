@@ -50,7 +50,7 @@ package body Gtk.Progress_Bar is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Progress_Bar : access Gtk_Progress_Bar_Record;
+   procedure Initialize (Progress_Bar : access Gtk_Progress_Bar_Record'Class;
                          Adjustment   : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal return System.Address;
