@@ -109,8 +109,9 @@ package Gtk.Tooltips is
    procedure Set_Colors (Tooltips   : access Gtk_Tooltips_Record;
                          Foreground : Gdk.Color.Gdk_Color;
                          Background : Gdk.Color.Gdk_Color);
-   --  Modify the color scheme for the tooltips in the group Tooltips.
-   --  This function does not seem to do anything useful. This should anyway
+   --  Modify the color scheme for the tooltips in the group Tooltips.  This
+   --  function does not work intentionnaly, and these modifications are left
+   --  to the user through the use of configuration files. This should anyway
    --  be left to the user, who might want a different scheme for the colors.
    --  See the example below for how to modify the color scheme of a
    --  Gtk_Tooltips.
