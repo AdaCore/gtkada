@@ -211,6 +211,87 @@ package body Gtk.Layout is
       end if;
    end Set_Vadjustment;
 
+   ------------
+   -- Freeze --
+   ------------
+
+   procedure Freeze (Layout : access Gtk_Layout_Record) is
+      procedure Internal (Layout : in System.Address);
+      pragma Import (C, Internal, "gtk_layout_freeze");
+   begin
+      Internal (Get_Object (Layout));
+   end Freeze;
+
+   ----------
+   -- Thaw --
+   ----------
+
+   procedure Thaw (Layout : access Gtk_Layout_Record) is
+      procedure Internal (Layout : in System.Address);
+      pragma Import (C, Internal, "gtk_layout_thaw");
+   begin
+      Internal (Get_Object (Layout));
+   end Thaw;
+
+   -----------------
+   -- Get_Xoffset --
+   -----------------
+
+   function Get_Xoffset (Layout : access Gtk_Layout_Record) return Guint is
+      function Internal (Layout : in System.Address) return Guint;
+      pragma Import (C, Internal, "ada_gtk_layout_get_xoffset");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Xoffset;
+
+   -----------------
+   -- Get_Yoffset --
+   -----------------
+
+   function Get_Yoffset (Layout : access Gtk_Layout_Record) return Guint is
+      function Internal (Layout : in System.Address) return Guint;
+      pragma Import (C, Internal, "ada_gtk_layout_get_yoffset");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Yoffset;
+
+   ---------------
+   -- Get_Width --
+   ---------------
+
+   function Get_Width (Layout : access Gtk_Layout_Record) return Guint is
+      function Internal (Layout : in System.Address) return Guint;
+      pragma Import (C, Internal, "ada_gtk_layout_get_width");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Width;
+
+   ----------------
+   -- Get_Height --
+   ----------------
+
+   function Get_Height (Layout : access Gtk_Layout_Record) return Guint is
+      function Internal (Layout : in System.Address) return Guint;
+      pragma Import (C, Internal, "ada_gtk_layout_get_height");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Height;
+
+   --------------------
+   -- Get_Bin_Window --
+   --------------------
+
+   function Get_Bin_Window (Widget : access Gtk_Layout_Record)
+                           return Gdk.Window.Gdk_Window
+   is
+      function Internal (Layout : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gtk_layout_get_bin_window");
+      Win : Gdk.Window.Gdk_Window;
+   begin
+      Set_Object (Win, Internal (Get_Object (Widget)));
+      return Win;
+   end Get_Bin_Window;
+
    --------------
    -- Generate --
    --------------

@@ -27,10 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
-with Gdk; use Gdk;
+with Gdk;           use Gdk;
 with Gtk.Container; use Gtk.Container;
-with Gtk.Util; use Gtk.Util;
+with Gtk.Enums;     use Gtk.Enums;
+with Gtk.Util;      use Gtk.Util;
+with Gtk.Widget;    use Gtk.Widget;
+with System;
+with Gtk.Object;    use Gtk.Object;
 
 package body Gtk.Notebook is
 
@@ -206,6 +209,40 @@ package body Gtk.Notebook is
    begin
       return Gtk_Position_Type'Val (Internal (Get_Object (Widget)));
    end Get_Tab_Pos;
+
+   ------------------
+   -- Get_Nth_Page --
+   ------------------
+
+   function Get_Nth_Page (Widget   : access Gtk_Notebook_Record'Class;
+                          Page_Num : Gint)
+                         return Gtk_Notebook_Page
+   is
+      function Internal (Widget   : in System.Address;
+                         Page_Num : Gint)
+                        return System.Address;
+      pragma Import (C, Internal, "gtk_notebook_get_nth_page");
+      Page : Gtk_Notebook_Page;
+   begin
+      Set_Object (Page, Internal (Get_Object (Widget), Page_Num));
+      return Page;
+   end Get_Nth_Page;
+
+   --------------
+   -- Page_Num --
+   --------------
+
+   function Page_Num (Widget : access Gtk_Notebook_Record'Class;
+                      Child  : access Gtk_Widget_Record'Class)
+                     return Gint
+   is
+      function Internal (Widget : in System.Address;
+                         Child  : in System.Address)
+                        return Gint;
+      pragma Import (C, Internal, "gtk_notebook_page_num");
+   begin
+      return Internal (Get_Object (Widget), Get_Object (Child));
+   end Page_Num;
 
    -------------
    -- Gtk_New --
@@ -573,6 +610,95 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Gtk_Position_Type'Pos (Pos));
    end Set_Tab_Pos;
 
+   -------------------
+   -- Set_Tab_Label --
+   -------------------
+
+   procedure Set_Tab_Label
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Notebook  : System.Address;
+                          Child     : System.Address;
+                          Tab_Label : System.Address);
+      pragma Import (C, Internal, "gtk_notebook_set_tab_label");
+   begin
+      Internal (Get_Object (Notebook), Get_Object (Child),
+                Get_Object (Tab_Label));
+   end Set_Tab_Label;
+
+   ------------------------
+   -- Set_Tab_Label_Text --
+   ------------------------
+
+   procedure Set_Tab_Label_Text
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Text : in String)
+   is
+      procedure Internal (Notebook : System.Address;
+                          Child    : System.Address;
+                          Tab_Text : String);
+      pragma Import (C, Internal, "gtk_notebook_set_tab_label_text");
+   begin
+      Internal (Get_Object (Notebook), Get_Object (Child),
+                Tab_Text & ASCII.NUL);
+   end Set_Tab_Label_Text;
+
+   --------------------
+   -- Set_Menu_Label --
+   --------------------
+
+   procedure Set_Menu_Label
+     (Notebook   : access Gtk_Notebook_Record;
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Notebook   : System.Address;
+                          Child      : System.Address;
+                          Menu_Label : System.Address);
+      pragma Import (C, Internal, "gtk_notebook_set_menu_label");
+   begin
+      Internal (Get_Object (Notebook), Get_Object (Child),
+                Get_Object (Menu_Label));
+   end Set_Menu_Label;
+
+   -------------------------
+   -- Set_Menu_Label_Text --
+   -------------------------
+
+   procedure Set_Menu_Label_Text
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Menu_Text : in String)
+   is
+      procedure Internal (Notebook : System.Address;
+                          Child    : System.Address;
+                          Menu_Text : String);
+      pragma Import (C, Internal, "gtk_notebook_set_menu_label_text");
+   begin
+      Internal (Get_Object (Notebook), Get_Object (Child),
+                Menu_Text & ASCII.NUL);
+   end Set_Menu_Label_Text;
+
+   -------------------
+   -- Reorder_Child --
+   -------------------
+
+   procedure Reorder_Child
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : Gint)
+   is
+      procedure Internal (Notebook : System.Address;
+                          Child    : System.Address;
+                          Position : Gint);
+      pragma Import (C, Internal, "gtk_notebook_reorder_child");
+   begin
+      Internal (Get_Object (Notebook), Get_Object (Child), Position);
+   end Reorder_Child;
+
    --------------
    -- Generate --
    --------------
@@ -590,6 +716,10 @@ package body Gtk.Notebook is
       Gen_Set (N, "Notebook", "tab_vborder", File);
       Gen_Set (N, "Notebook", "tab_pos", File);
    end Generate;
+
+   --------------
+   -- Generate --
+   --------------
 
    procedure Generate (Notebook : in out Gtk_Object;
                        N        : in Node_Ptr) is
