@@ -8,6 +8,7 @@ with Gdk.Window_Attr; use Gdk.Window_Attr;
 with Gtk.Widget;    use Gtk.Widget;
 with Gtk.Style;     use Gtk.Style;
 with Gtk.Handlers;  use Gtk.Handlers;
+with Gtk.Event_Box; use Gtk.Event_Box;
 
 with System;
 
@@ -124,7 +125,7 @@ package body Gtk_Dial is
    begin
       --  We first need to call the ancestor's Initialize function to create
       --  the underlying C object.
-      Initialize_Widget (Dial);
+      Gtk.Event_Box.Initialize (Dial);
 
       if Adjustment = null then
          Gtk_New (Adj, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);

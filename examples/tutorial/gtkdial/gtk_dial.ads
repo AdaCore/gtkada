@@ -1,12 +1,13 @@
 with Glib; use Glib;
-with Gtk.Widget, Gtk.Adjustment, Gtk.Main;
+with Gtk.Adjustment, Gtk.Main;
+with Gtk.Event_Box;
 with Gtk.Enums, Gtk.Handlers;
 
 package Gtk_Dial is
 
    use Gtk.Adjustment, Gtk.Main, Gtk.Enums;
 
-   type Gtk_Dial_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Dial_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with private;
    type Gtk_Dial is access all Gtk_Dial_Record'Class;
 
    procedure Gtk_New (Dial : out Gtk_Dial; Adjustment : Gtk_Adjustment);
@@ -27,7 +28,7 @@ package Gtk_Dial is
 
 private
 
-   type Gtk_Dial_Record is new Gtk.Widget.Gtk_Widget_Record with record
+   type Gtk_Dial_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with record
       Policy : Gtk_Update_Type := Update_Continuous;
       --  Update Policy (Update_[Continuous/Delayed/Discontinuous])
 
