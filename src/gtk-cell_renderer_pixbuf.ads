@@ -56,6 +56,13 @@ package Gtk.Cell_Renderer_Pixbuf is
    --
    --  </signals>
 
+   --  The following properties are defined for this cell_renderer :
+   --
+   --   Attribute             Type                      Mode
+   --   =========             ====                      ====
+   --
+   --   "pixbuf"              Gdk_Pixbuf                Read / Write
+
 private
    type Gtk_Cell_Renderer_Pixbuf_Record is
      new Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record with null record;

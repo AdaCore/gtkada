@@ -75,6 +75,19 @@ package Gtk.Cell_Renderer_Toggle is
    --
    --  </signals>
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  The following properties are defined for this cell_renderer :
+   --
+   --   Attribute             Type                      Mode
+   --   =========             ====                      ====
+   --
+   --   "activatable"         Boolean                   Read / Write
+   --   "active"              Boolean                   Read / Write
+   --   "radio"               Boolean                   Read / Write
+
 private
    type Gtk_Cell_Renderer_Toggle_Record is
      new Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record with null record;

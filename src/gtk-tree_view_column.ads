@@ -94,6 +94,9 @@ package Gtk.Tree_View_Column is
    --  parameter on Cell_Renderer to be set from the value. So for example if
    --  column 2 of the model contains strings, you could have the "text"
    --  attribute of a Gtk_Cell_Renderer_Text get its values from column 2.
+   --
+   --  For a list of properties available for each Cell_Renderer, please
+   --  refer to the corresponding packages specifications.
 
 --    procedure Set_Cell_Data_Func
 --      (Tree_Column   : access Gtk_Tree_View_Column_Record;

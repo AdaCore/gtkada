@@ -27,6 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+
+
+
 with Gtk;
 with Gtk.Cell_Renderer;
 
@@ -65,9 +68,53 @@ package Gtk.Cell_Renderer_Text is
    --
    --  </signals>
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  The following properties are defined for this cell_renderer :
+   --
+   --   Attribute             Type                      Mode
+   --   =========             ====                      ====
+   --
+   --   "text"                String                    Read / Write
+   --   "markup"              String                    Write
+   --   "attributes"          PangoAttrList             Read / Write
+   --   "background"          String                    Write
+   --   "foreground"          String                    Write
+   --   "background-gdk"      Gdk_Color                 Read / Write
+   --   "foreground-gdk"      Gdk_Color                 Read / Write
+   --   "font"                String                    Read / Write
+   --   "font-desc"           Pango_Font_Description    Read / Write
+   --   "family"              String                    Read / Write
+   --   "style"               PangoStyle                Read / Write
+   --   "variant"             PangoVariant              Read / Write
+   --   "weight"              Gint                      Read / Write
+   --   "stretch"             PangoStretch              Read / Write
+   --   "size"                Gint                      Read / Write
+   --   "size-points"         Gdouble                   Read / Write
+   --   "scale"               Gdouble                   Read / Write
+   --   "editable"            Boolean                   Read / Write
+   --   "strikethrough"       Boolean                   Read / Write
+   --   "underline"           PangoUnderline            Read / Write
+   --   "rise"                Gint                      Read / Write
+   --   "background-set"      Boolean                   Read / Write
+   --   "foreground-set"      Boolean                   Read / Write
+   --   "family-set"          Boolean                   Read / Write
+   --   "style-set"           Boolean                   Read / Write
+   --   "variant-set"         Boolean                   Read / Write
+   --   "weight-set"          Boolean                   Read / Write
+   --   "stretch-set"         Boolean                   Read / Write
+   --   "size-set"            Boolean                   Read / Write
+   --   "scale-set"           Boolean                   Read / Write
+   --   "editable-set"        Boolean                   Read / Write
+   --   "strikethrough-set"   Boolean                   Read / Write
+   --   "underline-set"       Boolean                   Read / Write
+   --   "rise-set"            Boolean                   Read / Write
+
 private
    type Gtk_Cell_Renderer_Text_Record is
      new Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record with null record;
 
-   pragma Import (C, Get_Type, "gtk_cell_renderer_text_get_type");
+   pragma Import (C, Get_Type,  "gtk_cell_renderer_text_get_type");
 end Gtk.Cell_Renderer_Text;
