@@ -215,6 +215,8 @@ package body Gtkada.MDI is
    Source_Target_Table : constant Target_Entry_Array :=
      ((New_String ("gtkada/widget"), Target_No_Constraint, Widget_Target_Dnd),
       (New_String ("application/x-rootwin-drop"), Target_No_Constraint,
+       Root_Window_Target_Dnd),
+      (New_String ("application/x-rootwindow-drop"), Target_No_Constraint,
        Root_Window_Target_Dnd));
    Dest_Target_Table : constant Target_Entry_Array :=
      (1 => (New_String ("gtkada/widget"), Target_Same_App, Widget_Target_Dnd));
