@@ -25,3 +25,8 @@ Note that you need to first install GtkAda to use these examples.
 
     $ gnatmake menu `gtkada-config`
     $ menu
+
+2- file
+
+  Demonstrates the file selection GTK widget. Follow the instructions
+  explained above for menu.
