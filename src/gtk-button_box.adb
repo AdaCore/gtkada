@@ -31,6 +31,25 @@ with System;
 
 package body Gtk.Button_Box is
 
+   --------------------
+   -- Get_Child_Size --
+   --------------------
+
+   procedure Get_Child_Size
+     (Button_Box : access Gtk_Button_Box_Record;
+      Min_Width  : out Gint;
+      Min_Height : out Gint)
+   is
+      procedure Internal
+        (Widget     : System.Address;
+         Min_Width  : out Gint;
+         Min_Height : out Gint);
+      pragma Import (C, Internal, "gtk_button_box_get_child_size");
+
+   begin
+      Internal (Get_Object (Button_Box), Min_Width, Min_Height);
+   end Get_Child_Size;
+
    ----------------
    -- Get_Layout --
    ----------------
@@ -46,6 +65,25 @@ package body Gtk.Button_Box is
       return Enums.Gtk_Button_Box_Style'Val
         (Internal (Get_Object (Button_Box)));
    end Get_Layout;
+
+   --------------------
+   -- Set_Child_Size --
+   --------------------
+
+   procedure Set_Child_Size
+     (Button_Box : access Gtk_Button_Box_Record;
+      Min_Width  : Gint;
+      Min_Height : Gint)
+   is
+      procedure Internal
+        (Widget     : System.Address;
+         Min_Width  : Gint;
+         Min_Height : Gint);
+      pragma Import (C, Internal, "gtk_button_box_set_child_size");
+
+   begin
+      Internal (Get_Object (Button_Box), Min_Width, Min_Height);
+   end Set_Child_Size;
 
    ----------------
    -- Set_Layout --

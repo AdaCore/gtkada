@@ -73,6 +73,22 @@ package Gtk.Button_Box is
       return Enums.Gtk_Button_Box_Style;
    --  Return the layout used in the box.
 
+   procedure Set_Child_Size
+     (Button_Box : access Gtk_Button_Box_Record;
+      Min_Width  : in Gint;
+      Min_Height : in Gint);
+   --  Set the size to use for children of this specific box.
+   --  You can modify the size for all the boxes at once by using
+   --  Set_Child_Size_Default.
+
+   procedure Get_Child_Size
+     (Button_Box : access Gtk_Button_Box_Record;
+      Min_Width  : out Gint;
+      Min_Height : out Gint);
+   --  Return the size to use for children of this specific box.
+   --  Min_Width and Min_Height are set to -1 if this widget uses the default
+   --  sizes that are set by Set_Child_Size_Default.
+
    -------------
    -- Signals --
    -------------
