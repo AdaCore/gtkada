@@ -41,13 +41,11 @@
 
 with Glib; use Glib;
 
-with Gdk.Drawable;
-with Gdk.GC;
 with Gdk.Window;
 
 package Gdk.Bitmap is
 
-   subtype Gdk_Bitmap is Gdk.Drawable.Gdk_Drawable;
+   subtype Gdk_Bitmap is Gdk.Gdk_Bitmap;
    --  A black and white image.
    --  This type is mainly used as a mask when drawing other colored images.
    --  Each pixel can have two values, 0 or 1.
@@ -83,16 +81,8 @@ package Gdk.Bitmap is
    --  Width is the width of the new bitmap in pixels.
    --  Height is the height of the new bitmap in pixels.
 
-   procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC;
-                            Mask  : in Gdk_Bitmap);
-   --  If Mask is set to Null_Bitmap, then no clip_mask is used for drawing.
-   --  Points will be drawn through this GC only where the bits are set to 1
-   --  in the mask. See also the function Gdk.GC.Set_Clip_Origin for
-   --  how to move the mask inside the GC.
-
 private
    Null_Bitmap : constant Gdk_Bitmap := null;
    pragma Import (C, Ref, "gdk_bitmap_ref");
    pragma Import (C, Unref, "gdk_bitmap_unref");
-   pragma Import (C, Set_Clip_Mask, "gdk_gc_set_clip_mask");
 end Gdk.Bitmap;
