@@ -33,6 +33,7 @@ The detailed documentation for packages
 * Package Gtk.Widget::
 * Package Gtk.Container::
 * Package Gtk.Bin::
+* Package Gtk.Button::
 @include generated_menu.texi
 
 @end detailmenu
@@ -67,6 +68,9 @@ All the widgets are described, as well as their associated subprograms
 
 @node Package Gtk.Bin
 @section Package Gtk.Bin
+
+@node Package Gtk.Button
+@section Package Gtk.Button
 
 @include generated.texi
 
