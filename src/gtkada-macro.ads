@@ -26,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  This package provides low level support for event recording and replay.
+
 with Gdk.Event;
 with Gdk.Types;
 with Glib; use Glib;
