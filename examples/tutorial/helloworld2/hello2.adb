@@ -71,7 +71,7 @@ begin
    --  with a pointer to "button 1" as its argument
    Handlers.Connect
      (Button, "clicked", Handlers.To_Marshaller (Hello_Callback'Access),
-      new String' ("button 1"));
+      new String'("button 1"));
 
    --  Instead of gtk_container_add, we pack this button into the invisible
    --  box, which has been packed into the window. */
@@ -90,7 +90,7 @@ begin
    --  passing a pointer to "button 2" instead.
    Handlers.Connect
      (Button, "clicked", Handlers.To_Marshaller (Hello_Callback'Access),
-      new String' ("button 2"));
+      new String'("button 2"));
 
    --  Instead of gtk_container_add, we pack this button into the invisible
    --  box, which has been packed into the window. */
