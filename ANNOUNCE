@@ -38,6 +38,7 @@ New features in 1.2.5 include:
 - A new examples shows how to do some flicker-free animation with GtkAda
 - Tested on HP-UX 11.00
 - Tested on SCO UnixWare 7.1
+- Add partial support for Gtk_Ctree
 
 New features in 1.2.4 include:
 
@@ -60,8 +61,8 @@ New features in 1.2.4 include:
     * generate comments in callback stubs to separate cleanly each callback,
       and to avoid occasional merge failures
 - Tested on AiX 4.3.2
-- New widgets supported by GATE/DGATE: Gtk_List, Gtk_Clist, Gtk_Paned,
-  Gtk_Viewport, Gtk_Vscrollbar
+- New widgets supported by GATE/DGATE: Gtk_List, Gtk_Clist (partially),
+  Gtk_Paned, Gtk_Viewport, Gtk_Vscrollbar
 - Fixed GATE support for Gtk_Frame (Label handling)
 - Simple minded support for XML attributes in Glib.XML
 
