@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,8 +29,8 @@
 -----------------------------------------------------------------------
 
 with Gdk.Color;             use Gdk.Color;
-with Gdk.Event;             use Gdk.Event;
 with Gdk.Drawable;          use Gdk.Drawable;
+with Gdk.GC;                use Gdk.GC;
 with Gdk.Pixmap;            use Gdk.Pixmap;
 with Gdk.Bitmap;            use Gdk.Bitmap;
 with Glib;                  use Glib;
@@ -45,18 +46,19 @@ with Gtk.Extra.Plot_Polar;  use Gtk.Extra.Plot_Polar;
 with Gtk.Extra.Plot_Data;   use Gtk.Extra.Plot_Data;
 with Gtk.Extra.Plot_Canvas; use Gtk.Extra.Plot_Canvas;
 with Gtk.Extra.Plot_Ps;     use Gtk.Extra.Plot_Ps;
-with Gtk.Extra.PsFont;      use Gtk.Extra.PsFont;
 with Gtk.Frame;             use Gtk.Frame;
 with Gtk.Scrolled_Window;   use Gtk.Scrolled_Window;
 with Gtk.Style;             use Gtk.Style;
 with Gtk.Handlers;          use Gtk.Handlers;
 with Gtk.Arguments;         use Gtk.Arguments;
+with Gtk.Widget;            use Gtk.Widget;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Text_IO;
 with System;
 with Gtkada.Types;          use Gtkada.Types;
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
+with Common;                use Common;
 
 package body Create_Plot is
 
@@ -183,25 +185,6 @@ package body Create_Plot is
         & " axis.";
    end Help;
 
-   -------------------
-   -- Print_Dataset --
-   -------------------
-
-   function Print_Dataset (Canvas : access Gtk_Plot_Canvas_Record'Class;
-                           Event  : Gdk.Event.Gdk_Event_Button)
-                          return Boolean
-   is
-      pragma Warnings (Off, Event);
-      Arr : Points_Array := Get_Y (Get_Active_Data (Canvas));
-   begin
-      Ada.Text_IO.Put_Line ("Current values of points in the dataset:");
-      for Num in 0 .. Integer (Arr.Num_Points) - 1 loop
-         Ada.Text_IO.Put (Gdouble'Image (Arr.Points (Num)) & "  ");
-      end loop;
-      Ada.Text_IO.New_Line;
-      return True;
-   end Print_Dataset;
-
    -----------------
    -- My_Function --
    -----------------
@@ -302,7 +285,7 @@ package body Create_Plot is
      (Button : access Gtk_Toggle_Button_Record'Class)
    is
    begin
-      if Is_Active (Button) then
+      if Get_Active (Button) then
          for N in 1 .. Num_Layers loop
             if Buttons (N) = Gtk_Toggle_Button (Button) then
                Set_Active_Plot (Canvas, Plots (N));
@@ -379,6 +362,7 @@ package body Create_Plot is
       Set_Range (Plot, -1.0, 1.0, -1.0, 1.4);
       Legends_Move (Plot, 0.5, 0.05);
       Set_Legends_Border (Plot, Border_None, 0);
+      Set_Default_Plot_Attributes (Plot);
       Axis_Hide_Title (Plot, Axis_Top);
       Axis_Show_Ticks (Plot, Axis_Top, Ticks_In, Ticks_In);
       Axis_Set_Ticks (Plot,  Axis_X, 1.0, 1);
@@ -389,6 +373,7 @@ package body Create_Plot is
       Y0_Set_Visible (Plot, True);
 
       Add_Plot (Canvas, Plot, 0.05, 0.05);
+
       Show (Plot);
 
       --  Specify a custom tick label for the right axis
@@ -400,9 +385,9 @@ package body Create_Plot is
       --  Common initialization
 
       Red := Parse ("red");
-      Alloc (Gdk.Color.Get_System, Red);
+      Alloc (Get_Default_Colormap, Red);
       Blue := Parse ("blue");
-      Alloc (Gdk.Color.Get_System, Blue);
+      Alloc (Get_Default_Colormap, Blue);
 
       --  Create the first set of data
 
@@ -411,7 +396,8 @@ package body Create_Plot is
       Show (Data);
       Set_Points (Data, Px1'Access, Py1'Access, Pdx1'Access, Pdy1'Access);
       Set_Symbol (Data, Symbol_Diamond, Symbol_Opaque, 10, 2.0, Red, Red);
-      Set_Line_Attributes (Data, Line_Solid, 1.0, Red);
+      Set_Line_Attributes
+        (Data, Line_Solid, Cap_Not_Last, Join_Miter, 1.0, Red);
       Set_Connector (Data, Connect_Spline);
       Show_Yerrbars (Data);
       Set_Legend (Data, "Spline + EY");
@@ -424,17 +410,23 @@ package body Create_Plot is
       Set_Points (Data, Px2'Access, Py2'Access, Pdx2'Access, Pdy2'Access);
       Set_Symbol (Data, Symbol_Square, Symbol_Opaque, 8, 2.0,
                   Get_Black (Get_Style (Plot)), Get_Black (Get_Style (Plot)));
-      Set_Line_Attributes (Data, Line_Solid, 4.0, Red);
+      Set_Line_Attributes
+        (Data, Line_Solid, Cap_Not_Last, Join_Miter, 4.0, Red);
       Set_Connector (Data, Connect_Straight);
-      Set_X_Attributes (Data, Line_Solid, 0.0, Get_Black (Get_Style (Plot)));
-      Set_Y_Attributes (Data, Line_Solid, 0.0, Get_Black (Get_Style (Plot)));
+      Set_X_Attributes
+        (Data, Line_Solid, Cap_Not_Last, Join_Miter, 0.0,
+         Get_Black (Get_Style (Plot)));
+      Set_Y_Attributes
+        (Data, Line_Solid, Cap_Not_Last, Join_Miter, 0.0,
+         Get_Black (Get_Style (Plot)));
       Set_Legend (Data, "Line + Symbol");
 
       --  Create the third set of data
 
       Data := Add_Function (Plot, My_Func'Access);
       Show (Data);
-      Set_Line_Attributes (Data, Line_Solid, 0.0, Blue);
+      Set_Line_Attributes
+        (Data, Line_Solid, Cap_Not_Last, Join_Miter, 0.0, Blue);
       Set_Legend (Data, "Function Plot");
    end Build_Example1;
 
@@ -454,6 +446,7 @@ package body Create_Plot is
       Set_Range (Plot, -1.0, 1.0, -1.0, 1.4);
       Legends_Move (Plot, 0.5, 0.05);
       Set_Legends_Border (Plot, Border_None, 0);
+      Set_Default_Plot_Attributes (Plot);
       Axis_Hide_Title (Plot, Axis_Top);
       Axis_Show_Ticks (Plot, Axis_Top, Ticks_In, Ticks_In);
       Axis_Set_Ticks (Plot,  Axis_X, 1.0, 1);
@@ -469,9 +462,9 @@ package body Create_Plot is
       --  Common initializations
 
       Red := Parse ("red");
-      Alloc (Gdk.Color.Get_System, Red);
+      Alloc (Get_Default_Colormap, Red);
       Yellow := Parse ("yellow");
-      Alloc (Gdk.Color.Get_System, Yellow);
+      Alloc (Get_Default_Colormap, Yellow);
 
       --  Create the data
 
@@ -483,7 +476,8 @@ package body Create_Plot is
       Set_Dz (Data, Pdz1'Access);
       Show_Zerrbars (Data);
       Set_Symbol (Data, Symbol_None, Symbol_Filled, 10, 2.0, Yellow, Red);
-      Set_Line_Attributes (Data, Line_None, 1.0, red);
+      Set_Line_Attributes
+        (Data, Line_None, Cap_Not_Last, Join_Miter, 1.0, red);
       Set_Legend (Data, "Boxes");
    end Build_Example3;
 
@@ -502,16 +496,18 @@ package body Create_Plot is
       New_Layer (Canvas, Plot);
       Add_Plot (Canvas, Plot, 0.55, 0.45);
       Show (Plot);
+      Set_Default_Plot_Attributes (Plot);
 
       Red := Parse ("red");
-      Alloc (Gdk.Color.Get_System, Red);
+      Alloc (Get_Default_Colormap, Red);
 
       Gtk_New (Data);
       Add_Data (Plot, Data);
       Show (Data);
       Set_Points (Data, R'Access, Angle'Access, null, null);
       Set_Symbol (Data, Symbol_Diamond, Symbol_Opaque, 10, 2.0, Red, Red);
-      Set_Line_Attributes (Data, Line_Solid, 1.0, Red);
+      Set_Line_Attributes
+        (Data, Line_Solid, Cap_Not_Last, Join_Miter, 1.0, Red);
       Set_Legend (Data, "Polar");
    end Build_Example4;
 
@@ -526,16 +522,17 @@ package body Create_Plot is
       Data2               : Gtk_Plot_Bar;
    begin
       Yellow := Parse ("light yellow");
-      Alloc (Gdk.Color.Get_System, Yellow);
+      Alloc (Get_Default_Colormap, Yellow);
       Blue := Parse ("light blue");
-      Alloc (Gdk.Color.Get_System, Blue);
+      Alloc (Get_Default_Colormap, Blue);
       Green := Parse ("dark green");
-      Alloc (Gdk.Color.Get_System, Green);
+      Alloc (Get_Default_Colormap, Green);
 
       Gtk_New (Plot, Width => 0.4, Height => 0.3);
       New_Layer (Canvas, Plot);
       Set_Background (Plot, Yellow);
       Legends_Set_Attributes (Plot, "", 0, Null_Color, Blue);
+      Set_Default_Plot_Attributes (Plot);
       Set_Range (Plot, 0.0, 1.0, 0.0, 0.85);
       Axis_Set_Visible (Plot, Axis_Top, True);
       Axis_Set_Visible (Plot, Axis_Right, True);
@@ -550,17 +547,19 @@ package body Create_Plot is
 
       Data := Add_Function (Plot, Gauss'Access);
       Show (Data);
-      Set_Line_Attributes (Data, Line_Dashed, 2.0, Green);
+      Set_Line_Attributes
+        (Data, Line_Dashed, Cap_Not_Last, Join_Miter, 2.0, Green);
       Set_Legend (Data, "Gaussian");
 
       Blue := Parse ("blue");
-      Alloc (Gdk.Color.Get_System, Blue);
+      Alloc (Get_Default_Colormap, Blue);
       Gtk_New (Data2, Orientation_Vertical);
       Show (Data2);
       Add_Data (Plot, Data2);
       Set_Points (Data2, Px3'Access, Py3'Access, Pdx3'Access, Pdy3'Access);
       Set_Symbol (Data2, Symbol_None, Symbol_Opaque, 10, 2.0, Blue, Blue);
-      Set_Line_Attributes (Data2, Line_None, 1.0, Blue);
+      Set_Line_Attributes
+        (Data2, Line_None, Cap_Not_Last, Join_Miter, 1.0, Blue);
       Set_Legend (Data2, "V Bar");
 --    Set_Symbol (Data2, Symbol_Impulse, Symbol_Filled, 10, 5.0, Blue, Blue);
 --    Set_Line_Attributes (Data2, Line_Solid, 5.0, Blue);
@@ -581,7 +580,7 @@ package body Create_Plot is
    begin
       Create_From_Xpm_D (Pixmap,
                          Get_Window (Canvas),
-                         Get_System,
+                         Get_Default_Colormap,
                          Mask,
                          Null_Color,
                          Plot_Icons2);
@@ -607,11 +606,8 @@ package body Create_Plot is
       Button      : Gtk_Button;
       Text        : Gtk_Plot_Canvas_Child;
       Child       : Gtk_Plot_Canvas_Child;
-      Tmp         : Gint;
    begin
       Set_Label (Frame, "Gtk.Extra.Plot_3D demo");
-
-      Tmp := Gtk.Extra.PsFont.Init;
 
       Num_Layers := 0;
       Gtk_New_Vbox (Vbox1, False, 0);
@@ -641,7 +637,7 @@ package body Create_Plot is
 
       Text := Put_Text
         (Canvas, 0.40, 0.02,
-         "Times-BoldItalic", 16, 0, Null_Color, Null_Color, True,
+         "Times-BoldItalic", 10, 0, Null_Color, Null_Color, True,
          Justify_Center, "Dnd titles, legends and plots");
 
       Gtk_New (Button, "Print");
@@ -653,19 +649,18 @@ package body Create_Plot is
 
       Text := Put_Text
         (Canvas, 0.4, 0.84,
-         "Times-Roman", 16, 0, Null_Color, Null_Color, False,
+         "Times-Roman", 10, 0, Null_Color, Null_Color, False,
          Justify_Center,
          "You can use \ssubscripts\b\b\b\b\b\b\b\b"
          & "\b\b\N\Ssuperscripts");
       Text := Put_Text
         (Canvas, 0.4, 0.88,
-         "Times-Roman", 16, 0, Null_Color, Null_Color, True,
+         "Times-Roman", 10, 0, Null_Color, Null_Color, True,
          Justify_Center,
-         "Format text mixing \Bbold \N\i, italics, \ggreek \4\N "
-         & "and \+different fonts");
+         "Format text mixing \Bbold \N\i, italics and \+different fonts");
 
 
-      -- Insert a customer item --
+      -- Insert a custom item --
       Child := Child_New (Custom);
       Set_Draw_Func (Child, Draw_Child'Access);
       Put_Child (Canvas, Child, 0.6, 0.2, 0.58, 0.56);

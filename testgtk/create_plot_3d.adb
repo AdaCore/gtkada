@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,7 +42,7 @@ with Gtk.Scrolled_Window;   use Gtk.Scrolled_Window;
 with Gtk.Handlers;          use Gtk.Handlers;
 with Ada.Numerics.Generic_Elementary_Functions;
 with System;
-with Ada.Numerics.Generic_Elementary_Functions;
+with Common;                use Common;
 
 package body Create_Plot_3D is
 
@@ -153,6 +154,7 @@ package body Create_Plot_3D is
 
       --  Create the plot
       Gtk_New (Plot, null, 0.7, 0.7);
+      Set_Default_Plot_Attributes (Plot);
       Add_Plot (Canvas, Plot, 0.1, 0.06);
       Show (Plot);
 

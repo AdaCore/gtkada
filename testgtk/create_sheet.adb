@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
+--                     Copyright (C) 2000-2003                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -32,7 +32,6 @@ with Gdk.Bitmap;        use Gdk.Bitmap;
 with Gdk.Color;         use Gdk.Color;
 with Gdk.Drawable;      use Gdk.Drawable;
 with Gdk.Event;         use Gdk.Event;
-with Gdk.Font;          use Gdk.Font;
 with Gdk.Gc;            use Gdk.Gc;
 with Gdk.Pixmap;        use Gdk.Pixmap;
 with Gdk.Rectangle;     use Gdk.Rectangle;
@@ -50,7 +49,6 @@ with Gtk.Extra.Border_Combo;  use Gtk.Extra.Border_Combo;
 with Gtk.Extra.Color_Combo;   use Gtk.Extra.Color_Combo;
 with Gtk.Extra.Font_Combo;    use Gtk.Extra.Font_Combo;
 with Gtk.Extra.Item_Entry;    use Gtk.Extra.Item_Entry;
-with Gtk.Extra.PsFont;        use Gtk.Extra.PsFont;
 with Gtk.Extra.Sheet;   use Gtk.Extra.Sheet;
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.GEntry;        use Gtk.GEntry;
@@ -64,6 +62,7 @@ with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Toolbar;       use Gtk.Toolbar;
 with Gtk.Widget;        use Gtk.Widget;
+with Pango.Font;        use Pango.Font;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Gtk.Type_Conversion;
@@ -531,8 +530,8 @@ package body Create_Sheet is
                              Params : Gtk.Arguments.Gtk_Args)
    is
       pragma Warnings (Off, Widget);
-      Old_Range : Gtk_Sheet_Range := To_Range (Get_Nth (Params, 1));
-      New_Range : Gtk_Sheet_Range := To_Range (Get_Nth (Params, 2));
+      Old_Range : Gtk_Sheet_Range := To_Range (To_Address (Params, 1));
+      New_Range : Gtk_Sheet_Range := To_Range (To_Address (Params, 2));
    begin
       Put_Line ("Resize: Old selection: "
                 & Gint'Image (Old_Range.Row0)
@@ -554,8 +553,8 @@ package body Create_Sheet is
                            Params : Gtk.Arguments.Gtk_Args)
    is
       pragma Warnings (Off, Widget);
-      Old_Range : Gtk_Sheet_Range := To_Range (Get_Nth (Params, 1));
-      New_Range : Gtk_Sheet_Range := To_Range (Get_Nth (Params, 2));
+      Old_Range : Gtk_Sheet_Range := To_Range (To_Address (Params, 1));
+      New_Range : Gtk_Sheet_Range := To_Range (To_Address (Params, 2));
    begin
       Put_Line ("Move: Old selection: "
                 & Gint'Image (Old_Range.Row0)
@@ -580,8 +579,8 @@ package body Create_Sheet is
       pragma Warnings (Off, Widget);
       Row : Gint := To_Gint (Params, 1);
       Col : Gint := To_Gint (Params, 2);
-      New_Row : Gint_Access := To_Gint_Access (Get_Nth (Params, 3));
-      New_Col : Gint_Access := To_Gint_Access (Get_Nth (Params, 4));
+      New_Row : Gint_Access := To_Gint_Access (To_Address (Params, 3));
+      New_Col : Gint_Access := To_Gint_Access (To_Address (Params, 4));
    begin
       Put_Line ("Traverse: from ("
                 & Gint'Image (Row) & ","
@@ -599,7 +598,7 @@ package body Create_Sheet is
       pragma Warnings (Off, Button);
    begin
       if not Flag_Is_Set (Curve, Mapped) then
-         Attach (Sheets (0), Curve, 0, 4, 0.0, 0.0);
+         Attach (Sheets (0), Curve, 0, 4);
       end if;
    end Show_Child;
 
@@ -794,9 +793,7 @@ package body Create_Sheet is
 
    procedure Parse_Numbers (Widget : access Gtk_Widget_Record'Class) is
       Sheet         : Gtk_Sheet := Gtk_Sheet (Widget);
-      Justification : Gtk.Enums.Gtk_Justification;
    begin
-      Justification := Get_Justification (Gtk_IEntry (Get_Entry (Sheet)));
       declare
          Label : String := Format_Text
            (Sheet, Get_Text (Gtk_IEntry (Get_Entry (Sheet))));
@@ -804,7 +801,7 @@ package body Create_Sheet is
          Col   : Gint;
       begin
          Get_Active_Cell (Sheet, Row, Col);
-         Set_Cell (Sheet, Row, Col, Justification, Label);
+         Set_Cell (Sheet, Row, Col, Justify_Left, Label);
       end;
    end Parse_Numbers;
 
@@ -818,7 +815,7 @@ package body Create_Sheet is
       Color : Gdk_Color;
       Tmp   : Boolean;
    begin
-      Sheet_Unset_Flags (Sheet, Auto_Scroll);
+      Set_Autoscroll (Sheet, False);
       Set_Selection_Mode (Sheet, Selection_Single);
 
       R := (Row0 => 0, Rowi => 2,
@@ -911,7 +908,7 @@ package body Create_Sheet is
       Range_Set_Border_Color (Sheet, R2, Color);
       Range_Set_Border (Sheet, R2, Bottom_Border, 4, Line_Double_Dash);
 
-      Sheet_Set_Flags (Sheet, Auto_Resize);
+      Set_Autoresize (Sheet, True);
 
       --  Change the type of entries
       Change_Entry (Sheet, Gtk.Combo.Get_Type);
@@ -922,21 +919,18 @@ package body Create_Sheet is
    --------------------
 
    procedure Build_Example1 (Sheet : access Gtk_Sheet_Record'Class) is
-      Font_Name1 : constant String
-        := "-bitstream-charter-bold-r-normal--36-360-72-72-p-0-iso8859-1";
-      Font_Name2 : constant String
-        := "-bitstream-charter-bold-r-normal--28-280-72-72-p-0-iso8859-1";
-      Colormap : Gdk.Color.Gdk_Colormap := Gdk.Color.Get_System;
+      Font_Name1 : constant String := "Arial 36";
+      Font_Name2 : constant String := "Arial 28";
+      Colormap : Gdk.Color.Gdk_Colormap := Get_Default_Colormap;
       R : aliased Gtk_Sheet_Range_Record;
       R2 : Gtk_Sheet_Range := R'Unchecked_Access;
-      Font  : Gdk_Font;
       Color : Gdk_Color;
       Pixmap : Gdk_Pixmap;
       Bullet : array (0 .. 5) of Gtk_Pixmap;
       Mask   : Gdk_Bitmap;
       Show_Button : Gtk_Button;
    begin
-      for I in 0 .. Gint (Get_Columns_Count (Sheet)) loop
+      for I in 0 .. Gint (Get_Columns_Count (Sheet)) -1 loop
          Column_Button_Add_Label (Sheet, I, "A" & Gint'Image (I));
          Set_Column_Title (Sheet, I, "A" & Gint'Image (I));
       end loop;
@@ -948,8 +942,7 @@ package body Create_Sheet is
 
       R := (Row0 => 1, Rowi => 2, Col0 => 1, Coli => 3);
       Clip_Range (Sheet, R2);
-      Load (Font, Font_Name2);
-      Range_Set_Font (Sheet, R2, Font);
+      Range_Set_Font (Sheet, R2, From_String (Font_Name2));
       Color := Parse ("red");
       Alloc (Get_Colormap (Sheet), Color);
       Range_Set_Foreground (Sheet, R2, Color);
@@ -957,8 +950,7 @@ package body Create_Sheet is
       Set_Cell (Sheet, 1, 2, Justify_Center, "Welcome to");
 
       R.Row0 := 2;
-      Load (Font, Font_Name1);
-      Range_Set_Font (Sheet, R2, Font);
+      Range_Set_Font (Sheet, R2, From_String (Font_Name1));
       Color := Parse ("blue");
       Alloc (Get_Colormap (Sheet), Color);
       Range_Set_Foreground (Sheet, R2, Color);
@@ -1014,17 +1006,17 @@ package body Create_Sheet is
       for I in 0 .. 4 loop
          Gtk_New (Bullet (I), Pixmap, Mask);
          Show (Bullet (I));
-         Attach (Sheet, Bullet (I), 4 + Gint (I), 0, 0.5, 0.5);
+         Attach (Sheet, Bullet (I), 4 + Gint (I), 0);
       end loop;
 
       Gtk_New (Bullet (5), Pixmap, Mask);
       Show (Bullet (5));
-      Attach (Sheet, Bullet (5), 10, 0, 0.5, 0.5);
+      Attach (Sheet, Bullet (5), 10, 0);
 
       Gtk_New (Show_Button, "Show me a plot");
       Show (Show_Button);
       Set_Usize (Show_Button, 100, 60);
-      Attach (Sheet, Show_Button, 12, 2, 0.5, 0.5);
+      Attach (Sheet, Show_Button, 12, 2);
 
       Button_Cb.Connect (Show_Button, "clicked",
                          Button_Cb.To_Marshaller (Show_Child'Access));
@@ -1042,6 +1034,8 @@ package body Create_Sheet is
       Color    : Gdk_Color;
       Color_Name : String := To_String (Params, 2);
       Tmp_Gc   : Gdk_Gc;
+      Pix      : Gdk_Pixmap;
+      Mask     : Gdk_Bitmap;
    begin
       Cur_Page := Get_Current_Page (Notebook);
       Current  := Sheets (Cur_Page);
@@ -1054,7 +1048,8 @@ package body Create_Sheet is
       --  Update the button of the combo box
       Gdk_New (Tmp_Gc, Get_Window (Button));
       Set_Foreground (Tmp_Gc, Color);
-      Draw_Rectangle (Get_Pixmap (Bg_Pixmap), Tmp_Gc, True, 4, 20, 18, 4);
+      Get (Bg_Pixmap, Pix, Mask);
+      Draw_Rectangle (Pix, Tmp_Gc, True, 4, 20, 18, 4);
       Draw (Bg_Pixmap, Full_Area);
 
       Unref (Tmp_Gc);
@@ -1072,6 +1067,8 @@ package body Create_Sheet is
       Color    : Gdk_Color;
       Color_Name : String := To_String (Params, 2);
       Tmp_Gc   : Gdk_Gc;
+      Pix      : Gdk_Pixmap;
+      Mask     : Gdk_Bitmap;
    begin
       Cur_Page := Get_Current_Page (Notebook);
       Current  := Sheets (Cur_Page);
@@ -1084,7 +1081,8 @@ package body Create_Sheet is
       --  Update the button of the combo box
       Gdk_New (Tmp_Gc, Get_Window (Button));
       Set_Foreground (Tmp_Gc, Color);
-      Draw_Rectangle (Get_Pixmap (Fg_Pixmap), Tmp_Gc, True, 5, 20, 16, 4);
+      Get (Fg_Pixmap, Pix, Mask);
+      Draw_Rectangle (Pix, Tmp_Gc, True, 5, 20, 16, 4);
       Draw (Fg_Pixmap, Full_Area);
       Unref (Tmp_Gc);
    end Change_Fg;
@@ -1100,7 +1098,7 @@ package body Create_Sheet is
       Cur_Page := Get_Current_Page (Notebook);
       Current  := Sheets (Cur_Page);
       Range_Set_Font (Current, Get_Range (Current),
-                      Get_Font (Gtk_Font_Combo (Combo)));
+                      Get_Font_Description (Gtk_Font_Combo (Combo)));
    end New_Font;
 
    -------------------
@@ -1260,15 +1258,12 @@ package body Create_Sheet is
       Sheet_Entry   : Gtk_IEntry;
       Row           : Gint;
       Col           : Gint;
-      Justification : Gtk_Justification := Justify_Left;
    begin
       Cur_Page := Get_Current_Page (Notebook);
       Current  := Sheets (Cur_Page);
       Get_Active_Cell (Current, Row, Col);
       Sheet_Entry := Gtk_IEntry (Get_Entry (Current));
-      Justification := Get_Justification (Sheet_Entry);
-      Set_Cell (Current, Row, Col, Justification,
-                Get_Text (Sheet_Entry));
+      Set_Cell (Current, Row, Col, Justify_Left, Get_Text (Sheet_Entry));
    end Activate_Sheet_Entry;
 
    ---------
@@ -1287,17 +1282,14 @@ package body Create_Sheet is
       Label              : Gtk_Label;
       Pixmap             : Gdk_Pixmap;
       Tpixmap            : Gtk_Pixmap;
-      Colormap           : Gdk_Colormap := Gdk.Color.Get_System;
+      Colormap           : Gdk_Colormap := Get_Default_Colormap;
       Mask               : Gdk_Bitmap;
       Font_Combo         : Gtk_Font_Combo;
       Border_Combo       : Gtk_Border_Combo;
       Fg_Color_Combo     : Gtk_Color_Combo;
       Bg_Color_Combo     : Gtk_Color_Combo;
-      Tmp                : Gint;
 
    begin
-      Tmp := Gtk.Extra.PsFont.Init;
-
       Gtk.Frame.Set_Label (Frame, "Gtk_Sheet");
 
       Gtk_New_Vbox (Main_Vbox, Homogeneous => False, Spacing => 1);
@@ -1341,8 +1333,6 @@ package body Create_Sheet is
 
       Gtk_New (Font_Combo);
       Append_Widget (Toolbar, Font_Combo, "font", "font");
-      Set_Usize (Get_Italic_Button (Font_Combo), 32, 32);
-      Set_Usize (Get_Bold_Button (Font_Combo), 32, 32);
       Widget_Handler.Connect (Font_Combo, "changed",
                               Widget_Handler.To_Marshaller (New_Font'Access));
 

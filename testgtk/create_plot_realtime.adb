@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2001                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,7 @@
 -----------------------------------------------------------------------
 
 with Gdk.Color;             use Gdk.Color;
+with Gdk.GC;                use Gdk.GC;
 with Gdk.Rectangle;         use Gdk.Rectangle;
 with Glib;                  use Glib;
 with Gtk.Enums;             use Gtk.Enums;
@@ -41,6 +43,7 @@ with Gtk.Widget;            use Gtk.Widget;
 with Gtkada.Handlers;       use Gtkada.Handlers;
 with Unchecked_Deallocation;
 with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
+with Common;                use Common;
 
 package body Create_Plot_Realtime is
 
@@ -122,13 +125,12 @@ package body Create_Plot_Realtime is
       if X (Length) > Xmax then
          Set_Xrange (Data.Plot, Xmin + 5.0, Xmax + 5.0);
          Paint (Data.Canvas);
-         Refresh (Data.Canvas);
+         Queue_Draw (Data.Canvas);
 
       else
          --  Draw only the last point added
          Draw_Points (Data.Dataset, 1);
          Refresh (Data.Plot, Full_Area);
-         Refresh (Data.Canvas);
       end if;
       return True;
    end Update;
@@ -157,7 +159,7 @@ package body Create_Plot_Realtime is
       --  Create the canvas in which the plot will be drawn
       Gtk_New (Canvas, Gint (Get_Allocation_Width (Frame) - 10),
                Gint (Get_Allocation_Height (Frame) - 10), 1.0);
-      Plot_Canvas_Set_Flags (Canvas, Dnd_Flags);
+      Plot_Canvas_Unset_Flags (Canvas, Dnd_Flags);
       Add_With_Viewport (Scrollw1, Canvas);
 
       Widget_Callback.Connect
@@ -173,15 +175,10 @@ package body Create_Plot_Realtime is
       Color := Parse ("light yellow");
       Alloc (Get_Default_Colormap, Color);
       Set_Background (Active_Plot, Color);
+      Set_Default_Plot_Attributes (Active_Plot);
 
       Color := Parse ("white");
       Alloc (Get_Default_Colormap, Color);
-      Legends_Set_Attributes
-        (Active_Plot,
-         Ps_Font    => "",
-         Height     => 0,
-         Foreground => Null_Color,
-         Background => Color);
       Set_Legends_Border (Active_Plot, Border_Shadow, 3);
       Legends_Move (Active_Plot, 0.6, 0.1);
       Set_Range (Active_Plot, 0.0, 20.0, 0.0, 1.0);
@@ -190,6 +187,7 @@ package body Create_Plot_Realtime is
       Axis_Set_Ticks (Active_Plot, Axis_Y, 0.1, 1);
       Axis_Set_Visible (Active_Plot, Axis_Top, True);
       Axis_Set_Visible (Active_Plot, Axis_Right, True);
+      Grids_Set_Visible (Active_Plot, True, True, True, True);
       Axis_Hide_Title (Active_Plot, Axis_Top);
       Axis_Hide_Title (Active_Plot, Axis_Right);
       Axis_Set_Title (Active_Plot, Axis_Left, "Intensity");
@@ -204,7 +202,7 @@ package body Create_Plot_Realtime is
          X             => 0.45,
          Y             => 0.05,
          Ps_Font       => "Times-BoldItalic",
-         Height        => 20,
+         Height        => 10,
          Angle         => 0,
          Fg            => Null_Color,
          Bg            => Null_Color,
@@ -226,7 +224,8 @@ package body Create_Plot_Realtime is
                   Symbol_Diamond,
                   Symbol_Opaque,
                   10, 2.0, Color, Color);
-      Set_Line_Attributes (Dataset, Line_Solid, 1.0, Color);
+      Set_Line_Attributes
+        (Dataset, Line_Solid, Cap_Not_Last, Join_Miter, 1.0, Color);
 
       --  Paint everything
       Paint (Canvas);
@@ -235,7 +234,7 @@ package body Create_Plot_Realtime is
       --  Register the periodic timer
 
       Timer := Plot_Timeout.Add
-        (1000,
+        (300,
          Update'Access,
          new Timeout_Data' (Canvas  => Canvas,
                             Plot    => Active_Plot,
