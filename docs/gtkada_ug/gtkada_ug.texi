@@ -643,124 +643,30 @@ for an example on how to do that.
 @c ----------------------------------------------------------------------
 
 @noindent
-A signal is @samp{emited} by a widget when an action is performed by the
-user on this widget. If the widget has one or more procedures attached
-to this signal, they are then executed.
-Such procedure will be called @code{callback} in this document.
+In GtkAda, the interaction between the interface and the core
+application is done via signals. Most user actions on the graphical
+application trigger some signals to be @samp{emitted}. 
 
-To associate a callback to a widget, you have to connect this callback to
-the specific widget, specifying which signal will be handled. This is
-done with the @code{Connect} function.
+A signal is a kind of message that an object wants to broadcast. It is
+identified by its name, and each one is associated to certain event
+happening during its life. For instance, when the user clicks on a
+button, a "clicked" signal is emitted by this button.
 
-Depending on their type, the widgets can emit zero (e.g @code{Gtk_Label}),
-one or several different signals.
+It is possible for the application to react to such events by
+@samp{connecting} to a signal a special kind of procedure called
+@samp{handler} or @samp{callback}.  The handler will then be called back
+when this signal is emitted, allowing the application to do any form of
+processing. More than one handler can be connected to the same signal on
+the same object, in wich case each handler will be invoked in the order
+of connection.
 
-A signal is identified by a string, e.g
-@itemize @bullet
-@item "clicked"
-@item "destroy"
-@item "delete_event"
-@item "configure_event"
-@item "expose_event"
-@end itemize
-
-For a specific widget, you can connect several callbacks on the same signal.
-They will be executed in the order in which they have been connected.
-
-One single callback can be connected several times on the same widget and even
-on different widgets.
-
-The choice made by GtkAda to use generics may look complicated but is
-actually simple to use and more important, ensures type checking.
-
-For example, you can connect to a @code{Gtk_Button} an action to
-execute each time the button is clicked (signal @code{"clicked"}).
-Here is how to do it:
-@example
-@c @group
-@c @cartouche
-@b{declare}
-   Button : Gtk.Button.Gtk_Button;
-   Cb_Id  : Glib.Guint;
-
-@b{begin}
-   Gtk.Button.Gtk_New (Button => Button, Label => "Load");
-   Cb_Id := Callbacks.Button_Callback.Connect (
-      Obj  => Button,                     --  the emitting widget
-      Name => "clicked",                  --  the generated signal
-      Func => Callbacks.Load'Access);     --  the signal handler
-@b{end};
-@c @end cartouche
-@c @end group
-@end example
-
-The package @code{Button_Callback} is an instanciation of the
-package @code{Gtk.Signal.Void_Callback}
-with the type @code{Gtk.Button.Gtk_Button}.
-
-This package defines an access type to a procedure
-@code{Button_Callback.Callback} and the corresponding connect function
-@code{Button_Callback.Connect}.
-
-The callbacks provided to this function have to respect the
-@code{Button_Callback.Callback} type. Below is an example of how to declare
-this package.
-
-@example
-@c @group
-@c @cartouche
-@b{with} Gtk.Signal;
-@b{with} Gtk.Button;
-
-@b{package} Callbacks @b{is}
-   --  Define callbacks that apply on the widget that detected the
-   --  corresponding signal.
-   --  These callbacks have only one parameter: the widget itself
-
-   @b{package} Button_Callback @b{is} @b{new} Gtk.Signal.Void_Callback
-     (Widget_Type => Gtk.Button.Gtk_Button_Record);
-
-   --  Which is equivalent to:
-   --     package Button_Callback is
-   --
-   --        type Callback is access procedure
-   --           (Widget : access Gtk.Button.Gtk_Button_Record);
-   --        --  Definition of the Callback type
-   --
-   --        function Connect
-   --          (Obj    : access Gtk.Button.Gtk_Button_Record'Class;
-   --           Name   : in String;
-   --           Func   : in Callback;
-   --           After  : in Boolean := False)
-   --           return Guint;
-   --         --  Connect a callback to a button
-   --
-   --     end Button_Callback;
-
-   @b{procedure} Load (Widget : @b{access} Gtk.Button.Gtk_Button_Record);
-   --  The callback procedure
-
-@b{end} Callbacks;
-@c @end cartouche
-@c @end group
-@end example
-
-@code{Callbacks.Load} is a procedure that can be used to handle a signal
-since its profile conforms with @code{Button_Callback.Callback}.
-
-Note that @code{Callbacks} must be declared at the library level
-to ensure its lifetime and the presence of its variables during the execution
-of the application. This is needed so that GtkAda can take care of freeing
-memory.
-
-Although GtkAda tries to check whether you gave enough arguments to your
-callback handlers, it is of course easier if you know what gtk+ expects!
-The easiest way to find out is to look at the C header files. Each
-widget is described in its own C file, and has two C structures
-associated with it. One of them is the ``class'' structure, and contains a
-serie of pointers to functions. Each of these functions has the same
-name as the signal name, and the arguments are the one that are expected
-in the handlers.
+Depending on their type, the widgets can emit zero (e.g
+@code{Gtk_Label}), one or several different signals. The easiest way to
+find out what signals can be emitted by a widget is to look at the C
+header files.  Each widget is described in its own C file, and has two C
+structures associated with it. One of them is the ``class'' structure,
+and contains a series of pointers to functions. Each of these functions
+has the same name as the signal name.
 
 For instance, consider the following extract from gtkbutton.h:
 @example
@@ -778,22 +684,100 @@ For instance, consider the following extract from gtkbutton.h:
 
 This means that the Gtk_Button widget redefines five new signals, called
 respectively @code{"pressed"}, @code{"release"}, ...
-Each of them expects a handler looking like:
 
+The profile of the handler can also be deducted from those pointers :
+The handler has the same arguments, plus an optional User_Data parameter
+that can be used to pass any kind of data to the handler.  When the
+User_Data parameter is used, the value of this data is specified when
+connecting the handler to the signal. It is then given back to the
+handler when the signal is raised.
+
+Therefore, the profile of a handler should look like:
 @example
    procedure Pressed_Handler (Button : access Gtk_Button_Record;
-                              Data   : ...);
+                              User_Data   : ...);
 @end example
 
-The type of Data is given by one of the generic parameters to the
-packages in Gtk.Signal.
+It is also legal to use a procedure that "drops" some of the last
+arguments. It is very common, for example, to drop the User_Data
+parameter. The profile would then look like:
+@example
+   procedure Pressed_Handler (Button : access Gtk_Button_Record);
+@end example
+Any number of arguments can be dropped, as long as those arguments are
+the last ones in the list. For instance, in the handler for the
+"pressed" signal, it is legal to drop the User_Data parameter, or both
+the Button and User_Data parameter. However, it is not possible to drop
+the Button parameter while keeping the User_Data.
 
-For more information on how signals work, we recommand having a look at
-Havoc Pennington's book [1].
+Beware that adding new arguments is not possible! When connecting a
+handler, GtkAda will verify that your handler does not have more
+arguments than expected. *****FIXME: Explain what happens in such a
+case*****. 
+
+All the signal-handling work is performed by using the services provided
+by the Gtk.Handlers package. This package is completely self-documented,
+so please check the documentation on this package either in the GtkAda
+Reference Manual, or in the specifications themselves.
+
+Here is a commented example of how to use it; the complete example can
+be found in create_file_selection.adb (inside the testgtk/
+directory). Let's imagine that an application opens a file selector to
+allow the user to select a file.  GtkAda provides a high-level widget
+called Gtk_File_Selection which can be used in this case:
+
+@example
+   declare
+      Window : Gtk_File_Selection;
+   begin
+      Gtk.File_Selection.Gtk_New (Window, Title => "Select a file");
+   end;
+@end example
+
+When the "OK" button is pressed, the application needs to retrieve the
+file selected, and then close the dialog. This can be achieved by the
+following handler:
+
+@example
+   procedure OK (Files : access Gtk_File_Selection_Record'Class) is
+   begin
+      Ada.Text_IO.Put_Line ("Selected " & Get_Filename (Files));
+      --  Prints the name of the selected file.
+      Destroy (Files);
+      --  Destroys the file selector dialog
+   end Ok;
+@end example
+
+To connect this handler to the "OK" button, Gtk.Handlers.Callbacks needs
+to be instantiated with the
+Gtk_File_Selection_Record type:
+@example
+   package Files_Cb is new 
+      Handlers.Callback (Gtk_File_Selection_Record);
+@end example
+
+This gives access to the services needed to connect the
+handler. Connecting the handler is achieved by doing the following:
+@example
+   Files_Cb.Object_Connect
+     (Get_Ok_Button (Window),              --  The object to which we
+                                           --  connect the handler
+ 
+      "clicked",                           --  The name of the signal
+
+      Files_Cb.To_Marshaller (Ok'Access),  --  The signal handler
+
+      Slot_Object => Window);
+@end example
+
+For more in-depth information on how signals work, reading Havoc
+Pennington's book[1] is recommended.
 
 
+@c ----------------------------------------------------------------------
 @node Starting an application with GtkAda
 @chapter Starting an application with GtkAda
+@c ----------------------------------------------------------------------
 
 You need to perform some initializations to start a GtkAda application:
 @example
