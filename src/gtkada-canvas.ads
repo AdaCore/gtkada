@@ -94,12 +94,9 @@ package Gtkada.Canvas is
    -- Customization --
    -------------------
 
-   Default_Annotation_Font   : constant String := "Helvetica";
-   --  Font used when displaying link annotation.
-   --  This is the name of a postscript font, as defined in Gtk.Extra.PsFont.
-
-   Default_Annotation_Height : constant := 8;
-   --  Default Height use for the annotation font.
+   Default_Annotation_Font   : constant String := "Helvetica 8";
+   --  Font used when displaying link annotation. See Pango.Font for the
+   --  format.
 
    Default_Grid_Size         : constant := 15;
    --  Number of pixels between two dots on the grid.
@@ -161,7 +158,6 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Grid_Size         : Glib.Guint := Default_Grid_Size;
       Annotation_Font   : String := Default_Annotation_Font;
-      Annotation_Height : Glib.Gint := Default_Annotation_Height;
       Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
       Arrow_Angle       : Glib.Gint := Default_Arrow_Angle;
       Arrow_Length      : Glib.Gint := Default_Arrow_Length;

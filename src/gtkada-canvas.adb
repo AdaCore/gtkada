@@ -512,7 +512,6 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Grid_Size         : Guint := Default_Grid_Size;
       Annotation_Font   : String := Default_Annotation_Font;
-      Annotation_Height : Gint := Default_Annotation_Height;
       Arc_Link_Offset   : Gint := Default_Arc_Link_Offset;
       Arrow_Angle       : Gint := Default_Arrow_Angle;
       Arrow_Length      : Gint := Default_Arrow_Length;
@@ -530,9 +529,7 @@ package body Gtkada.Canvas is
          Unref (Canvas.Annotation_Font);
       end if;
 
-      Descr := To_Font_Description
-        (Family_Name => Annotation_Font,
-         Size        => Annotation_Height);
+      Descr := From_String (Annotation_Font);
       Canvas.Annotation_Font := From_Description (Descr);
       Free (Descr);
 
