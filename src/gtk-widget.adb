@@ -715,12 +715,14 @@ package body Gtk.Widget is
       S, S2, S3  : String_Ptr;
       Child      : Node_Ptr := Find_Tag (N.Child, "child");
       Q          : Node_Ptr;
+      Func       : Callback;
+      Data       : System.Address;
 
       procedure Signal_Connect
         (Object        : System.Address;
          Name          : String;
-         Func          : Void_Signal;
-         Func_Data     : System.Address := System.Null_Address);
+         Func          : Callback;
+         Func_Data     : System.Address);
       pragma Import (C, Signal_Connect, "gtk_signal_connect");
 
    begin
@@ -781,10 +783,11 @@ package body Gtk.Widget is
       Q := Find_Tag (N.Child, "signal");
 
       while Q /= null loop
+         Get_Signal (Get_Field (Q, "handler").all, Func, Data);
          Signal_Connect
            (Gdk.Get_Object (Widget),
             Get_Field (Q, "name").all & ASCII.Nul,
-            Get_Signal (Get_Field (Q, "handler").all));
+            Func, Data);
          Q := Find_Tag (Q.Next, "signal");
       end loop;
    end Generate;
