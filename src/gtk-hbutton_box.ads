@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,8 +27,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  A Gtk_Hbutton_Box is a specific Gtk_Button_Box that organizes its
+--  children horizontally.
+--  The beginning of the box (when you add children with Gtk.Box.Pack_Start)
+--  is on the left of the box. Its end (for Gtk.Box.Pack_End) is on the right.
+--
+--  </description>
+--  <c_version>1.2.6</c_version>
+
 with Gtk.Button_Box;
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;
 with Gtk.Object;
 
 package Gtk.Hbutton_Box is
@@ -37,24 +47,60 @@ package Gtk.Hbutton_Box is
      with private;
    type Gtk_Hbutton_Box is access all Gtk_Hbutton_Box_Record'Class;
 
-   function Get_Layout_Default return Gtk_Button_Box_Style;
-   function Get_Spacing_Default return Gint;
    procedure Gtk_New (Widget : out Gtk_Hbutton_Box);
-   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class);
-   procedure Set_Layout_Default (Layout : in Gtk_Button_Box_Style);
-   procedure Set_Spacing_Default (Spacing : in Gint);
+   --  Creates a new horizontal button box.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_HButton_Box internally.
+
+   procedure Set_Spacing_Default (Spacing : in Gint);
+   --  Sets the default spacing (space between two adjacent children of the
+   --  box) for all the Hbutton_Boxes in your application. This can be
+   --  overriden for a specific box by calling Gtk.Button_Box.Set_Spacing.
+
+   function Get_Spacing_Default return Gint;
+   --  Returns the default spacing to use for all Hbutton_Boxes in your
+   --  application that don't have a specific value.
+
+   procedure Set_Layout_Default (Layout : in Gtk.Enums.Gtk_Button_Box_Style);
+   --  Sets the the default layout to use for all the hbutton_boxes in your
+   --  application that don't have a specific value set by
+   --  Gtk.Button_Box.Set_Layout. The default value is Buttonbox_Edge.
+
+   function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
+   --  Returns the default layout to use for all the hbutton_boxes in your
+   --  application.
+
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
 
    procedure Generate (N    : in Node_Ptr;
                        File : in File_Type);
+   --  Gate internal function
 
-   procedure Generate
-     (Hbutton_Box : in out Object.Gtk_Object; N : in Node_Ptr);
+   procedure Generate (Hbutton_Box : in out Gtk.Object.Gtk_Object;
+                       N           : in Node_Ptr);
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
    type Gtk_Hbutton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
      with null record;
-
+   pragma Import (C, Get_Type, "gtk_hbutton_box_get_type");
+   pragma Import (C, Get_Spacing_Default,
+                  "gtk_hbutton_box_get_spacing_default");
+   pragma Import (C, Set_Spacing_Default,
+                  "gtk_hbutton_box_set_spacing_default");
 end Gtk.Hbutton_Box;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,9 +28,9 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
+with Gdk;       use Gdk;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Util; use Gtk.Util;
+with Gtk.Util;  use Gtk.Util;
 
 package body Gtk.Hbutton_Box is
 
@@ -45,18 +45,6 @@ package body Gtk.Hbutton_Box is
    begin
       return Gtk_Button_Box_Style'Val (Internal);
    end Get_Layout_Default;
-
-   -------------------------
-   -- Get_Spacing_Default --
-   -------------------------
-
-   function Get_Spacing_Default return Gint
-   is
-      function Internal return Gint;
-      pragma Import (C, Internal, "gtk_hbutton_box_get_spacing_default");
-   begin
-      return Internal;
-   end Get_Spacing_Default;
 
    -------------
    -- Gtk_New --
@@ -93,18 +81,6 @@ package body Gtk.Hbutton_Box is
    begin
       Internal (Gtk_Button_Box_Style'Pos (Layout));
    end Set_Layout_Default;
-
-   -------------------------
-   -- Set_Spacing_Default --
-   -------------------------
-
-   procedure Set_Spacing_Default (Spacing : in Gint)
-   is
-      procedure Internal (Spacing : in Gint);
-      pragma Import (C, Internal, "gtk_hbutton_box_set_spacing_default");
-   begin
-      Internal (Spacing);
-   end Set_Spacing_Default;
 
    --------------
    -- Generate --

@@ -29,8 +29,8 @@
 
 --  <description>
 --
---  A Gtk_Radio_Button is a simple button that can have two states, just like
---  a Gtk_Toggle_Button.
+--  A Gtk_Radio_Button is a simple button that has two states, like a
+--  Gtk_Toggle_Button.
 --  However, Gtk_Radio_Buttons can be grouped together to get a special
 --  behavior: only one button in the group can be active at any given time.
 --  Thus, when the user selects one of the buttons from the group, the button

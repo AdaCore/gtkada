@@ -144,6 +144,5 @@ package Gtk.Button is
 
 private
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with null record;
-
    pragma Import (C, Get_Type, "gtk_button_get_type");
 end Gtk.Button;

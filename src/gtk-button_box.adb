@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -51,18 +51,6 @@ package body Gtk.Button_Box is
       Internal (Get_Object (Button_Box), Ipad_X, Ipad_Y);
    end Get_Child_Ipadding;
 
-   --------------------------------
-   -- Get_Child_Ipadding_Default --
-   --------------------------------
-
-   procedure Get_Child_Ipadding_Default (Ipad_X, Ipad_Y : out Gint) is
-      procedure Internal (Ipad_X : out Gint; Ipad_Y : out Gint);
-      pragma Import (C, Internal, "gtk_button_box_get_child_ipadding_default");
-
-   begin
-      Internal (Ipad_X, Ipad_Y);
-   end Get_Child_Ipadding_Default;
-
    --------------------
    -- Get_Child_Size --
    --------------------
@@ -81,18 +69,6 @@ package body Gtk.Button_Box is
    begin
       Internal (Get_Object (Button_Box), Min_Width, Min_Height);
    end Get_Child_Size;
-
-   ----------------------------
-   -- Get_Child_Size_Default --
-   ----------------------------
-
-   procedure Get_Child_Size_Default (Min_Width, Min_Height  : out Gint) is
-      procedure Internal (Min_Width  : out Gint; Min_Height : out Gint);
-      pragma Import (C, Internal, "gtk_button_box_get_child_size_default");
-
-   begin
-      Internal (Min_Width, Min_Height);
-   end Get_Child_Size_Default;
 
    ----------------
    -- Get_Layout --
@@ -142,20 +118,6 @@ package body Gtk.Button_Box is
       Internal (Get_Object (Button_Box), Ipad_X, Ipad_Y);
    end Set_Child_Ipadding;
 
-   --------------------------------
-   -- Set_Child_Ipadding_Default --
-   --------------------------------
-
-   procedure Set_Child_Ipadding_Default (Ipad_X : in Gint; Ipad_Y : in Gint) is
-      procedure Internal
-        (Ipad_X : in Gint;
-         Ipad_Y : in Gint);
-      pragma Import (C, Internal, "gtk_button_box_set_child_ipadding_default");
-
-   begin
-      Internal (Ipad_X, Ipad_Y);
-   end Set_Child_Ipadding_Default;
-
    --------------------
    -- Set_Child_Size --
    --------------------
@@ -174,18 +136,6 @@ package body Gtk.Button_Box is
    begin
       Internal (Get_Object (Button_Box), Min_Width, Min_Height);
    end Set_Child_Size;
-
-   ----------------------------
-   -- Set_Child_Size_Default --
-   ----------------------------
-
-   procedure Set_Child_Size_Default (Min_Width, Min_Height  : in Gint) is
-      procedure Internal (Min_Width  : in Gint; Min_Height : in Gint);
-      pragma Import (C, Internal, "gtk_button_box_set_child_size_default");
-
-   begin
-      Internal (Min_Width, Min_Height);
-   end Set_Child_Size_Default;
 
    ----------------
    -- Set_Layout --

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,12 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gdk;  use Gdk;
+with Glib;                use Glib;
+with Gdk;                 use Gdk;
 with System;
-
-with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
-with Ada.Text_IO; use Ada.Text_IO;
+with Glib.Glade;          use Glib.Glade, Glib.Glade.Glib_XML;
+with Ada.Text_IO;         use Ada.Text_IO;
 pragma Warnings (Off, Glib.Glade);
 pragma Warnings (Off, Glib_XML);
 pragma Warnings (Off, Ada.Text_IO);
@@ -42,13 +41,37 @@ pragma Warnings (Off, Ada.Text_IO);
 package Gtk is
 
    function Major_Version return Guint;
+   --  Returns the major version number for gtk+ (this is not the same
+   --  as for GtkAda). If the version is 1.2.6, returns 1.
+
    function Minor_Version return Guint;
+   --  Returns the minor version number for gtk+ (this is not the same
+   --  as for GtkAda). If the version is 1.2.6, returns 2.
+
    function Micro_Version return Guint;
+   --  Returns the micro version number for gtk+ (this is not the same
+   --  as for GtkAda). If the version is 1.2.6, returns 6.
 
    type Gtk_Type is new Guint;
    Gtk_Type_None : constant Gtk_Type := 1;
+   --  This type describes a type internally in gtk+. You shouldn't have to
+   --  use it in your own applications, however it might be useful sometimes.
+   --  Every widget type is associated with a specific value, created
+   --  dynamically at run time the first time you instantiate a widget of that
+   --  type (thus if you have never used a Gtk_File_Selection, it won't have
+   --  any Gtk_Type associated with it).
+   --  You can get the exact type value for each type by using the functions
+   --  Get_Type provided in all the packages in GtkAda.
+   --  You can get the specific value for an existing widget by using the
+   --  function Gtk.Object.Get_Type.
+
    function Type_Name (Type_Num : in Gtk_Type) return String;
+   --  Returns the type name corresponding to a Gtk_Type.
+   --  This might be useful in debug messages.
+
    function Type_From_Name (Name : in String) return Gtk_Type;
+   --  Converts a string to the matching type. NAME should be the C widget's
+   --  name, such as GtkScrollbar or GtkButton, rather than the Ada name.
 
 private
 
