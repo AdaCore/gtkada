@@ -21,6 +21,7 @@
 
 with Gdk; use Gdk;
 with Gdk.Color;
+with Gdk.GC;
 with Gdk.Point;
 with Gdk.Window;
 with Gtk.Enums;
@@ -58,10 +59,12 @@ package Gtk.Style is
 
    function Get_Black (Style : in Gtk_Style) return Gdk.Color.Gdk_Color;
 
-   function Get_Style (Widget : in Gtk.Widget.Gtk_Widget'Class)
-                       return Gtk.Style.Gtk_Style;
    function Get_White (Style : in Gtk_Style) return Gdk.Color.Gdk_Color;
 
+   function Get_Style (Widget : in Gtk.Widget.Gtk_Widget'Class)
+                       return Gtk.Style.Gtk_Style;
+
+   function Get_Black_GC (Style : in Gtk_Style'Class) return Gdk.GC.Gdk_GC;
 
    procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
