@@ -255,12 +255,6 @@ package body Create_Scroll_Test is
                                    Func => Adjustment_Change'Access,
                                    Func_Data => Drawing_Area);
 
-      Gtk.Button.Gtk_New (Button, Label => "Quit");
-      Box.Pack_Start (In_Box => Vbox, Child => Button, Expand => False, Fill => False);
-      Id := Widget_Cb.Connect (Button, "clicked",
-                               Gtk.Widget.Destroy'Access,
-                               Frame);
-
       Show_All (Frame);
    end Run;
 
