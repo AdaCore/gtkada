@@ -60,6 +60,8 @@ package Gdk.Types is
    --  This type represents a property of the X-server, that can be
    --  manipulated through functions in Gdk.Property. They have an associated
    --  name, that can be printed, as well as a value whose type may vary.
+   --  See the program xlsatoms on any X-Window machine to list all the atoms
+   --  known by the Xserver.
 
    type Gdk_Axis_Use is
      (Axis_Ignore,
