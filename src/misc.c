@@ -261,6 +261,11 @@ ada_initialize_class_record (GtkObject*  object,
     }
 }
 
+void
+ada_widget_set_realize (GtkObject *widget, void (* realize) (GtkWidget *))
+{
+  ((GtkWidgetClass *)(widget->klass))->realize = realize;
+}
 /*********************************************************************
  **  Gdk.RGB functions
  *********************************************************************/
@@ -2162,6 +2167,11 @@ ada_combo_get_list (GtkCombo* widget)
  ** Functions for Widget
  ********************************************/
 
+gint
+ada_widget_get_state (GtkWidget *widget) {
+  return widget->state;
+}
+
 GtkStyle*
 ada_widget_get_style (GtkWidget* widget)
 {
@@ -2172,6 +2182,12 @@ GdkWindow*
 ada_widget_get_window (GtkWidget* widget)
 {
   return widget->window;
+}
+
+void
+ada_widget_set_window (GtkWidget* widget, GdkWindow *window)
+{
+  widget->window = window;
 }
 
 GtkWidget*
