@@ -1,6 +1,4 @@
 pragma Warnings (Off);
-with Gtk.Dial;
-with Gtk.Clock;
 with Gnome.About;
 with Gnome.App;
 with Gnome.App_Bar;
@@ -27,7 +25,6 @@ with Gnome.MDI_Child;
 with Gnome.MDI_Session;
 with Gnome.Pixmap;
 with Gnome.Pixmap_Entry;
-with Gnome.Proc_Bar;
 with Gnome.Property_Box;
 with Gnome.Stock;
 with Gnome.Scores;
