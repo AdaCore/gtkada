@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -101,19 +101,21 @@ package body Gtk.Aspect_Frame is
       Obey_Child   : in Boolean)
    is
       function Internal
-        (Label      : in String;
+        (Label      : in System.Address;
          Xalign     : in Gfloat;
          Yalign     : in Gfloat;
          Ratio      : in Gfloat;
          Obey_Child : in Gint)
          return System.Address;
       pragma Import (C, Internal, "gtk_aspect_frame_new");
-
+      S : aliased constant String := Label & ASCII.NUL;
+      Sa : System.Address := System.Null_Address;
    begin
-      Set_Object
-        (Aspect_Frame,
-         Internal (Label & Ascii.NUL, Xalign, Yalign, Ratio,
-         Boolean'Pos (Obey_Child)));
+      if Label /= "" then
+         Sa := S'Address;
+      end if;
+      Set_Object (Aspect_Frame, Internal (Sa, Xalign, Yalign, Ratio,
+                                          Boolean'Pos (Obey_Child)));
       Initialize_User_Data (Aspect_Frame);
    end Initialize;
 
