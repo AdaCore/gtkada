@@ -68,7 +68,9 @@ package Gtk.Cell_Renderer_Text is
    --
    --    Called when the text has been edited interactively . Note that you
    --    also need to set the attribute "editable" for users to be able to
-   --    interactively edit the cell.
+   --    interactively edit the cell. If you want to take into account the
+   --    change, you need to change the value in the model appropriately, for
+   --    instance through a call to Set_Value
    --  </signals>
 
    ----------------
