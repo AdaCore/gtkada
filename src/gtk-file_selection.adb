@@ -11,7 +11,7 @@ package body Gtk.File_Selection is
    function Get_Filename (File_Selection : in Gtk_File_Selection'Class)
                           return String is
       function Internal (File_Selection : in System.Address)
-                         return C.Chars_Ptr;
+                         return C.chars_ptr;
       pragma Import (C, Internal, "gtk_file_selection_get_filename");
    begin
       return C.Value (Internal (Get_Object (File_Selection)));
