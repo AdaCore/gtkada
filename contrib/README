@@ -5,10 +5,13 @@ Contents
 ========
 
 gtk-win32.diff: this is the source patch used to build Gtk+ 1.3.0 under
-Windows NT.
+Windows.
 
 glade-0.5.9.win32.diff: this is the source patch used to build Glade 0.5.9
-under Windows NT.
+under Windows.
+
+gtk+-2.0.3-win32.diff: this is a patch against Gtk+ 2.0.3 sources that fixes
+Windows specific problems.
 
 To build Glade under NT:
 - extract glade-0.5.9.tar.gz
