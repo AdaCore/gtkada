@@ -172,14 +172,24 @@ package body Gtk is
    -- Type_Name --
    ---------------
 
-   function Type_Name (Type_Num : in Gtk_Type) return String
-   is
+   function Type_Name (Type_Num : in Gtk_Type) return String is
       function Internal (Type_Num : in Gtk_Type)
                          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_type_name");
    begin
       return Interfaces.C.Strings.Value (Internal (Type_Num));
    end Type_Name;
+
+   --------------------
+   -- Type_From_Name --
+   --------------------
+
+   function Type_From_Name (Name : in String) return Gtk_Type is
+      function Internal (Name : String) return Gtk_Type;
+      pragma Import (C, Internal, "gtk_type_from_name");
+   begin
+      return Internal (Name & ASCII.Nul);
+   end Type_From_Name;
 
 begin
    Type_Conversion_Function := Simple_Conversion'Access;

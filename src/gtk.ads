@@ -45,9 +45,10 @@ package Gtk is
    function Minor_Version return Guint;
    function Micro_Version return Guint;
 
-   type Gtk_Type is new Gint;
+   type Gtk_Type is new Guint;
    Gtk_Type_None : constant Gtk_Type := 1;
    function Type_Name (Type_Num : in Gtk_Type) return String;
+   function Type_From_Name (Name : in String) return Gtk_Type;
 
 private
 
