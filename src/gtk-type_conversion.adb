@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---   Copyright (C) 1998-1999 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2001 ACT-Europe                    --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -44,7 +44,6 @@ with Gtk.Combo;
 with Gtk.Container;
 with Gtk.Ctree;
 with Gtk.Curve;
-with Gtk.Data;
 with Gtk.Dialog;
 with Gtk.Drawing_Area;
 with Gtk.Editable;
@@ -182,9 +181,7 @@ package body Gtk.Type_Conversion is
                return new Gtk.Curve.Gtk_Curve_Record;
             end if;
          when 'D' =>
-            if Type_Name = "GtkData" then
-               return new Gtk.Data.Gtk_Data_Record;
-            elsif Type_Name = "GtkDialog" then
+            if Type_Name = "GtkDialog" then
                return new Gtk.Dialog.Gtk_Dialog_Record;
             elsif Type_Name = "GtkDrawingArea" then
                return new Gtk.Drawing_Area.Gtk_Drawing_Area_Record;
