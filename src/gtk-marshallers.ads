@@ -148,9 +148,22 @@ package Gtk.Marshallers is
                                           Param  : Base_Type)
                                          return Return_Type;
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object : access Widget_Type'Class;
-                                 Name   : in String;
-                                 Param  : Base_Type);
+
+         function Emit_By_Name (Object : access Widget_Type'Class;
+                                Name   : in String;
+                                Param  : Base_Type)
+                               return Return_Type;
+         --  The function above should be used when BASE_TYPE can be passed
+         --  as is to C.
+
+         generic
+            with function Conversion (Param : Base_Type) return System.Address;
+         function Emit_By_Name_Generic (Object : access Widget_Type'Class;
+                                        Name   : in String;
+                                        Param  : Base_Type)
+                                       return Return_Type;
+         --  Provide an explicit conversion function for PARAM.
+
       private
          function Call (Widget  : access Widget_Type'Class;
                         Params  : Gtk.Arguments.Gtk_Args;
@@ -167,9 +180,10 @@ package Gtk.Marshallers is
                                           Param  : access Base_Type'Class)
                                          return Return_Type;
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object : access Widget_Type'Class;
-                                 Name   : in String;
-                                 Param  : access Base_Type'Class);
+         function Emit_By_Name (Object : access Widget_Type'Class;
+                                Name   : in String;
+                                Param  : access Base_Type'Class)
+                               return Return_Type;
       private
          function Call (Widget  : access Widget_Type'Class;
                         Params  : Gtk.Arguments.Gtk_Args;
@@ -182,8 +196,9 @@ package Gtk.Marshallers is
          type Handler is access function (Widget : access Widget_Type'Class)
                                          return Return_Type;
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object : access Widget_Type'Class;
-                                 Name   : in String);
+         function Emit_By_Name (Object : access Widget_Type'Class;
+                                Name   : in String)
+                               return Return_Type;
       private
          function Call (Widget  : access Widget_Type'Class;
                         Params  : Gtk.Arguments.Gtk_Args;
@@ -226,9 +241,21 @@ package Gtk.Marshallers is
                                           User_Data : User_Type)
                                          return Return_Type;
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object    : access Widget_Type'Class;
-                                 Name      : in String;
-                                 Param     : Base_Type);
+
+         function Emit_By_Name (Object    : access Widget_Type'Class;
+                                Name      : in String;
+                                Param     : Base_Type)
+                               return Return_Type;
+         --  The function above should be used when BASE_TYPE can be passed
+         --  as is to C.
+
+         generic
+            with function Conversion (Param : Base_Type) return System.Address;
+         function Emit_By_Name_Generic (Object : access Widget_Type'Class;
+                                        Name   : in String;
+                                        Param  : Base_Type)
+                                       return Return_Type;
+         --  Provide an explicit conversion function for PARAM.
       private
          function Call (Widget    : access Widget_Type'Class;
                         Params    : Gtk.Arguments.Gtk_Args;
@@ -247,9 +274,10 @@ package Gtk.Marshallers is
                                           User_Data : User_Type)
                                          return Return_Type;
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object    : access Widget_Type'Class;
-                                 Name      : in String;
-                                 Param     : access Base_Type'Class);
+         function Emit_By_Name (Object    : access Widget_Type'Class;
+                                Name      : in String;
+                                Param     : access Base_Type'Class)
+                               return Return_Type;
       private
          function Call (Widget    : access Widget_Type'Class;
                         Params    : Gtk.Arguments.Gtk_Args;
@@ -264,8 +292,9 @@ package Gtk.Marshallers is
                                           User_Data : User_Type)
                                          return Return_Type;
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object    : access Widget_Type'Class;
-                                 Name      : in String);
+         function Emit_By_Name (Object    : access Widget_Type'Class;
+                                Name      : in String)
+                               return Return_Type;
       private
          function Call (Widget    : access Widget_Type'Class;
                         Params    : Gtk.Arguments.Gtk_Args;
@@ -304,9 +333,19 @@ package Gtk.Marshallers is
          type Handler is access procedure (Widget : access Widget_Type'Class;
                                            Param  : Base_Type);
          function To_Marshaller (Cb : Handler) return Marshaller;
+
          procedure Emit_By_Name (Object : access Widget_Type'Class;
                                  Name   : in String;
                                  Param  : Base_Type);
+         --  The function above should be used when BASE_TYPE can be passed
+         --  as is to C.
+
+         generic
+            with function Conversion (Param : Base_Type) return System.Address;
+         procedure Emit_By_Name_Generic (Object : access Widget_Type'Class;
+                                         Name   : in String;
+                                         Param  : Base_Type);
+         --  Provide an explicit conversion function for PARAM.
       private
          procedure Call (Widget  : access Widget_Type'Class;
                          Params  : Gtk.Arguments.Gtk_Args;
@@ -375,9 +414,19 @@ package Gtk.Marshallers is
                                            Param  : Base_Type;
                                            User_Data : User_Type);
          function To_Marshaller (Cb : Handler) return Marshaller;
+
          procedure Emit_By_Name (Object    : access Widget_Type'Class;
                                  Name      : in String;
                                  Param     : Base_Type);
+         --  The function above should be used when BASE_TYPE can be passed
+         --  as is to C.
+
+         generic
+            with function Conversion (Param : Base_Type) return System.Address;
+         procedure Emit_By_Name_Generic (Object : access Widget_Type'Class;
+                                         Name   : in String;
+                                         Param  : Base_Type);
+         --  Provide an explicit conversion function for PARAM.
       private
          procedure Call (Widget    : access Widget_Type'Class;
                          Params    : Gtk.Arguments.Gtk_Args;
