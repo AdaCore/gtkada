@@ -115,7 +115,6 @@ if ($list_mode) {
 			$from {$last} .= "  from misc.c";
 		    }
 		}
-		
 	    }
 	}
  	shift @ARGV;
@@ -134,6 +133,7 @@ close (FILE);
 
 
 my (%functions) = &parse_functions;
+
 my ($abstract) = 0;
 # 1 if the type is an abstract type
 # Set 1 on the previous line if you want to eventually create abstract types.
@@ -467,6 +467,9 @@ sub parse_functions
 	  $args =~ s/\/\*.*?\*\///g;
 	  $args =~ s/\s+/ /g;
 	  @arguments = grep ($_ !~ /^\s*$/, split (/,/, $args));
+
+	  # We do not want to generate bindings for some functions
+	  $func_name = "" if ($func_name =~ /$unit_name\_construct$/);
 
 	  if ($unit_name eq ""
 	      || $func_name =~ /$prefix\_$unit_name/i) {
