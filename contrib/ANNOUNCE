@@ -30,7 +30,11 @@ End
 
 New features in 1.2.4 include:
 
-- New code generation in GATE, taking advantage of the composite types
+- New code generation in GATE:
+    * take advantage of the composite types
+    * generate a child package for callbacks related to each composite widget
+    * generate comments in callback stubs to separate cleanly each callback,
+      and to avoid occasional merge failures
 - Tested on AiX 4.3.1
 - New widgets supported by GATE/DGATE: Gtk_List, Gtk_Clist, Gtk_Paned,
   Gtk_Viewport, Gtk_Vscrollbar
