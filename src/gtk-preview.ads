@@ -54,36 +54,46 @@ package Gtk.Preview is
    function Get_Cmap return Gdk.Color.Gdk_Colormap'Class;
    function Get_Info return Gtk_Preview_Info;
    function Get_Visual return Gdk.Visual.Gdk_Visual'Class;
-   procedure Gtk_New (Widget   : out Gtk_Preview;
+   procedure Gtk_New (Preview  : out Gtk_Preview;
                       The_Type : in Gtk_Preview_Type);
    procedure Put
-      (Preview : in Gtk_Preview;
-       Window  : in Gdk.Window.Gdk_Window'Class;
-       Gc      : in Gdk.GC.Gdk_GC'Class;
-       Srcx    : in Gint;
-       Srcy    : in Gint;
-       Destx   : in Gint;
-       Desty   : in Gint;
-       Width   : in Gint;
-       Height  : in Gint);
+     (Preview : in Gtk_Preview;
+      Window  : in Gdk.Window.Gdk_Window'Class;
+      Gc      : in Gdk.GC.Gdk_GC'Class;
+      Srcx    : in Gint;
+      Srcy    : in Gint;
+      Destx   : in Gint;
+      Desty   : in Gint;
+      Width   : in Gint;
+      Height  : in Gint);
 
    procedure Reset;
    procedure Set_Color_Cube
-      (Nred_Shades   : in Guint;
-       Ngreen_Shades : in Guint;
-       Nblue_Shades  : in Guint;
-       Ngray_Shades  : in Guint);
+     (Nred_Shades   : in Guint;
+      Ngreen_Shades : in Guint;
+      Nblue_Shades  : in Guint;
+      Ngray_Shades  : in Guint);
    procedure Set_Expand
-      (Preview : in Gtk_Preview;
-       Expand  : in Gint);
+     (Preview : in Gtk_Preview;
+      Expand  : in Boolean);
    procedure Set_Gamma (Gamma : in Gdouble);
    procedure Set_Install_Cmap (Install_Cmap : in Gint);
    procedure Set_Reserved (Nreserved : in Gint);
    procedure Size
-      (Preview : in Gtk_Preview;
-       Width   : in Gint;
-       Height  : in Gint);
+     (Preview : in Gtk_Preview;
+      Width   : in Gint;
+      Height  : in Gint);
    procedure Uninit;
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (Preview : in Gtk_Preview;
+                       N       : in Node_Ptr;
+                       File    : in File_Type);
+
+   procedure Generate (Preview : in out Gtk_Preview;
+                       N       : in Node_Ptr);
 
 private
    type Gtk_Preview is new Gtk.Widget.Gtk_Widget with null record;

@@ -33,24 +33,36 @@ with Gtk.Widget;
 package Gtk.Ruler is
 
    type Gtk_Ruler is new Gtk.Widget.Gtk_Widget with private;
+   subtype Gtk_Hruler is Gtk_Ruler;
+   subtype Gtk_Vruler is Gtk_Ruler;
 
    procedure Draw_Pos (Ruler : in Gtk_Ruler);
    procedure Draw_Ticks (Ruler : in Gtk_Ruler);
-   function Get_Lower (Widget : in Gtk_Ruler) return Gfloat;
-   function Get_Max_Size (Widget : in Gtk_Ruler) return Gfloat;
-   function Get_Position (Widget : in Gtk_Ruler) return Gfloat;
-   function Get_Upper (Widget : in Gtk_Ruler) return Gfloat;
-   procedure Gtk_New_Hruler (Widget : out Gtk_Ruler);
-   procedure Gtk_New_Vruler (Widget : out Gtk_Ruler);
+   function Get_Lower (Ruler : in Gtk_Ruler) return Gfloat;
+   function Get_Max_Size (Ruler : in Gtk_Ruler) return Gfloat;
+   function Get_Position (Ruler : in Gtk_Ruler) return Gfloat;
+   function Get_Upper (Ruler : in Gtk_Ruler) return Gfloat;
+   procedure Gtk_New_Hruler (Ruler : out Gtk_Ruler);
+   procedure Gtk_New_Vruler (Ruler : out Gtk_Ruler);
    procedure Set_Metric
-      (Ruler  : in Gtk_Ruler;
-       Metric : in Gtk_Metric_Type);
+     (Ruler  : in Gtk_Ruler;
+      Metric : in Gtk_Metric_Type);
    procedure Set_Range
-      (Ruler    : in Gtk_Ruler;
-       Lower    : in Gfloat;
-       Upper    : in Gfloat;
-       Position : in Gfloat;
-       Max_Size : in Gfloat);
+     (Ruler    : in Gtk_Ruler;
+      Lower    : in Gfloat;
+      Upper    : in Gfloat;
+      Position : in Gfloat;
+      Max_Size : in Gfloat);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (Ruler : in Gtk_Ruler;
+                       N     : in Node_Ptr;
+                       File  : in File_Type);
+
+   procedure Generate (Ruler : in out Gtk_Ruler;
+                       N     : in Node_Ptr);
 
 private
    type Gtk_Ruler is new Gtk.Widget.Gtk_Widget with null record;

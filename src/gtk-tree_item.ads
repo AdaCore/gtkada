@@ -40,16 +40,26 @@ package Gtk.Tree_Item is
    procedure Expand (Tree_Item : in Gtk_Tree_Item);
    function From_Tree (Tree : in Gtk.Tree.Gtk_Tree) return Gtk_Tree_Item;
    function Get_Subtree (Tree_Item : in Gtk_Tree_Item)
-                         return Gtk.Tree.Gtk_Tree;
-   procedure Gtk_New (Widget : out Gtk_Tree_Item;
-                      Label  : in String);
-   procedure Gtk_New (Widget : out Gtk_Tree_Item);
+     return Gtk.Tree.Gtk_Tree;
+   procedure Gtk_New (Tree_Item : out Gtk_Tree_Item;
+                      Label     : in String);
+   procedure Gtk_New (Tree_Item : out Gtk_Tree_Item);
    procedure Gtk_Select (Tree_Item : in Gtk_Tree_Item);
    procedure Remove_Subtree (Tree_Item : in Gtk_Tree_Item);
    procedure Set_Subtree
-      (Tree_Item : in Gtk_Tree_Item;
-       Subtree   : in Gtk.Widget.Gtk_Widget'Class);
-   function To_Tree (Item : in Gtk_Tree_Item) return Gtk.Tree.Gtk_Tree;
+     (Tree_Item : in Gtk_Tree_Item;
+      Subtree   : in Gtk.Widget.Gtk_Widget'Class);
+   function To_Tree (Tree_Item : in Gtk_Tree_Item) return Gtk.Tree.Gtk_Tree;
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (Tree_Item : in Gtk_Tree_Item;
+                       N         : in Node_Ptr;
+                       File      : in File_Type);
+
+   procedure Generate (Tree_Item : in out Gtk_Tree_Item;
+                       N         : in Node_Ptr);
 
 private
    type Gtk_Tree_Item is new Gtk.Item.Gtk_Item with null record;

@@ -30,6 +30,7 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Widget;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Tree_Item is
 
@@ -74,11 +75,12 @@ package body Gtk.Tree_Item is
    ---------------
 
    function From_Tree (Tree : in Gtk.Tree.Gtk_Tree)
-                       return Gtk_Tree_Item is
-      Item : Gtk_Tree_Item;
+     return Gtk_Tree_Item
+   is
+      Tree_Item : Gtk_Tree_Item;
    begin
-      Set_Object (Item, Get_Object (Tree));
-      return Item;
+      Set_Object (Tree_Item, Get_Object (Tree));
+      return Tree_Item;
    end From_Tree;
 
    -----------------
@@ -86,12 +88,13 @@ package body Gtk.Tree_Item is
    -----------------
 
    function Get_Subtree (Tree_Item : in Gtk_Tree_Item)
-                         return Gtk.Tree.Gtk_Tree
+     return Gtk.Tree.Gtk_Tree
    is
       function Internal (Tree_Item : in System.Address)
-                         return System.Address;
+        return System.Address;
       pragma Import (C, Internal, "ada_tree_item_get_subtree");
       Tree : Gtk.Tree.Gtk_Tree;
+
    begin
       Set_Object (Tree, Internal (Get_Object (Tree_Item)));
       return Tree;
@@ -101,26 +104,26 @@ package body Gtk.Tree_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Tree_Item;
-                      Label  : in String)
+   procedure Gtk_New (Tree_Item : out Gtk_Tree_Item;
+                      Label     : in String)
    is
       function Internal (Label  : in String)
-                         return      System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_tree_item_new_with_label");
    begin
-      Set_Object (Widget, Internal (Label & Ascii.NUL));
+      Set_Object (Tree_Item, Internal (Label & Ascii.NUL));
    end Gtk_New;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Tree_Item)
+   procedure Gtk_New (Tree_Item : out Gtk_Tree_Item)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tree_item_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Tree_Item, Internal);
    end Gtk_New;
 
    ----------------
@@ -168,11 +171,38 @@ package body Gtk.Tree_Item is
    -- To_Tree --
    -------------
 
-   function To_Tree (Item : in Gtk_Tree_Item) return Gtk.Tree.Gtk_Tree is
+   function To_Tree (Tree_Item : in Gtk_Tree_Item) return Gtk.Tree.Gtk_Tree is
       Tree : Gtk.Tree.Gtk_Tree;
    begin
-      Set_Object (Tree, Get_Object (Item));
+      Set_Object (Tree, Get_Object (Tree_Item));
       return Tree;
    end To_Tree;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Tree_Item : in Gtk_Tree_Item;
+                       N         : in Node_Ptr;
+                       File      : in File_Type) is
+      use Item;
+   begin
+      Gen_New (N, "Tree_Item", Get_Field (N, "label").all,
+        File => File, Delim => '"');
+      Generate (Gtk_Item (Tree_Item), N, File);
+   end Generate;
+
+   procedure Generate (Tree_Item : in out Gtk_Tree_Item;
+                       N         : in Node_Ptr) is
+      use Item;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Tree_Item, Get_Field (N, "label").all);
+         Set_Object (Get_Field (N, "name"), Tree_Item'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Item (Tree_Item), N);
+   end Generate;
 
 end Gtk.Tree_Item;

@@ -34,10 +34,20 @@ package Gtk.List_Item is
    type Gtk_List_Item is new Gtk.Item.Gtk_Item with private;
 
    procedure Deselect (List_Item : in Gtk_List_Item);
-   procedure Gtk_New (Widget : out Gtk_List_Item;
-                      Label  : in String);
-   procedure Gtk_New (Widget : out Gtk_List_Item);
+   procedure Gtk_New (List_Item : out Gtk_List_Item;
+                      Label     : in String);
+   procedure Gtk_New (List_Item : out Gtk_List_Item);
    procedure Gtk_Select (List_Item : in Gtk_List_Item);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (List_Item : in Gtk_List_Item;
+                       N         : in Node_Ptr;
+                       File      : in File_Type);
+
+   procedure Generate (List_Item : in out Gtk_List_Item;
+                       N         : in Node_Ptr);
 
 private
    type Gtk_List_Item is new Gtk.Item.Gtk_Item with null record;

@@ -29,6 +29,7 @@
 
 with Gdk; use Gdk;
 with System;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Preview is
 
@@ -37,36 +38,33 @@ package body Gtk.Preview is
    --------------
 
    procedure Draw_Row
-      (Preview : in Gtk_Preview;
-       Data    : in Guchar_Array;
-       X       : in Gint;
-       Y       : in Gint;
-       W       : in Gint)
+     (Preview : in Gtk_Preview;
+      Data    : in Guchar_Array;
+      X       : in Gint;
+      Y       : in Gint;
+      W       : in Gint)
    is
       procedure Internal
-         (Preview : in System.Address;
-          Data    : in System.Address;
-          X       : in Gint;
-          Y       : in Gint;
-          W       : in Gint);
+        (Preview : in System.Address;
+         Data    : in System.Address;
+         X       : in Gint;
+         Y       : in Gint;
+         W       : in Gint);
       pragma Import (C, Internal, "gtk_preview_draw_row");
+
    begin
-      Internal (Get_Object (Preview),
-                Data'Address,
-                X,
-                Y,
-                W);
+      Internal (Get_Object (Preview), Data'Address, X, Y, W);
    end Draw_Row;
 
    --------------
    -- Get_Cmap --
    --------------
 
-   function Get_Cmap return Gdk.Color.Gdk_Colormap'Class
-   is
+   function Get_Cmap return Gdk.Color.Gdk_Colormap'Class is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_preview_get_cmap");
       Widget : Gdk.Color.Gdk_Colormap;
+
    begin
       Set_Object (Widget, Internal);
       return Widget;
@@ -76,11 +74,11 @@ package body Gtk.Preview is
    -- Get_Info --
    --------------
 
-   function Get_Info return Gtk_Preview_Info
-   is
+   function Get_Info return Gtk_Preview_Info is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_preview_get_info");
       Widget : Gtk_Preview_Info;
+
    begin
       Set_Object (Widget, Internal);
       return Widget;
@@ -90,11 +88,11 @@ package body Gtk.Preview is
    -- Get_Visual --
    ----------------
 
-   function Get_Visual return Gdk.Visual.Gdk_Visual'Class
-   is
+   function Get_Visual return Gdk.Visual.Gdk_Visual'Class is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_preview_get_visual");
       Widget : Gdk.Visual.Gdk_Visual;
+
    begin
       Set_Object (Widget, Internal);
       return Widget;
@@ -104,14 +102,14 @@ package body Gtk.Preview is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget   : out Gtk_Preview;
-                      The_Type : in Gtk_Preview_Type)
-   is
+   procedure Gtk_New (Preview  : out Gtk_Preview;
+                      The_Type : in Gtk_Preview_Type) is
       function Internal (The_Type : in Gint)
-                         return        System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_preview_new");
+
    begin
-      Set_Object (Widget, Internal (Gtk_Preview_Type'Pos (The_Type)));
+      Set_Object (Preview, Internal (Gtk_Preview_Type'Pos (The_Type)));
    end Gtk_New;
 
    ---------
@@ -119,47 +117,42 @@ package body Gtk.Preview is
    ---------
 
    procedure Put
-      (Preview : in Gtk_Preview;
-       Window  : in Gdk.Window.Gdk_Window'Class;
-       Gc      : in Gdk.GC.Gdk_GC'Class;
-       Srcx    : in Gint;
-       Srcy    : in Gint;
-       Destx   : in Gint;
-       Desty   : in Gint;
-       Width   : in Gint;
-       Height  : in Gint)
+     (Preview : in Gtk_Preview;
+      Window  : in Gdk.Window.Gdk_Window'Class;
+      Gc      : in Gdk.GC.Gdk_GC'Class;
+      Srcx    : in Gint;
+      Srcy    : in Gint;
+      Destx   : in Gint;
+      Desty   : in Gint;
+      Width   : in Gint;
+      Height  : in Gint)
    is
       procedure Internal
-         (Preview : in System.Address;
-          Window  : in System.Address;
-          Gc      : in System.Address;
-          Srcx    : in Gint;
-          Srcy    : in Gint;
-          Destx   : in Gint;
-          Desty   : in Gint;
-          Width   : in Gint;
-          Height  : in Gint);
+        (Preview : in System.Address;
+         Window  : in System.Address;
+         Gc      : in System.Address;
+         Srcx    : in Gint;
+         Srcy    : in Gint;
+         Destx   : in Gint;
+         Desty   : in Gint;
+         Width   : in Gint;
+         Height  : in Gint);
       pragma Import (C, Internal, "gtk_preview_put");
+
    begin
-      Internal (Get_Object (Preview),
-                Get_Object (Window),
-                Get_Object (Gc),
-                Srcx,
-                Srcy,
-                Destx,
-                Desty,
-                Width,
-                Height);
+      Internal
+        (Get_Object (Preview), Get_Object (Window), Get_Object (Gc),
+         Srcx, Srcy, Destx, Desty, Width, Height);
    end Put;
 
    -----------
    -- Reset --
    -----------
 
-   procedure Reset
-   is
+   procedure Reset is
       procedure Internal;
       pragma Import (C, Internal, "gtk_preview_reset");
+
    begin
       Internal;
    end Reset;
@@ -169,22 +162,20 @@ package body Gtk.Preview is
    --------------------
 
    procedure Set_Color_Cube
-      (Nred_Shades   : in Guint;
-       Ngreen_Shades : in Guint;
-       Nblue_Shades  : in Guint;
-       Ngray_Shades  : in Guint)
+     (Nred_Shades   : in Guint;
+      Ngreen_Shades : in Guint;
+      Nblue_Shades  : in Guint;
+      Ngray_Shades  : in Guint)
    is
       procedure Internal
-         (Nred_Shades   : in Guint;
-          Ngreen_Shades : in Guint;
-          Nblue_Shades  : in Guint;
-          Ngray_Shades  : in Guint);
+        (Nred_Shades   : in Guint;
+         Ngreen_Shades : in Guint;
+         Nblue_Shades  : in Guint;
+         Ngray_Shades  : in Guint);
       pragma Import (C, Internal, "gtk_preview_set_color_cube");
+
    begin
-      Internal (Nred_Shades,
-                Ngreen_Shades,
-                Nblue_Shades,
-                Ngray_Shades);
+      Internal (Nred_Shades, Ngreen_Shades, Nblue_Shades, Ngray_Shades);
    end Set_Color_Cube;
 
    ----------------
@@ -192,26 +183,26 @@ package body Gtk.Preview is
    ----------------
 
    procedure Set_Expand
-      (Preview : in Gtk_Preview;
-       Expand  : in Gint)
+     (Preview : in Gtk_Preview;
+      Expand  : in Boolean)
    is
       procedure Internal
-         (Preview : in System.Address;
-          Expand  : in Gint);
+        (Preview : in System.Address;
+         Expand  : in Gint);
       pragma Import (C, Internal, "gtk_preview_set_expand");
+
    begin
-      Internal (Get_Object (Preview),
-                Expand);
+      Internal (Get_Object (Preview), Boolean'Pos (Expand));
    end Set_Expand;
 
    ---------------
    -- Set_Gamma --
    ---------------
 
-   procedure Set_Gamma (Gamma : in Gdouble)
-   is
+   procedure Set_Gamma (Gamma : in Gdouble) is
       procedure Internal (Gamma : in Gdouble);
       pragma Import (C, Internal, "gtk_preview_set_gamma");
+
    begin
       Internal (Gamma);
    end Set_Gamma;
@@ -220,10 +211,10 @@ package body Gtk.Preview is
    -- Set_Install_Cmap --
    ----------------------
 
-   procedure Set_Install_Cmap (Install_Cmap : in Gint)
-   is
+   procedure Set_Install_Cmap (Install_Cmap : in Gint) is
       procedure Internal (Install_Cmap : in Gint);
       pragma Import (C, Internal, "gtk_preview_set_install_cmap");
+
    begin
       Internal (Install_Cmap);
    end Set_Install_Cmap;
@@ -232,10 +223,10 @@ package body Gtk.Preview is
    -- Set_Reserved --
    ------------------
 
-   procedure Set_Reserved (Nreserved : in Gint)
-   is
+   procedure Set_Reserved (Nreserved : in Gint) is
       procedure Internal (Nreserved : in Gint);
       pragma Import (C, Internal, "gtk_preview_set_reserved");
+
    begin
       Internal (Nreserved);
    end Set_Reserved;
@@ -245,31 +236,71 @@ package body Gtk.Preview is
    ----------
 
    procedure Size
-      (Preview : in Gtk_Preview;
-       Width   : in Gint;
-       Height  : in Gint)
+     (Preview : in Gtk_Preview;
+      Width   : in Gint;
+      Height  : in Gint)
    is
       procedure Internal
-         (Preview : in System.Address;
-          Width   : in Gint;
-          Height  : in Gint);
+        (Preview : in System.Address;
+         Width   : in Gint;
+         Height  : in Gint);
       pragma Import (C, Internal, "gtk_preview_size");
+
    begin
-      Internal (Get_Object (Preview),
-                Width,
-                Height);
+      Internal (Get_Object (Preview), Width, Height);
    end Size;
 
    ------------
    -- Uninit --
    ------------
 
-   procedure Uninit
-   is
+   procedure Uninit is
       procedure Internal;
       pragma Import (C, Internal, "gtk_preview_uninit");
    begin
       Internal;
    end Uninit;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Preview : in Gtk_Preview;
+                       N         : in Node_Ptr;
+                       File      : in File_Type) is
+      use Widget;
+   begin
+      if Get_Field (N, "type").all = "True" then
+         Gen_New (N, "Preview", "Preview_Color", File => File);
+         Gen_New (N, "Preview", "Preview_Grayscale", File => File);
+      end if;
+
+      Generate (Gtk_Widget (Preview), N, File);
+      Gen_Set (N, "Preview", "expand", File);
+   end Generate;
+
+   procedure Generate (Preview : in out Gtk_Preview;
+                       N         : in Node_Ptr) is
+      use Widget;
+
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         if Get_Field (N, "type").all = "True" then
+            Gtk_New (Preview, Preview_Color);
+            Gtk_New (Preview, Preview_Grayscale);
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Preview'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Widget (Preview), N);
+      S := Get_Field (N, "expand");
+
+      if S /= null then
+         Set_Expand (Preview, Boolean'Value (S.all));
+      end if;
+   end Generate;
 
 end Gtk.Preview;
