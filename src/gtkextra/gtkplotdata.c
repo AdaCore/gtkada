@@ -1932,17 +1932,19 @@ gtk_plot_data_connect_points(GtkPlotData *dataset, gint npoints)
     }
 
   if(dataset->fill_area){
-    x = dataset->x[dataset->num_points-1];
-    y = 0.0;
-    gtk_plot_get_pixel(plot, x, y, &px, &py);
-    points[num_points].x = px; 
-    points[num_points].y = py; 
-    x = dataset->x[dataset->num_points - npoints];
-    gtk_plot_get_pixel(plot, x, y, &px, &py);
-    points[num_points + 1].x = px; 
-    points[num_points + 1].y = py; 
-    num_points += 2;
-    gtk_plot_pc_draw_polygon(plot->pc, TRUE, points, num_points);
+    if(dataset->num_points > 1){
+      x = dataset->x[dataset->num_points-1];
+      y = 0.0;
+      gtk_plot_get_pixel(plot, x, y, &px, &py);
+      points[num_points].x = px; 
+      points[num_points].y = py; 
+      x = dataset->x[dataset->num_points - npoints];
+      gtk_plot_get_pixel(plot, x, y, &px, &py);
+      points[num_points + 1].x = px; 
+      points[num_points + 1].y = py; 
+      num_points += 2;
+      gtk_plot_pc_draw_polygon(plot->pc, TRUE, points, num_points);
+    }
   } else {
     gtk_plot_pc_draw_lines(plot->pc, points, num_points);
   }
