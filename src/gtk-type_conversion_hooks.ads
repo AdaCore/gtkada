@@ -37,6 +37,9 @@
 --  Implementation note: This is a separate package from Gtk.Type_Conversion
 --  so that adding a hook does not necessarily mean the user has to 'with'
 --  Gtk.Type_Conversion, and thus all the packages from GtkAda.
+--
+--  @THREAD_STATUS@: This package is not thread safe. You should call the
+--  function Add_Hook from the elaboration part of your packages.
 
 package Gtk.Type_Conversion_Hooks is
 
