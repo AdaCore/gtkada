@@ -36,7 +36,6 @@ with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Separator; use Gtk.Separator;
 with Gtk.Label; use Gtk.Label;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Style; use Gtk.Style;

@@ -38,7 +38,6 @@ with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Window; use Gtk.Window;
