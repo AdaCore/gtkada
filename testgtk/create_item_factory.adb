@@ -71,7 +71,6 @@ package body Create_Item_Factory is
       --                            "<main>",
       --                            item_factory,
       --                            (GtkDestroyNotify) gtk_object_unref);
-      Attach (Accel_Group, Frame);
       Create_Items (Item_Factory, Menu_Items, null);
  
       --  preselect /Preferences/Shape/Oval over the other radios
