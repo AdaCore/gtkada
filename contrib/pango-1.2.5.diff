@@ -1,9 +1,17 @@
-Thu Apr  3 17:50:27 CEST 2003	Arnaud Charlet	<charlet@gnat.com>
+Thu Nov 27 2003  Arnaud Charlet  <charlet@act-europe.fr>
+
+	* configure.in, configure: Add missing G_DISABLE_CAST_CHECKS when
+	using --disable-debug
+
+	* pango/pango-layout.c: Do not call utf8_validate when assertions
+	are disabled.
+
+Thu Apr 3 2003  Arnaud Charlet  <charlet@act-europe.fr>
 
 	Changes to ease distributing gtk+ executables with no gtk+ install:
 
-	pango/pangox-fontmap.c: Provide a default set of aliases when none
-	 was found.
+	* pango/pangox-fontmap.c: Provide a default set of aliases when none
+	was found.
 
 --- pango/pangox-fontmap.c	2003/04/03 15:16:10	1.1
 +++ pango/pangox-fontmap.c	2003/04/03 15:45:47
@@ -334,3 +342,39 @@ Thu Apr  3 17:50:27 CEST 2003	Arnaud Charlet	<charlet@gnat.com>
  }
  
  /*
+--- configure.in	2003/11/22 15:24:13	1.1
++++ configure.in	2003/11/23 16:48:34
+@@ -139,7 +139,7 @@
+   PANGO_DEBUG_FLAGS="-DG_DISABLE_CAST_CHECKS"
+ 
+   if test "x$enable_debug" = "xno"; then
+-    PANGO_DEBUG_FLAGS="$GLIB_DEBUG_FLAGS -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS"
++    PANGO_DEBUG_FLAGS="$GLIB_DEBUG_FLAGS -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS $PANGO_DEBUG_FLAGS"
+   fi
+ fi
+ 
+--- configure	2003/11/26 13:59:18	1.1
++++ configure	2003/11/26 13:59:29
+@@ -18533,7 +18533,7 @@
+   PANGO_DEBUG_FLAGS="-DG_DISABLE_CAST_CHECKS"
+ 
+   if test "x$enable_debug" = "xno"; then
+-    PANGO_DEBUG_FLAGS="$GLIB_DEBUG_FLAGS -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS"
++    PANGO_DEBUG_FLAGS="$GLIB_DEBUG_FLAGS -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS $PANGO_DEBUG_FLAGS"
+   fi
+ fi
+ 
+--- pango/pango-layout.c	2003/11/26 14:16:48	1.1
++++ pango/pango-layout.c	2003/11/22 14:37:36
+@@ -730,7 +730,11 @@ pango_layout_set_text (PangoLayout *layo
+ 
+   old_text = layout->text;
+ 
++#ifdef G_DISABLE_ASSERT
++  if (length == -1)
++#else
+   if (length != 0)
++#endif
+     {
+       if (!g_utf8_validate (text, length, &end))
+ 	g_warning ("Invalid UTF8 string passed to pango_layout_set_text()");
