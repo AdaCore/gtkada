@@ -44,6 +44,10 @@ package Gtk.Glade is
    --  Parse file File and generate the corresponding Ada code on standard
    --  output.
 
+   procedure Generate (N : Node_Ptr);
+   --  Generate the Ada code corresponding the creation of to N and its
+   --  children on standard output.
+
    procedure Instanciate (File : String);
    --  Parse File and create the corresponding widgets.
 

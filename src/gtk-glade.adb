@@ -357,14 +357,18 @@ package body Gtk.Glade is
    --------------
 
    procedure Generate (File : String) is
-      N, M        : Node_Ptr;
+   begin
+      Generate (Parse (File));
+   end Generate;
+
+   procedure Generate (N : Node_Ptr) is
+      M           : Node_Ptr;
       Buffer      : String (1 .. 256);
       Len         : Natural;
       Num_Signals : Natural;
       Output      : File_Type;
 
    begin
-      N := Parse (File);
       Print_Header (N, Output);
       M := N.Child.Next;
 
