@@ -320,12 +320,10 @@ package body Gtk.CList is
    -- Get_Text --
    --------------
 
-   procedure Get_Text
+   function Get_Text
       (Clist    : in Gtk_CList;
        Row      : in Gint;
-       Column   : in Gint;
-       Text     : out String;
-       Is_Valid : out Boolean)
+       Column   : in Gint) return String
    is
       function Internal
          (Clist  : in System.Address;
@@ -334,13 +332,18 @@ package body Gtk.CList is
           Text   : in System.Address)
           return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_text");
+      Is_Valid : Boolean;
       S : Interfaces.C.Strings.chars_ptr;
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
                                          Row,
                                          Column,
                                          S'Address));
-      Text := Interfaces.C.Strings.Value (S);
+      if Is_Valid then
+         return Interfaces.C.Strings.Value (S);
+      else
+         return String'(1 .. 0 => ' ');
+      end if;
    end Get_Text;
 
    -------------

@@ -102,7 +102,7 @@ package Gtk.CList is
        Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
        Is_Valid : out Boolean);
-   --  The result is not meaningful is Is_Valid is false
+   --  The result is not meaningful if Is_Valid is false
 
    function Get_Selection (Widget : in Gtk_CList) return Gint_List.Glist;
 
@@ -115,13 +115,13 @@ package Gtk.CList is
        Is_Valid : out Boolean);
    --  The result is valid only if Is_Valid is true
 
-   procedure Get_Text
+   function Get_Text
      (Clist    : in Gtk_CList;
       Row      : in Gint;
-      Column   : in Gint;
-      Text     : out String;
-      Is_Valid : out Boolean);
-   --  The result is meaningful only if Is_Valid is True
+      Column   : in Gint) return String;
+   --  If there was a problem, a null-length string is returned.
+   --  The problem might appear in case the row or the column are
+   --  invalid, or if the cell does not contain any text.
 
    procedure Gtk_New (Widget : out Gtk_CList; Columns : in Gint);
 
