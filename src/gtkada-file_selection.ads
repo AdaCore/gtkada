@@ -35,10 +35,21 @@
 package Gtkada.File_Selection is
 
    function File_Selection_Dialog
-     (Title : String := "Select File") return String;
+     (Title       : String := "Select File";
+      Default_Dir : String := "";
+      Dir_Only    : Boolean := False;
+      Must_Exist  : Boolean := False) return String;
    --  Open a file selection dialog and make it modal.
    --  Return when either the Cancel button is clicked or when a file is
    --  selected.
+   --  Default_Dir is the directory to display in dialog initially. Note that
+   --  it must end with a directory separator ('/' or '\', depending on your
+   --  system). You can use GNAT.Os_Lib.Directory_Separator to get the correct
+   --  value for your system.
+   --  If Must_Exist is True, then the file (or directory if Dir_Only is True)
+   --  must exist.
+   --  If Dir_Only is True, then the dialog is modified so that the user can
+   --  only choose a directory name, but not a file name.
    --  The value returned is the name of the file selected, or "" if none.
 
 end Gtkada.File_Selection;
