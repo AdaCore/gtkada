@@ -449,27 +449,46 @@ private
    pragma Import (C, Selection_Data_Copy, "gtk_selection_data_copy");
    pragma Import (C, Selection_Data_Free, "gtk_selection_data_free");
 
-   Selection_Primary   : constant Gdk_Selection := 1;
-   Selection_Secondary : constant Gdk_Selection := 2;
 
-   Selection_Type_Atom     : constant Gdk_Selection_Type := 4;
-   Selection_Type_Bitmap   : constant Gdk_Selection_Type := 5;
-   Selection_Type_Colormap : constant Gdk_Selection_Type := 7;
-   Selection_Type_Drawable : constant Gdk_Selection_Type := 17;
-   Selection_Type_Integer  : constant Gdk_Selection_Type := 19;
-   Selection_Type_Pixmap   : constant Gdk_Selection_Type := 20;
-   Selection_Type_Window   : constant Gdk_Selection_Type := 33;
-   Selection_Type_String   : constant Gdk_Selection_Type := 31;
+   function Make_Atom (Num : Gulong) return Gdk.Types.Gdk_Atom;
+   pragma Import (C, Make_Atom, "ada_make_atom");
+
+   Selection_Primary   : constant Gdk_Selection
+     := Make_Atom (1);
+   Selection_Secondary : constant Gdk_Selection
+     := Make_Atom (2);
+
+   Selection_Type_Atom     : constant Gdk_Selection_Type
+     := Make_Atom (4);
+   Selection_Type_Bitmap   : constant Gdk_Selection_Type
+     := Make_Atom (5);
+   Selection_Type_Colormap : constant Gdk_Selection_Type
+     := Make_Atom (7);
+   Selection_Type_Drawable : constant Gdk_Selection_Type
+     := Make_Atom (17);
+   Selection_Type_Integer  : constant Gdk_Selection_Type
+     := Make_Atom (19);
+   Selection_Type_Pixmap   : constant Gdk_Selection_Type
+     := Make_Atom (20);
+   Selection_Type_Window   : constant Gdk_Selection_Type
+     := Make_Atom (33);
+   Selection_Type_String   : constant Gdk_Selection_Type
+     := Make_Atom (31);
 
    Target_No_Constraint : constant Target_Flags := 0;
    Target_Same_App      : constant Target_Flags := 1;
    Target_Same_Widget   : constant Target_Flags := 2;
 
-   Target_Bitmap   : constant Gdk_Target := 5;
-   Target_Colormap : constant Gdk_Target := 7;
-   Target_Drawable : constant Gdk_Target := 17;
-   Target_Pixmap   : constant Gdk_Target := 20;
-   Target_String   : constant Gdk_Target := 31;
+   Target_Bitmap   : constant Gdk_Target
+     := Make_Atom (5);
+   Target_Colormap : constant Gdk_Target
+     := Make_Atom (7);
+   Target_Drawable : constant Gdk_Target
+     := Make_Atom (17);
+   Target_Pixmap   : constant Gdk_Target
+     := Make_Atom (20);
+   Target_String   : constant Gdk_Target
+     := Make_Atom (31);
 end Gtk.Selection;
 
 --  missing:
