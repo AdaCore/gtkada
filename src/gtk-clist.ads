@@ -773,9 +773,11 @@ package Gtk.Clist is
    --                       Column : Gint;
    --                       Event  : Gdk.Event.Gdk_Event);
    --
-   --    Emitted to request the selection of a row. Event will be null most of
-   --    the time when the event is emitted directly by GtkAda. You should use
-   --    Select_Row instead.
+   --    Emitted when a row is selected. Column contains the column number in
+   --    which the user has clicked, or -1 if the selection was done internally
+   --    by GtkAda.
+   --    Event will be null if the selection was not triggered by an event, eg
+   --    if the row was selected through a call to Select_Row.
    --
    --  - "unselect_row"
    --    procedure Handler (Clist  : access Gtk_Clist_Record'Class;
