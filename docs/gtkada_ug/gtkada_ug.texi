@@ -162,6 +162,8 @@ directory in the distribution).
 This toolkit was tested on the following systems:
 @itemize @bullet
 @item Linux/x86
+@item Linux/sparc
+@item Linux/ppc
 @item Solaris/sparc
 @item Solaris/x86
 @item Dec Unix 4.0b
