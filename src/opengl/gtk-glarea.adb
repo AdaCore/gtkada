@@ -28,8 +28,12 @@
 -----------------------------------------------------------------------
 
 with Gtk.Drawing_Area;
+with Gtk.Enums; use Gtk.Enums;
+with Gtk.Type_Conversion_Hooks;
 
 package body Gtk.GLArea is
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access;
 
    -------------
    -- Gtk_New --
@@ -124,4 +128,18 @@ package body Gtk.GLArea is
       Internal (Get_Object (Glarea));
    end Swap_Buffers;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access is
+   begin
+      if Type_Name = "GtkGlArea" then
+         return new Gtk.GLArea.Gtk_GLArea_Record;
+      end if;
+      return null;
+   end Type_Conversion;
+
+begin
+   Gtk.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.GLArea;
