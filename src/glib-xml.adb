@@ -233,6 +233,7 @@ package body Glib.XML is
       S : String_Ptr;
       Index_Save : Natural;
       Empty_Node : Boolean;
+      Last_Child : Node_Ptr;
 
    begin
       pragma Assert (Buf (Index.all) = '<');
@@ -265,14 +266,14 @@ package body Glib.XML is
 
                N.Child := Get_Node (Buf, Index);
                N.Child.Parent := N;
-               N.Last_Child := N.Child;
+               Last_Child := N.Child;
                pragma Assert (Buf (Index.all) = '<');
 
                while Buf (Index.all + 1) /= '/' loop
-                  Q := N.Last_Child;
+                  Q := Last_Child;
                   Q.Next := Get_Node (Buf, Index);
                   Q.Next.Parent := N;
-                  N.Last_Child := Q.Next;
+                  Last_Child := Q.Next;
                   pragma Assert (Buf (Index.all) = '<');
                end loop;
 

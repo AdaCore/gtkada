@@ -54,9 +54,6 @@ package Glib.XML is
       Child : Node_Ptr;
       --  The first Child of this Node. The next child is Child.Next
 
-      Last_Child : Node_Ptr;
-      --  The last Child of this Node.
-
       Next  : Node_Ptr;
       --  Next "brother" node.
 
