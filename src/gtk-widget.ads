@@ -383,7 +383,7 @@ package Gtk.Widget is
 
    procedure Set_Events
      (Widget : access Gtk_Widget_Record;
-      Events : Gdk.Types.Gdk_Event_Mask);
+      Events : Gdk.Event.Gdk_Event_Mask);
    --  Sets the event mask for the widget.
    --  Widget should not have been realized before, or nothing is done.
    --  This is the only way you can explicitly get mouse or keyboards events on
@@ -391,13 +391,13 @@ package Gtk.Widget is
    --  Gtk_Drawing_Area.
 
    function Get_Events
-     (Widget : access Gtk_Widget_Record) return Gdk.Types.Gdk_Event_Mask;
+     (Widget : access Gtk_Widget_Record) return Gdk.Event.Gdk_Event_Mask;
    --  Get the event mask for the widget.
    --  This indicates the list of events that the widget receives.
 
    procedure Add_Events
      (Widget : access Gtk_Widget_Record;
-      Events : Gdk.Types.Gdk_Event_Mask);
+      Events : Gdk.Event.Gdk_Event_Mask);
    --  Add some events to the current event mask of the widget.
 
    procedure Set_Extension_Events

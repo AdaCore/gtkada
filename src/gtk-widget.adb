@@ -104,10 +104,10 @@ package body Gtk.Widget is
 
    procedure Add_Events
      (Widget : access Gtk_Widget_Record;
-      Events : Gdk.Types.Gdk_Event_Mask)
+      Events : Gdk.Event.Gdk_Event_Mask)
    is
       procedure Internal
-        (Widget : System.Address; Events : Gdk.Types.Gdk_Event_Mask);
+        (Widget : System.Address; Events : Gdk.Event.Gdk_Event_Mask);
       pragma Import (C, Internal, "gtk_widget_add_events");
 
    begin
@@ -278,13 +278,14 @@ package body Gtk.Widget is
    ----------------
 
    function Get_Events
-     (Widget : access Gtk_Widget_Record) return Gdk.Types.Gdk_Event_Mask
+     (Widget : access Gtk_Widget_Record) return Gdk.Event.Gdk_Event_Mask
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal
+        (Widget : System.Address) return Gdk.Event.Gdk_Event_Mask;
       pragma Import (C, Internal, "gtk_widget_get_events");
 
    begin
-      return Gdk.Types.Gdk_Event_Mask'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_Events;
 
    --------------
@@ -463,8 +464,10 @@ package body Gtk.Widget is
    -- Get_Visual --
    ----------------
 
-   function Get_Visual (Widget : access Gtk_Widget_Record) return Gdk_Visual is
-      function Internal (Widget : System.Address) return Gdk_Visual;
+   function Get_Visual
+     (Widget : access Gtk_Widget_Record) return Gdk.Gdk_Visual
+   is
+      function Internal (Widget : System.Address) return Gdk.Gdk_Visual;
       pragma Import (C, Internal, "gtk_widget_get_visual");
 
    begin
@@ -852,8 +855,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_app_paintable");
 
    begin
-      Internal (Get_Object (Widget),
-                Gboolean'Val (Boolean'Pos (App_Paintable)));
+      Internal (Get_Object (Widget), To_Gboolean (App_Paintable));
    end Set_App_Paintable;
 
    ------------------
@@ -862,9 +864,9 @@ package body Gtk.Widget is
 
    procedure Set_Colormap
      (Widget : access Gtk_Widget_Record;
-      Cmap : Gdk_Colormap)
+      Cmap   : Gdk.Gdk_Colormap)
    is
-      procedure Internal (Widget : System.Address; Cmap : Gdk_Colormap);
+      procedure Internal (Widget : System.Address; Cmap : Gdk.Gdk_Colormap);
       pragma Import (C, Internal, "gtk_widget_set_colormap");
 
    begin
@@ -877,10 +879,10 @@ package body Gtk.Widget is
 
    procedure Set_Events
      (Widget : access Gtk_Widget_Record;
-      Events : Gdk.Types.Gdk_Event_Mask)
+      Events : Gdk.Event.Gdk_Event_Mask)
    is
       procedure Internal
-        (Widget : System.Address; Events : Gdk.Types.Gdk_Event_Mask);
+        (Widget : System.Address; Events : Gdk.Event.Gdk_Event_Mask);
       pragma Import (C, Internal, "gtk_widget_set_events");
 
    begin
@@ -983,11 +985,12 @@ package body Gtk.Widget is
    function Get_Extension_Events
      (Widget : access Gtk_Widget_Record) return Gdk.Types.Gdk_Extension_Mode
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal
+        (Widget : System.Address) return Gdk.Types.Gdk_Extension_Mode;
       pragma Import (C, Internal, "gtk_widget_get_extension_events");
 
    begin
-      return Gdk.Types.Gdk_Extension_Mode'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_Extension_Events;
 
    ------------------
@@ -1191,21 +1194,18 @@ package body Gtk.Widget is
    function Get_State
      (Widget : access Gtk_Widget_Record) return Enums.Gtk_State_Type
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Enums.Gtk_State_Type;
       pragma Import (C, Internal, "ada_widget_get_state");
 
    begin
-      return Enums.Gtk_State_Type'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_State;
 
    -------------------
    -- Set_UPosition --
    -------------------
 
-   procedure Set_UPosition
-     (Widget : access Gtk_Widget_Record;
-      X, Y  : Gint)
-   is
+   procedure Set_UPosition (Widget : access Gtk_Widget_Record; X, Y : Gint) is
       procedure Internal (Widget : System.Address; X, Y : Gint);
       pragma Import (C, Internal, "gtk_widget_set_uposition");
 
