@@ -77,8 +77,7 @@ package Gtk.Toggle_Button is
    --  Returns true if the button is in its active state, i.e is pressed.
 
    function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
-                      return Boolean
-                      renames Get_Active;
+                      return Boolean;
    --  Deprecated: this is the old name of Get_Active.
 
    procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);

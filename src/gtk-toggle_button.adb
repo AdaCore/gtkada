@@ -77,6 +77,14 @@ package body Gtk.Toggle_Button is
       Initialize_User_Data (Toggle_Button);
    end Initialize;
 
+   ---------------
+   -- Is_Active --
+   ---------------
+
+   function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
+                      return Boolean
+     renames Get_Active;
+
    ----------------
    -- Set_Active --
    ----------------
