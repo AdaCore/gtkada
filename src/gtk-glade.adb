@@ -416,6 +416,7 @@ package body Gtk.Glade is
          Put_Line ("with Glib;");
          Put_Line ("with Gtk; use Gtk;");
          Put_Line ("with Gtk.Enums; use Gtk.Enums;");
+         Put_Line ("with Gtk.Widget; use Gtk.Widget;");
          Put_Line ("with Gtk.Button; use Gtk.Button;");
          Put_Line ("with Callbacks_" & Project &
            "; use Callbacks_" & Project & ";");
