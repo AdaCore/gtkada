@@ -24,7 +24,7 @@ package body Create_Gamma_Curve is
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id    : Guint;
       Max   : Gint := 127 + (Count mod 4) * 128;
-      Vec   : Curve_Vector (Positive (Max));
+      Vec   : Gfloat_Array (1 .. Positive (Max));
    begin
 
       if not Is_Created (Window) then
@@ -44,8 +44,8 @@ package body Create_Gamma_Curve is
                                & " points");
       end if;
       Set_Range (Get_Curve (Curve), 0.0, Gfloat (Max), 0.0, Gfloat (Max));
-      for J in Vec.Vector'Range loop
-         Vec.Vector (J) := (127.0 / Float_P.Sqrt (Gfloat (Max)))
+      for J in Vec'Range loop
+         Vec (J) := (127.0 / Float_P.Sqrt (Gfloat (Max)))
            * Float_P.Sqrt (Gfloat (J));
       end loop;
       Set_Vector (Get_Curve (Curve), Vec);
