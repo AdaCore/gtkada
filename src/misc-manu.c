@@ -596,3 +596,12 @@ ada_tree_get_selection (GtkTree* widget)
    return widget->selection;
 }
 
+/*******************************************
+ ** Functions for Tree_Item
+ *******************************************/
+
+GtkWidget*
+ada_tree_item_get_subtree (GtkTreeItem* widget)
+{
+  return GTK_TREE_ITEM_SUBTREE (widget);
+}
