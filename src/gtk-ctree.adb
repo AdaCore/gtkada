@@ -1559,7 +1559,7 @@ package body Gtk.Ctree is
       ---------------
 
       procedure Free_Data (Data : Data_Type_Access) is
-         Local_Data : Data_Type_Access;
+         Local_Data : Data_Type_Access := Data;
       begin
          Deallocate_Data_Type (Local_Data);
       end Free_Data;
