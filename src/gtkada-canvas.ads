@@ -357,6 +357,10 @@ package Gtkada.Canvas is
    function Get_Descr (Link : access Canvas_Link_Record) return String;
    --  Return the description for the link, or "" if there is none
 
+   function Get_Arrow_Type
+     (Link : access Canvas_Link_Record) return Arrow_Type;
+   --  Return the location of the arrows on Link
+
    procedure Set_Src_Pos
      (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gfloat := 0.5);
    --  Set the position of the link's attachment in its source item.
@@ -650,4 +654,7 @@ private
 
    pragma Inline (To_Canvas_Coordinates);
    pragma Inline (To_World_Coordinates);
+   pragma Inline (Get_Arrow_Type);
+   pragma Inline (Pixmap);
 end Gtkada.Canvas;
+

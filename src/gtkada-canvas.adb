@@ -2630,4 +2630,14 @@ package body Gtkada.Canvas is
       return Item.Pixmap;
    end Pixmap;
 
+   --------------------
+   -- Get_Arrow_Type --
+   --------------------
+
+   function Get_Arrow_Type
+     (Link : access Canvas_Link_Record) return Arrow_Type is
+   begin
+      return Link.Arrow;
+   end Get_Arrow_Type;
+
 end Gtkada.Canvas;
