@@ -299,9 +299,13 @@ foreach $source_file (@source_files) {
 		    &output ("\@subsection $name\n\n");
 		    &html_output ("</TD></TR><TR><TD><BR></TD></TR>");
 		    $comment =~ s/^\s*//;
-		    $comment = &process_list
-			(&clean_comment_marks ($comment, 1));
-		    &output ($comment, "\n\n");
+		    if ($comment ne "") {
+			$comment = &process_list
+			    (&clean_comment_marks ($comment, 1));
+			&html_output ("<TR><TD colspan=3>");
+			&output ($comment, "\n\n");
+			&html_output ("<BR></TD></TR>");
+		    }
 		    next;
 		}
 
@@ -850,9 +854,12 @@ sub get_subprograms () {
     }
 
     if ($saw_package_start
-	&& $line =~ /^\s*------*/
-	&& $last_was_section == 0)
+	&& $line =~ /^\s*------*/)
     {
+	# Delete the previous section if it was empty
+	if ($last_was_section != 0) {
+	    pop (@result);
+	}
 
 	$line = shift @content;
 	$line =~ /-- (.*) --/;
