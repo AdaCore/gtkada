@@ -19,6 +19,21 @@
  **
  ********************************************************************/
 
+void
+ada_gtk_plot_set_color (GtkPlotLine* line, GdkColor* color) {
+  line->color = *color;
+}
+
+void
+ada_gtk_plot_set_line_style (GtkPlotLine* line, GtkPlotLineStyle style) {
+  line->line_style = style;
+}
+
+void
+ada_gtk_plot_set_line_width (GtkPlotLine* line, gfloat width) {
+  line->line_width = width;
+}
+
 gint
 ada_gtk_extra_plot_flag_is_set (GtkPlot* plot, guint8  flag) {
   return ((GTK_PLOT_FLAGS (plot) & flag) != 0);
