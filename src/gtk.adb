@@ -75,14 +75,13 @@ package body Gtk is
    -- Type_Name --
    ---------------
 
-   function Type_Name (Object : in Root_Type'Class)
-                       return      String
+   function Type_Name (Type_Num : in Gint) return      String
    is
-      function Internal (Object : in System.Address)
+      function Internal (Type_Num : in Gint)
                          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_type_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Object)));
+      return Interfaces.C.Strings.Value (Internal (Type_Num));
    end Type_Name;
 
    --------------------
