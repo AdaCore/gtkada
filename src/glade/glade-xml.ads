@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                       Copyright (C) 2000                          --
---                           ACT-Europe                              --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,12 +36,12 @@
 
 with System;
 with Glib;
-with Gtk.Data;
+with Glib.Object;
 with Gtk.Widget; use Gtk.Widget;
 
 package Glade.XML is
 
-   type Glade_XML_Record is new Gtk.Data.Gtk_Data_Record with private;
+   type Glade_XML_Record is new Glib.Object.GObject_Record with private;
    type Glade_XML is access all Glade_XML_Record'Class;
 
    procedure Gtk_New
@@ -131,7 +130,7 @@ package Glade.XML is
    procedure Set_Custom_Handler (Handler : Custom_Widget_Handler);
 
 private
-   type Glade_XML_Record is new Gtk.Data.Gtk_Data_Record with null record;
+   type Glade_XML_Record is new Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "glade_xml_get_type");
 end Glade.XML;
