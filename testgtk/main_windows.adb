@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -44,7 +44,6 @@ with Gtk.HButton_Box;     use Gtk.HButton_Box;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Main;            use Gtk.Main;
 with Gtk.Notebook;        use Gtk.Notebook;
-with Gtk.Pixmap;          use Gtk.Pixmap;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Style;           use Gtk.Style;
@@ -127,11 +126,6 @@ package body Main_Windows is
       Gtkada_Demos : Boolean := False;
       Pixbuf_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
-
-   function New_Pixmap
-     (Icon   : Interfaces.C.Strings.chars_ptr_array;
-      Window : access Gtk_Widget_Record'Class) return Gtk_Pixmap;
-   --  Create a new icon from a file
 
    procedure Display_Help (Button : access Gtk_Widget_Record'Class);
    --  Display an Help window for the current demo
@@ -429,6 +423,8 @@ package body Main_Windows is
    ------------------
 
    procedure Display_Help (Button : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Button);
+
       Close     : Gtk.Button.Gtk_Button;
       Scrolled  : Gtk_Scrolled_Window;
       Label     : Gtk.Label.Gtk_Label;
@@ -553,28 +549,12 @@ package body Main_Windows is
       Show_All (Help_Dialog);
    end Display_Help;
 
-   ----------------
-   -- New_Pixmap --
-   ----------------
-
-   function New_Pixmap
-     (Icon   : Interfaces.C.Strings.chars_ptr_array;
-      Window : access Gtk_Widget_Record'Class) return Gtk_Pixmap
-   is
-      Pixmap    : Gdk.Gdk_Pixmap;
-      Mask      : Gdk.Gdk_Bitmap;
-      GtkPixmap : Gtk_Pixmap;
-   begin
-      Create_From_Xpm_D (Pixmap, Get_Window (Window), Mask, Null_Color, Icon);
-      Gtk_New (GtkPixmap, Pixmap, Mask);
-      return GtkPixmap;
-   end New_Pixmap;
-
    -----------------
    --  Exit_Main  --
    -----------------
 
    procedure Exit_Main (Object : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Object);
    begin
       Gtk.Main.Main_Quit;
    end Exit_Main;
@@ -583,9 +563,10 @@ package body Main_Windows is
    -- Delete_Event --
    ------------------
 
-   function Delete_Event (Object : access Gtk_Widget_Record'Class)
-                         return Boolean
+   function Delete_Event
+     (Object : access Gtk_Widget_Record'Class) return Boolean
    is
+      pragma Unreferenced (Object);
    begin
       --  Do not allow the user to kill the window by clicking on the icon,
       --  he has to press explicitly "Quit"
