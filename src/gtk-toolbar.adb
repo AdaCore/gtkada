@@ -144,7 +144,7 @@ package body Gtk.Toolbar is
 
    function Get_Button_Relief (Toolbar : in Gtk_Toolbar)
                                return Gtk_Relief_Style is
-      function Internal (Toolbar : System.Address) return Int;
+      function Internal (Toolbar : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_toolbar_get_button_relief");
    begin
       return Gtk_Relief_Style'Val (Internal (Get_Object (Toolbar)));
