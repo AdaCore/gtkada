@@ -169,6 +169,11 @@ package Gtk.Editable is
    --    "insert-text" handler, it is possible to override the default
    --    behavior by connecting a handler to this signal, and then
    --    stopping the signal.
+   --
+   --  - "changed"
+   --    procedure Handler (Widget : access Gtk_Editable_Record'Class);
+   --
+   --    Called when the contents of Widget has changed
    --  </signals>
 
 private
