@@ -23,6 +23,7 @@ New features in 2.0.1:
 - Fixed Gtk.Text_Buffer.Cut|Copy|Paste_Clipboard
 - Speed improvements and code clean up in Gtkada.Canvas
 - Full support for Pango (font handling and internationalization support)
+- New package Glib.Unicode
 
 LSM entry follows:
 Begin4
