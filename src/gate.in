@@ -7,7 +7,8 @@ fi
 
 echo Generating Ada files...
 
-file=$1
+dir=`dirname $1`
+file=`cd $dir; pwd`/`basename $1`
 info=`gate-in.exe -p -s $file`
 status=$?
 
@@ -30,7 +31,7 @@ else
 fi
 
 owd=`pwd`
-cd "`dirname $file`/$srcdir"
+cd "$dir/$srcdir"
 
 gt=".gate/$prj"
 mkdir -p $gt > /dev/null 2>&1
@@ -38,7 +39,7 @@ tmp=$gt/tmp
 /bin/rm -rf $tmp
 mkdir $tmp
 wd=`pwd`
-gate-in.exe $owd/$file > $tmp/gate.ada
+gate-in.exe $file > $tmp/gate.ada
 
 if [ $? != 0 ]; then
   echo "Couldn't generate Ada code. Exiting."
