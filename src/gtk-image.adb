@@ -39,13 +39,13 @@ package body Gtk.Image is
 
    procedure Get
      (Image : access Gtk_Image_Record;
-      Val   : in Gdk.Image.Gdk_Image;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap)
+      Val   : out Gdk.Image.Gdk_Image;
+      Mask  : out Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
         (Image : in System.Address;
-         Val   : in Gdk.Image.Gdk_Image;
-         Mask  : in Gdk.Bitmap.Gdk_Bitmap);
+         Val   : out Gdk.Image.Gdk_Image;
+         Mask  : out Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_image_get");
 
    begin
