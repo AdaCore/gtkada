@@ -1,7 +1,25 @@
 EXPORTS
+	gtk_border_combo_get_type
+	gtk_border_combo_new
 	gtk_check_item_get_type
 	gtk_check_item_new
 	gtk_check_item_new_with_label
+	gtk_color_combo_find_color
+	gtk_color_combo_get_color_at
+	gtk_color_combo_get_type
+	gtk_color_combo_new
+	gtk_color_combo_new_with_values
+	gtk_combo_box_get_type
+	gtk_combobox_hide_popdown_window
+	gtk_combobox_new
+	gtk_font_combo_get_type
+	gtk_font_combo_new
+	gtk_font_combo_select
+	gtk_font_combo_select_nth
+	gtk_item_entry_get_type
+	gtk_item_entry_new_with_max_length
+	gtk_item_entry_set_justification
+	gtk_item_entry_set_text
 	gtk_plot_add_dataset
 	gtk_plot_add_function
 	gtk_plot_axis_get_attributes
@@ -131,3 +149,81 @@ EXPORTS
 	gtk_psfont_get_font
 	gtk_psfont_get_gdkfont
 	gtk_psfont_get_psfontname
+	gtk_sheet_add_column
+	gtk_sheet_add_row
+	gtk_sheet_attach
+	gtk_sheet_cell_clear
+	gtk_sheet_cell_delete
+	gtk_sheet_cell_get_state
+	gtk_sheet_cell_get_text
+	gtk_sheet_change_entry
+	gtk_sheet_clip_range
+	gtk_sheet_column_button_add_label
+	gtk_sheet_column_button_justify
+	gtk_sheet_column_set_justification
+	gtk_sheet_column_set_sensitivity
+	gtk_sheet_column_set_visibility
+	gtk_sheet_columns_set_sensitivity
+	gtk_sheet_delete_columns
+	gtk_sheet_delete_rows
+	gtk_sheet_freeze
+	gtk_sheet_get_active_cell
+	gtk_sheet_get_attributes
+	gtk_sheet_get_cell_area
+	gtk_sheet_get_child_at
+	gtk_sheet_get_entry
+	gtk_sheet_get_hadjustment
+	gtk_sheet_get_link
+	gtk_sheet_get_pixel_info
+	gtk_sheet_get_state
+	gtk_sheet_get_type
+	gtk_sheet_get_vadjustment
+	gtk_sheet_get_visible_range
+	gtk_sheet_hide_column_titles
+	gtk_sheet_hide_row_titles
+	gtk_sheet_insert_columns
+	gtk_sheet_insert_rows
+	gtk_sheet_link_cell
+	gtk_sheet_move_child
+	gtk_sheet_moveto
+	gtk_sheet_new
+	gtk_sheet_new_browser
+	gtk_sheet_new_with_custom_entry
+	gtk_sheet_put
+	gtk_sheet_range_clear
+	gtk_sheet_range_delete
+	gtk_sheet_range_set_background
+	gtk_sheet_range_set_border
+	gtk_sheet_range_set_border_color
+	gtk_sheet_range_set_editable
+	gtk_sheet_range_set_font
+	gtk_sheet_range_set_foreground
+	gtk_sheet_range_set_justification
+	gtk_sheet_range_set_visible
+	gtk_sheet_remove_link
+	gtk_sheet_row_button_add_label
+	gtk_sheet_row_button_justify
+	gtk_sheet_row_set_sensitivity
+	gtk_sheet_row_set_visibility
+	gtk_sheet_rows_set_sensitivity
+	gtk_sheet_select_column
+	gtk_sheet_select_range
+	gtk_sheet_select_row
+	gtk_sheet_set_active_cell
+	gtk_sheet_set_cell
+	gtk_sheet_set_cell_text
+	gtk_sheet_set_column_title
+	gtk_sheet_set_column_titles_height
+	gtk_sheet_set_column_width
+	gtk_sheet_set_hadjustment
+	gtk_sheet_set_row_height
+	gtk_sheet_set_row_title
+	gtk_sheet_set_row_titles_width
+	gtk_sheet_set_selection_mode
+	gtk_sheet_set_title
+	gtk_sheet_set_vadjustment
+	gtk_sheet_show_column_titles
+	gtk_sheet_show_row_titles
+	gtk_sheet_thaw
+	gtk_sheet_unclip_range
+	gtk_sheet_unselect_range
