@@ -143,7 +143,7 @@ package body Create_Button_Box is
         (Vbox, Create_Bbox (True, "Start", 40, 85, 20, Buttonbox_Start),
          True, True, 5);
       Pack_Start
-        (Vbox, Create_Bbox (True, "End", 40, 85, 20, Buttonbox_Style_End),
+        (Vbox, Create_Bbox (True, "End", 40, 85, 20, Buttonbox_End),
          True, True, 5);
 
 
@@ -167,7 +167,7 @@ package body Create_Button_Box is
         (Hbox, Create_Bbox (False, "Start", 30, 85, 20, Buttonbox_Start),
          True, True, 5);
       Pack_Start
-        (Hbox, Create_Bbox (False, "End", 30, 85, 20, Buttonbox_Style_End),
+        (Hbox, Create_Bbox (False, "End", 30, 85, 20, Buttonbox_End),
          True, True, 5);
       Show_All (Main_Vbox);
    end Run;
