@@ -10,7 +10,6 @@ with Glib;             use Glib;
 with Glu_H;            use Glu_H;
 with Gtk.Glarea;       use Gtk.Glarea;
 with Gtk.Handlers;     use Gtk.Handlers;
-with Interfaces.C;     use Interfaces.C;
 with Lwobjects;        use Lwobjects;
 with Trackball;        use Trackball;
 #else
