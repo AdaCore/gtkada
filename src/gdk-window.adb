@@ -76,6 +76,28 @@ package body Gdk.Window is
 
 
    ---------------
+   --  Convert  --
+   ---------------
+
+   function Convert (S : in System.Address) return Gdk_Window'Class is
+      Result : Gdk_Window;
+   begin
+      Set_Object (Result, S);
+      return Result;
+   end Convert;
+
+
+   ---------------
+   --  Convert  --
+   ---------------
+
+   function Convert (P : in Gdk_Window'Class) return System.Address is
+   begin
+      return Get_Object (P);
+   end Convert;
+
+
+   ---------------
    --  Destroy  --
    ---------------
 
@@ -122,6 +144,21 @@ package body Gdk.Window is
                             Attributes => Get_Object (Attributes),
                             Attributes_Mask => Attributes_Mask));
    end Gdk_New;
+
+
+   ------------------
+   -- Get_Children --
+   ------------------
+
+   function Get_Children (Window : in Gdk_Window'Class)
+                          return Gdk_Window_List.Glist is
+      function Internal (Window : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_window_get_children");
+      Result : Gdk_Window_List.Glist;
+   begin
+      Gdk_Window_List.Set_Object (Result, Internal (Get_Object (Window)));
+      return Result;
+   end Get_Children;
 
 
    ------------------
@@ -224,6 +261,29 @@ package body Gdk.Window is
    end Get_Parent;
 
 
+   -------------------
+   --  Get_Pointer  --
+   -------------------
+
+   procedure Get_Pointer (Window : in out Gdk_Window;
+                          X      :    out Gint;
+                          Y      :    out Gint;
+                          Mask   :    out Gdk.Types.Gdk_Modifier_Type;
+                          Result :    out Gdk_Window) is
+      function Internal (Window : in System.Address;
+                         X      : in System.Address;
+                         Y      : in System.Address;
+                         Mask   : in System.Address)
+                         return      System.Address;
+      pragma Import (C, Internal, "gdk_window_get_pointer");
+   begin
+      Set_Object (Result, Internal (Get_Object (Window),
+                                    X'Address,
+                                    Y'Address,
+                                    Mask'Address));
+   end Get_Pointer;
+
+
    --------------------
    --  Get_Position  --
    --------------------
@@ -281,6 +341,20 @@ package body Gdk.Window is
    begin
       Set_Object (Toplevel, Internal (Get_Object (Window)));
    end Get_Toplevel;
+
+
+   ---------------------
+   --  Get_Toplevels  --
+   ---------------------
+
+   function Get_Toplevels return Gdk_Window_List.Glist is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gdk_window_get_toplevels");
+      Result : Gdk_Window_List.Glist;
+   begin
+      Gdk_Window_List.Set_Object (Result, Internal);
+      return Result;
+   end Get_Toplevels;
 
 
    ----------------
@@ -553,10 +627,10 @@ package body Gdk.Window is
 
    procedure Set_Geometry_Hints
      (Window   : in out Gdk_Window;
-      Geometry : in out Gdk.Geometry.Gdk_Geometry;
+      Geometry : in out Gdk.Types.Gdk_Geometry;
       Flags    : in     Gdk.Types.Gdk_Window_Hints) is
       procedure Internal (Window   : in System.Address;
-                          Geometry : in out Gdk.Geometry.Gdk_Geometry;
+                          Geometry : in out Gdk.Types.Gdk_Geometry;
                           Flags    : in     Gdk.Types.Gdk_Window_Hints);
       pragma Import (C, Internal, "gdk_window_set_geometry_hints");
    begin
@@ -682,6 +756,23 @@ package body Gdk.Window is
       Internal (Get_Object (Window));
       Set_Object (Window, System.Null_Address);
    end Unref;
+
+
+   -----------------------
+   -- Window_At_Pointer --
+   -----------------------
+
+   procedure Window_At_Pointer (Win_X  : out Gint;
+                                Win_Y  : out Gint;
+                                Window : out Gdk_Window) is
+      function Internal (Win_X  : in System.Address;
+                         Win_Y  : in System.Address)
+                         return System.Address;
+      pragma Import (C, Internal, "gdk_window_at_pointer");
+   begin
+      Set_Object (Window, Internal (Win_X'Address,
+                                    Win_Y'Address));
+   end Window_At_Pointer;
 
 
    ----------------
