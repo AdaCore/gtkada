@@ -282,4 +282,20 @@ package Gtk.Signal is
      (Obj        : access Gtk.Object.Gtk_Object_Record'Class;
       Handler_Id : in Guint);
 
+   function Count_Arguments
+     (The_Type : Gtk_Type; Name : in String) return Guint;
+   --  Returns the number of arguments used in the handlers for the signal
+   --  Note that in the Connect functions, we always test whether the user
+   --  has asked for *at most* the number of arguments defined by gtk+ for the
+   --  callback. This is because having less argument is authorized (the
+   --  extra parameters passed by gtk+ will simply be ignored), whereas having
+   --  more arguments is impossible (they would never be set).
+
+   function Argument_Type
+     (The_Type : Gtk_Type;
+      Name     : in String;
+      Num      : in Guint) return Gtk_Type;
+   --  Returns the type of the num-th argument for the handlers of signal
+   --  name
+
 end Gtk.Signal;

@@ -69,44 +69,18 @@ package body Gtk.Signal is
                               return          Guint;
    --  Internal function used to connect the signal.
 
-   function Count_Arguments
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Name   : in String)
-     return          Gint;
-   --  Returns the number of arguments used in the handlers for the signal
-   --  Note that in the Connect functions below we always test whether the user
-   --  has ask for *at most* the number of arguments defined by gtk+ for the
-   --  callback. This is because having less argument is authorized (the
-   --  extra parameters passed by gtk+ will simply be ignored), whereas having
-   --  more arguments is impossible (they would never be set).
-   --
-   --  This functions returns -1 if the object does not know the signal.
-
-   function Argument_Type
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Name   : in String;
-      Num    : in Guint)
-     return Gtk_Type;
-   --  Returns the type of the num-th argument for the handlers the for signal
-
-
    -------------------
    -- Argument_Type --
    -------------------
 
    function Argument_Type
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Name   : in String;
-      Num    : in Guint)
-     return Gtk_Type
+     (The_Type : Gtk_Type; Name : in String; Num : in Guint) return Gtk_Type
    is
-      function Internal (Object : System.Address;
-                         Name : String;
-                         Num  : Guint)
-                        return Gtk_Type;
+      function Internal
+        (The_Type : Gtk_Type; Name : String; Num  : Guint) return Gtk_Type;
       pragma Import (C, Internal, "ada_signal_argument_type");
    begin
-      return Internal (Get_Object (Object), Name & ASCII.Nul, Num);
+      return Internal (The_Type, Name & ASCII.Nul, Num);
    end Argument_Type;
 
    ---------------------
@@ -114,16 +88,13 @@ package body Gtk.Signal is
    ---------------------
 
    function Count_Arguments
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Name   : in String)
-     return          Gint
+     (The_Type : Gtk_Type; Name : in String) return Guint
    is
-      function Internal (Object : System.Address;
-                         Name : String)
-                        return Gint;
+      function Internal (The_Type : Gtk_Type; Name : String) return Guint;
       pragma Import (C, Internal, "ada_signal_count_arguments");
+
    begin
-      return Internal (Get_Object (Object), Name & ASCII.Nul);
+      return Internal (The_Type, Name & ASCII.Nul);
    end Count_Arguments;
 
    -----------------------
@@ -244,8 +215,8 @@ package body Gtk.Signal is
       begin
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
-         pragma Assert (Count_Arguments (Obj, Name) >= 0);
-         pragma Assert (Argument_Type (Obj, Name, -1)
+         pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 0);
+         pragma Assert (Argument_Type (Get_Type (Obj), Name, -1)
                         = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
@@ -270,7 +241,7 @@ package body Gtk.Signal is
       begin
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
-         pragma Assert (Count_Arguments (Object, Name) <= 0);
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 0);
          Internal (Get_Object (Object.all), Name & Ascii.NUL);
       end Emit_By_Name;
 
@@ -371,8 +342,9 @@ package body Gtk.Signal is
       begin
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
-         pragma Assert (Count_Arguments (Obj, Name) >= 1);
-         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+         pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
+         pragma Assert
+           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -398,7 +370,7 @@ package body Gtk.Signal is
       begin
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
-         pragma Assert (Count_Arguments (Object, Name) <= 1);
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 1);
          Internal (Get_Object (Object.all), Name & Ascii.Nul,
                    Get_Object (Cb_Data));
       end Emit_By_Name;
@@ -506,8 +478,9 @@ package body Gtk.Signal is
       begin
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
-         pragma Assert (Count_Arguments (Obj, Name) >= 1);
-         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+         pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
+         pragma Assert
+           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -533,7 +506,7 @@ package body Gtk.Signal is
       begin
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
-         pragma Assert (Count_Arguments (Object, Name) <= 1);
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 1);
          Internal (Get_Object (Object.all), Name & Ascii.Nul,
                    Get_Object (Cb_Data));
       end Emit_By_Name;
@@ -623,8 +596,9 @@ package body Gtk.Signal is
       begin
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
-         pragma Assert (Count_Arguments (Obj, Name) >= 0);
-         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+         pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 0);
+         pragma Assert
+           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -648,7 +622,7 @@ package body Gtk.Signal is
       begin
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
-         pragma Assert (Count_Arguments (Object, Name) <= 0);
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 0);
          Internal (Get_Object (Object.all), Name & Ascii.NUL);
       end Emit_By_Name;
 
@@ -767,8 +741,10 @@ package body Gtk.Signal is
       begin
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
-         pragma Assert (Count_Arguments (Obj, Name) >= 2);
-         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+         pragma Assert
+           (Count_Arguments (Get_Type (Gtk_Object (Obj)), Name) >= 2);
+         pragma Assert (Argument_Type (Get_Type (Gtk_Object (Obj)), Name, -1) =
+           Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -828,8 +804,9 @@ package body Gtk.Signal is
       begin
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
-         pragma Assert (Count_Arguments (Obj, Name) >= 0);
-         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+         pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 0);
+         pragma Assert
+           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -853,7 +830,7 @@ package body Gtk.Signal is
       begin
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
-         pragma Assert (Count_Arguments (Object, Name) <= 0);
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 0);
          Internal (Get_Object (Object.all), Name & Ascii.NUL);
       end Emit_By_Name;
 
@@ -936,8 +913,9 @@ package body Gtk.Signal is
       begin
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
-         pragma Assert (Count_Arguments (Obj, Name) >= 0);
-         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+         pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 0);
+         pragma Assert
+           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
