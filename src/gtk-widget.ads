@@ -1217,8 +1217,8 @@ private
 
    type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
 
-   pragma Import (C, Push_Style, "gtk_push_style");
-   pragma Import (C, Pop_Style, "gtk_pop_style");
+   pragma Import (C, Push_Style, "gtk_widget_push_style");
+   pragma Import (C, Pop_Style, "gtk_widget_pop_style");
    pragma Import (C, Set_Default_Style, "gtk_widget_set_default_style");
    pragma Import (C, Get_Default_Style, "gtk_widget_get_default_style");
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
