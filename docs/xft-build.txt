@@ -82,7 +82,7 @@ cd ..
 tar xzvf xft-2.1.2.tar.gz
 cd xft-2.1.2
 ./configure --prefix=$prefix
-patch < .../xft-2.1.2.diff
+patch < .../GtkAda/contrib/xft-2.1.2.diff
 make
 make install
 cd ..
