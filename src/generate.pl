@@ -219,7 +219,7 @@ sub parse_enums
 
     for ($line = 0; $line < $#deffile; $line ++)
       {
-	last if ($deffile[$line] =~ /^STRUCT\s+_$file\s*/i);
+	last if ($deffile[$line] =~ /^STRUCT\s+_$file($|\s)/i);
 
 	# Do we have an enumerated type ?
 	if ($deffile[$line] =~ /^typedef enum/) {
@@ -227,6 +227,7 @@ sub parse_enums
 	  while ($deffile[$line] !~ /;/) {
 	    $line++;
 	    $enum .= $deffile[$line];
+	    chop $enum;  # so that multi-lines comments are correctly handled
 	  }
 
 	  # Remove comments
@@ -244,7 +245,8 @@ sub parse_enums
 	    $enumerates .= "mod 2 ** 16;\n";
 	    foreach (split (/,/, $enum)) {
 	      my ($value, $num) = lc ($_);
-	      $value =~ s/G[td]k|Gnome_//i;
+	      $value =~ s/G[td]k_|Gnome_//i;
+	      $value =~ s/^$current_package\_//i;
 	      ($value, $num) = ($value =~ /^([^=]+)=(.*)/);
 	      $num = "2 ** $1" if ($num =~ /<<(.*)/);
 
@@ -260,6 +262,7 @@ sub parse_enums
 	    foreach (split (/,/, $enum)) {
 	      my ($value) = lc ($_);
 	      $value =~ s/G[td]k|Gnome_//i;
+	      $value =~ s/^$current_package\_//i;
 	      $enumerates .= ",\n" unless ($first);
 	      $first = 0;
 	      $enumerates .= "      " . &create_ada_name ($value);
@@ -413,9 +416,10 @@ sub generate_specifications
     push (@output, "\nprivate\n");
     push (@output, "   type $prefix\_$current_package\_Record is "
 	  . ($abstract ? "abstract " : "")
-	  . "new ".
-	  &package_name ($parent). ".$parent_prefix\_", &create_ada_name ($parent).
-	  "_Record with null record;\n\n");
+	  . "new ",
+	  $parent_string = ($parent eq "Root_Type") ?
+	      "Root_Type" : "$parent_string\_Record",
+	  " with null record;\n\n");
 
     if ($has_get_type_subprogram) {
       push (@output,
@@ -542,7 +546,7 @@ sub parse_functions
       {
 	# If this looks like a subprogram start (<return_type>  <name>)
 
-	if (/^(\w\S+(\s+\*)?)\s+((g[dt]k|gnome)_\S+)/) {
+	if (/^(\w\S+(\s+\*)?)\s*((g[dt]k|gnome)_\S+)/) {
 	  chop;
 
 	  # Read the whole subprogram definition at once. This makes it
@@ -556,7 +560,7 @@ sub parse_functions
 
 	  # Associate pointers (return value) with the type instead of the
 	  # name. Preserve comments indications (*/)
-	  s/(\w+)\[\]/* $1/g;   # "*argv[]" arguments (see gnome-client.h)
+	  s/(\w+)\s*\[\]/* $1/g;   # "*argv[]" arguments (see gnome-client.h)
 	  s/\s*\*([^\/])/* $1/g;
 
 	  # Parse the definition
