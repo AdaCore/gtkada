@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C.Strings;
+with System.Address_To_Access_Conversions;
 
 package body Gtk.Text_Iter is
 
@@ -57,6 +58,9 @@ package body Gtk.Text_Iter is
    --  the proper method is to use the 'Address of a local Gtk_Text_Iter.
 
    use Gtk.Text_Tag;
+
+   package Iter_Access_Address_Conversions is
+     new System.Address_To_Access_Conversions (Gtk_Text_Iter);
 
    --------------
    -- Get_Char --
@@ -1053,9 +1057,18 @@ package body Gtk.Text_Iter is
          Start   : Gtk_Text_Iter;
          The_End : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_in_range");
-
    begin
       return To_Boolean (Internal (Iter, Start, The_End));
    end In_Range;
+
+   -------------------
+   -- Get_Text_Iter --
+   -------------------
+
+   function Get_Text_Iter (Val  : Glib.Values.GValue) return Gtk_Text_Iter is
+   begin
+      return Iter_Access_Address_Conversions.To_Pointer
+                (Glib.Values.Get_Address (Val)).all;
+   end Get_Text_Iter;
 
 end Gtk.Text_Iter;

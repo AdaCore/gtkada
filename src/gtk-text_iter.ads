@@ -34,6 +34,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
+with Glib.Values;
 with Gdk.Pixbuf;
 with Gtk.Text_Child;
 with Gtk.Text_Tag;
@@ -601,6 +602,23 @@ package Gtk.Text_Iter is
    --  There are some exceptions, such as In_Range, that expect a pre-sorted
    --  range.
 
+   -------------------------------
+   -- Converting to/from GValue --
+   -------------------------------
+
+   procedure Set_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : Gtk_Text_Iter);
+   --  Set the value of the given GValue to Iter.
+   --  Note that Iter is stored by reference, which means no copy of Iter
+   --  is made. Iter should remain allocated as long as Val is being used.
+
+   function Get_Text_Iter (Val  : Glib.Values.GValue) return Gtk_Text_Iter;
+   --  Extract the iterator from the given GValue.
+   --  Note that the iterator returned is a copy of the iterator referenced
+   --  by the give GValue. Modifying the iterator returned does not modify
+   --  the iterator referenced by the GValue.
+
 private
 
    type Gtk_Text_Iter is limited record
@@ -636,5 +654,6 @@ private
    pragma Import (C, Compare, "gtk_text_iter_compare");
    pragma Import (C, Reorder, "gtk_text_iter_reorder");
    pragma Import (C, Get_Pixbuf, "gtk_text_iter_get_pixbuf");
+   pragma Import (C, Set_Text_Iter, "g_value_set_pointer");
 
 end Gtk.Text_Iter;
