@@ -76,9 +76,9 @@ package Gtk.Text_Tag is
    --  Event: the event.
    --  Iter: location where the event was received.
 
-   ------------------
-   --  Properties  --
-   ------------------
+   ----------------
+   -- Properties --
+   ----------------
 
    procedure Set_Property_Name
      (Tag  : access Gtk_Text_Tag_Record;

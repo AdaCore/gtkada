@@ -54,16 +54,19 @@ package body Gtk.Text_Tag is
    is
       function Internal (Name : String) return System.Address;
       pragma Import (C, Internal, "gtk_text_tag_new");
+
       function Internal_No_Name (Dummy : System.Address) return System.Address;
       pragma Import (C, Internal_No_Name, "gtk_text_tag_new");
       --  Same as Internal except that we need to pass a null address for
       --  the name.
+
    begin
       if Name = "" then
          Set_Object (Widget, Internal_No_Name (System.Null_Address));
       else
          Set_Object (Widget, Internal (Name & ASCII.NUL));
       end if;
+
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -96,11 +99,10 @@ package body Gtk.Text_Tag is
    -- Get_Priority --
    ------------------
 
-   function Get_Priority (Tag    : access Gtk_Text_Tag_Record)
-                          return Gint
-   is
-      function Internal (Tag    : System.Address) return Gint;
+   function Get_Priority (Tag : access Gtk_Text_Tag_Record) return Gint is
+      function Internal (Tag : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_tag_get_priority");
+
    begin
       return Internal (Get_Object (Tag));
    end Get_Priority;
@@ -113,30 +115,39 @@ package body Gtk.Text_Tag is
      (Tag      : access Gtk_Text_Tag_Record;
       Priority : Gint)
    is
-      procedure Internal
-        (Tag      : System.Address;
-         Priority : Gint);
+      procedure Internal (Tag : System.Address; Priority : Gint);
       pragma Import (C, Internal, "gtk_text_tag_set_priority");
+
    begin
       Internal (Get_Object (Tag), Priority);
    end Set_Priority;
 
-   ------------------------
-   --  Set_Property_Name --
-   ------------------------
+   ----------------
+   -- Properties --
+   ----------------
+
+   procedure g_object_set
+     (Object        : System.Address;
+      Property_Name : String;
+      Value         : String;
+      No_More_Args  : System.Address := System.Null_Address);
+
+   procedure g_object_set
+     (Object        : System.Address;
+      Property_Name : String;
+      Value         : Gint;
+      No_More_Args  : System.Address := System.Null_Address);
+   pragma Import (C, g_object_set, "g_object_set");
+
+   -----------------------
+   -- Set_Property_Name --
+   -----------------------
 
    procedure Set_Property_Name
      (Tag  : access Gtk_Text_Tag_Record;
-      Name : String)
-   is
-      procedure Internal
-        (Object : System.Address;
-         Property_Name : String;
-         Value : String;
-         No_More_Args : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+      Name : String) is
    begin
-      Internal (Get_Object (Tag), "name" & ASCII.NUL, Name & ASCII.NUL);
+      g_object_set (Get_Object (Tag), "name" & ASCII.NUL, Name & ASCII.NUL);
    end Set_Property_Name;
 
    ------------------------------
@@ -145,16 +156,9 @@ package body Gtk.Text_Tag is
 
    procedure Set_Property_Background
      (Tag        : access Gtk_Text_Tag_Record;
-      Background : String)
-   is
-      procedure Internal
-        (Object : System.Address;
-         Property_Name : String;
-         Value : String;
-         No_More_Args : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+      Background : String) is
    begin
-      Internal
+      g_object_set
         (Get_Object (Tag), "background" & ASCII.NUL, Background & ASCII.NUL);
    end Set_Property_Background;
 
@@ -164,16 +168,10 @@ package body Gtk.Text_Tag is
 
    procedure Set_Property_Editable
      (Tag       : access Gtk_Text_Tag_Record;
-      Editable  : Boolean := True)
-   is
-      procedure Internal
-        (Object : System.Address;
-         Property_Name : String;
-         Value : Boolean;
-         No_More_Args : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+      Editable  : Boolean := True) is
    begin
-      Internal (Get_Object (Tag), "editable" & ASCII.NUL, Editable);
+      g_object_set
+        (Get_Object (Tag), "editable" & ASCII.NUL, Boolean'Pos (Editable));
    end Set_Property_Editable;
 
    ------------------------------
@@ -182,16 +180,9 @@ package body Gtk.Text_Tag is
 
    procedure Set_Property_Foreground
      (Tag        : access Gtk_Text_Tag_Record;
-      Foreground : String)
-   is
-      procedure Internal
-        (Object : System.Address;
-         Property_Name : String;
-         Value : String;
-         No_More_Args : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+      Foreground : String) is
    begin
-      Internal
+      g_object_set
          (Get_Object (Tag), "foreground" & ASCII.NUL, Foreground & ASCII.NUL);
    end Set_Property_Foreground;
 
@@ -201,37 +192,24 @@ package body Gtk.Text_Tag is
 
    procedure Set_Property_Invisible
      (Tag        : access Gtk_Text_Tag_Record;
-      Invisible  : Boolean := True)
-   is
-      procedure Internal
-        (Object : System.Address;
-         Property_Name : String;
-         Value : Boolean;
-         No_More_Args : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+      Invisible  : Boolean := True) is
    begin
-      Internal (Get_Object (Tag), "invisible" & ASCII.NUL, Invisible);
+      g_object_set
+        (Get_Object (Tag), "invisible" & ASCII.NUL, Boolean'Pos (Invisible));
    end Set_Property_Invisible;
 
-   ---------------------------------
-   --  Set_Property_Strikethrough --
-   ---------------------------------
+   --------------------------------
+   -- Set_Property_Strikethrough --
+   --------------------------------
 
    procedure Set_Property_Strikethrough
      (Tag           : access Gtk_Text_Tag_Record;
-      Strikethrough : Boolean := True)
-   is
-      procedure Internal
-        (Object : System.Address;
-         Property_Name : String;
-         Value : Gboolean;
-         No_More_Args : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+      Strikethrough : Boolean := True) is
    begin
-      Internal
+      g_object_set
         (Get_Object (Tag),
          "strikethrough" & ASCII.NUL,
-         To_Gboolean (Strikethrough));
+         Boolean'Pos (Strikethrough));
    end Set_Property_Strikethrough;
 
 end Gtk.Text_Tag;
