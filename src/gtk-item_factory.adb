@@ -391,7 +391,12 @@ package body Gtk.Item_Factory is
             Ientry.Accelerator := ICS.New_String (Accelerator);
          end if;
 
-         Ientry.Callback        := Callback.all'Address;
+         if Callback = null then
+            Ientry.Callback := System.Null_Address;
+         else
+            Ientry.Callback := Callback.all'Address;
+         end if;
+
          Ientry.Callback_Action := Callback_Action;
 
          if Item_Type = "" then
