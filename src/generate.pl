@@ -405,7 +405,9 @@ sub create_ada_name
 
     return "The_Type" if ($entity eq "Type");
     return "The_End" if ($entity eq "End");
-    return "The_Digits" if ($entity eq "Digits");    
+    return "The_Digits" if ($entity eq "Digits");
+    return "GEntry" if ($entity eq "Entry");     # gnome-entry.h
+    return "Accepted" if ($entity eq "Accept");  # gnome-icon-item.h
     return $entity;
   }
 
@@ -421,7 +423,7 @@ sub package_name
     $entity =~ s/([a-z])([A-Z])/$1_$2/g;
     $entity =~ s/Gtk\.Range/Gtk\.GRange/;
     $entity =~ s/Gtk\.Entry/Gtk\.GEntry/;
-    $entity =~ s/Gnome(.*)\.Entry/Gnome$1\.GEntry/;    
+    $entity =~ s/Gnome(.*)\.Entry/Gnome$1\.GEntry/;
     return $entity;
   }
 
