@@ -42,6 +42,9 @@ package Glib.XML is
       Tag   : String_Ptr;
       --  The name of this node
 
+      Attributes   : String_Ptr;
+      --  The attributes of this node
+
       Value : String_Ptr;
       --  The value, or null is not relevant
 
@@ -72,4 +75,9 @@ package Glib.XML is
    --  Return the value of the field 'Field' if present in the children of N,
    --  null otherwise
 
+   function Get_Attribute
+     (N : in Node_Ptr;
+      Attribute_Name : in String) return String_Ptr;
+   --  Return the value of the attibute 'Attribute_Name' if present,
+   --  null otherwise
 end Glib.XML;

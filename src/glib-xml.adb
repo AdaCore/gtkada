@@ -52,6 +52,22 @@ package body Glib.XML is
    --  terminating before the first 'Terminator' character. Index will also
    --  point to the next non blank character.
 
+   procedure Extract_Attrib
+     (Tag        : in out String_Ptr;
+      Attributes : out String_Ptr;
+      Empty_Node : out Boolean);
+   --  Extract the attributes as a string, if the tag contains blanks ' '
+   --  On return, Tag is unchanged and Attributes contains the string
+   --  If the last character in Tag is '/' then the node is empty and
+   --  Empty_Node is set to True
+
+   procedure Get_Next_Word
+     (Buf     : String;
+      Index   : in out Natural;
+      Word    : out String_Ptr);
+   --  extract the next textual word from Buf and return it.
+   --  return null if no word left
+
    -----------------
    -- Skip_Blanks --
    -----------------
@@ -92,6 +108,121 @@ package body Glib.XML is
       end if;
    end Get_Buf;
 
+   ------------------------
+   -- Extract_Attributes --
+   ------------------------
+
+   procedure Extract_Attrib
+     (Tag : in out String_Ptr;
+      Attributes : out String_Ptr;
+      Empty_Node : out Boolean)
+   is
+      Index : Natural := Tag'First;
+      Index_Last_Of_Tag : Natural;
+      S : String_Ptr;
+
+   begin
+      --  First decide if the node is empty
+
+      if Tag.all (Tag.all'Last) = '/' then
+         Empty_Node := True;
+      else
+         Empty_Node := False;
+      end if;
+
+      while Index <= Tag.all'Last and then
+        not
+          (Tag.all (Index) = ' '  or else Tag.all (Index) = ASCII.LF
+           or else Tag.all (Index) = ASCII.HT
+           or else Tag.all (Index) = ASCII.CR)
+      loop
+         Index := Index + 1;
+      end loop;
+
+      Index_Last_Of_Tag := Index - 1;
+      Skip_Blanks (Tag.all, Index);
+
+      if Index <= Tag.all'Last then
+         if Empty_Node then
+            Attributes := new String' (Tag (Index .. Tag'Last - 1));
+         else
+            Attributes := new String' (Tag (Index .. Tag'Last));
+         end if;
+
+         S := new String' (Tag.all (Tag.all'First .. Index_Last_Of_Tag));
+         Free (Tag);
+         Tag := S;
+      end if;
+   end Extract_Attrib;
+
+   --------------------
+   --  Get_Next_Word --
+   --------------------
+
+   procedure Get_Next_Word
+     (Buf     : String;
+      Index   : in out Natural;
+      Word    : out String_Ptr)
+   is
+      Terminator : Character := ' ';
+   begin
+      Skip_Blanks (Buf, Index);
+
+      if Buf (Index) = ''' or Buf (Index) = '"' then
+         --  If the word starts with a quotation mark, then read until
+         --  the closing mark
+
+         Terminator := Buf (Index);
+         Index := Index + 1;
+         Get_Buf (Buf, Index, Terminator, Word);
+
+      else
+         --  For a normal word, scan up to either a blank, or a '='
+
+         declare
+            Start_Index : constant Natural := Index;
+         begin
+            while Buf (Index) /= ' ' and
+              Buf (Index) /= '=' loop
+               Index := Index + 1;
+            end loop;
+
+            Word := new String' (Buf (Start_Index .. Index - 1));
+         end;
+      end if;
+
+      if Index < Buf'Last then
+         Skip_Blanks (Buf, Index);
+      end if;
+   end Get_Next_Word;
+
+   -------------------
+   -- Get_Attribute --
+   -------------------
+
+   function Get_Attribute
+     (N : in Node_Ptr;
+      Attribute_Name : in String) return String_Ptr
+   is
+      Index : Natural := N.Attributes.all'First;
+      Key, Value : String_Ptr;
+
+   begin
+      while Index < N.Attributes.all'Last loop
+         Get_Next_Word (N.Attributes.all, Index, Key);
+         Get_Buf (N.Attributes.all, Index, '=', Value);
+         Get_Next_Word (N.Attributes.all, Index, Value);
+
+         if Attribute_Name = Key.all then
+            exit;
+         else
+            Free (Key);
+            Free (Value);
+         end if;
+      end loop;
+      return Value;
+   end Get_Attribute;
+
    --------------
    -- Get_Node --
    --------------
@@ -100,56 +231,71 @@ package body Glib.XML is
       N : Node_Ptr := new Node;
       P, Q : Node_Ptr;
       S : String_Ptr;
+      Index_Save : Natural;
+      Empty_Node : Boolean;
 
    begin
       pragma Assert (Buf (Index.all) = '<');
       Index.all := Index.all + 1;
+      Index_Save := Index.all;
       Get_Buf (Buf, Index.all, '>', N.Tag);
 
-      if Buf (Index.all) = '<' then
-         if Buf (Index.all + 1) = '/' then
+      --  Here we have to deal with the attributes of the form
+      --  <tag attrib='xyyzy'>
 
-            --  No value contained on this node
+      Extract_Attrib (N.Tag, N.Attributes, Empty_Node);
 
-            N.Value := new String' ("");
-            Index.all := Index.all + 1;
+      --  it is possible to have a child-less node that has the form
+      --  <tag /> or <tag attrib='xyyzy'/>
+
+      if Empty_Node then
+         N.Value := new String' ("");
+      else
+         if Buf (Index.all) = '<' then
+            if Buf (Index.all + 1) = '/' then
+
+               --  No value contained on this node
+
+               N.Value := new String' ("");
+               Index.all := Index.all + 1;
+
+            else
+
+               --  Parse the children
+
+               N.Child := Get_Node (Buf, Index);
+               N.Child.Parent := N;
+               pragma Assert (Buf (Index.all) = '<');
+
+               while Buf (Index.all + 1) /= '/' loop
+                  Q := N.Child;
+                  P := Q.Next;
+
+                  while P /= null loop
+                     Q := P;
+                     P := P.Next;
+                  end loop;
+
+                  Q.Next := Get_Node (Buf, Index);
+                  Q.Next.Parent := N;
+                  pragma Assert (Buf (Index.all) = '<');
+               end loop;
+
+               Index.all := Index.all + 1;
+            end if;
 
          else
 
-            --  Parse the children
+            --  Get the value of this node
 
-            N.Child := Get_Node (Buf, Index);
-            N.Child.Parent := N;
-            pragma Assert (Buf (Index.all) = '<');
-
-            while Buf (Index.all + 1) /= '/' loop
-               Q := N.Child;
-               P := Q.Next;
-
-               while P /= null loop
-                  Q := P;
-                  P := P.Next;
-               end loop;
-
-               Q.Next := Get_Node (Buf, Index);
-               Q.Next.Parent := N;
-               pragma Assert (Buf (Index.all) = '<');
-            end loop;
-
-            Index.all := Index.all + 1;
+            Get_Buf (Buf, Index.all, '<', N.Value);
          end if;
 
-      else
-
-         --  Get the value of this node
-
-         Get_Buf (Buf, Index.all, '<', N.Value);
+         pragma Assert (Buf (Index.all) = '/');
+         Index.all := Index.all + 1;
+         Get_Buf (Buf, Index.all, '>', S);
+         pragma Assert (N.Tag.all = S.all);
       end if;
-
-      pragma Assert (Buf (Index.all) = '/');
-      Index.all := Index.all + 1;
-      Get_Buf (Buf, Index.all, '>', S);
-      pragma Assert (N.Tag.all = S.all);
 
       return N;
    end Get_Node;
@@ -172,10 +318,14 @@ package body Glib.XML is
 
    begin
       Do_Indent (Indent);
-      Put ("<" & N.Tag.all & ">");
+      Put ("<" & N.Tag.all);
+
+      if N.Attributes /= null then
+         Put (" " & N.Attributes.all);
+      end if;
 
       if N.Child /= null then
-         New_Line;
+         Put_Line (">");
          Print (N.Child, Indent + 2);
          P := N.Child.Next;
 
@@ -188,10 +338,14 @@ package body Glib.XML is
          Put_Line ("</" & N.Tag.all & ">");
 
       else
-         Put (N.Value.all);
-         Put_Line ("</" & N.Tag.all & ">");
+         if N.Value.all = "" then
+            Put_Line ("/>");
+         else
+            Put (">");
+            Put (N.Value.all);
+            Put_Line ("</" & N.Tag.all & ">");
+         end if;
       end if;
-
    end Print;
 
    -----------
