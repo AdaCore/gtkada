@@ -82,8 +82,12 @@ package Glib.XML is
    function Parse (File : String) return Node_Ptr;
    --  Parse File and return the first node representing the XML file.
 
-   procedure Print (N : Node_Ptr; Indent : Natural := 0);
-   --  Simple print procedure. Print the whole tree starting with N.
+   procedure Print
+     (N : Node_Ptr; Indent : Natural := 0; File_Name : String := "");
+   --  Write the tree starting with N into a file File_Name. The generated
+   --  file is valid XML, and can be parsed with the Parse function.
+   --  If File_Name is the empty string, then the tree is printed on the
+   --  standard output
 
    function Find_Tag (N : Node_Ptr; Tag : String) return Node_Ptr;
    --  Find a tag Tag in N and its brothers.
@@ -94,6 +98,10 @@ package Glib.XML is
 
    procedure Add_Child (N : Node_Ptr; Child : Node_Ptr);
    --  Add a new child to a node.
+
+   function Deep_Copy (N : Node_Ptr) return Node_Ptr;
+   --  Return a deep copy of the tree starting with N. N can then be freed
+   --  without affecting the copy.
 
    type Free_Specific_Data is access
      procedure (Data : in out XML_Specific_Data);

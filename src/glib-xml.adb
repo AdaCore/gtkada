@@ -78,6 +78,7 @@ package body Glib.XML is
    --   - &gt;
    --   - &lt;
    --   - &amp;
+   --   - &apos;
 
    -----------------
    -- Skip_Blanks --
@@ -241,6 +242,8 @@ package body Glib.XML is
                Str (J) := '<';
             elsif S (Start .. Index - 1) = "amp" then
                Str (J) := '&';
+            elsif S (Start .. Index - 1) = "apos" then
+               Str (J) := ''';
             end if;
          end if;
 
@@ -375,51 +378,101 @@ package body Glib.XML is
    -- Print --
    -----------
 
-   procedure Print (N : Node_Ptr; Indent : Natural := 0) is
-      P : Node_Ptr;
+   procedure Print
+     (N : Node_Ptr; Indent : Natural := 0; File_Name : String := "")
+   is
+      File : File_Type;
 
       procedure Do_Indent (Indent : Natural);
+      --  Print a string made of Indent blank characters.
+
+      procedure Print_String (S : String);
+      --  Print S to File, after replacing the special '<', '>',
+      --  '"', '&' and ''' characters.
+
+      procedure Print_Node (N : Node_Ptr; Indent : Natural);
+      --  Write a node and its children to File
+
+      ---------------
+      -- Do_Indent --
+      ---------------
 
       procedure Do_Indent (Indent : Natural) is
       begin
          Put ((1 .. Indent => ' '));
       end Do_Indent;
 
-   begin
-      Do_Indent (Indent);
-      Put ("<" & N.Tag.all);
+      ------------------
+      -- Print_String --
+      ------------------
 
-      if N.Attributes /= null then
-         Put (" " & N.Attributes.all);
-      end if;
-
-      if N.Child /= null then
-         Put_Line (">");
-         Print (N.Child, Indent + 2);
-         P := N.Child.Next;
-
-         while P /= null loop
-            Print (P, Indent + 2);
-            P := P.Next;
+      procedure Print_String (S : String) is
+      begin
+         for J in S'Range loop
+            case S (J) is
+               when '<' => Put ("&lt;");
+               when '>' => Put ("&gt;");
+               when '&' => Put ("&amp;");
+               when ''' => Put ("&apos;");
+               when '"' => Put ("&quot;");
+               when others => Put (S (J));
+            end case;
          end loop;
+      end Print_String;
 
+      ----------------
+      -- Print_Node --
+      ----------------
+
+      procedure Print_Node (N : Node_Ptr; Indent : Natural) is
+         P : Node_Ptr;
+      begin
          Do_Indent (Indent);
-         Put_Line ("</" & N.Tag.all & ">");
+         Put ("<" & N.Tag.all);
 
-      else
-         if N.Value.all = "" then
-            --  The following handles the difference between what you got
-            --  when you parsed <tag/> vs. <tag />.
-            if N.Tag (N.Tag'Last) = '/' then
-               Put_Line (">");
-            else
-               Put_Line ("/>");
-            end if;
-         else
-            Put (">");
-            Put (N.Value.all);
-            Put_Line ("</" & N.Tag.all & ">");
+         if N.Attributes /= null then
+            Print_String (" " & N.Attributes.all);
          end if;
+
+         if N.Child /= null then
+            Put_Line (">");
+            P := N.Child;
+            while P /= null loop
+               Print_Node (P, Indent + 2);
+               P := P.Next;
+            end loop;
+
+            Do_Indent (Indent);
+            Put_Line ("</" & N.Tag.all & ">");
+
+         else
+            if N.Value.all = "" then
+               --  The following handles the difference between what you got
+               --  when you parsed <tag/> vs. <tag />.
+               if N.Tag (N.Tag'Last) = '/' then
+                  Put_Line (">");
+               else
+                  Put_Line ("/>");
+               end if;
+            else
+               Put (">");
+               Print_String (N.Value.all);
+               Put_Line ("</" & N.Tag.all & ">");
+            end if;
+         end if;
+      end Print_Node;
+
+   begin
+      if File_Name /= "" then
+         Create (File, Out_File, File_Name);
+         Set_Output (File);
+      end if;
+      Put_Line (File, "<?xml version=""1.0""?>");
+      Print_Node (N, 0);
+
+      if File_Name /= "" then
+         Close (File);
+         Set_Output (Standard_Output);
       end if;
    end Print;
 
@@ -562,5 +615,48 @@ package body Glib.XML is
       --  Free the memory occupied by the node
       Free_Node (N);
    end Free;
+
+   ---------------
+   -- Deep_Copy --
+   ---------------
+
+   function Deep_Copy (N : Node_Ptr) return Node_Ptr is
+
+      function Deep_Copy_Internal (N : Node_Ptr; Parent : Node_Ptr := null)
+         return Node_Ptr;
+      --  Internal version of Deep_Copy. Returns a deep copy of N, whose
+      --  parent should be Parent.
+
+      function Deep_Copy_Internal (N : Node_Ptr; Parent : Node_Ptr := null)
+         return Node_Ptr
+      is
+         Attr : String_Ptr;
+         Value : String_Ptr;
+      begin
+         if N = null then
+            return null;
+         else
+            if N.Attributes /= null then
+               Attr := new String' (N.Attributes.all);
+            end if;
+
+            if N.Value /= null then
+               Value := new String' (N.Value.all);
+            end if;
+
+            return new Node'
+              (Tag => new String' (N.Tag.all),
+               Attributes => Attr,
+               Value => Value,
+               Parent => Parent,
+               Child => Deep_Copy_Internal (N.Child, Parent => N),
+               Next => Deep_Copy_Internal (N.Next, Parent => Parent),
+               Specific_Data => N.Specific_Data);
+         end if;
+      end Deep_Copy_Internal;
+
+   begin
+      return  Deep_Copy_Internal (N);
+   end Deep_Copy;
 
 end Glib.XML;
