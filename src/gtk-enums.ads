@@ -99,6 +99,10 @@ package Gtk.Enums is
                                   Factory_Menu_Bar,
                                   Factory_Option_Menu);
 
+   type Gtk_Resize_Mode is (Resize_Parent,     --  Pass request to the parent
+                            Resize_Queue,      --  Queue resizes on this widget
+                            Resize_Immediate); --  Perform the resizes now
+
    type Gtk_Metric_Type is (Pixels,
                             Inches,
                             Centimeters);
