@@ -231,11 +231,7 @@ package body Gtk.Menu_Item is
      (Menu_Item : access Gtk_Menu_Item_Record;
       Justify   : Boolean) is
    begin
-      if Justify then
-         null;
-         --  TODO
-         --  Right_Justify (Menu_Item);
-      end if;
+      Set_Right_Justified (Menu_Item, Justify);
    end Set_Right_Justify;
 
    ---------------------
