@@ -53,7 +53,7 @@ package Gtk.Text_Buffer is
 
    procedure Initialize
      (Buffer : access Gtk_Text_Buffer_Record'Class;
-      Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table);
+      Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

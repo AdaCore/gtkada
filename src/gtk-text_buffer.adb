@@ -50,7 +50,7 @@ package body Gtk.Text_Buffer is
 
    procedure Initialize
      (Buffer : access Gtk_Text_Buffer_Record'Class;
-      Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table)
+      Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null)
    is
       function Internal (Table : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_new");
