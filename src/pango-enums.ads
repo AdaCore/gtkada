@@ -120,6 +120,7 @@ package Pango.Enums is
       Pango_Weight_Bold,
       Pango_Weight_Ultrabold,
       Pango_Weight_Heavy);
+   pramga Convention (C, Weight);
 
    for Weight use
      (Pango_Weight_Ultralight => 200,
