@@ -1663,7 +1663,7 @@ package body Gtkada.MDI is
             if Current = null then
                Update_Dnd_Window (C.MDI, "Float");
 
-            elsif C3 = null or else Current = Gtk_Widget (C.MDI) then
+            elsif Current = null or else Current = Gtk_Widget (C.MDI) then
                Update_Dnd_Window (C.MDI, "Put in central area");
 
             elsif C2.State = Normal
@@ -1676,23 +1676,30 @@ package body Gtkada.MDI is
                Note := Gtk_Notebook (Current);
                C3  := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
 
-               case Position is
-                  when Position_Bottom =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put below " & Get_Short_Title (C3));
-                  when Position_Top =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put above " & Get_Short_Title (C3));
-                  when Position_Left =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put on the left of " & Get_Short_Title (C3));
-                  when Position_Right =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put on the right of " & Get_Short_Title (C3));
-                  when others =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put on top of " & Get_Short_Title (C3));
-               end case;
+               if C3 = null then
+                  Update_Dnd_Window (C.MDI, "Put in central area");
+
+               else
+                  case Position is
+                     when Position_Bottom =>
+                        Update_Dnd_Window
+                          (C.MDI, "Put below " & Get_Short_Title (C3));
+                     when Position_Top =>
+                        Update_Dnd_Window
+                          (C.MDI, "Put above " & Get_Short_Title (C3));
+                     when Position_Left =>
+                        Update_Dnd_Window
+                          (C.MDI,
+                           "Put on the left of " & Get_Short_Title (C3));
+                     when Position_Right =>
+                        Update_Dnd_Window
+                          (C.MDI,
+                           "Put on the right of " & Get_Short_Title (C3));
+                     when others =>
+                        Update_Dnd_Window
+                          (C.MDI, "Put on top of " & Get_Short_Title (C3));
+                  end case;
+               end if;
             end if;
 
             --  Highlight the destination area itself. This doesn't work on
