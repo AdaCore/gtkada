@@ -1511,11 +1511,9 @@ package body Gtkada.MDI is
 
       --  Set the color of the notebook page and label.
 
-      if Highlight_Page then
+      if Highlight_Page and then Note /= null then
          Modify_Bg (Note, State_Normal, Color);
-
          Label := Get_Tab_Label (Note, Child);
-
          if Label /= null then
             Modify_Bg (Label, State_Normal, Color);
          end if;
