@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -69,7 +69,6 @@
 --  Note that the callback might be called several times, if for instance this
 --  was an Action_Move, and the drop site requires explicitly to delete the
 --  data in its call to Finish.
---
 --
 --  - Defining a widget as a possible drop site
 --
@@ -177,12 +176,10 @@ package Gtk.Dnd is
    function Dest_Find_Target
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Context     : Drag_Context;
-      Target_List : Gtk.Selection.Target_List)
-     return Gdk.Types.Gdk_Atom;
+      Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
 
    function Dest_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-     return Target_List;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List;
 
    procedure Dest_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;

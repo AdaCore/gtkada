@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2003                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -86,12 +86,12 @@ package Gdk.Dnd is
       Drag_Proto_Xdnd,
       Drag_Proto_Rootwin,
       Drag_Proto_None,
-      Drag_Proto_Win_32_Dropfiles,
-      Drag_Proto_Ole_2,
+      Drag_Proto_Win32_Dropfiles,
+      Drag_Proto_Ole2,
       Drag_Proto_Local);
    --  The various dnd protocols recognized by a window.
    --  Note that not every window recognizes every protocol, and you should
-   --  be careful as to which one you use. The function Gdk.Drag.Get_Protocol
+   --  be careful as to which one you use. The function Gdk.Drag_Get_Protocol
    --  returns which one is recognized by a window.
 
    ------------------
@@ -147,18 +147,16 @@ package Gdk.Dnd is
       Time    : Guint32);
    --  Clean up from the drag, and display snapback, if necessary.
 
-   function Drag_Get_Selection (Context : Drag_Context)
-                               return Gdk_Atom;
+   function Drag_Get_Selection (Context : Drag_Context) return Gdk_Atom;
 
    function Drag_Begin
      (Window  : Gdk.Window.Gdk_Window;
-      Targets : Target_List)
-     return Drag_Context;
+      Targets : Target_List) return Drag_Context;
 
    function Drag_Get_Protocol
      (Xid      : Guint32;
-      Protocol : Drag_Protocol)
-     return Guint32;
+      Protocol : Drag_Protocol) return Guint32;
+   --  Return which drag protocol is recognized by a given low level window.
 
    procedure Drag_Find_Window
      (Context     : Drag_Context;
@@ -176,16 +174,11 @@ package Gdk.Dnd is
       Y_Root           : Gint;
       Suggested_Action : Drag_Action;
       Possible_Actions : Drag_Action;
-      Time             : Guint32)
-      return Boolean;
+      Time             : Guint32) return Boolean;
 
-   procedure Drag_Drop
-     (Context : Drag_Context;
-      Time    : Guint32);
+   procedure Drag_Drop (Context : Drag_Context; Time : Guint32);
 
-   procedure Drag_Abort
-     (Context : Drag_Context;
-      Time    : Guint32);
+   procedure Drag_Abort (Context : Drag_Context; Time : Guint32);
 
 private
 
