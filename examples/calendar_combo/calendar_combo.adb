@@ -1,9 +1,9 @@
 with Glib;        use Glib;
+with Glib.Values; use Glib.Values;
 with Gtk.Frame;   use Gtk.Frame;
 with Gtk.Arrow;   use Gtk.Arrow;
 with Gtk.Widget;  use Gtk.Widget;
 with Gtk.Button;  use Gtk.Button;
-with Gtk.Arguments; use Gtk.Arguments;
 with Unchecked_Conversion;
 with System;
 with Gtk.Handlers; use Gtk.Handlers;
@@ -22,10 +22,11 @@ package body Calendar_Combo is
 
    procedure Size_Request
      (Widget      : access Gtk_Calendar_Combo_Record'Class;
-      Params      : Gtk.Arguments.Gtk_Args)
+      Params      : Glib.Values.GValues)
    is
       use type Gint;
-      Requisition : Requisition_Access := Convert (Get_Nth (Params, 1));
+      Requisition : Requisition_Access :=
+        Convert (Get_Address (Nth (Params, 1)));
       Req_Arrow,
       Req_Button : Gtk_Requisition;
    begin
