@@ -157,9 +157,9 @@ directory in the distribution).
 
 This toolkit was tested on the following systems:
 @itemize @bullet
-@item Linux/x86
-@item Linux/sparc
-@item Linux/ppc
+@item GNU Linux/x86
+@item GNU Linux/sparc
+@item GNU Linux/ppc
 @item Solaris/sparc
 @item Solaris/x86
 @item Dec Unix
@@ -1170,8 +1170,7 @@ one specific task. In other words, you cannot call Gtk.Main.Main from
 any task other than the one that started the outer level main loop.
 
 Note that Gdk.Threads assumes that you are using a tasking run time that maps
-Ada tasks to native threads. For example under Linux with GNAT, you need to
-change the default tasking run time for that purpose.
+Ada tasks to native threads.
 
 A minimal main program for a tasking GtkAda application looks like: 
 
@@ -1616,8 +1615,9 @@ field does not contain any dots, Gate will consider the name as a variable
 rather than a file name. It is up to you to provide the necessary definitions
 in order to compile properly the generated code.
 
-@subsection Note for Linux users
-Some Linux systems come with a precompiled version of Glade that will usually
+@subsection Note for GNU/Linux users
+Some GNU/Linux systems come with a precompiled version of Glade that will
+usually
 have support for Gnome. GtkAda and Gate currently do not provide support
 for Gnome (GtkAda instead provides portable alternatives to Gnome widgets,
 see e.g Gtkada.Canvas, Gtkada.Dialogs, Gtkada.Pixmaps), which means that
@@ -1755,7 +1755,7 @@ This procedure associates a given Generate procedure with a given widget C name.
 @section Dynamic loading of XML files
 @subsection Introduction to Libglade
 Libglade is an external library provided by default on some systems (e.g
-Linux, Gnome) that supports dynamic loading of XML files and creation of
+GNU/Linux, Gnome) that supports dynamic loading of XML files and creation of
 widgets at run time. The advantage of using libglade is that you do not need
 to recompile your application to change your user interface. On the other
 hand, everything is done at run time, meaning less compile checks, and also the
@@ -1848,8 +1848,8 @@ $ gnatchop temporary
 @noindent
 
 This chapter presents a number of technics that can be used when
-debugging GtkAda applications. Of course, the standard tools to debug
-Ada applications should still be used:
+debugging GtkAda applications. First, the standard tools to debug
+Ada applications can be used:
 
 @table @bullet
 @item Compile with -g
@@ -1891,12 +1891,12 @@ understand internal errors or warnings reported by gtk+ and glib
 
 @item compile glib with @code{--disable-mem-pools}
 Glib, the underlying layer that provides system-independent services
-to gtk+, has an extensive an optimized system for memory
+to gtk+, has an extensive and optimized system for memory
 allocation. Bigger chunks of Memory are allocated initially, and then
 subdivided by glib itself. Although this is extremely performant, this
 also make the debugging of memory-related problems (storage_error)
 more difficult. Compiling with the above switch forces glib to use the
-standard malloc() and free() system calls. On linux systems, it might
+standard malloc() and free() system calls. On GNU/Linux systems, it might
 be useful to set the variable @code{MALLOC_CHECK_} to 1 to use
 error-detecting algorithms (see the man page for malloc()).
 
@@ -1917,9 +1917,9 @@ This sets up the debugging output for glib. The value @samp{objects}
 is probably the most useful, and displays, on exit of the application,
 the list of unfreed objects. This helps detect memory leaks. The
 second value @samp{signals} will display all the signals emitted by
-the objects. Note that this results in a huge amount of output.
+the objects. Note that this results in a significant amount of output.
 
-@item @samp{GDK_DEBUG=updates:nograbs:events:dnd:misc:@*xim:colormap:gdkrb:gc:pixmap:image:input:cursor}
+@item @samp{GDK_DEBUG=updates:nograbs:events:dnd:misc:@*xim:colormap:gdkrgb:gc:pixmap:image:input:cursor}
 This sets up the debugging output for gdk. The most useful value is
 @samp{nograbs}, which prevents the application from ever grabbing the
 mouse or keyboards. If you don't set this, it might happen that the
@@ -1953,7 +1953,7 @@ and should be called in a manner similar to
 @b{end};
 @end smallexample
 
-and returns the internal referecence counter for the widget. When this
+and returns the internal reference counter for the widget. When this
 counter reaches 0, the memory allocated for the widget is
 automatically freed.
 
