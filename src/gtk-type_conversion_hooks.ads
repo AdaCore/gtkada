@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,7 +29,7 @@
 
 --  <description>
 --
---  This package provides an implementation for hooks used in the package
+--  This package provides an implementation for hooks used in
 --  Gtk.Type_Conversion. These hooks should be used when you import a new
 --  C widget, so that GtkAda can recreate the Ada structure from the
 --  underlying C structure.
