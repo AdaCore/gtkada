@@ -49,6 +49,7 @@ with Gdk.Color;     use Gdk.Color;
 with Gdk.Window;    use Gdk.Window;
 with Gtk.Frame;     use Gtk.Frame;
 with Gtk.Text;      use Gtk.Text;
+with Gdk.Dnd;       use Gdk.Dnd;
 
 package body Create_Dnd is
 
@@ -455,12 +456,6 @@ package body Create_Dnd is
       Have_Drag := False;
       Put_Log ("Drop");
       Set (Gtk_Pixmap (Widget), Trashcan_Closed, Trashcan_Closed_Mask);
-      if Get_Targets (Context) /= Guint_List.Null_List then
-         Get_Data (Widget, Context,
-                   Gdk_Atom (Guint_List.Get_Data (Get_Targets (Context))),
-                   Guint32 (Time));
-         return True;
-      end if;
       return False;
    end Target_Drag_Drop;
 
