@@ -102,7 +102,7 @@ package body Gtkada.MDI is
    Drop_Area_Thickness : constant Gint := 4;
    --  Thickness of the Dnd drop areas on each side of the MDI.
 
-   Title_Font : constant String := "Helvetica 7";
+   Title_Font : constant String := "Helvetica 8";
    --  <preferences> Name of the font to use in the title bar
 
    Icons_Width : constant Gint := 100;
@@ -202,11 +202,11 @@ package body Gtkada.MDI is
    --  need to be different from one another.
 
    Source_Target_Table : constant Target_Entry_Array :=
-     ((New_String ("gps/widget"), Target_No_Constraint, Widget_Target_Dnd),
+     ((New_String ("gtkada/widget"), Target_No_Constraint, Widget_Target_Dnd),
       (New_String ("application/x-rootwin-drop"), Target_No_Constraint,
        Root_Window_Target_Dnd));
    Dest_Target_Table : constant Target_Entry_Array :=
-     (1 => (New_String ("gps/widget"), Target_Same_App, Widget_Target_Dnd));
+     (1 => (New_String ("gtkada/widget"), Target_Same_App, Widget_Target_Dnd));
    --  The various mime types support by the drag-and-drop in the MDI.
 
    use Widget_List;
@@ -4339,10 +4339,11 @@ package body Gtkada.MDI is
       --  Set up the notebook as a possible drag-and-drop target, so that
       --  items can be moved from one to another by dragging them.
 
-      Gtk.Dnd.Dest_Set (Widget  => Widget,
-                        Flags   => Dest_Default_All,
-                        Targets => Dest_Target_Table,
-                        Actions => Action_Copy);
+      Gtk.Dnd.Dest_Set
+        (Widget  => Widget,
+         Flags   => Dest_Default_All,
+         Targets => Dest_Target_Table,
+         Actions => Action_Copy);
       Widget_Callback.Connect
         (Widget, "drag_data_received", Target_Drag_Data_Received'Access);
    end Set_Dnd_Target;
@@ -4353,16 +4354,16 @@ package body Gtkada.MDI is
 
    procedure Set_Dnd_Source
      (Widget : access Gtk_Widget_Record'Class;
-      Child  : access Gtk_Widget_Record'Class)
-   is
+      Child  : access Gtk_Widget_Record'Class) is
    begin
       --  Set up the drag-and-drop (when clicking in the title bar), so that
       --  the item can be moved to another notebook by dragging it
 
-      Gtk.Dnd.Source_Set (Widget            => Widget,
-                          Start_Button_Mask => Button1_Mask,
-                          Targets           => Source_Target_Table,
-                          Actions           => Action_Copy);
+      Gtk.Dnd.Source_Set
+        (Widget            => Widget,
+         Start_Button_Mask => Button1_Mask,
+         Targets           => Source_Target_Table,
+         Actions           => Action_Copy);
       Widget_Callback.Object_Connect
         (Widget, "drag_data_get", Source_Drag_Data_Get'Access, Child);
    end Set_Dnd_Source;
