@@ -292,6 +292,7 @@ package body Gtkada.Canvas is
       function Location_Is_Free (X, Y : Gint) return Boolean;
       --  Return True if the location X, Y for the new item would be
       --  acceptable, or if it would cross an existing item.
+      --  Keeps a space of at least Grid_Size around each item.
 
       ----------------------
       -- Location_Is_Free --
@@ -300,22 +301,23 @@ package body Gtkada.Canvas is
       function Location_Is_Free (X, Y : Gint) return Boolean is
          Tmp   : Canvas_Item_List := Canvas.Children;
          Dest  : Gdk.Rectangle.Gdk_Rectangle;
-         Inter : Boolean;
+         Inter : Boolean := False;
       begin
-         Item.Coord.X := X;
-         Item.Coord.Y := Y;
+         Item.Coord.X := X - Gint (Canvas.Grid_Size);
+         Item.Coord.Y := Y - Gint (Canvas.Grid_Size);
+         Item.Coord.Width := Item.Coord.Width + 2 * Canvas.Grid_Size;
+         Item.Coord.Height := Item.Coord.Height + 2 * Canvas.Grid_Size;
 
-         while Tmp /= null loop
+         while not Inter and then Tmp /= null loop
 
             if Tmp.Item /= Canvas_Item (Item) then
                Intersect (Tmp.Item.Coord, Item.Coord, Dest, Inter);
-               if Inter then
-                  return False;
-               end if;
                Tmp := Tmp.Next;
             end if;
          end loop;
-         return True;
+         Item.Coord.Width := Item.Coord.Width - 2 * Canvas.Grid_Size;
+         Item.Coord.Height := Item.Coord.Height - 2 * Canvas.Grid_Size;
+         return not Inter;
       end Location_Is_Free;
 
       Src_Item : Canvas_Item := null;
@@ -342,9 +344,9 @@ package body Gtkada.Canvas is
          end loop;
 
          --  The rule is the following when we have a link to an existing
-         --  item: We first try to put the new item on the right of the old
+         --  item: We first try to put the new item below the old
          --  one, then, if that place is already occupied, to the
-         --  bottom-right, then the top right, then two to the right, ...
+         --  bottom-right, then the bottom-left, then two down, ...
 
          if Src_Item /= null then
             declare
@@ -352,25 +354,25 @@ package body Gtkada.Canvas is
             begin
                loop
                   Num := Num + 1;
-                  X1 := Src_Item.Coord.X + (Num / 3) * 4
+                  X1 := Src_Item.Coord.X + ((Num + 1) mod 3 - 1) * 2
                     * Gint (Canvas.Grid_Size);
-                  Y1 := Src_Item.Coord.Y + ((Num + 1) mod 3 - 1) * 2
+                  Y1 := Src_Item.Coord.Y + (Num / 3) * 4
                     * Gint (Canvas.Grid_Size);
-                  if Y1 < 0 then
-                     Y1 := Src_Item.Coord.Y;
+                  if X1 < 0 then
+                     X1 := Src_Item.Coord.Y;
                   end if;
                   exit when Location_Is_Free (X1, Y1);
                end loop;
             end;
 
-         --  Else put the item in the first column, at the first possible
+         --  Else put the item in the first line, at the first possible
          --  location
 
          else
             X1 := Gint (Canvas.Grid_Size);
             Y1 := Gint (Canvas.Grid_Size);
             while not Location_Is_Free (X1, Y1) loop
-               Y1 := Y1 + Gint (Canvas.Grid_Size) * 2;
+               X1 := X1 + Gint (Canvas.Grid_Size) * 2;
             end loop;
          end if;
 
