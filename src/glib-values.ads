@@ -136,22 +136,12 @@ package Glib.Values is
    --  also provided inside Gtk.Text_Iter.
 
 private
-   function C_Gvalue_Size return Natural;
-   pragma Import (C, C_Gvalue_Size, "ada_c_gvalue_size");
-
-   type Byte is range 0 .. 255;
-   for Byte'Size use 8;
-   Gvalue_Size : constant Natural := (GType'Size + 4 * Gdouble'Size) / 8;
-   --  In fact, we should really use the following constant definition,
-   --  except that GNAT 3.14 does not compile...
-   --  Gvalue_Size : constant Natural := C_Gvalue_Size;
-
-   type GValue is array (1 .. Gvalue_Size) of Byte;
+   type GValue_Data is array (1 .. 4) of Guint64;
+   type GValue is record
+      g_type : GType;
+      data   : GValue_Data;
+   end record;
    pragma Convention (C, GValue);
-   pragma Pack (GValue);
-   --  The definition above doesn't match the one of C. However, we use it
-   --  so that Gvalue can be manipulated on the stack, rather than require
-   --  calls to malloc() and free()
 
    type GValues is record
       Nb  : Guint;

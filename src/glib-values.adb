@@ -151,9 +151,12 @@ package body Glib.Values is
       procedure Internal (Value : in out GValue; G_Type : Glib.GType);
       pragma Import (C, Internal, "g_value_init");
    begin
-      Value := (others => 0);
+      Value := (g_type => 0, data => (others => 0));
       Internal (Value, G_Type);
    end Init;
+
+   function C_Gvalue_Size return Natural;
+   pragma Import (C, C_Gvalue_Size, "ada_c_gvalue_size");
 
 begin
    if GValue'Size /= C_Gvalue_Size * 8 then
