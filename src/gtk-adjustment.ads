@@ -154,6 +154,10 @@ package Gtk.Adjustment is
    --  start of it will be in the current page.
    --  A "value_changed" signal will be emitted if the value is changed.
 
+   ----------------------
+   -- Signals emission --
+   ----------------------
+
    procedure Changed (Adjustment : access Gtk_Adjustment_Record);
    --  Emits the "changed" signal on ADJUSTMENT.
    --  This warns any listener that some field other than the value has been
@@ -162,6 +166,26 @@ package Gtk.Adjustment is
    procedure Value_Changed (Adjustment : access Gtk_Adjustment_Record);
    --  Emits the "value_changed" signal on ADJUSTMENT.
    --  This warns any listener that the value has been changed.
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "changed"
+   --    procedure Handler (Adjustment : access Gtk_Adjustment_Record'Class);
+   --
+   --    This signal is emitted every time one of the parameters is modified,
+   --    except the value.
+   --
+   --  - "value_changed"
+   --    procedure Handler (Adjustment : access Gtk_Adjustment_Record'Class);
+   --
+   --    This signal is emitted every time the value of the adjustment is
+   --    modified
+   --  </signals>
 
 private
 
