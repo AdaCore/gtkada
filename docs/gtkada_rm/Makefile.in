@@ -21,6 +21,7 @@ gtkada_rm.ps: generated.texi
 	echo x | tex gtkada_rm.texi
 	texindex gtkada_rm.cp
 	tex gtkada_rm.texi
+	tex gtkada_rm.texi
 	dvips gtkada_rm.dvi -o gtkada_rm.ps
 	
 html: gtkada_rm_toc.html
