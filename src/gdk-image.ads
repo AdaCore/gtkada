@@ -27,6 +27,16 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  The Gdk_Image type represents an area for drawing graphics.
+--  It has now been superceded to a large extent by the much more flexible
+--  Gdk.RGB functions.
+--
+--  To create an empty Gdk_Image use Gdk_New. To create an image from part of
+--  a Gdk_Window, use Get.
+--
+--  To draw a Gdk_Image in a Gdk_Window or Gdk_Pixmap use
+--  Gdk.Drawable.Draw_Image.
+
 with Glib; use Glib;
 with Gdk.Visual;
 with Gdk.Window;
