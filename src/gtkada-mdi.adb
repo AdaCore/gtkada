@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2004 ACT-Europe                --
+--                 Copyright (C) 2001-2005 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -3741,16 +3741,21 @@ package body Gtkada.MDI is
          User          : User_Data;
          Focus_Child   : in out MDI_Child;
          Width, Height : out Gint;
-         Notebook      : out Gtk_Notebook);
+         Notebook      : out Gtk_Notebook;
+         Reuse_Empty_If_Needed : in out Boolean);
       --  Parse a <notebook> node.
-      --  A new notebook is created and returned
+      --  A new notebook is created and returned.
+      --  If Reuse_Empty_If_Needed and we need to insert an empty notebook,
+      --  we'll try and reuse an existing empty notebook. In this case, the
+      --  variable is set to False
 
       procedure Parse_Pane_Node
         (MDI                 : access MDI_Window_Record'Class;
          Node                : Node_Ptr;
          Focus_Child         : in out MDI_Child;
          User                : User_Data;
-         Initial_Ref_Child   : Gtk_Notebook := null);
+         Initial_Ref_Child   : Gtk_Notebook := null;
+         Reuse_Empty_If_Needed : in out Boolean);
       --  Parse a <Pane> node
       --  First_Child is the first notebook insert in pane (possibly inserted
 
@@ -3778,7 +3783,8 @@ package body Gtkada.MDI is
          User          : User_Data;
          Focus_Child   : in out MDI_Child;
          Width, Height : out Gint;
-         Notebook      : out Gtk_Notebook)
+         Notebook      : out Gtk_Notebook;
+         Reuse_Empty_If_Needed : in out Boolean)
       is
          N : Node_Ptr := Child_Node.Child;
          State  : State_Type;
@@ -3796,13 +3802,16 @@ package body Gtkada.MDI is
          end if;
 
          Notebook := null;
-         if Child_Node.Child = null then
+         if Child_Node.Child = null
+           and then Reuse_Empty_If_Needed
+         then
             Notebook := Find_Empty_Notebook (MDI);
-            if Notebook /= null
-              and then Traces
-            then
-               Put_Line ("MDI Using existing empty notebook "
-                         & System.Address_Image (Notebook.all'Address));
+            if Notebook /= null then
+               Reuse_Empty_If_Needed := False;
+               if Traces then
+                  Put_Line ("MDI Using existing empty notebook "
+                            & System.Address_Image (Notebook.all'Address));
+               end if;
             end if;
          end if;
 
@@ -3941,7 +3950,8 @@ package body Gtkada.MDI is
          Node                : Node_Ptr;
          Focus_Child         : in out MDI_Child;
          User                : User_Data;
-         Initial_Ref_Child   : Gtk_Notebook := null)
+         Initial_Ref_Child   : Gtk_Notebook := null;
+         Reuse_Empty_If_Needed : in out Boolean)
       is
          Orientation : constant Gtk_Orientation := Gtk_Orientation'Value
            (Get_Attribute (Node, "Orientation"));
@@ -3992,36 +4002,39 @@ package body Gtkada.MDI is
                      Focus_Child => Focus_Child,
                      Width       => Width,
                      Height      => Height,
-                     Notebook    => Notebooks (Count));
+                     Notebook    => Notebooks (Count),
+                     Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
 
-                  if Ref_Item = null then
-                     if Traces then
-                        Put_Line
-                          ("MDI: Add_Child "
-                           & System.Address_Image
-                             (Notebooks (Count).all'Address));
+                  if Get_Parent (Notebooks (Count)) = null then
+                     if Ref_Item = null then
+                        if Traces then
+                           Put_Line
+                             ("MDI: Add_Child "
+                              & System.Address_Image
+                                (Notebooks (Count).all'Address));
+                        end if;
+                        Add_Child (Win         => MDI,
+                                   New_Child   => Notebooks (Count),
+                                   Orientation => Orientation,
+                                   Width       => Width,
+                                   Height      => Height);
+                     else
+                        if Traces then
+                           Put_Line
+                             ("MDI: Split "
+                              & System.Address_Image
+                                (Notebooks (Count).all'Address)
+                              & " ref="
+                              & System.Address_Image (Ref_Item.all'Address)
+                              & " Orient=" & Orientation'Img);
+                        end if;
+                        Split (MDI,
+                               Ref_Widget  => Ref_Item,
+                               New_Child   => Notebooks (Count),
+                               Width       => Width,
+                               Height      => Height,
+                               Orientation => Orientation);
                      end if;
-                     Add_Child (Win         => MDI,
-                                New_Child   => Notebooks (Count),
-                                Orientation => Orientation,
-                                Width       => Width,
-                                Height      => Height);
-                  else
-                     if Traces then
-                        Put_Line
-                          ("MDI: Split "
-                           & System.Address_Image
-                             (Notebooks (Count).all'Address)
-                           & " ref="
-                           & System.Address_Image (Ref_Item.all'Address)
-                           & " Orient=" & Orientation'Img);
-                     end if;
-                     Split (MDI,
-                            Ref_Widget  => Ref_Item,
-                            New_Child   => Notebooks (Count),
-                            Width       => Width,
-                            Height      => Height,
-                            Orientation => Orientation);
                   end if;
                end if;
 
@@ -4041,7 +4054,8 @@ package body Gtkada.MDI is
                      Node                => N,
                      Focus_Child         => Focus_Child,
                      User                => User,
-                     Initial_Ref_Child   => Notebooks (Count));
+                     Initial_Ref_Child   => Notebooks (Count),
+                     Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
                end if;
                Count := Count + 1;
                N := N.Next;
@@ -4063,6 +4077,7 @@ package body Gtkada.MDI is
          State      : State_Type;
          Raised     : Boolean;
          X, Y       : Gint;
+         Reuse_Empty_If_Needed : Boolean := True;
       begin
          if From_Tree /= null then
             Child_Node := From_Tree.Child;
@@ -4086,7 +4101,9 @@ package body Gtkada.MDI is
 
          while Child_Node /= null loop
             if Child_Node.Tag.all = "Pane" then
-               Parse_Pane_Node (MDI, Child_Node, Focus_Child, User, null);
+               Parse_Pane_Node
+                 (MDI, Child_Node, Focus_Child, User, null,
+                  Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
 
             elsif Child_Node.Tag.all = "Bottom_Dock_Height" then
                --  An old desktop ? Do not load it at all, and use the default
