@@ -282,24 +282,22 @@ package body Gtk_Generates is
    -- Check_Button_Generate --
    ---------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Check_Button_Generate (N : Node_Ptr; File : File_Type) is
-      Label : constant String_Ptr := Get_Field (N, "label");
+      Label : constant String := Get_Property (N, "label", "");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_check_button_get_type");
 
    begin
       Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
-         if Label = null then
+         if Label = "" then
             Gen_New (N, "Check_Button", File => File);
          else
             if Gettext_Support (N) then
-               Gen_New (N, "Check_Button", Label.all, File => File,
+               Gen_New (N, "Check_Button", Label, File => File,
                  Prefix => "-""", Postfix => """");
             else
-               Gen_New (N, "Check_Button", Label.all, File => File,
+               Gen_New (N, "Check_Button", Label, File => File,
                  Prefix => """", Postfix => """");
             end if;
          end if;
@@ -313,8 +311,6 @@ package body Gtk_Generates is
    -- Check_Menu_Item_Generate --
    ------------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Check_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_check_menu_item_get_type");
@@ -322,10 +318,10 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
-         Gen_New (N, "Check_Menu_Item", Get_Field (N, "label").all,
+         Gen_New (N, "Check_Menu_Item", Get_Property (N, "label", ""),
            File => File, Prefix => "-""", Postfix => """");
       else
-         Gen_New (N, "Check_Menu_Item", Get_Field (N, "label").all,
+         Gen_New (N, "Check_Menu_Item", Get_Property (N, "label", ""),
            File => File, Prefix => """", Postfix => """");
       end if;
 
@@ -1158,8 +1154,6 @@ package body Gtk_Generates is
    -- Notebook_Generate --
    -----------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Notebook_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_notebook_get_type");
@@ -1182,11 +1176,7 @@ package body Gtk_Generates is
    -- Option_Menu_Generate --
    --------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Option_Menu_Generate (N : Node_Ptr; File : File_Type) is
-      S  : String_Ptr;
-      First, Last : Natural;
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_option_menu_get_type");
 
@@ -1195,47 +1185,6 @@ package body Gtk_Generates is
       Gen_New (N, "Option_Menu", File => File);
       Widget_Destroy (Widget);
       Button_Generate (N, File);
-
-      S := Get_Field (N, "items");
-
-      if S /= null then
-         First := S'First;
-
-         Add_Package ("Menu");
-         Add_Package ("Menu_Item");
-         Put_Line (File, "   Menu.Gtk_New (" &
-           To_Ada (Get_Field (N, "name").all) & "_Menu);");
-
-         loop
-            Last := Index (S (First .. S'Last), ASCII.LF & "");
-
-            if Last = 0 then
-               Last := S'Last + 1;
-            end if;
-
-            Put (File, "   Menu_Item.Gtk_New (The_Menu_Item, ");
-
-            if Gettext_Support (N) then
-               Put (File, '-');
-            end if;
-
-            Put_Line (File, '"' & S (First .. Last - 1) & """);");
-            Put_Line (File, "   Menu.Append (" &
-              To_Ada (Get_Field (N, "name").all) & "_Menu, The_Menu_Item);");
-            Put_Line (File, "   Show (The_Menu_Item);");
-
-            exit when Last >= S'Last;
-
-            First := Last + 1;
-         end loop;
-
-         Put_Line (File, "   Option_Menu.Set_Menu");
-         Put_Line (File, "     (Gtk_Option_Menu (" &
-           To_Ada (Get_Field (Find_Top_Widget (N), "name").all) & "." &
-           To_Ada (Get_Field (N, "name").all) & "),");
-         Put_Line (File, "      " & To_Ada (Get_Field (N, "name").all) &
-           "_Menu);");
-      end if;
    end Option_Menu_Generate;
 
    --------------------
@@ -1367,9 +1316,9 @@ package body Gtk_Generates is
    ---------------------------
 
    procedure Radio_Button_Generate (N : Node_Ptr; File : File_Type) is
-      Label : constant String_Ptr := Get_Property (N, "label");
+      Label : constant String := Get_Property (N, "label", "");
       Name  : constant String := Get_Attribute (N, "id");
-      Group : constant String_Ptr := Get_Property (N, "group");
+      Group : constant String := Get_Property (N, "group", "default_group");
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top   : constant String := Get_Attribute (Top_Widget, "id");
       function Build_Type return Glib.GType;
@@ -1384,24 +1333,24 @@ package body Gtk_Generates is
       if not N.Specific_Data.Created then
          Add_Package ("Radio_Button");
 
-         if Group = null then
+         if Group = "" then
             Put (File, "   Gtk_New ("
                  & To_Ada (Top) & "." & To_Ada (Name)
                  & ", null");
          else
             Put (File, "   Gtk_New ("
                  & To_Ada (Top) & "." & To_Ada (Name)
-                 & ", " & To_Ada (Top) & "." & To_Ada (Group.all));
+                 & ", " & To_Ada (Top) & "." & To_Ada (Group));
          end if;
 
-         if Label /= null then
+         if Label /= "" then
             Put (File, ", ");
 
             if Gettext_Support (Top_Widget) then
                Put (File, '-');
             end if;
 
-            Put (File, '"' & Label.all & '"');
+            Put (File, '"' & Label & '"');
          end if;
 
          Put_Line (File, ");");
@@ -1416,38 +1365,52 @@ package body Gtk_Generates is
    -- Radio_Menu_Item_Generate --
    ------------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Radio_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
-      Label : constant String_Ptr := Get_Field (N, "label");
-      Name  : constant String_Ptr := Get_Field (N, "name");
+      Label : constant String := Get_Property (N, "label", "");
+      Name  : constant String := Get_Name (N);
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
-      Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
+      Top   : constant String := Get_Name (Top_Widget);
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_radio_menu_item_get_type");
 
+      Group_Name : constant String := To_Ada (Get_Name (N.Parent.Parent));
    begin
       Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          Add_Package ("Radio_Menu_Item");
-         Put (File, "   Gtk_New (" &
-           To_Ada (Top.all) & "." & To_Ada (Name.all) & ", " &
-           To_Ada (Get_Field (N.Parent, "name").all) & "_Group");
 
-         if Label /= null then
+         if Group_Name /= "" then
+            Put (File, "   Gtk_New (" &
+                 To_Ada (Top) & "." & To_Ada (Name) & ", " &
+                 Group_Name & "_Group");
+         else
+            Put (File, "   Gtk_New (" &
+                 To_Ada (Top) & "." & To_Ada (Name) & ", " &
+                 "Default_Group");
+         end if;
+
+
+         if Label /= "" then
             Put (File, ", ");
 
             if Gettext_Support (Top_Widget) then
                Put (File, '-');
             end if;
 
-            Put (File, '"' & Label.all & '"');
+            Put (File, '"' & Adjust (Label) & '"');
          end if;
 
          Put_Line (File, ");");
-         Put_Line (File, "   " & To_Ada (Get_Field (N.Parent, "name").all) &
-           "_Group := Group (" & To_Ada (Top.all) & "." &
-           To_Ada (Name.all) & ");");
+
+         if Group_Name /= "" then
+            Put_Line (File, "   " & Group_Name &
+                      "_Group := Group (" & To_Ada (Top) & "." &
+                      To_Ada (Name) & ");");
+         else
+            Put_Line (File, "   " & "Default_Group := Group (" &
+                      To_Ada (Top) & "." &
+                      To_Ada (Name) & ");");
+         end if;
          N.Specific_Data.Created := True;
       end if;
 
@@ -1770,10 +1733,8 @@ package body Gtk_Generates is
    -- Toggle_Button_Generate --
    ----------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Toggle_Button_Generate (N : Node_Ptr; File : File_Type) is
-      Label : constant String_Ptr := Get_Field (N, "label");
+      Label : constant String := Get_Property (N, "label", "");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_toggle_button_get_type");
 
@@ -1784,14 +1745,14 @@ package body Gtk_Generates is
       end if;
 
       if not N.Specific_Data.Created then
-         if Label = null then
+         if Label = "" then
             Gen_New (N, "Toggle_Button", File => File);
          else
             if Gettext_Support (N) then
-               Gen_New (N, "Toggle_Button", Label.all,
+               Gen_New (N, "Toggle_Button", Label,
                  File => File, Prefix => "-""", Postfix => """");
             else
-               Gen_New (N, "Toggle_Button", Label.all,
+               Gen_New (N, "Toggle_Button", Label,
                  File => File, Prefix => """", Postfix => """");
             end if;
          end if;
@@ -1801,6 +1762,9 @@ package body Gtk_Generates is
       Button_Generate (N, File);
       Gen_Set (N, "mode", File);
       Gen_Set (N, "active", File);
+      Gen_Set (N, "inconsistent", File);
+      Gen_Set (N, "relief", File);
+      Gen_Set (N, "use_underline", File);
    end Toggle_Button_Generate;
 
    ----------------------
@@ -2411,20 +2375,25 @@ package body Gtk_Generates is
          Put_Line (File, "   Add_Accelerator (" &
                    Top_Name & "." &
                    Cur & ", """ &
-                   Get_Field (Q, "signal").all & """,");
+                   Get_Attribute (Q, "signal") & """,");
          Add_Package ("Gdk.Types.Keysyms");
-         S := Get_Field (Q, "modifiers");
-         Put (File, "     The_Accel_Group, " & Get_Field (Q, "key").all);
+         declare
+            M : constant String := Get_Attribute (Q, "modifiers");
+         begin
+            Put (File, "     The_Accel_Group, "
+                 & "Gdk.Types.keysyms.GDK_" & Get_Attribute (Q, "key"));
 
-         if S'Length > 4 and then S (S'First .. S'First + 3) = "GDK_" then
-            Put_Line (File, ", Gdk.Types." & To_Ada (S.all) &
-              ", Accel_Visible);");
-         else
-            Put_Line (File, ", " & S.all & ", Accel_Visible);");
-         end if;
+            if M'Length > 4 and then M (M'First .. M'First + 3) = "GDK_" then
+               Put_Line (File, ", Gdk.Types." & To_Ada (M) &
+                         ", Accel_Visible);");
+
+            else
+               Put_Line (File, ", " & M & ", Accel_Visible);");
+            end if;
+         end;
       end if;
 
-      S := Get_Field (N, "tooltip");
+      S := Get_Property (N, "tooltip");
 
       if S /= null then
          if not Top.Specific_Data.Has_Tooltip then
@@ -2469,7 +2438,8 @@ package body Gtk_Generates is
                      Gen_Call_Child (N, null, Parent, "Toolbar",
                                   "Append_Widget", File => File);
 
-                  elsif S = "GtkMenuBar"
+                  elsif S = "GtkMenu"
+                    or else S = "GtkMenuBar"
                     or else S = "GtkMenuShell"
                   then
                      Gen_Call_Child
@@ -2482,6 +2452,11 @@ package body Gtk_Generates is
                      Gen_Call_Child
                        (N, null, Parent,
                         "Menu_Item", "Set_Submenu", File => File);
+
+                  elsif S = "GtkOptionMenu" then
+                     Gen_Call_Child
+                       (N, null, Parent,
+                        "Option_Menu", "Set_Menu", File => File);
 
                   else
                      Gen_Call_Child
