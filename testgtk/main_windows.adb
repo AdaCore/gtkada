@@ -36,7 +36,6 @@ with Gdk.Pixmap;          use Gdk.Pixmap;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Button;          use Gtk.Button;
 with Gtk.Dialog;          use Gtk.Dialog;
---  with Gtk.Drawing_Area;    use Gtk.Drawing_Area;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Handlers;        use Gtk.Handlers;
@@ -49,12 +48,12 @@ with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Style;           use Gtk.Style;
 with Gtk.Text;            use Gtk.Text;
-with Gtk.Tree;            use Gtk.Tree;
-with Gtk.Tree_Item;       use Gtk.Tree_Item;
+with Gtk.Clist;           use Gtk.Clist;
+with Gtk.Ctree;           use Gtk.Ctree;
 with Gtk.Widget;          use Gtk.Widget;
 with Gtk.Window;          use Gtk.Window;
 
-with Interfaces.C.Strings;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Ada.Strings.Fixed;
 
 with Create_Alignment;
@@ -120,13 +119,14 @@ with Libart_Demo;  use Libart_Demo;
 
 package body Main_Windows is
 
-   procedure Fill_Gtk_Tree (Tree : in out Gtk.Tree.Gtk_Tree;
-                            Gtkada_Demos : Boolean := False);
+   procedure Fill_Gtk_Tree
+     (Tree         : in out Gtk.Ctree.Gtk_Ctree;
+      Gtkada_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
 
-   function New_Pixmap (Icon   : Interfaces.C.Strings.chars_ptr_array;
-                        Window : access Gtk_Widget_Record'Class)
-                       return Gtk_Pixmap;
+   function New_Pixmap
+     (Icon   : Interfaces.C.Strings.chars_ptr_array;
+      Window : access Gtk_Widget_Record'Class) return Gtk_Pixmap;
    --  Create a new icon from a file
 
    procedure Display_Help (Button : access Gtk_Widget_Record'Class);
@@ -152,34 +152,19 @@ package body Main_Windows is
    --  Symbols between @b and @B are displayed in bold
    --  New lines should be represented by ASCII.LF
 
-   type String_Access is access String;
-   function NS (S : String) return String_Access is
-   begin
-      return new String'(S);
-   end NS;
-   --  Access to strings
+   function NS (S : String) return chars_ptr renames New_String;
 
-   type Demo_Tree_Item_Record is new Gtk_Tree_Item_Record with
-      record
-         Demo_Num  : Natural;
-         Frame     : Integer;
-      end record;
-   type Demo_Tree_Item is access all Demo_Tree_Item_Record'Class;
-   procedure Gtk_New (Item  : out Demo_Tree_Item;
-                      Label : String;
-                      Num   : Natural);
-   procedure Initialize (Item  : access Demo_Tree_Item_Record'Class;
-                         Label : String;
-                         Num   : Natural);
-   --  New definition for tree items, so that they know which demo function
-   --  to call.
+   type Demo_Tree_Item is record
+      Demo_Num : Natural;
+      Frame    : Integer;
+   end record;
 
-   package Tree_Cb is new Gtk.Handlers.User_Callback
-     (Widget_Type => Gtk.Tree.Gtk_Tree_Record,
-      User_Type => Integer);
-   procedure Tree_Select_Child (Tree   : access Gtk_Tree_Record'Class;
-                                Item_P : access Gtk_Widget_Record'Class;
-                                Data   : Integer);
+   package Tree_Data is new Gtk.Clist.Row_Data (Demo_Tree_Item);
+
+   package Tree_Cb is new Gtk.Handlers.Callback
+     (Widget_Type => Gtk.Ctree.Gtk_Ctree_Record);
+
+   procedure Tree_Select_Child (Tree : access Gtk_Ctree_Record'Class);
    --  Callbacks when a different item in the tree is selected.
 
    package Window_Cb is new Handlers.Callback (Gtk_Widget_Record);
@@ -187,8 +172,8 @@ package body Main_Windows is
      (Gtk_Widget_Record, Boolean);
    procedure Exit_Main (Object : access Gtk_Widget_Record'Class);
    --  Callbacks when the main window is killed
-   function Delete_Event (Object : access Gtk_Widget_Record'Class)
-                         return Boolean;
+   function Delete_Event
+     (Object : access Gtk_Widget_Record'Class) return Boolean;
 
    type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc);
    --  The available types for demos.
@@ -200,7 +185,7 @@ package body Main_Windows is
    --  Misc:    Demonstrates some features that are not widgets
 
    type Tree_Item_Information is record
-      Label  : String_Access;
+      Label  : chars_ptr;
       Typ    : Demo_Type;
       Func   : Demo_Function;
       Help   : Help_Function;
@@ -331,53 +316,75 @@ package body Main_Windows is
    -- Fill_Gtk_Tree --
    -------------------
 
-   procedure Fill_Gtk_Tree (Tree : in out Gtk.Tree.Gtk_Tree;
-                            Gtkada_Demos : Boolean := False) is
-      Item_Subtree : Gtk_Tree;
-      Item_New     : Demo_Tree_Item;
-      Item         : Gtk_Tree_Item;
-      Frame_Num    : Integer := 1;
+   procedure Fill_Gtk_Tree
+     (Tree         : in out Gtk.Ctree.Gtk_Ctree;
+      Gtkada_Demos : Boolean := False)
+   is
+      Sibling   : Gtk.Ctree.Gtk_Ctree_Node;
+      Subtree   : Gtk.Ctree.Gtk_Ctree_Node;
+      Text      : chars_ptr;
+      Frame_Num : Integer := 1;
    begin
       for Typ in Demo_Type'Range loop
          if ((not Gtkada_Demos)  and then Typ /= Gtkada)
            or else (Gtkada_Demos and then Typ = Gtkada)
          then
             case Typ is
-               when Box     => Gtk_New (Item, "Containers");
-               when Base    => Gtk_New (Item, "Basic Widgets");
-               when Complex => Gtk_New (Item, "Composite Widgets");
-               when Gimp    => Gtk_New (Item, "Gimp Widgets");
-               when Misc    => Gtk_New (Item, "Misc. Demos");
-               when GdkD    => Gtk_New (Item, "Gdk demos");
+               when Box     => Text := New_String ("Containers");
+               when Base    => Text := New_String ("Basic Widgets");
+               when Complex => Text := New_String ("Composite Widgets");
+               when Gimp    => Text := New_String ("Gimp Widgets");
+               when Misc    => Text := New_String ("Misc. Demos");
+               when GdkD    => Text := New_String ("Gdk demos");
                when Gtkada  =>
-                  Gtk_New (Item, "GtkAda Widgets");
+                  Text := New_String ("GtkAda Widgets");
                   Frame_Num := 2;
-               when others  => Gtk_New (Item, Demo_Type'Image (Typ));
+               when others  =>
+                  Text := New_String (Demo_Type'Image (Typ));
             end case;
-            Append (Tree, Item);
 
-            Gtk_New (Item_Subtree);
+            Sibling := Gtk.Ctree.Insert_Node
+              (Tree,
+               Parent => null,
+               Sibling => null,
+               Text => (1 => Text),
+               Spacing => 5,
+               Pixmap_Closed => Gdk.Pixmap.Null_Pixmap,
+               Mask_Closed => Gdk.Bitmap.Null_Bitmap,
+               Pixmap_Opened => Gdk.Pixmap.Null_Pixmap,
+               Mask_Opened => Gdk.Bitmap.Null_Bitmap,
+               Is_Leaf => False,
+               Expanded => False);
+            Free (Text);
 
             for Item_Num in Gtk_Demos'Range loop
                if Gtk_Demos (Item_Num).Typ = Typ
                  and then Gtk_Demos (Item_Num).Func /= null
                then
-                  Gtk_New (Item_New,
-                           Label => Gtk_Demos (Item_Num).Label.all,
-                           Num   => Item_Num);
-                  Item_New.Frame := Frame_Num;
-                  Append (Item_Subtree, Item_New);
-                  Show (Item_New);
+                  Subtree := Gtk.Ctree.Insert_Node
+                    (Tree,
+                     Parent => Sibling,
+                     Sibling => null,
+                     Text => (1 => Gtk_Demos (Item_Num).Label),
+                     Spacing => 5,
+                     Pixmap_Closed => Gdk.Pixmap.Null_Pixmap,
+                     Mask_Closed => Gdk.Bitmap.Null_Bitmap,
+                     Pixmap_Opened => Gdk.Pixmap.Null_Pixmap,
+                     Mask_Opened => Gdk.Bitmap.Null_Bitmap,
+                     Is_Leaf => True,
+                     Expanded => False);
+                  Tree_Data.Set
+                    (Tree, Gtk_Clist_Row (Node_Get_Row (Subtree)),
+                     (Demo_Num => Item_Num,
+                      Frame    => Frame_Num));
                end if;
             end loop;
-
-            Set_Subtree (Item, Item_Subtree);
-            Tree_Cb.Connect
-              (Item_Subtree, "select_child",
-               Tree_Cb.To_Marshaller (Tree_Select_Child'Access),
-               0);
          end if;
       end loop;
+
+      Tree_Cb.Connect
+        (Tree, "tree_select_row",
+         Tree_Cb.To_Marshaller (Tree_Select_Child'Access));
    end Fill_Gtk_Tree;
 
    ------------------
@@ -501,8 +508,9 @@ package body Main_Windows is
                            Current_Color := Black;
                            Pos := First + 2;
                         when others =>
-                           Insert (Help_Text, Null_Font, Current_Color, Null_Color,
-                                   "@", 1);
+                           Insert
+                             (Help_Text, Null_Font, Current_Color, Null_Color,
+                              "@", 1);
                            Pos := First + 1;
                      end case;
                   end if;
@@ -510,7 +518,8 @@ package body Main_Windows is
 
                Pos := Pos + 1;
                exit when Pos > Help'Last;
-               Insert (Help_Text, Null_Font, Null_Color, Null_Color, Newline, 1);
+               Insert
+                 (Help_Text, Null_Font, Null_Color, Null_Color, Newline, 1);
             end loop;
          end;
       end if;
@@ -523,9 +532,9 @@ package body Main_Windows is
    -- New_Pixmap --
    ----------------
 
-   function New_Pixmap (Icon   : Interfaces.C.Strings.chars_ptr_array;
-                        Window : access Gtk_Widget_Record'Class)
-                       return Gtk_Pixmap
+   function New_Pixmap
+     (Icon   : Interfaces.C.Strings.chars_ptr_array;
+      Window : access Gtk_Widget_Record'Class) return Gtk_Pixmap
    is
       Pixmap    : Gdk_Pixmap;
       Mask      : Gdk_Bitmap;
@@ -535,32 +544,6 @@ package body Main_Windows is
       Gtk_New (GtkPixmap, Pixmap, Mask);
       return GtkPixmap;
    end New_Pixmap;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New (Item  : out Demo_Tree_Item;
-                      Label : String;
-                      Num   : Natural)
-   is
-   begin
-      Item := new Demo_Tree_Item_Record;
-      Initialize (Item, Label, Num);
-   end Gtk_New;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize (Item  : access Demo_Tree_Item_Record'Class;
-                         Label : String;
-                         Num   : Natural)
-   is
-   begin
-      Gtk.Tree_Item.Initialize (Item, Label);
-      Item.Demo_Num := Num;
-   end Initialize;
 
    -----------------
    --  Exit_Main  --
@@ -604,22 +587,25 @@ package body Main_Windows is
    -- Tree_Select_Child --
    -----------------------
 
-   procedure Tree_Select_Child (Tree   : access Gtk_Tree_Record'Class;
-                                Item_P : access Gtk_Widget_Record'Class;
-                                Data   : Integer)
-   is
+   procedure Tree_Select_Child (Tree : access Gtk_Ctree_Record'Class) is
       use Gtk.Widget.Widget_List;
       List : Gtk.Widget.Widget_List.Glist;
-      Item : Demo_Tree_Item := Demo_Tree_Item (Item_P);
+      Node : constant Gtk_Ctree_Node := Node_List.Get_Data
+        (Node_List.First (Get_Selection (Tree)));
+      Item : Demo_Tree_Item;
    begin
+      Item := Tree_Data.Get (Tree, Gtk_Clist_Row (Node_Get_Row (Node)));
+
       if Gtk_Demos (Item.Demo_Num).Func /= null then
 
          --  Remove the current demo from the frame
 
          List := Gtk.Frame.Children (Gtk_Demo_Frames (Item.Frame));
+
          if Length (List) /= 0 then
-            Gtk.Frame.Remove (Container => Gtk_Demo_Frames (Item.Frame),
-                              Widget    => Get_Data (List));
+            Gtk.Frame.Remove
+              (Container => Gtk_Demo_Frames (Item.Frame),
+               Widget    => Get_Data (List));
          end if;
 
          --  And then insert our own new demo
@@ -684,13 +670,11 @@ package body Main_Windows is
       Box      : Gtk.Box.Gtk_Box;
       Vbox,
       Vbox2    : Gtk.Box.Gtk_Box;
-      Tree     : Gtk.Tree.Gtk_Tree;
+      Tree     : Gtk.Ctree.Gtk_Ctree;
       Scrolled : Gtk_Scrolled_Window;
       Font     : Gdk.Font.Gdk_Font;
       Style    : Gtk_Style;
-      --  Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
       Button   : Gtk.Button.Gtk_Button;
-      --  Bbox     : Gtk.Box.Gtk_Box;
       Bbox     : Gtk.Hbutton_Box.Gtk_Hbutton_Box;
 
    begin
@@ -751,9 +735,8 @@ package body Main_Windows is
                   Padding => 0);
       Set_Usize (Scrolled, 170, 500);
 
-      Gtk_New (Tree);
+      Gtk_New (Tree, 1);
       Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
-      Set_View_Lines (Tree, True);
       Add_With_Viewport (Scrolled, Tree);
       Fill_Gtk_Tree (Tree);
 
@@ -793,9 +776,8 @@ package body Main_Windows is
                   Padding => 0);
       Set_Usize (Scrolled, 170, 500);
 
-      Gtk_New (Tree);
+      Gtk_New (Tree, 1);
       Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
-      Set_View_Lines (Tree, True);
       Add_With_Viewport (Scrolled, Tree);
       Fill_Gtk_Tree (Tree, True);
 
