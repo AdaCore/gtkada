@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -26,6 +26,12 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
+
+--  <description>
+--
+--  This is the parent package for the GtkAda specific units.
+--
+--  </description>
 
 package Gtkada is
 
