@@ -30,8 +30,10 @@ with Ada.Tags;
 with Glib;
 with Glib.Xml_Int;
 with Gdk.GC;
+with Gdk.Color;
 with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Window;
+with Gtk.Box;
 with Gtk.Button;
 with Gtk.Fixed;
 with Gtk.Event_Box;
@@ -43,6 +45,7 @@ with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
 with Gtk.Window;
+with Pango.Layout;
 
 --  TODO:
 --  - handles multiple views of the MDI (through several top-level windows)
@@ -110,6 +113,22 @@ package Gtkada.MDI is
    procedure Initialize (MDI : access MDI_Window_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Configure
+     (MDI                       : access MDI_Window_Record;
+      Opaque_Resize             : Boolean             := False;
+      Opaque_Move               : Boolean             := False;
+      Close_Floating_Is_Unfloat : Boolean             := True;
+      Title_Font                : String              := "Sans 8";
+      Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color);
+   --  Change the setup of the MDI.
+   --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
+   --  will put it back in the MDI instead of destroying it.
+   --  Title_Font is the font used in the title bars.
+   --  The colors, when Null_Color, will not change the current setup. Changes
+   --  in colors will not take effect unless the MDI is realized.
 
    function Put
      (MDI   : access MDI_Window_Record;
@@ -492,6 +511,10 @@ private
 
       Maximize_Button : Gtk.Button.Gtk_Button;
       Minimize_Button : Gtk.Button.Gtk_Button;
+
+      Title_Box : Gtk.Box.Gtk_Box;
+      --  Box that contains the title. It will be resized whenever the title
+      --  font changes.
    end record;
 
    procedure Gtk_New (Child : out MDI_Child;
@@ -593,6 +616,24 @@ private
 
       Default_X, Default_Y : Glib.Gint := 10;
       --  Default position when placing a new child.
+
+      Title_Layout        : Pango.Layout.Pango_Layout;
+      --  Layout used to draw titles in the MDI children
+
+      Title_Bar_Height    : Glib.Gint;
+      --  Height of the title bar for all the children
+
+      Opaque_Resize : Boolean;
+      --  True if the contents of windows should be displayed while resizing
+      --  widgets
+
+      Opaque_Move : Boolean;
+      --  True if the contents of windows should be displayed while moved
+
+      Close_Floating_Is_Unfloat : Boolean;
+      --  True if destroying a floating window will put the child back in the
+      --  MDI instead of destroying it. False if the child should be destroyed
+      --  (provided it accepts so in its delete_event handler).
    end record;
 
    pragma Inline (Get_Window);

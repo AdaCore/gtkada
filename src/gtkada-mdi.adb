@@ -35,7 +35,6 @@ with Gdk.Cursor;       use Gdk.Cursor;
 with Gdk.Dnd;          use Gdk.Dnd;
 with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
-with Gdk.Font;         use Gdk.Font;
 with Gdk.GC;           use Gdk.GC;
 with Gdk.Main;         use Gdk.Main;
 with Gdk.Pixmap;
@@ -56,6 +55,7 @@ with Gtk.Event_Box;    use Gtk.Event_Box;
 with Gtk.Fixed;        use Gtk.Fixed;
 with Gtk.Handlers;
 with Gtk.Label;        use Gtk.Label;
+with Pango.Layout;     use Pango.Layout;
 with Gtk.Main;         use Gtk.Main;
 pragma Elaborate_All (Gtk.Main);
 
@@ -82,19 +82,15 @@ package body Gtkada.MDI is
    use Glib.Xml_Int;
 
    Title_Bar_Focus_Color : constant String := "#000088";
-   --  <preferences> Color to use for the title bar of the child that has
+   --  Default color to use for the title bar of the child that has
    --  the focus
 
    Title_Bar_Color : constant String := "#AAAAAA";
-   --  <preferences> Color to use for the title bar of children that do not
+   --  Default color to use for the title bar of children that do not
    --  have the focus.
 
-   Title_Bar_Height : constant Gint := 15;
-   --  <preferences> Height of the title bar for the children
-   --  ??? Should be computed from Title_Font, and thus a field in MDI_Window
-
    MDI_Background_Color : constant String := "#666666";
-   --  <preferences> Background color to use for the MDI window
+   --  Default background color to use for the MDI window
 
    Border_Thickness : constant Gint := 4;
    --  <preferences> Thickness of the separators in the MDI
@@ -102,26 +98,13 @@ package body Gtkada.MDI is
    Drop_Area_Thickness : constant Gint := 4;
    --  Thickness of the Dnd drop areas on each side of the MDI.
 
-   Title_Font : constant String := "Sans 8";
-   --  <preferences> Name of the font to use in the title bar
-
    Icons_Width : constant Gint := 100;
-   Icons_Height : constant Gint := Title_Bar_Height + 2 * Border_Thickness;
-   --  <preferences> Width to use for icons
-
-   Opaque_Resize : constant Boolean := False;
-   --  <preferences> True if the contents of windows should be displayed while
-   --  resizing widgets.
-
-   Opaque_Move : constant Boolean := False;
-   --  <preferences> True if the contents of windows should be displayed while
-   --  they are moved.
+   --  Width to use for icons
 
    Handle_Size : constant Gint := 8;
-   --  <preferences> The default width or height of the handles.
+   --  The default width or height of the handles.
 
    Min_Width  : constant Gint := 40;
-   Min_Height : constant Gint := 2 * Border_Thickness + Title_Bar_Height;
    --  Minimal size for all windows
 
    Threshold : constant Gint := 40;
@@ -131,11 +114,6 @@ package body Gtkada.MDI is
    --  Extra tolerance when the user selects a corner for resizing (if the
    --  pointer is within Corner_Size in both coordinates, then we are clicking
    --  on the corner)
-
-   Close_Floating_Is_Unfloat : constant Boolean := True;
-   --  True if destroying a floating window will put the child back in the MDI
-   --  instead of destroying it. False if the child should be destroyed
-   --  (provided it accepts so in its delete_event handler).
 
    MDI_Class_Record        : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
@@ -458,6 +436,11 @@ package body Gtkada.MDI is
       Gtk.Fixed.Initialize (MDI);
       Set_Has_Window (MDI, True);
 
+      MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
+      Configure (MDI,
+                 Opaque_Resize => True,
+                 Opaque_Move   => True);
+
       Gtk.Object.Initialize_Class_Record
         (MDI,
          Signals      => MDI_Signals,
@@ -509,6 +492,69 @@ package body Gtkada.MDI is
          Set_Dnd_Target (MDI.Drop_Sites (S));
       end loop;
    end Initialize;
+
+   ---------------
+   -- Configure --
+   ---------------
+
+   procedure Configure
+     (MDI                       : access MDI_Window_Record;
+      Opaque_Resize             : Boolean             := False;
+      Opaque_Move               : Boolean             := False;
+      Close_Floating_Is_Unfloat : Boolean             := True;
+      Title_Font                : String              := "Sans 8";
+      Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color)
+   is
+      Desc : Pango_Font_Description;
+      W, H : Gint;
+      List : Widget_List.Glist;
+      C    : MDI_Child;
+      Need_Redraw : Boolean := False;
+   begin
+      MDI.Opaque_Resize := Opaque_Resize;
+      MDI.Opaque_Move   := Opaque_Move;
+      MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
+
+      Desc := From_String (Title_Font);
+      Set_Font_Description (MDI.Title_Layout, Desc);
+      Get_Pixel_Size (MDI.Title_Layout, W, H);
+      MDI.Title_Bar_Height := 2 + H;
+      Free (Desc);
+
+      --  Resize the title bar of all children already in the MDI
+
+      List := First (MDI.Items);
+      while List /= Null_List loop
+         C := MDI_Child (Get_Data (List));
+         Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
+         List := Widget_List.Next (List);
+      end loop;
+
+      --  Ignore changes in colors, unless the MDI is realized
+
+      if Realized_Is_Set (MDI) then
+         if Background_Color /= Null_Color then
+            Set_Background (Get_Window (MDI), Background_Color);
+            Need_Redraw := True;
+         end if;
+
+         if Title_Bar_Color /= Null_Color then
+            Set_Foreground (MDI.Non_Focus_GC, Title_Bar_Color);
+            Need_Redraw := True;
+         end if;
+
+         if Focus_Title_Color /= Null_Color then
+            Set_Foreground (MDI.Focus_GC, Focus_Title_Color);
+            Need_Redraw := True;
+         end if;
+
+         if Need_Redraw then
+            Queue_Draw (MDI);
+         end if;
+      end if;
+   end Configure;
 
    ------------------------
    -- Realize_MDI_Layout --
@@ -650,7 +696,8 @@ package body Gtkada.MDI is
                   First := M.Docks_Size (Top) + Handle_Size - 1;
                   Draw_Line
                     (M.Handles (Left), Get_Black_GC (Get_Style (M)),
-                     Handle_Size - 1, 0, Handle_Size - 1, First - Handle_Size);
+                     Handle_Size - 1, 0, Handle_Size - 1,
+                     First - Handle_Size + 1);
                else
                   Draw_Line
                     (M.Handles (Left), Get_White_GC (Get_Style (M)),
@@ -660,10 +707,11 @@ package body Gtkada.MDI is
 
             if M.Priorities (Left) < M.Priorities (Bottom) then
                if M.Docks (Bottom) /= null then
-                  Last := H - M.Docks_Size (Bottom) - Handle_Size + 1;
+                  Last := H - M.Docks_Size (Bottom) - Handle_Size
+                     + Drop_Area_Thickness;
                   Draw_Line
                     (M.Handles (Left), Get_Black_GC (Get_Style (M)),
-                     Handle_Size - 1, Last + Handle_Size - 2,
+                     Handle_Size - 1, Last + Handle_Size - 1,
                      Handle_Size - 1, H);
                else
                   Draw_Line
@@ -688,10 +736,10 @@ package body Gtkada.MDI is
 
             if M.Priorities (Bottom) < M.Priorities (Right) then
                if M.Docks (Right) /= null then
-                  Last := W - M.Docks_Size (Right) - Handle_Size + 1;
+                  Last := W - M.Docks_Size (Right) - Handle_Size;
                   Draw_Line
                     (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
-                     Last + Handle_Size - 2, 0, W, 0);
+                     Last + Handle_Size - 1, 0, W, 0);
                else
                   Draw_Line
                     (M.Handles (Bottom), Get_Black_GC (Get_Style (M)),
@@ -701,10 +749,11 @@ package body Gtkada.MDI is
 
             if M.Priorities (Bottom) < M.Priorities (Left) then
                if M.Docks (Left) /= null then
-                  First := M.Docks_Size (Left) + Handle_Size - 1;
+                  First := M.Docks_Size (Left) + Handle_Size
+                    - Drop_Area_Thickness - 1;
                   Draw_Line
                     (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
-                     0, 0, M.Docks_Size (Left), 0);
+                     0, 0, M.Docks_Size (Left) - Drop_Area_Thickness, 0);
                else
                   Draw_Line
                     (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
@@ -768,10 +817,13 @@ package body Gtkada.MDI is
 
             if M.Priorities (Top) <= M.Priorities (Left) then
                if M.Docks (Left) /= null then
-                  First := M.Docks_Size (Left) + Handle_Size - 1;
+                  First := M.Docks_Size (Left) + Handle_Size
+                    - Drop_Area_Thickness - 1;
                   Draw_Line
                     (M.Handles (Top), Get_Black_GC (Get_Style (M)), 0,
-                     Handle_Size - 1, M.Docks_Size (Left), Handle_Size - 1);
+                     Handle_Size - 1,
+                     M.Docks_Size (Left) - Drop_Area_Thickness,
+                     Handle_Size - 1);
                end if;
                Draw_Line
                  (M.Handles (Top), Get_White_GC (Get_Style (M)),
@@ -780,10 +832,10 @@ package body Gtkada.MDI is
 
             if M.Priorities (Top) <= M.Priorities (Right) then
                if M.Docks (Right) /= null then
-                  Last := W - M.Docks_Size (Right) - Handle_Size + 1;
+                  Last := W - M.Docks_Size (Right) - Handle_Size;
                   Draw_Line
                     (M.Handles (Top), Get_Black_GC (Get_Style (M)),
-                     Last + Handle_Size - 2, Handle_Size - 1,
+                     Last + Handle_Size - 1, Handle_Size - 1,
                      W, Handle_Size - 1);
                end if;
                Draw_Line
@@ -835,7 +887,7 @@ package body Gtkada.MDI is
            and then M.Docks_Size (Bottom) /= 0
          then
             Alloc.Height := Alloc.Height
-              - Allocation_Int (M.Docks_Size (Bottom) + Handle_Size);
+              - Allocation_Int (M.Docks_Size (Bottom));
          end if;
 
          Alloc.Height := Alloc.Height - Drop_Area_Thickness;
@@ -867,7 +919,7 @@ package body Gtkada.MDI is
            and then M.Docks_Size (Bottom) /= 0
          then
             Alloc.Height := Alloc.Height
-              - Allocation_Int (M.Docks_Size (Bottom) + Handle_Size);
+              - Allocation_Int (M.Docks_Size (Bottom));
          end if;
 
          Show (M.Handles (Right));
@@ -1057,7 +1109,7 @@ package body Gtkada.MDI is
            and then MDI.Docks_Size (Bottom) /= 0
          then
             Alloc.Height := Alloc.Height
-              - Allocation_Int (MDI.Docks_Size (Bottom) + Handle_Size);
+              - Allocation_Int (MDI.Docks_Size (Bottom));
          end if;
 
          Alloc.Height := Alloc.Height - Drop_Area_Thickness;
@@ -1086,7 +1138,7 @@ package body Gtkada.MDI is
            and then MDI.Docks_Size (Bottom) /= 0
          then
             Alloc.Height := Alloc.Height
-              - Allocation_Int (MDI.Docks_Size (Bottom) + Handle_Size);
+              - Allocation_Int (MDI.Docks_Size (Bottom));
          end if;
 
          Size_Allocate (MDI.Docks (Right), Alloc);
@@ -1283,6 +1335,7 @@ package body Gtkada.MDI is
       end loop;
 
       Free (MDI_Window (MDI).Items);
+      Unref (MDI_Window (MDI).Title_Layout);
 
       if MDI_Window (MDI).Menu /= null then
          Destroy (MDI_Window (MDI).Menu);
@@ -1489,10 +1542,8 @@ package body Gtkada.MDI is
       use Widget_List;
       pragma Unreferenced (Area);
 
-      F  : Gdk.Font.Gdk_Font;
       GC : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
-      Descr : Pango_Font_Description;
-
+      W, H : Gint;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
@@ -1501,10 +1552,6 @@ package body Gtkada.MDI is
          GC := Child.MDI.Focus_GC;
       end if;
 
-      Descr := From_String (Title_Font);
-      F := From_Description (Descr);
-      Free (Descr);
-
       Draw_Rectangle
         (Get_Window (Child),
          GC,
@@ -1512,16 +1559,16 @@ package body Gtkada.MDI is
          Border_Thickness,
          Border_Thickness,
          Gint (Get_Allocation_Width (Child)) - 2 * Border_Thickness,
-         Title_Bar_Height);
+         Child.MDI.Title_Bar_Height);
 
-      Draw_Text
+      Set_Text (Child.MDI.Title_Layout, Child.Title.all);
+      Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
+      Draw_Layout
         (Get_Window (Child),
-         F,
          Get_White_GC (Get_Style (Child.MDI)),
          Border_Thickness + 3,
-         Border_Thickness +
-         (Title_Bar_Height + Get_Ascent (F) - Get_Descent (F)) / 2,
-         Child.Title.all);
+         Border_Thickness + (Child.MDI.Title_Bar_Height - H) / 2,
+         Child.MDI.Title_Layout);
 
       Draw_Shadow
         (Get_Style (Child),
@@ -1807,8 +1854,8 @@ package body Gtkada.MDI is
 
       if not Children_Are_Maximized (MDI)
         and then
-        ((not Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
-         or else (not Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
+        ((not MDI.Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
+         or else (not MDI.Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
       then
          Draw_Rectangle
            (Get_Window (MDI.Layout),
@@ -1847,8 +1894,9 @@ package body Gtkada.MDI is
          Allocation_Int (MDI.Current_W), Allocation_Int (MDI.Current_H));
 
       if not Children_Are_Maximized (MDI)
-        and then ((not Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
-          or else (not Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
+        and then ((not MDI.Opaque_Resize
+                    and then MDI.Current_Cursor /= Left_Ptr)
+          or else (not MDI.Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
       then
          Draw_Rectangle
            (Get_Window (MDI.Layout),
@@ -1889,6 +1937,8 @@ package body Gtkada.MDI is
       Curs    : Gdk_Cursor_Type;
       W, H    : Gint;
       Alloc   : Gtk_Allocation;
+      Min_Height : constant Gint :=
+        2 * Border_Thickness + MDI.Title_Bar_Height;
 
    begin
       if Get_Window (Child) /= Get_Window (Event) then
@@ -1903,8 +1953,9 @@ package body Gtkada.MDI is
 
          if not Children_Are_Maximized (MDI)
            and then
-           ((not Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
-            or else (not Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
+           ((not MDI.Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
+            or else (not MDI.Opaque_Move
+                     and then MDI.Current_Cursor = Left_Ptr))
          then
             Draw_Rectangle
               (Get_Window (MDI.Layout),
@@ -1966,7 +2017,7 @@ package body Gtkada.MDI is
             when others => null;
          end case;
 
-         if MDI.Current_Cursor = Left_Ptr and then Opaque_Move then
+         if MDI.Current_Cursor = Left_Ptr and then MDI.Opaque_Move then
             Alloc :=
               (MDI.Current_X, MDI.Current_Y,
                Allocation_Int (MDI.Current_W),
@@ -1974,7 +2025,7 @@ package body Gtkada.MDI is
             Size_Allocate (Child, Alloc);
 
          elsif MDI.Current_Cursor /= Left_Ptr
-           and then Opaque_Resize
+           and then MDI.Opaque_Resize
            and then (W /= Gint (Get_Allocation_Width (C))
                      or else H /= Gint (Get_Allocation_Height (C)))
          then
@@ -1984,8 +2035,9 @@ package body Gtkada.MDI is
 
          if not Children_Are_Maximized (MDI)
            and then
-           ((not Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
-            or else (not Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
+           ((not MDI.Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
+            or else (not MDI.Opaque_Move
+                       and then MDI.Current_Cursor = Left_Ptr))
          then
             MDI.Current_W := W;
             MDI.Current_H := H;
@@ -2126,7 +2178,7 @@ package body Gtkada.MDI is
       Widget  : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       Button    : Gtk_Button;
-      Box, Box2 : Gtk_Box;
+      Box       : Gtk_Box;
       Pix       : Gdk_Pixmap;
       Mask      : Gdk_Bitmap;
       Pixmap    : Gtk_Pixmap;
@@ -2172,18 +2224,17 @@ package body Gtkada.MDI is
 
       --  Buttons in the title bar
 
-      Gtk_New_Hbox (Box2, Homogeneous => False);
-      Pack_Start (Box, Box2, Expand => False, Fill => False);
+      Gtk_New_Hbox (Child.Title_Box, Homogeneous => False);
+      Pack_Start (Box, Child.Title_Box, Expand => False, Fill => False);
 
       Set_Border_Width (Box, Guint (Border_Thickness));
-      Set_USize (Box2, -1, Title_Bar_Height);
 
       Gdk.Pixmap.Create_From_Xpm_D
         (Pix, null, Get_Default_Colormap, Mask, Null_Color, Close_Xpm);
       Gtk_New (Pixmap, Pix, Mask);
       Gtk_New (Button);
       Add (Button, Pixmap);
-      Pack_End (Box2, Button, Expand => False, Fill => False);
+      Pack_End (Child.Title_Box, Button, Expand => False, Fill => False);
       Widget_Callback.Object_Connect
         (Button, "clicked",
          Widget_Callback.To_Marshaller (Close_Child'Access), Child);
@@ -2194,7 +2245,8 @@ package body Gtkada.MDI is
       Gtk_New (Child.Maximize_Button);
       Add (Child.Maximize_Button, Pixmap);
       Pack_End
-        (Box2, Child.Maximize_Button, Expand => False, Fill => False);
+        (Child.Title_Box, Child.Maximize_Button,
+         Expand => False, Fill => False);
       Widget_Callback.Object_Connect
         (Child.Maximize_Button, "clicked",
          Widget_Callback.To_Marshaller (Maximize_Child_Cb'Access), Child);
@@ -2204,7 +2256,8 @@ package body Gtkada.MDI is
       Gtk_New (Pixmap, Pix, Mask);
       Gtk_New (Child.Minimize_Button);
       Add (Child.Minimize_Button, Pixmap);
-      Pack_End (Box2, Child.Minimize_Button, Expand => False, Fill => False);
+      Pack_End (Child.Title_Box, Child.Minimize_Button, Expand
+                => False, Fill => False);
       Widget_Callback.Object_Connect
         (Child.Minimize_Button, "clicked",
          Widget_Callback.To_Marshaller (Iconify_Child'Access), Child);
@@ -2254,6 +2307,8 @@ package body Gtkada.MDI is
       C.MDI := MDI_Window (MDI);
       C.X   := MDI.Default_X;
       C.Y   := MDI.Default_Y;
+
+      Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
 
       if not Children_Are_Maximized (MDI)
         and then MDI.Default_X + Threshold >
@@ -2655,14 +2710,14 @@ package body Gtkada.MDI is
          Queue_Draw_Area
            (Old, Border_Thickness, Border_Thickness,
             Gint (Get_Allocation_Width (Old)) - 2 * Border_Thickness,
-            Title_Bar_Height);
+            Child.MDI.Title_Bar_Height);
       end if;
 
       if Realized_Is_Set (C) then
          Queue_Draw_Area
            (C, Border_Thickness, Border_Thickness,
             Gint (Get_Allocation_Width (C)) - 2 * Border_Thickness,
-            Title_Bar_Height);
+            Child.MDI.Title_Bar_Height);
       end if;
 
       Update_Dock_Menu (C);
@@ -2714,8 +2769,8 @@ package body Gtkada.MDI is
       end loop;
 
       Alloc := Compute_Workspace_Size (MDI);
-      W := Gint (Alloc.Width)  - (Num_Children - 1) * Title_Bar_Height;
-      H := Gint (Alloc.Height) - (Num_Children - 1) * Title_Bar_Height;
+      W := Gint (Alloc.Width)  - (Num_Children - 1) * MDI.Title_Bar_Height;
+      H := Gint (Alloc.Height) - (Num_Children - 1) * MDI.Title_Bar_Height;
 
       List := First (MDI.Items);
 
@@ -2728,7 +2783,7 @@ package body Gtkada.MDI is
          List := Widget_List.Next (List);
 
          if (C.State = Normal or else C.State = Iconified) then
-            C.X := (Num_Children - Level) * Title_Bar_Height;
+            C.X := (Num_Children - Level) * MDI.Title_Bar_Height;
             C.Y := C.X;
             C.Uniconified_Width  := W;
             C.Uniconified_Height := H;
@@ -2871,7 +2926,7 @@ package body Gtkada.MDI is
       pragma Assert
         (not (MDI_Child (Child).Initial.all in Gtk_Window_Record'Class));
 
-      if Close_Floating_Is_Unfloat then
+      if MDI_Child (Child).MDI.Close_Floating_Is_Unfloat then
          Float_Child (MDI_Child (Child), False);
          return True;
       else
@@ -3196,6 +3251,8 @@ package body Gtkada.MDI is
       List        : Widget_List.Glist;
       C2          : MDI_Child;
       Alloc       : Gtk_Allocation;
+      Icons_Height : constant Gint :=
+        MDI.Title_Bar_Height + 2 * Border_Thickness;
 
    begin
       --  Items can't be iconified if they are maximized
@@ -3943,6 +4000,9 @@ package body Gtkada.MDI is
          Register   : Register_Node;
          Width, Height : Guint;
          State      : State_Type;
+         Icons_Height : constant Gint :=
+           MDI.Title_Bar_Height - 2 * Border_Thickness;
+
       begin
          pragma Assert (From_Tree.Tag.all = "MDI");
          MDI.Desktop_Was_Loaded := True;
