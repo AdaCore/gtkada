@@ -57,7 +57,6 @@ with Gtk.Window;
 --  - Automatically add a new menu bar when a child is floated (settable
 --    on a per-child basis).
 --  - contextual menu in the title bar of children to dock them, float them,...
---  - Maximize_Children should work even if there is no child in MDI.
 
 package Gtkada.MDI is
 
