@@ -609,7 +609,7 @@ fi
 # Current release settings
 GTKADA_MAJOR_VERSION=1
 GTKADA_MINOR_VERSION=2
-GTKADA_MICRO_VERSION=4
+GTKADA_MICRO_VERSION=7
 GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 
 ac_aux_dir=
@@ -1823,7 +1823,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "Makefile src/Makefile src/gtkada-config src/gate testgtk/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -1928,7 +1928,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile src/Makefile src/gtkada-config src/gate testgtk/Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
