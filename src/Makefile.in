@@ -21,6 +21,7 @@ GNATFLAGS = -O2 -gnatn -gnatwuwewl
 GNATFLAGS_DEVEL = -O2 -gnatag -gnatwuwewl -g
 
 GNATMAKE = gnatmake
+GNATMAKEBINDFLAGS = -bargs -shared
 GNATMAKELDFLAGS = -largs -L. -lgtkada @GTK_LIBS@
 OS_SPECIFIC_LINK_OPTIONS = @OS_SPECIFIC_LINK_OPTIONS@
 
@@ -105,18 +106,18 @@ install_ali::
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
 	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
 
-$(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
+$(GATE_EX):: $(GATE_SRC) $(LIBNAME)
 	@if [ -f .devel ]; then \
-	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKELDFLAGS); \
+	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
-	  $(GNATMAKE) $(GNATFLAGS) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKELDFLAGS); \
+	  $(GNATMAKE) $(GNATFLAGS) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
-$(DGATE):: $(DGATE).adb $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
+$(DGATE):: $(DGATE).adb $(LIBNAME)
 	@if [ -f .devel ]; then \
-	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) $(GNATFLAGS) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
 $(LIB_DIR)/$(MAKE_ADB).o::
@@ -131,7 +132,7 @@ $(LIB_DIR)/$(MAKE_ADB).o::
 $(OPENGL_OBJECTS):: force
 	$(CD) $(LIB_DIR); $(GNATMAKE) $(GNATFLAGS) $(FPIC) -c -q ../$(notdir $(patsubst %.o,%.adb,$@))
 
-install: $(ARCHIVENAME) $(LIBNAME)
+install: all
 	@if [ "$(prefix)" != `pwd` ]; then \
 	   echo Installing GtkAda in $(prefix); \
 	   $(MKDIR) $(bindir); \
