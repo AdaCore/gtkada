@@ -38,6 +38,9 @@ package Gtk.Status_Bar is
    type Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with private;
    type Gtk_Status_Bar is access all Gtk_Status_Bar_Record'Class;
 
+   subtype Gtk_Statusbar is Gtk_Status_Bar;
+   --  This is needed by Gate since the C name is GtkStatusbar
+
    type Context_Id is new Guint;
    type Message_Id is new Guint;
 
