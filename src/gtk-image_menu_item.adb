@@ -64,6 +64,14 @@ package body Gtk.Image_Menu_Item is
       Initialize (Widget, Stock_Id, Accel_Group);
    end Gtk_New;
 
+   procedure Gtk_New_From_Stock
+     (Widget   : out Gtk_Image_Menu_Item;
+      Stock_Id : String) is
+   begin
+      Widget := new Gtk_Image_Menu_Item_Record;
+      Initialize_From_Stock (Widget, Stock_Id);
+   end Gtk_New_From_Stock;
+
    ---------------------------
    -- Gtk_New_With_Mnemonic --
    ---------------------------
@@ -127,6 +135,24 @@ package body Gtk.Image_Menu_Item is
    begin
       Set_Object (Widget, Internal (Label & ASCII.NUL));
    end Initialize_With_Mnemonic;
+
+   ---------------------------
+   -- Initialize_From_Stock --
+   ---------------------------
+
+   procedure Initialize_From_Stock
+     (Widget   : access Gtk_Image_Menu_Item_Record'Class;
+      Stock_Id : String)
+   is
+      function Internal
+        (Stock : String;
+         Accel_Group : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_image_menu_item_new_from_stock");
+
+   begin
+      Set_Object
+        (Widget, Internal (Stock_Id & ASCII.NUL, System.Null_Address));
+   end Initialize_From_Stock;
 
    ---------------
    -- Get_Image --

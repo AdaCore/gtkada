@@ -54,6 +54,11 @@ package Gtk.Image_Menu_Item is
    --  Create a new Gtk_Image_Menu_Item.
    --  If label is non null, set the label of the menu item.
 
+   procedure Gtk_New_From_Stock
+     (Widget   : out Gtk_Image_Menu_Item;
+      Stock_Id : String);
+   --  Create a new Gtk_Image_Menu_Item from a stock item.
+
    procedure Gtk_New
      (Widget      : out Gtk_Image_Menu_Item;
       Stock_Id    : String;
@@ -82,6 +87,11 @@ package Gtk.Image_Menu_Item is
    procedure Initialize_With_Mnemonic
      (Widget : access Gtk_Image_Menu_Item_Record'Class;
       Label  : UTF8_String);
+   --  ditto.
+
+   procedure Initialize_From_Stock
+     (Widget   : access Gtk_Image_Menu_Item_Record'Class;
+      Stock_Id : String);
    --  ditto.
 
    function Get_Type return Gtk.Gtk_Type;
