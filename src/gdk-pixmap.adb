@@ -105,10 +105,10 @@ package body Gdk.Pixmap is
    end Create_From_Xpm_D;
 
    ---------------
-   --  Gtk_New  --
+   --  Gdk_New  --
    ---------------
 
-   procedure Gtk_New (Pixmap :    out Gdk_Pixmap;
+   procedure Gdk_New (Pixmap :    out Gdk_Pixmap;
                       Window : in     Gdk.Window.Gdk_Window'Class;
                       Width  : in     Gint;
                       Height : in     Gint;
@@ -121,7 +121,7 @@ package body Gdk.Pixmap is
    begin
       Set_Object (Pixmap, Internal (Get_Object (Window),
                                     Width, Height, Depth));
-   end Gtk_New;
+   end Gdk_New;
 
    ----------------
    -- Ref_Pixmap --

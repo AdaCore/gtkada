@@ -38,7 +38,7 @@ package Gdk.Pixmap is
 
    type Gdk_Pixmap is new Gdk.Drawable.Gdk_Drawable with private;
 
-   procedure Gtk_New (Pixmap :    out Gdk_Pixmap;
+   procedure Gdk_New (Pixmap :    out Gdk_Pixmap;
                       Window : in     Gdk.Window.Gdk_Window'Class;
                       Width  : in     Gint;
                       Height : in     Gint;
