@@ -1625,6 +1625,35 @@ else
 fi
 rm -f conftest*
    echo "$ac_t""$have_MesaGL" 1>&6
+
+   ## Testing for Mesa + pthread
+   if test "x$have_MesaGL" = "xno"; then
+    echo $ac_n "checking Mesa with pthreads""... $ac_c" 1>&6
+echo "configure:1637: checking Mesa with pthreads" >&5
+    LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL -lpthread"
+    cat > conftest.$ac_ext <<EOF
+#line 1640 "configure"
+#include "confdefs.h"
+
+int main() {
+ char glBegin(); glBegin(); 
+; return 0; }
+EOF
+if { (eval echo configure:1647: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+  rm -rf conftest*
+  have_MesaGL_pthread=yes
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  have_MesaGL_pthread=no
+fi
+rm -f conftest*
+    echo "$ac_t""$have_MesaGL_pthread" 1>&6
+   fi
+
+
+   ## Setting up the libraries for Mesa
     
    LIBS="$saved_LIBS"
    HAVE_OPENGL="False"
