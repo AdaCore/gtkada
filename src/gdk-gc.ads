@@ -231,6 +231,8 @@ package Gdk.GC is
 
    procedure Set_Clip_Rectangle
      (GC : Gdk_GC; Rectangle : Gdk.Rectangle.Gdk_Rectangle);
+   procedure Set_Clip_Rectangle
+     (GC : Gdk_GC; Rectangle : Gdk.Rectangle.Gdk_Rectangle_Access := null);
    --  Set the clip rectangle.
    --  Only the points that are drawn inside this rectangle will be displayed
    --  on the screen. The clip origin is modified automatically.
