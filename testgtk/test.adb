@@ -41,6 +41,7 @@ with Create_Status;
 with Create_Test_Idle;
 with Create_Test_Timeout;
 with Create_Toggle_Buttons;
+with Create_Tooltips;
 with Create_Main_Loop;
 with Create_Toolbar;
 
@@ -131,7 +132,7 @@ package body Test is
       (US ("text"), null),
       (US ("toggle buttons"), Create_Toggle_Buttons.Run'Access),
       (US ("toolbar"), Create_Toolbar.Run'Access),
-      (US ("tooltips"), null),
+      (US ("tooltips"), Create_Tooltips.Run'Access),
       (US ("tree"), null),
       (US ("WM hints"), null)
       );
