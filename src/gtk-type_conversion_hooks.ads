@@ -43,7 +43,7 @@
 --  @THREAD_STATUS@: This package is not thread safe. You should call the
 --  function Add_Hook from the elaboration part of your packages.
 --
---  <description>
+--  </description>
 
 package Gtk.Type_Conversion_Hooks is
 
