@@ -23,6 +23,7 @@ package Glib is
    type Gfloat  is new C.C_float;
    type Gdouble is new C.double;
 
+   subtype Gint8  is Gint range -(2 ** 4) .. (2 ** 4 - 1);
    subtype Gint16 is Gint range -(2 ** 8) .. (2 ** 8 - 1);
    subtype Gint32 is Gint range -(2 ** 16) .. (2 ** 16 - 1);
 
