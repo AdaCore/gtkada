@@ -437,8 +437,9 @@ package body Gtk.Notebook is
    -- Set_Page --
    --------------
 
-   procedure Set_Page (Notebook : access Gtk_Notebook_Record;
-                       Page_Num : in Gint)
+   procedure Set_Page
+     (Notebook : access Gtk_Notebook_Record;
+      Page_Num : in Gint := -1)
    is
       procedure Internal (Notebook : in System.Address; Page_Num : in Gint);
       pragma Import (C, Internal, "gtk_notebook_set_page");

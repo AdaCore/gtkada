@@ -184,12 +184,13 @@ package Gtk.Notebook is
 
    procedure Set_Page
      (Notebook : access Gtk_Notebook_Record;
-      Page_Num : in Gint);
+      Page_Num : in Gint := -1);
    --  Modify the current page.
    --  The current page is the page that is currently visible on the screen.
    --  Nothing happens if there is no such page.
    --  Note also that the page has to be visible on the screen (ie you must
    --  have called Gtk.Widget.Show on it first).
+   --  Use -1 to set the current page to the last one.
 
    procedure Next_Page (Notebook : access Gtk_Notebook_Record);
    --  Display the next page on the screen.
