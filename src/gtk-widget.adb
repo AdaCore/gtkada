@@ -152,6 +152,15 @@ package body Gtk.Widget is
       Internal (Tmp);
    end Destroy;
 
+   ----------------
+   -- Destroy_Cb --
+   ----------------
+
+   procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class) is
+   begin
+      Destroy (Widget);
+   end Destroy_Cb;
+
    ----------
    -- Draw --
    ----------
@@ -186,14 +195,16 @@ package body Gtk.Widget is
    -- Event --
    -----------
 
-   procedure Event (Widget : access Gtk_Widget_Record'Class;
-                    Event  : Gdk.Event.Gdk_Event)
+   function Event (Widget : access Gtk_Widget_Record'Class;
+                   Event  : Gdk.Event.Gdk_Event)
+                  return Gint
    is
-      procedure Internal (Widget : System.Address; Event : System.Address);
+      function Internal (Widget : System.Address; Event : System.Address)
+                        return Gint;
       pragma Import (C, Internal, "gtk_widget_event");
 
    begin
-      Internal (Get_Object (Widget), Get_Object (Event));
+      return Internal (Get_Object (Widget), Get_Object (Event));
    end Event;
 
    ---------------------------
@@ -251,20 +262,6 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Allocation_Y;
-
-   -------------------------------------
-   -- Get_Default_Motion_Notify_Event --
-   -------------------------------------
-
-   function Get_Default_Motion_Notify_Event (Widget : access Gtk_Widget_Record)
-     return System.Address
-   is
-      function Internal (Widget : in System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_widget_get_motion_notify");
-
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Default_Motion_Notify_Event;
 
    ----------------
    -- Get_Object --
@@ -391,6 +388,22 @@ package body Gtk.Widget is
       Set_Object (Result, Internal);
       return Result;
    end Get_Default_Colormap;
+
+   ---------------------------------
+   -- Default_Motion_Notify_Event --
+   ---------------------------------
+
+   function Default_Motion_Notify_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk.Event.Gdk_Event)
+     return Gint
+   is
+      function Internal (Widget : in System.Address;
+                         Event  : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_widget_get_motion_notify");
+   begin
+      return Internal (Get_Object (Widget), Get_Object (Event));
+   end Default_Motion_Notify_Event;
 
    ------------------------
    -- Get_Default_Visual --

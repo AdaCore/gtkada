@@ -96,6 +96,8 @@ package Gtk.Widget is
    procedure Activate (Widget : access Gtk_Widget_Record);
 
    procedure Destroy (Widget : access Gtk_Widget_Record);
+   procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class);
+   --  The second version should be used directly in your own callbacks.
 
    procedure Draw
      (Widget : access Gtk_Widget_Record;
@@ -204,8 +206,9 @@ package Gtk.Widget is
    --  Events --
    -------------
 
-   procedure Event (Widget : access Gtk_Widget_Record'Class;
-                    Event  : Gdk.Event.Gdk_Event);
+   function Event (Widget : access Gtk_Widget_Record'Class;
+                   Event  : Gdk.Event.Gdk_Event)
+                  return Gint;
 
    -------------------
    --  Accelerators --
@@ -276,13 +279,15 @@ package Gtk.Widget is
    function Rc_Style_Is_Set (Widget : access Gtk_Widget_Record'Class)
                              return Boolean;
 
-   -----------------------
-   --  Default callbacks
-   --  These methods are available for use with Gtk.Signal.C_Unsafe_Connect
-   -----------------------
 
-   function Get_Default_Motion_Notify_Event (Widget : access Gtk_Widget_Record)
-                                             return System.Address;
+   function Default_Motion_Notify_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk.Event.Gdk_Event)
+     return Gint;
+   --  Access to the standard default callback for motion events:
+   --  This is mainly used for rulers in Gtk.Ruler (See the example in
+   --  testgtk, with create_rulers.adb
+
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
