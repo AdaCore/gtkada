@@ -285,20 +285,22 @@ package Gtk.Tree_Model is
    --  Get a value from the model, at column Column and line Iter.
    --  Value must be freed by the caller.
 
-   generic
-      type Data_Type is private;
-   function Model_Data_Get
-     (Tree_Model : access Gtk_Tree_Model_Record'Class;
+   function Get_Int
+     (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
-      Column     : Gint)
-      return Data_Type;
-   --  Get the value of one cell in the row referenced by Iter.
+      Column     : Gint) return Gint;
+   --  Get the int value of one cell in the row referenced by Iter.
+
+   function Get_Boolean
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Boolean;
+   --  Get the boolean value of one cell in the row referenced by Iter.
 
    function Get_String
      (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
-      Column     : Gint)
-      return String;
+      Column     : Gint) return String;
    --  Get the string stored at a specific location in the model.
 
    -------------

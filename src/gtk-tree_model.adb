@@ -439,35 +439,53 @@ package body Gtk.Tree_Model is
       Internal (Get_Object (Tree_Model), Iter'Address);
    end Unref_Node;
 
-   ----------------
-   -- Model_Data --
-   ----------------
+   -------------
+   -- Get_Int --
+   -------------
 
-   function Model_Data_Get
-     (Tree_Model : access Gtk_Tree_Model_Record'Class;
+   function Get_Int
+     (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
-      Column     : Gint)
-      return Data_Type
+      Column     : Gint) return Gint
    is
       procedure Internal
         (Tree_Model : System.Address;
          Iter       : System.Address;
          Column     : Gint;
-         Value      : System.Address;
+         Value      : access Gint;
          Final      : Gint := -1);
       pragma Import (C, Internal, "gtk_tree_model_get");
 
-      Value : aliased Data_Type;
+      A : aliased Gint;
 
-      --  Packing is used to compensate for possible different representation
-      --  between Ada and C, for instance for booleans. We can't apply a
-      --  convention to Data_Type.
-      Packing : array (1 .. 10) of Character;
-      pragma Warnings (Off, Packing);
    begin
-      Internal (Get_Object (Tree_Model), Iter'Address, Column, Value'Address);
-      return Value;
-   end Model_Data_Get;
+      Internal (Get_Object (Tree_Model), Iter'Address, Column, A'Access);
+      return A;
+   end Get_Int;
+
+   -----------------
+   -- Get_Boolean --
+   -----------------
+
+   function Get_Boolean
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Boolean
+   is
+      procedure Internal
+        (Tree_Model : System.Address;
+         Iter       : System.Address;
+         Column     : Gint;
+         Value      : access Gboolean;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_model_get");
+
+      B : aliased Gboolean;
+
+   begin
+      Internal (Get_Object (Tree_Model), Iter'Address, Column, B'Access);
+      return To_Boolean (B);
+   end Get_Boolean;
 
    ----------------
    -- Get_String --
@@ -476,22 +494,20 @@ package body Gtk.Tree_Model is
    function Get_String
      (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
-      Column     : Gint)
-     return String
+      Column     : Gint) return String
    is
       procedure Internal
         (Tree_Model : System.Address;
          Iter       : System.Address;
          Column     : Gint;
-         Value      : System.Address;
+         Value      : access chars_ptr;
          Final      : Gint := -1);
       pragma Import (C, Internal, "gtk_tree_model_get");
-      A : chars_ptr;
+
+      A : aliased chars_ptr := Null_Ptr;
+
    begin
-      Internal (Get_Object (Tree_Model),
-                Iter'Address,
-                Column,
-                A'Address);
+      Internal (Get_Object (Tree_Model), Iter'Address, Column, A'Access);
 
       if A = Null_Ptr then
          return "";
