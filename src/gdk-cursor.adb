@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -41,6 +41,35 @@ package body Gdk.Cursor is
       pragma Import (C, Internal, "ada_gdk_cursor_new");
    begin
       Widget := Internal (Cursor_Type);
+   end Gdk_New;
+
+   procedure Gdk_New
+      (Widget : out Gdk_Cursor;
+       Source : in Gdk.Gdk_Pixmap;
+       Mask   : in Gdk.Gdk_Pixmap;
+       Fg     : in Gdk.Color.Gdk_Color;
+       Bg     : in Gdk.Color.Gdk_Color;
+       X      : in Glib.Gint;
+       Y      : in Glib.Gint)
+   is
+      function Internal
+         (Source : in Gdk.Gdk_Pixmap;
+          Mask   : in Gdk.Gdk_Pixmap;
+          Fg     : in System.Address;
+          Bg     : in System.Address;
+          X      : in Glib.Gint;
+          Y      : in Glib.Gint)
+          return Gdk_Cursor;
+      pragma Import (C, Internal, "gdk_cursor_new_from_pixmap");
+ 
+      Col_Fg : aliased Gdk.Color.Gdk_Color := Fg;
+      Col_Bg : aliased Gdk.Color.Gdk_Color := Bg;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+
+   begin
+      Widget := Internal
+        (Source, Mask, Col_Fg'Address,  Col_Bg'Address, X, Y);
    end Gdk_New;
 
 end Gdk.Cursor;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,23 +27,28 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib;
 with Gdk.Types;
+with Gdk.Color;
 
 package Gdk.Cursor is
 
    type Gdk_Cursor is new Gdk.C_Proxy;
    Null_Cursor : constant Gdk_Cursor;
 
-
    procedure Gdk_New (Widget      : out Gdk_Cursor;
                       Cursor_Type : in  Gdk.Types.Gdk_Cursor_Type);
 
-   procedure Destroy (Cursor : in out Gdk_Cursor);
+   procedure Gdk_New
+     (Widget : out Gdk_Cursor;
+      Source : in Gdk.Gdk_Pixmap;
+      Mask   : in Gdk.Gdk_Pixmap;
+      Fg     : in Gdk.Color.Gdk_Color;
+      Bg     : in Gdk.Color.Gdk_Color;
+      X      : in Glib.Gint;
+      Y      : in Glib.Gint);
 
-   --  procedure Set_Cursor
-   --
-   --  This procedure has been moved to the Gdk.Window Package
-   --  to prevent any circular dependency.
+   procedure Destroy (Cursor : in out Gdk_Cursor);
 
 private
    Null_Cursor : constant Gdk_Cursor := null;
