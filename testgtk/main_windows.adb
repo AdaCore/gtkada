@@ -449,7 +449,7 @@ package body Main_Windows is
 
       if Current_Help = null then
          Insert (Help_Text, Null_Font,
-                 Gdk.Color.Black (Get_Colormap (Help_Text)), Null_Color,
+                 Null_Color, Null_Color,
                  "No help available", -1);
       else
 
@@ -458,9 +458,7 @@ package body Main_Windows is
             Pos   : Natural := Help'First;
             First : Natural;
             Blue  : Gdk_Color;
-            Black : constant Gdk_Color
-              := Gdk.Color.Black (Get_Colormap (Help_Text));
-            Current_Color : Gdk_Color := Black;
+            Current_Color : Gdk_Color := Null_Color;
             Newline : constant String := (1 => ASCII.LF);
 
             Line_End : Natural;
@@ -468,6 +466,7 @@ package body Main_Windows is
 
          begin
             Set_Rgb (Blue, 16#0#, 16#0#, 16#FFFF#);
+            Alloc (Get_Default_Colormap, Blue);
 
             loop
 
@@ -506,7 +505,7 @@ package body Main_Windows is
                            Current_Color := Blue;
                            Pos := First + 2;
                         when 'B' =>
-                           Current_Color := Black;
+                           Current_Color := Gdk.Color.Null_Color;
                            Pos := First + 2;
                         when others =>
                            Insert
