@@ -241,7 +241,8 @@ package body Gtkada.MDI is
    --  assuming we are in the middle of resizing docks interactively. This
    --  immediately updates the docks.
 
-   procedure Close_Child (Child : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Internal_Close_Child
+     (Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Internal version of Close, for a MDI_Child
 
    function Leave_Child
@@ -1338,15 +1339,24 @@ package body Gtkada.MDI is
       end if;
    end Close;
 
+   --------------------------
+   -- Internal_Close_Child --
+   --------------------------
+
+   procedure Internal_Close_Child (Child : access Gtk_Widget_Record'Class) is
+      C : constant MDI_Child := MDI_Child (Child);
+   begin
+      Close_Child (C);
+   end Internal_Close_Child;
+
    -----------------
    -- Close_Child --
    -----------------
 
-   procedure Close_Child (Child : access Gtk_Widget_Record'Class) is
-      C          : constant MDI_Child := MDI_Child (Child);
+   procedure Close_Child (Child : access MDI_Child_Record'Class) is
       Event      : Gdk_Event;
    begin
-      Allocate (Event, Delete, Get_Window (C.MDI));
+      Allocate (Event, Delete, Get_Window (Child.MDI));
 
       --  For a top-level window, we must rebuild the initial widget
       --  temporarily, so that the application can do all the test it wants.
@@ -1354,10 +1364,10 @@ package body Gtkada.MDI is
       --  Dock_Child and Float_Child below
 
       if not Return_Callback.Emit_By_Name
-        (C.Initial, "delete_event", Event)
+        (Child.Initial, "delete_event", Event)
       then
-         Float_Child (C, False);
-         Destroy (C);
+         Float_Child (Child, False);
+         Destroy (Child);
       end if;
 
       Free (Event);
@@ -2266,7 +2276,8 @@ package body Gtkada.MDI is
          Pack_End (Child.Title_Box, Button, Expand => False, Fill => False);
          Widget_Callback.Object_Connect
            (Button, "clicked",
-            Widget_Callback.To_Marshaller (Close_Child'Access), Child);
+            Widget_Callback.To_Marshaller (Internal_Close_Child'Access),
+            Child);
       end if;
 
       if (Flags and Maximize_Button) /= 0 then

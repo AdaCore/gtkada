@@ -183,7 +183,8 @@ package Gtkada.MDI is
    procedure Close
      (MDI : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Close the child, and remove its window from the MDI.
+   --  Close the child that contains Child, and remove its window from the
+   --  MDI. See also Close_Child if you need to close a MDI_Child itself.
    --  This first checks through a delete_event callback whether the child
    --  accepts to be closed.
 
@@ -341,6 +342,9 @@ package Gtkada.MDI is
    --  Specify where a child should be docked. Note that this doesn't
    --  actually dock the child.
    --  If the child was already docked, its location is changed accordingly.
+
+   procedure Close_Child (Child : access MDI_Child_Record'Class);
+   --  Same as Close, but applies directly to a MDI_Child
 
    ---------------------------
    -- Reorganizing children --
