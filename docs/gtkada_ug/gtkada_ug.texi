@@ -2500,9 +2500,6 @@ a string with the name of the C widget (ex/ "GtkButton"), and expects a newly
 allocated pointer in return. If you don't know this type either, simply
 return @b{null}.
 
-For instance, when you create a Gtk_Button, a internal child is
-also created for its label. If you want to get the label and modify it, GtkAda is
-
 @node Converting your applications to the new tagged type scheme
 @section Converting your applications to the new tagged type scheme
 
