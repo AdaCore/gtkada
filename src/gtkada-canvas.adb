@@ -23,6 +23,7 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Gtk.Object;       use Gtk.Object;
 with System;
 with Unchecked_Deallocation;
+with Ada.Text_IO; use Ada.Text_IO;
 
 
 package body Gtkada.Canvas is
@@ -1423,6 +1424,8 @@ package body Gtkada.Canvas is
          --  (Min_X < 0), or if the items are two widely spaced (wider than
          --  the canvas itself), then align the left-most item to the left
          --  of the canvas.
+         --  Do not consider that the items are widely spaced if there is
+         --  only one of them in the selection
 
          if Min_X < Gint (Canvas.Grid_Size)
            or else Max_X - Min_X + 2 * Gint (Canvas.Grid_Size) > W
@@ -1873,12 +1876,16 @@ package body Gtkada.Canvas is
                         Item   : access Canvas_Item_Record'Class)
    is
    begin
-      Clamp_Page (Get_Hadjustment (Canvas),
-                  Gfloat (Item.Coord.X),
-                  Gfloat (Item.Coord.X) + Gfloat (Item.Coord.Width));
-      Clamp_Page (Get_Vadjustment (Canvas),
-                  Gfloat (Item.Coord.Y),
-                  Gfloat (Item.Coord.Y) + Gfloat (Item.Coord.Height));
+      --  Make the item visible, but when we have a very big item don't
+      --  scroll the whole canvas to make it visible.
+      Clamp_Page
+        (Get_Hadjustment (Canvas),
+         Gfloat (Item.Coord.X),
+         Gfloat (Item.Coord.X) + Gfloat (Guint'Min (20, Item.Coord.Width)));
+      Clamp_Page
+        (Get_Vadjustment (Canvas),
+         Gfloat (Item.Coord.Y),
+         Gfloat (Item.Coord.Y) + Gfloat (Guint'Min (20, Item.Coord.Height)));
       Value_Changed (Get_Hadjustment (Canvas));
       Value_Changed (Get_Vadjustment (Canvas));
    end Show_Item;
