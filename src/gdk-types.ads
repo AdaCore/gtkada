@@ -30,6 +30,21 @@ with Glib; use Glib;
 
 package Gdk.Types is
 
+   --
+   --  See at the end of the package a list of all the types that
+   --  have not been "bound".
+   --
+
+   type Gdk_Axis_Use is (Ignore,
+                         X,
+                         Y,
+                         Pressure,
+                         X_Tilt,
+                         Y_Tilt,
+                         Last);
+
+   type Gdk_Byte_Order is (Lsb_First, Msb_First);
+
    type Gdk_Cap_Style is (Not_Last, Butt, Round, Projecting);
 
    type Gdk_Cursor_Type is (X_Cursor,
@@ -156,57 +171,120 @@ package Gdk.Types is
                            Selection_Notify,
                            Proximity_In,
                            Proximity_Out,
-                           Drag_Begin,
-                           Drag_Request,
-                           Drop_Enter,
-                           Drop_Leave,
-                           Drop_Data_Avail,
+                           Drag_Enter,
+                           Drag_Leave,
+                           Drag_Motion,
+                           Drag_Status,
+                           Drop_Start,
+                           Drop_Finished,
                            Client_Event,
                            Visibility_Notify,
-                           No_Expose,
-                           Other_Event);
+                           No_Expose);
+
+   type Gdk_Extension_Mode is (None,
+                               Gdk_all,
+                               Cursor);
 
    type Gdk_Fill is (Solid, Tiled, Stippled, Opaque_Stippled);
 
    type Gdk_Fill_Rule is (Even_Odd_Rule, Winding_Rule);
 
-   type Gdk_Function is (Copy, Invert, Gdk_Xor);
+   type Gdk_Function is (Copy,
+                         Invert,
+                         Gdk_Xor,
+                         Clear,
+                         Gdk_And,
+                         And_Reverse,
+                         And_Invert,
+                         Noop,
+                         Gdk_Or,
+                         Equiv,
+                         Or_Reverse,
+                         Copy_Invert,
+                         Or_Invert,
+                         Nand,
+                         Set);
 
    type Gdk_Join_Style is (Miter, Round, Bevel);
+
+   type Gdk_IC_Attributes_Type is new Guint;
+   Ic_Style                : constant Gdk_IC_Attributes_Type;
+   Ic_Client_Window        : constant Gdk_IC_Attributes_Type;
+   Ic_Focus_Window         : constant Gdk_IC_Attributes_Type;
+   Ic_Filter_Events        : constant Gdk_IC_Attributes_Type;
+   Ic_Spot_Location        : constant Gdk_IC_Attributes_Type;
+   Ic_Line_Spacing         : constant Gdk_IC_Attributes_Type;
+   Ic_Cursor               : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Fontset      : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Area         : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Area_Needed  : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Foreground   : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Background   : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Pixmap       : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Colormap     : constant Gdk_IC_Attributes_Type;
+   Ic_Status_Fontset       : constant Gdk_IC_Attributes_Type;
+   Ic_Status_Area          : constant Gdk_IC_Attributes_Type;
+   Ic_Status_Area_Needed   : constant Gdk_IC_Attributes_Type;
+   Ic_Status_Foreground    : constant Gdk_IC_Attributes_Type;
+   Ic_Status_Background    : constant Gdk_IC_Attributes_Type;
+   Ic_Status_Pixmap        : constant Gdk_IC_Attributes_Type;
+   Ic_Status_Colormap      : constant Gdk_IC_Attributes_Type;
+   Ic_All_Req              : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Area_Req     : constant Gdk_IC_Attributes_Type;
+   Ic_Preedit_Position_Req : constant Gdk_IC_Attributes_Type;
+   Ic_Status_Area_Req      : constant Gdk_IC_Attributes_Type;
+
+   type Gdk_IM_Style is new Guint;
+   Preedit_Area      : constant Gdk_IM_Style;
+   Preedit_Callbacks : constant Gdk_IM_Style;
+   Preedit_Position  : constant Gdk_IM_Style;
+   Preedit_Nothing   : constant Gdk_IM_Style;
+   Preedit_None      : constant Gdk_IM_Style;
+   Preedit_Mask      : constant Gdk_IM_Style;
+   Status_Area       : constant Gdk_IM_Style;
+   Status_Callbacks  : constant Gdk_IM_Style;
+   Status_Nothing    : constant Gdk_IM_Style;
+   Status_None       : constant Gdk_IM_Style;
+   Status_Mask       : constant Gdk_IM_Style;
+
+   type Gdk_Input_Condition is (Read, Write, Gdk_Exception);
+
+   type Gdk_Input_Mode is (Disabled,
+                           Screen,
+                           Window);
+
+   type Gdk_Input_Source is (Mouse,
+                             Pen,
+                             Eraser,
+                             Cursor);
 
    type Gdk_Key_Type is new Guint;
    --  see Gdk.Types.Keysyms for key type constants
 
-   type Gdk_Input_Condition is (Read, Write, Input_Exception);
-
    type Gdk_Line_Style is (Solid, On_Off_Dash, Double_Dash);
 
    type Gdk_Modifier_Type is new Guint;
-   Shift_Mask   : constant Gdk_Modifier_Type;
-   Lock_Mask    : constant Gdk_Modifier_Type;
-   Control_Mask : constant Gdk_Modifier_Type;
-   Mod1_Mask    : constant Gdk_Modifier_Type;
-   Mod2_Mask    : constant Gdk_Modifier_Type;
-   Mod3_Mask    : constant Gdk_Modifier_Type;
-   Mod4_Mask    : constant Gdk_Modifier_Type;
-   Mod5_Mask    : constant Gdk_Modifier_Type;
-   Button1_Mask : constant Gdk_Modifier_Type;
-   Button2_Mask : constant Gdk_Modifier_Type;
-   Button3_Mask : constant Gdk_Modifier_Type;
-   Button4_Mask : constant Gdk_Modifier_Type;
-   Button5_Mask : constant Gdk_Modifier_Type;
+   Shift_Mask    : constant Gdk_Modifier_Type;
+   Lock_Mask     : constant Gdk_Modifier_Type;
+   Control_Mask  : constant Gdk_Modifier_Type;
+   Mod1_Mask     : constant Gdk_Modifier_Type;
+   Mod2_Mask     : constant Gdk_Modifier_Type;
+   Mod3_Mask     : constant Gdk_Modifier_Type;
+   Mod4_Mask     : constant Gdk_Modifier_Type;
+   Mod5_Mask     : constant Gdk_Modifier_Type;
+   Button1_Mask  : constant Gdk_Modifier_Type;
+   Button2_Mask  : constant Gdk_Modifier_Type;
+   Button3_Mask  : constant Gdk_Modifier_Type;
+   Button4_Mask  : constant Gdk_Modifier_Type;
+   Button5_Mask  : constant Gdk_Modifier_Type;
+   Release_Mask  : constant Gdk_Modifier_Type;
+   Modifier_Mask : constant Gdk_Modifier_Type;
 
    type Gdk_Overlap_Type is (Rectangle_In, Rectangle_Out, Rectangle_Part);
 
-   type Gdk_Window_Attributes_Type is new Guint;
-   Wa_Title    : constant Gdk_Window_Attributes_Type;
-   Wa_X        : constant Gdk_Window_Attributes_Type;
-   Wa_Y        : constant Gdk_Window_Attributes_Type;
-   Wa_Cursor   : constant Gdk_Window_Attributes_Type;
-   Wa_Colormap : constant Gdk_Window_Attributes_Type;
-   Wa_Visual   : constant Gdk_Window_Attributes_Type;
-   Wa_Wmclass  : constant Gdk_Window_Attributes_Type;
-   Wa_Noredir  : constant Gdk_Window_Attributes_Type;
+   type Gdk_Prop_Mode is (Replace,
+                          Prepend,
+                          Append);
 
    type Gdk_Subwindow_Mode is (Clip_By_Children, Include_Inferiors);
 
@@ -230,6 +308,10 @@ package Gdk.Types is
    Cap_Style     : constant Gdk_Values_Mask;
    Join_Style    : constant Gdk_Values_Mask;
 
+   type Gdk_Visibility_State is (Unobscured,
+                                 Partial,
+                                 Fully_Obscured);
+
    type Gdk_Visual_Type is (Static_Gray,
                             Grayscale,
                             Static_Color,
@@ -237,13 +319,26 @@ package Gdk.Types is
                             True_Color,
                             Direct_Color);
 
+   type Gdk_Window_Attributes_Type is new Guint;
+   Wa_Title    : constant Gdk_Window_Attributes_Type;
+   Wa_X        : constant Gdk_Window_Attributes_Type;
+   Wa_Y        : constant Gdk_Window_Attributes_Type;
+   Wa_Cursor   : constant Gdk_Window_Attributes_Type;
+   Wa_Colormap : constant Gdk_Window_Attributes_Type;
+   Wa_Visual   : constant Gdk_Window_Attributes_Type;
+   Wa_Wmclass  : constant Gdk_Window_Attributes_Type;
+   Wa_Noredir  : constant Gdk_Window_Attributes_Type;
+
    type Gdk_Window_Class is (Input_Output,
                              Input_Only);
 
-   type Gdk_Window_Hint is new Guint;
-   Gdk_Hint_Pos      : constant Gdk_Window_Hint;
-   Gdk_Hint_Min_Size : constant Gdk_Window_Hint;
-   Gdk_Hint_Max_Size : constant Gdk_Window_Hint;
+   type Gdk_Window_Hints is new Guint;
+   Gdk_Hint_Pos        : constant Gdk_Window_Hints;
+   Gdk_Hint_Min_Size   : constant Gdk_Window_Hints;
+   Gdk_Hint_Max_Size   : constant Gdk_Window_Hints;
+   Gdk_Hint_Base_Size  : constant Gdk_Window_Hints;
+   Gdk_Hint_Aspect     : constant Gdk_Window_Hints;
+   Gdk_Hint_Resize_Inc : constant Gdk_Window_Hints;
 
    type Gdk_Window_Type is (Root,
                             Toplevel,
@@ -269,6 +364,12 @@ package Gdk.Types is
    Func_Minimize : constant Gdk_Wm_Function;
    Func_Maximize : constant Gdk_Wm_Function;
    Func_Close    : constant Gdk_Wm_Function;
+
+   subtype Gdk_WChar is Standard.Wide_Character;
+   subtype Gdk_WString is Standard.Wide_String;
+   --
+   --  Gdk does not define a Gdk_WString type, but uses pointers
+   --  to Gdk_WChar instead.
 
 private
 
@@ -296,7 +397,50 @@ private
    Visibility_Notify_Mask   : constant Gdk_Event_Mask := 2 ** 17;
    Proximity_In_Mask        : constant Gdk_Event_Mask := 2 ** 18;
    Proximity_Out_Mask       : constant Gdk_Event_Mask := 2 ** 19;
-   All_Events_Mask          : constant Gdk_Event_Mask := 16#7FFFF#;
+   Substructure_Mask        : constant Gdk_Event_Mask := 2 ** 20;
+   All_Events_Mask          : constant Gdk_Event_Mask := 16#0FFFFF#;
+
+   Ic_Style                : constant Gdk_IC_Attributes_Type := 2 ** 0;
+   Ic_Client_Window        : constant Gdk_IC_Attributes_Type := 2 ** 1;
+   Ic_Focus_Window         : constant Gdk_IC_Attributes_Type := 2 ** 2;
+   Ic_Filter_Events        : constant Gdk_IC_Attributes_Type := 2 ** 3;
+   Ic_Spot_Location        : constant Gdk_IC_Attributes_Type := 2 ** 4;
+   Ic_Line_Spacing         : constant Gdk_IC_Attributes_Type := 2 ** 5;
+   Ic_Cursor               : constant Gdk_IC_Attributes_Type := 2 ** 6;
+   Ic_Preedit_Fontset      : constant Gdk_IC_Attributes_Type := 2 ** 10;
+   Ic_Preedit_Area         : constant Gdk_IC_Attributes_Type := 2 ** 11;
+   Ic_Preedit_Area_Needed  : constant Gdk_IC_Attributes_Type := 2 ** 12;
+   Ic_Preedit_Foreground   : constant Gdk_IC_Attributes_Type := 2 ** 13;
+   Ic_Preedit_Background   : constant Gdk_IC_Attributes_Type := 2 ** 14;
+   Ic_Preedit_Pixmap       : constant Gdk_IC_Attributes_Type := 2 ** 15;
+   Ic_Preedit_Colormap     : constant Gdk_IC_Attributes_Type := 2 ** 16;
+   Ic_Status_Fontset       : constant Gdk_IC_Attributes_Type := 2 ** 21;
+   Ic_Status_Area          : constant Gdk_IC_Attributes_Type := 2 ** 22;
+   Ic_Status_Area_Needed   : constant Gdk_IC_Attributes_Type := 2 ** 23;
+   Ic_Status_Foreground    : constant Gdk_IC_Attributes_Type := 2 ** 24;
+   Ic_Status_Background    : constant Gdk_IC_Attributes_Type := 2 ** 25;
+   Ic_Status_Pixmap        : constant Gdk_IC_Attributes_Type := 2 ** 26;
+   Ic_Status_Colormap      : constant Gdk_IC_Attributes_Type := 2 ** 27;
+   Ic_All_Req              : constant Gdk_IC_Attributes_Type
+     := Ic_Style or Ic_Client_Window;
+   Ic_Preedit_Area_Req     : constant Gdk_IC_Attributes_Type
+     := Ic_Preedit_Area or Ic_Preedit_Fontset;
+   Ic_Preedit_Position_Req : constant Gdk_IC_Attributes_Type
+     := Ic_Preedit_Area or Ic_Spot_Location or Ic_Preedit_Fontset;
+   Ic_Status_Area_Req      : constant Gdk_IC_Attributes_Type
+     := Ic_Status_Area or Ic_Status_Fontset;
+
+   Preedit_Area      : constant Gdk_IM_Style := 16#0001#;
+   Preedit_Callbacks : constant Gdk_IM_Style := 16#0002#;
+   Preedit_Position  : constant Gdk_IM_Style := 16#0004#;
+   Preedit_Nothing   : constant Gdk_IM_Style := 16#0008#;
+   Preedit_None      : constant Gdk_IM_Style := 16#0010#;
+   Preedit_Mask      : constant Gdk_IM_Style := 16#001F#;
+   Status_Area       : constant Gdk_IM_Style := 16#0100#;
+   Status_Callbacks  : constant Gdk_IM_Style := 16#0200#;
+   Status_Nothing    : constant Gdk_IM_Style := 16#0400#;
+   Status_None       : constant Gdk_IM_Style := 16#0800#;
+   Status_Mask       : constant Gdk_IM_Style := 16#0F00#;
 
    Shift_Mask   : constant Gdk_Modifier_Type := 2 ** 0;
    Lock_Mask    : constant Gdk_Modifier_Type := 2 ** 1;
@@ -311,6 +455,8 @@ private
    Button3_Mask : constant Gdk_Modifier_Type := 2 ** 10;
    Button4_Mask : constant Gdk_Modifier_Type := 2 ** 11;
    Button5_Mask : constant Gdk_Modifier_Type := 2 ** 12;
+   Release_Mask  : constant Gdk_Modifier_Type := 2 ** 13;
+   Modifier_Mask : constant Gdk_Modifier_Type := 16#3FFF#;
 
    Wa_Title    : constant Gdk_Window_Attributes_Type := 2 ** 1;
    Wa_X        : constant Gdk_Window_Attributes_Type := 2 ** 2;
@@ -340,9 +486,13 @@ private
    Cap_Style     : constant Gdk_Values_Mask := 2 ** 16;
    Join_Style    : constant Gdk_Values_Mask := 2 ** 17;
 
-   Gdk_Hint_Pos      : constant Gdk_Window_Hint := 2 ** 0;
-   Gdk_Hint_Min_Size : constant Gdk_Window_Hint := 2 ** 1;
-   Gdk_Hint_Max_Size : constant Gdk_Window_Hint := 2 ** 2;
+   Gdk_Hint_Pos        : constant Gdk_Window_Hints := 2 ** 0;
+   Gdk_Hint_Min_Size   : constant Gdk_Window_Hints := 2 ** 1;
+   Gdk_Hint_Max_Size   : constant Gdk_Window_Hints := 2 ** 2;
+   Gdk_Hint_Base_Size  : constant Gdk_Window_Hints := 2 ** 3;
+   Gdk_Hint_Aspect     : constant Gdk_Window_Hints := 2 ** 4;
+   Gdk_Hint_Resize_Inc : constant Gdk_Window_Hints := 2 ** 5;
+
 
    ------------------------------
    --  Representation clauses  --
@@ -371,19 +521,19 @@ private
                            Selection_Notify => 19,
                            Proximity_In => 20,
                            Proximity_Out => 21,
-                           Drag_Begin => 22,
-                           Drag_Request => 23,
-                           Drop_Enter => 24,
-                           Drop_Leave => 25,
-                           Drop_Data_Avail => 26,
-                           Client_Event => 27,
-                           Visibility_Notify => 28,
-                           No_Expose => 29,
-                           Other_Event => 9999);
+                           Drag_Enter => 22,
+                           Drag_Leave => 23,
+                           Drag_Motion => 24,
+                           Drag_Status => 25,
+                           Drop_Start => 26,
+                           Drop_Finished => 27,
+                           Client_Event => 28,
+                           Visibility_Notify => 29,
+                           No_Expose => 30);
 
-   for Gdk_Input_Condition use (Read            => 2 ** 0,
-                                Write           => 2 ** 1,
-                                Input_Exception => 2 ** 2);
+   for Gdk_Input_Condition use (Read          => 2 ** 0,
+                                Write         => 2 ** 1,
+                                Gdk_Exception => 2 ** 2);
 
    for Gdk_Subwindow_Mode use (Clip_By_Children  => 0,
                                Include_Inferiors => 1);
@@ -484,3 +634,24 @@ private
    Func_Close    : constant Gdk_Wm_Function := 2 ** 5;
 
 end Gdk.Types;
+
+--
+--  The following types were not bound because it did not seem
+--  to be necessary (yet).
+--
+--  + GdkColorContextMode
+--  + GdkCrossingMode
+--  + GdkFilterReturn
+--  + GdkFontType
+--  + GdkNotifyType
+--  + GdkPropertyState
+--  + GdkSelection
+--  + GdkSelectionType
+--  + GdkStatus
+--  + GdkTarget
+--
+--  The following types will probably be bound later (DnD).
+--
+--  + GdkDragAction
+--  + GdkDragProtocol
+--
