@@ -227,6 +227,9 @@ package Gtk.Widget is
    --
    --  This function is only useful for container implementations and
    --  never should be called by an application.
+   --
+   --  It should also only be called when after the widget was added to its
+   --  parent container.
 
    function Get_Child_Visible
      (Widget : access Gtk_Widget_Record) return Boolean;
