@@ -15,7 +15,7 @@
 @page
 @vskip 0pt plus 1filll
 
-@copyright{} Copyright 1998-1999, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
+Copyright @copyright{} 1998-1999, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
 This document may be copied, in whole or in part, in any form or by any
 means, as is or with alterations, provided that (1) alterations are clearly
@@ -36,7 +36,7 @@ Version 1.2.0
 
 Date: $Date$
 
-@copyright{} Copyright 1998-1999, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
+Copyright @copyright{} 1998-1999, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
 This document may be copied, in whole or in part, in any form or by any
 means, as is or with alterations, provided that (1) alterations are clearly
@@ -227,7 +227,7 @@ windowing library (X-Window or Win32).
 +----------------------+  +-------------------+
 @end example
 
-GTK is the interface you will use most,but it is sometimes needed to use
+GTK is the interface you will use most, but it is sometimes needed to use
 directly GDK and GLIB.
 
 The Gtk components (resp. Gdk and Glib) are available in packages whose
