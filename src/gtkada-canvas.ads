@@ -54,6 +54,7 @@
 with Gdk.Event;
 with Gdk.Font;
 with Gdk.GC;
+with Gdk.Pixbuf;
 with Gdk.Pixmap;
 with Gdk.Window;
 with Glib;
@@ -189,6 +190,8 @@ package Gtkada.Canvas is
    --  If you leave both coordinates X and Y to their default value, then the
    --  item's location will be automatically computed when you layout the
    --  canvas (it is your responsability to call Layout).
+   --  Note that (X, Y) is the coordinates for a zoom level 100%. Conversion to
+   --  other zoom levels is fully automatic
 
    procedure Put
      (Canvas : access Interactive_Canvas_Record;
@@ -200,6 +203,8 @@ package Gtkada.Canvas is
    --  will be computed automatically when you call Layout on the canvas,
    --  unless Auto_Layout has been set, in which case the position will be
    --  computed immediately.
+   --  Note that (X, Y) is the coordinates for a zoom level 100%. Conversion to
+   --  other zoom levels is fully automatic
 
    procedure Remove
      (Canvas : access Interactive_Canvas_Record;
@@ -267,10 +272,7 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Percent : Glib.Guint := 100;
       Steps   : Glib.Guint := 1);
-   --  Zoom in or out in the canvas. All items are resized, and their contents
-   --  is then random.
-   --  You must either redraw them systematically afterwards, or connect to the
-   --  "zoomed" signal which is emitted automatically by this subprogram.
+   --  Zoom in or out in the canvas.
    --
    --  Steps is the number of successive zooms that will be done to provide
    --  smooth scrolling.
@@ -287,7 +289,9 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       X      : Glib.Gint) return Glib.Gint;
    --  Scale the scalar X depending by the zoom level (map from world
-   --  coordinates to canvas coordinates)
+   --  coordinates to canvas coordinates).
+   --
+   --  ??? Need an extra parameter to convert coordinates instead of distances.
 
    function To_World_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -412,11 +416,12 @@ package Gtkada.Canvas is
    --  ??? Would be nicer to give direct access to the Graph iterators
 
    procedure Draw_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record;
-      Window : Gdk.Window.Gdk_Window;
+     (Canvas      : access Interactive_Canvas_Record'Class;
+      Link        : access Canvas_Link_Record;
+      Window      : Gdk.Window.Gdk_Window;
       Invert_Mode : Boolean;
-      GC     : Gdk.GC.Gdk_GC);
+      GC          : Gdk.GC.Gdk_GC;
+      Edge_Number : Glib.Gint);
    --  Redraw the link on the canvas.
    --  Note that this is a primitive procedure of Link, not of Canvas, and thus
    --  can easily be overrided for specific links. The default version draws
@@ -436,6 +441,11 @@ package Gtkada.Canvas is
    --  graphic context you use must be in Invert mode (see Gdk.GC.Set_Function)
    --  if and only if Invert_Mode is true, so that when items are moved on the
    --  canvas, the links properly follow the items they are attached to.
+   --
+   --  Edge_Number indicates the index of link in the list of links that join
+   --  the same source to the same destination. It should be used so that two
+   --  links do not overlap (for instance, the default is to draw the first
+   --  link straight, and the others as arcs).
 
    procedure Destroy (Link : in out Canvas_Link_Record);
    --  Method called every time a link is destroyed. You should override this
@@ -475,10 +485,8 @@ package Gtkada.Canvas is
      (Item   : access Canvas_Item_Record;
       Width  : Glib.Gint;
       Height : Glib.Gint);
-   --  Set the size that the items occupies on the screen. You must call this
-   --  subprogram every time the zoom level changes, since Width and Height
-   --  must reflect the current size of the item in the current zoom level,
-   --  not an absolute size that is automatically scaled.
+   --  Set the size of the item in world coordinates (ie for a zoom level
+   --  100%).
 
    procedure Draw
      (Item   : access Canvas_Item_Record;
@@ -486,7 +494,8 @@ package Gtkada.Canvas is
       Dest   : Gdk.Pixmap.Gdk_Pixmap;
       Xdest, Ydest : Glib.Gint) is abstract;
    --  This subprogram, that must be overridden, should draw the item on
-   --  the pixmap Dest, at the specific location (At_X, At_Y).
+   --  the pixmap Dest, at the specific location (Xdest, Ydest). The item must
+   --  also be drawn at the appropriate zoom level.
 
    procedure Destroy (Item : in out Canvas_Item_Record);
    --  Free the memory occupied by the item (not the item itself). You should
@@ -507,7 +516,8 @@ package Gtkada.Canvas is
 
    function Get_Coord
      (Item : access Canvas_Item_Record) return Gdk.Rectangle.Gdk_Rectangle;
-   --  Return the coordinates and size of the item.
+   --  Return the coordinates and size of the item, in world coordinates (ie
+   --  for a zoom level 100%).
 
    procedure Set_Visibility
      (Item    : access Canvas_Item_Record;
@@ -526,9 +536,11 @@ package Gtkada.Canvas is
    type Buffered_Item_Record is new Canvas_Item_Record with private;
    type Buffered_Item is access all Buffered_Item_Record'Class;
    --  A widget that has a double-buffer associated. You should use this one
-   --  when drawing items can take a long time. You need to update the contents
-   --  of the pixmap when the item is created and every time the canvas is
-   --  zoomed (connect to the "zoomed" signal).
+   --  when drawing items can take a long time, or you do not want to handle
+   --  the zoom yourself.
+   --  You only need to update the contents of the double pixmap when the
+   --  contents of the item changes, since all the drawing and zooming is
+   --  taken care of automatically.
 
    procedure Draw
      (Item : access Buffered_Item_Record;
@@ -544,13 +556,12 @@ package Gtkada.Canvas is
      (Item   : access Buffered_Item_Record;
       Win    : Gdk.Window.Gdk_Window;
       Width, Height  : Glib.Gint);
-   --  Sets the size used on the screen by item, and reallocate the pixmap
-   --  if needed
+   --  Changes the size of the item. Width and Height should be world sizes,
+   --  for a zoom level 100%, and should not depend on the current zoom level.
 
    function Pixmap (Item : access Buffered_Item_Record)
       return Gdk.Pixmap.Gdk_Pixmap;
-   --  Return the double-buffer that must be updated every time the canvas
-   --  is scrolled.
+   --  Return the double-buffer
 
    -------------
    -- Signals --
@@ -580,10 +591,8 @@ package Gtkada.Canvas is
    --  - "zoomed"
    --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class);
    --
-   --  Emitted when the canvas has been zoomed in or out. You must resize the
-   --  items as needed, and possibily refresh their internal double-pixmap.
-   --  However, you do not need to redraw them on the screen, this will be
-   --  handled by separate calls to Draw.
+   --  Emitted when the canvas has been zoomed in or out. You do not need to
+   --  redraw the items yourself, since this will be handled by calls to Draw
    --
    --  </signals>
 
@@ -681,6 +690,7 @@ private
 
    type Buffered_Item_Record is new Canvas_Item_Record with record
       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf;
    end record;
 
    pragma Inline (To_Canvas_Coordinates);
