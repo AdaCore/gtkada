@@ -30,6 +30,23 @@ with Glib; use Glib;
 
 package Gdk.Types is
 
+
+   type Gdk_Geometry is
+      record
+         Min_Width   : Gint;
+         Min_Height  : Gint;
+         Max_Width   : Gint;
+         Max_Height  : Gint;
+         Base_Width  : Gint;
+         Base_Height : Gint;
+         Width_Inc   : Gint;
+         Height_Inc  : Gint;
+         Min_Aspect  : Gdouble;
+         Max_Aspect  : Gdouble;
+      end record;
+   pragma Pack (Gdk_Geometry);
+
+
    type Gdk_Point is record
       X : Gint16;
       Y : Gint16;
@@ -40,7 +57,7 @@ package Gdk.Types is
    type Gdk_Points_Array is array (Positive range <>) of Gdk_Point;
    pragma Pack (Gdk_Points_Array);
 
-     
+
    type Gdk_Segment is record
       X1 : Gint16;
       Y1 : Gint16;
@@ -59,6 +76,8 @@ package Gdk.Types is
    --  have not been "bound".
    --
 
+   type Gdk_Atom is new Gulong;
+
    type Gdk_Axis_Use is (Ignore,
                          X,
                          Y,
@@ -70,6 +89,8 @@ package Gdk.Types is
    type Gdk_Byte_Order is (Lsb_First, Msb_First);
 
    type Gdk_Cap_Style is (Not_Last, Butt, Round, Projecting);
+
+   type Gdk_Crossing_Mode is (Normal, Grab, Ungrab);
 
    type Gdk_Cursor_Type is (X_Cursor,
                             Arrow,
@@ -148,6 +169,10 @@ package Gdk.Types is
                             Ur_Angle,
                             Watch,
                             Xterm);
+
+   type Gdk_Device_Id is new Guint32;
+   --
+   --  This type is specific to GtkAda. In gdk, they use guint32.
 
    type Gdk_Event_Mask is new Guint;
    Null_Event_Mask          : constant Gdk_Event_Mask;
@@ -303,6 +328,14 @@ package Gdk.Types is
    Button5_Mask  : constant Gdk_Modifier_Type;
    Release_Mask  : constant Gdk_Modifier_Type;
    Modifier_Mask : constant Gdk_Modifier_Type;
+
+   type Gdk_Notify_Type is new Guint;
+   Ancestor           : constant Gdk_Notify_Type;
+   Virtual            : constant Gdk_Notify_Type;
+   Inferior           : constant Gdk_Notify_Type;
+   Non_Linear         : constant Gdk_Notify_Type;
+   Non_Linear_Virtual : constant Gdk_Notify_Type;
+   Unknown            : constant Gdk_Notify_Type;
 
    type Gdk_Overlap_Type is (Rectangle_In, Rectangle_Out, Rectangle_Part);
 
@@ -481,6 +514,13 @@ private
    Button5_Mask : constant Gdk_Modifier_Type := 2 ** 12;
    Release_Mask  : constant Gdk_Modifier_Type := 2 ** 13;
    Modifier_Mask : constant Gdk_Modifier_Type := 16#3FFF#;
+
+   Ancestor           : constant Gdk_Notify_Type := 0;
+   Virtual            : constant Gdk_Notify_Type := 1;
+   Inferior           : constant Gdk_Notify_Type := 2;
+   Non_Linear         : constant Gdk_Notify_Type := 3;
+   Non_Linear_Virtual : constant Gdk_Notify_Type := 4;
+   Unknown            : constant Gdk_Notify_Type := 5;
 
    Wa_Title    : constant Gdk_Window_Attributes_Type := 2 ** 1;
    Wa_X        : constant Gdk_Window_Attributes_Type := 2 ** 2;
