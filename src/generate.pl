@@ -288,8 +288,21 @@ sub parse_definition_file
   }
 
 ###################################
+##  Sorting function used to generate the subprograms in a correct order
+###################################
+
+sub func_sort () {
+
+  return (-1) if ($a =~ /_new$/);
+  return (1)  if ($b =~ /_new$/);
+
+  return &ada_func_name ($a) cmp &ada_func_name ($b);
+}
+
+###################################
 ##  Generates the package specification file
 ###################################
+
 sub generate_specifications
   {
     my ($parent_prefix);
@@ -297,7 +310,7 @@ sub generate_specifications
     %with_list = ("with Gtk" => 1);
     @output = ();
     $with_list {"with " . &package_name ($parent)} ++;
-    foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
+    foreach (sort func_sort keys %functions)
       {
 	&print_declaration ($_, @{$functions{$_}});
       }
@@ -341,7 +354,7 @@ sub generate_body
     @output = ();
     push (@output, "package body $prefix.$current_package is\n\n");
 
-    foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
+    foreach (sort func_sort keys %functions)
       {
 	&print_body ($_, @{$functions{$_}});
       }
@@ -440,7 +453,7 @@ sub parse_functions
       {
 	# If this looks like a subprogram start (<return_type>  <name>)
 
-	if (/^(\w\S+)\s+((g[dt]k|gnome)_\S+)/) {
+	if (/^(\w\S+(\s+\*)?)\s+((g[dt]k|gnome)_\S+)/) {
 	  chop;
 
 	  # Read the whole subprogram definition at once. This makes it
@@ -458,10 +471,10 @@ sub parse_functions
 
 	  # Parse the definition
 
-	  /^(\w\S+)\s+((g[dt]k|gnome)_\S+)\s*\((.*)\);/;
+	  /^(\w\S+(\s+\*)?)\s+((g[dt]k|gnome)_\S+)\s*\((.*)\);/;
 	  $return = $1;
-	  $func_name = $2;
-	  $args = $4;
+	  $func_name = $3;
+	  $args = $5;
 
 	  # Cleanup initial spaces and remove comments from the arguments list
 	  $args =~ s/\/\*.*?\*\///g;
@@ -471,7 +484,7 @@ sub parse_functions
 	  # We do not want to generate bindings for some functions
 	  $func_name = "" if ($func_name =~ /$unit_name\_construct$/);
 
-	  if ($unit_name eq ""
+	  if (($unit_name eq "" && $func_name ne "")
 	      || $func_name =~ /$prefix\_$unit_name/i) {
 	    push (@{$functions{$func_name}}, $return, @arguments);
 	  }
@@ -514,7 +527,10 @@ sub print_initialize_declaration
     $indent = ' ' x (length ($string));
     &print_arguments ($indent, "void", \&convert_ada_type,
 		      3, 2, @arguments);
-
+    push (@output,
+	  ";\n   --  Internal initialization function.\n",
+	  "   --  See the section \"Creating your own widgets\" in "
+	  . "the documentation.\n\n");
 }
 
 #########################
@@ -594,11 +610,11 @@ sub print_arguments
 	    } elsif ($type =~ /(.*)\*$/) {
 	      $type = $1;
 	      $type = "$1_Access" if ($type =~ /(.*)\*$/);
-	      $type = "in out $type";
+	      $type = "out $type";
 
 	    # Else, simply an "in" parameter
 	    } else {
-	      $type = "in $type";
+	      $type = "$type";
 	    }
 	    push (@types, $type);
 	  }
@@ -722,12 +738,12 @@ sub print_declaration
     my (@arguments) = @_;
     my ($string);
     my ($indent);
-    my ($adaname) = &ada_func_name ($func_name); 
+    my ($adaname) = &ada_func_name ($func_name);
 
     if ($adaname =~ /New/)
       {
 	&print_new_declaration ($func_name, @arguments);
-	push (@output, ";\n");
+	push (@output, ";\n\n");
 	&print_initialize_declaration ($func_name, @arguments);
       }
     else
@@ -739,8 +755,8 @@ sub print_declaration
 	$return = "Gtk.Gtk_Type" if ($adaname eq "Get_Type");
 	&print_arguments ($indent, $return, \&convert_ada_type,
 			  3, 0, @arguments);
+	push (@output, ";\n\n");
       }
-    push (@output, ";\n");
   }
 
 #########################
@@ -851,7 +867,7 @@ sub print_body
 	    $string = "      Internal";
 	  }
 	push (@output, $string);
-	
+
 	&print_arguments_call (' ' x length ($string), @arguments);
 	push (@output, $terminate);
       }
@@ -876,7 +892,7 @@ sub ada_func_name
     return "$prefix\_New" if ($type =~ /New/);
     return $type;
   }
-    
+
 ###########################
 ## Generates the name for a type
 ## The current package does not appear in the generated type
@@ -979,7 +995,7 @@ sub print_comment
     my ($func_name) = shift;
     my ($ada) = &ada_func_name ($func_name);
     my ($string) = "";
-    
+
     $string = "   --  mapping: ";
     $string .= &ada_func_name ($func_name);
     $string .= " $hfile ";
