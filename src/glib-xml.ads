@@ -53,13 +53,13 @@ package Glib.XML is
 
    type Node is record
       Tag   : String_Ptr;
-      --  The name of this node
+      --  The name of this node. This is utf8-encoded
 
       Attributes   : String_Ptr;
-      --  The attributes of this node
+      --  The attributes of this node. This is utf8-encoded
 
       Value : String_Ptr;
-      --  The value, or null is not relevant
+      --  The value, or null is not relevant. This is utf8-encoded
 
       Parent : Node_Ptr;
       --  The parent of this Node.
@@ -82,7 +82,7 @@ package Glib.XML is
    function Parse (File : String) return Node_Ptr;
    --  Parse File and return the first node representing the XML file.
 
-   function Parse_Buffer (Buffer : String) return Node_Ptr;
+   function Parse_Buffer (Buffer : UTF8_String) return Node_Ptr;
    --  Parse a given Buffer in memory and return the first node representing
    --  the XML contents.
 
@@ -95,10 +95,10 @@ package Glib.XML is
    function Protect (S : String) return String;
    --  Return a copy of S modified so that it is a valid XML value
 
-   function Find_Tag (N : Node_Ptr; Tag : String) return Node_Ptr;
+   function Find_Tag (N : Node_Ptr; Tag : UTF8_String) return Node_Ptr;
    --  Find a tag Tag in N and its brothers.
 
-   function Get_Field (N : Node_Ptr; Field : String) return String_Ptr;
+   function Get_Field (N : Node_Ptr; Field : UTF8_String) return String_Ptr;
    --  Return the value of the field 'Field' if present in the children of N.
    --  Return null otherwise.
    --  Do not free the returned value.
@@ -121,16 +121,19 @@ package Glib.XML is
    --  the Specific_Data for each node.
 
    function Get_Attribute
-     (N : in Node_Ptr; Attribute_Name : in String) return String;
+     (N : in Node_Ptr; Attribute_Name : in UTF8_String) return UTF8_String;
    --  Return the value of the attribute 'Attribute_Name' if present.
    --  Return "" otherwise.
 
    procedure Set_Attribute
-     (N : Node_Ptr; Attribute_Name, Attribute_Value : String);
+     (N : Node_Ptr; Attribute_Name, Attribute_Value : UTF8_String);
    --  Create a new attribute, or replace an existing one
 
    function Find_Tag_With_Attribute
-     (N : Node_Ptr; Tag : String; Key : String; Value : String := "")
+     (N     : Node_Ptr;
+      Tag   : UTF8_String;
+      Key   : UTF8_String;
+      Value : UTF8_String := "")
      return Node_Ptr;
    --  Find a tag Tag in N that has a given key (and value if given).
 

@@ -28,7 +28,11 @@
 -----------------------------------------------------------------------
 
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Direct_IO;
+with Glib.Convert;  use Glib.Convert;
+with Glib.Error;    use Glib.Error;
+with Glib.Messages; use Glib.Messages;
 
 package body Glib.XML is
 
@@ -278,7 +282,7 @@ package body Glib.XML is
    -------------------
 
    function Get_Attribute
-     (N : Node_Ptr; Attribute_Name : String) return String
+     (N : Node_Ptr; Attribute_Name : UTF8_String) return UTF8_String
    is
       Index      : Natural;
       Key, Value : String_Ptr;
@@ -323,7 +327,7 @@ package body Glib.XML is
    -------------------
 
    procedure Set_Attribute
-     (N : Node_Ptr; Attribute_Name, Attribute_Value : String)
+     (N : Node_Ptr; Attribute_Name, Attribute_Value : UTF8_String)
    is
       Index, Tmp : Natural;
       Key, Value : String_Ptr;
@@ -666,17 +670,63 @@ package body Glib.XML is
    -- Parse_Buffer --
    ------------------
 
-   function Parse_Buffer (Buffer : String) return Node_Ptr is
+   function Parse_Buffer (Buffer : UTF8_String) return Node_Ptr is
       Index       : aliased Natural := 2;
       XML_Version : String_Ptr;
-
+      Encoding    : Integer;
+      Encoding_Last : Integer;
+      Result        : Node_Ptr;
    begin
       Get_Buf (Buffer, Index, '>', XML_Version);
       if XML_Version = null then
          return null;
       else
+         --  Check the encoding specified for that file
+         Encoding := Ada.Strings.Fixed.Index (XML_Version.all, "encoding");
+
+         if Encoding /= 0 then
+            while Encoding <= XML_Version'Last
+              and then XML_Version (Encoding) /= '"'
+            loop
+               Encoding := Encoding + 1;
+            end loop;
+
+            Encoding := Encoding + 1;
+            Encoding_Last := Encoding + 1;
+
+            while Encoding_Last <= XML_Version'Last
+              and then XML_Version (Encoding_Last) /= '"'
+            loop
+               Encoding_Last := Encoding_Last + 1;
+            end loop;
+
+            if Encoding_Last <= XML_Version'Last then
+               declare
+                  Error       : aliased GError;
+                  Utf8_Buffer : constant String := Glib.Convert.Convert
+                    (Buffer,
+                     To_Codeset => "UTF-8",
+                     From_Codeset =>
+                       XML_Version (Encoding .. Encoding_Last - 1),
+                     Error => Error'Unchecked_Access);
+               begin
+                  if Utf8_Buffer /= "" then
+                     Result := Get_Node (Utf8_Buffer, Index'Unchecked_Access);
+                  else
+                     Glib.Messages.Log
+                       ("Glib", Log_Level_Warning, Get_Message (Error));
+                     Error_Free (Error);
+                  end if;
+               end;
+            else
+               Result := Get_Node (Buffer, Index'Unchecked_Access);
+            end if;
+         else
+            Result := Get_Node (Buffer, Index'Unchecked_Access);
+         end if;
+
          Free (XML_Version);
-         return Get_Node (Buffer, Index'Unchecked_Access);
+         return Result;
       end if;
    end Parse_Buffer;
 
@@ -684,7 +734,7 @@ package body Glib.XML is
    -- Find_Tag --
    --------------
 
-   function Find_Tag (N : Node_Ptr; Tag : String) return Node_Ptr is
+   function Find_Tag (N : Node_Ptr; Tag : UTF8_String) return Node_Ptr is
       P : Node_Ptr := N;
 
    begin
@@ -704,8 +754,10 @@ package body Glib.XML is
    -----------------------------
 
    function Find_Tag_With_Attribute
-     (N : Node_Ptr; Tag : String; Key :
-      String; Value : String := "") return Node_Ptr
+     (N : Node_Ptr;
+      Tag : UTF8_String;
+      Key : UTF8_String;
+      Value : UTF8_String := "") return Node_Ptr
    is
       P : Node_Ptr := N;
    begin
@@ -733,7 +785,7 @@ package body Glib.XML is
    -- Get_Field --
    ---------------
 
-   function Get_Field (N : Node_Ptr; Field : String) return String_Ptr is
+   function Get_Field (N : Node_Ptr; Field : UTF8_String) return String_Ptr is
       P : constant Node_Ptr := Find_Tag (N.Child, Field);
 
    begin
