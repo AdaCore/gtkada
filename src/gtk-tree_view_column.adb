@@ -179,11 +179,11 @@ package body Gtk.Tree_View_Column is
       T_Stub : Gtk_Tree_View_Column_Record;
 
       T : constant Gtk_Tree_View_Column :=
-        Gtk_Tree_View_Column (Get_User_Data (Tree_Column, T_Stub));
+        Gtk_Tree_View_Column (Get_User_Data_Fast (Tree_Column, T_Stub));
       C : constant Gtk_Cell_Renderer :=
-        Gtk_Cell_Renderer (Get_User_Data (Cell, C_Stub));
+        Gtk_Cell_Renderer (Get_User_Data_Fast (Cell, C_Stub));
       M : constant Gtk_Tree_Model :=
-        Gtk_Tree_Model (Get_User_Data (Model, M_Stub));
+        Gtk_Tree_Model (Get_User_Data_Fast (Model, M_Stub));
       I : constant Gtk_Tree_Iter_Access := To_Iter (Iter);
    begin
       Data (T, C, M, I.all);
@@ -260,11 +260,11 @@ package body Gtk.Tree_View_Column is
          T_Stub : Gtk_Tree_View_Column_Record;
 
          T : constant Gtk_Tree_View_Column :=
-           Gtk_Tree_View_Column (Get_User_Data (Tree_Column, T_Stub));
+           Gtk_Tree_View_Column (Get_User_Data_Fast (Tree_Column, T_Stub));
          C : constant Gtk_Cell_Renderer :=
-           Gtk_Cell_Renderer (Get_User_Data (Cell, C_Stub));
+           Gtk_Cell_Renderer (Get_User_Data_Fast (Cell, C_Stub));
          M : constant Gtk_Tree_Model :=
-           Gtk_Tree_Model (Get_User_Data (Model, M_Stub));
+           Gtk_Tree_Model (Get_User_Data_Fast (Model, M_Stub));
          I : constant Gtk_Tree_Iter_Access := To_Iter (Iter);
 
       begin

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@ package body Gtk.Tree_Model_Sort is
 
    begin
       return Gtk.Tree_Model.Gtk_Tree_Model
-        (Get_User_Data (Internal (Get_Object (Tree_Model)), Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Tree_Model)), Stub));
    end Get_Model;
 
    --------------------------------

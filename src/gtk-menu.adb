@@ -87,7 +87,7 @@ package body Gtk.Menu is
 
    begin
       return Accel_Group.Gtk_Accel_Group
-        (Get_User_Data (Internal (Get_Object (Menu)), Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Menu)), Stub));
    end Get_Accel_Group;
 
    ----------------

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -61,8 +61,8 @@ package body Gtk.Tree_Selection is
          is
             Stub : Gtk_Tree_Model_Record;
          begin
-            Func
-              (Gtk_Tree_Model (Get_User_Data (Model, Stub)), Path, Iter, Data);
+            Func (Gtk_Tree_Model (Get_User_Data_Fast (Model, Stub)),
+                  Path, Iter, Data);
          end C_Foreach_Func;
 
          procedure Internal
@@ -183,8 +183,8 @@ package body Gtk.Tree_Selection is
          Iter  := Null_Iter;
          Model := null;
       else
-         Model := Gtk_Tree_Model (Get_User_Data (M, Local_Model));
-         Iter := It;
+         Model := Gtk_Tree_Model (Get_User_Data_Fast (M, Local_Model));
+         Iter  := It;
       end if;
    end Get_Selected;
 

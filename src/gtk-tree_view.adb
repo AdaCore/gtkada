@@ -118,8 +118,7 @@ package body Gtk.Tree_View is
 
    begin
       return Gtk.Tree_Model.Gtk_Tree_Model
-        (Get_User_Data (Internal (Get_Object (Tree_View)),
-                        Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Tree_View)), Stub));
    end Get_Model;
 
    ---------------
@@ -154,8 +153,7 @@ package body Gtk.Tree_View is
 
    begin
       return Gtk.Tree_Selection.Gtk_Tree_Selection
-        (Get_User_Data (Internal (Get_Object (Tree_View)),
-                        Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Tree_View)), Stub));
    end Get_Selection;
 
    ---------------------
@@ -173,8 +171,7 @@ package body Gtk.Tree_View is
 
    begin
       return Gtk.Adjustment.Gtk_Adjustment
-        (Get_User_Data (Internal (Get_Object (Tree_View)),
-                        Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Tree_View)), Stub));
    end Get_Hadjustment;
 
    ---------------------
@@ -209,8 +206,7 @@ package body Gtk.Tree_View is
 
    begin
       return Gtk.Adjustment.Gtk_Adjustment
-        (Get_User_Data (Internal (Get_Object (Tree_View)),
-                        Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Tree_View)), Stub));
    end Get_Vadjustment;
 
    ---------------------
@@ -427,8 +423,7 @@ package body Gtk.Tree_View is
 
    begin
       return Gtk.Tree_View_Column.Gtk_Tree_View_Column
-        (Get_User_Data (Internal (Get_Object (Tree_View), N),
-                        Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Tree_View), N), Stub));
    end Get_Column;
 
    -----------------
@@ -503,8 +498,7 @@ package body Gtk.Tree_View is
 
    begin
       return Gtk.Tree_View_Column.Gtk_Tree_View_Column
-        (Get_User_Data (Internal (Get_Object (Tree_View)),
-                        Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Tree_View)), Stub));
    end Get_Expander_Column;
 
 --    ------------------------------
@@ -793,7 +787,7 @@ package body Gtk.Tree_View is
    begin
       Internal (Get_Object (Tree_View), Path, Local_Column);
       Focus_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column
-        (Get_User_Data (Local_Column, Stub));
+        (Get_User_Data_Fast (Local_Column, Stub));
    end Get_Cursor;
 
    ---------------------
@@ -838,7 +832,7 @@ package body Gtk.Tree_View is
       Cell_Y := Local_Y;
 
       Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column
-        (Get_User_Data (Local_Column, Stub));
+        (Get_User_Data_Fast (Local_Column, Stub));
 
       Path := Local_Path;
    end Get_Path_At_Pos;

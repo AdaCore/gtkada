@@ -195,7 +195,8 @@ package body Gtk.Window is
       Stub : Gtk_Window_Record;
 
    begin
-      return Gtk_Window (Get_User_Data (Internal (Get_Object (Window)), Stub));
+      return Gtk_Window
+        (Get_User_Data_Fast (Internal (Get_Object (Window)), Stub));
    end Get_Transient_For;
 
    -------------
