@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
 --                Copyright (C) 2000-2001 ACT-Europe                 --
