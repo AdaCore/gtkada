@@ -246,9 +246,10 @@ package Gtk.Enums is
      (Selection_None,
       Selection_Single,
       Selection_Browse,
-      Selection_Multiple,
-      Selection_Extended);
+      Selection_Multiple);
    for Gtk_Selection_Mode'Size use Gint'Size;
+   --  The old Selection_Extended is now deprected, and replaced by
+   --  Selection_Multiple.
 
    type Gtk_Shadow_Type is
      (Shadow_None,
