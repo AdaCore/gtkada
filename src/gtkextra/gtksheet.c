@@ -5734,8 +5734,10 @@ gtk_sheet_key_press(GtkWidget *widget,
       extend_selection = FALSE;
       break;
     default:
-      if(in_selection) GTK_SHEET_SET_FLAGS(sheet, GTK_SHEET_IN_SELECTION);
-      if(extend_selection) return TRUE;
+      if(in_selection) {
+	GTK_SHEET_SET_FLAGS(sheet, GTK_SHEET_IN_SELECTION);
+	if(extend_selection) return TRUE;
+      }
       if(state == GTK_SHEET_ROW_SELECTED) 
         sheet->active_cell.col=MIN_VISIBLE_COLUMN(sheet);
       if(state == GTK_SHEET_COLUMN_SELECTED)
