@@ -125,9 +125,8 @@ package Gdk.Font is
    --  Fontset_Name is a comma-separated list of fonts that will be loaded
    --  as part of the fontset.
 
-   procedure From_Description
-     (Font      : out Gdk_Font;
-      Font_Desc : Pango.Font.Pango_Font_Description);
+   function From_Description
+     (Font_Desc : Pango.Font.Pango_Font_Description) return Gdk.Font.Gdk_Font;
    --  Create a new Gdk_Font from the given Pango_Font_Description.
    --  This is a convenient function to create fonts from, because
    --  a Pango_Font_Description is a higher level description of a font

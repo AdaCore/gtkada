@@ -100,14 +100,13 @@ package body Gdk.Font is
    -- From_Description --
    ----------------------
 
-   procedure From_Description
-     (Font      : out Gdk_Font;
-      Font_Desc : Pango.Font.Pango_Font_Description)
+   function From_Description
+     (Font_Desc : Pango.Font.Pango_Font_Description) return Gdk_Font
    is
       function Internal (Desc : Pango_Font_Description) return Gdk_Font;
       pragma Import (C, Internal, "gdk_font_from_description");
    begin
-      Font := Internal (Font_Desc);
+      return Internal (Font_Desc);
    end From_Description;
 
    ----------
