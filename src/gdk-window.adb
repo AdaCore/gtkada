@@ -385,6 +385,30 @@ package body Gdk.Window is
    end Get_Visual;
 
 
+   -------------------
+   --  Is_Viewable  --
+   -------------------
+
+   function Is_Viewable (Window : in Gdk_Window) return Boolean is
+      function Internal (Window : in System.Address) return Gboolean;
+      pragma Import (C, Internal, "gdk_window_is_viewable");
+   begin
+      return To_Boolean (Internal (Get_Object (Window)));
+   end Is_Viewable;
+
+
+   ------------------
+   --  Is_Visible  --
+   ------------------
+
+   function Is_Visible (Window : in Gdk_Window) return Boolean is
+      function Internal (Window : in System.Address) return Gboolean;
+      pragma Import (C, Internal, "gdk_window_is_visible");
+   begin
+      return To_Boolean (Internal (Get_Object (Window)));
+   end Is_Visible;
+
+
    ------------
    --  Hide  --
    ------------

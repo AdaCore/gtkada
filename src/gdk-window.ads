@@ -124,6 +124,10 @@ package Gdk.Window is
 
    procedure Merge_Child_Shapes (Window : in out Gdk_Window);
 
+   function Is_Visible (Window : in Gdk_Window) return Boolean;
+
+   function Is_Viewable (Window : in Gdk_Window) return Boolean;
+
    procedure Set_Hints (Window     : in out Gdk_Window;
                         X          : in     Gint;
                         Y          : in     Gint;
