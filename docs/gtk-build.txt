@@ -172,17 +172,11 @@ cd glib-2.2.3
 CPP="cc -E -I$C_INCLUDE_PATH"
 export CPP
 
-# On x86-solaris, there is a problem in autoconf that causes a configure failure
-# if a C++ preprocessor can not be found. The preprocessor is
-# /usr/ccs/lib/cpp, but configure only looks in /lib. So just make
-# sure to add a link from /usr/ccs/lib/cpp to /lib/cpp.
-# (*** OBE with gcc-head (2004-02-19))
-#
-# There is also a dependency on libgcc_s.so for which GCC didn't
+# On x86-solaris, there is a dependency on libgcc_s.so for which GCC didn't
 # add a rpath, so we need to help the loader find it by adding
 # the path to this library in LD_LIBRARY_PATH. This will be needed
 # throughout the rest of the gtk builds, so let's export the change.
-LD_LIBRARY_PATH=/opt/gtk-2.0/gcc-2004-02-19/lib:$LD_LIBRARY_PATH
+# LD_LIBRARY_PATH=/opt/gtk-2.0/gcc-2004-02-19/lib:$LD_LIBRARY_PATH
 
 # on Linux:
 ./configure --prefix=$prefix --disable-debug
@@ -234,9 +228,7 @@ patch -p0 < .../GtkAda/contrib/pango-1.2.5.diff
 
 bash ./configure --prefix=$prefix --with-included-modules=basic-x --disable-debug
 
-# On x86-solaris 2.6
-#
-# The patch applied above seems to be disturbing the dependencies
+# On x86-solaris 2.6, the patch above seems to be disturbing the dependencies
 # between several automatically generated files.  This causes the
 # Makefile to try to rebuild these file by calling automake, aclocal,
 # etc...  On the x86-solaris machine we have, these tools are either
