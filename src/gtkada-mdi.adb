@@ -1429,17 +1429,21 @@ package body Gtkada.MDI is
          if C.State /= Floating then
             Reparent (C.Initial_Child, Gtk_Window (C.Initial));
          end if;
+
          Hide_All (C.Initial);
 
          --  Workaround an apparent bug in gtk+: it it not possible to unref()
          --  a toplevel GtkWindow, we can just destroy() it. Otherwise, we get
          --  a glib warning and storage_error
+
          if Ref_Count (Get_Object (C.Initial)) <= 2 then
-            --  There seems to be an apparent bug in gtk+, in
-            --  g_object_last_unref. Call to parent_class->dispose should be
-            --  replaced with call to g_object_run_dispose.
+            --  There seems to be a bug in g_object_last_unref: call to
+            --  parent_class->dispose should be replaced with call to
+            --  g_object_run_dispose.
             --  As a result we need to Unref the child as well
-            Unref (C.Initial);
+            --  However, unreffing a Gtk_Window causes a SEGV, so comment it
+            --  out for now ???
+            --  Unref (C.Initial);
 
             Destroy (C.Initial);
          end if;
