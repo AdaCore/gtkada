@@ -573,10 +573,19 @@ package body Gtk.Tree_View is
          Col_Align : Gfloat);
       pragma Import (C, Internal, "gtk_tree_view_scroll_to_cell");
 
+      Column_Address : System.Address;
+
+      use Gtk.Tree_View_Column;
    begin
+      if Column = null then
+         Column_Address := System.Null_Address;
+      else
+         Column_Address := Get_Object (Column);
+      end if;
+
       Internal (Get_Object (Tree_View),
                 Path,
-                Get_Object (Column),
+                Column_Address,
                 To_Gboolean (Use_Align),
                 Row_Align,
                 Col_Align);
