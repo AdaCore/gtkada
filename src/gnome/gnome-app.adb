@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                  Copyright (C) 2000-2001                          --
+--                            ACT-Europe                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -50,18 +50,18 @@ package body Gnome.App is
       Internal (Get_Object (App), Boolean'Pos (Enable));
    end Enable_Layout_Config;
 
-   -------------
-   -- Gtk_New --
-   -------------
+   ---------------
+   -- Gnome_New --
+   ---------------
 
-   procedure Gtk_New
+   procedure Gnome_New
      (App     : out Gnome_App;
       Appname : String;
       Title   : String := "") is
    begin
       App := new Gnome_App_Record;
       Initialize (App, Appname, Title);
-   end Gtk_New;
+   end Gnome_New;
 
    ----------------
    -- Initialize --
@@ -177,4 +177,3 @@ package body Gnome.App is
    end Set_Toolbar;
 
 end Gnome.App;
-

@@ -1,6 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
+--               Copyright (C) 2000 Helix Code, Inc.                 --
 --               Copyright (C) 2000-2001 ACT-Europe                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -26,21 +27,59 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Glade; use Glib.Glade, Glib.Glade.Glib_XML;
-with Ada.Text_IO; use Ada.Text_IO;
-pragma Warnings (Off, Glib.Glade);
-pragma Warnings (Off, Glib_XML);
-pragma Warnings (Off, Ada.Text_IO);
---  Text_IO is required by almost all the package for Gate and,
---  so we put the 'with' here.
+with Glib; use Glib;
+with Gtk;
+with Gtk.Box;
 
-package Gnome is
-   pragma Elaborate_Body;
+package Gnome.Paper_Selector is
 
-   function Init (App_Id : String; App_Version : String) return Boolean;
-   --  Initialize Gnome.
-   --  You should call this function before anything other gnome related
-   --  actions.
-   --  Return True in case of success, False otherwise.
+   type Gnome_Paper_Selector_Record is new Gtk.Box.Gtk_Vbox_Record
+     with private;
+   type Gnome_Paper_Selector is access all Gnome_Paper_Selector_Record'Class;
 
-end Gnome;
+   procedure Gnome_New (Paper_Selector : out Gnome_Paper_Selector);
+   --  Create a new paper selector.
+
+   procedure Initialize
+     (Paper_Selector : access Gnome_Paper_Selector_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gnome_Paper_Selector.
+
+   function Get_Width
+     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+
+   function Get_Height
+     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+
+   function Get_Left_Margin
+     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+
+   function Get_Right_Margin
+     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+
+   function Get_Top_Margin
+     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+
+   function Get_Bottom_Margin
+     (Paper_Selector : access Gnome_Paper_Selector_Record) return Gfloat;
+
+   procedure Set_Name
+     (Paper_Selector : access Gnome_Paper_Selector_Record;
+      Name           : String);
+
+   procedure Set_Width
+     (Paper_Selector : access Gnome_Paper_Selector_Record;
+      Width          : Gfloat);
+
+   procedure Set_Height
+     (Paper_Selector : access Gnome_Paper_Selector_Record;
+      Height         : Gfloat);
+
+private
+   type Gnome_Paper_Selector_Record is new Gtk.Box.Gtk_Vbox_Record
+     with null record;
+   pragma Import (C, Get_Type, "gnome_paper_selector_get_type");
+end Gnome.Paper_Selector;

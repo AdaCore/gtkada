@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                       Copyright (C) 2000                          --
+--                            ACT-Europe                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,33 +28,62 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk; use Gtk;
 
-package body Gnome is
+package body Gnome.About is
 
-   ----------
-   -- Init --
-   ----------
+   ---------------
+   -- Gnome_New --
+   ---------------
 
-   function Init (App_Id : String; App_Version : String) return Boolean is
-      gnat_argc : Integer;
-      pragma Import (C, gnat_argc);
+   procedure Gnome_New
+     (About     : out Gnome_About;
+      Title     : String;
+      Version   : String;
+      Copyright : String;
+      Authors   : Chars_Ptr_Array;
+      Comments  : String;
+      Logo      : String) is
+   begin
+      About := new Gnome_About_Record;
+      Initialize (About, Title, Version, Copyright, Authors, Comments, Logo);
+   end Gnome_New;
 
-      gnat_argv : System.Address;
-      pragma Import (C, gnat_argv);
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (About     : access Gnome_About_Record'Class;
+      Title     : String;
+      Version   : String;
+      Copyright : String;
+      Authors   : Chars_Ptr_Array;
+      Comments  : String;
+      Logo      : String)
+   is
+      Authors_Padded : constant Chars_Ptr_Array := Authors + Null_Ptr;
 
       function Internal
-        (App_Id      : String;
-         App_Version : String;
-         Argc        : Integer;
-         Argv        : System.Address) return Integer;
-      pragma Import (C, Internal, "gnome_init");
+        (Title     : String;
+         Version   : String;
+         Copyright : String;
+         Authors   : Chars_Ptr_Array;
+         Comments  : String;
+         Logo      : String) return System.Address;
+      pragma Import (C, Internal, "gnome_about_new");
 
    begin
-      return Internal
-        (App_Id & ASCII.NUL,
-         App_Version & ASCII.NUL,
-         gnat_argc,
-         gnat_argv) /= 0;
-   end Init;
+      Set_Object
+        (About,
+         Internal
+           (Title & ASCII.NUL,
+            Version & ASCII.NUL,
+            Copyright & ASCII.NUL,
+            Authors_Padded,
+            Comments & ASCII.NUL,
+            Logo & ASCII.NUL));
+      Initialize_User_Data (About);
+   end Initialize;
 
-end Gnome;
+end Gnome.About;

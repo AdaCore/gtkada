@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                  Copyright (C) 2000-2001                          --
+--                            ACT-Europe                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,16 +36,10 @@ with Gtk.Window;
 
 package Gnome.App is
 
-   Menubar_Name  : constant String := "Menubar";
-   --  Is this needed ???
-
-   Toolbar_Name  : constant String := "Toolbar";
-   --  Is this needed ???
-
    type Gnome_App_Record is new Gtk.Window.Gtk_Window_Record with private;
    type Gnome_App is access all Gnome_App_Record'Class;
 
-   procedure Gtk_New
+   procedure Gnome_New
      (App     : out Gnome_App;
       Appname : String;
       Title   : String := "");
