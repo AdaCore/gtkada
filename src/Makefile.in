@@ -1,5 +1,4 @@
 SHELL=/bin/sh
-@SET_MAKE@
 
 .SUFFIXES:
 .SUFFIXES: .c .o .ads .adb .ali
