@@ -32,9 +32,9 @@ with System;
 
 package body Gdk.Window_Attr is
 
-   ---------------
-   --  Destroy  --
-   ---------------
+   -------------
+   -- Destroy --
+   -------------
 
    procedure Destroy (Window_Attr : in out Gdk_Window_Attr) is
       procedure Internal (Window_Attr : in System.Address);
@@ -44,32 +44,32 @@ package body Gdk.Window_Attr is
       Set_Object (Window_Attr, System.Null_Address);
    end Destroy;
 
-
-   ---------------
-   --  Gdk_New  --
-   ---------------
+   -------------
+   -- Gdk_New --
+   -------------
 
    procedure Gdk_New
      (Window_Attr       :    out Gdk_Window_Attr;
       Title             : in     String := "";
-      Event_Mask        : in     Gdk.Types.Gdk_Event_Mask
-        := Gdk.Types.Null_Event_Mask;
+      Event_Mask        : in     Gdk.Types.Gdk_Event_Mask :=
+        Gdk.Types.Null_Event_Mask;
       X, Y              : in     Glib.Gint16 := 0;
       Width             : in     Glib.Gint16 := 0;
       Height            : in     Glib.Gint16 := 0;
-      Wclass            : in     Gdk.Types.Gdk_Window_Class
-        := Gdk.Types.Input_Output;
-      Visual            : in     Gdk.Visual.Gdk_Visual'Class
-        := Gdk.Visual.Null_Visual;
-      Colormap          : in     Gdk.Color.Gdk_Colormap'Class
-        := Gdk.Color.Null_Colormap;
-      Window_Type       : in     Gdk.Types.Gdk_Window_Type
-        := Gdk.Types.Root;
-      Cursor            : in     Gdk.Cursor.Gdk_Cursor'Class
-        := Gdk.Cursor.Null_Cursor;
+      Wclass            : in     Gdk.Types.Gdk_Window_Class :=
+        Gdk.Types.Input_Output;
+      Visual            : in     Gdk.Visual.Gdk_Visual'Class :=
+        Gdk.Visual.Null_Visual;
+      Colormap          : in     Gdk.Color.Gdk_Colormap'Class :=
+        Gdk.Color.Null_Colormap;
+      Window_Type       : in     Gdk.Types.Gdk_Window_Type :=
+        Gdk.Types.Window_Root;
+      Cursor            : in     Gdk.Cursor.Gdk_Cursor'Class :=
+        Gdk.Cursor.Null_Cursor;
       Wmclass_Name      : in     String := "";
       Wmclass_Class     : in     String := "";
-      Override_Redirect : in    Boolean := True) is
+      Override_Redirect : in     Boolean := True)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "ada_gdk_window_attr_new");
    begin
@@ -91,10 +91,9 @@ package body Gdk.Window_Attr is
       Set_Override_Redirect (Window_Attr, Override_Redirect);
    end Gdk_New;
 
-
-   --------------------
-   --  Get_Colormap  --
-   --------------------
+   ------------------
+   -- Get_Colormap --
+   ------------------
 
    function Get_Colormap (Window_Attr : in Gdk_Window_Attr)
                           return Gdk.Color.Gdk_Colormap is
@@ -107,10 +106,9 @@ package body Gdk.Window_Attr is
       return Result;
    end Get_Colormap;
 
-
-   ------------------
-   --  Get_Cursor  --
-   ------------------
+   ----------------
+   -- Get_Cursor --
+   ----------------
 
    function Get_Cursor (Window_Attr : in Gdk_Window_Attr)
                         return Gdk.Cursor.Gdk_Cursor is
@@ -123,10 +121,9 @@ package body Gdk.Window_Attr is
       return Result;
    end Get_Cursor;
 
-
-   ----------------------
-   --  Get_Event_Mask  --
-   ----------------------
+   --------------------
+   -- Get_Event_Mask --
+   --------------------
 
    function Get_Event_Mask (Window_Attr : in Gdk_Window_Attr)
                             return Gdk.Types.Gdk_Event_Mask is
@@ -137,10 +134,9 @@ package body Gdk.Window_Attr is
       return Internal (Get_Object (Window_Attr));
    end Get_Event_Mask;
 
-
-   ------------------
-   --  Get_Height  --
-   ------------------
+   ----------------
+   -- Get_Height --
+   ----------------
 
    function Get_Height (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16 is
       function Internal (Window_Attr : in System.Address) return Glib.Gint16;
@@ -149,10 +145,9 @@ package body Gdk.Window_Attr is
       return Internal (Get_Object (Window_Attr));
    end Get_Height;
 
-
-   -----------------------------
-   --  Get_Override_Redirect  --
-   -----------------------------
+   ---------------------------
+   -- Get_Override_Redirect --
+   ---------------------------
 
    function Get_Override_Redirect (Window_Attr : in Gdk_Window_Attr)
                                    return Boolean is
@@ -163,10 +158,9 @@ package body Gdk.Window_Attr is
       return Glib.To_Boolean (Internal (Get_Object (Window_Attr)));
    end Get_Override_Redirect;
 
-
-   -----------------
-   --  Get_Title  --
-   -----------------
+   ---------------
+   -- Get_Title --
+   ---------------
 
    function Get_Title (Window_Attr : in Gdk_Window_Attr) return String is
       function Internal (Window_Attr : in System.Address) return
@@ -175,7 +169,6 @@ package body Gdk.Window_Attr is
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Window_Attr)));
    end Get_Title;
-
 
    ------------------
    --  Get_Visual  --
@@ -192,10 +185,9 @@ package body Gdk.Window_Attr is
       return Result;
    end Get_Visual;
 
-
-   -----------------
-   --  Get_Width  --
-   -----------------
+   ---------------
+   -- Get_Width --
+   ---------------
 
    function Get_Width (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16 is
       function Internal (Window_Attr : in System.Address) return Glib.Gint16;
@@ -204,10 +196,9 @@ package body Gdk.Window_Attr is
       return Internal (Get_Object (Window_Attr));
    end Get_Width;
 
-
-   ------------------------
-   --  Get_Window_Class  --
-   ------------------------
+   ----------------------
+   -- Get_Window_Class --
+   ----------------------
 
    function Get_Window_Class (Window_Attr : in Gdk_Window_Attr)
                               return Gdk.Types.Gdk_Window_Class is
@@ -218,10 +209,9 @@ package body Gdk.Window_Attr is
       return Internal (Get_Object (Window_Attr));
    end Get_Window_Class;
 
-
-   -----------------------
-   --  Get_Window_Type  --
-   -----------------------
+   ---------------------
+   -- Get_Window_Type --
+   ---------------------
 
    function Get_Window_Type (Window_Attr : in Gdk_Window_Attr)
                              return Gdk.Types.Gdk_Window_Type is
@@ -232,10 +222,9 @@ package body Gdk.Window_Attr is
       return Internal (Get_Object (Window_Attr));
    end Get_Window_Type;
 
-
-   -------------------------
-   --  Get_Wmclass_Class  --
-   -------------------------
+   -----------------------
+   -- Get_Wmclass_Class --
+   -----------------------
 
    function Get_Wmclass_Class (Window_Attr : in Gdk_Window_Attr)
                               return String is
@@ -246,10 +235,9 @@ package body Gdk.Window_Attr is
       return Interfaces.C.Strings.Value (Internal (Get_Object (Window_Attr)));
    end Get_Wmclass_Class;
 
-
-   ------------------------
-   --  Get_Wmclass_Name  --
-   ------------------------
+   ----------------------
+   -- Get_Wmclass_Name --
+   ----------------------
 
    function Get_Wmclass_Name (Window_Attr : in Gdk_Window_Attr)
                               return String is
@@ -260,10 +248,9 @@ package body Gdk.Window_Attr is
       return Interfaces.C.Strings.Value (Internal (Get_Object (Window_Attr)));
    end Get_Wmclass_Name;
 
-
-   -------------
-   --  Get_X  --
-   -------------
+   -----------
+   -- Get_X --
+   -----------
 
    function Get_X (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16 is
       function Internal (Window_Attr : in System.Address) return Glib.Gint16;
@@ -272,10 +259,9 @@ package body Gdk.Window_Attr is
       return Internal (Get_Object (Window_Attr));
    end Get_X;
 
-
-   -------------
-   --  Get_Y  --
-   -------------
+   -----------
+   -- Get_Y --
+   -----------
 
    function Get_Y (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16 is
       function Internal (Window_Attr : in System.Address) return Glib.Gint16;
@@ -284,10 +270,9 @@ package body Gdk.Window_Attr is
       return Internal (Get_Object (Window_Attr));
    end Get_Y;
 
-
-   --------------------
-   --  Set_Colormap  --
-   --------------------
+   ------------------
+   -- Set_Colormap --
+   ------------------
 
    procedure Set_Colormap
      (Window_Attr : in Gdk_Window_Attr;
@@ -298,10 +283,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Get_Object (Colormap));
    end Set_Colormap;
 
-
-   ------------------
-   --  Set_Cursor  --
-   ------------------
+   ----------------
+   -- Set_Cursor --
+   ----------------
 
    procedure Set_Cursor (Window_Attr : in Gdk_Window_Attr;
                          Cursor      : in Gdk.Cursor.Gdk_Cursor'Class) is
@@ -311,10 +295,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Get_Object (Cursor));
    end Set_Cursor;
 
-
-   ----------------------
-   --  Set_Event_Mask  --
-   ----------------------
+   --------------------
+   -- Set_Event_Mask --
+   --------------------
 
    procedure Set_Event_Mask (Window_Attr : in Gdk_Window_Attr;
                              Event_Mask  : in Gdk.Types.Gdk_Event_Mask) is
@@ -325,10 +308,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Event_Mask);
    end Set_Event_Mask;
 
-
-   ------------------
-   --  Set_Height  --
-   ------------------
+   ----------------
+   -- Set_Height --
+   ----------------
 
    procedure Set_Height (Window_Attr : in Gdk_Window_Attr;
                         height       : in Glib.Gint16) is
@@ -339,10 +321,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Height);
    end Set_Height;
 
-
-   -----------------------------
-   --  Set_Override_Redirect  --
-   -----------------------------
+   ---------------------------
+   -- Set_Override_Redirect --
+   ---------------------------
 
    procedure Set_Override_Redirect (Window_Attr       : in Gdk_Window_Attr;
                                     Override_Redirect : in Boolean) is
@@ -354,10 +335,9 @@ package body Gdk.Window_Attr is
                 Glib.To_Gboolean (Override_Redirect));
    end Set_Override_Redirect;
 
-
-   -----------------
-   --  Set_Title  --
-   -----------------
+   ---------------
+   -- Set_Title --
+   ---------------
 
    procedure Set_Title (Window_Attr : in Gdk_Window_Attr;
                         Title       : in String) is
@@ -368,10 +348,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Title & Ascii.NUL);
    end Set_Title;
 
-
-   ------------------
-   --  Set_Visual  --
-   ------------------
+   ----------------
+   -- Set_Visual --
+   ----------------
 
    procedure Set_Visual (Window_Attr : in Gdk_Window_Attr;
                          Visual      : in Gdk.Visual.Gdk_Visual'class) is
@@ -381,10 +360,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Get_Object (Visual));
    end Set_Visual;
 
-
-   -----------------
-   --  Set_Width  --
-   -----------------
+   ---------------
+   -- Set_Width --
+   ---------------
 
    procedure Set_Width (Window_Attr : in Gdk_Window_Attr;
                         Width       : in Glib.Gint16) is
@@ -395,10 +373,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Width);
    end Set_Width;
 
-
-   ------------------------
-   --  Set_Window_Class  --
-   ------------------------
+   ----------------------
+   -- Set_Window_Class --
+   ----------------------
 
    procedure Set_Window_Class
      (Window_Attr : in Gdk_Window_Attr;
@@ -410,10 +387,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Wclass);
    end Set_Window_Class;
 
-
-   -----------------------
-   --  Set_Window_Type  --
-   -----------------------
+   ---------------------
+   -- Set_Window_Type --
+   ---------------------
 
    procedure Set_Window_Type
      (Window_Attr : in Gdk_Window_Attr;
@@ -425,10 +401,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Window_Type);
    end Set_Window_Type;
 
-
-   -------------------------
-   --  Set_Wmclass_Class  --
-   -------------------------
+   -----------------------
+   -- Set_Wmclass_Class --
+   -----------------------
 
    procedure Set_Wmclass_Class (Window_Attr   : in Gdk_Window_Attr;
                                 Wmclass_Class : in String) is
@@ -439,10 +414,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Wmclass_Class & Ascii.NUL);
    end Set_Wmclass_Class;
 
-
-   ------------------------
-   --  Set_Wmclass_Name  --
-   ------------------------
+   ----------------------
+   -- Set_Wmclass_Name --
+   ----------------------
 
    procedure Set_Wmclass_Name (Window_Attr  : in Gdk_Window_Attr;
                                Wmclass_Name : in String) is
@@ -453,10 +427,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), Wmclass_Name & Ascii.NUL);
    end Set_Wmclass_Name;
 
-
-   -------------
-   --  Set_X  --
-   -------------
+   -----------
+   -- Set_X --
+   -----------
 
    procedure Set_X (Window_Attr : in Gdk_Window_Attr;
                     X           : in Glib.Gint16) is
@@ -467,10 +440,9 @@ package body Gdk.Window_Attr is
       Internal (Get_Object (Window_Attr), X);
    end Set_X;
 
-
-   -------------
-   --  Set_Y  --
-   -------------
+   -----------
+   -- Set_Y --
+   -----------
 
    procedure Set_Y (Window_Attr : in Gdk_Window_Attr;
                     Y           : in Glib.Gint16) is

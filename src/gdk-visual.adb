@@ -31,13 +31,11 @@ with Interfaces.C.Pointers;
 
 package body Gdk.Visual is
 
-
    type Aliased_Gint_Array is array (Natural range <>) of aliased Gint;
 
    package Gint_Ptr is new Interfaces.C.Pointers
      (Index => Natural, Element => Gint, Element_Array => Aliased_Gint_Array,
       Default_Terminator => 0);
-
 
    type Aliased_Visual_Type_Array is array (Natural range <>)
      of aliased Types.Gdk_Visual_Type;
@@ -45,12 +43,11 @@ package body Gdk.Visual is
    package Visual_Type_Ptr is new Interfaces.C.Pointers
      (Index => Natural, Element => Types.Gdk_Visual_Type,
       Element_Array => Aliased_Visual_Type_Array,
-      Default_Terminator => Types.Static_Gray);
+      Default_Terminator => Types.Visual_Static_Gray);
 
-
-   ----------------
-   --  Get_Best  --
-   ----------------
+   --------------
+   -- Get_Best --
+   --------------
 
    procedure Get_Best (Visual : out Gdk_Visual) is
       function Internal return System.Address;
@@ -59,10 +56,9 @@ package body Gdk.Visual is
       Set_Object (Visual, Internal);
    end Get_Best;
 
-
-   ----------------
-   --  Get_Best  --
-   ----------------
+   --------------
+   -- Get_Best --
+   --------------
 
    procedure Get_Best (Visual :    out Gdk_Visual;
                        Depth  : in     Gint) is
@@ -72,10 +68,9 @@ package body Gdk.Visual is
       Set_Object (Visual, Internal (Depth));
    end Get_Best;
 
-
-   ----------------
-   --  Get_Best  --
-   ----------------
+   --------------
+   -- Get_Best --
+   --------------
 
    procedure Get_Best (Visual      :    out Gdk_Visual;
                        Visual_Type : in     Types.Gdk_Visual_Type) is
@@ -86,10 +81,9 @@ package body Gdk.Visual is
       Set_Object (Visual, Internal (Visual_Type));
    end Get_Best;
 
-
-   ----------------
-   --  Get_Best  --
-   ----------------
+   --------------
+   -- Get_Best --
+   --------------
 
    procedure Get_Best (Visual      :    out Gdk_Visual;
                        Depth       : in     Gint;
@@ -102,10 +96,9 @@ package body Gdk.Visual is
       Set_Object (Visual, Internal (Depth, Visual_Type));
    end Get_Best;
 
-
-   ------------------
-   --  Get_System  --
-   ------------------
+   ----------------
+   -- Get_System --
+   ----------------
 
    procedure Get_System (Visual : out Gdk_Visual) is
       function Internal return System.Address;
@@ -114,10 +107,9 @@ package body Gdk.Visual is
       Set_Object (Visual, Internal);
    end Get_System;
 
-
-   --------------------
-   --  List_Visuals  --
-   --------------------
+   ------------------
+   -- List_Visuals --
+   ------------------
 
    function Convert (V : in Gdk_Visual'Class) return System.Address is
    begin
@@ -140,10 +132,9 @@ package body Gdk.Visual is
       return Result;
    end List_Visuals;
 
-
-   --------------------
-   --  Query_Depths  --
-   --------------------
+   ------------------
+   -- Query_Depths --
+   ------------------
 
    function Query_Depths return Gint_Array is
       procedure Internal (Depths : out Gint_Ptr.Pointer; Count : out Gint);
@@ -153,7 +144,6 @@ package body Gdk.Visual is
       Count : Gint;
 
    begin
-
       Internal (Internal_Result, Count);
 
       declare
@@ -161,22 +151,19 @@ package body Gdk.Visual is
            Gint_Ptr.Value (Ref => Internal_Result,
                            Length => Interfaces.C.ptrdiff_t (Count));
          Result : Gint_Array (1 .. Temp'Length);
-      begin
 
+      begin
          for Index in Temp'Range loop
             Result (Result'First + Index - Temp'First) := Temp (Index);
          end loop;
 
          return Result;
-
       end;
-
    end Query_Depths;
 
-
-   --------------------------
-   --  Query_Visual_Types  --
-   --------------------------
+   ------------------------
+   -- Query_Visual_Types --
+   ------------------------
 
    function Query_Visual_Types return Gdk_Visual_Type_Array is
       procedure Internal (Visual_Type : out Visual_Type_Ptr.Pointer;
@@ -187,7 +174,6 @@ package body Gdk.Visual is
       Count : Gint;
 
    begin
-
       Internal (Internal_Result, Count);
 
       declare
@@ -195,17 +181,14 @@ package body Gdk.Visual is
            Visual_Type_Ptr.Value (Ref => Internal_Result,
                                   Length => Interfaces.C.ptrdiff_t (Count));
          Result : Gdk_Visual_Type_Array (1 .. Temp'Length);
-      begin
 
+      begin
          for Index in Temp'Range loop
             Result (Result'First + Index - Temp'First) := Temp (Index);
          end loop;
 
          return Result;
-
       end;
-
    end Query_Visual_Types;
-
 
 end Gdk.Visual;

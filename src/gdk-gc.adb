@@ -96,10 +96,10 @@ package body Gdk.GC is
    procedure Gdk_New (GC          :    out Gdk_GC;
                       Window      : in     Gdk.Window.Gdk_Window'Class;
                       Values      : in     Gdk_GC_Values'Class;
-                      Values_Mask : in     Types.Gdk_Values_Mask) is
+                      Values_Mask : in     Types.Gdk_GC_Values_Mask) is
       function Internal (Window : in System.Address;
                          Values : in System.Address;
-                         Values_Mask : in Types.Gdk_Values_Mask)
+                         Values_Mask : in Types.Gdk_GC_Values_Mask)
                          return System.Address;
       pragma Import (C, Internal, "gdk_gc_new_with_values");
    begin

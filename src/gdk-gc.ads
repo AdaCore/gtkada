@@ -48,7 +48,7 @@ package Gdk.GC is
    procedure Gdk_New (GC          :    out Gdk_GC;
                       Window      : in     Gdk.Window.Gdk_Window'Class;
                       Values      : in     Gdk_GC_Values'Class;
-                      Values_Mask : in     Types.Gdk_Values_Mask);
+                      Values_Mask : in     Types.Gdk_GC_Values_Mask);
 
    procedure Destroy (GC : in out Gdk_GC);
 

@@ -40,24 +40,24 @@ package Gdk.Window_Attr is
    procedure Gdk_New
      (Window_Attr       :    out Gdk_Window_Attr;
       Title             : in     String := "";
-      Event_Mask        : in     Gdk.Types.Gdk_Event_Mask
-        := Gdk.Types.Null_Event_Mask;
+      Event_Mask        : in     Gdk.Types.Gdk_Event_Mask :=
+        Gdk.Types.Null_Event_Mask;
       X, Y              : in     Glib.Gint16 := 0;
       Width             : in     Glib.Gint16 := 0;
       Height            : in     Glib.Gint16 := 0;
-      Wclass            : in     Gdk.Types.Gdk_Window_Class
-        := Gdk.Types.Input_Output;
-      Visual            : in     Gdk.Visual.Gdk_Visual'Class
-        := Gdk.Visual.Null_Visual;
-      Colormap          : in     Gdk.Color.Gdk_Colormap'Class
-        := Gdk.Color.Null_Colormap;
-      Window_Type       : in     Gdk.Types.Gdk_Window_Type
-        := Gdk.Types.Root;
-      Cursor            : in     Gdk.Cursor.Gdk_Cursor'Class
-        := Gdk.Cursor.Null_Cursor;
+      Wclass            : in     Gdk.Types.Gdk_Window_Class :=
+        Gdk.Types.Input_Output;
+      Visual            : in     Gdk.Visual.Gdk_Visual'Class :=
+        Gdk.Visual.Null_Visual;
+      Colormap          : in     Gdk.Color.Gdk_Colormap'Class :=
+        Gdk.Color.Null_Colormap;
+      Window_Type       : in     Gdk.Types.Gdk_Window_Type :=
+        Gdk.Types.Window_Root;
+      Cursor            : in     Gdk.Cursor.Gdk_Cursor'Class :=
+        Gdk.Cursor.Null_Cursor;
       Wmclass_Name      : in     String := "";
       Wmclass_Class     : in     String := "";
-      Override_Redirect : in    Boolean := True);
+      Override_Redirect : in     Boolean := True);
 
    procedure Destroy (Window_Attr : in out Gdk_Window_Attr);
 
