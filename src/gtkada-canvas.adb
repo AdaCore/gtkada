@@ -332,13 +332,13 @@ package body Gtkada.Canvas is
 
    procedure Initialize (Canvas : access Interactive_Canvas_Record'Class) is
       Signal_Parameters : constant Signal_Parameter_Types :=
-        (1 => (1 => Gtk.Gtk_Type_Gdk_Event, 2 => Gtk.Gtk_Type_None),
-         2 => (1 => Gtk.Gtk_Type_Pointer,   2 => Gtk.Gtk_Type_None),
-         3 => (1 => Gtk.Gtk_Type_Uint,      2 => Gtk.Gtk_Type_None),
-         4 => (1 => Gtk.Gtk_Type_Object,    2 => Gtk.Gtk_Type_Object));
+        (1 => (1 => Gdk.Event.Get_Type, 2 => GType_None),
+         2 => (1 => GType_Pointer,      2 => GType_None),
+         3 => (1 => GType_Uint,         2 => GType_None),
+         4 => (1 => GType_Object,       2 => GType_Object));
       --  the parameters for the above signals.
       --  This must be defined in this function rather than at the
-      --  library-level, or the value of Gtk_Type_Gdk_Event is not yet
+      --  library-level, or the value of Gdk_Event.Get_Type is not yet
       --  initialized.
 
    begin
