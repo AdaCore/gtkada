@@ -2851,6 +2851,9 @@ package body Gtkada.Canvas is
         To_Canvas_Coordinates (Canvas, Y + Gint (Item.Coord.Height));
       Adj_Changed : Boolean := False;
    begin
+      --  Realize it first, so that there is a size allocated
+      Realize (Canvas);
+
       --  Do we need to scroll the canvas to the right to show the item?
 
       if X2 > Gint (Get_Upper (Canvas.Hadj)) then
@@ -2913,11 +2916,13 @@ package body Gtkada.Canvas is
       end if;
 
       if Y1 < Gint (Get_Value (Canvas.Vadj)) then
-         Set_Value (Canvas.Vadj, Gdouble (Y1));
+         Set_Value
+           (Canvas.Vadj, Gdouble (Y1) - Get_Page_Size (Canvas.Vadj) / 2.0);
       elsif Gdouble (Y2) >
         Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj)
       then
-         Set_Value (Canvas.Vadj, Gdouble (Y2) - Get_Page_Size (Canvas.Vadj));
+         Set_Value
+           (Canvas.Vadj, Gdouble (Y2) - Get_Page_Size (Canvas.Vadj) / 2.0);
       end if;
    end Show_Item;
 
