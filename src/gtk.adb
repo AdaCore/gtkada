@@ -10,10 +10,22 @@ package body Gtk is
       return Object.Ptr;
    end Get_Object;
 
+   --------------
+   -- Get_Type --
+   --------------
 
-   ---------------------
-   --  Major_Version  --
-   ---------------------
+   function Get_Type (Object : in Root_Type'Class)
+                      return Gint is
+      function Internal (Object : System.Address)
+                         return Gint;
+      pragma Import (C, Internal, "ada_object_get_type");
+   begin
+      return Internal (Object.Ptr);
+   end Get_Type;
+
+   -------------------
+   -- Major_Version --
+   -------------------
 
    function Major_Version return Guint is
       Number : Guint;
@@ -23,9 +35,9 @@ package body Gtk is
    end Major_Version;
 
 
-   ---------------------
-   --  Micro_Version  --
-   ---------------------
+   -------------------
+   -- Micro_Version --
+   -------------------
 
    function Micro_Version return Guint is
       Number : Guint;
@@ -34,9 +46,9 @@ package body Gtk is
       return Number;
    end Micro_Version;
 
-   ---------------------
-   --  Minor_Version  --
-   ---------------------
+   -------------------
+   -- Minor_Version --
+   -------------------
 
    function Minor_Version return Guint is
       Number : Guint;
@@ -58,9 +70,9 @@ package body Gtk is
    end Set_Object;
 
 
-   ------------------
-   --  To_Boolean  --
-   ------------------
+   ----------------
+   -- To_Boolean --
+   ----------------
 
    function To_Boolean (Value : in Gint) return Boolean is
    begin
@@ -68,9 +80,9 @@ package body Gtk is
    end To_Boolean;
 
 
-   ---------------
-   --  To_Gint  --
-   ---------------
+   -------------
+   -- To_Gint --
+   -------------
 
    function To_Gint (Bool : in Boolean) return Gint is
    begin

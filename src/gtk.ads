@@ -29,6 +29,10 @@ private
                         return System.Address;
    pragma Inline (Get_Object);
 
+   function Get_Type (Object : in Root_Type'Class)
+                      return Gint;
+   pragma Inline (Get_Type);
+
    procedure Set_Object (Object : in out Root_Type'Class;
                          Value  : in     System.Address);
    pragma Inline (Set_Object);
