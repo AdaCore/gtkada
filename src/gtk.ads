@@ -60,7 +60,7 @@ package Gtk is
 
    type Gtk_Rc_Style is new Gdk.C_Proxy;
    --  Type used to handle resource styles.
-   --  @pxref{Package_Gtk.Rc} for more details.
+   --  See package Gtk.Rc for more details.
 
    function Major_Version return Guint;
    --  Return the major version number for Gtk+.
