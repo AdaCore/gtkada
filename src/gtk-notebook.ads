@@ -51,6 +51,9 @@ package Gtk.Notebook is
       Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   function Get_Child (Page : in Gtk_Notebook_Page) return Gtk_Widget;
+
    function Get_Current_Page
      (Notebook : access Gtk_Notebook_Record) return Gint;
    function Get_Cur_Page
@@ -136,7 +139,6 @@ package Gtk.Notebook is
      (Gtk_Notebook_Page);
    function Get_Children
      (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
-
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
