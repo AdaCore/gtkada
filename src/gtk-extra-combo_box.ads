@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,9 +33,7 @@
 --  This widget should be used only if you intend to write your own kind
 --  of combo box. You should look at the following widgets for specific
 --  implementation: Gtk_Combo, Gtk_Color_Combo, Gtk_Border_Combo.
---
 --  </description>
---  <c_version>gtk+extra 0.99.14</c_version>
 
 with Gtk.Box;
 with Gtk.Button;

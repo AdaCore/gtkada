@@ -31,7 +31,6 @@
 --  A Gtk_Sheet is a table like the one you can find in most spreadsheets.
 --  Each cell can contain some text or any kind of widgets.
 --  </description>
---  <c_version>gtk+extra 0.99.14</c_version>
 
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Container;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,10 +34,11 @@
 --
 --  Note that nothing appears in the button, this your responsibility to
 --  update it when the user selects a new color (see the "changed" signal).
---  </description>. The recommended solution is to put a Gtk_Pixmap as the
+--
+--  The recommended solution is to put a Gtk_Pixmap as the
 --  child of the button of the combo box ("Add (Get_Button (Combo), Pixmap)"),
 --  and updated it in the handler for this signal.
---  <c_version>gtk+extra 0.99.14</c_version>
+--  </description>
 
 with Gdk.Color;
 with Gtk.Extra.Combo_Box;

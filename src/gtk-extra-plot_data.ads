@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
 --                Copyright (C) 2000-2003 ACT-Europe                 --
@@ -37,7 +37,6 @@
 --  the value stored in the data set and (width, height) its allocated screen
 --  size.
 --  </description>
---  <c_version>gtk+extra 0.99.14<c_version>
 
 with Glib; use Glib;
 with Gtk.Widget;

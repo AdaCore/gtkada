@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
 --                Copyright (C) 2000-2003 ACT-Europe                 --
@@ -38,7 +38,6 @@
 --  Like any child of Gtk_Layout, this widget can have an almost unlimited
 --  size for its children, and provides scrolling.
 --  </description>
---  <c_version>gtk+extra 0.99.14</c_version>
 
 with Gdk;
 with Gdk.Pixmap;

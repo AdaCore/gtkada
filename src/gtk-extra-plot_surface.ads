@@ -30,8 +30,6 @@
 --  <description>
 --  A special kind of data set that stores three-dimensional data.
 --  </description>
---  <c_version>gtk+extra 0.99.14<c_version>
-
 
 with Gdk.Color;
 with Gtk;

@@ -31,7 +31,6 @@
 --  A special plot that draws its data in three dimension. The data associated
 --  with such plots should either be a function or a Gtk.Extra.Plot_Surface.
 --  </description>
---  <c_version>gtk+extra 0.99.14<c_version>
 
 with Gdk.Color;
 with Gdk.Drawable;

@@ -93,7 +93,6 @@
 --   - "ZapfDingbats",
 --
 --  </description>
---  <c_version>gtk+extra 0.99.14<c_version>
 
 with Glib;           use Glib;
 with Glib.Glist;
