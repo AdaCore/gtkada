@@ -114,7 +114,7 @@ package body Gdk.Event is
    ---------------------------
 
    procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose;
-                                  Window : in Gdk_Window'Class)
+                                  Window : in Gdk.Window.Gdk_Window'Class)
    is
       function Internal (Window : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_event_get_graphics_expose");
@@ -174,10 +174,10 @@ package body Gdk.Event is
    --  Get_Window  --
    ------------------
 
-   function Get_Window (Event  : in Gdk_Event) return Gdk_Window is
+   function Get_Window (Event  : in Gdk_Event) return Gdk.Window.Gdk_Window is
       function Internal (Event : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gdk_event_any_get_window");
-      Win : Gdk_Window;
+      Win : Gdk.Window.Gdk_Window;
    begin
       Set_Object (Win, Internal (Get_Object (Event)));
       return Win;
@@ -210,8 +210,10 @@ package body Gdk.Event is
    --  Get_State  --
    -----------------
 
-   function Get_State (Event : in Gdk_Event_Button) return Gdk_Modifier_Type is
-      function Internal (Event : in System.Address) return Gdk_Modifier_Type;
+   function Get_State (Event : in Gdk_Event_Button)
+                       return Gdk.Types.Gdk_Modifier_Type is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Modifier_Type;
       pragma Import (C, Internal, "ada_gdk_event_button_get_state");
    begin
       return Internal (Get_Object (Event));
@@ -387,8 +389,10 @@ package body Gdk.Event is
    --  Get_State  --
    -----------------
 
-   function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Type is
-      function Internal (Event : in System.Address) return Gdk_Modifier_Type;
+   function Get_State (Event : in Gdk_Event_Motion)
+                       return Gdk.Types.Gdk_Modifier_Type is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Modifier_Type;
       pragma Import (C, Internal, "ada_gdk_event_motion_get_state");
    begin
       return Internal (Get_Object (Event));
@@ -444,8 +448,10 @@ package body Gdk.Event is
    --  Get_State  --
    -----------------
 
-   function Get_State (Event : in Gdk_Event_Key) return Gdk_Modifier_Type is
-      function Internal (Event : in System.Address) return Gdk_Modifier_Type;
+   function Get_State (Event : in Gdk_Event_Key)
+                       return Gdk.Types.Gdk_Modifier_Type is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Modifier_Type;
       pragma Import (C, Internal, "ada_gdk_event_key_get_state");
    begin
       return Internal (Get_Object (Event));
@@ -455,8 +461,10 @@ package body Gdk.Event is
    --  Get_Key_Val  --
    -------------------
 
-   function Get_Key_Val (Event : in Gdk_Event_Key) return Gdk_Key_Type is
-      function Internal (Event : in System.Address) return Gdk_Key_Type;
+   function Get_Key_Val (Event : in Gdk_Event_Key)
+                         return Gdk.Types.Gdk_Key_Type is
+      function Internal (Event : in System.Address)
+                         return Gdk.Types.Gdk_Key_Type;
       pragma Import (C, Internal, "ada_gdk_event_key_get_key_val");
    begin
       return Internal (Get_Object (Event));

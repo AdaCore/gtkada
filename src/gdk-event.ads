@@ -28,8 +28,8 @@
 
 with Glib; use Glib;
 with Gdk.Rectangle;
-with Gdk.Types; use Gdk.Types;
-with Gdk.Window; use Gdk.Window;
+with Gdk.Types;
+with Gdk.Window;
 
 package Gdk.Event is
 
@@ -66,7 +66,8 @@ package Gdk.Event is
    procedure Set_Event_Type (Event      : in out Gdk_Event;
                              Event_Type : in     Types.Gdk_Event_Type);
 
-   function Get_Window (Event  : in     Gdk_Event) return Gdk_Window;
+   function Get_Window (Event  : in     Gdk_Event)
+                        return Gdk.Window.Gdk_Window;
 
    procedure Set_Window (Event  : in out Gdk_Event;
                          Window : in     Gdk.Window.Gdk_Window'Class);
@@ -83,17 +84,19 @@ package Gdk.Event is
    ---------------------
    --  Gdk_Event_Key  --
    ---------------------
- 
+
    type Gdk_Event_Key is new Gdk_Event with private;
- 
-   function Get_State (Event : in Gdk_Event_Key) return Gdk_Modifier_Type;
- 
-   function Get_Key_Val (Event : in Gdk_Event_Key) return Gdk_Key_Type;
- 
+
+   function Get_State (Event : in Gdk_Event_Key)
+                       return Gdk.Types.Gdk_Modifier_Type;
+
+   function Get_Key_Val (Event : in Gdk_Event_Key)
+                         return Gdk.Types.Gdk_Key_Type;
+
    function Get_Length  (Event : in Gdk_Event_Key) return Gint;
- 
+
    function Get_String  (Event : in Gdk_Event_Key) return String;
- 
+
    ---------------------
    --  Gdk_Event_Any  --
    ---------------------
@@ -132,8 +135,9 @@ package Gdk.Event is
 
    type Gdk_Event_Expose is new Gdk_Event with private;
 
-   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose;
-                                  Window : in Gdk_Window'Class);
+   procedure Get_Graphics_Expose
+     (Event  : out Gdk_Event_Expose;
+      Window : in Gdk.Window.Gdk_Window'Class);
 
    function Get_Area (Event : in     Gdk_Event_Expose)
                       return Rectangle.Gdk_Rectangle;
@@ -157,7 +161,9 @@ package Gdk.Event is
 
    function Get_Y (Event : in Gdk_Event_Button) return Gint16;
 
-   function Get_State (Event : in Gdk_Event_Button) return Gdk_Modifier_Type;
+   function Get_State (Event : in Gdk_Event_Button)
+                       return Gdk.Types.Gdk_Modifier_Type;
+
    function Get_Button (Event : in Gdk_Event_Button) return Guint32;
 
 
@@ -171,7 +177,8 @@ package Gdk.Event is
 
    function Get_Y (Event : in Gdk_Event_Motion) return Gint16;
 
-   function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Type;
+   function Get_State (Event : in Gdk_Event_Motion)
+                       return Gdk.Types.Gdk_Modifier_Type;
 
 private
 
