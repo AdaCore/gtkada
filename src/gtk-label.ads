@@ -238,6 +238,9 @@ end Gtk.Label;
 --  Set_Attributes
 --  Get_Attributes
 --  Set_Markup
+--      e.g/ gtk_label_set_markup (GTK_LABEL (label),
+--                  "<u>Animation loaded from a file</u>")
+--           for underlined label.
 --  Set_Use_Markup
 --  Get_Use_Markup
 --  Set_Use_Underline
