@@ -282,4 +282,22 @@ package body Gtk.Layout is
       return Internal (Get_Object (Widget));
    end Get_Bin_Window;
 
+   ------------
+   -- Freeze --
+   ------------
+
+   procedure Freeze (Layout : access Gtk_Layout_Record) is
+   begin
+      null;
+   end Freeze;
+
+   ----------
+   -- Thaw --
+   ----------
+
+   procedure Thaw (Layout : access Gtk_Layout_Record) is
+   begin
+      null;
+   end Thaw;
+
 end Gtk.Layout;

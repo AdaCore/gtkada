@@ -146,6 +146,16 @@ package Gtk.Layout is
    function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
    --  Get the height in pixels of the layout.
 
+   --  <doc_ignore>
+
+   procedure Freeze (Layout : access Gtk_Layout_Record);
+   --  Deprecated, only provided for compatibility.
+
+   procedure Thaw (Layout : access Gtk_Layout_Record);
+   --  Deprecated, only provided for compatibility.
+
+   --  </doc_ignore>
+
    ----------------
    -- Properties --
    ----------------
