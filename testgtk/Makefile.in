@@ -70,3 +70,4 @@ maintainer-clean: clean
 	$(CC) -c $(GNATFLAGS) $<
 
 force:
+
