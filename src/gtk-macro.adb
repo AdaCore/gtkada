@@ -237,6 +237,12 @@ package body Gtk.Macro is
 
    Global_Rec : Recorder;
 
+   type Event_Handler_Func is access procedure (Event : System.Address);
+   procedure Event_Handler_Set (Func : Event_Handler_Func);
+   --  Set our new event handler, called before dispatching events to GtkAda
+
+   procedure My_Event_Handler (Event : System.Address);
+
    function Get_Widget_From_Name (Name : String;
                                   List : Widget_List.Glist)
                                  return Gtk_Widget;
@@ -270,7 +276,7 @@ package body Gtk.Macro is
          Current_Item : Natural := 1;
       end record;
 
-   Record_Macro : Boolean := True;
+   Record_Macro : Boolean := False;
    --  True if we should record the events in the current macro
 
    Current_Macro : Macro;
@@ -298,7 +304,7 @@ package body Gtk.Macro is
    --  this one returns NULL instead of the class name if no name was
    --  set.
 
-   procedure Initialize_Macro;
+   procedure Initialize_Macro (Data : System.Address);
    --  Creates the small graphical interface for macros
 
    procedure Add_Item (M : in out Macro; Item : Macro_Item_Access);
@@ -314,14 +320,6 @@ package body Gtk.Macro is
                                     Event  : Gdk_Event_Crossing);
    procedure Save_Configure_Event (Widget : access Gtk_Widget_Record'Class;
                                      Event  : Gdk_Event_Configure);
-
-   function Record_Event
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Event  : in     Gdk.Event.Gdk_Event)
-     return Boolean;
-   --  Records a new event in the current macro.
-   --  This function is not thread safe. It also requires a macro to be
-   --  started.
 
    procedure Record_Macro_Cb (Button : access Gtk_Button_Record'Class);
    --  Starts recording a new macro, with the given name.
@@ -357,9 +355,6 @@ package body Gtk.Macro is
    procedure Stop_Macro_Cb (Rec : access Recorder_Record'Class);
    --  Stop recording the macro (if we were), and reinitialize it at the
    --  beginning so that Step_Macro_Cb starts from there.
-
-   procedure Create_Object (Obj : access Root_Type'Class);
-   --  Called every time an object is created
 
    function Event_Name_From_Type (Event_Type : Gdk.Types.Gdk_Event_Type)
                              return String;
@@ -460,6 +455,8 @@ package body Gtk.Macro is
    procedure Stop_Macro_Cb (Rec : access Recorder_Record'Class) is
    begin
       Set_Active (Rec.Record_Button, False);
+      Current_Macro.Current_Read := Current_Macro.Item_List;
+      Current_Macro.Current_Item := 1;
       Put_Line ("Current Step in the macro is: "
                 & Natural'Image (Current_Macro.Current_Item)
                 & " / "
@@ -485,10 +482,6 @@ package body Gtk.Macro is
    procedure Step_Macro_Cb (Button : access Gtk_Button_Record'Class) is
       pragma Warnings (Off, Button);
    begin
-      Put_Line ("Executing step "
-                & Natural'Image (Current_Macro.Current_Item)
-                & " / "
-                & Natural'Image (Current_Macro.Macro_Size));
       Next_Step (1, True);
    end Step_Macro_Cb;
 
@@ -527,12 +520,23 @@ package body Gtk.Macro is
             Put_Line (Current_Macro.Current_Read.Widget_Name & " not found");
          else
             E := Create_Event (Current_Macro.Current_Read.all, W);
-            if Verbose then
-               Put_Line ("Event_Type: " &
+            if Verbose or True then
+               Put_Line (Natural'Image (Current_Macro.Current_Item)
+                         & " / "
+                         & Natural'Image (Current_Macro.Macro_Size)
+                         & ":   Event_Type: " &
                          Gdk_Event_Type'Image (Get_Event_Type (E))
                          & " (on "
                          & Current_Macro.Current_Read.Widget_Name
-                         & ")");
+                         & "  ->  "
+                         & Get_Name (W)
+                         & "  depth="
+                         & Natural'Image
+                         (Current_Macro.Current_Read.Widget_Depth)
+                         & ") at"
+                         & Gint'Image (Gint (Get_X (E)))
+                         & " x "
+                         & Gint'Image (Gint (Get_Y (E))));
             end if;
             B := Boolean_Cb.Emit_By_Name
               (W, Event_Name_From_Type (Get_Event_Type (E)), E);
@@ -564,18 +568,70 @@ package body Gtk.Macro is
       end case;
    end Event_Name_From_Type;
 
-   -------------------
-   -- Create_Object --
-   -------------------
+   -----------------------
+   -- Event_Handler_Set --
+   -----------------------
 
-   procedure Create_Object (Obj : access Root_Type'Class) is
+   procedure Event_Handler_Set (Func : Event_Handler_Func) is
+      procedure Internal (Func : Event_Handler_Func;
+                          Data : System.Address;
+                          Destroy_Notify : System.Address);
+      pragma Import (C, Internal, "gdk_event_handler_set");
    begin
-      if Obj.all in Gtk_Widget_Record'Class then
-         Boolean_Cb.Connect
-           (Gtk_Widget (Obj), "event",
-            Boolean_Cb.To_Marshaller (Record_Event'Access));
+      Internal (Func, System.Null_Address, System.Null_Address);
+   end Event_Handler_Set;
+
+   ----------------------
+   -- My_Event_Handler --
+   ----------------------
+
+   procedure My_Event_Handler (Event : System.Address) is
+      E      : Gdk.Event.Gdk_Event;
+      Widget : Gtk.Widget.Gtk_Widget;
+   begin
+      Set_Object (E, Event);
+      if Record_Macro then
+         case Get_Event_Type (E) is
+
+            when Button_Press
+              |  Gdk_2button_Press
+              |  Gdk_3button_Press
+              |  Button_Release     =>
+
+               Widget := Gtk.Main.Get_Event_Widget (E);
+               Save_Button_Event (Widget, Gdk_Event_Button (E));
+
+            when Key_Press
+              |  Key_Release        =>
+
+               Widget := Gtk.Main.Get_Event_Widget (E);
+               Save_Key_Event (Widget, Gdk_Event_Key (E));
+
+            when Motion_Notify      =>
+
+               Widget := Gtk.Main.Get_Event_Widget (E);
+               Save_Motion_Event (Widget, Gdk_Event_Motion (E));
+
+            when Enter_Notify
+              |  Leave_Notify       =>
+
+               Widget := Gtk.Main.Get_Event_Widget (E);
+               Save_Crossing_Event (Widget, Gdk_Event_Crossing (E));
+
+            when Configure          =>
+
+               Widget := Gtk.Main.Get_Event_Widget (E);
+               Save_Configure_Event (Widget, Gdk_Event_Configure (E));
+
+            when others             =>
+
+               null;
+
+         end case;
       end if;
-   end Create_Object;
+
+      Gtk.Main.Do_Event (E);
+   end My_Event_Handler;
 
    ----------------
    -- Initialize --
@@ -704,7 +760,8 @@ package body Gtk.Macro is
    -- Initialize_Macro --
    ----------------------
 
-   procedure Initialize_Macro is
+   procedure Initialize_Macro (Data : System.Address) is
+      pragma Warnings (Off, Data);
       Win      : Gtk_Window;
       Vbox     : Gtk_Box;
    begin
@@ -728,6 +785,8 @@ package body Gtk.Macro is
 
       Show_All (Win);
       Set_Style (Global_Rec, Toolbar_Icons);
+
+      Event_Handler_Set (My_Event_Handler'Access);
    end Initialize_Macro;
 
    ------------------
@@ -790,6 +849,8 @@ package body Gtk.Macro is
    begin
       Save_To_Disk (File, Macro_Item (Item));
       Put_Line (File, "Mode:=" & Gdk_Crossing_Mode'Image (Item.Mode));
+      Put_Line (File, "State:=" & Gdk_Modifier_Type'Image (Item.State));
+      Put_Line (File, "Detail:=" & Gdk_Notify_Type'Image (Item.Detail));
    end Save_To_Disk;
 
    ---------------
@@ -859,7 +920,6 @@ package body Gtk.Macro is
             Item.Event_Type  := Gdk_Event_Type'Val (Typ);
             Load_From_Disk (File, Item.all);
             Add_Item (M, Item);
-            M.Macro_Size := M.Macro_Size + 1;
             Skip_Line (File);
          end;
       end loop;
@@ -905,6 +965,8 @@ package body Gtk.Macro is
    begin
       Load_From_Disk (File, Macro_Item (Item));
       Item.Mode := Gdk_Crossing_Mode'Value (Load_Line (File, "Mode"));
+      Item.State  := Gdk_Modifier_Type'Value (Load_Line (File, "State"));
+      Item.Detail := Gdk_Notify_Type'Value (Load_Line (File, "Detail"));
    end Load_From_Disk;
 
    --------------------------
@@ -959,6 +1021,7 @@ package body Gtk.Macro is
          return Gtk_Widget (Widget);
       end if;
 
+      --  Should not be required
       if Widget.all in Gtk_Container_Record'Class then
          List := Children (Gtk_Container (Widget));
          Current := Widget_List.First (List);
@@ -1006,6 +1069,17 @@ package body Gtk.Macro is
       while Parent /= null
         and then Get_Real_Name (Get_Object (Parent)) = System.Null_Address
       loop
+         Put_Line ("Find_Name_Parent: Going up (current_name = "
+                   & Get_Name (Parent)
+                   & "  Allocation_X="
+                   & Gint'Image (Get_Allocation_X (Parent))
+                   & "  Allocation_Y="
+                   & Gint'Image (Get_Allocation_Y (Parent)));
+
+         --  ERROR in gtk+: gtkhbutton_box sets the allocation_y for its
+         --  children to the same value as the parent....  NEED TO DO
+         --  SOMETHING FOR THAT.
+
          X      := X + Get_Allocation_X (Parent);
          Y      := Y + Get_Allocation_Y (Parent);
          Parent := Get_Parent (Parent);
@@ -1060,6 +1134,11 @@ package body Gtk.Macro is
       Set_Mode (E, Item.Mode);
       Set_Subwindow (E, Get_Window (Widget));
       Gdk.Window.Ref (Get_Window (Widget));
+      Set_X (E, Gdouble (Item.X));
+      Set_Y (E, Gdouble (Item.Y));
+      Set_State (E, Item.State);
+      Set_Focus (E, Item.Focus);
+      Set_Detail (E, Item.Detail);
       return E;
    end Create_Event;
 
@@ -1080,6 +1159,7 @@ package body Gtk.Macro is
       M.Last_Item    := Item;
       M.Current_Read := M.Item_List;
       M.Current_Item := 1;
+      M.Macro_Size   := M.Macro_Size + 1;
    end Add_Item;
 
    -----------------------
@@ -1094,11 +1174,17 @@ package body Gtk.Macro is
       Y : Gint := Gint (Get_Y (Event));
       In_W : Natural;
    begin
+      Put_Line ("button at "
+                & Gint'Image (X) & " / "
+                & Gint'Image (Y));
       Find_Named_Parent (Widget => Widget,
                          Parent => W,
                          X      => X,
                          Y      => Y,
                          Depth  => In_W);
+      Put_Line ("   final at "
+                & Gint'Image (X) & " / "
+                & Gint'Image (Y));
 
       if W /= null then
          declare
@@ -1153,11 +1239,17 @@ package body Gtk.Macro is
       Y    : Gint := Gint (Get_Y (Event));
       In_W : Natural;
    begin
+      Put_Line ("Crossing at "
+                & Gint'Image (X) & " / "
+                & Gint'Image (Y));
       Find_Named_Parent (Widget => Widget,
                          Parent => W,
                          X      => X,
                          Y      => Y,
                          Depth  => In_W);
+      Put_Line ("   Final at "
+                & Gint'Image (X) & " / "
+                & Gint'Image (Y));
 
       if W /= null then
          declare
@@ -1172,6 +1264,9 @@ package body Gtk.Macro is
             Item.Mode          := Get_Mode (Event);
             Item.X             := X;
             Item.Y             := Y;
+            Item.Focus         := Get_Focus (Event);
+            Item.Detail        := Get_Detail (Event);
+            Item.State         := Get_State (Event);
             Add_Item (Current_Macro, Macro_Item_Access (Item));
          end;
       end if;
@@ -1188,63 +1283,10 @@ package body Gtk.Macro is
       null;
    end Save_Configure_Event;
 
-   ------------------
-   -- Record_Event --
-   ------------------
-
-   function Record_Event
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Event  : in     Gdk.Event.Gdk_Event)
-     return Boolean
-   is
-   begin
-      if not Record_Macro then
-         --  The event should not be considered as Saved
-         return False;
-      end if;
-
-      case Get_Event_Type (Event) is
-
-         when Button_Press
-           |  Gdk_2button_Press
-           |  Gdk_3button_Press
-           |  Button_Release     =>
-
-            Save_Button_Event (Widget, Gdk_Event_Button (Event));
-
-         when Key_Press
-           |  Key_Release        =>
-
-            Save_Key_Event (Widget, Gdk_Event_Key (Event));
-
-         when Motion_Notify      =>
-
-            Save_Motion_Event (Widget, Gdk_Event_Motion (Event));
-
-         when Enter_Notify
-           |  Leave_Notify       =>
-
-            Save_Crossing_Event (Widget, Gdk_Event_Crossing (Event));
-
-         when Configure          =>
-
-            Save_Configure_Event (Widget, Gdk_Event_Configure (Event));
-
-         when others             =>
-
-            null;
-
-      end case;
-
-      --  The event should not be considered as Handled
-      return False;
-   end Record_Event;
-
    function Parse_Cmd_Line (Switch : String) return Gint;
    pragma Import (C, Parse_Cmd_Line, "ada_gtk_parse_cmd_line");
 begin
    if Parse_Cmd_Line ("--gtkada_macro" & ASCII.NUL) /= 0 then
-      Gtk.Main.Main_Hook            := Initialize_Macro'Access;
-      Gtk.Initialize_User_Data_Hook := Create_Object'Access;
+      Gtk.Main.Init_Add (Initialize_Macro'Access, System.Null_Address);
    end if;
 end Gtk.Macro;

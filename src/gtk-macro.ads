@@ -66,6 +66,9 @@ private
    type Macro_Item_Crossing is new Macro_Item with
       record
          Mode   : Gdk.Types.Gdk_Crossing_Mode;
+         State  : Gdk.Types.Gdk_Modifier_Type;
+         Detail : Gdk.Types.Gdk_Notify_Type;
+         Focus  : Boolean;
       end record;
    type Macro_Item_Crossing_Access is
      access all Macro_Item_Crossing'Class;
