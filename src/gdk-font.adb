@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -108,6 +108,37 @@ package body Gdk.Font is
    begin
       return Internal (Font_Desc);
    end From_Description;
+
+   ----------------
+   -- Get_Ascent --
+   ----------------
+
+   function Get_Ascent (Font : Gdk_Font) return Gint is
+      function Internal (Font : Gdk_Font) return Gint;
+      pragma Import (C, Internal, "ada_gdk_font_get_ascent");
+
+   begin
+      if Font = null then
+         raise Constraint_Error;
+      else
+         return Internal (Font);
+      end if;
+   end Get_Ascent;
+
+   -----------------
+   -- Get_Descent --
+   -----------------
+
+   function Get_Descent (Font : Gdk_Font) return Gint is
+      function Internal (Font : Gdk_Font) return Gint;
+      pragma Import (C, Internal, "ada_gdk_font_get_descent");
+   begin
+      if Font = null then
+         raise Constraint_Error;
+      else
+         return Internal (Font);
+      end if;
+   end Get_Descent;
 
    ----------
    -- Load --
