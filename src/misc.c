@@ -164,24 +164,34 @@ ada_gtk_parse_cmd_line (int *gnat_argc, char **gnat_argv, char* macro_switch)
  ** GSignal                              **
  ******************************************/
 
-int c_signal_query_size () {
+int
+c_signal_query_size ()
+{
   return sizeof (GSignalQuery);
 }
 
-const gchar* ada_gsignal_query_signal_name (GSignalQuery* query) {
+const gchar*
+ada_gsignal_query_signal_name (GSignalQuery* query)
+{
   return query->signal_name;
 }
 
-const GType* ada_gsignal_query_params (GSignalQuery* query, guint* n_params) {
+const GType*
+ada_gsignal_query_params (GSignalQuery* query, guint* n_params)
+{
   *n_params = query->n_params;
   return query->param_types;
 }
 
-guint ada_gsignal_query_id (GSignalQuery* query) {
+guint
+ada_gsignal_query_id (GSignalQuery* query)
+{
   return query->signal_id;
 }
 
-GType ada_gsignal_query_return_type (GSignalQuery* query) {
+GType
+ada_gsignal_query_return_type (GSignalQuery* query)
+{
   return query->return_type;
 }
 
@@ -214,11 +224,14 @@ GType ada_gsignal_query_return_type (GSignalQuery* query) {
 
  *********************************************************************/
 
-GType ada_type_from_class (gpointer klass) {
+GType
+ada_type_from_class (gpointer klass)
+{
   return G_TYPE_FROM_CLASS (klass);
 }
 
-void* ada_get_nth_virtual_function (GObjectClass* class, gint num)
+void *
+ada_get_nth_virtual_function (GObjectClass* class, gint num)
 {
   GTypeQuery query;
   gpointer * virtual_functions;
@@ -417,7 +430,8 @@ ada_rgb_cmap_set (GdkRgbCmap* cmap, gint index, guint32 value)
  ******************************************************/
 
 GdkWindow*
-ada_gtk_socket_get_plug_window (GtkSocket* socket) {
+ada_gtk_socket_get_plug_window (GtkSocket* socket)
+{
   return socket->plug_window;
 }
 
@@ -426,47 +440,56 @@ ada_gtk_socket_get_plug_window (GtkSocket* socket) {
  *****************************************************/
 
 GdkAtom
-ada_gtk_dnd_get_selection (GtkSelectionData* selection) {
+ada_gtk_dnd_get_selection (GtkSelectionData* selection)
+{
   return selection->selection;
 }
 
 GdkAtom
-ada_gtk_dnd_get_target (GtkSelectionData* selection) {
+ada_gtk_dnd_get_target (GtkSelectionData* selection)
+{
   return selection->target;
 }
 
 GdkAtom
-ada_gtk_dnd_get_type (GtkSelectionData* selection) {
+ada_gtk_dnd_get_type (GtkSelectionData* selection)
+{
   return selection->type;
 }
 
 gint
-ada_gtk_dnd_get_format (GtkSelectionData* selection) {
+ada_gtk_dnd_get_format (GtkSelectionData* selection)
+{
   return selection->format;
 }
 
 guchar*
-ada_gtk_dnd_get_data (GtkSelectionData* selection) {
+ada_gtk_dnd_get_data (GtkSelectionData* selection)
+{
   return selection->data;
 }
 
 gint
-ada_gtk_dnd_get_length (GtkSelectionData* selection) {
+ada_gtk_dnd_get_length (GtkSelectionData* selection)
+{
   return selection->length;
 }
 
 GdkDragAction
-ada_gtk_dnd_context_get_actions (GdkDragContext* context) {
+ada_gtk_dnd_context_get_actions (GdkDragContext* context)
+{
   return context->actions;
 }
 
 GdkDragAction
-ada_gtk_dnd_context_get_suggested_action (GdkDragContext* context) {
+ada_gtk_dnd_context_get_suggested_action (GdkDragContext* context)
+{
   return context->suggested_action;
 }
 
 GdkDragAction
-ada_gtk_dnd_context_get_action (GdkDragContext* context) {
+ada_gtk_dnd_context_get_action (GdkDragContext* context)
+{
   return context->action;
 }
 
@@ -605,7 +628,9 @@ ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
  * Gtk_Container
  *********************/
 
-GtkWidget* ada_gtk_container_get_focus_child (GtkContainer* container) {
+GtkWidget *
+ada_gtk_container_get_focus_child (GtkContainer* container)
+{
   return container->focus_child;
 }
 
@@ -614,12 +639,14 @@ GtkWidget* ada_gtk_container_get_focus_child (GtkContainer* container) {
  *********************/
 
 gint
-ada_gdk_font_get_ascent (GdkFont* font) {
+ada_gdk_font_get_ascent (GdkFont* font)
+{
   return font->ascent;
 }
 
 gint
-ada_gdk_font_get_descent (GdkFont* font) {
+ada_gdk_font_get_descent (GdkFont* font)
+{
   return font->descent;
 }
 
@@ -650,32 +677,38 @@ ada_gtk_font_selection_dialog_get_apply (GtkFontSelectionDialog* fsd)
  ********************/
 
 gboolean
-ada_paned_get_child1_resize (GtkPaned* widget) {
+ada_paned_get_child1_resize (GtkPaned* widget)
+{
   return widget->child1_resize;
 }
 
 gboolean
-ada_paned_get_child2_resize (GtkPaned* widget) {
+ada_paned_get_child2_resize (GtkPaned* widget)
+{
   return widget->child2_resize;
 }
 
 gboolean
-ada_paned_get_child1_shrink (GtkPaned* widget) {
+ada_paned_get_child1_shrink (GtkPaned* widget)
+{
   return widget->child1_shrink;
 }
 
 gboolean
-ada_paned_get_child2_shrink (GtkPaned* widget) {
+ada_paned_get_child2_shrink (GtkPaned* widget)
+{
   return widget->child2_shrink;
 }
 
 GtkWidget*
-ada_paned_get_child1 (GtkPaned* widget) {
+ada_paned_get_child1 (GtkPaned* widget)
+{
   return widget->child1;
 }
 
 GtkWidget*
-ada_paned_get_child2 (GtkPaned* widget) {
+ada_paned_get_child2 (GtkPaned* widget)
+{
   return widget->child2;
 }
 
@@ -684,12 +717,14 @@ ada_paned_get_child2 (GtkPaned* widget) {
  ********************/
 
 GtkAdjustment*
-ada_progress_get_adjustment (GtkProgress* widget) {
+ada_progress_get_adjustment (GtkProgress* widget)
+{
   return widget->adjustment;
 }
 
 guint
-ada_progress_get_activity_mode (GtkProgress* widget) {
+ada_progress_get_activity_mode (GtkProgress* widget)
+{
   return widget->activity_mode;
 }
 
@@ -698,7 +733,8 @@ ada_progress_get_activity_mode (GtkProgress* widget) {
  ********************/
 
 guint
-ada_gdk_point_size () {
+ada_gdk_point_size ()
+{
   return sizeof (GdkPoint);
 }
 
@@ -830,12 +866,14 @@ extern const guint32 ada_gdk_invalid_guint32_value;
 extern const gulong  ada_gdk_invalid_gulong_value;
 #endif
 
-GdkAtom ada_make_atom (gulong num)
+GdkAtom
+ada_make_atom (gulong num)
 {
   return _GDK_MAKE_ATOM (num);
 }
 
-gdouble ada_gdk_event_get_x (GdkEvent * event)
+gdouble
+ada_gdk_event_get_x (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gdouble_value;
@@ -862,7 +900,8 @@ gdouble ada_gdk_event_get_x (GdkEvent * event)
   return ada_gdk_invalid_gdouble_value;
 }
 
-gdouble ada_gdk_event_get_y (GdkEvent * event)
+gdouble
+ada_gdk_event_get_y (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gdouble_value;
@@ -889,7 +928,8 @@ gdouble ada_gdk_event_get_y (GdkEvent * event)
   return ada_gdk_invalid_gdouble_value;
 }
 
-gint ada_gdk_event_get_width (GdkEvent * event)
+gint
+ada_gdk_event_get_width (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -904,7 +944,8 @@ gint ada_gdk_event_get_width (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gint ada_gdk_event_get_height (GdkEvent * event)
+gint
+ada_gdk_event_get_height (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -919,7 +960,8 @@ gint ada_gdk_event_get_height (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gdouble ada_gdk_event_get_x_root (GdkEvent * event)
+gdouble
+ada_gdk_event_get_x_root (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gdouble_value;
@@ -944,7 +986,8 @@ gdouble ada_gdk_event_get_x_root (GdkEvent * event)
   return ada_gdk_invalid_gdouble_value;
 }
 
-gdouble ada_gdk_event_get_y_root (GdkEvent * event)
+gdouble
+ada_gdk_event_get_y_root (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gdouble_value;
@@ -969,7 +1012,8 @@ gdouble ada_gdk_event_get_y_root (GdkEvent * event)
   return ada_gdk_invalid_gdouble_value;
 }
 
-guint ada_gdk_event_get_button (GdkEvent * event)
+guint
+ada_gdk_event_get_button (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_guint_value;
@@ -987,7 +1031,8 @@ guint ada_gdk_event_get_button (GdkEvent * event)
   return ada_gdk_invalid_guint_value;
 }
 
-guint ada_gdk_event_get_state (GdkEvent * event)
+guint
+ada_gdk_event_get_state (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_guint_value;
@@ -1017,7 +1062,8 @@ guint ada_gdk_event_get_state (GdkEvent * event)
   return ada_gdk_invalid_guint_value;
 }
 
-GdkWindow* ada_gdk_event_get_subwindow (GdkEvent * event)
+GdkWindow *
+ada_gdk_event_get_subwindow (GdkEvent * event)
 {
   if (!event)
     return NULL;
@@ -1033,7 +1079,8 @@ GdkWindow* ada_gdk_event_get_subwindow (GdkEvent * event)
   return NULL;
 }
 
-gint ada_gdk_event_get_mode (GdkEvent * event)
+gint
+ada_gdk_event_get_mode (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1049,7 +1096,8 @@ gint ada_gdk_event_get_mode (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gint ada_gdk_event_get_detail (GdkEvent * event)
+gint
+ada_gdk_event_get_detail (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1065,7 +1113,8 @@ gint ada_gdk_event_get_detail (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gint ada_gdk_event_get_focus (GdkEvent * event)
+gint
+ada_gdk_event_get_focus (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1081,7 +1130,8 @@ gint ada_gdk_event_get_focus (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gint ada_gdk_event_get_direction (GdkEvent * event)
+gint
+ada_gdk_event_get_direction (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1096,7 +1146,8 @@ gint ada_gdk_event_get_direction (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-GdkDevice *ada_gdk_event_get_device_id (GdkEvent * event)
+GdkDevice *
+ada_gdk_event_get_device_id (GdkEvent * event)
 {
   if (!event)
     return NULL;
@@ -1139,7 +1190,8 @@ ada_gdk_event_get_region (GdkEvent *event)
     return NULL;
 }
 
-gint ada_gdk_event_get_count (GdkEvent * event)
+gint
+ada_gdk_event_get_count (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1149,7 +1201,8 @@ gint ada_gdk_event_get_count (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gint ada_gdk_event_get_in (GdkEvent * event)
+gint
+ada_gdk_event_get_in (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1159,7 +1212,8 @@ gint ada_gdk_event_get_in (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gint ada_gdk_event_get_is_hint (GdkEvent * event)
+gint
+ada_gdk_event_get_is_hint (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1169,7 +1223,8 @@ gint ada_gdk_event_get_is_hint (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gint ada_gdk_event_get_key_val (GdkEvent * event)
+gint
+ada_gdk_event_get_key_val (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1185,7 +1240,8 @@ gint ada_gdk_event_get_key_val (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-guint16 ada_gdk_event_get_hardware_keycode (GdkEvent * event)
+guint16
+ada_gdk_event_get_hardware_keycode (GdkEvent * event)
 {
   if (!event)
     return 0;
@@ -1201,7 +1257,8 @@ guint16 ada_gdk_event_get_hardware_keycode (GdkEvent * event)
   return 0;
 }
 
-guint8 ada_gdk_event_get_group (GdkEvent * event)
+guint8
+ada_gdk_event_get_group (GdkEvent * event)
 {
   if (!event)
     return 0;
@@ -1217,7 +1274,8 @@ guint8 ada_gdk_event_get_group (GdkEvent * event)
   return 0;
 }
 
-char* ada_gdk_event_get_string (GdkEvent * event)
+char *
+ada_gdk_event_get_string (GdkEvent * event)
 {
   if (!event)
     return NULL;
@@ -1226,14 +1284,16 @@ char* ada_gdk_event_get_string (GdkEvent * event)
   return event->key.string;
 }
 
-GdkAtom ada_gdk_event_get_atom (GdkEvent * event)
+GdkAtom
+ada_gdk_event_get_atom (GdkEvent * event)
 {
   if (event->type == GDK_PROPERTY_NOTIFY)
     return event->property.atom;
   return NULL;
 }
 
-guint ada_gdk_event_get_property_state (GdkEvent * event)
+guint
+ada_gdk_event_get_property_state (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_guint_value;
@@ -1243,7 +1303,8 @@ guint ada_gdk_event_get_property_state (GdkEvent * event)
   return ada_gdk_invalid_guint_value;
 }
 
-gint ada_gdk_event_get_visibility_state (GdkEvent * event)
+gint
+ada_gdk_event_get_visibility_state (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_gint_value;
@@ -1253,7 +1314,8 @@ gint ada_gdk_event_get_visibility_state (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-GdkAtom ada_gdk_event_get_selection (GdkEvent * event)
+GdkAtom
+ada_gdk_event_get_selection (GdkEvent * event)
 {
   if (!event)
     return NULL;
@@ -1263,7 +1325,8 @@ GdkAtom ada_gdk_event_get_selection (GdkEvent * event)
   return NULL;
 }
 
-GdkAtom ada_gdk_event_get_target (GdkEvent * event)
+GdkAtom
+ada_gdk_event_get_target (GdkEvent * event)
 {
   if (!event)
     return NULL;
@@ -1273,7 +1336,8 @@ GdkAtom ada_gdk_event_get_target (GdkEvent * event)
   return NULL;
 }
 
-GdkAtom ada_gdk_event_get_property (GdkEvent * event)
+GdkAtom
+ada_gdk_event_get_property (GdkEvent * event)
 {
   if (!event)
     return NULL;
@@ -1283,7 +1347,8 @@ GdkAtom ada_gdk_event_get_property (GdkEvent * event)
   return NULL;
 }
 
-guint32 ada_gdk_event_get_requestor (GdkEvent * event)
+guint32
+ada_gdk_event_get_requestor (GdkEvent * event)
 {
   if (!event)
     return ada_gdk_invalid_guint32_value;
@@ -1293,7 +1358,8 @@ guint32 ada_gdk_event_get_requestor (GdkEvent * event)
   return ada_gdk_invalid_guint32_value;
 }
 
-GdkAtom ada_gdk_event_get_message_type (GdkEvent * event)
+GdkAtom
+ada_gdk_event_get_message_type (GdkEvent * event)
 {
   if (!event)
     return NULL;
@@ -1303,7 +1369,8 @@ GdkAtom ada_gdk_event_get_message_type (GdkEvent * event)
   return NULL;
 }
 
-GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
+GdkEvent *
+ada_gdk_event_create (gint type, GdkWindow* win)
 {
   GdkEvent* event;
 
@@ -1317,42 +1384,50 @@ GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
   return event;
 }
 
-short * ada_gdk_event_client_get_s (GdkEventClient * event)
+short *
+ada_gdk_event_client_get_s (GdkEventClient * event)
 {
   return event->data.s;
 }
 
-char * ada_gdk_event_client_get_b (GdkEventClient * event)
+char *
+ada_gdk_event_client_get_b (GdkEventClient * event)
 {
   return event->data.b;
 }
 
-long * ada_gdk_event_client_get_l (GdkEventClient * event)
+long *
+ada_gdk_event_client_get_l (GdkEventClient * event)
 {
   return event->data.l;
 }
 
-gushort ada_gdk_event_client_get_data_format (GdkEventClient * event)
+gushort
+ada_gdk_event_client_get_data_format (GdkEventClient * event)
 {
   return event->data_format;
 }
 
-GdkEventType ada_gdk_event_get_type (GdkEventAny * event)
+GdkEventType
+ada_gdk_event_get_type (GdkEventAny * event)
 {
   return event->type;
 }
 
-gint8 ada_gdk_event_get_send_event (GdkEventAny * event)
+gint8
+ada_gdk_event_get_send_event (GdkEventAny * event)
 {
   return event->send_event;
 }
 
-GdkWindow * ada_gdk_event_get_window (GdkEventAny * event)
+GdkWindow *
+ada_gdk_event_get_window (GdkEventAny * event)
 {
   return event->window;
 }
 
-void ada_gdk_event_set_window (GdkEventAny * event, GdkWindow * window)
+void
+ada_gdk_event_set_window (GdkEventAny * event, GdkWindow * window)
 {
   event->window = window;
 }
@@ -1361,7 +1436,8 @@ void ada_gdk_event_set_window (GdkEventAny * event, GdkWindow * window)
  **  Setting the fields of events
  *******************************************************************/
 
-gint ada_gdk_event_set_x (GdkEvent * event, gdouble x)
+gint
+ada_gdk_event_set_x (GdkEvent * event, gdouble x)
 {
   switch (event->type)
     {
@@ -1390,7 +1466,8 @@ gint ada_gdk_event_set_x (GdkEvent * event, gdouble x)
   return 1;
 }
 
-gint ada_gdk_event_set_y (GdkEvent * event, gdouble y)
+gint
+ada_gdk_event_set_y (GdkEvent * event, gdouble y)
 {
   switch (event->type)
     {
@@ -1419,7 +1496,8 @@ gint ada_gdk_event_set_y (GdkEvent * event, gdouble y)
   return 1;
 }
 
-gint ada_gdk_event_set_xroot (GdkEvent * event, gdouble xroot)
+gint
+ada_gdk_event_set_xroot (GdkEvent * event, gdouble xroot)
 {
   switch (event->type)
     {
@@ -1445,7 +1523,8 @@ gint ada_gdk_event_set_xroot (GdkEvent * event, gdouble xroot)
   return 1;
 }
 
-gint ada_gdk_event_set_yroot (GdkEvent * event, gdouble yroot)
+gint
+ada_gdk_event_set_yroot (GdkEvent * event, gdouble yroot)
 {
   switch (event->type)
     {
@@ -1471,7 +1550,8 @@ gint ada_gdk_event_set_yroot (GdkEvent * event, gdouble yroot)
   return 1;
 }
 
-gint ada_gdk_event_set_time (GdkEvent * event, guint32 time)
+gint
+ada_gdk_event_set_time (GdkEvent * event, guint32 time)
 {
   switch (event->type)
     {
@@ -1519,7 +1599,8 @@ gint ada_gdk_event_set_time (GdkEvent * event, guint32 time)
   return 1;
 }
 
-gint ada_gdk_event_set_width (GdkEvent * event, gint width)
+gint
+ada_gdk_event_set_width (GdkEvent * event, gint width)
 {
   switch (event->type)
     {
@@ -1532,7 +1613,8 @@ gint ada_gdk_event_set_width (GdkEvent * event, gint width)
   return 1;
 }
 
-gint ada_gdk_event_set_height (GdkEvent * event, gint height)
+gint
+ada_gdk_event_set_height (GdkEvent * event, gint height)
 {
   switch (event->type)
     {
@@ -1545,7 +1627,8 @@ gint ada_gdk_event_set_height (GdkEvent * event, gint height)
   return 1;
 }
 
-gint ada_gdk_event_set_button (GdkEvent * event, guint button)
+gint
+ada_gdk_event_set_button (GdkEvent * event, guint button)
 {
   switch (event->type)
     {
@@ -1561,7 +1644,8 @@ gint ada_gdk_event_set_button (GdkEvent * event, guint button)
   return 1;
 }
 
-gint ada_gdk_event_set_state (GdkEvent * event, guint state)
+gint
+ada_gdk_event_set_state (GdkEvent * event, guint state)
 {
   switch (event->type)
     {
@@ -1594,7 +1678,8 @@ gint ada_gdk_event_set_state (GdkEvent * event, guint state)
   return 1;
 }
 
-gint ada_gdk_event_set_subwindow (GdkEvent * event, GdkWindow* win)
+gint
+ada_gdk_event_set_subwindow (GdkEvent * event, GdkWindow* win)
 {
   switch (event->type)
     {
@@ -1608,7 +1693,8 @@ gint ada_gdk_event_set_subwindow (GdkEvent * event, GdkWindow* win)
   return 1;
 }
 
-gint ada_gdk_event_set_string (GdkEvent * event, char* str)
+gint
+ada_gdk_event_set_string (GdkEvent * event, char* str)
 {
   switch (event->type)
     {
@@ -1623,7 +1709,8 @@ gint ada_gdk_event_set_string (GdkEvent * event, char* str)
   return 1;
 }
 
-gint ada_gdk_event_set_mode (GdkEvent * event, gint mode)
+gint
+ada_gdk_event_set_mode (GdkEvent * event, gint mode)
 {
   switch (event->type)
     {
@@ -1637,7 +1724,8 @@ gint ada_gdk_event_set_mode (GdkEvent * event, gint mode)
   return 1;
 }
 
-gint ada_gdk_event_set_detail (GdkEvent * event, gint detail)
+gint
+ada_gdk_event_set_detail (GdkEvent * event, gint detail)
 {
   switch (event->type)
     {
@@ -1651,8 +1739,8 @@ gint ada_gdk_event_set_detail (GdkEvent * event, gint detail)
   return 1;
 }
 
-gint ada_gdk_event_set_direction
-  (GdkEvent * event, GdkScrollDirection direction)
+gint
+ada_gdk_event_set_direction (GdkEvent * event, GdkScrollDirection direction)
 {
   switch (event->type)
     {
@@ -1665,7 +1753,8 @@ gint ada_gdk_event_set_direction
   return 1;
 }
 
-gint ada_gdk_event_set_focus (GdkEvent * event, gint focus)
+gint
+ada_gdk_event_set_focus (GdkEvent * event, gint focus)
 {
   switch (event->type)
     {
@@ -1679,7 +1768,8 @@ gint ada_gdk_event_set_focus (GdkEvent * event, gint focus)
   return 1;
 }
 
-gint ada_gdk_event_set_area (GdkEvent * event, GdkRectangle area)
+gint
+ada_gdk_event_set_area (GdkEvent * event, GdkRectangle area)
 {
   if (event->type == GDK_EXPOSE)
     event->expose.area = area;
@@ -1688,7 +1778,8 @@ gint ada_gdk_event_set_area (GdkEvent * event, GdkRectangle area)
   return 1;
 }
 
-gint ada_gdk_event_set_in (GdkEvent * event, gint in)
+gint
+ada_gdk_event_set_in (GdkEvent * event, gint in)
 {
   if (event->type == GDK_FOCUS_CHANGE)
     {
@@ -1698,7 +1789,8 @@ gint ada_gdk_event_set_in (GdkEvent * event, gint in)
   return 0;
 }
 
-gint ada_gdk_event_set_is_hint (GdkEvent * event, gint is_hint)
+gint
+ada_gdk_event_set_is_hint (GdkEvent * event, gint is_hint)
 {
   if (event->type == GDK_MOTION_NOTIFY)
     {
@@ -1708,7 +1800,8 @@ gint ada_gdk_event_set_is_hint (GdkEvent * event, gint is_hint)
   return 0;
 }
 
-gint ada_gdk_event_set_key_val (GdkEvent * event, gint keyval)
+gint
+ada_gdk_event_set_key_val (GdkEvent * event, gint keyval)
 {
   switch (event->type)
     {
@@ -1722,7 +1815,8 @@ gint ada_gdk_event_set_key_val (GdkEvent * event, gint keyval)
   return 1;
 }
 
-gint ada_gdk_event_set_group (GdkEvent * event, guint8 group)
+gint
+ada_gdk_event_set_group (GdkEvent * event, guint8 group)
 {
   switch (event->type)
     {
@@ -1736,7 +1830,8 @@ gint ada_gdk_event_set_group (GdkEvent * event, guint8 group)
   return 1;
 }
 
-gint ada_gdk_event_set_hardware_keycode (GdkEvent * event, guint16 keycode)
+gint
+ada_gdk_event_set_hardware_keycode (GdkEvent * event, guint16 keycode)
 {
   switch (event->type)
     {
@@ -1750,7 +1845,8 @@ gint ada_gdk_event_set_hardware_keycode (GdkEvent * event, guint16 keycode)
   return 1;
 }
 
-gint ada_gdk_event_set_atom (GdkEvent * event, GdkAtom atom)
+gint
+ada_gdk_event_set_atom (GdkEvent * event, GdkAtom atom)
 {
   if (event->type == GDK_PROPERTY_NOTIFY)
     {
@@ -1760,7 +1856,8 @@ gint ada_gdk_event_set_atom (GdkEvent * event, GdkAtom atom)
   return 0;
 }
 
-gint ada_gdk_event_set_property_state (GdkEvent * event, guint state)
+gint
+ada_gdk_event_set_property_state (GdkEvent * event, guint state)
 {
   if (event->type == GDK_PROPERTY_NOTIFY)
     {
@@ -1770,7 +1867,8 @@ gint ada_gdk_event_set_property_state (GdkEvent * event, guint state)
   return 0;
 }
 
-gint ada_gdk_event_set_visibility_state (GdkEvent * event, gint state)
+gint
+ada_gdk_event_set_visibility_state (GdkEvent * event, gint state)
 {
   if (event->type == GDK_VISIBILITY_NOTIFY)
     {
@@ -1780,7 +1878,8 @@ gint ada_gdk_event_set_visibility_state (GdkEvent * event, gint state)
   return 0;
 }
 
-gint ada_gdk_event_set_selection (GdkEvent * event, GdkAtom selection)
+gint
+ada_gdk_event_set_selection (GdkEvent * event, GdkAtom selection)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     {
@@ -1790,7 +1889,8 @@ gint ada_gdk_event_set_selection (GdkEvent * event, GdkAtom selection)
   return 0;
 }
 
-gint ada_gdk_event_set_target (GdkEvent * event, GdkAtom target)
+gint
+ada_gdk_event_set_target (GdkEvent * event, GdkAtom target)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     {
@@ -1800,7 +1900,8 @@ gint ada_gdk_event_set_target (GdkEvent * event, GdkAtom target)
   return 0;
 }
 
-gint ada_gdk_event_set_property (GdkEvent * event, GdkAtom property)
+gint
+ada_gdk_event_set_property (GdkEvent * event, GdkAtom property)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     {
@@ -1810,7 +1911,8 @@ gint ada_gdk_event_set_property (GdkEvent * event, GdkAtom property)
   return 0;
 }
 
-gint ada_gdk_event_set_requestor (GdkEvent * event, guint32 requestor)
+gint
+ada_gdk_event_set_requestor (GdkEvent * event, guint32 requestor)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     {
@@ -1820,7 +1922,8 @@ gint ada_gdk_event_set_requestor (GdkEvent * event, guint32 requestor)
   return 0;
 }
 
-gint ada_gdk_event_set_message_type (GdkEvent * event, GdkAtom type)
+gint
+ada_gdk_event_set_message_type (GdkEvent * event, GdkAtom type)
 {
   if (event->type == GDK_CLIENT_EVENT)
     {
@@ -1904,12 +2007,14 @@ ada_adjustment_set_page_size (GtkAdjustment * adjustment,
  */
 
 void
-ada_style_set_font_description (GtkStyle* style, PangoFontDescription* font) {
+ada_style_set_font_description (GtkStyle* style, PangoFontDescription* font)
+{
   style->font_desc = font;
 }
 
 PangoFontDescription*
-ada_style_get_font_description (GtkStyle* style) {
+ada_style_get_font_description (GtkStyle* style)
+{
   return style->font_desc;
 }
 
@@ -2133,7 +2238,6 @@ ada_style_get_white_gc (GtkStyle * style)
 }
 
 
-
 void
 ada_style_set_bg_pixmap (GtkStyle* style, gint state, GdkPixmap *pix)
 {
@@ -2147,12 +2251,14 @@ ada_style_get_bg_pixmap (GtkStyle* style, gint state)
 }
 
 gint
-ada_style_get_x_thickness (GtkStyle* style) {
+ada_style_get_x_thickness (GtkStyle* style)
+{
   return style->xthickness;
 }
 
 gint
-ada_style_get_y_thickness (GtkStyle* style) {
+ada_style_get_y_thickness (GtkStyle* style)
+{
   return style->ythickness;
 }
 
@@ -2192,7 +2298,9 @@ ada_gvalue_nth (GValue* value, guint num, GValue* val)
   *val = *(value + num);
 }
 
-int ada_c_gvalue_size () {
+int
+ada_c_gvalue_size ()
+{
   return sizeof (GValue);
 }
 
@@ -2323,21 +2431,24 @@ ada_aspect_frame_get_yalign (GtkAspectFrame* widget)
  ******************************************/
 
 guint
-ada_gtk_layout_get_width (GtkLayout* layout) {
+ada_gtk_layout_get_width (GtkLayout* layout)
+{
   /** ??? Should not be needed with gtk_layout_get_size,
       ??? but kept for compatibility with GVD **/
   return layout->width;
 }
 
 guint
-ada_gtk_layout_get_height (GtkLayout* layout) {
+ada_gtk_layout_get_height (GtkLayout* layout)
+{
   /** ??? Should not be needed with gtk_layout_get_size,
       ??? but kept for compatibility with GVD **/
   return layout->height;
 }
 
 GdkWindow*
-ada_gtk_layout_get_bin_window (GtkLayout* layout) {
+ada_gtk_layout_get_bin_window (GtkLayout* layout)
+{
   return layout->bin_window;
 }
 
@@ -2346,7 +2457,8 @@ ada_gtk_layout_get_bin_window (GtkLayout* layout) {
  ******************************************/
 
 GdkWindow*
-ada_gtk_viewport_get_bin_window (GtkViewport* viewport) {
+ada_gtk_viewport_get_bin_window (GtkViewport* viewport)
+{
   return viewport->bin_window;
 }
 
@@ -2386,7 +2498,9 @@ ada_text_iter_copy (const GtkTextIter *source,
   *dest = *source;
 }
 
-int ada_c_gtk_text_iter_size () {
+int
+ada_c_gtk_text_iter_size ()
+{
   return sizeof (GtkTextIter);
 }
 
@@ -2420,8 +2534,9 @@ void
 ada_text_view_set_disable_scroll_on_focus (GtkTextView* widget, gboolean flag)
 {
 #if (GTK_CHECK_VERSION (2, 2, 2))
-  //  Nothing to do, disable scroll on focus is the default, and we can't
-  //  override this anyway
+  /*  Nothing to do, disable scroll on focus is the default, and we can't
+   *  override this anyway
+   */
 #else
   widget->disable_scroll_on_focus = flag;
 #endif
@@ -2540,7 +2655,8 @@ ada_combo_get_list (GtkCombo* widget)
  ********************************************/
 
 gint
-ada_widget_get_state (GtkWidget *widget) {
+ada_widget_get_state (GtkWidget *widget)
+{
   return widget->state;
 }
 
@@ -3180,23 +3296,33 @@ ada_gdk_property_get (GdkWindow	 *window,
  ** GEnumClass                           **
  ******************************************/
 
-int ada_c_enum_value_size () {
+int
+ada_c_enum_value_size ()
+{
   return sizeof (GEnumValue);
 }
 
-GEnumValue* ada_genum_nth_value (GEnumClass* klass, guint nth) {
+GEnumValue*
+ada_genum_nth_value (GEnumClass* klass, guint nth)
+{
   return (nth < klass->n_values) ? &(klass->values[nth]) : NULL;
 }
 
-gint ada_genum_get_value (GEnumValue* value) {
+gint
+ada_genum_get_value (GEnumValue* value)
+{
   return value->value;
 }
 
-gchar* ada_genum_get_name (GEnumValue* value) {
+gchar*
+ada_genum_get_name (GEnumValue* value)
+{
   return value->value_name;
 }
 
-gchar* ada_genum_get_nick (GEnumValue* value) {
+gchar*
+ada_genum_get_nick (GEnumValue* value)
+{
   return value->value_nick;
 }
 
@@ -3204,19 +3330,27 @@ gchar* ada_genum_get_nick (GEnumValue* value) {
  ** GFlags                               **
  ******************************************/
 
-GFlagsValue* ada_gflags_nth_value (GFlagsClass* klass, guint nth) {
+GFlagsValue*
+ada_gflags_nth_value (GFlagsClass* klass, guint nth)
+{
   return (nth < klass->n_values) ? &(klass->values[nth]) : NULL;
 }
 
-gint ada_gflags_get_value (GFlagsValue* value) {
+gint
+ada_gflags_get_value (GFlagsValue* value)
+{
   return value->value;
 }
 
-gchar* ada_gflags_get_name (GFlagsValue* value) {
+gchar*
+ada_gflags_get_name (GFlagsValue* value)
+{
   return value->value_name;
 }
 
-gchar* ada_gflags_get_nick (GFlagsValue* value) {
+gchar*
+ada_gflags_get_nick (GFlagsValue* value)
+{
   return value->value_nick;
 }
 
@@ -3224,167 +3358,249 @@ gchar* ada_gflags_get_nick (GFlagsValue* value) {
  ** GParamSpec                           **
  ******************************************/
 
-char* ada_gparam_get_name (GParamSpec* param) {
+char*
+ada_gparam_get_name (GParamSpec* param)
+{
   return param->name;
 }
 
-GParamFlags ada_gparam_get_flags (GParamSpec* param) {
+GParamFlags
+ada_gparam_get_flags (GParamSpec* param)
+{
   return param->flags;
 }
 
-GType ada_gparam_get_value_type (GParamSpec* param) {
+GType
+ada_gparam_get_value_type (GParamSpec* param)
+{
   return G_PARAM_SPEC_VALUE_TYPE (param);
 }
 
-void ada_gparam_set_value_type (GParamSpec* param, GType value_type) {
+void
+ada_gparam_set_value_type (GParamSpec* param, GType value_type)
+{
   G_PARAM_SPEC_VALUE_TYPE (param) = value_type;
 }
 
-gint8 ada_gparam_get_minimum_char (GParamSpecChar* param) {
+gint8
+ada_gparam_get_minimum_char (GParamSpecChar* param)
+{
   return param->minimum;
 }
 
-gint8 ada_gparam_get_maximum_char (GParamSpecChar* param) {
+gint8
+ada_gparam_get_maximum_char (GParamSpecChar* param)
+{
   return param->maximum;
 }
 
-gint8 ada_gparam_get_default_char (GParamSpecChar* param) {
+gint8
+ada_gparam_get_default_char (GParamSpecChar* param)
+{
   return param->default_value;
 }
 
-guint8 ada_gparam_get_minimum_uchar (GParamSpecUChar* param) {
+guint8
+ada_gparam_get_minimum_uchar (GParamSpecUChar* param)
+{
   return param->minimum;
 }
 
-guint8 ada_gparam_get_maximum_uchar (GParamSpecUChar* param) {
+guint8
+ada_gparam_get_maximum_uchar (GParamSpecUChar* param)
+{
   return param->maximum;
 }
 
-guint8 ada_gparam_get_default_uchar (GParamSpecUChar* param) {
+guint8
+ada_gparam_get_default_uchar (GParamSpecUChar* param)
+{
   return param->default_value;
 }
 
-gboolean ada_gparam_get_default_boolean (GParamSpecBoolean* param) {
+gboolean
+ada_gparam_get_default_boolean (GParamSpecBoolean* param)
+{
   return param->default_value;
 }
 
-gint ada_gparam_get_minimum_int (GParamSpecInt* param) {
+gint
+ada_gparam_get_minimum_int (GParamSpecInt* param)
+{
   return param->minimum;
 }
 
-gint ada_gparam_get_maximum_int (GParamSpecInt* param) {
+gint
+ada_gparam_get_maximum_int (GParamSpecInt* param)
+{
   return param->maximum;
 }
 
-gint ada_gparam_get_default_int (GParamSpecInt* param) {
+gint
+ada_gparam_get_default_int (GParamSpecInt* param)
+{
   return param->default_value;
 }
 
-guint ada_gparam_get_minimum_uint (GParamSpecUInt* param) {
+guint
+ada_gparam_get_minimum_uint (GParamSpecUInt* param)
+{
   return param->minimum;
 }
 
-guint ada_gparam_get_maximum_uint (GParamSpecUInt* param) {
+guint
+ada_gparam_get_maximum_uint (GParamSpecUInt* param)
+{
   return param->maximum;
 }
 
-guint ada_gparam_get_default_uint (GParamSpecUInt* param) {
+guint
+ada_gparam_get_default_uint (GParamSpecUInt* param)
+{
   return param->default_value;
 }
 
-glong ada_gparam_get_minimum_long (GParamSpecLong* param) {
+glong
+ada_gparam_get_minimum_long (GParamSpecLong* param)
+{
   return param->minimum;
 }
 
-glong ada_gparam_get_maximum_long (GParamSpecLong* param) {
+glong
+ada_gparam_get_maximum_long (GParamSpecLong* param)
+{
   return param->maximum;
 }
 
-glong ada_gparam_get_default_long (GParamSpecLong* param) {
+glong
+ada_gparam_get_default_long (GParamSpecLong* param)
+{
   return param->default_value;
 }
 
-gulong ada_gparam_get_minimum_ulong (GParamSpecULong* param) {
+gulong
+ada_gparam_get_minimum_ulong (GParamSpecULong* param)
+{
   return param->minimum;
 }
 
-gulong ada_gparam_get_maximum_ulong (GParamSpecULong* param) {
+gulong
+ada_gparam_get_maximum_ulong (GParamSpecULong* param)
+{
   return param->maximum;
 }
 
-gulong ada_gparam_get_default_ulong (GParamSpecULong* param) {
+gulong
+ada_gparam_get_default_ulong (GParamSpecULong* param)
+{
   return param->default_value;
 }
 
-gunichar ada_gparam_get_default_unichar (GParamSpecUnichar* param) {
+gunichar
+ada_gparam_get_default_unichar (GParamSpecUnichar* param)
+{
   return param->default_value;
 }
 
-gint ada_gparam_get_default_enum (GParamSpecEnum* param) {
+gint
+ada_gparam_get_default_enum (GParamSpecEnum* param)
+{
   return param->default_value;
 }
 
-GEnumClass* ada_gparam_get_enum_class_enum (GParamSpecEnum* param) {
+GEnumClass*
+ada_gparam_get_enum_class_enum (GParamSpecEnum* param)
+{
   return param->enum_class;
 }
 
-GFlagsClass* ada_gparam_get_flags_flags (GParamSpecFlags* param) {
+GFlagsClass*
+ada_gparam_get_flags_flags (GParamSpecFlags* param)
+{
   return param->flags_class;
 }
 
-glong ada_gparam_get_default_flags (GParamSpecFlags* param) {
+glong
+ada_gparam_get_default_flags (GParamSpecFlags* param)
+{
   return param->default_value;
 }
 
-gfloat ada_gparam_get_minimum_gfloat (GParamSpecFloat* param) {
+gfloat
+ada_gparam_get_minimum_gfloat (GParamSpecFloat* param)
+{
   return param->minimum;
 }
 
-gfloat ada_gparam_get_maximum_gfloat (GParamSpecFloat* param) {
+gfloat
+ada_gparam_get_maximum_gfloat (GParamSpecFloat* param)
+{
   return param->maximum;
 }
 
-gfloat ada_gparam_get_default_gfloat (GParamSpecFloat* param) {
+gfloat
+ada_gparam_get_default_gfloat (GParamSpecFloat* param)
+{
   return param->default_value;
 }
 
-gfloat ada_gparam_get_epsilon_gfloat (GParamSpecFloat* param) {
+gfloat
+ada_gparam_get_epsilon_gfloat (GParamSpecFloat* param)
+{
   return param->epsilon;
 }
 
-gdouble ada_gparam_get_minimum_gdouble (GParamSpecDouble* param) {
+gdouble
+ada_gparam_get_minimum_gdouble (GParamSpecDouble* param)
+{
   return param->minimum;
 }
 
-gdouble ada_gparam_get_maximum_gdouble (GParamSpecDouble* param) {
+gdouble
+ada_gparam_get_maximum_gdouble (GParamSpecDouble* param)
+{
   return param->maximum;
 }
 
-gdouble ada_gparam_get_default_gdouble (GParamSpecDouble* param) {
+gdouble
+ada_gparam_get_default_gdouble (GParamSpecDouble* param)
+{
   return param->default_value;
 }
 
-gdouble ada_gparam_get_epsilon_gdouble (GParamSpecDouble* param) {
+gdouble
+ada_gparam_get_epsilon_gdouble (GParamSpecDouble* param)
+{
   return param->epsilon;
 }
 
-gchar* ada_gparam_default_string (GParamSpecString* param) {
+gchar*
+ada_gparam_default_string (GParamSpecString* param)
+{
   return param->default_value;
 }
 
-gchar* ada_gparam_cset_first_string (GParamSpecString* param) {
+gchar*
+ada_gparam_cset_first_string (GParamSpecString* param)
+{
   return param->cset_first;
 }
 
-gchar* ada_gparam_cset_nth_string (GParamSpecString* param) {
+gchar*
+ada_gparam_cset_nth_string (GParamSpecString* param)
+{
   return param->cset_nth;
 }
 
-gchar ada_gparam_substitutor_string (GParamSpecString* param) {
+gchar
+ada_gparam_substitutor_string (GParamSpecString* param)
+{
   return param->substitutor;
 }
 
-gboolean ada_gparam_ensure_non_null_string (GParamSpecString* param) {
+gboolean
+ada_gparam_ensure_non_null_string (GParamSpecString* param)
+{
   return param->ensure_non_null != 0;
 }
 
@@ -3400,7 +3616,8 @@ void ada_set_properties_handlers (gpointer klass,
   G_OBJECT_CLASS (klass)->get_property = get_handler;
 }
 
-GObjectGetPropertyFunc ada_real_get_property_handler (GObject* object)
+GObjectGetPropertyFunc
+ada_real_get_property_handler (GObject* object)
 {
   GTypeQuery query;
   g_type_query (G_TYPE_FROM_INSTANCE (object), &query);
@@ -3422,7 +3639,8 @@ ada_set_real_get_property_handler (gpointer klass,
 			     - sizeof (GObjectSetPropertyFunc)) = handler;
 }
 
-GObjectSetPropertyFunc ada_real_set_property_handler (GObject* object)
+GObjectSetPropertyFunc
+ada_real_set_property_handler (GObject* object)
 {
   GTypeQuery query;
   g_type_query (G_TYPE_FROM_INSTANCE (object), &query);
@@ -3444,7 +3662,7 @@ ada_set_real_set_property_handler (gpointer klass,
 
 void
 ada_genum_create_enum_value
-(gint value, gchar* name, gchar* nick, GEnumValue* val)
+  (gint value, gchar* name, gchar* nick, GEnumValue* val)
 {
   val->value = value;
   val->value_name = g_strdup (name);
@@ -3455,11 +3673,15 @@ ada_genum_create_enum_value
  ** GType                                **
  ******************************************/
 
-GType ada_g_object_get_type (GObject* object) {
+GType
+ada_g_object_get_type (GObject* object)
+{
   return G_OBJECT_TYPE (object);
 }
 
-GType ada_gtype_fundamental (GType type) {
+GType
+ada_gtype_fundamental (GType type)
+{
   return G_TYPE_FUNDAMENTAL (type);
 }
 
@@ -3529,13 +3751,17 @@ ada_pango_underline_error (void)
  ** Handling of tree Freeze/Thaw         **
  ******************************************/
 
-gint ada_gtk_tree_view_freeze_sort (GtkTreeStore* tree) {
+gint
+ada_gtk_tree_view_freeze_sort (GtkTreeStore* tree)
+{
   gint save = tree->sort_column_id;
   tree->sort_column_id = -2;
   return save;
 }
 
-void ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id) {
+void
+ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id)
+{
   gtk_tree_sortable_set_sort_column_id
     (GTK_TREE_SORTABLE (tree), id, tree->order);
 }
@@ -3546,20 +3772,26 @@ void ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id) {
 
 
 #if (GTK_CHECK_VERSION (2, 4, 0))
-void       gtk_event_box_set_visible_window (GtkEventBox *event_box,
-                                             gboolean     visible_window) 
+void
+gtk_event_box_set_visible_window (GtkEventBox *event_box,
+                                  gboolean     visible_window) 
 {
 }
-gboolean   gtk_event_box_get_visible_window (GtkEventBox *event_box)
+
+gboolean
+gtk_event_box_get_visible_window (GtkEventBox *event_box)
 {
    return 1;
 }
 
-void       gtk_event_box_set_above_child    (GtkEventBox *event_box,
-                                             gboolean     above_child)
+void
+gtk_event_box_set_above_child (GtkEventBox *event_box,
+                               gboolean     above_child)
 {
 }
-gboolean   gtk_event_box_get_above_child    (GtkEventBox *event_box) 
+
+gboolean
+gtk_event_box_get_above_child (GtkEventBox *event_box) 
 {
   return 0;
 }
