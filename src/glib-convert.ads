@@ -179,6 +179,7 @@ package Glib.Convert is
       Error         : GError_Access := null) return chars_ptr;
    --  Same as procedure Locale_From_UTF8, but return the raw C string for
    --  efficiency. The caller is responsible for freeing the resulting string.
+   --  Use the C "free" function to free this.
 
    function Locale_From_UTF8 (UTF8_String : String) return String;
    --  Same as procedure Locale_From_UTF8, but return only the String.
