@@ -58,7 +58,7 @@ package body Gtk.Handlers is
    --  it has been destroyed.
 
    procedure Disconnect_Internal (Obj : System.Address; Id : Handler_Id);
-   pragma Import (C, Disconnect_Internal, "gtk_signal_disconnect");
+   pragma Import (C, Disconnect_Internal, "g_signal_handler_disconnect");
    --  Internal version of Disconnect
 
    type Destroy_Data_Record is record
@@ -115,6 +115,39 @@ package body Gtk.Handlers is
          Object_Signal : Gint;
          After         : Gint) return Handler_Id;
       pragma Import (C, Internal, "gtk_signal_connect_full");
+
+      --  XXX ???
+      --  function Internal
+      --    (Instance  : System.Address;
+      --     Signal_Id : Guint;
+      --     Detail    : GQuark;
+      --     Closure   : GClosure;
+      --     After     : Gint) return Handler_Id;
+      --  pragma Import (C, Internal, "g_signal_connect_closure_by_id");
+
+      --  Closure := G_CClosure_New
+      --    (System.Null_Address, Func_Data, (GClosureNotify) Destroy),
+      --  Set_Marshal (Closure, Marshaller);
+      --  Internal
+      --    (Get_Object (Object),
+      --     G_Signal_Lookup (Name & ASCII.NUL, Get_Type (Object)),
+      --     Unknown_Quark, Closure, Boolean'Pos (After));
+
+      --  old:
+      --  procedure First_Marshaller
+      --    (Object    : in System.Address;
+      --     User_Data : in System.Address;
+      --     Nparams   : in Guint;
+      --     Params    : in System.Address);
+
+      --  new:
+      --  typedef void (*GClosureMarshal)
+      --    (GClosure       *closure,
+      --     GValue         *return_value,
+      --     guint           n_param_values,
+      --     const GValue   *param_values,
+      --     gpointer        invocation_hint,
+      --     gpointer        marshal_data);
 
       use type System.Address;
       Id : Handler_Id;
@@ -177,7 +210,7 @@ package body Gtk.Handlers is
       --  Function used internally to specify the value returned by a
       --  callback.  In the gtk+ convention, such return values should go as
       --  the last element in Params (which is a GtkArg*).  Typ is the C type
-      --  (matches the constants GTK_TYPE_INT, ...).  Num is the position in
+      --  (matches the constants G_TYPE_INT, ...).  Num is the position in
       --  Params where the value should be put.
 
       type Acc is access all Widget_Type'Class;
@@ -1284,7 +1317,7 @@ package body Gtk.Handlers is
       Id  : in Handler_Id)
    is
       procedure Internal (Obj : in System.Address; Id : in Handler_Id);
-      pragma Import (C, Internal, "gtk_signal_handler_block");
+      pragma Import (C, Internal, "g_signal_handler_block");
    begin
       Internal (Obj => Get_Object (Obj), Id  => Id);
    end Handler_Block;
@@ -1296,7 +1329,7 @@ package body Gtk.Handlers is
    procedure Handlers_Destroy (Obj : access Object.Gtk_Object_Record'Class)
    is
       procedure Internal (Obj : System.Address);
-      pragma Import (C, Internal, "gtk_signal_handlers_destroy");
+      pragma Import (C, Internal, "g_signal_handlers_destroy");
    begin
       Internal (Obj => Get_Object (Obj));
    end Handlers_Destroy;
@@ -1310,7 +1343,7 @@ package body Gtk.Handlers is
       Id  : in Handler_Id)
    is
       procedure Internal (Obj : in System.Address; Id : in Handler_Id);
-      pragma Import (C, Internal, "gtk_signal_handler_unblock");
+      pragma Import (C, Internal, "g_signal_handler_unblock");
    begin
       Internal (Obj => Get_Object (Obj), Id  => Id);
    end Handler_Unblock;
