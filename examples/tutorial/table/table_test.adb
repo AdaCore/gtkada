@@ -20,9 +20,9 @@ begin
    --  exits GTK.
 
    Return_Handlers.Connect
-      (Window,
-       "delete_event",
-       Return_Handlers.To_Marshaller (Delete_Event'Access));
+     (Window,
+      "delete_event",
+      Return_Handlers.To_Marshaller (Delete_Event'Access));
 
    --  Sets the border width of the window.
    Set_Border_Width (Window, 20);
@@ -40,8 +40,8 @@ begin
    --  with a pointer to "button 1" as its argument
 
    Handlers.Connect
-      (Button, "clicked", Handlers.To_Marshaller (Callback'Access),
-       new String' ("button 1"));
+     (Button, "clicked", Handlers.To_Marshaller (Callback'Access),
+      new String' ("button 1"));
 
    --  Insert button 1 into the upper left quadrant of the table
    Attach_Defaults (Table, Button, 0, 1, 0, 1);
@@ -53,8 +53,8 @@ begin
    --  When the button is clicked, we call the "callback" function
    --  with a pointer to "button 2" as its argument
    Handlers.Connect
-      (Button, "clicked",
-       Handlers.To_Marshaller (Callback'Access), new String' ("button 2"));
+     (Button, "clicked",
+      Handlers.To_Marshaller (Callback'Access), new String' ("button 2"));
 
    --  Insert button 2 into the upper right quadrant of the table
    Attach_Defaults (Table, Button, 1, 2, 0, 1);
@@ -66,8 +66,8 @@ begin
    --  and the program exits
 
    Handlers.Connect
-      (Button, "clicked", Handlers.To_Marshaller (Quit'Access),
-       new String' ("Button Pressed"));
+     (Button, "clicked", Handlers.To_Marshaller (Quit'Access),
+      new String' ("Button Pressed"));
 
    --  Insert the quit button into the both
    --  lower quadrants of the table
