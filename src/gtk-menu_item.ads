@@ -27,6 +27,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  This widget represents one of the lines in a menu, on which the user can
+--  click to execute an action. The menu items can be bound to a submenu, so
+--  that clicking on them will in fact display the submenu on the screen.
+--
+--  They can also be associated with key shortcuts (called accelerators). See
+--  the subprogram Set_Accel_Path, and the subprograms in the package
+--  Gtk.Accel_Map.
+--
+--  Activating the proper options in the theme files will allow the user to
+--  interactively modify the shortcuts.
+--
+--  </description>
 --  <c_version>1.3.11</c_version>
 
 with Gtk.Item;
@@ -93,6 +106,11 @@ package Gtk.Menu_Item is
    procedure Set_Accel_Path
      (Menu_Item  : access Gtk_Menu_Item_Record;
       Accel_Path : String);
+   --  Set the path that will be used to reference the widget in calls to the
+   --  subprograms in Gtk.Accel_Map. This means, for instance, that the widget
+   --  is fully setup for interactive modification of the shortcuts by the
+   --  user, should he choose to activate this possibility in his themes (see
+   --  gtk-accel_map.ads for more information).
 
    -------------
    -- Signals --
