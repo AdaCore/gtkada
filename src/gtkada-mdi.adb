@@ -2347,14 +2347,20 @@ package body Gtkada.MDI is
       end if;
 
       if Child.State = Docked then
-         Set_Tab_Label_Text
-           (Child.MDI.Docks (Child.Dock), Child, Child.Short_Title.all);
+         Set_Text
+           (Gtk_Label
+            (Get_Child (Gtk_Event_Box
+               (Get_Tab_Label (Child.MDI.Docks (Child.Dock), Child)))),
+            Child.Short_Title.all);
 
       elsif Child.State = Normal
         and then Children_Are_Maximized (Child.MDI)
       then
-         Set_Tab_Label_Text
-           (Child.MDI.Docks (None), Child, Child.Short_Title.all);
+         Set_Text
+           (Gtk_Label
+            (Get_Child (Gtk_Event_Box
+               (Get_Tab_Label (Child.MDI.Docks (None), Child)))),
+            Child.Short_Title.all);
       end if;
 
       --  Update the menu, if it exists
