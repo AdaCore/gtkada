@@ -2984,7 +2984,9 @@ package body Gtkada.MDI is
    begin
       --  Gtk_Window children are handled differently (see Float_Child)
 
-      if MDI_Child (Child).MDI.Close_Floating_Is_Unfloat then
+      if MDI_Child (Child).MDI.Close_Floating_Is_Unfloat
+        and then (MDI_Child (Child).Flags and Always_Destroy_Float) = 0
+      then
          Float_Child (MDI_Child (Child), False);
          return True;
       else

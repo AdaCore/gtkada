@@ -123,18 +123,20 @@ package Gtkada.MDI is
       Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color);
    --  Change the setup of the MDI.
    --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
-   --  will put it back in the MDI instead of destroying it.
+   --  will put it back in the MDI instead of destroying it (unless its flag
+   --  Always_Destroy_Float is set).
    --  Title_Font is the font used in the title bars (if null, "sans 8"
    --  is used).
    --  The colors, when Null_Color, will not change the current setup.
    --  Opaque_Docks should be true if resizing the docks with the handles
    --  should be opaque.
 
-   type Child_Flags is mod 2 ** 4;
-   Iconify_Button     : constant Child_Flags := 2 ** 0;
-   Maximize_Button    : constant Child_Flags := 2 ** 1;
-   Destroy_Button     : constant Child_Flags := 2 ** 2;
-   Float_As_Transient : constant Child_Flags := 2 ** 3;
+   type Child_Flags is mod 2 ** 5;
+   Iconify_Button       : constant Child_Flags := 2 ** 0;
+   Maximize_Button      : constant Child_Flags := 2 ** 1;
+   Destroy_Button       : constant Child_Flags := 2 ** 2;
+   Float_As_Transient   : constant Child_Flags := 2 ** 3;
+   Always_Destroy_Float : constant Child_Flags := 2 ** 4;
    All_Buttons        : constant Child_Flags :=
      Iconify_Button or Maximize_Button or Destroy_Button;
    --  Special flags to set up the widgets:
@@ -145,7 +147,9 @@ package Gtkada.MDI is
    --  top of the MDI, but the window will have less decorations in its title
    --  bar, in particular no destroy button. In such a case, <Esc> will close
    --  the window, or unfloat it depending on the MDI's setup, as is the case
-   --  for all dialogs in GtkAda.
+   --  for all dialogs in GtkAda. The MDI's setup will be ignored (and the
+   --  child always destroyed when Esc is pressed) if Always_Destroy_Float is
+   --  true.
 
    function Put
      (MDI   : access MDI_Window_Record;
