@@ -130,8 +130,6 @@ with Gdk.Threads;
 with Gdk.Types.Keysyms;
 with Gdk.Types;
 with Gdk.Visual;
-with Gdk.Window.Gc;
-with Gdk.Window.Pixmap;
 with Gdk.Window;
 with Gdk.Window_Attr;
 with Gdk;
