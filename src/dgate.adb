@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
---                   DGATE - GtkAda Components                       --
+--                   DGate - GtkAda Components                       --
 --                                                                   --
---                      Copyright (C) 2000                           --
+--                    Copyright (C) 1999-2000                        --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- Dynagate is free software;  you can redistribute it and/or modify --
@@ -18,10 +18,9 @@
 -- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
 -----------------------------------------------------------------------
 
---  DGATE stands for Dynamic GATE.
 --  Parse a Glade's XML project file, declare the required callbacks and
 --  create the widgets associated with the project file.
---  DGATE can very easily be used in conjunction with GLADE to test during
+--  DGate can very easily be used in conjunction with GLADE to test during
 --  the development.
 
 with Ada.Command_Line; use Ada.Command_Line;
