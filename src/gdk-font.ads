@@ -78,6 +78,9 @@
 --  represented as arrays of char values. However multi-byte strings are much
 --  easier to manipulate since the character are all of the same size.
 --
+--  On Unix systems, the external utility 'xfd' can be used to display all
+--  the characters in a font.
+--
 --  </description>
 --  <c_version>1.2.7</c_version>
 --  <screenshot>font</screenshot>

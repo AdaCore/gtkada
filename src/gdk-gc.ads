@@ -43,6 +43,9 @@
 --  of creating a single one that is modified every time you need to
 --  modify one of the attributes.
 --
+--  On Unix machines, you should have a look at the external utility 'xgc'
+--  which demonstrates all the basic settings of the graphic contexts.
+--
 --  </description>
 --  <c_version>1.2.6</c_version>
 
