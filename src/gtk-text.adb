@@ -362,7 +362,9 @@ package body Gtk.Text is
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
    begin
       Gen_New (N, "Text", File => File);
+
       Editable.Generate (N, File);
+
       Gen_Set (N, "Text", "editable", File);
       Gen_Set (N, "Text", "point", File);
       Gen_Set (N, "Text", "word_wrap", File);
