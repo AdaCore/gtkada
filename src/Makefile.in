@@ -10,7 +10,7 @@ SHELL=/bin/sh
 
 include Makefile.common
 
-MAKE_ADB = make
+MAKE_ADB = make_gtk
 
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I.. $(FPIC)
 
