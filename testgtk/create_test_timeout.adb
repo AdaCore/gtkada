@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -69,6 +69,13 @@ package body Create_Test_Timeout is
       Count := 0;
    end Destroy_Timeout;
 
+   procedure Destroy_Timeout (Window : in out Gtk_Widget;
+                              Widget : in out Gtk_Widget_Access) is
+   begin
+      Destroy_Timeout (Window);
+      Destroyed (Window, Widget);
+   end Destroy_Timeout;
+  
    procedure Start_Timeout (Label : in out Gtk_Label) is
    begin
       if Timeout = 0 then
@@ -84,7 +91,7 @@ package body Create_Test_Timeout is
 
       if not Is_Created (Dialog) then
          Gtk_New (Dialog);
-         Id := Widget2_Cb.Connect (Dialog, "destroy", Destroyed'Access,
+         Id := Widget2_Cb.Connect (Dialog, "destroy", Destroy_Timeout'Access,
                                    Dialog'Access);
          Set_Title (Dialog, "Timeout Test");
          Border_Width (Dialog, Border_Width => 0);

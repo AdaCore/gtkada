@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -43,16 +43,9 @@ package body Create_Color_Selection is
    package Color_Sel_Cb is new Signal.Callback
      (Widget_Type => Button.Gtk_Button,
       Data_Type   => Gtk_Color_Selection_Dialog);
-   package Color_Changed_Cb is new Signal.Void_Callback
-     (Widget_Type => Gtk_Color_Selection);
    package Exit_Cb is new Signal.Object_Callback
      (Widget_Type => Gtk.Widget.Gtk_Widget);
    --  Must be instanciated at library level !
-
-   procedure Color_Changed (Dialog : in out Gtk_Color_Selection);
-   procedure Color_Ok (Widget : in out Button.Gtk_Button;
-                       Dialog : in out Gtk_Color_Selection_Dialog);
-
 
    procedure Color_Ok (Widget : in out Button.Gtk_Button;
                        Dialog : in out Gtk_Color_Selection_Dialog)
@@ -60,7 +53,6 @@ package body Create_Color_Selection is
       Color : Color_Array;
    begin
       Get_Color (Get_Colorsel (Dialog), Color);
-      Ada.Text_IO.Put_Line ("Button OK in Color_Selection : ");
       for I in Red .. Opacity loop
          Ada.Text_IO.Put_Line (Color_Index'Image (I)
                                & " => "
@@ -68,20 +60,6 @@ package body Create_Color_Selection is
       end loop;
       Set_Color (Get_Colorsel (Dialog), Color);
    end Color_Ok;
-
-
-   procedure Color_Changed (Dialog : in out Gtk_Color_Selection)
-   is
-      Color : Color_Array;
-   begin
-      Get_Color (Dialog, Color);
-      Ada.Text_IO.Put_Line ("Color changed : ");
-      for I in Red .. Opacity loop
-         Ada.Text_IO.Put_Line (Color_Index'Image (I)
-                               & " => "
-                               & Gdouble'Image (Color (I)));
-      end loop;
-   end Color_Changed;
 
    Dialog : aliased Gtk_Color_Selection_Dialog;
 
@@ -102,9 +80,6 @@ package body Create_Color_Selection is
                                       Destroyed'Access,
                                       Dialog'Access);
 
-         Cb_Id := Color_Changed_Cb.Connect (Get_Colorsel (Dialog),
-                                            "color_changed",
-                                            Color_Changed'Access);
          Cb_Id := Color_Sel_Cb.Connect (Get_OK_Button (Dialog),
                                         "clicked",
                                         Color_Ok'Access,

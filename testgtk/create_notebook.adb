@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -290,7 +290,6 @@ package body Create_Notebook is
       Box1            : Gtk_Box;
       Box2            : Gtk_Box;
       Notebook        : Gtk_Notebook;
-      Transparent     : Gdk_Color;
       Separator       : Gtk_Separator;
       Option_Menu     : Gtk_Option_Menu;
       Menu            : Gtk_Menu;
@@ -319,11 +318,11 @@ package body Create_Notebook is
 
          Create_From_Xpm_D (Book_Open,
                             Get_Window (Notebook),
-                            Book_Open_Mask, Transparent,
+                            Book_Open_Mask, Null_Color,
                             Book_Open_Xpm);
          Create_From_Xpm_D (Book_Closed,
                             Get_Window (Notebook),
-                            Book_Closed_Mask, Transparent,
+                            Book_Closed_Mask, Null_Color,
                             Book_Closed_Xpm);
 
          Create_Pages (Notebook, 1, 5);

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -49,15 +49,22 @@ package body Create_Main_Loop is
       Main_Quit;
    end Loop_Destroy;
 
+   procedure Loop_Destroy (Window : in out Gtk_Widget;
+                           Widget : in out Gtk_Widget_Access) is
+   begin
+      Loop_Destroy (Window);
+      Destroyed (Window, Widget);
+   end Loop_Destroy;
+ 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id     : Guint;
       Label  : Gtk_Label;
       Button : Gtk_Button;
-   begin
+  begin
 
       if not Is_Created (Window) then
          Gtk_New (Window);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Widget2_Cb.Connect (Window, "destroy", Loop_Destroy'Access,
                                    Window'Access);
          Set_Title (Window, "test_main_loop");
          Border_Width (Window, Border_Width => 0);

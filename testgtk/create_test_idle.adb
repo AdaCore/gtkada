@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -68,6 +68,13 @@ package body Create_Test_Idle is
       Gtk.Widget.Destroy (Window);
    end Destroy_Idle;
 
+   procedure Destroy_Idle (Window : in out Gtk_Widget;
+                           Widget : in out Gtk_Widget_Access) is
+   begin
+      Destroy_Idle (Window);
+      Destroyed (Window, Widget);
+   end Destroy_Idle;
+
    procedure Start_Idle (Label : in out Gtk_Label) is
    begin
       if Idle = 0 then
@@ -83,7 +90,7 @@ package body Create_Test_Idle is
 
       if not Is_Created (Dialog) then
          Gtk_New (Dialog);
-         Id := Widget2_Cb.Connect (Dialog, "destroy", Destroyed'Access,
+         Id := Widget2_Cb.Connect (Dialog, "destroy", Destroy_idle'Access,
                                    Dialog'Access);
          Set_Title (Dialog, "Idle");
          Border_Width (Dialog, Border_Width => 0);

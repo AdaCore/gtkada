@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -53,6 +53,13 @@ package body Create_Progress is
       Gtk.Widget.Destroy (Window);
    end Destroy_Progress;
 
+   procedure Destroy_Progress (Window : in out Gtk_Widget;
+                               Widget : in out Gtk_Widget_Access) is
+   begin
+      Destroy_Progress (Window);
+      Destroyed (Window, Widget);
+   end Destroy_Progress;
+ 
    function Progress_Timeout (Pbar : in Gtk_Progress_Bar) return Boolean is
       New_Val : Gfloat;
    begin
@@ -76,7 +83,7 @@ package body Create_Progress is
 
       if not Is_Created (Window) then
          Gtk_New (Window);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroy_Progress'Access,
                                    Window'Access);
          Set_Title (Window, "progress bar");
          Border_Width (Window, Border_Width => 0);

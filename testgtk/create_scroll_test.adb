@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -90,7 +90,7 @@ package body Create_Scroll_Test is
          return;
       end if;
 
-      Gdk_New (Rect);
+      Set_Values (Rect, 0, 0, 0, 0);
       --  This is actually different from C, since we can not
       --  create a C's GdkRectangle, only a C's GdkRectangle*
 
@@ -130,7 +130,7 @@ package body Create_Scroll_Test is
          loop
             Get_Graphics_Expose (Event, Get_Window (Widget));
             exit when not Is_Created (Event);
-            Gdk.Event.Event (Widget, Event);
+            Gdk.Event.Event (Widget, Gdk_Event (Event));
             if Get_Count (Event) = 0 then
                Free (Event);
                exit;
@@ -142,8 +142,6 @@ package body Create_Scroll_Test is
       if Get_Height (Rect) /= 0 then
          Draw (Widget, Rect);
       end if;
-
-      Destroy (Rect);
 
    end Adjustment_Change;
 
@@ -180,7 +178,7 @@ package body Create_Scroll_Test is
       Jmax := (Gint (Adjustment.Get_Value (Adj)) + Get_Y (Area)
                + Gint (Get_Height (Area)) + 9) / 10;
 
-      Gdk.Window.Clear_Area (Window => Gdk.Window.Get_Window (Widget),
+      Gdk.Window.Clear_Area (Window => Get_Window (Widget),
                              X => Get_X (Area), Y => Get_Y (Area),
                              Width => Gint (Get_Width (Area)),
                              Height => Gint (Get_Height (Area)));
@@ -189,7 +187,7 @@ package body Create_Scroll_Test is
          for J in Jmin .. Jmax loop
             if ((I + J) mod 2 /= 0) then
                Gdk.Drawable.Draw_Rectangle
-                 (Drawable => Gdk.Window.Get_Window (Widget),
+                 (Drawable => Get_Window (Widget),
                   GC => Style.Get_Black_Gc (Style.Get_Style (Widget)),
                   Filled => True,
                   X => 10 * I, Y => 10 * J - Gint (Adjustment.Get_Value (Adj)),
