@@ -28,9 +28,10 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
-with Gtk.Menu_Item; use Gtk.Menu_Item;
-with Gtk.Util; use Gtk.Util;
+with Gdk;            use Gdk;
+with Gtk.Menu_Item;  use Gtk.Menu_Item;
+with Gtk.Menu_Shell; use Gtk.Menu_Shell;
+with Gtk.Util;       use Gtk.Util;
 
 package body Gtk.Menu is
 
@@ -40,7 +41,7 @@ package body Gtk.Menu is
 
    procedure Append
      (Menu  : access Gtk_Menu_Record;
-      Child : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Child : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
       procedure Internal (Menu  : System.Address;
                           Child : System.Address);
@@ -183,8 +184,8 @@ package body Gtk.Menu is
 
    procedure Insert
      (Menu     : access Gtk_Menu_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position : in Gint)
+      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
+      Position : in Gint := 0)
    is
       procedure Internal (Menu     : System.Address;
                           Child    : System.Address;
@@ -212,7 +213,7 @@ package body Gtk.Menu is
 
    procedure Prepend
      (Menu  : access Gtk_Menu_Record;
-      Child : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Child : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
       procedure Internal (Menu  : System.Address;
                           Child : System.Address);
@@ -307,12 +308,46 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu), To_Gboolean (Torn_Off));
    end Set_Tearoff_State;
 
+   -----------
+   -- Popup --
+   -----------
 
-   ------------------------------------
-   --  Menu_Popup (generic package)  --
-   ------------------------------------
+   procedure Popup
+     (Menu              : access Gtk_Menu_Record;
+      Parent_Menu_Shell : in Gtk.Menu_Shell.Gtk_Menu_Shell := null;
+      Parent_Menu_Item  : in Gtk.Menu_Item.Gtk_Menu_Item := null;
+      Func              : in Gtk_Menu_Position_Func := null;
+      Button            : in Guint := 1;
+      Activate_Time     : in Guint32 := 0)
+   is
+      procedure Internal (Menu          : System.Address;
+                          Parent_M      : System.Address;
+                          Parent_I      : System.Address;
+                          Func          : Gtk_Menu_Position_Func;
+                          Data          : System.Address;
+                          Button        : Guint;
+                          Activate_Time : Guint32);
+      pragma Import (C, Internal, "gtk_menu_popup");
 
-   package body Menu_Popup is
+      Parent_Shell : System.Address := System.Null_Address;
+      Parent_Item  : System.Address := System.Null_Address;
+   begin
+      if Parent_Menu_Shell /= null then
+         Parent_Shell := Get_Object (Parent_Menu_Shell);
+      end if;
+      if Parent_Menu_Item /= null then
+         Parent_Item := Get_Object (Parent_Menu_Item);
+      end if;
+
+      Internal (Get_Object (Menu), Parent_Shell, Parent_Item,
+                Func, System.Null_Address, Button, Activate_Time);
+   end Popup;
+
+   ---------------------------------------
+   -- User_Menu_Popup (generic package) --
+   ---------------------------------------
+
+   package body User_Menu_Popup is
 
       -----------
       -- Popup --
@@ -320,12 +355,12 @@ package body Gtk.Menu is
 
       procedure Popup
         (Menu              : access Gtk_Menu_Record;
-         Parent_Menu_Shell : access Gtk.Menu_Shell.Gtk_Menu_Shell_Record'Class;
-         Parent_Menu_Item  : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
-         Func              : in Gtk_Menu_Position_Func;
          Data              : access Data_Type;
-         Button            : in Guint;
-         Activate_Time     : in Guint32)
+         Parent_Menu_Shell : in Gtk.Menu_Shell.Gtk_Menu_Shell := null;
+         Parent_Menu_Item  : in Gtk.Menu_Item.Gtk_Menu_Item := null;
+         Func              : in Gtk_Menu_Position_Func := null;
+         Button            : in Guint := 1;
+         Activate_Time     : in Guint32 := 0)
       is
          procedure Internal (Menu          : System.Address;
                              Parent_M      : System.Address;
@@ -335,7 +370,17 @@ package body Gtk.Menu is
                              Button        : Guint;
                              Activate_Time : Guint32);
          pragma Import (C, Internal, "gtk_menu_popup");
+
+         Parent_Shell : System.Address := System.Null_Address;
+         Parent_Item  : System.Address := System.Null_Address;
       begin
+         if Parent_Menu_Shell /= null then
+            Parent_Shell := Get_Object (Parent_Menu_Shell);
+         end if;
+         if Parent_Menu_Item /= null then
+            Parent_Item := Get_Object (Parent_Menu_Item);
+         end if;
+
          Internal (Get_Object (Menu),
                    Get_Object (Parent_Menu_Shell),
                    Get_Object (Parent_Menu_Item),
@@ -344,7 +389,7 @@ package body Gtk.Menu is
                    Button,
                    Activate_Time);
       end Popup;
-   end Menu_Popup;
+   end User_Menu_Popup;
 
    --------------
    -- Generate --
