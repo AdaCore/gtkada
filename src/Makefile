@@ -42,7 +42,7 @@ RANLIB = ranlib
 
 all: libgtkada.so libgtkada.a
 
-libgtkada.so:: test_link.o
+libgtkada.so:: test_link.o $(c_objects)
 	$(CC) -shared -o libgtkada.so g*.o $(c_objects)
 
 libgtkada.a::
