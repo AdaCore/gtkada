@@ -177,7 +177,7 @@ package body Glib.Glade is
    begin
       for J in S'Range loop
          if S (J) = ASCII.LF then
-            T (K .. K + 15) := """ & ASCII.LF & """;
+            T (K .. K + 15) := """ & ASCII.LF" & ASCII.LF & "& """;
             K := K + 16;
 
          --  Skip additional CR present on Win32
