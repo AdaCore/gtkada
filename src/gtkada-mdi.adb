@@ -76,8 +76,6 @@ with Ada.Unchecked_Deallocation;
 with Ada.Unchecked_Conversion;
 with Ada.Tags;         use Ada.Tags;
 with System;           use System;
-with GNAT.IO; use GNAT.IO;
-with Ada.Exceptions; use Ada.Exceptions;
 
 package body Gtkada.MDI is
 
@@ -1351,11 +1349,12 @@ package body Gtkada.MDI is
       Free (Event);
 
    exception
-      when E : others =>
+      when others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the button in Initialize
-         Put_Line ("Unexpected exception " & Exception_Information (E));
+
+         null;
    end Close_Child;
 
    -------------------
