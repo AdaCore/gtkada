@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001-2003                       --
+--                     Copyright (C) 2001-2004                       --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -193,13 +193,13 @@ package Gtk.Extra.Plot_3D is
 
    procedure Axis_Set_Scale
      (Plot  : access Gtk_Plot_3D_Record;
-      Axis  : Gtk.Extra.Plot.Plot_Axis_Pos;
+      Axis  : Gtk.Extra.Plot.Plot_Orientation;
       Scale : Gtk.Extra.Plot.Plot_Scale);
    --  Set the scale for the axis
 
    function Axis_Get_Scale
      (Plot  : access Gtk_Plot_3D_Record;
-      Axis  : Gtk.Extra.Plot.Plot_Axis_Pos)
+      Axis  : Gtk.Extra.Plot.Plot_Orientation)
       return Gtk.Extra.Plot.Plot_Scale;
    --  Get the current sale for the axis
 
