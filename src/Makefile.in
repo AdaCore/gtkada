@@ -45,7 +45,7 @@ ARCHIVENAME   = libgtkada.a
 
 GTKADA_CONFIG = gtkada-config
 GATE_SRC      = gate.adb
-GATE_EX       = gate.ex
+GATE_EX       = gate-in.exe
 GATE          = gate
 DGATE         = dgate
 

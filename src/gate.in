@@ -7,7 +7,7 @@ fi
 
 echo Generating Ada files...
 
-info=`gate.ex -p -s $*`
+info=`gate-in.exe -p -s $*`
 
 if [ $? != 0 ]; then
   echo "Couldn't parse $*. Exiting."
@@ -28,7 +28,7 @@ tmp=$gt/tmp
 /bin/rm -rf $tmp
 mkdir $tmp
 wd=`pwd`
-gate.ex $args > $tmp/gate.ada
+gate-in.exe $args > $tmp/gate.ada
 
 if [ $? != 0 ]; then
   echo "Couldn't generate Ada code. Exiting."
