@@ -32,6 +32,7 @@ with Pango.Font;       use Pango.Font;
 with Gdk;              use Gdk;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Cursor;       use Gdk.Cursor;
+with Gdk.Dnd;          use Gdk.Dnd;
 with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Font;         use Gdk.Font;
@@ -49,6 +50,7 @@ with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
 with Gtk.Container;    use Gtk.Container;
+with Gtk.Dnd;          use Gtk.Dnd;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Event_Box;    use Gtk.Event_Box;
 with Gtk.Fixed;        use Gtk.Fixed;
@@ -63,6 +65,7 @@ with Gtk.Notebook;     use Gtk.Notebook;
 with Gtk.Object;
 with Gtk.Pixmap;       use Gtk.Pixmap;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
+with Gtk.Selection;    use Gtk.Selection;
 with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Window;       use Gtk.Window;
@@ -70,6 +73,7 @@ with Gtkada.Handlers;  use Gtkada.Handlers;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Ada.Unchecked_Deallocation;
+with Ada.Unchecked_Conversion;
 with Ada.Tags;         use Ada.Tags;
 with System;           use System;
 
@@ -93,7 +97,10 @@ package body Gtkada.MDI is
    --  <preferences> Background color to use for the MDI window
 
    Border_Thickness : constant Gint := 4;
-   --  <preferences> Thickness of the windows in the MDI
+   --  <preferences> Thickness of the separators in the MDI
+
+   Drop_Area_Thickness : constant Gint := 4;
+   --  Thickness of the Dnd drop areas on each side of the MDI.
 
    Title_Font : constant String := "Helvetica 7";
    --  <preferences> Name of the font to use in the title bar
@@ -124,6 +131,11 @@ package body Gtkada.MDI is
    --  Extra tolerance when the user selects a corner for resizing (if the
    --  pointer is within Corner_Size in both coordinates, then we are clicking
    --  on the corner)
+
+   Close_Floating_Is_Unfloat : constant Boolean := True;
+   --  True if destroying a floating window will put the child back in the MDI
+   --  instead of destroying it. False if the child should be destroyed
+   --  (provided it accepts so in its delete_event handler).
 
    MDI_Class_Record        : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
@@ -182,6 +194,20 @@ package body Gtkada.MDI is
       New_String ("..+.....+...."),
       New_String ("..+++++++...."),
       New_String ("............."));
+
+   Widget_Target_Dnd      : constant Guint := 0;
+   Root_Window_Target_Dnd : constant Guint := 1;
+   Widget_Format          : constant Gint  := 111;
+   --  Internal values for drag-and-drop support. Values are random, they just
+   --  need to be different from one another.
+
+   Source_Target_Table : constant Target_Entry_Array :=
+     ((New_String ("gps/widget"), Target_No_Constraint, Widget_Target_Dnd),
+      (New_String ("application/x-rootwin-drop"), Target_No_Constraint,
+       Root_Window_Target_Dnd));
+   Dest_Target_Table : constant Target_Entry_Array :=
+     (1 => (New_String ("gps/widget"), Target_Same_App, Widget_Target_Dnd));
+   --  The various mime types support by the drag-and-drop in the MDI.
 
    use Widget_List;
 
@@ -311,6 +337,10 @@ package body Gtkada.MDI is
 
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class);
    procedure Realize_MDI_Layout (MDI : access Gtk_Widget_Record'Class);
+   procedure Set_Dnd_Source
+     (Widget : access Gtk_Widget_Record'Class;
+      Child  : access Gtk_Widget_Record'Class);
+   procedure Set_Dnd_Target (Widget : access Gtk_Widget_Record'Class);
    --  Called when the child is realized.
 
    function Expose_MDI
@@ -377,6 +407,14 @@ package body Gtkada.MDI is
 
    package Widget_Idle is new Gtk.Main.Idle (Raise_Idle_Data);
 
+   procedure Source_Drag_Data_Get
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class; Args : Gtk_Args);
+   --  Called when a drag source must emit some data
+
+   procedure Target_Drag_Data_Received
+     (Notebook : access Gtk.Widget.Gtk_Widget_Record'Class; Args : Gtk_Args);
+   --  Called when some data is received by a drop site
+
    -------------------------
    -- Set_Focus_Child_MDI --
    -------------------------
@@ -435,12 +473,9 @@ package body Gtkada.MDI is
          Class_Record => MDI_Layout_Class_Record,
          Type_Name    => "GtkAdaMDI_Layout");
 
-      --  All the resizing for the children is handled by the MDI itself, and
-      --  resize events should not be propagated to the parent of the MDI.
+      Set_Dnd_Target (MDI_Window (MDI).Layout);
 
-      --  Set_Resize_Mode (MDI, Resize_Queue);
-
-      Put (MDI, MDI.Layout, 0, 0);
+      Put (MDI, MDI.Layout, Drop_Area_Thickness, Drop_Area_Thickness);
 
       Widget_Callback.Connect
         (MDI, "realize", Widget_Callback.To_Marshaller (Realize_MDI'Access));
@@ -467,6 +502,12 @@ package body Gtkada.MDI is
 
       Widget_Callback.Connect
         (MDI, "set_focus_child", Set_Focus_Child_MDI'Access);
+
+      for S in Left .. Bottom loop
+         Gtk_New (MDI.Drop_Sites (S));
+         Put (MDI, MDI.Drop_Sites (S), 0, 0);
+         Set_Dnd_Target (MDI.Drop_Sites (S));
+      end loop;
    end Initialize;
 
    ------------------------
@@ -541,36 +582,6 @@ package body Gtkada.MDI is
 
       Destroy (Cursor);
       Destroy (Window_Attr);
-
-      --  Initialize the size of all children.
-      --  This couldn't be done earlier since the child would have requested
-      --  a size of 0x0..
-      --  ??? Should put children at 0x0 while MDI is not realized, and
-      --  provide a Compute_Layout subprogram, since Realize can be called
-      --  several times.
-
-      --  Gdk_New (Region);
-
-      --  while Tmp /= Null_List loop
-      --     Child := MDI_Child (Get_Data (Tmp));
-
-      --     if Child.State /= Docked then
-      --        Size_Request (Child, Child_Req);
-      --        Child.Uniconified_Width := Child_Req.Width;
-      --        Child.Uniconified_Height := Child_Req.Height;
-      --        Layout_Child (Child, Region);
-      --        Union_With_Rect
-      --          (Region, Region,
-      --           (Child.X, Child.Y,
-      --            GRectangle_Length (Child.Uniconified_Width),
-      --            GRectangle_Length (Child.Uniconified_Height)));
-      --     end if;
-
-      --     Tmp := Next (Tmp);
-      --  end loop;
-
-      --  Free (List);
-      --  Destroy (Region);
    end Realize_MDI;
 
    ----------------------------
@@ -815,7 +826,7 @@ package body Gtkada.MDI is
          then
             Alloc.Y := M.Docks_Size (Top) + Handle_Size;
          else
-            Alloc.Y := 0;
+            Alloc.Y := Drop_Area_Thickness;
          end if;
 
          Alloc.Height := Allocation_Int (MDI_Height - Alloc.Y);
@@ -827,6 +838,8 @@ package body Gtkada.MDI is
               - Allocation_Int (M.Docks_Size (Bottom) + Handle_Size);
          end if;
 
+         Alloc.Height := Alloc.Height - Drop_Area_Thickness;
+
          Show (M.Handles (Left));
          Gdk.Window.Move_Resize
            (M.Handles (Left), Alloc.X, Alloc.Y,
@@ -837,14 +850,15 @@ package body Gtkada.MDI is
 
       if M.Docks_Size (Right) /= 0 then
          Alloc.Width := Allocation_Int (Handle_Size);
-         Alloc.X := MDI_Width - M.Docks_Size (Right) - Handle_Size;
+         Alloc.X := MDI_Width - M.Docks_Size (Right) - Handle_Size
+           - Drop_Area_Thickness;
 
          if M.Priorities (Top) <= M.Priorities (Right)
            and then M.Docks_Size (Top) /= 0
          then
             Alloc.Y := M.Docks_Size (Top) + Handle_Size;
          else
-            Alloc.Y := 0;
+            Alloc.Y := Drop_Area_Thickness;
          end if;
 
          Alloc.Height := Allocation_Int (MDI_Height - Alloc.Y);
@@ -866,12 +880,12 @@ package body Gtkada.MDI is
 
       if M.Docks_Size (Top) /= 0 then
          Alloc.Height := Allocation_Int (Handle_Size);
-         Alloc.Y := M.Docks_Size (Top);
+         Alloc.Y := M.Docks_Size (Top) + Drop_Area_Thickness;
 
          if M.Docks_Size (Left) = 0
            or else M.Priorities (Top) < M.Priorities (Left)
          then
-            Alloc.X := 0;
+            Alloc.X := Drop_Area_Thickness;
          else
             Alloc.X := M.Docks_Size (Left) + Handle_Size;
          end if;
@@ -884,6 +898,8 @@ package body Gtkada.MDI is
             Alloc.Width := Alloc.Width
               - Allocation_Int (M.Docks_Size (Right) + Handle_Size);
          end if;
+
+         Alloc.Width := Alloc.Width - Drop_Area_Thickness;
 
          Show (M.Handles (Top));
          Gdk.Window.Move_Resize
@@ -901,7 +917,7 @@ package body Gtkada.MDI is
          if M.Docks_Size (Left) = 0
            or else M.Priorities (Bottom) < M.Priorities (Left)
          then
-            Alloc.X := 0;
+            Alloc.X := Drop_Area_Thickness;
          else
             Alloc.X := M.Docks_Size (Left) + Handle_Size;
          end if;
@@ -914,6 +930,8 @@ package body Gtkada.MDI is
             Alloc.Width := Alloc.Width
               - Allocation_Int (M.Docks_Size (Right) + Handle_Size);
          end if;
+
+         Alloc.Width := Alloc.Width - Drop_Area_Thickness;
 
          Show (M.Handles (Bottom));
          Gdk.Window.Move_Resize
@@ -956,13 +974,13 @@ package body Gtkada.MDI is
       if MDI.Docks (Left) /= null then
          Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
       else
-         Alloc.X := 0;
+         Alloc.X := Drop_Area_Thickness;
       end if;
 
       if MDI.Docks (Top) /= null then
-         Alloc.Y := MDI.Docks_Size (Top) + Handle_Size;
+         Alloc.Y := MDI.Docks_Size (Top) + Handle_Size + Drop_Area_Thickness;
       else
-         Alloc.Y := 0;
+         Alloc.Y := Drop_Area_Thickness;
       end if;
 
       Alloc.Width := Get_Allocation_Width (MDI) - Allocation_Int (Alloc.X);
@@ -970,6 +988,7 @@ package body Gtkada.MDI is
          Alloc.Width := Alloc.Width -
            Allocation_Int (Handle_Size + MDI.Docks_Size (Right));
       end if;
+      Alloc.Width := Alloc.Width - Drop_Area_Thickness;
 
       Alloc.Height := Get_Allocation_Height (MDI) - Allocation_Int (Alloc.Y);
       if MDI.Docks (Bottom) /= null then
@@ -1019,15 +1038,17 @@ package body Gtkada.MDI is
       --  Left dock
 
       if MDI.Docks (Left) /= null then
-         Alloc.X := 0;
-         Alloc.Width := Allocation_Int (MDI.Docks_Size (Left));
+         Alloc.X := Drop_Area_Thickness;
+         Alloc.Width := Allocation_Int (MDI.Docks_Size (Left))
+           - Drop_Area_Thickness;
 
          if MDI.Priorities (Top) <= MDI.Priorities (Left)
            and then MDI.Docks_Size (Top) /= 0
          then
-            Alloc.Y := MDI.Docks_Size (Top) + Handle_Size;
+            Alloc.Y := MDI.Docks_Size (Top) + Handle_Size
+              + Drop_Area_Thickness;
          else
-            Alloc.Y := 0;
+            Alloc.Y := Drop_Area_Thickness;
          end if;
 
          Alloc.Height := MDI_Alloc_Height - Allocation_Int (Alloc.Y);
@@ -1039,6 +1060,8 @@ package body Gtkada.MDI is
               - Allocation_Int (MDI.Docks_Size (Bottom) + Handle_Size);
          end if;
 
+         Alloc.Height := Alloc.Height - Drop_Area_Thickness;
+
          Size_Allocate (MDI.Docks (Left), Alloc);
       end if;
 
@@ -1046,14 +1069,16 @@ package body Gtkada.MDI is
 
       if MDI.Docks (Right) /= null then
          Alloc.Width := Allocation_Int (MDI.Docks_Size (Right));
-         Alloc.X := Gint (MDI_Alloc_Width - Alloc.Width);
+         Alloc.X := Gint (MDI_Alloc_Width - Alloc.Width)
+           - Drop_Area_Thickness;
 
          if MDI.Priorities (Top) <= MDI.Priorities (Right)
            and then MDI.Docks_Size (Top) /= 0
          then
-            Alloc.Y := MDI.Docks_Size (Top) + Handle_Size;
+            Alloc.Y := MDI.Docks_Size (Top) + Handle_Size
+              + Drop_Area_Thickness;
          else
-            Alloc.Y := 0;
+            Alloc.Y := Drop_Area_Thickness;
          end if;
 
          Alloc.Height := MDI_Alloc_Height - Allocation_Int (Alloc.Y);
@@ -1070,7 +1095,7 @@ package body Gtkada.MDI is
       --  Top dock
 
       if MDI.Docks (Top) /= null then
-         Alloc.Y := 0;
+         Alloc.Y := Drop_Area_Thickness;
          Alloc.Height := Allocation_Int (MDI.Docks_Size (Top));
 
          if MDI.Priorities (Left) < MDI.Priorities (Top)
@@ -1078,7 +1103,7 @@ package body Gtkada.MDI is
          then
             Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
          else
-            Alloc.X := 0;
+            Alloc.X := Drop_Area_Thickness;
          end if;
 
          Alloc.Width := MDI_Alloc_Width - Allocation_Int (Alloc.X);
@@ -1089,21 +1114,25 @@ package body Gtkada.MDI is
               - Allocation_Int (MDI.Docks_Size (Right) + Handle_Size);
          end if;
 
+         Alloc.Width := Alloc.Width - Drop_Area_Thickness;
+
          Size_Allocate (MDI.Docks (Top), Alloc);
       end if;
 
       --  Bottom dock
 
       if MDI.Docks (Bottom) /= null then
-         Alloc.Height := Allocation_Int (MDI.Docks_Size (Bottom));
-         Alloc.Y := Gint (MDI_Alloc_Height - Alloc.Height);
+         Alloc.Height := Allocation_Int (MDI.Docks_Size (Bottom))
+           - Drop_Area_Thickness;
+         Alloc.Y := Gint (MDI_Alloc_Height - Alloc.Height)
+           - Drop_Area_Thickness;
 
          if MDI.Priorities (Left) < MDI.Priorities (Bottom)
            and then MDI.Docks_Size (Left) /= 0
          then
             Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
          else
-            Alloc.X := 0;
+            Alloc.X := Drop_Area_Thickness;
          end if;
 
          Alloc.Width := MDI_Alloc_Width - Allocation_Int (Alloc.X);
@@ -1114,6 +1143,8 @@ package body Gtkada.MDI is
             Alloc.Width := Alloc.Width
               - Allocation_Int (MDI.Docks_Size (Right) + Handle_Size);
          end if;
+
+         Alloc.Width := Alloc.Width - Drop_Area_Thickness;
 
          Size_Allocate (MDI.Docks (Bottom), Alloc);
       end if;
@@ -1126,6 +1157,25 @@ package body Gtkada.MDI is
       else
          Size_Allocate (MDI.Layout, Alloc);
       end if;
+
+      Alloc := (X => 0, Y => 0, Width => MDI_Alloc_Width,
+                Height => Drop_Area_Thickness);
+      Size_Allocate (MDI.Drop_Sites (Top), Alloc);
+
+      Alloc := (X => 0, Y => MDI_Alloc_Height - Drop_Area_Thickness,
+                Width => MDI_Alloc_Width,
+                Height => Drop_Area_Thickness);
+      Size_Allocate (MDI.Drop_Sites (Bottom), Alloc);
+
+      Alloc := (X => 0, Y => Drop_Area_Thickness, Width => Drop_Area_Thickness,
+                Height => MDI_Alloc_Height - 2 * Drop_Area_Thickness);
+      Size_Allocate (MDI.Drop_Sites (Left), Alloc);
+
+      Alloc := (X => MDI_Alloc_Width - Drop_Area_Thickness,
+                Y => Drop_Area_Thickness,
+                Width => Drop_Area_Thickness,
+                Height => MDI_Alloc_Height - 2 * Drop_Area_Thickness);
+      Size_Allocate (MDI.Drop_Sites (Right), Alloc);
 
       Reposition_Handles (MDI);
    end Compute_Docks_Size;
@@ -1543,12 +1593,14 @@ package body Gtkada.MDI is
          when Left | Right =>
             M.Current_X := Gint (Get_X (Event)) + Win_X;
             M.Current_W := M.Current_X;
-            M.Current_Y := 0;
-            M.Current_H := Gint (Get_Allocation_Height (M));
+            M.Current_Y := Drop_Area_Thickness;
+            M.Current_H := Gint (Get_Allocation_Height (M))
+              - 2 * Drop_Area_Thickness;
 
          when Top | Bottom =>
-            M.Current_X := 0;
-            M.Current_W := Gint (Get_Allocation_Width (M));
+            M.Current_X := Drop_Area_Thickness;
+            M.Current_W := Gint (Get_Allocation_Width (M))
+              - 2 * Drop_Area_Thickness;
             M.Current_Y := Gint (Get_Y (Event)) + Win_Y;
             M.Current_H := M.Current_Y;
 
@@ -2061,6 +2113,8 @@ package body Gtkada.MDI is
 
    begin
       Gtk.Event_Box.Initialize (Child);
+      Set_Dnd_Source (Child, Child);
+
       Child.Initial := Gtk_Widget (Widget);
       Child.Uniconified_Width := -1;
       Set_Flags (Child, App_Paintable);
@@ -2150,6 +2204,7 @@ package body Gtkada.MDI is
          Child.Initial_Child := Gtk_Widget (Widget);
          Add (Event, Widget);
       end if;
+
       Widget_Callback.Object_Connect
         (Child.Initial_Child, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Initial_Child'Access),
@@ -2787,8 +2842,14 @@ package body Gtkada.MDI is
 
       pragma Assert
         (not (MDI_Child (Child).Initial.all in Gtk_Window_Record'Class));
-      return Return_Callback.Emit_By_Name
-        (MDI_Child (Child).Initial, "delete_event", Event);
+
+      if Close_Floating_Is_Unfloat then
+         Float_Child (MDI_Child (Child), False);
+         return True;
+      else
+         return Return_Callback.Emit_By_Name
+           (MDI_Child (Child).Initial, "delete_event", Event);
+      end if;
    end Delete_Child;
 
    -----------------
@@ -2931,6 +2992,7 @@ package body Gtkada.MDI is
          end if;
 
          Show_All (MDI.Docks (Side));
+         Set_Dnd_Target (MDI.Docks (Side));
 
       else
          Set_Show_Tabs
@@ -2948,6 +3010,7 @@ package body Gtkada.MDI is
       Child : access MDI_Child_Record'Class)
    is
       Label : Gtk_Label;
+      Event : Gtk_Event_Box;
    begin
       --  Embed the contents of the child into the notebook, and mark
       --  Child as docked, so that we can't manipulate it afterwards.
@@ -2983,11 +3046,20 @@ package body Gtkada.MDI is
       end if;
 
       Create_Notebook (MDI, Side);
+
+      Gtk_New (Event);
       Gtk_New (Label, Child.Short_Title.all);
-      Append_Page (MDI.Docks (Side), Child, Label);
+      Add (Event, Label);
+      Show (Label);
+      Append_Page (MDI.Docks (Side), Child, Event);
       Unref (Child);
 
       Set_Sensitive (Child.Minimize_Button, False);
+
+      --  Setup drag-and-drop, so that items can be moved from one location to
+      --  another.
+
+      Set_Dnd_Source (Event, Child);
    end Put_In_Notebook;
 
    --------------------------
@@ -3059,6 +3131,7 @@ package body Gtkada.MDI is
             Put (MDI.Layout, Child, 0, 0);
             Size_Allocate (Child, Alloc);
             Unref (Child);
+            Queue_Resize (Child);
          end if;
          Child.State := Normal;
 
@@ -4118,5 +4191,180 @@ package body Gtkada.MDI is
    begin
       return MDI.Desktop_Was_Loaded;
    end Desktop_Was_Loaded;
+
+   --------------------------
+   -- Source_Drag_Data_Get --
+   --------------------------
+
+   procedure Source_Drag_Data_Get
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Args   : Gtk_Args)
+   is
+      Data  : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 2));
+      Info  : constant Guint          := To_Guint (Args, 3);
+      Child : constant MDI_Child      := MDI_Child (Widget);
+
+   begin
+      if Info = Root_Window_Target_Dnd then
+         Float_Child (Child, True);
+         Set_Focus_Child (Child);
+         Raise_Child (Child);
+
+      elsif Info = Widget_Target_Dnd then
+         Selection_Data_Set
+           (Data,
+            The_Type => Get_Target (Data),
+            Format   => Widget_Format,
+            Data     => Child'Address,
+            Length   => Child'Size);
+      end if;
+   end Source_Drag_Data_Get;
+
+   -------------------------------
+   -- Target_Drag_Data_Received --
+   -------------------------------
+
+   procedure Target_Drag_Data_Received
+     (Notebook : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Args     : Gtk_Args)
+   is
+      Context : constant Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
+      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 4));
+      Info : constant Guint := To_Guint (Args, 5);
+      Time : constant Guint := To_Guint (Args, 6);
+
+      Child : MDI_Child;
+      Old   : Gtk_Notebook;
+
+      type Gtk_Widget_Access is access Gtk_Widget;
+      function Unchecked_Convert is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Widget_Access);
+
+   begin
+      if Get_Length (Data) >= 0
+        and then Info = Widget_Target_Dnd
+      then
+         case Get_Format (Data) is
+            when Widget_Format =>
+               Child := MDI_Child (Unchecked_Convert (Get_Data (Data)).all);
+
+               if Notebook.all in Gtk_Fixed_Record'Class then
+                  if Child.State /= Normal then
+                     Dock_Child (Child, False);
+                  end if;
+
+                  Set_Focus_Child (Child);
+                  Raise_Child (Child);
+
+                  Finish
+                    (Context,
+                     Success => True,
+                     Del     => False,
+                     Time    => Guint32 (Time));
+
+               elsif Notebook.all in Gtk_Event_Box_Record'Class then
+                  --  We have to first undock it, or we can't move it to
+                  --  another dock
+                  Dock_Child (Child, False);
+
+                  for Side in Left .. Bottom loop
+                     if Gtk_Event_Box (Notebook) =
+                       Child.MDI.Drop_Sites (Side)
+                     then
+                        Child.Dock := Side;
+                        Dock_Child (Child, True);
+                        exit;
+                     end if;
+                  end loop;
+
+                  Finish
+                    (Context,
+                     Success => True,
+                     Del     => False,
+                     Time    => Guint32 (Time));
+
+               elsif Child.State /= Docked
+                 or else Child.MDI.Docks (Child.Dock) /=
+                    Gtk_Notebook (Notebook)
+               then
+
+                  Old := Child.MDI.Docks (Child.Dock);
+
+                  --  We have to first undock it, or we can't move it to
+                  --  another dock
+                  Dock_Child (Child, False);
+
+                  for Side in Dock_Side'Range loop
+                     if Gtk_Notebook (Notebook) = Child.MDI.Docks (Side) then
+                        if Side /= None then
+                           Child.Dock := Side;
+                           Dock_Child (Child, True);
+                        end if;
+                        exit;
+                     end if;
+                  end loop;
+
+                  Set_Focus_Child (Child);
+                  Raise_Child (Child);
+
+                  Finish
+                    (Context,
+                     Success => True,
+                     Del     => False,
+                     Time    => Guint32 (Time));
+               else
+                  Finish
+                    (Context,
+                     Success => False,
+                     Del     => False,
+                     Time    => Guint32 (Time));
+               end if;
+
+            when others =>
+               Finish
+                 (Context,
+                  Success => False,
+                  Del     => False,
+                  Time    => Guint32 (Time));
+         end case;
+      end if;
+   end Target_Drag_Data_Received;
+
+   --------------------
+   -- Set_Dnd_Target --
+   --------------------
+
+   procedure Set_Dnd_Target (Widget : access Gtk_Widget_Record'Class) is
+   begin
+      --  Set up the notebook as a possible drag-and-drop target, so that
+      --  items can be moved from one to another by dragging them.
+
+      Gtk.Dnd.Dest_Set (Widget  => Widget,
+                        Flags   => Dest_Default_All,
+                        Targets => Dest_Target_Table,
+                        Actions => Action_Copy);
+      Widget_Callback.Connect
+        (Widget, "drag_data_received", Target_Drag_Data_Received'Access);
+   end Set_Dnd_Target;
+
+   --------------------
+   -- Set_Dnd_Source --
+   --------------------
+
+   procedure Set_Dnd_Source
+     (Widget : access Gtk_Widget_Record'Class;
+      Child  : access Gtk_Widget_Record'Class)
+   is
+   begin
+      --  Set up the drag-and-drop (when clicking in the title bar), so that
+      --  the item can be moved to another notebook by dragging it
+
+      Gtk.Dnd.Source_Set (Widget            => Widget,
+                          Start_Button_Mask => Button1_Mask,
+                          Targets           => Source_Target_Table,
+                          Actions           => Action_Copy);
+      Widget_Callback.Object_Connect
+        (Widget, "drag_data_get", Source_Drag_Data_Get'Access, Child);
+   end Set_Dnd_Source;
 
 end Gtkada.MDI;
