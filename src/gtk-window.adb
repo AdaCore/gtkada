@@ -74,11 +74,11 @@ package body Gtk.Window is
    is
       procedure Internal
         (Window      : System.Address;
-         Accel_Group : Gtk_Accel_Group);
+         Accel_Group : System.Address);
       pragma Import (C, Internal, "gtk_window_add_accel_group");
 
    begin
-      Internal (Get_Object (Window), Accel_Group);
+      Internal (Get_Object (Window), Get_Object (Accel_Group));
    end Add_Accel_Group;
 
    ---------------
@@ -245,11 +245,12 @@ package body Gtk.Window is
       Accel_Group : Gtk_Accel_Group)
    is
       procedure Internal
-        (Window : System.Address; Accel_Group : Gtk_Accel_Group);
+        (Window      : System.Address;
+         Accel_Group : System.Address);
       pragma Import (C, Internal, "gtk_window_remove_accel_group");
 
    begin
-      Internal (Get_Object (Window), Accel_Group);
+      Internal (Get_Object (Window), Get_Object (Accel_Group));
    end Remove_Accel_Group;
 
    -------------------

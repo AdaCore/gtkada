@@ -61,7 +61,7 @@ package body Gtk.Widget is
       procedure Internal
         (Widget       : System.Address;
          Accel_Signal : String;
-         Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
+         Accel_Group  : System.Address;
          Accel_Key    : Gdk.Types.Gdk_Key_Type;
          Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
          Accel_Flags  : Gtk.Accel_Group.Gtk_Accel_Flags);
@@ -71,7 +71,7 @@ package body Gtk.Widget is
       Internal
         (Get_Object (Widget),
          Accel_Signal & ASCII.NUL,
-         Accel_Group,
+         Get_Object (Accel_Group),
          Accel_Key,
          Accel_Mods,
          Accel_Flags);
@@ -761,13 +761,16 @@ package body Gtk.Widget is
    is
       procedure Internal
         (Widget      : System.Address;
-         Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group;
+         Accel_Group : System.Address;
          Accel_Key   : Gdk.Types.Gdk_Key_Type;
          Accel_Mods  : Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gtk_widget_remove_accelerator");
 
    begin
-      Internal (Get_Object (Widget), Accel_Group, Accel_Key, Accel_Mods);
+      Internal (Get_Object (Widget),
+                Get_Object (Accel_Group),
+                Accel_Key,
+                Accel_Mods);
    end Remove_Accelerator;
 
    --------------

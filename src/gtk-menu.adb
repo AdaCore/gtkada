@@ -79,11 +79,14 @@ package body Gtk.Menu is
      (Menu : access Gtk_Menu_Record) return Accel_Group.Gtk_Accel_Group
    is
       function Internal
-        (Menu : System.Address) return Accel_Group.Gtk_Accel_Group;
+        (Menu : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_menu_get_accel_group");
 
+      A : Accel_Group.Gtk_Accel_Group
+        := new Accel_Group.Gtk_Accel_Group_Record;
    begin
-      return Internal (Get_Object (Menu));
+      Set_Object (A, Internal (Get_Object (Menu)));
+      return A;
    end Get_Accel_Group;
 
    ----------------
@@ -193,13 +196,12 @@ package body Gtk.Menu is
    is
       procedure Internal
         (Menu        : System.Address;
-         Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group);
+         Accel_Group : System.Address);
       pragma Import (C, Internal, "gtk_menu_set_accel_group");
 
    begin
-      Internal (Get_Object (Menu), Accel);
+      Internal (Get_Object (Menu), Get_Object (Accel));
    end Set_Accel_Group;
-
 
    ----------------
    -- Set_Active --
@@ -212,7 +214,6 @@ package body Gtk.Menu is
    begin
       Internal (Get_Object (Menu), Index);
    end Set_Active;
-
 
    ---------------
    -- Set_Title --

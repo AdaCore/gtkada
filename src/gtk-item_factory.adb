@@ -51,7 +51,7 @@ package body Gtk.Item_Factory is
       procedure Internal
         (Accel_Widget : System.Address;
          Full_Path    : String;
-         Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
+         Accel_Group  : System.Address;
          Keyval       : Guint;
          Modifiers    : Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gtk_item_factory_add_foreign");
@@ -59,7 +59,7 @@ package body Gtk.Item_Factory is
    begin
       Internal (Get_Object (Accel_Widget),
                 Full_Path & ASCII.NUL,
-                Accel_Group,
+                Get_Object (Accel_Group),
                 Keyval,
                 Modifiers);
    end Add_Foreign;
@@ -544,14 +544,16 @@ package body Gtk.Item_Factory is
       function Internal
         (Container_Type : Gtk_Type;
          Path           : String;
-         Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group)
+         Accel_Group    : System.Address)
          return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_new");
 
    begin
       Set_Object
         (Ifactory,
-         Internal (Container_Type, Path & ASCII.NUL, Accel_Group));
+         Internal (Container_Type,
+                   Path & ASCII.NUL,
+                   Get_Object (Accel_Group)));
    end Initialize;
 
 end Gtk.Item_Factory;

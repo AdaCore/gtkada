@@ -108,11 +108,12 @@ package body Gtk.Image_Menu_Item is
    is
       function Internal
         (Stock_Id    : String;
-         Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group) return System.Address;
+         Accel_Group : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_menu_item_new_from_stock");
 
    begin
-      Set_Object (Widget, Internal (Stock_Id & ASCII.NUL, Accel_Group));
+      Set_Object (Widget,
+                  Internal (Stock_Id & ASCII.NUL, Get_Object (Accel_Group)));
       Initialize_User_Data (Widget);
    end Initialize;
 
