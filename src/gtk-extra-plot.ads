@@ -47,10 +47,14 @@
 --  Most points in the plot have also this relative coordinates systems, which
 --  makes it really easy to handle resizing of a plot window.
 --
+--  See the package Gtk.Extra.Plot_Ps for a way to easily print a Gtk_Plot to
+--  a postscript file.
+--
 --  </description>
 --  <c_version>gtk+extra 0.99<c_version>
 
 with Glib;           use Glib;
+with Glib.Glist;
 with Gdk.Color;
 with Gdk.Drawable;
 with Gdk.GC;
@@ -64,7 +68,17 @@ package Gtk.Extra.Plot is
    type Gtk_Plot_Record is new Gtk.Misc.Gtk_Misc_Record with private;
    type Gtk_Plot is access all Gtk_Plot_Record'Class;
 
-   type Gtk_Plot_Data is private;
+   type Gtk_Plot_Data is new System.Address;
+   type Gtk_Plot_Axis is private;
+   type Gtk_Plot_Text is new System.Address;
+
+   function Convert (S : System.Address) return Gtk_Plot_Data;
+   function Convert (S : Gtk_Plot_Data) return System.Address;
+   package Datasets_List is new Glib.Glist.Generic_List (Gtk_Plot_Data);
+
+   function Convert (S : System.Address) return Gtk_Plot_Text;
+   function Convert (S : Gtk_Plot_Text) return System.Address;
+   package Texts_List is new Glib.Glist.Generic_List (Gtk_Plot_Text);
 
    type No_Range_Gdouble_Array is array (Natural) of Gdouble;
    type No_Range_Gdouble_Array_Access is access all No_Range_Gdouble_Array;
@@ -81,13 +95,28 @@ package Gtk.Extra.Plot is
       Points     : No_Range_Gdouble_Array_Access;
       Num_Points : Gint := 0;
    end record;
+   --  The points are indexed from 0 to Num_Points-1.
+   --  Note that you can't use 'Range, 'First or 'Last on Points.
 
-   type Plot_Function is access
-     function (Plot  : access Gtk_Plot_Record'Class;
-               Set   : in     Gtk_Plot_Data;
-               X     : in     Gdouble;
-               Error : access Boolean)
-              return Gdouble;
+   generic
+      with function Func (Plot  : access Gtk_Plot_Record'Class;
+                          Set   : in     Gtk_Plot_Data;
+                          X     : in     Gdouble;
+                          Error : access Boolean)
+                         return Gdouble;
+   function Generic_Plot_Function (Plot  : System.Address;
+                                   Set   : System.Address;
+                                   X     : Gdouble;
+                                   Error : access Gboolean)
+                                  return Gdouble;
+   --  Generic function that can be instanciated for Plot_Function below.
+
+
+   type Plot_Function is access function (Plot  : System.Address;
+                                          Set   : System.Address;
+                                          X     : Gdouble;
+                                          Error : access Gboolean)
+                                         return Gdouble;
    --  Function used for plotting.
    --  It should return the value associated with X in its graph, and set
    --  Error to True if there was an error while calculating the value.
@@ -168,16 +197,18 @@ package Gtk.Extra.Plot is
    ---------------------
 
    procedure Gtk_New (Plot     : out Gtk_Plot;
-                      Drawable : in Gdk.Drawable.Gdk_Drawable);
+                      Drawable : in Gdk.Drawable.Gdk_Drawable
+                        :=  Gdk.Drawable.Null_Drawable);
    --  Creates a new plot, that will be displayed in Drawable.
    --  All the dataset, labels, axis,... associated with the plot will be drawn
    --  in that drawable, which must have been created beforehand.
    --  Note that the drawable can also be set later with Set_Drawable.
 
    procedure Gtk_New (Plot     : out Gtk_Plot;
-                      Drawable : in Gdk.Drawable.Gdk_Drawable;
                       Width    : in Gdouble;
-                      Height   : in Gdouble);
+                      Height   : in Gdouble;
+                      Drawable : in Gdk.Drawable.Gdk_Drawable
+                        := Gdk.Drawable.Null_Drawable);
    --  Creates a new plot with a specific size.
 
    procedure Initialize (Plot     : access Gtk_Plot_Record;
@@ -351,9 +382,11 @@ package Gtk.Extra.Plot is
    --  through the Gtk_Plot widget.  Note that there is no noticeable speed
    --  difference between the two, and thus we decided to provide only the
    --  second method here.
-   --       function Get_Axis (Plot   : access Gtk_Plot_Record;
-   --                          Axis   : in Plot_Axis)
-   --                         return      Gtk_Plot_Axis;
+
+   function Get_Axis (Plot   : access Gtk_Plot_Record;
+                      Axis   : in Plot_Axis)
+                     return      Gtk_Plot_Axis;
+   --  Get a pointer to an axis.
 
    procedure Axis_Set_Visible (Plot    : access Gtk_Plot_Record;
                                Axis    : in Plot_Axis;
@@ -610,8 +643,8 @@ package Gtk.Extra.Plot is
       Angle         : in Gint;
       Ps_Font       : in String := "";
       Font_Height   : in Gint := 10;
-      Foreground    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Background    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Foreground    : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Background    : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Justification : in Gtk.Enums.Gtk_Justification
         := Gtk.Enums.Justify_Center;
       Text          : in String := "");
@@ -624,9 +657,24 @@ package Gtk.Extra.Plot is
    --  specify any. Font should be the name of a postscript font, the list of
    --  which can be found in Gtk.Plot.Psfont.
 
-   --     procedure Text_Get_Size (Text   : in Gtk_Plot_Text;
-   --                              Width  : out Gint;
-   --                              Height : out Gint);
+   procedure Text_Get_Size (Text   : in Gtk_Plot_Text;
+                            Width  : out Gint;
+                            Height : out Gint);
+   --  Return the size in pixels occupied by a text in the plot.
+   --  See also Gtk.Extra.Plot_Canvas for a function that returns
+   --  a Gtk_Plot_Text.
+
+   function Get_Texts (Plot : access Gtk_Plot_Record)
+                      return Texts_List.Glist;
+   --  Return the list of all the texts associated with the plot
+
+   procedure Get_Text_Position (Text : in Gtk_Plot_Text;
+                                X    : out Gdouble;
+                                Y    : out Gdouble);
+   --  Return the location of the Text.
+
+   function Get_Text_String (Text : in Gtk_Plot_Text) return String;
+   --  Return the string of the text.
 
    --------------
    -- Datasets --
@@ -672,6 +720,10 @@ package Gtk.Extra.Plot is
    --  The newly allocated set should be freed by calling Free above.
    --  The set is automatically added to the plot, so you don't need to
    --  explicitly call Add_Dataset.
+
+   function Get_Datasets (Plot : access Gtk_Plot_Record)
+                         return Datasets_List.Glist;
+   --  Return the list of all the datasets associated with Plot.
 
    procedure Draw_Dataset (Plot : access Gtk_Plot_Record;
                            Gc   : in Gdk.Gc.Gdk_GC;
@@ -888,11 +940,15 @@ package Gtk.Extra.Plot is
    --  is set. This can only be used for the flags defined in the
    --  Gtk.Extra.Gtk_Plot package.
 
-   procedure Set_Plot_Flags  (Plot  : access Gtk_Plot_Record;
+   procedure Plot_Set_Flags  (Plot  : access Gtk_Plot_Record;
                               Flags : Guint8);
    --  Set the flags for a Gtk_Plot widget or its children. Note that the
    --  flags currently set are not touched by this function. This can only be
    --  used for the flags defined in the Gtk.Extra.Gtk_Plot package.
+
+   procedure Plot_Unset_Flags  (Plot  : access Gtk_Plot_Record;
+                                Flags : Guint8);
+   --  Unset the flags in the widget.
 
    -------------
    -- Signals --
@@ -929,7 +985,7 @@ private
    type Gtk_Plot_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
    pragma Import (C, Get_Type, "gtk_plot_get_type");
 
-   type Gtk_Plot_Data is new System.Address;
+   type Gtk_Plot_Axis is new System.Address;
    for Plot_Label_Mask use (Label_None   => 0,
                             Label_Left   => 1,
                             Label_Right  => 2,
@@ -955,5 +1011,7 @@ private
    pragma Import (C, Dataset_Hide_Legend, "gtk_plot_dataset_hide_legend");
    pragma Import (C, Show_Dataset, "gtk_plot_show_dataset");
    pragma Import (C, Hide_Dataset, "gtk_plot_hide_dataset");
+   pragma Import (C, Text_Get_Size, "gtk_plot_text_get_size");
+   pragma Import (C, Get_Text_Position, "ada_gtk_plot_get_text_position");
 
 end Gtk.Extra.Plot;
