@@ -135,6 +135,18 @@ package body Gtk.Clist is
       Internal (Get_Object (Clist));
    end Column_Titles_Show;
 
+   ----------------------
+   -- Columns_Autosize --
+   ----------------------
+
+   function Columns_Autosize (Clist  : access Gtk_Clist_Record) return Gint
+   is
+      function Internal (Clist  : in System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_clist_columns_autosize");
+   begin
+      return Internal (Get_Object (Clist));
+   end Columns_Autosize;
+
    --------------------
    -- Free_Line_Data --
    --------------------
@@ -156,6 +168,25 @@ package body Gtk.Clist is
    begin
       Internal (Get_Object (Clist));
    end Freeze;
+
+   --------------------
+   -- Get_Cell_Style --
+   --------------------
+
+   function Get_Cell_Style (Clist  : access Gtk_Clist_Record;
+                            Row    : in     Gint;
+                            Column : in     Gint)
+                            return          Gtk.Style.Gtk_Style'Class is
+      function Internal (Clist  : in System.Address;
+                         Row    : in Gint;
+                         Column : in Gint)
+                         return      System.Address;
+      pragma Import (C, Internal, "gtk_clist_get_cell_style");
+      Tmp : Gtk.Style.Gtk_Style;
+   begin
+      Set_Object (Tmp, Internal (Get_Object (Clist), Row, Column));
+      return Tmp;
+   end Get_Cell_Style;
 
    -------------------
    -- Get_Cell_Type --
@@ -225,6 +256,22 @@ package body Gtk.Clist is
       return Interfaces.C.Strings.Value
         (Internal (Get_Object (Clist), Column));
    end Get_Column_Title;
+
+   ---------------------
+   -- Get_Hadjustment --
+   ---------------------
+
+   function Get_Hadjustment (Clist  : access Gtk_Clist_Record)
+                             return          Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Clist  : in System.Address)
+                         return      System.Address;
+      pragma Import (C, Internal, "gtk_clist_get_hadjustment");
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+   begin
+      return Gtk.Adjustment.Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (Clist)), Stub));
+   end Get_Hadjustment;
 
    ----------------
    -- Get_Pixmap --
@@ -296,6 +343,24 @@ package body Gtk.Clist is
       Gdk.Set_Object (Pixmap, Pix);
       Gdk.Set_Object (Mask, Msk);
    end Get_Pixtext;
+
+   -------------------
+   -- Get_Row_Style --
+   -------------------
+
+   function Get_Row_Style (Clist  : access Gtk_Clist_Record;
+                           Row    : in     Gint)
+                           return          Gtk.Style.Gtk_Style'Class
+   is
+      function Internal (Clist  : in System.Address;
+                         Row    : in Gint)
+                         return      System.Address;
+      pragma Import (C, Internal, "gtk_clist_get_row_style");
+      Tmp : Gtk.Style.Gtk_Style;
+   begin
+      Set_Object (Tmp, Internal (Get_Object (Clist), Row));
+      return Tmp;
+   end Get_Row_Style;
 
    --------------------
    -- Get_Selectable --
@@ -395,6 +460,22 @@ package body Gtk.Clist is
          return String'(1 .. 0 => ' ');
       end if;
    end Get_Text;
+
+   ---------------------
+   -- Get_Vadjustment --
+   ---------------------
+
+   function Get_Vadjustment (Clist  : access Gtk_Clist_Record)
+                             return          Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Clist  : in System.Address)
+                         return      System.Address;
+      pragma Import (C, Internal, "gtk_clist_get_vadjustment");
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+   begin
+      return Gtk.Adjustment.Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (Clist)), Stub));
+   end Get_Vadjustment;
 
    -------------
    -- Gtk_New --
@@ -534,6 +615,33 @@ package body Gtk.Clist is
       return Gtk_Visibility'Val (Internal (Get_Object (Clist), Row));
    end Row_Is_Visible;
 
+   --------------
+   -- Row_Move --
+   --------------
+
+   procedure Row_Move (Clist      : access Gtk_Clist_Record;
+                       Source_Row : in     Gint;
+                       Dest_Row   : in     Gint)
+   is
+      procedure Internal (Clist      : in System.Address;
+                          Source_Row : in Gint;
+                          Dest_Row   : in Gint);
+      pragma Import (C, Internal, "gtk_clist_row_move");
+   begin
+      Internal (Get_Object (Clist), Source_Row, Dest_Row);
+   end Row_Move;
+
+   ----------------
+   -- Select_All --
+   ----------------
+
+   procedure Select_All (Clist : access Gtk_Clist_Record) is
+      procedure Internal (Clist : in System.Address);
+      pragma Import (C, Internal, "gtk_clist_select_all");
+   begin
+      Internal (Get_Object (Clist));
+   end Select_All;
+
    ----------------
    -- Select_Row --
    ----------------
@@ -601,23 +709,6 @@ package body Gtk.Clist is
    begin
       Internal (Get_Object (Clist), Row, Column, Get_Object (Style));
    end Set_Cell_Style;
-
-   ---------------------
-   -- Set_Shadow_Type --
-   ---------------------
-
-   procedure Set_Shadow_Type
-     (Clist    : access Gtk_Clist_Record;
-      The_Type : in Gtk_Shadow_Type)
-   is
-      procedure Internal
-        (Clist    : in System.Address;
-         The_Type : in Gint);
-      pragma Import (C, Internal, "gtk_clist_set_shadow_type");
-   begin
-      Internal (Get_Object (Clist),
-                Gtk_Shadow_Type'Pos (The_Type));
-   end Set_Shadow_Type;
 
    ----------------------------
    -- Set_Column_Auto_Resize --
@@ -737,8 +828,8 @@ package body Gtk.Clist is
 
    procedure Set_Column_Widget
      (Clist  : access Gtk_Clist_Record;
-      Column : in Gint;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Column : in     Gint;
+      Widget : in     Gtk.Widget.Gtk_Widget)
    is
       procedure Internal
         (Clist  : in System.Address;
@@ -790,6 +881,22 @@ package body Gtk.Clist is
                 Row,
                 Color'Address);
    end Set_Foreground;
+
+   ---------------------
+   -- Set_Hadjustment --
+   ---------------------
+
+   procedure Set_Hadjustment
+     (Clist      : access Gtk_Clist_Record;
+      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment)
+   is
+      procedure Internal (Clist      : in System.Address;
+                          Adjustment : in System.Address);
+      pragma Import (C, Internal, "gtk_clist_set_hadjustment");
+   begin
+      Internal (Get_Object (Clist),
+                Get_Object (Adjustment));
+   end Set_Hadjustment;
 
    ----------------
    -- Set_Pixmap --
@@ -920,6 +1027,23 @@ package body Gtk.Clist is
                 Gtk_Selection_Mode'Pos (Mode));
    end Set_Selection_Mode;
 
+   ---------------------
+   -- Set_Shadow_Type --
+   ---------------------
+
+   procedure Set_Shadow_Type
+     (Clist    : access Gtk_Clist_Record;
+      The_Type : in Gtk_Shadow_Type)
+   is
+      procedure Internal
+        (Clist    : in System.Address;
+         The_Type : in Gint);
+      pragma Import (C, Internal, "gtk_clist_set_shadow_type");
+   begin
+      Internal (Get_Object (Clist),
+                Gtk_Shadow_Type'Pos (The_Type));
+   end Set_Shadow_Type;
+
    ---------------
    -- Set_Shift --
    ---------------
@@ -982,6 +1106,22 @@ package body Gtk.Clist is
       Internal (Get_Object (Clist), Boolean'Pos (Use_Icons));
    end Set_Use_Drag_Icons;
 
+   ---------------------
+   -- Set_Vadjustment --
+   ---------------------
+
+   procedure Set_Vadjustment
+      (Clist      : access Gtk_Clist_Record;
+       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment)
+   is
+      procedure Internal (Clist      : in System.Address;
+                          Adjustment : in System.Address);
+      pragma Import (C, Internal, "gtk_clist_set_vadjustment");
+   begin
+      Internal (Get_Object (Clist),
+                Get_Object (Adjustment));
+   end Set_Vadjustment;
+
    ---------------------------
    -- Optimal_Column_Widget --
    ---------------------------
@@ -1005,6 +1145,17 @@ package body Gtk.Clist is
    begin
       Internal (Get_Object (Clist));
    end Thaw;
+
+   ------------------
+   -- Unselect_All --
+   ------------------
+
+   procedure Unselect_All (Clist : access Gtk_Clist_Record) is
+      procedure Internal (Clist : in System.Address);
+      pragma Import (C, Internal, "gtk_clist_unselect_all");
+   begin
+      Internal (Get_Object (Clist));
+   end Unselect_All;
 
    ------------------
    -- Unselect_Row --
