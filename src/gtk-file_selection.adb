@@ -278,9 +278,9 @@ package body Gtk.File_Selection is
       Internal (Get_Object (File_Selection));
    end Show_Fileop_Buttons;
 
-   --------------------
-   -- File_Selection --
-   --------------------
+   --------------
+   -- Generate --
+   --------------
 
    procedure Generate (File_Selection : in Gtk_File_Selection;
                        N      : in Node_Ptr;

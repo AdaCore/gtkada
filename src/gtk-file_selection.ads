@@ -59,19 +59,19 @@ package Gtk.File_Selection is
    function Get_Selection_Text (File_Selection : in Gtk_File_Selection)
      return Gtk.Widget.Gtk_Widget'Class;
    procedure Gtk_New (File_Selection : out Gtk_File_Selection;
-                      Title  : in String);
+                      Title          : in String);
    procedure Hide_Fileop_Buttons (File_Selection : in out Gtk_File_Selection);
    procedure Set_Filename
      (File_Selection  : in Gtk_File_Selection;
-      Filename : in String);
+      Filename        : in String);
    procedure Show_Fileop_Buttons (File_Selection : in out Gtk_File_Selection);
 
    procedure Generate (File_Selection : in Gtk_File_Selection;
-                       N      : in Node_Ptr;
-                       File   : in File_Type);
+                       N              : in Node_Ptr;
+                       File           : in File_Type);
 
    procedure Generate (File_Selection : in out Gtk_File_Selection;
-                       N        : in Node_Ptr);
+                       N              : in Node_Ptr);
 
 private
    type Gtk_File_Selection is new Gtk.Window.Gtk_Window with null record;
