@@ -101,9 +101,10 @@ package Gtk.Clipboard is
    --  Set_With_Owner or Set_With_Data, and when the Clear_Func you supplied
    --  is called. Otherwise, the clipboard may be owned by someone else.
 
-   --  procedure Set_Text
-   --    (Clipboard : Gtk_Clipboard;
-   --     Text      : String);
+   procedure Set_Text
+     (Clipboard : Gtk_Clipboard;
+      Text      : String);
+   --  Set the contents of the clipboard.
 
    --  procedure Request_Contents
    --    (Clipboard : Gtk_Clipboard;
