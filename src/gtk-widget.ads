@@ -444,6 +444,39 @@ package Gtk.Widget is
    --  This is sent when the widget gets the focus. Its visual aspect might
    --  change.
    --  The "Can_Focus" flag must have been set first.
+   --  See also Gtk.Widget.Child_Focus, which should be used instead when
+   --  writting new widgets in Ada
+
+   function Child_Focus
+     (Child     : access Gtk_Widget_Record'Class;
+      Direction : Gtk.Enums.Gtk_Direction_Type := Gtk.Enums.Dir_Tab_Forward)
+      return Boolean;
+   --  This function is used by custom widget implementations; if you're
+   --  writing an app, you'd use gtk.widget.grab_focus to move the focus to a
+   --  particular widget, and gtk.container.set_focus_chain to change the focus
+   --  tab order. So you may want to investigate those functions instead.
+
+   --  gtk.widget.child_focus is called by containers as the user moves around
+   --  the window using keyboard shortcuts. Direction indicates what kind of
+   --  motion is taking place (up, down, left, right, tab forward, tab
+   --  backward).  gtk.widget.child_focus invokes the "focus" signal on Child;
+   --  widgets override the default handler for this signal in order to
+   --  implement appropriate focus behavior.
+
+   --  The "focus" default handler for a widget should return True if moving in
+   --  Direction left the focus on a focusable location inside that widget, and
+   --  False if moving in Direction moved the focus outside the widget. If
+   --  returning True, widgets normally call gtk.widget.grab_focus to place the
+   --  focus accordingly; if returning False, they don't modify the current
+   --  focus location.
+
+   --  This function replaces gtk.container.focus from GTK+ 1.2.  It was
+   --  necessary to check that the child was visible, sensitive, and focusable
+   --  before calling gtk.container.focus. gtk.widget.child_focus returns False
+   --  if the widget is not currently in a focusable state, so there's no need
+   --  for those checks.
+
+   --  Return value: True if focus ended up inside @widget
 
    procedure Set_Events
      (Widget : access Gtk_Widget_Record;

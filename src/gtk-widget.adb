@@ -1513,4 +1513,21 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Boolean'Pos (Is_Visible));
    end Set_Child_Visible;
 
+   -----------------
+   -- Child_Focus --
+   -----------------
+
+   function Child_Focus
+     (Child     : access Gtk_Widget_Record'Class;
+      Direction : Gtk.Enums.Gtk_Direction_Type := Gtk.Enums.Dir_Tab_Forward)
+      return Boolean
+   is
+      function Internal
+        (Child : System.Address;
+         Dir   : Gtk.Enums.Gtk_Direction_Type) return Integer;
+      pragma Import (C, Internal, "gtk_widget_child_focus");
+   begin
+      return Boolean'Val (Internal (Get_Object (Child), Direction));
+   end Child_Focus;
+
 end Gtk.Widget;
