@@ -302,11 +302,13 @@ package Gtk.Main is
       type Data_Type (<>) is private;
    package Timeout is
       type Callback is access function (D : in Data_Type) return Boolean;
+      type Destroy_Callback is access procedure (D : in out Data_Type);
 
       function Add
         (Interval : Guint32;
          Func     : Callback;
-         D        : Data_Type) return Timeout_Handler_Id;
+         D        : Data_Type;
+         Destroy  : in Destroy_Callback := null) return Timeout_Handler_Id;
       --  Adds a new timeout. Func will be called after Interval milliseconds.
    end Timeout;
    --  !!Warning!! The instances of this package must be declared at library
