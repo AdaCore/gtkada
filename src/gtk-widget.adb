@@ -30,6 +30,7 @@
 with Gdk; use Gdk;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Util; use Gtk.Util;
+with Interfaces.C.Strings;
 with Gtk.Table; use Gtk.Table;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Strings.Maps; use Ada.Strings.Maps;
@@ -269,13 +270,26 @@ package body Gtk.Widget is
    -- Get_Object --
    ----------------
 
-   function Get_Events (Widget : access Gtk_Widget_Record) return Gint is
+   function Get_Events (Widget : access Gtk_Widget_Record)
+         return Gdk.Types.Gdk_Event_Mask
+   is
       function Internal (Widget : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_widget_get_events");
-
    begin
-      return Internal (Get_Object (Widget));
+      return Gdk.Types.Gdk_Event_Mask'Val (Internal (Get_Object (Widget)));
    end Get_Events;
+
+   --------------
+   -- Get_Name --
+   --------------
+
+   function Get_Name (Widget : access Gtk_Widget_Record) return String is
+      function Internal (Widget : System.Address)
+        return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_widget_get_name");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+   end Get_Name;
 
    ----------------
    -- Get_Parent --
@@ -462,9 +476,25 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Hide;
 
-   -------------------------
-   -- Is_Sensitive_Is_Set --
-   -------------------------
+   -----------------
+   -- Is_Ancestor --
+   -----------------
+
+   function Is_Ancestor (Widget   : access Gtk_Widget_Record;
+                         Ancestor : access Gtk_Widget_Record'Class)
+                         return Boolean
+   is
+      function Internal (Widget : System.Address; Ancestor : System.Address)
+        return Gint;
+      pragma Import (C, Internal, "gtk_widget_is_ancestor");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget),
+                                    Get_Object (Ancestor)));
+   end Is_Ancestor;
+
+   ---------------------------
+   --  Is_Sensitive_Is_Set  --
+   ---------------------------
 
    function Is_Sensitive_Is_Set (Widget : access Gtk_Widget_Record'Class)
      return Boolean

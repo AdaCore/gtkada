@@ -102,6 +102,7 @@ package Gtk.Widget is
       Area   : in Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area);
 
    procedure Set_Name (Widget : access Gtk_Widget_Record; Name : in String);
+   function Get_Name (Widget : access Gtk_Widget_Record) return String;
 
    procedure Set_Sensitive (Widget    : access Gtk_Widget_Record;
                             Sensitive : in Boolean := True);
@@ -143,7 +144,8 @@ package Gtk.Widget is
    function Get_Toplevel (Widget : access Gtk_Widget_Record)
                           return Gtk_Widget;
 
-   function Get_Events (Widget : access Gtk_Widget_Record) return Gint;
+   function Get_Events (Widget : access Gtk_Widget_Record)
+                        return Gdk.Types.Gdk_Event_Mask;
 
    procedure Set_Events (Widget : access Gtk_Widget_Record;
                          Events : in     Gdk.Types.Gdk_Event_Mask);
@@ -154,6 +156,12 @@ package Gtk.Widget is
 
    procedure Set_State (Widget : access Gtk_Widget_Record;
                         State : in Enums.Gtk_State_Type);
+
+   function Is_Ancestor (Widget   : access Gtk_Widget_Record;
+                         Ancestor : access Gtk_Widget_Record'Class)
+                        return Boolean;
+   --  Returns True if Ancestor is in the ancestor tree for Widget, ie if
+   --  Widget is contained within Ancestor
 
    --  (See also gtk-style for functions dealing with styles)
 
