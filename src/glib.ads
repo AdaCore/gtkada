@@ -72,6 +72,8 @@ package Glib is
    type Guint16 is mod 2 ** 16;
    type Guint32 is mod 2 ** 32;
 
+   type Gunichar is new Guint32;
+
    ----------------------
    -- Some Array types --
    ----------------------
@@ -177,6 +179,49 @@ package Glib is
    --  Return the quark associated with the string, if it exists.
    --  If it does not exist, return Unknown_Quark.
 
+   -------------
+   -- Signals --
+   -------------
+
+   type Handler_Id is private;
+   --  This uniquely identifies a connection widget<->signal.
+
+   Invalid_Handler_Id : constant Handler_Id;
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  This is only the definition of the property types. See Glib.Properties
+   --  on how to get and set the value of properties for specific objects, or
+   --  the package Glib.Properties.Creation for information on how to create
+   --  new properties in your own widgets.
+
+   type Property (<>) is private;
+
+   function Build (Name : String) return Property;
+   --  You should use this function only if you are creating new widgets, and
+   --  their properties. Normal usage of properties doesn't require the use
+   --  of this function.
+   --  An ASCII.Nul character is automatically appended if necessary
+
+   function Property_Name (Prop : Property) return String;
+   --  Return the name of the property.
+   --  This name includes the trailing ASCII.Nul, and thus can be passed as is
+   --  to C.
+
+   type Param_Spec is private;
+   --  See Glib.Properties.Creation for more information on this type
+
+   type Param_Flags is mod 2 ** 6;
+   Param_Readable       : constant Param_Flags := 2 ** 0;
+   Param_Writable       : constant Param_Flags := 2 ** 1;
+   Param_Construct      : constant Param_Flags := 2 ** 2;
+   Param_Construct_Only : constant Param_Flags := 2 ** 3;
+   Param_Lax_Validation : constant Param_Flags := 2 ** 4;
+   Param_Private        : constant Param_Flags := 2 ** 5;
+   --  These are the various flags that help define if, and when, a property
+   --  can be read and modified.
+
    -----------
    -- GType --
    -----------
@@ -194,11 +239,40 @@ package Glib is
    --  You can get the specific value for an existing widget by using the
    --  function Gtk.Object.Get_Type.
 
+   type GType_Array is array (Guint range <>) of Glib.GType;
+
+   function Parent (Typ : GType) return GType;
+   --  Return the parent type of Typ (eg if Typ is associated with a Gtk
+   --  widget, it returns the typ of its parent).
+
+   function Fundamental (Typ : GType) return GType;
+   --  Return the fundamental type for Type.  In gtk+, the types are organized
+   --  into several hierarchies, similar to what is done for widgets.
+   --  All of these hierarchies are based on one of the fundamental types
+   --  defined below.
+   --  This function returns that fundamental type.
+   --
+   --  For instance, each enumeration type in gtk+ has its own GType.
+   --  However, Fundamental will return GType_Enum in all of these cases.
+
+   function Type_Name (Type_Num : in GType) return String;
+   --  Return the name of the type (enumeration,...) associated with Typ.
+   --  If Fundamental (Typ) return GType_Enum, this returns the name of
+   --  the enumeration type that Typ represents.
+   --  This might be useful in debug messages.
+
+   function Type_From_Name (Name : in String) return GType;
+   --  Convert a string to the matching type.
+   --  Name should be the C GObject name rather than the Ada name: thus,
+   --  use names such as GtkScrollbar or GtkButton for widgets.
+
+   --  The list of fundamental types defined in Glib. As opposed to most other
+   --  types (for instance the ones used for widgets), the types have static
+   --  values, always the same.
+
    GType_Invalid   : constant GType := 0;
    GType_None      : constant GType := 1;
    GType_Interface : constant GType := 2;
-
-   --  Glib type ids
    GType_Char      : constant GType := 3;
    GType_Uchar     : constant GType := 4;
    GType_Bool      : constant GType := 5;
@@ -208,18 +282,46 @@ package Glib is
    GType_Ulong     : constant GType := 9;
    GType_Enum      : constant GType := 10;
    GType_Flags     : constant GType := 11;
-
    GType_Float     : constant GType := 12;
    GType_Double    : constant GType := 13;
    GType_String    : constant GType := 14; --  Null terminated string.
-   GType_Pointer   : constant GType := 15; --  a general pointer type.
+   GType_Pointer   : constant GType := 15; --  A general pointer type.
    GType_Boxed     : constant GType := 16;
    GType_Param     : constant GType := 17;
    GType_Object    : constant GType := 18; --  One of the widgets/objects
+
+   GType_Param_Char        : constant GType := GType_Param + 1 * 256;
+   GType_Param_Uchar       : constant GType := GType_Param + 2 * 256;
+   GType_Param_Boolean     : constant GType := GType_Param + 3 * 256;
+   GType_Param_Int         : constant GType := GType_Param + 4 * 256;
+   GType_Param_Uint        : constant GType := GType_Param + 5 * 256;
+   GType_Param_Long        : constant GType := GType_Param + 6 * 256;
+   GType_Param_Ulong       : constant GType := GType_Param + 7 * 256;
+   GType_Param_Unichar     : constant GType := GType_Param + 8 * 256;
+   GType_Param_Enum        : constant GType := GType_Param + 9 * 256;
+   GType_Param_Flags       : constant GType := GType_Param + 10 * 256;
+   GType_Param_Float       : constant GType := GType_Param + 11 * 256;
+   GType_Param_Double      : constant GType := GType_Param + 12 * 256;
+   GType_Param_String      : constant GType := GType_Param + 13 * 256;
+   GType_Param_Param       : constant GType := GType_Param + 14 * 256;
+   GType_Param_Boxed       : constant GType := GType_Param + 15 * 256;
+   GType_Param_Pointer     : constant GType := GType_Param + 16 * 256;
+   GType_Param_Value_Array : constant GType := GType_Param + 17 * 256;
+   GType_Param_Closure     : constant GType := GType_Param + 18 * 256;
+   GType_Param_Object      : constant GType := GType_Param + 19 * 256;
 
 private
    type C_Dummy is null record;
    --  This array can contain anything, since it is never used on the Ada side
    --  anyway.
 
+   type Property is new String;
+   type Param_Spec is new Glib.C_Proxy;
+
+   type Handler_Id is new Guint;
+   Invalid_Handler_Id : constant Handler_Id := -1;
+
+   pragma Import (C, Fundamental, "ada_gtype_fundamental");
+   pragma Import (C, Parent, "g_type_parent");
+   pragma Inline (Build);
 end Glib;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
+--                     Copyright (C) 1998-2001                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -26,6 +26,8 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
+
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Glib is
 
@@ -117,5 +119,54 @@ package body Glib is
    begin
       return Internal (Id & ASCII.NUL);
    end Quark_Try_String;
+
+   ---------------
+   -- Type_Name --
+   ---------------
+
+   function Type_Name (Type_Num : in GType) return String is
+      function Internal (Type_Num : GType) return chars_ptr;
+      pragma Import (C, Internal, "g_type_name");
+      Ret : chars_ptr := Internal (Type_Num);
+   begin
+      if Ret = Null_Ptr then
+         return "";
+      else
+         return Value (Ret);
+      end if;
+   end Type_Name;
+
+   --------------------
+   -- Type_From_Name --
+   --------------------
+
+   function Type_From_Name (Name : in String) return GType is
+      function Internal (Name : String) return GType;
+      pragma Import (C, Internal, "g_type_from_name");
+   begin
+      return Internal (Name & ASCII.NUL);
+   end Type_From_Name;
+
+   -----------
+   -- Build --
+   -----------
+
+   function Build (Name : String) return Property is
+   begin
+      if Name (Name'Last) /= ASCII.Nul then
+         return Property (Name & ASCII.Nul);
+      else
+         return Property (Name);
+      end if;
+   end Build;
+
+   -------------------
+   -- Property_Name --
+   -------------------
+
+   function Property_Name (Prop : Property) return String is
+   begin
+      return String (Prop);
+   end Property_Name;
 
 end Glib;
