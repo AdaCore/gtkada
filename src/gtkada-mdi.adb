@@ -1043,7 +1043,7 @@ package body Gtkada.MDI is
       --  Using Get_Style (MDI) would be more appropriate, but Gtk+ sometimes
       --  return an invalid style when doing so.
 
-      Highlight_Style := Copy (Get_Default_Style);
+      MDI.Highlight_Style := Copy (Get_Default_Style);
 
       if Focus_Title_Color /= Null_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
