@@ -204,9 +204,6 @@ package Gtkada.MDI is
    --
    --  If Child is a MDI_Child, its location is recomputed automatically.
    --
-   --  You shouldn't call Show_All on the returned child, since some of the
-   --  title bar buttons are hidden.
-   --
    --  If Focus_Widget is not null, this is the widget that gets the keyboard
    --  focus when the child is selected.
    --
@@ -232,12 +229,9 @@ package Gtkada.MDI is
    --  the children, whereas Short_Title is the name of the notebook tab when
    --  children are maximized. By default, it is the same as Title.
    --
-   --  If you have put a Gtk_Window in the MDI, then the default title is the
-   --  same as for the Gtk_Window. Likewise, if you modify the title with this
-   --  subprogram, it changes the title of the Gtk_Window.
-   --  For any other widget, the default is the empty string.
-   --  In every case, this title will be the one used for the window when the
-   --  child is set to floating state.
+   --  The default title is the empty string.
+   --  This title will be the one used for the window when the child is set to
+   --  floating state.
 
    function Get_Title (Child : access MDI_Child_Record) return UTF8_String;
    --  Return the title for a specific child
@@ -364,8 +358,6 @@ package Gtkada.MDI is
      (Child : access MDI_Child_Record) return Gtk.Widget.Gtk_Widget;
    --  Return the widget that Child encapsulates. This is the widget you
    --  initially Put() in MDI.
-   --  Note that if you put a toplevel Gtk_Window initially, this returns the
-   --  child of the window.
 
    function Find_MDI_Child
      (MDI    : access MDI_Window_Record;
