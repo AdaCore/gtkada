@@ -270,7 +270,9 @@ package body Gtk.Box is
 
       Generate (Gtk_Container (Box), N, File);
 
-      if Child_Name /= null then
+      if Child_Name = null then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+      else
          Gen_Set (N, "Box", "homogeneous", File);
          Gen_Set (N, "Box", "spacing", File);
       end if;
@@ -336,7 +338,11 @@ package body Gtk.Box is
 
       Generate (Gtk_Container (Box), N);
 
-      if Child_Name /= null then
+      if Child_Name = null then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+            Box);
+      else
          S := Get_Field (N, "homogeneous");
 
          if S /= null then
