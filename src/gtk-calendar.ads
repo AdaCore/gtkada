@@ -52,9 +52,9 @@ package Gtk.Calendar is
    procedure Freeze (Calendar : access Gtk_Calendar_Record);
    procedure Get_Date
       (Calendar : access Gtk_Calendar_Record;
-       Year     : in out Guint;
-       Month    : in out Guint;
-       Day      : in out Guint);
+       Year     : out Guint;
+       Month    : out Guint;
+       Day      : out Guint);
    procedure Gtk_New (Widget : out Gtk_Calendar);
    procedure Initialize (Widget : access Gtk_Calendar_Record'Class);
    function Mark_Day
