@@ -153,7 +153,7 @@ package body Gtk.Arguments is
 
    function To_Notebook_Page (C : System.Address) return Gtk_Notebook_Page is
    begin
-      return Gtk_Notebook_Page (Gdk.Convert (C));
+      return Gtk_Notebook_Page (Glib.Convert (C));
    end To_Notebook_Page;
 
    function To_Notebook_Page

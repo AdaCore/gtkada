@@ -46,6 +46,7 @@
 --  Gdk.Event.Get_Graphics_Expose for more information.
 --  <c_version>1.2.7</c_version>
 
+with System;
 with Glib; use Glib;
 with Glib.Glist;
 with Gdk;

@@ -35,17 +35,20 @@
 --  </description>
 
 with Ada.Unchecked_Deallocation;
+with Ada.Unchecked_Conversion;
+with System;
 with Interfaces.C;
 
 package Glib is
+   pragma Preelaborate;
 
    package C renames Interfaces.C;
    use type C.int;
    use type C.unsigned;
 
-   ----------------------------------------
-   --  The basic types  defined by glib  --
-   ----------------------------------------
+   -------------------------------------
+   -- The basic types defined by glib --
+   -------------------------------------
 
    type Gshort is new C.short;
    type Glong  is new C.long;
@@ -69,10 +72,9 @@ package Glib is
    subtype Guint16 is Guint range Guint'First .. (2 ** 16 - 1);
    subtype Guint32 is Guint range Guint'First .. (2 ** 32 - 1);
 
-
-   ------------------------
-   --  Some Array types  --
-   ------------------------
+   ----------------------
+   -- Some Array types --
+   ----------------------
 
    type Gboolean_Array is array (Natural range <>) of Gboolean;
    type Gshort_Array   is array (Natural range <>) of Gshort;
@@ -91,9 +93,9 @@ package Glib is
    type Short_Array    is array (Natural range <>) of C.short;
    type Long_Array     is array (Natural range <>) of C.long;
 
-   ---------------------------
-   --  Conversion services  --
-   ---------------------------
+   -------------------------
+   -- Conversion services --
+   -------------------------
 
    function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array;
    --  Convert a C-style boolean array into an Ada-style array.
@@ -113,9 +115,9 @@ package Glib is
    function To_Gint (Bool : in Boolean) return Gint;
    --  Convert an Ada boolean into a C int.
 
-   -------------------------
-   --  Some Access types  --
-   -------------------------
+   -----------------------
+   -- Some Access types --
+   -----------------------
 
    type Guchar_Array_Access is access Guchar_Array;
 
@@ -127,6 +129,29 @@ package Glib is
 
    procedure Free is new Ada.Unchecked_Deallocation
      (Object => String, Name => String_Ptr);
+   --  </doc_ignore>
+
+   --  <doc_ignore>
+   type C_Dummy is limited private;
+   --  </doc_ignore>
+
+   type C_Proxy is access C_Dummy;
+   --  General proxy for C structures.
+   --  This type is used instead of System.Address so that the variables are
+   --  automatically initialized to 'null'.
+   --  The value pointed to is irrelevant, and in fact should not be accessed.
+   --  It has thus been made limited private with no subprogram to access it.
+   --  C_Proxy is a public type so that one can compare directly the value
+   --  of the variables with 'null'.
+
+   --  <doc_ignore>
+   pragma Convention (C, C_Proxy);
+
+   function Convert is new Ada.Unchecked_Conversion (System.Address, C_Proxy);
+   function Convert is new Ada.Unchecked_Conversion (C_Proxy, System.Address);
+   --  Converts from a System.Address returned by a C function to an
+   --  internal C_Proxy.
+
    --  </doc_ignore>
 
    ------------
@@ -151,5 +176,10 @@ package Glib is
    function Quark_Try_String (Id : in String) return GQuark;
    --  Return the quark associated with the string, if it exists.
    --  If it does not exist, return Unknown_Quark.
+
+private
+   type C_Dummy is null record;
+   --  This array can contain anything, since it is never used on the Ada side
+   --  anyway.
 
 end Glib;

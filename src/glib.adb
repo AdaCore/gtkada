@@ -29,40 +29,36 @@
 
 package body Glib is
 
-
-   ------------------
-   --  To_Boolean  --
-   ------------------
+   ----------------
+   -- To_Boolean --
+   ----------------
 
    function To_Boolean (Value : in Gboolean) return Boolean is
    begin
       return Value /= Gboolean (Gboolean'Val (0));
    end To_Boolean;
 
-
-   ------------------
-   --  To_Boolean  --
-   ------------------
+   ----------------
+   -- To_Boolean --
+   ----------------
 
    function To_Boolean (Value : in Gint) return Boolean is
    begin
       return Value /= 0;
    end To_Boolean;
 
-
-   ------------------
-   --  To_Boolean  --
-   ------------------
+   ----------------
+   -- To_Boolean --
+   ----------------
 
    function To_Boolean (Value : in Guint) return Boolean is
    begin
       return Value /= 0;
    end To_Boolean;
 
-
-   ------------------------
-   --  To_Boolean_Array  --
-   ------------------------
+   ----------------------
+   -- To_Boolean_Array --
+   ----------------------
 
    function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array is
       Result : Boolean_Array (A'Range);
@@ -70,13 +66,13 @@ package body Glib is
       for Index in A'Range loop
          Result (Index) := To_Boolean (A (Index));
       end loop;
+
       return Result;
    end To_Boolean_Array;
 
-
-   -------------------
-   --  To_Gboolean  --
-   -------------------
+   -----------------
+   -- To_Gboolean --
+   -----------------
 
    function To_Gboolean (Bool : in Boolean) return Gboolean is
    begin
@@ -87,10 +83,9 @@ package body Glib is
       end if;
    end To_Gboolean;
 
-
-   ---------------
-   --  To_Gint  --
-   ---------------
+   -------------
+   -- To_Gint --
+   -------------
 
    function To_Gint (Bool : in Boolean) return Gint is
    begin

@@ -30,48 +30,20 @@
 --  <description>
 --
 --  This is the top level package of the Gdk hierarchy.
---  It provides a single type used to access the underlying C structures.
+--  It provides the type definitions used to access underlying C structures.
 --
 --  </description>
 
-with System;
-with Unchecked_Conversion;
+with Glib;
 
 package Gdk is
    pragma Preelaborate;
 
-   --  <doc_ignore>
-   type C_Dummy is limited private;
-   --  </doc_ignore>
-
-   type C_Proxy is access C_Dummy;
-   --  General proxy for C structures.
-   --  This type is used instead of System.Address so that the variables are
-   --  automatically initialized to 'null'.
-   --  The value pointed to is irrelevant, and in fact should not be accessed.
-   --  It has thus been made limited private with no subprogram to access it.
-   --  C_Proxy is a public type so that one can compare directly the value
-   --  of the variables with 'null'.
-
-   --  <doc_ignore>
-   pragma Convention (C, C_Proxy);
-
+   subtype C_Proxy is Glib.C_Proxy;
    type Gdk_GC is new C_Proxy;
    type Gdk_Window is new C_Proxy;
    subtype Gdk_Drawable is Gdk_Window;
    subtype Gdk_Pixmap is Gdk_Drawable;
    subtype Gdk_Bitmap is Gdk_Drawable;
-
-   function Convert is new Unchecked_Conversion (System.Address, C_Proxy);
-   function Convert is new Unchecked_Conversion (C_Proxy, System.Address);
-   --  Converts from a System.Address returned by a C function to an
-   --  internal C_Proxy.
-
-   --  </doc_ignore>
-
-private
-   type C_Dummy is null record;
-   --  This array can contain anything, since it is never used on the Ada side
-   --  anyway.
 
 end Gdk;

@@ -27,39 +27,42 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
+
 package body Gdk.Cursor is
 
    -------------
    -- Gdk_New --
    -------------
 
-   procedure Gdk_New (Widget      : out Gdk_Cursor;
-                      Cursor_Type : in Gdk.Types.Gdk_Cursor_Type)
+   procedure Gdk_New
+     (Widget      : out Gdk_Cursor;
+      Cursor_Type : in Gdk.Types.Gdk_Cursor_Type)
    is
-      function Internal (Cursor_Type : in Gdk.Types.Gdk_Cursor_Type)
-                         return Gdk_Cursor;
+      function Internal
+        (Cursor_Type : in Gdk.Types.Gdk_Cursor_Type) return Gdk_Cursor;
       pragma Import (C, Internal, "ada_gdk_cursor_new");
+
    begin
       Widget := Internal (Cursor_Type);
    end Gdk_New;
 
    procedure Gdk_New
-      (Widget : out Gdk_Cursor;
-       Source : in Gdk.Gdk_Pixmap;
-       Mask   : in Gdk.Gdk_Pixmap;
-       Fg     : in Gdk.Color.Gdk_Color;
-       Bg     : in Gdk.Color.Gdk_Color;
-       X      : in Glib.Gint;
-       Y      : in Glib.Gint)
+     (Widget : out Gdk_Cursor;
+      Source : in Gdk.Gdk_Pixmap;
+      Mask   : in Gdk.Gdk_Pixmap;
+      Fg     : in Gdk.Color.Gdk_Color;
+      Bg     : in Gdk.Color.Gdk_Color;
+      X      : in Glib.Gint;
+      Y      : in Glib.Gint)
    is
       function Internal
-         (Source : in Gdk.Gdk_Pixmap;
-          Mask   : in Gdk.Gdk_Pixmap;
-          Fg     : in System.Address;
-          Bg     : in System.Address;
-          X      : in Glib.Gint;
-          Y      : in Glib.Gint)
-          return Gdk_Cursor;
+        (Source : in Gdk.Gdk_Pixmap;
+         Mask   : in Gdk.Gdk_Pixmap;
+         Fg     : in System.Address;
+         Bg     : in System.Address;
+         X      : in Glib.Gint;
+         Y      : in Glib.Gint) return Gdk_Cursor;
       pragma Import (C, Internal, "gdk_cursor_new_from_pixmap");
 
       Col_Fg : aliased Gdk.Color.Gdk_Color := Fg;

@@ -27,27 +27,32 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
+
 package body Gdk.Pixmap is
 
    ----------------------
    -- Create_From_Data --
    ----------------------
 
-   procedure Create_From_Data (Pixmap :    out Gdk_Pixmap;
-                               Window : in     Gdk.Window.Gdk_Window;
-                               Data   : in     String;
-                               Width  : in     Gint;
-                               Height : in     Gint;
-                               Depth  : in     Gint;
-                               Fg     : in     Color.Gdk_Color;
-                               Bg     : in     Color.Gdk_Color) is
-      function Internal (Window : in Gdk.Window.Gdk_Window;
-                         Data   : in String;
-                         Width  : in Gint;
-                         Height : in Gint;
-                         Depth  : in Gint;
-                         Fg     : in System.Address;
-                         Bg     : in System.Address) return Gdk_Pixmap;
+   procedure Create_From_Data
+     (Pixmap :    out Gdk_Pixmap;
+      Window : in     Gdk.Window.Gdk_Window;
+      Data   : in     String;
+      Width  : in     Gint;
+      Height : in     Gint;
+      Depth  : in     Gint;
+      Fg     : in     Color.Gdk_Color;
+      Bg     : in     Color.Gdk_Color)
+   is
+      function Internal
+        (Window : Gdk.Window.Gdk_Window;
+         Data   : String;
+         Width  : Gint;
+         Height : Gint;
+         Depth  : Gint;
+         Fg     : System.Address;
+         Bg     : System.Address) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_create_from_data");
       use type Gdk.Color.Gdk_Color;
 
@@ -58,35 +63,41 @@ package body Gdk.Pixmap is
 
       Fg_A : System.Address := Fg_Col'Address;
       Bg_A : System.Address := Bg_Col'Address;
+
    begin
       if Fg = Gdk.Color.Null_Color then
          Fg_A := System.Null_Address;
       end if;
+
       if Bg = Gdk.Color.Null_Color then
          Bg_A := System.Null_Address;
       end if;
-      Pixmap := Internal (Window, Data & ASCII.NUL,
-                          Width, Height, Depth,
-                          Fg_A, Bg_A);
+
+      Pixmap := Internal
+        (Window, Data & ASCII.NUL,
+         Width, Height, Depth, Fg_A, Bg_A);
    end Create_From_Data;
 
    ---------------------
    -- Create_From_Xpm --
    ---------------------
 
-   procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
-                              Window      : in     Gdk.Window.Gdk_Window;
-                              Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
-                              Transparent : in     Gdk.Color.Gdk_Color;
-                              Filename    : in     String)
+   procedure Create_From_Xpm
+     (Pixmap      :    out Gdk_Pixmap;
+      Window      : in     Gdk.Window.Gdk_Window;
+      Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+      Transparent : in     Gdk.Color.Gdk_Color;
+      Filename    : in     String)
    is
-      function Internal (Window      : in Gdk.Window.Gdk_Window;
-                         Mask        : in System.Address;
-                         Transparent : in System.Address;
-                         Filename    : in String)
-                         return           Gdk_Pixmap;
+      function Internal
+        (Window      : in Gdk.Window.Gdk_Window;
+         Mask        : in System.Address;
+         Transparent : in System.Address;
+         Filename    : in String) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm");
+
       use type Gdk.Color.Gdk_Color;
+
       Tmp : aliased Gdk.Bitmap.Gdk_Bitmap := Mask;
 
       Transp_Col : aliased Gdk.Color.Gdk_Color := Transparent;
@@ -94,13 +105,15 @@ package body Gdk.Pixmap is
       --  the parameter is passed in a register for instance.
 
       Transparent_A : System.Address := Transp_Col'Address;
+
    begin
       if Transparent = Gdk.Color.Null_Color then
          Transparent_A := System.Null_Address;
       end if;
-      Pixmap := Internal (Window, Tmp'Address,
-                          Transparent_A,
-                          Filename & ASCII.Nul);
+
+      Pixmap :=
+        Internal
+          (Window, Tmp'Address, Transparent_A, Filename & ASCII.Nul);
       Mask := Tmp;
    end Create_From_Xpm;
 
@@ -108,20 +121,24 @@ package body Gdk.Pixmap is
    -- Create_From_Xpm --
    ---------------------
 
-   procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
-                              Window      : in     Gdk.Window.Gdk_Window;
-                              Colormap    : in     Gdk.Color.Gdk_Colormap;
-                              Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
-                              Transparent : in     Gdk.Color.Gdk_Color;
-                              Filename    : in     String) is
-      function Internal (Window      : in Gdk.Window.Gdk_Window;
-                         Colormap    : in Gdk.Color.Gdk_Colormap;
-                         Mask        : in System.Address;
-                         Transparent : in System.Address;
-                         Filename    : in String)
-                         return Gdk_Pixmap;
+   procedure Create_From_Xpm
+     (Pixmap      :    out Gdk_Pixmap;
+      Window      : in     Gdk.Window.Gdk_Window;
+      Colormap    : in     Gdk.Color.Gdk_Colormap;
+      Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+      Transparent : in     Gdk.Color.Gdk_Color;
+      Filename    : in     String)
+   is
+      function Internal
+        (Window      : in Gdk.Window.Gdk_Window;
+         Colormap    : in Gdk.Color.Gdk_Colormap;
+         Mask        : in System.Address;
+         Transparent : in System.Address;
+         Filename    : in String) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm");
+
       use type Gdk.Color.Gdk_Color;
+
       Tmp : aliased Gdk.Bitmap.Gdk_Bitmap := Mask;
 
       Transp_Col : aliased Gdk.Color.Gdk_Color := Transparent;
@@ -129,15 +146,19 @@ package body Gdk.Pixmap is
       --  the parameter is passed in a register for instance.
 
       Transparent_A : System.Address := Transp_Col'Address;
+
    begin
       if Transparent = Gdk.Color.Null_Color then
          Transparent_A := System.Null_Address;
       end if;
-      Pixmap := Internal (Window => Window,
-                          Colormap => Colormap,
-                          Mask => Tmp'Address,
-                          Transparent => Transparent_A,
-                          Filename => Filename & ASCII.Nul);
+
+      Pixmap :=
+        Internal
+          (Window => Window,
+           Colormap => Colormap,
+           Mask => Tmp'Address,
+           Transparent => Transparent_A,
+           Filename => Filename & ASCII.Nul);
       Mask := Tmp;
    end Create_From_Xpm;
 
@@ -187,30 +208,31 @@ package body Gdk.Pixmap is
       Colormap    : in     Gdk.Color.Gdk_Colormap;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
       Transparent : in     Gdk.Color.Gdk_Color;
-      Data        : in     Gtkada.Types.Chars_Ptr_Array) is
-      function Internal (Window      : in Gdk.Window.Gdk_Window;
-                         Colormap    : in Gdk.Color.Gdk_Colormap;
-                         Mask        : in System.Address;
-                         Transparent : in System.Address;
-                         Data        : in Gtkada.Types.Chars_Ptr_Array)
-                         return Gdk_Pixmap;
+      Data        : in     Gtkada.Types.Chars_Ptr_Array)
+   is
+      function Internal
+        (Window      : in Gdk.Window.Gdk_Window;
+         Colormap    : in Gdk.Color.Gdk_Colormap;
+         Mask        : in System.Address;
+         Transparent : in System.Address;
+         Data        : in Gtkada.Types.Chars_Ptr_Array) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm_d");
+
       use type Gdk.Color.Gdk_Color;
+
       Tmp : aliased Gdk.Bitmap.Gdk_Bitmap := Mask;
       Transp_Col : aliased Gdk.Color.Gdk_Color := Transparent;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
 
       Transparent_A : System.Address := Transp_Col'Address;
+
    begin
       if Transparent = Gdk.Color.Null_Color then
          Transparent_A := System.Null_Address;
       end if;
-      Pixmap := Internal (Window,
-                          Colormap,
-                          Tmp'Address,
-                          Transparent_A,
-                          Data);
+
+      Pixmap := Internal (Window, Colormap, Tmp'Address, Transparent_A, Data);
       Mask := Tmp;
    end Create_From_Xpm_D;
 
@@ -218,16 +240,20 @@ package body Gdk.Pixmap is
    -- Gdk_New --
    -------------
 
-   procedure Gdk_New (Pixmap :    out Gdk_Pixmap;
-                      Window : in     Gdk.Window.Gdk_Window;
-                      Width  : in     Gint;
-                      Height : in     Gint;
-                      Depth  : in     Gint := -1) is
-      function Internal (Window : in Gdk.Window.Gdk_Window;
-                         Width  : in Gint;
-                         Height : in Gint;
-                         Depth  : in Gint) return Gdk_Pixmap;
+   procedure Gdk_New
+     (Pixmap :    out Gdk_Pixmap;
+      Window : in     Gdk.Window.Gdk_Window;
+      Width  : in     Gint;
+      Height : in     Gint;
+      Depth  : in     Gint := -1)
+   is
+      function Internal
+        (Window : in Gdk.Window.Gdk_Window;
+         Width  : in Gint;
+         Height : in Gint;
+         Depth  : in Gint) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_new");
+
    begin
       Pixmap := Internal (Window, Width, Height, Depth);
    end Gdk_New;

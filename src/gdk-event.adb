@@ -1136,7 +1136,7 @@ package body Gdk.Event is
 
    function From_Address (C : System.Address) return Gdk_Event is
    begin
-      return Gdk_Event (Gdk.Convert (C));
+      return Gdk_Event (Glib.Convert (C));
    end From_Address;
 
    ----------------
@@ -1145,7 +1145,7 @@ package body Gdk.Event is
 
    function To_Address (C : Gdk_Event) return System.Address is
    begin
-      return Gdk.Convert (Gdk.C_Proxy (C));
+      return Glib.Convert (Gdk.C_Proxy (C));
    end To_Address;
 
    ----------------

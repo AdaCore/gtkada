@@ -27,56 +27,59 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
+
 package body Gdk.Rectangle is
 
    ---------------
    -- Intersect --
    ---------------
 
-   procedure Intersect (Src1      : in     Gdk_Rectangle;
-                        Src2      : in     Gdk_Rectangle;
-                        Dest      :    out Gdk_Rectangle;
-                        Intersect :    out Boolean) is
+   procedure Intersect
+     (Src1      : in     Gdk_Rectangle;
+      Src2      : in     Gdk_Rectangle;
+      Dest      :    out Gdk_Rectangle;
+      Intersect :    out Boolean)
+   is
       function Internal (Src1, Src2, Dest : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_rectangle_intersect");
+
       Src1_Rec : aliased Gdk_Rectangle := Src1;
       Src2_Rec : aliased Gdk_Rectangle := Src2;
       Dest_Rec : aliased Gdk_Rectangle;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
-      Intersect := To_Boolean (Internal (Src1_Rec'Address,
-                                         Src2_Rec'Address,
-                                         Dest_Rec'Address));
+      Intersect :=
+        To_Boolean
+          (Internal (Src1_Rec'Address, Src2_Rec'Address, Dest_Rec'Address));
       Dest := Dest_Rec;
    end Intersect;
 
-   -------------
-   --  Union  --
-   -------------
+   -----------
+   -- Union --
+   -----------
 
-   procedure Union (Src1 : in     Gdk_Rectangle;
-                    Src2 : in     Gdk_Rectangle;
-                    Dest :    out Gdk_Rectangle) is
-      procedure Internal (Src1, Src2 : in System.Address;
-                          Dest       : in System.Address);
+   procedure Union
+     (Src1 : in     Gdk_Rectangle;
+      Src2 : in     Gdk_Rectangle;
+      Dest :    out Gdk_Rectangle)
+   is
+      procedure Internal
+        (Src1, Src2 : in System.Address;
+         Dest       : in System.Address);
       pragma Import (C, Internal, "gdk_rectangle_union");
+
       Src1_Rec : aliased Gdk_Rectangle := Src1;
       Src2_Rec : aliased Gdk_Rectangle := Src2;
       Dest_Rec : aliased Gdk_Rectangle;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
       Internal (Src1_Rec'Address, Src2_Rec'Address, Dest_Rec'Address);
       Dest := Dest_Rec;
    end Union;
 
-
-   ----------------------------------------------------------------------
-
-   function Ada_Gdk_Rectangle_Size return Guint;
-   pragma Import (C, Ada_Gdk_Rectangle_Size);
-begin
-   --  pragma Assert (Gdk_Rectangle'Size / 8 = Ada_Gdk_Rectangle_Size);
-   null;
 end Gdk.Rectangle;

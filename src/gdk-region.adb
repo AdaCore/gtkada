@@ -27,187 +27,219 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
+
 package body Gdk.Region is
 
-   -----------
-   --  "="  --
-   -----------
+   ---------
+   -- "=" --
+   ---------
 
    function "=" (Left, Right : in Gdk_Region) return Boolean is
       function Internal (Region1, Region2 : in Gdk_Region) return Gboolean;
       pragma Import (C, Internal, "gdk_region_equal");
+
    begin
       return Boolean'Val (Internal (Left, Right));
    end "=";
 
-   ---------------
-   --  Destroy  --
-   ---------------
+   -------------
+   -- Destroy --
+   -------------
 
    procedure Destroy (Region : in out Gdk_Region) is
       procedure Internal (Region : in Gdk_Region);
       pragma Import (C, Internal, "gdk_region_destroy");
+
    begin
       Internal (Region);
       Region := Null_Region;
    end Destroy;
 
-   -------------
-   --  Empty  --
-   -------------
+   -----------
+   -- Empty --
+   -----------
 
    function Empty (Region : in Gdk_Region) return Boolean is
       function Internal (Region : in Gdk_Region) return Gboolean;
       pragma Import (C, Internal, "gdk_region_empty");
+
    begin
       return Boolean'Val (Internal (Region));
    end Empty;
 
-   -------------------
-   --  Get_Clipbox  --
-   -------------------
+   -----------------
+   -- Get_Clipbox --
+   -----------------
 
-   procedure Get_Clipbox (Region    : in     Gdk_Region;
-                          Rectangle :    out Gdk.Rectangle.Gdk_Rectangle) is
-      procedure Internal (Region    : in Gdk_Region;
-                          Rectangle : in System.Address);
+   procedure Get_Clipbox
+     (Region    : in     Gdk_Region;
+      Rectangle :    out Gdk.Rectangle.Gdk_Rectangle)
+   is
+      procedure Internal
+        (Region    : in Gdk_Region;
+         Rectangle : in System.Address);
       pragma Import (C, Internal, "gdk_region_get_clipbox");
+
       Rec : aliased Gdk.Rectangle.Gdk_Rectangle;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
       Internal (Region, Rec'Address);
       Rectangle := Rec;
    end Get_Clipbox;
 
-   ---------------
-   --  Gdk_New  --
-   ---------------
+   -------------
+   -- Gdk_New --
+   -------------
 
    procedure Gdk_New (Region : out Gdk_Region) is
       function Internal return Gdk_Region;
       pragma Import (C, Internal, "gdk_region_new");
+
    begin
       Region := Internal;
    end Gdk_New;
 
-   ---------------
-   --  Gdk_Xor  --
-   ---------------
+   -------------
+   -- Gdk_Xor --
+   -------------
 
-   procedure Gdk_Xor (Result  :     out Gdk_Region;
-                      Source1 : in      Gdk_Region;
-                      Source2 : in      Gdk_Region) is
-      function Internal (Source1, Source2 : in Gdk_Region)
-                         return Gdk_Region;
+   procedure Gdk_Xor
+     (Result  :     out Gdk_Region;
+      Source1 : in      Gdk_Region;
+      Source2 : in      Gdk_Region)
+   is
+      function Internal (Source1, Source2 : in Gdk_Region) return Gdk_Region;
       pragma Import (C, Internal, "gdk_regions_xor");
+
    begin
       Result := Internal (Source1, Source2);
    end Gdk_Xor;
 
-   -----------------
-   --  Intersect  --
-   -----------------
+   ---------------
+   -- Intersect --
+   ---------------
 
-   procedure Intersect (Result  :    out Gdk_Region;
-                        Source1 : in     Gdk_Region;
-                        Source2 : in     Gdk_Region) is
-      function Internal (Source1, Source2 : in Gdk_Region)
-                         return Gdk_Region;
+   procedure Intersect
+     (Result  :    out Gdk_Region;
+      Source1 : in     Gdk_Region;
+      Source2 : in     Gdk_Region)
+   is
+      function Internal (Source1, Source2 : in Gdk_Region) return Gdk_Region;
       pragma Import (C, Internal, "gdk_regions_intersect");
+
    begin
       Result := Internal (Source1, Source2);
    end Intersect;
 
-   ----------------
-   --  Point_In  --
-   ----------------
+   --------------
+   -- Point_In --
+   --------------
 
-   function Point_In (Region : in Gdk_Region;
-                      X, Y   : in Integer) return Boolean is
-      function Internal (Region : in Gdk_Region; X, Y : in Integer)
-                         return Gboolean;
+   function Point_In
+     (Region : in Gdk_Region;
+      X, Y   : in Integer) return Boolean
+   is
+      function Internal
+        (Region : in Gdk_Region; X, Y : in Integer) return Gboolean;
       pragma Import (C, Internal, "gdk_region_point_in");
+
    begin
       return Boolean'Val (Internal (Region, X, Y));
    end Point_In;
 
-   ---------------
-   --  Polygon  --
-   ---------------
+   -------------
+   -- Polygon --
+   -------------
 
-   procedure Polygon (Region    :    out Gdk_Region;
-                      Points    : in     Gdk.Types.Gdk_Points_Array;
-                      Fill_Rule : in     Types.Gdk_Fill_Rule) is
-      function Internal (Points  : in Gdk.Types.Gdk_Points_Array;
-                         Npoints : in Gint;
-                         Fill_Rule : in Types.Gdk_Fill_Rule)
-                         return Gdk_Region;
+   procedure Polygon
+     (Region    :    out Gdk_Region;
+      Points    : in     Gdk.Types.Gdk_Points_Array;
+      Fill_Rule : in     Types.Gdk_Fill_Rule)
+   is
+      function Internal
+        (Points  : in Gdk.Types.Gdk_Points_Array;
+         Npoints : in Gint;
+         Fill_Rule : in Types.Gdk_Fill_Rule) return Gdk_Region;
       pragma Import (C, Internal, "gdk_region_polygon");
+
    begin
       Region := Internal (Points, Points'Length, Fill_Rule);
    end Polygon;
 
-   ---------------
-   --  Rect_In  --
-   ---------------
+   -------------
+   -- Rect_In --
+   -------------
 
-   function Rect_In (Region : in Gdk_Region;
-                     Rect   : in Rectangle.Gdk_Rectangle)
-                     return Types.Gdk_Overlap_Type is
-      function Internal (Region : in Gdk_Region;
-                         Rect   : in System.Address)
-                         return Types.Gdk_Overlap_Type;
+   function Rect_In
+     (Region : in Gdk_Region;
+      Rect   : in Rectangle.Gdk_Rectangle) return Types.Gdk_Overlap_Type
+   is
+      function Internal
+        (Region : in Gdk_Region;
+         Rect   : in System.Address) return Types.Gdk_Overlap_Type;
       pragma Import (C, Internal, "gdk_region_rect_in");
+
       Rectangle : aliased Gdk.Rectangle.Gdk_Rectangle := Rect;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
       return Internal (Region, Rectangle'Address);
    end Rect_In;
 
-   -----------------
-   --  Substract  --
-   -----------------
+   ---------------
+   -- Substract --
+   ---------------
 
-   procedure Substract (Result  :     out Gdk_Region;
-                        Source1 : in      Gdk_Region;
-                        Source2 : in      Gdk_Region) is
-      function Internal (Source1, Source2 : in Gdk_Region)
-                         return Gdk_Region;
+   procedure Substract
+     (Result  :     out Gdk_Region;
+      Source1 : in      Gdk_Region;
+      Source2 : in      Gdk_Region)
+   is
+      function Internal (Source1, Source2 : in Gdk_Region) return Gdk_Region;
       pragma Import (C, Internal, "gdk_regions_subtract");
+
    begin
       Result := Internal (Source1, Source2);
    end Substract;
 
-   -------------
-   --  Union  --
-   -------------
+   -----------
+   -- Union --
+   -----------
 
-   procedure Union (Result  :     out Gdk_Region;
-                    Source1 : in      Gdk_Region;
-                    Source2 : in      Gdk_Region) is
-      function Internal (Source1, Source2 : in Gdk_Region)
-                         return Gdk_Region;
+   procedure Union
+     (Result  :     out Gdk_Region;
+      Source1 : in      Gdk_Region;
+      Source2 : in      Gdk_Region)
+   is
+      function Internal (Source1, Source2 : in Gdk_Region) return Gdk_Region;
       pragma Import (C, Internal, "gdk_regions_union");
+
    begin
       Result := Internal (Source1, Source2);
    end Union;
 
-   -----------------------
-   --  Union_With_Rect  --
-   -----------------------
+   ---------------------
+   -- Union_With_Rect --
+   ---------------------
 
-   procedure Union_With_Rect (Result :    out Gdk_Region;
-                              Region : in     Gdk_Region;
-                              Rect   : in     Rectangle.Gdk_Rectangle) is
-      function Internal (Region : in Gdk_Region;
-                         Rect   : in System.Address)
-                         return Gdk_Region;
+   procedure Union_With_Rect
+     (Result :    out Gdk_Region;
+      Region : in     Gdk_Region;
+      Rect   : in     Rectangle.Gdk_Rectangle)
+   is
+      function Internal
+        (Region : in Gdk_Region;
+         Rect   : in System.Address) return Gdk_Region;
       pragma Import (C, Internal, "gdk_region_union_with_rect");
+
       Rectangle : aliased Gdk.Rectangle.Gdk_Rectangle := Rect;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
       Result := Internal (Region, Rectangle'Address);
    end Union_With_Rect;

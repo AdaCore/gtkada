@@ -32,7 +32,7 @@ with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 
 with Gdk.Types;
-
+with System;
 with Unchecked_Conversion;
 
 package Gdk.Visual is

@@ -38,6 +38,7 @@
 --  you have to use the function Free too...
 --  </description>
 
+with System;
 with Glib; use Glib;
 with Gdk.Rectangle;
 with Gdk.Types;
