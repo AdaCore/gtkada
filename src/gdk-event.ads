@@ -45,6 +45,7 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Glib.Values;
 with Gdk.Rectangle;
+with Gdk.Region;
 with Gdk.Types;
 
 package Gdk.Event is
@@ -229,8 +230,6 @@ package Gdk.Event is
    --  smallest area that you need to redraw.
    --  Relevant fields: Area, Region, Count
    --  Type: Expose
-
-   --  ??? Need a function to access Region
 
    subtype Gdk_Event_No_Expose is Gdk_Event;
    --  Indicate that the source region was completely available when parts of
@@ -444,6 +443,10 @@ package Gdk.Event is
    function Get_Area (Event : Gdk_Event) return Rectangle.Gdk_Rectangle;
    --  The minimal area on which the event applies.
    --  For Expose_Events, this is the minimal area to redraw.
+
+   function Get_Region (Event : Gdk_Event) return Gdk.Region.Gdk_Region;
+   --  Return the region to which the event applies.
+   --  Do not free the returned value
 
    function Get_Count (Event : Gdk_Event) return Gint;
    --  Number of Expose_Events that are to follow this one.
@@ -743,6 +746,7 @@ private
    pragma Import (C, Get_Window, "ada_gdk_event_get_window");
    pragma Import (C, Get_Time, "gdk_event_get_time");
    pragma Import (C, Put, "gdk_event_put");
+   pragma Import (C, Get_Region, "ada_gdk_event_get_region");
    pragma Import
      (C, Send_Client_Message_To_All, "gdk_event_send_clientmessage_toall");
    pragma Import (C, Set_Window, "ada_gdk_event_set_window");
