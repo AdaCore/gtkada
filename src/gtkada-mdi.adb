@@ -1351,7 +1351,6 @@ package body Gtkada.MDI is
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the button in Initialize
-
          null;
    end Close_Child;
 
@@ -1361,6 +1360,9 @@ package body Gtkada.MDI is
 
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class) is
       use type Widget_SList.GSlist;
+
+      function Ref_Count (A : System.Address) return Guint;
+      pragma Import (C, Ref_Count, "ada_gtk_debug_get_ref_count");
 
       C : MDI_Child := MDI_Child (Child);
 
@@ -1427,13 +1429,26 @@ package body Gtkada.MDI is
          if C.State /= Floating then
             Reparent (C.Initial_Child, Gtk_Window (C.Initial));
          end if;
-
          Hide_All (C.Initial);
-         Unref (C.Initial);
-      else
+
+         --  Workaround an apparent bug in gtk+: it it not possible to unref()
+         --  a toplevel GtkWindow, we can just destroy() it. Otherwise, we get
+         --  a glib warning and storage_error
+         if Ref_Count (Get_Object (C.Initial)) <= 2 then
+            --  There seems to be an apparent bug in gtk+, in
+            --  g_object_last_unref. Call to parent_class->dispose should be
+            --  replaced with call to g_object_run_dispose.
+            --  As a result we need to Unref the child as well
+            Unref (C.Initial);
+
+            Destroy (C.Initial);
+         end if;
+
+      elsif Get_Parent (C.Initial_Child) /= null then
          Remove
            (Gtk_Container (Get_Parent (C.Initial_Child)), C.Initial_Child);
       end if;
+
       C.Initial := null;
       C.Initial_Child := null;
 
@@ -1451,10 +1466,6 @@ package body Gtkada.MDI is
    begin
       pragma Assert (Get_Parent (MDI_Child (Child).Initial_Child) = null);
 
-      if MDI_Child (Child).Initial = MDI_Child (Child).Initial_Child then
-         MDI_Child (Child).Initial := null;
-      end if;
-
       --  If the initial_child wasn't explicitly destroyed in Destroy_Child
 
       if not Gtk.Object.Destroyed_Is_Set (Child) then
@@ -1467,10 +1478,9 @@ package body Gtkada.MDI is
    ----------------------------
 
    procedure Destroy_Initial_Window (Child : access Gtk_Widget_Record'Class) is
-      C : constant MDI_Child := MDI_Child (Child);
    begin
-      if not Gtk.Object.Destroyed_Is_Set (C) then
-         Destroy (C);
+      if not Gtk.Object.Destroyed_Is_Set (Child) then
+         Destroy (Child);
       end if;
    end Destroy_Initial_Window;
 
