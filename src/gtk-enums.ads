@@ -186,6 +186,16 @@ package Gtk.Enums is
                                          Progress_Top_To_Bottom);
    --  enum type introduced in gtk1.1
 
+   type Gtk_Ctree_Line_Style is (Ctree_Lines_None,
+                                 Ctree_Lines_Solid,
+                                 Ctree_Lines_Dotted,
+                                 Ctree_Lines_Tabbed);
+
+   type Gtk_Ctree_Expander_Style is (Ctree_Expander_None,
+                                     Ctree_Expander_Square,
+                                     Ctree_Expander_Triangle,
+                                     Ctree_Expander_Circular);
+
    --  Some Glib instanciations
 
    function Convert (S : String) return System.Address;
