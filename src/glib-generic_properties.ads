@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                 Copyright (C) 2001-2002 ACT-Europe                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -102,9 +102,8 @@ package Glib.Generic_Properties is
    --  GUI builders for instance
    --
    --  !!IMPORTANT!!: For proper usage of properties based on enumeration
-   --  types, you must set a representation clause for the size of the
-   --  enumeration with something like:
-   --      for Enumeration_Type'Size use Glib.Gint'Size;
+   --  types, you must specify the Convention C on the type:
+   --      pragma Convention (C, Enumeration_Type);
 
    generic
       Name : String;
