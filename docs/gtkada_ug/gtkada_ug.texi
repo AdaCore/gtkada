@@ -83,11 +83,9 @@ General GTK documentation
 
 Description of the GDK hierarchy
 
-* Package Gdk.Color::
 * Package Gdk.Point::
 * Package Gdk.Window::
 * Package Gdk.Drawable::
-* Package Gdk.GC::
 * Package Gdk.Font::
 * Draw in a widget::
 
