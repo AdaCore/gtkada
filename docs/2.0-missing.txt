@@ -44,3 +44,57 @@ gtktreednd.h
 gtkwidget.h: see "missing" section. check signals.
 gtkwindow.h: see "missing" section.
 
+new in Gtk+ 2.2:
+gdkdisplay.h
+gdkdisplaymanager.h
+gdkscreen.h
+
+all functions taking a GdkDisplay/GdkScreen parameter, including:
+gdk.h:gdk_event_send_client_message_for_display
+gdkcursor.h:gdk_cursor_new_for_display
+gdkdnd.h:gdk_drag_get_protocol_for_display
+gdkfont.h:gdk_font_load_for_display
+gdkfont.h:gdk_fontset_load_for_display
+gdkfont.h:gdk_font_from_description_for_display
+gdkgc.h:gdk_gc_get_screen
+gdkkeys.h:gdk_keymap_get_for_display
+gdkpixmap.h:gdk_pixmap_foreign_new_for_display
+gdkpixmap.h:gdk_pixmap_lookup_for_display
+gdkproperty.h:gdk_text_property_to_text_list_for_display
+gdkproperty.h:gdk_text_property_to_utf8_list_for_display
+gdkproperty.h:gdk_string_to_compound_text_for_display
+gdkproperty.h:gdk_utf8_to_compound_text_for_display
+gdkselection.h:gdk_selection_owner_set_for_display
+gdkselection.h:*gdk_selection_owner_get_for_display
+gdkselection.h:gdk_selection_send_notify_for_display
+gdkvisual.h:gdk_visual_get_screen
+gdkwindow.h:gdk_window_foreign_new_for_display
+gdkwindow.h:gdk_window_lookup_for_display
+
+gtkclipboard.h:gtk_clipboard_get_for_display
+gtkclipboard.h:gtk_clipboard_get_display
+gtkinvisible.h:gtk_invisible_new_for_screen
+gtkinvisible.h:gtk_invisible_set_screen
+gtkinvisible.h:gtk_invisible_get_screen
+gtkmenu.h:gtk_menu_set_screen
+gtkplug.h:gtk_plug_construct_for_display
+gtkplug.h:gtk_plug_new_for_display
+gtkselection.h:gtk_selection_owner_set_for_display
+gtksettings.h:gtk_settings_get_for_screen
+gtkwidget.h:gtk_widget_get_screen
+gtkwidget.h:gtk_widget_has_screen
+gtkwidget.h:gtk_widget_get_display
+gtkwindow.h:gtk_window_set_screen
+gtkwindow.h:gtk_window_get_screen
+
+API additions in GtkTreeView, including:
+gtk_tree_model_get_string_from_iter
+gtk_list_store_remove API
+gtk_tree_model_sort_iter_is_valid(), gtk_tree_view_expand_to_path()
+Add gtk_tree_selection_get_selected_rows(),
+gtk_tree_selection_count_selected_rows()
+gtk_tree_path_new_from_indices(),  gtk_{list,tree}_store_{reorder,swap,_move}
+
+misc:
+gtk_menu_shell_select_first()
+gtk_notebook_get_n_pages()
