@@ -50,6 +50,7 @@ with Create_Buttons;
 with Create_Calendar;
 with Create_Check_Buttons;
 with Create_Clist;
+with Create_Ctree;
 with Create_Color_Selection;
 with Create_Cursors;
 with Create_Dialog;
@@ -138,7 +139,7 @@ package body Test is
       (US ("calendar"), Create_Calendar.Run'Access),
       (US ("check buttons"), Create_Check_Buttons.Run'Access),
       (US ("clist"), Create_Clist.Run'Access),
-      (US ("ctree"), null),
+      (US ("ctree"), Create_Ctree.Run'Access),
       (US ("color selection"), Create_Color_Selection.Run'Access),
       (US ("cursors"), Create_Cursors.Run'Access),
       (US ("dialog"), Create_Dialog.Run'Access),
