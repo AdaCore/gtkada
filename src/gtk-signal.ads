@@ -122,7 +122,7 @@ package Gtk.Signal is
         (Obj         : in Object.Gtk_Object'Class;
          Name        : in String;
          Func        : in Callback;
-         Slot_Object : in Widget_Type)
+         Slot_Object : in Widget_Type'Class)
          return Guint;
       --  mapping: Connect_Object gtksignal.h gtk_signal_connect_object
 
@@ -130,7 +130,7 @@ package Gtk.Signal is
         (Obj         : in Object.Gtk_Object'Class;
          Name        : in String;
          Func        : in Callback;
-         Slot_Object : in Widget_Type)
+         Slot_Object : in Widget_Type'Class)
          return Guint;
       --  mapping: Connect_Object_After gtksignal.h \
       --  mapping: gtk_signal_connect_object_after
