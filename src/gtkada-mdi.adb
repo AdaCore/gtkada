@@ -2832,8 +2832,17 @@ package body Gtkada.MDI is
       elsif Child.State = Floating
         and then Realized_Is_Set (Child.Initial)
       then
-         Deiconify (Gtk_Window (Get_Toplevel (Child.Initial)));
-         Gdk.Window.Gdk_Raise (Get_Window (Get_Toplevel (Child.Initial)));
+         declare
+            Win : constant Gdk.Window.Gdk_Window :=
+                    Get_Window (Get_Toplevel (Child.Initial));
+         begin
+            if (Get_State (Win) and Window_State_Maximized) /= 0 then
+               Present (Gtk_Window (Get_Toplevel (Child.Initial)));
+               Maximize (Win);
+            else
+               Present (Gtk_Window (Get_Toplevel (Child.Initial)));
+            end if;
+         end;
 
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
