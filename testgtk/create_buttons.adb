@@ -74,10 +74,10 @@ package body Create_Buttons is
       Box1    : Gtk_Box;
       Table   : Gtk_Table;
       Button  : array (0 .. 8) of Gtk_Button;
-      Left_A  : array (0 .. 8) of Gint := (0, 1, 2, 0, 2, 1, 1, 2, 0);
-      Right_A : array (0 .. 8) of Gint := (1, 2, 3, 1, 3, 2, 2, 3, 1);
-      Top_A   : array (0 .. 8) of Gint := (0, 1, 2, 2, 0, 2, 0, 1, 1);
-      Bott_A  : array (0 .. 8) of Gint := (1, 2, 3, 3, 1, 3, 1, 2, 2);
+      Left_A  : array (0 .. 8) of Guint := (0, 1, 2, 0, 2, 1, 1, 2, 0);
+      Right_A : array (0 .. 8) of Guint := (1, 2, 3, 1, 3, 2, 2, 3, 1);
+      Top_A   : array (0 .. 8) of Guint := (0, 1, 2, 2, 0, 2, 0, 1, 1);
+      Bott_A  : array (0 .. 8) of Guint := (1, 2, 3, 3, 1, 3, 1, 2, 2);
 
    begin
       Gtk.Frame.Set_Label (Frame, "Buttons");

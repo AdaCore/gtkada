@@ -88,8 +88,8 @@ package body Create_Scrolled is
          for J in 0 .. 19 loop
             Gtk_New (Toggle, "button (" & Integer'Image (I)
                      & "," & Integer'Image (J) & ")");
-            Attach_Defaults (Table, Toggle, Gint (I), Gint (I + 1),
-                             Gint (J), Gint (J + 1));
+            Attach_Defaults (Table, Toggle, Guint (I), Guint (I + 1),
+                             Guint (J), Guint (J + 1));
          end loop;
       end loop;
 
