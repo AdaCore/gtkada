@@ -2415,6 +2415,12 @@ ada_notebook_page_get_child (GtkNotebookPage* widget)
   return widget->child;
 }
 
+GtkWidget*
+ada_notebook_get_tab_label (GtkNotebookPage* widget)
+{
+  return widget->tab_label;
+}
+
 /**********************************************
  ** Functions for Box
  **********************************************/
