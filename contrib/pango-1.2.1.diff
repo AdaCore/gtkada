@@ -2,10 +2,11 @@ Thu Apr  3 17:50:27 CEST 2003	Arnaud Charlet	<charlet@gnat.com>
 
 	Changes to ease distributing gtk+ executables with no gtk+ install:
 
-	gtk/gtkimmodule.c: Handle more gracefully a missing immodule file
+	pango/pangox-fontmap.c: Provide a default set of aliases when none
+	 was found.
 
---- pango-1.2.1/pango/pangox-fontmap.c	2003/04/03 15:16:10	1.1
-+++ pango-1.2.1/pango/pangox-fontmap.c	2003/04/03 15:45:47
+--- pango/pangox-fontmap.c	2003/04/03 15:16:10	1.1
++++ pango/pangox-fontmap.c	2003/04/03 15:45:47
 @@ -772,110 +772,135 @@
  }
  

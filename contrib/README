@@ -3,6 +3,9 @@ This directory contains various contributions or updates for GtkAda.
 Contents
 ========
 
+pango-1.2.1.diff: a patch against pango 1.2.1 sources to ease distributing
+gtk+ executables with no pango install.
+
 gtk+-2.2.1.diff: a patch against Gtk+ 2.2.1 sources to ease distributing
 gtk+ executables with no gtk+ install.
 
