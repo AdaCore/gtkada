@@ -87,8 +87,9 @@ package body Gtk.List_Store is
         (List_Store : System.Address;
          Iter       : System.Address;
          Column     : Gint;
-         Value      : System.Address);
-      pragma Import (C, Internal, "ada_gtk_list_store_set_value");
+         Value      : System.Address;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_list_store_set");
    begin
       Internal (Get_Object (List_Store),
                 Iter'Address,
@@ -110,34 +111,14 @@ package body Gtk.List_Store is
         (List_Store : System.Address;
          Iter       : System.Address;
          Column     : Gint;
-         Value      : System.Address);
+         Value      : Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_list_store_set_value");
    begin
       Internal (Get_Object (List_Store),
                 Iter'Address,
                 Column,
-                Value'Address);
+                Value);
    end Set_Value;
-
---    ----------------
---    -- Set_Valist --
---    ----------------
-
---    procedure Set_Valist
---      (List_Store : access Gtk_List_Store_Record;
---       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
---       Var_Args   : va_list)
---    is
---       procedure Internal
---         (List_Store : System.Address;
---          Iter       : System.Address;
---          Var_Args   : Gint);
---       pragma Import (C, Internal, "gtk_list_store_set_valist");
---    begin
---       Internal (Get_Object (List_Store),
---                 Get_Object (Iter),
---                 va_list'Pos (Var_Args));
---    end Set_Valist;
 
    ------------
    -- Remove --
