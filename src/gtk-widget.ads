@@ -68,7 +68,7 @@ package Gtk.Widget is
    App_Paintable    : constant := 2 ** 19;
    Receives_Default : constant := 2 ** 20;
 
-   type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
+   type Gtk_Widget_Record is new Object.Gtk_Object_Record with private;
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
 
    --  This is the desired amount of space when you create new widgets.
@@ -307,6 +307,8 @@ package Gtk.Widget is
    package Widget_SList is new Glib.GSlist.Generic_SList (Gtk_Widget);
 
 private
+
+   type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
 
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Pop_Visual, "gtk_widget_pop_visual");
