@@ -2296,13 +2296,22 @@ ada_text_view_get_vadj (GtkTextView* widget)
 gboolean
 ada_text_view_get_disable_scroll_on_focus (GtkTextView* widget)
 {
+#if (GTK_CHECK_VERSION (2, 2, 2))
+  return TRUE;
+#else
   return widget->disable_scroll_on_focus;
+#endif
 }
 
 void
 ada_text_view_set_disable_scroll_on_focus (GtkTextView* widget, gboolean flag)
 {
+#if (GTK_CHECK_VERSION (2, 2, 2))
+  //  Nothing to do, disable scroll on focus is the default, and we can't
+  //  override this anyway
+#else
   widget->disable_scroll_on_focus = flag;
+#endif
 }
 
 /******************************************
