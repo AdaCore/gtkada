@@ -757,7 +757,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_visual");
    begin
       Internal (Get_Object (Widget), Get_Object (Visual));
-   end Set;
+   end Set_Visual;
 
    ------------
    --  Show  --
