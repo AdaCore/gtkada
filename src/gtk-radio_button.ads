@@ -54,7 +54,7 @@ package Gtk.Radio_Button is
 
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
-      Group        : in Widget_SList.Gslist := Widget_SList.Null_List;
+      Group        : in Widget_SList.GSlist := Widget_SList.Null_List;
       Label        : in String := "");
    --  Creates a new radio button, belonging to GROUP.
    --  If LABEL is left as the empty string, then the button will not have any

@@ -57,7 +57,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
-      Group        : in  Widget_SList.Gslist := Widget_SList.Null_List;
+      Group        : in  Widget_SList.GSlist := Widget_SList.Null_List;
       Label        : in String := "") is
    begin
       Radio_Button := new Gtk_Radio_Button_Record;
