@@ -31,17 +31,6 @@ package Glib is
    subtype Guint16 is Guint range Guint'First .. (2 ** 16 - 1);
    subtype Guint32 is Guint range Guint'First .. (2 ** 32 - 1);
 
-   -------------------------------------------------
-   --  The more evoluated types defined by glib   --
-   -------------------------------------------------
-   --
-   --  Note : The services related to those types should be implemented in
-   --         different packages.  Ex: Services related to Gdk_Window should
-   --         be implemented in the package Gdk.Window just like it has been
-   --         implemented in gtkwindow.c in the C version.
-   --
-   --         Note also that some of those type can not be declared here since
-   --         they are "generic" types.
 
    ------------------------
    --  Some Array types  --
