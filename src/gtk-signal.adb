@@ -72,13 +72,15 @@ package body Gtk.Signal is
    function Count_Arguments
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
       Name   : in String)
-     return          Guint;
+     return          Gint;
    --  Returns the number of arguments used in the handlers for the signal
    --  Note that in the Connect functions below we always test whether the user
    --  has ask for *at most* the number of arguments defined by gtk+ for the
    --  callback. This is because having less argument is authorized (the
    --  extra parameters passed by gtk+ will simply be ignored), whereas having
    --  more arguments is impossible (they would never be set).
+   --
+   --  This functions returns -1 if the object does not know the signal.
 
    function Argument_Type
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
@@ -114,11 +116,11 @@ package body Gtk.Signal is
    function Count_Arguments
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
       Name   : in String)
-     return          Guint
+     return          Gint
    is
       function Internal (Object : System.Address;
                          Name : String)
-                        return Guint;
+                        return Gint;
       pragma Import (C, Internal, "ada_signal_count_arguments");
    begin
       return Internal (Get_Object (Object), Name & ASCII.Nul);

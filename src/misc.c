@@ -52,9 +52,10 @@ convert_i (gint s)
 /********************************************************************
  **  This function checks the number of arguments for a given signal
  **  and a specific widget.
+ **  Returns -1 if the signal does not exist
  ********************************************************************/
 
-guint
+gint
 ada_signal_count_arguments (GtkObject* object, char* signal_name)
 {
   /* Implementation note: using gtk_signal_query adds an extra call to
@@ -62,8 +63,12 @@ ada_signal_count_arguments (GtkObject* object, char* signal_name)
      gtksignal.c would make this too dependent from the exact implementation
      of gtk+ */
   guint signal_id = gtk_signal_lookup (signal_name, GTK_OBJECT_TYPE (object));
-  GtkSignalQuery * signal = gtk_signal_query (signal_id);
-  guint nparams = signal->nparams;
+  GtkSignalQuery * signal;
+  guint nparams;
+  if (signal_id == 0)
+    return -1;
+  signal = gtk_signal_query (signal_id);  
+  nparams = signal->nparams;
   g_free (signal);
   return nparams;
 }
