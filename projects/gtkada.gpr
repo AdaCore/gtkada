@@ -1,0 +1,19 @@
+--  Using this project file:
+--  From your own project, add:
+--    with "gtkada";
+--  Then make sure that the directory projects/ in the installation directory
+--  GtkAda is in your ADA_PROJECT_PATH environment variable
+--
+--  Compilation can then be done as
+--     gnatmake -Pyour_project.gpr main.adb
+
+--  TODO:
+--  This project file currently doesn't give access to libgtkada_gl or
+--  libgtkada_glade, since there are some duplicated sources otherwise. 
+
+with "gtkada_lib";
+--  with "gtkada_gl", "gtkada_glade";
+project GtkAda is
+  for Source_Dirs use ();
+  for Object_Dir use "../include/gtkada/";
+end GtkAda;

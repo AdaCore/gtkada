@@ -1,0 +1,6 @@
+project GtkAda_Lib is
+   for Source_Dirs use ("../include/gtkada/");
+   for Library_Dir use "../lib";
+   for Library_Name use "gtkada";
+   for Library_Kind use "relocatable";
+end GtkAda_Lib;
