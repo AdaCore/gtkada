@@ -2468,16 +2468,27 @@ package body Gtk_Generates is
             Top.Specific_Data.Has_Tooltip := True;
          end if;
 
-         if Gettext_Support (N) then
-            Put_Line (File, "   Set_Tip (Tooltips, " &
-               Top_Name & "." &
-               Cur & ", -""" & S.all & """);");
+         declare
+            Name : String_Ptr;
+         begin
+            if N = Top then
+               Name := new String'(Top_Name);
+            else
+               Name := new String'(Top_Name & "." & Cur);
+            end if;
 
-         else
-            Put_Line (File, "   Set_Tip (Tooltips, " &
-                Top_Name & "." &
-                Cur & ", """ & S.all & """);");
-         end if;
+
+            if Gettext_Support (N) then
+               Put_Line (File, "   Set_Tip (Tooltips, " &
+                         Name.all & ", -""" & S.all & """);");
+
+            else
+               Put_Line (File, "   Set_Tip (Tooltips, " &
+                         Name.all & ", """ & S.all & """);");
+            end if;
+
+            Glib_XML.Free (Name);
+         end;
       end if;
 
       if not N.Specific_Data.Initialized then
