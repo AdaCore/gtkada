@@ -2156,7 +2156,8 @@ package body Gtkada.MDI is
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child
    is
-      C     : MDI_Child;
+      C           : MDI_Child;
+      Requisition : Gtk_Requisition;
 
    begin
       if Child.all in MDI_Child_Record'Class then
@@ -2206,6 +2207,8 @@ package body Gtkada.MDI is
       if Children_Are_Maximized (MDI) then
          Put_In_Notebook (MDI, None, C);
       else
+         Size_Request (Child, Requisition);
+         Set_Size_Request (C, Requisition.Width, Requisition.Height);
          Put (MDI.Layout, C, 0, 0);
       end if;
 
