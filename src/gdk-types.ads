@@ -35,7 +35,7 @@ package Gdk.Types is
       X : Gint;
       Y : Gint;
    end record;
-   pragma Pack (Gdk_Point);
+   pragma Convention (C, Gdk_Point);
 
    type Gdk_Points_Array is array (Positive range <>) of Gdk_Point;
    pragma Pack (Gdk_Points_Array);
@@ -46,7 +46,7 @@ package Gdk.Types is
       X2 : Gint;
       Y2 : Gint;
    end record;
-   pragma Pack (Gdk_Segment);
+   pragma Convention (C, Gdk_Segment);
 
    type Gdk_Segments_Array is array (Positive range <>) of Gdk_Segment;
    pragma Pack (Gdk_Segments_Array);
