@@ -845,12 +845,12 @@ package body Gtk.Style is
       if Area = Full_Area then
          Internal
            (Style, Window, State_Type, Shadow_Type,
-            System.Null_Address, Get_Object (Widget), Detail & ASCII.Nul,
+            System.Null_Address, Get_Object (Widget), Detail & ASCII.NUL,
             X, Y, Width, Height, Orientation);
       else
          Internal
            (Style, Window, State_Type, Shadow_Type,
-            Area, Get_Object (Widget), Detail & ASCII.Nul,
+            Area, Get_Object (Widget), Detail & ASCII.NUL,
             X, Y, Width, Height, Orientation);
       end if;
    end Paint_Handle;
