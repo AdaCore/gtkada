@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,56 +36,63 @@ package body Gtk.Extra.Font_Combo is
    -- Font_Combo_Select --
    -----------------------
 
-   procedure Font_Combo_Select (Font_Combo : access Gtk_Font_Combo_Record;
-                                Family     : in String;
-                                Bold       : in Boolean;
-                                Italic     : in Boolean;
-                                Height     : in Gint)
+   procedure Font_Combo_Select
+     (Font_Combo : access Gtk_Font_Combo_Record;
+      Family     : String;
+      Bold       : Boolean;
+      Italic     : Boolean;
+      Height     : Gint)
    is
-      procedure Internal (Font_Combo : in System.Address;
-                          Family     : in String;
-                          Bold       : in Gint;
-                          Italic     : in Gint;
-                          Height     : in Gint);
+      procedure Internal
+        (Font_Combo : System.Address;
+         Family     : String;
+         Bold       : Gint;
+         Italic     : Gint;
+         Height     : Gint);
       pragma Import (C, Internal, "gtk_font_combo_select");
+
    begin
-      Internal (Get_Object (Font_Combo),
-                Family & ASCII.NUL,
-                Boolean'Pos (Bold),
-                Boolean'Pos (Italic),
-                Height);
+      Internal
+        (Get_Object (Font_Combo),
+         Family & ASCII.NUL,
+         Boolean'Pos (Bold),
+         Boolean'Pos (Italic),
+         Height);
    end Font_Combo_Select;
 
    ---------------------------
    -- Font_Combo_Select_Nth --
    ---------------------------
 
-   procedure Font_Combo_Select_Nth (Font_Combo : access Gtk_Font_Combo_Record;
-                                    N          : in Gint;
-                                    Bold       : in Boolean;
-                                    Italic     : in Boolean;
-                                    Height     : in Gint)
+   procedure Font_Combo_Select_Nth
+     (Font_Combo : access Gtk_Font_Combo_Record;
+      N          : Gint;
+      Bold       : Boolean;
+      Italic     : Boolean;
+      Height     : Gint)
    is
-      procedure Internal (Font_Combo : in System.Address;
-                          N          : in Gint;
-                          Bold       : in Gint;
-                          Italic     : in Gint;
-                          Height     : in Gint);
+      procedure Internal
+        (Font_Combo : System.Address;
+         N          : Gint;
+         Bold       : Gint;
+         Italic     : Gint;
+         Height     : Gint);
       pragma Import (C, Internal, "gtk_font_combo_select_nth");
+
    begin
-      Internal (Get_Object (Font_Combo),
-                N,
-                Boolean'Pos (Bold),
-                Boolean'Pos (Italic),
-                Height);
+      Internal
+        (Get_Object (Font_Combo),
+         N,
+         Boolean'Pos (Bold),
+         Boolean'Pos (Italic),
+         Height);
    end Font_Combo_Select_Nth;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Font_Combo)
-   is
+   procedure Gtk_New (Widget : out Gtk_Font_Combo) is
    begin
       Widget := new Gtk_Font_Combo_Record;
       Gtk.Extra.Font_Combo.Initialize (Widget);
@@ -95,14 +102,18 @@ package body Gtk.Extra.Font_Combo is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Font_Combo_Record'Class)
-   is
+   procedure Initialize (Widget : access Gtk_Font_Combo_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_combo_new");
 
       procedure Psfont_Init;
       pragma Import (C, Psfont_Init, "gtk_psfont_init");
+
    begin
+      --  gtk_psfont needs to be initialized. Since we no longer provide
+      --  a binding for it (it is replaced by pango), this needs to be done
+      --  automatically. Subsequent calls to Psfont_Init are ignored.
+
       Psfont_Init;
       Set_Object (Widget, Internal);
    end Initialize;
@@ -111,11 +122,10 @@ package body Gtk.Extra.Font_Combo is
    -- Get_Font --
    --------------
 
-   function Get_Font (Font_Combo : access Gtk_Font_Combo_Record)
-                     return Gdk.Font.Gdk_Font
+   function Get_Font
+     (Font_Combo : access Gtk_Font_Combo_Record) return Gdk.Font.Gdk_Font
    is
-      function Internal (Font_Combo : System.Address)
-                        return Gdk.Font.Gdk_Font;
+      function Internal (Font_Combo : System.Address) return Gdk.Font.Gdk_Font;
       pragma Import (C, Internal, "gtk_font_combo_get_gdkfont");
    begin
       return Internal (Get_Object (Font_Combo));

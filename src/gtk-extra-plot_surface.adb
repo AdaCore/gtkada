@@ -161,7 +161,8 @@ package body Gtk.Extra.Plot_Surface is
          return System.Address;
       pragma Import (C, Internal, "gtk_plot_surface_get_x");
       N : aliased Gint;
-      X : System.Address := Internal (Get_Object (Data), N'Address);
+      X : constant System.Address := Internal (Get_Object (Data), N'Address);
+
    begin
       return (To_Double_Array (X), N);
    end Get_X;
@@ -170,8 +171,7 @@ package body Gtk.Extra.Plot_Surface is
    -- Get_Xstep --
    ---------------
 
-   function Get_Xstep (Data   : access Gtk_Plot_Surface_Record) return Gdouble
-   is
+   function Get_Xstep (Data : access Gtk_Plot_Surface_Record) return Gdouble is
       function Internal (Data   : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_plot_surface_get_xstep");
    begin
@@ -182,13 +182,16 @@ package body Gtk.Extra.Plot_Surface is
    -- Get_Y --
    -----------
 
-   function Get_Y (Data : access Gtk_Plot_Surface_Record) return Points_Array
+   function Get_Y
+     (Data : access Gtk_Plot_Surface_Record) return Points_Array
    is
-      function Internal (Data : System.Address; Ny : System.Address)
-         return System.Address;
+      function Internal
+        (Data : System.Address; Ny : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_plot_surface_get_y");
+
       N : aliased Gint;
-      Y : System.Address := Internal (Get_Object (Data), N'Address);
+      Y : constant System.Address := Internal (Get_Object (Data), N'Address);
+
    begin
       return (To_Double_Array (Y), N);
    end Get_Y;
@@ -215,7 +218,8 @@ package body Gtk.Extra.Plot_Surface is
          return System.Address;
       pragma Import (C, Internal, "gtk_plot_surface_get_z");
       N : aliased Gint;
-      Z : System.Address := Internal (Get_Object (Data), N'Address);
+      Z : constant System.Address := Internal (Get_Object (Data), N'Address);
+
    begin
       return (To_Double_Array (Z), N);
    end Get_Z;

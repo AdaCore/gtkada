@@ -308,7 +308,9 @@ package body Gtk.Extra.Plot_Data is
       pragma Import (C, Internal, "gtk_plot_data_get_x");
 
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Get_Object (Data), Num_Points'Address);
+      S          : constant System.Address :=
+        Internal (Get_Object (Data), Num_Points'Address);
+
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Get_X;
@@ -323,7 +325,9 @@ package body Gtk.Extra.Plot_Data is
       pragma Import (C, Internal, "gtk_plot_data_get_y");
 
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Get_Object (Data), Num_Points'Address);
+      S          : constant System.Address :=
+        Internal (Get_Object (Data), Num_Points'Address);
+
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Get_Y;
@@ -338,7 +342,9 @@ package body Gtk.Extra.Plot_Data is
       pragma Import (C, Internal, "gtk_plot_data_get_z");
 
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Get_Object (Data), Num_Points'Address);
+      S          : constant System.Address :=
+        Internal (Get_Object (Data), Num_Points'Address);
+
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Get_Z;
@@ -353,7 +359,9 @@ package body Gtk.Extra.Plot_Data is
       pragma Import (C, Internal, "gtk_plot_data_get_a");
 
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Get_Object (Data), Num_Points'Address);
+      S          : constant System.Address :=
+        Internal (Get_Object (Data), Num_Points'Address);
+
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Get_A;
@@ -368,7 +376,9 @@ package body Gtk.Extra.Plot_Data is
       pragma Import (C, Internal, "gtk_plot_data_get_dx");
 
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Get_Object (Data), Num_Points'Address);
+      S          : constant System.Address :=
+        Internal (Get_Object (Data), Num_Points'Address);
+
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Get_Dx;
@@ -383,7 +393,9 @@ package body Gtk.Extra.Plot_Data is
       pragma Import (C, Internal, "gtk_plot_data_get_dy");
 
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Get_Object (Data), Num_Points'Address);
+      S          : constant System.Address :=
+        Internal (Get_Object (Data), Num_Points'Address);
+
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Get_Dy;
@@ -393,12 +405,15 @@ package body Gtk.Extra.Plot_Data is
    ------------
 
    function Get_Dz (Data : access Gtk_Plot_Data_Record) return Points_Array is
-      function Internal (Data : System.Address; Num_Points : System.Address)
+      function Internal
+        (Data : System.Address; Num_Points : System.Address)
          return System.Address;
       pragma Import (C, Internal, "gtk_plot_data_get_dz");
 
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Get_Object (Data), Num_Points'Address);
+      S          : constant System.Address :=
+        Internal (Get_Object (Data), Num_Points'Address);
+
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Get_Dz;
@@ -413,7 +428,9 @@ package body Gtk.Extra.Plot_Data is
       pragma Import (C, Internal, "gtk_plot_data_get_da");
 
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Get_Object (Data), Num_Points'Address);
+      S          : constant System.Address :=
+        Internal (Get_Object (Data), Num_Points'Address);
+
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Get_Da;
@@ -1296,10 +1313,10 @@ package body Gtk.Extra.Plot_Data is
    procedure Show_Markers
      (Data : access Gtk_Plot_Data_Record; Show : Boolean)
    is
-      procedure Internal (Data : System.Address; Show : Integer);
+      procedure Internal (Data : System.Address; Show : Gboolean);
       pragma Import (C, Internal, "gtk_plot_data_show_markers");
    begin
-      Internal (Get_Object (Data), Boolean'Pos (Show));
+      Internal (Get_Object (Data), To_Gboolean (Show));
    end Show_Markers;
 
    ---------------------
@@ -1309,10 +1326,10 @@ package body Gtk.Extra.Plot_Data is
    function Markers_Visible (Data : access Gtk_Plot_Data_Record)
       return Boolean
    is
-      function Internal (Data : System.Address) return Integer;
+      function Internal (Data : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_plot_data_markers_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Data)));
+      return To_Boolean (Internal (Get_Object (Data)));
    end Markers_Visible;
 
 end Gtk.Extra.Plot_Data;
