@@ -150,7 +150,7 @@ ada_gtk_parse_cmd_line (int *gnat_argc, char **gnat_argv, char* macro_switch)
  ********************************************************************/
 
 guint
-ada_signal_count_arguments (gint type, char* signal_name)
+ada_signal_count_arguments (GType type, char* signal_name)
 {
   /* Implementation note: using gtk_signal_query adds an extra call to
      malloc and free, but using the internal variables/macros for
@@ -172,7 +172,7 @@ ada_signal_count_arguments (gint type, char* signal_name)
  ********************************************************************/
 
 GType
-ada_signal_argument_type (gint type, char* signal_name, gint num)
+ada_signal_argument_type (GType type, char* signal_name, gint num)
 {
   /* Implementation note: using g_signal_query adds an extra call to
      malloc and free, but using the internal variables/macros of
