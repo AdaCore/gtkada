@@ -18,6 +18,7 @@ with Gtk.Window;
 with Create_Button_Box;
 with Create_Buttons;
 with Create_Check_Buttons;
+with Create_Clist;
 with Create_Color_Selection;
 with Create_Dialog;
 with Create_Entry;
@@ -102,7 +103,7 @@ package body Test is
      ((US ("button box"), Create_Button_Box.Run'Access),
       (US ("buttons"), Create_Buttons.Run'Access),
       (US ("check buttons"), Create_Check_Buttons.Run'Access),
-      (US ("clist"), null),
+      (US ("clist"), Create_Clist.Run'Access),
       (US ("color selection"), Create_Color_Selection.Run'Access),
       (US ("cursors"), null),
       (US ("dialog"), Create_Dialog.Run'Access),

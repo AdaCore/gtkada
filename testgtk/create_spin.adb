@@ -161,17 +161,6 @@ package body Create_Spin is
          Set_Wrap (Spinner2, True);
          Id := Spin_O_Cb.Connect (Adj, "value_changed", Change_Digits'Access,
                                   Spinner2);
---         Unref (Spinner2);
-         --  FIXME : this one is a little bit tricky : Adj will not be
-         --  destroyed till Spinner2 is destroyed.
-         --  And the previous callback will not be removed till Adj is
-         --  destroyed.
-         --  Finally, SPinner2 will not be destroyed while the callback
-         --  exists, as there is a reference from the callback to Spinner2.
-         --  So we have a circular depency here, that we can only break with
-         --  the 'Unref' statement above.
-         --  Actually, this problem has been solved directly in gtk-signal.adb,
-         --  so that we do not keep a reference on Slot_Object
 
          Pack_Start (Vbox2, Spinner2, False, True, 0);
 

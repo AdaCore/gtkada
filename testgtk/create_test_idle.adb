@@ -52,15 +52,10 @@ package body Create_Test_Idle is
       end if;
    end Start_Idle;
 
-   Label    : Gtk_Label;
-   --  FIXME : label has to be a global variable for the window to be
-   --  destroyed correctly. Otherwise, gtk seems stuck in a infinite
-   --  loop. Another solution would be to do a Ref (Label) somewhere in
-   --  Run.
-
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id       : Guint;
       Button   : Gtk_Button;
+      Label    : Gtk_Label;
    begin
 
       if not Is_Created (Dialog) then
