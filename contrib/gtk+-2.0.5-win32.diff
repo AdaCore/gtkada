@@ -137,8 +137,6 @@
 +{
 +  int i ;
 +
-+  translate_queue = g_slist_append (translate_queue, item) ;
-+
 +  if (g_slist_length (translate_queue) >= 128)
 +    {
 +      GdkWindowImplWin32 *impl = GDK_WINDOW_IMPL_WIN32 (GDK_WINDOW_OBJECT (window)->impl) ;
@@ -148,6 +146,8 @@
 +                          whole_region) ;
 +      gdk_region_destroy (whole_region) ;
 +    }
++
++  translate_queue = g_slist_append (translate_queue, item) ;
 +}
 +
  static void
