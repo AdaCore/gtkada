@@ -103,6 +103,17 @@ ada_gtk_micro_version () {
 }
 
 /********************************************************************
+ **  Returns the GtkType associated with a GdkEvent.
+ **  This is a function since under some systems, importing global
+ **  variables requires special handling (e.g DLLs under Win32).
+ ********************************************************************/
+
+GtkType
+ada_gtk_type_gdk_event () {
+  return GTK_TYPE_GDK_EVENT;
+}
+
+/********************************************************************
  **  Returns the real widget name (as opposed to gtk_widget_get_name,
  **  this one returns NULL instead of the class name if no name was
  **  set.
