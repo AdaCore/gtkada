@@ -129,12 +129,18 @@ package Glib.Object is
    --  Modify the underlying C pointer.
 
    function Get_User_Data
-     (Obj  : in System.Address;
-      Stub : in GObject_Record'Class) return GObject;
+     (Obj  : System.Address;
+      Stub : GObject_Record'Class) return GObject;
    --  Return the Ada object matching the C object Obj. If Obj was created
    --  explicitely from GtkAda, this will be the exact same widget. If Obj was
    --  created implicitely by gtk+ (buttons in complex windows,...), a new Ada
    --  object of type Stub will be created.
+
+   function Get_User_Data_Fast
+     (Obj  : System.Address;
+      Stub : GObject_Record'Class) return GObject;
+   --  Same as Get_User_Data, but does not try to guess the type of Obj,
+   --  always default to Stub if Obj is unknown to GtkAda.
 
    function Unchecked_Cast
      (Obj  : access GObject_Record'Class;

@@ -143,8 +143,8 @@ package body Glib.Object is
    -------------------
 
    function Get_User_Data
-     (Obj  : in System.Address;
-      Stub : in GObject_Record'Class) return GObject
+     (Obj  : System.Address;
+      Stub : GObject_Record'Class) return GObject
    is
       function Internal
         (Object : in System.Address;
@@ -177,6 +177,44 @@ package body Glib.Object is
 
       return R;
    end Get_User_Data;
+
+   ------------------------
+   -- Get_User_Data_Fast --
+   ------------------------
+
+   function Get_User_Data_Fast
+     (Obj  : in System.Address;
+      Stub : in GObject_Record'Class) return GObject
+   is
+      pragma Suppress (All_Checks);
+
+      function Internal
+        (Object : in System.Address;
+         Quark  : in Glib.GQuark) return GObject;
+      pragma Import (C, Internal, "g_object_get_qdata");
+
+      use type System.Address;
+
+      R : GObject;
+
+   begin
+      if Obj = System.Null_Address then
+         return null;
+      end if;
+
+      if GtkAda_String_Quark = Glib.Unknown_Quark then
+         GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
+      end if;
+
+      R := Internal (Obj, GtkAda_String_Quark);
+
+      if R = null then
+         R := new GObject_Record'Class'(Stub);
+         Set_Object (R, Obj);
+      end if;
+
+      return R;
+   end Get_User_Data_Fast;
 
    ----------------
    -- Is_Created --
