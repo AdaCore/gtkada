@@ -41,7 +41,7 @@ package Gdk.Font is
    procedure Fontset_Load (Font         :   out Gdk_Font;
                            Fontset_Name : in    String);
 
-   procedure Ref (Font : in out Gdk_Font);
+   procedure Ref (Font : in Gdk_Font);
 
    procedure Unref (Font : in out Gdk_Font);
 

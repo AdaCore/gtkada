@@ -96,7 +96,7 @@ package Gdk.Color_Context is
    procedure Query_Colors (CC     : in     Gdk_Color_Context;
                            Colors : in out Gdk.Color.Gdk_Color_Array);
 
-   procedure Add_Palette (CC           : in out Gdk_Color_Context;
+   procedure Add_Palette (CC           : in     Gdk_Color_Context;
                           Palette      : in     Gdk.Color.Gdk_Color_Array;
                           Palette_Size :    out Glib.Gint);
    --

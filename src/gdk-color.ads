@@ -49,7 +49,7 @@ package Gdk.Color is
                       Visual       : in     Gdk.Visual.Gdk_Visual;
                       Private_Cmap : in     Gint);
 
-   procedure Ref (Colormap : in out Gdk_Colormap);
+   procedure Ref (Colormap : in Gdk_Colormap);
 
    procedure Unref (Colormap : in out Gdk_Colormap);
 
@@ -60,7 +60,7 @@ package Gdk.Color is
    procedure Change (Colormap : in Gdk_Colormap;
                      Ncolors  : in Gint);
 
-   procedure Alloc_Colors (Colormap   : in out Gdk_Colormap;
+   procedure Alloc_Colors (Colormap   : in     Gdk_Colormap;
                            Colors     : in     Gdk_Color_Array;
                            Writeable  : in     Boolean;
                            Best_Match : in     Boolean;
@@ -71,7 +71,7 @@ package Gdk.Color is
    --  Colors_Array. USAGE OF AN ARRAY OF A DIFFERENT SIZE WILL
    --  PROBABLY LEAD TO A CONSTRAINT_ERROR.
 
-   procedure Alloc_Color (Colormap   : in out Gdk_Colormap;
+   procedure Alloc_Color (Colormap   : in     Gdk_Colormap;
                           Color      : in     Gdk_Color;
                           Writeable  : in     Boolean;
                           Best_Match : in     Boolean;
@@ -80,19 +80,19 @@ package Gdk.Color is
    procedure Free_Colors (Colormap : in Gdk_Colormap;
                           Colors   : in Gdk_Color_Array);
 
-   procedure Store (Colormap : in out Gdk_Colormap;
-                    Colors   : in     Gdk_Color_Array);
+   procedure Store (Colormap : in Gdk_Colormap;
+                    Colors   : in Gdk_Color_Array);
    --  Stores the colors in the colormap
 
-   procedure Alloc (Colormap   : in out Gdk_Colormap;
-                    Contiguous : in     Boolean;
+   procedure Alloc (Colormap   : in Gdk_Colormap;
+                    Contiguous : in Boolean;
                     Planes     : in     Gulong_Array;
                     Pixels     : in     Gulong_Array;
                     Succeeded  :    out Boolean);
 
-   procedure Free (Colormap : in out Gdk_Colormap;
-                   Pixels   : in     Gulong_Array;
-                   Planes   : in     Gulong);
+   procedure Free (Colormap : in Gdk_Colormap;
+                   Pixels   : in Gulong_Array;
+                   Planes   : in Gulong);
 
    function White (Colormap  : in Gdk_Colormap) return Gdk_Color;
    function Black (Colormap  : in Gdk_Colormap) return Gdk_Color;
@@ -110,9 +110,9 @@ package Gdk.Color is
    function Hash (Color_A : in Gdk_Color;
                   Color_B : in Gdk_Color) return Guint;
 
-   procedure Change (Colormap  : in out Gdk_Colormap;
-                    Color     : in out Gdk_Color;
-                    Succeeded :    out Boolean);
+   procedure Change (Colormap  : in Gdk_Colormap;
+                     Color     : in out Gdk_Color;
+                     Succeeded :    out Boolean);
 
    procedure Get_Visual (Colormap : in     Gdk_Colormap;
                          Visual   :    out Gdk.Visual.Gdk_Visual);

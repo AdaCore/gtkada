@@ -59,9 +59,9 @@ package Gdk.Region is
                       Points : in     Gdk.Types.Gdk_Points_Array;
                       Fill_Rule : in     Types.Gdk_Fill_Rule);
 
-   procedure Offset (Region : in out Gdk_Region;
-                     Dx     : in     Gint;
-                     Dy     : in     Gint);
+   procedure Offset (Region : in Gdk_Region;
+                     Dx     : in Gint;
+                     Dy     : in Gint);
 
    procedure Shrink (Region : in out Gdk_Region;
                      Dx     : in     Gint;

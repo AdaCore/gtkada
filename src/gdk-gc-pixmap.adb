@@ -33,8 +33,8 @@ package body Gdk.GC.Pixmap is
    --  Set_Stipple  --
    -------------------
 
-   procedure Set_Stipple (GC      : in out Gdk_GC;
-                          Stipple : in     Gdk.Pixmap.Gdk_Pixmap) is
+   procedure Set_Stipple (GC      : in Gdk_GC;
+                          Stipple : in Gdk.Pixmap.Gdk_Pixmap) is
       procedure Internal (GC, Stipple : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_stipple");
    begin
@@ -45,8 +45,8 @@ package body Gdk.GC.Pixmap is
    --  Set_Tile  --
    ----------------
 
-   procedure Set_Tile (GC   : in out Gdk_GC;
-                       Tile : in     Gdk.Pixmap.Gdk_Pixmap) is
+   procedure Set_Tile (GC   : in Gdk_GC;
+                       Tile : in Gdk.Pixmap.Gdk_Pixmap) is
       procedure Internal (GC, Tile : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_tile");
    begin

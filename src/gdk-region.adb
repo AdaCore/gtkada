@@ -127,9 +127,9 @@ package body Gdk.Region is
    --  Offset  --
    --------------
 
-   procedure Offset (Region : in out Gdk_Region;
-                     Dx     : in     Gint;
-                     Dy     : in     Gint) is
+   procedure Offset (Region : in Gdk_Region;
+                     Dx     : in Gint;
+                     Dy     : in Gint) is
       procedure Internal (Region : in System.Address;
                           Dx, Dy : in Gint);
       pragma Import (C, Internal, "gdk_region_offset");

@@ -125,8 +125,8 @@ package body Gdk.GC is
    --  Set_Background  --
    ----------------------
 
-   procedure Set_Background (GC     : in out Gdk_GC;
-                             Color  : in     Gdk.Color.Gdk_Color) is
+   procedure Set_Background (GC     : in Gdk_GC;
+                             Color  : in Gdk.Color.Gdk_Color) is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_background");
    begin
@@ -138,8 +138,8 @@ package body Gdk.GC is
    --  Set_Clip_Origin  --
    -----------------------
 
-   procedure Set_Clip_Origin (GC   : in out Gdk_GC;
-                              X, Y : in     Gint) is
+   procedure Set_Clip_Origin (GC   : in Gdk_GC;
+                              X, Y : in Gint) is
       procedure Internal (GC : in System.Address; X, Y : in Gint);
       pragma Import (C, Internal, "gdk_gc_set_clip_origin");
    begin
@@ -152,8 +152,8 @@ package body Gdk.GC is
    --------------------------
 
    procedure Set_Clip_Rectangle
-     (GC        : in out Gdk_GC;
-      Rectangle : in     Gdk.Rectangle.Gdk_Rectangle) is
+     (GC        : in Gdk_GC;
+      Rectangle : in Gdk.Rectangle.Gdk_Rectangle) is
       procedure Internal (GC, Rectangle : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_clip_rectangle");
    begin
@@ -165,8 +165,8 @@ package body Gdk.GC is
    --  Set_Clip_Region  --
    -----------------------
 
-   procedure Set_Clip_Region (GC     : in out Gdk_GC;
-                              Region : in     Gdk.Region.Gdk_Region'Class) is
+   procedure Set_Clip_Region (GC     : in Gdk_GC;
+                              Region : in Gdk.Region.Gdk_Region'Class) is
       procedure Internal (GC, Region : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_clip_region");
    begin
@@ -178,9 +178,9 @@ package body Gdk.GC is
    -- Set_Dashes --
    ----------------
 
-   procedure Set_Dashes (Gc          : in out Gdk_GC;
-                         Dash_Offset : in     Gint;
-                         Dash_List   : in     Gint_Array) is
+   procedure Set_Dashes (Gc          : in Gdk_GC;
+                         Dash_Offset : in Gint;
+                         Dash_List   : in Gint_Array) is
       procedure Internal (Gc          : in System.Address;
                           Dash_Offset : in Gint;
                           Dash_List   : in Gint_Array;
@@ -198,8 +198,8 @@ package body Gdk.GC is
    --  Set_Exposures  --
    ---------------------
 
-   procedure Set_Exposures (GC        : in out Gdk_GC;
-                            Exposures : in     Boolean) is
+   procedure Set_Exposures (GC        : in Gdk_GC;
+                            Exposures : in Boolean) is
       procedure Internal (GC : in System.Address; Exposures : in Gint);
       pragma Import (C, Internal, "gdk_gc_set_exposures");
    begin
@@ -211,8 +211,8 @@ package body Gdk.GC is
    --  Set_Fill  --
    ----------------
 
-   procedure Set_Fill (GC   : in out Gdk_GC;
-                       Fill : in     Types.Gdk_Fill) is
+   procedure Set_Fill (GC   : in Gdk_GC;
+                       Fill : in Types.Gdk_Fill) is
       procedure Internal (GC : in System.Address; Fill : in Types.Gdk_Fill);
       pragma Import (C, Internal, "gdk_gc_set_fill");
    begin
@@ -224,8 +224,8 @@ package body Gdk.GC is
    --  Set_Font  --
    ----------------
 
-   procedure Set_Font (GC   : in out Gdk_GC;
-                       Font : in     Gdk.Font.Gdk_Font'Class) is
+   procedure Set_Font (GC   : in Gdk_GC;
+                       Font : in Gdk.Font.Gdk_Font'Class) is
       procedure Internal (GC, Font : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_font");
    begin
@@ -237,8 +237,8 @@ package body Gdk.GC is
    --  Set_Foreground  --
    ----------------------
 
-   procedure Set_Foreground (GC    : in out Gdk_GC;
-                             Color : in     Gdk.Color.Gdk_Color) is
+   procedure Set_Foreground (GC    : in Gdk_GC;
+                             Color : in Gdk.Color.Gdk_Color) is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_foreground");
    begin
@@ -250,8 +250,8 @@ package body Gdk.GC is
    --  Set_Function  --
    --------------------
 
-   procedure Set_Function (GC   : in out Gdk_GC;
-                           Func : in     Types.Gdk_Function) is
+   procedure Set_Function (GC   : in Gdk_GC;
+                           Func : in Types.Gdk_Function) is
       procedure Internal (GC   : in System.Address;
                           Func : in Types.Gdk_Function);
       pragma Import (C, Internal, "gdk_gc_set_function");
@@ -264,11 +264,11 @@ package body Gdk.GC is
    --  Set_Line_Attributes  --
    ---------------------------
 
-   procedure Set_Line_Attributes (GC         : in out Gdk_GC;
-                                  Line_Width : in     Gint;
-                                  Line_Style : in     Types.Gdk_Line_Style;
-                                  Cap_Style  : in     Types.Gdk_Cap_Style;
-                                  Join_Style : in     Types.Gdk_Join_Style) is
+   procedure Set_Line_Attributes (GC         : in Gdk_GC;
+                                  Line_Width : in Gint;
+                                  Line_Style : in Types.Gdk_Line_Style;
+                                  Cap_Style  : in Types.Gdk_Cap_Style;
+                                  Join_Style : in Types.Gdk_Join_Style) is
       procedure Internal (GC : in System.Address;
                           Line_Width : in     Gint;
                           Line_Style : in     Types.Gdk_Line_Style;
@@ -285,8 +285,8 @@ package body Gdk.GC is
    --  Set_Subwindow  --
    ---------------------
 
-   procedure Set_Subwindow (GC   : in out Gdk_GC;
-                            Mode : in     Types.Gdk_Subwindow_Mode) is
+   procedure Set_Subwindow (GC   : in Gdk_GC;
+                            Mode : in Types.Gdk_Subwindow_Mode) is
       procedure Internal (GC : in System.Address;
                           Mode : in Types.Gdk_Subwindow_Mode);
       pragma Import (C, Internal, "gdk_gc_set_subwindow");
@@ -299,8 +299,8 @@ package body Gdk.GC is
    --  Set_Ts_Origin  --
    ---------------------
 
-   procedure Set_Ts_Origin (GC   : in out Gdk_GC;
-                            X, Y : in     Gint) is
+   procedure Set_Ts_Origin (GC   : in Gdk_GC;
+                            X, Y : in Gint) is
       procedure Internal (GC : in System.Address; X, Y : in Gint);
       pragma Import (C, Internal, "gdk_gc_set_ts_origin");
    begin

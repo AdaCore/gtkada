@@ -100,10 +100,10 @@ package body Gdk.Image is
    --  Put_Pixel  --
    -----------------
 
-   procedure Put_Pixel (Image : in out Gdk_Image;
-                        X     : in     Gint;
-                        Y     : in     Gint;
-                        Pixel : in     Guint32) is
+   procedure Put_Pixel (Image : in Gdk_Image;
+                        X     : in Gint;
+                        Y     : in Gint;
+                        Pixel : in Guint32) is
       procedure Internal (Image : in System.Address;
                           X, Y  : in Gint;
                           Pixel : in Guint32);

@@ -34,14 +34,14 @@ package Gdk.Window.Gc is
    --  Because the Gdk.Gc package spec depends on the Gdk.Window package,
    --  the following services can not be moved in the parent package.
 
-   procedure Copy_Area (Window        : in out Gdk_Window;
-                        Gc            : in     Gdk.GC.Gdk_GC'Class;
-                        X             : in     Gint;
-                        Y             : in     Gint;
-                        Source_Window : in     Gdk_Window;
-                        Source_X      : in     Gint;
-                        Source_Y      : in     Gint;
-                        Width         : in     Gint;
-                        Height        : in     Gint);
+   procedure Copy_Area (Window        : in Gdk_Window;
+                        Gc            : in Gdk.GC.Gdk_GC'Class;
+                        X             : in Gint;
+                        Y             : in Gint;
+                        Source_Window : in Gdk_Window;
+                        Source_X      : in Gint;
+                        Source_Y      : in Gint;
+                        Width         : in Gint;
+                        Height        : in Gint);
 
 end Gdk.Window.Gc;

@@ -44,13 +44,11 @@ package Gdk.Bitmap is
                       Width  : in  Gint;
                       Height : in  Gint);
 
-   procedure Unref_Bitmap (Bitmap : in out Gdk_Bitmap);
-   --  This is the usual way to destroy a bitmap. The memory is freed when
-   --  there is no more reference
-
-   procedure Ref (Bitmap : in out Gdk_Bitmap);
+   procedure Ref (Bitmap : in Gdk_Bitmap);
 
    procedure Unref (Bitmap : in out Gdk_Bitmap);
+   --  This is the usual way to destroy a bitmap. The memory is freed when
+   --  there is no more reference
 
    procedure Create_From_Data (Bitmap :    out Gdk_Bitmap;
                                Window : in     Gdk.Window.Gdk_Window'Class;
@@ -58,8 +56,8 @@ package Gdk.Bitmap is
                                Width  : in     Gint;
                                Height : in     Gint);
 
-   procedure Set_Clip_Mask (GC    : in out Gdk.GC.Gdk_GC'Class;
-                            Mask  : in     Gdk_Bitmap);
+   procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC'Class;
+                            Mask  : in Gdk_Bitmap);
    --  If MASK is set to Null_Bitmap, then no clip_mask is used for drawing
 
 private

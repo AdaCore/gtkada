@@ -145,7 +145,7 @@ package body Gdk.Font is
    --  Ref  --
    -----------
 
-   procedure Ref (Font : in out Gdk_Font) is
+   procedure Ref (Font : in Gdk_Font) is
       function Internal (Font : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_font_ref");
       S : System.Address;

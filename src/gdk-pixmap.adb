@@ -188,7 +188,7 @@ package body Gdk.Pixmap is
    -- Ref --
    ---------
 
-   procedure Ref (Pixmap : in out Gdk_Pixmap) is
+   procedure Ref (Pixmap : in Gdk_Pixmap) is
       function Internal (Pixmap : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_pixmap_ref");
       S : System.Address;

@@ -31,10 +31,10 @@ with Gdk.Pixmap;
 
 package Gdk.GC.Pixmap is
 
-   procedure Set_Tile (GC   : in out Gdk_GC;
-                       Tile : in     Gdk.Pixmap.Gdk_Pixmap);
+   procedure Set_Tile (GC   : in Gdk_GC;
+                       Tile : in Gdk.Pixmap.Gdk_Pixmap);
 
-   procedure Set_Stipple (GC      : in out Gdk_GC;
-                          Stipple : in     Gdk.Pixmap.Gdk_Pixmap);
+   procedure Set_Stipple (GC      : in Gdk_GC;
+                          Stipple : in Gdk.Pixmap.Gdk_Pixmap);
 
 end Gdk.GC.Pixmap;

@@ -33,9 +33,9 @@ package body Gdk.Color_Context is
    --  Add_Palette  --
    -------------------
 
-   procedure Add_Palette (CC           : in out Gdk_Color_Context;
-                          Palette      : in     Gdk.Color.Gdk_Color_Array;
-                          Palette_Size :    out Glib.Gint) is
+   procedure Add_Palette (CC           : in  Gdk_Color_Context;
+                          Palette      : in  Gdk.Color.Gdk_Color_Array;
+                          Palette_Size : out Glib.Gint) is
       function Internal  (CC          : in System.Address;
                           Palette     : in System.Address;
                           Num_Palette : in Glib.Gint) return Glib.Gint;

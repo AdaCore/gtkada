@@ -44,10 +44,10 @@ package body Gdk.Color is
    -- Alloc --
    -----------
 
-   procedure Alloc (Colormap   : in out Gdk_Colormap;
-                    Contiguous : in     Boolean;
-                    Planes     : in     Gulong_Array;
-                    Pixels     : in     Gulong_Array;
+   procedure Alloc (Colormap   : in Gdk_Colormap;
+                    Contiguous : in Boolean;
+                    Planes     : in Gulong_Array;
+                    Pixels     : in Gulong_Array;
                     Succeeded  :    out Boolean) is
       function Internal (Colormap   : in System.Address;
                          Contiguous : in Gint;
@@ -83,10 +83,10 @@ package body Gdk.Color is
    --  Alloc_Colors  --
    --------------------
 
-   procedure Alloc_Color (Colormap   : in out Gdk_Colormap;
-                          Color      : in     Gdk_Color;
-                          Writeable  : in     Boolean;
-                          Best_Match : in     Boolean;
+   procedure Alloc_Color (Colormap   : in Gdk_Colormap;
+                          Color      : in Gdk_Color;
+                          Writeable  : in Boolean;
+                          Best_Match : in Boolean;
                           Success    :    out Boolean) is
       function Internal (Colormap   : in System.Address;
                          Color      : in System.Address;
@@ -105,7 +105,7 @@ package body Gdk.Color is
    --  Alloc_Colors  --
    --------------------
 
-   procedure Alloc_Colors (Colormap   : in out Gdk_Colormap;
+   procedure Alloc_Colors (Colormap   : in     Gdk_Colormap;
                            Colors     : in     Gdk_Color_Array;
                            Writeable  : in     Boolean;
                            Best_Match : in     Boolean;
@@ -172,9 +172,9 @@ package body Gdk.Color is
    -- Change --
    ------------
 
-   procedure Change (Colormap  : in out Gdk_Colormap;
-                    Color     : in out Gdk_Color;
-                    Succeeded :    out Boolean) is
+   procedure Change (Colormap  : in Gdk_Colormap;
+                     Color     : in out Gdk_Color;
+                     Succeeded :    out Boolean) is
       function Internal (Colormap, Color : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_color_change");
    begin
@@ -200,9 +200,9 @@ package body Gdk.Color is
    -- Free --
    ----------
 
-   procedure Free (Colormap : in out Gdk_Colormap;
-                   Pixels   : in     Gulong_Array;
-                   Planes   : in     Gulong) is
+   procedure Free (Colormap : in Gdk_Colormap;
+                   Pixels   : in Gulong_Array;
+                   Planes   : in Gulong) is
       procedure Internal (Colormap : in System.Address;
                           Pixels   : in Gulong_Array;
                           NPixels  : in Gint;
@@ -329,7 +329,7 @@ package body Gdk.Color is
    --  Ref  --
    -----------
 
-   procedure Ref (Colormap : in out Gdk_Colormap) is
+   procedure Ref (Colormap : in Gdk_Colormap) is
       function Internal (Colormap : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_colormap_ref");
       S : System.Address;
@@ -364,8 +364,8 @@ package body Gdk.Color is
    -- Store --
    -----------
 
-   procedure Store (Colormap : in out Gdk_Colormap;
-                    Colors   : in     Gdk_Color_Array)
+   procedure Store (Colormap : in Gdk_Colormap;
+                    Colors   : in Gdk_Color_Array)
    is
       procedure Internal (Colormap : in System.Address;
                           Colors : in System.Address;

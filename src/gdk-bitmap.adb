@@ -52,7 +52,7 @@ package body Gdk.Bitmap is
    --  Ref  --
    -----------
 
-   procedure Ref (Bitmap : in out Gdk_Bitmap) is
+   procedure Ref (Bitmap : in Gdk_Bitmap) is
       function Internal (Bitmap : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_bitmap_ref");
       S : System.Address;
@@ -65,8 +65,8 @@ package body Gdk.Bitmap is
    --  Set_Clip_Mask  --
    ---------------------
 
-   procedure Set_Clip_Mask (GC    : in out Gdk.GC.Gdk_GC'Class;
-                            Mask  : in     Gdk_Bitmap) is
+   procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC'Class;
+                            Mask  : in Gdk_Bitmap) is
       procedure Internal (GC, Mask : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_clip_mask");
    begin
@@ -114,17 +114,5 @@ package body Gdk.Bitmap is
    begin
       return Bitmap;
    end Null_Bitmap;
-
-   ------------------
-   -- Unref_Bitmap --
-   ------------------
-
-   procedure Unref_Bitmap (Bitmap : in out Gdk_Bitmap) is
-      procedure Internal (Pixmap : in System.Address);
-      pragma Import (C, Internal, "gdk_bitmap_unref");
-   begin
-      Internal (Get_Object (Bitmap));
-      Set_Object (Bitmap, System.Null_Address);
-   end Unref_Bitmap;
 
 end Gdk.Bitmap;

@@ -59,20 +59,20 @@ package Gdk.GC is
    procedure Get_Values (GC     : in     Gdk_GC'Class;
                          Values :    out Gdk_GC_Values);
 
-   procedure Set_Foreground (GC    : in out Gdk_GC;
-                             Color : in     Gdk.Color.Gdk_Color);
+   procedure Set_Foreground (GC    : in Gdk_GC;
+                             Color : in Gdk.Color.Gdk_Color);
 
-   procedure Set_Background (GC     : in out Gdk_GC;
-                             Color  : in     Gdk.Color.Gdk_Color);
+   procedure Set_Background (GC     : in Gdk_GC;
+                             Color  : in Gdk.Color.Gdk_Color);
 
-   procedure Set_Font (GC   : in out Gdk_GC;
-                       Font : in     Gdk.Font.Gdk_Font'Class);
+   procedure Set_Font (GC   : in Gdk_GC;
+                       Font : in Gdk.Font.Gdk_Font'Class);
 
-   procedure Set_Function (GC   : in out Gdk_GC;
-                           Func : in     Types.Gdk_Function);
+   procedure Set_Function (GC   : in Gdk_GC;
+                           Func : in Types.Gdk_Function);
 
-   procedure Set_Fill (GC   : in out Gdk_GC;
-                       Fill : in     Types.Gdk_Fill);
+   procedure Set_Fill (GC   : in Gdk_GC;
+                       Fill : in Types.Gdk_Fill);
 
    --  procedure Set_Tile
    --  procedure Set_Stipple
@@ -80,34 +80,34 @@ package Gdk.GC is
    --  Have been moved to the Gdk.GC.Pixmap child package for
    --  circular dependency reasons.
 
-   procedure Set_Ts_Origin (GC   : in out Gdk_GC;
-                            X, Y : in     Gint);
+   procedure Set_Ts_Origin (GC   : in Gdk_GC;
+                            X, Y : in Gint);
 
-   procedure Set_Clip_Origin (GC   : in out Gdk_GC;
-                              X, Y : in     Gint);
+   procedure Set_Clip_Origin (GC   : in Gdk_GC;
+                              X, Y : in Gint);
 
    procedure Set_Clip_Rectangle
-     (GC        : in out Gdk_GC;
-      Rectangle : in     Gdk.Rectangle.Gdk_Rectangle);
+     (GC        : in Gdk_GC;
+      Rectangle : in Gdk.Rectangle.Gdk_Rectangle);
 
-   procedure Set_Clip_Region (GC     : in out Gdk_GC;
-                              Region : in     Gdk.Region.Gdk_Region'Class);
+   procedure Set_Clip_Region (GC     : in Gdk_GC;
+                              Region : in Gdk.Region.Gdk_Region'Class);
 
-   procedure Set_Subwindow (GC   : in out Gdk_GC;
-                            Mode : in     Types.Gdk_Subwindow_Mode);
+   procedure Set_Subwindow (GC   : in Gdk_GC;
+                            Mode : in Types.Gdk_Subwindow_Mode);
 
-   procedure Set_Exposures (GC        : in out Gdk_GC;
-                            Exposures : in     Boolean);
+   procedure Set_Exposures (GC        : in Gdk_GC;
+                            Exposures : in Boolean);
 
-   procedure Set_Line_Attributes (GC         : in out Gdk_GC;
-                                  Line_Width : in     Gint;
-                                  Line_Style : in     Types.Gdk_Line_Style;
-                                  Cap_Style  : in     Types.Gdk_Cap_Style;
-                                  Join_Style : in     Types.Gdk_Join_Style);
+   procedure Set_Line_Attributes (GC         : in Gdk_GC;
+                                  Line_Width : in Gint;
+                                  Line_Style : in Types.Gdk_Line_Style;
+                                  Cap_Style  : in Types.Gdk_Cap_Style;
+                                  Join_Style : in Types.Gdk_Join_Style);
 
-   procedure Set_Dashes (Gc          : in out Gdk_GC;
-                         Dash_Offset : in     Gint;
-                         Dash_List   : in     Gint_Array);
+   procedure Set_Dashes (Gc          : in Gdk_GC;
+                         Dash_Offset : in Gint;
+                         Dash_List   : in Gint_Array);
 
    procedure Copy (Dst_GC :    out Gdk_GC;
                    Src_GC : in     Gdk_GC);

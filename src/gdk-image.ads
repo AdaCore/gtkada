@@ -54,10 +54,10 @@ package Gdk.Image is
                   Width  : in     Gint;
                   Height : in     Gint);
 
-   procedure Put_Pixel (Image : in out Gdk_Image;
-                        X     : in     Gint;
-                        Y     : in     Gint;
-                        Pixel : in     Guint32);
+   procedure Put_Pixel (Image : in Gdk_Image;
+                        X     : in Gint;
+                        Y     : in Gint;
+                        Pixel : in Guint32);
 
    function Get_Pixel (Image : in Gdk_Image;
                        X     : in Gint;

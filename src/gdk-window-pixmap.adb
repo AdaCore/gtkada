@@ -29,9 +29,9 @@
 
 package body Gdk.Window.Pixmap is
 
-   procedure Set_Back_Pixmap (Window          : in out Gdk_Window;
-                              Pixmap          : in     Gdk.Pixmap.Gdk_Pixmap;
-                              Parent_Relative : in     Gint) is
+   procedure Set_Back_Pixmap (Window          : in Gdk_Window;
+                              Pixmap          : in Gdk.Pixmap.Gdk_Pixmap;
+                              Parent_Relative : in Gint) is
       procedure Internal (Window          : in System.Address;
                           Pixmap          : in System.Address;
                           Parent_Relative : in Gint);

@@ -33,15 +33,15 @@ package body Gdk.Window.Gc is
    --  Copy_Area  --
    -----------------
 
-   procedure Copy_Area (Window        : in out Gdk_Window;
-                        Gc            : in     Gdk.GC.Gdk_GC'Class;
-                        X             : in     Gint;
-                        Y             : in     Gint;
-                        Source_Window : in     Gdk_Window;
-                        Source_X      : in     Gint;
-                        Source_Y      : in     Gint;
-                        Width         : in     Gint;
-                        Height        : in     Gint) is
+   procedure Copy_Area (Window        : in Gdk_Window;
+                        Gc            : in Gdk.GC.Gdk_GC'Class;
+                        X             : in Gint;
+                        Y             : in Gint;
+                        Source_Window : in Gdk_Window;
+                        Source_X      : in Gint;
+                        Source_Y      : in Gint;
+                        Width         : in Gint;
+                        Height        : in Gint) is
       procedure Internal (Window        : in System.Address;
                           Gc            : in System.Address;
                           X, Y          : in Gint;

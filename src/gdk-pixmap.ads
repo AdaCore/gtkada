@@ -47,7 +47,7 @@ package Gdk.Pixmap is
    --  If the depth is -1, the default depth for the window will be
    --  chosen
 
-   procedure Ref (Pixmap : in out Gdk_Pixmap);
+   procedure Ref (Pixmap : in Gdk_Pixmap);
    --  Adds a reference to a pixmap
 
    procedure Unref (Pixmap : in out Gdk_Pixmap);

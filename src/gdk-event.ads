@@ -68,19 +68,19 @@ package Gdk.Event is
    function Get_Event_Type (Event : in Gdk_Event)
                             return Types.Gdk_Event_Type;
 
-   procedure Set_Event_Type (Event      : in out Gdk_Event;
-                             Event_Type : in     Types.Gdk_Event_Type);
+   procedure Set_Event_Type (Event      : in Gdk_Event;
+                             Event_Type : in Types.Gdk_Event_Type);
 
    function Get_Window (Event  : in     Gdk_Event)
                         return Gdk.Window.Gdk_Window;
 
-   procedure Set_Window (Event  : in out Gdk_Event;
-                         Window : in     Gdk.Window.Gdk_Window'Class);
+   procedure Set_Window (Event  : in Gdk_Event;
+                         Window : in Gdk.Window.Gdk_Window'Class);
 
    function Get_Send_Event (Event : in Gdk_Event) return Boolean;
 
-   procedure Set_Send_Event (Event      : in out Gdk_Event;
-                             Send_Event : in     Boolean := True);
+   procedure Set_Send_Event (Event      : in Gdk_Event;
+                             Send_Event : in Boolean := True);
 
 
    procedure Send_Client_Message_To_All (Event : in Gdk_Event);
@@ -174,23 +174,23 @@ package Gdk.Event is
 
    function Get_X (Event : in Gdk_Event_Configure) return Gint16;
 
-   procedure Set_X (Event : in out Gdk_Event_Configure;
-                    X     : in     Gint16);
+   procedure Set_X (Event : in Gdk_Event_Configure;
+                    X     : in Gint16);
 
    function Get_Y (Event : in Gdk_Event_Configure) return Gint16;
 
-   procedure Set_Y (Event : in out Gdk_Event_Configure;
-                    Y     : in     Gint16);
+   procedure Set_Y (Event : in Gdk_Event_Configure;
+                    Y     : in Gint16);
 
    function Get_Width (Event : in Gdk_Event_Configure) return Gint16;
 
-   procedure Set_Width (Event : in out Gdk_Event_Configure;
-                        Width : in     Gint16);
+   procedure Set_Width (Event : in Gdk_Event_Configure;
+                        Width : in Gint16);
 
    function Get_Height (Event : in Gdk_Event_Configure) return Gint16;
 
-   procedure Set_Height (Event  : in out Gdk_Event_Configure;
-                         Height : in     Gint16);
+   procedure Set_Height (Event  : in Gdk_Event_Configure;
+                         Height : in Gint16);
 
 
    --------------------------
@@ -237,13 +237,13 @@ package Gdk.Event is
    function Get_Area (Event : in     Gdk_Event_Expose)
                       return Rectangle.Gdk_Rectangle;
 
-   procedure Set_Area (Event : in out Gdk_Event_Expose;
-                       Area  : in     Rectangle.Gdk_Rectangle);
+   procedure Set_Area (Event : in Gdk_Event_Expose;
+                       Area  : in Rectangle.Gdk_Rectangle);
 
    function Get_Count (Event : in Gdk_Event_Expose) return Gint;
 
-   procedure Set_Count (Event : in out Gdk_Event_Expose;
-                        Count : in     Gint);
+   procedure Set_Count (Event : in Gdk_Event_Expose;
+                        Count : in Gint);
 
 
    -----------------------

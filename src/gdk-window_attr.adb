@@ -72,9 +72,8 @@ package body Gdk.Window_Attr is
       Override_Redirect : in    Boolean := True) is
       function Internal return System.Address;
       pragma Import (C, Internal, "ada_gdk_window_attr_new");
-      Result : Gdk_Window_Attr;
    begin
-      Set_Object (Result, Internal);
+      Set_Object (Window_Attr, Internal);
 
       Set_Title (Window_Attr, Title);
       Set_Event_Mask (Window_Attr, Event_Mask);
@@ -291,8 +290,8 @@ package body Gdk.Window_Attr is
    --------------------
 
    procedure Set_Colormap
-     (Window_Attr : in out Gdk_Window_Attr;
-      Colormap    : in     Gdk.Color.Gdk_Colormap'Class) is
+     (Window_Attr : in Gdk_Window_Attr;
+      Colormap    : in Gdk.Color.Gdk_Colormap'Class) is
       procedure Internal (Window_Attr, Colormap : in System.Address);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_colormap");
    begin
@@ -304,8 +303,8 @@ package body Gdk.Window_Attr is
    --  Set_Cursor  --
    ------------------
 
-   procedure Set_Cursor (Window_Attr : in out Gdk_Window_Attr;
-                         Cursor      : in     Gdk.Cursor.Gdk_Cursor'Class) is
+   procedure Set_Cursor (Window_Attr : in Gdk_Window_Attr;
+                         Cursor      : in Gdk.Cursor.Gdk_Cursor'Class) is
       procedure Internal (Window_Attr, Cursor : in System.Address);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_cursor");
    begin
@@ -317,8 +316,8 @@ package body Gdk.Window_Attr is
    --  Set_Event_Mask  --
    ----------------------
 
-   procedure Set_Event_Mask (Window_Attr : in out Gdk_Window_Attr;
-                             Event_Mask  : in     Gdk.Types.Gdk_Event_Mask) is
+   procedure Set_Event_Mask (Window_Attr : in Gdk_Window_Attr;
+                             Event_Mask  : in Gdk.Types.Gdk_Event_Mask) is
       procedure Internal (Window_Attr : in System.Address;
                           Event_Mask : in Gdk.Types.Gdk_Event_Mask);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_event_mask");
@@ -331,8 +330,8 @@ package body Gdk.Window_Attr is
    --  Set_Height  --
    ------------------
 
-   procedure Set_Height (Window_Attr : in out Gdk_Window_Attr;
-                        height       : in     Glib.Gint16) is
+   procedure Set_Height (Window_Attr : in Gdk_Window_Attr;
+                        height       : in Glib.Gint16) is
       procedure Internal (Window_Attr : in System.Address;
                           height       : in Glib.Gint16);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_height");
@@ -345,8 +344,8 @@ package body Gdk.Window_Attr is
    --  Set_Override_Redirect  --
    -----------------------------
 
-   procedure Set_Override_Redirect (Window_Attr       : in out Gdk_Window_Attr;
-                                    Override_Redirect : in     Boolean) is
+   procedure Set_Override_Redirect (Window_Attr       : in Gdk_Window_Attr;
+                                    Override_Redirect : in Boolean) is
       procedure Internal (Window_Attr : in System.Address;
                           Override_Redirect : in Glib.Gboolean);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_override_redirect");
@@ -360,8 +359,8 @@ package body Gdk.Window_Attr is
    --  Set_Title  --
    -----------------
 
-   procedure Set_Title (Window_Attr : in out Gdk_Window_Attr;
-                        Title       : in     String) is
+   procedure Set_Title (Window_Attr : in Gdk_Window_Attr;
+                        Title       : in String) is
       procedure Internal (Window_Attr : in System.Address;
                           Title : in String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_title");
@@ -374,8 +373,8 @@ package body Gdk.Window_Attr is
    --  Set_Visual  --
    ------------------
 
-   procedure Set_Visual (Window_Attr : in out Gdk_Window_Attr;
-                         Visual      : in     Gdk.Visual.Gdk_Visual'class) is
+   procedure Set_Visual (Window_Attr : in Gdk_Window_Attr;
+                         Visual      : in Gdk.Visual.Gdk_Visual'class) is
       procedure Internal (Window_Attr, Visual : in System.Address);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_visual");
    begin
@@ -387,8 +386,8 @@ package body Gdk.Window_Attr is
    --  Set_Width  --
    -----------------
 
-   procedure Set_Width (Window_Attr : in out Gdk_Window_Attr;
-                        Width       : in     Glib.Gint16) is
+   procedure Set_Width (Window_Attr : in Gdk_Window_Attr;
+                        Width       : in Glib.Gint16) is
       procedure Internal (Window_Attr : in System.Address;
                           Width       : in Glib.Gint16);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_width");
@@ -402,8 +401,8 @@ package body Gdk.Window_Attr is
    ------------------------
 
    procedure Set_Window_Class
-     (Window_Attr : in out Gdk_Window_Attr;
-      Wclass      : in     Gdk.Types.Gdk_Window_Class) is
+     (Window_Attr : in Gdk_Window_Attr;
+      Wclass      : in Gdk.Types.Gdk_Window_Class) is
       procedure Internal (Window_Attr : in System.Address;
                           Wclass : in Gdk.Types.Gdk_Window_Class);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_wclass");
@@ -417,8 +416,8 @@ package body Gdk.Window_Attr is
    -----------------------
 
    procedure Set_Window_Type
-     (Window_Attr : in out Gdk_Window_Attr;
-      Window_Type : in     Gdk.Types.Gdk_Window_Type) is
+     (Window_Attr : in Gdk_Window_Attr;
+      Window_Type : in Gdk.Types.Gdk_Window_Type) is
       procedure Internal (Window_Attr : in System.Address;
                           Window_Type : in Gdk.Types.Gdk_Window_Type);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_window_type");
@@ -431,8 +430,8 @@ package body Gdk.Window_Attr is
    --  Set_Wmclass_Class  --
    -------------------------
 
-   procedure Set_Wmclass_Class (Window_Attr  : in out Gdk_Window_Attr;
-                                Wmclass_Class : in     String) is
+   procedure Set_Wmclass_Class (Window_Attr   : in Gdk_Window_Attr;
+                                Wmclass_Class : in String) is
       procedure Internal (Window_Attr  : in System.Address;
                           Wmclass_Class : in String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_wmclass_class");
@@ -445,8 +444,8 @@ package body Gdk.Window_Attr is
    --  Set_Wmclass_Name  --
    ------------------------
 
-   procedure Set_Wmclass_Name (Window_Attr  : in out Gdk_Window_Attr;
-                               Wmclass_Name : in     String) is
+   procedure Set_Wmclass_Name (Window_Attr  : in Gdk_Window_Attr;
+                               Wmclass_Name : in String) is
       procedure Internal (Window_Attr  : in System.Address;
                           Wmclass_Name : in String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_wmclass_name");
@@ -459,8 +458,8 @@ package body Gdk.Window_Attr is
    --  Set_X  --
    -------------
 
-   procedure Set_X (Window_Attr : in out Gdk_Window_Attr;
-                    X           : in     Glib.Gint16) is
+   procedure Set_X (Window_Attr : in Gdk_Window_Attr;
+                    X           : in Glib.Gint16) is
       procedure Internal (Window_Attr : in System.Address;
                           X           : in Glib.Gint16);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_x");
@@ -473,8 +472,8 @@ package body Gdk.Window_Attr is
    --  Set_Y  --
    -------------
 
-   procedure Set_Y (Window_Attr : in out Gdk_Window_Attr;
-                    Y           : in     Glib.Gint16) is
+   procedure Set_Y (Window_Attr : in Gdk_Window_Attr;
+                    Y           : in Glib.Gint16) is
       procedure Internal (Window_Attr : in System.Address;
                           Y           : in Glib.Gint16);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_y");

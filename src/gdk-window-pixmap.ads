@@ -31,9 +31,9 @@ with Gdk.Pixmap;
 
 package Gdk.Window.Pixmap is
 
-   procedure Set_Back_Pixmap (Window          : in out Gdk_Window;
-                              Pixmap          : in     Gdk.Pixmap.Gdk_Pixmap;
-                              Parent_Relative : in     Gint);
+   procedure Set_Back_Pixmap (Window          : in Gdk_Window;
+                              Pixmap          : in Gdk.Pixmap.Gdk_Pixmap;
+                              Parent_Relative : in Gint);
 
    --  void          gdk_window_set_icon        (GdkWindow       *window,
    --                                            GdkWindow       *icon_window,

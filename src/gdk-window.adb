@@ -34,7 +34,7 @@ package body Gdk.Window is
    --  Clear  --
    -------------
 
-   procedure Clear (Window : in out Gdk_Window) is
+   procedure Clear (Window : in Gdk_Window) is
       procedure Internal (Window : in System.Address);
       pragma Import (C, Internal, "gdk_window_clear");
    begin
@@ -266,7 +266,7 @@ package body Gdk.Window is
    --  Get_Pointer  --
    -------------------
 
-   procedure Get_Pointer (Window : in out Gdk_Window;
+   procedure Get_Pointer (Window : in     Gdk_Window;
                           X      :    out Gint;
                           Y      :    out Gint;
                           Mask   :    out Gdk.Types.Gdk_Modifier_Type;
@@ -438,7 +438,7 @@ package body Gdk.Window is
    --  Merge_Child_Shapes  --
    --------------------------
 
-   procedure Merge_Child_Shapes (Window : in out Gdk_Window) is
+   procedure Merge_Child_Shapes (Window : in Gdk_Window) is
       procedure Internal (Window : in System.Address);
       pragma Import (C, Internal, "gdk_window_merge_child_shapes");
    begin
@@ -450,9 +450,9 @@ package body Gdk.Window is
    --  Move  --
    ------------
 
-   procedure Move (Window : in out Gdk_Window;
-                   X      : in     Gint;
-                   Y      : in     Gint) is
+   procedure Move (Window : in Gdk_Window;
+                   X      : in Gint;
+                   Y      : in Gint) is
       procedure Internal (Window : in System.Address;
                           X, Y   : in Gint);
       pragma Import (C, Internal, "gdk_window_move");
@@ -465,11 +465,11 @@ package body Gdk.Window is
    --  Move_Resize  --
    -------------------
 
-   procedure Move_Resize (Window : in out Gdk_Window;
-                          X      : in     Gint;
-                          Y      : in     Gint;
-                          Width  : in     Gint;
-                          Height : in     Gint) is
+   procedure Move_Resize (Window : in Gdk_Window;
+                          X      : in Gint;
+                          Y      : in Gint;
+                          Width  : in Gint;
+                          Height : in Gint) is
       procedure Internal (Window : in System.Address;
                           X, Y   : in Gint;
                           Width  : in Gint;
@@ -496,7 +496,7 @@ package body Gdk.Window is
    --  Ref  --
    -----------
 
-   procedure Ref (Window : in out Gdk_Window) is
+   procedure Ref (Window : in Gdk_Window) is
       procedure Internal (Window : in System.Address);
       pragma Import (C, Internal, "gdk_window_ref");
       --
@@ -513,10 +513,10 @@ package body Gdk.Window is
    --  Reparent  --
    ----------------
 
-   procedure Reparent (Window     : in out Gdk_Window;
-                       New_Parent : in     Gdk_Window;
-                       X          : in     Gint;
-                       Y          : in     Gint) is
+   procedure Reparent (Window     : in Gdk_Window;
+                       New_Parent : in Gdk_Window;
+                       X          : in Gint;
+                       Y          : in Gint) is
       procedure Internal (Window    : in System.Address;
                           New_Paent : in System.Address;
                           X, Y      : in Gint);
@@ -530,9 +530,9 @@ package body Gdk.Window is
    --  Resize  --
    --------------
 
-   procedure Resize (Window : in out Gdk_Window;
-                     Width  : in     Gint;
-                     Height : in     Gint) is
+   procedure Resize (Window : in Gdk_Window;
+                     Width  : in Gint;
+                     Height : in Gint) is
       procedure Internal (Window : in System.Address;
                           Width  : in Gint;
                           Height : in Gint);
@@ -546,8 +546,8 @@ package body Gdk.Window is
    --  Set_Background  --
    ----------------------
 
-   procedure Set_Background (Window : in out Gdk_Window;
-                             Color  : in     Gdk.Color.Gdk_Color) is
+   procedure Set_Background (Window : in Gdk_Window;
+                             Color  : in Gdk.Color.Gdk_Color) is
       procedure Internal (Window : in System.Address;
                           Color  : in System.Address);
       pragma Import (C, Internal, "gdk_window_set_background");
@@ -566,7 +566,7 @@ package body Gdk.Window is
    --  Set_Child_Shapes  --
    ------------------------
 
-   procedure Set_Child_Shapes (Window : in out Gdk_Window) is
+   procedure Set_Child_Shapes (Window : in Gdk_Window) is
       procedure Internal (Window : in System.Address);
       pragma Import (C, Internal, "gdk_window_set_child_shapes");
    begin
@@ -578,7 +578,7 @@ package body Gdk.Window is
    --  Set_Colormap  --
    --------------------
 
-   procedure Set_Colormap (Window   : in out Gdk_Window;
+   procedure Set_Colormap (Window   : in Gdk_Window;
                            Colormap : in     Gdk.Color.Gdk_Colormap) is
       procedure Internal (Window   : in System.Address;
                           Colormap : in System.Address);
@@ -592,8 +592,8 @@ package body Gdk.Window is
    -- Set_Cursor --
    ----------------
 
-   procedure Set_Cursor (Window : in out Gdk_Window;
-                         Cursor : in     Gdk.Cursor.Gdk_Cursor)
+   procedure Set_Cursor (Window : in Gdk_Window;
+                         Cursor : in Gdk.Cursor.Gdk_Cursor)
    is
       procedure Internal (Window : in System.Address;
                           Cursor : in System.Address);
@@ -608,8 +608,8 @@ package body Gdk.Window is
    ----------------------
 
    procedure Set_Decorations
-     (Window      : in out Gdk_Window;
-      Decorations : in     Gdk.Types.Gdk_Wm_Decoration) is
+     (Window      : in Gdk_Window;
+      Decorations : in Gdk.Types.Gdk_Wm_Decoration) is
       procedure Internal (Window      : in System.Address;
                           Decorations : in Gdk.Types.Gdk_Wm_Decoration);
       pragma Import (C, Internal, "gdk_window_set_decorations");
@@ -622,8 +622,8 @@ package body Gdk.Window is
    --  Set_Events  --
    ------------------
 
-   procedure Set_Events (Window     : in out Gdk_Window;
-                         Event_Mask : in     Gdk.Types.Gdk_Event_Mask) is
+   procedure Set_Events (Window     : in Gdk_Window;
+                         Event_Mask : in Gdk.Types.Gdk_Event_Mask) is
       procedure Internal (Window     : in System.Address;
                           Event_Mask : in Gdk.Types.Gdk_Event_Mask);
       pragma Import (C, Internal, "gdk_window_set_events");
@@ -636,8 +636,8 @@ package body Gdk.Window is
    --  Set_Functions  --
    ---------------------
 
-   procedure Set_Functions (Window    : in out Gdk_Window;
-                            Functions : in     Gdk.Types.Gdk_Wm_Function) is
+   procedure Set_Functions (Window    : in Gdk_Window;
+                            Functions : in Gdk.Types.Gdk_Wm_Function) is
       procedure Internal (Window    : in System.Address;
                           Functions : in Gdk.Types.Gdk_Wm_Function);
       pragma Import (C, Internal, "gdk_window_set_functions");
@@ -651,7 +651,7 @@ package body Gdk.Window is
    --------------------------
 
    procedure Set_Geometry_Hints
-     (Window   : in out Gdk_Window;
+     (Window   : in     Gdk_Window;
       Geometry : in out Gdk.Types.Gdk_Geometry;
       Flags    : in     Gdk.Types.Gdk_Window_Hints) is
       procedure Internal (Window   : in System.Address;
@@ -667,8 +667,8 @@ package body Gdk.Window is
    --  Set_Group  --
    -----------------
 
-   procedure Set_Group (Window : in out Gdk_Window;
-                        Leader : in     Gdk_Window) is
+   procedure Set_Group (Window : in Gdk_Window;
+                        Leader : in Gdk_Window) is
       procedure Internal (Window, Leader : in System.Address);
       pragma Import (C, Internal, "gdk_window_set_group");
    begin
@@ -680,14 +680,14 @@ package body Gdk.Window is
    --  Set_Hints  --
    -----------------
 
-   procedure Set_Hints (Window     : in out Gdk_Window;
-                        X          : in     Gint;
-                        Y          : in     Gint;
-                        Min_Width  : in     Gint;
-                        Min_Height : in     Gint;
-                        Max_Width  : in     Gint;
-                        Max_Height : in     Gint;
-                        Flags      : in     Gdk.Types.Gdk_Window_Hints) is
+   procedure Set_Hints (Window     : in Gdk_Window;
+                        X          : in Gint;
+                        Y          : in Gint;
+                        Min_Width  : in Gint;
+                        Min_Height : in Gint;
+                        Max_Width  : in Gint;
+                        Max_Height : in Gint;
+                        Flags      : in Gdk.Types.Gdk_Window_Hints) is
       procedure Internal
         (Window                : in System.Address;
          X, Y                  : in Gint;
@@ -706,8 +706,8 @@ package body Gdk.Window is
    -----------------------------
 
    procedure Set_Override_Redirect
-     (Window            : in out Gdk_Window;
-      Override_Redirect : in     Boolean := True) is
+     (Window            : in Gdk_Window;
+      Override_Redirect : in Boolean    := True) is
       procedure Internal (Window            : in System.Address;
                           Override_Redirect : in Gboolean);
       pragma Import (C, Internal, "gdk_window_set_override_redirect");
@@ -720,8 +720,8 @@ package body Gdk.Window is
    --  Set_Role  --
    ----------------
 
-   procedure Set_Role (Window : in out Gdk_Window;
-                       Role   : in     String) is
+   procedure Set_Role (Window : in Gdk_Window;
+                       Role   : in String) is
       procedure Internal (Window : in System.Address;
                           Role   : in String);
       pragma Import (C, Internal, "gdk_window_set_role");
@@ -734,8 +734,8 @@ package body Gdk.Window is
    --  Set_Title  --
    -----------------
 
-   procedure Set_Title (Window : in out Gdk_Window;
-                        Title  : in     String) is
+   procedure Set_Title (Window : in Gdk_Window;
+                        Title  : in String) is
       procedure Internal (Window : in System.Address;
                           Title  : in String);
       pragma Import (C, Internal, "gdk_window_set_title");
@@ -748,8 +748,8 @@ package body Gdk.Window is
    --  Set_Transient_For  --
    -------------------------
 
-   procedure Set_Transient_For (Window : in out Gdk_Window;
-                                Leader : in     Gdk_Window) is
+   procedure Set_Transient_For (Window : in Gdk_Window;
+                                Leader : in Gdk_Window) is
       procedure Internal (Window : in System.Address;
                           Leader : in System.Address);
       pragma Import (C, Internal, "gdk_window_set_transient_for");
@@ -804,7 +804,7 @@ package body Gdk.Window is
    --  Withdraw  --
    ----------------
 
-   procedure Withdraw (Window : in out Gdk_Window) is
+   procedure Withdraw (Window : in Gdk_Window) is
       procedure Internal (Window : in System.Address);
       pragma Import (C, Internal, "gdk_window_withdraw");
    begin
