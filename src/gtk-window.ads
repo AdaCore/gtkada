@@ -39,6 +39,11 @@
 --  decoration, etc.) but these are only hints to the window manager, which
 --  might not respect them.
 --
+--  A useful hint, respected by most window managers, can be used to force
+--  some secondary windows to stay on top of the main window on the screen
+--  (for instance, so that a smaller window can not be hidden by a bigger
+--  one). See the function Set_Transient_For below.
+--
 --  A window can also be modal, i.e. grab all the mouse and keyboard events
 --  in the application while it is displayed.
 --
@@ -166,6 +171,10 @@ package Gtk.Window is
    --  Window belongs. A window that has set this can expect less decoration
    --  from the window manager (for instance no title bar and no borders).
    --  (see XSetTransientForHint(3) on Unix systems)
+   --
+   --  The main usage of this function is to force Window to be on top of
+   --  Parent on the screen at all times. Most window managers respect this
+   --  hint, even if this is not mandatory.
 
    procedure Set_Geometry_Hints
      (Window          : access Gtk_Window_Record;
