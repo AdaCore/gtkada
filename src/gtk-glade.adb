@@ -123,6 +123,7 @@ package body Gtk.Glade is
 
       S := Get_Field (N, "class");
       Get_Gate (S.all) (N, File);
+      End_Generate (N, File);
 
       if not C and then S.all /= "Placeholder" then
          New_Line (File);
