@@ -372,6 +372,8 @@ package Gdk.Window is
    function Is_Viewable (Window : Gdk_Window) return Boolean;
 
    function Get_State (Window : Gdk_Window) return Gdk.Event.Gdk_Window_State;
+   --  Return the current state of the Windows.
+   --  See Gdk.Event.Gdk_Window_State for more details.
 
    function Set_Static_Gravities
      (Window     : Gdk_Window;
