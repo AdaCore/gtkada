@@ -130,7 +130,7 @@ package body Create_Scroll_Test is
          loop
             Get_Graphics_Expose (Event, Get_Window (Widget));
             exit when not Is_Created (Event);
-            Gdk.Event.Event (Widget, Gdk_Event (Event));
+            Gtk.Widget.Event (Widget, Gdk_Event (Event));
             if Get_Count (Event) = 0 then
                Free (Event);
                exit;
