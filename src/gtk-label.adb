@@ -104,15 +104,37 @@ package body Gtk.Label is
    -- Generate --
    --------------
 
-   procedure Generate (N     : in Node_Ptr;
-                       File  : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
       Child_Name : String_Ptr := Get_Field (N, "child_name");
       S          : String_Ptr;
       P          : Node_Ptr;
       Page_Num   : Gint;
 
+      function Adjust (S : String) return String;
+      --  Replace non "compilable" characters (e.g ASCII.LF) and return
+      --  a printable and "compilable" Ada string.
+
+      function Adjust (S : String) return String is
+         T : String (1 .. S'Length + 256);
+         K : Natural := 1;
+
+      begin
+         for J in S'Range loop
+            if S (J) = ASCII.LF then
+               T (K .. K + 15) := """ & ASCII.LF & """;
+               K := K + 15;
+            else
+               T (K) := S (J);
+            end if;
+
+            K := K + 1;
+         end loop;
+
+         return T (1 .. K - 1);
+      end Adjust;
+
    begin
-      Gen_New (N, "Label", Find_Tag (N.Child, "label").Value.all,
+      Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
         File => File, Delim => '"');
       Misc.Generate (N, File);
       Gen_Set (N, "Label", "justify", File);
