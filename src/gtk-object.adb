@@ -63,13 +63,23 @@ package body Gtk.Object is
    procedure Destroy (Object : access Gtk_Object_Record) is
       procedure Internal  (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_destroy");
-      Tmp : System.Address := Get_Object (Object);
    begin
-      --  We use a Tmp variable, because when the C widget is destroyed,
-      --  the Ada structure might be freed (or not), and we always want
-      --  to set the Object back to Null_Address;
+      --  Keep a reference on the object, so that the Ada structure is
+      --  never automatically deleted when the C object is.
+      --  We can't reset the content of Object to System.Null_Address before
+      --  calling the C function, because we want the user's destroy callbacks
+      --  to be called with the appropriate object.
+      Ref (Object);
+      Internal (Get_Object (Object));
+
+      --  We then can make sure that the object won't be referenced any more,
+      --  (The Ada structure won't be free before the ref count goes down to
+      --  0, and we don't want the user to use an deleted object...).
       Set_Object (Object, System.Null_Address);
-      Internal (Tmp);
+
+      --  Free the reference we had. In most cases, this results in the object
+      --  being freed.
+      Unref (Object);
    end Destroy;
 
    ---------------
