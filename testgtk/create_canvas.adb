@@ -183,9 +183,9 @@ package body Create_Canvas is
 
       Gtk_New (Canvas);
       Add (Scrolled, Canvas);
-      Set_USize (Canvas, 500, 500);
       Align_On_Grid (Canvas, True);
 
+      Realize (Frame);
       Realize (Canvas);
 
       if White_GC = null then
@@ -199,6 +199,8 @@ package body Create_Canvas is
          Set_Foreground (Grey_GC, Grey);
 
       end if;
+
+      Show_All (Frame);
 
       --  Add the items
 
@@ -249,8 +251,7 @@ package body Create_Canvas is
       Add_Link (Canvas, Item3, Item4, Both_Arrow, "From3->44");
       Add_Link (Canvas, Item2, Item2, No_Arrow, "Self");
       Add_Link (Canvas, Item2, Item2, Start_Arrow, "Self2");
-
-      Show_All (Frame);
+      Show_Item (Canvas, Item1);
    end Run;
 
 end Create_Canvas;
