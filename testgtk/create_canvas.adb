@@ -360,8 +360,7 @@ package body Create_Canvas is
    is
       Link : Canvas_Link := new Canvas_Link_Record;
    begin
-      Configure (Link, Item1, Item2, Both_Arrow, Text);
-      Add_Link (Canvas, Link);
+      Add_Link (Canvas, Link, Item1, Item2, Both_Arrow, Text);
       Last_Link := Last_Link + 1;
       Set_Text (Num_Links_Label, Positive'Image (Last_Link - 1) & " links");
    end Add_Canvas_Link;
@@ -381,8 +380,11 @@ package body Create_Canvas is
       is
          pragma Warnings (Off, Canvas);
       begin
-         if (Get_Src (Link) = It1 and then Get_Dest (Link) = It2)
-           or else (Get_Src (Link) = It2 and then Get_Dest (Link) = It1)
+         if (Canvas_Item (Get_Src (Link)) = It1
+             and then Canvas_Item (Get_Dest (Link)) = It2)
+           or else
+           (Canvas_Item (Get_Src (Link)) = It2
+            and then Canvas_Item (Get_Dest (Link)) = It1)
          then
             Remove_Link (Canvas, Link);
             return False;
@@ -462,6 +464,7 @@ package body Create_Canvas is
      (Canvas : access Interactive_Canvas_Record'Class)
    is
       Item1, Item2, Item3,  Item4    : Display_Item;
+      Link  : Canvas_Link;
    begin
       Item1 := new Display_Item_Record;
       Initialize (Item1);
@@ -486,13 +489,21 @@ package body Create_Canvas is
       Add_Canvas_Link (Canvas, Item2, Item3, "From2->3");
       Add_Canvas_Link (Canvas, Item2, Item4, "From2->4");
       Add_Canvas_Link (Canvas, Item3, Item4, "From3->41");
-      Add_Link (Canvas, Item3, Item4, Start_Arrow, "From3->42");
-      Add_Link (Canvas, Item4, Item3, End_Arrow, "From3->43");
-      Add_Link (Canvas, Item3, Item4, Both_Arrow, "From3->44");
-      Add_Link (Canvas, Item4, Item3, Both_Arrow, "From3->45");
-      Add_Link (Canvas, Item3, Item4, Both_Arrow, "From3->46");
-      Add_Link (Canvas, Item2, Item2, No_Arrow, "Self");
-      Add_Link (Canvas, Item2, Item2, Start_Arrow, "Self2");
+
+      Link := new Canvas_Link_Record;
+      Add_Link (Canvas, Link, Item3, Item4, Start_Arrow, "From3->42");
+      Link := new Canvas_Link_Record;
+      Add_Link (Canvas, Link, Item4, Item3, End_Arrow, "From3->43");
+      Link := new Canvas_Link_Record;
+      Add_Link (Canvas, Link, Item3, Item4, Both_Arrow, "From3->44");
+      Link := new Canvas_Link_Record;
+      Add_Link (Canvas, Link, Item4, Item3, Both_Arrow, "From3->45");
+      Link := new Canvas_Link_Record;
+      Add_Link (Canvas, Link, Item3, Item4, Both_Arrow, "From3->46");
+      Link := new Canvas_Link_Record;
+      Add_Link (Canvas, Link, Item2, Item2, No_Arrow, "Self");
+      Link := new Canvas_Link_Record;
+      Add_Link (Canvas, Link, Item2, Item2, Start_Arrow, "Self2");
       Last_Link := Last_Link + 7;
 
       Set_Text (Num_Links_Label, Positive'Image (Last_Link - 1) & " links");
