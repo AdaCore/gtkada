@@ -107,8 +107,7 @@ package body Gtk.Text_Buffer is
 
    begin
       return Gtk.Text_Tag_Table.Gtk_Text_Tag_Table
-               (Get_User_Data (Internal (Get_Object (Buffer)),
-                               Stub));
+               (Get_User_Data_Fast (Internal (Get_Object (Buffer)), Stub));
    end Get_Tag_Table;
 
    --------------
@@ -462,8 +461,7 @@ package body Gtk.Text_Buffer is
       Stub : Gtk.Text_Child.Gtk_Text_Child_Anchor_Record;
    begin
       Result := Gtk.Text_Child.Gtk_Text_Child_Anchor
-                  (Get_User_Data (Internal (Get_Object (Buffer), Iter),
-                                  Stub));
+        (Get_User_Data_Fast (Internal (Get_Object (Buffer), Iter), Stub));
    end Create_Child_Anchor;
 
    -----------------
@@ -495,7 +493,7 @@ package body Gtk.Text_Buffer is
       if Mark_Name /= "" then
          return
            Gtk.Text_Mark.Gtk_Text_Mark
-             (Get_User_Data
+             (Get_User_Data_Fast
                (Internal
                  (Get_Object (Buffer),
                   Mark_Name & ASCII.NUL,
@@ -505,7 +503,7 @@ package body Gtk.Text_Buffer is
       else
          return
            Gtk.Text_Mark.Gtk_Text_Mark
-             (Get_User_Data
+             (Get_User_Data_Fast
                (Internal
                   (Buffer => Get_Object (Buffer),
                    Where => Where,
@@ -566,7 +564,7 @@ package body Gtk.Text_Buffer is
       Stub : Gtk.Text_Mark.Gtk_Text_Mark_Record;
    begin
       return Gtk.Text_Mark.Gtk_Text_Mark
-               (Get_User_Data
+               (Get_User_Data_Fast
                  (Internal (Get_Object (Buffer), Name & ASCII.NUL),
                   Stub));
    end Get_Mark;
@@ -621,8 +619,7 @@ package body Gtk.Text_Buffer is
 
    begin
       return Gtk.Text_Mark.Gtk_Text_Mark
-               (Get_User_Data (Internal (Get_Object (Buffer)),
-                               Stub));
+               (Get_User_Data_Fast (Internal (Get_Object (Buffer)), Stub));
    end Get_Insert;
 
    -------------------------
@@ -637,8 +634,7 @@ package body Gtk.Text_Buffer is
       Stub : Gtk.Text_Mark.Gtk_Text_Mark_Record;
    begin
       return Gtk.Text_Mark.Gtk_Text_Mark
-               (Get_User_Data (Internal (Get_Object (Buffer)),
-                               Stub));
+               (Get_User_Data_Fast (Internal (Get_Object (Buffer)), Stub));
    end Get_Selection_Bound;
 
    ------------------
@@ -1119,7 +1115,7 @@ package body Gtk.Text_Buffer is
       pragma Import (C, Internal, "gtk_text_iter_get_buffer");
       Stub : Gtk_Text_Buffer_Record;
    begin
-      return Gtk_Text_Buffer (Get_User_Data (Internal (Iter), Stub));
+      return Gtk_Text_Buffer (Get_User_Data_Fast (Internal (Iter), Stub));
    end Get_Buffer;
 
 end Gtk.Text_Buffer;

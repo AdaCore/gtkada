@@ -99,7 +99,7 @@ package body Gtk.Text_View is
 
    begin
       return Gtk.Text_Buffer.Gtk_Text_Buffer
-               (Get_User_Data (Internal (Get_Object (Text_View)), Stub));
+               (Get_User_Data_Fast (Internal (Get_Object (Text_View)), Stub));
    end Get_Buffer;
 
    --------------------

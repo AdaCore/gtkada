@@ -257,7 +257,7 @@ package body Gtk.Text_Iter is
 
    begin
       return Gtk.Text_Child.Gtk_Text_Child_Anchor
-               (Get_User_Data (Internal (Iter), Stub));
+               (Get_User_Data_Fast (Internal (Iter), Stub));
    end Get_Child_Anchor;
 
    ----------------------
