@@ -841,15 +841,13 @@ package body Gtk_Generates is
    -- GRange_Generate --
    ---------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure GRange_Generate (N : Node_Ptr; File : File_Type) is
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_range_get_type");
+--        function Build_Type return Glib.GType;
+--        pragma Import (C, Build_Type, "gtk_range_get_type");
 
    begin
-      Widget := Widget_New (Build_Type);
-      Widget_Destroy (Widget);
+--        Widget := Widget_New (Build_Type);
+--        Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "Update_Policy", "policy", File => File);
    end GRange_Generate;
@@ -1486,10 +1484,8 @@ package body Gtk_Generates is
    -- Ruler_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Ruler_Generate (N : Node_Ptr; File : File_Type) is
-      Class : constant String_Ptr := Get_Field (N, "class");
+      Class : constant String := Get_Class (N);
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_ruler_get_type");
 
@@ -1508,30 +1504,46 @@ package body Gtk_Generates is
    -- Scale_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Scale_Generate (N : Node_Ptr; File : File_Type) is
-      S     : String_Ptr;
-      Class : constant String_Ptr := Get_Field (N, "class");
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_scale_get_type");
+      Name  : constant String := Get_Name (N);
+      Class : constant String := Get_Class (N);
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
+      Top   : constant String := Get_Name (Top_Widget);
+      function Build_Vscale return Glib.GType;
+      pragma Import (C, Build_Vscale, "gtk_vscale_get_type");
+      function Build_Hscale return Glib.GType;
+      pragma Import (C, Build_Hscale, "gtk_hscale_get_type");
 
    begin
-      Widget := Widget_New (Build_Type);
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "name");
-         Add_Package ("Adjustment");
-         Put_Line
-           (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
-            To_Float (Get_Field (N, "value").all) & ", " &
-            To_Float (Get_Field (N, "lower").all) & ", " &
-            To_Float (Get_Field (N, "upper").all) & ", " &
-            To_Float (Get_Field (N, "step").all)  & ", " &
-            To_Float (Get_Field (N, "page").all)  & ", " &
-            To_Float (Get_Field (N, "page_size").all) & ");");
+      if Class = "GtkVScale" then
+         Widget := Widget_New (Build_Vscale);
+      else
+         Widget := Widget_New (Build_Hscale);
+      end if;
 
-         Gen_New (N, "Scale", S.all & "_Adj", "",
-           Class (Class'First + 3) & "scale", File => File);
+      if not N.Specific_Data.Created then
+         Add_Package ("Adjustment");
+         declare
+            A : constant String :=
+              Get_Property (N, "adjustment", "1 0 100 1 10 10") & " ";
+            K : Natural := A'First - 1;
+            P : Natural := A'First;
+         begin
+            Put (File, "   Gtk_New (" & Name & "_Adj");
+            for J in 1 .. 6 loop
+               P := K + 1;
+               K := Index (A (P .. A'Last), " ");
+               Put (File, ", " & To_Float (A (P .. K - 1)));
+            end loop;
+
+            Put_Line (File, ");");
+         end;
+
+         Add_Package ("Scale");
+
+         Put_Line (File, "   Gtk_New_" & Class (Class'First + 3) & "scale ("
+                   & Top & "." & Name & ", " & Name & "_Adj);");
+         N.Specific_Data.Created := True;
       end if;
 
       Widget_Destroy (Widget);
@@ -1592,9 +1604,7 @@ package body Gtk_Generates is
       end if;
 
       Widget_Destroy (Widget);
-
-      --  ??? Why was this needed ?
-      --        GRange_Generate (N, File);
+      GRange_Generate (N, File);
    end Scrollbar_Generate;
 
    ------------------------------
@@ -2027,8 +2037,6 @@ package body Gtk_Generates is
    -- Viewport_Generate --
    -----------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Viewport_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_viewport_get_type");
@@ -2392,6 +2400,13 @@ package body Gtk_Generates is
 
             Put (File, Get_Property (Packing, "resize", "True") & ", ");
             Put_Line (File, Get_Property (Packing, "shrink", "True") & ");");
+
+
+         elsif Parent_Class = "GtkFixed" then
+            Put_Line (File, "   Put (" & Top_Name & "." & Parent_Name & ", "
+                      & Top_Name & "." & Cur & ", "
+                      & Get_Property (Packing, "x", "0") & ", "
+                      & Get_Property (Packing, "y", "0") & ");");
          end if;
 
          --  ??? Need to implement specific "adding" functions for widgets
