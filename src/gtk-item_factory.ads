@@ -157,6 +157,7 @@ package Gtk.Item_Factory is
          Func_Data : Data_Type_Access) return Gtkada.Types.Chars_Ptr;
 
       type Limited_Widget is limited private;
+      Null_Widget : constant Limited_Widget;
 
       function To_Widget
         (Widget : Limited_Widget) return Gtk.Widget.Gtk_Widget;
@@ -250,6 +251,8 @@ package Gtk.Item_Factory is
 
    private
       type Limited_Widget is new System.Address;
+      Null_Widget : constant Limited_Widget :=
+        Limited_Widget (System.Null_Address);
    end Data_Item;
 
    ----------------
