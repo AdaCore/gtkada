@@ -43,6 +43,8 @@ package Gtk.Adjustment is
                       Page_Size      : in Gfloat);
 
    function Get_Value (Adjustment : in Gtk_Adjustment) return Gfloat;
+   function Get_Lower (Adjustment : in Gtk_Adjustment) return Gfloat;
+   function Get_Upper (Adjustment : in Gtk_Adjustment) return Gfloat;
 
    function Get_Step_Increment (Adjustment : in Gtk_Adjustment) return Gfloat;
 

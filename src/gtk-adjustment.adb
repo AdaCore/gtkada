@@ -48,6 +48,28 @@ package body Gtk.Adjustment is
       Internal (Get_Object (Adjustment), Lower, Upper);
    end Clamp_Page;
 
+   ---------------
+   -- Get_Lower --
+   ---------------
+
+   function Get_Lower (Adjustment : in Gtk_Adjustment) return Gfloat is
+      function Internal (Adj : System.Address) return Gfloat;
+      pragma Import (C, Internal, "ada_adjustment_get_lower");
+   begin
+      return Internal (Get_Object (Adjustment));
+   end Get_Lower;
+
+   ---------------
+   -- Get_Upper --
+   ---------------
+
+   function Get_Upper (Adjustment : in Gtk_Adjustment) return Gfloat is
+      function Internal (Adj : System.Address) return Gfloat;
+      pragma Import (C, Internal, "ada_adjustment_get_upper");
+   begin
+      return Internal (Get_Object (Adjustment));
+   end Get_Upper;
+
    ------------------------
    -- Get_Step_Increment --
    ------------------------
