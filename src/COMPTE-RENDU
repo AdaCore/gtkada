@@ -95,13 +95,13 @@ Date : 13/07/1998
          alors si il faut alerter la presse ou pas.
 - tous : produire une version alpha pour le 20 juillet.
 - Manu : Voir comment faire une lib statique [LOW PRIORITY]
-- Manu : Essayer de reflechir a un script qui verifie les types enumeres.
-         Demander a quelqu'un comment passer un type enumere au C.
+* Manu : Essayer de reflechir a un script qui verifie les types enumeres.
+- Manu : Demander a quelqu'un comment passer un type enumere au C.
 - tous : coder les widgets de l'autre dans testgtk.
 - Joel : passer le type Object en abstract.
 * Manu : changer generate.pl de sorte que les types qui n'ont pas de new
          soient declares en abstract.
-- Manu : Je recopie tel-quels tes idees :
+* Manu : Je recopie tel-quels tes idees :
 <<Une premiere idee (non teste) serait de modifier gtk_new. A chaque fois
 qu'on cree un widget, on insere son type (no au sens e gtk) et l
 le type object correspondant dans une htable... Ca permet de ne chercher la con
@@ -118,15 +118,15 @@ declare pas dans les specs.
 
 Reunion du 17 Juillet 1997
 
-- Manu : Rajouter un test dans Gtk.Signal pour qu'on puisse passer null.
+* Manu : Rajouter un test dans Gtk.Signal pour qu'on puisse passer null.
          Retirer les "void callbacks"...
 - Joel : Regarder le probleme des flags, et essayer de trouver une solution
          elegante.
          Ensuite, il faudra l'implementer.
-- Manu : Regarder le pb des callbacks : il faut pouvoir acceder directement
+* Manu : Regarder le pb des callbacks : il faut pouvoir acceder directement
          a l'objet lui meme dans le callback et non a une copie. C'est
          important en cas de destroy par ex.
-- Manu : Regarder le gros pb des callback.
+* Manu : Regarder le gros pb des callback.
   Joel : P*****, ca va marcher oui!
 - Joel : Regarder du cote des libtools pour faire une lib dynamique
 * Joel : Modifier le script mapping.pl
