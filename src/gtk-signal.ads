@@ -1,4 +1,3 @@
-with Gtk; use Gtk;
 with Gtk.Widget;
 
 package Gtk.Signal is
