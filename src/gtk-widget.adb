@@ -1481,4 +1481,23 @@ package body Gtk.Widget is
       return Gtk.Widget.Flag_Is_Set (Widget, Visible);
    end Visible_Is_Set;
 
+   --------------------
+   -- Set_Accel_Path --
+   --------------------
+
+   procedure Set_Accel_Path
+     (Widget     : access Gtk_Widget_Record;
+      Accel_Path : String;
+      Group      : Gtk.Accel_Group.Gtk_Accel_Group)
+   is
+      procedure Internal
+        (Widget     : System.Address;
+         Accel_Path : String;
+         Group      : System.Address);
+      pragma Import (C, Internal, "gtk_widget_set_accel_path");
+   begin
+      Internal (Get_Object (Widget), Accel_Path & ASCII.NUL,
+                Get_Object (Group));
+   end Set_Accel_Path;
+
 end Gtk.Widget;

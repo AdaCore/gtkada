@@ -371,6 +371,16 @@ package Gtk.Widget is
       Accel_Mods   : Gdk.Types.Gdk_Modifier_Type);
    --  Remove an accelerator for the widget.
 
+   procedure Set_Accel_Path
+     (Widget     : access Gtk_Widget_Record;
+      Accel_Path : String;
+      Group      : Gtk.Accel_Group.Gtk_Accel_Group);
+   --  Set the path that will be used to reference the widget in calls to the
+   --  subprograms in Gtk.Accel_Map. This means, for instance, that the widget
+   --  is fully setup for interactive modification of the shortcuts by the
+   --  user, should he choose to activate this possibility in his themes (see
+   --  gtk-accel_map.ads for more information).
+
    -------------------------
    --  Events and signals --
    -------------------------
