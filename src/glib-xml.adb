@@ -194,7 +194,8 @@ package body Glib.XML is
          declare
             Start_Index : constant Natural := Index;
          begin
-            while Buf (Index) /= ' '
+            while Index <= Buf'Last
+              and then Buf (Index) /= ' '
               and then Buf (Index) /= '='
             loop
                Index := Index + 1;
@@ -269,13 +270,17 @@ package body Glib.XML is
    -------------------
 
    function Get_Attribute
-     (N : in Node_Ptr;
-      Attribute_Name : in String) return String_Ptr
+     (N : Node_Ptr; Attribute_Name : String) return String
    is
-      Index      : Natural := N.Attributes'First;
+      Index      : Natural;
       Key, Value : String_Ptr;
 
    begin
+      if N.Attributes = null then
+         return "";
+      end if;
+
+      Index := N.Attributes'First;
       while Index < N.Attributes'Last loop
          Get_Next_Word (N.Attributes.all, Index, Key);
          Get_Buf (N.Attributes.all, Index, '=', Value);
@@ -289,8 +294,66 @@ package body Glib.XML is
          end if;
       end loop;
 
-      return Value;
+      if Value = null then
+         return "";
+      else
+         declare
+            V : constant String := Value.all;
+         begin
+            Free (Value);
+
+            return V (V'First .. V'Last);
+         end;
+      end if;
    end Get_Attribute;
+
+   -------------------
+   -- Set_Attribute --
+   -------------------
+
+   procedure Set_Attribute
+     (N : Node_Ptr; Attribute_Name, Attribute_Value : String)
+   is
+      Index, Tmp : Natural;
+      Key, Value : String_Ptr;
+      Atts       : String_Ptr;
+      Str        : constant String :=
+        Attribute_Name & "=""" & Translate (Attribute_Value) & """ ";
+
+   begin
+      if N.Attributes /= null then
+         Index := N.Attributes'First;
+         --  First remove any definition of the attribute in the current list
+         while Index < N.Attributes'Last loop
+            Tmp := Index;
+            Get_Next_Word (N.Attributes.all, Index, Key);
+            Get_Buf (N.Attributes.all, Index, '=', Value);
+            Get_Next_Word (N.Attributes.all, Index, Value);
+
+            Free (Value);
+
+            if Attribute_Name = Key.all then
+               Atts := new String'
+                 (Str
+                  & N.Attributes (N.Attributes'First .. Tmp - 1)
+                  & N.Attributes (Index .. N.Attributes'Last));
+               Free (N.Attributes);
+               N.Attributes := Atts;
+               Free (Key);
+               return;
+            end if;
+
+            Free (Key);
+         end loop;
+
+         Atts := new String'(Str & N.Attributes.all);
+         Free (N.Attributes);
+         N.Attributes := Atts;
+
+      else
+         N.Attributes := new String'(Str);
+      end if;
+   end Set_Attribute;
 
    ---------------
    -- Add_Child --
