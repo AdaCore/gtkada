@@ -308,6 +308,7 @@ EXPORTS
 	ada_gdk_window_attr_get_override_redirect
 	ada_gdk_property_get
 	ada_c_enum_value_size
+	ada_genum_create_enum_value
 	ada_genum_nth_value
 	ada_genum_get_value
 	ada_genum_get_name
