@@ -86,7 +86,7 @@ $(ARCHIVENAME):: $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 # rebuild the files (it does not check anything if the .ali files are read-only.
 install_ali::
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
-	test -f .devel || $(CHMOD) -w *.ali
+	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
 
 $(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 	if [ -f .devel ]; then \
