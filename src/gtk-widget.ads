@@ -30,7 +30,7 @@ package Gtk.Widget is
    procedure Activate (Widget : in Gtk_Widget'Class);
    --  mapping: Activate gtkwidget.h gtk_widget_activate
 
-   procedure Destroy (Widget : in Gtk_Widget'Class);
+   procedure Destroy (Widget : in out Gtk_Widget'Class);
    --  mapping: Destroy gtkwidget.h gtk_widget_destroy
 
    procedure Set_Name (Widget : in out Gtk_Widget'Class;

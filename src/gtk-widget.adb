@@ -16,7 +16,7 @@ package body Gtk.Widget is
    --  Destroy  --
    ---------------
 
-   procedure Destroy (Widget : in Gtk_Widget'Class) is
+   procedure Destroy (Widget : in out Gtk_Widget'Class) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_destroy");
    begin
