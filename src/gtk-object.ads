@@ -146,7 +146,6 @@ package Gtk.Object is
    -------------
    --  Flags  --
    -------------
-   --  <description>
    --  Each object is associated with a set of flags, that reports the state
    --  of the object.
    --  The following flags are known by all objects:
@@ -170,8 +169,6 @@ package Gtk.Object is
    --     Every time you create an object at the GtkAda level, the object will
    --     be fully constructed, and you shouldn't have to worry about that
    --     flag.
-   --
-   --  </description>
 
    Destroyed   : constant := 2 ** 0;
    Floating    : constant := 2 ** 1;
