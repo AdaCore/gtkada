@@ -135,6 +135,19 @@ package body Gtk.Widget is
       return To_Boolean (Internal (Get_Object (Widget)));
    end Drawable_Is_Set;
 
+   -----------
+   -- Event --
+   -----------
+
+   procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
+                    Event  : Gdk.Event.Gdk_Event)
+   is
+      procedure Internal (Widget : System.Address; Event : System.Address);
+      pragma Import (C, Internal, "gtk_widget_event");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Event));
+   end Event;
+
    ---------------------------
    -- Get_Allocation_Height --
    ---------------------------

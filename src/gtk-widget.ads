@@ -32,6 +32,7 @@
 --  which actual widgets must adhere to.
 
 with Gdk.Color;       use Gdk.Color;
+with Gdk.Event;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Visual;      use Gdk.Visual;
@@ -147,6 +148,13 @@ package Gtk.Widget is
    function Get_Allocation_Height (Widget : in Gtk_Widget) return Guint;
    function Get_Allocation_X (Widget : in Gtk_Widget) return Gint;
    function Get_Allocation_Y (Widget : in Gtk_Widget) return Gint;
+
+   -------------
+   --  Events --
+   -------------
+
+   procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
+                    Event  : Gdk.Event.Gdk_Event);
 
    --------------------
    --  Widget flags  --
