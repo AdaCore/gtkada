@@ -1,6 +1,5 @@
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
-with Ada.Text_IO;
 
 package body Gtk.Object is
 
@@ -197,7 +196,6 @@ package body Gtk.Object is
       begin
          Internal2 (D.Ptr);
          Internal (D);
-         Ada.Text_IO.Put_Line ("Free user_Data");
       end Free;
 
       ---------
