@@ -1,19 +1,15 @@
-
-with Gtk.Signal;
-
 package body Gtk is
-
 
    -----------------
    -- Destroy --
    -----------------
 
-   procedure Destroy (Obj : in Gtk_Object'Class)
+   procedure Destroy (Obj : access Gtk_Object'Class)
    is
       procedure Internal  (Obj : in System.Address);
       pragma Import (C, Internal, "gtk_object_destroy");
    begin
-      Internal (Get_Object (Obj));
+      Internal (Get_Object (Obj.all));
    end Destroy;
 
 

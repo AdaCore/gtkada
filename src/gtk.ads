@@ -10,8 +10,9 @@ package Gtk is
    subtype Gint  is Integer;
    subtype Gint32  is Integer range -(2 ** 16) .. (2 ** 16 - 1);
 
-   subtype Guint is Positive;
-   subtype Guint8 is Natural range 0 .. 2 ** 8 - 1;
+   subtype Guint   is Positive;
+   subtype Guint8  is Integer range 0 .. 2 ** 8 - 1;
+   subtype Guint32 is Long_Long_Integer range 0 .. 2 ** 32 - 1;
 
    subtype Gfloat is Float;
    subtype Gdouble is Long_Float;
@@ -22,9 +23,9 @@ package Gtk is
    --  The Object type  --
    -----------------------
 
-   type Object is tagged private;
+   type Gtk_Object is tagged private;
 
-   procedure Destroy (Obj : in Object'Class);
+   procedure Destroy (Obj : access Gtk_Object'Class);
    --  mapping: Destroy gtkobject.h gtk_object_destroy
 
 
@@ -49,16 +50,16 @@ package Gtk is
 
 private
 
-   type Object is tagged
+   type Gtk_Object is tagged
       record
          Ptr : System.Address := System.Null_Address;
       end record;
 
-   function Get_Object (Obj : in Object'Class)
+   function Get_Object (Obj : in Gtk_Object'Class)
                         return System.Address;
    pragma Inline (Get_Object);
 
-   procedure Set_Object (Obj : in out Object'Class;
+   procedure Set_Object (Obj : in out Gtk_Object'Class;
                          Value  : in     System.Address);
    pragma Inline (Set_Object);
 
