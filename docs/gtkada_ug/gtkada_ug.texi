@@ -30,7 +30,7 @@ unmodified in any copy.
 
 GtkAda User's Guide
 
-GtkAda, the Ada 95 Gtk+ binding
+GtkAda, the Ada 95 graphical toolkit
 
 Version 1.2.0
 
@@ -122,20 +122,19 @@ The home page for gtk is
 
      @uref{http://www.gtk.org}
 
-This is GtkAda version 1.2.0. This package is an Ada95 binding for the
-Gimp Toolkit, which means this is a set of packages to allow you to
-easily create some graphical interfaces under X11 or Win32, using Ada95
+This is GtkAda version 1.2.0. This package is an Ada95 graphical library
+for the Gimp Toolkit, which means this is a set of packages to allow you
+to easily create some graphical interfaces under X11 and Win32, using Ada95
 as a programming language.
- 
-This is the first stable version of this binding. From now on, major
-version numbers will follow Gtk+ (e.g 1.2, 1.3), meaning that stable
-versions of GtkAda will have major number 1.2 and development versions
-will have number 1.3.
+
+From now on, major version numbers will follow Gtk+ (e.g 1.2, 1.3),
+meaning that stable versions of GtkAda will have major number 1.2 and
+development versions will have number 1.3.
  
 Every widget from gtk 1.2 has been implemented, and the test
 program found in the gtk release has been reimplemented in Ada (have a
 look at the @code{testgtk/} directory).
-   
+
 This binding was tested on the following systems:
 @itemize @bullet
 @item Linux version 2.0.35
@@ -151,14 +150,14 @@ using the following compilers:
 
 the following versions of gtk:
 @itemize @bullet
-@item Gtk 1.2.0
 @item Gtk 1.2.1
+@item Gtk 1.2.0
 @end itemize
 
 and the following versions of glade:
 @itemize @bullet
-@item Glade 0.4.0
 @item Glade 0.4.1
+@item Glade 0.4.0
 @end itemize
 
 Although versions up to 0.2.1 were compatible with Gtk-1.0, this one is
@@ -2305,7 +2304,7 @@ This should create two Ada files (specification and body)
 @chapter Threads
 
 The 1.2 series of Gtk+ are now thread safe. The
-usage of tasks inside programs using this binding should not cause any
+usage of tasks inside programs using this toolkit should not cause any
 problem provided that you protect your Gtk calls with Gdk.Threads.Enter/
 Leave and that your windowing system (e.g X) is thread-safe.
 
@@ -2320,11 +2319,11 @@ you will  find bugs.  We  have tried to  test it as much  as possible,
 essentially  by  converting  the  testgtk.c  file  found  in  the  gtk
 distribution.   We   have  been  able   to  rewrite  nearly   all  the
 tests. Please have a look at the  testgtk, which can give you a lot of
-examples of how to use this binding.
+examples of how to use this toolkit.
 
 For more general questions about gtk itself, please ask your questions
-to the  gtk  mailing list. The  authors of  this binding  are far from
-beeing specialists of gtk, as it was one of our first projects with gtk.
+to the  gtk  mailing list. The  authors of  this toolkit  are far from
+being specialists of gtk, as it was one of our first projects with gtk.
 
 There are two kinds of problems you can encounter:
 @itemize @bullet
@@ -2354,8 +2353,8 @@ $ gdb <your_program_name>
 
 @item In  some  (hopefully) rare cases,   you can even get a  segmentation
 fault within gtk.  That means there is definitly something wrong either
-in your program or in the binding.  Please check your program carefully,
-and if you think this is a problem in the binding, send us an e-mail.
+in your program or in the toolkit.  Please check your program carefully,
+and if you think this is a problem in GtkAda itself, send us an e-mail.
 @end itemize
 
 To report errors, send a mail to the authors (@uref{mailto:gtkada@@ada.eu.org})
@@ -2367,7 +2366,7 @@ sources at  the end of  the mail). Please  try to provide a  subset of
 your sources as small as possible.
 
 Of course, we will  welcome any patch   you can provide, so  that this
-binding is as useful as possible.
+toolkit is as useful as possible.
 
 @node New tagged type scheme
 @chapter New tagged type scheme
@@ -2420,15 +2419,15 @@ package My_Cb is new Signal.Void_Callback (Gtk_Widget_Record);
   type, and the second parameter is an "in" parameter.
 @end itemize
 
-The last things that have changed in this new version of the binding are some
-of the names of the parameters in the subprograms of the bindings. This
+The last things that have changed in this new version of the toolkit are some
+of the names of the parameters in the subprograms. This
 is part of a major cleanup we are doing so that things can be more
 homogeneous within GtkAda.
 
 @node Using tagged types to extend Gtk widgets
 @chapter Using tagged types to extend Gtk widgets
 
-Since version 0.6 of this binding, it is possible to associate your
+Since version 0.6 of this toolkit, it is possible to associate your
 own data with existing widgets, simply by creating new @b{type}s. This
 section will show you a simple example, but you should rather read the
 source code in testgtk/ where we used this feature instead of using
