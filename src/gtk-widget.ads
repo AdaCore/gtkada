@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -451,32 +451,32 @@ package Gtk.Widget is
      (Child     : access Gtk_Widget_Record'Class;
       Direction : Gtk.Enums.Gtk_Direction_Type := Gtk.Enums.Dir_Tab_Forward)
       return Boolean;
-   --  This function is used by custom widget implementations; if you're
-   --  writing an app, you'd use gtk.widget.grab_focus to move the focus to a
-   --  particular widget, and gtk.container.set_focus_chain to change the focus
+   --  Used by custom widget implementations to indicate the focus child.
+   --  If you're writing an app, you'd use Grab_Focus to move the focus to a
+   --  particular widget, and Gtk.Container.Set_Focus_Chain to change the focus
    --  tab order. So you may want to investigate those functions instead.
-
-   --  gtk.widget.child_focus is called by containers as the user moves around
+   --
+   --  Child_Focus is called by containers as the user moves around
    --  the window using keyboard shortcuts. Direction indicates what kind of
    --  motion is taking place (up, down, left, right, tab forward, tab
-   --  backward).  gtk.widget.child_focus invokes the "focus" signal on Child;
+   --  backward). Child_Focus invokes the "focus" signal on Child;
    --  widgets override the default handler for this signal in order to
    --  implement appropriate focus behavior.
-
+   --
    --  The "focus" default handler for a widget should return True if moving in
    --  Direction left the focus on a focusable location inside that widget, and
    --  False if moving in Direction moved the focus outside the widget. If
-   --  returning True, widgets normally call gtk.widget.grab_focus to place the
+   --  returning True, widgets normally call Grab_Focus to place the
    --  focus accordingly; if returning False, they don't modify the current
    --  focus location.
-
-   --  This function replaces gtk.container.focus from GTK+ 1.2.  It was
+   --
+   --  This function replaces Gtk.Container.Focus from GTK+ 1.2.  It was
    --  necessary to check that the child was visible, sensitive, and focusable
-   --  before calling gtk.container.focus. gtk.widget.child_focus returns False
+   --  before calling Gtk.Container.Focus. Child_Focus returns False
    --  if the widget is not currently in a focusable state, so there's no need
    --  for those checks.
-
-   --  Return value: True if focus ended up inside @widget
+   --
+   --  Return value: True if focus ended up inside Child
 
    procedure Set_Events
      (Widget : access Gtk_Widget_Record;
