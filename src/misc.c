@@ -33,7 +33,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
-
+#include <stdlib.h>
 
 gint
 convert_a (void* a)
@@ -931,24 +931,6 @@ GdkGC *
 ada_gtk_style_get_white_gc (GtkStyle * style)
 {
   return style->white_gc;
-}
-
-/*************************************
- * GdkColor
- ************************************/
-
-guint
-ada_gdk_color_size () {
-  return sizeof (GdkColor);
-}
-
-/*************************************
- * GdkRectangle
- ************************************/
-
-guint
-ada_gdk_rectangle_size () {
-  return sizeof (GdkRectangle);
 }
 
 /***************************************************
