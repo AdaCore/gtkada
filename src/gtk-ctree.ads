@@ -163,9 +163,11 @@ package Gtk.Ctree is
 
    function Get_Row_List
      (Ctree : access Gtk_Ctree_Record) return Row_List.Glist;
+   --  Return the list of rows associated with a given Ctree.
 
    function Get_Selection
-     (Widget : access Gtk_Ctree_Record) return Node_List.Glist;
+     (Ctree : access Gtk_Ctree_Record) return Node_List.Glist;
+   --   Return the list of nodes currently selected.
    --   Extract the nodes with Node_List.Get_Data
 
    function Node_Get_Row (Node : in Gtk_Ctree_Node) return Gtk_Ctree_Row;
@@ -209,29 +211,42 @@ package Gtk.Ctree is
      (Ctree  : access Gtk_Ctree_Record;
       Node   : in     Gtk_Ctree_Node)
       return Gtk_Ctree_Node;
+   --  Return the last node of a given subtree.
+   --  Starting at Node, this function will recursively look for the last
+   --  sibling of the last child.
+   --  Return an empty node is Node is empty.
 
    function Find_Node_Ptr
      (Ctree     : access Gtk_Ctree_Record;
       Ctree_Row : in     Gtk_Ctree_Row)
       return Gtk_Ctree_Node;
+   --  Return the node corresponding to a given row.
 
    function Node_Nth (Ctree  : access Gtk_Ctree_Record;
                       Row    : in     Guint)
                       return          Gtk_Ctree_Node;
+   --  Return the Node corresponding to the nth row of a given Ctree.
 
    function Find (Ctree : access Gtk_Ctree_Record;
                   Node  : in     Gtk_Ctree_Node;
                   Child : in     Gtk_Ctree_Node) return Boolean;
+   --  Recursively search for a given Child in a given subtree.
+   --  the subtree is determined by Node. If Node is empty, the search will
+   --  occur on the whole tree.
+   --  Return True if Child is found, False otherwise.
 
-   function Is_Ancestor (Ctree  : access Gtk_Ctree_Record;
-                         Node   : in     Gtk_Ctree_Node;
-                         Child  : in     Gtk_Ctree_Node)
-                         return          Boolean;
+   function Is_Ancestor
+     (Ctree  : access Gtk_Ctree_Record;
+      Node   : in     Gtk_Ctree_Node;
+      Child  : in     Gtk_Ctree_Node) return Boolean;
+   --  Indicate whether Node is an ancestor of Child.
+   --  It is assumed that Node is not empty.
 
-   function Is_Hot_Spot (Ctree  : access Gtk_Ctree_Record;
-                         X      : in     Gint;
-                         Y      : in     Gint)
-                         return          Boolean;
+   function Is_Hot_Spot
+     (Ctree  : access Gtk_Ctree_Record;
+      X      : in     Gint;
+      Y      : in     Gint) return Boolean;
+   --  Return True if the Ctree is centered on (x,y)
 
    ------------------------------------------------------
    -- Tree signals: move, expand, collapse, (un)select --
@@ -308,9 +323,12 @@ package Gtk.Ctree is
       Node  : in     Gtk_Ctree_Node := null);
    --  Unselect a specified Node, and its whole subtree.
 
-   procedure Real_Select_Recursive (Ctree : access Gtk_Ctree_Record;
-                                    Node  : in     Gtk_Ctree_Node;
-                                    State : in     Gint);
+   procedure Real_Select_Recursive (Ctree     : access Gtk_Ctree_Record;
+                                    Node      : in     Gtk_Ctree_Node := null;
+                                    Do_Select : in     Boolean);
+   --  Similar to Select_Recursive or Unselect_Recursive.
+   --  If Do_Select is True, equivalent to Select_Recursive.
+   --  If Do_Select is False, equivalent to Unselect_Recursive.
 
    ------------------------------------
    -- Analogs of Gtk_Clist functions --
@@ -397,6 +415,7 @@ package Gtk.Ctree is
                             Mask_Opened   : in     Gdk.Bitmap.Gdk_Bitmap;
                             Is_Leaf       : in     Boolean;
                             Expanded      : in     Boolean);
+   --  Set all the info related to a specific Node.
 
    procedure Get_Node_Info
      (Ctree         : access Gtk_Ctree_Record;
@@ -410,6 +429,7 @@ package Gtk.Ctree is
       Is_Leaf       :    out Boolean;
       Expanded      :    out Boolean;
       Success       :    out Boolean);
+   --  Return all the info related to a specific Node.
 
    procedure Node_Set_Selectable (Ctree      : access Gtk_Ctree_Record;
                                   Node       : in     Gtk_Ctree_Node;
@@ -518,31 +538,49 @@ package Gtk.Ctree is
 
    procedure Set_Show_Stub (Ctree     : access Gtk_Ctree_Record;
                             Show_Stub : in     Boolean);
+   --  Set the Show_Stub attribute of Ctree.
 
    function Get_Show_Stub (Ctree : access Gtk_Ctree_Record) return Boolean;
+   --  Return the Show_Stub attribute of Ctree.
 
-   procedure Set_Line_Style (Ctree      : access Gtk_Ctree_Record;
-                             Line_Style : in     Gtk_Ctree_Line_Style);
+   procedure Set_Line_Style
+     (Ctree      : access Gtk_Ctree_Record;
+      Line_Style : in     Gtk_Ctree_Line_Style := Ctree_Lines_Solid);
+   --  Change the style of the lines representing the tree of a given Ctree.
+   --  By default, solid lines are used.
+   --  See the description of Gtk_Ctree_Line_Style for more details of the
+   --  possible values.
 
    function Get_Line_Style
      (Ctree : access Gtk_Ctree_Record) return Gtk_Ctree_Line_Style;
+   --  return the style of the lines representing the tree of a given Ctree.
 
    procedure Set_Expander_Style
      (Ctree          : access Gtk_Ctree_Record;
-      Expander_Style : in     Gtk_Ctree_Expander_Style);
+      Expander_Style : in     Gtk_Ctree_Expander_Style :=
+        Ctree_Expander_Square);
+   --  Set the way a given Ctree can be expanded.
+   --  To expand a subtree, you can either double-click on a node, or click on
+   --  the "+/-" icon. This icon is by default included in a square pixmap.
+   --  This procedure can change the form of this pixmap.
+   --  See the description of Gtk_Ctree_Expander_Style for more details.
 
    function Get_Expander_Style
      (Ctree : access Gtk_Ctree_Record) return Gtk_Ctree_Expander_Style;
+   --  Return the way a given Ctree can be expanded.
 
    type Gtk_Ctree_Compare_Drag_Func is access
      function (Ctree        : in Gtk_Ctree;
                Source_Node  : in Gtk_Ctree_Node;
                New_Parent   : in Gtk_Ctree_Node;
                New_Sibling  : in Gtk_Ctree_Node) return Boolean;
+   --  Function type used in Set_Drag_Compare_Func.
 
    procedure Set_Drag_Compare_Func
      (Ctree    : access Gtk_Ctree_Record;
       Cmp_Func : in     Gtk_Ctree_Compare_Drag_Func);
+   --  Set the drag compare function of a given Ctree.
+   --  This function is used when the Ctree receives a dragged data.
 
    ----------------------------
    -- Tree sorting functions --
@@ -562,6 +600,9 @@ package Gtk.Ctree is
    -- Ctree_Gnode handling --
    --------------------------
 
+   --  <doc_ignore>
+   --  This package needs to be documented ???
+
    generic
       type Data_Type (<>) is private;
    package Ctree_Gnode is
@@ -574,7 +615,6 @@ package Gtk.Ctree is
                   Gnode : in     Glib.Gnodes.Gnode;
                   Cnode : in     Gtk_Ctree_Node;
                   Data  : in     Data_Type_Access) return Boolean;
-
 
       function Export_To_Gnode (Ctree   : access Gtk_Ctree_Record'Class;
                                 Parent  : in     Glib.Gnodes.Gnode;
@@ -591,18 +631,21 @@ package Gtk.Ctree is
                              Func    : in     Gtk_Ctree_Gnode_Func;
                              Data    : in     Data_Type_Access)
         return Gtk_Ctree_Node;
-
    end Ctree_Gnode;
+
+   --  </doc_ignore>
 
    -----------------------
    -- Row_Data handling --
    -----------------------
 
+   --  <doc_ignore>
    generic
       type Data_Type (<>) is private;
    package Row_Data is
 
       type Data_Type_Access is access all Data_Type;
+      --  </doc_ignore>
 
       procedure Node_Set_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
                                    Node  : in     Gtk_Ctree_Node;

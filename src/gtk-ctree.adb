@@ -293,14 +293,15 @@ package body Gtk.CTree is
    -- Get_Selection --
    -------------------
 
-   function Get_Selection (Widget : access Gtk_Ctree_Record)
-                           return Node_List.Glist
+   function Get_Selection
+     (Ctree : access Gtk_Ctree_Record) return Node_List.Glist
    is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_clist_get_selection");
       List : Node_List.Glist;
+
    begin
-      Node_List.Set_Object (List, Internal (Get_Object (Widget)));
+      Node_List.Set_Object (List, Internal (Get_Object (Ctree)));
       return List;
    end Get_Selection;
 
@@ -980,9 +981,9 @@ package body Gtk.CTree is
    -- Real_Select_Recursive --
    ---------------------------
 
-   procedure Real_Select_Recursive (Ctree : access Gtk_Ctree_Record;
-                                    Node  : in     Gtk_Ctree_Node;
-                                    State : in     Gint)
+   procedure Real_Select_Recursive (Ctree     : access Gtk_Ctree_Record;
+                                    Node      : in     Gtk_Ctree_Node := null;
+                                    Do_Select : in     Boolean)
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in Gtk_Ctree_Node;
@@ -990,7 +991,7 @@ package body Gtk.CTree is
       pragma Import (C, Internal, "gtk_ctree_real_select_recursive");
 
    begin
-      Internal (Get_Object (Ctree), Node, State);
+      Internal (Get_Object (Ctree), Node, Boolean'Pos (Do_Select));
    end Real_Select_Recursive;
 
    -----------------
@@ -1132,8 +1133,9 @@ package body Gtk.CTree is
    ------------------------
 
    procedure Set_Expander_Style
-      (Ctree          : access Gtk_Ctree_Record;
-       Expander_Style : in     Gtk_Ctree_Expander_Style)
+     (Ctree          : access Gtk_Ctree_Record;
+      Expander_Style : in     Gtk_Ctree_Expander_Style :=
+        Ctree_Expander_Square)
    is
       procedure Internal (Ctree          : in System.Address;
                           Expander_Style : in Gint);
@@ -1161,8 +1163,9 @@ package body Gtk.CTree is
    -- Set_Line_Style --
    --------------------
 
-   procedure Set_Line_Style (Ctree      : access Gtk_Ctree_Record;
-                             Line_Style : in     Gtk_Ctree_Line_Style)
+   procedure Set_Line_Style
+     (Ctree      : access Gtk_Ctree_Record;
+      Line_Style : in     Gtk_Ctree_Line_Style := Ctree_Lines_Solid)
    is
       procedure Internal (Ctree      : in System.Address;
                           Line_Style : in Gint);
