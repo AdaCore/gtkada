@@ -172,7 +172,7 @@ package body Gtk.Box is
       Expand   : out Boolean;
       Fill     : out Boolean;
       Padding  : out Gint;
-      PackType : out Pack_Type)
+      PackType : out Gtk_Pack_Type)
    is
       procedure Internal (In_Box   : in System.Address;
                           Child    : in System.Address;
@@ -190,7 +190,7 @@ package body Gtk.Box is
                 Expand_Ptr, Fill_Ptr, Padding, PackT_Ptr);
       Expand   := Expand_Ptr /= 0;
       Fill     := Fill_Ptr /= 0;
-      PackType := Pack_Type'Val (PackT_Ptr);
+      PackType := Gtk_Pack_Type'Val (PackT_Ptr);
    end Query_Child_Packing;
 
    -----------------------
@@ -203,7 +203,7 @@ package body Gtk.Box is
       Expand    : in Boolean;
       Fill      : in Boolean;
       Padding   : in Gint;
-      PackType  : in Pack_Type)
+      PackType  : in Gtk_Pack_Type)
    is
       procedure Internal (In_Box   : in System.Address;
                           Child    : in System.Address;
@@ -215,7 +215,7 @@ package body Gtk.Box is
    begin
       Internal (Get_Object (In_Box), Get_Object (Child),
                 Boolean'Pos (Expand), Boolean'Pos (Fill), Padding,
-                Pack_Type'Pos (PackType));
+                Gtk_Pack_Type'Pos (PackType));
    end Set_Child_Packing;
 
 

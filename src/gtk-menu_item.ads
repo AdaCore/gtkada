@@ -50,8 +50,8 @@ package Gtk.Menu_Item is
 
    function Accelerator_Text (Menu_Item : in Gtk_Menu_Item'Class)
                               return String;
+   --  This function returns the accelerator associated with the Menu_Item
    --  mapping: Accelerator_Text gtkmenuitem.h gtk_menu_item_accelerator_text
-   --  FIXME  This service should be tested to see if it works...
 
    procedure Configure (Menu_Item              : in out Gtk_Menu_Item'Class;
                         Show_Toggle_Indicator  : in     Boolean;

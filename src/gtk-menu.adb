@@ -89,7 +89,6 @@ package body Gtk.Menu is
    -- Get_Attach_Widget --
    -----------------------
 
-   --  FIXME : should know the real type of the widget
    function Get_Attach_Widget (Menu : in Gtk_Menu'Class)
                                return Gtk.Widget.Gtk_Widget
    is

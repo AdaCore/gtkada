@@ -21,14 +21,12 @@
 
 
 with Gtk.Container;
+with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Box is
 
    type Gtk_Box is new Gtk.Container.Gtk_Container with private;
-
-   type Pack_Type is (Pack_Start, Pack_End);
-   --  mapping: Pack_Type gtkenums.h GtkPackType
 
    function Get_Child
      (Box : in Gtk_Box;
@@ -85,7 +83,7 @@ package Gtk.Box is
       Expand   : out Boolean;
       Fill     : out Boolean;
       Padding  : out Gint;
-      PackType : out Pack_Type);
+      PackType : out Gtk_Pack_Type);
    --  mapping: Query_Child_Packing gtkbox.h gtk_box_query_child_packing
 
    procedure Set_Child_Packing
@@ -94,7 +92,7 @@ package Gtk.Box is
       Expand    : in Boolean;
       Fill      : in Boolean;
       Padding   : in Gint;
-      PackType  : in Pack_Type);
+      PackType  : in Gtk_Pack_Type);
    --  mapping: Set_Child_Packing gtkbox.h gtk_box_set_child_packing
 
 

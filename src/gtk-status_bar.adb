@@ -32,7 +32,7 @@ package body Gtk.Status_Bar is
    function Convert (Msg : Status_Bar_Msg) return System.Address is
    begin
       return Msg'Address;
-      --  FIXME : this function is anyway not supposed to be used
+      --  This function is anyway not supposed to be used
    end Convert;
 
    function Convert (Msg : System.Address) return Status_Bar_Msg is

@@ -65,7 +65,8 @@ package Gtk.Enums is
                           Cell_Pixtext,
                           Cell_Widget);
 
-   --  FIXME  move the Pack_Type back here.
+   type Gtk_Pack_Type is (Pack_Start, Pack_End);
+   --  mapping: Gtk_Pack_Type gtkenums.h GtkPackType
 
    type Gtk_Policy_Type is (Policy_Always,
                             Policy_Automatic);
