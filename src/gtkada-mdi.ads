@@ -450,11 +450,17 @@ package Gtkada.MDI is
       Title       : String := "";
       State       : State_Type := Normal;
       Dock        : Dock_Side := None;
-      Focus       : Boolean := False);
+      Focus       : Boolean := False;
+      Raised      : Boolean := False);
    --  Add an item to a Tree that can then be loaded through
    --  a Load_Desktop_Function, see below.
    --  Tree can be null, in which case it will be initialized with
    --  values relative to the MDI.
+   --  If Focus is True, then the widget will be given the focus, unless
+   --  another widget is also registered later on with Focus set to True.
+   --  If Raised is True and the child is docked, then this widget will appear
+   --  on top unless another widget is also registered later on with Raised set
+   --  to True and in the same Dock.
 
    generic
       type User_Data (<>) is private;

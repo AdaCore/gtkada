@@ -4570,7 +4570,8 @@ package body Gtkada.MDI is
       Title       : String := "";
       State       : State_Type := Normal;
       Dock        : Dock_Side := None;
-      Focus       : Boolean := False)
+      Focus       : Boolean := False;
+      Raised      : Boolean := False)
    is
       --  ??? some code duplication from Save_Desktop, see below.
 
@@ -4626,6 +4627,7 @@ package body Gtkada.MDI is
       Add ("Width", Integer'Image (Width));
       Add ("Y", Integer'Image (Y));
       Add ("X", Integer'Image (X));
+      Add ("Raised", Boolean'Image (Raised));
 
       if ID_Node /= null then
          Add_Child (Child_Node, ID_Node);
