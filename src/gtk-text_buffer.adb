@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +28,7 @@
 
 with Interfaces.C.Strings;
 with System;
+with Gtk.Text_Iter; use Gtk.Text_Iter;
 
 package body Gtk.Text_Buffer is
 
@@ -776,8 +777,15 @@ package body Gtk.Text_Buffer is
          Char_Offset : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_line_offset");
 
+      Result : Boolean;
    begin
-      Internal (Get_Object (Buffer), Iter, Line_Number, Char_Offset);
+      --  Prevent critical crashes from gtk+ if Char_Offset is invalid
+      Internal (Get_Object (Buffer), Iter, Line_Number, 0);
+      Forward_To_Line_End (Iter, Result);
+
+      if Char_Offset <= Get_Line_Offset (Iter) then
+         Internal (Get_Object (Buffer), Iter, Line_Number, Char_Offset);
+      end if;
    end Get_Iter_At_Line_Offset;
 
    ----------------------------
