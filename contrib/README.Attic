@@ -50,6 +50,7 @@ These functions were tested on the following systems :
    - SCO UnixWare 7.1
    - FreeBSD 3.2
 using the following compilers:
+   - Gnat 3.14a
    - Gnat 3.13a1
    - Gnat 3.13p
 
@@ -80,49 +81,6 @@ General Public  License for more details.  You  should have received a
 copy of the GNU General -- Public License distributed with GtkAda; see
 file  COPYING.  If  not,  write to  the  Free  Software Foundation, 59
 Temple Place - Suite 330, Boston, -- MA 02111-1307, USA.
-
-Content
-=======
-
-The full set of widget that comes with Gtk+ 1.2 have been bound,
-and you should be able to use all of them from your Ada program.
-
-Although it is not quite complete yet, the Gdk binding (the low level
-layer) will probably not evolve soon, unless some people (why not
-you?) send us patches, or at least ask for specific functions.
-
-It is important to know that only a subset of the gdk binding has
-actually been tested, and therefore errors are still likely to appear.
-
-The full set of Gtk+ widgets that can be generated from GtkGlade, the
-GUI builder is now supported by GtkAda.
-
-We have tried to adopt a consistent naming scheme for Ada identifiers :
-
-- The widget names are  the same as in  C, excepted that an underscore
-sign (_) is used to separate words
-     
-    ex/   Gtk_Button   Gtk_Color_Selection_Dialog
-     
-- The function names are the  same as in  C, ignoring the leading gtk_
-and the widget name
-     
-    ex/   gtk_misc_set_padding        ->  Set_Padding
-          gtk_toggle_button_set_state ->  Set_State
-     
-- All the enum types have been grouped in the gtk-enums.ads file
-     
-- The only tricky part is for the callbacks, the timeout functions,
-the idle functions, and the data that can be attached to every
-Object. In these cases, we have used generic package to provide type
-safety. Please have a look at the files in testgtk to see how these
-functions are implemented.
-     
-!!WARNING!!  All  the  generic   functions allocate   some  memory for
-internal structures. This  memory is freed  by gtk itself,  by calling
-some Ada functions. Thus the generic packages  have to be instanciated
-at library level, not  inside a subprogram,  so that the functions are
-still defined when gtk needs to free the memory.
 
 Documentation
 =============
