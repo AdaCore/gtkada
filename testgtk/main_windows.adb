@@ -594,24 +594,26 @@ package body Main_Windows is
         (Node_List.First (Get_Selection (Tree)));
       Item : Demo_Tree_Item;
    begin
-      Item := Tree_Data.Get (Tree, Gtk_Clist_Row (Node_Get_Row (Node)));
+      if Row_Get_Is_Leaf (Node_Get_Row (Node)) then
+         Item := Tree_Data.Get (Tree, Gtk_Clist_Row (Node_Get_Row (Node)));
 
-      if Gtk_Demos (Item.Demo_Num).Func /= null then
+         if Gtk_Demos (Item.Demo_Num).Func /= null then
 
-         --  Remove the current demo from the frame
+            --  Remove the current demo from the frame
 
-         List := Gtk.Frame.Children (Gtk_Demo_Frames (Item.Frame));
+            List := Gtk.Frame.Children (Gtk_Demo_Frames (Item.Frame));
 
-         if Length (List) /= 0 then
-            Gtk.Frame.Remove
-              (Container => Gtk_Demo_Frames (Item.Frame),
-               Widget    => Get_Data (List));
+            if Length (List) /= 0 then
+               Gtk.Frame.Remove
+                 (Container => Gtk_Demo_Frames (Item.Frame),
+                  Widget    => Get_Data (List));
+            end if;
+
+            --  And then insert our own new demo
+
+            Gtk_Demos (Item.Demo_Num).Func (Gtk_Demo_Frames (Item.Frame));
+            Set_Help (Gtk_Demos (Item.Demo_Num).Help);
          end if;
-
-         --  And then insert our own new demo
-
-         Gtk_Demos (Item.Demo_Num).Func (Gtk_Demo_Frames (Item.Frame));
-         Set_Help (Gtk_Demos (Item.Demo_Num).Help);
       end if;
    end Tree_Select_Child;
 
