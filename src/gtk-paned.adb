@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -30,7 +30,6 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Container; use Gtk.Container;
-with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Paned is
@@ -274,19 +273,9 @@ package body Gtk.Paned is
          New_Name => Class (Class'First + 3) & "paned",
          File => File);
 
+      Container.Generate (N, File);
       Gen_Set (N, "Paned", "handle_size", File);
       Gen_Set (N, "Paned", "gutter_size", File);
-
-      if not N.Specific_Data.Has_Container then
-         if Get_Field (N.Parent, "class").all = "GtkScrolledWindow" then
-            Gen_Call_Child
-              (N, null, "Scrolled_Window", "Add_With_Viewport", File => File);
-         else
-            Gen_Call_Child (N, null, "Container", "Add", File => File);
-         end if;
-
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Paned : in out Gtk_Object; N : in Node_Ptr) is
@@ -305,6 +294,7 @@ package body Gtk.Paned is
          N.Specific_Data.Created := True;
       end if;
 
+      Container.Generate (Paned, N);
       S := Get_Field (N, "handle_size");
 
       if S /= null then
@@ -315,21 +305,6 @@ package body Gtk.Paned is
 
       if S /= null then
          Set_Gutter_Size (Gtk_Paned (Paned), Guint16'Value (S.all));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         if Get_Field (N.Parent, "class").all = "GtkScrolledWindow" then
-            Scrolled_Window.Add_With_Viewport
-              (Gtk_Scrolled_Window
-                (Get_Object (Get_Field (N.Parent, "name"))),
-               Gtk_Paned (Paned));
-         else
-            Container.Add
-              (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-               Gtk_Paned (Paned));
-         end if;
-
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
