@@ -105,6 +105,26 @@ package body Create_Toolbar is
       Set_Tooltips (Toolbar, False);
    end Set_Disable;
 
+   procedure Borders (Toolbar : in out Gtk_Toolbar) is
+   begin
+      Set_Button_Relief (Toolbar, Normal);
+   end Borders;
+
+   procedure Borderless (Toolbar : in out Gtk_Toolbar) is
+   begin
+      Set_Button_Relief (Toolbar, None);
+   end Borderless;
+
+   procedure Space_Style_Empty (Toolbar : in out Gtk_Toolbar) is
+   begin
+      Set_Space_Style (Toolbar, Space_Empty);
+   end Space_Style_Empty;
+
+   procedure Space_Style_Line (Toolbar : in out Gtk_Toolbar) is
+   begin
+      Set_Space_Style (Toolbar, Space_Line);
+   end Space_Style_Line;
+
    procedure Make_Toolbar (Toolbar    : out Gtk_Toolbar;
                            Toplevel   : in out Gtk_Window;
                            With_Entry : in Boolean := False)
@@ -188,6 +208,34 @@ package body Create_Toolbar is
                                   Get_Window (Toplevel),
                                   Get_Bg (Get_Style (Toplevel), State_Normal))),
          "clicked", Set_Disable'Access, Toolbar);
+
+      Append_Space (Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Borders", "Show Borders", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Borders'Access, Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Borderless", "Hide Borders", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Borderless'Access, Toolbar);
+
+      Append_Space (Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Empty", "Empty spaces", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Space_Style_Empty'Access, Toolbar);
+      Id := Toolbar_Cb.Connect
+        (Append_Item (Toolbar, "Lines", "Lines in spaces", "",
+                      New_Pixmap ("test.xpm",
+                                  Get_Window (Toplevel),
+                                  Get_Bg (Get_Style (Toplevel), State_Normal))),
+         "clicked", Space_Style_Line'Access, Toolbar);
 
    end Make_Toolbar;
 
