@@ -54,7 +54,7 @@ libdir        = $(prefix)/lib
 incdir        = $(prefix)/include/gtkada
 alidir        = $(incdir)
 
-export INSTALL INSTALL_PROGRAM INSTALL_DATA FPIC GNATFLAGS GNATFLAGS_DEVEL
+export FPIC GNATFLAGS GNATFLAGS_DEVEL
 export CC GNATMAKE OS_SPECIFIC_LINK_OPTIONS CP CHMOD ARFLAGS RANLIB
 export prefix exec_prefix bindir libdir incdir alidir
 
