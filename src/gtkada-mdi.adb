@@ -2930,7 +2930,7 @@ package body Gtkada.MDI is
 
          Gtk_New (Win, Window_Toplevel);
          Set_Title (Win, Child.Title.all);
-         Set_Position (Win, Win_Pos_Center_On_Parent);
+         Set_Position (Win, Win_Pos_Mouse);
 
          if (Child.Flags and Float_As_Transient) /= 0 then
             Set_Transient_For (Win, Gtk_Window (Get_Toplevel (Child.MDI)));
