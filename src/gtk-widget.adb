@@ -1164,9 +1164,9 @@ package body Gtk.Widget is
             Gdk_Pointer_Motion_Mask,
             Gdk_Pointer_Motion_Hint_Mask,
             Gdk_Button_Motion_Mask,
-            Gdk_Button_1_Motion_Mask,
-            Gdk_Button_2_Motion_Mask,
-            Gdk_Button_3_Motion_Mask,
+            Gdk_Button1_Motion_Mask,
+            Gdk_Button2_Motion_Mask,
+            Gdk_Button3_Motion_Mask,
             Gdk_Button_Press_Mask,
             Gdk_Button_Release_Mask,
             Gdk_Key_Press_Mask,
@@ -1199,7 +1199,7 @@ package body Gtk.Widget is
          if The_First /= S'Last then
             Events := Events or
               2 ** Gdk_Event_Mask_Enum'Pos
-                (Gdk_Event_Mask_Enum'Value (S (The_First .. Last)));
+                (Gdk_Event_Mask_Enum'Value (S (The_First .. S'Last)));
          end if;
  
          return Events;
