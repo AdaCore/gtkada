@@ -295,8 +295,7 @@ package body Gtkada.Canvas is
    pragma Import (C, Emit_By_Name_Item, "gtk_signal_emit_by_name");
 
    function Compute_Line_Pos
-     (Canvas : access Interactive_Canvas_Record'Class)
-     return Gint_Array;
+     (Canvas : access Interactive_Canvas_Record'Class) return Gint_Array;
    --  ???
 
    ---------------------------
@@ -528,7 +527,7 @@ package body Gtkada.Canvas is
 
    procedure Size_Allocate
      (Canv : access Gtk_Widget_Record'Class;
-      Args   : Gtk_Args)
+      Args : Gtk_Args)
    is
       Alloc  : constant Gtk_Allocation_Access := To_Allocation (Args, 1);
       Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -918,48 +917,52 @@ package body Gtkada.Canvas is
    --------------
 
    procedure Realized (Canvas : access Gtk_Widget_Record'Class) is
-      Canv : Interactive_Canvas := Interactive_Canvas (Canvas);
+      Canv   : Interactive_Canvas := Interactive_Canvas (Canvas);
+      Window : Gdk_Window;
    begin
+      if Canv.Black_GC /= null then
+         return;
+      end if;
+
       --  Create all the graphic contexts if necessary.
       --  Set Exposures to False, since we want to handle the redraw
       --  events ourselves, and not have them generated automatically
       --  everytime we do a Draw_Pixmap (for optimization purposes)
 
-      if Canv.Black_GC = null then
-         Gdk_New (Canv.Black_GC, Get_Window (Canvas));
-         Set_Foreground
-           (Canv.Black_GC, Black (Gtk.Widget.Get_Default_Colormap));
-         Set_Exposures (Canv.Black_GC, False);
+      Window := Get_Window (Canvas);
+      Gdk_New (Canv.Black_GC, Window);
+      Set_Foreground
+        (Canv.Black_GC, Black (Gtk.Widget.Get_Default_Colormap));
+      Set_Exposures (Canv.Black_GC, False);
 
-         Gdk_New (Canv.Link_GC, Get_Window (Canvas));
-         Set_Foreground
-           (Canv.Link_GC, Black (Gtk.Widget.Get_Default_Colormap));
-         Set_Exposures (Canv.Link_GC, False);
+      Gdk_New (Canv.Link_GC, Window);
+      Set_Foreground
+        (Canv.Link_GC, Black (Gtk.Widget.Get_Default_Colormap));
+      Set_Exposures (Canv.Link_GC, False);
 
-         Gdk_New (Canv.Clear_GC, Get_Window (Canvas));
-         Set_Foreground
-           (Canv.Clear_GC, Get_Background (Get_Style (Canvas), State_Normal));
-         Set_Exposures (Canv.Clear_GC, False);
+      Gdk_New (Canv.Clear_GC, Window);
+      Set_Foreground
+        (Canv.Clear_GC, Get_Background (Get_Style (Canvas), State_Normal));
+      Set_Exposures (Canv.Clear_GC, False);
 
-         --  Note: when setting the line attributes below, it is very important
-         --  for the Line_Width to be 0 so has to get algorithms as fast as
-         --  possible (1 is way too slow for a proper interaction with the
-         --  user).
+      --  Note: when setting the line attributes below, it is very important
+      --  for the Line_Width to be 0 so has to get algorithms as fast as
+      --  possible (1 is way too slow for a proper interaction with the
+      --  user).
 
-         Gdk_New (Canv.Anim_GC, Get_Window (Canvas));
-         Set_Function (Canv.Anim_GC, Invert);
+      Gdk_New (Canv.Anim_GC, Window);
+      Set_Function (Canv.Anim_GC, Invert);
 
-         --  Do not draw the lines dashed while we are moving items, since this
-         --  becomes too slow when there are a lot of links to move around.
-         --  Set_Line_Attributes
-         --    (Canv.Anim_GC,
-         --     Line_Width => 0,
-         --     Line_Style => Line_On_Off_Dash,
-         --     Cap_Style  => Cap_Butt,
-         --     Join_Style => Join_Miter);
+      --  Do not draw the lines dashed while we are moving items, since this
+      --  becomes too slow when there are a lot of links to move around.
+      --  Set_Line_Attributes
+      --    (Canv.Anim_GC,
+      --     Line_Width => 0,
+      --     Line_Style => Line_On_Off_Dash,
+      --     Cap_Style  => Cap_Butt,
+      --     Join_Style => Join_Miter);
 
-         Set_Exposures (Canv.Anim_GC, False);
-      end if;
+      Set_Exposures (Canv.Anim_GC, False);
    end Realized;
 
    -------------------
@@ -1919,13 +1922,17 @@ package body Gtkada.Canvas is
       GC            : Gdk.GC.Gdk_GC;
       Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle)
    is
-      X_Left : constant Gint := Left_World_Coordinates (Canvas);
-      Y_Top  : constant Gint := Top_World_Coordinates (Canvas);
-      Grid   : constant Gint :=
+      X_Left     : constant Gint := Left_World_Coordinates (Canvas);
+      Y_Top      : constant Gint := Top_World_Coordinates (Canvas);
+      Grid       : constant Gint :=
         Gint (Canvas.Grid_Size) * Gint (Canvas.Zoom) / 100;
       X, Y, Xmin : Gint;
+      Window     : Gdk_Window;
+
    begin
       if Grid >= 5 then
+         Window := Get_Window (Interactive_Canvas (Canvas));
+
          if (Screen_Rect.Y + Y_Top) mod Grid = 0 then
             Y := Screen_Rect.Y;
          else
@@ -1941,7 +1948,7 @@ package body Gtkada.Canvas is
             X := Xmin;
 
             while X <= Screen_Rect.X + Gint (Screen_Rect.Width) loop
-               Draw_Point (Get_Window (Canvas), GC, X, Y);
+               Draw_Point (Window, GC, X, Y);
                X := X + Grid;
             end loop;
 
@@ -1955,30 +1962,30 @@ package body Gtkada.Canvas is
    ---------------------
 
    procedure Draw_Background
-     (Canvas        : access Interactive_Canvas_Record;
-      Screen_Rect   : Gdk_Rectangle) is
+     (Canvas      : access Interactive_Canvas_Record;
+      Screen_Rect : Gdk_Rectangle)
+   is
+      C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
    begin
       Draw_Rectangle
-        (Get_Window (Canvas),
+        (Get_Window (C),
          Canvas.Clear_GC,
          Filled => True,
          X      => Screen_Rect.X,
          Y      => Screen_Rect.Y,
          Width  => Gint (Screen_Rect.Width),
          Height => Gint (Screen_Rect.Height));
-      Draw_Grid (Interactive_Canvas (Canvas), Canvas.Black_GC, Screen_Rect);
+      Draw_Grid (C, Canvas.Black_GC, Screen_Rect);
    end Draw_Background;
 
-   ------------
-   -- Expose --
-   ------------
+   ---------------
+   -- Draw_Area --
+   ---------------
 
-   function Expose
-     (Canv  : access Gtk_Widget_Record'Class;
-      Event : Gdk.Event.Gdk_Event) return Boolean
+   procedure Draw_Area
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Rect   : Gdk_Rectangle)
    is
-      Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
-      Rect   : constant Gdk_Rectangle := Get_Area (Event);
       Item   : Canvas_Item;
       Tmp    : Vertex_Iterator := First (Canvas.Children);
       X, Y   : Gint;
@@ -1991,7 +1998,7 @@ package body Gtkada.Canvas is
       --  If the GC was not created, do not do anything
 
       if Canvas.Clear_GC = Null_GC then
-         return False;
+         return;
       end if;
 
       --  Clear the canvas
@@ -2008,6 +2015,7 @@ package body Gtkada.Canvas is
 
       while not At_End (Tmp) loop
          Item := Canvas_Item (Get (Tmp));
+
          if Item.Visible then
             X := To_Canvas_Coordinates (Canvas, Item.Coord.X) - Xbase;
             Y := To_Canvas_Coordinates (Canvas, Item.Coord.Y) - Ybase;
@@ -2018,6 +2026,7 @@ package body Gtkada.Canvas is
                 Item.Coord.Width * GRectangle_Length (Canvas.Zoom) / 100,
                 Item.Coord.Height * GRectangle_Length (Canvas.Zoom) / 100),
                Dest, Inters);
+
             if Inters then
                Draw (Item, Canvas, Canvas.Black_GC, X, Y);
             end if;
@@ -2028,10 +2037,24 @@ package body Gtkada.Canvas is
 
       --  The dashed line (while moving items) have been deleted, and are no
       --  longer visible
+
       if Canvas.Dashed_Line_Visible then
          Draw_Dashed_Selection (Canvas);
       end if;
+   end Draw_Area;
 
+   ------------
+   -- Expose --
+   ------------
+
+   function Expose
+     (Canv  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event) return Boolean
+   is
+      Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
+      Rect   : constant Gdk_Rectangle := Get_Area (Event);
+   begin
+      Draw_Area (Canvas, Rect);
       return False;
    end Expose;
 
@@ -2280,9 +2303,11 @@ package body Gtkada.Canvas is
         or else Get_Button (Event) /= 1
       then
          Set_Cursor (Get_Window (Canvas), null);
+
          if Item /= null then
             On_Button_Click (Item, Event);
          end if;
+
          return False;
       end if;
 
@@ -2354,12 +2379,13 @@ package body Gtkada.Canvas is
      (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
-      Tmp : Item_Selection_List;
-      Xbase : constant Gint := Left_World_Coordinates (Canvas);
-      Ybase : constant Gint := Top_World_Coordinates (Canvas);
+      Canvas       : Interactive_Canvas := Interactive_Canvas (Canv);
+      Tmp          : Item_Selection_List;
+      Xbase        : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase        : constant Gint := Top_World_Coordinates (Canvas);
       Rect, Coord  : Gdk_Rectangle;
-      Iter  : Item_Iterator;
+      Iter         : Item_Iterator;
+
    begin
       Grab_Remove (Canvas);
 
@@ -2507,7 +2533,7 @@ package body Gtkada.Canvas is
    -------------------
 
    function Button_Motion
-     (Canv : access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2592,11 +2618,12 @@ package body Gtkada.Canvas is
    procedure Draw_Dashed_Selection
      (Canvas : access Interactive_Canvas_Record'Class)
    is
-      Xbase : constant Gint := Left_World_Coordinates (Canvas);
-      Ybase : constant Gint := Top_World_Coordinates (Canvas);
+      Xbase    : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase    : constant Gint := Top_World_Coordinates (Canvas);
       Selected : Item_Selection_List := Canvas.Selection;
-      X, Y : Gint;
-      Rect : Gdk_Rectangle;
+      X, Y     : Gint;
+      Rect     : Gdk_Rectangle;
+
    begin
       if Selected = null then
          Rect := Get_Background_Selection_Rectangle (Canvas);
@@ -3578,5 +3605,21 @@ package body Gtkada.Canvas is
    begin
       return Gint (Get_Value (Canvas.Hadj));
    end Left_World_Coordinates;
+
+   ---------------------------
+   -- Get_World_Coordinates --
+   ---------------------------
+
+   procedure Get_World_Coordinates
+     (Canvas : access Interactive_Canvas_Record'Class;
+      X, Y   : out Glib.Gint;
+      Width  : out Glib.Gint;
+      Height : out Glib.Gint) is
+   begin
+      X      := Gint (Get_Lower (Canvas.Hadj));
+      Y      := Gint (Get_Lower (Canvas.Vadj));
+      Width  := Gint (Get_Upper (Canvas.Hadj)) - X;
+      Height := Gint (Get_Upper (Canvas.Vadj)) - Y;
+   end Get_World_Coordinates;
 
 end Gtkada.Canvas;

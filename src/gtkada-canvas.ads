@@ -99,6 +99,7 @@ with Gdk.Event;
 with Gdk.GC;
 with Gdk.Pixbuf;
 with Gdk.Pixmap;
+with Gdk.Rectangle;
 with Gdk.Window;
 with Glib;
 with Glib.Graphs;
@@ -214,6 +215,11 @@ package Gtkada.Canvas is
    --  canvas. Note that in that case you can never activate Align_On_Grid.
    --  This setting doesn't apply if you have redefined Draw_Background, which
    --  may not draw a grid.
+
+   procedure Draw_Area
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Rect   : Gdk.Rectangle.Gdk_Rectangle);
+   --  Draw in Canvas the specified area.
 
    procedure Draw_Background
      (Canvas        : access Interactive_Canvas_Record;
@@ -437,6 +443,13 @@ package Gtkada.Canvas is
       X      : Glib.Gint) return Glib.Gint;
    --  Scale the scalar X depending by the zoom level (map from canvas
    --  coordinates to world coordinates)
+
+   procedure Get_World_Coordinates
+     (Canvas : access Interactive_Canvas_Record'Class;
+      X, Y   : out Glib.Gint;
+      Width  : out Glib.Gint;
+      Height : out Glib.Gint);
+   --  Return the world coordinates of Canvas.
 
    ---------------------
    -- Layout of items --
