@@ -166,6 +166,7 @@ package Glib.Unicode is
 
    function UTF8_Find_Next_Char
      (Str : UTF8_String; Index : Natural) return Natural;
+   pragma Inline (UTF8_Find_Next_Char);
    --  Find the start of the next UTF8 character after the Index-th byte.
    --  Index doesn't need to be on the start of a character.
    --  Index is set to a value greater than Str'Last if there is no more
