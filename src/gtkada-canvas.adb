@@ -838,6 +838,7 @@ package body Gtkada.Canvas is
 
          Gdk_New (Canv.Anim_GC, Get_Window (Canvas));
          Set_Function (Canv.Anim_GC, Invert);
+         --  ??? Why is the following code commented out
          --  Set_Line_Attributes
          --    (Canv.Anim_GC,
          --     Line_Width => 0,
