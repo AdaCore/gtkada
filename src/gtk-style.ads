@@ -513,7 +513,7 @@ private
    pragma Import (C, Y_Thickness, "ada_style_get_y_thickness");
    pragma Import (C, Set_Font_Description, "ada_style_set_font_description");
    pragma Import (C, Get_Font_Description, "ada_style_get_font_description");
-   pragma Import (C, Get_Font, "ada_style_get_font");
+   pragma Import (C, Get_Font, "gtk_style_get_font");
 end Gtk.Style;
 
 --  missing:
