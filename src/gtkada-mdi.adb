@@ -1933,54 +1933,63 @@ package body Gtkada.MDI is
 
       C.MDI.In_Drag := No_Drag;
 
-      if MDI.Selected_Child = null then
-         return False;
+      --  We can only move children in the central layout
+
+      if C.State = Normal and then not MDI.Central.Children_Are_Maximized then
+         if MDI.Selected_Child = null then
+            return False;
+         end if;
+
+         Alloc :=
+           (MDI.Dnd_Rectangle.X, MDI.Dnd_Rectangle.Y,
+            Allocation_Int (MDI.Dnd_Rectangle.Width),
+            Allocation_Int (MDI.Dnd_Rectangle.Height));
+
+         if Alloc.X + Alloc.Width < Buttons_Width then
+            Alloc.X := Buttons_Width - Alloc.Width;
+         elsif Alloc.X >
+           Get_Allocation_Width (MDI.Central.Layout) - Minimal
+         then
+            Alloc.X := Get_Allocation_Width (MDI.Central.Layout) - Minimal;
+         end if;
+
+         if Alloc.Y + MDI.Title_Bar_Height < Minimal then
+            Alloc.Y := Minimal - MDI.Title_Bar_Height;
+         elsif Alloc.Y >
+           Get_Allocation_Height (MDI.Central.Layout) - Minimal
+         then
+            Alloc.Y := Get_Allocation_Height (MDI.Central.Layout) - Minimal;
+         end if;
+
+         if not MDI.Central.Children_Are_Maximized
+           and then ((not MDI.Opaque_Resize
+                      and then MDI.Current_Cursor /= Left_Ptr)
+                     or else (not MDI.Opaque_Move
+                              and then MDI.Current_Cursor = Left_Ptr))
+         then
+            Draw_Rectangle
+              (Get_Window (MDI.Central.Layout),
+               MDI.Xor_GC,
+               Filled => False,
+               X => Alloc.X,
+               Y => Alloc.Y,
+               Width => Gint (Alloc.Width),
+               Height => Gint (Alloc.Height));
+            Size_Allocate (Child, Alloc);
+         end if;
+
+         MDI_Child (Child).X := Alloc.X;
+         MDI_Child (Child).Y := Alloc.Y;
+         Set_Size_Request (Child, Alloc.Width, Alloc.Height);
+         Move (MDI.Central.Layout, Child, Alloc.X, Alloc.Y);
+
+         if MDI.Current_Cursor /= Left_Ptr then
+            MDI_Child (Child).Uniconified_Width  := Gint (Alloc.Width);
+            MDI_Child (Child).Uniconified_Height := Gint (Alloc.Height);
+         end if;
+
+         MDI.Selected_Child := null;
       end if;
-
-      Alloc :=
-        (MDI.Dnd_Rectangle.X, MDI.Dnd_Rectangle.Y,
-         Allocation_Int (MDI.Dnd_Rectangle.Width),
-         Allocation_Int (MDI.Dnd_Rectangle.Height));
-
-      if Alloc.X + Alloc.Width < Buttons_Width then
-         Alloc.X := Buttons_Width - Alloc.Width;
-      elsif Alloc.X > Get_Allocation_Width (MDI.Central.Layout) - Minimal then
-         Alloc.X := Get_Allocation_Width (MDI.Central.Layout) - Minimal;
-      end if;
-
-      if Alloc.Y + MDI.Title_Bar_Height < Minimal then
-         Alloc.Y := Minimal - MDI.Title_Bar_Height;
-      elsif Alloc.Y > Get_Allocation_Height (MDI.Central.Layout) - Minimal then
-         Alloc.Y := Get_Allocation_Height (MDI.Central.Layout) - Minimal;
-      end if;
-
-      if not MDI.Central.Children_Are_Maximized
-        and then ((not MDI.Opaque_Resize
-                    and then MDI.Current_Cursor /= Left_Ptr)
-          or else (not MDI.Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
-      then
-         Draw_Rectangle
-           (Get_Window (MDI.Central.Layout),
-            MDI.Xor_GC,
-            Filled => False,
-            X => Alloc.X,
-            Y => Alloc.Y,
-            Width => Gint (Alloc.Width),
-            Height => Gint (Alloc.Height));
-         Size_Allocate (Child, Alloc);
-      end if;
-
-      MDI_Child (Child).X := Alloc.X;
-      MDI_Child (Child).Y := Alloc.Y;
-      Set_Size_Request (Child, Alloc.Width, Alloc.Height);
-      Move (MDI.Central.Layout, Child, Alloc.X, Alloc.Y);
-
-      if MDI.Current_Cursor /= Left_Ptr then
-         MDI_Child (Child).Uniconified_Width  := Gint (Alloc.Width);
-         MDI_Child (Child).Uniconified_Height := Gint (Alloc.Height);
-      end if;
-
-      MDI.Selected_Child := null;
       return True;
    end Button_Release;
 
@@ -3186,14 +3195,11 @@ package body Gtkada.MDI is
 
    begin
       if MDI.Central.Children_Are_Maximized then
-         Max_W := Gint (Get_Allocation_Width (MDI.Central.Container));
-         Max_H := Gint (Get_Allocation_Height (MDI.Central.Container));
          Maximize_Children (MDI, False);
-
-      else
-         Max_W := Gint (Get_Allocation_Width (MDI.Central.Layout));
-         Max_H := Gint (Get_Allocation_Height (MDI.Central.Layout));
       end if;
+
+      Max_W := Gint (Get_Allocation_Width (MDI.Central.Layout));
+      Max_H := Gint (Get_Allocation_Height (MDI.Central.Layout));
 
       if List = Null_List then
          return;
