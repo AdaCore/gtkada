@@ -1,5 +1,0 @@
-# GtkColorCombo specific marshallers
-VOID:INT,POINTER
-# GtkSheet specific marshallers
-BOOLEAN:INT,INT
-BOOLEAN:INT,INT,POINTER,POINTER
