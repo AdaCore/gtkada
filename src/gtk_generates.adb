@@ -26,7 +26,7 @@ package body Gtk_Generates is
 
    use Glib;
 
-   Widget : System.Address;
+   Widget, Widget2 : System.Address;
 
    function Widget_New
      (T : Glib.GType; Addr : System.Address := System.Null_Address)
@@ -125,11 +125,16 @@ package body Gtk_Generates is
    procedure Box_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
       Class      : constant String_Ptr := Get_Field (N, "class");
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_box_get_type");
+      function Build_HType return Glib.GType;
+      pragma Import (C, Build_HType, "gtk_hbox_get_type");
+
+      function Build_VType return Glib.GType;
+      pragma Import (C, Build_VType, "gtk_vbox_get_type");
 
    begin
-      Widget := Widget_New (Build_Type);
+      Widget := Widget_New (Build_HType);
+      Widget2 := Widget_New (Build_VType);
+
       if Child_Name = null then
          if not N.Specific_Data.Created then
             Gen_New (N, "Box", Get_Field (N, "homogeneous").all,
@@ -142,6 +147,7 @@ package body Gtk_Generates is
       end if;
 
       Widget_Destroy (Widget);
+      Widget_Destroy (Widget2);
       Container_Generate (N, File);
 
       if Child_Name /= null then
@@ -394,12 +400,7 @@ package body Gtk_Generates is
    end Combo_Generate;
 
    procedure Container_Generate (N : Node_Ptr; File : File_Type) is
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_container_get_type");
-
    begin
-      Widget := Widget_New (Build_Type);
-      Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "border_width", File);
       Gen_Set (N, "resize_mode", File);
