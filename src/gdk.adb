@@ -54,6 +54,11 @@ package body Gdk is
       return Object.Ptr /= System.Null_Address;
    end Is_Created;
 
+   function Is_Created (Object : in C_Proxy) return Boolean is
+   begin
+      return Object /= null;
+   end Is_Created;
+
    ------------------
    --  Set_Object  --
    ------------------

@@ -38,6 +38,19 @@ package Gdk is
    --  to an underlying C object. This is not a controlled type, for efficiency
    --  reasons, and because gtk+ takes care of memory management on its own.
 
+   type C_Dummy_Record is limited private;
+   type C_Proxy is access C_Dummy_Record;
+   --  This is the general type of handlers to C structures.
+   --  The value pointed as no important whatsoever, since only the pointer
+   --  itself is important (this is a pointer to any kind of underlying C
+   --  structure).
+   --  Using this type instead of a simpler System.Address has the advantage
+   --  that because of its access semantics, the pointers of this type are
+   --  always initialized automatically to null.
+   --  C_Proxy is a public type so that one can use the null value to test
+   --  whether it is initialized or not.
+   --  Note also that for more security this type as a C convention.
+
    generic
       type To is new Root_Type with private;
       type To_Access is access all To'Class;
@@ -67,6 +80,11 @@ package Gdk is
    --  any of the widgets) is "null", since this relates to the underlying
    --  C object.
 
+   function Is_Created (Object : in C_Proxy) return Boolean;
+   --  Provided for backward compatibility only.
+   --  You should test directly that Object is not null, this makes the
+   --  code clearer.
+
    --  The following services are for INTERNAL use only. They are not
    --  declared inside the private part for visibility issues. Do NOT
    --  use them outside of the binding.
@@ -86,4 +104,12 @@ private
       Ptr : System.Address := System.Null_Address;
    end record;
 
+   type C_Dummy_Record is
+      record
+         I : Character;
+      end record;
+   --  This array can contain anything, since it is never used in
+   --  fact.
+
+   pragma Convention (C, C_Proxy);
 end Gdk;
