@@ -198,7 +198,7 @@ package body Create_Notebook is
    begin
       Set_Show_Tabs (Notebook, True);
       Set_Scrollable (Notebook, False);
-      if Children_List.Length (Get_Children (Notebook)) = 15 then
+      if Widget_List.Length (Get_Children (Notebook)) = 15 then
          for I in 0 .. 9 loop
             Remove_Page (Notebook, 5);
          end loop;
@@ -208,7 +208,7 @@ package body Create_Notebook is
    procedure Notabs_Notebook (Notebook : in out Gtk_Notebook'Class) is
    begin
       Set_Show_Tabs (Notebook, False);
-      if Children_List.Length (Get_Children (Notebook)) = 15 then
+      if Widget_List.Length (Get_Children (Notebook)) = 15 then
          for I in 0 .. 9 loop
             Remove_Page (Notebook, 5);
          end loop;
@@ -219,7 +219,7 @@ package body Create_Notebook is
    begin
       Set_Show_Tabs (Notebook, True);
       Set_Scrollable (Notebook, True);
-      if Children_List.Length (Get_Children (Notebook)) = 5 then
+      if Widget_List.Length (Get_Children (Notebook)) = 5 then
          Create_Pages (Notebook, 6, 15);
       end if;
    end Scrollable_Notebook;
@@ -271,7 +271,7 @@ package body Create_Notebook is
       Option_Menu     : Gtk_Option_Menu;
       Menu            : Gtk_Menu;
       Menu_Item       : Gtk_Radio_Menu_Item;
-      Group           : Gtk.Radio_Menu_Item.Widget_SList.GSlist;
+      Group           : Widget_SList.GSlist;
       Button          : Gtk_Check_Button;
       Button2         : Gtk_Button;
    begin

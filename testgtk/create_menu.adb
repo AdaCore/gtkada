@@ -24,7 +24,7 @@ package body Create_Menu is
 
    function Create_Menu (Depth : Integer) return Gtk_Menu is
       Menu      : Gtk_Menu;
-      Group     : Gtk.Radio_Menu_Item.Widget_SList.GSlist;
+      Group     : Widget_SList.GSlist;
       Menu_Item : Gtk_Radio_Menu_Item;
    begin
       if Depth < 1 then

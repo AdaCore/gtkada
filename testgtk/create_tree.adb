@@ -57,9 +57,9 @@ package body Create_Tree is
 
 
    procedure Cb_Tree_Changed (Tree : in out Gtk_Tree'Class) is
-      use Children_List;
+      use Widget_List;
       Tree_Buttons  : STreeButtons_Access := Tree_Data.Get (Tree);
-      Selected_List : Gtk.Tree.Children_List.Glist;
+      Selected_List : Widget_List.Glist;
       Nb_Selected   : Guint;
    begin
       Selected_List := Get_Selection (Tree);
@@ -88,9 +88,9 @@ package body Create_Tree is
 
 
    procedure Cb_Add_New_Item (Tree : in out Gtk_Tree'Class) is
-      use Children_List;
+      use Widget_List;
       Tree_Buttons  : STreeButtons_Access := Tree_Data.Get (Tree);
-      Selected_List : Gtk.Tree.Children_List.Glist;
+      Selected_List : Widget_List.Glist;
       Selected_Item : Gtk_Tree_Item;
       Subtree       : Gtk_Tree;
       Item_New      : Gtk_Tree_Item;
@@ -115,9 +115,9 @@ package body Create_Tree is
    end Cb_Add_New_Item;
 
    procedure Cb_Remove_Item (Tree : in out Gtk_Tree'Class) is
-      use Children_List;
-      Selected_List : Gtk.Tree.Children_List.Glist;
-      Clear_List    : Gtk.Tree.Children_List.Glist;
+      use Widget_List;
+      Selected_List : Widget_List.Glist;
+      Clear_List    : Widget_List.Glist;
    begin
       Selected_List := Get_Selection (Tree);
       while Selected_List /= Null_List loop
@@ -131,8 +131,8 @@ package body Create_Tree is
    end Cb_Remove_Item;
 
    procedure Cb_Remove_Subtree (Tree : in out Gtk_Tree'Class) is
-      use Children_List;
-      Selected_List : Gtk.Tree.Children_List.Glist;
+      use Widget_List;
+      Selected_List : Widget_List.Glist;
       Item          : Gtk_Tree_Item;
    begin
       Selected_List := Get_Selection (Tree);

@@ -8,11 +8,9 @@ with Gtk.Button;
 with Gtk.Container;
 with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Drawing_Area;
-with Gtk.Object;
 with Gtk.Scrollbar;
 with Gtk.Signal;
 with Gtk.Widget;
-with Gtk.Window;
 
 package body Create_Scroll_Test is
 

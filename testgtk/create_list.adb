@@ -45,12 +45,12 @@ package body Create_List is
    end List_Add;
 
    procedure List_Remove (List : in out Gtk_List'Class) is
-      use Gtk.List.Children_List;
+      use Widget_List;
       Tmp_List,
-        Clear_List : Gtk.List.Children_List.Glist;
+        Clear_List : Widget_List.Glist;
    begin
       Tmp_List := Get_Selection (List);
-      while Tmp_List /= Children_List.Null_List loop
+      while Tmp_List /= Widget_List.Null_List loop
          Prepend (Clear_List, Get_Data (Tmp_List));
          Tmp_List := Next (Tmp_List);
       end loop;

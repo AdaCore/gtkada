@@ -32,7 +32,7 @@ package body Create_Entry is
 
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
-      use Gtk.Combo.String_List;
+      use String_List;
 
       List      : Glist;
       Id        : Guint;
