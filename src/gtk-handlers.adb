@@ -118,8 +118,10 @@ package body Gtk.Handlers is
      (Object : access GObject_Record'Class; Signal : String)
       return Glib.GType
    is
-      Q : Signal_Query;
-      Id : Handler_Id := Lookup (Get_Type (Object), Signal & ASCII.Nul);
+      Q  : Signal_Query;
+      Id : constant Handler_Id :=
+        Lookup (Get_Type (Object), Signal & ASCII.NUL);
+
    begin
       if Id = Invalid_Handler_Id or else Id = Null_Handler_Id then
          return GType_Invalid;
