@@ -55,34 +55,6 @@ package body Gtk.Pixmap is
       Internal (Get_Object (Pixmap), Val, Mask);
    end Get;
 
-   --------------
-   -- Get_Mask --
-   --------------
-
-   function Get_Mask
-     (Widget : access Gtk_Pixmap_Record) return Gdk.Bitmap.Gdk_Bitmap
-   is
-      function Internal (Widget : System.Address) return Gdk.Bitmap.Gdk_Bitmap;
-      pragma Import (C, Internal, "ada_pixmap_get_mask");
-
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Mask;
-
-   ----------------
-   -- Get_Pixmap --
-   ----------------
-
-   function Get_Pixmap
-     (Widget : access Gtk_Pixmap_Record) return Gdk.Pixmap.Gdk_Pixmap
-   is
-      function Internal (Widget : System.Address) return Gdk.Pixmap.Gdk_Pixmap;
-      pragma Import (C, Internal, "ada_pixmap_get_pixmap");
-
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Pixmap;
-
    -------------
    -- Gtk_New --
    -------------
