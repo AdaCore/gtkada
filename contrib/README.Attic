@@ -35,26 +35,26 @@ look at the testgtk/ directory).
 These functions were tested on the following systems :
    - Linux version 2.0.35
    - SunOS 5.5.1
-   - Dec Unix
+   - Dec Unix 4.0b
 using the following compilers :
    - Gnat 3.11p
-   - Gnat 3.12w
-     
-and the following version of gtk :
+   - Gnat 3.12b2
+
+and the following versions of gtk :
    - Gtk 1.1.16
    - Gtk 1.2
-     
+
 Although versions up to 0.2.1 were compatible with Gtk1.0, this one is
 Gtk-1.1 (or Gtk-1.2) specific.  If you are looking for a binding to
 Gtk1.0, please consider downloading GtkAda 0.2.1.
-     
+
 If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
 we can add to the above list.
-     
+
 Disclaimer
 ==========
-     
+
 GtkAda  is free software;  you  can redistribute  it and/or  modify it
 under terms of the GNU General Public License as published by the Free
 Software Foundation; either  version 2, or  (at your option) any later
@@ -65,13 +65,13 @@ General Public  License for more details.  You  should have received a
 copy of the GNU General -- Public License distributed with GtkAda; see
 file  COPYING.  If  not,  write to  the  Free  Software Foundation, 59
 Temple Place - Suite 330, Boston, -- MA 02111-1307, USA.
-     
+
 Ada Core Technologies Inc. (developpers of Gnat) is not responsible in
 any way for this binding, and can not provide any support for it.
-     
+
 Content
 =======
-     
+
 The almost full set of widget that comes with gtk 1.2 have been bound,
 and you should be able to use all of them from your Ada program.
 
@@ -88,7 +88,7 @@ versions will not break your code, but we certainly can not guaranty
 anything. 
 
 We have tried to adopt a consistent naming scheme for Ada identifiers :
-     
+
 - The widget names are  the same as in  C, excepted that an underscore
 sign (_) is used to separate words
      
@@ -343,8 +343,7 @@ of them. If you really need one, it is easy to add the two required
 functions...
 
 We actually provide two versions: a dynamic one and a static one. In
-both cases, you first need to get and install glade (go to
-www.gtk.org and follow the links).
+both cases, you first need to get and install glade (http://glade.pn.org).
 Then start a new project (or edit an old one). It is easy enough to use,
 simply select the widget you want to add to your interface, and click!
 
@@ -352,14 +351,14 @@ For now, you can not directly create Ada files from Glade (although this
 should be in the next version). In the meanwhile, save your project as
 an XML file.
 
-DGATE is the dynamic version of our support. This is a shell script,
+DGATE is the dynamic version of our support. This is an Ada program
 that takes the XML file in argument. It also provides default
 callbacks for your application. We recommand using it while you are
 trying to design your interface.
 If you want, you can also use your own callbacks instead of using the
 default ones provided by dgate.
 
-GATE is the static version of oyr support. This is an Ada program that
+GATE is the static version of our support. This is a shell script, that
 takes the XML file in argument. It will generate a set of Ada files that,
 when compiled, will recreate the interface you just designed in Glade.
 
@@ -371,6 +370,10 @@ and have GATE re-generate a set of files. All your modifications will be
 kept in the new files. For that, GATE creates a directory .gate/ in the
 current directory. Please do not delete it if you want GATE to be able to
 keep your changes from one version to the next.
+
+Also note that to be able to keep track of your modifications, gate relies on
+patch and diff being available on your system. The GNU versions of these
+two tools are recommended.
 
 AUTHORS
 =======
