@@ -226,7 +226,7 @@ package body Gtk.Glade is
    begin
       if S /= null then
          New_Line;
-         Put_Line ("GtkAda-WARNING *: Unsupported widget " &
+         Put_Line ("GtkAda-WARNING **: Unsupported widget " &
            Get_Field (N, "class").all & " (" & S.all & ")");
       end if;
    exception
