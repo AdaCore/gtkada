@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                       Copyright (C) 1999                          --
+--                     Copyright (C) 1999-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -33,42 +33,29 @@
 --  It provides routines to generate Ada code and create widgets dynamically
 --  from an XML definition file.
 --  @pxref{Package_Glib.Glade} for the low level GUI builder support.
---  @pxref{Package_Gtk.Util} for the additional API to support easily dynamic
---  loading of files.
 --
 --  </description>
 
-with Gtk.Object;
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
 
 package Gtk.Glade is
 
+   ---------------------
+   -- Code Generation --
+   ---------------------
+
    --  <doc_ignore>
 
    type Generate_Ptr is access procedure (N : Node_Ptr; File : File_Type);
-   type Dynamic_Generate_Ptr is access
-     procedure (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr);
-
-   type Generate_Rec is record
-      Gate  : Generate_Ptr;
-      Dgate : Dynamic_Generate_Ptr;
-   end record;
 
    procedure Generic_Ptr (N : Node_Ptr; File : File_Type);
    --  Dummy Generate_Ptr that does nothing.
 
-   procedure Generic_DPtr
-     (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr);
-   --  Dummy Dynamic_Generate_Ptr that does nothing.
    --  </doc_ignore>
 
    function Get_Gate (Class : String) return Generate_Ptr;
    --  Return a Generate_Ptr corresponding to a specific Class.
    --  If class isn't found, return a pointer to Generic_Ptr.
-
-   function Get_Dgate (Class : String) return Dynamic_Generate_Ptr;
-   --  Return a Dynamic_Generate_Ptr corresponding to a specific Class.
-   --  If class isn't found, return a pointer to Generic_DPtr.
 
    procedure Generate (File : String);
    --  Parse file File and generate the corresponding Ada code on standard
@@ -78,11 +65,9 @@ package Gtk.Glade is
    --  Generate the Ada code corresponding the creation of to N and its
    --  children on standard output.
 
-   procedure Instantiate (File : String);
-   --  Parse File, create and display the corresponding widgets.
-
-   procedure Instantiate (N : Node_Ptr; Display : Boolean := True);
-   --  Create the widgets corresponding to N and its children.
-   --  If Display is True, display them.
+   procedure Register_Generate (Widget : String; Generate : Generate_Ptr);
+   --  Register Callback as a procedure that knows how to generate code
+   --  for a given Widget class.
+   --  Widget is the C string representing the widget, e.g "GnomeCanvas".
 
 end Gtk.Glade;
