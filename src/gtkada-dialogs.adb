@@ -52,8 +52,8 @@ package body Gtkada.Dialogs is
 
    Dialog_Button_String : constant array (Button_Range) of String_20 :=
      ("Yes                 ",
-      "No                  ",
       "All                 ",
+      "No                  ",
       "OK                  ",
       "Cancel              ",
       "Abort               ",
