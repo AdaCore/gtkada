@@ -174,7 +174,6 @@ package Gtk.Widget is
    --  mapping: Set_Parent gtkwidget.h gtk_widget_set_parent
 
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_ancestor
-   --  FIXME  --  How do we bind this?
 
    procedure Get_Toplevel (Widget : in Gtk_Widget'Class;
                            Result : out Gtk_Widget'Class);
