@@ -31,7 +31,7 @@
 --
 --  This package provides some basic Gtk+ functionalities such as getting the
 --  version number. This is the top level package of the Gtk widget hierarchy.
---  For general GtkAda initializations, look at the package Gtk.Main.
+--  For general GtkAda initializations, @pxref{Package_Gtk.Main}.
 --
 --  </description>
 --  <c_version>1.2.7</c_version>
