@@ -814,6 +814,7 @@ package body Glib.Glade is
       After    : String_Ptr;
       Returned : GType;
       Rename   : String_Ptr;
+      Q        : Signal_Query;
 
       function Simple_Class (Class : String_Ptr) return String_Ptr;
       --  Return the simple name of a class.
@@ -855,8 +856,8 @@ package body Glib.Glade is
          Name := Get_Field (P, "name");
          After := Get_Field (P, "after");
 
-         Returned := Argument_Type
-           (Type_From_Name (Orig_Class.all), Name.all, -1);
+         Query (Lookup (Type_From_Name (Orig_Class.all), Name.all), Q);
+         Returned := Return_Type (Q);
 
          Rename := Add_Signal (Top, Handler, Name, Class, Orig_Class);
 
@@ -885,9 +886,7 @@ package body Glib.Glade is
          Put (File, To_Ada (Current.all) &
            ", """ & Name.all & """,");
 
-         if Count_Arguments
-           (Type_From_Name (Orig_Class.all), Name.all) = 0
-         then
+         if Params (Q)'Length = 0 then
             New_Line (File);
             Put (File, "      " &
               To_Ada (Class (Class'First + 3 .. Class'Last)) &
@@ -920,9 +919,9 @@ package body Glib.Glade is
       R, S     : String_Ptr;
       SR       : Signal_Rec;
       Prev_SR  : Signal_Rec;
-      Count    : Guint;
       Kind     : String_Ptr;
       Returned : GType;
+      Q        : Signal_Query;
 
    begin
       if Num_Signal_Instantiations > 0 then
@@ -978,10 +977,10 @@ package body Glib.Glade is
 
             for J in Signal_Range'First .. Num_Signals loop
                if Signals (J).Widget.all = SR.Widget.all then
-                  Returned := Argument_Type
-                    (Type_From_Name (Signals (J).Orig_Class.all),
-                     Signals (J).Signal.all,
-                     -1);
+                  Query (Lookup (Type_From_Name (Signals (J).Orig_Class.all),
+                                 Signals (J).Signal.all),
+                         Q);
+                  Returned := Return_Type (Q);
 
                   if Returned > GType_None then
                      Put (File, "   function ");
@@ -1000,9 +999,7 @@ package body Glib.Glade is
 
                   Put (File, "_Record'Class");
 
-                  if Count_Arguments (Type_From_Name
-                    (Signals (J).Orig_Class.all), Signals (J).Signal.all) > 0
-                  then
+                  if Params (Q)'Length > 0 then
                      Put_Line (File, ";");
                      Put (File, "      Params : Glib.Values.GValues)");
                   else
@@ -1049,10 +1046,11 @@ package body Glib.Glade is
                        (others => '-');
 
                   begin
-                     Returned := Argument_Type
-                       (Type_From_Name (Signals (J).Orig_Class.all),
-                        Signals (J).Signal.all,
-                        -1);
+                     Query (Lookup
+                            (Type_From_Name (Signals (J).Orig_Class.all),
+                             Signals (J).Signal.all),
+                            Q);
+                     Returned := Return_Type (Q);
 
                      Put_Line (File, "   " & Dashes);
                      Put_Line (File, "   -- " & Handler & " --");
@@ -1076,87 +1074,91 @@ package body Glib.Glade is
 
                      Put (File, "_Record'Class");
 
-                     Count := Count_Arguments (Type_From_Name
-                       (Signals (J).Orig_Class.all), Signals (J).Signal.all);
+                     declare
+                        P : constant GType_Array := Params (Q);
+                     begin
 
-                     if Count > 0 then
-                        Put_Line (File, ";");
-                        Put (File,
-                          "      Params : Glib.Values.GValues)");
-                     else
-                        Put (File, ")");
-                     end if;
-
-                     if Returned > GType_None then
-                        Put (File, " return Boolean");
-                     end if;
-
-                     New_Line (File);
-                     Put_Line (File, "   is");
-
-                     for K in 1 .. Gint (Count) loop
-                        Kind := new String' (To_Ada (Type_Name
-                          (Argument_Type
-                            (Type_From_Name (Signals (J).Orig_Class.all),
-                             Signals (J).Signal.all, K - 1))));
-
-                        if Kind.all = "Gpointer" then
-                           Free (Kind);
-                           Kind := new String' ("Address");
-
-                        elsif Kind.all = "Gtk_String" then
-                           Free (Kind);
-                           Kind := new String' ("String");
+                        if P'Length > 0 then
+                           Put_Line (File, ";");
+                           Put (File,
+                                "      Params : Glib.Values.GValues)");
+                        else
+                           Put (File, ")");
                         end if;
 
-                        Put (File, "      Arg" &
-                          Trim (Gint'Image (K), Left) &
-                          " : " & Kind.all & " := ");
+                        if Returned > GType_None then
+                           Put (File, " return Boolean");
+                        end if;
 
-                        --  ??? This whole section is ugly. Need to find a
-                        --  cleaner and more automated way of generating the
-                        --  right code.
+                        New_Line (File);
+                        Put_Line (File, "   is");
 
-                        if Kind.all = "Gdk_Event" then
-                           Put (File, "To_Event");
-                        elsif Kind (Kind'First .. Kind'First + 2) = "Gtk" then
-                           if Kind.all = "Gtk_Clist_Row"
-                             or else Kind.all = "Gtk_Ctree_Node"
-                             or else Kind.all = "Gtk_Accel_Group"
-                             or else Kind.all = "Gtk_Style"
-                           then
-                              Put (File, Kind.all & " (To_C_Proxy");
-                           elsif Kind.all = "Gtk_Object"
-                             or else Kind.all = "Gtk_Widget"
-                           then
-                              Put (File, Kind.all & " (To_Object");
-                           else
-                              Put (File, Kind.all & "'Val (To_Gint");
+                        for K in P'Range loop
+                           Kind := new String' (To_Ada (Type_Name (P (K))));
+
+                           if Kind.all = "Gpointer" then
+                              Free (Kind);
+                              Kind := new String' ("Address");
+
+                           elsif Kind.all = "Gtk_String" then
+                              Free (Kind);
+                              Kind := new String' ("String");
                            end if;
 
-                        elsif Kind (Kind'First .. Kind'First + 2) = "Gdk" then
-                           Put (File, Kind.all & " (To_Gint");
-                        else
-                           Put (File, "To_" & Kind.all);
-                        end if;
+                           Put (File, "      Arg" &
+                                Trim (Guint'Image (K - P'First + 1), Left) &
+                                " : " & Kind.all & " := ");
 
-                        Put (File, " (Params, " &
-                          Trim (Gint'Image (K), Left));
+                           --  ??? This whole section is ugly. Need to find a
+                           --  cleaner and more automated way of generating the
+                           --  right code.
 
-                        if Kind (Kind'First .. Kind'First + 2) = "Gtk"
-                          or else Kind (Kind'First .. Kind'First + 2) = "Gdk"
-                        then
                            if Kind.all = "Gdk_Event" then
-                              Put_Line (File, ");");
-                           else
-                              Put_Line (File, "));");
-                           end if;
-                        else
-                           Put_Line (File, ");");
-                        end if;
+                              Put (File, "To_Event");
+                           elsif Kind (Kind'First .. Kind'First + 2)
+                             = "Gtk"
+                           then
+                              if Kind.all = "Gtk_Clist_Row"
+                                or else Kind.all = "Gtk_Ctree_Node"
+                                or else Kind.all = "Gtk_Accel_Group"
+                                or else Kind.all = "Gtk_Style"
+                              then
+                                 Put (File, Kind.all & " (To_C_Proxy");
+                              elsif Kind.all = "Gtk_Object"
+                                or else Kind.all = "Gtk_Widget"
+                              then
+                                 Put (File, Kind.all & " (To_Object");
+                              else
+                                 Put (File, Kind.all & "'Val (To_Gint");
+                              end if;
 
-                        Free (Kind);
-                     end loop;
+                           elsif Kind (Kind'First .. Kind'First + 2)
+                             = "Gdk"
+                           then
+                              Put (File, Kind.all & " (To_Gint");
+                           else
+                              Put (File, "To_" & Kind.all);
+                           end if;
+
+                           Put (File, " (Params, " &
+                                Trim (Guint'Image (K - P'First + 1), Left));
+
+                           if Kind (Kind'First .. Kind'First + 2) = "Gtk"
+                             or else Kind (Kind'First .. Kind'First + 2) =
+                             "Gdk"
+                           then
+                              if Kind.all = "Gdk_Event" then
+                                 Put_Line (File, ");");
+                              else
+                                 Put_Line (File, "));");
+                              end if;
+                           else
+                              Put_Line (File, ");");
+                           end if;
+
+                           Free (Kind);
+                        end loop;
+                     end;
 
                      Put_Line (File, "   begin");
 
