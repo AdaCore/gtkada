@@ -39,10 +39,24 @@ package Gdk is
 
    generic
       type To is new Root_Type with private;
-   function Unchecked_Cast (From : in Root_Type'Class) return To;
-   --  This function allows the conversion any two widget types.
+      type To_Access is access all To'Class;
+   package Unchecked_Cast is
+      function Convert (From : access Root_Type'Class) return To_Access;
+   private
+      Returned : aliased To;
+   end Unchecked_Cast;
+   --  This function allows the conversion to any widget type.
+   --  Note:
+   --   The access type returned points to a global variable in this package,
+   --   that will be overidden the next time you call Convert. You should make
+   --   a copy of it if you need to reuse it.
    --  Warning : no verification is done at Ada level. The only verification
    --  are done by gtk itself. Whenever possible, avoid using this function
+   --  See testgtk/create_notebook.adb for an example how to use this package.
+
+   function Is_Created (Object : in Root_Type'Class) return Boolean;
+   --  Return True if the associated C object has been created, False if no
+   --  C object is associated with Object.
 
 
    --  The following services are for INTERNAL use only. They are not

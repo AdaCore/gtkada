@@ -44,6 +44,16 @@ package body Gdk is
       return Object.Ptr;
    end Get_Object;
 
+   ----------------
+   -- Is_Created --
+   ----------------
+
+   function Is_Created (Object : in Root_Type'Class) return Boolean is
+      use type System.Address;
+   begin
+      return Object.Ptr /= System.Null_Address;
+   end Is_Created;
+
    ------------------
    --  Set_Object  --
    ------------------
@@ -64,11 +74,12 @@ package body Gdk is
    -- Unchecked_Cast --
    --------------------
 
-   function Unchecked_Cast (From : in Root_Type'Class) return To is
-      T : To;
-   begin
-      Set_Object (T, Get_Object (From));
-      return T;
+   package body Unchecked_Cast is
+      function Convert (From : access Root_Type'Class) return To_Access is
+      begin
+         Set_Object (Returned, Get_Object (From));
+         return Returned'Access;
+      end Convert;
    end Unchecked_Cast;
 
 end Gdk;
