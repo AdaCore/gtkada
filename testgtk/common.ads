@@ -30,6 +30,7 @@
 with Gtk; use Gtk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Check_Button; use Gtk.Check_Button;
+with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Signal;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Widget; use Gtk.Widget;
@@ -55,6 +56,12 @@ package Common is
                                               Gtk_Window_Access);
    procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record;
                              Ptr : in Gtk_Window_Access);
+
+   type Gtk_Dialog_Access is access all Gtk_Dialog;
+   package Destroy_Dialog_Cb is new Signal.Callback (Gtk_Dialog_Record,
+                                                     Gtk_Dialog_Access);
+   procedure Destroy_Dialog (Win : access Gtk.Dialog.Gtk_Dialog_Record;
+                             Ptr : in Gtk_Dialog_Access);
 
    package ICS renames Interfaces.C.Strings;
    Book_Open_Xpm    : ICS.chars_ptr_array :=

@@ -29,10 +29,24 @@
 
 package body Common is
 
+   --------------------
+   -- Destroy_Window --
+   --------------------
+
    procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record;
                              Ptr : in Gtk_Window_Access) is
    begin
       Ptr.all := null;
    end Destroy_Window;
+
+   --------------------
+   -- Destroy_Dialog --
+   --------------------
+
+   procedure Destroy_Dialog (Win : access Gtk.Dialog.Gtk_Dialog_Record;
+                             Ptr : in Gtk_Dialog_Access) is
+   begin
+      Ptr.all := null;
+   end Destroy_Dialog;
 
 end Common;
