@@ -2977,9 +2977,6 @@ area).
 @section Introduction
 GtkAda now comes with a support for the GUI builder Glade (this is not
 the glade released with Gnat for distributed systems).
-Not all widgets are supported yet, but we eventually hope to have all
-of them. If you really need one, it is easy to add the two required
-functions @dots{} (and to send us patches...)
 
 We actually provide two versions: a dynamic one and a static one. In
 both cases, you first need to get and install glade (http://glade.pn.org).
@@ -3096,12 +3093,6 @@ an unsupported widget:
 @smallexample
 GtkAda-WARNING **: Unsupported widget GnomeCanvas (canvas1)
 @end smallexample
-
-Here is the list of widgets that are currently not supported by Gate/Dgate.
-
-@itemize @bullet
-@item Gtk_Radio_Menu_Item
-@end itemize
 
 @c --------------------------------------------------------------
 @node Bibliography
