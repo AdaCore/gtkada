@@ -29,7 +29,6 @@
 
 with Ada.Unchecked_Deallocation;
 with Interfaces.C;
-with System;
 
 package Glib is
 
@@ -129,37 +128,5 @@ package Glib is
    function Quark_Try_String (Id : in String) return GQuark;
    --  Returns the quark associated with the string, if it exists.
    --  If it does not exist, returns Unknown_Quark.
-
-   -------------------
-   --  Object_Type  --
-   -------------------
-
-   type Object_Type is private;
-   Null_Object_Type : constant Object_Type;
-   --  This type is basically the same as Gdk.Root_Type, except this is not
-   --  a tagged type, and thus it can not be extended. It is used as the
-   --  common ancestor for all the types that interface to C but that can
-   --  not be extended in Ada.
-
-   function Is_Created (Object : in Object_Type) return Boolean;
-   --  Returns True if the associated C object has been created.
-
-   --  The following services are for INTERNAL use only. They are not
-   --  declared inside the private part for visibility issues. Do NOT
-   --  use them outside of the binding.
-   function Get_Object (Object : in Object_Type) return System.Address;
-   pragma Inline (Get_Object);
-
-   procedure Set_Object (Object : in out Object_Type;
-                         Value  : in     System.Address);
-   pragma Inline (Set_Object);
-
-private
-
-   type Object_Type is record
-      Ptr : System.Address := System.Null_Address;
-   end record;
-
-   Null_Object_Type : constant Object_Type := (Ptr => System.Null_Address);
 
 end Glib;

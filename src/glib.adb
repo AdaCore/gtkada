@@ -31,37 +31,6 @@ package body Glib is
 
 
    ------------------
-   --  Get_Object  --
-   ------------------
-
-   function Get_Object (Object : in Object_Type) return System.Address is
-   begin
-      return Object.Ptr;
-   end Get_Object;
-
-
-   ----------------
-   -- Is_Created --
-   ----------------
-
-   function Is_Created (Object : in Object_Type) return Boolean is
-      use type System.Address;
-   begin
-      return Object.Ptr /= System.Null_Address;
-   end Is_Created;
-
-   ------------------
-   --  Set_Object  --
-   ------------------
-
-   procedure Set_Object (Object : in out Object_Type;
-                         Value  : in     System.Address) is
-   begin
-      Object.Ptr := Value;
-   end Set_Object;
-
-
-   ------------------
    --  To_Boolean  --
    ------------------
 
