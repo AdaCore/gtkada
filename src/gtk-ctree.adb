@@ -1148,7 +1148,7 @@ package body Gtk.CTree is
    ----------------
 
    procedure Set_Indent (Ctree  : access Gtk_Ctree_Record;
-                         Indent : in     Gint)
+                         Indent : in     Gint := 20)
    is
       procedure Internal (Ctree  : in System.Address;
                           Indent : in Gint);
@@ -1230,7 +1230,7 @@ package body Gtk.CTree is
    -----------------
 
    procedure Set_Spacing (Ctree   : access Gtk_Ctree_Record;
-                          Spacing : in     Gint)
+                          Spacing : in     Gint := 5)
    is
       procedure Internal (Ctree   : in System.Address;
                           Spacing : in Gint);

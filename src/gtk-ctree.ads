@@ -58,8 +58,10 @@ package Gtk.Ctree is
    type Gtk_Ctree is access all Gtk_Ctree_Record'Class;
 
    type Gtk_Ctree_Row is new Gtk.Clist.Gtk_Clist_Row;
+   --  Similar to Clist_Row, but for a Ctree.
 
    type Gtk_Ctree_Node is new Gdk.C_Proxy;
+   --  This type represents a node inside a Ctree.
    Null_Ctree_Node : constant Gtk_Ctree_Node := null;
 
    --  <doc_ignore>
@@ -149,35 +151,44 @@ package Gtk.Ctree is
    -- Tree, Node and Row basic manipulation --
    -------------------------------------------
 
-   function Get_Tree_Column (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
-                             return          Gint;
+   function Get_Tree_Column
+     (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class) return Gint;
+   --  Return the Tree_Column attribute of a given Node.
+   --  Tree_Column indicates in which column the tree will be displayed.
 
-   function Get_Node_List (Ctree : access Gtk_Ctree_Record)
-                          return         Node_List.Glist;
-   --   Extract the nodes with Node_List.Get_Gpointer
+   function Get_Node_List
+     (Ctree : access Gtk_Ctree_Record) return Node_List.Glist;
+   --   Return the list of nodes associated with a given Ctree.
+   --   Note: you need to extract the nodes with Node_List.Get_Gpointer.
 
-   function Get_Row_List (Ctree : access Gtk_Ctree_Record)
-                          return         Row_List.Glist;
+   function Get_Row_List
+     (Ctree : access Gtk_Ctree_Record) return Row_List.Glist;
 
-   function Get_Selection (Widget : access Gtk_Ctree_Record)
-                          return Node_List.Glist;
+   function Get_Selection
+     (Widget : access Gtk_Ctree_Record) return Node_List.Glist;
    --   Extract the nodes with Node_List.Get_Data
 
    function Node_Get_Row (Node : in Gtk_Ctree_Node) return Gtk_Ctree_Row;
+   --  Return the row of a given Node.
 
    function Row_Get_Children (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node;
+   --  Return the children node of a given Row.
 
    function Row_Get_Expanded (Row : in Gtk_Ctree_Row) return Boolean;
-   --  Expanded can also be retrieved via Get_Node_Info
-   --  This function is just a quick accessor
+   --  Return the expanded attribute of a given Row.
+   --  Note that Expanded can also be retrieved via Get_Node_Info,
+   --  this function is just a quick accessor.
 
    function Row_Get_Is_Leaf (Row : in Gtk_Ctree_Row) return Boolean;
-   --  Is_Leaf can also be retrieved via Get_Node_Info
-   --  This function is just a quick accessor
+   --  Return the leaf attribute of a given Row.
+   --  Note that Is_Leaf can also be retrieved via Get_Node_Info,
+   --  this function is just a quick accessor.
 
    function Row_Get_Parent (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node;
+   --  Return the parent node of a given Row.
 
    function Row_Get_Sibling (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node;
+   --  Return the sibling node of a given Row.
 
    function Is_Created (Node : in Gtk_Ctree_Node) return Boolean;
    --  Return True if Node is different from Null_Ctree_Node
@@ -485,16 +496,25 @@ package Gtk.Ctree is
    ------------------------------
 
    procedure Set_Indent (Ctree  : access Gtk_Ctree_Record;
-                         Indent : in     Gint);
+                         Indent : in     Gint := 20);
+   --  Change the indentation of the Ctree.
+   --  Each different level of a subtree is indented by a number of pixels.
+   --  By default, the indentation is 20 pixels, and can be changed using this
+   --  procedure.
 
-   function Get_Indent (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
-     return Gint;
+   function Get_Indent
+     (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class) return Gint;
+   --  Return the indentation of a Ctree.
 
    procedure Set_Spacing (Ctree   : access Gtk_Ctree_Record;
-                          Spacing : in     Gint);
+                          Spacing : in     Gint := 5);
+   --  Set the spacing between the tree's icon and the additional pixmap.
+   --  The additional pixmap indicates whether the subtree is opened or closed.
+   --  The default value is 5 pixels.
 
-   function Get_Spacing (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
-     return Gint;
+   function Get_Spacing
+     (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class) return Gint;
+   --  Return the spacing between the tree's icon and the additional pixmap.
 
    procedure Set_Show_Stub (Ctree     : access Gtk_Ctree_Record;
                             Show_Stub : in     Boolean);
@@ -504,15 +524,15 @@ package Gtk.Ctree is
    procedure Set_Line_Style (Ctree      : access Gtk_Ctree_Record;
                              Line_Style : in     Gtk_Ctree_Line_Style);
 
-   function Get_Line_Style (Ctree : access Gtk_Ctree_Record)
-                            return         Gtk_Ctree_Line_Style;
+   function Get_Line_Style
+     (Ctree : access Gtk_Ctree_Record) return Gtk_Ctree_Line_Style;
 
    procedure Set_Expander_Style
      (Ctree          : access Gtk_Ctree_Record;
       Expander_Style : in     Gtk_Ctree_Expander_Style);
 
-   function Get_Expander_Style (Ctree : access Gtk_Ctree_Record)
-                                return         Gtk_Ctree_Expander_Style;
+   function Get_Expander_Style
+     (Ctree : access Gtk_Ctree_Record) return Gtk_Ctree_Expander_Style;
 
    type Gtk_Ctree_Compare_Drag_Func is access
      function (Ctree        : in Gtk_Ctree;
@@ -530,9 +550,13 @@ package Gtk.Ctree is
 
    procedure Sort_Node (Ctree : access Gtk_Ctree_Record;
                         Node  : in     Gtk_Ctree_Node);
+   --  Sort the nodes of a given Ctree.
+   --  This procedure only sorts the first level of the tree.
 
    procedure Sort_Recursive (Ctree : access Gtk_Ctree_Record;
                              Node  : in     Gtk_Ctree_Node);
+   --  Sort the nodes of a given Ctree recursively.
+   --  This procedure sorts the whole tree and subtrees associated with Ctree.
 
    --------------------------
    -- Ctree_Gnode handling --
