@@ -44,24 +44,9 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
    if (event->button == 1)
      {
 
---- gtk+/gdk/win32/gdkevents-win32.c	2003/03/27 11:08:56	1.2
-+++ gtk+/gdk/win32/gdkevents-win32.c	2003/03/27 14:11:31
-@@ -2910,6 +2910,12 @@
- 	  _gdk_window_process_expose (window, update_region);
- 	  gdk_region_destroy (update_region);
- 	  return_val = FALSE;
-+
-+          /* Force a process_updates to refresh visible windows
-+           * when receiving a paint message. */
-+ 
-+          if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
-+            gdk_window_process_updates (window, FALSE);
-         }
-       DeleteObject (hrgn);
-       break;
---- gtk+/gdk/win32/gdkevents-win32.c	2003/04/13 09:25:27	1.3
-+++ gtk+/gdk/win32/gdkevents-win32.c	2003/04/13 09:49:57
-@@ -2823,6 +2823,31 @@
+--- gtk+/gdk/win32/gdkevents-win32.c.orig	2003-10-13 16:12:32.000000000 +0100
++++ gtk+/gdk/win32/gdkevents-win32.c	2003-10-13 16:16:11.000000000 +0100
+@@ -2712,6 +2712,31 @@
        *ret_valp = 1;
        break;
  
@@ -93,15 +78,30 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
      case WM_PAINT:
        hrgn = CreateRectRgn (0, 0, 0, 0);
        if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
---- gtk+/gdk/win32/Makefile.am	2002/11/25 10:58:36	1.1
-+++ gtk+/gdk/win32/Makefile.am	2002/11/25 10:59:18
-@@ -79,4 +79,4 @@
+@@ -2802,6 +2827,12 @@
+ 
+ 	  _gdk_window_process_expose (window, update_region);
+ 	  gdk_region_destroy (update_region);
++
++	  /* Force a process_updates to refresh visible windows
++	   * when receiving a paint message. */
++
++	  if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
++	    gdk_window_process_updates (window, FALSE);
+         }
+       DeleteObject (hrgn);
+       break;
+--- gtk+/gdk/win32/Makefile.am.orig	2003-01-05 21:06:04.000000000 +0100
++++ gtk+/gdk/win32/Makefile.am	2003-10-13 16:13:31.000000000 +0100
+@@ -80,7 +80,7 @@
  libgdkinclude_HEADERS =		\
  	gdkwin32.h
  
 -libgdk_win32_la_LIBADD = rc/gdk-win32res.lo
 +libgdk_win32_la_LIBADD =
-
+ 
+ ###########################################
+ # Hack to get gdkenumtypes.h built first
 --- pango/modules/basic/basic-win32.c.old	2003-03-14 11:36:44 +0100
 +++ pango/modules/basic/basic-win32.c	2003-03-14 11:37:20 +0100
 @@ -303,7 +303,6 @@
