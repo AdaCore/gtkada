@@ -37,7 +37,6 @@
 --  <c_version>1.2.7</c_version>
 
 with Glib;                use Glib;
-with Gdk;                 use Gdk;
 with System;
 with Glib.Glade;          use Glib.Glade, Glib.Glade.Glib_XML;
 with Ada.Text_IO;         use Ada.Text_IO;
@@ -48,6 +47,12 @@ pragma Warnings (Off, Ada.Text_IO);
 --  DGate, so we put the 'with' here.
 
 package Gtk is
+
+   type Root_Type is tagged private;
+   type Root_Type_Access is access all Root_Type'Class;
+   --  The base type of the hierarchy in GtkAda. It basically gives access
+   --  to an underlying C object. This is not a controlled type, for efficiency
+   --  reasons, and because gtk+ takes care of memory management on its own.
 
    function Major_Version return Guint;
    --  Return the major version number for Gtk+.
@@ -88,7 +93,25 @@ package Gtk is
    --  Name should be the C widget's name, such as GtkScrollbar or GtkButton,
    --  rather than the Ada name.
 
+   --  Package Unchecked_Cast:
+   --  This package has now been removed completly from GtkAda.
+   --  You can safely replace any call you had to it with a standard
+   --  Unchecked_Conversion.
+   --  This package had several disadvantages (it wasn't task-safe for
+   --  instance).
+
+   function Is_Created (Object : in Root_Type'Class) return Boolean;
+   --  Return True if the associated C object has been created, False if no
+   --  C object is associated with Object.
+   --  This is not the same as testing whether an access type (for instance
+   --  any of the widgets) is "null", since this relates to the underlying
+   --  C object.
+
 private
+
+   type Root_Type is tagged record
+      Ptr : System.Address := System.Null_Address;
+   end record;
 
    --  <doc_ignore>
 
@@ -129,7 +152,15 @@ private
    --  Stub is the expect type (it is used by the simple conversion
    --  function only).
 
+   function Get_Object (Object : access Root_Type'Class) return System.Address;
+   procedure Set_Object (Object : access Root_Type'Class;
+                         Value  : in     System.Address);
+   --  Access the C underlying pointer.
+
    --  </doc_ignore>
+
+   pragma Inline (Get_Object);
+   pragma Inline (Set_Object);
 
    pragma Import (C, Major_Version, "ada_gtk_major_version");
    pragma Import (C, Minor_Version, "ada_gtk_minor_version");

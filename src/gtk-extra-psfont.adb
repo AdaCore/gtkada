@@ -29,7 +29,6 @@
 -----------------------------------------------------------------------
 
 with Gdk.Font;
-with Gdk; use Gdk;
 with Interfaces.C.Strings;
 with System;
 

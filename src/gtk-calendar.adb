@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Widget; use Gtk.Widget;
 with System;

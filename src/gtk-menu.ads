@@ -97,7 +97,7 @@ package Gtk.Menu is
 
    procedure Reorder_Child
      (Menu     : access Gtk_Menu_Record;
-      Child    : in     Gtk.Widget.Gtk_Widget_Record'Class;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position : in     Gint);
    --  Move an existing menu_item within the menu.
    --  Its new position is given by Position, 0 being the first item in the
@@ -214,7 +214,7 @@ package Gtk.Menu is
 
    procedure Set_Accel_Group
       (Menu     : access Gtk_Menu_Record;
-       Accel    : access Accel_Group.Gtk_Accel_Group'Class);
+       Accel    : in Accel_Group.Gtk_Accel_Group);
    --  Set the Accel_Group that holds the global accelerators and key bindings
    --  for the menu.
 

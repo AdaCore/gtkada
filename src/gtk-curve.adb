@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Curve is

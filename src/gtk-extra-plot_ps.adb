@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk;                   use Gdk;
 with Gtk.Extra.Plot;        use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Layout; use Gtk.Extra.Plot_Layout;
 with System;

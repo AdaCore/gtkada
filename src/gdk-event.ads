@@ -43,7 +43,7 @@ package Gdk.Event is
    --  Definition of the types --
    ------------------------------
 
-   type Gdk_Event is new Root_Type with private;
+   type Gdk_Event is private;
    subtype Gdk_Event_Any is Gdk_Event;
    --  Change from GtkAda1.2.3: There is no longer a tagged type
    --  hierarchy, only one type.
@@ -383,10 +383,20 @@ package Gdk.Event is
    --  call this function only if the event was created through Allocate, not
    --  if it was created by GtkAda itself.
 
+   function From_Address (C : System.Address) return Gdk_Event;
+   --  Convert a C handler to the matching Event structure.
+
+   function To_Address (C : Gdk_Event) return System.Address;
+   --  Convert an event to the underlying C handler.
+
+   function Is_Created (E : Gdk_Event) return Boolean;
+   --  Return True if the underlying C event has been created.
+
 private
 
-   type Gdk_Event is new Root_Type with
+   type Gdk_Event is
       record
+         Ptr          : Gdk.C_Proxy;
          User_Created : Boolean := False;  --  True if allocated by the user
       end record;
 

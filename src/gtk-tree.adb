@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 with Gtk.Util; use Gtk.Util;

@@ -34,11 +34,8 @@ with Gtk.Object;
 
 package Gtk.Accel_Group is
 
-   type Gtk_Accel_Group is new Root_Type with private;
-   type Gtk_Accel_Group_Access is access all Gtk_Accel_Group'Class;
-
-   type Gtk_Accel_Entry is new Root_Type with private;
-   type Gtk_Accel_Entry_Access is access all Gtk_Accel_Entry'Class;
+   type Gtk_Accel_Group is new Gdk.C_Proxy;
+   type Gtk_Accel_Entry is new Gdk.C_Proxy;
 
    type Gtk_Accel_Flags is new Guint;
    Accel_Visible        : constant Gtk_Accel_Flags;
@@ -88,7 +85,7 @@ package Gtk.Accel_Group is
    function Get_Entry (Accel_Group : in Gtk_Accel_Group;
                        Accel_Key   : in Gdk.Types.Gdk_Key_Type;
                        Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type)
-                       return        Gtk_Accel_Entry'Class;
+                       return        Gtk_Accel_Entry;
 
    procedure Lock_Entry (Accel_Group : in Gtk_Accel_Group;
                          Accel_Key   : in Gdk.Types.Gdk_Key_Type;
@@ -166,9 +163,6 @@ package Gtk.Accel_Group is
 
 private
 
-   type Gtk_Accel_Group is new Root_Type with null record;
-   type Gtk_Accel_Entry is new Root_Type with null record;
-
    Accel_Visible        : constant Gtk_Accel_Flags := 2 ** 0;
    Accel_Signal_Visible : constant Gtk_Accel_Flags := 2 ** 1;
    Accel_Locked         : constant Gtk_Accel_Flags := 2 ** 2;
@@ -178,5 +172,7 @@ private
                   "gtk_accelerator_set_default_mod_mask");
    pragma Import (C, Accelerator_Get_Default_Mod_Mask,
                   "gtk_accelerator_get_default_mod_mask");
-
+   pragma Import (C, Get_Default, "gtk_accel_group_get_default");
+   pragma Import (C, Lock, "gtk_accel_group_lock");
+   pragma Import (C, Unlock, "gtk_accel_group_unlock");
 end Gtk.Accel_Group;

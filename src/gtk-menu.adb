@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk;            use Gdk;
 with Gtk.Menu_Item;  use Gtk.Menu_Item;
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
 with Gtk.Util;       use Gtk.Util;
@@ -86,12 +85,11 @@ package body Gtk.Menu is
 
    function Ensure_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
                                       return Accel_Group.Gtk_Accel_Group is
-      function Internal (Menu : in System.Address) return System.Address;
+      function Internal (Menu : in System.Address)
+                        return Accel_Group.Gtk_Accel_Group;
       pragma Import (C, Internal, "gtk_menu_ensure_uline_accel_group");
-      Result : Accel_Group.Gtk_Accel_Group;
    begin
-      Set_Object (Result, Internal (Get_Object (Menu)));
-      return Result;
+      return Internal (Get_Object (Menu));
    end Ensure_Uline_Accel_Group;
 
    -----------------------
@@ -100,12 +98,11 @@ package body Gtk.Menu is
 
    function Get_Accel_Group (Menu : access Gtk_Menu_Record)
                             return Accel_Group.Gtk_Accel_Group is
-      function Internal (Menu : in System.Address) return System.Address;
+      function Internal (Menu : in System.Address)
+                        return Accel_Group.Gtk_Accel_Group;
       pragma Import (C, Internal, "gtk_menu_get_accel_group");
-      Result : Accel_Group.Gtk_Accel_Group;
    begin
-      Set_Object (Result, Internal (Get_Object (Menu)));
-      return Result;
+      return Internal (Get_Object (Menu));
    end Get_Accel_Group;
 
    ----------------
@@ -157,12 +154,11 @@ package body Gtk.Menu is
 
    function Get_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
                                    return Accel_Group.Gtk_Accel_Group is
-      function Internal (Menu : in System.Address) return System.Address;
+      function Internal (Menu : in System.Address)
+                        return Accel_Group.Gtk_Accel_Group;
       pragma Import (C, Internal, "gtk_menu_get_uline_accel_group");
-      Result : Accel_Group.Gtk_Accel_Group;
    begin
-      Set_Object (Result, Internal (Get_Object (Menu)));
-      return Result;
+      return Internal (Get_Object (Menu));
    end Get_Uline_Accel_Group;
 
 
@@ -230,7 +226,7 @@ package body Gtk.Menu is
 
    procedure Reorder_Child
      (Menu     : access Gtk_Menu_Record;
-      Child    : in     Gtk.Widget.Gtk_Widget_Record'Class;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position : in     Gint) is
       procedure Internal (Menu     : in System.Address;
                           Child    : in System.Address;
@@ -257,12 +253,12 @@ package body Gtk.Menu is
 
    procedure Set_Accel_Group
       (Menu    : access Gtk_Menu_Record;
-       Accel   : access Gtk.Accel_Group.Gtk_Accel_Group'Class) is
+       Accel   : in Gtk.Accel_Group.Gtk_Accel_Group) is
       procedure Internal (Menu        : in System.Address;
-                          Accel_Group : in System.Address);
+                          Accel_Group : in Gtk.Accel_Group.Gtk_Accel_Group);
       pragma Import (C, Internal, "gtk_menu_set_accel_group");
    begin
-      Internal (Get_Object (Menu), Get_Object (Accel));
+      Internal (Get_Object (Menu), Accel);
    end Set_Accel_Group;
 
 

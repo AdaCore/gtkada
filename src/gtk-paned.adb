@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 

@@ -38,6 +38,7 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
+with Gdk;
 with Gtk.Object;
 with Gtk.Widget;
 with Gtk.Container;

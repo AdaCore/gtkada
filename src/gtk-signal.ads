@@ -92,7 +92,7 @@ package Gtk.Signal is
 
       type Data_Type (<>) is private;
 
-      type Cb_Type is new Gdk.Root_Type with private;
+      type Cb_Type is new Gdk.C_Proxy;
 
    package Two_Callback is
 
@@ -125,7 +125,7 @@ package Gtk.Signal is
 
       type Data_Type (<>) is private;
 
-      type Cb_Type is new Gdk.Root_Type with private;
+      type Cb_Type is new Gtk.Object.Gtk_Object_Record with private;
 
    package Two_Callback_Gtk is
       type Callback is access procedure
@@ -145,7 +145,7 @@ package Gtk.Signal is
       procedure Emit_By_Name
         (Object  : access Base_Type'Class;
          Name    : in String;
-         Cb_Data : in Cb_Type);
+         Cb_Data : access Cb_Type);
 
    end Two_Callback_Gtk;
 

@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk; use Gdk;
 with Gtk.Adjustment;
 with Interfaces.C.Strings;
 with System;

@@ -94,7 +94,7 @@ package body Gtk.Signal is
                          return          Guint;
       pragma Import (C, Internal, "gtk_signal_connect_full");
    begin
-      return Internal (Get_Object (Object.all),
+      return Internal (Get_Object (Object),
                        Name & ASCII.Nul,
                        System.Null_Address,
                        Marshaller,
@@ -214,7 +214,7 @@ package body Gtk.Signal is
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
          pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 0);
-         Internal (Get_Object (Object.all), Name & ASCII.Nul);
+         Internal (Get_Object (Object), Name & ASCII.Nul);
       end Emit_By_Name;
 
    end Callback;
@@ -276,13 +276,12 @@ package body Gtk.Signal is
       is
          function Internal (Params : in GtkArgArray;
                             Num    : in Guint)
-                            return System.Address;
+                            return Gdk.C_Proxy;
          pragma Import (C, Internal, "ada_gtkarg_value_object");
          use type System.Address;
          Stub    : Base_Type;
          Data    : Data_Type_Access := Convert (User_Data);
-         Widget2 : Cb_Type;
-         Tmp     : System.Address := Internal (Params, 0);
+         Tmp     : Gdk.C_Proxy := Internal (Params, 0);
       begin
          if Nparams = 0 then
             Ada.Text_IO.Put_Line
@@ -290,9 +289,8 @@ package body Gtk.Signal is
                "Wrong number of arguments in Two_Callback");
          end if;
          if Data.Func /= null then
-            Gdk.Set_Object (Widget2, Tmp);
             Data.Func (Acc (Get_User_Data (Object, Stub)),
-                       Widget2, Data.Data.all);
+                       Cb_Type (Tmp), Data.Data.all);
          end if;
       end Marshaller;
 
@@ -335,14 +333,14 @@ package body Gtk.Signal is
       is
          procedure Internal (Object  : in System.Address;
                              Name    : in String;
-                             Cb_Data : in System.Address);
+                             Cb_Data : in Cb_Type);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
          pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 1);
-         Internal (Get_Object (Object.all), Name & ASCII.Nul,
-                   Get_Object (Cb_Data));
+         Internal (Get_Object (Object), Name & ASCII.Nul,
+                   Cb_Data);
       end Emit_By_Name;
 
    end Two_Callback;
@@ -465,7 +463,7 @@ package body Gtk.Signal is
       procedure Emit_By_Name
         (Object  : access Base_Type'Class;
          Name    : in String;
-         Cb_Data : in Cb_Type)
+         Cb_Data : access Cb_Type)
       is
          procedure Internal (Object  : in System.Address;
                              Name    : in String;
@@ -475,7 +473,7 @@ package body Gtk.Signal is
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
          pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 1);
-         Internal (Get_Object (Object.all), Name & ASCII.Nul,
+         Internal (Get_Object (Object), Name & ASCII.Nul,
                    Get_Object (Cb_Data));
       end Emit_By_Name;
 
@@ -589,7 +587,7 @@ package body Gtk.Signal is
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
          pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 0);
-         Internal (Get_Object (Object.all), Name & ASCII.Nul);
+         Internal (Get_Object (Object), Name & ASCII.Nul);
       end Emit_By_Name;
 
    end Record_Callback;
@@ -669,8 +667,11 @@ package body Gtk.Signal is
          end To_String;
 
          Data    : Data_Type_Access;
-         Widget  : aliased Gtk.Tips_Query.Gtk_Tips_Query_Record;
-         Widget2 : aliased Gtk.Widget.Gtk_Widget_Record;
+         Widget_R  : aliased Gtk.Tips_Query.Gtk_Tips_Query_Record;
+         Widget    : Gtk.Tips_Query.Gtk_Tips_Query
+           := Widget_R'Unchecked_Access;
+         Widget2_R : aliased Gtk.Widget.Gtk_Widget_Record;
+         Widget2   : Gtk.Widget.Gtk_Widget := Widget2_R'Unchecked_Access;
       begin
          if Nparams < 3 then
             Ada.Text_IO.Put_Line
@@ -682,7 +683,7 @@ package body Gtk.Signal is
          if Data.Func /= null then
             Set_Object (Widget, Object);
             Set_Object (Widget2, Internal (Params, 0));
-            Data.Func (Widget'Access, Widget2'Access,
+            Data.Func (Widget_R'Access, Widget2,
                        To_String (Internal (Params, 1)),
                        To_String (Internal (Params, 2)),
                        Data.Data);
@@ -793,7 +794,7 @@ package body Gtk.Signal is
          --  for Emit_By_Name, we want to make sure that we pass at least
          --  as many arguments to the gtk handler as are expected.
          pragma Assert (Count_Arguments (Get_Type (Object), Name) <= 0);
-         Internal (Get_Object (Object.all), Name & ASCII.Nul);
+         Internal (Get_Object (Object), Name & ASCII.Nul);
       end Emit_By_Name;
 
    end Void_Callback;
@@ -898,7 +899,7 @@ package body Gtk.Signal is
       pragma Import (C, Internal, "gtk_signal_disconnect");
 
    begin
-      Internal (Obj => Get_Object (Object.all),
+      Internal (Obj => Get_Object (Object),
                 Id  => Handler_Id);
    end Disconnect;
 
@@ -914,7 +915,7 @@ package body Gtk.Signal is
                           Name   : in String);
       pragma Import (C, Internal, "gtk_signal_emit_stop_by_name");
    begin
-      Internal (Get_Object (Object.all), Name & ASCII.Nul);
+      Internal (Get_Object (Object), Name & ASCII.Nul);
    end Emit_Stop_By_Name;
 
    -------------------
@@ -928,7 +929,7 @@ package body Gtk.Signal is
       procedure Internal (Obj : in System.Address; Id  : in Guint);
       pragma Import (C, Internal, "gtk_signal_handler_block");
    begin
-      Internal (Obj => Get_Object (Obj.all), Id  => Handler_Id);
+      Internal (Obj => Get_Object (Obj), Id  => Handler_Id);
    end Handler_Block;
 
    ----------------------
@@ -940,7 +941,7 @@ package body Gtk.Signal is
       procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "gtk_signal_handlers_destroy");
    begin
-      Internal (Obj => Get_Object (Obj.all));
+      Internal (Obj => Get_Object (Obj));
    end Handlers_Destroy;
 
    ---------------------
@@ -954,7 +955,7 @@ package body Gtk.Signal is
       procedure Internal (Obj : in System.Address; Id  : in Guint);
       pragma Import (C, Internal, "gtk_signal_handler_unblock");
    begin
-      Internal (Obj => Get_Object (Obj.all), Id  => Handler_Id);
+      Internal (Obj => Get_Object (Obj), Id  => Handler_Id);
    end Handler_Unblock;
 
 end Gtk.Signal;

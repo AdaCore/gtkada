@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
 with Interfaces.C.Strings;
 
 package body Gtk.Tooltips is

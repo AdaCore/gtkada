@@ -150,6 +150,36 @@ package body Gtk is
       return Internal (Name & ASCII.Nul);
    end Type_From_Name;
 
+   ------------------
+   --  Get_Object  --
+   ------------------
+
+   function Get_Object (Object : access Root_Type'Class) return System.Address
+   is
+   begin
+      return Object.Ptr;
+   end Get_Object;
+
+   ----------------
+   -- Is_Created --
+   ----------------
+
+   function Is_Created (Object : in Root_Type'Class) return Boolean is
+      use type System.Address;
+   begin
+      return Object.Ptr /= System.Null_Address;
+   end Is_Created;
+
+   ------------------
+   --  Set_Object  --
+   ------------------
+
+   procedure Set_Object (Object : access Root_Type'Class;
+                         Value  : in     System.Address) is
+   begin
+      Object.Ptr := Value;
+   end Set_Object;
+
 begin
    Type_Conversion_Function := Simple_Conversion'Access;
 end Gtk;

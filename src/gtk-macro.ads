@@ -17,7 +17,7 @@ private
    type Macro_Item (Widget_Name_Length : Natural) is abstract tagged
       record
          Widget_Name   : String (1 .. Widget_Name_Length);
-         Event_Type    : Types.Gdk_Event_Type;
+         Event_Type    : Gdk.Types.Gdk_Event_Type;
          Next          : Macro_Item_Access;
          Widget_Depth  : Natural := 0;
          X             : Gint;

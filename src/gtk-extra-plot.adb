@@ -31,7 +31,6 @@ with Gdk.Color;
 with Gdk.Drawable;
 with Gdk.GC;
 with Gdk.Rectangle;
-with Gdk; use Gdk;
 with Gtk.Enums;
 with Gtk.Widget;
 with System;

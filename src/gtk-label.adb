@@ -29,7 +29,6 @@
 
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
-with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Notebook; use Gtk.Notebook;

@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk; use Gdk;
 with System;
 
 package body Gtk.Extra.Font_Combo is

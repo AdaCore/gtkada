@@ -31,7 +31,6 @@ with Interfaces.C.Strings;
 with Unchecked_Deallocation;
 with Unchecked_Conversion;
 with System;
-with Gdk; use Gdk;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -47,7 +46,7 @@ package body Gtk.Main is
       procedure Internal (Event : System.Address);
       pragma Import (C, Internal, "gtk_main_do_event");
    begin
-      Internal (Get_Object (Event));
+      Internal (Gdk.Event.To_Address (Event));
    end Do_Event;
 
    --------------------
@@ -235,7 +234,7 @@ package body Gtk.Main is
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
       return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Event)), Stub));
+        (Get_User_Data (Internal (Gdk.Event.To_Address (Event)), Stub));
    end Get_Event_Widget;
 
    --------------

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Window; use Gtk.Window;
@@ -143,15 +142,15 @@ package body Gtk.Toolbar is
       if Text'Length = 0 then
          TA := System.Null_Address;
       end if;
- 
+
       if Tooltip_Text'Length = 0 then
          TTA := System.Null_Address;
       end if;
- 
+
       if Tooltip_Private_Text'Length = 0 then
          TPTA := System.Null_Address;
       end if;
- 
+
       if Icon = null then
          I := System.Null_Address;
       else
@@ -201,7 +200,7 @@ package body Gtk.Toolbar is
       if Tooltip_Text'Length = 0 then
          TTA := System.Null_Address;
       end if;
- 
+
       if Tooltip_Private_Text'Length = 0 then
          TPTA := System.Null_Address;
       end if;
@@ -747,7 +746,7 @@ package body Gtk.Toolbar is
       while P /= null loop
          if P.Tag.all = "widget" then
             S := Get_Field (P, "class");
- 
+
             if S.all = "GtkButton" or else S.all = "GtkToggleButton"
               or else S.all = "GtkRadioButton"
             then

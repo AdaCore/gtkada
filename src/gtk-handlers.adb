@@ -94,7 +94,7 @@ package body Gtk.Handlers is
                          return Handler_Id;
       pragma Import (C, Internal, "gtk_signal_connect_full");
    begin
-      return Internal (Get_Object (Object.all),
+      return Internal (Get_Object (Object),
                        Name & ASCII.Nul,
                        System.Null_Address,
                        Marshaller,
@@ -1075,7 +1075,7 @@ package body Gtk.Handlers is
       pragma Import (C, Internal, "gtk_signal_disconnect");
 
    begin
-      Internal (Obj => Get_Object (Object.all),
+      Internal (Obj => Get_Object (Object),
                 Id  => Id);
    end Disconnect;
 
@@ -1091,7 +1091,7 @@ package body Gtk.Handlers is
                           Name   : in String);
       pragma Import (C, Internal, "gtk_signal_emit_stop_by_name");
    begin
-      Internal (Get_Object (Object.all), Name & ASCII.Nul);
+      Internal (Get_Object (Object), Name & ASCII.Nul);
    end Emit_Stop_By_Name;
 
    -------------------
@@ -1105,7 +1105,7 @@ package body Gtk.Handlers is
       procedure Internal (Obj : in System.Address; Id : in Handler_Id);
       pragma Import (C, Internal, "gtk_signal_handler_block");
    begin
-      Internal (Obj => Get_Object (Obj.all), Id  => Id);
+      Internal (Obj => Get_Object (Obj), Id  => Id);
    end Handler_Block;
 
    ----------------------
@@ -1117,7 +1117,7 @@ package body Gtk.Handlers is
       procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "gtk_signal_handlers_destroy");
    begin
-      Internal (Obj => Get_Object (Obj.all));
+      Internal (Obj => Get_Object (Obj));
    end Handlers_Destroy;
 
    ---------------------
@@ -1131,7 +1131,7 @@ package body Gtk.Handlers is
       procedure Internal (Obj : in System.Address; Id : in Handler_Id);
       pragma Import (C, Internal, "gtk_signal_handler_unblock");
    begin
-      Internal (Obj => Get_Object (Obj.all), Id  => Id);
+      Internal (Obj => Get_Object (Obj), Id  => Id);
    end Handler_Unblock;
 
 end Gtk.Handlers;

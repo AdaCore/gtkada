@@ -94,13 +94,12 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gdk;
 with System;
 with Gtkada.Types;
 
 package Gtk.Object is
 
-   type Gtk_Object_Record is new Gdk.Root_Type with private;
+   type Gtk_Object_Record is new Gtk.Root_Type with private;
    type Gtk_Object is access all Gtk_Object_Record'Class;
 
    procedure Ref (Object : access Gtk_Object_Record);
@@ -315,7 +314,7 @@ package Gtk.Object is
    --  </signals>
 
 private
-   type Gtk_Object_Record is new Gdk.Root_Type with null record;
+   type Gtk_Object_Record is new Gtk.Root_Type with null record;
 
    pragma Inline (Destroyed_Is_Set);
    pragma Inline (Floating_Is_Set);

@@ -42,6 +42,7 @@ with Gtk.Object;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Widget;
+with Unchecked_Conversion;
 
 package Gtk.Notebook is
 
@@ -49,7 +50,7 @@ package Gtk.Notebook is
      with private;
    type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
 
-   type Gtk_Notebook_Page is new Root_Type with null record;
+   type Gtk_Notebook_Page is new Gdk.C_Proxy;
 
    ---------------------------------------------
    -- Creating a notebook and inserting pages --
@@ -348,8 +349,10 @@ package Gtk.Notebook is
    -------------------
 
    --  <doc_ignore>
-   function Convert (W : in Gtk_Notebook_Page) return System.Address;
-   function Convert (W : System.Address) return Gtk_Notebook_Page;
+   function Convert is new Unchecked_Conversion
+     (Gtk_Notebook_Page, System.Address);
+   function Convert is new Unchecked_Conversion
+     (System.Address, Gtk_Notebook_Page);
    package Page_List is new Glib.Glist.Generic_List (Gtk_Notebook_Page);
    --  </doc_ignore>
 

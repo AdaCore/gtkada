@@ -79,8 +79,6 @@ package Gtk.Arguments is
      return Gtk.Notebook.Gtk_Notebook_Page;
    function To_Address (Args : Gtk_Args; Num : Positive) return System.Address;
    function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy;
-   function To_Root_Type (Args : Gtk_Args; Num : Positive)
-     return Gdk.Root_Type_Access;
    function To_Object (Args : Gtk_Args; Num : Positive)
      return Gtk.Object.Gtk_Object;
    --  This function can return null, if the C object was not created.
@@ -92,19 +90,20 @@ package Gtk.Arguments is
    function To_Gint          (C : System.Address) return Gint;
    function To_Guint         (C : System.Address) return Guint;
    function To_Boolean       (C : System.Address) return Boolean;
-   function To_Event         (C : System.Address) return Gdk.Event.Gdk_Event;
+   function To_Event         (C : System.Address) return Gdk.Event.Gdk_Event
+                             renames Gdk.Event.From_Address;
    function To_String        (C : System.Address) return String;
    function To_Notebook_Page (C : System.Address)
      return Gtk.Notebook.Gtk_Notebook_Page;
    function To_Object        (C : System.Address) return Gtk.Object.Gtk_Object;
    function To_C_Proxy       (C : System.Address) return Gdk.C_Proxy;
-   function To_Root_Type     (C : System.Address) return Gdk.Root_Type_Access;
 
    ----------------------------------
    --  Reverse conversion functions
    ----------------------------------
 
-   function To_Address       (E : Gdk.Event.Gdk_Event) return System.Address;
+   function To_Address       (E : Gdk.Event.Gdk_Event) return System.Address
+                             renames Gdk.Event.To_Address;
 
 private
    type Gtk_Args is record

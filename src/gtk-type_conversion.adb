@@ -138,8 +138,10 @@ package body Gtk.Type_Conversion is
    -- Full_Conversion --
    ---------------------
 
-   function Full_Conversion (Obj  : System.Address; Stub : Root_Type'Class)
-                            return Root_Type_Access is
+   function Full_Conversion (Obj  : System.Address;
+                             Stub : Root_Type'Class)
+                            return Root_Type_Access
+   is
       function Get_Type (Obj : System.Address) return Gtk_Type;
       pragma Import (C, Get_Type, "ada_object_get_type");
 

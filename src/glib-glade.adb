@@ -999,7 +999,7 @@ package body Glib.Glade is
                              or else Kind.all = "Gtk_Accel_Group_Access"
                              or else Kind.all = "Gtk_Style_Access"
                            then
-                              Put (File, Kind.all & " (To_Root_Type");
+                              Put (File, Kind.all & " (To_Object");
                            else
                               Put (File, Kind.all & "'Val (To_Gint");
                            end if;

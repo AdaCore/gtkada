@@ -62,13 +62,6 @@ package body Gdk.Event is
    --    keep a copy of the parameters), it is possible to free the memory
    --    in the same subprogram where the event was created.
    --
-   --  The policy in GtkAda is that the user shouldn't have to do any memory
-   --  management. We thus tried to use controlled types for events. But this
-   --  did not work out, since a Gdk_Event must inherit from Root_Type. Having
-   --  an internal controlled type field that automatically pointed back to the
-   --  event did not work as well, since the field has to be limited and the
-   --  event could not be private.
-
    --  Event types:
    --  There are two possible way to implement the hierarchives of events
    --  (distinguish from one type to the other):
@@ -123,10 +116,10 @@ package body Gdk.Event is
    --------------------
 
    function Get_Event_Type (Event : in Gdk_Event) return Gdk_Event_Type is
-      function Internal (Event : in System.Address) return Gdk_Event_Type;
+      function Internal (Event : in C_Proxy) return Gdk_Event_Type;
       pragma Import (C, Internal, "ada_gdk_event_get_type");
    begin
-      return Internal (Get_Object (Event));
+      return Internal (Event.Ptr);
    end Get_Event_Type;
 
    --------------------
@@ -134,10 +127,10 @@ package body Gdk.Event is
    --------------------
 
    function Get_Send_Event (Event : in Gdk_Event) return Boolean is
-      function Internal (Event : in System.Address) return Gint8;
+      function Internal (Event : in Gdk.C_Proxy) return Gint8;
       pragma Import (C, Internal, "ada_gdk_event_get_send_event");
    begin
-      return To_Boolean (Internal (Get_Object (Event)));
+      return To_Boolean (Internal (Event.Ptr));
    end Get_Send_Event;
 
    ----------------
@@ -145,10 +138,10 @@ package body Gdk.Event is
    ----------------
 
    function Get_Window (Event  : in Gdk_Event) return Gdk_Window is
-      function Internal (Event : in System.Address) return Gdk_Window;
+      function Internal (Event : in Gdk.C_Proxy) return Gdk_Window;
       pragma Import (C, Internal, "ada_gdk_event_get_window");
    begin
-      return Internal (Get_Object (Event));
+      return Internal (Event.Ptr);
    end Get_Window;
 
    --------------
@@ -156,10 +149,10 @@ package body Gdk.Event is
    --------------
 
    function Get_Time (Event : in Gdk_Event) return Guint32 is
-      function Internal (Event : System.Address) return Guint32;
+      function Internal (Event : Gdk.C_Proxy) return Guint32;
       pragma Import (C, Internal, "gdk_event_get_time");
    begin
-      return Internal (Get_Object (Event));
+      return Internal (Event.Ptr);
    end Get_Time;
 
    -----------
@@ -167,9 +160,9 @@ package body Gdk.Event is
    -----------
 
    function Get_X (Event : in Gdk_Event) return Gdouble is
-      function Internal (Event : in System.Address) return Gdouble;
+      function Internal (Event : in Gdk.C_Proxy) return Gdouble;
       pragma Import (C, Internal, "ada_gdk_event_get_x");
-      X : constant Gdouble := Internal (Get_Object (Event));
+      X : constant Gdouble := Internal (Event.Ptr);
    begin
       if X = Invalid_Gdouble_Value then
          raise Invalid_Field;
@@ -182,9 +175,9 @@ package body Gdk.Event is
    -----------
 
    function Get_Y (Event : in Gdk_Event) return Gdouble is
-      function Internal (Event : in System.Address) return Gdouble;
+      function Internal (Event : in Gdk.C_Proxy) return Gdouble;
       pragma Import (C, Internal, "ada_gdk_event_get_y");
-      Y : constant Gdouble := Internal (Get_Object (Event));
+      Y : constant Gdouble := Internal (Event.Ptr);
    begin
       if Y = Invalid_Gdouble_Value then
          raise Invalid_Field;
@@ -197,9 +190,9 @@ package body Gdk.Event is
    ---------------
 
    function Get_Width (Event : in Gdk_Event) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
+      function Internal (Event : in Gdk.C_Proxy) return Gint16;
       pragma Import (C, Internal, "ada_gdk_event_get_width");
-      Width : constant Gint16 := Internal (Get_Object (Event));
+      Width : constant Gint16 := Internal (Event.Ptr);
    begin
       if Width = Invalid_Gint16_Value then
          raise Invalid_Field;
@@ -212,9 +205,9 @@ package body Gdk.Event is
    ----------------
 
    function Get_Height (Event : in Gdk_Event) return Gint16 is
-      function Internal (Event : in System.Address) return Gint16;
+      function Internal (Event : in Gdk.C_Proxy) return Gint16;
       pragma Import (C, Internal, "ada_gdk_event_get_height");
-      Height : constant Gint16 := Internal (Get_Object (Event));
+      Height : constant Gint16 := Internal (Event.Ptr);
    begin
       if Height = Invalid_Gint16_Value then
          raise Invalid_Field;
@@ -227,9 +220,9 @@ package body Gdk.Event is
    ----------------
 
    function Get_X_Root (Event : in Gdk_Event) return Gdouble is
-      function Internal (Event : in System.Address) return Gdouble;
+      function Internal (Event : in Gdk.C_Proxy) return Gdouble;
       pragma Import (C, Internal, "ada_gdk_event_get_x_root");
-      X : constant Gdouble := Internal (Get_Object (Event));
+      X : constant Gdouble := Internal (Event.Ptr);
    begin
       if X = Invalid_Gdouble_Value then
          raise Invalid_Field;
@@ -242,9 +235,9 @@ package body Gdk.Event is
    ----------------
 
    function Get_Y_Root (Event : in Gdk_Event) return Gdouble is
-      function Internal (Event : in System.Address) return Gdouble;
+      function Internal (Event : in Gdk.C_Proxy) return Gdouble;
       pragma Import (C, Internal, "ada_gdk_event_get_y_root");
-      Y : constant Gdouble := Internal (Get_Object (Event));
+      Y : constant Gdouble := Internal (Event.Ptr);
    begin
       if Y = Invalid_Gdouble_Value then
          raise Invalid_Field;
@@ -257,9 +250,9 @@ package body Gdk.Event is
    ----------------
 
    function Get_Button (Event : in Gdk_Event) return Guint is
-      function Internal (Event : in System.Address) return Guint;
+      function Internal (Event : in Gdk.C_Proxy) return Guint;
       pragma Import (C, Internal, "ada_gdk_event_get_button");
-      Button : constant Guint := Internal (Get_Object (Event));
+      Button : constant Guint := Internal (Event.Ptr);
    begin
       if Button = Invalid_Guint_Value then
          raise Invalid_Field;
@@ -272,9 +265,9 @@ package body Gdk.Event is
    ---------------
 
    function Get_State (Event : in Gdk_Event) return Gdk_Modifier_Type is
-      function Internal (Event : in System.Address) return Guint;
+      function Internal (Event : in Gdk.C_Proxy) return Guint;
       pragma Import (C, Internal, "ada_gdk_event_get_state");
-      State : constant Guint := Internal (Get_Object (Event));
+      State : constant Guint := Internal (Event.Ptr);
    begin
       if State = Invalid_Guint_Value then
          raise Invalid_Field;
@@ -287,9 +280,9 @@ package body Gdk.Event is
    -------------------
 
    function Get_Subwindow (Event : in Gdk_Event) return Gdk_Window is
-      function Internal (Event : in System.Address) return Gdk_Window;
+      function Internal (Event : in Gdk.C_Proxy) return Gdk_Window;
       pragma Import (C, Internal, "ada_gdk_event_get_subwindow");
-      Addr : constant Gdk_Window := Internal (Get_Object (Event));
+      Addr : constant Gdk_Window := Internal (Event.Ptr);
    begin
       if Addr = Null_Window then
          raise Invalid_Field;
@@ -302,9 +295,9 @@ package body Gdk.Event is
    --------------
 
    function Get_Mode (Event : in Gdk_Event) return Gdk_Crossing_Mode is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_mode");
-      Mode : constant Gint := Internal (Get_Object (Event));
+      Mode : constant Gint := Internal (Event.Ptr);
    begin
       if Mode = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -317,9 +310,9 @@ package body Gdk.Event is
    ----------------
 
    function Get_Detail (Event : in Gdk_Event) return Gdk_Notify_Type is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_detail");
-      Detail : constant Gint := Internal (Get_Object (Event));
+      Detail : constant Gint := Internal (Event.Ptr);
    begin
       if Detail = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -332,9 +325,9 @@ package body Gdk.Event is
    ---------------
 
    function Get_Focus (Event : in Gdk_Event) return Boolean is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_focus");
-      Focus : constant Gint := Internal (Get_Object (Event));
+      Focus : constant Gint := Internal (Event.Ptr);
    begin
       if Focus = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -347,9 +340,9 @@ package body Gdk.Event is
    ------------------
 
    function Get_Pressure (Event : in Gdk_Event) return Gdouble is
-      function Internal (Event : in System.Address) return Gdouble;
+      function Internal (Event : in Gdk.C_Proxy) return Gdouble;
       pragma Import (C, Internal, "ada_gdk_event_get_pressure");
-      Pressure : constant Gdouble := Internal (Get_Object (Event));
+      Pressure : constant Gdouble := Internal (Event.Ptr);
    begin
       if Pressure = Invalid_Gdouble_Value then
          raise Invalid_Field;
@@ -362,9 +355,9 @@ package body Gdk.Event is
    ---------------
 
    function Get_Xtilt (Event : in Gdk_Event) return Gdouble is
-      function Internal (Event : in System.Address) return Gdouble;
+      function Internal (Event : in Gdk.C_Proxy) return Gdouble;
       pragma Import (C, Internal, "ada_gdk_event_get_xtilt");
-      Xtilt : constant Gdouble := Internal (Get_Object (Event));
+      Xtilt : constant Gdouble := Internal (Event.Ptr);
    begin
       if Xtilt = Invalid_Gdouble_Value then
          raise Invalid_Field;
@@ -377,9 +370,9 @@ package body Gdk.Event is
    ---------------
 
    function Get_Ytilt (Event : in Gdk_Event) return Gdouble is
-      function Internal (Event : in System.Address) return Gdouble;
+      function Internal (Event : in Gdk.C_Proxy) return Gdouble;
       pragma Import (C, Internal, "ada_gdk_event_get_ytilt");
-      Ytilt : constant Gdouble := Internal (Get_Object (Event));
+      Ytilt : constant Gdouble := Internal (Event.Ptr);
    begin
       if Ytilt = Invalid_Gdouble_Value then
          raise Invalid_Field;
@@ -392,9 +385,9 @@ package body Gdk.Event is
    ----------------
 
    function Get_Source (Event : in Gdk_Event) return Gdk_Input_Source is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_source");
-      Source : constant Gint := Internal (Get_Object (Event));
+      Source : constant Gint := Internal (Event.Ptr);
    begin
       if Source = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -407,9 +400,9 @@ package body Gdk.Event is
    -------------------
 
    function Get_Device_Id (Event : in Gdk_Event) return Gdk_Device_Id is
-      function Internal (Event : in System.Address) return Guint32;
+      function Internal (Event : in Gdk.C_Proxy) return Guint32;
       pragma Import (C, Internal, "ada_gdk_event_get_device_id");
-      Device : constant Guint32 := Internal (Get_Object (Event));
+      Device : constant Guint32 := Internal (Event.Ptr);
    begin
       if Device = Invalid_Guint32_Value then
          raise Invalid_Field;
@@ -422,11 +415,11 @@ package body Gdk.Event is
    --------------
 
    function Get_Area (Event : in Gdk_Event) return Rectangle.Gdk_Rectangle is
-      procedure Internal (Event : System.Address; Area : System.Address);
+      procedure Internal (Event : Gdk.C_Proxy; Area : System.Address);
       pragma Import (C, Internal, "ada_gdk_event_get_area");
       Rec : aliased Rectangle.Gdk_Rectangle;
    begin
-      Internal (Get_Object (Event), Rec'Address);
+      Internal (Event.Ptr, Rec'Address);
       if Rec.Width = Invalid_Guint16_Value then
          raise Invalid_Field;
       end if;
@@ -438,9 +431,9 @@ package body Gdk.Event is
    ---------------
 
    function Get_Count (Event : in Gdk_Event) return Gint is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_count");
-      Count : constant Gint := Internal (Get_Object (Event));
+      Count : constant Gint := Internal (Event.Ptr);
    begin
       if Count = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -453,9 +446,9 @@ package body Gdk.Event is
    ------------
 
    function Get_In (Event : in Gdk_Event) return Boolean is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_in");
-      Value : constant Gint := Internal (Get_Object (Event));
+      Value : constant Gint := Internal (Event.Ptr);
    begin
       if Value = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -468,9 +461,9 @@ package body Gdk.Event is
    -----------------
 
    function Get_Is_Hint (Event : in Gdk_Event) return Boolean is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_is_hint");
-      Hint : constant Gint := Internal (Get_Object (Event));
+      Hint : constant Gint := Internal (Event.Ptr);
    begin
       if Hint = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -483,9 +476,9 @@ package body Gdk.Event is
    -----------------
 
    function Get_Key_Val (Event : in Gdk_Event) return Gdk_Key_Type is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_key_val");
-      Key : constant Gint := Internal (Get_Object (Event));
+      Key : constant Gint := Internal (Event.Ptr);
    begin
       if Key = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -498,12 +491,12 @@ package body Gdk.Event is
    ----------------
 
    function Get_String  (Event : in Gdk_Event) return String is
-      function Internal (Event : in System.Address)
+      function Internal (Event : in Gdk.C_Proxy)
                          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gdk_event_get_string");
       use type Interfaces.C.Strings.chars_ptr;
       Str : constant Interfaces.C.Strings.chars_ptr
-        := Internal (Get_Object (Event));
+        := Internal (Event.Ptr);
    begin
       if Str = Interfaces.C.Strings.Null_Ptr then
          raise Invalid_Field;
@@ -516,9 +509,9 @@ package body Gdk.Event is
    --------------
 
    function Get_Atom (Event : in Gdk_Event) return Gdk_Atom is
-      function Internal (Event : in System.Address) return Gulong;
+      function Internal (Event : in Gdk.C_Proxy) return Gulong;
       pragma Import (C, Internal, "ada_gdk_event_get_atom");
-      Atom : constant Gulong := Internal (Get_Object (Event));
+      Atom : constant Gulong := Internal (Event.Ptr);
    begin
       if Atom = Invalid_Gulong_Value then
          raise Invalid_Field;
@@ -531,9 +524,9 @@ package body Gdk.Event is
    ------------------------
 
    function Get_Property_State (Event : in Gdk_Event) return Guint is
-      function Internal (Event : System.Address) return Guint;
+      function Internal (Event : Gdk.C_Proxy) return Guint;
       pragma Import (C, Internal, "ada_gdk_event_get_property_state");
-      State : constant Guint := Internal (Get_Object (Event));
+      State : constant Guint := Internal (Event.Ptr);
    begin
       if State = Invalid_Guint_Value then
          raise Invalid_Field;
@@ -548,9 +541,9 @@ package body Gdk.Event is
    function Get_Visibility_State (Event : in Gdk_Event)
                                  return Gdk_Visibility_State
    is
-      function Internal (Event : in System.Address) return Gint;
+      function Internal (Event : in Gdk.C_Proxy) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_visibility_state");
-      State : constant Gint := Internal (Get_Object (Event));
+      State : constant Gint := Internal (Event.Ptr);
    begin
       if State = Invalid_Gint_Value then
          raise Invalid_Field;
@@ -563,9 +556,9 @@ package body Gdk.Event is
    -------------------
 
    function Get_Selection (Event : in Gdk_Event) return Gdk_Atom is
-      function Internal (Event : in System.Address) return Gulong;
+      function Internal (Event : in Gdk.C_Proxy) return Gulong;
       pragma Import (C, Internal, "ada_gdk_event_get_selection");
-      Selection : constant Gulong := Internal (Get_Object (Event));
+      Selection : constant Gulong := Internal (Event.Ptr);
    begin
       if Selection = Invalid_Gulong_Value then
          raise Invalid_Field;
@@ -578,9 +571,9 @@ package body Gdk.Event is
    ----------------
 
    function Get_Target (Event : in Gdk_Event) return Gdk_Atom is
-      function Internal (Event : in System.Address) return Gulong;
+      function Internal (Event : in Gdk.C_Proxy) return Gulong;
       pragma Import (C, Internal, "ada_gdk_event_get_target");
-      Target : constant Gulong := Internal (Get_Object (Event));
+      Target : constant Gulong := Internal (Event.Ptr);
    begin
       if Target = Invalid_Gulong_Value then
          raise Invalid_Field;
@@ -593,9 +586,9 @@ package body Gdk.Event is
    ------------------
 
    function Get_Property (Event : in Gdk_Event) return Gdk_Atom is
-      function Internal (Event : in System.Address) return Gulong;
+      function Internal (Event : in Gdk.C_Proxy) return Gulong;
       pragma Import (C, Internal, "ada_gdk_event_get_property");
-      Prop : constant Gulong := Internal (Get_Object (Event));
+      Prop : constant Gulong := Internal (Event.Ptr);
    begin
       if Prop = Invalid_Gulong_Value then
          raise Invalid_Field;
@@ -608,9 +601,9 @@ package body Gdk.Event is
    -------------------
 
    function Get_Requestor (Event : in Gdk_Event) return Guint32 is
-      function Internal (Event : in System.Address) return Guint32;
+      function Internal (Event : in Gdk.C_Proxy) return Guint32;
       pragma Import (C, Internal, "ada_gdk_event_get_requestor");
-      Req : constant Guint32 := Internal (Get_Object (Event));
+      Req : constant Guint32 := Internal (Event.Ptr);
    begin
       if Req = Invalid_Guint32_Value then
          raise Invalid_Field;
@@ -623,9 +616,9 @@ package body Gdk.Event is
    ----------------------
 
    function Get_Message_Type (Event : in Gdk_Event) return Gdk_Atom is
-      function Internal (Event : in System.Address) return Gulong;
+      function Internal (Event : in Gdk.C_Proxy) return Gulong;
       pragma Import (C, Internal, "ada_gdk_event_get_message_type");
-      Message : constant Gulong := Internal (Get_Object (Event));
+      Message : constant Gulong := Internal (Event.Ptr);
    begin
       if Message = Invalid_Gulong_Value then
          raise Invalid_Field;
@@ -656,21 +649,21 @@ package body Gdk.Event is
          Element_Array => Local_Long_Array,
          Default_Terminator => 0);
 
-      function Format_Of (Event : in System.Address)
+      function Format_Of (Event : in Gdk.C_Proxy)
                          return Gdk_Event_Client_Data_Format;
       pragma Import (C, Format_Of, "ada_gdk_event_client_get_data_format");
 
-      function B_Of (Event : in System.Address) return ICS.chars_ptr;
+      function B_Of (Event : in Gdk.C_Proxy) return ICS.chars_ptr;
       pragma Import (C, B_Of, "ada_gdk_event_client_get_b");
 
-      function S_Of (Event : in System.Address) return Shorts_Ptr.Pointer;
+      function S_Of (Event : in Gdk.C_Proxy) return Shorts_Ptr.Pointer;
       pragma Import (C, S_Of, "ada_gdk_event_client_get_s");
 
-      function L_Of (Event : in System.Address) return Longs_Ptr.Pointer;
+      function L_Of (Event : in Gdk.C_Proxy) return Longs_Ptr.Pointer;
       pragma Import (C, L_Of, "ada_gdk_event_client_get_l");
 
       Result : Gdk_Event_Client_Data
-        (Format => Format_Of (Get_Object (Event)));
+        (Format => Format_Of (Event.Ptr));
 
    begin
 
@@ -678,14 +671,14 @@ package body Gdk.Event is
 
          when Char_Array =>
             Result.B :=
-              IC.To_Ada (ICS.Value (Item => B_Of (Get_Object (Event)),
+              IC.To_Ada (ICS.Value (Item => B_Of (Event.Ptr),
                                     Length => Number_Of_Characters),
                          Trim_Nul => False);
 
          when Short_Array =>
             declare
                Tmp : constant Local_Short_Array :=
-                 Shorts_Ptr.Value (Ref => S_Of (Get_Object (Event)),
+                 Shorts_Ptr.Value (Ref => S_Of (Event.Ptr),
                                    Length => Number_Of_Shorts);
             begin
                for Index in 1 .. Number_Of_Shorts loop
@@ -696,7 +689,7 @@ package body Gdk.Event is
          when Long_Array =>
             declare
                Tmp : constant Local_Long_Array :=
-                 Longs_Ptr.Value (Ref => L_Of (Get_Object (Event)),
+                 Longs_Ptr.Value (Ref => L_Of (Event.Ptr),
                                   Length => Number_Of_Longs);
             begin
                for Index in 1 .. Number_Of_Shorts loop
@@ -716,10 +709,10 @@ package body Gdk.Event is
                                   Window : in Gdk.Window.Gdk_Window)
    is
       function Internal (Window : in Gdk.Window.Gdk_Window)
-                        return System.Address;
+                        return Gdk.C_Proxy;
       pragma Import (C, Internal, "gdk_event_get_graphics_expose");
    begin
-      Set_Object (Event, Internal (Window));
+      Event.Ptr := Internal (Window);
    end Get_Graphics_Expose;
 
    ---------------
@@ -727,10 +720,10 @@ package body Gdk.Event is
    ---------------
 
    procedure Deep_Copy (From : Gdk_Event; To : out Gdk_Event) is
-      function Internal (Event : System.Address) return System.Address;
+      function Internal (Event : Gdk.C_Proxy) return Gdk.C_Proxy;
       pragma Import (C, Internal, "gdk_event_copy");
    begin
-      Set_Object (To, Internal (Get_Object (From)));
+      To.Ptr := Internal (From.Ptr);
    end Deep_Copy;
 
    --------------------
@@ -749,10 +742,10 @@ package body Gdk.Event is
    ---------
 
    procedure Get (Event : out Gdk_Event) is
-      function Internal return System.Address;
+      function Internal return Gdk.C_Proxy;
       pragma Import (C, Internal, "gdk_event_get");
    begin
-      Set_Object (Event, Internal);
+      Event.Ptr := Internal;
    end Get;
 
    ----------
@@ -760,10 +753,10 @@ package body Gdk.Event is
    ----------
 
    procedure Peek (Event : out Gdk_Event) is
-      function Internal return System.Address;
+      function Internal return Gdk.C_Proxy;
       pragma Import (C, Internal, "gdk_event_peek");
    begin
-      Set_Object (Event, Internal);
+      Event.Ptr := Internal;
    end Peek;
 
    ---------
@@ -771,10 +764,10 @@ package body Gdk.Event is
    ---------
 
    procedure Put (Event : in Gdk_Event) is
-      procedure Internal (Event : in System.Address);
+      procedure Internal (Event : in Gdk.C_Proxy);
       pragma Import (C, Internal, "gdk_event_put");
    begin
-      Internal (Get_Object (Event));
+      Internal (Event.Ptr);
    end Put;
 
    ---------------------
@@ -804,10 +797,10 @@ package body Gdk.Event is
    --------------------------------
 
    procedure Send_Client_Message_To_All (Event : in Gdk_Event) is
-      procedure Internal (Event : in System.Address);
+      procedure Internal (Event : in Gdk.C_Proxy);
       pragma Import (C, Internal, "gdk_event_send_clientmessage_toall");
    begin
-      Internal (Get_Object (Event));
+      Internal (Event.Ptr);
    end Send_Client_Message_To_All;
 
    -------------------------
@@ -818,11 +811,11 @@ package body Gdk.Event is
                                  Xid   : in Guint32)
                                 return Boolean
    is
-      function Internal (Event  : in System.Address;
+      function Internal (Event  : in Gdk.C_Proxy;
                          Xid    : in Guint32) return Gboolean;
       pragma Import (C, Internal, "gdk_event_send_client_message");
    begin
-      return To_Boolean (Internal (Get_Object (Event), Xid));
+      return To_Boolean (Internal (Event.Ptr, Xid));
    end Send_Client_Message;
 
    --------------
@@ -835,10 +828,10 @@ package body Gdk.Event is
    is
       function Internal (Event_Type : Gdk_Event_Type;
                          Win        : Gdk.Window.Gdk_Window)
-                        return System.Address;
+                        return Gdk.C_Proxy;
       pragma Import (C, Internal, "ada_gdk_event_create");
    begin
-      Set_Object (Event, Internal (Event_Type, Window));
+      Event.Ptr := Internal (Event_Type, Window);
       Event.User_Created := True;
    end Allocate;
 
@@ -847,12 +840,12 @@ package body Gdk.Event is
    ----------
 
    procedure Free (Event : in out Gdk_Event) is
-      procedure Internal (Event : System.Address);
+      procedure Internal (Event : Gdk.C_Proxy);
       pragma Import (C, Internal, "gdk_event_free");
    begin
       if Event.User_Created then
-         Internal (Get_Object (Event));
-         Set_Object (Event, System.Null_Address);
+         Internal (Event.Ptr);
+         Event.Ptr := null;
       end if;
    end Free;
 
@@ -861,10 +854,10 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_Window (Event  : in Gdk_Event; Win : Gdk_Window) is
-      procedure Internal (Event : in System.Address; Win : Gdk_Window);
+      procedure Internal (Event : in Gdk.C_Proxy; Win : Gdk_Window);
       pragma Import (C, Internal, "ada_gdk_event_set_window");
    begin
-      Internal (Get_Object (Event), Win);
+      Internal (Event.Ptr, Win);
    end Set_Window;
 
    -----------
@@ -872,11 +865,11 @@ package body Gdk.Event is
    -----------
 
    procedure Set_X (Event : in Gdk_Event; X : Gdouble) is
-      function Internal (Event : in System.Address;  X : Gdouble)
+      function Internal (Event : in Gdk.C_Proxy;  X : Gdouble)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_x");
    begin
-      if Internal (Get_Object (Event), X) = 0 then
+      if Internal (Event.Ptr, X) = 0 then
          raise Invalid_Field;
       end if;
    end Set_X;
@@ -886,11 +879,11 @@ package body Gdk.Event is
    -----------
 
    procedure Set_Y (Event : in Gdk_Event; Y : Gdouble) is
-      function Internal (Event : in System.Address; Y : Gdouble)
+      function Internal (Event : in Gdk.C_Proxy; Y : Gdouble)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_y");
    begin
-      if Internal (Get_Object (Event), Y) = 0 then
+      if Internal (Event.Ptr, Y) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Y;
@@ -900,11 +893,11 @@ package body Gdk.Event is
    ---------------
 
    procedure Set_Width (Event : in Gdk_Event; Width : Gint16) is
-      function Internal (Event : in System.Address;  Width : Gint16)
+      function Internal (Event : in Gdk.C_Proxy;  Width : Gint16)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_width");
    begin
-      if Internal (Get_Object (Event), Width) = 0 then
+      if Internal (Event.Ptr, Width) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Width;
@@ -914,11 +907,11 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_Height (Event : in Gdk_Event; Height : Gint16) is
-      function Internal (Event : in System.Address;  Height : Gint16)
+      function Internal (Event : in Gdk.C_Proxy;  Height : Gint16)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_height");
    begin
-      if Internal (Get_Object (Event), Height) = 0 then
+      if Internal (Event.Ptr, Height) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Height;
@@ -928,11 +921,11 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_Button (Event : in Gdk_Event; Button : Guint) is
-      function Internal (Event : in System.Address; Button : Guint)
+      function Internal (Event : in Gdk.C_Proxy; Button : Guint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_button");
    begin
-      if Internal (Get_Object (Event), Button) = 0 then
+      if Internal (Event.Ptr, Button) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Button;
@@ -942,11 +935,11 @@ package body Gdk.Event is
    ---------------
 
    procedure Set_State (Event : in Gdk_Event; State : Gdk_Modifier_Type) is
-      function Internal (Event : in System.Address; State : Guint)
+      function Internal (Event : in Gdk.C_Proxy; State : Guint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_state");
    begin
-      if Internal (Get_Object (Event), Gdk_Modifier_Type'Pos (State)) = 0 then
+      if Internal (Event.Ptr, Gdk_Modifier_Type'Pos (State)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_State;
@@ -956,12 +949,12 @@ package body Gdk.Event is
    -------------------
 
    procedure Set_Subwindow (Event : in Gdk_Event; Window : Gdk_Window) is
-      function Internal (Event : in System.Address;
+      function Internal (Event : in Gdk.C_Proxy;
                          Win   : Gdk_Window)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_subwindow");
    begin
-      if Internal (Get_Object (Event), Window) = 0 then
+      if Internal (Event.Ptr, Window) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Subwindow;
@@ -971,11 +964,11 @@ package body Gdk.Event is
    --------------
 
    procedure Set_Mode (Event : in Gdk_Event; Mode : Gdk_Crossing_Mode) is
-      function Internal (Event : in System.Address; Mode : Gint)
+      function Internal (Event : in Gdk.C_Proxy; Mode : Gint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_mode");
    begin
-      if Internal (Get_Object (Event), Gdk_Crossing_Mode'Pos (Mode)) = 0 then
+      if Internal (Event.Ptr, Gdk_Crossing_Mode'Pos (Mode)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Mode;
@@ -985,11 +978,11 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_Detail (Event : in Gdk_Event; Detail : Gdk_Notify_Type) is
-      function Internal (Event : in System.Address; Detail : Gint)
+      function Internal (Event : in Gdk.C_Proxy; Detail : Gint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_detail");
    begin
-      if Internal (Get_Object (Event), Gdk_Notify_Type'Pos (Detail)) = 0 then
+      if Internal (Event.Ptr, Gdk_Notify_Type'Pos (Detail)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Detail;
@@ -999,11 +992,11 @@ package body Gdk.Event is
    ---------------
 
    procedure Set_Focus (Event : in Gdk_Event; Has_Focus : Boolean) is
-      function Internal (Event : in System.Address; Focus : Gint)
+      function Internal (Event : in Gdk.C_Proxy; Focus : Gint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_focus");
    begin
-      if Internal (Get_Object (Event), Boolean'Pos (Has_Focus)) = 0 then
+      if Internal (Event.Ptr, Boolean'Pos (Has_Focus)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Focus;
@@ -1013,12 +1006,12 @@ package body Gdk.Event is
    --------------
 
    procedure Set_Area (Event : in Gdk_Event; Area : Gdk_Rectangle) is
-      function Internal (Event : in System.Address;
+      function Internal (Event : in Gdk.C_Proxy;
                          Rec   : in Gdk_Rectangle)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_area");
    begin
-      if Internal (Get_Object (Event), Area) = 0 then
+      if Internal (Event.Ptr, Area) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Area;
@@ -1028,11 +1021,11 @@ package body Gdk.Event is
    ------------
 
    procedure Set_In (Event : in Gdk_Event; Focus_In : Boolean) is
-      function Internal (Event : in System.Address; Focus_In : Gint)
+      function Internal (Event : in Gdk.C_Proxy; Focus_In : Gint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_in");
    begin
-      if Internal (Get_Object (Event), Boolean'Pos (Focus_In)) = 0 then
+      if Internal (Event.Ptr, Boolean'Pos (Focus_In)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_In;
@@ -1042,11 +1035,11 @@ package body Gdk.Event is
    -----------------
 
    procedure Set_Is_Hint (Event : in Gdk_Event; Is_Hint : Boolean) is
-      function Internal (Event : in System.Address; Is_Hint : Gint)
+      function Internal (Event : in Gdk.C_Proxy; Is_Hint : Gint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_is_hint");
    begin
-      if Internal (Get_Object (Event), Boolean'Pos (Is_Hint)) = 0 then
+      if Internal (Event.Ptr, Boolean'Pos (Is_Hint)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Is_Hint;
@@ -1056,11 +1049,11 @@ package body Gdk.Event is
    -----------------
 
    procedure Set_Key_Val (Event : in Gdk_Event; Key : Gdk_Key_Type) is
-      function Internal (Event : in System.Address; Key : Gint)
+      function Internal (Event : in Gdk.C_Proxy; Key : Gint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_key_val");
    begin
-      if Internal (Get_Object (Event), Gdk_Key_Type'Pos (Key)) = 0 then
+      if Internal (Event.Ptr, Gdk_Key_Type'Pos (Key)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Key_Val;
@@ -1070,11 +1063,11 @@ package body Gdk.Event is
    --------------
 
    procedure Set_Atom (Event : in Gdk_Event; Atom : Gdk_Atom) is
-      function Internal (Event : in System.Address; Atom : Gulong)
+      function Internal (Event : in Gdk.C_Proxy; Atom : Gulong)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_atom");
    begin
-      if Internal (Get_Object (Event), Gulong (Atom)) = 0 then
+      if Internal (Event.Ptr, Gulong (Atom)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Atom;
@@ -1084,11 +1077,11 @@ package body Gdk.Event is
    ------------------------
 
    procedure Set_Property_State (Event : in Gdk_Event; State : Guint) is
-      function Internal (Event : System.Address; State : Guint)
+      function Internal (Event : Gdk.C_Proxy; State : Guint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_property_state");
    begin
-      if Internal (Get_Object (Event), State) = 0 then
+      if Internal (Event.Ptr, State) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Property_State;
@@ -1100,11 +1093,11 @@ package body Gdk.Event is
    procedure Set_Visibility_State (Event : in Gdk_Event;
                                    State : Gdk_Visibility_State)
    is
-      function Internal (Event : in System.Address; State : Gint)
+      function Internal (Event : in Gdk.C_Proxy; State : Gint)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_visibility_state");
    begin
-      if Internal (Get_Object (Event), Gdk_Visibility_State'Pos (State))
+      if Internal (Event.Ptr, Gdk_Visibility_State'Pos (State))
         = 0
       then
          raise Invalid_Field;
@@ -1116,11 +1109,11 @@ package body Gdk.Event is
    -------------------
 
    procedure Set_Selection (Event : in Gdk_Event; Selection : Gdk_Atom) is
-      function Internal (Event : in System.Address; Selection : Gulong)
+      function Internal (Event : in Gdk.C_Proxy; Selection : Gulong)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_selection");
    begin
-      if Internal (Get_Object (Event), Gulong (Selection)) = 0 then
+      if Internal (Event.Ptr, Gulong (Selection)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Selection;
@@ -1130,11 +1123,11 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_Target (Event : in Gdk_Event; Target : Gdk_Atom) is
-      function Internal (Event : in System.Address; Target : Gulong)
+      function Internal (Event : in Gdk.C_Proxy; Target : Gulong)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_target");
    begin
-      if Internal (Get_Object (Event), Gulong (Target)) = 0 then
+      if Internal (Event.Ptr, Gulong (Target)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Target;
@@ -1144,11 +1137,11 @@ package body Gdk.Event is
    ------------------
 
    procedure Set_Property (Event : in Gdk_Event; Property : Gdk_Atom) is
-      function Internal (Event : in System.Address; Property : Gulong)
+      function Internal (Event : in Gdk.C_Proxy; Property : Gulong)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_property");
    begin
-      if Internal (Get_Object (Event), Gulong (Property)) = 0 then
+      if Internal (Event.Ptr, Gulong (Property)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Property;
@@ -1158,11 +1151,11 @@ package body Gdk.Event is
    -------------------
 
    procedure Set_Requestor (Event : in Gdk_Event; Requestor : Guint32) is
-      function Internal (Event : in System.Address; Requestor : Guint32)
+      function Internal (Event : in Gdk.C_Proxy; Requestor : Guint32)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_requestor");
    begin
-      if Internal (Get_Object (Event), Requestor) = 0 then
+      if Internal (Event.Ptr, Requestor) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Requestor;
@@ -1172,13 +1165,41 @@ package body Gdk.Event is
    ----------------------
 
    procedure Set_Message_Type (Event : in Gdk_Event; Typ : Gdk_Atom) is
-      function Internal (Event : in System.Address; Typ : Gulong)
+      function Internal (Event : in Gdk.C_Proxy; Typ : Gulong)
                         return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_message_type");
    begin
-      if Internal (Get_Object (Event), Gulong (Typ)) = 0 then
+      if Internal (Event.Ptr, Gulong (Typ)) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Message_Type;
+
+   ------------------
+   -- From_Address --
+   ------------------
+
+   function From_Address (C : System.Address) return Gdk_Event is
+   begin
+      return (Ptr          => Gdk.Convert (C),
+              User_Created => False);
+   end From_Address;
+
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Address (C : Gdk_Event) return System.Address is
+   begin
+      return Gdk.Convert (C.Ptr);
+   end To_Address;
+
+   ----------------
+   -- Is_Created --
+   ----------------
+
+   function Is_Created (E : Gdk_Event) return Boolean is
+   begin
+      return E.Ptr /= null;
+   end Is_Created;
 
 end Gdk.Event;

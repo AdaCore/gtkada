@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
 with Gdk.Types; use Gdk.Types;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Accel_Group;  use Gtk.Accel_Group;
@@ -67,12 +66,12 @@ package body Gtk.Window is
    ---------------------
 
    procedure Add_Accel_Group (Window      : access Gtk_Window_Record;
-                              Accel_Group : in Gtk_Accel_Group'Class) is
+                              Accel_Group : in Gtk_Accel_Group) is
       procedure Internal (Window : System.Address;
-                          Accel_Group : System.Address);
+                          Accel_Group : Gtk_Accel_Group);
       pragma Import (C, Internal, "gtk_window_add_accel_group");
    begin
-      Internal (Get_Object (Window), Get_Object (Accel_Group));
+      Internal (Get_Object (Window), Accel_Group);
    end Add_Accel_Group;
 
    -------------
@@ -104,12 +103,12 @@ package body Gtk.Window is
    ------------------------
 
    procedure Remove_Accel_Group (Window : access Gtk_Window_Record;
-                                 Accel_Group : in Gtk_Accel_Group'Class) is
+                                 Accel_Group : in Gtk_Accel_Group) is
       procedure Internal (Window : System.Address;
-                          Accel_Group : System.Address);
+                          Accel_Group : Gtk_Accel_Group);
       pragma Import (C, Internal, "gtk_window_remove_accel_group");
    begin
-      Internal (Get_Object (Window), Get_Object (Accel_Group));
+      Internal (Get_Object (Window), Accel_Group);
    end Remove_Accel_Group;
 
    ----------------------

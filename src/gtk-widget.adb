@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk;                  use Gdk;
 with Gtk.Box;              use Gtk.Box;
 with Gtk.Util;             use Gtk.Util;
 with Gtk.Fixed;            use Gtk.Fixed;
@@ -56,7 +55,7 @@ package body Gtk.Widget is
      return Guint
    is
       function Internal (Widget : System.Address;
-                         Accel_Group : System.Address;
+                         Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group;
                          Accel_Key   : Gint;
                          Accel_Mods  : Gint)
         return Guint;
@@ -64,7 +63,7 @@ package body Gtk.Widget is
 
    begin
       return Internal (Get_Object (Widget),
-                       Get_Object (Accel_Group),
+                       Accel_Group,
                        Gdk.Types.Gdk_Key_Type'Pos (Accel_Key),
                        Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods));
    end Accelerator_Signal;
@@ -95,7 +94,7 @@ package body Gtk.Widget is
    is
       procedure Internal (Widget : System.Address;
                           Accel_Signal : String;
-                          Accel_Group : System.Address;
+                          Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group;
                           Accel_Key   : Gint;
                           Accel_Mods  : Gint;
                           Accel_Flags : Gint);
@@ -103,7 +102,7 @@ package body Gtk.Widget is
 
    begin
       Internal (Get_Object (Widget), Accel_Signal & ASCII.Nul,
-                Get_Object (Accel_Group),
+                Accel_Group,
                 Gdk.Types.Gdk_Key_Type'Pos (Accel_Key),
                 Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods),
                 Gtk.Accel_Group.Gtk_Accel_Flags'Pos (Accel_Flags));
@@ -237,7 +236,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_event");
 
    begin
-      return Internal (Get_Object (Widget), Get_Object (Event));
+      return Internal (Get_Object (Widget), Gdk.Event.To_Address (Event));
    end Event;
 
    ---------------------------
@@ -439,7 +438,7 @@ package body Gtk.Widget is
                          Event  : in System.Address) return Gint;
       pragma Import (C, Internal, "ada_widget_get_motion_notify");
    begin
-      return Internal (Get_Object (Widget), Get_Object (Event));
+      return Internal (Get_Object (Widget), Gdk.Event.To_Address (Event));
    end Default_Motion_Notify_Event;
 
    ---------------------------
@@ -723,14 +722,14 @@ package body Gtk.Widget is
       Accel_Mods   : in Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal (Widget : System.Address;
-                          Accel_Group : System.Address;
+                          Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group;
                           Accel_Key   : Gint;
                           Accel_Mods  : Gint);
       pragma Import (C, Internal, "gtk_widget_remove_accelerator");
 
    begin
       Internal (Get_Object (Widget),
-                Get_Object (Accel_Group),
+                Accel_Group,
                 Gdk.Types.Gdk_Key_Type'Pos (Accel_Key),
                 Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods));
    end Remove_Accelerator;
@@ -1830,7 +1829,7 @@ package body Gtk.Widget is
          if S /= null then
             Get_Signal (S.all, Func, Data);
             Signal_Connect
-              (Gdk.Get_Object (Widget.all),
+              (Get_Object (Widget),
                Get_Field (Q, "name").all & ASCII.Nul,
                Func, Data);
          end if;

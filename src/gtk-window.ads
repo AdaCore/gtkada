@@ -119,12 +119,12 @@ package Gtk.Window is
 
    procedure Add_Accel_Group
      (Window      : access Gtk_Window_Record;
-      Accel_Group : in Gtk.Accel_Group.Gtk_Accel_Group'Class);
+      Accel_Group : in Gtk.Accel_Group.Gtk_Accel_Group);
    --  Specify an accelerator group for the window.
 
    procedure Remove_Accel_Group
      (Window      : access Gtk_Window_Record;
-      Accel_Group : in Gtk.Accel_Group.Gtk_Accel_Group'Class);
+      Accel_Group : in Gtk.Accel_Group.Gtk_Accel_Group);
    --  Remove the specified accelerator group for the window.
 
    procedure Set_Position (Window   : access Gtk_Window_Record;

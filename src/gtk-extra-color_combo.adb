@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gdk.Color;
-with Gdk; use Gdk;
 with System;
 with Interfaces.C.Strings;
 

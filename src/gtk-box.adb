@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk;                use Gdk;
 with Gtk.Dialog;         use Gtk.Dialog;
 with Gtk.Enums;          use Gtk.Enums;
 with Gtk.File_Selection; use Gtk.File_Selection;

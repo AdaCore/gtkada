@@ -585,10 +585,9 @@ package body Gtk.Macro is
    ----------------------
 
    procedure My_Event_Handler (Event : System.Address) is
-      E      : Gdk.Event.Gdk_Event;
+      E      : Gdk.Event.Gdk_Event := Gdk.Event.From_Address (Event);
       Widget : Gtk.Widget.Gtk_Widget;
    begin
-      Set_Object (E, Event);
       if Record_Macro then
          case Get_Event_Type (E) is
 

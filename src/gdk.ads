@@ -36,15 +36,9 @@
 --  </description>
 
 with System;
+with Unchecked_Conversion;
 
 package Gdk is
-   pragma Elaborate_Body;
-
-   type Root_Type is tagged private;
-   type Root_Type_Access is access all Root_Type'Class;
-   --  The base type of the hierarchy in GtkAda. It basically gives access
-   --  to an underlying C object. This is not a controlled type, for efficiency
-   --  reasons, and because gtk+ takes care of memory management on its own.
 
    type C_Dummy_Record is limited private;
    type C_Proxy is access C_Dummy_Record;
@@ -57,58 +51,14 @@ package Gdk is
    --  C_Proxy is a public type so that one can compare directly the value
    --  of the variables with 'null'.
 
-   generic
-      type To is new Root_Type with private;
-      type To_Access is access all To'Class;
-   package Unchecked_Cast is
-      function Convert (From : access Root_Type'Class) return To_Access;
-      --  Convert between any widget type.
-      --  Note that the access type returned points to a global variable in
-      --  this package, that will be overidden the next time you call Convert.
-      --  You should make a copy of it if you need to reuse it.
-      --  Warning : no verification is done at Ada level. The only verification
-      --  are done by gtk itself.
-      --  @pxref{Package_Gtk.Type_Conversion} for help on how to convert
-      --  from C widgets to Ada widgets.
-      --
-      --  This function should not be required at all. If you absolutely need
-      --  to use it, please report it to the GtkAda team
-      --  (@uref{mailto:gtkada@@ada.eu.org}) so that we try and get rid of this
-      --  case if possible.
-
-   private
-      Returned : aliased To;
-   end Unchecked_Cast;
-
-   function Is_Created (Object : in Root_Type'Class) return Boolean;
-   --  Return True if the associated C object has been created.
-   --  False is returned if no C object is associated with Object.
-   --  This is not the same as testing whether an access type (for instance
-   --  any of the widgets) is "null", since this relates to the underlying
-   --  C object.
-
-   --  <doc_ignore>
-   --  The following services are for INTERNAL use only. They are not
-   --  declared inside the private part for visibility issues. Do NOT
-   --  use them outside of the binding.
-   function Get_Object (Object : in Root_Type'Class) return System.Address;
-   function Get_Object (Object : access Root_Type'Class) return System.Address;
-   pragma Inline (Get_Object);
-
-   procedure Set_Object (Object : in out Root_Type'Class;
-                         Value  : in     System.Address);
-   procedure Set_Object (Object : access Root_Type'Class;
-                         Value  : in     System.Address);
-   pragma Inline (Set_Object);
-   --  </doc_ignore>
+   function Convert is new Unchecked_Conversion (System.Address, C_Proxy);
+   function Convert is new Unchecked_Conversion (C_Proxy, System.Address);
+   --  Converts from a System.Address returned by a C function to an
+   --  internal C_Proxy.
 
 private
-
-   type Root_Type is tagged record
-      Ptr : System.Address := System.Null_Address;
-   end record;
-
    type C_Dummy_Record is null record;
    --  This array can contain anything, since it is never used on the Ada side
    --  anyway.
+
 end Gdk;

@@ -29,7 +29,6 @@
 
 with System;
 with Interfaces.C.Strings;
-with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Text is

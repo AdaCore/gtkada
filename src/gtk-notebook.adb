@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk;           use Gdk;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums;     use Gtk.Enums;
 with Gtk.Util;      use Gtk.Util;
@@ -82,22 +81,6 @@ package body Gtk.Notebook is
                 Get_Object (Menu_Label));
    end Append_Page_Menu;
 
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (W : in Gtk_Notebook_Page) return System.Address is
-   begin
-      return Get_Object (W);
-   end Convert;
-
-   function Convert (W : System.Address) return Gtk_Notebook_Page is
-      Tmp : Gtk_Notebook_Page;
-   begin
-      Set_Object (Tmp, W);
-      return Tmp;
-   end Convert;
-
    ----------------------
    -- Get_Current_Page --
    ----------------------
@@ -116,23 +99,16 @@ package body Gtk.Notebook is
    ---------------
 
    function Get_Child (Page : in Gtk_Notebook_Page) return Gtk_Widget is
-      function Internal (Notebook_Page : in System.Address)
+      function Internal (Notebook_Page : in Gtk_Notebook_Page)
                          return System.Address;
       pragma Import (C, Internal, "ada_notebook_page_get_child");
 
       Stub   : Gtk_Widget_Record;
-      Object : System.Address;
-
-      use type System.Address;
-
    begin
-      Object := Get_Object (Page);
-
-      if Object = System.Null_Address then
+      if Page = null then
          return null;
       else
-         return Gtk_Widget
-           (Get_User_Data (Internal (Get_Object (Page)), Stub));
+         return Gtk_Widget (Get_User_Data (Internal (Page), Stub));
       end if;
    end Get_Child;
 
@@ -159,12 +135,11 @@ package body Gtk.Notebook is
    function Get_Cur_Page (Widget : access Gtk_Notebook_Record'Class)
                           return Gtk_Notebook_Page
    is
-      function Internal (Widget : in System.Address) return System.Address;
+      function Internal (Widget : in System.Address)
+                        return Gtk_Notebook_Page;
       pragma Import (C, Internal, "ada_notebook_get_cur_page");
-      Page : Gtk_Notebook_Page;
    begin
-      Set_Object (Page, Internal (Get_Object (Widget)));
-      return Page;
+      return Internal (Get_Object (Widget));
    end Get_Cur_Page;
 
    --------------------
@@ -174,12 +149,12 @@ package body Gtk.Notebook is
    function Get_Menu_Label (Page : in Gtk_Notebook_Page)
      return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Widget : in System.Address) return System.Address;
+      function Internal (Widget : in Gtk_Notebook_Page) return System.Address;
       pragma Import (C, Internal, "ada_notebook_get_menu_label");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
       return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Page)), Stub));
+        (Get_User_Data (Internal (Page), Stub));
    end Get_Menu_Label;
 
    -------------------
@@ -189,12 +164,11 @@ package body Gtk.Notebook is
    function Get_Tab_Label (Page : in Gtk_Notebook_Page)
      return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Widget : in System.Address) return System.Address;
+      function Internal (Widget : in Gtk_Notebook_Page) return System.Address;
       pragma Import (C, Internal, "ada_notebook_get_tab_label");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Page)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Page), Stub));
    end Get_Tab_Label;
 
    -----------------
@@ -220,12 +194,10 @@ package body Gtk.Notebook is
    is
       function Internal (Widget   : in System.Address;
                          Page_Num : Gint)
-                        return System.Address;
+                        return Gtk_Notebook_Page;
       pragma Import (C, Internal, "gtk_notebook_get_nth_page");
-      Page : Gtk_Notebook_Page;
    begin
-      Set_Object (Page, Internal (Get_Object (Widget), Page_Num));
-      return Page;
+      return Internal (Get_Object (Widget), Page_Num);
    end Get_Nth_Page;
 
    --------------

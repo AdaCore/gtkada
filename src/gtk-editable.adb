@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
 with Interfaces.C.Strings;
 
 package body Gtk.Editable is
@@ -147,7 +146,7 @@ package body Gtk.Editable is
           End_Pos   : in Gint)
           return         Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
-      
+
       procedure Internal_G_Free (Mem : in Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal_G_Free, "g_free");
 

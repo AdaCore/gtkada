@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -30,7 +30,6 @@
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
 with System;
-with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Gtkada.Types;
 
@@ -104,7 +103,7 @@ package body Gtk.Object is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_flags");
    begin
-      return Internal (Get_Object (Object.all));
+      return Internal (Get_Object (Object));
    end Flags;
 
    --------------
@@ -125,7 +124,7 @@ package body Gtk.Object is
       function Internal (Object : in System.Address) return Gtk_Type;
       pragma Import (C, Internal, "ada_object_get_type");
    begin
-      return Internal (Get_Object (Object.all));
+      return Internal (Get_Object (Object));
    end Get_Type;
 
    -----------------------------
@@ -160,8 +159,8 @@ package body Gtk.Object is
       pragma Import (C, Internal, "gtk_object_ref");
       use type System.Address;
    begin
-      if Get_Object (Object.all) /= System.Null_Address then
-         Internal (Get_Object (Object.all));
+      if Get_Object (Object) /= System.Null_Address then
+         Internal (Get_Object (Object));
       end if;
    end Ref;
 
@@ -175,7 +174,7 @@ package body Gtk.Object is
                           Flags  : in Guint32);
       pragma Import (C, Internal, "ada_object_set_flags");
    begin
-      Internal (Get_Object (Object.all), Flags);
+      Internal (Get_Object (Object), Flags);
    end Set_Flags;
 
    ----------
@@ -322,7 +321,7 @@ package body Gtk.Object is
          pragma Import (C, Internal, "gtk_object_set_data_full");
          D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
       begin
-         Internal (Get_Object (Object.all),
+         Internal (Get_Object (Object),
                    Id & ASCII.NUL,
                    Convert (D),
                    Free_Data'Address);
@@ -345,7 +344,7 @@ package body Gtk.Object is
          pragma Import (C, Internal, "gtk_object_set_data_by_id_full");
          D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
       begin
-         Internal (Get_Object (Object.all),
+         Internal (Get_Object (Object),
                    Id,
                    Convert (D),
                    Free_Data'Address);
@@ -390,6 +389,10 @@ package body Gtk.Object is
    begin
       null;
    end Generate;
+
+   --------------
+   -- Generate --
+   --------------
 
    procedure Generate (Object : in out Gtk_Object;
                        N      : in Node_Ptr) is
