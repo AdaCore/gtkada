@@ -363,18 +363,18 @@ GATE is the static version of our support. This is a shell script, that
 takes the XML file in argument. It will generate a set of Ada files that,
 when compiled, will recreate the interface you just designed in Glade.
 
-The most import file created by Gate is called callback_<project_name>.adb.
+The most important file created by Gate is called callback_<project_name>.adb.
 It contains stubs for all the callbacks you declared in Glade.
 
-Note that you can easily go back to Glade anytime, modify your interface,
+Note that you can easily go back to Glade any time, modify your interface,
 and have GATE re-generate a set of files. All your modifications will be
 kept in the new files. For that, GATE creates a directory .gate/ in the
 current directory. Please do not delete it if you want GATE to be able to
 keep your changes from one version to the next.
 
 Also note that to be able to keep track of your modifications, gate relies on
-patch and diff being available on your system. The GNU versions of these
-two tools are recommended.
+patch and diff being available on your system. If you don't have a working set
+of diff/patch, configure will simply replace them by null operations.
 
 AUTHORS
 =======
