@@ -110,10 +110,6 @@ package Gtk.Enums is
    type Gtk_Submenu_Placement is (Top_Bottom,
                                   Left_Right);
 
-   type Gtk_Menu_Factory_Type is (Menu_Factory_Menu,
-                                  Menu_Factory_Menu_Bar,
-                                  Menu_Factory_Option_Menu);
-
    type Gtk_Resize_Mode is (Resize_Parent,     --  Pass request to the parent
                             Resize_Queue,      --  Queue resizes on this widget
                             Resize_Immediate); --  Perform the resizes now
