@@ -149,6 +149,20 @@ package body Gtkada.MDI is
    --  pointer is within Corner_Size in both coordinates, then we are clicking
    --  on the corner)
 
+   Draw_Title_Bars : constant Boolean := True;
+   --  Whether title bars should be drawn when in maximized mode. They are
+   --  always visible in non-maximized mode
+
+   Position_Of_Tabs : constant Gtk.Enums.Gtk_Position_Type := Pos_Bottom;
+   --  Where the tabs of the notebooks should be
+
+   type Show_Tabs_Policy is (Always, Never, As_Needed);
+   Show_Tabs : Show_Tabs_Policy := As_Needed;
+   pragma Warnings (Off, Show_Tabs);
+   --  Whether tabs in notebooks should be visible
+   --  (not a constant to avoid warnings below about condition being always
+   --  True or False)
+
    MDI_Class_Record        : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
    Child_Class_Record      : Gtk.Object.GObject_Class :=
@@ -1120,7 +1134,9 @@ package body Gtkada.MDI is
       List := First (MDI.Items);
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
-         Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
+         if C.Title_Box /= null then
+            Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
+         end if;
          List := Widget_List.Next (List);
       end loop;
 
@@ -2344,6 +2360,7 @@ package body Gtkada.MDI is
       Pack_Start
         (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
 
+
       Gtk_New (Child.Title_Area);
       Pack_Start
         (Child.Title_Box, Child.Title_Area, Expand => True, Fill => True);
@@ -2354,11 +2371,11 @@ package body Gtkada.MDI is
          Slot_Object => Child,
          After => True);
 
-      Return_Callback.Object_Connect
-        (Child, "expose_event",
-         Return_Callback.To_Marshaller (Draw_Child'Access),
-         Slot_Object => Child,
-         After => True);
+      --  Return_Callback.Object_Connect
+      --  (Child, "expose_event",
+      --   Return_Callback.To_Marshaller (Draw_Child'Access),
+      --   Slot_Object => Child,
+      --   After => True);
 
       if (Flags and Destroy_Button) /= 0 then
          Pix := Gdk_New_From_Xpm_Data (Close_Xpm);
@@ -2382,7 +2399,8 @@ package body Gtkada.MDI is
             Expand => False, Fill => False);
          Widget_Callback.Object_Connect
            (Child.Maximize_Button, "clicked",
-            Widget_Callback.To_Marshaller (Maximize_Child_Cb'Access), Child);
+            Widget_Callback.To_Marshaller (Maximize_Child_Cb'Access),
+            Child);
       end if;
 
       if (Flags and Iconify_Button) /= 0 then
@@ -2402,6 +2420,11 @@ package body Gtkada.MDI is
       Add (Event, Widget);
       Pack_Start
         (Child.Main_Box, Event, Expand => True, Fill => True, Padding => 0);
+
+      if not Draw_Title_Bars then
+         Set_Child_Visible (Child.Title_Box, False);
+         Hide_All (Child.Title_Box);
+      end if;
 
       Widget_Callback.Object_Connect
         (Child.Initial, "destroy",
@@ -2494,7 +2517,9 @@ package body Gtkada.MDI is
       C.Y   := MDI.Default_Y;
       C.Focus_Widget := Focus_Widget;
 
-      Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
+      if C.Title_Box /= null then
+         Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
+      end if;
 
       if not MDI.Central.Children_Are_Maximized
         and then MDI.Default_X + Threshold >
@@ -2521,6 +2546,9 @@ package body Gtkada.MDI is
       --  otherwise the notebook page will not be made visible.
 
       Show_All (C);
+      if not Draw_Title_Bars then
+         Hide_All (C.Title_Box);
+      end if;
 
       Widget_List.Prepend (MDI.Items, Gtk_Widget (C));
 
@@ -3384,8 +3412,8 @@ package body Gtkada.MDI is
       Notebook : Gtk_Notebook;
    begin
       Gtk_New (Notebook);
-      Set_Tab_Pos (Notebook, Pos_Bottom);
-      Set_Show_Tabs (Notebook, False);
+      Set_Tab_Pos (Notebook, Position_Of_Tabs);
+      Set_Show_Tabs (Notebook, Show_Tabs = Always);
       Set_Show_Border (Notebook, False);
       Set_Border_Width (Notebook, 0);
       Set_Scrollable (Notebook);
@@ -3483,11 +3511,11 @@ package body Gtkada.MDI is
       Append_Page (Note, Child);
 
       if Get_Nth_Page (Note, 1) /= null then
-         Set_Show_Tabs (Note, True);
+         Set_Show_Tabs (Note, Show_Tabs /= Never);
          Set_Border_Width (Child.Main_Box, 0);
          Set_Border_Width (MDI_Child (Get_Nth_Page (Note, 0)).Main_Box, 0);
       else
-         Set_Show_Tabs (Note, False);
+         Set_Show_Tabs (Note, Show_Tabs = Always);
          Set_Border_Width (Child.Main_Box, Guint (Small_Border_Thickness));
       end if;
 
@@ -3578,12 +3606,20 @@ package body Gtkada.MDI is
          Put_In_Notebook (MDI, Child.Dock, Child);
          Update_Dock_Menu (Child);
 
-         Ref (Child.Maximize_Button);
-         Remove (Child.Title_Box, Child.Maximize_Button);
+         if Child.Maximize_Button /= null then
+            Ref (Child.Maximize_Button);
+            Remove (Child.Title_Box, Child.Maximize_Button);
+         end if;
 
-         Ref (Child.Minimize_Button);
-         Remove (Child.Title_Box, Child.Minimize_Button);
+         if Child.Minimize_Button /= null then
+            Ref (Child.Minimize_Button);
+            Remove (Child.Title_Box, Child.Minimize_Button);
+         end if;
 
+         if not Draw_Title_Bars then
+            Set_Child_Visible (Child.Title_Box, False);
+            Hide_All (Child.Title_Box);
+         end if;
 
       elsif not Dock and then Child.State = Docked then
          Ref (Child);
@@ -3601,15 +3637,26 @@ package body Gtkada.MDI is
                Set_Size_Request
                  (Child, Child.Uniconified_Width, Child.Uniconified_Height);
             end if;
+
+            if not Draw_Title_Bars then
+               Set_Child_Visible (Child.Title_Box, True);
+               Show_All (Child.Title_Box);
+            end if;
          end if;
 
          Unref (Child);
          Queue_Resize (Child);
 
-         Pack_End (Child.Title_Box, Child.Maximize_Button, False, False);
-         Unref (Child.Maximize_Button);
-         Pack_End (Child.Title_Box, Child.Minimize_Button, False, False);
-         Unref (Child.Minimize_Button);
+         if Child.Maximize_Button /= null then
+            Pack_End (Child.Title_Box, Child.Maximize_Button, False, False);
+            Unref (Child.Maximize_Button);
+         end if;
+
+         if Child.Minimize_Button /= null then
+            Pack_End (Child.Title_Box, Child.Minimize_Button, False, False);
+            Unref (Child.Minimize_Button);
+         end if;
+
 
          Update_Dock_Menu (Child);
       end if;
@@ -3741,6 +3788,10 @@ package body Gtkada.MDI is
 
             if C.State = Normal or else C.State = Iconified then
                Put_In_Notebook (MDI, None, C);
+               if not Draw_Title_Bars then
+                  Set_Child_Visible (C.Title_Box, False);
+                  Hide_All (C.Title_Box);
+               end if;
             end if;
          end loop;
 
@@ -3765,6 +3816,9 @@ package body Gtkada.MDI is
                Set_Border_Width (C.Main_Box, Guint (Border_Thickness));
                Put (MDI.Central.Layout, C, C.X, C.Y);
                Unref (C);
+
+               Set_Child_Visible (C.Title_Box, True);
+               Show_All (C.Title_Box);
             end if;
             List := Prev (List);
          end loop;
@@ -3936,10 +3990,10 @@ package body Gtkada.MDI is
 
       if not Gtk.Object.In_Destruction_Is_Set (Note) then
          if Len > 1 then
-            Set_Show_Tabs (Gtk_Notebook (Note), True);
+            Set_Show_Tabs (Gtk_Notebook (Note), Show_Tabs /= Never);
 
          elsif Len = 1 then
-            Set_Show_Tabs (Gtk_Notebook (Note), False);
+            Set_Show_Tabs (Gtk_Notebook (Note), Show_Tabs = Always);
 
             First_Child := MDI_Child (Get_Nth_Page (Gtk_Notebook (Note), 0));
             Set_Border_Width
