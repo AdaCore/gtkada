@@ -34,8 +34,15 @@ with Gtk.Accel_Group;  use Gtk.Accel_Group;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Widget;       use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Window is
+
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    ----------------------
    -- Activate_Default --
@@ -110,6 +117,21 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window));
    end Deiconify;
+
+   ---------------
+   -- Get_Focus --
+   ---------------
+
+   function Get_Focus (Window : access Gtk_Window_Record)
+      return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (W : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_window_get_focus");
+      Stub : Gtk_Widget_Record;
+   begin
+      return Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Window)), Stub));
+   end Get_Focus;
 
    -----------------
    -- Get_Gravity --
@@ -616,4 +638,19 @@ package body Gtk.Window is
       Internal (Get_Object (Window));
    end Unstick;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkWindow" then
+         return new Gtk_Window_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Window;

@@ -312,6 +312,7 @@ package Gtk.Window is
    --  callbacks that might destroy the widgets, you must "ref"erence
    --  all the widgets in the list first and then unref all the widgets
    --  afterwards.
+   --  The list itself must be freed by the caller
 
    procedure Present (Window : access Gtk_Window_Record);
    --  Present a window to the user.
@@ -486,6 +487,16 @@ package Gtk.Window is
    --  Target will receive the "activate" signal when Keyval is pressed inside
    --  the window.
 
+   -----------
+   -- Focus --
+   -----------
+
+   function Get_Focus (Window : access Gtk_Window_Record)
+      return Gtk.Widget.Gtk_Widget;
+   --  Return the widget that would have the keyboard focus if
+   --  Window itself has the focus. It currently has the focus
+   --  only if Has_Focus_Is_Set returns True.
+
    ----------------
    -- Properties --
    ----------------
@@ -558,6 +569,16 @@ package Gtk.Window is
    --    Descr: If this window should be destroyed when the parent is destroyed
    --    See also:  Set_Destroy_With_Parent
    --
+   --  - Name:  Has_Toplevel_Focus_Property
+   --    Type:  Boolean
+   --    Flags: read-only
+   --    Descr: Whether the input focus is within this Gtk_Window
+   --
+   --  - Name:  Is_Active_Property
+   --    Type:  Boolean
+   --    Flags: read-only
+   --    Descr: Whether the toplevel is the current active window
+   --
    --  </properties>
 
    Type_Property             : constant Gtk.Enums.Property_Gtk_Window_Type;
@@ -566,6 +587,8 @@ package Gtk.Window is
    Allow_Shrink_Property     : constant Glib.Properties.Property_Boolean;
    Allow_Grow_Property       : constant Glib.Properties.Property_Boolean;
    Modal_Property            : constant Glib.Properties.Property_Boolean;
+   Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean;
+   Is_Active_Property        : constant Glib.Properties.Property_Boolean;
    Win_Pos_Property          : constant Gtk.Enums.Property_Gtk_Window_Position;
    Default_Width_Property    : constant Glib.Properties.Property_Int;
    Default_Height_Property   : constant Glib.Properties.Property_Int;
@@ -623,6 +646,10 @@ private
      Glib.Properties.Build ("default_height");
    Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("destroy_with_parent");
+   Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has_toplevel_focus");
+   Is_Active_Property        : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is_active");
 
    pragma Import (C, Get_Type, "gtk_window_get_type");
 end Gtk.Window;
