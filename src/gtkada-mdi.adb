@@ -2873,7 +2873,10 @@ package body Gtkada.MDI is
       Child.Icon := Icon;
 
       if Realized_Is_Set (Child) then
-         Draw_Child (Child, Full_Area);
+         --  Force a refresh of the title bar
+         Draw
+           (Child,
+            (0, 0, Get_Allocation_Width (Child), Child.MDI.Title_Bar_Height));
       end if;
 
       Update_Menu_Item (Child);
