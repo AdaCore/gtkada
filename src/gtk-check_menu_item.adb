@@ -123,7 +123,6 @@ package body Gtk.Check_Menu_Item is
       Generate (Gtk_Menu_Item (Check_Menu_Item), N, File);
       Gen_Set (N, "Check_Menu_Item", "active", File);
       Gen_Set (N, "Check_Menu_Item", "always_show_toggle", File => File);
-      Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
    procedure Generate (Check_Menu_Item : in out Gtk_Check_Menu_Item;
@@ -158,10 +157,6 @@ package body Gtk.Check_Menu_Item is
       if S /= null then
          Set_Show_Toggle (Check_Menu_Item, Boolean'Value (S.all));
       end if;
-
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
-         Check_Menu_Item);
    end Generate;
 
 end Gtk.Check_Menu_Item;
