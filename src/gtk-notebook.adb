@@ -372,15 +372,18 @@ package body Gtk.Notebook is
          Child : System.Address;
          Expand : out Gint;
          Fill : out Gint;
-         Pack_Type : out Gtk_Pack_Type);
+         Pack_Type : out Gint);
       pragma Import (C, Internal, "gtk_notebook_query_tab_label_packing");
       Expand_Ptr : Gint;
       Fill_Ptr : Gint;
+      Pack_Ptr : Gint;
+
    begin
       Internal (Get_Object (Notebook), Get_Object (Child),
-                Expand_Ptr, Fill_Ptr, Pack_Type);
+                Expand_Ptr, Fill_Ptr, Pack_Ptr);
       Expand := Expand_Ptr /= 0;
       Fill   := Fill_Ptr /= 0;
+      Pack_Type := Gtk_Pack_Type'Val (Pack_Ptr);
    end Query_Tab_Label_Packing;
 
    -----------------
