@@ -30,6 +30,14 @@ package Gtk is
    function Type_Name (Object : in Root_Type'Class)
                        return      String;
 
+   function Get_Object (Object : in Root_Type'Class)
+                        return System.Address;
+   pragma Inline (Get_Object);
+
+   procedure Set_Object (Object : in out Root_Type'Class;
+                         Value  : in     System.Address);
+   pragma Inline (Set_Object);
+
 private
 
    type Root_Type is new Ada.Finalization.Controlled with
@@ -40,13 +48,5 @@ private
    procedure Adjust (Object : in out Root_Type);
    procedure Finalize (Object : in out Root_Type);
    procedure Initialize (Object : in out Root_Type);
-
-   function Get_Object (Object : in Root_Type'Class)
-                        return System.Address;
-   pragma Inline (Get_Object);
-
-   procedure Set_Object (Object : in out Root_Type'Class;
-                         Value  : in     System.Address);
-   pragma Inline (Set_Object);
 
 end Gtk;
