@@ -1771,6 +1771,9 @@ package body Gtkada.MDI is
       end if;
 
       Set_Focus_Child (C);
+      Raise_Child (C); --  not done by Set_Focus_Child if the child already had
+                       --  the focus.
+
       MDI.X_Root := Gint (Get_X_Root (Event));
       MDI.Y_Root := Gint (Get_Y_Root (Event));
 
