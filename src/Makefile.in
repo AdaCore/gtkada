@@ -93,13 +93,13 @@ dirs:: force
 	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
 
-$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(c_extra_objects) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
+$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
 	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects) @GTK_LIBS@ $(OPENGL_LIBS) -lm
 	-@if [ ! -f .devel ]; then \
 	  strip $(LIBNAME); \
 	fi
 
-$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(c_extra_objects) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
+$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
