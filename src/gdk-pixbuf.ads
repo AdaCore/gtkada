@@ -355,6 +355,21 @@ package Gdk.Pixbuf is
       Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
       Mask            : out Gdk.Bitmap.Gdk_Bitmap;
       Alpha_Threshold : Alpha_Range);
+   procedure Render_Pixmap_And_Mask_For_Colormap
+     (Pixbuf          : Gdk_Pixbuf;
+      Colormap        : Gdk.Color.Gdk_Colormap;
+      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
+      Alpha_Threshold : Alpha_Range);
+   --  Creates a pixmap and a mask bitmap which are returned in the Pixmap
+   --  and Mask arguments, respectively, and renders a pixbuf and its
+   --  corresponding tresholded alpha mask to them.  This is merely a
+   --  convenience function; applications that need to render pixbufs with
+   --  dither offsets or to given drawables should use Render_To_Drawable_Alpha
+   --  or Render_To_Drawable
+   --  The pixmap that is created uses Colormap.
+   --  This colormap must match the colormap of the window where the pixmap
+   --  will eventually be used or an error will result.
 
    function Get_From_Drawable
      (Dest   : Gdk_Pixbuf;
@@ -652,6 +667,9 @@ private
      (C, Render_To_Drawable_Alpha, "gdk_pixbuf_render_to_drawable_alpha");
    pragma Import
      (C, Render_Pixmap_And_Mask, "gdk_pixbuf_render_pixmap_and_mask");
+   pragma Import
+     (C, Render_Pixmap_And_Mask_For_Colormap,
+      "gdk_pixbuf_render_pixmap_and_mask_for_colormap");
    pragma Import (C, Scale_Simple, "gdk_pixbuf_scale_simple");
    pragma Import
      (C, Composite_Color_Simple, "gdk_pixbuf_composite_color_simple");
