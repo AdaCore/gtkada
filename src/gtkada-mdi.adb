@@ -163,9 +163,8 @@ package body Gtkada.MDI is
       3 => New_String ("selected"));
 
    Close_Xpm : constant Interfaces.C.Strings.chars_ptr_array :=
-     (New_String ("13 11 3 1"),
-      New_String ("      c None"),
-      New_String (".     c #C0C0C0"),
+     (New_String ("13 11 2 1"),
+      New_String (".     c None"),
       New_String ("+     c #000000"),
       New_String ("............."),
       New_String ("............."),
@@ -182,7 +181,7 @@ package body Gtkada.MDI is
    Iconify_Xpm : constant Interfaces.C.Strings.chars_ptr_array :=
      (New_String ("13 11 2 1"),
       New_String (". c #000000"),
-      New_String ("# c #c0c0c0"),
+      New_String ("# c None"),
       New_String ("#############"),
       New_String ("#############"),
       New_String ("#############"),
@@ -196,9 +195,8 @@ package body Gtkada.MDI is
       New_String ("#############"));
 
    Maximize_Xpm : constant Interfaces.C.Strings.chars_ptr_array :=
-     (New_String ("13 11 3 1"),
-      New_String ("       c None"),
-      New_String (".      c #C0C0C0"),
+     (New_String ("13 11 2 1"),
+      New_String (".      c None"),
       New_String ("+      c #000000"),
       New_String ("............."),
       New_String ("....+++++++.."),
