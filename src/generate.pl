@@ -576,7 +576,7 @@ sub generate_specifications
     $with_list {"with " . &package_name ($parent)} ++;
     foreach (@functions)
       {
-	&print_declaration ($_->[0], @{$_}[1 .. 2]);
+	&print_declaration ($_->[0], @{$_}[1 .. $#{$_}]);
       }
 
     $parent_prefix = "Gtk"   if ($parent =~ /^gtk/i);
@@ -634,7 +634,7 @@ sub generate_body
 
     foreach (@functions)
       {
-	&print_body ($_->[0], @{$_}[1 .. 2]);
+	&print_body ($_->[0], @{$_}[1 .. $#{$_}]);
       }
 
     push (@output, "end $prefix.$current_package;\n");
