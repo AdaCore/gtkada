@@ -39,7 +39,9 @@ package body Gtk.Object is
    -- Connected --
    ---------------
 
-   function Connected_Is_Set (Object : in Gtk_Object) return Boolean is
+   function Connected_Is_Set (Object : access Gtk_Object_Record'Class)
+     return Boolean
+   is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_connected");
    begin
@@ -50,7 +52,9 @@ package body Gtk.Object is
    -- Constructed --
    -----------------
 
-   function Constructed_Is_Set (Object : in Gtk_Object) return Boolean is
+   function Constructed_Is_Set (Object : access Gtk_Object_Record'Class)
+     return Boolean
+   is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_constructed");
    begin
@@ -77,7 +81,9 @@ package body Gtk.Object is
    -- Destroyed --
    ---------------
 
-   function Destroyed_Is_Set (Object : in Gtk_Object) return Boolean is
+   function Destroyed_Is_Set (Object : access Gtk_Object_Record'Class)
+     return Boolean
+   is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_destroyed");
    begin
@@ -99,7 +105,9 @@ package body Gtk.Object is
    -- Floating --
    --------------
 
-   function Floating_Is_Set (Object : in Gtk_Object) return Boolean is
+   function Floating_Is_Set (Object : access Gtk_Object_Record'Class)
+     return Boolean
+   is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_floating");
    begin
@@ -116,6 +124,29 @@ package body Gtk.Object is
    begin
       return Internal (Get_Object (Object.all));
    end Get_Type;
+
+   -----------------------------
+   -- Initialize_Class_Record --
+   -----------------------------
+
+   procedure Initialize_Class_Record
+     (Object       : access Gtk_Object_Record'Class;
+      Signals      : Signal_Array;
+      Class_Record : in out System.Address)
+   is
+      function Internal (Object       : System.Address;
+                         NSignals     : Gint;
+                         Signals      : System.Address;
+                         Class_Record : System.Address)
+        return System.Address;
+      pragma Import (C, Internal, "ada_initialize_class_record");
+
+   begin
+      Class_Record := Internal (Get_Object (Object),
+                                Signals'Length,
+                                Signals'Address,
+                                Class_Record);
+   end Initialize_Class_Record;
 
    ---------
    -- Ref --
@@ -269,7 +300,7 @@ package body Gtk.Object is
       if Object = null then
          Object := Get_Object (Get_Field (N, "name"));
       end if;
- 
+
       if S /= null then
          Set_Flags (Object, Guint32'Value (S.all));
       end if;

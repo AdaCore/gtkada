@@ -65,13 +65,39 @@ package Gtk.Object is
    procedure Unset_Flags (Object : access Gtk_Object_Record;
                           Flags  : in     Guint32);
 
-   function Destroyed_Is_Set (Object : in Gtk_Object) return Boolean;
+   function Destroyed_Is_Set (Object : access Gtk_Object_Record'Class)
+     return Boolean;
 
-   function Floating_Is_Set (Object : in Gtk_Object) return Boolean;
+   function Floating_Is_Set (Object : access Gtk_Object_Record'Class)
+     return Boolean;
 
-   function Connected_Is_Set (Object : in Gtk_Object) return Boolean;
+   function Connected_Is_Set (Object : access Gtk_Object_Record'Class)
+     return Boolean;
 
-   function Constructed_Is_Set (Object : in Gtk_Object) return Boolean;
+   function Constructed_Is_Set (Object : access Gtk_Object_Record'Class)
+     return Boolean;
+
+   --------------------------
+   -- Creating new widgets --
+   --------------------------
+
+   --  These types and functions are used only when creating new widgets
+   --  in Ada. These functions initialize the classes so that they are
+   --  correctly recognized by gtk+ itself
+
+   type Signal_Array is array (Natural range <>) of String_Ptr;
+
+   procedure Initialize_Class_Record
+     (Object       : access Gtk_Object_Record'Class;
+      Signals      : Signal_Array;
+      Class_Record : in out System.Address);
+   --  Creates the class record for a new widget type, which is associated
+   --  with Signals'Length new signals. A pointer to the newly created
+   --  structure is also returned in Class_Record.
+   --  If Class_Record /= System.Null_Address, no memory allocation is
+   --  performed, we just reuse it.
+   --  Note: The underlying C widget must already have been initialized
+   --  by a call to its parent's Initialize function.
 
    ---------------
    -- User_Data --
