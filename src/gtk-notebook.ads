@@ -35,7 +35,7 @@
 --  This is the best way to organize complicated interfaces that have a lot
 --  of widgets, by putting the children into groups of coherent widgets.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib.Glist;
 with Glib.Values;
@@ -51,6 +51,11 @@ package Gtk.Notebook is
    type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
 
    subtype Gtk_Notebook_Page is Gtk.Gtk_Notebook_Page;
+
+   type Gtk_Notebook_Tab is
+     (Notebook_Tab_First,
+      Notebook_Tab_Last);
+   for Gtk_Notebook_Tab'Size use Gint'Size;
 
    ---------------------------------------------
    -- Creating a notebook and inserting pages --
@@ -395,6 +400,13 @@ package Gtk.Notebook is
    --   Notify when the current page is modified in the notebook.
    --   This is called every time the user selected a new page, or the
    --   program selected a new page with Next_Page, Prev_Page, ...
+   --
+   --  - "select_page"
+   --    ???
+   --
+   --  - "focus_tab"
+   --    ???
+   --
    --  </signals>
 private
    type Gtk_Notebook_Record is new Gtk.Container.Gtk_Container_Record
