@@ -9,7 +9,7 @@ echo Generating Ada files...
 
 dir=`dirname $1`
 file=`cd $dir; pwd`/`basename $1`
-info=`gate-in.exe -p -s $file`
+info=`gate-in.exe -p -s -x $file`
 status=$?
 
 if [ $status != 0 ]; then
@@ -22,16 +22,37 @@ if [ $status != 0 ]; then
 fi
 
 set $info
-prj=$1
 
-if [ $# -eq 2 ]; then
-   srcdir=$2
+if [ $1 = "<no_name>" ]; then
+   prj=default
 else
-   srcdir="."
+   prj=$1
+fi
+
+if [ $2 = "<no_name>" ]; then
+   srcdir=.
+   psrcdir="the current directory"
+else
+   srcdir=$2
+   psrcdir=$srcdir
+fi
+
+pixdir="$3"
+# Copy any pixmap files from pixdir to srcdir
+
+mkdir -p $dir/$srcdir
+
+if [ $pixdir != "<no_name>" -a -d $dir/$pixdir ]; then
+   cp $dir/$pixdir/*.xpm $dir/$srcdir
 fi
 
 owd=`pwd`
-cd "$dir/$srcdir"
+cd $dir/$srcdir
+
+if [ $? != 0 ]; then
+  echo "Couldn't change to $dir/$srcdir, aborting."
+  exit 1
+fi
 
 gt=".gate/$prj"
 mkdir -p $gt > /dev/null 2>&1
@@ -61,7 +82,7 @@ done
 /bin/rm -f *.rej *.orig
 
 if cat $gt/gate.difs | @PATCH@ > $gt/patch.out 2>&1; then
-  echo "The following files have been created/updated in $srcdir:"
+  echo "The following files have been created/updated in $psrcdir:"
 
   for j in $files; do
     echo "  "$j
@@ -70,7 +91,7 @@ if cat $gt/gate.difs | @PATCH@ > $gt/patch.out 2>&1; then
   echo done.
   /bin/rm -f *.orig
 else
-  echo "The following files have been updated in $srcdir:"
+  echo "The following files have been updated in $psrcdir:"
 
   for j in $files; do
     echo "  "$j
