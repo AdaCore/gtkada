@@ -27,6 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This is the top level package of the Gdk.Art hierarchy.
+--
+--  </description>
+
 package Gdk.Art is
+   pragma Preelaborate;
+
    pragma Linker_Options ("-lgtkada_art");
 end Gdk.Art;
