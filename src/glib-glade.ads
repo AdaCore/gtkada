@@ -172,9 +172,15 @@ package Glib.Glade is
    --  Check_Next indicates whether the linked list of brothers of N should
    --  also be reset (the children are always reset recursively).
 
-   procedure Gen_Signal (N : Node_Ptr; File : File_Type);
+   procedure Gen_Signal
+     (N            : Node_Ptr;
+      File         : File_Type;
+      Widget_Class : String_Ptr := null);
    --  Output to file calls to connect if N contains any signal.
    --  Also register the class of the widget that uses signals.
+   --  Widget_Class if not null specifies the class of the widget contained in
+   --  N. If null, the class will be retrieved from the "class" field of N.
+   --  This is useful when a downcast is needed.
 
    function Gen_Signal_Instantiations (Project : String; File : File_Type)
      return Natural;
