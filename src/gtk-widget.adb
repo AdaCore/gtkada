@@ -159,10 +159,10 @@ package body Gtk.Widget is
       Stub : Pango_Layout_Record;
    begin
       if Text = "" then
-         return Pango_Layout (Get_User_Data
+         return Pango_Layout (Get_User_Data_Fast
            (Internal2 (Get_Object (Widget), System.Null_Address), Stub));
       else
-         return Pango_Layout (Get_User_Data
+         return Pango_Layout (Get_User_Data_Fast
            (Internal (Get_Object (Widget), Text & ASCII.NUL), Stub));
       end if;
    end Create_Pango_Layout;
