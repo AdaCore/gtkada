@@ -222,7 +222,8 @@ package body Create_Canvas is
       begin
          --  Change the size the item occupies on the screen.
          Set_Screen_Size
-           (Item, To_Canvas (Canvas, It.W), To_Canvas (Canvas, It.H));
+           (Item, To_Canvas_Coordinates (Canvas, It.W),
+            To_Canvas_Coordinates (Canvas, It.H));
          return True;
       end Internal;
 
