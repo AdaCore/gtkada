@@ -199,6 +199,8 @@ package Gdk.Color is
                    Destination :    out Gdk_Color);
 
    function Equal (Colora, Colorb : in Gdk_Color) return Boolean;
+   --  This function returns True if the Red, Green and Blue components
+   --  of both colors are equal.
 
    ----------------------------------------------
    --  Setting/Getting the fields of Gdk_Color --
