@@ -6,6 +6,7 @@ GNATFLAGS_DEVEL = -O2 -gnatag -gnatwuwewl -g
 
 GNATMAKE = gnatmake
 OS_SPECIFIC_LINK_OPTIONS = @OS_SPECIFIC_LINK_OPTIONS@
+SO_EXT = @SO_EXT@
 
 CP = cp -p -f
 CHMOD = chmod
