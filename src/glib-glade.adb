@@ -339,7 +339,7 @@ package body Glib.Glade is
          --  character is in upper case and if the string doesn't have any
          --  separator.
 
-         if Separator /= ASCII.Nul and then Is_Upper (S (J))
+         if Separator /= ASCII.NUL and then Is_Upper (S (J))
            and then not Has_Sep and then J /= Last + 1
          then
             R (K) := Separator;
@@ -822,9 +822,29 @@ package body Glib.Glade is
       Returned : Gtk_Type;
       Rename   : String_Ptr;
 
+      function Simple_Class (Class : String_Ptr) return String_Ptr;
+      --  Return the simple name of a class.
+      --  This currently simply replaces Gtk[HV]* by Gtk*
+
+      function Simple_Class (Class : String_Ptr) return String_Ptr is
+      begin
+         if Class'Length >= 5
+           and then Class (Class'First .. Class'First + 2) = "Gtk"
+           and then
+             (Class (Class'First + 3) = 'H'
+              or else Class (Class'First + 3) = 'V')
+           and then Class (Class'First + 4) in 'A' .. 'Z'
+           and then Class (Class'First + 4 .. Class'Last) /= "Button_Box"
+         then
+            return new String' ("Gtk" & Class (Class'First + 4 .. Class'Last));
+         else
+            return Class;
+         end if;
+      end Simple_Class;
+
    begin
       if Widget_Class = null then
-         Orig_Class := Get_Field (N, "class");
+         Orig_Class := Simple_Class (Get_Field (N, "class"));
       else
          Orig_Class := Widget_Class;
       end if;
