@@ -55,9 +55,9 @@ with Unchecked_Conversion;
 
 package Gdk.Window is
 
-   type Gdk_Window is new C_Proxy;
-   Null_Window : constant Gdk_Window;
+   subtype Gdk_Window is Gdk.Gdk_Window;
 
+   Null_Window : constant Gdk_Window;
 
    procedure Gdk_New
      (Window          :    out Gdk_Window;
@@ -120,11 +120,15 @@ package Gdk.Window is
                            Height : in Gint);
    --  Same as Clear_Area, but generates an expose event.
 
-   --  procedure Copy_Area  --
-   --
-   --  Copy_Area needs a Gdk_Gc object. However, the Gdk.Gc package depends
-   --  on this package, thus creating a circular dependency. This service
-   --  has therefore been moved to the following child package : Gdk.Window.Gc.
+   procedure Copy_Area (Window        : in Gdk_Window;
+                        Gc            : in Gdk.Gdk_GC;
+                        X             : in Gint;
+                        Y             : in Gint;
+                        Source_Window : in Gdk_Window;
+                        Source_X      : in Gint;
+                        Source_Y      : in Gint;
+                        Width         : in Gint;
+                        Height        : in Gint);
 
    procedure Gdk_Raise (Window : in Gdk_Window);
 
@@ -167,11 +171,10 @@ package Gdk.Window is
    procedure Set_Background (Window : in Gdk_Window;
                              Color  : in Gdk.Color.Gdk_Color);
 
-   --  procedure Set_Back_Pixmap
-   --
-   --  For circular dependency reasons, this procedure has been moved to
-   --  The Gdk.Window.Pixmap child package.
-
+   procedure Set_Back_Pixmap (Window          : in Gdk_Window;
+                              Pixmap          : in Gdk.Gdk_Pixmap;
+                              Parent_Relative : in Gint);
+ 
    procedure Set_Cursor (Window : in Gdk_Window;
                          Cursor : in Gdk.Cursor.Gdk_Cursor);
    --  Note: the window must be realized first, ie have an associated X11
@@ -268,6 +271,7 @@ private
    pragma Import (C, Clear, "gdk_window_clear");
    pragma Import (C, Clear_Area, "gdk_window_clear_area");
    pragma Import (C, Clear_Area_E, "gdk_window_clear_area_e");
+   pragma Import (C, Copy_Area, "gdk_window_copy_area");
    pragma Import (C, Get_Events, "gdk_window_get_events");
    pragma Import (C, Get_Geometry, "gdk_window_get_geometry");
    pragma Import (C, Get_Parent, "gdk_window_get_parent");
@@ -300,4 +304,11 @@ private
    pragma Import (C, Get_Colormap, "gdk_window_get_colormap");
    pragma Import (C, Get_Visual, "gdk_window_get_visual");
    pragma Import (C, Set_Colormap, "gdk_window_set_colormap");
+   --  void          gdk_window_set_icon        (GdkWindow       *window,
+   --                                            GdkWindow       *icon_window,
+   --                                            GdkPixmap       *pixmap,
+   --                                            GdkBitmap       *mask);
+   --  void          gdk_window_set_icon_name   (GdkWindow       *window,
+   --                                            gchar           *name);
+   pragma Import (C, Set_Back_Pixmap, "gdk_window_set_back_pixmap");
 end Gdk.Window;
