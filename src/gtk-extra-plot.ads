@@ -1,0 +1,959 @@
+-----------------------------------------------------------------------
+--          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--                                                                   --
+--                     Copyright (C) 2000                            --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
+
+--  <description>
+--
+--  This package implements a high-level, general purpose plotting widget.
+--  You can display any set of data (set of points, curve defined by a
+--  parametric function, ...). This widget can automatically display them
+--  as a curve, along with labelled axis, axis tic marks, legends,...
+--
+--  It fully supports the drag-and-drop protocol for all of its children,
+--  which means that the user can interactively move them in the Gtk_Plot
+--  area.
+--
+--  A Gtk_Plot is closely associated with a Gdk_Drawable, on which all the
+--  drawings are done. It can be done anywhere within that drawable, its
+--  "position" is indicated by a tuple (X, Y), which are two values between
+--  0.0 and 1.0 (from left to right, or from top to bottom).
+--  Its size is also given as a ratio other the drawable's size.
+--
+--  Most points in the plot have also this relative coordinates systems, which
+--  makes it really easy to handle resizing of a plot window.
+--
+--  </description>
+--  <c_version>gtk+extra 0.99<c_version>
+
+with Glib;           use Glib;
+with Gdk.Color;
+with Gdk.Drawable;
+with Gdk.GC;
+with Gdk.Rectangle;
+with Gtk.Enums;
+with Gtk.Misc;
+with Gtk.Widget;
+
+package Gtk.Extra.Plot is
+
+   type Gtk_Plot_Record is new Gtk.Misc.Gtk_Misc_Record with private;
+   type Gtk_Plot is access all Gtk_Plot_Record'Class;
+
+   type Gtk_Plot_Data is private;
+
+   type No_Range_Gdouble_Array is array (Natural) of Gdouble;
+   type No_Range_Gdouble_Array_Access is access all No_Range_Gdouble_Array;
+   --  Note: this is a flat array, 'Range will return bogus values!!
+
+   type Gdouble_Array_Access is access all Glib.Gdouble_Array;
+   --  The reason we use this type in the functions below is because
+   --  gtk+-extra does not keep a copy of the arrays, but points to the one
+   --  given in argument. Thus, the Ada arrays should not be allocated on the
+   --  stack, or at least they should be at library level. Using this 'Access
+   --  will force the compiler to do the check for us.
+
+   type Points_Array is record
+      Points     : No_Range_Gdouble_Array_Access;
+      Num_Points : Gint := 0;
+   end record;
+
+   type Plot_Function is access
+     function (Plot  : access Gtk_Plot_Record'Class;
+               Set   : in     Gtk_Plot_Data;
+               X     : in     Gdouble;
+               Error : access Boolean)
+              return Gdouble;
+   --  Function used for plotting.
+   --  It should return the value associated with X in its graph, and set
+   --  Error to True if there was an error while calculating the value.
+
+   ----------------
+   -- Enum types --
+   ----------------
+
+   type Plot_Scale is (Scale_Linear, Scale_Log10);
+   --  Type of scale used for each axis of a graph.
+
+   type Plot_Symbol_Type is (Symbol_None,
+                             Symbol_Square,
+                             Symbol_Circle,
+                             Symbol_Up_Triangle,
+                             Symbol_Down_Triangle,
+                             Symbol_Diamond,
+                             Symbol_Plus,
+                             Symbol_Cross,
+                             Symbol_Star,
+                             Symbol_Impulse,
+                             Symbol_Bar);
+   --  Type of symbol used to represent the points in a graph.
+
+   type Plot_Symbol_Style is (Symbol_Empty,
+                              Symbol_Filled,
+                              Symbol_Opaque);
+   --  Style used to draw the points in a graph.
+
+   type Plot_Line_Style is (Line_None,
+                            Line_Solid,
+                            Line_Dotted,
+                            Line_Dashed,
+                            Line_Dot_Dash,
+                            Line_Dot_Dot_Dash,
+                            Line_Dot_Dash_Dash);
+   --  Lines used to connect two adjacent points in a graph.
+
+   type Plot_Connector is (Connect_None,
+                           Connect_Straight,     --  straight line
+                           Connect_Spline,       --  spline (Bezier curve)
+                           Connect_Hv_Step,      --  Horizontal then vertical
+                           Connect_Vh_Step,      --  Vertical then horizontal
+                           Connect_Middle_Step); --  Split in the middle
+   --  The type of connection between two adjacent points in a graph.
+
+   type Plot_Label_Mask is (Label_None,
+                            Label_Left,
+                            Label_Right,
+                            Label_Top,
+                            Label_Bottom);
+   --  The type of labels.
+
+   type Plot_Error is (Error_Div_Zero,
+                       Error_Log_Neg);
+   --  Errors that can be encountered while calculating a graph.
+
+   type Plot_Axis  is (Axis_Left,
+                       Axis_Right,
+                       Axis_Top,
+                       Axis_Bottom);
+   --  Where the axis should be put
+
+   type Plot_Label_Style is (Label_Float,
+                             Label_Exp);
+   --  The style of labels (floating point, or scientific notation)
+
+   type Plot_Ticks is new Integer;
+   Ticks_None  : constant Plot_Ticks;
+   Ticks_Left  : constant Plot_Ticks;
+   Ticks_Right : constant Plot_Ticks;
+   Ticks_Up    : constant Plot_Ticks;
+   Ticks_Down  : constant Plot_Ticks;
+   Ticks_All   : constant Plot_Ticks;
+
+   ---------------------
+   -- Creating a plot --
+   ---------------------
+
+   procedure Gtk_New (Plot     : out Gtk_Plot;
+                      Drawable : in Gdk.Drawable.Gdk_Drawable);
+   --  Creates a new plot, that will be displayed in Drawable.
+   --  All the dataset, labels, axis,... associated with the plot will be drawn
+   --  in that drawable, which must have been created beforehand.
+   --  Note that the drawable can also be set later with Set_Drawable.
+
+   procedure Gtk_New (Plot     : out Gtk_Plot;
+                      Drawable : in Gdk.Drawable.Gdk_Drawable;
+                      Width    : in Gdouble;
+                      Height   : in Gdouble);
+   --  Creates a new plot with a specific size.
+
+   procedure Initialize (Plot     : access Gtk_Plot_Record;
+                         Drawable : in Gdk.Drawable.Gdk_Drawable);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Initialize (Plot     : access Gtk_Plot_Record;
+                         Drawable : in Gdk.Drawable.Gdk_Drawable;
+                         Width    : in Gdouble;
+                         Height   : in Gdouble);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Plot.
+
+   procedure Set_Drawable (Plot     : access Gtk_Plot_Record;
+                           Drawable : in     Gdk.Drawable.Gdk_Drawable);
+   --  Modify the drawable on which the graphs are displayed.
+   --  From now on, all the drawings will be done on that drawable. Note that
+   --  they are not automatically copied to the new Drawable until the Plot
+   --  needs to be redrawn.
+
+   function Get_Drawable (Plot   : access Gtk_Plot_Record)
+                         return      Gdk.Drawable.Gdk_Drawable;
+   --  Return the drawable on which the graphs are plotted.
+
+   procedure Set_Background (Plot       : access Gtk_Plot_Record;
+                             Background : in Gdk.Color.Gdk_Color);
+   --  Change the background for the plot.
+   --  Note that this has no effect if the plot has been set to transparent
+   --  (see the flags below).
+   --  The Plot is also redrawn as soon as you modify this color.
+
+   procedure Paint (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+                    Area   : in     Gdk.Rectangle.Gdk_Rectangle);
+   --  Force an immediate repaint of the widget in its pixmap.
+   --  The modification won't appear on the screen until you call Refresh.
+   --  It is probably not a good idea to call this function directly, and it
+   --  is more efficient to queue a draw request (see the Gtk.Widget package
+   --  for related functions).
+
+   procedure Refresh (Plot : access Gtk_Plot_Record;
+                      Area : in     Gdk.Rectangle.Gdk_Rectangle);
+   --  Copy the plot's pixmap to the screen.
+   --  The same comment as for Paint applies here, and you probably don't
+   --  have to call this function yourself, since queuing a draw request is
+   --  more efficient.
+
+   ----------------------------
+   --  Coordinates and sizes --
+   ----------------------------
+
+   procedure Get_Position (Plot : access Gtk_Plot_Record;
+                           X    : out Gdouble;
+                           Y    : out Gdouble);
+   --  Return the position of the Plot within its drawable.
+   --  X and Y are in the range 0.0 .. 1.0, where (0.0, 0.0) is the top-left
+   --  corner and (1.0, 1.0) the bottom-right corner. The position can be modified
+   --  by Move below.
+
+   procedure Get_Size (Plot   : access Gtk_Plot_Record;
+                       Width  : out Gdouble;
+                       Height : out Gdouble);
+   --  Return the size of the Plot.
+   --  Width and Height are both in the range 0.0 .. 1.0, where 1.0 means they
+   --  occupy all the space available in the Drawable, 0.5 means they only
+   --  occupy half of it.
+
+   function Get_Internal_Allocation (Plot   : access Gtk_Plot_Record)
+                                    return      Gtk.Widget.Gtk_Allocation;
+   --  Return the real position/size of the plot inside its parent container.
+   --  You should use this function instead of converting yourself the result
+   --  of Get_Position and Get_Size.
+
+   procedure Move (Plot : access Gtk_Plot_Record;
+                   X    : in Gdouble;
+                   Y    : in Gdouble);
+   --  Move the plot widget inside its drawable.
+   --  X and Y should both be in the range 0.0 .. 1.0 (from top-left corner
+   --  to bottom-right corner).
+
+   procedure Resize (Plot   : access Gtk_Plot_Record;
+                     Width  : in Gdouble;
+                     Height : in Gdouble);
+   --  Resize the widget.
+   --  Width and Height should both be in the range 0.0 .. 1.0, this indicates
+   --  which ratio of the drawable's screen real-estate they should use.
+
+   procedure Move_Resize (Plot   : access Gtk_Plot_Record;
+                          X      : in Gdouble;
+                          Y      : in Gdouble;
+                          Width  : in Gdouble;
+                          Height : in Gdouble);
+   --  Move and resize the widget in a single operation.
+   --  This is faster than doing each operation separately.
+
+   procedure Get_Pixel (Plot : access Gtk_Plot_Record;
+                        Xx   : in Gdouble;
+                        Yy   : in Gdouble;
+                        X    : out Gint;
+                        Y    : out Gint);
+   --  Get the screen coordinate (relative to Plot's parent) of a point.
+   --  The initial coordinates (Xx, Yy) should be in the range 0.0 .. 1.0.
+
+   procedure Get_Point (Plot : access Gtk_Plot_Record;
+                        X    : in Gint;
+                        Y    : in Gint;
+                        Xx   : out Gdouble;
+                        Yy   : out Gdouble);
+   --  Convert from an absolute screen coordinate to a relative one.
+   --  (X, Y) should be relative to Plot's parent.
+   --  This function is the opposite of Get_Pixel.
+
+   procedure Set_Xrange (Plot : access Gtk_Plot_Record;
+                         Xmin : in Gdouble := 0.0;
+                         Xmax : in Gdouble := 1.0);
+   --  Set the range of visible points for this plot.
+   --  Only the points of the graph those coordinates are in the range
+   --  Xmin .. Xmax will be visible.
+
+   procedure Set_Yrange (Plot : access Gtk_Plot_Record;
+                         Ymin : in Gdouble := 0.0;
+                         Ymax : in Gdouble := 1.0);
+   --  Set the range of visible points for this plot.
+   --  Only the points of the graph those coordinates are in the range
+   --  Xmin .. Xmax will be visible.
+
+   procedure Set_Range (Plot : access Gtk_Plot_Record;
+                        Xmin : in Gdouble := 0.0;
+                        Xmax : in Gdouble := 1.0;
+                        Ymin : in Gdouble := 0.0;
+                        Ymax : in Gdouble := 1.0);
+   --  Set both ranges at the same time
+
+   procedure Get_Xrange (Plot : access Gtk_Plot_Record;
+                         Xmin : out Gdouble;
+                         Xmax : out Gdouble);
+   --  Get the current range for the X axis.
+
+   procedure Get_Yrange (Plot : access Gtk_Plot_Record;
+                         Ymin : out Gdouble;
+                         Ymax : out Gdouble);
+   --  Get the current range for the X axis.
+
+   procedure Set_Xscale (Plot       : access Gtk_Plot_Record;
+                         Scale_Type : in Plot_Scale);
+   --  Set the type of the X axis (logarithmic, linear, ...).
+
+   procedure Set_Yscale (Plot       : access Gtk_Plot_Record;
+                         Scale_Type : in Plot_Scale);
+   --  Set the type of the Y axis (logarithmic, linear, ...).
+
+   function Get_Xscale (Plot   : access Gtk_Plot_Record)
+                       return      Plot_Scale;
+   --  Get the type of the X axis.
+
+   function Get_Yscale (Plot   : access Gtk_Plot_Record)
+                       return      Plot_Scale;
+   --  Get the type of the Y axis.
+
+   ----------
+   -- Axis --
+   ----------
+   --  A Gtk_Plot has four axis, one one each of its sides. These axis can
+   --  have ticks, labels for ticks, titles, ... associated with them.
+
+   --  In C, there are two ways to access these axis: you can either get a
+   --  pointer to the underlying C structure, or simply always access them
+   --  through the Gtk_Plot widget.  Note that there is no noticeable speed
+   --  difference between the two, and thus we decided to provide only the
+   --  second method here.
+   --       function Get_Axis (Plot   : access Gtk_Plot_Record;
+   --                          Axis   : in Plot_Axis)
+   --                         return      Gtk_Plot_Axis;
+
+   procedure Axis_Set_Visible (Plot    : access Gtk_Plot_Record;
+                               Axis    : in Plot_Axis;
+                               Visible : in Boolean);
+   --  Indicate whether the axis should be visible or not.
+
+   function Axis_Get_Visible (Plot   : access Gtk_Plot_Record;
+                              Axis   : in Plot_Axis)
+                             return      Boolean;
+   --  Return the visibility state of the axis
+
+   procedure Axis_Set_Title (Plot  : access Gtk_Plot_Record;
+                             Axis  : in Plot_Axis;
+                             Title : in String);
+   --  Modify the title of the axis.
+   --  Each axis has a title that is displayed along its line (vertically
+   --  for the left and right sides).
+
+   procedure Axis_Show_Title (Plot : access Gtk_Plot_Record;
+                              Axis : in Plot_Axis);
+   --  Show the title associated with the axis.
+
+   procedure Axis_Hide_Title (Plot : access Gtk_Plot_Record;
+                              Axis : in Plot_Axis);
+   --  Hide the title associated with the axis.
+
+   procedure Axis_Move_Title (Plot  : access Gtk_Plot_Record;
+                              Axis  : in Plot_Axis;
+                              Angle : in Gint;
+                              X     : in Gdouble;
+                              Y     : in Gdouble);
+   --  Modify the position and orientation of the axis' title.
+   --  The only valid values for Angle are 0, 90, 180 and 270 degres.
+   --  X and Y indicate a position relative to the location of the axis (0.0
+   --  to display it to the left (resp. top) of the axis, 1.0 to display it
+   --  to the right (resp. bottom) of the axis.
+
+   procedure Axis_Justify_Title
+     (Plot          : access Gtk_Plot_Record;
+      Axis          : in Plot_Axis;
+      Justification : in Gtk.Enums.Gtk_Justification);
+   --  Modify the justification for the axis.
+
+   procedure Axis_Set_Attributes (Plot       : access Gtk_Plot_Record;
+                                  Axis       : in     Plot_Axis;
+                                  Line_Width : in     Gint;
+                                  Color      : in     Gdk.Color.Gdk_Color);
+   --  Modify the attributes of the lines of the axis.
+
+   procedure Axis_Set_Ticks (Plot        : access Gtk_Plot_Record;
+                             Orientation : in Gtk.Enums.Gtk_Orientation;
+                             Major_Ticks : in Gdouble;
+                             Minor_Ticks : in Gdouble);
+   --  Set up ticks for a specific orientation.
+   --  A horizontal orientation will match the left and right sides, whereas
+   --  a vertical orientation will match the top and bottom sides.
+   --  Major_Ticks and Minor_Ticks are percentage values of the widget size,
+   --  and indicate the step between each big ticks (resp. small ticks).
+   --  For instance, if Major_Ticks has a value of 0.2, there will be 5
+   --  big ticks drawn along the axis.
+
+   procedure Axis_Set_Ticks_Length (Plot   : access Gtk_Plot_Record;
+                                    Axis   : in Plot_Axis;
+                                    Length : in Gint);
+   --  Set the length (in pixels) of the big ticks.
+   --  The small ticks will have half this length.
+
+   procedure Axis_Set_Ticks_Width (Plot  : access Gtk_Plot_Record;
+                                   Axis  : in Plot_Axis;
+                                   Width : in Gint);
+   --  Set the width (in pixels) of the ticks.
+   --  This width is common to both the long and short ticks.
+
+   procedure Axis_Show_Ticks (Plot       : access Gtk_Plot_Record;
+                              Axis       : in Plot_Axis;
+                              Major_Mask : in Plot_Ticks;
+                              Minor_Mask : in Plot_Ticks);
+   --  Set the style of the ticks.
+   --  Not all the values are relevant for all the axis (You can not
+   --  use Ticks_Left for horizontal axis.
+
+   procedure Axis_Set_Ticks_Limits (Plot        : access Gtk_Plot_Record;
+                                    Orientation : in Gtk.Enums.Gtk_Orientation;
+                                    Ticks_Beg   : in Gdouble;
+                                    Ticks_End   : in Gdouble);
+   --  Indicate the area of the axis that should have ticks.
+   --  Ticks will be displayed only from Ticks_Beg to Ticks_End.
+
+   procedure Axis_Unset_Ticks_Limits
+     (Plot        : access Gtk_Plot_Record;
+      Orientation : in Gtk.Enums.Gtk_Orientation);
+   --  Cancel the ticks limits set by a previous call to
+   --  Axis_Set_Ticks_Limits.
+
+   procedure Axis_Show_Labels (Plot        : access Gtk_Plot_Record;
+                               Axis        : in Plot_Axis;
+                               Labels_Mask : in Plot_Label_Mask);
+   --  Indicate whether a label should be drawn at each ticks to indicate
+   --  its value.
+   --  Not all values of Labels_Mask are relevant for all axis. For instance,
+   --  for a vertical axis, the relevant values are Label_Right and Label_Left.
+
+   procedure Axis_Labels_Set_Attributes (Plot       : access Gtk_Plot_Record;
+                                         Axis       : in Plot_Axis;
+                                         Ps_Font    : in String;
+                                         Height     : in Gint;
+                                         Foreground : in Gdk.Color.Gdk_Color;
+                                         Background : in Gdk.Color.Gdk_Color);
+   --  Set the attributes to be used for the ticks labels.
+   --  Ps_Font should be a postscript font (see Gtk.Plot.PsFont).
+
+   procedure Axis_Labels_Set_Numbers (Plot      : access Gtk_Plot_Record;
+                                      Axis      : in Plot_Axis;
+                                      Style     : in Plot_Label_Style;
+                                      Precision : in Gint);
+   --  Set the style of labels.
+   --  This indicates whether the labels should be displayed as floating
+   --  point values or in the scientific notation.
+   --  Precision is the number of digits to be printed.
+
+   -----------
+   -- Grids --
+   -----------
+   --  A grid can be displayed in the graph.
+   --  This makes it easier to understand a graphics in some situations.
+   --  The grid has two simultaneous line styles, each with its own specific
+   --  step (minor and major steps).
+   --
+   --  There are two special lines in the grid, that you can display even if
+   --  you don't display the rest of the line. These are the origin of the
+   --  coordinates system, ie the lines at X=0 and Y=0.
+
+   procedure X0_Set_Visible (Plot    : access Gtk_Plot_Record;
+                             Visible : in Boolean);
+   --  Indicate whether the line at X=0 should be displayed.
+
+   function X0_Get_Visible (Plot   : access Gtk_Plot_Record)
+                           return      Boolean;
+   --  Return the visibility state of the line at X=0
+
+   procedure Y0_Set_Visible (Plot    : access Gtk_Plot_Record;
+                             Visible : in Boolean);
+   --  Indicate whether the line at Y=0 should be displayed.
+
+   function Y0_Get_Visible (Plot   : access Gtk_Plot_Record)
+                           return      Boolean;
+   --  Return the visibility state of the line at Y=0
+
+   procedure X0line_Set_Attributes (Plot  : access Gtk_Plot_Record;
+                                    Style : in Plot_Line_Style;
+                                    Width : in Gint;
+                                    Color : in Gdk.Color.Gdk_Color);
+   --  Set the attributes of the line at X=0
+
+   procedure Y0line_Set_Attributes (Plot  : access Gtk_Plot_Record;
+                                    Style : in Plot_Line_Style;
+                                    Width : in Gint;
+                                    Color : in Gdk.Color.Gdk_Color);
+   --  Set the attributes of the line at Y=0
+
+   procedure Grids_Set_Visible (Plot   : access Gtk_Plot_Record;
+                                Vmajor : in Boolean;
+                                Vminor : in Boolean;
+                                Hmajor : in Boolean;
+                                Hminor : in Boolean);
+   --  Indicate whether the lines of the grids should be displayed.
+   --  You can decide separately whether the major and minor lines should
+   --  be displayed.
+
+   procedure Grids_Get_Visible (Plot   : access Gtk_Plot_Record;
+                                Vmajor : out Boolean;
+                                Vminor : out Boolean;
+                                Hmajor : out Boolean;
+                                Hminor : out Boolean);
+   --  Return the visibility state of the grid.
+
+   procedure Major_Hgrid_Set_Attributes (Plot  : access Gtk_Plot_Record;
+                                         Style : in Plot_Line_Style;
+                                         Width : in Gint;
+                                         Color : in Gdk.Color.Gdk_Color);
+   --  Set the attributes for the major horizontal lines in the grid.
+
+   procedure Major_Vgrid_Set_Attributes (Plot  : access Gtk_Plot_Record;
+                                         Style : in Plot_Line_Style;
+                                         Width : in Gint;
+                                         Color : in Gdk.Color.Gdk_Color);
+   --  Set the attributes for the major vertical lines in the grid.
+
+   procedure Minor_Hgrid_Set_Attributes (Plot  : access Gtk_Plot_Record;
+                                         Style : in Plot_Line_Style;
+                                         Width : in Gint;
+                                         Color : in Gdk.Color.Gdk_Color);
+   --  Set the attributes for the minor horizontal lines in the grid.
+
+   procedure Minor_Vgrid_Set_Attributes (Plot  : access Gtk_Plot_Record;
+                                         Style : in Plot_Line_Style;
+                                         Width : in Gint;
+                                         Color : in Gdk.Color.Gdk_Color);
+   --  Set the attributes for the minor vertical lines in the grid.
+
+   -------------
+   -- Legends --
+   -------------
+   --  Each graph is associated with one legend, that is supposed to
+   --  indicate what the plot represents.
+
+   procedure Show_Legends (Plot : access Gtk_Plot_Record);
+   --  Indicate that the legend should be displayed.
+
+   procedure Hide_Legends (Plot : access Gtk_Plot_Record);
+   --  Indicate that the legend should not be displayed.
+
+   procedure Show_Legends_Border (Plot         : access Gtk_Plot_Record;
+                                  Show_Shadow  : in Boolean;
+                                  Shadow_Width : in Gint);
+   --  Indicate that the legend will be put in a shadowed box.
+
+   procedure Hide_Legends_Border (Plot : access Gtk_Plot_Record);
+   --  Hide the borders around the legend.
+
+   procedure Legends_Move (Plot : access Gtk_Plot_Record;
+                           X    : in Gdouble;
+                           Y    : in Gdouble);
+   --  Move the legend relative to the widget's area.
+   --  X and Y are percentage values. (0.0, 0.0) indicates the top-left
+   --  corner of the plot, (1.0, 1.0) indicates the bottom-right corner.
+
+   procedure Legends_Get_Position (Plot : access Gtk_Plot_Record;
+                                   X    : out Gdouble;
+                                   Y    : out Gdouble);
+   --  Return the current position of the legend.
+
+   function Legends_Get_Allocation (Plot   : access Gtk_Plot_Record)
+                                   return      Gtk.Widget.Gtk_Allocation;
+   --  Return the exact coordinates and size in pixels of the legend.
+   --  The coordinates are relative to the widget's parent container.
+
+   procedure Legends_Set_Attributes (Plot       : access Gtk_Plot_Record;
+                                     Ps_Font    : in String;
+                                     Height     : in Gint;
+                                     Foreground : in Gdk.Color.Gdk_Color;
+                                     Background : in Gdk.Color.Gdk_Color);
+   --  Set the attributes to use when displaying the legend.
+   --  Ps_Font is the name of a postscript font (see Gtk.Plot.PsFont)
+
+   ----------
+   -- Text --
+   ----------
+
+   procedure Put_Text
+     (Plot          : access Gtk_Plot_Record;
+      X             : in Gdouble;
+      Y             : in Gdouble;
+      Angle         : in Gint;
+      Ps_Font       : in String := "";
+      Font_Height   : in Gint := 10;
+      Foreground    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Background    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Justification : in Gtk.Enums.Gtk_Justification
+        := Gtk.Enums.Justify_Center;
+      Text          : in String := "");
+   --  Print some text in Plot.
+   --  The text will be drawn at the relative coordinates (X, Y), with a
+   --  specified Angle (Currently, the only recognized values are 0, 90,
+   --  180 and 270 degres).
+   --  If Font is the empty string, a default font and default Font_Height
+   --  will be used. Likewise, default colors will be used if you don't
+   --  specify any. Font should be the name of a postscript font, the list of
+   --  which can be found in Gtk.Plot.Psfont.
+
+   --     procedure Text_Get_Size (Text   : in Gtk_Plot_Text;
+   --                              Width  : out Gint;
+   --                              Height : out Gint);
+
+   --------------
+   -- Datasets --
+   --------------
+   --  A dataset is a set of points, either given explicitly by your
+   --  application or calculated with a specific function, and that can be
+   --  ploted on the screen.
+   --  In Gtk_Plot, such a set is represented with symbols (special points in
+   --  the graph, that can be manipulated interactively if you so wish), linked
+   --  by connectors, which are either straight lines, splines, sets, ...
+   --  Multiple data sets can of course be printed on a single graph.
+
+   function Gtk_Dataset_New return Gtk_Plot_Data;
+   --  Return a newly allocated dataset.
+   --  This set has to be freed manually by your application, by calling the
+   --  Free subprogram below.
+   --  Datasets allocated by this function will contain explicits points
+   --  specified by the user. If you want to automatically calculate the set
+   --  with a function, see the subprogram Add_Function below.
+
+   procedure Free (Widget : in out Gtk_Plot_Data);
+   --  Free the memory allocated for a dataset.
+
+   procedure Add_Dataset (Plot    : access Gtk_Plot_Record;
+                          Dataset : in     Gtk_Plot_Data);
+   --  Add an existing set of data to the plot.
+   --  This set will automatically be drawn the next time the Plot itself is
+   --  drawn.
+
+   function Remove_Dataset (Plot    : access Gtk_Plot_Record;
+                            Dataset : in     Gtk_Plot_Data)
+                           return       Boolean;
+   --  Remove the dataset from Plot.
+   --  This function returns True if the dataset was indeed found and could be
+   --  removed, False otherwise.
+
+   function Add_Function (Plot   : access Gtk_Plot_Record;
+                          Func   : in Plot_Function)
+                         return  Gtk_Plot_Data;
+   --  Allocate a new dataset, whose point are automatically calculated.
+   --  Func is a function that takes the X coordinate value, and should return
+   --  the Y coordinate value.
+   --  The newly allocated set should be freed by calling Free above.
+   --  The set is automatically added to the plot, so you don't need to
+   --  explicitly call Add_Dataset.
+
+   procedure Draw_Dataset (Plot : access Gtk_Plot_Record;
+                           Gc   : in Gdk.Gc.Gdk_GC;
+                           Data : in Gtk_Plot_Data);
+   --  Force a redraw of the dataset.
+   --  The set is redrawn immediatly. You should probably rather queue a draw
+   --  request for Plot itself, which will also redraw all the other sets
+   --  associated with the plot.
+
+   procedure Dataset_Set_Points (Data : in Gtk_Plot_Data;
+                                 X    : in Gdouble_Array_Access;
+                                 Y    : in Gdouble_Array_Access;
+                                 Dx   : in Gdouble_Array_Access;
+                                 Dy   : in Gdouble_Array_Access);
+   --  Set some explicit points in the set.
+   --  Note that the set must not be associated with a function, or the points
+   --  will simply be ignored.
+   --  All of the arrays must have the same length, the behavior is undefined
+   --  otherwise.
+   --  X and Y are the list of coordinates of the points.
+   --  Dx and Dy are the list of size (precision) of these points. A bigger
+   --  symbol will be displayed for the point whose (Dx, Dy) value is bigger.
+
+   procedure Dataset_Get_Points (Data       : in Gtk_Plot_Data;
+                                 X          : out Points_Array;
+                                 Y          : out Points_Array;
+                                 Dx         : out Points_Array;
+                                 Dy         : out Points_Array);
+   --  Return the value of the points in the set.
+   --  Null-length arrays are returned if the set is associated with a
+   --  function, since no explicit point has been set.
+   --  See Dataset_Set_Points for a definition of X, Y, Dx and Dy.
+
+   procedure Dataset_Set_X (Data : in Gtk_Plot_Data;
+                            X    : in Gdouble_Array_Access);
+   --  Set the X coordinates of the points in the set.
+   --  The array must have a length of Dataset_Get_Numpoints (if GtkAda was
+   --  compiled with assertions enabled, an exception will be raised if the
+   --  length are different).
+   --  No copy of the array is made for efficiency reasons, thus modifying
+   --  the array content later on will also modify the plot.
+
+   procedure Dataset_Set_Y (Data : in Gtk_Plot_Data;
+                            Y    : in Gdouble_Array_Access);
+   --  Set the Y coordinates of the points in the set.
+   --  The array must have a length of Dataset_Get_Numpoints (if GtkAda was
+   --  compiled with assertions enabled, an exception will be raised if the
+   --  length are different).
+   --  No copy of the array is made for efficiency reasons, thus modifying
+   --  the array content later on will also modify the plot.
+
+   procedure Dataset_Set_Dx (Data : in Gtk_Plot_Data;
+                             Dx   : in Gdouble_Array_Access);
+   --  Set the width of the points in the set.s
+   --  The array must have a length of Dataset_Get_Numpoints (if GtkAda was
+   --  compiled with assertions enabled, an exception will be raised if the
+   --  length are different).
+   --  No copy of the array is made for efficiency reasons, thus modifying
+   --  the array content later on will also modify the plot.
+
+   procedure Dataset_Set_Dy (Data : in Gtk_Plot_Data;
+                             Dy   : in Gdouble_Array_Access);
+   --  Set the height of the points in the set.
+   --  The array must have a length of Dataset_Get_Numpoints (if GtkAda was
+   --  compiled with assertions enabled, an exception will be raised if the
+   --  length are different).
+   --  No copy of the array is made for efficiency reasons, thus modifying
+   --  the array content later on will also modify the plot.
+
+   function Dataset_Get_X (Data       : in Gtk_Plot_Data)
+                          return     Points_Array;
+   --  Return the list of X coordinates for the points in the set.
+   --  This is a direct access to the underlying C array, thus modifying this
+   --  array's contents also modifies the graph.
+
+   function Dataset_Get_Y (Data       : in Gtk_Plot_Data)
+                          return     Points_Array;
+   --  Return the list of Y coordinates for the points in the set.
+   --  This is a direct access to the underlying C array, thus modifying this
+   --  array's contents also modifies the graph.
+
+   function Dataset_Get_Dx (Data      : in Gtk_Plot_Data)
+                           return    Points_Array;
+   --  Return the list of Dx coordinates for the points in the set.
+   --  This is a direct access to the underlying C array, thus modifying this
+   --  array's contents also modifies the graph.
+
+   function Dataset_Get_Dy (Data   : in Gtk_Plot_Data)
+                           return    Points_Array;
+   --  Return the list of Dy coordinates for the points in the set.
+   --  This is a direct access to the underlying C array, thus modifying this
+   --  array's contents also modifies the graph.
+
+   procedure Dataset_Set_Numpoints (Data       : in Gtk_Plot_Data;
+                                    Num_Points : in Gint);
+   --  Set the number of points that should be expected in the graph.
+   --  Note that this does not automatically resize all the internal structure,
+   --  it just indicates what size the parameters to Dataset_Set_X,
+   --  Dataset_Set_Y, ... should have.
+
+   function Dataset_Get_Numpoints (Data   : in Gtk_Plot_Data)
+                                  return  Gint;
+   --  Return the number of points expected in the graph.
+
+   procedure Dataset_Set_Symbol (Data       : in Gtk_Plot_Data;
+                                 The_Type   : in Plot_Symbol_Type;
+                                 Style      : in Plot_Symbol_Style;
+                                 Size       : in Gint;
+                                 Line_Width : in Gint;
+                                 Color      : in Gdk.Color.Gdk_Color);
+   --  Set the visual aspect of the symbols.
+   --  Each point you explicitly set in a dataset is associated visually with
+   --  a symbol, that can be represented in many different ways.
+
+   procedure Dataset_Get_Symbol (Data       : in Gtk_Plot_Data;
+                                 The_Type   : out Plot_Symbol_Type;
+                                 Style      : out Plot_Symbol_Style;
+                                 Size       : out Gint;
+                                 Line_Width : out Gint;
+                                 Color      : out Gdk.Color.Gdk_Color);
+   --  Return the visual characteristics of the symbols.
+
+   procedure Dataset_Set_Connector (Data      : in Gtk_Plot_Data;
+                                    Connector : in Plot_Connector);
+   --  Set the style of the connectors.
+   --  Each symbol/point in the graph is connect to the next one by such
+   --  connectors.
+
+   function Dataset_Get_Connector (Data   : in Gtk_Plot_Data)
+                                  return      Plot_Connector;
+   --  Return the connector style used for the data set.
+
+   procedure Dataset_Set_Line_Attributes (Data  : in Gtk_Plot_Data;
+                                          Style : in Plot_Line_Style;
+                                          Width : in Gint;
+                                          Color : in Gdk.Color.Gdk_Color);
+   --  Set the line style used for the connectors in that data set.
+
+   procedure Dataset_Get_Line_Attributes (Data  : in Gtk_Plot_Data;
+                                          Style : out Plot_Line_Style;
+                                          Width : out Gint;
+                                          Color : out Gdk.Color.Gdk_Color);
+   --  Return the line attributes used for the connectors.
+
+   procedure Dataset_Set_Xy_Attributes (Data  : in Gtk_Plot_Data;
+                                        Style : in Plot_Line_Style;
+                                        Width : in Gint;
+                                        Color : in Gdk.Color.Gdk_Color);
+   --  Set the style of the lines used to connect the symbols to the two main
+   --  axis.
+   --  Each symbol, in addition to being connected to the next one with a
+   --  connector, can also be linked to the axis X=0 and Y=0, so that it is
+   --  easier to read its coordinates. This function set the style of the
+   --  lines used in that case.
+
+   procedure Dataset_Show_Xerrbars (Data : in Gtk_Plot_Data);
+   --  Indicate that each symbol should be connected to the (Y=0) line.
+
+   procedure Dataset_Show_Yerrbars (Data : in Gtk_Plot_Data);
+   --  Indicate that each symbol should be connected to the (X=0) line.
+
+   procedure Dataset_Hide_Xerrbars (Data : in Gtk_Plot_Data);
+   --  Indicate that no symbol should be connected to the (Y=0) line.
+   --  This is the default behavior.
+
+   procedure Dataset_Hide_Yerrbars (Data : in Gtk_Plot_Data);
+   --  Indicate that no symbol should be connected to the (X=0) line.
+   --  This is the default behavior.
+
+   procedure Dataset_Set_Legend (Data   : in Gtk_Plot_Data;
+                                 Legend : in String);
+   --  Set the string printed in the legend for that dataset.
+   --  Note that an entry can exist in the legend even if there is no name
+   --  associated with the graph.
+
+   procedure Dataset_Show_Legend (Data : in Gtk_Plot_Data);
+   --  An entry will be made in the plot's legend for that dataset.
+
+   procedure Dataset_Hide_Legend (Data : in Gtk_Plot_Data);
+   --  No entry will appear in the plot's legend for that dataset.
+
+   procedure Dataset_Set_Name (Data : in Gtk_Plot_Data;
+                               Name : in String);
+   --  Set the name used internally for that dataset.
+   --  This name does not appear anywhere on the screen, but it is easier to
+   --  find the dataset afterward by using this mail.
+
+   function Dataset_Get_Name (Data : in Gtk_Plot_Data) return String;
+   --  Return the name associated with that data set.
+
+   procedure Show_Dataset (Data : in Gtk_Plot_Data);
+   --  Show the dataset when the plot is displayed.
+
+   procedure Hide_Dataset (Data : in Gtk_Plot_Data);
+   --  Hide the dataset when the plot is displayed.
+
+   -----------
+   -- Flags --
+   -----------
+   --  Some flags are defined for this widget. You can not access them through
+   --  the usual interface in Gtk.Object.Flag_Is_Set since this widget is not
+   --  part of the standard gtk+ packages. Instead, use the functions below.
+   --
+   --  - "transparent"
+   --    If this flag is set, the widget's backgroud is not filled, and thus
+   --    the widget's parent's background is seen through it.
+
+   Transparent : constant := 2 ** 0;
+
+   function Plot_Flag_Is_Set (Plot : access Gtk_Plot_Record;
+                              Flag : Guint8)
+                             return Boolean;
+   --  Test whether one of the flags for a Gtk_Plot widget or its children
+   --  is set. This can only be used for the flags defined in the
+   --  Gtk.Extra.Gtk_Plot package.
+
+   procedure Set_Plot_Flags  (Plot  : access Gtk_Plot_Record;
+                              Flags : Guint8);
+   --  Set the flags for a Gtk_Plot widget or its children. Note that the
+   --  flags currently set are not touched by this function. This can only be
+   --  used for the flags defined in the Gtk.Extra.Gtk_Plot package.
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "changed"
+   --    procedure Handler (Plot : access Gtk_Plot_Record'Class);
+   --
+   --    Called every time some property of the widget is changed, or the
+   --    widget is moved or resized.
+   --
+   --  - "moved"
+   --    procedure Handler (Plot : access Gtk_Plot_Record'Class;
+   --                       X    : Gdouble;
+   --                       Y    : Gdouble);
+   --
+   --    Called when the widget has been moved relative to its drawable.
+   --    Its new position is given in parameters.
+   --
+   --  - "resized"
+   --    procedure Handler (Plot   : access Gtk_Plot_Record'Class;
+   --                       Width  : Gdouble;
+   --                       Height : Gdouble);
+   --
+   --    Called when the widget has been resized relative to its drawable.
+   --    Its new size is given in parameters.
+   --
+   --  </signal>
+
+private
+   type Gtk_Plot_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
+   pragma Import (C, Get_Type, "gtk_plot_get_type");
+
+   type Gtk_Plot_Data is new System.Address;
+   for Plot_Label_Mask use (Label_None   => 0,
+                            Label_Left   => 1,
+                            Label_Right  => 2,
+                            Label_Top    => 4,
+                            Label_Bottom => 8);
+   Ticks_None  : constant Plot_Ticks := 0;
+   Ticks_Left  : constant Plot_Ticks := 1;
+   Ticks_Right : constant Plot_Ticks := 2;
+   Ticks_Up    : constant Plot_Ticks := 4;
+   Ticks_Down  : constant Plot_Ticks := 8;
+   Ticks_All   : constant Plot_Ticks := 15;
+
+   pragma Import (C, Gtk_Dataset_New, "gtk_plot_dataset_new");
+   pragma Import (C, Dataset_Set_Numpoints, "gtk_plot_dataset_set_numpoints");
+   pragma Import (C, Dataset_Get_Numpoints, "gtk_plot_dataset_get_numpoints");
+   pragma Import (C, Dataset_Set_Connector, "gtk_plot_dataset_set_connector");
+   pragma Import (C, Dataset_Get_Connector, "gtk_plot_dataset_get_connector");
+   pragma Import (C, Dataset_Show_Xerrbars, "gtk_plot_dataset_show_xerrbars");
+   pragma Import (C, Dataset_Show_Yerrbars, "gtk_plot_dataset_show_yerrbars");
+   pragma Import (C, Dataset_Hide_Xerrbars, "gtk_plot_dataset_hide_xerrbars");
+   pragma Import (C, Dataset_Hide_Yerrbars, "gtk_plot_dataset_hide_yerrbars");
+   pragma Import (C, dataset_show_legend, "gtk_plot_dataset_show_legend");
+   pragma Import (C, Dataset_Hide_Legend, "gtk_plot_dataset_hide_legend");
+   pragma Import (C, Show_Dataset, "gtk_plot_show_dataset");
+   pragma Import (C, Hide_Dataset, "gtk_plot_hide_dataset");
+
+end Gtk.Extra.Plot;
