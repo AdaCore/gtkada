@@ -47,12 +47,12 @@ package body Glib.Properties is
    is
       procedure Internal
         (Object : System.Address;
-         Name : Property;
-         Value : String;
+         Name   : Property;
+         Value  : String;
          Null_Arg : System.Address := System.Null_Address);
       pragma Import (C, Internal, "g_object_set");
    begin
-      Internal (Get_Object (Object), Property (Name),  Value & ASCII.Nul);
+      Internal (Get_Object (Object), Property (Name),  Value & ASCII.NUL);
    end Set_Property;
 
    ------------------
@@ -205,7 +205,7 @@ package body Glib.Properties is
       Value : GValue;
       A     : System.Address;
    begin
-      Init (Value, GType_String);
+      Init (Value, GType_Pointer);
       Get (Get_Object (Object), Property (Name), Value);
       A := Get_Address (Value);
       Unset (Value);
@@ -237,12 +237,12 @@ package body Glib.Properties is
 
    function Get_Property
      (Object : access Glib.Object.GObject_Record'Class;
-      Name : Property_Float) return Gfloat
+      Name   : Property_Float) return Gfloat
    is
       Value : GValue;
       A     : Gfloat;
    begin
-      Init (Value, GType_String);
+      Init (Value, GType_Float);
       Get (Get_Object (Object), Property (Name), Value);
       A := Get_Float (Value);
       Unset (Value);
@@ -279,7 +279,7 @@ package body Glib.Properties is
       Value : GValue;
       A     : Gdouble;
    begin
-      Init (Value, GType_String);
+      Init (Value, GType_Double);
       Get (Get_Object (Object), Property (Name), Value);
       A := Get_Double (Value);
       Unset (Value);
@@ -316,7 +316,7 @@ package body Glib.Properties is
       Value : GValue;
       A     : C_Proxy;
    begin
-      Init (Value, GType_String);
+      Init (Value, GType_Object);
       Get (Get_Object (Object), Property (Name), Value);
       A := Get_Proxy (Value);
       Unset (Value);
