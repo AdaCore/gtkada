@@ -50,7 +50,7 @@ $(LIBNAME):: $(TEST_LINK).o $(c_objects)
 	$(CC) -shared -o $(LIBNAME) glib*.o gdk*.o gtk*.o $(c_objects) `gtk-config --libs` -lm
 
 libgtkada.a:: $(TEST_LINK).o $(c_objects)
-	$(AR) $(ARFLAGS) libgtkada.a g*.o $(c_objects)
+	$(AR) $(ARFLAGS) libgtkada.a glib*.o gdk*.o gtk*.o $(c_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) libgtkada.a; \
 	fi
