@@ -992,15 +992,14 @@ package body Gtkada.MDI is
                Alloc.Y := Drop_Area_Thickness;
             end if;
 
-            Alloc.Height := MDI_Height - Allocation_Int (Alloc.Y);
+            Alloc.Height := MDI_Height - Allocation_Int (Alloc.Y) -
+              Drop_Area_Thickness;
 
             if MDI.Priorities (Bottom) <= MDI.Priorities (Side)
               and then MDI.Docks (Bottom) /= null
             then
                Alloc.Height := Alloc.Height
                  - Allocation_Int (MDI.Docks_Size (Bottom)) - Handle_Size;
-            else
-               Alloc.Height := Alloc.Height - Drop_Area_Thickness;
             end if;
 
          when Top | Bottom =>
@@ -1012,15 +1011,14 @@ package body Gtkada.MDI is
                Alloc.X := Drop_Area_Thickness;
             end if;
 
-            Alloc.Width := MDI_Width - Allocation_Int (Alloc.X);
+            Alloc.Width := MDI_Width - Allocation_Int (Alloc.X) -
+              Drop_Area_Thickness;
 
             if MDI.Priorities (Right) < MDI.Priorities (Side)
               and then MDI.Docks (Right) /= null
             then
                Alloc.Width := Alloc.Width
                  - Allocation_Int (MDI.Docks_Size (Right)) - Handle_Size;
-            else
-               Alloc.Width := Alloc.Width - Drop_Area_Thickness;
             end if;
 
          when None =>
