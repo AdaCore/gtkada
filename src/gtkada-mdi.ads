@@ -134,9 +134,17 @@ package Gtkada.MDI is
    --  Opaque_Docks should be true if resizing the docks with the handles
    --  should be opaque.
 
+   type Buttons_Flags is mod 2 ** 3;
+   Iconify_Button  : constant Buttons_Flags := 2 ** 0;
+   Maximize_Button : constant Buttons_Flags := 2 ** 1;
+   Destroy_Button  : constant Buttons_Flags := 2 ** 2;
+   All_Buttons     : constant Buttons_Flags :=
+     Iconify_Button or Maximize_Button or Destroy_Button;
+
    function Put
      (MDI   : access MDI_Window_Record;
-      Child : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child;
+      Child : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags : Buttons_Flags := All_Buttons) return MDI_Child;
    --  Add a new child to the MDI window, and return its embedding widget.
    --  Note that there is a small difference between adding a toplevel
    --  Gtk_Window and a standard widget.
@@ -145,6 +153,8 @@ package Gtkada.MDI is
    --  toplevel window), we reuse the window you give in parameter to Put.
    --  Likewise, before the child is destroyed, a "delete_event" is emitted
    --  on the window you give in parameter to Put).
+   --
+   --  Flags indicates which buttons should be made visible in the title bar.
    --
    --  In that case, you shouldn't access Child directly afterwards, but should
    --  manipulate its child instead. However, as a special exception, you can
@@ -521,12 +531,16 @@ private
       --  font changes.
    end record;
 
-   procedure Gtk_New (Child : out MDI_Child;
-                      Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Gtk_New
+     (Child  : out MDI_Child;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags  : Buttons_Flags := All_Buttons);
    --  Create a new MDI child that contains widget.
 
-   procedure Initialize (Child : access MDI_Child_Record;
-                         Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Initialize
+     (Child  : access MDI_Child_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags  : Buttons_Flags);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
