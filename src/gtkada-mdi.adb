@@ -1272,13 +1272,15 @@ package body Gtkada.MDI is
       if not Result then
          if C.State = Docked then
             Dock_Child (C, False);
-         elsif C.State = Normal
+         end if;
+
+         if C.State = Normal
            and then Children_Are_Maximized (C.MDI)
          then
             Remove_From_Notebook (C, None);
+         else
+            Destroy (C);
          end if;
-
-         Destroy (C);
       end if;
 
       Free (Event);
@@ -1320,15 +1322,16 @@ package body Gtkada.MDI is
          Dock_Child (C, False);
       end if;
 
-      --  For maximized children, test whether there are still more than three
-      --  items (ie the item being destroyed item and two others) to see
-      --  whether we should leave the tabs visible.
+      --  For maximized children, test whether there are still enough
+      --  pages. Note that if the child is destroyed through its title bar
+      --  button, it has already been unparented, and thus is no longer in the
+      --  notebook.
 
       if C.State = Normal
         and then Children_Are_Maximized (C.MDI)
       then
          Set_Show_Tabs
-           (C.MDI.Docks (None), Get_Nth_Page (C.MDI.Docks (None), 2) /= null);
+           (C.MDI.Docks (None), Get_Nth_Page (C.MDI.Docks (None), 1) /= null);
       end if;
 
       --  Destroy the toplevel Child is associated with
@@ -3626,12 +3629,11 @@ package body Gtkada.MDI is
          User      : User_Data)
       is
          Widget     : Gtk_Widget;
-         Child      : MDI_Child;
+         Child, Focus_Child : MDI_Child;
          Child_Node : Node_Ptr := From_Tree.Child;
          N          : Node_Ptr;
          Register   : Register_Node;
          Width, Height : Guint;
-         Alloc      : Gtk_Allocation;
          State      : State_Type;
       begin
          pragma Assert (From_Tree.Tag.all = "MDI");
@@ -3649,6 +3651,9 @@ package body Gtkada.MDI is
 
             elsif Child_Node.Tag.all = "Bottom" then
                MDI.Docks_Size (Bottom) := Gint'Value (Child_Node.Value.all);
+
+            elsif Child_Node.Tag.all = "Maximized" then
+               Maximize_Children (MDI, Boolean'Value (Child_Node.Value.all));
 
             elsif Child_Node.Tag.all = "Child" then
                --  Create the widget
@@ -3704,6 +3709,11 @@ package body Gtkada.MDI is
                      elsif N.Tag.all = "Uniconified_Height" then
                         Child.Uniconified_Height := Gint'Value (N.Value.all);
 
+                     elsif N.Tag.all = "Focus"
+                       and then Boolean'Value (N.Value.all)
+                     then
+                        Focus_Child := Child;
+
                      else
                         --  ??? Unknown node, just ignore for now
                         null;
@@ -3720,13 +3730,17 @@ package body Gtkada.MDI is
                   end case;
 
                   Set_Size_Request (Child, Gint (Width), Gint (Height));
-                  Alloc := (Child.X, Child.Y, Gint (Width), Gint (Height));
-                  Size_Allocate (Child, Alloc);
                end if;
             end if;
 
             Child_Node := Child_Node.Next;
          end loop;
+
+         if Focus_Child /= null then
+            Raise_Child (Focus_Child);
+         end if;
+
+         Queue_Resize (MDI);
       end Restore_Desktop;
 
       ------------------
@@ -3768,6 +3782,7 @@ package body Gtkada.MDI is
          Add ("Right",  Gint'Image (MDI.Docks_Size (Right)));
          Add ("Top",    Gint'Image (MDI.Docks_Size (Top)));
          Add ("Bottom", Gint'Image (MDI.Docks_Size (Bottom)));
+         Add ("Maximized", Boolean'Image (Children_Are_Maximized (MDI)));
 
          while Item /= Widget_List.Null_List loop
             Child := MDI_Child (Widget_List.Get_Data (Item));
@@ -3808,6 +3823,11 @@ package body Gtkada.MDI is
                     Allocation_Int'Image (Get_Allocation_Width (Child)));
                Add ("Y", Gint'Image (Child.Y));
                Add ("X", Gint'Image (Child.X));
+
+               if Child = MDI.Focus_Child then
+                  Add ("Focus", "True");
+               end if;
+
                Add_Child (Child_Node, Widget_Node);
 
                Add_Child (Root, Child_Node);
