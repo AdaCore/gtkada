@@ -389,7 +389,7 @@ package Gtk.Notebook is
    --                       Page     : in Gtk_Notebook_Page;
    --                       Page_Num : Guint);
    --
-   --   Modify when the current page is modified in the notebook.
+   --   Notify when the current page is modified in the notebook.
    --   This is called every time the user selected a new page, or the
    --   program selected a new page with Next_Page, Prev_Page, ...
    --  </signals>
