@@ -44,8 +44,6 @@
 --  communicate with the maximum number of applications. These protocols are
 --  Xdnd and Motif.
 --
---  Note that drag-and-drop is currently not supported under Windows systems.
---
 --  Below is a summary of what is needed to add drag-and-drop capabilities to
 --  your application. We highly recommend that you look at, and understand,
 --  the example in testgtk (create_dnd.adb), before using these features in
@@ -53,7 +51,6 @@
 --
 --  See also the package Gtk.Selection, that contains some lower subprograms
 --  and data types that are used when implementing drag-and-drop.
---
 --
 --  - Defining a widget as a possible drag source
 --
