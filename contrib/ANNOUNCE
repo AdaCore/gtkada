@@ -16,7 +16,7 @@ LSM entry follows :
 Begin3
 Title:  GtkAda
 Version: 1.2.4
-Entered-date: 05OCT99
+Entered-date: 22OCT99
 Description: Ada95 graphical toolkit based on Gtk+ (version 1.2.x) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
@@ -30,26 +30,25 @@ End
 
 New features in 1.2.4 include:
 
-- GtkAda now supports OpenGL. A binding to GtkglArea is provided, as well
-  as a very basic binding to Mesa. See testgtk for some examples.
-  testgtk has been updated to give some examples of openGL.
-  You do *not* need openGL to build GtkAda, this is an optional part of the
+- GtkAda now supports OpenGL. A binding to GtkglArea is provided, see e.g
+  testgtk which has been updated to give some examples of OpenGL.
+  You do *not* need OpenGL to build GtkAda, this is an optional part of the
   toolkit
-  A very thin binding to the openGL library MESA is also provided, although
-  you are invited to use your own openGL binding rather than this one.
+  A very thin binding to the OpenGL library MESA is also provided, although
+  you are invited to use your own OpenGL binding rather than this one.
 - Handling of Gdk events has been rewritten, so that:
     * It is now much easier to convert from one event type to another
     * It is possible to create events directly from GtkAda, and then send them
       to any widget.
-- Handling of signals has been modified, so that GtkAda now tests that the handler
-  provided are compatible argument-wise with what is expected in gtk+. The same test
-  is done when emitting a signal.
+- Handling of signals has been modified, so that GtkAda now tests that the
+  handler provided are compatible argument-wise with what is expected in gtk+.
+  The same test is done when emitting a signal.
 - New code generation in GATE:
     * take advantage of the composite types
     * generate a child package for callbacks related to each composite widget
     * generate comments in callback stubs to separate cleanly each callback,
       and to avoid occasional merge failures
-- Tested on AiX 4.3.1
+- Tested on AiX 4.3.2
 - New widgets supported by GATE/DGATE: Gtk_List, Gtk_Clist, Gtk_Paned,
   Gtk_Viewport, Gtk_Vscrollbar
 - Fixed GATE support for Gtk_Frame (Label handling)
