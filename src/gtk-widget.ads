@@ -1006,8 +1006,8 @@ package Gtk.Widget is
    --                      Event  : Gdk.Event.Gdk_Event)
    --                     return Boolean;
    --
-   --    This signal is emitted when a widget a destroyed (by calling
-   --    explicitely or indirectly Destroy or Destroy_Cb).
+   --    This signal is apparently never emitted by Gtk+. You might want to
+   --    use "destroy" instead, which is documented in Gtk.Object.
    --
    --  - "expose_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;

@@ -309,8 +309,8 @@ package Gtk.Object is
    --    Raised when the object is about to be destroyed. The "destroyed"
    --    flag has been set on the object first. Handlers should not keep
    --    a reference on the object.
-   --    Note that when you destroy handlers are called, the user_data is still
-   --    available.
+   --    Note that when your destroy handlers are called, the user_data is
+   --    still available.
    --    The default implementation destroys all the handlers.
    --  </signals>
 
