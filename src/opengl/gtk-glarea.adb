@@ -3,6 +3,8 @@
 --                                                                   --
 --                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright 2001-2005                           --
+--                          AdaCore
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,10 +32,27 @@
 with Gtk.Drawing_Area;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
+with Gtkada.Handlers;
+with Gtk.Widget; use Gtk.Widget;
 
 package body Gtk.GLArea is
 
    function Type_Conversion (Type_Name : String) return GObject;
+
+   procedure On_Destroy (Widget : access Gtk_Widget_Record'Class);
+
+   ----------------
+   -- On_Destroy --
+   ----------------
+
+   procedure On_Destroy (Widget : access Gtk_Widget_Record'Class) is
+   begin
+      --  Temporarily remove widget from its parent, since otherwise we still
+      --  get openGL queries after the openGL context has been destroyed,
+      --  resulting in a Storage_Error
+      Ref (Widget);
+      Destroy (Widget);
+   end On_Destroy;
 
    -------------
    -- Gtk_New --
@@ -69,6 +88,8 @@ package body Gtk.GLArea is
 
       --  gtk+'s double buffering and openGL's don't go together
       Set_Double_Buffered (Widget, False);
+      Gtkada.Handlers.Widget_Callback.Connect
+         (Widget, "destroy", Gtk.GLArea.On_Destroy'Access);
    end Initialize;
 
    -------------
