@@ -36,6 +36,9 @@ AM_CHECK_PIXBUF
 # try to find libglade if present
 AM_CHECK_LIBGLADE
 
+# try to find gnome if present
+AM_CHECK_GNOME
+
 # Set the version number of GtkAda
 AC_SUBST(GTKADA_VERSION)
 AC_SUBST(GTKADA_MAJOR_VERSION)
@@ -45,4 +48,4 @@ AC_SUBST(GTKADA_MICRO_VERSION)
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
-AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/pixbuf/Makefile src/glade/Makefile)
+AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/pixbuf/Makefile src/glade/Makefile src/gnome/Makefile)

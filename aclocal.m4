@@ -589,6 +589,34 @@ AC_DEFUN(AM_CHECK_OPENGL,
 
 #############################################################
 #
+#  Checking for gnome
+#
+#############################################################
+
+AC_DEFUN(AM_CHECK_GNOME,
+[   
+  AC_PATH_PROG(GNOME_CONFIG, gnome-config, no)
+
+  if test "$GNOME_CONFIG" = "no" ; then
+    HAVE_GNOME="False"
+    GNOME_CFLAGS=""
+    GNOME_LIBS=""
+    GNOME_STATIC_LIBS=""
+  else
+    HAVE_GNOME="True"
+    GNOME_PREFIX=`$GNOME_CONFIG --prefix`
+    GNOME_CFLAGS=`$GNOME_CONFIG --cflags gnomeui`
+    GNOME_LIBS="-L$GNOME_PREFIX/lib -lgnomeui -lgnome -lart_lgpl -lpopt"
+    GNOME_STATIC_LIBS="$GNOME_PREFIX/lib/libgnomeui.a $GNOME_PREFIX/lib/libgnome.a $GNOME_PREFIX/lib/libart_lgpl.a $GNOME_PREFIX/lib/lib/libpopt.a"
+  fi
+
+  AC_SUBST(GNOME_CFLAGS)
+  AC_SUBST(GNOME_LIBS)
+  AC_SUBST(GNOME_STATIC_LIBS)
+  AC_SUBST(HAVE_GNOME)
+])
+#############################################################
+#
 #  Checking for gdk-pixbuf
 #
 #############################################################
