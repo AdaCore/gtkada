@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -56,7 +56,7 @@ with Gdk.Window;
 
 package Gdk.GC is
 
-   type Gdk_GC is new Gdk.C_Proxy;
+   subtype Gdk_GC is Gdk.Gdk_GC;
    --  A graphic context that contain all the information to draw graphics
    --  on the screen.
    --  Creating these GC is more efficient than passing a lot of parameters
@@ -151,12 +151,18 @@ package Gdk.GC is
                        Fill : in Types.Gdk_Fill);
    --  Set the pattern used for filling the polygons.
 
-   --  procedure Set_Tile
-   --  procedure Set_Stipple
-   --  procedure Set_Clip_Mask
-   --
-   --  Have been moved to the Gdk.GC.Pixmap child package for
-   --  circular dependency reasons.
+   procedure Set_Tile (GC   : in Gdk_GC;
+                       Tile : in Gdk.Gdk_Pixmap);
+ 
+   procedure Set_Stipple (GC      : in Gdk_GC;
+                          Stipple : in Gdk.Gdk_Pixmap);
+
+   procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC;
+                            Mask  : in Gdk.Gdk_Bitmap);
+   --  If Mask is set to Null_Bitmap, then no clip_mask is used for drawing.
+   --  Points will be drawn through this GC only where the bits are set to 1
+   --  in the mask. See also the function Set_Clip_Origin for
+   --  how to move the mask inside the GC.
 
    procedure Set_Ts_Origin (GC   : in Gdk_GC;
                             X, Y : in Gint);
@@ -232,7 +238,6 @@ package Gdk.GC is
                    Src_GC : in Gdk_GC);
    --  Copy a Src_GC to Dst_GC.
 
-
    ----------------------
    -- Gdk_Color_Values --
    ----------------------
@@ -291,10 +296,14 @@ package Gdk.GC is
 private
    Null_GC : constant Gdk_GC := null;
    Null_GC_Values : constant Gdk_GC_Values := null;
+
    pragma Import (C, Copy, "gdk_gc_copy");
    pragma Import (C, Destroy, "gdk_gc_destroy");
    pragma Import (C, Free, "ada_gdk_gc_free_values");
    pragma Import (C, Get_Values, "gdk_gc_get_values");
    pragma Import (C, Ref, "gdk_gc_ref");
    pragma Import (C, Unref, "gdk_gc_unref");
+   pragma Import (C, Set_Stipple, "gdk_gc_set_stipple");
+   pragma Import (C, Set_Tile, "gdk_gc_set_tile");
+   pragma Import (C, Set_Clip_Mask, "gdk_gc_set_clip_mask");
 end Gdk.GC;
