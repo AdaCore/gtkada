@@ -72,6 +72,18 @@ package body Gtk.Widget is
       Set_Object (Widget, System.Null_Address);
    end Destroy;
 
+   ---------------
+   -- Destroyed --
+   ---------------
+
+   procedure Destroyed (Dummy  : in out Gtk_Widget'Class;
+                        Widget : in out Gtk_Widget_Access)
+   is
+      pragma Warnings (Off, Dummy);
+   begin
+      Set_Object (Widget.all, System.Null_Address);
+   end Destroyed;
+
    ----------
    -- Draw --
    ----------

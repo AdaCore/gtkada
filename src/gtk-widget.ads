@@ -49,6 +49,7 @@ package Gtk.Widget is
    Rc_Style         : constant := 2 ** 18;
 
    type Gtk_Widget is new Object.Gtk_Object with private;
+   type Gtk_Widget_Access is access all Gtk_Widget'Class;
 
 
    procedure Activate (Widget : in out Gtk_Widget'Class);
@@ -56,6 +57,11 @@ package Gtk.Widget is
 
    procedure Destroy (Widget : in out Gtk_Widget'Class);
    --  mapping: Destroy gtkwidget.h gtk_widget_destroy
+
+   procedure Destroyed (Dummy  : in out Gtk_Widget'Class;
+                        Widget : in out Gtk_Widget_Access);
+   --  mapping: Destroyed gtkwidget.h gtk_widget_destroyed
+   --  Set Widget to NULL
 
    --  GET_WINDOW : to get the window field of a widget, please
    --  see package gtk-window.ads
@@ -245,7 +251,6 @@ private
    --  mapping: USE_OBJECT_ORIENTED gtkwidget.h gtk_widget_new
 
    --  mapping: INTERNAL gtkwidget.h gtk_widget_basic
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_destroyed
    --  mapping: INTERNAL gtkwidget.h gtk_widget_draw_default
    --  mapping: INTERNAL gtkwidget.h gtk_widget_init
    --  mapping: INTERNAL gtkwidget.h gtk_widget_propagate_default_style
