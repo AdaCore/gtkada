@@ -34,8 +34,19 @@ with Gtk.Object; use Gtk.Object;
 with Gtk.Notebook; use Gtk.Notebook;
 with Gtk.Clist; use Gtk.Clist;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Type_Conversion_Hooks;
+pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
 package body Gtk.Label is
+
+   -----------------------
+   -- Local Subprograms --
+   -----------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    ---------
    -- Get --
@@ -278,4 +289,19 @@ package body Gtk.Label is
       end if;
    end Generate;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access is
+   begin
+      if Type_Name = "GtkLabel" then
+         return new Gtk_Label_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Gtk.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Label;
