@@ -1070,8 +1070,9 @@ sub get_subprograms () {
 	
 	push (@result, ['--', $section, "$comments", ()]);
 	$last_was_section = 1;
-	
-    } elsif ($line =~ /^\s*(procedure|function)\s+(\w+)\s*(.*)/) {
+
+    # Else if we have a subprogram or operator definition	
+    } elsif ($line =~ /^\s*(procedure|function)\s+([\w\"+\-*\/&]+)\s*(.*)/) {
       my ($type)   = $1;
       my ($name)   = $2;
       my ($params) = $3;
