@@ -110,7 +110,7 @@ package Gtk.Layout is
    --  Return the adjustment that indicate the horizontal visual area
    --  of the layout.
    --  You generally do not have to modify the value of this adjustment
-   --  yourself. This is done automatically by GtkAda when the layout has
+   --  yourself, since this is done automatically when the layout has
    --  been put in a Gtk_Scrolled_Window.
 
    function Get_Vadjustment (Layout : access Gtk_Layout_Record)
@@ -118,7 +118,7 @@ package Gtk.Layout is
    --  Return the adjustment that indicate the vertical visual area
    --  of the layout.
    --  You generally do not have to modify the value of this adjustment
-   --  yourself. This is done automatically by GtkAda when the layout has
+   --  yourself, since this is done automatically when the layout has
    --  been put in a Gtk_Scrolled_Window.
 
    procedure Set_Hadjustment (Layout     : access Gtk_Layout_Record;

@@ -74,7 +74,7 @@ package Gtk.Extra.Plot_Canvas is
                              Text,
                              Data);
    --  The type of data that can be put in a canvas.
-   --  A 'plot' is specifically a Gtk.Extra.Plot.Gtk_Plot.
+   --  Plot is only for a Gtk.Extra.Plot.Gtk_Plot widget.
 
    type Plot_Canvas_Pos is (Canvas_Out,
                             Canvas_In,
