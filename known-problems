@@ -1,3 +1,9 @@
+
+- Printing an XML tree to Standard_Output
+  Problem:    When trying to print an XML tree (Glib.XML) to standard_output,
+              an exception Status_Error is raised
+  Workaround: Write into a file instead...
+
 Known problems fixed in GtkAda 1.2.11/1.3.11
 
 - Declaring new signals for widgets with a common parent
