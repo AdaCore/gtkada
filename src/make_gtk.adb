@@ -109,7 +109,6 @@ with Gtk.Font_Selection_Dialog;
 with Gtk.Frame;
 with Gtk.Gamma_Curve;
 with Gtk.GEntry;
-with Gtk.Glade;
 with Gtk.GRange;
 with Gtk.Handle_Box;
 with Gtk.Handlers;
