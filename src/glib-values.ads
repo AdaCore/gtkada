@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,7 @@
 --  equivalent of the C's (GValue*) array, i.e an array of unions.  This
 --  package provides functions to extract the values from this type.
 --  </description>
-
+--  <c_version>1.3.15</c_version>
 
 with System;
 
@@ -136,7 +136,7 @@ package Glib.Values is
    --  also provided inside Gtk.Text_Iter.
 
 private
-   type GValue_Data is array (1 .. 4) of Guint64;
+   type GValue_Data is array (1 .. 2) of Guint64;
    type GValue is record
       g_type : GType;
       data   : GValue_Data;
