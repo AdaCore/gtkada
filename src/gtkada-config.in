@@ -3,7 +3,7 @@
 
 prefix=@prefix@
 
-gtk_libs="@GTK_LIBS@ @PIXBUF_LIBS@"
+gtk_libs="@GTK_LIBS@"
 gtkada_libs="-L$prefix/include/gtkada -L$prefix/lib"
 gtkada_cflags="-I$prefix/include/gtkada"
 gtkada_lflags="-lgtkada"
