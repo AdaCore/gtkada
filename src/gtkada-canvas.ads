@@ -77,6 +77,14 @@ package Gtkada.Canvas is
    --  routine. Instead, the end-user should extend this type and implement
    --  a subprogram to draw on the pixmap returned by the Pixmap subprogram.
 
+   type Canvas_Link_Record is tagged private;
+   type Canvas_Link is access all Canvas_Link_Record'Class;
+   --  A link between two items in the canvas.
+   --  The implementation provided in this package provides links that can
+   --  be either straight links or curved links.
+   --  This type is provided as a tagged type so that you can associated your
+   --  own user data with it.
+
    -------------------
    -- Customization --
    -------------------
@@ -157,18 +165,6 @@ package Gtkada.Canvas is
                               return Boolean;
    --  Return True if items are currently aligned on grid.
 
-   procedure Add_Link (Canvas : access Interactive_Canvas_Record;
-                       Src    : access Canvas_Item_Record'Class;
-                       Dest   : access Canvas_Item_Record'Class;
-                       Arrow  : in Arrow_Type := End_Arrow;
-                       Descr  : in String := "");
-   --  Add an oriented link between two items.
-   --  If Descr is not the empty string, it will be displayed in the middle
-   --  of the link, and should indicate what the link means.
-   --  This package automatically chose whether the link should be a straight
-   --  line or an arc, so as to avoid overloading links.
-   --  An arrow is drawn at the end of the link, on the border of Dest.
-
    procedure Move_To
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class;
@@ -195,7 +191,7 @@ package Gtkada.Canvas is
    procedure Remove (Canvas : access Interactive_Canvas_Record;
                      Item   : access Canvas_Item_Record'Class);
    --  Remove an item and all the links to and from it from the canvas.
-   --  The item itself is not freed.
+   --  The item itself is not freed, but the links are.
    --  Nothing is done if the item is not part of the canvas.
 
    procedure Item_Updated (Canvas : access Interactive_Canvas_Record;
@@ -221,6 +217,7 @@ package Gtkada.Canvas is
                             Execute : Item_Processor);
    --  Execute an action on each of the items contained in the canvas.
    --  If Execute returns False, we stop traversing the list of children.
+   --  It is safe to remove the items in Item_Processor.
 
    function Has_Link (Canvas   : access Interactive_Canvas_Record;
                       From, To : access Canvas_Item_Record'Class;
@@ -248,6 +245,74 @@ package Gtkada.Canvas is
    procedure Show_Item (Canvas : access Interactive_Canvas_Record;
                         Item   : access Canvas_Item_Record'Class);
    --  Scroll the canvas so that Item is visible.
+
+   -----------
+   -- Links --
+   -----------
+
+   procedure Configure
+     (Link   : access Canvas_Link_Record;
+      Src    : access Canvas_Item_Record'Class;
+      Dest   : access Canvas_Item_Record'Class;
+      Arrow  : in Arrow_Type := End_Arrow;
+      Descr  : in String := "");
+   --  Configure a link.
+   --  The link is an oriented bound between two items on the canvas.
+   --  If Descr is not the empty string, it will be displayed in the middle
+   --  of the link, and should indicate what the link means.
+   --  Arrow indicates whether some arrows should be printed as well.
+
+   function Get_Src (Link : access Canvas_Link_Record) return Canvas_Item;
+   --  Return the source item for the link
+
+   function Get_Dest (Link : access Canvas_Link_Record) return Canvas_Item;
+   --  Return the destination item for the link
+
+   function Get_Descr (Link : access Canvas_Link_Record) return String;
+   --  Return the description for the link, or "" if there is none
+
+   procedure Add_Link
+     (Canvas : access Interactive_Canvas_Record;
+      Link   : access Canvas_Link_Record'Class);
+   --  Add an oriented link in the canvas.
+   --  This package automatically chooses whether the link should be a straight
+   --  line or an arc, so as to avoid overloading links.
+   --  Note that no copy of Link is made, and that you should allocate some
+   --  memory yourself.
+
+   procedure Add_Link
+     (Canvas : access Interactive_Canvas_Record;
+      Src    : access Canvas_Item_Record'Class;
+      Dest   : access Canvas_Item_Record'Class;
+      Arrow  : in Arrow_Type := End_Arrow;
+      Descr  : in String := "");
+   --  Simpler procedure to add a standard link.
+   --  This takes care of memory allocation, as well as adding the link to
+   --  the canvas.
+
+   procedure Remove_Link
+     (Canvas : access Interactive_Canvas_Record;
+      Link   : access Canvas_Link_Record'Class);
+   --  Remove a link from the canvas.
+   --  Note that this does not deallocate the memory occupied by Link, this is
+   --  your responsability to do so.
+   --  Nothing is done if Link does not belong to canvas.
+
+   type Link_Processor is access
+     function (Canvas : access Interactive_Canvas_Record'Class;
+               Link   : access Canvas_Link_Record'Class)
+              return Boolean;
+   procedure For_Each_Link
+     (Canvas  : access Interactive_Canvas_Record;
+      Execute : Link_Processor);
+   --  Execute an action on each of the links contained in the canvas.
+   --  If Execute returns False, we stop traversing the list of links.
+   --  It is safe to remove the link from the list in Link_Processor.
+
+   procedure Destroy (Link : access Canvas_Link_Record);
+   --  Free the memory occupied by Link.
+   --  Note that Link should first be removed from the canvas, but this is
+   --  your responsability to do so.
 
    ---------------
    -- Selection --
@@ -350,25 +415,28 @@ private
    --  For Straight, the link is drawn as a straight line between the two
    --  items. The other two cases indicates curve links, to a specific side.
 
-   type Link;
-   type Link_Access is access Link;
-   type Link is
+   type Canvas_Link_Record is tagged record
+      Src    : Canvas_Item;
+      Dest   : Canvas_Item;
+      Descr  : String_Access;
+
+      Arrow  : Arrow_Type;
+
+      Side   : Link_Side;
+      Offset : Glib.Gint;
+      --  How the link is drawn.
+      --  Offset is used, along with Side, to calculate the "equation" of
+      --  the arc. Basically, Offset * Grid_Size is the distance in the
+      --  middle of the link between where a straight link would be and
+      --  where the arc is.
+   end record;
+
+   type Canvas_Link_List_Record;
+   type Canvas_Link_List is access Canvas_Link_List_Record;
+   type Canvas_Link_List_Record is
       record
-         Src    : Canvas_Item;
-         Dest   : Canvas_Item;
-         Descr  : String_Access;
-
-         Arrow  : Arrow_Type;
-
-         Side   : Link_Side;
-         Offset : Glib.Gint;
-         --  How the link is drawn.
-         --  Offset is used, along with Side, to calculate the "equation" of
-         --  the arc. Basically, Offset * Grid_Size is the distance in the
-         --  middle of the link between where a straight link would be and
-         --  where the arc is.
-
-         Next   : Link_Access;
+         Link : Canvas_Link;
+         Next : Canvas_Link_List;
       end record;
 
    type Canvas_Item_List_Record;
@@ -381,7 +449,7 @@ private
 
    type Interactive_Canvas_Record is new Gtk.Viewport.Gtk_Viewport_Record with
       record
-         Links             : Link_Access := null;
+         Links             : Canvas_Link_List  := null;
          Children          : Canvas_Item_List := null;
 
          Selection         : Canvas_Item_List := null;

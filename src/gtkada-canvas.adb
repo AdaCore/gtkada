@@ -37,7 +37,10 @@ package body Gtkada.Canvas is
    -----------------
 
    procedure Free is new Unchecked_Deallocation (String, String_Access);
-   procedure Free is new Unchecked_Deallocation (Link, Link_Access);
+   procedure Free is new Unchecked_Deallocation
+     (Canvas_Link_List_Record, Canvas_Link_List);
+   procedure Free is new Unchecked_Deallocation
+     (Canvas_Link_Record'Class, Canvas_Link);
    procedure Free is new Unchecked_Deallocation
      (Canvas_Item_List_Record, Canvas_Item_List);
 
@@ -105,7 +108,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
-      Link   : in Link_Access);
+      Link   : in Canvas_Link);
    --  Draw Link on the screen as a straight line.
    --  This link includes both an arrow head on its destination, and an
    --  optional text displayed approximatively in its middle.
@@ -113,7 +116,7 @@ package body Gtkada.Canvas is
    procedure Draw_Arc_Link (Canvas : access Interactive_Canvas_Record'Class;
                             Window : Gdk_Window;
                             GC     : in Gdk.GC.Gdk_GC;
-                            Link   : in Link_Access);
+                            Link   : in Canvas_Link);
    --  Draw Link on the screen.
    --  The link is drawn as a curved link (ie there is an extra handle in its
    --  middle).
@@ -147,6 +150,15 @@ package body Gtkada.Canvas is
    procedure Draw_On_Double_Buffer
      (Canvas : access Interactive_Canvas_Record'Class);
    --  Redraw everything on the double buffer.
+
+   function Has_Link
+     (Canvas    : access Interactive_Canvas_Record'Class;
+      Src, Dest : access Canvas_Item_Record'Class;
+      Side      : Link_Side;
+      Offset    : Gint) return Boolean;
+   --  Return True if there is already a link from Src to Dest with
+   --  the specific side and offset specified in parameter.
+   --  This is used to avoid having two link hidding each other.
 
    -------------
    -- Gtk_New --
@@ -413,7 +425,7 @@ package body Gtkada.Canvas is
       end Location_Is_Free;
 
       Src_Item : Canvas_Item := null;
-      Links    : Link_Access := Canvas.Links;
+      Links    : Canvas_Link_List := Canvas.Links;
       X1       : Gint;
       Y1       : Gint;
 
@@ -428,9 +440,9 @@ package body Gtkada.Canvas is
 
          while Links /= null loop
             if Src_Item = null
-              and then Links.Dest = Canvas_Item (Item)
+              and then Links.Link.Dest = Canvas_Item (Item)
             then
-               Src_Item := Links.Src;
+               Src_Item := Links.Link.Src;
             end if;
             Links := Links.Next;
          end loop;
@@ -552,102 +564,15 @@ package body Gtkada.Canvas is
    procedure For_Each_Item (Canvas  : access Interactive_Canvas_Record;
                             Execute : Item_Processor)
    is
-      Item : Canvas_Item_List := Canvas.Children;
+      Item     : Canvas_Item_List := Canvas.Children;
+      Tmp      : Canvas_Item_List;
    begin
-      while Item /= null
-        and then Execute (Canvas, Item.Item)
-      loop
-         Item := Item.Next;
+      while Item /= null loop
+         Tmp := Item.Next;
+         exit when not  Execute (Canvas, Item.Item);
+         Item := Tmp;
       end loop;
    end For_Each_Item;
-
-   --------------
-   -- Add_Link --
-   --------------
-
-   procedure Add_Link (Canvas : access Interactive_Canvas_Record;
-                       Src    : access Canvas_Item_Record'Class;
-                       Dest   : access Canvas_Item_Record'Class;
-                       Arrow  : in Arrow_Type := End_Arrow;
-                       Descr  : in String := "")
-   is
-      function Has_Link (Side : Link_Side; Offset : Gint) return Boolean;
-      --  Return True if there is already a link from Src to Dest with
-      --  the specific side and offset specified in parameter.
-      --  This is used to avoid having two link hidding each other.
-
-      --------------
-      -- Has_Link --
-      --------------
-
-      function Has_Link (Side : Link_Side; Offset : Gint) return Boolean is
-         Current : Link_Access := Canvas.Links;
-         Other_Side : Link_Side := Side;
-      begin
-         if Side = Left then
-            Other_Side := Right;
-         elsif Side = Right then
-            Other_Side := Left;
-         end if;
-
-         while Current /= null loop
-            if Current.Src = Canvas_Item (Src)
-              and then Current.Dest = Canvas_Item (Dest)
-              and then Current.Side = Side
-              and then Current.Offset = Offset
-            then
-               return True;
-            end if;
-
-            if Current.Src = Canvas_Item (Dest)
-              and then Current.Dest = Canvas_Item (Src)
-              and then Current.Side = Other_Side
-              and then Current.Offset = Offset
-            then
-               return True;
-            end if;
-            Current := Current.Next;
-         end loop;
-         return False;
-      end Has_Link;
-
-      Ptr    : String_Access := null;
-      Offset : Gint := 1;
-      Side   : Link_Side;
-   begin
-      if Descr /= "" then
-         Ptr := new String'(Descr);
-      end if;
-
-      --  Find the type of link that should be used.
-      --  We can't use straight links for self referencing links.
-
-      if Canvas_Item (Src) /= Canvas_Item (Dest)
-        and then not Has_Link (Straight, 0)
-      then
-         Side := Straight;
-         Offset := 0;
-      else
-         loop
-            if not Has_Link (Right, Offset) then
-               Side := Right;
-               exit;
-            elsif not Has_Link (Left, Offset) then
-               Side := Left;
-               exit;
-            end if;
-            Offset := Offset + 1;
-         end loop;
-      end if;
-
-      Canvas.Links := new Link'(Src    => Canvas_Item (Src),
-                                Dest   => Canvas_Item (Dest),
-                                Side   => Side,
-                                Offset => Offset,
-                                Descr  => Ptr,
-                                Arrow  => Arrow,
-                                Next   => Canvas.Links);
-   end Add_Link;
 
    ---------------
    -- Clip_Line --
@@ -753,7 +678,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
-      Link   : in Link_Access)
+      Link   : in Canvas_Link)
    is
       X1, Y1, X2, Y2 : Gint;
    begin
@@ -816,7 +741,7 @@ package body Gtkada.Canvas is
    procedure Draw_Arc_Link (Canvas : access Interactive_Canvas_Record'Class;
                             Window : Gdk_Window;
                             GC     : in Gdk.GC.Gdk_GC;
-                            Link   : in Link_Access)
+                            Link   : in Canvas_Link)
    is
       X1, Y1, X2, Y2, X3, Y3 : Gint;
       --  The three points that define the arc
@@ -1041,17 +966,21 @@ package body Gtkada.Canvas is
       GC     : in Gdk.GC.Gdk_GC;
       Item   : in Canvas_Item := null)
    is
-      Current : Link_Access := Canvas.Links;
+      Current : Canvas_Link_List := Canvas.Links;
    begin
       while Current /= null loop
          if Item = null
-           or else Current.Src = Canvas_Item (Item)
-           or else Current.Dest = Canvas_Item (Item)
+           or else Current.Link.Src = Canvas_Item (Item)
+           or else Current.Link.Dest = Canvas_Item (Item)
          then
-            if Current.Side = Straight then
-               Draw_Straight_Link (Canvas, Window, GC, Current);
-            else
-               Draw_Arc_Link (Canvas, Window, GC, Current);
+            if Is_Visible (Current.Link.Src)
+              and then Is_Visible (Current.Link.Dest)
+            then
+               if Current.Link.Side = Straight then
+                  Draw_Straight_Link (Canvas, Window, GC, Current.Link);
+               else
+                  Draw_Arc_Link (Canvas, Window, GC, Current.Link);
+               end if;
             end if;
          end if;
          Current := Current.Next;
@@ -1527,16 +1456,16 @@ package body Gtkada.Canvas is
 
             --  Delete the currently dashed lines
 
-            if Canvas.Align_On_Grid then
-               X := Item.Coord.X;
-               Y := Item.Coord.Y;
-               Item.Coord.X := Item.Coord.X
-                 - Item.Coord.X mod Gint (Canvas.Grid_Size);
-               Item.Coord.Y := Item.Coord.Y
-                 - Item.Coord.Y mod Gint (Canvas.Grid_Size);
-            end if;
-
             if Item.Visible then
+               if Canvas.Align_On_Grid then
+                  X := Item.Coord.X;
+                  Y := Item.Coord.Y;
+                  Item.Coord.X := Item.Coord.X
+                    - Item.Coord.X mod Gint (Canvas.Grid_Size);
+                  Item.Coord.Y := Item.Coord.Y
+                    - Item.Coord.Y mod Gint (Canvas.Grid_Size);
+               end if;
+
                Draw_Rectangle (Get_Window (Canvas.Drawing_Area),
                                GC     => Canvas.Anim_GC,
                                Filled => False,
@@ -1544,16 +1473,16 @@ package body Gtkada.Canvas is
                                Y      => Item.Coord.Y,
                                Width  => Gint (Item.Coord.Width) - 1,
                                Height => Gint (Item.Coord.Height) - 1);
+               Update_Links
+                 (Canvas, Get_Window (Canvas.Drawing_Area),
+                  Canvas.Anim_GC, Item);
+
+               if Canvas.Align_On_Grid then
+                  Item.Coord.X := X;
+                  Item.Coord.Y := Y;
+               end if;
             end if;
 
-            Update_Links
-              (Canvas, Get_Window (Canvas.Drawing_Area),
-               Canvas.Anim_GC, Item);
-
-            if Canvas.Align_On_Grid then
-               Item.Coord.X := X;
-               Item.Coord.Y := Y;
-            end if;
 
             Selected := Selected.Next;
          end loop;
@@ -1576,16 +1505,16 @@ package body Gtkada.Canvas is
          --  Note that in the case of Align_On_Grid, we do not want to
          --  constrain the item location now, since this wouldn't work.
 
-         if Canvas.Align_On_Grid then
-            X := Item.Coord.X;
-            Y := Item.Coord.Y;
-            Item.Coord.X := Item.Coord.X
-              - Item.Coord.X mod Gint (Canvas.Grid_Size);
-            Item.Coord.Y := Item.Coord.Y
-              - Item.Coord.Y mod Gint (Canvas.Grid_Size);
-         end if;
-
          if Item.Visible then
+            if Canvas.Align_On_Grid then
+               X := Item.Coord.X;
+               Y := Item.Coord.Y;
+               Item.Coord.X := Item.Coord.X
+                 - Item.Coord.X mod Gint (Canvas.Grid_Size);
+               Item.Coord.Y := Item.Coord.Y
+                 - Item.Coord.Y mod Gint (Canvas.Grid_Size);
+            end if;
+
             Draw_Rectangle (Get_Window (Canvas.Drawing_Area),
                             GC     => Canvas.Anim_GC,
                             Filled => False,
@@ -1593,14 +1522,14 @@ package body Gtkada.Canvas is
                             Y      => Item.Coord.Y,
                             Width  => Gint (Item.Coord.Width) - 1,
                             Height => Gint (Item.Coord.Height) - 1);
-         end if;
 
-         Update_Links
-           (Canvas, Get_Window (Canvas.Drawing_Area), Canvas.Anim_GC, Item);
+            Update_Links
+              (Canvas, Get_Window (Canvas.Drawing_Area), Canvas.Anim_GC, Item);
 
-         if Canvas.Align_On_Grid then
-            Item.Coord.X := X;
-            Item.Coord.Y := Y;
+            if Canvas.Align_On_Grid then
+               Item.Coord.X := X;
+               Item.Coord.Y := Y;
+            end if;
          end if;
 
          Selected := Selected.Next;
@@ -1661,10 +1590,10 @@ package body Gtkada.Canvas is
    procedure Remove (Canvas : access Interactive_Canvas_Record;
                      Item   : access Canvas_Item_Record'Class)
    is
-      Previous     : Canvas_Item_List := null;
-      Current      : Canvas_Item_List := Canvas.Children;
-      Previous_Link : Link_Access;
-      Current_Link : Link_Access;
+      Previous      : Canvas_Item_List := null;
+      Current       : Canvas_Item_List := Canvas.Children;
+      Previous_Link : Canvas_Link_List;
+      Current_Link  : Canvas_Link_List;
    begin
       while Current /= null loop
          if Current.Item = Canvas_Item (Item) then
@@ -1682,8 +1611,8 @@ package body Gtkada.Canvas is
             Previous_Link := null;
             Current_Link := Canvas.Links;
             while Current_Link /= null loop
-               if Current_Link.Src = Canvas_Item (Item)
-                 or else Current_Link.Dest = Canvas_Item (Item)
+               if Current_Link.Link.Src = Canvas_Item (Item)
+                 or else Current_Link.Link.Dest = Canvas_Item (Item)
                then
 
                   if Previous_Link = null then
@@ -1692,7 +1621,7 @@ package body Gtkada.Canvas is
                      Previous_Link.Next := Current_Link.Next;
                   end if;
 
-                  Free (Current_Link.Descr);
+                  Destroy (Current_Link.Link);
                   Free (Current_Link);
                else
                   Previous_Link := Current_Link;
@@ -1751,12 +1680,12 @@ package body Gtkada.Canvas is
                       Name     : String)
                      return Boolean
    is
-      Current : Link_Access := Canvas.Links;
+      Current : Canvas_Link_List := Canvas.Links;
    begin
       while Current /= null loop
-         if Current.Src = Canvas_Item (From)
-           and then Current.Dest = Canvas_Item (To)
-           and then Current.Descr.all = Name
+         if Current.Link.Src = Canvas_Item (From)
+           and then Current.Link.Dest = Canvas_Item (To)
+           and then Current.Link.Descr.all = Name
          then
             return True;
          end if;
@@ -1987,5 +1916,208 @@ package body Gtkada.Canvas is
          end if;
       end loop;
    end Remove_From_Selection;
+
+   ---------------
+   -- Configure --
+   ---------------
+
+   procedure Configure
+     (Link   : access Canvas_Link_Record;
+      Src    : access Canvas_Item_Record'Class;
+      Dest   : access Canvas_Item_Record'Class;
+      Arrow  : in Arrow_Type := End_Arrow;
+      Descr  : in String := "")
+   is
+   begin
+      Link.Src := Canvas_Item (Src);
+      Link.Dest := Canvas_Item (Dest);
+      Link.Arrow := Arrow;
+
+      Free (Link.Descr);
+      Link.Descr := new String'(Descr);
+   end Configure;
+
+   --------------
+   -- Add_Link --
+   --------------
+
+   procedure Add_Link
+     (Canvas : access Interactive_Canvas_Record;
+      Src    : access Canvas_Item_Record'Class;
+      Dest   : access Canvas_Item_Record'Class;
+      Arrow  : in Arrow_Type := End_Arrow;
+      Descr  : in String := "")
+   is
+      L : Canvas_Link;
+   begin
+      L := new Canvas_Link_Record;
+      Configure (L, Src, Dest, Arrow, Descr);
+      Add_Link (Canvas, L);
+   end Add_Link;
+
+   --------------
+   -- Has_Link --
+   --------------
+
+   function Has_Link
+     (Canvas    : access Interactive_Canvas_Record'Class;
+      Src, Dest : access Canvas_Item_Record'Class;
+      Side      : Link_Side;
+      Offset    : Gint) return Boolean
+   is
+      Current : Canvas_Link_List := Canvas.Links;
+      Other_Side : Link_Side := Side;
+   begin
+      if Side = Left then
+         Other_Side := Right;
+      elsif Side = Right then
+         Other_Side := Left;
+      end if;
+
+      while Current /= null loop
+         if Current.Link.Src = Canvas_Item (Src)
+           and then Current.Link.Dest = Canvas_Item (Dest)
+           and then Current.Link.Side = Side
+           and then Current.Link.Offset = Offset
+         then
+            return True;
+         end if;
+
+         if Current.Link.Src = Canvas_Item (Dest)
+           and then Current.Link.Dest = Canvas_Item (Src)
+           and then Current.Link.Side = Other_Side
+           and then Current.Link.Offset = Offset
+         then
+            return True;
+         end if;
+         Current := Current.Next;
+      end loop;
+      return False;
+   end Has_Link;
+
+   --------------
+   -- Add_Link --
+   --------------
+
+   procedure Add_Link
+     (Canvas : access Interactive_Canvas_Record;
+      Link   : access Canvas_Link_Record'Class)
+   is
+      Offset : Gint := 1;
+      Side   : Link_Side;
+   begin
+      --  Find the type of link that should be used.
+      --  We can't use straight links for self referencing links.
+
+      if Link.Src /= Link.Dest
+        and then not Has_Link (Canvas, Link.Src, Link.Dest, Straight, 0)
+      then
+         Side := Straight;
+         Offset := 0;
+      else
+         loop
+            if not Has_Link (Canvas, Link.Src, Link.Dest, Right, Offset) then
+               Side := Right;
+               exit;
+            elsif not Has_Link (Canvas, Link.Src, Link.Dest, Left, Offset) then
+               Side := Left;
+               exit;
+            end if;
+            Offset := Offset + 1;
+         end loop;
+      end if;
+
+      Link.Side   := Side;
+      Link.Offset := Offset;
+      Canvas.Links := new Canvas_Link_List_Record'
+        (Link => Canvas_Link (Link),
+         Next => Canvas.Links);
+   end Add_Link;
+
+   -----------------
+   -- Remove_Link --
+   -----------------
+
+   procedure Remove_Link
+     (Canvas : access Interactive_Canvas_Record;
+      Link   : access Canvas_Link_Record'Class)
+   is
+      Previous : Canvas_Link_List;
+      Current : Canvas_Link_List := Canvas.Links;
+   begin
+      while Current /= null loop
+         if Current.Link = Canvas_Link (Link) then
+            if Previous = null then
+               Canvas.Links := Current.Next;
+            else
+               Previous.Next := Current.Next;
+            end if;
+            Free (Current);
+            return;
+         end if;
+         Previous := Current;
+         Current := Current.Next;
+      end loop;
+   end Remove_Link;
+
+   -------------------
+   -- For_Each_Link --
+   -------------------
+
+   procedure For_Each_Link
+     (Canvas  : access Interactive_Canvas_Record;
+      Execute : Link_Processor)
+   is
+      Current : Canvas_Link_List := Canvas.Links;
+      Tmp     : Canvas_Link_List;
+   begin
+      while Current /= null loop
+         Tmp := Current.Next;
+         exit when not Execute (Canvas, Current.Link);
+         Current := Tmp;
+      end loop;
+   end For_Each_Link;
+
+   -------------
+   -- Destroy --
+   -------------
+
+   procedure Destroy (Link : access Canvas_Link_Record) is
+      L : Canvas_Link := Canvas_Link (Link);
+   begin
+      Free (Link.Descr);
+      Free (L);
+   end Destroy;
+
+   -------------
+   -- Get_Src --
+   -------------
+
+   function Get_Src (Link : access Canvas_Link_Record) return Canvas_Item is
+   begin
+      return Link.Src;
+   end Get_Src;
+
+   --------------
+   -- Get_Dest --
+   --------------
+
+   function Get_Dest (Link : access Canvas_Link_Record) return Canvas_Item is
+   begin
+      return Link.Dest;
+   end Get_Dest;
+
+   ---------------
+   -- Get_Descr --
+   ---------------
+
+   function Get_Descr (Link : access Canvas_Link_Record) return String is
+   begin
+      if Link.Descr = null then
+         return "";
+      else
+         return Link.Descr.all;
+      end if;
+   end Get_Descr;
 
 end Gtkada.Canvas;
