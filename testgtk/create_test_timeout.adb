@@ -48,7 +48,7 @@ package body Create_Test_Timeout is
    function Timeout_Test (Label : in Gtk_Label) return Boolean is
    begin
       Count := Count + 1;
-      Set (Label, "count:" & Integer'Image (Count));
+      Set_Text (Label, "count:" & Integer'Image (Count));
       return True;
    end Timeout_Test;
 
@@ -75,7 +75,7 @@ package body Create_Test_Timeout is
       Destroy_Timeout (Window);
       Destroyed (Window, Widget);
    end Destroy_Timeout;
-  
+
    procedure Start_Timeout (Label : in out Gtk_Label) is
    begin
       if Timeout = 0 then

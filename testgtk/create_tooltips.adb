@@ -72,9 +72,9 @@ package body Create_Tooltips is
    begin
       if Is_Active (Toggle) then
          if Tip_Text'Length /= 0 then
-            Set (Tips_Query, "There is a Tip!");
+            Set_Text (Tips_Query, "There is a Tip!");
          else
-            Set (Tips_Query, "There is no Tip!");
+            Set_Text (Tips_Query, "There is no Tip!");
          end if;
          --  Don't let GtkTipsQuery reset it's label
          Emit_Stop_By_Name (Tips_Query, "widget_entered");

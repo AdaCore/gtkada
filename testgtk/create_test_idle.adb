@@ -48,7 +48,7 @@ package body Create_Test_Idle is
    function Idle_Test (Label : in Gtk_Label) return Boolean is
    begin
       Count := Count + 1;
-      Set (Label, "count:" & Integer'Image (Count));
+      Set_Text (Label, "count:" & Integer'Image (Count));
       return True;
    end Idle_Test;
 

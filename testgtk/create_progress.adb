@@ -149,10 +149,11 @@ package body Create_Progress is
    procedure Value_Changed (Adj   : in out Gtk_Adjustment) is
    begin
       if Get_Activity_Mode (Pdata.Pbar) then
-         Set (Pdata.Label, "???");
+         Set_Text (Pdata.Label, "???");
       else
-         Set (Pdata.Label, GFloat'Image (Get_Current_Percentage (Pdata.Pbar))
-              & "%");
+         Set_Text (Pdata.Label,
+                   GFloat'Image (Get_Current_Percentage (Pdata.Pbar))
+                   & "%");
       end if;
    end Value_Changed;
 

@@ -82,9 +82,9 @@ package body Create_Spin is
       Spin  : Gtk_Spin_Button := Spinner1;
    begin
       if Data = 1 then
-         Set (Label, Gint'Image (Get_Value_As_Int (Spin)));
+         Set_Text (Label, Gint'Image (Get_Value_As_Int (Spin)));
       else
-         Set (Label, Gfloat'Image (Get_Value_As_Float (Spin)));
+         Set_Text (Label, Gfloat'Image (Get_Value_As_Float (Spin)));
       end if;
    end Get_Value;
 
@@ -221,7 +221,7 @@ package body Create_Spin is
          Pack_Start (Hbox, Button, True, True, 5);
 
          Pack_Start (Vbox, Label, True, True, 0);
-         Set (Label, "0");
+         Set_Text (Label, "0");
 
          Gtk_New_Hbox (Hbox, False, 0);
          Pack_Start (Main_Box, Hbox, False, True, 0);
