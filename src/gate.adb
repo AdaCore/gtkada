@@ -133,6 +133,6 @@ exception
       Put_Line ("Exception = " & Exception_Name (E));
       Put_Line ("GATE: Internal error. Please send a bug report with the XML");
       Put_Line ("file " & Argument (Arg) & " and the GtkAda version to " &
-        "gtkada@ada.eu.org");
+        "gtkada@lists.act-europe.fr");
       Set_Exit_Status (2);
 end Gate;
