@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Check_Menu_Item;
 with Gtk.Widget; use Gtk.Widget;
@@ -43,10 +43,20 @@ package Gtk.Radio_Menu_Item is
       Group           : Widget_SList.GSlist;
       Label           : String := "");
 
+   procedure Gtk_New_With_Mnemonic
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : Widget_SList.GSlist;
+      Label           : String);
+
    procedure Initialize
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
       Group           : Widget_SList.GSlist;
       Label           : String := "");
+
+   procedure Initialize_With_Mnemonic
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : Widget_SList.GSlist;
+      Label           : String);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Menu_Item.

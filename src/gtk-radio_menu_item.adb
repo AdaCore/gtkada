@@ -76,6 +76,19 @@ package body Gtk.Radio_Menu_Item is
       Initialize (Radio_Menu_Item, Group, Label);
    end Gtk_New;
 
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : Widget_SList.GSlist;
+      Label           : String) is
+   begin
+      Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
+      Initialize_With_Mnemonic (Radio_Menu_Item, Group, Label);
+   end Gtk_New_With_Mnemonic;
+
    ----------------
    -- Initialize --
    ----------------
@@ -88,12 +101,36 @@ package body Gtk.Radio_Menu_Item is
       function Internal
         (Group : System.Address; Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_new_with_label");
+      function Internal2
+        (Group : System.Address) return System.Address;
+      pragma Import (C, Internal2, "gtk_radio_menu_item_new");
+   begin
+      if Label = "" then
+         Set_Object (Radio_Menu_Item, Internal2 (Get_Object (Group)));
+      else
+         Set_Object
+           (Radio_Menu_Item, Internal (Get_Object (Group), Label & ASCII.NUL));
+      end if;
+      Initialize_User_Data (Radio_Menu_Item);
+   end Initialize;
 
+   ------------------------------
+   -- Initialize_With_Mnemonic --
+   ------------------------------
+
+   procedure Initialize_With_Mnemonic
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : Widget_SList.GSlist;
+      Label           : String)
+   is
+      function Internal
+        (Group : System.Address; Label : String) return System.Address;
+      pragma Import (C, Internal, "gtk_radio_menu_item_new_with_mnemonic");
    begin
       Set_Object
         (Radio_Menu_Item, Internal (Get_Object (Group), Label & ASCII.NUL));
       Initialize_User_Data (Radio_Menu_Item);
-   end Initialize;
+   end Initialize_With_Mnemonic;
 
    ---------------------
    -- Selected_Button --
