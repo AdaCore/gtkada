@@ -37,11 +37,12 @@ package body Pango.Font is
    --  confuse their memory tracking mechanism, and which might even lead to
    --  failures in certains OSes.
 
-   function G_Strdup (Str : String) return Interfaces.C.Strings.chars_ptr;
-   pragma Import (C, G_Strdup, "g_strdup");
+   function g_strndup
+     (str : String; len : Integer) return Interfaces.C.Strings.chars_ptr;
+   pragma Import (C, g_strndup, "g_strndup");
 
-   procedure G_Free (C_Str : Interfaces.C.Strings.chars_ptr);
-   pragma Import (C, G_Free, "g_free");
+   procedure g_free (c_str : Interfaces.C.Strings.chars_ptr);
+   pragma Import (C, g_free, "g_free");
 
    -----------
    -- Equal --
@@ -49,14 +50,13 @@ package body Pango.Font is
 
    function Equal
      (Desc1 : Pango_Font_Description;
-      Desc2 : Pango_Font_Description)
-     return Boolean
+      Desc2 : Pango_Font_Description) return Boolean
    is
       function Internal
         (Desc1 : Pango_Font_Description;
-         Desc2 : Pango_Font_Description)
-        return Gboolean;
+         Desc2 : Pango_Font_Description) return Gboolean;
       pragma Import (C, Internal, "pango_font_description_equal");
+
    begin
       return Boolean'Val (Internal (Desc1, Desc2));
    end Equal;
@@ -65,10 +65,10 @@ package body Pango.Font is
    -- Free --
    ----------
 
-   procedure Free (Desc : in out Pango_Font_Description)
-   is
+   procedure Free (Desc : in out Pango_Font_Description) is
       procedure Internal (Desc : Pango_Font_Description);
       pragma Import (C, Internal, "pango_font_description_free");
+
    begin
       Internal (Desc);
       Desc := null;
@@ -78,10 +78,10 @@ package body Pango.Font is
    -- From_String --
    -----------------
 
-   function From_String (Str : String) return Pango_Font_Description
-   is
+   function From_String (Str : String) return Pango_Font_Description is
       function Internal (Str : String) return Pango_Font_Description;
       pragma Import (C, Internal, "pango_font_description_from_string");
+
    begin
       return Internal (Str & ASCII.NUL);
    end From_String;
@@ -90,15 +90,16 @@ package body Pango.Font is
    -- To_String --
    ---------------
 
-   function To_String (Desc : Pango_Font_Description) return String
-   is
-      function Internal (Desc : Pango_Font_Description)
-        return Interfaces.C.Strings.chars_ptr;
+   function To_String (Desc : Pango_Font_Description) return String is
+      function Internal
+        (Desc : Pango_Font_Description) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "pango_font_description_to_string");
+
       C_Result : Interfaces.C.Strings.chars_ptr := Internal (Desc);
-      Result : constant String := Interfaces.C.Strings.Value (C_Result);
+      Result   : constant String := Interfaces.C.Strings.Value (C_Result);
+
    begin
-      G_Free (C_Result);
+      g_free (C_Result);
       return Result;
    end To_String;
 
@@ -106,15 +107,16 @@ package body Pango.Font is
    -- To_Filename --
    -----------------
 
-   function To_Filename (Desc : Pango_Font_Description) return String
-   is
-      function Internal (Desc : Pango_Font_Description)
-        return Interfaces.C.Strings.chars_ptr;
+   function To_Filename (Desc : Pango_Font_Description) return String is
+      function Internal
+        (Desc : Pango_Font_Description) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "pango_font_description_to_filename");
+
       C_Result : Interfaces.C.Strings.chars_ptr := Internal (Desc);
-      Result : constant String := Interfaces.C.Strings.Value (C_Result);
+      Result   : constant String := Interfaces.C.Strings.Value (C_Result);
+
    begin
-      G_Free (C_Result);
+      g_free (C_Result);
       return Result;
    end To_Filename;
 
@@ -138,9 +140,10 @@ package body Pango.Font is
       use type Interfaces.C.Strings.chars_ptr;
    begin
       if Desc.Family_Name /= Interfaces.C.Strings.Null_Ptr then
-         G_Free (Desc.Family_Name);
+         g_free (Desc.Family_Name);
       end if;
-      Desc.Family_Name := G_Strdup (Name & ASCII.NUL);
+
+      Desc.Family_Name := g_strndup (Name, Name'Length);
    end Set_Family_Name;
 
 end Pango.Font;

@@ -38,11 +38,12 @@ package Pango.Font is
       Family_Name : Interfaces.C.Strings.chars_ptr;
       --  It is highly recommended to access to this field via the
       --  Get/Set_Family_Name routines (see below).
-      Style : Pango.Enums.Style;
-      Variant : Pango.Enums.Variant;
-      Weight : Pango.Enums.Weight;
-      Stretch : Pango.Enums.Stretch;
-      Size : Gint;
+
+      Style       : Pango.Enums.Style;
+      Variant     : Pango.Enums.Variant;
+      Weight      : Pango.Enums.Weight;
+      Stretch     : Pango.Enums.Stretch;
+      Size        : Gint;
       --  Strictly, should be Interfaces.C.int, but Gint is simpler to use.
    end record;
    pragma Convention (C, Pango_Font_Description_Record);
@@ -50,18 +51,16 @@ package Pango.Font is
    type Pango_Font_Description is access all Pango_Font_Description_Record;
    pragma Convention (C, Pango_Font_Description);
 
-   function Copy (Desc : Pango_Font_Description)
-     return Pango_Font_Description;
-   --  Return a newly allocated font description. This Pango_Font_Description
-   --  needs to be free'ed after use.
+   function Copy (Desc : Pango_Font_Description) return Pango_Font_Description;
+   --  Return a newly allocated font description.
+   --  This Pango_Font_Description needs to be free'ed after use.
 
    function Equal
      (Desc1 : Pango_Font_Description;
-      Desc2 : Pango_Font_Description)
-     return Boolean;
-   --  Return True if the two font descriptions are identical. Note that two
-   --  font description may result in identical fonts being loaded, but still
-   --  compare False.
+      Desc2 : Pango_Font_Description) return Boolean;
+   --  Return True if the two font descriptions are identical.
+   --  Note that two font description may result in identical fonts being
+   --  loaded, but still compare False.
 
    procedure Free (Desc : in out Pango_Font_Description);
    --  Deallocate the given font description.
@@ -97,9 +96,7 @@ package Pango.Font is
    --  Returns the Family_Name of the given Pango_Font_Description. This is
    --  a convenience function that converts the chars_ptr into a String.
 
-   procedure Set_Family_Name
-     (Desc : Pango_Font_Description;
-      Name : String);
+   procedure Set_Family_Name (Desc : Pango_Font_Description; Name : String);
    --  Sets the Family_Name of the given Pango_Font_Description. This is
    --  a convenience functions that transforms the given string into
    --  the chars_ptr stored in the font description record. It also takes
