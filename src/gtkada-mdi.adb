@@ -2730,7 +2730,9 @@ package body Gtkada.MDI is
 
    procedure Configure_Notebook_Tabs
      (MDI : access MDI_Window_Record'Class;
-      Notebook : access Gtk_Notebook_Record'Class) is
+      Notebook : access Gtk_Notebook_Record'Class)
+   is
+      Child : MDI_Child;
    begin
       Set_Tab_Pos   (Notebook, MDI.Tabs_Position);
 
@@ -2738,6 +2740,17 @@ package body Gtkada.MDI is
          Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy /= Never);
       else
          Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy = Always);
+      end if;
+
+      Child := MDI_Child (Get_Nth_Page (Notebook, 0));
+      if Child = null then
+         null;
+      elsif Get_Nth_Page (Notebook, 1) /= null
+         or else MDI.Show_Tabs_Policy = Always
+      then
+         Set_Border_Width (Child.Main_Box, 0);
+      else
+         Set_Border_Width (Child.Main_Box, Guint (Small_Border_Thickness));
       end if;
    end Configure_Notebook_Tabs;
 
@@ -2860,13 +2873,6 @@ package body Gtkada.MDI is
       Child.State := Normal;
 
       Append_Page (Note, Child);
-
-      if Get_Nth_Page (Note, 1) /= null then
-         Set_Border_Width (Child.Main_Box, 0);
-         Set_Border_Width (MDI_Child (Get_Nth_Page (Note, 0)).Main_Box, 0);
-      else
-         Set_Border_Width (Child.Main_Box, Guint (Small_Border_Thickness));
-      end if;
 
       Configure_Notebook_Tabs (MDI, Note);
 
@@ -3264,8 +3270,12 @@ package body Gtkada.MDI is
          --  If we have only one page:
          elsif Page2 = null then
             First_Child := MDI_Child (Page1);
-            Set_Border_Width
-              (First_Child.Main_Box, Guint (Small_Border_Thickness));
+            if Child.MDI.Show_Tabs_Policy = Always then
+               Set_Border_Width (First_Child.Main_Box, 0);
+            else
+               Set_Border_Width
+                 (First_Child.Main_Box, Guint (Small_Border_Thickness));
+            end if;
          end if;
       end if;
 
