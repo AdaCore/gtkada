@@ -2280,7 +2280,7 @@ ada_gdk_window_attr_get_override_redirect (GdkWindowAttr * window_attr)
  *
  */
 
-inline void
+void
 ada_gdk_property_get (GdkWindow	 *window,
 		      GdkAtom     property,
 		      GdkAtom     type,
