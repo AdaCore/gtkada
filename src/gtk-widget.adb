@@ -286,13 +286,12 @@ package body Gtk.Widget is
    -- Get_Default_Colormap --
    --------------------------
 
-   function Get_Default_Colormap (Widget : in Gtk_Widget)
-                          return Gdk.Color.Gdk_Colormap is
-      function Internal (Widget : in System.Address) return System.Address;
+   function Get_Default_Colormap return Gdk.Color.Gdk_Colormap is
+      function Internal return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_default_colormap");
       Result : Gdk.Color.Gdk_Colormap;
    begin
-      Set_Object (Result, Internal (Get_Object (Widget)));
+      Set_Object (Result, Internal);
       return Result;
    end Get_Default_Colormap;
 
@@ -300,12 +299,12 @@ package body Gtk.Widget is
    -- Get_Default_Visual --
    ------------------------
 
-   function Get_Default_Visual (Widget : Gtk_Widget) return Gdk_Visual is
-      function Internal (Widget : System.Address) return System.Address;
+   function Get_Default_Visual return Gdk_Visual is
+      function Internal return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_default_visual");
       Visual : Gdk_Visual;
    begin
-      Set_Object (Visual, Internal (Get_Object (Widget)));
+      Set_Object (Visual, Internal);
       return Visual;
    end Get_Default_Visual;
 

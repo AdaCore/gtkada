@@ -132,13 +132,13 @@ package Gtk.Widget is
    --  The following functions deal with Visuals
 
    function Get_Visual (Widget : Gtk_Widget) return Gdk_Visual;
-   function Get_Default_Visual (Widget : Gtk_Widget) return Gdk_Visual;
+   function Get_Default_Visual return Gdk_Visual;
    procedure Set_Default_Visual (Widget : Gtk_Widget; Visual : Gdk_Visual);
 
    --  The following functions deal with Colormaps
 
    function Get_Colormap (Widget : Gtk_Widget) return Gdk_Colormap;
-   function Get_Default_Colormap (Widget : Gtk_Widget) return Gdk_Colormap;
+   function Get_Default_Colormap return Gdk_Colormap;
    procedure Set_Default_Colormap (Widget : Gtk_Widget; Cmap : Gdk_Colormap);
 
    --  The following four functions get the size and position of the widget
