@@ -618,7 +618,11 @@ package body Create_Ctree is
       B := Gtk.Spin_Button.Get_Value_As_Int (Spin2);
       P := Gtk.Spin_Button.Get_Value_As_Int (Spin3);
 
-      N := ((B ** Integer (D) - 1) / (B - 1)) * (P + 1);
+      if B = 1 then
+         N := D * (P + 1);
+      else
+         N := ((B ** Integer (D) - 1) / (B - 1)) * (P + 1);
+      end if;
 
       if N > 100_000 then
          Ada.Text_IO.Put_Line (Gint'Image (N) & " total items? Try less");
