@@ -3886,7 +3886,10 @@ package body Gtkada.MDI is
          return;
       end if;
 
-      if Dock and then Child.Dock /= None then
+      if Dock
+        and then Child.State /= Docked
+        and then Child.Dock /= None
+      then
          Float_Child (Child, False);
          Minimize_Child (Child, False);
          Put_In_Notebook (MDI, Child.Dock, Child);
@@ -4749,6 +4752,7 @@ package body Gtkada.MDI is
          State      : State_Type;
          Icons_Height : constant Gint :=
            MDI.Title_Bar_Height - 2 * Border_Thickness;
+         Dock : Dock_Side;
 
          Raised     : Boolean;
 
@@ -4819,7 +4823,7 @@ package body Gtkada.MDI is
                         State := State_Type'Value (N.Value.all);
 
                      elsif N.Tag.all = "Dock" then
-                        Child.Dock := Dock_Side'Value (N.Value.all);
+                        Dock := Dock_Side'Value (N.Value.all);
 
                      elsif N.Tag.all = "Uniconified_X" then
                         Child.Uniconified_X := Gint'Value (N.Value.all);
@@ -4852,6 +4856,11 @@ package body Gtkada.MDI is
                   if Raised then
                      Current_Pages (Child.Dock) := Child;
                   end if;
+
+                  --  Undock the child, since it is possible that its current
+                  --  dock is different from the one registered in the desktop
+                  Dock_Child (Child, False);
+                  Child.Dock := Dock;
 
                   case State is
                      when Docked =>
