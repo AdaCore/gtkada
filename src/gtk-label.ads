@@ -81,7 +81,7 @@ package Gtk.Label is
    --  matching the ones in the string. GtkAda will underline every letter
    --  that matches an underscore.
    --  An empty string disables the underlines.
-   --  example: If the text is FooBarBaz and the PATTERN is "___   ___"
+   --  example: If the text is FooBarBaz and the Pattern is "___   ___"
    --  then both "Foo" and "Baz" will be underlined, but not "Bar".
 
    procedure Set_Line_Wrap (Label : access Gtk_Label_Record;
