@@ -65,19 +65,6 @@ package body Gtk.Window is
       Set_Object (Window, Internal (Gtk_Window_Type'Pos (The_Type)));
    end Gtk_New;
 
-   --------------
-   -- Position --
-   --------------
-
-   procedure Position (Window   : in out Gtk_Window;
-                       Position : in     Gtk_Window_Position) is
-      procedure Internal (Window : in System.Address;
-                          Position : in Gtk_Window_Position);
-      pragma Import (C, Internal, "gtk_window_position");
-   begin
-      Internal (Get_Object (Window), Position);
-   end Position;
-
    -----------------
    -- Set_Default --
    -----------------
@@ -119,6 +106,18 @@ package body Gtk.Window is
                 To_Gint (Allow_Grow), To_Gint (Auto_Shrink));
    end Set_Policy;
 
+   ------------------
+   -- Set_Position --
+   ------------------
+
+   procedure Set_Position (Window   : in out Gtk_Window;
+                           Position : in     Gtk_Window_Position) is
+      procedure Internal (Window : in System.Address;
+                          Position : in Gtk_Window_Position);
+      pragma Import (C, Internal, "gtk_window_set_position");
+   begin
+      Internal (Get_Object (Window), Position);
+   end Set_Position;
 
    ---------------
    -- Set_Title --

@@ -50,8 +50,8 @@ package Gtk.Window is
                          Allow_Grow   : in     Boolean;
                          Auto_Shrink  : in     Boolean);
 
-   procedure Position (Window   : in out Gtk_Window;
-                       Position : in     Enums.Gtk_Window_Position);
+   procedure Set_Position (Window   : in out Gtk_Window;
+                           Position : in     Enums.Gtk_Window_Position);
 
    function Activate_Focus (Window : in Gtk_Window) return Boolean;
 
