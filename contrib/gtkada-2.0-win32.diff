@@ -50,7 +50,7 @@ Tue Jul  9 11:48:58 2002  Arnaud Charlet  <charlet@gnat.com>
   private
 !    type GValue_Data is array (1 .. 2) of Guint64;
 !    type GValue is record
-!       g_type : GType;
+!       g_type : GType := GType_Invalid;
 !       data   : GValue_Data;
 !    end record;
      pragma Convention (C, GValue);
