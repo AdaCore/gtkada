@@ -34,6 +34,8 @@ with Interfaces.C.Strings;
 with Gdk; use Gdk;
 with Ada.Text_IO;
 
+with Gtk.Handlers; use Gtk.Handlers;
+
 --  This package tries to handle three problems encountered with callbacks
 --    1) the memory allocated internally by our Ada functions must be freed
 --       when the callback is destroyed. For this, we used the 'destroy_func'
@@ -68,34 +70,6 @@ package body Gtk.Signal is
                                After      : in Boolean)
                               return          Guint;
    --  Internal function used to connect the signal.
-
-   -------------------
-   -- Argument_Type --
-   -------------------
-
-   function Argument_Type
-     (The_Type : Gtk_Type; Name : in String; Num : in Guint) return Gtk_Type
-   is
-      function Internal
-        (The_Type : Gtk_Type; Name : String; Num  : Guint) return Gtk_Type;
-      pragma Import (C, Internal, "ada_signal_argument_type");
-   begin
-      return Internal (The_Type, Name & ASCII.Nul, Num);
-   end Argument_Type;
-
-   ---------------------
-   -- Count_Arguments --
-   ---------------------
-
-   function Count_Arguments
-     (The_Type : Gtk_Type; Name : in String) return Guint
-   is
-      function Internal (The_Type : Gtk_Type; Name : String) return Guint;
-      pragma Import (C, Internal, "ada_signal_count_arguments");
-
-   begin
-      return Internal (The_Type, Name & ASCII.Nul);
-   end Count_Arguments;
 
    -----------------------
    -- Do_Signal_Connect --
@@ -216,8 +190,6 @@ package body Gtk.Signal is
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
          pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 0);
-         pragma Assert (Argument_Type (Get_Type (Obj), Name, -1)
-                        = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -343,8 +315,6 @@ package body Gtk.Signal is
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
          pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
-         pragma Assert
-           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -479,8 +449,6 @@ package body Gtk.Signal is
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
          pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
-         pragma Assert
-           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -597,8 +565,6 @@ package body Gtk.Signal is
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
          pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 0);
-         pragma Assert
-           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -743,8 +709,6 @@ package body Gtk.Signal is
          --  parameters as given in this package
          pragma Assert
            (Count_Arguments (Get_Type (Gtk_Object (Obj)), Name) >= 2);
-         pragma Assert (Argument_Type (Get_Type (Gtk_Object (Obj)), Name, -1) =
-           Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -805,8 +769,6 @@ package body Gtk.Signal is
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
          pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 0);
-         pragma Assert
-           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -914,8 +876,6 @@ package body Gtk.Signal is
          --  Check that the real gtk+ callback has at least as many
          --  parameters as given in this package
          pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 0);
-         pragma Assert
-           (Argument_Type (Get_Type (Obj), Name, -1) = Gtk_Type_None);
 
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
@@ -925,28 +885,6 @@ package body Gtk.Signal is
                                    After);
       end Connect;
    end Object_Callback;
-
-   ----------------------
-   -- C_Unsafe_Connect --
-   ----------------------
-
-   function C_Unsafe_Connect
-     (Object      : access Gtk.Object.Gtk_Object_Record'Class;
-      Name        : in String;
-      Func        : in System.Address;
-      Slot_Object : access Gtk.Object.Gtk_Object_Record'Class)
-      return Guint
-   is
-      function Internal (Object      : in System.Address;
-                         Name        : in String;
-                         Func        : in System.Address;
-                         Slot_Object : in System.Address)
-                         return Guint;
-      pragma Import (C, Internal, "gtk_signal_connect_object");
-   begin
-      return Internal (Get_Object (Object.all), Name & Ascii.NUL,
-                       Func, Get_Object (Slot_Object.all));
-   end C_Unsafe_Connect;
 
    ----------------
    -- Disconnect --

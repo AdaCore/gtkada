@@ -33,6 +33,13 @@ with Gtk.Widget;
 with Gtk.Tips_Query;
 with System;
 
+--  !! Important Note !!
+--  This package is obsolete. It is provided only for backward compatibility
+--  only, and is known to be missing the capacity to interface to some specific
+--  types of signals.
+--  Consider using Gtk.Handlers and Gtk.Marshallers instead.
+
+
 package Gtk.Signal is
 
    --  Every Connect function accepts 'null' for the function to call. In
@@ -246,18 +253,16 @@ package Gtk.Signal is
 
    end Tips_Query_Callback;
 
-   ----------------------------------------------------------------
-   --  The following function for connecting a default C callback
-   ----------------------------------------------------------------
-
-   function C_Unsafe_Connect
-     (Object      : access Gtk.Object.Gtk_Object_Record'Class;
-      Name        : in String;
-      Func        : in System.Address;
-      Slot_Object : access Gtk.Object.Gtk_Object_Record'Class)
-      return Guint;
-   --  See testgtk/create_ruler for an example how to use this...
-   --  You should avoid using this whenever possible
+   --  C_Unsafe_Connect has been removed. To use it, use the new
+   --  Gtk.Handlers.Return_Callback package, as in:
+   --      package Motion_Cb is new Handlers.Return_Callback
+   --        (Gtk_Widget_Record, Gint);
+   --      Motion_Cb.Object_Connect
+   --        (Gtk_Object (Darea), "motion_notify_event",
+   --         Motion_Cb.To_Event_Marshaller
+   --          (Gtk.Widget.Default_Motion_Notify_Event'Access),
+   --           Slot_Object => Ruler);
+   --  See also testgtk/create_rulers.adb for an example
 
    ------------------------------------------------------------------
    --  More general functions
@@ -281,21 +286,5 @@ package Gtk.Signal is
    procedure Handler_Unblock
      (Obj        : access Gtk.Object.Gtk_Object_Record'Class;
       Handler_Id : in Guint);
-
-   function Count_Arguments
-     (The_Type : Gtk_Type; Name : in String) return Guint;
-   --  Returns the number of arguments used in the handlers for the signal
-   --  Note that in the Connect functions, we always test whether the user
-   --  has asked for *at most* the number of arguments defined by gtk+ for the
-   --  callback. This is because having less argument is authorized (the
-   --  extra parameters passed by gtk+ will simply be ignored), whereas having
-   --  more arguments is impossible (they would never be set).
-
-   function Argument_Type
-     (The_Type : Gtk_Type;
-      Name     : in String;
-      Num      : in Guint) return Gtk_Type;
-   --  Returns the type of the num-th argument for the handlers of signal
-   --  name
 
 end Gtk.Signal;
