@@ -1540,4 +1540,17 @@ package body Gtk.Widget is
       return Boolean'Val (Internal (Get_Object (Child), Direction));
    end Child_Focus;
 
+   -----------------------
+   -- Get_Child_Visible --
+   -----------------------
+
+   function Get_Child_Visible
+     (Widget : access Gtk_Widget_Record) return Boolean
+   is
+      function Internal (Widget : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_widget_get_child_visible");
+   begin
+      return Internal (Get_Object (Widget)) /= 0;
+   end Get_Child_Visible;
+
 end Gtk.Widget;

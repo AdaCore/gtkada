@@ -228,6 +228,10 @@ package Gtk.Widget is
    --  This function is only useful for container implementations and
    --  never should be called by an application.
 
+   function Get_Child_Visible
+     (Widget : access Gtk_Widget_Record) return Boolean;
+   --  Return the value set by Set_Child_Visible
+
    ----------------------
    -- Drawing a widget --
    ----------------------
