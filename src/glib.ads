@@ -112,8 +112,11 @@ package Glib is
    -------------------
 
    type Object_Type is private;
-
    Null_Object_Type : constant Object_Type;
+
+
+   function Is_Created (Object : in Object_Type) return Boolean;
+   --  Returns True if the associated C object has been created.
 
    --  The following services are for INTERNAL use only. They are not
    --  declared inside the private part for visibility issues. Do NOT

@@ -40,6 +40,16 @@ package body Glib is
    end Get_Object;
 
 
+   ----------------
+   -- Is_Created --
+   ----------------
+
+   function Is_Created (Object : in Object_Type) return Boolean is
+      use type System.Address;
+   begin
+      return Object.Ptr /= System.Null_Address;
+   end Is_Created;
+
    ------------------
    --  Set_Object  --
    ------------------
