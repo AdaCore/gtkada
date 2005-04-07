@@ -168,11 +168,8 @@ package body Gtkada.Multi_Paned is
       Child : Child_Description_Access;
       Old_Handles : Handles_Array_Access := null);
    --  Add a new handle to Parent.
-   --  The handle corresponding to Child is modified.
+   --  The handle just after Child is modified.
    --  Old_Handles is the old percentage values used to split Child.
-   --  Child_Percent indicates what proportion of the area the new handle
-   --  occupies. It is ignored if Old_Handles /= null or there are more than
-   --  one child.
 
    function Is_Visible (Child : Child_Description_Access) return Boolean;
    --  Return True if Child is visible (or if any of its children is visible).
@@ -201,7 +198,10 @@ package body Gtkada.Multi_Paned is
       Alloc : Gtk_Allocation;
 
       function Image (Orient : Gtk_Orientation) return String;
-      --  return the string to display for Orient
+      --  Return the string to display for Orient
+
+      function Image (Str : String; Value : Boolean) return String;
+      --  Return Str if Value is True
 
       function Image (Orient : Gtk_Orientation) return String is
       begin
@@ -211,38 +211,47 @@ package body Gtkada.Multi_Paned is
          end case;
       end Image;
 
+      function Image (Str : String; Value : Boolean) return String is
+      begin
+         if Value then
+            return Str & " ";
+         else
+            return "";
+         end if;
+      end Image;
+
    begin
       if Child = null then
          Put_Line ("<null>");
 
       elsif Child.Is_Widget then
          Compute_Child_Position (Split, Child, Alloc);
-         Put_Line (Prefix & "<w req_w=" & Child.Width'Img
-                   & " req_h="   & Child.Height'Img
-                   & " w=" & Alloc.Width'Img
-                   & " h=" & Alloc.Height'Img
-                   & " visible=" & Is_Visible (Child)'Img
-                   & " fixed=" & Child.Fixed_Size'Img
-                   & " w="
-                   & System.Address_Image (Child.Widget.all'Address)
+         Put_Line (Prefix & "<w req=(" & Child.Width'Img
+                   & Child.Height'Img
+                   & ") size=(" & Alloc.Width'Img
+                   & Alloc.Height'Img
+                   & ") " & Image ("HIDDEN", not Is_Visible (Child))
+                   & Image ("FIXED", Child.Fixed_Size)
+                   & "w=" & System.Address_Image (Child.Widget.all'Address)
                    & ">");
       else
          Compute_Child_Position (Split, Child, Alloc);
-         Put_Line (Prefix & "<p orient="
-                   & Image (Child.Orientation)
-                   & " handles=""" & Child.Handles'Length'Img
-                   & " req_w=" & Child.Width'Img
-                   & " req_h=" & Child.Height'Img
-                   & " w=" & Alloc.Width'Img
-                   & " h=" & Alloc.Height'Img
-                   & ">");
+         Put_Line (Prefix & "<" & Image (Child.Orientation)
+                   & " handles=" & Child.Handles'Length'Img
+                   & " req=(" & Child.Width'Img
+                   & Child.Height'Img
+                   & ") size=(" & Alloc.Width'Img
+                   & Alloc.Height'Img
+                   & ")>");
          Tmp := Child.First_Child;
          H := Child.Handles'First;
          while Tmp /= null loop
             Dump (Split, Tmp, Prefix & "  ");
             if H <= Child.Handles'Last then
-               Put_Line (Prefix & "  <handle percent="""
-                         & Child.Handles (H).Percent'Img & """>");
+               Put_Line (Prefix & "  <handle"
+                         & Integer'Image
+                           (Integer (Child.Handles (H).Percent * 100.0))
+                         & "%>");
                H := H + 1;
             end if;
             Tmp := Tmp.Next;
@@ -1318,6 +1327,10 @@ package body Gtkada.Multi_Paned is
                   case Current.Orientation is
                      when Orientation_Horizontal =>
                         if Tmp.Width = 0 then
+                           --  ??? We cannot use Get_Allocation_Width, in fact,
+                           --  since the widget might just have been split,
+                           --  but not reallocated yet. It would report the
+                           --  old size in this case
                            if Tmp.Is_Widget then
                               Current.Width := Current.Width
                                 + Get_Allocation_Width (Tmp.Widget);
@@ -1329,6 +1342,11 @@ package body Gtkada.Multi_Paned is
                            Current.Width := Current.Width + Tmp.Width;
                         end if;
 
+                        if Tmp.Next /= null then
+                           Current.Width := Current.Width
+                             + 2 * Handle_Half_Width;
+                        end if;
+
                         Current.Height := Gint'Max
                           (Current.Height, Tmp.Height);
 
@@ -1338,6 +1356,10 @@ package body Gtkada.Multi_Paned is
 
                         if Tmp.Height = 0 then
                            if Tmp.Is_Widget then
+                              --  We can't use Get_Allocation_Height, in fact,
+                              --  since the widget might just have been split,
+                              --  but not reallocated yet. It would report the
+                              --  old size in this case
                               Current.Height := Current.Height
                                 + Get_Allocation_Height (Tmp.Widget);
                            else
@@ -1346,6 +1368,11 @@ package body Gtkada.Multi_Paned is
                            end if;
                         else
                            Current.Height := Current.Height + Tmp.Height;
+                        end if;
+
+                        if Tmp.Next /= null then
+                           Current.Height := Current.Height
+                             + 2 * Handle_Half_Width;
                         end if;
                   end case;
 
@@ -1913,8 +1940,8 @@ package body Gtkada.Multi_Paned is
          Ref_Item : Child_Description_Access;
          After    : Boolean)
       is
-         Tmp  : Child_Description_Access := Parent.First_Child;
-         Tmp2 : Child_Description_Access;
+         Tmp      : Child_Description_Access := Parent.First_Child;
+         Tmp2     : Child_Description_Access;
       begin
          Tmp2 := new Child_Description'
            (Parent      => Parent,
@@ -2094,7 +2121,8 @@ package body Gtkada.Multi_Paned is
 
       if Traces then
          Put_Line ("Split_Internal: After inserting "
-                   & System.Address_Image (New_Child.all'Address));
+                   & System.Address_Image (New_Child.all'Address)
+                   & " Width=" & Width'Img & " Height=" & Height'Img);
          Dump (Win, Win.Children);
       end if;
    end Split_Internal;
