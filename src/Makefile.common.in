@@ -2,7 +2,7 @@ CC = @CC@
 FPIC = @FPIC@
 
 GNATFLAGS = -O2 -gnatn -gnatws
-GNATFLAGS_DEVEL = -O2 -gnatag -gnatwlrkmj -g
+GNATFLAGS_DEVEL = -O2 -gnatay -gnatwlrkmj -g
 
 GNATMAKE = gnatmake
 OS_SPECIFIC_LINK_OPTIONS = @OS_SPECIFIC_LINK_OPTIONS@
