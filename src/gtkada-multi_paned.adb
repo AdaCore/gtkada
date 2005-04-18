@@ -55,19 +55,46 @@ package body Gtkada.Multi_Paned is
    Traces : constant Boolean := False;
    --  Whether debug traces should be displayed on stdout
 
-   Handle_Half_Width : constant := 3;
-   --  Half the width, in pixels, of the resizing handles.
+   Handle_Width : constant := 6;
+   --  Width, in pixels, of the resizing handles.
    --  ??? Should be read from theme with
    --     gtk_widget_style_get (gtk_paned, "handle_size", &handle_size, NULL)
 
-   Minimum_Child_Width : constant := 10 + 2 * Handle_Half_Width;
-   --  Minimum width or height for the children of the window
+   Minimum_Width : constant := 1;
+   --  Minimum width for a child
 
    Paned_Class_Record : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
 
-   procedure Unchecked_Free is new Ada.Unchecked_Deallocation
-     (Handles_Array, Handles_Array_Access);
+   type Resize_Handle is record
+      Position : Gtk.Widget.Gtk_Allocation;
+      Win      : Gdk.Window.Gdk_Window;
+   end record;
+   No_Handle : constant Resize_Handle := ((0, 0, 0, 0), null);
+
+   type Child_Description (Is_Widget : Boolean) is record
+      Parent : Child_Description_Access;
+      Next   : Child_Description_Access;
+      Width, Height : Float;
+      --  Either the size request for the widget, or the allocated size
+
+      Visible : Boolean := True;
+      --  Visibility status the last time we computed the size request
+
+      Handle : Resize_Handle;
+      --  The handle following the child. This might be invisible when the
+      --  child is the last in its parent
+
+      case Is_Widget is
+         when True  =>
+            Widget      : Gtk.Widget.Gtk_Widget;
+            Fixed_Size  : Boolean;
+         when False =>
+            Orientation : Gtk.Enums.Gtk_Orientation;
+            First_Child : Child_Description_Access;
+            X, Y        : Gint;  --  Location of the top-left corner
+      end case;
+   end record;
 
    procedure Free (Child : in out Child_Description_Access);
    --  Free Child, but not its Next or parent children
@@ -77,28 +104,53 @@ package body Gtkada.Multi_Paned is
    pragma Convention (C, Size_Allocate_Paned);
    --  Window was resized, need to resize and reposition the children.
 
+   procedure Size_Allocate
+     (Split         : access Gtkada_Multi_Paned_Record'Class;
+      Current       : Child_Description_Access;
+      Width, Height : Float);
+   --  Handle the size allocation for a specific pane. The actual
+   --  position are given by Current.X and Current.Y
+
+   procedure Size_Request (Current : Child_Description_Access);
+   --  Compute the size requisition for a specific type of children.
+   --  Sets Current.Width and Current.Height appropriately.
+   --  Children that have a size_request of 0 do not count in the overall size
+   --  request (will be taken into account at Size_Allocate). Neither does
+   --  their handle.
+
+   procedure Set_Size_Request
+     (Current : Child_Description_Access; Width, Height : Float);
+   --  Set the size requisition to use for Current and its children.
+   --  This assumes however that Size_Allocate has been called at least once
+   --  before, or panes with 0 width or height will not be handled properly.
+
    procedure Realize_Paned (Paned : access Gtk_Widget_Record'Class);
    --  Called when the window was realized.
 
-   procedure Create_Handle
-     (Split  : access Gtkada_Multi_Paned_Record'Class;
-      Handle : out Resize_Handle;
-      Orientation : Gtk_Orientation);
-   --  Create a new handle
+   procedure Set_Handle_Cursor (Current : Child_Description_Access);
+   --  Reset the cursor used for the mouse when it is over the handle for
+   --  Current.
+
+   function Count_Children (Current : Child_Description_Access) return Gint;
+   --  Return the number of children Current has
+
+   procedure Resize_Child_And_Siblings
+     (Parent       : Child_Description_Access;
+      Child        : Child_Description_Access);
+   --  Resize a child and its neighbors to take into account the new position
+   --  of the handle associated with Child. This handle's position must
+   --  have been changed before calling this subprogram.
 
    function Expose_Paned
      (Paned : access Gtk_Widget_Record'Class;
-      Event      : Gdk_Event) return Boolean;
+      Event : Gdk_Event) return Boolean;
    --  Redraw all the handles
 
-   procedure Move_Handles
-     (Split : access Gtkada_Multi_Paned_Record'Class;
-      Parent : Child_Description_Access;
-      Ref   : Positive := 1);
-   --  Recompute the position of all the handles.
-   --  If Ref is other than 1, than the Ref-th handle will not be
-   --  moved. Instead, handles on both side will be moved appropriately so that
-   --  their relative position on screen is the same as in Split.Handles.
+   procedure Move_Handle
+     (Split   : access Gtkada_Multi_Paned_Record'Class;
+      Current : Child_Description_Access);
+   --  Move the window associated with a given handle to its position.
+   --  If Show is False, then the handle is hidden
 
    function Button_Pressed
      (Paned : access Gtk_Widget_Record'Class;
@@ -112,8 +164,8 @@ package body Gtkada.Multi_Paned is
 
    procedure Remove_Child
      (Paned : access Gtk_Widget_Record'Class;
-      Args       : Gtk_Args);
-   --  A child was removed from Spittable
+      Args  : Gtk_Args);
+   --  A child was removed from Paned
 
    procedure Remove_Child
       (Split : access Gtkada_Multi_Paned_Record'Class;
@@ -126,20 +178,6 @@ package body Gtkada.Multi_Paned is
    procedure Destroy_Paned
      (Paned : access Gtk_Widget_Record'Class);
    --  The Paned window is being destroyed.
-
-   procedure Compute_Handle_Position
-     (Split        : access Gtkada_Multi_Paned_Record'Class;
-      Parent       : Child_Description_Access;
-      Handle_Index : Natural;
-      Position     : in out Gtk_Allocation);
-   --  Compute the position of a specific handle
-
-   procedure Compute_Child_Position
-     (Split    : access Gtkada_Multi_Paned_Record'Class;
-      Child    : Child_Description_Access;
-      Position : in out Gtk_Allocation);
-   --  Compute the position of a specific child
-
 
    function Get (Iter : Child_Iterator) return Child_Description_Access;
    --  Return the current child. You must move to Next before destroying
@@ -155,34 +193,32 @@ package body Gtkada.Multi_Paned is
       Orientation : Gtk_Orientation;
       Fixed_Size  : Boolean := False;
       Width, Height : Glib.Gint := -1;
-      After       : Boolean := True;
-      Include_Siblings : Boolean := False);
+      After       : Boolean := True);
    --  Internal version of Split_Horizontal and Split_Vertical.
    --  If Use_Ref_Pane is true, then all split are done with regards to
    --  Ref_Pane, otherwise they are done relative to Ref_Widget.
-   --  See the doc for Split_Group for more info on Include_Siblings
-
-   procedure Add_Handle
-     (Split : access Gtkada_Multi_Paned_Record'Class;
-      Parent : Child_Description_Access;
-      Child : Child_Description_Access;
-      Old_Handles : Handles_Array_Access := null);
-   --  Add a new handle to Parent.
-   --  The handle just after Child is modified.
-   --  Old_Handles is the old percentage values used to split Child.
 
    function Is_Visible (Child : Child_Description_Access) return Boolean;
    --  Return True if Child is visible (or if any of its children is visible).
 
-   procedure Compute_Resize_Handle_Percent
-     (Split : access Gtkada_Multi_Paned_Record'Class);
-   --  Compute the new percent value for the handle being dragged
+   function Is_Last_Visible
+     (Current : Child_Description_Access) return Boolean;
+   --  Return True if Current is the right-most visible child in its parent
 
    procedure Dump
-     (Split : access Gtkada_Multi_Paned_Record'Class;
-      Child : Child_Description_Access;
+     (Split  : access Gtkada_Multi_Paned_Record'Class;
+      Child  : Child_Description_Access;
       Prefix : String := "");
    --  Dump to stdout the status of the multipaned
+
+   ----------
+   -- Dump --
+   ----------
+
+   procedure Dump (Split : access Gtkada_Multi_Paned_Record'Class) is
+   begin
+      Dump (Split, Split.Children);
+   end Dump;
 
    ----------
    -- Dump --
@@ -194,8 +230,6 @@ package body Gtkada.Multi_Paned is
       Prefix : String := "")
    is
       Tmp : Child_Description_Access;
-      H   : Natural;
-      Alloc : Gtk_Allocation;
 
       function Image (Orient : Gtk_Orientation) return String;
       --  Return the string to display for Orient
@@ -225,41 +259,29 @@ package body Gtkada.Multi_Paned is
          Put_Line ("<null>");
 
       elsif Child.Is_Widget then
-         Compute_Child_Position (Split, Child, Alloc);
          Put_Line (Prefix & "<w req=(" & Child.Width'Img
                    & Child.Height'Img
-                   & ") size=(" & Alloc.Width'Img
-                   & Alloc.Height'Img
-                   & ") " & Image ("HIDDEN", not Is_Visible (Child))
+                   & ") alloc=("
+                   & Get_Allocation_Width (Child.Widget)'Img
+                   & Get_Allocation_Height (Child.Widget)'Img
+                   & ") "
+                   & Image ("HIDDEN", not Child.Visible)
                    & Image ("FIXED", Child.Fixed_Size)
+                   & Image ("NoHandle", Child.Handle.Win = null)
                    & "w=" & System.Address_Image (Child.Widget.all'Address)
                    & ">");
       else
-         Compute_Child_Position (Split, Child, Alloc);
          Put_Line (Prefix & "<" & Image (Child.Orientation)
-                   & " handles=" & Child.Handles'Length'Img
                    & " req=(" & Child.Width'Img
                    & Child.Height'Img
-                   & ") size=(" & Alloc.Width'Img
-                   & Alloc.Height'Img
+                   & ") x,y=(" & Child.X'Img
+                   & Child.Y'Img
                    & ")>");
          Tmp := Child.First_Child;
-         H := Child.Handles'First;
          while Tmp /= null loop
             Dump (Split, Tmp, Prefix & "  ");
-            if H <= Child.Handles'Last then
-               Put_Line (Prefix & "  <handle"
-                         & Integer'Image
-                           (Integer (Child.Handles (H).Percent * 100.0))
-                         & "%>");
-               H := H + 1;
-            end if;
             Tmp := Tmp.Next;
          end loop;
-
-         if H <= Child.Handles'Last then
-            Put_Line ("ERROR: Handle not followed by child");
-         end if;
       end if;
    end Dump;
 
@@ -282,16 +304,10 @@ package body Gtkada.Multi_Paned is
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
         (Child_Description, Child_Description_Access);
    begin
-      if Child /= null
-        and then not Child.Is_Widget
-      then
-         for H in Child.Handles'Range loop
-            if Child.Handles (H).Win /= null then
-               Destroy (Child.Handles (H).Win);
-            end if;
-         end loop;
-
-         Unchecked_Free (Child.Handles);
+      if Child /= null then
+         if Child.Handle.Win /= null then
+            Destroy (Child.Handle.Win);
+         end if;
       end if;
 
       Unchecked_Free (Child);
@@ -472,13 +488,11 @@ package body Gtkada.Multi_Paned is
      (Paned : access Gtk_Widget_Record'Class;
       Args  : Gtk_Args)
    is
-      Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      Child : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
-      Iter : Child_Iterator;
+      Split   : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
+      Child   : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
+      Iter    : Child_Iterator := Start (Split);
       Current : Child_Description_Access;
    begin
-      Iter := Start (Split);
-
       loop
          Current := Get (Iter);
          exit when Current = null
@@ -519,6 +533,7 @@ package body Gtkada.Multi_Paned is
          then
             if Child.Parent /= null then
                Child.First_Child.Parent := Child.Parent;
+               Set_Handle_Cursor (Child.First_Child);
 
                if Child.Parent.First_Child = Child then
                   Child.Parent.First_Child := Child.First_Child;
@@ -567,8 +582,6 @@ package body Gtkada.Multi_Paned is
 
             --  Previous is now the last child of Child
 
-            Add_Handle (Split, Child.Parent, Child, Child.Handles);
-
             if Previous /= null then
                if Child.Parent.First_Child = Child then
                   Previous.Next := Child.Next;
@@ -589,8 +602,6 @@ package body Gtkada.Multi_Paned is
       end Merge_With_Parent_If_Same;
 
       Current : Child_Description_Access := Pane;
-      Old_Handles  : Handles_Array_Access;
-      C, D : Natural;
       Tmp, Parent : Child_Description_Access;
    begin
       if Traces then
@@ -604,36 +615,18 @@ package body Gtkada.Multi_Paned is
 
       if Current /= null then
          Parent := Current.Parent;
-         C := Parent.Handles'First;
 
          if Parent.First_Child = Current then
             Parent.First_Child := Current.Next;
          else
             Tmp := Parent.First_Child;
             while Tmp.Next /= Current loop
-               C := C + 1;
                Tmp := Tmp.Next;
             end loop;
             Tmp.Next := Current.Next;
          end if;
 
          Free (Current);
-
-         if Parent.Handles'Length /= 0 then
-            D := Natural'Min (C, Parent.Handles'Last);
-
-            if Parent.Handles (D).Win /= null then
-               Destroy (Parent.Handles (D).Win);
-            end if;
-
-            Old_Handles := Parent.Handles;
-            Parent.Handles := new Handles_Array
-              (1 .. Old_Handles'Length - 1);
-            Parent.Handles (1 .. D - 1) := Old_Handles (1 .. D - 1);
-            Parent.Handles (D .. Parent.Handles'Last) :=
-              Old_Handles (D + 1 .. Old_Handles'Last);
-            Unchecked_Free (Old_Handles);
-         end if;
 
          Merge_With_Parent_If_Single_Child (Parent);
          Merge_With_Parent_If_Same (Parent);
@@ -650,179 +643,28 @@ package body Gtkada.Multi_Paned is
             end if;
          end if;
 
-         Queue_Resize (Split);
+         if Parent /= null and then Parent.Is_Widget then
+            Parent := Parent.Parent;
+         end if;
+
+         if Split.Children /= null
+            and then Realized_Is_Set (Split)
+            and then Split.Children.Width  > 0.0
+            and then Split.Children.Height > 0.0
+         then
+            Size_Allocate
+              (Split, Split.Children, Split.Children.Width,
+               Split.Children.Height);
+         else
+            Queue_Resize (Split);
+         end if;
       end if;
 
       if Traces then
+         Put_Line ("After Remove_Child");
          Dump (Split, Split.Children);
       end if;
    end Remove_Child;
-
-   -----------------------------
-   -- Compute_Handle_Position --
-   -----------------------------
-
-   procedure Compute_Handle_Position
-     (Split        : access Gtkada_Multi_Paned_Record'Class;
-      Parent       : Child_Description_Access;
-      Handle_Index : Natural;
-      Position     : in out Gtk_Allocation)
-   is
-      Parent_Position      : Gtk_Allocation;
-      Percent : constant Float := Parent.Handles (Handle_Index).Percent;
-   begin
-      Compute_Child_Position (Split, Parent, Parent_Position);
-
-      if Parent.Orientation = Orientation_Horizontal then
-         Position :=
-           (X           => Parent_Position.X + Gint
-              (Percent * Float (Parent_Position.Width)) - Handle_Half_Width,
-            Y           => Parent_Position.Y,
-            Width       => Handle_Half_Width * 2,
-            Height      => Parent_Position.Height);
-      else
-         Position :=
-           (X           => Parent_Position.X,
-            Y           => Parent_Position.Y + Gint
-              (Percent * Float (Parent_Position.Height)) - Handle_Half_Width,
-            Width       => Parent_Position.Width,
-            Height      => Handle_Half_Width * 2);
-      end if;
-   end Compute_Handle_Position;
-
-   ----------------------------
-   -- Compute_Child_Position --
-   ----------------------------
-
-   procedure Compute_Child_Position
-     (Split    : access Gtkada_Multi_Paned_Record'Class;
-      Child    : Child_Description_Access;
-      Position : in out Gtk_Allocation)
-   is
-      Parent_Pos : Gtk_Allocation;
-      Percent, Percent_End : Float := 0.0;
-      Handle_Index : Natural := 1;
-      Tmp : Child_Description_Access;
-      X_Offset, W_Offset : Allocation_Int;
-   begin
-      if Child.Parent = null then
-         if Get_Has_Window (Split) then
-            Position := (X      => 0,
-                         Y      => 0,
-                         Width  => Get_Allocation_Width (Split),
-                         Height => Get_Allocation_Height (Split));
-         else
-            Position := (X      => Get_Allocation_X (Split),
-                         Y      => Get_Allocation_Y (Split),
-                         Width  => Get_Allocation_Width (Split),
-                         Height => Get_Allocation_Height (Split));
-         end if;
-      else
-         Compute_Child_Position (Split, Child.Parent, Parent_Pos);
-
-         Tmp := Child.Parent.First_Child;
-         while Tmp /= Child loop
-            Tmp := Tmp.Next;
-
-            if Child.Parent.Handles (Handle_Index).Win /= null
-              and then Is_Visible (Child.Parent.Handles (Handle_Index).Win)
-            then
-               Percent := Child.Parent.Handles (Handle_Index).Percent;
-            end if;
-
-            Handle_Index := Handle_Index + 1;
-         end loop;
-
-         X_Offset := 0;
-         for H in 1 .. Handle_Index - 1 loop
-            if Child.Parent.Handles (H).Win /= null
-              and then Is_Visible (Child.Parent.Handles (H).Win)
-            then
-               X_Offset := Handle_Half_Width;
-               exit;
-            end if;
-         end loop;
-
-         while Handle_Index <= Child.Parent.Handles'Last
-           and then
-             (Child.Parent.Handles (Handle_Index).Win = null
-              or else not Is_Visible (Child.Parent.Handles (Handle_Index).Win))
-         loop
-            Handle_Index := Handle_Index + 1;
-         end loop;
-
-         if Handle_Index > Child.Parent.Handles'Last then
-            Percent_End := 1.0;
-            W_Offset := X_Offset;
-         else
-            Percent_End := Child.Parent.Handles (Handle_Index).Percent;
-
-            --  If this is the first visible child, do not add the handle
-            --  width
-            W_Offset := X_Offset + Handle_Half_Width;
-         end if;
-
-         case Child.Parent.Orientation is
-            when Orientation_Vertical =>
-               Position :=
-                 (X      => Parent_Pos.X,
-                  Y      => Parent_Pos.Y
-                    + Allocation_Int (Percent * Float (Parent_Pos.Height))
-                    + X_Offset,
-                  Width  => Parent_Pos.Width,
-                  Height => Allocation_Int
-                    ((Percent_End - Percent) * Float (Parent_Pos.Height))
-                    - W_Offset);
-
-            when Orientation_Horizontal =>
-               Position :=
-                 (X      => Parent_Pos.X
-                    + Allocation_Int (Percent * Float (Parent_Pos.Width))
-                    + X_Offset,
-                  Y      => Parent_Pos.Y,
-                  Width  => Allocation_Int
-                    ((Percent_End - Percent) * Float (Parent_Pos.Width))
-                    - W_Offset,
-                  Height => Parent_Pos.Height);
-         end case;
-      end if;
-   end Compute_Child_Position;
-
-   -----------------------------------
-   -- Compute_Resize_Handle_Percent --
-   -----------------------------------
-
-   procedure Compute_Resize_Handle_Percent
-     (Split : access Gtkada_Multi_Paned_Record'Class)
-   is
-      Parent_Pos : Gtk_Allocation;
-      Percent    : Float;
-   begin
-      Compute_Child_Position
-        (Split, Split.Selected_Handle_Parent, Parent_Pos);
-
-      case Split.Selected_Handle_Parent.Orientation is
-         when Orientation_Vertical =>
-            Percent := Float
-              (Split.Selected_Handle_Pos.Y - Split.Anim_Offset
-                 + Handle_Half_Width - Parent_Pos.Y) /
-                Float (Parent_Pos.Height);
-         when Orientation_Horizontal =>
-            Percent := Float
-              (Split.Selected_Handle_Pos.X - Split.Anim_Offset
-                 + Handle_Half_Width - Parent_Pos.X) /
-                Float (Parent_Pos.Width);
-      end case;
-
-      if Percent < 0.0 then
-         Percent := 0.0;
-      elsif Percent > 1.0 then
-         Percent := 1.0;
-      end if;
-
-      Split.Selected_Handle_Parent.Handles
-        (Split.Selected_Handle_Index).Percent := Percent;
-   end Compute_Resize_Handle_Percent;
 
    ----------------------
    -- Draw_Resize_Line --
@@ -834,13 +676,10 @@ package body Gtkada.Multi_Paned is
       if not Split.Opaque_Resizing then
          Draw_Line
            (Get_Window (Split),
-            Split.GC, Split.Selected_Handle_Pos.X,
-            Split.Selected_Handle_Pos.Y,
-            Split.Selected_Handle_Pos.X + Split.Selected_Handle_Pos.Width,
-            Split.Selected_Handle_Pos.Y + Split.Selected_Handle_Pos.Height);
-      else
-         Compute_Resize_Handle_Percent (Split);
-         Queue_Resize (Split);
+            Split.GC, Split.Selected_Pos.X,
+            Split.Selected_Pos.Y,
+            Split.Selected_Pos.X + Split.Selected_Pos.Width,
+            Split.Selected_Pos.Y + Split.Selected_Pos.Height);
       end if;
    end Draw_Resize_Line;
 
@@ -863,18 +702,13 @@ package body Gtkada.Multi_Paned is
          return False;
       end if;
 
-      Split.Selected_Handle_Parent := null;
+      Split.Selected := null;
 
       while Get (Iter) /= null loop
          Current := Get (Iter);
-         if not Current.Is_Widget then
-            for H in Current.Handles'Range loop
-               if Get_Window (Event) = Current.Handles (H).Win then
-                  Split.Selected_Handle_Parent := Current;
-                  Split.Selected_Handle_Index  := H;
-                  exit;
-               end if;
-            end loop;
+         if Current.Handle.Win = Get_Window (Event) then
+            Split.Selected := Current;
+            exit;
          end if;
 
          Next (Iter);
@@ -882,18 +716,40 @@ package body Gtkada.Multi_Paned is
 
       if Traces then
          Put_Line ("Button_Pressed in multi_panned has_selected_handle="
-                   & Boolean'Image (Split.Selected_Handle_Parent /= null));
+                   & Boolean'Image (Split.Selected /= null));
       end if;
 
-      if Split.Selected_Handle_Parent = null then
+      if Split.Selected = null then
          return False;
       end if;
 
-      case Split.Selected_Handle_Parent.Orientation is
+      --  Make sure none of the widgets has a fixed size, or
+      --  the resizing won't take place.
+      if Current.Is_Widget then
+         Current.Fixed_Size := False;
+      end if;
+
+      if Current.Next /= null and then Current.Next.Is_Widget then
+         Current.Next.Fixed_Size := False;
+      end if;
+
+      Split.Selected_Pos := Split.Selected.Handle.Position;
+
+      case Split.Selected.Parent.Orientation is
          when Orientation_Vertical =>
             Gdk_New (Cursor, Sb_V_Double_Arrow);
+            Split.Selected_Pos.Height := 0;
+            Split.Selected_Pos.Y :=
+              Split.Selected_Pos.Y + Gint (Get_Y (Event));
+            Split.Initial_Pos := Split.Selected.Handle.Position.Y
+              - Gint (Get_Y_Root (Event));
          when Orientation_Horizontal =>
             Gdk_New (Cursor, Sb_H_Double_Arrow);
+            Split.Selected_Pos.Width := 0;
+            Split.Selected_Pos.X :=
+              Split.Selected_Pos.X + Gint (Get_X (Event));
+            Split.Initial_Pos := Split.Selected.Handle.Position.X
+              - Gint (Get_X_Root (Event));
       end case;
 
       Tmp := Pointer_Grab
@@ -904,27 +760,133 @@ package body Gtkada.Multi_Paned is
          Time   => 0);
       Destroy (Cursor);
 
-      Compute_Handle_Position
-        (Split,
-         Split.Selected_Handle_Parent,
-         Split.Selected_Handle_Index,
-         Split.Selected_Handle_Pos);
-
-      if Split.Selected_Handle_Parent.Orientation = Orientation_Horizontal then
-         Split.Anim_Offset := Gint (Get_X (Event));
-         Split.Selected_Handle_Pos.Width := 0;
-         Split.Selected_Handle_Pos.X :=
-           Split.Selected_Handle_Pos.X + Split.Anim_Offset;
-      else
-         Split.Anim_Offset := Gint (Get_Y (Event));
-         Split.Selected_Handle_Pos.Height := 0;
-         Split.Selected_Handle_Pos.Y :=
-           Split.Selected_Handle_Pos.Y + Split.Anim_Offset;
-      end if;
-
       Draw_Resize_Line (Split);
       return False;
    end Button_Pressed;
+
+   -------------------------------
+   -- Resize_Child_And_Siblings --
+   -------------------------------
+
+   procedure Resize_Child_And_Siblings
+     (Parent       : Child_Description_Access;
+      Child        : Child_Description_Access)
+   is
+      Size         : Gint;
+      Count        : Natural := 0;
+      Tmp          : Child_Description_Access := Parent.First_Child;
+      Handle_Index : Natural := 0;
+   begin
+      --  We'll need to traverse the list of children in reverse order,
+      --  so we store it in an array for ease of use
+      while Tmp /= null loop
+         Count := Count + 1;
+         Tmp := Tmp.Next;
+      end loop;
+
+      declare
+         Children : array (1 .. Count) of Child_Description_Access;
+      begin
+         Tmp := Parent.First_Child;
+         Count := Children'First;
+         while Tmp /= null loop
+            Children (Count) := Tmp;
+            if Tmp = Child then
+               Handle_Index := Count;
+            end if;
+            Count := Count + 1;
+            Tmp := Tmp.Next;
+         end loop;
+
+         --  Now adjust the size
+         if Parent.Orientation = Orientation_Horizontal then
+            for H in reverse Children'First .. Handle_Index loop
+               if H - 1 >= Children'First then
+                  Size := Children (H).Handle.Position.X
+                    - Children (H - 1).Handle.Position.X - Handle_Width;
+               else
+                  Size := Children (H).Handle.Position.X - Parent.X;
+               end if;
+               if Size >= Minimum_Width then
+                  Set_Size_Request
+                    (Children (H), Float (Size), Children (H).Height);
+                  exit;
+               else
+                  Set_Size_Request
+                    (Children (H), Float (Minimum_Width), Children (H).Height);
+                  if H - 1 >= Children'First then
+                     Children (H - 1).Handle.Position.X :=
+                       Children (H).Handle.Position.X
+                       - Gint (Children (H).Width) - Handle_Width;
+                  end if;
+               end if;
+            end loop;
+
+            for H in Handle_Index + 1 .. Children'Last loop
+               Size := Children (H).Handle.Position.X
+                 - Children (H - 1).Handle.Position.X - Handle_Width;
+               Children (H).Handle.Position.X :=
+                 Children (H - 1).Handle.Position.X + Gint (Children (H).Width)
+                 + Handle_Width;
+               if Size >= Minimum_Width then
+                  Set_Size_Request
+                    (Children (H), Float (Size), Children (H).Height);
+                  exit;
+               else
+                  Set_Size_Request
+                    (Children (H), Float (Minimum_Width),
+                     Children (H).Height);
+                  Children (H).Handle.Position.X :=
+                    Children (H - 1).Handle.Position.X + Minimum_Width
+                    + Handle_Width;
+               end if;
+            end loop;
+
+         else --  Orientation_Vertical
+            for H in reverse Children'First .. Handle_Index loop
+               if H - 1 >= Children'First then
+                  Size := Children (H).Handle.Position.Y
+                    - Children (H - 1).Handle.Position.Y - Handle_Width;
+               else
+                  Size := Children (H).Handle.Position.Y - Parent.Y;
+               end if;
+               if Size >= Minimum_Width then
+                  Set_Size_Request
+                    (Children (H), Children (H).Width, Float (Size));
+                  exit;
+               else
+                  Set_Size_Request
+                    (Children (H), Children (H).Width, Float (Minimum_Width));
+                  if H - 1 >= Children'First then
+                     Children (H - 1).Handle.Position.Y :=
+                       Children (H).Handle.Position.Y
+                       - Gint (Children (H).Height) - Handle_Width;
+                  end if;
+               end if;
+            end loop;
+
+            for H in Handle_Index + 1 .. Children'Last loop
+               Size := Children (H).Handle.Position.Y
+                 - Children (H - 1).Handle.Position.Y - Handle_Width;
+               Children (H).Handle.Position.Y :=
+                 Children (H - 1).Handle.Position.Y
+                 + Gint (Children (H).Height) + Handle_Width;
+               if Size >= Minimum_Width then
+                  Set_Size_Request
+                    (Children (H), Children (H).Width, Float (Size));
+                  exit;
+               else
+                  Set_Size_Request
+                    (Children (H), Children (H).Width, Float (Minimum_Width));
+                  Children (H).Handle.Position.Y :=
+                    Children (H - 1).Handle.Position.Y + Minimum_Width
+                    + Handle_Width;
+               end if;
+            end loop;
+
+         end if;
+      end;
+   end Resize_Child_And_Siblings;
 
    ---------------------
    -- Button_Released --
@@ -937,26 +899,29 @@ package body Gtkada.Multi_Paned is
       pragma Unreferenced (Event);
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
    begin
-      if Split.Selected_Handle_Parent /= null then
-         if Traces then
-            Put_Line ("Button_Released in multi_paned");
-         end if;
-
+      if Split.Selected /= null then
          Draw_Resize_Line (Split);
-
-         if not Split.Opaque_Resizing then
-            Compute_Resize_Handle_Percent (Split);
-         end if;
-
          Pointer_Ungrab (Time => 0);
 
-         --  Move the handles, giving the one we just moved priority, and move
-         --  the adjacent handles accordingly..
-         Move_Handles
-           (Split, Split.Selected_Handle_Parent, Split.Selected_Handle_Index);
-         Queue_Resize (Split);
+         case Split.Selected.Parent.Orientation is
+            when Orientation_Horizontal =>
+               Split.Selected.Handle.Position.X := Split.Selected_Pos.X;
+            when Orientation_Vertical =>
+               Split.Selected.Handle.Position.Y := Split.Selected_Pos.Y;
+         end case;
 
-         Split.Selected_Handle_Parent := null;
+         Resize_Child_And_Siblings (Split.Selected.Parent, Split.Selected);
+         Size_Allocate (Split,
+                        Split.Selected.Parent,
+                        Split.Selected.Parent.Width,
+                        Split.Selected.Parent.Height);
+
+         if Traces then
+            Put_Line ("After button_release.size_allocate");
+            Dump (Split, Split.Children);
+         end if;
+
+         Split.Selected := null;
       end if;
       return False;
    end Button_Released;
@@ -970,42 +935,44 @@ package body Gtkada.Multi_Paned is
       Event : Gdk_Event) return Boolean
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      C : Child_Description_Access;
+      New_Pos : Gint;
    begin
-      if Split.Selected_Handle_Parent /= null then
-
-         --  Make sure none of the widgets has a fixed size, or
-         --  the resizing won't take place.
-
-         C := Split.Selected_Handle_Parent.First_Child;
-         for H in 1 .. Split.Selected_Handle_Index - 1 loop
-            C := C.Next;
-         end loop;
-
-         if C.Is_Widget then
-            C.Fixed_Size := False;
-            C.Width := 0;
-            C.Height := 0;
-         end if;
-
-         if C.Next /= null and then C.Next.Is_Widget then
-            C.Next.Fixed_Size := False;
-            C.Next.Width := 0;
-            C.Next.Height := 0;
-         end if;
-
+      if Split.Selected /= null then
          Draw_Resize_Line (Split);
 
-         case Split.Selected_Handle_Parent.Orientation is
+         case Split.Selected.Parent.Orientation is
             when Orientation_Horizontal =>
-               Split.Selected_Handle_Pos.X := Gint (Get_X (Event))
-                 + Split.Selected_Handle_Parent.Handles
-                   (Split.Selected_Handle_Index).Position.X;
+               New_Pos := Gint (Get_X_Root (Event)) + Split.Initial_Pos;
+               if New_Pos >= Split.Selected.Parent.X
+                 and then New_Pos <= Split.Selected.Parent.X
+                   + Gint (Split.Selected.Parent.Width)
+               then
+                  Split.Selected_Pos.X := New_Pos;
+               end if;
             when Orientation_Vertical =>
-               Split.Selected_Handle_Pos.Y := Gint (Get_Y (Event))
-                 + Split.Selected_Handle_Parent.Handles
-                   (Split.Selected_Handle_Index).Position.Y;
+               New_Pos := Gint (Get_Y_Root (Event)) + Split.Initial_Pos;
+               if New_Pos >= Split.Selected.Parent.Y
+                 and then New_Pos <= Split.Selected.Parent.Y
+                   + Gint (Split.Selected.Parent.Height)
+               then
+                  Split.Selected_Pos.Y := New_Pos;
+               end if;
          end case;
+
+         if Split.Opaque_Resizing then
+            case Split.Selected.Parent.Orientation is
+               when Orientation_Horizontal =>
+                  Split.Selected.Handle.Position.X := Split.Selected_Pos.X;
+               when Orientation_Vertical =>
+                  Split.Selected.Handle.Position.Y := Split.Selected_Pos.Y;
+            end case;
+            Resize_Child_And_Siblings (Split.Selected.Parent, Split.Selected);
+
+            Size_Allocate (Split,
+                           Split.Selected.Parent,
+                           Split.Selected.Parent.Width,
+                           Split.Selected.Parent.Height);
+         end if;
 
          Draw_Resize_Line (Split);
       end if;
@@ -1034,6 +1001,24 @@ package body Gtkada.Multi_Paned is
       end if;
    end Is_Visible;
 
+   ---------------------
+   -- Is_Last_Visible --
+   ---------------------
+
+   function Is_Last_Visible
+     (Current : Child_Description_Access) return Boolean
+   is
+      Tmp : Child_Description_Access := Current.Next;
+   begin
+      while Tmp /= null loop
+         if Tmp.Visible then
+            return False;
+         end if;
+         Tmp := Tmp.Next;
+      end loop;
+      return True;
+   end Is_Last_Visible;
+
    -----------------------
    -- Expose_Paned --
    -----------------------
@@ -1052,30 +1037,31 @@ package body Gtkada.Multi_Paned is
          Current := Get (Iter);
          exit when Current = null;
 
-         if not Current.Is_Widget then
-            case Current.Orientation is
+         if not Is_Last_Visible (Current)
+           and then Current.Visible
+         then
+            case Current.Parent.Orientation is
                when Orientation_Vertical =>
                   Orientation := Orientation_Horizontal;
                when Orientation_Horizontal =>
                   Orientation := Orientation_Vertical;
             end case;
 
-            for H in Current.Handles'Range loop
-               if Is_Visible (Current.Handles (H).Win) then
-                  Paint_Handle
-                    (Get_Style (Split),
-                     Get_Window (Split),
-                     State_Normal,
-                     Shadow_None,
-                     Area,
-                     Split,
-                     X           => Current.Handles (H).Position.X,
-                     Y           => Current.Handles (H).Position.Y,
-                     Width       => Current.Handles (H).Position.Width,
-                     Height      => Current.Handles (H).Position.Height,
-                     Orientation => Orientation);
-               end if;
-            end loop;
+            Paint_Handle
+              (Get_Style (Split),
+               Get_Window (Split),
+               State_Normal,
+               Shadow_None,
+               Area,
+               Split,
+               X           => Current.Handle.Position.X,
+               Y           => Current.Handle.Position.Y,
+               Width       => Current.Handle.Position.Width,
+               Height      => Current.Handle.Position.Height,
+               Orientation => Orientation);
+
+         elsif Current.Handle.Win /= null then
+            Hide (Current.Handle.Win);
          end if;
 
          Next (Iter);
@@ -1086,45 +1072,6 @@ package body Gtkada.Multi_Paned is
           (Get_Object (Split), Event);
    end Expose_Paned;
 
-   -------------------
-   -- Create_Handle --
-   -------------------
-
-   procedure Create_Handle
-     (Split  : access Gtkada_Multi_Paned_Record'Class;
-      Handle : out Resize_Handle;
-      Orientation : Gtk_Orientation)
-   is
-      Cursor      : Gdk_Cursor;
-      Window_Attr : Gdk.Window_Attr.Gdk_Window_Attr;
-   begin
-      case Orientation is
-         when Orientation_Vertical =>
-            Gdk_New (Cursor, Sb_V_Double_Arrow);
-         when Orientation_Horizontal =>
-            Gdk_New (Cursor, Sb_H_Double_Arrow);
-      end case;
-
-      Gdk_New (Window_Attr,
-               Window_Type => Window_Child,
-               Wclass      => Input_Only,   --  Let it be transparent
-               Cursor      => Cursor,
-               Event_Mask  => Get_Events (Split)
-               or Button_Press_Mask
-               or Button_Release_Mask
-               or Button_Motion_Mask);
-      Gdk_New (Handle.Win,
-               Parent          => Get_Window (Split),
-               Attributes      => Window_Attr,
-               Attributes_Mask => Wa_Cursor);
-
-      Set_User_Data (Handle.Win, Split);
-      Gdk.Window.Show (Handle.Win);
-
-      Destroy (Cursor);
-      Destroy (Window_Attr);
-   end Create_Handle;
-
    ------------------------
    -- Realize_Paned --
    ------------------------
@@ -1133,394 +1080,485 @@ package body Gtkada.Multi_Paned is
      (Paned : access Gtk_Widget_Record'Class)
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      Iter  : Child_Iterator := Start (Split);
-      Current : Child_Description_Access;
    begin
-      loop
-         Current := Get (Iter);
-         exit when Current = null;
-
-         if not Current.Is_Widget then
-            for H in Current.Handles'Range loop
-               if Current.Handles (H).Win = null then
-                  Create_Handle
-                    (Split, Current.Handles (H), Current.Orientation);
-               end if;
-            end loop;
-         end if;
-
-         Next (Iter);
-      end loop;
-
+      if Traces then
+         Put_Line ("REALIZE_PANED");
+      end if;
       Gdk_New       (Split.GC, Get_Window (Split));
       Set_Function  (Split.GC, Invert);
       Set_Exposures (Split.GC, False);
       Set_Subwindow (Split.GC, Include_Inferiors);
-      Queue_Resize (Paned);
    end Realize_Paned;
 
-   ------------------
-   -- Move_Handles --
-   ------------------
+   -----------------------
+   -- Set_Handle_Cursor --
+   -----------------------
 
-   procedure Move_Handles
-     (Split  : access Gtkada_Multi_Paned_Record'Class;
-      Parent : Child_Description_Access;
-      Ref    : Positive := 1)
-   is
-      Parent_Pos : Gtk_Allocation;
-
-      procedure Resize_Handle (C : Natural);
-      --  resize the C-th handle
-
-      -------------------
-      -- Resize_Handle --
-      -------------------
-
-      procedure Resize_Handle (C : Natural) is
-         Handle_Pos : Gtk_Allocation;
-      begin
-         Compute_Handle_Position (Split, Parent, C, Handle_Pos);
-         Parent.Handles (C).Position := Handle_Pos;
-
-         if Is_Visible (Parent.Handles (C).Win) then
-            Gdk.Window.Move_Resize
-              (Parent.Handles (C).Win,
-               X      => Handle_Pos.X,
-               Y      => Handle_Pos.Y,
-               Width  => Handle_Pos.Width,
-               Height => Handle_Pos.Height);
-
-            --  For some reason, some parts of the handles are
-            --  sometimes incorrectly exposed when a child is removed. So we
-            --  just force an update
-
-            Invalidate_Rect
-              (Get_Window (Split),
-               (X           => Handle_Pos.X,
-                Y           => Handle_Pos.Y,
-                Width       => Handle_Pos.Width,
-                Height      => Handle_Pos.Height),
-               True);
-         end if;
-      end Resize_Handle;
-
-      Max    : Float;
-      Last : Gint;
-      Previous : Gint := 0;
+   procedure Set_Handle_Cursor (Current : Child_Description_Access) is
+      Cursor      : Gdk_Cursor;
    begin
-      Compute_Child_Position (Split, Parent, Parent_Pos);
+      if Current.Handle.Win /= null then
+         case Current.Parent.Orientation is
+            when Orientation_Vertical =>
+               Gdk_New (Cursor, Sb_V_Double_Arrow);
+            when Orientation_Horizontal =>
+               Gdk_New (Cursor, Sb_H_Double_Arrow);
+         end case;
+         Set_Cursor (Current.Handle.Win, Cursor);
+         Destroy (Cursor);
+      end if;
+   end Set_Handle_Cursor;
 
-      if Parent.Orientation = Orientation_Vertical then
-         Max := Float (Parent_Pos.Height);
-      else
-         Max := Float (Parent_Pos.Width);
+   -----------------
+   -- Move_Handle --
+   -----------------
+
+   procedure Move_Handle
+     (Split   : access Gtkada_Multi_Paned_Record'Class;
+      Current : Child_Description_Access)
+   is
+      Window_Attr : Gdk.Window_Attr.Gdk_Window_Attr;
+   begin
+      if Current.Handle.Win = null
+         and then Get_Window (Split) /= null
+      then
+         Gdk_New (Window_Attr,
+                  Window_Type => Window_Child,
+                  Wclass      => Input_Only,   --  Let it be transparent
+                  Event_Mask  => Get_Events (Split)
+                  or Button_Press_Mask
+                  or Button_Release_Mask
+                  or Button_Motion_Mask);
+         Gdk_New (Current.Handle.Win,
+                  Parent          => Get_Window (Split),
+                  Attributes      => Window_Attr,
+                  Attributes_Mask => 0);
+
+         Set_User_Data (Current.Handle.Win, Split);
+         Gdk.Window.Show (Current.Handle.Win);
+
+         Destroy (Window_Attr);
+         Set_Handle_Cursor (Current);
       end if;
 
-      for C in Ref .. Parent.Handles'Last loop
-         if Is_Visible (Parent.Handles (C).Win) then
-            Last :=  Gint (Parent.Handles (C).Percent * Max);
-            if Last <= Previous + Minimum_Child_Width then
-               Last := Previous + Minimum_Child_Width;
-               Parent.Handles (C).Percent := Float (Last) / Max;
+      if Realized_Is_Set (Split)
+         and then Current.Handle.Win /= null
+         and then Current.Visible
+      then
+         Gdk.Window.Show (Current.Handle.Win);
+         Gdk.Window.Move_Resize
+           (Current.Handle.Win,
+            X      => Current.Handle.Position.X,
+            Y      => Current.Handle.Position.Y,
+            Width  => Current.Handle.Position.Width,
+            Height => Current.Handle.Position.Height);
 
-               if Parent.Handles (C).Percent >= 1.0 then
-                  Parent.Handles (C).Percent := 0.99;
+         --  For some reason, some parts of the handles are
+         --  sometimes incorrectly exposed when a child is removed. So we
+         --  just force an update
+
+         Invalidate_Rect
+           (Get_Window (Split),
+            (X      => Current.Handle.Position.X,
+             Y      => Current.Handle.Position.Y,
+             Width  => Current.Handle.Position.Width,
+             Height => Current.Handle.Position.Height),
+            False);
+      end if;
+   end Move_Handle;
+
+   ----------------------
+   -- Set_Size_Request --
+   ----------------------
+
+   procedure Set_Size_Request
+     (Current : Child_Description_Access; Width, Height : Float)
+   is
+      Tmp   : Child_Description_Access;
+      Count : Gint;
+      Size, Size2 : Float;
+      Total : Float := 0.0;
+      Item  : Float;
+   begin
+      if Current.Width = Width and then Current.Height = Height then
+         null;
+      elsif Current.Is_Widget then
+         Set_Size_Request
+           (Current.Widget,
+            Gint (Float'Max (1.0, Width)),
+            Gint (Float'Max (1.0, Height)));
+      elsif Current.Orientation = Orientation_Horizontal then
+         Count := Count_Children (Current) - 1;
+         Size  := Current.Width - Float (Count * Handle_Width);
+         if Size > 0.0 then
+            Tmp := Current.First_Child;
+            Size2 := Width - Float (Count * Handle_Width);
+            while Tmp.Next /= null loop
+               Item := Size2 * Tmp.Width / Size;
+               Set_Size_Request (Tmp, Item, Height);
+               Total := Total + Item + Float (Handle_Width);
+               Tmp   := Tmp.Next;
+            end loop;
+            Set_Size_Request (Tmp, Width - Total, Height);
+         end if;
+
+      else
+         Count := Count_Children (Current) - 1;
+         Size  := Current.Height - Float (Count * Handle_Width);
+         Size2 := Height - Float (Count * Handle_Width);
+         if Size > 0.0 then
+            Tmp := Current.First_Child;
+            while Tmp.Next /= null loop
+               Item := Size2 * Tmp.Height / Size;
+               Set_Size_Request (Tmp, Width, Item);
+               Total := Total + Item + Float (Handle_Width);
+               Tmp   := Tmp.Next;
+            end loop;
+            Set_Size_Request (Tmp, Width, Height - Total);
+         end if;
+      end if;
+      Current.Width  := Width;
+      Current.Height := Height;
+   end Set_Size_Request;
+
+   ------------------
+   -- Size_Request --
+   ------------------
+
+   procedure Size_Request (Current : Child_Description_Access) is
+      Requisition : Gtk_Requisition;
+      Tmp         : Child_Description_Access;
+      W, H        : Float := 0.0;
+   begin
+      if Current.Is_Widget then
+         if Current.Visible then
+            if Current.Width < 0.0 or else Current.Height < 0.0 then
+               Size_Request (Current.Widget, Requisition);
+
+               if Current.Width < 0.0 then
+                  Current.Width := Float (Requisition.Width);
+               end if;
+
+               if Current.Height < 0.0 then
+                  Current.Height := Float (Requisition.Height);
+               end if;
+            else
+               null;  --  Keep current size
+            end if;
+         else
+            Current.Width  := 0.0;
+            Current.Height := 0.0;
+         end if;
+
+      else
+         Tmp := Current.First_Child;
+         while Tmp /= null loop
+            Tmp.Visible := Is_Visible (Tmp);
+            if Tmp.Visible then
+               Size_Request (Tmp);
+
+               if Current.Orientation = Orientation_Horizontal then
+                  W  := W + Tmp.Width;
+                  if Tmp.Width /= 0.0
+                    and then not Is_Last_Visible (Tmp)
+                  then
+                     W := W + Float (Handle_Width);
+                  end if;
+                  H := Float'Max (H, Tmp.Height);
+               else
+                  W  := Float'Max (W, Tmp.Width);
+                  H := H + Tmp.Height;
+                  if Tmp.Height /= 0.0
+                    and then not Is_Last_Visible (Tmp)
+                  then
+                     H := H + Float (Handle_Width);
+                  end if;
                end if;
             end if;
 
-            Resize_Handle (C);
-            Previous := Last;
+            Tmp := Tmp.Next;
+         end loop;
+
+         --  If none of the children have requested some size, we keep the
+         --  current request (so that when splitting a window, the resulting
+         --  pane occupies exactly the same amoung of space as splitted window
+         --  used to occupy).
+         if W /= 0.0 then
+            Current.Width  := W;
          end if;
-      end loop;
-
-      if Ref <= Parent.Handles'Last then
-         Previous := Gint (Parent.Handles (Ref).Percent * Max);
-      else
-         Previous := Gint (Max);
+         if H /= 0.0 then
+            Current.Height := H;
+         end if;
       end if;
+   end Size_Request;
 
-      for C in reverse Parent.Handles'First .. Ref - 1 loop
-         if Is_Visible (Parent.Handles (C).Win) then
-            Last :=  Gint (Parent.Handles (C).Percent * Max);
-            if Last >= Previous - Minimum_Child_Width then
-               Last := Previous - Minimum_Child_Width;
-               Parent.Handles (C).Percent := Float (Last) / Max;
+   --------------------
+   -- Count_Children --
+   --------------------
 
-               if Parent.Handles (C).Percent <= 0.0 then
-                  Parent.Handles (C).Percent := 0.01;
-               end if;
+   function Count_Children (Current : Child_Description_Access) return Gint is
+      Count : Gint := 0;
+      Tmp   : Child_Description_Access;
+   begin
+      if not Current.Is_Widget then
+         Tmp := Current.First_Child;
+         while Tmp /= null loop
+            if Tmp.Visible then
+               Count := Count + 1;
+            end if;
+            Tmp := Tmp.Next;
+         end loop;
+      end if;
+      return Count;
+   end Count_Children;
+
+   -------------------
+   -- Size_Allocate --
+   -------------------
+
+   procedure Size_Allocate
+     (Split         : access Gtkada_Multi_Paned_Record'Class;
+      Current       : Child_Description_Access;
+      Width, Height : Float)
+   is
+      Xchild : Gint := Current.X;
+      Ychild : Gint := Current.Y;
+      Tmp    : Child_Description_Access := Current.First_Child;
+      Children_Count : Gint := 0;
+      Child  : Float;
+      Ratio, Fixed_Ratio  : Float := 1.0;
+      Has_Request_Child : Boolean := False;
+      Unrequested : Float := 0.0; --  Size for children that didn't request one
+      Fixed_Width, Fixed_Height : Float := 0.0;
+      Req_Width, Req_Height : Float := 0.0;
+      Handles_Size : Float;
+
+      procedure Compute_Ratios (Total, Requested, Fixed  : Float);
+      --  Compute the various ratios to apply, given the total size allocated
+      --  to the widget, its requested size, and the size dedicated to fixed
+      --  size children
+
+      procedure Compute_Ratios (Total, Requested, Fixed  : Float) is
+         T : Float;
+      begin
+         if Handles_Size > Total then
+            Ratio       := 0.0;
+            Fixed_Ratio := 0.0;
+         else
+            if Fixed > Total - Handles_Size then
+               Fixed_Ratio := (Total - Handles_Size) / Fixed;
             end if;
 
-            Resize_Handle (C);
-            Previous := Last;
-         end if;
-      end loop;
-   end Move_Handles;
+            T := Total - Handles_Size - Fixed * Fixed_Ratio;
 
-   ------------------------------
+            if Unrequested = 0.0 then
+               Ratio       := T / (Requested - Fixed * Fixed_Ratio);
+            elsif T > Requested or else not Has_Request_Child then
+               Ratio       := 1.0;
+               Unrequested := (T - Requested) / Unrequested;
+            else
+               Ratio := (T - Unrequested * Float (Minimum_Width))
+                 / (Requested - Fixed * Fixed_Ratio);
+               Unrequested := Float (Minimum_Width);
+            end if;
+         end if;
+      end Compute_Ratios;
+
+   begin
+      --  Algorithm is the following:
+      --    - Each handle gets its constant size (Handle_Width).
+      --    - Each fixed_size widget gets its requested size. If the total
+      --      size would be wider than the box, then they are shrunk
+      --    - The remaining space is split among the children that requested a
+      --      specific size. If the total requested size is wider than the box,
+      --      then they are shrunk
+      --    - The remaining space is split equaly among the children that
+      --      didn't request a specific size.
+
+      while Tmp /= null loop
+         if Tmp.Visible then
+            Children_Count := Children_Count + 1;
+
+            if Tmp.Is_Widget and then Tmp.Fixed_Size then
+               Fixed_Width  := Fixed_Width  + Tmp.Width;
+               Fixed_Height := Fixed_Height + Tmp.Height;
+            end if;
+
+            Req_Width  := Req_Width + Tmp.Width;
+            Req_Height := Req_Height + Tmp.Height;
+
+            if Tmp.Width = 0.0 or else Tmp.Height = 0.0 then
+               Unrequested         := Unrequested + 1.0;
+            else
+               Has_Request_Child := True;
+            end if;
+         end if;
+         Tmp := Tmp.Next;
+      end loop;
+
+      Handles_Size := Float ((Children_Count - 1) * Handle_Width);
+      Tmp := Current.First_Child;
+
+      if Current.Orientation = Orientation_Horizontal then
+         Compute_Ratios (Width, Req_Width, Fixed_Width);
+         if Traces then
+            Put_Line ("Horiz Ratio=" & Ratio'Img
+                      & " Fixed_Ratio=" & Fixed_Ratio'Img
+                      & " Total=" & Width'Img
+                      & " Requested=" & Req_Width'Img
+                      & " Fixed=" & Fixed_Width'Img
+                      & " Handles=" & Handles_Size'Img
+                      & " Unrequested=" & Unrequested'Img);
+         end if;
+
+         while Tmp /= null loop
+            if Tmp.Visible then
+               if Tmp.Width = 0.0 then
+                  Child := Unrequested;
+               elsif Tmp.Is_Widget and then Tmp.Fixed_Size then
+                  Child := Tmp.Width * Fixed_Ratio;
+               else
+                  Child := Tmp.Width * Ratio;
+               end if;
+
+               if Tmp.Is_Widget then
+                  Size_Allocate
+                    (Tmp.Widget,
+                     (Xchild, Current.Y,
+                      Gint'Max (1, Gint (Child)), Gint (Height)));
+                  Tmp.Width  := Float'Max (1.0, Child);
+                  Tmp.Height := Height;
+               else
+                  Tmp.X := Xchild;
+                  Tmp.Y := Current.Y;
+                  Size_Allocate (Split, Tmp, Child, Height);
+               end if;
+
+               Tmp.Handle.Position :=
+                 (X      => Xchild + Gint (Child),
+                  Y      => Current.Y,
+                  Width  => Handle_Width,
+                  Height => Gint (Height));
+               Move_Handle (Split, Tmp);
+
+               Xchild := Xchild + Gint (Child) + Handle_Width;
+            elsif Tmp.Handle.Win /= null then
+               Hide (Tmp.Handle.Win);
+            end if;
+
+            Tmp := Tmp.Next;
+         end loop;
+
+      else
+         Compute_Ratios (Height, Req_Height, Fixed_Height);
+         if Traces then
+            Put_Line ("Vert Ratio=" & Ratio'Img
+                      & " Fixed_Ratio=" & Fixed_Ratio'Img
+                      & " Total=" & Height'Img
+                      & " Requested=" & Req_Height'Img
+                      & " Fixed=" & Fixed_Height'Img
+                      & " Handles=" & Handles_Size'Img
+                      & " Unrequested=" & Unrequested'Img);
+         end if;
+         while Tmp /= null loop
+            if Tmp.Visible then
+               if Tmp.Height = 0.0 then
+                  Child := Unrequested;
+               elsif Tmp.Is_Widget and then Tmp.Fixed_Size then
+                  Child := Tmp.Height * Fixed_Ratio;
+               else
+                  Child := Tmp.Height * Ratio;
+               end if;
+               if Tmp.Is_Widget then
+                  Size_Allocate
+                    (Tmp.Widget,
+                     (Current.X, Ychild, Gint (Width),
+                      Gint'Max (1, Gint (Child))));
+                  Tmp.Width  := Width;
+                  Tmp.Height := Float'Max (1.0, Child);
+               else
+                  Tmp.X := Current.X;
+                  Tmp.Y := Ychild;
+                  Size_Allocate (Split, Tmp, Width, Child);
+               end if;
+
+               Tmp.Handle.Position :=
+                 (X      => Current.X,
+                  Y      => Ychild + Gint (Child),
+                  Width  => Gint (Width),
+                  Height => Handle_Width);
+               Move_Handle (Split, Tmp);
+
+               Ychild := Ychild + Gint (Child) + Handle_Width;
+            elsif Tmp.Handle.Win /= null then
+               Hide (Tmp.Handle.Win);
+            end if;
+
+            Tmp := Tmp.Next;
+         end loop;
+      end if;
+
+      Current.Width  := Width;
+      Current.Height := Height;
+   end Size_Allocate;
+
+   -------------------------
    -- Size_Allocate_Paned --
-   ------------------------------
+   -------------------------
 
    procedure Size_Allocate_Paned
      (Paned : System.Address; Alloc : Gtk_Allocation)
    is
       Split        : constant Gtkada_Multi_Paned :=
-          Gtkada_Multi_Paned (Gtk.Widget.Convert (Paned));
-      Iter         : Child_Iterator := Start (Split);
-      Current, Tmp : Child_Description_Access;
-      Position     : Gtk_Allocation;
-
-      procedure Compute_Requisition (Current : Child_Description_Access);
-      --  Propagate the children size requisition to the parent, so that we can
-      --  later compute the ratio that each children should occupy.
-
-      procedure Propagate_Sizes
-        (Current : Child_Description_Access; Width, Height : Allocation_Int);
-      --  Compute the size that each children of Current should really
-      --  occupy on the screen. This depends on the size requisition for each
-      --  of the children, and the total size allocates to Current (given by
-      --  Alloc)
-
-      -------------------------
-      -- Compute_Requisition --
-      -------------------------
-
-      procedure Compute_Requisition (Current : Child_Description_Access) is
-         Requisition : Gtk_Requisition;
-         Tmp         : Child_Description_Access;
-         Force_Zero  : Boolean;
-         Alloc       : Gtk_Allocation;
-      begin
-         if Current /= null then
-            if Current.Is_Widget and then Is_Visible (Current) then
-               if Current.Width = -1 or else Current.Height = -1 then
-                  Size_Request (Current.Widget, Requisition);
-                  if Current.Width = -1 then
-                     Current.Width := Requisition.Width;
-                  end if;
-
-                  if Current.Height = -1 then
-                     Current.Height := Requisition.Height;
-                  end if;
-
-               --  Do not try to reset Width and Height if they are 0,
-               --  otherwise resizing panes will no longer be possible
-               end if;
-
-            elsif not Current.Is_Widget then
-               Current.Width  := 0;
-               Current.Height := 0;
-               Force_Zero     := True;
-
-               Tmp := Current.First_Child;
-               while Tmp /= null loop
-                  Compute_Requisition (Tmp);
-
-                  --  If at least one of the children has a specific size
-                  --  requisition, we need to recompute everything, taking into
-                  --  account the currently allocated sizes.
-                  if Tmp.Height /= 0 or else Tmp.Width /= 0 then
-                     Force_Zero := False;
-                  end if;
-
-                  case Current.Orientation is
-                     when Orientation_Horizontal =>
-                        if Tmp.Width = 0 then
-                           --  ??? We cannot use Get_Allocation_Width, in fact,
-                           --  since the widget might just have been split,
-                           --  but not reallocated yet. It would report the
-                           --  old size in this case
-                           if Tmp.Is_Widget then
-                              Current.Width := Current.Width
-                                + Get_Allocation_Width (Tmp.Widget);
-                           else
-                              Compute_Child_Position (Split, Tmp, Alloc);
-                              Current.Width := Current.Width + Alloc.Width;
-                           end if;
-                        else
-                           Current.Width := Current.Width + Tmp.Width;
-                        end if;
-
-                        if Tmp.Next /= null then
-                           Current.Width := Current.Width
-                             + 2 * Handle_Half_Width;
-                        end if;
-
-                        Current.Height := Gint'Max
-                          (Current.Height, Tmp.Height);
-
-                     when Orientation_Vertical =>
-                        Current.Width := Gint'Max
-                          (Current.Width, Tmp.Width);
-
-                        if Tmp.Height = 0 then
-                           if Tmp.Is_Widget then
-                              --  We can't use Get_Allocation_Height, in fact,
-                              --  since the widget might just have been split,
-                              --  but not reallocated yet. It would report the
-                              --  old size in this case
-                              Current.Height := Current.Height
-                                + Get_Allocation_Height (Tmp.Widget);
-                           else
-                              Compute_Child_Position (Split, Tmp, Alloc);
-                              Current.Height := Current.Height + Alloc.Height;
-                           end if;
-                        else
-                           Current.Height := Current.Height + Tmp.Height;
-                        end if;
-
-                        if Tmp.Next /= null then
-                           Current.Height := Current.Height
-                             + 2 * Handle_Half_Width;
-                        end if;
-                  end case;
-
-                  Tmp := Tmp.Next;
-               end loop;
-
-               if Force_Zero then
-                  Current.Width := 0;
-                  Current.Height := 0;
-               end if;
-            end if;
-         end if;
-      end Compute_Requisition;
-
-      ---------------------
-      -- Propagate_Sizes --
-      ---------------------
-
-      procedure Propagate_Sizes
-        (Current : Child_Description_Access; Width, Height : Allocation_Int)
-      is
-         Tmp    : Child_Description_Access;
-         Changed : Boolean;
-         Percent : Float;
-      begin
-         if Current /= null
-           and then not Current.Is_Widget
-         then
-            Tmp := Current.First_Child;
-            for Handle in Current.Handles'Range loop
-               Changed := False;
-
-               case Current.Orientation is
-                  when Orientation_Horizontal =>
-                     if Tmp.Width /= 0
-                       and then Current.Width /= 0
-                     then
-                        Current.Handles (Handle).Percent :=
-                          Float (Tmp.Width) / Float (Current.Width);
-                        Changed := True;
-                     elsif Handle = Current.Handles'Last then
-                        --  Check whether the last widget has its own request
-                        if Tmp.Next.Width /= 0
-                          and then Current.Width /= 0
-                        then
-                           if Handle > Current.Handles'First then
-                              Current.Handles (Handle).Percent :=
-                               1.0
-                               - Float (Tmp.Next.Width) / Float (Current.Width)
-                               - 2.0 * Current.Handles (Handle - 1).Percent;
-                           else
-                              Current.Handles (Handle).Percent := 1.0
-                              - Float (Tmp.Next.Width) / Float (Current.Width);
-                           end if;
-
-                           Changed := True;
-                        end if;
-                     end if;
-                     Propagate_Sizes
-                       (Tmp,
-                        Allocation_Int
-                          (Float (Width) * Current.Handles (Handle).Percent),
-                        Height);
-
-                  when Orientation_Vertical =>
-                     if Tmp.Height /= 0
-                       and then Current.Height /= 0
-                     then
-                        Current.Handles (Handle).Percent :=
-                          Float (Tmp.Height) / Float (Current.Height);
-                        Changed := True;
-                     elsif Handle = Current.Handles'Last then
-                        --  Check whether the last widget has its own request
-                        if Tmp.Next.Height /= 0
-                          and then Current.Height /= 0
-                        then
-                           if Handle > Current.Handles'First then
-                              Current.Handles (Handle).Percent :=
-                                1.0
-                                - Float (Tmp.Next.Height)
-                                  / Float (Current.Height)
-                                - 2.0 * Current.Handles (Handle - 1).Percent;
-                           else
-                              Current.Handles (Handle).Percent :=
-                                1.0
-                                - Float (Tmp.Next.Height)
-                                  / Float (Current.Height);
-                           end if;
-
-                           Changed := True;
-                        end if;
-                     end if;
-                     Propagate_Sizes
-                       (Tmp,
-                        Width,
-                        Allocation_Int
-                          (Float (Height) * Current.Handles (Handle).Percent));
-               end case;
-
-               if Changed then
-                  if Handle > Current.Handles'First then
-                     Current.Handles (Handle).Percent :=
-                       Current.Handles (Handle).Percent
-                       + Current.Handles (Handle - 1).Percent;
-                  end if;
-               end if;
-
-               if Current.Handles (Handle).Percent > 1.0 then
-                  Current.Handles (Handle).Percent := 0.99;
-               end if;
-
-               Tmp := Tmp.Next;
-            end loop;
-
-            if Current.Handles'Length = 0 then
-               Percent := 1.0;
-            else
-               Percent :=
-                 1.0 - Current.Handles (Current.Handles'Last).Percent;
-            end if;
-
-            case Current.Orientation is
-               when Orientation_Horizontal =>
-                  Propagate_Sizes
-                    (Tmp,
-                     Allocation_Int (Float (Width) * Percent),
-                     Height);
-               when Orientation_Vertical =>
-                  Propagate_Sizes
-                    (Tmp,
-                     Width,
-                     Allocation_Int (Float (Height) * Percent));
-            end case;
-
-         elsif Current /= null then
-            if not Current.Fixed_Size then
-               Current.Width := 0;
-               Current.Height := 0;
-            end if;
-         end if;
-      end Propagate_Sizes;
-
+        Gtkada_Multi_Paned (Gtk.Widget.Convert (Paned));
+      Visibility_Changed : Boolean := False;
+      --  True if the visibility of one of the children has changed.
+      Iter : Child_Iterator;
    begin
-      Set_Allocation (Split, Alloc);
-
-      if not Realized_Is_Set (Split) then
+      if not Realized_Is_Set (Split)
+        or else Split.Children = null
+      then
          return;
       end if;
+
+      Iter := Start (Split);
+      while not At_End (Iter) loop
+         if Iter.Current.Visible /= Is_Visible (Iter.Current) then
+            Visibility_Changed := True;
+            exit;
+         end if;
+         Next (Iter);
+      end loop;
+
+      if Traces then
+         Put_Line ("SIZE_ALLOCATE_PANED");
+      end if;
+
+      if not Visibility_Changed
+        and then Get_Allocation_X (Split)      = Alloc.X
+        and then Get_Allocation_Y (Split)      = Alloc.Y
+        and then Get_Allocation_Width (Split)  = Alloc.Width
+        and then Get_Allocation_Height (Split) = Alloc.Height
+      then
+         --  We need to propagate the size_allocate to children, since
+         --  otherwise they are not properly refreshed, for instance the
+         --  notebooks in the MDI.
+         Iter := Start (Split);
+         while not At_End (Iter) loop
+            if Iter.Current.Is_Widget then
+               Size_Allocate
+                  (Iter.Current.Widget,
+                   (Get_Allocation_X (Iter.Current.Widget),
+                    Get_Allocation_Y (Iter.Current.Widget),
+                    Get_Allocation_Width (Iter.Current.Widget),
+                    Get_Allocation_Height (Iter.Current.Widget)));
+            end if;
+            Next (Iter);
+         end loop;
+         return;
+      end if;
+
+      Set_Allocation (Split, Alloc);
 
       if Get_Has_Window (Split) then
          Gdk.Window.Move_Resize
@@ -1531,170 +1569,35 @@ package body Gtkada.Multi_Paned is
             Height => Alloc.Height);
       end if;
 
-      --  Hide the handles that shouldn't be visible
-      loop
-         Current := Get (Iter);
-         exit when Current = null;
+      Size_Request (Split.Children);
 
-         if not Current.Is_Widget then
-            Tmp := Current.First_Child;
-
-            --  For GPS's sake, we handle the following configuration
-            --      child visible / child invisible / child visible
-            --  by allocating the maximum space for the first child, and less
-            --  for the last child (think of the docks in GPS)
-
-            if Tmp /= null then
-               Tmp := Tmp.Next;
-            end if;
-
-            for H in Current.Handles'Range loop
-               if Is_Visible (Tmp) then
-                  Show (Current.Handles (H).Win);
-               else
-                  Hide (Current.Handles (H).Win);
-               end if;
-
-               Tmp := Tmp.Next;
-            end loop;
-
-            if Current.Handles'Last /= 0
-              and then Current.First_Child /= null
-              and then not Is_Visible (Current.First_Child)
-            then
-               Hide (Current.Handles (Current.Handles'First).Win);
-            end if;
-         end if;
-
-         Next (Iter);
-      end loop;
-
-      Compute_Requisition (Split.Children);
       if Traces then
-         Put_Line ("## Compute_Requisition, at end");
-         Dump (Split, Split.Children);
-      end if;
-      Propagate_Sizes (Split.Children, Alloc.Width, Alloc.Height);
-      if Traces then
-         Put_Line ("## Propagate_Sizes, at end");
+         Put_Line ("## after Size_Request");
          Dump (Split, Split.Children);
       end if;
 
-      --  Move the handles first, in case some need to be moved to make enough
-      --  space for the children. This must be a separate loop from above,
-      --  since the sizes are impacted by what is visible.
-      Iter := Start (Split);
-      loop
-         Current := Get (Iter);
-         exit when Current = null;
+      if Get_Has_Window (Split) then
+         Split.Children.X := 0;
+         Split.Children.Y := 0;
+      else
+         Split.Children.X := Alloc.X;
+         Split.Children.Y := Alloc.Y;
+      end if;
 
-         if not Current.Is_Widget then
-            Move_Handles (Split, Current);
-         end if;
+      Size_Allocate (Split, Split.Children,
+                     Float (Alloc.Width), Float (Alloc.Height));
 
-         Next (Iter);
-      end loop;
-
-      --  Then reposition the children
-
-      Iter := Start (Split);
-      loop
-         Current := Get (Iter);
-         exit when Current = null;
-
-         if Current.Is_Widget then
-            Compute_Child_Position (Split, Current, Position);
-            if Position.Width < 0 then
-               Position.Width := 0;
-            end if;
-
-            if Position.Height < 0 then
-               Position.Height := 0;
-            end if;
-
-            Size_Allocate (Current.Widget, Position);
-         end if;
-
-         Next (Iter);
-      end loop;
+      if Traces then
+         Put_Line ("## after Size_Allocate");
+         Dump (Split, Split.Children);
+      end if;
 
    exception
       when E : others =>
-         pragma Debug
-           (Put_Line ("Unexpected exception " & Exception_Information (E)));
-         null;
+         if Traces then
+            Put_Line ("Unexpected exception " & Exception_Information (E));
+         end if;
    end Size_Allocate_Paned;
-
-   ----------------
-   -- Add_Handle --
-   ----------------
-
-   procedure Add_Handle
-     (Split : access Gtkada_Multi_Paned_Record'Class;
-      Parent : Child_Description_Access;
-      Child : Child_Description_Access;
-      Old_Handles : Handles_Array_Access := null)
-   is
-      Old        : Handles_Array_Access := Parent.Handles;
-      Count      : Natural := 1;
-      Index      : Natural := 1;
-      Tmp        : Child_Description_Access;
-      Width, Start : Float;
-   begin
-      if Old_Handles /= null then
-         Count := Old_Handles'Length;
-      end if;
-
-      Tmp := Parent.First_Child;
-      while Tmp /= Child loop
-         Index := Index + 1;
-         Tmp := Tmp.Next;
-      end loop;
-
-      Parent.Handles := new Handles_Array (Old'First .. Old'Last + Count);
-      Parent.Handles (Parent.Handles'First .. Index - 1) :=
-        Old (Old'First .. Index - 1);
-      Parent.Handles (Index + Count .. Parent.Handles'Last) :=
-        Old (Index .. Old'Last);
-
-      if Old'Last = 0 then
-         Width := 1.0;
-         Start := 0.0;
-      elsif Index in Old'First + 1 .. Old'Last then
-         Width := Old (Index).Percent - Old (Index - 1).Percent;
-         Start := Old (Index - 1).Percent;
-      elsif Index = 1 then
-         Width := Old (Index).Percent;
-         Start := 0.0;
-      else
-         Width := 1.0 - Old (Old'Last).Percent;
-         Start := Old (Old'Last).Percent;
-      end if;
-
-      if Old_Handles = null then
-         if Count = 1 then
-            Width := Width * 0.5;
-         else
-            Width := Width / Float (Count + 1);
-         end if;
-      end if;
-
-      for H in Index .. Index + Count - 1 loop
-         if Old_Handles /= null then
-            Parent.Handles (H).Percent :=
-              Width * Old_Handles (Old_Handles'First + H - Index).Percent
-              + Start;
-         else
-            Parent.Handles (H).Percent  := Width + Start;
-         end if;
-
-         if Realized_Is_Set (Split) then
-            Create_Handle (Split, Parent.Handles (H), Parent.Orientation);
-         end if;
-      end loop;
-
-      Unchecked_Free (Old);
-   end Add_Handle;
 
    -------------------
    -- Splitted_Area --
@@ -1793,44 +1696,29 @@ package body Gtkada.Multi_Paned is
       Orientation   : Gtk_Orientation;
       Fixed_Size    : Boolean := False;
       Width, Height : Glib.Gint := -1;
-      After         : Boolean := True;
-      Include_Siblings : Boolean := False)
+      After         : Boolean := True)
    is
       procedure Add_After_All_Children (Parent : Child_Description_Access);
       --  Add the new child at the end of the child list for Parent
 
       procedure Add_As_First_Child (Parent : Child_Description_Access);
-      --  Add the new child as the first child of parent
+      --  Add the new child as the first child of parent.
+      --  It will share the space of the current first child of Parent
 
       procedure Add_In_List
         (Parent   : Child_Description_Access;
          Ref_Item : Child_Description_Access;
          After    : Boolean);
-      --  Add a new child to Parent, before or after Ref_Item
+      --  Add a new child to Parent, that contains New_Child, before or after
+      --  Ref_Item. The new child shares the space previously occupied by
+      --  Ref_Item, which is thus resized as needed.
 
       function Create_Or_Get_Parent
         (Current          : Child_Description_Access;
-         Orientation      : Gtk_Orientation;
-         Force            : Boolean := False;
-         Include_Siblings : Boolean := False) return Child_Description_Access;
+         Orientation      : Gtk_Orientation) return Child_Description_Access;
       --  Create a new parent for Current with the orientation specified in
-      --  parameter to Split_Internal.
-      --  If Force is True, then a new parent is created, even if the current
-      --  one already has the right orientation.
-      --  If Include_Siblings is True, then Current and all its siblings are
-      --  moved to the new parent
-
-      procedure Create_Parent_For_Siblings
-        (Current : Child_Description_Access);
-      --  Transform the following tree:
-      --      Horizontal                     Horizontal
-      --    /                 into          /
-      --    1 -> 2 -> 3                     1 -> Vertical
-      --                                          /
-      --                                          Horizontal -> 4
-      --                                          /
-      --                                          2 -> 3
-      --  This is used for the implementation of Split_Group
+      --  parameter to Split_Internal. This new parent takes the place of
+      --  Current in the tree.
 
       --------------------------
       -- Create_Or_Get_Parent --
@@ -1838,20 +1726,19 @@ package body Gtkada.Multi_Paned is
 
       function Create_Or_Get_Parent
         (Current          : Child_Description_Access;
-         Orientation      : Gtk_Orientation;
-         Force            : Boolean := False;
-         Include_Siblings : Boolean := False) return Child_Description_Access
+         Orientation      : Gtk_Orientation) return Child_Description_Access
       is
          Pane, Tmp2 : Child_Description_Access;
-         Count : Integer;
-         Old_Handles : Handles_Array_Access;
       begin
-         if not Force
-            and then Current.Parent /= null
+         if Current.Parent /= null
             and then Current.Parent.Orientation = Orientation
          then
             return Current.Parent;
          end if;
+
+         --  The new parent occupies the same area as Current, therefore we
+         --  adjust the size request accordingly. The size of Current doesn't
+         --  change either, since there is no extra handle added
 
          Pane := new Child_Description'
            (Parent      => Current.Parent,
@@ -1859,10 +1746,12 @@ package body Gtkada.Multi_Paned is
             Is_Widget   => False,
             Orientation => Orientation,
             First_Child => Current,
-            Width       => -1,
-            Height      => -1,
-            Handles     => null);
-
+            Width       => Current.Width,
+            Height      => Current.Height,
+            X           => 0,
+            Y           => 0,
+            Visible     => True,
+            Handle      => No_Handle);
          Current.Parent := Pane;
 
          if Pane.Parent = null then
@@ -1877,59 +1766,10 @@ package body Gtkada.Multi_Paned is
             Tmp2.Next := Pane;
          end if;
 
-         if Include_Siblings then
-            Pane.Next    := null;
-            Tmp2 := Current.Next;
-            Count := 0;
-            while Tmp2 /= null loop
-               Tmp2.Parent := Current.Parent;
-               Count := Count + 1;
-               Tmp2 := Tmp2.Next;
-            end loop;
-            Pane.Handles := new Handles_Array (1 .. Count);
-         else
-            Pane.Handles := new Handles_Array (1 .. 0);
-            Current.Next := null;
-         end if;
-
-         if Pane.Parent /= null then
-            Count := 0;
-            Tmp2 := Pane.Parent.First_Child.Next;
-            while Tmp2 /= null loop
-               Count := Count + 1;
-               Tmp2 := Tmp2.Next;
-            end loop;
-
-            Old_Handles := Pane.Parent.Handles;
-            Pane.Parent.Handles := new Handles_Array (1 .. Count);
-            Pane.Parent.Handles (1 .. Count) := Old_Handles (1 .. Count);
-            Unchecked_Free (Old_Handles);
-         end if;
-
+         Set_Handle_Cursor (Current);
+         Current.Next := null;
          return Pane;
       end Create_Or_Get_Parent;
-
-      --------------------------------
-      -- Create_Parent_For_Siblings --
-      --------------------------------
-
-      procedure Create_Parent_For_Siblings
-        (Current : Child_Description_Access)
-      is
-         Pane1, Pane : Child_Description_Access;
-         pragma Unreferenced (Pane);
-      begin
-         Pane1 := Create_Or_Get_Parent
-           (Current          => Current,
-            Orientation      => Current.Parent.Orientation,
-            Force            => True,
-            Include_Siblings => True);
-         Pane := Create_Or_Get_Parent
-           (Current          => Pane1,
-            Orientation      => Orientation,
-            Force            => True,
-            Include_Siblings => False);
-      end Create_Parent_For_Siblings;
 
       -----------------
       -- Add_In_List --
@@ -1943,13 +1783,19 @@ package body Gtkada.Multi_Paned is
          Tmp      : Child_Description_Access := Parent.First_Child;
          Tmp2     : Child_Description_Access;
       begin
+         if Traces then
+            Put_Line ("Add_In_List");
+         end if;
+
          Tmp2 := new Child_Description'
            (Parent      => Parent,
             Next        => null,
             Is_Widget   => True,
             Fixed_Size  => Fixed_Size,
-            Width       => Width,
-            Height      => Height,
+            Width       => Float (Width),
+            Height      => Float (Height),
+            Visible     => True,
+            Handle      => No_Handle,
             Widget      => Gtk_Widget (New_Child));
 
          if After then
@@ -1958,7 +1804,6 @@ package body Gtkada.Multi_Paned is
             end loop;
             Tmp2.Next := Tmp.Next;
             Tmp.Next := Tmp2;
-            Add_Handle (Win, Parent, Tmp);
          else
             if Parent.First_Child = Ref_Item then
                Tmp2.Next := Parent.First_Child;
@@ -1970,7 +1815,6 @@ package body Gtkada.Multi_Paned is
                Tmp2.Next := Tmp.Next;
                Tmp.Next := Tmp2;
             end if;
-            Add_Handle (Win, Parent, Tmp2);
          end if;
       end Add_In_List;
 
@@ -1979,18 +1823,24 @@ package body Gtkada.Multi_Paned is
       ------------------------
 
       procedure Add_As_First_Child (Parent : Child_Description_Access) is
-         Tmp : Child_Description_Access;
       begin
-         Tmp := new Child_Description'
-           (Parent      => Parent,
-            Next        => Parent.First_Child,
-            Is_Widget   => True,
-            Fixed_Size  => Fixed_Size,
-            Width       => Width,
-            Height      => Height,
-            Widget      => Gtk_Widget (New_Child));
-         Parent.First_Child := Tmp;
-         Add_Handle (Win, Parent, Tmp);
+         if Traces then
+            Put_Line ("Add_As_First_Child");
+         end if;
+         if Parent.First_Child = null then
+            Parent.First_Child := new Child_Description'
+              (Parent      => Parent,
+               Next        => Parent.First_Child,
+               Is_Widget   => True,
+               Fixed_Size  => Fixed_Size,
+               Width       => Float (Width),
+               Height      => Float (Height),
+               Handle      => No_Handle,
+               Visible     => True,
+               Widget      => Gtk_Widget (New_Child));
+         else
+            Add_In_List (Parent, Parent.First_Child, After => False);
+         end if;
       end Add_As_First_Child;
 
       ----------------------------
@@ -1998,26 +1848,29 @@ package body Gtkada.Multi_Paned is
       ----------------------------
 
       procedure Add_After_All_Children (Parent : Child_Description_Access) is
-         Tmp, Tmp2 : Child_Description_Access;
+         Tmp : Child_Description_Access;
       begin
-         Tmp := new Child_Description'
-           (Parent      => Parent,
-            Next        => null,
-            Is_Widget   => True,
-            Fixed_Size  => Fixed_Size,
-            Width       => Width,
-            Height      => Height,
-            Widget      => Gtk_Widget (New_Child));
-         if Parent.First_Child = null then
-            Parent.First_Child := Tmp;
-         else
-            Tmp2 := Parent.First_Child;
-            while Tmp2.Next /= null loop
-               Tmp2 := Tmp2.Next;
-            end loop;
-            Tmp2.Next := Tmp;
+         if Traces then
+            Put_Line ("Add_After_All_Children");
          end if;
-         Add_Handle (Win, Parent, Tmp2);
+         if Parent.First_Child = null then
+            Parent.First_Child := new Child_Description'
+              (Parent      => Parent,
+               Next        => null,
+               Is_Widget   => True,
+               Fixed_Size  => Fixed_Size,
+               Width       => Float (Width),
+               Height      => Float (Height),
+               Handle      => No_Handle,
+               Visible     => True,
+               Widget      => Gtk_Widget (New_Child));
+         else
+            Tmp := Parent.First_Child;
+            while Tmp.Next /= null loop
+               Tmp := Tmp.Next;
+            end loop;
+            Add_In_List (Parent, Tmp, After => True);
+         end if;
       end Add_After_All_Children;
 
       Current, Tmp2, Pane : Child_Description_Access;
@@ -2038,7 +1891,7 @@ package body Gtkada.Multi_Paned is
          end if;
       else
          declare
-            Iter    : Child_Iterator := Start (Win);
+            Iter : Child_Iterator := Start (Win);
          begin
             loop
                Current := Get (Iter);
@@ -2064,60 +1917,67 @@ package body Gtkada.Multi_Paned is
             end if;
 
          else  --  Current.Is_Widget
-            if Include_Siblings then
-               Create_Parent_For_Siblings (Current);
-               Add_After_All_Children (Current.Parent.Parent);
-            else
-               Pane := Create_Or_Get_Parent (Current, Orientation);
-               Add_In_List (Pane, Current, After);
-            end if;
+            Pane := Create_Or_Get_Parent (Current, Orientation);
+            Add_In_List (Pane, Current, After);
+         end if;
+
+         if Width = 0 then
+            Current.Width := 0.0;
+         end if;
+
+         if Height = 0 then
+            Current.Height := 0.0;
          end if;
 
       --   Current = null => Do nothing unless there is no child yet
       elsif Win.Children = null then
+         if Traces then
+            Put_Line ("No children yet");
+         end if;
          Tmp2 := new Child_Description'
            (Parent      => null,
             Next        => null,
             Is_Widget   => True,
             Fixed_Size  => Fixed_Size,
-            Width       => Width,
-            Height      => Height,
+            Width       => Float (Width),
+            Height      => Float (Height),
+            Handle      => No_Handle,
+            Visible     => True,
             Widget      => Gtk_Widget (New_Child));
          Win.Children := new Child_Description'
            (Parent      => null,
             Next        => null,
             Is_Widget   => False,
             Orientation => Orientation,
-            Width       => -1,
-            Height      => -1,
+            Width       => -1.0,
+            Height      => -1.0,
+            X           => 0,
+            Y           => 0,
             First_Child => Tmp2,
-            Handles     => new Handles_Array (1 .. 0));
+            Visible     => True,
+            Handle      => No_Handle);
          Tmp2.Parent := Win.Children;
 
       elsif Win.Children /= null then
-         Tmp2 := new Child_Description'
-           (Parent      => Win.Children,
-            Next        => null,
-            Is_Widget   => True,
-            Fixed_Size  => Fixed_Size,
-            Width       => Width,
-            Height      => Height,
-            Widget      => Gtk_Widget (New_Child));
-
-         if Win.Children.First_Child = null then
-            Win.Children.First_Child := Tmp2;
-         else
-            Current := Win.Children.First_Child;
-            while Current.Next /= null loop
-               Current := Current.Next;
-            end loop;
-
-            Current.Next := Tmp2;
-            Add_Handle (Win, Win.Children, Current);
+         if Traces then
+            Put_Line ("Added as first child of Win");
          end if;
+         Add_As_First_Child (Win.Children);
       end if;
 
       Put (Win, New_Child, 0, 0);
+
+      if not Realized_Is_Set (Win)
+        or else Win.Children.Width <= 0.0
+      then
+         --  Reset to -1, so that other operations like Set_Size will not try
+         --  to do a Size_Allocate, even though there was no Size_Request first
+         Win.Children.Width := -1.0;
+         Queue_Resize (Win);
+      else
+         Size_Allocate
+           (Win, Win.Children, Win.Children.Width, Win.Children.Height);
+      end if;
 
       if Traces then
          Put_Line ("Split_Internal: After inserting "
@@ -2137,7 +1997,7 @@ package body Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := -1;
+      Width, Height : Glib.Gint := 0;
       After         : Boolean := True) is
    begin
       Split_Internal
@@ -2155,33 +2015,13 @@ package body Gtkada.Multi_Paned is
       New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation : Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := -1;
+      Width, Height : Glib.Gint := 0;
       After       : Boolean := True) is
    begin
       Split_Internal
         (Win, Gtk_Widget (Ref_Widget), null, False, New_Child, Orientation,
          Fixed_Size, Width, Height, After);
    end Split;
-
-   -----------------
-   -- Split_Group --
-   -----------------
-
-   procedure Split_Group
-     (Win           : access Gtkada_Multi_Paned_Record;
-      Ref_Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Orientation   : Gtk.Enums.Gtk_Orientation;
-      Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := -1;
-      After         : Boolean := True)
-   is
-   begin
-      Split_Internal
-        (Win, Gtk_Widget (Ref_Widget), null, False, New_Child, Orientation,
-         Fixed_Size, Width, Height, After,
-         Include_Siblings => True);
-   end Split_Group;
 
    ---------------
    -- Add_Child --
@@ -2193,7 +2033,7 @@ package body Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := -1;
+      Width, Height : Glib.Gint := 0;
       After         : Boolean := True) is
    begin
       Split_Internal
@@ -2211,13 +2051,8 @@ package body Gtkada.Multi_Paned is
       Width, Height : Glib.Gint := -1;
       Fixed_Size    : Boolean := False)
    is
-      Iter    : Child_Iterator := Start (Win);
-      Current : Child_Description_Access;
-      Child   : Child_Description_Access;
-      Percent : Float;
-      Current_Percent : Float;
-      Selected : Child_Description_Access;
-      Index : Natural;
+      Iter              : Child_Iterator := Start (Win);
+      Current, Previous : Child_Description_Access;
    begin
       loop
          Current := Get (Iter);
@@ -2226,65 +2061,58 @@ package body Gtkada.Multi_Paned is
          if Current.Is_Widget
            and then Current.Widget = Gtk_Widget (Widget)
          then
-            Selected := null;
-            Child := Current.Parent.First_Child;
-            for H in Current.Parent.Handles'Range loop
-               if Child = Current then
-                  Index := H;
-                  Selected := Current.Parent;
-                  exit;
-               end if;
-               Child := Child.Next;
-            end loop;
-
-            case Current.Parent.Orientation is
-               when Orientation_Vertical =>
-                  if Height = 0 then
-                     return; --  Nothing to do, keep current height
-                  end if;
-                  Percent := Float (Height + Handle_Half_Width)
-                    / Float (Get_Allocation_Height (Widget));
-
-               when Orientation_Horizontal =>
-                  if Width = 0 then
-                     return; --  Nothing to do, keep current width
-                  end if;
-                  Percent := Float (Width + Handle_Half_Width)
-                    / Float (Get_Allocation_Width (Widget));
-            end case;
-
-            if Selected = null then
-               Index := Current.Parent.Handles'Last;
-               Selected := Current.Parent;
-               Current_Percent := Current.Parent.Handles (Index).Percent;
-
-               Current.Parent.Handles (Index).Percent :=
-                 1.0 - Percent * (1.0 - Current_Percent);
-
-            elsif Index = Current.Parent.Handles'First then
-               Current_Percent :=
-                 Current.Parent.Handles (Index).Percent;
-               Current.Parent.Handles (Index).Percent :=
-                 Percent * Current_Percent;
-
-            else
-               Current_Percent :=
-                 Current.Parent.Handles (Index).Percent;
-               Current.Parent.Handles (Index).Percent :=
-                 Percent
-                   * (Current_Percent
-                      - Current.Parent.Handles (Index - 1).Percent)
-                 + Current.Parent.Handles (Index - 1).Percent;
-            end if;
-
             Current.Fixed_Size := Fixed_Size;
 
-            if not Realized_Is_Set (Win) then
-               Current.Width      := Width;
-               Current.Height     := Height;
-            end if;
+            --  If we have gone through a whole Size_Request/Size_Allocate
+            --  cycle already, we don't do this again, to preserve as much as
+            --  possible the current size of windows
+            if Realized_Is_Set (Win)
+              and then Win.Children.Width > 0.0
+            then
+               --  We need to adjust the size of several widgets, to take into
+               --  account the fact that resizing one will impact its neighbors
+               --  We use the same algorithm as when dragging handles.
 
-            Move_Handles (Win, Current.Parent, Index);
+               if Current.Next = null then
+                  Previous := Current.Parent.First_Child;
+                  while Previous.Next /= Current loop
+                     Previous := Previous.Next;
+                  end loop;
+
+                  if Previous /= null then
+                     if Current.Parent.Orientation =
+                       Orientation_Horizontal
+                     then
+                        Previous.Handle.Position.X :=
+                          Previous.Handle.Position.X - Width
+                            + Gint (Current.Width);
+                     else
+                        Current.Handle.Position.Y :=
+                       Previous.Handle.Position.Y - Height
+                            + Gint (Current.Height);
+                     end if;
+                     Resize_Child_And_Siblings (Current.Parent, Previous);
+                  end if;
+
+               else
+                  if Current.Parent.Orientation = Orientation_Horizontal then
+                     Current.Handle.Position.X := Current.Handle.Position.X
+                       + Width - Gint (Current.Width);
+                  else
+                     Current.Handle.Position.Y := Current.Handle.Position.Y
+                       + Height - Gint (Current.Height);
+                  end if;
+                  Resize_Child_And_Siblings (Current.Parent, Current);
+               end if;
+
+               Size_Allocate
+                 (Win, Current.Parent,
+                  Current.Parent.Width, Current.Parent.Height);
+            else
+               Current.Width  := Float (Width);
+               Current.Height := Float (Height);
+               Queue_Resize (Win);
+            end if;
             exit;
          end if;
 
@@ -2292,12 +2120,11 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       if Traces then
-         Put_Line ("Set_Size on "
+         Put_Line ("After Set_Size on "
                    & System.Address_Image (Widget.all'Address)
                    & " to " & Width'Img & Height'Img);
          Dump (Win, Win.Children);
       end if;
-      Queue_Resize (Win);
    end Set_Size;
 
 end Gtkada.Multi_Paned;

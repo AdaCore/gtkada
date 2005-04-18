@@ -222,10 +222,15 @@ package Gtkada.MDI is
      (MDI    : access MDI_Window_Record;
       Child  : access MDI_Child_Record'Class;
       Width  : Glib.Gint;
-      Height : Glib.Gint);
+      Height : Glib.Gint;
+      Fixed_Size : Boolean := False);
    --  Forces a new size for a child. If Width or Height is left to -1, the
    --  matching size will be computed from the child's requisition. If they are
    --  left to 0, the corresponding length is left to its current value.
+   --  If Fixed_Size is True, then the widget will not be resized when the MDI
+   --  itself is resized (unless the user has first moved one of the handles to
+   --  manually resize it). Otherwise, it will grow proportionally with the
+   --  rest of the MDI.
 
    procedure Close
      (MDI   : access MDI_Window_Record;

@@ -1639,30 +1639,30 @@ package body Gtkada.MDI is
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Vertical,
-                           Width => 0,
+                           Width  => 0,
                            Height => 0,
-                           After => True);
+                           After  => True);
                      when Position_Top =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Vertical,
-                           Width => 0,
+                           Width  => 0,
                            Height => 0,
-                           After => False);
+                           After  => False);
                      when Position_Left =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Horizontal,
-                           Width => 0,
+                           Width  => 0,
                            Height => 0,
-                           After => False);
+                           After  => False);
                      when Position_Right =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Horizontal,
-                           Width => 0,
+                           Width  => 0,
                            Height => 0,
-                           After => True);
+                           After  => True);
                      when others =>
                         null;
                   end case;
@@ -2049,14 +2049,16 @@ package body Gtkada.MDI is
      (MDI    : access MDI_Window_Record;
       Child  : access MDI_Child_Record'Class;
       Width  : Glib.Gint;
-      Height : Glib.Gint)
+      Height : Glib.Gint;
+      Fixed_Size : Boolean := False)
    is
       Notebook : constant Gtk_Notebook := Get_Notebook (Child);
    begin
       if Notebook /= null then
          Set_Size (MDI,
                    Widget => Notebook,
-                   Width => Width, Height => Height);
+                   Width => Width, Height => Height,
+                   Fixed_Size => Fixed_Size);
       end if;
    end Set_Size;
 
@@ -3030,6 +3032,7 @@ package body Gtkada.MDI is
                          New_Child   => Note,
                          Ref_Widget  => Empty,
                          Orientation => Orientation_Vertical,
+                         Width       => -1,
                          Height      => -1,
                          After       => True);
                when Position_Top =>
@@ -3037,6 +3040,7 @@ package body Gtkada.MDI is
                          New_Child   => Note,
                          Ref_Widget  => Empty,
                          Orientation => Orientation_Vertical,
+                         Width       => -1,
                          Height      => -1,
                          After       => False);
                when Position_Left =>
@@ -3045,6 +3049,7 @@ package body Gtkada.MDI is
                          Ref_Widget  => Empty,
                          Orientation => Orientation_Horizontal,
                          Width       => -1,
+                         Height      => -1,
                          After       => False);
                when Position_Right =>
                   Split (MDI,
@@ -3052,6 +3057,7 @@ package body Gtkada.MDI is
                          Ref_Widget  => Empty,
                          Orientation => Orientation_Horizontal,
                          Width       => -1,
+                         Height      => -1,
                          After       => True);
                when others =>
                   Add_Child (MDI, New_Child => Note);
@@ -3063,6 +3069,7 @@ package body Gtkada.MDI is
                          New_Child   => Note,
                          Ref_Pane    => Root_Pane,
                          Orientation => Orientation_Vertical,
+                         Width       => -1,
                          Height      => -1,
                          After       => True);
                when Position_Top =>
@@ -3070,6 +3077,7 @@ package body Gtkada.MDI is
                          New_Child   => Note,
                          Ref_Pane    => Root_Pane,
                          Orientation => Orientation_Vertical,
+                         Width       => -1,
                          Height      => -1,
                          After       => False);
                when Position_Left =>
@@ -3078,6 +3086,7 @@ package body Gtkada.MDI is
                          Ref_Pane    => Root_Pane,
                          Orientation => Orientation_Horizontal,
                          Width       => -1,
+                         Height      => -1,
                          After       => False);
                when Position_Right =>
                   Split (MDI,
@@ -3085,6 +3094,7 @@ package body Gtkada.MDI is
                          Ref_Pane    => Root_Pane,
                          Orientation => Orientation_Horizontal,
                          Width       => -1,
+                         Height      => -1,
                          After       => True);
                when others =>
                   if Sides (Position_Bottom) /= null then
@@ -3105,6 +3115,7 @@ package body Gtkada.MDI is
                                New_Child   => Note,
                                Ref_Widget  => First_Non_Side,
                                Orientation => Orientation_Vertical,
+                               Width       => -1,
                                Height      => -1,
                                After       => False);
                      when Position_Top =>
@@ -3112,6 +3123,7 @@ package body Gtkada.MDI is
                                New_Child   => Note,
                                Ref_Widget  => First_Non_Side,
                                Orientation => Orientation_Vertical,
+                               Width       => -1,
                                Height      => -1,
                                After       => True);
                      when Position_Left =>
@@ -3120,6 +3132,7 @@ package body Gtkada.MDI is
                                Ref_Widget  => First_Non_Side,
                                Orientation => Orientation_Horizontal,
                                Width       => -1,
+                               Height      => -1,
                                After       => True);
                      when Position_Right =>
                         Split (MDI,
@@ -3127,6 +3140,7 @@ package body Gtkada.MDI is
                                Ref_Widget  => First_Non_Side,
                                Orientation => Orientation_Horizontal,
                                Width       => -1,
+                               Height      => -1,
                                After       => False);
                      when others =>
                         null;
@@ -4219,10 +4233,6 @@ package body Gtkada.MDI is
             Child_Node := Child_Node.Next;
          end loop;
 
-         if Focus_Child /= null then
-            Set_Focus_Child (Focus_Child);
-         end if;
-
          MDI.Desktop_Was_Loaded := True;
 
          Queue_Resize (MDI);
@@ -4239,6 +4249,10 @@ package body Gtkada.MDI is
          end if;
 
          Set_All_Floating_Mode (MDI, Initial_All_Floating_Mode);
+
+         if Focus_Child /= null then
+            Set_Focus_Child (Focus_Child);
+         end if;
 
          return True;
       end Restore_Desktop;
@@ -4357,16 +4371,21 @@ package body Gtkada.MDI is
             Length : constant Guint := Page_List.Length (Get_Children (Note));
             Current_Page : constant Gint := Get_Current_Page (Note);
             Parent : Node_Ptr;
+
+            Border_Width : constant Allocation_Int := 0;
+            --  +4 is to take into account the border of the notebook
+
          begin
             Parent := new Node;
             Parent.Tag := new String'("Notebook");
-            --  +4 is to take into account the border of the notebook
             Set_Attribute
               (Parent, "Width",
-               Allocation_Int'Image (Get_Allocation_Width (Note) + 4));
+               Allocation_Int'Image
+                 (Get_Allocation_Width (Note) + Border_Width));
             Set_Attribute
               (Parent, "Height",
-               Allocation_Int'Image (Get_Allocation_Height (Note) + 4));
+               Allocation_Int'Image
+                 (Get_Allocation_Height (Note) + Border_Width));
             if Length > 0 then
                for Page_Index in 0 .. Length - 1 loop
                   Save_Widget

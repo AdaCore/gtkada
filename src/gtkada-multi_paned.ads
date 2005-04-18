@@ -31,7 +31,6 @@ with Gdk.GC;
 with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Widget;
-with Gdk.Window;
 
 --  This widget implements a multi-paned widget, similar to the standard
 --  Gtk_Paned widget, but which can contain several children side to side.
@@ -75,7 +74,7 @@ package Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := -1;
+      Width, Height : Glib.Gint := 0;
       After         : Boolean := True);
    --  Add new child, splitting as needed.
    --  This should be used when there is no child yet
@@ -94,7 +93,7 @@ package Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := -1;
+      Width, Height : Glib.Gint := 0;
       After         : Boolean := True);
    --  Split the pane containing Ref_Widget, and add New_Child
    --  in the new pane (on the right or at the bottom if After is True, on the
@@ -128,7 +127,7 @@ package Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := -1;
+      Width, Height : Glib.Gint := 0;
       After         : Boolean := True);
    --  Split Ref_Pane to display New_Child to one of its sides.
    --  See the comments for Root_Pane above.
@@ -186,33 +185,6 @@ package Gtkada.Multi_Paned is
    --    | 2 |   |   |  |   | 2 |   |   | 2 |   |   |  | 2 |   |   |
    --    +---+---+---+  +---+---+---+   +---+---+---+  +---+---+---+
 
-   procedure Split_Group
-     (Win           : access Gtkada_Multi_Paned_Record;
-      Ref_Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Orientation   : Gtk.Enums.Gtk_Orientation;
-      Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := -1;
-      After         : Boolean := True);
-   --  This is similar to Split, except Ref_Widget and all its siblings in the
-   --  pane are left together in the new pane.
-   --  For instance, Split_Group is called with "2" as the Ref_Widget:
-   --     +---+---+---+        +---+---+---+
-   --     | 1 | 2 | 3 |   =>   | 1 | 2 | 3 |
-   --     +---+---+---+        |   +---+---+
-   --                          |   |   4   |
-   --                          +---+-------+
-   --  If only Split had been used, the result would have been:
-   --                          +---+---+---+
-   --                          | 1 | 2 | 3 |
-   --                          |   +---+   |
-   --                          |   | 4 |   |
-   --                          +---+---+---+
-   --
-   --  This procedure is mostly useful when reloading a setup from a file, so
-   --  that you can properly restore it. See GtkAda.MDI for more information
-   --  on desktops.
-
    ---------------
    -- Iterators --
    ---------------
@@ -240,8 +212,7 @@ package Gtkada.Multi_Paned is
    function Get_Orientation
      (Iter : Child_Iterator) return Gtk.Enums.Gtk_Orientation;
    --  Return the orientation of the current child. This is only relevant if
-   --  the child doesn't cont    after=False  +---+---+
-   --                   |ain a widget (and therefore Get_Widget has
+   --  the child doesn't contain a widget (and therefore Get_Widget has
    --  returned null).
 
    function Get_Depth (Iter : Child_Iterator) return Natural;
@@ -250,32 +221,15 @@ package Gtkada.Multi_Paned is
    --  This can be used to detect when the Iter has finished traversing one
    --  of the panes.
 
+   procedure Dump (Split : access Gtkada_Multi_Paned_Record'Class);
+   --  Dump the configuration of Split to stdout. This is only intended for
+   --  testing purposes. If you want to save and restore this configuration,
+   --  you should look at Gtkada.MDI instead, which contains all the
+   --  subprograms needed to handle desktops.
+
 private
-   type Resize_Handle is record
-      Position : Gtk.Widget.Gtk_Allocation;
-      Win      : Gdk.Window.Gdk_Window;
-      Percent  : Float;
-   end record;
-
-   type Handles_Array is array (Natural range <>) of Resize_Handle;
-   type Handles_Array_Access is access Handles_Array;
-
    type Child_Description;
    type Child_Description_Access is access Child_Description;
-   type Child_Description (Is_Widget : Boolean) is record
-      Parent : Child_Description_Access;
-      Next   : Child_Description_Access;
-      Width, Height : Glib.Gint;
-      case Is_Widget is
-         when True  =>
-            Widget      : Gtk.Widget.Gtk_Widget;
-            Fixed_Size  : Boolean;
-         when False =>
-            Orientation : Gtk.Enums.Gtk_Orientation;
-            First_Child : Child_Description_Access;
-            Handles     : Handles_Array_Access;
-      end case;
-   end record;
 
    type Pane is new Child_Description_Access;
    Root_Pane : constant Pane := null;
@@ -289,11 +243,9 @@ private
       Children    : Child_Description_Access;
       GC          : Gdk.GC.Gdk_GC;
 
-      Selected_Handle_Parent : Child_Description_Access;
-      Selected_Handle_Index  : Natural;
-      Selected_Handle_Pos    : Gtk.Widget.Gtk_Allocation;
-      Anim_Offset            : Glib.Allocation_Int;
-      --  Temporary variables, used while resizing windows
+      Initial_Pos  : Gint;
+      Selected     : Child_Description_Access;
+      Selected_Pos : Gtk.Widget.Gtk_Allocation;
 
       Opaque_Resizing        : Boolean := False;
    end record;
