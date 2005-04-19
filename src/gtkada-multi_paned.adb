@@ -1816,6 +1816,24 @@ package body Gtkada.Multi_Paned is
                Tmp.Next := Tmp2;
             end if;
          end if;
+
+         if Realized_Is_Set (Win)
+           and then Win.Children.Width > 0.0
+         then
+            if Ref_Item.Width > Float (Width) then
+               Ref_Item.Width := Ref_Item.Width - Float (Width);
+            else
+               Tmp2.Width := Float (Width - Minimum_Width);
+               Ref_Item.Width := Float (Minimum_Width);
+            end if;
+
+            if Ref_Item.Height > Float (Height) then
+               Ref_Item.Height := Ref_Item.Height - Float (Height);
+            else
+               Tmp2.Height := Float (Height - Minimum_Width);
+               Ref_Item.Height := Float (Minimum_Width);
+            end if;
+         end if;
       end Add_In_List;
 
       ------------------------
