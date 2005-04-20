@@ -17,7 +17,7 @@ On HP-UX, a recent version of GCC (e.g 3.2) should be used
 On x86-solaris, use GCC 3.4, since earlier versions have lots of subtle
 problems related e.g. to include files.
 
-On AiX and IRIX, the vendor C compiler is used:
+On IRIX, the vendor C compiler is used:
 # CC=cc
 # export CC
 
@@ -58,7 +58,7 @@ export PATH LDFLAGS LD_LIBRARY_PATH PKG_CONFIG_PATH
 C_INCLUDE_PATH="$prefix/include"
 export C_INCLUDE_PATH
 
-# When using the native C compiler (e.g. under AiX):
+# When using the native C compiler (e.g. under IRIX):
 # CFLAGS="-I$C_INCLUDE_PATH -O2 -g"
 # export CFLAGS
 
@@ -68,7 +68,7 @@ export C_INCLUDE_PATH
 
 # Not needed on Linux, Tru64 5.1a nor IRIX 6.5
 
-# AiX 5.1: although this library seems to be provided by the system, building
+# AIX 5.1: although this library seems to be provided by the system, building
 # it is still needed, as the headers were not installed.
 
 tar xzvf zlib-1.1.4.tar.gz
@@ -92,8 +92,8 @@ cd ..
 ############
 # libiconv #
 ############
-# This step isn't needed on Linux nor AiX 5.1
-# It is needed under Solaris, HP-UX, Tru64 and IRIX
+# This step isn't needed on Linux
+# It is needed under Solaris, HP-UX, Tru64, IRIX and AIX
 
 tar xzvf libiconv-1.7.tar.gz
 cd libiconv-1.7
@@ -156,7 +156,7 @@ cd ..
 ###########
 
 # This step is not needed under Solaris & Linux
-# It is needed under HP-UX, Tru64 5.1a, IRIX 6.5, AiX 5.1
+# It is needed under HP-UX, Tru64 5.1a, IRIX 6.5, AIX 5.1
 
 tar xzvf gettext-0.11.5.tar.gz
 cd gettext-0.11.5
@@ -167,11 +167,6 @@ make install
 
 # Under HP-UX, remove -R$prefix/lib in $prefix/lib/libintl.la to work around
 # a gettext bug, fixed in recent (CVS) versions of gettext.
-
-# On AiX 5.1, the AiX C compiler does not seem to like the _Bool
-# name for the {true, false} enum name. This causes a compilation error
-# in stdbool.h. So before doing a make, update stdbool.h.in around line
-# 34, and replace all instances of _Bool by BOOL.
 
 cd ..
 
@@ -268,7 +263,7 @@ cd ..
 tar xzvf gtk+-2.2.4.tar.gz
 cd gtk+-2.2.4
 
-# Under certain platforms such as AiX or NT, a very recent version of
+# Under certain platforms such as AIX or NT, a very recent version of
 # libtool may be needed. To install the most recent version of libtool,
 # do the following:
 # rm -f config.cache
