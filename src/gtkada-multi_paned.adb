@@ -643,18 +643,27 @@ package body Gtkada.Multi_Paned is
             end if;
          end if;
 
-         if Parent /= null and then Parent.Is_Widget then
-            Parent := Parent.Parent;
-         end if;
-
          if Split.Children /= null
             and then Realized_Is_Set (Split)
             and then Split.Children.Width  > 0.0
             and then Split.Children.Height > 0.0
          then
-            Size_Allocate
-              (Split, Split.Children, Split.Children.Width,
-               Split.Children.Height);
+            --  We have to redo some of the work done by Size_Allocate_Paned.
+            --  The reason is that the latter will do nothing since the
+            --  allocation has changed, but we might have changed the top-level
+            --  Child, and need to reset the allocation properties anyway
+
+            if Get_Has_Window (Split) then
+               Split.Children.X := 0;
+               Split.Children.Y := 0;
+            else
+               Split.Children.X := Get_Allocation_X (Split);
+               Split.Children.Y := Get_Allocation_Y (Split);
+            end if;
+
+            Size_Allocate (Split, Split.Children,
+                           Float (Get_Allocation_Width (Split)),
+                           Float (Get_Allocation_Height (Split)));
          else
             Queue_Resize (Split);
          end if;
@@ -1698,6 +1707,8 @@ package body Gtkada.Multi_Paned is
       Width, Height : Glib.Gint := -1;
       After         : Boolean := True)
    is
+      New_Pane : Child_Description_Access;
+
       procedure Add_After_All_Children (Parent : Child_Description_Access);
       --  Add the new child at the end of the child list for Parent
 
@@ -1797,6 +1808,7 @@ package body Gtkada.Multi_Paned is
             Visible     => True,
             Handle      => No_Handle,
             Widget      => Gtk_Widget (New_Child));
+         New_Pane := Tmp2;
 
          if After then
             while Tmp /= Ref_Item loop
@@ -1856,6 +1868,7 @@ package body Gtkada.Multi_Paned is
                Handle      => No_Handle,
                Visible     => True,
                Widget      => Gtk_Widget (New_Child));
+            New_Pane := Parent.First_Child;
          else
             Add_In_List (Parent, Parent.First_Child, After => False);
          end if;
@@ -1882,6 +1895,7 @@ package body Gtkada.Multi_Paned is
                Handle      => No_Handle,
                Visible     => True,
                Widget      => Gtk_Widget (New_Child));
+            New_Pane := Parent.First_Child;
          else
             Tmp := Parent.First_Child;
             while Tmp.Next /= null loop
@@ -1891,7 +1905,7 @@ package body Gtkada.Multi_Paned is
          end if;
       end Add_After_All_Children;
 
-      Current, Tmp2, Pane : Child_Description_Access;
+      Current, Pane : Child_Description_Access;
    begin
       if Ref_Pane /= null then
          --  Split specific pane
@@ -1952,7 +1966,7 @@ package body Gtkada.Multi_Paned is
          if Traces then
             Put_Line ("No children yet");
          end if;
-         Tmp2 := new Child_Description'
+         New_Pane := new Child_Description'
            (Parent      => null,
             Next        => null,
             Is_Widget   => True,
@@ -1971,10 +1985,10 @@ package body Gtkada.Multi_Paned is
             Height      => -1.0,
             X           => 0,
             Y           => 0,
-            First_Child => Tmp2,
+            First_Child => New_Pane,
             Visible     => True,
             Handle      => No_Handle);
-         Tmp2.Parent := Win.Children;
+         New_Pane.Parent := Win.Children;
 
       elsif Win.Children /= null then
          if Traces then
@@ -1993,8 +2007,26 @@ package body Gtkada.Multi_Paned is
          Win.Children.Width := -1.0;
          Queue_Resize (Win);
       else
-         Size_Allocate
-           (Win, Win.Children, Win.Children.Width, Win.Children.Height);
+         --  In some case, we might need to force a recomputation of the size,
+         --  since the widget might not have specified an explicit size
+         if Width <= 0 or else Height <= 0 then
+            Size_Request (New_Pane.Parent);
+         end if;
+
+         --  In case the toplevel child has changed, we need to simulate the
+         --  full allocation mechanism, without redoing the size_request to
+         --  avoid resizing unwanted widgets
+         if Get_Has_Window (Win) then
+            Win.Children.X := 0;
+            Win.Children.Y := 0;
+         else
+            Win.Children.X := Get_Allocation_X (Win);
+            Win.Children.Y := Get_Allocation_Y (Win);
+         end if;
+
+         Size_Allocate (Win, Win.Children,
+                        Float (Get_Allocation_Width (Win)),
+                        Float (Get_Allocation_Height (Win)));
       end if;
 
       if Traces then
