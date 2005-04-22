@@ -2055,10 +2055,15 @@ package body Gtkada.MDI is
       Notebook : constant Gtk_Notebook := Get_Notebook (Child);
    begin
       if Notebook /= null then
-         Set_Size (MDI,
-                   Widget => Notebook,
-                   Width => Width, Height => Height,
-                   Fixed_Size => Fixed_Size);
+         --  Only take this into account if we have a single page
+         if Get_Nth_Page (Notebook, 1) = null then
+            Set_Size (MDI,
+                      Widget => Notebook,
+                      Width => Width, Height => Height,
+                      Fixed_Size => Fixed_Size);
+         else
+            Set_Size_Request (Child, Width, Height);
+         end if;
       end if;
    end Set_Size;
 
