@@ -91,7 +91,6 @@ package Gtk.Icon_Factory is
    --  using scaling, pixelation, etc. as required to adjust the icon size
    --  or make the icon look insensitive/prelighted.
 
-
    ------------------
    -- Icon sources --
    ------------------

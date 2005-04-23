@@ -41,7 +41,6 @@ package Pango.Enums is
    --  Convert a size in pango units to pixels. This is a rounding of
    --  Pango_Units divided by Pango_Scale
 
-
    --  Enum types are bound with the following algorithm:
    --    + the "Pango" prefix of the type name is stripped
    --    + Each word of the type name is separated by '_'

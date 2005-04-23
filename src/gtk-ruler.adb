@@ -174,5 +174,4 @@ package body Gtk.Ruler is
       Internal (Get_Object (Ruler), Lower, Upper, Position, Max_Size);
    end Get_Range;
 
-
 end Gtk.Ruler;

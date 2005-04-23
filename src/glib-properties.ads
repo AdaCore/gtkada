@@ -97,7 +97,6 @@ package Glib.Properties is
 
    --  </doc_ignore>
 
-
    --  Predefined types of properties. Additional types are available
    --  for most of the standard enumeration types, and you can create
    --  your own types (see Glib.Properties).
@@ -217,4 +216,3 @@ package Glib.Properties is
       Name : Property_C_Proxy) return C_Proxy;
 
 end Glib.Properties;
-

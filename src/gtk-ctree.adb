@@ -1400,7 +1400,6 @@ package body Gtk.Ctree is
                                           C_Cnode, C_Data.Data));
       end C_Ctree_Gnode_Func;
 
-
       ---------------------
       -- Export_To_Gnode --
       ---------------------
@@ -1501,7 +1500,6 @@ package body Gtk.Ctree is
                               C_Node  : in Gtk_Ctree_Node;
                               C_Data  : in Ctree_Func_Record_Access);
       pragma Convention (C, C_Ctree_Func);
-
 
       type Gcompare_Func_Record is record
          Func : Gcompare_Func;

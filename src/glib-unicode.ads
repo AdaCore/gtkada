@@ -86,7 +86,6 @@ package Glib.Unicode is
    --  The possible character classifications.
    --  See http://www.unicode.org/Public/UNIDATA/UnicodeData.html
 
-
    function Is_Space (Char : Gunichar) return Boolean;
    --  True if Char is a space character
 

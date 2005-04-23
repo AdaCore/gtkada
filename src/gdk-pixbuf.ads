@@ -684,4 +684,3 @@ private
 end Gdk.Pixbuf;
 
 --  missing: gdk_pixbuf_new_from_data
-

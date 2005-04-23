@@ -336,5 +336,5 @@ package body Glib.GSlist is
       end Set_Object;
 
    end Generic_SList;
-end Glib.GSlist;
 
+end Glib.GSlist;

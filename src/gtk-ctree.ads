@@ -788,7 +788,6 @@ package Gtk.Ctree is
       --  Similar to Post_Recursive_To_Depth but will apply Func to the parent
       --  before applying it to its children.
 
-
    private
 
       --  <doc_ignore>

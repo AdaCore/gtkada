@@ -380,4 +380,3 @@ package body Glib.Glist is
 
    end Generic_List;
 end Glib.Glist;
-

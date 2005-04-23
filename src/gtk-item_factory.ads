@@ -271,7 +271,6 @@ package Gtk.Item_Factory is
    --
    --  </properties>
 
-
 private
    type Gtk_Item_Factory_Record is new Gtk.Object.Gtk_Object_Record
      with null record;

@@ -164,7 +164,6 @@ package body Gdk.Property is
       C_Free (Tmp_Result);
    end Get;
 
-
    -----------------------
    --  To_Guchar_Array  --
    -----------------------

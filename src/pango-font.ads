@@ -253,7 +253,6 @@ package Pango.Font is
    function Font_Metrics_Get_Type return Glib.GType;
    --  Return the internal value associated with a Pango_Font_Metrics
 
-
    ----------------
    -- Properties --
    ----------------

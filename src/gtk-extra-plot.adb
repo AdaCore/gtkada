@@ -1643,7 +1643,6 @@ package body Gtk.Extra.Plot is
                 Ascent, Descent);
    end Text_Get_Size;
 
-
    -------------------
    -- Text_Get_Area --
    -------------------

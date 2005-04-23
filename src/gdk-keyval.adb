@@ -68,7 +68,6 @@ package body Gdk.Keyval is
       return Internal (Keyval_Name & ASCII.NUL);
    end From_Name;
 
-
    ----------
    -- Name --
    ----------
@@ -88,6 +87,5 @@ package body Gdk.Keyval is
          return C.Strings.Value (P);
       end if;
    end Name;
-
 
 end Gdk.Keyval;

@@ -60,7 +60,6 @@ with Glib.Object;
 with Glib.Values;
 with Interfaces.C.Strings;
 
-
 package Glib.Properties.Creation is
 
    --  subtype Param_Spec is Glib.Param_Spec;

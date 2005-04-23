@@ -85,4 +85,3 @@ package body Pango.Context is
    end Load_Font;
 
 end Pango.Context;
-

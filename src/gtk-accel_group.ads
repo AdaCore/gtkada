@@ -104,7 +104,6 @@ package Gtk.Accel_Group is
       return Object_List.GSlist;
    --  Gets a list of all accel groups which are attached to Object.
 
-
    --  ??? To bind:
 
    --  function Find

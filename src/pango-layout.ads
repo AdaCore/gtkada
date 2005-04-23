@@ -310,7 +310,6 @@ private
    pragma Import (C, Line_Index_To_X, "pango_layout_line_index_to_x");
 end Pango.Layout;
 
-
 --  missing:
 --  pango_layout_get_context
 --  pango_layout_copy
@@ -351,5 +350,3 @@ end Pango.Layout;
 --  pango_layout_iter_get_line_yrange
 --  pango_layout_iter_get_layout_extents
 --  pango_layout_iter_get_baseline
-
-

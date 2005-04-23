@@ -314,4 +314,3 @@ private
 
    pragma Import (C, Get_Type, "gtk_entry_get_type");
 end Gtk.GEntry;
-

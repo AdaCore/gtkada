@@ -214,7 +214,6 @@ package body Gtk.Extra.Color_Combo is
                 Row * Get_Ncols (Color_Combo) + Col, C'Address);
    end Changed;
 
-
    ---------------
    -- Get_Ncols --
    ---------------

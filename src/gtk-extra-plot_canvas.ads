@@ -609,7 +609,6 @@ private
    Arrow_End    : constant Plot_Canvas_Arrow := 2;
 end Gtk.Extra.Plot_Canvas;
 
-
 --  Unbound
 --    gtk_plot_canvas_set_pc
 --    gtk_plot_canvas_child_set_selection

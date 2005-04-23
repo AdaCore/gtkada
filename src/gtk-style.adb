@@ -855,6 +855,4 @@ package body Gtk.Style is
       end if;
    end Paint_Handle;
 
-
-
 end Gtk.Style;

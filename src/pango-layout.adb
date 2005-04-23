@@ -398,4 +398,3 @@ package body Pango.Layout is
    end Get_Attributes;
 
 end Pango.Layout;
-

@@ -100,7 +100,6 @@ package Gtk.Accel_Map is
 
 end Gtk.Accel_Map;
 
-
 --  Missing:
 --    gtk_accel_map_load_fd
 --    gtk_accel_map_load_scanner

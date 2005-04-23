@@ -180,7 +180,6 @@ package Gtk.Cell_Renderer is
    --   "cell_background_gdk" Gdk_Color                 Read / Write
    --   "cell_background"     String                    Write
 
-
 private
    type Gtk_Cell_Renderer_Record is
      new Gtk.Object.Gtk_Object_Record with null record;

@@ -701,7 +701,6 @@ package Gtk.Extra.Sheet is
    --  If the cell is moved because of resizing or other reasons, Widget will
    --  be moved as well.
 
-
    procedure Move_Child
       (Sheet  : access Gtk_Sheet_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -911,7 +910,6 @@ private
    All_Borders   : constant Gtk_Sheet_Border := 15;
    pragma Convention (C, Gtk_Sheet_Range);
 end Gtk.Extra.Sheet;
-
 
 --  Unbounded:
 --  gtk_sheet_get_entry_widget

@@ -1264,7 +1264,6 @@ package body Gtk_Generates is
    -- Paned_Generate --
    --------------------
 
-
    procedure Paned_Generate (N : Node_Ptr; File : File_Type) is
       Class : constant String := Get_Class (N);
       function Build_Vpaned return Glib.GType;
@@ -1446,7 +1445,6 @@ package body Gtk_Generates is
                  To_Ada (Top) & "." & To_Ada (Name) & ", " &
                  "Default_Group");
          end if;
-
 
          if Label /= "" then
             Put (File, ", ");
@@ -1866,7 +1864,6 @@ package body Gtk_Generates is
       Gen_Set (N, "Button_Relief", "relief", File);
 
       --  Now look for widgets that should be added to this toolbar
-
 
       P := Find_Child (N, "child");
       P := P.Child;
@@ -2396,7 +2393,6 @@ package body Gtk_Generates is
                               (Packing, "tab_pack", "Pack_Start")) & ");");
             end if;
 
-
          elsif Parent_Class = "GtkVPaned"
            or else Parent_Class = "GtkHPaned"
          then
@@ -2415,7 +2411,6 @@ package body Gtk_Generates is
 
             Put (File, Get_Property (Packing, "resize", "True") & ", ");
             Put_Line (File, Get_Property (Packing, "shrink", "True") & ");");
-
 
          elsif Parent_Class = "GtkFixed"
            or else Parent_Class = "GtkLayout"
@@ -2478,7 +2473,6 @@ package body Gtk_Generates is
             else
                Name := new String'(Top_Name & "." & Cur);
             end if;
-
 
             if Gettext_Support (N) then
                Put_Line (File, "   Set_Tip (Tooltips, " &

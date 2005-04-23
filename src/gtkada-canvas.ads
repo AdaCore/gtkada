@@ -384,7 +384,6 @@ package Gtkada.Canvas is
    --  will be processed. It is possible that a given item will be returned
    --  twice, if it is both linked to and from the item.
 
-
    type Item_Iterator is private;
 
    function Start

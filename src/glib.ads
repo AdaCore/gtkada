@@ -345,7 +345,6 @@ package Glib is
       Free : Boxed_Free) return GType;
    --  Create a new boxed type
 
-
 private
    type C_Dummy is null record;
    --  This array can contain anything, since it is never used on the Ada side

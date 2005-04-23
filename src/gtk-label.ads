@@ -328,4 +328,3 @@ end Gtk.Label;
 --  Get_Selection_Bounds
 --  Get_Layout
 --  Get_Layout_Offsets
-

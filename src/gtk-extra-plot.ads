@@ -1038,6 +1038,5 @@ private
    pragma Import (C, Text_Set_Border, "gtk_plot_text_set_border");
 end Gtk.Extra.Plot;
 
-
 --  Unbound:
 --    gtk_plot_set_pc

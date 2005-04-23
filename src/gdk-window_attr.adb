@@ -215,5 +215,3 @@ package body Gdk.Window_Attr is
    end Set_Wmclass_Name;
 
 end Gdk.Window_Attr;
-
-

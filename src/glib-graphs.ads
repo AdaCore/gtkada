@@ -328,7 +328,6 @@ private
    function Length (List : Edge_List) return Natural;
    --  Return the number of elements in the list
 
-
    type Vertex_List_Record;
    type Vertex_List is access Vertex_List_Record;
    type Vertex_List_Record is record
@@ -338,7 +337,6 @@ private
 
    procedure Add    (List : in out Vertex_List; V : access Vertex'Class);
    procedure Remove (List : in out Vertex_List; V : access Vertex'Class);
-
 
    type Graph is record
       Vertices          : Vertex_List;

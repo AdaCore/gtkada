@@ -620,7 +620,6 @@ package body Gtk.Glade is
 
    end Generate;
 
-
    --------------
    -- Get_Gate --
    --------------

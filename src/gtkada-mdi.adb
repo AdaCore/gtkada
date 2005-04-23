@@ -1145,7 +1145,6 @@ package body Gtkada.MDI is
       Queue_Resize (MDI);
    end Realize_MDI;
 
-
    -----------------
    -- Destroy_MDI --
    -----------------
@@ -1888,7 +1887,6 @@ package body Gtkada.MDI is
       Gtk_New_Hbox (Child.Title_Box, Homogeneous => False);
       Pack_Start
         (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
-
 
       Gtk_New (Child.Title_Area);
       Pack_Start

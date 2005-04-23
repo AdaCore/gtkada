@@ -252,7 +252,6 @@ package body Gtk.Clist is
         (Internal (Get_Object (Clist), Column));
    end Get_Column_Title;
 
-
    ---------------------
    --  Get_Focus_Row  --
    ---------------------
@@ -263,7 +262,6 @@ package body Gtk.Clist is
    begin
       return Internal (Get_Object (Clist));
    end Get_Focus_Row;
-
 
    ---------------------
    -- Get_Hadjustment --

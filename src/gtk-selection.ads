@@ -449,7 +449,6 @@ private
    pragma Import (C, Selection_Data_Copy, "gtk_selection_data_copy");
    pragma Import (C, Selection_Data_Free, "gtk_selection_data_free");
 
-
    function Make_Atom (Num : Gulong) return Gdk.Types.Gdk_Atom;
    pragma Import (C, Make_Atom, "ada_make_atom");
 

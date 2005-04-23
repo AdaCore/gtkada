@@ -88,7 +88,6 @@ package Glib.Object is
    --  object is effectively destroy, all the callbacks associated with it are
    --  disconnected.
 
-
    type Weak_Notify is access procedure
      (Data                 : System.Address;
       Where_The_Object_Was : System.Address);

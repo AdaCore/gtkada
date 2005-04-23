@@ -654,7 +654,6 @@ package Gtk.Extra.Plot_Data is
    procedure Remove_Link (Data : access Gtk_Plot_Data_Record);
    --  Remove the user data associated with Data.
 
-
    --  <doc_ignore>
    function To_Double_Array is new Unchecked_Conversion
      (System.Address, No_Range_Gdouble_Array_Access);

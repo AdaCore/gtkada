@@ -160,4 +160,3 @@ end Gtk.Menu_Item;
 --    (Menu_Item  : access Gtk_Menu_Item_Record;
 --     Allocation : Gint);
 --  Emit the signal "toggle_size_allocate"
-
