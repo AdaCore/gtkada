@@ -34,7 +34,6 @@ with Glib; use Glib;
 package body Gtkada.Intl is
 
    pragma Warnings (Off);
-
 #if GETTEXT_INTL then
    pragma Linker_Options ("-lintl");
 #end if;
