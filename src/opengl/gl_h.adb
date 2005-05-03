@@ -56,5 +56,4 @@ package body gl_h is
       Internal (pname, params'Address);
    end glFogfv;
 
-
 end gl_h;

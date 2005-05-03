@@ -59,7 +59,6 @@ package body Gnome.About is
    -- Initialize --
    ----------------
 
-
    procedure Initialize
      (About              : access Gnome_About_Record'Class;
       Name               : String;

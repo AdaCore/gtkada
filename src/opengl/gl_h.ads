@@ -36,7 +36,6 @@ package gl_h is
    type GLenum is new Integer;
    for GLenum'Size use 32;
 
-
    --   Boolean values
    GL_FALSE          : constant GLenum := 0;
    GL_TRUE           : constant GLenum := 1;
@@ -683,8 +682,6 @@ package gl_h is
    GL_MAX_3D_TEXTURE_SIZE           : constant GLenum := 16#8073#;
    GL_TEXTURE_BINDING_3D            : constant GLenum := 16#806A#;
 
-
-
    --  Extensions
 
             --   GL_EXT_blend_minmax and GL_EXT_blend_color
@@ -804,7 +801,6 @@ package gl_h is
    GL_TEXTURE2_EXT : constant GLenum := 33736;
    GL_TEXTURE3_EXT : constant GLenum := 33737;
    GL_CLAMP_TO_EDGE_SGIS : constant GLenum := 33071;
-
 
    --
    --  Miscellaneous
@@ -2352,4 +2348,3 @@ private
    pragma Import (C, glCopyTexSubImage3D, "glCopyTexSubImage3D");
 
 end gl_h;
-
