@@ -215,9 +215,9 @@ foreach $source_file (@source_files) {
 	$pack =~ s/_/\@code{_}/g;
 
 	&output ("\@page\n",
-		 "\@cindex $package_name\n");
-	&output ("\@node Package_$package_name\n",
-		 "\@chapter Package $pack\n");
+	         "\@node Package_$package_name\n",
+		 "\@chapter Package $pack\n",
+                 "\@cindex $package_name\n");
 	&output ("\n\@noindent\n");
 
 	my ($description) = &clean_comment_marks
@@ -459,9 +459,9 @@ foreach $package_name (keys %parent) {
     $package_name = &package_from_type ($package_name);
     unless (defined $output{$package_name}) {
 
-	&output ("\@cindex $package_name\n",
-		 "\@node Package_$package_name\n",
-		 "\@chapter Package $package_name\n\n");
+	&output ("\@node Package_$package_name\n",
+		 "\@chapter Package $package_name\n\n",
+                 "\@cindex $package_name\n");
     }
 }
 
