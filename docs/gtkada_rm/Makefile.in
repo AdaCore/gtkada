@@ -9,12 +9,19 @@ SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/glade/*.ads
 
 gtkada_rm: ps html info partial_clean
 
+USEMAKEINFO=1
+## Whether we use makeinfo --html  or texi2html to generate the HTML documentation
+
 partial_clean::
 	-${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
 	-${RM} generated.texi generated_menu.texi
 
 generated.texi : ${SRC} generate_doc.pl
+ifeq (${USEMAKEINFO},1)
+	./generate_doc.pl -usemakeinfo ${SRC}
+else
 	./generate_doc.pl ${SRC}
+endif
 
 ps: gtkada_rm.ps
 gtkada_rm.ps: generated.texi
@@ -26,7 +33,11 @@ gtkada_rm.ps: generated.texi
 	
 html: gtkada_rm_toc.html
 gtkada_rm_toc.html: generated.texi
+ifeq (${USEMAKEINFO},1)
+	makeinfo --html --no-number-sections --css-include=gtkada_rm.css gtkada_rm.texi
+else	
 	perl ../texi2html -menu -split_chapter -body "BGCOLOR=#FFFFFF" gtkada_rm.texi
+endif
 
 info: gtkada_rm.info
 gtkada_rm.info: generated.texi
@@ -44,6 +55,7 @@ clean:
 	${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
 	${RM} *.ps *.html *.info* *.txt
 	${RM} generated.texi generated_menu.texi
+	${RM} -rf gtkada_rm/
 
 distclean: clean
 	-${RM} Makefile

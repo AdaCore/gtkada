@@ -85,6 +85,14 @@ $gtk_src_dir = "../..";
 $output_file_name  = "generated.texi";
 $menu_file_name    = "generated_menu.texi";
 
+$makeinfo_for_html = 0;
+## Set to 1 if we use makeinfo to generate the HTML, to 0 if we use texi2html
+
+if ($ARGV[0] eq "-usemakeinfo") {
+   $makeinfo_for_html = 1;
+   shift @ARGV;
+}
+
 @source_files = @ARGV;
 
 opendir (DIR, $gtk_src_dir);
@@ -245,16 +253,18 @@ foreach $source_file (@source_files) {
 
 	## Prepare the submenu
 
-	&output ("\@menu\n");
-	&output ("* $package_name Widget Hierarchy::\n") if (@hierarchy);
-	&output ("* $package_name Signals::\n")          if (keys %signals);
-	&output ("* $package_name Types::\n")            if (%types);
-	&output ("* $package_name Subprograms::\n")      if (@subprogs);
+        if (!$makeinfo_for_html) {
+	   &output ("\@menu\n");
+	   &output ("* $package_name Widget Hierarchy::\n") if (@hierarchy);
+	   &output ("* $package_name Signals::\n")          if (keys %signals);
+	   &output ("* $package_name Types::\n")            if (%types);
+	   &output ("* $package_name Subprograms::\n")      if (@subprogs);
 
-	if (&get_tag_value ("example", @content)) {
-	    &output ("* $package_name Example::\n");
-	}
-	&output ("\@end menu\n\n");
+   	   if (&get_tag_value ("example", @content)) {
+	      &output ("* $package_name Example::\n");
+	   }
+	   &output ("\@end menu\n\n");
+        }
 
 	## Widget hierarchy
 
@@ -283,11 +293,10 @@ foreach $source_file (@source_files) {
 		}
 		$hierarchy_short .= $line;		
 	    }
-	    &color_output ($section_bg, $section_fg,
-			   "\@node $package_name Widget Hierarchy\n",
-			   "\@section Widget Hierarchy\n");
-	    &html_output ("<TABLE WIDTH=100%><TR><TD WIDTH=$tab1_width></TD>",
-			  "<TD BGCOLOR=$hierarchy_bg>");
+          
+	    &section_output ($package_name, "Widget Hierarchy");
+	    &html_output ("<TABLE WIDTH=\"100%\"><TR><TD WIDTH=\"$tab1_width\"></TD>",
+			  "<TD BGCOLOR=\"$hierarchy_bg\">");
 	    &output ("\n\@ifnottex\n");
 	    &output ("\n\@smallexample\n$hierarchy\n\@end smallexample\n");
 	    &output ("\@end ifnottex\n");
@@ -301,9 +310,7 @@ foreach $source_file (@source_files) {
 	## List of signals
 
 	if (keys %signals) {
-	    &color_output ($section_bg, $section_fg,
-			   "\@node $package_name Signals\n",
-			   "\@section Signals\n\n");
+	    &section_output ($package_name, "Signals");
 	    &output ("\@itemize \@bullet\n\n");
 
 	    foreach $signal (sort keys %signals) {
@@ -316,24 +323,22 @@ foreach $source_file (@source_files) {
 	## List of types (sorted)
 
 	if (%types) {
-	    &color_output ($section_bg, $section_fg,
-			   "\@node $package_name Types\n",
-			   "\@section Types\n\n");
-	    &html_output ("<TABLE width=100% border=0 ",
-			  "CELLSPACING=0>");
+            &section_output ($package_name, "Types");
+	    &html_output ("<TABLE width=\"100%\" border=\"0\" ",
+			  "CELLSPACING=\"0\">");
 
 	    foreach $type (sort keys %types) {
 		&html_output ("<TR>",
-			      "<TD WIDTH=$tab1_width></TD>",
-			      "<TD BGCOLOR=$subprog_bg valign=top>");
+			      "<TD WIDTH=\"$tab1_width\:></TD>",
+			      "<TD BGCOLOR=\"$subprog_bg\" valign=\"top\">");
 		&output ("\@smallexample\n\@exdent ",
 			 $types{$type}[0],
 			 "\n\@end smallexample");
 		&html_output ("</TD></TR><TR>",
-			      "<TD WIDTH=$tab1_width></TD>\n<TD>");
+			      "<TD WIDTH=\"$tab1_width\"></TD>\n<TD>");
 		&output ("\@noindent\n",
-			 $types{$type}[1], "\@*\n",
-			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
+			 $types{$type}[1], "\@*\n");
+                &html_output ("<BR><BR>\n");
 		&html_output ("</TD></TR>");
 	    }
 	    &html_output ("</TABLE>");
@@ -343,12 +348,9 @@ foreach $source_file (@source_files) {
 
 	if (@subprogs) {
 	    my ($has_itemize) = 0;
-	    &color_output ($section_bg, $section_fg,
-			   "\@node $package_name Subprograms\n",
-			   "\@section Subprograms\n\n");
-
-	    &html_output ("<TABLE width=100% border=0 ",
-			  "CELLSPACING=0>");
+            &section_output ($package_name, "Subprograms");
+	    &html_output ("<TABLE width=\"100%\" border=\"0\" ",
+			  "CELLSPACING=\"0\">");
 	    foreach $subprog (@subprogs) {
 		my ($name, $return, $comment, @params)
 		    = ($$subprog[1], $$subprog[0], $$subprog[2],
@@ -358,14 +360,14 @@ foreach $source_file (@source_files) {
 		    if ($has_itemize == 1) {
 			$has_itemize = 0;
 		    }
-		    &html_output ("<TR><TD colspan=3 BGCOLOR=$subsection_bg>");
+		    &html_output ("<TR><TD colspan=\"3\" BGCOLOR=\"$subsection_bg\">");
 		    &output ("\@subsection $name\n\n");
 		    &html_output ("</TD></TR><TR><TD><BR></TD></TR>");
 		    $comment =~ s/^\s*//;
 		    if ($comment ne "") {
 			$comment = &process_list
 			    (&clean_comment_marks ($comment, 1));
-			&html_output ("<TR><TD colspan=3>");
+			&html_output ("<TR><TD colspan=\"3\">");
 			&output ($comment, "\n\n");
 			&html_output ("<BR></TD></TR>");
 		    }
@@ -415,18 +417,24 @@ foreach $source_file (@source_files) {
 		}
 
 		&html_output ("<TR>",
-			      "<TD WIDTH=$tab1_width></TD>",
-			      "<TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab23_width>");
-		&output ("\@smallexample\n\@exdent $profile\n\@end smallexample");
+			      "<TD WIDTH=\"$tab1_width\"></TD>",
+			      "<TD BGCOLOR=\"$subprog_bg\" valign=\"top\" WIDTH=\"$tab23_width\">");
+                if ($makeinfo_for_html) {
+		   &output ("\@smallexample\n$profile\n\@end smallexample");
+                } else {
+		   &output ("\@smallexample\n\@exdent $profile\n\@end smallexample");
+                }
 
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
 		&html_output ("</TD></TR><TR>",
-			      "<TD WIDTH=$tab1_width></TD>",
-			      "<TD colspan=2 WIDTH=$tab23_width>");
+			      "<TD WIDTH=\"$tab1_width\"></TD>",
+			      "<TD colspan=\"2\" WIDTH=\"$tab23_width\">");
 		&output ("\@noindent\n",
-			 $comment, "\@*\n",
-			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
+			 $comment, "\@*\n");
+                if (!$makeinfo_for_html) {
+                   &html_output ("<BR><BR>\n");
+                }
 		&html_output ("</TD></TR>");
 	    }
 	    &html_output ("</TABLE>");
@@ -435,9 +443,7 @@ foreach $source_file (@source_files) {
 	## Examples if any
 
 	if (&get_tag_value ("example", @content)) {
-	    &color_output ($section_bg, $section_fg,
-			   "\@node $package_name Example\n",
-			   "\@section Example\n");
+            &section_output ($package_name, "Example");
 	    &output ("\n\@example\n",
 		     &highlight_keywords
 		     (&clean_comment_marks (&get_tag_value
@@ -513,7 +519,11 @@ sub output () {
 # Outputs the block, only for html
 
 sub html_output () {
-    &output ("\n\@ifhtml\n", @_, "\n\@end ifhtml\n");
+   if ($makeinfo_for_html) {
+      &output ("\n\@ifhtml\n\@html\n", @_, "\n\@end html\n\@end ifhtml\n");
+   } else {
+      &output ("\n\@ifhtml\n", @_, "\n\@end ifhtml\n");
+   }
 }
 
 # Outputs the block, only for tex
@@ -523,19 +533,26 @@ sub tex_output () {
 }
 
 # Print some output with special colors
-#   $1 = background color
-#   $2 = foreground color
-#   $3,.. = text (array of lines)
+#   $1 = name of the current package
+#   $2 = name of the current section (doesn't include the name of the package)
 
-sub color_output ()
-{
-    my ($bg) = shift;
-    my ($fg) = shift;
+sub section_output () {
+    my ($bg) = $section_bg;
+    my ($fg) = $section_fd;;
+    my ($pkg) = shift;
+    my ($section) = shift;
 
+    #&html_output ("<table class='section'><tr><th>");
     &html_output ("<TABLE WIDTH=\"100%\"><TR>",
-		  "<TH BGCOLOR=\"$bg\"><FONT COLOR=\"$fg\">");
-    &output (@_);
+    		  "<TH BGCOLOR=\"$bg\"><FONT COLOR=\"$fg\">");
+    if ($makeinfo_for_html) {
+       &output ($section);
+    } else {
+       &output ("\@node $package_name $section\n",
+                "\@section $section");
+    }
     &html_output ("</FONT></TH></TR></TABLE>");
+    #&html_output ("</th></tr></table>");
 }
 
 
