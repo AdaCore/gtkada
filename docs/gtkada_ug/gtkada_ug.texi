@@ -24,7 +24,7 @@
 
 Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright @copyright{} 2000-2003, ACT-Europe
+Copyright @copyright{} 2000-2005, AdaCore
 
 This document may be copied, in whole or in part, in any form or by any
 means, as is or with alterations, provided that (1) alterations are clearly
@@ -47,7 +47,7 @@ Date: $Date$
 
 Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright @copyright{} 2000-2003, ACT-Europe
+Copyright @copyright{} 2000-2005, AdaCore
 
 This document may be copied, in whole or in part, in any form or by any
 means, as is or with alterations, provided that (1) alterations are clearly
