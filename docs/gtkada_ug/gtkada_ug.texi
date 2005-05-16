@@ -1864,9 +1864,10 @@ debugging features.
 
 @table @bullet
 @item Use the @code{--sync} switch
-All applications compiled with gtk+ automatically support this switch,
-which forces events to be processed synchronously, thus making it
-easier to detect problems as soon as they happen.
+Under unix systems, all applications compiled with gtk+ automatically
+support this switch, which forces events to be processed synchronously,
+thus making it easier to detect problems as soon as they happen.
+This switch is not relevant to Windows systems.
 
 @item break on g_log
 In the debugger, it is often useful to put a breakpoint on the glib
