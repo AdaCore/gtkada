@@ -1,11 +1,15 @@
-Thu Mar 23 2004  Arnaud Charlet  <charlet@act-europe.fr>
+Thu Mar 23 2004  Arnaud Charlet  <charlet@adacore.com>
+
+	* pango/pangox-fontmap.c: Fix bug in handling of scalable fonts.
+
+Thu Mar 23 2004  Arnaud Charlet  <charlet@adacore.com>
 
 	* pango/pangofc-fontmap.cI (_pango_fc_font_desc_from_pattern): Fix
 	code that was only executed when assertion were enabled.
 
 	This change is already included in pango 1.4.
 
-Thu Nov 27 2003  Arnaud Charlet  <charlet@act-europe.fr>
+Thu Nov 27 2003  Arnaud Charlet  <charlet@adacore.com>
 
 	* configure.in, configure: Add missing G_DISABLE_CAST_CHECKS when
 	using --disable-debug
@@ -15,7 +19,7 @@ Thu Nov 27 2003  Arnaud Charlet  <charlet@act-europe.fr>
 
 	To be submitted.
 
-Thu Apr 3 2003  Arnaud Charlet  <charlet@act-europe.fr>
+Thu Apr 3 2003  Arnaud Charlet  <charlet@adacore.com>
 
 	Changes to ease distributing gtk+ executables with no gtk+ install:
 
@@ -353,6 +357,42 @@ Thu Apr 3 2003  Arnaud Charlet  <charlet@act-europe.fr>
  }
  
  /*
+--- pango/pangox-fontmap.c	2003/04/03 15:16:10	1.1
++++ pango/pangox-fontmap.c	2003/04/03 15:45:47
+***************
+*** 1289,1295 ****
+  	  /* OK, we have a match; let's modify it to fit this size and charset */
+  
+  	  p = closest_match;
+! 	  while (n_dashes < 6)
+  	    {
+  	      if (*p == '-')
+  		n_dashes++;
+--- 1289,1295 ----
+  	  /* OK, we have a match; let's modify it to fit this size and charset */
+  
+  	  p = closest_match;
+! 	  while (n_dashes < 7)
+  	    {
+  	      if (*p == '-')
+  		n_dashes++;
+***************
+*** 1309,1315 ****
+  
+  	  target_size = (int)((double)size / xfontmap->resolution + 0.5);
+  	  prefix = g_strndup (closest_match, prefix_end - closest_match);
+! 	  result  = g_strdup_printf ("%s--%d-*-*-*-*-*-%s", prefix, target_size, charset);
+  	  g_free (prefix);
+  	}
+        else
+--- 1309,1315 ----
+  
+  	  target_size = (int)((double)size / xfontmap->resolution + 0.5);
+  	  prefix = g_strndup (closest_match, prefix_end - closest_match);
+! 	  result = g_strdup_printf ("%s-%d-*-*-*-*-*-%s", prefix, target_size, charset);
+  	  g_free (prefix);
+  	}
+        else
 --- configure.in	2003/11/22 15:24:13	1.1
 +++ configure.in	2003/11/23 16:48:34
 @@ -139,7 +139,7 @@
