@@ -3379,6 +3379,7 @@ package body Gtkada.MDI is
 
          if not Reuse_If_Possible or else Note2 = null then
             Note2 := Create_Notebook (MDI);
+            Show_All (Note2);
             Split (MDI,
                    Ref_Widget  => Note,
                    New_Child   => Note2,
