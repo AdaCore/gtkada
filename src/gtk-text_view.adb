@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                    Copyright (C) 2001 - 2003                      --
---                         ACT-Europe                                --
+--                    Copyright (C) 2001 - 2005                      --
+--                         AdaCore                                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,6 +29,7 @@
 
 with Gtk.Enums; use Gtk.Enums;
 with System;
+with Pango.Tabs; use Pango.Tabs;
 
 package body Gtk.Text_View is
 
@@ -922,29 +923,27 @@ package body Gtk.Text_View is
    -- Set_Tabs --
    --------------
 
-   --  procedure Set_Tabs
-   --    (Text_View : access Gtk_Text_View_Record;
-   --     Tabs      : out Pango_Tab_Array)
-   --  is
-   --     procedure Internal
-   --       (Text_View : System.Address;
-   --        Tabs      : System.Address);
-   --     pragma Import (C, Internal, "gtk_text_view_set_tabs");
-   --  begin
-   --     Internal (Get_Object (Text_View), Get_Object (Tabs));
-   --  end Set_Tabs;
+   procedure Set_Tabs
+     (Text_View : access Gtk_Text_View_Record;
+      Tabs      : Pango_Tab_Array)
+   is
+      procedure Internal (Text_View : System.Address; Tabs : Pango_Tab_Array);
+      pragma Import (C, Internal, "gtk_text_view_set_tabs");
+   begin
+      Internal (Get_Object (Text_View), Tabs);
+   end Set_Tabs;
 
    --------------
    -- Get_Tabs --
    --------------
 
-   --  function Get_Tabs (Text_View : access Gtk_Text_View_Record)
-   --                     return Pango_Tab_Array
-   --  is
-   --     function Internal (Text_View : System.Address) return System.Address;
-   --     pragma Import (C, Internal, "gtk_text_view_get_tabs");
-   --  begin
-   --     return Internal (Get_Object (Text_View));
-   --  end Get_Tabs;
+   function Get_Tabs
+     (Text_View : access Gtk_Text_View_Record) return Pango_Tab_Array
+   is
+      function Internal (Text_View : System.Address) return Pango_Tab_Array;
+      pragma Import (C, Internal, "gtk_text_view_get_tabs");
+   begin
+      return Internal (Get_Object (Text_View));
+   end Get_Tabs;
 
 end Gtk.Text_View;

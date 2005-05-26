@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2002-2003 ACT-Europe                 --
+--                Copyright (C) 2002-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,6 +32,7 @@ with Gdk.Rectangle;        use Gdk.Rectangle;
 with Pango.Attributes;     use Pango.Attributes;
 with Pango.Context;        use Pango.Context;
 with Pango.Font;           use Pango.Font;
+with Pango.Tabs;           use Pango.Tabs;
 with System;               use System;
 with Gtkada.Types;         use Gtkada.Types;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
@@ -396,5 +397,32 @@ package body Pango.Layout is
    begin
       return Internal (Get_Object (Layout));
    end Get_Attributes;
+
+   --------------
+   -- Set_Tabs --
+   --------------
+
+   procedure Set_Tabs
+     (Layout : access Pango_Layout_Record;
+      Tabs   : Pango.Tabs.Pango_Tab_Array)
+   is
+      procedure Internal (Layout : System.Address; Tabs : Pango_Tab_Array);
+      pragma Import (C, Internal, "pango_layout_set_tabs");
+   begin
+      Internal (Get_Object (Layout), Tabs);
+   end Set_Tabs;
+
+   --------------
+   -- Get_Tabs --
+   --------------
+
+   function Get_Tabs
+     (Layout : access Pango_Layout_Record) return Pango.Tabs.Pango_Tab_Array
+   is
+      function Internal (Layout : System.Address) return Pango_Tab_Array;
+      pragma Import (C, Internal, "pango_layout_get_tabs");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Tabs;
 
 end Pango.Layout;

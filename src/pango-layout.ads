@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2002-2003 ACT-Europe                 --
+--                Copyright (C) 2002-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -60,6 +60,7 @@ with Glib;
 with Pango.Attributes;
 with Pango.Context;
 with Pango.Font;
+with Pango.Tabs;
 with Glib.Object;
 with Gdk.Rectangle;
 with Gtkada.Types;
@@ -288,6 +289,22 @@ package Pango.Layout is
       return Pango_Wrap_Mode;
    --  Return the current wrap style
 
+   procedure Set_Tabs
+     (Layout : access Pango_Layout_Record;
+      Tabs   : Pango.Tabs.Pango_Tab_Array);
+   --  Sets the tabs to use for Layout, overriding the default tabs (by
+   --  default, tabs are every 8 spaces). If Tabs is Null_Tab_Array, the
+   --  default tabs are reinstated. tabs is copied into the layout; you must
+   --  free your copy of Tabs yourself.
+
+   function Get_Tabs
+     (Layout : access Pango_Layout_Record) return Pango.Tabs.Pango_Tab_Array;
+   --  Get the current tab array used by Layout. If no tab array
+   --  has been set, then the default tabs are in use and Null_Tab_Array is
+   --  returned.
+   --  Default tabs are every 8 spaces. The return value should be freed with
+   --  Pango.Tabs.Free.
+
    ----------------
    -- Attributes --
    ----------------
@@ -320,8 +337,6 @@ end Pango.Layout;
 --  pango_layout_get_indent
 --  pango_layout_set_spacing
 --  pango_layout_get_spacing
---  pango_layout_set_tabs
---  pango_layout_get_tabs
 --  pango_layout_set_single_paragraph_mode
 --  pango_layout_get_single_paragraph_mode
 --  pango_layout_get_log_attrs

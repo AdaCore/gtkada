@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,6 +40,7 @@ with Gtk.Text_Child;
 with Gtk.Text_Iter;
 with Gtk.Text_Mark;
 with Gtk.Widget;
+with Pango.Tabs;
 
 package Gtk.Text_View is
 
@@ -394,9 +395,19 @@ package Gtk.Text_View is
    function Get_Indent (Text_View : access Gtk_Text_View_Record) return Gint;
    --  ???
 
-   --  ??? not bound because PangoTabArray isn't bound either:
-   --  Set_Tabs
-   --  Get_Tabs
+   procedure Set_Tabs
+     (Text_View : access Gtk_Text_View_Record;
+      Tabs      : Pango.Tabs.Pango_Tab_Array);
+   --  Sets the default tab stops for paragraphs in Text_View.
+   --  Tags in the buffer may override the deault
+
+   function Get_Tabs
+     (Text_View : access Gtk_Text_View_Record)
+      return Pango.Tabs.Pango_Tab_Array;
+   --  Gets the default tabs for Text_view. Tags in the buffer may
+   --  override the defaults. The returned array will be Null_Tab_Array if
+   --  "standard" (8-space) tabs are used. Free the return value
+   --  Pango.Tabs.Free
 
    ----------------
    -- Properties --
