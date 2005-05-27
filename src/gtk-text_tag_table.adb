@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Text_Tag;  use Gtk.Text_Tag;
 
 package body Gtk.Text_Tag_Table is
 
@@ -148,12 +149,12 @@ package body Gtk.Text_Tag_Table is
         (C_Tag  : System.Address;
          C_Data : Foreach_Proc_Record_Access)
       is
-         Stub      : Gtk_Text_Tag_Table_Record;
-         Tag_Table : constant Gtk_Text_Tag_Table :=
-           Gtk_Text_Tag_Table (Get_User_Data_Fast (C_Tag, Stub));
+         Stub : Gtk_Text_Tag_Record;
+         Tag  : constant Gtk_Text_Tag :=
+           Gtk_Text_Tag (Get_User_Data_Fast (C_Tag, Stub));
 
       begin
-         C_Data.Proc (Tag_Table, C_Data.Data);
+         C_Data.Proc (Tag, C_Data.Data);
       end C_Gtk_Text_Tag_Table_Foreach_Proc;
 
       -------------

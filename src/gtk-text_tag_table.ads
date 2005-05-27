@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -78,7 +78,7 @@ package Gtk.Text_Tag_Table is
       type Data_Type_Access is access all Data_Type;
 
       type Gtk_Text_Tag_Table_Proc is access
-        procedure (Tag  : access Gtk_Text_Tag_Table_Record'Class;
+        procedure (Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
                    Data : Data_Type_Access);
 
       procedure Foreach
