@@ -62,11 +62,17 @@ export C_INCLUDE_PATH
 # CFLAGS="-I$C_INCLUDE_PATH -O2 -g"
 # export CFLAGS
 
+# Under Darwin
+# export CPPFLAGS="-I$prefix/include -no-cpp-precomp"
+# LDFLAGS="$LDFLAGS -L$prefix/lib -bind_at_load"
+# CFLAGS="$CFLAGS -malign-natural"
+
+
 ########
 # zlib #
 ########
 
-# Not needed on Linux, Tru64 5.1a nor IRIX 6.5
+# Not needed on Linux, Tru64 5.1a, nor IRIX 6.5 
 
 # AIX 5.1: although this library seems to be provided by the system, building
 # it is still needed, as the headers were not installed.
@@ -212,7 +218,12 @@ cd ..
 tar xzvf atk-1.2.4.tar.gz
 cd atk-1.2.4
 
+# on Darwin:
+# LDFLAGS="$LDFLAGS -no-undefined" ./configure --prefix=$prefix
+
+# on other systems
 ./configure --prefix=$prefix
+
 make all install
 cd ..
 
@@ -236,6 +247,10 @@ touch -r aclocal.m4 configure.in
 # If you have Xft2 available, e.g. under Redhat 8.0 and above
 ./configure --prefix=$prefix \
 	--with-included-modules=basic-x,basic-xft --disable-debug
+
+# On Darwin:
+# CPPFLAGS="$CPPFLAGS -no-cpp-precomp" LDFLAGS="$LDFLAGS -no-undefined" \
+# ./configure --prefix=$prefix --with-included-modules=basic-x --disable-debug
 
 # On other platforms:
 # Replace /bin/sh by /bin/bash in order to work around a sh bug under some
@@ -274,6 +289,14 @@ cd gtk+-2.2.4
 # This patch fixes regressions in Gtk+
 patch -p0 < .../GtkAda/contrib/gtk+-2.2.4.diff
 
+
+# on Darwin
+# CPPFLAGS="$CPPFLAGS -no-cpp-precomp -DX_LOCALE" \
+# LDFLAGS="$LDFLAGS -lpango-1.0" ./configure --disable-modules \
+# --disable-shm --prefix=$prefix --with-included-loaders=xpm,png,gif,jpeg \
+# --without-libtiff --disable-debug
+
+# on other systems
 ./configure --disable-modules --without-libtiff \
   --with-included-loaders=xpm,png,gif,jpeg --prefix=$prefix --disable-debug
 
