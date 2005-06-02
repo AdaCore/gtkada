@@ -1,6 +1,6 @@
 Here are the complete procedures to build Gtk+ 2.2.4 from scratch
 (Systems tested are Redhat 8.0, Solaris/sparc 2.5.1, Solaris/sparc 8,
- Solaris/x86 2.6, Tru64 5.1a, HP-UX 11.00).
+ Solaris/x86 2.6, Tru64 5.1a, HP-UX 11.00, Darwin 8.1.0 "Tiger").
 
 Note that these instructions are provided as is, and do not represent a
 100% guaranteed method. This is merely an empirical list of steps that
