@@ -12,6 +12,8 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
    BUILD_SHARED=yes
    FPIC=-fPIC
    TARGET_LFLAGS=
+   TARGET_CFLAGS=
+   GTK_LIBS_FLAGS=
 
    case $build_os in
    aix*)
@@ -43,6 +45,12 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       BUILD_SHARED=no
       FPIC=
       ;;
+   *darwin*)
+      SO_EXT=.dylib
+      SO_OPTS="-dynamiclib -compatibility_version 2.2.2 -current_version 2.2.2 -install_name @prefix@/lib/"
+      TARGET_CFLAGS=-fno-common
+      GTK_LIBS_FLAGS="-flat_namespace -undefined suppress"
+      ;;
    esac
 
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
@@ -51,6 +59,8 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
   AC_SUBST(SO_OPTS)
   AC_SUBST(FPIC)
   AC_SUBST(TARGET_LFLAGS)
+  AC_SUBST(TARGET_CFLAGS)
+  AC_SUBST(GTK_LIBS_FLAGS)
 
 ]
 )
