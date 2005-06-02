@@ -47,9 +47,10 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       ;;
    *darwin*)
       SO_EXT=.dylib
-      SO_OPTS="-dynamiclib -compatibility_version 2.2.2 -current_version 2.2.2 -install_name @prefix@/lib/"
-      TARGET_CFLAGS=-fno-common
-      GTK_LIBS_FLAGS="-flat_namespace -undefined suppress"
+      BUILD_SHARED=no
+#      SO_OPTS="-dynamiclib -compatibility_version 2.2.2 -current_version 2.2.2 -install_name @prefix@/lib/"
+      FPIC=-fno-common
+      TARGET_LFLAGS="-flat_namespace -undefined suppress"
       ;;
    esac
 
@@ -59,8 +60,6 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
   AC_SUBST(SO_OPTS)
   AC_SUBST(FPIC)
   AC_SUBST(TARGET_LFLAGS)
-  AC_SUBST(TARGET_CFLAGS)
-  AC_SUBST(GTK_LIBS_FLAGS)
 
 ]
 )
