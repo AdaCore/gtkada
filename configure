@@ -1349,13 +1349,12 @@ test -n "$target_alias" &&
       ;;
    *darwin*)
       SO_EXT=.dylib
-      SO_OPTS="-dynamiclib -compatibility_version 2.2.2 -current_version 2.2.2 -install_name @prefix@/lib/"
-      TARGET_CFLAGS=-fno-common
-      GTK_LIBS_FLAGS="-flat_namespace -undefined suppress"
+      BUILD_SHARED=no
+#      SO_OPTS="-dynamiclib -compatibility_version 2.2.2 -current_version 2.2.2 -install_name @prefix@/lib/"
+      FPIC=-fno-common
+      TARGET_LFLAGS="-flat_namespace -undefined suppress"
       ;;
    esac
-
-
 
 
 
@@ -4686,8 +4685,6 @@ s,@SO_EXT@,$SO_EXT,;t t
 s,@SO_OPTS@,$SO_OPTS,;t t
 s,@FPIC@,$FPIC,;t t
 s,@TARGET_LFLAGS@,$TARGET_LFLAGS,;t t
-s,@TARGET_CFLAGS@,$TARGET_CFLAGS,;t t
-s,@GTK_LIBS_FLAGS@,$GTK_LIBS_FLAGS,;t t
 s,@MERGE@,$MERGE,;t t
 s,@MERGE_AVAIL@,$MERGE_AVAIL,;t t
 s,@DIFF@,$DIFF,;t t
