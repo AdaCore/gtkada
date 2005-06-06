@@ -1,0 +1,9 @@
+table.section                { width: 100%; background: #FFD0D0 }
+table.subprograms            { width: 100%; border: 0px; padding-left: 20px}
+table.subprograms td.profile { background: #D6E8FF;
+                               vertical-align: top;
+                               white-space: pre }
+table.subprograms td.descr   { padding-bottom: 20px }
+table.hierarchy              { width: 100%; background: #FFF0D0; border: 0px;
+                               margin-left: 20px; margin-top: 10px;
+                               margin-bottom: 10px }
