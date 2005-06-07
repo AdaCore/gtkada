@@ -94,9 +94,7 @@ endif
 
 $(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(LIB_DIR)/pango*.o $(c_objects) $(c_extra_objects)
-	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
-	  $(RANLIB) $(ARCHIVENAME); \
-	fi
+	-$(RANLIB) $(ARCHIVENAME)
 
 # This copies the .ali files from lib_obj/ to the current directory, and change
 # the permission of the files so that dgate, gate and testgtk use the dynamic
@@ -150,6 +148,9 @@ install: all
 	   $(GENERATE_PRJ); \
 	   $(INSTALL_DATA) $(PRJ) $(incdir); \
 	   $(INSTALL_DATA) $(ARCHIVENAME) $(libdir); \
+	   if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
+	     $(RANLIB) $(libdir)/$(ARCHIVENAME); \
+	   fi; \
 	   if [ $(BUILD_SHARED) = yes ]; then \
 	     $(INSTALL_DATA) $(SONAME) $(libdir); \
 	     $(RM) $(libdir)/$(LIBNAME); \
