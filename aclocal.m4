@@ -54,6 +54,20 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       ;;
    esac
 
+   # ??? The following case has been introduced because of an elaboration
+   # problem with the GtkAda dynamic library and GPS (see E511-010). This
+   # is a workaround, and shall be removed as soon as the bug is fixed.
+   case $build_cpu in
+   *ia64*)
+      case $build_os in
+      *linux*)
+         echo "MATCH" 
+         BUILD_SHARED=no
+         FPIC=
+         ;;
+      esac
+   esac
+
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
   AC_SUBST(BUILD_SHARED)
   AC_SUBST(SO_EXT)
