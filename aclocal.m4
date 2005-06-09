@@ -61,7 +61,6 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
    *ia64*)
       case $build_os in
       *linux*)
-         echo "MATCH" 
          BUILD_SHARED=no
          FPIC=
          ;;
