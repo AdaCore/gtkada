@@ -1356,6 +1356,19 @@ test -n "$target_alias" &&
       ;;
    esac
 
+   # ??? The following case has been introduced because of an elaboration
+   # problem with the GtkAda dynamic library and GPS (see E511-010). This
+   # is a workaround, and shall be removed as soon as the bug is fixed.
+   case $build_cpu in
+   *ia64*)
+      case $build_os in
+      *linux*)
+         BUILD_SHARED=no
+         FPIC=
+         ;;
+      esac
+   esac
+
 
 
 
