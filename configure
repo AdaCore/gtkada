@@ -1314,8 +1314,6 @@ test -n "$target_alias" &&
    BUILD_SHARED=yes
    FPIC=-fPIC
    TARGET_LFLAGS=
-   TARGET_CFLAGS=
-   GTK_LIBS_FLAGS=
 
    case $build_os in
    aix*)
@@ -1354,19 +1352,17 @@ test -n "$target_alias" &&
       FPIC=-fno-common
       TARGET_LFLAGS="-flat_namespace -undefined suppress"
       ;;
-   esac
-
    # ??? The following case has been introduced because of an elaboration
    # problem with the GtkAda dynamic library and GPS (see E511-010). This
    # is a workaround, and shall be removed as soon as the bug is fixed.
-   case $build_cpu in
-   *ia64*)
-      case $build_os in
-      *linux*)
+   *linux*)
+      case $build_cpu in
+      *ia64*)
          BUILD_SHARED=no
          FPIC=
          ;;
       esac
+      ;;
    esac
 
 
