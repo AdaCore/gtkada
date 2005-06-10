@@ -52,19 +52,17 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       FPIC=-fno-common
       TARGET_LFLAGS="-flat_namespace -undefined suppress"
       ;;
-   esac
-
    # ??? The following case has been introduced because of an elaboration
    # problem with the GtkAda dynamic library and GPS (see E511-010). This
    # is a workaround, and shall be removed as soon as the bug is fixed.
-   case $build_cpu in
-   *ia64*)
-      case $build_os in
-      *linux*)
+   *linux*)
+      case $build_cpu in
+      *ia64*)
          BUILD_SHARED=no
          FPIC=
          ;;
       esac
+      ;;
    esac
 
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
