@@ -12,8 +12,6 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
    BUILD_SHARED=yes
    FPIC=-fPIC
    TARGET_LFLAGS=
-   TARGET_CFLAGS=
-   GTK_LIBS_FLAGS=
 
    case $build_os in
    aix*)
