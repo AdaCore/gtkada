@@ -1,3 +1,9 @@
+2005-06-17	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/win32/gdkdrawable-win32.c: Remove one use of GDI_CALL to
+	avoid generating too many Gtk+ warnings.
+	Part of E609-003.
+
 2005-03-24	Arnaud Charlet	<charlet@adacore.com>
 
 	* gtk/gtkbutton.c, gtk/gtkmain.c, gtk/gtkmenushell.c,
@@ -475,3 +481,16 @@
        if (k_grab_window != NULL && !k_grab_owner_events)
  	break;
  
+--- gdk/win32/gdkdrawable-win32.c.old	2005-06-16 16:41:30.000000000 +0100
++++ gdk/win32/gdkdrawable-win32.c	2005-06-16 16:42:03.000000000 +0100
+@@ -1583,8 +1583,8 @@
+ 	}
+       
+       if (ok)
+-	GDI_CALL (BitBlt, (hdc, xdest, ydest, width, height,
+-			   srcdc, xsrc, ysrc, rop2_to_rop3 (gcwin32->rop2)));
++	BitBlt, (hdc, xdest, ydest, width, height,
++		 srcdc, xsrc, ysrc, rop2_to_rop3 (gcwin32->rop2));
+       
+       /* Restore source's color table if necessary */
+       if (ok && newtable_size > 0 && oldtable_size > 0)
