@@ -1,3 +1,8 @@
+Fri Jun 17 2005  Arnaud Charlet  <charlet@adacore.com>
+
+	* pango/pangowin32-fontmap.c: integrate patch from PR 110521
+	Fix E607-006
+
 Thu Dec 06 2004  Arnaud Charlet  <charlet@adacore.com>
 
 	* pango/pango-context.c, pango/glyphstring.c, pango/pangowin32.c: Avoid
@@ -84,3 +89,25 @@ Thu Nov 27 2003  Arnaud Charlet  <charlet@adacore.com>
    if (!win32font->hfont)
      {
        cache = pango_win32_font_map_get_font_cache (win32font->fontmap);
+--- pango/pangowin32-fontmap.c.old	2005-06-16 16:42:50.000000000 +0100
++++ pango/pangowin32-fontmap.c	2005-06-16 16:47:26.000000000 +0100
+@@ -206,7 +206,18 @@
+ 			     DWORD       fontType,
+ 			     LPARAM      lParam)
+ {
+-  pango_win32_insert_font (fontmap, lfp);
++  /* Bold and italic variants can always (?) be simulated,
++     so insert them. */
++  lfp->lfItalic = 0;
++  lfp->lfWeight = FW_NORMAL;
++  pango_win32_insert_font (fontmap, lfp); // normal
++  lfp->lfItalic = 1;
++  pango_win32_insert_font (fontmap, lfp); // italic
++  lfp->lfItalic = 0;
++  lfp->lfWeight = FW_BOLD;
++  pango_win32_insert_font (fontmap, lfp); // bold
++  lfp->lfItalic = 1;
++  pango_win32_insert_font (fontmap, lfp); // bold+italic
+ 
+   return 1;
+ }
