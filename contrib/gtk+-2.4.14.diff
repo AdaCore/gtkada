@@ -489,8 +489,8 @@
        if (ok)
 -	GDI_CALL (BitBlt, (hdc, xdest, ydest, width, height,
 -			   srcdc, xsrc, ysrc, rop2_to_rop3 (gcwin32->rop2)));
-+	BitBlt, (hdc, xdest, ydest, width, height,
-+		 srcdc, xsrc, ysrc, rop2_to_rop3 (gcwin32->rop2));
++	BitBlt (hdc, xdest, ydest, width, height,
++		srcdc, xsrc, ysrc, rop2_to_rop3 (gcwin32->rop2));
        
        /* Restore source's color table if necessary */
        if (ok && newtable_size > 0 && oldtable_size > 0)
