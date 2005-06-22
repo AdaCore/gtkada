@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2004 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -475,8 +475,6 @@ package body Glib.Object is
 
       function Convert is new
         Unchecked_Conversion (System.Address, Cb_Record_Access);
-      procedure Free_Data (Data : System.Address);
-      pragma Convention (C, Free_Data);
 
       procedure Set_Data_Internal
         (Object  : System.Address;

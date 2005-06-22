@@ -1,7 +1,7 @@
-----------------------------------------------------------------------
+-----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001-2003 ACT-Europe              --
+--                   Copyright (C) 2001-2005 AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -345,6 +345,11 @@ package Glib.Object is
         (Object : access GObject_Record'Class; Id : Glib.GQuark);
       --  Same function as Remove above, but uses directly the Quark associated
       --  with the string, which speeds up the access time significantly.
+
+   private
+      procedure Free_Data (Data : System.Address);
+      --  Internal procedure used to free user data in the package body
+      pragma Convention (C, Free_Data);
    end User_Data;
 
    --  </doc_ignore>
