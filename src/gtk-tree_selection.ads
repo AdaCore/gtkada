@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@ package Gtk.Tree_Selection is
 
    type Gtk_Tree_Selection_Record is
      new Glib.Object.GObject_Record with private;
-   type Gtk_Tree_Selection is access all Gtk_Tree_Selection_Record'Class'Class;
+   type Gtk_Tree_Selection is access all Gtk_Tree_Selection_Record'Class;
 
    function Get_Type return Glib.GType;
    --  Return the internal type associated with Gtk_Tree_Selection.
