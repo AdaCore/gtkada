@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,39 +40,44 @@ package body Gtk.Tree_Selection is
       -- Selected_Foreach --
       ----------------------
 
+      type Data_Wrapper is record
+         Data : Data_Type_Access;
+         Func : Foreach_Func;
+      end record;
+
+      procedure C_Foreach_Func
+        (Model : System.Address;
+         Path  : Gtk_Tree_Path;
+         Iter  : Gtk_Tree_Iter;
+         Data  : access Data_Wrapper);
+      pragma Convention (C, C_Foreach_Func);
+
+      procedure C_Foreach_Func
+        (Model : System.Address;
+         Path  : Gtk_Tree_Path;
+         Iter  : Gtk_Tree_Iter;
+         Data  : access Data_Wrapper)
+      is
+         Stub : Gtk_Tree_Model_Record;
+      begin
+         Data.Func (Gtk_Tree_Model (Get_User_Data_Fast (Model, Stub)),
+                    Path, Iter, Data.Data);
+      end C_Foreach_Func;
+
       procedure Selected_Foreach
         (Selection : access Gtk_Tree_Selection_Record'Class;
          Func      : Foreach_Func;
          Data      : Data_Type_Access)
       is
-
-         procedure C_Foreach_Func
-           (Model : System.Address;
-            Path  : Gtk_Tree_Path;
-            Iter  : Gtk_Tree_Iter;
-            Data  : Data_Type_Access);
-         pragma Convention (C, C_Foreach_Func);
-
-         procedure C_Foreach_Func
-           (Model : System.Address;
-            Path  : Gtk_Tree_Path;
-            Iter  : Gtk_Tree_Iter;
-            Data  : Data_Type_Access)
-         is
-            Stub : Gtk_Tree_Model_Record;
-         begin
-            Func (Gtk_Tree_Model (Get_User_Data_Fast (Model, Stub)),
-                  Path, Iter, Data);
-         end C_Foreach_Func;
-
          procedure Internal
            (Selection : System.Address;
             Func      : System.Address;
-            Data      : Data_Type_Access);
+            Data      : access Data_Wrapper);
          pragma Import (C, Internal, "gtk_tree_selection_selected_foreach");
 
+         D : aliased Data_Wrapper := (Data, Func);
       begin
-         Internal (Get_Object (Selection), C_Foreach_Func'Address, Data);
+         Internal (Get_Object (Selection), C_Foreach_Func'Address, D'Access);
       end Selected_Foreach;
 
    end Selection_Foreach;
