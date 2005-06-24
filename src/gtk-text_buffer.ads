@@ -595,6 +595,10 @@ package Gtk.Text_Buffer is
      (Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Gtk_Text_Buffer;
    --  Return the buffer associated to the given Gtk_Text_Iterator.
 
+   function Get_Buffer
+     (Mark : Gtk.Text_Mark.Gtk_Text_Mark) return Gtk_Text_Buffer;
+   --  Return the buffer associated to the given mark
+
    ----------------
    -- Properties --
    ----------------

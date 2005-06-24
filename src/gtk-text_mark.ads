@@ -37,10 +37,13 @@ package Gtk.Text_Mark is
 
    type Gtk_Text_Mark_Record is new GObject_Record with private;
    type Gtk_Text_Mark is access all Gtk_Text_Mark_Record'Class;
-
-   --  ??? How are the marks destroyed? Is this automatic when the associated
-   --  buffer is destroyed? Is this automatic when the text area where the mark
-   --  is located is destroyed? More investigation needed.
+   --  Marks are positions in a buffer which move when the buffer is modified,
+   --  so that they always point to the same place in the buffer.
+   --  They are automatically destroyed when the buffer is destroyed, unless
+   --  you have explicitly call Ref on the mark.
+   --  See Gtk.Text_Buffer for various functions dealing with marks. In
+   --  particular, Gtk.Text_Buffer.Get_Buffer can be used to retrieve the
+   --  buffer from a mark.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Label.
@@ -66,13 +69,6 @@ package Gtk.Text_Mark is
    function Get_Deleted (Mark : access Gtk_Text_Mark_Record) return Boolean;
    --  Returns True if the mark has been removed from its buffer with
    --  Gtk.Text_Buffer.Delete_Mark. Marks can't be used once deleted.
-
-   --  function Get_Buffer (Mark   : access Gtk_Text_Mark_Record)
-   --                       return Gtk.Text_Buffer.Gtk_Text_Buffer;
-   --  ??? Can not be bound here to avoid circular dependency with
-   --  Gtk.Text_Buffer.
-   --  Get the buffer this mark is located inside, or null if the mark is
-   --  deleted.
 
    function Get_Left_Gravity
      (Mark : access Gtk_Text_Mark_Record) return Boolean;

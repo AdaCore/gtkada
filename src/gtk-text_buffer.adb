@@ -1118,4 +1118,19 @@ package body Gtk.Text_Buffer is
       return Gtk_Text_Buffer (Get_User_Data_Fast (Internal (Iter), Stub));
    end Get_Buffer;
 
+   ----------------
+   -- Get_Buffer --
+   ----------------
+
+   function Get_Buffer
+     (Mark : Gtk.Text_Mark.Gtk_Text_Mark) return Gtk_Text_Buffer
+   is
+      function Internal (Iter : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_text_mark_get_buffer");
+      Stub : Gtk_Text_Buffer_Record;
+   begin
+      return Gtk_Text_Buffer
+        (Get_User_Data_Fast (Internal (Get_Object (Mark)), Stub));
+   end Get_Buffer;
+
 end Gtk.Text_Buffer;
