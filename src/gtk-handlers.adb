@@ -214,11 +214,6 @@ package body Gtk.Handlers is
       function To_Address is new Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
-      function Convert is new Unchecked_Conversion
-        (Data_Type_Access, System.Address);
-      function Convert is new Unchecked_Conversion
-        (System.Address, Data_Type_Access);
-
       -------------
       -- Connect --
       -------------
@@ -572,11 +567,6 @@ package body Gtk.Handlers is
         (Handler, System.Address);
       function To_Address is new Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
-
-      function Convert is new Unchecked_Conversion
-        (Data_Type_Access, System.Address);
-      function Convert is new Unchecked_Conversion
-        (System.Address, Data_Type_Access);
 
       ---------------
       -- Free_Data --
@@ -941,11 +931,6 @@ package body Gtk.Handlers is
       function To_Address is new Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
-      function Convert is new Unchecked_Conversion
-        (Data_Type_Access, System.Address);
-      function Convert is new Unchecked_Conversion
-        (System.Address, Data_Type_Access);
-
       ---------------
       -- Free_Data --
       ---------------
@@ -1290,11 +1275,6 @@ package body Gtk.Handlers is
         (Handler, System.Address);
       function To_Address is new Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
-
-      function Convert is new Unchecked_Conversion
-        (Data_Type_Access, System.Address);
-      function Convert is new Unchecked_Conversion
-        (System.Address, Data_Type_Access);
 
       ---------------
       -- Free_Data --

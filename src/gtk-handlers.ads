@@ -141,6 +141,8 @@ pragma Elaborate_All (Gtk.Marshallers);
 with Gtk.Notebook;
 with Gtk.Widget;
 
+with Unchecked_Conversion;
+
 package Gtk.Handlers is
 
    --  <doc_ignore>
@@ -370,6 +372,11 @@ package Gtk.Handlers is
       pragma Convention (C, Data_Type_Access);
       --  Data passed to the C handler
 
+      function Convert is new Unchecked_Conversion
+        (Data_Type_Access, System.Address);
+      function Convert is new Unchecked_Conversion
+        (System.Address, Data_Type_Access);
+
       procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
@@ -583,6 +590,11 @@ package Gtk.Handlers is
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
       --  Data passed to the C handler
+
+      function Convert is new Unchecked_Conversion
+        (Data_Type_Access, System.Address);
+      function Convert is new Unchecked_Conversion
+        (System.Address, Data_Type_Access);
 
       procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
@@ -941,6 +953,11 @@ package Gtk.Handlers is
       pragma Convention (C, Data_Type_Access);
       --  Data passed to the C handler
 
+      function Convert is new Unchecked_Conversion
+        (Data_Type_Access, System.Address);
+      function Convert is new Unchecked_Conversion
+        (System.Address, Data_Type_Access);
+
       procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
@@ -1150,6 +1167,11 @@ package Gtk.Handlers is
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
       --  Data passed to the C handler
+
+      function Convert is new Unchecked_Conversion
+        (Data_Type_Access, System.Address);
+      function Convert is new Unchecked_Conversion
+        (System.Address, Data_Type_Access);
 
       procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
