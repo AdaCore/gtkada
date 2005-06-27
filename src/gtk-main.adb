@@ -95,14 +95,8 @@ package body Gtk.Main is
       end record;
       type Cb_Record_Access is access Cb_Record;
 
-      procedure Free_Data (D : System.Address);
-      pragma Convention (C, Free_Data);
-
       function Convert is new Unchecked_Conversion
         (System.Address, Cb_Record_Access);
-
-      function General_Cb (D : System.Address) return Gint;
-      pragma Convention (C, General_Cb);
 
       ----------
       -- Free --
@@ -376,14 +370,8 @@ package body Gtk.Main is
       end record;
       type Cb_Record_Access is access Cb_Record;
 
-      procedure Free_Data (D : System.Address);
-      pragma Convention (C, Free_Data);
-
       function Convert is new Unchecked_Conversion
         (System.Address, Cb_Record_Access);
-
-      function General_Cb (D : System.Address) return Gint;
-      pragma Convention (C, General_Cb);
 
       ----------
       -- Free --
@@ -461,14 +449,8 @@ package body Gtk.Main is
       end record;
       type Cb_Record_Access is access Cb_Record;
 
-      procedure Free_Data (D : System.Address);
-      pragma Convention (C, Free_Data);
-
       function Convert is new Unchecked_Conversion
         (System.Address, Cb_Record_Access);
-
-      function General_Cb (D : System.Address) return Gint;
-      pragma Convention (C, General_Cb);
 
       ----------
       -- Free --

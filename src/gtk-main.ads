@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -81,6 +81,7 @@ package Gtk.Main is
    -----------------------------
 
    type Init_Function is access procedure (Data : System.Address);
+   pragma Convention (C, Init_Function);
    --  Function called just before starting the main loop.
    --  This can be registered with Init_Add below.
 
@@ -94,6 +95,7 @@ package Gtk.Main is
    --  main loop exits.
 
    type Quit_Function is access function return Boolean;
+   pragma Convention (C, Quit_Function);
    --  Type of function that can be called when the main loop exits.
    --  It should return False if it should not be called again when another
    --  main loop exits.
@@ -119,6 +121,13 @@ package Gtk.Main is
         (Main_Level : Guint;
          Func       : Quit_Function;
          Data       : Data_Type) return Quit_Handler_Id;
+
+   private
+      procedure Free_Data (D : System.Address);
+      pragma Convention (C, Free_Data);
+
+      function General_Cb (D : System.Address) return Gint;
+      pragma Convention (C, General_Cb);
    end Quit;
    --  !!Warning!!: This package needs to be instantiated at library level
    --  since it calls some internal functions as callback.
@@ -237,14 +246,16 @@ package Gtk.Main is
    Priority_Low_Idle     : constant Idle_Priority := 300;
 
    type Idle_Callback is access function return Boolean;
+   pragma Convention (C, Idle_Callback);
    --  Function that can be called automatically whenever GtkAda is not
    --  processing events.
    --  It should return True if the function should be called again as soon
    --  as possible, False if it should be unregistered.
 
-   function Idle_Add (Cb       : in Idle_Callback;
-                      Priority : in Idle_Priority := Priority_Default_Idle)
-                     return Idle_Handler_Id;
+   function Idle_Add
+     (Cb       : Idle_Callback;
+      Priority : Idle_Priority := Priority_Default_Idle)
+      return Idle_Handler_Id;
    --  Register an idle callback with no user data.
 
    --  <doc_ignore>
@@ -260,6 +271,13 @@ package Gtk.Main is
          Priority : in Idle_Priority := Priority_Default_Idle;
          Destroy  : in Destroy_Callback := null)
          return Idle_Handler_Id;
+
+   private
+      procedure Free_Data (D : System.Address);
+      pragma Convention (C, Free_Data);
+
+      function General_Cb (D : System.Address) return Gint;
+      pragma Convention (C, General_Cb);
    end Idle;
    --  !!Warning!! The instances of this package must be declared at library
    --  level, as they are some accesses to internal functions that happen
@@ -315,6 +333,13 @@ package Gtk.Main is
          D        : Data_Type;
          Destroy  : in Destroy_Callback := null) return Timeout_Handler_Id;
       --  Adds a new timeout. Func will be called after Interval milliseconds.
+
+   private
+      procedure Free_Data (D : System.Address);
+      pragma Convention (C, Free_Data);
+
+      function General_Cb (D : System.Address) return Gint;
+      pragma Convention (C, General_Cb);
    end Timeout;
    --  !!Warning!! The instances of this package must be declared at library
    --  level, as they are some accesses to internal functions that happen
