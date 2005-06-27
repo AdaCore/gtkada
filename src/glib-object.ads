@@ -347,9 +347,11 @@ package Glib.Object is
       --  with the string, which speeds up the access time significantly.
 
    private
+      --  <doc_ignore>
       procedure Free_Data (Data : System.Address);
       --  Internal procedure used to free user data in the package body
       pragma Convention (C, Free_Data);
+      --  </doc_ignore>
    end User_Data;
 
    --  </doc_ignore>
