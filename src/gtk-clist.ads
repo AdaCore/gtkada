@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -779,6 +779,13 @@ package Gtk.Clist is
          Data   : in Data_Type);
       --  Same as above but acts directly on a row obtained through
       --  Get_Row_List. This is faster for big lists.
+
+   private
+      --  <doc_ignore>
+      procedure Free_Data (Data : System.Address);
+      --  Free memory associated with Data
+      pragma Convention (C, Free_Data);
+      --  </doc_ignore>
    end Row_Data;
 
    --  <doc_ignore>
