@@ -203,7 +203,7 @@ package Gtk.Widget is
 
    private
       --  <doc_ignore>
-      procedure Internal_Realize (Widget : System.Address);         
+      procedure Internal_Realize (Widget : System.Address);
       --  The wrapper passed to Gtk+.
       pragma Convention (C, Internal_Realize);
       --  </doc_ignore>
