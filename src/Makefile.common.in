@@ -1,8 +1,9 @@
 CC = @CC@
 FPIC = @FPIC@
+PWD = $(shell pwd)
 
 GNATFLAGS = -O2 -gnatn -gnatws
-GNATFLAGS_DEVEL = -O2 -gnatay -gnatwae -g -gnatec=../gnat.adc
+GNATFLAGS_DEVEL = -O2 -gnatay -gnatwae -g -gnatec=$(PWD)/gnat.adc
 
 GNATMAKE = gnatmake
 OS_SPECIFIC_LINK_OPTIONS = @OS_SPECIFIC_LINK_OPTIONS@
