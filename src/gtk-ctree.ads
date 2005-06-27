@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -670,6 +670,23 @@ package Gtk.Ctree is
                              Func    : in     Gtk_Ctree_Gnode_Func;
                              Data    : in     Data_Type_Access)
         return Gtk_Ctree_Node;
+   private
+      --  <doc_ignore>
+      type Ctree_Gnode_Func_Record is record
+         Func : Gtk_Ctree_Gnode_Func;
+         Data : Data_Type_Access;
+      end record;
+      type Ctree_Gnode_Func_Record_Access is
+        access all Ctree_Gnode_Func_Record;
+
+      function C_Ctree_Gnode_Func
+        (C_Ctree : System.Address;
+         Depth   : Guint;
+         C_Gnode : Glib.Gnodes.Gnode;
+         C_Cnode : Gtk_Ctree_Node;
+         C_Data  : Ctree_Gnode_Func_Record_Access) return Gboolean;
+      pragma Convention (C, C_Ctree_Gnode_Func);
+      --  </doc_ignore>
    end Ctree_Gnode;
 
    --  </doc_ignore>
@@ -796,6 +813,34 @@ package Gtk.Ctree is
       --  This function needs to be declared in the spec, although it is
       --  only used in the body. Otherwise, the compiler does not allow
       --  to apply the 'Access attribute to it.
+
+      type Ctree_Func_Record is record
+         Func : Gtk_Ctree_Func;
+         Data : Data_Type_Access;
+      end record;
+      type Ctree_Func_Record_Access is access all Ctree_Func_Record;
+
+      procedure Free_Data (Data : Data_Type_Access);
+      pragma Convention (C, Free_Data);
+      --  Note that Data is *not* an in out parameter here, since Free_Data
+      --  will be used as a callback, and when called, the original variable
+      --  holding the pointer no longer exists.
+
+      procedure C_Ctree_Func (C_Ctree : in System.Address;
+                              C_Node  : in Gtk_Ctree_Node;
+                              C_Data  : in Ctree_Func_Record_Access);
+      pragma Convention (C, C_Ctree_Func);
+
+      type Gcompare_Func_Record is record
+         Func : Gcompare_Func;
+         Data : Data_Type_Access;
+      end record;
+      type Gcompare_Func_Record_Access is access all Gcompare_Func_Record;
+
+      function C_Gcompare_Func
+        (Row_Data           : in Data_Type_Access;
+         Gcompare_Func_Data : in Gcompare_Func_Record_Access) return Gint;
+      pragma Convention (C, C_Gcompare_Func);
       --  </doc_ignore>
 
    end Row_Data;
