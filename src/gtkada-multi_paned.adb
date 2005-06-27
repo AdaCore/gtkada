@@ -259,11 +259,11 @@ package body Gtkada.Multi_Paned is
          Put_Line ("<null>");
 
       elsif Child.Is_Widget then
-         Put_Line (Prefix & "<w req=(" & Child.Width'Img
-                   & Child.Height'Img
+         Put_Line (Prefix & "<w req=(" & Float'Image (Child.Width)
+                   & Float'Image (Child.Height)
                    & ") alloc=("
-                   & Get_Allocation_Width (Child.Widget)'Img
-                   & Get_Allocation_Height (Child.Widget)'Img
+                   & Gint'Image (Get_Allocation_Width (Child.Widget))
+                   & Gint'Image (Get_Allocation_Height (Child.Widget))
                    & ") "
                    & Image ("HIDDEN", not Child.Visible)
                    & Image ("FIXED", Child.Fixed_Size)
@@ -272,10 +272,10 @@ package body Gtkada.Multi_Paned is
                    & ">");
       else
          Put_Line (Prefix & "<" & Image (Child.Orientation)
-                   & " req=(" & Child.Width'Img
-                   & Child.Height'Img
-                   & ") x,y=(" & Child.X'Img
-                   & Child.Y'Img
+                   & " req=(" & Float'Image (Child.Width)
+                   & Float'Image (Child.Height)
+                   & ") x,y=(" & Gint'Image (Child.X)
+                   & Gint'Image (Child.Y)
                    & ")>");
          Tmp := Child.First_Child;
          while Tmp /= null loop
@@ -1411,13 +1411,13 @@ package body Gtkada.Multi_Paned is
       if Current.Orientation = Orientation_Horizontal then
          Compute_Ratios (Width, Req_Width, Fixed_Width);
          if Traces then
-            Put_Line ("Horiz Ratio=" & Ratio'Img
-                      & " Fixed_Ratio=" & Fixed_Ratio'Img
-                      & " Total=" & Width'Img
-                      & " Requested=" & Req_Width'Img
-                      & " Fixed=" & Fixed_Width'Img
-                      & " Handles=" & Handles_Size'Img
-                      & " Unrequested=" & Unrequested'Img);
+            Put_Line ("Horiz Ratio=" & Float'Image (Ratio)
+                      & " Fixed_Ratio=" & Float'Image (Fixed_Ratio)
+                      & " Total=" & Float'Image (Width)
+                      & " Requested=" & Float'Image (Req_Width)
+                      & " Fixed=" & Float'Image (Fixed_Width)
+                      & " Handles=" & Float'Image (Handles_Size)
+                      & " Unrequested=" & Float'Image (Unrequested));
          end if;
 
          while Tmp /= null loop
@@ -1461,13 +1461,13 @@ package body Gtkada.Multi_Paned is
       else
          Compute_Ratios (Height, Req_Height, Fixed_Height);
          if Traces then
-            Put_Line ("Vert Ratio=" & Ratio'Img
-                      & " Fixed_Ratio=" & Fixed_Ratio'Img
-                      & " Total=" & Height'Img
-                      & " Requested=" & Req_Height'Img
-                      & " Fixed=" & Fixed_Height'Img
-                      & " Handles=" & Handles_Size'Img
-                      & " Unrequested=" & Unrequested'Img);
+            Put_Line ("Vert Ratio=" & Float'Image (Ratio)
+                      & " Fixed_Ratio=" & Float'Image (Fixed_Ratio)
+                      & " Total=" & Float'Image (Height)
+                      & " Requested=" & Float'Image (Req_Height)
+                      & " Fixed=" & Float'Image (Fixed_Height)
+                      & " Handles=" & Float'Image (Handles_Size)
+                      & " Unrequested=" & Float'Image (Unrequested));
          end if;
          while Tmp /= null loop
             if Tmp.Visible then
@@ -2032,7 +2032,8 @@ package body Gtkada.Multi_Paned is
       if Traces then
          Put_Line ("Split_Internal: After inserting "
                    & System.Address_Image (New_Child.all'Address)
-                   & " Width=" & Width'Img & " Height=" & Height'Img);
+                   & " Width=" & Gint'Image (Width)
+                   & " Height=" & Gint'Image (Height));
          Dump (Win, Win.Children);
       end if;
    end Split_Internal;
@@ -2172,7 +2173,8 @@ package body Gtkada.Multi_Paned is
       if Traces then
          Put_Line ("After Set_Size on "
                    & System.Address_Image (Widget.all'Address)
-                   & " to " & Width'Img & Height'Img);
+                   & " to " & Gint'Image (Width)
+                   & Gint'Image (Height));
          Dump (Win, Win.Children);
       end if;
    end Set_Size;

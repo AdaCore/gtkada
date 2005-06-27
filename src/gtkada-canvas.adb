@@ -1406,8 +1406,6 @@ package body Gtkada.Canvas is
 
       X3 := Gint'First;
 
-      --  Put_Line ("Xp1=" & Xp1'Img & " X2=" & X2'Img);
-
       for L in Line_Pos'Range loop
          if Line_Pos (L) >= Xp1
            and then Line_Pos (L) <= X2
@@ -2312,13 +2310,17 @@ package body Gtkada.Canvas is
 
       if Traces then
          if Item /= null then
-            Put_Line ("Clicked on Item at coordinates (" & X'Img & Y'Img
+            Put_Line ("Clicked on Item at coordinates ("
+                      & Gint'Image (X) & Gint'Image (Y)
                       & ") item=("
-                      & Item.Coord.X'Img & Item.Coord.Y'Img
-                      & Item.Coord.Width'Img & Item.Coord.Height'Img
-                      & ") base=(" & Xbase'Img & Ybase'Img
-                      & ") mouse=" & Gint (Get_X (Event))'Img
-                      & Gint (Get_Y (Event))'Img);
+                      & Gint'Image (Item.Coord.X)
+                      & Gint'Image (Item.Coord.Y)
+                      & Gint'Image (Item.Coord.Width)
+                      & Gint'Image (Item.Coord.Height)
+                      & ") base=(" & Gint'Image (Xbase)
+                      & Gint'Image (Ybase)
+                      & ") mouse=" & Gint'Image (Gint (Get_X (Event)))
+                      & Gint'Image (Gint (Get_Y (Event))));
          else
             Put_Line ("Clicked outside of item");
          end if;
@@ -2711,11 +2713,13 @@ package body Gtkada.Canvas is
 
                if Traces then
                   Put_Line ("Draw_Dashed_Selection, at "
-                            & Selected.X'Img
-                            & Selected.Y'Img
+                            & Gint'Image (Selected.X)
+                            & Gint'Image (Selected.Y)
                             & " canvas coordinates="
-                            & To_Canvas_Coordinates (Canvas, Selected.X)'Img
-                            & To_Canvas_Coordinates (Canvas, Selected.Y)'Img);
+                            & Gint'Image
+                              (To_Canvas_Coordinates (Canvas, Selected.X))
+                            & Gint'Image
+                              (To_Canvas_Coordinates (Canvas, Selected.Y)));
                end if;
 
                Draw_Rectangle
@@ -2777,9 +2781,10 @@ package body Gtkada.Canvas is
 
          if Traces then
             Put_Line ("Move_Selection delta="
-                      & Delta_X'Img & Delta_Y'Img
+                      & Gint'Image (Delta_X) & Gint'Image (Delta_Y)
                       & " to "
-                      & Selected.X'Img & Selected.Y'Img);
+                      & Gint'Image (Selected.X)
+                      & Gint'Image (Selected.Y));
          end if;
 
          Selected := Selected.Next;
@@ -2798,8 +2803,8 @@ package body Gtkada.Canvas is
          --  and disappearing, and slow down the whole process.
          if Traces then
             Put_Line ("Show_Item X,Y="
-                      & Canvas.Selection.X'Img
-                      & Canvas.Selection.Y'Img);
+                      & Gint'Image (Canvas.Selection.X)
+                      & Gint'Image (Canvas.Selection.Y));
          end if;
 
          Show_Item
@@ -3141,8 +3146,9 @@ package body Gtkada.Canvas is
          Next => Canvas.Selection);
 
       if Traces then
-         Put_Line ("Add_To_Selection X,Y=" & Canvas.Selection.X'Img
-                   & Canvas.Selection.Y'Img);
+         Put_Line ("Add_To_Selection X,Y="
+                   & Gint'Image (Canvas.Selection.X)
+                   & Gint'Image (Canvas.Selection.Y));
       end if;
 
       Selected (Item, Canvas, Is_Selected => True);

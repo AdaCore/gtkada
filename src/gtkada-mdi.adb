@@ -1547,7 +1547,8 @@ package body Gtkada.MDI is
         (Get_State (Event) and Shift_Mask) /= 0;
    begin
       if Traces then
-         Put_Line ("Button release, drag=" & C.MDI.In_Drag'Img);
+         Put_Line
+           ("Button release, drag=" & Drag_Status'Image (C.MDI.In_Drag));
       end if;
 
       Pointer_Ungrab (Time => 0);
@@ -2979,7 +2980,7 @@ package body Gtkada.MDI is
                if Note /= null then
                   if Traces then
                      Put_Line ("Find_Current_In_Central Position="
-                               & Position'Img
+                               & Integer'Image (Position)
                                & " Found existing notebook");
                   end if;
                   return Note;
@@ -3020,8 +3021,8 @@ package body Gtkada.MDI is
 
       if Note = null then
          if Traces then
-            Put_Line ("Find_Current_In_Central Position=" & Position'Img
-                      & " Creating new notebook");
+            Put_Line ("Find_Current_In_Central Position="
+                      & Integer'Image (Position) & " Creating new notebook");
          end if;
          Note := Create_Notebook (MDI);
 
@@ -3847,8 +3848,8 @@ package body Gtkada.MDI is
          Height := Gint'Value (Get_Attribute (Child_Node, "Height", "-1"));
 
          if Traces then
-            Put_Line ("MDI Parse_Notebook_Node Width=" & Width'Img
-                      & " Height=" & Height'Img);
+            Put_Line ("MDI Parse_Notebook_Node Width=" & Gint'Image (Width)
+                      & " Height=" & Gint'Image (Height));
          end if;
 
          Notebook := null;
@@ -3950,7 +3951,7 @@ package body Gtkada.MDI is
 
          if Traces then
             Put_Line ("MDI Parse child node " & Child.Title.all
-                      & " position=" & Child.Position'Img);
+                      & " position=" & Child_Position'Image (Child.Position));
          end if;
 
          Child.Position := Child_Position'Value
@@ -4019,7 +4020,8 @@ package body Gtkada.MDI is
 
       begin
          if Traces then
-            Put_Line ("MDI Parsing pane node " & Orientation'Img);
+            Put_Line
+              ("MDI Parsing pane node " & Gtk_Orientation'Image (Orientation));
          end if;
 
          N := Node.Child;
@@ -4082,7 +4084,8 @@ package body Gtkada.MDI is
                                 (Notebooks (Count).all'Address)
                               & " ref="
                               & System.Address_Image (Ref_Item.all'Address)
-                              & " Orient=" & Orientation'Img);
+                              & " Orient="
+                              & Gtk_Orientation'Image (Orientation));
                         end if;
                         Split (MDI,
                                Ref_Widget  => Ref_Item,
