@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -349,6 +349,42 @@ package Gtk.Handlers is
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
 
+   private
+      --  <doc_ignore>
+      type Acc is access all Widget_Type'Class;
+      --  This type has to be declared at library level, otherwise
+      --  Program_Error might be raised when trying to cast from the
+      --  parameter of Marshaller to another type.
+
+      type Data_Type_Record is record
+         Func     : Handler;
+         --  User's callback
+
+         Proxy    : Marshallers.Handler_Proxy := null;
+         --  Handler_Proxy to use
+
+         Object   : Acc := null;
+         --  Slot Object for Object_Connect
+      end record;
+      type Data_Type_Access is access all Data_Type_Record;
+      pragma Convention (C, Data_Type_Access);
+      --  Data passed to the C handler
+
+      procedure Free_Data (Data : Data_Type_Access);
+      pragma Convention (C, Free_Data);
+      --  Free the memory associated with the callback's data
+
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : Glib.Values.GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address);
+      pragma Convention (C, First_Marshaller);
+      --  First level marshaller. This is the function that is actually
+      --  called by gtk+. It then calls the Ada functions as required.
+      --  </doc_ignore>
    end Return_Callback;
 
    ---------------------------------------------------------
@@ -524,6 +560,45 @@ package Gtk.Handlers is
          Name   : String;
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
+
+   private
+      --  <doc_ignore>
+      type Acc is access all Widget_Type'Class;
+      --  This type has to be declared at library level, otherwise
+      --  Program_Error might be raised when trying to cast from the
+      --  parameter of Marshaller to another type.
+
+      type User_Access is access User_Type;
+      type Data_Type_Record is record
+         Func  : Handler;
+         --  User's callback
+
+         Proxy : Marshallers.Handler_Proxy := null;
+         --  Handler_Proxy to use
+
+         User  : User_Access := null;
+         Object   : Acc := null;
+         --  Slot Object for Object_Connect
+      end record;
+      type Data_Type_Access is access all Data_Type_Record;
+      pragma Convention (C, Data_Type_Access);
+      --  Data passed to the C handler
+
+      procedure Free_Data (Data : Data_Type_Access);
+      pragma Convention (C, Free_Data);
+      --  Free the memory associated with the callback's data
+
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : Glib.Values.GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address);
+      pragma Convention (C, First_Marshaller);
+      --  First level marshaller. This is the function that is actually
+      --  called by gtk+. It then calls the Ada functions as required.
+      --  </doc_ignore>
    end User_Return_Callback;
 
    -------------------------------------
@@ -850,6 +925,37 @@ package Gtk.Handlers is
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          renames Notebook_Page_Marshaller.Emit_By_Name;
 
+   private
+      --  <doc_ignore>
+      type Acc is access all Widget_Type'Class;
+      --  This type has to be declared at library level, otherwise
+      --  Program_Error might be raised when trying to cast from the
+      --  parameter of Marshaller to another type.
+
+      type Data_Type_Record is record
+         Func   : Handler;             --  User's callback
+         Proxy  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
+         Object : Acc := null;         --  Slot Object for Object_Connect
+      end record;
+      type Data_Type_Access is access all Data_Type_Record;
+      pragma Convention (C, Data_Type_Access);
+      --  Data passed to the C handler
+
+      procedure Free_Data (Data : Data_Type_Access);
+      pragma Convention (C, Free_Data);
+      --  Free the memory associated with the callback's data
+
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : Glib.Values.GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address);
+      pragma Convention (C, First_Marshaller);
+      --  First level marshaller. This is the function that is actually
+      --  called by gtk+. It then calls the Ada functions as required.
+      --  </doc_ignore>
    end Callback;
 
    ---------------------------------------------------------
@@ -1022,6 +1128,44 @@ package Gtk.Handlers is
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          renames Notebook_Page_Marshaller.Emit_By_Name;
 
+   private
+      --  <doc_ignore>
+      type Acc is access all Widget_Type'Class;
+      --  This type has to be declared at library level, otherwise
+      --  Program_Error might be raised when trying to cast from the
+      --  parameter of Marshaller to another type.
+
+      type User_Access is access User_Type;
+      type Data_Type_Record is record
+         Func   : Handler;
+         --  User's callback
+
+         Proxy  : Marshallers.Handler_Proxy := null;
+         --  Handler_Proxy to use
+
+         User   : User_Access := null;
+         Object : Acc := null;
+         --  Slot_Object for Object_Connect
+      end record;
+      type Data_Type_Access is access all Data_Type_Record;
+      pragma Convention (C, Data_Type_Access);
+      --  Data passed to the C handler
+
+      procedure Free_Data (Data : Data_Type_Access);
+      pragma Convention (C, Free_Data);
+      --  Free the memory associated with the callback's data
+
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : Glib.Values.GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address);
+      pragma Convention (C, First_Marshaller);
+      --  First level marshaller. This is the function that is actually
+      --  called by gtk+. It then calls the Ada functions as required.
+      --  </doc_ignore>
    end User_Callback;
 
    ------------------------------

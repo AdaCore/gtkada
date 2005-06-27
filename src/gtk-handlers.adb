@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2004 ACT-Europe                --
+--                 Copyright (C) 2000-2005 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -214,44 +214,10 @@ package body Gtk.Handlers is
       function To_Address is new Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
-      type Acc is access all Widget_Type'Class;
-      --  This type has to be declared at library level, otherwise
-      --  Program_Error might be raised when trying to cast from the
-      --  parameter of Marshaller to another type.
-
-      type Data_Type_Record is record
-         Func     : Handler;
-         --  User's callback
-
-         Proxy    : Marshallers.Handler_Proxy := null;
-         --  Handler_Proxy to use
-
-         Object   : Acc := null;
-         --  Slot Object for Object_Connect
-      end record;
-      type Data_Type_Access is access all Data_Type_Record;
-      pragma Convention (C, Data_Type_Access);
-      --  Data passed to the C handler
-
       function Convert is new Unchecked_Conversion
         (Data_Type_Access, System.Address);
       function Convert is new Unchecked_Conversion
         (System.Address, Data_Type_Access);
-
-      procedure Free_Data (Data : Data_Type_Access);
-      pragma Convention (C, Free_Data);
-      --  Free the memory associated with the callback's data
-
-      procedure First_Marshaller
-        (Closure         : GClosure;
-         Return_Value    : GValue;
-         N_Params        : Guint;
-         Params          : System.Address;
-         Invocation_Hint : System.Address;
-         User_Data       : System.Address);
-      pragma Convention (C, First_Marshaller);
-      --  First level marshaller. This is the function that is actually
-      --  called by gtk+. It then calls the Ada functions as required.
 
       -------------
       -- Connect --
@@ -607,46 +573,10 @@ package body Gtk.Handlers is
       function To_Address is new Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
-      type Acc is access all Widget_Type'Class;
-      --  This type has to be declared at library level, otherwise
-      --  Program_Error might be raised when trying to cast from the
-      --  parameter of Marshaller to another type.
-
-      type User_Access is access User_Type;
-      type Data_Type_Record is record
-         Func  : Handler;
-         --  User's callback
-
-         Proxy : Marshallers.Handler_Proxy := null;
-         --  Handler_Proxy to use
-
-         User  : User_Access := null;
-         Object   : Acc := null;
-         --  Slot Object for Object_Connect
-      end record;
-      type Data_Type_Access is access all Data_Type_Record;
-      pragma Convention (C, Data_Type_Access);
-      --  Data passed to the C handler
-
       function Convert is new Unchecked_Conversion
         (Data_Type_Access, System.Address);
       function Convert is new Unchecked_Conversion
         (System.Address, Data_Type_Access);
-
-      procedure Free_Data (Data : Data_Type_Access);
-      pragma Convention (C, Free_Data);
-      --  Free the memory associated with the callback's data
-
-      procedure First_Marshaller
-        (Closure         : GClosure;
-         Return_Value    : GValue;
-         N_Params        : Guint;
-         Params          : System.Address;
-         Invocation_Hint : System.Address;
-         User_Data       : System.Address);
-      pragma Convention (C, First_Marshaller);
-      --  First level marshaller. This is the function that is actually
-      --  called by gtk+. It then calls the Ada functions as required.
 
       ---------------
       -- Free_Data --
@@ -1011,39 +941,10 @@ package body Gtk.Handlers is
       function To_Address is new Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
-      type Acc is access all Widget_Type'Class;
-      --  This type has to be declared at library level, otherwise
-      --  Program_Error might be raised when trying to cast from the
-      --  parameter of Marshaller to another type.
-
-      type Data_Type_Record is record
-         Func   : Handler;             --  User's callback
-         Proxy  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
-         Object : Acc := null;         --  Slot Object for Object_Connect
-      end record;
-      type Data_Type_Access is access all Data_Type_Record;
-      pragma Convention (C, Data_Type_Access);
-      --  Data passed to the C handler
-
       function Convert is new Unchecked_Conversion
         (Data_Type_Access, System.Address);
       function Convert is new Unchecked_Conversion
         (System.Address, Data_Type_Access);
-
-      procedure Free_Data (Data : Data_Type_Access);
-      pragma Convention (C, Free_Data);
-      --  Free the memory associated with the callback's data
-
-      procedure First_Marshaller
-        (Closure         : GClosure;
-         Return_Value    : GValue;
-         N_Params        : Guint;
-         Params          : System.Address;
-         Invocation_Hint : System.Address;
-         User_Data       : System.Address);
-      pragma Convention (C, First_Marshaller);
-      --  First level marshaller. This is the function that is actually
-      --  called by gtk+. It then calls the Ada functions as required.
 
       ---------------
       -- Free_Data --
@@ -1390,46 +1291,10 @@ package body Gtk.Handlers is
       function To_Address is new Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
-      type Acc is access all Widget_Type'Class;
-      --  This type has to be declared at library level, otherwise
-      --  Program_Error might be raised when trying to cast from the
-      --  parameter of Marshaller to another type.
-
-      type User_Access is access User_Type;
-      type Data_Type_Record is record
-         Func   : Handler;
-         --  User's callback
-
-         Proxy  : Marshallers.Handler_Proxy := null;
-         --  Handler_Proxy to use
-
-         User   : User_Access := null;
-         Object : Acc := null;
-         --  Slot_Object for Object_Connect
-      end record;
-      type Data_Type_Access is access all Data_Type_Record;
-      pragma Convention (C, Data_Type_Access);
-      --  Data passed to the C handler
-
       function Convert is new Unchecked_Conversion
         (Data_Type_Access, System.Address);
       function Convert is new Unchecked_Conversion
         (System.Address, Data_Type_Access);
-
-      procedure Free_Data (Data : Data_Type_Access);
-      pragma Convention (C, Free_Data);
-      --  Free the memory associated with the callback's data
-
-      procedure First_Marshaller
-        (Closure         : GClosure;
-         Return_Value    : GValue;
-         N_Params        : Guint;
-         Params          : System.Address;
-         Invocation_Hint : System.Address;
-         User_Data       : System.Address);
-      pragma Convention (C, First_Marshaller);
-      --  First level marshaller. This is the function that is actually
-      --  called by gtk+. It then calls the Ada functions as required.
 
       ---------------
       -- Free_Data --
