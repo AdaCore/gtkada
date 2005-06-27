@@ -2856,25 +2856,28 @@ package body Gtkada.MDI is
    -- Put_In_Notebook --
    ---------------------
 
+   procedure Note_Notify (Data : System.Address; Where : System.Address);
+   pragma Convention (C, Note_Notify);
+   --  Notified if the old notebook that contained Child is destroyed
+
+   procedure Note_Notify (Data : System.Address; Where : System.Address) is
+      pragma Unreferenced (Where);
+      Old_Note_Was_Destroyed : aliased Boolean;
+      for Old_Note_Was_Destroyed'Address use Data;
+
+   begin
+      Old_Note_Was_Destroyed := True;
+   end Note_Notify;
+
    procedure Put_In_Notebook
      (MDI      : access MDI_Window_Record'Class;
       Child    : access MDI_Child_Record'Class;
       Notebook : Gtk_Notebook := null;
       Force_Parent_Destruction : Boolean := True)
    is
-      Note, Old_Note : Gtk_Notebook;
-      Destroy_Old : Boolean := False;
-      Old_Note_Was_Destroyed : Boolean := False;
-
-      procedure Note_Notify (Data : System.Address; Where : System.Address);
-      pragma Convention (C, Note_Notify);
-      --  Notified if the old notebook that contained Child is destroyed
-
-      procedure Note_Notify (Data : System.Address; Where : System.Address) is
-         pragma Unreferenced (Data, Where);
-      begin
-         Old_Note_Was_Destroyed := True;
-      end Note_Notify;
+      Note, Old_Note         : Gtk_Notebook;
+      Destroy_Old            : Boolean := False;
+      Old_Note_Was_Destroyed : aliased Boolean := False;
 
    begin
       --  Embed the contents of the child into the notebook
@@ -2901,11 +2904,13 @@ package body Gtkada.MDI is
          Destroy_Old := Force_Parent_Destruction
            and then Get_Nth_Page (Old_Note, 1) = null;
 
-         Weak_Ref (Old_Note, Note_Notify'Unrestricted_Access);
+         Weak_Ref
+           (Old_Note, Note_Notify'Access, Old_Note_Was_Destroyed'Address);
          Remove (Old_Note, Child);
 
          if not Old_Note_Was_Destroyed then
-            Weak_Unref (Old_Note, Note_Notify'Unrestricted_Access);
+            Weak_Unref
+              (Old_Note, Note_Notify'Access, Old_Note_Was_Destroyed'Address);
          end if;
 
          --  Problem: Old_Note might no longer exist not, since
