@@ -345,6 +345,7 @@ package body Glib.Object is
 
    function List_Ids (Typ : Glib.GType) return Signal_Id_Array is
       type Flat_Id_Array is array (Guint) of Signal_Id;
+      pragma Convention (C, Flat_Id_Array);
       type Flat_Id_Array_Access is access Flat_Id_Array;
       type Guint_Access is access all Guint;
 
@@ -387,6 +388,7 @@ package body Glib.Object is
 
    function Params (Q : Signal_Query) return GType_Array is
       type Flat_GType_Array is array (Guint) of GType;
+      pragma Convention (C, Flat_GType_Array);
       type Flat_GType_Array_Access is access Flat_GType_Array;
       type Guint_Access is access all Guint;
 
