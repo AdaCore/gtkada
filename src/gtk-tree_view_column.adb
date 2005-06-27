@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -217,27 +217,11 @@ package body Gtk.Tree_View_Column is
    -------------------------
 
    package body Cell_Data_Functions is
-      type Data_Type_Access is access Data_Type;
       procedure Free is new Ada.Unchecked_Deallocation
         (Data_Type, Data_Type_Access);
 
-      type Data_Type_Record is record
-         Func : Cell_Data_Func;
-         Data : Data_Type_Access;
-      end record;
-      type Data_Type_Record_Access is access Data_Type_Record;
-      pragma Convention (C, Data_Type_Record_Access);
-
       procedure Free is new Ada.Unchecked_Deallocation
         (Data_Type_Record, Data_Type_Record_Access);
-
-      procedure Internal_Destroy_Notify (Data : Data_Type_Record_Access);
-      pragma Convention (C, Internal_Destroy_Notify);
-
-      procedure Internal_Data_Cell_Data_Func
-        (Tree_Column, Cell, Model, Iter : System.Address;
-         Data : Data_Type_Record_Access);
-      pragma Convention (C, Internal_Data_Cell_Data_Func);
 
       procedure Internal
         (Tree_Column   : System.Address;

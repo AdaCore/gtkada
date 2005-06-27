@@ -201,6 +201,12 @@ package Gtk.Widget is
       --  Set the realize handler at the low level.
       --  This is needed to replace the default realize in new widgets.
 
+   private
+      --  <doc_ignore>
+      procedure Internal_Realize (Widget : System.Address);         
+      --  The wrapper passed to Gtk+.
+      pragma Convention (C, Internal_Realize);
+      --  </doc_ignore>
    end Realize_Handling;
 
    function Hide_On_Delete (Widget : access Gtk_Widget_Record'Class)

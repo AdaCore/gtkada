@@ -1527,10 +1527,6 @@ package body Gtk.Widget is
 
    package body Realize_Handling is
 
-      procedure Internal_Realize (Widget : System.Address);
-      --  The wrapper passed to Gtk+.
-      pragma Convention (C, Internal_Realize);
-
       procedure Internal_Realize (Widget : System.Address) is
          Dummy : Widget_Type;
          pragma Warnings (Off, Dummy);

@@ -128,19 +128,6 @@ package body Gtk.Text_Tag_Table is
 
    package body Iterator is
 
-      type Foreach_Proc_Record is record
-         Proc : Gtk_Text_Tag_Table_Proc;
-         Data : Data_Type_Access;
-      end record;
-
-      type Foreach_Proc_Record_Access is
-        access all Foreach_Proc_Record;
-
-      procedure C_Gtk_Text_Tag_Table_Foreach_Proc
-        (C_Tag  : System.Address;
-         C_Data : Foreach_Proc_Record_Access);
-      pragma Convention (C, C_Gtk_Text_Tag_Table_Foreach_Proc);
-
       ---------------------------------------
       -- C_Gtk_Text_Tag_Table_Foreach_Proc --
       ---------------------------------------
