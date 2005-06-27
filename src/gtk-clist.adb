@@ -1531,21 +1531,20 @@ package body Gtk.Clist is
          end record;
       type Cb_Record_Access is access all Cb_Record;
 
-      function Convert is new Unchecked_Conversion (System.Address,
-                                                    Cb_Record_Access);
-      procedure Free_Data (Data : in System.Address);
-      pragma Convention (C, Free_Data);
+      function Convert is new
+        Unchecked_Conversion (System.Address, Cb_Record_Access);
 
       ----------
       -- Free --
       ----------
 
-      procedure Free_Data (Data : in System.Address) is
-         procedure Internal is new Unchecked_Deallocation (Cb_Record,
-                                                           Cb_Record_Access);
-         procedure Internal2 is new Unchecked_Deallocation (Data_Type,
-                                                            Data_Access);
+      procedure Free_Data (Data : System.Address) is
+         procedure Internal is new
+           Unchecked_Deallocation (Cb_Record, Cb_Record_Access);
+         procedure Internal2 is new
+           Unchecked_Deallocation (Data_Type, Data_Access);
          D : Cb_Record_Access := Convert (Data);
+
       begin
          Internal2 (D.Ptr);
          Internal (D);
