@@ -1011,14 +1011,20 @@ package body Gtk.Text_Buffer is
       procedure Internal
         (Buffer            : System.Address;
          Clipboard         : Gtk.Clipboard.Gtk_Clipboard;
-         Override_Location : Gtk.Text_Iter.Gtk_Text_Iter_Access;
+         Override_Location : System.Address;
          Default_Editable  : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_paste_clipboard");
 
    begin
-      Internal
-        (Get_Object (Buffer), Clipboard,
-         Override_Location, Boolean'Pos (Default_Editable));
+      if Override_Location = null then
+         Internal
+           (Get_Object (Buffer), Clipboard,
+            System.Null_Address, Boolean'Pos (Default_Editable));
+      else
+         Internal
+           (Get_Object (Buffer), Clipboard,
+            Override_Location.all'Address, Boolean'Pos (Default_Editable));
+      end if;
    end Paste_Clipboard;
 
    ----------------------
