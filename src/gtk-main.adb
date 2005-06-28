@@ -75,13 +75,14 @@ package body Gtk.Main is
    function Quit_Add
      (Main_Level : Guint; Func : Quit_Function) return Quit_Handler_Id
    is
-       function Internal
-         (Main_Level : Guint;
-          Func       : System.Address;
-          Marshal    : System.Address;
-          Data       : System.Address := System.Null_Address;
-          Destroy    : System.Address := System.Null_Address) return Quit_Handler_Id;
-       pragma Import (C, Internal, "gtk_quit_add_full");
+      function Internal
+        (Main_Level : Guint;
+         Func       : System.Address;
+         Marshal    : System.Address;
+         Data       : System.Address := System.Null_Address;
+         Destroy    : System.Address := System.Null_Address)
+         return Quit_Handler_Id;
+      pragma Import (C, Internal, "gtk_quit_add_full");
 
    begin
       return Internal (Main_Level, Quit_Marshaller'Address, Func'Address);
