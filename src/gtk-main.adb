@@ -42,6 +42,9 @@ package body Gtk.Main is
    function Idle_Marshaller (Func : Idle_Callback) return Gint;
    --  Marshaller for Idle_Callbacks.
 
+   function Quit_Marshaller (Func : Quit_Function) return Gint;
+   --  Marshaller for Quit_Function.
+
    --------------
    -- Do_Event --
    --------------
@@ -72,14 +75,16 @@ package body Gtk.Main is
    function Quit_Add
      (Main_Level : Guint; Func : Quit_Function) return Quit_Handler_Id
    is
-      function Internal
-        (Main_Level : Guint;
-         Func       : Quit_Function;
-         Data       : System.Address) return Quit_Handler_Id;
-      pragma Import (C, Internal, "gtk_quit_add");
+       function Internal
+         (Main_Level : Guint;
+          Func       : System.Address;
+          Marshal    : System.Address;
+          Data       : System.Address := System.Null_Address;
+          Destroy    : System.Address := System.Null_Address) return Quit_Handler_Id;
+       pragma Import (C, Internal, "gtk_quit_add_full");
 
    begin
-      return Internal (Main_Level, Idle_Marshaller'Address, Func'Address);
+      return Internal (Main_Level, Quit_Marshaller'Address, Func'Address);
    end Quit_Add;
 
    ----------
@@ -183,6 +188,19 @@ package body Gtk.Main is
          return Boolean'Pos (Func.all);
       end if;
    end Idle_Marshaller;
+
+   ---------------------
+   -- Quit_Marshaller --
+   ---------------------
+
+   function Quit_Marshaller (Func : Quit_Function) return Gint is
+   begin
+      if Func = null then
+         return Boolean'Pos (False);
+      else
+         return Boolean'Pos (Func.all);
+      end if;
+   end Quit_Marshaller;
 
    --------------
    -- Idle_Add --
