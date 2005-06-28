@@ -79,7 +79,7 @@ package body Gtk.Main is
       pragma Import (C, Internal, "gtk_quit_add");
 
    begin
-      return Internal (Main_Level, Func, System.Null_Address);
+      return Internal (Main_Level, Idle_Marshaller'Address, Func'Address);
    end Quit_Add;
 
    ----------

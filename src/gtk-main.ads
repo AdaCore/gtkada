@@ -95,7 +95,6 @@ package Gtk.Main is
    --  main loop exits.
 
    type Quit_Function is access function return Boolean;
-   pragma Convention (C, Quit_Function);
    --  Type of function that can be called when the main loop exits.
    --  It should return False if it should not be called again when another
    --  main loop exits.
@@ -246,7 +245,6 @@ package Gtk.Main is
    Priority_Low_Idle     : constant Idle_Priority := 300;
 
    type Idle_Callback is access function return Boolean;
-   pragma Convention (C, Idle_Callback);
    --  Function that can be called automatically whenever GtkAda is not
    --  processing events.
    --  It should return True if the function should be called again as soon
