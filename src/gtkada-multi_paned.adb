@@ -2126,7 +2126,7 @@ package body Gtkada.Multi_Paned is
 
                if Current.Next = null then
                   Previous := Current.Parent.First_Child;
-                  while Previous.Next /= Current loop
+                  while Previous /= null and then Previous.Next /= Current loop
                      Previous := Previous.Next;
                   end loop;
 
