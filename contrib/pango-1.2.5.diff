@@ -1,3 +1,9 @@
+Thu Jun 30 2005  Nicolas Setton  <setton@adacore.com>
+
+        * pango/pango-utils.c (read_config_file): Fix small memory leak.
+
+        This change is already included in pango 1.4
+
 Thu Mar 23 2004  Arnaud Charlet  <charlet@adacore.com>
 
 	* pango/pangox-fontmap.c: Fix bug in handling of scalable fonts.
@@ -456,3 +462,33 @@ Thu Apr 3 2003  Arnaud Charlet  <charlet@adacore.com>
   
     pango_font_description_set_family (desc, s);
     
+*** pango/pango-utils.c.original	Fri Jun 24 12:09:35 2005
+--- pango/pango-utils.c	Thu Jun 30 18:39:43 2005
+***************
+*** 549,560 ****
+  	  if (g_hash_table_lookup_extended (config_hash, tmp_buffer1->str,
+  					    (gpointer *)&k, (gpointer *)&v))
+  	    {
+  	      g_free (k);
+  	      if (append)
+  		{
+  		  g_string_prepend (tmp_buffer2, v);
+! 		  g_free (v);
+! 		}
+  	    }
+  	      
+  	  if (!empty)
+--- 549,561 ----
+  	  if (g_hash_table_lookup_extended (config_hash, tmp_buffer1->str,
+  					    (gpointer *)&k, (gpointer *)&v))
+  	    {
++               g_hash_table_remove (config_hash, k);
+  	      g_free (k);
+  	      if (append)
+  		{
+  		  g_string_prepend (tmp_buffer2, v);
+!                 }
+!               g_free (v);
+  	    }
+  	      
+  	  if (!empty)
