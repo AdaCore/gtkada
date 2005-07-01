@@ -251,21 +251,6 @@ foreach $source_file (@source_files) {
 	my (%types) = &get_types (@content);
 
 
-	## Prepare the submenu
-
-        if (!$makeinfo_for_html) {
-	   &output ("\@menu\n");
-	   &output ("* $package_name Widget Hierarchy::\n") if (@hierarchy);
-	   &output ("* $package_name Signals::\n")          if (keys %signals);
-	   &output ("* $package_name Types::\n")            if (%types);
-	   &output ("* $package_name Subprograms::\n")      if (@subprogs);
-
-   	   if (&get_tag_value ("example", @content)) {
-	      &output ("* $package_name Example::\n");
-	   }
-	   &output ("\@end menu\n\n");
-        }
-
 	## Widget hierarchy
 
 	if (@hierarchy) {
@@ -294,15 +279,14 @@ foreach $source_file (@source_files) {
 		$hierarchy_short .= $line;		
 	    }
           
-	    &section_output ($package_name, "Widget Hierarchy");
-	    &html_output ("<TABLE WIDTH=\"100%\"><TR><TD WIDTH=\"$tab1_width\"></TD>",
-			  "<TD BGCOLOR=\"$hierarchy_bg\">");
+	    &section_output ("Widget Hierarchy");
+	    &html_output ("<table class='hierarchy'><tr><td>");
 	    &output ("\n\@ifnottex\n");
-	    &output ("\n\@smallexample\n$hierarchy\n\@end smallexample\n");
+	    &output ("\@smallexample\n$hierarchy\n\@end smallexample\n");
 	    &output ("\@end ifnottex\n");
 	    &output ("\@ifnothtml\n\@iftex\n\@smallexample\n$hierarchy_short\n",
 		     "\@end smallexample\n\@end iftex\n\@end ifnothtml\n");
-	    &html_output ("</TD></TR></TABLE>");
+	    &html_output ("</td></tr></table>");
 	} else {
 	    $parent{$package_name} = "<>";
 	}
@@ -310,7 +294,7 @@ foreach $source_file (@source_files) {
 	## List of signals
 
 	if (keys %signals) {
-	    &section_output ($package_name, "Signals");
+	    &section_output ("Signals");
 	    &output ("\@itemize \@bullet\n\n");
 
 	    foreach $signal (sort keys %signals) {
@@ -323,7 +307,7 @@ foreach $source_file (@source_files) {
 	## List of types (sorted)
 
 	if (%types) {
-            &section_output ($package_name, "Types");
+            &section_output ("Types");
 	    &html_output ("<TABLE width=\"100%\" border=\"0\" ",
 			  "CELLSPACING=\"0\">");
 
@@ -333,7 +317,7 @@ foreach $source_file (@source_files) {
 			      "<TD BGCOLOR=\"$subprog_bg\" valign=\"top\">");
 		&output ("\@smallexample\n\@exdent ",
 			 $types{$type}[0],
-			 "\n\@end smallexample");
+			 "\n\@end smallexample\n");
 		&html_output ("</TD></TR><TR>",
 			      "<TD WIDTH=\"$tab1_width\"></TD>\n<TD>");
 		&output ("\@noindent\n",
@@ -348,9 +332,8 @@ foreach $source_file (@source_files) {
 
 	if (@subprogs) {
 	    my ($has_itemize) = 0;
-            &section_output ($package_name, "Subprograms");
-	    &html_output ("<TABLE width=\"100%\" border=\"0\" ",
-			  "CELLSPACING=\"0\">");
+            &section_output ("Subprograms");
+            &html_output ("<table class='subprograms'>");
 	    foreach $subprog (@subprogs) {
 		my ($name, $return, $comment, @params)
 		    = ($$subprog[1], $$subprog[0], $$subprog[2],
@@ -361,7 +344,10 @@ foreach $source_file (@source_files) {
 			$has_itemize = 0;
 		    }
 		    &html_output ("<TR><TD colspan=\"3\" BGCOLOR=\"$subsection_bg\">");
-		    &output ("\@subsection $name\n\n");
+
+		    if ($name !~ /^\s*$/) {
+			&output ("\@subsection $name\n\n");
+		    }
 		    &html_output ("</TD></TR><TR><TD><BR></TD></TR>");
 		    $comment =~ s/^\s*//;
 		    if ($comment ne "") {
@@ -415,35 +401,23 @@ foreach $source_file (@source_files) {
 		    $profile .= "\n" . " " x 3 if (scalar (@params) > 0);
 		    $profile .=  "\@b{return} $return;";
 		}
-
-		&html_output ("<TR>",
-			      "<TD WIDTH=\"$tab1_width\"></TD>",
-			      "<TD BGCOLOR=\"$subprog_bg\" valign=\"top\" WIDTH=\"$tab23_width\">");
-                if ($makeinfo_for_html) {
-		   &output ("\@smallexample\n$profile\n\@end smallexample");
-                } else {
-		   &output ("\@smallexample\n\@exdent $profile\n\@end smallexample");
-                }
-
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
-		&html_output ("</TD></TR><TR>",
-			      "<TD WIDTH=\"$tab1_width\"></TD>",
-			      "<TD colspan=\"2\" WIDTH=\"$tab23_width\">");
-		&output ("\@noindent\n",
-			 $comment, "\@*\n");
-                if (!$makeinfo_for_html) {
-                   &html_output ("<BR><BR>\n");
-                }
-		&html_output ("</TD></TR>");
+
+                &output ("\@ifnothtml\n\@smallexample\n$profile\n",
+                         "\@end smallexample\n\@end ifnothtml\n");
+		&html_output ("<tr><td class='profile'>$profile</td>",
+		              "</tr><tr><td class='descr'>");
+		&output ("$comment\n");
+		&html_output ("</td></tr>");
 	    }
-	    &html_output ("</TABLE>");
+	    &html_output ("</table>");
 	}
 
 	## Examples if any
 
 	if (&get_tag_value ("example", @content)) {
-            &section_output ($package_name, "Example");
+            &section_output ("Example");
 	    &output ("\n\@example\n",
 		     &highlight_keywords
 		     (&clean_comment_marks (&get_tag_value
@@ -520,9 +494,9 @@ sub output () {
 
 sub html_output () {
    if ($makeinfo_for_html) {
-      &output ("\n\@ifhtml\n\@html\n", @_, "\n\@end html\n\@end ifhtml\n");
+      &output ("\@ifhtml\n\@html\n", @_, "\n\@end html\n\@end ifhtml\n");
    } else {
-      &output ("\n\@ifhtml\n", @_, "\n\@end ifhtml\n");
+      &output ("\@ifhtml\n", @_, "\n\@end ifhtml\n");
    }
 }
 
@@ -537,22 +511,9 @@ sub tex_output () {
 #   $2 = name of the current section (doesn't include the name of the package)
 
 sub section_output () {
-    my ($bg) = $section_bg;
-    my ($fg) = $section_fd;;
-    my ($pkg) = shift;
-    my ($section) = shift;
-
-    #&html_output ("<table class='section'><tr><th>");
-    &html_output ("<TABLE WIDTH=\"100%\"><TR>",
-    		  "<TH BGCOLOR=\"$bg\"><FONT COLOR=\"$fg\">");
-    if ($makeinfo_for_html) {
-       &output ($section);
-    } else {
-       &output ("\@node $package_name $section\n",
-                "\@section $section");
-    }
-    &html_output ("</FONT></TH></TR></TABLE>");
-    #&html_output ("</th></tr></table>");
+   my ($section) = shift;
+   &html_output ("<table class='section'><tr><th>$section</th><tr></table>");
+   &output ("\@ifnothtml\n\@section $section\n\@end ifnothtml\n");
 }
 
 
