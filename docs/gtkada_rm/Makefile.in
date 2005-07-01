@@ -43,7 +43,8 @@ gtkada_rm.info: force
 
 install:
 	-$(MKDIR) $(docdir)
-	for i in `ls *.html *.info* *.ps *.texi *.txt *.tex *.jpg`; \
+	$(INSTALL_DATA) gtkada_rm/* $(docdir)
+	for i in `ls *.ps *.texi *.tex *.jpg`; \
 	do \
 	  $(INSTALL_DATA) $$i $(docdir); \
 	done
