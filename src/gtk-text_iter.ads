@@ -197,9 +197,8 @@ package Gtk.Text_Iter is
       Tag  : Gtk.Text_Tag.Gtk_Text_Tag := null) return Boolean;
    --  Return True if Iter is within a range tagged with Tag.
 
-   --  function Get_Tags
-   --    (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSList;
-   --  ??? Need a GSLists of Tags to bind this function
+   function Get_Tags
+     (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSlist;
    --  Return a list of tags that apply to Iter, in ascending order of priority
    --  (highest-priority tags are last). The Gtk_Text_Tag in the list don't
    --  have a reference added, but you have to free the list itself.

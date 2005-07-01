@@ -363,12 +363,16 @@ package body Gtk.Text_Iter is
    -- Get_Tags --
    --------------
 
-   --  function Get_Tags (Iter : access Gtk_Text_Iter) return GSList is
-   --     function Internal (Iter : System.Address) return System.Address;
-   --     pragma Import (C, Internal, "gtk_text_iter_get_tags");
-   --  begin
-   --     return Internal (Iter);
-   --  end Get_Tags;
+   function Get_Tags
+     (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSlist
+   is
+      function Internal (Iter : Gtk_Text_Iter) return System.Address;
+      pragma Import (C, Internal, "gtk_text_iter_get_tags");
+      List : Gtk.Text_Tag.Text_Tag_List.GSlist;
+   begin
+      Gtk.Text_Tag.Text_Tag_List.Set_Object (List, Internal (Iter));
+      return List;
+   end Get_Tags;
 
    --------------
    -- Editable --
