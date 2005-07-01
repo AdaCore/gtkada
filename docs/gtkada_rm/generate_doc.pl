@@ -85,13 +85,22 @@ $gtk_src_dir = "../..";
 $output_file_name  = "generated.texi";
 $menu_file_name    = "generated_menu.texi";
 
+$with_html = 0;
+## Whether we should output HTML support code
+
 $makeinfo_for_html = 0;
 ## Set to 1 if we use makeinfo to generate the HTML, to 0 if we use texi2html
 
 if ($ARGV[0] eq "-usemakeinfo") {
    $makeinfo_for_html = 1;
+   $with_html = 1;
+   shift @ARGV;
+} elsif ($ARG[0] eq "-usetexi2html") {
+   $makeinfo_for_html = 0;
+   $with_html = 1;
    shift @ARGV;
 }
+
 
 @source_files = @ARGV;
 
@@ -284,8 +293,14 @@ foreach $source_file (@source_files) {
 	    &output ("\n\@ifnottex\n");
 	    &output ("\@smallexample\n$hierarchy\n\@end smallexample\n");
 	    &output ("\@end ifnottex\n");
-	    &output ("\@ifnothtml\n\@iftex\n\@smallexample\n$hierarchy_short\n",
-		     "\@end smallexample\n\@end iftex\n\@end ifnothtml\n");
+
+	    if ($with_html) {
+		&output ("\@ifnothtml\n\@iftex\n\@smallexample\n$hierarchy_short\n",
+			 "\@end smallexample\n\@end iftex\n\@end ifnothtml\n");
+	    } else {
+		&output ("\@iftex\n\@smallexample\n$hierarchy_short\n",
+			 "\@end smallexample\n\@end iftex\n");
+	    }
 	    &html_output ("</td></tr></table>");
 	} else {
 	    $parent{$package_name} = "<>";
@@ -404,8 +419,13 @@ foreach $source_file (@source_files) {
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
 
-                &output ("\@ifnothtml\n\@smallexample\n$profile\n",
-                         "\@end smallexample\n\@end ifnothtml\n");
+		if ($with_html) {
+		    &output ("\@ifnothtml\n\@smallexample\n$profile\n",
+			     "\@end smallexample\n\@end ifnothtml\n");
+		} else {
+		    &output ("\@smallexample\n$profile\n",
+			     "\@end smallexample\n");
+		}
 		&html_output ("<tr><td class='profile'>$profile</td>",
 		              "</tr><tr><td class='descr'>");
 		&output ("$comment\n");
@@ -493,10 +513,12 @@ sub output () {
 # Outputs the block, only for html
 
 sub html_output () {
-   if ($makeinfo_for_html) {
-      &output ("\@ifhtml\n\@html\n", @_, "\n\@end html\n\@end ifhtml\n");
-   } else {
-      &output ("\@ifhtml\n", @_, "\n\@end ifhtml\n");
+   if ($with_html) {
+       if ($makeinfo_for_html) {
+	   &output ("\@ifhtml\n\@html\n", @_, "\n\@end html\n\@end ifhtml\n");
+       } else {
+	   &output ("\@ifhtml\n", @_, "\n\@end ifhtml\n");
+       }
    }
 }
 
@@ -513,7 +535,11 @@ sub tex_output () {
 sub section_output () {
    my ($section) = shift;
    &html_output ("<table class='section'><tr><th>$section</th><tr></table>");
-   &output ("\@ifnothtml\n\@section $section\n\@end ifnothtml\n");
+   if ($with_html) {
+       &output ("\@ifnothtml\n\@section $section\n\@end ifnothtml\n");
+   } else {
+       &output ("\@section $section\n");
+   }
 }
 
 
