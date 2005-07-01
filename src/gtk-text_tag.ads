@@ -34,14 +34,21 @@
 with Gtk.Enums;
 with Pango.Enums;
 with Glib.Properties;
+with Glib.GSlist;
 with Pango.Font;
 with Gdk.Color;
+with System;
 pragma Elaborate_All (Gdk.Color);
 
 package Gtk.Text_Tag is
 
    type Gtk_Text_Tag_Record is new GObject_Record with private;
    type Gtk_Text_Tag is access all Gtk_Text_Tag_Record'Class;
+
+   function Convert (W : Gtk_Text_Tag) return System.Address;
+   function Convert (W : System.Address) return Gtk_Text_Tag;
+   package Text_Tag_List is new Glib.GSlist.Generic_SList
+     (Gpointer => Gtk_Text_Tag);
 
    procedure Gtk_New (Widget : out Gtk_Text_Tag; Name : String := "");
    --  Create a new Gtk_Text_Tag.

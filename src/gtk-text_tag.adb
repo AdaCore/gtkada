@@ -120,4 +120,27 @@ package body Gtk.Text_Tag is
       Internal (Get_Object (Tag), Priority);
    end Set_Priority;
 
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (W : Gtk_Text_Tag) return System.Address is
+   begin
+      if W = null then
+         return System.Null_Address;
+      else
+         return Get_Object (W);
+      end if;
+   end Convert;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (W : System.Address) return Gtk_Text_Tag is
+      Stub : Gtk_Text_Tag_Record;
+   begin
+      return Gtk_Text_Tag (Get_User_Data (W, Stub));
+   end Convert;
+
 end Gtk.Text_Tag;
