@@ -801,16 +801,16 @@ package body Gtkada.MDI is
          if (D.Modifier and Control_Mask) /= 0
            and then
              (Key = Gdk.Types.Keysyms.GDK_Control_L
-              or else Key = Gdk.Types.Keysyms.GDK_Control_R)
+              or else Key = Gdk.Types.Keysyms.GDK_Control_R
+              or else Key = Gdk.Types.Keysyms.GDK_ISO_Next_Group)
          then
             Close := True;
-         end if;
 
-         if (D.Modifier and Mod1_Mask) /= 0
-         and then (Key = Gdk.Types.Keysyms.GDK_Meta_L
-                   or else Key = Gdk.Types.Keysyms.GDK_Meta_R
-                   or else Key = Gdk.Types.Keysyms.GDK_Alt_L
-                   or else Key = Gdk.Types.Keysyms.GDK_Alt_R)
+         elsif (D.Modifier and Mod1_Mask) /= 0
+            and then (Key = Gdk.Types.Keysyms.GDK_Meta_L
+                      or else Key = Gdk.Types.Keysyms.GDK_Meta_R
+                      or else Key = Gdk.Types.Keysyms.GDK_Alt_L
+                      or else Key = Gdk.Types.Keysyms.GDK_Alt_R)
          then
             Close := True;
 
