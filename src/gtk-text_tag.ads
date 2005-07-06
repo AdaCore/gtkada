@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                 Copyright (C) 2001-2005 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,6 +39,7 @@ with Pango.Font;
 with Gdk.Color;
 with System;
 pragma Elaborate_All (Gdk.Color);
+pragma Elaborate_All (Glib.GSlist);
 
 package Gtk.Text_Tag is
 
