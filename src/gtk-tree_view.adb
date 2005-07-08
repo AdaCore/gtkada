@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2004 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,7 @@ with Gtk.Adjustment;
 with Gtk.Tree_Model;
 with Gtk.Tree_Selection;
 with Gtk; use Gtk;
-with Gtk.Tree_View_Column;
+with Gtk.Tree_View_Column;  use Gtk.Tree_View_Column;
 with System;
 
 package body Gtk.Tree_View is
@@ -486,7 +486,11 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_set_expander_column");
 
    begin
-      Internal (Get_Object (Tree_View), Get_Object (Column));
+      if Column = null then
+         Internal (Get_Object (Tree_View), System.Null_Address);
+      else
+         Internal (Get_Object (Tree_View), Get_Object (Column));
+      end if;
    end Set_Expander_Column;
 
    -------------------------
