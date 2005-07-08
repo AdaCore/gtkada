@@ -447,7 +447,6 @@ package body Gtk.Glade is
          --  I_Name   : constant String :=
          --     To_Ada (Get_Field (Find_Tag (Window, "glade-interface"),
          --    "child").all);
-      Gettext        : Boolean := True;
 
    begin
       M := Window;
@@ -459,7 +458,7 @@ package body Gtk.Glade is
       end if;
 
       Print_Header (Window, Standard_Output);
-      Tmp := Find_Tag (Project, "gettext_support");
+      Tmp := Find_Tag (Project.Child, "gettext_support");
 
       Gettext := Tmp = null or else Tmp.Value.all /= "FALSE";
 
