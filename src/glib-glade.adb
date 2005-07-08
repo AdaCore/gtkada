@@ -1296,6 +1296,10 @@ package body Glib.Glade is
    function Gettext_Support (N : Node_Ptr) return Boolean is
       P : Node_Ptr;
    begin
+      if not Gettext then
+         return False;
+      end if;
+
       if N /= null then
          P := Find_Tag_With_Attribute (N.Child, "property",
                "translatable");
