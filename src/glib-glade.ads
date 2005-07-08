@@ -28,6 +28,9 @@ pragma Elaborate_All (Glib.XML);
 
 package Glib.Glade is
 
+   Gettext : Boolean := True;
+   --  Indicates whether the project currently being parsed supports Gettext
+
    type XML_Data is record
       Created : Boolean := False;
       --  True if the corresponding object has been created
