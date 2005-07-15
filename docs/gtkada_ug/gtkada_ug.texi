@@ -1146,8 +1146,8 @@ so the only safe approach under this operating system is to perform all your
 Gtk+ calls in the same task.
 
 Under other platforms,
-the Glib library can be used in a task-safe mode by calling Gdk.Thread.G_Init
-and Gdk.Thread.Init before making any other Glib/Gdk calls.
+the Glib library can be used in a task-safe mode by calling Gdk.Threads.G_Init
+and Gdk.Threads.Init before making any other Glib/Gdk calls.
 In this mode Gdk automatically locks all
 internal data structures as needed. This does not mean that two tasks can
 simultaneously access, for example, a single hash table, but they can access
