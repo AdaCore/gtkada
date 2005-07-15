@@ -13,8 +13,8 @@ General Information
 ===================
 
 The home page for GtkAda is
-     
-     http://libre.act-europe.fr/GtkAda
+
+     http://libre.adacore.com/GtkAda
 
 The home page for gtk is
     
@@ -38,12 +38,14 @@ These functions were tested on the following systems:
    - IRIX
    - HP-UX
    - Tru64
+   - Mac OS
 
 using the following compilers:
-   - GNAT 5.02
+   - GNAT 5.03
    - GCC 3.4.2
 
-the following versions of gtk:
+and the following versions of gtk:
+   - Gtk+ 2.2.4
    - Gtk+ 2.4.13
 
 If you manage to use it on other systems (which should probably be
