@@ -479,8 +479,7 @@ package body Glib.Convert is
    -- Escape_Text --
    -----------------
 
-   function Escape_Text (S : in String) return String is
-
+   function Escape_Text (S : String) return String is
       function Internal (S : String; L : Integer) return
         Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "g_markup_escape_text");
