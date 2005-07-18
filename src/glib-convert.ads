@@ -221,6 +221,10 @@ package Glib.Convert is
    --  Error:    Location to store the error occuring, ignored if null.
    --            Any of the errors in Convert_Error may occur.
 
+   function Escape_Text (S : in String) return String;
+   --  Escape the text so that it is interpreted as-is by the Pango markup
+   --  language
+
 private
 
    pragma Import (C, Convert_Error_Domain, "g_convert_error_quark");

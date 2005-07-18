@@ -475,4 +475,23 @@ package body Glib.Convert is
       end if;
    end Locale_To_UTF8;
 
+   -----------------
+   -- Escape_Text --
+   -----------------
+
+   function Escape_Text (S : in String) return String is
+
+      function Internal (S : String; L : Integer) return
+        Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "g_markup_escape_text");
+
+      C_Res  : constant Interfaces.C.Strings.chars_ptr :=
+        Internal (S & ASCII.NUL, S'Length);
+      Result : constant String := Interfaces.C.Strings.Value (C_Res);
+
+   begin
+      g_free (C_Res);
+      return Result;
+   end Escape_Text;
+
 end Glib.Convert;
