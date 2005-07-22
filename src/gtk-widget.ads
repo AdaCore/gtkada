@@ -732,9 +732,26 @@ package Gtk.Widget is
    --  Return the widget's parent window.
 
    function Get_Toplevel (Widget : access Gtk_Widget_Record) return Gtk_Widget;
-   --  Return the toplevel ancestor of the widget.
-   --  This is the window or dialog in which the widget is included.
-   --  The widget returned does not have any parent.
+   --  This function returns the topmost widget in the container hierarchy
+   --  Widget is a part of. If Widget has no parent widgets, it will be
+   --  returned as the topmost widget.
+   --
+   --  Note the difference in behavior vs. Get_Ancestor:
+   --  Get_Ancestor (Widget, GTK_TYPE_WINDOW) would return null
+   --  if Widget wasn't inside a toplevel window, and if the
+   --  window was inside a Gtk_Window-derived widget which was in turn
+   --  inside the toplevel Gtk_Window. While the second case may
+   --  seem unlikely, it actually happens when a Gtk_Plug is embedded
+   --  inside a Gtk_Socket within the same application.
+   --
+   --  To reliably find the toplevel Gtk_Window, use
+   --  Get_Toplevel and check if the "toplevel" flag
+   --  is set on the result:
+   --
+   --  Toplevel := Get_Toplevel (Widget);
+   --  if Top_Level_Is_Set (Toplevel) then
+   --     [ Perform some action on Toplevel. ]
+   --  end if;
 
    function Get_Ancestor
      (Widget        : access Gtk_Widget_Record;
