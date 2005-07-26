@@ -493,6 +493,24 @@ ada_gtk_dnd_context_get_action (GdkDragContext* context)
   return context->action;
 }
 
+guint ada_gtk_dnd_context_targets_count (GdkDragContext* context)
+{
+  return g_list_length (context->targets);
+}
+
+void ada_gtk_dnd_context_get_targets (GdkDragContext* context, GdkAtom* result)
+{
+  GList *glist = context->targets;
+  GdkAtom* tmp = result;
+  while (glist != NULL)
+    {
+      *tmp++ = (GdkAtom)glist->data;
+//      gchar *name = gdk_atom_name ((GdkAtom)glist->data);
+//      *tmp++ = name;
+      glist = glist->next;
+    }
+}
+
 /*
  * Gnode macros
  *
@@ -3774,7 +3792,7 @@ ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id)
 #if (!GTK_CHECK_VERSION (2, 4, 0))
 void
 gtk_event_box_set_visible_window (GtkEventBox *event_box,
-                                  gboolean     visible_window) 
+                                  gboolean     visible_window)
 {
 }
 
@@ -3791,7 +3809,7 @@ gtk_event_box_set_above_child (GtkEventBox *event_box,
 }
 
 gboolean
-gtk_event_box_get_above_child (GtkEventBox *event_box) 
+gtk_event_box_get_above_child (GtkEventBox *event_box)
 {
   return 0;
 }

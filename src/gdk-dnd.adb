@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                     Copyright (C) 2001-2005                       --
+--                         AdaCore                                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -270,5 +270,23 @@ package body Gdk.Dnd is
       Internal (Context,
                 Time);
    end Drag_Abort;
+
+   -----------------
+   -- Get_Targets --
+   -----------------
+
+   function Get_Targets (Context : Drag_Context) return Gdk_Atom_Array is
+      function Targets_Count (Context : Drag_Context) return Guint;
+      pragma Import (C, Targets_Count, "ada_gtk_dnd_context_targets_count");
+
+      procedure Internal (Context : Drag_Context; Result : Gdk_Atom_Array);
+      pragma Import (C, Internal, "ada_gtk_dnd_context_get_targets");
+
+      Length : constant Natural := Natural (Targets_Count (Context));
+      Result : Gdk_Atom_Array (0 .. Length - 1);
+   begin
+      Internal (Context, Result);
+      return Result;
+   end Get_Targets;
 
 end Gdk.Dnd;

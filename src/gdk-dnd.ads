@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2003                          --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2005                          --
+--                         AdaCore                                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -126,6 +126,10 @@ package Gdk.Dnd is
    --  drop widget (for instance, if Source_Set was used with Action_Copy +
    --  Action_Move and Dest_Set was used with only Action_Move, this will
    --  be Action_Move).
+
+   type Gdk_Atom_Array is array (Natural range <>) of Gdk.Types.Gdk_Atom;
+   function Get_Targets (Context : Drag_Context) return Gdk_Atom_Array;
+   --  Return the list of targets supported by this context.
 
    procedure Drag_Context_Ref (Context : Drag_Context);
 
