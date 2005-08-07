@@ -37,67 +37,70 @@
 --    on a per-child basis).
 --  - contextual menu in the title bar of children to dock them, float them,...
 
-with Glib;             use Glib;
-with Glib.Convert;     use Glib.Convert;
-with Glib.Object;      use Glib.Object;
-with Glib.Properties;  use Glib.Properties;
-with Pango.Font;       use Pango.Font;
-with Gdk;              use Gdk;
-with Gdk.Color;        use Gdk.Color;
-with Gdk.Cursor;       use Gdk.Cursor;
-with Gdk.Drawable;     use Gdk.Drawable;
-with Gdk.Event;        use Gdk.Event;
-with Gdk.GC;           use Gdk.GC;
-with Gdk.Main;         use Gdk.Main;
-with Gdk.Pixbuf;       use Gdk.Pixbuf;
-with Gdk.Rectangle;    use Gdk.Rectangle;
-with Gdk.Types;        use Gdk.Types;
-with Gdk.Types.Keysyms;
-with Gdk.Window;       use Gdk.Window;
-with Gdk.Window_Attr;  use Gdk.Window_Attr;
-with Gtk;              use Gtk;
-with Gtk.Accel_Group;  use Gtk.Accel_Group;
-with Gtk.Accel_Label;  use Gtk.Accel_Label;
-with Gtk.Arguments;    use Gtk.Arguments;
-with Gtk.Box;          use Gtk.Box;
-with Gtk.Button;       use Gtk.Button;
-with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
-with Gtk.Container;    use Gtk.Container;
-with Gtk.Drawing_Area; use Gtk.Drawing_Area;
-with Gtk.Dialog;       use Gtk.Dialog;
-with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Event_Box;    use Gtk.Event_Box;
-with Gtk.Frame;        use Gtk.Frame;
-with Gtk.GEntry;       use Gtk.GEntry;
-with Gtk.Handlers;
-with Gtk.Image;        use Gtk.Image;
-with Gtk.Label;        use Gtk.Label;
-with Pango.Layout;     use Pango.Layout;
-with Gtkada.Multi_Paned; use Gtkada.Multi_Paned;
-with Gtk.Main;         use Gtk.Main;
-pragma Elaborate_All (Gtk.Main);
-
-with Gtk.Menu;         use Gtk.Menu;
-with Gtk.Menu_Item;    use Gtk.Menu_Item;
-with Gtk.Notebook;     use Gtk.Notebook;
-with Gtk.Object;
-with Gtk.Pixmap;       use Gtk.Pixmap;
-with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
-with Gtk.Style;        use Gtk.Style;
-with Gtk.Widget;       use Gtk.Widget;
-with Gtk.Window;       use Gtk.Window;
-with Gtkada.Handlers;  use Gtkada.Handlers;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-
 with Ada.Unchecked_Deallocation;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Characters.Handling; use Ada.Characters.Handling;
-with Ada.Tags;         use Ada.Tags;
-with System;           use System;
+with Ada.Tags;                use Ada.Tags;
+with Ada.Exceptions;          use Ada.Exceptions;
+with System;                  use System;
 with System.Address_Image;
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
-with Ada.Exceptions; use Ada.Exceptions;
-with GNAT.IO; use GNAT.IO;
+with GNAT.IO;                 use GNAT.IO;
+
+with Glib;                    use Glib;
+with Glib.Convert;            use Glib.Convert;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
+
+with Pango.Font;              use Pango.Font;
+with Pango.Layout;            use Pango.Layout;
+
+with Gdk;                     use Gdk;
+with Gdk.Color;               use Gdk.Color;
+with Gdk.Cursor;              use Gdk.Cursor;
+with Gdk.Drawable;            use Gdk.Drawable;
+with Gdk.Event;               use Gdk.Event;
+with Gdk.GC;                  use Gdk.GC;
+with Gdk.Main;                use Gdk.Main;
+with Gdk.Pixbuf;              use Gdk.Pixbuf;
+with Gdk.Rectangle;           use Gdk.Rectangle;
+with Gdk.Types;               use Gdk.Types;
+with Gdk.Types.Keysyms;
+with Gdk.Window;              use Gdk.Window;
+with Gdk.Window_Attr;         use Gdk.Window_Attr;
+
+with Gtk;                     use Gtk;
+with Gtk.Accel_Group;         use Gtk.Accel_Group;
+with Gtk.Accel_Label;         use Gtk.Accel_Label;
+with Gtk.Arguments;           use Gtk.Arguments;
+with Gtk.Box;                 use Gtk.Box;
+with Gtk.Button;              use Gtk.Button;
+with Gtk.Check_Menu_Item;     use Gtk.Check_Menu_Item;
+with Gtk.Container;           use Gtk.Container;
+with Gtk.Drawing_Area;        use Gtk.Drawing_Area;
+with Gtk.Dialog;              use Gtk.Dialog;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Event_Box;           use Gtk.Event_Box;
+with Gtk.Frame;               use Gtk.Frame;
+with Gtk.GEntry;              use Gtk.GEntry;
+with Gtk.Handlers;
+with Gtk.Image;               use Gtk.Image;
+with Gtk.Label;               use Gtk.Label;
+with Gtk.Main;                use Gtk.Main;
+pragma Elaborate_All (Gtk.Main);
+with Gtk.Menu;                use Gtk.Menu;
+with Gtk.Menu_Item;           use Gtk.Menu_Item;
+with Gtk.Notebook;            use Gtk.Notebook;
+with Gtk.Object;
+with Gtk.Pixmap;              use Gtk.Pixmap;
+with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
+with Gtk.Style;               use Gtk.Style;
+with Gtk.Widget;              use Gtk.Widget;
+with Gtk.Window;              use Gtk.Window;
+
+with Gtkada.Handlers;         use Gtkada.Handlers;
+with Gtkada.Multi_Paned;      use Gtkada.Multi_Paned;
 
 package body Gtkada.MDI is
 
@@ -533,7 +536,7 @@ package body Gtkada.MDI is
    function Toplevel_Focus_In
      (MDI : access Gtk_Widget_Record'Class) return Boolean
    is
-      M    : constant MDI_Window := MDI_Window (MDI);
+      M : constant MDI_Window := MDI_Window (MDI);
    begin
       --  If the current child was a floating window, make sure it keeps the
       --  focus, and that no one gains the keyboard focus in the main window.
@@ -599,10 +602,12 @@ package body Gtkada.MDI is
 
       --  Request a null size, so that the window can be resized at will, even
       --  though we have played with Set_Size_Request on the children.
+
       Set_Size_Request (MDI, 0, 0);
 
       --  The MDI must have a window, so that we can change the background
       --  color. No other notebook or paned inside has a window
+
       Set_Has_Window (MDI, True);
 
       MDI.Group := Gtk_Accel_Group (Group);
@@ -626,17 +631,20 @@ package body Gtkada.MDI is
          Type_Name    => "GtkAdaMDI",
          Parameters   => Signal_Parameters);
 
-      Configure (MDI,
-                 Background_Color  => MDI.Background_Color,
-                 Title_Bar_Color   => MDI.Title_Bar_Color,
-                 Focus_Title_Color => MDI.Focus_Title_Color);
+      Configure
+        (MDI,
+         Background_Color  => MDI.Background_Color,
+         Title_Bar_Color   => MDI.Title_Bar_Color,
+         Focus_Title_Color => MDI.Focus_Title_Color);
 
       --  Put an empty notebook in the MDI, which will act as a recipient for
       --  the Position_Default widgets
-      Add_Child (MDI, New_Child => Create_Notebook (MDI),
-                 Width       => -1,
-                 Height      => -1,
-                 Orientation => Orientation_Vertical);
+
+      Add_Child
+        (MDI, New_Child => Create_Notebook (MDI),
+         Width       => -1,
+         Height      => -1,
+         Orientation => Orientation_Vertical);
 
       Widget_Callback.Connect
         (MDI, "realize", Widget_Callback.To_Marshaller (Realize_MDI'Access));
@@ -696,6 +704,7 @@ package body Gtkada.MDI is
       Set_Position (D.Ent, Gint (D.Length));
 
       --  Find the index of the current child
+
       if Children'Length /= 0 then
          while Index <= Children'Last loop
             exit when Children (Index) = D.Current_Child;
@@ -764,9 +773,9 @@ package body Gtkada.MDI is
      (MDI   : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      M : constant MDI_Window := MDI_Window (MDI);
-      D : constant Selection_Dialog_Access :=
-        Selection_Dialog_Access (M.Selection_Dialog);
+      M     : constant MDI_Window := MDI_Window (MDI);
+      D     : constant Selection_Dialog_Access :=
+                Selection_Dialog_Access (M.Selection_Dialog);
       Close : Boolean := False;
       Tmp   : Boolean;
       Key   : Gdk_Key_Type;
@@ -841,16 +850,16 @@ package body Gtkada.MDI is
    ----------------------------------------
 
    procedure Check_Interactive_Selection_Dialog
-     (MDI    : access MDI_Window_Record;
-      Event  : Gdk.Event.Gdk_Event;
-      Move_To_Next : Boolean;
+     (MDI                     : access MDI_Window_Record;
+      Event                   : Gdk.Event.Gdk_Event;
+      Move_To_Next            : Boolean;
       Visible_In_Central_Only : Boolean := False)
    is
       use type Widget_List.Glist;
-      D : Selection_Dialog_Access;
+      D         : Selection_Dialog_Access;
       Box, HBox : Gtk_Box;
-      Frame : Gtk_Frame;
-      Tmp : Gdk_Grab_Status;
+      Frame     : Gtk_Frame;
+      Tmp       : Gdk_Grab_Status;
       pragma Unreferenced (Tmp);
 
    begin
@@ -860,9 +869,9 @@ package body Gtkada.MDI is
 
       if Event = null then
          declare
-            List, Tmp : Widget_List.Glist;
+            List, Tmp         : Widget_List.Glist;
             Notebook, Current : Gtk_Notebook;
-            Child     : MDI_Child;
+            Child             : MDI_Child;
          begin
             if not Visible_In_Central_Only then
                if Move_To_Next then
@@ -1048,8 +1057,9 @@ package body Gtkada.MDI is
 
       --  Using Get_Style (MDI) would be more appropriate, but Gtk+ sometimes
       --  return an invalid style when doing so.
+      --  Under Win32, using Get_Style (MDI) works fine.
 
-      MDI.Highlight_Style := Copy (Get_Default_Style);
+      MDI.Highlight_Style := Copy (Get_Style (MDI));
 
       if Focus_Title_Color /= Null_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
@@ -1190,7 +1200,7 @@ package body Gtkada.MDI is
    -----------
 
    procedure Close
-     (MDI : access MDI_Window_Record;
+     (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
       Force : Boolean := False)
    is
@@ -1219,8 +1229,8 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class;
       Force : Boolean := False)
    is
-      MDI    : constant MDI_Window := MDI_Window (Child.MDI);
-      Event  : Gdk_Event;
+      MDI   : constant MDI_Window := MDI_Window (Child.MDI);
+      Event : Gdk_Event;
    begin
       --  Don't do anything for now if the MDI isn't realized, since we
       --  can't send create the event anyway.
@@ -1338,6 +1348,7 @@ package body Gtkada.MDI is
          Hide (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, False);
          Set_USize (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
+
       else
          Show (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, True);
@@ -1354,11 +1365,11 @@ package body Gtkada.MDI is
       use Widget_List;
       pragma Unreferenced (Area);
 
-      GC : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
-      W, H : Gint;
       Border_Thickness : constant Gint :=
-        Gint (Get_Border_Width (Child.Main_Box));
-      X : Gint := 1;
+                           Gint (Get_Border_Width (Child.Main_Box));
+      GC   : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
+      W, H : Gint;
+      X    : Gint := 1;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
@@ -1500,9 +1511,9 @@ package body Gtkada.MDI is
 
    function Button_Pressed_Forced
      (Child : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean
+      Event : Gdk_Event) return Boolean
    is
-      C      : constant MDI_Child := MDI_Child (Child);
+      C : constant MDI_Child := MDI_Child (Child);
    begin
       C.MDI.In_Drag := No_Drag;
 
@@ -1535,16 +1546,16 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      C        : constant MDI_Child := MDI_Child (Child);
-      C2       : MDI_Child;
-      MDI      : constant MDI_Window := C.MDI;
-      Current  : Gtk_Widget;
-      Note     : Gtk_Notebook;
-      Position : Child_Position;
-      Move_Whole_Notebook : constant Boolean :=
-        (Get_State (Event) and Control_Mask) /= 0;
+      C                    : constant MDI_Child := MDI_Child (Child);
+      MDI                  : constant MDI_Window := C.MDI;
+      Move_Whole_Notebook  : constant Boolean :=
+                               (Get_State (Event) and Control_Mask) /= 0;
       Copy_Instead_Of_Move : constant Boolean :=
-        (Get_State (Event) and Shift_Mask) /= 0;
+                               (Get_State (Event) and Shift_Mask) /= 0;
+      C2                   : MDI_Child;
+      Current              : Gtk_Widget;
+      Note                 : Gtk_Notebook;
+      Position             : Child_Position;
    begin
       if Traces then
          Put_Line
@@ -1686,15 +1697,15 @@ package body Gtkada.MDI is
 
    function Button_Motion
      (Child : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean
+      Event : Gdk_Event) return Boolean
    is
-      C       : constant MDI_Child := MDI_Child (Child);
-      Cursor  : Gdk_Cursor;
-      Current : Gtk_Widget;
-      C2, C3  : MDI_Child;
-      Note    : Gtk_Notebook;
-      Rect2   : Gdk_Rectangle;
-      Tmp     : Gdk_Grab_Status;
+      C        : constant MDI_Child := MDI_Child (Child);
+      Cursor   : Gdk_Cursor;
+      Current  : Gtk_Widget;
+      C2, C3   : MDI_Child;
+      Note     : Gtk_Notebook;
+      Rect2    : Gdk_Rectangle;
+      Tmp      : Gdk_Grab_Status;
       Position : Child_Position;
       pragma Unreferenced (Tmp);
 
@@ -1829,18 +1840,18 @@ package body Gtkada.MDI is
    ----------------
 
    procedure Initialize
-     (Child   : access MDI_Child_Record;
-      Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags   : Child_Flags)
+     (Child  : access MDI_Child_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags  : Child_Flags)
    is
       Signal_Parameters : constant Signal_Parameter_Types :=
-        (1 => (1 => GType_None),
-         2 => (1 => GType_None),
-         3 => (1 => GType_None));
-      Button    : Gtk_Button;
-      Pix       : Gdk_Pixbuf;
-      Pixmap    : Gtk_Image;
-      Event     : Gtk_Event_Box;
+                            (1 => (1 => GType_None),
+                             2 => (1 => GType_None),
+                             3 => (1 => GType_None));
+      Button            : Gtk_Button;
+      Pix               : Gdk_Pixbuf;
+      Pixmap            : Gtk_Image;
+      Event             : Gtk_Event_Box;
 
    begin
       if Widget.all in Gtk_Window_Record'Class then
@@ -1958,8 +1969,8 @@ package body Gtkada.MDI is
    procedure Give_Focus_To_Previous_Child
      (Child : access MDI_Child_Record'Class)
    is
-      Item   : Widget_List.Glist;
-      It     : MDI_Child;
+      Item : Widget_List.Glist;
+      It   : MDI_Child;
    begin
       --  Set the focus on the child that had the focus just before,
       --  and in the same notebook.
@@ -1997,7 +2008,7 @@ package body Gtkada.MDI is
       Flags        : Child_Flags := All_Buttons;
       Focus_Widget : Gtk.Widget.Gtk_Widget := null) return MDI_Child
    is
-      C           : MDI_Child;
+      C : MDI_Child;
    begin
       if Child.all in MDI_Child_Record'Class then
          C := MDI_Child (Child);
@@ -2045,10 +2056,10 @@ package body Gtkada.MDI is
    --------------
 
    procedure Set_Size
-     (MDI    : access MDI_Window_Record;
-      Child  : access MDI_Child_Record'Class;
-      Width  : Glib.Gint;
-      Height : Glib.Gint;
+     (MDI        : access MDI_Window_Record;
+      Child      : access MDI_Child_Record'Class;
+      Width      : Glib.Gint;
+      Height     : Glib.Gint;
       Fixed_Size : Boolean := False)
    is
       Notebook : constant Gtk_Notebook := Get_Notebook (Child);
@@ -2156,12 +2167,12 @@ package body Gtkada.MDI is
       Title       : UTF8_String;
       Short_Title : UTF8_String := "")
    is
-      Title_Changed : constant Boolean := Child.Title = null
-         or else Child.Title.all /= Title;
+      Title_Changed       : constant Boolean := Child.Title = null
+                              or else Child.Title.all /= Title;
       Short_Title_Changed : constant Boolean := Child.Short_Title = null
-         or else Child.Short_Title.all /= Short_Title;
-      The_Title       : String_Access;
-      The_Short_Title : String_Access;
+                              or else Child.Short_Title.all /= Short_Title;
+      The_Title           : String_Access;
+      The_Short_Title     : String_Access;
       --  Those pointers are used to prevent problems when
       --  the Title parameter is in fact Child.Title
    begin
@@ -2237,8 +2248,7 @@ package body Gtkada.MDI is
 
    function Find_MDI_Child_By_Tag
      (MDI : access MDI_Window_Record;
-      Tag : Ada.Tags.Tag)
-      return MDI_Child
+      Tag : Ada.Tags.Tag) return MDI_Child
    is
       Child : MDI_Child;
       Iter  : Child_Iterator := First_Child (MDI);
@@ -2258,8 +2268,7 @@ package body Gtkada.MDI is
 
    function Find_MDI_Child_By_Name
      (MDI    : access MDI_Window_Record;
-      Name   : String)
-     return MDI_Child
+      Name   : String) return MDI_Child
    is
       Child : MDI_Child;
       Iter  : Child_Iterator := First_Child (MDI);
@@ -2396,6 +2405,10 @@ package body Gtkada.MDI is
 
       function Color_Equal (A, B : Gdk_Color) return Boolean;
       --  Coloc comparison not taking into account the Pixel value.
+
+      -----------------
+      -- Color_Equal --
+      -----------------
 
       function Color_Equal (A, B : Gdk_Color) return Boolean is
       begin
@@ -2543,6 +2556,7 @@ package body Gtkada.MDI is
          Float_Child (MDI_Child (Child), False);
          Raise_Child (MDI_Child (Child), False);
          return True;
+
       else
          return Return_Callback.Emit_By_Name
            (MDI_Child (Child).Initial, "delete_event", Event);
@@ -2599,11 +2613,12 @@ package body Gtkada.MDI is
       Groups      : Object_List.GSlist;
    begin
       if Child.State /= Floating and then Float then
-         --  Ref is removed when the child is unfloated.
+         --  Ref is removed when the child is unfloated
          Ref (Child);
 
          --  This could be called before the child even has a parent if
          --  All_Floating_Mode is set.
+
          if Get_Parent (Child) /= null then
             Remove (Gtk_Container (Get_Parent (Child)), Child);
          end if;
@@ -2764,7 +2779,7 @@ package body Gtkada.MDI is
    -----------------------------
 
    procedure Configure_Notebook_Tabs
-     (MDI : access MDI_Window_Record'Class;
+     (MDI      : access MDI_Window_Record'Class;
       Notebook : access Gtk_Notebook_Record'Class)
    is
       Child : MDI_Child;
@@ -2795,12 +2810,12 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Tab_Label (Child : access MDI_Child_Record'Class) is
+      Note   : constant Gtk_Notebook := Get_Notebook (Child);
       Event  : Gtk_Event_Box;
       Box    : Gtk_Box;
       Pix    : Gdk_Pixmap;
       Mask   : Gdk_Bitmap;
       Pixmap : Gtk_Pixmap;
-      Note   : constant Gtk_Notebook := Get_Notebook (Child);
    begin
       if Note /= null and then Child.State = Normal then
          Gtk_New (Event);
@@ -2813,6 +2828,7 @@ package body Gtkada.MDI is
          --  the background color of tabs, when no title bars are
          --  displayed, will not be correct, with a grey rectangle
          --  where the label is.
+
          Set_Visible_Window (Event, False);
 
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
@@ -2864,15 +2880,14 @@ package body Gtkada.MDI is
       pragma Unreferenced (Where);
       Old_Note_Was_Destroyed : aliased Boolean;
       for Old_Note_Was_Destroyed'Address use Data;
-
    begin
       Old_Note_Was_Destroyed := True;
    end Note_Notify;
 
    procedure Put_In_Notebook
-     (MDI      : access MDI_Window_Record'Class;
-      Child    : access MDI_Child_Record'Class;
-      Notebook : Gtk_Notebook := null;
+     (MDI                      : access MDI_Window_Record'Class;
+      Child                    : access MDI_Child_Record'Class;
+      Notebook                 : Gtk_Notebook := null;
       Force_Parent_Destruction : Boolean := True)
    is
       Note, Old_Note         : Gtk_Notebook;
@@ -2949,12 +2964,15 @@ package body Gtkada.MDI is
    begin
       while L /= Null_List loop
          N := Gtk_Notebook (Get_Data (L));
+
          if Get_Nth_Page (N, 0) = null then
             Free (Children);
             return N;
          end if;
+
          L := Next (L);
       end loop;
+
       return null;
    end Find_Empty_Notebook;
 
@@ -2966,17 +2984,19 @@ package body Gtkada.MDI is
      (MDI      : access MDI_Window_Record'Class;
       Position : Integer := -1) return Gtk_Notebook
    is
-      List : Widget_List.Glist := MDI.Items;
-      C    : MDI_Child;
-      Note : Gtk_Notebook;
-      First_Non_Side, Empty : Gtk_Notebook;
       Sides : array (Position_Bottom .. Position_Right) of Gtk_Notebook;
-      Selected_Side : Child_Position;
+      List                  : Widget_List.Glist := MDI.Items;
+      C                     : MDI_Child;
+      Note                  : Gtk_Notebook;
+      Selected_Side         : Child_Position;
+      First_Non_Side, Empty : Gtk_Notebook;
    begin
       --  Find the last child that had the focus, and with
-      --  the same Position attribute
+      --  the same Position attribute.
+
       while List /= Widget_List.Null_List loop
          C := MDI_Child (Get_Data (List));
+
          if C.State = Normal  then
             if Position = -1
               or else C.Position = Child_Position (Position)
@@ -2998,6 +3018,7 @@ package body Gtkada.MDI is
                Sides (C.Position) := Get_Notebook (C);
             end if;
          end if;
+
          List := Next (List);
       end loop;
 
@@ -3178,8 +3199,8 @@ package body Gtkada.MDI is
      (MDI : access MDI_Window_Record; All_Floating : Boolean)
    is
       use Widget_List;
-      List      : Widget_List.Glist := First (MDI.Items);
-      C : MDI_Child;
+      List : Widget_List.Glist := First (MDI.Items);
+      C    : MDI_Child;
    begin
       if All_Floating /= MDI.All_Floating_Mode then
          --  We cannot do a simple loop here. When a child is floated, it
@@ -3242,10 +3263,10 @@ package body Gtkada.MDI is
    procedure Removed_From_Notebook
      (Note : access Gtk_Widget_Record'Class; Args  : Gtk_Args)
    is
-      C : constant  Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
+      C            : constant  Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
       Page2, Page1 : Gtk_Widget;
-      Child : MDI_Child;
-      First_Child : MDI_Child;
+      Child        : MDI_Child;
+      First_Child  : MDI_Child;
    begin
       if C.all not in MDI_Child_Record'Class then
          return;
@@ -3370,7 +3391,7 @@ package body Gtkada.MDI is
       Width, Height     : Glib.Gint := 0)
    is
       Note, Note2 : Gtk_Notebook;
-      Child : MDI_Child;
+      Child       : MDI_Child;
    begin
       Note := Find_Current_In_Central (MDI);
 
@@ -3409,7 +3430,7 @@ package body Gtkada.MDI is
    -- Split_H_Cb --
    ----------------
 
-   procedure Split_H_Cb (MDI   : access Gtk_Widget_Record'Class) is
+   procedure Split_H_Cb (MDI : access Gtk_Widget_Record'Class) is
    begin
       --  Do nothing unless the current child is in the central area, since
       --  otherwise this is disturbing for the user
@@ -3431,7 +3452,7 @@ package body Gtkada.MDI is
    -- Split_V_Cb --
    ----------------
 
-   procedure Split_V_Cb (MDI   : access Gtk_Widget_Record'Class) is
+   procedure Split_V_Cb (MDI : access Gtk_Widget_Record'Class) is
    begin
       --  Do nothing unless the current child is in the central area, since
       --  otherwise this is disturbing for the user
@@ -3741,11 +3762,11 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Add_To_Tree
-     (Tree        : in out Glib.Xml_Int.Node_Ptr;
-      ID_Node     : Glib.Xml_Int.Node_Ptr;
-      Position    : Child_Position := Position_Default;
-      Focus       : Boolean := False;
-      Raised      : Boolean := False)
+     (Tree     : in out Glib.Xml_Int.Node_Ptr;
+      ID_Node  : Glib.Xml_Int.Node_Ptr;
+      Position : Child_Position := Position_Default;
+      Focus    : Boolean := False;
+      Raised   : Boolean := False)
    is
       Child_Node : Node_Ptr;
    begin
@@ -3770,6 +3791,10 @@ package body Gtkada.MDI is
 
       Add_Child (Tree, Child_Node, Append => True);
    end Add_To_Tree;
+
+   -------------
+   -- Desktop --
+   -------------
 
    package body Desktop is
 
@@ -3833,21 +3858,21 @@ package body Gtkada.MDI is
       -------------------------
 
       procedure Parse_Notebook_Node
-        (MDI           : access MDI_Window_Record'Class;
-         Child_Node    : Node_Ptr;
-         User          : User_Data;
-         Focus_Child   : in out MDI_Child;
-         Width, Height : out Gint;
-         Notebook      : out Gtk_Notebook;
+        (MDI                   : access MDI_Window_Record'Class;
+         Child_Node            : Node_Ptr;
+         User                  : User_Data;
+         Focus_Child           : in out MDI_Child;
+         Width, Height         : out Gint;
+         Notebook              : out Gtk_Notebook;
          Reuse_Empty_If_Needed : in out Boolean)
       is
-         N : Node_Ptr := Child_Node.Child;
-         State  : State_Type;
-         Raised : Boolean;
-         Child  : MDI_Child;
+         N            : Node_Ptr := Child_Node.Child;
+         State        : State_Type;
+         Raised       : Boolean;
+         Child        : MDI_Child;
          Raised_Child : MDI_Child;
-         X, Y : Gint;
-         Dummy  : Gtk_Label;
+         X, Y         : Gint;
+         Dummy        : Gtk_Label;
       begin
          Width  := Gint'Value (Get_Attribute (Child_Node, "Width", "-1"));
          Height := Gint'Value (Get_Attribute (Child_Node, "Height", "-1"));
@@ -3858,6 +3883,7 @@ package body Gtkada.MDI is
          end if;
 
          Notebook := null;
+
          if Child_Node.Child = null
            and then Reuse_Empty_If_Needed
          then
@@ -3931,9 +3957,9 @@ package body Gtkada.MDI is
          State       : out State_Type;
          Child       : out MDI_Child)
       is
-         N          : Node_Ptr;
-         Register   : Register_Node;
-         W, H       : Allocation_Int := -1;
+         N        : Node_Ptr;
+         Register : Register_Node;
+         W, H     : Allocation_Int := -1;
       begin
          Register := Registers;
          Child    := null;
@@ -4008,19 +4034,19 @@ package body Gtkada.MDI is
       ---------------------
 
       procedure Parse_Pane_Node
-        (MDI                 : access MDI_Window_Record'Class;
-         Node                : Node_Ptr;
-         Focus_Child         : in out MDI_Child;
-         User                : User_Data;
-         Initial_Ref_Child   : Gtk_Notebook := null;
+        (MDI                   : access MDI_Window_Record'Class;
+         Node                  : Node_Ptr;
+         Focus_Child           : in out MDI_Child;
+         User                  : User_Data;
+         Initial_Ref_Child     : Gtk_Notebook := null;
          Reuse_Empty_If_Needed : in out Boolean)
       is
          Orientation : constant Gtk_Orientation := Gtk_Orientation'Value
            (Get_Attribute (Node, "Orientation"));
-         N     : Node_Ptr;
+         N             : Node_Ptr;
          Width, Height : Gint;
-         Ref_Item : Gtk_Notebook := Initial_Ref_Child;
-         Count : Natural := 0;
+         Ref_Item      : Gtk_Notebook := Initial_Ref_Child;
+         Count         : Natural := 0;
          Notebook_Node : Node_Ptr;
 
       begin
@@ -4041,9 +4067,11 @@ package body Gtkada.MDI is
             --  First insert all direct children of the pane, splitting as
             --  needed. Only then process the Pane children. Otherwise, the
             --  children of Pane will have been split and reorganized so that
-            --  we won't be able to get a reference item for further splitting
+            --  we won't be able to get a reference item for further splitting.
+
             Count := Notebooks'First;
             N := Node.Child;
+
             while N /= null loop
                --  Find the first notebook node of N
                Notebook_Node := N;
@@ -4137,11 +4165,11 @@ package body Gtkada.MDI is
          User      : User_Data) return Boolean
       is
          Child, Focus_Child : MDI_Child;
-         Child_Node : Node_Ptr;
-         State      : State_Type;
-         Raised     : Boolean;
-         X, Y       : Gint;
-         Items_Removed : Boolean := False;
+         Child_Node         : Node_Ptr;
+         State              : State_Type;
+         Raised             : Boolean;
+         X, Y               : Gint;
+         Items_Removed      : Boolean := False;
 
          procedure Remove_All_Items (Remove_All_Empty : Boolean);
          --  Remove all the items currently in the MDI.
@@ -4149,11 +4177,15 @@ package body Gtkada.MDI is
          --  if there is one.
          --  Does nothing if called multiple times
 
+         ----------------------
+         -- Remove_All_Items --
+         ----------------------
+
          procedure Remove_All_Items (Remove_All_Empty : Boolean) is
-            Children : Widget_List.Glist;
-            L, L2 : Widget_List.Glist;
+            Children    : Widget_List.Glist;
+            L, L2       : Widget_List.Glist;
             Found_Empty : Boolean := Remove_All_Empty;
-            Note : Gtk_Notebook;
+            Note        : Gtk_Notebook;
          begin
             if not Items_Removed then
                --  First loop is to remove all children. We give them a chance
@@ -4380,9 +4412,10 @@ package body Gtkada.MDI is
          -------------------
 
          procedure Save_Notebook (Current : Node_Ptr; Note : Gtk_Notebook) is
-            Length : constant Guint := Page_List.Length (Get_Children (Note));
+            Length       : constant Guint :=
+                             Page_List.Length (Get_Children (Note));
             Current_Page : constant Gint := Get_Current_Page (Note);
-            Parent : Node_Ptr;
+            Parent       : Node_Ptr;
 
             Border_Width : constant Allocation_Int := 0;
             --  +4 is to take into account the border of the notebook
@@ -4412,6 +4445,7 @@ package body Gtkada.MDI is
             --  the notebook was found, unless the number of pages is 0, in
             --  which case this is a real empty space which should be saved
             --  in the desktop
+
             if Length = 0 or else Parent.Child /= null then
                Add_Child (Current, Parent, Append => True);
             end if;
@@ -4452,11 +4486,11 @@ package body Gtkada.MDI is
             end loop;
          end;
 
-         --  A pass to eliminate all empty.
+         --  A pass to eliminate all empty
 
          declare
             procedure Prune_Empty (N : in out Node_Ptr);
-            --  Prunes empty panes below N.
+            --  Prunes empty panes below N
 
             procedure Prune_Empty (N : in out Node_Ptr) is
                C : Node_Ptr;
@@ -4482,7 +4516,7 @@ package body Gtkada.MDI is
             Prune_Empty (Root.Child);
          end;
 
-         --  Save the floating and non-maximized widgets.
+         --  Save the floating and non-maximized widgets
 
          while Item /= Widget_List.Null_List loop
             Child := MDI_Child (Widget_List.Get_Data (Item));
@@ -4556,8 +4590,8 @@ package body Gtkada.MDI is
    procedure Highlight_Child
      (Child : access MDI_Child_Record; Highlight : Boolean := True)
    is
-      Note    : constant Gtk_Notebook := Get_Notebook (Child);
-      Style   : Gtk_Style;
+      Note  : constant Gtk_Notebook := Get_Notebook (Child);
+      Style : Gtk_Style;
    begin
       if Highlight then
          if Note /= null
@@ -4677,8 +4711,8 @@ package body Gtkada.MDI is
      (Child  : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event) return Boolean
    is
-      C      : constant MDI_Child := MDI_Child (Child);
-      Tmp    : Gdk_Grab_Status;
+      C   : constant MDI_Child := MDI_Child (Child);
+      Tmp : Gdk_Grab_Status;
       pragma Unreferenced (Tmp);
    begin
       Tmp := Pointer_Grab
@@ -4706,9 +4740,9 @@ package body Gtkada.MDI is
       Rectangle : out Gdk_Rectangle)
    is
       Border_Width, Border_Height : Gint;
-      Win    : Gdk.Gdk_Window;
-      Current : Gtk_Widget;
-      X, Y   : Gint;
+      Win                         : Gdk.Gdk_Window;
+      Current                     : Gtk_Widget;
+      X, Y                        : Gint;
    begin
       Window_At_Pointer (X, Y, Win);
 
