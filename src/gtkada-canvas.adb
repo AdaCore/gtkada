@@ -3209,7 +3209,7 @@ package body Gtkada.Canvas is
          exit when Item = null;
 
          Canvas.Selection := new Item_Selection_List_Record'
-           (Item => Canvas_Item (Item),
+           (Item => Item,
             X    => Item.Coord.X,
             Y    => Item.Coord.Y,
             Next => Canvas.Selection);
