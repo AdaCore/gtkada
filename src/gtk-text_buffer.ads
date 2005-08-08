@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,6 @@
 --  </description>
 --  <c_version>1.3.11</c_version>
 
-with Gtkada.Types;
 with Gdk.Pixbuf;
 with Gtk.Clipboard;
 with Gtk.Text_Child;
@@ -40,6 +39,7 @@ with Gtk.Text_Iter;
 with Gtk.Text_Mark;
 with Gtk.Text_Tag;
 with Gtk.Text_Tag_Table;
+with Gtkada.Types;
 
 package Gtk.Text_Buffer is
 
@@ -529,7 +529,7 @@ package Gtk.Text_Buffer is
       Clipboard        : Gtk.Clipboard.Gtk_Clipboard;
       Default_Editable : Boolean := True);
    --  Copy the currently-selected text to the clipboard, then delete
-   --  said text if it's editable.
+   --  it if editable.
    --  Default_Editable: default editability of the buffer.
 
    procedure Copy_Clipboard
