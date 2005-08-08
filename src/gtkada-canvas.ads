@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -101,12 +101,14 @@ with Gdk.Pixbuf;
 with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Window;
+
 with Glib;
 with Glib.Graphs;
-with Gtk.Drawing_Area;
-with Gdk.Rectangle;
+
 with Gtk.Adjustment;
+with Gtk.Drawing_Area;
 with Gtk.Main;
+
 with Pango.Font;
 with Pango.Layout;
 
@@ -711,7 +713,7 @@ package Gtkada.Canvas is
 
    procedure Add_To_Selection
      (Canvas : access Interactive_Canvas_Record;
-      Item : access Canvas_Item_Record'Class);
+      Item   : access Canvas_Item_Record'Class);
    --  Add Item to the selection.  This is only meaningful during a drag
    --  operation (ie during a button press and the matching button
    --  release). Item will be moved at the same time that the selection is
@@ -723,9 +725,12 @@ package Gtkada.Canvas is
 
    procedure Remove_From_Selection
      (Canvas : access Interactive_Canvas_Record;
-      Item : access Canvas_Item_Record'Class);
+      Item   : access Canvas_Item_Record'Class);
    --  Remove Item from the selection.
    --  This emits the "item_unselected" signal.
+
+   procedure Select_All (Canvas : access Interactive_Canvas_Record);
+   --  Select all the Item in the canvas.
 
    function Is_Selected
      (Canvas : access Interactive_Canvas_Record;
