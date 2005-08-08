@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,41 +28,45 @@
 -----------------------------------------------------------------------
 
 with Ada.Numerics.Elementary_Functions;  use Ada.Numerics.Elementary_Functions;
-with Glib;             use Glib;
-with Glib.Graphs;      use Glib.Graphs;
-with Glib.Object;      use Glib.Object;
-with Glib.Values;      use Glib.Values;
-with Gdk.Color;        use Gdk.Color;
-with Gdk.Cursor;       use Gdk.Cursor;
-with Gdk.Drawable;     use Gdk.Drawable;
-with Gdk.Event;        use Gdk.Event;
-with Gdk.Font;         use Gdk.Font;
-with Gdk.GC;           use Gdk.GC;
-with Gdk.Pixbuf;       use Gdk.Pixbuf;
-with Gdk.Pixmap;       use Gdk.Pixmap;
-with Gdk.Region;       use Gdk.Region;
-with Gdk.Types;        use Gdk.Types;
-with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
-with Gdk.Rectangle;    use Gdk.Rectangle;
-with Gdk.Window;       use Gdk.Window;
-with Gtk.Adjustment;   use Gtk.Adjustment;
-with Gtk.Arguments;    use Gtk.Arguments;
-with Gtk.Drawing_Area; use Gtk.Drawing_Area;
-with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Handlers;
-with Gtk.Object;
-with Gtkada.Handlers;  use Gtkada.Handlers;
-with Gtk.Main;         use Gtk.Main;
-pragma Elaborate_All (Gtk.Main);
-with Pango.Font;       use Pango.Font;
-with Pango.Layout;     use Pango.Layout;
-
-with Gtk.Style;        use Gtk.Style;
-with Gtk.Widget;       use Gtk.Widget;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Interfaces.C.Strings;               use Interfaces.C.Strings;
 with System;
 with Unchecked_Deallocation;
-with GNAT.IO;          use GNAT.IO;
+with GNAT.IO;                            use GNAT.IO;
+
+with Gdk.Color;                          use Gdk.Color;
+with Gdk.Cursor;                         use Gdk.Cursor;
+with Gdk.Drawable;                       use Gdk.Drawable;
+with Gdk.Event;                          use Gdk.Event;
+with Gdk.Font;                           use Gdk.Font;
+with Gdk.GC;                             use Gdk.GC;
+with Gdk.Pixbuf;                         use Gdk.Pixbuf;
+with Gdk.Pixmap;                         use Gdk.Pixmap;
+with Gdk.Rectangle;                      use Gdk.Rectangle;
+with Gdk.Region;                         use Gdk.Region;
+with Gdk.Window;                         use Gdk.Window;
+with Gdk.Types;                          use Gdk.Types;
+with Gdk.Types.Keysyms;                  use Gdk.Types.Keysyms;
+
+with Glib;                               use Glib;
+with Glib.Graphs;                        use Glib.Graphs;
+with Glib.Object;                        use Glib.Object;
+with Glib.Values;                        use Glib.Values;
+
+with Gtk.Adjustment;                     use Gtk.Adjustment;
+with Gtk.Arguments;                      use Gtk.Arguments;
+with Gtk.Drawing_Area;                   use Gtk.Drawing_Area;
+with Gtk.Enums;                          use Gtk.Enums;
+with Gtk.Handlers;
+with Gtk.Main;                           use Gtk.Main;
+pragma Elaborate_All (Gtk.Main);
+with Gtk.Object;
+with Gtk.Style;                          use Gtk.Style;
+with Gtk.Widget;                         use Gtk.Widget;
+
+with Gtkada.Handlers;                    use Gtkada.Handlers;
+
+with Pango.Font;                         use Pango.Font;
+with Pango.Layout;                       use Pango.Layout;
 
 --  TODO:
 --   - would be nice to have a pixbuf item directly (for alpha layers)
@@ -3126,7 +3130,7 @@ package body Gtkada.Canvas is
 
    procedure Add_To_Selection
      (Canvas : access Interactive_Canvas_Record;
-      Item : access Canvas_Item_Record'Class)
+      Item   : access Canvas_Item_Record'Class)
    is
       Tmp : Item_Selection_List := Canvas.Selection;
    begin
@@ -3164,7 +3168,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Item : access Canvas_Item_Record'Class)
    is
-      Tmp : Item_Selection_List := Canvas.Selection;
+      Tmp      : Item_Selection_List := Canvas.Selection;
       Previous : Item_Selection_List := null;
    begin
       while Tmp /= null loop
@@ -3187,8 +3191,42 @@ package body Gtkada.Canvas is
          Previous := Tmp;
          Tmp := Tmp.Next;
       end loop;
-
    end Remove_From_Selection;
+
+   ----------------
+   -- Select_All --
+   ----------------
+
+   procedure Select_All (Canvas : access Interactive_Canvas_Record) is
+      Iter : Item_Iterator := Start (Canvas);
+      Item : Canvas_Item;
+   begin
+      Canvas.Selection := null;
+
+      loop
+         Item := Get (Iter);
+
+         exit when Item = null;
+
+         Canvas.Selection := new Item_Selection_List_Record'
+           (Item => Canvas_Item (Item),
+            X    => Item.Coord.X,
+            Y    => Item.Coord.Y,
+            Next => Canvas.Selection);
+
+         if Traces then
+            Put_Line ("Add_To_Selection X,Y="
+                      & Gint'Image (Canvas.Selection.X)
+                      & Gint'Image (Canvas.Selection.Y));
+         end if;
+
+         Selected (Item, Canvas, Is_Selected => True);
+         Emit_By_Name_Item
+           (Get_Object (Canvas), "item_selected" & ASCII.NUL, Item);
+
+         Next (Iter);
+      end loop;
+   end Select_All;
 
    ---------------
    -- Configure --
