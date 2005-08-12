@@ -287,6 +287,15 @@ package Glib is
    --  Name should be the C GObject name rather than the Ada name: thus,
    --  use names such as GtkScrollbar or GtkButton for widgets.
 
+   function Get_Qdata (Typ : GType; Quark : GQuark) return Glib.C_Proxy;
+   --  Return the user data set for Typ
+
+   procedure Set_Qdata
+     (Typ     : GType;
+      Quark   : GQuark;
+      Data    : Glib.C_Proxy);
+   --  Associate some named data with Typ.
+
    --  The list of fundamental types defined in Glib. As opposed to most other
    --  types (for instance the ones used for widgets), the types have static
    --  values, always the same.
@@ -358,6 +367,8 @@ private
 
    pragma Import (C, Fundamental, "ada_gtype_fundamental");
    pragma Import (C, Parent, "g_type_parent");
+   pragma Import (C, Get_Qdata, "g_type_get_qdata");
+   pragma Import (C, Set_Qdata, "g_type_set_qdata");
    pragma Inline (Build);
 
 end Glib;
