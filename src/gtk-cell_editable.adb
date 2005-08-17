@@ -27,11 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk; use Gdk;
-with Gtk.Cell_Editable;
-with Gdk.Event;
-with Gtk; use Gtk;
+
 with System;
+
+with Gdk.Event;
+
+with Gtk;               use Gtk;
+with Gtk.Cell_Editable;
 
 package body Gtk.Cell_Editable is
 

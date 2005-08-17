@@ -48,7 +48,6 @@ with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 with GNAT.IO;                 use GNAT.IO;
 
-with Glib;                    use Glib;
 with Glib.Convert;            use Glib.Convert;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -1159,11 +1158,8 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Destroy_MDI (MDI : access Gtk_Widget_Record'Class) is
-      use Widget_List;
-
       Tmp : Widget_List.Glist := First (MDI_Window (MDI).Items);
       N   : Widget_List.Glist;
-
    begin
       --  Note: we only destroy the floating children. Other children will be
       --  destroyed when their parent container is destroyed, so we have
@@ -1361,7 +1357,6 @@ package body Gtkada.MDI is
    procedure Draw_Child
      (Child : access MDI_Child_Record'Class; Area : Gdk_Rectangle)
    is
-      use Widget_List;
       pragma Unreferenced (Area);
 
       Border_Thickness : constant Gint :=
@@ -2224,8 +2219,6 @@ package body Gtkada.MDI is
      (MDI    : access MDI_Window_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child
    is
-      use Widget_List;
-
       Tmp : Widget_List.Glist;
    begin
       Tmp := First (MDI.Items);
@@ -3197,7 +3190,6 @@ package body Gtkada.MDI is
    procedure Set_All_Floating_Mode
      (MDI : access MDI_Window_Record; All_Floating : Boolean)
    is
-      use Widget_List;
       List : Widget_List.Glist := First (MDI.Items);
       C    : MDI_Child;
    begin
@@ -3557,7 +3549,7 @@ package body Gtkada.MDI is
    -----------------------
 
    procedure Create_Menu_Entry (Child : access MDI_Child_Record'Class) is
-      use Widget_List, Widget_SList;
+      use Widget_SList;
 
       G           : Widget_SList.GSlist := Widget_SList.Null_List;
       First_Child : MDI_Child;
@@ -3637,7 +3629,6 @@ package body Gtkada.MDI is
      (Container : access Gtk.Container.Gtk_Container_Record'Class;
       Event     : Gdk.Event.Gdk_Event_Expose)
    is
-      use Widget_List;
       Children, Tmp : Widget_List.Glist;
    begin
       Children := Get_Children (Container);

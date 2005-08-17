@@ -28,8 +28,9 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Widget; use Gtk.Widget;
+
+with Gtk.Enums;
+with Gtk.Widget;
 
 package body Gtk.List is
 

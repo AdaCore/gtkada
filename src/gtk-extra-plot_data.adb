@@ -28,13 +28,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;         use Glib;
-with Gtk.Widget;   use Gtk.Widget;
-with Gtkada.Types; use Gtkada.Types;
+with Ada.Unchecked_Conversion;
+with Interfaces.C; use Interfaces.C;
+
 with Gdk.Color;    use Gdk.Color;
 with Gdk.GC;       use Gdk.GC;
-with Interfaces.C; use Interfaces.C;
-with Ada.Unchecked_Conversion;
+with Glib;
+with Gtk.Widget;   use Gtk.Widget;
+with Gtkada.Types; use Gtkada.Types;
 
 package body Gtk.Extra.Plot_Data is
 

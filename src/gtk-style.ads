@@ -32,16 +32,17 @@
 --  In gtk+ 2.0, consider using directly the various functions
 --  Gtk.Widget.Modify_Font, Gtk.Widget.Modify_Background,...
 
-with Gdk; use Gdk;
 with Gdk.Color;
 with Gdk.Font;
 with Gdk.GC;
+with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Types;
-with Gdk.Pixmap;
 with Gdk.Window;
+
 with Gtk.Enums;
 with Gtk.Object;
+
 with Pango.Font;
 
 package Gtk.Style is

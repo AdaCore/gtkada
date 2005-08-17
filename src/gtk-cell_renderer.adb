@@ -26,15 +26,16 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Object; use Glib.Object;
+with System;         use System;
+
 with Gdk.Event;
 with Gdk.Rectangle;
 with Gdk.Window;
-with Gdk; use Gdk;
-with Gtk.Widget;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
-with System; use System;
+
+with Glib.Object;
+
+with Gtk;            use Gtk;
+with Gtk.Widget;     use Gtk.Widget;
 
 package body Gtk.Cell_Renderer is
 

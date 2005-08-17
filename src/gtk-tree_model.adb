@@ -27,11 +27,10 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C.Strings;  use Interfaces.C.Strings;
-with Glib.Object;           use Glib.Object;
-with Gtk;                   use Gtk;
-with Interfaces.C.Strings;
 with System;                use System;
 
+with Glib.Object;
+with Gtk;                   use Gtk;
 with Gtkada.Types;
 
 package body Gtk.Tree_Model is

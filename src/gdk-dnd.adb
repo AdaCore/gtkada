@@ -27,11 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Window;
-with Gdk; use Gdk;
-with Gtk; use Gtk;
 with System;
-with Gtk.Selection; use Gtk.Selection;
+
+with Gdk;           use Gdk;
+with Gdk.Window;
+
+with Gtk;           use Gtk;
+with Gtk.Selection;
 
 package body Gdk.Dnd is
 

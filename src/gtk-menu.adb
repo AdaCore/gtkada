@@ -27,12 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
-with Gtk.Menu_Item;  use Gtk.Menu_Item;
-with Gtk.Menu_Shell; use Gtk.Menu_Shell;
+
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtk.Menu_Item;
+with Gtk.Menu_Shell; use Gtk.Menu_Shell;
 
 package body Gtk.Menu is
 

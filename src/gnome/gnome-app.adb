@@ -28,8 +28,9 @@
 -----------------------------------------------------------------------
 
 with System;
-with Glib; use Glib;
-with Gtk; use Gtk;
+
+with Glib;
+with Gtk;    use Gtk;
 
 package body Gnome.App is
 

@@ -29,9 +29,10 @@
 
 with Interfaces.C.Strings;
 with System;
-with Gtk.Object; use Gtk.Object;
+
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
+with Gtk.Object; use Gtk.Object;
 
 package body Gtk.Accel_Group is
 

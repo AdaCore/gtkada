@@ -26,7 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Ada.Exceptions;       use Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
+with GNAT.IO;              use GNAT.IO;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+with System;               use System;
+with System.Address_Image;
+
 with Gdk.Cursor;           use Gdk, Gdk.Cursor;
 with Gdk.Drawable;         use Gdk.Drawable;
 with Gdk.Event;            use Gdk.Event;
@@ -35,20 +41,18 @@ with Gdk.Main;             use Gdk.Main;
 with Gdk.Rectangle;        use Gdk.Rectangle;
 with Gdk.Window;           use Gdk.Window;
 with Gdk.Window_Attr;      use Gdk.Window_Attr;
+
 with Glib.Object;          use Glib.Object;
-with Glib;                 use Glib;
+with Glib;
+
 with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Fixed;            use Gtk.Fixed;
 with Gtk.Object;           use Gtk.Object;
 with Gtk.Style;            use Gtk.Style;
 with Gtk.Widget;           use Gtk.Widget;
+
 with Gtkada.Handlers;      use Gtkada.Handlers;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-with System;               use System;
-with GNAT.IO;              use GNAT.IO;
-with Ada.Exceptions;       use Ada.Exceptions;
-with System.Address_Image;
 
 package body Gtkada.Multi_Paned is
 

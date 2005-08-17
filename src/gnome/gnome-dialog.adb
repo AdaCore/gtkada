@@ -28,8 +28,9 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk; use Gtk;
-with Gtkada.Types; use Gtkada.Types;
+
+with Gtk;          use Gtk;
+with Gtkada.Types;
 
 package body Gnome.Dialog is
 

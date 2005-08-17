@@ -27,8 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
 with System;
+
+with Glib;
 
 package body Gtk.Text_Child is
 

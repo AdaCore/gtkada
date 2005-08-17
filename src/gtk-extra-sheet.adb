@@ -27,13 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Color; use Gdk.Color;
-with Gtk.Enums; use Gtk.Enums;
-with Pango.Font; use Pango.Font;
-with System;
-with Interfaces.C.Strings;
-with Unchecked_Conversion;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with System;
+with Unchecked_Conversion;
+
+with Gdk.Color;            use Gdk.Color;
+with Gtk.Enums;
+with Pango.Font;           use Pango.Font;
 
 package body Gtk.Extra.Sheet is
 

@@ -26,18 +26,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Rectangle;
-with Gdk;               use Gdk;
-with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
-with Gtk.Enums;         use Gtk.Enums;
-with Gtk.Tree_Model;    use Gtk.Tree_Model;
-with Gtk.Widget;
-with Gtk.Widget;        use Gtk.Widget;
-with Gtk;               use Gtk;
 with System;
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+
+with Gdk.Rectangle;
+
+with Gtk;                  use Gtk;
+with Gtk.Cell_Renderer;    use Gtk.Cell_Renderer;
+with Gtk.Enums;
+with Gtk.Tree_Model;       use Gtk.Tree_Model;
+with Gtk.Widget;           use Gtk.Widget;
 
 package body Gtk.Tree_View_Column is
 

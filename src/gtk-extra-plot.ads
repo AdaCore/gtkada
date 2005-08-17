@@ -94,19 +94,21 @@
 --
 --  </description>
 
-with Glib;           use Glib;
-with Glib.Glist;
-pragma Elaborate_All (Glib.Glist);
+with System;
+with Unchecked_Conversion;
+
 with Gdk.Color;
 with Gdk.Drawable;
+with Gdk.Pixmap;
 with Gdk.Rectangle;
+
+with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
+
 with Gtk.Enums;
+with Gtk.Extra.Plot_Data;   use Gtk.Extra.Plot_Data;
 with Gtk.Object;
 with Gtk.Widget;
-with Unchecked_Conversion;
-with System;
-with Gtk.Extra.Plot_Data;   use Gtk.Extra.Plot_Data;
-with Gdk.Pixmap;
 
 package Gtk.Extra.Plot is
 

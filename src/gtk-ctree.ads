@@ -43,19 +43,22 @@
 --  </description>
 --  <c_version>1.2.7</c_version>
 
+with Interfaces.C.Strings;
+with Unchecked_Conversion;
+
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
-with Glib; use Glib;
+
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 with Glib.Gnodes;
+
 with Gtk.Clist;
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Style;
-with Gtkada.Types; use Gtkada.Types;
-with Interfaces.C.Strings;
-with Unchecked_Conversion;
+
+with Gtkada.Types;         use Gtkada.Types;
 
 package Gtk.Ctree is
    pragma Elaborate_Body;

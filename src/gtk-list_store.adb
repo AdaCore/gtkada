@@ -26,10 +26,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Object; use Glib.Object;
-with Gtk.Tree_Model; use Gtk.Tree_Model;
-with Gtk; use Gtk;
 with System;
+
+with Gtk;            use Gtk;
+with Gtk.Tree_Model; use Gtk.Tree_Model;
 
 package body Gtk.List_Store is
 

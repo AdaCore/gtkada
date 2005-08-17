@@ -27,12 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Object;   use Glib.Object;
+with Ada.Unchecked_Conversion;
+with System;
+
+with Gdk.Color;     use Gdk.Color;
 with Gdk.Rectangle; use Gdk.Rectangle;
 with Gtk.Enums;     use Gtk.Enums;
-with System;
-with Gdk.Color;     use Gdk.Color;
-with Ada.Unchecked_Conversion;
 
 package body Gtk.Style is
 

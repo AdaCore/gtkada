@@ -27,13 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
-with Glib.Object; use Glib.Object;
+
+with Glib.Object;
 with Glib.Values; use Glib.Values;
-with Glib; use Glib;
 with Gtk.Widget;
-with System;
 
 package body Gtk.Handlers is
 

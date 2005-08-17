@@ -27,11 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk; use Gtk;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Widget;
-with Gtk.Widget; use Gtk.Widget;
 with System;
+
+with Gtk.Enums;
+with Gtk.Widget; use Gtk.Widget;
 
 package body Bonobo.Dock is
 

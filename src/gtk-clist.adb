@@ -27,18 +27,20 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Interfaces.C.Strings;
+with System;
+with Unchecked_Conversion;
+with Unchecked_Deallocation;
+
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
-with Gtk.Enums;    use Gtk.Enums;
+
+with Gtk.Enums;              use Gtk.Enums;
+with Gtk.Style;              use Gtk.Style;
 with Gtk.Widget;
-with Interfaces.C.Strings;
-with Unchecked_Deallocation;
-with Unchecked_Conversion;
-with System;
-with Gdk;          use Gdk;
-with Gtkada.Types; use Gtkada.Types;
-with Gtk.Style;    use Gtk.Style;
+
+with Gtkada.Types;           use Gtkada.Types;
 
 package body Gtk.Clist is
 

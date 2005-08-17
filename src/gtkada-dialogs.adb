@@ -27,21 +27,25 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;              use Glib;
+with Ada.Strings;       use Ada.Strings;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+
 with Gdk.Pixmap;        use Gdk.Pixmap;
 with Gdk.Color;         use Gdk.Color;
 with Gdk.Event;         use Gdk.Event;
 with Gdk.Window;        use Gdk.Window;
+
+with Glib;              use Glib;
+
 with Gtk.Box;           use Gtk.Box;
-with Gtk.Dialog;        use Gtk.Dialog;
-with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Dialog;
+with Gtk.Enums;
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Pixmap;        use Gtk.Pixmap;
 with Gtk.Widget;        use Gtk.Widget;
-with Ada.Strings;       use Ada.Strings;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
-with Gtkada.Pixmaps;    use Gtkada.Pixmaps;
+
 with Gtkada.Intl;       use Gtkada.Intl;
+with Gtkada.Pixmaps;    use Gtkada.Pixmaps;
 
 package body Gtkada.Dialogs is
 

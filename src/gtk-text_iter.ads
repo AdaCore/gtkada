@@ -33,13 +33,15 @@
 --  </description>
 --  <c_version>1.3.11</c_version>
 
-with Glib; use Glib;
-with Glib.Values;
-with Gdk.Pixbuf;
-with Gtk.Text_Child;
-with Gtk.Text_Tag;
 with Interfaces.C.Strings;
 with System;
+
+with Gdk.Pixbuf;
+
+with Glib.Values;
+
+with Gtk.Text_Child;
+with Gtk.Text_Tag;
 
 package Gtk.Text_Iter is
 

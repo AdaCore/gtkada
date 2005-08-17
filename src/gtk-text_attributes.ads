@@ -31,7 +31,7 @@
 --  </description>
 --  <c_version>1.3.11</c_version>
 
-with Glib; use Glib;
+with Glib;
 with Pango.Font;
 
 package Gtk.Text_Attributes is

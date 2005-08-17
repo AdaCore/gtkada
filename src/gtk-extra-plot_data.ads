@@ -38,7 +38,7 @@
 --  size.
 --  </description>
 
-with Glib; use Glib;
+with Glib;
 with Gtk.Widget;
 with Gtkada.Types;
 with Gdk.Color;

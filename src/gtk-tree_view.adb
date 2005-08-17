@@ -26,16 +26,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
+
 with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Window;
-with Gdk; use Gdk;
+
+with Gtk;                   use Gtk;
 with Gtk.Adjustment;
 with Gtk.Tree_Model;
 with Gtk.Tree_Selection;
-with Gtk; use Gtk;
 with Gtk.Tree_View_Column;  use Gtk.Tree_View_Column;
-with System;
 
 package body Gtk.Tree_View is
 
@@ -577,7 +578,6 @@ package body Gtk.Tree_View is
 
       Column_Address : System.Address;
 
-      use Gtk.Tree_View_Column;
    begin
       if Column = null then
          Column_Address := System.Null_Address;

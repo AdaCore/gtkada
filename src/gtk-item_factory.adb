@@ -26,12 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk; use Gdk;
-with Gtk.Accel_Group;
-with Gtk.Widget; use Gtk.Widget;
+with Ada.Unchecked_Conversion;
 with Interfaces.C.Strings;
 with System;
-with Ada.Unchecked_Conversion;
+
+with Gdk;
+with Gtk.Accel_Group;
+with Gtk.Widget;                use Gtk.Widget;
 
 package body Gtk.Item_Factory is
 

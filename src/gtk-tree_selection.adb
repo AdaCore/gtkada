@@ -26,11 +26,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Enums;      use Gtk.Enums;
-with Gtk.Tree_Model; use Gtk.Tree_Model;
-with Gtk.Widget;     use Gtk.Widget;
-with Gtk;            use Gtk;
 with System;
+
+with Gtk;            use Gtk;
+with Gtk.Enums;
+with Gtk.Tree_Model; use Gtk.Tree_Model;
+with Gtk.Widget;
 
 package body Gtk.Tree_Selection is
 

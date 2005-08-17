@@ -29,7 +29,6 @@
 -----------------------------------------------------------------------
 
 with Gdk.Drawable;
-with Gdk;                  use Gdk;
 
 package body Gtk.Extra.Plot_Polar is
 

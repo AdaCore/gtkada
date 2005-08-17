@@ -27,11 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Color;              use Gdk.Color;
-with Gdk; use Gdk;
-with Gtk.Extra.Plot_Data;    use Gtk.Extra.Plot_Data;
-with Gtk.Extra.Plot;         use Gtk.Extra.Plot;
 with System;
+
+with Gdk.Color;              use Gdk.Color;
+with Gtk.Extra.Plot_Data;
+with Gtk.Extra.Plot;         use Gtk.Extra.Plot;
 
 package body Gtk.Extra.Plot_Surface is
 

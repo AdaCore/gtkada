@@ -29,7 +29,6 @@
 
 --  <c_version>partial 1.3.11</c_version>
 
-with Gdk; use Gdk;
 with Gdk.Types;
 with Gtk.Object;
 

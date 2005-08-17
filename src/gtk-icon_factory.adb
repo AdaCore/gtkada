@@ -27,10 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Pixbuf; use Gdk.Pixbuf;
-with Gdk; use Gdk;
-with Gtk; use Gtk;
 with System;
+
+with Gdk.Pixbuf;   use Gdk.Pixbuf;
+with Gtk; use Gtk;
 
 package body Gtk.Icon_Factory is
 

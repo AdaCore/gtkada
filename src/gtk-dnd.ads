@@ -82,16 +82,15 @@
 --  </description>
 --  <c_version>1.3.11</c_version>
 
-with Glib; use Glib;
 with Gdk.Bitmap;
 with Gdk.Color;
+with Gdk.Dnd;        use Gdk.Dnd;
 with Gdk.Event;
 with Gdk.Pixmap;
 with Gdk.Pixbuf;
 with Gdk.Types;
-with Gdk.Dnd; use Gdk.Dnd;
-
 with Gdk.Window;
+
 with Gtk.Widget;
 with Gtk.Selection;  use Gtk.Selection;
 

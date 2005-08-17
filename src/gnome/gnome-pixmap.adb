@@ -27,9 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk; use Gtk;
-with Gtkada.Types; use Gtkada.Types;
 with System;
+
+with Gtk;          use Gtk;
+with Gtkada.Types;
 
 package body Gnome.Pixmap is
 
