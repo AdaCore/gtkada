@@ -1,4 +1,6 @@
 New features:
+   2005-08-18
+      Project files are now installed along with GtkAda, for ease of use
    2005-05-26 (E525-016)
       Add binding to the Pango.Tabs package
       Add binding to Pango.Layout.Set_Tabs and Gtk.Text_View.Set_Tabs, so that
