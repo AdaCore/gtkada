@@ -25,6 +25,7 @@ install: all
 	$(RM) $(libdir)/$(LIBNAME)
 	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
 	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
+	$(LN) gtkada/$(SONAME) $(libdir)/$(SONAME)
 	$(CP) glade*.ads glade*.adb $(incdir)
 	$(CP) *.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali

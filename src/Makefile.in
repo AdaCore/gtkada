@@ -158,6 +158,7 @@ install: all
 	     $(RM) $(libdir)/$(LIBNAME); \
 	     $(LN) $(SONAME) $(alidir)/$(LIBNAME); \
 	     $(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME); \
+	     $(LN) gtkada/$(SONAME) $(libdir)/$(SONAME); \
 	   fi; \
 	   $(CP) glib*.ads glib*.adb $(MESA_SPECS) $(incdir); \
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \
