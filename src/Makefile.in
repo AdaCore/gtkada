@@ -147,14 +147,17 @@ install: all
 	   $(MKDIR) $(alidir); \
 	   $(GENERATE_PRJ); \
 	   $(INSTALL_DATA) $(PRJ) $(incdir); \
-	   $(INSTALL_DATA) $(ARCHIVENAME) $(libdir); \
+	   $(INSTALL_DATA) $(ARCHIVENAME) $(alidir); \
+	   $(RM) $(libdir)/$(ARCHIVENAME); \
+	   $(LN) gtkada/$(ARCHIVENAME) $(libdir)/$(ARCHIVENAME); \
 	   if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
-	     $(RANLIB) $(libdir)/$(ARCHIVENAME); \
+	     $(RANLIB) $(alidir)/$(ARCHIVENAME); \
 	   fi; \
 	   if [ $(BUILD_SHARED) = yes ]; then \
-	     $(INSTALL_DATA) $(SONAME) $(libdir); \
+	     $(INSTALL_DATA) $(SONAME) $(alidir); \
 	     $(RM) $(libdir)/$(LIBNAME); \
-	     $(LN) $(SONAME) $(libdir)/$(LIBNAME); \
+	     $(LN) $(SONAME) $(alidir)/$(LIBNAME); \
+	     $(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME); \
 	   fi; \
 	   $(CP) glib*.ads glib*.adb $(MESA_SPECS) $(incdir); \
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \

@@ -4,17 +4,17 @@ LIBNAME       = libgnomeada$(SO_EXT)
 SONAME        = libgnomeada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 ARCHIVENAME   = libgnomeada.a
 GNOME_LIBS    = @GNOME_LIBS@
-HAVE_GNOME    = @HAVE_GNOME@
-INSTALL       = @INSTALL@
-INSTALL_DATA  = @INSTALL_DATA@
 
 ifeq ($(HAVE_GNOME),True)
 all: $(ARCHIVENAME) $(LIBNAME)
 install: all
-	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
-	$(INSTALL_DATA) $(SONAME) $(libdir)
+	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
+	$(RM) $(libdir)/$(ARCHIVENAME)
+	$(LN) gtkada/$(ARCHIVENAME) $(libdir)/$(ARCHIVENAME)
+	$(INSTALL_DATA) $(SONAME) $(alidir)
 	$(RM) $(libdir)/$(LIBNAME)
-	$(LN) $(SONAME) $(libdir)/$(LIBNAME)
+	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
+	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
 	$(CP) gnome*.ads gnome*.adb bonobo*.ads bonobo*.adb $(incdir)
 	$(CP) gnome*.ali bonobo*.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali

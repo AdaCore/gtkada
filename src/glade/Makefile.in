@@ -10,11 +10,7 @@ include ../Makefile.common
 SONAME        = libgtkada_glade-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 LIBNAME       = libgtkada_glade$(SO_EXT)
 ARCHIVENAME   = libgtkada_glade.a
-INSTALL       = @INSTALL@
-INSTALL_DATA  = @INSTALL_DATA@
 
-HAVE_LIBGLADE=@HAVE_LIBGLADE@
- 
 ifeq ($(HAVE_LIBGLADE),True)
 LIBGLADE_SOURCES=glade.adb glade-xml.adb
 LIBGLADE_OBJECTS=glade.o glade-xml.o
@@ -22,10 +18,13 @@ LIBGLADE_LIBS=@LIBGLADE_LIBS@
 
 all: $(LIBNAME) $(ARCHIVENAME)
 install: all
-	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
-	$(INSTALL_DATA) $(SONAME) $(libdir)
+	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
+	$(RM) $(libdir)/$(ARCHIVENAME)
+	$(LN) gtkada/$(ARCHIVENAME) $(libdir)/$(ARCHIVENAME)
+	$(INSTALL_DATA) $(SONAME) $(alidir)
 	$(RM) $(libdir)/$(LIBNAME)
-	$(LN) $(SONAME) $(libdir)/$(LIBNAME)
+	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
+	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
 	$(CP) glade*.ads glade*.adb $(incdir)
 	$(CP) *.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali
