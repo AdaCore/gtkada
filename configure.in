@@ -48,4 +48,4 @@ AC_SUBST(GTKADA_MICRO_VERSION)
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
-AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/glade/Makefile src/gnome/Makefile docs/gtkada_ug/Makefile docs/gtkada_rm/Makefile src/config.h)
+AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/glade/Makefile src/gnome/Makefile docs/gtkada_ug/Makefile docs/gtkada_rm/Makefile src/config.h projects/gtkada.pc)
