@@ -456,8 +456,8 @@ private
    pragma Import (C, Enumeration, "ada_gparam_get_enum_class_enum");
    pragma Import (C, Install_Property, "g_object_class_install_property");
    pragma Import (C, Unref, "g_param_spec_unref");
-   pragma Import (C, Get_Qdata, "g_param_spec_get_gdata");
-   pragma Import (C, Set_Qdata, "g_param_spec_set_gdata_full");
+   pragma Import (C, Get_Qdata, "g_param_spec_get_qdata");
+   pragma Import (C, Set_Qdata, "g_param_spec_set_qdata_full");
    pragma Import (C, Enum_Class_From_Type, "g_type_class_ref");
    pragma Inline (Description);
    pragma Inline (Name);
