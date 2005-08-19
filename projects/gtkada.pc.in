@@ -1,0 +1,6 @@
+Name: GtkAda
+Description: Ada binding for gtk+-2.0
+Version: @GTKADA_MAJOR_VERSION@.@GTKADA_MINOR_VERSION@.@GTKADA_MICRO_VERSION@
+Requires: gtk+-2.0
+Libs: -L@prefix@/lib -lgtkada
+Cflags: -aI@prefix@/include/gtkada -aO@prefix@/lib/gtkada
