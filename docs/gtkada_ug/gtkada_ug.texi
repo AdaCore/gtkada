@@ -343,10 +343,47 @@ at various shows.
 @c ----------------------------------------------------------------------
 
 This section explains how you can compile your own applications.
+
+There are several ways to use GtkAda in your applications
+
+@subsection Using project files
+
+A set of project files is installed along with GtkAda. If you have installed
+GtkAda in the same location as GNAT itself, nothing else needs to be done.
+
+Otherwise, you need to make the directory that contains these project files
+visible to the compiler. This is done by adding the directory to the
+@code{ADA_PROJECT_PATH} environment variable. Assuming you have installed the
+library in @code{prefix}, the directory you need to add is
+@code{prefix/lib/gnat}.
+
+On Unix, this is done with
+
+@smallexample
+csh:
+   setenv ADA_PROJECT_PATH $prefix/lib/gnat:$ADA_PROJECT_PATH
+sh:
+   ADA_PROJECT_PATH=$prefix/lib/gnat:$ADA_PROJECT_PATH
+   export ADA_PROJECT_PATH
+@end smallexample
+
+To build your own application, you should then setup a project file (see
+the GNAT documentation for more details on project files), which simply
+contains the statement
+
+@smallexample
+with "gtkada";
+@end smallexample
+
+This will automatically set the right compiler and linker options, so that
+your application is linked with GtkAda.
+
+@subsection Using the command line
+
 The procedure is system-dependent, and thus is divided into two
 subsections.
 
-@subsection Unix systems
+@subsubsection Unix systems
 
 @noindent
 On Unix systems, a script called @code{gtkada-config} is automatically
@@ -387,7 +424,7 @@ switches (chosen to be compatible with the ones set by @code{gtk-config}):
   option will still use the dynamic gtk+ libraries.
 @end itemize
 
-@subsection Windows systems
+@subsubsection Windows systems
 
 Things are somewhat easier on Windows systems. You don't have access to the
 @code{gtkada-config} script. On the other hang you also don't
