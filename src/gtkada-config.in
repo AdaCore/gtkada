@@ -4,8 +4,8 @@
 prefix=@prefix@
 
 gtk_libs="@GTK_LIBS@"
-gtkada_libs="-L$prefix/include/gtkada -L$prefix/lib"
-gtkada_cflags="-I$prefix/include/gtkada"
+gtkada_libs="-L$prefix/lib"
+gtkada_cflags="-aI$prefix/include/gtkada -aO$prefix/lib/gtkada"
 gtkada_lflags="-lgtkada"
 
 usage()
