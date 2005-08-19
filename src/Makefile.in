@@ -22,6 +22,7 @@ HAVE_GETTEXT=@HAVE_GETTEXT@
 
 LIB_DIR=lib-obj
 
+CP = cp -p
 CD = cd
 MKDIR = mkdir -p
 RMDIR = rmdir
