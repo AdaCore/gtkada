@@ -272,6 +272,10 @@ package Gtkada.MDI is
    --  notebook tabs, the Window menu and the interactive selection dialog.
    --  The icon is updated dynamically on the screen.
 
+   function Get_Icon
+     (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
+   --  Returns the icon associated with Child
+
    function Dnd_Data
      (Child : access MDI_Child_Record; Copy : Boolean) return MDI_Child;
    --  When a drag-and-drop operation took place to move a child from one

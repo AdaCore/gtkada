@@ -2149,6 +2149,16 @@ package body Gtkada.MDI is
       Update_Tab_Label (Child);
    end Set_Icon;
 
+   --------------
+   -- Get_Icon --
+   --------------
+
+   function Get_Icon
+     (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf is
+   begin
+      return Child.Icon;
+   end Get_Icon;
+
    ---------------
    -- Set_Title --
    ---------------
