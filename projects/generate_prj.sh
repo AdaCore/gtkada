@@ -35,10 +35,8 @@ generate_static() {
 project ${uc} is
    for Source_Dirs use ("../../include/gtkada");
    for Source_List_File use "${lcmodule}.lgpr";
-   for Library_Dir use "../gtkada";
-   for Library_Kind use "static";
-   for Library_Name use "${lcmodule}";
    for Externally_Built use "true";
+   for Object_Dir use "../gtkada";
 
    package Linker is
       for Linker_Options use (
