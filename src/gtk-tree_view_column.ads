@@ -29,6 +29,7 @@
 --  <description>
 --  General organization of the tree_view widgets:
 --
+--  <example>
 --    ______________Tree_View___________________________________
 --   |   _________________________     ________________________|
 --   |  |_____Tree_View_Column1__|    |___Tree_View_Column2 __||
@@ -42,6 +43,7 @@
 --   |  |________________________|    |_______________________||
 --   |_________________________________________________________|
 --
+--  </example>
 --  A tree view can contain multiple physical columns on the screen. These
 --  columns can have a button at the top, typically to force an ordering
 --  of the tree). They can also be reorganized interactively by the user.
