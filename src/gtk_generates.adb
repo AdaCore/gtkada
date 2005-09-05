@@ -2079,6 +2079,7 @@ package body Gtk_Generates is
         "auto_shrink", "", File);
       Gen_Set (N, "position", File, Property_Name => "window_position");
       Gen_Set (N, "modal", File);
+      Gen_Set (N, "resizable", File);
       Gen_Set (N, "Default_Size", "default_width", "default_height",
         "", "", File);
    end Window_Generate;
