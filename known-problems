@@ -1,3 +1,10 @@
+Known problems fixed in GtkAda 2.4.2
+
+- E902-004: Non-resizeable windows are still resizeable under Windows
+  Problem:    Under Windows, when a window is set to be non-resizable,
+              it can still be resized to a square.
+  Workaround: No known workaround.
+
 Known problems fixed in GtkAda 2.4.0
 
 - E322-003: Storage_Error raised when closing an OpenGL window
