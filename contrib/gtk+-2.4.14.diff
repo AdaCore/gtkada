@@ -1,3 +1,8 @@
+2005-09-13	Nicolas Setton  <setton@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c: Backport patch suggested for #158459.
+	Fixes E902-004.
+
 2005-06-17	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/win32/gdkdrawable-win32.c: Remove one use of GDI_CALL to
@@ -494,3 +499,22 @@
        
        /* Restore source's color table if necessary */
        if (ok && newtable_size > 0 && oldtable_size > 0)
+*** gdk/win32/gdkevents-win32.c.original	Tue Sep 13 11:03:37 2005
+--- gdk/win32/gdkevents-win32.c	Tue Sep 13 11:05:16 2005
+***************
+*** 3284,3290 ****
+  	  maxw = rect.right - rect.left;
+  	  maxh = rect.bottom - rect.top;
+  	  mmi->ptMaxTrackSize.x = maxw > 0 && maxw < G_MAXSHORT ? maxw : G_MAXSHORT;
+! 	  mmi->ptMaxTrackSize.y = maxh > 0 && maxh < G_MAXSHORT ? maxw : G_MAXSHORT;
+  	}
+  
+        if (impl->hint_flags & (GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE))
+--- 3284,3290 ----
+  	  maxw = rect.right - rect.left;
+  	  maxh = rect.bottom - rect.top;
+  	  mmi->ptMaxTrackSize.x = maxw > 0 && maxw < G_MAXSHORT ? maxw : G_MAXSHORT;
+! 	  mmi->ptMaxTrackSize.y = maxh > 0 && maxh < G_MAXSHORT ? maxh : G_MAXSHORT;
+  	}
+  
+        if (impl->hint_flags & (GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE))
