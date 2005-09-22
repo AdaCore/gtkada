@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                 Copyright (C) 2001-2005 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -83,22 +83,20 @@ package body Gtk.Tree_Model is
    -----------------
 
    function Get_Indices (Path : Gtk_Tree_Path) return Gint_Array is
-      type Big_Gint_Array is array (Natural) of Gint;
-      type Big_Gint_Array_Access is access all Big_Gint_Array;
-      pragma Convention (C, Big_Gint_Array_Access);
+      Depth : constant Integer := Integer (Get_Depth (Path));
 
-      function Internal (Path : Gtk_Tree_Path) return Big_Gint_Array_Access;
+      subtype Result_Array is Gint_Array (0 .. Depth - 1);
+      type Result_Array_Access is access all Result_Array;
+      pragma Convention (C, Result_Array_Access);
+
+      function Internal (Path : Gtk_Tree_Path) return Result_Array_Access;
       pragma Import (C, Internal, "gtk_tree_path_get_indices");
 
-      Result : Gint_Array (0 .. Integer (Get_Depth (Path)) - 1);
-      R      : constant Big_Gint_Array_Access := Internal (Path);
-
    begin
-      for J in Result'Range loop
-         Result (J) := R (J);
-      end loop;
+      --  Do not free the result of gtk_tree_path_get_indices since this is
+      --  not a copy, but the currently used data.
 
-      return Result;
+      return Internal (Path).all;
    end Get_Indices;
 
    ----------
