@@ -4,6 +4,7 @@ MKDIR = mkdir -p
 
 install: force
 	${MKDIR} $(prefix)/lib/gnat/
+	${MKDIR} $(prefix)/lib/gnat/deps
 	$(MKDIR) $(prefix)/lib/pkgconfig/
 	${CP} gtkada.pc $(prefix)/lib/pkgconfig/
 	-${RM} ${prefix}/projects/gtkada*
@@ -18,7 +19,7 @@ ifeq ($(HAVE_GNOME), True)
 	./generate_prj.sh GtkAda_Gnome "${prefix}" ${BUILD_SHARED}
 endif	
 	${CP} *.gpr ${prefix}/lib/gnat/
-	${CP} *.lgpr ${prefix}/lib/gnat/
+	${CP} *.lgpr ${prefix}/lib/gnat/deps
 
 clean: force
 	${RM} *.gpr 
