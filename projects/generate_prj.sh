@@ -17,7 +17,7 @@ generate_shared() {
   cat <<EOF > ${lc}.gpr
 project ${uc} is
    for Source_Dirs use ("../../include/gtkada");
-   for Source_List_File use "deps/${lcmodule}.lgpr";
+   for Source_List_File use "gtkada/${lcmodule}.lgpr";
    for Library_Dir use "../gtkada";
    for Library_Kind use "relocatable";
    for Library_Name use "${lcmodule}";
@@ -34,7 +34,7 @@ generate_static() {
   cat <<EOF > ${lc}.gpr
 project ${uc} is
    for Source_Dirs use ("../../include/gtkada");
-   for Source_List_File use "deps/${lcmodule}.lgpr";
+   for Source_List_File use "gtkada/${lcmodule}.lgpr";
    for Externally_Built use "true";
    for Object_Dir use "../gtkada";
 
