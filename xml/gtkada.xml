@@ -3,6 +3,10 @@
 <GPS>
   <doc_path>share/doc/gtkada</doc_path>
 
+   <submenu before="About">
+      <title>/Help/GtkAda</title>
+   </submenu>
+
   <documentation_file>
      <name>gtkada_rm/index.html</name>
      <descr>GtkAda Reference Manuel</descr>
