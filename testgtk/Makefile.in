@@ -2,7 +2,7 @@ SHELL = /bin/sh
 @SET_MAKE@
 
 include ../src/Makefile.common
-examples=$(prefix)/examples/gtkada/testgtk
+examples=$(prefix)/share/examples/gtkada/testgtk
 
 .SUFFIXES:
 .SUFFIXES: .c .o .ads .adb .ali

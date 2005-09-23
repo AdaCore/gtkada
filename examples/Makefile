@@ -1,6 +1,6 @@
 include ../src/Makefile.common
 
-examples=$(prefix)/examples/gtkada/
+examples=$(prefix)/share/examples/gtkada/
 
 DIRECTORIES=base_widget \
   calendar_combo        \
