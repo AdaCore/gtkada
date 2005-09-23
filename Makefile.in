@@ -12,6 +12,7 @@ testgtk_dir = testgtk
 doc_dir     = docs
 example_dir = examples
 projects_dir = projects
+xml_dir      = xml
 
 all:
 	$(MAKE) -C $(src_dir)
@@ -23,6 +24,7 @@ install:
 	$(MAKE) -C $(testgtk_dir) install
 	$(MAKE) -C $(doc_dir) install
 	$(MAKE) -C $(example_dir) install
+	$(MAKE) -C $(xml_dir) install
 
 clean-generic:
 	-${RM} core
