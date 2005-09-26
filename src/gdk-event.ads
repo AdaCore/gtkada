@@ -122,7 +122,16 @@ package Gdk.Event is
       --  A mouse wheel was scrolled either up or down.
 
       Window_State,
-      Setting);
+      Setting,
+
+      Owner_Change,
+      --  Emitted when the owner of a selection has changed
+      --  Added in gtk+ 2.6
+
+      Grab_Broken
+      --  A pointer or keyboard grab was broken
+      --  Added in gtk+ 2.8
+      );
    pragma Convention (C, Gdk_Event_Type);
 
    type Gdk_Event_Mask is mod 2 ** 32;
@@ -770,7 +779,9 @@ private
       No_Expose => 30,
       Scroll => 31,
       Window_State => 32,
-      Setting => 33);
+      Setting => 33,
+      Owner_Change => 34,
+      Grab_Broken => 35);
 
    pragma Import (C, Get_Type, "gdk_event_get_type");
    pragma Import (C, Get_Event_Type, "ada_gdk_event_get_type");
