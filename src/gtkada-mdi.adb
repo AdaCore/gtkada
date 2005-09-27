@@ -1969,6 +1969,10 @@ package body Gtkada.MDI is
         (Child.Initial, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Initial_Child'Access),
          Child);
+      Widget_Callback.Connect
+        (Child, "hide", Child_Widget_Hidden'Access);
+      Widget_Callback.Connect
+        (Child, "show", Child_Widget_Shown'Access);
       Widget_Callback.Object_Connect
         (Child.Initial, "hide", Child_Widget_Hidden'Access, Child);
       Widget_Callback.Object_Connect
