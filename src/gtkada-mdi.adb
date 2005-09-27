@@ -209,6 +209,14 @@ package body Gtkada.MDI is
    --  Called when the user moves the mouse while a button is pressed.
    --  If an item was selected, the item is moved.
 
+   procedure Child_Widget_Shown
+     (Widget : access Gtk_Widget_Record'Class);
+   procedure Child_Widget_Hidden
+     (Widget : access Gtk_Widget_Record'Class);
+   --  Called when the child widget is shown or hidden by the user, to reflect
+   --  that fact at the MDI_Child level, no matter whether the child is
+   --  currently floating or not.
+
    procedure Internal_Close_Child
      (Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Internal version of Close, for a MDI_Child
@@ -1813,6 +1821,38 @@ package body Gtkada.MDI is
       return MDI_Child (Child);
    end Dnd_Data;
 
+   -------------------------
+   -- Child_Widget_Hidden --
+   -------------------------
+
+   procedure Child_Widget_Hidden
+     (Widget : access Gtk_Widget_Record'Class)
+   is
+      Child : constant MDI_Child := MDI_Child (Widget);
+   begin
+      if Child.State = Floating then
+         Hide (Get_Toplevel (Get_Widget (Child)));
+      else
+         Hide (Child);
+      end if;
+   end Child_Widget_Hidden;
+
+   ------------------------
+   -- Child_Widget_Shown --
+   ------------------------
+
+   procedure Child_Widget_Shown
+     (Widget : access Gtk_Widget_Record'Class)
+   is
+      Child : constant MDI_Child := MDI_Child (Widget);
+   begin
+      if Child.State = Floating then
+         Show (Get_Toplevel (Get_Widget (Child)));
+      else
+         Show (Child);
+      end if;
+   end Child_Widget_Shown;
+
    -------------
    -- Gtk_New --
    -------------
@@ -1929,6 +1969,10 @@ package body Gtkada.MDI is
         (Child.Initial, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Initial_Child'Access),
          Child);
+      Widget_Callback.Object_Connect
+        (Child.Initial, "hide", Child_Widget_Hidden'Access, Child);
+      Widget_Callback.Object_Connect
+        (Child.Initial, "show", Child_Widget_Shown'Access, Child);
    end Initialize;
 
    -------------------------
