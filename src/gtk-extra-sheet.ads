@@ -743,13 +743,13 @@ package Gtk.Extra.Sheet is
       type Data_Type_Access is access all Data_Type;
       --  </doc_ignore>
 
-      procedure Link_Cell (Sheet : access Gtk_Sheet_Record;
+      procedure Link_Cell (Sheet : access Gtk_Sheet_Record'Class;
                            Row   : in Gint;
                            Col   : in Gint;
                            Link  : in Data_Type);
       --  Associate some user specific data with a given cell.
 
-      function Get_Link (Sheet  : access Gtk_Sheet_Record;
+      function Get_Link (Sheet  : access Gtk_Sheet_Record'Class;
                          Row    : in Gint;
                          Col    : in Gint)
                         return      Data_Type_Access;

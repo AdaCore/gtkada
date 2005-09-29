@@ -1032,7 +1032,7 @@ package body Gtk.Extra.Sheet is
       ---------------
 
       procedure Link_Cell
-        (Sheet : access Gtk_Sheet_Record;
+        (Sheet : access Gtk_Sheet_Record'Class;
          Row   : Gint;
          Col   : Gint;
          Link  : Data_Type)
@@ -1055,7 +1055,7 @@ package body Gtk.Extra.Sheet is
       --------------
 
       function Get_Link
-        (Sheet  : access Gtk_Sheet_Record;
+        (Sheet  : access Gtk_Sheet_Record'Class;
          Row    : Gint;
          Col    : Gint) return Data_Type_Access
       is
