@@ -70,6 +70,9 @@
 --     return Dgettext ("my_domain", Msg);
 --  end "-";
 --
+--  The procedure Setlocale must be called first. It will initialize all
+--  internal variables based on the environment variables mentioned above.
+--
 --  Do not forget to call Bind_Text_Domain ("my_domain", "my locale prefix")
 --  at the beginning of your program. For example, if the prefix of your
 --  application is /usr, the standard location of the locale would
@@ -137,5 +140,10 @@ package Gtkada.Intl is
    procedure Bind_Text_Domain (Domain : String; Dirname : String);
    --  Specify that the Domain message catalog will be found in Dirname.
    --  This overrides the default system locale data base.
+
+   procedure Setlocale;
+   --  This procedure must be called before any other subprogram in this
+   --  package. It will initialize internal variables based on the environment
+   --  variables.
 
 end Gtkada.Intl;

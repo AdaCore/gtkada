@@ -144,4 +144,21 @@ package body Gtkada.Intl is
 #end if;
    end Bind_Text_Domain;
 
+   ---------------
+   -- Setlocale --
+   ---------------
+
+   procedure Setlocale is
+      LC_ALL : constant Integer := 6;  --  from locale.h
+      Empty_String : constant String (1 .. 1) := (1 => ASCII.NUL);
+      procedure Setlocale (Category : Integer; Locale : String);
+      pragma Import (C, Setlocale, "setlocale");
+   begin
+#if HAVE_GETTEXT then
+      Setlocale (LC_ALL, Empty_String);
+#else
+      null;
+#end if;
+   end Setlocale;
+
 end Gtkada.Intl;
