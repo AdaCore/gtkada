@@ -4370,7 +4370,7 @@ echo "${ECHO_T}yes" >&6
 EXEC_PREFIX="$prefix"
 
 
-                                                                                                                                            ac_config_files="$ac_config_files Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/glade/Makefile src/gnome/Makefile docs/gtkada_ug/Makefile docs/gtkada_rm/Makefile src/config.h projects/gtkada.pc"
+                                                                                                                                            ac_config_files="$ac_config_files Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/glade/Makefile src/gnome/Makefile docs/gtkada_ug/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -4933,6 +4933,7 @@ do
   "src/gnome/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/gnome/Makefile" ;;
   "docs/gtkada_ug/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/gtkada_ug/Makefile" ;;
   "docs/gtkada_rm/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/gtkada_rm/Makefile" ;;
+  "po/Makefile" ) CONFIG_FILES="$CONFIG_FILES po/Makefile" ;;
   "src/config.h" ) CONFIG_FILES="$CONFIG_FILES src/config.h" ;;
   "projects/gtkada.pc" ) CONFIG_FILES="$CONFIG_FILES projects/gtkada.pc" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
