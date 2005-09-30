@@ -32,11 +32,92 @@
 --  This package provides support for string internationalization using the
 --  libintl library.
 --
---  To change the current locale setting, use on the environment variables
---  "LANG" or "LC_MESSAGES". For example, to switch to the french locale using
+--  Developer setup
+--  ===============
+--
+--  To provide internationalization in your application, you must install a
+--  number of files along with your application, and modify your code to
+--  highlight the strings to translate. This translation is based on the
+--  gettext() library. Reading its documentation is recommanded since it
+--  explains best practices for handling translations.
+--
+--  Preparing your code
+--  ===================
+--
+--  Gettext needs to information to locate the translation files: a language,
+--  as setup by the user (see User Setup below), and a domain, hard-coded in
+--  the application. The domain is the name of your application. Given these
+--  two informations, the translation file will be found in:
+--     $prefix/<lang>/LC_MESSAGES/<domain>.mo
+--
+--  Where $prefix is either one of the standard search paths, or specified
+--  through a call to Bind_Text_Domain.
+--
+--  Although the user can simply specify which language to use by setting one
+--  environment variable, they are in fact several other setup to be done, so
+--  that the C library properly handles date format for instance. This is done
+--  through a call to Setlocale.
+--
+--  An application can be associated with several domains, although it is
+--  generally recommanded to have one default domain, specify through a call to
+--  Text_Domain. Each string can then be translated through a call to Gettext,
+--  without specifying the domain every time.
+--  A convenient shortcut is provided in the form of the "-" operator.
+--
+--  As a result, typical code would look like:
+--    begin
+--       Setlocale;
+--       Text_Domain ("application");
+--       Bind_Text_Domain ("application", "/usr/local/share/locale");
+--       ...
+--       Put_Line (-"Internalized string");
+--    end;
+--
+--  Preparing and installing the translation files
+--  ===============================================
+--
+--  The Gtkada distribution comes with a convenient script named
+--  build_skeleton.pl, which you can run on your application to extract all the
+--  strings that should be translated. See the "po/" directory in GtkAda, as
+--  well as the Makefile in this directory.
+--
+--  Running "make refresh" will reparse all the source files in your
+--  application, and create (or update if they already exist) one file .po for
+--  each language registered in the Makefile.
+--
+--  You would then translate each of the string indicated my "msgid", by
+--  modifying the lines starting with "msgstr".
+--
+--  Once this is done, running the msgfmt tool through "make install" will
+--  generate a <lang>.mo binary file, which should be copied in the directory
+--     $prefix/<lang>/LC_MESSAGES/<domain>.mo
+--
+--  The translation files can also be created fully by hand.
+--  Here is a sample translation file that can be used as an input for msgfmt:
+--
+--  # gtkada-fr.po
+--  msgid  "Help"
+--  msgstr "Aide"
+--
+--  msgid  "Yes"
+--  msgstr "Oui"
+--
+--  $ msgfmt gtkada-fr.po -o gtkada-fr.gmo
+--  $ cp gtkada-fr.gmo /usr/share/locale/fr/LC_MESSAGES/gtkada.mo
+--
+--  If your program uses GtkAda, there are also a number of strings that need
+--  to be translated in that library. The recommanded approach is to merge the
+--  .po files found in the GtkAda distribution in the "po/" directory, and use
+--  the tool msgmerge to merge these into your applications' translation file.
+--
+--  User setup
+--  ==========
+--
+--  To change the current locale setting, use the environment variables
+--  "LANG". For example, to switch to the french locale using
 --  bash:
 --
---  $ export LANG=fr
+--  $ export LANG=fr_FR
 --
 --  Depending on the specific implementation of gettext, the following
 --  environment variables may be set to change the default settings of locale
@@ -58,53 +139,6 @@
 --          /usr/share/locale on Linux).
 --
 --  See the gettext documentation of your specific OS for more details.
---
---  The recommended way to use the gettext capability in your application is
---  to use Dgettext with your own domain, and define the following shortcut:
---
---  function "-" (Msg : UTF8_String) return UTF8_String;
---  --  Convenient shortcut to the Gettext function.
---
---  function "-" (Msg : UTF8_String) return UTF8_String is
---  begin
---     return Dgettext ("my_domain", Msg);
---  end "-";
---
---  The procedure Setlocale must be called first. It will initialize all
---  internal variables based on the environment variables mentioned above.
---
---  Do not forget to call Bind_Text_Domain ("my_domain", "my locale prefix")
---  at the beginning of your program. For example, if the prefix of your
---  application is /usr, the standard location of the locale would
---  be /usr/share/locale, e.g:
---    Bind_Text_Domain ("GtkAda", "/usr/share/locale");
---
---  Under this locale directory, the functions provided by this package
---  will look for the directory $LANG/LC_MESSAGES,
---  /usr/share/locale/fr/LC_MESSAGES in our example; and in this directory,
---  the file <domain>.mo will be used, e.g
---  /usr/share/locale/fr/LC_MESSAGES/GtkAda.mo
---
---  The .mo files can be generated using the GNU tool msgfmt that takes a
---  text file containing for each string the original and the translation.
---  See msgfmt documentation for more details.
---  Here is a sample translation file that can be used as an input for msgfmt:
---
---  # gtkada-fr.po
---  msgid  "Help"
---  msgstr "Aide"
---
---  msgid  "Yes"
---  msgstr "Oui"
---
---  $ msgfmt gtkada-fr.po -o gtkada-fr.gmo
---  $ cp gtkada-fr.gmo /usr/share/locale/fr/LC_MESSAGES/GtkAda.mo
---
---  Then, to enable the string translation in your application, use the "-"
---  function defined above, e.g:
---
---  Gtk_New (Label, -"Help");
---  Gtk_New (Label, -("Help ?") & ASCII.LF & -("Yes"));
 --
 --  </description>
 
@@ -140,6 +174,7 @@ package Gtkada.Intl is
    procedure Bind_Text_Domain (Domain : String; Dirname : String);
    --  Specify that the Domain message catalog will be found in Dirname.
    --  This overrides the default system locale data base.
+   --  Dirname will generally be the installation prefix for your application.
 
    procedure Setlocale;
    --  This procedure must be called before any other subprogram in this

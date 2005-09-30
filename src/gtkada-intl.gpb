@@ -76,7 +76,7 @@ package body Gtkada.Intl is
 
    function "-" (Msg : UTF8_String) return UTF8_String is
    begin
-      return Dgettext ("GtkAda", Msg);
+      return Gettext (Msg);
    end "-";
 
    ---------------
