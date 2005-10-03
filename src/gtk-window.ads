@@ -497,6 +497,9 @@ package Gtk.Window is
    --  Return the widget that would have the keyboard focus if
    --  Window itself has the focus. It currently has the focus
    --  only if Has_Focus_Is_Set returns True.
+   --  To know whether the Window itself currently has the focus, check the
+   --    Has_Toplevel_Focus_Property
+   --  property described below
 
    procedure Set_Focus
      (Window : access Gtk_Window_Record;
