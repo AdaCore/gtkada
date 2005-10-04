@@ -62,7 +62,6 @@ glib-graphs.adb
 glib-graphs.ads
 glib-gslist.adb
 glib-gslist.ads
-glib-interfaces.ads
 glib-messages.adb
 glib-messages.ads
 glib-module.adb
