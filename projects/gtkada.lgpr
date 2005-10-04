@@ -102,8 +102,6 @@ gtkada-mdi.ads
 gtkada-multi_paned.adb
 gtkada-multi_paned.ads
 gtkada-pixmaps.ads
-gtkada_support.adb
-gtkada_support.ads
 gtkada-types.adb
 gtkada-types.ads
 gtk-adjustment.adb
@@ -119,7 +117,6 @@ gtk-aspect_frame.adb
 gtk-aspect_frame.ads
 gtk-bin.adb
 gtk-bin.ads
-gtk-bindings.ads
 gtk-box.adb
 gtk-box.ads
 gtk-button.adb
