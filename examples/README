@@ -8,6 +8,14 @@ documentation (and bug reports) to the authors.
 
 Note that you need to first install GtkAda to use these examples.
 
+Some of the examples are build using the GNAT project files, to demonstrate
+how to use them to simply compile and link your application.
+See for instance base_widget/ and calendar_combo/
+
+Others are build using the gtkada-config script, on machines where this script
+is usable.
+
+
 1- menu
  
   Demonstrates the use of gate/dgate with a glade project file.
