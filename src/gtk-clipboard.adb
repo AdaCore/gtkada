@@ -86,7 +86,7 @@ package body Gtk.Clipboard is
    is
       function Internal
         (Clipboard : Gtk_Clipboard) return Gboolean;
-      pragma Import (C, Internal, "gtk_clipboard_wait_for_text");
+      pragma Import (C, Internal, "gtk_clipboard_wait_is_text_available");
    begin
       return Internal (Clipboard) /= 0;
    end Wait_Is_Text_Available;
