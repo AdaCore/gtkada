@@ -1,3 +1,9 @@
+2005-10-13  J. Brobecker  <brobecker@gnat.com>
+
+	* glib-1.2.8/configure.in: Modify pthread_cond_timedwait test program
+	to avoid an undefined behavior that leads to a lockup on ia64-hpux.
+	* glib-1.2.8/configure: Regenerate.
+
 2004-01-07  J. Brobecker  <brobecker@gnat.com>
 
 	* pkg.c (verify_package): Fix a compilation failure when
@@ -25,3 +31,65 @@ diff -c -p ../pkgconfig-0.14.0.orig/pkg.c ./pkg.c
   		{
   		  debug_spew ("Package %s has %s in Cflags\n",
   			      pkg->name, (gchar *)iter->data);
+diff -rc ../pkgconfig-0.14.0.ref/glib-1.2.8/configure.in ./glib-1.2.8/configure.in
+*** ../pkgconfig-0.14.0.ref/glib-1.2.8/configure.in	Wed May 24 20:29:09 2000
+--- ./glib-1.2.8/configure.in	Thu Oct 13 12:34:54 2005
+***************
+*** 836,846 ****
+  			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+  			struct timeval tval;
+  			struct timespec tspec;
+  			gettimeofday (&tval, NULL);
+  			tspec.tv_sec = tval.tv_sec;
+  			tspec.tv_nsec = 0;
+! 			return pthread_cond_timedwait (&cond,&mutex,&tspec) 
+! 				!= -1;}],
+  			[AC_MSG_RESULT(no)],
+  			[AC_MSG_RESULT(yes)
+  			AC_DEFINE(HAVE_PTHREAD_COND_TIMEDWAIT_POSIX)])
+--- 836,849 ----
+  			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+  			struct timeval tval;
+  			struct timespec tspec;
++ 			int result;
+  			gettimeofday (&tval, NULL);
+  			tspec.tv_sec = tval.tv_sec;
+  			tspec.tv_nsec = 0;
+! 			pthread_mutex_lock (&mutex);
+! 			result = pthread_cond_timedwait (&cond,&mutex,&tspec) 
+! 			pthread_mutex_unlock (&mutex);
+! 			return result != -1;}],
+  			[AC_MSG_RESULT(no)],
+  			[AC_MSG_RESULT(yes)
+  			AC_DEFINE(HAVE_PTHREAD_COND_TIMEDWAIT_POSIX)])
+diff -rc ../pkgconfig-0.14.0.ref/glib-1.2.8/configure ./glib-1.2.8/configure
+*** ../pkgconfig-0.14.0.ref/glib-1.2.8/configure	Thu Oct 10 17:17:32 2002
+--- ./glib-1.2.8/configure	Thu Oct 13 12:36:39 2005
+***************
+*** 5352,5362 ****
+  			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+  			struct timeval tval;
+  			struct timespec tspec;
+  			gettimeofday (&tval, NULL);
+  			tspec.tv_sec = tval.tv_sec;
+  			tspec.tv_nsec = 0;
+! 			return pthread_cond_timedwait (&cond,&mutex,&tspec) 
+! 				!= -1;}
+  EOF
+  if { (eval echo configure:5362: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+  then
+--- 5352,5365 ----
+  			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+  			struct timeval tval;
+  			struct timespec tspec;
++ 			int result;
+  			gettimeofday (&tval, NULL);
+  			tspec.tv_sec = tval.tv_sec;
+  			tspec.tv_nsec = 0;
+! 			pthread_mutex_lock (&mutex);
+! 			result = pthread_cond_timedwait (&cond,&mutex,&tspec) 
+! 			pthread_mutex_unlock (&mutex);
+! 			return result != -1;}
+  EOF
+  if { (eval echo configure:5362: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+  then
