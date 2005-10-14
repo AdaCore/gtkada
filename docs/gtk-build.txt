@@ -165,15 +165,12 @@ cd ..
 # This step is not needed under Solaris & Linux
 # It is needed under HP-UX, Tru64 5.1a, IRIX 6.5, AIX 5.1
 
-tar xzvf gettext-0.11.5.tar.gz
-cd gettext-0.11.5
+tar xzvf gettext-0.14.5.tar.gz
+cd gettext-0.14.5
 ./configure --prefix=$prefix
 
 make
 make install
-
-# Under HP-UX, remove -R$prefix/lib in $prefix/lib/libintl.la to work around
-# a gettext bug, fixed in recent (CVS) versions of gettext.
 
 cd ..
 
