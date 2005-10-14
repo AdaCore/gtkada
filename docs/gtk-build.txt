@@ -38,7 +38,8 @@ prefix=/opt/gtk-2.0
 tar xzvf pkgconfig-0.14.0.tar.gz
 cd pkgconfig-0.14.0
 
-# IRIX: Apply the following patch to avoid an error with SGI cc:
+# IRIX: Apply the following patch to avoid an error with SGI cc.
+# ia64-hpux: Apply this patch as well, to avoid a hangup during configure.
 # patch -p0 < .../GtkAda/contrib/pkgconfig-0.14.0.diff
 
 ./configure --prefix=$prefix
