@@ -80,7 +80,7 @@ EOF
 
 generate_static ${module}_Static ${lcmodule}_static
 
-if [ x"$has_shared" != x ]; then
+if [ x"$has_shared" = xyes ]; then
   generate_shared ${module}_Relocatable ${lcmodule}_relocatable
   generate_shared ${module} ${lcmodule}
 else
