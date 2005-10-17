@@ -969,13 +969,11 @@ package body Gtk.Extra.Sheet is
    is
       procedure Internal
         (Sheet     : System.Address;
-         The_Range : access Gtk_Sheet_Range);
+         The_Range : Gtk_Sheet_Range);
       pragma Import (C, Internal, "gtk_sheet_range_clear");
 
-      R : aliased Gtk_Sheet_Range := The_Range;
-
    begin
-      Internal (Get_Object (Sheet), R'Access);
+      Internal (Get_Object (Sheet), The_Range);
    end Range_Clear;
 
    ------------------
