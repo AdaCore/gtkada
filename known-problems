@@ -1,3 +1,9 @@
+- EA03-011: Gtk.Extra.Sheet.Select_Range seg fault
+  Problem:    There is a bug in the the Gtk.Extra.Sheet.Select_Range binding
+              that prevent this subprogram from working at all. Same for
+              Gtk.Extra.Sheet.Clear_Range.
+  Workaround: No known workaround.
+
 Known problems fixed in GtkAda 2.4.2
 
 - E902-004: Non-resizeable windows are still resizeable under Windows
