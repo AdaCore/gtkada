@@ -8,6 +8,51 @@ libs=`../src/gtkada-config --libs`
 
 lcmodule=`echo $module | tr A-Z a-z`
 
+#### Create the linker page
+
+echo_linker() {
+   shared=$1
+
+   echo "   package Linker is"
+   echo "      for Linker_Options use ("
+
+   if [ x$lcmodule = xgtkada ]; then
+      cpt=0
+      for j in $libs; do
+         lib="$j"
+         if [ x"$lib" = x"-lgtkada" ]; then
+            if [ $shared = 0 ]; then
+               lib=""
+            else
+               lib="${prefix}/lib/libgtkada.a"
+            fi
+         fi
+
+         if [ x"$lib" != x ]; then
+            if [ $cpt -eq 1 ]; then
+               echo ","
+            fi
+            cpt=1
+            echo -n "        \"$lib\""
+         fi
+      done
+
+      case `uname` in
+         *_NT*)
+            echo ","
+            echo -n "         \"-luser32\""
+         ;;
+      esac
+
+   else
+      echo -n "        \"$prefix/lib/lib${lcmodule}.a\""
+   fi
+
+   echo ");"
+   echo "   end Linker;"
+}
+
+
 #### Generate the project file for the relocatable library
 
 generate_shared() {
@@ -22,6 +67,9 @@ project ${uc} is
    for Library_Kind use "relocatable";
    for Library_Name use "${lcmodule}";
    for Externally_Built use "true";
+EOF
+  echo_linker 1 >> ${lc}.gpr
+  cat <<EOF >> ${lc}.gpr
 end ${uc};
 EOF
 }
@@ -37,41 +85,9 @@ project ${uc} is
    for Source_List_File use "gtkada/${lcmodule}.lgpr";
    for Externally_Built use "true";
    for Object_Dir use "../gtkada";
-
-   package Linker is
-      for Linker_Options use (
 EOF
-
-if [ x$lcmodule = xgtkada ]; then
-   cpt=0
-   for j in $libs; do
-      lib="$j"
-      if [ x"$lib" = x"-lgtkada" ]; then
-         lib="${prefix}/lib/libgtkada.a"
-      fi
-
-      if [ $cpt -eq 1 ]; then
-         echo "," >> ${lcmodule}_static.gpr
-      fi
-      cpt=1
-
-      echo -n "        \"$lib\"" >> ${lcmodule}_static.gpr
-   done
-
-   case `uname` in
-      *_NT*)
-         echo "," >> ${lcmodule}_static.gpr
-         echo -n "         \"-luser32\"" >> ${lcmodule}_static.gpr
-      ;;
-   esac
-
-else
-   echo -n "        \"$prefix/lib/lib${lcmodule}.a\"" >> ${lcmodule}_static.gpr
-fi
-
-   cat <<EOF >> ${lcmodule}_static.gpr
-);
-   end Linker;
+  echo_linker 0 >> ${lc}.gpr
+  cat <<EOF >> ${lc}.gpr
 end ${uc};
 EOF
 
