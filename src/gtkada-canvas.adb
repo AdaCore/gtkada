@@ -3043,7 +3043,8 @@ package body Gtkada.Canvas is
          Changed (Canvas.Vadj);
       end if;
 
-      -- Is the box larger than the view ?
+      --  Is the box larger than the view ?
+
       if Gdouble (Item.Coord.Height) >= Get_Page_Size (Canvas.Vadj) then
          Visible_Height := Get_Page_Size (Canvas.Vadj);
       else
