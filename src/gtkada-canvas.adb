@@ -98,7 +98,7 @@ package body Gtkada.Canvas is
    --  area or moved outside of the canvas)
 
    Scrolling_Amount_Min      : constant Gfloat := 10.0;
-   Scrolling_Amount_Max      : constant Gfloat := 50.0;
+   Scrolling_Amount_Max      : constant Gfloat := 20.0;
    Scrolling_Amount_Increase : constant Gfloat := 1.05;  --  +5% every step
    --  Number of pixels to scroll while the mouse is in the surrounding
    --  box. This is the initial value, and will keep increasing while the mouse
@@ -2971,6 +2971,8 @@ package body Gtkada.Canvas is
       Y2 : constant Gint :=
         To_Canvas_Coordinates (Canvas, Y + Gint (Item.Coord.Height));
       Adj_Changed : Boolean := False;
+
+      Visible_Height : Gdouble;
    begin
       --  If no size was allocated yet, memorize the item for later (see
       --  the callback for size_allocate)
@@ -3041,14 +3043,24 @@ package body Gtkada.Canvas is
          Changed (Canvas.Vadj);
       end if;
 
+      -- Is the box larger than the view ?
+      if Gdouble (Item.Coord.Height) >= Get_Page_Size (Canvas.Vadj) then
+         Visible_Height := Get_Page_Size (Canvas.Vadj);
+      else
+         Visible_Height := Gdouble (Item.Coord.Height);
+      end if;
+
       if Y1 < Gint (Get_Value (Canvas.Vadj)) then
          Set_Value
-           (Canvas.Vadj, Gdouble (Y1) - Get_Page_Size (Canvas.Vadj) / 2.0);
+           (Canvas.Vadj, Gdouble (Y1));
       elsif Gdouble (Y2) >
         Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj)
       then
          Set_Value
-           (Canvas.Vadj, Gdouble (Y2) - Get_Page_Size (Canvas.Vadj) / 2.0);
+           (Canvas.Vadj,
+            Gdouble (To_Canvas_Coordinates
+              (Canvas, Y + Gint (Visible_Height)))
+            - Get_Page_Size (Canvas.Vadj));
       end if;
    end Show_Item;
 
