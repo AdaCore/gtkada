@@ -831,21 +831,34 @@ package body Gtkada.Canvas is
       Canvas.Auto_Layout := Auto_Layout;
    end Set_Auto_Layout;
 
+   ----------------------------
+   -- Set_Layout_Orientation --
+   ----------------------------
+
+   procedure Set_Layout_Orientation
+     (Canvas          : access Interactive_Canvas_Record;
+      Vertical_Layout : Boolean := False)
+   is
+   begin
+      Canvas.Vertical_Layout := Vertical_Layout;
+   end Set_Layout_Orientation;
+
    ------------
    -- Layout --
    ------------
 
    procedure Layout
      (Canvas : access Interactive_Canvas_Record;
-      Force  : Boolean := False;
-      Vertical_Layout : Boolean := False)
+      Force  : Boolean := False)
    is
       Step  : constant Gint := Gint (Canvas.Grid_Size);
       Items : Vertex_Iterator;
       Item : Canvas_Item;
       Min_X, Min_Y : Gint := Gint'Last;
    begin
-      Canvas.Layout (Canvas, Canvas.Children, Force, Vertical_Layout);
+      Canvas.Layout (Canvas, Canvas.Children,
+                     Force           => Force,
+                     Vertical_Layout => Canvas.Vertical_Layout);
 
       Items := First (Canvas.Children);
       while not At_End (Items) loop
@@ -3064,6 +3077,23 @@ package body Gtkada.Canvas is
             - Get_Page_Size (Canvas.Vadj));
       end if;
    end Show_Item;
+
+   ----------------
+   -- Align_Item --
+   ----------------
+
+   procedure Align_Item
+     (Canvas  : access Interactive_Canvas_Record;
+      Item    : access Canvas_Item_Record'Class;
+      X_Align : Float := 0.5;
+      Y_Align : Float := 0.5) is
+   begin
+      Show_Item (Canvas, Item,
+                 Get_Allocation_X (Canvas)
+                   + Gint (Float (Get_Allocation_Width (Canvas)) * X_Align),
+                 Get_Allocation_Y (Canvas)
+                   + Gint (Float (Get_Allocation_Height (Canvas)) * Y_Align));
+   end Align_Item;
 
    ---------------
    -- Show_Item --

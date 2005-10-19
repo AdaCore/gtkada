@@ -364,7 +364,17 @@ package Gtkada.Canvas is
    procedure Show_Item
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class);
-   --  Scroll the canvas so that Item is visible.
+   --  Scroll the canvas so that Item is visible. Nothing is done if the item
+   --  is already visible
+
+   procedure Align_Item
+     (Canvas  : access Interactive_Canvas_Record;
+      Item    : access Canvas_Item_Record'Class;
+      X_Align : Float := 0.5;
+      Y_Align : Float := 0.5);
+   --  Scroll the canvas so that the Item appears at the given location in the
+   --  canvas. If X_Align is 0.0, the item is align on the left. With 0.5, it
+   --  is centered horizontally. If 1.0, it is aligned on the right.
 
    --------------------------
    -- Iterating over items --
@@ -515,10 +525,15 @@ package Gtkada.Canvas is
    --  recomputation of the layout, preferably after inserting a number of
    --  items.
 
+   procedure Set_Layout_Orientation
+     (Canvas          : access Interactive_Canvas_Record;
+      Vertical_Layout : Boolean := False);
+   --  Specify the layout orientation to use for this canvas. The setting is
+   --  passed as a parameter to the layout algorithm
+
    procedure Layout
      (Canvas          : access Interactive_Canvas_Record;
-      Force           : Boolean := False;
-      Vertical_Layout : Boolean := False);
+      Force           : Boolean := False);
    --  Recompute the layout of the canvas.
    --  Force can be used to control the layout algorithm, as described above
    --  for Layout_Algorithm.
@@ -956,6 +971,7 @@ private
 
       Layout            : Layout_Algorithm := Default_Layout_Algorithm'Access;
       Auto_Layout       : Boolean := True;
+      Vertical_Layout   : Boolean := False;
       --  The algorithm to use when laying out items on the canvas.
 
       Selection         : Item_Selection_List := null;
