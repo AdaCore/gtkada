@@ -467,17 +467,25 @@ package Gtkada.Canvas is
    ---------------------
 
    type Layout_Algorithm is access procedure
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Graph : Glib.Graphs.Graph;
-      Force : Boolean;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      Graph           : Glib.Graphs.Graph;
+      Force           : Boolean;
       Vertical_Layout : Boolean);
    --  A general layout algorithm. It should compute the position of all the
    --  vertices of the graph, and set them directly in the graph itself.
-   --  NoteL all the vertices in the graph are of time Canvad_Item_Record'Class
+   --  Note: all the vertices in the graph are of time Canvas_Item_Record'Class
    --  and you should use that to set the coordinates through a call to
    --  Move_To.
-   --  if Force is False, then only the item at location (Gint'First,
-   --  Gint'First) should be moved.
+   --
+   --  Algorithms are encouraged to preserve the current layout as much as
+   --  possible, taking into account items that have been moved manually by
+   --  the user, so that the latter can preserver his mental map of the graph.
+   --  However, if Force is set to True, then the whole layout should be
+   --  recomputed as if all items had just been inserted.
+   --
+   --  Items that have just been inserted in the graph, but whose position has
+   --  never been computed, are set at coordinates (Gint'First, Gint'First).
+   --  Check the result of Get_Coord.
    --
    --  This function doesn't need to align items, this is done automatically by
    --  the canvas if necessary.
@@ -489,9 +497,9 @@ package Gtkada.Canvas is
    --  Algorithm mustn't be null.
 
    procedure Default_Layout_Algorithm
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Graph : Glib.Graphs.Graph;
-      Force : Boolean;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      Graph           : Glib.Graphs.Graph;
+      Force           : Boolean;
       Vertical_Layout : Boolean);
    --  The default algorithm used in the canvas.
    --  Basically, items are put next to each other, unless there is a link
@@ -499,18 +507,21 @@ package Gtkada.Canvas is
    --  as space allows.
 
    procedure Set_Auto_Layout
-     (Canvas : access Interactive_Canvas_Record;
+     (Canvas      : access Interactive_Canvas_Record;
       Auto_Layout : Boolean);
-   --  If Auto_Layout is true, then the items will be automatically layed out
-   --  when inserted in the canvas, if no coordinates are specified.
+   --  If Auto_Layout is true, then every time an item is inserted in the
+   --  canvas, the layout algorithm is called. If set to False, it is the
+   --  responsability of the caller to call Layout below to force a
+   --  recomputation of the layout, preferably after inserting a number of
+   --  items.
 
    procedure Layout
-     (Canvas : access Interactive_Canvas_Record;
-      Force  : Boolean := False;
+     (Canvas          : access Interactive_Canvas_Record;
+      Force           : Boolean := False;
       Vertical_Layout : Boolean := False);
    --  Recompute the layout of the canvas.
-   --  If Force is False, only the items that don't already have a location are
-   --  moved.
+   --  Force can be used to control the layout algorithm, as described above
+   --  for Layout_Algorithm.
 
    -----------
    -- Links --
