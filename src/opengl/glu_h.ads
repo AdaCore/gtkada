@@ -28,10 +28,13 @@ package glu_h is
 
    --
    --  $Log$
+   --  Revision 1.2  2005/10/21 12:57:21  briot
+   --  Fix installation (missing some files, and some were not compiled correctly)
+   --
    --  Revision 1.1  1999/09/24 08:37:15  briot
    --  These two files provide a very basic binding to the openGL library (they
-   --  were generated from the Mesa files). These are mainly provided as examples,
-   --  not as a full binding
+   --  were generated from the Mesa files). These are mainly provided as
+   --  examples,  not as a full binding
    --
    --  Revision 3.2  1998/07/26 01:36:27  brianp
    --  changes for Windows compilation per Ted Jump
@@ -44,7 +47,7 @@ package glu_h is
    --
 
             --   to facilitate clean DLL building ...
-     --  tag specifying we're building for DLL runtime support
+   --  tag specifying we're building for DLL runtime support
 
    GLU_VERSION_1_1 : constant := 1;
    GLU_TRUE        : constant := 1;
@@ -155,7 +158,7 @@ package glu_h is
 
    type GLUquadricObj is new Interfaces.C.Extensions.opaque_structure_def;
    type GLUquadricObj_Ptr      is access GLUquadricObj;
-   type GLUtriangulatorObj is new     Interfaces.C.Extensions.opaque_structure_def;
+   type GLUtriangulatorObj is new Interfaces.C.Extensions.opaque_structure_def;
    type GLUtriangulatorObj_Ptr is access GLUtriangulatorObj;
    type GLUnurbsObj is new Interfaces.C.Extensions.opaque_structure_def;
    type GLUnurbsObj_Ptr        is access GLUnurbsObj;
@@ -164,78 +167,78 @@ package glu_h is
    --  Miscellaneous functions
    --
 
-   procedure gluLookAt (eyex    : Gl_H.GLdouble;
-                        eyey    : Gl_H.GLdouble;
-                        eyez    : Gl_H.GLdouble;
-                        centerx : Gl_H.GLdouble;
-                        centery : Gl_H.GLdouble;
-                        centerz : Gl_H.GLdouble;
-                        upx     : Gl_H.GLdouble;
-                        upy     : Gl_H.GLdouble;
-                        upz     : Gl_H.GLdouble);
-   procedure gluOrtho2D (left   : Gl_H.GLdouble;
-                         right  : Gl_H.GLdouble;
-                         bottom : Gl_H.GLdouble;
-                         top    : Gl_H.GLdouble);
-   procedure gluPerspective (fovy   : Gl_H.GLdouble;
-                             aspect : Gl_H.GLdouble;
-                             zNear  : Gl_H.GLdouble;
-                             zFar   : Gl_H.GLdouble);
-   procedure gluPickMatrix (x        : Gl_H.GLdouble;
-                            y        : Gl_H.GLdouble;
-                            width    : Gl_H.GLdouble;
-                            height   : Gl_H.GLdouble;
-                            viewport : Gl_H.GLint_Vec_4);
-   function gluProject (objx        : Gl_H.GLdouble;
-                        objy        : Gl_H.GLdouble;
-                        objz        : Gl_H.GLdouble;
-                        modelMatrix : Gl_H.GLdouble_Vec_16;
-                        projMatrix  : Gl_H.GLdouble_Vec_16;
-                        viewport    : Gl_H.GLint_Vec_4;
-                        winx        : access Gl_H.GLdouble;
-                        winy        : access Gl_H.GLdouble;
-                        winz        : access Gl_H.GLdouble) return Gl_H.GLint;
+   procedure gluLookAt (eyex    : gl_h.GLdouble;
+                        eyey    : gl_h.GLdouble;
+                        eyez    : gl_h.GLdouble;
+                        centerx : gl_h.GLdouble;
+                        centery : gl_h.GLdouble;
+                        centerz : gl_h.GLdouble;
+                        upx     : gl_h.GLdouble;
+                        upy     : gl_h.GLdouble;
+                        upz     : gl_h.GLdouble);
+   procedure gluOrtho2D (left   : gl_h.GLdouble;
+                         right  : gl_h.GLdouble;
+                         bottom : gl_h.GLdouble;
+                         top    : gl_h.GLdouble);
+   procedure gluPerspective (fovy   : gl_h.GLdouble;
+                             aspect : gl_h.GLdouble;
+                             zNear  : gl_h.GLdouble;
+                             zFar   : gl_h.GLdouble);
+   procedure gluPickMatrix (x        : gl_h.GLdouble;
+                            y        : gl_h.GLdouble;
+                            width    : gl_h.GLdouble;
+                            height   : gl_h.GLdouble;
+                            viewport : gl_h.GLint_Vec_4);
+   function gluProject (objx        : gl_h.GLdouble;
+                        objy        : gl_h.GLdouble;
+                        objz        : gl_h.GLdouble;
+                        modelMatrix : gl_h.GLdouble_Vec_16;
+                        projMatrix  : gl_h.GLdouble_Vec_16;
+                        viewport    : gl_h.GLint_Vec_4;
+                        winx        : access gl_h.GLdouble;
+                        winy        : access gl_h.GLdouble;
+                        winz        : access gl_h.GLdouble) return gl_h.GLint;
    function gluUnProject
-       (winx        : Gl_H.GLdouble;
-        winy        : Gl_H.GLdouble;
-        winz        : Gl_H.GLdouble;
-        modelMatrix : Gl_H.GLdouble_Vec_16;
-        projMatrix  : Gl_H.GLdouble_Vec_16;
-        viewport    : Gl_H.GLint_Vec_4;
-        objx        : access Gl_H.GLdouble;
-        objy        : access Gl_H.GLdouble;
-        objz        : access Gl_H.GLdouble) return Gl_H.GLint;
-   function gluErrorString (errorCode : Gl_H.GLenum) return Gl_H.GLubyte_Ptr;
+       (winx        : gl_h.GLdouble;
+        winy        : gl_h.GLdouble;
+        winz        : gl_h.GLdouble;
+        modelMatrix : gl_h.GLdouble_Vec_16;
+        projMatrix  : gl_h.GLdouble_Vec_16;
+        viewport    : gl_h.GLint_Vec_4;
+        objx        : access gl_h.GLdouble;
+        objy        : access gl_h.GLdouble;
+        objz        : access gl_h.GLdouble) return gl_h.GLint;
+   function gluErrorString (errorCode : gl_h.GLenum) return gl_h.GLubyte_Ptr;
 
    --
    --  Mipmapping and image scaling
    --
 
    function gluScaleImage
-       (format    : Gl_H.GLenum;
-        widthin   : Gl_H.GLint;
-        heightin  : Gl_H.GLint;
-        typein    : Gl_H.GLenum;
-        datain    : Interfaces.C.Extensions.Void_Ptr;
-        widthout  : Gl_H.GLint;
-        heightout : Gl_H.GLint;
-        typeout   : Gl_H.GLenum;
-        dataout   : Interfaces.C.Extensions.Void_Ptr) return Gl_H.GLint;
+       (format    : gl_h.GLenum;
+        widthin   : gl_h.GLint;
+        heightin  : gl_h.GLint;
+        typein    : gl_h.GLenum;
+        datain    : Interfaces.C.Extensions.void_ptr;
+        widthout  : gl_h.GLint;
+        heightout : gl_h.GLint;
+        typeout   : gl_h.GLenum;
+        dataout   : Interfaces.C.Extensions.void_ptr) return gl_h.GLint;
    function gluBuild1DMipmaps
-       (target     : Gl_H.GLenum;
-        components : Gl_H.GLint;
-        width      : Gl_H.GLint;
-        format     : Gl_H.GLenum;
-        type_Id    : Gl_H.GLenum;
-        data       : Interfaces.C.Extensions.Void_Ptr) return Gl_H.GLint;
+       (target     : gl_h.GLenum;
+        components : gl_h.GLint;
+        width      : gl_h.GLint;
+        format     : gl_h.GLenum;
+        type_Id    : gl_h.GLenum;
+        data       : Interfaces.C.Extensions.void_ptr) return gl_h.GLint;
    function gluBuild2DMipmaps
-       (target     : Gl_H.GLenum;
-        components : Gl_H.GLint;
-        width      : Gl_H.GLint;
-        height     : Gl_H.GLint;
-        format     : Gl_H.GLenum;
-        type_Id    : Gl_H.GLenum;
-        data       : Interfaces.C.Extensions.Void_Ptr) return Gl_H.GLint;
+       (target     : gl_h.GLenum;
+        components : gl_h.GLint;
+        width      : gl_h.GLint;
+        height     : gl_h.GLint;
+        format     : gl_h.GLenum;
+        type_Id    : gl_h.GLenum;
+        data       : Interfaces.C.Extensions.void_ptr) return gl_h.GLint;
 
    --
    --  Quadrics
@@ -244,41 +247,41 @@ package glu_h is
    function gluNewQuadric return GLUquadricObj_Ptr;
    procedure gluDeleteQuadric (state : access GLUquadricObj);
    procedure gluQuadricDrawStyle (quadObject : access GLUquadricObj;
-                                  drawStyle  : Gl_H.GLenum);
+                                  drawStyle  : gl_h.GLenum);
    procedure gluQuadricOrientation (quadObject  : access GLUquadricObj;
-                                    orientation : Gl_H.GLenum);
+                                    orientation : gl_h.GLenum);
    procedure gluQuadricNormals (quadObject : access GLUquadricObj;
-                                normals    : Gl_H.GLenum);
+                                normals    : gl_h.GLenum);
    procedure gluQuadricTexture (quadObject    : access GLUquadricObj;
-                                textureCoords : Gl_H.GLboolean);
+                                textureCoords : gl_h.GLboolean);
 
    type glu_h_proc_1 is access procedure;
 
    procedure gluQuadricCallback (qobj  : access GLUquadricObj;
-                                 which : Gl_H.GLenum;
+                                 which : gl_h.GLenum;
                                  fn    : glu_h_proc_1);
    procedure gluCylinder (qobj       : access GLUquadricObj;
-                          baseRadius : Gl_H.GLdouble;
-                          topRadius  : Gl_H.GLdouble;
-                          height     : Gl_H.GLdouble;
-                          slices     : Gl_H.GLint;
-                          stacks     : Gl_H.GLint);
+                          baseRadius : gl_h.GLdouble;
+                          topRadius  : gl_h.GLdouble;
+                          height     : gl_h.GLdouble;
+                          slices     : gl_h.GLint;
+                          stacks     : gl_h.GLint);
    procedure gluSphere (qobj   : access GLUquadricObj;
-                        radius : Gl_H.GLdouble;
-                        slices : Gl_H.GLint;
-                        stacks : Gl_H.GLint);
+                        radius : gl_h.GLdouble;
+                        slices : gl_h.GLint;
+                        stacks : gl_h.GLint);
    procedure gluDisk (qobj        : access GLUquadricObj;
-                      innerRadius : Gl_H.GLdouble;
-                      outerRadius : Gl_H.GLdouble;
-                      slices      : Gl_H.GLint;
-                      loops       : Gl_H.GLint);
+                      innerRadius : gl_h.GLdouble;
+                      outerRadius : gl_h.GLdouble;
+                      slices      : gl_h.GLint;
+                      loops       : gl_h.GLint);
    procedure gluPartialDisk (qobj        : access GLUquadricObj;
-                             innerRadius : Gl_H.GLdouble;
-                             outerRadius : Gl_H.GLdouble;
-                             slices      : Gl_H.GLint;
-                             loops       : Gl_H.GLint;
-                             startAngle  : Gl_H.GLdouble;
-                             sweepAngle  : Gl_H.GLdouble);
+                             innerRadius : gl_h.GLdouble;
+                             outerRadius : gl_h.GLdouble;
+                             slices      : gl_h.GLint;
+                             loops       : gl_h.GLint;
+                             startAngle  : gl_h.GLdouble;
+                             sweepAngle  : gl_h.GLdouble);
 
    --
    --  Nurbs
@@ -287,49 +290,49 @@ package glu_h is
    function gluNewNurbsRenderer return GLUnurbsObj_Ptr;
    procedure gluDeleteNurbsRenderer (nobj : access GLUnurbsObj);
    procedure gluLoadSamplingMatrices (nobj        : access GLUnurbsObj;
-                                      modelMatrix : Gl_H.GLfloat_Vec_16;
-                                      projMatrix  : Gl_H.GLfloat_Vec_16;
-                                      viewport    : Gl_H.GLint_Vec_4);
+                                      modelMatrix : gl_h.GLfloat_Vec_16;
+                                      projMatrix  : gl_h.GLfloat_Vec_16;
+                                      viewport    : gl_h.GLint_Vec_4);
    procedure gluNurbsProperty (nobj     : access GLUnurbsObj;
-                               property : Gl_H.GLenum;
-                               value    : Gl_H.GLfloat);
+                               property : gl_h.GLenum;
+                               value    : gl_h.GLfloat);
    procedure gluGetNurbsProperty (nobj     : access GLUnurbsObj;
-                                  property : Gl_H.GLenum;
-                                  value    : access Gl_H.GLfloat);
+                                  property : gl_h.GLenum;
+                                  value    : access gl_h.GLfloat);
    procedure gluBeginCurve (nobj : access GLUnurbsObj);
    procedure gluEndCurve (nobj : access GLUnurbsObj);
    procedure gluNurbsCurve (nobj     : access GLUnurbsObj;
-                            nknots   : Gl_H.GLint;
-                            knot     : access Gl_H.GLfloat;
-                            stride   : Gl_H.GLint;
-                            ctlarray : access Gl_H.GLfloat;
-                            order    : Gl_H.GLint;
-                            type_Id  : Gl_H.GLenum);
+                            nknots   : gl_h.GLint;
+                            knot     : access gl_h.GLfloat;
+                            stride   : gl_h.GLint;
+                            ctlarray : access gl_h.GLfloat;
+                            order    : gl_h.GLint;
+                            type_Id  : gl_h.GLenum);
    procedure gluBeginSurface (nobj : access GLUnurbsObj);
    procedure gluEndSurface (nobj : access GLUnurbsObj);
    procedure gluNurbsSurface (nobj        : access GLUnurbsObj;
-                              sknot_count : Gl_H.GLint;
-                              sknot       : access Gl_H.GLfloat;
-                              tknot_count : Gl_H.GLint;
-                              tknot       : access Gl_H.GLfloat;
-                              s_stride    : Gl_H.GLint;
-                              t_stride    : Gl_H.GLint;
-                              ctlarray    : access Gl_H.GLfloat;
-                              sorder      : Gl_H.GLint;
-                              torder      : Gl_H.GLint;
-                              type_Id     : Gl_H.GLenum);
+                              sknot_count : gl_h.GLint;
+                              sknot       : access gl_h.GLfloat;
+                              tknot_count : gl_h.GLint;
+                              tknot       : access gl_h.GLfloat;
+                              s_stride    : gl_h.GLint;
+                              t_stride    : gl_h.GLint;
+                              ctlarray    : access gl_h.GLfloat;
+                              sorder      : gl_h.GLint;
+                              torder      : gl_h.GLint;
+                              type_Id     : gl_h.GLenum);
    procedure gluBeginTrim (nobj : access GLUnurbsObj);
    procedure gluEndTrim (nobj : access GLUnurbsObj);
    procedure gluPwlCurve (nobj     : access GLUnurbsObj;
-                          count    : Gl_H.GLint;
-                          array_Id : access Gl_H.GLfloat;
-                          stride   : Gl_H.GLint;
-                          type_Id  : Gl_H.GLenum);
+                          count    : gl_h.GLint;
+                          array_Id : access gl_h.GLfloat;
+                          stride   : gl_h.GLint;
+                          type_Id  : gl_h.GLenum);
 
    type glu_h_proc_2 is access procedure;
 
    procedure gluNurbsCallback (nobj  : access GLUnurbsObj;
-                               which : Gl_H.GLenum;
+                               which : gl_h.GLenum;
                                fn    : glu_h_proc_2);
 
    --
@@ -341,22 +344,22 @@ package glu_h is
    type glu_h_proc_3 is access procedure;
 
    procedure gluTessCallback (tobj  : access GLUtriangulatorObj;
-                              which : Gl_H.GLenum;
+                              which : gl_h.GLenum;
                               fn    : glu_h_proc_3);
    procedure gluDeleteTess (tobj : access GLUtriangulatorObj);
    procedure gluBeginPolygon (tobj : access GLUtriangulatorObj);
    procedure gluEndPolygon (tobj : access GLUtriangulatorObj);
    procedure gluNextContour (tobj    : access GLUtriangulatorObj;
-                             type_Id : Gl_H.GLenum);
+                             type_Id : gl_h.GLenum);
    procedure gluTessVertex (tobj : access GLUtriangulatorObj;
-                            v    : Gl_H.GLdouble_Vec_3;
-                            data : Interfaces.C.Extensions.Void_Ptr);
+                            v    : gl_h.GLdouble_Vec_3;
+                            data : Interfaces.C.Extensions.void_ptr);
 
    --
    --  New functions in GLU 1.1
    --
 
-   function gluGetString (name : Gl_H.GLenum) return Gl_H.GLubyte_Ptr;
+   function gluGetString (name : gl_h.GLenum) return gl_h.GLubyte_Ptr;
 
 private
 
