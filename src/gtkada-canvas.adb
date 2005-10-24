@@ -268,12 +268,19 @@ package body Gtkada.Canvas is
    --  reason nothing happened
 
    procedure Show_Item
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item   : access Canvas_Item_Record'Class;
-      X, Y   : Gint;
+     (Canvas             : access Interactive_Canvas_Record'Class;
+      Item               : access Canvas_Item_Record'Class;
+      Item_X, Item_Y     : Gint;
+      Canvas_X, Canvas_Y : Gdouble := 0.5;
       Report_Adj_Changed : Boolean := True);
-   --  Like Show_Item, but use X, Y for the coordinates instead of the
-   --  ones available in Item.
+   --  Like Show_Item, but use Item_X, Item_Y for the coordinates instead of
+   --  the ones available in Item. This is used while dragging the item inside
+   --  the canvas.
+   --  (Canvas_X, Canvas_Y) are the position in the canvas where the center of
+   --  the item should be put. (0,0) is on the top-left, (1,1) is bottom-right.
+   --
+   --  Nothing is done if the item is already visible.
+   --
    --  If Report_Adj_Changed is true, the "changed" signal might be sent if the
    --  adjustments are changed. However, this might result in flickering.
 
@@ -573,7 +580,9 @@ package body Gtkada.Canvas is
       Update_Adjustments (Canvas);
 
       if Canvas.Show_Item /= null then
-         Show_Item (Canvas, Canvas.Show_Item);
+         Put_Line ("MANU Size_Allocate");
+         Show_Item (Canvas, Canvas.Show_Item, Canvas.Show_X, Canvas.Show_Y,
+                    Canvas.Show_Canvas_X, Canvas.Show_Canvas_Y);
          Canvas.Show_Item := null;
       end if;
    end Size_Allocate;
@@ -636,6 +645,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class)
    is
       X_Max, Y_Max, X_Min, Y_Min : Gint;
+      Lower, Upper : Gdouble;
    begin
       Get_Bounding_Box (Canvas, X_Min, X_Max, Y_Min, Y_Max);
       X_Min := To_Canvas_Coordinates (Canvas, X_Min);
@@ -646,23 +656,31 @@ package body Gtkada.Canvas is
       --  If the non-visible part of the canvas (left of the displayed area)
       --  contains no item, we can delete that part. However, avoid any visible
       --  scrolling, which is disturbing for the user.
-      Set_Lower
-        (Canvas.Hadj, Gdouble'Min (Get_Value (Canvas.Hadj), Gdouble (X_Min)));
-      Set_Upper
-        (Canvas.Hadj,
-         Gdouble'Max
-           (Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj),
-            Gdouble (X_Max)));
+      Lower := Gdouble'Min (Get_Value (Canvas.Hadj), Gdouble (X_Min));
+      Upper := Gdouble'Max
+        (Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj),
+         Gdouble (X_Max));
+
+      Set_Lower (Canvas.Hadj, Lower);
+      Set_Upper (Canvas.Hadj, Upper);
       Changed (Canvas.Hadj);
 
-      Set_Lower
-        (Canvas.Vadj, Gdouble'Min (Get_Value (Canvas.Vadj), Gdouble (Y_Min)));
-      Set_Upper
-        (Canvas.Vadj,
-         Gdouble'Max
-           (Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj),
-            Gdouble (Y_Max)));
+      if Get_Page_Size (Canvas.Hadj) <= Upper - Lower then
+         Set_Value (Canvas.Hadj, Lower);
+      end if;
+
+      Lower := Gdouble'Min (Get_Value (Canvas.Vadj), Gdouble (Y_Min));
+      Upper := Gdouble'Max
+        (Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj),
+         Gdouble (Y_Max));
+
+      Set_Lower (Canvas.Vadj, Lower);
+      Set_Upper (Canvas.Vadj, Upper);
       Changed (Canvas.Vadj);
+
+      if Get_Page_Size (Canvas.Vadj) <= Upper - Lower then
+         Set_Value (Canvas.Vadj, Lower);
+      end if;
    end Update_Adjustments;
 
    ------------------------------
@@ -855,6 +873,7 @@ package body Gtkada.Canvas is
       Items : Vertex_Iterator;
       Item : Canvas_Item;
       Min_X, Min_Y : Gint := Gint'Last;
+      Max_X, Max_Y : Gint := Gint'First;
    begin
       Canvas.Layout (Canvas, Canvas.Children,
                      Force           => Force,
@@ -865,6 +884,8 @@ package body Gtkada.Canvas is
          Item := Canvas_Item (Get (Items));
          Min_X := Gint'Min (Min_X, Item.Coord.X);
          Min_Y := Gint'Min (Min_Y, Item.Coord.Y);
+         Max_X := Gint'Max (Max_X, Item.Coord.X + Item.Coord.Width);
+         Max_Y := Gint'Max (Max_Y, Item.Coord.Y + Item.Coord.Height);
 
          if Force then
             Item.From_Auto_Layout := True;
@@ -875,10 +896,26 @@ package body Gtkada.Canvas is
       Items := First (Canvas.Children);
       while not At_End (Items) loop
          Item := Canvas_Item (Get (Items));
-         if Item.From_Auto_Layout then
+
+         --  Normalize the coordinates, so that we are stay in Integer'Range.
+         --  Since this causes unwanted scrolling when new boxes are added, we
+         --  only do it to keep a safe margin when the user moves a box around,
+         --  and thus only when absolutly needed.
+         if Max_X > Gint'Last - 5000
+           or else Max_Y > Gint'Last - 5000
+           or else Min_X < Gint'First + 5000
+           or else Min_Y < Gint'First + 5000
+         then
+            if Traces then
+               Put_Line ("Layout: Changing all items: Min="
+                 & Gint'Image (Min_X) & Gint'Image (Min_Y)
+                         & " Max=" & Gint'Image (Max_X) & Gint'Image (Max_Y));
+            end if;
             Item.Coord.X := Item.Coord.X - Min_X;
             Item.Coord.Y := Item.Coord.Y - Min_Y;
+         end if;
 
+         if Item.From_Auto_Layout then
             if Canvas.Align_On_Grid then
                Item.Coord.X := Item.Coord.X - Item.Coord.X mod Step;
                Item.Coord.Y := Item.Coord.Y - Item.Coord.Y mod Step;
@@ -887,6 +924,8 @@ package body Gtkada.Canvas is
 
          Next (Items);
       end loop;
+
+      Update_Adjustments (Canvas);
    end Layout;
 
    --------------------------
@@ -2824,6 +2863,7 @@ package body Gtkada.Canvas is
                       & Gint'Image (Canvas.Selection.Y));
          end if;
 
+         Update_Adjustments (Canvas);
          Show_Item
            (Canvas, Canvas.Selection.Item,
             Canvas.Selection.X, Canvas.Selection.Y,
@@ -2972,110 +3012,91 @@ package body Gtkada.Canvas is
    ---------------
 
    procedure Show_Item
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item   : access Canvas_Item_Record'Class;
-      X, Y   : Gint;
+     (Canvas             : access Interactive_Canvas_Record'Class;
+      Item               : access Canvas_Item_Record'Class;
+      Item_X, Item_Y     : Gint;
+      Canvas_X, Canvas_Y : Gdouble := 0.5;
       Report_Adj_Changed : Boolean := True)
    is
-      X1 : constant Gint := To_Canvas_Coordinates (Canvas, X);
-      Y1 : constant Gint := To_Canvas_Coordinates (Canvas, Y);
+      pragma Unreferenced (Report_Adj_Changed);
+      Hvalue  : constant Gdouble := Get_Value (Canvas.Hadj);
+      Hpage   : constant Gdouble := Get_Page_Size (Canvas.Hadj);
+      X1 : constant Gint := To_Canvas_Coordinates (Canvas, Item_X);
       X2 : constant Gint :=
-        To_Canvas_Coordinates (Canvas, X + Gint (Item.Coord.Width));
-      Y2 : constant Gint :=
-        To_Canvas_Coordinates (Canvas, Y + Gint (Item.Coord.Height));
-      Adj_Changed : Boolean := False;
+        To_Canvas_Coordinates (Canvas, Item_X + Gint (Item.Coord.Width));
+      Value : Gdouble;
 
-      Visible_Height : Gdouble;
+      Vvalue  : constant Gdouble := Get_Value (Canvas.Vadj);
+      Vpage   : constant Gdouble := Get_Page_Size (Canvas.Vadj);
+      Y1 : constant Gint := To_Canvas_Coordinates (Canvas, Item_Y);
+      Y2 : constant Gint :=
+        To_Canvas_Coordinates (Canvas, Item_Y + Gint (Item.Coord.Height));
    begin
+      if Traces then
+         Put_Line ("Show_Item: X,Y=" & Gint'Image (Item_X)
+                   & Gint'Image (Item_Y) & " Item="
+                   & Integer'Image (Get_Index (Item))
+                   & " Canvas=" & Gdouble'Image (Canvas_X)
+                   & Gdouble'Image (Canvas_Y));
+      end if;
+
       --  If no size was allocated yet, memorize the item for later (see
       --  the callback for size_allocate)
+
       if Get_Allocation_Width (Canvas) = 1
         or else Get_Allocation_Height (Canvas) = 1
       then
+         if Traces then
+            Put_Line ("Show_Item: Canvas not realized");
+         end if;
          Canvas.Show_Item := Canvas_Item (Item);
+         Canvas.Show_X        := Item_X;
+         Canvas.Show_Y        := Item_Y;
+         Canvas.Show_Canvas_X := Canvas_X;
+         Canvas.Show_Canvas_Y := Canvas_Y;
+         return;
       end if;
 
-      --  Do we need to scroll the canvas to the right to show the item?
+      --  If the item is already visible, do nothing.
+      --  This is disabled for now, since otherwise the initial display in a
+      --  browser would not show all the items, even when they would otherwise
+      --  all fit in the visible part of the browser.
 
-      if X2 > Gint (Get_Upper (Canvas.Hadj)) then
-         Set_Upper (Canvas.Hadj, Gdouble (X2));
-         Adj_Changed := True;
-      end if;
-
-      --  In case the item is larger than the canvas, make sure we display
-      --  its right-most part
-      --      ----------------------------
-      --     |                            |
-      --     |                          ------
-      --     |                         |      |
-      --     |                         |      |
-      --     |                          ------
-      --     |                            |
-      --      ----------------------------
-      --     ^                            ^
-      --   value                    value + page_size
-      --                                      ^
-      --                                      X2
-
-      --  Do we need to scroll the canvas to the left ?
-
-      if X1 < Gint (Get_Lower (Canvas.Hadj)) then
-         Set_Lower (Canvas.Hadj, Gdouble (X1));
-         Adj_Changed := True;
-      end if;
-
-      if Report_Adj_Changed and then Adj_Changed then
-         Changed (Canvas.Hadj);
-      end if;
-
-      if X1 < Gint (Get_Value (Canvas.Hadj)) then
-         Set_Value (Canvas.Hadj, Gdouble (X1));
-      elsif Gdouble (X2) >
-        Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj)
+      if X1 >= Gint (Hvalue)
+        and then X2 <= Gint (Hvalue + Hpage)
+        and then Y1 >= Gint (Vvalue)
+        and then Y2 <= Gint (Vvalue + Vpage)
       then
-         Set_Value (Canvas.Hadj, Gdouble (X2) - Get_Page_Size (Canvas.Hadj));
+         if Traces then
+            Put_Line ("Show_Item: Nothing to do for item "
+                      & Integer'Image (Get_Index (Item)));
+         end if;
+         return;
       end if;
 
-      --  Do we need to scroll the canvas to the top to show the selection?
+      --  Change the adjustments to make the item visible
 
-      Adj_Changed := False;
-
-      if Y2 > Gint (Get_Upper (Canvas.Vadj)) then
-         Set_Upper (Canvas.Vadj, Gdouble (Y2));
-         Adj_Changed := True;
+      Value := Gdouble (To_Canvas_Coordinates (Canvas, Item_X))
+        - (Hpage - Gdouble (To_Canvas_Coordinates (Canvas, Item.Coord.Width)))
+        * Canvas_X;
+      if Value > Gdouble (X1) then
+         Value := Gdouble (X1);
+      elsif Value + Hpage < Gdouble (X2) then
+         Value := Gdouble (X2) - Hpage;
       end if;
 
-      --  Do we need to scroll the canvas to the bottom ?
+      Set_Value (Canvas.Hadj, Value);
 
-      if Y1 < Gint (Get_Lower (Canvas.Vadj)) then
-         Set_Lower (Canvas.Vadj, Gdouble (Y1));
-         Adj_Changed := True;
+      Value := Gdouble (To_Canvas_Coordinates (Canvas, Item_Y))
+        - (Vpage - Gdouble (To_Canvas_Coordinates (Canvas, Item.Coord.Height)))
+        * Canvas_Y;
+      if Value > Gdouble (Y1) then
+         Value := Gdouble (Y1);
+      elsif Value + Vpage < Gdouble (Y2) then
+         Value := Gdouble (Y2) - Vpage;
       end if;
 
-      if Report_Adj_Changed and then Adj_Changed then
-         Changed (Canvas.Vadj);
-      end if;
-
-      --  Is the box larger than the view ?
-
-      if Gdouble (Item.Coord.Height) >= Get_Page_Size (Canvas.Vadj) then
-         Visible_Height := Get_Page_Size (Canvas.Vadj);
-      else
-         Visible_Height := Gdouble (Item.Coord.Height);
-      end if;
-
-      if Y1 < Gint (Get_Value (Canvas.Vadj)) then
-         Set_Value
-           (Canvas.Vadj, Gdouble (Y1));
-      elsif Gdouble (Y2) >
-        Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj)
-      then
-         Set_Value
-           (Canvas.Vadj,
-            Gdouble (To_Canvas_Coordinates
-              (Canvas, Y + Gint (Visible_Height)))
-            - Get_Page_Size (Canvas.Vadj));
-      end if;
+      Set_Value (Canvas.Vadj, Value);
    end Show_Item;
 
    ----------------
@@ -3088,11 +3109,9 @@ package body Gtkada.Canvas is
       X_Align : Float := 0.5;
       Y_Align : Float := 0.5) is
    begin
-      Show_Item (Canvas, Item,
-                 Get_Allocation_X (Canvas)
-                   + Gint (Float (Get_Allocation_Width (Canvas)) * X_Align),
-                 Get_Allocation_Y (Canvas)
-                   + Gint (Float (Get_Allocation_Height (Canvas)) * Y_Align));
+      Show_Item
+        (Canvas, Item, Item.Coord.X, Item.Coord.Y,
+         Gdouble (X_Align), Gdouble (Y_Align));
    end Align_Item;
 
    ---------------

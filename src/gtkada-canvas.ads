@@ -995,10 +995,13 @@ private
       --  Save the event that was sent when the item was clicked on. This
       --  event will be sent to the application if the item was not moved.
 
-      Show_Item : Canvas_Item;
+      Show_Item                    : Canvas_Item;
+      Show_X, Show_Y               : Glib.Gint;
+      Show_Canvas_X, Show_Canvas_Y : Glib.Gdouble;
       --  The item that should be made visible when the canvas is resized.
       --  This is required since the canvas doesn't necessarily have a size yet
-      --  when Show_Item() is called the first time.
+      --  when Show_Item() is called the first time. Show_X and Show_Y are
+      --  used to save the other parameters to Show_Item
 
       Grid_Size         : Glib.Guint := Default_Grid_Size;
       --  The current number of pixels between each dot of the grid. If this
