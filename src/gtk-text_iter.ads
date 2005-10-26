@@ -568,11 +568,16 @@ package Gtk.Text_Iter is
    --  ??? Need to be put in a generic package.
    --  And also needs a binding to gunichar.
 
+   type Gtk_Text_Search_Flags is mod 2 ** 8;
+   for Gtk_Text_Search_Flags'Size use Gint'Size;
+
+   Visible_Only : constant Gtk_Text_Search_Flags := 2 ** 0;
+   Text_Only    : constant Gtk_Text_Search_Flags := 2 ** 1;
+
    procedure Forward_Search
      (Iter         : Gtk_Text_Iter;
       Str          : UTF8_String;
-      Visible_Only : Boolean := False;
-      Slice        : Boolean;
+      Flags        : Gtk_Text_Search_Flags;
       Match_Start  : out Gtk_Text_Iter;
       Match_End    : out Gtk_Text_Iter;
       Limit        : Gtk_Text_Iter;
@@ -583,9 +588,6 @@ package Gtk.Text_Iter is
    --  pixbufs, or child widgets interspersed in Str.
    --  Iter: start of search
    --  Str: a search string
-   --  Visible_Only: if True, search only visible text
-   --  Slice: if True, Str contains 16#FFFC# when we want to match widgets,
-   --  pixbufs
    --  Match_Start: return location for start of match, or null
    --  Match_End: return location for end of match, or null
    --  Limit: bound for the search, or null for the end of the buffer
@@ -594,8 +596,7 @@ package Gtk.Text_Iter is
    procedure Backward_Search
      (Iter         : Gtk_Text_Iter;
       Str          : UTF8_String;
-      Visible_Only : Boolean := False;
-      Slice        : Boolean;
+      Flags        : Gtk_Text_Search_Flags;
       Match_Start  : out Gtk_Text_Iter;
       Match_End    : out Gtk_Text_Iter;
       Limit        : Gtk_Text_Iter;

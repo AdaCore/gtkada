@@ -1087,8 +1087,7 @@ package body Gtk.Text_Iter is
    procedure Forward_Search
      (Iter         : Gtk_Text_Iter;
       Str          : UTF8_String;
-      Visible_Only : Boolean := False;
-      Slice        : Boolean;
+      Flags        : Gtk_Text_Search_Flags;
       Match_Start  : out Gtk_Text_Iter;
       Match_End    : out Gtk_Text_Iter;
       Limit        : Gtk_Text_Iter;
@@ -1097,20 +1096,17 @@ package body Gtk.Text_Iter is
       function Internal
         (Iter         : Gtk_Text_Iter;
          Str          : UTF8_String;
-         Visible_Only : Gboolean;
-         Slice        : Gboolean;
+         Flags        : Gtk_Text_Search_Flags;
          Match_Start  : System.Address;
          Match_End    : System.Address;
          Limit        : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_search");
-
    begin
       Result :=
         Internal
           (Iter,
            Str & ASCII.NUL,
-           Boolean'Pos (Visible_Only),
-           Boolean'Pos (Slice),
+           Flags,
            Match_Start'Address,
            Match_End'Address,
            Limit) /= 0;
@@ -1123,8 +1119,7 @@ package body Gtk.Text_Iter is
    procedure Backward_Search
      (Iter         : Gtk_Text_Iter;
       Str          : UTF8_String;
-      Visible_Only : Boolean := False;
-      Slice        : Boolean;
+      Flags        : Gtk_Text_Search_Flags;
       Match_Start  : out Gtk_Text_Iter;
       Match_End    : out Gtk_Text_Iter;
       Limit        : Gtk_Text_Iter;
@@ -1133,8 +1128,7 @@ package body Gtk.Text_Iter is
       function Internal
         (Iter         : Gtk_Text_Iter;
          Str          : UTF8_String;
-         Visible_Only : Gboolean;
-         Slice        : Gboolean;
+         Flags        : Gtk_Text_Search_Flags;
          Match_Start  : System.Address;
          Match_End    : System.Address;
          Limit        : Gtk_Text_Iter) return Gboolean;
@@ -1145,8 +1139,7 @@ package body Gtk.Text_Iter is
         Internal
           (Iter,
            Str & ASCII.NUL,
-           Boolean'Pos (Visible_Only),
-           Boolean'Pos (Slice),
+           Flags,
            Match_Start'Address,
            Match_End'Address,
            Limit) /= 0;
