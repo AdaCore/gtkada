@@ -323,6 +323,12 @@ package Gtk.Tree_Model is
       Column     : Gint) return Glib.Object.GObject;
    --  Get the object value of one cell in the row referenced by Iter.
 
+   function Get_C_Proxy
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.C_Proxy;
+   --  Get the address value of one cell in the row referenced by Iter.
+
    function Get_String
      (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;

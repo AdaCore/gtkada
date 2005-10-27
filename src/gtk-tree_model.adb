@@ -576,6 +576,29 @@ package body Gtk.Tree_Model is
    end Get_Object;
 
    -----------------
+   -- Get_C_Proxy --
+   -----------------
+
+   function Get_C_Proxy
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Glib.C_Proxy
+   is
+      procedure Internal
+        (Tree_Model : System.Address;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : out Glib.C_Proxy;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_model_get");
+
+      Value : Glib.C_Proxy;
+   begin
+      Internal (Get_Object (Tree_Model), Iter, Column, Value);
+      return Value;
+   end Get_C_Proxy;
+
+   -----------------
    -- Get_Address --
    -----------------
 
