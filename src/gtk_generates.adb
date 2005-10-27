@@ -1610,6 +1610,7 @@ package body Gtk_Generates is
       Gen_Set (N, "Policy", "hscrollbar_policy",
                "vscrollbar_policy", "", "", File);
       Gen_Set (N, "Shadow_Type", "shadow_type", File);
+      Gen_Set (N, "Placement", "window_placement", File);
    end Scrolled_Window_Generate;
 
    ------------------------
