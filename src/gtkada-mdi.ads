@@ -643,6 +643,11 @@ package Gtkada.MDI is
    --     is no longer part of the children, although you can still access its
    --     titles.
    --
+   --  - "child_icon_changed"
+   --     procedure Handler
+   --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
+   --     Emitted when the icon for Child has changed
+   --
    --  </signals>
    --
    --  <signals>

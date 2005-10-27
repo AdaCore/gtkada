@@ -147,7 +147,8 @@ package body Gtkada.MDI is
       2 => New_String ("float_child"),
       3 => New_String ("child_title_changed"),
       4 => New_String ("child_added"),
-      5 => New_String ("child_removed"));
+      5 => New_String ("child_removed"),
+      6 => New_String ("child_icon_changed"));
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String ("float_child"),
@@ -602,7 +603,8 @@ package body Gtkada.MDI is
          2 => (1 => GType_Pointer),
          3 => (1 => GType_Pointer),
          4 => (1 => GType_Pointer),
-         5 => (1 => GType_Pointer));
+         5 => (1 => GType_Pointer),
+         6 => (1 => GType_Pointer));
    begin
       Gtkada.Multi_Paned.Initialize (MDI);
 
@@ -2201,6 +2203,9 @@ package body Gtkada.MDI is
 
       Update_Menu_Item (Child);
       Update_Tab_Label (Child);
+
+      Emit_By_Name_Child
+        (Get_Object (Child.MDI), "child_added" & ASCII.NUL, Get_Object (Child));
    end Set_Icon;
 
    --------------
