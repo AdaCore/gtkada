@@ -463,6 +463,15 @@ package Gtkada.MDI is
    --  Width and Height indicate the desired geometry for the splitted area,
    --  0 indicate a 50/50 split.
 
+   procedure Child_Drag_Begin
+     (Child  : access MDI_Child_Record'Class;
+      Event  : Gdk.Event.Gdk_Event);
+   --  Starts a drag-and-drop operation for the child, so that it can be put in
+   --  some other place on the desktop. This should only be called when a
+   --  handler for the "button_press_event" signal, passing the event itself in
+   --  parameter.
+   --  The Child is immediately raised and gains the focus.
+
    ----------------------
    -- Desktop Handling --
    ----------------------
@@ -614,6 +623,25 @@ package Gtkada.MDI is
    --      (MDI : access MDI_Window_Record'Class; Child : System.Address);
    --
    --    Emitted when the title of a child is changed.
+   --
+   --  - "child_added"
+   --     procedure Handler
+   --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
+   --     Emitted when a new child is added. You cannot use the "add" signal
+   --     since in fact the children are added to notebooks that are part of
+   --     the MDI, and thus "add" is only emitted when a new notebook is
+   --     created.
+   --
+   --  - "child_removed"
+   --     procedure Handler
+   --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
+   --     Emitted when a new child is removed. You cannot use the "remove"
+   --     signal since in fact the children are removed from notebooks that are
+   --     part of the MDI, and thus "remove" is only emitted when a new
+   --     notebook is destroyed.
+   --     When this signal is emitted, Child no longer contains a widget, and
+   --     is no longer part of the children, although you can still access its
+   --     titles.
    --
    --  </signals>
    --

@@ -145,7 +145,9 @@ package body Gtkada.MDI is
    MDI_Signals : constant chars_ptr_array :=
      (1 => New_String ("child_selected"),
       2 => New_String ("float_child"),
-      3 => New_String ("child_title_changed"));
+      3 => New_String ("child_title_changed"),
+      4 => New_String ("child_added"),
+      5 => New_String ("child_removed"));
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String ("float_child"),
@@ -269,11 +271,6 @@ package body Gtkada.MDI is
      (Widget : access Gtk_Widget_Record'Class;
       Child  : access Gtk_Widget_Record'Class);
    --  Setup a widget as either a source or a target for drag-and-drop ops.
-
-   function Child_Drag_Begin
-     (Child  : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean;
-   --  Handlers for the various signals associated with drag-and-drop
 
    procedure Get_Dnd_Target
      (MDI       : access MDI_Window_Record'Class;
@@ -603,7 +600,9 @@ package body Gtkada.MDI is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => GType_Pointer),
          2 => (1 => GType_Pointer),
-         3 => (1 => GType_Pointer));
+         3 => (1 => GType_Pointer),
+         4 => (1 => GType_Pointer),
+         5 => (1 => GType_Pointer));
    begin
       Gtkada.Multi_Paned.Initialize (MDI);
 
@@ -1318,6 +1317,11 @@ package body Gtkada.MDI is
       --  to manipulate that list.
       Widget_List.Remove (MDI.Items, Gtk_Widget (C));
 
+      --  Report that the child has been removed only after it has indeed be
+      --  fully removed, but before we actually free it
+      Emit_By_Name_Child
+        (Get_Object (MDI), "child_removed" & ASCII.NUL, Get_Object (C));
+
       Free (C.Title);
       Free (C.Short_Title);
 
@@ -1522,11 +1526,6 @@ package body Gtkada.MDI is
          return False;
       end if;
 
-      --  Focus and raise the child. Raise_Child must be called explicitly
-      --  since Set_Focus_Child won't do it if the child already has the focus
-
-      Set_Focus_Child (C);
-      Raise_Child (C, False);
 
       --  Start a drag-and-drop operation. This won't be effective unless
       --  the user actually drags the mouse a while
@@ -1534,7 +1533,10 @@ package body Gtkada.MDI is
       if Traces then
          Put_Line ("Button_Pressed_Forced");
       end if;
-      return Child_Drag_Begin (C, Event);
+      Child_Drag_Begin (C, Event);
+
+      --  Let the event through, the drag hasn't started yet
+      return False;
    end Button_Pressed_Forced;
 
    --------------------
@@ -2087,6 +2089,10 @@ package body Gtkada.MDI is
       --  child was added to a notebook.
 
       Give_Focus_To_Child (MDI.Focus_Child);
+
+      Emit_By_Name_Child
+        (Get_Object (MDI), "child_added" & ASCII.NUL, Get_Object (C));
+
       return C;
    end Put;
 
@@ -4752,26 +4758,31 @@ package body Gtkada.MDI is
    -- Child_Drag_Begin --
    ----------------------
 
-   function Child_Drag_Begin
-     (Child  : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean
+   procedure Child_Drag_Begin
+     (Child  : access MDI_Child_Record'Class;
+      Event  : Gdk_Event)
    is
-      C   : constant MDI_Child := MDI_Child (Child);
       Tmp : Gdk_Grab_Status;
       pragma Unreferenced (Tmp);
    begin
+      --  Focus and raise the child. Raise_Child must be called explicitly
+      --  since Set_Focus_Child won't do it if the child already has the focus.
+      --  We have to raise the child, since otherwise the Pointer_Grab below
+      --  will fail
+
+      Set_Focus_Child (Child);
+      Raise_Child (Child, False);
+
+
       Tmp := Pointer_Grab
-        (Get_Window (C),
+        (Get_Window (Child),
          False,
          Button_Press_Mask or Button_Motion_Mask or Button_Release_Mask,
          Cursor => null,
          Time   => 0);
-      C.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
-      C.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
-      C.MDI.In_Drag := In_Pre_Drag;
-
-      --  Let the event through, the drag hasn't started yet
-      return False;
+      Child.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
+      Child.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
+      Child.MDI.In_Drag := In_Pre_Drag;
    end Child_Drag_Begin;
 
    --------------------
