@@ -43,6 +43,7 @@ with Gtk.Handlers;
 with Gtk.Label;
 with Gtk.Menu;
 with Gtk.Menu_Item;
+with Gtk.Notebook;
 with Gtk.Style;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
@@ -393,13 +394,28 @@ package Gtkada.MDI is
 
    type Child_Iterator is private;
 
-   function First_Child (MDI : access MDI_Window_Record) return Child_Iterator;
+   function First_Child
+     (MDI               : access MDI_Window_Record;
+      Group_By_Notebook : Boolean := False) return Child_Iterator;
    --  Return an access to the first child of the MDI.
-   --  It is garanteed that the first child is the one that currently has the
-   --  focus in the MDI.
+   --
+   --  If Group_By_Notebook is True, then the children are reported one after
+   --  the other, but all the widget from the same notebook are reported in the
+   --  same order as the notebook pages. Floating children do not belong to a
+   --  notebook, and are also reported together. To find out to which notebook
+   --  a child belongs, use Get_Notebook below.
+   --
+   --  If Group_By_Notebook is False, it is garanteed that the first child is
+   --  the one that currently has the focus in the MDI. The children are
+   --  returned in the order in which they last had the focus.
 
    procedure Next (Iterator : in out Child_Iterator);
    --  Move to the next child in the MDI
+
+   function Get_Notebook
+     (Iterator : Child_Iterator) return Gtk.Notebook.Gtk_Notebook;
+   --  Return the notebook to which the current child belongs. null is returned
+   --  for floating children
 
    function Get (Iterator : Child_Iterator) return MDI_Child;
    --  Return the child pointed to by Iterator.
@@ -648,6 +664,11 @@ package Gtkada.MDI is
    --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
    --     Emitted when the icon for Child has changed
    --
+   --  - "children_reorganized"
+   --     procedure Handler (MDI : access MDI_Window_Record'Class);
+   --     Emitted when the children have been reorganized: either a split
+   --     occurred, or a window was dropped into another position
+   --
    --  </signals>
    --
    --  <signals>
@@ -733,8 +754,17 @@ private
       --  label used when child is in a notebook, null if not in a notebook
    end record;
 
-   type Child_Iterator is record
-      Iter : Gtk.Widget.Widget_List.Glist;
+   type Child_Iterator (Group_By_Notebook : Boolean := False) is record
+      case Group_By_Notebook is
+         when False =>
+            Iter : Gtk.Widget.Widget_List.Glist;
+
+         when True =>
+            MDI                 : MDI_Window;
+            Notebook            : Gtk.Notebook.Gtk_Notebook;
+            Notebook_Page       : Glib.Gint;
+            Floating_Iter       : Gtk.Widget.Widget_List.Glist;
+      end case;
    end record;
 
    type Drag_Status is (No_Drag, In_Pre_Drag, In_Drag);

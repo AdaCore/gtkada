@@ -148,7 +148,8 @@ package body Gtkada.MDI is
       3 => New_String ("child_title_changed"),
       4 => New_String ("child_added"),
       5 => New_String ("child_removed"),
-      6 => New_String ("child_icon_changed"));
+      6 => New_String ("child_icon_changed"),
+      7 => New_String ("children_reorganized"));
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String ("float_child"),
@@ -408,6 +409,10 @@ package body Gtkada.MDI is
      (Object : System.Address; Name : String; Child : System.Address);
    pragma Import (C, Emit_By_Name_Child, "g_signal_emit_by_name");
 
+   procedure Emit_By_Name
+     (Object : System.Address; Name : String);
+   pragma Import (C, Emit_By_Name, "g_signal_emit_by_name");
+
    procedure Internal_Float_Child
      (Child             : access MDI_Child_Record'Class;
       Float             : Boolean;
@@ -604,7 +609,8 @@ package body Gtkada.MDI is
          3 => (1 => GType_Pointer),
          4 => (1 => GType_Pointer),
          5 => (1 => GType_Pointer),
-         6 => (1 => GType_Pointer));
+         6 => (1 => GType_Pointer),
+         7 => (1 => GType_None));
    begin
       Gtkada.Multi_Paned.Initialize (MDI);
 
@@ -1678,7 +1684,9 @@ package body Gtkada.MDI is
                            Height => 0,
                            After  => True);
                      when others =>
-                        null;
+                        Emit_By_Name
+                          (Get_Object (MDI),
+                           "children_reorganized" & ASCII.NUL);
                   end case;
                end if;
             end if;
@@ -2205,7 +2213,8 @@ package body Gtkada.MDI is
       Update_Tab_Label (Child);
 
       Emit_By_Name_Child
-        (Get_Object (Child.MDI), "child_added" & ASCII.NUL, Get_Object (Child));
+        (Get_Object (Child.MDI), "child_icon_changed" & ASCII.NUL,
+         Get_Object (Child));
    end Set_Icon;
 
    --------------
@@ -3480,6 +3489,9 @@ package body Gtkada.MDI is
          Set_Focus_Child (Child);
 
          Show (Note2);
+
+         Emit_By_Name
+           (Get_Object (MDI), "children_reorganized" & ASCII.NUL);
       end if;
    end Split;
 
@@ -4354,6 +4366,8 @@ package body Gtkada.MDI is
             Set_Focus_Child (Focus_Child);
          end if;
 
+         Emit_By_Name (Get_Object (MDI), "children_reorganized" & ASCII.NUL);
+
          return True;
       end Restore_Desktop;
 
@@ -4611,18 +4625,93 @@ package body Gtkada.MDI is
    -----------------
 
    function First_Child
-     (MDI : access MDI_Window_Record) return Child_Iterator is
+     (MDI : access MDI_Window_Record;
+      Group_By_Notebook : Boolean := False) return Child_Iterator
+   is
+      Children : Widget_List.Glist;
    begin
-      return (Iter => MDI.Items);
+      if Group_By_Notebook then
+         Children := Get_Children (MDI);
+
+         declare
+            Iter : Child_Iterator :=
+              (Group_By_Notebook => True,
+               Notebook          => Gtk_Notebook (Get_Data (Children)),
+               Notebook_Page     => 0,
+               Floating_Iter     => MDI.Items,
+               MDI               => MDI_Window (MDI));
+         begin
+            while Iter.Floating_Iter /= Null_List
+              and then MDI_Child
+                (Widget_List.Get_Data (Iter.Floating_Iter)).State /= Floating
+            loop
+               Iter.Floating_Iter := Widget_List.Next (Iter.Floating_Iter);
+            end loop;
+
+            Free (Children);
+            return Iter;
+         end;
+
+      else
+         return (Group_By_Notebook => False, Iter => MDI.Items);
+      end if;
    end First_Child;
+
+   ------------------
+   -- Get_Notebook --
+   ------------------
+
+   function Get_Notebook
+     (Iterator : Child_Iterator) return Gtk.Notebook.Gtk_Notebook is
+   begin
+      return Get_Notebook (Get (Iterator));
+   end Get_Notebook;
 
    ----------
    -- Next --
    ----------
 
    procedure Next (Iterator : in out Child_Iterator) is
+      Children, Child : Widget_List.Glist;
    begin
-      Iterator.Iter := Widget_List.Next (Iterator.Iter);
+      if Iterator.Group_By_Notebook then
+         if Iterator.Notebook = null then
+            --  Find the next floating child
+            while Iterator.Iter /= Null_List
+              and then MDI_Child (Widget_List.Get_Data (Iterator.Iter)).State
+                 /= Floating
+            loop
+               Iterator.Iter := Widget_List.Next (Iterator.Iter);
+            end loop;
+
+         else
+            Iterator.Notebook_Page := Iterator.Notebook_Page + 1;
+            if Get_Nth_Page
+              (Iterator.Notebook, Iterator.Notebook_Page) = null
+            then
+               Iterator.Notebook_Page := 0;
+               Children := Get_Children (Iterator.MDI);
+               Child := First (Children);
+               while Child /= Null_List
+                 and then Get_Data (Child) /= Gtk_Widget (Iterator.Notebook)
+               loop
+                  Child := Next (Child);
+               end loop;
+
+               if Child = Null_List or else Next (Child) = Null_List then
+                  Iterator.Notebook := null;
+                  --  We will start returning floating children
+               else
+                  Iterator.Notebook := Gtk_Notebook (Get_Data (Next (Child)));
+               end if;
+
+               Free (Children);
+            end if;
+         end if;
+
+      else
+         Iterator.Iter := Widget_List.Next (Iterator.Iter);
+      end if;
    end Next;
 
    ---------
@@ -4632,7 +4721,20 @@ package body Gtkada.MDI is
    function Get (Iterator : Child_Iterator) return MDI_Child is
       use type Widget_List.Glist;
    begin
-      if Iterator.Iter /= Widget_List.Null_List then
+      if Iterator.Group_By_Notebook then
+         if Iterator.Notebook = null then
+            if Iterator.Floating_Iter = Widget_List.Null_List then
+               return null;
+            else
+               return MDI_Child
+                 (Widget_List.Get_Data (Iterator.Floating_Iter));
+            end if;
+         else
+            return MDI_Child
+              (Get_Nth_Page (Iterator.Notebook, Iterator.Notebook_Page));
+         end if;
+
+      elsif Iterator.Iter /= Widget_List.Null_List then
          return MDI_Child (Widget_List.Get_Data (Iterator.Iter));
       else
          return null;
