@@ -376,6 +376,14 @@ package Gtkada.Canvas is
    --  canvas. If X_Align is 0.0, the item is align on the left. With 0.5, it
    --  is centered horizontally. If 1.0, it is aligned on the right.
 
+   function Get_Arrow_Angle
+     (Canvas : access Interactive_Canvas_Record'Class) return Float;
+   --  Return the angle of arrows in the canvas.
+
+   function Get_Arrow_Length
+     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint;
+   --  Return the length of arrows in the canvas.
+
    --------------------------
    -- Iterating over items --
    --------------------------

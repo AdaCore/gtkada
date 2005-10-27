@@ -3818,4 +3818,24 @@ package body Gtkada.Canvas is
       Height := Gint (Get_Upper (Canvas.Vadj)) - Y;
    end Get_World_Coordinates;
 
+   ---------------------
+   -- Get_Arrow_Angle --
+   ---------------------
+
+   function Get_Arrow_Angle
+     (Canvas : access Interactive_Canvas_Record'Class) return Float is
+   begin
+      return Canvas.Arrow_Angle;
+   end Get_Arrow_Angle;
+
+   ----------------------
+   -- Get_Arrow_Length --
+   ----------------------
+
+   function Get_Arrow_Length
+     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint is
+   begin
+      return Canvas.Arrow_Length;
+   end Get_Arrow_Length;
+
 end Gtkada.Canvas;
