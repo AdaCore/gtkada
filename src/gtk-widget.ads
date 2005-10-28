@@ -678,6 +678,15 @@ package Gtk.Widget is
    --  style values are left untouched. The text color is the foreground
    --  color used along with the base color (see Modify_Base)
    --  for widgets such as Gtk_Entry and Gtk_Text_View.
+   --
+   --  Attention: This does not work with a Gtk_Button. Modify_Fg should be
+   --  called on the button child in order to set the color of its label.
+   --  For example:
+   --
+   --     Modify_Fg
+   --       (Gtk.Bin.Get_Child (Gtk_Bin (My_Button)),
+   --        My_State,
+   --        My_New_Color);
 
    procedure Modify_Base
      (Widget     : access Gtk_Widget_Record;
