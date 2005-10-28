@@ -580,7 +580,6 @@ package body Gtkada.Canvas is
       Update_Adjustments (Canvas);
 
       if Canvas.Show_Item /= null then
-         Put_Line ("MANU Size_Allocate");
          Show_Item (Canvas, Canvas.Show_Item, Canvas.Show_X, Canvas.Show_Y,
                     Canvas.Show_Canvas_X, Canvas.Show_Canvas_Y);
          Canvas.Show_Item := null;
