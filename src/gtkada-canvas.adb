@@ -664,10 +664,6 @@ package body Gtkada.Canvas is
       Set_Upper (Canvas.Hadj, Upper);
       Changed (Canvas.Hadj);
 
-      if Get_Page_Size (Canvas.Hadj) <= Upper - Lower then
-         Set_Value (Canvas.Hadj, Lower);
-      end if;
-
       Lower := Gdouble'Min (Get_Value (Canvas.Vadj), Gdouble (Y_Min));
       Upper := Gdouble'Max
         (Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj),
@@ -677,9 +673,6 @@ package body Gtkada.Canvas is
       Set_Upper (Canvas.Vadj, Upper);
       Changed (Canvas.Vadj);
 
-      if Get_Page_Size (Canvas.Vadj) <= Upper - Lower then
-         Set_Value (Canvas.Vadj, Lower);
-      end if;
    end Update_Adjustments;
 
    ------------------------------
