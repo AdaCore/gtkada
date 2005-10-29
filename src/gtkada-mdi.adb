@@ -1581,6 +1581,7 @@ package body Gtkada.MDI is
       case C.MDI.In_Drag is
          when In_Pre_Drag =>
             Destroy_Dnd_Window (C.MDI);
+            Child_Drag_Finished (C);
 
          when In_Drag =>
             Destroy_Dnd_Window (C.MDI);
@@ -1588,6 +1589,9 @@ package body Gtkada.MDI is
             Get_Dnd_Target (C.MDI, Current, Position, C.MDI.Dnd_Rectangle);
 
             C2 := Dnd_Data (C, Copy => Copy_Instead_Of_Move);
+            if C2 = null then
+               C2 := C;
+            end if;
 
             if Current = null then
                --  Floating child ?
@@ -1691,6 +1695,7 @@ package body Gtkada.MDI is
                end if;
             end if;
 
+            Child_Drag_Finished (C);
             Raise_Child (C2, False);
             Set_Focus_Child (C2);
 
@@ -1713,7 +1718,7 @@ package body Gtkada.MDI is
       C        : constant MDI_Child := MDI_Child (Child);
       Cursor   : Gdk_Cursor;
       Current  : Gtk_Widget;
-      C2, C3   : MDI_Child;
+      C3       : MDI_Child;
       Note     : Gtk_Notebook;
       Rect2    : Gdk_Rectangle;
       Tmp      : Gdk_Grab_Status;
@@ -1733,7 +1738,7 @@ package body Gtkada.MDI is
             --  Show the user what will happen if he drops at the current
             --  location
 
-            C2 := Dnd_Data (C, Copy => False);
+--              C2 := Dnd_Data (C, Copy => False);
 
             if Current = null then
                Update_Dnd_Window (C.MDI, "Float");
@@ -1741,8 +1746,9 @@ package body Gtkada.MDI is
             elsif Current = null or else Current = Gtk_Widget (C.MDI) then
                Update_Dnd_Window (C.MDI, "Put in central area");
 
-            elsif C2.State = Normal
-              and then Current = Get_Parent (C2)
+            elsif
+--  if C2.State = Normal and then
+              Current = Get_Parent (C)
               and then Position = Position_Default
             then
                Update_Dnd_Window (C.MDI, "Leave at current position");
@@ -4880,7 +4886,6 @@ package body Gtkada.MDI is
       Set_Focus_Child (Child);
       Raise_Child (Child, False);
 
-
       Tmp := Pointer_Grab
         (Get_Window (Child),
          False,
@@ -4891,6 +4896,16 @@ package body Gtkada.MDI is
       Child.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
       Child.MDI.In_Drag := In_Pre_Drag;
    end Child_Drag_Begin;
+
+   -------------------------
+   -- Child_Drag_Finished --
+   -------------------------
+
+   procedure Child_Drag_Finished (Child  : access MDI_Child_Record) is
+      pragma Unreferenced (Child);
+   begin
+      null;
+   end Child_Drag_Finished;
 
    --------------------
    -- Get_Dnd_Target --

@@ -277,18 +277,36 @@ package Gtkada.MDI is
      (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Returns the icon associated with Child
 
+   ---------------------------
+   -- Drag and Drop support --
+   ---------------------------
+
    function Dnd_Data
      (Child : access MDI_Child_Record; Copy : Boolean) return MDI_Child;
    --  When a drag-and-drop operation took place to move a child from one
    --  position to the next, this function is called to know what child should
    --  be moved.
-   --  As a result, the implementer can choose whether a copy of the child
+   --  As a result, the implementor can choose whether a copy of the child
    --  should be returned (creating a new view for an editor for instance), or
    --  if the child itself should be moved (the default).
    --  The returned MDI_Child must have been added to the MDI before it is
    --  returned.
    --  Copy is set to true if a copy operation was requested, to False if a
-   --  simple move operation was requested.
+   --  simple move operation was requested. It can be ignored if Child doesn't
+   --  know how to create a copy of itself for instance.
+
+   procedure Child_Drag_Begin
+     (Child  : access MDI_Child_Record'Class;
+      Event  : Gdk.Event.Gdk_Event);
+   --  Starts a drag-and-drop operation for the child, so that it can be put in
+   --  some other place on the desktop. This should only be called when a
+   --  handler for the "button_press_event" signal, passing the event itself in
+   --  parameter.
+   --  The Child is immediately raised and gains the focus.
+
+   procedure Child_Drag_Finished (Child  : access MDI_Child_Record);
+   --  Called when a drag operation is either aborted or completed. It should
+   --  be overriden if special cleanup should be done.
 
    -----------
    -- Menus --
@@ -478,15 +496,6 @@ package Gtkada.MDI is
    --  left of that area).
    --  Width and Height indicate the desired geometry for the splitted area,
    --  0 indicate a 50/50 split.
-
-   procedure Child_Drag_Begin
-     (Child  : access MDI_Child_Record'Class;
-      Event  : Gdk.Event.Gdk_Event);
-   --  Starts a drag-and-drop operation for the child, so that it can be put in
-   --  some other place on the desktop. This should only be called when a
-   --  handler for the "button_press_event" signal, passing the event itself in
-   --  parameter.
-   --  The Child is immediately raised and gains the focus.
 
    ----------------------
    -- Desktop Handling --
