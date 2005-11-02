@@ -4638,26 +4638,32 @@ package body Gtkada.MDI is
    begin
       if Group_By_Notebook then
          Children := Get_Children (MDI);
+         if Children /= Null_List then
+            declare
+               Iter : Child_Iterator :=
+                 (Group_By_Notebook => True,
+                  Notebook          => Gtk_Notebook (Get_Data (Children)),
+                  Notebook_Page     => 0,
+                  Floating_Iter     => MDI.Items,
+                  MDI               => MDI_Window (MDI));
+            begin
+               while Iter.Floating_Iter /= Null_List
+                 and then MDI_Child
+                  (Widget_List.Get_Data (Iter.Floating_Iter)).State /= Floating
+               loop
+                  Iter.Floating_Iter := Widget_List.Next (Iter.Floating_Iter);
+               end loop;
 
-         declare
-            Iter : Child_Iterator :=
-              (Group_By_Notebook => True,
-               Notebook          => Gtk_Notebook (Get_Data (Children)),
-               Notebook_Page     => 0,
-               Floating_Iter     => MDI.Items,
-               MDI               => MDI_Window (MDI));
-         begin
-            while Iter.Floating_Iter /= Null_List
-              and then MDI_Child
-                (Widget_List.Get_Data (Iter.Floating_Iter)).State /= Floating
-            loop
-               Iter.Floating_Iter := Widget_List.Next (Iter.Floating_Iter);
-            end loop;
-
-            Free (Children);
-            return Iter;
-         end;
-
+               Free (Children);
+               return Iter;
+            end;
+         else
+            return (Group_By_Notebook => True,
+                    Notebook       => null,
+                    Notebook_Page  => Gint'Last,
+                    Floating_Iter  => Null_List,
+                    MDI            => MDI_Window (MDI));
+         end if;
       else
          return (Group_By_Notebook => False, Iter => MDI.Items);
       end if;
