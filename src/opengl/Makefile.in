@@ -14,8 +14,8 @@ LIBNAME       = libgtkada_gl$(SO_EXT)
 ARCHIVENAME   = libgtkada_gl.a
 
 ifeq ($(HAVE_OPENGL),True)
-OPENGL_C_OBJECTS=gtkglarea.o gdkgl.o glu_h.o
-OPENGL_SOURCES=gl_h.adb gdk-gl.adb gtk-glarea.adb
+OPENGL_C_OBJECTS=gtkglarea.o gdkgl.o
+OPENGL_SOURCES=gdk-gl.adb gtk-glarea.adb
 OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=%.o)
 OPENGL_LIBS=@GL_LIBS@
 OPENGL_FLAGS=@GL_CFLAGS@
@@ -71,9 +71,6 @@ $(ARCHIVENAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	   $(RANLIB) $(ARCHIVENAME); \
 	fi
-
-glu_h.o: glu_h.ads
-	$(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS) $(FPIC) -c glu_h.ads
 
 $(OPENGL_OBJECTS):: force
 	@if [ -f ../.devel ]; then \
