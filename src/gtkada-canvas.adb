@@ -861,17 +861,20 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Force  : Boolean := False)
    is
-      Step  : constant Gint := Gint (Canvas.Grid_Size);
-      Items : Vertex_Iterator;
-      Item : Canvas_Item;
+      Step         : constant Gint := Gint (Canvas.Grid_Size);
+      Items        : Vertex_Iterator;
+      Item         : Canvas_Item;
       Min_X, Min_Y : Gint := Gint'Last;
       Max_X, Max_Y : Gint := Gint'First;
+
    begin
-      Canvas.Layout (Canvas, Canvas.Children,
-                     Force           => Force,
-                     Vertical_Layout => Canvas.Vertical_Layout);
+      Canvas.Layout
+        (Canvas, Canvas.Children,
+         Force           => Force,
+         Vertical_Layout => Canvas.Vertical_Layout);
 
       Items := First (Canvas.Children);
+
       while not At_End (Items) loop
          Item := Canvas_Item (Get (Items));
          Min_X := Gint'Min (Min_X, Item.Coord.X);
@@ -882,17 +885,20 @@ package body Gtkada.Canvas is
          if Force then
             Item.From_Auto_Layout := True;
          end if;
+
          Next (Items);
       end loop;
 
       Items := First (Canvas.Children);
+
       while not At_End (Items) loop
          Item := Canvas_Item (Get (Items));
 
-         --  Normalize the coordinates, so that we are stay in Integer'Range.
+         --  Normalize the coordinates, so that we stay within Integer'Range.
          --  Since this causes unwanted scrolling when new boxes are added, we
          --  only do it to keep a safe margin when the user moves a box around,
          --  and thus only when absolutly needed.
+
          if Max_X > Gint'Last - 5000
            or else Max_Y > Gint'Last - 5000
            or else Min_X < Gint'First + 5000
@@ -903,6 +909,7 @@ package body Gtkada.Canvas is
                  & Gint'Image (Min_X) & Gint'Image (Min_Y)
                          & " Max=" & Gint'Image (Max_X) & Gint'Image (Max_Y));
             end if;
+
             Item.Coord.X := Item.Coord.X - Min_X;
             Item.Coord.Y := Item.Coord.Y - Min_Y;
          end if;
