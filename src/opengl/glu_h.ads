@@ -4,9 +4,11 @@
 with Interfaces.C.Extensions;
 with gl_h;
 
+--  This file provides a very basic binding to the openGL library (they
+--  were generated from the Mesa files). These are mainly provided as
+--  examples, not as a full binding and are provided without support.
+
 package glu_h is
-   --   $Id$
-   --
    --  Mesa 3-D graphics library
    --  Version:  3.0
    --  Copyright (C) 1995-1998  Brian Paul
@@ -25,29 +27,6 @@ package glu_h is
    --  License along with this library; if not, write to the Free
    --  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
    --
-
-   --
-   --  $Log$
-   --  Revision 1.2  2005/10/21 12:57:21  briot
-   --  Fix installation (missing some files, and some were not compiled correctly)
-   --
-   --  Revision 1.1  1999/09/24 08:37:15  briot
-   --  These two files provide a very basic binding to the openGL library (they
-   --  were generated from the Mesa files). These are mainly provided as
-   --  examples,  not as a full binding
-   --
-   --  Revision 3.2  1998/07/26 01:36:27  brianp
-   --  changes for Windows compilation per Ted Jump
-   --
-   --  Revision 3.1  1998/06/23 00:33:08  brianp
-   --  added some WIN32 APIENTRY, CALLBACK stuff (Eric Lassauge)
-   --
-   --  Revision 3.0  1998/02/20 05:06:01  brianp
-   --  initial rev
-   --
-
-            --   to facilitate clean DLL building ...
-   --  tag specifying we're building for DLL runtime support
 
    GLU_VERSION_1_1 : constant := 1;
    GLU_TRUE        : constant := 1;
