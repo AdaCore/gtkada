@@ -1738,17 +1738,13 @@ package body Gtkada.MDI is
             --  Show the user what will happen if he drops at the current
             --  location
 
---              C2 := Dnd_Data (C, Copy => False);
-
             if Current = null then
                Update_Dnd_Window (C.MDI, "Float");
 
             elsif Current = null or else Current = Gtk_Widget (C.MDI) then
                Update_Dnd_Window (C.MDI, "Put in central area");
 
-            elsif
---  if C2.State = Normal and then
-              Current = Get_Parent (C)
+            elsif Current = Get_Parent (C)
               and then Position = Position_Default
             then
                Update_Dnd_Window (C.MDI, "Leave at current position");
