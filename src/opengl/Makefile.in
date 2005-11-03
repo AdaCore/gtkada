@@ -19,7 +19,6 @@ OPENGL_SOURCES=gdk-gl.adb gtk-glarea.adb
 OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=%.o)
 OPENGL_LIBS=@GL_LIBS@
 OPENGL_FLAGS=@GL_CFLAGS@
-MESA_SPECS=gl_h.ads gl_h.adb glu_h.ads
 
 ifeq ($(BUILD_SHARED),yes)
 all: $(LIBNAME) $(ARCHIVENAME)
@@ -38,7 +37,6 @@ install: all
 	  $(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME); \
 	  $(LN) gtkada/$(SONAME) $(libdir)/$(SONAME); \
 	fi
-	$(CP) $(MESA_SPECS) $(incdir)
 	$(CP) gdk*.ads gdk*.adb $(incdir)
 	$(CP) gtk*.ads gtk*.adb $(incdir)
 	$(CP) *.ali $(alidir)
@@ -50,7 +48,6 @@ OPENGL_SOURCES=
 OPENGL_OBJECTS=
 OPENGL_LIBS=
 OPENGL_FLAGS=
-MESA_SPECS=
 
 all:
 install:
