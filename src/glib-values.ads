@@ -77,6 +77,8 @@ package Glib.Values is
    --  a GType_Int before you can use Set_Int (see below).
    --  Note that for enumeration types, you shouldn't use GType_Enum, but
    --  rather the exact GType corresponding to the enumeration.
+   --  If you need to store a reference-counted type in a GValue, it is
+   --  recommanded that you use a type derived from Boxed (see Set_Boxed below)
 
    procedure Unset (Value : in out GValue);
    --  Frees the memory allocate for Value (like strings contents) in the call
@@ -127,6 +129,21 @@ package Glib.Values is
    --  This is similar to Set_Address and Get_Address, except that the boxed
    --  type might have been associated with some specific initialization and
    --  finalization functions through Glib.Boxed_Type_Register_Static
+   --  For instance:
+   --    declare
+   --       Typ   : Glib.GType;
+   --       Value : GValue;
+   --       function To_Ref_Counted_Value is new Ada.Unchecked_Conversion
+   --          (System.Address, My_Ref_Counted_Type);
+   --    begin
+   --       Typ := Boxed_Typed_Register_Static
+   --          ("FOO", Copy'Access, Free'Access);
+   --       Init (Value, Typ);
+   --       Set_Boxed (Value, my_ref_counted_value.all'address);
+   --
+   --       Val := To_Ref_Counted_Value (Get_Boxed (Value));
+   --       Unset (Value);
+   --    end;
 
    procedure Set_Enum (Value : in out GValue; V_Enum : Gint);
    function Get_Enum (Value : GValue) return Glib.Gint;

@@ -77,6 +77,14 @@ package Gtk.Tree_Store is
       Value      : Glib.Values.GValue);
    --  Set a new value in the model. The value is added in the column Column,
    --  and in the line Iter.
+   --  This is the most general of the Set procedures, since it allows you to
+   --  control what should be done when the cell is freed (useful for instance
+   --  for reference-controlled types). In particular, you would create a
+   --  GValue of a special type derived from Boxed (see Glib.Value.Set_Boxed).
+   --
+   --  The type of the column must be of the type stored in the GValue itself.
+   --  Referencing the example given for Set_Boxed, this would be the value
+   --  in "Typ".
 
    generic
       type Data_Type is private;
@@ -94,7 +102,8 @@ package Gtk.Tree_Store is
       --  parameter.
       --
       --  Please see the example at the end for more information on how to
-      --  create your own Set procedures adapted to your model.
+      --  create your own Set procedures adapted to your model. Also consider
+      --  using Set_Value for complex cases
    end Generic_Set;
 
    procedure Set

@@ -336,7 +336,11 @@ package Glib is
    --  layer. An initialization and a finalization function can be provided.
    --  The most frequent usage of such types is in argument to signals and
    --  handlers (See the functions in Glib.Values), or to store such types
-   --  in a Gtk_Tree_Model.
+   --  in a Gtk_Tree_Model. This allows you for instance to store reference
+   --  counted types where you want to be able to control what should happen
+   --  when the cell is removed from the tree.
+   --
+   --  See an example with the subprogram Glib.Values.Set_Boxed
 
    GType_Boxed     : constant GType := 18 * (2 ** GType_Fundamental_Shift);
    --  The base type for all boxed types. In tree models, you should use the
