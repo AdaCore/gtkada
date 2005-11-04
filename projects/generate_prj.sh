@@ -21,11 +21,7 @@ echo_linker() {
       for j in $libs; do
          lib="$j"
          if [ x"$lib" = x"-lgtkada" ]; then
-            if [ $shared = 0 ]; then
-               lib=""
-            else
-               lib="${prefix}/lib/libgtkada.a"
-            fi
+            lib=""
          fi
 
          if [ x"$lib" != x ]; then
@@ -83,8 +79,10 @@ generate_static() {
 project ${uc} is
    for Source_Dirs use ("../../include/gtkada");
    for Source_List_File use "gtkada/${lcmodule}.lgpr";
+   for Library_Dir use "../gtkada";
+   for Library_Kind use "static";
+   for Library_Name use "${lcmodule}";
    for Externally_Built use "true";
-   for Object_Dir use "../gtkada";
 EOF
   echo_linker 0 >> ${lc}.gpr
   cat <<EOF >> ${lc}.gpr
