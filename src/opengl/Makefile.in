@@ -29,7 +29,6 @@ endif
 install: all
 	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
 	$(RM) $(libdir)/$(ARCHIVENAME)
-	$(LN) gtkada/$(ARCHIVENAME) $(libdir)/$(ARCHIVENAME)
 	if [ $(BUILD_SHARED) = yes ]; then \
 	  $(INSTALL_DATA) $(SONAME) $(alidir); \
 	  $(RM) $(libdir)/$(LIBNAME); \

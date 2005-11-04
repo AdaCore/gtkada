@@ -20,7 +20,6 @@ all: $(LIBNAME) $(ARCHIVENAME)
 install: all
 	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
 	$(RM) $(libdir)/$(ARCHIVENAME)
-	$(LN) gtkada/$(ARCHIVENAME) $(libdir)/$(ARCHIVENAME)
 	$(INSTALL_DATA) $(SONAME) $(alidir)
 	$(RM) $(libdir)/$(LIBNAME)
 	$(LN) $(SONAME) $(alidir)/$(LIBNAME)

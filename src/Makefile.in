@@ -145,7 +145,6 @@ install: all
 	   $(MKDIR) $(alidir); \
 	   $(INSTALL_DATA) $(ARCHIVENAME) $(alidir); \
 	   $(RM) $(libdir)/$(ARCHIVENAME); \
-	   $(LN) gtkada/$(ARCHIVENAME) $(libdir)/$(ARCHIVENAME); \
 	   if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	     $(RANLIB) $(alidir)/$(ARCHIVENAME); \
 	   fi; \
