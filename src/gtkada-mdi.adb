@@ -317,11 +317,11 @@ package body Gtkada.MDI is
    --  Container. You must call this when Container has a specific expose
    --  callback.
 
-   procedure Split_H_Cb        (MDI   : access Gtk_Widget_Record'Class);
-   procedure Split_V_Cb        (MDI   : access Gtk_Widget_Record'Class);
-   procedure Float_Cb          (MDI   : access Gtk_Widget_Record'Class);
-   procedure Close_Cb          (MDI   : access Gtk_Widget_Record'Class);
-   procedure Focus_Cb          (Child : access Gtk_Widget_Record'Class);
+   procedure Split_H_Cb (MDI   : access Gtk_Widget_Record'Class);
+   procedure Split_V_Cb (MDI   : access Gtk_Widget_Record'Class);
+   procedure Float_Cb   (MDI   : access Gtk_Widget_Record'Class);
+   procedure Close_Cb   (MDI   : access Gtk_Widget_Record'Class);
+   procedure Focus_Cb   (Child : access Gtk_Widget_Record'Class);
    --  Callbacks for the menu
 
    procedure Set_Focus_Child_MDI
@@ -393,7 +393,7 @@ package body Gtkada.MDI is
    --  the same attribute).
 
    procedure Removed_From_Notebook
-     (Note : access Gtk_Widget_Record'Class; Args  : Gtk_Args);
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when a child is removed from one of the notebooks
 
    procedure Update_Dnd_Window
@@ -702,13 +702,13 @@ package body Gtkada.MDI is
    procedure Update_Selection_Dialog
      (MDI : access MDI_Window_Record'Class; Increment : Integer)
    is
-      D : constant Selection_Dialog_Access :=
-        Selection_Dialog_Access (MDI.Selection_Dialog);
-      Str : constant UTF8_String := Get_Text (D.Ent);
+      D        : constant Selection_Dialog_Access :=
+                   Selection_Dialog_Access (MDI.Selection_Dialog);
+      Str      : constant UTF8_String := Get_Text (D.Ent);
       Children : constant Children_Array :=
-        Matching_Children (MDI, To_Lower (Str));
-      Index : Integer := Children'First;
-      Tmp   : Integer;
+                   Matching_Children (MDI, To_Lower (Str));
+      Index    : Integer := Children'First;
+      Tmp      : Integer;
 
    begin
       --  Update graphically the list of children matching the filter
@@ -1407,13 +1407,13 @@ package body Gtkada.MDI is
             Render_To_Drawable_Alpha
               (Child.Icon,
                Get_Window (Child.Title_Area),
-               Src_X  => 0,
-               Src_Y  => 0,
-               Dest_X => X,
-               Dest_Y => (Child.MDI.Title_Bar_Height - H) / 2,
-               Width  => W,
-               Height => H,
-               Alpha  => Alpha_Full,
+               Src_X           => 0,
+               Src_Y           => 0,
+               Dest_X          => X,
+               Dest_Y          => (Child.MDI.Title_Bar_Height - H) / 2,
+               Width           => W,
+               Height          => H,
+               Alpha           => Alpha_Full,
                Alpha_Threshold => 128);
 
             X := X + W + 1;
@@ -1872,9 +1872,9 @@ package body Gtkada.MDI is
    -------------
 
    procedure Gtk_New
-     (Child   : out MDI_Child;
-      Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags : Child_Flags := All_Buttons) is
+     (Child  : out MDI_Child;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags  : Child_Flags := All_Buttons) is
    begin
       Child := new MDI_Child_Record;
       Initialize (Child, Widget, Flags);
@@ -2125,8 +2125,8 @@ package body Gtkada.MDI is
          --  Only take this into account if we have a single page
          if Get_Nth_Page (Notebook, 1) = null then
             Set_Size (MDI,
-                      Widget => Notebook,
-                      Width => Width, Height => Height,
+                      Widget     => Notebook,
+                      Width      => Width, Height => Height,
                       Fixed_Size => Fixed_Size);
          else
             Set_Size_Request (Child, Width, Height);
@@ -2262,8 +2262,9 @@ package body Gtkada.MDI is
       Child.Short_Title := The_Short_Title;
 
       if Title_Changed and then Child.State = Floating then
-         Set_Title (Gtk_Window (Get_Toplevel (Child.Initial)),
-                    Locale_From_UTF8 (Title));
+         Set_Title
+           (Gtk_Window (Get_Toplevel (Child.Initial)),
+            Locale_From_UTF8 (Title));
       end if;
 
       if Short_Title_Changed then
@@ -2336,8 +2337,8 @@ package body Gtkada.MDI is
    ----------------------------
 
    function Find_MDI_Child_By_Name
-     (MDI    : access MDI_Window_Record;
-      Name   : String) return MDI_Child
+     (MDI  : access MDI_Window_Record;
+      Name : String) return MDI_Child
    is
       Child : MDI_Child;
       Iter  : Child_Iterator := First_Child (MDI);
@@ -3886,12 +3887,12 @@ package body Gtkada.MDI is
       --  has not been inserted in the MDI
 
       procedure Parse_Notebook_Node
-        (MDI           : access MDI_Window_Record'Class;
-         Child_Node    : Node_Ptr;
-         User          : User_Data;
-         Focus_Child   : in out MDI_Child;
-         Width, Height : out Gint;
-         Notebook      : out Gtk_Notebook;
+        (MDI                   : access MDI_Window_Record'Class;
+         Child_Node            : Node_Ptr;
+         User                  : User_Data;
+         Focus_Child           : in out MDI_Child;
+         Width, Height         : out Gint;
+         Notebook              : out Gtk_Notebook;
          Reuse_Empty_If_Needed : in out Boolean);
       --  Parse a <notebook> node.
       --  A new notebook is created and returned.
@@ -3900,11 +3901,11 @@ package body Gtkada.MDI is
       --  variable is set to False
 
       procedure Parse_Pane_Node
-        (MDI                 : access MDI_Window_Record'Class;
-         Node                : Node_Ptr;
-         Focus_Child         : in out MDI_Child;
-         User                : User_Data;
-         Initial_Ref_Child   : Gtk_Notebook := null;
+        (MDI                   : access MDI_Window_Record'Class;
+         Node                  : Node_Ptr;
+         Focus_Child           : in out MDI_Child;
+         User                  : User_Data;
+         Initial_Ref_Child     : Gtk_Notebook := null;
          Reuse_Empty_If_Needed : in out Boolean);
       --  Parse a <Pane> node
       --  First_Child is the first notebook insert in pane (possibly inserted
@@ -4212,11 +4213,11 @@ package body Gtkada.MDI is
             while N /= null loop
                if N.Tag.all = "Pane" then
                   Parse_Pane_Node
-                    (MDI                 => MDI,
-                     Node                => N,
-                     Focus_Child         => Focus_Child,
-                     User                => User,
-                     Initial_Ref_Child   => Notebooks (Count),
+                    (MDI                   => MDI,
+                     Node                  => N,
+                     Focus_Child           => Focus_Child,
+                     User                  => User,
+                     Initial_Ref_Child     => Notebooks (Count),
                      Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
                end if;
                Count := Count + 1;
@@ -4378,7 +4379,7 @@ package body Gtkada.MDI is
       ------------------
 
       function Save_Desktop
-        (MDI : access MDI_Window_Record'Class;
+        (MDI  : access MDI_Window_Record'Class;
          User : User_Data) return Glib.Xml_Int.Node_Ptr
       is
          use type Widget_List.Glist;
@@ -4532,7 +4533,7 @@ package body Gtkada.MDI is
 
          declare
             Current, N : Node_Ptr;
-            Depth : Natural := 0;
+            Depth      : Natural := 0;
          begin
             Current := Root;
             Iter := Start (MDI);
@@ -4563,6 +4564,10 @@ package body Gtkada.MDI is
          declare
             procedure Prune_Empty (N : in out Node_Ptr);
             --  Prunes empty panes below N
+
+            -----------------
+            -- Prune_Empty --
+            -----------------
 
             procedure Prune_Empty (N : in out Node_Ptr) is
                C : Node_Ptr;
@@ -4700,6 +4705,7 @@ package body Gtkada.MDI is
                Iterator.Notebook_Page := 0;
                Children := Get_Children (Iterator.MDI);
                Child := First (Children);
+
                while Child /= Null_List
                  and then Get_Data (Child) /= Gtk_Widget (Iterator.Notebook)
                loop
@@ -4737,6 +4743,7 @@ package body Gtkada.MDI is
                return MDI_Child
                  (Widget_List.Get_Data (Iterator.Floating_Iter));
             end if;
+
          else
             return MDI_Child
               (Get_Nth_Page (Iterator.Notebook, Iterator.Notebook_Page));
@@ -5016,7 +5023,7 @@ package body Gtkada.MDI is
               (X      => Border_Width,
                Y      => Border_Height,
                Width  => Get_Allocation_Width (Parent) - 2 * Border_Width,
-            Height => Get_Allocation_Height (Parent) - 2 * Border_Height);
+               Height => Get_Allocation_Height (Parent) - 2 * Border_Height);
          end if;
 
          if No_Window_Is_Set (Parent) then
