@@ -3209,7 +3209,11 @@ package body Gtkada.MDI is
 
                   First_Non_Side := Sides (Selected_Side);
 
-                  case Selected_Side is
+                  if First_Non_Side = null then
+                     Add_Child (MDI, New_Child => Note);
+
+                  else
+                     case Selected_Side is
                      when Position_Bottom =>
                         Split (MDI,
                                New_Child   => Note,
@@ -3244,7 +3248,8 @@ package body Gtkada.MDI is
                                After       => False);
                      when others =>
                         null;
-                  end case;
+                     end case;
+                  end if;
             end case;
          end if;
       end if;
