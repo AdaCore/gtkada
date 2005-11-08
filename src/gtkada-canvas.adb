@@ -312,6 +312,15 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class) return Gint_Array;
    --  ???
 
+   procedure Scroll_Canvas_To_Item
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Item   : access Canvas_Item_Record'Class;
+      X, Y   : Gint;
+      Report_Adj_Changed : Boolean := True);
+   --  Scroll the canvas to the item. This function tries to scroll the canvas
+   --  as less as possible, typically used when the item is moving out of the
+   --  window.
+
    ---------------------------
    -- To_Canvas_Coordinates --
    ---------------------------
@@ -1404,6 +1413,103 @@ package body Gtkada.Canvas is
          return Result;
       end;
    end Compute_Line_Pos;
+
+   ---------------------------
+   -- Scroll_Canvas_To_Item --
+   ----------------------------
+
+   procedure Scroll_Canvas_To_Item
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Item   : access Canvas_Item_Record'Class;
+      X, Y   : Gint;
+      Report_Adj_Changed : Boolean := True)
+   is
+      X1 : constant Gint := To_Canvas_Coordinates (Canvas, X);
+      Y1 : constant Gint := To_Canvas_Coordinates (Canvas, Y);
+      X2 : constant Gint :=
+        To_Canvas_Coordinates (Canvas, X + Gint (Item.Coord.Width));
+      Y2 : constant Gint :=
+        To_Canvas_Coordinates (Canvas, Y + Gint (Item.Coord.Height));
+      Adj_Changed : Boolean := False;
+
+      Visible_Height : Gdouble;
+   begin
+      --  If no size was allocated yet, memorize the item for later (see
+      --  the callback for size_allocate)
+
+      if Get_Allocation_Width (Canvas) = 1
+        or else Get_Allocation_Height (Canvas) = 1
+      then
+         Canvas.Show_Item := Canvas_Item (Item);
+      end if;
+
+      --  Do we need to scroll the canvas to the right to show the item?
+
+      if X2 > Gint (Get_Upper (Canvas.Hadj)) then
+         Set_Upper (Canvas.Hadj, Gdouble (X2));
+         Adj_Changed := True;
+      end if;
+
+      --  Do we need to scroll the canvas to the left ?
+
+      if X1 < Gint (Get_Lower (Canvas.Hadj)) then
+         Set_Lower (Canvas.Hadj, Gdouble (X1));
+         Adj_Changed := True;
+      end if;
+
+      if Report_Adj_Changed and then Adj_Changed then
+         Changed (Canvas.Hadj);
+      end if;
+
+      if X1 < Gint (Get_Value (Canvas.Hadj)) then
+         Set_Value (Canvas.Hadj, Gdouble (X1));
+      elsif Gdouble (X2) >
+        Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj)
+      then
+         Set_Value (Canvas.Hadj, Gdouble (X2) - Get_Page_Size (Canvas.Hadj));
+      end if;
+
+      --  Do we need to scroll the canvas to the top to show the selection?
+
+      Adj_Changed := False;
+
+      if Y2 > Gint (Get_Upper (Canvas.Vadj)) then
+         Set_Upper (Canvas.Vadj, Gdouble (Y2));
+         Adj_Changed := True;
+      end if;
+
+      --  Do we need to scroll the canvas to the bottom ?
+
+      if Y1 < Gint (Get_Lower (Canvas.Vadj)) then
+         Set_Lower (Canvas.Vadj, Gdouble (Y1));
+         Adj_Changed := True;
+      end if;
+
+      if Report_Adj_Changed and then Adj_Changed then
+         Changed (Canvas.Vadj);
+      end if;
+
+      --  Is the box larger than the view ?
+
+      if Gdouble (Item.Coord.Height) >= Get_Page_Size (Canvas.Vadj) then
+         Visible_Height := Get_Page_Size (Canvas.Vadj);
+      else
+         Visible_Height := Gdouble (Item.Coord.Height);
+      end if;
+
+      if Y1 < Gint (Get_Value (Canvas.Vadj)) then
+         Set_Value
+           (Canvas.Vadj, Gdouble (Y1));
+      elsif Gdouble (Y2) >
+        Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj)
+      then
+         Set_Value
+           (Canvas.Vadj,
+            Gdouble (To_Canvas_Coordinates
+              (Canvas, Y + Gint (Visible_Height)))
+            - Get_Page_Size (Canvas.Vadj));
+      end if;
+   end Scroll_Canvas_To_Item;
 
    --------------------------
    -- Draw_Orthogonal_Link --
@@ -2863,10 +2969,10 @@ package body Gtkada.Canvas is
          end if;
 
          Update_Adjustments (Canvas);
-         Show_Item
-           (Canvas, Canvas.Selection.Item,
-            Canvas.Selection.X, Canvas.Selection.Y,
-            Report_Adj_Changed => False);
+         Scroll_Canvas_To_Item
+             (Canvas, Canvas.Selection.Item,
+              Canvas.Selection.X, Canvas.Selection.Y,
+              Report_Adj_Changed => False);
       end if;
       return True;
    end Move_Selection;
