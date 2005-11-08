@@ -2542,6 +2542,12 @@ package body Gtkada.MDI is
 
       Child.MDI.Focus_Child := C;
 
+      if Previous_Focus_Child /= null then
+         Update_Tab_Color (Previous_Focus_Child);
+      end if;
+
+      Update_Tab_Color (C);
+
       Ref (C);
       Remove (C.MDI.Items, Gtk_Widget (Child));
       Prepend (C.MDI.Items, Gtk_Widget (Child));
@@ -2918,6 +2924,7 @@ package body Gtkada.MDI is
 
          Set_Tab_Label (Note, Child, Event);
          Show_All (Event);
+
          Update_Tab_Color (Child);
 
          Return_Callback.Object_Connect
