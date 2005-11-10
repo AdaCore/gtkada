@@ -18,8 +18,9 @@
 -- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
 -----------------------------------------------------------------------
 
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
-with Ada.Strings.Maps;  use Ada.Strings.Maps;
+with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
+with Ada.Strings.Maps;        use Ada.Strings.Maps;
+with Ada.Characters.Handling; use Ada.Characters.Handling;
 with System;
 
 package body Gtk_Generates is
@@ -1872,11 +1873,11 @@ package body Gtk_Generates is
       while P /= null loop
          if P.Tag.all = "widget" then
             declare
-               Child_Class : constant String := Get_Class (P);
+               Class : constant String := Get_Class (P);
             begin
-               if Child_Class = "GtkButton"
-                 or else Child_Class = "GtkToggleButton"
-                 or else Child_Class = "GtkRadioButton"
+               if Class = "button"
+                 or else Class = "toggle"
+                 or else Class = "radio"
                then
                   Child := Find_Child (P, "child");
 
@@ -1921,9 +1922,9 @@ package body Gtk_Generates is
 
                      Put_Line (File, To_Ada (Cur) & ",");
 
-                     Put (File, "      The_Type => Toolbar_Child_" &
-                       Child_Class
-                         (Child_Class'First + 3 .. Child_Class'Last));
+                     Put (File, "      The_Type => Toolbar_Child_"
+                       & To_Upper (Class (Class'First .. Class'First))
+                       & Class (Class'First + 1 .. Class'Last));
                      S := Get_Property (P, "label");
 
                      if S /= null then
@@ -2084,6 +2085,16 @@ package body Gtk_Generates is
       Gen_Set (N, "Default_Size", "default_width", "default_height",
         "", "", File);
    end Window_Generate;
+
+   ----------------------
+   -- Generate_Nothing --
+   ----------------------
+
+   procedure Generate_Nothing (N : Node_Ptr; File : File_Type) is
+      pragma Unreferenced (N, File);
+   begin
+      null;
+   end Generate_Nothing;
 
    ------------------
    -- End_Generate --

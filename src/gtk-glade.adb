@@ -20,6 +20,7 @@
 
 with GNAT.HTable;
 with Gtk_Generates; use Gtk_Generates;
+with Ada.Characters.Handling; use Ada.Characters.Handling;
 
 package body Gtk.Glade is
 
@@ -263,7 +264,6 @@ package body Gtk.Glade is
       is
          P : Node_Ptr := N;
          T : Node_Ptr := N;
-
       begin
          while P /= null loop
             if P.Tag.all = "child" then
@@ -305,7 +305,18 @@ package body Gtk.Glade is
                                  then
                                     Put_Line (File, "Gtk_Widget;");
                                  else
-                                    Put_Line (File, To_Ada (S) & ";");
+                                    --  Special case for toolbar children
+
+                                    if Get_Attribute (P.Parent, "class")
+                                      = "GtkToolbar"
+                                    then
+                                       Put_Line
+                                         (File, "Gtk_" & To_Upper
+                                            (S (S'First .. S'First)) &
+                                          S (S'First + 1 .. S'Last) & ";");
+                                    else
+                                       Put_Line (File, To_Ada (S) & ";");
+                                    end if;
                                  end if;
                               end;
                               Printed := True;
@@ -718,4 +729,9 @@ begin
    SHT.Set (new String'("GtkVButtonBox"), Vbutton_Box_Generate'Access);
    SHT.Set (new String'("GtkViewport"), Viewport_Generate'Access);
    SHT.Set (new String'("GtkWindow"), Window_Generate'Access);
+
+   --  Special cases for toolbar children
+   SHT.Set (new String'("button"), Generate_Nothing'Access);
+   SHT.Set (new String'("radio"), Generate_Nothing'Access);
+   SHT.Set (new String'("toggle"), Generate_Nothing'Access);
 end Gtk.Glade;
