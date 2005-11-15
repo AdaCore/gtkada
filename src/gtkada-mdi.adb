@@ -341,6 +341,12 @@ package body Gtkada.MDI is
    --  Gives the focus to Child when the notebook tab associated with it is
    --  pressed.
 
+   procedure Set_Focus_Child_Switch_Notebook_Page
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args);
+   --  Called when a new page from a notebook has been selected, in particular
+   --  when using the scroll arrows when there are too many pages to be
+   --  displayed
+
    function Toplevel_Focus_In
      (MDI : access Gtk_Widget_Record'Class) return Boolean;
    --  Called when the toplevel window that contains a the MDI gains the focus
@@ -472,6 +478,23 @@ package body Gtkada.MDI is
       --  No need to call the parent's set_focus_child, this is called
       --  automatically when the signal is propagated.
    end Set_Focus_Child_MDI;
+
+   ------------------------------------------
+   -- Set_Focus_Child_Switch_Notebook_Page --
+   ------------------------------------------
+
+   procedure Set_Focus_Child_Switch_Notebook_Page
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args)
+   is
+      N    : constant Gtk_Notebook := Gtk_Notebook (Note);
+      Page : constant Guint := To_Guint (Args, 2);
+      Child : MDI_Child;
+   begin
+      Child := MDI_Child (Get_Nth_Page (N, Gint (Page)));
+      if Child /= null then
+         Set_Focus_Child (Child);
+      end if;
+   end Set_Focus_Child_Switch_Notebook_Page;
 
    ------------------------------
    -- Set_Focus_Child_Notebook --
@@ -2847,6 +2870,8 @@ package body Gtkada.MDI is
         (Notebook, "remove", Removed_From_Notebook'Access);
       Widget_Callback.Connect
         (Notebook, "set_focus_child", Set_Focus_Child_Notebook'Access);
+      Widget_Callback.Connect
+        (Notebook, "switch_page", Set_Focus_Child_Switch_Notebook_Page'Access);
       return Notebook;
    end Create_Notebook;
 
