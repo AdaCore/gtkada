@@ -3400,7 +3400,7 @@ package body Gtkada.MDI is
             --    - Or there is at least one notebook with Position_Default
             --      children
 
-            if Child.Position in Position_Bottom .. Position_Right then
+            if Child.Position /= Position_Default then
                Destroy (Note);
                return;
             end if;
@@ -3434,9 +3434,7 @@ package body Gtkada.MDI is
                      for N in Notes'Range loop
                         if Notes (N) = Gtk_Notebook (Get_Parent (Child)) then
                            Is_Empty (N) := False;
-                           if Child.Position
-                              in Position_Bottom .. Position_Right
-                           then
+                           if Child.Position /= Position_Default then
                               Only_Normal_Children (N) := False;
                               exit;
                            end if;

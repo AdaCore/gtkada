@@ -206,18 +206,34 @@ package Gtkada.MDI is
    --      out of the notebook, that window keeps its Bottom attribute. As a
    --      result, there can be multiple notebooks with this attribute.
    --  - Likewise for Top, Left and Right
+   --
    --  - If position is something other: the MDI checks whether the current
-   --    notebook has a window with the same attribute value. If yet, the new
+   --    notebook has a window with the same attribute value. If yes, the new
    --    child is put in that same notebook. If no, it looks for the first
    --    notebook with at least one child with that attribute. The goal of this
    --    rule is to ensure that larger windows, like editors, are not put on
    --    smaller windows, like a project view, even if the latter currently has
    --    the focus.
-   --    If there is no window with a child with the same position, then the
-   --    window is placed in the default area (empty initially)
+   --    If there is no existing window at the same position, it will try and
+   --    reuse an empty notebook if one is available, then it selects the first
+   --    notebook with a window not in Position_Bottom .. Position_Right.
    --
    --  You can create new Position types as needed, for instance if you want
    --  to group similar windows together automatically.
+   --
+   --  The position also has an impact when a window is closed: if the window
+   --  is in Position_Default, the space it occupies is reclaimed only if there
+   --  is at least one other window in that Position_Default. If there is none,
+   --  an empty space is left instead.
+   --  For all other positions, the space is always reused by the MDI that will
+   --  enlarge adjacent windows as needed.
+   --
+   --  An example of use of these positions in an Integrated Development
+   --  Environment. The most important type of windows in such an environment
+   --  are the editors, which are all put in Position_Default. All other
+   --  windows (browsers, trees,...) are put in other positions, so that when
+   --  closing the last editor, the MDI will leave its space empty. Opening a
+   --  new editor will therefore reuse that space.
 
    procedure Set_Size
      (MDI    : access MDI_Window_Record;
