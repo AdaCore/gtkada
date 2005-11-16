@@ -622,6 +622,14 @@ package body Glib.XML is
                when '&' => Put ("&amp;");
                when ''' => Put ("&apos;");
                when '"' => Put ("&quot;");
+               when ASCII.NUL .. Character'Val (9)
+                  | Character'Val (11) .. Character'Val (31) =>
+                  declare
+                     Img : constant String :=
+                       Integer'Image (Character'Pos (S (J)));
+                  begin
+                     Put ("&#" & Img (Img'First + 1 .. Img'Last) & ";");
+                  end;
                when others => Put ((1 => S (J)));
             end case;
          end loop;
