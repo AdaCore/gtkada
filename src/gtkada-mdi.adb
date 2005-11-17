@@ -184,6 +184,16 @@ package body Gtkada.MDI is
    end record;
    type Selection_Dialog_Access is access all Selection_Dialog_Record'Class;
 
+   type MDI_Notebook_Record is new Gtk_Notebook_Record with record
+      Is_Default_Notebook : Boolean := False;
+   end record;
+   type MDI_Notebook is access all MDI_Notebook_Record'Class;
+   --  The type of notebooks used in the MDI.
+   --  Is_Default_Notebook is set to true if the notebook should be used when
+   --  Position_Default children are inserted in the MDI and no other child is
+   --  available. Such a notebook is also kept empty when its last child is
+   --  removed, provided no other Position_Default child exists.
+
    type Children_Array is array (Natural range <>) of Widget_List.Glist;
 
    procedure Free is new
@@ -434,6 +444,10 @@ package body Gtkada.MDI is
    function Find_Empty_Notebook
      (MDI : access MDI_Window_Record'Class) return Gtk_Notebook;
    --  Return the empty notebook, if there is any, in the MDI.
+
+   procedure Note_Notify (Data : System.Address; Where : System.Address);
+   pragma Convention (C, Note_Notify);
+   --  Notified if the old notebook that contained Child is destroyed
 
    ------------------
    -- Get_Notebook --
@@ -2860,7 +2874,8 @@ package body Gtkada.MDI is
    is
       Notebook : Gtk_Notebook;
    begin
-      Gtk_New (Notebook);
+      Notebook := new MDI_Notebook_Record;
+      Gtk.Notebook.Initialize (Notebook);
       Configure_Notebook_Tabs (MDI, Notebook);
       Set_Show_Border (Notebook, False);
       Set_Border_Width (Notebook, 0);
@@ -2970,13 +2985,9 @@ package body Gtkada.MDI is
       end if;
    end Update_Tab_Label;
 
-   ---------------------
-   -- Put_In_Notebook --
-   ---------------------
-
-   procedure Note_Notify (Data : System.Address; Where : System.Address);
-   pragma Convention (C, Note_Notify);
-   --  Notified if the old notebook that contained Child is destroyed
+   -----------------
+   -- Note_Notify --
+   -----------------
 
    procedure Note_Notify (Data : System.Address; Where : System.Address) is
       pragma Unreferenced (Where);
@@ -2985,6 +2996,10 @@ package body Gtkada.MDI is
    begin
       Old_Note_Was_Destroyed := True;
    end Note_Notify;
+
+   ---------------------
+   -- Put_In_Notebook --
+   ---------------------
 
    procedure Put_In_Notebook
      (MDI                      : access MDI_Window_Record'Class;
@@ -3019,6 +3034,7 @@ package body Gtkada.MDI is
          --  a notebook for items in the same position.
 
          Destroy_Old := Force_Parent_Destruction
+           and then not MDI_Notebook (Old_Note).Is_Default_Notebook
            and then Get_Nth_Page (Old_Note, 1) = null;
 
          Weak_Ref
@@ -3050,6 +3066,21 @@ package body Gtkada.MDI is
       Show (Note);
       Queue_Resize (Note);
 
+      if Child.Position = Position_Default then
+         declare
+            Children : Widget_List.Glist := Get_Children (MDI);
+            L        : Widget_List.Glist := Children;
+            N        : MDI_Notebook;
+         begin
+            while L /= Null_List loop
+               N := MDI_Notebook (Get_Data (L));
+               N.Is_Default_Notebook := False;
+               L := Next (L);
+            end loop;
+            Free (Children);
+         end;
+      end if;
+
       Unref (Child);
    end Put_In_Notebook;
 
@@ -3075,6 +3106,7 @@ package body Gtkada.MDI is
          L := Next (L);
       end loop;
 
+      Free (Children);
       return null;
    end Find_Empty_Notebook;
 
@@ -3373,6 +3405,8 @@ package body Gtkada.MDI is
       Page2, Page1 : Gtk_Widget;
       Child        : MDI_Child;
       First_Child  : MDI_Child;
+      Default_Child_Remains : Boolean := False;
+      Must_Destroy : Boolean := False;
    begin
       if C.all not in MDI_Child_Record'Class then
          return;
@@ -3389,6 +3423,34 @@ package body Gtkada.MDI is
          Page2 := Get_Nth_Page (Gtk_Notebook (Note), 1);
          Page1 := Get_Nth_Page (Gtk_Notebook (Note), 0);
 
+         --  Do we have any child remaining with Position_Default ?
+
+         if Child.Position = Position_Default then
+            --  The current child should be taken into account only when it is
+            --  moved to another notebook, ie will remain as part of the MDI.
+            --  If it is being destroyed, it should no longer count as a
+            --  Position_Default child.
+            declare
+               Child_Is_Being_Destroyed : constant Boolean :=
+                 Child.MDI.In_Drag = No_Drag;
+               L : Widget_List.Glist := Child.MDI.Items;
+               C  : MDI_Child;
+            begin
+               while L /= Null_List loop
+                  C := MDI_Child (Get_Data (L));
+                  if (Child /= C
+                      or else not Child_Is_Being_Destroyed)
+                    and then C.State = Normal   --  In a notebook currently
+                    and then C.Position = Position_Default
+                  then
+                     Default_Child_Remains := True;
+                     exit;
+                  end if;
+                  L := Next (L);
+               end loop;
+            end;
+         end if;
+
          --  No more pages in the notebook ?
          if Page1 = null then
             --  Are there any other notebook with only children in normal
@@ -3401,73 +3463,66 @@ package body Gtkada.MDI is
             --      children
 
             if Child.Position /= Position_Default then
-               Destroy (Note);
+               if not MDI_Notebook (Note).Is_Default_Notebook then
+                  Destroy (Note);
+               end if;
                return;
             end if;
 
-            declare
-               Children : Widget_List.Glist :=
-                 Get_Children (Gtk_Container (Child.MDI));
-               Max_Notes : constant Natural := Natural (Length (Children));
-               Notes : array (1 .. Max_Notes) of Gtk_Notebook;
-               Is_Empty : array (1 .. Max_Notes) of Boolean :=
-                 (others => True);
-               Only_Normal_Children : array (1 .. Max_Notes) of Boolean :=
-                 (others => True);
-               L : Widget_List.Glist;
-               Must_Destroy : Boolean := False;
-               Index : Integer := 1;
-            begin
-               L := Children;
-               while L /= Null_List loop
-                  Notes (Index) := Gtk_Notebook (Get_Data (L));
-                  Is_Empty (Index) := Get_Nth_Page (Notes (Index), 0) = null;
-                  Index := Index + 1;
-                  L := Next (L);
-               end loop;
-               Free (Children);
+            --  The notebook will be destroyed if we already have an
+            --  empty notebook, or if there is at least one Position_Default
+            --  child remaining. Otherwise we keep this notebook as empty,
+            --  and mark it as special.
 
-               L := Child.MDI.Items;
-               while L /= Null_List loop
-                  Child := MDI_Child (Get_Data (L));
-                  if Child.State = Normal then
-                     for N in Notes'Range loop
-                        if Notes (N) = Gtk_Notebook (Get_Parent (Child)) then
-                           Is_Empty (N) := False;
-                           if Child.Position /= Position_Default then
-                              Only_Normal_Children (N) := False;
-                              exit;
-                           end if;
-                        end if;
-                     end loop;
-                  end if;
-                  L := Next (L);
-               end loop;
-
-               for N in Notes'Range loop
-                  if Notes (N) /= Gtk_Notebook (Note) then
-                     if Is_Empty (N)
-                       or else Only_Normal_Children (N)
+            Must_Destroy := Default_Child_Remains;
+            if not Must_Destroy then
+               declare
+                  Children : Widget_List.Glist :=
+                    Get_Children (Gtk_Container (Child.MDI));
+                  Has_Empty_Notebook : Boolean := False;
+                  L : Widget_List.Glist;
+                  N : Gtk_Notebook;
+               begin
+                  --  Identify which notebooks are empty
+                  L := Children;
+                  while L /= Null_List loop
+                     N := Gtk_Notebook (Get_Data (L));
+                     if N /= Gtk_Notebook (Note)
+                       and then Get_Nth_Page (N, 0) = null
                      then
-                        Must_Destroy := True;
+                        Has_Empty_Notebook := True;
                         exit;
                      end if;
-                  end if;
-               end loop;
+                     L := Next (L);
+                  end loop;
+                  Free (Children);
 
-               if Must_Destroy then
-                  Destroy (Note);
-               end if;
-            end;
+                  Must_Destroy := Has_Empty_Notebook;
+               end;
+            end if;
 
-         --  If we have only one page:
-         elsif Page2 = null then
-            First_Child := MDI_Child (Page1);
-            if Child.MDI.Show_Tabs_Policy = Always then
-               Set_Border_Width (First_Child.Main_Box, 0);
+            if Must_Destroy then
+               Destroy (Note);
             else
-               Set_Border_Width
-                 (First_Child.Main_Box, Guint (Small_Border_Thickness));
+               MDI_Notebook (Note).Is_Default_Notebook := True;
+            end if;
+
+         else
+            --  If we have only one page:
+            if Page2 = null then
+               First_Child := MDI_Child (Page1);
+               if Child.MDI.Show_Tabs_Policy = Always then
+                  Set_Border_Width (First_Child.Main_Box, 0);
+               else
+                  Set_Border_Width
+                    (First_Child.Main_Box, Guint (Small_Border_Thickness));
+               end if;
+            end if;
+
+            if Child.Position = Position_Default
+              and then not Default_Child_Remains
+            then
+               MDI_Notebook (Note).Is_Default_Notebook := True;
             end if;
          end if;
       end if;
@@ -3979,9 +4034,12 @@ package body Gtkada.MDI is
          Raised_Child : MDI_Child;
          X, Y         : Gint;
          Dummy        : Gtk_Label;
+         Is_Default   : Boolean;
       begin
          Width  := Gint'Value (Get_Attribute (Child_Node, "Width", "-1"));
          Height := Gint'Value (Get_Attribute (Child_Node, "Height", "-1"));
+         Is_Default := Boolean'Value
+           (Get_Attribute (Child_Node, "default", "false"));
 
          if Traces then
             Put_Line ("MDI Parse_Notebook_Node Width=" & Gint'Image (Width)
@@ -4005,6 +4063,7 @@ package body Gtkada.MDI is
 
          if Notebook = null then
             Notebook := Create_Notebook (MDI);
+            MDI_Notebook (Notebook).Is_Default_Notebook := Is_Default;
             if Traces then
                Put_Line ("MDI About to create new notebook "
                          & System.Address_Image (Notebook.all'Address));
@@ -4539,6 +4598,11 @@ package body Gtkada.MDI is
               (Parent, "Height",
                Allocation_Int'Image
                  (Get_Allocation_Height (Note) + Border_Width));
+
+            if MDI_Notebook (Note).Is_Default_Notebook then
+               Set_Attribute (Parent, "default", "true");
+            end if;
+
             if Length > 0 then
                for Page_Index in 0 .. Length - 1 loop
                   Save_Widget
