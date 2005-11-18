@@ -530,24 +530,10 @@ package Gtkada.MDI is
    --
    --  Desktops are saved and restored in XML trees.
    --
-   --  Note that you can instantiate several of these packages, but you need to
-   --  call Save_Desktop and Restore_Desktop from each of them if you want to
-   --  save the whole contents of the MDI. The resulting XML nodes can then be
-   --  merged into a single XML tree if needed.
-
-   procedure Add_To_Tree
-     (Tree        : in out Glib.Xml_Int.Node_Ptr;
-      ID_Node     : Glib.Xml_Int.Node_Ptr;
-      Position    : Child_Position := Position_Default;
-      Focus       : Boolean := False;
-      Raised      : Boolean := False);
-   --  Add an item to a Tree that can then be loaded through
-   --  a Load_Desktop_Function, see below.
-   --  Tree can be null, in which case it will be initialized with
-   --  values relative to the MDI.
-   --  If Focus is True, then the widget will be given the focus, unless
-   --  another widget is also registered later on with Focus set to True.
-   --  It isn't possible to define a floating child as a default
+   --  If you need your application to load a "default desktop" when the user
+   --  hasn't defined one, it is recommended that you distribute an actual
+   --  file containing this desktop. You could also create the XML tree in
+   --  memory yourself, and thus hard-code the default desktop if need be.
 
    generic
       type User_Data (<>) is private;
@@ -625,14 +611,6 @@ package Gtkada.MDI is
    function Desktop_Was_Loaded (MDI : access MDI_Window_Record) return Boolean;
    --  Return True if a desktop was loaded, False if the MDI is only the result
    --  of calls to Gtk_New and Put.
-
-   procedure Present_On_Child_Focus
-     (MDI     : access MDI_Window_Record;
-      Present : Boolean);
-   --  Whether giving the focus to a child should cause the window containing
-   --  this child to be "Presented".
-   --  This behaviour is enabled by default; it might be useful to disable it,
-   --  for example when loading a desktop.
 
    -------------
    -- Signals --

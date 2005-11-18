@@ -3918,41 +3918,6 @@ package body Gtkada.MDI is
       end if;
    end Set_Focus_Child;
 
-   ----------------------
-   -- Desktop Handling --
-   ----------------------
-
-   procedure Add_To_Tree
-     (Tree     : in out Glib.Xml_Int.Node_Ptr;
-      ID_Node  : Glib.Xml_Int.Node_Ptr;
-      Position : Child_Position := Position_Default;
-      Focus    : Boolean := False;
-      Raised   : Boolean := False)
-   is
-      Child_Node : Node_Ptr;
-   begin
-      if Tree = null then
-         Tree := new Node;
-         Tree.Tag := new String'("MDI");
-         Child_Node := Tree;
-      else
-         Child_Node := Tree;
-      end if;
-
-      Child_Node := new Node;
-      Child_Node.Tag := new String'("Child");
-      Set_Attribute (Child_Node, "Focus", Boolean'Image (Focus));
-      Set_Attribute (Child_Node, "State", State_Type'Image (Normal));
-      Set_Attribute (Child_Node, "Raised", Boolean'Image (Raised));
-      Set_Attribute (Child_Node, "Position", Child_Position'Image (Position));
-
-      if ID_Node /= null then
-         Add_Child (Child_Node, ID_Node);
-      end if;
-
-      Add_Child (Tree, Child_Node, Append => True);
-   end Add_To_Tree;
-
    -------------
    -- Desktop --
    -------------
@@ -4404,6 +4369,8 @@ package body Gtkada.MDI is
             Put_Line ("MDI Restore_Desktop");
          end if;
 
+         MDI.Present_Window_On_Child_Focus := False;
+
          while Child_Node /= null loop
             if Child_Node.Tag.all = "Pane" then
                Remove_All_Items (Remove_All_Empty => True);
@@ -4464,6 +4431,8 @@ package body Gtkada.MDI is
          end if;
 
          Emit_By_Name (Get_Object (MDI), "children_reorganized" & ASCII.NUL);
+
+         MDI.Present_Window_On_Child_Focus := True;
 
          return True;
       end Restore_Desktop;
@@ -4912,17 +4881,6 @@ package body Gtkada.MDI is
    begin
       return MDI.Desktop_Was_Loaded;
    end Desktop_Was_Loaded;
-
-   ----------------------------
-   -- Present_On_Child_Focus --
-   ----------------------------
-
-   procedure Present_On_Child_Focus
-     (MDI     : access MDI_Window_Record;
-      Present : Boolean) is
-   begin
-      MDI.Present_Window_On_Child_Focus := Present;
-   end Present_On_Child_Focus;
 
    ---------------
    -- Get_State --
