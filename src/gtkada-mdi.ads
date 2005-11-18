@@ -583,6 +583,8 @@ package Gtkada.MDI is
       --  User is passed as a parameter to all of the Load_Desktop_Function
       --  registered by the widgets.
       --  Return False if the desktop couldn't be loaded
+      --  It also restores the size and position of the toplevel window that
+      --  contains the MDI
 
       function Save_Desktop
         (MDI : access MDI_Window_Record'Class;
@@ -590,6 +592,8 @@ package Gtkada.MDI is
       --  Return an XML tree that describes the current contents of the MDI.
       --  This function calls each of the registered function for the children
       --  of the MDI.
+      --  It also saves the size and position of the toplevel window that
+      --  contains the MDI
 
       procedure Free_Registered_Desktop_Functions;
       --  Free the memory allocated for the registered functions.

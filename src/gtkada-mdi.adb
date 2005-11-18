@@ -4355,21 +4355,53 @@ package body Gtkada.MDI is
          Reuse_Empty_If_Needed : Boolean := True;
          Initial_All_Floating_Mode : constant Boolean := MDI.All_Floating_Mode;
       begin
+         if From_Tree = null then
+            return False;
+         end if;
+
          --  Temporarily disable the user of all floating mode, so that we can
          --  properly restore the desktop even if notebooks are referenced.
          MDI.All_Floating_Mode := False;
          Empty_Notebook_Filler := null;
 
-         if From_Tree /= null then
-            Child_Node := From_Tree.Child;
-            pragma Assert (From_Tree.Tag.all = "MDI");
-         end if;
+         Child_Node := From_Tree.Child;
+         pragma Assert (From_Tree.Tag.all = "MDI");
 
          if Traces then
             Put_Line ("MDI Restore_Desktop");
          end if;
 
          MDI.Present_Window_On_Child_Focus := False;
+
+         --  We must restore the size of the main window first, so that the
+         --  rest of the desktop makes sense
+
+         declare
+            Width, Height, X, Y : Gint;
+            State  : Gdk_Window_State;
+         begin
+            Width  := Gint'Value (Get_Attribute (From_Tree, "width",  "640"));
+            Height := Gint'Value (Get_Attribute (From_Tree, "height", "480"));
+            X      := Gint'Value (Get_Attribute (From_Tree, "x", "-1"));
+            Y      := Gint'Value (Get_Attribute (From_Tree, "y", "-1"));
+            State  := Gdk_Window_State'Value
+              (Get_Attribute (From_Tree, "state", "0"));
+
+            Set_Default_Size (Gtk_Window (Get_Toplevel (MDI)), Width, Height);
+            Set_UPosition (Get_Toplevel (MDI), X, Y);
+
+            if (State and Window_State_Maximized) /= 0 then
+               Maximize (Gtk_Window (Get_Toplevel (MDI)));
+            end if;
+         exception
+            when others =>
+               --  An invalid attribute in XML ?
+               null;
+         end;
+
+         --  Now restore the rest of the desktop
+
+         Child_Node := From_Tree.Child;
 
          while Child_Node /= null loop
             if Child_Node.Tag.all = "Pane" then
@@ -4595,6 +4627,33 @@ package body Gtkada.MDI is
       begin
          Root := new Node;
          Root.Tag := new String'("MDI");
+
+         --  Save the general configuration of the MDI
+
+         declare
+            Win   : constant Gtk_Window := Gtk_Window (Get_Toplevel (MDI));
+            State : Gdk_Window_State;
+            X, Y  : Gint;
+         begin
+            if Win /= null then
+               State := Get_State (Get_Window (Win));
+               if (State and Window_State_Maximized) = 0 then
+                  Set_Attribute
+                    (Root, "width",
+                     Allocation_Int'Image (Get_Allocation_Width (Win)));
+                  Set_Attribute
+                    (Root, "height",
+                     Allocation_Int'Image (Get_Allocation_Height (Win)));
+
+                  Get_Root_Origin (Get_Window (Win), X, Y);
+
+                  Set_Attribute (Root, "x", Gint'Image (X));
+                  Set_Attribute (Root, "y", Gint'Image (Y));
+               end if;
+
+               Set_Attribute (Root, "state", Gdk_Window_State'Image (State));
+            end if;
+         end;
 
          --  Look through all the notebooks, and save the widgets in the
          --  notebook order.
