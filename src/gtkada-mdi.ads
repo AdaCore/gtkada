@@ -129,6 +129,10 @@ package Gtkada.MDI is
    --  Tabs_Position indicates where the notebook tabs should be put.
    --  Show_Tabs_Policy indicates when the notebook tabs should be displayed.
 
+   -------------
+   -- Windows --
+   -------------
+
    type Child_Flags is mod 2 ** 5;
    Destroy_Button       : constant Child_Flags := 2 ** 2;
    Float_As_Transient   : constant Child_Flags := 2 ** 3;
@@ -146,100 +150,92 @@ package Gtkada.MDI is
    --  child always destroyed when Esc is pressed) if Always_Destroy_Float is
    --  true.
 
+   type Child_Group is new Positive;
+   Group_Default : constant Child_Group := 1;
+   Group_Any     : constant Child_Group := Child_Group'Last;
+   --  This type can be used to help group windows by type within the MDI.
+   --  Group_Default as a special status when computing the initial position
+   --  for a window. But you can create your own groups as needed, so that for
+   --  instance editors tend to be grouped with other editors, graphs with
+   --  other graphs,... depending on your application.
+   --  The group has an impact when a the last window from a notebook is
+   --  closed:
+   --  If the window belongs to Group_Default, and it is the last of its group,
+   --  then the space currently occupied by that window is not reclaimed, and
+   --  therefore an empty area will exist in the MDI. The idea is that for
+   --  instance editors typically play a special role in an integrated
+   --  development environment, and the users like to have them in the center
+   --  of the window. When closing the last editor, they do not want the side
+   --  windows (browsers, consoles,...) to take up that space that should
+   --  really only be used for editors.
+   --  To get such a behavior, editors should belong to Group_Default, and all
+   --  other windows to custom groups.
+   --
+   --  Do not use Group_Any, it is used internally with special meanings.
+
    procedure Gtk_New
-     (Child  : out MDI_Child;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags  : Child_Flags := All_Buttons);
-   --  Create a new MDI child that contains widget.
-
-   procedure Initialize
-     (Child  : access MDI_Child_Record;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags  : Child_Flags);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
-   type Child_Position is new Positive;
-   Position_Bottom  : constant Child_Position := 1;
-   Position_Top     : constant Child_Position := 2;
-   Position_Left    : constant Child_Position := 3;
-   Position_Right   : constant Child_Position := 4;
-   Position_Default : constant Child_Position := 5;
-
-   function Put
-     (MDI          : access MDI_Window_Record;
-      Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position     : Child_Position := Position_Default;
+     (Child        : out MDI_Child;
+      Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags        : Child_Flags := All_Buttons;
-      Focus_Widget : Gtk.Widget.Gtk_Widget := null) return MDI_Child;
-   --  Add a new child to the MDI window, and return its embedding widget.
-   --  Child mustn't be a Gtk_Window (or one of its inheriting types).
-   --  Otherwise, Program_Error is raised.
+      Group        : Child_Group := Group_Default;
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null);
+   --  Create a new MDI child that contains widget.
+   --  Widget mustn't be of type Gtk_Window.
    --
-   --  Flags indicates which buttons should be made visible in the title bar.
+   --  You shouldn't access Widget directly afterwards, but should manipulate
+   --  Child only. However, as a special exception, you can still pass Widget
+   --  as a parameter to the subprograms in this package to manipulate it (e.g.
+   --  in Raise_Child, ...)
    --
-   --  You shouldn't access Child directly afterwards, but should manipulate
-   --  its MDI_Child instead. However, as a special exception, you can
-   --  still pass Child as a parameter to the subprograms in this package to
-   --  manipulate it (e.g. in Raise_Child, ...)
-   --
-   --  Note: You might have to call Set_Size_Request on Child to set its
+   --  Note: You might have to call Set_Size_Request on Widget to set its
    --  initial size. This won't prevent it from being resized by the user.
-   --
-   --  If Child is a MDI_Child, its location is recomputed automatically.
    --
    --  If Focus_Widget is not null, this is the widget that gets the keyboard
    --  focus when the child is selected.
-   --
+
+   procedure Initialize
+     (Child        : access MDI_Child_Record'Class;
+      Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags        : Child_Flags := All_Buttons;
+      Group        : Child_Group := Group_Default;
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   type Child_Position is
+     (Position_Automatic,
+      Position_Bottom,
+      Position_Top,
+      Position_Left,
+      Position_Right);
+   subtype Side_Position is Child_Position
+      range Position_Bottom .. Position_Right;
+   --  The initial position of windows within the MDI.
+   --  In all cases, the initial location for a window is computed with the
+   --  following algorithm. This algorithm is designed with the notion of
+   --  groups of windows in mind, so that some windows (typically editors) have
+   --  a special status.
+   --     - If another window with the same Group is already in the MDI, the
+   --       new window is put on top of it.
+   --     - Otherwise, if Position_Automatic, if an empty area exists within
+   --       the MDI, the new window is put in that area.
+   --     - Else if the Position is Bottom .. Right, the new window is put
+   --       below all others (resp. to the top, left or right)
+   --     - Else the window is put on top of the currently selected window
+
+   procedure Put
+     (MDI              : access MDI_Window_Record;
+      Child            : access MDI_Child_Record'Class;
+      Initial_Position : Child_Position := Position_Automatic);
+   --  Add a new child to the MDI window, and return its embedding widget.
    --  Calling Put does not give the focus to the newly inserted widget.
    --  To do that, you should call Set_Focus_Child.
-   --
-   --  Position is used to place the new widget at the right position in the
-   --  MDI. The algorithm is the following:
-   --  - If position is Bottom, then the MDI first check
-   --      whether there is already a child with that attribute.
-   --      * If yes, the new child is put in the same notebook as that one.
-   --      * If no, a new window is created below all others, splitting the MDI
-   --        as needed. The new child is put in that new window and has the
-   --        attribute Bottom.
-   --      When the user moves (through drag-and-drop or split) a Bottom window
-   --      out of the notebook, that window keeps its Bottom attribute. As a
-   --      result, there can be multiple notebooks with this attribute.
-   --  - Likewise for Top, Left and Right
-   --
-   --  - If position is something other: the MDI checks whether the current
-   --    notebook has a window with the same attribute value. If yes, the new
-   --    child is put in that same notebook. If no, it looks for the first
-   --    notebook with at least one child with that attribute. The goal of this
-   --    rule is to ensure that larger windows, like editors, are not put on
-   --    smaller windows, like a project view, even if the latter currently has
-   --    the focus.
-   --    If there is no existing window at the same position, it will try and
-   --    reuse an empty notebook if one is available, then it selects the first
-   --    notebook with a window not in Position_Bottom .. Position_Right.
-   --
-   --  You can create new Position types as needed, for instance if you want
-   --  to group similar windows together automatically.
-   --
-   --  The position also has an impact when a window is closed: if the window
-   --  is in Position_Default, the space it occupies is reclaimed only if there
-   --  is at least one other window in that Position_Default. If there is none,
-   --  an empty space is left instead.
-   --  For all other positions, the space is always reused by the MDI that will
-   --  enlarge adjacent windows as needed.
-   --
-   --  An example of use of these positions in an Integrated Development
-   --  Environment. The most important type of windows in such an environment
-   --  are the editors, which are all put in Position_Default. All other
-   --  windows (browsers, trees,...) are put in other positions, so that when
-   --  closing the last editor, the MDI will leave its space empty. Opening a
-   --  new editor will therefore reuse that space.
 
    procedure Set_Size
-     (MDI    : access MDI_Window_Record;
-      Child  : access MDI_Child_Record'Class;
-      Width  : Glib.Gint;
-      Height : Glib.Gint;
+     (MDI        : access MDI_Window_Record;
+      Child      : access MDI_Child_Record'Class;
+      Width      : Glib.Gint;
+      Height     : Glib.Gint;
       Fixed_Size : Boolean := False);
    --  Forces a new size for a child. If Width or Height is left to -1, the
    --  matching size will be computed from the child's requisition. If they are
@@ -364,14 +360,14 @@ package Gtkada.MDI is
    --  focus to some specific part of your widget (an entry field,...) in some
    --  cases.
 
-   procedure Set_Focus_Child (Child : access MDI_Child_Record'Class);
+   procedure Set_Focus_Child (Child : access MDI_Child_Record);
    --  Make Child the active widget, and raise it at the top.
 
    procedure Check_Interactive_Selection_Dialog
      (MDI          : access MDI_Window_Record;
       Event        : Gdk.Event.Gdk_Event;
       Move_To_Next : Boolean;
-      Visible_In_Central_Only : Boolean := False);
+      Only_Group   : Child_Group := Group_Any);
    --  Open the interactive dialog for selecting windows.
    --  This dialog should be open as a result of a key press event.
    --  Move_To_Next indicates whether we want to select the next child (True)
@@ -386,12 +382,12 @@ package Gtkada.MDI is
    --  the keys to move between children.
    --
    --  If Event is null, then no dialog is displayed. Instead, the next or
-   --  previous child is immediately selected.
+   --  previous visible child is immediately selected. In such a mode, windows
+   --  that are not on top of their respective notebook are ignored. This can
+   --  be used to emulate Emacs's behavior for goto-other-window.
    --
-   --  If Visible_In_Central_Only is set, then only the children currently
-   --  visible in the central area can be selected. There is only one such
-   --  child unless the central area was splitted. Event is ignored in this
-   --  case, and the selection is not interactive
+   --  If Only_Group is specified, then only the windows from that group will
+   --  be shown in the dialog.
 
    --  This function is not internal to the MDI since connecting to the
    --  key_press_event and key_release_event should be done in the gtk_window
@@ -645,7 +641,9 @@ package Gtkada.MDI is
    --    procedure Handler
    --      (MDI : access MDI_Window_Record'Class; Child : System.Address);
    --
-   --    Emitted when the title of a child is changed.
+   --    Emitted when the title of a child is changed. This signal is not
+   --    emitted if Set_Title is called for a child that hasn't been put in the
+   --    MDI yet.
    --
    --  - "child_added"
    --     procedure Handler
@@ -727,8 +725,7 @@ private
 
       State : State_Type := Normal;
 
-      Position : Child_Position := Position_Default;
-      --  The attribute of the child.
+      Group : Child_Group := Group_Default;
 
       Title       : String_Access;
       Short_Title : String_Access;
