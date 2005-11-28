@@ -131,7 +131,9 @@ package body Gtkada.Multi_Paned is
    procedure Realize_Paned (Paned : access Gtk_Widget_Record'Class);
    --  Called when the window was realized.
 
-   procedure Set_Handle_Cursor (Current : Child_Description_Access);
+   procedure Set_Handle_Cursor
+     (Split   : access Gtkada_Multi_Paned_Record'Class;
+      Current : Child_Description_Access);
    --  Reset the cursor used for the mouse when it is over the handle for
    --  Current.
 
@@ -537,7 +539,7 @@ package body Gtkada.Multi_Paned is
          then
             if Child.Parent /= null then
                Child.First_Child.Parent := Child.Parent;
-               Set_Handle_Cursor (Child.First_Child);
+               Set_Handle_Cursor (Split, Child.First_Child);
 
                if Child.Parent.First_Child = Child then
                   Child.Parent.First_Child := Child.First_Child;
@@ -750,14 +752,20 @@ package body Gtkada.Multi_Paned is
 
       case Split.Selected.Parent.Orientation is
          when Orientation_Vertical =>
-            Gdk_New (Cursor, Sb_V_Double_Arrow);
+            if Split.Cursor_Double_V_Arrow = null then
+               Gdk_New (Split.Cursor_Double_V_Arrow, Sb_V_Double_Arrow);
+            end if;
+            Cursor := Split.Cursor_Double_V_Arrow;
             Split.Selected_Pos.Height := 0;
             Split.Selected_Pos.Y :=
               Split.Selected_Pos.Y + Gint (Get_Y (Event));
             Split.Initial_Pos := Split.Selected.Handle.Position.Y
               - Gint (Get_Y_Root (Event));
          when Orientation_Horizontal =>
-            Gdk_New (Cursor, Sb_H_Double_Arrow);
+            if Split.Cursor_Double_H_Arrow = null then
+               Gdk_New (Split.Cursor_Double_H_Arrow, Sb_H_Double_Arrow);
+            end if;
+            Cursor := Split.Cursor_Double_H_Arrow;
             Split.Selected_Pos.Width := 0;
             Split.Selected_Pos.X :=
               Split.Selected_Pos.X + Gint (Get_X (Event));
@@ -771,7 +779,6 @@ package body Gtkada.Multi_Paned is
          Button_Press_Mask or Button_Motion_Mask or Button_Release_Mask,
          Cursor => Cursor,
          Time   => 0);
-      Destroy (Cursor);
 
       Draw_Resize_Line (Split);
       return False;
@@ -1107,18 +1114,26 @@ package body Gtkada.Multi_Paned is
    -- Set_Handle_Cursor --
    -----------------------
 
-   procedure Set_Handle_Cursor (Current : Child_Description_Access) is
+   procedure Set_Handle_Cursor
+     (Split   : access Gtkada_Multi_Paned_Record'Class;
+      Current : Child_Description_Access)
+   is
       Cursor      : Gdk_Cursor;
    begin
       if Current.Handle.Win /= null then
          case Current.Parent.Orientation is
             when Orientation_Vertical =>
-               Gdk_New (Cursor, Sb_V_Double_Arrow);
+               if Split.Cursor_Double_V_Arrow = null then
+                  Gdk_New (Split.Cursor_Double_V_Arrow, Sb_V_Double_Arrow);
+               end if;
+               Cursor := Split.Cursor_Double_V_Arrow;
             when Orientation_Horizontal =>
-               Gdk_New (Cursor, Sb_H_Double_Arrow);
+               if Split.Cursor_Double_H_Arrow = null then
+                  Gdk_New (Split.Cursor_Double_H_Arrow, Sb_H_Double_Arrow);
+               end if;
+               Cursor := Split.Cursor_Double_H_Arrow;
          end case;
          Set_Cursor (Current.Handle.Win, Cursor);
-         Destroy (Cursor);
       end if;
    end Set_Handle_Cursor;
 
@@ -1151,7 +1166,7 @@ package body Gtkada.Multi_Paned is
          Gdk.Window.Show (Current.Handle.Win);
 
          Destroy (Window_Attr);
-         Set_Handle_Cursor (Current);
+         Set_Handle_Cursor (Split, Current);
       end if;
 
       if Realized_Is_Set (Split)
@@ -1781,7 +1796,7 @@ package body Gtkada.Multi_Paned is
             Tmp2.Next := Pane;
          end if;
 
-         Set_Handle_Cursor (Current);
+         Set_Handle_Cursor (Win, Current);
          Current.Next := null;
          return Pane;
       end Create_Or_Get_Parent;

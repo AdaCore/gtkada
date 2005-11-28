@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003 ACT-Europe                     --
+--                 Copyright (C) 2003-2005 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with Glib;       use Glib;
+with Gdk.Cursor;
 with Gdk.GC;
 with Gtk.Enums;
 with Gtk.Fixed;
@@ -246,6 +247,9 @@ private
       Initial_Pos  : Gint;
       Selected     : Child_Description_Access;
       Selected_Pos : Gtk.Widget.Gtk_Allocation;
+
+      Cursor_Double_H_Arrow : Gdk.Cursor.Gdk_Cursor;
+      Cursor_Double_V_Arrow : Gdk.Cursor.Gdk_Cursor;
 
       Opaque_Resizing        : Boolean := False;
    end record;

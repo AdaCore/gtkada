@@ -1147,7 +1147,6 @@ package body Gtkada.MDI is
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class) is
       Window_Attr : Gdk.Window_Attr.Gdk_Window_Attr;
       M           : constant MDI_Window := MDI_Window (MDI);
-      Cursor      : Gdk_Cursor;
 
    begin
       Gdk.Window.Set_Background (Get_Window (M), M.Background_Color);
@@ -1160,11 +1159,13 @@ package body Gtkada.MDI is
       Set_Foreground (M.Focus_GC, M.Focus_Title_Color);
       Set_Exposures (M.Focus_GC, False);
 
-      Gdk_New (Cursor, Cross);
+      if M.Cursor_Cross = null then
+         Gdk_New (M.Cursor_Cross, Cross);
+      end if;
       Gdk_New (Window_Attr,
                Window_Type => Window_Child,
                Wclass      => Input_Output,
-               Cursor      => Cursor,
+               Cursor      => M.Cursor_Cross,
                Visual      => Get_Visual (MDI),
                Colormap    => Get_Colormap (MDI),
                Event_Mask  => Get_Events (MDI)
@@ -1175,7 +1176,6 @@ package body Gtkada.MDI is
 
       --  Destroy the window attribute and the cursor
 
-      Destroy (Cursor);
       Destroy (Window_Attr);
       Queue_Resize (MDI);
    end Realize_MDI;
@@ -1731,7 +1731,6 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean
    is
       C        : constant MDI_Child := MDI_Child (Child);
-      Cursor   : Gdk_Cursor;
       Current  : Gtk_Widget;
       C3       : MDI_Child;
       Note     : Gtk_Notebook;
@@ -1822,13 +1821,14 @@ package body Gtkada.MDI is
                C.MDI.Dnd_Rectangle_Owner := null;
                Pointer_Ungrab (Time => 0);
 
-               Gdk_New (Cursor, Fleur);
+               if C.MDI.Cursor_Fleur = null then
+                  Gdk_New (C.MDI.Cursor_Fleur, Fleur);
+               end if;
                Tmp := Pointer_Grab
                  (Get_Window (C),
                   False, Button_Motion_Mask or Button_Release_Mask,
-                  Cursor => Cursor,
+                  Cursor => C.MDI.Cursor_Fleur,
                   Time   => 0);
-               Unref (Cursor);
                return True;
             end if;
 
@@ -1987,6 +1987,7 @@ package body Gtkada.MDI is
       if (Flags and Destroy_Button) /= 0 then
          Pix := Gdk_New_From_Xpm_Data (Close_Xpm);
          Gtk_New (Pixmap, Pix);
+         Unref (Pix);
          Gtk_New (Button);
          Add (Button, Pixmap);
          Pack_End (Child.Title_Box, Button, Expand => False, Fill => False);

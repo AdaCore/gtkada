@@ -31,6 +31,7 @@ with Glib;        use Glib;
 with Glib.Xml_Int;
 with Gdk.GC;
 with Gdk.Color;
+with Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Pixbuf;
 with Gdk.Rectangle;
@@ -820,6 +821,10 @@ private
       Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Default_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+
+      Cursor_Cross      : Gdk.Cursor.Gdk_Cursor;
+      Cursor_Fleur      : Gdk.Cursor.Gdk_Cursor;
+      --  Cached cursors
 
       Draw_Title_Bars   : Boolean             := True;
       Tabs_Position     : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
