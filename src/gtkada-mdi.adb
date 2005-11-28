@@ -816,6 +816,8 @@ package body Gtkada.MDI is
                Render_Pixmap_And_Mask (Scaled, Pixmap, Mask, 128);
                Unref (Scaled);
                Set (D.Icon, Pixmap, Mask);
+               Gdk.Drawable.Unref (Pixmap);
+               Gdk.Drawable.Unref (Mask);
             end if;
          end;
       end if;
