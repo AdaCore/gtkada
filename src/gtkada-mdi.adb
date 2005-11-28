@@ -2181,6 +2181,8 @@ package body Gtkada.MDI is
             Render_Pixmap_And_Mask (Child.Icon, Pix, Mask, 128);
             Gtk_New (Pixmap, Pix, Mask);
             Pack_Start (Box, Pixmap, Expand => False);
+            Gdk.Drawable.Unref (Pix);
+            Gdk.Drawable.Unref (Mask);
          end if;
 
          Gtk_New (Label, Child.Short_Title.all);
@@ -2926,6 +2928,8 @@ package body Gtkada.MDI is
             Render_Pixmap_And_Mask_For_Colormap
               (Child.Icon, Get_Default_Colormap, Pix, Mask, 128);
             Gtk_New (Pixmap, Pix, Mask);
+            Gdk.Drawable.Unref (Pix);
+            Gdk.Drawable.Unref (Mask);
             Pack_Start (Box, Pixmap, Expand => False);
             Pack_Start (Box, Child.Tab_Label,  Expand => True, Fill => True);
             Add (Event, Box);
