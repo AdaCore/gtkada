@@ -3740,6 +3740,9 @@ ada_gdk_get_window_id (GdkWindow *w)
 void
 ada_gdk_move_pointer (gint x, gint y)
 {
+/*  Disable this function under Apple, since on Tiger, the call to 
+    XWarpPointer requires explicit linker flags pointing to X11 libs.
+*/
 #ifndef __APPLE__
   GdkDisplay *display = gdk_display_get_default ();
   Display *xdisplay = GDK_DISPLAY_XDISPLAY (display);
