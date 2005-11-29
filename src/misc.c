@@ -3740,11 +3740,13 @@ ada_gdk_get_window_id (GdkWindow *w)
 void
 ada_gdk_move_pointer (gint x, gint y)
 {
+#ifndef __APPLE__
   GdkDisplay *display = gdk_display_get_default ();
   Display *xdisplay = GDK_DISPLAY_XDISPLAY (display);
   Window xroot_window = GDK_WINDOW_XID (gdk_get_default_root_window ());
 
   XWarpPointer (xdisplay, None, xroot_window, 0, 0, 0, 0, x, y);
+#endif
 }
 
 void *
