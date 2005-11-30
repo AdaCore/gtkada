@@ -326,6 +326,9 @@ package Gtkada.Canvas is
    --  Same as above, but using the canvas coordinates of the event, taking
    --  into account the current zoom level and current scrolling
 
+   procedure Clear (Canvas : access Interactive_Canvas_Record);
+   --  Remove all items from the canvas
+
    procedure Remove
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class);

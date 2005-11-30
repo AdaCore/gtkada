@@ -126,7 +126,16 @@ package body Glib.Graphs is
    -------------
 
    procedure Destroy (G : in out Graph) is
-      V : Vertex_List := G.Vertices;
+   begin
+      Clear (G);
+   end Destroy;
+
+   -----------
+   -- Clear --
+   -----------
+
+   procedure Clear (G : in out Graph) is
+      V   : Vertex_List := G.Vertices;
       Tmp : Vertex_List;
    begin
       while V /= null loop
@@ -134,7 +143,7 @@ package body Glib.Graphs is
          Remove (G, V.V);
          V := Tmp;
       end loop;
-   end Destroy;
+   end Clear;
 
    ------------
    -- Remove --

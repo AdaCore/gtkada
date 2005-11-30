@@ -3017,6 +3017,23 @@ package body Gtkada.Canvas is
       Refresh_Canvas (Canvas);
    end Remove;
 
+   -----------
+   -- Clear --
+   -----------
+
+   procedure Clear (Canvas : access Interactive_Canvas_Record) is
+      Tmp, Tmp2 : Item_Selection_List := Canvas.Selection;
+   begin
+      while Tmp /= null loop
+         Tmp2 := Tmp.Next;
+         Free (Tmp);
+         Tmp := Tmp2;
+      end loop;
+
+      Clear (Canvas.Children);
+      Refresh_Canvas (Canvas);
+   end Clear;
+
    ---------------------
    -- On_Button_Click --
    ---------------------

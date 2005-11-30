@@ -86,6 +86,9 @@ package Glib.Graphs is
    --  Destroy all the nodes and edges of the graph, and then free the memory
    --  occupied by the graph itself
 
+   procedure Clear (G : in out Graph);
+   --  Remove all the nodes and edges of the graph.
+
    procedure Remove (G : in out Graph; E : access Edge'Class);
    --  Remove the edge from the graph. The primitive
    --  subprogram Destroy is called for the edge.
