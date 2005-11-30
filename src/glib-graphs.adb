@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2002 ACT-Europe                --
+--                 Copyright (C) 2001-2005 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -135,13 +135,9 @@ package body Glib.Graphs is
    -----------
 
    procedure Clear (G : in out Graph) is
-      V   : Vertex_List := G.Vertices;
-      Tmp : Vertex_List;
    begin
-      while V /= null loop
-         Tmp := V.Next;
-         Remove (G, V.V);
-         V := Tmp;
+      while G.Vertices /= null loop
+         Remove (G, G.Vertices.V);
       end loop;
    end Clear;
 
@@ -174,8 +170,7 @@ package body Glib.Graphs is
       end loop;
 
       --  Free the vertex
-      Remove (G.Vertices, V);
-      G.Num_Vertices := G.Num_Vertices - 1;
+      Remove (G.Vertices, V, G);
       Destroy (V.all);
       Free (V2);
    end Remove;
@@ -245,11 +240,13 @@ package body Glib.Graphs is
    -- Remove --
    ------------
 
-   procedure Remove (List : in out Vertex_List; V : access Vertex'Class) is
+   procedure Remove
+     (List : in out Vertex_List; V : access Vertex'Class; G : in out Graph)
+   is
       procedure Internal is new Unchecked_Deallocation
         (Vertex_List_Record, Vertex_List);
       Tmp      : Vertex_List := List;
-      Previous : Vertex_List;
+      Previous : Vertex_List := null;
    begin
       while Tmp /= null
         and then Tmp.V /= Vertex_Access (V)
@@ -260,7 +257,7 @@ package body Glib.Graphs is
 
       if Tmp /= null then
          if Previous = null then
-            pragma Assert (Tmp = List);
+            pragma Assert (Tmp = List, "Remove vertex");
             Previous := List;
             List := List.Next;
             Internal (Previous);
@@ -268,6 +265,7 @@ package body Glib.Graphs is
             Previous.Next := Tmp.Next;
             Internal (Tmp);
          end if;
+         G.Num_Vertices := G.Num_Vertices - 1;
       end if;
    end Remove;
 

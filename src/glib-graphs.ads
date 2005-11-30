@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                   Copyright (C) 2001-2005 AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -338,15 +338,16 @@ private
       Next : Vertex_List;
    end record;
 
-   procedure Add    (List : in out Vertex_List; V : access Vertex'Class);
-   procedure Remove (List : in out Vertex_List; V : access Vertex'Class);
-
    type Graph is record
       Vertices          : Vertex_List;
       Num_Vertices      : Natural := 0;
       Directed          : Boolean := False;
       Last_Vertex_Index : Natural := 0;
    end record;
+
+   procedure Add    (List : in out Vertex_List; V : access Vertex'Class);
+   procedure Remove
+     (List : in out Vertex_List; V : access Vertex'Class; G : in out Graph);
 
    type Edge is abstract tagged record
       Src, Dest : Vertex_Access;
