@@ -462,22 +462,12 @@ package body Gtkada.Canvas is
 
    procedure Canvas_Destroyed (Canvas : access Gtk_Widget_Record'Class) is
       C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
-      Child : Vertex_Iterator;
-      V : Vertex_Access;
    begin
       if C.Scrolling_Timeout_Id /= 0 then
          Timeout_Remove (C.Scrolling_Timeout_Id);
       end if;
 
-      Clear_Selection (C);
-
-      --  Delete nodes and links
-      Child := First (C.Children);
-      while not At_End (Child) loop
-         V := Get (Child);
-         Next (Child);
-         Remove (C.Children, V);
-      end loop;
+      Clear (C);
 
       Unref (C.Annotation_Layout);
       if C.Clear_GC /= null then
@@ -3022,14 +3012,8 @@ package body Gtkada.Canvas is
    -----------
 
    procedure Clear (Canvas : access Interactive_Canvas_Record) is
-      Tmp, Tmp2 : Item_Selection_List := Canvas.Selection;
    begin
-      while Tmp /= null loop
-         Tmp2 := Tmp.Next;
-         Free (Tmp);
-         Tmp := Tmp2;
-      end loop;
-
+      Clear_Selection (Canvas);
       Clear (Canvas.Children);
       Refresh_Canvas (Canvas);
    end Clear;
