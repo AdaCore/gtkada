@@ -100,7 +100,7 @@ $(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects
 # rebuild the files (it does not check anything if the .ali files are read-only.
 install_ali::
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
-	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
+	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali pango*.ali
 
 $(GATE_EX):: $(GATE_SRC) $(LIBNAME) force
 	@if [ -f .devel ]; then \
