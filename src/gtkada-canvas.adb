@@ -3125,18 +3125,22 @@ package body Gtkada.Canvas is
       Report_Adj_Changed : Boolean := True)
    is
       pragma Unreferenced (Report_Adj_Changed);
-      Hvalue  : constant Gdouble := Get_Value (Canvas.Hadj);
-      Hpage   : constant Gdouble := Get_Page_Size (Canvas.Hadj);
+
+      Hvalue : constant Gdouble := Get_Value (Canvas.Hadj);
+      Hpage  : constant Gdouble := Get_Page_Size (Canvas.Hadj);
+
       X1 : constant Gint := To_Canvas_Coordinates (Canvas, Item_X);
       X2 : constant Gint :=
         To_Canvas_Coordinates (Canvas, Item_X + Gint (Item.Coord.Width));
       Value : Gdouble;
 
-      Vvalue  : constant Gdouble := Get_Value (Canvas.Vadj);
-      Vpage   : constant Gdouble := Get_Page_Size (Canvas.Vadj);
+      Vvalue : constant Gdouble := Get_Value (Canvas.Vadj);
+      Vpage  : constant Gdouble := Get_Page_Size (Canvas.Vadj);
+
       Y1 : constant Gint := To_Canvas_Coordinates (Canvas, Item_Y);
       Y2 : constant Gint :=
         To_Canvas_Coordinates (Canvas, Item_Y + Gint (Item.Coord.Height));
+
    begin
       if Traces then
          Put_Line ("Show_Item: X,Y=" & Gint'Image (Item_X)
@@ -3168,10 +3172,10 @@ package body Gtkada.Canvas is
       --  browser would not show all the items, even when they would otherwise
       --  all fit in the visible part of the browser.
 
-      if X1 >= Gint (Hvalue)
-        and then X2 <= Gint (Hvalue + Hpage)
-        and then Y1 >= Gint (Vvalue)
-        and then Y2 <= Gint (Vvalue + Vpage)
+      if X1 > Gint (Hvalue)
+        and then X2 < Gint (Hvalue + Hpage)
+        and then Y1 > Gint (Vvalue)
+        and then Y2 < Gint (Vvalue + Vpage)
       then
          if Traces then
             Put_Line ("Show_Item: Nothing to do for item "
