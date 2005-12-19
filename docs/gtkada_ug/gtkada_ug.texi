@@ -1292,6 +1292,9 @@ anytime you need ? Once again, using the standard Ada features, you can
 simply create a new tagged type and teach it how to interact with the user.
 See the section @ref{Creating new widgets in Ada} below.
 
+Note that when extending GtkAda widgets or creting new ones, you cannot
+associate a user defined storage pool with these new widgets.
+
 @subsection Type conversions from C to Ada widgets
 
 There are basically three kinds of widgets that you can use with GtkAda:
