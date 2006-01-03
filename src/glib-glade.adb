@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -545,15 +545,9 @@ package body Glib.Glade is
                Put (File, To_Float (P.Value.all) & ", " & To_Float
                   (Q.Value.all));
 
-            elsif Q /= null then
+            else
                Put (File, To_Ada (P.Value.all) & ", " & To_Ada
                   (Q.Value.all));
-
-            else
-               --  ??? Need to find a clean and uniform way of handling default
-               --  integer values
-
-               Put (File, To_Ada (P.Value.all) & ", -1");
             end if;
 
             if Field3 /= "" and R /= null then
@@ -1303,13 +1297,12 @@ package body Glib.Glade is
       if N /= null then
          P := Find_Tag_With_Attribute (N.Child, "property",
                "translatable");
-         if N /= null then
-            declare
-               S : constant String := Get_Attribute (P, "translatable");
-            begin
-               return S = "yes";
-            end;
-         end if;
+
+         declare
+            S : constant String := Get_Attribute (P, "translatable");
+         begin
+            return S = "yes";
+         end;
       end if;
 
       return False;
