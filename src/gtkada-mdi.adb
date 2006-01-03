@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2005 AdaCore                   --
+--                 Copyright (C) 2001-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1551,7 +1551,6 @@ package body Gtkada.MDI is
          return False;
       end if;
 
-
       --  Start a drag-and-drop operation. This won't be effective unless
       --  the user actually drags the mouse a while
 
@@ -1757,7 +1756,7 @@ package body Gtkada.MDI is
             if Current = null then
                Update_Dnd_Window (C.MDI, "Float");
 
-            elsif Current = null or else Current = Gtk_Widget (C.MDI) then
+            elsif Current = Gtk_Widget (C.MDI) then
                Update_Dnd_Window (C.MDI, "Put in central area");
 
             elsif Current = Get_Parent (C)
