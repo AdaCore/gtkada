@@ -526,10 +526,6 @@ package body Glib.Glade is
                  To_Ada (P.Value.all));
             end if;
 
-         elsif Q = null then
-            --  Field1 has been found, but not Field2. Abort.
-            return;
-
          elsif (Field3 = "" or else R /= null)
            and then (Field4 = "" or else S /= null)
          then
@@ -545,9 +541,14 @@ package body Glib.Glade is
                Put (File, To_Float (P.Value.all) & ", " & To_Float
                   (Q.Value.all));
 
-            else
+            elsif Q /= null then
                Put (File, To_Ada (P.Value.all) & ", " & To_Ada
                   (Q.Value.all));
+            else
+               --  ??? Need to find a clean and uniform way of handling default
+               --  integer values
+
+               Put (File, To_Ada (P.Value.all) & ", -1");
             end if;
 
             if Field3 /= "" and R /= null then
