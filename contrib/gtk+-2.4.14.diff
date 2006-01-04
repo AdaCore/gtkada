@@ -1,3 +1,9 @@
+2006-01-04	Arnaud Charlet	<charlet@adacore.com>
+
+	* gtk/gtktextview.c (gtk_text_view_start_selection_dnd): Disabled,
+	since not functional.
+	For C928-003.
+
 2005-09-13	Nicolas Setton  <setton@adacore.com>
 
 	* gdk/win32/gdkevents-win32.c: Backport patch suggested for #158459.
@@ -518,3 +524,14 @@
   	}
   
         if (impl->hint_flags & (GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE))
+--- gtk/gtktextview.c.1	2005-01-06 10:59:54.000000000 +0100
++++ gtk/gtktextview.c	2005-12-23 18:13:39.000000000 +0100
+@@ -5851,6 +5851,8 @@ gtk_text_view_start_selection_dnd (GtkTe
+   GdkDragContext *context;
+   GtkTargetList *target_list;
+ 
++  return;
++
+   text_view->drag_start_x = -1;
+   text_view->drag_start_y = -1;
+   text_view->pending_place_cursor_button = 0;
