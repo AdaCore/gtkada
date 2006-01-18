@@ -3907,8 +3907,16 @@ package body Gtkada.MDI is
 
                --  Child cannot be floating while in a notebook
                if Child /= null then
+                  if Traces then
+                     Put_Line
+                       ("MDI: Parse_Notebook_Node, moving child into the"
+                        & " the notebook");
+                  end if;
                   Float_Child (Child, False);
                   Put_In_Notebook (MDI, Child, Notebook);
+                  if Traces then
+                     Put_Line ("MDI: Parse_Notebook_Node, done moving child");
+                  end if;
                end if;
 
             else
@@ -3918,6 +3926,10 @@ package body Gtkada.MDI is
 
             N := N.Next;
          end loop;
+
+         if Traces then
+            Put_Line ("MDI Parse_Notebook_Node: done adding all children");
+         end if;
 
          if Child_Node.Child = null then
             Gtk_New (Dummy, "");
@@ -3957,7 +3969,9 @@ package body Gtkada.MDI is
          State    := Normal;
 
          if Traces then
-            Put_Line ("MDI About to parse and insert child");
+            Put_Line ("MDI About to parse and insert child in MDI. "
+                      & "Child will be removed immediately to be moved to "
+                      & " another location");
          end if;
 
          while Child = null and then Register /= null loop
@@ -4011,6 +4025,10 @@ package body Gtkada.MDI is
 
          if W /= -1 or else H /= -1 then
             Set_Size_Request (Child, W, H);
+         end if;
+
+         if Traces then
+            Put_Line ("MDI: Parse_Child_Node: done");
          end if;
       end Parse_Child_Node;
 
@@ -4080,12 +4098,16 @@ package body Gtkada.MDI is
                      Height      => Height,
                      Notebook    => Notebooks (Count),
                      Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
+                  if Traces then
+                     Put_Line
+                       ("MDI: Parse_Pane_Node: done parsing notebook node");
+                  end if;
 
                   if Get_Parent (Notebooks (Count)) = null then
                      if Ref_Item = null then
                         if Traces then
                            Put_Line
-                             ("MDI: Add_Child "
+                             ("MDI: Parse_Pane_Node, add notebook in MDI "
                               & System.Address_Image
                                 (Notebooks (Count).all'Address));
                         end if;
@@ -4097,7 +4119,7 @@ package body Gtkada.MDI is
                      else
                         if Traces then
                            Put_Line
-                             ("MDI: Split "
+                             ("MDI: Parse_Pane_Node Split notebook into MDI "
                               & System.Address_Image
                                 (Notebooks (Count).all'Address)
                               & " ref="
@@ -4111,6 +4133,15 @@ package body Gtkada.MDI is
                                Width       => Width,
                                Height      => Height,
                                Orientation => Orientation);
+                     end if;
+                  else
+                     if Traces then
+                        Put_Line
+                          ("MDI: Parse_Pane_Node: notebook already in MDI");
+                        Set_Size (MDI,
+                                  Notebooks (Count),
+                                  Width => Width,
+                                  Height => Height);
                      end if;
                   end if;
                end if;
@@ -4172,6 +4203,10 @@ package body Gtkada.MDI is
             Found_Empty : Boolean := Remove_All_Empty;
             Note        : Gtk_Notebook;
          begin
+            if Traces then
+               Put_Line ("MDI Remove_All_Items: remove_empty="
+                         & Boolean'Image (Remove_All_Empty));
+            end if;
             if not Items_Removed then
                --  First loop is to remove all children. We give them a chance
                --  to react to the delete_event, in case they do some cleanup
@@ -4205,6 +4240,9 @@ package body Gtkada.MDI is
                Free (Children);
                Items_Removed := True;
             end if;
+            if Traces then
+               Put_Line ("MDI Remove_All_Items: done");
+            end if;
          end Remove_All_Items;
 
          Reuse_Empty_If_Needed : Boolean := True;
@@ -4227,6 +4265,7 @@ package body Gtkada.MDI is
          end if;
 
          MDI.Present_Window_On_Child_Focus := False;
+         Force_Size_Reset (MDI);
 
          --  We must restore the size of the main window first, so that the
          --  rest of the desktop makes sense
@@ -4316,6 +4355,16 @@ package body Gtkada.MDI is
          if Focus_Child /= null then
             Set_Focus_Child (Focus_Child);
          end if;
+
+         if Traces then
+            Put_Line ("MDI: Restore_Desktop, forcing a Size_Allocate");
+         end if;
+         Size_Allocate
+           (MDI,
+            Allocation => (X      => Get_Allocation_X (MDI),
+                           Y      => Get_Allocation_Y (MDI),
+                           Width  => Get_Allocation_Width (MDI),
+                           Height => Get_Allocation_Height (MDI)));
 
          Emit_By_Name (Get_Object (MDI), "children_reorganized" & ASCII.NUL);
 
