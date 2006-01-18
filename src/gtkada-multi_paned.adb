@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003-2005 AdaCore                   --
+--                 Copyright (C) 2003-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1559,7 +1559,13 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       if Traces then
-         Put_Line ("SIZE_ALLOCATE_PANED");
+         Put_Line ("SIZE_ALLOCATE_PANED "
+                   & Gint'Image (Alloc.X)
+                   & Gint'Image (Alloc.Y)
+                   & Allocation_Int'Image (Alloc.Width)
+                   & "x" & Allocation_Int'Image (Alloc.Height)
+                   & " visibility_changed="
+                   & Boolean'Image (Visibility_Changed));
       end if;
 
       if not Visibility_Changed
@@ -2056,6 +2062,22 @@ package body Gtkada.Multi_Paned is
          Dump (Win, Win.Children);
       end if;
    end Split_Internal;
+
+   ----------------------
+   -- Force_Size_Reset --
+   ----------------------
+
+   procedure Force_Size_Reset (Win : access Gtkada_Multi_Paned_Record) is
+   begin
+      if Win.Children /= null then
+         --  Split_Internal will not call Size_Allocate directly
+         Win.Children.Width := -1.0;
+
+         --  So that Size_Allocate_Paned detects a visibility change, even
+         --  though the actual size of the window probably has not changed
+         Win.Children.Visible := False;
+      end if;
+   end Force_Size_Reset;
 
    -----------
    -- Split --
