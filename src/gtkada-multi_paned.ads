@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003-2005 AdaCore                   --
+--                 Copyright (C) 2003-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -185,6 +185,15 @@ package Gtkada.Multi_Paned is
    --    +---+   |   |  |   +---+   |   +---+   |   |  +---+   |   |
    --    | 2 |   |   |  |   | 2 |   |   | 2 |   |   |  | 2 |   |   |
    --    +---+---+---+  +---+---+---+   +---+---+---+  +---+---+---+
+
+   procedure Force_Size_Reset (Win : access Gtkada_Multi_Paned_Record);
+   --  Force a recomputation of all sizes (in particular for the toplevel
+   --  window). Splitting or adding children after this will not generate
+   --  immediate resizing, only when a new size is allocated for Win through
+   --  a call to Size_Allocate.
+   --  You only need to call this procedure when restoring Win to a previously
+   --  state saved, and never if you are using the GtkAda.MDI which takes care
+   --  of it on its own.
 
    ---------------
    -- Iterators --
