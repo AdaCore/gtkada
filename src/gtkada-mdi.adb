@@ -490,9 +490,7 @@ package body Gtkada.MDI is
    is
       Widget : Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
    begin
-      --  ??? The call to Has_Focus_Is_Set fixes the focus child when loading
-      --  a desktop, and doesn't seem to have side effects
-      if Has_Focus_Is_Set (MDI) and then Widget /= null then
+      if Widget /= null then
          --  The widget is currently either a notebook or the Gtk_Fixed. Get
          --  its focus widget, which is the one we are really interested in.
 
@@ -531,12 +529,10 @@ package body Gtkada.MDI is
    procedure Set_Focus_Child_Notebook
      (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args)
    is
---      pragma Unreferenced (Note);
+      pragma Unreferenced (Note);
       Widget : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
    begin
-      --  ??? The call to Has_Focus_Is_Set fixes the focus child when loading
-      --  a desktop, and doesn't seem to have side effects
-      if Has_Focus_Is_Set (Note) and then Widget /= null then
+      if Widget /= null then
          Set_Focus_Child (MDI_Child (Widget));
       end if;
    end Set_Focus_Child_Notebook;
