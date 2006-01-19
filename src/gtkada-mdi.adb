@@ -338,6 +338,13 @@ package body Gtkada.MDI is
    procedure Focus_Cb   (Child : access Gtk_Widget_Record'Class);
    --  Callbacks for the menu
 
+   function Has_Default_Child
+     (MDI         : access MDI_Window_Record'Class;
+      Ignore      : MDI_Child := null;
+      Ignore_Note : Gtk_Notebook := null) return Boolean;
+   --  Return True if the MDI still contains a child in the Default_Group,
+   --  appart from Ignore and all children of Ignore_Note.
+
    procedure Set_Focus_Child_MDI
      (MDI : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    procedure Set_Focus_Child_Notebook
@@ -3262,6 +3269,35 @@ package body Gtkada.MDI is
       return MDI.Focus_Child;
    end Get_Focus_Child;
 
+   -----------------------
+   -- Has_Default_Child --
+   -----------------------
+
+   function Has_Default_Child
+     (MDI         : access MDI_Window_Record'Class;
+      Ignore      : MDI_Child := null;
+      Ignore_Note : Gtk_Notebook := null) return Boolean
+   is
+      Child_Is_Being_Destroyed : constant Boolean :=
+        Ignore = null or else Ignore.MDI.In_Drag = No_Drag;
+      L : Widget_List.Glist := MDI.Items;
+      C  : MDI_Child;
+   begin
+      while L /= Null_List loop
+         C := MDI_Child (Get_Data (L));
+         if (Ignore /= C or else not Child_Is_Being_Destroyed)
+           and then C.State = Normal   --  In a notebook currently
+           and then C.Group = Group_Default
+           and then (Ignore_Note = null
+                     or else Get_Notebook (C) /= Ignore_Note)
+         then
+            return True;
+         end if;
+         L := Next (L);
+      end loop;
+      return False;
+   end Has_Default_Child;
+
    ---------------------------
    -- Removed_From_Notebook --
    ---------------------------
@@ -3298,25 +3334,8 @@ package body Gtkada.MDI is
             --  moved to another notebook, ie will remain as part of the MDI.
             --  If it is being destroyed, it should no longer count as a
             --  Position_Default child.
-            declare
-               Child_Is_Being_Destroyed : constant Boolean :=
-                 Child.MDI.In_Drag = No_Drag;
-               L : Widget_List.Glist := Child.MDI.Items;
-               C  : MDI_Child;
-            begin
-               while L /= Null_List loop
-                  C := MDI_Child (Get_Data (L));
-                  if (Child /= C
-                      or else not Child_Is_Being_Destroyed)
-                    and then C.State = Normal   --  In a notebook currently
-                    and then C.Group = Group_Default
-                  then
-                     Default_Child_Remains := True;
-                     exit;
-                  end if;
-                  L := Next (L);
-               end loop;
-            end;
+            Default_Child_Remains := Has_Default_Child
+              (Child.MDI, Ignore => Child);
          end if;
 
          --  No more pages in the notebook ?
@@ -4525,6 +4544,9 @@ package body Gtkada.MDI is
                              Page_List.Length (Get_Children (Note));
             Current_Page : constant Gint := Get_Current_Page (Note);
             Parent       : Node_Ptr;
+            Has_Default_Group_Child : Boolean := False;
+            Child        : MDI_Child;
+            Is_Default_Notebook : Boolean := False;
 
             Border_Width : constant Allocation_Int := 0;
             --  +4 is to take into account the border of the notebook
@@ -4541,16 +4563,15 @@ package body Gtkada.MDI is
                Allocation_Int'Image
                  (Get_Allocation_Height (Note) + Border_Width));
 
-            if MDI_Notebook (Note).Is_Default_Notebook then
-               Set_Attribute (Parent, "default", "true");
-            end if;
-
             if Length > 0 then
                for Page_Index in 0 .. Length - 1 loop
+                  Child := Get_Child_From_Page
+                    (Get_Nth_Page (Note, Gint (Page_Index)));
+                  Has_Default_Group_Child := Has_Default_Group_Child
+                    or else Child.Group = Group_Default;
                   Save_Widget
                     (Parent,
-                     Get_Child_From_Page
-                       (Get_Nth_Page (Note, Gint (Page_Index))),
+                     Child,
                      Raised => Current_Page = Gint (Page_Index));
                end loop;
             end if;
@@ -4558,10 +4579,23 @@ package body Gtkada.MDI is
             --  Do not append the Notebook node to the parent if no child in
             --  the notebook was found, unless the number of pages is 0, in
             --  which case this is a real empty space which should be saved
-            --  in the desktop
+            --  in the desktop. Also add the default notebook always, since
+            --  it plays a special role
 
-            if Length = 0 or else Parent.Child /= null then
+            Is_Default_Notebook := MDI_Notebook (Note).Is_Default_Notebook
+              or else (Has_Default_Group_Child
+                       and not Has_Default_Child (MDI, Ignore_Note => Note));
+            if Is_Default_Notebook then
+               Set_Attribute (Parent, "default", "true");
+            end if;
+
+            if Length = 0
+              or else Parent.Child /= null
+              or else Is_Default_Notebook
+            then
                Add_Child (Current, Parent, Append => True);
+            else
+               Free (Parent);
             end if;
          end Save_Notebook;
 
