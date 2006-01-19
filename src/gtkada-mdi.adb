@@ -483,7 +483,9 @@ package body Gtkada.MDI is
    is
       Widget : Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
    begin
-      if Widget /= null then
+      --  ??? The call to Has_Focus_Is_Set fixes the focus child when loading
+      --  a desktop, and doesn't seem to have side effects
+      if Has_Focus_Is_Set (MDI) and then Widget /= null then
          --  The widget is currently either a notebook or the Gtk_Fixed. Get
          --  its focus widget, which is the one we are really interested in.
 
@@ -522,10 +524,12 @@ package body Gtkada.MDI is
    procedure Set_Focus_Child_Notebook
      (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args)
    is
-      pragma Unreferenced (Note);
+--      pragma Unreferenced (Note);
       Widget : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
    begin
-      if Widget /= null then
+      --  ??? The call to Has_Focus_Is_Set fixes the focus child when loading
+      --  a desktop, and doesn't seem to have side effects
+      if Has_Focus_Is_Set (Note) and then Widget /= null then
          Set_Focus_Child (MDI_Child (Widget));
       end if;
    end Set_Focus_Child_Notebook;
@@ -2420,7 +2424,7 @@ package body Gtkada.MDI is
       Note          : Gtk_Notebook;
       Current_Focus : MDI_Child;
    begin
-      --  For an docked item, we in fact want to raise its parent dock,
+      --  For a docked item, we in fact want to raise its parent dock,
       --  and make sure the current page in that dock is the correct one.
 
       if Child.State = Normal then
@@ -2452,7 +2456,9 @@ package body Gtkada.MDI is
       --  might have changed that.
 
       if not Give_Focus then
-         Give_Focus_To_Child (Old_Focus);
+         if Old_Focus /= Child.MDI.Focus_Child then
+            Give_Focus_To_Child (Old_Focus);
+         end if;
       else
          Set_Focus_Child (Child);
       end if;
@@ -2537,6 +2543,10 @@ package body Gtkada.MDI is
 
       Previous_Focus_Child : constant MDI_Child := Child.MDI.Focus_Child;
    begin
+      if not Child.MDI.Present_Window_On_Child_Focus then
+         return;
+      end if;
+
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
 
       if C = Old or else Gtk.Object.In_Destruction_Is_Set (C.MDI) then
@@ -2718,7 +2728,7 @@ package body Gtkada.MDI is
                It     : MDI_Child;
             begin
                --  If the current child is floating, we do not want to float
-               --  the dialog as transiant for the main window, but for the
+               --  the dialog as transient for the main window, but for the
                --  current child.
                --  ??? Should we introduce a flag for childs that are allways
                --  transient for the main window ?
@@ -3806,12 +3816,18 @@ package body Gtkada.MDI is
          Focus_Child           : in out MDI_Child;
          Width, Height         : out Gint;
          Notebook              : out Gtk_Notebook;
+         To_Raise              : in out Gtk.Widget.Widget_List.Glist;
          Reuse_Empty_If_Needed : in out Boolean);
       --  Parse a <notebook> node.
       --  A new notebook is created and returned.
       --  If Reuse_Empty_If_Needed and we need to insert an empty notebook,
       --  we'll try and reuse an existing empty notebook. In this case, the
-      --  variable is set to False
+      --  variable is set to False.
+      --  To_Raise is the children that are visible in the notebooks. It cannot
+      --  be changed within this procedure, since when other items are loaded
+      --  into the desktop, they might be put in the same notebook temporarily,
+      --  before being moved to their actual location, and that would change
+      --  the current page.
 
       procedure Parse_Pane_Node
         (MDI                   : access MDI_Window_Record'Class;
@@ -3819,6 +3835,7 @@ package body Gtkada.MDI is
          Focus_Child           : in out MDI_Child;
          User                  : User_Data;
          Initial_Ref_Child     : Gtk_Notebook := null;
+         To_Raise              : in out Gtk.Widget.Widget_List.Glist;
          Reuse_Empty_If_Needed : in out Boolean);
       --  Parse a <Pane> node
       --  First_Child is the first notebook insert in pane (possibly inserted
@@ -3848,13 +3865,14 @@ package body Gtkada.MDI is
          Focus_Child           : in out MDI_Child;
          Width, Height         : out Gint;
          Notebook              : out Gtk_Notebook;
+         To_Raise              : in out Gtk.Widget.Widget_List.Glist;
          Reuse_Empty_If_Needed : in out Boolean)
       is
          N            : Node_Ptr := Child_Node.Child;
          State        : State_Type;
          Raised       : Boolean;
-         Child        : MDI_Child;
          Raised_Child : MDI_Child;
+         Child        : MDI_Child;
          X, Y         : Gint;
          Dummy        : Gtk_Label;
          Is_Default   : Boolean;
@@ -3940,7 +3958,7 @@ package body Gtkada.MDI is
          end if;
 
          if Raised_Child /= null then
-            Set_Current_Page (Notebook, Page_Num (Notebook, Raised_Child));
+            Prepend (To_Raise, Gtk_Widget (Raised_Child));
          end if;
       end Parse_Notebook_Node;
 
@@ -4042,6 +4060,7 @@ package body Gtkada.MDI is
          Focus_Child           : in out MDI_Child;
          User                  : User_Data;
          Initial_Ref_Child     : Gtk_Notebook := null;
+         To_Raise              : in out Gtk.Widget.Widget_List.Glist;
          Reuse_Empty_If_Needed : in out Boolean)
       is
          Orientation : constant Gtk_Orientation := Gtk_Orientation'Value
@@ -4097,6 +4116,7 @@ package body Gtkada.MDI is
                      Width       => Width,
                      Height      => Height,
                      Notebook    => Notebooks (Count),
+                     To_Raise    => To_Raise,
                      Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
                   if Traces then
                      Put_Line
@@ -4163,6 +4183,7 @@ package body Gtkada.MDI is
                      Focus_Child           => Focus_Child,
                      User                  => User,
                      Initial_Ref_Child     => Notebooks (Count),
+                     To_Raise              => To_Raise,
                      Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
                end if;
                Count := Count + 1;
@@ -4186,6 +4207,7 @@ package body Gtkada.MDI is
          Raised             : Boolean;
          X, Y               : Gint;
          Items_Removed      : Boolean := False;
+         To_Raise           : Gtk.Widget.Widget_List.Glist;
 
          procedure Remove_All_Items (Remove_All_Empty : Boolean);
          --  Remove all the items currently in the MDI.
@@ -4302,6 +4324,7 @@ package body Gtkada.MDI is
                Remove_All_Items (Remove_All_Empty => True);
                Parse_Pane_Node
                  (MDI, Child_Node, Focus_Child, User, null,
+                  To_Raise              => To_Raise,
                   Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
 
             elsif Child_Node.Tag.all = "Bottom_Dock_Height" then
@@ -4352,6 +4375,22 @@ package body Gtkada.MDI is
 
          Set_All_Floating_Mode (MDI, Initial_All_Floating_Mode);
 
+         MDI.Present_Window_On_Child_Focus := True;
+
+         --  Raise all appropriate items at the end, so that even if some items
+         --  are added temporarily to notebooks, then have no long-lasting
+         --  impact on the notebook itself.
+         declare
+            Item : Widget_List.Glist := To_Raise;
+         begin
+            while Item /= Widget_List.Null_List loop
+               Child := MDI_Child (Widget_List.Get_Data (Item));
+               Raise_Child (Child, Give_Focus => False);
+               Item := Widget_List.Next (Item);
+            end loop;
+            Free (To_Raise);
+         end;
+
          if Focus_Child /= null then
             Set_Focus_Child (Focus_Child);
          end if;
@@ -4368,8 +4407,6 @@ package body Gtkada.MDI is
 
          Emit_By_Name (Get_Object (MDI), "children_reorganized" & ASCII.NUL);
 
-         MDI.Present_Window_On_Child_Focus := True;
-
          return True;
       end Restore_Desktop;
 
@@ -4383,7 +4420,7 @@ package body Gtkada.MDI is
       is
          use type Widget_List.Glist;
 
-         Item             : Widget_List.Glist := MDI.Items;
+         Item             : Widget_List.Glist;
          Root, Child_Node : Node_Ptr;
          Widget_Node      : Node_Ptr;
          Register         : Register_Node;
@@ -4514,7 +4551,7 @@ package body Gtkada.MDI is
                     (Parent,
                      Get_Child_From_Page
                        (Get_Nth_Page (Note, Gint (Page_Index))),
-                     Current_Page = Gint (Page_Index));
+                     Raised => Current_Page = Gint (Page_Index));
                end loop;
             end if;
 
@@ -4624,8 +4661,9 @@ package body Gtkada.MDI is
             Prune_Empty (Root.Child);
          end;
 
-         --  Save the floating and non-maximized widgets
+         --  Save the floating widgets
 
+         Item := MDI.Items;
          while Item /= Widget_List.Null_List loop
             Child := MDI_Child (Widget_List.Get_Data (Item));
 
