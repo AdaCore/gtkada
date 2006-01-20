@@ -490,6 +490,10 @@ package body Gtkada.MDI is
    is
       Widget : Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
    begin
+      --  This code must always be executed (we cannot take into account
+      --  whether the MDI has the focus or not). Otherwise, clicking
+      --  inside an open editor in GPS, for instance, will not properly give
+      --  the focus to the MDI child
       if Widget /= null then
          --  The widget is currently either a notebook or the Gtk_Fixed. Get
          --  its focus widget, which is the one we are really interested in.
@@ -532,6 +536,10 @@ package body Gtkada.MDI is
       pragma Unreferenced (Note);
       Widget : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
    begin
+      --  This code must always be executed (we cannot take into account
+      --  whether the notebook has the focus or not). Otherwise, clicking
+      --  inside an open editor in GPS, for instance, will not properly give
+      --  the focus to the MDI child
       if Widget /= null then
          Set_Focus_Child (MDI_Child (Widget));
       end if;
@@ -2459,9 +2467,10 @@ package body Gtkada.MDI is
       --  might have changed that.
 
       if not Give_Focus then
-         if Old_Focus /= Child.MDI.Focus_Child then
-            Give_Focus_To_Child (Old_Focus);
-         end if;
+         --  This must be done even if Old_Focus = MDI.Focus_Child. Otherwise,
+         --  clicking inside an editor in GPS for instance will not properly
+         --  refresh the outline view
+         Give_Focus_To_Child (Old_Focus);
       else
          Set_Focus_Child (Child);
       end if;
