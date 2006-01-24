@@ -275,6 +275,7 @@ package body Gtkada.Multi_Paned is
                    & Image ("FIXED", Child.Fixed_Size)
                    & Image ("NoHandle", Child.Handle.Win = null)
                    & "w=" & System.Address_Image (Child.Widget.all'Address)
+                   & " C=" & System.Address_Image (Get_Object (Child.Widget))
                    & ">");
       else
          Put_Line (Prefix & "<" & Image (Child.Orientation)
@@ -470,14 +471,9 @@ package body Gtkada.Multi_Paned is
    is
       use type Widget_List.Glist;
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      Items, Tmp : Widget_List.Glist := Get_Children (Split);
    begin
-      while Tmp /= Widget_List.Null_List loop
-         Remove (Split, Widget_List.Get_Data (Tmp));
-         Tmp := Widget_List.Next (Tmp);
-      end loop;
-
-      Widget_List.Free (Items);
+      --  Destruction of children would be done automatically by the default
+      --  "destroy" handler of the ancestor of Gtkada_Multi_Paned (ie GtkFixed)
 
       Free (Split.Children);
 
@@ -499,13 +495,23 @@ package body Gtkada.Multi_Paned is
       Iter    : Child_Iterator := Start (Split);
       Current : Child_Description_Access;
    begin
+      --  Split might have been destroyed as part of the global interface, in
+      --  which case its children are destroyed only after Split itself.
+      if Split.Children = null then
+         return;
+      end if;
+
       loop
          Current := Get (Iter);
+
          exit when Current = null
            or else (Current.Is_Widget and then Current.Widget = Child);
          Next (Iter);
       end loop;
-      Remove_Child (Split, Current);
+
+      if Current /= null then
+         Remove_Child (Split, Current);
+      end if;
    end Remove_Child;
 
    ------------------
