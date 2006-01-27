@@ -186,14 +186,16 @@ package Gtkada.Multi_Paned is
    --    | 2 |   |   |  |   | 2 |   |   | 2 |   |   |  | 2 |   |   |
    --    +---+---+---+  +---+---+---+   +---+---+---+  +---+---+---+
 
-   procedure Force_Size_Reset (Win : access Gtkada_Multi_Paned_Record);
-   --  Force a recomputation of all sizes (in particular for the toplevel
-   --  window). Splitting or adding children after this will not generate
-   --  immediate resizing, only when a new size is allocated for Win through
-   --  a call to Size_Allocate.
+   procedure Freeze (Win : access Gtkada_Multi_Paned_Record);
+   --  Freeze the window, ie when a child is inserted, no computation of its
+   --  size is done, and will not generate immediate resizing.
    --  You only need to call this procedure when restoring Win to a previously
    --  state saved, and never if you are using the GtkAda.MDI which takes care
    --  of it on its own.
+
+   procedure Thaw (Win : access Gtkada_Multi_Paned_Record);
+   --  Opposite of Freeze. You should call Size_Allocate on Win afterward to
+   --  force a recomputation of the size
 
    ---------------
    -- Iterators --
@@ -250,6 +252,7 @@ private
    end record;
 
    type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with record
+      Frozen      : Boolean := False;
       Children    : Child_Description_Access;
       GC          : Gdk.GC.Gdk_GC;
 

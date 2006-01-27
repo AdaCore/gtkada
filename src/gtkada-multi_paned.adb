@@ -1550,7 +1550,9 @@ package body Gtkada.Multi_Paned is
       Iter : Child_Iterator;
    begin
       if not Realized_Is_Set (Split)
+        or else Split.Frozen
         or else Split.Children = null
+        or else Alloc.Width <= 1 --  Uninitialized yet
       then
          return;
       end if;
@@ -1862,7 +1864,11 @@ package body Gtkada.Multi_Paned is
 
          if Realized_Is_Set (Win)
            and then Win.Children.Width > 0.0
+           and then not Win.Frozen
          then
+            if Traces then
+               Put_Line ("Adjusting sizes since window is realized");
+            end if;
             if Ref_Item.Width > Float (Width) then
                Ref_Item.Width := Ref_Item.Width - Float (Width);
             else
@@ -2031,6 +2037,7 @@ package body Gtkada.Multi_Paned is
       Put (Win, New_Child, 0, 0);
 
       if not Realized_Is_Set (Win)
+        or else Win.Frozen
         or else Win.Children.Width <= 0.0
       then
          --  Reset to -1, so that other operations like Set_Size will not try
@@ -2069,21 +2076,37 @@ package body Gtkada.Multi_Paned is
       end if;
    end Split_Internal;
 
-   ----------------------
-   -- Force_Size_Reset --
-   ----------------------
+   ------------
+   -- Freeze --
+   ------------
 
-   procedure Force_Size_Reset (Win : access Gtkada_Multi_Paned_Record) is
+   procedure Freeze (Win : access Gtkada_Multi_Paned_Record) is
    begin
-      if Win.Children /= null then
-         --  Split_Internal will not call Size_Allocate directly
-         Win.Children.Width := -1.0;
+      Win.Frozen := True;
 
-         --  So that Size_Allocate_Paned detects a visibility change, even
-         --  though the actual size of the window probably has not changed
-         Win.Children.Visible := False;
+      if Traces then
+         Put_Line ("Multi_Paned: Freeze");
       end if;
-   end Force_Size_Reset;
+   end Freeze;
+
+   ----------
+   -- Thaw --
+   ----------
+
+   procedure Thaw (Win : access Gtkada_Multi_Paned_Record) is
+   begin
+      Win.Frozen := False;
+
+      --  So that Size_Allocate_Paned detects a visibility change, even
+      --  though the actual size of the window probably has not changed
+      Win.Children.Visible := False;
+--        Win.Children.Width   := -1.0;
+--        Win.Children.Height  := -1.0;
+
+      if Traces then
+         Put_Line ("Multi_Paned: Thaw");
+      end if;
+   end Thaw;
 
    -----------
    -- Split --
