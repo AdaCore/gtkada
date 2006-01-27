@@ -782,9 +782,10 @@ private
       Desktop_Was_Loaded : Boolean := False;
       --  True if a desktop was loaded
 
-      Present_Window_On_Child_Focus : Boolean := True;
-      --  Whether the window containing a child should be Presented when the
-      --  child gets the focus.
+      Loading_Desktop : Boolean := False;
+      --  Whether we are currently loading the desktop. This impacts a number
+      --  of focus and sizing parameters, so that the desktop can be restored
+      --  as accurately as possible.
 
       Focus_GC     : Gdk.GC.Gdk_GC;
       Non_Focus_GC : Gdk.GC.Gdk_GC;

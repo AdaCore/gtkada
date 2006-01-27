@@ -2144,7 +2144,9 @@ package body Gtkada.MDI is
    is
       Notebook : constant Gtk_Notebook := Get_Notebook (Child);
    begin
-      if Notebook /= null then
+      --  Ignore specific size requests while loading the desktop, since the
+      --  latter should force the size
+      if not MDI.Loading_Desktop and then Notebook /= null then
          --  Only take this into account if we have a single page
          if Get_Nth_Page (Notebook, 1) = null then
             Set_Size (MDI,
@@ -2466,13 +2468,15 @@ package body Gtkada.MDI is
       --  Give the focus to the Focus_Child, since the notebook page switch
       --  might have changed that.
 
-      if not Give_Focus then
-         --  This must be done even if Old_Focus = MDI.Focus_Child. Otherwise,
-         --  clicking inside an editor in GPS for instance will not properly
-         --  refresh the outline view
-         Give_Focus_To_Child (Old_Focus);
-      else
-         Set_Focus_Child (Child);
+      if not Child.MDI.Loading_Desktop then
+         if not Give_Focus then
+            --  This must be done even if Old_Focus = MDI.Focus_Child.
+            --  Otherwise, clicking inside an editor in GPS for instance will
+            --  not properly refresh the outline view
+            Give_Focus_To_Child (Old_Focus);
+         else
+            Set_Focus_Child (Child);
+         end if;
       end if;
    end Raise_Child;
 
@@ -2555,7 +2559,7 @@ package body Gtkada.MDI is
 
       Previous_Focus_Child : constant MDI_Child := Child.MDI.Focus_Child;
    begin
-      if not Child.MDI.Present_Window_On_Child_Focus then
+      if Child.MDI.Loading_Desktop then
          return;
       end if;
 
@@ -2615,7 +2619,7 @@ package body Gtkada.MDI is
          --  window to the current desktop. Therefore, we only do this when the
          --  input focus was already on a window of the MDI.
 
-         if Child.MDI.Present_Window_On_Child_Focus
+         if not Child.MDI.Loading_Desktop
            and then Previous_Focus_Child /= null
            and then Realized_Is_Set
              (Get_Toplevel (Previous_Focus_Child.Initial))
@@ -4011,9 +4015,7 @@ package body Gtkada.MDI is
          State    := Normal;
 
          if Traces then
-            Put_Line ("MDI About to parse and insert child in MDI. "
-                      & "Child will be removed immediately to be moved to "
-                      & " another location");
+            Put_Line ("MDI About to insert child. Will be moved elsewhere");
          end if;
 
          while Child = null and then Register /= null loop
@@ -4286,8 +4288,12 @@ package body Gtkada.MDI is
                Free (Children);
                Items_Removed := True;
             end if;
+
             if Traces then
                Put_Line ("MDI Remove_All_Items: done");
+               New_Line;
+               New_Line;
+               New_Line;
             end if;
          end Remove_All_Items;
 
@@ -4310,8 +4316,9 @@ package body Gtkada.MDI is
             Put_Line ("MDI Restore_Desktop");
          end if;
 
-         MDI.Present_Window_On_Child_Focus := False;
-         Force_Size_Reset (MDI);
+         MDI.Loading_Desktop := True;
+
+         Freeze (MDI);
 
          --  We must restore the size of the main window first, so that the
          --  rest of the desktop makes sense
@@ -4399,8 +4406,6 @@ package body Gtkada.MDI is
 
          Set_All_Floating_Mode (MDI, Initial_All_Floating_Mode);
 
-         MDI.Present_Window_On_Child_Focus := True;
-
          --  Raise all appropriate items at the end, so that even if some items
          --  are added temporarily to notebooks, then have no long-lasting
          --  impact on the notebook itself.
@@ -4415,13 +4420,14 @@ package body Gtkada.MDI is
             Free (To_Raise);
          end;
 
-         if Focus_Child /= null then
-            Set_Focus_Child (Focus_Child);
-         end if;
+         MDI.Loading_Desktop := False;
+         Realize (MDI);
+         Thaw (MDI);
 
          if Traces then
             Put_Line ("MDI: Restore_Desktop, forcing a Size_Allocate");
          end if;
+
          Size_Allocate
            (MDI,
             Allocation => (X      => Get_Allocation_X (MDI),
@@ -4430,6 +4436,10 @@ package body Gtkada.MDI is
                            Height => Get_Allocation_Height (MDI)));
 
          Emit_By_Name (Get_Object (MDI), "children_reorganized" & ASCII.NUL);
+
+         if Focus_Child /= null then
+            Set_Focus_Child (Focus_Child);
+         end if;
 
          return True;
       end Restore_Desktop;
