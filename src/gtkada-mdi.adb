@@ -501,6 +501,9 @@ package body Gtkada.MDI is
          Widget := Get_Focus_Child (Gtk_Container (Widget));
 
          if Widget /= null then
+            if Traces then
+               Put_Line ("MDI: Set_Focus_Child_MDI");
+            end if;
             Set_Focus_Child (MDI_Window (MDI), Containing => Widget);
          end if;
       end if;
@@ -522,6 +525,10 @@ package body Gtkada.MDI is
    begin
       Child := MDI_Child (Get_Nth_Page (N, Gint (Page)));
       if Child /= null then
+         if Traces then
+            Put_Line ("MDI: Set_Focus_Child_Switch_Notebook_Page "
+                      & Get_Title (Child));
+         end if;
          Set_Focus_Child (Child);
       end if;
    end Set_Focus_Child_Switch_Notebook_Page;
@@ -541,6 +548,10 @@ package body Gtkada.MDI is
       --  inside an open editor in GPS, for instance, will not properly give
       --  the focus to the MDI child
       if Widget /= null then
+         if Traces then
+            Put_Line ("MDI: Set_Focus_Child_Notebook "
+                      & Get_Title (MDI_Child (Widget)));
+         end if;
          Set_Focus_Child (MDI_Child (Widget));
       end if;
    end Set_Focus_Child_Notebook;
@@ -552,6 +563,9 @@ package body Gtkada.MDI is
    function Set_Focus_Child_MDI_Floating
      (Child : access Gtk_Widget_Record'Class) return Boolean is
    begin
+      if Traces then
+         Put_Line ("MDI: Set_Focus_Child_MDI_Floating");
+      end if;
       Set_Focus_Child (MDI_Child (Child));
       return False;
    end Set_Focus_Child_MDI_Floating;
@@ -605,6 +619,10 @@ package body Gtkada.MDI is
    is
       M : constant MDI_Window := MDI_Window (MDI);
    begin
+      if Traces then
+         Put_Line ("MDI: Toplevel_Focus_In");
+      end if;
+
       --  If the current child was a floating window, make sure it keeps the
       --  focus, and that no one gains the keyboard focus in the main window.
       --  This avoids a situation where an TextView has the keyboard focus, but
@@ -1648,6 +1666,10 @@ package body Gtkada.MDI is
                      --  Raise the page that last had it in the same pane
 
                      if C /= C2 then
+                        if Traces then
+                           Put_Line ("MDI: Button_Release raising last1 "
+                                     & Get_Title (C));
+                        end if;
                         Raise_Child (C, False);
                      else
                         while Item /= Widget_List.Null_List loop
@@ -1655,6 +1677,10 @@ package body Gtkada.MDI is
                            if It /= C2
                              and then Get_Parent (C2) = Get_Parent (It)
                            then
+                              if Traces then
+                                 Put_Line ("MDI: Button_Release raising last2 "
+                                           & Get_Title (It));
+                              end if;
                               Raise_Child (It, False);
                               exit;
                            end if;
@@ -1727,7 +1753,17 @@ package body Gtkada.MDI is
             end if;
 
             Child_Drag_Finished (C);
+
+            if Traces then
+               Put_Line ("MDI: Button_Release raising "
+                         & Get_Title (C2));
+            end if;
+
             Raise_Child (C2, False);
+            if Traces then
+               Put_Line ("MDI: Button_Release, set_focus "
+                         & Get_Title (C2));
+            end if;
             Set_Focus_Child (C2);
 
          when No_Drag =>
@@ -2076,6 +2112,10 @@ package body Gtkada.MDI is
            and then It.State = Normal
            and then Get_Parent (It) = Get_Parent (Child)
          then
+            if Traces then
+               Put_Line ("MDI: Give_Focus_To_Previous_Child "
+                         & Get_Title (It));
+            end if;
             Set_Focus_Child (It);
             return;
          end if;
@@ -2475,6 +2515,10 @@ package body Gtkada.MDI is
             --  not properly refresh the outline view
             Give_Focus_To_Child (Old_Focus);
          else
+            if Traces then
+               Put_Line ("MDI: Raise_Child, give focus to "
+                         & Get_Title (Child));
+            end if;
             Set_Focus_Child (Child);
          end if;
       end if;
@@ -2580,6 +2624,10 @@ package body Gtkada.MDI is
 
       Child.MDI.Focus_Child := C;
 
+      if Traces then
+         Put_Line ("MDI: Set_Focus_Child on " & Get_Title (C));
+      end if;
+
       if Previous_Focus_Child /= null then
          Update_Tab_Color (Previous_Focus_Child);
       end if;
@@ -2596,6 +2644,9 @@ package body Gtkada.MDI is
       --  manager.
 
       if C.State /= Floating then
+         if Traces then
+            Put_Line ("MDI: Set_Focus_Child, raise child " & Get_Title (C));
+         end if;
          Raise_Child (C, False);
       end if;
 
@@ -2668,6 +2719,11 @@ package body Gtkada.MDI is
         and then not MDI_Child (Child).MDI.All_Floating_Mode
       then
          Float_Child (MDI_Child (Child), False);
+
+         if Traces then
+            Put_Line
+              ("MDI: Delete_Child, raising " & Get_Title (MDI_Child (Child)));
+         end if;
          Raise_Child (MDI_Child (Child), False);
          return True;
 
@@ -4299,6 +4355,7 @@ package body Gtkada.MDI is
 
          Reuse_Empty_If_Needed : Boolean := True;
          Initial_All_Floating_Mode : constant Boolean := MDI.All_Floating_Mode;
+         Do_Size_Allocate : Boolean := True;
       begin
          if From_Tree = null then
             return False;
@@ -4327,18 +4384,27 @@ package body Gtkada.MDI is
             Width, Height, X, Y : Gint;
             State  : Gdk_Window_State;
          begin
-            Width  := Gint'Value (Get_Attribute (From_Tree, "width",  "640"));
-            Height := Gint'Value (Get_Attribute (From_Tree, "height", "480"));
-            X      := Gint'Value (Get_Attribute (From_Tree, "x", "-1"));
-            Y      := Gint'Value (Get_Attribute (From_Tree, "y", "-1"));
             State  := Gdk_Window_State'Value
               (Get_Attribute (From_Tree, "state", "0"));
 
-            Set_Default_Size (Gtk_Window (Get_Toplevel (MDI)), Width, Height);
-            Set_UPosition (Get_Toplevel (MDI), X, Y);
-
             if (State and Window_State_Maximized) /= 0 then
+               --  Issue: this will not be done immediately, since the
+               --  window might not be mapped when loading the initial desktop.
+               --  As a result, the first call to Size_Allocate below will
+               --  use whatever current size the window has, and thus might
+               --  break the desktop. See the call to Realize below
                Maximize (Gtk_Window (Get_Toplevel (MDI)));
+               Do_Size_Allocate := False;
+            else
+               Width  :=
+                 Gint'Value (Get_Attribute (From_Tree, "width",  "640"));
+               Height :=
+                 Gint'Value (Get_Attribute (From_Tree, "height", "480"));
+               X      := Gint'Value (Get_Attribute (From_Tree, "x", "-1"));
+               Y      := Gint'Value (Get_Attribute (From_Tree, "y", "-1"));
+               Set_UPosition (Get_Toplevel (MDI), X, Y);
+               Set_Default_Size
+                 (Gtk_Window (Get_Toplevel (MDI)), Width, Height);
             end if;
          exception
             when others =>
@@ -4414,30 +4480,51 @@ package body Gtkada.MDI is
          begin
             while Item /= Widget_List.Null_List loop
                Child := MDI_Child (Widget_List.Get_Data (Item));
+               if Traces then
+                  Put_Line
+                    ("MDI: Restore desktop, raising child with no focus "
+                     & Get_Title (Child));
+               end if;
                Raise_Child (Child, Give_Focus => False);
                Item := Widget_List.Next (Item);
             end loop;
             Free (To_Raise);
          end;
 
-         MDI.Loading_Desktop := False;
-         Realize (MDI);
-         Thaw (MDI);
-
-         if Traces then
-            Put_Line ("MDI: Restore_Desktop, forcing a Size_Allocate");
+         --  Realize the window while frozen, so that windows that insist on
+         --  setting their own size when realized (eg. the search window in
+         --  GPS) will not break the desktop.
+         --  However, don't do this when attempting to maximize the desktop,
+         --  since otherwise we get a first Size_Allocate for whatever current
+         --  size we have, and then a second one for the maximized size. The
+         --  first one breaks the desktop partially.
+         if Do_Size_Allocate then
+            Realize (MDI);
          end if;
 
-         Size_Allocate
-           (MDI,
-            Allocation => (X      => Get_Allocation_X (MDI),
-                           Y      => Get_Allocation_Y (MDI),
-                           Width  => Get_Allocation_Width (MDI),
-                           Height => Get_Allocation_Height (MDI)));
+         MDI.Loading_Desktop := False;
+         Thaw (MDI);
+
+         if Do_Size_Allocate then
+            if Traces then
+               Put_Line ("MDI: Restore_Desktop, forcing a Size_Allocate");
+            end if;
+
+            Size_Allocate
+              (MDI,
+               Allocation => (X      => Get_Allocation_X (MDI),
+                              Y      => Get_Allocation_Y (MDI),
+                              Width  => Get_Allocation_Width (MDI),
+                              Height => Get_Allocation_Height (MDI)));
+         end if;
 
          Emit_By_Name (Get_Object (MDI), "children_reorganized" & ASCII.NUL);
 
          if Focus_Child /= null then
+            if Traces then
+               Put_Line
+                 ("MDI: Desktop set focus on " & Get_Title (Focus_Child));
+            end if;
             Set_Focus_Child (Focus_Child);
          end if;
 
@@ -4998,6 +5085,11 @@ package body Gtkada.MDI is
       --  since Set_Focus_Child won't do it if the child already has the focus.
       --  We have to raise the child, since otherwise the Pointer_Grab below
       --  will fail
+
+      if Traces then
+         Put_Line ("MDI: Child_Drag_Begin, focus and raise "
+                   & Get_Title (Child));
+      end if;
 
       Set_Focus_Child (Child);
       Raise_Child (Child, False);
