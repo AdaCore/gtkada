@@ -2099,9 +2099,7 @@ package body Gtkada.Multi_Paned is
 
       --  So that Size_Allocate_Paned detects a visibility change, even
       --  though the actual size of the window probably has not changed
-      Win.Children.Visible := False;
---        Win.Children.Width   := -1.0;
---        Win.Children.Height  := -1.0;
+      Win.Children.Width   := -1.0;
 
       if Traces then
          Put_Line ("Multi_Paned: Thaw");
