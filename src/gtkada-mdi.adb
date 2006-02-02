@@ -83,7 +83,6 @@ with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Event_Box;           use Gtk.Event_Box;
 with Gtk.Frame;               use Gtk.Frame;
 with Gtk.GEntry;              use Gtk.GEntry;
-with Gtk.Handlers;
 with Gtk.Image;               use Gtk.Image;
 with Gtk.Label;               use Gtk.Label;
 with Gtk.Main;                use Gtk.Main;

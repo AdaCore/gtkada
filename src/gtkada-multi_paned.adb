@@ -43,7 +43,6 @@ with Gdk.Window;           use Gdk.Window;
 with Gdk.Window_Attr;      use Gdk.Window_Attr;
 
 with Glib.Object;          use Glib.Object;
-with Glib;
 
 with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
