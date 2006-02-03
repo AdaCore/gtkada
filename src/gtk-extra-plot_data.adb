@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
+--               Copyright (C) 2001-2006, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,7 +33,6 @@ with Interfaces.C; use Interfaces.C;
 
 with Gdk.Color;    use Gdk.Color;
 with Gdk.GC;       use Gdk.GC;
-with Glib;
 with Gtk.Widget;   use Gtk.Widget;
 with Gtkada.Types; use Gtkada.Types;
 

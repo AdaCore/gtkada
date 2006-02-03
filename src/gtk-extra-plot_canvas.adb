@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--               Copyright (C) 2001-2006, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,10 +28,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Extra.Plot;
 with System;
-with Gdk.Color; use Gdk.Color;
-with Gtk.Extra.Plot; use Gtk.Extra.Plot;
+with Gdk.Color;           use Gdk.Color;
 with Gtk.Extra.Plot_Data; use Gtk.Extra.Plot_Data;
 
 package body Gtk.Extra.Plot_Canvas is

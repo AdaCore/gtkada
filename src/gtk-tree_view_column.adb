@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2005 AdaCore                    --
+--                Copyright (C) 2001-2006, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,15 +27,11 @@
 -----------------------------------------------------------------------
 
 with System;
-with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
-with Gdk.Rectangle;
-
 with Gtk;                  use Gtk;
 with Gtk.Cell_Renderer;    use Gtk.Cell_Renderer;
-with Gtk.Enums;
 with Gtk.Tree_Model;       use Gtk.Tree_Model;
 with Gtk.Widget;           use Gtk.Widget;
 

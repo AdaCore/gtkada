@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                Copyright (C) 2003 ACT-Europe                      --
+--               Copyright (C) 2001-2006, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,13 +29,9 @@
 -----------------------------------------------------------------------
 
 with Gdk.Color;            use Gdk.Color;
-with Gdk.Drawable;
 with Gdk.Rectangle;        use Gdk.Rectangle;
 with Gdk.Pixmap;           use Gdk.Pixmap;
 with Gtk.Enums;            use Gtk.Enums;
-with Gtk.Widget;
-with System;
-with Unchecked_Conversion;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Extra.Plot is

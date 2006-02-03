@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,8 +29,6 @@
 with System;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
-
-with Gtk.Widget;
 
 package body Gtk.Image_Menu_Item is
 
@@ -63,6 +61,10 @@ package body Gtk.Image_Menu_Item is
       Widget := new Gtk_Image_Menu_Item_Record;
       Initialize (Widget, Stock_Id, Accel_Group);
    end Gtk_New;
+
+   ------------------------
+   -- Gtk_New_From_Stock --
+   ------------------------
 
    procedure Gtk_New_From_Stock
      (Widget   : out Gtk_Image_Menu_Item;

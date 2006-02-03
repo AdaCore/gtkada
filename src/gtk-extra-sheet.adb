@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2005 AdaCore                    --
+--                 Copyright (C) 2000-2006, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,6 @@ with System;
 with Unchecked_Conversion;
 
 with Gdk.Color;            use Gdk.Color;
-with Gtk.Enums;
 with Pango.Font;           use Pango.Font;
 
 package body Gtk.Extra.Sheet is
