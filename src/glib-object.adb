@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2005 AdaCore                    --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -360,12 +360,7 @@ package body Glib.Object is
       if N_Ids = 0 then
          return (1 .. 0 => 0);
       else
-         declare
-            Res : constant Signal_Id_Array (0 .. N_Ids - 1) :=
-              Signal_Id_Array (Result (0 .. N_Ids - 1));
-         begin
-            return Res;
-         end;
+         return Signal_Id_Array (Result (0 .. N_Ids - 1));
       end if;
    end List_Ids;
 
