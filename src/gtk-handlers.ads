@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2005 AdaCore                    --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -151,8 +151,10 @@ package Gtk.Handlers is
 
    type GClosure is new Glib.C_Proxy;
 
+   Null_Handler_Id : constant Gulong := 0;
+
    type Handler_Id is record
-      Signal  : Signal_Id := Null_Signal_Id;
+      Id      : Gulong := Null_Handler_Id;
       Closure : GClosure;
    end record;
    --  This uniquely identifies a connection widget<->signal.
