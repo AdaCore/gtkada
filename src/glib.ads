@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -365,7 +365,7 @@ private
 
    type Property is new String;
 
-   type Signal_Id is new Gulong;
+   type Signal_Id is new Guint;
    Invalid_Signal_Id : constant Signal_Id := -1;
    Null_Signal_Id : constant Signal_Id := 0;
 
