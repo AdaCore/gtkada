@@ -57,11 +57,11 @@ package body Gtk.Handlers is
       Slot_Object : System.Address := System.Null_Address) return Handler_Id;
    --  Internal function used to connect the signal.
 
-   procedure Disconnect_Internal (Obj : System.Address; Id : Signal_Id);
+   procedure Disconnect_Internal (Obj : System.Address; Id : Gulong);
    pragma Import (C, Disconnect_Internal, "g_signal_handler_disconnect");
    --  Internal version of Disconnect
 
-   function Signal_Lookup (Name : String; IType : GType) return Guint;
+   function Signal_Lookup (Name : String; IType : GType) return Signal_Id;
    pragma Import (C, Signal_Lookup, "g_signal_lookup");
 
    procedure Set_Value (Value : GValue; Val : System.Address);
@@ -145,15 +145,15 @@ package body Gtk.Handlers is
    is
       function Internal
         (Instance  : System.Address;
-         Id        : Guint;
+         Id        : Signal_Id;
          Detail    : GQuark := Unknown_Quark;
          Closure   : GClosure;
-         After     : Gint := 0) return Signal_Id;
+         After     : Gint := 0) return Gulong;
       pragma Import (C, Internal, "g_signal_connect_closure_by_id");
 
       use type System.Address;
       Id      : Handler_Id;
-      Signal  : Guint;
+      Signal  : Signal_Id;
 
    begin
       --  When the handler is destroyed, for instance because Object is
@@ -166,10 +166,10 @@ package body Gtk.Handlers is
       Set_Marshal (Id.Closure, Marshaller);
       Signal := Signal_Lookup (Name & ASCII.NUL, Get_Type (Object));
 
-      pragma Assert (Signal /= 0,
+      pragma Assert (Signal /= Null_Signal_Id,
                      "Trying to connect to unknown signal");
 
-      Id.Signal := Internal
+      Id.Id := Internal
         (Get_Object (Object),
          Id      => Signal,
          Closure => Id.Closure,
@@ -2013,9 +2013,9 @@ package body Gtk.Handlers is
      (Object : access Glib.Object.GObject_Record'Class;
       Id     : in out Handler_Id) is
    begin
-      if Id.Signal /= Null_Signal_Id then
-         Disconnect_Internal (Obj => Get_Object (Object), Id  => Id.Signal);
-         Id.Signal := Null_Signal_Id;
+      if Id.Id /= Null_Handler_Id then
+         Disconnect_Internal (Obj => Get_Object (Object), Id => Id.Id);
+         Id.Id := Null_Handler_Id;
       end if;
    end Disconnect;
 
@@ -2029,7 +2029,7 @@ package body Gtk.Handlers is
    is
       procedure Internal
         (Object : System.Address;
-         Signal_Id : Guint;
+         Id     : Signal_Id;
          Detail : GQuark := Unknown_Quark);
       pragma Import (C, Internal, "g_signal_stop_emission");
    begin
@@ -2046,11 +2046,11 @@ package body Gtk.Handlers is
      (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id)
    is
-      procedure Internal (Obj : System.Address; Id : Signal_Id);
+      procedure Internal (Obj : System.Address; Id : Gulong);
       pragma Import (C, Internal, "g_signal_handler_block");
 
    begin
-      Internal (Obj => Get_Object (Obj), Id  => Id.Signal);
+      Internal (Obj => Get_Object (Obj), Id => Id.Id);
    end Handler_Block;
 
    ----------------------
@@ -2074,10 +2074,10 @@ package body Gtk.Handlers is
      (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id)
    is
-      procedure Internal (Obj : System.Address; Id : Signal_Id);
+      procedure Internal (Obj : System.Address; Id : Gulong);
       pragma Import (C, Internal, "g_signal_handler_unblock");
    begin
-      Internal (Obj => Get_Object (Obj), Id  => Id.Signal);
+      Internal (Obj => Get_Object (Obj), Id => Id.Id);
    end Handler_Unblock;
 
 end Gtk.Handlers;
