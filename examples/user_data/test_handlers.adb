@@ -103,7 +103,7 @@ begin
 
    Data3 := new My_Data3' (Object => Gtk_Widget (Button1),
                            Button => Gtk_Widget (Button2),
-                           Id     => (Null_Signal_Id, null));
+                           Id     => (Null_Handler_Id, null));
    Id := User_Callback3.Connect
      (Button1, "clicked",
       User_Callback3.To_Marshaller (My_Destroy3'Unrestricted_Access),
