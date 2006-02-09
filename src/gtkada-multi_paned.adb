@@ -1398,6 +1398,10 @@ package body Gtkada.Multi_Paned is
       end Compute_Ratios;
 
    begin
+      if Split.Frozen then
+         return;
+      end if;
+
       --  Algorithm is the following:
       --    - Each handle gets its constant size (Handle_Width).
       --    - Each fixed_size widget gets its requested size. If the total
