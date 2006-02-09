@@ -1556,14 +1556,19 @@ package body Gtkada.Multi_Paned is
          return;
       end if;
 
-      Iter := Start (Split);
-      while not At_End (Iter) loop
-         if Iter.Current.Visible /= Is_Visible (Iter.Current) then
-            Visibility_Changed := True;
-            exit;
-         end if;
-         Next (Iter);
-      end loop;
+      if Split.Children.Width = -1.0 then
+         --  After a thaw
+         Visibility_Changed := True;
+      else
+         Iter := Start (Split);
+         while not At_End (Iter) loop
+            if Iter.Current.Visible /= Is_Visible (Iter.Current) then
+               Visibility_Changed := True;
+               exit;
+            end if;
+            Next (Iter);
+         end loop;
+      end if;
 
       if Traces then
          Put_Line ("SIZE_ALLOCATE_PANED "
