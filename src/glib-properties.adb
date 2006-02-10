@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,11 +48,10 @@ package body Glib.Properties is
       procedure Internal
         (Object : System.Address;
          Name   : Property;
-         Value  : String;
-         Null_Arg : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+         Value  : String);
+      pragma Import (C, Internal, "ada_g_object_set_string");
    begin
-      Internal (Get_Object (Object), Property (Name),  Value & ASCII.NUL);
+      Internal (Get_Object (Object), Property (Name), Value & ASCII.NUL);
    end Set_Property;
 
    ------------------
@@ -110,11 +109,11 @@ package body Glib.Properties is
       procedure Internal
         (Object : System.Address;
          Name   : Property;
-         Value  : Gint;
-         Null_Arg : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+         Value  : Gint);
+      pragma Import (C, Internal, "ada_g_object_set_int");
+
    begin
-      Internal (Get_Object (Object), Property (Name),  Boolean'Pos (Value));
+      Internal (Get_Object (Object), Property (Name), Boolean'Pos (Value));
    end Set_Property;
 
    ------------------
@@ -187,9 +186,9 @@ package body Glib.Properties is
       procedure Internal
         (Object : System.Address;
          Name   : Property;
-         Value  : System.Address;
-         Null_Arg : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+         Value  : System.Address);
+      pragma Import (C, Internal, "ada_g_object_set_ptr");
+
    begin
       Internal (Get_Object (Object), Property (Name), Value);
    end Set_Property;
@@ -224,9 +223,9 @@ package body Glib.Properties is
       procedure Internal
         (Object : System.Address;
          Name   : Property;
-         Value  : Gfloat;
-         Null_Arg : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+         Value  : Gfloat);
+      pragma Import (C, Internal, "ada_g_object_set_float");
+
    begin
       Internal (Get_Object (Object), Property (Name), Value);
    end Set_Property;
@@ -261,9 +260,8 @@ package body Glib.Properties is
       procedure Internal
         (Object : System.Address;
          Name   : Property;
-         Value  : Gdouble;
-         Null_Arg : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+         Value  : Gdouble);
+      pragma Import (C, Internal, "ada_g_object_set_double");
    begin
       Internal (Get_Object (Object), Property (Name), Value);
    end Set_Property;
@@ -298,9 +296,8 @@ package body Glib.Properties is
       procedure Internal
         (Object : System.Address;
          Name   : Property;
-         Value  : C_Proxy;
-         Null_Arg : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "g_object_set");
+         Value  : C_Proxy);
+      pragma Import (C, Internal, "ada_g_object_set_ptr");
    begin
       Internal (Get_Object (Object), Property (Name), Value);
    end Set_Property;

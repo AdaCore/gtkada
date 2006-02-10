@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001-2005 AdaCore                 --
+--                   Copyright (C) 2001-2006 AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -375,11 +375,16 @@ private
    Uninitialized_Class : constant GObject_Class :=
      GObject_Class (System.Null_Address);
 
-   type Byte is range 0 .. 255;
-   for Byte'Size use 8;
-   function C_Signal_Query_Size return Natural;
-   pragma Import (C, C_Signal_Query_Size);
-   type Signal_Query is array (1 .. C_Signal_Query_Size) of Byte;
+   type Signal_Query is record
+      Signal_Id    : Guint;
+      Signal_Name  : System.Address;  --  const gchar*
+      IType        : GType;
+      Signal_Flags : Gint;            --  enum GSignalFlags
+      Return_Type  : GType;
+      N_Params     : Guint;
+      Param_Types  : System.Address;  --  const gtype*
+   end record;
+   pragma Convention (C, Signal_Query);
 
    --  <doc_ignore>
 

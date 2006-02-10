@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2004 ACT-Europe                --
+--                 Copyright (C) 2000-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Unchecked_Conversion;
+with Ada.Unchecked_Conversion;
 with System; use System;
 with Glib.Values; use Glib.Values;
 
@@ -46,9 +46,9 @@ package body Gtk.Marshallers is
       package body Generic_Marshaller is
 
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -91,14 +91,21 @@ package body Gtk.Marshallers is
             procedure Internal
               (Object : System.Address;
                Name   : String;
-               Param  : Base_Type;
+               Param  : System.Address;
                Ret    : out Gint);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
+
+            pragma Warnings (Off);
+            function To_Address is new
+              Ada.Unchecked_Conversion (Base_Type, System.Address);
+            pragma Warnings (On);
 
             B : Gint;
+
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object), Name & ASCII.NUL, Param, B);
+            Internal
+              (Get_Object (Object), Name & ASCII.NUL, To_Address (Param), B);
             return Return_Type'Val (B);
          end Emit_By_Name;
 
@@ -116,7 +123,7 @@ package body Gtk.Marshallers is
                Name   : String;
                Param  : System.Address;
                Ret    : out Gint);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
             B : Gint;
 
          begin
@@ -134,9 +141,9 @@ package body Gtk.Marshallers is
 
       package body Generic_Widget_Marshaller is
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -188,7 +195,7 @@ package body Gtk.Marshallers is
                Name   : String;
                Param  : System.Address;
                Ret    : out Gint);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
 
             R : Gint;
 
@@ -207,9 +214,9 @@ package body Gtk.Marshallers is
 
       package body Void_Marshaller is
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -248,7 +255,7 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Ret    : out Gint);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
             R : Gint;
 
@@ -274,9 +281,9 @@ package body Gtk.Marshallers is
       package body Generic_Marshaller is
 
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -317,14 +324,21 @@ package body Gtk.Marshallers is
             procedure Internal
               (Object : System.Address;
                Name   : String;
-               Param  : Base_Type;
+               Param  : System.Address;
                Ret    : out Gint);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
+
+            pragma Warnings (Off);
+            function To_Address is new
+              Ada.Unchecked_Conversion (Base_Type, System.Address);
+            pragma Warnings (On);
 
             B : Gint;
+
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object), Name & ASCII.NUL, Param, B);
+            Internal
+              (Get_Object (Object), Name & ASCII.NUL, To_Address (Param), B);
             return Return_Type'Val (B);
          end Emit_By_Name;
 
@@ -342,7 +356,7 @@ package body Gtk.Marshallers is
                Name   : String;
                Param  : System.Address;
                Ret    : out Gint);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
 
             B : Gint;
 
@@ -362,9 +376,9 @@ package body Gtk.Marshallers is
       package body Generic_Widget_Marshaller is
 
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -416,7 +430,7 @@ package body Gtk.Marshallers is
                Name   : String;
                Param  : System.Address;
                Ret    : out Gint);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
 
             R : Gint;
 
@@ -436,9 +450,9 @@ package body Gtk.Marshallers is
       package body Void_Marshaller is
 
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -478,7 +492,7 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Ret    : out Gint);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
             R : Gint;
 
@@ -504,9 +518,9 @@ package body Gtk.Marshallers is
 
       package body Generic_Marshaller is
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -546,12 +560,18 @@ package body Gtk.Marshallers is
             procedure Internal
               (Object : System.Address;
                Name   : String;
-               Param  : Base_Type);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+               Param  : System.Address);
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
+
+            pragma Warnings (Off);
+            function To_Address is new
+              Ada.Unchecked_Conversion (Base_Type, System.Address);
+            pragma Warnings (On);
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object), Name & ASCII.NUL, Param);
+            Internal
+              (Get_Object (Object), Name & ASCII.NUL, To_Address (Param));
          end Emit_By_Name;
 
          --------------------------
@@ -567,7 +587,7 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : System.Address);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -583,9 +603,9 @@ package body Gtk.Marshallers is
 
       package body Generic_Widget_Marshaller is
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -636,7 +656,7 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : System.Address);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -652,9 +672,9 @@ package body Gtk.Marshallers is
 
       package body Void_Marshaller is
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -690,7 +710,7 @@ package body Gtk.Marshallers is
             Name   : String)
          is
             procedure Internal (Object : System.Address; Name : String);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name");
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
@@ -714,9 +734,9 @@ package body Gtk.Marshallers is
       package body Generic_Marshaller is
 
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -757,12 +777,18 @@ package body Gtk.Marshallers is
             procedure Internal
               (Object : System.Address;
                Name   : String;
-               Param  : Base_Type);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+               Param  : System.Address);
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
+
+            pragma Warnings (Off);
+            function To_Address is new
+              Ada.Unchecked_Conversion (Base_Type, System.Address);
+            pragma Warnings (On);
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object), Name & ASCII.NUL, Param);
+            Internal
+              (Get_Object (Object), Name & ASCII.NUL, To_Address (Param));
          end Emit_By_Name;
 
          --------------------------
@@ -778,7 +804,7 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : System.Address);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -795,9 +821,9 @@ package body Gtk.Marshallers is
       package body Generic_Widget_Marshaller is
 
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -849,7 +875,7 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : System.Address);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -866,9 +892,9 @@ package body Gtk.Marshallers is
       package body Void_Marshaller is
 
          function To_Handler is new
-           Unchecked_Conversion (General_Handler, Handler);
+           Ada.Unchecked_Conversion (General_Handler, Handler);
          function To_General_Handler is new
-           Unchecked_Conversion (Handler, General_Handler);
+           Ada.Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -905,7 +931,7 @@ package body Gtk.Marshallers is
             Name   : String)
          is
             procedure Internal (Object : System.Address; Name : String);
-            pragma Import (C, Internal, "g_signal_emit_by_name");
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name");
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);

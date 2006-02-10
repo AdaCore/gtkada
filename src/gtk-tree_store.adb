@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -81,9 +81,8 @@ package body Gtk.Tree_Store is
            (Tree_Store : System.Address;
             Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
             Column     : Gint;
-            Value      : System.Address;
-            Final      : Gint := -1);
-         pragma Import (C, Internal, "gtk_tree_store_set");
+            Value      : System.Address);
+         pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
 
       begin
          Internal
@@ -106,9 +105,8 @@ package body Gtk.Tree_Store is
         (Tree_Store : System.Address;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : UTF8_String;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_store_set");
+         Value      : UTF8_String);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
 
    begin
       Internal (Get_Object (Tree_Store), Iter, Column, Value & ASCII.NUL);
@@ -124,9 +122,8 @@ package body Gtk.Tree_Store is
         (Tree_Store : System.Address;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : Gint;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_store_set");
+         Value      : Gint);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_int");
 
    begin
       Internal (Get_Object (Tree_Store), Iter, Column, Value);
@@ -142,9 +139,8 @@ package body Gtk.Tree_Store is
         (Tree_Store : System.Address;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : Gboolean;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_store_set");
+         Value      : Gboolean);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_int");
 
    begin
       Internal (Get_Object (Tree_Store), Iter, Column, Boolean'Pos (Value));
@@ -160,9 +156,8 @@ package body Gtk.Tree_Store is
         (Tree_Store : System.Address;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : Glib.C_Proxy;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_store_set");
+         Value      : Glib.C_Proxy);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
 
    begin
       Internal (Get_Object (Tree_Store), Iter, Column, Value);
@@ -178,9 +173,8 @@ package body Gtk.Tree_Store is
         (Tree_Store : System.Address;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : System.Address;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_store_set");
+         Value      : System.Address);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
 
    begin
       if Value = null then

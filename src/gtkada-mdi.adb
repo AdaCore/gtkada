@@ -434,11 +434,10 @@ package body Gtkada.MDI is
 
    procedure Emit_By_Name_Child
      (Object : System.Address; Name : String; Child : System.Address);
-   pragma Import (C, Emit_By_Name_Child, "g_signal_emit_by_name");
+   pragma Import (C, Emit_By_Name_Child, "ada_g_signal_emit_by_name_ptr");
 
-   procedure Emit_By_Name
-     (Object : System.Address; Name : String);
-   pragma Import (C, Emit_By_Name, "g_signal_emit_by_name");
+   procedure Emit_By_Name (Object : System.Address; Name : String);
+   pragma Import (C, Emit_By_Name, "ada_g_signal_emit_by_name");
 
    procedure Internal_Float_Child
      (Child             : access MDI_Child_Record'Class;

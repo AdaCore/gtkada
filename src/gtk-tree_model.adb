@@ -514,9 +514,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : System.Address;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out Gint;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out Gint);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get_int");
 
       A : Gint;
 
@@ -538,9 +537,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : System.Address;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out Gboolean;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out Gboolean);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get_int");
 
       B : Gboolean;
 
@@ -562,9 +560,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : System.Address;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out System.Address;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out System.Address);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get_ptr");
 
       Value : System.Address;
       Stub  : Glib.Object.GObject_Record;
@@ -587,9 +584,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : System.Address;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out Glib.C_Proxy;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out Glib.C_Proxy);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get_ptr");
 
       Value : Glib.C_Proxy;
    begin
@@ -610,9 +606,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : System.Address;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out System.Address;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out System.Address);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get_ptr");
 
       Value : System.Address;
    begin
@@ -633,9 +628,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : System.Address;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : access chars_ptr;
-         Final      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : access chars_ptr);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get_ptr");
 
       A : aliased chars_ptr := Null_Ptr;
 

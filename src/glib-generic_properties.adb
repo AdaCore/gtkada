@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2002 ACT-Europe                --
+--                 Copyright (C) 2001-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -149,14 +149,19 @@ package body Glib.Generic_Properties is
       is
          procedure Get
            (Object : System.Address;
-            Name : Property;
-            Value : out Discrete_Type;
-            Last : System.Address := System.Null_Address);
-         pragma Import (C, Get, "g_object_get");
-         Ret : Discrete_Type;
+            Name   : Property;
+            Value  : out Gulong);
+         pragma Import (C, Get, "ada_g_object_get_ulong");
+
+         pragma Warnings (Off);
+         function To_Discrete_Type is new
+           Ada.Unchecked_Conversion (Gulong, Discrete_Type);
+         pragma Warnings (On);
+         Ret : Gulong;
+
       begin
          Get (Get_Object (Object), Property (Name), Ret);
-         return Ret;
+         return To_Discrete_Type (Ret);
       end Get_Property;
 
       ------------------
@@ -182,11 +187,16 @@ package body Glib.Generic_Properties is
          procedure Internal
            (Object   : System.Address;
             Name     : Property;
-            Value    : Discrete_Type;
-            Null_Arg : System.Address := System.Null_Address);
-         pragma Import (C, Internal, "g_object_set");
+            Value    : Gulong);
+         pragma Import (C, Internal, "ada_g_object_set_ulong");
+
+         pragma Warnings (Off);
+         function To_Gulong is new
+           Ada.Unchecked_Conversion (Discrete_Type, Gulong);
+         pragma Warnings (On);
+
       begin
-         Internal (Get_Object (Object), Name, Value);
+         Internal (Get_Object (Object), Name, To_Gulong (Value));
       end Set_Property;
    end Generic_Internal_Discrete_Property;
 

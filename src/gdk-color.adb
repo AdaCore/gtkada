@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -366,7 +366,7 @@ package body Gdk.Color is
       function sprintf
         (S : System.Address; Format : String;
          Arg1 : Gint; Arg2 : Gint; Arg3 : Gint) return Gint;
-      pragma Import (C, sprintf);
+      pragma Import (C, sprintf, "c_sprintf");
 
    begin
       Len := sprintf

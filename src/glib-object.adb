@@ -111,11 +111,8 @@ package body Glib.Object is
    ----------------
 
    procedure Initialize (Object : access GObject_Record'Class) is
-      function Internal
-        (Typ : GType; Last : System.Address := System.Null_Address)
-         return System.Address;
-      pragma Import (C, Internal, "g_object_new");
-
+      function Internal (Typ : GType) return System.Address;
+      pragma Import (C, Internal, "ada_g_object_new");
    begin
       Set_Object (Object, Internal (GType_Object));
    end Initialize;
@@ -344,13 +341,12 @@ package body Glib.Object is
    --------------
 
    function List_Ids (Typ : Glib.GType) return Signal_Id_Array is
-      type Flat_Id_Array is array (Guint) of Signal_Id;
+      type Flat_Id_Array is array (Positive) of Signal_Id;
       pragma Convention (C, Flat_Id_Array);
-      type Flat_Id_Array_Access is access Flat_Id_Array;
-      type Guint_Access is access all Guint;
+      type Flat_Id_Array_Access is access all Flat_Id_Array;
 
       function Internal
-        (Typ : GType; N_Ids : Guint_Access) return Flat_Id_Array_Access;
+        (Typ : GType; N_Ids : access Guint) return Flat_Id_Array_Access;
       pragma Import (C, Internal, "g_signal_list_ids");
 
       N_Ids  : aliased Guint;
@@ -360,7 +356,7 @@ package body Glib.Object is
       if N_Ids = 0 then
          return (1 .. 0 => 0);
       else
-         return Signal_Id_Array (Result (0 .. N_Ids - 1));
+         return Signal_Id_Array (Result (0 .. Positive (N_Ids) - 1));
       end if;
    end List_Ids;
 
@@ -382,14 +378,13 @@ package body Glib.Object is
    ------------
 
    function Params (Q : Signal_Query) return GType_Array is
-      type Flat_GType_Array is array (Guint) of GType;
+      type Flat_GType_Array is array (Positive) of GType;
       pragma Convention (C, Flat_GType_Array);
-      type Flat_GType_Array_Access is access Flat_GType_Array;
-      type Guint_Access is access all Guint;
+      type Flat_GType_Array_Access is access all Flat_GType_Array;
 
       function Internal
         (Q     : Signal_Query;
-         N_Ids : Guint_Access) return Flat_GType_Array_Access;
+         N_Ids : access Guint) return Flat_GType_Array_Access;
       pragma Import (C, Internal, "ada_gsignal_query_params");
 
       N_Ids  : aliased Guint;
@@ -399,12 +394,7 @@ package body Glib.Object is
       if N_Ids = 0 then
          return (1 .. 0 => GType_Invalid);
       else
-         declare
-            Res : constant GType_Array (0 .. N_Ids - 1) :=
-              GType_Array (Result (0 .. N_Ids - 1));
-         begin
-            return Res;
-         end;
+         return GType_Array (Result (0 .. Positive (N_Ids) - 1));
       end if;
    end Params;
 

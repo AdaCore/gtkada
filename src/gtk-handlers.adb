@@ -117,9 +117,10 @@ package body Gtk.Handlers is
      (Object : access GObject_Record'Class; Signal : String)
       return Guint
    is
-      Q : Signal_Query;
+      Q  : Signal_Query;
       Id : constant Signal_Id :=
-        Lookup (Get_Type (Object), Signal & ASCII.Nul);
+        Lookup (Get_Type (Object), Signal & ASCII.NUL);
+
    begin
       if Id = Invalid_Signal_Id then
          return 0;
@@ -537,9 +538,10 @@ package body Gtk.Handlers is
             Name   : String;
             Param  : System.Address;
             Ret    : out Gint);
-         pragma Import (C, Internal, "g_signal_emit_by_name");
+         pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
 
          B : Gint;
+
       begin
          pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
@@ -900,9 +902,10 @@ package body Gtk.Handlers is
             Name   : String;
             Param  : System.Address;
             Ret    : out Gint);
-         pragma Import (C, Internal, "g_signal_emit_by_name");
+         pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
 
          B : Gint;
+
       begin
          pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
@@ -1246,9 +1249,9 @@ package body Gtk.Handlers is
          procedure Internal
            (Object : System.Address;
             Name   : String;
-            Param  : System.Address;
-            Last   : System.Address := System.Null_Address);
-         pragma Import (C, Internal, "g_signal_emit_by_name");
+            Param  : System.Address);
+         pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
+
       begin
          pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
@@ -1602,9 +1605,8 @@ package body Gtk.Handlers is
          procedure Internal
            (Object : System.Address;
             Name   : String;
-            Param  : System.Address;
-            Last   : System.Address := System.Null_Address);
-         pragma Import (C, Internal, "g_signal_emit_by_name");
+            Param  : System.Address);
+         pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
       begin
          pragma Assert (Count_Arguments (Object, Name) = 1);

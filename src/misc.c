@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -115,6 +115,139 @@ ada_gtk_micro_version () {
 }
 
 /********************************************************************
+ **  var_arg wrappers.
+ ********************************************************************/
+
+gpointer
+ada_g_object_new (GType object_type)
+{
+  return g_object_new (object_type, NULL);
+}
+
+void
+ada_g_object_get_ulong (gpointer object,
+		        const gchar *property_name,
+		        gulong *property)
+{
+  g_object_get (object, property_name, property, NULL);
+}
+
+
+void
+ada_g_object_set_string (gpointer object,
+			 const gchar *property_name,
+			 const gchar *property)
+{
+  g_object_set (object, property_name, property, NULL);
+}
+
+void
+ada_g_object_set_int (gpointer object,
+		      const gchar *property_name,
+		      gint property)
+{
+  g_object_set (object, property_name, property, NULL);
+}
+
+void
+ada_g_object_set_ulong (gpointer object,
+		        const gchar *property_name,
+		        gulong property)
+{
+  g_object_set (object, property_name, property, NULL);
+}
+
+void
+ada_g_object_set_ptr (gpointer object,
+		      const gchar *property_name,
+		      void *property)
+{
+  g_object_set (object, property_name, property, NULL);
+}
+
+void
+ada_g_object_set_float (gpointer object,
+			const gchar *property_name,
+			gfloat property)
+{
+  g_object_set (object, property_name, property, NULL);
+}
+
+void
+ada_g_object_set_double (gpointer object,
+			 const gchar *property_name,
+			 gdouble property)
+{
+  g_object_set (object, property_name, property, NULL);
+}
+
+void
+ada_g_signal_emit_by_name (gpointer     instance,
+			   const gchar *detailed_signal)
+{
+  g_signal_emit_by_name (instance, detailed_signal);
+}
+
+void
+ada_g_signal_emit_by_name_ptr (gpointer     instance,
+			       const gchar *detailed_signal,
+			       void *arg)
+{
+  g_signal_emit_by_name (instance, detailed_signal, arg);
+}
+
+void
+ada_g_signal_emit_by_name_ptr_ptr (gpointer     instance,
+			           const gchar *detailed_signal,
+			           void *arg1,
+			           void *arg2)
+{
+  g_signal_emit_by_name (instance, detailed_signal, arg1, arg2);
+}
+
+void
+ada_gtk_tree_store_set_ptr (GtkTreeStore *tree_store,
+			    GtkTreeIter  *iter,
+			    gint          col,
+			    void         *val)
+{
+  gtk_tree_store_set (tree_store, iter, col, val, -1);
+}
+
+void
+ada_gtk_tree_store_set_int (GtkTreeStore *tree_store,
+			    GtkTreeIter  *iter,
+			    gint          col,
+			    gint          val)
+{
+  gtk_tree_store_set (tree_store, iter, col, val, -1);
+}
+
+void
+ada_gtk_tree_model_get_int (GtkTreeModel *tree_model,
+			    GtkTreeIter  *iter,
+			    gint          column,
+			    gint         *value)
+{
+  gtk_tree_model_get (tree_model, iter, column, value, -1);
+}
+
+void
+ada_gtk_tree_model_get_ptr (GtkTreeModel *tree_model,
+			    GtkTreeIter  *iter,
+			    gint          column,
+			    void         *value)
+{
+  gtk_tree_model_get (tree_model, iter, column, value, -1);
+}
+
+void
+c_sprintf (char *s, char *format, int arg1, int arg2, int arg3)
+{
+  sprintf (s, format, arg1, arg2, arg3);
+}
+
+/********************************************************************
  **  This function should only be used for debug purposes.
  ********************************************************************/
 
@@ -163,12 +296,6 @@ ada_gtk_parse_cmd_line (int *gnat_argc, char **gnat_argv, char* macro_switch)
 /******************************************
  ** GSignal                              **
  ******************************************/
-
-int
-c_signal_query_size ()
-{
-  return sizeof (GSignalQuery);
-}
 
 const gchar*
 ada_gsignal_query_signal_name (GSignalQuery* query)
@@ -3740,7 +3867,7 @@ ada_gdk_get_window_id (GdkWindow *w)
 void
 ada_gdk_move_pointer (gint x, gint y)
 {
-/*  Disable this function under Apple, since under Tiger the call to 
+/*  Disable this function under Apple, since under Tiger the call to
     XWarpPointer requires explicit linker flags pointing to X11 libs.
 */
 #ifndef __APPLE__
