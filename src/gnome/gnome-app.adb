@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                  Copyright (C) 2000-2002                          --
---                            ACT-Europe                             --
+--                  Copyright (C) 2000-2006                          --
+--                              AdaCore                              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,6 @@
 
 with System;
 
-with Glib;
 with Gtk;    use Gtk;
 
 package body Gnome.App is

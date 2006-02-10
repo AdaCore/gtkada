@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2002                          --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2006                          --
+--                           AdaCore                                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gtk; use Gtk;
-with Gtk.Progress;
 with Gtk.Widget; use Gtk.Widget;
 with Interfaces.C.Strings;
 with System;

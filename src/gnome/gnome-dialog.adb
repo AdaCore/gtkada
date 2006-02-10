@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --               Copyright (C) 2000 Helix Code, Inc.                 --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--               Copyright (C) 2000-2006 AdaCore                     --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +30,6 @@
 with System;
 
 with Gtk;          use Gtk;
-with Gtkada.Types;
 
 package body Gnome.Dialog is
 
