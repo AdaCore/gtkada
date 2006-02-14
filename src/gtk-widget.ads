@@ -668,7 +668,10 @@ package Gtk.Widget is
       State_Type : Enums.Gtk_State_Type;
       Color      : Gdk.Color.Gdk_Color);
    --  Sets the background color for a widget in a particular state.  All
-   --  other style values are left untouched.
+   --  other style values are left untouched. This procedure has no effect
+   --  when Widget has no physical window associated to it (for instance
+   --  a Gtk_Label). In such cases, you must put widget inside a
+   --  Gtk_Event_Box, and set the background color of the box itself.
 
    procedure Modify_Text
      (Widget     : access Gtk_Widget_Record;
