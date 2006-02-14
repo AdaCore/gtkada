@@ -16,7 +16,12 @@ LIBGLADE_SOURCES=glade.adb glade-xml.adb
 LIBGLADE_OBJECTS=glade.o glade-xml.o
 LIBGLADE_LIBS=@LIBGLADE_LIBS@
 
+ifeq ($(BUILD_SHARED),yes)
 all: $(LIBNAME) $(ARCHIVENAME)
+else
+all: $(ARCHIVENAME)
+endif
+
 install: all
 	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
 	$(RM) $(libdir)/$(ARCHIVENAME)
