@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2004 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -300,17 +300,22 @@ end Gtk.Tree_Store;
 --      Column1 : Gint; Value1 : UTF8_String;
 --      Column2 : Gint; Value2 : Boolean)
 --  is
---      procedure Internal
+--      procedure Set_String
 --        (Tree : System.Address;
 --         Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
---         Column1 : Gint; Value1 : UTF8_String;
---         Column2 : Gint; Value2 : Gint;
---         Final : Gint := -1);
---      pragma Import (C, Internal, "gtk_tree_store_set");
+--         Column : Gint; Value : UTF8_String);
+--      pragma Import (C, Set_String, "ada_gtk_tree_store_set_ptr");
+--
+--      procedure Set_Int
+--        (Tree : System.Address;
+--         Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+--         Column : Gint; Value : Gint);
+--      pragma Import (C, Internal, "ada_gtk_tree_store_set_int");
 --   begin
 --      Internal
---        (Get_Object (Tree_Store), Iter,
---         Column1, Value1 & ASCII.NUL, Column2, Boolean'Pos (Value2));
+--        (Get_Object (Tree_Store), Iter, Column1, Value1 & ASCII.NUL);
+--      Internal
+--        (Get_Object (Tree_Store), Iter, Column2, Boolean'Pos (Value2));
 --   end Set;
 --
 --  </example>
