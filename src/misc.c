@@ -356,7 +356,7 @@ ada_gtk_widget_style_get_int (GtkWidget   *widget,
 			      const gchar *first_property_name,
 			      gint        *value)
 {
-  gtk_widget_style_get_int (widget, first_property_name, value, NULL);
+  gtk_widget_style_get (widget, first_property_name, value, NULL);
 }
 
 gboolean
