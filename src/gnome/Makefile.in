@@ -6,15 +6,23 @@ ARCHIVENAME   = libgnomeada.a
 GNOME_LIBS    = @GNOME_LIBS@
 
 ifeq ($(HAVE_GNOME),True)
+
+ifeq ($(BUILD_SHARED),yes)
 all: $(ARCHIVENAME) $(LIBNAME)
+else
+all: $(ARCHIVENAME)
+endif
+
 install: all
 	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
 	$(RM) $(libdir)/$(ARCHIVENAME)
+ifeq ($(BUILD_SHARED),yes)
 	$(INSTALL_DATA) $(SONAME) $(alidir)
 	$(RM) $(libdir)/$(LIBNAME)
 	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
 	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
 	$(LN) gtkada/$(SONAME) $(libdir)/$(SONAME)
+endif
 	$(CP) gnome*.ads gnome*.adb bonobo*.ads bonobo*.adb $(incdir)
 	$(CP) gnome*.ali bonobo*.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali
@@ -32,7 +40,6 @@ gnome:
 	fi
 
 $(LIBNAME): gnome
-ifeq ($(BUILD_SHARED),yes)
 	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
 	  $(SO_OPTS)$(SONAME) gnome.o gnome-*.o bonobo*.o \
 	  $(GTK_LIBS) $(GNOME_LIBS)
@@ -42,7 +49,6 @@ ifeq ($(BUILD_SHARED),yes)
 	  strip $(LIBNAME); \
 	  $(CHMOD) +x $(LIBNAME); \
 	fi
-endif
 
 $(ARCHIVENAME): gnome
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) gnome.o gnome-*.o bonobo*.o
