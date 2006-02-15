@@ -25,11 +25,13 @@ endif
 install: all
 	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
 	$(RM) $(libdir)/$(ARCHIVENAME)
+ifeq ($(BUILD_SHARED),yes)
 	$(INSTALL_DATA) $(SONAME) $(alidir)
 	$(RM) $(libdir)/$(LIBNAME)
 	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
 	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
 	$(LN) gtkada/$(SONAME) $(libdir)/$(SONAME)
+endif
 	$(CP) glade*.ads glade*.adb $(incdir)
 	$(CP) *.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali
