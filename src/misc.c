@@ -206,6 +206,15 @@ ada_g_signal_emit_by_name_ptr_ptr (gpointer     instance,
 }
 
 void
+ada_g_signal_emit_by_name_int_int (gpointer     instance,
+			           const gchar *detailed_signal,
+			           gint arg1,
+			           gint arg2)
+{
+  g_signal_emit_by_name (instance, detailed_signal, arg1, arg2);
+}
+
+void
 ada_gtk_tree_store_set_ptr (GtkTreeStore *tree_store,
 			    GtkTreeIter  *iter,
 			    gint          col,
