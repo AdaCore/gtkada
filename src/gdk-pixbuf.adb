@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -265,9 +265,8 @@ package body Gdk.Pixbuf is
          Format   : String;
          Error    : out GError;
          Key      : String;
-         Value    : String;
-         Term     : System.Address := System.Null_Address);
-      pragma Import (C, Internal, "gdk_pixbuf_save");
+         Value    : String);
+      pragma Import (C, Internal, "ada_gdk_pixbuf_save");
 
    begin
       Error := null;

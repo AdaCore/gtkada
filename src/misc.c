@@ -215,6 +215,15 @@ ada_g_signal_emit_by_name_int_int (gpointer     instance,
 }
 
 void
+ada_g_signal_emit_by_name_int_ptr (gpointer     instance,
+			           const gchar *detailed_signal,
+			           gint arg1,
+			           void *arg2)
+{
+  g_signal_emit_by_name (instance, detailed_signal, arg1, arg2);
+}
+
+void
 ada_gtk_tree_store_set_ptr (GtkTreeStore *tree_store,
 			    GtkTreeIter  *iter,
 			    gint          col,
@@ -326,6 +335,39 @@ ada_gtk_tree_model_get_ptr (GtkTreeModel *tree_model,
 			    void         *value)
 {
   gtk_tree_model_get (tree_model, iter, column, value, -1);
+}
+
+GtkWidget*
+ada_gtk_dialog_new_with_buttons (const gchar     *title,
+                                 GtkWindow       *parent,
+                                 GtkDialogFlags   flags)
+{
+  return gtk_dialog_new_with_buttons (title, parent, flags, NULL);
+}
+
+GtkWidget*
+ada_gtk_widget_new (GType type)
+{
+  return gtk_widget_new (type, NULL);
+}
+
+gboolean
+ada_gdk_pixbuf_save (GdkPixbuf  *pixbuf,
+		     const char *filename,
+		     const char *type,
+		     GError    **error,
+		     char       *key,
+		     char       *value)
+{
+  return gdk_pixbuf_save (pixbuf, filename, type, error, key, value, NULL);
+}
+
+void
+ada_g_log (const gchar    *log_domain,
+	   GLogLevelFlags  log_level,
+	   const gchar    *format)
+{
+  g_log (log_domain, log_level, format);
 }
 
 void

@@ -29,10 +29,8 @@ package body Gtk_Generates is
 
    Widget, Widget2 : System.Address;
 
-   function Widget_New
-     (T : Glib.GType; Addr : System.Address := System.Null_Address)
-      return System.Address;
-   pragma Import (C, Widget_New, "gtk_widget_new");
+   function Widget_New (T : Glib.GType) return System.Address;
+   pragma Import (C, Widget_New, "ada_gtk_widget_new");
 
    procedure Widget_Destroy (Widget : System.Address);
    pragma Import (C, Widget_Destroy, "gtk_widget_destroy");

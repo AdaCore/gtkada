@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -57,7 +57,7 @@ package body Glib.Error is
    is
       function Internal
         (Domain : GQuark; Code : Gint; Message : String) return GError;
-      pragma Import (C, Internal, "g_error_new");
+      pragma Import (C, Internal, "g_error_new_literal");
 
    begin
       return Internal (Domain, Code, Message & ASCII.NUL);

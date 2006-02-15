@@ -124,14 +124,11 @@ package body Glib.Messages is
       procedure Internal
         (Log_Domain : String;
          Log_Levels : Log_Level_Flags;
-         Format     : String;
-         Message    : UTF8_String);
-      pragma Import (C, Internal, "g_log");
+         Format     : UTF8_String);
+      pragma Import (C, Internal, "ada_g_log");
 
    begin
-      Internal
-        (Log_Domain & ASCII.NUL, Log_Levels,
-         "%s" & ASCII.NUL, Message & ASCII.NUL);
+      Internal (Log_Domain & ASCII.NUL, Log_Levels, Message & ASCII.NUL);
    end Log;
 
    ------------------------
