@@ -206,7 +206,7 @@ package body Gtk.Extra.Color_Combo is
          Signal    : String;
          Selection : Gint;
          Color     : System.Address);
-      pragma Import (C, Internal, "ada_gtk_signal_emit_by_name_int_ptr");
+      pragma Import (C, Internal, "ada_g_signal_emit_by_name_int_ptr");
 
       C : aliased constant Gdk_Color := Get_Color_At (Color_Combo, Row, Col);
    begin

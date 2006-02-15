@@ -306,7 +306,7 @@ package body Gtkada.Canvas is
      (Object : System.Address;
       Name   : String;
       Param  : access Canvas_Item_Record'Class);
-   pragma Import (C, Emit_By_Name_Item, "ada_gtk_signal_emit_by_name_ptr");
+   pragma Import (C, Emit_By_Name_Item, "ada_g_signal_emit_by_name_ptr");
 
    function Compute_Line_Pos
      (Canvas : access Interactive_Canvas_Record'Class) return Gint_Array;
