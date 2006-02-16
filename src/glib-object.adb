@@ -341,7 +341,7 @@ package body Glib.Object is
    --------------
 
    function List_Ids (Typ : Glib.GType) return Signal_Id_Array is
-      type Flat_Id_Array is array (Positive) of Signal_Id;
+      type Flat_Id_Array is array (Guint) of Signal_Id;
       pragma Convention (C, Flat_Id_Array);
       type Flat_Id_Array_Access is access all Flat_Id_Array;
 
@@ -356,7 +356,7 @@ package body Glib.Object is
       if N_Ids = 0 then
          return (1 .. 0 => 0);
       else
-         return Signal_Id_Array (Result (0 .. Positive (N_Ids) - 1));
+         return Signal_Id_Array (Result (0 .. N_Ids - 1));
       end if;
    end List_Ids;
 
