@@ -378,7 +378,7 @@ package body Glib.Object is
    ------------
 
    function Params (Q : Signal_Query) return GType_Array is
-      type Flat_GType_Array is array (Positive) of GType;
+      type Flat_GType_Array is array (Guint) of GType;
       pragma Convention (C, Flat_GType_Array);
       type Flat_GType_Array_Access is access all Flat_GType_Array;
 
@@ -394,7 +394,7 @@ package body Glib.Object is
       if N_Ids = 0 then
          return (1 .. 0 => GType_Invalid);
       else
-         return GType_Array (Result (0 .. Positive (N_Ids) - 1));
+         return GType_Array (Result (0 .. N_Ids - 1));
       end if;
    end Params;
 
