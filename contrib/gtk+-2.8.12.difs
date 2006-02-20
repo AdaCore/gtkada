@@ -120,9 +120,9 @@
  am_libgdk_win32_la_OBJECTS = gdkcolor-win32.lo gdkcursor-win32.lo \
  	gdkdisplay-win32.lo gdkdnd-win32.lo gdkdrawable-win32.lo \
  	gdkevents-win32.lo gdkfont-win32.lo gdkgc-win32.lo \
---- gtk/gtktextview.c	2003/11/22 12:54:08	1.2
-+++ gtk/gtktextview.c	2003/11/27 17:54:03
-@@ -3150,7 +3150,7 @@ incremental_validate_callback (gpointer 
+--- gtk/gtktextview.c.old	2006-02-17 16:11:04.000000000 +0100
++++ gtk/gtktextview.c	2006-02-20 17:08:54.691581240 +0100
+@@ -3273,7 +3273,7 @@ incremental_validate_callback (gpointer 
    
    DV(g_print(G_STRLOC"\n"));
    
@@ -131,9 +131,18 @@
  
    gtk_text_view_update_adjustments (text_view);
    
---- gtk/gtktextbtree.c	2003/11/22 00:11:14	1.1
-+++ gtk/gtktextbtree.c	2003/11/22 00:40:42
-@@ -3149,13 +3149,9 @@ ensure_end_iter_line (GtkTextBTree *tree
+@@ -6028,6 +6028,8 @@ gtk_text_view_start_selection_dnd (GtkTe
+   GdkDragContext *context;
+   GtkTargetList  *target_list;
+ 
++  return;
++
+   text_view->drag_start_x = -1;
+   text_view->drag_start_y = -1;
+   text_view->pending_place_cursor_button = 0;
+--- gtk/gtktextbtree.c.old	2006-02-17 16:11:31.000000000 +0100
++++ gtk/gtktextbtree.c	2006-02-17 16:12:02.000000000 +0100
+@@ -3348,13 +3348,9 @@ ensure_end_iter_line (GtkTextBTree *tree
  {
    if (tree->end_iter_line_stamp != tree->chars_changed_stamp)
      {
@@ -148,9 +157,9 @@
  
        tree->end_iter_line = _gtk_text_btree_get_line_no_last (tree, -1, &real_line);
        
---- gtk/gtktextiter.c	2003/11/21 23:46:35	1.1
-+++ gtk/gtktextiter.c	2003/11/22 00:07:39
-@@ -150,6 +150,11 @@ iter_set_from_segment (GtkTextRealIter *
+--- gtk/gtktextiter.c.old	2006-02-17 16:12:09.000000000 +0100
++++ gtk/gtktextiter.c	2006-02-17 16:16:50.000000000 +0100
+@@ -152,6 +152,11 @@ iter_set_from_segment (GtkTextRealIter *
     truly computed lazily; often we don't need to do the full make_real
     work. This ensures the btree and line are valid, but doesn't
     update the segments. */
@@ -162,7 +171,7 @@
  static GtkTextRealIter*
  gtk_text_iter_make_surreal (const GtkTextIter *_iter)
  {
-@@ -188,6 +193,7 @@ gtk_text_iter_make_surreal (const GtkTex
+@@ -190,6 +195,7 @@ gtk_text_iter_make_surreal (const GtkTex
  
    return iter;
  }
@@ -170,7 +179,7 @@
  
  static GtkTextRealIter*
  gtk_text_iter_make_real (const GtkTextIter *_iter)
-@@ -385,15 +391,15 @@ is_segment_start (GtkTextRealIter *real)
+@@ -387,15 +393,15 @@ is_segment_start (GtkTextRealIter *real)
    return real->segment_byte_offset == 0 || real->segment_char_offset == 0;
  }
  
@@ -189,14 +198,3 @@
  #endif
  
  /**
---- gtk/gtktextview.c.1	2005-01-06 10:59:54.000000000 +0100
-+++ gtk/gtktextview.c	2005-12-23 18:13:39.000000000 +0100
-@@ -5851,6 +5851,8 @@ gtk_text_view_start_selection_dnd (GtkTe
-   GdkDragContext *context;
-   GtkTargetList *target_list;
- 
-+  return;
-+
-   text_view->drag_start_x = -1;
-   text_view->drag_start_y = -1;
-   text_view->pending_place_cursor_button = 0;
