@@ -1,3 +1,115 @@
+2006-02-20	Arnaud Charlet	<charlet@adacore.com>
+
+	* gtk/stock-icons/Makefile.in, demos/Makefile.in: Force call to
+	gdk-pixbuf-csource. to work around cygwin ambiguity.
+
+2002-11-25	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/win32/Makefile.in: Remove gdk-win32res.lo dependency,
+	since we do not want to use the default Gtk+ icon.
+
+2003-03-27	Arnaud Charlet <charlet@adacore.com>
+
+	* gdk/win32/gdkwindow-win32.c: Bring parent window on top when
+	destroying a modal window. Fixes unexpected lost focus.
+
+2002-09-12	Florent Duguet	<duguet@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c: Force an update when paint message
+	is received, otherwise windows in background are not immediately
+	refreshed when moving a modal window on top of them.
+	Add handling of WM_NCPAINT message to refresh some areas when a window
+	from another application is moved on top of the current app.
+
+--- gdk/win32/gdkevents-win32.c.orig	2004-09-03 02:30:03.000000000 +0100
++++ gdk/win32/gdkevents-win32.c	2004-10-19 14:38:35.000000000 +0100
+@@ -2036,6 +2036,12 @@
+   _gdk_window_process_expose (window, update_region);
+   gdk_region_destroy (update_region);
+ 
++  /* Force a process_updates to refresh visible windows
++   * when receiving a paint message. */
++
++  if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
++    gdk_window_process_updates (window, FALSE);
++
+   DeleteObject (hrgn);
+ }
+ 
+@@ -2862,6 +2868,35 @@
+       *ret_valp = 1;
+       break;
+ 
++    case WM_NCPAINT:
++      if (msg->wParam < 1)
++	break;
++
++      {
++      HRGN hrgn;
++
++      hrgn = CreateRectRgn (0, 0, 0, 0);
++      if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
++	{
++	  WIN32_GDI_FAILED ("GetUpdateRgn");
++	  break;
++	}
++
++      {
++        GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
++
++	_gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
++	gdk_region_offset (update_region, xoffset, yoffset);
++
++	_gdk_window_process_expose (window, update_region);
++	gdk_region_destroy (update_region);
++
++	DeleteObject (hrgn);
++	return_val = FALSE;
++      }
++      }
++      break;
++
+     case WM_PAINT:
+       handle_wm_paint (msg, window, FALSE, NULL);
+       break;
+--- gdk/win32/gdkwindow-win32.c	2003/03/27 14:43:01	1.1
++++ gdk/win32/gdkwindow-win32.c	2003/04/13 09:22:48
+@@ -742,6 +742,15 @@
+   GDK_NOTE (MISC, g_print ("_gdk_windowing_window_destroy %p\n",
+ 			   GDK_WINDOW_HWND (window)));
+ 
++  if (private->modal_hint)
++    {
++      HWND parent = (HWND) GetWindowLong
++	(GDK_WINDOW_HWND (window), GWL_HWNDPARENT);
++
++      if ((long)parent > 1 && !BringWindowToTop (parent))
++	WIN32_API_FAILED ("BringWindowToTop");
++    }
++
+   if (private->extension_events != 0)
+     _gdk_input_window_destroy (window);
+ 
+--- gdk/win32/Makefile.in.old	2004-10-19 14:20:42.000000000 +0100
++++ gdk/win32/Makefile.in	2004-10-19 14:21:00.000000000 +0100
+@@ -346,7 +346,7 @@
+ 	gdkwin32.h
+ 
+ 
+-libgdk_win32_la_LIBADD = rc/gdk-win32res.lo
++libgdk_win32_la_LIBADD =
+ subdir = gdk/win32
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+@@ -355,7 +355,7 @@
+ LTLIBRARIES = $(noinst_LTLIBRARIES)
+ 
+ libgdk_win32_la_LDFLAGS =
+-libgdk_win32_la_DEPENDENCIES = rc/gdk-win32res.lo
++libgdk_win32_la_DEPENDENCIES =
+ am_libgdk_win32_la_OBJECTS = gdkcolor-win32.lo gdkcursor-win32.lo \
+ 	gdkdisplay-win32.lo gdkdnd-win32.lo gdkdrawable-win32.lo \
+ 	gdkevents-win32.lo gdkfont-win32.lo gdkgc-win32.lo \
 --- gtk/stock-icons/Makefile.in.old	2006-02-20 15:49:26.000000000 +0100
 +++ gtk/stock-icons/Makefile.in	2006-02-20 15:50:28.000000000 +0100
 @@ -662,7 +662,7 @@
@@ -8,4 +120,13 @@
 +@CROSS_COMPILING_FALSE@pixbuf_csource = GDK_PIXBUF_MODULE_FILE=$(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource.
  @CROSS_COMPILING_TRUE@pixbuf_csource_deps = 
  @CROSS_COMPILING_FALSE@pixbuf_csource_deps = $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource $(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders 
+--- demos/Makefile.in.old	2006-02-20 16:58:02.000000000 +0100
++++ demos/Makefile.in	2006-02-20 16:58:13.000000000 +0100
+@@ -317,7 +317,7 @@
+ @HAVE_PNG_TRUE@BUILT_SOURCES = test-inline-pixbufs.h
  
+ @CROSS_COMPILING_TRUE@pixbuf_csource = $(GDK_PIXBUF_CSOURCE)
+-@CROSS_COMPILING_FALSE@pixbuf_csource = GDK_PIXBUF_MODULE_FILE=$(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource
++@CROSS_COMPILING_FALSE@pixbuf_csource = GDK_PIXBUF_MODULE_FILE=$(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource.
+ @CROSS_COMPILING_TRUE@pixbuf_csource_deps = 
+ @CROSS_COMPILING_FALSE@pixbuf_csource_deps = $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource $(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders 
