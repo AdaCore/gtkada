@@ -1366,12 +1366,11 @@ package body Gtkada.MDI is
       C.Initial := null;
 
       --  Do not transfer the focus elsewhere: for an interactive close, this
-      --  is done in Close_Child, otherwise we do not want to change the focus
+      --  is done in Close_Child, otherwise we do not want to change the focus.
+      --  No need to send a signal to signal that a new child has been selected
+      --  since Give_Focus_To_Previous_Child has been called already
       if C = MDI.Focus_Child then
          MDI.Focus_Child := null;
-         Emit_By_Name_Child
-           (Get_Object (MDI), "child_selected" & ASCII.NUL,
-            System.Null_Address);
       end if;
 
       --  Only remove it from the list of children at the end, since some of
