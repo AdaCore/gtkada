@@ -11,9 +11,8 @@
 
 (The SGI C compiler does not like the addition of a void* and the offset)
 
-diff -c -p ../pkgconfig-0.14.0.orig/pkg.c ./pkg.c
-*** ../pkgconfig-0.14.0.orig/pkg.c	Wed Jan  7 09:00:23 2004
---- ./pkg.c	Wed Jan  7 08:53:02 2004
+*** pkgconfig-0.14.0.orig/pkg.c	Wed Jan  7 09:00:23 2004
+--- pkg.c	Wed Jan  7 08:53:02 2004
 *************** verify_package (Package *pkg)
 *** 813,819 ****
   	  system_dir_iter = system_directories;
@@ -31,9 +30,8 @@ diff -c -p ../pkgconfig-0.14.0.orig/pkg.c ./pkg.c
   		{
   		  debug_spew ("Package %s has %s in Cflags\n",
   			      pkg->name, (gchar *)iter->data);
-diff -rc ../pkgconfig-0.14.0.ref/glib-1.2.8/configure.in ./glib-1.2.8/configure.in
-*** ../pkgconfig-0.14.0.ref/glib-1.2.8/configure.in	Wed May 24 20:29:09 2000
---- ./glib-1.2.8/configure.in	Thu Oct 13 12:34:54 2005
+*** pkgconfig-0.14.0.ref/glib-1.2.8/configure.in	Wed May 24 20:29:09 2000
+--- glib-1.2.8/configure.in	Thu Oct 13 12:34:54 2005
 ***************
 *** 836,846 ****
   			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
@@ -62,9 +60,8 @@ diff -rc ../pkgconfig-0.14.0.ref/glib-1.2.8/configure.in ./glib-1.2.8/configure.
   			[AC_MSG_RESULT(no)],
   			[AC_MSG_RESULT(yes)
   			AC_DEFINE(HAVE_PTHREAD_COND_TIMEDWAIT_POSIX)])
-diff -rc ../pkgconfig-0.14.0.ref/glib-1.2.8/configure ./glib-1.2.8/configure
-*** ../pkgconfig-0.14.0.ref/glib-1.2.8/configure	Thu Oct 10 17:17:32 2002
---- ./glib-1.2.8/configure	Thu Oct 13 12:36:39 2005
+*** pkgconfig-0.14.0.ref/glib-1.2.8/configure	Thu Oct 10 17:17:32 2002
+--- glib-1.2.8/configure	Thu Oct 13 12:36:39 2005
 ***************
 *** 5352,5362 ****
   			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
