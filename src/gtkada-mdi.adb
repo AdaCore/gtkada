@@ -1301,11 +1301,14 @@ package body Gtkada.MDI is
          if Force or else not Return_Callback.Emit_By_Name
            (Child.Initial, "delete_event", Event)
          then
-            Float_Child (Child, False);
-
+            --  Transfer the focus before unfloating, so that the parent in
+            --  which the child is unfloated (which might be random from the
+            --  user's point of view) doesn't influence who gets the focus.
             if MDI_Child (Child) = MDI.Focus_Child then
                Give_Focus_To_Previous_Child (Child);
             end if;
+
+            Float_Child (Child, False);
 
             Destroy (Child);
          end if;
@@ -1366,6 +1369,9 @@ package body Gtkada.MDI is
       --  is done in Close_Child, otherwise we do not want to change the focus
       if C = MDI.Focus_Child then
          MDI.Focus_Child := null;
+         Emit_By_Name_Child
+           (Get_Object (MDI), "child_selected" & ASCII.NUL,
+            System.Null_Address);
       end if;
 
       --  Only remove it from the list of children at the end, since some of
@@ -2098,6 +2104,7 @@ package body Gtkada.MDI is
    is
       Item : Widget_List.Glist;
       It   : MDI_Child;
+      Last : MDI_Child;
    begin
       --  Set the focus on the child that had the focus just before,
       --  and in the same notebook.
@@ -2106,26 +2113,38 @@ package body Gtkada.MDI is
       while Item /= Widget_List.Null_List loop
          It := MDI_Child (Get_Data (Item));
 
-         if It /= MDI_Child (Child)
-           and then It.State = Normal
-           and then Get_Parent (It) = Get_Parent (Child)
-         then
-            if Traces then
-               Put_Line ("MDI: Give_Focus_To_Previous_Child "
-                         & Get_Title (It));
+         if It /= MDI_Child (Child) then
+            if Last = null then
+               Last := It;
             end if;
-            Set_Focus_Child (It);
-            return;
+
+            if It.State = Child.State
+              and then Get_Parent (It) = Get_Parent (Child)
+            then
+               if Traces then
+                  Put_Line ("MDI: Give_Focus_To_Previous_Child "
+                            & Get_Title (It));
+               end if;
+               Set_Focus_Child (It);
+               return;
+            end if;
          end if;
 
          Item := Widget_List.Next (Item);
       end loop;
 
-      --  No such child, report it still
-      Child.MDI.Focus_Child := null;
-      Emit_By_Name_Child
-        (Get_Object (Child.MDI), "child_selected" & ASCII.NUL,
-         System.Null_Address);
+      --  No such child, give it to the last child that had the focus
+      if Last = null then
+         if Traces then
+            Put_Line ("MDI: Give_Focus_To_Previous_Child: no one");
+         end if;
+         Child.MDI.Focus_Child := null;
+         Emit_By_Name_Child
+           (Get_Object (Child.MDI), "child_selected" & ASCII.NUL,
+            System.Null_Address);
+      else
+         Set_Focus_Child (Last);
+      end if;
    end Give_Focus_To_Previous_Child;
 
    ---------
@@ -2780,6 +2799,11 @@ package body Gtkada.MDI is
       Requisition : Gtk_Requisition;
       Groups      : Object_List.GSlist;
    begin
+      if Traces then
+         Put_Line ("Float_Child " & Get_Title (Child)
+                   & " Float=" & Boolean'Image (Float));
+      end if;
+
       if Child.State /= Floating and then Float then
          --  Ref is removed when the child is unfloated
          Ref (Child);
@@ -4369,6 +4393,14 @@ package body Gtkada.MDI is
 
          if Traces then
             Put_Line ("MDI Restore_Desktop");
+            Put_Line ("Current MDI size is"
+                      & Gint'Image (Get_Allocation_Width (MDI))
+                      & "x" & Gint'Image (Get_Allocation_Height (MDI)));
+            Put_Line
+              ("Current window size is"
+               & Gint'Image (Get_Allocation_Width (Get_Toplevel (MDI)))
+               & "x"
+               & Gint'Image (Get_Allocation_Height (Get_Toplevel (MDI))));
          end if;
 
          MDI.Loading_Desktop := True;
