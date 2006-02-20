@@ -1,0 +1,11 @@
+--- gtk/stock-icons/Makefile.in.old	2006-02-20 15:49:26.000000000 +0100
++++ gtk/stock-icons/Makefile.in	2006-02-20 15:50:28.000000000 +0100
+@@ -662,7 +662,7 @@
+ CLEANFILES = $(noinst_DATA)
+ 
+ @CROSS_COMPILING_TRUE@pixbuf_csource = $(GDK_PIXBUF_CSOURCE)
+-@CROSS_COMPILING_FALSE@pixbuf_csource = GDK_PIXBUF_MODULE_FILE=$(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource
++@CROSS_COMPILING_FALSE@pixbuf_csource = GDK_PIXBUF_MODULE_FILE=$(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource.
+ @CROSS_COMPILING_TRUE@pixbuf_csource_deps = 
+ @CROSS_COMPILING_FALSE@pixbuf_csource_deps = $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource $(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders 
+ 

@@ -3,10 +3,10 @@ This directory contains various contributions or updates for GtkAda.
 Contents
 ========
 
-gtk+-2.4.13.diff: a patch against Gtk+ 2.4.13 sources containing some
-improvements/fixes not submitted yet.
+pkgconfig-0.14.0.diff: a patch against pkgconfig-0.14.0 needed with some
+non gcc compilers (e.g. SGI cc).
 
-glib-2.4.7.diff: a patch against Glib 2.4.7 sources needed to build Glib
+glib-2.8.6-win32.diff: a patch against Glib 2.8.6 sources needed to build Glib
 under Windows.
 
 pango-1.4.1.diff: a patch against pango 1.4.1 sources
@@ -16,17 +16,14 @@ gtk+ executables with no pango install.
 
 gtk+-2.2.4.diff: a patch against Gtk+ 2.2.4 sources
 
-gtk+-2.2.4-win32.diff: a patch against Gtk+ 2.2.4 sources that fixes
-Windows specific problems.
+gtk+-2.8.12.diff: a patch against Gtk+ 2.8.12 sources containing some
+improvements/fixes not submitted yet.
+
+gtk+-2.8.12-win32.diff: a patch against Gtk+ 2.8.12 sources needed to build
+Gtk+ under Windows.
 
 gtkada-2.2-win32.diff: a patch to run GtkAda 2.2.x properly under Windows
 
-pkgconfig-0.14.0.diff: a patch against pkgconfig-0.14.0 needed with some
-non gcc compilers (e.g. SGI cc).
-
 glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
-
-gtk-wimp.diff: a patch against gtk-wimp, fixing handling of radio buttons
-and handles.
 
 xft-2.1.2.diff: fix build of xft with freetype 2.1.7

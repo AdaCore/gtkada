@@ -1,0 +1,11 @@
+--- gobject/Makefile.in.old	2006-02-20 11:17:54.000000000 +0100
++++ gobject/Makefile.in	2006-02-20 11:26:07.000000000 +0100
+@@ -377,7 +377,7 @@
+ # srcdir to be writable, passing --disable-rebuilds to
+ # ../configure will supress all autogeneration rules.
+ @CROSS_COMPILING_TRUE@glib_genmarshal = $(GLIB_GENMARSHAL)
+-@CROSS_COMPILING_FALSE@glib_genmarshal = ./glib-genmarshal
++@CROSS_COMPILING_FALSE@glib_genmarshal = ./glib-genmarshal.
+ 
+ # target platform:
+ libgobjectinclude_HEADERS = $(gobject_target_headers)
