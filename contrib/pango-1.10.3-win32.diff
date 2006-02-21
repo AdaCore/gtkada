@@ -14,6 +14,7 @@ Thu Dec 06 2004  Arnaud Charlet  <charlet@adacore.com>
 	* pango/glyphstring.c, pango/pangowin32.c: Avoid dereferencing null
 	font.
 	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=331996
+	Committed on Feb 21 2006
 
 --- pango/glyphstring.c.old	2004-12-06 17:35:56.000000000 +0100
 +++ pango/glyphstring.c	2004-12-06 17:36:28.000000000 +0100
