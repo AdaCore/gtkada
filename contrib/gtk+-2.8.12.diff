@@ -9,9 +9,11 @@
 	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
 	of characters validated at each call, this gives a better behavior
 	when loading big files.
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=332057
 
 	* gtk/gtktextbtree.c, gtk/gtktextiter.c: Remove some function calls
 	when assertions are disabled.
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=332059
 
 --- gtk/gtktextview.c.old	2006-02-17 16:11:04.000000000 +0100
 +++ gtk/gtktextview.c	2006-02-20 17:08:54.691581240 +0100
