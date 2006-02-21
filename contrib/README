@@ -9,10 +9,13 @@ non gcc compilers (e.g. SGI cc).
 glib-2.8.6-win32.diff: a patch against Glib 2.8.6 sources needed to build Glib
 under Windows.
 
-pango-1.4.1.diff: a patch against pango 1.4.1 sources
-
 pango-1.2.5.diff: a patch against pango 1.2.5 sources to ease distributing
 gtk+ executables with no pango install.
+
+pango-1.10.3-win32.diff: a patch against pango 1.10.3 sources needed to build
+pango under Windows.
+
+pango-1.10.3.diff: a patch against pango 1.10.3 sources
 
 gtk+-2.2.4.diff: a patch against Gtk+ 2.2.4 sources
 

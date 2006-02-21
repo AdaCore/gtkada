@@ -1,0 +1,96 @@
+Tue Feb 21 2006  Arnaud Charlet  <charlet@adacore.com>
+
+	* tests/Makefile.in, examples/Makefile.in: Work around cygwin/libtool
+	limitation.
+
+Fri Jun 17 2005  Arnaud Charlet  <charlet@adacore.com>
+
+	* pango/pangowin32-fontmap.c: integrate patch from
+	http://bugzilla.gnome.org/show_bug.cgi?id=110521
+	Fix E607-006
+
+Thu Dec 06 2004  Arnaud Charlet  <charlet@adacore.com>
+
+	* pango/glyphstring.c, pango/pangowin32.c: Avoid dereferencing null
+	font.
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=331996
+
+--- pango/glyphstring.c.old	2004-12-06 17:35:56.000000000 +0100
++++ pango/glyphstring.c	2004-12-06 17:36:28.000000000 +0100
+@@ -184,6 +184,9 @@ pango_glyph_string_extents_range (PangoG
+       
+       PangoGlyphGeometry *geometry = &glyphs->glyphs[i].geometry;
+ 
++      if (font == NULL)
++	goto skip_font;
++
+       pango_font_get_glyph_extents (font, glyphs->glyphs[i].glyph,
+ 				    ink_rect ? &glyph_ink : NULL,
+ 				    logical_rect ? &glyph_logical : NULL);
+@@ -231,6 +234,7 @@ pango_glyph_string_extents_range (PangoG
+ 	    }
+ 	}
+ 
++skip_font:
+       x_pos += geometry->width;
+     }
+ }
+--- pango/pangowin32.c.old	2004-12-06 17:43:37.000000000 +0100
++++ pango/pangowin32.c	2004-12-06 17:44:23.000000000 +0100
+@@ -87,6 +87,9 @@ pango_win32_get_hfont (PangoFont *font)
+   PangoWin32FontCache *cache;
+   TEXTMETRIC tm;
+ 
++  if (!win32font)
++    return NULL;
++
+   if (!win32font->hfont)
+     {
+       cache = pango_win32_font_map_get_font_cache (win32font->fontmap);
+--- pango/pangowin32-fontmap.c.orig	Tue Sep 14 02:21:37 2004
++++ pango/pangowin32-fontmap.c	Mon Oct 11 11:56:19 2004
+@@ -179,7 +179,21 @@
+    * Asian fonts with @ prepended to their name, ignore them.
+    */
+   if (lfp->lfFaceName[0] != '@')
+-    pango_win32_insert_font (fontmap, lfp);
++    {
++      /* Bold and italic variants can always (?) be simulated,
++       * so insert them.
++       */
++      lfp->lfItalic = 0;
++      lfp->lfWeight = FW_NORMAL;
++      pango_win32_insert_font (fontmap, lfp); /* normal */
++      lfp->lfItalic = 1;
++      pango_win32_insert_font (fontmap, lfp); /* italic */
++      lfp->lfItalic = 0;
++      lfp->lfWeight = FW_BOLD;
++      pango_win32_insert_font (fontmap, lfp); /* bold */
++      lfp->lfItalic = 1;
++      pango_win32_insert_font (fontmap, lfp); /* bold+italic */
++    }
+ 
+   return 1;
+ }
+--- tests/Makefile.in.old	2006-02-21 09:11:07.000000000 +0100
++++ tests/Makefile.in	2006-02-21 09:11:14.000000000 +0100
+@@ -790,7 +790,7 @@ pango.modules:
+ 	if find ../modules -name '*.so' | grep 'so' > /dev/null ; then \
+           echo "Writing a pango.modules file to use when running tests before installing Pango."; \
+ 	  (cd ../modules && \
+-           ../pango/pango-querymodules `find . -name '*.la' | grep -v \.libs` > ../tests/pango.modules ) ;\
++           ../pango/pango-querymodules. `find . -name '*.la' | grep -v \.libs` > ../tests/pango.modules ) ;\
+ 	else \
+           echo "No dynamic modules found; will use only static modules for uninstalled test programs."; \
+ 	  touch pango.modules; \
+--- examples/Makefile.in.old	2006-02-21 09:10:34.000000000 +0100
++++ examples/Makefile.in	2006-02-21 09:10:43.000000000 +0100
+@@ -725,7 +725,7 @@ pango.modules: $(top_builddir)/pango/pan
+ 	if find ../modules -name '*.so' | grep 'so' > /dev/null ; then \
+           echo "Writing a pango.modules file to use when running examples before installing Pango."; \
+ 	  (cd ../modules && \
+-           $(top_builddir)/pango/pango-querymodules `find . -name '*.la' | grep -v \.libs` > ../examples/pango.modules ) ;\
++           $(top_builddir)/pango/pango-querymodules. `find . -name '*.la' | grep -v \.libs` > ../examples/pango.modules ) ;\
+ 	else \
+           echo "No dynamic modules found; will use only static modules for uninstalled example programs."; \
+ 	  touch pango.modules; \
