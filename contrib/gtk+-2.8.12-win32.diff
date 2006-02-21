@@ -7,7 +7,7 @@
 
 2002-11-25	Arnaud Charlet	<charlet@adacore.com>
 
-	* gdk/win32/rc/Makefile.in: Remove gdk-win32res.lo dependency,
+	* gdk/Makefile.in: Remove gdk-win32res.o dependency,
 	since we do not want to use the default Gtk+ icon.
 
 2003-03-27	Arnaud Charlet <charlet@adacore.com>
@@ -92,16 +92,19 @@
    if (private->extension_events != 0)
      _gdk_input_window_destroy (window);
  
---- gdk/win32/rc/Makefile.in.old	2006-02-21 10:00:42.000000000 +0100
-+++ gdk/win32/rc/Makefile.in	2006-02-21 10:01:08.000000000 +0100
-@@ -286,7 +286,6 @@ EXTRA_DIST = \
- 	gtk.ico
+--- gdk/Makefile.in.old	2006-02-21 10:46:12.000000000 +0100
++++ gdk/Makefile.in	2006-02-21 10:46:33.000000000 +0100
+@@ -437,8 +437,8 @@
+ libgdk_win32_2_0_la_LIBADD = win32/libgdk-win32.la $(GDK_DEP_LIBS) \
+   $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la\
+ $(am__append_1) $(am__append_2)
+-libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la win32/rc/gdk-win32-res.o gdk.def
+-libgdk_win32_2_0_la_LDFLAGS = -Wl,win32/rc/gdk-win32-res.o -export-symbols gdk.def $(LDADD)
++libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la gdk.def
++libgdk_win32_2_0_la_LDFLAGS = -export-symbols gdk.def $(LDADD)
  
+ @MS_LIB_AVAILABLE_TRUE@noinst_DATA = gdk-win32-$(GTK_API_VERSION).lib
  
--@USE_WIN32_TRUE@noinst_DATA = gdk-win32-res.o
- subdir = gdk/win32/rc
- ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
- mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 --- gdk-pixbuf/Makefile.in.old	2006-02-21 09:00:26.000000000 +0100
 +++ gdk-pixbuf/Makefile.in	2006-02-21 08:58:57.000000000 +0100
 @@ -1603,7 +1603,7 @@ distclean-local:
