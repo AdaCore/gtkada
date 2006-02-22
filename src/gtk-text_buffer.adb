@@ -776,10 +776,13 @@ package body Gtk.Text_Buffer is
    begin
       --  Prevent critical crashes from gtk+ if Char_Offset is invalid
       Internal (Get_Object (Buffer), Iter, Line_Number, 0);
-      Forward_To_Line_End (Iter, Result);
 
-      if Char_Offset <= Get_Line_Offset (Iter) then
-         Internal (Get_Object (Buffer), Iter, Line_Number, Char_Offset);
+      if not Ends_Line (Iter) then
+         Forward_To_Line_End (Iter, Result);
+
+         if Char_Offset <= Get_Line_Offset (Iter) then
+            Internal (Get_Object (Buffer), Iter, Line_Number, Char_Offset);
+         end if;
       end if;
    end Get_Iter_At_Line_Offset;
 

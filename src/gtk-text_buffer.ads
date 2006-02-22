@@ -440,6 +440,11 @@ package Gtk.Text_Buffer is
    --  line. The Char_Offset must exist, offsets off the end of the line
    --  are not allowed. Note characters, not bytes;
    --  UTF-8 may encode one character as multiple bytes.
+   --
+   --  If the Line_Number is an existing line but the Char_Offset is past
+   --  the last offset, the iter pointing at the beginning of the line is
+   --  returned.
+   --  If the Line_Number is not valid, the behavior is undetermined.
 
    procedure Get_Iter_At_Line_Index
      (Buffer      : access Gtk_Text_Buffer_Record;
