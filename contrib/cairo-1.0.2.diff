@@ -22,3 +22,16 @@
      break;
    }
    return TRUE;
+--- pixman/src/pixman.h.old	2006-02-22 16:35:38.000000000 +0100
++++ pixman/src/pixman.h	2006-02-22 17:02:14.000000000 +0100
+@@ -98,6 +98,10 @@
+ # include <stdint.h>
+ #endif
+ 
++#ifdef __hpux__
++#include <sys/types.h>
++#endif
++
+ #include "pixman-remap.h"
+ 
+ #if defined(__cplusplus) || defined(c_plusplus)
