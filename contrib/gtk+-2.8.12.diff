@@ -14,6 +14,7 @@
 	* gtk/gtktextbtree.c, gtk/gtktextiter.c: Remove some function calls
 	when assertions are disabled.
 	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=332059
+	Committed on 2006-02-22
 
 --- gtk/gtktextview.c.old	2006-02-17 16:11:04.000000000 +0100
 +++ gtk/gtktextview.c	2006-02-20 17:08:54.691581240 +0100
