@@ -1,3 +1,8 @@
+2006-02-23	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/x11/gdkasync.c: #define ANSICPP on Solaris, to work around
+	bug in X11/Xmd.h on Solaris 8.
+
 2006-01-04	Arnaud Charlet	<charlet@adacore.com>
 
 	* gtk/gtktextview.c (gtk_text_view_start_selection_dnd): Disabled,
@@ -94,3 +99,17 @@
  #endif
  
  /**
+--- gdk/x11/gdkasync.c.old	Thu Feb 23 11:30:46 2006
++++ gdk/x11/gdkasync.c	Thu Feb 23 11:48:14 2006
+@@ -47,6 +47,11 @@ in this Software without prior written a
+ #ifdef NEED_XIPROTO_H_FOR_XREPLY
+ #include <X11/extensions/XIproto.h>
+ #endif
++
++#if defined (sun) && defined (__SVR4)
++#define ANSICPP
++#endif
++
+ #include <X11/Xlibint.h>
+ #include "gdkasync.h"
+ #include "gdkx.h"
