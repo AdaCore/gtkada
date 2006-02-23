@@ -1,3 +1,11 @@
+2006-02-22  Arnaud Charlet  <charlet@adacore.com>
+
+	* src/cairo-win32-surface.c: Fix build failure under Win32
+	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=6015
+
+	* pixman/src/pixman.h: Fix build failure on ia64 hpux
+	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=6016
+
 --- src/cairo-win32-surface.c.old	2005-10-03 21:44:43.000000000 +0100
 +++ src/cairo-win32-surface.c	2006-02-20 14:40:30.000000000 +0100
 @@ -1062,6 +1062,7 @@
