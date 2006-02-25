@@ -6,8 +6,8 @@ Contents
 pkgconfig-0.14.0.diff: a patch against pkgconfig-0.14.0 needed with some
 non gcc compilers (e.g. SGI cc).
 
-glib-2.8.6-win32.diff: a patch against Glib 2.8.6 sources needed to build Glib
-under Windows.
+glib-2.10.0-win32.diff: a patch against Glib 2.10.0 sources needed to build
+Glib under Windows.
 
 pango-1.2.5.diff: a patch against pango 1.2.5 sources to ease distributing
 gtk+ executables with no pango install.
@@ -19,10 +19,10 @@ pango-1.10.3.diff: a patch against pango 1.10.3 sources
 
 gtk+-2.2.4.diff: a patch against Gtk+ 2.2.4 sources
 
-gtk+-2.8.12.diff: a patch against Gtk+ 2.8.12 sources containing some
+gtk+-2.8.13.diff: a patch against Gtk+ 2.8.13 sources containing some
 improvements/fixes not submitted yet.
 
-gtk+-2.8.12-win32.diff: a patch against Gtk+ 2.8.12 sources needed to build
+gtk+-2.8.13-win32.diff: a patch against Gtk+ 2.8.13 sources needed to build
 Gtk+ under Windows.
 
 gtkada-2.2-win32.diff: a patch to run GtkAda 2.2.x properly under Windows
