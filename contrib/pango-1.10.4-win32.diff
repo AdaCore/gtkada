@@ -48,27 +48,27 @@ Thu Dec 06 2004  Arnaud Charlet  <charlet@adacore.com>
    if (!win32font->hfont)
      {
        cache = pango_win32_font_map_get_font_cache (win32font->fontmap);
---- pango/pangowin32-fontmap.c.orig	Tue Sep 14 02:21:37 2004
-+++ pango/pangowin32-fontmap.c	Mon Oct 11 11:56:19 2004
-@@ -179,7 +179,21 @@
+--- pango/pangowin32-fontmap.c.old	2006-02-27 08:32:44.000000000 +0100
++++ pango/pangowin32-fontmap.c	2006-02-27 08:34:50.000000000 +0100
+@@ -133,7 +133,21 @@ pango_win32_inner_enum_proc (LOGFONT    
     * Asian fonts with @ prepended to their name, ignore them.
     */
    if (lfp->lfFaceName[0] != '@')
--    pango_win32_insert_font (fontmap, lfp);
+-    pango_win32_insert_font (win32fontmap, lfp);
 +    {
 +      /* Bold and italic variants can always (?) be simulated,
 +       * so insert them.
 +       */
 +      lfp->lfItalic = 0;
 +      lfp->lfWeight = FW_NORMAL;
-+      pango_win32_insert_font (fontmap, lfp); /* normal */
++      pango_win32_insert_font (win32fontmap, lfp); /* normal */
 +      lfp->lfItalic = 1;
-+      pango_win32_insert_font (fontmap, lfp); /* italic */
++      pango_win32_insert_font (win32fontmap, lfp); /* italic */
 +      lfp->lfItalic = 0;
 +      lfp->lfWeight = FW_BOLD;
-+      pango_win32_insert_font (fontmap, lfp); /* bold */
++      pango_win32_insert_font (win32fontmap, lfp); /* bold */
 +      lfp->lfItalic = 1;
-+      pango_win32_insert_font (fontmap, lfp); /* bold+italic */
++      pango_win32_insert_font (win32fontmap, lfp); /* bold+italic */
 +    }
  
    return 1;
