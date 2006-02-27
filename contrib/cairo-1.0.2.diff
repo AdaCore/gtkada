@@ -1,3 +1,8 @@
+2006-02-27  Arnaud Charlet  <charlet@adacore.com>
+
+	* src/cairoint.h, pixman/src/slim_internal.h: Fix build failure on
+	Solaris with GCC 3.x
+
 2006-02-22  Arnaud Charlet  <charlet@adacore.com>
 
 	* src/cairo-win32-surface.c: Fix build failure under Win32
@@ -41,3 +46,25 @@
  #else
  # include <stdint.h>
  #endif
+--- src/cairoint.h.old	Mon Feb 27 14:27:41 2006
++++ src/cairoint.h	Mon Feb 27 14:45:52 2006
+@@ -94,7 +94,7 @@
+ #endif
+ 
+ /* slim_internal.h */
+-#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)) && defined(__ELF__)
++#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)) && defined(__ELF__) && !defined (sun)
+ #define cairo_private		__attribute__((__visibility__("hidden")))
+ #else
+ #define cairo_private
+--- pixman/src/slim_internal.h.old	Mon Feb 27 14:29:28 2006
++++ pixman/src/slim_internal.h	Mon Feb 27 14:46:26 2006
+@@ -47,7 +47,7 @@
+ /* ??? Not marked with "slim" because that makes it look too much
+    like the function name instead of just an attribute.  */
+ 
+-#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)) && defined(__ELF__)
++#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)) && defined(__ELF__) && !defined (sun)
+ #define pixman_private	__attribute__((__visibility__("hidden")))
+ #else
+ #define pixman_private
