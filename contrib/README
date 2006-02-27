@@ -12,10 +12,10 @@ Glib under Windows.
 pango-1.2.5.diff: a patch against pango 1.2.5 sources to ease distributing
 gtk+ executables with no pango install.
 
-pango-1.10.3-win32.diff: a patch against pango 1.10.3 sources needed to build
+pango-1.10.4-win32.diff: a patch against pango 1.10.4 sources needed to build
 pango under Windows.
 
-pango-1.10.3.diff: a patch against pango 1.10.3 sources
+pango-1.10.4.diff: a patch against pango 1.10.4 sources
 
 gtk+-2.2.4.diff: a patch against Gtk+ 2.2.4 sources
 
