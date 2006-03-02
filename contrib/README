@@ -3,11 +3,11 @@ This directory contains various contributions or updates for GtkAda.
 Contents
 ========
 
-pkgconfig-0.14.0.diff: a patch against pkgconfig-0.14.0 needed with some
-non gcc compilers (e.g. SGI cc).
-
 glib-2.8.6-win32.diff: a patch against Glib 2.8.6 sources needed to build
 Glib under Windows.
+
+glib-2.8.6-aix.diff: a patch against Glib 2.8.6 sources needed to build
+Glib under AiX.
 
 pango-1.2.5.diff: a patch against pango 1.2.5 sources to ease distributing
 gtk+ executables with no pango install.
