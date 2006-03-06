@@ -9,7 +9,7 @@
 * GtkAda_Ug: (gtkada_ug).           Ada95 graphical tookit based on GTK+ (User's Guide)
 @end direntry 
 
-@set GtkAdaVersion 2.4.3
+@set GtkAdaVersion 2.8.0
 
 @titlepage
 
@@ -175,9 +175,8 @@ If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
 we can add to the above list.
 
-This version of GtkAda is known to be compatible with @code{gtk+} @b{2.2.1}
-through @b{2.4.4}.
-This release is no longer compatible with older versions of gtk+.
+This version of GtkAda is known to be compatible with @code{gtk+} @b{2.8.x}.
+This release may or may not be compatible with older versions of gtk+.
 
 This version of GtkAda is compatible with @code{Glade} @b{version
 2.0.0}.  Due to some modification in the output format of Glade, this
@@ -198,9 +197,8 @@ information that you might find interesting.
 
 If you are interested in getting support for GtkAda (including priority
 bug fixes, early releases, help in using the toolkit, help in designing
-your interface, on site consulting@dots{}), please contact ACT Europe
-(@uref{mailto:sales@@act-europe.fr}) or Ada Core
-Technologies (@uref{mailto:sales@@gnat.com}).
+your interface, on site consulting@dots{}), please contact AdaCore
+(@uref{mailto:sales@@adacore.com}).
 
 @c --------------------------------------------------------------------
 @node Getting started with GtkAda
