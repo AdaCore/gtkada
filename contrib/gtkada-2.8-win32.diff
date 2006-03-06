@@ -1,0 +1,25 @@
+Tue Jul  9 11:48:58 2002  Arnaud Charlet  <charlet@gnat.com>
+
+	* glib-values.ads: Fix definition of GValue to conform to ms bitfields
+	packing under Windows.
+
+*** glib-values.ads	4 Sep 2002 14:47:59 -0000	1.13
+--- glib-values.ads	8 Nov 2002 11:49:02 -0000
+***************
+*** 136,142 ****
+     --  also provided inside Gtk.Text_Iter.
+  
+  private
+!    type GValue_Data is array (1 .. 2) of Guint64;
+     type GValue is record
+        g_type : GType := GType_Invalid;
+        data   : GValue_Data;
+--- 136,143 ----
+     --  also provided inside Gtk.Text_Iter.
+  
+  private
+! 
+!    type GValue_Data is array (1 .. 20) of Guint8;
+     type GValue is record
+        g_type : GType := GType_Invalid;
+        data   : GValue_Data;
