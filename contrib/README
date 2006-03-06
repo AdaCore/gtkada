@@ -25,7 +25,7 @@ improvements/fixes not submitted yet.
 gtk+-2.8.13-win32.diff: a patch against Gtk+ 2.8.13 sources needed to build
 Gtk+ under Windows.
 
-gtkada-2.2-win32.diff: a patch to run GtkAda 2.2.x properly under Windows
+gtkada-2.8-win32.diff: a patch to build GtkAda 2.8.x under Windows
 
 glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
 
