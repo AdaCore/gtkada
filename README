@@ -19,34 +19,28 @@ The home page for GtkAda is
 The home page for gtk is
     
      http://www.gtk.org
-     
+
 This home page will always contain the latest news for this toolkit.
 
-This is GtkAda version 2.4.1. This package is an Ada95 graphical library
+This is GtkAda version 2.8.0. This package is an Ada95 graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
-to easily create some graphical interfaces under X11 and Win32, using Ada95
-as a programming language.
+to easily create some graphical interfaces under X11 and Win32, using Ada
+as the programming language.
 
-Every widget from gtk 2.2 has been bound, and the test
-program found in the gtk release has been reimplemented in Ada (have a
-look at the testgtk/ directory).
-     
-These functions were tested on the following systems:
-   - Linux/x86
+This library has been tested using Gtk+ 2.8.13 on the following systems:
+
+   - GNU Linux/x86
+   - GNU Linux/x86-64
+   - GNU Linux/ia64
    - Solaris/sparc
-   - Windows NT/2000/XP
+   - Solaris/x86
+   - Windows XP
+   - AIX
    - IRIX
-   - HP-UX
+   - HP-UX/pa
+   - HP-UX/ia64
    - Tru64
-   - Mac OS
-
-using the following compilers:
-   - GNAT 5.03
-   - GCC 3.4.2
-
-and the following versions of gtk:
-   - Gtk+ 2.2.4
-   - Gtk+ 2.4.13
+   - Mac OS X
 
 If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
