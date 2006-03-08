@@ -4038,16 +4038,6 @@ ada_gdk_get_window_id (GdkWindow *w)
 
 #endif
 
-PangoUnderline
-ada_pango_underline_error (void)
-{
-#ifdef HAVE_PANGO_UNDERLINE_ERROR
-  return PANGO_UNDERLINE_ERROR;
-#else
-  return PANGO_UNDERLINE_SINGLE;
-#endif
-}
-
 /******************************************
  ** Handling of tree Freeze/Thaw         **
  ******************************************/
