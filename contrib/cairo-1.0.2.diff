@@ -8,7 +8,7 @@
 	* src/cairo-win32-surface.c: Fix build failure under Win32
 	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=6015
 
-	* pixman/src/pixman.h: Fix build failures on ia64/pa hpux
+	* pixman/src/pixman.h: Fix build failures on ia64/pa hpux and tru64
 	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=6016
 
 --- src/cairo-win32-surface.c.old	2005-10-03 21:44:43.000000000 +0100
@@ -37,12 +37,14 @@
    return TRUE;
 --- pixman/src/pixman.h.orig	Mon Feb 27 11:08:33 2006
 +++ pixman/src/pixman.h	Mon Feb 27 11:08:11 2006
-@@ -94,6 +94,8 @@ SOFTWARE.
+@@ -94,6 +94,10 @@ SOFTWARE.
    typedef unsigned __int32 uint32_t;
    typedef __int64 int64_t;
    typedef unsigned __int64 uint64_t;
 +#elif defined (__hpux__)
 +#include <sys/types.h>
++#elif defined (__osf__)
++#include <inttypes.h>
  #else
  # include <stdint.h>
  #endif
