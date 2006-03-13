@@ -9,45 +9,6 @@ Fri Jun 17 2005  Arnaud Charlet  <charlet@adacore.com>
 	http://bugzilla.gnome.org/show_bug.cgi?id=110521
 	Fix E607-006
 
-Thu Dec 06 2004  Arnaud Charlet  <charlet@adacore.com>
-
-	* pango/glyphstring.c, pango/pangowin32.c: Avoid dereferencing null
-	font.
-	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=331996
-	Committed on Feb 21 2006
-
---- pango/glyphstring.c.old	2004-12-06 17:35:56.000000000 +0100
-+++ pango/glyphstring.c	2004-12-06 17:36:28.000000000 +0100
-@@ -184,6 +184,9 @@ pango_glyph_string_extents_range (PangoG
-       
-       PangoGlyphGeometry *geometry = &glyphs->glyphs[i].geometry;
- 
-+      if (font == NULL)
-+	goto skip_font;
-+
-       pango_font_get_glyph_extents (font, glyphs->glyphs[i].glyph,
- 				    ink_rect ? &glyph_ink : NULL,
- 				    logical_rect ? &glyph_logical : NULL);
-@@ -231,6 +234,7 @@ pango_glyph_string_extents_range (PangoG
- 	    }
- 	}
- 
-+skip_font:
-       x_pos += geometry->width;
-     }
- }
---- pango/pangowin32.c.old	2004-12-06 17:43:37.000000000 +0100
-+++ pango/pangowin32.c	2004-12-06 17:44:23.000000000 +0100
-@@ -87,6 +87,9 @@ pango_win32_get_hfont (PangoFont *font)
-   PangoWin32FontCache *cache;
-   TEXTMETRIC tm;
- 
-+  if (!win32font)
-+    return NULL;
-+
-   if (!win32font->hfont)
-     {
-       cache = pango_win32_font_map_get_font_cache (win32font->fontmap);
 --- pango/pangowin32-fontmap.c.old	2006-02-27 08:32:44.000000000 +0100
 +++ pango/pangowin32-fontmap.c	2006-02-27 08:34:50.000000000 +0100
 @@ -133,7 +133,21 @@ pango_win32_inner_enum_proc (LOGFONT    
