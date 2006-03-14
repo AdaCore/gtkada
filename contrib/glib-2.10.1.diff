@@ -15,10 +15,11 @@
  gint
  g_atomic_int_exchange_and_add (volatile gint *atomic,
  			       gint           val)
-@@ -424,6 +432,12 @@ g_atomic_int_add (volatile gint *atomic,
+@@ -424,6 +432,13 @@ g_atomic_int_add (volatile gint *atomic,
    __sync_fetch_and_add (atomic, val);
  }
  
++extern int __sync_bool_compare_and_swap_si (int *, int, int);
 +extern int __sync_bool_compare_and_swap_di (long *, long, long);
 +#define __sync_bool_compare_and_swap(PTR, OLD, NEW)                     \
 + ((sizeof (*(PTR)) == sizeof(int))                                      \
