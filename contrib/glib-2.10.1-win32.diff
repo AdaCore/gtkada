@@ -9,3 +9,14 @@
  
  # target platform:
  libgobjectinclude_HEADERS = $(gobject_target_headers)
+--- tests/gobject/Makefile.in.old	2006-03-13 12:09:02.062400000 +0100
++++ tests/gobject/Makefile.in	2006-03-13 12:09:26.096960000 +0100
+@@ -260,7 +260,7 @@ libtestgobject_la_SOURCES = \
+ 
+ 
+ @CROSS_COMPILING_TRUE@glib_genmarshal = $(GLIB_GENMARSHAL)
+-@CROSS_COMPILING_FALSE@glib_genmarshal = $(top_builddir)/gobject/glib-genmarshal
++@CROSS_COMPILING_FALSE@glib_genmarshal = $(top_builddir)/gobject/glib-genmarshal.
+ 
+ BUILT_SOURCES = testmarshal.h testmarshal.c
+ CLEANFILES = stamp-testmarshal.h

@@ -1,7 +1,6 @@
-Tue Feb 21 2006  Arnaud Charlet  <charlet@adacore.com>
+Mon Mar 13 2006  Arnaud Charlet  <charlet@adacore.com>
 
-	* tests/Makefile.in, examples/Makefile.in: Work around cygwin/libtool
-	limitation.
+	* modules/Makefile.in: work around cygwin limitation.
 
 Fri Jun 17 2005  Arnaud Charlet  <charlet@adacore.com>
 
@@ -34,25 +33,27 @@ Fri Jun 17 2005  Arnaud Charlet  <charlet@adacore.com>
  
    return 1;
  }
---- tests/Makefile.in.old	2006-02-21 09:11:07.000000000 +0100
-+++ tests/Makefile.in	2006-02-21 09:11:14.000000000 +0100
-@@ -790,7 +790,7 @@ pango.modules:
- 	if find ../modules -name '*.so' | grep 'so' > /dev/null ; then \
-           echo "Writing a pango.modules file to use when running tests before installing Pango."; \
- 	  (cd ../modules && \
--           ../pango/pango-querymodules `find . -name '*.la' | grep -v \.libs` > ../tests/pango.modules ) ;\
-+           ../pango/pango-querymodules. `find . -name '*.la' | grep -v \.libs` > ../tests/pango.modules ) ;\
+--- modules/Makefile.in.old	2006-03-13 12:37:32.642092800 +0100
++++ modules/Makefile.in	2006-03-13 12:38:25.648312000 +0100
+@@ -606,10 +606,10 @@ uninstall-info: uninstall-info-recursive
+ install-data-local: $(top_builddir)/pango/pango-querymodules
+ 	@if $(RUN_QUERY_MODULES_TEST) ; then 				\
+ 	  echo $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/pango \&\& 	\
+-	  $(top_builddir)/pango/pango-querymodules 			\
++	  $(top_builddir)/pango/pango-querymodules. 			\
+ 		\> $(DESTDIR)$(sysconfdir)/pango/pango.modules ;	\
+ 	  $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/pango && 		\
+-	  $(top_builddir)/pango/pango-querymodules 			\
++	  $(top_builddir)/pango/pango-querymodules. 			\
+ 		> $(DESTDIR)$(sysconfdir)/pango/pango.modules ;		\
+ 	else								\
+ 	  echo "***" ; 							\
+@@ -626,7 +626,7 @@ uninstall-local:
+ pango.modules: $(top_builddir)/pango/pango-querymodules $(SUBDIRS)
+ 	@if find . -name '*.so' | grep 'so' > /dev/null ; then \
+           echo "Writing a pango.modules file to use with tests/examples."; \
+-          $(top_builddir)/pango/pango-querymodules `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
++          $(top_builddir)/pango/pango-querymodules. `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
  	else \
-           echo "No dynamic modules found; will use only static modules for uninstalled test programs."; \
- 	  touch pango.modules; \
---- examples/Makefile.in.old	2006-02-21 09:10:34.000000000 +0100
-+++ examples/Makefile.in	2006-02-21 09:10:43.000000000 +0100
-@@ -725,7 +725,7 @@ pango.modules: $(top_builddir)/pango/pan
- 	if find ../modules -name '*.so' | grep 'so' > /dev/null ; then \
-           echo "Writing a pango.modules file to use when running examples before installing Pango."; \
- 	  (cd ../modules && \
--           $(top_builddir)/pango/pango-querymodules `find . -name '*.la' | grep -v \.libs` > ../examples/pango.modules ) ;\
-+           $(top_builddir)/pango/pango-querymodules. `find . -name '*.la' | grep -v \.libs` > ../examples/pango.modules ) ;\
- 	else \
-           echo "No dynamic modules found; will use only static modules for uninstalled example programs."; \
- 	  touch pango.modules; \
+           echo "No dynamic modules found; will use only static modules for tests/examples."; \
+ 	  touch $@; \
