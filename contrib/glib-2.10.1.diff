@@ -1,0 +1,29 @@
+--- glib/gatomic.c.old	2006-03-14 02:40:47.403133764 -0500
++++ glib/gatomic.c	2006-03-14 02:37:53.037039136 -0500
+@@ -411,6 +411,13 @@ g_atomic_pointer_compare_and_exchange (v
+ /* Adapted from CVS version 1.8 of glibc's sysdeps/ia64/bits/atomic.h
+  */
+ 
++extern int __sync_fetch_and_add_si (int *, int);
++extern long __sync_fetch_and_add_di (long *, long);
++#define __sync_fetch_and_add(PTR,VAL)                                   \
++ ((sizeof (*(PTR)) == sizeof(int))                                      \
++   ? (__typeof__(*(PTR))) __sync_fetch_and_add_si((int *)(PTR),(int)(VAL)) \
++     : (__typeof__(*(PTR))) __sync_fetch_and_add_di((long *)(PTR),(long)(VAL)))
++
+ gint
+ g_atomic_int_exchange_and_add (volatile gint *atomic,
+ 			       gint           val)
+@@ -425,6 +432,12 @@ g_atomic_int_add (volatile gint *atomic,
+   __sync_fetch_and_add (atomic, val);
+ }
+ 
++extern int __sync_bool_compare_and_swap_di (long *, long, long);
++#define __sync_bool_compare_and_swap(PTR, OLD, NEW)                     \
++ ((sizeof (*(PTR)) == sizeof(int))                                      \
++   ? __sync_bool_compare_and_swap_si((int *)(PTR),(int)(OLD),(int)(NEW)) \
++     : __sync_bool_compare_and_swap_di((long *)(PTR),(long)(OLD),(long)(NEW)))
++
+ gboolean
+ g_atomic_int_compare_and_exchange (volatile gint *atomic,
+ 				   gint           oldval, 
