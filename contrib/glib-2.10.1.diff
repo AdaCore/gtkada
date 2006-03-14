@@ -1,9 +1,10 @@
---- glib/gatomic.c.old	2006-03-14 02:40:47.403133764 -0500
-+++ glib/gatomic.c	2006-03-14 02:37:53.037039136 -0500
-@@ -411,6 +411,13 @@ g_atomic_pointer_compare_and_exchange (v
+--- gatomic.c.orig	2005-12-17 07:20:50.000000000 -0500
++++ gatomic.c	2006-03-14 03:09:49.415176530 -0500
+@@ -410,6 +410,14 @@ g_atomic_pointer_compare_and_exchange (v
+ # elif defined (G_ATOMIC_IA64)
  /* Adapted from CVS version 1.8 of glibc's sysdeps/ia64/bits/atomic.h
   */
- 
++
 +extern int __sync_fetch_and_add_si (int *, int);
 +extern long __sync_fetch_and_add_di (long *, long);
 +#define __sync_fetch_and_add(PTR,VAL)                                   \
@@ -14,7 +15,7 @@
  gint
  g_atomic_int_exchange_and_add (volatile gint *atomic,
  			       gint           val)
-@@ -425,6 +432,12 @@ g_atomic_int_add (volatile gint *atomic,
+@@ -424,6 +432,12 @@ g_atomic_int_add (volatile gint *atomic,
    __sync_fetch_and_add (atomic, val);
  }
  
