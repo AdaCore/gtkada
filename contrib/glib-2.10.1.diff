@@ -1,5 +1,5 @@
---- gatomic.c.orig	2005-12-17 07:20:50.000000000 -0500
-+++ gatomic.c	2006-03-14 03:09:49.415176530 -0500
+--- glib/gatomic.c.orig	2005-12-17 07:20:50.000000000 -0500
++++ glib/gatomic.c	2006-03-14 03:09:49.415176530 -0500
 @@ -410,6 +410,14 @@ g_atomic_pointer_compare_and_exchange (v
  # elif defined (G_ATOMIC_IA64)
  /* Adapted from CVS version 1.8 of glibc's sysdeps/ia64/bits/atomic.h
