@@ -24,7 +24,7 @@
 
 Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright @copyright{} 2000-2005, AdaCore
+Copyright @copyright{} 2000-2006, AdaCore
 
 This document may be copied, in whole or in part, in any form or by any
 means, as is or with alterations, provided that (1) alterations are clearly
@@ -144,36 +144,22 @@ packages for @code{GtkAda}, @code{gtk+} and @code{Glade}.
      
 
 The scheme used for GtkAda's version numbers is the following: the major
-version number is the same as for the underlying gtk+ library (e.g 1.2
-or 1.3). Thus, stable versions of GtkAda will have even major numbers,
-and development versions (potentially less stable, although we are
-trying to make sure that no big problem exists in those versions) will
-have odd version numbers. The minor version numbers depends on GtkAda's
-release number.
-
-This documentation is distributed with GtkAda @b{version
-@value{GtkAdaVersion}}. At this stage, every widget found in @w{gtk+
-2.2} has been implemented, and the test program found in the gtk release
-has been fully coded in Ada (have a look at the @code{testgtk/}
-directory in the distribution).
+and minor version number is the same as for the underlying gtk+ library
+(e.g 2.8 or 2.10).
+The micro version number depends on GtkAda's release number.
 
 This toolkit was tested on the following systems:
 @itemize @bullet
 @item GNU Linux/x86
+@item GNU Linux/x86-64
 @item Solaris/sparc
-@item Tru64
 @item HP/UX
-@item NT 4.0
-@item Windows 2000
+@item Tru64
 @item Windows XP
 @end itemize
 
 with the latest version of the @code{GNAT} compiler, developed and supported by
-Ada Core Technologies (see @uref{http://www.gnat.com}).
-
-If you manage to use it on other systems (which should probably be
-straightforward - just recompile GtkAda), please let us know so that
-we can add to the above list.
+Ada Core Technologies (see @uref{http://www.adacore.com}).
 
 This version of GtkAda is known to be compatible with @code{gtk+} @b{2.8.x}.
 This release may or may not be compatible with older versions of gtk+.
@@ -235,12 +221,9 @@ skip this section.
 
 On Unix systems, you first need to install the glib and gtk+
 libraries. Download the compatible packages from the gtk+ web site
-(@url{http://www.gtk.org}, compile and install it.  When compiling glib,
-make sure that the support for multithreading is enabled (this is the
-default, and can be enforced with the @code{--enable-threads} and
-@code{--with-threads} command line switches.
+(@url{http://www.gtk.org}, compile and install it.
 
-Change your PATH environment variable so that the script @code{gtk-config},
+Change your PATH environment variable so that the script @code{pkg-config},
 which indicates where gtk+ was installed and what libraries it needs is
 automatically found by GtkAda. You will no longer need this script once
 GtkAda is installed, unless you develop part of your application in C.
@@ -282,6 +265,17 @@ would do one of the following:
 @item modify your @code{LD_LIBRARY_PATH} environment variable if you are
   not super-user. You should simply add the path to libgtkada.
 @end itemize
+
+In addition, if you are using precompiled Gtk+ binary packages, you will
+also need to set the FONTCONFIG_FILE environment variable to point to
+the @file{prefix/etc/fonts/fonts.conf} file of your binary installation.
+
+For example, assuming you have installed Gtk+ under @file{/opt/gtk} and
+using bash:
+
+@smallexample
+$ export FONTCONFIG_FILE=/opt/gtk/etc/fonts/fonts.conf
+@end smallexample
 
 @c ----------------------------------------------------------------------
 @node Organization of the GtkAda package
