@@ -111,6 +111,19 @@ package Glib.Object is
       Data   : System.Address := System.Null_Address);
    --  Cancels the settings of Weak_Ref.
 
+   procedure Deallocate (Object : access GObject_Record);
+   --  This operation is used to deallocate Object.
+   --  The default implementation assumes that the value passed in is an
+   --  access value created by an allocator of the default pool, i.e. it
+   --  will assume that an instance of
+   --  Unchecked_Deallocation (GObject_Record'Class, GObject)
+   --  can be used to deallocate the designated object.
+   --  Types derived of GObject_Record can override this operation in order
+   --  to cope with objects allocated on other pools or even objects allocated
+   --  on the stack.
+   --  This design is limited to support only one allocation strategy for each
+   --  class, as the class tag is used to identify the applicable strategy.
+
    ------------------------
    -- Interfacing with C --
    ------------------------

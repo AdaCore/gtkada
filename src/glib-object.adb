@@ -35,7 +35,7 @@ with Gtkada.Types; use Gtkada.Types;
 
 package body Glib.Object is
 
-   procedure Free_User_Data (Data : in System.Address);
+   procedure Free_User_Data (Data : System.Address);
    --  Free the user data Data. This function should not be called directly
 
    procedure Set_User_Data
@@ -44,6 +44,20 @@ package body Glib.Object is
       Data    : System.Address;
       Destroy : System.Address);
    pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
+
+   ----------------
+   -- Deallocate --
+   ----------------
+
+   procedure Deallocate (Object : access GObject_Record) is
+      procedure Free is new Unchecked_Deallocation
+        (GObject_Record'Class, GObject);
+
+      Obj : GObject := GObject (Object);
+
+   begin
+      Free (Obj);
+   end Deallocate;
 
    -------------------------
    -- Conversion_Function --
@@ -82,18 +96,14 @@ package body Glib.Object is
    -- Free_User_Data --
    --------------------
 
-   procedure Free_User_Data (Data : in System.Address) is
+   procedure Free_User_Data (Data : System.Address) is
       pragma Warnings (Off);
       --  This UC is safe aliasing-wise, so kill warning
       function Convert is new Unchecked_Conversion (System.Address, GObject);
       pragma Warnings (On);
 
-      procedure Free is new Unchecked_Deallocation
-        (GObject_Record'Class, GObject);
-
-      Obj : GObject := Convert (Data);
    begin
-      Free (Obj);
+      Deallocate (Convert (Data));
    end Free_User_Data;
 
    -----------
@@ -269,7 +279,6 @@ package body Glib.Object is
      (Obj  : access GObject_Record'Class;
       Stub : GObject_Record'Class) return GObject
    is
-      Object : GObject := GObject (Obj);
       Result : constant GObject := new GObject_Record'Class'(Stub);
 
       procedure Set_User_Data
@@ -279,14 +288,11 @@ package body Glib.Object is
          Destroy : System.Address);
       pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
 
-      procedure Free is new Unchecked_Deallocation
-        (GObject_Record'Class, GObject);
-
    begin
       Result.Ptr := Obj.Ptr;
       Set_User_Data
         (Obj.Ptr, GtkAda_String_Quark, Result, Free_User_Data'Address);
-      Free (Object);
+      Deallocate (Obj);
       return Result;
    end Unchecked_Cast;
 
