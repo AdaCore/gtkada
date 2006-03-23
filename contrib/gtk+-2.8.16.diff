@@ -1,3 +1,9 @@
+2006-03-23	Nicolas Setton  <setton@adacore.com>
+	* gtk/gtktextview.c (gtk_text_view_value_changed): Do not invalidate
+	the window if the view is not realized.
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=335717
+        For F323-006.
+
 2006-02-23	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/x11/gdkasync.c: #define ANSICPP on Solaris, to work around
@@ -50,3 +56,24 @@
  #include <X11/Xlibint.h>
  #include "gdkasync.h"
  #include "gdkx.h"
+*** gtk/gtktextview.c.original	Thu Mar 23 18:53:45 2006
+--- gtk/gtktextview.c	Thu Mar 23 18:56:11 2006
+*************** gtk_text_view_value_changed (GtkAdjustme
+*** 6570,6576 ****
+         */
+        if (text_view->width_changed)
+  	{
+! 	  gdk_window_invalidate_rect (text_view->text_window->bin_window, NULL, FALSE);
+  	  
+  	  text_view->width_changed = FALSE;
+  	}
+--- 6570,6578 ----
+         */
+        if (text_view->width_changed)
+  	{
+! 	  /* No need to invalidate the window if the view is not realized.  */
+! 	  if (text_view->text_window->bin_window)
+! 	    gdk_window_invalidate_rect (text_view->text_window->bin_window, NULL, FALSE);
+  	  
+  	  text_view->width_changed = FALSE;
+  	}
