@@ -1,7 +1,16 @@
+2006-04-03	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtkpixmap.c (gtk_pixmap_set): Do not check the depth of a
+	null drawable.
+	Backport patch already present in the Gtk+ CVS.
+	For F324-013.
+
 2006-03-23	Nicolas Setton  <setton@adacore.com>
+	
 	* gtk/gtktextview.c (gtk_text_view_value_changed): Do not invalidate
 	the window if the view is not realized.
-	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=335717
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=335717.
+	Patch has been applied in the Gtk+ CVS.
         For F323-006.
 
 2006-02-23	Arnaud Charlet	<charlet@adacore.com>
@@ -77,3 +86,23 @@
   	  
   	  text_view->width_changed = FALSE;
   	}
+*** gtk/gtkpixmap.c.original	Mon Apr  3 12:44:33 2006
+--- gtk/gtkpixmap.c	Mon Apr  3 12:45:03 2006
+*************** gtk_pixmap_set (GtkPixmap *pixmap,
+*** 131,137 ****
+    gint oldheight;
+  
+    g_return_if_fail (GTK_IS_PIXMAP (pixmap));
+!   g_return_if_fail (gdk_colormap_get_visual (gtk_widget_get_colormap (GTK_WIDGET (pixmap)))->depth == gdk_drawable_get_depth (GDK_DRAWABLE (val)));
+  
+    if (pixmap->pixmap != val)
+      {
+--- 131,138 ----
+    gint oldheight;
+  
+    g_return_if_fail (GTK_IS_PIXMAP (pixmap));
+!   if(GDK_IS_DRAWABLE(val))
+!     g_return_if_fail (gdk_colormap_get_visual (gtk_widget_get_colormap (GTK_WIDGET (pixmap)))->depth == gdk_drawable_get_depth (GDK_DRAWABLE (val)));
+  
+    if (pixmap->pixmap != val)
+      {
