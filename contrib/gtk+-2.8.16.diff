@@ -2,7 +2,8 @@
 
 	* gtk/gtkpixmap.c (gtk_pixmap_set): Do not check the depth of a
 	null drawable.
-	Backport patch already present in the Gtk+ CVS.
+	Backport patch already present in the Gtk+ CVS, including in the
+	gtk-2-8 branch.
 	For F324-013.
 
 2006-03-23	Nicolas Setton  <setton@adacore.com>
