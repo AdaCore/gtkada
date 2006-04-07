@@ -3,13 +3,13 @@ This directory contains various contributions or updates for GtkAda.
 Contents
 ========
 
-glib-2.10.1.diff: a patch against Glib 2.10.1 sources needed to build
+glib-2.10.2.diff: a patch against Glib 2.10.2 sources needed to build
 Glib.
 
-glib-2.10.1-win32.diff: a patch against Glib 2.10.1 sources needed to build
+glib-2.10.2-win32.diff: a patch against Glib 2.10.2 sources needed to build
 Glib under Windows.
 
-pango-1.12.0-win32.diff: a patch against pango 1.12.0 sources needed to build
+pango-1.12.1-win32.diff: a patch against pango 1.12.1 sources needed to build
 pango under Windows.
 
 gtk+-2.8.16.diff: a patch against Gtk+ 2.8.16 sources containing some
