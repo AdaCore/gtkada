@@ -12,10 +12,10 @@ Glib under Windows.
 pango-1.12.1-win32.diff: a patch against pango 1.12.1 sources needed to build
 pango under Windows.
 
-gtk+-2.8.16.diff: a patch against Gtk+ 2.8.16 sources containing some
+gtk+-2.8.17.diff: a patch against Gtk+ 2.8.17 sources containing some
 improvements/fixes not submitted yet.
 
-gtk+-2.8.16-win32.diff: a patch against Gtk+ 2.8.16 sources needed to build
+gtk+-2.8.17-win32.diff: a patch against Gtk+ 2.8.17 sources needed to build
 Gtk+ under Windows.
 
 gtkada-2.8-win32.diff: a patch to build GtkAda 2.8.x under Windows
