@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2004                            --
---                         ACT-Europe                                --
+--                  Copyright (C) 2004 - 2006                        --
+--                          AdaCore                                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -218,5 +218,19 @@ package body Gtk.Icon_Factory is
    begin
       Internal (Source, Pixbuf);
    end Set_Pixbuf;
+
+   -------------------------
+   -- Set_Size_Wildcarded --
+   -------------------------
+
+   procedure Set_Size_Wildcarded
+     (Source     : Gtk_Icon_Source;
+      Wildcarded : Boolean)
+   is
+      procedure Internal (Source : Gtk_Icon_Source; Wildcarded : Gboolean);
+      pragma Import (C, Internal, "gtk_icon_source_set_size_wildcarded");
+   begin
+      Internal (Source, Boolean'Pos (Wildcarded));
+   end Set_Size_Wildcarded;
 
 end Gtk.Icon_Factory;
