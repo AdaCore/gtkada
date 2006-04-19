@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2004                            --
---                         ACT-Europe                                --
+--                  Copyright (C) 2004 - 2006                        --
+--                          AdaCore                                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,6 +32,7 @@
 
 with Glib.Object;
 with Gdk.Pixbuf;
+with Gtk.Enums;
 
 package Gtk.Icon_Factory is
 
@@ -203,6 +204,28 @@ package Gtk.Icon_Factory is
    --  for an icon set. If an icon source has both a filename and a pixbuf
    --  set, the pixbuf will take priority.
 
+   procedure Set_Size
+     (Source : Gtk_Icon_Source;
+      Size   : Gtk.Enums.Gtk_Icon_Size);
+   --  Sets the icon size this icon source is intended to be used with.
+
+   procedure Set_Size_Wildcarded
+     (Source     : Gtk_Icon_Source;
+      Wildcarded : Boolean);
+   --  Change the wilcarded state of the size for the icon source.
+   --
+   --  If the icon size is wildcarded, this source can be used as the base
+   --  image for an icon of any size.  if the size is not wildcarded, then
+   --  the size the source applies to should be set with Set_Size,
+   --  and the icon source will only be used with that specific size.
+   --
+   --  Gtk prefers non-wildcarded sources (exact matches) over wildcarded
+   --  sources, and will use an exact match when possible.
+   --
+   --  Gtk will normally scale wildcarded source images to produce
+   --  an appropriate icon at a given size, but will not change the size
+   --  of source images that match exactly.
+
    -------------
    -- Signals --
    -------------
@@ -216,4 +239,5 @@ private
      new Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_icon_factory_get_type");
+   pragma Import (C, Set_Size, "gtk_icon_source_set_size");
 end Gtk.Icon_Factory;
