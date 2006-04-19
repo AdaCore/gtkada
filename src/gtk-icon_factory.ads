@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2004 - 2006                        --
---                          AdaCore                                  --
+--                    Copyright (C) 2004-2006                        --
+--                            AdaCore                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -194,20 +194,20 @@ package Gtk.Icon_Factory is
    procedure Set_Filename
      (Source   : Gtk_Icon_Source;
       Filename : String);
-   --  Sets the name of an image file to use as a base image when creating
+   --  Set the name of an image file to use as a base image when creating
    --  icon variants for an icon set. The filename must be absolute.
 
    procedure Set_Pixbuf
      (Source : Gtk_Icon_Source;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
-   --  Sets a pixbuf to use as a base image when creating icon variants
+   --  Set a pixbuf to use as a base image when creating icon variants
    --  for an icon set. If an icon source has both a filename and a pixbuf
    --  set, the pixbuf will take priority.
 
    procedure Set_Size
      (Source : Gtk_Icon_Source;
       Size   : Gtk.Enums.Gtk_Icon_Size);
-   --  Sets the icon size this icon source is intended to be used with.
+   --  Set the icon size this icon source is intended to be used with
 
    procedure Set_Size_Wildcarded
      (Source     : Gtk_Icon_Source;
