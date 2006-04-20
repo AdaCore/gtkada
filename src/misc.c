@@ -224,6 +224,25 @@ ada_g_signal_emit_by_name_int_ptr (gpointer     instance,
 }
 
 void
+ada_gtk_list_store_set_ptr (GtkListStore *list_store,
+                            GtkTreeIter  *iter,
+                            gint          col,
+                            void         *val)
+{
+  gtk_list_store_set (list_store, iter, col, val, -1);
+}
+
+
+void
+ada_gtk_list_store_set_int (GtkListStore *list_store,
+                            GtkTreeIter  *iter,
+                            gint          col,
+                            gint          val)
+{
+  gtk_list_store_set (list_store, iter, col, val, -1);
+}
+
+void
 ada_gtk_tree_store_set_ptr (GtkTreeStore *tree_store,
 			    GtkTreeIter  *iter,
 			    gint          col,
