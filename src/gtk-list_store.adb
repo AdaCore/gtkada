@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                      Copyright (C) 2001-2006                      --
+--                               AdaCore                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -99,6 +100,48 @@ package body Gtk.List_Store is
    begin
       Internal (Get_Object (List_Store), Iter, Column, Value);
    end Set_Value;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : UTF8_String)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : UTF8_String);
+      pragma Import (C, Internal, "ada_gtk_list_store_set_ptr");
+
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value & ASCII.NUL);
+   end Set;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gint)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gint);
+      pragma Import (C, Internal, "ada_gtk_list_store_set_int");
+
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+   end Set;
 
    ------------
    -- Remove --

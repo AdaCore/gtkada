@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                      Copyright (C) 2001-2006                      --
+--                               AdaCore                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -63,6 +64,20 @@ package Gtk.List_Store is
       Value      : Glib.Values.GValue);
    --  Set the data in the cell specified by Iter and Column.
    --  The type of Value must be convertible to the type of the column.
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : UTF8_String);
+   --  Same as above, for an UTF8 string.
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gint);
+   --  Same as above, for a Gint.
 
    procedure Remove
      (List_Store : access Gtk_List_Store_Record;
