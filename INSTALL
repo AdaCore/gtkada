@@ -52,3 +52,4 @@ gtkada-config script:
 
 This will automatically submit the correct paths to gnatmake so that
 the gtk and gtkada libraries are found.
+
