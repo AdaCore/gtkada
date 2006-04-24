@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-1999 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -88,7 +88,7 @@ package body Gdk.Main is
    function Keyboard_Grab
      (Window       : Gdk.Window.Gdk_Window;
       Owner_Events : Boolean := True;
-      Time         : Guint32) return Gdk_Grab_Status
+      Time         : Guint32 := 0) return Gdk_Grab_Status
    is
       function Internal
          (Window       : Gdk.Window.Gdk_Window;
@@ -105,7 +105,7 @@ package body Gdk.Main is
    -- Keyboard_Ungrab --
    ---------------------
 
-   procedure Keyboard_Ungrab (Time : Guint32) is
+   procedure Keyboard_Ungrab (Time : Guint32 := 0) is
       procedure Internal (Time : Guint32);
       pragma Import (C, Internal, "gdk_keyboard_ungrab");
 
@@ -123,7 +123,7 @@ package body Gdk.Main is
       Event_Mask   : Gdk.Event.Gdk_Event_Mask;
       Confine_To   : Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
       Cursor       : Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
-      Time         : Guint32) return Gdk_Grab_Status
+      Time         : Guint32 := 0) return Gdk_Grab_Status
    is
       function Internal
         (Window       : Gdk.Window.Gdk_Window;
@@ -161,7 +161,7 @@ package body Gdk.Main is
    -- Pointer_Ungrab --
    --------------------
 
-   procedure Pointer_Ungrab (Time : Guint32) is
+   procedure Pointer_Ungrab (Time : Guint32 := 0) is
       procedure Internal (Time : Guint32);
       pragma Import (C, Internal, "gdk_pointer_ungrab");
 

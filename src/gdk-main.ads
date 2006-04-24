@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -71,11 +71,12 @@ package Gdk.Main is
    function Get_Display return String;
    --  Return the name of the display.
 
-   type Gdk_Grab_Status is (Grab_Success,
-                            Grab_Already_Grabbed,
-                            Gdk_Grab_Invalid_Time,
-                            Gdk_Grab_Not_Viewable,
-                            Gdk_Grab_Frozen);
+   type Gdk_Grab_Status is
+     (Grab_Success,
+      Grab_Already_Grabbed,
+      Gdk_Grab_Invalid_Time,
+      Gdk_Grab_Not_Viewable,
+      Gdk_Grab_Frozen);
 
    function Pointer_Grab
      (Window       : Gdk.Window.Gdk_Window;
@@ -83,7 +84,7 @@ package Gdk.Main is
       Event_Mask   : Gdk.Event.Gdk_Event_Mask;
       Confine_To   : Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
       Cursor       : Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
-      Time         : Guint32) return Gdk_Grab_Status;
+      Time         : Guint32 := 0) return Gdk_Grab_Status;
    --  Grab the pointer to a specific window.
    --    - Window is the window which will receive the grab
    --    - Owner_Events specifies whether events will be reported as is,
@@ -94,7 +95,7 @@ package Gdk.Main is
    --    - Time specifies the time
    --  Requires a corresponding call to Pointer_Ungrab
 
-   procedure Pointer_Ungrab (Time : Guint32);
+   procedure Pointer_Ungrab (Time : Guint32 := 0);
    --  Release any pointer grab.
 
    function Pointer_Is_Grabbed return Boolean;
@@ -103,7 +104,7 @@ package Gdk.Main is
    function Keyboard_Grab
      (Window       : Gdk.Window.Gdk_Window;
       Owner_Events : Boolean := True;
-      Time         : Guint32) return Gdk_Grab_Status;
+      Time         : Guint32 := 0) return Gdk_Grab_Status;
    --  Grab the keyboard to a specific window.
    --    - Window is the window which will receive the grab
    --    - Owner_Events specifies whether events will be reported as is,
@@ -111,7 +112,7 @@ package Gdk.Main is
    --    - Time specifies the time
    --  Requires a corresponding call to Keyboard_Ungrab
 
-   procedure Keyboard_Ungrab (Time : Guint32);
+   procedure Keyboard_Ungrab (Time : Guint32 := 0);
    --  Release any keyboard grab.
 
    function Screen_Width return Gint;
