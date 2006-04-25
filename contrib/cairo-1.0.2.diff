@@ -7,6 +7,7 @@
 
 	* src/cairo-win32-surface.c: Fix build failure under Win32
 	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=6015
+	Committed for cairo 1.0.4 on 2006-04-23
 
 	* pixman/src/pixman.h: Fix build failures on ia64/pa hpux and tru64
 	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=6016
