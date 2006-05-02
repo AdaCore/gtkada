@@ -1190,16 +1190,6 @@ package body Gtk.Text_Iter is
          Dest   => Iter);
    end Get_Text_Iter;
 
-   -------------------
-   -- Get_Text_Iter --
-   -------------------
-
-   function Get_Text_Iter (Val : Glib.Values.GValue) return Gtk_Text_Iter is
-   begin
-      return Iter_Access_Address_Conversions.To_Pointer
-               (Glib.Values.Get_Address (Val)).all;
-   end Get_Text_Iter;
-
 begin
    if Gtk_Text_Iter'Size /= C_Gtk_Text_Iter_Size * 8 then
       raise Program_Error;

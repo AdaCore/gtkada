@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -654,12 +654,6 @@ package Gtk.Text_Iter is
    --  Note that the iterator returned is a copy of the iterator referenced
    --  by the give GValue. Modifying the iterator returned does not modify
    --  the iterator referenced by the GValue.
-
-   function Get_Text_Iter (Val : Glib.Values.GValue) return Gtk_Text_Iter;
-   --  This is the function equivalent of procedure Get_Text_Iter above. It is
-   --  sometimes more convenient that then procedure, but its use is limited by
-   --  the fact that the result returned can not be stored in a variable, since
-   --  Gtk_Text_Iter is limited.
 
 private
    function C_Gtk_Text_Iter_Size return Gint;
