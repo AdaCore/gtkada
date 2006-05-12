@@ -40,8 +40,12 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-expect_unresolved,\*
       ;;
    *mingw*)
-      BUILD_SHARED=no
+      BUILD_SHARED=yes
+      SO_EXT=.dll
       FPIC=
+      ac_GNATDIR=`which gcc | sed 's,/gcc,,'`
+      ac_GNATLIB=`cd $ac_GNATDIR; ls libgnat*.dll | sed 's,lib,,;s,.dll,,'`
+      OS_SPECIFIC_LINK_OPTIONS=-Wl,-L$ac_GNATDIR,-l$ac_GNATLIB
       ;;
    *darwin*)
       SO_EXT=.dylib
