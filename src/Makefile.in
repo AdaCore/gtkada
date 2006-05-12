@@ -32,7 +32,11 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
 LIBNAME       = libgtkada$(SO_EXT)
+ifeq ($(OS),Windows_NT)
+SONAME        = libgtkada-$(MAJOR).$(MINOR)$(SO_EXT)
+else
 SONAME        = libgtkada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
+endif
 ARCHIVENAME   = libgtkada.a
 
 GTKADA_CONFIG = gtkada-config
@@ -84,10 +88,16 @@ ifeq ($(BUILD_SHARED),yes)
 	  $(c_objects) $(c_extra_objects) $(GTK_LIBS)
 	$(RM) $(LIBNAME)
 	$(LN) $(SONAME) $(LIBNAME)
+ifeq ($(OS),Windows_NT)
+	-@if [ ! -f .devel ]; then \
+	  $(CHMOD) +x $(SONAME) $(LIBNAME); \
+	fi
+else
 	-@if [ ! -f .devel ]; then \
 	  strip $(LIBNAME); \
 	  $(CHMOD) +x $(LIBNAME); \
 	fi
+endif
 endif
 
 $(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
@@ -149,11 +159,17 @@ install: all
 	     $(RANLIB) $(alidir)/$(ARCHIVENAME); \
 	   fi; \
 	   if [ $(BUILD_SHARED) = yes ]; then \
-	     $(INSTALL_DATA) $(SONAME) $(alidir); \
-	     $(RM) $(libdir)/$(LIBNAME); \
-	     $(LN) $(SONAME) $(alidir)/$(LIBNAME); \
-	     $(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME); \
-	     $(LN) gtkada/$(SONAME) $(libdir)/$(SONAME); \
+		if [ "$(OS)" = "Windows_NT" ]; then \
+		     $(INSTALL_DATA) $(SONAME) $(bindir); \
+		     $(INSTALL_DATA) $(SONAME) $(alidir); \
+		     $(CHMOD) +x $(bindir)/$(SONAME) $(alidir)/$(SONAME); \
+		else \
+		     $(INSTALL_DATA) $(SONAME) $(alidir); \
+		     $(RM) $(libdir)/$(LIBNAME); \
+		     $(LN) $(SONAME) $(alidir)/$(LIBNAME); \
+		     $(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME); \
+		     $(LN) gtkada/$(SONAME) $(libdir)/$(SONAME); \
+		fi; \
 	   fi; \
 	   $(CP) glib*.ads glib*.adb $(MESA_SPECS) $(incdir); \
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \
