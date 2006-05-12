@@ -3,10 +3,17 @@
 module=${1:-}
 prefix=$2
 has_shared="$3"
+version=$4
 
 libs=`../src/gtkada-config --libs`
 
 lcmodule=`echo $module | tr A-Z a-z`
+
+if [ "$OS" = "Windows_NT" ]; then
+lcversion="-$version"
+else
+lcversion=""
+fi
 
 #### Create the linker page
 
@@ -61,7 +68,7 @@ project ${uc} is
    for Source_List_File use "gtkada/${lcmodule}.lgpr";
    for Library_Dir use "../gtkada";
    for Library_Kind use "relocatable";
-   for Library_Name use "${lcmodule}";
+   for Library_Name use "${lcmodule}${lcversion}";
    for Externally_Built use "true";
 EOF
   echo_linker 1 >> ${lc}.gpr
