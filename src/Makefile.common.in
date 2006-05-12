@@ -21,7 +21,12 @@ INSTALL       = @INSTALL@
 INSTALL_DATA  = @INSTALL_DATA@
 
 CP = cp -p -f
-LN = ln -f -s
+ifeq ($(OS),Windows_NT)
+   LN = $(CP)
+else
+   LN = ln -f -s
+endif
+
 CHMOD = chmod
 ARFLAGS = cr
 
