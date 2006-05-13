@@ -65,10 +65,12 @@ package body Gtk.Arguments is
    ---------------
 
    function To_Object (Args : Gtk_Args; Num : Positive)
-     return Gtk.Object.Gtk_Object is
+     return Gtk.Object.Gtk_Object
+   is
+      Stub : Gtk.Object.Gtk_Object_Record;
    begin
       return Gtk.Object.Gtk_Object
-        (Gtk.Widget.Convert (Get_Address (Nth (Args, Guint (Num)))));
+        (Get_User_Data (Get_Address (Nth (Args, Guint (Num))), Stub));
    end To_Object;
 
    ----------------
