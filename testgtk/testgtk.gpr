@@ -1,0 +1,17 @@
+project TestGtk is
+   for Languages use ("C", "Ada");
+   for Main use ("testgtk.adb");
+   for Source_Dirs use ("./");
+   for Object_Dir use ".";
+
+   package Compiler is
+      for Default_Switches ("Ada") use ("-gnatwa", "-gnatay");
+   end Compiler;
+
+   package IDE is
+      for VCS_Kind use "cvs";
+      for VCS_Log_Check use "log_check";
+      for VCS_File_Check use "ci_check";
+   end IDE;
+
+end TestGtk;
