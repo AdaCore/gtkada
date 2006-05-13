@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -189,7 +189,7 @@ with Gtk.Window;
 
 with Gtk.Extra.Border_Combo;
 with Gtk.Extra.Color_Combo;
-with Gtk.Extra.Combo_Box;
+with Gtk.Extra.Combo_Button;
 
 with Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Canvas;
