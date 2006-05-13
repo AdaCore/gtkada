@@ -1,4 +1,7 @@
 New features:
+   2006-05-13
+      F426-006 Upgraded gtk.extra binding to the new version of the gtkextra
+      library (2.1.1)
    2005-08-18
       Project files are now installed along with GtkAda, for ease of use
    2005-05-26 (E525-016)
