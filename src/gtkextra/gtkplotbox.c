@@ -28,23 +28,37 @@
 #include "gtkplotbox.h"
 #include "gtkpsfont.h"
 
+#define P_(string) string
+
 static void gtk_plot_box_class_init 	(GtkPlotBoxClass *klass);
 static void gtk_plot_box_init 		(GtkPlotBox *data);
-static void gtk_plot_box_draw_legend	(GtkPlotData *data, 
+static void gtk_plot_box_set_property   (GObject *object,
+                                         guint prop_id,
+                                         const GValue *value,
+                                         GParamSpec *pspec);
+static void gtk_plot_box_get_property   (GObject *object,
+                                         guint prop_id,
+                                         GValue *value,
+                                         GParamSpec *pspec);
+static void gtk_plot_box_draw_legend	(GtkPlotData *data,
 					 gint x, gint y);
 static void gtk_plot_box_draw_symbol	(GtkPlotData *data,
-                                     	 gdouble x, 
-					 gdouble y, 
-					 gdouble z, 
+                                     	 gdouble x,
+					 gdouble y,
+					 gdouble z,
 					 gdouble a,
-                                     	 gdouble dx, 
-					 gdouble dy, 
-					 gdouble dz, 
+                                     	 gdouble dx,
+					 gdouble dy,
+					 gdouble dz,
 					 gdouble da);
 static void gtk_plot_box_clone          (GtkPlotData *data, GtkPlotData *copy);
 
-static gint roundint (gdouble x);
+extern inline gint roundint (gdouble x);
 
+enum {
+  ARG_0,
+  ARG_ORIENTATION,
+};
 
 static GtkPlotDataClass *parent_class = NULL;
 
@@ -78,6 +92,7 @@ gtk_plot_box_class_init (GtkPlotBoxClass *klass)
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
   GtkPlotDataClass *data_class;
+  GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 
   parent_class = gtk_type_class (gtk_plot_data_get_type ());
 
@@ -85,12 +100,62 @@ gtk_plot_box_class_init (GtkPlotBoxClass *klass)
   widget_class = (GtkWidgetClass *) klass;
   data_class = (GtkPlotDataClass *) klass;
 
+  gobject_class->set_property = gtk_plot_box_set_property;
+  gobject_class->get_property = gtk_plot_box_get_property;
+
+  g_object_class_install_property(gobject_class,
+                           ARG_ORIENTATION,
+  g_param_spec_enum ("orientation",
+                     P_("Orientation"),
+                     P_("Orientation"),
+                     GTK_TYPE_ORIENTATION, 0,
+                     G_PARAM_READABLE|G_PARAM_WRITABLE));
+
   data_class->clone = gtk_plot_box_clone;
   data_class->draw_legend = gtk_plot_box_draw_legend;
   data_class->draw_symbol = gtk_plot_box_draw_symbol;
 /*
   data_class->draw_data = gtk_plot_box_draw;
 */
+}
+
+static void
+gtk_plot_box_set_property (GObject      *object,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+  GtkPlotBox *data;
+
+  data = GTK_PLOT_BOX (object);
+
+  switch (prop_id)
+    {
+      case ARG_ORIENTATION:
+        data->orientation  = g_value_get_enum(value);
+        break;
+    }
+}
+
+static void
+gtk_plot_box_get_property (GObject      *object,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+  GtkPlotBox *data;
+
+  data = GTK_PLOT_BOX (object);
+
+  switch (prop_id)
+    {
+      case ARG_ORIENTATION:
+        g_value_set_enum(value, data->orientation);
+        break;
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
 }
 
 
@@ -155,6 +220,7 @@ gtk_plot_box_draw_symbol(GtkPlotData *dataset,
   gdouble x1 = 0.0, y1 = 0.0, width = 0.0, height = 0.0;
   gdouble el_x, el_y, er_x, er_y, ed_x, ed_y, eu_x, eu_y;
   gdouble m;
+  gdouble a_scale;
 
 
   g_return_if_fail(GTK_IS_PLOT_BOX(dataset));
@@ -165,60 +231,62 @@ gtk_plot_box_draw_symbol(GtkPlotData *dataset,
 
   plot = dataset->plot;
 
-  m = plot->magnification * dataset->a_scale;
+  a_scale = gtk_plot_data_get_a_scale(dataset);
+  m = plot->magnification * a_scale;
 
-  gtk_plot_pc_set_lineattr (plot->pc, dataset->symbol.border.line_width, 
+  gtk_plot_pc_set_lineattr (plot->pc, dataset->symbol.border.line_width,
                             0, 0, 0);
-  gtk_plot_pc_set_dash (plot->pc, 0, 0, 0); 
+  gtk_plot_pc_set_dash (plot->pc, 0, 0, 0);
 
   if(x >= plot->xmin && x <= plot->xmax){
     if(GTK_IS_PLOT3D(plot)){
     }else{
-      gtk_plot_get_pixel(plot, x, y, &px, &py);
       if(dataset->show_zerrbars){
         gtk_plot_pc_set_color(plot->pc, &dataset->symbol.border.color);
         switch(box->orientation){
-          case GTK_ORIENTATION_VERTICAL:    
-            gtk_plot_get_pixel(plot, x, y - dx, &px1, &py1);
-            gtk_plot_get_pixel(plot, x, y + dy, &px0, &py0);
+          case GTK_ORIENTATION_VERTICAL:
+            gtk_plot_get_pixel(plot, x, y, &px, &py);
+            gtk_plot_get_pixel(plot, x, y, &px0, &py0);
+            gtk_plot_get_pixel(plot, x, z, &px1, &py1);
             width = roundint(dataset->symbol.size * m);
             height = abs(py1 - py0);
 
-            gtk_plot_get_pixel(plot, x, y + dy + z, &eu_x, &eu_y);
-            gtk_plot_get_pixel(plot, x, y - dx - dz, &ed_x, &ed_y);
+            gtk_plot_get_pixel(plot, x, z + dy, &eu_x, &eu_y);
+            gtk_plot_get_pixel(plot, x, y - dy, &ed_x, &ed_y);
 
             errbar[0].x = px-roundint(m * dataset->symbol.size/2);
             errbar[0].y = eu_y;
             errbar[1].x = px+roundint(m * dataset->symbol.size/2);
             errbar[1].y = eu_y;
             gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
- 
+
             errbar[0].x = px;
             errbar[0].y = eu_y;
             errbar[1].x = px;
-            errbar[1].y = py0;
+            errbar[1].y = py1;
             gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
- 
+
             errbar[0].x = px-roundint(m * dataset->symbol.size/2);
             errbar[0].y = ed_y;
             errbar[1].x = px+roundint(m * dataset->symbol.size/2);
             errbar[1].y = ed_y;
             gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
- 
+
             errbar[0].x = px;
             errbar[0].y = ed_y;
             errbar[1].x = px;
-            errbar[1].y = py1;
+            errbar[1].y = py0;
             gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
 
             break;
-          case GTK_ORIENTATION_HORIZONTAL:    
-            gtk_plot_get_pixel(plot, x - dx, y, &px1, &py1);
-            gtk_plot_get_pixel(plot, x + dy, y, &px0, &py0);
+          case GTK_ORIENTATION_HORIZONTAL:
+            gtk_plot_get_pixel(plot, y, x, &px, &py);
+            gtk_plot_get_pixel(plot, y, x, &px0, &py0);
+            gtk_plot_get_pixel(plot, z, x, &px1, &py1);
             height = roundint(dataset->symbol.size * m);
 
-            gtk_plot_get_pixel(plot, x + dy + z, y, &er_x, &er_y);
-            gtk_plot_get_pixel(plot, x - dx - dz, y, &el_x, &el_y);
+            gtk_plot_get_pixel(plot, z + dy, x, &er_x, &er_y);
+            gtk_plot_get_pixel(plot, y - dy, x, &el_x, &el_y);
 
             errbar[0].x = el_x;
             errbar[0].y = py-roundint(m * dataset->symbol.size / 2.);
@@ -228,19 +296,19 @@ gtk_plot_box_draw_symbol(GtkPlotData *dataset,
 
             errbar[0].x = el_x;
             errbar[0].y = py;
-            errbar[1].x = px1;
+            errbar[1].x = px0;
             errbar[1].y = py;
             gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
- 
+
             errbar[0].x = er_x;
             errbar[0].y = py-roundint(m * dataset->symbol.size / 2.);
             errbar[1].x = er_x;
             errbar[1].y = py+roundint(m * dataset->symbol.size / 2.);
             gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
- 
+
             errbar[0].x = er_x;
             errbar[0].y = py;
-            errbar[1].x = px0;
+            errbar[1].x = px1;
             errbar[1].y = py;
             gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
 
@@ -249,17 +317,19 @@ gtk_plot_box_draw_symbol(GtkPlotData *dataset,
       }
 
       switch(box->orientation){
-        case GTK_ORIENTATION_VERTICAL:    
-          gtk_plot_get_pixel(plot, x, y - dx, &px1, &py1);
-          gtk_plot_get_pixel(plot, x, y + dy, &px0, &py0);
+        case GTK_ORIENTATION_VERTICAL:
+          gtk_plot_get_pixel(plot, x, y, &px, &py);
+          gtk_plot_get_pixel(plot, x, y, &px0, &py0);
+          gtk_plot_get_pixel(plot, x, z, &px1, &py1);
           y1 = MIN(py0,py1);
           height = fabs(py0-py1);
           width = roundint(dataset->symbol.size * m);
           x1 = px0 - width / 2;
           break;
-        case GTK_ORIENTATION_HORIZONTAL:    
-          gtk_plot_get_pixel(plot, x - dx, y, &px1, &py1);
-          gtk_plot_get_pixel(plot, x + dy, y, &px0, &py0);
+        case GTK_ORIENTATION_HORIZONTAL:
+          gtk_plot_get_pixel(plot, y, x, &px, &py);
+          gtk_plot_get_pixel(plot, y, x, &px0, &py0);
+          gtk_plot_get_pixel(plot, z, x, &px1, &py1);
           x1 = MIN(px0,px1);
           width = fabs(px0-px1);
           height = roundint(dataset->symbol.size * m);
@@ -287,15 +357,15 @@ gtk_plot_box_draw_symbol(GtkPlotData *dataset,
                                   x1, y1, width, height);
 
       switch(box->orientation){
-        case GTK_ORIENTATION_VERTICAL:    
-          gtk_plot_pc_draw_line(plot->pc, px-width/2, py, px+width/2, py); 
+        case GTK_ORIENTATION_VERTICAL:
+          gtk_plot_pc_draw_line(plot->pc, px-width/2, py, px+width/2, py);
           break;
-        case GTK_ORIENTATION_HORIZONTAL:    
-          gtk_plot_pc_draw_line(plot->pc, px, py-height/2, px, py+height/2); 
+        case GTK_ORIENTATION_HORIZONTAL:
+          gtk_plot_pc_draw_line(plot->pc, px, py-height/2, px, py+height/2);
           break;
       }
 
-    }  
+    }
   }
 
 }
@@ -332,7 +402,7 @@ gtk_plot_box_draw_legend(GtkPlotData *data, gint x, gint y)
     legend.text = "";
 
   gtk_plot_text_get_size(legend.text, legend.angle, legend.font,
-                         roundint(legend.height * m), 
+                         roundint(legend.height * m),
                          &lwidth, &lheight,
                          &lascent, &ldescent);
 
@@ -345,9 +415,9 @@ gtk_plot_box_draw_legend(GtkPlotData *data, gint x, gint y)
 
   if(data->symbol.symbol_style == GTK_PLOT_SYMBOL_OPAQUE){
     gtk_plot_pc_set_color(plot->pc, &plot->background);
-    gtk_plot_pc_draw_rectangle(plot->pc, TRUE, 
+    gtk_plot_pc_draw_rectangle(plot->pc, TRUE,
                                x, y,
-                               roundint(plot->legends_line_width * m), 
+                               roundint(plot->legends_line_width * m),
                                lascent + ldescent);
   }
 
@@ -356,27 +426,17 @@ gtk_plot_box_draw_legend(GtkPlotData *data, gint x, gint y)
 
   if(data->symbol.symbol_style == GTK_PLOT_SYMBOL_FILLED){
     gtk_plot_pc_set_color(plot->pc, &data->symbol.color);
-    gtk_plot_pc_draw_rectangle(plot->pc, TRUE, 
+    gtk_plot_pc_draw_rectangle(plot->pc, TRUE,
                                x, y,
-                               roundint(plot->legends_line_width * m), 
+                               roundint(plot->legends_line_width * m),
                                lascent + ldescent);
   }
 
   gtk_plot_pc_set_color(plot->pc, &data->symbol.border.color);
-  gtk_plot_pc_draw_rectangle(plot->pc, FALSE, 
+  gtk_plot_pc_draw_rectangle(plot->pc, FALSE,
                              x, y,
-                             roundint(plot->legends_line_width * m), 
+                             roundint(plot->legends_line_width * m),
                              lascent + ldescent);
 
 }
 
-
-static gint
-roundint (gdouble x)
-{
- gint sign = 1;
-
-/* if(x <= 0.) sign = -1; 
-*/
- return (x+sign*.50999999471);
-}

@@ -72,7 +72,7 @@ struct _GtkPlot3D
   gdouble ncos[360];
   gdouble nsin[360];
 
-  GtkPlotAxis *ax, *ay, *az; 
+  GtkPlotAxis *ax, *ay, *az;
 
   gboolean xy_visible;
   gboolean yz_visible;
@@ -102,7 +102,7 @@ struct _GtkPlot3DClass
 {
   GtkPlotClass parent_class;
 
-  void	(* get_pixel) 		(GtkWidget *widget, 
+  void	(* get_pixel) 		(GtkWidget *widget,
                       		 gdouble x, gdouble y, gdouble z,
                      		 gdouble *px, gdouble *py, gdouble *pz);
 };
@@ -120,48 +120,48 @@ void		gtk_plot3d_construct_with_size	(GtkPlot3D *plot,
                                                  gdouble width, gdouble height);
 void		gtk_plot3d_autoscale		(GtkPlot3D *plot);
 /* rotations around global axes */
-void		gtk_plot3d_rotate		(GtkPlot3D *plot, 
+void		gtk_plot3d_rotate		(GtkPlot3D *plot,
 						 gdouble angle_x,
 						 gdouble angle_y,
 						 gdouble angle_z);
 void 		gtk_plot3d_rotate_vector	(GtkPlot3D *plot,
                           			 GtkPlotVector *vector,
-                          			 gdouble a1, 	
-						 gdouble a2, 
+                          			 gdouble a1,
+						 gdouble a2,
 						 gdouble a3);
 
 /* rotations around local axes */
-void 		gtk_plot3d_reset_angles		(GtkPlot3D *plot); 
-void 		gtk_plot3d_rotate_x		(GtkPlot3D *plot, 
+void 		gtk_plot3d_reset_angles		(GtkPlot3D *plot);
+void 		gtk_plot3d_rotate_x		(GtkPlot3D *plot,
 						 gdouble angle);
-void 		gtk_plot3d_rotate_y		(GtkPlot3D *plot, 
+void 		gtk_plot3d_rotate_y		(GtkPlot3D *plot,
 						 gdouble angle);
-void 		gtk_plot3d_rotate_z		(GtkPlot3D *plot, 
+void 		gtk_plot3d_rotate_z		(GtkPlot3D *plot,
 						 gdouble angle);
 
 
-void 		gtk_plot3d_get_pixel		(GtkPlot3D *plot, 
-                          			 gdouble x, 
-                                                 gdouble y, 
+void 		gtk_plot3d_get_pixel		(GtkPlot3D *plot,
+                          			 gdouble x,
+                                                 gdouble y,
                                                  gdouble z,
-                                                 gdouble *px, 
+                                                 gdouble *px,
                                                  gdouble *py,
                                                  gdouble *pz);
-void 		gtk_plot3d_set_xrange		(GtkPlot3D *plot, 
+void 		gtk_plot3d_set_xrange		(GtkPlot3D *plot,
 						 gdouble min, gdouble max);
-void 		gtk_plot3d_set_yrange		(GtkPlot3D *plot, 
+void 		gtk_plot3d_set_yrange		(GtkPlot3D *plot,
 						 gdouble min, gdouble max);
-void 		gtk_plot3d_set_zrange		(GtkPlot3D *plot, 
+void 		gtk_plot3d_set_zrange		(GtkPlot3D *plot,
 						 gdouble min, gdouble max);
-void 		gtk_plot3d_set_xfactor		(GtkPlot3D *plot, 
-						 gdouble xfactor); 
-void 		gtk_plot3d_set_yfactor		(GtkPlot3D *plot, 
-						 gdouble yfactor); 
-void 		gtk_plot3d_set_zfactor		(GtkPlot3D *plot, 
-						 gdouble zfactor); 
-gdouble 	gtk_plot3d_get_xfactor		(GtkPlot3D *plot); 
-gdouble 	gtk_plot3d_get_yfactor		(GtkPlot3D *plot); 
-gdouble 	gtk_plot3d_get_zfactor		(GtkPlot3D *plot); 
+void 		gtk_plot3d_set_xfactor		(GtkPlot3D *plot,
+						 gdouble xfactor);
+void 		gtk_plot3d_set_yfactor		(GtkPlot3D *plot,
+						 gdouble yfactor);
+void 		gtk_plot3d_set_zfactor		(GtkPlot3D *plot,
+						 gdouble zfactor);
+gdouble 	gtk_plot3d_get_xfactor		(GtkPlot3D *plot);
+gdouble 	gtk_plot3d_get_yfactor		(GtkPlot3D *plot);
+gdouble 	gtk_plot3d_get_zfactor		(GtkPlot3D *plot);
 /* Planes */
 void		gtk_plot3d_plane_set_color	(GtkPlot3D *plot,
 						 GtkPlotPlane plane,
@@ -177,7 +177,8 @@ void		gtk_plot3d_corner_set_visible	(GtkPlot3D *plot,
 gboolean	gtk_plot3d_corner_visible	(GtkPlot3D *plot);
 
 void            gtk_plot3d_corner_set_attributes(GtkPlot3D *plot,
-                                                 GtkPlotLineStyle style,                                                         gfloat width,
+						 GtkPlotLineStyle style,
+						 gfloat width,
                                                  const GdkColor *color);
 void            gtk_plot3d_corner_get_attributes(GtkPlot3D *plot,
                                                  GtkPlotLineStyle *style,
@@ -198,47 +199,47 @@ GtkPlotAxis *	gtk_plot3d_get_axis		(GtkPlot3D *plot,
 						 GtkPlotOrientation orientation);
 GtkPlotAxis *	gtk_plot3d_get_side		(GtkPlot3D *plot,
 						 GtkPlotSide side);
-void		gtk_plot3d_axis_show_major_ticks(GtkPlot3D *plot,
+void		gtk_plot3d_show_major_ticks	(GtkPlot3D *plot,
                                                  GtkPlotSide side,
 						 gint ticks_mask);
-void		gtk_plot3d_axis_show_minor_ticks(GtkPlot3D *plot,
+void		gtk_plot3d_show_minor_ticks	(GtkPlot3D *plot,
                                                  GtkPlotSide side,
 						 gint ticks_mask);
-void		gtk_plot3d_axis_show_labels	(GtkPlot3D *plot,
+void		gtk_plot3d_show_labels		(GtkPlot3D *plot,
                                                  GtkPlotSide side,
 						 gint label_mask);
-void		gtk_plot3d_axis_show_title	(GtkPlot3D *plot,
+void		gtk_plot3d_show_title		(GtkPlot3D *plot,
                                                  GtkPlotSide side);
-void		gtk_plot3d_axis_hide_title	(GtkPlot3D *plot,
+void		gtk_plot3d_hide_title		(GtkPlot3D *plot,
                                                  GtkPlotSide side);
-void 		gtk_plot3d_axis_set_ticks       (GtkPlot3D *plot,
+void 		gtk_plot3d_set_ticks       	(GtkPlot3D *plot,
 						 GtkPlotOrientation axis,
                                  		 gdouble major_step,
                                  		 gint nminor);
-void 		gtk_plot3d_axis_set_major_ticks (GtkPlot3D *plot,
+void 		gtk_plot3d_set_major_ticks 	(GtkPlot3D *plot,
 						 GtkPlotOrientation axis,
                                  		 gdouble major_step);
-void 		gtk_plot3d_axis_set_minor_ticks (GtkPlot3D *plot,
+void 		gtk_plot3d_set_minor_ticks 	(GtkPlot3D *plot,
 						 GtkPlotOrientation axis,
                                  		 gint nminor);
-void            gtk_plot3d_axis_set_ticks_length(GtkPlot3D *plot,
+void            gtk_plot3d_set_ticks_length	(GtkPlot3D *plot,
                                                  GtkPlotOrientation axis,
                                                  gint length);
-void            gtk_plot3d_axis_set_ticks_width (GtkPlot3D *plot,
+void            gtk_plot3d_set_ticks_width 	(GtkPlot3D *plot,
                                                  GtkPlotOrientation axis,
                                                  gfloat width);
-void            gtk_plot3d_axis_show_ticks      (GtkPlot3D *plot,
+void            gtk_plot3d_show_ticks      	(GtkPlot3D *plot,
                                                  GtkPlotSide side,
                                                  gint major_mask,
                                                  gint minor_mask);
 void 		gtk_plot3d_set_titles_offset 	(GtkPlot3D *plot,
                                                  gint offset);
 gint 		gtk_plot3d_get_titles_offset 	(GtkPlot3D *plot);
-void            gtk_plot3d_axis_set_scale       (GtkPlot3D *plot,
-                                                 GtkPlotOrientation axis,
-                                                 GtkPlotScale scale);
-GtkPlotScale    gtk_plot3d_axis_get_scale       (GtkPlot3D *plot,
-                                                 GtkPlotOrientation axis);
+void		gtk_plot3d_set_scale		(GtkPlot3D *plot,
+						 GtkPlotOrientation axis,
+						 GtkPlotScale scale);
+GtkPlotScale	gtk_plot3d_get_scale		(GtkPlot3D *plot,
+						 GtkPlotOrientation axis);
 /* Grids */
 void            gtk_plot3d_major_grids_set_visible    (GtkPlot3D *plot,
 						       gboolean x,
@@ -257,7 +258,8 @@ void            gtk_plot3d_minor_grids_visible        (GtkPlot3D *plot,
 						       gboolean *y,
 						       gboolean *z);
 void            gtk_plot3d_major_zgrid_set_attributes  (GtkPlot3D *plot,
-                                                       GtkPlotLineStyle style,                                                         gfloat width,
+							GtkPlotLineStyle style,
+							gfloat width,
                                                        const GdkColor *color);
 void            gtk_plot3d_major_zgrid_get_attributes  (GtkPlot3D *plot,
                                                        GtkPlotLineStyle *style,

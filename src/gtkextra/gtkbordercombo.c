@@ -30,7 +30,7 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkframe.h>
 #include <gdk/gdkkeysyms.h>
-#include "gtkextracombobox.h"
+#include "gtkcombobutton.h"
 #include "gtkbordercombo.h"
 #include "gtkextra-marshal.h"
 
@@ -79,7 +79,7 @@ static void         gtk_border_combo_realize         (GtkWidget *widget);
 static GtkWidget*   create_border_pixmap             (GtkBorderCombo *border_combo, 
                                                       gchar *border[18]);
 
-static GtkExtraComboBoxClass *parent_class = NULL;
+static GtkComboButtonClass *parent_class = NULL;
 
 static void
 gtk_border_combo_class_init (GtkBorderComboClass * klass)
@@ -172,14 +172,12 @@ gtk_border_combo_update (GtkWidget * widget, GtkBorderCombo * border_combo)
 
   if(new_selection){
       if(row >= 0 && column >= 0){
-          GTK_BUTTON(border_combo->button[row][column])->button_down=FALSE;     
-          GTK_TOGGLE_BUTTON(border_combo->button[row][column])->active=FALSE;
-          gtk_widget_set_state(border_combo->button[row][column], GTK_STATE_NORMAL);
+          gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(border_combo->button[row][column]), FALSE);
           gtk_widget_queue_draw(border_combo->button[row][column]);
       }
       border_combo->row=new_row;
       border_combo->column=new_col;
-      window=GTK_PIXMAP(GTK_BIN(GTK_EXTRA_COMBO_BOX(border_combo)->button)
+      window=GTK_PIXMAP(GTK_BIN(GTK_COMBO_BUTTON(border_combo)->button)
                                                          ->child)->pixmap;
       gdk_window_copy_area(window,
                            widget->style->fg_gc[GTK_STATE_NORMAL],
@@ -187,16 +185,14 @@ gtk_border_combo_update (GtkWidget * widget, GtkBorderCombo * border_combo)
  GTK_PIXMAP(GTK_BIN(border_combo->button[new_row][new_col])->child)->pixmap,
                            0,0,16,16);
 
-      gtk_widget_queue_draw(GTK_EXTRA_COMBO_BOX(border_combo)->button);
+      gtk_widget_queue_draw(GTK_COMBO_BUTTON(border_combo)->button);
       
       gtk_signal_emit (GTK_OBJECT(border_combo), border_combo_signals[CHANGED],
                        new_row * border_combo->ncols + new_col);
   }
 
   if(!new_selection && row >= 0 && column >= 0){
-          GTK_BUTTON(border_combo->button[row][column])->button_down=TRUE;     
-          GTK_TOGGLE_BUTTON(border_combo->button[row][column])->active=TRUE;
-          gtk_widget_set_state(border_combo->button[row][column], GTK_STATE_ACTIVE);
+          gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(border_combo->button[row][column]), TRUE);
           gtk_widget_queue_draw(border_combo->button[row][column]);
 
           gtk_signal_emit (GTK_OBJECT(border_combo),                     
@@ -205,11 +201,11 @@ gtk_border_combo_update (GtkWidget * widget, GtkBorderCombo * border_combo)
   }
 
 
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GTK_EXTRA_COMBO_BOX(border_combo)->arrow), FALSE);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GTK_COMBO_BUTTON(border_combo)->arrow), FALSE);
 
-  gtk_grab_remove(GTK_EXTRA_COMBO_BOX(border_combo)->popwin);
+  gtk_grab_remove(GTK_COMBO_BUTTON(border_combo)->popwin);
   gdk_pointer_ungrab(GDK_CURRENT_TIME);
-  gtk_widget_hide(GTK_EXTRA_COMBO_BOX(border_combo)->popwin);
+  gtk_widget_hide(GTK_COMBO_BUTTON(border_combo)->popwin);
   return;
 
 }
@@ -268,7 +264,7 @@ gtk_border_combo_get_type ()
 	NULL,
 	(GtkClassInitFunc) NULL,
       };
-      border_combo_type = gtk_type_unique (gtk_extra_combobox_get_type (), &border_combo_info);
+      border_combo_type = gtk_type_unique (gtk_combo_button_get_type (), &border_combo_info);
     }
   return border_combo_type;
 }
@@ -288,7 +284,7 @@ gtk_border_combo_new ()
 static void
 gtk_border_combo_realize(GtkWidget *widget)
 {
-  GtkExtraComboBox *combo;
+  GtkComboButton *combo;
   GtkBorderCombo *border_combo;
   GtkWidget *pixmap;
   GtkRequisition requisition;
@@ -301,7 +297,7 @@ gtk_border_combo_realize(GtkWidget *widget)
 
   GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
-  combo=GTK_EXTRA_COMBO_BOX(widget);
+  combo=GTK_COMBO_BUTTON(widget);
   border_combo=GTK_BORDER_COMBO(widget);
 
   border_combo->table = gtk_table_new (border_combo->nrows, border_combo->ncols, TRUE);
@@ -330,7 +326,7 @@ gtk_border_combo_realize(GtkWidget *widget)
     }
   }
 
-  gtk_container_add(GTK_CONTAINER(GTK_EXTRA_COMBO_BOX(border_combo)->frame), 
+  gtk_container_add(GTK_CONTAINER(GTK_COMBO_BUTTON(border_combo)->frame), 
                     border_combo->table);
   gtk_widget_show(border_combo->table);
 

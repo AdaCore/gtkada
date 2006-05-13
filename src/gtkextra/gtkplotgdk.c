@@ -31,6 +31,7 @@
 #include "gtkplot.h"
 #include "gtkpsfont.h"
 #include "gtkplotcanvas.h"
+#include <pango/pango.h>
 
 static void gtk_plot_gdk_init                       (GtkPlotGdk *pc);
 static void gtk_plot_gdk_class_init                 (GtkPlotGdkClass *klass);
@@ -71,7 +72,7 @@ static void gtk_plot_gdk_draw_lines                  (GtkPlotPC *pc,
 static void gtk_plot_gdk_draw_rectangle              (GtkPlotPC *pc,
                                                      gint filled,
                                                      gdouble x, gdouble y,
-                                                     gdouble width, 
+                                                     gdouble width,
                                                      gdouble height);
 static void gtk_plot_gdk_draw_polygon                (GtkPlotPC *pc,
                                                      gint filled,
@@ -84,7 +85,7 @@ static void gtk_plot_gdk_draw_circle                 (GtkPlotPC *pc,
 static void gtk_plot_gdk_draw_ellipse                (GtkPlotPC *pc,
                                                      gint filled,
                                                      gdouble x, gdouble y,
-                                                     gdouble width, 
+                                                     gdouble width,
                                                      gdouble height);
 static void gtk_plot_gdk_set_font                    (GtkPlotPC *pc,
 						     GtkPSFont *psfont,
@@ -109,19 +110,19 @@ static void gtk_plot_gdk_draw_pixmap                (GtkPlotPC *pc,
                                                      gint xsrc, gint ysrc,
                                                      gint xdest, gint ydest,
                                                      gint width, gint height,
-                                                     gdouble scale_x, 
+                                                     gdouble scale_x,
                                                      gdouble scale_y);
 
-static GdkPixmap * scale_pixmap 		    (GdkWindow *window, 
-						     GdkPixmap *pixmap, 
-						     gdouble scale_x, 
+static GdkPixmap * scale_pixmap 		    (GdkWindow *window,
+						     GdkPixmap *pixmap,
+						     gdouble scale_x,
 						     gdouble scale_y);
-static GdkBitmap * scale_bitmap 		    (GdkWindow *window, 
-						     GdkBitmap *bitmap, 
-						     gdouble scale_x, 
+static GdkBitmap * scale_bitmap 		    (GdkWindow *window,
+						     GdkBitmap *bitmap,
+						     gdouble scale_x,
 						     gdouble scale_y);
 
-static gint roundint                                (gdouble x);
+extern inline gint roundint                         (gdouble x);
 
 static GtkPlotPCClass *parent_class = NULL;
 
@@ -152,8 +153,10 @@ gtk_plot_gdk_get_type (void)
 static void
 gtk_plot_gdk_init (GtkPlotGdk *pc)
 {
+/*
   GdkWindowAttr attributes;
   gint attributes_mask;
+  GdkScreen *screen;
 
   attributes.window_type = GDK_WINDOW_CHILD;
   attributes.title = NULL;
@@ -162,12 +165,28 @@ gtk_plot_gdk_init (GtkPlotGdk *pc)
   attributes.colormap = gdk_colormap_get_system ();
   attributes.event_mask = 0;
   attributes_mask = GDK_WA_VISUAL | GDK_WA_COLORMAP;
-
+*/
   pc->gc = NULL;
   pc->drawable = NULL;
   pc->ref_count = 0;
+  pc->text_direction = GTK_TEXT_DIR_LTR;
 
+/*
   pc->window = gdk_window_new (NULL, &attributes, attributes_mask);
+
+  screen = gdk_screen_get_default ();
+  pc->context = gdk_pango_context_get ();
+*/
+/*
+  pango_context_set_base_dir (pc->context,
+                              pc->text_direction == GTK_TEXT_DIR_LTR ?
+                              PANGO_DIRECTION_LTR : PANGO_DIRECTION_RTL);
+*/
+/*
+  pango_context_set_language (pc->context, gtk_get_default_language ());
+
+  pc->layout = pango_layout_new(pc->context);
+*/
 }
 
 
@@ -215,37 +234,46 @@ gtk_plot_gdk_class_init (GtkPlotGdkClass *klass)
 
 
 GtkObject *
-gtk_plot_gdk_new                                (GdkDrawable *drawable)
+gtk_plot_gdk_new                                (GtkWidget *widget)
 {
   GtkObject *object;
 
   object = gtk_type_new(gtk_plot_gdk_get_type());
 
-  gtk_plot_gdk_construct(GTK_PLOT_GDK(object), drawable);
+  gtk_plot_gdk_construct(GTK_PLOT_GDK(object), widget);
 
   return (object);
 }
 
 void
-gtk_plot_gdk_construct(GtkPlotGdk *pc, GdkDrawable *drawable)
+gtk_plot_gdk_construct(GtkPlotGdk *pc, GtkWidget *widget)
 {
-  if(drawable){ 
-    gtk_plot_gdk_set_drawable(GTK_PLOT_GDK(pc), drawable);
-    gtk_plot_pc_gsave(GTK_PLOT_PC(pc));
-  }
+  pc->window = widget->window;
+  pc->context = gtk_widget_get_pango_context (widget);
+  g_object_ref(G_OBJECT(pc->context));
+  pc->layout = pango_layout_new(pc->context);
 }
 
 
 static void
 gtk_plot_gdk_finalize (GObject *object)
 {
-  gdk_window_unref(GTK_PLOT_GDK(object)->window);
+  GtkPlotGdk *pc = GTK_PLOT_GDK(object);
+
   GTK_PLOT_GDK(object)->window = NULL;
 
   if(GTK_PLOT_GDK(object)->ref_count > 0 && GTK_PLOT_GDK(object)->gc){
           gdk_gc_destroy(GTK_PLOT_GDK(object)->gc);
           GTK_PLOT_GDK(object)->gc = NULL;
   }
+
+  if(pc->layout)
+    g_object_unref(G_OBJECT(pc->layout));
+  pc->layout = NULL;
+
+  if(pc->context)
+    g_object_unref(G_OBJECT(pc->context));
+  pc->context = NULL;
 }
 
 static void
@@ -254,7 +282,7 @@ gtk_plot_gdk_real_set_drawable(GtkPlotGdk *pc, GdkDrawable *drawable)
   pc->drawable = drawable;
 }
 
-static gboolean 
+static gboolean
 gtk_plot_gdk_real_init (GtkPlotPC *pc)
 {
   return TRUE;
@@ -265,30 +293,30 @@ gtk_plot_gdk_leave (GtkPlotPC *pc)
 {
 }
 
-void 
+void
 gtk_plot_gdk_set_drawable               (GtkPlotGdk *gdk, GdkDrawable *drawable)
 {
   GTK_PLOT_GDK_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(gdk)))->set_drawable(gdk, drawable);
 }
 
-static void 
+static void
 gtk_plot_gdk_set_viewport               (GtkPlotPC *pc, gdouble w, gdouble h)
 {
 }
 
-static void 
+static void
 gtk_plot_gdk_gsave                                  (GtkPlotPC *pc)
 {
-  if(GTK_PLOT_GDK(pc)->gc) 
+  if(GTK_PLOT_GDK(pc)->gc)
     gdk_gc_ref(GTK_PLOT_GDK(pc)->gc);
   else{
-    GTK_PLOT_GDK(pc)->gc = gdk_gc_new(GTK_PLOT_GDK(pc)->window);
+    if(GTK_PLOT_GDK(pc)->drawable) GTK_PLOT_GDK(pc)->gc = gdk_gc_new(GTK_PLOT_GDK(pc)->drawable);
   }
 
   GTK_PLOT_GDK(pc)->ref_count++;
 }
 
-static void 
+static void
 gtk_plot_gdk_grestore                                  (GtkPlotPC *pc)
 {
   if(GTK_PLOT_GDK(pc)->gc) gdk_gc_unref(GTK_PLOT_GDK(pc)->gc);
@@ -297,21 +325,21 @@ gtk_plot_gdk_grestore                                  (GtkPlotPC *pc)
   if(GTK_PLOT_GDK(pc)->ref_count == 0) GTK_PLOT_GDK(pc)->gc = NULL;
 }
 
-static void 
+static void
 gtk_plot_gdk_clip                                   (GtkPlotPC *pc,
                                                      const GdkRectangle *area)
 {
   if(!GTK_PLOT_GDK(pc)->gc) return;
 
-  /* discard GdkRectangle* const: 
+  /* discard GdkRectangle* const:
    * gdk_gc_set_clip_rectangle should have a const arg.
    * I've checked the code and it doesn't change it or keep it. murrayc.
    */
 
-  gdk_gc_set_clip_rectangle(GTK_PLOT_GDK(pc)->gc, (GdkRectangle*)area);  
+  gdk_gc_set_clip_rectangle(GTK_PLOT_GDK(pc)->gc, (GdkRectangle*)area);
 }
 
-static void 
+static void
 gtk_plot_gdk_clip_mask                              (GtkPlotPC *pc,
 						     gdouble x,
 						     gdouble y,
@@ -322,10 +350,10 @@ gtk_plot_gdk_clip_mask                              (GtkPlotPC *pc,
   if(x >= 0 && y >= 0)
     gdk_gc_set_clip_origin(GTK_PLOT_GDK(pc)->gc, x, y);
 
-  gdk_gc_set_clip_mask(GTK_PLOT_GDK(pc)->gc, (GdkBitmap*)mask);  
+  gdk_gc_set_clip_mask(GTK_PLOT_GDK(pc)->gc, (GdkBitmap*)mask);
 }
 
-static void 
+static void
 gtk_plot_gdk_set_color                               (GtkPlotPC *pc,
                                                      const GdkColor *color)
 {
@@ -338,7 +366,7 @@ gtk_plot_gdk_set_color                               (GtkPlotPC *pc,
   gdk_gc_set_foreground(GTK_PLOT_GDK(pc)->gc, &new_color);
 }
 
-static void 
+static void
 gtk_plot_gdk_set_dash                               (GtkPlotPC *pc,
                                                     gdouble offset,
                                                     gdouble *values,
@@ -358,7 +386,7 @@ gtk_plot_gdk_set_dash                               (GtkPlotPC *pc,
      gint value;
      value = values[i];
      dash[i] = list[value];
-  }  
+  }
 
   gdk_gc_set_dashes(GTK_PLOT_GDK(pc)->gc, 0, dash, num_values);
 }
@@ -371,25 +399,25 @@ static void gtk_plot_gdk_set_lineattr           (GtkPlotPC *pc,
 {
   if(!GTK_PLOT_GDK(pc)->gc) return;
 
-  gdk_gc_set_line_attributes(GTK_PLOT_GDK(pc)->gc,  
+  gdk_gc_set_line_attributes(GTK_PLOT_GDK(pc)->gc,
                              roundint(line_width),
                              line_style,
                              cap_style,
                              join_style);
 }
 
-static void 
+static void
 gtk_plot_gdk_draw_point                              (GtkPlotPC *pc,
                                                      gdouble x, gdouble y)
 {
   if(!GTK_PLOT_GDK(pc)->gc) return;
   if(!GTK_PLOT_GDK(pc)->drawable) return;
 
-  gdk_draw_point(GTK_PLOT_GDK(pc)->drawable, GTK_PLOT_GDK(pc)->gc, 
+  gdk_draw_point(GTK_PLOT_GDK(pc)->drawable, GTK_PLOT_GDK(pc)->gc,
                  roundint(x), roundint(y));
 }
 
-static void 
+static void
 gtk_plot_gdk_draw_line                               (GtkPlotPC *pc,
                                                      gdouble x1, gdouble y1,
                                                      gdouble x2, gdouble y2)
@@ -397,11 +425,11 @@ gtk_plot_gdk_draw_line                               (GtkPlotPC *pc,
   if(!GTK_PLOT_GDK(pc)->gc) return;
   if(!GTK_PLOT_GDK(pc)->drawable) return;
 
-  gdk_draw_line(GTK_PLOT_GDK(pc)->drawable, GTK_PLOT_GDK(pc)->gc, 
+  gdk_draw_line(GTK_PLOT_GDK(pc)->drawable, GTK_PLOT_GDK(pc)->gc,
                 roundint(x1), roundint(y1), roundint(x2), roundint(y2));
 }
 
-static void 
+static void
 gtk_plot_gdk_draw_lines                              (GtkPlotPC *pc,
                                                      GtkPlotPoint *points,
                                                      gint numpoints)
@@ -423,7 +451,7 @@ gtk_plot_gdk_draw_lines                              (GtkPlotPC *pc,
   g_free(p);
 }
 
-static void 
+static void
 gtk_plot_gdk_draw_rectangle                          (GtkPlotPC *pc,
                                                      gint filled,
                                                      gdouble x, gdouble y,
@@ -434,12 +462,12 @@ gtk_plot_gdk_draw_rectangle                          (GtkPlotPC *pc,
 
   gdk_draw_rectangle (GTK_PLOT_GDK(pc)->drawable, GTK_PLOT_GDK(pc)->gc,
                       filled,
-                      roundint(x), roundint(y), 
+                      roundint(x), roundint(y),
                       roundint(width), roundint(height));
 
 }
 
-static void 
+static void
 gtk_plot_gdk_draw_polygon                            (GtkPlotPC *pc,
                                                      gint filled,
                                                      GtkPlotPoint *points,
@@ -457,13 +485,13 @@ gtk_plot_gdk_draw_polygon                            (GtkPlotPC *pc,
     p[i].y = roundint(points[i].y);
   }
 
-  gdk_draw_polygon(GTK_PLOT_GDK(pc)->drawable, GTK_PLOT_GDK(pc)->gc, 
+  gdk_draw_polygon(GTK_PLOT_GDK(pc)->drawable, GTK_PLOT_GDK(pc)->gc,
                    filled, p, numpoints);
 
   g_free(p);
 }
 
-static void 
+static void
 gtk_plot_gdk_draw_circle                             (GtkPlotPC *pc,
                                                      gint filled,
                                                      gdouble x, gdouble y,
@@ -479,7 +507,7 @@ gtk_plot_gdk_draw_circle                             (GtkPlotPC *pc,
 
 }
 
-static void 
+static void
 gtk_plot_gdk_draw_ellipse                            (GtkPlotPC *pc,
                                                      gint filled,
                                                      gdouble x, gdouble y,
@@ -494,7 +522,7 @@ gtk_plot_gdk_draw_ellipse                            (GtkPlotPC *pc,
                 roundint(width), roundint(height), 0, 25000);
 }
 
-static void 
+static void
 gtk_plot_gdk_set_font                                (GtkPlotPC *pc,
 						     GtkPSFont *psfont,
                                                      gint height)
@@ -505,65 +533,50 @@ gtk_plot_gdk_set_font                                (GtkPlotPC *pc,
 /* subfunction of gtk_plot_gdk_draw_string(). */
 static gint
 drawstring(GtkPlotPC *pc,
-	   GdkBitmap *dest,
+	   GdkDrawable *drawable,
 	   GdkGC *gc,
+           gint angle,
 	   gint dx, gint dy,
 	   GtkPSFont *psfont, gint height,
-	   GdkWChar wc)
+	   const gchar *text)
 {
-  GdkBitmap *tmp;
-  GdkFont *font;
-  GdkImage *image;
-  GdkColor mask_color;
-  gint w, h, a, d, x, y, d2;
-  guint32 pixel;
+  PangoFontDescription *font;
+  PangoRectangle rect;
+  const gchar *aux = text;
+  gint ret_value;
 
-  font = gtk_psfont_get_gdkfont(psfont, height);
- 
-  if (psfont->i18n_latinfamily && psfont->vertical && (0 > wc || wc > 0x7f)) {
+  if(!text || strlen(text) == 0) return 0;
+  font = gtk_psfont_get_font_description(psfont, height);
+  pango_layout_set_font_description(GTK_PLOT_GDK(pc)->layout, font);
+
+  pango_layout_set_text(GTK_PLOT_GDK(pc)->layout, text, strlen(text));
+  pango_layout_get_extents(GTK_PLOT_GDK(pc)->layout, NULL, &rect);
+
+  if (psfont->i18n_latinfamily && psfont->vertical) {
     /* vertical-writing CJK postscript fonts. */
-
-    w = gdk_char_width_wc(font, wc);
-    a = font->ascent;
-    d = font->descent;
-    h = a + d;
-    d2 = w * d / h;
-
-    tmp = gdk_pixmap_new(GTK_PLOT_GDK(pc)->window, w, h, 1);
-
-    mask_color.pixel = 0;
-    gdk_gc_set_foreground(gc, &mask_color);
-    gdk_draw_rectangle(tmp, gc, TRUE, 0, 0, -1, -1);
-    mask_color.pixel = 1;
-    gdk_gc_set_foreground(gc, &mask_color);
-
-    gdk_draw_text_wc(tmp, font, gc, 0, a, &wc, 1);
-
-    image = gdk_image_get(tmp, 0, 0, w, h);
-
-    for (y = 0; y < h; y++) {
-      for (x = 0; x < w; x++) {
-	pixel = gdk_image_get_pixel(image, x, y);
-	if (pixel == 1)
-	  gdk_draw_point(dest, gc, dx + y, dy + d2 - x);
-      }
-    }
-
-    gdk_image_destroy(image);
-    gdk_pixmap_unref(tmp);
-
-    return h;
-  } else {
-    /* horizontal writing */
-
-    gdk_draw_text_wc(dest, font, gc, dx, dy, &wc, 1);
-    w = gdk_char_width_wc(font, wc);
-    
-    return w;
+    return rect.height;
   }
+  else
+  {
+    /* horizontal writing */
+    if(angle == 90)
+      gdk_draw_layout (drawable, gc, dx, dy-PANGO_PIXELS(rect.width), GTK_PLOT_GDK(pc)->layout);
+    else if(angle == 180)
+      gdk_draw_layout (drawable, gc, dx-PANGO_PIXELS(rect.width), dy, GTK_PLOT_GDK(pc)->layout);
+    else
+      gdk_draw_layout (drawable, gc, dx, dy, GTK_PLOT_GDK(pc)->layout);
+
+/*
+    gdk_draw_layout (GTK_PLOT_GDK(pc)->drawable, gc, dx, dy, GTK_PLOT_GDK(pc)->layout);
+*/
+
+  }
+  pango_font_description_free(font);
+  ret_value = (angle == 0 || angle == 180) ? rect.width : rect.height;
+  return PANGO_PIXELS(rect.width);
 }
 
-static void 
+static void
 gtk_plot_gdk_draw_string                        (GtkPlotPC *pc,
                                                 gint tx, gint ty,
                                                 gint angle,
@@ -579,37 +592,43 @@ gtk_plot_gdk_draw_string                        (GtkPlotPC *pc,
                                                 GtkJustification just,
                                                 const gchar *text)
 {
-  GdkBitmap *text_bitmap;
-  GdkPixmap *text_pixmap;
-  GdkBitmap *text_mask;
-  GdkImage *image;
-  GdkGC *gc, *bitmap_gc;
-  GdkColormap *colormap;
-  GdkColor mask_color;
+  GdkGC *gc;
   GList *family = NULL;
-  gint y0;
+  gint x0, y0;
   gint old_width, old_height;
   gboolean bold, italic;
   gint fontsize;
-  gint ascent, descent, w;
+  gint ascent, descent;
   gint numf;
-  gint xp = 0, yp = 0;
   gint width, height;
   gint x, y;
   gint i;
-  GdkFont *font = NULL, *latin_font = NULL;
+  PangoFontDescription *font = NULL, *latin_font = NULL;
   GtkPSFont *psfont, *base_psfont, *latin_psfont;
   gchar subs[2], insert_char;
-  GdkWChar *aux, *wtext, *lastchar = NULL, *xaux;
+  const gchar *aux = text;
+  const gchar *lastchar = text;
+  const gchar *wtext = text;
+  const gchar *xaux = text;
+  gchar new_text[strlen(text)+1];
   gchar num[4];
+  PangoRectangle rect;
+  PangoFontMetrics *metrics = NULL;
+  PangoLayout *layout = NULL;
+  gint real_x, real_y, real_width, real_height;
+  GdkColor real_fg = *fg;
+  GdkColor real_bg = *bg;
+  PangoMatrix matrix = PANGO_MATRIX_INIT;
+  PangoContext *context = GTK_PLOT_GDK(pc)->context;
+  GdkDrawable *drawable = GTK_PLOT_GDK(pc)->drawable;
+  gint sign_x = 1, sign_y = 0;
 
   if(!GTK_PLOT_GDK(pc)->drawable) return;
-  if(!GTK_PLOT_GDK(pc)->window) return;
   if(!GTK_PLOT_GDK(pc)->gc) return;
   if(!text || strlen(text) == 0) return;
 
-  colormap = gdk_colormap_get_system ();
   gc = GTK_PLOT_GDK(pc)->gc;
+  layout = GTK_PLOT_GDK(pc)->layout;
 
   if(!gc) return;
 
@@ -624,72 +643,158 @@ gtk_plot_gdk_draw_string                        (GtkPlotPC *pc,
       old_width = height;
       old_height = width;
     }
+  switch(angle){
+    case 90:
+      sign_x = 0;
+      sign_y = -1;
+      break;
+    case 180:
+      sign_x = -1;
+      sign_y = 0;
+      break;
+    case 270:
+      sign_x = 0;
+      sign_y = 1;
+      break;
+    case 0:
+    default:
+      sign_x = 1;
+      sign_y = 0;
+      break;
+  }
+
+  switch(just){
+    case GTK_JUSTIFY_LEFT:
+      switch(angle){
+        case 0:
+            ty -= ascent;
+            break;
+        case 90:
+            ty -= height;
+            tx -= ascent;
+            break;
+        case 180:
+            tx -= width;
+            ty -= descent;
+            break;
+        case 270:
+            tx -= descent;
+            break;
+      }
+      break;
+    case GTK_JUSTIFY_RIGHT:
+      switch(angle){
+        case 0:
+            tx -= width;
+            ty -= ascent;
+            break;
+        case 90:
+            tx -= ascent;
+            ty += height;
+            break;
+        case 180:
+            tx += width;
+            ty -= descent;
+            break;
+        case 270:
+            tx -= descent;
+            break;
+      }
+      break;
+    case GTK_JUSTIFY_CENTER:
+    default:
+      switch(angle){
+        case 0:
+            tx -= width / 2.;
+            ty -= ascent;
+            break;
+        case 90:
+            tx -= ascent;
+            ty += height / 2.;
+            break;
+        case 180:
+            tx += width / 2.;
+            ty -= descent;
+            break;
+        case 270:
+            tx -= descent;
+            ty -= height / 2.;
+            break;
+      }
+  }
+
+  real_x = tx;
+  real_y = ty;
+  real_width = width;
+  real_height = height;
+
+  pango_matrix_rotate (&matrix, angle);
+  pango_context_set_matrix (context, &matrix);
+  pango_layout_context_changed (layout);
+
+  if(!transparent){
+    gdk_gc_set_foreground(gc, &real_bg);
+    gdk_draw_rectangle(drawable, gc, TRUE, tx, ty, old_width, old_height);
+  }
+
+/* TEST */
+/*
+  gdk_draw_rectangle(text_pixmap, gc, FALSE, 0, 0, old_width-1, old_height-1);
+*/
 
   gtk_psfont_get_families(&family, &numf);
   base_psfont = psfont = gtk_psfont_get_by_name(font_name);
-  font = gtk_psfont_get_gdkfont(psfont, font_height);
+  font = gtk_psfont_get_font_description(psfont, font_height);
   italic = psfont->italic;
   bold = psfont->bold;
   fontsize = font_height;
-  x = 0;
-  y0 = y = ascent;
+  x0 = x = 0;
+  y0 = y = 0;
 
   if (psfont->i18n_latinfamily) {
     latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily, italic,
                                              bold);
-    latin_font = gtk_psfont_get_gdkfont(latin_psfont, fontsize);
+    if(latin_font) pango_font_description_free(latin_font);
+    latin_font = gtk_psfont_get_font_description(latin_psfont, fontsize);
   } else {
-    latin_psfont = NULL; 
+    latin_psfont = NULL;
     latin_font = NULL;
   }
 
-  i = strlen(text) + 2;
-  aux = wtext = g_malloc0(sizeof(GdkWChar) * i);
-  gdk_mbstowcs(wtext, text, i - 1);
-
-  /* initializing text bitmap - ajd */
-  text_bitmap = gdk_pixmap_new(GTK_PLOT_GDK(pc)->window,
-                              old_width, old_height, 1);
-  bitmap_gc = gdk_gc_new(text_bitmap);
-  mask_color.pixel = 0;
-  gdk_gc_set_foreground(bitmap_gc, &mask_color);
-  gdk_draw_rectangle(text_bitmap, bitmap_gc, TRUE,
-                     0, 0, -1, -1);
-  mask_color.pixel = 1;
-  gdk_gc_set_foreground(bitmap_gc, &mask_color);
-
+  gdk_gc_set_foreground(gc, &real_fg);
+  aux = text;
   while(aux && *aux != '\0' && *aux != '\n'){
    if(*aux == '\\'){
-     aux++;
+     aux = g_utf8_next_char(aux);
      switch(*aux){
        case '0': case '1': case '2': case '3':
        case '4': case '5': case '6': case '7': case '9':
            psfont = gtk_psfont_get_by_family((gchar *)g_list_nth_data(family, *aux-'0'), italic, bold);
-           gdk_font_unref(font);
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
-           aux++;
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
+           aux = g_utf8_next_char(aux);
            break;
        case '8': case 'g':
            psfont = gtk_psfont_get_by_family("Symbol", italic, bold);
-           gdk_font_unref(font);
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
-           aux++;
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
+           aux = g_utf8_next_char(aux);
            break;
        case 'B':
            bold = TRUE;
-           gdk_font_unref(font);
            psfont = gtk_psfont_get_by_family(psfont->family, italic, bold);
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
            if(latin_font){
-             gdk_font_unref(latin_font);
              latin_font = NULL;
            }
            if (psfont->i18n_latinfamily) {
              latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily,
                                                       italic, bold);
-             latin_font = gtk_psfont_get_gdkfont(latin_psfont, fontsize);
+             if(latin_font) pango_font_description_free(latin_font);
+             latin_font = gtk_psfont_get_font_description(latin_psfont, fontsize);
            }
-           aux++;
+           aux = g_utf8_next_char(aux);
            break;
        case 'x':
            xaux = aux + 1;
@@ -700,238 +805,181 @@ gtk_plot_gdk_draw_string                        (GtkPlotPC *pc,
               break;
            }
            if (i < 3){
-              aux++;
+              aux = g_utf8_next_char(aux);
               break;
            }
            num[3] = '\0';
            insert_char = (gchar)atoi(num);
            subs[0] = insert_char;
            subs[1] = '\0';
-           x += gdk_char_width(font, insert_char);
+           pango_layout_set_font_description(layout, font);
+           pango_layout_set_text(layout, subs, 1);
+           pango_layout_get_extents(layout, NULL, &rect);
+           x += sign_x*PANGO_PIXELS(rect.width);
+           y += sign_y*PANGO_PIXELS(rect.width);
            aux += 4;
            lastchar = aux - 1;
            break;
        case 'i':
            italic = TRUE;
            psfont = gtk_psfont_get_by_family(psfont->family, italic, bold);
-           gdk_font_unref(font);
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
-           if (latin_font) {
-             gdk_font_unref(latin_font);
-             latin_font = NULL;
-           }
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
            if (psfont->i18n_latinfamily) {
              latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily,
                                                       italic, bold);
-             latin_font = gtk_psfont_get_gdkfont(latin_psfont, fontsize);
+             if(latin_font) pango_font_description_free(latin_font);
+             latin_font = gtk_psfont_get_font_description(latin_psfont, fontsize);
            }
-           aux++;
+           aux = g_utf8_next_char(aux);
            break;
        case 'S': case '^':
            fontsize = (int)((gdouble)fontsize * 0.6 + 0.5);
-           gdk_font_unref(font);
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
-           y -= font->ascent;
-           if (latin_font) {
-             gdk_font_unref(latin_font);
-             latin_font = NULL;
-           }
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
+           if(metrics) pango_font_metrics_unref(metrics);
+           metrics = pango_context_get_metrics(pango_layout_get_context(layout), font, pango_context_get_language(pango_layout_get_context(layout)));
            if (psfont->i18n_latinfamily) {
-             latin_font = gtk_psfont_get_gdkfont(latin_psfont, fontsize);
+             latin_font = gtk_psfont_get_font_description(latin_psfont, fontsize);
            }
-           aux++;
+           if(angle == 180)
+             y = y0 + fontsize;
+           else if(angle == 270)
+             x = x0 + sign_y*fontsize;
+           aux = g_utf8_next_char(aux);
            break;
        case 's': case '_':
            fontsize = (int)((gdouble)fontsize * 0.6 + 0.5);
-           gdk_font_unref(font);
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
-           y += font->descent;
-           if (latin_font) {
-             gdk_font_unref(latin_font);
-             latin_font = NULL;
-           }
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
+           if(metrics) pango_font_metrics_unref(metrics);
+           metrics = pango_context_get_metrics(pango_layout_get_context(layout), font, pango_context_get_language(pango_layout_get_context(layout)));
+           if(angle == 0)
+             y = y0 + fontsize;
+           else if(angle == 90)
+             x = x0 - sign_y*fontsize;
            if (psfont->i18n_latinfamily) {
-             latin_font = gtk_psfont_get_gdkfont(latin_psfont, fontsize);
+             latin_font = gtk_psfont_get_font_description(latin_psfont, fontsize);
            }
-           aux++;
+           aux = g_utf8_next_char(aux);
            break;
        case '+':
            fontsize += 3;
-           gdk_font_unref(font);
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
-           if (latin_font) {
-             gdk_font_unref(latin_font);
-             latin_font = NULL;
-           }
+           y -= sign_x*3;
+           x += sign_y*3;
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
            if (psfont->i18n_latinfamily) {
-             latin_font = gtk_psfont_get_gdkfont(latin_psfont, fontsize);
+             latin_font = gtk_psfont_get_font_description(latin_psfont, fontsize);
            }
-           aux++;
+           aux = g_utf8_next_char(aux);
            break;
        case '-':
            fontsize -= 3;
-           gdk_font_unref(font);
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
-           if (latin_font) {
-             gdk_font_unref(latin_font);
-             latin_font = NULL;
-           }
+           y += sign_x*3;
+           x -= sign_y*3;
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
            if (psfont->i18n_latinfamily) {
-             latin_font = gtk_psfont_get_gdkfont(latin_psfont, fontsize);
+             latin_font = gtk_psfont_get_font_description(latin_psfont, fontsize);
            }
-           aux++;
+           aux = g_utf8_next_char(aux);
            break;
        case 'N':
 	   psfont = base_psfont;
-           gdk_font_unref(font);
            fontsize = font_height;
-           font = gtk_psfont_get_gdkfont(psfont, fontsize);
-           y = y0;
+           pango_font_description_free(font);
+           font = gtk_psfont_get_font_description(psfont, fontsize);
+           if(angle == 0 || angle == 180)
+             y = y0;
+           else
+             x = x0;
            italic = psfont->italic;
            bold = psfont->bold;
-           aux++;
+           aux = g_utf8_next_char(aux);
            break;
        case 'b':
 	   if (lastchar) {
-	     gtk_psfont_get_char_size(psfont, font, latin_font, *lastchar, &w,
-				      NULL, NULL);
-	     x -= w;
+             const gchar *aux2 = lastchar;
+             gint i = g_utf8_prev_char(lastchar) != --aux2 ? 2 : 1;
+             pango_layout_set_text(layout, lastchar, i);
+             pango_layout_get_extents(layout, NULL, &rect);
+	     x -= sign_x*PANGO_PIXELS(rect.width);
+	     y -= sign_y*PANGO_PIXELS(rect.width);
 
 	     if (lastchar == wtext)
 	       lastchar = NULL;
 	     else
-	       lastchar--;
+	       lastchar = g_utf8_prev_char(lastchar);
 	   } else {
-	     gtk_psfont_get_char_size(psfont, font, latin_font, 'X', &w, NULL,
-				    NULL);
-	     x -= w;
+             pango_layout_set_text(layout, "X", 1);
+             pango_layout_get_extents(layout, NULL, &rect);
+	     x -= sign_x*PANGO_PIXELS(rect.width);
+	     y -= sign_y*PANGO_PIXELS(rect.width);
 	   }
-           aux++;
+           aux = g_utf8_next_char(aux);
            break;
        default:
            if(aux && *aux != '\0' && *aux !='\n'){
-	     x += drawstring(pc, text_bitmap, bitmap_gc, x, y,
-			     psfont, fontsize, *aux);
+             gint new_width = 0;
+	     new_width = drawstring(pc, drawable, gc, angle, tx+x, ty+y,
+			     psfont, fontsize, aux);
+             x += sign_x * new_width;
+             y += sign_y * new_width;
 	     lastchar = aux;
-	     aux++;
+	     aux = g_utf8_next_char(aux);
 	   }
 	   break;
      }
    } else {
-     if(aux && *aux != '\0' && *aux !='\n'){
-       x += drawstring(pc, text_bitmap, bitmap_gc, x, y,
-		       psfont, fontsize, *aux);
-       lastchar = aux;
-       aux++;
+     gint new_len = 0;
+     gint new_width = 0;
+     lastchar = aux;
+     while(aux && *aux != '\0' && *aux !='\n' && *aux != '\\'){
+       xaux = aux;
+       new_len += g_utf8_next_char(aux) != ++xaux ? 2 : 1;
+       aux = g_utf8_next_char(aux);
      }
+     xaux = lastchar;
+     for(i = 0; i < new_len; i++) new_text[i] = *xaux++;
+     new_text[new_len] = '\0';
+     new_width = drawstring(pc, drawable, gc, angle, tx+x, ty+y,
+	         psfont, fontsize, new_text);
+     x += sign_x * new_width;
+     y += sign_y * new_width;
+     lastchar = aux;
    }
   }
 
-  g_free(wtext);
-
-  /* initializing clip mask bitmap - ajd */
-  text_mask = gdk_pixmap_new(GTK_PLOT_GDK(pc)->window, width, height, 1);
-  mask_color.pixel = 0;
-  gdk_gc_set_foreground(bitmap_gc, &mask_color);
-  gdk_draw_rectangle(text_mask, bitmap_gc, TRUE, 0, 0, -1, -1);
-  mask_color.pixel = 1;
-  gdk_gc_set_foreground(bitmap_gc, &mask_color);
-
-  /* performing text rotation and saving it onto clip mask bitmap - ajd */
-  image = gdk_image_get(text_bitmap, 0, 0, old_width, old_height);
-  for(y = 0; y < old_height; y++)
-      for(x = 0; x < old_width; x++)
-         {
-           if( gdk_image_get_pixel(image, x, y) == 1 ){
-           switch(angle){
-            case 0:
-                xp = x;
-                yp = y;
-                break;
-            case 90:
-                xp = y;
-                yp = old_width - x;
-                break;
-            case 180:
-                xp = old_width - x;
-                yp = old_height - y;
-                break;
-            case 270:
-                xp = old_height - y;
-                yp = x;
-                break;
-            }
-            gdk_draw_point(text_mask, bitmap_gc, xp, yp);
-           }
-         }
-  gdk_image_destroy(image);
-
-
-  /* initializing text pixmap - ajd */
-  text_pixmap = gdk_pixmap_new(GTK_PLOT_GDK(pc)->window, width, height, -1);
-  gdk_gc_set_foreground(gc, (GdkColor *) bg);
-  gdk_draw_rectangle(text_pixmap, gc, TRUE, 0, 0, -1, -1);
-  gdk_gc_set_foreground(gc, (GdkColor *) fg);
-
-  /* copying clip mask bitmap onto text pixmap - ajd */
-  gdk_gc_set_clip_mask(gc, text_mask);
-  gdk_gc_set_clip_origin(gc, 0, 0);
-  gdk_draw_rectangle(text_pixmap, gc, TRUE, 0, 0, -1, -1);
-  gdk_gc_set_clip_mask(gc, NULL);
-
-  gtk_plot_text_get_area(text, angle, just, font_name, font_height,
-                         &x, &y, &width, &height);
-  tx += x;
-  ty += y;
-
-  if(transparent){
-    gdk_gc_set_clip_mask (gc, text_mask);
-    gdk_gc_set_clip_origin (gc, tx, ty);
-  } else {
-    gdk_gc_set_foreground(gc, (GdkColor *) bg);
-    gtk_plot_pc_draw_rectangle(pc,
-   		         TRUE, 
-                         tx - border_space, ty - border_space, 
-                         width + 2*border_space, height + 2*border_space);
-  }
-
-  gdk_draw_pixmap(GTK_PLOT_GDK(pc)->drawable, gc,
-                  text_pixmap, 0, 0,
-                  tx, ty, -1, -1);
-  gdk_gc_set_clip_mask(gc, NULL);
-
-  gdk_pixmap_unref(text_pixmap);
-  gdk_bitmap_unref(text_mask);
-  gdk_font_unref(font);
-  gdk_gc_unref(bitmap_gc);
-  gdk_pixmap_unref(text_bitmap);
-
+  pango_font_description_free(font);
+  if(latin_font) pango_font_description_free(latin_font);
+  if(metrics) pango_font_metrics_unref(metrics);
 
 /* border */
 
-  gdk_gc_set_foreground(gc, (GdkColor *) fg);
+  gdk_gc_set_foreground(gc, &real_fg);
   gtk_plot_pc_set_dash(pc, 0, NULL, 0);
   gtk_plot_pc_set_lineattr(pc, border_width, 0, 0, 0);
   switch(border){
-    case GTK_PLOT_BORDER_SHADOW: 
+    case GTK_PLOT_BORDER_SHADOW:
       gtk_plot_pc_draw_rectangle(pc,
-   		         TRUE, 
-                         tx - border_space + shadow_width, 
-                         ty + height + border_space, 
+   		         TRUE,
+                         tx - border_space + shadow_width,
+                         ty + height + border_space,
                          width + 2 * border_space, shadow_width);
       gtk_plot_pc_draw_rectangle(pc,
-   		         TRUE, 
-                         tx + width + border_space, 
-                         ty - border_space + shadow_width, 
+   		         TRUE,
+                         tx + width + border_space,
+                         ty - border_space + shadow_width,
                          shadow_width, height + 2 * border_space);
-    case GTK_PLOT_BORDER_LINE: 
+    case GTK_PLOT_BORDER_LINE:
       gtk_plot_pc_draw_rectangle(pc,
-   		         FALSE, 
-                         tx - border_space, ty - border_space, 
+   		         FALSE,
+                         tx - border_space, ty - border_space,
                          width + 2*border_space, height + 2*border_space);
-    case GTK_PLOT_BORDER_NONE: 
+    case GTK_PLOT_BORDER_NONE:
     default:
-	break; 
+	break;
   }
 
   return;
@@ -944,7 +992,7 @@ static void gtk_plot_gdk_draw_pixmap                (GtkPlotPC *pc,
                                                      gint xdest, gint ydest,
                                                      gint width,
                                                      gint height,
-                                                     gdouble scale_x, 
+                                                     gdouble scale_x,
                                                      gdouble scale_y)
 {
   GdkGC *gc;
@@ -952,17 +1000,21 @@ static void gtk_plot_gdk_draw_pixmap                (GtkPlotPC *pc,
   GdkBitmap *new_mask = NULL;
 
   if(!GTK_PLOT_GDK(pc)->drawable) return;
-  if(!GTK_PLOT_GDK(pc)->window) return;
   if(!GTK_PLOT_GDK(pc)->gc) return;
 
   gc = GTK_PLOT_GDK(pc)->gc;
 
   if(!gc) return;
 
-  new_pixmap = scale_pixmap(GTK_PLOT_GDK(pc)->window, pixmap, scale_x, scale_y);
-  
+  new_pixmap = scale_pixmap(GTK_PLOT_GDK(pc)->drawable, pixmap, scale_x, scale_y);
+
   if(mask)
-     new_mask = scale_bitmap(GTK_PLOT_GDK(pc)->window, mask, scale_x, scale_y);
+     new_mask = scale_bitmap(GTK_PLOT_GDK(pc)->drawable, mask, scale_x, scale_y);
+
+/* TEST
+  new_pixmap = pixmap; gdk_pixmap_ref(pixmap);
+  if(mask) new_mask = mask; gdk_bitmap_ref(mask);
+*/
 
   gtk_plot_pc_clip_mask(pc, xdest, ydest, new_mask);
   gdk_draw_pixmap(GTK_PLOT_GDK(pc)->drawable, gc, new_pixmap,
@@ -976,20 +1028,18 @@ static void gtk_plot_gdk_draw_pixmap                (GtkPlotPC *pc,
 static GdkPixmap *
 scale_pixmap (GdkWindow *window, GdkPixmap *pixmap, gdouble scale_x, gdouble scale_y)
 {
-  GdkGC *gc;
-  GdkVisual *visual;
-  GdkImage *image, *new_image;
+  GdkGC *gc = NULL;
   GdkPixmap *new_pixmap;
-  gint x, y, width, height, new_width, new_height;
-  guint32 pixel;
+  gint width, height, new_width, new_height;
+  GdkPixbuf *pixbuf = NULL;
+  GdkPixbuf *aux_pixbuf = NULL;
 
   if(!pixmap) return NULL;
   if(!window) return NULL;
 
-  gc = gdk_gc_new(pixmap);
-  visual = gdk_visual_get_system ();
-
   gdk_window_get_size(pixmap, &width, &height);
+
+  gc = gdk_gc_new(window);
 
   if(scale_x == 1.0 && scale_y == 1.0){
     new_pixmap = gdk_pixmap_new(window, width, height, -1);
@@ -1004,32 +1054,16 @@ scale_pixmap (GdkWindow *window, GdkPixmap *pixmap, gdouble scale_x, gdouble sca
 
   new_width = roundint(width * scale_x);
   new_height = roundint(height * scale_y);
- 
-  /* make a client side image of the pixmap, and
-   * scale the data into a another client side image */
-  new_image = gdk_image_new(GDK_IMAGE_FASTEST,visual,new_width,new_height);
-  image = gdk_drawable_get_image(pixmap,
-                        0, 0,
-                        width, height);
 
-  for(x = 0; x < new_width; x++){
-    for(y = 0; y < new_height; y++){
-      gint px, py;
+  pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, gdk_drawable_get_colormap(window), 0, 0, 0, 0, width, height);
+  aux_pixbuf = gdk_pixbuf_scale_simple(pixbuf, new_width, new_height, GDK_INTERP_BILINEAR);
+  new_pixmap = gdk_pixmap_new(pixmap, new_width, new_height, -1);
+  gdk_draw_pixbuf(new_pixmap, gc, aux_pixbuf, 0, 0, 0, 0, new_width, new_height, GDK_RGB_DITHER_MAX, 0, 0);
 
-      px = MIN(roundint(x / scale_x), width - 1);
-      py = MIN(roundint(y / scale_y), height - 1);
+  gdk_pixbuf_unref(pixbuf);
+  gdk_pixbuf_unref(aux_pixbuf);
 
-      pixel = gdk_image_get_pixel(image, px, py);
-      gdk_image_put_pixel(new_image, x, y, pixel);
-    }
-  }
-
-  /* draw the image into a new pixmap */
-  new_pixmap = gdk_pixmap_new(window, new_width, new_height, -1);
-  gdk_draw_image(new_pixmap,gc,new_image,0,0,0,0,new_width,new_height);
-
-  gdk_image_destroy(image);
-  gdk_image_destroy(new_image);
+  gdk_gc_unref(gc);
 
   return new_pixmap;
 }
@@ -1038,9 +1072,9 @@ static GdkBitmap *
 scale_bitmap (GdkWindow *window, GdkBitmap *bitmap, gdouble scale_x, gdouble scale_y)
 {
   GdkGC *gc;
-  GdkVisual *visual;
-  GdkImage *image, *new_image;
-  GdkBitmap *new_bitmap;
+  GdkVisual *visual = NULL;
+  GdkImage *image = NULL, *new_image = NULL;
+  GdkBitmap *new_bitmap = NULL;
   gint x, y, width, height, new_width, new_height;
   GdkColor color;
 
@@ -1048,7 +1082,6 @@ scale_bitmap (GdkWindow *window, GdkBitmap *bitmap, gdouble scale_x, gdouble sca
   if(!window) return NULL;
 
   gc = gdk_gc_new(bitmap);
-  visual = gdk_visual_get_system ();
 
   gdk_window_get_size(bitmap, &width, &height);
 
@@ -1056,7 +1089,7 @@ scale_bitmap (GdkWindow *window, GdkBitmap *bitmap, gdouble scale_x, gdouble sca
     new_bitmap = gdk_pixmap_new(window, width, height, 1);
     color.pixel = 0;
     gdk_gc_set_foreground(gc, &color);
-    gdk_draw_rectangle(new_bitmap, gc, TRUE, 0, 0, width, height); 
+    gdk_draw_rectangle(new_bitmap, gc, TRUE, 0, 0, width, height);
     color.pixel = 1;
     gdk_gc_set_foreground(gc, &color);
 
@@ -1074,16 +1107,19 @@ scale_bitmap (GdkWindow *window, GdkBitmap *bitmap, gdouble scale_x, gdouble sca
 
   /* make a client side image of the bitmap, and
    * scale the data into a another client side image */
+  visual = gdk_window_get_visual (bitmap);
+  if(!visual) return NULL;
+  new_image = gdk_image_new(GDK_IMAGE_FASTEST,visual,new_width,new_height);
+  if(!new_image) return NULL;
+  new_bitmap = gdk_pixmap_new(window, new_width, new_height, 1);
+
   image = gdk_drawable_get_image(bitmap,
                         0, 0,
                         width, height);
 
-  new_image = gdk_image_new(GDK_IMAGE_FASTEST,visual,new_width,new_height);
-  new_bitmap = gdk_pixmap_new(window, new_width, new_height, 1);
-
   color.pixel = 0;
   gdk_gc_set_foreground(gc, &color);
-  gdk_draw_rectangle(new_bitmap, gc, TRUE, 0, 0, width, height); 
+  gdk_draw_rectangle(new_bitmap, gc, TRUE, 0, 0, width, height);
   color.pixel = 1;
   gdk_gc_set_foreground(gc, &color);
 
@@ -1097,7 +1133,6 @@ scale_bitmap (GdkWindow *window, GdkBitmap *bitmap, gdouble scale_x, gdouble sca
 
       pixel = gdk_image_get_pixel(image, px, py);
       gdk_image_put_pixel(new_image, x, y, pixel);
-
     }
   }
 
@@ -1109,8 +1144,4 @@ scale_bitmap (GdkWindow *window, GdkBitmap *bitmap, gdouble scale_x, gdouble sca
 
   return new_bitmap;
 }
-static gint
-roundint(gdouble x)
-{
- return (x+.50999999471);
-}
+

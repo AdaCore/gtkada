@@ -81,6 +81,7 @@ gtk_plot_pc_real_init (GtkPlotPC *pc)
   pc->width = pc->height = 0;
 
   pc->init_count = 0;
+  pc->use_pixmap = TRUE;
 }
 
 GtkObject *
@@ -89,7 +90,7 @@ gtk_plot_pc_new				(void)
   GtkObject *object;
 
   object = gtk_type_new (gtk_plot_pc_get_type());
-        
+
   return (object);
 }
 
@@ -175,7 +176,7 @@ void gtk_plot_pc_draw_lines                              (GtkPlotPC *pc,
                                                          GtkPlotPoint *points,
                                                          gint numpoints)
 {
-  if(!points || numpoints < 1) return;
+  if(!points || numpoints <= 1) return;
   GTK_PLOT_PC_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(pc)))->draw_lines(pc, points, numpoints);
 }
 
@@ -189,7 +190,7 @@ void gtk_plot_pc_draw_rectangle                          (GtkPlotPC *pc,
                                                          gint filled,
                                                          gdouble x, gdouble y,
                                                          gdouble width,
-                                                         gdouble height) 
+                                                         gdouble height)
 {
   GTK_PLOT_PC_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(pc)))->draw_rectangle(pc, filled, x, y, width, height);
 }
@@ -215,7 +216,7 @@ void gtk_plot_pc_draw_ellipse                            (GtkPlotPC *pc,
                                                          gint filled,
                                                          gdouble x, gdouble y,
                                                          gdouble width,
-                                                         gdouble height) 
+                                                         gdouble height)
 {
   GTK_PLOT_PC_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(pc)))->draw_ellipse(pc, filled, x, y, width, height);
 }
@@ -246,7 +247,7 @@ void gtk_plot_pc_draw_string                             (GtkPlotPC *pc,
   if(!text) return;
   if(strlen(text) == 0) return;
 
-  GTK_PLOT_PC_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(pc)))->draw_string(pc, x, y, 
+  GTK_PLOT_PC_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(pc)))->draw_string(pc, x, y,
                                                        angle,
                                                        fg,
                                                        bg,

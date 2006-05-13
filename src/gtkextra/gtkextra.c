@@ -120,31 +120,11 @@ _gtkextra_signal_emit(GtkObject *object, guint signal_id, ...)
 
     }
 
-  result = va_arg (var_args, gboolean*);
-
   g_value_init(&ret, query.return_type);
-  G_VALUE_COLLECT (&ret,
-                   var_args,
-                   query.return_type ? G_VALUE_NOCOPY_CONTENTS : 0,
-                   &error);
-
-  if (error)
-    {
-      g_warning ("%s: %s", G_STRLOC, error);
-      g_free (error);
-      while (i-- > 0)
-        g_value_unset (instance_and_params + i);
-
-      va_end (var_args);
-      return;
-    }
-
+  result = va_arg(var_args,gboolean *);
   g_value_set_boolean(&ret, *result);    
-
   g_signal_emitv(instance_and_params, signal_id, 0, &ret);
-
   *result = g_value_get_boolean(&ret);    
-
   g_value_unset (&ret);
 
   for (i = 0; i < query.n_params; i++)

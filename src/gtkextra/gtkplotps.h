@@ -47,7 +47,7 @@ struct _GtkPlotPS
 
    FILE *psfile;
    gchar *psname;
- 
+
    gint orientation;
    gint epsflag;
 

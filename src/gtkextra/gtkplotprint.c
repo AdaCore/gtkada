@@ -145,14 +145,10 @@ gtk_plot_canvas_export_ps                       (GtkPlotCanvas *canvas,
 {
   GtkPlotPC *pc;
   GtkPlotPS *ps;
-  GList *plots;
   gint old_width, old_height;
   gdouble scalex, scaley;
   gdouble m;
-  GtkAllocation allocation[100];
-  GtkAllocation canvas_allocation;
-  GtkPlotPC *aux_pc[100];
-  gint n = 0;
+  GdkPixmap *pixmap;
 
   m = canvas->magnification;
 
@@ -173,56 +169,17 @@ gtk_plot_canvas_export_ps                       (GtkPlotCanvas *canvas,
 
   pc = canvas->pc;
   canvas->pc = GTK_PLOT_PC(ps);
-  canvas->magnification = 1.0;
-  canvas->pixmap_width = canvas->width;
-  canvas->pixmap_height = canvas->height;
 
-  canvas_allocation.x = canvas_allocation.y = 0;
-  canvas_allocation.width = canvas->width;
-  canvas_allocation.height = canvas->height;
-
-  plots = canvas->plots;
-  while(plots){
-    GtkPlot *plot;
-
-    plot = GTK_PLOT(plots->data);
-
-    plot->magnification = 1.0;
-
-    allocation[n] = GTK_WIDGET(plot)->allocation;
-    aux_pc[n] = plot->pc;
-    plot->pc = pc;
-    n++;
-
-    gtk_widget_size_allocate(GTK_WIDGET(plot), &canvas_allocation);
-    recalc_pixels(plot);
-
-    plots= plots->next;
-  }
+  pixmap = canvas->pixmap;
+  canvas->pixmap = NULL;
+  gtk_plot_canvas_set_magnification(canvas, 1.0);
 
   gtk_plot_canvas_paint(canvas);
+  gtk_plot_canvas_set_magnification(canvas, m);
+  gdk_pixmap_unref(canvas->pixmap);
+  canvas->pixmap = pixmap;
 
   canvas->pc = pc;
-  canvas->magnification = m;
-  canvas->pixmap_width = old_width;
-  canvas->pixmap_height = old_height;
-
-  n = 0;
-  plots = canvas->plots;
-  while(plots){
-    GtkPlot *plot;
-   
-    plot = GTK_PLOT(plots->data);
-
-    plot->magnification = m;
-    gtk_widget_size_allocate(GTK_WIDGET(plot), &allocation[n]);
-    plot->pc = aux_pc[n];
-    recalc_pixels(plot); 
-    n++;
-    
-    plots= plots->next;
-  }
-
   gtk_object_destroy(GTK_OBJECT(ps));
 
   return TRUE;
@@ -239,14 +196,9 @@ gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
 {
   GtkPlotPC *pc;
   GtkPlotPS *ps;
-  GList *plots;
-  GtkAllocation allocation[100];
-  GtkAllocation canvas_allocation;
-  GtkPlotPC *aux_pc[100];
-  gint old_width, old_height;
   gdouble scalex, scaley;
   gdouble m;
-  gint n = 0;
+  GdkPixmap *pixmap;
 
   m = canvas->magnification;
 
@@ -265,66 +217,23 @@ gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
 
   gtk_plot_ps_set_scale(ps, scalex, scaley);
 
-  old_width = canvas->pixmap_width;
-  old_height = canvas->pixmap_height;
-
   pc = canvas->pc;
   canvas->pc = GTK_PLOT_PC(ps);
-  canvas->magnification = 1.0;
-  canvas->pixmap_width = canvas->width;
-  canvas->pixmap_height = canvas->height;
 
-  canvas_allocation.x = canvas_allocation.y = 0;
-  canvas_allocation.width = canvas->width;
-  canvas_allocation.height = canvas->height;
-
-  plots = canvas->plots;
-  while(plots){
-    GtkPlot *plot;
-   
-    plot = GTK_PLOT(plots->data);
-
-    plot->magnification = 1.0;
-    allocation[n] = GTK_WIDGET(plot)->allocation;
-    aux_pc[n] = plot->pc;
-    plot->pc = pc;
-    n++;
-
-
-    gtk_widget_size_allocate(GTK_WIDGET(plot), &canvas_allocation);
-    recalc_pixels(plot); 
-    
-    plots= plots->next;
-  }
-
+  pixmap = canvas->pixmap;
+  canvas->pixmap = NULL;
+  gtk_plot_canvas_set_magnification(canvas, 1.0);
   gtk_plot_canvas_paint(canvas);
+  gtk_plot_canvas_set_magnification(canvas, m);
+  gdk_pixmap_unref(canvas->pixmap);
+  canvas->pixmap = pixmap;
 
   canvas->pc = pc;
-  canvas->magnification = m;
-  canvas->pixmap_width = old_width;
-  canvas->pixmap_height = old_height;
-
-  n = 0;
-  plots = canvas->plots;
-  while(plots){
-    GtkPlot *plot;
-   
-    plot = GTK_PLOT(plots->data);
-
-    plot->magnification = m;
-    gtk_widget_size_allocate(GTK_WIDGET(plot), &allocation[n]);
-    plot->pc = aux_pc[n];
-    recalc_pixels(plot); 
-    n++;
-    
-    plots= plots->next;
-  }
 
   gtk_object_destroy(GTK_OBJECT(ps));
 
   return TRUE;
 }
-
 static void
 recalc_pixels(GtkPlot *plot)
 {

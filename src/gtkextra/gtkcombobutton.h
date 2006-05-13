@@ -1,4 +1,4 @@
-/* gtkcombobox - combobox widget for gtk+
+/* gtkcombo_button - combo_button widget for gtk+
  * Copyright 1999-2001 Adrian E. Feiguin <feiguin@ifir.edu.ar>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,22 +18,22 @@
  */
 
 
-#ifndef __GTK_EXTRA_COMBO_BOX_H__
-#define __GTK_EXTRA_COMBO_BOX_H__
+#ifndef __GTK_COMBO_BUTTON_H__
+#define __GTK_COMBO_BUTTON_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define GTK_EXTRA_COMBO_BOX(obj)			GTK_CHECK_CAST (obj, gtk_extra_combobox_get_type (), GtkExtraComboBox)
-#define GTK_EXTRA_COMBO_BOX_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_extra_combobox_get_type (), GtkExtraComboBoxClass)
-#define GTK_EXTRA_IS_COMBO_BOX(obj)       GTK_CHECK_TYPE (obj, gtk_extra_combobox_get_type ())
+#define GTK_COMBO_BUTTON(obj)			GTK_CHECK_CAST (obj, gtk_combo_button_get_type (), GtkComboButton)
+#define GTK_COMBO_BUTTON_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_combo_button_get_type (), GtkComboButtonClass)
+#define GTK_IS_COMBO_BUTTON(obj)       GTK_CHECK_TYPE (obj, gtk_combo_button_get_type ())
 
-typedef struct _GtkExtraComboBox	GtkExtraComboBox;
-typedef struct _GtkExtraComboBoxClass	GtkExtraComboBoxClass;
+typedef struct _GtkComboButton		GtkComboButton;
+typedef struct _GtkComboButtonClass	GtkComboButtonClass;
 
 /* you should access only the entry and list fields directly */
-struct _GtkExtraComboBox {
+struct _GtkComboButton {
 	GtkHBox hbox;
 
 	GtkWidget *button;
@@ -43,20 +43,20 @@ struct _GtkExtraComboBox {
 	GtkWidget *frame;
 };
 
-struct _GtkExtraComboBoxClass {
+struct _GtkComboButtonClass {
 	GtkHBoxClass parent_class;
 };
 
-GtkType      gtk_extra_combobox_get_type              (void);
+GtkType      gtk_combo_button_get_type              (void);
 
-GtkWidget *gtk_extra_combobox_new                   (void);
+GtkWidget *gtk_combo_button_new                   (void);
 
-void	   gtk_extra_combobox_hide_popdown_window   (GtkExtraComboBox *combobox);
+void	   gtk_combo_button_hide_popdown_window   (GtkComboButton *combo_button);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* __GTK_COMBO_BOX_H__ */
+#endif /* __GTK_COMBO_BUTTON_H__ */
 
 

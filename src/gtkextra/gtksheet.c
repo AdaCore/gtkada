@@ -44,7 +44,7 @@
 
 /* sheet flags */
 enum
-{ 
+{
   GTK_SHEET_IS_LOCKED       = 1 << 0,
   GTK_SHEET_IS_FROZEN       = 1 << 1,
   GTK_SHEET_IN_XDRAG        = 1 << 2,
@@ -68,7 +68,7 @@ enum
 #define GTK_SHEET_IN_RESIZE(sheet) (GTK_SHEET_FLAGS (sheet) & GTK_SHEET_IN_RESIZE)
 #define GTK_SHEET_IN_CLIP(sheet) (GTK_SHEET_FLAGS (sheet) & GTK_SHEET_IN_CLIP)
 #define GTK_SHEET_REDRAW_PENDING(sheet)   (GTK_SHEET_FLAGS (sheet) & GTK_SHEET_REDRAW_PENDING)
- 
+
 #define CELL_SPACING 1
 #define DRAG_WIDTH 6
 #define TIMEOUT_SCROLL 20
@@ -81,28 +81,28 @@ enum
 #define CELLOFFSET 4
 #define DEFAULT_COLUMN_WIDTH 80
 
-static inline guint DEFAULT_ROW_HEIGHT(GtkWidget *widget) 
-{ 
+static inline guint DEFAULT_ROW_HEIGHT(GtkWidget *widget)
+{
   if(!widget->style->font_desc) return 24;
   else {
-    PangoContext *context = gtk_widget_get_pango_context(widget); 
+    PangoContext *context = gtk_widget_get_pango_context(widget);
     PangoFontMetrics *metrics = pango_context_get_metrics(context,
                                   widget->style->font_desc,
-                                  pango_context_get_language(context)); 
-    guint val = pango_font_metrics_get_descent(metrics) + 
+                                  pango_context_get_language(context));
+    guint val = pango_font_metrics_get_descent(metrics) +
                 pango_font_metrics_get_ascent(metrics);
     pango_font_metrics_unref(metrics);
     return PANGO_PIXELS(val)+2*CELLOFFSET;
   }
 }
-static inline guint DEFAULT_FONT_ASCENT(GtkWidget *widget) 
-{ 
+static inline guint DEFAULT_FONT_ASCENT(GtkWidget *widget)
+{
   if(!widget->style->font_desc) return 12;
   else {
-    PangoContext *context = gtk_widget_get_pango_context(widget); 
+    PangoContext *context = gtk_widget_get_pango_context(widget);
     PangoFontMetrics *metrics = pango_context_get_metrics(context,
                                   widget->style->font_desc,
-                                  pango_context_get_language(context)); 
+                                  pango_context_get_language(context));
     guint val = pango_font_metrics_get_ascent(metrics);
     pango_font_metrics_unref(metrics);
     return PANGO_PIXELS(val);
@@ -123,14 +123,14 @@ static inline guint STRING_WIDTH(GtkWidget *widget,
   return PANGO_PIXELS(rect.width);
 }
 
-static inline guint DEFAULT_FONT_DESCENT(GtkWidget *widget) 
-{ 
+static inline guint DEFAULT_FONT_DESCENT(GtkWidget *widget)
+{
   if(!widget->style->font_desc) return 12;
   else {
-    PangoContext *context = gtk_widget_get_pango_context(widget); 
+    PangoContext *context = gtk_widget_get_pango_context(widget);
     PangoFontMetrics *metrics = pango_context_get_metrics(context,
                                   widget->style->font_desc,
-                                  pango_context_get_language(context)); 
+                                  pango_context_get_language(context));
     guint val =  pango_font_metrics_get_descent(metrics);
     pango_font_metrics_unref(metrics);
     return PANGO_PIXELS(val);
@@ -146,9 +146,9 @@ ROW_TOP_YPIXEL(GtkSheet *sheet, gint nrow)
 }
 
 
-/* returns the row index from a y pixel location in the 
+/* returns the row index from a y pixel location in the
  * context of the sheet's voffset */
-static inline gint 
+static inline gint
 ROW_FROM_YPIXEL(GtkSheet *sheet, gint y)
 {
   gint i, cy;
@@ -177,7 +177,7 @@ COLUMN_LEFT_XPIXEL(GtkSheet *sheet, gint ncol)
    return (sheet->hoffset + sheet->column[ncol].left_xpixel);
 }
 
-/* returns the column index from a x pixel location in the 
+/* returns the column index from a x pixel location in the
  * context of the sheet's hoffset */
 static inline gint
 COLUMN_FROM_XPIXEL (GtkSheet * sheet,
@@ -204,12 +204,12 @@ COLUMN_FROM_XPIXEL (GtkSheet * sheet,
 static inline gint SHEET_HEIGHT(GtkSheet *sheet)
 {
   gint i,cx;
- 
+
   cx = 0;
   if(sheet->column_titles_visible) cx += sheet->column_title_area.height;
   for (i=0;i<=sheet->maxrow; i++)
    if(sheet->row[i].is_visible) cx += sheet->row[i].height;
-  
+
   return cx;
 }
 
@@ -218,12 +218,12 @@ static inline gint SHEET_HEIGHT(GtkSheet *sheet)
 static inline gint SHEET_WIDTH(GtkSheet *sheet)
 {
   gint i,cx;
- 
+
   cx = 0;
   if(sheet->row_titles_visible) cx += sheet->row_title_area.width;
   for (i=0;i<=sheet->maxcol; i++)
    if(sheet->column[i].is_visible) cx += sheet->column[i].width;
-  
+
   return cx;
 }
 
@@ -253,7 +253,7 @@ POSSIBLE_XDRAG(GtkSheet *sheet, gint x, gint *drag_column)
    return sheet->column[column].is_sensitive;
 
  return FALSE;
-} 
+}
 
 static inline gint
 POSSIBLE_YDRAG(GtkSheet *sheet, gint y, gint *drag_row)
@@ -274,10 +274,10 @@ POSSIBLE_YDRAG(GtkSheet *sheet, gint y, gint *drag_row)
 
  if(y >= ydrag-DRAG_WIDTH/2 && y <= ydrag+DRAG_WIDTH/2)
    return sheet->row[row].is_sensitive;
- 
- 
+
+
  return FALSE;
-}        
+}
 
 static inline gint POSSIBLE_DRAG(GtkSheet *sheet, gint x, gint y,
                             gint *drag_row, gint *drag_column)
@@ -325,14 +325,14 @@ static inline gint POSSIBLE_RESIZE(GtkSheet *sheet, gint x, gint y,
                             gint *drag_row, gint *drag_column)
 {
   gint xdrag, ydrag;
-  
+
   xdrag=COLUMN_LEFT_XPIXEL(sheet,sheet->range.coli)+
            sheet->column[sheet->range.coli].width;
 
   ydrag=ROW_TOP_YPIXEL(sheet,sheet->range.rowi)+
            sheet->row[sheet->range.rowi].height;
 
-  if(sheet->state == GTK_SHEET_COLUMN_SELECTED) 
+  if(sheet->state == GTK_SHEET_COLUMN_SELECTED)
         ydrag = ROW_TOP_YPIXEL(sheet, sheet->view.row0);
 
   if(sheet->state == GTK_SHEET_ROW_SELECTED)
@@ -344,12 +344,13 @@ static inline gint POSSIBLE_RESIZE(GtkSheet *sheet, gint x, gint y,
   if(x>=xdrag-DRAG_WIDTH/2 && x<=xdrag+DRAG_WIDTH/2 &&
      y>=ydrag-DRAG_WIDTH/2 && y<=ydrag+DRAG_WIDTH/2) return TRUE;
 
-  return FALSE;  
+  return FALSE;
 }
 
 static void gtk_sheet_class_init 		(GtkSheetClass * klass);
 static void gtk_sheet_init 			(GtkSheet * sheet);
 static void gtk_sheet_destroy 			(GtkObject * object);
+static void gtk_sheet_finalize 			(GObject * object);
 static void gtk_sheet_style_set 		(GtkWidget *widget,
 		                 		 GtkStyle  *previous_style);
 static void gtk_sheet_realize 			(GtkWidget * widget);
@@ -360,8 +361,8 @@ static gint gtk_sheet_expose 			(GtkWidget * widget,
 		  				 GdkEventExpose * event);
 static void gtk_sheet_forall 			(GtkContainer *container,
                               			 gboolean include_internals,
-                              			 GtkCallback  callback, 
-                              			 gpointer  callback_data); 
+                              			 GtkCallback  callback,
+                              			 gpointer  callback_data);
 
 static void gtk_sheet_set_scroll_adjustments	(GtkSheet *sheet,
 						 GtkAdjustment *hadjustment,
@@ -396,39 +397,39 @@ static gint gtk_sheet_flash			(gpointer data);
 /* Drawing Routines */
 
 /* draw cell background and frame */
-static void gtk_sheet_cell_draw_default 	(GtkSheet *sheet, 
+static void gtk_sheet_cell_draw_default 	(GtkSheet *sheet,
 						 gint row, gint column);
 
 /* draw cell border */
-static void gtk_sheet_cell_draw_border 		(GtkSheet *sheet, 
-						 gint row, gint column, 
+static void gtk_sheet_cell_draw_border 		(GtkSheet *sheet,
+						 gint row, gint column,
 						 gint mask);
 
 /* draw cell contents */
-static void gtk_sheet_cell_draw_label 		(GtkSheet *sheet, 
+static void gtk_sheet_cell_draw_label 		(GtkSheet *sheet,
 						 gint row, gint column);
 
 /* draw visible part of range. If range==NULL then draw the whole screen */
-static void gtk_sheet_range_draw		(GtkSheet *sheet, 
+static void gtk_sheet_range_draw		(GtkSheet *sheet,
 						 const GtkSheetRange *range);
 
 /* highlight the visible part of the selected range */
-static void gtk_sheet_range_draw_selection	(GtkSheet *sheet, 
+static void gtk_sheet_range_draw_selection	(GtkSheet *sheet,
 						 GtkSheetRange range);
 
 /* Selection */
 
-static gint gtk_sheet_move_query		(GtkSheet *sheet, 
+static gint gtk_sheet_move_query		(GtkSheet *sheet,
 						 gint row, gint column);
 static void gtk_sheet_real_select_range 	(GtkSheet * sheet,
 			                 	 GtkSheetRange * range);
 static void gtk_sheet_real_unselect_range 	(GtkSheet * sheet,
 			                 	 const GtkSheetRange * range);
-static void gtk_sheet_extend_selection		(GtkSheet *sheet, 
+static void gtk_sheet_extend_selection		(GtkSheet *sheet,
 						 gint row, gint column);
-static void gtk_sheet_new_selection		(GtkSheet *sheet, 
+static void gtk_sheet_new_selection		(GtkSheet *sheet,
 						 GtkSheetRange *range);
-static void gtk_sheet_draw_border 		(GtkSheet *sheet, 
+static void gtk_sheet_draw_border 		(GtkSheet *sheet,
 						 GtkSheetRange range);
 static void gtk_sheet_draw_corners		(GtkSheet *sheet,
 						 GtkSheetRange range);
@@ -436,24 +437,24 @@ static void gtk_sheet_draw_corners		(GtkSheet *sheet,
 
 /* Active Cell handling */
 
-static void gtk_sheet_entry_changed		(GtkWidget *widget, 
+static void gtk_sheet_entry_changed		(GtkWidget *widget,
 						 gpointer data);
 static gboolean gtk_sheet_deactivate_cell	(GtkSheet *sheet);
 static void gtk_sheet_hide_active_cell		(GtkSheet *sheet);
-static gboolean gtk_sheet_activate_cell		(GtkSheet *sheet, 
+static gboolean gtk_sheet_activate_cell		(GtkSheet *sheet,
 						 gint row, gint col);
 static void gtk_sheet_draw_active_cell		(GtkSheet *sheet);
 static void gtk_sheet_show_active_cell		(GtkSheet *sheet);
-static void gtk_sheet_click_cell		(GtkSheet *sheet, 
-                                 		 gint row, 
+static void gtk_sheet_click_cell		(GtkSheet *sheet,
+                                 		 gint row,
                                 		 gint column,
                                  		 gboolean *veto);
 
 /* Backing Pixmap */
 
-static void gtk_sheet_make_backing_pixmap 	(GtkSheet *sheet, 
+static void gtk_sheet_make_backing_pixmap 	(GtkSheet *sheet,
 						 guint width, guint height);
-static void gtk_sheet_draw_backing_pixmap	(GtkSheet *sheet, 
+static void gtk_sheet_draw_backing_pixmap	(GtkSheet *sheet,
 						 GtkSheetRange range);
 /* Scrollbars */
 
@@ -470,9 +471,9 @@ static void hadjustment_value_changed 		(GtkAdjustment * adjustment,
 
 static void draw_xor_vline 			(GtkSheet * sheet);
 static void draw_xor_hline 			(GtkSheet * sheet);
-static void draw_xor_rectangle			(GtkSheet *sheet, 
+static void draw_xor_rectangle			(GtkSheet *sheet,
 						 GtkSheetRange range);
-static void gtk_sheet_draw_flashing_range	(GtkSheet *sheet, 
+static void gtk_sheet_draw_flashing_range	(GtkSheet *sheet,
 						 GtkSheetRange range);
 static guint new_column_width 			(GtkSheet * sheet,
 		  				 gint column,
@@ -483,7 +484,7 @@ static guint new_row_height 			(GtkSheet * sheet,
 /* Sheet Button */
 
 static void create_global_button		(GtkSheet *sheet);
-static void global_button_clicked		(GtkWidget *widget, 
+static void global_button_clicked		(GtkWidget *widget,
 						 gpointer data);
 /* Sheet Entry */
 
@@ -495,38 +496,38 @@ static void gtk_sheet_entry_set_max_size	(GtkSheet *sheet);
 
 static void size_allocate_column_title_buttons 	(GtkSheet * sheet);
 static void size_allocate_row_title_buttons 	(GtkSheet * sheet);
-static void gtk_sheet_recalc_top_ypixels	(GtkSheet *sheet, 
+static void gtk_sheet_recalc_top_ypixels	(GtkSheet *sheet,
 						 gint row);
-static void gtk_sheet_recalc_left_xpixels	(GtkSheet *sheet, 
+static void gtk_sheet_recalc_left_xpixels	(GtkSheet *sheet,
 						 gint column);
-static void row_button_set 			(GtkSheet *sheet, 
+static void row_button_set 			(GtkSheet *sheet,
 						 gint row);
-static void column_button_set 			(GtkSheet *sheet, 
+static void column_button_set 			(GtkSheet *sheet,
 						 gint column);
-static void row_button_release 			(GtkSheet *sheet, 
+static void row_button_release 			(GtkSheet *sheet,
 						 gint row);
-static void column_button_release 		(GtkSheet *sheet, 
+static void column_button_release 		(GtkSheet *sheet,
 						 gint column);
-static void gtk_sheet_button_draw		(GtkSheet *sheet, 
+static void gtk_sheet_button_draw		(GtkSheet *sheet,
 						 gint row, gint column);
 static void size_allocate_global_button 	(GtkSheet *sheet);
 static void gtk_sheet_button_size_request	(GtkSheet *sheet,
-                                 		 GtkSheetButton *button, 
+                                 		 GtkSheetButton *button,
                                  		 GtkRequisition *requisition);
 
 /* Attributes routines */
 
-static void gtk_sheet_set_cell_attributes	(GtkSheet *sheet, 
+static void gtk_sheet_set_cell_attributes	(GtkSheet *sheet,
 						 gint row, gint col,
 						 GtkSheetCellAttr attributes);
 
-static void init_attributes			(GtkSheet *sheet, gint col,  
+static void init_attributes			(GtkSheet *sheet, gint col,
 						 GtkSheetCellAttr *attributes);
 /* Memory allocation routines */
-static void gtk_sheet_real_range_clear 		(GtkSheet *sheet, 
-						 const GtkSheetRange *range, 
+static void gtk_sheet_real_range_clear 		(GtkSheet *sheet,
+						 const GtkSheetRange *range,
                             			 gboolean delete);
-static void gtk_sheet_real_cell_clear 		(GtkSheet *sheet, 
+static void gtk_sheet_real_cell_clear 		(GtkSheet *sheet,
 						 gint row,
 						 gint column,
 						 gboolean delete);
@@ -537,9 +538,9 @@ static gint InsertRow				(GtkSheet *sheet, gint row, gint nrows);
 static gint InsertColumn			(GtkSheet *sheet, gint col, gint ncols);
 static gint DeleteRow				(GtkSheet *sheet, gint row, gint nrows);
 static gint DeleteColumn			(GtkSheet *sheet, gint col, gint ncols);
-static gint GrowSheet				(GtkSheet *sheet, 
+static gint GrowSheet				(GtkSheet *sheet,
 						 gint newrows, gint newcols);
-static gint CheckBounds				(GtkSheet *sheet, 
+static gint CheckBounds				(GtkSheet *sheet,
 						 gint row, gint col);
 
 /* Container Functions */
@@ -550,8 +551,8 @@ static void gtk_sheet_realize_child		(GtkSheet *sheet,
 static void gtk_sheet_position_child		(GtkSheet *sheet,
 						 GtkSheetChild *child);
 static void gtk_sheet_position_children		(GtkSheet *sheet);
-static void gtk_sheet_child_show		(GtkSheetChild *child); 
-static void gtk_sheet_child_hide		(GtkSheetChild *child); 
+static void gtk_sheet_child_show		(GtkSheetChild *child);
+static void gtk_sheet_child_hide		(GtkSheetChild *child);
 static void gtk_sheet_column_size_request       (GtkSheet *sheet,
                                                  gint col,
                                                  guint *requisition);
@@ -562,18 +563,18 @@ static void gtk_sheet_row_size_request          (GtkSheet *sheet,
 
 /* Signals */
 
-extern void 
+extern void
 _gtkextra_signal_emit(GtkObject *object, guint signal_id, ...);
 
 enum {
-      SELECT_ROW, 
-      SELECT_COLUMN, 
+      SELECT_ROW,
+      SELECT_COLUMN,
       SELECT_RANGE,
       CLIP_RANGE,
       RESIZE_RANGE,
       MOVE_RANGE,
-      TRAVERSE, 
-      DEACTIVATE, 
+      TRAVERSE,
+      DEACTIVATE,
       ACTIVATE,
       SET_CELL,
       CLEAR_CELL,
@@ -587,24 +588,30 @@ static GtkContainerClass *parent_class = NULL;
 static guint sheet_signals[LAST_SIGNAL] = {0};
 
 
-GtkType
+GType
 gtk_sheet_get_type ()
 {
-  static GtkType sheet_type = 0;
-  if(!sheet_type){
-	GtkTypeInfo sheet_info =
-        {
-		"GtkSheet",
-	        sizeof(GtkSheet),
-	        sizeof(GtkSheetClass),
-	        (GtkClassInitFunc) gtk_sheet_class_init,
-	        (GtkObjectInitFunc) gtk_sheet_init,
-		/* reserved_1 */ NULL,
-	        /* reserved_2 */ NULL,
-                (GtkClassInitFunc) NULL,
-	};
-	sheet_type = gtk_type_unique (GTK_TYPE_CONTAINER, &sheet_info);
-  }
+  static GType sheet_type = 0;
+
+  if (!sheet_type)
+    {
+      static const GTypeInfo sheet_info =
+      {
+        sizeof (GtkSheetClass),
+        NULL,
+        NULL,
+        (GClassInitFunc) gtk_sheet_class_init,
+        NULL,
+        NULL,
+        sizeof (GtkSheet),
+        0,
+        (GInstanceInitFunc) gtk_sheet_init,
+        NULL,
+      };
+      sheet_type =
+        g_type_register_static (GTK_TYPE_CONTAINER, "GtkSheet",
+                                &sheet_info, 0);
+    }
   return sheet_type;
 }
 
@@ -630,10 +637,10 @@ gtk_sheet_range_free (GtkSheetRange *range)
   g_free (range);
 }
 
-GtkType
+GType
 gtk_sheet_range_get_type (void)
 {
-  static GtkType sheet_range_type;
+  static GType sheet_range_type;
 
   if(!sheet_range_type)
   {
@@ -649,12 +656,13 @@ gtk_sheet_class_init (GtkSheetClass * klass)
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
   GtkContainerClass *container_class;
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
   object_class = (GtkObjectClass *) klass;
   widget_class = (GtkWidgetClass *) klass;
   container_class = (GtkContainerClass *) klass;
 
-  parent_class = gtk_type_class (GTK_TYPE_CONTAINER);
+  parent_class = g_type_class_peek_parent (klass);
 
   sheet_signals[SELECT_ROW] =
     gtk_signal_new ("select_row",
@@ -783,6 +791,7 @@ gtk_sheet_class_init (GtkSheetClass * klass)
   container_class->forall = gtk_sheet_forall;
 
   object_class->destroy = gtk_sheet_destroy;
+  gobject_class->finalize = gtk_sheet_finalize;
 
   widget_class->realize = gtk_sheet_realize;
   widget_class->unrealize = gtk_sheet_unrealize;
@@ -815,7 +824,7 @@ gtk_sheet_class_init (GtkSheetClass * klass)
 
 }
 
-static void 
+static void
 gtk_sheet_init (GtkSheet *sheet)
 {
   sheet->children = NULL;
@@ -844,7 +853,7 @@ gtk_sheet_init (GtkSheet *sheet)
   sheet->column_title_area.y=0;
   sheet->column_title_area.width=0;
   sheet->column_title_area.height=DEFAULT_ROW_HEIGHT(GTK_WIDGET(sheet));
- 
+
   sheet->row_title_window=NULL;
   sheet->row_title_area.x=0;
   sheet->row_title_area.y=0;
@@ -953,16 +962,16 @@ GtkWidget *
 gtk_sheet_new_browser(guint rows, guint columns, const gchar *title)
 {
   GtkWidget *widget;
-  
+
   widget = gtk_type_new (gtk_sheet_get_type ());
 
   gtk_sheet_construct_browser(GTK_SHEET(widget), rows, columns, title);
- 
+
   return widget;
 }
 
 void
-gtk_sheet_construct_browser(GtkSheet *sheet, guint rows, guint columns, 
+gtk_sheet_construct_browser(GtkSheet *sheet, guint rows, guint columns,
                            const gchar *title)
 {
   gtk_sheet_construct(sheet, rows, columns, title);
@@ -976,18 +985,18 @@ gtk_sheet_new_with_custom_entry (guint rows, guint columns, const gchar *title,
                                  GtkType entry_type)
 {
   GtkWidget *widget;
-  
+
   widget = gtk_type_new (gtk_sheet_get_type ());
 
-  gtk_sheet_construct_with_custom_entry(GTK_SHEET(widget), 
+  gtk_sheet_construct_with_custom_entry(GTK_SHEET(widget),
                                        rows, columns, title, entry_type);
- 
+
   return widget;
 }
 
 void
-gtk_sheet_construct_with_custom_entry (GtkSheet *sheet, 
-                                      guint rows, guint columns, 
+gtk_sheet_construct_with_custom_entry (GtkSheet *sheet,
+                                      guint rows, guint columns,
                                       const gchar *title,
                                       GtkType entry_type)
 {
@@ -1017,13 +1026,13 @@ gtk_sheet_change_entry(GtkSheet *sheet, GtkType entry_type)
 
   if(state == GTK_SHEET_NORMAL)
     {
-      gtk_sheet_show_active_cell(sheet); 
+      gtk_sheet_show_active_cell(sheet);
       gtk_signal_connect(GTK_OBJECT(gtk_sheet_get_entry(sheet)),
                          "changed",
                          (GtkSignalFunc)gtk_sheet_entry_changed,
                          GTK_OBJECT(GTK_WIDGET(sheet)));
     }
- 
+
 }
 
 void
@@ -1033,10 +1042,10 @@ gtk_sheet_show_grid(GtkSheet *sheet, gboolean show)
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
   if(show == sheet->show_grid) return;
- 
+
   sheet->show_grid = show;
 
-  if(!GTK_SHEET_IS_FROZEN(sheet)) 
+  if(!GTK_SHEET_IS_FROZEN(sheet))
     gtk_sheet_range_draw(sheet, NULL);
 }
 
@@ -1060,7 +1069,7 @@ gtk_sheet_set_background(GtkSheet *sheet, GdkColor *color)
   else
     sheet->bg_color = *color;
 
-  if(!GTK_SHEET_IS_FROZEN(sheet)) 
+  if(!GTK_SHEET_IS_FROZEN(sheet))
     gtk_sheet_range_draw(sheet, NULL);
 }
 
@@ -1075,7 +1084,7 @@ gtk_sheet_set_grid(GtkSheet *sheet, GdkColor *color)
   else
     sheet->grid_color = *color;
 
-  if(!GTK_SHEET_IS_FROZEN(sheet)) 
+  if(!GTK_SHEET_IS_FROZEN(sheet))
     gtk_sheet_range_draw(sheet, NULL);
 }
 
@@ -1287,10 +1296,10 @@ gtk_sheet_thaw(GtkSheet *sheet)
   sheet->old_hadjustment = -1.;
 
   if(sheet->hadjustment)
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment),
    			      "value_changed");
   if(sheet->vadjustment)
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
    			      "value_changed");
 
   if(sheet->state == GTK_STATE_NORMAL)
@@ -1321,7 +1330,7 @@ gtk_sheet_set_row_titles_width(GtkSheet *sheet, guint width)
 
  sheet->old_hadjustment = -1.;
  if(sheet->hadjustment)
-     gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), 
+     gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment),
   			      "value_changed");
  size_allocate_global_button(sheet);
 }
@@ -1340,7 +1349,7 @@ gtk_sheet_set_column_titles_height(GtkSheet *sheet, guint height)
 
  sheet->old_vadjustment = -1.;
  if(sheet->vadjustment)
-     gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+     gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
  			      "value_changed");
  size_allocate_global_button(sheet);
 }
@@ -1357,6 +1366,11 @@ gtk_sheet_show_column_titles(GtkSheet *sheet)
  gtk_sheet_recalc_left_xpixels(sheet, 0);
  if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))){
   gdk_window_show(sheet->column_title_window);
+  gdk_window_move_resize (sheet->column_title_window,
+                          sheet->column_title_area.x,
+                          sheet->column_title_area.y,
+                          sheet->column_title_area.width,
+                          sheet->column_title_area.height);
 
   for(col = MIN_VISIBLE_COLUMN(sheet); col <= MAX_VISIBLE_COLUMN(sheet); col++){
     GtkSheetChild *child;
@@ -1366,11 +1380,11 @@ gtk_sheet_show_column_titles(GtkSheet *sheet)
     }
   }
   adjust_scrollbars(sheet);
- } 
+ }
 
  sheet->old_vadjustment = -1.;
  if(sheet->vadjustment)
-     gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+     gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
 			      "value_changed");
  size_allocate_global_button(sheet);
 }
@@ -1387,6 +1401,11 @@ gtk_sheet_show_row_titles(GtkSheet *sheet)
  gtk_sheet_recalc_left_xpixels(sheet, 0);
  if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))){
   gdk_window_show(sheet->row_title_window);
+  gdk_window_move_resize (sheet->row_title_window,
+                          sheet->row_title_area.x,
+                          sheet->row_title_area.y,
+                          sheet->row_title_area.width,
+                          sheet->row_title_area.height);
 
   for(row = MIN_VISIBLE_ROW(sheet); row <= MAX_VISIBLE_ROW(sheet); row++){
     GtkSheetChild *child;
@@ -1400,7 +1419,7 @@ gtk_sheet_show_row_titles(GtkSheet *sheet)
 
  sheet->old_hadjustment = -1.;
  if(sheet->hadjustment)
-     gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), 
+     gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment),
 			      "value_changed");
  size_allocate_global_button(sheet);
 }
@@ -1416,9 +1435,9 @@ gtk_sheet_hide_column_titles(GtkSheet *sheet)
  gtk_sheet_recalc_top_ypixels(sheet, 0);
  gtk_sheet_recalc_left_xpixels(sheet, 0);
  if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))){
-  if(sheet->column_title_window) 
+  if(sheet->column_title_window)
     gdk_window_hide(sheet->column_title_window);
-  if(GTK_WIDGET_VISIBLE(sheet->button)) 
+  if(GTK_WIDGET_VISIBLE(sheet->button))
     gtk_widget_hide(sheet->button);
 
   for(col = MIN_VISIBLE_COLUMN(sheet); col <= MAX_VISIBLE_COLUMN(sheet); col++){
@@ -1430,10 +1449,10 @@ gtk_sheet_hide_column_titles(GtkSheet *sheet)
   }
   adjust_scrollbars(sheet);
  }
- 
+
  sheet->old_vadjustment = -1.;
  if(sheet->vadjustment)
-     gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+     gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
 			      "value_changed");
 }
 
@@ -1448,9 +1467,9 @@ gtk_sheet_hide_row_titles(GtkSheet *sheet)
  gtk_sheet_recalc_top_ypixels(sheet, 0);
  gtk_sheet_recalc_left_xpixels(sheet, 0);
  if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))){
-  if(sheet->row_title_window) 
+  if(sheet->row_title_window)
     gdk_window_hide(sheet->row_title_window);
-  if(GTK_WIDGET_VISIBLE(sheet->button)) 
+  if(GTK_WIDGET_VISIBLE(sheet->button))
     gtk_widget_hide(sheet->button);
   for(row = MIN_VISIBLE_ROW(sheet); row <= MAX_VISIBLE_ROW(sheet); row++){
     GtkSheetChild *child;
@@ -1464,7 +1483,7 @@ gtk_sheet_hide_row_titles(GtkSheet *sheet)
 
  sheet->old_hadjustment = -1.;
  if(sheet->hadjustment)
-     gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), 
+     gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment),
 			      "value_changed");
 }
 
@@ -1564,7 +1583,7 @@ gtk_sheet_row_button_add_label(GtkSheet *sheet, gint row, const gchar *label)
     gtk_sheet_button_draw(sheet, row, -1);
     gtk_signal_emit(GTK_OBJECT(sheet),sheet_signals[CHANGED], row, -1);
   }
-}  
+}
 
 const gchar *
 gtk_sheet_row_button_get_label(GtkSheet *sheet, gint row)
@@ -1587,7 +1606,7 @@ gtk_sheet_row_label_set_visibility(GtkSheet *sheet, gint row, gboolean visible)
 
   sheet->row[row].button.label_visible = visible;
 
-  if(!GTK_SHEET_IS_FROZEN(sheet)){  
+  if(!GTK_SHEET_IS_FROZEN(sheet)){
     gtk_sheet_button_draw(sheet, row, -1);
     gtk_signal_emit(GTK_OBJECT(sheet),sheet_signals[CHANGED], row, -1);
   }
@@ -1637,7 +1656,7 @@ gtk_sheet_column_button_add_label(GtkSheet *sheet, gint column, const gchar *lab
     gtk_sheet_button_draw(sheet, -1, column);
     gtk_signal_emit(GTK_OBJECT(sheet),sheet_signals[CHANGED], -1, column);
   }
-}  
+}
 
 const gchar *
 gtk_sheet_column_button_get_label(GtkSheet *sheet, gint column)
@@ -1660,7 +1679,7 @@ gtk_sheet_column_label_set_visibility(GtkSheet *sheet, gint col, gboolean visibl
 
   sheet->column[col].button.label_visible = visible;
 
-  if(!GTK_SHEET_IS_FROZEN(sheet)){  
+  if(!GTK_SHEET_IS_FROZEN(sheet)){
     gtk_sheet_button_draw(sheet, -1, col);
     gtk_signal_emit(GTK_OBJECT(sheet),sheet_signals[CHANGED], -1, col);
   }
@@ -1679,7 +1698,7 @@ gtk_sheet_columns_labels_set_visibility(GtkSheet *sheet, gboolean visible)
 }
 
 void
-gtk_sheet_row_button_justify(GtkSheet *sheet, gint row, 
+gtk_sheet_row_button_justify(GtkSheet *sheet, gint row,
                              GtkJustification justification)
 {
   GtkSheetButton *button;
@@ -1692,14 +1711,14 @@ gtk_sheet_row_button_justify(GtkSheet *sheet, gint row,
   button = &sheet->row[row].button;
   button->justification = justification;
 
-  if(!GTK_SHEET_IS_FROZEN(sheet)){  
+  if(!GTK_SHEET_IS_FROZEN(sheet)){
     gtk_sheet_button_draw(sheet, row, -1);
     gtk_signal_emit(GTK_OBJECT(sheet),sheet_signals[CHANGED], row, -1);
   }
-}  
+}
 
 void
-gtk_sheet_column_button_justify(GtkSheet *sheet, gint column, 
+gtk_sheet_column_button_justify(GtkSheet *sheet, gint column,
                                 GtkJustification justification)
 {
   GtkSheetButton *button;
@@ -1712,11 +1731,11 @@ gtk_sheet_column_button_justify(GtkSheet *sheet, gint column,
   button = &sheet->column[column].button;
   button->justification = justification;
 
-  if(!GTK_SHEET_IS_FROZEN(sheet)){  
+  if(!GTK_SHEET_IS_FROZEN(sheet)){
     gtk_sheet_button_draw(sheet, -1, column);
     gtk_signal_emit(GTK_OBJECT(sheet),sheet_signals[CHANGED], -1, column);
   }
-}  
+}
 
 
 void
@@ -1757,7 +1776,7 @@ gtk_sheet_moveto (GtkSheet * sheet,
       adjust = 0;
       if(row_align == 1.){
         while(min_row >= 0 && min_row > MIN_VISIBLE_ROW(sheet)){
-         if(sheet->row[min_row].is_visible) 
+         if(sheet->row[min_row].is_visible)
                 adjust += sheet->row[min_row].height;
          if(adjust >= height){
            break;
@@ -1775,11 +1794,11 @@ gtk_sheet_moveto (GtkSheet * sheet,
 	sheet->vadjustment->value = y;
 
       sheet->old_vadjustment = -1.;
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
 			       "value_changed");
 
-    } 
-     
+    }
+
   /* adjust horizontal scrollbar */
   if (column >= 0 && col_align >= 0.)
     {
@@ -1792,7 +1811,7 @@ gtk_sheet_moveto (GtkSheet * sheet,
       adjust = 0;
       if(col_align == 1.){
         while(min_col >= 0 && min_col > MIN_VISIBLE_COLUMN(sheet)){
-         if(sheet->column[min_col].is_visible) 
+         if(sheet->column[min_col].is_visible)
                 adjust += sheet->column[min_col].width;
          if(adjust >= width){
            break;
@@ -1810,13 +1829,13 @@ gtk_sheet_moveto (GtkSheet * sheet,
 	sheet->hadjustment->value = x;
 
       sheet->old_vadjustment = -1.;
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment),
 			       "value_changed");
 
     }
 }
 
-void 
+void
 gtk_sheet_column_set_sensitivity(GtkSheet *sheet, gint column, gboolean sensitive)
 {
   g_return_if_fail (sheet != NULL);
@@ -1865,7 +1884,7 @@ gtk_sheet_columns_resizable (GtkSheet *sheet)
   return sheet->columns_resizable;
 }
 
-void 
+void
 gtk_sheet_row_set_sensitivity(GtkSheet *sheet, gint row,  gboolean sensitive)
 {
 
@@ -1928,7 +1947,7 @@ gtk_sheet_column_set_visibility(GtkSheet *sheet, gint column, gboolean visible)
 
   gtk_sheet_recalc_left_xpixels(sheet, column);
 
-  if(!GTK_SHEET_IS_FROZEN(sheet) && 
+  if(!GTK_SHEET_IS_FROZEN(sheet) &&
     gtk_sheet_cell_isvisible(sheet, MIN_VISIBLE_ROW(sheet), column)){
       gtk_sheet_range_draw(sheet, NULL);
       size_allocate_column_title_buttons(sheet);
@@ -1948,7 +1967,7 @@ gtk_sheet_row_set_visibility(GtkSheet *sheet, gint row, gboolean visible)
 
   gtk_sheet_recalc_top_ypixels(sheet, row);
 
-  if(!GTK_SHEET_IS_FROZEN(sheet) && 
+  if(!GTK_SHEET_IS_FROZEN(sheet) &&
     gtk_sheet_cell_isvisible(sheet, row, MIN_VISIBLE_COLUMN(sheet))){
       gtk_sheet_range_draw(sheet, NULL);
       size_allocate_row_title_buttons(sheet);
@@ -1965,7 +1984,7 @@ gtk_sheet_select_row (GtkSheet * sheet,
   if (row < 0 || row > sheet->maxrow)
     return;
 
-  if(sheet->state != GTK_SHEET_NORMAL) 
+  if(sheet->state != GTK_SHEET_NORMAL)
      gtk_sheet_real_unselect_range(sheet, NULL);
   else
   {
@@ -1974,7 +1993,7 @@ gtk_sheet_select_row (GtkSheet * sheet,
      if(!veto) return;
   }
 
-  sheet->state=GTK_SHEET_ROW_SELECTED;                     
+  sheet->state=GTK_SHEET_ROW_SELECTED;
   sheet->range.row0=row;
   sheet->range.col0=0;
   sheet->range.rowi=row;
@@ -1992,14 +2011,14 @@ void
 gtk_sheet_select_column (GtkSheet * sheet,
 		         gint column)
 {
-  
+
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
   if (column < 0 || column > sheet->maxcol)
     return;
 
-  if(sheet->state != GTK_SHEET_NORMAL) 
+  if(sheet->state != GTK_SHEET_NORMAL)
      gtk_sheet_real_unselect_range(sheet, NULL);
   else
   {
@@ -2008,7 +2027,7 @@ gtk_sheet_select_column (GtkSheet * sheet,
      if(!veto) return;
   }
 
-  sheet->state=GTK_SHEET_COLUMN_SELECTED;                     
+  sheet->state=GTK_SHEET_COLUMN_SELECTED;
   sheet->range.row0=0;
   sheet->range.col0=column;
   sheet->range.rowi=sheet->maxrow;
@@ -2038,7 +2057,7 @@ gtk_sheet_clip_range (GtkSheet *sheet, const GtkSheetRange *range)
     sheet->clip_range=*range;
 
   sheet->interval=0;
-  sheet->clip_timer=gtk_timeout_add(TIMEOUT_FLASH, gtk_sheet_flash, sheet); 
+  sheet->clip_timer=gtk_timeout_add(TIMEOUT_FLASH, gtk_sheet_flash, sheet);
 
   gtk_signal_emit(GTK_OBJECT(sheet), sheet_signals[CLIP_RANGE],
                                      &sheet->clip_range);
@@ -2083,14 +2102,14 @@ gtk_sheet_flash(gpointer data)
   if(!GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))) return TRUE;
   if(!GTK_WIDGET_DRAWABLE(GTK_WIDGET(sheet))) return TRUE;
   if(!gtk_sheet_range_isvisible(sheet, sheet->clip_range)) return TRUE;
-  if(GTK_SHEET_IN_XDRAG(sheet)) return TRUE; 
-  if(GTK_SHEET_IN_YDRAG(sheet)) return TRUE; 
+  if(GTK_SHEET_IN_XDRAG(sheet)) return TRUE;
+  if(GTK_SHEET_IN_YDRAG(sheet)) return TRUE;
 
   GDK_THREADS_ENTER();
- 
+
   x=COLUMN_LEFT_XPIXEL(sheet,sheet->clip_range.col0)+1;
   y=ROW_TOP_YPIXEL(sheet,sheet->clip_range.row0)+1;
-  width=COLUMN_LEFT_XPIXEL(sheet,sheet->clip_range.coli)-x+ 
+  width=COLUMN_LEFT_XPIXEL(sheet,sheet->clip_range.coli)-x+
              sheet->column[sheet->clip_range.coli].width-1;
   height=ROW_TOP_YPIXEL(sheet,sheet->clip_range.rowi)-y+
              sheet->row[sheet->clip_range.rowi].height-1;
@@ -2160,17 +2179,17 @@ gtk_sheet_draw_flashing_range(GtkSheet *sheet, GtkSheetRange range)
   gint x,y,width,height;
 
   if(!gtk_sheet_range_isvisible(sheet, sheet->clip_range)) return;
-  
+
   clip_area.x=COLUMN_LEFT_XPIXEL(sheet, MIN_VISIBLE_COLUMN(sheet));
   clip_area.y=ROW_TOP_YPIXEL(sheet, MIN_VISIBLE_ROW(sheet));
   clip_area.width=sheet->sheet_window_width;
   clip_area.height=sheet->sheet_window_height;
 
-  gdk_gc_set_clip_rectangle(sheet->xor_gc, &clip_area);  
+  gdk_gc_set_clip_rectangle(sheet->xor_gc, &clip_area);
 
   x=COLUMN_LEFT_XPIXEL(sheet,sheet->clip_range.col0)+1;
   y=ROW_TOP_YPIXEL(sheet,sheet->clip_range.row0)+1;
-  width=COLUMN_LEFT_XPIXEL(sheet,sheet->clip_range.coli)-x+ 
+  width=COLUMN_LEFT_XPIXEL(sheet,sheet->clip_range.coli)-x+
              sheet->column[sheet->clip_range.coli].width-1;
   height=ROW_TOP_YPIXEL(sheet,sheet->clip_range.rowi)-y+
              sheet->row[sheet->clip_range.rowi].height-1;
@@ -2188,7 +2207,7 @@ gtk_sheet_draw_flashing_range(GtkSheet *sheet, GtkSheetRange range)
 
   gdk_gc_set_line_attributes(sheet->xor_gc, 1, 1, 0 ,0 );
 
-  gdk_draw_rectangle(sheet->sheet_window, sheet->xor_gc, FALSE, 
+  gdk_draw_rectangle(sheet->sheet_window, sheet->xor_gc, FALSE,
                      x, y,
                      width, height);
 
@@ -2245,7 +2264,7 @@ gtk_sheet_cell_isvisible (GtkSheet * sheet,
   return gtk_sheet_range_isvisible(sheet, range);
 }
 
-void 
+void
 gtk_sheet_get_visible_range(GtkSheet *sheet, GtkSheetRange *range)
 {
 
@@ -2288,10 +2307,10 @@ gtk_sheet_set_vadjustment (GtkSheet      *sheet,
   g_return_if_fail (GTK_IS_SHEET (sheet));
   if (adjustment)
     g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-  
+
   if (sheet->vadjustment == adjustment)
     return;
-  
+
   old_adjustment = sheet->vadjustment;
 
   if (sheet->vadjustment)
@@ -2334,10 +2353,10 @@ gtk_sheet_set_hadjustment (GtkSheet      *sheet,
   g_return_if_fail (GTK_IS_SHEET (sheet));
   if (adjustment)
     g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-  
+
   if (sheet->hadjustment == adjustment)
     return;
-  
+
   old_adjustment = sheet->hadjustment;
 
   if (sheet->hadjustment)
@@ -2382,7 +2401,7 @@ gtk_sheet_set_scroll_adjustments (GtkSheet *sheet,
 }
 
 static void
-gtk_sheet_destroy (GtkObject * object)
+gtk_sheet_finalize (GObject * object)
 {
   GtkSheet *sheet;
 
@@ -2393,6 +2412,40 @@ gtk_sheet_destroy (GtkObject * object)
 
   /* get rid of all the cells */
   gtk_sheet_range_clear (sheet, NULL);
+  gtk_sheet_range_delete(sheet, NULL);
+
+  gtk_sheet_delete_rows (sheet, 0, sheet->maxrow + 1);
+  gtk_sheet_delete_columns (sheet, 0, sheet->maxcol + 1);
+
+  DeleteRow (sheet, 0, sheet->maxrow + 1);
+  DeleteColumn (sheet, 0, sheet->maxcol + 1);
+
+  g_free(sheet->row);
+  sheet->row = NULL;
+  g_free(sheet->column);
+  sheet->column = NULL;
+  g_free(sheet->data);
+  sheet->data = NULL;
+
+  if(sheet->name){
+      g_free(sheet->name);
+      sheet->name = NULL;
+  }
+
+  if (G_OBJECT_CLASS (parent_class)->finalize)
+    (*G_OBJECT_CLASS (parent_class)->finalize) (object);
+}
+
+static void
+gtk_sheet_destroy (GtkObject * object)
+{
+  GtkSheet *sheet;
+  GList *children;
+
+  g_return_if_fail (object != NULL);
+  g_return_if_fail (GTK_IS_SHEET (object));
+
+  sheet = GTK_SHEET (object);
 
   /* destroy the entry */
   if(sheet->sheet_entry && GTK_IS_WIDGET(sheet->sheet_entry)){
@@ -2430,30 +2483,17 @@ gtk_sheet_destroy (GtkObject * object)
       sheet->vadjustment = NULL;
     }
 
-
-  gtk_sheet_range_delete(sheet, NULL);
-
-  gtk_sheet_delete_rows (sheet, 0, sheet->maxrow + 1);
-  gtk_sheet_delete_columns (sheet, 0, sheet->maxcol + 1);
-
-  g_free(sheet->row);
-  sheet->row = NULL;
-  g_free(sheet->column);
-  sheet->column = NULL;
-  g_free(sheet->data);
-  sheet->data = NULL;
-
-  if(sheet->name){
-      g_free(sheet->name);
-      sheet->name = NULL;
+  children = sheet->children;
+  while(children){
+    GtkSheetChild *child = (GtkSheetChild *)children->data;
+    if(child && child->widget)
+      gtk_sheet_remove(GTK_CONTAINER(sheet), child->widget);
+    children = sheet->children;
   }
+  sheet->children = NULL;
 
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (*GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-
-  if(sheet->children) g_list_free(sheet->children);
-  sheet->children = NULL;
-
 }
 
 static void
@@ -2556,7 +2596,7 @@ gtk_sheet_realize (GtkWidget * widget)
 
   attributes.x = 0;
   attributes.y = 0;
-  attributes.width = sheet->sheet_window_width, 
+  attributes.width = sheet->sheet_window_width,
   attributes.height = sheet->sheet_window_height;
 
   sheet->sheet_window = gdk_window_new (widget->window, &attributes, attributes_mask);
@@ -2566,12 +2606,12 @@ gtk_sheet_realize (GtkWidget * widget)
   gdk_window_show (sheet->sheet_window);
 
   /* backing_pixmap */
-  gtk_sheet_make_backing_pixmap(sheet, 0, 0);  
+  gtk_sheet_make_backing_pixmap(sheet, 0, 0);
 
   /* GCs */
-  if(sheet->fg_gc) 
+  if(sheet->fg_gc)
       gdk_gc_unref(sheet->fg_gc);
-  if(sheet->bg_gc) 
+  if(sheet->bg_gc)
       gdk_gc_unref(sheet->bg_gc);
   sheet->fg_gc = gdk_gc_new (widget->window);
   sheet->bg_gc = gdk_gc_new (widget->window);
@@ -2594,34 +2634,11 @@ gtk_sheet_realize (GtkWidget * widget)
 					  GDK_GC_FUNCTION |
 					  GDK_GC_SUBWINDOW);
 
-/* create sheet_entry_window */
-
-  if(GTK_WIDGET_NO_WINDOW(sheet->sheet_entry)){
-
-    attributes.window_type = GDK_WINDOW_CHILD;
-    attributes.x = 0;
-    attributes.y = 0;
-    attributes.width = sheet->sheet_entry->requisition.width;
-    attributes.height = sheet->sheet_entry->requisition.height;
-    attributes.wclass = GDK_INPUT_OUTPUT;
-    attributes.visual = gtk_widget_get_visual (widget);
-    attributes.colormap = gtk_widget_get_colormap (widget);
-    attributes.event_mask = GDK_EXPOSURE_MASK;
- 
-    attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-    sheet->sheet_entry_window =  gdk_window_new (sheet->sheet_window,
-   				                 &attributes, attributes_mask);
-    gdk_window_set_user_data (sheet->sheet_entry_window, widget);
-  }
-
   if(sheet->sheet_entry->parent){
           gtk_widget_ref(sheet->sheet_entry);
           gtk_widget_unparent(sheet->sheet_entry);
   }
-  gtk_widget_set_parent_window (sheet->sheet_entry,
-				sheet->sheet_entry_window ? 
-                                sheet->sheet_entry_window : 
-                                sheet->sheet_window);
+  gtk_widget_set_parent_window (sheet->sheet_entry, sheet->sheet_window);
   gtk_widget_set_parent(sheet->sheet_entry, GTK_WIDGET(sheet));
 
   if(sheet->button && sheet->button->parent){
@@ -2636,7 +2653,7 @@ gtk_sheet_realize (GtkWidget * widget)
 */
   if(!sheet->cursor_drag)
        sheet->cursor_drag = gdk_cursor_new(GDK_PLUS);
- 
+
   if(sheet->column_titles_visible)
      gdk_window_show(sheet->column_title_window);
   if(sheet->row_titles_visible)
@@ -2655,7 +2672,7 @@ gtk_sheet_realize (GtkWidget * widget)
     {
       child = children->data;
       children = children->next;
- 
+
       gtk_sheet_realize_child(sheet, child);
     }
 }
@@ -2704,14 +2721,11 @@ static void
 gtk_sheet_unrealize (GtkWidget * widget)
 {
   GtkSheet *sheet;
-  GtkSheetChild *child;
-  GList *children;
 
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_SHEET (widget));
 
   sheet = GTK_SHEET (widget);
-  GTK_WIDGET_UNSET_FLAGS (widget, GTK_REALIZED | GTK_MAPPED);
 
   gdk_cursor_destroy (sheet->cursor_drag);
 
@@ -2719,43 +2733,24 @@ gtk_sheet_unrealize (GtkWidget * widget)
   gdk_gc_destroy (sheet->fg_gc);
   gdk_gc_destroy (sheet->bg_gc);
 
-  gtk_style_detach (widget->style);
-
   gdk_window_destroy (sheet->sheet_window);
   gdk_window_destroy (sheet->column_title_window);
   gdk_window_destroy (sheet->row_title_window);
-  gdk_window_set_user_data (widget->window, NULL);
-  gdk_window_destroy (widget->window);
 
   if (sheet->pixmap){
     g_free (sheet->pixmap);
     sheet->pixmap = NULL;
   }
 
-  widget->window = NULL;
   sheet->column_title_window=NULL;
   sheet->sheet_window = NULL;
-  sheet->sheet_entry_window = NULL;
   sheet->cursor_drag = NULL;
   sheet->xor_gc = NULL;
   sheet->fg_gc = NULL;
   sheet->bg_gc = NULL;
 
-  children = sheet->children;
-  while (children)
-   {
-     child = children->data;
-     children = children->next;
-
-     if(child->window)
-        {
-            gdk_window_set_user_data(child->window, NULL);
-            gdk_window_destroy(child->window);
-            child->window = NULL;
-        }
-
-   }
-
+  if (GTK_WIDGET_CLASS (parent_class)->unrealize)
+    (* GTK_WIDGET_CLASS (parent_class)->unrealize) (widget);
 }
 
 static void
@@ -2780,13 +2775,12 @@ gtk_sheet_map (GtkWidget * widget)
 
       gdk_window_show (sheet->sheet_window);
 
-      if(sheet->sheet_entry_window)
-          gdk_window_show(sheet->sheet_entry_window);
-
       if(sheet->column_titles_visible){
+           size_allocate_column_title_buttons(sheet);
            gdk_window_show (sheet->column_title_window);
       }
       if(sheet->row_titles_visible){
+           size_allocate_row_title_buttons(sheet);
            gdk_window_show (sheet->row_title_window);
       }
 
@@ -2807,8 +2801,8 @@ gtk_sheet_map (GtkWidget * widget)
   	          gtk_widget_map (GTK_BIN(sheet->button)->child);
 
       gtk_sheet_range_draw(sheet, NULL);
-      gtk_sheet_activate_cell(sheet, 
-                              sheet->active_cell.row, 
+      gtk_sheet_activate_cell(sheet,
+                              sheet->active_cell.row,
                               sheet->active_cell.col);
 
       children = sheet->children;
@@ -2821,8 +2815,6 @@ gtk_sheet_map (GtkWidget * widget)
     	    !GTK_WIDGET_MAPPED (child->widget)){
 	  gtk_widget_map (child->widget);
           gtk_sheet_position_child(sheet, child);
-          if (GTK_WIDGET_NO_WINDOW(child->widget) && child->window) 
-                         gdk_window_show(child->window);
         }
       }
 
@@ -2852,9 +2844,6 @@ gtk_sheet_unmap (GtkWidget * widget)
           gdk_window_hide (sheet->row_title_window);
       gdk_window_hide (widget->window);
 
-      if(sheet->sheet_entry_window)
-          gdk_window_hide (sheet->sheet_entry_window);
-
       if (GTK_WIDGET_MAPPED (sheet->sheet_entry))
 	gtk_widget_unmap (sheet->sheet_entry);
 
@@ -2871,7 +2860,6 @@ gtk_sheet_unmap (GtkWidget * widget)
 	      GTK_WIDGET_MAPPED (child->widget))
                 {
   	             gtk_widget_unmap (child->widget);
-                     if(child->window) gdk_window_hide(child->window);
                 }
         }
 
@@ -2900,7 +2888,7 @@ gtk_sheet_cell_draw_default (GtkSheet *sheet, gint row, gint col)
   widget = GTK_WIDGET (sheet);
 
   gtk_sheet_get_attributes(sheet, row, col, &attributes);
- 
+
   /* select GC for background rectangle */
   gdk_gc_set_foreground (sheet->fg_gc, &attributes.foreground);
   gdk_gc_set_foreground (sheet->bg_gc, &attributes.background);
@@ -2984,19 +2972,19 @@ gtk_sheet_cell_draw_border (GtkSheet *sheet, gint row, gint col, gint mask)
    if(attributes.border.mask & GTK_SHEET_RIGHT_BORDER & mask)
       gdk_draw_line(sheet->pixmap, sheet->fg_gc,
                     area.x+area.width, area.y-width/2,
-                    area.x+area.width, 
+                    area.x+area.width,
                     area.y+area.height+width/2+1);
 
    if(attributes.border.mask & GTK_SHEET_TOP_BORDER & mask)
       gdk_draw_line(sheet->pixmap, sheet->fg_gc,
                     area.x-width/2,area.y,
-                    area.x+area.width+width/2+1, 
+                    area.x+area.width+width/2+1,
                     area.y);
 
    if(attributes.border.mask & GTK_SHEET_BOTTOM_BORDER & mask)
       gdk_draw_line(sheet->pixmap, sheet->fg_gc,
                     area.x-width/2, area.y+area.height,
-                    area.x+area.width+width/2+1, 
+                    area.x+area.width+width/2+1,
                     area.y+area.height);
   }
 
@@ -3010,7 +2998,7 @@ gtk_sheet_cell_draw_label (GtkSheet *sheet, gint row, gint col)
   GdkRectangle area, clip_area;
   gint i;
   gint text_width, text_height, y;
-  gint xoffset=0;  
+  gint xoffset=0;
   gint size, sizel, sizer;
   GdkGC *fg_gc, *bg_gc;
   GtkSheetCellAttr attributes;
@@ -3019,7 +3007,7 @@ gtk_sheet_cell_draw_label (GtkSheet *sheet, gint row, gint col)
   PangoRectangle logical_rect;
   PangoLayoutLine *line;
   PangoFontMetrics *metrics;
-  PangoContext *context = gtk_widget_get_pango_context(GTK_WIDGET(sheet)); 
+  PangoContext *context = gtk_widget_get_pango_context(GTK_WIDGET(sheet));
   gint ascent, descent, y_pos;
 
   char *label;
@@ -3073,7 +3061,7 @@ gtk_sheet_cell_draw_label (GtkSheet *sheet, gint row, gint col)
 
   metrics = pango_context_get_metrics(context,
                                   attributes.font_desc,
-                                  pango_context_get_language(context)); 
+                                  pango_context_get_language(context));
 
   ascent = pango_font_metrics_get_ascent(metrics) / PANGO_SCALE;
   descent = pango_font_metrics_get_descent(metrics) / PANGO_SCALE;
@@ -3101,7 +3089,7 @@ gtk_sheet_cell_draw_label (GtkSheet *sheet, gint row, gint col)
     case GTK_JUSTIFY_RIGHT:
           size=area.width;
           area.x+=area.width;
-          if(!gtk_sheet_clip_text(sheet)){          
+          if(!gtk_sheet_clip_text(sheet)){
            for(i=col-1; i>=MIN_VISIBLE_COLUMN(sheet); i--){
              if(gtk_sheet_cell_get_text(sheet, row, i)) break;
              if(size>=text_width+CELLOFFSET) break;
@@ -3118,7 +3106,7 @@ gtk_sheet_cell_draw_label (GtkSheet *sheet, gint row, gint col)
           sizel=area.width/2;
           sizer=area.width/2;
 	  area.x+=area.width/2;
-          if(!gtk_sheet_clip_text(sheet)){          
+          if(!gtk_sheet_clip_text(sheet)){
            for(i=col+1; i<=MAX_VISIBLE_COLUMN(sheet); i++){
              if(gtk_sheet_cell_get_text(sheet, row, i)) break;
              if(sizer>=text_width/2) break;
@@ -3140,7 +3128,7 @@ gtk_sheet_cell_draw_label (GtkSheet *sheet, gint row, gint col)
       case GTK_JUSTIFY_LEFT:
       default:
           size=area.width;
-          if(!gtk_sheet_clip_text(sheet)){          
+          if(!gtk_sheet_clip_text(sheet)){
            for(i=col+1; i<=MAX_VISIBLE_COLUMN(sheet); i++){
              if(gtk_sheet_cell_get_text(sheet, row, i)) break;
              if(size>=text_width+CELLOFFSET) break;
@@ -3173,7 +3161,7 @@ gtk_sheet_cell_draw_label (GtkSheet *sheet, gint row, gint col)
                   area.x,
                   area.y,
                   area.width,
-                  area.height);      
+                  area.height);
 
 }
 
@@ -3188,7 +3176,7 @@ gtk_sheet_range_draw(GtkSheet *sheet, const GtkSheetRange *range)
 
  g_return_if_fail(sheet != NULL);
  g_return_if_fail(GTK_SHEET(sheet));
- 
+
  if(!GTK_WIDGET_DRAWABLE(GTK_WIDGET(sheet))) return;
  if(!GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))) return;
  if(!GTK_WIDGET_MAPPED(GTK_WIDGET(sheet))) return;
@@ -3226,7 +3214,7 @@ gtk_sheet_range_draw(GtkSheet *sheet, const GtkSheetRange *range)
 	              sheet->fg_gc,
 	              TRUE,
 	              area.x,area.y,
-	              sheet->sheet_window_width - area.x, 
+	              sheet->sheet_window_width - area.x,
                       sheet->sheet_window_height);
 
   gdk_draw_pixmap(sheet->sheet_window,
@@ -3236,8 +3224,8 @@ gtk_sheet_range_draw(GtkSheet *sheet, const GtkSheetRange *range)
                   area.y,
                   area.x,
                   area.y,
-	          sheet->sheet_window_width - area.x, 
-                  sheet->sheet_window_height);                  
+	          sheet->sheet_window_width - area.x,
+                  sheet->sheet_window_height);
  }
  if(drawing_range.rowi == sheet->maxrow){
   area.x=0;
@@ -3282,29 +3270,29 @@ gtk_sheet_range_draw(GtkSheet *sheet, const GtkSheetRange *range)
      if(i<=sheet->maxallocrow && j<=sheet->maxalloccol &&
         sheet->data[i] && sheet->data[i][j])
                   gtk_sheet_cell_draw_label (sheet, i, j);
-     
+
  for(i=drawing_range.row0; i<=drawing_range.rowi; i++)
   for(j=sheet->column[drawing_range.col0].left_text_column; j<drawing_range.col0; j++)
-     if(i<=sheet->maxallocrow && j<=sheet->maxalloccol && 
+     if(i<=sheet->maxallocrow && j<=sheet->maxalloccol &&
         sheet->data[i] && sheet->data[i][j])
                   gtk_sheet_cell_draw_label (sheet, i, j);
-    
+
  for(i=drawing_range.row0; i<=drawing_range.rowi; i++)
   for(j=drawing_range.coli+1; j<=sheet->column[drawing_range.coli].right_text_column; j++)
-     if(i<=sheet->maxallocrow && j<=sheet->maxalloccol && 
+     if(i<=sheet->maxallocrow && j<=sheet->maxalloccol &&
         sheet->data[i] && sheet->data[i][j])
-                  gtk_sheet_cell_draw_label (sheet, i, j); 
+                  gtk_sheet_cell_draw_label (sheet, i, j);
 
   gtk_sheet_draw_backing_pixmap(sheet, drawing_range);
 
   if(sheet->state != GTK_SHEET_NORMAL && gtk_sheet_range_isvisible(sheet, sheet->range))
        gtk_sheet_range_draw_selection(sheet, drawing_range);
-  
-  if(sheet->state == GTK_STATE_NORMAL && 
+
+  if(sheet->state == GTK_STATE_NORMAL &&
      sheet->active_cell.row >= drawing_range.row0 &&
      sheet->active_cell.row <= drawing_range.rowi &&
      sheet->active_cell.col >= drawing_range.col0 &&
-     sheet->active_cell.col <= drawing_range.coli)    
+     sheet->active_cell.col <= drawing_range.coli)
                             gtk_sheet_show_active_cell(sheet);
 
 }
@@ -3338,7 +3326,7 @@ gtk_sheet_range_draw_selection(GtkSheet *sheet, GtkSheetRange range)
   for(i=range.row0; i<=range.rowi; i++){
    for(j=range.col0; j<=range.coli; j++){
 
-    if(gtk_sheet_cell_get_state(sheet, i, j)==GTK_STATE_SELECTED && 
+    if(gtk_sheet_cell_get_state(sheet, i, j)==GTK_STATE_SELECTED &&
        sheet->column[j].is_visible && sheet->row[i].is_visible){
 
       row_button_set(sheet, i);
@@ -3382,9 +3370,9 @@ gtk_sheet_draw_backing_pixmap(GtkSheet *sheet, GtkSheetRange range)
   gint x,y,width,height;
 
   if(!GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))) return;
- 
+
   x=COLUMN_LEFT_XPIXEL(sheet,range.col0);
-  y=ROW_TOP_YPIXEL(sheet, range.row0);  
+  y=ROW_TOP_YPIXEL(sheet, range.row0);
   width=COLUMN_LEFT_XPIXEL(sheet, range.coli)-x+sheet->column[range.coli].width;
   height=ROW_TOP_YPIXEL(sheet, range.rowi)-y+sheet->row[range.rowi].height;
 
@@ -3399,11 +3387,11 @@ gtk_sheet_draw_backing_pixmap(GtkSheet *sheet, GtkSheetRange range)
   }
   if(range.coli==sheet->range.coli) width=width+5;
 
-  
+
   width=MIN(width, sheet->sheet_window_width-x);
   height=MIN(height, sheet->sheet_window_height-y);
 
-  x--; 
+  x--;
   y--;
   width+=2;
   height+=2;
@@ -3424,7 +3412,7 @@ gtk_sheet_draw_backing_pixmap(GtkSheet *sheet, GtkSheetRange range)
                   x,
                   y,
                   width+1,
-                  height+1);                  
+                  height+1);
 }
 
 static GtkSheetCell *
@@ -3438,7 +3426,7 @@ gtk_sheet_cell_new()
  return cell;
 }
 
-void 
+void
 gtk_sheet_set_cell_text(GtkSheet *sheet, gint row, gint col, const gchar *text)
 {
  GtkSheetCellAttr attributes;
@@ -3452,8 +3440,8 @@ gtk_sheet_set_cell_text(GtkSheet *sheet, gint row, gint col, const gchar *text)
  gtk_sheet_set_cell(sheet, row, col, attributes.justification, text);
 }
 
-void 
-gtk_sheet_set_cell(GtkSheet *sheet, gint row, gint col, 
+void
+gtk_sheet_set_cell(GtkSheet *sheet, gint row, gint col,
                    GtkJustification justification,
                    const gchar *text)
 {
@@ -3487,7 +3475,7 @@ gtk_sheet_set_cell(GtkSheet *sheet, gint row, gint col,
     (*cell)->text = NULL;
  }
 
- if(text) 
+ if(text)
       (*cell)->text=g_strdup(text);
 
  if(attributes.is_visible){
@@ -3572,17 +3560,18 @@ gtk_sheet_real_cell_clear (GtkSheet *sheet, gint row, gint column, gboolean dele
   if(!sheet->data[row]) return;
   if(!sheet->data[row][column]) return;
 
-  text = gtk_sheet_cell_get_text(sheet, row, column); 
-  link = gtk_sheet_get_link(sheet, row, column); 
+  text = gtk_sheet_cell_get_text(sheet, row, column);
+  link = gtk_sheet_get_link(sheet, row, column);
 
-  if(text){ 
-      g_free(sheet->data[row][column]->text);
-      sheet->data[row][column]->text = NULL;
+  if(text){
+    g_free(sheet->data[row][column]->text);
+    sheet->data[row][column]->text = NULL;
 
+    if(GTK_IS_OBJECT(sheet) && G_OBJECT(sheet)->ref_count > 0)
       gtk_signal_emit(GTK_OBJECT(sheet),sheet_signals[CLEAR_CELL], row, column);
-  }  
+  }
 
-  if(delete){ 
+  if(delete){
      if(sheet->data[row][column]->attributes){
          g_free(sheet->data[row][column]->attributes);
          sheet->data[row][column]->attributes = NULL;
@@ -3595,7 +3584,7 @@ gtk_sheet_real_cell_clear (GtkSheet *sheet, gint row, gint column, gboolean dele
   }
 
 }
-    
+
 void
 gtk_sheet_range_clear (GtkSheet *sheet, const GtkSheetRange *range)
 {
@@ -3613,9 +3602,9 @@ gtk_sheet_range_delete (GtkSheet *sheet, const GtkSheetRange *range)
 
   gtk_sheet_real_range_clear(sheet, range, TRUE);
 }
- 
+
 static void
-gtk_sheet_real_range_clear (GtkSheet *sheet, const GtkSheetRange *range, 
+gtk_sheet_real_range_clear (GtkSheet *sheet, const GtkSheetRange *range,
                             gboolean delete)
 {
   gint i, j;
@@ -3627,7 +3616,7 @@ gtk_sheet_real_range_clear (GtkSheet *sheet, const GtkSheetRange *range,
     clear.col0=0;
     clear.coli=sheet->maxalloccol;
   }else
-    clear=*range;  
+    clear=*range;
 
   clear.row0=MAX(clear.row0, 0);
   clear.col0=MAX(clear.col0, 0);
@@ -3643,7 +3632,7 @@ gtk_sheet_real_range_clear (GtkSheet *sheet, const GtkSheetRange *range,
 }
 
 
-gchar *     
+gchar *
 gtk_sheet_cell_get_text (GtkSheet *sheet, gint row, gint col)
 {
   g_return_val_if_fail (sheet != NULL, NULL);
@@ -3660,7 +3649,7 @@ gtk_sheet_cell_get_text (GtkSheet *sheet, gint row, gint col)
   return (sheet->data[row][col]->text);
 }
 
-void 
+void
 gtk_sheet_link_cell(GtkSheet *sheet, gint row, gint col, gpointer link)
 {
  g_return_if_fail (sheet != NULL);
@@ -3675,7 +3664,7 @@ gtk_sheet_link_cell(GtkSheet *sheet, gint row, gint col, gpointer link)
  sheet->data[row][col]->link = link;
 }
 
-gpointer 
+gpointer
 gtk_sheet_get_link(GtkSheet *sheet, gint row, gint col)
 {
  g_return_val_if_fail (sheet != NULL, NULL);
@@ -3683,9 +3672,9 @@ gtk_sheet_get_link(GtkSheet *sheet, gint row, gint col)
  if(col > sheet->maxcol || row > sheet->maxrow) return NULL;
  if(col < 0 || row < 0) return NULL;
 
- if (row > sheet->maxallocrow || col > sheet->maxalloccol) return NULL; 
- if (!sheet->data[row]) return NULL; /* Added by Chris Howell */ 
- if (!sheet->data[row][col]) return NULL; /* Added by Bob Lissner */ 
+ if (row > sheet->maxallocrow || col > sheet->maxalloccol) return NULL;
+ if (!sheet->data[row]) return NULL; /* Added by Chris Howell */
+ if (!sheet->data[row][col]) return NULL; /* Added by Bob Lissner */
 
  return(sheet->data[row][col]->link);
 }
@@ -3697,7 +3686,7 @@ gtk_sheet_remove_link(GtkSheet *sheet, gint row, gint col)
  g_return_if_fail (GTK_IS_SHEET (sheet));
  if(col > sheet->maxcol || row > sheet->maxrow) return;
  if(col < 0 || row < 0) return;
- 
+
  /* Fixed by Andreas Voegele */
  if(row < sheet->maxallocrow && col < sheet->maxalloccol &&
     sheet->data[row] && sheet->data[row][col] &&
@@ -3725,11 +3714,11 @@ gtk_sheet_cell_get_state (GtkSheet *sheet, gint row, gint col)
                      return GTK_STATE_NORMAL;
 		     break;
 		case GTK_SHEET_ROW_SELECTED:
-                     if(row>=range->row0 && row<=range->rowi) 
+                     if(row>=range->row0 && row<=range->rowi)
                                         return GTK_STATE_SELECTED;
 		     break;
                 case GTK_SHEET_COLUMN_SELECTED:
-                     if(col>=range->col0 && col<=range->coli) 
+                     if(col>=range->col0 && col<=range->coli)
                                         return GTK_STATE_SELECTED;
 		     break;
 		case GTK_SHEET_RANGE_SELECTED:
@@ -3753,7 +3742,7 @@ gtk_sheet_get_pixel_info (GtkSheet * sheet,
   g_return_val_if_fail (sheet != NULL, 0);
   g_return_val_if_fail (GTK_IS_SHEET (sheet), 0);
 
-  /* bounds checking, return false if the user clicked 
+  /* bounds checking, return false if the user clicked
    * on a blank area */
   trow = ROW_FROM_YPIXEL (sheet, y);
   if (trow > sheet->maxrow)
@@ -3805,12 +3794,12 @@ gtk_sheet_get_cell_area  (GtkSheet * sheet,
            area->y -= sheet->column_title_area.height;
 
   area->width=sheet->column[column].width;
-  area->height=sheet->row[row].height;  
+  area->height=sheet->row[row].height;
 */
   return TRUE;
 }
 
-gboolean 
+gboolean
 gtk_sheet_set_active_cell (GtkSheet *sheet, gint row, gint column)
 {
  g_return_val_if_fail (sheet != NULL, 0);
@@ -3826,9 +3815,9 @@ gtk_sheet_set_active_cell (GtkSheet *sheet, gint row, gint column)
 
  sheet->active_cell.row=row;
  sheet->active_cell.col=column;
- 
+
  if(!gtk_sheet_activate_cell(sheet, row, column)) return FALSE;
- 
+
  return TRUE;
 }
 
@@ -3872,26 +3861,29 @@ gtk_sheet_entry_changed(GtkWidget *widget, gpointer data)
  GTK_SHEET_SET_FLAGS(sheet, GTK_SHEET_IS_FROZEN);
 
  if(text && strlen(text)!=0){
-      gtk_sheet_get_attributes(sheet, row, col, &attributes); 
+      gtk_sheet_get_attributes(sheet, row, col, &attributes);
       justification=attributes.justification;
       gtk_sheet_set_cell(sheet, row, col, justification, text);
  }
  else
  {
  /* Added by Matias Mutchinick */
-      gtk_sheet_cell_clear(sheet, row, col);
+      if(row < sheet->maxallocrow && col < sheet->maxalloccol && sheet->data[row] && sheet->data[row][col] && sheet->data[row][col]->text) {
+        g_free(sheet->data[row][col]->text);
+        sheet->data[row][col]->text = NULL;
+      }
  }
 
  if(sheet->freeze_count == 0)
         GTK_SHEET_UNSET_FLAGS(sheet, GTK_SHEET_IS_FROZEN);
- 
+
  sheet->active_cell.row=row;;
  sheet->active_cell.col=col;
 
 }
 
 
-static gboolean 
+static gboolean
 gtk_sheet_deactivate_cell(GtkSheet *sheet)
 {
  gboolean veto = TRUE;
@@ -3902,7 +3894,7 @@ gtk_sheet_deactivate_cell(GtkSheet *sheet)
  if(!GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))) return FALSE;
  if(sheet->state != GTK_SHEET_NORMAL) return FALSE;
 
- _gtkextra_signal_emit(GTK_OBJECT(sheet),sheet_signals[DEACTIVATE], 
+ _gtkextra_signal_emit(GTK_OBJECT(sheet),sheet_signals[DEACTIVATE],
                                    sheet->active_cell.row,
                                    sheet->active_cell.col, &veto);
 
@@ -3915,14 +3907,14 @@ gtk_sheet_deactivate_cell(GtkSheet *sheet)
  gtk_sheet_hide_active_cell(sheet);
  sheet->active_cell.row=-1;
  sheet->active_cell.col=-1;
- 
+
  if(GTK_SHEET_REDRAW_PENDING(sheet)){
    GTK_SHEET_UNSET_FLAGS(sheet, GTK_SHEET_REDRAW_PENDING);
    gtk_sheet_range_draw(sheet, NULL);
  }
 
  return TRUE;
-}	
+}
 
 static void
 gtk_sheet_hide_active_cell(GtkSheet *sheet)
@@ -3944,7 +3936,7 @@ gtk_sheet_hide_active_cell(GtkSheet *sheet)
 
  text=gtk_entry_get_text(GTK_ENTRY(gtk_sheet_get_entry(sheet)));
 
- gtk_sheet_get_attributes(sheet, row, col, &attributes); 
+ gtk_sheet_get_attributes(sheet, row, col, &attributes);
  justification=attributes.justification;
 
  if(text && strlen(text)!=0){
@@ -3962,10 +3954,7 @@ gtk_sheet_hide_active_cell(GtkSheet *sheet)
  column_button_release(sheet, col);
  row_button_release(sheet, row);
 
- if(sheet->sheet_entry_window) 
-      gdk_window_hide(sheet->sheet_entry_window);
- else
-      gdk_window_hide(sheet->sheet_entry->window);
+ gtk_widget_unmap(sheet->sheet_entry);
 
  if(row != -1 && col != -1)
    gdk_draw_pixmap(sheet->sheet_window,
@@ -3976,7 +3965,7 @@ gtk_sheet_hide_active_cell(GtkSheet *sheet)
                    COLUMN_LEFT_XPIXEL(sheet,col)-1,
                    ROW_TOP_YPIXEL(sheet,row)-1,
                    sheet->column[col].width+4,
-                   sheet->row[row].height+4);   
+                   sheet->row[row].height+4);
 
  GTK_WIDGET_UNSET_FLAGS(sheet->sheet_entry, GTK_HAS_FOCUS);
  GTK_WIDGET_SET_FLAGS(GTK_WIDGET(sheet), GTK_HAS_FOCUS);
@@ -4016,7 +4005,7 @@ gtk_sheet_activate_cell(GtkSheet *sheet, gint row, gint col)
  sheet->selection_cell.row=row;
  sheet->selection_cell.col=col;
  row_button_set(sheet, row);
- column_button_set(sheet, col); 
+ column_button_set(sheet, col);
 
  GTK_SHEET_UNSET_FLAGS(sheet, GTK_SHEET_IN_SELECTION);
  gtk_sheet_show_active_cell(sheet);
@@ -4038,6 +4027,7 @@ gtk_sheet_show_active_cell(GtkSheet *sheet)
  GtkEntry *sheet_entry;
  GtkSheetCellAttr attributes;
  gchar *text = NULL;
+ const gchar *old_text;
  GtkJustification justification;
  gint row, col;
 
@@ -4050,7 +4040,7 @@ gtk_sheet_show_active_cell(GtkSheet *sheet)
  /* Don't show the active cell, if there is no active cell: */
  if(!(row >= 0 && col >= 0)) /* e.g row or coll == -1. */
    return;
-  
+
  if(!GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))) return;
  if(sheet->state != GTK_SHEET_NORMAL) return;
  if(GTK_SHEET_IN_SELECTION(sheet)) return;
@@ -4059,7 +4049,7 @@ gtk_sheet_show_active_cell(GtkSheet *sheet)
 
  sheet_entry = GTK_ENTRY(gtk_sheet_get_entry(sheet));
 
- gtk_sheet_get_attributes(sheet, row, col, &attributes); 
+ gtk_sheet_get_attributes(sheet, row, col, &attributes);
 
  justification = GTK_JUSTIFY_LEFT;
 
@@ -4080,27 +4070,25 @@ gtk_sheet_show_active_cell(GtkSheet *sheet)
 
  gtk_entry_set_visibility(GTK_ENTRY(sheet_entry), attributes.is_visible);
 
- if(gtk_sheet_locked(sheet) || !attributes.is_editable){ 
+ if(gtk_sheet_locked(sheet) || !attributes.is_editable){
             gtk_entry_set_editable(GTK_ENTRY(sheet_entry), FALSE);
  }else{
             gtk_entry_set_editable(GTK_ENTRY(sheet_entry), TRUE);
  }
 
- if(!GTK_IS_ITEM_ENTRY(sheet_entry))
-    gtk_entry_set_text(GTK_ENTRY(sheet_entry), text);
- else
-    gtk_item_entry_set_text(GTK_ITEM_ENTRY(sheet_entry), text, justification);
+/*** Added by John Gotts. Mar 25, 2005 *********/
+ old_text = gtk_entry_get_text(GTK_ENTRY(sheet_entry));
+ if (strcmp(old_text, text) != 0) {
+  if(!GTK_IS_ITEM_ENTRY(sheet_entry))
+     gtk_entry_set_text(GTK_ENTRY(sheet_entry), text);
+  else
+     gtk_item_entry_set_text(GTK_ITEM_ENTRY(sheet_entry), text, justification);
+ }
 
  gtk_sheet_entry_set_max_size(sheet);
  gtk_sheet_size_allocate_entry(sheet);
 
- if(GTK_WIDGET_REALIZED(sheet->sheet_entry)){
-     if(sheet->sheet_entry_window)           
-            gdk_window_show(sheet->sheet_entry_window);
-     else
-            gdk_window_show(sheet->sheet_entry->window);
-     gtk_widget_queue_draw(sheet->sheet_entry);
- }
+ gtk_widget_map(sheet->sheet_entry);
  gtk_sheet_draw_active_cell(sheet);
 
  gtk_widget_grab_focus(GTK_WIDGET(sheet_entry));
@@ -4120,11 +4108,11 @@ gtk_sheet_draw_active_cell(GtkSheet *sheet)
 
     row = sheet->active_cell.row;
     col = sheet->active_cell.col;
- 
+
     if(row<0 || col<0) return;
 
     if(!gtk_sheet_cell_isvisible(sheet, row, col)) return;
- 
+
     row_button_set(sheet, row);
     column_button_set(sheet, col);
 
@@ -4200,10 +4188,10 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
   aux_range.coli=MIN(new_range.coli, MAX_VISIBLE_COLUMN(sheet));
 
   for(i=range->row0; i<=range->rowi; i++){
-   for(j=range->col0; j<=range->coli; j++){     
+   for(j=range->col0; j<=range->coli; j++){
 
     state=gtk_sheet_cell_get_state(sheet, i, j);
-    selected=(i<=new_range.rowi && i>=new_range.row0 && 
+    selected=(i<=new_range.rowi && i>=new_range.row0 &&
         j<=new_range.coli && j>=new_range.col0) ? TRUE : FALSE;
 
     if(state==GTK_STATE_SELECTED && selected &&
@@ -4221,11 +4209,11 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
        mask2 = i==new_range.row0 ? 1 : 0;
        mask2 = i==new_range.rowi ? mask2+2 : mask2;
        mask2 = j==new_range.col0 ? mask2+4 : mask2;
-       mask2 = j==new_range.coli ? mask2+8 : mask2;     
+       mask2 = j==new_range.coli ? mask2+8 : mask2;
 
        if(mask1 != mask2){
          x=COLUMN_LEFT_XPIXEL(sheet,j);
-         y=ROW_TOP_YPIXEL(sheet, i);  
+         y=ROW_TOP_YPIXEL(sheet, i);
          width=COLUMN_LEFT_XPIXEL(sheet, j)-x+sheet->column[j].width;
          height=ROW_TOP_YPIXEL(sheet, i)-y+sheet->row[i].height;
 
@@ -4248,11 +4236,11 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
                   x+1,
                   y+1,
                   width,
-                  height);           
+                  height);
 
          if(i != sheet->active_cell.row || j != sheet->active_cell.col){
            x=COLUMN_LEFT_XPIXEL(sheet,j);
-           y=ROW_TOP_YPIXEL(sheet, i);  
+           y=ROW_TOP_YPIXEL(sheet, i);
            width=COLUMN_LEFT_XPIXEL(sheet, j)-x+sheet->column[j].width;
            height=ROW_TOP_YPIXEL(sheet, i)-y+sheet->row[i].height;
 
@@ -4279,17 +4267,17 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
   }
 
   for(i=range->row0; i<=range->rowi; i++){
-   for(j=range->col0; j<=range->coli; j++){     
+   for(j=range->col0; j<=range->coli; j++){
 
     state=gtk_sheet_cell_get_state(sheet, i, j);
-    selected=(i<=new_range.rowi && i>=new_range.row0 && 
+    selected=(i<=new_range.rowi && i>=new_range.row0 &&
         j<=new_range.coli && j>=new_range.col0) ? TRUE : FALSE;
 
-    if(state==GTK_STATE_SELECTED && !selected &&   
+    if(state==GTK_STATE_SELECTED && !selected &&
        sheet->column[j].is_visible && sheet->row[i].is_visible){
 
       x=COLUMN_LEFT_XPIXEL(sheet,j);
-      y=ROW_TOP_YPIXEL(sheet, i);  
+      y=ROW_TOP_YPIXEL(sheet, i);
       width=COLUMN_LEFT_XPIXEL(sheet, j)-x+sheet->column[j].width;
       height=ROW_TOP_YPIXEL(sheet, i)-y+sheet->row[i].height;
 
@@ -4312,16 +4300,16 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
                   x+1,
                   y+1,
                   width,
-                  height);           
+                  height);
     }
    }
   }
 
   for(i=range->row0; i<=range->rowi; i++){
-   for(j=range->col0; j<=range->coli; j++){     
+   for(j=range->col0; j<=range->coli; j++){
 
     state=gtk_sheet_cell_get_state(sheet, i, j);
-    selected=(i<=new_range.rowi && i>=new_range.row0 && 
+    selected=(i<=new_range.rowi && i>=new_range.row0 &&
         j<=new_range.coli && j>=new_range.col0) ? TRUE : FALSE;
 
     if(state!=GTK_STATE_SELECTED && selected &&
@@ -4329,7 +4317,7 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
        (i != sheet->active_cell.row || j != sheet->active_cell.col)){
 
       x=COLUMN_LEFT_XPIXEL(sheet,j);
-      y=ROW_TOP_YPIXEL(sheet, i);  
+      y=ROW_TOP_YPIXEL(sheet, i);
       width=COLUMN_LEFT_XPIXEL(sheet, j)-x+sheet->column[j].width;
       height=ROW_TOP_YPIXEL(sheet, i)-y+sheet->row[i].height;
 
@@ -4350,13 +4338,13 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
 	                   x+1,y+1,
 	                   width,height);
 
-    }   
+    }
 
    }
   }
 
   for(i=aux_range.row0; i<=aux_range.rowi; i++){
-   for(j=aux_range.col0; j<=aux_range.coli; j++){     
+   for(j=aux_range.col0; j<=aux_range.coli; j++){
 
     if(sheet->column[j].is_visible && sheet->row[i].is_visible){
 
@@ -4370,10 +4358,10 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
        mask2 = i==new_range.row0 ? 1 : 0;
        mask2 = i==new_range.rowi ? mask2+2 : mask2;
        mask2 = j==new_range.col0 ? mask2+4 : mask2;
-       mask2 = j==new_range.coli ? mask2+8 : mask2;    
+       mask2 = j==new_range.coli ? mask2+8 : mask2;
        if(mask2!=mask1 || (mask2==mask1 && state!=GTK_STATE_SELECTED)){
          x=COLUMN_LEFT_XPIXEL(sheet,j);
-         y=ROW_TOP_YPIXEL(sheet, i);  
+         y=ROW_TOP_YPIXEL(sheet, i);
          width=sheet->column[j].width;
          height=sheet->row[i].height;
          if(mask2 & 1)
@@ -4383,7 +4371,7 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
 	                           x+1,y-1,
 	                           width,3);
 
-           
+
          if(mask2 & 2)
                gdk_draw_rectangle (sheet->sheet_window,
   	                           sheet->xor_gc,
@@ -4406,14 +4394,14 @@ gtk_sheet_new_selection(GtkSheet *sheet, GtkSheetRange *range)
 	                           x+width-1,y+1,
 	                           3,height);
 
-       
 
-       }         
 
-    } 
+       }
+
+    }
 
    }
-  } 
+  }
 
 
   *range=new_range;
@@ -4433,7 +4421,7 @@ gtk_sheet_draw_border (GtkSheet *sheet, GtkSheetRange new_range)
 
   x=COLUMN_LEFT_XPIXEL(sheet,new_range.col0);
   y=ROW_TOP_YPIXEL(sheet,new_range.row0);
-  width=COLUMN_LEFT_XPIXEL(sheet,new_range.coli)-x+ 
+  width=COLUMN_LEFT_XPIXEL(sheet,new_range.coli)-x+
              sheet->column[new_range.coli].width;
   height=ROW_TOP_YPIXEL(sheet,new_range.rowi)-y+
              sheet->row[new_range.rowi].height;
@@ -4464,7 +4452,7 @@ gtk_sheet_draw_border (GtkSheet *sheet, GtkSheetRange new_range)
 	                 width-2*i,height-2*i);
 
   gdk_gc_set_clip_rectangle(sheet->xor_gc, NULL);
-  
+
   gtk_sheet_draw_corners(sheet, new_range);
 
 }
@@ -4486,7 +4474,7 @@ gtk_sheet_draw_corners(GtkSheet *sheet, GtkSheetRange range)
                        x-1,
                        y-1,
                        3,
-                       3);         
+                       3);
        gdk_draw_rectangle (sheet->sheet_window,
   	                   sheet->xor_gc,
                            TRUE,
@@ -4513,7 +4501,7 @@ gtk_sheet_draw_corners(GtkSheet *sheet, GtkSheetRange range)
                        x-width,
                        y-width,
                        2*width+1,
-                       2*width+1);         
+                       2*width+1);
        gdk_draw_rectangle (sheet->sheet_window,
   	                   sheet->xor_gc,
                            TRUE,
@@ -4527,7 +4515,7 @@ gtk_sheet_draw_corners(GtkSheet *sheet, GtkSheetRange range)
        y=ROW_TOP_YPIXEL(sheet,range.rowi)+
          sheet->row[range.rowi].height;
        width = 1;
-       if(sheet->state == GTK_SHEET_ROW_SELECTED) 
+       if(sheet->state == GTK_SHEET_ROW_SELECTED)
          {
              x = COLUMN_LEFT_XPIXEL(sheet, sheet->view.col0)+3;
              width = 3;
@@ -4540,7 +4528,7 @@ gtk_sheet_draw_corners(GtkSheet *sheet, GtkSheetRange range)
                        x-width,
                        y-width,
                        2*width+1,
-                       2*width+1);         
+                       2*width+1);
        gdk_draw_rectangle (sheet->sheet_window,
   	                   sheet->xor_gc,
                            TRUE,
@@ -4564,7 +4552,7 @@ gtk_sheet_draw_corners(GtkSheet *sheet, GtkSheetRange range)
                        x-width,
                        y-width,
                        2*width+1,
-                       2*width+1);         
+                       2*width+1);
        gdk_draw_rectangle (sheet->sheet_window,
   	                   sheet->xor_gc,
                            TRUE,
@@ -4601,7 +4589,7 @@ gtk_sheet_real_select_range (GtkSheet * sheet,
     column_button_set(sheet, i);
    }
   }
- 
+
   if(state==GTK_SHEET_ROW_SELECTED || state==GTK_SHEET_RANGE_SELECTED){
    for(i=sheet->range.row0; i< range->row0; i++)
     row_button_release(sheet, i);
@@ -4643,7 +4631,7 @@ gtk_sheet_select_range(GtkSheet * sheet, const GtkSheetRange *range)
   if(range->row0 < 0 || range->rowi < 0) return;
   if(range->col0 < 0 || range->coli < 0) return;
 
-  if(sheet->state != GTK_SHEET_NORMAL) 
+  if(sheet->state != GTK_SHEET_NORMAL)
        gtk_sheet_real_unselect_range(sheet, NULL);
   else
   {
@@ -4680,7 +4668,7 @@ gtk_sheet_real_unselect_range (GtkSheet * sheet,
 			       const GtkSheetRange *range)
 {
   gint i;
- 
+
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_WIDGET_REALIZED(GTK_WIDGET(sheet)));
 
@@ -4703,6 +4691,7 @@ gtk_sheet_real_unselect_range (GtkSheet * sheet,
      row_button_release(sheet, i);
   }
 
+  gtk_sheet_position_children(sheet);
 }
 
 
@@ -4727,34 +4716,36 @@ gtk_sheet_expose (GtkWidget * widget,
       range.coli=COLUMN_FROM_XPIXEL(sheet,event->area.x+event->area.width);
 
       /* exposure events on the sheet */
- 
+
       if(event->window == sheet->row_title_window && sheet->row_titles_visible){
-                     size_allocate_row_title_buttons(sheet);
-                     gdk_window_show(sheet->row_title_window);
+         gint i;
+         for(i = MIN_VISIBLE_ROW(sheet); i <= MAX_VISIBLE_ROW(sheet); i++)
+           gtk_sheet_button_draw(sheet,i,-1);
       }
 
       if(event->window == sheet->column_title_window && sheet->column_titles_visible){
-                     size_allocate_column_title_buttons(sheet);
-                     gdk_window_show(sheet->column_title_window);
+         gint i;
+         for(i = MIN_VISIBLE_COLUMN(sheet); i <= MAX_VISIBLE_COLUMN(sheet); i++)
+           gtk_sheet_button_draw(sheet,-1,i);
       }
 
       if (event->window == sheet->sheet_window){
         gtk_sheet_draw_backing_pixmap(sheet, range);
-              
+
         if(sheet->state != GTK_SHEET_NORMAL){
-                if(gtk_sheet_range_isvisible(sheet, sheet->range))          
+                if(gtk_sheet_range_isvisible(sheet, sheet->range))
                    gtk_sheet_draw_backing_pixmap(sheet, sheet->range);
                 if(GTK_SHEET_IN_RESIZE(sheet) || GTK_SHEET_IN_DRAG(sheet))
                    gtk_sheet_draw_backing_pixmap(sheet, sheet->drag_range);
 
-                if(gtk_sheet_range_isvisible(sheet, sheet->range))          
+                if(gtk_sheet_range_isvisible(sheet, sheet->range))
                    gtk_sheet_range_draw_selection(sheet, sheet->range);
                 if(GTK_SHEET_IN_RESIZE(sheet) || GTK_SHEET_IN_DRAG(sheet))
                    draw_xor_rectangle(sheet, sheet->drag_range);
         }
 
         if((!GTK_SHEET_IN_XDRAG(sheet)) && (!GTK_SHEET_IN_YDRAG(sheet))){
-             if(sheet->state == GTK_SHEET_NORMAL){ 
+             if(sheet->state == GTK_SHEET_NORMAL){
                  gtk_sheet_draw_active_cell(sheet);
                  if(!GTK_SHEET_IN_SELECTION(sheet))
                          gtk_widget_queue_draw(sheet->sheet_entry);
@@ -4843,7 +4834,7 @@ gtk_sheet_button_press (GtkWidget * widget,
 		       GDK_BUTTON_RELEASE_MASK,
 		       NULL, NULL, event->time);
      gtk_grab_add(GTK_WIDGET(sheet));
-     sheet->timer=gtk_timeout_add(TIMEOUT_SCROLL, gtk_sheet_scroll, sheet); 
+     sheet->timer=gtk_timeout_add(TIMEOUT_SCROLL, gtk_sheet_scroll, sheet);
      GTK_WIDGET_UNSET_FLAGS(sheet->sheet_entry, GTK_HAS_FOCUS);
      GTK_WIDGET_SET_FLAGS(GTK_SHEET(sheet), GTK_HAS_FOCUS);
      gtk_widget_grab_focus(GTK_WIDGET(sheet));
@@ -4895,7 +4886,7 @@ gtk_sheet_button_press (GtkWidget * widget,
             draw_xor_rectangle(sheet, sheet->drag_range);
             GTK_SHEET_SET_FLAGS(sheet, GTK_SHEET_IN_DRAG);
           }
-          else 
+          else
           {
            gtk_sheet_click_cell(sheet, row, column, &veto);
            if(veto) GTK_SHEET_SET_FLAGS(sheet, GTK_SHEET_IN_SELECTION);
@@ -4909,7 +4900,7 @@ gtk_sheet_button_press (GtkWidget * widget,
      if(sheet->column[column].is_sensitive){;
        gtk_sheet_click_cell(sheet, -1, column, &veto);
        gtk_grab_add(GTK_WIDGET(sheet));
-       sheet->timer=gtk_timeout_add(TIMEOUT_SCROLL, gtk_sheet_scroll, sheet); 
+       sheet->timer=gtk_timeout_add(TIMEOUT_SCROLL, gtk_sheet_scroll, sheet);
        GTK_WIDGET_UNSET_FLAGS(sheet->sheet_entry, GTK_HAS_FOCUS);
        GTK_WIDGET_SET_FLAGS(GTK_SHEET(sheet), GTK_HAS_FOCUS);
        gtk_widget_grab_focus(GTK_WIDGET(sheet));
@@ -4923,7 +4914,7 @@ gtk_sheet_button_press (GtkWidget * widget,
      if(sheet->row[row].is_sensitive){
        gtk_sheet_click_cell(sheet, row, -1, &veto);
        gtk_grab_add(GTK_WIDGET(sheet));
-       sheet->timer=gtk_timeout_add(TIMEOUT_SCROLL, gtk_sheet_scroll, sheet); 
+       sheet->timer=gtk_timeout_add(TIMEOUT_SCROLL, gtk_sheet_scroll, sheet);
        GTK_WIDGET_UNSET_FLAGS(sheet->sheet_entry, GTK_HAS_FOCUS);
        GTK_WIDGET_SET_FLAGS(GTK_SHEET(sheet), GTK_HAS_FOCUS);
        gtk_widget_grab_focus(GTK_WIDGET(sheet));
@@ -4940,7 +4931,7 @@ gtk_sheet_scroll(gpointer data)
  GtkSheet *sheet;
  gint x,y,row,column;
  gint move;
-  
+
  sheet=GTK_SHEET(data);
 
  GDK_THREADS_ENTER();
@@ -4955,13 +4946,13 @@ gtk_sheet_scroll(gpointer data)
 
  if(GTK_SHEET_IN_DRAG(sheet) || GTK_SHEET_IN_RESIZE(sheet)){
        move=gtk_sheet_move_query(sheet, row, column);
-       if(move) draw_xor_rectangle(sheet, sheet->drag_range);      
- }       
+       if(move) draw_xor_rectangle(sheet, sheet->drag_range);
+ }
 
  GDK_THREADS_LEAVE();
 
  return TRUE;
-      
+
 }
 
 static void
@@ -4975,14 +4966,14 @@ gtk_sheet_click_cell(GtkSheet *sheet, gint row, gint column, gboolean *veto)
       }
 
       if(column >= 0 && row >= 0)
-       if(!sheet->column[column].is_visible || !sheet->row[row].is_visible) 
+       if(!sheet->column[column].is_visible || !sheet->row[row].is_visible)
          {
            *veto = FALSE;
            return;
          }
 
       _gtkextra_signal_emit(GTK_OBJECT(sheet), sheet_signals[TRAVERSE],
-                            sheet->active_cell.row, sheet->active_cell.col, 
+                            sheet->active_cell.row, sheet->active_cell.col,
                             &row, &column, veto);
 
       if(!*veto){
@@ -5057,7 +5048,7 @@ gtk_sheet_button_release (GtkWidget * widget,
 {
   GtkSheet *sheet;
   gint x,y;
- 
+
   sheet=GTK_SHEET(widget);
 
   /* release on resize windows */
@@ -5067,7 +5058,7 @@ gtk_sheet_button_release (GtkWidget * widget,
 	  gtk_widget_get_pointer (widget, &x, NULL);
 	  gdk_pointer_ungrab (event->time);
 	  draw_xor_vline (sheet);
-	  
+
 	  gtk_sheet_set_column_width (sheet, sheet->drag_cell.col, new_column_width (sheet, sheet->drag_cell.col, &x));
           sheet->old_hadjustment = -1.;
           gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), "value_changed");
@@ -5080,14 +5071,14 @@ gtk_sheet_button_release (GtkWidget * widget,
 	  gtk_widget_get_pointer (widget, NULL, &y);
 	  gdk_pointer_ungrab (event->time);
 	  draw_xor_hline (sheet);
-	  
+
 	  gtk_sheet_set_row_height (sheet, sheet->drag_cell.row, new_row_height (sheet, sheet->drag_cell.row, &y));
           sheet->old_vadjustment = -1.;
           gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), "value_changed");
 	  return TRUE;
   }
 
-  
+
   if (GTK_SHEET_IN_DRAG(sheet)){
       GtkSheetRange old_range;
       draw_xor_rectangle(sheet, sheet->drag_range);
@@ -5095,7 +5086,7 @@ gtk_sheet_button_release (GtkWidget * widget,
       gdk_pointer_ungrab (event->time);
 
       gtk_sheet_real_unselect_range(sheet, NULL);
-      
+
       sheet->active_cell.row = sheet->active_cell.row +
                                (sheet->drag_range.row0 - sheet->range.row0);
       sheet->active_cell.col = sheet->active_cell.col +
@@ -5119,7 +5110,7 @@ gtk_sheet_button_release (GtkWidget * widget,
       gdk_pointer_ungrab (event->time);
 
       gtk_sheet_real_unselect_range(sheet, NULL);
-      
+
       sheet->active_cell.row = sheet->active_cell.row +
                                (sheet->drag_range.row0 - sheet->range.row0);
       sheet->active_cell.col = sheet->active_cell.col +
@@ -5145,7 +5136,7 @@ gtk_sheet_button_release (GtkWidget * widget,
   if(sheet->state == GTK_SHEET_NORMAL && GTK_SHEET_IN_SELECTION(sheet)){
       GTK_SHEET_UNSET_FLAGS(sheet, GTK_SHEET_IN_SELECTION);
       gdk_pointer_ungrab (event->time);
-      gtk_sheet_activate_cell(sheet, sheet->active_cell.row, 
+      gtk_sheet_activate_cell(sheet, sheet->active_cell.row,
                                      sheet->active_cell.col);
   }
 
@@ -5176,7 +5167,6 @@ gtk_sheet_motion (GtkWidget * widget,
 
   sheet = GTK_SHEET (widget);
 
-
   /* selections on the sheet */
   x = event->x;
   y = event->y;
@@ -5198,7 +5188,7 @@ gtk_sheet_motion (GtkWidget * widget,
         gdk_window_set_cursor(sheet->column_title_window,sheet->cursor_drag);
       }
     }
-  }      
+  }
 
   if(event->window == sheet->row_title_window && gtk_sheet_rows_resizable(sheet)){
     gtk_widget_get_pointer(widget, &x, &y);
@@ -5217,12 +5207,12 @@ gtk_sheet_motion (GtkWidget * widget,
         gdk_window_set_cursor(sheet->row_title_window,sheet->cursor_drag);
       }
     }
-  }      
+  }
 
   new_cursor=GDK_PLUS;
   if(!POSSIBLE_DRAG(sheet,x,y,&row,&column) && !GTK_SHEET_IN_DRAG(sheet) &&
      !POSSIBLE_RESIZE(sheet,x,y,&row,&column) && !GTK_SHEET_IN_RESIZE(sheet) &&
-     event->window == sheet->sheet_window && 
+     event->window == sheet->sheet_window &&
      new_cursor != sheet->cursor_drag->type){
          gdk_cursor_destroy(sheet->cursor_drag);
          sheet->cursor_drag=gdk_cursor_new(GDK_PLUS);
@@ -5231,8 +5221,8 @@ gtk_sheet_motion (GtkWidget * widget,
 
   new_cursor=GDK_TOP_LEFT_ARROW;
   if(!(POSSIBLE_RESIZE(sheet,x,y,&row,&column) || GTK_SHEET_IN_RESIZE(sheet)) &&
-     (POSSIBLE_DRAG(sheet, x,y,&row,&column) || GTK_SHEET_IN_DRAG(sheet)) && 
-     event->window == sheet->sheet_window && 
+     (POSSIBLE_DRAG(sheet, x,y,&row,&column) || GTK_SHEET_IN_DRAG(sheet)) &&
+     event->window == sheet->sheet_window &&
      new_cursor != sheet->cursor_drag->type){
          gdk_cursor_destroy(sheet->cursor_drag);
          sheet->cursor_drag=gdk_cursor_new(GDK_TOP_LEFT_ARROW);
@@ -5242,7 +5232,7 @@ gtk_sheet_motion (GtkWidget * widget,
   new_cursor=GDK_SIZING;
   if(!GTK_SHEET_IN_DRAG(sheet) &&
      (POSSIBLE_RESIZE(sheet,x,y,&row,&column) || GTK_SHEET_IN_RESIZE(sheet)) &&
-     event->window == sheet->sheet_window && 
+     event->window == sheet->sheet_window &&
      new_cursor != sheet->cursor_drag->type){
          gdk_cursor_destroy(sheet->cursor_drag);
          sheet->cursor_drag=gdk_cursor_new(GDK_SIZING);
@@ -5324,7 +5314,7 @@ gtk_sheet_motion (GtkWidget * widget,
        sheet->y_drag=y;
        aux=sheet->range;
 
-       if(row < sheet->range.row0 - sheet->range.rowi - 1) 
+       if(row < sheet->range.row0 - sheet->range.rowi - 1)
           row=row+(sheet->range.rowi-sheet->range.row0 + 1);
        else if(row<0) row=0;
 
@@ -5332,7 +5322,7 @@ gtk_sheet_motion (GtkWidget * widget,
           column=column+(sheet->range.coli-sheet->range.col0 + 1);
        else if(column<0) column=0;
 
-       if(v_h==1) 
+       if(v_h==1)
            column=0;
        else
            row=0;
@@ -5347,7 +5337,7 @@ gtk_sheet_motion (GtkWidget * widget,
              if(row>0) sheet->drag_range.rowi=sheet->range.rowi+row;
              if(column<0) sheet->drag_range.col0=sheet->range.col0+column;
              if(column>0) sheet->drag_range.coli=sheet->range.coli+column;
-             
+
              if(aux.row0 != sheet->drag_range.row0 ||
                 aux.rowi != sheet->drag_range.rowi ||
                 aux.col0 != sheet->drag_range.col0 ||
@@ -5359,7 +5349,7 @@ gtk_sheet_motion (GtkWidget * widget,
        return TRUE;
   }
 
-  
+
 
   gtk_sheet_get_pixel_info (sheet, x, y, &row, &column);
 
@@ -5394,7 +5384,7 @@ gtk_sheet_move_query(GtkSheet *sheet, gint row, gint column)
 	  new_row = MIN(sheet->maxrow, row + 1);
           row_move = TRUE;
           if(MAX_VISIBLE_ROW(sheet) == sheet->maxrow &&
-             ROW_TOP_YPIXEL(sheet, sheet->maxrow) + 
+             ROW_TOP_YPIXEL(sheet, sheet->maxrow) +
              sheet->row[sheet->maxrow].height < height){
                  row_move = FALSE;
 		 row_align = -1.;
@@ -5409,12 +5399,12 @@ gtk_sheet_move_query(GtkSheet *sheet, gint row, gint column)
           new_col = MIN(sheet->maxcol, column + 1);
           column_move = TRUE;
           if(MAX_VISIBLE_COLUMN(sheet) == sheet->maxcol &&
-             COLUMN_LEFT_XPIXEL(sheet, sheet->maxcol) + 
+             COLUMN_LEFT_XPIXEL(sheet, sheet->maxcol) +
              sheet->column[sheet->maxcol].width < width){
                  column_move = FALSE;
 		 col_align = -1.;
           }
-  } 
+  }
   if(column<MIN_VISIBLE_COLUMN(sheet) && sheet->state!=GTK_SHEET_ROW_SELECTED) {
 	  col_align = 0.;
           column_move = TRUE;
@@ -5452,7 +5442,7 @@ gtk_sheet_extend_selection(GtkSheet *sheet, gint row, gint column)
          break;
     case GTK_SHEET_COLUMN_SELECTED:
 	 row = sheet->maxrow;
-         break; 
+         break;
     case GTK_SHEET_NORMAL:
 	 sheet->state=GTK_SHEET_RANGE_SELECTED;
          r=sheet->active_cell.row;
@@ -5469,7 +5459,7 @@ gtk_sheet_extend_selection(GtkSheet *sheet, gint row, gint column)
                    COLUMN_LEFT_XPIXEL(sheet,c)-1,
                    ROW_TOP_YPIXEL(sheet,r)-1,
                    sheet->column[c].width+4,
-                   sheet->row[r].height+4);   
+                   sheet->row[r].height+4);
          gtk_sheet_range_draw_selection(sheet, sheet->range);
     case GTK_SHEET_RANGE_SELECTED:
          sheet->state=GTK_SHEET_RANGE_SELECTED;
@@ -5522,12 +5512,12 @@ gtk_sheet_key_press(GtkWidget *widget,
     if(key->keyval=='c' || key->keyval == 'C' && sheet->state != GTK_STATE_NORMAL)
             gtk_sheet_clip_range(sheet, sheet->range);
     if(key->keyval=='x' || key->keyval == 'X')
-            gtk_sheet_unclip_range(sheet);    
+            gtk_sheet_unclip_range(sheet);
     return FALSE;
   }
 */
 
-  extend_selection = (key->state & GDK_SHIFT_MASK) || key->keyval==GDK_Shift_L 
+  extend_selection = (key->state & GDK_SHIFT_MASK) || key->keyval==GDK_Shift_L
 || key->keyval==GDK_Shift_R;
 
   state=sheet->state;
@@ -5536,9 +5526,9 @@ gtk_sheet_key_press(GtkWidget *widget,
 
   switch(key->keyval){
     case GDK_Return: case GDK_KP_Enter:
-      if(sheet->state == GTK_SHEET_NORMAL && 
+      if(sheet->state == GTK_SHEET_NORMAL &&
          !GTK_SHEET_IN_SELECTION(sheet))
-         gtk_signal_emit_stop_by_name(GTK_OBJECT(gtk_sheet_get_entry(sheet)), 
+         gtk_signal_emit_stop_by_name(GTK_OBJECT(gtk_sheet_get_entry(sheet)),
                                      "key_press_event");
       row = sheet->active_cell.row;
       col = sheet->active_cell.col;
@@ -5556,39 +5546,39 @@ gtk_sheet_key_press(GtkWidget *widget,
    case GDK_ISO_Left_Tab:
       row = sheet->active_cell.row;
       col = sheet->active_cell.col;
-      if(sheet->state == GTK_SHEET_ROW_SELECTED) 
+      if(sheet->state == GTK_SHEET_ROW_SELECTED)
            col = MIN_VISIBLE_COLUMN(sheet)-1;
-      if(sheet->state == GTK_SHEET_COLUMN_SELECTED) 
+      if(sheet->state == GTK_SHEET_COLUMN_SELECTED)
            row = MIN_VISIBLE_ROW(sheet);
       if(col > 0){
-           col = col - scroll; 
+           col = col - scroll;
            while(!sheet->column[col].is_visible && col>0) col--;
 	   col=MAX(0, col);
-      }       
+      }
       gtk_sheet_click_cell(sheet, row, col, &veto);
       extend_selection = FALSE;
       break;
    case GDK_Tab:
       row = sheet->active_cell.row;
       col = sheet->active_cell.col;
-      if(sheet->state == GTK_SHEET_ROW_SELECTED) 
+      if(sheet->state == GTK_SHEET_ROW_SELECTED)
            col = MIN_VISIBLE_COLUMN(sheet)-1;
-      if(sheet->state == GTK_SHEET_COLUMN_SELECTED) 
+      if(sheet->state == GTK_SHEET_COLUMN_SELECTED)
            row = MIN_VISIBLE_ROW(sheet);
       if(col < sheet->maxcol){
-           col = col + scroll; 
+           col = col + scroll;
            while(!sheet->column[col].is_visible && col<sheet->maxcol) col++;
-      }       
+      }
       gtk_sheet_click_cell(sheet, row, col, &veto);
       extend_selection = FALSE;
       break;
 /*    case GDK_BackSpace:
       if(sheet->active_cell.row >= 0 && sheet->active_cell.col >= 0){
        if(sheet->active_cell.col > 0){
-            col = sheet->active_cell.col - scroll; 
+            col = sheet->active_cell.col - scroll;
 	    row = sheet->active_cell.row;
             while(!sheet->column[col].is_visible && col > 0) col--;
-       }       
+       }
       }
       gtk_sheet_click_cell(sheet, row, col, &veto);
       extend_selection = FALSE;
@@ -5614,9 +5604,9 @@ gtk_sheet_key_press(GtkWidget *widget,
       }
       col = sheet->active_cell.col;
       row = sheet->active_cell.row;
-      if(state==GTK_SHEET_COLUMN_SELECTED) 
+      if(state==GTK_SHEET_COLUMN_SELECTED)
              row = MIN_VISIBLE_ROW(sheet);
-      if(state==GTK_SHEET_ROW_SELECTED) 
+      if(state==GTK_SHEET_ROW_SELECTED)
              col = MIN_VISIBLE_COLUMN(sheet);
       row = row - scroll;
       while(!sheet->row[row].is_visible && row > 0) row--;
@@ -5645,9 +5635,9 @@ gtk_sheet_key_press(GtkWidget *widget,
       col = sheet->active_cell.col;
       row = sheet->active_cell.row;
       if(sheet->active_cell.row < sheet->maxrow){
-	   if(state==GTK_SHEET_COLUMN_SELECTED) 
+	   if(state==GTK_SHEET_COLUMN_SELECTED)
                 row = MIN_VISIBLE_ROW(sheet)-1;
-	   if(state==GTK_SHEET_ROW_SELECTED) 
+	   if(state==GTK_SHEET_ROW_SELECTED)
                 col = MIN_VISIBLE_COLUMN(sheet);
 	   row = row + scroll;
            while(!sheet->row[row].is_visible && row < sheet->maxrow) row++;
@@ -5675,12 +5665,12 @@ gtk_sheet_key_press(GtkWidget *widget,
       row = sheet->active_cell.row;
       if(sheet->active_cell.col < sheet->maxcol){
            col ++;
-	   if(state==GTK_SHEET_ROW_SELECTED) 
+	   if(state==GTK_SHEET_ROW_SELECTED)
                 col = MIN_VISIBLE_COLUMN(sheet)-1;
-	   if(state==GTK_SHEET_COLUMN_SELECTED) 
+	   if(state==GTK_SHEET_COLUMN_SELECTED)
                 row = MIN_VISIBLE_ROW(sheet);
            while(!sheet->column[col].is_visible && col < sheet->maxcol) col++;
-           if(strlen(gtk_entry_get_text(GTK_ENTRY(gtk_sheet_get_entry(sheet)))) == 0 
+           if(strlen(gtk_entry_get_text(GTK_ENTRY(gtk_sheet_get_entry(sheet)))) == 0
               || force_move) {
 	        gtk_sheet_click_cell(sheet, row, col, &veto);
            }
@@ -5699,16 +5689,16 @@ gtk_sheet_key_press(GtkWidget *widget,
         }
         if(sheet->selection_cell.col > 0){
           col = sheet->selection_cell.col - 1;
-          while(!sheet->column[col].is_visible && col > 0) col--;          
+          while(!sheet->column[col].is_visible && col > 0) col--;
           gtk_sheet_extend_selection(sheet, sheet->selection_cell.row, col);
         }
 	return TRUE;
       }
       col = sheet->active_cell.col - 1;
       row = sheet->active_cell.row;
-      if(state==GTK_SHEET_ROW_SELECTED) 
+      if(state==GTK_SHEET_ROW_SELECTED)
                 col = MIN_VISIBLE_COLUMN(sheet)-1;
-      if(state==GTK_SHEET_COLUMN_SELECTED) 
+      if(state==GTK_SHEET_COLUMN_SELECTED)
                 row = MIN_VISIBLE_ROW(sheet);
       while(!sheet->column[col].is_visible && col > 0) col--;
       col = MAX(0, col);
@@ -5735,10 +5725,10 @@ gtk_sheet_key_press(GtkWidget *widget,
       break;
     default:
       if(in_selection) {
-	GTK_SHEET_SET_FLAGS(sheet, GTK_SHEET_IN_SELECTION);
-	if(extend_selection) return TRUE;
+        GTK_SHEET_SET_FLAGS(sheet, GTK_SHEET_IN_SELECTION);
+        if(extend_selection) return TRUE;
       }
-      if(state == GTK_SHEET_ROW_SELECTED) 
+      if(state == GTK_SHEET_ROW_SELECTED)
         sheet->active_cell.col=MIN_VISIBLE_COLUMN(sheet);
       if(state == GTK_SHEET_COLUMN_SELECTED)
         sheet->active_cell.row=MIN_VISIBLE_ROW(sheet);
@@ -5751,7 +5741,7 @@ gtk_sheet_key_press(GtkWidget *widget,
                                  sheet->active_cell.col);
 
   return TRUE;
-} 
+}
 
 static void
 gtk_sheet_size_request (GtkWidget * widget,
@@ -5772,11 +5762,11 @@ gtk_sheet_size_request (GtkWidget * widget,
   requisition->height = 3*DEFAULT_ROW_HEIGHT(widget);
 
   /* compute the size of the column title area */
-  if(sheet->column_titles_visible) 
+  if(sheet->column_titles_visible)
      requisition->height += sheet->column_title_area.height;
 
   /* compute the size of the row title area */
-  if(sheet->row_titles_visible) 
+  if(sheet->row_titles_visible)
      requisition->width += sheet->row_title_area.width;
 
   sheet->view.row0=ROW_FROM_YPIXEL(sheet, sheet->column_title_area.height+1);
@@ -5784,10 +5774,10 @@ gtk_sheet_size_request (GtkWidget * widget,
   sheet->view.col0=COLUMN_FROM_XPIXEL(sheet, sheet->row_title_area.width+1);
   sheet->view.coli=COLUMN_FROM_XPIXEL(sheet, sheet->sheet_window_width);
 
-  if(!sheet->column_titles_visible) 
+  if(!sheet->column_titles_visible)
      sheet->view.row0=ROW_FROM_YPIXEL(sheet, 1);
 
-  if(!sheet->row_titles_visible) 
+  if(!sheet->row_titles_visible)
      sheet->view.col0=COLUMN_FROM_XPIXEL(sheet, 1);
 
   children = sheet->children;
@@ -5800,7 +5790,7 @@ gtk_sheet_size_request (GtkWidget * widget,
   }
 }
 
- 
+
 static void
 gtk_sheet_size_allocate (GtkWidget * widget,
 			 GtkAllocation * allocation)
@@ -5831,7 +5821,7 @@ gtk_sheet_size_allocate (GtkWidget * widget,
   sheet->internal_allocation.y = 0;
   sheet->internal_allocation.width = allocation->width - 2*border_width;
   sheet->internal_allocation.height = allocation->height - 2*border_width;
-	
+
   sheet_allocation.x = 0;
   sheet_allocation.y = 0;
   sheet_allocation.width = allocation->width - 2*border_width;
@@ -5852,7 +5842,7 @@ gtk_sheet_size_allocate (GtkWidget * widget,
   sheet->column_title_area.y = 0;
   if(sheet->row_titles_visible)
        sheet->column_title_area.x = sheet->row_title_area.width;
-  sheet->column_title_area.width = sheet_allocation.width - 
+  sheet->column_title_area.width = sheet_allocation.width -
                                      sheet->column_title_area.x;
   if(GTK_WIDGET_REALIZED(widget) && sheet->column_titles_visible)
       gdk_window_move_resize (sheet->column_title_window,
@@ -5893,7 +5883,7 @@ gtk_sheet_size_allocate (GtkWidget * widget,
 
   if(!sheet->column_titles_visible)
        sheet->view.row0=ROW_FROM_YPIXEL(sheet, 1);
-      
+
   if(!sheet->row_titles_visible)
        sheet->view.col0=COLUMN_FROM_XPIXEL(sheet, 1);
 
@@ -5901,7 +5891,7 @@ gtk_sheet_size_allocate (GtkWidget * widget,
   size_allocate_row_title_buttons(sheet);
 
   /* re-scale backing pixmap */
-  gtk_sheet_make_backing_pixmap(sheet, 0, 0); 
+  gtk_sheet_make_backing_pixmap(sheet, 0, 0);
   gtk_sheet_position_children(sheet);
 
   /* set the scrollbars adjustments */
@@ -5942,7 +5932,7 @@ size_allocate_column_title_buttons (GtkSheet * sheet)
   if(MAX_VISIBLE_COLUMN(sheet) == sheet->maxcol)
      gdk_window_clear_area (sheet->column_title_window,
 	   		    0,0,
-			    sheet->column_title_area.width, 
+			    sheet->column_title_area.width,
                             sheet->column_title_area.height);
 
   if(!GTK_WIDGET_DRAWABLE(sheet)) return;
@@ -5950,7 +5940,7 @@ size_allocate_column_title_buttons (GtkSheet * sheet)
   for (i = MIN_VISIBLE_COLUMN(sheet); i <= MAX_VISIBLE_COLUMN(sheet); i++)
       gtk_sheet_button_draw(sheet,-1,i);
 }
-	
+
 static void
 size_allocate_row_title_buttons (GtkSheet * sheet)
 {
@@ -5969,7 +5959,7 @@ size_allocate_row_title_buttons (GtkSheet * sheet)
       height -= sheet->column_title_area.height;
       y = sheet->column_title_area.height;
     }
-    
+
   if(sheet->row_title_area.height != height || sheet->row_title_area.y != y){
      sheet->row_title_area.y = y;
      sheet->row_title_area.height = height;
@@ -5982,7 +5972,7 @@ size_allocate_row_title_buttons (GtkSheet * sheet)
   if(MAX_VISIBLE_ROW(sheet) == sheet->maxrow)
     gdk_window_clear_area (sheet->row_title_window,
 			   0,0,
-			   sheet->row_title_area.width, 
+			   sheet->row_title_area.width,
                            sheet->row_title_area.height);
 
   if(!GTK_WIDGET_DRAWABLE(sheet)) return;
@@ -5990,7 +5980,7 @@ size_allocate_row_title_buttons (GtkSheet * sheet)
   for(i = MIN_VISIBLE_ROW(sheet); i <= MAX_VISIBLE_ROW(sheet); i++)
       gtk_sheet_button_draw(sheet,i,-1);
 }
-	  
+
 static void
 gtk_sheet_recalc_top_ypixels(GtkSheet *sheet, gint row)
 {
@@ -6036,11 +6026,11 @@ gtk_sheet_size_allocate_entry(GtkSheet *sheet)
 
  sheet_entry = GTK_ENTRY(gtk_sheet_get_entry(sheet));
 
- gtk_sheet_get_attributes(sheet, sheet->active_cell.row, sheet->active_cell.col, &attributes); 
+ gtk_sheet_get_attributes(sheet, sheet->active_cell.row, sheet->active_cell.col, &attributes);
 
  if(GTK_WIDGET_REALIZED(sheet->sheet_entry)){
 
-  if(!GTK_WIDGET(sheet_entry)->style) 
+  if(!GTK_WIDGET(sheet_entry)->style)
         gtk_widget_ensure_style(GTK_WIDGET(sheet_entry));
 
   previous_style = GTK_WIDGET(sheet_entry)->style;
@@ -6078,7 +6068,7 @@ gtk_sheet_size_allocate_entry(GtkSheet *sheet)
 
  text_size = 0;
  text = gtk_entry_get_text(GTK_ENTRY(sheet_entry));
- if(text && strlen(text) > 0){ 
+ if(text && strlen(text) > 0){
      text_size = STRING_WIDTH(GTK_WIDGET(sheet), attributes.font_desc, text);
  }
 
@@ -6126,18 +6116,7 @@ gtk_sheet_size_allocate_entry(GtkSheet *sheet)
    shentry_allocation.height -= MIN(shentry_allocation.height, 3);
  }
 
- if(sheet->sheet_entry_window){
-   gdk_window_move_resize(sheet->sheet_entry_window,
-                          shentry_allocation.x,
-                          shentry_allocation.y,
-                          shentry_allocation.width,
-                          shentry_allocation.height);
-   shentry_allocation.x = 0;
-   shentry_allocation.y = 0;
-   gtk_widget_size_allocate(sheet->sheet_entry, &shentry_allocation);
- } else { 
-   gtk_widget_size_allocate(sheet->sheet_entry, &shentry_allocation);
- }
+ gtk_widget_size_allocate(sheet->sheet_entry, &shentry_allocation);
 
  if(previous_style == style) gtk_style_unref(previous_style);
 }
@@ -6203,14 +6182,9 @@ create_sheet_entry(GtkSheet *sheet)
 
  widget = GTK_WIDGET(sheet);
 
- style = gtk_style_copy(GTK_WIDGET(sheet)->style); 
+ style = gtk_style_copy(GTK_WIDGET(sheet)->style);
 
  if(sheet->sheet_entry){
-    if(sheet->sheet_entry_window){
-        gdk_window_set_user_data(sheet->sheet_entry_window, NULL);
-        gdk_window_destroy(sheet->sheet_entry_window);
-        sheet->sheet_entry_window = NULL;
-    }
     /* avoids warnings */
     gtk_widget_ref(sheet->sheet_entry);
     gtk_widget_unparent(sheet->sheet_entry);
@@ -6219,7 +6193,7 @@ create_sheet_entry(GtkSheet *sheet)
 
  if(sheet->entry_type){
 
-   if(!gtk_type_is_a (sheet->entry_type, GTK_TYPE_ENTRY)){
+   if(!g_type_is_a (sheet->entry_type, GTK_TYPE_ENTRY)){
 
      parent = GTK_WIDGET(gtk_type_new(sheet->entry_type));
 
@@ -6234,8 +6208,8 @@ create_sheet_entry(GtkSheet *sheet)
      entry = parent;
      found_entry = TRUE;
 
-   }             
-                                    
+   }
+
    if(!found_entry){
 
      g_warning ("Entry type must be GtkEntry subclass, using default");
@@ -6255,50 +6229,25 @@ create_sheet_entry(GtkSheet *sheet)
      sheet->sheet_entry = entry;
 
  }
- 
- gtk_widget_size_request(sheet->sheet_entry, NULL);
-  
- if (GTK_WIDGET_REALIZED(sheet) && GTK_WIDGET_NO_WINDOW (sheet->sheet_entry))
-    {
-      GdkWindowAttr attributes;
-      gint attributes_mask;
-      
-      attributes.window_type = GDK_WINDOW_CHILD;
-      attributes.x = 0;
-      attributes.y = 0;
-      attributes.width = sheet->sheet_entry->requisition.width;
-      attributes.height = sheet->sheet_entry->requisition.height;
-      attributes.wclass = GDK_INPUT_OUTPUT;
-      attributes.visual = gtk_widget_get_visual (widget);
-      attributes.colormap = gtk_widget_get_colormap (widget);
-      attributes.event_mask = GDK_EXPOSURE_MASK;
- 
-      attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-      sheet->sheet_entry_window =  gdk_window_new (sheet->sheet_window,
- 				               &attributes, attributes_mask);
-      gdk_window_set_user_data (sheet->sheet_entry_window, widget);
 
-     }
+ gtk_widget_size_request(sheet->sheet_entry, NULL);
 
  if(GTK_WIDGET_REALIZED(sheet))
    {
-      gtk_widget_set_parent_window (sheet->sheet_entry,
-				    sheet->sheet_entry_window ? 
-                                    sheet->sheet_entry_window : 
-                                    sheet->sheet_window);
+      gtk_widget_set_parent_window (sheet->sheet_entry, sheet->sheet_window);
       gtk_widget_set_parent(sheet->sheet_entry, GTK_WIDGET(sheet));
       gtk_widget_realize(sheet->sheet_entry);
    }
 
  gtk_signal_connect_object(GTK_OBJECT(entry),"key_press_event",
                            (GtkSignalFunc) gtk_sheet_entry_key_press,
-                           GTK_OBJECT(sheet)); 
+                           GTK_OBJECT(sheet));
 
- gtk_widget_show (sheet->sheet_entry); 
+ gtk_widget_show (sheet->sheet_entry);
 }
 
 
-GtkWidget * 
+GtkWidget *
 gtk_sheet_get_entry(GtkSheet *sheet)
 {
  GtkWidget *parent;
@@ -6326,14 +6275,14 @@ gtk_sheet_get_entry(GtkSheet *sheet)
                  entry = table_child->widget;
       }
       if(GTK_IS_BOX(parent)){
-                 box_child = children->data; 
+                 box_child = children->data;
                  entry = box_child->widget;
       }
 
-      if(GTK_IS_ENTRY(entry))  
+      if(GTK_IS_ENTRY(entry))
                                 break;
-      children = children->next;                        
- } 
+      children = children->next;
+ }
 
 
  if(!GTK_IS_ENTRY(entry))   return NULL;
@@ -6342,7 +6291,7 @@ gtk_sheet_get_entry(GtkSheet *sheet)
 
 }
 
-GtkWidget * 
+GtkWidget *
 gtk_sheet_get_entry_widget(GtkSheet *sheet)
 {
  g_return_val_if_fail (sheet != NULL, NULL);
@@ -6360,7 +6309,7 @@ row_button_set (GtkSheet *sheet, gint row)
 
   sheet->row[row].button.state = GTK_STATE_ACTIVE;
   gtk_sheet_button_draw(sheet, row, -1);
- 
+
 }
 
 static void
@@ -6370,7 +6319,7 @@ column_button_set (GtkSheet *sheet, gint column)
 
   sheet->column[column].button.state = GTK_STATE_ACTIVE;
   gtk_sheet_button_draw(sheet, -1, column);
- 
+
 }
 
 static void
@@ -6409,6 +6358,10 @@ gtk_sheet_button_draw (GtkSheet *sheet, gint row, gint column)
   gchar *line = 0;
   gchar *words = 0;
   gchar label[10];
+  PangoAlignment align = PANGO_ALIGN_LEFT;
+  gboolean rtl;
+
+  rtl = gtk_widget_get_direction(GTK_WIDGET(sheet)) == GTK_TEXT_DIR_RTL;
 
   if(!GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))) return;
 
@@ -6420,7 +6373,7 @@ gtk_sheet_button_draw (GtkSheet *sheet, gint row, gint column)
   if(column>=0 && column >MAX_VISIBLE_COLUMN(sheet)) return;
   if(row>=0 && row <MIN_VISIBLE_ROW(sheet)) return;
   if(row>=0 && row >MAX_VISIBLE_ROW(sheet)) return;
-  if( (row == -1) && (column == -1) ) return; 
+  if( (row == -1) && (column == -1) ) return;
 
   if(row==-1){
      window=sheet->column_title_window;
@@ -6449,14 +6402,14 @@ gtk_sheet_button_draw (GtkSheet *sheet, gint row, gint column)
   allocation.y = y;
   allocation.width = width;
   allocation.height = height;
- 
+
   gdk_window_clear_area (window,
                          x, y,
 	                 width, height);
 
   gtk_paint_box (sheet->button->style, window,
-                 GTK_STATE_NORMAL, GTK_SHADOW_OUT, 
-                 &allocation, GTK_WIDGET(sheet),
+                 GTK_STATE_NORMAL, GTK_SHADOW_OUT,
+                 &allocation, GTK_WIDGET(sheet->button),
                  "buttondefault", x, y, width, height);
 
   state = button->state;
@@ -6469,21 +6422,26 @@ gtk_sheet_button_draw (GtkSheet *sheet, gint row, gint column)
 
   if(state != GTK_STATE_NORMAL && state != GTK_STATE_INSENSITIVE)
   gtk_paint_box (sheet->button->style, window,
-                 button->state, shadow_type, 
-                 &allocation, GTK_WIDGET(sheet),
+                 button->state, shadow_type,
+                 &allocation, GTK_WIDGET(sheet->button),
                  "button", x, y, width, height);
 
   if(button->label_visible){
 
     text_height=DEFAULT_ROW_HEIGHT(GTK_WIDGET(sheet))-2*CELLOFFSET;
 
-    gdk_gc_set_clip_rectangle(GTK_WIDGET(sheet)->style->fg_gc[button->state], 
+    gdk_gc_set_clip_rectangle(GTK_WIDGET(sheet)->style->fg_gc[button->state],
                               &allocation);
     gdk_gc_set_clip_rectangle(GTK_WIDGET(sheet)->style->white_gc, &allocation);
 
+/*
     y += DEFAULT_ROW_HEIGHT(GTK_WIDGET(sheet))/2 + sheet->button->style->ythickness + DEFAULT_FONT_DESCENT(GTK_WIDGET(sheet));
+*/
+    y += 2*sheet->button->style->ythickness;
 
     if(button->label && strlen(button->label)>0){
+           PangoLayout *layout = NULL;
+           gint real_x = x, real_y = y;
 
            words=button->label;
            line = g_new(gchar, 1);
@@ -6499,28 +6457,35 @@ gtk_sheet_button_draw (GtkSheet *sheet, gint row, gint column)
              if(*words == '\n' || *(words+1) == '\0'){
                text_width = STRING_WIDTH(GTK_WIDGET(sheet), GTK_WIDGET(sheet)->style->font_desc, line);
 
+               layout = gtk_widget_create_pango_layout (GTK_WIDGET(sheet), line);
                switch(button->justification){
                  case GTK_JUSTIFY_LEFT:
-                   gtk_paint_string (GTK_WIDGET(sheet)->style, window, state,
-                                     &allocation, GTK_WIDGET(sheet), "label",
-                                     x + CELLOFFSET, y,
-                                     line);
+                   real_x = x + CELLOFFSET;
+                   align = rtl ? PANGO_ALIGN_RIGHT : PANGO_ALIGN_LEFT;
                    break;
                  case GTK_JUSTIFY_RIGHT:
-                   gtk_paint_string (GTK_WIDGET(sheet)->style, window, state,
-                                     &allocation, GTK_WIDGET(sheet), "label",
-                                     x + width - text_width - CELLOFFSET, y,
-                                     line);
+                   real_x = x + width - text_width - CELLOFFSET;
+                   align = rtl ? PANGO_ALIGN_LEFT : PANGO_ALIGN_RIGHT;
                    break;
                  case GTK_JUSTIFY_CENTER:
                  default:
-                   gtk_paint_string (GTK_WIDGET(sheet)->style, window, state,
-                                     &allocation, GTK_WIDGET(sheet), "label",
-                                     x + (width - text_width) /2, y,
-                                     line);
+                   real_x = x + (width - text_width)/2;
+                   align = rtl ? PANGO_ALIGN_RIGHT : PANGO_ALIGN_LEFT;
+                   pango_layout_set_justify (layout, TRUE);
                }
+               pango_layout_set_alignment (layout, align);
+               gtk_paint_layout (GTK_WIDGET(sheet)->style,
+                                 window,
+                                 state,
+                                 FALSE,
+                                 &allocation,
+                                 GTK_WIDGET(sheet),
+                                 "label",
+                                 real_x, real_y,
+                                 layout);
+               g_object_unref(G_OBJECT(layout));
 
-               y += text_height + 2;
+               real_y += text_height + 2;
 
                g_free(line);
                line = g_new(gchar, 1);
@@ -6530,30 +6495,39 @@ gtk_sheet_button_draw (GtkSheet *sheet, gint row, gint column)
            }
            g_free(line);
     }else{
+           PangoLayout *layout = NULL;
+           gint real_x = x, real_y = y;
+
            sprintf(label,"%d",index);
            text_width = STRING_WIDTH(GTK_WIDGET(sheet), GTK_WIDGET(sheet)->style->font_desc, label);
 
+           layout = gtk_widget_create_pango_layout (GTK_WIDGET(sheet), label);
            switch(button->justification){
              case GTK_JUSTIFY_LEFT:
-               gtk_paint_string (GTK_WIDGET(sheet)->style, window, state,
-                                 &allocation, GTK_WIDGET(sheet), "label",
-                                 x + CELLOFFSET, y,
-                                 label);
+               real_x = x + CELLOFFSET;
+               align = rtl ? PANGO_ALIGN_RIGHT : PANGO_ALIGN_LEFT;
                break;
              case GTK_JUSTIFY_RIGHT:
-               gtk_paint_string (GTK_WIDGET(sheet)->style, window, state,
-                                 &allocation, GTK_WIDGET(sheet), "label",
-                                 x + width - text_width - CELLOFFSET, y,
-                                 label);
+               real_x = x + width - text_width - CELLOFFSET;
+               align = rtl ? PANGO_ALIGN_LEFT : PANGO_ALIGN_RIGHT;
                break;
              case GTK_JUSTIFY_CENTER:
              default:
-               gtk_paint_string (GTK_WIDGET(sheet)->style, window, state,
-                                 &allocation, GTK_WIDGET(sheet), "label",
-                                 x + (width - text_width) /2, y,
-                                 label);
+               real_x = x + (width - text_width)/2;
+               align = rtl ? PANGO_ALIGN_RIGHT : PANGO_ALIGN_LEFT;
+               pango_layout_set_justify (layout, TRUE);
            }
-
+           pango_layout_set_alignment (layout, align);
+           gtk_paint_layout (GTK_WIDGET(sheet)->style,
+                             window,
+                             state,
+                             FALSE,
+                             &allocation,
+                             GTK_WIDGET(sheet),
+                             "label",
+                             real_x, real_y,
+                             layout);
+           g_object_unref(G_OBJECT(layout));
     }
 
     gdk_gc_set_clip_rectangle(GTK_WIDGET(sheet)->style->fg_gc[button->state],
@@ -6561,43 +6535,32 @@ gtk_sheet_button_draw (GtkSheet *sheet, gint row, gint column)
     gdk_gc_set_clip_rectangle(GTK_WIDGET(sheet)->style->white_gc, NULL);
 
   }
-  
+
   if((child = button->child) && (child->widget)){
       child->x = allocation.x;
       child->y = allocation.y;
 
-      child->x += (width - child->widget->requisition.width) / 2; 
+      child->x += (width - child->widget->requisition.width) / 2;
       child->y += (height - child->widget->requisition.height) / 2;
-      child->widget->allocation.width = child->widget->requisition.width;
-      child->widget->allocation.height = child->widget->requisition.height;
+      allocation.x = child->x;
+      allocation.y = child->y;
+      allocation.width = child->widget->requisition.width;
+      allocation.height = child->widget->requisition.height;
 
       x = child->x;
       y = child->y;
 
       gtk_widget_set_state(child->widget, button->state);
-      if(GTK_WIDGET_NO_WINDOW(child->widget))
-        {
-           child->widget->allocation.x = 0;
-           child->widget->allocation.y = 0;
-        }
 
       if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet)) &&
          GTK_WIDGET_MAPPED(child->widget))
             {
-              gtk_widget_size_allocate(child->widget, 
-                                       &child->widget->allocation);
-              if(GTK_WIDGET_NO_WINDOW(child->widget) && child->window)
-                 {
-		    gdk_window_move_resize(child->window,
-                                           x, y,
-                                           child->widget->allocation.width,
-					   child->widget->allocation.height);
-                    gtk_widget_draw(child->widget, NULL);
-                 }
+              gtk_widget_size_allocate(child->widget,
+                                       &allocation);
+              gtk_widget_queue_draw(child->widget);
             }
-
   }
-   
+
 }
 
 
@@ -6614,7 +6577,7 @@ static void
 adjust_scrollbars (GtkSheet * sheet)
 {
 
- if(sheet->vadjustment){ 
+ if(sheet->vadjustment){
   sheet->vadjustment->page_size = sheet->sheet_window_height;
   sheet->vadjustment->page_increment = sheet->sheet_window_height / 2;
   sheet->vadjustment->step_increment = DEFAULT_ROW_HEIGHT(GTK_WIDGET(sheet));
@@ -6623,9 +6586,9 @@ adjust_scrollbars (GtkSheet * sheet)
 /*
   if (sheet->sheet_window_height - sheet->voffset > SHEET_HEIGHT (sheet))
     {
-      sheet->vadjustment->value = MAX(0, SHEET_HEIGHT (sheet) - 
+      sheet->vadjustment->value = MAX(0, SHEET_HEIGHT (sheet) -
 	sheet->sheet_window_height);
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
 			       "value_changed");
     }
 */
@@ -6642,9 +6605,9 @@ adjust_scrollbars (GtkSheet * sheet)
 /*
   if (sheet->sheet_window_width - sheet->hoffset > SHEET_WIDTH (sheet))
     {
-      sheet->hadjustment->value = MAX(0, SHEET_WIDTH (sheet) - 
+      sheet->hadjustment->value = MAX(0, SHEET_WIDTH (sheet) -
 	sheet->sheet_window_width);
-      gtk_signal_emit_by_name (GTK_OBJECT(sheet->hadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT(sheet->hadjustment),
 			       "value_changed");
     }
 */
@@ -6652,7 +6615,7 @@ adjust_scrollbars (GtkSheet * sheet)
 
  }
 /*
- if(GTK_WIDGET_REALIZED(sheet)) 
+ if(GTK_WIDGET_REALIZED(sheet))
    {
      if(sheet->row_titles_visible){
                  size_allocate_row_title_buttons(sheet);
@@ -6718,7 +6681,7 @@ vadjustment_value_changed (GtkAdjustment * adjustment,
   row=ROW_FROM_YPIXEL(sheet,sheet->column_title_area.height + CELL_SPACING);
   if(!sheet->column_titles_visible)
      row=ROW_FROM_YPIXEL(sheet,CELL_SPACING);
-    
+
   old_value = -sheet->voffset;
 
   for(i=0; i<= sheet->maxrow; i++){
@@ -6732,7 +6695,7 @@ vadjustment_value_changed (GtkAdjustment * adjustment,
       sheet->row[i].height > sheet->vadjustment->step_increment){
 /* This avoids embarrassing twitching */
           if(row == new_row && row != sheet->maxrow &&
-             adjustment->value - sheet->old_vadjustment >= 
+             adjustment->value - sheet->old_vadjustment >=
                           sheet->vadjustment->step_increment &&
              new_row + 1 != MIN_VISIBLE_ROW(sheet)){
                 new_row+=1;
@@ -6749,7 +6712,7 @@ vadjustment_value_changed (GtkAdjustment * adjustment,
   sheet->old_vadjustment = sheet->vadjustment->value;
   adjustment->value=y;
 
- 
+
   if(new_row == 0){
    sheet->vadjustment->step_increment=
    sheet->row[0].height;
@@ -6774,14 +6737,14 @@ vadjustment_value_changed (GtkAdjustment * adjustment,
 	}
 
       sheet->voffset = -value;
- 
+
   sheet->view.row0=ROW_FROM_YPIXEL(sheet, sheet->column_title_area.height+1);
   sheet->view.rowi=ROW_FROM_YPIXEL(sheet, sheet->sheet_window_height-1);
   if(!sheet->column_titles_visible)
      sheet->view.row0=ROW_FROM_YPIXEL(sheet, 1);
 
   if(GTK_WIDGET_REALIZED(sheet->sheet_entry) &&
-     sheet->state == GTK_SHEET_NORMAL && 
+     sheet->state == GTK_SHEET_NORMAL &&
      sheet->active_cell.row >= 0 && sheet->active_cell.col >= 0 &&
      !gtk_sheet_cell_isvisible(sheet, sheet->active_cell.row,
                                       sheet->active_cell.col))
@@ -6790,15 +6753,11 @@ vadjustment_value_changed (GtkAdjustment * adjustment,
 
       text = gtk_entry_get_text(GTK_ENTRY(gtk_sheet_get_entry(sheet)));
 
-      if(!text || strlen(text)==0) 
+      if(!text || strlen(text)==0)
              gtk_sheet_cell_clear(sheet,
                                   sheet->active_cell.row,
                                   sheet->active_cell.col);
-
-      if(sheet->sheet_entry_window) 
-            gdk_window_hide(sheet->sheet_entry_window);
-      else
-            gdk_window_hide(sheet->sheet_entry->window);
+       gtk_widget_unmap(sheet->sheet_entry);
     }
 
   gtk_sheet_position_children(sheet);
@@ -6842,7 +6801,7 @@ hadjustment_value_changed (GtkAdjustment * adjustment,
       sheet->column[i].width > sheet->hadjustment->step_increment){
 /* This avoids embarrassing twitching */
           if(column == new_column && column != sheet->maxcol &&
-             adjustment->value - sheet->old_hadjustment >= 
+             adjustment->value - sheet->old_hadjustment >=
                           sheet->hadjustment->step_increment &&
              new_column + 1 != MIN_VISIBLE_COLUMN(sheet)){
              new_column+=1;
@@ -6891,7 +6850,7 @@ hadjustment_value_changed (GtkAdjustment * adjustment,
     sheet->view.col0=COLUMN_FROM_XPIXEL(sheet, 1);
 
   if(GTK_WIDGET_REALIZED(sheet->sheet_entry) &&
-     sheet->state == GTK_SHEET_NORMAL && 
+     sheet->state == GTK_SHEET_NORMAL &&
      sheet->active_cell.row >= 0 && sheet->active_cell.col >= 0 &&
      !gtk_sheet_cell_isvisible(sheet, sheet->active_cell.row,
                                       sheet->active_cell.col))
@@ -6899,15 +6858,12 @@ hadjustment_value_changed (GtkAdjustment * adjustment,
       const gchar *text;
 
       text = gtk_entry_get_text(GTK_ENTRY(gtk_sheet_get_entry(sheet)));
-      if(!text || strlen(text)==0) 
+      if(!text || strlen(text)==0)
              gtk_sheet_cell_clear(sheet,
                                   sheet->active_cell.row,
                                   sheet->active_cell.col);
 
-      if(sheet->sheet_entry_window) 
-            gdk_window_hide(sheet->sheet_entry_window);
-      else
-            gdk_window_hide(sheet->sheet_entry->window);
+      gtk_widget_unmap(sheet->sheet_entry);
     }
 
   gtk_sheet_position_children(sheet);
@@ -6915,41 +6871,41 @@ hadjustment_value_changed (GtkAdjustment * adjustment,
   gtk_sheet_range_draw(sheet, NULL);
   size_allocate_column_title_buttons(sheet);
 }
-	
+
 
 /* COLUMN RESIZING */
-static void                          
+static void
 draw_xor_vline (GtkSheet * sheet)
 {
   GtkWidget *widget;
-  
+
   g_return_if_fail (sheet != NULL);
-  
+
   widget = GTK_WIDGET (sheet);
 
-  gdk_draw_line (widget->window, sheet->xor_gc,  
-                 sheet->x_drag,                                       
-                 sheet->column_title_area.height,                               
-                 sheet->x_drag,                                             
+  gdk_draw_line (widget->window, sheet->xor_gc,
+                 sheet->x_drag,
+                 sheet->column_title_area.height,
+                 sheet->x_drag,
                  sheet->sheet_window_height + 1);
 }
 
 /* ROW RESIZING */
-static void                          
+static void
 draw_xor_hline (GtkSheet * sheet)
 {
   GtkWidget *widget;
-  
+
   g_return_if_fail (sheet != NULL);
-  
+
   widget = GTK_WIDGET (sheet);
 
-  gdk_draw_line (widget->window, sheet->xor_gc,  
+  gdk_draw_line (widget->window, sheet->xor_gc,
 		 sheet->row_title_area.width,
-                 sheet->y_drag,                                       
-                        
-	         sheet->sheet_window_width + 1,                      
-                 sheet->y_drag);                                             
+                 sheet->y_drag,
+
+	         sheet->sheet_window_width + 1,
+                 sheet->y_drag);
 }
 
 /* SELECTED RANGE */
@@ -7007,9 +6963,9 @@ draw_xor_rectangle(GtkSheet *sheet, GtkSheetRange range)
 
    gdk_gc_set_foreground(sheet->xor_gc, &values.foreground);
 
-}                      
+}
 
-  
+
 /* this function returns the new width of the column being resized given
  * the column and x position of the cursor; the x cursor position is passed
  * in as a pointer and automaticaly corrected if it's beyond min/max limits */
@@ -7048,7 +7004,7 @@ new_column_width (GtkSheet * sheet,
   gtk_sheet_recalc_left_xpixels(sheet, column+1);
   sheet->view.coli=COLUMN_FROM_XPIXEL(sheet, sheet->sheet_window_width);
   size_allocate_column_title_buttons (sheet);
-  
+
   return width;
 }
 
@@ -7177,7 +7133,7 @@ gtk_sheet_add_column(GtkSheet *sheet, guint ncols)
 
  sheet->old_hadjustment = -1.;
  if(!GTK_SHEET_IS_FROZEN(sheet) && sheet->hadjustment)
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment),
 			       "value_changed");
 }
 
@@ -7198,7 +7154,7 @@ gtk_sheet_add_row(GtkSheet *sheet, guint nrows)
 
  sheet->old_vadjustment = -1.;
  if(!GTK_SHEET_IS_FROZEN(sheet) && sheet->vadjustment)
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
 			       "value_changed");
 }
 
@@ -7222,7 +7178,7 @@ gtk_sheet_insert_rows(GtkSheet *sheet, guint row, guint nrows)
      child = (GtkSheetChild *)children->data;
 
      if(child->attached_to_cell)
-        if(child->row >= row) child->row += nrows; 
+        if(child->row >= row) child->row += nrows;
 
      children = children->next;
    }
@@ -7231,10 +7187,10 @@ gtk_sheet_insert_rows(GtkSheet *sheet, guint row, guint nrows)
 
  if(sheet->state==GTK_SHEET_COLUMN_SELECTED) sheet->range.rowi+=nrows;
  adjust_scrollbars(sheet);
- 
+
  sheet->old_vadjustment = -1.;
  if(!GTK_SHEET_IS_FROZEN(sheet) && sheet->vadjustment)
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
 			       "value_changed");
 
 }
@@ -7259,7 +7215,7 @@ gtk_sheet_insert_columns(GtkSheet *sheet, guint col, guint ncols)
      child = (GtkSheetChild *)children->data;
 
      if(child->attached_to_cell)
-        if(child->col >= col) child->col += ncols; 
+        if(child->col >= col) child->col += ncols;
 
      children = children->next;
    }
@@ -7271,7 +7227,7 @@ gtk_sheet_insert_columns(GtkSheet *sheet, guint col, guint ncols)
 
  sheet->old_hadjustment = -1.;
  if(!GTK_SHEET_IS_FROZEN(sheet) && sheet->hadjustment)
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment),
 			       "value_changed");
 
 }
@@ -7299,21 +7255,22 @@ gtk_sheet_delete_rows(GtkSheet *sheet, guint row, guint nrows)
    {
      child = (GtkSheetChild *)children->data;
 
-     if(child->attached_to_cell){
-        if(child->row >= row && child->row < row+nrows){  
+     if(child->attached_to_cell &&
+        child->row >= row && child->row < row+nrows){
               gtk_container_remove(GTK_CONTAINER(sheet), child->widget);
               children = sheet->children;
-        } 
-        else
-        {
-              if(child->row >= row) child->row -= nrows; 
-              children = children->next;
-        }
-     }
-     else
+     } else
         children = children->next;
    }
 
+ children = sheet->children;
+ while(children)
+   {
+     child = (GtkSheetChild *)children->data;
+
+     if(child->attached_to_cell && child->row > row) child->row -= nrows;
+     children = children->next;
+   }
 
  if(!GTK_WIDGET_REALIZED(sheet)) return;
 
@@ -7337,7 +7294,7 @@ gtk_sheet_delete_rows(GtkSheet *sheet, guint row, guint nrows)
 
  sheet->old_vadjustment = -1.;
  if(!GTK_SHEET_IS_FROZEN(sheet) && sheet->vadjustment)
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->vadjustment),
 			       "value_changed");
 
 }
@@ -7365,21 +7322,22 @@ gtk_sheet_delete_columns(GtkSheet *sheet, guint col, guint ncols)
    {
      child = (GtkSheetChild *)children->data;
 
-     if(child->attached_to_cell){
-        if(child->col >= col && child->col < col+ncols){  
+     if(child->attached_to_cell &&
+        child->col >= col && child->col < col+ncols){
               gtk_container_remove(GTK_CONTAINER(sheet), child->widget);
               children = sheet->children;
-        } 
-        else
-        {
-              if(child->col >= col) child->col -= ncols; 
-              children = children->next;
-        }
-     }
-     else
+     } else
         children = children->next;
    }
 
+ children = sheet->children;
+ while(children)
+   {
+     child = (GtkSheetChild *)children->data;
+
+     if(child->attached_to_cell && child->col > col) child->col -= ncols;
+     children = children->next;
+   }
 
  if(!GTK_WIDGET_REALIZED(sheet)) return;
 
@@ -7403,7 +7361,7 @@ gtk_sheet_delete_columns(GtkSheet *sheet, guint col, guint ncols)
 
  sheet->old_hadjustment = -1.;
  if(!GTK_SHEET_IS_FROZEN(sheet) && sheet->hadjustment)
-      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment), 
+      gtk_signal_emit_by_name (GTK_OBJECT (sheet->hadjustment),
 			       "value_changed");
 
 }
@@ -7418,7 +7376,7 @@ gtk_sheet_range_set_background(GtkSheet *sheet, const GtkSheetRange *urange, con
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
-  if(!urange) 
+  if(!urange)
      range = sheet->range;
   else
      range = *urange;
@@ -7430,8 +7388,8 @@ gtk_sheet_range_set_background(GtkSheet *sheet, const GtkSheetRange *urange, con
         attributes.background = *color;
       else
         attributes.background = sheet->bg_color;
- 
-      gtk_sheet_set_cell_attributes(sheet, i, j, attributes); 
+
+      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);
     }
 
   range.row0--;
@@ -7454,7 +7412,7 @@ gtk_sheet_range_set_foreground(GtkSheet *sheet, const GtkSheetRange *urange, con
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
-  if(!urange) 
+  if(!urange)
      range = sheet->range;
   else
      range = *urange;
@@ -7467,8 +7425,8 @@ gtk_sheet_range_set_foreground(GtkSheet *sheet, const GtkSheetRange *urange, con
         attributes.foreground = *color;
       else
         gdk_color_black(gdk_colormap_get_system(), &attributes.foreground);
- 
-      gtk_sheet_set_cell_attributes(sheet, i, j, attributes); 
+
+      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);
     }
 
   if(!GTK_SHEET_IS_FROZEN(sheet))
@@ -7477,7 +7435,7 @@ gtk_sheet_range_set_foreground(GtkSheet *sheet, const GtkSheetRange *urange, con
 }
 
 void
-gtk_sheet_range_set_justification(GtkSheet *sheet, const GtkSheetRange *urange, 
+gtk_sheet_range_set_justification(GtkSheet *sheet, const GtkSheetRange *urange,
                                   GtkJustification just)
 {
   gint i, j;
@@ -7487,7 +7445,7 @@ gtk_sheet_range_set_justification(GtkSheet *sheet, const GtkSheetRange *urange,
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
-  if(!urange) 
+  if(!urange)
      range = sheet->range;
   else
      range = *urange;
@@ -7496,11 +7454,11 @@ gtk_sheet_range_set_justification(GtkSheet *sheet, const GtkSheetRange *urange,
     for (j=range.col0; j<=range.coli; j++){
       gtk_sheet_get_attributes(sheet, i, j, &attributes);
       attributes.justification = just;
-      gtk_sheet_set_cell_attributes(sheet, i, j, attributes); 
+      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);
     }
 
-  range.col0 = sheet->view.col0;    
-  range.coli = sheet->view.coli;    
+  range.col0 = sheet->view.col0;
+  range.coli = sheet->view.coli;
 
   if(!GTK_SHEET_IS_FROZEN(sheet))
       gtk_sheet_range_draw(sheet, &range);
@@ -7508,7 +7466,7 @@ gtk_sheet_range_set_justification(GtkSheet *sheet, const GtkSheetRange *urange,
 }
 
 void
-gtk_sheet_column_set_justification(GtkSheet *sheet, gint col, 
+gtk_sheet_column_set_justification(GtkSheet *sheet, gint col,
                                    GtkJustification justification)
 {
   g_return_if_fail (sheet != NULL);
@@ -7517,7 +7475,7 @@ gtk_sheet_column_set_justification(GtkSheet *sheet, gint col,
   if(col > sheet->maxcol) return;
 
   sheet->column[col].justification = justification;
-  
+
   if(GTK_WIDGET_REALIZED(sheet) && !GTK_SHEET_IS_FROZEN(sheet) &&
      col >= MIN_VISIBLE_COLUMN(sheet) && col <= MAX_VISIBLE_COLUMN(sheet))
           gtk_sheet_range_draw(sheet, NULL);
@@ -7530,11 +7488,11 @@ gtk_sheet_range_set_editable(GtkSheet *sheet, const GtkSheetRange *urange, gbool
   gint i, j;
   GtkSheetCellAttr attributes;
   GtkSheetRange range;
- 
+
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
-  if(!urange) 
+  if(!urange)
      range = sheet->range;
   else
      range = *urange;
@@ -7543,9 +7501,9 @@ gtk_sheet_range_set_editable(GtkSheet *sheet, const GtkSheetRange *urange, gbool
     for (j=range.col0; j<=range.coli; j++){
       gtk_sheet_get_attributes(sheet, i, j, &attributes);
       attributes.is_editable = editable;
-      gtk_sheet_set_cell_attributes(sheet, i, j, attributes); 
+      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);
     }
- 
+
   if(!GTK_SHEET_IS_FROZEN(sheet))
       gtk_sheet_range_draw(sheet, &range);
 
@@ -7561,7 +7519,7 @@ gtk_sheet_range_set_visible(GtkSheet *sheet, const GtkSheetRange *urange, gboole
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
-  if(!urange) 
+  if(!urange)
      range = sheet->range;
   else
      range = *urange;
@@ -7570,16 +7528,16 @@ gtk_sheet_range_set_visible(GtkSheet *sheet, const GtkSheetRange *urange, gboole
     for (j=range.col0; j<=range.coli; j++){
       gtk_sheet_get_attributes(sheet, i, j, &attributes);
       attributes.is_visible=visible;
-      gtk_sheet_set_cell_attributes(sheet, i, j, attributes); 
+      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);
     }
- 
+
   if(!GTK_SHEET_IS_FROZEN(sheet))
       gtk_sheet_range_draw(sheet, &range);
 
 }
 
 void
-gtk_sheet_range_set_border(GtkSheet *sheet, const GtkSheetRange *urange, gint mask, 
+gtk_sheet_range_set_border(GtkSheet *sheet, const GtkSheetRange *urange, gint mask,
 guint width, gint line_style)
 {
   gint i, j;
@@ -7589,7 +7547,7 @@ guint width, gint line_style)
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
-  if(!urange) 
+  if(!urange)
      range = sheet->range;
   else
      range = *urange;
@@ -7602,13 +7560,13 @@ guint width, gint line_style)
       attributes.border.line_style=line_style;
       attributes.border.cap_style=GDK_CAP_NOT_LAST;
       attributes.border.join_style=GDK_JOIN_MITER;
-      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);      
+      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);
     }
 
-  range.row0--; 
-  range.col0--; 
-  range.rowi++; 
-  range.coli++; 
+  range.row0--;
+  range.col0--;
+  range.rowi++;
+  range.coli++;
 
   if(!GTK_SHEET_IS_FROZEN(sheet))
       gtk_sheet_range_draw(sheet, &range);
@@ -7625,7 +7583,7 @@ gtk_sheet_range_set_border_color(GtkSheet *sheet, const GtkSheetRange *urange, c
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
-  if(!urange) 
+  if(!urange)
      range = sheet->range;
   else
      range = *urange;
@@ -7634,9 +7592,9 @@ gtk_sheet_range_set_border_color(GtkSheet *sheet, const GtkSheetRange *urange, c
     for (j=range.col0; j<=range.coli; j++){
       gtk_sheet_get_attributes(sheet, i, j, &attributes);
       attributes.border.color = *color;
-      gtk_sheet_set_cell_attributes(sheet, i, j, attributes); 
+      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);
     }
- 
+
   if(!GTK_SHEET_IS_FROZEN(sheet))
       gtk_sheet_range_draw(sheet, &range);
 
@@ -7655,31 +7613,31 @@ gtk_sheet_range_set_font(GtkSheet *sheet, const GtkSheetRange *urange, PangoFont
   g_return_if_fail (sheet != NULL);
   g_return_if_fail (GTK_IS_SHEET (sheet));
 
-  if(!urange) 
+  if(!urange)
      range = sheet->range;
   else
      range = *urange;
 
   gtk_sheet_freeze(sheet);
 
-  context = gtk_widget_get_pango_context(GTK_WIDGET(sheet)); 
+  context = gtk_widget_get_pango_context(GTK_WIDGET(sheet));
   metrics = pango_context_get_metrics(context,
                                 font,
-                                pango_context_get_language(context)); 
-  font_height = pango_font_metrics_get_descent(metrics) + 
+                                pango_context_get_language(context));
+  font_height = pango_font_metrics_get_descent(metrics) +
                 pango_font_metrics_get_ascent(metrics);
   font_height = PANGO_PIXELS(font_height) + 2*CELLOFFSET;
 
   for (i=range.row0; i<=range.rowi; i++)
     for (j=range.col0; j<=range.coli; j++){
       gtk_sheet_get_attributes(sheet, i, j, &attributes);
-      attributes.font_desc = font; 
+      attributes.font_desc = font;
       if(font_height > sheet->row[i].height){
           sheet->row[i].height = font_height;
           gtk_sheet_recalc_top_ypixels(sheet, i);
       }
 
-      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);  
+      gtk_sheet_set_cell_attributes(sheet, i, j, attributes);
     }
 
   gtk_sheet_thaw(sheet);
@@ -7703,7 +7661,7 @@ gtk_sheet_set_cell_attributes(GtkSheet *sheet, gint row, gint col, GtkSheetCellA
    (*cell)->col = col;
   }
 
-  if((*cell)->attributes == NULL) 
+  if((*cell)->attributes == NULL)
       (*cell)->attributes = g_new(GtkSheetCellAttr, 1);
 
   *((*cell)->attributes) = attributes;
@@ -7739,15 +7697,15 @@ gtk_sheet_get_attributes(GtkSheet *sheet, gint row, gint col, GtkSheetCellAttr *
          if(sheet->column[col].justification != GTK_JUSTIFY_FILL)
               attributes->justification = sheet->column[col].justification;
       }
- }   
- 
+ }
+
  return TRUE;
 }
 
 static void
 init_attributes(GtkSheet *sheet, gint col, GtkSheetCellAttr *attributes)
 {
- /* DEFAULT VALUES */    
+ /* DEFAULT VALUES */
  attributes->foreground = GTK_WIDGET(sheet)->style->black;
  attributes->background = sheet->bg_color;
  if(!GTK_WIDGET_REALIZED(GTK_WIDGET(sheet))){
@@ -7768,18 +7726,18 @@ init_attributes(GtkSheet *sheet, gint col, GtkSheetCellAttr *attributes)
  attributes->font = GTK_WIDGET(sheet)->style->private_font;
  attributes->font_desc = GTK_WIDGET(sheet)->style->font_desc;
 
-}       
- 
+}
+
 /**********************************************************************
- * Memory allocation routines: 
+ * Memory allocation routines:
  * AddRow & AddColumn allocate memory for GtkSheetColumn & GtkSheetRow structs.
- * InsertRow 
+ * InsertRow
  * InsertColumn
  * DeleteRow
  * DeleteColumn
- * GrowSheet allocates memory for the sheet cells contents using an array of 
+ * GrowSheet allocates memory for the sheet cells contents using an array of
  * pointers. Alternative to this could be a linked list or a hash table.
- * CheckBounds checks whether the given cell is currently allocated or not. 
+ * CheckBounds checks whether the given cell is currently allocated or not.
  * If not, it calls to GrowSheet.
  **********************************************************************/
 
@@ -7822,7 +7780,7 @@ AddColumn(GtkSheet *tbl, gint ncols)
         else
         {
 	   tbl->column[i].left_xpixel=tbl->row_title_area.width;
-	   if(!tbl->row_titles_visible) 
+	   if(!tbl->row_titles_visible)
                         tbl->column[i].left_xpixel=0;
         }
    }
@@ -7860,9 +7818,9 @@ AddRow(GtkSheet *tbl, gint nrows)
 	else
         {
 	   tbl->row[i].top_ypixel=tbl->column_title_area.height;
-           if(!tbl->column_titles_visible) 
+           if(!tbl->column_titles_visible)
                         tbl->row[i].top_ypixel=0;
-        } 
+        }
    }
    return TRUE;
 }
@@ -7878,17 +7836,17 @@ InsertRow(GtkSheet *tbl, gint row, gint nrows)
   AddRow(tbl,nrows);
 
   for(i=tbl->maxrow; i>=row+nrows; i--){
-    auxrow = tbl->row[i];  
-    tbl->row[i]=tbl->row[i-nrows];    
+    auxrow = tbl->row[i];
+    tbl->row[i]=tbl->row[i-nrows];
     tbl->row[i].is_visible=tbl->row[i-nrows].is_visible;
     tbl->row[i].is_sensitive=tbl->row[i-nrows].is_sensitive;
-    if(auxrow.is_visible) 
+    if(auxrow.is_visible)
                tbl->row[i].top_ypixel+=nrows*DEFAULT_ROW_HEIGHT(GTK_WIDGET(tbl));
     tbl->row[i-nrows]=auxrow;
   }
 
   if(row <= tbl->maxallocrow){
-   
+
     GrowSheet(tbl,nrows,0);
 
     for(i=tbl->maxallocrow; i>=row+nrows; i--){
@@ -7899,16 +7857,16 @@ InsertRow(GtkSheet *tbl, gint row, gint nrows)
       for(j=0; j<=tbl->maxalloccol; j++,pp++){
         if(*pp!=(GtkSheetCell *)NULL)
                                     (*pp)->row=i;
-      
+
       }
       tbl->data[i-nrows]=auxdata;
     }
   }
   gtk_sheet_recalc_top_ypixels(tbl, 0);
   return TRUE;
-}  
+}
 
-static gint 
+static gint
 InsertColumn(GtkSheet *tbl, gint col, gint ncols)
 {
   gint i,j;
@@ -7919,7 +7877,6 @@ InsertColumn(GtkSheet *tbl, gint col, gint ncols)
   for(i=tbl->maxcol; i>=col+ncols; i--){
     auxcol = tbl->column[i];
     tbl->column[i]=tbl->column[i-ncols];
-    tbl->column[i].name=NULL;
     tbl->column[i].is_visible=tbl->column[i-ncols].is_visible;
     tbl->column[i].is_sensitive=tbl->column[i-ncols].is_sensitive;
     tbl->column[i].left_text_column=tbl->column[i-ncols].left_text_column;
@@ -7930,7 +7887,7 @@ InsertColumn(GtkSheet *tbl, gint col, gint ncols)
   }
 
   if(col <= tbl->maxalloccol){
-   
+
     GrowSheet(tbl,0,ncols);
 
     for(i=0; i<=tbl->maxallocrow; i++){
@@ -7965,10 +7922,10 @@ DeleteRow(GtkSheet *tbl, gint row, gint nrows)
             g_free(tbl->row[i].button.label);
             tbl->row[i].button.label = NULL;
     }
-  }           
+  }
 
   for(i=row; i<=tbl->maxrow-nrows; i++){
-    if(i+nrows <= tbl->maxrow){ 
+    if(i+nrows <= tbl->maxrow){
       tbl->row[i]=tbl->row[i+nrows];
     }
   }
@@ -8006,7 +7963,7 @@ DeleteRow(GtkSheet *tbl, gint row, gint nrows)
   tbl->maxrow-=nrows;
   gtk_sheet_recalc_top_ypixels(tbl, 0);
   return TRUE;
-} 
+}
 
 static gint
 DeleteColumn(GtkSheet *tbl, gint column, gint ncols)
@@ -8032,8 +7989,8 @@ DeleteColumn(GtkSheet *tbl, gint column, gint ncols)
 
   for(i=column; i<=tbl->maxcol-ncols; i++){
     if(i+ncols <= tbl->maxcol){
-      tbl->column[i]=tbl->column[i+ncols];    
-    } 
+      tbl->column[i]=tbl->column[i+ncols];
+    }
   }
 
   if(column <= tbl->maxalloccol){
@@ -8058,7 +8015,7 @@ DeleteColumn(GtkSheet *tbl, gint column, gint ncols)
   tbl->maxcol-=ncols;
   gtk_sheet_recalc_left_xpixels(tbl, 0);
   return TRUE;
-}  
+}
 
 static gint
 GrowSheet(GtkSheet *tbl, gint newrows, gint newcols)
@@ -8066,8 +8023,8 @@ GrowSheet(GtkSheet *tbl, gint newrows, gint newcols)
   gint i,j;
   gint inirow, inicol;
 
-  inirow = tbl->maxallocrow + 1;  
-  inicol = tbl->maxalloccol + 1;  
+  inirow = tbl->maxallocrow + 1;
+  inicol = tbl->maxalloccol + 1;
 
   tbl->maxalloccol = tbl->maxalloccol + newcols;
   tbl->maxallocrow = tbl->maxallocrow + newrows;
@@ -8083,7 +8040,7 @@ GrowSheet(GtkSheet *tbl, gint newrows, gint newcols)
           tbl->data[i][j] = NULL;
         }
       }
-          
+
   }
 
   if(newcols>0){
@@ -8097,7 +8054,7 @@ GrowSheet(GtkSheet *tbl, gint newrows, gint newcols)
   }
 
   return(0);
-}	   
+}
 
 static gint
 CheckBounds(GtkSheet *tbl, gint row, gint col)
@@ -8108,7 +8065,7 @@ CheckBounds(GtkSheet *tbl, gint row, gint col)
   if(row>tbl->maxallocrow) newrows=row-tbl->maxallocrow;
   if(newrows>0 || newcols>0) GrowSheet(tbl, newrows, newcols);
   return(0);
-} 
+}
 
 /********************************************************************
  * Container Functions:
@@ -8118,10 +8075,10 @@ CheckBounds(GtkSheet *tbl, gint row, gint col)
  * gtk_sheet_remove
  * gtk_sheet_move_child
  * gtk_sheet_position_child
- * gtk_sheet_position_children 
+ * gtk_sheet_position_children
  * gtk_sheet_realize_child
  * gtk_sheet_get_child_at
- ********************************************************************/ 
+ ********************************************************************/
 
 GtkSheetChild *
 gtk_sheet_put(GtkSheet *sheet, GtkWidget *child, gint x, gint y)
@@ -8136,9 +8093,8 @@ gtk_sheet_put(GtkSheet *sheet, GtkWidget *child, gint x, gint y)
 
   child_info = g_new (GtkSheetChild, 1);
   child_info->widget = child;
-  child_info->x = x;  
+  child_info->x = x;
   child_info->y = y;
-  child_info->window = NULL;  
   child_info->attached_to_cell = FALSE;
   child_info->floating = TRUE;
   child_info->xpadding = child_info->ypadding = 0;
@@ -8154,11 +8110,11 @@ gtk_sheet_put(GtkSheet *sheet, GtkWidget *child, gint x, gint y)
 
   if (GTK_WIDGET_VISIBLE(GTK_WIDGET(sheet)))
     {
-       if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet)) && 
-          !GTK_WIDGET_REALIZED(child))
+       if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet)) &&
+          (!GTK_WIDGET_REALIZED(child) || GTK_WIDGET_NO_WINDOW(child)))
         gtk_sheet_realize_child(sheet, child_info);
 
-       if(GTK_WIDGET_MAPPED(GTK_WIDGET(sheet)) && 
+       if(GTK_WIDGET_MAPPED(GTK_WIDGET(sheet)) &&
           !GTK_WIDGET_MAPPED(child))
         gtk_widget_map(child);
     }
@@ -8250,12 +8206,10 @@ gtk_sheet_attach        (GtkSheet *sheet,
   child->x = area.x + child->xpadding;
   child->y = area.y + child->ypadding;
 
-  gtk_widget_set_parent (widget, GTK_WIDGET(sheet));
-
   if (GTK_WIDGET_VISIBLE(GTK_WIDGET(sheet)))
     {
        if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet)) &&
-          !GTK_WIDGET_REALIZED(widget))
+          (!GTK_WIDGET_REALIZED(widget) || GTK_WIDGET_NO_WINDOW(widget)))
         gtk_sheet_realize_child(sheet, child);
 
        if(GTK_WIDGET_MAPPED(GTK_WIDGET(sheet)) &&
@@ -8278,8 +8232,8 @@ gtk_sheet_attach        (GtkSheet *sheet,
 }
 
 void
-gtk_sheet_button_attach		(GtkSheet *sheet, 
-				 GtkWidget *widget, 
+gtk_sheet_button_attach		(GtkSheet *sheet,
+				 GtkWidget *widget,
 				 gint row, gint col)
 {
   GtkSheetButton *button;
@@ -8291,9 +8245,8 @@ gtk_sheet_button_attach		(GtkSheet *sheet,
 
   child = g_new (GtkSheetChild, 1);
   child->widget = widget;
-  child->x = 0;  
-  child->y = 0;  
-  child->window = NULL;  
+  child->x = 0;
+  child->y = 0;
   child->attached_to_cell = TRUE;
   child->floating = FALSE;
   child->row = row;
@@ -8314,30 +8267,29 @@ gtk_sheet_button_attach		(GtkSheet *sheet,
 
   sheet->children = g_list_append(sheet->children, child);
 
-  gtk_widget_set_parent (widget, GTK_WIDGET(sheet));
   gtk_sheet_button_size_request(sheet, button, &button_requisition);
 
   if(row == -1){
        if(button_requisition.height > sheet->column_title_area.height)
-             sheet->column_title_area.height = button_requisition.height; 
+             sheet->column_title_area.height = button_requisition.height;
        if(button_requisition.width > sheet->column[col].width)
-             sheet->column[col].width = button_requisition.width; 
+             sheet->column[col].width = button_requisition.width;
   }
 
   if(col == -1){
        if(button_requisition.width > sheet->row_title_area.width)
-             sheet->row_title_area.width = button_requisition.width; 
+             sheet->row_title_area.width = button_requisition.width;
        if(button_requisition.height > sheet->row[row].height)
-             sheet->row[row].height = button_requisition.height; 
+             sheet->row[row].height = button_requisition.height;
   }
 
   if (GTK_WIDGET_VISIBLE(GTK_WIDGET(sheet)))
     {
-       if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet)) && 
-          !GTK_WIDGET_REALIZED(widget))
+       if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet)) &&
+          (!GTK_WIDGET_REALIZED(widget) || GTK_WIDGET_NO_WINDOW(widget)))
         gtk_sheet_realize_child(sheet, child);
 
-       if(GTK_WIDGET_MAPPED(GTK_WIDGET(sheet)) && 
+       if(GTK_WIDGET_MAPPED(GTK_WIDGET(sheet)) &&
           !GTK_WIDGET_MAPPED(widget))
         gtk_widget_map(widget);
     }
@@ -8371,13 +8323,13 @@ label_size_request(GtkSheet *sheet, gchar *label, GtkRequisition *req)
     }
     words++;
   }
- 
+
   if(n > 0) req->height -= 2;
 }
 
 static void
 gtk_sheet_button_size_request	(GtkSheet *sheet,
-                                 GtkSheetButton *button, 
+                                 GtkSheetButton *button,
                                  GtkRequisition *button_requisition)
 {
   GtkRequisition requisition;
@@ -8390,7 +8342,7 @@ gtk_sheet_button_size_request	(GtkSheet *sheet,
   } else {
      label_requisition.height = DEFAULT_ROW_HEIGHT(GTK_WIDGET(sheet));
      label_requisition.width = COLUMN_MIN_WIDTH;
-  } 
+  }
 
   if(button->child)
   {
@@ -8409,7 +8361,7 @@ gtk_sheet_button_size_request	(GtkSheet *sheet,
   *button_requisition = requisition;
   button_requisition->width = MAX(requisition.width, label_requisition.width);
   button_requisition->height = MAX(requisition.height, label_requisition.height);
- 
+
 }
 
 static void
@@ -8496,7 +8448,7 @@ gtk_sheet_move_child(GtkSheet *sheet, GtkWidget *widget, gint x, gint y)
        children = children->next;
     }
 
-  g_warning("Widget must be a GtkSheet child"); 
+  g_warning("Widget must be a GtkSheet child");
 
 }
 
@@ -8505,14 +8457,14 @@ gtk_sheet_position_child(GtkSheet *sheet, GtkSheetChild *child)
 {
    GtkRequisition child_requisition;
    GtkAllocation child_allocation;
-   gint xoffset = 0; 
+   gint xoffset = 0;
    gint yoffset = 0;
    gint x = 0, y = 0;
    GdkRectangle area;
 
    gtk_widget_get_child_requisition(child->widget, &child_requisition);
 
-   if(sheet->column_titles_visible) 
+   if(sheet->column_titles_visible)
              yoffset = sheet->column_title_area.height;
 
    if(sheet->row_titles_visible)
@@ -8523,15 +8475,15 @@ gtk_sheet_position_child(GtkSheet *sheet, GtkSheetChild *child)
       child->x = COLUMN_LEFT_XPIXEL(sheet, child->col);
       child->y = ROW_TOP_YPIXEL(sheet, child->row);
 
-      if(sheet->row_titles_visible) 
+      if(sheet->row_titles_visible)
                                     child->x-=sheet->row_title_area.width;
-      if(sheet->column_titles_visible) 
+      if(sheet->column_titles_visible)
                                     child->y-=sheet->column_title_area.height;
 
       width = sheet->column[child->col].width;
       height = sheet->row[child->row].height;
 */
-      
+
       gtk_sheet_get_cell_area(sheet, child->row, child->col, &area);
       child->x = area.x + child->xpadding;
       child->y = area.y + child->ypadding;
@@ -8580,36 +8532,16 @@ gtk_sheet_position_child(GtkSheet *sheet, GtkSheetChild *child)
    }
    else
    {
-      x = child_allocation.x = child->x + sheet->hoffset + xoffset;   
-      x = child_allocation.x = child->x + xoffset;   
+      x = child_allocation.x = child->x + sheet->hoffset + xoffset;
+      x = child_allocation.x = child->x + xoffset;
       y = child_allocation.y = child->y + sheet->voffset + yoffset;
       y = child_allocation.y = child->y + yoffset;
       child_allocation.width = child_requisition.width;
       child_allocation.height = child_requisition.height;
    }
 
-
-   if(GTK_WIDGET_NO_WINDOW(child->widget))
-     {
-        child_allocation.x = 0;
-        child_allocation.y = 0;
-     }
-
-   if(GTK_WIDGET_REALIZED(GTK_WIDGET(sheet)) &&
-      GTK_WIDGET_MAPPED(child->widget))
-         {
-              gtk_widget_size_allocate(child->widget, 
-                                       &child_allocation);
-              if(GTK_WIDGET_NO_WINDOW(child->widget) && child->window)
-                 {
-		    gdk_window_move_resize(child->window,
-                                           x, y,
-                                           child_allocation.width,
-                                           child_allocation.height);
-                    gtk_widget_draw(child->widget, NULL);
-                 }
-         }
-
+   gtk_widget_size_allocate(child->widget, &child_allocation);
+   gtk_widget_queue_draw(child->widget);
 }
 
 static void
@@ -8626,7 +8558,6 @@ gtk_sheet_forall (GtkContainer *container,
   g_return_if_fail (callback != NULL);
 
   sheet = GTK_SHEET (container);
-
   children = sheet->children;
   while (children)
     {
@@ -8637,6 +8568,8 @@ gtk_sheet_forall (GtkContainer *container,
     }
   if(sheet->button)
      (* callback) (sheet->button, callback_data);
+  if(sheet->sheet_entry)
+     (* callback) (sheet->sheet_entry, callback_data);
 }
 
 
@@ -8656,7 +8589,7 @@ gtk_sheet_position_children(GtkSheet *sheet)
            gtk_sheet_position_child(sheet, child);
 
      if(child->row == -1){
-        if(child->col < MIN_VISIBLE_COLUMN(sheet) || 
+        if(child->col < MIN_VISIBLE_COLUMN(sheet) ||
            child->col > MAX_VISIBLE_COLUMN(sheet))
               gtk_sheet_child_hide(child);
         else
@@ -8669,10 +8602,10 @@ gtk_sheet_position_children(GtkSheet *sheet)
         else
               gtk_sheet_child_show(child);
      }
- 
+
      children = children->next;
    }
-    
+
 }
 
 static void
@@ -8706,16 +8639,12 @@ gtk_sheet_remove (GtkContainer *container, GtkWidget *widget)
      if(child->col == -1)
         sheet->column[child->row].button.child = NULL;
 
-     if(child->window) {
-        gdk_window_hide(child->window);
-        gdk_window_unref(child->window);
-     }
-
      gtk_widget_unparent (widget);
      child->widget = NULL;
 
      sheet->children = g_list_remove_link (sheet->children, children);
      g_list_free_1 (children);
+     g_free(child);
    }
 
 }
@@ -8723,66 +8652,24 @@ gtk_sheet_remove (GtkContainer *container, GtkWidget *widget)
 static void
 gtk_sheet_realize_child(GtkSheet *sheet, GtkSheetChild *child)
 {
-  gint attributes_mask;
   GtkWidget *widget;
 
   widget = GTK_WIDGET(sheet);
 
-  if (GTK_WIDGET_NO_WINDOW (child->widget))
-    {
-      GdkWindowAttr attributes;
-      
-      gint x = child->x - sheet->hoffset;
-      gint y = child->y - sheet->voffset;
-
-      gtk_widget_size_request(child->widget, NULL);
-
-      attributes.window_type = GDK_WINDOW_CHILD;
-      attributes.x = x;
-      attributes.y = y;
-      attributes.width = child->widget->requisition.width;
-      attributes.height = child->widget->requisition.height;
-      attributes.wclass = GDK_INPUT_OUTPUT;
-      attributes.visual = gtk_widget_get_visual (widget);
-      attributes.colormap = gtk_widget_get_colormap (widget);
-      attributes.event_mask = GDK_EXPOSURE_MASK;
- 
-      attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-
-      if(child->row == -1)
-        child->window =  gdk_window_new (sheet->column_title_window,
-   	  			         &attributes, attributes_mask);
-      else if(child->col == -1)
-        child->window =  gdk_window_new (sheet->row_title_window,
-   	  			         &attributes, attributes_mask);
-      else
-        child->window =  gdk_window_new (widget->window,
-   	  			         &attributes, attributes_mask);
-
-      if(GTK_IS_PIXMAP(child->widget)){
-            gdk_window_shape_combine_mask(child->window, 
-                                          GTK_PIXMAP(child->widget)->mask,
-                                          0, 0);
-      }
-
-      gdk_window_set_user_data (child->window, widget);
-
-      if (child->window)
-	gtk_style_set_background (widget->style, 
-				  child->window, 
-				  GTK_STATE_NORMAL);
-
-      gtk_widget_set_parent_window(child->widget, child->window);
-      gdk_window_show(child->window);
-    }
-  else
+  if(GTK_WIDGET_REALIZED(widget)){
+    if(child->row == -1)
+      gtk_widget_set_parent_window(child->widget, sheet->column_title_window);
+    else if(child->col == -1)
+      gtk_widget_set_parent_window(child->widget, sheet->row_title_window);
+    else
       gtk_widget_set_parent_window(child->widget, sheet->sheet_window);
+  }
 
-    gtk_widget_realize(child->widget);
+  gtk_widget_set_parent(child->widget, widget);
 }
 
 
-   
+
 GtkSheetChild *
 gtk_sheet_get_child_at(GtkSheet *sheet, gint row, gint col)
 {
@@ -8799,31 +8686,27 @@ gtk_sheet_get_child_at(GtkSheet *sheet, gint row, gint col)
      child = (GtkSheetChild *)children->data;
 
      if(child->attached_to_cell)
-        if(child->row == row && child->col == col) break; 
-     
+        if(child->row == row && child->col == col) break;
+
      children = children->next;
    }
 
-  if(children) return child; 
+  if(children) return child;
 
   return NULL;
 }
 
 static void
-gtk_sheet_child_hide(GtkSheetChild *child) 
+gtk_sheet_child_hide(GtkSheetChild *child)
 {
   g_return_if_fail(child != NULL);
   gtk_widget_hide(child->widget);
-  if(child->window)   
-      gdk_window_hide(child->window);
 }
 
 static void
-gtk_sheet_child_show(GtkSheetChild *child) 
+gtk_sheet_child_show(GtkSheetChild *child)
 {
   g_return_if_fail(child != NULL);
 
   gtk_widget_show(child->widget);
-  if(child->window)   
-      gdk_window_show(child->window);
 }

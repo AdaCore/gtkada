@@ -58,7 +58,7 @@ struct _GtkPlotBarClass
 GtkType		gtk_plot_bar_get_type	(void);
 GtkWidget*	gtk_plot_bar_new	(GtkOrientation orientation);
 
-void		gtk_plot_bar_construct	(GtkPlotBar *bar, 
+void		gtk_plot_bar_construct	(GtkPlotBar *bar,
 					 GtkOrientation orientation);
 void		gtk_plot_bar_set_width	(GtkPlotBar *bar, gdouble width);
 gdouble		gtk_plot_bar_get_width	(GtkPlotBar *bar);

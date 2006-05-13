@@ -43,7 +43,7 @@ struct _GtkPlotPolygon
   GtkPlotVector p[4];			/* pixels */
   gint n;				/* number of points */
   gdouble level;
-  gboolean cut_level;	
+  gboolean cut_level;
   gboolean sublevel;
 };
 
@@ -110,55 +110,55 @@ void		gtk_plot_surface_set_mesh_visible	(GtkPlotSurface *data,
 						 	 gboolean visible);
 gboolean	gtk_plot_surface_get_mesh_visible	(GtkPlotSurface *data);
 void            gtk_plot_surface_set_light      (GtkPlotSurface *data,
-                                 		 gdouble x, 
-						 gdouble y, 
+                                 		 gdouble x,
+						 gdouble y,
 						 gdouble z);
 void            gtk_plot_surface_set_ambient    (GtkPlotSurface *data,
                                    		 gdouble ambient);
-void            gtk_plot_surface_use_height_gradient (GtkPlotSurface *data, 
+void            gtk_plot_surface_use_height_gradient (GtkPlotSurface *data,
 						 gboolean use_gradient);
-void            gtk_plot_surface_use_amplitud   (GtkPlotSurface *data, 
+void            gtk_plot_surface_use_amplitud   (GtkPlotSurface *data,
 						 gboolean use_amplitud);
 void            gtk_plot_surface_set_transparent(GtkPlotSurface *data,
                                    		 gboolean transparent);
 
 void 		gtk_plot_surface_set_points	(GtkPlotSurface *data,
-						 gdouble *x, 
+						 gdouble *x,
                                                  gdouble *y,
                                                  gdouble *z,
-						 gdouble *dx, 
+						 gdouble *dx,
                                                  gdouble *dy,
                                                  gdouble *dz,
                                                  gint nx, gint ny);
 void 		gtk_plot_surface_get_points	(GtkPlotSurface *data,
-						 gdouble **x, 
+						 gdouble **x,
                                                  gdouble **y,
                                                  gdouble **z,
-						 gdouble **dx, 
+						 gdouble **dx,
                                                  gdouble **dy,
                                                  gdouble **dz,
                                                  gint *nx, gint *ny);
-void 		gtk_plot_surface_set_x		(GtkPlotSurface *data,
-						 gdouble *x); 
-void 		gtk_plot_surface_set_y		(GtkPlotSurface *data,
-						 gdouble *y); 
-void 		gtk_plot_surface_set_z		(GtkPlotSurface *data,
-						 gdouble *z); 
-void 		gtk_plot_surface_set_dx		(GtkPlotSurface *data,
-						 gdouble *dx); 
-void 		gtk_plot_surface_set_dy		(GtkPlotSurface *data,
-						 gdouble *dy); 
-void 		gtk_plot_surface_set_dz		(GtkPlotSurface *data,
-						 gdouble *dz); 
-gdouble * 	gtk_plot_surface_get_x		(GtkPlotSurface *data, 
+GtkPlotArray * 	gtk_plot_surface_set_x		(GtkPlotSurface *data,
+						 gdouble *x);
+GtkPlotArray * 	gtk_plot_surface_set_y		(GtkPlotSurface *data,
+						 gdouble *y);
+GtkPlotArray * 	gtk_plot_surface_set_z		(GtkPlotSurface *data,
+						 gdouble *z);
+GtkPlotArray * 	gtk_plot_surface_set_dx		(GtkPlotSurface *data,
+						 gdouble *dx);
+GtkPlotArray *	gtk_plot_surface_set_dy		(GtkPlotSurface *data,
+						 gdouble *dy);
+GtkPlotArray *	gtk_plot_surface_set_dz		(GtkPlotSurface *data,
+						 gdouble *dz);
+gdouble * 	gtk_plot_surface_get_x		(GtkPlotSurface *data,
                                                  gint *nx);
-gdouble * 	gtk_plot_surface_get_y		(GtkPlotSurface *data, 
+gdouble * 	gtk_plot_surface_get_y		(GtkPlotSurface *data,
                                                  gint *ny);
 gdouble * 	gtk_plot_surface_get_z		(GtkPlotSurface *data,
-                                                 gint *nx, gint *ny); 
-gdouble * 	gtk_plot_surface_get_dx		(GtkPlotSurface *data); 
-gdouble * 	gtk_plot_surface_get_dy		(GtkPlotSurface *data); 
-gdouble * 	gtk_plot_surface_get_dz		(GtkPlotSurface *data); 
+                                                 gint *nx, gint *ny);
+gdouble * 	gtk_plot_surface_get_dx		(GtkPlotSurface *data);
+gdouble * 	gtk_plot_surface_get_dy		(GtkPlotSurface *data);
+gdouble * 	gtk_plot_surface_get_dz		(GtkPlotSurface *data);
 void		gtk_plot_surface_set_nx  	(GtkPlotSurface *data,
                                                  gint nx);
 void		gtk_plot_surface_set_ny  	(GtkPlotSurface *data,

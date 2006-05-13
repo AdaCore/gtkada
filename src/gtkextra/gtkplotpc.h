@@ -42,7 +42,7 @@ typedef enum{
      GTK_PLOT_LEGAL	,
      GTK_PLOT_A4	,
      GTK_PLOT_EXECUTIVE	,
-     GTK_PLOT_CUSTOM	
+     GTK_PLOT_CUSTOM
 } GtkPlotPageSize;
 
 #define GTK_PLOT_LETTER_W 	612   /* Width and Height in ps points */
@@ -61,7 +61,7 @@ typedef enum{
 /* Page orientation */
 typedef enum{
      GTK_PLOT_PORTRAIT	,
-     GTK_PLOT_LANDSCAPE	
+     GTK_PLOT_LANDSCAPE
 } GtkPlotPageOrientation;
 
 /* Size units */
@@ -69,7 +69,7 @@ typedef enum{
      GTK_PLOT_PSPOINTS	,
      GTK_PLOT_MM	,
      GTK_PLOT_CM	,
-     GTK_PLOT_INCHES	
+     GTK_PLOT_INCHES
 } GtkPlotUnits;
 
 
@@ -90,6 +90,7 @@ struct _GtkPlotPC
    GdkColor color;
 
    gint init_count;
+   gboolean use_pixmap;
 };
 
 
@@ -125,7 +126,7 @@ struct _GtkPlotPCClass
                                                  GdkJoinStyle join_style);
 
    void  (* set_dash)					(GtkPlotPC *pc,
-							 gdouble offset_,	
+							 gdouble offset_,
 							 gdouble *values,
 							 gint num_values);
 
@@ -154,13 +155,13 @@ struct _GtkPlotPCClass
    void  (* draw_circle) 	                        (GtkPlotPC *pc,
 							 gboolean filled,
                                                  	 gdouble x, gdouble y,
-                                                 	 gdouble size); 
+                                                 	 gdouble size);
 
    void  (* draw_ellipse) 	                        (GtkPlotPC *pc,
 							 gboolean filled,
                                                  	 gdouble x, gdouble y,
-                                                 	 gdouble width, 
-                                                 	 gdouble height); 
+                                                 	 gdouble width,
+                                                 	 gdouble height);
 
    void  (* set_font)					(GtkPlotPC *pc,
 							 GtkPSFont *psfont,
@@ -186,15 +187,15 @@ struct _GtkPlotPCClass
 							 GdkBitmap *mask,
                                    	             	 gint xsrc, gint ysrc,
                                    	             	 gint xdest, gint ydest,
-                                   	             	 gint width, 
-                                                         gint height, 
-                                   	             	 gdouble scale_x, 
-                                                         gdouble scale_y); 
+                                   	             	 gint width,
+                                                         gint height,
+                                   	             	 gdouble scale_x,
+                                                         gdouble scale_y);
 };
 
 GtkType    gtk_plot_pc_get_type				(void);
 GtkObject *gtk_plot_pc_new				(void);
-							 
+
 gboolean gtk_plot_pc_init				(GtkPlotPC *pc);
 
 void gtk_plot_pc_leave					(GtkPlotPC *pc);
@@ -208,8 +209,8 @@ void gtk_plot_pc_grestore				(GtkPlotPC *pc);
 void gtk_plot_pc_clip					(GtkPlotPC *pc,
 							 GdkRectangle *area);
 void gtk_plot_pc_clip_mask				(GtkPlotPC *pc,
-							 gdouble x, 
-							 gdouble y, 
+							 gdouble x,
+							 gdouble y,
 							 GdkBitmap *mask);
 
 void gtk_plot_pc_set_color                     		(GtkPlotPC *pc,
@@ -257,7 +258,7 @@ void gtk_plot_pc_draw_ellipse	                        (GtkPlotPC *pc,
 void gtk_plot_pc_draw_circle 	                        (GtkPlotPC *pc,
 							 gint filled,
                                                  	 gdouble x, gdouble y,
-                                                 	 gdouble size); 
+                                                 	 gdouble size);
 
 void gtk_plot_pc_set_font				(GtkPlotPC *pc,
 							 GtkPSFont *psfont,
@@ -284,9 +285,9 @@ void  gtk_plot_pc_draw_pixmap   	                (GtkPlotPC *pc,
                                    	             	 gint xsrc, gint ysrc,
                                    	             	 gint xdest, gint ydest,
                                    	             	 gint width,
-                                   	             	 gint height, 
+                                   	             	 gint height,
                                    	             	 gdouble scale_x,
-                                   	             	 gdouble scale_y); 
+                                   	             	 gdouble scale_y);
 
 #ifdef __cplusplus
 }

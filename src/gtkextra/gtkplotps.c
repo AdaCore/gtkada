@@ -34,7 +34,6 @@
 #include <ctype.h>
 #include <time.h>
 #include <gtk/gtk.h>
-// #include <wctype.h>
 #include <locale.h>
 
 #include "gtkplot.h"
@@ -42,14 +41,15 @@
 #include "gtkplotpc.h"
 #include "gtkplotps.h"
 
+
 static void gtk_plot_ps_class_init 		(GtkPlotPSClass *klass);
 static void gtk_plot_ps_init 			(GtkPlotPS *ps);
 static void gtk_plot_ps_destroy 		(GtkObject *object);
 /*********************************************************************/
 /* Postscript specific functions */
-static gboolean psinit				(GtkPlotPC *pc); 
-static void pssetviewport			(GtkPlotPC *pc, 
-						 gdouble w, gdouble h); 
+static gboolean psinit				(GtkPlotPC *pc);
+static void pssetviewport			(GtkPlotPC *pc,
+						 gdouble w, gdouble h);
 static void psleave				(GtkPlotPC *pc);
 static void psgsave				(GtkPlotPC *pc);
 static void psgrestore				(GtkPlotPC *pc);
@@ -59,32 +59,32 @@ static void psclipmask				(GtkPlotPC *pc,
 						 gdouble x, gdouble y,
 						 const GdkBitmap *mask);
 static void psdrawlines				(GtkPlotPC *pc,
-						 GtkPlotPoint *points, 
+						 GtkPlotPoint *points,
 						 gint numpoints);
-static void psdrawpoint				(GtkPlotPC *pc, 
-                				 gdouble x, gdouble y); 
+static void psdrawpoint				(GtkPlotPC *pc,
+                				 gdouble x, gdouble y);
 static void psdrawline				(GtkPlotPC *pc,
-						 gdouble x0, gdouble y0, 
+						 gdouble x0, gdouble y0,
 						 gdouble xf, gdouble yf);
 static void psdrawpolygon			(GtkPlotPC *pc,
 						 gboolean filled,
-						 GtkPlotPoint *points, 
-						 gint numpoints); 
-static void psdrawrectangle			(GtkPlotPC *pc, 
-						 gboolean filled, 
-                				 gdouble x, gdouble y, 
+						 GtkPlotPoint *points,
+						 gint numpoints);
+static void psdrawrectangle			(GtkPlotPC *pc,
+						 gboolean filled,
+                				 gdouble x, gdouble y,
 						 gdouble width, gdouble height);
 static void psdrawcircle			(GtkPlotPC *pc,
 						 gboolean filled,
-                                                 gdouble x, gdouble y, 
+                                                 gdouble x, gdouble y,
 						 gdouble size);
-static void psdrawellipse			(GtkPlotPC *pc, 
+static void psdrawellipse			(GtkPlotPC *pc,
               					 gboolean filled,
-						 gdouble x, gdouble y, 
-						 gdouble width, gdouble height); 
-static void pssetcolor				(GtkPlotPC *pc, 
-						 const GdkColor *color); 
-static void pssetlineattr			(GtkPlotPC *pc, 
+						 gdouble x, gdouble y,
+						 gdouble width, gdouble height);
+static void pssetcolor				(GtkPlotPC *pc,
+						 const GdkColor *color);
+static void pssetlineattr			(GtkPlotPC *pc,
                                                  gfloat line_width,
                                                  GdkLineStyle line_style,
                                                  GdkCapStyle cap_style,
@@ -103,10 +103,10 @@ static void psdrawstring			(GtkPlotPC *pc,
                                                  gint height,
                                                  GtkJustification just,
                                                  const gchar *text);
-static void pssetfont				(GtkPlotPC *pc, 
+static void pssetfont				(GtkPlotPC *pc,
 						 GtkPSFont *psfont,
 						 gint height);
-static void pssetdash				(GtkPlotPC *pc, 
+static void pssetdash				(GtkPlotPC *pc,
 						 gdouble offset,
 						 gdouble *values,
 						 gint num_values);
@@ -155,6 +155,7 @@ gtk_plot_ps_init (GtkPlotPS *ps)
 {
   ps->psname = NULL;
   ps->gsaved = FALSE;
+  GTK_PLOT_PC(ps)->use_pixmap = FALSE;
 }
 
 
@@ -343,16 +344,16 @@ gtk_plot_ps_set_scale                           (GtkPlotPS *ps,
                                                  gdouble scaley)
 {
   ps->scalex = scalex;
-  ps->scaley = scaley; 
+  ps->scaley = scaley;
 }
 
 static void pssetviewport			(GtkPlotPC *pc,
-						 gdouble w, gdouble h) 
+						 gdouble w, gdouble h)
 {
 
 }
 
-static void pssetlineattr			(GtkPlotPC *pc, 
+static void pssetlineattr			(GtkPlotPC *pc,
                                                  gfloat line_width,
                                                  GdkLineStyle line_style,
                                                  GdkCapStyle cap_style,
@@ -368,9 +369,9 @@ static void pssetlineattr			(GtkPlotPC *pc,
             fprintf(psout,"[] 0 sd\n");  /* solid line */
 }
 
-static void 
+static void
 pssetdash(GtkPlotPC *pc,
-          gdouble offset, 
+          gdouble offset,
           gdouble *values,
           gint num_values)
 {
@@ -385,13 +386,13 @@ pssetdash(GtkPlotPC *pc,
         break;
       case 4:
         fprintf(psout, "[%g %g %g %g] %g sd\n", values[0], values[1],
-                                                values[2], values[3], 
+                                                values[2], values[3],
                                                 offset);
         break;
       case 6:
         fprintf(psout, "[%g %g %g %g %g %g] %g sd\n",  values[0], values[1],
-                                                       values[2], values[3], 
-                                                       values[4], values[5], 
+                                                       values[2], values[3],
+                                                       values[4], values[5],
                                                        offset);
         break;
       default:
@@ -399,7 +400,7 @@ pssetdash(GtkPlotPC *pc,
     }
 }
 
-static void 
+static void
 psleave(GtkPlotPC *pc)
 {
     fprintf(GTK_PLOT_PS(pc)->psfile, "showpage\n");
@@ -410,7 +411,7 @@ psleave(GtkPlotPC *pc)
     g_free(locale);
 }
 
-static gboolean 
+static gboolean
 psinit						(GtkPlotPC *pc)
 {
     time_t now;
@@ -426,7 +427,7 @@ psinit						(GtkPlotPC *pc)
     psout = ps->psfile;
 
     if ((psout = fopen(ps->psname, "w")) == NULL){
-       g_warning("ERROR: Cannot open file: %s", ps->psname); 
+       g_warning("ERROR: Cannot open file: %s", ps->psname);
        return FALSE;
     }
 
@@ -501,7 +502,7 @@ psinit						(GtkPlotPC *pc)
              " 2 div neg 0\n"
              " rmoveto\n"
              "} bind def\n"
-  
+
              "\n/ellipsedict 8 dict def\n"
              "ellipsedict /mtrx matrix put\n"
              "/ellipse\n"
@@ -518,8 +519,8 @@ psinit						(GtkPlotPC *pc)
              "   savematrix setmatrix\n"
              "   end\n"
              "} def\n\n"
-    ); 
-  
+    );
+
     fprintf(psout,
           "[ /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef\n"
           "/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef\n"
@@ -546,7 +547,7 @@ psinit						(GtkPlotPC *pc)
           "/ae /ccedilla /egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis\n"
           "/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide /oslash /ugrave\n"
           "/uacute /ucircumflex /udieresis /yacute /thorn /ydieresis] /isolatin1encoding exch def\n");
- 
+
     ps_reencode_font(psout, "Times-Roman");
     ps_reencode_font(psout, "Times-Italic");
     ps_reencode_font(psout, "Times-Bold");
@@ -582,19 +583,29 @@ psinit						(GtkPlotPC *pc)
     ps_reencode_font(psout, "Symbol");
     ps_reencode_font(psout, "ZapfChancery-MediumItalic");
     ps_reencode_font(psout, "ZapfDingbats");
-   
+
+    fprintf(psout,"%%%%EndProlog\n%%%%BeginSetup\n"
+                "%%%%PageBoundingBox: 0 0 %d %d\n"
+                "%%%%PageOrientation: %s\n"
+                "%%%%PaperSize: %d %d\n",
+                 ps->page_width,
+                 ps->page_height,
+                (ps->orientation == GTK_PLOT_PORTRAIT) ? "Portrait":"Landscape",
+                 ps->page_width,
+                 ps->page_height);
+
     if(ps->orientation == GTK_PLOT_PORTRAIT)
-             fprintf(psout, "%d %d translate\n"
-                            "%g %g scale\n",
-                            0, ps->page_height,
-                            ps->scalex, -ps->scaley);
+             fprintf(psout, "%g %g scale\n",
+                            ps->scalex, ps->scaley);
 
     if(ps->orientation == GTK_PLOT_LANDSCAPE)
              fprintf(psout, "%g %g scale\n"
-                            "-90 rotate \n",
-                            ps->scalex, -ps->scaley);
+                            "90 rotate \n"
+                            "0 %d translate\n",
+                            ps->scalex, ps->scaley,
+                            -ps->page_width);
 
-    fprintf(psout,"%%%%EndProlog\n\n\n");
+    fprintf(psout,"%%%%EndSetup\n\n\n");
 
     return TRUE;
 }
@@ -634,6 +645,7 @@ psdrawpoint(GtkPlotPC *pc, gdouble x, gdouble y)
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
+  y = GTK_PLOT_PS(pc)->page_height - y;
   fprintf(psout, "n\n");
   fprintf(psout, "%g %g m\n", x, y);
   fprintf(psout, "%g %g l\n", x, y);
@@ -643,13 +655,13 @@ psdrawpoint(GtkPlotPC *pc, gdouble x, gdouble y)
 static void
 psdrawlines(GtkPlotPC *pc, GtkPlotPoint *points, gint numpoints)
 {
-  gint i;
+  gint i, page_height = GTK_PLOT_PS(pc)->page_height;
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
- 
+
   fprintf(psout,"n\n");
-  fprintf(psout,"%g %g m\n", points[0].x, points[0].y);
+  fprintf(psout,"%g %g m\n", points[0].x, page_height - points[0].y);
   for(i = 1; i < numpoints; i++)
-        fprintf(psout,"%g %g l\n", points[i].x, points[i].y);
+        fprintf(psout,"%g %g l\n", points[i].x, page_height - points[i].y);
 
   fprintf(psout,"s\n");
 }
@@ -657,13 +669,13 @@ psdrawlines(GtkPlotPC *pc, GtkPlotPoint *points, gint numpoints)
 static void
 psdrawpolygon(GtkPlotPC *pc, gboolean filled, GtkPlotPoint *points, gint numpoints)
 {
-  gint i;
+  gint i, page_height = GTK_PLOT_PS(pc)->page_height;
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
   fprintf(psout,"n\n");
-  fprintf(psout,"%g %g m\n", points[0].x, points[0].y);
+  fprintf(psout,"%g %g m\n", points[0].x, page_height - points[0].y);
   for(i = 1; i < numpoints; i++)
-      fprintf(psout,"%g %g l\n", points[i].x, points[i].y);
+      fprintf(psout,"%g %g l\n", points[i].x, page_height - points[i].y);
 
   if(filled)
      fprintf(psout,"f\n");
@@ -677,13 +689,13 @@ static void psdrawline(GtkPlotPC *pc, gdouble x0, gdouble y0, gdouble xf, gdoubl
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout, "%g %g m\n", x0, y0);
-  fprintf(psout, "%g %g l\n", xf, yf);
+  fprintf(psout, "%g %g m\n", x0, GTK_PLOT_PS(pc)->page_height - y0);
+  fprintf(psout, "%g %g l\n", xf, GTK_PLOT_PS(pc)->page_height - yf);
   fprintf(psout, "s\n");
 }
 
 static void
-psdrawrectangle(GtkPlotPC *pc, gboolean filled, 
+psdrawrectangle(GtkPlotPC *pc, gboolean filled,
                 gdouble x, gdouble y, gdouble width, gdouble height)
 {
   GtkPlotPoint point[4];
@@ -705,7 +717,8 @@ psdrawcircle(GtkPlotPC *pc, gboolean filled, gdouble x, gdouble y, gdouble size)
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout,"n %g %g %g %g 0 360 ellipse\n", 
+  y = GTK_PLOT_PS(pc)->page_height - y;
+  fprintf(psout,"n %g %g %g %g 0 360 ellipse\n",
           x, y, size / 2., size / 2.);
 
   if(filled)
@@ -715,15 +728,16 @@ psdrawcircle(GtkPlotPC *pc, gboolean filled, gdouble x, gdouble y, gdouble size)
 }
 
 static void
-psdrawellipse(GtkPlotPC *pc, 
-              gboolean filled, 
-              gdouble x, gdouble y, 
+psdrawellipse(GtkPlotPC *pc,
+              gboolean filled,
+              gdouble x, gdouble y,
               gdouble width, gdouble height)
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout,"n %g %g %g %g 0 360 ellipse\n", 
-          x+width/2., y+height/2., 
+  y = GTK_PLOT_PS(pc)->page_height - y;
+  fprintf(psout,"n %g %g %g %g 0 360 ellipse\n",
+          x+width/2., y-height/2.,
           width/2., height/2.);
 
   if(filled)
@@ -737,25 +751,27 @@ psoutputstring (GtkPlotPC *pc,
 		GtkPSFont *psfont,
 		GtkPSFont *latin_psfont,
 		gint height,
-		const GdkWChar *wstring,
+		const gchar *wstring,
 		const gchar *addstring)
 {
-  const GdkWChar *p;
-  GdkWChar wcs[2];
-  gint curcode = 0, code; /* 0..neither 1..latin 2..i18n */
+  const gchar *p;
+  gint curcode = 0;
   gchar begin[] = { 0, '(', '<' };
   gchar end[] = { 0, ')', '>' };
   GtkPSFont *fonts[3];
   FILE *out = GTK_PLOT_PS(pc)->psfile;
-  gchar *mbs, *c;
- 
+  const gchar *c = NULL;
+
   fonts[0] = NULL;
   fonts[1] = latin_psfont;
   fonts[2] = psfont;
 
   p = wstring;
-  
+
   if (psfont->i18n_latinfamily) {
+/*    gint code; */ /* 0..neither 1..latin 2..i18n */
+/*
+    gchar wcs[2];
     while (*p) {
       code = (*p >= 0 && *p <= 0x7f) ? 1 : 2;
       if (curcode && curcode != code)
@@ -764,13 +780,13 @@ psoutputstring (GtkPlotPC *pc,
 	pssetfont(pc, fonts[code], height);
 	fputc(begin[code], out);
       }
-      
+
       curcode = code;
 
       wcs[0] = *p++;
       wcs[1] = 0;
-      c = mbs = gdk_wcstombs(wcs);
-      
+      c = wcs;
+
       if (code == 2) {
 	while (*c)
 	  fprintf(out, "%02x", (unsigned char)(*c++));
@@ -779,25 +795,28 @@ psoutputstring (GtkPlotPC *pc,
 	  fputc('\\', out);
 	fputc(*c, out);
       }
-      
-      g_free(mbs);
     }
+*/
   } else {
-    c = mbs = gdk_wcstombs(wstring);
-    
-    while (*c) {
-      if (curcode == 0) {
-	pssetfont(pc, psfont, height);
-	fputc(begin[1], out);
-	curcode = 1;
-      }
+    c = wstring;
 
+    pssetfont(pc, psfont, height);
+    fputc(begin[1], out);
+    curcode = 1;
+
+    while (*c) {
+      const gchar *aux2 = c;
       if (*c == '(' || *c == ')')
 	fputc('\\', out);
-      fputc(*c++, out);
-    }
 
-    g_free(mbs);
+      if(++aux2 != g_utf8_next_char(c)){
+        fprintf(out, ") show <%02x> show (", (unsigned char)(*++c));
+        c++;
+      } else {
+        fputc(*c, out);
+        c = g_utf8_next_char(c);
+      }
+    }
   }
 
   if (curcode)
@@ -832,9 +851,10 @@ psdrawstring	(GtkPlotPC *pc,
   GList *family;
   FILE *psout;
   gint twidth, theight, tdescent, tascent;
-  gint tx, ty, width, height; 
+  gint tx, ty, width, height;
   gint i;
-  GdkWChar *curstr, *wtext, *lastchar = NULL, bkspchar[2], *aux, *xaux;
+  const gchar *aux, *xaux, *wtext, *lastchar = NULL;
+  gchar *curstr, bkspchar[3];
   gchar num[4];
 
   if (text == NULL || strlen(text) == 0) return;
@@ -858,6 +878,7 @@ psdrawstring	(GtkPlotPC *pc,
 
   tx += x;
   ty += y;
+
   if(!transparent){
     pssetcolor(pc, bg);
     gtk_plot_pc_draw_rectangle(pc,
@@ -870,23 +891,23 @@ psdrawstring	(GtkPlotPC *pc,
   pssetcolor(pc, fg);
   pssetdash(pc, 0, NULL, 0);
   pssetlineattr(pc, border_width, 0, 0, 0);
- 
+
   switch(border){
     case GTK_PLOT_BORDER_SHADOW:
       psdrawrectangle(pc,
-                         TRUE, 
+                         TRUE,
                          tx - border_space + shadow_width,
-                         ty + height + border_space, 
+                         ty + height + border_space,
                          width + 2 * border_space, shadow_width);
       psdrawrectangle(pc,
-                         TRUE, 
-                         tx + width + border_space, 
-                         ty - border_space + shadow_width, 
+                         TRUE,
+                         tx + width + border_space,
+                         ty - border_space + shadow_width,
                          shadow_width, height + 2 * border_space);
-    case GTK_PLOT_BORDER_LINE: 
+    case GTK_PLOT_BORDER_LINE:
       psdrawrectangle(pc,
-                         FALSE, 
-                         tx - border_space, ty - border_space, 
+                         FALSE,
+                         tx - border_space, ty - border_space,
                          width + 2*border_space, height + 2*border_space);
     case GTK_PLOT_BORDER_NONE:
     default:
@@ -894,25 +915,22 @@ psdrawstring	(GtkPlotPC *pc,
   }
 
 
-  gtk_plot_text_get_size(text, angle, psfont->psname, font_height, 
+  gtk_plot_text_get_size(text, angle, psfont->psname, font_height,
                          &twidth, &theight, &tascent, &tdescent);
 
-  if(angle == 90 || angle == 270) angle = 360 - angle;
   psgsave(pc);
-  fprintf(psout, "%d %d translate\n", x, y);
+  fprintf(psout, "%d %d translate\n", x, GTK_PLOT_PS(pc)->page_height - y);
   fprintf(psout, "%d rotate\n", angle);
 
   fprintf(psout, "0 0 m\n");
-  fprintf(psout, "1 -1 sc\n");
 
-  
   if (psfont->i18n_latinfamily)
     special = TRUE;
 
   c = text;
   while(c && *c != '\0' && *c != '\n') {
      if(*c == '\\'){
-         c++;
+         c = g_utf8_next_char(c);
          switch(*c){
            case '0': case '1': case '2': case '3':
            case '4': case '5': case '6': case '7': case '9':
@@ -924,7 +942,7 @@ psdrawstring	(GtkPlotPC *pc,
              break;
          }
      } else {
-         c++;
+         c = g_utf8_next_char(c);
      }
   }
 
@@ -948,7 +966,7 @@ psdrawstring	(GtkPlotPC *pc,
     }
   } else {
     pssetfont(pc, psfont, font_height);
-    
+
     switch (justification) {
       case GTK_JUSTIFY_LEFT:
         break;
@@ -962,22 +980,21 @@ psdrawstring	(GtkPlotPC *pc,
     }
     fprintf(psout, "(%s) show\n", text);
 
-    psgrestore(pc);  
-    fprintf(psout, "n\n");  
+    psgrestore(pc);
+    fprintf(psout, "n\n");
     return;
   }
 
-  i = strlen(text) + 2;
-  curstr = g_malloc0(sizeof(GdkWChar) * i);
-  aux = wtext = g_malloc0(sizeof(GdkWChar) * i);
-  gdk_mbstowcs(wtext, text, i - 1);
+  i = g_utf8_strlen(text, -1) + 2;
+  curstr = g_malloc0(sizeof(gchar) * i);
+  aux = wtext = text;
 
   scale = font_height;
   curcnt = 0;
 
   while(aux && *aux != '\0' && *aux != '\n') {
      if(*aux == '\\'){
-         aux++;
+         aux = g_utf8_next_char(aux);
          switch(*aux){
            case '0': case '1': case '2': case '3':
            case '4': case '5': case '6': case '7': case '9':
@@ -986,7 +1003,7 @@ psdrawstring	(GtkPlotPC *pc,
 				 curstr, "show");
                   curcnt = 0;
                   psfont = gtk_psfont_get_by_family((gchar *)g_list_nth_data(family, *aux-'0'), italic, bold);
-		  aux++;
+		  aux = g_utf8_next_char(aux);
                   break;
            case '8':case 'g':
                   curstr[curcnt] = 0;
@@ -994,7 +1011,7 @@ psdrawstring	(GtkPlotPC *pc,
 				 curstr, "show");
                   curcnt = 0;
                   psfont = gtk_psfont_get_by_family("Symbol", italic, bold);
-                  aux++;
+                  aux = g_utf8_next_char(aux);
                   break;
            case 'B':
                   curstr[curcnt] = 0;
@@ -1005,7 +1022,7 @@ psdrawstring	(GtkPlotPC *pc,
                   psfont = gtk_psfont_get_by_family(psfont->family, italic, bold);
 		  if (psfont->i18n_latinfamily)
 		    latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily, italic, bold);
-		  aux++;
+		  aux = g_utf8_next_char(aux);
                   break;
            case 'x':
                   xaux = aux + 1;
@@ -1016,11 +1033,11 @@ psdrawstring	(GtkPlotPC *pc,
 		      break;
                   }
                   if (i < 3){
-                     aux++;
+                     aux = g_utf8_next_char(aux);
                      break;
                   }
                   num[3] = '\0';
-		  
+
 		  i = atoi(num);
 		  g_snprintf(num, 4, "%o", i % (64 * 8));
 
@@ -1029,7 +1046,7 @@ psdrawstring	(GtkPlotPC *pc,
 		  while (num[i]) {
 		    curstr[curcnt++] = num[i++];
 		  }
-		  
+
                   aux += 4;
                   break;
            case 'i':
@@ -1041,7 +1058,7 @@ psdrawstring	(GtkPlotPC *pc,
                   psfont = gtk_psfont_get_by_family(psfont->family, italic, bold);
 		  if (psfont->i18n_latinfamily)
 		    latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily, italic, bold);
-		  aux++;
+		  aux = g_utf8_next_char(aux);
                   break;
            case 's':case '_':
                   curstr[curcnt] = 0;
@@ -1051,7 +1068,7 @@ psdrawstring	(GtkPlotPC *pc,
                   scale = 0.6 * font_height;
 		  offset -= (gint)scale / 2;
                   fprintf(psout, "0 %d rmoveto\n", -((gint)scale / 2));
-                  aux++;
+                  aux = g_utf8_next_char(aux);
                   break;
            case 'S':case '^':
                   curstr[curcnt] = 0;
@@ -1061,7 +1078,7 @@ psdrawstring	(GtkPlotPC *pc,
                   scale = 0.6 * font_height;
 		  offset += 0.5*font_height;
                   fprintf(psout, "0 %d rmoveto\n", (gint)(0.5*font_height));
-                  aux++;
+                  aux = g_utf8_next_char(aux);
                   break;
            case 'N':
                   curstr[curcnt] = 0;
@@ -1078,17 +1095,23 @@ psdrawstring	(GtkPlotPC *pc,
                   scale = font_height;
                   fprintf(psout, "0 %d rmoveto\n", -offset);
                   offset = 0;
-                  aux++;
+                  aux = g_utf8_next_char(aux);
                   break;
            case 'b':
                   curstr[curcnt] = '\0';
                   psoutputstring(pc, psfont, latin_psfont, (gint)scale,
 				 curstr, "show");
                   curcnt = 0;
-		  bkspchar[1] = 0;
                   if (lastchar) {
+                      const gchar *aux2 = lastchar;
                       bkspchar[0] = *lastchar;
-                      lastchar--;
+                      lastchar = g_utf8_prev_char(lastchar);
+		      bkspchar[1] = 0;
+                      if(--aux2 != lastchar){
+                        bkspchar[1] = *lastchar;
+                        lastchar = g_utf8_prev_char(lastchar);
+		        bkspchar[2] = 0;
+                      }
                   } else {
                       bkspchar[0] = 'X';
                       lastchar = NULL;
@@ -1096,7 +1119,7 @@ psdrawstring	(GtkPlotPC *pc,
 		  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
 				 bkspchar,
 				 "stringwidth pop 0 exch neg exch rmoveto");
-                  aux++;
+                  aux = g_utf8_next_char(aux);
                   break;
            case '-':
                   curstr[curcnt] = 0;
@@ -1107,7 +1130,7 @@ psdrawstring	(GtkPlotPC *pc,
                   if (scale < 6) {
                       scale = 6;
                   }
-                  aux++;
+                  aux = g_utf8_next_char(aux);
                   break;
            case '+':
                   curstr[curcnt] = 0;
@@ -1115,32 +1138,36 @@ psdrawstring	(GtkPlotPC *pc,
 				 curstr, "show");
                   curcnt = 0;
                   scale += 3;
-                  aux++;
+                  aux = g_utf8_next_char(aux);
                   break;
            default:
                   if(aux && *aux != '\0' && *aux != '\n'){
                     curstr[curcnt++] = *aux;
-                    aux++;
+                    aux = g_utf8_next_char(aux);
                   }
                   break;
          }
      } else {
        if(aux && *aux != '\0' && *aux != '\n'){
-                curstr[curcnt++] = *aux;
-		lastchar = aux;
-                aux++;
-
+                const gchar *aux2 = aux;
+                if(g_utf8_next_char(aux) != ++aux2){
+                  curstr[curcnt++] = *aux++;
+//                  aux = g_utf8_next_char(aux);
+                  curstr[curcnt++] = *aux++;
+                } else {
+                  curstr[curcnt++] = *aux;
+		  lastchar = aux;
+                  aux = g_utf8_next_char(aux);
+                }
        }
      }
   }
   curstr[curcnt] = 0;
   psoutputstring(pc, psfont, latin_psfont, (gint)scale, curstr, "show");
 
-  psgrestore(pc);  
-  fprintf(psout, "n\n");  
+  psgrestore(pc);
+  fprintf(psout, "n\n");
 
-
-  g_free(wtext);
   g_free(curstr);
 }
 
@@ -1183,7 +1210,9 @@ psgrestore(GtkPlotPC *pc)
 
   psout = ps->psfile;
 
+/*
   if(!ps->gsaved) return;
+*/
 
   fprintf(psout,"grestore\n");
   ps->gsaved = FALSE;
@@ -1196,11 +1225,11 @@ psclipmask(GtkPlotPC *pc, gdouble x, gdouble y, const GdkBitmap *mask)
   gint width, height;
   gint px, py;
   gint npoints = 0;
-  gint i;
+  gint i, page_height = GTK_PLOT_PS(pc)->page_height;
   GtkPlotVector *points;
   GdkImage *image;
 
-  if(!mask){ 
+  if(!mask){
     fprintf(psout,"grestore\n");
     return;
   }
@@ -1213,50 +1242,50 @@ psclipmask(GtkPlotPC *pc, gdouble x, gdouble y, const GdkBitmap *mask)
   for(px = 0; px < width; px++){
     for(py = 0; py < height; py++){
       if(gdk_image_get_pixel(image, px, py)){
-        points[npoints].x = px; 
-        points[npoints].y = py; 
+        points[npoints].x = px;
+        points[npoints].y = py;
         npoints++;
         break;
       }
-    } 
+    }
   }
   for(py = points[npoints-1].y; py < height; py++){
     for(px = width - 1; px >= 0; px--){
       if(gdk_image_get_pixel(image, px, py)){
-        points[npoints].x = px; 
-        points[npoints].y = py; 
+        points[npoints].x = px;
+        points[npoints].y = py;
         npoints++;
         break;
       }
-    } 
+    }
   }
   for(px = points[npoints-1].x; px >= 0; px--){
     for(py = height - 1; py >= 0; py--){
       if(gdk_image_get_pixel(image, px, py)){
-        points[npoints].x = px; 
-        points[npoints].y = py; 
+        points[npoints].x = px;
+        points[npoints].y = py;
         npoints++;
         break;
       }
-    } 
+    }
   }
   for(py = points[npoints-1].y; py >= 0; py--){
     for(px = 0; px < width; px++){
       if(gdk_image_get_pixel(image, px, py)){
-        points[npoints].x = px; 
-        points[npoints].y = py; 
+        points[npoints].x = px;
+        points[npoints].y = py;
         npoints++;
         break;
       }
-    } 
+    }
   }
 
   fprintf(psout,"gsave\n");
 
   fprintf(psout,"n\n");
-  fprintf(psout,"%g %g m\n", x + points[0].x, y + points[0].y);
+  fprintf(psout,"%g %g m\n", x + points[0].x, page_height - y - points[0].y);
   for(i = 1; i < npoints; i++)
-      fprintf(psout,"%g %g l\n", x + points[i].x, y + points[i].y);
+      fprintf(psout,"%g %g l\n", x + points[i].x, page_height - y - points[i].y);
 
   fprintf(psout,"cp\n");
 
@@ -1271,18 +1300,22 @@ psclip(GtkPlotPC *pc, const GdkRectangle *clip)
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  if(!clip){ 
+  if(!clip){
     fprintf(psout,"grestore\n");
     return;
   }
 
   fprintf(psout,"gsave\n");
-  fprintf(psout,"%d %d %d %d rectclip\n", clip->x, clip->y, clip->width, clip->height);
+  fprintf(psout,"%d %d %d %d rectclip\n",
+                  clip->x,
+                  GTK_PLOT_PS(pc)->page_height - clip->y - clip->height,
+                  clip->width,
+                  clip->height);
 }
 
 /* TODO: FIXME */
 
-static void 
+static void
 psdrawpixmap  (GtkPlotPC *pc,
                GdkPixmap *pixmap,
                GdkBitmap *mask,
@@ -1306,6 +1339,7 @@ psdrawpixmap  (GtkPlotPC *pc,
                           width, height);
 
     if(mask) gtk_plot_pc_clip_mask(pc, xdest, ydest, mask);
+    ydest = GTK_PLOT_PS(pc)->page_height - ydest - height;
 
     fprintf(psout, "%d %g translate\n", xdest, ydest + height * scale_y);
     fprintf(psout, "%g %g scale\n",width * scale_x, height * scale_y);
@@ -1314,8 +1348,7 @@ psdrawpixmap  (GtkPlotPC *pc,
     fprintf(psout, "{ currentfile scanline readhexstring pop } false 3\n");
     fprintf(psout, "colorimage\n");
 
-
-    for(y = 0; y < height; y++){
+    for(y = height - 1; y >= 0; y--){
       for(x = 0; x < width; x++){
         GdkColor color;
         gchar string[7];

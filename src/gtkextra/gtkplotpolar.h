@@ -44,7 +44,7 @@ typedef struct _GtkPlotPolarClass		GtkPlotPolarClass;
 struct _GtkPlotPolar
 {
   GtkPlot plot;
-  
+
   GtkPlotAxis *r;
   GtkPlotAxis *angle;
 
@@ -66,12 +66,13 @@ void		gtk_plot_polar_construct	(GtkPlotPolar *plot,
 						 GdkDrawable *drawable);
 void		gtk_plot_polar_construct_with_size (GtkPlotPolar *plot,
 						    GdkDrawable *drawable,
-						    gdouble width, 
+						    gdouble width,
 						    gdouble height);
 
 void		gtk_plot_polar_rotate		(GtkPlotPolar *plot,
 						 gdouble angle);
-gdouble		gtk_plot_polar_get_angle	(GtkPlotPolar *plot);
+gdouble         gtk_plot_polar_get_angle        (GtkPlotPolar *plot);
+
 
 #ifdef __cplusplus
 }

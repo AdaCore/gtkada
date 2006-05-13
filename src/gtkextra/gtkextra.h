@@ -28,7 +28,7 @@
 #include <gtkextra/gtkcharsel.h>
 #include <gtkextra/gtkcheckitem.h>
 #include <gtkextra/gtkcolorcombo.h>
-#include <gtkextra/gtkcombobox.h>
+#include <gtkextra/gtkcombobutton.h>
 #include <gtkextra/gtkdirtree.h>
 #include <gtkextra/gtkextrafeatures.h>
 #include <gtkextra/gtkfilelist.h>
@@ -39,14 +39,23 @@
 #include <gtkextra/gtkplot.h>
 #include <gtkextra/gtkplotpolar.h>
 #include <gtkextra/gtkplot3d.h>
+#include <gtkextra/gtkplotbubble.h>
 #include <gtkextra/gtkplotdata.h>
+#include <gtkextra/gtkplotarray.h>
 #include <gtkextra/gtkplotsurface.h>
 #include <gtkextra/gtkplotcsurface.h>
 #include <gtkextra/gtkplotcanvas.h>
+#include <gtkextra/gtkplotcanvasellipse.h>
+#include <gtkextra/gtkplotcanvasline.h>
+#include <gtkextra/gtkplotcanvaspixmap.h>
+#include <gtkextra/gtkplotcanvasplot.h>
+#include <gtkextra/gtkplotcanvasrectangle.h>
+#include <gtkextra/gtkplotcanvastext.h>
 #include <gtkextra/gtkplotbar.h>
 #include <gtkextra/gtkplotbox.h>
 #include <gtkextra/gtkplotdt.h>
 #include <gtkextra/gtkplotflux.h>
+#include <gtkextra/gtkplotsegment.h>
 #include <gtkextra/gtkplotpixmap.h>
 #include <gtkextra/gtkplotgdk.h>
 #include <gtkextra/gtkplotpc.h>
@@ -55,6 +64,5 @@
 #include <gtkextra/gtkpsfont.h>
 #include <gtkextra/gtksheet.h>
 #include <gtkextra/gtktogglecombo.h>
-
 
 #endif /* GTK_EXTRA_H */

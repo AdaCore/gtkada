@@ -35,7 +35,7 @@
 #include <gtk/gtkcolorsel.h>
 #include <gtk/gtkcolorseldialog.h>
 #include <gdk/gdkkeysyms.h>
-#include "gtkextracombobox.h"
+#include "gtkcombobutton.h"
 #include "gtkcolorcombo.h"
 #include "gtkextra-marshal.h"
 
@@ -125,7 +125,7 @@ static void 	    gtk_color_combo_get_color_name  (GdkColor *color,
 						     gchar *name);
 static void 	    color_to_hex		    (gint color, gchar string[5]);
 
-static GtkExtraComboBoxClass *parent_class = NULL;
+static GtkComboButtonClass *parent_class = NULL;
 
 static void
 gtk_color_combo_class_init (GtkColorComboClass * klass)
@@ -230,9 +230,7 @@ gtk_color_combo_update (GtkWidget * widget, GtkColorCombo * color_combo)
 
   if(new_selection){
       if(row >= 0 && column >= 0){
-          GTK_BUTTON(color_combo->button[row*color_combo->ncols+column])->button_down=FALSE;
-          GTK_TOGGLE_BUTTON(color_combo->button[row*color_combo->ncols+column])->active=FALSE;
-          gtk_widget_set_state(color_combo->button[row*color_combo->ncols+column], GTK_STATE_NORMAL);
+          gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(color_combo->button[row*color_combo->ncols+column]), FALSE);
           gtk_widget_queue_draw(color_combo->button[row*color_combo->ncols+column]);
       }
       color_combo->row=new_row;
@@ -246,9 +244,7 @@ gtk_color_combo_update (GtkWidget * widget, GtkColorCombo * color_combo)
   }
 
   if(!new_selection && row >= 0 && column >= 0){
-      GTK_BUTTON(color_combo->button[row*color_combo->ncols+column])->button_down=TRUE;
-      GTK_TOGGLE_BUTTON(color_combo->button[row*color_combo->ncols+column])->active=TRUE;
-      gtk_widget_set_state(color_combo->button[row*color_combo->ncols+column], GTK_STATE_ACTIVE);
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(color_combo->button[row*color_combo->ncols+column]), TRUE);
       gtk_widget_queue_draw(color_combo->button[row*color_combo->ncols+column]);
       gtk_signal_emit (GTK_OBJECT(color_combo),
                        color_combo_signals[CHANGED],
@@ -257,11 +253,11 @@ gtk_color_combo_update (GtkWidget * widget, GtkColorCombo * color_combo)
 
   }
 
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GTK_EXTRA_COMBO_BOX(color_combo)->arrow), FALSE);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GTK_COMBO_BUTTON(color_combo)->arrow), FALSE);
 
-  gtk_grab_remove(GTK_EXTRA_COMBO_BOX(color_combo)->popwin);
+  gtk_grab_remove(GTK_COMBO_BUTTON(color_combo)->popwin);
   gdk_pointer_ungrab(GDK_CURRENT_TIME);
-  gtk_widget_hide(GTK_EXTRA_COMBO_BOX(color_combo)->popwin);
+  gtk_widget_hide(GTK_COMBO_BUTTON(color_combo)->popwin);
   return;
 }
 
@@ -333,9 +329,9 @@ gtk_color_combo_customize(GtkButton *button, gpointer data)
 
   gtk_color_selection_set_has_palette (GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (dialog)->colorsel), TRUE);
   gtk_color_selection_set_color(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(dialog)->colorsel), values);
+  gtk_window_set_modal (GTK_WINDOW(dialog),TRUE);
 
   gtk_widget_show(dialog);
-  gtk_window_set_modal (GTK_WINDOW(dialog),TRUE);
 
   gtk_signal_connect (GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(dialog)->ok_button),
                       "clicked", GTK_SIGNAL_FUNC(pick_color), combo);
@@ -353,7 +349,7 @@ gtk_color_combo_customize(GtkButton *button, gpointer data)
 static void
 gtk_color_combo_realize(GtkWidget *widget)
 {
-  GtkExtraComboBox *combo;
+  GtkComboButton *combo;
   GtkColorCombo *color_combo;
   GdkPixmap *color_pixmap;
   GtkWidget *pixmap;
@@ -366,7 +362,7 @@ gtk_color_combo_realize(GtkWidget *widget)
 
   GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
-  combo = GTK_EXTRA_COMBO_BOX(widget);
+  combo = GTK_COMBO_BUTTON(widget);
   color_combo = GTK_COLOR_COMBO(widget);
 
   box = gtk_vbox_new(FALSE,0);
@@ -394,7 +390,7 @@ gtk_color_combo_realize(GtkWidget *widget)
   }
 
 
-  gtk_container_add(GTK_CONTAINER(GTK_EXTRA_COMBO_BOX(color_combo)->frame), box);
+  gtk_container_add(GTK_CONTAINER(GTK_COMBO_BUTTON(color_combo)->frame), box);
   gtk_box_pack_start(GTK_BOX(box), color_combo->table, TRUE, TRUE, 0);
   gtk_widget_show(box);
   gtk_widget_show(color_combo->table);
@@ -491,7 +487,7 @@ gtk_color_combo_get_type ()
 	NULL,
 	(GtkClassInitFunc) NULL,
       };
-      color_combo_type = gtk_type_unique (gtk_extra_combobox_get_type (), &color_combo_info);
+      color_combo_type = gtk_type_unique (gtk_combo_button_get_type (), &color_combo_info);
     }
   return color_combo_type;
 }

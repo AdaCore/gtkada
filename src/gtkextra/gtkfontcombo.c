@@ -307,8 +307,10 @@ gtk_font_combo_select_nth (GtkFontCombo *combo,
   if(i < NUM_SIZES)
     gtk_list_select_item(GTK_LIST(GTK_COMBO(combo->size_combo)->list), i);
 
-  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(combo->bold_button), bold);
-  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(combo->italic_button), italic);
+  if(GTK_IS_TOGGLE_BUTTON(combo->bold_button))
+    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(combo->bold_button), bold);
+  if(GTK_IS_TOGGLE_BUTTON(combo->italic_button))
+    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(combo->italic_button), italic);
 }
 
 gint 
@@ -325,12 +327,14 @@ GtkPSFont *
 gtk_font_combo_get_psfont (GtkFontCombo *combo)
 {
   const gchar *text;
-  gboolean italic, bold;
+  gboolean italic = FALSE, bold = FALSE;
 
   text=gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(combo->name_combo)->entry));
 
-  italic = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GTK_FONT_COMBO(combo)->italic_button));
-  bold = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GTK_FONT_COMBO(combo)->bold_button));
+  if(GTK_IS_TOGGLE_BUTTON(GTK_FONT_COMBO(combo)->italic_button))
+    italic = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GTK_FONT_COMBO(combo)->italic_button));
+  if(GTK_IS_TOGGLE_BUTTON(GTK_FONT_COMBO(combo)->bold_button))
+    bold = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GTK_FONT_COMBO(combo)->bold_button));
 
   return (gtk_psfont_get_by_family(text, italic, bold));
 }

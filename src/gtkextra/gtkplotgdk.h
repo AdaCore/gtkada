@@ -21,6 +21,7 @@
 #define __GTK_PLOT_GDK_H__
 
 #include <stdio.h>
+#include <pango/pango.h>
 #include "gtkpsfont.h"
 
 #ifdef __cplusplus
@@ -45,6 +46,10 @@ struct _GtkPlotGdk
    GdkGC *gc;
    GdkDrawable *drawable;
 
+   GtkTextDirection text_direction;
+   PangoContext *context;
+   PangoLayout *layout;
+
    GdkWindow *window;
 
    gint ref_count;
@@ -59,11 +64,11 @@ struct _GtkPlotGdkClass
 };
 
 GtkType    gtk_plot_gdk_get_type			(void);
-GtkObject *gtk_plot_gdk_new				(GdkDrawable *drawable);
+GtkObject *gtk_plot_gdk_new				(GtkWidget *widget);
 void	   gtk_plot_gdk_construct			(GtkPlotGdk *pc,
-							 GdkDrawable *drawable);					 
+							 GtkWidget *widget);
 void	   gtk_plot_gdk_set_drawable			(GtkPlotGdk *pc,
-							 GdkDrawable *drawable);					 
+							 GdkDrawable *drawable);
 
 #ifdef __cplusplus
 }

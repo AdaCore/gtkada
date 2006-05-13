@@ -28,261 +28,262 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
+// #include <fontconfig/fontconfig.h>
 #include <pango/pango.h>
 #include "gtkpsfont.h"
 
 #define FONTCACHE_SIZE 17
 #define NUM_X11_FONTS 2
 
-
-static GtkPSFont font_data[] = 
+static GtkPSFont font_data[] =
 {
   { "Times-Roman",
     "Times-Roman",
     "Times-Roman",
-    "times, Medium",
+    "Nimbus Roman No9 L, Regular",
     NULL,
     FALSE, FALSE
-  }, 
+  },
   { "Times-Italic",
     "Times-Italic",
     "Times-Roman",
-    "times, Medium Italic",
+    "Nimbus Roman No9 L, Italic",
     NULL,
     TRUE, FALSE
-  }, 
+  },
   { "Times-Bold",
     "Times-Bold",
     "Times-Roman",
-    "times, Bold",
+    "Nimbus Roman No9 L, Bold",
     NULL,
     FALSE, TRUE
-  }, 
+  },
   { "Times-BoldItalic",
     "Times-BoldItalic",
     "Times-Roman",
-    "times, Bold Italic",
+    "Nimbus Roman No9 L, Bold Italic",
     NULL,
     TRUE, TRUE
-  }, 
+  },
   { "AvantGarde-Book",
     "AvantGarde-Book",
     "AvantGarde",
-    "avantgarde",
+    "URW Gothic L, Book",
     NULL,
     FALSE, FALSE
   },
   { "AvantGarde-BookOblique",
     "AvantGarde-BookOblique",
     "AvantGarde",
-    "avantgarde, Oblique",
+    "URW Gothic L, Book Oblique",
     NULL,
     TRUE, FALSE
   },
   { "AvantGarde-Demi",
     "AvantGarde-Demi",
     "AvantGarde",
-    "avantgarde, Semi-Bold",
+    "URW Gothic L, Demi",
     NULL,
     FALSE, TRUE
   },
   { "AvantGarde-DemiOblique",
     "AvantGarde-DemiOblique",
     "AvantGarde",
-    "avantgarde, Semi-Bold Oblique",
+    "URW Gothic L, Demi Oblique",
     NULL,
     TRUE, TRUE
   },
   { "Bookman-Light",
     "Bookman-Light",
     "Bookman",
-    "bookman",
+    "URW Bookman L, Light",
     NULL,
     FALSE, FALSE
   },
   { "Bookman-LightItalic",
     "Bookman-LightItalic",
     "Bookman",
-    "bookman, Light Italic",
+    "URW Bookman L, Light Italic",
     NULL,
     TRUE, FALSE
   },
   { "Bookman-Demi",
     "Bookman-Demi",
     "Bookman",
-    "bookman, Semi-Bold", 
+    "URW Bookman L, Demi Bold",
     NULL,
     FALSE, TRUE
   },
   { "Bookman-DemiItalic",
     "Bookman-DemiItalic",
     "Bookman",
-    "bookman, Semi-Bold Italic", 
+    "URW Bookman L, Demi Bold Italic",
     NULL,
     TRUE, TRUE
   },
   { "Courier",
     "Courier",
     "Courier",
-    "courier",
+    "Nimbus Mono L, Regular",
     NULL,
     FALSE, FALSE
   },
   { "Courier-Oblique",
     "Courier-Oblique",
     "Courier",
-    "courier, Italic",
+    "Nimbus Mono L, Regular Oblique",
     NULL,
     TRUE, FALSE
   },
   { "Courier-Bold",
     "Courier-Bold",
     "Courier",
-    "courier, Bold",
+    "Nimbus Mono L, Bold",
     NULL,
     FALSE, TRUE
   },
   { "Courier-BoldOblique",
     "Courier-BoldOblique",
     "Courier",
-    "courier, Bold Oblique",
+    "Nimbus Mono L, Bold Oblique",
     NULL,
     TRUE, TRUE
   },
   { "Helvetica",
     "Helvetica",
     "Helvetica",
-    "helvetica, Medium",
+    "Nimbus Sans L, Regular",
     NULL,
     FALSE, FALSE
   },
   { "Helvetica-Oblique",
     "Helvetica-Oblique",
     "Helvetica",
-    "helvetica, Medium Oblique",
+    "Nimbus Sans L, Regular Italic",
     NULL,
     TRUE, FALSE
   },
   { "Helvetica-Bold",
     "Helvetica-Bold",
     "Helvetica",
-    "helvetica, Bold",
+    "Nimbus Sans L, Bold",
     NULL,
     FALSE, TRUE
   },
   { "Helvetica-BoldOblique",
     "Helvetica-BoldOblique",
     "Helvetica",
-    "helvetica, Bold Oblique",
+    "Nimbus Sans L, Bold Italic",
     NULL,
     TRUE, TRUE
   },
   { "Helvetica-Narrow",
     "Helvetica-Narrow",
     "Helvetica-Narrow",
-    "helvetica, Medium Condensed",
+    "Nimbus Sans L, Regular Condensed",
     NULL,
     FALSE, FALSE
   },
   { "Helvetica-Narrow-Oblique",
     "Helvetica-Narrow-Oblique",
     "Helvetica-Narrow",
-    "helvetica, Medium Oblique Condensed",
+    "Nimbus Sans L, Regular Condensed Italic",
     NULL,
     TRUE, FALSE
   },
   { "Helvetica-Narrow-Bold",
     "Helvetica-Narrow-Bold",
     "Helvetica-Narrow",
-    "helvetica, Bold Condensed",
+    "Nimbus Sans L, Bold Condensed",
     NULL,
     FALSE, TRUE
   },
   { "Helvetica-Narrow-BoldOblique",
     "Helvetica-Narrow-BoldOblique",
     "Helvetica-Narrow",
-    "helvetica, Bold Oblique Condensed",
+    "Nimbus Sans L, Bold Condensed Italic",
     NULL,
     TRUE, TRUE
   },
   { "NewCenturySchoolbook-Roman",
     "NewCenturySchlbk-Roman",
     "NewCenturySchlbk",
-    "new century schoolbook, Medium",
+    "Century Schoolbook L, Roman",
     NULL,
     FALSE, FALSE
   },
   { "NewCenturySchoolbook-Italic",
     "NewCenturySchlbk-Italic",
     "NewCenturySchlbk",
-    "new century schoolbook, Medium Italic",
+    "Century Schoolbook L, Italic",
     NULL,
     TRUE, FALSE
   },
   { "NewCenturySchoolbook-Bold",
     "NewCenturySchlbk-Bold",
     "NewCenturySchlbk",
-    "new century schoolbook, Bold",
+    "Century Schoolbook L, Bold",
     NULL,
     FALSE, TRUE
   },
   { "NewCenturySchoolbook-BoldItalic",
     "NewCenturySchlbk-BoldItalic",
     "NewCenturySchlbk",
-    "new century schoolbook, Bold Italic",
+    "Century Schoolbook L, Bold Italic",
     NULL,
     TRUE, TRUE
   },
   { "Palatino-Roman",
     "Palatino-Roman",
     "Palatino",
-    "palatino, Medium",
+    "URW Palladio L, Roman",
     NULL,
     FALSE, FALSE
   },
   { "Palatino-Italic",
     "Palatino-Italic",
     "Palatino",
-    "palatino, Medium Italic",
+    "URW Palladio L, Italic",
     NULL,
     TRUE, FALSE
   },
   { "Palatino-Bold",
     "Palatino-Bold",
     "Palatino",
-    "palatino, Bold",
+    "URW Palladio L, Bold",
     NULL,
     FALSE, TRUE
   },
   { "Palatino-BoldItalic",
     "Palatino-BoldItalic",
     "Palatino",
-    "palatino, Bold Italic",
+    "URW Palladio L, Bold Italic",
     NULL,
     TRUE, TRUE
   },
   { "Symbol",
     "Symbol",
     "Symbol",
-    "symbol",
+    "Standard Symbols L, Regular",
     NULL,
     FALSE, FALSE
   },
   { "ZapfChancery-MediumItalic",
     "ZapfChancery-MediumItalic",
     "ZapfChancery",
-    "zapf chancery, Medium Italic",
+    "URW Chancery L, Medium Italic",
     NULL,
     FALSE, FALSE
   },
   { "ZapfDingbats",
     "ZapfDingbats",
     "ZapfDingbats",
-    "zapf dingbats, Medium",
+    "Dingbats, Regular",
     NULL,
     FALSE, FALSE
   },
 };
+
 
 #define NUM_FONTS (sizeof(font_data)/sizeof(GtkPSFont))
 
@@ -357,6 +358,8 @@ gtk_psfont_unref()
 {
   GList *list;
 
+  if(psfont_refcount <= 0) return;
+
   psfont_refcount--;
 
   if(psfont_refcount > 0) return;
@@ -402,7 +405,6 @@ GdkFont *
 gtk_psfont_get_gdkfont(GtkPSFont *font, gint height)
 {
   PangoFontDescription *font_desc;
-  gchar *font_string;
   GdkFont *gdkfont;
 
   g_return_val_if_fail (font != NULL, NULL);
@@ -415,9 +417,7 @@ gtk_psfont_get_gdkfont(GtkPSFont *font, gint height)
     pango_font_description_free(font_desc);
 
   if (!gdkfont) {
-    font_string = g_strdup_printf("%s %i", default_font, height);
-    font_desc = pango_font_description_from_string(font_string);
-    g_free(font_string);
+    font_desc = gtk_psfont_get_font_description(find_psfont(default_font), height);
     gdkfont = font_desc ? gdk_font_from_description(font_desc) : NULL;
     if (font_desc)
       pango_font_description_free(font_desc);
@@ -435,15 +435,50 @@ gtk_psfont_get_gdkfont(GtkPSFont *font, gint height)
 PangoFontDescription *
 gtk_psfont_get_font_description(GtkPSFont *font, gint height)
 {
-  PangoFontDescription *font_desc, *desc;
-  PangoContext *context = gdk_pango_context_get();
-  PangoFontset *pffontset;
-  PangoFont *pffont;
+  PangoFontDescription *font_desc;
   gchar *font_string;
+  GtkSettings *settings = gtk_settings_get_for_screen(gdk_screen_get_default());
+  GObjectClass *klass;
+  gdouble dpi;
 
   g_return_val_if_fail (font != NULL, NULL);
 
   if (height <= 0) height = 1;
+
+/* Dirty hack to get the correct font size for this device
+http://mail.gnome.org/archives/gtk-i18n-list/2003-August/msg00001.html
+*/
+
+  klass = G_OBJECT_CLASS(GTK_SETTINGS_GET_CLASS(settings));
+/* Check that the properties we're looking at are defined. */
+  if (!g_object_class_find_property(klass, "gtk-xft-dpi")) {
+    dpi = 96.;
+  } else {
+    /* Read the settings. */
+    gint int_dpi;
+    g_object_get(G_OBJECT(settings),
+    	         "gtk-xft-dpi", &int_dpi,
+	         NULL);
+    dpi = int_dpi / PANGO_SCALE;
+  }
+
+/*
+{
+    GdkScreen *screen = gdk_screen_get_default ();
+    FcPattern *pattern;
+
+    pattern = FcPatternCreate();
+    if (pattern)
+      {
+        XftDefaultSubstitute (GDK_SCREEN_XDISPLAY (screen),
+                              GDK_SCREEN_XNUMBER (screen),
+                              pattern);
+        FcPatternGetDouble (pattern, FC_DPI, 0, &dpi); 
+        FcPatternDestroy (pattern);
+      }
+}
+*/
+  height *= 75./dpi;
  
   font_string = g_strdup_printf("%s %i", font->pango_description, height);
   font_desc = pango_font_description_from_string(font_string);
@@ -461,12 +496,20 @@ gtk_psfont_get_font_description(GtkPSFont *font, gint height)
   }
 
   /* Loading via the pango fontset facility means that pango.aliases is used */
+/* This is not working */
+/* It is screwing up the whole thing */
+/*
   if (font_desc) {
+    PangoContext *context = gdk_pango_context_get();
+    PangoFontset *pffontset;
+    PangoFont *pffont;
+
     pffontset = pango_context_load_fontset(context, font_desc,
-      pango_context_get_language(context));
+    pango_context_get_language(context));
     if (pffontset) {
       pffont = pango_fontset_get_font(pffontset, g_utf8_get_char(" "));
       if (pffont) {
+        PangoFontDescription *font_desc;
 	desc = pango_font_describe(pffont);
 	g_object_unref(G_OBJECT(pffont));
 	if (desc) {
@@ -477,7 +520,7 @@ gtk_psfont_get_font_description(GtkPSFont *font, gint height)
       g_object_unref(G_OBJECT(pffontset));
     }
   }
-
+*/
   return font_desc;
 }
 
