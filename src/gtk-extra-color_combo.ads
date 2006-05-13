@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,14 +39,15 @@
 --  child of the button of the combo box ("Add (Get_Button (Combo), Pixmap)"),
 --  and updated it in the handler for this signal.
 --  </description>
+--  <c_version>gtkextra 2.1.1</c_version>
 
 with Gdk.Color;
-with Gtk.Extra.Combo_Box;
+with Gtk.Extra.Combo_Button;
 
 package Gtk.Extra.Color_Combo is
 
-   type Gtk_Color_Combo_Record is new Gtk.Extra.Combo_Box.Gtk_Combo_Box_Record
-     with private;
+   type Gtk_Color_Combo_Record is
+     new Gtk.Extra.Combo_Button.Gtk_Combo_Button_Record with private;
    type Gtk_Color_Combo is access all Gtk_Color_Combo_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Color_Combo);
@@ -136,7 +137,7 @@ package Gtk.Extra.Color_Combo is
    --  - "changed"
    --  procedure Handler (Color_Combo : access Gtk_Color_Combo_Record'Class;
    --                     Selection   : Gint;
-   --                     Color_Name  : String);
+   --                     Color       : access Gdk.Color.Gdk_Color);
    --
    --  Emitted when the color has selected a new color.
    --  Selection is the number of the selection (this is the total
@@ -144,7 +145,7 @@ package Gtk.Extra.Color_Combo is
    --  </signals>
 
 private
-   type Gtk_Color_Combo_Record is new Gtk.Extra.Combo_Box.Gtk_Combo_Box_Record
-     with null record;
+   type Gtk_Color_Combo_Record is
+     new Gtk.Extra.Combo_Button.Gtk_Combo_Button_Record with null record;
    pragma Import (C, Get_Type, "gtk_color_combo_get_type");
 end Gtk.Extra.Color_Combo;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001-2004                       --
---                         ACT-Europe                                --
+--                     Copyright (C) 2001-2006                       --
+--                         AdaCore                                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,9 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
-
 with Gdk.Color;           use Gdk.Color;
-
 with Gtk;                 use Gtk;
 with Gtk.Extra.Plot;      use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Data; use Gtk.Extra.Plot_Data;
@@ -87,59 +85,59 @@ package body Gtk.Extra.Plot_3D is
       Internal (Get_Object (Plot));
    end Autoscale;
 
-   ---------------------
-   -- Axis_Hide_Title --
-   ---------------------
+   ----------------
+   -- Hide_Title --
+   ----------------
 
-   procedure Axis_Hide_Title
+   procedure Hide_Title
      (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side)
    is
       procedure Internal (Plot : System.Address; Side : Plot_Side);
-      pragma Import (C, Internal, "gtk_plot3d_axis_hide_title");
+      pragma Import (C, Internal, "gtk_plot3d_hide_title");
 
    begin
       Internal (Get_Object (Plot), Side);
-   end Axis_Hide_Title;
+   end Hide_Title;
 
-   --------------------------
-   -- Axis_Set_Major_Ticks --
-   --------------------------
+   ---------------------
+   -- Set_Major_Ticks --
+   ---------------------
 
-   procedure Axis_Set_Major_Ticks
+   procedure Set_Major_Ticks
      (Plot       : access Gtk_Plot_3D_Record;
       Axis       : Plot_Orientation;
       Major_Step : Gdouble)
    is
       procedure Internal
         (Plot : System.Address; Axis : Plot_Orientation; Major_Step : Gdouble);
-      pragma Import (C, Internal, "gtk_plot3d_axis_set_major_ticks");
+      pragma Import (C, Internal, "gtk_plot3d_set_major_ticks");
 
    begin
       Internal (Get_Object (Plot), Axis, Major_Step);
-   end Axis_Set_Major_Ticks;
+   end Set_Major_Ticks;
 
-   --------------------------
-   -- Axis_Set_Minor_Ticks --
-   --------------------------
+   ---------------------
+   -- Set_Minor_Ticks --
+   ---------------------
 
-   procedure Axis_Set_Minor_Ticks
+   procedure Set_Minor_Ticks
      (Plot   : access Gtk_Plot_3D_Record;
       Axis   : Plot_Orientation;
       Nminor : Gint)
    is
       procedure Internal
         (Plot : System.Address; Axis : Plot_Orientation; Nminor : Gint);
-      pragma Import (C, Internal, "gtk_plot3d_axis_set_minor_ticks");
+      pragma Import (C, Internal, "gtk_plot3d_set_minor_ticks");
 
    begin
       Internal (Get_Object (Plot), Axis, Nminor);
-   end Axis_Set_Minor_Ticks;
+   end Set_Minor_Ticks;
 
-   --------------------
-   -- Axis_Set_Ticks --
-   --------------------
+   ---------------
+   -- Set_Ticks --
+   ---------------
 
-   procedure Axis_Set_Ticks
+   procedure Set_Ticks
      (Plot       : access Gtk_Plot_3D_Record;
       Axis       : Plot_Orientation;
       Major_Step : Gdouble;
@@ -150,102 +148,65 @@ package body Gtk.Extra.Plot_3D is
          Axis       : Plot_Orientation;
          Major_Step : Gdouble;
          Nminor     : Gint);
-      pragma Import (C, Internal, "gtk_plot3d_axis_set_ticks");
+      pragma Import (C, Internal, "gtk_plot3d_set_ticks");
 
    begin
       Internal
         (Get_Object (Plot), Axis, Major_Step, Nminor);
-   end Axis_Set_Ticks;
+   end Set_Ticks;
 
-   ---------------------------
-   -- Axis_Set_Ticks_Length --
-   ---------------------------
+   ----------------------
+   -- Set_Ticks_Length --
+   ----------------------
 
-   procedure Axis_Set_Ticks_Length
+   procedure Set_Ticks_Length
      (Plot : access Gtk_Plot_3D_Record; Axis : Plot_Orientation; Length : Gint)
    is
       procedure Internal
         (Plot : System.Address; Axis : Plot_Orientation; Length : Gint);
-      pragma Import (C, Internal, "gtk_plot3d_axis_set_ticks_length");
+      pragma Import (C, Internal, "gtk_plot3d_set_ticks_length");
 
    begin
       Internal (Get_Object (Plot), Axis, Length);
-   end Axis_Set_Ticks_Length;
+   end Set_Ticks_Length;
 
-   --------------------------
-   -- Axis_Set_Ticks_Width --
-   --------------------------
+   ---------------------
+   -- Set_Ticks_Width --
+   ---------------------
 
-   procedure Axis_Set_Ticks_Width
+   procedure Set_Ticks_Width
      (Plot  : access Gtk_Plot_3D_Record;
       Axis  : Plot_Orientation;
       Width : Gfloat)
    is
       procedure Internal
         (Plot : System.Address; Axis : Plot_Orientation; Width : Gfloat);
-      pragma Import (C, Internal, "gtk_plot3d_axis_set_ticks_width");
+      pragma Import (C, Internal, "gtk_plot3d_set_ticks_width");
 
    begin
       Internal (Get_Object (Plot), Axis, Width);
-   end Axis_Set_Ticks_Width;
+   end Set_Ticks_Width;
 
-   ----------------------
-   -- Axis_Show_Labels --
-   ----------------------
+   -----------------
+   -- Show_Labels --
+   -----------------
 
-   procedure Axis_Show_Labels
+   procedure Show_Labels
      (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side; Label_Mask : Gint)
    is
       procedure Internal
         (Plot : System.Address; Side : Plot_Side;  Label_Mask : Gint);
-      pragma Import (C, Internal, "gtk_plot3d_axis_show_labels");
+      pragma Import (C, Internal, "gtk_plot3d_show_labels");
 
    begin
       Internal (Get_Object (Plot), Side, Label_Mask);
-   end Axis_Show_Labels;
+   end Show_Labels;
 
-   ---------------------------
-   -- Axis_Show_Major_Ticks --
-   ---------------------------
+   ----------------
+   -- Show_Ticks --
+   ----------------
 
-   procedure Axis_Show_Major_Ticks
-     (Plot : access Gtk_Plot_3D_Record;
-      Side       : Plot_Side;
-      Ticks_Mask : Plot_Ticks_Pos)
-   is
-      procedure Internal
-        (Plot       : System.Address;
-         Side       : Plot_Side;
-         Ticks_Mask : Plot_Ticks_Pos);
-      pragma Import (C, Internal, "gtk_plot3d_axis_show_major_ticks");
-
-   begin
-      Internal (Get_Object (Plot), Side, Ticks_Mask);
-   end Axis_Show_Major_Ticks;
-
-   ---------------------------
-   -- Axis_Show_Minor_Ticks --
-   ---------------------------
-
-   procedure Axis_Show_Minor_Ticks
-     (Plot       : access Gtk_Plot_3D_Record;
-      Side       : Plot_Side;
-      Ticks_Mask : Plot_Ticks_Pos)
-   is
-      procedure Internal
-        (Plot       : System.Address;
-         Side       : Plot_Side;
-         Ticks_Mask : Plot_Ticks_Pos);
-      pragma Import (C, Internal, "gtk_plot3d_axis_show_minor_ticks");
-   begin
-      Internal (Get_Object (Plot), Side, Ticks_Mask);
-   end Axis_Show_Minor_Ticks;
-
-   ---------------------
-   -- Axis_Show_Ticks --
-   ---------------------
-
-   procedure Axis_Show_Ticks
+   procedure Show_Ticks
      (Plot       : access Gtk_Plot_3D_Record;
       Side       : Plot_Side;
       Major_Mask : Plot_Ticks_Pos;
@@ -256,26 +217,26 @@ package body Gtk.Extra.Plot_3D is
          Side       : Plot_Side;
          Major_Mask : Plot_Ticks_Pos;
          Minor_Mask : Plot_Ticks_Pos);
-      pragma Import (C, Internal, "gtk_plot3d_axis_show_ticks");
+      pragma Import (C, Internal, "gtk_plot3d_show_ticks");
 
    begin
       Internal
         (Get_Object (Plot), Side, Major_Mask, Minor_Mask);
-   end Axis_Show_Ticks;
+   end Show_Ticks;
 
-   ---------------------
-   -- Axis_Show_Title --
-   ---------------------
+   ----------------
+   -- Show_Title --
+   ----------------
 
-   procedure Axis_Show_Title
+   procedure Show_Title
      (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side)
    is
       procedure Internal (Plot : System.Address; Side : Plot_Side);
-      pragma Import (C, Internal, "gtk_plot3d_axis_show_title");
+      pragma Import (C, Internal, "gtk_plot3d_show_title");
 
    begin
       Internal (Get_Object (Plot), Side);
-   end Axis_Show_Title;
+   end Show_Title;
 
    ---------------------------
    -- Corner_Get_Attributes --
@@ -856,39 +817,39 @@ package body Gtk.Extra.Plot_3D is
       Internal (Get_Object (Plot), Min,  Max);
    end Set_Zrange;
 
-   --------------------
-   -- Axis_Set_Scale --
-   --------------------
+   ---------------
+   -- Set_Scale --
+   ---------------
 
-   procedure Axis_Set_Scale
+   procedure Set_Scale
      (Plot  : access Gtk_Plot_3D_Record;
-      Axis  : Gtk.Extra.Plot.Plot_Orientation;
-      Scale : Gtk.Extra.Plot.Plot_Scale)
+      Axis  : Plot_Orientation;
+      Scale : Plot_Scale)
    is
       procedure Internal
-        (Plot : System.Address;
-         Axis : Plot_Orientation;
-         Scale : Gtk.Extra.Plot.Plot_Scale);
-      pragma Import (C, Internal, "gtk_plot3d_axis_set_scale");
+        (Plot  : System.Address;
+         Axis  : Plot_Orientation;
+         Scale : Plot_Scale);
+      pragma Import (C, Internal, "gtk_plot3d_set_scale");
    begin
       Internal (Get_Object (Plot), Axis, Scale);
-   end Axis_Set_Scale;
+   end Set_Scale;
 
-   --------------------
-   -- Axis_Get_Scale --
-   --------------------
+   ---------------
+   -- Get_Scale --
+   ---------------
 
-   function Axis_Get_Scale
+   function Get_Scale
      (Plot  : access Gtk_Plot_3D_Record;
       Axis  : Gtk.Extra.Plot.Plot_Orientation)
-      return Gtk.Extra.Plot.Plot_Scale
+      return Plot_Scale
    is
       function Internal
         (Plot : System.Address; Axis : Plot_Orientation)
-         return Gtk.Extra.Plot.Plot_Scale;
-      pragma Import (C, Internal, "gtk_plot3d_axis_get_scale");
+         return Plot_Scale;
+      pragma Import (C, Internal, "gtk_plot3d_get_scale");
    begin
       return Internal (Get_Object (Plot), Axis);
-   end Axis_Get_Scale;
+   end Get_Scale;
 
 end Gtk.Extra.Plot_3D;

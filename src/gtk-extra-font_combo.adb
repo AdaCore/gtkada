@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -118,18 +118,18 @@ package body Gtk.Extra.Font_Combo is
       Set_Object (Widget, Internal);
    end Initialize;
 
-   --------------
-   -- Get_Font --
-   --------------
+   -----------------
+   -- Get_GdkFont --
+   -----------------
 
-   function Get_Font
+   function Get_GdkFont
      (Font_Combo : access Gtk_Font_Combo_Record) return Gdk.Font.Gdk_Font
    is
       function Internal (Font_Combo : System.Address) return Gdk.Font.Gdk_Font;
       pragma Import (C, Internal, "gtk_font_combo_get_gdkfont");
    begin
       return Internal (Get_Object (Font_Combo));
-   end Get_Font;
+   end Get_GdkFont;
 
    ---------------------
    -- Get_Font_Height --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,6 +32,8 @@
 --  Instead, if provides postscript support for Gtk_Plot widgets, and can
 --  create a postscript file from any Gtk_Plot widget.
 --  </description>
+--  This is a binding to gtkplotprint.h
+--  <c_version>gtkextra 2.1.1</c_version>
 
 with Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Canvas;  use Gtk.Extra.Plot_Canvas;
@@ -58,10 +60,10 @@ package Gtk.Extra.Plot_Ps is
 
    procedure Plot_Export_Ps
      (Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;
-      Psfile      : in String;
-      Orientation : in Ps_Orientation;
-      Epsflag     : in Boolean;
-      Page_Size   : in Ps_Page_Size);
+      Psfile      : String;
+      Orientation : Ps_Orientation;
+      Epsflag     : Boolean;
+      Page_Size   : Ps_Page_Size);
    --  Create a new postscript file PsFile with the content of Plot.
    --  Epsflag should be true if the generated file should be in
    --  Encapsulated Postscript format instead of simple Postscript.
@@ -104,24 +106,13 @@ package Gtk.Extra.Plot_Ps is
    --  Encapsulated Postscript format instead of simple Postscript.
    --  The page has a custom size.
 
-   --  <doc_ignore>
-   procedure Plot_Layout_Export_Ps
-     (Canvas      : access Gtk_Plot_Canvas_Record'Class;
-      File_Name   : in String;
-      Orientation : in Ps_Orientation;
-      Epsflag     : in Boolean;
-      Page_Size   : in Ps_Page_Size) renames Plot_Canvas_Export_Ps;
-   --  For backward compatibility only.
-
-   procedure Plot_Layout_Export_Ps_With_Size
-     (Canvas      : access Gtk_Plot_Canvas_Record'Class;
-      File_Name   : in String;
-      Orientation : in Ps_Orientation;
-      Epsflag     : in Boolean;
-      Units       : in Ps_Units;
-      Width       : in Gint;
-      Height      : in Gint) renames Plot_Canvas_Export_Ps_With_Size;
-   --  For backward compatibility only.
-   --  </doc_ignore>
+   --  Unbound:
+   --     gtk_plot_ps_get_type
+   --     gtk_plot_ps_new
+   --     gtk_plot_ps_new_with_size
+   --     gtk_plot_ps_construct
+   --     gtk_plot_ps_construct_with_size
+   --     gtk_plot_ps_set_size
+   --     gtk_plot_ps_set_scale
 
 end Gtk.Extra.Plot_Ps;

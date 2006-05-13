@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001-2004                       --
---                         ACT-Europe                                --
+--                     Copyright (C) 2001-2006                       --
+--                         AdaCore                                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +31,7 @@
 --  A special plot that draws its data in three dimension. The data associated
 --  with such plots should either be a function or a Gtk.Extra.Plot_Surface.
 --  </description>
+--  <c_version>gtkextra 2.1.1</c_version>
 
 with Gdk.Color;
 with Gdk.Drawable;
@@ -57,10 +58,6 @@ package Gtk.Extra.Plot_3D is
    Plot_Side_Yz : constant Plot_Side := 2 ** 3;
    Plot_Side_Zx : constant Plot_Side := 2 ** 4;
    Plot_Side_Zy : constant Plot_Side := 2 ** 5;
-
-   type Plot_Vector is record
-      X, Y, Z : Gdouble;
-   end record;
 
    procedure Gtk_New
      (Widget        : out Gtk_Plot_3D;
@@ -102,11 +99,15 @@ package Gtk.Extra.Plot_3D is
    -- Axis --
    ----------
 
-   procedure Axis_Hide_Title
+   procedure Show_Title
+     (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side);
+   --  Show the title associated with the axis.
+
+   procedure Hide_Title
      (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side);
    --  Hide the title associated with the axis.
 
-   procedure Axis_Set_Major_Ticks
+   procedure Set_Major_Ticks
      (Plot       : access Gtk_Plot_3D_Record;
       Axis       : Gtk.Extra.Plot.Plot_Orientation;
       Major_Step : Gdouble);
@@ -114,14 +115,14 @@ package Gtk.Extra.Plot_3D is
    --  This is a percentage value that indicates how many major ticks are
    --  drawn along the axis. See also Axis_Set_Ticks.
 
-   procedure Axis_Set_Minor_Ticks
+   procedure Set_Minor_Ticks
      (Plot   : access Gtk_Plot_3D_Record;
       Axis   : Gtk.Extra.Plot.Plot_Orientation;
       Nminor : Gint);
    --  Modify the number of minor ticks between each major one.
    --  See also Axis_Set_Ticks.
 
-   procedure Axis_Set_Ticks
+   procedure Set_Ticks
      (Plot       : access Gtk_Plot_3D_Record;
       Axis       : Gtk.Extra.Plot.Plot_Orientation;
       Major_Step : Gdouble;
@@ -134,21 +135,21 @@ package Gtk.Extra.Plot_3D is
    --  of 0.2, there will be 5 big ticks drawn along the axis.
    --  Num_Minor is the number of minor ticks between each major one.
 
-   procedure Axis_Set_Ticks_Length
+   procedure Set_Ticks_Length
      (Plot   : access Gtk_Plot_3D_Record;
       Axis   : Gtk.Extra.Plot.Plot_Orientation;
       Length : Gint);
    --  Set the length (in pixels) of the big ticks.
    --  The small ticks will have half this length.
 
-   procedure Axis_Set_Ticks_Width
+   procedure Set_Ticks_Width
      (Plot  : access Gtk_Plot_3D_Record;
       Axis  : Gtk.Extra.Plot.Plot_Orientation;
       Width : Gfloat);
    --  Set the width (in pixels) of the ticks.
    --  This width is common to both the long and short ticks.
 
-   procedure Axis_Show_Labels
+   procedure Show_Labels
      (Plot       : access Gtk_Plot_3D_Record;
       Side       : Plot_Side;
       Label_Mask : Gint);
@@ -157,28 +158,12 @@ package Gtk.Extra.Plot_3D is
    --  Not all values of Labels_Mask are relevant for all axis. For instance,
    --  for a vertical axis, the relevant values are Label_Right and Label_Left.
 
-   procedure Axis_Show_Major_Ticks
-     (Plot       : access Gtk_Plot_3D_Record;
-      Side       : Plot_Side;
-      Ticks_Mask : Gtk.Extra.Plot.Plot_Ticks_Pos);
-   --  Set the style of the major ticks along one of the axis
-
-   procedure Axis_Show_Minor_Ticks
-     (Plot       : access Gtk_Plot_3D_Record;
-      Side       : Plot_Side;
-      Ticks_Mask : Gtk.Extra.Plot.Plot_Ticks_Pos);
-   --  Set the style of the minor ticks along one of the axis
-
-   procedure Axis_Show_Ticks
+   procedure Show_Ticks
      (Plot       : access Gtk_Plot_3D_Record;
       Side       : Plot_Side;
       Major_Mask : Gtk.Extra.Plot.Plot_Ticks_Pos;
       Minor_Mask : Gtk.Extra.Plot.Plot_Ticks_Pos);
    --  Set the style of the ticks.
-
-   procedure Axis_Show_Title
-     (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side);
-   --  Show the title associated with the axis.
 
    function Get_Axis
      (Plot        : access Gtk_Plot_3D_Record;
@@ -191,16 +176,16 @@ package Gtk.Extra.Plot_3D is
       return Gtk.Extra.Plot.Gtk_Plot_Axis;
    --  Get the axis for a specific side.
 
-   procedure Axis_Set_Scale
+   procedure Set_Scale
      (Plot  : access Gtk_Plot_3D_Record;
       Axis  : Gtk.Extra.Plot.Plot_Orientation;
-      Scale : Gtk.Extra.Plot.Plot_Scale);
+      Scale : Gtk.Extra.Plot_Data.Plot_Scale);
    --  Set the scale for the axis
 
-   function Axis_Get_Scale
+   function Get_Scale
      (Plot  : access Gtk_Plot_3D_Record;
       Axis  : Gtk.Extra.Plot.Plot_Orientation)
-      return Gtk.Extra.Plot.Plot_Scale;
+      return Gtk.Extra.Plot_Data.Plot_Scale;
    --  Get the current sale for the axis
 
    ----------
@@ -266,7 +251,7 @@ package Gtk.Extra.Plot_3D is
 
    procedure Rotate_Vector
      (Plot       : access Gtk_Plot_3D_Record;
-      Vector     : Plot_Vector;
+      Vector     : Gtk.Extra.Plot.Plot_Vector;
       A1, A2, A3 : Gdouble);
    --  Rotate Vector along the three axis.
    --  The three angles A1, A2 and A3 are specified in degrees.

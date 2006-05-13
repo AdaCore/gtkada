@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---               Copyright (C) 2001-2006, AdaCore                    --
+--               Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,31 +31,14 @@
 with System;
 with Gdk.Color;           use Gdk.Color;
 with Gtk.Extra.Plot_Data; use Gtk.Extra.Plot_Data;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Extra.Plot_Canvas is
 
-   --------------
-   -- Add_Plot --
-   --------------
-
-   procedure Add_Plot
-      (Plot_Canvas : access Gtk_Plot_Canvas_Record;
-       Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;
-       X           : in Gdouble;
-       Y           : in Gdouble)
-   is
-      procedure Internal
-         (Plot_Canvas : in System.Address;
-          Plot        : in System.Address;
-          X           : in Gdouble;
-          Y           : in Gdouble);
-      pragma Import (C, Internal, "gtk_plot_canvas_add_plot");
-   begin
-      Internal (Get_Object (Plot_Canvas),
-                Get_Object (Plot),
-                X,
-                Y);
-   end Add_Plot;
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  Used to implement an automatic type conversion for objects returned
+   --  from C.
 
    -------------------
    -- Cancel_Action --
@@ -68,55 +51,6 @@ package body Gtk.Extra.Plot_Canvas is
    begin
       Internal (Get_Object (Plot_Canvas));
    end Cancel_Action;
-
-   ------------------------
-   -- Get_Active_Data --
-   ------------------------
-
-   function Get_Active_Data (Canvas : access Gtk_Plot_Canvas_Record)
-      return Gtk_Plot_Data
-   is
-      function Internal (Canvas : in System.Address) return Gtk_Plot_Data;
-      pragma Import (C, Internal, "gtk_plot_canvas_get_active_data");
-   begin
-      return Internal (Get_Object (Canvas));
-   end Get_Active_Data;
-
-   ---------------------
-   -- Get_Active_Plot --
-   ---------------------
-
-   function Get_Active_Plot (Canvas : access Gtk_Plot_Canvas_Record)
-                             return      Gtk.Extra.Plot.Gtk_Plot
-   is
-      function Internal (Canvas : in System.Address)
-                         return      System.Address;
-      pragma Import (C, Internal, "gtk_plot_canvas_get_active_plot");
-      Stub : Gtk.Extra.Plot.Gtk_Plot_Record;
-   begin
-      return Gtk.Extra.Plot.Gtk_Plot
-        (Get_User_Data (Internal (Get_Object (Canvas)), Stub));
-   end Get_Active_Plot;
-
-   ----------------------
-   -- Get_Active_Point --
-   ----------------------
-
-   procedure Get_Active_Point (Canvas : access Gtk_Plot_Canvas_Record;
-                               X      : out Gdouble;
-                               Y      : out Gdouble;
-                               Index  : out Gint)
-   is
-      function Internal (Canvas : in System.Address;
-                         X      : System.Address;
-                         Y      : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_plot_canvas_get_active_point");
-      X2, Y2 : aliased Gdouble;
-   begin
-      Index := Internal (Get_Object (Canvas), X2'Address, Y2'Address);
-      X := X2;
-      Y := Y2;
-   end Get_Active_Point;
 
    -------------
    -- Gtk_New --
@@ -151,21 +85,6 @@ package body Gtk.Extra.Plot_Canvas is
    begin
       Set_Object (Widget, Internal (Width, Height, Magnification));
    end Initialize;
-
-   ---------------------
-   -- Set_Active_Plot --
-   ---------------------
-
-   procedure Set_Active_Plot
-     (Plot_Canvas : access Gtk_Plot_Canvas_Record;
-      Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class)
-   is
-      procedure Internal (Plot_Canvas : in System.Address;
-                          Plot        : in System.Address);
-      pragma Import (C, Internal, "gtk_plot_canvas_set_active_plot");
-   begin
-      Internal (Get_Object (Plot_Canvas), Get_Object (Plot));
-   end Set_Active_Plot;
 
    -----------------------------
    -- Plot_Canvas_Flag_Is_Set --
@@ -259,10 +178,12 @@ package body Gtk.Extra.Plot_Canvas is
    function Get_Active_Item (Canvas  : access Gtk_Plot_Canvas_Record)
                             return Gtk_Plot_Canvas_Child
    is
-      function Internal (Canvas : System.Address) return Gtk_Plot_Canvas_Child;
+      function Internal (Canvas : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_plot_canvas_get_active_item");
+      Stub : Gtk_Plot_Canvas_Child_Record;
    begin
-      return Internal (Get_Object (Canvas));
+      return Gtk_Plot_Canvas_Child
+        (Get_User_Data (Internal (Get_Object (Canvas)), Stub));
    end Get_Active_Item;
 
    ----------------------
@@ -270,7 +191,7 @@ package body Gtk.Extra.Plot_Canvas is
    ----------------------
 
    procedure Grid_Set_Visible (Canvas  : access Gtk_Plot_Canvas_Record;
-                               Visible : in Boolean)
+                               Visible : Boolean)
    is
       procedure Internal (Canvas  : System.Address;
                           Visible : Gint);
@@ -284,10 +205,10 @@ package body Gtk.Extra.Plot_Canvas is
    -------------------
 
    procedure Grid_Set_Step (Canvas : access Gtk_Plot_Canvas_Record;
-                            Step   : in Gint)
+                            Step   : Gdouble)
    is
       procedure Internal (Canvas : System.Address;
-                          Step   : Gint);
+                          Step   : Gdouble);
       pragma Import (C, Internal, "gtk_plot_canvas_grid_set_step");
    begin
       Internal (Get_Object (Canvas), Step);
@@ -360,8 +281,8 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Get_Pixel
      (Canvas : access Gtk_Plot_Canvas_Record;
-      Px     : in Gdouble;
-      Py     : in Gdouble;
+      Px     : Gdouble;
+      Py     : Gdouble;
       X      : out Gint;
       Y      : out Gint)
    is
@@ -381,15 +302,15 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Get_Position
       (Canvas : access Gtk_Plot_Canvas_Record;
-       X      : in Gint;
-       Y      : in Gint;
+       X      : Gint;
+       Y      : Gint;
        Px     : out Gdouble;
        Py     : out Gdouble)
    is
       procedure Internal
-         (Canvas : in System.Address;
-          X      : in Gint;
-          Y      : in Gint;
+         (Canvas : System.Address;
+          X      : Gint;
+          Y      : Gint;
           Px     : out Gdouble;
           Py     : out Gdouble);
       pragma Import (C, Internal, "gtk_plot_canvas_get_position");
@@ -397,325 +318,25 @@ package body Gtk.Extra.Plot_Canvas is
       Internal (Get_Object (Canvas), X, Y, Px, Py);
    end Get_Position;
 
-   --------------
-   -- Put_Text --
-   --------------
-
-   function Put_Text
-     (Canvas        : access Gtk_Plot_Canvas_Record;
-      X             : in Gdouble;
-      Y             : in Gdouble;
-      Ps_Font       : in String;
-      Height        : in Gint;
-      Angle         : in Gint;
-      Fg            : in Gdk.Color.Gdk_Color;
-      Bg            : in Gdk.Color.Gdk_Color;
-      Transparent   : in Boolean;
-      Justification : in Gtk.Enums.Gtk_Justification;
-      Text          : in String) return Gtk_Plot_Canvas_Child
-   is
-      function Internal
-        (Canvas        : System.Address;
-         X             : Gdouble;
-         Y             : Gdouble;
-         Font          : String;
-         Height        : Gint;
-         Angle         : Gint;
-         Fg            : System.Address;
-         Bg            : System.Address;
-         Transparent   : Gint;
-         Justification : Gtk.Enums.Gtk_Justification;
-         Text          : String) return Gtk_Plot_Canvas_Child;
-      pragma Import (C, Internal, "gtk_plot_canvas_put_text");
-
-      use type Gdk.Color.Gdk_Color;
-
-      Fg_C : aliased Gdk.Color.Gdk_Color := Fg;
-      F : System.Address := Fg_C'Address;
-      Bg_C : aliased Gdk.Color.Gdk_Color := Bg;
-      B : System.Address := Bg_C'Address;
-
-   begin
-      if Fg = Gdk.Color.Null_Color then
-         F := System.Null_Address;
-      end if;
-
-      if Bg = Gdk.Color.Null_Color then
-         B := System.Null_Address;
-      end if;
-
-      return Internal
-        (Get_Object (Canvas), X, Y, Ps_Font & ASCII.NUL, Height, Angle,
-         F, B, Boolean'Pos (Transparent),
-         Justification, Text & ASCII.NUL);
-   end Put_Text;
-
-   --------------
-   -- Put_Line --
-   --------------
-
-   function Put_Line
-     (Canvas     : access Gtk_Plot_Canvas_Record;
-      X1         : Gdouble;
-      Y1         : Gdouble;
-      X2         : Gdouble;
-      Y2         : Gdouble;
-      Style      : Plot_Line_Style;
-      Width      : Gfloat;
-      Color      : Gdk.Color.Gdk_Color;
-      Arrow_Mask : Plot_Canvas_Arrow) return Gtk_Plot_Canvas_Child
-   is
-      function Internal
-        (Canvas     : System.Address;
-         X1         : Gdouble;
-         Y1         : Gdouble;
-         X2         : Gdouble;
-         Y2         : Gdouble;
-         Style      : Plot_Line_Style;
-         Width      : Gfloat;
-         Color      : System.Address;
-         Arrow_Mask : Plot_Canvas_Arrow) return Gtk_Plot_Canvas_Child;
-      pragma Import (C, Internal, "gtk_plot_canvas_put_line");
-
-      Col  : aliased Gdk.Color.Gdk_Color := Color;
-      Cola : System.Address := Col'Address;
-
-   begin
-      if Color = Gdk.Color.Null_Color then
-         Cola := System.Null_Address;
-      end if;
-
-      return Internal
-        (Get_Object (Canvas), X1, Y1, X2, Y2, Style, Width, Cola, Arrow_Mask);
-   end Put_Line;
-
-   -------------------
-   -- Put_Rectangle --
-   -------------------
-
-   function Put_Rectangle
-     (Canvas     : access Gtk_Plot_Canvas_Record;
-      X1         : Gdouble;
-      Y1         : Gdouble;
-      X2         : Gdouble;
-      Y2         : Gdouble;
-      Style      : Plot_Line_Style;
-      Width      : Gfloat;
-      Fg         : Gdk.Color.Gdk_Color;
-      Bg         : Gdk.Color.Gdk_Color;
-      Border     : Gtk.Extra.Plot.Plot_Border_Style;
-      Fill       : Boolean := False) return Gtk_Plot_Canvas_Child
-   is
-      function Internal
-        (Canvas     : System.Address;
-         X1         : Gdouble;
-         Y1         : Gdouble;
-         X2         : Gdouble;
-         Y2         : Gdouble;
-         Style      : Plot_Line_Style;
-         Width      : Gfloat;
-         Fg         : System.Address;
-         Bg         : System.Address;
-         Border     : Gtk.Extra.Plot.Plot_Border_Style;
-         Fill       : Gint) return Gtk_Plot_Canvas_Child;
-      pragma Import (C, Internal, "gtk_plot_canvas_put_rectangle");
-
-      Fore : aliased Gdk.Color.Gdk_Color := Fg;
-      Fga  : System.Address := Fore'Address;
-      Back : aliased Gdk.Color.Gdk_Color := Bg;
-      Bga  : System.Address := Back'Address;
-
-   begin
-      if Fg = Gdk.Color.Null_Color then
-         Fga := System.Null_Address;
-      end if;
-
-      if Bg = Gdk.Color.Null_Color then
-         Bga := System.Null_Address;
-      end if;
-
-      return Internal
-        (Get_Object (Canvas), X1, Y1, X2, Y2, Style,
-         Width, Fga, Bga, Border, Boolean'Pos (Fill));
-   end Put_Rectangle;
-
-   -----------------
-   -- Put_Ellipse --
-   -----------------
-
-   function Put_Ellipse
-     (Canvas     : access Gtk_Plot_Canvas_Record;
-      X1         : Gdouble;
-      Y1         : Gdouble;
-      X2         : Gdouble;
-      Y2         : Gdouble;
-      Style      : Plot_Line_Style;
-      Width      : Gfloat;
-      Fg         : Gdk.Color.Gdk_Color;
-      Bg         : Gdk.Color.Gdk_Color;
-      Fill       : Boolean := False) return Gtk_Plot_Canvas_Child
-   is
-      function Internal
-        (Canvas     : System.Address;
-         X1         : Gdouble;
-         Y1         : Gdouble;
-         X2         : Gdouble;
-         Y2         : Gdouble;
-         Style      : Plot_Line_Style;
-         Width      : Gfloat;
-         Fg         : System.Address;
-         Bg         : System.Address;
-         Fill       : Gint) return Gtk_Plot_Canvas_Child;
-      pragma Import (C, Internal, "gtk_plot_canvas_put_ellipse");
-
-      Fore : aliased Gdk.Color.Gdk_Color := Fg;
-      Fga  : System.Address := Fore'Address;
-      Back : aliased Gdk.Color.Gdk_Color := Bg;
-      Bga  : System.Address := Back'Address;
-
-   begin
-      if Fg = Gdk.Color.Null_Color then
-         Fga := System.Null_Address;
-      end if;
-
-      if Bg = Gdk.Color.Null_Color then
-         Bga := System.Null_Address;
-      end if;
-
-      return Internal
-        (Get_Object (Canvas), X1, Y1, X2, Y2, Style,
-         Width, Fga, Bga, Boolean'Pos (Fill));
-   end Put_Ellipse;
-
-   -------------------------
-   -- Line_Set_Attributes --
-   -------------------------
-
-   procedure Line_Set_Attributes
-     (Child : Gtk_Plot_Canvas_Child;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color;
-      Mask  : Plot_Canvas_Arrow)
-   is
-      procedure Internal
-        (Child      : Gtk_Plot_Canvas_Child;
-         Style      : Plot_Line_Style;
-         Width      : Gfloat;
-         Color      : System.Address;
-         Arrow_Mask : Plot_Canvas_Arrow);
-      pragma Import (C, Internal, "gtk_plot_canvas_line_set_attributes");
-
-      Col  : aliased Gdk.Color.Gdk_Color := Color;
-      Cola : System.Address := Col'Address;
-
-   begin
-      if Color = Gdk.Color.Null_Color then
-         Cola := System.Null_Address;
-      end if;
-
-      Internal
-        (Child, Style, Width, Cola, Mask);
-   end Line_Set_Attributes;
-
-   ------------------------------
-   -- Rectangle_Set_Attributes --
-   ------------------------------
-
-   procedure Rectangle_Set_Attributes
-     (Child  : Gtk_Plot_Canvas_Child;
-      Style  : Plot_Line_Style;
-      Width  : Gfloat;
-      Fg     : Gdk.Color.Gdk_Color;
-      Bg     : Gdk.Color.Gdk_Color;
-      Border : Gtk.Extra.Plot.Plot_Border_Style;
-      Fill   : Boolean := False)
-   is
-      procedure Internal
-        (Child      : Gtk_Plot_Canvas_Child;
-         Style      : Plot_Line_Style;
-         Width      : Gfloat;
-         Fg         : System.Address;
-         Bg         : System.Address;
-         Border     : Gtk.Extra.Plot.Plot_Border_Style;
-         Fill       : Gint);
-      pragma Import (C, Internal, "gtk_plot_canvas_rectangle_set_attributes");
-
-      Fore : aliased Gdk.Color.Gdk_Color := Fg;
-      Fga  : System.Address := Fore'Address;
-      Back : aliased Gdk.Color.Gdk_Color := Bg;
-      Bga  : System.Address := Back'Address;
-
-   begin
-      if Fg = Gdk.Color.Null_Color then
-         Fga := System.Null_Address;
-      end if;
-
-      if Bg = Gdk.Color.Null_Color then
-         Bga := System.Null_Address;
-      end if;
-
-      Internal
-        (Child, Style, Width, Fga, Bga, Border, Boolean'Pos (Fill));
-   end Rectangle_Set_Attributes;
-
-   ---------------------------
-   -- Ellipse_Set_Attributes --
-   ---------------------------
-
-   procedure Ellipse_Set_Attributes
-     (Child  : Gtk_Plot_Canvas_Child;
-      Style  : Plot_Line_Style;
-      Width  : Gfloat;
-      Fg     : Gdk.Color.Gdk_Color;
-      Bg     : Gdk.Color.Gdk_Color;
-      Fill   : Boolean := False)
-   is
-      procedure Internal
-        (Child      : Gtk_Plot_Canvas_Child;
-         Style      : Plot_Line_Style;
-         Width      : Gfloat;
-         Fg         : System.Address;
-         Bg         : System.Address;
-         Fill       : Gint);
-      pragma Import (C, Internal, "gtk_plot_canvas_ellipse_set_attributes");
-
-      Fore : aliased Gdk.Color.Gdk_Color := Fg;
-      Fga  : System.Address := Fore'Address;
-      Back : aliased Gdk.Color.Gdk_Color := Bg;
-      Bga  : System.Address := Back'Address;
-
-   begin
-      if Fg = Gdk.Color.Null_Color then
-         Fga := System.Null_Address;
-      end if;
-
-      if Bg = Gdk.Color.Null_Color then
-         Bga := System.Null_Address;
-      end if;
-
-      Internal (Child, Style, Width, Fga, Bga, Boolean'Pos (Fill));
-   end Ellipse_Set_Attributes;
-
    ---------------
    -- Put_Child --
    ---------------
 
    procedure Put_Child
      (Canvas : access Gtk_Plot_Canvas_Record;
-      Child  : Gtk_Plot_Canvas_Child;
+      Child  : access Gtk_Plot_Canvas_Child_Record'Class;
       X1     : Gdouble;
       Y1     : Gdouble;
-      X2     : Gdouble;
-      Y2     : Gdouble)
+      X2     : Gdouble := 0.0;
+      Y2     : Gdouble := 0.0)
    is
       procedure Internal
         (Canvas : System.Address;
-         Child  : Gtk_Plot_Canvas_Child;
+         Child  : System.Address;
          X1, Y1, X2, Y2 : Gdouble);
       pragma Import (C, Internal, "gtk_plot_canvas_put_child");
    begin
-      Internal (Get_Object (Canvas), Child, X1, Y1, X2, Y2);
+      Internal (Get_Object (Canvas), Get_Object (Child), X1, Y1, X2, Y2);
    end Put_Child;
 
    ----------------
@@ -724,17 +345,17 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Child_Move
      (Canvas : access Gtk_Plot_Canvas_Record;
-      Child  : Gtk_Plot_Canvas_Child;
+      Child  : access Gtk_Plot_Canvas_Child_Record'Class;
       X1     : Gdouble;
       Y1     : Gdouble)
    is
       procedure Internal
         (Canvas : System.Address;
-         Child  : Gtk_Plot_Canvas_Child;
+         Child  : System.Address;
          X1, Y1 : Gdouble);
       pragma Import (C, Internal, "gtk_plot_canvas_child_move");
    begin
-      Internal (Get_Object (Canvas), Child, X1, Y1);
+      Internal (Get_Object (Canvas), Get_Object (Child), X1, Y1);
    end Child_Move;
 
    -----------------------
@@ -743,7 +364,7 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Child_Move_Resize
      (Canvas : access Gtk_Plot_Canvas_Record;
-      Child  : Gtk_Plot_Canvas_Child;
+      Child  : access Gtk_Plot_Canvas_Child_Record'Class;
       X1     : Gdouble;
       Y1     : Gdouble;
       X2     : Gdouble;
@@ -751,35 +372,12 @@ package body Gtk.Extra.Plot_Canvas is
    is
       procedure Internal
         (Canvas : System.Address;
-         Child  : Gtk_Plot_Canvas_Child;
+         Child  : System.Address;
          X1, Y1, X2, Y2 : Gdouble);
       pragma Import (C, Internal, "gtk_plot_canvas_child_move_resize");
    begin
-      Internal (Get_Object (Canvas), Child, X1, Y1, X2, Y2);
+      Internal (Get_Object (Canvas), Get_Object (Child), X1, Y1, X2, Y2);
    end Child_Move_Resize;
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (Canvas : System.Address) return Gtk_Plot_Canvas is
-      Stub : Gtk_Plot_Canvas_Record;
-   begin
-      return Gtk_Plot_Canvas (Get_User_Data (Canvas, Stub));
-   end Convert;
-
-   ----------------
-   -- Get_Pixmap --
-   ----------------
-
-   function Get_Pixmap (Canvas : access Gtk_Plot_Canvas_Record)
-                       return Gdk.Pixmap.Gdk_Pixmap
-   is
-      function Internal (Canvas : System.Address) return Gdk.Pixmap.Gdk_Pixmap;
-      pragma Import (C, Internal, "ada_gtk_plot_canvas_get_pixmap");
-   begin
-      return Internal (Get_Object (Canvas));
-   end Get_Pixmap;
 
    -----------
    -- Paint --
@@ -846,30 +444,75 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Remove_Child
      (Canvas : access Gtk_Plot_Canvas_Record;
-      Child  : Gtk_Plot_Canvas_Child)
+      Child  : access Gtk_Plot_Canvas_Child_Record'Class)
    is
-      procedure Internal (C : System.Address; Child : Gtk_Plot_Canvas_Child);
+      procedure Internal (C : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_plot_canvas_remove_child");
    begin
-      Internal (Get_Object (Canvas), Child);
+      Internal (Get_Object (Canvas), Get_Object (Child));
    end Remove_Child;
 
-   ----------------
-   -- Put_Pixmap --
-   ----------------
+   -------------------
+   -- Set_Selection --
+   -------------------
 
-   function Put_Pixmap
-     (Canvas     : access Gtk_Plot_Canvas_Record;
-      Pixmap     : Gdk.Pixmap.Gdk_Pixmap;
-      X1, Y1     : Gdouble) return Gtk_Plot_Canvas_Child
+   procedure Set_Selection
+     (Child     : access Gtk_Plot_Canvas_Child_Record;
+      Selection : Plot_Canvas_Selection)
    is
-      function Internal
-        (Canvas : System.Address;
-         Pixmap : Gdk.Gdk_Pixmap;
-         X1, Y1 : Gdouble) return Gtk_Plot_Canvas_Child;
-      pragma Import (C, Internal, "gtk_plot_canvas_put_pixmap");
+      procedure Internal
+        (Child : System.Address; Selection : Plot_Canvas_Selection);
+      pragma Import (C, Internal, "gtk_plot_canvas_child_set_selection");
    begin
-      return Internal (Get_Object (Canvas), Pixmap, X1, Y1);
-   end Put_Pixmap;
+      Internal (Get_Object (Child), Selection);
+   end Set_Selection;
 
+   ------------------------
+   -- Set_Selection_Mode --
+   ------------------------
+
+   procedure Set_Selection_Mode
+     (Child     : access Gtk_Plot_Canvas_Child_Record;
+      Mode      : Plot_Canvas_Selection_Mode)
+   is
+      procedure Internal
+        (Child : System.Address; Selection : Plot_Canvas_Selection_Mode);
+      pragma Import (C, Internal, "gtk_plot_canvas_child_set_selection_mode");
+   begin
+      Internal (Get_Object (Child), Mode);
+   end Set_Selection_Mode;
+
+   ------------------
+   -- Get_Position --
+   ------------------
+
+   procedure Get_Position
+     (Canvas    : access Gtk_Plot_Canvas_Record;
+      Child     : access Gtk_Plot_Canvas_Child_Record'Class;
+      X1, Y1    : out Gdouble;
+      X2, Y2    : out Gdouble)
+   is
+      procedure Internal
+        (Canvas, Child : System.Address;
+         X1, Y1, X2, Y2 : out Gdouble);
+      pragma Import (C, Internal, "gtk_plot_canvas_child_get_position");
+   begin
+      Internal (Get_Object (Canvas), Get_Object (Child), X1, Y1, X2, Y2);
+   end Get_Position;
+
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkPlotCanvasChild" then
+         return new Gtk_Plot_Canvas_Child_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Extra.Plot_Canvas;

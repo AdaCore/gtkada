@@ -1,7 +1,6 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
 --                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,47 +27,47 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Border_Combo is a special kind of combo box that allows the
---  user to select the border to apply to cells in a spreadsheet.
---  Its main usage seems to be with a Gtk_Sheet.
+--  A special kind of child that can be put in a Gtk_Plot_Canvas.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
 
-with Gtk.Extra.Combo_Button;
+with Gdk.Color;
+with Gtk.Enums;
+with Gtk.Extra.Plot_Data;
 
-package Gtk.Extra.Border_Combo is
+package Gtk.Extra.Plot_Canvas.Text is
 
-   type Gtk_Border_Combo_Record is
-     new Gtk.Extra.Combo_Button.Gtk_Combo_Button_Record with private;
-   type Gtk_Border_Combo is access all Gtk_Border_Combo_Record'Class;
+   type Gtk_Plot_Canvas_Text_Record is new Gtk_Plot_Canvas_Child_Record
+     with private;
+   type Gtk_Plot_Canvas_Text is access all Gtk_Plot_Canvas_Text_Record'Class;
 
-   procedure Gtk_New (Widget : out Gtk_Border_Combo);
-   --  Create a new border combo.
-   --  The button contains the currently selected border.
+   procedure Gtk_New
+     (Child    : out Gtk_Plot_Canvas_Text;
+      Text     : String;
+      Font     : String := "";
+      Height   : Gint := 0;
+      Angle    : Gtk.Extra.Plot_Data.Plot_Angle := Gtk.Extra.Plot_Data.Angle_0;
+      Fg       : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Bg            : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Transparent   : Boolean := True;
+      Justification : Gtk.Enums.Gtk_Justification := Gtk.Enums.Justify_Center);
+   --  Create a new text child.
+   --  If default values are used, the corresponding attribute isn't set
 
-   procedure Initialize (Widget : access Gtk_Border_Combo_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   procedure Set_Attributes
+     (Child         : access Gtk_Plot_Canvas_Text_Record;
+      Font          : String := "";
+      Height        : Gint;
+      Angle         : Gtk.Extra.Plot_Data.Plot_Angle;
+      Fg            : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Bg            : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Transparent   : Boolean;
+      Justification : Gtk.Enums.Gtk_Justification;
+      Text          : String);
+   --  Change the attribute of Text. The attributes with their default
+   --  values are not changed.
 
-   function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Border_Combo.
-
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --
-   --  - "changed"
-   --  procedure Handler (Combo : access Gtk_Border_Combo_Record'Class;
-   --                     Selection : Gint);
-   --
-   --  Emitted when a new font has been selected.
-   --  Selection is the number of the selection font.
-   --  </signals>
 private
-   type Gtk_Border_Combo_Record is
-     new Gtk.Extra.Combo_Button.Gtk_Combo_Button_Record with null record;
-   pragma Import (C, Get_Type, "gtk_border_combo_get_type");
-end Gtk.Extra.Border_Combo;
+   type Gtk_Plot_Canvas_Text_Record is new Gtk_Plot_Canvas_Child_Record
+     with null record;
+end Gtk.Extra.Plot_Canvas.Text;

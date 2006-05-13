@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,6 +33,7 @@
 --  It can be used independently, but you should rather use a more general
 --  Gtk_Entry widget.
 --  </description>
+--  <c_version>gtkextra 2.1.1</c_version>
 
 with Gtk.Enums;
 with Gtk.GEntry;
@@ -62,13 +63,13 @@ package Gtk.Extra.Item_Entry is
 
    procedure Set_Justification
      (Item_Entry    : access Gtk_IEntry_Record;
-      Justification : in Gtk.Enums.Gtk_Justification);
+      Justification : Gtk.Enums.Gtk_Justification);
    --  Change the justification of the text in the entry.
 
    procedure Set_Text
      (Item_Entry    : access Gtk_IEntry_Record;
-      Text          : in String;
-      Justification : in Gtk.Enums.Gtk_Justification);
+      Text          : String;
+      Justification : Gtk.Enums.Gtk_Justification);
    --  Change the text in the entry.
 
    procedure Set_Cursor_Visible

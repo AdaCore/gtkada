@@ -186,17 +186,32 @@ package body Gtk.Extra.Sheet is
    ---------------
 
    function Get_Entry
-     (Sheet : access Gtk_Sheet_Record) return Gtk.Widget.Gtk_Widget
+     (Sheet : access Gtk_Sheet_Record) return Gtk.GEntry.Gtk_Entry
    is
       function Internal (Sheet : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_sheet_get_entry");
 
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub : Gtk.GEntry.Gtk_Entry_Record;
+   begin
+      return Gtk.GEntry.Gtk_Entry
+        (Get_User_Data (Internal (Get_Object (Sheet)), Stub));
+   end Get_Entry;
 
+   ----------------------
+   -- Get_Entry_Widget --
+   ----------------------
+
+   function Get_Entry_Widget
+     (Sheet : access Gtk_Sheet_Record) return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Sheet : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_sheet_get_entry_widget");
+
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
       return Gtk.Widget.Gtk_Widget
         (Get_User_Data (Internal (Get_Object (Sheet)), Stub));
-   end Get_Entry;
+   end Get_Entry_Widget;
 
    ---------------
    -- Get_State --
@@ -1523,10 +1538,12 @@ package body Gtk.Extra.Sheet is
       function Internal (Sheet  : in System.Address;
                          Row    : in Gint;
                          Col    : in Gint)
-                        return      Gtk_Sheet_Child;
+                        return System.Address;
       pragma Import (C, Internal, "gtk_sheet_get_child_at");
+      Stub : Gtk_Sheet_Child_Record;
    begin
-      return Internal (Get_Object (Sheet), Row, Col);
+      return Gtk_Sheet_Child
+        (Get_User_Data (Internal (Get_Object (Sheet), Row, Col), Stub));
    end Get_Child_At;
 
    ----------------

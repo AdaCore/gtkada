@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,6 +34,7 @@
 --  screen.
 --  This widget only works with postscript fonts (see Gtk.Extra.PsFont).
 --  </description>
+--  <c_version>gtkextra 2.1.1</c_version>
 
 with Gtk.Toolbar;
 with Gdk.Font;
@@ -55,27 +56,29 @@ package Gtk.Extra.Font_Combo is
    function Get_Type return Guint;
    --  Return the internal value associated with a Gtk_Font_Combo.
 
-   procedure Font_Combo_Select (Font_Combo : access Gtk_Font_Combo_Record;
-                                Family     : in String;
-                                Bold       : in Boolean;
-                                Italic     : in Boolean;
-                                Height     : in Gint);
+   procedure Font_Combo_Select
+     (Font_Combo : access Gtk_Font_Combo_Record;
+      Family     : String;
+      Bold       : Boolean;
+      Italic     : Boolean;
+      Height     : Gint);
    --  Selects a new font
    --  Family is the name of the postscript font.
 
-   procedure Font_Combo_Select_Nth (Font_Combo : access Gtk_Font_Combo_Record;
-                                    N          : in Gint;
-                                    Bold       : in Boolean;
-                                    Italic     : in Boolean;
-                                    Height     : in Gint);
+   procedure Font_Combo_Select_Nth
+     (Font_Combo : access Gtk_Font_Combo_Record;
+      N          : Gint;
+      Bold       : Boolean;
+      Italic     : Boolean;
+      Height     : Gint);
    --  Selects the nth font in the combo box.
 
    function Get_Font_Height
-     (Font_Combo : access Gtk_Font_Combo_Record)  return Glib.Gint;
+     (Font_Combo : access Gtk_Font_Combo_Record) return Glib.Gint;
    --  Return the height of the selected font
 
-   function Get_Font (Font_Combo : access Gtk_Font_Combo_Record)
-                     return Gdk.Font.Gdk_Font;
+   function Get_GdkFont
+     (Font_Combo : access Gtk_Font_Combo_Record) return Gdk.Font.Gdk_Font;
    --  Return the selected font.
 
    function Get_Font_Description
@@ -100,4 +103,7 @@ private
    type Gtk_Font_Combo_Record is new Gtk.Toolbar.Gtk_Toolbar_Record
      with null record;
    pragma Import (C, Get_Type, "gtk_font_combo_get_type");
+
+   --  Unbound:
+   --     gtk_font_combo_get_psfont
 end Gtk.Extra.Font_Combo;

@@ -28,30 +28,55 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Border_Combo is a special kind of combo box that allows the
---  user to select the border to apply to cells in a spreadsheet.
---  Its main usage seems to be with a Gtk_Sheet.
+--  A Gtk_Combo_Button is a general form for a combo box (ie a button
+--  associated with a popup window to select its value).
+--  This widget should be used only if you intend to write your own kind
+--  of combo box. You should look at the following widgets for specific
+--  implementation: Gtk_Combo, Gtk_Color_Combo, Gtk_Border_Combo.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
 
-with Gtk.Extra.Combo_Button;
 
-package Gtk.Extra.Border_Combo is
+with Gtk.Box;
+with Gtk.Button;
+with Gtk.Arrow;
+with Gtk.Frame;
 
-   type Gtk_Border_Combo_Record is
-     new Gtk.Extra.Combo_Button.Gtk_Combo_Button_Record with private;
-   type Gtk_Border_Combo is access all Gtk_Border_Combo_Record'Class;
+package Gtk.Extra.Combo_Button is
 
-   procedure Gtk_New (Widget : out Gtk_Border_Combo);
-   --  Create a new border combo.
-   --  The button contains the currently selected border.
+   type Gtk_Combo_Button_Record is new Gtk.Box.Gtk_Box_Record with private;
+   type Gtk_Combo_Button is access all Gtk_Combo_Button_Record'Class;
 
-   procedure Initialize (Widget : access Gtk_Border_Combo_Record'Class);
+   procedure Gtk_New (Widget : out Gtk_Combo_Button);
+   --  Create a new combo box.
+   --  This creates all the internal subwidgets (the popup window,...) but
+   --  this is your responsibility to put something inside the button or
+   --  the popup window.
+
+   procedure Initialize (Widget : access Gtk_Combo_Button_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Border_Combo.
+   --  Return the internal value associated with a Gtk_Combo_Box.
+
+   procedure Hide_Popdown_Window (Combo : access Gtk_Combo_Button_Record);
+   --  Hide the popup window, release the mouse grabs, and restore the
+   --  default aspect for the arrow.
+
+   function Get_Button
+     (Combo : access Gtk_Combo_Button_Record) return Gtk.Button.Gtk_Button;
+   --  Return the button that shows the value of the combo.
+
+   function Get_Arrow
+     (Combo : access Gtk_Combo_Button_Record) return Gtk.Arrow.Gtk_Arrow;
+   --  Return the arrow button.
+   --  The user has to click on it to open the popup window.
+
+   function Get_Frame
+     (Combo : access Gtk_Combo_Button_Record) return Gtk.Frame.Gtk_Frame;
+   --  The frame displayed in the popup window.
+   --  You should add whatever value the popup window should display in it.
 
    -------------
    -- Signals --
@@ -59,16 +84,9 @@ package Gtk.Extra.Border_Combo is
 
    --  <signals>
    --  The following new signals are defined for this widget:
-   --
-   --  - "changed"
-   --  procedure Handler (Combo : access Gtk_Border_Combo_Record'Class;
-   --                     Selection : Gint);
-   --
-   --  Emitted when a new font has been selected.
-   --  Selection is the number of the selection font.
    --  </signals>
+
 private
-   type Gtk_Border_Combo_Record is
-     new Gtk.Extra.Combo_Button.Gtk_Combo_Button_Record with null record;
-   pragma Import (C, Get_Type, "gtk_border_combo_get_type");
-end Gtk.Extra.Border_Combo;
+   type Gtk_Combo_Button_Record is new Gtk.Box.Gtk_Box_Record with null record;
+   pragma Import (C, Get_Type, "gtk_combo_button_get_type");
+end Gtk.Extra.Combo_Button;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2005 AdaCore                    --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,10 +31,12 @@
 --  A Gtk_Sheet is a table like the one you can find in most spreadsheets.
 --  Each cell can contain some text or any kind of widgets.
 --  </description>
+--  <c_version>gtkextra 2.1.1</c_version>
 
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums;       use Gtk.Enums;
+with Gtk.GEntry;
 with Gdk.Rectangle;
 with Gdk.Color;
 with Gdk.GC;
@@ -58,7 +60,9 @@ package Gtk.Extra.Sheet is
    --  its lower-right cell.
    --  Most operations below apply to such ranges.
 
-   type Gtk_Sheet_Child is new Gdk.C_Proxy;
+   type Gtk_Sheet_Child_Record is
+     new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Sheet_Child is access all Gtk_Sheet_Child_Record'Class;
    --  A widget insert in the sheet.
    --  This structure includes both a widget pointer and the position in the
    --  table in which it is put.
@@ -105,29 +109,32 @@ package Gtk.Extra.Sheet is
    -- Creation and modification --
    -------------------------------
 
-   procedure Gtk_New (Sheet      : out Gtk_Sheet;
-                      Rows       : in Guint;
-                      Columns    : in Guint;
-                      Title      : in UTF8_String := "";
-                      Entry_Type : in Gtk_Type := GType_Invalid);
+   procedure Gtk_New
+     (Sheet      : out Gtk_Sheet;
+      Rows       : Guint;
+      Columns    : Guint;
+      Title      : UTF8_String := "";
+      Entry_Type : Gtk_Type := GType_Invalid);
    --  Create a new sheet with a specific number of rows and columns.
    --  You can fully specify which type the entry used to modify the value of
    --  cells should have. The value of Entry_Type can be found by using one
    --  of the Get_Type subprograms in the GtkAda packages.
    --  The Title is internal, and does not appear on the screen.
 
-   procedure Initialize (Sheet      : access Gtk_Sheet_Record'Class;
-                         Rows       : in Guint;
-                         Columns    : in Guint;
-                         Title      : in UTF8_String := "";
-                         Entry_Type : in Gtk_Type := GType_Invalid);
+   procedure Initialize
+     (Sheet      : access Gtk_Sheet_Record'Class;
+      Rows       : Guint;
+      Columns    : Guint;
+      Title      : UTF8_String := "";
+      Entry_Type : Gtk_Type := GType_Invalid);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   procedure Gtk_New_Browser (Sheet   : out Gtk_Sheet;
-                              Rows    : in Guint;
-                              Columns : in Guint;
-                              Title   : in UTF8_String := "");
+   procedure Gtk_New_Browser
+     (Sheet   : out Gtk_Sheet;
+      Rows    : Guint;
+      Columns : Guint;
+      Title   : UTF8_String := "");
    --  Create a new sheet browser with a specific number of rows and columns.
    --  This is a standard Gtk_Sheet, except that it is read-only and that its
    --  cells will automatically resize themselves depending on their contents.
@@ -154,25 +161,35 @@ package Gtk.Extra.Sheet is
    --  Change the vertical adjustment.
    --  It indicates what range of rows is visible.
 
-   function Get_Vadjustment (Sheet  : access Gtk_Sheet_Record)
-                            return      Gtk.Adjustment.Gtk_Adjustment;
+   function Get_Vadjustment
+     (Sheet  : access Gtk_Sheet_Record)
+      return      Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment used to indicate the range of visible rows.
 
-   function Get_Hadjustment (Sheet  : access Gtk_Sheet_Record)
-                            return      Gtk.Adjustment.Gtk_Adjustment;
+   function Get_Hadjustment
+     (Sheet  : access Gtk_Sheet_Record)
+      return      Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment used to indicate the range of visible columns.
 
-   procedure Change_Entry (Sheet      : access Gtk_Sheet_Record;
-                           Entry_Type : in Gtk_Type);
+   procedure Change_Entry
+     (Sheet      : access Gtk_Sheet_Record;
+      Entry_Type : Gtk_Type);
    --  Change the type of widget used to interactively modify the value of
    --  the cells.
 
-   function Get_Entry (Sheet : access Gtk_Sheet_Record)
-                      return Gtk.Widget.Gtk_Widget;
+   function Get_Entry
+     (Sheet : access Gtk_Sheet_Record) return Gtk.GEntry.Gtk_Entry;
+   --  Return the entry used to modify the content of the cells.
+   --  This can be the same widget as Get_Entry_Widget, if set, or some default
+   --  widget associated with the specific child otherwise
+
+   function Get_Entry_Widget
+     (Sheet : access Gtk_Sheet_Record) return Gtk.Widget.Gtk_Widget;
    --  Return the entry used to modify the content of the cells.
 
-   procedure Set_Title (Sheet : access Gtk_Sheet_Record;
-                        Title : in UTF8_String);
+   procedure Set_Title
+     (Sheet : access Gtk_Sheet_Record;
+      Title : UTF8_String);
    --  Change the title of the sheet.
 
    procedure Freeze (Sheet : access Gtk_Sheet_Record);
@@ -184,11 +201,12 @@ package Gtk.Extra.Sheet is
    --  Note that you have to call Thaw as many times as you have called
    --  Freeze to actually thaw the widget.
 
-   procedure Moveto (Sheet     : access Gtk_Sheet_Record;
-                     Row       : in Gint;
-                     Column    : in Gint;
-                     Row_Align : in Gfloat;
-                     Col_Align : in Gfloat);
+   procedure Moveto
+     (Sheet     : access Gtk_Sheet_Record;
+      Row       : Gint;
+      Column    : Gint;
+      Row_Align : Gfloat;
+      Col_Align : Gfloat);
    --  Scroll the viewing area to (Row, Column).
    --  (Row_Align, Col_Align) represent the location on the screen that the
    --  cell should appear at. (0.0, 0.0) is at the top-left of the screen,
@@ -214,27 +232,31 @@ package Gtk.Extra.Sheet is
    -- Selection and Clipping --
    ----------------------------
 
-   function Get_State (Sheet  : access Gtk_Sheet_Record) return Sheet_State;
+   function Get_State (Sheet : access Gtk_Sheet_Record) return Sheet_State;
    --  Return the status of the selection in the sheet.
 
    function Get_Range (Sheet : access Gtk_Sheet_Record) return Gtk_Sheet_Range;
    --  Return the selected range.
 
-   procedure Get_Visible_Range (Sheet     : access Gtk_Sheet_Record;
-                                The_Range : out Gtk_Sheet_Range);
+   procedure Get_Visible_Range
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : out Gtk_Sheet_Range);
    --  Return the range visible on the screen.
 
-   procedure Set_Selection_Mode (Sheet : access Gtk_Sheet_Record;
-                                 Mode  : in Gtk.Enums.Gtk_Selection_Mode);
+   procedure Set_Selection_Mode
+     (Sheet : access Gtk_Sheet_Record;
+      Mode  : Gtk.Enums.Gtk_Selection_Mode);
    --  Change the selection mode.
 
-   procedure Select_Column (Sheet  : access Gtk_Sheet_Record;
-                            Column : in Gint);
+   procedure Select_Column
+     (Sheet  : access Gtk_Sheet_Record;
+      Column : Gint);
    --  Replace the current selection with a specific column.
    --  The range is highlighted.
 
-   procedure Select_Row (Sheet : access Gtk_Sheet_Record;
-                         Row   : in Gint);
+   procedure Select_Row
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Gint);
    --  Replace the current selection with a specific row.
    --  The range is highlighted.
 
@@ -278,11 +300,12 @@ package Gtk.Extra.Sheet is
    function Locked (Sheet : access Gtk_Sheet_Record) return Boolean;
    --  Whether cells are currently read-only
 
-   procedure Select_Range (Sheet     : access Gtk_Sheet_Record;
-                           The_Range : in Gtk_Sheet_Range);
+   procedure Select_Range
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : Gtk_Sheet_Range);
    --  Select a new range of cells.
 
-   procedure Unselect_Range (Sheet     : access Gtk_Sheet_Record);
+   procedure Unselect_Range (Sheet : access Gtk_Sheet_Record);
    --  Unselect a specific range of cells.
    --  If null is passed, the current selected range is used.
 
@@ -297,19 +320,21 @@ package Gtk.Extra.Sheet is
    function In_Clip (Sheet : access Gtk_Sheet_Record) return Boolean;
    --  Whether a range was copied to the clipboard
 
-   function Set_Active_Cell (Sheet  : access Gtk_Sheet_Record;
-                             Row    : in Gint;
-                             Column : in Gint)
-                            return      Boolean;
+   function Set_Active_Cell
+     (Sheet  : access Gtk_Sheet_Record;
+      Row    : Gint;
+      Column : Gint)
+      return Boolean;
    --  Set active cell where the entry will be displayed.
    --  Returns FALSE if the current cell can not be deactivated or if the
    --  requested cell can't be activated.
    --  Depending on the value passed to Set_Autoscroll, the sheet might be
    --  scrolled.
 
-   procedure Get_Active_Cell (Sheet  : access Gtk_Sheet_Record;
-                              Row    : out Gint;
-                              Column : out Gint);
+   procedure Get_Active_Cell
+     (Sheet  : access Gtk_Sheet_Record;
+      Row    : out Gint;
+      Column : out Gint);
    --  Return the coordinates of the active cell.
    --  This is the cell that the user is currently editing.
 
@@ -317,26 +342,28 @@ package Gtk.Extra.Sheet is
    -- Columns --
    -------------
 
-   procedure Set_Column_Title (Sheet  : access Gtk_Sheet_Record;
-                               Column : in Gint;
-                               Title  : in UTF8_String);
+   procedure Set_Column_Title
+     (Sheet  : access Gtk_Sheet_Record;
+      Column : Gint;
+      Title  : UTF8_String);
    --  Modify the title of a column.
    --  The first column on the left has the number 0.
    --  Note that this title does not appear on the screen, and can only be
    --  used internally to find a specific column.
 
-   function Get_Column_Title (Sheet  : access Gtk_Sheet_Record;
-                              Column : Gint)
-                             return UTF8_String;
+   function Get_Column_Title
+     (Sheet  : access Gtk_Sheet_Record;
+      Column : Gint) return UTF8_String;
    --  Return the title of a specific column.
 
    procedure Set_Column_Titles_Height
      (Sheet  : access Gtk_Sheet_Record; Height : Guint);
    --  Modify the height of the row in which the column titles appear.
 
-   procedure Column_Button_Add_Label (Sheet  : access Gtk_Sheet_Record;
-                                      Column : in Gint;
-                                      Label  : in UTF8_String);
+   procedure Column_Button_Add_Label
+     (Sheet  : access Gtk_Sheet_Record;
+      Column : Gint;
+      Label  : UTF8_String);
    --  Modify the label of the button that appears at the top of each column.
 
    function Column_Button_Get_Label
@@ -345,8 +372,8 @@ package Gtk.Extra.Sheet is
 
    procedure Column_Button_Justify
       (Sheet         : access Gtk_Sheet_Record;
-       Column        : in Gint;
-       Justification : in Gtk.Enums.Gtk_Justification);
+       Column        : Gint;
+       Justification : Gtk.Enums.Gtk_Justification);
    --  Modify the justification for the label in the column button.
 
    procedure Show_Column_Titles (Sheet : access Gtk_Sheet_Record);
@@ -360,22 +387,25 @@ package Gtk.Extra.Sheet is
    --  Whether a special row is added at the top to show the title of the
    --  columns.
 
-   procedure Columns_Set_Sensitivity (Sheet     : access Gtk_Sheet_Record;
-                                      Sensitive : in Boolean);
+   procedure Columns_Set_Sensitivity
+     (Sheet     : access Gtk_Sheet_Record;
+      Sensitive : Boolean);
    --  Modify the sensitivity of all the columns.
    --  If Sensitive is False, the columns can not be resized dynamically.
    --  This also modifies the sensitivity of the button at the top of the
    --  columns.
 
-   procedure Column_Set_Sensitivity (Sheet     : access Gtk_Sheet_Record;
-                                     Column    : in Gint;
-                                     Sensitive : in Boolean);
+   procedure Column_Set_Sensitivity
+     (Sheet     : access Gtk_Sheet_Record;
+      Column    : Gint;
+      Sensitive : Boolean);
    --  Modify the sensitivity of a specific column and its title button.
    --  If Sensitive if False, the column can not be dynamically resized.
 
-   procedure Column_Set_Visibility (Sheet   : access Gtk_Sheet_Record;
-                                    Column  : in Gint;
-                                    Visible : in Boolean);
+   procedure Column_Set_Visibility
+     (Sheet   : access Gtk_Sheet_Record;
+      Column  : Gint;
+      Visible : Boolean);
    --  Change the visibility of a column.
 
    procedure Columns_Set_Resizable
@@ -387,8 +417,8 @@ package Gtk.Extra.Sheet is
 
    procedure Column_Label_Set_Visibility
      (Sheet   : access Gtk_Sheet_Record;
-      Column  : in Gint;
-      Visible : in Boolean := True);
+      Column  : Gint;
+      Visible : Boolean := True);
    --  Change the visibility of the label in a given column.
 
    procedure Columns_Labels_Set_Visibility
@@ -396,9 +426,10 @@ package Gtk.Extra.Sheet is
       Visible : Boolean := True);
    --  Change the visibility for all the column labels.
 
-   procedure Set_Column_Width (Sheet  : access Gtk_Sheet_Record;
-                               Column : in Gint;
-                               Width  : in Guint);
+   procedure Set_Column_Width
+     (Sheet  : access Gtk_Sheet_Record;
+      Column : Gint;
+      Width  : Guint);
    --  Modify the width in pixels of a specific column.
 
    function Get_Column_Width (Sheet  : access Gtk_Sheet_Record;
@@ -406,24 +437,27 @@ package Gtk.Extra.Sheet is
                              return Gint;
    --  Return the width in pixels of the Column-nth in Sheet.
 
-   procedure Add_Column (Sheet : access Gtk_Sheet_Record;
-                         Ncols : in Guint);
+   procedure Add_Column
+     (Sheet : access Gtk_Sheet_Record;
+      Ncols : Guint);
    --  Add some empty columns at the end of the sheet.
 
-   procedure Insert_Columns (Sheet : access Gtk_Sheet_Record;
-                             Col   : in Guint;
-                             Ncols : in Guint);
+   procedure Insert_Columns
+     (Sheet : access Gtk_Sheet_Record;
+      Col   : Guint;
+      Ncols : Guint);
    --  Add Ncols empty columns just before the columns number Col.
 
-   procedure Delete_Columns (Sheet : access Gtk_Sheet_Record;
-                             Col   : in Guint;
-                             Ncols : in Guint);
+   procedure Delete_Columns
+     (Sheet : access Gtk_Sheet_Record;
+      Col   : Guint;
+      Ncols : Guint);
    --  Delete Ncols columns starting from Col.
 
    procedure Column_Set_Justification
      (Sheet         : access Gtk_Sheet_Record;
-      Column        : in Gint;
-      Justification : in Gtk.Enums.Gtk_Justification);
+      Column        : Gint;
+      Justification : Gtk.Enums.Gtk_Justification);
    --  Set the default justification for the cells in the specific column.
 
    function Get_Columns_Count (Sheet : access Gtk_Sheet_Record) return Guint;
@@ -433,9 +467,10 @@ package Gtk.Extra.Sheet is
    -- Rows --
    ----------
 
-   procedure Set_Row_Title (Sheet : access Gtk_Sheet_Record;
-                            Row   : in Gint;
-                            Title : in UTF8_String);
+   procedure Set_Row_Title
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Gint;
+      Title : UTF8_String);
    --  Modify the title of a row.
    --  The first row at the top has the number 0.
    --  Note that this title does not appear on the screen, and can only be
@@ -449,9 +484,10 @@ package Gtk.Extra.Sheet is
      (Sheet : access Gtk_Sheet_Record; Width : Guint);
    --  Modify the width of the column that has the row titles.
 
-   procedure Row_Button_Add_Label (Sheet : access Gtk_Sheet_Record;
-                                   Row   : in Gint;
-                                   Label : in UTF8_String);
+   procedure Row_Button_Add_Label
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Gint;
+      Label : UTF8_String);
    --  Modify the label of the button that appears on the left of each row.
 
    function Row_Button_Get_Label
@@ -460,8 +496,8 @@ package Gtk.Extra.Sheet is
 
    procedure Row_Button_Justify
       (Sheet         : access Gtk_Sheet_Record;
-       Row           : in Gint;
-       Justification : in Gtk.Enums.Gtk_Justification);
+       Row           : Gint;
+       Justification : Gtk.Enums.Gtk_Justification);
    --  Modify the justification for the label of the row button.
 
    procedure Show_Row_Titles (Sheet : access Gtk_Sheet_Record);
@@ -511,9 +547,10 @@ package Gtk.Extra.Sheet is
    function Rows_Resizable (Sheet : access Gtk_Sheet_Record) return Boolean;
    --  Whether rows are resizable
 
-   procedure Set_Row_Height (Sheet  : access Gtk_Sheet_Record;
-                             Row    : in Gint;
-                             Height : in Guint);
+   procedure Set_Row_Height
+     (Sheet  : access Gtk_Sheet_Record;
+      Row    : Gint;
+      Height : Guint);
    --  Set the height in pixels of a specific row.
 
    function Get_Row_Height (Sheet   : access Gtk_Sheet_Record;
@@ -521,18 +558,21 @@ package Gtk.Extra.Sheet is
                            return Gint;
    --  Return the height in pixels of the Row-th row in Sheet.
 
-   procedure Add_Row (Sheet : access Gtk_Sheet_Record;
-                      Nrows : in Guint);
+   procedure Add_Row
+     (Sheet : access Gtk_Sheet_Record;
+      Nrows : Guint);
    --  Append Nrows row at the end of the sheet.
 
-   procedure Insert_Rows (Sheet : access Gtk_Sheet_Record;
-                          Row   : in Guint;
-                          Nrows : in Guint);
+   procedure Insert_Rows
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Guint;
+      Nrows : Guint);
    --  Add Nrows empty rows just before the row number Row.
 
-   procedure Delete_Rows (Sheet : access Gtk_Sheet_Record;
-                          Row   : in Guint;
-                          Nrows : in Guint);
+   procedure Delete_Rows
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Guint;
+      Nrows : Guint);
    --  Delete Nrows rows starting from Row.
 
    function Get_Rows_Count (Sheet : access Gtk_Sheet_Record) return Guint;
@@ -545,33 +585,38 @@ package Gtk.Extra.Sheet is
    function Range_Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associate with a Gtk_Sheet_Range
 
-   procedure Range_Clear (Sheet     : access Gtk_Sheet_Record;
-                          The_Range : in Gtk_Sheet_Range);
+   procedure Range_Clear
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : Gtk_Sheet_Range);
    --  Clear the content of the range.
 
-   procedure Range_Delete (Sheet     : access Gtk_Sheet_Record;
-                           The_Range : in Gtk_Sheet_Range);
+   procedure Range_Delete
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : Gtk_Sheet_Range);
    --  Clear the content of the range and delete all the links (user_data)
 
-   procedure Range_Set_Background (Sheet     : access Gtk_Sheet_Record;
-                                   The_Range : in Gtk_Sheet_Range;
-                                   Color     : in Gdk.Color.Gdk_Color);
+   procedure Range_Set_Background
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : Gtk_Sheet_Range;
+      Color     : Gdk.Color.Gdk_Color);
    --  Set the background color for the cells in a specific range.
 
-   procedure Range_Set_Foreground (Sheet     : access Gtk_Sheet_Record;
-                                   The_Range : in Gtk_Sheet_Range;
-                                   Color     : in Gdk.Color.Gdk_Color);
+   procedure Range_Set_Foreground
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : Gtk_Sheet_Range;
+      Color     : Gdk.Color.Gdk_Color);
    --  Set the foreground color for the cells in a specific range.
 
    procedure Range_Set_Justification
      (Sheet         : access Gtk_Sheet_Record;
-      The_Range     : in Gtk_Sheet_Range;
-      Justification : in Gtk.Enums.Gtk_Justification);
+      The_Range     : Gtk_Sheet_Range;
+      Justification : Gtk.Enums.Gtk_Justification);
    --  Set the text justification for the cells in the range.
 
-   procedure Range_Set_Editable (Sheet     : access Gtk_Sheet_Record;
-                                 The_Range : in Gtk_Sheet_Range;
-                                 Editable  : in Boolean);
+   procedure Range_Set_Editable
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : Gtk_Sheet_Range;
+      Editable  : Boolean);
    --  Set whether the cells in the range are editable.
 
    procedure Range_Set_Visible (Sheet     : access Gtk_Sheet_Record;
@@ -579,57 +624,65 @@ package Gtk.Extra.Sheet is
                                 Visible   : in Boolean);
    --  Set whether the cells in the range are visible.
 
-   procedure Range_Set_Border (Sheet      : access Gtk_Sheet_Record;
-                               The_Range  : in Gtk_Sheet_Range;
-                               Mask       : in Gtk_Sheet_Border;
-                               Width      : in Guint;
-                               Line_Style : in Gdk.GC.Gdk_Line_Style);
+   procedure Range_Set_Border
+     (Sheet      : access Gtk_Sheet_Record;
+      The_Range  : Gtk_Sheet_Range;
+      Mask       : Gtk_Sheet_Border;
+      Width      : Guint;
+      Line_Style : Gdk.GC.Gdk_Line_Style);
    --  Set the style of the border for the cells in the range.
 
-   procedure Range_Set_Border_Color (Sheet     : access Gtk_Sheet_Record;
-                                     The_Range : in Gtk_Sheet_Range;
-                                     Color     : in Gdk.Color.Gdk_Color);
+   procedure Range_Set_Border_Color
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : Gtk_Sheet_Range;
+      Color     : Gdk.Color.Gdk_Color);
    --  Change the color for the borders of the cells in the range.
 
-   procedure Range_Set_Font (Sheet     : access Gtk_Sheet_Record;
-                             The_Range : in Gtk_Sheet_Range;
-                             Font      : Pango.Font.Pango_Font_Description);
+   procedure Range_Set_Font
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : Gtk_Sheet_Range;
+      Font      : Pango.Font.Pango_Font_Description);
    --  Change the font of the cells in the range.
 
    -----------
    -- Cells --
    -----------
 
-   procedure Set_Cell (Sheet         : access Gtk_Sheet_Record;
-                       Row           : in Gint;
-                       Col           : in Gint;
-                       Justification : in Gtk.Enums.Gtk_Justification;
-                       Text          : in UTF8_String);
+   procedure Set_Cell
+     (Sheet         : access Gtk_Sheet_Record;
+      Row           : Gint;
+      Col           : Gint;
+      Justification : Gtk.Enums.Gtk_Justification;
+      Text          : UTF8_String);
    --  Set the cell contents.
    --  Set Text to the empty string to delete the content of the cell.
 
-   procedure Set_Cell_Text (Sheet : access Gtk_Sheet_Record;
-                            Row   : in Gint;
-                            Col   : in Gint;
-                            Text  : in UTF8_String);
+   procedure Set_Cell_Text
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Gint;
+      Col   : Gint;
+      Text  : UTF8_String);
    --  Set the cell contents.
    --  The justification used is the previous one used in that cell.
 
-   function Cell_Get_Text (Sheet  : access Gtk_Sheet_Record;
-                           Row    : in Gint;
-                           Col    : in Gint)
-                          return      UTF8_String;
+   function Cell_Get_Text
+     (Sheet  : access Gtk_Sheet_Record;
+      Row    : Gint;
+      Col    : Gint)
+      return UTF8_String;
    --  Return the text put in a specific cell.
    --  The empty string is returned if there is no text in that cell.
 
-   procedure Cell_Clear (Sheet : access Gtk_Sheet_Record;
-                         Row   : in Gint;
-                         Col   : in Gint);
+   procedure Cell_Clear
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Gint;
+      Col   : Gint);
    --  Clear the contents of the cell.
 
-   procedure Cell_Delete (Sheet : access Gtk_Sheet_Record;
-                          Row   : in Gint;
-                          Col   : in Gint);
+   procedure Cell_Delete
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Gint;
+      Col   : Gint);
    --  Clear the contents of the cell and remove the user data associated
    --  with it.
 
@@ -639,29 +692,22 @@ package Gtk.Extra.Sheet is
                            return  Gtk.Enums.Gtk_State_Type;
    --  Return the state of the cell (normal or selected).
 
-   procedure Get_Pixel_Info (Sheet  : access Gtk_Sheet_Record;
-                             X      : in Gint;
-                             Y      : in Gint;
-                             Row    : out Gint;
-                             Column : out Gint);
+   procedure Get_Pixel_Info
+     (Sheet  : access Gtk_Sheet_Record;
+      X      : Gint;
+      Y      : Gint;
+      Row    : out Gint;
+      Column : out Gint);
    --  Return the row and column matching a given pixel on the screen.
    --  Constraint_Error is raised if no such cell exists.
 
-   procedure Get_Cell_Area (Sheet  : access Gtk_Sheet_Record;
-                            Row    : in Gint;
-                            Column : in Gint;
-                            Area   : out Gdk.Rectangle.Gdk_Rectangle);
+   procedure Get_Cell_Area
+     (Sheet  : access Gtk_Sheet_Record;
+      Row    : Gint;
+      Column : Gint;
+      Area   : out Gdk.Rectangle.Gdk_Rectangle);
    --  Get the area of the screen that a cell is mapped to.
    --  Constraint_Error is raised if no such cell exists;
-
---     function Get_Attributes (Sheet      : access Gtk_Sheet_Record;
---                              Row        : in Gint;
---                              Col        : in Gint;
---                              Attributes : access Gtk_Sheet_Cell_Attr)
---                             return      Boolean;
-   --  Return the attributes of the cell at (Row, Col).
-   --  Return True if the cell is currently allocated.
-   --  It modifies the contents of Attributes.
 
    --------------
    -- Children --
@@ -669,10 +715,11 @@ package Gtk.Extra.Sheet is
    --  A Gtk_Sheet can contain some children, attached to some specific
    --  cells.
 
-   procedure Put (Sheet  : access Gtk_Sheet_Record;
-                  Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-                  X      : in Gint;
-                  Y      : in Gint);
+   procedure Put
+     (Sheet  : access Gtk_Sheet_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : Gint;
+      Y      : Gint);
    --  Put a new child at a specific location (in pixels) in the sheet.
 
    procedure Attach
@@ -704,15 +751,16 @@ package Gtk.Extra.Sheet is
    procedure Move_Child
       (Sheet  : access Gtk_Sheet_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-       X      : in Gint;
-       Y      : in Gint);
+       X      : Gint;
+       Y      : Gint);
    --  Move a child of the table to a specific location in pixels.
    --  A warning is printed if Widget is not already a child of Sheet.
 
-   function Get_Child_At (Sheet  : access Gtk_Sheet_Record;
-                          Row    : in Gint;
-                          Col    : in Gint)
-                         return  Gtk_Sheet_Child;
+   function Get_Child_At
+     (Sheet  : access Gtk_Sheet_Record;
+      Row    : Gint;
+      Col    : Gint)
+      return Gtk_Sheet_Child;
    --  Return the widget associated with the cell.
 
    function Get_Widget (Child : Gtk_Sheet_Child) return Gtk.Widget.Gtk_Widget;
@@ -743,24 +791,27 @@ package Gtk.Extra.Sheet is
       type Data_Type_Access is access all Data_Type;
       --  </doc_ignore>
 
-      procedure Link_Cell (Sheet : access Gtk_Sheet_Record'Class;
-                           Row   : in Gint;
-                           Col   : in Gint;
-                           Link  : in Data_Type);
+      procedure Link_Cell
+        (Sheet : access Gtk_Sheet_Record'Class;
+         Row   : Gint;
+         Col   : Gint;
+         Link  : Data_Type);
       --  Associate some user specific data with a given cell.
 
-      function Get_Link (Sheet  : access Gtk_Sheet_Record'Class;
-                         Row    : in Gint;
-                         Col    : in Gint)
-                        return      Data_Type_Access;
+      function Get_Link
+        (Sheet  : access Gtk_Sheet_Record'Class;
+         Row    : Gint;
+         Col    : Gint)
+         return  Data_Type_Access;
       --  Return the user data associated with the cell.
       --  null is returned if the cell has no user data.
 
    end Links;
 
-   procedure Remove_Link (Sheet : access Gtk_Sheet_Record;
-                          Row   : in Gint;
-                          Col   : in Gint);
+   procedure Remove_Link
+     (Sheet : access Gtk_Sheet_Record;
+      Row   : Gint;
+      Col   : Gint);
    --  Delete the user data associated with the cell.
 
    -------------
@@ -899,6 +950,9 @@ package Gtk.Extra.Sheet is
 private
    type Gtk_Sheet_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
+   type Gtk_Sheet_Child_Record is
+     new Gtk.Widget.Gtk_Widget_Record with null record;
+
    pragma Import (C, Get_Type, "gtk_sheet_get_type");
    pragma Import (C, Range_Get_Type, "gtk_sheet_range_get_type");
 
@@ -911,5 +965,6 @@ private
    pragma Convention (C, Gtk_Sheet_Range);
 end Gtk.Extra.Sheet;
 
---  Unbounded:
---  gtk_sheet_get_entry_widget
+--  Unbound:
+--    gtk_sheet_get_entry_widget
+--    gtk_sheet_get_attributes

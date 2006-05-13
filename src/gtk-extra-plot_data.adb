@@ -513,14 +513,15 @@ package body Gtk.Extra.Plot_Data is
      (Data : access Gtk_Plot_Data_Record;
       Font : String;
       Height : Gint;
-      Angle  : Gint;
+      Angle  : Plot_Angle;
       Foreground : Gdk.Color.Gdk_Color;
       Background : Gdk.Color.Gdk_Color)
    is
       procedure Internal
         (Data : System.Address;
          Font : String;
-         Height, Angle : Gint;
+         Height : Gint;
+         Angle : Plot_Angle;
          Foreground, Background : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_labels_set_attributes");
 
@@ -1001,12 +1002,14 @@ package body Gtk.Extra.Plot_Data is
    procedure Set_Gradient
      (Data     : access Gtk_Plot_Data_Record;
       Min, Max : Gdouble;
-      Nlevels  : Gint)
+      Nlevels  : Gint;
+      Nsublevels : Gint)
    is
-      procedure Internal (Data : System.Address; Min, Max : Gdouble; N : Gint);
+      procedure Internal
+        (Data : System.Address; Min, Max : Gdouble; N, N2 : Gint);
       pragma Import (C, Internal, "gtk_plot_data_set_gradient");
    begin
-      Internal (Get_Object (Data), Min, Max, Nlevels);
+      Internal (Get_Object (Data), Min, Max, Nlevels, Nsublevels);
    end Set_Gradient;
 
    ------------------
@@ -1016,14 +1019,15 @@ package body Gtk.Extra.Plot_Data is
    procedure Get_Gradient
      (Data     : access Gtk_Plot_Data_Record;
       Min, Max : out Gdouble;
-      Nlevels  : out Gint)
+      Nlevels  : out Gint;
+      Nsublevels : out Gint)
    is
       procedure Internal (Data : System.Address;
                           Min, Max : out Gdouble;
-                          N : out Gint);
+                          N, N2 : out Gint);
       pragma Import (C, Internal, "gtk_plot_data_get_gradient");
    begin
-      Internal (Get_Object (Data), Min, Max, Nlevels);
+      Internal (Get_Object (Data), Min, Max, Nlevels, Nsublevels);
    end Get_Gradient;
 
    ------------------------
@@ -1193,19 +1197,6 @@ package body Gtk.Extra.Plot_Data is
       Internal (Get_Object (Data), Mi'Address, Ma'Address);
    end Set_Gradient_Outer_Colors;
 
-   -------------------
-   -- Draw_Gradient --
-   -------------------
-
-   procedure Draw_Gradient
-     (Data : access Gtk_Plot_Data_Record; X, Y : Gint)
-   is
-      procedure Internal (Data : System.Address; X, Y : Gint);
-      pragma Import (C, Internal, "gtk_plot_data_draw_gradient");
-   begin
-      Internal (Get_Object (Data), X, Y);
-   end Draw_Gradient;
-
    --------------------------
    -- Gradient_Autoscale_A --
    --------------------------
@@ -1331,5 +1322,112 @@ package body Gtk.Extra.Plot_Data is
    begin
       return Internal (Get_Object (Data)) /= 0;
    end Markers_Visible;
+
+   -----------
+   -- Clone --
+   -----------
+
+   procedure Clone
+     (Data : access Gtk_Plot_Data_Record;
+      Copy : access Gtk_Plot_Data_Record'Class)
+   is
+      procedure Internal (Data, Copy : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_clone");
+   begin
+      Internal (Get_Object (Data), Get_Object (Copy));
+   end Clone;
+
+   --------------------------
+   -- Dimension_Set_Points --
+   --------------------------
+
+   procedure Dimension_Set_Points
+     (Data   : access Gtk_Plot_Data_Record;
+      Name   : String;
+      Points : Gdouble_Array_Access)
+   is
+      procedure Internal
+        (Data : System.Address; Name : String; Points : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_dimension_set_points");
+      P : System.Address := System.Null_Address;
+   begin
+      if Points /= null then
+         P := Points (Points'First)'Address;
+      end if;
+
+      Internal (Get_Object (Data), Name & ASCII.NUL, P);
+   end Dimension_Set_Points;
+
+   -------------------
+   -- Move_Gradient --
+   -------------------
+
+   procedure Move_Gradient
+     (Data : access Gtk_Plot_Data_Record; X, Y : Gdouble)
+   is
+      procedure Internal (Data : System.Address; X, Y : Gdouble);
+      pragma Import (C, Internal, "gtk_plot_data_move_gradient");
+   begin
+      Internal (Get_Object (Data), X, Y);
+   end Move_Gradient;
+
+   -----------------------
+   -- Set_Gradient_Size --
+   -----------------------
+
+   procedure Set_Gradient_Size
+     (Data : access Gtk_Plot_Data_Record; Size : Gint)
+   is
+      procedure Internal (Data : System.Address; Size : Gint);
+      pragma Import (C, Internal, "gtk_plot_data_set_gradient_size");
+   begin
+      Internal (Get_Object (Data), Size);
+   end Set_Gradient_Size;
+
+   --------------------------------
+   -- Gradient_Use_Custom_Colors --
+   --------------------------------
+
+   procedure Gradient_Use_Custom_Colors
+     (Data : access Gtk_Plot_Data_Record; Custom : Boolean)
+   is
+      procedure Internal (Data : System.Address; Custom : Gboolean);
+      pragma Import (C, Internal, "gtk_plot_data_gradient_use_custom_colors");
+   begin
+      Internal (Get_Object (Data), Boolean'Pos (Custom));
+   end Gradient_Use_Custom_Colors;
+
+   ----------------------------
+   -- Gradient_Custom_Colors --
+   ----------------------------
+
+   function Gradient_Custom_Colors
+     (Data : access Gtk_Plot_Data_Record) return Boolean
+   is
+      function Internal (Data : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_plot_data_gradient_custom_colors");
+   begin
+      return Boolean'Val (Internal (Get_Object (Data)));
+   end Gradient_Custom_Colors;
+
+   -------------------------------
+   -- Get_Gradient_Outer_Colors --
+   -------------------------------
+
+   procedure Get_Gradient_Outer_Colors
+     (Data     : access Gtk_Plot_Data_Record;
+      Min, Max : out Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Data : System.Address;
+         MinA, MaxA : out System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_get_gradient_outer_colors");
+
+      Mi, Ma : System.Address;
+   begin
+      Internal (Get_Object (Data), Mi, Ma);
+      Min := Convert (Mi).all;
+      Max := Convert (Ma).all;
+   end Get_Gradient_Outer_Colors;
 
 end Gtk.Extra.Plot_Data;
