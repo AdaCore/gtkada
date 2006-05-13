@@ -1,13 +1,42 @@
+/*-----------------------------------------------------------------------
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
+--                                                                   --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2006 AdaCore                    --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------*/
 
 #include <gtk/gtk.h>
 
 #include "gtkextra/gtkpsfont.h"
-#include "gtkextra/gtkextracombobox.h"
 #include "gtkextra/gtkfontcombo.h"
+#include "gtkextra/gtkcombobutton.h"
 #include "gtkextra/gtkcolorcombo.h"
 #include "gtkextra/gtksheet.h"
 #include "gtkextra/gtkplot.h"
 #include "gtkextra/gtkplotcanvas.h"
+#include "gtkextra/gtkplotcanvasplot.h"
 
 /********************************************************************
  **
@@ -79,55 +108,6 @@ ada_gtk_plot_canvas_unset_flags (GtkPlotCanvas* canvas, guint16 flags) {
   GTK_PLOT_CANVAS_UNSET_FLAGS (canvas, flags);
 }
 
-GtkPlotCanvasType
-ada_gtk_plot_canvas_get_item_type (GtkPlotCanvasChild * item) {
-  return item->type;
-}
-
-void
-ada_gtk_plot_canvas_set_draw_func
-(GtkPlotCanvasChild* item,
- void (*draw) (GtkPlotCanvas *canvas, GtkPlotCanvasChild *child))
-{
-  item->draw_child = draw;
-}
-
-guint
-ada_gtk_plot_canvas_get_alloc_width (GtkPlotCanvasChild* child) {
-  return child->allocation.width;
-}
-
-guint
-ada_gtk_plot_canvas_get_alloc_height (GtkPlotCanvasChild* child) {
-  return child->allocation.height;
-}
-
-gint
-ada_gtk_plot_canvas_get_alloc_x (GtkPlotCanvasChild* child) {
-  return child->allocation.x;
-}
-
-gint
-ada_gtk_plot_canvas_get_alloc_y (GtkPlotCanvasChild* child) {
-  return child->allocation.x;
-}
-
-GdkPixmap*
-ada_gtk_plot_canvas_get_pixmap (GtkPlotCanvas* canvas) {
-  return canvas->pixmap;
-}
-
-GtkPlotCanvasFlag
-ada_gtk_plot_canvas_get_child_flags (GtkPlotCanvasChild* child) {
-  return child->flags;
-}
-
-void
-ada_gtk_plot_canvas_set_child_flags (GtkPlotCanvasChild* child,
-				     GtkPlotCanvasFlag flags) {
-  child->flags = flags;
-}
-
 /********************************************************************
  **
  **  Gtk_Sheet widget
@@ -156,22 +136,22 @@ ada_gtk_sheet_get_row_height (GtkSheet* sheet, gint row) {
 
 /********************************************************************
  **
- **  Gtk_Extra_Combo_Box widget
+ **  Gtk_Combo_Button widget
  **
  ********************************************************************/
 
 GtkWidget*
-ada_gtk_extra_combo_box_get_button (GtkExtraComboBox* combo) {
+ada_gtk_combo_button_get_button (GtkComboButton* combo) {
   return combo->button;
 }
 
 GtkWidget*
-ada_gtk_extra_combo_box_get_arrow (GtkExtraComboBox* combo) {
+ada_gtk_combo_button_get_arrow (GtkComboButton* combo) {
   return combo->arrow;
 }
 
 GtkWidget*
-ada_gtk_extra_combo_box_get_frame (GtkExtraComboBox* combo) {
+ada_gtk_combo_button_get_frame (GtkComboButton* combo) {
   return combo->frame;
 }
 
@@ -208,3 +188,27 @@ ada_gtk_psfont_get_psname (GtkPSFont* font) {
   return font->psname;
 }
 
+GtkPlotCanvasPlotPos
+ada_gtk_plot_canvas_plot_get_pos (GtkPlotCanvasPlot* plot) {
+  return plot->pos;
+}
+
+GtkPlotData*
+ada_gtk_plot_canvas_plot_get_data (GtkPlotCanvasPlot* plot) {
+  return plot->data;
+}
+
+gint
+ada_gtk_plot_canvas_plot_get_datapoint (GtkPlotCanvasPlot* plot) {
+  return plot->datapoint;
+}
+
+void
+ada_gtk_plot_canvas_plot_set_flags (GtkPlotCanvasPlot* plot, int flags) {
+   GTK_PLOT_CANVAS_PLOT_SET_FLAGS(plot, flags);
+}
+
+void
+ada_gtk_plot_canvas_plot_unset_flags (GtkPlotCanvasPlot* plot, int flags) {
+   GTK_PLOT_CANVAS_PLOT_UNSET_FLAGS(plot, flags);
+}
