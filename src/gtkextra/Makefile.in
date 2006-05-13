@@ -1,10 +1,13 @@
-SRC=gtkplot.c gtkplotcanvas.c gtkplotprint.c gtkplotps.c \
-  gtkpsfont.c gtkplotpc.c gtksheet.c gtkitementry.c \
-  gtkextra-marshal.c gtkextra.c gtkplotdt.c \
-  gtkextracombobox.c gtkcolorcombo.c gtkbordercombo.c \
-  gtkfontcombo.c gtkplotgdk.c \
-  gtkplotdata.c gtkplot3d.c gtkplotpolar.c gtkplotbar.c gtkplotbox.c \
-  gtkplotsurface.c
+SRC=gtkbordercombo.c  gtkfontcombo.c     gtkplotbox.c \
+    gtkplotdata.c     gtkplotpixmap.c    gtkpsfont.c  \
+    gtkcolorcombo.c   gtkitementry.c     gtkplot.c    \
+    gtkplotdt.c       gtkplotpolar.c     gtksheet.c   \
+    gtkcombobutton.c  gtkplot3d.c        gtkplotcandle.c \
+    gtkplotflux.c     gtkplotprint.c     gtkextra.c \
+    gtkplotarray.c    gtkplotcanvas.c    gtkplotgdk.c \
+    gtkplotps.c       gtkextra-marshal.c gtkplotbar.c \
+    gtkplotcsurface.c gtkplotpc.c        gtkplotsurface.c \
+    gtkplotcanvastext.c gtkplotcanvasplot.c gtkplotcanvaspixmap.c
 
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
@@ -12,7 +15,7 @@ FPIC=@FPIC@
 CFLAGS=@CFLAGS@
 ALL_CFLAGS=$(CFLAGS) @GTK_CFLAGS@ $(FPIC)
 
-all: gtkextra-marshal.h gtkextra-marshal.c $(OBJ)
+all: $(OBJ)
 
 %.o: %.c %.h
 	$(CC) -c $(ALL_CFLAGS) $<
@@ -25,7 +28,6 @@ gtkextra-marshal.c: gtkextra-marshal.list
 
 clean:
 	-$(RM) $(OBJ)
-	-$(RM) gtkextra-marshal.[ch]
 
 distclean: clean
 	-$(RM) Makefile
