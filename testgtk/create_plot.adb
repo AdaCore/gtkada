@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
+--                     Copyright (C) 2003-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,6 @@
 -----------------------------------------------------------------------
 
 with Gdk.Color;             use Gdk.Color;
-with Gdk.Drawable;          use Gdk.Drawable;
 with Gdk.GC;                use Gdk.GC;
 with Gdk.Pixmap;            use Gdk.Pixmap;
 with Gdk.Bitmap;            use Gdk.Bitmap;
@@ -45,15 +44,17 @@ with Gtk.Extra.Plot_Box;    use Gtk.Extra.Plot_Box;
 with Gtk.Extra.Plot_Polar;  use Gtk.Extra.Plot_Polar;
 with Gtk.Extra.Plot_Data;   use Gtk.Extra.Plot_Data;
 with Gtk.Extra.Plot_Canvas; use Gtk.Extra.Plot_Canvas;
+with Gtk.Extra.Plot_Canvas.Pixmap; use Gtk.Extra.Plot_Canvas.Pixmap;
+with Gtk.Extra.Plot_Canvas.Plot;   use Gtk.Extra.Plot_Canvas.Plot;
+with Gtk.Extra.Plot_Canvas.Text;   use Gtk.Extra.Plot_Canvas.Text;
 with Gtk.Extra.Plot_Ps;     use Gtk.Extra.Plot_Ps;
 with Gtk.Frame;             use Gtk.Frame;
 with Gtk.Scrolled_Window;   use Gtk.Scrolled_Window;
 with Gtk.Style;             use Gtk.Style;
 with Gtk.Handlers;          use Gtk.Handlers;
-with Gtk.Arguments;         use Gtk.Arguments;
 with Gtk.Widget;            use Gtk.Widget;
 with Ada.Numerics.Generic_Elementary_Functions;
-with Ada.Text_IO;
+with Ada.Text_IO;           use Ada.Text_IO;
 with System;
 with Gtkada.Types;          use Gtkada.Types;
 with Interfaces.C.Strings;
@@ -64,11 +65,9 @@ package body Create_Plot is
 
    Px1  : aliased Gdouble_Array := (0.0, 0.2, 0.4, 0.6, 0.8, 1.0);
    Py1  : aliased Gdouble_Array := (0.2, 0.4, 0.5, 0.35, 0.3, 0.4);
-   Pz1  : aliased Gdouble_Array := (0.12, 0.22, 0.27, 0.12, 0.052, 0.42);
    Pdx1 : aliased Gdouble_Array := (0.2, 0.2, 0.2, 0.2, 0.2, 0.2);
    Pdy1 : aliased Gdouble_Array := (0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
-   Pdz1 : aliased Gdouble_Array :=
-     (0.0243, 0.045, 0.075, 0.0213, 0.05, 0.0324);
+   Pdz1  : aliased Gdouble_Array := (0.56, 0.12, 0.123, 0.5, 0.2, 0.21);
 
    Px2  : aliased Gdouble_Array := (0.0, -0.2, -0.4, -0.6, -0.8, -1.0);
    Py2  : aliased Gdouble_Array := (0.2, 0.56, 0.9, 0.74, 0.3, 0.4);
@@ -81,14 +80,19 @@ package body Create_Plot is
    Pdx3 : aliased Gdouble_Array := (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
    Pdy3 : aliased Gdouble_Array := (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
+   Px4  : aliased Gdouble_Array := (0.0, 0.2, 0.4, 0.6, 0.8, 1.0);
+   Py4  : aliased Gdouble_Array := (0.243, 0.045, 0.75, 0.213, 0.05, 0.124);
+   Pz4  : aliased Gdouble_Array := (0.56, 0.12, 0.123, 0.5, 0.2, 0.21);
+   Pdx4 : aliased Gdouble_Array := (0.1, 0.18, 0.17, 0.16, 0.082, 0.034);
+   Pdy4 : aliased Gdouble_Array := (0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+
    R    : aliased Gdouble_Array := (0.2, 0.34, 0.45, 0.6, 0.75, 0.81);
    Angle : aliased Gdouble_Array := (15.0, 20.0, 43.0, 67.0, 84.0, 106.0);
 
    Num_Layers : Integer := 0;
    Buttons    : array (1 .. 10) of Gtk_Toggle_Button;
-   Plots      : array (1 .. 10) of Gtk_Plot;
 
-   Canvas : Gtk_Plot_Canvas;
+   Canvas      : Gtk_Plot_Canvas;
 
    package Double_Numerics is new
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
@@ -96,14 +100,12 @@ package body Create_Plot is
 
    package Event_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Plot_Canvas_Record, Boolean);
-   package Button_Cb is new Gtk.Handlers.Callback
-     (Gtk_Toggle_Button_Record);
    package Layout_Cb is new Gtk.Handlers.Callback
      (Gtk_Plot_Canvas_Record);
    package Axis_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Plot_Axis_Record, Boolean);
 
-   Plot_Icons2 : Chars_Ptr_Array :=
+   Plot_Icons2 : constant Chars_Ptr_Array :=
      "48 48 5 1" +
      "       c #FFFFFFFFFFFF" +
      ".      c #000000000000" +
@@ -159,6 +161,45 @@ package body Create_Plot is
      "                       . .                      " +
      "                                                ";
 
+   function My_Function
+     (Plot  : access Gtk_Plot_Record'Class;
+      Set   : Gtk_Plot_Data;
+      X     : Gdouble;
+      Error : access Boolean)
+      return Gdouble;
+   --  Computes the values to be plotted for a custom function
+
+   function Gaussian
+     (Plot  : access Gtk_Plot_Record'Class;
+      Set   : Gtk_Plot_Data;
+      X     : Gdouble;
+      Error : access Boolean)
+      return Gdouble;
+   --  Computes the values to be plotted for a gaussian function
+
+   procedure Print (Canvas : access Gtk_Plot_Canvas_Record'Class);
+   --  Print the current graph to a postscript file on the disk
+
+   function Select_Item
+     (Canvas : access Gtk_Plot_Canvas_Record'Class;
+      Args   : Gtk_Args) return Boolean;
+   --  Callback when a new item is selected
+
+   function My_Tick_Label
+     (Axis : access Gtk_Plot_Axis_Record'Class;
+      Args : Gtk_Args) return Boolean;
+   --  Return the labels to use for some of the axis
+
+   procedure New_Layer
+     (Canvas : access Gtk_Plot_Canvas_Record'Class;
+      Plot   : access Gtk_Plot_Record'Class);
+   --  Create a new plot in the canvas
+
+   procedure Build_Example1;
+   procedure Build_Example2;
+   procedure Build_Example3;
+   procedure Build_Example4;
+   --  Build each of the plots to be shwon
 
    ----------
    -- Help --
@@ -189,11 +230,12 @@ package body Create_Plot is
    -- My_Function --
    -----------------
 
-   function My_Function  (Plot  : access Gtk_Plot_Record'Class;
-                          Set   : in     Gtk_Plot_Data;
-                          X     : in     Gdouble;
-                          Error : access Boolean)
-                         return Gdouble
+   function My_Function
+     (Plot  : access Gtk_Plot_Record'Class;
+      Set   : Gtk_Plot_Data;
+      X     : Gdouble;
+      Error : access Boolean)
+      return Gdouble
    is
       pragma Warnings (Off, Plot);
       pragma Warnings (Off, Set);
@@ -225,76 +267,62 @@ package body Create_Plot is
    function Gauss is new Generic_Plot_Function (Gaussian);
    pragma Convention (C, Gauss);
 
-   -------------------
-   -- Activate_Plot --
-   -------------------
-
-   function Activate_Plot (C : access Gtk_Plot_Canvas_Record'Class)
-                          return Boolean
-   is
-      pragma Warnings (Off, C);
-      P : Gtk_Plot;
-   begin
-      P := Get_Active_Plot (Canvas);
-      for N in 1 .. Num_Layers loop
-         if Plots (N) = P then
-            Set_Active_Plot (Canvas, Plots (N));
-            Set_Active (Buttons (N), True);
-         else
-            Set_Active (Buttons (N), False);
-         end if;
-         Queue_Draw (Buttons (N));
-      end loop;
-      return True;
-   end Activate_Plot;
-
    -----------
    -- Print --
    -----------
 
    procedure Print (Canvas : access Gtk_Plot_Canvas_Record'Class) is
    begin
-      Plot_Layout_Export_Ps (Canvas, "plotdemo.ps",
-                             Plot_Portrait,
-                             False,
-                             Plot_Letter);
+      Plot_Canvas_Export_Ps
+        (Canvas, "plotdemo.ps",
+         Plot_Portrait,
+         False,
+         Plot_Letter);
    end Print;
 
    -----------------
    -- Select_Item --
    -----------------
 
-   function Select_Item (Canvas : access Gtk_Plot_Canvas_Record'Class;
-                         Args   : Gtk_Args)
-                        return Boolean
+   function Select_Item
+     (Canvas : access Gtk_Plot_Canvas_Record'Class;
+      Args   : Gtk_Args) return Boolean
    is
-      Item  : Gtk_Plot_Canvas_Child
-        := Gtk_Plot_Canvas_Child (To_C_Proxy (Args, 2));
-      Tmp : Boolean;
+      Item  : constant Gtk_Plot_Canvas_Child
+        := Gtk_Plot_Canvas_Child (To_Object (Args, 2));
+      pragma Unreferenced (Canvas);
+      Pos   : Plot_Canvas_Plot_Pos;
+      N     : Gint;
+      X, Y  : Points_Array;
    begin
-      Ada.Text_IO.Put_Line (Plot_Canvas_Type'Image (Get_Item_Type (Item)));
-      Tmp := Activate_Plot (Canvas);
+      if Item.all in Gtk_Plot_Canvas_Text_Record'Class then
+         Ada.Text_IO.Put_Line ("Item selected: TEXT");
+      elsif Item.all in Gtk_Plot_Canvas_Plot_Record'Class then
+         Pos := Get_Pos (Gtk_Plot_Canvas_Plot (Item));
+         case Pos is
+            when Plot_Out         => Put_Line ("In Plot: OUT");
+            when Plot_In_Plot     => Put_Line ("In Plot: IN_PLOT");
+            when Plot_In_Legends  => Put_Line ("In Plot: IN LEGENDS");
+            when Plot_In_Title    => Put_Line ("In Plot: IN TITLE");
+            when Plot_In_Axis     => Put_Line ("In Plot: IN AXIS");
+            when Plot_In_Gradient => Put_Line ("In Plot: IN GRADIENT");
+            when Plot_In_Marker   => Put_Line ("In Plot: IN MARKER");
+            when Plot_In_Data     =>
+               Put_Line ("In Plot: IN DATA");
+               N := Get_Datapoint (Gtk_Plot_Canvas_Plot (Item));
+               X := Get_X (Get_Data (Gtk_Plot_Canvas_Plot (Item)));
+               Y := Get_Y (Get_Data (Gtk_Plot_Canvas_Plot (Item)));
+               Put_Line ("  active point:"
+                         & N'Img & " =>"
+                         & X.Points (Integer (N))'Img
+                         & Y.Points (Integer (N))'Img);
+         end case;
+
+      else
+         Ada.Text_IO.Put_Line ("Item selected: Unknown");
+      end if;
       return True;
    end Select_Item;
-
-   -----------------------------
-   -- Active_Plot_With_Button --
-   -----------------------------
-
-   procedure Active_Plot_With_Button
-     (Button : access Gtk_Toggle_Button_Record'Class)
-   is
-   begin
-      if Get_Active (Button) then
-         for N in 1 .. Num_Layers loop
-            if Buttons (N) = Gtk_Toggle_Button (Button) then
-               Set_Active_Plot (Canvas, Plots (N));
-            else
-               Set_Active (Buttons (N), False);
-            end if;
-         end loop;
-      end if;
-   end Active_Plot_With_Button;
 
    ---------------
    -- New_Layer --
@@ -304,20 +332,14 @@ package body Create_Plot is
      (Canvas : access Gtk_Plot_Canvas_Record'Class;
       Plot   : access Gtk_Plot_Record'Class)
    is
-      Dummy : Boolean;
+      pragma Unreferenced (Plot);
    begin
+      --  Show that we can put standard widgets on the canvas
       Num_Layers := Num_Layers + 1;
       Gtk_New (Buttons (Num_Layers), Integer'Image (Num_Layers));
-      Set_Usize (Buttons (Num_Layers), 20, 20);
+      Set_USize (Buttons (Num_Layers), 20, 20);
       Put (Canvas, Buttons (Num_Layers), Gint (Num_Layers - 1) * 20, 0);
       Show (Buttons (Num_Layers));
-
-      Button_Cb.Connect
-        (Buttons (Num_Layers), "toggled",
-         Button_Cb.To_Marshaller (Active_Plot_With_Button'Access));
-
-      Plots (Num_Layers) := Gtk_Plot (Plot);
-      Dummy := Activate_Plot (Canvas);
    end New_Layer;
 
    -------------------
@@ -336,11 +358,12 @@ package body Create_Plot is
       function Convert is new Unchecked_Conversion
         (System.Address, Gdouble_Access);
 
-      Tick_Value : Gdouble_Access := Convert (To_Address (Args, 1));
-      Label : Interfaces.C.Strings.chars_ptr := Convert (To_Address (Args, 2));
+      Tick_Value : constant Gdouble_Access := Convert (To_Address (Args, 1));
+      Label      : constant Interfaces.C.Strings.chars_ptr :=
+        Convert (To_Address (Args, 2));
    begin
       if Tick_Value.all = 0.0 then
-         Update (Label, 0, String' ("custom" & ASCII.NUL), False);
+         Update (Label, 0, String'("custom" & ASCII.NUL), False);
          return True;
       end if;
       return False;
@@ -354,6 +377,8 @@ package body Create_Plot is
       Red, Blue : Gdk.Color.Gdk_Color;
       Plot      : Gtk_Plot;
       Data      : Gtk_Plot_Data;
+      Child     : Gtk_Plot_Canvas_Plot;
+      Marker    : Gtk_Plot_Marker;
    begin
       --  Create the plot itself, its axis and the legend box
 
@@ -362,23 +387,24 @@ package body Create_Plot is
       Set_Range (Plot, -1.0, 1.0, -1.0, 1.4);
       Legends_Move (Plot, 0.5, 0.05);
       Set_Legends_Border (Plot, Border_None, 0);
-      Set_Default_Plot_Attributes (Plot);
-      Axis_Hide_Title (Plot, Axis_Top);
-      Axis_Show_Ticks (Plot, Axis_Top, Ticks_In, Ticks_In);
-      Axis_Set_Ticks (Plot,  Axis_X, 1.0, 1);
-      Axis_Set_Ticks (Plot,  Axis_Y, 1.0, 1);
-      Axis_Set_Visible (Plot, Axis_Top, True);
-      Axis_Set_Visible (Plot, Axis_Right, True);
-      X0_Set_Visible (Plot, True);
-      Y0_Set_Visible (Plot, True);
+      Axis_Hide_Title  (Get_Axis (Plot, Axis_Top));
+      Axis_Show_Ticks  (Get_Axis (Plot, Axis_Top), Ticks_In, Ticks_In);
+      Set_Ticks        (Plot, Axis_X, 1.0, 1);
+      Set_Ticks        (Plot, Axis_Y, 1.0, 1);
+      Axis_Set_Visible (Get_Axis (Plot, Axis_Top), True);
+      Axis_Set_Visible (Get_Axis (Plot, Axis_Right), True);
+      X0_Set_Visible   (Plot, True);
+      Y0_Set_Visible   (Plot, True);
+      Axis_Set_Labels_Suffix (Get_Axis (Plot, Axis_Left), "%");
 
-      Add_Plot (Canvas, Plot, 0.05, 0.05);
-
+      Gtk_New (Child, Plot);
+      Set_Flags (Child, Flags_Select_Point + Flags_Dnd_Point);
+      Put_Child (Canvas, Child, 0.15, 0.06, 0.44, 0.38);
       Show (Plot);
 
       --  Specify a custom tick label for the right axis
 
-      Axis_Use_Custom_Tick_Labels (Plot, Axis_Bottom, True);
+      Axis_Use_Custom_Tick_Labels (Get_Axis (Plot, Axis_Bottom), True);
       Axis_Cb.Connect
         (Get_Axis (Plot, Axis_Bottom), "tick_label", My_Tick_Label'Access);
 
@@ -400,6 +426,7 @@ package body Create_Plot is
         (Data, Line_Solid, Cap_Not_Last, Join_Miter, 1.0, Red);
       Set_Connector (Data, Connect_Spline);
       Show_Yerrbars (Data);
+      Marker := Add_Marker (Data, 3);
       Set_Legend (Data, "Spline + EY");
 
       --  Create the second set of data
@@ -438,6 +465,7 @@ package body Create_Plot is
       Red, Yellow : Gdk.Color.Gdk_Color;
       Plot        : Gtk_Plot;
       Data        : Gtk_Plot_Box;
+      Child       : Gtk_Plot_Canvas_Plot;
    begin
       --  Create the plot itself, its axis and the legend box
 
@@ -446,17 +474,17 @@ package body Create_Plot is
       Set_Range (Plot, -1.0, 1.0, -1.0, 1.4);
       Legends_Move (Plot, 0.5, 0.05);
       Set_Legends_Border (Plot, Border_None, 0);
-      Set_Default_Plot_Attributes (Plot);
-      Axis_Hide_Title (Plot, Axis_Top);
-      Axis_Show_Ticks (Plot, Axis_Top, Ticks_In, Ticks_In);
-      Axis_Set_Ticks (Plot,  Axis_X, 1.0, 1);
-      Axis_Set_Ticks (Plot,  Axis_Y, 1.0, 1);
-      Axis_Set_Visible (Plot, Axis_Top, True);
-      Axis_Set_Visible (Plot, Axis_Right, True);
+      Axis_Hide_Title  (Get_Axis (Plot, Axis_Top));
+      Axis_Show_Ticks  (Get_Axis (Plot, Axis_Top), Ticks_In, Ticks_In);
+      Set_Ticks        (Plot,  Axis_X, 1.0, 1);
+      Set_Ticks        (Plot,  Axis_Y, 1.0, 1);
+      Axis_Set_Visible (Get_Axis (Plot, Axis_Top), True);
+      Axis_Set_Visible (Get_Axis (Plot, Axis_Right), True);
       X0_Set_Visible (Plot, True);
       Y0_Set_Visible (Plot, True);
 
-      Add_Plot (Canvas, Plot, 0.55, 0.05);
+      Gtk_New (Child, Plot);
+      Put_Child (Canvas, Child, 0.55, 0.09, 0.92, 0.44);
       Show (Plot);
 
       --  Common initializations
@@ -471,13 +499,13 @@ package body Create_Plot is
       Gtk_New (Data, Orientation_Vertical);
       Add_Data (Plot, Data);
       Show (Data);
-      Set_Points (Data, Px1'Access, Py1'Access, null, null);
-      Set_Z (Data, Pz1'Access);
+      Set_Points (Data, Px4'Access, Py4'Access, Pdx4'Access, Pdy4'Access);
+      Set_Z (Data, Pz4'Access);
       Set_Dz (Data, Pdz1'Access);
       Show_Zerrbars (Data);
       Set_Symbol (Data, Symbol_None, Symbol_Filled, 10, 2.0, Yellow, Red);
       Set_Line_Attributes
-        (Data, Line_None, Cap_Not_Last, Join_Miter, 1.0, red);
+        (Data, Line_None, Cap_Not_Last, Join_Miter, 1.0, Red);
       Set_Legend (Data, "Boxes");
    end Build_Example3;
 
@@ -490,13 +518,14 @@ package body Create_Plot is
       Red   : Gdk_Color;
       Plot  : Gtk_Plot_Polar;
       Data  : Gtk_Plot_Data;
+      Child : Gtk_Plot_Canvas_Plot;
 
    begin
-      Gtk_New (Plot, Width => 0.4, Height => 0.3);
+      Gtk_New (Plot, Width => 0.3, Height => 0.3);
       New_Layer (Canvas, Plot);
-      Add_Plot (Canvas, Plot, 0.55, 0.45);
+      Gtk_New (Child, Plot);
+      Put_Child (Canvas, Child, 0.57, 0.55, 0.92, 0.92);
       Show (Plot);
-      Set_Default_Plot_Attributes (Plot);
 
       Red := Parse ("red");
       Alloc (Get_Default_Colormap, Red);
@@ -520,6 +549,7 @@ package body Create_Plot is
       Plot                : Gtk_Plot;
       Data                : Gtk_Plot_Data;
       Data2               : Gtk_Plot_Bar;
+      Child               : Gtk_Plot_Canvas_Plot;
    begin
       Yellow := Parse ("light yellow");
       Alloc (Get_Default_Colormap, Yellow);
@@ -532,17 +562,17 @@ package body Create_Plot is
       New_Layer (Canvas, Plot);
       Set_Background (Plot, Yellow);
       Legends_Set_Attributes (Plot, "", 0, Null_Color, Blue);
-      Set_Default_Plot_Attributes (Plot);
       Set_Range (Plot, 0.0, 1.0, 0.0, 0.85);
-      Axis_Set_Visible (Plot, Axis_Top, True);
-      Axis_Set_Visible (Plot, Axis_Right, True);
+      Axis_Set_Visible (Get_Axis (Plot, Axis_Top), True);
+      Axis_Set_Visible (Get_Axis (Plot, Axis_Right), True);
       Grids_Set_Visible (Plot, True, True, True, True);
-      Axis_Hide_Title (Plot, Axis_Top);
-      Axis_Hide_Title (Plot, Axis_Right);
+      Axis_Hide_Title (Get_Axis (Plot, Axis_Top));
+      Axis_Hide_Title (Get_Axis (Plot, Axis_Right));
       Set_Legends_Border (Plot, Border_Shadow, 2);
       Legends_Move (Plot, 0.58, 0.05);
 
-      Add_Plot (Canvas, Plot, 0.05, 0.45);
+      Gtk_New (Child, Plot);
+      Put_Child (Canvas, Child, 0.08, 0.54, 0.48, 0.93);
       Show (Plot);
 
       Data := Add_Function (Plot, Gauss'Access);
@@ -561,40 +591,9 @@ package body Create_Plot is
       Set_Line_Attributes
         (Data2, Line_None, Cap_Not_Last, Join_Miter, 1.0, Blue);
       Set_Legend (Data2, "V Bar");
---    Set_Symbol (Data2, Symbol_Impulse, Symbol_Filled, 10, 5.0, Blue, Blue);
---    Set_Line_Attributes (Data2, Line_Solid, 5.0, Blue);
---    Set_Connector (Data2, Connect_None);
---    Set_Legend (Data2, "Impulses");
+
+      Set_Break (Plot, Axis_Y, 0.7, 0.72, 0.05, 4, Scale_Linear, 0.6);
    end Build_Example2;
-
-   ----------------
-   -- Draw_Child --
-   ----------------
-
-   procedure Draw_Child (C_Canvas : System.Address;
-                         Child    : Gtk_Plot_Canvas_Child)
-   is
-      Canvas : Gtk_Plot_Canvas := Convert (C_Canvas);
-      Pixmap : Gdk_Pixmap;
-      Mask   : Gdk_Bitmap;
-   begin
-      Create_From_Xpm_D (Pixmap,
-                         Get_Window (Canvas),
-                         Get_Default_Colormap,
-                         Mask,
-                         Null_Color,
-                         Plot_Icons2);
-      Draw_Pixmap (Get_Pixmap (Canvas),
-                   Get_Fg_Gc (Get_Style (Canvas), State_Normal),
-                   Pixmap,
-                   0, 0,
-                   Get_Allocation_X (Child),
-                   Get_Allocation_Y (Child),
-                   Gint (Get_Allocation_Width (Child)),
-                   Gint (Get_Allocation_Height (Child)));
-      Gdk.Pixmap.Unref (Pixmap);
-      Gdk.Bitmap.Unref (Mask);
-   end Draw_Child;
 
    ---------
    -- Run --
@@ -604,10 +603,12 @@ package body Create_Plot is
       Vbox1       : Gtk_Box;
       Scrollw1    : Gtk_Scrolled_Window;
       Button      : Gtk_Button;
-      Text        : Gtk_Plot_Canvas_Child;
-      Child       : Gtk_Plot_Canvas_Child;
+      PixChild    : Gtk_Plot_Canvas_Pixmap;
+      Text        : Gtk_Plot_Canvas_Text;
+      Pixmap      : Gdk.Pixmap.Gdk_Pixmap;
+      Bitmap      : Gdk.Bitmap.Gdk_Bitmap;
    begin
-      Set_Label (Frame, "Gtk.Extra.Plot_3D demo");
+      Set_Label (Frame, "Gtk.Extra.Plot demo");
 
       Num_Layers := 0;
       Gtk_New_Vbox (Vbox1, False, 0);
@@ -635,10 +636,12 @@ package body Create_Plot is
       Event_Cb.Connect (Canvas, "select_item", Select_Item'Access);
       Show_All (Frame);
 
-      Text := Put_Text
-        (Canvas, 0.40, 0.02,
-         "Times-BoldItalic", 10, 0, Null_Color, Null_Color, True,
-         Justify_Center, "Dnd titles, legends and plots");
+      Gtk_New
+        (Text,
+         Font          => "Times-BoldItalic",
+         Height        => 16,
+         Text          => "Dnd titles, legends and plots");
+      Put_Child (Canvas, Text, 0.4, 0.02);
 
       Gtk_New (Button, "Print");
       Put (Canvas, Button, 0, 40);
@@ -647,23 +650,34 @@ package body Create_Plot is
                                 Layout_Cb.To_Marshaller (Print'Access),
                                 Slot_Object => Canvas);
 
-      Text := Put_Text
-        (Canvas, 0.4, 0.84,
-         "Times-Roman", 10, 0, Null_Color, Null_Color, False,
-         Justify_Center,
-         "You can use \ssubscripts\b\b\b\b\b\b\b\b"
-         & "\b\b\N\Ssuperscripts");
-      Text := Put_Text
-        (Canvas, 0.4, 0.88,
-         "Times-Roman", 10, 0, Null_Color, Null_Color, True,
-         Justify_Center,
-         "Format text mixing \Bbold \N\i, italics and \+different fonts");
+      Gtk_New
+        (Text,
+         Font          => "Times-Roman",
+         Height        => 16,
+         Transparent   => False,
+         Text          =>
+           "You can use \ssubscripts\b\b\b\b\b\b\b\b\b\b\N\Ssuperscripts");
+      Put_Child (Canvas, Text, 0.2, 0.45);
 
+      Gtk_New
+        (Text,
+         Font          => "Times-Roman",
+         Height        => 12,
+         Text          =>
+         "Format text mixing \Bbold \N\i, italics and \+different fonts");
+      Put_Child (Canvas, Text, 0.2, 0.49);
 
       -- Insert a custom item --
-      Child := Child_New (Custom);
-      Set_Draw_Func (Child, Draw_Child'Access);
-      Put_Child (Canvas, Child, 0.6, 0.2, 0.58, 0.56);
+      Create_From_Xpm_D (Pixmap,
+                         Get_Window (Canvas),
+                         Get_Default_Colormap,
+                         Bitmap,
+                         Null_Color,
+                         Plot_Icons2);
+      Gtk_New (PixChild, Pixmap, Bitmap);
+      Put_Child (Canvas, PixChild, 0.6, 0.2, 0.64, 0.24);
+      Gdk.Pixmap.Unref (Pixmap);
+      Gdk.Bitmap.Unref (Bitmap);
 
       Show_All (Frame);
    end Run;

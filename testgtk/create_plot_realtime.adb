@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2001                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
+--                     Copyright (C) 2003-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,6 +36,8 @@ with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Extra.Plot;        use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Data;   use Gtk.Extra.Plot_Data;
 with Gtk.Extra.Plot_Canvas; use Gtk.Extra.Plot_Canvas;
+with Gtk.Extra.Plot_Canvas.Plot; use Gtk.Extra.Plot_Canvas.Plot;
+with Gtk.Extra.Plot_Canvas.Text; use Gtk.Extra.Plot_Canvas.Text;
 with Gtk.Frame;             use Gtk.Frame;
 with Gtk.Main;              use Gtk.Main;
 with Gtk.Scrolled_Window;   use Gtk.Scrolled_Window;
@@ -64,6 +66,12 @@ package body Create_Plot_Realtime is
 
    procedure Free is new Unchecked_Deallocation
      (Gdouble_Array, Gdouble_Array_Access);
+
+   procedure Destroy (Widget : access Gtk_Widget_Record'Class);
+   --  Called when the widget is destroyed, removes the timeout
+
+   function Update (Data : Timeout_Data_Access) return Boolean;
+   --  Update the contents of the widget periodically
 
    ----------
    -- Help --
@@ -141,11 +149,12 @@ package body Create_Plot_Realtime is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Scrollw1    : Gtk_Scrolled_Window;
-      Child       : Gtk_Plot_Canvas_Child;
       Canvas      : Gtk_Plot_Canvas;
       Color       : Gdk_Color;
       Active_Plot : Gtk_Plot;
       Dataset     : Gtk_Plot_Data;
+      Plot_Child  : Gtk_Plot_Canvas_Plot;
+      Text_Child  : Gtk_Plot_Canvas_Text;
    begin
       Set_Label (Frame, "gtk_plot realtime");
 
@@ -175,7 +184,6 @@ package body Create_Plot_Realtime is
       Color := Parse ("light yellow");
       Alloc (Get_Default_Colormap, Color);
       Set_Background (Active_Plot, Color);
-      Set_Default_Plot_Attributes (Active_Plot);
 
       Color := Parse ("white");
       Alloc (Get_Default_Colormap, Color);
@@ -183,32 +191,26 @@ package body Create_Plot_Realtime is
       Legends_Move (Active_Plot, 0.6, 0.1);
       Set_Range (Active_Plot, 0.0, 20.0, 0.0, 1.0);
 
-      Axis_Set_Ticks (Active_Plot, Axis_X, 2.0, 1);
-      Axis_Set_Ticks (Active_Plot, Axis_Y, 0.1, 1);
-      Axis_Set_Visible (Active_Plot, Axis_Top, True);
-      Axis_Set_Visible (Active_Plot, Axis_Right, True);
+      Set_Ticks (Active_Plot, Axis_X, 2.0, 1);
+      Set_Ticks (Active_Plot, Axis_Y, 0.1, 1);
+      Axis_Set_Visible (Get_Axis (Active_Plot, Axis_Top), True);
+      Axis_Set_Visible (Get_Axis (Active_Plot, Axis_Right), True);
       Grids_Set_Visible (Active_Plot, True, True, True, True);
-      Axis_Hide_Title (Active_Plot, Axis_Top);
-      Axis_Hide_Title (Active_Plot, Axis_Right);
-      Axis_Set_Title (Active_Plot, Axis_Left, "Intensity");
-      Axis_Set_Title (Active_Plot, Axis_Bottom, "Time");
+      Axis_Hide_Title (Get_Axis (Active_Plot, Axis_Top));
+      Axis_Hide_Title (Get_Axis (Active_Plot, Axis_Right));
+      Axis_Set_Title (Get_Axis (Active_Plot, Axis_Left), "Intensity");
+      Axis_Set_Title (Get_Axis (Active_Plot, Axis_Bottom), "Time");
       Grids_Set_Visible (Active_Plot, True, True, True, True);
 
-      Add_Plot (Canvas, Active_Plot, 0.15, 0.15);
+      Gtk_New (Plot_Child, Active_Plot);
+      Put_Child (Canvas, Plot_Child, 0.15, 0.15, 0.9, 0.9);
       Show (Active_Plot);
 
-      Child := Put_Text
-        (Canvas,
-         X             => 0.45,
-         Y             => 0.05,
-         Ps_Font       => "Times-BoldItalic",
-         Height        => 10,
-         Angle         => 0,
-         Fg            => Null_Color,
-         Bg            => Null_Color,
-         Transparent   => True,
-         Justification => Justify_Center,
-         Text          => "Real Time Demo");
+      Gtk_New (Text_Child,
+               Font          => "Times-BoldItalic",
+               Height        => 10,
+               Text          => "Real Time Demo");
+      Put_Child (Canvas, Text_Child, 0.45, 0.05, 0.85, 0.9);
 
       --  Create the data
 
@@ -236,11 +238,11 @@ package body Create_Plot_Realtime is
       Timer := Plot_Timeout.Add
         (300,
          Update'Access,
-         new Timeout_Data' (Canvas  => Canvas,
-                            Plot    => Active_Plot,
-                            Dataset => Dataset,
-                            X       => null,
-                            Y       => null));
+         new Timeout_Data'(Canvas  => Canvas,
+                           Plot    => Active_Plot,
+                           Dataset => Dataset,
+                           X       => null,
+                           Y       => null));
       Show_All (Frame);
    end Run;
 

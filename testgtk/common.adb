@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
+--                     Copyright (C) 2003-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,6 +33,7 @@ with Gtk.Radio_Menu_Item;  use Gtk.Radio_Menu_Item;
 with Gtk.Widget;           use Gtk.Widget;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Extra.Plot;       use Gtk.Extra.Plot;
+with Gtk.Extra.Plot_Data;  use Gtk.Extra.Plot_Data;
 with Gdk.Color;            use Gdk.Color;
 
 with Ada.Strings.Fixed;
@@ -117,7 +118,7 @@ package body Common is
         (Plot, "Helvetica", 6,
          Black (Get_Default_Colormap), White (Get_Default_Colormap));
       Axis_Set_Labels_Attributes
-        (Plot, Axis_Top,
+        (Get_Axis (Plot, Axis_Top),
          Font          => "Helvetica",
          Height        => 4,
          Angle         => Angle_0,
@@ -126,7 +127,7 @@ package body Common is
          Transparent   => True,
          Justification => Justify_Left);
       Axis_Set_Labels_Attributes
-        (Plot, Axis_Bottom,
+        (Get_Axis (Plot, Axis_Bottom),
          Font          => "Helvetica",
          Height        => 4,
          Angle         => Angle_0,
@@ -135,7 +136,7 @@ package body Common is
          Transparent   => True,
          Justification => Justify_Left);
       Axis_Set_Labels_Attributes
-        (Plot, Axis_Left,
+        (Get_Axis (Plot, Axis_Left),
          Font          => "Helvetica",
          Height        => 4,
          Angle         => Angle_90,
@@ -144,7 +145,7 @@ package body Common is
          Transparent   => True,
          Justification => Justify_Left);
       Axis_Set_Labels_Attributes
-        (Plot, Axis_Right,
+        (Get_Axis (Plot, Axis_Right),
          Font          => "Helvetica",
          Height        => 4,
          Angle         => Angle_90,
@@ -154,7 +155,7 @@ package body Common is
          Justification => Justify_Left);
 
       Axis_Title_Set_Attributes
-        (Plot, Axis_Top,
+        (Get_Axis (Plot, Axis_Top),
          Font          => "Helvetica",
          Height        => 6,
          Angle         => Angle_0,
@@ -163,7 +164,7 @@ package body Common is
          Transparent   => True,
          Justification => Justify_Left);
       Axis_Title_Set_Attributes
-        (Plot, Axis_Bottom,
+        (get_Axis (Plot, Axis_Bottom),
          Font          => "Helvetica",
          Height        => 6,
          Angle         => Angle_0,
@@ -172,7 +173,7 @@ package body Common is
          Transparent   => True,
          Justification => Justify_Left);
       Axis_Title_Set_Attributes
-        (Plot, Axis_Left,
+        (Get_Axis (Plot, Axis_Left),
          Font          => "Helvetica",
          Height        => 6,
          Angle         => Angle_90,
@@ -181,7 +182,7 @@ package body Common is
          Transparent   => True,
          Justification => Justify_Left);
       Axis_Title_Set_Attributes
-        (Plot, Axis_Right,
+        (Get_Axis (Plot, Axis_Right),
          Font          => "Helvetica",
          Height        => 6,
          Angle         => Angle_90,

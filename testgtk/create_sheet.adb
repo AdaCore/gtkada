@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000-2003                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2004-0026 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +28,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Ada.Unchecked_Conversion;
 with Common;            use Common;
 with Gdk.Bitmap;        use Gdk.Bitmap;
 with Gdk.Color;         use Gdk.Color;
@@ -1062,10 +1064,13 @@ package body Create_Sheet is
    procedure Change_Fg (Button : access Gtk_Widget_Record'Class;
                         Params : Gtk.Arguments.Gtk_Args)
    is
+      type Gdk_Color_Access is access Gdk.Color.Gdk_Color;
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Gdk_Color_Access);
       Cur_Page : Gint;
       Current  : Gtk_Sheet;
       Color    : Gdk_Color;
-      Color_Name : String := To_String (Params, 2);
+      Color_Access : constant System.Address := To_Address (Params, 2);
       Tmp_Gc   : Gdk_Gc;
       Pix      : Gdk_Pixmap;
       Mask     : Gdk_Bitmap;
@@ -1074,8 +1079,7 @@ package body Create_Sheet is
       Current  := Sheets (Cur_Page);
 
       --  Update the sheet
-      Color := Parse (Color_Name);
-      Alloc (Get_Colormap (Button), Color);
+      Color := Convert (Color_Access).all;
       Range_Set_Foreground (Current, Get_Range (Current), Color);
 
       --  Update the button of the combo box

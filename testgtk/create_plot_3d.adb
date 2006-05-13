@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
+--                     Copyright (C) 2003-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,6 +35,7 @@ with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Extra.Plot;        use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Data;   use Gtk.Extra.Plot_Data;
 with Gtk.Extra.Plot_Canvas; use Gtk.Extra.Plot_Canvas;
+with Gtk.Extra.Plot_Canvas.Plot; use Gtk.Extra.Plot_Canvas.Plot;
 with Gtk.Extra.Plot_3D;     use Gtk.Extra.Plot_3D;
 with Gtk.Extra.Plot_Surface; use Gtk.Extra.Plot_Surface;
 with Gtk.Frame;             use Gtk.Frame;
@@ -52,12 +53,19 @@ package body Create_Plot_3D is
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
    use Double_Numerics;
 
+   procedure Rotatex (Canvas : access Gtk_Plot_Canvas_Record'Class);
+   procedure Rotatey (Canvas : access Gtk_Plot_Canvas_Record'Class);
+   procedure Rotatez (Canvas : access Gtk_Plot_Canvas_Record'Class);
+   --  rotates the plot in one of the usual directions
+
    function My_Function
      (Plot  : System.Address;
       Set   : Gtk_Plot_Data;
       X, Y  : Gdouble;
-      Error : access Boolean) return Gdouble;
+      Error : access Gboolean) return Gdouble;
    pragma Convention (C, My_Function);
+
+   Active_Plot : Gtk_Plot_3D;
 
    -----------------
    -- My_Function --
@@ -67,12 +75,12 @@ package body Create_Plot_3D is
      (Plot  : System.Address;
       Set   : Gtk_Plot_Data;
       X, Y  : Gdouble;
-      Error : access Boolean) return Gdouble
+      Error : access Gboolean) return Gdouble
    is
       pragma Warnings (Off, Plot);
       pragma Warnings (Off, Set);
    begin
-      Error.all := False;
+      Error.all := 0;
       return Cos (((X - 0.5) * (X - 0.5) + (Y - 0.5) *(Y - 0.5)) * 24.0)
         / 4.0 + 0.5;
    end My_Function;
@@ -82,9 +90,8 @@ package body Create_Plot_3D is
    -------------
 
    procedure Rotatex (Canvas : access Gtk_Plot_Canvas_Record'Class) is
-      Plot : Gtk_Plot_3D := Gtk_Plot_3D (Get_Active_Plot (Canvas));
    begin
-      Rotate_X (Plot, 10.0);
+      Rotate_X (Active_Plot, 10.0);
       Paint (Canvas);
       Refresh (Canvas);
    end Rotatex;
@@ -94,9 +101,8 @@ package body Create_Plot_3D is
    -------------
 
    procedure Rotatey (Canvas : access Gtk_Plot_Canvas_Record'Class) is
-      Plot : Gtk_Plot_3D := Gtk_Plot_3D (Get_Active_Plot (Canvas));
    begin
-      Rotate_Y (Plot, 10.0);
+      Rotate_Y (Active_Plot, 10.0);
       Paint (Canvas);
       Refresh (Canvas);
    end Rotatey;
@@ -106,9 +112,8 @@ package body Create_Plot_3D is
    -------------
 
    procedure Rotatez (Canvas : access Gtk_Plot_Canvas_Record'Class) is
-      Plot : Gtk_Plot_3D := Gtk_Plot_3D (Get_Active_Plot (Canvas));
    begin
-      Rotate_Z (Plot, 10.0);
+      Rotate_Z (Active_Plot, 10.0);
       Paint (Canvas);
       Refresh (Canvas);
    end Rotatez;
@@ -133,6 +138,7 @@ package body Create_Plot_3D is
       Plot        : Gtk_Plot_3D;
       Canvas      : Gtk_Plot_Canvas;
       Surface     : Gtk_Plot_Surface;
+      Plot_Child  : Gtk_Plot_Canvas_Plot;
    begin
       Set_Label (Frame, "Gtk.Extra.Plot_3D demo");
 
@@ -154,15 +160,16 @@ package body Create_Plot_3D is
 
       --  Create the plot
       Gtk_New (Plot, null, 0.7, 0.7);
-      Set_Default_Plot_Attributes (Plot);
-      Add_Plot (Canvas, Plot, 0.1, 0.06);
+      Gtk_New (Plot_Child, Plot);
+      Put_Child (Canvas, Plot_Child, 0.1, 0.06, 0.9, 0.9);
       Show (Plot);
+      Active_Plot := Plot;
 
-      Axis_Set_Minor_Ticks (Plot, Axis_X, 1);
-      Axis_Set_Minor_Ticks (Plot, Axis_Y, 1);
-      Axis_Show_Ticks (Plot, Plot_Side_Xy, Ticks_Out, Ticks_Out);
-      Axis_Show_Ticks (Plot, Plot_Side_Xz, Ticks_Out, Ticks_Out);
-      Axis_Show_Ticks (Plot, Plot_Side_Yz, Ticks_Out, Ticks_Out);
+      Set_Minor_Ticks (Plot, Axis_X, 1);
+      Set_Minor_Ticks (Plot, Axis_Y, 1);
+      Show_Ticks (Plot, Plot_Side_Xy, Ticks_Out, Ticks_Out);
+      Show_Ticks (Plot, Plot_Side_Xz, Ticks_Out, Ticks_Out);
+      Show_Ticks (Plot, Plot_Side_Yz, Ticks_Out, Ticks_Out);
       Corner_Set_Visible (Plot, True);
 
       --  Create the data set

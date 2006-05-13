@@ -212,6 +212,7 @@ package body Create_Tree_View is
       Num := Append_Column (Tree, Col);
       Set_Title (Col, "First column");
       Pack_Start (Col, Text_Render, True);
+      Set_Sizing (Col, Tree_View_Column_Autosize);
       Add_Attribute (Col, Text_Render, "text", Text_Column);
       Add_Attribute (Col, Text_Render, "strikethrough", Strike_Column);
       Add_Attribute (Col, Text_Render, "editable", Editable_Column);
@@ -243,7 +244,7 @@ package body Create_Tree_View is
 
       Parent := Null_Iter;
 
-      for Count in 1 .. 3 loop
+      for Count in 1 .. 30 loop
          Iter := Add_Line
            (Model, "not-editable, not striken", Parent => Parent);
          Iter := Add_Line
