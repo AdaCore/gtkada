@@ -20,12 +20,6 @@ all: $(OBJ)
 %.o: %.c %.h
 	$(CC) -c $(ALL_CFLAGS) $<
 
-gtkextra-marshal.h: gtkextra-marshal.list
-	glib-genmarshal --prefix=gtkextra --header $< > $@
-
-gtkextra-marshal.c: gtkextra-marshal.list
-	glib-genmarshal --prefix=gtkextra --body $< > $@
-
 clean:
 	-$(RM) $(OBJ)
 
