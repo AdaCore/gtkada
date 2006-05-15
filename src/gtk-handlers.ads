@@ -118,6 +118,41 @@
 --    some marshallers for the most commonly used types in order to ease
 --    the usage of this package. Most of the time, it will not be
 --    necessary to use some other marshallers.
+--    For instance, if a signal is documented as receiving a single argument,
+--    the widget (for instance the "clicked" signal for a Gtk_Button), you
+--    will connect to it with:
+--        with Gtkada.Handlers;
+--        procedure On_Clicked (Button : access Gtk_Widget_Record'Class);
+--        ...
+--           Widget_Callback.Connect (Button, "clicked", On_Clicked'Access);
+--
+--    The simple form above also applies for most handlers that take one
+--    additional argument, for instance the "button_press_event" in
+--    gtk_widget.ads. Just declare your subprogram with the appropriate profile
+--    and connect it, as in:
+--        with Gtkada.Handlers;
+--        procedure On_Button (Widget : access Gtk_Widget_Record'Class;
+--                             Event  : Gdk_Event);
+--        ...
+--           Widget_Callback.Connect (Widget, "button_press_event",
+--                                    On_Button'Access);
+--
+--    More complex forms of handlers exists however in GtkAda, for which no
+--    predefined marshaller exists. In this case, you have to use the general
+--    form of callbacks. For instance, the "select_row" signal of Gtk.Clist.
+--        with Gtkada.Handlers;
+--        with Gtk.Arguments;
+--        procedure On_Select (Clist : access Gtk_Widget_Record'Class;
+--                             Args  : Glib.Values.GValues)
+--        is
+--           Row : constant Gint := To_Gint (Args, 1);
+--           Column : constant Gint := To_Gint (Args, 2);
+--           Event  : constant Gdk_Event := To_Event (Args, 3);
+--        begin
+--           ...
+--        end On_Select;
+--        ...
+--            Widget_Callback.Connect (Clist, "select_row", On_Select'Access);
 --
 --    As for the "To_Marshaller" functions, a series of "Emit_By_Name"
 --    procedures are also provided for the same most common types, to
