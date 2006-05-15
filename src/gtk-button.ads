@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -62,11 +62,12 @@
 --  +------------------------------------------------+
 --  </example>
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gtk.Bin;
 with Gtk.Enums;
+with Gtk.Widget;
 
 package Gtk.Button is
 
@@ -120,39 +121,75 @@ package Gtk.Button is
    procedure Set_Relief
      (Button    : access Gtk_Button_Record;
       New_Style : Gtk.Enums.Gtk_Relief_Style);
+   function Get_Relief
+     (Button    : access Gtk_Button_Record) return Gtk.Enums.Gtk_Relief_Style;
    --  Modify the relief style for the button.
    --  This modifies only its visual aspect, not its behavior.
-
-   function Get_Relief
-     (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Relief_Style;
-   --  Get the current relief style for the button
 
    procedure Set_Label
      (Button : access Gtk_Button_Record;
       Label  : UTF8_String);
-   --  Set the label of the button.
-
    function Get_Label
      (Button : access Gtk_Button_Record) return UTF8_String;
-   --  Return the label of the button.
+   --  Set or gets the label of the button.
+   --  This text is also used to select an icon if Set_Use_Stock was called
+   --  with a parameter set to True.
 
    procedure Set_Use_Underline
      (Button        : access Gtk_Button_Record;
       Use_Underline : Boolean);
-   --  Set whether underscore is used to designate an accelerator.
-
    function Get_Use_Underline
      (Button : access Gtk_Button_Record) return Boolean;
-   --  Return whether underscores are used to designate an accelerator.
+   --  Sets whether an underscore used in the button's label designates an
+   --  accelerator.
+   --  If True, then if the user presses alt and the character following the
+   --  underscore, then the button will act as if it had been pressed.
 
    procedure Set_Use_Stock
      (Button    : access Gtk_Button_Record;
       Use_Stock : Boolean);
-   --  Set whether a stock item is used by the button.
-
    function Get_Use_Stock
      (Button : access Gtk_Button_Record) return Boolean;
-   --  Return whether a stock item is used by the button.
+   --  Sets or Gets whether a stock item is used by the button.
+
+   procedure Set_Alignment
+     (Button : access Gtk_Button_Record;
+      Xalign : Gfloat := 0.5;
+      Yalign : Gfloat := 0.5);
+   procedure Get_Alignment
+     (Button : access Gtk_Button_Record;
+      Xalign : out Gfloat;
+      Yalign : out Gfloat);
+   --  Specify the alignment of the label inside the button.
+   --  Passing (0.0, 0.0) indicates the label should be at the top-left corner
+   --  of the button. (0.5, 0.5) indicates that the label should be centered.
+   --  This property has no effect unless the button's child is a child of
+   --  Gtk_Alignment or Gtk_Misc
+
+   procedure Set_Focus_On_Click
+     (Button         : access Gtk_Button_Record;
+      Focus_On_Click : Boolean := True);
+   function Get_Focus_On_Click
+     (Button : access Gtk_Button_Record)
+      return Boolean;
+   --  Sets whether the button will grab focus when it is clicked with the
+   --  mouse.
+   --  Setting Focus_On_Click to False is useful in contexts like toolbars
+   --  where the focus should not be removed from the main area of the
+   --  application.
+
+   procedure Set_Image
+     (Button : access Gtk_Button_Record;
+      Image  : access Gtk.Widget.Gtk_Widget_Record'Class);
+   function Get_Image
+     (Button : access Gtk_Button_Record)
+      return Gtk.Widget.Gtk_Widget;
+   --  Set the image of the button.
+   --  You do not need to call Show on the image yourself.
+   --  This settings might have no effect, depending on the theme configuration
+   --  that the application's user is using (in particular, the setting
+   --  "gtk-button-images" indicates whether or not images should be displayed
+   --  in buttons).
 
    ----------------------
    -- Signals emission --
@@ -193,10 +230,28 @@ package Gtk.Button is
    --    Descr: Changes the relief used to draw the border of the button.
    --    See also: Same as calling Set_Relief directly.
    --
+   --  - Name:  Use_Underline_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    See also: Same as calling Set_Use_Underline directly
+   --
+   --  - Name:  Use_Stock_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    See also: Same as calling Set_Use_Stock directly
+   --
+   --  - Name:  Focus_On_Click_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    See also: Same as calling Set_Focus_On_Click directly
+   --
    --  </properties>
 
-   Label_Property  : constant Glib.Properties.Property_String;
-   Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style;
+   Label_Property          : constant Glib.Properties.Property_String;
+   Relief_Property         : constant Gtk.Enums.Property_Gtk_Relief_Style;
+   Use_Underline_Property  : constant Glib.Properties.Property_Boolean;
+   Use_Stock_Property      : constant Glib.Properties.Property_Boolean;
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -246,6 +301,12 @@ private
      Glib.Properties.Build ("label");
    Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
      Gtk.Enums.Build ("relief");
+   Use_Underline_Property  : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-underline");
+   Use_Stock_Property      : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-stock");
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("focus-on-click");
 
    pragma Import (C, Get_Type, "gtk_button_get_type");
 end Gtk.Button;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -786,5 +786,19 @@ package body Gtk.Notebook is
    begin
       return Gtk_Notebook_Page (Glib.Values.Get_Proxy (Value));
    end Get_Notebook_Page;
+
+   -----------------
+   -- Get_N_Pages --
+   -----------------
+
+   function Get_N_Pages
+     (Notebook : access Gtk_Notebook_Record)
+      return Gint
+   is
+      function Internal  (Notebook : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_notebook_get_n_pages");
+   begin
+      return Internal (Get_Object (Notebook));
+   end Get_N_Pages;
 
 end Gtk.Notebook;

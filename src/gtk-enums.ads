@@ -335,8 +335,14 @@ package Gtk.Enums is
       Toolbar_Child_Widget);
    pragma Convention (C, Gtk_Toolbar_Child_Type);
 
-   type Gtk_Toolbar_Style is (Toolbar_Icons, Toolbar_Text, Toolbar_Both);
+   type Gtk_Toolbar_Style is
+     (Toolbar_Icons,
+      Toolbar_Text,
+      Toolbar_Both,
+      Toolbar_Both_Horiz);
    pragma Convention (C, Gtk_Toolbar_Style);
+   --  The style of toolbars. Toolbar_Both_Horiz indicates that both icon and
+   --  text should be displayed, arranged horizontally.
 
    type Gtk_Toolbar_Space_Style is (Toolbar_Space_Empty, Toolbar_Space_Line);
    pragma Convention (C, Gtk_Toolbar_Space_Style);
@@ -423,6 +429,8 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Update_Type);
    package Position_Type_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Position_Type);
+   package Toolbar_Style_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Toolbar_Style);
    package Button_Box_Style_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Button_Box_Style);
    package Justification_Properties is new
@@ -444,6 +452,7 @@ package Gtk.Enums is
    type Property_Gtk_Shadow_Type   is new Shadow_Type_Properties.Property;
    type Property_Gtk_Update_Type   is new Update_Type_Properties.Property;
    type Property_Gtk_Position_Type is new Position_Type_Properties.Property;
+   type Property_Gtk_Toolbar_Style is new Toolbar_Style_Properties.Property;
    type Property_Gtk_Button_Box_Style is new
      Button_Box_Style_Properties.Property;
    type Property_Gtk_Justification is new Justification_Properties.Property;

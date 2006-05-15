@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +31,7 @@ with System;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtk.Widget;           use Gtk.Widget;
 
 package body Gtk.Button is
 
@@ -213,7 +214,7 @@ package body Gtk.Button is
 
    procedure Leave (Button : access Gtk_Button_Record) is
       procedure Internal (W : System.Address);
-      pragma Import (C, Internal, "gtk_button_enter");
+      pragma Import (C, Internal, "gtk_button_leave");
 
    begin
       Internal (Get_Object (Button));
@@ -310,6 +311,109 @@ package body Gtk.Button is
    begin
       Internal (Get_Object (Button), Boolean'Pos (Use_Stock));
    end Set_Use_Stock;
+
+   -------------------
+   -- Get_Alignment --
+   -------------------
+
+   procedure Get_Alignment
+     (Button : access Gtk_Button_Record;
+      Xalign : out Gfloat;
+      Yalign : out Gfloat)
+   is
+      procedure Internal
+        (Button : System.Address;
+         Xalign : out Gfloat;
+         Yalign : out Gfloat);
+      pragma Import (C, Internal, "gtk_button_get_alignment");
+   begin
+      Internal (Get_Object (Button), Xalign, Yalign);
+   end Get_Alignment;
+
+   ------------------------
+   -- Get_Focus_On_Click --
+   ------------------------
+
+   function Get_Focus_On_Click
+     (Button : access Gtk_Button_Record)
+     return Boolean
+   is
+      function Internal
+        (Button : System.Address)
+        return Gboolean;
+      pragma Import (C, Internal, "gtk_button_get_focus_on_click");
+   begin
+      return Boolean'Val (Internal (Get_Object (Button)));
+   end Get_Focus_On_Click;
+
+   ---------------
+   -- Get_Image --
+   ---------------
+
+   function Get_Image
+     (Button : access Gtk_Button_Record)
+     return Gtk_Widget
+   is
+      function Internal
+        (Button : System.Address)
+        return System.Address;
+      pragma Import (C, Internal, "gtk_button_get_image");
+      Stub : Gtk_Widget_Record;
+   begin
+      return Gtk_Widget
+        (Get_User_Data
+          (Internal (Get_Object (Button)), Stub));
+   end Get_Image;
+
+   -------------------
+   -- Set_Alignment --
+   -------------------
+
+   procedure Set_Alignment
+     (Button : access Gtk_Button_Record;
+      Xalign : Gfloat := 0.5;
+      Yalign : Gfloat := 0.5)
+   is
+      procedure Internal
+        (Button : System.Address;
+         Xalign : Gfloat;
+         Yalign : Gfloat);
+      pragma Import (C, Internal, "gtk_button_set_alignment");
+   begin
+      Internal (Get_Object (Button), Xalign, Yalign);
+   end Set_Alignment;
+
+   ------------------------
+   -- Set_Focus_On_Click --
+   ------------------------
+
+   procedure Set_Focus_On_Click
+     (Button         : access Gtk_Button_Record;
+      Focus_On_Click : Boolean := True)
+   is
+      procedure Internal
+        (Button         : System.Address;
+         Focus_On_Click : Gboolean);
+      pragma Import (C, Internal, "gtk_button_set_focus_on_click");
+   begin
+      Internal (Get_Object (Button), Boolean'Pos (Focus_On_Click));
+   end Set_Focus_On_Click;
+
+   ---------------
+   -- Set_Image --
+   ---------------
+
+   procedure Set_Image
+     (Button : access Gtk_Button_Record;
+      Image  : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Button : System.Address;
+         Image  : System.Address);
+      pragma Import (C, Internal, "gtk_button_set_image");
+   begin
+      Internal (Get_Object (Button), Get_Object (Image));
+   end Set_Image;
 
    ---------------------
    -- Type_Conversion --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Tool_Item;  use Gtk.Tool_Item;
 
 package body Gtk.Toolbar is
 
@@ -281,7 +282,9 @@ package body Gtk.Toolbar is
       Style       : Gtk_Toolbar_Style) is
    begin
       Widget := new Gtk_Toolbar_Record;
+      pragma Warnings (Off);
       Initialize (Widget, Orientation, Style);
+      pragma Warnings (On);
    end Gtk_New;
 
    ----------------
@@ -798,5 +801,164 @@ package body Gtk.Toolbar is
    begin
       Internal (Get_Object (Toolbar));
    end Unset_Icon_Size;
+
+   --------------------
+   -- Get_Drop_Index --
+   --------------------
+
+   function Get_Drop_Index
+     (Toolbar : access Gtk_Toolbar_Record;
+      X       : Gint;
+      Y       : Gint)
+      return Gint
+   is
+      function Internal
+        (Toolbar : System.Address;
+         X       : Gint;
+         Y       : Gint)
+        return Gint;
+      pragma Import (C, Internal, "gtk_toolbar_get_drop_index");
+   begin
+      return Internal (Get_Object (Toolbar), X, Y);
+   end Get_Drop_Index;
+
+   -----------------
+   -- Get_N_Items --
+   -----------------
+
+   function Get_N_Items
+     (Toolbar : access Gtk_Toolbar_Record)
+     return Gint
+   is
+      function Internal
+        (Toolbar : System.Address)
+        return Gint;
+      pragma Import (C, Internal, "gtk_toolbar_get_n_items");
+   begin
+      return Internal (Get_Object (Toolbar));
+   end Get_N_Items;
+
+   ----------------------
+   -- Get_Relief_Style --
+   ----------------------
+
+   function Get_Relief_Style
+     (Toolbar : access Gtk_Toolbar_Record)
+      return Gtk_Relief_Style
+   is
+      function Internal
+        (Toolbar : System.Address)
+         return Gtk_Relief_Style;
+      pragma Import (C, Internal, "gtk_toolbar_get_relief_style");
+   begin
+      return Internal (Get_Object (Toolbar));
+   end Get_Relief_Style;
+
+   --------------------
+   -- Get_Show_Arrow --
+   --------------------
+
+   function Get_Show_Arrow
+     (Toolbar : access Gtk_Toolbar_Record)
+      return Boolean
+   is
+      function Internal
+        (Toolbar : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_toolbar_get_show_arrow");
+   begin
+      return Boolean'Val (Internal (Get_Object (Toolbar)));
+   end Get_Show_Arrow;
+
+   --------------------
+   -- Set_Show_Arrow --
+   --------------------
+
+   procedure Set_Show_Arrow
+     (Toolbar    : access Gtk_Toolbar_Record;
+      Show_Arrow : Boolean := True)
+   is
+      procedure Internal
+        (Toolbar    : System.Address;
+         Show_Arrow : Gboolean);
+      pragma Import (C, Internal, "gtk_toolbar_set_show_arrow");
+   begin
+      Internal (Get_Object (Toolbar), Boolean'Pos (Show_Arrow));
+   end Set_Show_Arrow;
+
+   ------------
+   -- Insert --
+   ------------
+
+   procedure Insert
+     (Toolbar : access Gtk_Toolbar_Record;
+      Item    : access Gtk_Tool_Item_Record'Class;
+      Pos     : Gint)
+   is
+      procedure Internal
+        (Toolbar : System.Address;
+         Item    : System.Address;
+         Pos     : Gint);
+      pragma Import (C, Internal, "gtk_toolbar_insert");
+   begin
+      Internal (Get_Object (Toolbar), Get_Object (Item), Pos);
+   end Insert;
+
+   --------------------
+   -- Get_Item_Index --
+   --------------------
+
+   function Get_Item_Index
+     (Toolbar : access Gtk_Toolbar_Record;
+      Item    : access Gtk_Tool_Item_Record'Class)
+      return Gint
+   is
+      function Internal
+        (Toolbar : System.Address;
+         Item    : System.Address)
+         return Gint;
+      pragma Import (C, Internal, "gtk_toolbar_get_item_index");
+   begin
+      return Internal (Get_Object (Toolbar), Get_Object (Item));
+   end Get_Item_Index;
+
+   ------------------
+   -- Get_Nth_Item --
+   ------------------
+
+   function Get_Nth_Item
+     (Toolbar : access Gtk_Toolbar_Record;
+      N       : Gint)
+      return Gtk_Tool_Item
+   is
+      function Internal
+        (Toolbar : System.Address;
+         N       : Gint)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_toolbar_get_nth_item");
+      Stub : Gtk_Tool_Item_Record;
+   begin
+      return Gtk_Tool_Item
+        (Get_User_Data
+          (Internal (Get_Object (Toolbar), N), Stub));
+   end Get_Nth_Item;
+
+   -----------------------------
+   -- Set_Drop_Highlight_Item --
+   -----------------------------
+
+   procedure Set_Drop_Highlight_Item
+     (Toolbar   : access Gtk_Toolbar_Record;
+      Tool_Item : access Gtk_Tool_Item_Record'Class;
+      Index     : Gint)
+   is
+      procedure Internal
+        (Toolbar   : System.Address;
+         Tool_Item : System.Address;
+         Index     : Gint);
+      pragma Import (C, Internal, "gtk_toolbar_set_drop_highlight_item");
+   begin
+      Internal (Get_Object (Toolbar), Get_Object (Tool_Item), Index);
+   end Set_Drop_Highlight_Item;
 
 end Gtk.Toolbar;
