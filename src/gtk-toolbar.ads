@@ -178,6 +178,18 @@ package Gtk.Toolbar is
       Style       : Gtk_Toolbar_Style);
    pragma Obsolescent;
 
+   type Gtk_Toolbar_Child_Type is
+     (Toolbar_Child_Space,
+      Toolbar_Child_Button,
+      Toolbar_Child_Togglebutton,
+      Toolbar_Child_Radiobutton,
+      Toolbar_Child_Widget);
+   --  This type used to be in Gtk.Enums, but is no longer used outside of the
+   --  obsolescent subprograms in this package. We strongly encourage you to
+   --  move your code to the new Insert API.
+
+   pragma Convention (C, Gtk_Toolbar_Child_Type);
+
    function Append_Element
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : Gtk_Toolbar_Child_Type;
