@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,8 +48,9 @@
 --  as the height of the handlebox shrinks, so the snap edge should be set to
 --  Pos_Bottom.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Bin;
 with Gtk.Enums;
 
@@ -71,26 +72,26 @@ package Gtk.Handle_Box is
    procedure Set_Shadow_Type
      (Handle_Box : access Gtk_Handle_Box_Record;
       Typ        : Enums.Gtk_Shadow_Type);
-   --  Set the type of shadow to be drawn around the border of the Handle_Box.
-
    function Get_Shadow_Type
      (Handle_Box : access Gtk_Handle_Box_Record) return Enums.Gtk_Shadow_Type;
-   --  Return the shadow type of the handle box.
+   --  Sets or gets the type of shadow to be drawn around the border of the
+   --  Handle_Box.
 
    procedure Set_Handle_Position
      (Handle_Box : access  Gtk_Handle_Box_Record;
       Position   : Enums.Gtk_Position_Type);
-   --  Set the side of the Handle_Box where the handle is drawn.
-
    function Get_Handle_Position
      (Handle_Box : access  Gtk_Handle_Box_Record)
       return Enums.Gtk_Position_Type;
-   --  Return the side of the Handle_Box where the handle is drawn.
+   --  Sets or gets the side of the Handle_Box where the handle is drawn.
 
    procedure Set_Snap_Edge
      (Handle_Box : access  Gtk_Handle_Box_Record;
       Edge       : Enums.Gtk_Position_Type);
-   --  Set the snap edge of a Handle_Box.
+   function Get_Snap_Edge
+     (Handle_Box : access  Gtk_Handle_Box_Record)
+      return Enums.Gtk_Position_Type;
+   --  Sets or gets the snap edge of a Handle_Box.
    --  The snap edge is the edge of the detached child that must be aligned
    --  with the corresponding edge of the "ghost" left behind when the child
    --  was detached to reattach the torn-off window. Usually, the snap edge
@@ -102,11 +103,6 @@ package Gtk.Handle_Box is
    --  Pos_Left, then the snap edge will be Pos_Top, otherwise it will be
    --  Pos_Left.
 
-   function Get_Snap_Edge
-     (Handle_Box : access  Gtk_Handle_Box_Record)
-      return Enums.Gtk_Position_Type;
-   --  Return the snap edge of a Handle_Box.
-
    ----------------
    -- Properties --
    ----------------
@@ -115,7 +111,7 @@ package Gtk.Handle_Box is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  - Name:  Shadow_Property
+   --  - Name:  Shadow_Property and Shadow_Type_Property
    --    Type:  Gtk_Shadow_Type
    --    Flags: read-write
    --    Descr: Appearance of the shadow that surrounds the container.
@@ -134,11 +130,18 @@ package Gtk.Handle_Box is
    --           to dock the handlebox.
    --    See also: Set_Snap_Edge
    --
+   --  - Name:  Snap_Edge_Set_Property
+   --    Type:  Boolean
+   --    Descr: Whether to use the value from the Snap_Edge_Property, or a
+   --           value derived from Handle_Position
+   --
    --  </properties>
 
    Shadow_Property          : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+   Shadow_Type_Property     : constant Gtk.Enums.Property_Gtk_Shadow_Type;
    Handle_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
    Snap_Edge_Property       : constant Gtk.Enums.Property_Gtk_Position_Type;
+   Snap_Edge_Set_Property   : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -147,34 +150,40 @@ package Gtk.Handle_Box is
    --  <signals>
    --  The following new signals are defined for this widget:
    --
-   --   - "child-attached"
-   --     procedure Handler
-   --       (Handle_Box : access Gtk_Handle_Box_Record'Class;
-   --        Widget     : access Gtk_Widget_Record'Class);
+   --  - "child_attached"
+   --    procedure Handler
+   --      (Handle_Box : access Gtk_Handle_Box_Record'Class;
+   --       Widget     : access Gtk_Widget_Record'Class);
+   --    Emitted when the contents of the Handle_Box are reattached to the main
+   --    window.
+   --    Widget is the child widget of the Handle_Box. (this argument provides
+   --    no extra information and is here only for backwards-compatibility)
    --
-   --  Emitted when the contents of the Handle_Box are reattached to the main
-   --  window.
-   --  Widget is the child widget of the Handle_Box. (this argument provides no
-   --  extra information and is here only for backwards-compatibility)
+   --  - "child_detached"
+   --    procedure Handler
+   --      (Handle_Box : access Gtk_Handle_Box_Record'Class;
+   --       Widget     : access Gtk_Widget_Record'Class);
+   --    Emitted when the contents of the Handle_Box are detached from the main
+   --    window. See "child-attached" for drtails on the parameters.
    --
-   --   - "child-detached"
-   --     procedure Handler
-   --       (Handle_Box : access Gtk_Handle_Box_Record'Class;
-   --        Widget     : access Gtk_Widget_Record'Class);
-   --
-   --  Emitted when the contents of the Handle_Box are detached from the main
-   --  window. See "child-attached" for drtails on the parameters.
    --  </signals>
+
+   Signal_Child_Attached : constant String := "child_attached";
+   Signal_Child_Detached : constant String := "child_detached";
 
 private
    type Gtk_Handle_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
    Shadow_Property          : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
-     Gtk.Enums.Build ("shadow");
+     Gtk.Enums.Build ("shadow-type");  --  Same as Shadow_Type !
+   Shadow_Type_Property     : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow-type");
    Handle_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("handle_position");
    Snap_Edge_Property       : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("snap_edge");
+   Snap_Edge_Set_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("snap-edge-set");
 
    pragma Import (C, Get_Type, "gtk_handle_box_get_type");
 end Gtk.Handle_Box;
