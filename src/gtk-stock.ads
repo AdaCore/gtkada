@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,10 +32,8 @@
 --
 --  See the function Gtk.Widget.Render_Icon for a convenience function that
 --  converts a stock icon to an actual pixmap/pixbuf.
---
 --  </description>
-
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gdk.Types;
 with Gtkada.Types;
@@ -90,15 +88,13 @@ package Gtk.Stock is
    --  Fill Item with the registered values for Stock_Id.
    --  Success if set to True of Stock_Id was known.
 
-   --  function List_Ids return GSList*;
-   --  Should free the list (and free each string in it also).
-   --  This function is only useful for GUI builders and such.
-
    procedure Free (Item : in out Gtk_Stock_Item);
    --  Free memory allocated in Item.
 
    --  Stock IDs (not all are stock items; some are images only)
 
+   Stock_Dialog_Authentication : aliased constant String :=
+     "gtk-dialog-authentication";
    Stock_Dialog_Info      : aliased constant String := "gtk-dialog-info";
    Stock_Dialog_Warning   : aliased constant String := "gtk-dialog-warning";
    Stock_Dialog_Error     : aliased constant String := "gtk-dialog-error";
@@ -107,6 +103,7 @@ package Gtk.Stock is
    Stock_Dnd              : aliased constant String := "gtk-dnd";
    Stock_Dnd_Multiple     : aliased constant String := "gtk-dnd-multiple";
 
+   Stock_About            : aliased constant String := "gtk-about";
    Stock_Add              : aliased constant String := "gtk-add";
    Stock_Apply            : aliased constant String := "gtk-apply";
    Stock_Bold             : aliased constant String := "gtk-bold";
@@ -114,14 +111,20 @@ package Gtk.Stock is
    Stock_Cdrom            : aliased constant String := "gtk-cdrom";
    Stock_Clear            : aliased constant String := "gtk-clear";
    Stock_Close            : aliased constant String := "gtk-close";
+   Stock_Color_Picker     : aliased constant String := "gtk-color-picker";
    Stock_Convert          : aliased constant String := "gtk-convert";
+   Stock_Connect          : aliased constant String := "gtk-connect";
    Stock_Copy             : aliased constant String := "gtk-copy";
    Stock_Cut              : aliased constant String := "gtk-cut";
    Stock_Delete           : aliased constant String := "gtk-delete";
+   Stock_Directory        : aliased constant String := "gtk-directory";
+   Stock_Disconnect       : aliased constant String := "gtk-disconnect";
    Stock_Execute          : aliased constant String := "gtk-execute";
+   Stock_File             : aliased constant String := "gtk-file";
    Stock_Find             : aliased constant String := "gtk-find";
    Stock_Find_And_Replace : aliased constant String := "gtk-find-and-replace";
    Stock_Floppy           : aliased constant String := "gtk-floppy";
+   Stock_Fullscreen       : aliased constant String := "gtk-fullscreen";
    Stock_Goto_Bottom      : aliased constant String := "gtk-goto-bottom";
    Stock_Goto_First       : aliased constant String := "gtk-goto-first";
    Stock_Goto_Last        : aliased constant String := "gtk-goto-last";
@@ -130,16 +133,30 @@ package Gtk.Stock is
    Stock_Go_Down          : aliased constant String := "gtk-go-down";
    Stock_Go_Forward       : aliased constant String := "gtk-go-forward";
    Stock_Go_Up            : aliased constant String := "gtk-go-up";
+   Stock_Harddisk         : aliased constant String := "gtk-harddisk";
    Stock_Help             : aliased constant String := "gtk-help";
    Stock_Home             : aliased constant String := "gtk-home";
    Stock_Index            : aliased constant String := "gtk-index";
+   Stock_Indent           : aliased constant String := "gtk-indent";
+   Stock_Info             : aliased constant String := "gtk-info";
+   Stock_Unindent         : aliased constant String := "gtk-unindent";
    Stock_Italic           : aliased constant String := "gtk-italic";
    Stock_Jump_To          : aliased constant String := "gtk-jump-to";
    Stock_Justify_Center   : aliased constant String := "gtk-justify-center";
    Stock_Justify_Fill     : aliased constant String := "gtk-justify-fill";
    Stock_Justify_Left     : aliased constant String := "gtk-justify-left";
    Stock_Justify_Right    : aliased constant String := "gtk-justify-right";
+   Stock_Leave_Fullscreen : aliased constant String := "gtk-leave-fullscreen";
    Stock_Missing_Image    : aliased constant String := "gtk-missing-image";
+   Stock_Media_Forward    : aliased constant String := "gtk-media-forward";
+   Stock_Media_Next       : aliased constant String := "gtk-media-next";
+   Stock_Media_Pause      : aliased constant String := "gtk-media-pause";
+   Stock_Media_Play       : aliased constant String := "gtk-media-play";
+   Stock_Media_Previous   : aliased constant String := "gtk-media-previous";
+   Stock_Media_Record     : aliased constant String := "gtk-media-record";
+   Stock_Media_Rewind     : aliased constant String := "gtk-media-rewind";
+   Stock_Media_Stop       : aliased constant String := "gtk-media-stop";
+   Stock_Network          : aliased constant String := "gtk-network";
    Stock_New              : aliased constant String := "gtk-new";
    Stock_No               : aliased constant String := "gtk-no";
    Stock_Ok               : aliased constant String := "gtk-ok";
@@ -172,4 +189,8 @@ package Gtk.Stock is
    Stock_Zoom_In          : aliased constant String := "gtk-zoom-in";
    Stock_Zoom_Out         : aliased constant String := "gtk-zoom-out";
 
+   --  No binding: gtk_stock_list_ids
+   --  No binding: gtk_stock_item_free
+   --  No binding: gtk_stock_item_copy
+   --  No binding: gtk_stock_set_translate_func
 end Gtk.Stock;
