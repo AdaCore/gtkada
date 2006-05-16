@@ -313,8 +313,21 @@ foreach $source_file (@source_files) {
 	    &output ("\@itemize \@bullet\n\n");
 
 	    foreach $signal (sort keys %signals) {
-		&output ("\@item \"\@b{$signal}\"\n\n",
-			 $signals{$signal}, "\n");
+               &output ("\@item \"\@b{$signal}\"\n\n");
+               my ($handler, $comment) =
+                ($signals{$signal} =~ /^([^)]+\)[^;]*;)(.*)$/s);
+               $handler = &highlight_keywords ($handler);
+
+               if ($with_html) {
+                  &html_output ("<table class='subprograms noindent'><tr><td class='profile'>");
+                  &output ("$handler");
+                  &html_output ("</td></tr></table>");
+               } else {
+                  &output  ("\@smallexample\n");
+                  &output ("$handler");
+                  &output  ("\n\@end smallexample\n");
+               }
+               &output ("$comment\n");
 	    }
 	    &output ("\@end itemize\n\n");
 	}
@@ -829,14 +842,7 @@ sub find_signals () {
 		}
 		$descr .= "\n";
 	    } else {
-		if ($in_handler) {
-		    if ($line !~ /^procedure|function/) {
-			$line = ("\@ " x 27) . $line;
-		    }
-		    $descr .= $line . "\@*\n";
-		} else {
-		    $descr .= $line . "\n";
-		}
+                $descr .= $line . "\n";
 	    }
 	}
 	$signals{$signal} = $descr if ($signal ne "");
