@@ -27,6 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  This widget is an adapter: it can contain any child, and will make it
+--  scrollable. Its use is not necessary inside a Gtk_Scrolled_Window, which
+--  automatically uses a Gtk_Viewport when necessary.
+--  </description>
 --  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
@@ -45,11 +50,11 @@ package Gtk.Viewport is
      (Viewport    : out Gtk_Viewport;
       Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
       Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
-
    procedure Initialize
      (Viewport    : access Gtk_Viewport_Record'Class;
-      Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
-      Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
+      Hadjustment : Gtk.Adjustment.Gtk_Adjustment;
+      Vadjustment : Gtk.Adjustment.Gtk_Adjustment);
+   --  Create or initialize a new viewport
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Viewport.
@@ -59,26 +64,45 @@ package Gtk.Viewport is
    --  Return the window associated with the viewport.
    --  You should use this one rather than Gtk.Widget.Get_Window.
 
-   function Get_Hadjustment
-     (Viewport : access Gtk_Viewport_Record) return Adjustment.Gtk_Adjustment;
-
-   function Get_Vadjustment
-     (Viewport : access Gtk_Viewport_Record) return Adjustment.Gtk_Adjustment;
-
    procedure Set_Hadjustment
      (Viewport   : access Gtk_Viewport_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   function Get_Hadjustment
+     (Viewport : access Gtk_Viewport_Record) return Adjustment.Gtk_Adjustment;
+   --  Sets or gets the Gtk_Adjustment used for horizontal scrolling
 
    procedure Set_Vadjustment
      (Viewport   : access Gtk_Viewport_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   function Get_Vadjustment
+     (Viewport : access Gtk_Viewport_Record) return Adjustment.Gtk_Adjustment;
+   --  Sets or gets the Gtk_Adjustment used for vertical scrolling
 
    procedure Set_Shadow_Type
      (Viewport : access Gtk_Viewport_Record;
       The_Type : Gtk_Shadow_Type);
-
    function Get_Shadow_Type
      (Viewport : access Gtk_Viewport_Record) return Gtk_Shadow_Type;
+   --  Sets or gets the visual rendering of the viewport
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "set_scroll_adjustments"
+   --    procedure Handler
+   --      (Viewport   : access Gtk_Viewport_Record'Class;
+   --       Hadj, Vadj : access Gtk_Adjustment_Record'Class);
+   --    You should emit this signal to request a change of adjustments for the
+   --    viewport. Seldom used, it is simpler to use Set_Vadjusment and
+   --    Set_Hadjustment.
+   --
+   --  </signals>
+
+   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
 
    ----------------
    -- Properties --
