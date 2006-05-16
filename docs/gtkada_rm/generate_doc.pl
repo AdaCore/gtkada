@@ -178,6 +178,7 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 		      "Gtk_Font_Combo"   => "Gtk.Extra.Font_Combo",
 		      "Gtk_IEntry"       => "Gtk.Extra.Item_Entry",
 		      "Gtk_Entry"        => "Gtk.GEntry",
+                      "Gtk_Plot_Canvas_Child" => "Gtk.Extra.Plot_Canvas",
 		      "Gtk_Range"        => "Gtk.Grange");
 
 ## Contains the parent of each widget
@@ -259,7 +260,6 @@ foreach $source_file (@source_files) {
 	my (@subprogs) = &get_subprograms (@content);
 	my (%types) = &get_types (@content);
 
-
 	## Widget hierarchy
 
 	if (@hierarchy) {
@@ -285,9 +285,9 @@ foreach $source_file (@source_files) {
 		    my ($length) = " " x ($level * 3);
 		    $line =~ s/\(/\n$length        \(/;
 		}
-		$hierarchy_short .= $line;		
+		$hierarchy_short .= $line;
 	    }
-          
+
 	    &section_output ("Widget Hierarchy");
 	    &html_output ("<table class='hierarchy'><tr><td>");
 	    &output ("\n\@ifnottex\n");
@@ -559,9 +559,9 @@ sub find_type_in_package () {
 
     while (@content && ! defined $p) {
         # read the current line, and make sure we get the end of the current
-        # current declaration 
+        # declaration
 	$line = shift @content;
-	while (@content && line !~ /;/) {
+	while (@content && $line !~ /;/) {
 	  $line .= shift @content;
 	}
 
@@ -619,7 +619,7 @@ sub expand_include () {
 	    push (@strings, $line);
 	}
     }
-    
+
     return @strings;
 }
 
@@ -635,14 +635,14 @@ sub get_types () {
     my (%types) = ();
     my ($current) = "";
     my ($description);
-    
+
     while (($line = shift @content)) {
 
 	# Skip the private part
 	if ($line =~ /^\s*private/) {
 	    return %types;
 	}
-	
+
 	if ($line =~ /^\s*((sub)?type)\s*(\S+)\s+(.)/) {
 	    $current = $3;
 #	    print "======$current====\n";
@@ -973,7 +973,7 @@ sub get_package_name () {
 # the beginning of each line in $1)
 # When there is an empty line, replaces it with @*
 # And the first line is ended with @* if $2 is 1
-sub clean_comment_marks () {
+sub clean_comment_marks() {
     my ($string) = shift;
     my ($first_line) = shift;
 
@@ -995,7 +995,7 @@ sub clean_comment_marks () {
 # A list is recognized when at least one line starts with '-' as the first
 # non-white character, and ends after the next empty line.
 
-sub process_list () {
+sub process_list() {
     my ($value) = shift;
     my (@lines) = split (/\n/, $value);
     my ($output);
@@ -1015,11 +1015,11 @@ sub process_list () {
 	    $terminate_list = 0;
 	    $in_list = 0;
 	}
-	
+
 	$output .= $line . "\n";
     }
     $output .= "\@end itemize\n" if ($in_list);
-	
+
     return $output;
 }
 
@@ -1101,11 +1101,11 @@ sub get_subprograms () {
 	while ($content [0] =~ /^\s*--/) {
 	    $comments .= shift @content;
 	}
-	
+
 	push (@result, ['--', $section, "$comments", ()]);
 	$last_was_section = 1;
 
-    # Else if we have a subprogram or operator definition	
+    # Else if we have a subprogram or operator definition
     } elsif ($line =~ /^\s*(procedure|function)\s+([\w\"+\-*\/&]+)\s*(.*)/) {
       my ($type)   = $1;
       my ($name)   = $2;
@@ -1136,9 +1136,13 @@ sub get_subprograms () {
 
       my ($ret_type) = ($return =~ /return\s+([^\s;]+)/);
 
-      # Memorizes the comments
+      # Memorizes the comments (if we have any)
       my ($comments) = "";
       $line = shift @content;
+      if ($line !~ /^\s*--/) {
+        unshift @content, $line;
+      }
+
       while ($line =~ /^\s*--/) {
 	$comments .= $line;
 	$line = shift @content;
