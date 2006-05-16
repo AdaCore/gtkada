@@ -27,12 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <documentation>
+--  <description>
 --  A toolbar groups a number of items (buttons, combo boxes,...), generally
 --  at the top of the application window, just below the menu bar. It provides
 --  quick access to the most commonly used features of your application.
 --  It is common for an application to have multiple toolbars.
---  </documentation>
+--  </description>
 --  <c_version>2.8.17</c_version>
 
 with Glib;
@@ -164,6 +164,7 @@ package Gtk.Toolbar is
    --  from future versions of gtk+ (and therefore GtkAda).
    --  To find out whether your code uses any of these, we recommend compiling
    --  with the -gnatwj switch
+   --  <doc_ignore>
 
    procedure Gtk_New
      (Widget      : out Gtk_Toolbar;
@@ -299,6 +300,8 @@ package Gtk.Toolbar is
    --  Unsets icon sizes set through Set_Icon_Size, so that user preferences
    --  set through the gtk+ theme are used
 
+   --  </doc_ignore>
+
    -------------
    -- Signals --
    -------------
@@ -306,26 +309,35 @@ package Gtk.Toolbar is
    --  <signals>
    --  The following new signals are defined for this widget:
    --
-   --  "orientation-changed"
-   --  procedure Handler (Toolbar     : access Gtk_Toolbar_Record'Class;
-   --                     Orientation : Gtk_Orientation);
-   --  Emitted when the orientation of the toolbar changes
+   --  - "orientation-changed"
+   --    procedure Handler
+   --      (Toolbar     : access Gtk_Toolbar_Record'Class;
+   --       Orientation : Gtk_Orientation);
+   --    Emitted when the orientation of the toolbar changes
    --
-   --  "style-changed"
-   --  procedure Handler (Toolbar     : access Gtk_Toolbar_Record'Class;
-   --                     Style       : Gtk_Toolbar_Style);
-   --  Emitted when the style of the toolbar changes
+   --  - "style-changed"
+   --    procedure Handler
+   --      (Toolbar     : access Gtk_Toolbar_Record'Class;
+   --       Style       : Gtk_Toolbar_Style);
+   --    Emitted when the style of the toolbar changes
    --
-   --  "popup_context_menu"
-   --  function Handler (Toolbar      : access Gtk_Toolbar_Record'Class;
-   --                    X, Y, Button : Gint) return Boolean;
-   --  Emitted when the user right-clicks the toolbar or uses the keybindg to
-   --  display a popup menu.
-   --  Application developers should handle this signal if they want to display
-   --  a context menu on the toolbar. The context-menu should appear at the
-   --  coordinates given by (x, y). The mouse button number is given by the
-   --  Button parameter (set to -1 if popped up with the keyboard).
-   --  Return value is True if the signal was handled.
+   --  - "popup_context_menu"
+   --    function Handler
+   --      (Toolbar      : access Gtk_Toolbar_Record'Class;
+   --       X, Y, Button : Gint) return Boolean;
+   --    Emitted when the user right-clicks the toolbar or uses the keybinding
+   --    to display a popup menu.
+   --    Application developers should handle this signal if they want to
+   --    display a context menu on the toolbar. The context-menu should appear
+   --    at the coordinates given by (x, y). The mouse button number is given
+   --    by the Button parameter (set to -1 if popped up with the keyboard).
+   --    Return value is True if the signal was handled.
+   --
+   --  </signals>
+
+   Signal_Orientation_Changed : constant String := "orientation-changed";
+   Signal_Style_Changed       : constant String := "style-changed";
+   Signal_Popup_Context_Menu  : constant String := "popup_context_menu";
 
    ----------------
    -- Properties --
@@ -337,15 +349,19 @@ package Gtk.Toolbar is
    --
    --  Name: Orientation_Property
    --  Type: Gtk_Orientation
-   --  See:  Set_Orientation
+   --  See:  Set_Orientation / Get_Orientation
    --
    --  Name: Toolbar_Style_Property
    --  Type: Gtk_Toolbar_Style
-   --  See:  Set_Style
+   --  See:  Set_Style / Get_Style
    --
    --  Name: Show_Arrow_Property
    --  Type: Boolean
-   --  See:  Set_Show_Arrow
+   --  See:  Set_Show_Arrow / Get_Show_Arrow
+   --
+   --  Name: Tooltips_Property
+   --  Type: Boolean
+   --  See : Set_Tooltips / Get_Tooltips
    --
    --  </properties>
 
