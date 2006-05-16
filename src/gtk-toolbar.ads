@@ -169,13 +169,13 @@ package Gtk.Toolbar is
      (Widget      : out Gtk_Toolbar;
       Orientation : Gtk_Orientation;
       Style       : Gtk_Toolbar_Style);
-   --  pragma Obsolescent;
+   pragma Obsolescent;
 
    procedure Initialize
      (Widget      : access Gtk_Toolbar_Record'Class;
       Orientation : Gtk_Orientation;
       Style       : Gtk_Toolbar_Style);
-   --  pragma Obsolescent;
+   pragma Obsolescent;
 
    function Append_Element
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -186,7 +186,7 @@ package Gtk.Toolbar is
       Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget;
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead"); --  Append_Element
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead"); --  Append_Element
 
    function Prepend_Element
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -197,7 +197,7 @@ package Gtk.Toolbar is
       Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget;
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Prepend_Element
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Prepend_Element
 
    function Insert_Element
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -209,7 +209,7 @@ package Gtk.Toolbar is
       Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint)
       return Gtk.Widget.Gtk_Widget;
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Element
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Element
 
    function Append_Item
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -218,7 +218,7 @@ package Gtk.Toolbar is
       Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button;
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Append_Item
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Append_Item
 
    function Prepend_Item
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -227,7 +227,7 @@ package Gtk.Toolbar is
       Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button;
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Prepend_Item
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Prepend_Item
 
    function Insert_Item
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -237,7 +237,7 @@ package Gtk.Toolbar is
       Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint)
       return Gtk.Button.Gtk_Button;
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Item
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Item
 
    function Insert_Stock
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -245,35 +245,35 @@ package Gtk.Toolbar is
       Tooltip_Text         : UTF8_String := "";
       Tooltip_Private_Text : UTF8_String := "";
       Position             : Gint := -1) return Gtk.Button.Gtk_Button;
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Stock
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Stock
 
    procedure Append_Space (Toolbar : access Gtk_Toolbar_Record);
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Append_Space
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Append_Space
 
    procedure Prepend_Space (Toolbar : access Gtk_Toolbar_Record);
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Prepend_Space
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Prepend_Space
 
    procedure Insert_Space
      (Toolbar : access Gtk_Toolbar_Record; Position : Gint);
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Space
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Space
 
    procedure Remove_Space
      (Toolbar : access Gtk_Toolbar_Record; Position : Gint);
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Remove_Space
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Remove_Space
 
    procedure Append_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tooltip_Text         : UTF8_String := "";
       Tooltip_Private_Text : UTF8_String := "");
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Append_Widget
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Append_Widget
 
    procedure Prepend_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tooltip_Text         : UTF8_String := "";
       Tooltip_Private_Text : UTF8_String := "");
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Prepend_Widget
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Prepend_Widget
 
    procedure Insert_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -281,21 +281,21 @@ package Gtk.Toolbar is
       Tooltip_Text         : UTF8_String := "";
       Tooltip_Private_Text : UTF8_String := "";
       Position             : Gint);
-   --  pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Widget
+   pragma Obsolescent ("Use Gtk.Toolbar.Insert instead");  --  Insert_Widget
 
    procedure Set_Icon_Size
      (Toolbar   : access Gtk_Toolbar_Record;
       Icon_Size : Gtk_Icon_Size);
-   --  pragma Obsolescent  --  Set_Icon_Size
-   --  ("Applications should respect user preferences (gtk+ themes)");
+   pragma Obsolescent  --  Set_Icon_Size
+     ("Applications should respect user preferences (gtk+ themes)");
 
    function Get_Icon_Size
      (Toolbar : access Gtk_Toolbar_Record) return Gtk_Icon_Size;
-   --  pragma Obsolescent  --  Get_Icon_Size
-   --  ("Applications should respect user preferences (gtk+ themes)");
+   pragma Obsolescent  --  Get_Icon_Size
+     ("Applications should respect user preferences (gtk+ themes)");
 
    procedure Unset_Icon_Size (Toolbar : access Gtk_Toolbar_Record);
-   --  pragma Obsolescent;  --  Unset_Icon_Size
+   pragma Obsolescent;  --  Unset_Icon_Size
    --  Unsets icon sizes set through Set_Icon_Size, so that user preferences
    --  set through the gtk+ theme are used
 
