@@ -35,6 +35,7 @@
 --
 --  The gtk+ sources provide the following drawing that explains the role of
 --  the various spacings that can be set for a button:
+--  </description>
 --
 --  <example>
 --  +------------------------------------------------+
@@ -61,7 +62,6 @@
 --  |                border_width                    |
 --  +------------------------------------------------+
 --  </example>
---  </description>
 --  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
@@ -293,6 +293,12 @@ package Gtk.Button is
    --    Emitted when the mouse leaves the button.
    --
    --  </signals>
+
+   Signal_Clicked  : constant String := "clicked";
+   Signal_Pressed  : constant String := "pressed";
+   Signal_Released : constant String := "released";
+   Signal_Enter    : constant String := "enter";
+   Signal_Leave    : constant String := "leave";
 
 private
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with null record;
