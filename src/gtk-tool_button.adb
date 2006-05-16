@@ -161,13 +161,17 @@ package body Gtk.Tool_Button is
    is
       function Internal
         (Icon_Widget : System.Address;
-         Label       : String)
+         Label       : chars_ptr)
          return System.Address;
       pragma Import (C, Internal, "gtk_tool_button_new");
+      Str : chars_ptr := Null_Ptr;
    begin
-      Set_Object
-        (Button,
-         Internal (Get_Object (Icon_Widget), Label & ASCII.NUL));
+      if Label /= "" then
+         Str := New_String (Label);
+      end if;
+
+      Set_Object (Button, Internal (Get_Object (Icon_Widget), Str));
+      Free (Str);
    end Initialize;
 
    ------------------------

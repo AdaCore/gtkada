@@ -29,6 +29,8 @@
 --  <description>
 --  This package defines a special kind of Gtk.Toolbar child that embeds a
 --  button.
+--  See also gtk-toggle_tool_button.ads, gtk-radio_tool_button.ads and
+--  gtk-menu_tool_button.ads
 --  </description>
 --  <c_version>2.8.17</c_version>
 

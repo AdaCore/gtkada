@@ -29,7 +29,8 @@
 --  <description>
 --  This package defines the base class for all items that can be added into
 --  a toolbar (see gtk-toolbar.ads).
---  See also Gtk.Tool_Button (gtk-tool_button.ads)
+--  See also Gtk.Tool_Button (gtk-tool_button.ads).
+--  See also Gtk.Separator_Tool_Item (gtk-separator_tool_item).
 --  </description>
 --  <c_version>2.8.17</c_version>
 
