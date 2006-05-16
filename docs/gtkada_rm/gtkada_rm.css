@@ -1,9 +1,19 @@
+body                         { width: 800px; }
 table.section                { width: 100%; background: #FFD0D0 }
-table.subprograms            { width: 100%; border: 0px; padding-left: 20px}
+table.subprograms            { width: 780px; /* body.width - margin-left */
+                               border: 0px;
+                               margin-left: 20px}
+table.noindent               { margin-left: 0px; }
 table.subprograms td.profile { background: #D6E8FF;
                                vertical-align: top;
                                white-space: pre }
+table                        { margin-left: 0px;
+                               padding-left: 0px; }
+table td                     { padding-left: 0px; }
+table tr                     { padding-left: 0px; }
 table.subprograms td.descr   { padding-bottom: 20px }
-table.hierarchy              { width: 100%; background: #FFF0D0; border: 0px;
+table.hierarchy              { width: 780px;  /* body.width - margin-left */
+                               background: #FFF0D0; 
+                               border: 0px;
                                margin-left: 20px; margin-top: 10px;
                                margin-bottom: 10px }
