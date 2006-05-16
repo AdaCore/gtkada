@@ -42,6 +42,7 @@
 
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
+with Glib.Properties;
 with Glib.Values;
 with Gtk.Container;
 with Gtk.Enums;
@@ -247,34 +248,6 @@ package Gtk.Notebook is
      (Widget : access Gtk_Notebook_Record) return Gtk.Enums.Gtk_Position_Type;
    --  Return the current position of the tabs.
 
-   --  <doc_ignore>
-   procedure Set_Homogeneous_Tabs
-     (Notebook    : access Gtk_Notebook_Record;
-      Homogeneous : in Boolean := True);
-   --  Indicate whether all the tabs should have the same size (width or
-   --  height, depending on which side they are displayed on).
-   --  pragma Deprecated (Set_Homogeneous_Tabs);
-
-   procedure Set_Tab_Border
-     (Notebook     : access Gtk_Notebook_Record;
-      Border_Width : in Gint);
-   --  Change the width of the tabs' borders.
-   --  This modifies both the horizontal border and the vertical border.
-   --  pragma Deprecated (Set_Tab_Border);
-
-   procedure Set_Tab_Hborder
-     (Notebook     : access Gtk_Notebook_Record;
-      Border_Width : in Gint);
-   --  Modify the width of the horizontal borders of the tabs.
-   --  pragma Deprecated (Set_Tab_Hborder);
-
-   procedure Set_Tab_Vborder
-     (Notebook     : access Gtk_Notebook_Record;
-      Border_Width : in Gint);
-   --  Modify the height of the vertical borders of the tabs.
-   --  pragma Deprecated (Set_Tab_Vborder);
-   --  </doc_ignore>
-
    procedure Set_Scrollable
      (Notebook   : access Gtk_Notebook_Record;
       Scrollable : in Boolean := True);
@@ -401,22 +374,6 @@ package Gtk.Notebook is
       Position : Gint);
    --  Change the position of the page that contains Child.
 
-   -------------------
-   -- List of pages --
-   -------------------
-
-   --  <doc_ignore>
-   function Convert is new Unchecked_Conversion
-     (Gtk_Notebook_Page, System.Address);
-   function Convert is new Unchecked_Conversion
-     (System.Address, Gtk_Notebook_Page);
-   package Page_List is new Glib.Glist.Generic_List (Gtk_Notebook_Page);
-   --  </doc_ignore>
-
-   function Get_Children
-     (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
-   --  Return the list of all pages in the notebook.
-
    --------------------
    -- GValue support --
    --------------------
@@ -424,6 +381,54 @@ package Gtk.Notebook is
    function Get_Notebook_Page
      (Value : Glib.Values.GValue) return Gtk_Notebook_Page;
    --  Convert a Value into a notebook page.
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   function Convert is new Unchecked_Conversion
+     (Gtk_Notebook_Page, System.Address);
+   function Convert is new Unchecked_Conversion
+     (System.Address, Gtk_Notebook_Page);
+   package Page_List is new Glib.Glist.Generic_List (Gtk_Notebook_Page);
+
+   function Get_Children
+     (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
+   pragma Obsolescent;
+   --  Return the list of all pages in the notebook.
+
+   procedure Set_Homogeneous_Tabs
+     (Notebook    : access Gtk_Notebook_Record;
+      Homogeneous : in Boolean := True);
+   pragma Obsolescent;  --  Set_Homogeneous_Tabs
+   --  Indicate whether all the tabs should have the same size (width or
+   --  height, depending on which side they are displayed on).
+
+   procedure Set_Tab_Border
+     (Notebook     : access Gtk_Notebook_Record;
+      Border_Width : in Gint);
+   pragma Obsolescent;  --  Set_Tab_Border
+   --  Change the width of the tabs' borders.
+   --  This modifies both the horizontal border and the vertical border.
+
+   procedure Set_Tab_Hborder
+     (Notebook     : access Gtk_Notebook_Record;
+      Border_Width : in Gint);
+   pragma Obsolescent;  --  Set_Tab_Hborder
+   --  Modify the width of the horizontal borders of the tabs.
+
+   procedure Set_Tab_Vborder
+     (Notebook     : access Gtk_Notebook_Record;
+      Border_Width : in Gint);
+   pragma Obsolescent;  --  Set_Tab_Vborder
+   --  Modify the height of the vertical borders of the tabs.
+
+   --  </doc_ignore>
 
    ----------------
    -- Properties --
@@ -433,7 +438,58 @@ package Gtk.Notebook is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name: Page_Property
+   --  Type: Gint
+   --  See:  Set_Current_Page / Get_Current_Page
+   --
+   --  Name: Tab_Pos_Property
+   --  Type: Gtk_Position_Type
+   --  See:  Set_Tab_Pos / Get_Tab_Pos
+   --
+   --  Name: Tab_Border_Property
+   --  Type: Guint
+   --  Descr: Width of the border around the tab labels
+   --
+   --  Name: Tab_HBorder_Property
+   --  Type: Guint
+   --  Descr: Width of the horizontal border around the tab labels
+   --
+   --  Name: Tab_VBorder_Property
+   --  Type: Guint
+   --  Descr: Width of the vertical border around the tab labels
+   --
+   --  Name: Show_Tabs_Property
+   --  Type: Boolean
+   --  See:  Set_Show_Tabs / Get_Show_Tabs
+   --
+   --  Name: Show_Border_Property
+   --  Type: Boolean
+   --  See:  Set_Show_Border / Get_Show_Border
+   --
+   --  Name: Scrollable_Property
+   --  Type: Boolean
+   --  See:  Set_Scrollable / Get_Scrollable
+   --
+   --  Name: Enable_Popup_Property
+   --  Type: Boolean
+   --  See:  Popup_Enable / Popup_Disable
+   --
+   --  Name: Homogeneous_Property
+   --  Type: Boolean
+   --  See:  Set_Homogeneous_Tabs / -
+   --
    --  </properties>
+
+   Page_Property         : constant Glib.Properties.Property_Int;
+   Tab_Pos_Property      : constant Gtk.Enums.Property_Gtk_Position_Type;
+   Tab_Border_Property   : constant Glib.Properties.Property_Uint;
+   Tab_HBorder_Property  : constant Glib.Properties.Property_Uint;
+   Tab_VBorder_Property  : constant Glib.Properties.Property_Uint;
+   Show_Tabs_Property    : constant Glib.Properties.Property_Boolean;
+   Show_Border_Property  : constant Glib.Properties.Property_Boolean;
+   Scrollbar_Property    : constant Glib.Properties.Property_Boolean;
+   Enable_Popup_Property : constant Glib.Properties.Property_Boolean;
+   Homogeneous_Property  : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -447,21 +503,74 @@ package Gtk.Notebook is
    --      (Notebook : access Gtk_Notebook_Record'Class;
    --       Page     : Gtk_Notebook_Page;
    --       Page_Num : Guint);
-   --
    --   Notify when the current page is modified in the notebook.
    --   This is called every time the user selected a new page, or the
    --   program selected a new page with Next_Page, Prev_Page, ...
    --
    --  - "select_page"
-   --    ???
+   --    function Handler
+   --      (Notebook   : access Gtk_Notebook_Record'Class;
+   --       Move_Focus : Boolean) return Boolean;
+   --    You should emit this signal to request that the notebook selects the
+   --    page corresponding to the focus tab. If Move_Focus is true, the page
+   --    acquires the keyboard focus.
+   --    Seldom used.
    --
    --  - "focus_tab"
-   --    ???
+   --    function Handler
+   --       (Notebook : access Gtk_Notebook_Record'Class;
+   --        Tab      : Gtk_Notebook_Tab) return Boolean;
+   --    Gives the focus to one of the tabs in the notebook. This signal is
+   --    mostly used as a keybinding for Home, End,... so that the proper
+   --    behavior can be implemented
+   --
+   --  - "move_focus_out"
+   --    procedure Handler
+   --      (Notebook  : access Gtk_Notebook_Record'Class;
+   --       Direction : Gtk_Direction_Type);
+   --    You should emit this signal to request that the focus be transfered
+   --    from the current page to the parent widget.
+   --    Seldom used.
+   --
+   --  - "change_current_page"
+   --    procedure Handler
+   --      (Notebook : access Gtk_Notebook_Record'Class;
+   --       Offset   : Gint);
+   --    You should emit this signal to request that the notebook selects
+   --    another page as the current page. The offset is relative to the
+   --    currently selected page.
    --
    --  </signals>
+
+   Signal_Switch_Page         : constant String := "switch_page";
+   Signal_Select_Page         : constant String := "select_page";
+   Signal_Focus_Tab           : constant String := "focus_tab";
+   Signal_Move_Focus_Out      : constant String := "move_focus_out";
+   Signal_Change_Current_Page : constant String := "change_current_page";
+
 private
    type Gtk_Notebook_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
    pragma Import (C, Get_Type, "gtk_notebook_get_type");
 
+   Page_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("page");
+   Tab_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
+     Gtk.Enums.Build ("tab-pos");
+   Tab_Border_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("tab-border");
+   Tab_HBorder_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("tab-hborder");
+   Tab_VBorder_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("tab-vborder");
+   Show_Tabs_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-tabs");
+   Show_Border_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-border");
+   Scrollbar_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("scrollable");
+   Enable_Popup_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("enable-popup");
+   Homogeneous_Property  : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("homgeneous");
 end Gtk.Notebook;
