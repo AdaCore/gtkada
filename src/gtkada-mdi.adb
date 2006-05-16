@@ -2978,8 +2978,8 @@ package body Gtkada.MDI is
    is
       Child : MDI_Child;
    begin
-      Set_Tab_Pos   (Notebook, MDI.Tabs_Position);
-      Set_Tab_Vborder (Notebook, 0);
+      Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
+      Set_Property (Notebook, Tab_Border_Property, 0);
 
       if Get_Nth_Page (Notebook, 1) /= null then
          Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy /= Never);
@@ -4671,8 +4671,7 @@ package body Gtkada.MDI is
          -------------------
 
          procedure Save_Notebook (Current : Node_Ptr; Note : Gtk_Notebook) is
-            Length       : constant Guint :=
-                             Page_List.Length (Get_Children (Note));
+            Length       : constant Gint := Get_N_Pages (Note);
             Current_Page : constant Gint := Get_Current_Page (Note);
             Parent       : Node_Ptr;
             Has_Default_Group_Child : Boolean := False;
