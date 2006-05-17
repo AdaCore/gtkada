@@ -76,7 +76,7 @@ package body Create_Layout is
                             Event  : Gdk_Event_Expose)
                            return Boolean
    is
-      Area : Gdk_Rectangle := Get_Area (Event);
+      Area : constant Gdk_Rectangle := Get_Area (Event);
       Imin, Imax : Guint;
       Jmin, Jmax : Guint;
    begin
@@ -92,7 +92,7 @@ package body Create_Layout is
          for J in Jmin .. Jmax - 1 loop
             if (I + J) mod 2 /= 0 then
                Draw_Rectangle (Get_Bin_Window (Layout),
-                               Get_Black_Gc (Get_Style (Layout)),
+                               Get_Black_GC (Get_Style (Layout)),
                                True,
                                Gint (10 * I),
                                Gint (10 * J),

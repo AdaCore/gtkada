@@ -56,7 +56,7 @@ package body Create_Dnd is
    function "+" (S : String) return Interfaces.C.Strings.chars_ptr
                 renames Interfaces.C.Strings.New_String;
 
-   Drag_Icon_Xpm : constant Gtkada.Types.chars_ptr_array
+   Drag_Icon_Xpm : constant Gtkada.Types.Chars_Ptr_Array
      := "36 48 9 1"
      + "       c None"
      + ".      c #020204"
@@ -116,7 +116,7 @@ package body Create_Dnd is
      + ".&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&."
      + "....................................";
 
-   Trashcan_Closed_Xpm : constant Gtkada.Types.chars_ptr_array
+   Trashcan_Closed_Xpm : constant Gtkada.Types.Chars_Ptr_Array
      := "64 80 17 1"
      + "        c None"
      + ".       c #030304"
@@ -216,7 +216,7 @@ package body Create_Dnd is
      + "                                                                "
      + "                                                                ";
 
-   Trashcan_Open_Xpm : constant Gtkada.Types.chars_ptr_array :=
+   Trashcan_Open_Xpm : constant Gtkada.Types.Chars_Ptr_Array :=
      "64 80 17 1"
      + "        c None"
      + ".       c #030304"
@@ -338,7 +338,7 @@ package body Create_Dnd is
    package Return_Callback is new
      Gtk.Handlers.Return_Callback (Gtk.Widget.Gtk_Widget_Record, Boolean);
 
-   Target_Table : Target_Entry_Array
+   Target_Table : constant Target_Entry_Array
      := ((+"STRING",        Target_No_Constraint, My_Target_String1),
          (+"text/plain",    Target_No_Constraint, My_Target_String2),
          (+"text/uri-list", Target_No_Constraint, My_Target_Url),
@@ -347,12 +347,12 @@ package body Create_Dnd is
    --  all the known data types in this application. Any MIME type can be used,
    --  as well a strings defined in the motif protocol, like "STRING".
 
-   Target_Table_String : Target_Entry_Array
+   Target_Table_String : constant Target_Entry_Array
      := ((+"STRING",        Target_No_Constraint, My_Target_String1),
          (+"text/plain",    Target_No_Constraint, My_Target_String2));
    --  For a drop site that only accepts Data of type STRING or text/plain
 
-   Target_Table_Url : Target_Entry_Array
+   Target_Table_Url : constant Target_Entry_Array
      := (1 => (+"text/uri-list", Target_No_Constraint, My_Target_Url));
    --  For a drop site that only accepts Data of type url.
 
@@ -450,7 +450,7 @@ package body Create_Dnd is
 
       pragma Warnings (Off, Context);
       pragma Warnings (Off, X);
-      pragma Warnings (Off, y);
+      pragma Warnings (Off, Y);
       pragma Warnings (Off, Time);
 
       use type Guint_List.Glist;
@@ -474,12 +474,12 @@ package body Create_Dnd is
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Args   : in Gtk_Args)
    is
-      Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      X       : Gint := To_Gint (Args, 2);
-      Y       : Gint := To_Gint (Args, 3);
-      Data    : Selection_Data := Selection_Data (To_C_Proxy (Args, 4));
-      Info    : Guint := To_Guint (Args, 5); --  third item of the Target_Entry
-      Time    : Guint := To_Guint (Args, 6);
+      Context : constant Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
+      X    : Gint := To_Gint (Args, 2);
+      Y    : Gint := To_Gint (Args, 3);
+      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 4));
+      Info : Guint := To_Guint (Args, 5); --  third item of the Target_Entry
+      Time : constant Guint := To_Guint (Args, 6);
 
       pragma Warnings (Off, Widget);
       pragma Warnings (Off, X);
@@ -512,14 +512,13 @@ package body Create_Dnd is
                                  Args   : Gtk_Args)
                                 return Boolean
    is
-      Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
+      Context : constant Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
       X       : Gint := To_Gint (Args, 2);
       Y       : Gint := To_Gint (Args, 3);
-      Time    : Guint := To_Guint (Args, 4);
+      Time    : constant Guint := To_Guint (Args, 4);
 
       pragma Warnings (Off, X);
       pragma Warnings (Off, Y);
-      Source_Widget : Gtk_Widget;
       Toto : Gtk_Pixmap;
    begin
       if not Have_Drag then
@@ -528,7 +527,6 @@ package body Create_Dnd is
          Set (Toto, Trashcan_Open, Trashcan_Open_Mask);
       end if;
 
-      Source_Widget := Get_Source_Widget (Context);
       Drag_Status (Context, Get_Suggested_Action (Context), Guint32 (Time));
 
       return True;
@@ -571,12 +569,12 @@ package body Create_Dnd is
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Args   : in Gtk_Args)
    is
-      Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      X       : Gint := To_Gint (Args, 2);
-      Y       : Gint := To_Gint (Args, 3);
-      Data    : Selection_Data := Selection_Data (To_C_Proxy (Args, 4));
-      Info    : Guint := To_Guint (Args, 5); --  third item of the Target_Entry
-      Time    : Guint := To_Guint (Args, 6);
+      Context : constant Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
+      X    : Gint := To_Gint (Args, 2);
+      Y    : Gint := To_Gint (Args, 3);
+      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 4));
+      Info : Guint := To_Guint (Args, 5); --  third item of the Target_Entry
+      Time : constant Guint := To_Guint (Args, 6);
 
       pragma Warnings (Off, Widget);
       pragma Warnings (Off, X);
@@ -621,8 +619,9 @@ package body Create_Dnd is
       Args   : in Gtk_Args)
    is
       Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      Data    : Selection_Data := Selection_Data (To_C_Proxy (Args, 2));
-      Info    : Guint := To_Guint (Args, 3); --  third item of the Target_Entry
+      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 2));
+      Info : constant Guint := To_Guint (Args, 3);
+         --  third item of the Target_Entry
       Time    : Guint := To_Guint (Args, 4);
 
       pragma Warnings (Off, Widget);

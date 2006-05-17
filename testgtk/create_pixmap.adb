@@ -76,7 +76,7 @@ package body Create_Pixmap is
                        Get_Bg (Style, State_Normal), "test.xpm");
       Gtk_New (PixmapWid, Pixmap, Mask);
 
-      Gtk_New (Label, "Pixmap" & Ascii.LF & "test");
+      Gtk_New (Label, "Pixmap" & ASCII.LF & "test");
       Gtk_New_Hbox (Box3, False, 0);
       Set_Border_Width (Box3, 2);
       Add (Box3, PixmapWid);

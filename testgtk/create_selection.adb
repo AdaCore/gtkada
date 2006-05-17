@@ -51,7 +51,7 @@ package body Create_Selection is
 
    package My_Button_Handler is new Gtk.Handlers.Callback
      (My_Button_Record);
-   package Label_Handler is new Gtk.Handlers.Callback (Gtk_Label_record);
+   package Label_Handler is new Gtk.Handlers.Callback (Gtk_Label_Record);
 
    ----------
    -- Help --
@@ -134,7 +134,7 @@ package body Create_Selection is
    procedure Label_Selection_Received (Label : access Gtk_Label_Record'Class;
                                        Args : Gtk_Args)
    is
-      Data : Selection_Data := Selection_Data (To_C_Proxy (Args, 1));
+      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 1));
       Time : Guint := To_Guint (Args, 2);
       pragma Warnings (Off, Time);
    begin

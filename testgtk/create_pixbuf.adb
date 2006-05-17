@@ -57,14 +57,14 @@ package body Create_Pixbuf is
    type Pixbuf_Array is array (Positive range <>) of Gdk_Pixbuf;
 
    Image_Names : constant String_Array :=
-     (1 => new String' ("apple-red.png"),
-      2 => new String' ("gnome-applets.png"),
-      3 => new String' ("gnome-calendar.png"),
-      4 => new String' ("gnome-foot.png"),
-      5 => new String' ("gnome-gmush.png"),
-      6 => new String' ("gnome-gimp.png"),
-      7 => new String' ("gnome-gsame.png"),
-      8 => new String' ("gnu-keys.png"));
+     (1 => new String'("apple-red.png"),
+      2 => new String'("gnome-applets.png"),
+      3 => new String'("gnome-calendar.png"),
+      4 => new String'("gnome-foot.png"),
+      5 => new String'("gnome-gmush.png"),
+      6 => new String'("gnome-gimp.png"),
+      7 => new String'("gnome-gsame.png"),
+      8 => new String'("gnu-keys.png"));
 
    Background_Name : constant String := "background.jpg";
    Gif_Image       : constant String := "dancing-penguin.gif";
@@ -138,7 +138,7 @@ package body Create_Pixbuf is
       --  Number of bytes for each pixel (Red, Green, Blue)
 
       Rowstride : constant Gint := Get_Rowstride (Frame);
-      Pixels    : Rgb_Buffer_Access := Get_Pixels (Frame);
+      Pixels    : constant Rgb_Buffer_Access := Get_Pixels (Frame);
       X         : constant Gint := Get_Area (Event).X;
       Y         : constant Gint := Get_Area (Event).Y;
       W         : Gint := Gint (Get_Area (Event).Width);
@@ -168,7 +168,6 @@ package body Create_Pixbuf is
          Height    => H,
          Dith      => Dither_Normal,
          Rgb_Buf   => Pixels.all,
-        --  (Natural (Rowstride * Y + X * Num_Bytes_Per_Pixel) .. Pixels'Last),
          Rowstride => Rowstride,
          Xdith     => X,
          Ydith     => Y);
@@ -237,9 +236,9 @@ package body Create_Pixbuf is
          if Inter then
             --  Play with the transparency, so that the animation is smoother
             if J mod 2 = 1 then
-               Alpha := Gint' Max (50, abs (Gint (255.0 * S)));
+               Alpha := Gint'Max (50, abs (Gint (255.0 * S)));
             else
-               Alpha := Gint' Max (50, abs (Gint (255.0 * C)));
+               Alpha := Gint'Max (50, abs (Gint (255.0 * C)));
             end if;
 
             Composite

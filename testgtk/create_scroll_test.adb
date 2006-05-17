@@ -93,6 +93,7 @@ package body Create_Scroll_Test is
       Rect       : Gdk_Rectangle;
       Event      : Gdk_Event_Expose;
       Tmp        : Boolean;
+      pragma Unreferenced (Tmp, Dest_Max);
 
    begin
       Scroll_Test_Pos := Gint (Get_Value (Adj));
@@ -123,7 +124,7 @@ package body Create_Scroll_Test is
       end if;
 
       if Source_Min /= Source_Max then
-         if Scroll_Test_Gc = Null_GC then
+         if Scroll_Test_GC = Null_GC then
             Gdk_New (Scroll_Test_GC, Get_Window (Widget));
             Set_Exposures (Scroll_Test_GC, True);
          end if;
@@ -184,11 +185,11 @@ package body Create_Scroll_Test is
       Adj     : in Adjustment.Gtk_Adjustment)
      return Gint
    is
-      Expose_Event : Gdk.Event.Gdk_Event_Expose :=
+      Expose_Event : constant Gdk.Event.Gdk_Event_Expose :=
         Gdk.Event.Gdk_Event_Expose (Event);
       Area : Gdk.Rectangle.Gdk_Rectangle;
       Imin, Imax, Jmin, Jmax : Gint;
-      Sty : Gtk.Style.Gtk_Style := Get_Style (Widget);
+      Sty : constant Gtk.Style.Gtk_Style := Get_Style (Widget);
    begin
       Area := Gdk.Event.Get_Area (Expose_Event);
 
@@ -209,7 +210,7 @@ package body Create_Scroll_Test is
             if ((I + J) mod 2 /= 0) then
                Gdk.Drawable.Draw_Rectangle
                  (Drawable => Get_Window (Widget),
-                  GC => Gtk.Style.Get_Black_Gc (Sty),
+                  GC => Gtk.Style.Get_Black_GC (Sty),
                   Filled => True,
                   X => 10 * I, Y => 10 * J - Gint (Adjustment.Get_Value (Adj)),
                   Width => 1 + I mod 10, Height => 1 + J mod 10);
@@ -252,7 +253,7 @@ package body Create_Scroll_Test is
                           Page_Increment => 180.0, Page_Size => 200.0);
       Scroll_Test_Pos := 0;
 
-      Gtk.Scrollbar.Gtk_New_Vscrollbar (Widget => scrollbar,
+      Gtk.Scrollbar.Gtk_New_Vscrollbar (Widget => Scrollbar,
                                         Adjustment => Adj);
       Box.Pack_Start (In_Box => Hbox, Child => Scrollbar,
                       Expand => False, Fill => False);

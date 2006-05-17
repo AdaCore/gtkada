@@ -32,7 +32,6 @@ with Gtk.Adjustment;    use Gtk.Adjustment;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Button;        use Gtk.Button;
 with Gtk.Check_Button;  use Gtk.Check_Button;
-with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Spin_Button;   use Gtk.Spin_Button;
@@ -106,7 +105,7 @@ package body Create_Spin is
    procedure Get_Value (Widget : access My_Button_Record'Class;
                         Data   : in Gint)
    is
-      Spin  : Gtk_Spin_Button := Spinner1;
+      Spin  : constant Gtk_Spin_Button := Spinner1;
    begin
       if Data = 1 then
          Set_Text (Widget.Label, Gint'Image (Get_Value_As_Int (Spin)));
@@ -178,18 +177,18 @@ package body Create_Spin is
       Gtk_New (Adj, 1998.0, 0.0, 2100.0, 1.0, 100.0, 0.0);
       Gtk_New (Spinner, Adj, 0.0, 0);
       Set_Wrap (Spinner, True);
-      Set_Usize (Spinner, 55, 0);
+      Set_USize (Spinner, 55, 0);
       Pack_Start (Vbox2, Spinner, False, False, 0);
 
       Gtk_New (Frame2, "Accelerated");
       Pack_Start (Main_Box, Frame2, False, False, 0);
 
-      Gtk_New_Vbox (Vbox, False, 0);
-      Set_Border_Width (Vbox, 5);
-      Add (Frame2, Vbox);
+      Gtk_New_Vbox (VBox, False, 0);
+      Set_Border_Width (VBox, 5);
+      Add (Frame2, VBox);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Pack_Start (Vbox, Hbox, False, False, 5);
+      Pack_Start (VBox, Hbox, False, False, 5);
 
       Gtk_New_Vbox (Vbox2, False, 0);
       Pack_Start (Hbox, Vbox2, False, False, 5);
@@ -199,7 +198,7 @@ package body Create_Spin is
       Gtk_New (Adj, 0.0, -10000.0, 10000.0, 0.5, 100.0, 0.0);
       Gtk_New (Spinner1, Adj, 1.0, 2);
       Set_Wrap (Spinner1, True);
-      Set_Usize (Spinner1, 100, 0);
+      Set_USize (Spinner1, 100, 0);
       Set_Update_Policy (Spinner1, Update_Always);
       Pack_Start (Vbox2, Spinner1, False, False, 0);
 
@@ -219,25 +218,25 @@ package body Create_Spin is
       Pack_Start (Vbox2, Spinner2, False, False, 0);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Pack_Start (Vbox, Hbox, False, False, 5);
+      Pack_Start (VBox, Hbox, False, False, 5);
 
       Gtk_New (Check, "Snap to 0.5-ticks");
       Spin_Cb.Connect
         (Check, "clicked",
          Spin_Cb.To_Marshaller (Toggle_Snap'Access), Spinner1);
-      Pack_Start (Vbox, Check, False, False, 0);
+      Pack_Start (VBox, Check, False, False, 0);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Snap Numeric only input mode");
       Spin_Cb.Connect
         (Check, "clicked",
          Spin_Cb.To_Marshaller (Toggle_Numeric'Access), Spinner1);
-      Pack_Start (Vbox, Check, False, False, 0);
+      Pack_Start (VBox, Check, False, False, 0);
       Set_Active (Check, True);
 
       Gtk_New (Label, "");
       Gtk_New_Hbox (Hbox, False, 0);
-      Pack_Start (Vbox, Hbox, False, False, 5);
+      Pack_Start (VBox, Hbox, False, False, 5);
 
       Myb := new My_Button_Record;
       Initialize (Myb, "Value as Int");
@@ -253,7 +252,7 @@ package body Create_Spin is
                          Button_Cb.To_Marshaller (Get_Value'Access), 2);
       Pack_Start (Hbox, Myb, False, False, 5);
 
-      Pack_Start (Vbox, Label, False, False, 0);
+      Pack_Start (VBox, Label, False, False, 0);
       Set_Text (Label, "0");
 
       Show_All (Frame);

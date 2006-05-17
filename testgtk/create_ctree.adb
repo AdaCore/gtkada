@@ -39,7 +39,6 @@ with Gtk.Button;
 with Gtk.Check_Button;
 with Gtk.Ctree; use Gtk.Ctree;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame;
 with Gtk.Label;
 with Gtk.Option_Menu;
 with Gtk.Radio_Menu_Item;
@@ -64,7 +63,8 @@ package body Create_Ctree is
 
    use type Gtk.Ctree.Gtk_Ctree_Node;
 
-   package Ctree_Style_Row_Data is new Gtk.Ctree.Row_Data (Gtk.Style.Gtk_Style);
+   package Ctree_Style_Row_Data is
+     new Gtk.Ctree.Row_Data (Gtk.Style.Gtk_Style);
 
    package Ctree_User_Cb is new Gtk.Handlers.User_Callback
      (Widget_Type => Gtk.Widget.Gtk_Widget_Record,
@@ -81,11 +81,10 @@ package body Create_Ctree is
       User_Type   => Gtk.Ctree.Gtk_Ctree);
 
    Ctree : Gtk.Ctree.Gtk_Ctree;
-   Line_Style : Gtk.Ctree.Gtk_Ctree_Line_Style;
-   Clist_Omenu_Group1  : Gtk.Widget.Widget_Slist.GSlist;
-   Clist_Omenu_Group2  : Gtk.Widget.Widget_Slist.GSlist;
-   Clist_Omenu_Group3  : Gtk.Widget.Widget_Slist.GSlist;
-   Clist_Omenu_Group4  : Gtk.Widget.Widget_Slist.GSlist;
+   Clist_Omenu_Group1  : Gtk.Widget.Widget_SList.GSlist;
+   Clist_Omenu_Group2  : Gtk.Widget.Widget_SList.GSlist;
+   Clist_Omenu_Group3  : Gtk.Widget.Widget_SList.GSlist;
+   Clist_Omenu_Group4  : Gtk.Widget.Widget_SList.GSlist;
    Pixmap1, Pixmap2, Pixmap3 : Gdk.Pixmap.Gdk_Pixmap;
    Mask1, Mask2, Mask3 : Gdk.Bitmap.Gdk_Bitmap;
    Book_Label, Page_Label, Sel_Label, Vis_Label : Gtk.Label.Gtk_Label;
@@ -146,9 +145,9 @@ package body Create_Ctree is
    -- After_Press_return --
    ------------------------
 
-   function After_Press_Return (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class)
-                               return Gint
-   is
+   function After_Press_Return
+      (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+      return Gint is
    begin
       After_Press (Ctree);
       return 0;
@@ -360,7 +359,8 @@ package body Create_Ctree is
 
       if Gtk.Ctree.Get_Selection_Mode (Ctree) = Selection_Multiple and then
         not Is_Created (Gtk.Ctree.Get_Selection (Ctree)) and then
-        Gtk.Ctree.Get_Focus_Row (Ctree)>= 0 then
+        Gtk.Ctree.Get_Focus_Row (Ctree) >= 0
+      then
 
          Node := Gtk.Ctree.Node_Nth (Ctree,
                                      Guint (Gtk.Ctree.Get_Focus_Row (Ctree)));
@@ -441,8 +441,6 @@ package body Create_Ctree is
       end if;
 
       Gtk.Ctree.Set_Line_Style (Ctree, Line_Style => New_Line_Style);
-      Line_Style := New_Line_Style;
-
    end Toggle_Line_Style;
 
    ---------------------------
@@ -732,7 +730,7 @@ package body Create_Ctree is
       Gtk.Box.Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
       Gtk.Frame.Add (Frame, Widget => Vbox);
 
-      Gtk.Box.Gtk_New_Hbox (HBox, Homogeneous => False, Spacing => 5);
+      Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 5);
       Gtk.Box.Set_Border_Width (Hbox, Border_Width => 5);
       Gtk.Box.Pack_Start (In_Box => Vbox, Child => Hbox, Expand => False);
 
@@ -811,7 +809,6 @@ package body Create_Ctree is
       Gtk.Ctree.Set_Column_Width (Ctree, Column => 1, Width => 200);
       Gtk.Ctree.Set_Selection_Mode (Ctree, Mode => Selection_Multiple);
       Gtk.Ctree.Set_Line_Style (Ctree, Line_Style => Ctree_Lines_Dotted);
-      Line_Style := Ctree_Lines_Dotted;
 
       Ctree_User_Cb.Connect
         (Button,
@@ -1026,14 +1023,14 @@ package body Create_Ctree is
          Widget => Check,
          Tip_Text => "Tree items can be reordered by dragging.");
       --       gtk_signal_connect (GTK_OBJECT (check), "clicked",
-      --                           GTK_SIGNAL_FUNC (toggle_reorderable), ctree);
+      --  GTK_SIGNAL_FUNC (toggle_reorderable), ctree);
       Gtk.Check_Button.Set_Active (Check, Is_Active => True);
 
       Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous => True, Spacing => 5);
       Gtk.Box.Pack_Start (Mbox, Child => Hbox,
                           Expand => False, Fill => False);
 
-      Clist_Omenu_Group1 := Gtk.Widget.Widget_Slist.Null_List;
+      Clist_Omenu_Group1 := Gtk.Widget.Widget_SList.Null_List;
       --  FIXME : I wonder if there is not a memory leak here...
       Common.Build_Option_Menu (Omenu1,
                                 Gr => Clist_Omenu_Group1,
@@ -1045,7 +1042,7 @@ package body Create_Ctree is
                             Widget => Omenu1,
                             Tip_Text => "The tree's line style.");
 
-      Clist_Omenu_Group2 := Gtk.Widget.Widget_Slist.Null_List;
+      Clist_Omenu_Group2 := Gtk.Widget.Widget_SList.Null_List;
       --  FIXME : I wonder if there is not a memory leak here...
       Common.Build_Option_Menu (Omenu2,
                                 Gr => Clist_Omenu_Group2,
@@ -1057,7 +1054,7 @@ package body Create_Ctree is
                             Widget => Omenu2,
                             Tip_Text => "The tree's expander style.");
 
-      Clist_Omenu_Group3 := Gtk.Widget.Widget_Slist.Null_List;
+      Clist_Omenu_Group3 := Gtk.Widget.Widget_SList.Null_List;
       --  FIXME : I wonder if there is not a memory leak here...
       Common.Build_Option_Menu (Omenu3,
                                 Gr => Clist_Omenu_Group3,
@@ -1069,7 +1066,7 @@ package body Create_Ctree is
                             Widget => Omenu3,
                             Tip_Text => "The tree's justification.");
 
-      Clist_Omenu_Group4 := Gtk.Widget.Widget_Slist.Null_List;
+      Clist_Omenu_Group4 := Gtk.Widget.Widget_SList.Null_List;
       --  FIXME : I wonder if there is not a memory leak here...
       Common.Build_Option_Menu (Omenu4,
                                 Gr => Clist_Omenu_Group4,
@@ -1099,7 +1096,7 @@ package body Create_Ctree is
                                     Transparent => Transparent,
                                     Data => Common.Mini_Page_Xpm);
 
-      Gtk.Ctree.Set_Usize (Ctree, Width => 0, Height => 300);
+      Gtk.Ctree.Set_USize (Ctree, Width => 0, Height => 300);
 
       Gtk.Frame.Gtk_New (Frame2);
       Gtk.Frame.Set_Border_Width (Frame2, Border_Width => 0);

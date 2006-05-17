@@ -73,17 +73,17 @@ package body Create_Button_Box is
       Gtk_New (Frame, Label => Title);
       if Horizontal then
          declare
-            B : Gtk_HButton_Box;
+            B : Gtk_Hbutton_Box;
          begin
             Gtk_New (B);
-            BBox := Gtk_Button_Box (B);
+            Bbox := Gtk_Button_Box (B);
          end;
       else
          declare
-            B : Gtk_VButton_Box;
+            B : Gtk_Vbutton_Box;
          begin
             Gtk_New (B);
-            BBox := Gtk_Button_Box (B);
+            Bbox := Gtk_Button_Box (B);
          end;
       end if;
 

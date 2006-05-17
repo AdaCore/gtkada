@@ -50,7 +50,6 @@ with Gtkada.Canvas;       use Gtkada.Canvas;
 with Gtk.Spin_Button;     use Gtk.Spin_Button;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Adjustment;      use Gtk.Adjustment;
-with Pango.Font;          use Pango.Font;
 with Pango.Layout;        use Pango.Layout;
 with Gtk.Style;           use Gtk.Style;
 
@@ -162,7 +161,6 @@ package body Create_Canvas is
 
    Start_Spin, End_Spin, Num_Spin : Gtk_Spin_Button;
    Num_Items_Label, Num_Links_Label : Gtk_Label;
-   Font : Pango_Font_Description;
    Layout : Pango_Layout;
 
    type Color_Type is range 1 .. Max_Colors;
@@ -182,27 +180,27 @@ package body Create_Canvas is
    use Zoom_Random;
 
    type String_Access is access String;
-   Color_Names : array (Color_Type) of String_Access :=
-     (new String' ("forest green"),
-      new String' ("red"),
-      new String' ("blue"),
-      new String' ("yellow"),
-      new String' ("peach puff"),
-      new String' ("azure"),
-      new String' ("seashell"),
-      new String' ("lavender"),
-      new String' ("grey"),
-      new String' ("turquoise"),
-      new String' ("khaki"),
-      new String' ("tan"),
-      new String' ("orange red"),
-      new String' ("MediumPurple"),
-      new String' ("ivory1"),
-      new String' ("DeepSkyBlue1"),
-      new String' ("burlywood1"),
-      new String' ("wheat1"),
-      new String' ("orange1"),
-      new String' ("pink"));
+   Color_Names : constant array (Color_Type) of String_Access :=
+     (new String'("forest green"),
+      new String'("red"),
+      new String'("blue"),
+      new String'("yellow"),
+      new String'("peach puff"),
+      new String'("azure"),
+      new String'("seashell"),
+      new String'("lavender"),
+      new String'("grey"),
+      new String'("turquoise"),
+      new String'("khaki"),
+      new String'("tan"),
+      new String'("orange red"),
+      new String'("MediumPurple"),
+      new String'("ivory1"),
+      new String'("DeepSkyBlue1"),
+      new String'("burlywood1"),
+      new String'("wheat1"),
+      new String'("orange1"),
+      new String'("pink"));
 
    Colors : array (Color_Type) of Gdk_Color;
 
@@ -260,21 +258,21 @@ package body Create_Canvas is
 
    procedure Draw_To_Double_Buffer (Item : access Display_Item_Record'Class) is
    begin
-      Set_Foreground (Green_GC, Display_Item (Item).Color);
+      Set_Foreground (Green_Gc, Display_Item (Item).Color);
       Draw_Rectangle
         (Pixmap (Item),
-         GC     => Green_GC,
+         GC     => Green_Gc,
          Filled => True,
          X      => 0,
          Y      => 0,
          Width  => Item.W,
          Height => Item.H);
-      Set_Foreground (Green_GC, Black (Get_Default_Colormap));
+      Set_Foreground (Green_Gc, Black (Get_Default_Colormap));
 
       Set_Text (Layout, "Item" & Positive'Image (Display_Item (Item).Num));
       Draw_Layout
         (Pixmap (Item),
-         Green_GC,
+         Green_Gc,
          10,
          10,
          Layout);
@@ -463,7 +461,7 @@ package body Create_Canvas is
       else
          Draw_Rectangle
            (Get_Window (Canvas),
-            Get_Background_Gc (Get_Style (Canvas), State_Normal),
+            Get_Background_GC (Get_Style (Canvas), State_Normal),
             Filled => True,
             X      => Screen_Rect.X,
             Y      => Screen_Rect.Y,
@@ -574,13 +572,13 @@ package body Create_Canvas is
    procedure Add_Random_Item
      (Canvas : access Interactive_Canvas_Record'Class)
    is
-      Item : Display_Item := new Display_Item_Record;
+      Item : constant Display_Item := new Display_Item_Record;
    begin
       Initialize (Item, Canvas);
       Put (Canvas, Item, Random (Gen), Random (Gen));
       Refresh_Canvas (Canvas);
       Show_Item (Canvas, Item);
-  end Add_Random_Item;
+   end Add_Random_Item;
 
    -----------
    -- Clear --
@@ -632,7 +630,7 @@ package body Create_Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       With_Link : Boolean)
    is
-      Item : Display_Item := new Display_Item_Record;
+      Item : constant Display_Item := new Display_Item_Record;
       Num  : constant Positive := Positive (Get_Value_As_Int (Start_Spin));
    begin
       Initialize (Item, Canvas);
@@ -676,7 +674,7 @@ package body Create_Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Item1, Item2 : access Canvas_Item_Record'Class; Text : String := "")
    is
-      Link : Canvas_Link := new Canvas_Link_Record;
+      Link : constant Canvas_Link := new Canvas_Link_Record;
    begin
       Add_Link (Canvas, Link, Item1, Item2, Both_Arrow, Text);
       Last_Link := Last_Link + 1;
@@ -1026,13 +1024,12 @@ package body Create_Canvas is
 
       --  Initialize the colors
 
-      Gdk_New (Green_GC, Get_Window (Canvas));
+      Gdk_New (Green_Gc, Get_Window (Canvas));
       for J in Color_Names'Range loop
          Colors (J) := Parse (Color_Names (J).all);
          Alloc (Gtk.Widget.Get_Default_Colormap, Colors (J));
       end loop;
 
-      Font := From_String ("Courier 8");
       Layout := Create_Pango_Layout (Frame);
 
       Initial_Setup (Canvas);

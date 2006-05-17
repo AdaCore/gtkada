@@ -64,13 +64,13 @@ package body Create_Tree_View is
 
    procedure Edited_Callback
      (Model  : access GObject_Record'Class;
-      Params : Glib.Values.Gvalues);
+      Params : Glib.Values.GValues);
    --  Called when the user clicks on a toggle button. This is used to reflect
    --  (or not) the change in the model.
 
    procedure Text_Edited_Callback
      (Model  : access GObject_Record'Class;
-      Params : Glib.Values.Gvalues);
+      Params : Glib.Values.GValues);
    --  Same when a text cell is edited
 
    ----------
@@ -137,7 +137,7 @@ package body Create_Tree_View is
 
    procedure Edited_Callback
      (Model  : access GObject_Record'Class;
-      Params : Glib.Values.Gvalues)
+      Params : Glib.Values.GValues)
    is
       M             : constant Gtk_Tree_Store := Gtk_Tree_Store (Model);
       Path_String   : constant String := Get_String (Nth (Params, 1));
@@ -155,12 +155,12 @@ package body Create_Tree_View is
 
    procedure Text_Edited_Callback
      (Model  : access GObject_Record'Class;
-      Params : Glib.Values.Gvalues)
+      Params : Glib.Values.GValues)
    is
       M             : constant Gtk_Tree_Store := Gtk_Tree_Store (Model);
       Path_String   : constant String := Get_String (Nth (Params, 1));
       Text_Value    : constant GValue := Nth (Params, 2);
-      Iter          : Gtk_Tree_Iter :=
+      Iter          : constant Gtk_Tree_Iter :=
         Get_Iter_From_String (M, Path_String);
    begin
       Set_Value (M, Iter, Text_Column, Text_Value);
@@ -179,6 +179,7 @@ package body Create_Tree_View is
       Text_Render   : Gtk_Cell_Renderer_Text;
       Toggle_Render : Gtk_Cell_Renderer_Toggle;
       Parent, Iter  : Gtk_Tree_Iter;
+      pragma Unreferenced (Num);
 
    begin
       --  Create the model that contains the actual data. In this example,

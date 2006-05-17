@@ -84,7 +84,7 @@ package body Create_Gamma_Curve is
    -- Run --
    ---------
 
-   procedure Run (Frame: access Gtk.Frame.Gtk_Frame_Record'Class) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Button : Gtk_Button;
       Box    : Gtk_Box;
 

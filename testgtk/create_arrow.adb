@@ -76,7 +76,7 @@ package body Create_Arrow is
       Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
       Gtk_New (Label, "Shadow_In");
       Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
-      Attach (Table, box2, 1, 2, 0, 1,
+      Attach (Table, Box2, 1, 2, 0, 1,
               Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
 
       Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);

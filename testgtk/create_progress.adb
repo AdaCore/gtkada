@@ -33,8 +33,7 @@ with Gtk.Alignment;       use Gtk.Alignment;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Check_Button;    use Gtk.Check_Button;
 with Gtk.Enums;           use Gtk.Enums;
-with Gtk.Frame;           use Gtk.Frame;
-with Gtk.Gentry;          use Gtk.Gentry;
+with Gtk.GEntry;          use Gtk.GEntry;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Main;            use Gtk.Main;
 with Gtk.Option_Menu;     use Gtk.Option_Menu;
@@ -64,7 +63,7 @@ package body Create_Progress is
       Act_Blocks_Spin : Gtk_Spin_Button;
       Label           : Gtk_Label;
       Omenu1          : Gtk_Option_Menu;
-      Omenu1_Group    : Widget_Slist.GSlist;
+      Omenu1_Group    : Widget_SList.GSlist;
       Gentry          : Gtk_Entry;
       Timer           : Timeout_Handler_Id;
    end record;
@@ -90,7 +89,7 @@ package body Create_Progress is
    function Progress_Timeout (Pbar : Gtk_Progress_Bar) return Boolean is
       pragma Warnings (Off, Pbar);
       New_Val : Gdouble;
-      Adj     : Gtk_Adjustment := Get_Adjustment (Pdata.Pbar);
+      Adj     : constant Gtk_Adjustment := Get_Adjustment (Pdata.Pbar);
 
    begin
       New_Val := Get_Value (Adj) + 5.0;
@@ -112,7 +111,7 @@ package body Create_Progress is
       pragma Warnings (Off, Window);
    begin
       Timeout_Remove (Pdata.Timer);
-      Pdata.Omenu1_Group := Widget_Slist.Null_List;
+      Pdata.Omenu1_Group := Widget_SList.Null_List;
       Pdata.Timer := 0;
       --  Note: we are in a callback for destroy, so the window will be
       --  destroyed elsewhere. No need to do that here.
@@ -124,7 +123,7 @@ package body Create_Progress is
 
    procedure Toggle_Orientation (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
-      I : Natural := Selected_Button (Pdata.Omenu1_Group);
+      I : constant Natural := Selected_Button (Pdata.Omenu1_Group);
    begin
       Set_Orientation (Pdata.Pbar,
                        Gtk_Progress_Bar_Orientation'Val (3 - I));
@@ -290,11 +289,11 @@ package body Create_Progress is
          Slot_Object => Pdata.Gentry);
       Pack_Start (Hbox, Pdata.Gentry, True, True, 0);
       Set_Text (Pdata.Gentry, "%v from [%l,%u] (=%p%%)");
-      Set_Usize (Pdata.Gentry, 100, -1);
+      Set_USize (Pdata.Gentry, 100, -1);
       Set_Sensitive (Pdata.Gentry, False);
 
       Gtk_New (Label, "Text align :");
-      Attach (Tab, label, 0, 1, 2, 3, Enums.Expand or Enums.Fill,
+      Attach (Tab, Label, 0, 1, 2, 3, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
       Set_Alignment (Label, 0.0, 0.5);
 

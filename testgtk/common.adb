@@ -30,7 +30,6 @@
 
 with Gtk.Menu;             use Gtk.Menu;
 with Gtk.Radio_Menu_Item;  use Gtk.Radio_Menu_Item;
-with Gtk.Widget;           use Gtk.Widget;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Extra.Plot;       use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Data;  use Gtk.Extra.Plot_Data;
@@ -46,7 +45,7 @@ package body Common is
 
    procedure Build_Option_Menu
      (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
-      Gr      : in out Widget_Slist.GSlist;
+      Gr      : in out Widget_SList.GSlist;
       Items   : Chars_Ptr_Array;
       History : Gint;
       Cb      : Widget_Handler.Marshallers.Void_Marshaller.Handler)
@@ -56,7 +55,7 @@ package body Common is
       Menu_Item : Gtk_Radio_Menu_Item;
 
    begin
-      Gtk.Option_Menu.Gtk_New (OMenu);
+      Gtk.Option_Menu.Gtk_New (Omenu);
       Gtk_New (Menu);
 
       for I in Items'Range loop
@@ -72,7 +71,7 @@ package body Common is
          Show (Menu_Item);
       end loop;
       Gtk.Option_Menu.Set_Menu (Omenu, Menu);
-      Gtk.Option_Menu.Set_History (Omenu, Gint (History));
+      Gtk.Option_Menu.Set_History (Omenu, History);
    end Build_Option_Menu;
 
 
@@ -164,7 +163,7 @@ package body Common is
          Transparent   => True,
          Justification => Justify_Left);
       Axis_Title_Set_Attributes
-        (get_Axis (Plot, Axis_Bottom),
+        (Get_Axis (Plot, Axis_Bottom),
          Font          => "Helvetica",
          Height        => 6,
          Angle         => Angle_0,

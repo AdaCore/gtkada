@@ -31,7 +31,6 @@ with Glib;          use Glib;
 with Glib.Object;   use Glib.Object;
 with Gtk.Box;       use Gtk.Box;
 with Gtk.Button;    use Gtk.Button;
-with Gtk.Frame;     use Gtk.Frame;
 with Gtk.Label;     use Gtk.Label;
 with Gtk.Handlers;  use Gtk.Handlers;
 with Gtk.Widget;    use Gtk.Widget;
@@ -152,7 +151,7 @@ package body Create_Reparent is
 
       Gtk_New (Frame2, "Frame 2");
       Pack_Start (Box2, Frame2, True, True, 0);
-      Gtk_New_vbox (Box3, False, 5);
+      Gtk_New_Vbox (Box3, False, 5);
       Set_Border_Width (Box3, 5);
       Add (Frame2, Box3);
 

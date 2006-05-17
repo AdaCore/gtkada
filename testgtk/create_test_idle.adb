@@ -31,7 +31,6 @@ with Glib;             use Glib;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Frame;        use Gtk.Frame;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Main;         use Gtk.Main;
 with Gtk.Radio_Button; use Gtk.Radio_Button;
@@ -131,7 +130,7 @@ package body Create_Test_Idle is
       Container : Gtk_Box;
       Frame2   : Gtk_Frame;
       Myb      : My_Button;
-      Gr       : Widget_Slist.GSList;
+      Gr       : Widget_SList.GSlist;
       Vbox     : Gtk_Box;
 
    begin
@@ -159,7 +158,7 @@ package body Create_Test_Idle is
       Add (Frame2, Box);
 
       Myb := new My_Button_Record;
-      Initialize (Myb, Widget_Slist.Null_List, "Resize-Parent");
+      Initialize (Myb, Widget_SList.Null_List, "Resize-Parent");
       Myb.Value := Resize_Parent;
       My_Button_Cb.Connect
         (Myb, "clicked",

@@ -32,12 +32,12 @@ with Gdk.Bitmap;          use Gdk.Bitmap;
 with Gdk.Color;           use Gdk.Color;
 with Gdk.Pixmap;          use Gdk.Pixmap;
 with Glib;                use Glib;
+with Glib.Properties;     use Glib.Properties;
 with Gtk.Arguments;       use Gtk.Arguments;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Button;          use Gtk.Button;
 with Gtk.Check_Button;    use Gtk.Check_Button;
 with Gtk.Enums;           use Gtk.Enums;
-with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Menu;            use Gtk.Menu;
@@ -263,7 +263,7 @@ package body Create_Notebook is
    begin
       Set_Show_Tabs (Notebook, True);
       Set_Scrollable (Notebook, False);
-      if Page_List.Length (Get_Children (Notebook)) = 15 then
+      if Get_N_Pages (Notebook) = 15 then
          for I in 0 .. 9 loop
             Remove_Page (Notebook, 5);
          end loop;
@@ -277,7 +277,7 @@ package body Create_Notebook is
    procedure Notabs_Notebook (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       Set_Show_Tabs (Notebook, False);
-      if Page_List.Length (Get_Children (Notebook)) = 15 then
+      if Get_N_Pages (Notebook) = 15 then
          for I in 0 .. 9 loop
             Remove_Page (Notebook, 5);
          end loop;
@@ -293,7 +293,7 @@ package body Create_Notebook is
    begin
       Set_Show_Tabs (Notebook, True);
       Set_Scrollable (Notebook, True);
-      if Page_List.Length (Get_Children (Notebook)) = 5 then
+      if Get_N_Pages (Notebook) = 5 then
          Create_Pages (Notebook, 6, 15);
       end if;
    end Scrollable_Notebook;
@@ -319,7 +319,8 @@ package body Create_Notebook is
    procedure Homogeneous (Button : access Gtk_Check_Button_Record'Class;
                           Notebook : in Gtk_Notebook) is
    begin
-      Set_Homogeneous_Tabs (Notebook, Get_Active (Button));
+      Set_Property
+        (Notebook, Gtk.Notebook.Homogeneous_Property, Get_Active (Button));
    end Homogeneous;
 
    -----------------

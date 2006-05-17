@@ -75,8 +75,8 @@ package body Create_Paned is
    -------------------
 
    procedure Toggle_Resize (Child : access Gtk_Widget_Record'Class) is
-      Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
-      Is_Child1 : Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
+      Paned : constant Gtk_Paned := Gtk_Paned (Get_Parent (Child));
+      Is_Child1 : constant Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
       Resize : Boolean;
       Shrink : Boolean;
    begin
@@ -105,8 +105,8 @@ package body Create_Paned is
    -------------------
 
    procedure Toggle_Shrink (Child : access Gtk_Widget_Record'Class) is
-      Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
-      Is_Child1 : Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
+      Paned : constant Gtk_Paned := Gtk_Paned (Get_Parent (Child));
+      Is_Child1 : constant Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
       Resize : Boolean;
       Shrink : Boolean;
    begin
@@ -212,11 +212,11 @@ package body Create_Paned is
       Add (Frame, Vbox);
 
       Gtk_New_Vpaned (VPaned);
-      Pack_Start (Vbox, Vpaned, True, True, 0);
+      Pack_Start (Vbox, VPaned, True, True, 0);
       Set_Border_Width (VPaned, 5);
 
       Gtk_New_Hpaned (HPaned);
-      Add1 (Vpaned, HPaned);
+      Add1 (VPaned, HPaned);
 
       Gtk_New (Frame2);
 
@@ -224,7 +224,7 @@ package body Create_Paned is
       Add (Frame2, Button);
 
       Set_Shadow_Type (Frame2, Shadow_In);
-      Set_Usize (Frame2, 60, 60);
+      Set_USize (Frame2, 60, 60);
       Pack1 (HPaned, Frame2, False, False);
 
 
@@ -234,21 +234,21 @@ package body Create_Paned is
       Add (Frame2, Button);
 
       Set_Shadow_Type (Frame2, Shadow_In);
-      Set_Usize (Frame2, 80, 60);
+      Set_USize (Frame2, 80, 60);
       Add2 (HPaned, Frame2);
 
 
       Gtk_New (Frame2);
       Set_Shadow_Type (Frame2, Shadow_In);
-      Set_Usize (Frame2, 60, 280);
+      Set_USize (Frame2, 60, 280);
       Add2 (VPaned, Frame2);
 
       Pack_Start (Vbox,
-                  Create_Pane_Options (Hpaned, "Horizontal",
+                  Create_Pane_Options (HPaned, "Horizontal",
                                        "Left", "Right"),
                   False, False, 0);
       Pack_Start (Vbox,
-                  Create_Pane_Options (Vpaned, "Vertical",
+                  Create_Pane_Options (VPaned, "Vertical",
                                        "Top", "Bottom"),
                   False, False, 0);
 

@@ -55,7 +55,7 @@ package body Create_List is
      "Single" + "Browse" + "Multiple" + "Extended";
 
    List : Gtk_List;
-   Omenu_Group  : Widget_Slist.GSlist;
+   Omenu_Group  : Widget_SList.GSlist;
 
    ----------
    -- Help --
@@ -143,12 +143,12 @@ package body Create_List is
    begin
       Set_Label (Frame, "List");
 
-      Gtk_New_Vbox (VBox, Homogeneous => False, Spacing => 0);
-      Add (Frame, VBox);
+      Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
+      Add (Frame, Vbox);
 
       Gtk_New (Scrolled_Win);
       Set_Border_Width (Scrolled_Win, Border_Width => 5);
-      Set_Usize (Scrolled_Win, Width => -1, Height => 300);
+      Set_USize (Scrolled_Win, Width => -1, Height => 300);
       Pack_Start (Vbox, Scrolled_Win,
                   Expand => True,
                   Fill => True,
@@ -185,7 +185,7 @@ package body Create_List is
                   Padding => 0);
 
       Gtk_New (Button, Label => "Insert Row");
-      Pack_Start (Hbox, BUtton,
+      Pack_Start (Hbox, Button,
                   Expand  => True,
                   Fill    => True,
                   Padding => 0);
@@ -194,7 +194,7 @@ package body Create_List is
                               Slot_Object => List);
 
       Gtk_New (Button, Label => "Clear List");
-      Pack_Start (Hbox, BUtton,
+      Pack_Start (Hbox, Button,
                   Expand  => True,
                   Fill    => True,
                   Padding => 0);
@@ -230,7 +230,7 @@ package body Create_List is
                   Fill    => True,
                   Padding => 0);
 
-      Omenu_Group := Widget_Slist.Null_List;
+      Omenu_Group := Widget_SList.Null_List;
       Build_Option_Menu (List_Omenu, Omenu_Group,
                          Items, 0, Toggle_Sel_Mode'Access);
       Pack_Start (Hbox, List_Omenu,
@@ -243,7 +243,7 @@ package body Create_List is
 
    exception
       when Name_Error =>
-         Ada.Text_Io.Put_Line ("File not found: create_list.adb");
+         Ada.Text_IO.Put_Line ("File not found: create_list.adb");
    end Run;
 
 end Create_List;

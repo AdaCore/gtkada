@@ -74,7 +74,7 @@ package Common is
 
    procedure Build_Option_Menu
      (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
-      Gr      : in out Widget_Slist.GSlist;
+      Gr      : in out Widget_SList.GSlist;
       Items   : Chars_Ptr_Array;
       History : Gint;
       Cb      : Widget_Handler.Marshallers.Void_Marshaller.Handler);

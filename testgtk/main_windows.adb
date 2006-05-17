@@ -40,12 +40,11 @@ with Gtk.Dialog;          use Gtk.Dialog;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Handlers;        use Gtk.Handlers;
-with Gtk.HButton_Box;     use Gtk.HButton_Box;
+with Gtk.Hbutton_Box;     use Gtk.Hbutton_Box;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Main;            use Gtk.Main;
 with Gtk.Notebook;        use Gtk.Notebook;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Paned;           use Gtk.Paned;
 with Gtk.Style;           use Gtk.Style;
 with Gtk.Text;            use Gtk.Text;
@@ -116,7 +115,7 @@ with Create_Toolbar;
 with Create_Tooltips;
 with Create_Tree_View;
 with Common; use Common;
-with View_GL; use View_GL;
+with View_Gl; use View_Gl;
 
 with Libart_Demo;  use Libart_Demo;
 
@@ -212,7 +211,7 @@ package body Main_Windows is
                                          Create_Buttons.Help'Access),
       (NS ("calendar"),         Base,    Create_Calendar.Run'Access,
                                          Create_Calendar.Help'Access),
-      (Ns ("canvas"),           Gtkada,  Create_Canvas.Run'Access,
+      (NS ("canvas"),           Gtkada,  Create_Canvas.Run'Access,
                                          Create_Canvas.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,
                                          Create_Check_Buttons.Help'Access),
@@ -241,7 +240,7 @@ package body Main_Windows is
                                          Create_Frame.Help'Access),
       (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access,
                                          Create_Gamma_Curve.Help'Access),
-      (Ns ("graphic contexts"), GdkD,    Create_Gc.Run'Access,
+      (NS ("graphic contexts"), GdkD,    Create_Gc.Run'Access,
                                          Create_Gc.Help'Access),
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
                                          Create_Handle_Box.Help'Access),
@@ -361,8 +360,6 @@ package body Main_Windows is
                when Pixbuf  =>
                   Text := New_String ("Images");
                   Frame_Num := 3;
-               when others  =>
-                  Text := New_String (Demo_Type'Image (Typ));
             end case;
 
             Sibling := Gtk.Ctree.Insert_Node
@@ -764,10 +761,10 @@ package body Main_Windows is
       Gtk_New (Label, "OpenGL demo");
       Append_Page (Win.Notebook, Frame, Label);
 
-      View_GL.Run (Frame);
+      View_Gl.Run (Frame);
 
       --  Button box for the buttons at the bottom
-      -- Gtk_New_Hbox (Bbox, Homogeneous => True, Spacing => 10);
+      --  Gtk_New_Hbox (Bbox, Homogeneous => True, Spacing => 10);
       Gtk_New (Bbox);
       Set_Layout (Bbox, Buttonbox_Spread);
       Set_Spacing (Bbox, 40);

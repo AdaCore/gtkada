@@ -67,6 +67,7 @@ package body Create_Status is
 
    procedure Push (Status : access Gtk_Status_Bar_Record'Class) is
       Id : Message_Id;
+      pragma Unreferenced (Id);
    begin
       Id := Push (Status, 1, "Something" & Gint'Image (Counter));
       Counter := Counter + 1;
@@ -145,7 +146,7 @@ package body Create_Status is
    begin
       while List /= Messages_List.Null_List loop
          declare
-            Msg : Status_Bar_Msg := Messages_List.Get_Data (List);
+            Msg : constant Status_Bar_Msg := Messages_List.Get_Data (List);
          begin
             Ada.Text_IO.Put_Line ("Context Id = "
                                   & Context_Id'Image (Msg.Context)

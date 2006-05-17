@@ -59,7 +59,6 @@ with System;
 with Gtkada.Types;          use Gtkada.Types;
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
-with Common;                use Common;
 
 package body Create_Plot is
 
@@ -379,6 +378,7 @@ package body Create_Plot is
       Data      : Gtk_Plot_Data;
       Child     : Gtk_Plot_Canvas_Plot;
       Marker    : Gtk_Plot_Marker;
+      pragma Unreferenced (Marker);
    begin
       --  Create the plot itself, its axis and the legend box
 

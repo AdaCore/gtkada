@@ -114,7 +114,7 @@ package body Create_Splittable is
    ----------------
 
    procedure On_Split_V (Button : access Gtk_Widget_Record'Class) is
-      Child : Gtk_Widget := Create_Child (null, Integer'Image (Item));
+      Child : constant Gtk_Widget := Create_Child (null, Integer'Image (Item));
    begin
       Item := Item + 1;
       Split (Pane, Button, Child, Orientation_Vertical);
@@ -125,7 +125,7 @@ package body Create_Splittable is
    ----------------
 
    procedure On_Split_H (Button : access Gtk_Widget_Record'Class) is
-      Child : Gtk_Widget := Create_Child (null, Integer'Image (Item));
+      Child : constant Gtk_Widget := Create_Child (null, Integer'Image (Item));
    begin
       Item := Item + 1;
       Split (Pane, Button, Child, Orientation_Horizontal);
@@ -151,7 +151,7 @@ package body Create_Splittable is
       (Bar : Gtk_Toolbar; Title : String) return Gtk_Widget
    is
       Frame  : Gtk_Frame;
-      Box    : Gtk_VButton_Box;
+      Box    : Gtk_Vbutton_Box;
       Button : Gtk_Button;
       Item   : Gtk_Button;
    begin

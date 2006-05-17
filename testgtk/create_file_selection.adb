@@ -78,7 +78,7 @@ package body Create_File_Selection is
    begin
       Ada.Text_IO.Put_Line ("Selected " & Get_Filename (Files));
       Destroy (Files);
-   end Ok;
+   end OK;
 
    ------------
    -- Cancel --
@@ -126,7 +126,7 @@ package body Create_File_Selection is
             Destroy_Cb.To_Marshaller (Destroyed'Access), Window'Access);
          Files_Cb.Object_Connect
            (Get_Ok_Button (Window), "clicked",
-            Files_Cb.To_Marshaller (Ok'Access),
+            Files_Cb.To_Marshaller (OK'Access),
             Slot_Object => Window);
          Widget_Handler.Object_Connect
            (Get_Cancel_Button (Window), "clicked",

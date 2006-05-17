@@ -32,7 +32,6 @@ with Glib.Object;       use Glib.Object;
 with Gtk.Arguments;     use Gtk.Arguments;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Button;        use Gtk.Button;
-with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Tips_Query;    use Gtk.Tips_Query;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
@@ -75,7 +74,7 @@ package body Create_Tooltips is
                              Toggle      : in Gtk_Toggle_Button)
    is
       --  Widget    : Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
-      Tip_Text    : String := To_String (Params, 2);
+      Tip_Text    : constant String := To_String (Params, 2);
       --  Tip_Private : String := To_String (Params, 3);
 
    begin
@@ -98,9 +97,9 @@ package body Create_Tooltips is
                              Params      : in Gtk.Arguments.Gtk_Args)
                             return Gint
    is
-      Widget    : Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
+      Widget    : constant Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
       --  Tip_Text    : String := To_String (Params, 2);
-      Tip_Private : String := To_String (Params, 3);
+      Tip_Private : constant String := To_String (Params, 3);
       pragma Warnings (Off, Tips_Query);
    begin
       if Is_Created (Widget.all) then
@@ -130,7 +129,8 @@ package body Create_Tooltips is
    -----------------
 
    procedure Get_Data_Cb (Button : access Gtk_Button_Record'Class) is
-      Data : Gtk.Tooltips.Tooltips_Data := Gtk.Tooltips.Get_Data (Button);
+      Data : constant Gtk.Tooltips.Tooltips_Data :=
+        Gtk.Tooltips.Get_Data (Button);
    begin
       Ada.Text_IO.Put_Line ("Result of call to Gtk.Tooltips.Get_Data:");
       Ada.Text_IO.Put_Line ("   Text=" & Data.Text);
@@ -170,7 +170,7 @@ package body Create_Tooltips is
       Gtk_New (Button, "Button1");
       Show (Button);
       Pack_Start (Box2, Button, False, False, 0);
-      Set_Tip (Tooltips, button, "This is button 1",
+      Set_Tip (Tooltips, Button, "This is button 1",
                "ContextHelp/buttons/1");
 
       Gtk_New (Button, "(Print result of Get_Data)");

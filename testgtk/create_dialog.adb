@@ -38,7 +38,7 @@ with Gtk.Widget;   use Gtk.Widget;
 with Gtk;          use Gtk;
 
 package body Create_Dialog is
-   type Gtk_Label_access is access all Gtk_Label;
+   type Gtk_Label_Access is access all Gtk_Label;
    package Label_Destroy is new Handlers.User_Callback
      (Gtk_Label_Record, Gtk_Label_Access);
 
@@ -97,7 +97,7 @@ package body Create_Dialog is
             Dialog'Access);
          Set_Title (Dialog, "Gtk_Dialog");
          Set_Border_Width (Dialog, 0);
-         Set_Usize (Dialog, 200, 110);
+         Set_USize (Dialog, 200, 110);
 
          Gtk_New (Button, "OK");
          Set_Flags (Button, Can_Default);

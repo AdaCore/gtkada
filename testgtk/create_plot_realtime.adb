@@ -45,7 +45,6 @@ with Gtk.Widget;            use Gtk.Widget;
 with Gtkada.Handlers;       use Gtkada.Handlers;
 with Unchecked_Deallocation;
 with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
-with Common;                use Common;
 
 package body Create_Plot_Realtime is
 

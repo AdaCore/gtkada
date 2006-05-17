@@ -64,9 +64,9 @@ package body Create_Clist is
    Style1             : Gtk_Style;
    Style2             : Gtk_Style;
    Style3             : Gtk_Style;
-   Clist_Omenu_Group  : Widget_Slist.GSlist;
+   Clist_Omenu_Group  : Widget_SList.GSlist;
 
-   Titles : constant Chars_Ptr_Array (1 .. Clist_Columns):=
+   Titles : constant Chars_Ptr_Array (1 .. Clist_Columns) :=
      "Auto resize" +
      "Not resizable" +
      "Max width 100" +
@@ -168,7 +168,7 @@ package body Create_Clist is
       Mask   : Gdk.Gdk_Bitmap;
       Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Row    : Gint;
-      Style  : Gtk_Style := Get_Style (List);
+      Style  : constant Gtk_Style := Get_Style (List);
 
    begin
       Create_From_Xpm_D (Pixmap, Get_Clist_Window (List),
@@ -202,6 +202,7 @@ package body Create_Clist is
    procedure Add10000 (List : access Gtk_Clist_Record'Class) is
       Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Row    : Gint;
+      pragma Unreferenced (Row);
 
    begin
       for I in 3 .. Clist_Columns - 1 loop
@@ -212,7 +213,7 @@ package body Create_Clist is
       Freeze (List);
 
       for I in 0 .. 9999 loop
-         Ics.Free (Texts (0));
+         ICS.Free (Texts (0));
          Texts (0) := ICS.New_String ("Row" & Integer'Image (I));
          Row := Append (List, Texts);
       end loop;
@@ -234,7 +235,7 @@ package body Create_Clist is
       Col1 : Gdk_Color;
       Col2 : Gdk_Color;
       Row  : Gint;
-      Style : Gtk_Style := Get_Style (List);
+      Style : constant Gtk_Style := Get_Style (List);
 
    begin
       Row := Prepend (List, Texts);
@@ -303,9 +304,8 @@ package body Create_Clist is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Texts     : Chars_Ptr_Array (0 .. Clist_Columns - 1);
-      VBox,
-        HBox    : Gtk_Box;
-      Clist     : Gtk_CList;
+      VBox, HBox : Gtk_Box;
+      Clist     : Gtk_Clist;
       Button    : Gtk_Button;
       Label     : Gtk_Label;
       New_Row   : Gint;
@@ -315,6 +315,7 @@ package body Create_Clist is
       Col1      : Gdk_Color;
       Col2      : Gdk_Color;
       Style     : Gtk_Style;
+      pragma Unreferenced (New_Row);
 
    begin
 
@@ -332,9 +333,9 @@ package body Create_Clist is
       Add (Scrolled, Clist);
       --  TBD: Callback for click column
 
-      Gtk_New_Hbox (Hbox, False, 5);
-      Set_Border_Width (Hbox, 5);
-      Pack_Start (Vbox, Hbox, False, False, 0);
+      Gtk_New_Hbox (HBox, False, 5);
+      Set_Border_Width (HBox, 5);
+      Pack_Start (VBox, HBox, False, False, 0);
 
       Clist_Cb.Connect (Clist, "click_column",
                         Clist_Cb.To_Marshaller (Click_Column'Access));
@@ -358,25 +359,25 @@ package body Create_Clist is
                                Slot_Object => Clist);
 
       --  Second layer of buttons
-      Gtk_New_Hbox (Hbox, False, 5);
-      Set_Border_Width (Hbox, 5);
-      Pack_Start (Vbox, Hbox, False, False, 0);
+      Gtk_New_Hbox (HBox, False, 5);
+      Set_Border_Width (HBox, 5);
+      Pack_Start (VBox, HBox, False, False, 0);
 
       Gtk_New (Button, "Clear List");
-      Pack_Start (Hbox, Button, True, True, 0);
+      Pack_Start (HBox, Button, True, True, 0);
       Clist_Cb.Object_Connect (Button, "clicked",
                                Clist_Cb.To_Marshaller (Clear_List'Access),
                                Slot_Object => Clist);
 
       Gtk_New (Button, "Remove Selection");
-      Pack_Start (Hbox, Button, True, True, 0);
+      Pack_Start (HBox, Button, True, True, 0);
       Clist_Cb.Object_Connect
         (Button, "clicked",
          Clist_Cb.To_Marshaller (Remove_Selection'Access),
          Slot_Object => Clist);
 
       Gtk_New (Button, "Undo Selection");
-      Pack_Start (Hbox, Button, True, True, 0);
+      Pack_Start (HBox, Button, True, True, 0);
       Clist_Cb.Object_Connect
         (Button, "clicked",
          Clist_Cb.To_Marshaller (Undo_Selection'Access),
@@ -385,19 +386,19 @@ package body Create_Clist is
       --  TBD??? Warning tests button
 
       --  Third layer of buttons
-      Gtk_New_Hbox (Hbox, False, 5);
-      Set_Border_Width (Hbox, 5);
-      Pack_Start (Vbox, Hbox, False, False, 0);
+      Gtk_New_Hbox (HBox, False, 5);
+      Set_Border_Width (HBox, 5);
+      Pack_Start (VBox, HBox, False, False, 0);
 
       Gtk_New (Check, "Toggle title Buttons");
-      Pack_Start (Hbox, Check, True, True, 0);
+      Pack_Start (HBox, Check, True, True, 0);
       Check_Cb.Connect (Check, "clicked",
                         Check_Cb.To_Marshaller (Toggle_Titles'Access),
                         Clist);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Reorderable");
-      Pack_Start (Hbox, Check, True, True, 0);
+      Pack_Start (HBox, Check, True, True, 0);
       Check_Cb.Connect
         (Check, "clicked",
          Check_Cb.To_Marshaller (Toggle_Reorderable'Access),
@@ -405,16 +406,16 @@ package body Create_Clist is
       Set_Active (Check, True);
 
       Gtk_New (Label, "Selection_Mode :");
-      Pack_Start (Hbox, Label, False, True, 0);
+      Pack_Start (HBox, Label, False, True, 0);
 
-      Clist_Omenu_Group := Widget_Slist.Null_List;
+      Clist_Omenu_Group := Widget_SList.Null_List;
       Build_Option_Menu (Omenu, Clist_Omenu_Group, Items, 0, null);
       --  FIXME: Add the missing callback (instead of null).
-      Pack_Start (Hbox, Omenu, False, True, 0);
+      Pack_Start (HBox, Omenu, False, True, 0);
 
-      Pack_Start (Vbox, Scrolled, True, True, 0);
+      Pack_Start (VBox, Scrolled, True, True, 0);
       Set_Row_Height (Clist, 18);
-      Set_Usize (Clist, -1, 300);
+      Set_USize (Clist, -1, 300);
 
       for I in 0 .. Clist_Columns - 1 loop
          Set_Column_Width (Clist, Gint (I), 80);
@@ -441,7 +442,8 @@ package body Create_Clist is
       Set_Font_Description (Style, From_String ("Helvetica Bold 14"));
 
       for I in Gint'(0) .. 9 loop
-         Texts (0) := ICS.New_String ("ClistRow " & Integer'Image (Clist_Rows));
+         Texts (0) :=
+           ICS.New_String ("ClistRow " & Integer'Image (Clist_Rows));
          Clist_Rows := Clist_Rows + 1;
          New_Row := Append (Clist, Texts);
          ICS.Free (Texts (0));

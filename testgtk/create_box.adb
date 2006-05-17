@@ -115,8 +115,8 @@ package body Create_Box is
    begin
       Gtk.Frame.Set_Label (Frame, "Boxes");
 
-      Gtk_New_Vbox (VBox, Homogeneous => False, Spacing => 25);
-      Add (Frame, VBox);
+      Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 25);
+      Add (Frame, Vbox);
 
       Gtk_New_Vbox (Box, Homogeneous => True);
       Pack_Start (Vbox, Box, Expand => False, Fill => False);

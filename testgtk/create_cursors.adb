@@ -39,7 +39,6 @@ with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Frame;        use Gtk.Frame;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Handlers;     use Gtk.Handlers;
 with Gtk.Spin_Button;  use Gtk.Spin_Button;
@@ -84,13 +83,13 @@ package body Create_Cursors is
    function Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record'Class)
                                 return Gint
    is
-      Style      : Gtk_Style := Get_Style (Darea);
-      Draw       : Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
-      White_GC   : Gdk_GC := Get_White_GC (Style);
-      Black_GC   : Gdk_GC := Get_Black_GC (Style);
-      Gray_GC    : Gdk_GC := Get_Bg_GC (Style, State_Normal);
-      Max_Width  : Gint  := Get_Allocation_Width (Darea);
-      Max_Height : Gint  := Get_Allocation_Height (Darea);
+      Style      : constant Gtk_Style := Get_Style (Darea);
+      Draw       : constant Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
+      White_GC   : constant Gdk_GC := Get_White_GC (Style);
+      Black_GC   : constant Gdk_GC := Get_Black_GC (Style);
+      Gray_GC    : constant Gdk_GC := Get_Bg_GC (Style, State_Normal);
+      Max_Width  : constant Gint  := Get_Allocation_Width (Darea);
+      Max_Height : constant Gint  := Get_Allocation_Height (Darea);
 
    begin
       Draw_Rectangle (Draw, White_GC, True, 0, 0,
@@ -117,7 +116,7 @@ package body Create_Cursors is
       pragma Warnings (On);
 
       C      : Gint := Get_Value_As_Int (Spinner);
-      Window : Gdk_Window := Get_Window (Widget);
+      Window : constant Gdk_Window := Get_Window (Widget);
       Cursor : Gdk_Cursor := Null_Cursor;
    begin
       C := C mod 154;
@@ -200,7 +199,7 @@ package body Create_Cursors is
       Pack_Start (Vbox, Frame2);
 
       Gtk_New (Darea);
-      Set_Usize (Darea, 80, 80);
+      Set_USize (Darea, 80, 80);
       Add (Frame2, Darea);
       Da_Cb.Object_Connect
         (Darea, "expose_event",

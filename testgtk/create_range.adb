@@ -76,7 +76,7 @@ package body Create_Range is
 
       Gtk_New (Adjustment, 0.0, 0.0, 101.0, 0.1, 1.0, 1.0);
       Gtk_New_Hscale (Scale, Adjustment);
-      Set_Usize (Scale, 150, 30);
+      Set_USize (Scale, 150, 30);
       Set_Update_Policy (Scale, Update_Delayed);
       Set_Digits (Scale, 1);
       Set_Draw_Value (Scale, True);

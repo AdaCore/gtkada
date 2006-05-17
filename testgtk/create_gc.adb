@@ -1,6 +1,6 @@
 
 with Glib;         use Glib;
-with Gdk.Gc;       use Gdk.Gc;
+with Gdk.GC;       use Gdk.GC;
 with Gdk.Color;    use Gdk.Color;
 with Gdk.Drawable; use Gdk.Drawable;
 with Gdk.Event;    use Gdk.Event;
@@ -16,7 +16,7 @@ package body Create_Gc is
    package Event_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Drawing_Area_Record, Boolean);
 
-   Gc   : Gdk_Gc;
+   Gc   : Gdk_GC;
    Font : Gdk_Font;
    Blue : Gdk_Color;
    Red  : Gdk_Color;
@@ -172,7 +172,7 @@ package body Create_Gc is
       Gtk.Frame.Set_Label (Frame, "Graphic contexts");
 
       Gtk_New (Area);
-      Set_Usize (Area, 300, 500);
+      Set_USize (Area, 300, 500);
       Add (Frame, Area);
       Event_Cb.Connect (Area, "expose_event",
                         Event_Cb.To_Marshaller (Expose'Access));

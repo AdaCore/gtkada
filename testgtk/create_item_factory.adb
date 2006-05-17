@@ -44,7 +44,7 @@ package body Create_Item_Factory is
       Callback_Action : Guint;
       Widget          : Limited_Widget);
 
-   Menu_Items : Gtk_Item_Factory_Entry_Array :=
+   Menu_Items : constant Gtk_Item_Factory_Entry_Array :=
      (Gtk_New ("/_File", Item_Type => Branch),
       Gtk_New ("/File/tearoff1", "", Ifactory_Cb'Access, Tearoff),
       Gtk_New ("/File/_New", "<control>N", Ifactory_Cb'Access),
@@ -55,7 +55,8 @@ package body Create_Item_Factory is
       Gtk_New ("/File/_Quit", "<control>Q", Ifactory_Cb'Access),
       Gtk_New ("/_Preferences", Item_Type => Branch),
       Gtk_New ("/_Preferences/_Color", Item_Type => Branch),
-      Gtk_New ("/_Preferences/_Color/_Red", "", Ifactory_Cb'Access, Radio_Item),
+      Gtk_New ("/_Preferences/_Color/_Red", "",
+               Ifactory_Cb'Access, Radio_Item),
       Gtk_New ("/_Preferences/_Color/_Green", "", Ifactory_Cb'Access,
                "/Preferences/Color/Red"),
       Gtk_New ("/_Preferences/_Color/_Blue", "", Ifactory_Cb'Access,

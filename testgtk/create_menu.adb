@@ -131,7 +131,7 @@ package body Create_Menu is
 
       Menu := Create_Menu (2, True);
 
-      Gtk_New (Menu_Item, "test" & Ascii.LF & "line2");
+      Gtk_New (Menu_Item, "test" & ASCII.LF & "line2");
       Set_Submenu (Menu_Item, Menu);
       Append (Menu_Bar, Menu_Item);
 
@@ -140,7 +140,7 @@ package body Create_Menu is
       Append (Menu_Bar, Menu_Item);
 
       Gtk_New (Menu_Item, "bar");
-      Set_Submenu (Menu_Item, Create_Menu (4, true));
+      Set_Submenu (Menu_Item, Create_Menu (4, True));
 
       Set_Right_Justified (Menu_Item, True);
       Append (Menu_Bar, Menu_Item);

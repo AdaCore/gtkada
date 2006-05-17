@@ -43,7 +43,6 @@ with Gtk.Scrolled_Window;   use Gtk.Scrolled_Window;
 with Gtk.Handlers;          use Gtk.Handlers;
 with Ada.Numerics.Generic_Elementary_Functions;
 with System;
-with Common;                use Common;
 
 package body Create_Plot_3D is
 

@@ -100,7 +100,7 @@ package body Libart_Demo is
       Render_To_Drawable
         (Draw.Pix,
          Get_Window (Draw.Area),
-         Gtk.Style.Get_Black_Gc (Get_Style (Draw.Area)),
+         Gtk.Style.Get_Black_GC (Get_Style (Draw.Area)),
          0, 0,
          0, 0,
          Get_Width (Draw.Pix), Get_Height (Draw.Pix),
@@ -132,7 +132,7 @@ package body Libart_Demo is
       Pack_Start (Draw, Label, Expand => False, Fill => False);
 
       Draw.Pix := Pixbuf;
-      Set_Usize
+      Set_USize
         (Draw,
          Get_Width (Draw.Pix),
          Get_Height (Draw.Pix) + Gint (Get_Allocation_Height (Label)));
@@ -164,10 +164,10 @@ package body Libart_Demo is
       Error           : Glib.Error.GError;
 
    begin
-      Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
+      Gtk_New_Vbox (VBox, Homogeneous => False, Spacing => 0);
 
       Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 0);
-      Pack_Start (Vbox, Hbox);
+      Pack_Start (VBox, Hbox);
 
       --  Creating the images.
 
@@ -207,7 +207,7 @@ package body Libart_Demo is
          Overall_Alpha => 128);
 
       --  Creating the canvases
-      Add (Frame, Vbox);
+      Add (Frame, VBox);
 
       Gtk_New (Draw, Pix, "Initial Image");
       Pack_Start (Hbox, Draw, Expand => False, Fill => True);
@@ -218,7 +218,7 @@ package body Libart_Demo is
       Gtk_New (Draw, Pix3, "Composite Image with Opacity"
                & ASCII.LF
                & "This image is the addition of two simpler images");
-      Pack_Start (Vbox, Draw);
+      Pack_Start (VBox, Draw);
 
       Show_All (Frame);
    end Run;
