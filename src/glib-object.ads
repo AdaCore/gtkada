@@ -35,7 +35,9 @@
 
 with Gtkada.Types;
 with Glib.GSlist;
+with Glib.Glist;
 pragma Elaborate_All (Glib.GSlist);
+pragma Elaborate_All (Glib.Glist);
 
 package Glib.Object is
 
@@ -377,6 +379,7 @@ package Glib.Object is
    function Convert (W : System.Address) return GObject;
 
    package Object_List is new Glib.GSlist.Generic_SList (GObject);
+   package Object_Simple_List is new Glib.Glist.Generic_List (GObject);
 
 private
 
