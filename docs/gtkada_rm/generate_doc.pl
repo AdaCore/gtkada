@@ -560,12 +560,19 @@ sub section_output () {
 # @1.
 # The htable %parent is initialized, as a side effect
 sub find_type_in_package () {
+    my ($type) = shift;  ## if "", returns the main type. Otherwise, returns
+                         ## that type specifically
     my (@content) = @_;
     my ($line, $origin, $p);
 
     # Look into the private part only
     while (@content && $line !~ /^private/) {
 	$line = shift @content;
+    }
+
+    # If $type is unspecified, return the main type
+    if ($type eq "") {
+       $type = "[^ \t]+";
     }
 
     # Find the name of the type in the package @content
@@ -578,7 +585,7 @@ sub find_type_in_package () {
 	  $line .= shift @content;
 	}
 
-	if ($line =~ /type ([^ \t]+)_Record\s+is\s+new\s/) {
+	if ($line =~ /type ($type)_Record\s+is\s+new\s/) {
 	    $origin = $1;
 
 	    # Do not keep the package name
@@ -871,7 +878,7 @@ sub find_signals () {
 
 sub find_hierarchy () {
     my (@content) = @_;
-    my ($origin) = &find_type_in_package (@content);
+    my ($origin) = &find_type_in_package ("", @content);
     if ($origin =~ /^Gtk/) {
 	return &find_hierarchy_array ($origin);
     } else {
@@ -895,7 +902,7 @@ sub find_hierarchy_array () {
 	} else {
 	    die "file not found for type $type ($filename)\n";
 	}
-	my ($origin) = &find_type_in_package (<FILE>);
+	my ($origin) = &find_type_in_package ($type, <FILE>);
 	close (FILE);
 	return (&find_hierarchy_array ($parent{$type}), $type);
     }
@@ -906,7 +913,7 @@ sub find_hierarchy_array () {
 sub file_from_package () {
     my ($package) = shift;
     $package =~ s/G[dt]k\.//;
-    $package =~ s/\./-/;
+    $package =~ s/\./-/g;
     $package =~ tr/A-Z/a-z/;
     return $package . ".ads";
 }
