@@ -1,5 +1,3 @@
-with System;
-
 package body gl_h is
 
    ---------------
