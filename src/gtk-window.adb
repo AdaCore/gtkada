@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,6 +29,7 @@
 
 with System;
 with Gdk.Event;        use Gdk.Event;
+with Gdk.Pixbuf;       use Gdk.Pixbuf;
 with Gdk.Types;        use Gdk.Types;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Accel_Group;  use Gtk.Accel_Group;
@@ -657,10 +658,867 @@ package body Gtk.Window is
    procedure Unstick (Window : access Gtk_Window_Record) is
       procedure Internal (Window : System.Address);
       pragma Import (C, Internal, "gtk_window_unstick");
-
    begin
       Internal (Get_Object (Window));
    end Unstick;
+
+   -------------------------
+   -- Set_Skip_Pager_Hint --
+   -------------------------
+
+   procedure Set_Skip_Pager_Hint
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean)
+   is
+      procedure Internal (Window  : System.Address; Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_skip_pager_hint");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Skip_Pager_Hint;
+
+   ---------------------------
+   -- Set_Skip_Taskbar_Hint --
+   ---------------------------
+
+   procedure Set_Skip_Taskbar_Hint
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean)
+   is
+      procedure Internal (Window  : System.Address; Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_skip_taskbar_hint");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Skip_Taskbar_Hint;
+
+   ----------------------
+   -- Set_Urgency_Hint --
+   ----------------------
+
+   procedure Set_Urgency_Hint
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean)
+   is
+      procedure Internal (Window  : System.Address; Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_urgency_hint");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Urgency_Hint;
+
+   ------------------
+   -- Unfullscreen --
+   ------------------
+
+   procedure Unfullscreen (Window : access Gtk_Window_Record) is
+      procedure Internal (Window : System.Address);
+      pragma Import (C, Internal, "gtk_window_unfullscreen");
+   begin
+      Internal (Get_Object (Window));
+   end Unfullscreen;
+
+   ------------------------
+   -- Set_Icon_From_File --
+   ------------------------
+
+   function Set_Icon_From_File
+     (Window   : access Gtk_Window_Record;
+      Filename : String)
+      return Boolean
+   is
+      function Internal
+        (Window   : System.Address;
+         Filename : String)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_set_icon_from_file");
+   begin
+      return Boolean'Val
+        (Internal (Get_Object (Window), Filename & ASCII.NUL));
+   end Set_Icon_From_File;
+
+   -------------------
+   -- Set_Icon_List --
+   -------------------
+
+   procedure Set_Icon_List
+     (Window : access Gtk_Window_Record;
+      List   : Glib.Object.Object_Simple_List.Glist)
+   is
+      use Glib.Object.Object_Simple_List;
+      procedure Internal (Window, List : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_icon_list");
+   begin
+      Internal (Get_Object (Window), Get_Object (List));
+   end Set_Icon_List;
+
+   -------------------
+   -- Set_Icon_Name --
+   -------------------
+
+   procedure Set_Icon_Name
+     (Window : access Gtk_Window_Record;
+      Name   : String)
+   is
+      procedure Internal
+        (Window : System.Address;
+         Name   : String);
+      pragma Import (C, Internal, "gtk_window_set_icon_name");
+   begin
+      Internal (Get_Object (Window), Name & ASCII.NUL);
+   end Set_Icon_Name;
+
+   --------------------
+   -- Set_Keep_Above --
+   --------------------
+
+   procedure Set_Keep_Above
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean)
+   is
+      procedure Internal
+        (Window  : System.Address;
+         Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_keep_above");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Keep_Above;
+
+   --------------------
+   -- Set_Keep_Below --
+   --------------------
+
+   procedure Set_Keep_Below
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean)
+   is
+      procedure Internal
+        (Window  : System.Address;
+         Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_keep_below");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Keep_Below;
+
+   ---------------------------
+   -- Set_Mnemonic_Modifier --
+   ---------------------------
+
+   procedure Set_Mnemonic_Modifier
+     (Window   : access Gtk_Window_Record;
+      Modifier : Gdk_Modifier_Type)
+   is
+      procedure Internal
+        (Window   : System.Address;
+         Modifier : Gdk_Modifier_Type);
+      pragma Import (C, Internal, "gtk_window_set_mnemonic_modifier");
+   begin
+      Internal (Get_Object (Window), Modifier);
+   end Set_Mnemonic_Modifier;
+
+   ------------------------------
+   -- Reshow_With_Initial_Size --
+   ------------------------------
+
+   procedure Reshow_With_Initial_Size
+     (Window : access Gtk_Window_Record)
+   is
+      procedure Internal (Window : System.Address);
+      pragma Import (C, Internal, "gtk_window_reshow_with_initial_size");
+   begin
+      Internal (Get_Object (Window));
+   end Reshow_With_Initial_Size;
+
+   ----------------------
+   -- Set_Accept_Focus --
+   ----------------------
+
+   procedure Set_Accept_Focus
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean)
+   is
+      procedure Internal
+        (Window  : System.Address;
+         Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_accept_focus");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Accept_Focus;
+
+   -----------------------------------
+   -- Set_Auto_Startup_Notification --
+   -----------------------------------
+
+   procedure Set_Auto_Startup_Notification (Setting : Boolean) is
+      procedure Internal (Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_auto_startup_notification");
+   begin
+      Internal (Boolean'Pos (Setting));
+   end Set_Auto_Startup_Notification;
+
+   -----------------
+   -- Set_Default --
+   -----------------
+
+   procedure Set_Default
+     (Window         : access Gtk_Window_Record;
+      Default_Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Window         : System.Address;
+         Default_Widget : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_default");
+   begin
+      Internal (Get_Object (Window), Get_Object (Default_Widget));
+   end Set_Default;
+
+   ----------------------
+   -- Set_Default_Icon --
+   ----------------------
+
+   procedure Set_Default_Icon (Icon : Gdk_Pixbuf) is
+      procedure Internal (Icon : Gdk_Pixbuf);
+      pragma Import (C, Internal, "gtk_window_set_default_icon");
+   begin
+      Internal (Icon);
+   end Set_Default_Icon;
+
+   --------------------------------
+   -- Set_Default_Icon_From_File --
+   --------------------------------
+
+   function Set_Default_Icon_From_File (Filename : String) return Boolean is
+      function Internal (Filename : String) return Gboolean;
+      pragma Import (C, Internal, "gtk_window_set_default_icon_from_file");
+   begin
+      return Boolean'Val (Internal (Filename & ASCII.NUL));
+   end Set_Default_Icon_From_File;
+
+   ---------------------------
+   -- Set_Default_Icon_List --
+   ---------------------------
+
+   procedure Set_Default_Icon_List
+     (List : Glib.Object.Object_Simple_List.Glist)
+   is
+      use Glib.Object.Object_Simple_List;
+      procedure Internal (List : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_default_icon_list");
+   begin
+      Internal (Get_Object (List));
+   end Set_Default_Icon_List;
+
+   ---------------------------
+   -- Set_Default_Icon_Name --
+   ---------------------------
+
+   procedure Set_Default_Icon_Name (Name : String) is
+      procedure Internal (Name : String);
+      pragma Import (C, Internal, "gtk_window_set_default_icon_name");
+   begin
+      Internal (Name & ASCII.NUL);
+   end Set_Default_Icon_Name;
+
+   ----------------------
+   -- Set_Focus_On_Map --
+   ----------------------
+
+   procedure Set_Focus_On_Map
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean)
+   is
+      procedure Internal
+        (Window  : System.Address;
+         Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_focus_on_map");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Focus_On_Map;
+
+   --------------
+   -- Set_Icon --
+   --------------
+
+   procedure Set_Icon
+     (Window : access Gtk_Window_Record;
+      Icon   : Gdk_Pixbuf)
+   is
+      procedure Internal
+        (Window : System.Address;
+         Icon   : Gdk_Pixbuf);
+      pragma Import (C, Internal, "gtk_window_set_icon");
+   begin
+      Internal (Get_Object (Window), Icon);
+   end Set_Icon;
+
+   ----------
+   -- Move --
+   ----------
+
+   procedure Move
+     (Window : access Gtk_Window_Record;
+      X, Y   : Gint)
+   is
+      procedure Internal (Window : System.Address; X, Y : Gint);
+      pragma Import (C, Internal, "gtk_window_move");
+   begin
+      Internal (Get_Object (Window), X, Y);
+   end Move;
+
+   --------------------
+   -- Parse_Geometry --
+   --------------------
+
+   function Parse_Geometry
+     (Window   : access Gtk_Window_Record;
+      Geometry : String)
+      return Boolean
+   is
+      function Internal
+        (Window   : System.Address;
+         Geometry : String)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_parse_geometry");
+   begin
+      return Boolean'Val
+        (Internal (Get_Object (Window), Geometry & ASCII.NUL));
+   end Parse_Geometry;
+
+   -----------------------
+   -- Present_With_Time --
+   -----------------------
+
+   procedure Present_With_Time
+     (Window    : access Gtk_Window_Record;
+      Timestamp : Guint32)
+   is
+      procedure Internal
+        (Window    : System.Address;
+         Timestamp : Guint32);
+      pragma Import (C, Internal, "gtk_window_present_with_time");
+   begin
+      Internal (Get_Object (Window), Timestamp);
+   end Present_With_Time;
+
+   -------------------------
+   -- Propagate_Key_Event --
+   -------------------------
+
+   function Propagate_Key_Event
+     (Window : access Gtk_Window_Record;
+      Event  : Gdk.Event.Gdk_Event_Key)
+      return Boolean
+   is
+      function Internal
+        (Window : System.Address;
+         Event  : Gdk.Event.Gdk_Event_Key)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_propagate_key_event");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window), Event));
+   end Propagate_Key_Event;
+
+   ---------------------
+   -- Remove_Mnemonic --
+   ---------------------
+
+   procedure Remove_Mnemonic
+     (Window : access Gtk_Window_Record;
+      Keyval : Gdk_Key_Type;
+      Target : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Window : System.Address;
+         Keyval : Gdk_Key_Type;
+         Target : System.Address);
+      pragma Import (C, Internal, "gtk_window_remove_mnemonic");
+   begin
+      Internal (Get_Object (Window), Keyval, Get_Object (Target));
+   end Remove_Mnemonic;
+
+   -------------------------
+   -- Group_Remove_Window --
+   -------------------------
+
+   procedure Group_Remove_Window
+     (Window_Group : access Gtk_Window_Group_Record;
+      Window       : access Gtk_Window_Record'Class)
+   is
+      procedure Internal
+        (Window_Group : System.Address;
+         Window       : System.Address);
+      pragma Import (C, Internal, "gtk_window_group_remove_window");
+   begin
+      Internal (Get_Object (Window_Group), Get_Object (Window));
+   end Group_Remove_Window;
+
+   ------------------------
+   -- Has_Toplevel_Focus --
+   ------------------------
+
+   function Has_Toplevel_Focus
+     (Window : access Gtk_Window_Record) return Boolean
+   is
+      function Internal (Window : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_window_has_toplevel_focus");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Has_Toplevel_Focus;
+
+   ---------------
+   -- Is_Active --
+   ---------------
+
+   function Is_Active
+     (Window : access Gtk_Window_Record) return Boolean
+   is
+      function Internal (Window : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_window_is_active");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Is_Active;
+
+   -----------------------
+   -- Mnemonic_Activate --
+   -----------------------
+
+   function Mnemonic_Activate
+     (Window   : access Gtk_Window_Record;
+      Keyval   : Gdk_Key_Type;
+      Modifier : Gdk_Modifier_Type)
+      return Boolean
+   is
+      function Internal
+        (Window   : System.Address;
+         Keyval   : Gdk_Key_Type;
+         Modifier : Gdk_Modifier_Type)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_mnemonic_activate");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window), Keyval, Modifier));
+   end Mnemonic_Activate;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New (Group : out Gtk_Window_Group) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_window_group_new");
+   begin
+      Group := new Gtk_Window_Group_Record;
+      Set_Object (Group, Internal);
+   end Gtk_New;
+
+   --------------
+   -- Get_Role --
+   --------------
+
+   function Get_Role
+     (Window : access Gtk_Window_Record)
+      return String
+   is
+      function Internal
+        (Window : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_window_get_role");
+   begin
+      return Value (Internal (Get_Object (Window)));
+   end Get_Role;
+
+   --------------
+   -- Get_Size --
+   --------------
+
+   procedure Get_Size
+     (Window : access Gtk_Window_Record;
+      Width  : out Gint;
+      Height : out Gint)
+   is
+      procedure Internal
+        (Window : System.Address;
+         Width  : out Gint;
+         Height : out Gint);
+      pragma Import (C, Internal, "gtk_window_get_size");
+   begin
+      Internal (Get_Object (Window), Width, Height);
+   end Get_Size;
+
+   -------------------------
+   -- Get_Skip_Pager_Hint --
+   -------------------------
+
+   function Get_Skip_Pager_Hint
+     (Window : access Gtk_Window_Record)
+      return Boolean
+   is
+      function Internal
+        (Window : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_skip_pager_hint");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Skip_Pager_Hint;
+
+   ---------------------------
+   -- Get_Skip_Taskbar_Hint --
+   ---------------------------
+
+   function Get_Skip_Taskbar_Hint
+     (Window : access Gtk_Window_Record)
+      return Boolean
+   is
+      function Internal (Window : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_skip_taskbar_hint");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Skip_Taskbar_Hint;
+
+   -------------------
+   -- Get_Type_Hint --
+   -------------------
+
+   function Get_Type_Hint
+     (Window : access Gtk_Window_Record)
+      return Gdk_Window_Type_Hint
+   is
+      function Internal (Window : System.Address) return Gdk_Window_Type_Hint;
+      pragma Import (C, Internal, "gtk_window_get_type_hint");
+   begin
+      return Internal (Get_Object (Window));
+   end Get_Type_Hint;
+
+   ----------------------
+   -- Get_Urgency_Hint --
+   ----------------------
+
+   function Get_Urgency_Hint
+     (Window : access Gtk_Window_Record)
+      return Boolean
+   is
+      function Internal
+        (Window : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_urgency_hint");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Urgency_Hint;
+
+   ----------------------
+   -- Group_Add_Window --
+   ----------------------
+
+   procedure Group_Add_Window
+     (Window_Group : access Gtk_Window_Group_Record;
+      Window       : access Gtk_Window_Record'Class)
+   is
+      procedure Internal
+        (Window_Group : System.Address;
+         Window       : System.Address);
+      pragma Import (C, Internal, "gtk_window_group_add_window");
+   begin
+      Internal (Get_Object (Window_Group), Get_Object (Window));
+   end Group_Add_Window;
+
+   ----------------------
+   -- Get_Default_Size --
+   ----------------------
+
+   procedure Get_Default_Size
+     (Window : access Gtk_Window_Record;
+      Width  : out Gint;
+      Height : out Gint)
+   is
+      procedure Internal
+        (Window : System.Address;
+         Width  : out Gint;
+         Height : out Gint);
+      pragma Import (C, Internal, "gtk_window_get_default_size");
+   begin
+      Internal (Get_Object (Window), Width, Height);
+   end Get_Default_Size;
+
+   -----------------------------
+   -- Get_Destroy_With_Parent --
+   -----------------------------
+
+   function Get_Destroy_With_Parent
+     (Window : access Gtk_Window_Record)
+      return Boolean
+   is
+      function Internal
+        (Window : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_destroy_with_parent");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Destroy_With_Parent;
+
+   ----------------------
+   -- Get_Focus_On_Map --
+   ----------------------
+
+   function Get_Focus_On_Map
+     (Window : access Gtk_Window_Record)
+      return Boolean
+   is
+      function Internal
+        (Window : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_focus_on_map");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Focus_On_Map;
+
+   --------------------------
+   -- Get_Frame_Dimensions --
+   --------------------------
+
+   procedure Get_Frame_Dimensions
+     (Window : access Gtk_Window_Record;
+      Left   : out Gint;
+      Top    : out Gint;
+      Right  : out Gint;
+      Bottom : out Gint)
+   is
+      procedure Internal
+        (Window : System.Address;
+         Left   : out Gint;
+         Top    : out Gint;
+         Right  : out Gint;
+         Bottom : out Gint);
+      pragma Import (C, Internal, "gtk_window_get_frame_dimensions");
+   begin
+      Internal (Get_Object (Window), Left, Top, Right, Bottom);
+   end Get_Frame_Dimensions;
+
+   -------------------
+   -- Get_Has_Frame --
+   -------------------
+
+   function Get_Has_Frame
+     (Window : access Gtk_Window_Record)
+      return Boolean
+   is
+      function Internal
+        (Window : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_has_frame");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Has_Frame;
+
+   --------------
+   -- Get_Icon --
+   --------------
+
+   function Get_Icon
+     (Window : access Gtk_Window_Record)
+      return Gdk_Pixbuf
+   is
+      function Internal
+        (Window : System.Address)
+         return Gdk_Pixbuf;
+      pragma Import (C, Internal, "gtk_window_get_icon");
+   begin
+      return Internal (Get_Object (Window));
+   end Get_Icon;
+
+   -------------------
+   -- Get_Icon_List --
+   -------------------
+
+   function Get_Icon_List
+     (Window : access Gtk_Window_Record)
+      return Object_Simple_List.Glist
+   is
+      use Glib.Object.Object_Simple_List;
+      function Internal (Window : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_window_get_icon_list");
+      List : Glist;
+   begin
+      Set_Object (List, Internal (Get_Object (Window)));
+      return List;
+   end Get_Icon_List;
+
+   -------------------
+   -- Get_Icon_Name --
+   -------------------
+
+   function Get_Icon_Name
+     (Window : access Gtk_Window_Record)
+      return String
+   is
+      function Internal
+        (Window : System.Address)
+         return chars_ptr;
+      pragma Import (C, Internal, "gtk_window_get_icon_name");
+   begin
+      return Value (Internal (Get_Object (Window)));
+   end Get_Icon_Name;
+
+   ---------------------------
+   -- Get_Mnemonic_Modifier --
+   ---------------------------
+
+   function Get_Mnemonic_Modifier
+     (Window : access Gtk_Window_Record)
+      return Gdk_Modifier_Type
+   is
+      function Internal (Window : System.Address) return Gdk_Modifier_Type;
+      pragma Import (C, Internal, "gtk_window_get_mnemonic_modifier");
+   begin
+      return Internal (Get_Object (Window));
+   end Get_Mnemonic_Modifier;
+
+   ---------------
+   -- Get_Modal --
+   ---------------
+
+   function Get_Modal
+     (Window : access Gtk_Window_Record)
+      return Boolean
+   is
+      function Internal (Window : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_modal");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Modal;
+
+   ------------------
+   -- Get_Position --
+   ------------------
+
+   procedure Get_Position
+     (Window : access Gtk_Window_Record;
+      Root_X : out Gint;
+      Root_Y : out Gint)
+   is
+      procedure Internal
+        (Window : System.Address;
+         Root_X : out Gint;
+         Root_Y : out Gint);
+      pragma Import (C, Internal, "gtk_window_get_position");
+   begin
+      Internal (Get_Object (Window), Root_X, Root_Y);
+   end Get_Position;
+
+   ------------------
+   -- Activate_Key --
+   ------------------
+
+   function Activate_Key
+     (Window : access Gtk_Window_Record;
+      Event  : Gdk.Event.Gdk_Event_Key)
+      return Boolean
+   is
+      function Internal
+        (Window : System.Address;
+         Event  : Gdk.Event.Gdk_Event_Key)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_window_activate_key");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window), Event));
+   end Activate_Key;
+
+   ---------------------
+   -- Begin_Move_Drag --
+   ---------------------
+
+   procedure Begin_Move_Drag
+     (Window    : access Gtk_Window_Record;
+      Button    : Gint;
+      Root_X    : Gint;
+      Root_Y    : Gint;
+      Timestamp : Guint32)
+   is
+      procedure Internal
+        (Window    : System.Address;
+         Button    : Gint;
+         Root_X    : Gint;
+         Root_Y    : Gint;
+         Timestamp : Guint32);
+      pragma Import (C, Internal, "gtk_window_begin_move_drag");
+   begin
+      Internal (Get_Object (Window), Button, Root_X, Root_Y, Timestamp);
+   end Begin_Move_Drag;
+
+   -----------------------
+   -- Begin_Resize_Drag --
+   -----------------------
+
+   procedure Begin_Resize_Drag
+     (Window    : access Gtk_Window_Record;
+      Edge      : Gdk_Window_Edge;
+      Button    : Gint;
+      Root_X    : Gint;
+      Root_Y    : Gint;
+      Timestamp : Guint32)
+   is
+      procedure Internal
+        (Window    : System.Address;
+         Edge      : Gdk_Window_Edge;
+         Button    : Gint;
+         Root_X    : Gint;
+         Root_Y    : Gint;
+         Timestamp : Guint32);
+      pragma Import (C, Internal, "gtk_window_begin_resize_drag");
+   begin
+      Internal (Get_Object (Window), Edge, Button, Root_X, Root_Y, Timestamp);
+   end Begin_Resize_Drag;
+
+   ----------------
+   -- Fullscreen --
+   ----------------
+
+   procedure Fullscreen
+     (Window : access Gtk_Window_Record)
+   is
+      procedure Internal (Window : System.Address);
+      pragma Import (C, Internal, "gtk_window_fullscreen");
+   begin
+      Internal (Get_Object (Window));
+   end Fullscreen;
+
+   ----------------------
+   -- Get_Accept_Focus --
+   ----------------------
+
+   function Get_Accept_Focus
+     (Window : access Gtk_Window_Record)
+      return Boolean
+   is
+      function Internal (Window : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_accept_focus");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Accept_Focus;
+
+   -------------------
+   -- Get_Decorated --
+   -------------------
+
+   function Get_Decorated
+     (Window : access Gtk_Window_Record) return Boolean
+   is
+      function Internal (Window : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_decorated");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Decorated;
+
+   ---------------------------
+   -- Get_Default_Icon_List --
+   ---------------------------
+
+   function Get_Default_Icon_List
+      return Glib.Object.Object_Simple_List.Glist
+   is
+      use Glib.Object.Object_Simple_List;
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_window_get_default_icon_list");
+      List : Glist;
+   begin
+      Set_Object (List, Internal);
+      return List;
+   end Get_Default_Icon_List;
 
    ---------------------
    -- Type_Conversion --

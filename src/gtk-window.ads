@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,9 +48,12 @@
 --  in the application while it is displayed.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Object;
 with Glib.Properties;
+with Gdk.Event;
+with Gdk.Pixbuf;
 with Gdk.Types;
 with Gdk.Window;
 with Gtk.Accel_Group;
@@ -62,6 +65,10 @@ package Gtk.Window is
 
    type Gtk_Window_Record is new Bin.Gtk_Bin_Record with private;
    type Gtk_Window is access all Gtk_Window_Record'Class;
+
+   type Gtk_Window_Group_Record is
+     new Glib.Object.GObject_Record with null record;
+   type Gtk_Window_Group is access all Gtk_Window_Group_Record'Class;
 
    procedure Gtk_New
      (Window   : out Gtk_Window;
@@ -85,11 +92,9 @@ package Gtk.Window is
 
    procedure Set_Title
      (Window : access Gtk_Window_Record; Title : UTF8_String);
+   function Get_Title (Window : access Gtk_Window_Record) return UTF8_String;
    --  Change the title of the window, as it appears in the title bar.
    --  Note that on some systems you might not be able to change it.
-
-   function Get_Title (Window : access Gtk_Window_Record) return UTF8_String;
-   --  Return the title of the window, or "" if there is none
 
    procedure Set_Wmclass
      (Window        : access Gtk_Window_Record;
@@ -105,6 +110,7 @@ package Gtk.Window is
    --  manager to restore window positions when loading a saved session.
 
    procedure Set_Role (Window : access Gtk_Window_Record; Role : String);
+   function Get_Role  (Window : access Gtk_Window_Record) return String;
    --  In combination with the window title, the window role allows a
    --  window manager to identify "the same" window when an application is
    --  restarted. So for example you might set the "toolbox" role on your
@@ -115,30 +121,6 @@ package Gtk.Window is
    --  restoring the session.
    --  Role: unique identifier for the window to be used when restoring a
    --  session
-
-   procedure Add_Accel_Group
-     (Window      : access Gtk_Window_Record;
-      Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group);
-   --  Specify an accelerator group for the window.
-
-   procedure Remove_Accel_Group
-     (Window      : access Gtk_Window_Record;
-      Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group);
-   --  Remove the specified accelerator group for the window.
-
-   procedure Set_Position
-     (Window   : access Gtk_Window_Record;
-      Position : Gtk.Enums.Gtk_Window_Position);
-   --  Specify how the position of the window should be computed.
-   --  If Position is Win_Pos_Center_Always or Win_Pos_Center, then the window
-   --  is centered on the screen. In the first case, it is also recentered
-   --  when the window is resized with Gtk.Widget.Set_Usize (ie except on
-   --  user action).
-   --  If Position is Win_Pos_Mouse, then the window is positioned so that it
-   --  centered around the mouse.
-   --  If Position is Win_Pos_None, no calculation is done. If
-   --  Gtk.Widget.Set_Uposition as been called, it is respected. This is the
-   --  default case.
 
    function Activate_Focus (Window : access Gtk_Window_Record) return Boolean;
    --  Call Gtk.Widget.Activate on the widget that currently has the focus in
@@ -159,12 +141,13 @@ package Gtk.Window is
    --  You can set the default widget with the following calls:
    --
    --     Gtk.Widget.Set_Flags (Widget, Can_Default);
-   --
    --     Gtk.Widget.Grab_Default (Widget);
 
    procedure Set_Transient_For
      (Window : access Gtk_Window_Record;
       Parent : access Gtk_Window_Record'Class);
+   function Get_Transient_For
+     (Window : access Gtk_Window_Record) return Gtk_Window;
    --  Specify that Window is a transient window.
    --  A transient window is a temporary window, like a popup menu or a
    --  dialog box). Parent is the toplevel window of the application to which
@@ -179,62 +162,57 @@ package Gtk.Window is
    procedure Set_Type_Hint
      (Window : access Gtk_Window_Record;
       Hint   : Gdk.Window.Gdk_Window_Type_Hint);
+   function Get_Type_Hint
+     (Window : access Gtk_Window_Record)
+      return Gdk.Window.Gdk_Window_Type_Hint;
    --  allow the window manager to decorate and handle the window in a way
    --  which is suitable to the function of the window in your application.
    --  This function should be called before the window becomes visible.
 
+   procedure Set_Keep_Above
+     (Window  : access Gtk_Window_Record; Setting : Boolean);
+   procedure Set_Keep_Below
+     (Window  : access Gtk_Window_Record; Setting : Boolean);
+   --  Asks to keep Window above, so that it stays on top. Note that you
+   --  shouldn't assume the window is definitely above afterward, because other
+   --  entities (e.g. the user or window managers) could not keep it above, and
+   --  not all window managers support keeping windows above. But normally the
+   --  window will end kept above. Just don't write code that crashes if not.
+   --
+   --  It's permitted to call this function before showing a window, in which
+   --  case the window will be kept above when it appears onscreen initially.
+   --
+   --  You can track the above state via the "window_state_event" signal on
+   --  Window.
+   --
+   --  Note that, according to the "Extended Window Manager Hints"
+   --  specification, the above state is mainly meant for user preferences and
+   --  should not be used by applications e.g. for drawing attention to their
+   --  dialogs.
+
+   procedure Set_Auto_Startup_Notification (Setting : Boolean);
+   --  By default, after showing the first Window for each screen, GTK+ calls
+   --  gdk_notify_startup_complete(). Call this function to disable the
+   --  automatic startup notification. You might do this if your first window
+   --  is a splash screen, and you want to delay notification until after your
+   --  real main window has been shown, for example.
+   --
+   --  In that example, you would disable startup notification temporarily,
+   --  show your splash screen, then re-enable it so that showing the main
+   --  window would automatically result in notification.
+   --
+   --  Notification is used by the desktop environment to show the user that
+   --  your application is still loading.
+
    procedure Set_Destroy_With_Parent
      (Window  : access Gtk_Window_Record;
       Setting : Boolean := True);
+   function Get_Destroy_With_Parent
+     (Window : access Gtk_Window_Record) return Boolean;
    --  Set whether destroying the transient parent of Window will also destroy
    --  Window itself.
    --  This is useful for dialogs that shouldn't persist beyond the lifetime
    --  of the main window they're associated with, for example.
-
-   procedure Set_Resizable
-     (Window    : access Gtk_Window_Record;
-      Resizable : Boolean := True);
-   --  Set whether the user can resize a window.
-   --  Windows are user resizable by default.
-
-   --  <doc_ignore>
-   procedure Set_Resizeable
-     (Window    : access Gtk_Window_Record;
-      Resizable : Boolean := True) renames Set_Resizable;
-   --  This procedure is deprecated.
-   --  </doc_ignore>
-
-   function Get_Resizable (Window : access Gtk_Window_Record) return Boolean;
-   --  Whether the user can resize a window.
-
-   function Get_Resizeable (Window : access Gtk_Window_Record) return Boolean
-     renames Get_Resizable;
-   --  This function is deprecated.
-
-   procedure Set_Gravity
-     (Window  : access Gtk_Window_Record;
-      Gravity : Gdk.Window.Gdk_Gravity);
-   --  Window gravity defines the "reference point" to be used when
-   --  positioning or resizing a window. Calls to
-   --  Gtk.Widget.Set_UPosition will position a different point on the
-   --  window depending on the window gravity. When the window changes size
-   --  the reference point determined by the window's gravity will stay in
-   --  a fixed location.
-   --
-   --  See Gdk_Gravity for full details. To briefly summarize,
-   --  Gravity_North_West means that the reference point is the
-   --  northwest (top left) corner of the window
-   --  frame. Gravity_South_East would be the bottom right corner of
-   --  the frame, and so on. If you want to position the window contents,
-   --  rather than the window manager's frame, Gravity_Static moves
-   --  the reference point to the northwest corner of the Gtk_Window
-   --  itself.
-   --
-   --  The default window gravity is Gravity_North_West.
-
-   function Get_Gravity
-     (Window : access Gtk_Window_Record) return Gdk.Window.Gdk_Gravity;
-   --  Return the value set by Set_Gravity.
 
    procedure Set_Geometry_Hints
      (Window          : access Gtk_Window_Record;
@@ -266,28 +244,10 @@ package Gtk.Window is
    --  will always be resized so that the ratio between its width and its
    --  height remains in the range Min_Aspect .. Max_Aspect.
 
-   procedure Set_Has_Frame (Window : access Gtk_Window_Record);
-   --  If this function is called on a window before it is realized
-   --  or showed it will have a "frame" window around widget-window.
-   --  Using the signal frame_event you can receive all events targeted at the
-   --  frame.
-   --
-   --  This function is used by the linux-fb port to implement managed
-   --  windows, but it could concievably be used by X-programs that
-   --  want to do their own window decorations.
-
-   procedure Set_Frame_Dimensions
-     (Window : access Gtk_Window_Record;
-      Left   : Gint;
-      Top    : Gint;
-      Right  : Gint;
-      Bottom : Gint);
-   --  Change the size of the frame border.
-   --  This has only an effect for windows with frames (see Set_Has_Frame).
-
    procedure Set_Decorated
      (Window  : access Gtk_Window_Record;
       Setting : Boolean := True);
+   function Get_Decorated (Window : access Gtk_Window_Record) return Boolean;
    --  By default, windows are decorated with a title bar, resize
    --  controls, etc. Some window managers allow GtkAda to disable these
    --  decorations, creating a borderless window. If you set the decorated
@@ -295,8 +255,8 @@ package Gtk.Window is
    --  convince the window manager not to decorate the window.
 
    procedure Set_Modal
-     (Window : access Gtk_Window_Record;
-      Modal  : Boolean := True);
+     (Window : access Gtk_Window_Record;  Modal  : Boolean := True);
+   function Get_Modal (Window : access Gtk_Window_Record) return Boolean;
    --  Define the window as being Modal.
    --  It will grab the input from the keyboard and the mouse while it is
    --  displayed and will release it when it is hidden. The grab is only in
@@ -305,6 +265,36 @@ package Gtk.Window is
    --  In cunjunction with Gtk.Main.Main, this is the easiest way to show a
    --  dialog to which the user has to answer before the application can
    --  continue.
+
+   procedure Set_Skip_Pager_Hint
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean);
+   function Get_Skip_Taskbar_Hint
+     (Window : access Gtk_Window_Record)
+      return Boolean;
+   --  Windows may set a hint asking the desktop environment not to display
+   --  the window in the pager. This function sets this hint.
+   --  (A "pager" is any desktop navigation tool such as a workspace
+   --  switcher that displays a thumbnail representation of the windows
+   --  on the screen).
+
+   procedure Set_Skip_Taskbar_Hint
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean);
+   function Get_Skip_Pager_Hint
+     (Window : access Gtk_Window_Record)
+      return Boolean;
+   --  Windows may set a hint asking the desktop environment not to display
+   --  the window in the task bar. This function sets this hint.
+
+   procedure Set_Urgency_Hint
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean);
+   function Get_Urgency_Hint
+     (Window : access Gtk_Window_Record)
+      return Boolean;
+   --  Windows may set a hint asking the desktop environment to draw
+   --  the users attention to the window. This function sets this hint.
 
    function List_Toplevels return Gtk.Widget.Widget_List.Glist;
    --  Return a list of all existing toplevel windows.
@@ -329,6 +319,221 @@ package Gtk.Window is
    --  currently open, and the user chooses Preferences from the menu
    --  a second time; use Present to move the already-open dialog
    --  where the user can see it.
+   --
+   --  If you are calling this function in response to a user interaction, it
+   --  is preferable to use Present_With_Time.
+
+   procedure Present_With_Time
+     (Window    : access Gtk_Window_Record;
+      Timestamp : Guint32);
+   --  Present a window to the user in response to a user interaction.
+   --  Timestamp is the timestamp of the user interaction (typically a button
+   --  or key press event) which triggered this call.
+
+   procedure Stick (Window : access Gtk_Window_Record);
+   --  Ask to stick Window, which means that it will appear on all user
+   --  desktops. Note that you shouldn't assume the window is definitely
+   --  stuck afterward, because other entities (e.g. the user or window
+   --  manager) could unstick it again, and some window managers do not
+   --  support sticking windows. But normally the window will end up
+   --  stuck.
+   --
+   --  It's permitted to call this function before showing a window.
+   --
+   --  You can track stickiness via the "window_state_event" signal
+   --  on Gtk_Widget.
+
+   procedure Unstick (Window : access Gtk_Window_Record);
+   --  Ask to unstick Window, which means that it will appear on only
+   --  one of the user's desktops. Note that you shouldn't assume the
+   --  window is definitely unstuck afterward, because other entities
+   --  (e.g. the user or window manager) could stick it again. But
+   --  normally the window will end up stuck.
+   --
+   --  You can track stickiness via the "window_state_event" signal
+   --  on Gtk_Widget.
+
+   --------------
+   -- Position --
+   --------------
+
+   procedure Move (Window : access Gtk_Window_Record; X, Y : Gint);
+   --  Asks the window manager to move Window to the given position. Window
+   --  managers are free to ignore this; most window managers ignore requests
+   --  for initial window positions (instead using a user-defined placement
+   --  algorithm) and honor requests after the window has already been shown.
+   --
+   --  Note: the position is the position of the gravity-determined reference
+   --  point for the window. The gravity determines two things: first, the
+   --  location of the reference point in root window coordinates; and second,
+   --  which point on the window is positioned at the reference point.
+   --
+   --  By default the gravity is GRAVITY_NORTH_WEST, so the reference point is
+   --  simply the (x, y) supplied to Move. The top-left corner of the window
+   --  decorations (aka window frame or border) will be placed at (x, y).
+   --  Therefore, to position a window at the top left of the screen, you want
+   --  to use the default gravity (which is GRAVITY_NORTH_WEST) and move the
+   --  window to 0,0.
+   --
+   --  To position a window at the bottom right corner of the screen, you would
+   --  set GRAVITY_SOUTH_EAST, which means that the reference point is at x +
+   --  the window width and y + the window height, and the bottom-right corner
+   --  of the window border will be placed at that reference point. So, to
+   --  place a window in the bottom right corner you would first set gravity to
+   --  south east, then write:
+   --    Move (Window, Gdk_Screen_Width  - Window_Width,
+   --                  Gdk_Screen_Height - Window_Height);
+
+   procedure Set_Position
+     (Window   : access Gtk_Window_Record;
+      Position : Gtk.Enums.Gtk_Window_Position);
+   --  Specify how the position of the window should be computed.
+   --  If Position is Win_Pos_Center_Always or Win_Pos_Center, then the window
+   --  is centered on the screen. In the first case, it is also recentered
+   --  when the window is resized with Gtk.Widget.Set_Usize (ie except on
+   --  user action).
+   --  If Position is Win_Pos_Mouse, then the window is positioned so that it
+   --  centered around the mouse.
+   --  If Position is Win_Pos_None, no calculation is done. If
+   --  Gtk.Widget.Set_Uposition as been called, it is respected. This is the
+   --  default case.
+
+   procedure Get_Position
+     (Window         : access Gtk_Window_Record;
+      Root_X, Root_Y : out Gint);
+   --  This function returns the position you need to pass to gtk.window.move
+   --  to keep Window in its current position. This means that the meaning of
+   --  the returned value varies with window gravity. See Gtk.Window.Move for
+   --  more details.
+   --
+   --  If you haven't changed the window gravity, its gravity will be
+   --  GRAVITY_NORTH_WEST. This means that Get_Position gets the position of
+   --  the top-left corner of the window manager frame for the window.
+   --  gtk.window.move sets the position of this same top-left corner.
+   --
+   --  Get_Position is not 100% reliable because the X Window System does not
+   --  specify a way to obtain the geometry of the decorations placed on a
+   --  window by the window manager. Thus GTK+ is using a "best guess" that
+   --  works with most window managers.
+   --
+   --  Moreover, nearly all window managers are historically broken with
+   --  respect to their handling of window gravity. So moving a window to its
+   --  current position as returned by Get_Position tends to result in moving
+   --  the window slightly. Window managers are slowly getting better over
+   --  time.
+   --
+   --  If a window has gravity GRAVITY_STATIC the window manager frame is not
+   --  relevant, and thus Get_Position will always produce accurate results.
+   --  However you can't use static gravity to do things like place a window in
+   --  a corner of the screen, because static gravity ignores the window
+   --  manager decorations.
+   --
+   --  If you are saving and restoring your application's window positions, you
+   --  should know that it's impossible for applications to do this without
+   --  getting it somewhat wrong because applications do not have sufficient
+   --  knowledge of window manager state. The Correct Mechanism is to support
+   --  the session management protocol (see the "GnomeClient" object in the
+   --  GNOME libraries for example) and allow the window manager to save your
+   --  window sizes and positions.
+
+   procedure Begin_Move_Drag
+     (Window    : access Gtk_Window_Record;
+      Button    : Gint;
+      Root_X    : Gint;
+      Root_Y    : Gint;
+      Timestamp : Guint32);
+   --  Starts moving a window. This function is used if an application has
+   --  window movement grips. When GDK can support it, the window movement will
+   --  be done using the standard mechanism for the window manager or windowing
+   --  system. Otherwise, GDK will try to emulate window movement, potentially
+   --  not all that well, depending on the windowing system.
+   --  (Root_X, Root_Y): Position where the user clicked to initiate the drag,
+   --  in root window coordinates. Timestamp is the timestamp of the event that
+   --  initiated the drag
+
+   function Parse_Geometry
+     (Window   : access Gtk_Window_Record;
+      Geometry : String)
+      return Boolean;
+   --  Parses a standard X Window System geometry string - see the manual page
+   --  for X (type 'man X') for details on this. Parse_Geometry does work on
+   --  all GTK+ ports including Win32 but is primarily intended for an X
+   --  environment.
+   --
+   --  If either a size or a position can be extracted from the geometry
+   --  string, Parse_Geometry returns True and calls Set_Default_Size and/or
+   --  Move to resize/move the window.
+   --
+   --  If Parse_Geometry returns True, it will also set the HINT_USER_POS
+   --  and/or HINT_USER_SIZE hints indicating to the window manager that the
+   --  size/position of the window was user-specified. This causes most window
+   --  managers to honor the geometry.
+   --
+   --  Note that for Parse_Geometry to work as expected, it has to be called
+   --  when the window has its "final" size, i.e. after calling Show_All on the
+   --  contents and Set_Geometry_Hints on the window.
+
+   -----------
+   -- Sizes --
+   -----------
+
+   procedure Set_Resizable
+     (Window    : access Gtk_Window_Record;
+      Resizable : Boolean := True);
+   function Get_Resizable (Window : access Gtk_Window_Record) return Boolean;
+   --  Sets or gets whether the user can resize a window.
+   --  Windows are user resizable by default.
+
+   procedure Set_Gravity
+     (Window  : access Gtk_Window_Record;
+      Gravity : Gdk.Window.Gdk_Gravity);
+   function Get_Gravity
+     (Window : access Gtk_Window_Record) return Gdk.Window.Gdk_Gravity;
+   --  Window gravity defines the "reference point" to be used when
+   --  positioning or resizing a window. Calls to
+   --  Gtk.Widget.Set_UPosition will position a different point on the
+   --  window depending on the window gravity. When the window changes size
+   --  the reference point determined by the window's gravity will stay in
+   --  a fixed location.
+   --
+   --  See Gdk_Gravity for full details. To briefly summarize,
+   --  Gravity_North_West means that the reference point is the
+   --  northwest (top left) corner of the window
+   --  frame. Gravity_South_East would be the bottom right corner of
+   --  the frame, and so on. If you want to position the window contents,
+   --  rather than the window manager's frame, Gravity_Static moves
+   --  the reference point to the northwest corner of the Gtk_Window
+   --  itself.
+   --
+   --  The default window gravity is Gravity_North_West.
+
+   procedure Set_Has_Frame (Window : access Gtk_Window_Record);
+   function Get_Has_Frame  (Window : access Gtk_Window_Record) return Boolean;
+   --  If this function is called on a window before it is realized
+   --  or showed it will have a "frame" window around widget-window.
+   --  Using the signal frame_event you can receive all events targeted at the
+   --  frame.
+   --
+   --  This function is used by the linux-fb port to implement managed
+   --  windows, but it could concievably be used by X-programs that
+   --  want to do their own window decorations.
+
+   procedure Set_Frame_Dimensions
+     (Window                   : access Gtk_Window_Record;
+      Left, Top, Right, Bottom : Gint);
+   procedure Get_Frame_Dimensions
+     (Window                   : access Gtk_Window_Record;
+      Left, Top, Right, Bottom : out Gint);
+   --  Change the size of the frame border.
+   --  This has only an effect for windows with frames (see Set_Has_Frame).
+
+   procedure Fullscreen   (Window : access Gtk_Window_Record);
+   procedure Unfullscreen (Window : access Gtk_Window_Record);
+   --  Ask to place Window in fullscreen state.
+   --  You shouldn't assume the window is definitely full screen afterward,
+   --  because other entities (user or window manager) could unfullscreen it
+   --  again and not all window managers honor requests to fullscreen windows.
+   --  You can track the fullscreen state via the "window_state_event" signal.
 
    procedure Iconify (Window : access Gtk_Window_Record);
    --  Ask to iconify Window.
@@ -355,29 +560,6 @@ package Gtk.Window is
    --  You can track iconification via the "window_state_event" signal
    --  on Gtk_Widget.
 
-   procedure Stick (Window : access Gtk_Window_Record);
-   --  Ask to stick Window, which means that it will appear on all user
-   --  desktops. Note that you shouldn't assume the window is definitely
-   --  stuck afterward, because other entities (e.g. the user or window
-   --  manager) could unstick it again, and some window managers do not
-   --  support sticking windows. But normally the window will end up
-   --  stuck.
-   --
-   --  It's permitted to call this function before showing a window.
-   --
-   --  You can track stickiness via the "window_state_event" signal
-   --  on Gtk_Widget.
-
-   procedure Unstick (Window : access Gtk_Window_Record);
-   --  Ask to unstick Window, which means that it will appear on only
-   --  one of the user's desktops. Note that you shouldn't assume the
-   --  window is definitely unstuck afterward, because other entities
-   --  (e.g. the user or window manager) could stick it again. But
-   --  normally the window will end up stuck.
-   --
-   --  You can track stickiness via the "window_state_event" signal
-   --  on Gtk_Widget.
-
    procedure Maximize (Window : access Gtk_Window_Record);
    --  Ask to maximize Window, so that it becomes full-screen.
    --  Note that you shouldn't assume the window is definitely maximized
@@ -402,37 +584,12 @@ package Gtk.Window is
    --  You can track maximization via the "window_state_event" signal
    --  on Gtk_Widget.
 
-   function Get_Transient_For
-     (Window : access Gtk_Window_Record) return Gtk_Window;
-   --  Return the window for which this one is a temporary window.
-   --  See Set_Transient_For below for more information on transient windows.
-   --  null is returned if there is no such window.
-
-   --  <doc_ignore>
-   procedure Set_Policy
-     (Window       : access Gtk_Window_Record;
-      Allow_Shrink : Boolean;
-      Allow_Grow   : Boolean;
-      Auto_Shrink  : Boolean);
-   --  Specify the behavior of the window with regards to size modifications.
-   --  Default values when the window is created are:
-   --    Allow_Shrink => False,
-   --    Allow_Grow   => True,
-   --    Auto_Shrink  => False.
-   --
-   --  If Allow_Shrink is False, then the minimum size of the window is
-   --  calculated once depending on its children, and the window can never be
-   --  smaller.
-   --  If Allow_Grow is False, then the maximum size of the window is
-   --  calculated once depending on its children, and the window can never be
-   --  bigger.
-   --  If Auto_Shrink if False, then the window is not shrinked when its
-   --  content changes.
-   --  pragma Deprecated (Set_Policy);
-   --  </doc_ignore>
-
    procedure Set_Default_Size
      (Window : access Gtk_Window_Record; Width : Gint; Height : Gint);
+   procedure Get_Default_Size
+     (Window : access Gtk_Window_Record;
+      Width  : out Gint;
+      Height : out Gint);
    --  Sets the default size of a window. If the window's "natural" size (its
    --  size request) is larger than the default, the default will be
    --  ignored. More generally, if the default size does not obey the geometry
@@ -480,13 +637,170 @@ package Gtk.Window is
    --  special case, if both Width and Height are set to -1, the best requested
    --  size is recomputed for the window, and used.
 
-   procedure Add_Mnemonic
+   procedure Get_Size
+     (Window        : access Gtk_Window_Record;
+      Width, Height : out Gint);
+   --  Obtains the current size of Window. If Window is not onscreen, it
+   --  returns the size GTK+ will suggest to the window manager for the initial
+   --  window size (but this is not reliably the same as the size the window
+   --  manager will actually select). The size obtained by Get_Size is the last
+   --  size received in Gdk_Event_Configure, that is, GTK+ uses its
+   --  locally-stored size, rather than querying the X server for the size. As
+   --  a result, if you call Resize then immediately call Get_Size, the size
+   --  won't have taken effect yet. After the window manager processes the
+   --  resize request, GTK+ receives notification that the size has changed via
+   --  a configure event, and the size of the window gets updated.
+   --
+   --  Note 1: Nearly any use of this function creates a race condition,
+   --  because the size of the window may change between the time that you get
+   --  the size and the time that you perform some action assuming that size is
+   --  the current size. To avoid race conditions, connect to "configure_event"
+   --  on the window and adjust your size-dependent state to match the size
+   --  delivered in the Gdk_Event_Configure.
+   --
+   --  Note 2: The returned size does *not* include the size of the window
+   --  manager decorations (aka the window frame or border). Those are not
+   --  drawn by GTK+ and GTK+ has no reliable method of determining their size.
+   --
+   --  Note 3: If you are getting a window size in order to position the window
+   --  onscreen, there may be a better way. The preferred way is to simply set
+   --  the window's semantic type with Set_Type_Hint, which allows the window
+   --  manager to e.g. center dialogs. Also, if you set the transient parent of
+   --  dialogs with Set_Transient_For window managers will often center the
+   --  dialog over its parent window. It's much preferred to let the window
+   --  manager handle these things rather than doing it yourself, because all
+   --  apps will behave consistently and according to user prefs if the window
+   --  manager handles it. Also, the window manager can take the size of the
+   --  window decorations/border into account, while your application cannot.
+   --
+   --  In any case, if you insist on application-specified window positioning,
+   --  there's *still*> a better way than doing it yourself - Set_Position will
+   --  frequently handle the details for you.
+
+   procedure Reshow_With_Initial_Size (Window : access Gtk_Window_Record);
+   --  Hide Window, then reshows it, resetting the default size and position.
+   --  Used by GUI builders only.
+
+   procedure Begin_Resize_Drag
+     (Window    : access Gtk_Window_Record;
+      Edge      : Gdk.Window.Gdk_Window_Edge;
+      Button    : Gint;
+      Root_X    : Gint;
+      Root_Y    : Gint;
+      Timestamp : Guint32);
+   --  Starts resizing a window. This function is used if an application has
+   --  window resizing controls. When GDK can support it, the resize will be
+   --  done using the standard mechanism for the window manager or windowing
+   --  system. Otherwise, GDK will try to emulate window resizing, potentially
+   --  not all that well, depending on the windowing system.
+
+   -----------
+   -- Icons --
+   -----------
+
+   procedure Set_Icon_Name (Window : access Gtk_Window_Record; Name : String);
+   function Get_Icon_Name  (Window : access Gtk_Window_Record) return String;
+   --  Set the icon for the window from a named themed icon. See
+   --  Gtk.Icon_Them for more details. This has nothing to do with the
+   --  WM_ICON_NAME property which is mentioned in the ICCCM (and related to
+   --  window managers)
+
+   procedure Set_Icon
+     (Window : access Gtk_Window_Record; Icon : Gdk.Pixbuf.Gdk_Pixbuf);
+   function Get_Icon
+     (Window : access Gtk_Window_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
+   --  Sets up the icon representing Window. This icon is used when the window
+   --  is minimized (also known as iconified). Some window managers or desktop
+   --  environments may also place it in the window frame, or display it in
+   --  other contexts.
+   --
+   --  The icon should be provided in whatever size it was naturally drawn;
+   --  that is, don't scale the image before passing it to GTK+. Scaling is
+   --  postponed until the last minute, when the desired final size is known,
+   --  to allow best quality.
+   --
+   --  If you have your icon hand-drawn in multiple sizes, use
+   --  Set_Icon_List. Then the best size will be used.
+   --
+   --  This function is equivalent to calling Set_Icon_List with a single
+   --  element.
+   --
+   --  See also Set_Default_Icon_List to set the icon for all windows in your
+   --  application in one go.
+
+   procedure Set_Icon_List
      (Window : access Gtk_Window_Record;
-      Keyval : Gdk.Types.Gdk_Key_Type;
-      Target : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Add a mnemonic to this window.
-   --  Target will receive the "activate" signal when Keyval is pressed inside
-   --  the window.
+      List   : Glib.Object.Object_Simple_List.Glist);
+   function Get_Icon_List
+     (Window : access Gtk_Window_Record)
+      return Glib.Object.Object_Simple_List.Glist;
+   --  Sets up the icon representing Window. The icon is used when the window
+   --  is minimized (also known as iconified). Some window managers or desktop
+   --  environments may also place it in the window frame, or display it in
+   --  other contexts.
+   --
+   --  Set_Icon_List allows you to pass in the same icon in several hand-drawn
+   --  sizes. The list should contain the natural sizes your icon is available
+   --  in; that is, don't scale the image before passing it to GTK+. Scaling is
+   --  postponed until the last minute, when the desired final size is known,
+   --  to allow best quality.
+   --
+   --  By passing several sizes, you may improve the final image quality of the
+   --  icon, by reducing or eliminating automatic image scaling.
+   --
+   --  Recommended sizes to provide: 16x16, 32x32, 48x48 at minimum, and larger
+   --  images (64x64, 128x128) if you have them.
+   --
+   --  Note that transient windows (those who have been set transient for
+   --  another window using Set_Transient_For) will inherit their icon from
+   --  their transient parent. So there's no need to explicitly set the icon on
+   --  transient windows.
+
+   function Set_Icon_From_File
+     (Window   : access Gtk_Window_Record;
+      Filename : String) return Boolean;
+   --  Equivalent to calling Set_Icon with a pixbuf loaded from Filename.
+   --  return False on failure.
+
+   procedure Set_Default_Icon_List
+     (List : Glib.Object.Object_Simple_List.Glist);
+   function Get_Default_Icon_List
+     return Glib.Object.Object_Simple_List.Glist;
+   --  Sets an icon list to be used as fallback for windows that haven't had
+   --  Set_Icon_List called on them to setup a window-specific icon list.
+
+   procedure Set_Default_Icon (Icon : Gdk.Pixbuf.Gdk_Pixbuf);
+   --  Sets an icon to be used as a fallback for windows that haven't had
+   --  Set_Icon called on them
+
+   function Set_Default_Icon_From_File (Filename : String) return Boolean;
+   --  Same as Set_Default_Icon, loads the pixbuf automatically.
+
+   procedure Set_Default_Icon_Name (Name : String);
+   --  Sets an icon to be used as fallback for windows that haven't had a
+   --  themed icon set (set Set_Icon_Name).
+
+   ------------
+   -- Groups --
+   ------------
+
+   procedure Gtk_New (Group : out Gtk_Window_Group);
+   --  Create a new window group.
+   --  Grabs added with Gtk.Main.Grab_Add only affect windows within the same
+   --  group.
+
+   function Group_Get_Type return GType;
+   --  Return the internal type used for window groups
+
+   procedure Group_Add_Window
+     (Window_Group : access Gtk_Window_Group_Record;
+      Window       : access Gtk_Window_Record'Class);
+   --  Add a window to Window_Group
+
+   procedure Group_Remove_Window
+     (Window_Group : access Gtk_Window_Group_Record;
+      Window       : access Gtk_Window_Record'Class);
+   --  Remove a specific window from the group
 
    -----------
    -- Focus --
@@ -511,6 +825,148 @@ package Gtk.Window is
    --  widget in the toplevel, it is usually more convenient to use
    --  gtk_widget_grab_focus() instead of this function.
 
+   procedure Set_Accept_Focus
+     (Window  : access Gtk_Window_Record;  Setting : Boolean);
+   function Get_Accept_Focus
+     (Window : access Gtk_Window_Record) return Boolean;
+   --  Windows may set a hint asking the desktop environment not to receive
+   --  the input focus.
+
+   procedure Set_Focus_On_Map
+     (Window  : access Gtk_Window_Record; Setting : Boolean);
+   function Get_Focus_On_Map
+     (Window : access Gtk_Window_Record) return Boolean;
+   --  Windows may set a hint asking the desktop environment not to receive
+   --  the input focus when the window is mapped.
+
+   function Has_Toplevel_Focus
+     (Window : access Gtk_Window_Record) return Boolean;
+   --  Returns whether the input focus is within this Window. For real toplevel
+   --  windows, this is identical to Is_Active, but for embedded windows the
+   --  results will differ
+
+   function Is_Active (Window : access Gtk_Window_Record) return Boolean;
+   --  Returns whether the window is part of the current active toplevel. (That
+   --  is, the toplevel window receiving keystrokes.) The return value is True
+   --  if the window is active toplevel itself, but also if it is, say, a
+   --  Gtk_Plug embedded in the active toplevel. You might use this function if
+   --  you wanted to draw a widget differently in an active window from a
+   --  widget in an inactive window.
+
+   ------------------------
+   -- Keys and shortcuts --
+   ------------------------
+
+   procedure Set_Default
+     (Window         : access Gtk_Window_Record;
+      Default_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  The default widget is the widget that's activated when the user presses
+   --  Enter in a dialog (for example). This function sets or unsets the
+   --  default widget for a Window. When setting (rather than unsetting) the
+   --  default widget it's generally easier to call Grab_Focus on the widget.
+   --  Before making a widget the default widget, you must set the CAN_DEFAULT
+   --  flag on the widget you'd like to make the default using
+   --  GTK.WIDGET.SET_FLAGS.
+
+   procedure Set_Mnemonic_Modifier
+     (Window   : access Gtk_Window_Record;
+      Modifier : Gdk.Types.Gdk_Modifier_Type);
+   function Get_Mnemonic_Modifier
+     (Window : access Gtk_Window_Record)
+      return Gdk.Types.Gdk_Modifier_Type;
+   --  Sets the mnemonic modifier for this window.
+   --  Modifier is the mask used to active mnemonics in this window
+
+   procedure Add_Mnemonic
+     (Window : access Gtk_Window_Record;
+      Keyval : Gdk.Types.Gdk_Key_Type;
+      Target : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Remove_Mnemonic
+     (Window : access Gtk_Window_Record;
+      Keyval : Gdk.Types.Gdk_Key_Type;
+      Target : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Add a mnemonic to this window.
+   --  Target will receive the "activate" signal when Keyval is pressed inside
+   --  the window. In addition to keyval, the user must press the special key
+   --  defined through Set_Mnemonic_Modifier
+
+   function Mnemonic_Activate
+     (Window   : access Gtk_Window_Record;
+      Keyval   : Gdk.Types.Gdk_Key_Type;
+      Modifier : Gdk.Types.Gdk_Modifier_Type)
+     return Boolean;
+   --  Activates the targets associated with the mnemonic. This sends the
+   --  "activate" signal to the corresponding signal
+
+   function Activate_Key
+     (Window : access Gtk_Window_Record;
+      Event  : Gdk.Event.Gdk_Event_Key) return Boolean;
+   --  Activates mnemonics and accelerators for this window. This is normally
+   --  called by the default key_press_event_handler for toplevel windows,
+   --  however in some cases it may be useful to call this directly when
+   --  overriding the standard key handling for a toplevel window.
+   --  Return True if the mnemonic was found and activated.
+
+   function Propagate_Key_Event
+     (Window : access Gtk_Window_Record;
+      Event  : Gdk.Event.Gdk_Event_Key) return Boolean;
+   --  Propagate a key press or release event to the focus widget and up the
+   --  focus container chain until a widget handles Event.
+   --  This is normally called by the default key_press_event handler, but
+   --  might be useful when overriding the standard key handling for a
+   --  toplevel window.
+
+   procedure Add_Accel_Group
+     (Window      : access Gtk_Window_Record;
+      Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group);
+   procedure Remove_Accel_Group
+     (Window      : access Gtk_Window_Record;
+      Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group);
+   --  Adds or Removes the specified accelerator group for the window, such
+   --  that calling Gtk.Accel_Groups.Active on Window will activate
+   --  accelerators in Accel_Group.
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   procedure Set_Resizeable
+     (Window    : access Gtk_Window_Record;
+      Resizable : Boolean := True) renames Set_Resizable;
+   --  pragma Obsolescent ("Use Gtk.Window.Set_Resizable instead");
+
+   function Get_Resizeable (Window : access Gtk_Window_Record) return Boolean
+     renames Get_Resizable;
+   --  pragma Obsolescent ("Use Gtk.Window.Get_Resizable instead");
+
+   procedure Set_Policy
+     (Window       : access Gtk_Window_Record;
+      Allow_Shrink : Boolean;
+      Allow_Grow   : Boolean;
+      Auto_Shrink  : Boolean);
+   pragma Obsolescent;  --  Set_Policy
+   --  Specify the behavior of the window with regards to size modifications.
+   --  Default values when the window is created are:
+   --    Allow_Shrink => False,
+   --    Allow_Grow   => True,
+   --    Auto_Shrink  => False.
+   --
+   --  If Allow_Shrink is False, then the minimum size of the window is
+   --  calculated once depending on its children, and the window can never be
+   --  smaller.
+   --  If Allow_Grow is False, then the maximum size of the window is
+   --  calculated once depending on its children, and the window can never be
+   --  bigger.
+   --  If Auto_Shrink if False, then the window is not shrinked when its
+   --  content changes.
+
+   --  </doc_ignore>
+
    ----------------
    -- Properties --
    ----------------
@@ -530,6 +986,10 @@ package Gtk.Window is
    --    Flags: read-write
    --    Descr: The title of the window
    --    See also:  Set_Title and Get_Title
+   --
+   --  - Name:  Role_Property
+   --    Type:  String
+   --    See:   Set_Role / Get_Role
    --
    --  - Name:  Auto_Shrink_Property
    --    Type:  Boolean
@@ -551,6 +1011,10 @@ package Gtk.Window is
    --    Flags: read-write
    --    Descr: If TRUE, users can expand the window beyond its minimum size.
    --    See also:  Set_Policy
+   --
+   --  - Name: Resizable_Property
+   --    Type: Boolean
+   --    See:  Set_Resizable / Get_Resizable
    --
    --  - Name:  Modal_Property
    --    Type:  Boolean
@@ -595,18 +1059,30 @@ package Gtk.Window is
    --
    --  </properties>
 
-   Type_Property             : constant Gtk.Enums.Property_Gtk_Window_Type;
-   Title_Property            : constant Glib.Properties.Property_String;
-   Auto_Shrink_Property      : constant Glib.Properties.Property_Boolean;
-   Allow_Shrink_Property     : constant Glib.Properties.Property_Boolean;
-   Allow_Grow_Property       : constant Glib.Properties.Property_Boolean;
-   Modal_Property            : constant Glib.Properties.Property_Boolean;
-   Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean;
-   Is_Active_Property        : constant Glib.Properties.Property_Boolean;
-   Win_Pos_Property          : constant Gtk.Enums.Property_Gtk_Window_Position;
-   Default_Width_Property    : constant Glib.Properties.Property_Int;
-   Default_Height_Property   : constant Glib.Properties.Property_Int;
+   Type_Property                : constant Gtk.Enums.Property_Gtk_Window_Type;
+   Title_Property               : constant Glib.Properties.Property_String;
+   Role_Property                : constant Glib.Properties.Property_String;
+   Allow_Shrink_Property        : constant Glib.Properties.Property_Boolean;
+   Allow_Grow_Property          : constant Glib.Properties.Property_Boolean;
+   Modal_Property               : constant Glib.Properties.Property_Boolean;
+   Resizable_Property           : constant Glib.Properties.Property_Boolean;
+   Has_Toplevel_Focus_Property  : constant Glib.Properties.Property_Boolean;
+   Is_Active_Property           : constant Glib.Properties.Property_Boolean;
+   Window_Position_Property  : constant Gtk.Enums.Property_Gtk_Window_Position;
+   Default_Width_Property       : constant Glib.Properties.Property_Int;
+   Default_Height_Property      : constant Glib.Properties.Property_Int;
    Destroy_With_Parent_Property : constant Glib.Properties.Property_Boolean;
+   Icon_Property                : constant Glib.Properties.Property_Object;
+   Icon_Name_Property           : constant Glib.Properties.Property_String;
+   Screen_Property              : constant Glib.Properties.Property_Object;
+   Type_Hint_Property          : constant Gdk.Window.Property_Window_Type_Hint;
+   Skip_Taskbar_Hint_Property   : constant Glib.Properties.Property_Boolean;
+   Skip_Pager_Hint_Property     : constant Glib.Properties.Property_Boolean;
+   Urgency_Hint_Property        : constant Glib.Properties.Property_Boolean;
+   Accept_Focus_Property        : constant Glib.Properties.Property_Boolean;
+   Focus_On_Map_Property        : constant Glib.Properties.Property_Boolean;
+   Decorated_Property           : constant Glib.Properties.Property_Boolean;
+   Gravity_Property             : constant Gdk.Window.Property_Gravity;
 
    -------------
    -- Signals --
@@ -618,7 +1094,6 @@ package Gtk.Window is
    --  - "set_focus"
    --    procedure Handler (Window : access Gtk_Window_Record'Class;
    --                       Widget : access Gtk_Widget_Record'Class);
-   --
    --    Called when the widget that has the focus has changed.
    --    This widget gets all keyboard events that happen in the window.
    --    You should not block the emission of this signal, since most of
@@ -628,14 +1103,42 @@ package Gtk.Window is
    --    function Handler
    --      (Window : access Gtk_Window_Record'Class;
    --       Event  : Gdk.Event.Gdk_Event) return Boolean;
-   --
    --    If this function is called on a window before it is realized
    --    or showed it will have a "frame" window around widget-window.
    --    Called when the "frame" window set around a window receives events.
    --    This is mainly used by the linux-fb port to implement managed
    --    windows, but it could concievably be used by X-programs that
    --    want to do their own window decorations.
+   --
+   --  - "activate_focus"
+   --    procedure Handler (Window : access Gtk_Window_Record'Class);
+   --    You should emit this signal to request that the currently focused
+   --    widget receives the "activate" signal. This is the same as calling
+   --    Activate_Focus, but can be bound to a key binding
+   --
+   --  - "activate_default"
+   --    procedure Handler (Window : access Gtk_Window_Record'Class);
+   --    Same as Activate_Default, but can be bound to a key binding
+   --
+   --  - "move_focus"
+   --    procedure Handler
+   --       (Window    : access Gtk_Window_Record'Class;
+   --        Direction : Gtk_Direction_Type);
+   --    Emitted when a new child gains the focus
+   --
+   --  - "keys_changed"
+   --    procedure Handler (Window : access Gtk_Window_Record'Class);
+   --    Emitted when the key accelerators or mnemonics are changed for the
+   --    window.
+   --
    --  </signals>
+
+   Signal_Set_Focus        : constant String := "set_focus";
+   Signal_Frame_Event      : constant String := "frame_event";
+   Signal_Activate_Focus   : constant String := "activate_focus";
+   Signal_Activate_Default : constant String := "activate_default";
+   Signal_Move_Focus       : constant String := "move_focus";
+   Signal_Keys_Changed     : constant String := "keys_changed";
 
 private
    type Gtk_Window_Record is new Bin.Gtk_Bin_Record with null record;
@@ -644,8 +1147,6 @@ private
      Gtk.Enums.Build ("type");
    Title_Property               : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("title");
-   Auto_Shrink_Property         : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("auto_shrink");
    Allow_Shrink_Property        : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("allow_shrink");
    Allow_Grow_Property          : constant Glib.Properties.Property_Boolean :=
@@ -665,43 +1166,46 @@ private
    Is_Active_Property        : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is_active");
 
+   Icon_Property                : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("icon");
+   Icon_Name_Property           : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("icon-name");
+   Screen_Property              : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("screen");
+   Type_Hint_Property        : constant Gdk.Window.Property_Window_Type_Hint :=
+     Gdk.Window.Build ("type-hint");
+   Skip_Taskbar_Hint_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("skip-taskbar-hint");
+   Skip_Pager_Hint_Property     : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("skip-pager-hint");
+   Urgency_Hint_Property        : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("urgency-hint");
+   Accept_Focus_Property        : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("accept-focus");
+   Focus_On_Map_Property        : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("focus-on-map");
+   Decorated_Property           : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("decorated");
+   Gravity_Property             : constant Gdk.Window.Property_Gravity :=
+     Gdk.Window.Build ("gravity");
+   Window_Position_Property     :
+     constant Gtk.Enums.Property_Gtk_Window_Position :=
+     Gtk.Enums.Build ("window-position");
+   Resizable_Property           : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("resizable");
+   Role_Property                : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("role");
+
+
    pragma Import (C, Get_Type, "gtk_window_get_type");
+   pragma Import (C, Group_Get_Type, "gtk_window_group_get_type");
 end Gtk.Window;
 
 --  <example>
 --  <include>../examples/documentation/banner.adb</include>
 --  </example>
 
---  missing:
---  Get_Role
---  Set_Focus
---  Get_Focus
---  Get_Type_Hint
---  Get_Destroy_With_Parent
---  Get_Has_Frame
---  Get_Frame_Dimensions
---  Get_Decorated
---  Set_Icon_List
---  Get_Icon_List
---  Set_Icon
---  Get_Icon
---  Set_Default_Icon_List
---  Get_Default_Icon_List
---  Get_Modal
---  Remove_Mnemonic
---  Mnemonic_Activate
---  Set_Mnemonic_Modifier
---  Get_Mnemonic_Modifier
---  Begin_Resize_Drag
---  Begin_Move_Drag
---  Get_Default_Size
---  Resize
---  Get_Size
---  Move
---  Get_Position
---  Parse_Geometry
---  Reshow_With_Initial_Size
---  Group_Get_Type
---  Group_New
---  Group_Add_Window
---  Group_Remove_Window
+--  No binding: gtk_window_get_screen
+--  No binding: gtk_window_set_screen
+--  No binding: gtk_window_add_embedded_xid
+--  No binding: gtk_window_remove_embedded_xid
