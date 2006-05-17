@@ -336,24 +336,24 @@ foreach $source_file (@source_files) {
 
 	if (%types) {
             &section_output ("Types");
-	    &html_output ("<TABLE width=\"100%\" border=\"0\" ",
-			  "CELLSPACING=\"0\">");
+            &html_output ("<table class='types'>");
 
 	    foreach $type (sort keys %types) {
-		&html_output ("<TR>",
-			      "<TD WIDTH=\"$tab1_width\:></TD>",
-			      "<TD BGCOLOR=\"$subprog_bg\" valign=\"top\">");
-		&output ("\@smallexample\n\@exdent ",
-			 $types{$type}[0],
-			 "\n\@end smallexample\n");
-		&html_output ("</TD></TR><TR>",
-			      "<TD WIDTH=\"$tab1_width\"></TD>\n<TD>");
-		&output ("\@noindent\n",
-			 $types{$type}[1], "\@*\n");
-                &html_output ("<BR><BR>\n");
-		&html_output ("</TD></TR>");
+                if ($with_html) {
+                   &html_output ("<tr><td class='profile'>");
+                   &output ($types{$type}[0]);
+                   &html_output ("</td></tr><tr class='comment'><td>");
+                   &output ($types{$type}[1]);
+                   &html_output ("</td></tr>");
+                } else {
+                   &output ("\@smallexample\n\@exdent ",
+                            $types{$type}[0],
+			    "\n\@end smallexample\n");
+                   &output ("\@noindent\n",
+		  	    $types{$type}[1], "\@*\n");
+                }
 	    }
-	    &html_output ("</TABLE>");
+	    &html_output ("</table>");
 	}
 
 	## List of subprograms (sorted)
@@ -1165,7 +1165,7 @@ sub get_subprograms () {
 	  $profile =~ s/$all//;
       }
       # Ignore the special subprogram "Generate" and "Initialize"
-      if ($name ne "Generate" && $name ne "Initialize") {
+      if ($name ne "Generate" && $name !~ /^Initialize/) {
 	  push (@result, [ $ret_type, $name, $comments, \@param_list]);
 	  $last_was_section = 0;
       }

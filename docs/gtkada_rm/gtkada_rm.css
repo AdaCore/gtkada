@@ -1,12 +1,22 @@
 body                         { width: 800px; }
 table.section                { width: 100%; background: #FFD0D0 }
+table.types,
 table.subprograms            { width: 780px; /* body.width - margin-left */
+                               border-spacing: 0px;
                                border: 0px;
                                margin-left: 20px}
 table.noindent               { margin-left: 0px; }
-table.subprograms td.profile { background: #D6E8FF;
+table.subprograms td.profile,
+table.types       td.profile { background: #D6E8FF;
                                vertical-align: top;
                                white-space: pre }
+table.types       td.profile    { border-top:    0px solid black;
+                                  border-right:  0px solid black;
+                                  border-left:   0px solid black; }
+table.types       tr.comment td { border-bottom: 0px solid black;
+                                  border-right:  0px solid black;
+                                  border-left:   0px solid black;
+                                  padding-bottom: 20px }
 table                        { margin-left: 0px;
                                padding-left: 0px; }
 table td                     { padding-left: 0px; }
