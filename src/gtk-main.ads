@@ -209,6 +209,8 @@ package Gtk.Main is
    --  you.
    --  The grab is only done for the application. Events outside the
    --  application are still sent to their respective windows.
+   --
+   --  See also Gtk.Window.Gtk_Window_Group
 
    procedure Grab_Remove (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Remove a widget from the grab list.
