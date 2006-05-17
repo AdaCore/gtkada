@@ -1,12 +1,10 @@
 
-with System;
-
 package body Lwobjects is
 
    function Lw_Is_Lwobject (File : String) return Boolean
    is
-     function Internal (File : String) return Integer;
-     pragma Import (C, Internal, "lw_is_lwobject");
+      function Internal (File : String) return Integer;
+      pragma Import (C, Internal, "lw_is_lwobject");
    begin
       return Boolean'Val (Internal (File & ASCII.Nul));
    end Lw_Is_Lwobject;

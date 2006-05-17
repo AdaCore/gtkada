@@ -1,14 +1,14 @@
 #if HAVE_GL then
 with Ada.Text_IO;      use Ada.Text_IO;
-with GL_H;             use GL_H;
+with gl_h;             use gl_h;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.GL;           use Gdk.GL;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Types;        use Gdk.Types;
 with Gdk.Window;       use Gdk.Window;
 with Glib;             use Glib;
-with Glu_H;            use Glu_H;
-with Gtk.Glarea;       use Gtk.Glarea;
+with glu_h;            use glu_h;
+with Gtk.GLArea;       use Gtk.GLArea;
 with Gtk.Handlers;     use Gtk.Handlers;
 with Lwobjects;        use Lwobjects;
 with Trackball;        use Trackball;
@@ -46,37 +46,37 @@ package body View_Gl is
    -------------
 
    procedure Init_GL is
-      Light0_Pos   : Glfloat_Vec_4 := (-50.0, 50.0, 0.0, 0.0);
-      Light0_Color : Glfloat_Vec_4:= (0.6, 0.6, 0.6, 1.0);
-      Light1_Pos   : Glfloat_Vec_4:= (50.0, 50.0, 0.0, 0.0);
-      Light1_Color : Glfloat_Vec_4 := (0.4, 0.4, 1.0, 1.0);
+      Light0_Pos   : constant GLfloat_Vec_4 := (-50.0, 50.0, 0.0, 0.0);
+      Light0_Color : constant GLfloat_Vec_4 := (0.6, 0.6, 0.6, 1.0);
+      Light1_Pos   : constant GLfloat_Vec_4 := (50.0, 50.0, 0.0, 0.0);
+      Light1_Color : constant GLfloat_Vec_4 := (0.4, 0.4, 1.0, 1.0);
 
    begin
 
       --  Remove back faces
 
-      Gldisable (GL_CULL_FACE);
-      Glenable (GL_DEPTH_TEST);
+      glDisable (GL_CULL_FACE);
+      glEnable (GL_DEPTH_TEST);
 
       --  Speedups
 
-      Gldisable (GL_DITHER);
-      Glshademodel (GL_SMOOTH);
-      Glhint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-      Glhint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+      glDisable (GL_DITHER);
+      glShadeModel (GL_SMOOTH);
+      glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+      glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
 
-      -- Light
+      --  Light
 
-      Gllightfv (GL_LIGHT0, GL_POSITION, Light0_Pos);
-      Gllightfv (GL_LIGHT0, GL_DIFFUSE,  Light0_Color);
-      Gllightfv (GL_LIGHT1, GL_POSITION, Light1_Pos);
-      Gllightfv (GL_LIGHT1, GL_DIFFUSE,  Light1_Color);
-      Glenable (GL_LIGHT0);
-      Glenable (GL_LIGHT1);
-      Glenable (GL_LIGHTING);
+      glLightfv (GL_LIGHT0, GL_POSITION, Light0_Pos);
+      glLightfv (GL_LIGHT0, GL_DIFFUSE,  Light0_Color);
+      glLightfv (GL_LIGHT1, GL_POSITION, Light1_Pos);
+      glLightfv (GL_LIGHT1, GL_DIFFUSE,  Light1_Color);
+      glEnable (GL_LIGHT0);
+      glEnable (GL_LIGHT1);
+      glEnable (GL_LIGHTING);
 
-      Glcolormaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-      Glenable (GL_COLOR_MATERIAL);
+      glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+      glEnable (GL_COLOR_MATERIAL);
    end Init_GL;
 
    -------------------
@@ -103,7 +103,7 @@ package body View_Gl is
          return True;
       end if;
 
-      -- OpenGL calls can be done only if make_current returns true
+      --  OpenGL calls can be done only if make_current returns true
 
       if Make_Current (Area) then
 
@@ -114,31 +114,31 @@ package body View_Gl is
          end if;
 
          --  View
-         Glmatrixmode (GL_PROJECTION);
-         Glloadidentity;
+         glMatrixMode (GL_PROJECTION);
+         glLoadIdentity;
 
 #if WIN32 then
-         Gluperspective (GLdouble (Area.Mesh_Info.Zoom),
+         gluPerspective (GLdouble (Area.Mesh_Info.Zoom),
                          GLdouble (VIEW_ASPECT), 1.0, 100.0);
 #else
-         Gluperspective (Long_Float (Area.Mesh_Info.Zoom),
+         gluPerspective (Long_Float (Area.Mesh_Info.Zoom),
                          Long_Float (VIEW_ASPECT), 1.0, 100.0);
 #end if;
-         Glmatrixmode (GL_MODELVIEW);
+         glMatrixMode (GL_MODELVIEW);
 
          --  Draw Object
-         Glclearcolor (0.3, 0.4, 0.6, 1.0);
-         Glclear (GL_COLOR_BUFFER_BIT + GL_DEPTH_BUFFER_BIT);
+         glClearColor (0.3, 0.4, 0.6, 1.0);
+         glClear (GL_COLOR_BUFFER_BIT + GL_DEPTH_BUFFER_BIT);
 
-         Glloadidentity;
-         Gltranslatef (0.0, 0.0, -30.0);
+         glLoadIdentity;
+         glTranslatef (0.0, 0.0, -30.0);
          Build_Rotmatrix (M, Area.Mesh_Info.Quat);
 
 #if WIN32 then
          Val := GLfloat (M (0, 0));
-         Glmultmatrixf (Val'Unchecked_Access);
+         glmultmatrixf (Val'Unchecked_Access);
 #else
-         Glmultmatrixf (M (0, 0)'Access);
+         glMultMatrixf (M (0, 0)'Access);
 #end if;
 
          Lw_Object_Show (Area.Mesh_Info.Object);
@@ -161,11 +161,11 @@ package body View_Gl is
    begin
       if Make_Current (Area) then
 #if WIN32 then
-         Glviewport (0, 0,
+         glViewport (0, 0,
                      GLsizei (Get_Allocation_Width (Area)),
                      GLsizei (Get_Allocation_Height (Area)));
 #else
-         Glviewport (0, 0,
+         glViewport (0, 0,
                      Integer (Get_Allocation_Width (Area)),
                      Integer (Get_Allocation_Height (Area)));
 #end if;
@@ -279,7 +279,7 @@ package body View_Gl is
                             Lwobject_Name : String)
    is
       Object : Lwobject;
-      Area   : My_GLArea;
+      Area   : My_Glarea;
 
    begin
       --  Read lightwave object
@@ -289,7 +289,7 @@ package body View_Gl is
       end if;
 
       Object := Lw_Object_Read (Lwobject_Name);
-      if Object = null_lwobject then
+      if Object = Null_Lwobject then
          Put_Line ("can't read lightwave 3D object " & Lwobject_Name);
          return;
       end if;
@@ -302,12 +302,12 @@ package body View_Gl is
       --  Create new OpenGL widget
       Area := new My_Glarea_Record;
       Initialize (Area,
-                  (GDK_GL_RGBA,
-                   GDK_GL_RED_SIZE, Gl_Configs (1),
-                   GDK_GL_GREEN_SIZE, Gl_Configs (1),
-                   GDK_GL_BLUE_SIZE, Gl_Configs (1),
-                   GDK_GL_DOUBLEBUFFER,
-                   GDK_GL_DEPTH_SIZE, Gl_Configs (1)));
+                  (Gdk_GL_Rgba,
+                   Gdk_GL_Red_Size, GL_Configs (1),
+                   Gdk_GL_Green_Size, GL_Configs (1),
+                   Gdk_GL_Blue_Size, GL_Configs (1),
+                   Gdk_GL_Doublebuffer,
+                   Gdk_GL_Depth_Size, GL_Configs (1)));
       if Area = null then
          Put_Line ("Can't create Gtk_GLArea widget");
          return;
@@ -319,7 +319,7 @@ package body View_Gl is
                   or Button_Release_Mask or Pointer_Motion_Mask
                   or Pointer_Motion_Hint_Mask);
       Event_Cb.Connect (Area, "expose_event",
-                        Event_Cb.To_Marshaller (GlArea_Expose'Access));
+                        Event_Cb.To_Marshaller (Glarea_Expose'Access));
       Event_Cb.Connect (Area, "motion_notify_event",
                         Event_Cb.To_Marshaller (Motion_Notify'Access));
       Event_Cb.Connect (Area, "button_press_event",
@@ -327,9 +327,9 @@ package body View_Gl is
       Event_Cb.Connect (Area, "configure_event",
                         Event_Cb.To_Marshaller (Configure'Access));
       Void_Cb.Connect (Area, "destroy",
-                       Void_Cb.To_Marshaller (Glarea_Destroy'Access));
+                       Void_Cb.To_Marshaller (GlArea_Destroy'Access));
 
-      Set_Usize (Area, 200, Gint (200.0 / View_Aspect));
+      Set_USize (Area, 200, Gint (200.0 / VIEW_ASPECT));
 
       --  Set up mesh info
       Area.Mesh_Info.Do_Init := True;
