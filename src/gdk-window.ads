@@ -51,6 +51,8 @@
 with System;
 with Glib; use Glib;
 with Glib.Object;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 with Gdk;
@@ -564,6 +566,29 @@ package Gdk.Window is
    --  Under Windows, this returns a HWND object.
    --  Under X, this returns a Window object.
 
+   pragma Convention (C, Gdk_Window_Type_Hint);
+
+   pragma Convention (C, Gdk_Gravity);
+   for Gdk_Gravity use
+     (Gravity_North_West => 1,
+      Gravity_North      => 2,
+      Gravity_North_East => 3,
+      Gravity_West       => 4,
+      Gravity_Center     => 5,
+      Gravity_East       => 6,
+      Gravity_South_West => 7,
+      Gravity_South      => 8,
+      Gravity_South_East => 9,
+      Gravity_Static     => 10);
+
+   package Window_Type_Hint_Properties is new
+     Generic_Internal_Discrete_Property (Gdk_Window_Type_Hint);
+   package Gravity_Properties is new Generic_Internal_Discrete_Property
+     (Gdk_Gravity);
+
+   type Property_Window_Type_Hint  is new Window_Type_Hint_Properties.Property;
+   type Property_Gravity           is new Gravity_Properties.Property;
+
 private
 
    Null_Window : constant Gdk_Window := null;
@@ -623,21 +648,6 @@ private
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
    pragma Import (C, Invalidate_Rect, "gdk_window_invalidate_rect");
    pragma Import (C, Get_Window_Id, "ada_gdk_get_window_id");
-
-   pragma Convention (C, Gdk_Gravity);
-   for Gdk_Gravity use
-     (Gravity_North_West => 1,
-      Gravity_North      => 2,
-      Gravity_North_East => 3,
-      Gravity_West       => 4,
-      Gravity_Center     => 5,
-      Gravity_East       => 6,
-      Gravity_South_West => 7,
-      Gravity_South      => 8,
-      Gravity_South_East => 9,
-      Gravity_Static     => 10);
-
-   pragma Convention (C, Gdk_Window_Type_Hint);
 
    pragma Convention (C, Gdk_Window_Type);
 
