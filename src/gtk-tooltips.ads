@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,7 +41,7 @@
 --  for tooltips.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib;
 with Gtk.Object;
@@ -83,16 +83,6 @@ package Gtk.Tooltips is
    --  From now on, no tooltips in this group will appear, unless they are
    --  re-enabled.
 
-   --  <doc_ignore>
-   procedure Set_Delay
-     (Tooltips : access Gtk_Tooltips_Record;
-      Duration : Guint := 500);
-   --  Set the delay between the user moving the mouse over a widget and the
-   --  text appearing.
-   --  Duration is in milli-seconds.
-   --  pragma Deprecated (Set_Delay);
-   --  </doc_ignore>
-
    procedure Set_Tip
      (Tooltips    : access Gtk_Tooltips_Record;
       Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -116,6 +106,24 @@ package Gtk.Tooltips is
    --  created.
    --  This is useful if you want to modify some characteristics of that
    --  window.
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   procedure Set_Delay
+     (Tooltips : access Gtk_Tooltips_Record;
+      Duration : Guint := 500);
+   pragma Obsolescent;  --  Set_Delay
+   --  Set the delay between the user moving the mouse over a widget and the
+   --  text appearing. Duration is in milli-seconds.
+
+   --  </doc_ignore>
 
    ----------------
    -- Properties --
@@ -145,3 +153,5 @@ end Gtk.Tooltips;
 --  <example>
 --  <include>../examples/documentation/tooltips.adb</include>
 --  </example>
+
+--  No binding: gtk_tooltips_get_info_from_tip_window
