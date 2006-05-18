@@ -96,12 +96,16 @@ sub ada_bindings_in_unit() {
   return (1, \%binding, \%obsolescent, \%properties);
 }
 
-## Return all the properties defined for the current widget
+## Return all the properties defined for the current widget, as well as the
+## signals
+
 our $property_re = 'g_object_class_install_property\s*\(\s*\w+\s*,\s*\w+\s*,\s*g_param_spec_(\w+)\s*\("([^"]+)"';
 our $property_descr_re = '\s*,\s*P_\("[^"]+"\),\s*P_\("([^"]+)"';
+our $c_signal_re = 'g_signal_new\s*\("([^"]+)"';
+
 sub properties_in_c_file() {
    my ($fullname) = shift;
-   my (%properties);
+   my (%properties, %signals, $cname);
 
    $fullname =~ s/\.h$/.c/g;
 
@@ -109,42 +113,68 @@ sub properties_in_c_file() {
    my ($content) = join ("", <FILE>);
    close (FILE);
 
-   while ($content =~ /$property_re$property_descr_re/og) {
-      my ($type, $name, $descr) = ($1, $2, $3);
-      my ($cname) = $name;
-      $name =~ s/-/_/g;
-      $name = &capitalize ($name);
-      $properties{$name} = [$type, $descr, $cname];
+   while ($content =~ /($property_re$property_descr_re)|($c_signal_re)/og) {
+      if (defined $2) {
+         my ($type, $name, $descr) = ($2, $3, $4);
+         $cname = $name;
+         $name =~ s/-/_/g;
+         $name = &capitalize ($name);
+         $properties{$name} = [$type, $descr, $cname];
+      } else {
+         my ($sname) = $6;
+         $cname = $sname;
+         $sname =~ s/-/_/g;
+         $sname = &capitalize ($sname);
+         $signals {$sname} = $cname;
+      }
    }
-   return %properties;
+   return (\%properties, \%signals);
 }
 
 ## Output the descr
 sub output_properties() {
    my (%properties) = @_;
    my ($prop, $type, $descr, $cname);
+   my (@list) = sort keys %properties;
 
-   foreach $prop (sort keys %properties) {
-      ($type, $descr, $cname) = @{$properties{$prop}};
-      print "   --  Name:  " . $prop . "_Property\n";
-      print "   --  Type:  " . &capitalize ($type) . "\n";
-      print "   --  Descr: $descr\n";
-      print "   --\n";
+   if ($#list >= 0) {
+      foreach $prop (@list) {
+         ($type, $descr, $cname) = @{$properties{$prop}};
+         print "   --  Name:  " . $prop . "_Property\n";
+         print "   --  Type:  " . &capitalize ($type) . "\n";
+         print "   --  Descr: $descr\n";
+         print "   --\n";
+      }
+
+      print "\n";
+      foreach $prop (@list) {
+         ($type, $descr, $cname) = @{$properties{$prop}};
+         print "   ${prop}_Property : constant Glib.Properties.Property_",
+               &capitalize ($type), "\n";
+      }
+
+      print "\n";
+      foreach $prop (@list) {
+         ($type, $descr, $cname) = @{$properties{$prop}};
+         print "   ${prop}_Property : constant Glib.Properties.Property_",
+               &capitalize ($type), ":=\n",
+               "      Glib.Properties.Build (\"$cname\");\n";
+      }
    }
+}
 
-   print "\n";
-   foreach $prop (sort keys %properties) {
-      ($type, $descr, $cname) = @{$properties{$prop}};
-      print "   ${prop}_Property : constant Glib.Properties.Property_",
-            &capitalize ($type), "\n";
-   }
+## Output signals
+sub output_signals() {
+   my (%signals) = @_;
+   my (@list) = sort keys %signals;
+   my ($name);
 
-   print "\n";
-   foreach $prop (sort keys %properties) {
-      ($type, $descr, $cname) = @{$properties{$prop}};
-      print "   ${prop}_Property : constant Glib.Properties.Property_",
-            &capitalize ($type), ":=\n",
-            "      Glib.Properties.Build (\"$cname\");\n";
+   if ($#list >= 0) {
+      print "\n";
+      foreach $name (@list) {
+         print "   Signal_$name : constant String := \"$signals{$name}\";";
+      }
+      print "\n";
    }
 }
 
@@ -496,8 +526,8 @@ sub process_c_file() {
   my ($c_file) = shift;
   my ($with_dir);
   my (%funcs, %binding, %obsolescent, $func, $ada_unit, $success);
-  my ($binding, $obsolescent, %properties, $ada_properties);
-  my ($args, $returns, $deprecated);
+  my ($binding, $obsolescent, $c_properties, $c_signals, $ada_properties);
+  my ($args, $returns, $deprecated, $ada_signals);
 
   if (-f $c_file) {
     $with_dir = $c_file;
@@ -513,9 +543,9 @@ sub process_c_file() {
   }
 
   %funcs = &functions_from_c_file ($with_dir);
-  %properties = &properties_in_c_file ($with_dir);
+  ($c_properties, $c_signals) = &properties_in_c_file ($with_dir);
   $ada_unit = &ada_unit_from_c_file ($c_file);
-  ($success, $binding, $obsolescent, $ada_properties) =
+  ($success, $binding, $obsolescent, $ada_properties, $ada_signals) =
       &ada_bindings_in_unit ($ada_unit);
   %binding = %$binding;
   %obsolescent = %$obsolescent;
@@ -524,7 +554,13 @@ sub process_c_file() {
   ## Ignore properties already defined in Ada
   my ($prop);
   foreach $prop (keys %$ada_properties) {
-     delete $properties{$prop};
+     delete $c_properties->{$prop};
+  }
+
+  ## Ignore signals already defiend in Ada
+  my ($signal);
+  foreach $signal (keys %$ada_signals) {
+     delete $c_signals->{$signal};
   }
 
   foreach $func (sort keys %funcs) {
@@ -541,7 +577,6 @@ sub process_c_file() {
   }
 
   ## Output specs
-  print "\n\n";
   foreach $func (sort keys %funcs) {
      if (!defined $binding{$func}) {
         ($args, $returns, $deprecated) = ($funcs{$func}->[0], $funcs{$func}->[1], $funcs{$func}->[2]);
@@ -549,7 +584,8 @@ sub process_c_file() {
      }
   }
 
-   &output_properties (%properties);
+   &output_properties (%$c_properties);
+   &output_signals (%$c_signals);
 
   ## Output list of deprecated subprograms
   foreach $func (sort keys %funcs) {
