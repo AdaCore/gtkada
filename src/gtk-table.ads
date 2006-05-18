@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  Check out the Gtk_Sheet widget for a different kind of table that can
 --  also contain text and images in a more efficient way.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gtk.Container;
@@ -225,13 +225,13 @@ private
      with null record;
 
    N_Rows_Property         : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("n_rows");
+     Glib.Properties.Build ("n-rows");
    N_Columns_Property      : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("n_columns");
+     Glib.Properties.Build ("n-columns");
    Row_Spacing_Property    : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("row_spacing");
+     Glib.Properties.Build ("row-spacing");
    Column_Spacing_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("column_spacing");
+     Glib.Properties.Build ("column-spacing");
    Homogeneous_Property    : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
 
