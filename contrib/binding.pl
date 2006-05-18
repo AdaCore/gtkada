@@ -46,7 +46,8 @@ sub ada_unit_from_c_file() {
   $adafile =~ s/-entry(.+)/-entry_$1/;
   $adafile =~ s/_seldialog/_selection_dialog/;
   $adafile =~ s/_sel$/_selection/;
-  $adafile =~ s/-toolitem/-tool_item/;
+  $adafile =~ s/([-_])toolbutton/$1tool_button/;
+  $adafile =~ s/([-_])toolitem/$1tool_item/;
   $adafile =~ s/view_port/viewport/;
   return $adafile;
 }
@@ -56,11 +57,13 @@ sub ada_unit_from_c_file() {
 ## subprogram
 our $import_re      = 'pragma\s+Import\s+\(C\s*,\s*(\w+)\s*,\s*"(\w+)"\s*\)';
 our $obsolescent_re = 'pragma\s+Obsolescent.*?--  (\w+)';
+our $not_bound_re   = '--  No binding: (\w+)';
+our $ada_prop_re    = '\b(\w+)_Property\s+:\s+constant ';
 
 sub ada_bindings_in_unit() {
   my ($unit) = shift;
   my ($contents);
-  my (%binding, %obsolescent);
+  my (%binding, %obsolescent, %properties);
 
   if (-f "$ada_dir/$unit.ads") {
      open (FILE, "$ada_dir/$unit.ads");
@@ -78,19 +81,76 @@ sub ada_bindings_in_unit() {
      close (FILE);
   }
 
-  while ($contents =~ /($import_re)|($obsolescent_re)/iog) {
-     if (defined $5) {
+  while ($contents =~ /($import_re)|($obsolescent_re)|($not_bound_re)|($ada_prop_re)/iog) {
+     if (defined $9) {
+        $properties{$9} ++;
+     } elsif (defined $7) {
+        $binding{$7} = "Not bound";
+     } elsif (defined $5) {
         $obsolescent{$5} = 1;
      } else {
         $binding{$3} = $2;
      }
   }
 
-  return (1, \%binding, \%obsolescent);
+  return (1, \%binding, \%obsolescent, \%properties);
+}
+
+## Return all the properties defined for the current widget
+our $property_re = 'g_object_class_install_property\s*\(\s*\w+\s*,\s*\w+\s*,\s*g_param_spec_(\w+)\s*\("([^"]+)"';
+our $property_descr_re = '\s*,\s*P_\("[^"]+"\),\s*P_\("([^"]+)"';
+sub properties_in_c_file() {
+   my ($fullname) = shift;
+   my (%properties);
+
+   $fullname =~ s/\.h$/.c/g;
+
+   open (FILE, $fullname);
+   my ($content) = join ("", <FILE>);
+   close (FILE);
+
+   while ($content =~ /$property_re$property_descr_re/og) {
+      my ($type, $name, $descr) = ($1, $2, $3);
+      my ($cname) = $name;
+      $name =~ s/-/_/g;
+      $name = &capitalize ($name);
+      $properties{$name} = [$type, $descr, $cname];
+   }
+   return %properties;
+}
+
+## Output the descr
+sub output_properties() {
+   my (%properties) = @_;
+   my ($prop, $type, $descr, $cname);
+
+   foreach $prop (sort keys %properties) {
+      ($type, $descr, $cname) = @{$properties{$prop}};
+      print "   --  Name:  " . $prop . "_Property\n";
+      print "   --  Type:  " . &capitalize ($type) . "\n";
+      print "   --  Descr: $descr\n";
+      print "   --\n";
+   }
+
+   print "\n";
+   foreach $prop (sort keys %properties) {
+      ($type, $descr, $cname) = @{$properties{$prop}};
+      print "   ${prop}_Property : constant Glib.Properties.Property_",
+            &capitalize ($type), "\n";
+   }
+
+   print "\n";
+   foreach $prop (sort keys %properties) {
+      ($type, $descr, $cname) = @{$properties{$prop}};
+      print "   ${prop}_Property : constant Glib.Properties.Property_",
+            &capitalize ($type), ":=\n",
+            "      Glib.Properties.Build (\"$cname\");\n";
+   }
 }
 
 ## Find out all C functions defined in a C file.
 ## Return a hash table indexed on the functions
+our $c_function_re = '\b(\w+(\s*\*)?)\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST)?;';
 sub functions_from_c_file() {
   my ($fullname) = shift;
   my (%funcs, $contents);
@@ -100,7 +160,7 @@ sub functions_from_c_file() {
   $contents = join ("", <FILE>);
   close (FILE);
 
-  while ($contents =~ /(ifndef|endif).*GTK_DISABLE_DEPRECATED|\b(\w+(\s*\*)?)\s*(\w+)\s+\(([^)]*\))(\s*G_GNUC_CONST)?;/g) {
+  while ($contents =~ /(ifndef|endif).*GTK_DISABLE_DEPRECATED|$c_function_re/og) {
      if (defined $1 && $1 eq "ifndef") {
         $deprecated = 1;
      } elsif (defined $1 && $1 eq "endif") {
@@ -130,7 +190,12 @@ sub capitalize () {
 sub c_widget_to_ada () {
   my ($c) = shift;
   $c =~ /Gtk(.+)\*/;
-  return "Gtk_Tool_Item" if ($c eq "GtkToolItem*");
+  return "Gtk_Tool_Item"   if ($c eq "GtkToolItem*");
+  return "Gtk_Tool_Button" if ($c eq "GtkToolButton*");
+  return "Gtk_Separator_Tool_Item" if ($c eq "GtkSeparatorToolItem*");
+  return "Gtk_Toggle_Tool_Button"  if ($c eq "GtkToggleToolButton*");
+  return "Gtk_Radio_Tool_Button"   if ($c eq "GtkRadioToolButton*");
+  return "Gtk_Menu_Tool_Button"    if ($c eq "GtkMenuToolButton*");
   return "Gtk_$1";
 }
 
@@ -138,12 +203,12 @@ sub c_widget_to_ada () {
 sub c_to_ada() {
    my ($c_type) = shift;
    my ($param_index) = shift;  ## -1 for return type
-   return "Boolean"            if ($c_type eq "gboolean"); 
+   return "Boolean"            if ($c_type eq "gboolean");
    return "Gtk_Relief_Style"   if ($c_type eq "GtkReliefStyle");
    return "Gtk_Orientation"    if ($c_type eq "GtkOrientation");
    return "Gtk_Toolbar_Style"  if ($c_type eq "GtkToolbarStyle");
    return "Gtk_Icon_Size"      if ($c_type eq "GtkIconSize");
-   return "Gfloat"             if ($c_type eq "gfloat"); 
+   return "Gfloat"             if ($c_type eq "gfloat");
    return "String"             if ($c_type eq "gchar*");
    return "out Gfloat"         if ($c_type eq "gfloat*");
 
@@ -171,7 +236,9 @@ sub c_to_low_ada() {
    return "Gtk_Icon_Size"  if ($c_type eq "GtkIconSize");
    return "Gfloat"         if ($c_type eq "gfloat");
    return "out Gfloat"     if ($c_type eq "gfloat*");
-   return "String"         if ($c_type eq "gchar*");
+   return "String"         if ($c_type eq "gchar*" && $param_index >= 0);
+   return "Interfaces.C.Strings.chars_ptr"
+                           if ($c_type eq "gchar*" && $param_index == -1);
    return "System.Address" if ($c_type =~ /Gtk(.+)\*/);
    return &capitalize ($c_type);
 }
@@ -205,6 +272,7 @@ sub output_params() {
    my ($rargs) = shift;
    my ($rarg_types) = shift;
    my ($returns) = shift;
+   my ($subprogram_name) = shift;
    my (@args) = @$rargs;
    my (@arg_types) = @$rarg_types;
    my ($longuest) = &longuest (@args);
@@ -217,13 +285,20 @@ sub output_params() {
          print $indent, "   " if ($index != 0);
          print $n;
          print ' ' x ($longuest - length ($n)), " : ";
-         print &$convert ($arg_types[$index], $index);
+         if ($index == 0 && $subprogram_name =~ /^Gtk_New/) {
+            print "out ", &$convert ($arg_types[$index], -1);
+         } elsif ($index == 0 && $subprogram_name =~ /^Initialize/) {
+            print &$convert ($arg_types[$index], $index), "'Class";
+         } else {
+            print &$convert ($arg_types[$index], $index);
+         }
          print "", (($index != $#args) ? ";\n" : ")");
          $index++;
       }
+      print "\n" if ($returns ne "void");
    }
    if ($returns ne "void") {
-      print "\n$indent   return ", &$convert ($returns, -1);
+      print "$indent   return ", &$convert ($returns, -1);
    }
 }
 
@@ -239,13 +314,147 @@ sub ada_entity_from_c() {
    return $name;
 }
 
+## Output a single subprogram
+
+sub output_subprogram() {
+   my ($name) = shift;
+   my ($func) = shift;
+   my ($args) = shift;  # reference to array
+   my ($arg_types) = shift; # reference to array
+   my ($returns) = shift;
+   my ($specs_only) = shift;
+   my ($deprecated) = shift;
+   my (@args) = @$args;
+   my (@arg_types) = @$arg_types;
+   my ($longuest_param) = 0;
+   my ($index);
+
+   if (!$specs_only && $name eq "Get_Type") {
+      ## Nothing to do, this is just a pragma Import
+      return;
+   }
+
+   if (!$specs_only) {
+      # Subprogram box
+      print "\n   ", '-' x (length($name) + 6), "\n";
+      print "   -- $name --\n";
+      print "   ", '-' x (length($name) + 6), "\n\n";
+   }
+
+   ## Prototype of Ada subprogram
+   print (($returns eq "void") ? "   procedure " : "   function ");
+   print $name, "\n";
+   &output_params (\&c_to_ada, "   ", \@args, \@arg_types, $returns, $name);
+
+   if ($specs_only) {
+     print ";\n";
+     if ($deprecated) {
+        print "   pragma Obsolescent;\n";
+     }
+     if ($name eq "Get_Type") {
+        print "   pragma Import (C, $name, \"$func\");\n";
+     }
+     return;
+   }
+
+   print "\n";
+   print "   is\n";
+
+   if ($name =~ /^Gtk_New(.*)/) {
+      print "   begin\n";
+      print "      Widget := new ", &c_to_ada ($arg_types[0], -1), "_Record;\n";
+      print "      Initialize$1\n         ";
+      $index = 0;
+      while ($index <= $#args) {
+         print ",\n         " if ($index > 0);
+         print "", (($index == 0) ? "(" : " ");
+         print &capitalize ($args[$index]);
+         $index++;
+      }
+      print ");\n";
+
+   } else {
+      my ($old_name);
+      if ($name =~ /^Initialize/) {
+         $returns = shift @arg_types;
+         $old_name = shift @args;
+      }
+
+      ## Prototype for Internal
+      print "      ", (($returns eq "void") ? "procedure " : "function ");
+      print "Internal\n";
+      &output_params
+        (\&c_to_low_ada, "      ", \@args, \@arg_types, $returns, $name);
+      print ";\n";
+      print "      pragma Import (C, Internal, \"$func\");\n";
+
+      ## If we are returning a complex Widget type
+      if ($name !~ /^Initialize/ && $returns =~ /Gtk(.+)\*/) {
+         print "      Stub : ". &c_widget_to_ada ($returns) . "_Record;\n";
+      }
+
+      ## The body of the Ada subprogram
+      print "   begin\n";
+
+      if ($name =~ /^Initialize/) {
+         print "      Set_Object\n",
+               "        (", &capitalize ($old_name), ",\n   ";
+      }
+
+      ## Call to Internal
+      $index = 0;
+      if ($name !~ /^Initialize/ && $returns ne "void") {
+         if ($returns =~ /Gtk(.+)\*/) {
+            print "      return ", &c_widget_to_ada ($returns) . "\n";
+            print "        (Get_User_Data\n";
+            print "          (";
+         } elsif ($returns eq "gboolean") {
+            print "      return Boolean'Val (";
+         } elsif ($returns eq "gchar*") {
+            print "      return Value (";
+         } else {
+            print "      return ";
+         }
+      } else {
+         print "      ";
+      }
+      print "Internal";
+
+      while ($index <= $#args) {
+         if ($index == 0) {
+            print " (";
+         } else {
+            print ", ";
+         }
+         print &c_to_call_ada (&capitalize ($args[$index]), $arg_types[$index]);
+         $index++;
+      }
+      if ($#args >= 0) {
+         if ($name !~ /^Initialize/ && $returns =~ /Gtk(.+)\*/) {
+             print "), Stub));\n";
+         } elsif ($name =~ /^Initialize/) {
+             print "));\n";
+         } elsif ($returns eq "gboolean") {
+            print "));\n";
+         } elsif ($returns eq "gchar*") {
+            print "));\n";
+         } else {
+            print ");\n";
+         }
+     }
+   }
+
+   ## End of Ada subprogram
+   print "   end $name;\n";
+}
+
 ## Show the binding for a specific C function. This is only a rough binding,
 ## and needs to be reviewed manually
 sub create_binding() {
    my ($ada_pkg) = shift;
    my ($func) = shift;
    my ($args) = shift;
-   my ($returns) = shift; 
+   my ($returns) = shift;
    my ($specs_only) = shift;
    my ($deprecated) = shift;
    my (@args, @arg_types);
@@ -264,82 +473,21 @@ sub create_binding() {
       push (@arg_types, $1);
    }
 
-   if (!$specs_only) {
-      # Subprogram box
-      print "\n   ", '-' x (length($name) + 6), "\n";
-      print "   -- $name --\n";
-      print "   ", '-' x (length($name) + 6), "\n\n";
+   if ($name =~ /^New/) {
+     unshift (@args, "Widget");
+     unshift (@arg_types, $returns);
+     $returns = "void";
+
+     my ($end) = $name;
+     $end =~ s/^New//;
+
+     &output_subprogram ("Gtk_New$end", $func, \@args, \@arg_types, $returns,
+                         $specs_only, $deprecated);
+     $name = "Initialize$end";
    }
 
-   ## Prototype of Ada subprogram
-   print (($returns eq "void") ? "   procedure " : "   function ");
-   print $name, "\n";
-   &output_params (\&c_to_ada, "   ", \@args, \@arg_types, $returns);
-
-   if ($specs_only) {
-     print ";\n";
-     if ($deprecated) {
-        print "   pragma Obsolescent;\n";
-     }
-     return;
-   }
-
-   print "\n";
-   print "   is\n";
-
-   ## Prototype for Internal
-   print "      ", (($returns eq "void") ? "procedure " : "function ");
-   print "Internal\n";
-   &output_params (\&c_to_low_ada, "      ", \@args, \@arg_types, $returns);
-   print ";\n";
-   print "      pragma Import (C, Internal, \"$func\");\n";
-
-   ## If we are returning a complex Widget type
-   if ($returns =~ /Gtk(.+)\*/) {
-      print "      Stub : ". &c_widget_to_ada ($returns) . "_Record;\n";
-   }
-
-   ## The body of the Ada subprogram
-   print "   begin\n";
-
-   ## Call to Internal
-   my ($index) = 0;
-   if ($returns ne "void") {
-      if ($returns =~ /Gtk(.+)\*/) {
-         print "      return ", &c_widget_to_ada ($returns) . "\n";
-         print "        (Get_User_Data\n";
-         print "          (";
-      } elsif ($returns eq "gboolean") {
-         print "      return Boolean'Val (";
-      } else {
-         print "      return ";
-      }
-   } else {
-      print "      ";
-   }
-   print "Internal";
-
-   while ($index <= $#args) {
-      if ($index == 0) {
-         print " (";
-      } else {
-         print ", ";
-      }
-      print &c_to_call_ada (&capitalize ($args[$index]), $arg_types[$index]);
-      $index++;
-   }
-   if ($#args >= 0) {
-      if ($returns =~ /Gtk(.+)\*/) {
-         print "), Stub));\n";
-      } elsif ($returns eq "gboolean") {
-         print "));\n";
-      } else {
-         print ");\n";
-      }
-   }
-
-   ## End of Ada subprogram
-   print "   end $name;\n"; 
+   &output_subprogram ($name, $func, \@args, \@arg_types, $returns,
+                       $specs_only, $deprecated);
 }
 
 
@@ -348,7 +496,8 @@ sub process_c_file() {
   my ($c_file) = shift;
   my ($with_dir);
   my (%funcs, %binding, %obsolescent, $func, $ada_unit, $success);
-  my ($binding, $obsolescent);
+  my ($binding, $obsolescent, %properties, $ada_properties);
+  my ($args, $returns, $deprecated);
 
   if (-f $c_file) {
     $with_dir = $c_file;
@@ -364,11 +513,19 @@ sub process_c_file() {
   }
 
   %funcs = &functions_from_c_file ($with_dir);
+  %properties = &properties_in_c_file ($with_dir);
   $ada_unit = &ada_unit_from_c_file ($c_file);
-  ($success, $binding, $obsolescent) = &ada_bindings_in_unit ($ada_unit);
+  ($success, $binding, $obsolescent, $ada_properties) =
+      &ada_bindings_in_unit ($ada_unit);
   %binding = %$binding;
   %obsolescent = %$obsolescent;
   return if (!$success);
+
+  ## Ignore properties already defined in Ada
+  my ($prop);
+  foreach $prop (keys %$ada_properties) {
+     delete $properties{$prop};
+  }
 
   foreach $func (sort keys %funcs) {
      if (!defined $binding{$func}) {
@@ -387,14 +544,16 @@ sub process_c_file() {
   print "\n\n";
   foreach $func (sort keys %funcs) {
      if (!defined $binding{$func}) {
-        my ($args, $returns,$deprecated) = ($funcs{$func}->[0], $funcs{$func}->[1], $funcs{$func}->[2]);
+        ($args, $returns, $deprecated) = ($funcs{$func}->[0], $funcs{$func}->[1], $funcs{$func}->[2]);
         &create_binding ($ada_unit, $func, $args, $returns, 1, $deprecated);
      }
   }
 
+   &output_properties (%properties);
+
   ## Output list of deprecated subprograms
   foreach $func (sort keys %funcs) {
-     my ($args, $returns,$deprecated) =
+     ($args, $returns, $deprecated) =
        ($funcs{$func}->[0], $funcs{$func}->[1], $funcs{$func}->[2]);
      if ($deprecated) {
         my ($name) = &ada_entity_from_c ($ada_unit, $func);
@@ -407,7 +566,7 @@ sub process_c_file() {
   ## Output bodies
   foreach $func (sort keys %funcs) {
      if (!defined $binding{$func}) {
-        my ($args, $returns,$deprecated) =
+        ($args, $returns,$deprecated) =
           ($funcs{$func}->[0], $funcs{$func}->[1], $funcs{$func}->[2]);
         &create_binding ($ada_unit, $func, $args, $returns, 0, $deprecated);
      }
