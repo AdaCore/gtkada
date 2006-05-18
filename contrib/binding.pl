@@ -102,10 +102,11 @@ sub ada_bindings_in_unit() {
 our $property_re = 'g_object_class_install_property\s*\(\s*\w+\s*,\s*\w+\s*,\s*g_param_spec_(\w+)\s*\("([^"]+)"';
 our $property_descr_re = '\s*,\s*P_\("[^"]+"\),\s*P_\("([^"]+)"';
 our $c_signal_re = 'g_signal_new\s*\("([^"]+)"';
+our $c_doc_re = '/\*\*\s*\* (\w+):\s*(.*?)\*\*/';
 
 sub properties_in_c_file() {
    my ($fullname) = shift;
-   my (%properties, %signals, $cname);
+   my (%properties, %signals, %docs, $cname);
 
    $fullname =~ s/\.h$/.c/g;
 
@@ -113,8 +114,13 @@ sub properties_in_c_file() {
    my ($content) = join ("", <FILE>);
    close (FILE);
 
-   while ($content =~ /($property_re$property_descr_re)|($c_signal_re)/og) {
-      if (defined $2) {
+   while ($content =~ /($property_re$property_descr_re)|($c_signal_re)|($c_doc_re)/ogs) {
+      if (defined $8) {
+         my ($func, $descr) = ($8, $9);
+         $descr =~ s/^\s*\* */   --  /gm;
+         $docs {$func} = $descr;
+
+      } elsif (defined $2) {
          my ($type, $name, $descr) = ($2, $3, $4);
          $cname = $name;
          $name =~ s/-/_/g;
@@ -128,7 +134,7 @@ sub properties_in_c_file() {
          $signals {$sname} = $cname;
       }
    }
-   return (\%properties, \%signals);
+   return (\%properties, \%signals, \%docs);
 }
 
 ## Output the descr
@@ -138,6 +144,12 @@ sub output_properties() {
    my (@list) = sort keys %properties;
 
    if ($#list >= 0) {
+      print "   ----------------\n";
+      print "   -- Properties --\n";
+      print "   ----------------\n";
+      print "\n";
+      print "   --  <properties>\n";
+
       foreach $prop (@list) {
          ($type, $descr, $cname) = @{$properties{$prop}};
          print "   --  Name:  " . $prop . "_Property\n";
@@ -145,6 +157,9 @@ sub output_properties() {
          print "   --  Descr: $descr\n";
          print "   --\n";
       }
+
+      print "\n";
+      print "   --  </properties>\n";
 
       print "\n";
       foreach $prop (@list) {
@@ -171,6 +186,13 @@ sub output_signals() {
 
    if ($#list >= 0) {
       print "\n";
+      print "   -------------\n";
+      print "   -- Signals --\n";
+      print "   -------------\n";
+      print "\n";
+      print "   --  <signals>\n";
+      print "   --  </signals>\n";
+
       foreach $name (@list) {
          print "   Signal_$name : constant String := \"$signals{$name}\";";
       }
@@ -354,6 +376,7 @@ sub output_subprogram() {
    my ($returns) = shift;
    my ($specs_only) = shift;
    my ($deprecated) = shift;
+   my ($c_docs) = shift;
    my (@args) = @$args;
    my (@arg_types) = @$arg_types;
    my ($longuest_param) = 0;
@@ -383,6 +406,10 @@ sub output_subprogram() {
      }
      if ($name eq "Get_Type") {
         print "   pragma Import (C, $name, \"$func\");\n";
+     }
+
+     if (defined $c_docs->{$func}) {
+        print $c_docs->{$func}, "\n";
      }
      return;
    }
@@ -487,6 +514,7 @@ sub create_binding() {
    my ($returns) = shift;
    my ($specs_only) = shift;
    my ($deprecated) = shift;
+   my ($c_docs) = shift;
    my (@args, @arg_types);
    my ($longuest_param) = 0;
 
@@ -512,12 +540,12 @@ sub create_binding() {
      $end =~ s/^New//;
 
      &output_subprogram ("Gtk_New$end", $func, \@args, \@arg_types, $returns,
-                         $specs_only, $deprecated);
+                         $specs_only, $deprecated, $c_docs);
      $name = "Initialize$end";
    }
 
    &output_subprogram ($name, $func, \@args, \@arg_types, $returns,
-                       $specs_only, $deprecated);
+                       $specs_only, $deprecated, $c_docs);
 }
 
 
@@ -527,7 +555,7 @@ sub process_c_file() {
   my ($with_dir);
   my (%funcs, %binding, %obsolescent, $func, $ada_unit, $success);
   my ($binding, $obsolescent, $c_properties, $c_signals, $ada_properties);
-  my ($args, $returns, $deprecated, $ada_signals);
+  my ($args, $returns, $deprecated, $ada_signals, $c_docs);
 
   if (-f $c_file) {
     $with_dir = $c_file;
@@ -543,7 +571,7 @@ sub process_c_file() {
   }
 
   %funcs = &functions_from_c_file ($with_dir);
-  ($c_properties, $c_signals) = &properties_in_c_file ($with_dir);
+  ($c_properties, $c_signals, $c_docs) = &properties_in_c_file ($with_dir);
   $ada_unit = &ada_unit_from_c_file ($c_file);
   ($success, $binding, $obsolescent, $ada_properties, $ada_signals) =
       &ada_bindings_in_unit ($ada_unit);
@@ -580,7 +608,7 @@ sub process_c_file() {
   foreach $func (sort keys %funcs) {
      if (!defined $binding{$func}) {
         ($args, $returns, $deprecated) = ($funcs{$func}->[0], $funcs{$func}->[1], $funcs{$func}->[2]);
-        &create_binding ($ada_unit, $func, $args, $returns, 1, $deprecated);
+        &create_binding ($ada_unit, $func, $args, $returns, 1, $deprecated, $c_docs);
      }
   }
 
