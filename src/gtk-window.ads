@@ -991,14 +991,6 @@ package Gtk.Window is
    --    Type:  String
    --    See:   Set_Role / Get_Role
    --
-   --  - Name:  Auto_Shrink_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    Descr: If TRUE, the window automatically shrinks to its size request
-   --           anytime a resize occurs. Don't use this feature, it makes no
-   --           sense.
-   --    See also:  Set_Policy
-   --
    --  - Name:  Allow_Shrink_Property
    --    Type:  Boolean
    --    Flags: read-write
@@ -1195,7 +1187,6 @@ private
      Glib.Properties.Build ("resizable");
    Role_Property                : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("role");
-
 
    pragma Import (C, Get_Type, "gtk_window_get_type");
    pragma Import (C, Group_Get_Type, "gtk_window_group_get_type");
