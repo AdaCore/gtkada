@@ -47,8 +47,11 @@ pragma Warnings (On);
 package Gtk is
 
    function Major_Version return Guint;
-   --  Return the major version number for Gtk+.
-   --  Note that this is not necessarily the same as for GtkAda.
+   --  Return the major version number for Gtk+ that was linked.
+   --  Note that this is not necessarily the same as for GtkAda. It could also
+   --  be different when your application is running, if the dynamic linker
+   --  find some other GtkAda library. Use Gtk.Main.Check_Version to ensure
+   --  that the two versions are compatible
    --  If the version is 1.2.6, returns 1.
 
    function Minor_Version return Guint;
