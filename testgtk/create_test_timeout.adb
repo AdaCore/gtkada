@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright 2000-2006 AdaCore                        --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,16 +32,16 @@ with Glib;       use Glib;
 with Gtk.Box;    use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Label;  use Gtk.Label;
-with Gtk.Main;   use Gtk.Main;
+with Glib.Main;  use Glib.Main;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk;        use Gtk;
 with Common;     use Common;
 
 package body Create_Test_Timeout is
 
-   package Label_Timeout is new Timeout (Gtk_Label);
+   package Label_Timeout is new Glib.Main.Generic_Sources (Gtk_Label);
 
-   Timeout : Timeout_Handler_Id;
+   Timeout : G_Source_Id;
    Count   : Integer := 0;
 
    ----------
@@ -73,7 +74,7 @@ package body Create_Test_Timeout is
       pragma Warnings (Off, Object);
    begin
       if Timeout /= 0 then
-         Timeout_Remove (Timeout);
+         Remove (Timeout);
          Timeout := 0;
          Count := 0;
       end if;
@@ -86,8 +87,8 @@ package body Create_Test_Timeout is
    procedure Start_Timeout (Label : access Gtk_Label_Record'Class) is
    begin
       if Timeout = 0 then
-         Timeout := Label_Timeout.Add (100, Timeout_Test'Access,
-                                       Gtk_Label (Label));
+         Timeout := Label_Timeout.Timeout_Add
+           (100, Timeout_Test'Access, Gtk_Label (Label));
       end if;
    end Start_Timeout;
 

@@ -39,7 +39,7 @@ with Gtk.Extra.Plot_Canvas; use Gtk.Extra.Plot_Canvas;
 with Gtk.Extra.Plot_Canvas.Plot; use Gtk.Extra.Plot_Canvas.Plot;
 with Gtk.Extra.Plot_Canvas.Text; use Gtk.Extra.Plot_Canvas.Text;
 with Gtk.Frame;             use Gtk.Frame;
-with Gtk.Main;              use Gtk.Main;
+with Glib.Main;             use Glib.Main;
 with Gtk.Scrolled_Window;   use Gtk.Scrolled_Window;
 with Gtk.Widget;            use Gtk.Widget;
 with Gtkada.Handlers;       use Gtkada.Handlers;
@@ -48,7 +48,7 @@ with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
 
 package body Create_Plot_Realtime is
 
-   Timer : Timeout_Handler_Id;
+   Timer : G_Source_Id;
    Random_Generator : Ada.Numerics.Float_Random.Generator;
 
    type Timeout_Data is record
@@ -60,7 +60,7 @@ package body Create_Plot_Realtime is
    end record;
    type Timeout_Data_Access is access Timeout_Data;
 
-   package Plot_Timeout is new Gtk.Main.Timeout (Timeout_Data_Access);
+   package Plot_Timeout is new Glib.Main.Generic_Sources (Timeout_Data_Access);
    use Plot_Timeout;
 
    procedure Free is new Unchecked_Deallocation
@@ -89,7 +89,7 @@ package body Create_Plot_Realtime is
    procedure Destroy (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
    begin
-      Timeout_Remove (Timer);
+      Remove (Timer);
    end Destroy;
 
    ------------
@@ -234,7 +234,7 @@ package body Create_Plot_Realtime is
 
       --  Register the periodic timer
 
-      Timer := Plot_Timeout.Add
+      Timer := Plot_Timeout.Timeout_Add
         (300,
          Update'Access,
          new Timeout_Data'(Canvas  => Canvas,

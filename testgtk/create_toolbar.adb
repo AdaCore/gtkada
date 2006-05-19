@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright 2000-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,6 +36,9 @@ with Gtk.Enums;    use Gtk.Enums;
 with Gtk.GEntry;   use Gtk.GEntry;
 with Gtk.Handlers; use Gtk.Handlers;
 with Gtk.Pixmap;   use Gtk.Pixmap;
+with Gtk.Separator_Tool_Item; use Gtk.Separator_Tool_Item;
+with Gtk.Tool_Button;         use Gtk.Tool_Button;
+with Gtk.Tooltips; use Gtk.Tooltips;
 with Gtk.Widget;   use Gtk.Widget;
 with Gtk;          use Gtk;
 
@@ -218,125 +222,142 @@ package body Create_Toolbar is
                            With_Entry : in Boolean := False)
    is
       The_Entry : Gtk_Entry;
+      Button    : Gtk_Tool_Button;
+      Tooltips  : Gtk_Tooltips;
+      Separator : Gtk_Separator_Tool_Item;
+      Bg        : constant Gdk_Color := Get_Bg (Style, State_Normal);
 
    begin
-      Gtk_New (Toolbar, Orientation_Horizontal, Toolbar_Both);
+      Gtk_New (Toolbar);
+      Set_Orientation (Toolbar, Orientation_Horizontal);
+      Set_Style (Toolbar, Toolbar_Both);
+      Gtk_New (Tooltips);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Horizontal");
+      Set_Tooltip (Button, Tooltips, "Horizontal toolbar layout");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar,
-                      Text => "Horizontal",
-                      Tooltip_Text => "Horizontal_toolbar_layout",
-                      Tooltip_Private_Text => "",
-                      Icon => New_Pixmap ("test.xpm",
-                                          Toplevel,
-                                          Get_Bg (Style,
-                                                  State_Normal))),
-         "clicked",
+        (Button, "clicked",
          Toolbar_Cb.To_Marshaller (Set_Horizontal'Access),
          Slot_Object => Toolbar);
 
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Vertical");
+      Set_Tooltip (Button, Tooltips, "Vertical toolbar layout");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Vertical", "Vertical_toolbar_layout", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
-         "clicked",
+        (Button, "clicked",
          Toolbar_Cb.To_Marshaller (Set_Vertical'Access),
          Slot_Object => Toolbar);
-      Append_Space (Toolbar);
+
+      Gtk_New (Separator);
+      Insert (Toolbar, Separator);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Icons");
+      Set_Tooltip (Button, Tooltips, "Only show toolbar icons");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Icons", "Only show toolbar icons", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
-         "clicked",
+        (Button, "clicked",
          Toolbar_Cb.To_Marshaller (Set_Icons'Access),
          Slot_Object => Toolbar);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Text");
+      Set_Tooltip (Button, Tooltips, "Only show toolbar text");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Text", "Only show toolbar text", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
-         "clicked",
+        (Button, "clicked",
          Toolbar_Cb.To_Marshaller (Set_Text'Access),
          Slot_Object => Toolbar);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Both");
+      Set_Tooltip (Button, Tooltips, "Show toolbar icons and text");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Both", "Show toolbar icons and text", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
-         "clicked",
+        (Button, "clicked",
          Toolbar_Cb.To_Marshaller (Set_Both'Access),
          Slot_Object => Toolbar);
-      Append_Space (Toolbar);
+
+      Gtk_New (Separator);
+      Insert (Toolbar, Separator);
 
       if With_Entry then
          Gtk_New (The_Entry);
          Show (The_Entry);
          Append_Widget (Toolbar, The_Entry, "This is an unusable Gtk_Entry",
                         "Hey dont't click me!!!");
-         Append_Space (Toolbar);
+
+         Gtk_New (Separator);
+         Insert (Toolbar, Separator);
       end if;
 
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Small");
+      Set_Tooltip (Button, Tooltips, "Use small spaces", "Toolbar/Small");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Small", "Use small spaces", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
-         "clicked",
+        (Button, "clicked",
          Toolbar_Cb.To_Marshaller (Set_Small_Space'Access),
          Slot_Object => Toolbar);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Big");
+      Set_Tooltip (Button, Tooltips, "Use big spaces", "Toolbar/Big");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Big", "Use big spaces", "Toolbar/Big",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
-         "clicked", Toolbar_Cb.To_Marshaller (Set_Big_Space'Access),
+        (Button, "clicked", Toolbar_Cb.To_Marshaller (Set_Big_Space'Access),
          Slot_Object => Toolbar);
-      Append_Space (Toolbar);
+
+      Gtk_New (Separator);
+      Insert (Toolbar, Separator);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Enable");
+      Set_Tooltip (Button, Tooltips, "Enable tooltips");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Enable", "Enable_Tooltips", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
+        (Button,
          "clicked", Toolbar_Cb.To_Marshaller (Set_Enable'Access),
          Slot_Object => Toolbar);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Disable");
+      Set_Tooltip (Button, Tooltips, "Disable tooltips");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Disable", "Disable_Tooltips", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
+        (Button,
          "clicked", Toolbar_Cb.To_Marshaller (Set_Disable'Access),
          Slot_Object => Toolbar);
 
-      Append_Space (Toolbar);
+      Gtk_New (Separator);
+      Insert (Toolbar, Separator);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Borders");
+      Set_Tooltip (Button, Tooltips, "Show borders");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Borders", "Show Borders", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
+        (Button,
          "clicked", Toolbar_Cb.To_Marshaller (Borders'Access),
          Slot_Object => Toolbar);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Borderless");
+      Set_Tooltip (Button, Tooltips, "Hide borders");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Borderless", "Hide Borders", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
+        (Button,
          "clicked", Toolbar_Cb.To_Marshaller (Borderless'Access),
          Slot_Object => Toolbar);
 
-      Append_Space (Toolbar);
+      Gtk_New (Separator);
+      Insert (Toolbar, Separator);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Empty");
+      Set_Tooltip (Button, Tooltips, "Empty spaces");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Empty", "Empty spaces", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
+        (Button,
          "clicked", Toolbar_Cb.To_Marshaller (Space_Style_Empty'Access),
          Slot_Object => Toolbar);
+
+      Gtk_New (Button, New_Pixmap ("test.xpm", Toplevel, Bg), "Lines");
+      Set_Tooltip (Button, Tooltips, "Lines in spaces");
+      Insert (Toolbar, Button);
       Toolbar_Cb.Object_Connect
-        (Append_Item (Toolbar, "Lines", "Lines in spaces", "",
-                      New_Pixmap ("test.xpm",
-                                  Toplevel,
-                                  Get_Bg (Style, State_Normal))),
+        (Button,
          "clicked", Toolbar_Cb.To_Marshaller (Space_Style_Line'Access),
          Slot_Object => Toolbar);
 

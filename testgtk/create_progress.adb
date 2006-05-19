@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,7 +35,7 @@ with Gtk.Check_Button;    use Gtk.Check_Button;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.GEntry;          use Gtk.GEntry;
 with Gtk.Label;           use Gtk.Label;
-with Gtk.Main;            use Gtk.Main;
+with Glib.Main;           use Glib.Main;
 with Gtk.Option_Menu;     use Gtk.Option_Menu;
 with Gtk.Progress_Bar;    use Gtk.Progress_Bar;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
@@ -49,7 +49,7 @@ with Common; use Common;
 
 package body Create_Progress is
 
-   package Time_Cb  is new Gtk.Main.Timeout (Gtk_Progress_Bar);
+   package Time_Cb  is new Glib.Main.Generic_Sources (Gtk_Progress_Bar);
 
    Items1 : constant Chars_Ptr_Array :=
      "Left-Right" + "Right-Left" + "Bottom-Top" + "Top-Bottom";
@@ -65,7 +65,7 @@ package body Create_Progress is
       Omenu1          : Gtk_Option_Menu;
       Omenu1_Group    : Widget_SList.GSlist;
       Gentry          : Gtk_Entry;
-      Timer           : Timeout_Handler_Id;
+      Timer           : G_Source_Id;
    end record;
 
    Pdata : ProgressData;
@@ -110,7 +110,7 @@ package body Create_Progress is
    procedure Destroy_Progress (Window : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Window);
    begin
-      Timeout_Remove (Pdata.Timer);
+      Remove (Pdata.Timer);
       Pdata.Omenu1_Group := Widget_SList.Null_List;
       Pdata.Timer := 0;
       --  Note: we are in a callback for destroy, so the window will be
@@ -225,7 +225,8 @@ package body Create_Progress is
       Set_Format_String (Pdata.Pbar, "%v from [%l,%u] (=%p%%)");
       Add (Align, Pdata.Pbar);
 
-      Pdata.Timer := Time_Cb.Add (100, Progress_Timeout'Access, Pdata.Pbar);
+      Pdata.Timer := Time_Cb.Timeout_Add
+        (100, Progress_Timeout'Access, Pdata.Pbar);
 
       Gtk_New (Align,
                Xalign => 0.5,

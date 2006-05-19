@@ -30,7 +30,7 @@
 with Glib;        use Glib;
 with Gtk.Box;     use Gtk.Box;
 with Gtk.Enums;   use Gtk.Enums;
-with Gtk.Main;    use Gtk.Main;
+with Glib.Main;   use Glib.Main;
 with Gtk.Preview; use Gtk.Preview;
 with Gtk.Widget;  use Gtk.Widget;
 with Gtk.Window;  use Gtk.Window;
@@ -39,11 +39,11 @@ with Common;      use Common;
 
 package body Create_Preview_Color is
 
-   package Preview_Idle is new Gtk.Main.Idle (Gtk_Preview);
+   package Preview_Idle is new Glib.Main.Generic_Sources (Gtk_Preview);
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   Color_Idle : Idle_Handler_Id := 0;
+   Color_Idle : G_Source_Id := 0;
    Count      : Guchar := 1;
 
    ----------
@@ -88,7 +88,7 @@ package body Create_Preview_Color is
       pragma Warnings (Off, Dummy);
    begin
       if Color_Idle > 0 then
-         Idle_Remove (Color_Idle);
+         Remove (Color_Idle);
          Color_Idle := 0;
       end if;
       Window := null;
@@ -140,7 +140,7 @@ package body Create_Preview_Color is
          Size (Preview, 256, 256);
          Add (Window, Preview);
 
-         Color_Idle := Preview_Idle.Add (Color_Idle_Func'Access, Preview);
+         Color_Idle := Preview_Idle.Idle_Add (Color_Idle_Func'Access, Preview);
          Show_All (Window);
       else
          Destroy (Window);

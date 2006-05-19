@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright 2000-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +33,7 @@ with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Label;        use Gtk.Label;
-with Gtk.Main;         use Gtk.Main;
+with Glib.Main;        use Glib.Main;
 with Gtk.Radio_Button; use Gtk.Radio_Button;
 with Gtk.Handlers;     use Gtk.Handlers;
 with Gtk.Widget;       use Gtk.Widget;
@@ -41,7 +42,7 @@ with Common;           use Common;
 
 package body Create_Test_Idle is
 
-   package Label_Idle is new Idle (Gtk_Label);
+   package Label_Idle is new Glib.Main.Generic_Sources (Gtk_Label);
 
    type My_Button_Record is new Gtk_Radio_Button_Record with record
       Value : Gtk_Resize_Mode;
@@ -51,7 +52,7 @@ package body Create_Test_Idle is
    package My_Button_Cb is new Handlers.User_Callback
      (My_Button_Record, Gtk_Box);
 
-   Idle   : Idle_Handler_Id;
+   Idle   : G_Source_Id;
    Count  : Integer := 0;
 
    ----------
@@ -84,7 +85,7 @@ package body Create_Test_Idle is
       pragma Warnings (Off, Object);
    begin
       if Idle /= 0 then
-         Idle_Remove (Idle);
+         Remove (Idle);
          Idle := 0;
       end if;
    end Stop_Idle;
@@ -105,7 +106,7 @@ package body Create_Test_Idle is
    procedure Start_Idle (Label : access Gtk_Label_Record'Class) is
    begin
       if Idle = 0 then
-         Idle := Label_Idle.Add (Idle_Test'Access, Gtk_Label (Label));
+         Idle := Label_Idle.Idle_Add (Idle_Test'Access, Gtk_Label (Label));
       end if;
    end Start_Idle;
 

@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
+--                     Copyright (C) 2003-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +30,7 @@
 
 with Glib;             use Glib;
 with Glib.Error;       use Glib.Error;
+with Glib.Main;        use Glib.Main;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Pixbuf;       use Gdk.Pixbuf;
@@ -38,7 +39,6 @@ with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Frame;        use Gtk.Frame;
 with Gtk.Image;        use Gtk.Image;
 with Gtk.Label;        use Gtk.Label;
-with Gtk.Main;         use Gtk.Main;
 with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtkada.Handlers;  use Gtkada.Handlers;
@@ -69,7 +69,7 @@ package body Create_Pixbuf is
    Background_Name : constant String := "background.jpg";
    Gif_Image       : constant String := "dancing-penguin.gif";
 
-   Frame_Delay : constant Guint32 := 40;
+   Frame_Delay : constant Guint := 40;
    Cycle_Len   : constant := 40;
 
    Frame : Gdk_Pixbuf;
@@ -82,7 +82,7 @@ package body Create_Pixbuf is
 
    Da : Gtk_Drawing_Area;
 
-   Timeout_Id : Timeout_Handler_Id := 0;
+   Timeout_Id : G_Source_Id := 0;
 
    Images : Pixbuf_Array (Image_Names'Range);
 
@@ -270,7 +270,7 @@ package body Create_Pixbuf is
    procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
    begin
-      Timeout_Remove (Timeout_Id);
+      Remove (Timeout_Id);
       Timeout_Id := 0;
    end Destroy_Cb;
 
