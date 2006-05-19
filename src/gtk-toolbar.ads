@@ -63,8 +63,10 @@ package Gtk.Toolbar is
    procedure Insert
      (Toolbar : access Gtk_Toolbar_Record;
       Item    : access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-      Pos     : Gint);
-   --  Insert a new item anywhere in the toolbar
+      Pos     : Gint := -1);
+   --  Insert a new item anywhere in the toolbar.
+   --  If Pos is negative, the item is inserted at the end.
+   --  If Pos is 0, the item is inserted first in the toolbar
 
    function Get_Item_Index
      (Toolbar : access Gtk_Toolbar_Record;

@@ -893,7 +893,7 @@ package body Gtk.Toolbar is
    procedure Insert
      (Toolbar : access Gtk_Toolbar_Record;
       Item    : access Gtk_Tool_Item_Record'Class;
-      Pos     : Gint)
+      Pos     : Gint := -1)
    is
       procedure Internal
         (Toolbar : System.Address;
