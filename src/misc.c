@@ -36,6 +36,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <glib/gmain.h>
 
 #include <pango/pango.h>
 
@@ -4106,3 +4107,36 @@ gtk_event_box_get_above_child (GtkEventBox *event_box)
   return 0;
 }
 #endif
+
+/*****************************************************
+ ** Glib
+*****************************************************/
+
+struct CustomGSource {
+  GSource source;
+  gpointer user_data;
+};
+
+GSourceFuncs* ada_allocate_g_source_funcs
+  (gpointer prepare, gpointer check, gpointer dispatch, gpointer finalize)
+{
+  GSourceFuncs* result;
+  result = (GSourceFuncs*) malloc (sizeof (GSourceFuncs));
+
+  result->prepare  = prepare;
+  result->check    = check;
+  result->dispatch = dispatch;
+  result->finalize = finalize;
+  return result;
+}
+
+GSource* ada_g_source_new (GSourceFuncs* type, gpointer user_data) {
+  struct CustomGSource* result =
+    (struct CustomGSource*)g_source_new (type, sizeof (struct CustomGSource));
+  result->user_data = user_data;
+  return (GSource*)result;
+}
+
+gpointer ada_g_source_get_user_data (GSource* source) {
+  return ((struct CustomGSource*)source)->user_data;
+}
