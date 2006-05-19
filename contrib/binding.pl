@@ -110,9 +110,7 @@ sub properties_in_c_file() {
 
    $fullname =~ s/\.h$/.c/g;
 
-   open (FILE, $fullname);
-   my ($content) = join ("", <FILE>);
-   close (FILE);
+   my ($content) = &get_c_file_content ($fullname);
 
    while ($content =~ /($property_re$property_descr_re)|($c_signal_re)|($c_doc_re)/ogs) {
       if (defined $8) {
@@ -200,6 +198,37 @@ sub output_signals() {
    }
 }
 
+## Read the content of a C file. As a special case, it might include the
+## contents of other C files, for instance gtkseparator.c also includes
+## gtkvseparator.c and gtkhseparator.c
+
+sub get_c_file_content () {
+  my ($fullname) = shift;
+  my ($contents);
+
+  print "--  C file: $fullname\n";
+  open (FILE, $fullname);
+  $contents = join ("", <FILE>);
+  close (FILE);
+
+  $fullname =~ s,/gtk([^/]+)$,/gtkv$1,;
+  if (-f $fullname) {
+     print "--  C file: $fullname\n";
+     open (FILE, $fullname);
+     $contents .= join ("", <FILE>);
+     close (FILE);
+  }
+
+  $fullname =~ s,/gtkv([^/]+)$,/gtkh$1,;
+  if (-f $fullname) {
+     print "--  C file: $fullname\n";
+     open (FILE, $fullname);
+     $contents .= join ("", <FILE>);
+     close (FILE);
+  }
+  return $contents;
+}
+
 ## Find out all C functions defined in a C file.
 ## Return a hash table indexed on the functions
 our $c_function_re = '\b(\w+(\s*\*)?)\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST)?;';
@@ -208,9 +237,7 @@ sub functions_from_c_file() {
   my (%funcs, $contents);
   my ($deprecated) = 0;
 
-  open (FILE, $fullname);
-  $contents = join ("", <FILE>);
-  close (FILE);
+  $contents = &get_c_file_content ($fullname);
 
   while ($contents =~ /(ifndef|endif).*GTK_DISABLE_DEPRECATED|$c_function_re/og) {
      if (defined $1 && $1 eq "ifndef") {
