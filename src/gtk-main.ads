@@ -396,8 +396,6 @@ package Gtk.Main is
    generic
       type Data_Type (<>) is private;
    package Idle is
-      pragma Obsolescent ("Use Glib.Main.Idle"); --  Idle
-
       type Callback is access function (D : in Data_Type) return Boolean;
       type Destroy_Callback is access procedure (D : in out Data_Type);
 
@@ -407,6 +405,7 @@ package Gtk.Main is
          Priority : in Idle_Priority := Priority_Default_Idle;
          Destroy  : in Destroy_Callback := null)
          return Idle_Handler_Id;
+      pragma Obsolescent ("Use Glib.Main.Idle"); --  Add
 
    private
       procedure Free_Data (D : System.Address);
@@ -443,7 +442,6 @@ package Gtk.Main is
    generic
       type Data_Type (<>) is private;
    package Timeout is
-      pragma Obsolescent ("Use Glib.Main.Timeout");
       type Callback is access function (D : in Data_Type) return Boolean;
       type Destroy_Callback is access procedure (D : in out Data_Type);
 
@@ -452,6 +450,7 @@ package Gtk.Main is
          Func     : Callback;
          D        : Data_Type;
          Destroy  : in Destroy_Callback := null) return Timeout_Handler_Id;
+      pragma Obsolescent ("Use Glib.Main.Timeout"); --  Add
       --  Adds a new timeout. Func will be called after Interval milliseconds.
 
    private
