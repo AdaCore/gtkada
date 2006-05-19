@@ -104,6 +104,7 @@ with Create_Scroll_Test;
 with Create_Selection;
 with Create_Size_Groups;
 with Create_Sheet;
+with Create_Sources;
 with Create_Spin;
 with Create_Splittable;
 with Create_Status;
@@ -298,6 +299,8 @@ package body Main_Windows is
                                          Create_Sheet.Help'Access),
       (NS ("size groups"),      Box,     Create_Size_Groups.Run'Access,
                                          Create_Size_Groups.Help'Access),
+      (NS ("event sources"),    Misc,    Create_Sources.Run'Access,
+                                         Create_Sources.Help'Access),
       (NS ("spinbutton"),       Base,    Create_Spin.Run'Access,
                                          Create_Spin.Help'Access),
       (NS ("statusbar"),        Base,    Create_Status.Run'Access,
