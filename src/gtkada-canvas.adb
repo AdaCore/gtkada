@@ -464,7 +464,9 @@ package body Gtkada.Canvas is
       C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
    begin
       if C.Scrolling_Timeout_Id /= 0 then
+         pragma Warnings (Off); --  Timeout_Remove is obsolete
          Timeout_Remove (C.Scrolling_Timeout_Id);
+         pragma Warnings (On); --  Timeout_Remove is obsolete
       end if;
 
       Clear (C);
@@ -2643,7 +2645,9 @@ package body Gtkada.Canvas is
       end if;
 
       if Canvas.Scrolling_Timeout_Id /= 0 then
+         pragma Warnings (Off); --  Timeout_Remove is obsolete
          Timeout_Remove (Canvas.Scrolling_Timeout_Id);
+         pragma Warnings (On); --  Timeout_Remove is obsolete
          Canvas.Scrolling_Timeout_Id := 0;
       end if;
 
@@ -2762,15 +2766,19 @@ package body Gtkada.Canvas is
 
          if X_Scroll /= 0 or else Y_Scroll /= 0 then
             if Canvas.Scrolling_Timeout_Id = 0 then
+               pragma Warnings (Off); --  Add is obsolete
                Canvas.Scrolling_Timeout_Id := Canvas_Timeout.Add
                  (Timeout_Between_Scrolls, Scrolling_Timeout'Access, Canvas);
+               pragma Warnings (On); --  Add is obsolete
             end if;
             return False;
          end if;
       end if;
 
       if Canvas.Scrolling_Timeout_Id /= 0 then
+         pragma Warnings (Off); --  Timeout_Remove is obsolete
          Timeout_Remove (Canvas.Scrolling_Timeout_Id);
+         pragma Warnings (On); --  Timeout_Remove is obsolete
          Canvas.Surround_Box_Scroll := Scrolling_Amount_Min;
          Canvas.Scrolling_Timeout_Id := 0;
       end if;
@@ -3639,9 +3647,11 @@ package body Gtkada.Canvas is
                Canvas.Zoom_Step := -1;
             end if;
          end if;
+         pragma Warnings (Off); --  Add is obsolete
          Id := Canvas_Timeout.Add
            (Timeout_Between_Zooms, Zoom_Timeout'Access,
             Interactive_Canvas (Canvas));
+         pragma Warnings (On); --  Add is obsolete
 
       else
          Zoom_Internal (Canvas, Percent);
