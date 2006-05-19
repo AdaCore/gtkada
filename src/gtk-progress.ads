@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,13 +28,14 @@
 -----------------------------------------------------------------------
 
 --  This package is deprecated.
---  <c_version>1.3.6</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Adjustment;
 with Gtk.Widget;
 with Glib.Properties;
 
 package Gtk.Progress is
+   pragma Obsolescent; --  Gtk.Progress
 
    type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Progress is access all Gtk_Progress_Record'Class;
