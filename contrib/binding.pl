@@ -59,11 +59,12 @@ our $import_re      = 'pragma\s+Import\s+\(C\s*,\s*(\w+)\s*,\s*"(\w+)"\s*\)';
 our $obsolescent_re = 'pragma\s+Obsolescent.*?--  (\w+)';
 our $not_bound_re   = '--  No binding: (\w+)';
 our $ada_prop_re    = '\b(\w+)_Property\s+:\s+constant ';
+our $ada_signal_re  = '\bSignal_(\w+)\s+:\s+constant String := "([^"]+)"';
 
 sub ada_bindings_in_unit() {
   my ($unit) = shift;
   my ($contents);
-  my (%binding, %obsolescent, %properties);
+  my (%binding, %obsolescent, %properties, %signals);
 
   if (-f "$ada_dir/$unit.ads") {
      open (FILE, "$ada_dir/$unit.ads");
@@ -81,8 +82,10 @@ sub ada_bindings_in_unit() {
      close (FILE);
   }
 
-  while ($contents =~ /($import_re)|($obsolescent_re)|($not_bound_re)|($ada_prop_re)/iog) {
-     if (defined $9) {
+  while ($contents =~ /($import_re)|($obsolescent_re)|($not_bound_re)|($ada_prop_re)|($ada_signal_re)/iog) {
+     if (defined $11) {
+        $signals{$11} = $12;  ## Indexed on Ada name, value is C name
+     } elsif (defined $9) {
         $properties{$9} ++;
      } elsif (defined $7) {
         $binding{$7} = "Not bound";
@@ -93,7 +96,7 @@ sub ada_bindings_in_unit() {
      }
   }
 
-  return (1, \%binding, \%obsolescent, \%properties);
+  return (1, \%binding, \%obsolescent, \%properties, \%signals);
 }
 
 ## Return all the properties defined for the current widget, as well as the
@@ -163,15 +166,15 @@ sub output_properties() {
       foreach $prop (@list) {
          ($type, $descr, $cname) = @{$properties{$prop}};
          print "   ${prop}_Property : constant Glib.Properties.Property_",
-               &capitalize ($type), "\n";
+               &capitalize ($type), ";\n";
       }
 
       print "\n";
       foreach $prop (@list) {
          ($type, $descr, $cname) = @{$properties{$prop}};
          print "   ${prop}_Property : constant Glib.Properties.Property_",
-               &capitalize ($type), ":=\n",
-               "      Glib.Properties.Build (\"$cname\");\n";
+               &capitalize ($type), " :=\n",
+               "     Glib.Properties.Build (\"$cname\");\n";
       }
    }
 }
@@ -206,14 +209,14 @@ sub get_c_file_content () {
   my ($fullname) = shift;
   my ($contents);
 
-  print "--  C file: $fullname\n";
+  # print "--  C file: $fullname\n";
   open (FILE, $fullname);
   $contents = join ("", <FILE>);
   close (FILE);
 
   $fullname =~ s,/gtk([^/]+)$,/gtkv$1,;
   if (-f $fullname) {
-     print "--  C file: $fullname\n";
+     # print "--  C file: $fullname\n";
      open (FILE, $fullname);
      $contents .= join ("", <FILE>);
      close (FILE);
@@ -221,7 +224,7 @@ sub get_c_file_content () {
 
   $fullname =~ s,/gtkv([^/]+)$,/gtkh$1,;
   if (-f $fullname) {
-     print "--  C file: $fullname\n";
+     # print "--  C file: $fullname\n";
      open (FILE, $fullname);
      $contents .= join ("", <FILE>);
      close (FILE);
@@ -268,14 +271,16 @@ sub capitalize () {
 ## This doesn't return the final _Record
 sub c_widget_to_ada () {
   my ($c) = shift;
-  $c =~ /Gtk(.+)\*/;
+  $c =~ s/\s//g;
+  $c =~ /(Gtk|Pango)(.+)\*/;
   return "Gtk_Tool_Item"   if ($c eq "GtkToolItem*");
   return "Gtk_Tool_Button" if ($c eq "GtkToolButton*");
   return "Gtk_Separator_Tool_Item" if ($c eq "GtkSeparatorToolItem*");
   return "Gtk_Toggle_Tool_Button"  if ($c eq "GtkToggleToolButton*");
   return "Gtk_Radio_Tool_Button"   if ($c eq "GtkRadioToolButton*");
   return "Gtk_Menu_Tool_Button"    if ($c eq "GtkMenuToolButton*");
-  return "Gtk_$1";
+  return "Pango_Layout"            if ($c eq "PangoLayout*");
+  return "Gtk_$2";
 }
 
 ## Return the Ada type to use for a given C type
@@ -291,7 +296,7 @@ sub c_to_ada() {
    return "String"             if ($c_type eq "gchar*");
    return "out Gfloat"         if ($c_type eq "gfloat*");
 
-   if ($c_type =~ /Gtk(.+)\*/) {
+   if ($c_type =~ /Gtk(.+)\*/ || $c_type =~ /PangoLayout/) {
       if ($param_index == -1) {
          return &c_widget_to_ada ($c_type);
       } elsif ($param_index == 0) {
@@ -318,7 +323,7 @@ sub c_to_low_ada() {
    return "String"         if ($c_type eq "gchar*" && $param_index >= 0);
    return "Interfaces.C.Strings.chars_ptr"
                            if ($c_type eq "gchar*" && $param_index == -1);
-   return "System.Address" if ($c_type =~ /Gtk(.+)\*/);
+   return "System.Address" if ($c_type =~ /Gtk(.+)\*/ || $c_type =~ /PangoLayout/);
    return &capitalize ($c_type);
 }
 
@@ -408,6 +413,7 @@ sub output_subprogram() {
    my (@arg_types) = @$arg_types;
    my ($longuest_param) = 0;
    my ($index);
+   my ($is_gobject);
 
    if (!$specs_only && $name eq "Get_Type") {
       ## Nothing to do, this is just a pragma Import
@@ -473,7 +479,9 @@ sub output_subprogram() {
       print "      pragma Import (C, Internal, \"$func\");\n";
 
       ## If we are returning a complex Widget type
-      if ($name !~ /^Initialize/ && $returns =~ /Gtk(.+)\*/) {
+      $is_gobject = ($returns =~ /Gtk(.+)\*/ || $returns =~ /PangoLayout/);
+      if ($name !~ /^Initialize/ && $is_gobject)
+      {
          print "      Stub : ". &c_widget_to_ada ($returns) . "_Record;\n";
       }
 
@@ -488,7 +496,7 @@ sub output_subprogram() {
       ## Call to Internal
       $index = 0;
       if ($name !~ /^Initialize/ && $returns ne "void") {
-         if ($returns =~ /Gtk(.+)\*/) {
+         if ($is_gobject) {
             print "      return ", &c_widget_to_ada ($returns) . "\n";
             print "        (Get_User_Data\n";
             print "          (";
@@ -514,7 +522,7 @@ sub output_subprogram() {
          $index++;
       }
       if ($#args >= 0) {
-         if ($name !~ /^Initialize/ && $returns =~ /Gtk(.+)\*/) {
+         if ($name !~ /^Initialize/ && $is_gobject) {
              print "), Stub));\n";
          } elsif ($name =~ /^Initialize/) {
              print "));\n";
