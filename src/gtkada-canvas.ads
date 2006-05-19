@@ -104,10 +104,10 @@ with Gdk.Window;
 
 with Glib;
 with Glib.Graphs;
+with Glib.Main;
 
 with Gtk.Adjustment;
 with Gtk.Drawing_Area;
-with Gtk.Main;
 
 with Pango.Font;
 with Pango.Layout;
@@ -1036,7 +1036,7 @@ private
       --  Layout used to draw the annotations
 
       Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
-      Scrolling_Timeout_Id : Gtk.Main.Timeout_Handler_Id := 0;
+      Scrolling_Timeout_Id : Glib.Main.G_Source_Id := 0;
       Dashed_Line_Visible : Boolean := False;
 
       Orthogonal_Links : Boolean := False;
