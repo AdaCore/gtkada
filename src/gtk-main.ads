@@ -258,7 +258,7 @@ package Gtk.Main is
    --  * After finishing the delivery the event is popped from the event stack.
 
    procedure Propagate_Event
-     (Widget : access Gtk.Widget.Gtk_Widget_Record;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Event  : Gdk.Event.Gdk_Event);
    --  Sends an event to a widget, propagating the event to parent widgets
    --  if the event remains unhandled. Events received by GTK+ from GDK
@@ -302,9 +302,9 @@ package Gtk.Main is
    ----------
 
    type Key_Snooper_Func is
-     access function (Widget : System.Address
+     access function (Widget : System.Address;
                       Event  : Gdk.Event.Gdk_Event_Key;
-                      Data   : System.Address);
+                      Data   : System.Address) return Gboolean;
    pragma Convention (C, Key_Snooper_Func);
    --  This function is called before normal event delivery, and can be used to
    --  implement custom key event handling (for instance to create macros, or

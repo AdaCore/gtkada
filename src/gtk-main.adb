@@ -574,10 +574,11 @@ package body Gtk.Main is
    ---------------------
 
    procedure Propagate_Event
-     (Widget : access Gtk_Widget_Record;
-      Event  : Gdk_Event)
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Event  : Gdk.Event.Gdk_Event)
    is
-      procedure Internal (Widget : System.Address;  Event  : Gdk_Event);
+      procedure Internal
+        (Widget : System.Address; Event : Gdk.Event.Gdk_Event);
       pragma Import (C, Internal, "gtk_propagate_event");
    begin
       Internal (Get_Object (Widget), Event);
