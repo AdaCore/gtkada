@@ -33,6 +33,9 @@ pragma Elaborate_All (Glib.Generic_Properties);
 
 package Gdk.Types is
 
+   Current_Time : constant Guint32 := 0;
+   --  Represents the current time in timestamps stored in events
+
    type Gdk_Point is record
       X : Gint;
       Y : Gint;
