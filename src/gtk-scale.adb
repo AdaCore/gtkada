@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Pango.Layout;  use Pango.Layout;
 with System;
 
 package body Gtk.Scale is
@@ -243,5 +244,34 @@ package body Gtk.Scale is
    begin
       return Internal (Get_Object (Scale));
    end Get_Value_Pos;
+
+   ----------------
+   -- Get_Layout --
+   ----------------
+
+   function Get_Layout
+     (Scale : access Gtk_Scale_Record) return Pango.Layout.Pango_Layout
+   is
+      function Internal (Scale : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scale_get_layout");
+      Stub : Pango_Layout_Record;
+   begin
+      return Pango_Layout
+        (Get_User_Data (Internal (Get_Object (Scale)), Stub));
+   end Get_Layout;
+
+   ------------------------
+   -- Get_Layout_Offsets --
+   ------------------------
+
+   procedure Get_Layout_Offsets
+     (Scale : access Gtk_Scale_Record;
+      X, Y  : out Gint)
+   is
+      procedure Internal (Scale : System.Address;  X, Y  : out Gint);
+      pragma Import (C, Internal, "gtk_scale_get_layout_offsets");
+   begin
+      Internal (Get_Object (Scale), X, Y);
+   end Get_Layout_Offsets;
 
 end Gtk.Scale;
