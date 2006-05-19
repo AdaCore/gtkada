@@ -34,6 +34,7 @@ with Glib.Error;
 with Glib.Glist;
 with Glib.Glade;
 with Glib.Gnodes;
+with Glib.Main;
 with Glib.Object;
 with Glib.GSlist;
 with Glib.Messages;
