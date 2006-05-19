@@ -35,7 +35,10 @@
 
 with Glib.Properties;
 with Gtk.Enums; use Gtk.Enums;
+
+pragma Warnings (Off);  --  Gtk.Progress is obsolete
 with Gtk.Progress;
+pragma Warnings (On);
 
 package Gtk.Progress_Bar is
 

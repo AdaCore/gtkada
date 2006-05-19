@@ -30,7 +30,10 @@
 with Glib; use Glib;
 with Gtk;
 with Gtk.Box;
+
+pragma Warnings (Off); --  Gtk.Progress is obsolete
 with Gtk.Progress;
+pragma Warnings (On);
 
 package Gnome.App_Bar is
 
