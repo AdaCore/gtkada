@@ -27,7 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+with Gdk.Types;               use Gdk.Types;
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
 with Unchecked_Deallocation;
 with Unchecked_Conversion;
 
@@ -531,5 +532,55 @@ package body Gtk.Main is
       end Add;
 
    end Timeout;
+
+   -------------------
+   -- Check_Version --
+   -------------------
+
+   function Check_Version
+     (Required_Major : Guint := Gtk.Major_Version;
+      Required_Minor : Guint := Gtk.Minor_Version;
+      Required_Micro : Guint := Gtk.Micro_Version)
+      return String
+   is
+      function Internal
+        (Required_Major : Guint;
+         Required_Minor : Guint;
+         Required_Micro : Guint)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_check_version");
+   begin
+      return Value (Internal (Required_Major, Required_Minor, Required_Micro));
+   end Check_Version;
+
+   -----------------------------
+   -- Get_Current_Event_State --
+   -----------------------------
+
+   procedure Get_Current_Event_State
+     (State             : out Gdk_Modifier_Type;
+      Had_Current_Event : out Boolean)
+   is
+      function Internal (State : access Gdk_Modifier_Type) return Gboolean;
+      pragma Import (C, Internal, "gtk_get_current_event_state");
+      St : aliased Gdk_Modifier_Type;
+   begin
+      Had_Current_Event := Boolean'Val (Internal (St'Unchecked_Access));
+      State := St;
+   end Get_Current_Event_State;
+
+   ---------------------
+   -- Propagate_Event --
+   ---------------------
+
+   procedure Propagate_Event
+     (Widget : access Gtk_Widget_Record;
+      Event  : Gdk_Event)
+   is
+      procedure Internal (Widget : System.Address;  Event  : Gdk_Event);
+      pragma Import (C, Internal, "gtk_propagate_event");
+   begin
+      Internal (Get_Object (Widget), Event);
+   end Propagate_Event;
 
 end Gtk.Main;
