@@ -5133,6 +5133,20 @@ package body Gtkada.MDI is
       Child.MDI.In_Drag := In_Pre_Drag;
    end Child_Drag_Begin;
 
+   -----------------------
+   -- Cancel_Child_Drag --
+   -----------------------
+
+   procedure Cancel_Child_Drag (Child : access MDI_Child_Record'Class) is
+   begin
+      if Traces then
+         Put_Line ("MDI: Cancel_Child_Drag");
+      end if;
+
+      Pointer_Ungrab;
+      Child.MDI.In_Drag := No_Drag;
+   end Cancel_Child_Drag;
+
    -------------------------
    -- Child_Drag_Finished --
    -------------------------

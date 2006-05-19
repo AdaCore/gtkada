@@ -317,6 +317,10 @@ package Gtkada.MDI is
    --  parameter.
    --  The Child is immediately raised and gains the focus.
 
+   procedure Cancel_Child_Drag (Child : access MDI_Child_Record'Class);
+   --  Cancel a drag operation started by Child_Drag_Begin.
+   --  It doesn't call Child_Drag_Finished.
+
    procedure Child_Drag_Finished (Child  : access MDI_Child_Record);
    --  Called when a drag operation is either aborted or completed. It should
    --  be overriden if special cleanup should be done.
