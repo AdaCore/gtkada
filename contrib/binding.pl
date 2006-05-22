@@ -49,6 +49,9 @@ sub ada_unit_from_c_file() {
   $adafile =~ s/([-_])toolbutton/$1tool_button/;
   $adafile =~ s/([-_])toolitem/$1tool_item/;
   $adafile =~ s/view_port/viewport/;
+  $adafile =~ s/^gmain$/glib-main/;
+  $adafile =~ s/-tipsquery/-tips_query/;
+  $adafile =~ s/-spinbutton/-spin_button/;
   return $adafile;
 }
 
@@ -56,7 +59,7 @@ sub ada_unit_from_c_file() {
 ## Returns a hash-table indexed by C functions, containing the name of the Ada
 ## subprogram
 our $import_re      = 'pragma\s+Import\s+\(C\s*,\s*(\w+)\s*,\s*"(\w+)"\s*\)';
-our $obsolescent_re = 'pragma\s+Obsolescent.*?--  (\w+)';
+our $obsolescent_re = '(pragma\s+Obsolescent).*?(?:--  (\w+))?';
 our $not_bound_re   = '--  No binding: (\w+)';
 our $ada_prop_re    = '\b(\w+)_Property\s+:\s+constant ';
 our $ada_signal_re  = '\bSignal_(\w+)\s+:\s+constant String := "([^"]+)"';
@@ -65,6 +68,8 @@ sub ada_bindings_in_unit() {
   my ($unit) = shift;
   my ($contents);
   my (%binding, %obsolescent, %properties, %signals);
+  my ($whole_obsolesent) = 0;
+  my ($subprogram_seen) = 0;
 
   if (-f "$ada_dir/$unit.ads") {
      open (FILE, "$ada_dir/$unit.ads");
@@ -83,16 +88,27 @@ sub ada_bindings_in_unit() {
   }
 
   while ($contents =~ /($import_re)|($obsolescent_re)|($not_bound_re)|($ada_prop_re)|($ada_signal_re)/iog) {
-     if (defined $11) {
-        $signals{$11} = $12;  ## Indexed on Ada name, value is C name
-     } elsif (defined $9) {
-        $properties{$9} ++;
-     } elsif (defined $7) {
-        $binding{$7} = "Not bound";
+     if (defined $12) {
+        $signals{$12} = $13;  ## Indexed on Ada name, value is C name
+     } elsif (defined $10) {
+        $properties{$10} ++;
+     } elsif (defined $8) {
+        $binding{$8} = "No binding";
      } elsif (defined $5) {
-        $obsolescent{$5} = 1;
+        if (!$subprogram_seen) {
+           $whole_obsolesent = 1;
+        } else {
+           $obsolescent{$6} = 1;
+        }
      } else {
         $binding{$3} = $2;
+        $subprogram_seen = 1;
+
+        ## If the whole package is obsolete, this subprogram in particular is
+        ## also obsolete. We do this so that we do not have to repeat the
+        ## pragma Obsolescent for every entity.
+        $obsolescent{&ada_entity_from_c ($unit, $3)} = 1
+          if ($whole_obsolesent);
      }
   }
 
@@ -104,31 +120,32 @@ sub ada_bindings_in_unit() {
 
 our $property_re = 'g_object_class_install_property\s*\(\s*\w+\s*,\s*\w+\s*,\s*g_param_spec_(\w+)\s*\("([^"]+)"';
 our $property_descr_re = '\s*,\s*P_\("[^"]+"\),\s*P_\("([^"]+)"';
-our $c_signal_re = 'g_signal_new\s*\("([^"]+)"';
-our $c_doc_re = '/\*\*\s*\* (\w+):\s*(.*?)\*\*/';
+our $c_signal_re = 'g(tk)?_signal_new\s*\("([^"]+)"';
+our $c_doc_re = '/\*\*\s*\* (\w+):\s*(.*?)\*/';
 
 sub properties_in_c_file() {
    my ($fullname) = shift;
    my (%properties, %signals, %docs, $cname);
+   my ($func, $descr, $name, $type, $sname);
 
    $fullname =~ s/\.h$/.c/g;
 
    my ($content) = &get_c_file_content ($fullname);
 
    while ($content =~ /($property_re$property_descr_re)|($c_signal_re)|($c_doc_re)/ogs) {
-      if (defined $8) {
-         my ($func, $descr) = ($8, $9);
+      if (defined $9) {
+         ($func, $descr) = ($9, $10);
          $descr =~ s/^\s*\* */   --  /gm;
          $docs {$func} = $descr;
 
       } elsif (defined $2) {
-         my ($type, $name, $descr) = ($2, $3, $4);
+         ($type, $name, $descr) = ($2, $3, $4);
          $cname = $name;
          $name =~ s/-/_/g;
          $name = &capitalize ($name);
          $properties{$name} = [$type, $descr, $cname];
       } else {
-         my ($sname) = $6;
+         ($sname) = $7;
          $cname = $sname;
          $sname =~ s/-/_/g;
          $sname = &capitalize ($sname);
@@ -195,7 +212,7 @@ sub output_signals() {
       print "   --  </signals>\n";
 
       foreach $name (@list) {
-         print "   Signal_$name : constant String := \"$signals{$name}\";";
+         print "   Signal_$name : constant String := \"$signals{$name}\";\n";
       }
       print "\n";
    }
@@ -234,7 +251,7 @@ sub get_c_file_content () {
 
 ## Find out all C functions defined in a C file.
 ## Return a hash table indexed on the functions
-our $c_function_re = '\b(\w+(\s*\*)?)\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST)?;';
+our $c_function_re = '\b(\w+(\s*\*|\s))\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST)?;';
 sub functions_from_c_file() {
   my ($fullname) = shift;
   my (%funcs, $contents);
@@ -272,26 +289,23 @@ sub capitalize () {
 sub c_widget_to_ada () {
   my ($c) = shift;
   $c =~ s/\s//g;
-  $c =~ /(Gtk|Pango)(.+)\*/;
-  return "Gtk_Tool_Item"   if ($c eq "GtkToolItem*");
-  return "Gtk_Tool_Button" if ($c eq "GtkToolButton*");
-  return "Gtk_Separator_Tool_Item" if ($c eq "GtkSeparatorToolItem*");
-  return "Gtk_Toggle_Tool_Button"  if ($c eq "GtkToggleToolButton*");
-  return "Gtk_Radio_Tool_Button"   if ($c eq "GtkRadioToolButton*");
-  return "Gtk_Menu_Tool_Button"    if ($c eq "GtkMenuToolButton*");
-  return "Pango_Layout"            if ($c eq "PangoLayout*");
-  return "Gtk_$2";
+  $c =~ s/([^_])([A-Z])/$1_$2/g;  ## Split on upper cases
+  $c =~ s/\*$//;                  ## Ignore pointers for now
+  return $c;
 }
 
 ## Return the Ada type to use for a given C type
 sub c_to_ada() {
    my ($c_type) = shift;
    my ($param_index) = shift;  ## -1 for return type
+   $c_type =~ s/([^_])([A-Z])/$1_$2/g;  ## Split on upper cases
+
    return "Boolean"            if ($c_type eq "gboolean");
-   return "Gtk_Relief_Style"   if ($c_type eq "GtkReliefStyle");
-   return "Gtk_Orientation"    if ($c_type eq "GtkOrientation");
-   return "Gtk_Toolbar_Style"  if ($c_type eq "GtkToolbarStyle");
-   return "Gtk_Icon_Size"      if ($c_type eq "GtkIconSize");
+#   return "Gtk_Relief_Style"   if ($c_type eq "GtkReliefStyle");
+#   return "Gtk_Orientation"    if ($c_type eq "GtkOrientation");
+#   return "Gtk_Toolbar_Style"  if ($c_type eq "GtkToolbarStyle");
+#   return "Gtk_Icon_Size"      if ($c_type eq "GtkIconSize");
+   return "Gdk_Event"          if ($c_type eq "Gdk_Event*");
    return "Gfloat"             if ($c_type eq "gfloat");
    return "String"             if ($c_type eq "gchar*");
    return "out Gfloat"         if ($c_type eq "gfloat*");
@@ -314,11 +328,13 @@ sub c_to_low_ada() {
    my ($c_type) = shift;
    my ($param_index) = shift; ## -1 for return type
    return "Gboolean"       if ($c_type eq "gboolean");
-   return "Gtk_Relief_Style" if ($c_type eq "GtkReliefStyle");
-   return "Gtk_Orientation"  if ($c_type eq "GtkOrientation");
-   return "Gtk_Toolbar_Style"  if ($c_type eq "GtkToolbarStyle");
-   return "Gtk_Icon_Size"  if ($c_type eq "GtkIconSize");
+   $c_type =~ s/([^_])([A-Z])/$1_$2/g;  ## Split on upper cases
+#   return "Gtk_Relief_Style" if ($c_type eq "GtkReliefStyle");
+#   return "Gtk_Orientation"  if ($c_type eq "GtkOrientation");
+#   return "Gtk_Toolbar_Style"  if ($c_type eq "GtkToolbarStyle");
+#   return "Gtk_Icon_Size"  if ($c_type eq "GtkIconSize");
    return "Gfloat"         if ($c_type eq "gfloat");
+   return "Gdk_Event"      if ($c_type eq "Gdk_Event*");
    return "out Gfloat"     if ($c_type eq "gfloat*");
    return "String"         if ($c_type eq "gchar*" && $param_index >= 0);
    return "Interfaces.C.Strings.chars_ptr"
@@ -394,8 +410,16 @@ sub ada_entity_from_c() {
 
    $ada_pkg =~ s/-/_/g;
    $name =~ s/${ada_pkg}_//i;
-   $name = &capitalize ($name);
-   return $name;
+
+   if ($ada_pkg eq "gtk_main") {
+      $name =~ s/^gtk_//;
+   } elsif ($ada_pkg eq "glib_main") {
+      $name =~ s/^g_//;
+   } elsif ($ada_pkg eq "gtk_gentry") {
+      $name =~ s/^gtk_entry_//;
+   }
+
+   return &capitalize ($name);
 }
 
 ## Output a single subprogram
@@ -628,7 +652,7 @@ sub process_c_file() {
 
   foreach $func (sort keys %funcs) {
      if (!defined $binding{$func}) {
-        print "No binding for:  $func\n";
+        print "   --  No binding: $func\n";
      }
   }
   foreach $func (sort keys %binding) {
@@ -656,7 +680,11 @@ sub process_c_file() {
        ($funcs{$func}->[0], $funcs{$func}->[1], $funcs{$func}->[2]);
      if ($deprecated) {
         my ($name) = &ada_entity_from_c ($ada_unit, $func);
-        if (!defined $obsolescent{$name}) {
+
+        # Do not output the pragma for subprograms that are not bound
+        if (!defined $obsolescent{$name}
+            && defined $binding{$func}
+            && $binding{$func} ne "No binding") {
            print "  pragma Obsolescent; --  $name\n";
         }
      }
