@@ -49,8 +49,10 @@ package Gtk.Progress_Bar is
       Progress_Top_To_Bottom);
    pragma Convention (C, Gtk_Progress_Bar_Orientation);
 
+   pragma Warnings (Off);
    type Gtk_Progress_Bar_Record is new
      Gtk.Progress.Gtk_Progress_Record with private;
+   pragma Warnings (On);
    type Gtk_Progress_Bar is access all Gtk_Progress_Bar_Record'Class;
 
    procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar);
@@ -159,8 +161,10 @@ package Gtk.Progress_Bar is
    Text_Property            : constant Glib.Properties.Property_String;
 
 private
+   pragma Warnings (Off);
    type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record
      with null record;
+   pragma Warnings (On);
 
    Orientation_Property     : constant Gtk.Enums.Property_Gtk_Orientation :=
      Gtk.Enums.Build ("orientation");
