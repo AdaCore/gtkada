@@ -271,7 +271,10 @@ package body Gtk.Type_Conversion is
             elsif Type_Name = "GtkPreview" then
                return new Gtk.Preview.Gtk_Preview_Record;
             elsif Type_Name = "GtkProgress" then
+               pragma Warnings (Off);
                return new Gtk.Progress.Gtk_Progress_Record;
+               pragma Warnings (On);
+               --  Gtk.Progress is obsolete
             elsif Type_Name = "GtkProgressBar" then
                return new Gtk.Progress_Bar.Gtk_Progress_Bar_Record;
             end if;
