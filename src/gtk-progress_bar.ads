@@ -53,6 +53,7 @@ package Gtk.Progress_Bar is
    type Gtk_Progress_Bar_Record is new
      Gtk.Progress.Gtk_Progress_Record with private;
    pragma Warnings (On);
+   --  Gtk.Prgress is obsolete
    type Gtk_Progress_Bar is access all Gtk_Progress_Bar_Record'Class;
 
    procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar);
@@ -165,6 +166,7 @@ private
    type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record
      with null record;
    pragma Warnings (On);
+   --  Gtk.Progress is obsolete
 
    Orientation_Property     : constant Gtk.Enums.Property_Gtk_Orientation :=
      Gtk.Enums.Build ("orientation");
