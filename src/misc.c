@@ -1016,18 +1016,6 @@ ada_paned_get_child2_shrink (GtkPaned* widget)
   return widget->child2_shrink;
 }
 
-GtkWidget*
-ada_paned_get_child1 (GtkPaned* widget)
-{
-  return widget->child1;
-}
-
-GtkWidget*
-ada_paned_get_child2 (GtkPaned* widget)
-{
-  return widget->child2;
-}
-
 /********************
  * Progress_Bar
  ********************/

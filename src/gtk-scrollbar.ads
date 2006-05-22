@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,20 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  This widget represents a widget that can be dragged by the user to change
+--  the visible area of another widget. It is typically only used through a
+--  Gtk.Scrolled_Window, although you might need, from time to time, to use it
+--  directly if the widget you want to scroll isn't entirely suitable for a
+--  scrolled window.
+--  For instance, if you are creating your own drawing area, unlimited in size,
+--  you do not want to create a Gtk_Drawing_Area 100_000 pixels large, since
+--  that would use too much memory. Instead, you create one with just the
+--  size of the visible area on the screen, then connect it with a scrollbar so
+--  that when the user moves the scrollbar, you change what should be displayed
+--  in the drawing area.
+--  </description>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.GRange;
 with Gtk.Adjustment;
@@ -45,21 +58,23 @@ package Gtk.Scrollbar is
    procedure Gtk_New_Hscrollbar
      (Widget     : out Gtk_Scrollbar;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   procedure Initialize_Hscrollbar
+     (Widget     : access Gtk_Scrollbar_Record'Class;
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   --  Creates or initializes a new horizontal scrollbar
 
    procedure Gtk_New_Vscrollbar
      (Widget     : out Gtk_Scrollbar;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-
-   function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Scrollbar.
-
-   procedure Initialize_Hscrollbar
-     (Widget     : access Gtk_Scrollbar_Record'Class;
-      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-
    procedure Initialize_Vscrollbar
      (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   --  Creates or initializes a new vertical scrollbar
+
+   function Get_Type return Gtk.Gtk_Type;
+   function Hscrollbar_Get_Type return Gtk.Gtk_Type;
+   function Vscrollbar_Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Scrollbar.
 
    ----------------
    -- Properties --
@@ -76,4 +91,6 @@ private
      with null record;
 
    pragma Import (C, Get_Type, "gtk_scrollbar_get_type");
+   pragma Import (C, Hscrollbar_Get_Type, "gtk_hscrollbar_get_type");
+   pragma Import (C, Vscrollbar_Get_Type, "gtk_vscrollbar_get_type");
 end Gtk.Scrollbar;

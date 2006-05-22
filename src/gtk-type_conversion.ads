@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2001-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,10 +29,9 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  Provides full dynamic typing within GtkAda.
---
 --  </description>
+--  <c_version>2.8.17</c_version>
 
 package Gtk.Type_Conversion is
 

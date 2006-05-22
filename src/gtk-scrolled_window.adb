@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,7 +28,8 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;     use Gtk.Enums;
+with Gtk.Scrollbar; use Gtk.Scrollbar;
 
 package body Gtk.Scrolled_Window is
 
@@ -138,6 +139,38 @@ package body Gtk.Scrolled_Window is
       return Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub));
    end Get_Vadjustment;
+
+   --------------------
+   -- Get_Hscrollbar --
+   --------------------
+
+   function Get_Hscrollbar
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk_Scrollbar
+   is
+      function Internal (Scrolled : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_hscrollbar");
+      Stub : Gtk_Scrollbar_Record;
+   begin
+      return Gtk_Scrollbar
+        (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub));
+   end Get_Hscrollbar;
+
+   --------------------
+   -- Get_Vscrollbar --
+   --------------------
+
+   function Get_Vscrollbar
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk_Scrollbar
+   is
+      function Internal (Scrolled : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_vscrollbar");
+      Stub : Gtk_Scrollbar_Record;
+   begin
+      return Gtk_Scrollbar
+        (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub));
+   end Get_Vscrollbar;
 
    -------------
    -- Gtk_New --

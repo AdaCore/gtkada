@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,12 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  pragma Deprecated;
+--  <c_version>2.8.17</c_version>
+--  <doc_ignore>
 
 with Gtk.Label;
 with Gtk.Widget;
 
 package Gtk.Tips_Query is
+   pragma Obsolescent;
 
    type Gtk_Tips_Query_Record is new Gtk.Label.Gtk_Label_Record with private;
    type Gtk_Tips_Query is access all Gtk_Tips_Query_Record'Class;
@@ -51,6 +53,7 @@ package Gtk.Tips_Query is
       Label_No_Tip   : UTF8_String);
 
    procedure Start_Query (Tips_Query : access Gtk_Tips_Query_Record);
+
    procedure Stop_Query (Tips_Query : access Gtk_Tips_Query_Record);
 
    ----------------
@@ -63,8 +66,32 @@ package Gtk.Tips_Query is
    --
    --  </properties>
 
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "widget_selected"
+   --  - "start_query"
+   --  - "stop_query"
+   --  - "widget_entered"
+   --
+   --  </signals>
+
+   Signal_Widget_Selected : constant String := "widget_selected";
+   Signal_Start_Query     : constant String := "start_query";
+   Signal_Stop_Query      : constant String := "stop_query";
+   Signal_Widget_Entered  : constant String := "widget_entered";
+
 private
    type Gtk_Tips_Query_Record is new Gtk.Label.Gtk_Label_Record
      with null record;
-
 end Gtk.Tips_Query;
+
+--  This subprogram was never implemented, and the whole package is now
+--  obsolescent
+--  No binding: gtk_tips_query_get_type
+
+--  </doc_ignore>

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  A Gtk_Spin_Button is a single line text editing widget for text that
 --  represents a number. At the right hand side of the text line there are
 --  small up- and down arrow buttons for incrementing or decrementing
@@ -40,10 +39,11 @@
 --  depressed.
 --
 --  @pxref{Package_Gtk.GEntry} for a text editing widget without spin buttons.
---
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Generic_Properties;
+with Glib.Properties;
 with Gtk.Adjustment;
 with Gtk.GEntry;
 
@@ -123,79 +123,65 @@ package Gtk.Spin_Button is
    procedure Set_Adjustment
      (Spin_Button : access Gtk_Spin_Button_Record;
       Adjustment  : Gtk.Adjustment.Gtk_Adjustment);
-   --  Set the adjustment settings of the spin button.
-
    function Get_Adjustment
      (Spin_Button : access Gtk_Spin_Button_Record)
       return Gtk.Adjustment.Gtk_Adjustment;
-   --  Return the adjustment settings of the spin button.
+   --  Set or Get the adjustment settings of the spin button.
 
    procedure Set_Digits
      (Spin_Button : access Gtk_Spin_Button_Record;
       The_Digits  : Guint);
-   --  Set number of decimals of the spin button.
-
    function Get_Digits
      (Spin_Button : access Gtk_Spin_Button_Record) return Guint;
-   --  Return the number of decimals of the spin button.
+   --  Set or Get number of decimals of the spin button.
 
    procedure Set_Increments
      (Spin_Button : access Gtk_Spin_Button_Record;
       Step        : Gdouble;
       Page        : Gdouble);
-   --  Set increments for a single step and a page move.
-
    procedure Get_Increments
      (Spin_Button : access Gtk_Spin_Button_Record;
       Step        : out Gdouble;
       Page        : out Gdouble);
-   --  Return increments for a single step and a page move.
+   --  Set or Get the increments for a single step and a page move.
 
    procedure Set_Range
      (Spin_Button : access Gtk_Spin_Button_Record;
       Min         : Gdouble;
       Max         : Gdouble);
-   --  Set range of the spin button.
-
    procedure Get_Range
      (Spin_Button : access Gtk_Spin_Button_Record;
       Min         : out Gdouble;
       Max         : out Gdouble);
-   --  Return range of the spin button.
+   --  Set or Get range of the spin button.
 
+   procedure Set_Value
+     (Spin_Button : access Gtk_Spin_Button_Record;
+      Value       : Gdouble);
    function Get_Value
      (Spin_Button : access Gtk_Spin_Button_Record) return Gdouble;
-   --  Return the current value of the spin button in a float.
+   --  Set or Get the current value of the spin button in a double.
 
    function Get_Value_As_Int
      (Spin_Button : access Gtk_Spin_Button_Record) return Gint;
    --  Return the current value of the spin button in an integer.
 
-   procedure Set_Value
-     (Spin_Button : access Gtk_Spin_Button_Record;
-      Value       : Gdouble);
-   --  Set the current value of the spin button.
-
    procedure Set_Update_Policy
      (Spin_Button : access Gtk_Spin_Button_Record;
       Policy      : Gtk_Spin_Button_Update_Policy);
-   --  Set the update policy of the spin button.
-   --  See Gtk_Spin_Button_Update_Policy for the meaning of Policy.
-
    function Get_Update_Policy
      (Spin_Button : access Gtk_Spin_Button_Record)
       return Gtk_Spin_Button_Update_Policy;
-   --  Return the update policy of the spin button.
+   --  Set the update policy of the spin button.
+   --  See Gtk_Spin_Button_Update_Policy for the meaning of Policy.
 
    procedure Set_Numeric
      (Spin_Button : access Gtk_Spin_Button_Record;
       Numeric     : Boolean);
-   --  If Numeric is True, then only a numeric value can be typed in the
-   --  text entry, otherwise also nonnumeric text.
-
    function Get_Numeric
      (Spin_Button : access Gtk_Spin_Button_Record) return Boolean;
-   --  Return whether only numeric values can be typedin the text entry.
+   --  If Numeric is True, then only a numeric value can be typed in the
+   --  text entry, otherwise also nonnumeric text.
 
    procedure Spin
      (Spin_Button : access Gtk_Spin_Button_Record;
@@ -207,24 +193,18 @@ package Gtk.Spin_Button is
 
    procedure Set_Wrap
      (Spin_Button : access Gtk_Spin_Button_Record; Wrap : Boolean);
-   --  Set whether the spin button should "wrap around" when exceeding the
-   --  upper and lower limits.
-
    function Get_Wrap
      (Spin_Button : access Gtk_Spin_Button_Record) return Boolean;
-   --  Return whether the spin button will "wrap around" when exceeding the
+   --  Set whether the spin button should "wrap around" when exceeding the
    --  upper and lower limits.
 
    procedure Set_Snap_To_Ticks
     (Spin_Button   : access Gtk_Spin_Button_Record;
      Snap_To_Ticks : Boolean);
-   --  Set the spin button to round the value to the nearest step value
-   --  which is set within its adjustment settings.
-
    function Get_Snap_To_Ticks
     (Spin_Button : access Gtk_Spin_Button_Record) return Boolean;
-   --  Return whether the spin button rounds the value to the nearest step
-   --  value which is set within its adjustment settings.
+   --  Set the spin button to round the value to the nearest step value
+   --  which is set within its adjustment settings.
 
    procedure Update (Spin_Button : access Gtk_Spin_Button_Record);
    --  Manually force an update of the spin button.
@@ -237,11 +217,116 @@ package Gtk.Spin_Button is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Adjustment_Property
+   --  Type:  Object
+   --  Descr: The adjustment that holds the value of the spinbutton
+   --
+   --  Name:  Climb_Rate_Property
+   --  Type:  Double
+   --  Descr: The acceleration rate when you hold down a button
+   --
+   --  Name:  Digits_Property
+   --  Type:  Uint
+   --  Descr: The number of decimal places to display
+   --
+   --  Name:  Numeric_Property
+   --  Type:  Boolean
+   --  Descr: Whether non-numeric characters should be ignored
+   --
+   --  Name:  Snap_To_Ticks_Property
+   --  Type:  Boolean
+   --  Descr: Whether erroneous values are automatically changed to a spin
+   --         button's nearest step increment
+   --
+   --  Name:  Update_Policy_Property
+   --  Type:  Enum
+   --  Descr: Whether the spin button should update always, or only when the
+   --         value is legal
+   --
+   --  Name:  Value_Property
+   --  Type:  Double
+   --  Descr: Reads the current value, or sets a new value
+   --
+   --  Name:  Wrap_Property
+   --  Type:  Boolean
+   --  Descr: Whether a spin button should wrap upon reaching its limits
+   --
    --  </properties>
+
+   package Spin_Button_Update_Policy_Properties is new
+     Glib.Generic_Properties.Generic_Internal_Discrete_Property
+       (Gtk_Spin_Button_Update_Policy);
+   type Property_Spin_Button_Update_Policy_Type is new
+     Spin_Button_Update_Policy_Properties.Property;
+
+   Adjustment_Property    : constant Glib.Properties.Property_Object;
+   Climb_Rate_Property    : constant Glib.Properties.Property_Double;
+   Digits_Property        : constant Glib.Properties.Property_Uint;
+   Numeric_Property       : constant Glib.Properties.Property_Boolean;
+   Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean;
+   Update_Policy_Property : constant Property_Spin_Button_Update_Policy_Type;
+   Value_Property         : constant Glib.Properties.Property_Double;
+   Wrap_Property          : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "change_value"
+   --    procedure Handler
+   --      (Spin : access Gtk_Spin_Button_Record'Class;
+   --       Typ  : Gtk_Scroll_Type);
+   --    You should emit this signal to request a change in the value of the
+   --    spin button. This is mostly useful as a keybinding, and is bound, by
+   --    default, to the arrow keys, PageUp, PageDown, Home and End keys.
+   --
+   --  - "input"
+   --    procedure Handler
+   --       (Spin  : access Gtk_Spin_Button_Record'Class;
+   --        Value : out Gint);
+   --    ???
+   --
+   --  - "output"
+   --    procedure Handler (Spin : access Gtk_Spin_Button_Record'Class);
+   --    ???
+   --
+   --  - "value_changed"
+   --    procedure Handler (Spin : access Gtk_Spin_Button_Record'Class);
+   --    Emitted when the value of the spin button has changed.
+   --
+   --  </signals>
+
+   Signal_Change_Value  : constant String := "change_value";
+   Signal_Input         : constant String := "input";
+   Signal_Output        : constant String := "output";
+   Signal_Value_Changed : constant String := "value_changed";
 
 private
    type Gtk_Spin_Button_Record is new Gtk.GEntry.Gtk_Entry_Record
-     with null record;
+   with null record;
+
+   Adjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("adjustment");
+   Climb_Rate_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("climb-rate");
+   Digits_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("digits");
+   Numeric_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("numeric");
+   Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("snap-to-ticks");
+   Update_Policy_Property : constant Property_Spin_Button_Update_Policy_Type :=
+     Build ("update-policy");
+   Value_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("value");
+   Wrap_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("wrap");
 
    pragma Import (C, Get_Type, "gtk_spin_button_get_type");
 end Gtk.Spin_Button;
+
+--  The following function is for the sake of the C++ binding only:
+--  No binding: gtk_spin_button_configure

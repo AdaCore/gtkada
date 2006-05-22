@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000-2003                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2004-0026 AdaCore               --
+--                     Copyright (C) 2004-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -59,7 +59,7 @@ with Gtk.Label;         use Gtk.Label;
 with Gtk.Menu;          use Gtk.Menu;
 with Gtk.Menu_Item;     use Gtk.Menu_Item;
 with Gtk.Notebook;      use Gtk.Notebook;
-with Gtk.Pixmap;        use Gtk.Pixmap;
+with Gtk.Image;         use Gtk.Image;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Toolbar;       use Gtk.Toolbar;
@@ -101,8 +101,8 @@ package body Create_Sheet is
    Center_Button    : Gtk_Toggle_Button;
    Right_Button     : Gtk_Toggle_Button;
    Curve            : Gtk_Curve;
-   Bg_Pixmap        : Gtk_Pixmap;
-   Fg_Pixmap        : Gtk_Pixmap;
+   Bg_Pixmap        : Gtk_Image;
+   Fg_Pixmap        : Gtk_Image;
    GEntry           : Gtk_Entry;
    Location         : Gtk_Label;
    Popup            : Gtk_Menu;
@@ -932,7 +932,7 @@ package body Create_Sheet is
       R2 : constant Gtk_Sheet_Range := R'Unchecked_Access;
       Color : Gdk_Color;
       Pixmap : Gdk_Pixmap;
-      Bullet : array (0 .. 5) of Gtk_Pixmap;
+      Bullet : array (0 .. 5) of Gtk_Image;
       Mask   : Gdk_Bitmap;
       Show_Button : Gtk_Button;
    begin
@@ -1289,7 +1289,7 @@ package body Create_Sheet is
       Toolbar            : Gtk_Toolbar;
       Label              : Gtk_Label;
       Pixmap             : Gdk_Pixmap;
-      Tpixmap            : Gtk_Pixmap;
+      Tpixmap            : Gtk_Image;
       Colormap           : constant Gdk_Colormap := Get_Default_Colormap;
       Mask               : Gdk_Bitmap;
       Font_Combo         : Gtk_Font_Combo;

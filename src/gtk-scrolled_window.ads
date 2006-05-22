@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,11 +55,13 @@
 --  Set_Scroll_Adjustments in the call to Gtk.Object.Initialize_Class_Record.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Bin;
 with Gtk.Enums;
+with Gtk.Scrollbar;
 with Gtk.Widget;
 
 package Gtk.Scrolled_Window is
@@ -91,31 +93,41 @@ package Gtk.Scrolled_Window is
    procedure Set_Hadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
       Hadjustment     : Gtk_Adjustment);
+   function Get_Hadjustment
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk_Adjustment;
    --  Set the Gtk_Adjustment for the horizontal scrollbar.
+   --  This adjustment is used to connect the horizontal scrollbar to the child
+   --  widget's horizontal scroll functionality.
 
    procedure Set_Vadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
       Vadjustment     : Gtk_Adjustment);
-   --  Set the Gtk_Adjustment for the vertical scrollbar.
-
-   function Get_Hadjustment
-     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
-      return Gtk_Adjustment;
-   --  Return the horizontal scrollbar's adjustment.
-   --  This adjustment is used to connect the horizontal scrollbar to the child
-   --  widget's horizontal scroll functionality.
-
    function Get_Vadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record)
       return Gtk_Adjustment;
-   --  Return the vertical scrollbar's adjustment.
+   --  Set the Gtk_Adjustment for the vertical scrollbar.
    --  This adjustment is used to connect the vertical scrollbar to the child
    --  widget's vertical scroll functionality.
+
+   function Get_Hscrollbar
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk.Scrollbar.Gtk_Scrollbar;
+   --  Returns the horizontal scrollbar, or null if it doesn't have one.
+
+   function Get_Vscrollbar
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk.Scrollbar.Gtk_Scrollbar;
+   --  Returns the vertical scrollbar, or null if it doesn't have one.
 
    procedure Set_Policy
      (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
       H_Scrollbar_Policy : Enums.Gtk_Policy_Type;
       V_Scrollbar_Policy : Enums.Gtk_Policy_Type);
+   procedure Get_Policy
+     (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
+      H_Scrollbar_Policy : out Enums.Gtk_Policy_Type;
+      V_Scrollbar_Policy : out Enums.Gtk_Policy_Type);
    --  Set the scrollbar policy for the horizontal and vertical scrollbars.
    --  It determines when the scrollbar should appear; it is a value
    --  from the Gtk_Policy_Type enumeration. If Policy_Always, the scrollbar is
@@ -124,32 +136,22 @@ package Gtk.Scrolled_Window is
    --  the slider part of the bar would be smaller than the trough - the
    --  display is larger than the page size).
 
-   procedure Get_Policy
-     (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
-      H_Scrollbar_Policy : out Enums.Gtk_Policy_Type;
-      V_Scrollbar_Policy : out Enums.Gtk_Policy_Type);
-   --  Return the scrollbar policy for the horizontal and vertical scrollbars.
-
    procedure Set_Placement
      (Scrolled_Window  : access Gtk_Scrolled_Window_Record;
       Window_Placement : Gtk.Enums.Gtk_Corner_Type);
-   --  Determine the location of the widget with respect to the scrollbars.
-   --  The default is Corner_Top_Left.
-
    function Get_Placement
      (Scrolled_Window  : access Gtk_Scrolled_Window_Record)
       return Gtk.Enums.Gtk_Corner_Type;
-   --  Return the location of the widget with respect to the scrollbars.
+   --  Determine or return the location of the widget with respect to the
+   --  scrollbars. The default is Corner_Top_Left.
 
    procedure Set_Shadow_Type
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
       Shadow_Type     : Gtk.Enums.Gtk_Shadow_Type);
-   --  Change the type of shadow drawn around the contents of Scrolled_Window.
-
    function Get_Shadow_Type
      (Scrolled_Window : access Gtk_Scrolled_Window_Record)
       return Gtk.Enums.Gtk_Shadow_Type;
-   --  Return the type of shadow drawn around the contents of Scrolled_Window.
+   --  Change the type of shadow drawn around the contents of Scrolled_Window.
 
    procedure Add_With_Viewport
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
@@ -178,7 +180,38 @@ package Gtk.Scrolled_Window is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Hadjustment_Property
+   --  Type:  Object
+   --  Descr: The GtkAdjustment for the horizontal position
+   --
+   --  Name:  Hscrollbar_Policy_Property
+   --  Type:  Enum
+   --  Descr: When the horizontal scrollbar is displayed
+   --
+   --  Name:  Shadow_Type_Property
+   --  Type:  Enum
+   --  Descr: Style of bevel around the contents
+   --
+   --  Name:  Vadjustment_Property
+   --  Type:  Object
+   --  Descr: The GtkAdjustment for the vertical position
+   --
+   --  Name:  Vscrollbar_Policy_Property
+   --  Type:  Enum
+   --  Descr: When the vertical scrollbar is displayed
+   --
+   --  Name:  Window_Placement_Property
+   --  Type:  Enum
+   --  Descr: Where the contents are located with respect to the scrollbars
+   --
    --  </properties>
+
+   Hadjustment_Property       : constant Glib.Properties.Property_Object;
+   Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
+   Shadow_Type_Property       : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+   Vadjustment_Property       : constant Glib.Properties.Property_Object;
+   Vscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
+   Window_Placement_Property  : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
    -------------
    -- Signals --
@@ -186,10 +219,45 @@ package Gtk.Scrolled_Window is
 
    --  <signals>
    --  The following new signals are defined for this widget:
+   --
+   --  - "scroll_child"
+   --    procedure Handler
+   --       (Window     : access Gtk_Scrolled_Window_Record'Class;
+   --        Typ        : Gtk_Scroll_Type;
+   --        Horizontal : Gboolean);
+   --    You should emit this signal to request a scrolling of the child. This
+   --    signal is almost never needed directly, unless you connect it to a
+   --    key binding.
+   --    The boolean is used to further qualify Scroll_Start and Scroll_End,
+   --    which do not have horizontal and vertical variants.
+   --
+   --  - "move_focus_out"
+   --    procedure Handler
+   --       (Window     : access Gtk_Scrolled_Window_Record'Class;
+   --        Direction  : Gtk_Direction_Type);
+   --    Request that the keyboard focus be moved. You almost never have to
+   --    emit this signal yourself, unless you are binding it to a key for
+   --    user interaction. You do not need to connect to this signal
    --  </signals>
+
+   Signal_Move_Focus_Out : constant String := "move_focus_out";
+   Signal_Scroll_Child   : constant String := "scroll_child";
 
 private
    type Gtk_Scrolled_Window_Record is new Bin.Gtk_Bin_Record with null record;
+
+   Hadjustment_Property       : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("hadjustment");
+   Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
+     Gtk.Enums.Build ("hscrollbar-policy");
+   Shadow_Type_Property       : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow-type");
+   Vadjustment_Property       : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("vadjustment");
+   Vscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
+     Gtk.Enums.Build ("vscrollbar-policy");
+   Window_Placement_Property  : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("window-placement");
 
    pragma Import (C, Get_Type, "gtk_scrolled_window_get_type");
 end Gtk.Scrolled_Window;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,15 +28,13 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  This widget is an abstract widget designed to support the common
 --  functionalities of all widgets for editing text. It provides general
 --  services to manipulate an editable widget, a large number of action
 --  signals used for key bindings, and several signals that an
 --  application can connect to to modify the behavior of a widget.
---
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Widget;
 
@@ -72,7 +70,8 @@ package Gtk.Editable is
       New_Text : UTF8_String;
       Position : in out Gint);
    --  Insert the given string at the given position.
-   --  Position is set to the new cursor position.
+   --  Position is set to the new cursor position. If Position is -1, the
+   --  text is appended at the end.
 
    procedure Delete_Text
      (Editable  : access Gtk_Editable_Record;
@@ -106,6 +105,7 @@ package Gtk.Editable is
    procedure Set_Position
      (Editable : access Gtk_Editable_Record;
       Position : Gint);
+   function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
    --  Change the position of the cursor in the entry.
    --  The cursor is displayed before the character with the given
    --  index in the widget (the first character has index 0). The
@@ -114,19 +114,14 @@ package Gtk.Editable is
    --  should be set after the last character in the entry.
    --  Note that this position is in characters, not in bytes.
 
-   function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
-   --  Return the position of the cursor.
-
    procedure Set_Editable
      (Widget   : access Gtk_Editable_Record;
       Editable : Boolean := True);
+   function Get_Editable
+     (Editable : access Gtk_Editable_Record) return Boolean;
    --  Set the editable status of the entry.
    --  If Editable is False, the user can not modify the contents of the entry.
    --  This does not affect the user of the insertion functions above.
-
-   function Get_Editable
-     (Editable : access Gtk_Editable_Record) return Boolean;
-   --  Get the editable status of the entry.
 
    ----------------
    -- Properties --
@@ -175,6 +170,10 @@ package Gtk.Editable is
    --
    --    Called when the contents of Widget has changed
    --  </signals>
+
+   Signal_Changed     : constant String := "changed";
+   Signal_Delete_Text : constant String := "delete_text";
+   Signal_Insert_Text : constant String := "insert_text";
 
 private
    type Gtk_Editable_Record is new Gtk.Widget.Gtk_Widget_Record

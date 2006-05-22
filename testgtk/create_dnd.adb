@@ -38,7 +38,7 @@ with Gtk.Button;    use Gtk.Button;
 with Gtk.Table;     use Gtk.Table;
 with Gtk.Label;     use Gtk.Label;
 with Gtk.Handlers;  use Gtk.Handlers;
-with Gtk.Pixmap;    use Gtk.Pixmap;
+with Gtk.Image;     use Gtk.Image;
 with Gtkada.Types;  use Gtkada.Types;
 with Gtk.Widget;    use Gtk.Widget;
 with Gtk.Arguments; use Gtk.Arguments;
@@ -458,7 +458,7 @@ package body Create_Dnd is
    begin
       Have_Drag := False;
       Put_Log ("Drop");
-      Set (Gtk_Pixmap (Widget), Trashcan_Closed, Trashcan_Closed_Mask);
+      Set (Gtk_Image (Widget), Trashcan_Closed, Trashcan_Closed_Mask);
       return False;
    end Target_Drag_Drop;
 
@@ -519,11 +519,11 @@ package body Create_Dnd is
 
       pragma Warnings (Off, X);
       pragma Warnings (Off, Y);
-      Toto : Gtk_Pixmap;
+      Toto : Gtk_Image;
    begin
       if not Have_Drag then
          Have_Drag := True;
-         Toto := Gtk_Pixmap (Widget);
+         Toto := Gtk_Image (Widget);
          Set (Toto, Trashcan_Open, Trashcan_Open_Mask);
       end if;
 
@@ -554,7 +554,7 @@ package body Create_Dnd is
    begin
       Put_Log ("Leave");
       Have_Drag := False;
-      Set (Gtk_Pixmap (Widget), Trashcan_Closed, Trashcan_Closed_Mask);
+      Set (Gtk_Image (Widget), Trashcan_Closed, Trashcan_Closed_Mask);
    end Target_Drag_Leave;
 
    ------------------------------
@@ -670,7 +670,7 @@ package body Create_Dnd is
       Table     : Gtk_Table;
       Label     : Gtk_Label;
       Button    : Gtk_Button;
-      Pixmap    : Gtk_Pixmap;
+      Pixmap    : Gtk_Image;
       Box       : Gtk_Box;
    begin
       Set_Label (Frame, "Drag-and-Drop");

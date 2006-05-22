@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  This package declares an abstract type, parent of several widgets in
+--  GtkAda.
+--  </description>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Bin;
 
@@ -40,10 +44,13 @@ package Gtk.Item is
    --  Return the internal value associated with a Gtk_Item.
 
    procedure Item_Select (Item : access Gtk_Item_Record);
+   --  Emits the "select" signal on Item
 
    procedure Item_Deselect (Item : access Gtk_Item_Record);
+   --  Emits the "deselect" signal on item
 
    procedure Toggle (Item : access Gtk_Item_Record);
+   --  Emits the "toggle" signal on item
 
    ----------------
    -- Properties --
@@ -55,10 +62,29 @@ package Gtk.Item is
    --
    --  </properties>
 
-   --  signals:
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
    --  - "select"
+   --    procedure Handler (Item : access Gtk_Item_Record'Class);
+   --    Emitted when the item is selected
+   --
    --  - "deselect"
+   --    procedure Handler (Item : access Gtk_Item_Record'Class);
+   --    Emitted when the item is deselected
+   --
    --  - "toggle"
+   --    procedure Handler (Item : access Gtk_Item_Record'Class);
+   --    Emitted when the item is toggled
+   --  </signals>
+
+   Signal_Deselect : constant String := "deselect";
+   Signal_Select   : constant String := "select";
+   Signal_Toggle   : constant String := "toggle";
 
 private
    type Gtk_Item_Record is new Gtk.Bin.Gtk_Bin_Record with null record;

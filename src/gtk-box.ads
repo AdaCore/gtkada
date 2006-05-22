@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,7 +53,7 @@
 --  on how all the parameters for the boxes work.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gtk.Container;
@@ -63,15 +63,12 @@ with Gtk.Widget;
 package Gtk.Box is
 
    type Gtk_Box_Record is new Gtk.Container.Gtk_Container_Record with private;
-
-   --  <doc_ignore>
    subtype Gtk_Hbox_Record is Gtk_Box_Record;
    subtype Gtk_Vbox_Record is Gtk_Box_Record;
 
    type Gtk_Box is access all Gtk_Box_Record'Class;
    subtype Gtk_Hbox is Gtk_Box;
    subtype Gtk_Vbox is Gtk_Box;
-   --  </doc_ignore>
 
    procedure Gtk_New_Vbox
      (Box         : out Gtk_Box;
@@ -171,23 +168,19 @@ package Gtk.Box is
    procedure Set_Homogeneous
      (In_Box      : access Gtk_Box_Record;
       Homogeneous : Boolean);
-   --  Modify the homogeneous parameter for the box.
+   function Get_Homogeneous
+     (In_Box : access Gtk_Box_Record) return Boolean;
+   --  Modify or get the homogeneous parameter for the box.
    --  If the box is homogeneous, then all its children will be allocated the
    --  same amount of space, even if they are not resized to occupy it
    --  (depending on the parameters given to Pack_Start and Pack_End).
 
-   function Get_Homogeneous
-     (In_Box : access Gtk_Box_Record) return Boolean;
-   --  Return the homogeneous parameter of the box.
-
    procedure Set_Spacing
      (In_Box  : access Gtk_Box_Record;
       Spacing : Gint);
+   function Get_Spacing (In_Box : access Gtk_Box_Record) return Gint;
    --  Modify the spacing for the box.
    --  I.e. the amount of space left between two adjacent children.
-
-   function Get_Spacing (In_Box : access Gtk_Box_Record) return Gint;
-   --  Return the spacing of the box.
 
    procedure Reorder_Child
      (In_Box : access Gtk_Box_Record;
@@ -199,6 +192,13 @@ package Gtk.Box is
    --  other children, no matter where they were packed  (the beginning or the
    --  end of the box).
 
+   procedure Set_Child_Packing
+     (In_Box    : access Gtk_Box_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Expand    : Boolean;
+      Fill      : Boolean;
+      Padding   : Gint;
+      Pack_Type : Gtk.Enums.Gtk_Pack_Type);
    procedure Query_Child_Packing
      (In_Box   : access Gtk_Box_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -208,15 +208,6 @@ package Gtk.Box is
       PackType : out Gtk.Enums.Gtk_Pack_Type);
    --  Get information on how the child was packed in the box.
    --  The results are undefined if Child is not in the box.
-
-   procedure Set_Child_Packing
-     (In_Box    : access Gtk_Box_Record;
-      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Expand    : Boolean;
-      Fill      : Boolean;
-      Padding   : Gint;
-      Pack_Type : Gtk.Enums.Gtk_Pack_Type);
-   --  Modify the packing for a child.
 
    function Get_Child
      (Box : access Gtk_Box_Record; Num : Gint) return Gtk.Widget.Gtk_Widget;

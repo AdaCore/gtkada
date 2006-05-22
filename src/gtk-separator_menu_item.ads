@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                    Copyright (C) 2003 ACT-Europe                  --
+--                    Copyright (C) 2003-2006 AdaCore                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,9 +27,11 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  This widget serves as separator between menu items.
+--  This widget serves as separator between menu items. It is represented
+--  graphically as a horizontal line between two items, and is used to group
+--  items into meaningful groups.
 --  </description>
---  <c_version>2.2.1</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Menu_Item;
 

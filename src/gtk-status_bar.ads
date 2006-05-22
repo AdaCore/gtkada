@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,10 +48,11 @@
 --  error messages). You can then selectively remove the most recent message
 --  of each category.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Box;
 with Interfaces.C.Strings;
+with Glib.Properties;
 with Glib.GSlist;
 pragma Elaborate_All (Glib.GSlist);
 with System;
@@ -128,11 +129,11 @@ package Gtk.Status_Bar is
    procedure Set_Has_Resize_Grip
      (Statusbar  : access Gtk_Status_Bar_Record;
       Setting    : Boolean);
-   --  Set the value of the resize_grip attribute for a given status bar.
-
    function Get_Has_Resize_Grip
      (Statusbar : access Gtk_Status_Bar_Record) return Boolean;
-   --  Return the value of the resize_grip attribute for a given status bar.
+   --  Set or gets the value of the resize_grip attribute for a given status
+   --  bar. This indicates whether the status bar has a handle that, when
+   --  dragged, will resize the toplevel window that contains the status bar.
 
    ----------------
    -- Properties --
@@ -142,7 +143,13 @@ package Gtk.Status_Bar is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Has_Resize_Grip_Property
+   --  Type:  Boolean
+   --  Descr: Whether the statusbar has a grip for resizing the toplevel
+   --
    --  </properties>
+
+   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -152,23 +159,29 @@ package Gtk.Status_Bar is
    --  The following new signals are defined for this widget:
    --
    --  - "text_pushed"
-   --    procedure Handler (Status_Bar : access Gtk_Status_Bar_Record'Class;
-   --                       Context    : Context_Id;
-   --                       Text       : Interfaces.C.Strings.chars_ptr);
-   --
+   --    procedure Handler
+   --      (Status_Bar : access Gtk_Status_Bar_Record'Class;
+   --       Context    : Context_Id;
+   --       Text       : Interfaces.C.Strings.chars_ptr);
    --    Emitted when a new message has been in the queue.
    --
    --  - "text_popped"
-   --    procedure Handler (Status_Bar : access Gtk_Status_Bar_Record'Class;
-   --                       Context    : Context_Id;
-   --                       Text       : Interfaces.C.Strings.chars_ptr);
-   --
+   --    procedure Handler
+   --      (Status_Bar : access Gtk_Status_Bar_Record'Class;
+   --       Context    : Context_Id;
+   --       Text       : Interfaces.C.Strings.chars_ptr);
    --    Emitted when a message has been removed from the queue.
    --
    --  </signals>
 
+   Signal_Text_Popped : constant String := "text_popped";
+   Signal_Text_Pushed : constant String := "text_pushed";
+
 private
    type Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with null record;
+
+   Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-resize-grip");
 
    pragma Import (C, Get_Type, "gtk_statusbar_get_type");
 end Gtk.Status_Bar;

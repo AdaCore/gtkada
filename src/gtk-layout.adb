@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -262,9 +262,10 @@ package body Gtk.Layout is
    ------------
 
    procedure Freeze (Layout : access Gtk_Layout_Record) is
-      pragma Unreferenced (Layout);
+      procedure Internal (Layout : System.Address);
+      pragma Import (C, Internal, "gtk_layout_freeze");
    begin
-      null;
+      Internal (Get_Object (Layout));
    end Freeze;
 
    ----------
@@ -272,9 +273,10 @@ package body Gtk.Layout is
    ----------
 
    procedure Thaw (Layout : access Gtk_Layout_Record) is
-      pragma Unreferenced (Layout);
+      procedure Internal (Layout : System.Address);
+      pragma Import (C, Internal, "gtk_layout_thaw");
    begin
-      null;
+      Internal (Get_Object (Layout));
    end Thaw;
 
    --------------

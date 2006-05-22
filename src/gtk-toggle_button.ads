@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 --  <description>
-
 --  A Gtk_Toggle_Button is like a regular button, but can be in one of
 --  two states, "active" or "inactive". Its visual aspect is modified
 --  when the state is changed.
@@ -36,12 +35,11 @@
 --  You should consider using a Gtk_Check_Button instead, since it looks
 --  nicer and provides more visual clues that the button can be
 --  toggled.
-
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 --  <screenshot>togglebutton</screenshot>
 
-with Glib;
+with Glib.Properties;
 with Gtk.Button;
 
 package Gtk.Toggle_Button is
@@ -83,26 +81,24 @@ package Gtk.Toggle_Button is
    procedure Set_Mode
      (Toggle_Button  : access Gtk_Toggle_Button_Record;
       Draw_Indicator : Boolean);
-   --  Change the mode of the button.
-   --  If Draw_Indicator is False, then the button is hidden.
-
    function Get_Mode
      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
-   --  Return the mode of the button.
+   --  Change the mode of the button.
+   --  If Draw_Indicator is False, then the button is hidden.
 
    procedure Set_Active
      (Toggle_Button : access Gtk_Toggle_Button_Record;
       Is_Active     : Boolean);
-   --  Change the state of the button.
-   --  When Is_Active is True, the button is drawn as a pressed button.
-
    function Get_Active
      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
-   --  Return true if the button is in its active state, i.e is pressed.
+   --  Change the state of the button.
+   --  When Is_Active is True, the button is drawn as a pressed button.
 
    procedure Set_Inconsistent
      (Toggle_Button : access Gtk_Toggle_Button_Record;
       Setting       : Boolean := True);
+   function Get_Inconsistent
+     (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
    --  If the user has selected a range of elements (such as some text or
    --  spreadsheet cells) that are affected by a toggle button, and the
    --  current values in that range are inconsistent, you may want to
@@ -111,10 +107,6 @@ package Gtk.Toggle_Button is
    --  state again if the user toggles the toggle button. This has to be
    --  done manually, Set_Inconsistent only affects visual appearance, it
    --  doesn't affect the semantics of the button.
-
-   function Get_Inconsistent
-     (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
-   --  Get the value set by Set_Inconsistent.
 
    ----------------------
    -- Signals emission --
@@ -133,7 +125,23 @@ package Gtk.Toggle_Button is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Active_Property
+   --  Type:  Boolean
+   --  Descr: If the toggle button should be pressed in or not
+   --
+   --  Name:  Draw_Indicator_Property
+   --  Type:  Boolean
+   --  Descr: If the toggle part of the button is displayed
+   --
+   --  Name:  Inconsistent_Property
+   --  Type:  Boolean
+   --  Descr: If the toggle button is in an \
+   --
    --  </properties>
+
+   Active_Property         : constant Glib.Properties.Property_Boolean;
+   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean;
+   Inconsistent_Property   : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -149,9 +157,19 @@ package Gtk.Toggle_Button is
    --    modified.
    --  </signals>
 
+   Signal_Toggled : constant String := "toggled";
+
 private
    type Gtk_Toggle_Button_Record is new Gtk.Button.Gtk_Button_Record
-     with null record;
+      with null record;
+
+   Active_Property         : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("active");
+   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("draw-indicator");
+   Inconsistent_Property   : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inconsistent");
+
    pragma Import (C, Get_Type, "gtk_toggle_button_get_type");
 end Gtk.Toggle_Button;
 

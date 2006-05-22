@@ -33,6 +33,7 @@ with System;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
+with Gtk.Widget;     use Gtk.Widget;
 
 package body Gtk.Menu is
 
@@ -370,6 +371,61 @@ package body Gtk.Menu is
             Activate_Time);
       end Popup;
    end User_Menu_Popup;
+
+   ------------
+   -- Attach --
+   ------------
+
+   procedure Attach
+     (Menu          : access Gtk_Menu_Record;
+      Child         : access Gtk_Menu_Item_Record'Class;
+      Left_Attach   : Guint;
+      Right_Attach  : Guint;
+      Top_Attach    : Guint;
+      Bottom_Attach : Guint)
+   is
+      procedure Internal
+        (Menu          : System.Address;
+         Child         : System.Address;
+         Left_Attach   : Guint;
+         Right_Attach  : Guint;
+         Top_Attach    : Guint;
+         Bottom_Attach : Guint);
+      pragma Import (C, Internal, "gtk_menu_attach");
+   begin
+      Internal (Get_Object (Menu), Get_Object (Child), Left_Attach,
+                Right_Attach, Top_Attach, Bottom_Attach);
+   end Attach;
+
+   ---------------------------
+   -- Get_For_Attach_Widget --
+   ---------------------------
+
+   function Get_For_Attach_Widget
+     (Widget : access Gtk_Widget_Record'Class)
+      return Widget_List.Glist
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_get_for_attach_widget");
+      List : Widget_List.Glist;
+   begin
+      Widget_List.Set_Object (List, Internal (Get_Object (Widget)));
+      return List;
+   end Get_For_Attach_Widget;
+
+   -----------------
+   -- Set_Monitor --
+   -----------------
+
+   procedure Set_Monitor
+     (Menu        : access Gtk_Menu_Record;
+      Monitor_Num : Gint)
+   is
+      procedure Internal (Menu : System.Address;  Monitor_Num : Gint);
+      pragma Import (C, Internal, "gtk_menu_set_monitor");
+   begin
+      Internal (Get_Object (Menu), Monitor_Num);
+   end Set_Monitor;
 
    ---------------------
    -- Type_Conversion --

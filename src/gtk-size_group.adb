@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                     Copyright (C) 2001-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -115,5 +114,32 @@ package body Gtk.Size_Group is
    begin
       Internal (Get_Object (Size_Group), Get_Object (Widget));
    end Remove_Widget;
+
+   -----------------------
+   -- Get_Ignore_Hidden --
+   -----------------------
+
+   function Get_Ignore_Hidden
+     (Size_Group : access Gtk_Size_Group_Record) return Boolean
+   is
+      function Internal (Size_Group : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_size_group_get_ignore_hidden");
+   begin
+      return Boolean'Val (Internal (Get_Object (Size_Group)));
+   end Get_Ignore_Hidden;
+
+   -----------------------
+   -- Set_Ignore_Hidden --
+   -----------------------
+
+   procedure Set_Ignore_Hidden
+     (Size_Group    : access Gtk_Size_Group_Record; Ignore_Hidden : Boolean)
+   is
+      procedure Internal
+        (Size_Group    : System.Address; Ignore_Hidden : Gboolean);
+      pragma Import (C, Internal, "gtk_size_group_set_ignore_hidden");
+   begin
+      Internal (Get_Object (Size_Group), Boolean'Pos (Ignore_Hidden));
+   end Set_Ignore_Hidden;
 
 end Gtk.Size_Group;

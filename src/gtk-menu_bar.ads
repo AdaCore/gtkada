@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,8 +33,9 @@
 --  items. Gtk_Menu_Bar allows for a shadow type to be set for aesthetic
 --  purposes.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Gtk.Enums;
 with Gtk.Menu_Shell;
 
 package Gtk.Menu_Bar is
@@ -53,6 +54,22 @@ package Gtk.Menu_Bar is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu_Bar.
 
+   procedure Set_Child_Pack_Direction
+     (Menubar        : access Gtk_Menu_Bar_Record;
+      Child_Pack_Dir : Gtk.Enums.Gtk_Pack_Direction);
+   function Get_Child_Pack_Direction
+     (Menubar : access Gtk_Menu_Bar_Record)
+      return Gtk.Enums.Gtk_Pack_Direction;
+   --  Sets how widgets should be packed inside the children of a menubar.
+
+   procedure Set_Pack_Direction
+     (Menubar  : access Gtk_Menu_Bar_Record;
+      Pack_Dir : Gtk.Enums.Gtk_Pack_Direction);
+   function Get_Pack_Direction
+     (Menubar : access Gtk_Menu_Bar_Record)
+      return Gtk.Enums.Gtk_Pack_Direction;
+   --  Sets how items should be packed inside a menubar.
+
    ----------------
    -- Properties --
    ----------------
@@ -61,7 +78,18 @@ package Gtk.Menu_Bar is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Child_Pack_Direction_Property
+   --  Type:  Enum
+   --  Descr: The child pack direction of the menubar
+   --
+   --  Name:  Pack_Direction_Property
+   --  Type:  Enum
+   --  Descr: The pack direction of the menubar
+   --
    --  </properties>
+
+   Child_Pack_Direction_Property : constant Gtk.Enums.Property_Pack_Direction;
+   Pack_Direction_Property       : constant Gtk.Enums.Property_Pack_Direction;
 
    -------------
    -- Signals --
@@ -72,9 +100,13 @@ package Gtk.Menu_Bar is
    --  </signals>
 
 private
-
    type Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
      with null record;
+
+   Child_Pack_Direction_Property : constant Gtk.Enums.Property_Pack_Direction
+     := Gtk.Enums.Build ("child-pack-direction");
+   Pack_Direction_Property : constant Gtk.Enums.Property_Pack_Direction :=
+     Gtk.Enums.Build ("pack-direction");
 
    pragma Import (C, Get_Type, "gtk_menu_bar_get_type");
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2005 AdaCore                    --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,9 +38,8 @@
 --
 --  Activating the proper options in the theme files will allow the user to
 --  interactively modify the shortcuts.
---
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Item;
 with Gtk.Widget;
@@ -52,26 +51,24 @@ package Gtk.Menu_Item is
 
    procedure Gtk_New
      (Menu_Item : out Gtk_Menu_Item; Label : UTF8_String := "");
+   procedure Initialize
+     (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : UTF8_String);
+   --  Creates or initializes a new menu item containing a simple label.
 
    procedure Gtk_New_With_Mnemonic
      (Menu_Item : out Gtk_Menu_Item;
       Label     : UTF8_String);
-   --  Create a new Gtk_Menu_Item containing a label.
-   --  The label is created using Gtk.Label.Gtk_New_With_Mnemonic, so
-   --  underscores in Label indicate the mnemonic for the menu item.
-   --  Warning: the menu_item will not be properly destroyed when you remove
-   --  it from its parent menu, if you created it with a non-empty Label. In
-   --  this case, you first need to destroy the child of the Menu_Item, and
-   --  then remove it from its parent menu.
-
-   procedure Initialize
-     (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : UTF8_String);
-   --  Internal initialization procedure.
-
    procedure Initialize_With_Mnemonic
      (Menu_Item : access Gtk_Menu_Item_Record'Class;
       Label     : UTF8_String);
-   --  Internal initialization procedure.
+   --  Creates or initializes a new Gtk_Menu_Item containing a label.
+   --  The label is created using Gtk.Label.Gtk_New_With_Mnemonic, so
+   --  underscores in Label indicate the mnemonic for the menu item.
+   --
+   --  Warning: with some versions of gtk+, the menu_item will not be properly
+   --  destroyed when you remove it from its parent menu, if you created it
+   --  with a non-empty Label. In this case, you first need to destroy the
+   --  child of the Menu_Item, and then remove it from its parent menu.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu_Item.
@@ -79,34 +76,23 @@ package Gtk.Menu_Item is
    procedure Set_Submenu
      (Menu_Item : access Gtk_Menu_Item_Record;
       Submenu   : access Widget.Gtk_Widget_Record'Class);
-   --  Set the submenu underneath Menu_Item.
-
    function Get_Submenu
      (Menu_Item : access Gtk_Menu_Item_Record) return Gtk.Widget.Gtk_Widget;
-   --  Get the submenu underneath this menu item, if any, null otherwise.
+   --  Set or Get the submenu underneath Menu_Item.
 
    procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
-
-   procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
-
-   procedure Deselect (Menu_Item : access Gtk_Menu_Item_Record);
-
-   procedure Activate (Menu_Item : access Gtk_Menu_Item_Record);
-
-   procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record);
-   --  Deprecated. Use Set_Right_Justified with Justify = True instead.
+   --  Remove the menu_item's submenu
 
    procedure Set_Right_Justified
      (Menu_Item : access Gtk_Menu_Item_Record;
       Justify   : Boolean := True);
-
    function Get_Right_Justified
      (Menu_Item : access Gtk_Menu_Item_Record) return Boolean;
-
-   procedure Set_Right_Justify
-     (Menu_Item : access Gtk_Menu_Item_Record;
-      Justify   : Boolean) renames Set_Right_Justified;
-   --  This procedure is needed by Gate to automate the code generation.
+   --  Sets whether the menu item appears justified at the right side of a menu
+   --  bar. This was traditionally done for "Help" menu items, but is now
+   --  considered a bad idea. (If the widget layout is reversed for a
+   --  right-to-left language like Hebrew or Arabic, right-justified-menu-items
+   --  appear at the left.)
 
    procedure Set_Accel_Path
      (Menu_Item  : access Gtk_Menu_Item_Record;
@@ -117,15 +103,62 @@ package Gtk.Menu_Item is
    --  user, should he choose to activate this possibility in his themes (see
    --  gtk-accel_map.ads for more information).
 
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   procedure Set_Right_Justify
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Justify   : Boolean) renames Set_Right_Justified;
+   --  pragma Obsolescent;  --  Set_Right_Justify
+   --  This procedure is needed by Gate to automate the code generation.
+
+   procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record);
+   pragma Obsolescent;  --  Right_Justify
+   --  Use Set_Right_Justified with Justify = True instead.
+
+   --  </doc_ignore>
+
    -------------
    -- Signals --
    -------------
 
-   --  activate
-   --  activate_item
-   --  toggle_size_request
-   --  toggle_size_allocate
-
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "activate"
+   --    procedure Handler
+   --      (Menu_Item : access Gtk_Menu_Item_Record'Class);
+   --    Emitted when the menu item has been activated, ie the user has clicked
+   --    on it (or use a key shortcut for this)
+   --
+   --  - "activate_item"
+   --    procedure Handler
+   --      (Menu_Item : access Gtk_Menu_Item_Record'Class);
+   --    ???
+   --
+   --  - "toggle_size_request"
+   --    procedure Handler
+   --      (Menu_Item : access Gtk_Menu_Item_Record'Class;
+   --       Request   : Gtk_Requisition_Access);
+   --    Query the menu item to ask for its preferred size (this might not be
+   --    the one actually allocated for it, depending on screen space)
+   --
+   --  - "toggle_size_allocate"
+   --    procedure Handler
+   --      (Menu_Item  : access Gtk_Menu_Item_Record'Class;
+   --       Allocation : Gtk_Allocation_Request);
+   --    You should emit this signal to allocate a specific size for the item.
+   --    In practice, you will not need to do this yourself, since gtk+ takes
+   --    care of it correctly most of the time.
+   --
+   --  </signals>
+   --
    --  If you want to get a signal every time the menu item is made visible
    --  on screen, for instance because you want to dynamically set its
    --  sensitive state, you should connect to the "map" signal of the
@@ -133,6 +166,30 @@ package Gtk.Menu_Item is
    --     Gtkada.Handlers.Widget_Callback.Object_Connect
    --        (Get_Toplevel (Item), "map",
    --         Slot_Object => Item);
+
+   Signal_Activate : constant String := "activate";
+   Signal_Activate_Item : constant String := "activate_item";
+   Signal_Toggle_Size_Allocate : constant String := "toggle_size_allocate";
+   Signal_Toggle_Size_Request : constant String := "toggle_size_request";
+
+   procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
+   --  Emits the "select" signal on Menu_Item
+
+   procedure Deselect (Menu_Item : access Gtk_Menu_Item_Record);
+   --  Emits the "deselect" signal on Menu_Item
+
+   procedure Activate (Menu_Item : access Gtk_Menu_Item_Record);
+   --  Emits the "activate" signal on Menu_Item
+
+   procedure Toggle_Size_Allocate
+     (Menu_Item  : access Gtk_Menu_Item_Record;
+      Allocation : Gtk.Widget.Gtk_Allocation);
+   --  Emits the "toggle_size_allocate" signal on Menu_Item
+
+   procedure Toggle_Size_Request
+     (Menu_Item   : access Gtk_Menu_Item_Record;
+      Requisition : out Gtk.Widget.Gtk_Requisition);
+   --  Emits the "toggle_size_request" signal on Menu_Item
 
    ----------------
    -- Properties --

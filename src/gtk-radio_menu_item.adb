@@ -170,6 +170,95 @@ package body Gtk.Radio_Menu_Item is
       Set_Active (Radio_Menu_Item, False);
    end Set_Group;
 
+   -------------------------
+   -- Gtk_New_From_Widget --
+   -------------------------
+
+   procedure Gtk_New_From_Widget
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class) is
+   begin
+      Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
+      Initialize_From_Widget (Radio_Menu_Item, Group);
+   end Gtk_New_From_Widget;
+
+   ----------------------------
+   -- Initialize_From_Widget --
+   ----------------------------
+
+   procedure Initialize_From_Widget
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class)
+   is
+      function Internal (Group : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_radio_menu_item_new_from_widget");
+   begin
+      Set_Object (Radio_Menu_Item, Internal (Get_Object (Group)));
+   end Initialize_From_Widget;
+
+   ------------------------------------
+   -- Gtk_New_With_Label_From_Widget --
+   ------------------------------------
+
+   procedure Gtk_New_With_Label_From_Widget
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class;
+      Label           : String) is
+   begin
+      Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
+      Initialize_With_Label_From_Widget (Radio_Menu_Item, Group, Label);
+   end Gtk_New_With_Label_From_Widget;
+
+   ---------------------------------------
+   -- Initialize_With_Label_From_Widget --
+   ---------------------------------------
+
+   procedure Initialize_With_Label_From_Widget
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class;
+      Label           : String)
+   is
+      function Internal
+        (Group : System.Address; Label : String) return System.Address;
+      pragma Import
+        (C, Internal, "gtk_radio_menu_item_new_with_label_from_widget");
+   begin
+      Set_Object
+        (Radio_Menu_Item, Internal (Get_Object (Group), Label & ASCII.NUL));
+   end Initialize_With_Label_From_Widget;
+
+   ---------------------------------------
+   -- Gtk_New_With_Mnemonic_From_Widget --
+   ---------------------------------------
+
+   procedure Gtk_New_With_Mnemonic_From_Widget
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class;
+      Label           : String) is
+   begin
+      Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
+      Initialize_With_Mnemonic_From_Widget (Radio_Menu_Item, Group, Label);
+   end Gtk_New_With_Mnemonic_From_Widget;
+
+   ------------------------------------------
+   -- Initialize_With_Mnemonic_From_Widget --
+   ------------------------------------------
+
+   procedure Initialize_With_Mnemonic_From_Widget
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class;
+      Label           : String)
+   is
+      function Internal
+        (Group : System.Address; Label : String)
+         return System.Address;
+      pragma Import
+        (C, Internal, "gtk_radio_menu_item_new_with_mnemonic_from_widget");
+   begin
+      Set_Object
+        (Radio_Menu_Item, Internal (Get_Object (Group), Label & ASCII.NUL));
+   end Initialize_With_Mnemonic_From_Widget;
+
    ---------------------
    -- Type_Conversion --
    ---------------------

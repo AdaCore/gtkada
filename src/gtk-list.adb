@@ -129,7 +129,9 @@ package body Gtk.List is
    is
    begin
       Widget := new Gtk_List_Record;
+      pragma Warnings (Off);  --  Initialize is obsolescent
       Gtk.List.Initialize (Widget);
+      pragma Warnings (On);
    end Gtk_New;
 
    ----------------

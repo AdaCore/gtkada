@@ -238,7 +238,9 @@ package body Gtk.GEntry is
    procedure Gtk_New (Widget : out Gtk_Entry; Max : Gint) is
    begin
       Widget := new Gtk_Entry_Record;
+      pragma Warnings (Off);  --  Initialize is now obsolescent
       Initialize (Widget, Max);
+      pragma Warnings (On);
    end Gtk_New;
 
    -------------
@@ -361,6 +363,101 @@ package body Gtk.GEntry is
    begin
       Internal (Get_Object (The_Entry), Width);
    end Set_Width_Chars;
+
+   -------------------
+   -- Set_Alignment --
+   -------------------
+
+   procedure Set_Alignment (Ent  : access Gtk_Entry_Record; Xalign : Gfloat) is
+      procedure Internal (Ent  : System.Address; Xalign : Gfloat);
+      pragma Import (C, Internal, "gtk_entry_set_alignment");
+   begin
+      Internal (Get_Object (Ent), Xalign);
+   end Set_Alignment;
+
+   --------------------
+   -- Set_Completion --
+   --------------------
+
+   procedure Set_Completion
+     (Ent        : access Gtk_Entry_Record;
+      Completion : access Gtk_Entry_Completion_Record'Class)
+   is
+      procedure Internal
+        (Ent        : System.Address;
+         Completion : System.Address);
+      pragma Import (C, Internal, "gtk_entry_set_completion");
+   begin
+      Internal (Get_Object (Ent), Get_Object (Completion));
+   end Set_Completion;
+
+   --------------------------------
+   -- Text_Index_To_Layout_Index --
+   --------------------------------
+
+   function Text_Index_To_Layout_Index
+     (Ent        : access Gtk_Entry_Record;
+      Text_Index : Gint)
+      return Gint
+   is
+      function Internal
+        (Ent        : System.Address;
+         Text_Index : Gint)
+         return Gint;
+      pragma Import (C, Internal, "gtk_entry_text_index_to_layout_index");
+   begin
+      return Internal (Get_Object (Ent), Text_Index);
+   end Text_Index_To_Layout_Index;
+
+   -------------------
+   -- Get_Alignment --
+   -------------------
+
+   function Get_Alignment
+     (Ent : access Gtk_Entry_Record)
+      return Gfloat
+   is
+      function Internal (Ent : System.Address) return Gfloat;
+      pragma Import (C, Internal, "gtk_entry_get_alignment");
+   begin
+      return Internal (Get_Object (Ent));
+   end Get_Alignment;
+
+   --------------------
+   -- Get_Completion --
+   --------------------
+
+   function Get_Completion
+     (Ent : access Gtk_Entry_Record) return Gtk_Entry_Completion
+   is
+      function Internal
+        (Ent : System.Address)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_entry_get_completion");
+      Stub : Gtk_Entry_Completion_Record;
+   begin
+      return Gtk_Entry_Completion
+        (Get_User_Data (Internal (Get_Object (Ent)), Stub));
+   end Get_Completion;
+
+   --------------------------------
+   -- Layout_Index_To_Text_Index --
+   --------------------------------
+
+   function Layout_Index_To_Text_Index
+     (Ent          : access Gtk_Entry_Record;
+      Layout_Index : Gint)
+      return Gint
+   is
+      function Internal
+        (Ent          : System.Address;
+         Layout_Index : Gint)
+         return Gint;
+      pragma Import (C, Internal, "gtk_entry_layout_index_to_text_index");
+   begin
+      return Internal (Get_Object (Ent), Layout_Index);
+   end Layout_Index_To_Text_Index;
+
 
    ---------------------
    -- Type_Conversion --

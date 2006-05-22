@@ -54,7 +54,9 @@
 
 with Glib.Properties;
 with Gtk.GEntry;
+pragma Warnings (Off);  --  Gtk.List is obsolescent
 with Gtk.List;
+pragma Warnings (On);
 with Gtk.Box;
 with Gtk.Item;
 with Gtk.Window;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2002 ACT-Europe                --
+--                 Copyright (C) 2000-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -74,7 +74,7 @@ package body Gtk.Paned is
      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Paned : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_paned_get_child1");
+      pragma Import (C, Internal, "gtk_paned_get_child1");
 
    begin
       return Convert (Internal (Get_Object (Paned)));
@@ -88,7 +88,7 @@ package body Gtk.Paned is
      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Paned : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_paned_get_child2");
+      pragma Import (C, Internal, "gtk_paned_get_child2");
 
    begin
       return Convert (Internal (Get_Object (Paned)));

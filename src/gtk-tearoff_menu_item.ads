@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  This package contains a special type of menu item, which is displayed as
+--  a hashed line, and which is used to tear off a menu (ie detach it from the
+--  menu bar, and into its own toplevel window, so that the user can keep it
+--  visible at all time).
+--  </description>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Menu_Item;
 
@@ -38,9 +44,9 @@ package Gtk.Tearoff_Menu_Item is
    type Gtk_Tearoff_Menu_Item is access all Gtk_Tearoff_Menu_Item_Record'Class;
 
    procedure Gtk_New (Menu_Item : out Gtk_Tearoff_Menu_Item);
-
    procedure Initialize
      (Menu_Item : access Gtk_Tearoff_Menu_Item_Record'Class);
+   --  Creates or Initializes a menu item
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Tearoff_Menu_Item.
@@ -59,5 +65,5 @@ private
    type Gtk_Tearoff_Menu_Item_Record is new Menu_Item.Gtk_Menu_Item_Record
      with null record;
 
-   pragma Import (C, Get_Type, "get_tearoff_men_item_get_type");
+   pragma Import (C, Get_Type, "gtk_tearoff_menu_item_get_type");
 end Gtk.Tearoff_Menu_Item;

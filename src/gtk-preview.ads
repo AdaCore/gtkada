@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,8 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  This package is deprecated
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gdk.Color;
 with Gdk.GC;
 with Gdk.Visual;
@@ -37,6 +38,7 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Preview is
+   pragma Obsolescent;
 
    type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Preview is access all Gtk_Preview_Record'Class;
@@ -117,7 +119,14 @@ package Gtk.Preview is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Expand_Property
+   --  Type:  Boolean
+   --  Descr: Whether the preview widget should take up the entire space it is
+   --         allocated
+   --
    --  </properties>
+
+   Expand_Property : constant Glib.Properties.Property_Boolean;
 
 private
    type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record
@@ -125,6 +134,9 @@ private
 
    type Gtk_Preview_Info_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
+
+   Expand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("expand");
 
    pragma Import (C, Get_Visual, "gtk_preview_get_visual");
    pragma Import (C, Get_Cmap, "gtk_preview_get_cmap");
@@ -136,3 +148,5 @@ private
    pragma Import (C, Uninit, "gtk_preview_uninit");
 
 end Gtk.Preview;
+
+--  No binding: gtk_preview_set_dither

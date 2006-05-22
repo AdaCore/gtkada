@@ -35,7 +35,7 @@ with Gdk.Pixmap;   use Gdk.Pixmap;
 with Gtk.Enums;    use Gtk.Enums;
 with Gtk.GEntry;   use Gtk.GEntry;
 with Gtk.Handlers; use Gtk.Handlers;
-with Gtk.Pixmap;   use Gtk.Pixmap;
+with Gtk.Image;    use Gtk.Image;
 with Gtk.Separator_Tool_Item; use Gtk.Separator_Tool_Item;
 with Gtk.Tool_Button;         use Gtk.Tool_Button;
 with Gtk.Tooltips; use Gtk.Tooltips;
@@ -76,7 +76,7 @@ package body Create_Toolbar is
    is
       Pixmap    : Gdk_Pixmap;
       Mask      : Gdk_Bitmap;
-      GtkPixmap : Gtk_Pixmap;
+      GtkPixmap : Gtk_Image;
    begin
       Create_From_Xpm (Pixmap, Window, Mask, Background, Filename);
       Gtk_New (GtkPixmap, Pixmap, Mask);

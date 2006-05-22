@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,8 +40,9 @@
 --  submenu (if any) displayed.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Container;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
 
@@ -72,6 +73,44 @@ package Gtk.Menu_Shell is
    --  The first item is at position 0. To insert as the last item in the menu,
    --  set Position to -1.
 
+   procedure Set_Take_Focus
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Take_Focus : Boolean := True);
+   function Get_Take_Focus
+     (Menu_Shell : access Gtk_Menu_Shell_Record) return Boolean;
+   --  If Take_Focus is TRUE the menu shell will take the keyboard focus so
+   --  that it will receive all keyboard events which is needed to enable
+   --  keyboard navigation in menus.
+   --
+   --  Setting Take_Focus to FALSE is useful only for special applications like
+   --  virtual keyboard implementations which should not take keyboard focus.
+   --
+   --  The Take_Focus state of a menu or menu bar is automatically propagated
+   --  to submenus whenever a submenu is popped up, so you don't have to worry
+   --  about recursively setting it for your entire menu hierarchy. Only when
+   --  programmatically picking a submenu and popping it up manually, the
+   --  Take_Focus property of the submenu needs to be set explicitely.
+   --
+   --  Note that setting it to %ALSE has side-effects:
+   --
+   --  If the focus is in some other app, it keeps the focus and keynav in
+   --  the menu doesn't work. Consequently, keynav on the menu will only
+   --  work if the focus is on some toplevel owned by the onscreen keyboard.
+   --
+   --  To avoid confusing the user, menus with Take_Focus set to FALSE
+   --  should not display mnemonics or accelerators, since it cannot be
+   --  guaranteed that they will work.
+
+   procedure Select_First
+     (Menu_Shell       : access Gtk_Menu_Shell_Record;
+      Search_Sensitive : Boolean);
+   --  Select the first visible or selectable child of the menu shell;
+   --  don't select tearoff items unless the only item is a tearoff
+   --  item.
+   --  If Search_Sensitive is True, search for the first selectable menu item,
+   --  otherwise select nothing if the first item isn't sensitive. This should
+   --  be False if the menu is being popped up initially.
+
    ----------------------
    -- Signals emission --
    ----------------------
@@ -98,6 +137,9 @@ package Gtk.Menu_Shell is
    --  Menu_Shell and all its parent menus are deactivated and erased from
    --  the screen.
 
+   procedure Cancel (Menu_Shell : access Gtk_Menu_Shell_Record);
+   --  Cancels the selection within the menu shell.
+
    ----------------
    -- Properties --
    ----------------
@@ -106,7 +148,14 @@ package Gtk.Menu_Shell is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Take_Focus_Property
+   --  Type:  Boolean
+   --  Descr: A boolean that determines whether the menu grabs the keyboard
+   --         focus
+   --
    --  </properties>
+
+   Take_Focus_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -117,40 +166,53 @@ package Gtk.Menu_Shell is
    --
    --  - "deactivate"
    --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class);
-   --
    --    Emitted when the menu is deactivated, ie is erased from the screen.
    --
    --  - "selection-done"
    --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class);
-   --
    --    Emitted when an item has been selected. The menu shell might not be
    --    activated when the signal is emitted.
    --
    --  - "move_current"
    --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class;
    --                       Direction  : Gtk_Menu_Direction_Type);
-   --
-   --    An action signal which selects another menu item (given by direction).
+   --    You should emit this signal to request that another menu item be
+   --    selected. It is mostly useful when bound to a keybinding.
    --    In a menu, this is bound by default to the arrow keys to move the
    --    the selection.
+   --
+   --  - "cycle_focus"
+   --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class;
+   --                       Direction  : Gtk_Menu_Direction_Type);
+   --    You should emit this signal to request that another child of
+   --    Menu_Shell gets the focus. The child is not activated.
    --
    --  - "activate_current"
    --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class;
    --                       Force_Hide : Gboolean);
-   --
    --    Activates the current menu item within the Menu_Shell.
    --    if Force_Hide is True, hide the menu afterwards.
    --
    --  - "cancel"
    --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class);
-   --
    --    Cancels the selection within the menu_shell. Causes a "selection-done"
    --    signal to be emitted.
    --
    --  </signals>
 
+   Signal_Activate_Current : constant String := "activate_current";
+   Signal_Cancel           : constant String := "cancel";
+   Signal_Cycle_Focus      : constant String := "cycle_focus";
+   Signal_Deactivate       : constant String := "deactivate";
+   Signal_Move_Current     : constant String := "move_current";
+   Signal_Selection_Done   : constant String := "selection-done";
+
 private
    type Gtk_Menu_Shell_Record is new
      Gtk.Container.Gtk_Container_Record with null record;
+
+   Take_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("take-focus");
+
    pragma Import (C, Get_Type, "gtk_menu_shell_get_type");
 end Gtk.Menu_Shell;

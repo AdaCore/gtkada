@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright 2000-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,7 +34,7 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Label; use Gtk.Label;
-with Gtk.Pixmap; use Gtk.Pixmap;
+with Gtk.Image; use Gtk.Image;
 with Gtk.Style; use Gtk.Style;
 with Gtk; use Gtk;
 
@@ -54,7 +55,7 @@ package body Create_Pixmap is
       Style     : Gtk_Style;
       Pixmap    : Gdk_Pixmap;
       Mask      : Gdk_Bitmap;
-      PixmapWid : Gtk_Pixmap;
+      PixmapWid : Gtk_Image;
       Label     : Gtk_Label;
 
    begin

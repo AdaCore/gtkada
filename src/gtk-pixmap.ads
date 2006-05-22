@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,8 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  This package is deprecated. Gtk_Image now handles any kind of image/pixmap.
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gdk.Bitmap;
 with Gdk.Pixmap;
@@ -37,6 +36,7 @@ with Gtk.Window;
 with Gtkada.Types;
 
 package Gtk.Pixmap is
+   pragma Obsolescent ("Use Gtk.Image instead");
 
    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with private;
    type Gtk_Pixmap is access all Gtk_Pixmap_Record'Class;
@@ -44,25 +44,25 @@ package Gtk.Pixmap is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Pixmap.
 
-   procedure Get
-     (Pixmap : access Gtk_Pixmap_Record;
-      Val    : out Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : out Gdk.Bitmap.Gdk_Bitmap);
-
    procedure Gtk_New
      (Widget : out Gtk_Pixmap;
       Pixmap : Gdk.Pixmap.Gdk_Pixmap := null;
       Mask   : Gdk.Bitmap.Gdk_Bitmap := null);
-
    procedure Initialize
      (Widget : access Gtk_Pixmap_Record'Class;
       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
       Mask   : Gdk.Bitmap.Gdk_Bitmap);
+   --  Creates or initializes a pixmap
 
    procedure Set
      (Pixmap : access Gtk_Pixmap_Record;
       Val    : Gdk.Pixmap.Gdk_Pixmap;
       Mask   : Gdk.Bitmap.Gdk_Bitmap);
+   procedure Get
+     (Pixmap : access Gtk_Pixmap_Record;
+      Val    : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : out Gdk.Bitmap.Gdk_Bitmap);
+   --  Set or get the components of the pixmap
 
    function Create_Pixmap
      (Filename : String;
@@ -73,6 +73,12 @@ package Gtk.Pixmap is
      (Data     : Gtkada.Types.Chars_Ptr_Array;
       Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
    --  Create a pixmap given a window and a buffer.
+
+   procedure Set_Build_Insensitive
+     (Pixmap : access Gtk_Pixmap_Record;
+      Build  : Boolean);
+   --  Whether the pixmap should be grayed out, as is done for insensitive
+   --  widgets that do not accept user interaction
 
    ----------------
    -- Properties --

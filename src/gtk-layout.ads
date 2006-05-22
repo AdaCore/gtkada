@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@
 --  and make sure you specify a size big enough for the layout.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gdk.Window;
@@ -112,16 +112,17 @@ package Gtk.Layout is
      (Layout : access Gtk_Layout_Record;
       Width  : Guint;
       Height : Guint);
-   --  Specify an absolute size for the layout.
-   --  This is not the size on the screen, but the internal size of the widget.
-   --  The screen's size can be set with Gtk.Widget.Set_Usize.
-
    procedure Get_Size
      (Layout : access Gtk_Layout_Record;
       Width  : out Guint;
       Height : out Guint);
-   --  Get the current size in pixels of the layout, as set with Set_Size
+   --  Specify an absolute size for the layout.
+   --  This is not the size on the screen, but the internal size of the widget.
+   --  The screen's size can be set with Gtk.Widget.Set_Usize.
 
+   procedure Set_Hadjustment
+     (Layout     : access Gtk_Layout_Record;
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    function Get_Hadjustment
      (Layout : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment that indicate the horizontal visual area
@@ -130,6 +131,9 @@ package Gtk.Layout is
    --  yourself, since this is done automatically when the layout has
    --  been put in a Gtk_Scrolled_Window.
 
+   procedure Set_Vadjustment
+     (Layout     : access Gtk_Layout_Record;
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    function Get_Vadjustment
      (Layout : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment that indicate the vertical visual area
@@ -138,28 +142,29 @@ package Gtk.Layout is
    --  yourself, since this is done automatically when the layout has
    --  been put in a Gtk_Scrolled_Window.
 
-   procedure Set_Hadjustment
-     (Layout     : access Gtk_Layout_Record;
-      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-   --  Specify a new adjustment to use for the horizontal visual area.
-
-   procedure Set_Vadjustment
-     (Layout     : access Gtk_Layout_Record;
-      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-   --  Specify a new adjustment to use for the vertical visual area.
-
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
    --  <doc_ignore>
 
    function Get_Width (Layout : access Gtk_Layout_Record) return Guint;
+   pragma Obsolescent;  --  Get_Width
    --  Deprecated, only provided for compatibility, see Get_Size
 
    function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
+   --  pragma Obsolescent;  --  Get_Height
    --  Deprecated, only provided for compatibility, see Get_Size
 
    procedure Freeze (Layout : access Gtk_Layout_Record);
+   pragma Obsolescent;  --  Freeze
    --  Deprecated, only provided for compatibility.
 
    procedure Thaw (Layout : access Gtk_Layout_Record);
+   pragma Obsolescent;  --  Thaw
    --  Deprecated, only provided for compatibility.
 
    --  </doc_ignore>
@@ -218,6 +223,9 @@ package Gtk.Layout is
    --    Emitted whenever at least one of the adjustment of the layout is
    --    changed.
    --  </signals>
+
+   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
+
 private
    type Gtk_Layout_Record is new Gtk.Container.Gtk_Container_Record
      with null record;

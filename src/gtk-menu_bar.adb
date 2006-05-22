@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Enums;   use Gtk.Enums;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
@@ -59,6 +60,69 @@ package body Gtk.Menu_Bar is
    begin
       Set_Object (Menu_Bar, Internal);
    end Initialize;
+
+   ------------------------------
+   -- Get_Child_Pack_Direction --
+   ------------------------------
+
+   function Get_Child_Pack_Direction
+     (Menubar : access Gtk_Menu_Bar_Record)
+      return Gtk_Pack_Direction
+   is
+      function Internal (Menubar : System.Address) return Gtk_Pack_Direction;
+      pragma Import (C, Internal, "gtk_menu_bar_get_child_pack_direction");
+   begin
+      return Internal (Get_Object (Menubar));
+   end Get_Child_Pack_Direction;
+
+   ------------------------
+   -- Get_Pack_Direction --
+   ------------------------
+
+   function Get_Pack_Direction
+     (Menubar : access Gtk_Menu_Bar_Record)
+      return Gtk_Pack_Direction
+   is
+      function Internal
+        (Menubar : System.Address)
+         return Gtk_Pack_Direction;
+      pragma Import (C, Internal, "gtk_menu_bar_get_pack_direction");
+   begin
+      return Internal (Get_Object (Menubar));
+   end Get_Pack_Direction;
+
+   ------------------------------
+   -- Set_Child_Pack_Direction --
+   ------------------------------
+
+   procedure Set_Child_Pack_Direction
+     (Menubar        : access Gtk_Menu_Bar_Record;
+      Child_Pack_Dir : Gtk_Pack_Direction)
+   is
+      procedure Internal
+        (Menubar        : System.Address;
+         Child_Pack_Dir : Gtk_Pack_Direction);
+      pragma Import (C, Internal, "gtk_menu_bar_set_child_pack_direction");
+   begin
+      Internal (Get_Object (Menubar), Child_Pack_Dir);
+   end Set_Child_Pack_Direction;
+
+   ------------------------
+   -- Set_Pack_Direction --
+   ------------------------
+
+   procedure Set_Pack_Direction
+     (Menubar  : access Gtk_Menu_Bar_Record;
+      Pack_Dir : Gtk_Pack_Direction)
+   is
+      procedure Internal
+        (Menubar  : System.Address;
+         Pack_Dir : Gtk_Pack_Direction);
+      pragma Import (C, Internal, "gtk_menu_bar_set_pack_direction");
+   begin
+      Internal (Get_Object (Menubar), Pack_Dir);
+   end Set_Pack_Direction;
+
 
    ---------------------
    -- Type_Conversion --

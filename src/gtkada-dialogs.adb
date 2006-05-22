@@ -39,7 +39,9 @@ with Glib;              use Glib;
 
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Label;         use Gtk.Label;
+pragma Warnings (Off);  --  Gtk.Pixmap is obsolescent
 with Gtk.Pixmap;        use Gtk.Pixmap;
+pragma Warnings (On);
 with Gtk.Widget;        use Gtk.Widget;
 
 with Gtkada.Intl;       use Gtkada.Intl;

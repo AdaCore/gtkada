@@ -235,6 +235,38 @@ package body Gtk.Menu_Item is
       Internal (Get_Object (Menu_Item), Boolean'Pos (Justify));
    end Set_Right_Justified;
 
+   --------------------------
+   -- Toggle_Size_Allocate --
+   --------------------------
+
+   procedure Toggle_Size_Allocate
+     (Menu_Item  : access Gtk_Menu_Item_Record;
+      Allocation : Gtk.Widget.Gtk_Allocation)
+   is
+      procedure Internal
+        (Menu_Item  : System.Address;
+         Allocation : System.Address);
+      pragma Import (C, Internal, "gtk_menu_item_toggle_size_allocate");
+   begin
+      Internal (Get_Object (Menu_Item), Allocation'Address);
+   end Toggle_Size_Allocate;
+
+   -------------------------
+   -- Toggle_Size_Request --
+   -------------------------
+
+   procedure Toggle_Size_Request
+     (Menu_Item   : access Gtk_Menu_Item_Record;
+      Requisition : out Gtk.Widget.Gtk_Requisition)
+   is
+      procedure Internal
+        (Menu_Item   : System.Address;
+         Requisition : out Gtk.Widget.Gtk_Requisition);
+      pragma Import (C, Internal, "gtk_menu_item_toggle_size_request");
+   begin
+      Internal (Get_Object (Menu_Item), Requisition);
+   end Toggle_Size_Request;
+
    ---------------------
    -- Type_Conversion --
    ---------------------

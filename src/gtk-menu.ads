@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  This widget implements a drop-down menu.
 --  This is basically a simple box that contains a series of Gtk_Menu_Item
 --  widgets, on which the user can click to perform actions.
@@ -57,10 +56,10 @@
 --  creates a single one), as well as on the group returned by
 --  Gtk.Accel_Group.Get_Default, which is the one used for items that don't
 --  initially have a shortcut.
---
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Accel_Group;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Menu_Shell;
@@ -93,20 +92,17 @@ package Gtk.Menu is
    --  Return the internal value associated with a Gtk_Menu.
 
    procedure Set_Active (Menu : access Gtk_Menu_Record; Index : Guint);
-   --  Select a specified item in the menu.
-   --  You will almost never need this function, it is used internally by
-   --  Gtk_Option_Menu.
-   --  Note that the item is not considered as being pressed by the user, and
-   --  thus no callback is called as a result.
-
    function Get_Active
      (Menu : access Gtk_Menu_Record) return Gtk.Menu_Item.Gtk_Menu_Item;
-   --  Get the active menu item.
-   --  In a Gtk_Option_Menu, this is the item that is currently shown in the
-   --  button.
+   --  Select a specified item in the menu.
+   --  You will almost never need this function, it is used internally by
+   --  Gtk_Option_Menu, for which it is the item that is currently selected.
+   --  Note that the item is not considered as being pressed by the user when
+   --  you call Set_Active, and thus no callback is called as a result.
 
    procedure Set_Tearoff_State
      (Menu : access Gtk_Menu_Record; Torn_Off : Boolean);
+   function Get_Tearoff_State (Menu : access Gtk_Menu_Record) return Boolean;
    --  Modify the tearoff status of the menu.
    --  If Torn_Off is False, the menu is displayed as a drop down menu which
    --  disappears when the menu is not active. If Torn_Off is True, the menu
@@ -114,16 +110,11 @@ package Gtk.Menu is
    --  Note that you can give the user access to this functionality by
    --  inserting a Gtk_Tearoff_Menu_Item in the menu.
 
-   function Get_Tearoff_State (Menu : access Gtk_Menu_Record) return Boolean;
-   --  Return the tearoff status of the menu.
-
    procedure Set_Title (Menu : access Gtk_Menu_Record; Title : UTF8_String);
+   function Get_Title  (Menu : access Gtk_Menu_Record) return UTF8_String;
    --  Set the title of the menu.
    --  Title is displayed when the menu is displayed as a tearoff menu in an
    --  independent window.
-
-   function Get_Title (Menu : access Gtk_Menu_Record) return UTF8_String;
-   --  Return the tiel of the menu.
 
    procedure Reorder_Child
      (Menu     : access Gtk_Menu_Record;
@@ -133,6 +124,23 @@ package Gtk.Menu is
    --  Its new position is given by Position, 0 being the first item in the
    --  menu.
    --  If Child does not exist in the menu, nothing is done.
+
+   procedure Attach
+     (Menu          : access Gtk_Menu_Record;
+      Child         : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
+      Left_Attach   : Guint;
+      Right_Attach  : Guint;
+      Top_Attach    : Guint;
+      Bottom_Attach : Guint);
+   --  Adds a new #GtkMenuItem to a (table) menu. The number of 'cells' that
+   --  an item will occupy is specified by left_attach, right_attach,
+   --  top_attach and bottom_attach. These each represent the leftmost,
+   --  rightmost, uppermost and lower column and row numbers of the table.
+   --  (Columns and rows are indexed from zero).
+   --
+   --  Note that this function is not related to Detach().
+   --
+   --  Adding items to a standard menu is simply done by calling Add().
 
    -----------------------
    -- Displaying a menu --
@@ -212,6 +220,19 @@ package Gtk.Menu is
    --  Reposition a menu according to its position function.
    --  This function is set when Popup is called.
 
+   procedure Set_Monitor
+     (Menu        : access Gtk_Menu_Record;
+      Monitor_Num : Gint);
+   --  Informs GTK+ on which monitor a menu should be popped up.
+   --  See gdk_screen_get_monitor_geometry().
+   --
+   --  This function should be called from a Gtk_Menu_Position_Func if the
+   --  menu should not appear on the same monitor as the pointer. This
+   --  information can't be reliably inferred from the coordinates returned
+   --  by a Gtk_Menu_Position_Func, since, for very long menus, these
+   --  coordinates may extend beyond the monitor boundaries or even the screen
+   --  boundaries.
+
    --------------------------------
    -- Modifying the accelerators --
    --------------------------------
@@ -219,12 +240,10 @@ package Gtk.Menu is
    procedure Set_Accel_Group
      (Menu  : access Gtk_Menu_Record;
       Accel : Accel_Group.Gtk_Accel_Group);
-   --  Set the Accel_Group that holds the global accelerators and key bindings
-   --  for the menu.
-
    function Get_Accel_Group
      (Menu : access Gtk_Menu_Record) return Accel_Group.Gtk_Accel_Group;
-   --  Get the accelerator group used to set the key bindings in the menu.
+   --  Set the Accel_Group that holds the global accelerators and key bindings
+   --  for the menu.
 
    procedure Set_Accel_Path
      (Menu       : access Gtk_Menu_Record;
@@ -254,7 +273,7 @@ package Gtk.Menu is
       Detacher      : Gtk_Menu_Detach_Func);
    --  Attach a menu to the widget.
    --  When the menu is detached from the widget (for instance when it is
-   --  destroyed), the procedure Detached will be called.
+   --  destroyed), the procedure Detacher will be called.
    --  You will almost never need to use this function, unless you specifically
    --  want a call back when a widget becomes unavailable.
    --  If Attach_Widget is a menu_item with a single label in it, the name of
@@ -270,6 +289,12 @@ package Gtk.Menu is
    --  Return the widget to which the menu was attached.
    --  If the menu was not attached, this function returns null.
 
+   function Get_For_Attach_Widget
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk.Widget.Widget_List.Glist;
+   --  Returns a list of the menus which are attached to this widget.
+   --  This list is owned by GTK+ and must not be modified.
+
    ----------------
    -- Properties --
    ----------------
@@ -278,7 +303,19 @@ package Gtk.Menu is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Tearoff_State_Property
+   --  Type:  Boolean
+   --  Descr: A boolean that indicates whether the menu is torn-off
+   --
+   --  Name:  Tearoff_Title_Property
+   --  Type:  String
+   --  Descr: A title that may be displayed by the window manager when this
+   --         menu is torn-off
+   --
    --  </properties>
+
+   Tearoff_State_Property : constant Glib.Properties.Property_Boolean;
+   Tearoff_Title_Property : constant Glib.Properties.Property_String;
 
    -------------
    -- Signals --
@@ -287,14 +324,35 @@ package Gtk.Menu is
    --  <signals>
    --  The following new signals are defined for this widget:
    --
+   --  - "move_scroll"
+   --    procedure Handler
+   --       (Menu : access Gtk_Menu_Record'Class;
+   --        Typ  : Gtk_Scroll_Type);
+   --    Requests that another part of the menu be made visible. Menus that
+   --    display lots of items might not fit on the screen. When this is the
+   --    case, gtk+ will insert some scrolling arrows on both ends of the menus
+   --    and emitting this signal will behave as if the user had clicked on one
+   --    of these arrows.
+   --    This signal is mostly useful as a keybinding
+   --
    --  </signals>
+
+   Signal_Move_Scroll : constant String := "move_scroll";
 
 private
    type Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
      with null record;
+
+   Tearoff_State_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("tearoff-state");
+   Tearoff_Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tearoff-title");
+
    pragma Import (C, Get_Type, "gtk_menu_get_type");
 end Gtk.Menu;
 
 --  <example>
 --  <include>../examples/documentation/contextual.adb</include>
 --  </example>
+
+--  No binding: gtk_menu_set_screen

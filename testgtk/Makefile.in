@@ -18,8 +18,8 @@ opengl_dir = $(src_dir)/opengl
 
 CC = @CC@
 GTKADA_CONFIG=gtkada-config
-GNATFLAGS = @CFLAGS@ -gnata -gnatws
-GNATFLAGS_DEVEL = @CFLAGS@ -g -gnatawu
+GNATFLAGS = -Ptestgtk @CFLAGS@ -gnata -gnatws
+GNATFLAGS_DEVEL = -Ptestgtk @CFLAGS@ -gnatawu
 TARGET_LFLAGS = @TARGET_LFLAGS@
 
 GNATMAKE = gnatmake

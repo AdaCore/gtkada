@@ -81,7 +81,7 @@
 --  application, since most of the time the windowing system doesn't support
 --  multi-threaded applications.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>glib 2.10.2</c_version>
 
 package Glib.Main is
 

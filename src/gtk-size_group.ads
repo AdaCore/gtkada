@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,9 +39,10 @@
 --  a way that they get the size they request and not more. For example, if you
 --  are packing your widgets into a table, you would not include the Fill flag.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Object;
+with Glib.Properties;
 with Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Gtk.Widget;
@@ -77,11 +78,9 @@ package Gtk.Size_Group is
    procedure Set_Mode
      (Size_Group : access Gtk_Size_Group_Record;
       Mode       : Size_Group_Mode);
-   --  Change the way the group effects the size of its component widgets.
-
    function Get_Mode
      (Size_Group : access Gtk_Size_Group_Record) return Size_Group_Mode;
-   --  Indicate the way the group effects the size of its component widgets.
+   --  Change the way the group effects the size of its component widgets.
 
    procedure Add_Widget
      (Size_Group : access Gtk_Size_Group_Record;
@@ -100,6 +99,13 @@ package Gtk.Size_Group is
       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Remove a widget from the group.
 
+   procedure Set_Ignore_Hidden
+     (Size_Group    : access Gtk_Size_Group_Record; Ignore_Hidden : Boolean);
+   function Get_Ignore_Hidden
+     (Size_Group : access Gtk_Size_Group_Record) return Boolean;
+   --  Whether invisible widgets are ignored when calcuating the size for all
+   --  widgets in the group.
+
    ----------------
    -- Properties --
    ----------------
@@ -108,12 +114,16 @@ package Gtk.Size_Group is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  - Name:  Mode_Property
-   --    Type:  Size_Group_Mode
-   --    Flags: read-write
-   --    Descr: the directions in which the size group effects the requested
-   --           sizes of its component widgets
-   --    See also: Set_Mode / Get_Mode
+   --  Name:  Mode_Property
+   --  Type:  Size_Group_Mode
+   --  Flags: read-write
+   --  Descr: the directions in which the size group effects the requested
+   --         sizes of its component widgets
+   --  See also: Set_Mode / Get_Mode
+   --
+   --  Name:  Ignore_Hidden_Property
+   --  Type:  Boolean
+   --  Descr: If TRUE, hidden widgets are ignored
    --
    --  </properties>
 
@@ -123,6 +133,7 @@ package Gtk.Size_Group is
    type Property_Size_Group_Mode is new Size_Group_Mode_Properties.Property;
 
    Mode_Property : constant Property_Size_Group_Mode;
+   Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -138,6 +149,8 @@ private
      with null record;
 
    Mode_Property : constant Property_Size_Group_Mode := Build ("mode");
+   Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("ignore-hidden");
 
    pragma Import (C, Get_Type, "gtk_size_group_get_type");
 end Gtk.Size_Group;

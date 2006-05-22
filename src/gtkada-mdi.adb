@@ -91,7 +91,6 @@ with Gtk.Menu;                use Gtk.Menu;
 with Gtk.Menu_Item;           use Gtk.Menu_Item;
 with Gtk.Notebook;            use Gtk.Notebook;
 with Gtk.Object;
-with Gtk.Pixmap;              use Gtk.Pixmap;
 with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Style;               use Gtk.Style;
 with Gtk.Widget;              use Gtk.Widget;
@@ -179,7 +178,7 @@ package body Gtkada.MDI is
       Ent           : Gtk_Entry;
       Length        : Natural := 0;
       Modifier      : Gdk_Modifier_Type;
-      Icon          : Gtk.Pixmap.Gtk_Pixmap;
+      Icon          : Gtk.Image.Gtk_Image;
    end record;
    type Selection_Dialog_Access is access all Selection_Dialog_Record'Class;
 
@@ -782,12 +781,13 @@ package body Gtkada.MDI is
                    Matching_Children (MDI, To_Lower (Str));
       Index    : Integer := Children'First;
       Tmp      : Integer;
+      Pos      : Gint := -1;
 
    begin
       --  Update graphically the list of children matching the filter
 
       D.Length := Str'Length;
-      Append_Text (D.Ent, " {");
+      Insert_Text (D.Ent, " {", Pos);
       Set_Position (D.Ent, Gint (D.Length));
 
       --  Find the index of the current child
@@ -809,11 +809,13 @@ package body Gtkada.MDI is
          Tmp := Index;
          loop
             if Tmp /= Index then
-               Append_Text (D.Ent, ",");
+               Insert_Text (D.Ent, ",", Pos);
             end if;
 
-            Append_Text
-              (D.Ent, Get_Short_Title (MDI_Child (Get_Data (Children (Tmp)))));
+            Insert_Text
+              (D.Ent,
+               Get_Short_Title (MDI_Child (Get_Data (Children (Tmp)))),
+               Pos);
 
             Tmp := (Tmp + 1 - Children'First) mod Children'Length
               + Children'First;
@@ -826,7 +828,7 @@ package body Gtkada.MDI is
          D.Current_Child := Null_List;
       end if;
 
-      Append_Text (D.Ent, "}");
+      Insert_Text (D.Ent, "}", Pos);
 
       if D.Current_Child = Null_List then
          Set_Text (D.Label, "");
@@ -2240,7 +2242,7 @@ package body Gtkada.MDI is
 
    procedure Update_Menu_Item (Child : access MDI_Child_Record'Class) is
       Label  : Gtk_Accel_Label;
-      Pixmap : Gtk_Pixmap;
+      Pixmap : Gtk_Image;
       Pix    : Gdk_Pixmap;
       Mask   : Gdk_Bitmap;
       Box    : Gtk_Box;
@@ -3009,7 +3011,7 @@ package body Gtkada.MDI is
       Box    : Gtk_Box;
       Pix    : Gdk_Pixmap;
       Mask   : Gdk_Bitmap;
-      Pixmap : Gtk_Pixmap;
+      Pixmap : Gtk_Image;
    begin
       if Note /= null and then Child.State = Normal then
          Gtk_New (Event);

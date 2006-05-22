@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -142,5 +142,62 @@ package body Gtk.Menu_Shell is
    begin
       Internal (Get_Object (Menu_Shell));
    end Deselect;
+
+   ------------
+   -- Cancel --
+   ------------
+
+   procedure Cancel (Menu_Shell : access Gtk_Menu_Shell_Record) is
+      procedure Internal (Menu_Shell : System.Address);
+      pragma Import (C, Internal, "gtk_menu_shell_cancel");
+   begin
+      Internal (Get_Object (Menu_Shell));
+   end Cancel;
+
+   --------------------
+   -- Get_Take_Focus --
+   --------------------
+
+   function Get_Take_Focus
+     (Menu_Shell : access Gtk_Menu_Shell_Record)
+      return Boolean
+   is
+      function Internal (Menu_Shell : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_menu_shell_get_take_focus");
+   begin
+      return Boolean'Val (Internal (Get_Object (Menu_Shell)));
+   end Get_Take_Focus;
+
+   ------------------
+   -- Select_First --
+   ------------------
+
+   procedure Select_First
+     (Menu_Shell       : access Gtk_Menu_Shell_Record;
+      Search_Sensitive : Boolean)
+   is
+      procedure Internal
+        (Menu_Shell       : System.Address;
+         Search_Sensitive : Gboolean);
+      pragma Import (C, Internal, "gtk_menu_shell_select_first");
+   begin
+      Internal (Get_Object (Menu_Shell), Boolean'Pos (Search_Sensitive));
+   end Select_First;
+
+   --------------------
+   -- Set_Take_Focus --
+   --------------------
+
+   procedure Set_Take_Focus
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Take_Focus : Boolean := True)
+   is
+      procedure Internal
+        (Menu_Shell : System.Address;
+         Take_Focus : Gboolean);
+      pragma Import (C, Internal, "gtk_menu_shell_set_take_focus");
+   begin
+      Internal (Get_Object (Menu_Shell), Boolean'Pos (Take_Focus));
+   end Set_Take_Focus;
 
 end Gtk.Menu_Shell;

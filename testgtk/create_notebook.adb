@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2001 ACT-Europe                    --
+--                  Copyright (C) 2001-2006 AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,11 +39,11 @@ with Gtk.Button;          use Gtk.Button;
 with Gtk.Check_Button;    use Gtk.Check_Button;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Handlers;        use Gtk.Handlers;
+with Gtk.Image;           use Gtk.Image;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Menu;            use Gtk.Menu;
 with Gtk.Notebook;        use Gtk.Notebook;
 with Gtk.Option_Menu;     use Gtk.Option_Menu;
-with Gtk.Pixmap;          use Gtk.Pixmap;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Separator;       use Gtk.Separator;
 with Gtk.Widget;          use Gtk.Widget;
@@ -164,7 +164,7 @@ package body Create_Notebook is
       Child     : Gtk_Frame;
       Label_Box : Gtk_Box;
       Menu_Box  : Gtk_Box;
-      Pixmap    : Gtk_Pixmap;
+      Pixmap    : Gtk_Image;
       Label     : Gtk_Label;
       Vbox      : Gtk_Box;
       Hbox      : Gtk_Box;
@@ -332,25 +332,25 @@ package body Create_Notebook is
       Params   : Gtk.Arguments.Gtk_Args)
    is
       Old_Page : constant Gint := Get_Current_Page (Notebook);
-      Pixmap   : Gtk_Pixmap;
+      Pixmap   : Gtk_Image;
       Page_Num : constant Gint := Gint (To_Guint (Params, 2));
       Widget   : Gtk_Widget;
 
    begin
       Widget := Get_Nth_Page (Notebook, Page_Num);
-      Pixmap := Gtk_Pixmap
+      Pixmap := Gtk_Image
         (Get_Child (Gtk_Box (Get_Tab_Label (Notebook, Widget)), 0));
       Set (Pixmap, Book_Open, Book_Open_Mask);
-      Pixmap := Gtk_Pixmap
+      Pixmap := Gtk_Image
         (Get_Child (Gtk_Box (Get_Menu_Label (Notebook, Widget)), 0));
       Set (Pixmap, Book_Open, Book_Open_Mask);
 
       if Old_Page >= 0 then
          Widget := Get_Nth_Page (Notebook, Old_Page);
-         Pixmap := Gtk_Pixmap
+         Pixmap := Gtk_Image
            (Get_Child (Gtk_Box (Get_Tab_Label (Notebook, Widget)), 0));
          Set (Pixmap, Book_Closed, Book_Closed_Mask);
-         Pixmap := Gtk_Pixmap
+         Pixmap := Gtk_Image
            (Get_Child (Gtk_Box (Get_Menu_Label (Notebook, Widget)), 0));
          Set (Pixmap, Book_Closed, Book_Closed_Mask);
       end if;

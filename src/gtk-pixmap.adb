@@ -79,16 +79,9 @@ package body Gtk.Pixmap is
         (Pixmap : Gdk.Pixmap.Gdk_Pixmap;
          Mask   : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
       pragma Import (C, Internal, "gtk_pixmap_new");
-
-      function Gtk_Type_New (Typ : Gtk.Gtk_Type) return System.Address;
-      pragma Import (C, Gtk_Type_New, "gtk_type_new");
-
    begin
-      if Pixmap /= null then
-         Set_Object (Widget, Internal (Pixmap, Mask));
-      else
-         Set_Object (Widget, Gtk_Type_New (Gtk.Pixmap.Get_Type));
-      end if;
+      --  This call will work when Pixmap and/or Mask is null
+      Set_Object (Widget, Internal (Pixmap, Mask));
    end Initialize;
 
    ---------
@@ -172,5 +165,18 @@ package body Gtk.Pixmap is
 
       return Pixmap;
    end Create_Pixmap;
+
+      ---------------------------
+   -- Set_Build_Insensitive --
+   ---------------------------
+
+   procedure Set_Build_Insensitive
+     (Pixmap : access Gtk_Pixmap_Record; Build  : Boolean)
+   is
+      procedure Internal (Pixmap : System.Address; Build  : Gboolean);
+      pragma Import (C, Internal, "gtk_pixmap_set_build_insensitive");
+   begin
+      Internal (Get_Object (Pixmap), Boolean'Pos (Build));
+   end Set_Build_Insensitive;
 
 end Gtk.Pixmap;

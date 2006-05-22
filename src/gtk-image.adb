@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,8 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Enums;             use Gtk.Enums;
 with System;
-with Interfaces.C.Strings;
+with Interfaces.C.Strings;  use Interfaces.C.Strings;
 
 package body Gtk.Image is
 
@@ -391,5 +392,130 @@ package body Gtk.Image is
    begin
       Internal (Get_Object (Image), Animation);
    end Set;
+
+   ------------------------
+   -- Set_From_Icon_Name --
+   ------------------------
+
+   procedure Set_From_Icon_Name
+     (Image     : access Gtk_Image_Record;
+      Icon_Name : String;
+      Size      : Gtk_Icon_Size)
+   is
+      procedure Internal
+        (Image     : System.Address;
+         Icon_Name : String;
+         Size      : Gtk_Icon_Size);
+      pragma Import (C, Internal, "gtk_image_set_from_icon_name");
+   begin
+      Internal (Get_Object (Image), Icon_Name & ASCII.NUL, Size);
+   end Set_From_Icon_Name;
+
+   --------------------
+   -- Set_Pixel_Size --
+   --------------------
+
+   procedure Set_Pixel_Size
+     (Image : access Gtk_Image_Record; Pixel_Size : Gint) is
+      procedure Internal (Image : System.Address; Pixel_Size : Gint);
+      pragma Import (C, Internal, "gtk_image_set_pixel_size");
+   begin
+      Internal (Get_Object (Image), Pixel_Size);
+   end Set_Pixel_Size;
+
+   ----------------------------
+   -- Gtk_New_From_Icon_Name --
+   ----------------------------
+
+   procedure Gtk_New_From_Icon_Name
+     (Image     : out Gtk_Image;
+      Icon_Name : String;
+      Size      : Gtk_Icon_Size)
+   is
+   begin
+      Image := new Gtk_Image_Record;
+      Initialize_From_Icon_Name (Image, Icon_Name, Size);
+   end Gtk_New_From_Icon_Name;
+
+   -------------------------------
+   -- Initialize_From_Icon_Name --
+   -------------------------------
+
+   procedure Initialize_From_Icon_Name
+     (Image     : access Gtk_Image_Record'Class;
+      Icon_Name : String;
+      Size      : Gtk_Icon_Size)
+   is
+      function Internal
+        (Icon_Name : String;
+         Size      : Gtk_Icon_Size)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_image_new_from_icon_name");
+   begin
+      Set_Object (Image, Internal (Icon_Name & ASCII.NUL, Size));
+   end Initialize_From_Icon_Name;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New (Image : out Gtk_Image) is
+   begin
+      Image := new Gtk_Image_Record;
+      Gtk.Image.Initialize (Image);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Image : access Gtk_Image_Record'Class) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_image_new");
+   begin
+      Set_Object (Image, Internal);
+   end Initialize;
+
+   -------------------
+   -- Get_Icon_Name --
+   -------------------
+
+   procedure Get_Icon_Name
+     (Image : access Gtk_Image_Record;
+      Name  : out GNAT.Strings.String_Access;
+      Size  : out Gtk_Icon_Size)
+   is
+      procedure Internal
+        (Image : System.Address;
+         Name  : out Interfaces.C.Strings.chars_ptr;
+         Size  : out Gtk_Icon_Size);
+      pragma Import (C, Internal, "gtk_image_get_icon_name");
+      Str : chars_ptr;
+   begin
+      Internal (Get_Object (Image), Str, Size);
+      Name := new String'(Value (Str));
+   end Get_Icon_Name;
+
+   --------------------
+   -- Get_Pixel_Size --
+   --------------------
+
+   function Get_Pixel_Size (Image : access Gtk_Image_Record) return Gint is
+      function Internal (Image : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_image_get_pixel_size");
+   begin
+      return Internal (Get_Object (Image));
+   end Get_Pixel_Size;
+
+   -----------
+   -- Clear --
+   -----------
+
+   procedure Clear (Image : access Gtk_Image_Record) is
+      procedure Internal (Image : System.Address);
+      pragma Import (C, Internal, "gtk_image_clear");
+   begin
+      Internal (Get_Object (Image));
+   end Clear;
 
 end Gtk.Image;

@@ -353,6 +353,14 @@ package Gtk.Enums is
       Sort_Descending);
    --  How to sort
 
+   type Gtk_Pack_Direction is
+     (Pack_Direction_LTR,
+      Pack_Direction_RTL,
+      Pack_Direction_TTB,
+      Pack_Direction_BTT);
+   --  The direction in which children should be packed in their parents
+   --  (Left-to-Right, Right-To-Left, Top-To-Bottom or Bottom-To-Top)
+
    type Gtk_Text_Window_Type is
      (Text_Window_Private,
       Text_Window_Widget,
@@ -460,6 +468,10 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Text_Direction);
    package Wrap_Mode_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Text_Direction);
+   package Policy_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Policy_Type);
+   package Pack_Direction_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Pack_Direction);
 
    type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
    type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
@@ -477,6 +489,8 @@ package Gtk.Enums is
      Window_Position_Properties.Property;
    type Property_Gtk_Text_Direction is new Text_Direction_Properties.Property;
    type Property_Gtk_Wrap_Mode     is new Wrap_Mode_Properties.Property;
+   type Property_Gtk_Policy_Type   is new Policy_Properties.Property;
+   type Property_Pack_Direction    is new Pack_Direction_Properties.Property;
 
    -----------------
    -- Obsolescent --

@@ -1,11 +1,15 @@
 project TestGtk is
    for Languages use ("C", "Ada");
    for Main use ("testgtk.adb");
-   for Source_Dirs use ("./");
+   for Source_Dirs use (".", "opengl/");
    for Object_Dir use ".";
 
+   package Builder is
+      for Default_Switches ("Ada") use ("-g");
+   end Builder;
+
    package Compiler is
-      for Default_Switches ("Ada") use ("-gnatwa", "-gnatay");
+      for Default_Switches ("Ada") use ("-gnatwaj", "-gnata", "-gnaty3abcefhiklmnprt");
    end Compiler;
 
    package IDE is

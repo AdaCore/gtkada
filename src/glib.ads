@@ -171,6 +171,10 @@ package Glib is
 
    --  </doc_ignore>
 
+   type G_Destroy_Notify_Address is
+     access procedure (Data : System.Address);
+   pragma Convention (C, G_Destroy_Notify_Address);
+
    type G_Destroy_Notify is access procedure (Data : Glib.C_Proxy);
    pragma Convention (C, G_Destroy_Notify);
    --  Callback used when some named data associated with an object is

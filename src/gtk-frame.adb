@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,6 +29,7 @@
 
 with System;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtk.Widget;           use Gtk.Widget;
 
 package body Gtk.Frame is
 
@@ -176,5 +177,20 @@ package body Gtk.Frame is
    begin
       Internal (Get_Object (Frame), Get_Object (Label_Widget));
    end Set_Label_Widget;
+
+      ----------------------
+   -- Get_Label_Widget --
+   ----------------------
+
+   function Get_Label_Widget
+     (Frame : access Gtk_Frame_Record)
+      return Gtk_Widget
+   is
+      function Internal (Frame : System.Address)  return System.Address;
+      pragma Import (C, Internal, "gtk_frame_get_label_widget");
+      Stub : Gtk_Widget_Record;
+   begin
+      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Frame)), Stub));
+   end Get_Label_Widget;
 
 end Gtk.Frame;

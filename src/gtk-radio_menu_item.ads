@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,8 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  This widget provides a special kind of menu item that represents a
+--  radio button. Such a button can be checked or unchecked by the user, but
+--  only one button in a group can be selected at any given time, as opposed to
+--  a toggle menu item.
+--  </description>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Check_Menu_Item;
 with Gtk.Widget; use Gtk.Widget;
 
@@ -42,42 +49,103 @@ package Gtk.Radio_Menu_Item is
      (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
       Group           : Widget_SList.GSlist;
       Label           : UTF8_String := "");
+   procedure Initialize
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : Widget_SList.GSlist;
+      Label           : UTF8_String := "");
+   --  Creates or initializes a menu item
 
    procedure Gtk_New_With_Mnemonic
      (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
       Group           : Widget_SList.GSlist;
       Label           : UTF8_String);
-
-   procedure Initialize
-     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
-      Group           : Widget_SList.GSlist;
-      Label           : UTF8_String := "");
-
    procedure Initialize_With_Mnemonic
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
       Group           : Widget_SList.GSlist;
       Label           : UTF8_String);
+   --  Creates or initializes a menu item.
+   --  The first underscore sign in Label will be used as a key shortcut to
+   --  this item when the menu is displayed. For instance, if you use "_Open",
+   --  then pressing alt-o when the menu is open will select the menu item
+
+   procedure Gtk_New_From_Widget
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class);
+   procedure Initialize_From_Widget
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class);
+   --  Creates or initializes a menu item. It initially belongs to the same
+   --  group as Group
+
+   procedure Gtk_New_With_Label_From_Widget
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class;
+      Label           : String);
+   procedure Initialize_With_Label_From_Widget
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class;
+      Label           : String);
+   --  Creates or initializes a menu item. It initially belongs to the same
+   --  group as Group.
+
+   procedure Gtk_New_With_Mnemonic_From_Widget
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class;
+      Label           : String);
+   procedure Initialize_With_Mnemonic_From_Widget
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : access Gtk_Radio_Menu_Item_Record'Class;
+      Label           : String);
+   --  Same as Gtk_New_With_Mnemonic, except the group is given by a widget
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Menu_Item.
 
-   function Get_Group
-     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
-      return Widget_SList.GSlist;
-
-   function Group
-     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
-      return Widget_SList.GSlist renames Get_Group;
-   --  This function is deprecated. Get_Group should be used instead.
-
    procedure Set_Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
       Group           : Widget_SList.GSlist);
+   function Get_Group
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
+      return Widget_SList.GSlist;
+   --  Set or Get to which the menu item belongs. Only one menu item in this
+   --  group can be selected at any given time
 
    function Selected_Button (In_Group : Widget_SList.GSlist) return Natural;
    --  Return the button number of the selected button in the group.
    --  Note: This function is not part of Gtk+ itself, but is provided as a
    --  convenient function
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   function Group
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
+      return Widget_SList.GSlist renames Get_Group;
+   --  pragma Obsolescent;  --  Group
+   --  This function is deprecated. Get_Group should be used instead.
+
+   --  </doc_ignore>
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "group-changed"
+   --    procedure Handler (Item : access Gtk_Radio_Menu_Item_Record'Class);
+   --    Emitted when the group of Item has been changed.
+   --
+   --  </signals>
+
+   Signal_Group_Changed : constant String := "group-changed";
 
    ----------------
    -- Properties --
@@ -87,11 +155,20 @@ package Gtk.Radio_Menu_Item is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Group_Property
+   --  Type:  Object
+   --  Descr: The radio menu item whose group this widget belongs to.
+   --
    --  </properties>
+
+   Group_Property : constant Glib.Properties.Property_Object;
 
 private
    type Gtk_Radio_Menu_Item_Record is new
      Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with null record;
+
+   Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("group");
 
    pragma Import (C, Get_Type, "gtk_radio_menu_item_get_type");
 end Gtk.Radio_Menu_Item;
