@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -64,6 +64,7 @@ package body Gtk.Combo is
    -- Get_List --
    --------------
 
+   pragma Warnings (Off); --  Gtk_List is obsolescent
    function Get_List
      (Combo_Box : access Gtk_Combo_Record) return Gtk.List.Gtk_List
    is
@@ -76,6 +77,7 @@ package body Gtk.Combo is
       return Gtk.List.Gtk_List
         (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
    end Get_List;
+   pragma Warnings (On);
 
    ----------------------
    -- Get_Popup_Window --
