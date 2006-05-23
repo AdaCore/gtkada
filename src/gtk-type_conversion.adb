@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -241,7 +241,9 @@ package body Gtk.Type_Conversion is
             if Type_Name = "GtkLayout" then
                return new Gtk.Layout.Gtk_Layout_Record;
             elsif Type_Name = "GtkList" then
+               pragma Warnings (Off); --  Gtk_List is obsolescent
                return new Gtk.List.Gtk_List_Record;
+               pragma Warnings (On);
             end if;
          when 'M' =>
             if Type_Name = "GtkMenuShell" then
@@ -261,7 +263,9 @@ package body Gtk.Type_Conversion is
             end if;
          when 'P' =>
             if Type_Name = "GtkPixmap" then
+               pragma Warnings (Off); --  Gtk_Pixmap is obsolescent
                return new Gtk.Pixmap.Gtk_Pixmap_Record;
+               pragma Warnings (On);
             elsif Type_Name = "GtkPlug" then
                return new Gtk.Plug.Gtk_Plug_Record;
             --  elsif Type_Name = "GtkPlot" then
@@ -269,7 +273,9 @@ package body Gtk.Type_Conversion is
             --  elsif Type_Name = "GtkPlotCanvas" then
             --     return new Gtk.Extra.Plot_Canvas.Gtk_Plot_Canvas_Record;
             elsif Type_Name = "GtkPreview" then
+               pragma Warnings (Off); --  Gtk_Preview is obsolescent
                return new Gtk.Preview.Gtk_Preview_Record;
+               pragma Warnings (On);
             elsif Type_Name = "GtkProgress" then
                pragma Warnings (Off);
                return new Gtk.Progress.Gtk_Progress_Record;
@@ -310,7 +316,9 @@ package body Gtk.Type_Conversion is
             elsif Type_Name = "GtkText" then
                return new Gtk.Text.Gtk_Text_Record;
             elsif Type_Name = "GtkTipsQuery" then
+               pragma Warnings (Off); -- Gtk_Tips_Query is obsolescent
                return new Gtk.Tips_Query.Gtk_Tips_Query_Record;
+               pragma Warnings (On);
             elsif Type_Name = "GtkToggleButton" then
                return new Gtk.Toggle_Button.Gtk_Toggle_Button_Record;
             elsif Type_Name = "GtkToolbar" then
