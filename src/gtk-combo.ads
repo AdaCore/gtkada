@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -135,11 +135,13 @@ package Gtk.Combo is
       GEntry    : Gtk.GEntry.Gtk_Entry);
    --  Set the entry field for the combo box.
 
+   pragma Warnings (Off); --  Gtk_List is obsolescent
    function Get_List
      (Combo_Box : access Gtk_Combo_Record) return Gtk.List.Gtk_List;
    --  Return the list of items associated with a Combo_Box.
    --  Add (Gtk.Container.Add) Gtk_List_Items to this list to insert new
    --  entries in the popdown menu.
+   pragma Warnings (On);
 
    function Get_Popup_Window
      (Combo_Box : access Gtk_Combo_Record) return Gtk.Window.Gtk_Window;
