@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,14 +28,12 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  A Gtk_Vbutton_Box is a specific Gtk_Button_Box that organizes its
 --  children vertically.
 --  The beginning of the box (when you add children with Gtk.Box.Pack_Start)
 --  is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
---
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.10</c_version>
 
 with Glib;
 with Gtk.Button_Box;
@@ -80,3 +78,9 @@ private
 
    pragma Import (C, Get_Type, "gtk_vbutton_box_get_type");
 end Gtk.Vbutton_Box;
+
+--  These subprograms never had a binding, are now obsolescent
+--  No binding: gtk_vbutton_box_get_layout_default
+--  No binding: gtk_vbutton_box_get_spacing_default
+--  No binding: gtk_vbutton_box_set_layout_default
+--  No binding: gtk_vbutton_box_set_spacing_default

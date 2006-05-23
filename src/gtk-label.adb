@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +31,9 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
+with Pango.Attributes;     use Pango.Attributes;
+with Pango.Layout;         use Pango.Layout;
+with Gtk.Widget;           use Gtk.Widget;
 
 package body Gtk.Label is
 
@@ -357,6 +360,258 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Boolean'Pos (Underline));
    end Set_Use_Underline;
+
+   ---------------
+   -- Get_Angle --
+   ---------------
+
+   function Get_Angle
+     (Label : access Gtk_Label_Record) return Gdouble
+   is
+      function Internal (Label : System.Address) return Gdouble;
+      pragma Import (C, Internal, "gtk_label_get_angle");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Angle;
+
+   -------------------
+   -- Get_Ellipsize --
+   -------------------
+
+   function Get_Ellipsize
+     (Label : access Gtk_Label_Record) return Pango_Ellipsize_Mode
+   is
+      function Internal (Label : System.Address) return Pango_Ellipsize_Mode;
+      pragma Import (C, Internal, "gtk_label_get_ellipsize");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Ellipsize;
+
+   ---------------
+   -- Get_Label --
+   ---------------
+
+   function Get_Label (Label : access Gtk_Label_Record) return String is
+      function Internal
+        (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_label_get_label");
+   begin
+      return Value (Internal (Get_Object (Label)));
+   end Get_Label;
+
+   ----------------
+   -- Get_Layout --
+   ----------------
+
+   function Get_Layout (Label : access Gtk_Label_Record) return Pango_Layout is
+      function Internal (Label : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_label_get_layout");
+      Stub : Pango_Layout_Record;
+   begin
+      return Pango_Layout
+        (Get_User_Data (Internal (Get_Object (Label)), Stub));
+   end Get_Layout;
+
+   ------------------------
+   -- Get_Layout_Offsets --
+   ------------------------
+
+   procedure Get_Layout_Offsets
+     (Label : access Gtk_Label_Record;
+      X, Y  : out Gint)
+   is
+      procedure Internal (Label : System.Address; X, Y  : out Gint);
+      pragma Import (C, Internal, "gtk_label_get_layout_offsets");
+   begin
+      Internal (Get_Object (Label), X, Y);
+   end Get_Layout_Offsets;
+
+   -------------------------
+   -- Get_Max_Width_Chars --
+   -------------------------
+
+   function Get_Max_Width_Chars
+     (Label : access Gtk_Label_Record) return Gint
+   is
+      function Internal (Label : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_label_get_max_width_chars");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Max_Width_Chars;
+
+   -------------------------
+   -- Get_Mnemonic_Widget --
+   -------------------------
+
+   function Get_Mnemonic_Widget
+     (Label : access Gtk_Label_Record) return Gtk_Widget
+   is
+      function Internal (Label : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_label_get_mnemonic_widget");
+      Stub : Gtk_Widget_Record;
+   begin
+      return Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Label)), Stub));
+   end Get_Mnemonic_Widget;
+
+   --------------------------
+   -- Get_Selection_Bounds --
+   --------------------------
+
+   procedure Get_Selection_Bounds
+     (Label         : access Gtk_Label_Record;
+      First, Last   : out Gint;
+      Has_Selection : out Boolean)
+   is
+      function Internal
+        (Label : System.Address;
+         First : access Gint;
+         Last  : access Gint)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_label_get_selection_bounds");
+      F, L : aliased Gint;
+   begin
+      Has_Selection := Boolean'Val
+        (Internal (Get_Object (Label), F'Access, L'Access));
+      First := F;
+      Last  := L;
+   end Get_Selection_Bounds;
+
+   --------------------------
+   -- Get_Single_Line_Mode --
+   --------------------------
+
+   function Get_Single_Line_Mode
+     (Label : access Gtk_Label_Record) return Boolean
+   is
+      function Internal (Label : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_label_get_single_line_mode");
+   begin
+      return Boolean'Val (Internal (Get_Object (Label)));
+   end Get_Single_Line_Mode;
+
+   ---------------------
+   -- Get_Width_Chars --
+   ---------------------
+
+   function Get_Width_Chars
+     (Label : access Gtk_Label_Record) return Gint
+   is
+      function Internal (Label : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_label_get_width_chars");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Width_Chars;
+
+   ---------------
+   -- Set_Angle --
+   ---------------
+
+   procedure Set_Angle
+     (Label : access Gtk_Label_Record; Angle : Gdouble)
+   is
+      procedure Internal (Label : System.Address; Angle : Gdouble);
+      pragma Import (C, Internal, "gtk_label_set_angle");
+   begin
+      Internal (Get_Object (Label), Angle);
+   end Set_Angle;
+
+   -------------------
+   -- Set_Ellipsize --
+   -------------------
+
+   procedure Set_Ellipsize
+     (Label : access Gtk_Label_Record;
+      Mode  : Pango_Ellipsize_Mode)
+   is
+      procedure Internal (Label : System.Address; Mode : Pango_Ellipsize_Mode);
+      pragma Import (C, Internal, "gtk_label_set_ellipsize");
+   begin
+      Internal (Get_Object (Label), Mode);
+   end Set_Ellipsize;
+
+   ---------------
+   -- Set_Label --
+   ---------------
+
+   procedure Set_Label (Label : access Gtk_Label_Record; Str : String) is
+      procedure Internal (Label : System.Address; Str : String);
+      pragma Import (C, Internal, "gtk_label_set_label");
+   begin
+      Internal (Get_Object (Label), Str & ASCII.NUL);
+   end Set_Label;
+
+   -------------------------
+   -- Set_Max_Width_Chars --
+   -------------------------
+
+   procedure Set_Max_Width_Chars
+     (Label   : access Gtk_Label_Record;
+      N_Chars : Gint)
+   is
+      procedure Internal (Label : System.Address; N_Chars : Gint);
+      pragma Import (C, Internal, "gtk_label_set_max_width_chars");
+   begin
+      Internal (Get_Object (Label), N_Chars);
+   end Set_Max_Width_Chars;
+
+   --------------------------
+   -- Set_Single_Line_Mode --
+   --------------------------
+
+   procedure Set_Single_Line_Mode
+     (Label            : access Gtk_Label_Record;
+      Single_Line_Mode : Boolean)
+   is
+      procedure Internal
+        (Label            : System.Address;
+         Single_Line_Mode : Gboolean);
+      pragma Import (C, Internal, "gtk_label_set_single_line_mode");
+   begin
+      Internal (Get_Object (Label), Boolean'Pos (Single_Line_Mode));
+   end Set_Single_Line_Mode;
+
+   ---------------------
+   -- Set_Width_Chars --
+   ---------------------
+
+   procedure Set_Width_Chars
+     (Label   : access Gtk_Label_Record;
+      N_Chars : Gint)
+   is
+      procedure Internal (Label : System.Address; N_Chars : Gint);
+      pragma Import (C, Internal, "gtk_label_set_width_chars");
+   begin
+      Internal (Get_Object (Label), N_Chars);
+   end Set_Width_Chars;
+
+   --------------------
+   -- Get_Attributes --
+   --------------------
+
+   function Get_Attributes
+     (Label : access Gtk_Label_Record)
+      return Pango_Attr_List
+   is
+      function Internal (Label : System.Address) return Pango_Attr_List;
+      pragma Import (C, Internal, "gtk_label_get_attributes");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Attributes;
+
+   --------------------
+   -- Set_Attributes --
+   --------------------
+
+   procedure Set_Attributes
+     (Label : access Gtk_Label_Record;
+      Attrs : Pango_Attr_List)
+   is
+      procedure Internal (Label : System.Address; Attrs : Pango_Attr_List);
+      pragma Import (C, Internal, "gtk_label_set_attributes");
+   begin
+      Internal (Get_Object (Label), Attrs);
+   end Set_Attributes;
 
    ---------------------
    -- Type_Conversion --

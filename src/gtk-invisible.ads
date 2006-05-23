@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,8 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  This widget is used internally by gtk+, and is likely not very useful to
+--  end-users.
+--  This is a widget that has no visual rendering. It is used for reliable
+--  pointer grabs and drag-and-drop
+--  </description>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Widget;
 
 package Gtk.Invisible is
@@ -50,12 +57,24 @@ package Gtk.Invisible is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Screen_Property
+   --  Type:  Object
+   --  Descr: The screen where this window will be displayed
+   --
    --  </properties>
 
-private
+   Screen_Property : constant Glib.Properties.Property_Object;
 
+private
    type Gtk_Invisible_Record is new
      Gtk.Widget.Gtk_Widget_Record with null record;
 
+   Screen_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("screen");
+
    pragma Import (C, Get_Type, "gtk_invisible_get_type");
 end Gtk.Invisible;
+
+--  No binding: gtk_invisible_get_screen
+--  No binding: gtk_invisible_new_for_screen
+--  No binding: gtk_invisible_set_screen

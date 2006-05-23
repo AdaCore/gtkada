@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  A Gtk_Radio_Button is a simple button that has two states, like a
 --  Gtk_Toggle_Button.
 --  However, Gtk_Radio_Buttons can be grouped together to get a special
@@ -38,10 +37,10 @@
 --
 --  The radio buttons always belongs to a group, even if there is only one in
 --  this group
---
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Check_Button;
 with Gtk.Widget; use Gtk.Widget;
 
@@ -55,7 +54,11 @@ package Gtk.Radio_Button is
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Widget_SList.GSlist := Widget_SList.Null_List;
       Label        : UTF8_String := "");
-   --  Create a new radio button, belonging to Group.
+   procedure Initialize
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Widget_SList.GSlist;
+      Label        : UTF8_String);
+   --  Creates or initializes a new radio button, belonging to Group.
    --  If Label is left as the empty string, then the button will not have any
    --  child and you are free to put any thing you want in it, including a
    --  pixmap.
@@ -67,10 +70,13 @@ package Gtk.Radio_Button is
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Gtk_Radio_Button;
       Label        : UTF8_String := "");
-   --  Create a new radio button in the same group as Group.
+   procedure Initialize
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Gtk_Radio_Button;
+      Label        : UTF8_String);
+   --  Creates or initializes a new radio button in the same group as Group.
    --  If Label is left as the empty string, Radio_Button is created without
    --  any child and you can put whatever you want in it, including a pixmap.
-   --
    --  To initialize a new group (when creating the first button), you should
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
@@ -79,10 +85,13 @@ package Gtk.Radio_Button is
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Widget_SList.GSlist := Widget_SList.Null_List;
       Label        : UTF8_String);
+   procedure Initialize_With_Mnemonic
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Widget_SList.GSlist;
+      Label        : UTF8_String);
    --  Create a new Gtk_Radio_Button containing a Label. The Label is created
    --  using Gtk.Label.New_With_Mnemonic, so underscores in Label indicate
    --  the mnemonic for the button.
-   --
    --  To initialize a new group (when creating the first button), you should
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
@@ -91,58 +100,47 @@ package Gtk.Radio_Button is
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Gtk_Radio_Button;
       Label        : UTF8_String);
-   --  Create a new radio button in the same group as Group. The label is
-   --  created using Gtk.Label.New_With_Mnemonic, so underscores in Label
-   --  indicate the mnemonic for the button.
+   procedure Initialize_With_Mnemonic
+     (Radio_Button : access Gtk_Radio_Button_Record'Class;
+      Group        : Gtk_Radio_Button;
+      Label        : UTF8_String);
+   --  Creates or initializes a new radio button in the same group as Group.
+   --  The label is created using Gtk.Label.New_With_Mnemonic, so underscores
+   --  in Label indicate the mnemonic for the button.
    --
    --  To initialize a new group (when creating the first button), you should
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
 
-   procedure Initialize
-     (Radio_Button : access Gtk_Radio_Button_Record'Class;
-      Group        : Widget_SList.GSlist;
-      Label        : UTF8_String);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
-   procedure Initialize
-     (Radio_Button : access Gtk_Radio_Button_Record'Class;
-      Group        : Gtk_Radio_Button;
-      Label        : UTF8_String);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
-   procedure Initialize_With_Mnemonic
-     (Radio_Button : access Gtk_Radio_Button_Record'Class;
-      Group        : Widget_SList.GSlist;
-      Label        : UTF8_String);
-
-   procedure Initialize_With_Mnemonic
-     (Radio_Button : access Gtk_Radio_Button_Record'Class;
-      Group        : Gtk_Radio_Button;
-      Label        : UTF8_String);
-
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Button.
-
-   function Get_Group
-     (Radio_Button : access Gtk_Radio_Button_Record)
-      return Widget_SList.GSlist;
-   --  Return the group to which Radio_Button belongs.
-   --  This can be used as an argument to the first version of Gtk_New above,
-   --  or the list can also be traversed to get all the buttons.
-
-   function Group
-     (Radio_Button : access Gtk_Radio_Button_Record)
-      return Widget_SList.GSlist renames Get_Group;
-   --  This function is deprecated.
 
    procedure Set_Group
      (Radio_Button : access Gtk_Radio_Button_Record;
       Group        : Widget_SList.GSlist);
+   function Get_Group
+     (Radio_Button : access Gtk_Radio_Button_Record)
+      return Widget_SList.GSlist;
    --  Modify the group to which the button belongs.
    --  This will not change anything visually.
+   --  This can be used as an argument to the first version of Gtk_New above,
+   --  or the list can also be traversed to get all the buttons.
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   function Group
+     (Radio_Button : access Gtk_Radio_Button_Record)
+      return Widget_SList.GSlist renames Get_Group;
+   --  pragma Obsolescent; --  Group
+
+   --  </doc_ignore>
 
    ----------------
    -- Properties --
@@ -152,7 +150,13 @@ package Gtk.Radio_Button is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Group_Property
+   --  Type:  Object
+   --  Descr: The radio button whose group this widget belongs to.
+   --
    --  </properties>
+
+   Group_Property : constant Glib.Properties.Property_Object;
 
    -------------
    -- Signals --
@@ -160,11 +164,21 @@ package Gtk.Radio_Button is
 
    --  <signals>
    --  The following new signals are defined for this widget:
+   --
+   --  - "group-changed"
+   --    procedure Handler (Radio : access Gtk_Radio_Button_Record'Class);
+   --    This signal is emitted when the group of the button is changed
    --  </signals>
+
+   Signal_Group_Changed : constant String := "group-changed";
 
 private
    type Gtk_Radio_Button_Record is new Check_Button.Gtk_Check_Button_Record
      with null record;
+
+   Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("group");
+
    pragma Import (C, Get_Type, "gtk_radio_button_get_type");
 end Gtk.Radio_Button;
 

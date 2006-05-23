@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,14 +28,12 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  A Gtk_Hbutton_Box is a specific Gtk_Button_Box that organizes its
 --  children horizontally.
 --  The beginning of the box (when you add children with Gtk.Box.Pack_Start)
 --  is on the left of the box. Its end (for Gtk.Box.Pack_End) is on the right.
---
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.10</c_version>
 
 with Gtk.Button_Box;
 with Gtk.Enums;
@@ -56,27 +54,36 @@ package Gtk.Hbutton_Box is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_HButton_Box.
 
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
    --  <doc_ignore>
+
    procedure Set_Spacing_Default (Spacing : in Gint);
+   pragma Obsolescent;  --  Set_Spacing_Default
    --  Set the default spacing (space between two adjacent children).
    --  This is done for all the Hbutton_Boxes in your application. This can be
    --  overridden for a specific box by calling Gtk.Button_Box.Set_Spacing.
-   --  pragma Deprecated (Set_Spacing_Default);
 
    function Get_Spacing_Default return Gint;
+   pragma Obsolescent;  --  Get_Spacing_Default
    --  Return the default spacing to use for all Hbutton_Boxes in your
    --  application that don't have a specific value.
-   --  pragma Deprecated (Get_Spacing_Default);
 
    procedure Set_Layout_Default (Layout : Gtk.Enums.Gtk_Button_Box_Style);
+   pragma Obsolescent;  --  Set_Layout_Default
    --  Set the the default layout to use for all the hbutton_boxes in your
    --  application that don't have a specific value set by
    --  Gtk.Button_Box.Set_Layout. The default value is Buttonbox_Edge.
-   --  pragma Deprecated (Set_Layout_Default);
 
    function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
+   pragma Obsolescent;  --  Get_Layout_Default
    --  Return the default layout to use for all the hbutton_boxes.
-   --  pragma Deprecated (Get_Layout_Default);
+
    --  </doc_ignore>
 
    ----------------

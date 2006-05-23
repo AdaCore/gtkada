@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,16 +28,15 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  This widget displays any given text that can be manipulated by
 --  both the user and the programmer.
 --  The text can optionally be interactively modified by the user.
 --  Different colors and fonts can be used for any given part of the
 --  text. The background can have any color, or even be a pixmap.
---
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gdk.Color;
 with Gdk.Font;
 with Gtk.Adjustment;
@@ -45,6 +44,7 @@ with Gtk.Old_Editable;
 with Gdk.Window;
 
 package Gtk.Text is
+   pragma Obsolescent;
 
    type Gtk_Text_Record is new
      Gtk.Old_Editable.Gtk_Old_Editable_Record with private;
@@ -193,8 +193,59 @@ package Gtk.Text is
    --  If set to True, words are wrapped down to the next line if they can't
    --  be completed on the current line.
 
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  </signals>
+
+   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
+
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  Name:  Hadjustment_Property
+   --  Type:  Object
+   --  Descr: Horizontal adjustment for the text widget
+   --
+   --  Name:  Line_Wrap_Property
+   --  Type:  Boolean
+   --  Descr: Whether lines are wrapped at widget edges
+   --
+   --  Name:  Vadjustment_Property
+   --  Type:  Object
+   --  Descr: Vertical adjustment for the text widget
+   --
+   --  Name:  Word_Wrap_Property
+   --  Type:  Boolean
+   --  Descr: Whether words are wrapped at widget edges
+   --
+   --  </properties>
+
+   Line_Wrap_Property   : constant Glib.Properties.Property_Boolean;
+   Vadjustment_Property : constant Glib.Properties.Property_Object;
+   Word_Wrap_Property   : constant Glib.Properties.Property_Boolean;
+
 private
    type Gtk_Text_Record is new Gtk.Old_Editable.Gtk_Old_Editable_Record
      with null record;
+
+   Hadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("hadjustment");
+   Line_Wrap_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("line-wrap");
+   Vadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("vadjustment");
+   Word_Wrap_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("word-wrap");
+
    pragma Import (C, Get_Type, "gtk_text_get_type");
 end Gtk.Text;

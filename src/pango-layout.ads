@@ -90,6 +90,17 @@ package Pango.Layout is
    pragma Convention (C, Pango_Wrap_Mode);
    --  The wrap mode for a layout
 
+   type Pango_Ellipsize_Mode is
+     (Ellipsize_None,
+      Ellipsize_Start,
+      Ellipsize_Middle,
+      Ellipsize_End);
+   --  This type describes what sort of (if any) ellipsization should be
+   --  applied to a line of text. In the ellipsization process characters are
+   --  removed from the text in order to make it fit to a given width and
+   --  replaced with an ellipsis.
+
+
    -----------------------
    -- Creating a layout --
    -----------------------

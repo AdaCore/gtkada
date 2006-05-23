@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,6 +29,7 @@
 
 with System;
 with Interfaces.C.Strings;
+with Pango.Layout;         use Pango.Layout;
 
 package body Gtk.Progress_Bar is
 
@@ -190,5 +191,37 @@ package body Gtk.Progress_Bar is
    begin
       Internal (Get_Object (Progress_Bar), Orientation);
    end Set_Orientation;
+
+   -------------------
+   -- Get_Ellipsize --
+   -------------------
+
+   function Get_Ellipsize
+     (Pbar : access Gtk_Progress_Bar_Record)
+      return Pango_Ellipsize_Mode
+   is
+      function Internal
+        (Pbar : System.Address)
+         return Pango_Ellipsize_Mode;
+      pragma Import (C, Internal, "gtk_progress_bar_get_ellipsize");
+   begin
+      return Internal (Get_Object (Pbar));
+   end Get_Ellipsize;
+
+   -------------------
+   -- Set_Ellipsize --
+   -------------------
+
+   procedure Set_Ellipsize
+     (Pbar : access Gtk_Progress_Bar_Record;
+      Mode : Pango_Ellipsize_Mode)
+   is
+      procedure Internal
+        (Pbar : System.Address;
+         Mode : Pango_Ellipsize_Mode);
+      pragma Import (C, Internal, "gtk_progress_bar_set_ellipsize");
+   begin
+      Internal (Get_Object (Pbar), Mode);
+   end Set_Ellipsize;
 
 end Gtk.Progress_Bar;
