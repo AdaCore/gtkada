@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,17 +31,6 @@ with Gtk.Widget; use Gtk.Widget;
 with System;
 
 package body Gtk.Calendar is
-
-   ----------
-   -- Left --
-   ----------
-
-   function "and"
-     (Left, Right : Gtk_Calendar_Display_Options)
-      return Gtk_Calendar_Display_Options is
-   begin
-      return Left + Right;
-   end "and";
 
    -----------------
    -- Clear_Marks --
@@ -205,5 +194,37 @@ package body Gtk.Calendar is
    begin
       return Boolean'Val (Internal (Get_Object (Calendar), Day));
    end Unmark_Day;
+
+   -------------------------
+   -- Get_Display_Options --
+   -------------------------
+
+   function Get_Display_Options
+     (Calendar : access Gtk_Calendar_Record)
+      return Gtk_Calendar_Display_Options
+   is
+      function Internal
+        (Calendar : System.Address)
+         return Gtk_Calendar_Display_Options;
+      pragma Import (C, Internal, "gtk_calendar_get_display_options");
+   begin
+      return Internal (Get_Object (Calendar));
+   end Get_Display_Options;
+
+   -------------------------
+   -- Set_Display_Options --
+   -------------------------
+
+   procedure Set_Display_Options
+     (Calendar : access Gtk_Calendar_Record;
+      Flags    : Gtk_Calendar_Display_Options)
+   is
+      procedure Internal
+        (Calendar : System.Address;
+         Flags    : Gtk_Calendar_Display_Options);
+      pragma Import (C, Internal, "gtk_calendar_set_display_options");
+   begin
+      Internal (Get_Object (Calendar), Flags);
+   end Set_Display_Options;
 
 end Gtk.Calendar;

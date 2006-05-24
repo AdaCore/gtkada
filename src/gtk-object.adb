@@ -50,7 +50,8 @@ package body Gtk.Object is
       pragma Import (C, Internal, "gtk_object_destroy");
 
       procedure Unref_Internal (Object : System.Address);
-      pragma Import (C, Unref_Internal, "gtk_object_unref");
+      pragma Import (C, Unref_Internal, "g_object_unref");
+      --  External binding: g_object_unref
 
       Ptr : constant System.Address := Get_Object (Object);
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  actually given).
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gtk.Frame;
@@ -109,29 +109,29 @@ package Gtk.Aspect_Frame is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  - Name:  Xalign_Property
-   --    Type:  Gfloat
-   --    Flags: read-write
-   --    Descr: X alignment of the child
-   --    See also: Set and Get_Xalign
+   --  Name:  Xalign_Property
+   --  Type:  Gfloat
+   --  Flags: read-write
+   --  Descr: X alignment of the child
+   --  See also: Set and Get_Xalign
    --
-   --  - Name:  Yalign_Property
-   --    Type:  Gfloat
-   --    Flags: read-write
-   --    Descr: Y alignment of the child
-   --    See also: Set and Get_Xalign
+   --  Name:  Yalign_Property
+   --  Type:  Gfloat
+   --  Flags: read-write
+   --  Descr: Y alignment of the child
+   --  See also: Set and Get_Xalign
    --
-   --  - Name:  Ratio_Property
-   --    Type:  Gfloat
-   --    Flags: read-write
-   --    Descr: Aspect ratio if obey_child is FALSE
-   --    See also: Set and Get_Ratio
+   --  Name:  Ratio_Property
+   --  Type:  Gfloat
+   --  Flags: read-write
+   --  Descr: Aspect ratio if obey_child is FALSE
+   --  See also: Set and Get_Ratio
    --
-   --  - Name:  Obey_Child_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    Descr: Force aspect ratio to match that of the frame's child
-   --    See also: Set and Get_Ratio
+   --  Name:  Obey_Child_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  Descr: Force aspect ratio to match that of the frame's child
+   --  See also: Set and Get_Ratio
    --
    --  </properties>
 
@@ -139,6 +139,7 @@ package Gtk.Aspect_Frame is
    Yalign_Property     : constant Glib.Properties.Property_Float;
    Radio_Property      : constant Glib.Properties.Property_Float;
    Obey_Child_Property : constant Glib.Properties.Property_Boolean;
+   Ratio_Property      : constant Glib.Properties.Property_Float;
 
    -------------
    -- Signals --
@@ -160,6 +161,8 @@ private
      Glib.Properties.Build ("ratio");
    Obey_Child_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("obey_child");
+   Ratio_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("ratio");
 
    pragma Import (C, Get_Type, "gtk_aspect_frame_get_type");
 end Gtk.Aspect_Frame;

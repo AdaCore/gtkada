@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -92,7 +92,7 @@
 --        the memory used by the object and its user_data is freed.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Object;
 with Glib.Properties;
@@ -230,6 +230,17 @@ package Gtk.Object is
    generic
    package User_Data renames Glib.Object.User_Data;
 
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   --  </doc_ignore>
+
    ----------------
    -- Properties --
    ----------------
@@ -266,6 +277,8 @@ package Gtk.Object is
    --    The default implementation destroys all the handlers.
    --  </signals>
 
+   Signal_Destroy : constant String := "destroy";
+
 private
    type Gtk_Object_Record is new Glib.Object.GObject_Record with null record;
 
@@ -276,3 +289,23 @@ private
    pragma Inline (In_Destruction_Is_Set);
 
 end Gtk.Object;
+
+--  The following subprograms never had a binding, but are now obsolescent
+--  No binding: gtk_object_add_arg_type
+--  No binding: gtk_object_get_data
+--  No binding: gtk_object_get_data_by_id
+--  No binding: gtk_object_get_user_data
+--  No binding: gtk_object_new
+--  No binding: gtk_object_ref
+--  No binding: gtk_object_unref
+--  No binding: gtk_object_remove_data
+--  No binding: gtk_object_remove_data_by_id
+--  No binding: gtk_object_remove_no_notify
+--  No binding: gtk_object_remove_no_notify_by_id
+--  No binding: gtk_object_set_data
+--  No binding: gtk_object_set_data_by_id
+--  No binding: gtk_object_set_data_by_id_full
+--  No binding: gtk_object_set_data_full
+--  No binding: gtk_object_set_user_data
+--  No binding: gtk_object_weakref
+--  No binding: gtk_object_weakunref
