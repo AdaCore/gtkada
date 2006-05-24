@@ -314,7 +314,9 @@ package body Gtk.Type_Conversion is
             if Type_Name = "GtkTable" then
                return new Gtk.Table.Gtk_Table_Record;
             elsif Type_Name = "GtkText" then
+               pragma Warnings (Off); --  Gtk.Text is obsolescent
                return new Gtk.Text.Gtk_Text_Record;
+               pragma Warnings (On);
             elsif Type_Name = "GtkTipsQuery" then
                pragma Warnings (Off); -- Gtk_Tips_Query is obsolescent
                return new Gtk.Tips_Query.Gtk_Tips_Query_Record;
