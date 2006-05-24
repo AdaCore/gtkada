@@ -116,6 +116,19 @@ package Gtk.Object is
    --  user data is freed.
    --  Note that when you destroy handlers are called, the user_data is still
    --  available.
+   --
+   --  When a widget is destroyed, it will break any references it holds to
+   --  other objects. If the widget is inside a container, the widget will be
+   --  removed from the container. If the widget is a toplevel (derived from
+   --  Gtk_Window), it will be removed from the list of toplevels, and the
+   --  reference GTK+ holds to it will be removed. Removing widget from its
+   --  container or the list of toplevels results in the widget being
+   --  finalized, unless you've added additional references to the widget with
+   --  Ref.
+   --
+   --  In most cases, only toplevel widgets (windows) require explicit
+   --  destruction, because when you destroy a toplevel its children will be
+   --  destroyed as well.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Object internally.

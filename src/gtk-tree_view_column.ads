@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2005 AdaCore                    --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -56,8 +56,10 @@
 --  by iterators (Gtk_Tree_Iter).
 --  </description>
 
---  <c_version>partial 1.3.15</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
+with Glib.Generic_Properties;
 with Gdk.Rectangle;
 with Gtk;
 with Gtk.Cell_Renderer;
@@ -89,11 +91,8 @@ package Gtk.Tree_View_Column is
    pragma Convention (C, Gtk_Tree_View_Column_Sizing);
 
    procedure Gtk_New (Widget : out Gtk_Tree_View_Column);
-   --  Create a new Gtk_Tree_View_Column.
-
    procedure Initialize (Widget : access Gtk_Tree_View_Column_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   --  Creates or initializes a new Gtk_Tree_View_Column.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with this widget.
@@ -263,115 +262,108 @@ package Gtk.Tree_View_Column is
    procedure Set_Spacing
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Spacing     : Gint);
+   function Get_Spacing
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
    --  Set the spacing field of Tree_Column.
    --  The spacing field is the number of pixels to place between cell
    --  renderers packed into it.
 
-   function Get_Spacing
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
-   --  Return the spacing of Tree_Column.
-
    procedure Set_Visible
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Visible     : Boolean);
-   --  Set the visibility of Tree_Column.
-
    function Get_Visible
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
-   --  Return True if Tree_Column is visible.
+   --  Set the visibility of Tree_Column.
 
    procedure Set_Resizable
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Resizable   : Boolean);
-   --  Set whether the Tree_Column is resizable.
-
    function Get_Resizable
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
-   --  Return whether Tree_Column is resizable.
+   --  Set whether the Tree_Column is resizable.
 
    procedure Set_Sizing
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       The_Type    : Gtk_Tree_View_Column_Sizing);
-   --  Set the growth behavior of Tree_Column to The_Type.
-
    function Get_Sizing
      (Tree_Column : access Gtk_Tree_View_Column_Record)
       return Gtk_Tree_View_Column_Sizing;
-   --  Return the current type of Tree_Column.
+   --  Set the growth behavior of Tree_Column to The_Type.
 
    function Get_Width
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
    --  Return the current size of the Tree_Column in pixels.
 
-   function Get_Fixed_Width
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
-   --  Get the fixed width of the column.
-   --  This value may not be the actual width of the column on the screen, just
-   --  what is requested.
+   procedure Queue_Resize
+     (Tree_Column : access Gtk_Tree_View_Column_Record);
+   --  Flags the column, and the cell renderers added to this column, to have
+   --  their sizes renegotiated.
 
    procedure Set_Fixed_Width
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Fixed_Width : Gint);
+   function Get_Fixed_Width
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
    --  Set the size of the column in pixels.
    --  This is meaningful only if the sizing type is
    --  Gtk_Tree_View_Column_Fixed. In this case, the value is discarded as the
    --  size of the column is based on the calculated width of the column. The
    --  width is clamped to the min/max width for the column.
+   --  The value returned by Get_Fixed_width may not be the actual width of the
+   --  column on the screen, just what is requested.
 
    procedure Set_Min_Width
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Min_Width   : Gint);
-   --  Set the minimum width of the Tree_Column.
-   --  If Min_Width is -1, then the minimum width is unset.
-
    function Get_Min_Width
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
-   --  Return the minimum width in pixels of the Tree_Column, or -1 if no
-   --  minimum width is set.
+   --  Set the minimum width of the Tree_Column.
+   --  If Min_Width is -1, then the minimum width is unset.
 
    procedure Set_Max_Width
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Max_Width   : Gint);
+   function Get_Max_Width
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
    --  Set the maximum width of the Tree_Column.
    --  If Max_Width is -1, then the maximum width is unset.
    --  Note, the column can actually be wider than max width if it's the last
    --  column in a view. In this case, the column expands to fill the view.
-
-   function Get_Max_Width
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
-   --  Return the maximum width in pixels of the Tree_Column, or -1 if no
-   --  maximum width is set.
 
    procedure Clicked (Tree_Column : access Gtk_Tree_View_Column_Record);
    --  Emit the "clicked" signal on the column.
    --  This function will only work if the user could have conceivably clicked
    --  on the button.
 
+   procedure Set_Expand
+     (Tree_Column : access Gtk_Tree_View_Column_Record; Expand : Boolean);
+   function Get_Expand
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
+   --  Sets the column to take available extra space. This space is shared
+   --  equally amongst all columns that have the expand set to TRUE. If no
+   --  column has this option set, then the last column gets all extra space.
+   --  By default, every column is created with this FALSE.
+
    procedure Set_Title
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Title       : UTF8_String);
-   --  Set the title of the Tree_Column.
-   --  If a custom widget has been set, then this value is ignored.
-
    function Get_Title
      (Tree_Column : access Gtk_Tree_View_Column_Record) return UTF8_String;
-   --  Return the title of the Tree_Column.
+   --  Set the title of the Tree_Column.
+   --  If a custom widget has been set, then this value is ignored.
 
    procedure Set_Clickable
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Clickable   : Boolean);
+   function Get_Clickable
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
    --  Set the header to be active if Active is True.
    --  When the header is active, then it can take keyboard focus, and can be
    --  clicked.
 
-   function Get_Clickable
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
-   --  Return True if the user can click on the header for the column.
-
    procedure Set_Widget
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Widget      : access Gtk.Widget.Gtk_Widget_Record'Class);
-
    function Get_Widget
      (Tree_Column : access Gtk_Tree_View_Column_Record)
        return Gtk.Widget.Gtk_Widget;
@@ -382,51 +374,44 @@ package Gtk.Tree_View_Column is
    procedure Set_Alignment
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Xalign      : Gfloat);
+   function Get_Alignment
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gfloat;
    --  Set the alignment of the title or custom widget inside the column header
    --  The alignment determines its location inside the button
    --  0.0 for left, 0.5 for center, 1.0 for right.
 
-   function Get_Alignment
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gfloat;
-   --  Return the current x alignment of Tree_Column.
-   --  This value can range between 0.0 and 1.0.
-
    procedure Set_Reorderable
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Reorderable : Boolean);
-
    function Get_Reorderable
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
+   --  Whether this column can be drag-and-dropped to some other place in the
+   --  tree.
 
    procedure Set_Sort_Column_Id
      (Tree_Column    : access Gtk_Tree_View_Column_Record;
       Sort_Column_Id : Gint);
-   --  Set the logical sort_column_id that this column sorts on when this
-   --  column is selected for sorting. Doing so makes the column header
-   --  clickable.
-
    function Get_Sort_Column_Id
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
-   --  Get the logical sort_column_id that the model sorts on when this
-   --  column is selected for sorting.
-   --  See Gtk.Tree_View_Column.Set_Sort_Column_Id.
-   --  Return value: the current sort_column_id for this column, or -1 if
-   --  this column can't be used for sorting.
+   --  Set the logical model columns that this column sorts on when this
+   --  column is selected for sorting. Doing so makes the column header
+   --  clickable.
+   --  Get_Sort_Column_Id returns -1 if this column can't be used for sorting.
 
    procedure Set_Sort_Indicator
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Setting     : Boolean);
+   function Get_Sort_Indicator
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
    --  Call this function with a Setting of True to display an arrow in
    --  the header button indicating the column is sorted. Call
    --  Set_Sort_Order to change the direction of the arrow.
 
-   function Get_Sort_Indicator
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
-   --  Get the value set by Set_Sort_Indicator.
-
    procedure Set_Sort_Order
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Order       : Gtk_Sort_Type);
+   function Get_Sort_Order
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gtk_Sort_Type;
    --  Change the appearance of the sort indicator.
    --  This does *not* actually sort the model. Use
    --  Gtk.Tree_View_Column.Set_Sort_Column_Id if you want automatic sorting
@@ -436,10 +421,6 @@ package Gtk.Tree_View_Column is
    --  indicator changes direction to indicate normal sort or reverse sort.
    --  Note that you must have the sort indicator enabled to see anything
    --  when calling this function; see Set_Sort_Indicator.
-
-   function Get_Sort_Order
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gtk_Sort_Type;
-   --  Get the value set by Set_Sort_Order.
 
    procedure Cell_Set_Cell_Data
      (Tree_Column : access Gtk_Tree_View_Column_Record;
@@ -465,6 +446,119 @@ package Gtk.Tree_View_Column is
 
    function Cell_Is_Visible
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
+   --  Returns true if any of the cells packed in the column is visible
+
+   procedure Cell_Get_Position
+     (Tree_Column   : access Gtk_Tree_View_Column_Record;
+      Cell_Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Start_Pos     : out Gint;
+      Width         : out Gint;
+      Success       : out Boolean);
+   --  Obtains the horizontal position and size of a cell in a column. If the
+   --  cell is not found in the column, start_pos and width are not changed
+   --  and FALSE is returned.
+
+   procedure Focus_Cell
+     (Tree_Column : access Gtk_Tree_View_Column_Record;
+      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
+   --  Sets the current keyboard focus to be at Cell, if the column contains
+   --  2 or more editable and activatable cells.
+
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  Name:  Alignment_Property
+   --  Type:  Float
+   --  Descr: X Alignment of the column header text or widget
+   --
+   --  Name:  Clickable_Property
+   --  Type:  Boolean
+   --  Descr: Whether the header can be clicked
+   --
+   --  Name:  Expand_Property
+   --  Type:  Boolean
+   --  Descr: Column gets share of extra width allocated to the widget
+   --
+   --  Name:  Fixed_Width_Property
+   --  Type:  Int
+   --  Descr: Current fixed width of the column
+   --
+   --  Name:  Max_Width_Property
+   --  Type:  Int
+   --  Descr: Maximum allowed width of the column
+   --
+   --  Name:  Min_Width_Property
+   --  Type:  Int
+   --  Descr: Minimum allowed width of the column
+   --
+   --  Name:  Reorderable_Property
+   --  Type:  Boolean
+   --  Descr: Whether the column can be reordered around the headers
+   --
+   --  Name:  Resizable_Property
+   --  Type:  Boolean
+   --  Descr: Column is user-resizable
+   --
+   --  Name:  Sizing_Property
+   --  Type:  Enum
+   --  Descr: Resize mode of the column
+   --
+   --  Name:  Sort_Indicator_Property
+   --  Type:  Boolean
+   --  Descr: Whether to show a sort indicator
+   --
+   --  Name:  Sort_Order_Property
+   --  Type:  Enum
+   --  Descr: Sort direction the sort indicator should indicate
+   --
+   --  Name:  Spacing_Property
+   --  Type:  Int
+   --  Descr: Space which is inserted between cells
+   --
+   --  Name:  Title_Property
+   --  Type:  String
+   --  Descr: Title to appear in column header
+   --
+   --  Name:  Visible_Property
+   --  Type:  Boolean
+   --  Descr: Whether to display the column
+   --
+   --  Name:  Widget_Property
+   --  Type:  Object
+   --  Descr: Widget to put in column header button instead of column title
+   --
+   --  Name:  Width_Property
+   --  Type:  Int
+   --  Descr: Current width of the column
+   --
+   --  </properties>
+
+   package Column_Sizing_Properties is new
+     Glib.Generic_Properties.Generic_Internal_Discrete_Property
+       (Gtk_Tree_View_Column_Sizing);
+   type Property_Column_Sizing is new Column_Sizing_Properties.Property;
+
+   Alignment_Property      : constant Glib.Properties.Property_Float;
+   Clickable_Property      : constant Glib.Properties.Property_Boolean;
+   Expand_Property         : constant Glib.Properties.Property_Boolean;
+   Fixed_Width_Property    : constant Glib.Properties.Property_Int;
+   Max_Width_Property      : constant Glib.Properties.Property_Int;
+   Min_Width_Property      : constant Glib.Properties.Property_Int;
+   Reorderable_Property    : constant Glib.Properties.Property_Boolean;
+   Resizable_Property      : constant Glib.Properties.Property_Boolean;
+   Sizing_Property         : constant Property_Column_Sizing;
+   Sort_Indicator_Property : constant Glib.Properties.Property_Boolean;
+   Sort_Order_Property     : constant Gtk.Enums.Property_Sort_Type;
+   Spacing_Property        : constant Glib.Properties.Property_Int;
+   Title_Property          : constant Glib.Properties.Property_String;
+   Visible_Property        : constant Glib.Properties.Property_Boolean;
+   Widget_Property         : constant Glib.Properties.Property_Object;
+   Width_Property          : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -478,9 +572,44 @@ package Gtk.Tree_View_Column is
    --
    --  </signals>
 
+   Signal_Clicked : constant String := "clicked";
+
 private
    type Gtk_Tree_View_Column_Record is
      new Gtk.Object.Gtk_Object_Record with null record;
+
+      Alignment_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("alignment");
+   Clickable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("clickable");
+   Expand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("expand");
+   Fixed_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("fixed-width");
+   Max_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-width");
+   Min_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("min-width");
+   Reorderable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("reorderable");
+   Resizable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("resizable");
+   Sizing_Property : constant Property_Column_Sizing :=
+     Build ("sizing");
+   Sort_Indicator_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("sort-indicator");
+   Sort_Order_Property : constant Gtk.Enums.Property_Sort_Type :=
+     Gtk.Enums.Build ("sort-order");
+   Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("spacing");
+   Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("title");
+   Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible");
+   Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("widget");
+   Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width");
 
    pragma Import (C, Get_Type, "gtk_tree_view_column_get_type");
 end Gtk.Tree_View_Column;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,7 +39,7 @@
 --  user can draw the points of the curve freely, and they are not connected at
 --  all.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Drawing_Area;
 with Gtk.Enums; use Gtk.Enums;
@@ -86,15 +86,11 @@ package Gtk.Curve is
    --  The curve is also reset with a call to Reset.
 
    procedure Set_Vector
-     (Curve  : access Gtk_Curve_Record;
-      Vector : Gfloat_Array);
+     (Curve  : access Gtk_Curve_Record; Vector : Gfloat_Array);
+   procedure Get_Vector
+     (Curve  : access Gtk_Curve_Record; Vector : out Gfloat_Array);
    --  Set the vector of points on the curve.
    --  The curve type is set to Curve_Type_Free.
-
-   procedure Get_Vector
-     (Curve  : access Gtk_Curve_Record;
-      Vector : out Gfloat_Array);
-   --  Return a vector of points representing the curve.
 
    procedure Set_Curve_Type
      (Curve      : access Gtk_Curve_Record;
@@ -167,6 +163,8 @@ package Gtk.Curve is
    --  changed explicitly with a call to Set_Curve_Type. It is also changed as
    --  a side-effect of calling Reset or Set_Gamma.
    --  </signals>
+
+   Signal_Curve_Type_Changed : constant String := "curve_type_changed";
 
 private
    type Gtk_Curve_Record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record

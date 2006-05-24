@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  as font size changes easily.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Container;
 with Gtk.Widget;
@@ -80,14 +80,11 @@ package Gtk.Fixed is
    procedure Set_Has_Window
      (Fixed      : access Gtk_Fixed_Record;
       Has_Window : Boolean := False);
+   function Get_Has_Window (Fixed : access Gtk_Fixed_Record) return Boolean;
    --  Sets whether a Gtk_Fixed widget is created with a separate
    --  Gdk_Window for or not. (By default, it will be created with no
    --  separate Gdk_Window). This function must be called while the widget
    --  is not realized, for instance, immediately after the window is created.
-
-   function Get_Has_Window (Fixed : access Gtk_Fixed_Record) return Boolean;
-   --  Return whether a Gtk_Fixed widget is created with a separate
-   --  Gdk_Window for or not.
 
    ----------------
    -- Properties --

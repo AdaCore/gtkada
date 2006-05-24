@@ -134,7 +134,23 @@ package Gtk.Rc is
    procedure Modify_Style
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Style  : access Gtk_Rc_Style_Record'Class);
-   --  Modify the default style of a widget.
+   --  Modifies style values on the widget. Modifications made using this
+   --  technique take precedence over style values set via an RC file,
+   --  however, they will be overriden if a style is explicitely set on
+   --  the widget using gtk_widget_set_style(). The #GtkRcStyle structure
+   --  is designed so each field can either be set or unset, so it is
+   --  possible, using this function, to modify some style values and
+   --  leave the others unchanged.
+   --
+   --  Note that modifications made with this function are not cumulative
+   --  with previous calls to gtk_widget_modify_style() or with such
+   --  functions as gtk_widget_modify_fg(). If you wish to retain
+   --  previous values, you must first call gtk_widget_get_modifier_style(),
+   --  make your modifications to the returned style, then call
+   --  gtk_widget_modify_style() with that style. On the other hand,
+   --  if you first call gtk_widget_modify_style(), subsequent calls
+   --  to such functions gtk_widget_modify_fg() will have a cumulative
+   --  effect with the initial modifications.
 
    function Get_Modifier_Style
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Gtk_Rc_Style;

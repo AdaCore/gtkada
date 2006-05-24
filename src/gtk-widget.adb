@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2005 AdaCore                    --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,11 +28,15 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C.Strings;        use Interfaces.C.Strings;
-with Gdk.Visual; use Gdk.Visual;
-with Gdk.Color;  use Gdk.Color;
+with Glib.Values;                 use Glib.Values;
+with Gdk.Color;                   use Gdk.Color;
+with Gdk.Types;                   use Gdk.Types;
+with Gdk.Visual;                  use Gdk.Visual;
 with Ada.Unchecked_Conversion;
-with Pango.Context; use Pango.Context;
-with Pango.Layout;  use Pango.Layout;
+with Pango.Context;               use Pango.Context;
+with Pango.Layout;                use Pango.Layout;
+with Gtk.Clipboard;               use Gtk.Clipboard;
+with Gtk.Enums;                   use Gtk.Enums;
 
 package body Gtk.Widget is
 
@@ -1704,5 +1708,469 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget)) /= 0;
    end Get_Child_Visible;
+
+   ------------------------
+   -- Add_Mnemonic_Label --
+   ------------------------
+
+   procedure Add_Mnemonic_Label
+     (Widget : access Gtk_Widget_Record;
+      Label  : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         Label  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_add_mnemonic_label");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Label));
+   end Add_Mnemonic_Label;
+
+   --------------------------
+   -- List_Mnemonic_Labels --
+   --------------------------
+
+   function List_Mnemonic_Labels
+     (Widget : access Gtk_Widget_Record)
+      return Widget_List.Glist
+   is
+      use Widget_List;
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_list_mnemonic_labels");
+      List : Widget_List.Glist;
+   begin
+      Set_Object (List, Internal (Get_Object (Widget)));
+      return List;
+   end List_Mnemonic_Labels;
+
+   -----------------------
+   -- Mnemonic_Activate --
+   -----------------------
+
+   function Mnemonic_Activate
+     (Widget        : access Gtk_Widget_Record;
+      Group_Cycling : Boolean) return Boolean
+   is
+      function Internal
+        (Widget        : System.Address;
+         Group_Cycling : Gboolean)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_mnemonic_activate");
+   begin
+      return Boolean'Val
+        (Internal (Get_Object (Widget), Boolean'Pos (Group_Cycling)));
+   end Mnemonic_Activate;
+
+   ---------------------------
+   -- Remove_Mnemonic_Label --
+   ---------------------------
+
+   procedure Remove_Mnemonic_Label
+     (Widget : access Gtk_Widget_Record;
+      Label  : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         Label  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_remove_mnemonic_label");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Label));
+   end Remove_Mnemonic_Label;
+
+   ------------------------
+   -- Can_Activate_Accel --
+   ------------------------
+
+   function Can_Activate_Accel
+     (Widget    : access Gtk_Widget_Record;
+      Signal_Id : Gulong)
+      return Boolean
+   is
+      function Internal
+        (Widget    : System.Address;
+         Signal_Id : Guint)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_can_activate_accel");
+   begin
+      return Boolean'Val
+        (Internal (Get_Object (Widget), Guint (Signal_Id)));
+   end Can_Activate_Accel;
+
+   ------------------
+   -- Child_Notify --
+   ------------------
+
+   procedure Child_Notify
+     (Widget : access Gtk_Widget_Record; Child_Property : String)
+   is
+      procedure Internal
+        (Widget : System.Address; Child_Property : String);
+      pragma Import (C, Internal, "gtk_widget_child_notify");
+   begin
+      Internal (Get_Object (Widget), Child_Property & ASCII.NUL);
+   end Child_Notify;
+
+   -------------------------
+   -- Freeze_Child_Notify --
+   -------------------------
+
+   procedure Freeze_Child_Notify (Widget : access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_freeze_child_notify");
+   begin
+      Internal (Get_Object (Widget));
+   end Freeze_Child_Notify;
+
+   -----------------------
+   -- Thaw_Child_Notify --
+   -----------------------
+
+   procedure Thaw_Child_Notify (Widget : access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_thaw_child_notify");
+   begin
+      Internal (Get_Object (Widget));
+   end Thaw_Child_Notify;
+
+   ------------------------
+   -- Get_Composite_Name --
+   ------------------------
+
+   function Get_Composite_Name
+     (Widget : access Gtk_Widget_Record) return String
+   is
+      function Internal
+        (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_widget_get_composite_name");
+   begin
+      return Value (Internal (Get_Object (Widget)));
+   end Get_Composite_Name;
+
+   ------------------------
+   -- Set_Composite_Name --
+   ------------------------
+
+   procedure Set_Composite_Name
+     (Widget : access Gtk_Widget_Record; Name : String)
+   is
+      procedure Internal (Widget : System.Address; Name : String);
+      pragma Import (C, Internal, "gtk_widget_set_composite_name");
+   begin
+      Internal (Get_Object (Widget), Name & ASCII.NUL);
+   end Set_Composite_Name;
+
+   ---------------------
+   -- Get_No_Show_All --
+   ---------------------
+
+   function Get_No_Show_All
+     (Widget : access Gtk_Widget_Record) return Boolean
+   is
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_get_no_show_all");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Get_No_Show_All;
+
+   ---------------------
+   -- Set_No_Show_All --
+   ---------------------
+
+   procedure Set_No_Show_All
+     (Widget      : access Gtk_Widget_Record;
+      No_Show_All : Boolean)
+   is
+      procedure Internal
+        (Widget      : System.Address;
+         No_Show_All : Gboolean);
+      pragma Import (C, Internal, "gtk_widget_set_no_show_all");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (No_Show_All));
+   end Set_No_Show_All;
+
+   -------------------
+   -- Get_Direction --
+   -------------------
+
+   function Get_Direction
+     (Widget : access Gtk_Widget_Record)
+      return Gtk_Text_Direction
+   is
+      function Internal (Widget : System.Address) return Gtk_Text_Direction;
+      pragma Import (C, Internal, "gtk_widget_get_direction");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Direction;
+
+   -------------------
+   -- Set_Direction --
+   -------------------
+
+   procedure Set_Direction
+     (Widget : access Gtk_Widget_Record;
+      Dir    : Gtk_Text_Direction)
+   is
+      procedure Internal (Widget : System.Address; Dir : Gtk_Text_Direction);
+      pragma Import (C, Internal, "gtk_widget_set_direction");
+   begin
+      Internal (Get_Object (Widget), Dir);
+   end Set_Direction;
+
+   ----------------
+   -- Class_Path --
+   ----------------
+
+   function Class_Path
+     (Widget      : access Gtk_Widget_Record) return String
+   is
+      procedure Internal
+        (Widget        : System.Address;
+         Path_Length   : out Guint;
+         Path          : out chars_ptr;
+         Path_Reversed : out chars_ptr);
+      pragma Import (C, Internal, "gtk_widget_class_path");
+      P, R : chars_ptr;
+      Length : Guint;
+   begin
+      Internal (Get_Object (Widget), Length, P, R);
+      declare
+         Path : constant String := Value (P);
+      begin
+         Free (P);
+         Free (R);
+         return Path;
+      end;
+   end Class_Path;
+
+   -------------------------
+   -- Class_Path_Reversed --
+   -------------------------
+
+   function Class_Path_Reversed
+     (Widget      : access Gtk_Widget_Record) return String
+   is
+      procedure Internal
+        (Widget        : System.Address;
+         Path_Length   : out Guint;
+         Path          : out chars_ptr;
+         Path_Reversed : out chars_ptr);
+      pragma Import (C, Internal, "gtk_widget_class_path");
+      P, R : chars_ptr;
+      Length : Guint;
+   begin
+      Internal (Get_Object (Widget), Length, P, R);
+      declare
+         Path : constant String := Value (R);
+      begin
+         Free (P);
+         Free (R);
+         return Path;
+      end;
+   end Class_Path_Reversed;
+
+   ----------
+   -- Path --
+   ----------
+
+   function Path
+     (Widget : access Gtk_Widget_Record) return String
+   is
+      procedure Internal
+        (Widget        : System.Address;
+         Path_Length   : out Guint;
+         Path          : out chars_ptr;
+         Path_Reversed : out chars_ptr);
+      pragma Import (C, Internal, "gtk_widget_path");
+      P, R : chars_ptr;
+      Length : Guint;
+   begin
+      Internal (Get_Object (Widget), Length, P, R);
+      declare
+         Path : constant String := Value (P);
+      begin
+         Free (P);
+         Free (R);
+         return Path;
+      end;
+   end Path;
+
+   -------------------
+   -- Path_Reversed --
+   -------------------
+
+   function Path_Reversed
+     (Widget : access Gtk_Widget_Record) return String
+   is
+      procedure Internal
+        (Widget        : System.Address;
+         Path_Length   : out Guint;
+         Path          : out chars_ptr;
+         Path_Reversed : out chars_ptr);
+      pragma Import (C, Internal, "gtk_widget_path");
+      P, R : chars_ptr;
+      Length : Guint;
+   begin
+      Internal (Get_Object (Widget), Length, P, R);
+      declare
+         Path : constant String := Value (R);
+      begin
+         Free (P);
+         Free (R);
+         return Path;
+      end;
+   end Path_Reversed;
+
+   ---------------------
+   -- Get_Root_Window --
+   ---------------------
+
+   function Get_Root_Window
+     (Widget : access Gtk_Widget_Record) return Gdk_Window
+   is
+      function Internal (Widget : System.Address) return Gdk_Window;
+      pragma Import (C, Internal, "gtk_widget_get_root_window");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Root_Window;
+
+   ----------------------
+   -- Get_Size_Request --
+   ----------------------
+
+   procedure Get_Size_Request
+     (Widget        : access Gtk_Widget_Record;
+      Width, Height : out Gint)
+   is
+      procedure Internal
+        (Widget : System.Address; Width, Height : out Gint);
+      pragma Import (C, Internal, "gtk_widget_get_size_request");
+   begin
+      Internal (Get_Object (Widget), Width, Height);
+   end Get_Size_Request;
+
+   ----------------
+   -- Has_Screen --
+   ----------------
+
+   function Has_Screen (Widget : access Gtk_Widget_Record) return Boolean is
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_has_screen");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Has_Screen;
+
+   --------------
+   -- Is_Focus --
+   --------------
+
+   function Is_Focus (Widget : access Gtk_Widget_Record) return Boolean is
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_is_focus");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Is_Focus;
+
+   ----------------------------
+   -- Queue_Resize_No_Redraw --
+   ----------------------------
+
+   procedure Queue_Resize_No_Redraw (Widget : access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_queue_resize_no_redraw");
+   begin
+      Internal (Get_Object (Widget));
+   end Queue_Resize_No_Redraw;
+
+   ----------------------
+   -- Region_Intersect --
+   ----------------------
+
+   function Region_Intersect
+     (Widget : access Gtk_Widget_Record;
+      Region : Gdk_Region) return Gdk_Region
+   is
+      function Internal
+        (Widget : System.Address; Region : Gdk_Region) return Gdk_Region;
+      pragma Import (C, Internal, "gtk_widget_region_intersect");
+   begin
+      return Internal (Get_Object (Widget), Region);
+   end Region_Intersect;
+
+   ----------------------------
+   -- Set_Redraw_On_Allocate --
+   ----------------------------
+
+   procedure Set_Redraw_On_Allocate
+     (Widget             : access Gtk_Widget_Record;
+      Redraw_On_Allocate : Boolean)
+   is
+      procedure Internal
+        (Widget             : System.Address;
+         Redraw_On_Allocate : Gboolean);
+      pragma Import (C, Internal, "gtk_widget_set_redraw_on_allocate");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (Redraw_On_Allocate));
+   end Set_Redraw_On_Allocate;
+
+   ------------------------
+   -- Style_Get_Property --
+   ------------------------
+
+   procedure Style_Get_Property
+     (Widget        : access Gtk_Widget_Record;
+      Property_Name : String;
+      Value         : out GValue)
+   is
+      procedure Internal
+        (Widget        : System.Address;
+         Property_Name : String;
+         Value         : out GValue);
+      pragma Import (C, Internal, "gtk_widget_style_get_property");
+   begin
+      Internal (Get_Object (Widget), Property_Name & ASCII.NUL, Value);
+   end Style_Get_Property;
+
+   -------------------
+   -- Get_Clipboard --
+   -------------------
+
+   function Get_Clipboard
+     (Widget    : access Gtk_Widget_Record;
+      Selection : Gdk_Atom) return Gtk_Clipboard
+   is
+      function Internal
+        (Widget : System.Address; Selection : Gdk_Atom) return Gtk_Clipboard;
+      pragma Import (C, Internal, "gtk_widget_get_clipboard");
+   begin
+      return Internal (Get_Object (Widget), Selection);
+   end Get_Clipboard;
+
+   ------------------
+   -- Reset_Shapes --
+   ------------------
+
+   procedure Reset_Shapes (Widget : access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_reset_shapes");
+   begin
+      Internal (Get_Object (Widget));
+   end Reset_Shapes;
+
+   -------------------------------
+   -- Class_Find_Style_Property --
+   -------------------------------
+
+   function Class_Find_Style_Property
+     (Klass         : GObject_Class;
+      Property_Name : String)
+      return Param_Spec
+   is
+      function Internal
+        (Klass         : GObject_Class;
+         Property_Name : String)
+         return Param_Spec;
+      pragma Import (C, Internal, "gtk_widget_class_find_style_property");
+   begin
+      return Internal (Klass, Property_Name & ASCII.NUL);
+   end Class_Find_Style_Property;
 
 end Gtk.Widget;

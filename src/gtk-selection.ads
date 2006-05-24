@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -63,7 +63,7 @@
 --  more information on the way selection works on X-Window systems.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>old</c_version>
 
 with Gdk.Types;
 with Gtk.Widget;

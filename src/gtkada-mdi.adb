@@ -4433,7 +4433,11 @@ package body Gtkada.MDI is
                  Gint'Value (Get_Attribute (From_Tree, "height", "480"));
                X      := Gint'Value (Get_Attribute (From_Tree, "x", "-1"));
                Y      := Gint'Value (Get_Attribute (From_Tree, "y", "-1"));
+
+               pragma Warnings (Off);  --  Set_UPosition is now obsolescent
                Set_UPosition (Get_Toplevel (MDI), X, Y);
+               pragma Warnings (On);
+
                Set_Default_Size
                  (Gtk_Window (Get_Toplevel (MDI)), Width, Height);
             end if;

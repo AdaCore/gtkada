@@ -848,4 +848,86 @@ package body Gtk.Tree_View_Column is
       return Internal (Get_Object (Tree_Column)) /= 0;
    end Cell_Is_Visible;
 
+   -----------------------
+   -- Cell_Get_Position --
+   -----------------------
+
+   procedure Cell_Get_Position
+     (Tree_Column   : access Gtk_Tree_View_Column_Record;
+      Cell_Renderer : access Gtk_Cell_Renderer_Record'Class;
+      Start_Pos     : out Gint;
+      Width         : out Gint;
+      Success       : out Boolean)
+   is
+      function Internal
+        (Tree_Column   : System.Address;
+         Cell_Renderer : System.Address;
+         Start_Pos     : access Gint;
+         Width         : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_view_column_cell_get_position");
+      S, W : aliased Gint;
+   begin
+      Success := Boolean'Val
+        (Internal
+           (Get_Object (Tree_Column), Get_Object (Cell_Renderer),
+            S'Access, W'Access));
+      Start_Pos := S;
+      Width     := W;
+   end Cell_Get_Position;
+
+   ----------------
+   -- Focus_Cell --
+   ----------------
+
+   procedure Focus_Cell
+     (Tree_Column : access Gtk_Tree_View_Column_Record;
+      Cell        : access Gtk_Cell_Renderer_Record'Class)
+   is
+      procedure Internal
+        (Tree_Column : System.Address;
+         Cell        : System.Address);
+      pragma Import (C, Internal, "gtk_tree_view_column_focus_cell");
+   begin
+      Internal (Get_Object (Tree_Column), Get_Object (Cell));
+   end Focus_Cell;
+
+   ----------------
+   -- Get_Expand --
+   ----------------
+
+   function Get_Expand
+     (Tree_Column : access Gtk_Tree_View_Column_Record)
+      return Boolean
+   is
+      function Internal (Tree_Column : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_view_column_get_expand");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tree_Column)));
+   end Get_Expand;
+
+   ------------------
+   -- Queue_Resize --
+   ------------------
+
+   procedure Queue_Resize (Tree_Column : access Gtk_Tree_View_Column_Record) is
+      procedure Internal (Tree_Column : System.Address);
+      pragma Import (C, Internal, "gtk_tree_view_column_queue_resize");
+   begin
+      Internal (Get_Object (Tree_Column));
+   end Queue_Resize;
+
+   ----------------
+   -- Set_Expand --
+   ----------------
+
+   procedure Set_Expand
+     (Tree_Column : access Gtk_Tree_View_Column_Record;
+      Expand      : Boolean)
+   is
+      procedure Internal (Tree_Column : System.Address; Expand : Gboolean);
+      pragma Import (C, Internal, "gtk_tree_view_column_set_expand");
+   begin
+      Internal (Get_Object (Tree_Column), Boolean'Pos (Expand));
+   end Set_Expand;
+
 end Gtk.Tree_View_Column;

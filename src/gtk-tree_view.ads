@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,18 +29,23 @@
 --  <description>
 --  See extended documentation in Gtk.Tree_View_Column and Gtk.Tree_Store.
 --  </description>
+--  <c_version>2.8.17</c_version>
 
---  <c_version>1.3.11</c_version>
-
+with Glib.Properties;
+with Gdk.Dnd;
 with Gdk.Pixmap;
 with Gdk.Rectangle;
+with Gdk.Types;
 with Gdk.Window;
 with Gtk;
 with Gtk.Adjustment;
+with Gtk.Cell_Renderer;
 with Gtk.Container;
+with Gtk.Selection;
 with Gtk.Tree_Model;
 with Gtk.Tree_Selection;
 with Gtk.Tree_View_Column;
+with Interfaces.C.Strings;
 
 package Gtk.Tree_View is
 
@@ -74,15 +79,12 @@ package Gtk.Tree_View is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Model
-     (Tree_View : access Gtk_Tree_View_Record)
-      return Gtk.Tree_Model.Gtk_Tree_Model;
-   --  Returns the model the the Gtk_Tree_View is based on.  Returns Null if
-   --  the model is unset.
-
    procedure Set_Model
      (Tree_View : access Gtk_Tree_View_Record;
       Model     : Gtk.Tree_Model.Gtk_Tree_Model);
+   function Get_Model
+     (Tree_View : access Gtk_Tree_View_Record)
+      return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Sets the model for a Gtk_Tree_View.  If the Tree_View already has a
    --  model set, it will remove it before setting the new model.
    --  If Model is Null, then it will unset the old model.
@@ -92,38 +94,33 @@ package Gtk.Tree_View is
       return Gtk.Tree_Selection.Gtk_Tree_Selection;
    --  Gets the Gtk_Tree_Selection associated with Tree_View.
 
-   function Get_Hadjustment
-     (Tree_View : access Gtk_Tree_View_Record)
-      return Gtk.Adjustment.Gtk_Adjustment;
-   --  Sets the Gtk_Adjustment for the current horizontal aspect.
-
    procedure Set_Hadjustment
      (Tree_View  : access Gtk_Tree_View_Record;
       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   --  Sets the Gtk_Adjustment for the current horizontal aspect.
-
-   function Get_Vadjustment
+   function Get_Hadjustment
      (Tree_View : access Gtk_Tree_View_Record)
       return Gtk.Adjustment.Gtk_Adjustment;
-   --  Gets the Gtk_Adjustment currently being used for the vertical aspect.
+   --  Sets or gets the Gtk_Adjustment for the current horizontal aspect.
 
    procedure Set_Vadjustment
      (Tree_View  : access Gtk_Tree_View_Record;
       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   --  Sets the Gtk_Adjustment for the current vertical aspect.
+   function Get_Vadjustment
+     (Tree_View : access Gtk_Tree_View_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
+   --  Sets or Gets the Gtk_Adjustment currently being used for the vertical
+   --  aspect.
 
    ----------------------------------
    -- Column and header operations --
    ----------------------------------
 
-   function Get_Headers_Visible
-     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
-   --  Returns True if the headers on the Tree_View are visible.
-
    procedure Set_Headers_Visible
      (Tree_View       : access Gtk_Tree_View_Record;
       Headers_Visible : Boolean);
-   --  Sets the the visibility state of the headers.
+   function Get_Headers_Visible
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   --  Returns True if the headers on the Tree_View are visible.
 
    procedure Columns_Autosize (Tree_View : access Gtk_Tree_View_Record);
    --  Resizes all columns to their optimal width.
@@ -136,6 +133,8 @@ package Gtk.Tree_View is
    procedure Set_Rules_Hint
      (Tree_View : access Gtk_Tree_View_Record;
       Setting   : Boolean);
+   function Get_Rules_Hint
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
    --  This function tells GtkAda that the user interface for your
    --  application requires users to read across tree rows and associate
    --  cells with one another. By default, GtkAda will then render the tree
@@ -147,10 +146,6 @@ package Gtk.Tree_View is
    --  hint to the theme engine that your tree makes alternating colors
    --  useful from a functional standpoint (since it has lots of columns,
    --  generally).
-
-   function Get_Rules_Hint
-     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
-   --  Get the setting set by Set_Rules_Hint.
 
    -----------------------------
    -- Public Column functions --
@@ -174,6 +169,23 @@ package Gtk.Tree_View is
    --  Insert the Column into the Tree_View at Position.
    --  If Position is -1, then the column is inserted at the end.
    --  Return the number of columns in Tree_View after insertion.
+
+   function Insert_Column_With_Data_Func
+     (Tree_View : access Gtk_Tree_View_Record;
+      Position  : Gint;
+      Title     : String;
+      Cell      : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Func      : Gtk.Tree_View_Column.Cell_Data_Func)
+      return Gint;
+   --  Convenience function that inserts a new column into the tree view
+   --  with the given cell renderer and a function to set cell renderer
+   --  attributes (normally using data from the model). See also
+   --  Gtk.Tree_View_Column.Set_Cell_Data_Func and
+   --  Gtk.Tree_View_Column.Pack_Start.
+   --  If Tree_View has "fixed_height" mode enabled, then Column must have its
+   --  "sizing" property set to be TREE_VIEW_COLUMN_FIXED.
+   --
+   --  Return value: number of columns in the tree view post-insert
 
    function Get_Column
      (Tree_View : access Gtk_Tree_View_Record;
@@ -232,6 +244,15 @@ package Gtk.Tree_View is
    --  If Use_Align is False, then the alignment arguments are ignored, and the
    --  tree does the minimum amount of work to scroll the cell onto the screen.
 
+   procedure Get_Visible_Range
+     (Tree_View  : access Gtk_Tree_View_Record;
+      Start_Path : out Gtk.Tree_Model.Gtk_Tree_Path;
+      End_Path   : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Success    : out Boolean);
+   --  Sets Start_path and End_path to be the first and last visible path.
+   --  Note that there may be invisible paths in between.
+   --  The paths should be freed with Free after use.
+
    procedure Row_Activated
      (Tree_View : access Gtk_Tree_View_Record;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
@@ -251,6 +272,27 @@ package Gtk.Tree_View is
    --  Open the row so its children are visible
    --  Return True if the row existed and had children
 
+   procedure Expand_To_Path
+     (Tree_View : access Gtk_Tree_View_Record;
+      Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+   --  Expands the row at Path. This will also expand all parent rows of
+   --  Path as necessary.
+
+   type Gtk_Tree_View_Mapping_Func is access
+     procedure (Tree_View : System.Address;  --  Gtk_Tree_View
+                Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+                User_Data : System.Address);
+   pragma Convention (C, Gtk_Tree_View_Mapping_Func);
+   --  Function called on each matching row. Since this is low-level, you must
+   --  convert Tree_View to a proper Gtk_Tree_View with
+   --     Tree := Gtk_Tree_View (Gtk.Widget.Convert (Tree_View));
+
+   procedure Map_Expanded_Rows
+     (Tree_View : access Gtk_Tree_View_Record;
+      Func      : Gtk_Tree_View_Mapping_Func;
+      Data      : System.Address);
+   --  Calls Func on all expanded rows.
+
    function Collapse_Row
      (Tree_View : access Gtk_Tree_View_Record;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
@@ -261,23 +303,32 @@ package Gtk.Tree_View is
       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
    --  Return True if the node pointed to by Path is expanded in Tree_View.
 
-   procedure Set_Reorderable
-     (Tree_View   : access Gtk_Tree_View_Record;
-      Reorderable : Boolean);
-   --  This function is a convenience function to allow you to reorder models
-   --  that support the Gtk_Drag_Source_Iface and the Gtk_Drag_Dest_Iface. Both
-   --  Gtk_Tree_Store and Gtk_List_Store support these.
-   --  If Reorderable is True, then the user can reorder the model by dragging
-   --  and dropping columns.  The developer can listen to these changes by
-   --  connecting to the model's signals.
-   --  This function does not give you any degree of control over the order
-   --  - any reorderering is allowed. If more control is needed, you should
-   --  probably handle drag and drop manually.
-
-   function Get_Reorderable
+   procedure Set_Fixed_Height_Mode
+     (Tree_View : access Gtk_Tree_View_Record; Enable : Boolean);
+   function Get_Fixed_Height_Mode
      (Tree_View : access Gtk_Tree_View_Record) return Boolean;
-   --  Retrieve whether the user can reorder the tree via drag-and-drop.
-   --  See Set_Reorderable.
+   --  Enables or disables the fixed height mode of @tree_view.
+   --  Fixed height mode speeds up the rendering by assuming that all
+   --  rows have the same height.
+   --  Only enable this option if all rows are the same height and all
+   --  columns are of type TREE_VIEW_COLUMN_FIXED.
+
+   procedure Set_Hover_Expand
+     (Tree_View : access Gtk_Tree_View_Record; Expand : Boolean);
+   function Get_Hover_Expand
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   --  Enables of disables the hover expansion mode of Tree_view.
+   --  Hover expansion makes rows expand or collaps if the pointer
+   --  moves over them.
+
+   procedure Set_Hover_Selection
+     (Tree_View : access Gtk_Tree_View_Record; Hover : Boolean);
+   function Get_Hover_Selection
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   --  Enables of disables the hover selection mode of Tree_View.
+   --  Hover selection makes the selected row follow the pointer.
+   --  Currently, this works only for the selection modes
+   --  SELECTION_SINGLE and SELECTION_BROWSE.
 
    procedure Set_Cursor
      (Tree_View     : access Gtk_Tree_View_Record;
@@ -300,11 +351,56 @@ package Gtk.Tree_View is
    --  If the cursor isn't currently set, then *path will be Null. If no column
    --  currently has focus, then *focus_column will be Null.
 
+   procedure Set_Cursor_On_Cell
+     (Tree_View     : access Gtk_Tree_View_Record;
+      Path          : Gtk.Tree_Model.Gtk_Tree_Path;
+      Focus_Column  : Gtk.Tree_View_Column.Gtk_Tree_View_Column := null;
+      Focus_Cell    : Gtk.Cell_Renderer.Gtk_Cell_Renderer := null;
+      Start_Editing : Boolean);
+   --  Sets the current keyboard focus to be atPath, and selects it. This is
+   --  useful when you want to focus the user's attention on a particular row.
+   --  If Focus_Column is not null, then focus is given to the column specified
+   --  by it. If Focus_Column and Focus_Cell are not null, and Focus_Column
+   --  contains 2 or more editable or activatable cells, then focus is given to
+   --  the cell specified by Focus_Cell. Additionally, if Focus_Column is
+   --  specified, and Start_Editing is true, then editing should be started in
+   --  the specified cell. This function is often followed by
+   --  gtk.widget.grab_focus (Tree_View) in order to give keyboard focus to the
+   --  widget. Please note that editing can only happen when the widget is
+   --  realized.
+
    function Get_Bin_Window
      (Tree_View : access Gtk_Tree_View_Record) return Gdk.Window.Gdk_Window;
    --  Return the window that Tree_View renders to.
    --  This is used primarily to compare to Get_Window (Event) to confirm that
    --  the event on Tree_View is on the right window.
+
+   type Gtk_Tree_View_Row_Separator_Func is access
+     function (Model     : System.Address;
+               Iter      : Gtk.Tree_Model.Gtk_Tree_Iter;
+               User_Data : System.Address) return Gboolean;
+   pragma Convention (C, Gtk_Tree_View_Row_Separator_Func);
+   --  This function is used to determine whether a row should be drawn with a
+   --  separator. If it returns True, a separator is displayed.
+   --  This is a low-level function, since it isn't used very often, and you
+   --  should convert the Model to a Gtk_Tree_Model with
+   --     declare
+   --        Stub : Gtk_Tree_Model_Record;
+   --     begin
+   --        My_Model := Gtk_Tree_Model (Get_User_Data (Model, Stub));
+   --     end;
+
+   procedure Set_Row_Separator_Func
+     (Tree_View : access Gtk_Tree_View_Record;
+      Func      : Gtk_Tree_View_Row_Separator_Func;
+      Data      : System.Address;
+      Destroy   : Glib.G_Destroy_Notify_Address := null);
+   function Get_Row_Separator_Func
+     (Tree_View : access Gtk_Tree_View_Record)
+      return Gtk_Tree_View_Row_Separator_Func;
+   --  Sets the row separator function, which is used to determine
+   --  whether a row should be drawn as a separator. If the row separator
+   --  function is NULL, no separators are drawn. This is the default value.
 
    procedure Get_Path_At_Pos
      (Tree_View : access Gtk_Tree_View_Record;
@@ -386,28 +482,237 @@ package Gtk.Tree_View is
    --  Converts tree coordinates (coordinates in full scrollable area of
    --  the tree) to widget coordinates.
 
+   ---------------
+   -- Searching --
+   ---------------
+
+   procedure Set_Enable_Search
+     (Tree_View     : access Gtk_Tree_View_Record;
+      Enable_Search : Boolean);
+   function Get_Enable_Search
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   --  If enable_search is set, then the user can type in text to search
+   --  through the tree interactively (this is sometimes called "typeahead
+   --  find").
+   --  Note that even if this is FALSE, the user can still initiate a search
+   --  using the "start-interactive-search" key binding.
+
+   procedure Set_Search_Column
+     (Tree_View : access Gtk_Tree_View_Record;
+      Column    : Gint);
+   function Get_Search_Column
+     (Tree_View : access Gtk_Tree_View_Record) return Gint;
+   --  Sets column as the column where the interactive search code should
+   --  search in.
+   --  If the sort column is set, users can use the "start-interactive-search"
+   --  key binding to bring up search popup. The enable-search property
+   --  controls whether simply typing text will also start an interactive
+   --  search.
+   --  Note that column refers to a column of the model.
+
+   type Gtk_Tree_View_Search_Equal_Func is access
+     function (Model  : System.Address;
+               Column : Gint;
+               Key    : Interfaces.C.Strings.chars_ptr;
+               Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+               User_Data : System.Address) return Gboolean;
+   pragma Convention (C, Gtk_Tree_View_Search_Equal_Func);
+   --  The function used to compare for the interactive search capabilities.
+   --  This function should return False on match, similar to C's strcmp().
+   --  This is a low-level function, and you should convert the model to a
+   --  Gtk_Tree_Model (see Gtk_Tree_View_Row_Separator_Func
+
+   procedure Set_Search_Equal_Func
+     (Tree_View         : access Gtk_Tree_View_Record;
+      Search_Equal_Func : Gtk_Tree_View_Search_Equal_Func;
+      Search_User_Data  : System.Address;
+      Search_Destroy    : G_Destroy_Notify_Address := null);
+   function Get_Search_Equal_Func
+     (Tree_View : access Gtk_Tree_View_Record)
+      return Gtk_Tree_View_Search_Equal_Func;
+   --  Sets the compare function for the interactive search capabilities
+
+   ------------------------
+   -- Columns reordering --
+   ------------------------
+
+   procedure Set_Reorderable
+     (Tree_View   : access Gtk_Tree_View_Record;
+      Reorderable : Boolean);
+   function Get_Reorderable
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   --  This function is a convenience function to allow you to reorder models
+   --  that support the Gtk_Drag_Source_Iface and the Gtk_Drag_Dest_Iface. Both
+   --  Gtk_Tree_Store and Gtk_List_Store support these.
+   --  If Reorderable is True, then the user can reorder the model by dragging
+   --  and dropping columns.  The developer can listen to these changes by
+   --  connecting to the model's signals.
+   --  This function does not give you any degree of control over the order
+   --  - any reorderering is allowed. If more control is needed, you should
+   --  probably handle drag and drop manually.
+
+   type Gtk_Tree_View_Column_Drop_Func is access
+     function (Tree_View   : System.Address; --  Gtk_Tree_View
+               Column      : System.Address; --  Gtk_Tree_View_Column
+               Prev_Column : System.Address; --  Gtk_Tree_View_Column
+               Next_Column : System.Address; --  Gtk_Tree_View_Column
+               User_Data   : System.Address) return Gboolean;
+   pragma Convention (C, Gtk_Tree_View_Column_Drop_Func);
+   --  This function is used to determine whether a column may be dropped in
+   --  a given location.
+   --  This function is called on every column pair in turn at the beginning of
+   --  a column drag to determine where a drop can take place. The arguments
+   --  are: the tree_view, the column being dragged, the two columns
+   --  determining the drop spot, and user_data. If either of the column
+   --  arguments for the drop spot are null, then they indicate an edge.
+   --
+   --  This is a low-level function, and you should use Get_User_Data to
+   --  convert to the appropriate GtkAda widgets
+
+   procedure Set_Column_Drag_Function
+     (Tree_View : access Gtk_Tree_View_Record;
+      Func      : Gtk_Tree_View_Column_Drop_Func;
+      User_Data : System.Address;
+      Destroy   : Glib.G_Destroy_Notify_Address);
+   --  Sets a user function for determining where a column may be dropped.
+   --  If Func is set to be %NULL, then Tree_View reverts to the default
+   --  behavior of allowing all columns to be dropped everywhere.
+
+   -------------------
+   -- Drag-and-drop --
+   -------------------
+
+   procedure Enable_Model_Drag_Dest
+     (Tree_View : access Gtk_Tree_View_Record;
+      Targets   : Gtk.Selection.Target_Entry_Array;
+      Actions   : Gdk.Dnd.Drag_Action);
+   --  Turns Tree_View into a drop destination for automatic drag-and-drop.
+   --  Targets is the table of targets that the drag will support.
+   --  Actions is a bitmask of possible actions for a drag to this widget.
+
+   procedure Enable_Model_Drag_Source
+     (Tree_View         : access Gtk_Tree_View_Record;
+      Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
+      Targets           : Gtk.Selection.Target_Entry_Array;
+      Actions           : Gdk.Dnd.Drag_Action);
+   --  Turns Tree_View into a drag source for automatic DND.
+   --  Targets is the list of targets that the drag will support.
+   --  Actions is the bitmask of possible actions for a drag from this widget.
+   --  Start_Button_Mask is the mask of allowed buttons to start the drag.
+   --  You need to connect to the usual dnd signals (see gtk-dnd.ads) to
+   --  provide the actual data upon request.
+
    procedure Unset_Rows_Drag_Source (Tree_View : access Gtk_Tree_View_Record);
+   --  Undoes the effect of Enable_Model_Drag_Source.
 
    procedure Unset_Rows_Drag_Dest (Tree_View : access Gtk_Tree_View_Record);
+   --  Undoes the effect of Enable_Model_Drag_Dest.
 
    function Create_Row_Drag_Icon
      (Tree_View : access Gtk_Tree_View_Record;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path)
       return Gdk.Pixmap.Gdk_Pixmap;
+   --  Creates a Gdk_Pixmap representation of the row at path. This image is
+   --  used for a drag icon.
+   --  The returned pixmap must be freed by the user
 
-   procedure Set_Enable_Search
-     (Tree_View     : access Gtk_Tree_View_Record;
-      Enable_Search : Boolean);
-
-   function Get_Enable_Search
-     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
-
-   function Get_Search_Column
-     (Tree_View : access Gtk_Tree_View_Record) return Gint;
-
-   procedure Set_Search_Column
+   procedure Get_Dest_Row_At_Pos
      (Tree_View : access Gtk_Tree_View_Record;
-      Column    : Gint);
+      Drag_X    : Gint;
+      Drag_Y    : Gint;
+      Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Pos       : out Gtk_Tree_View_Drop_Position;
+      Success   : out Boolean);
+   --  Determines the destination row for a given position.
+   --  (Drag_X, Drag_Y) is the position to determine the destination row for.
+
+   procedure Set_Drag_Dest_Row
+     (Tree_View : access Gtk_Tree_View_Record;
+      Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+      Pos       : Gtk_Tree_View_Drop_Position);
+   procedure Get_Drag_Dest_Row
+     (Tree_View : access Gtk_Tree_View_Record;
+      Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Pos       : out Gtk_Tree_View_Drop_Position);
+   --  Sets or gets information about the row that is highlighted for feedback.
+
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  Name:  Enable_Search_Property
+   --  Type:  Boolean
+   --  Descr: View allows user to search through columns interactively
+   --
+   --  Name:  Expander_Column_Property
+   --  Type:  Object
+   --  Descr: Set the column for the expander column
+   --
+   --  Name:  Fixed_Height_Mode_Property
+   --  Type:  Boolean
+   --  Descr: Speeds up GtkTreeView by assuming that all rows have the same
+   --         height
+   --
+   --  Name:  Hadjustment_Property
+   --  Type:  Object
+   --  Descr: Horizontal Adjustment for the widget
+   --
+   --  Name:  Headers_Clickable_Property
+   --  Type:  Boolean
+   --  Descr: Column headers respond to click events
+   --
+   --  Name:  Headers_Visible_Property
+   --  Type:  Boolean
+   --  Descr: Show the column header buttons
+   --
+   --  Name:  Hover_Expand_Property
+   --  Type:  Boolean
+   --  Descr: Whether rows should be expanded/collapsed when the pointer moves
+   --         over them
+   --
+   --  Name:  Hover_Selection_Property
+   --  Type:  Boolean
+   --  Descr: Whether the selection should follow the pointer
+   --
+   --  Name:  Model_Property
+   --  Type:  Object
+   --  Descr: The model for the tree view
+   --
+   --  Name:  Reorderable_Property
+   --  Type:  Boolean
+   --  Descr: View is reorderable
+   --
+   --  Name:  Rules_Hint_Property
+   --  Type:  Boolean
+   --  Descr: Set a hint to the theme engine to draw rows in alternating colors
+   --
+   --  Name:  Search_Column_Property
+   --  Type:  Int
+   --  Descr: Model column to search through when searching through code
+   --
+   --  Name:  Vadjustment_Property
+   --  Type:  Object
+   --  Descr: Vertical Adjustment for the widget
+   --
+   --  </properties>
+
+   Enable_Search_Property     : constant Glib.Properties.Property_Boolean;
+   Expander_Column_Property   : constant Glib.Properties.Property_Object;
+   Fixed_Height_Mode_Property : constant Glib.Properties.Property_Boolean;
+   Hadjustment_Property       : constant Glib.Properties.Property_Object;
+   Headers_Clickable_Property : constant Glib.Properties.Property_Boolean;
+   Headers_Visible_Property   : constant Glib.Properties.Property_Boolean;
+   Hover_Expand_Property      : constant Glib.Properties.Property_Boolean;
+   Hover_Selection_Property   : constant Glib.Properties.Property_Boolean;
+   Model_Property             : constant Glib.Properties.Property_Object;
+   Reorderable_Property       : constant Glib.Properties.Property_Boolean;
+   Rules_Hint_Property        : constant Glib.Properties.Property_Boolean;
+   Search_Column_Property     : constant Glib.Properties.Property_Int;
+   Vadjustment_Property       : constant Glib.Properties.Property_Object;
 
    -------------
    -- Signals --
@@ -480,93 +785,57 @@ package Gtk.Tree_View is
    --
    --  </signals>
 
+   Signal_Columns_Changed            : constant String := "columns_changed";
+   Signal_Cursor_Changed             : constant String := "cursor_changed";
+   Signal_Expand_Collapse_Cursor_Row : constant String :=
+     "expand_collapse_cursor_row";
+   Signal_Move_Cursor            : constant String := "move_cursor";
+   Signal_Row_Activated          : constant String := "row_activated";
+   Signal_Row_Collapsed          : constant String := "row_collapsed";
+   Signal_Row_Expanded           : constant String := "row_expanded";
+   Signal_Select_All             : constant String := "select_all";
+   Signal_Select_Cursor_Parent   : constant String := "select_cursor_parent";
+   Signal_Select_Cursor_Row      : constant String := "select_cursor_row";
+   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
+   Signal_Start_Interactive_Search : constant String :=
+     "start_interactive_search";
+   Signal_Test_Collapse_Row      : constant String := "test_collapse_row";
+   Signal_Test_Expand_Row        : constant String := "test_expand_row";
+   Signal_Toggle_Cursor_Row      : constant String := "toggle_cursor_row";
+   Signal_Unselect_All           : constant String := "unselect_all";
+
 private
    type Gtk_Tree_View_Record is
      new Gtk.Container.Gtk_Container_Record with null record;
 
+   Enable_Search_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("enable-search");
+   Expander_Column_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("expander-column");
+   Fixed_Height_Mode_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("fixed-height-mode");
+   Hadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("hadjustment");
+   Headers_Clickable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("headers-clickable");
+   Headers_Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("headers-visible");
+   Hover_Expand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("hover-expand");
+   Hover_Selection_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("hover-selection");
+   Model_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("model");
+   Reorderable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("reorderable");
+   Rules_Hint_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("rules-hint");
+   Search_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("search-column");
+   Vadjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("vadjustment");
+
    pragma Import (C, Get_Type, "gtk_tree_view_get_type");
 end Gtk.Tree_View;
 
---  Missing :
-
---    type Gtk_Tree_View_Mapping_Func is access
---      procedure (Tree_View : Gtk_Tree_View;
---              Path      : Gtk.Tree_Model.Gtk_Tree_Path;
-
---    type Gtk_Tree_View_Search_Equal_Func is access
---      function (Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
---             Column : Gint;
---             Key    : String;
---             Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter_Record'Class;
-
---    function Get_Search_Equal_Func (Tree_View : access Gtk_Tree_View_Record)
---                                   return Gtk_Tree_View_Search_Equal_Func;
-
---    procedure Set_Search_Equal_Func
---      (Tree_View         : access Gtk_Tree_View_Record;
---       Search_Equal_Func : Gtk_Tree_View_Search_Equal_Func;
---       Search_User_Data  : gpointer;
---       Search_Destroy    : Gtk_Destroy_Notify);
-
---    procedure Set_Destroy_Count_Func
---      (Tree_View : access Gtk_Tree_View_Record;
---       Func      : Gtk_Tree_Destroy_Count_Func;
---       Data      : gpointer;
---       Destroy   : Gtk_Destroy_Notify);
-
---    procedure Set_Drag_Dest_Row
---      (Tree_View : access Gtk_Tree_View_Record;
---       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
---       Pos       : Gtk_Tree_View_Drop_Position);
-
---    procedure Get_Drag_Dest_Row
---      (Tree_View : access Gtk_Tree_View_Record;
---       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
---       Pos       : access Gtk_Tree_View_Drop_Position_Record);
-
---    function Get_Dest_Row_At_Pos
---      (Tree_View : access Gtk_Tree_View_Record;
---       Drag_X    : Gint;
---       Drag_Y    : Gint;
---       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
---       Pos       : access Gtk_Tree_View_Drop_Position_Record)
---       return Boolean;
-
---    procedure Set_Rows_Drag_Source
---      (Tree_View          : access Gtk_Tree_View_Record;
---       Start_Button_Mask  : Gdk_Modifier_Type;
---       Targets            : access Gtk.Selection.Gtk_Target_Entry;
---       N_Targets          : Gint;
---       Actions            : Gdk_Drag_Action;
---       Row_Draggable_Func : Gtk_Tree_View_Draggable_Func;
---       User_Data          : gpointer);
-
---    procedure Set_Rows_Drag_Dest
---      (Tree_View               : access Gtk_Tree_View_Record;
---       Targets                 :
---         access Gtk.Selection.Gtk_Target_Entry_Record'Class;
---       N_Targets               : Gint;
---       Actions                 : Gdk_Drag_Action;
---       Location_Droppable_Func : Gtk_Tree_View_Droppable_Func;
---       User_Data               : gpointer);
-
---    procedure Set_Column_Drag_Function
---      (Tree_View : access Gtk_Tree_View_Record;
---       Func      : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Drop_Func;
---       User_Data : gpointer;
---       Destroy   : Gtk_Destroy_Notify);
-
---    procedure Map_Expanded_Rows
---      (Tree_View : access Gtk_Tree_View_Record;
---       Func      : Gtk_Tree_View_Mapping_Func;
---       Data      : gpointer);
-
---    function Insert_Column_With_Data_Func
---      (Tree_View : access Gtk_Tree_View_Record;
---       Position  : Gint;
---       Title     : UTF8_String;
---       Cell      : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
---       Func      : Gtk_Tree_Cell_Data_Func;
---       Data      : gpointer;
---       Dnotify   : G_Destroy_Notify)
---       return Gint;
+--  No binding: gtk_tree_view_set_destroy_count_func
