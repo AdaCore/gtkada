@@ -36,46 +36,6 @@
 #include <gtk/gtktext.h>
 
 /******************************************
- ** Functions for Editable
- ******************************************/
-
-guint
-ada_editable_get_editable (GtkOldEditable* widget)
-{
-  return widget->editable;
-}
-
-void
-ada_editable_set_editable (GtkOldEditable* widget, guint val)
-{
-  widget->editable = val;
-}
-
-gchar*
-ada_editable_get_clipboard_text (GtkOldEditable* widget)
-{
-   return widget->clipboard_text;
-}
-
-guint
-ada_editable_get_has_selection (GtkOldEditable* widget)
-{
-   return widget->has_selection;
-}
-
-guint
-ada_editable_get_selection_end_pos (GtkOldEditable* widget)
-{
-   return widget->selection_end_pos;
-}
-
-guint
-ada_editable_get_selection_start_pos (GtkOldEditable* widget)
-{
-   return widget->selection_start_pos;
-}
-
-/******************************************
  ** Functions for Text
  ******************************************/
 
