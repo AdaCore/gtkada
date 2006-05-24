@@ -33,7 +33,7 @@
 --  The beginning of the box (when you add children with Gtk.Box.Pack_Start)
 --  is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
 --  </description>
---  <c_version>2.8.10</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib;
 with Gtk.Button_Box;
