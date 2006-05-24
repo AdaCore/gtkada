@@ -101,6 +101,7 @@ package body Gnome.App_Bar is
    -- Appbar_Get_Progress --
    -------------------------
 
+   pragma Warnings (Off); --  Gtk.Progress is obsolescent
    function Appbar_Get_Progress
      (Appbar : access Gnome_App_Bar_Record) return Gtk.Progress.Gtk_Progress
    is
@@ -110,6 +111,7 @@ package body Gnome.App_Bar is
       return Gtk.Progress.Gtk_Progress
         (Widget.Convert (Internal (Get_Object (Appbar))));
    end Appbar_Get_Progress;
+   pragma Warnings (On);
 
    -------------------------
    -- Appbar_Get_Response --
