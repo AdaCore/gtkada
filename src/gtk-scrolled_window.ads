@@ -71,8 +71,8 @@ package Gtk.Scrolled_Window is
 
    procedure Gtk_New
      (Scrolled_Window : out Gtk_Scrolled_Window;
-      Hadjustment     : Gtk_Adjustment := Null_Adjustment;
-      Vadjustment     : Gtk_Adjustment := Null_Adjustment);
+      Hadjustment     : Gtk_Adjustment := null;
+      Vadjustment     : Gtk_Adjustment := null);
    --  Create a new scrolled window.
    --  The two arguments are the scrolled window's horizontal and vertical
    --  adjustments; these will be shared with the scrollbars and the child
@@ -82,8 +82,8 @@ package Gtk.Scrolled_Window is
 
    procedure Initialize
      (Scrolled_Window : access Gtk_Scrolled_Window_Record'Class;
-      Hadjustment     : Gtk_Adjustment := Null_Adjustment;
-      Vadjustment     : Gtk_Adjustment := Null_Adjustment);
+      Hadjustment     : Gtk_Adjustment := null;
+      Vadjustment     : Gtk_Adjustment := null);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

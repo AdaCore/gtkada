@@ -48,8 +48,8 @@ package Gtk.Viewport is
 
    procedure Gtk_New
      (Viewport    : out Gtk_Viewport;
-      Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+      Hadjustment : Adjustment.Gtk_Adjustment := null;
+      Vadjustment : Adjustment.Gtk_Adjustment := null);
    procedure Initialize
      (Viewport    : access Gtk_Viewport_Record'Class;
       Hadjustment : Gtk.Adjustment.Gtk_Adjustment;

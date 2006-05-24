@@ -63,8 +63,8 @@ package Gtk.Layout is
 
    procedure Gtk_New
      (Layout      : out Gtk_Layout;
-      Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+      Hadjustment : Adjustment.Gtk_Adjustment := null;
+      Vadjustment : Adjustment.Gtk_Adjustment := null);
    --  Create new layout.
    --  You can either give an explicit couple of adjustments, that will
    --  indicate the current visible area. If you don't specify any, they will

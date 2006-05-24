@@ -52,8 +52,8 @@ package Gtk.Text is
 
    procedure Gtk_New
      (Text : out Gtk_Text;
-      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+      Hadj : in Adjustment.Gtk_Adjustment := null;
+      Vadj : in Adjustment.Gtk_Adjustment := null);
    --  Create a new text widget with the given adjustments.
    --  If either or both scrollbars is not provided, the text widget will
    --  create its own.
@@ -63,8 +63,8 @@ package Gtk.Text is
 
    procedure Initialize
      (Text : access Gtk_Text_Record'Class;
-      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+      Hadj : in Adjustment.Gtk_Adjustment := null;
+      Vadj : in Adjustment.Gtk_Adjustment := null);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

@@ -188,8 +188,8 @@ package body Gtk.Text is
 
    procedure Gtk_New
      (Text : out Gtk_Text;
-      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
+      Hadj : in Adjustment.Gtk_Adjustment := null;
+      Vadj : in Adjustment.Gtk_Adjustment := null) is
    begin
       Text := new Gtk_Text_Record;
       Initialize (Text, Hadj, Vadj);
@@ -217,8 +217,8 @@ package body Gtk.Text is
 
    procedure Initialize
      (Text : access Gtk_Text_Record'Class;
-      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment)
+      Hadj : in Adjustment.Gtk_Adjustment := null;
+      Vadj : in Adjustment.Gtk_Adjustment := null)
    is
       function Internal
         (Hadj   : in System.Address;

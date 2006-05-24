@@ -435,7 +435,7 @@ package body Gtkada.Canvas is
 
       --  Configure with default values
       Configure (Canvas);
-      Set_Scroll_Adjustments (Canvas, Null_Adjustment, Null_Adjustment);
+      Set_Scroll_Adjustments (Canvas, null, null);
    end Initialize;
 
    --------------

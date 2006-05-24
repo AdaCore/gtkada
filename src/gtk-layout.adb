@@ -71,8 +71,8 @@ package body Gtk.Layout is
 
    procedure Gtk_New
      (Layout      : out Gtk_Layout;
-      Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
+      Hadjustment : Adjustment.Gtk_Adjustment := null;
+      Vadjustment : Adjustment.Gtk_Adjustment := null) is
    begin
       Layout := new Gtk_Layout_Record;
       Initialize (Layout, Hadjustment, Vadjustment);

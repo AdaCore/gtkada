@@ -3,6 +3,7 @@
 --                                                                   --
 --                      Copyright (C) 2001                           --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                       Copyright 2002-2006 AdaCore                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -20,6 +21,7 @@
 
 --  This package provides all the routines needed to output code from Glade
 --  XML files for the Gtk+ hiearchy.
+--  <c_version>2.8.17</c_version>
 
 with Ada.Text_IO; use Ada.Text_IO;
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;

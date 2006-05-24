@@ -178,8 +178,8 @@ package body Gtk.Scrolled_Window is
 
    procedure Gtk_New
      (Scrolled_Window : out Gtk_Scrolled_Window;
-      Hadjustment     : Gtk_Adjustment := Null_Adjustment;
-      Vadjustment     : Gtk_Adjustment := Null_Adjustment) is
+      Hadjustment     : Gtk_Adjustment := null;
+      Vadjustment     : Gtk_Adjustment := null) is
    begin
       Scrolled_Window := new Gtk_Scrolled_Window_Record;
       Initialize (Scrolled_Window, Hadjustment, Vadjustment);
@@ -191,8 +191,8 @@ package body Gtk.Scrolled_Window is
 
    procedure Initialize
      (Scrolled_Window : access Gtk_Scrolled_Window_Record'Class;
-      Hadjustment     : Gtk_Adjustment := Null_Adjustment;
-      Vadjustment     : Gtk_Adjustment := Null_Adjustment)
+      Hadjustment     : Gtk_Adjustment := null;
+      Vadjustment     : Gtk_Adjustment := null)
    is
       function Internal
         (Hadjustment, Vadjustment : System.Address) return System.Address;

@@ -99,8 +99,8 @@ package body Gtk.Viewport is
 
    procedure Gtk_New
      (Viewport    : out Gtk_Viewport;
-      Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
+      Hadjustment : Adjustment.Gtk_Adjustment := null;
+      Vadjustment : Adjustment.Gtk_Adjustment := null) is
    begin
       Viewport := new Gtk_Viewport_Record;
       Initialize (Viewport, Hadjustment, Vadjustment);
