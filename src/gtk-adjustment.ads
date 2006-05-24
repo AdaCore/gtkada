@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,16 +47,15 @@
 --
 --  </example>
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Object;
 
 package Gtk.Adjustment is
 
    type Gtk_Adjustment_Record is new Object.Gtk_Object_Record with private;
    type Gtk_Adjustment is access all Gtk_Adjustment_Record'Class;
-
-   Null_Adjustment : constant Gtk_Adjustment;
 
    procedure Gtk_New
      (Adjustment     : out Gtk_Adjustment;
@@ -91,41 +90,10 @@ package Gtk.Adjustment is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Adjustment.
 
-   --------------------
-   -- Read functions --
-   --------------------
-
+   procedure Set_Value
+     (Adjustment : access Gtk_Adjustment_Record; Value : Gdouble);
    function Get_Value
      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
-   --  Return the current value of the adjustment.
-
-   function Get_Lower
-     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
-   --  Return the lower bound of the adjustment.
-
-   function Get_Upper
-     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
-   --  Return the upper bound of the adjustment.
-
-   function Get_Step_Increment
-     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
-   --  Return the step increment of the adjustment.
-
-   function Get_Page_Increment
-     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
-   --  Return the page increment of the adjustment.
-
-   function Get_Page_Size
-     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
-   --  Return the page size of the adjustment.
-
-   ---------------------
-   -- Write functions --
-   ---------------------
-
-   procedure Set_Value
-     (Adjustment : access Gtk_Adjustment_Record;
-      Value      : Gdouble);
    --  Modify the current value of the adjustment.
    --  You do not need to call Value_Changed after modifying this value,
    --  this is done automatically.
@@ -133,30 +101,40 @@ package Gtk.Adjustment is
    procedure Set_Lower
      (Adjustment : access Gtk_Adjustment_Record;
       Lower      : Gdouble);
+   function Get_Lower
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Modify the lower bound of the adjustment.
    --  You should call Changed after modifying this value.
 
    procedure Set_Upper
      (Adjustment : access Gtk_Adjustment_Record;
       Upper      : Gdouble);
+   function Get_Upper
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Modify the upper bound of the adjustment.
    --  You should call Changed after modifying this value.
 
    procedure Set_Step_Increment
      (Adjustment     : access Gtk_Adjustment_Record;
       Step_Increment : Gdouble);
+   function Get_Step_Increment
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Modify the step increment of the adjustment.
    --  You should call Changed after modifying this value.
 
    procedure Set_Page_Increment
      (Adjustment     : access Gtk_Adjustment_Record;
       Page_Increment : Gdouble);
+   function Get_Page_Increment
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Modify the page increment of the adjustment.
    --  You should call Changed after modifying this value.
 
    procedure Set_Page_Size
      (Adjustment : access Gtk_Adjustment_Record;
       Page_Size  : Gdouble);
+   function Get_Page_Size
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Modify the page size of the adjustment.
    --  You should call Changed after modifying this value.
 
@@ -194,7 +172,39 @@ package Gtk.Adjustment is
    --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
+   --
+   --  Name:  Lower_Property
+   --  Type:  Double
+   --  Descr: The minimum value of the adjustment
+   --
+   --  Name:  Page_Increment_Property
+   --  Type:  Double
+   --  Descr: The page increment of the adjustment
+   --
+   --  Name:  Page_Size_Property
+   --  Type:  Double
+   --  Descr: The page size of the adjustment
+   --
+   --  Name:  Step_Increment_Property
+   --  Type:  Double
+   --  Descr: The step increment of the adjustment
+   --
+   --  Name:  Upper_Property
+   --  Type:  Double
+   --  Descr: The maximum value of the adjustment
+   --
+   --  Name:  Value_Property
+   --  Type:  Double
+   --  Descr: The value of the adjustment
+   --
    --  </properties>
+
+   Lower_Property          : constant Glib.Properties.Property_Double;
+   Page_Increment_Property : constant Glib.Properties.Property_Double;
+   Page_Size_Property      : constant Glib.Properties.Property_Double;
+   Step_Increment_Property : constant Glib.Properties.Property_Double;
+   Upper_Property          : constant Glib.Properties.Property_Double;
+   Value_Property          : constant Glib.Properties.Property_Double;
 
    -------------
    -- Signals --
@@ -216,11 +226,24 @@ package Gtk.Adjustment is
    --    modified
    --  </signals>
 
-private
+   Signal_Changed       : constant String := "changed";
+   Signal_Value_Changed : constant String := "value_changed";
 
+private
    type Gtk_Adjustment_Record is new Object.Gtk_Object_Record with null record;
 
-   Null_Adjustment : constant Gtk_Adjustment := null;
+   Lower_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("lower");
+   Page_Increment_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("page-increment");
+   Page_Size_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("page-size");
+   Step_Increment_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("step-increment");
+   Upper_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("upper");
+   Value_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("value");
 
    pragma Import (C, Get_Type, "gtk_adjustment_get_type");
 end Gtk.Adjustment;
