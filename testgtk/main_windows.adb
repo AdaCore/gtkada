@@ -425,11 +425,12 @@ package body Main_Windows is
    ------------------
 
    procedure Display_Help (Button : access Gtk_Widget_Record'Class) is
-      pragma Unreferenced (Button);
-
       Close     : Gtk.Button.Gtk_Button;
       Scrolled  : Gtk_Scrolled_Window;
       Label     : Gtk.Label.Gtk_Label;
+      Tmp       : Boolean;
+      pragma Unreferenced (Button);
+
 
    begin
       if Help_Dialog = null then
@@ -465,7 +466,9 @@ package body Main_Windows is
          Grab_Default (Close);
 
       else
-         Delete_Text (Help_Text, 0, -1);
+         Set_Point (Help_Text, 0);
+         Tmp := Forward_Delete (Help_Text, Guint'Last);
+         --  Delete_Text (Help_Text, 0, -1);
       end if;
 
       Freeze (Help_Text);
