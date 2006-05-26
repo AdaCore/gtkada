@@ -188,6 +188,12 @@ gtk-extra-plot_box.adb
 gtk-extra-plot_box.ads
 gtk-extra-plot_canvas.adb
 gtk-extra-plot_canvas.ads
+gtk-extra-plot_canvas-pixmap.adb
+gtk-extra-plot_canvas-pixmap.ads
+gtk-extra-plot_canvas-plot.adb
+gtk-extra-plot_canvas-plot.ads
+gtk-extra-plot_canvas-text.adb
+gtk-extra-plot_canvas-text.ads
 gtk-extra-plot_data.adb
 gtk-extra-plot_data.ads
 gtk-extra-plot_polar.adb
