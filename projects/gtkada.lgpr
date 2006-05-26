@@ -172,8 +172,8 @@ gtk-extra-border_combo.adb
 gtk-extra-border_combo.ads
 gtk-extra-color_combo.adb
 gtk-extra-color_combo.ads
-gtk-extra-combo_box.adb
-gtk-extra-combo_box.ads
+gtk-extra-combo_button.adb
+gtk-extra-combo_button.ads
 gtk-extra-font_combo.adb
 gtk-extra-font_combo.ads
 gtk-extra-item_entry.adb
