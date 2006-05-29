@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -45,8 +45,9 @@
 --  interactively by the user.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gdk.Font;
 with Gtk.Box;
 with Gtk.Button;
@@ -68,46 +69,27 @@ package Gtk.Font_Selection is
    ------------------------------
 
    procedure Gtk_New (Widget : out Gtk_Font_Selection);
-   --  Create a new font selection widget.
-   --  It can be added to any existing container.
-
    procedure Initialize (Widget : access Gtk_Font_Selection_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   --  Creates or initialises a new font selection widget.
+   --  It can be added to any existing container.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Font_Selection.
 
-   function Get_Font_Name
-     (Fontsel : access Gtk_Font_Selection_Record) return String;
-   --  Return the name of the font selected by the user.
-   --  It returns an empty string if not font is selected.
-   --  The string has the same format as in Pango.Font.
-
-   --  <doc_ignore>
-   function Get_Font
-     (Fontsel : access Gtk_Font_Selection_Record) return Gdk.Font.Gdk_Font;
-   --  Allocate and return the font selected by the user.
-   --  This newly created font can be used as is by all the drawing functions
-   --  in the Gdk.Drawable package.
-   --  If not font has been selected, Gdk.Font.Null_Font is returned.
-   --  This function is deprecated.
-   --  </doc_ignore>
-
    function Set_Font_Name
      (Fontsel  : access Gtk_Font_Selection_Record;
       Fontname : String) return Boolean;
+   function Get_Font_Name
+     (Fontsel : access Gtk_Font_Selection_Record) return String;
    --  Set the name and attributes of the selected font in Fontsel.
    --  Fontname should have the format described in Pango.Font.
    --  Fontself must have been displayed on the screen already
 
-   function Get_Preview_Text
-     (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
-   --  Return the string used to preview the selected font in the dialog.
-
    procedure Set_Preview_Text
      (Fontsel : access Gtk_Font_Selection_Record; Text : UTF8_String);
-   --  Set the string to use to preview the selected font.
+   function Get_Preview_Text
+     (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
+   --  Set or Get the string used to preview the selected font in the dialog.
 
    -------------------------------------
    -- Font_Selection_Dialog functions --
@@ -115,19 +97,19 @@ package Gtk.Font_Selection is
 
    procedure Gtk_New
      (Widget : out Gtk_Font_Selection_Dialog; Title : UTF8_String);
-   --  Create a new dialog to select a font.
-   --  The font selection widget has its own window, whose title is chosen
-   --  by Title.
-
    procedure Initialize
      (Widget : access Gtk_Font_Selection_Dialog_Record'Class;
       Title  : UTF8_String);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   --  Creates or initialises a new dialog to select a font.
+   --  The font selection widget has its own window, whose title is chosen
+   --  by Title.
 
    function Dialog_Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Font_Selection_Dialog.
 
+   function Set_Font_Name
+     (Fsd      : access Gtk_Font_Selection_Dialog_Record;
+      Fontname : String) return Boolean;
    function Get_Font_Name
      (Fsd : access Gtk_Font_Selection_Dialog_Record) return String;
    --  Return the name of the font selected by the user.
@@ -135,30 +117,11 @@ package Gtk.Font_Selection is
    --  The string has the same format as excepted in the Gdk.Font package.
    --  This is also the standard format on X11 systems.
 
-   --  <doc_ignore>
-   function Get_Font
-     (Fsd : access Gtk_Font_Selection_Dialog_Record) return Gdk.Font.Gdk_Font;
-   --  Allocate and return the font selected by the user.
-   --  This newly created font can be used as is by all the drawing functions
-   --  in the Gdk.Drawable package.
-   --  If not font has been selected, Gdk.Font.Null_Font is returned.
-   --  This function is deprecated.
-   --  </doc_ignore>
-
-   function Set_Font_Name
-     (Fsd      : access Gtk_Font_Selection_Dialog_Record;
-      Fontname : String) return Boolean;
-   --  Set the name and attributes of the selected font in Fontsel.
-   --  Fontname should have the standard format on X11 systems, that fully
-   --  describe the family, weight, size, slant, etc. of the font.
-
+   procedure Set_Preview_Text
+     (Fsd : access Gtk_Font_Selection_Dialog_Record; Text : UTF8_String);
    function Get_Preview_Text
      (Fsd : access Gtk_Font_Selection_Dialog_Record) return UTF8_String;
    --  Return the string used to preview the selected font in the dialog.
-
-   procedure Set_Preview_Text
-     (Fsd : access Gtk_Font_Selection_Dialog_Record; Text : UTF8_String);
-   --  Set the string to use to preview the selected font.
 
    function Get_Cancel_Button
      (Fsd : access Gtk_Font_Selection_Dialog_Record)
@@ -182,6 +145,33 @@ package Gtk.Font_Selection is
    --  The callback on this button should temporarily apply the font, but
    --  should be able to cancel its effect if the Cancel button is selected.
 
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   function Get_Font
+     (Fontsel : access Gtk_Font_Selection_Record) return Gdk.Font.Gdk_Font;
+   pragma Obsolescent;  --  Get_Font
+   --  Allocate and return the font selected by the user.
+   --  This newly created font can be used as is by all the drawing functions
+   --  in the Gdk.Drawable package.
+   --  If not font has been selected, Gdk.Font.Null_Font is returned.
+
+   function Get_Font
+     (Fsd : access Gtk_Font_Selection_Dialog_Record) return Gdk.Font.Gdk_Font;
+   pragma Obsolescent;  --  Dialog_Get_Font
+   --  Allocate and return the font selected by the user.
+   --  This newly created font can be used as is by all the drawing functions
+   --  in the Gdk.Drawable package.
+   --  If not font has been selected, Gdk.Font.Null_Font is returned.
+
+   --  </doc_ignore>
+
    ----------------
    -- Properties --
    ----------------
@@ -190,7 +180,23 @@ package Gtk.Font_Selection is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Font_Property
+   --  Type:  Boxed
+   --  Descr: The GdkFont that is currently selected
+   --
+   --  Name:  Font_Name_Property
+   --  Type:  String
+   --  Descr: The X string that represents this font
+   --
+   --  Name:  Preview_Text_Property
+   --  Type:  String
+   --  Descr: The text to display in order to demonstrate the selected font
+   --
    --  </properties>
+
+   --  Font_Property         : constant Glib.Properties.Property_Boxed;
+   Font_Name_Property    : constant Glib.Properties.Property_String;
+   Preview_Text_Property : constant Glib.Properties.Property_String;
 
    -------------
    -- Signals --
@@ -206,6 +212,13 @@ private
 
    type Gtk_Font_Selection_Record is new
      Gtk.Box.Gtk_Box_Record with null record;
+
+   --     Font_Property : constant Glib.Properties.Property_Boxed :=
+   --       Glib.Properties.Build ("font");
+   Font_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("font-name");
+   Preview_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("preview-text");
 
    pragma Import (C, Get_Type, "gtk_font_selection_get_type");
    pragma Import (C, Dialog_Get_Type, "gtk_font_selection_dialog_get_type");

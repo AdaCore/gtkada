@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,9 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
-with Interfaces.C.Strings;
-with Gtk.Widget; use Gtk.Widget;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtk.Widget;           use Gtk.Widget;
+with GNAT.Strings;         use GNAT.Strings;
+with System;               use System;
 
 package body Gtk.File_Selection is
 
@@ -323,5 +324,73 @@ package body Gtk.File_Selection is
          Hide_Fileop_Buttons (File_Selection);
       end if;
    end Set_Show_File_Op_Buttons;
+
+   -------------------------
+   -- Get_Select_Multiple --
+   -------------------------
+
+   function Get_Select_Multiple
+     (Filesel : access Gtk_File_Selection_Record)
+      return Boolean
+   is
+      function Internal
+        (Filesel : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_file_selection_get_select_multiple");
+   begin
+      return Boolean'Val (Internal (Get_Object (Filesel)));
+   end Get_Select_Multiple;
+
+   --------------------
+   -- Get_Selections --
+   --------------------
+
+   function Get_Selections
+     (Filesel : access Gtk_File_Selection_Record)
+      return GNAT.Strings.String_List
+   is
+      function Internal (Filesel : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_file_selection_get_selections");
+
+      function Get_Length (S : System.Address) return Integer;
+      pragma Import (C, Get_Length, "ada_string_array_length");
+
+      function Get (S : System.Address; Index : Natural) return chars_ptr;
+      pragma Import (C, Get, "ada_string_array_get");
+
+      Result : constant System.Address := Internal (Get_Object (Filesel));
+   begin
+      if Result = System.Null_Address then
+         return (1 .. 0 => null);
+      else
+         declare
+            Output : String_List (1 .. Get_Length (Result));
+            Tmp    : chars_ptr;
+         begin
+            for L in Output'Range loop
+               Tmp := Get (Result, L - Output'First);
+               Output (L) := new String'(Value (Tmp));
+               Free (Tmp);
+            end loop;
+            return Output;
+         end;
+      end if;
+   end Get_Selections;
+
+   -------------------------
+   -- Set_Select_Multiple --
+   -------------------------
+
+   procedure Set_Select_Multiple
+     (Filesel         : access Gtk_File_Selection_Record;
+      Select_Multiple : Boolean)
+   is
+      procedure Internal
+        (Filesel         : System.Address;
+         Select_Multiple : Gboolean);
+      pragma Import (C, Internal, "gtk_file_selection_set_select_multiple");
+   begin
+      Internal (Get_Object (Filesel), Boolean'Pos (Select_Multiple));
+   end Set_Select_Multiple;
 
 end Gtk.File_Selection;

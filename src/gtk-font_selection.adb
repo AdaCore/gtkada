@@ -34,6 +34,7 @@ package body Gtk.Font_Selection is
 
    procedure g_free (S : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, g_free, "g_free");
+   --  External binding: g_free
 
    -----------------------
    -- Get_Cancel_Button --

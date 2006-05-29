@@ -419,10 +419,10 @@ package body Gtk.Selection is
       pragma Import (C, Internal, "gtk_selection_data_get_uris");
 
       function Get_Length (S : System.Address) return Integer;
-      pragma Import (C, Get_Length, "ada_selection_data_get_uris_length");
+      pragma Import (C, Get_Length, "ada_string_array_length");
 
       function Get (S : System.Address; Index : Natural) return chars_ptr;
-      pragma Import (C, Get, "ada_selection_data_get_uris_get");
+      pragma Import (C, Get, "ada_string_array_get");
 
       Result : constant System.Address := Internal (Selection);
    begin

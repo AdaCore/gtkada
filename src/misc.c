@@ -4116,7 +4116,7 @@ gpointer ada_g_source_get_user_data (GSource* source) {
  ** Gtk_Selection
 ********************************************************/
 
-int ada_selection_data_get_uris_length (gchar** uris) {
+int ada_string_array_length (gchar** uris) {
   int count = 0;
   gchar** tmp = uris;
   while (*tmp) {
@@ -4126,6 +4126,6 @@ int ada_selection_data_get_uris_length (gchar** uris) {
   return count;
 }
 
-gchar* ada_selection_data_get_uris_get (gchar** uris, int index) {
+gchar* ada_string_array_get (gchar** uris, int index) {
   return uris[index];
 }
