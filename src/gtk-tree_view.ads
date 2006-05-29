@@ -307,7 +307,7 @@ package Gtk.Tree_View is
      (Tree_View : access Gtk_Tree_View_Record; Enable : Boolean);
    function Get_Fixed_Height_Mode
      (Tree_View : access Gtk_Tree_View_Record) return Boolean;
-   --  Enables or disables the fixed height mode of @tree_view.
+   --  Enables or disables the fixed height mode of tree_view.
    --  Fixed height mode speeds up the rendering by assuming that all
    --  rows have the same height.
    --  Only enable this option if all rows are the same height and all

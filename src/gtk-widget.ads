@@ -1459,13 +1459,13 @@ package Gtk.Widget is
 
    procedure Thaw_Child_Notify (Widget : access Gtk_Widget_Record);
    --  Reverts the effect of a previous call to Freeze_Child_Notify.
-   --  This causes all queued "child-notify" signals on @widget to be emitted.
+   --  This causes all queued "child-notify" signals on Widget to be emitted.
 
    procedure Class_Install_Style_Property
      (Klass : Glib.Object.GObject_Class;
       Pspec : Glib.Param_Spec);
    --  Installs a style property on a widget class. The parser for the
-   --  style property is determined by the value type of @pspec.
+   --  style property is determined by the value type of Pspec.
    --  A style property configures the look-and-feel of a widget class. They
    --  are generally modified by the current gtk+ theme, although users can
    --  also modify them in their own configuration file.
