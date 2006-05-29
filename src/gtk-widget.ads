@@ -67,7 +67,6 @@ with Gdk.Window;
 
 with Gtk.Accel_Group;
 with Gtk.Adjustment;
-with Gtk.Clipboard;
 with Gtk.Enums;
 with Gtk.Object;
 with Gtk.Style;
@@ -980,18 +979,6 @@ package Gtk.Widget is
    --  the functions found in the Gdk hierarchy.
    --  These functions are rarely used except when you implement your own own
    --  widget types. Predefined widgets takes care of that automatically.
-
-   function Get_Clipboard
-     (Widget    : access Gtk_Widget_Record;
-      Selection : Gdk.Types.Gdk_Atom)
-      return Gtk.Clipboard.Gtk_Clipboard;
-   --  Returns the clipboard object for the given selection to be used with
-   --  Widget. Widget must have a Gdk_Display associated with it, so must be
-   --  attached to a toplevel window.
-   --
-   --  Return value: the appropriate clipboard object. If no clipboard already
-   --  exists, a new one will be created. Once a clipboard object has been
-   --  created, it is persistent for all time.
 
    procedure Shape_Combine_Mask
      (Widget     : access Gtk_Widget_Record;
@@ -2098,3 +2085,6 @@ end Gtk.Widget;
 
 --  Binding is in Gtk.Setting
 --  No binding: gtk_widget_get_settings
+
+--  Binding is in Gtk.Clipboard
+--  No binding: gtk_widget_get_clipboard

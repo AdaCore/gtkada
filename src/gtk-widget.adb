@@ -35,7 +35,6 @@ with Gdk.Visual;                  use Gdk.Visual;
 with Ada.Unchecked_Conversion;
 with Pango.Context;               use Pango.Context;
 with Pango.Layout;                use Pango.Layout;
-with Gtk.Clipboard;               use Gtk.Clipboard;
 with Gtk.Enums;                   use Gtk.Enums;
 
 package body Gtk.Widget is
@@ -2128,21 +2127,6 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Property_Name & ASCII.NUL, Value);
    end Style_Get_Property;
-
-   -------------------
-   -- Get_Clipboard --
-   -------------------
-
-   function Get_Clipboard
-     (Widget    : access Gtk_Widget_Record;
-      Selection : Gdk_Atom) return Gtk_Clipboard
-   is
-      function Internal
-        (Widget : System.Address; Selection : Gdk_Atom) return Gtk_Clipboard;
-      pragma Import (C, Internal, "gtk_widget_get_clipboard");
-   begin
-      return Internal (Get_Object (Widget), Selection);
-   end Get_Clipboard;
 
    ------------------
    -- Reset_Shapes --
