@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,7 +26,36 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  The Gtk_Cell_Renderer is a base class of a set of objects used for
+--  rendering a cell to a Gdk_Drawable. These objects are used primarily by the
+--  Gtk_Tree_View widget, though they aren't tied to them in any specific way.
+--  It is worth noting that Gtk_Cell_Renderer is not a Gtk_Widget and cannot be
+--  treated as such.
+--
+--  The primary use of a Gtk_Cell_Renderer is for drawing a certain graphical
+--  elements on a Gdk_Drawable. Typically, one cell renderer is used to draw
+--  many cells on the screen. To this extent, it isn't expected that
+--  Cell_Renderer keep any permanent state around. Instead, any state is set
+--  just prior to use using GObjects property system. Then, the cell is
+--  measured using Get_Size(). Finally, the cell is rendered in the correct
+--  location using Render().
+--
+--  There are a number of rules that must be followed when writing a new
+--  Gtk_Cell_Renderer. First and formost, it's important that a certain set of
+--  properties will always yield a cell renderer of the same size, barring
+--  GtkStyle change. The Gtk_Cell_Renderer also has a number of generic
+--  properties that are expected to be honored by all children.
+--
+--  Beyond merely rendering a cell, cell renderers can optionally provide
+--  active user interface elements. A cell renderer can be activatable like
+--  Gtk_Cell_Renderer_Toggle, which toggles when it gets activated by a mouse
+--  click, or it can be editable like Gtk_Cell_Renderer_Text, which allows the
+--  user to edit the text using a Gtk_Entry. To make a cell renderer
+--  activatable or editable, you have to implement the activate or
+--  start_editing virtual functions, respectively.
+--  </description>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Object;
 with Gdk.Event;
@@ -35,6 +64,8 @@ with Gdk.Window;
 with Gtk;
 with Gtk.Object;
 with Gtk.Widget;
+with Glib.Properties;
+with Glib.Generic_Properties;
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 
@@ -54,12 +85,19 @@ package Gtk.Cell_Renderer is
    Cell_Renderer_Prelit      : constant Gtk_Cell_Renderer_State;
    Cell_Renderer_Insensitive : constant Gtk_Cell_Renderer_State;
    Cell_Renderer_Sorted      : constant Gtk_Cell_Renderer_State;
+   Cell_Renderer_Focused     : constant Gtk_Cell_Renderer_State;
+   --  Identifies how a cell should be renderer. Prelit is used when the mouse
+   --  is hovering over a particular cell. Sorted is used when the cell is in
+   --  a sort row.
 
    type Gtk_Cell_Renderer_Mode is
      (Cell_Renderer_Mode_Inert,
       Cell_Renderer_Mode_Activatable,
       Cell_Renderer_Mode_Editable);
    for Gtk_Cell_Renderer_Mode'Size use Glib.Gint'Size;
+   --  Identifies how the user can interact with a particular cell. If
+   --  Activatable, the cell can be clicked. If Editable, the cell can be
+   --  modified
 
    function Get_Type return GType;
    --  Return the internal value associated with Gtk_Cell_Renderer
@@ -140,14 +178,12 @@ package Gtk.Cell_Renderer is
      (Cell   : access Gtk_Cell_Renderer_Record;
       Width  : Gint;
       Height : Gint);
-   --  Sets the renderer size to be explicit, independent of the
-   --  properties set.
-
    procedure Get_Fixed_Size
      (Cell   : access Gtk_Cell_Renderer_Record;
       Width  : out Gint;
       Height : out Gint);
-   --  Fills in Width and Height with the appropriate size of Cell.
+   --  Sets the renderer size to be explicit, independent of the
+   --  properties set.
 
    -------------
    -- Signals --
@@ -155,7 +191,29 @@ package Gtk.Cell_Renderer is
 
    --  <signals>
    --  The following new signals are defined for this widget:
+   --
+   --  - "editing-canceled"
+   --    procedure Handler (Cell : access Gtk_Cell_Renderer_Record'Class);
+   --    This signal gets emitted when the user cancels the process of editing
+   --    cell. For example, an editable cell renderer could be written to
+   --    cancel editing when the user presses Escape.
+   --
+   --  - "editing-started"
+   --    procedure Handler
+   --       (Cell     : access Gtk_Cell_Renderer_Record'Class;
+   --        Editable : Gtk_Cell_Editable
+   --        Path     : String)
+   --    This signal gets emitted when a cell starts to be edited. The indended
+   --    use of this signal is to do special setup on editable, e.g. adding a
+   --    GtkEntryCompletion or setting up additional columns in a GtkComboBox.
+   --    Note that GTK+ doesn't guarantee that cell renderers will continue to
+   --    use the same kind of widget for editing in future releases, therefore
+   --    you should check the type of editable before doing any specific setup,
+   --    as in the following example:
    --  </signals>
+
+   Signal_Editing_Canceled : constant String := "editing-canceled";
+   Signal_Editing_Started  : constant String := "editing-started";
 
    ----------------
    -- Properties --
@@ -163,6 +221,7 @@ package Gtk.Cell_Renderer is
 
    --  The following properties are defined for this cell_renderer and its
    --  children:
+   --  <properties>
    --
    --   Attribute             Type in Model             Mode
    --   =========             =============             ====
@@ -179,16 +238,122 @@ package Gtk.Cell_Renderer is
    --   "is_expanded"         Boolean                   Read / Write
    --   "cell_background_gdk" Gdk_Color                 Read / Write
    --   "cell_background"     String                    Write
+   --
+   --  Name:  Cell_Background_Property
+   --  Type:  String
+   --  Descr: Cell background color as a string
+   --
+   --  Name:  Cell_Background_Gdk_Property
+   --  Type:  Boxed
+   --  Descr: Cell background color as a GdkColor
+   --
+   --  Name:  Height_Property
+   --  Type:  Int
+   --  Descr: The fixed height
+   --
+   --  Name:  Is_Expanded_Property
+   --  Type:  Boolean
+   --  Descr: Row is an expander row, and is expanded
+   --
+   --  Name:  Is_Expander_Property
+   --  Type:  Boolean
+   --  Descr: Row has children
+   --
+   --  Name:  Mode_Property
+   --  Type:  Enum
+   --  Descr: Editable mode of the CellRenderer
+   --
+   --  Name:  Sensitive_Property
+   --  Type:  Boolean
+   --  Descr: Display the cell sensitive
+   --
+   --  Name:  Visible_Property
+   --  Type:  Boolean
+   --  Descr: Display the cell
+   --
+   --  Name:  Width_Property
+   --  Type:  Int
+   --  Descr: The fixed width
+   --
+   --  Name:  Xalign_Property
+   --  Type:  Float
+   --  Descr: The x-align
+   --
+   --  Name:  Xpad_Property
+   --  Type:  Uint
+   --  Descr: The xpad
+   --
+   --  Name:  Yalign_Property
+   --  Type:  Float
+   --  Descr: The y-align
+   --
+   --  Name:  Ypad_Property
+   --  Type:  Uint
+   --  Descr: The ypad
+
+   --   </properties>
+
+   package Cell_Renderer_Mode_Properties is new
+     Glib.Generic_Properties.Generic_Internal_Discrete_Property
+       (Gtk_Cell_Renderer_Mode);
+   type Property_Cell_Renderer_Mode is
+     new Cell_Renderer_Mode_Properties.Property;
+
+   Cell_Background_Property     : constant Glib.Properties.Property_String;
+   --  Cell_Background_Gdk_Property : constant Glib.Properties.Property_Boxed;
+   Height_Property              : constant Glib.Properties.Property_Int;
+   Is_Expanded_Property         : constant Glib.Properties.Property_Boolean;
+   Is_Expander_Property         : constant Glib.Properties.Property_Boolean;
+   Mode_Property                : constant Property_Cell_Renderer_Mode;
+   Sensitive_Property           : constant Glib.Properties.Property_Boolean;
+   Visible_Property             : constant Glib.Properties.Property_Boolean;
+   Width_Property               : constant Glib.Properties.Property_Int;
+   Xalign_Property              : constant Glib.Properties.Property_Float;
+   Xpad_Property                : constant Glib.Properties.Property_Uint;
+   Yalign_Property              : constant Glib.Properties.Property_Float;
+   Ypad_Property                : constant Glib.Properties.Property_Uint;
 
 private
    type Gtk_Cell_Renderer_Record is
      new Gtk.Object.Gtk_Object_Record with null record;
 
-   pragma Import (C, Get_Type, "gtk_cell_get_type");
+   pragma Import (C, Get_Type, "gtk_cell_renderer_get_type");
+
+   Cell_Background_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("cell-background");
+   --  Cell_Background_Gdk_Property : constant Glib.Properties.Property_Boxed
+   --    := Glib.Properties.Build ("cell-background-gdk");
+   Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("height");
+   Is_Expanded_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-expanded");
+   Is_Expander_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-expander");
+   Mode_Property : constant Property_Cell_Renderer_Mode :=
+     Build ("mode");
+   Sensitive_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("sensitive");
+   Visible_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible");
+   Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width");
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Xpad_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("xpad");
+   Yalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("yalign");
+   Ypad_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("ypad");
+
 
    Cell_Renderer_Selected    : constant Gtk_Cell_Renderer_State := 2 ** 0;
    Cell_Renderer_Prelit      : constant Gtk_Cell_Renderer_State := 2 ** 1;
    Cell_Renderer_Insensitive : constant Gtk_Cell_Renderer_State := 2 ** 2;
    Cell_Renderer_Sorted      : constant Gtk_Cell_Renderer_State := 2 ** 3;
-
+   Cell_Renderer_Focused     : constant Gtk_Cell_Renderer_State := 2 ** 4;
 end Gtk.Cell_Renderer;
+
+--  The following subprograms never had a binding, are now obsolescent
+--  No binding: gtk_cell_renderer_editing_canceled
+--  No binding: gtk_cell_renderer_stop_editing

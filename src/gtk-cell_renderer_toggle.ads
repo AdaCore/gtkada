@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,8 +26,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  Gtk_Cell_Renderer_Toggle renders a toggle button in a cell. The button is
+--  drawn as a radio- or checkbutton, depending on the radio property. When
+--  activated, it emits the toggled signal.
+--  </description>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk;
 with Gtk.Cell_Renderer;
 
@@ -39,21 +45,18 @@ package Gtk.Cell_Renderer_Toggle is
      access all Gtk_Cell_Renderer_Toggle_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Cell_Renderer_Toggle);
-
    procedure Initialize
      (Widget : access Gtk_Cell_Renderer_Toggle_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   --  Creates or initializes a new renderer.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
-   function Get_Radio
-     (Toggle : access Gtk_Cell_Renderer_Toggle_Record) return Boolean;
-
    procedure Set_Radio
      (Toggle : access Gtk_Cell_Renderer_Toggle_Record;
       Radio  : Boolean);
+   function Get_Radio
+     (Toggle : access Gtk_Cell_Renderer_Toggle_Record) return Boolean;
    --  If Setting is True, the cell renderer renders a radio toggle
    --  (i.e. a toggle in a group of mutually-exclusive toggles).
    --  If False, it renders a check toggle (a standalone boolean option).
@@ -62,12 +65,12 @@ package Gtk.Cell_Renderer_Toggle is
    --  still responsible for enforcing the behavior, through the toggled
    --  signal.
 
-   function Get_Active
-     (Toggle : access Gtk_Cell_Renderer_Toggle_Record) return Boolean;
-
    procedure Set_Active
      (Toggle  : access Gtk_Cell_Renderer_Toggle_Record;
       Setting : Boolean);
+   function Get_Active
+     (Toggle : access Gtk_Cell_Renderer_Toggle_Record) return Boolean;
+   --  Whether the renderer is currently selected
 
    -------------
    -- Signals --
@@ -83,22 +86,50 @@ package Gtk.Cell_Renderer_Toggle is
    --
    --  </signals>
 
+   Signal_Toggled : constant String := "toggled";
+
    ----------------
    -- Properties --
    ----------------
 
    --  The following properties are defined for this cell_renderer.
+   --  <properties>
    --
-   --   Attribute             Type in Model             Mode
-   --   =========             =============             ====
+   --  Name:  Activatable_Property
+   --  Type:  Boolean
+   --  Descr: The toggle button can be activated
    --
-   --   "activatable"         Boolean                   Read / Write
-   --   "active"              Boolean                   Read / Write
-   --   "radio"               Boolean                   Read / Write
+   --  Name:  Active_Property
+   --  Type:  Boolean
+   --  Descr: The toggle state of the button
+   --
+   --  Name:  Inconsistent_Property
+   --  Type:  Boolean
+   --  Descr: The inconsistent state of the button
+   --
+   --  Name:  Radio_Property
+   --  Type:  Boolean
+   --  Descr: Draw the toggle button as a radio button
+   --
+   --  </properties>
+
+   Activatable_Property  : constant Glib.Properties.Property_Boolean;
+   Active_Property       : constant Glib.Properties.Property_Boolean;
+   Inconsistent_Property : constant Glib.Properties.Property_Boolean;
+   Radio_Property        : constant Glib.Properties.Property_Boolean;
 
 private
    type Gtk_Cell_Renderer_Toggle_Record is
      new Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record with null record;
+
+   Activatable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("activatable");
+   Active_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("active");
+   Inconsistent_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inconsistent");
+   Radio_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("radio");
 
    pragma Import (C, Get_Type, "gtk_cell_renderer_toggle_get_type");
 end Gtk.Cell_Renderer_Toggle;
