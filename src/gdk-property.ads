@@ -43,8 +43,10 @@ package Gdk.Property is
    function Atom_Intern
      (Atom_Name      : String;
       Only_If_Exists : Boolean := True) return Gdk.Types.Gdk_Atom;
+   --  Convert from a string to an atom
 
    function Atom_Name (Atom : Gdk.Types.Gdk_Atom) return String;
+   --  Convert from an atom to a string
 
    procedure Get
      (Window               : Gdk.Window.Gdk_Window;

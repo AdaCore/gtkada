@@ -69,6 +69,8 @@ package Gdk.Types is
    Gdk_None : constant Gdk_Atom := null;
    --  No atom constant.
 
+   type Gdk_Atom_Array is array (Natural range <>) of Gdk_Atom;
+
    type Gdk_Axis_Use is
      (Axis_Ignore,
       Axis_X,
