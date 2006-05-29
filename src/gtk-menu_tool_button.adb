@@ -79,11 +79,15 @@ package body Gtk.Menu_Tool_Button is
          return System.Address;
       pragma Import (C, Internal, "gtk_menu_tool_button_new");
       Str : chars_ptr := Null_Ptr;
+      Obj : System.Address := System.Null_Address;
    begin
       if Label /= "" then
          Str := New_String (Label);
       end if;
-      Set_Object (Menu, Internal (Get_Object (Icon_Widget), Str));
+      if Icon_Widget /= null then
+         Obj := Get_Object (Icon_Widget);
+      end if;
+      Set_Object (Menu, Internal (Obj, Str));
       Free (Str);
    end Initialize;
 
