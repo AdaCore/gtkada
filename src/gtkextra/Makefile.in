@@ -7,7 +7,8 @@ SRC=gtkbordercombo.c  gtkfontcombo.c     gtkplotbox.c \
     gtkplotarray.c    gtkplotcanvas.c    gtkplotgdk.c \
     gtkplotps.c       gtkextra-marshal.c gtkplotbar.c \
     gtkplotcsurface.c gtkplotpc.c        gtkplotsurface.c \
-    gtkplotcanvastext.c gtkplotcanvasplot.c gtkplotcanvaspixmap.c
+    gtkplotcanvastext.c gtkplotcanvasplot.c gtkplotcanvaspixmap.c \
+    gtkplotcanvasline.c gtkplotcanvasellipse.c gtkplotcanvasrectangle.c
 
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
