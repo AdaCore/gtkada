@@ -48,7 +48,11 @@ with Gdk.Bitmap;    use Gdk.Bitmap;
 with Gdk.Color;     use Gdk.Color;
 with Gdk.Window;    use Gdk.Window;
 with Gtk.Frame;     use Gtk.Frame;
+
+pragma Warnings (Off); --  Gtk.Text is obsolescent
 with Gtk.Text;      use Gtk.Text;
+pragma Warnings (On);
+
 with Gdk.Dnd;       use Gdk.Dnd;
 
 package body Create_Dnd is
