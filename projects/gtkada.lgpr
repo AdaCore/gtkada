@@ -62,6 +62,8 @@ glib-graphs.adb
 glib-graphs.ads
 glib-gslist.adb
 glib-gslist.ads
+glib-main.adb
+glib-main.ads
 glib-messages.adb
 glib-messages.ads
 glib-module.adb
@@ -163,6 +165,8 @@ gtk-drawing_area.adb
 gtk-drawing_area.ads
 gtk-editable.adb
 gtk-editable.ads
+gtk-entry_completion.adb
+gtk-entry_completion.ads
 gtk-enums.adb
 gtk-enums.ads
 gtk-event_box.adb
@@ -188,10 +192,16 @@ gtk-extra-plot_box.adb
 gtk-extra-plot_box.ads
 gtk-extra-plot_canvas.adb
 gtk-extra-plot_canvas.ads
+gtk-extra-plot_canvas-ellipse.adb
+gtk-extra-plot_canvas-ellipse.ads
+gtk-extra-plot_canvas-line.adb
+gtk-extra-plot_canvas-line.ads
 gtk-extra-plot_canvas-pixmap.adb
 gtk-extra-plot_canvas-pixmap.ads
 gtk-extra-plot_canvas-plot.adb
 gtk-extra-plot_canvas-plot.ads
+gtk-extra-plot_canvas-rectangle.adb
+gtk-extra-plot_canvas-rectangle.ads
 gtk-extra-plot_canvas-text.adb
 gtk-extra-plot_canvas-text.ads
 gtk-extra-plot_data.adb
@@ -265,6 +275,8 @@ gtk-menu_item.adb
 gtk-menu_item.ads
 gtk-menu_shell.adb
 gtk-menu_shell.ads
+gtk-menu_tool_button.adb
+gtk-menu_tool_button.ads
 gtk-misc.adb
 gtk-misc.ads
 gtk-notebook.adb
@@ -291,6 +303,8 @@ gtk-radio_button.adb
 gtk-radio_button.ads
 gtk-radio_menu_item.adb
 gtk-radio_menu_item.ads
+gtk-radio_tool_button.adb
+gtk-radio_tool_button.ads
 gtk-rc.adb
 gtk-rc.ads
 gtk-ruler.adb
@@ -307,6 +321,8 @@ gtk-separator.adb
 gtk-separator.ads
 gtk-separator_menu_item.adb
 gtk-separator_menu_item.ads
+gtk-separator_tool_item.adb
+gtk-separator_tool_item.ads
 gtk-size_group.adb
 gtk-size_group.ads
 gtk-socket.adb
@@ -345,8 +361,14 @@ gtk-tips_query.adb
 gtk-tips_query.ads
 gtk-toggle_button.adb
 gtk-toggle_button.ads
+gtk-toggle_tool_button.adb
+gtk-toggle_tool_button.ads
 gtk-toolbar.adb
 gtk-toolbar.ads
+gtk-tool_button.adb
+gtk-tool_button.ads
+gtk-tool_item.adb
+gtk-tool_item.ads
 gtk-tooltips.adb
 gtk-tooltips.ads
 gtk-tree_model.adb
