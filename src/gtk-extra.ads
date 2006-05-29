@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright 2001-2006 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +31,7 @@
 --  <description>
 --  This is the top level package of the Gtk.Extra widget hierarchy.
 --  </description>
+--  <c_version>gtkextra 2.1.1</c_version>
 
 package Gtk.Extra is
 end Gtk.Extra;
