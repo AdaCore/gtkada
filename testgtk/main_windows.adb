@@ -65,6 +65,7 @@ with Create_Buttons;
 with Create_Calendar;
 with Create_Canvas;
 with Create_Check_Buttons;
+with Create_Clipboard;
 with Create_Clist;
 with Create_Ctree;
 with Create_Color_Selection;
@@ -216,6 +217,8 @@ package body Main_Windows is
                                          Create_Canvas.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,
                                          Create_Check_Buttons.Help'Access),
+      (NS ("clipboard"),        Misc,    Create_Clipboard.Run'Access,
+                                         Create_Clipboard.Help'Access),
       (NS ("clist"),            Complex, Create_Clist.Run'Access,
                                          Create_Clist.Help'Access),
       (NS ("ctree"),            Complex, Create_Ctree.Run'Access,
