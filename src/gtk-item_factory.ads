@@ -44,6 +44,8 @@ package Gtk.Item_Factory is
    type Gtk_Item_Factory_Record is new Object.Gtk_Object_Record with private;
    type Gtk_Item_Factory is access all Gtk_Item_Factory_Record'Class;
 
+   --  <doc_ignore>
+
    type Item_Type_Enum is
      (Title,
       --  Create a title item
@@ -265,6 +267,8 @@ package Gtk.Item_Factory is
       Null_Widget : constant Limited_Widget :=
         Limited_Widget (System.Null_Address);
    end Data_Item;
+
+   --  </doc_ignore>
 
    ----------------
    -- Properties --
