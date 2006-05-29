@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,7 +26,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  In recent versions of gtk+, this package has been deprecated in favor of
+--  Gtk.UIManager. However, the subprograms have not been marked as such in the
+--  C files themselves, so are still available in GtkAda as well.
+--  </description>
+--  <c_version>2.8.17</c_version>
 
 with Gdk.Types;
 with Gtk.Accel_Group;
@@ -85,16 +90,16 @@ package Gtk.Item_Factory is
       Container_Type : Gtk_Type;
       Path           : UTF8_String;
       Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group);
-   --  Possible values of Container_Type are:
-   --    - Gtk.Option_Menu.Get_Type
-   --    - Gtk.Menu_Bar.Get_Type
-   --    - Gtk.Menu.Get_Type
-
    procedure Initialize
      (Ifactory       : access Gtk_Item_Factory_Record'Class;
       Container_Type : Gtk_Type;
       Path           : UTF8_String := "";
       Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group);
+   --  Creates or initializes a new item factory.
+   --  Possible values of Container_Type are:
+   --    - Gtk.Option_Menu.Get_Type
+   --    - Gtk.Menu_Bar.Get_Type
+   --    - Gtk.Menu.Get_Type
 
    function Get_Type return Gtk_Type;
    --  Return the internal value associated with a Gtk_Item_Factory
@@ -293,3 +298,11 @@ private
    pragma Import (C, Get_Type, "gtk_item_factory_get_type");
 
 end Gtk.Item_Factory;
+
+--  The following subprograms never had a binding, are now obsolescent:
+--  No binding: gtk_item_factories_path_delete
+--  No binding: gtk_item_factory_construct
+--  No binding: gtk_item_factory_create_items_ac
+--  No binding: gtk_item_factory_create_menu_entries
+--  No binding: gtk_item_factory_from_path
+

@@ -26,14 +26,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>2.0.0</c_version>
-
-with Interfaces.C.Strings;
+with Ada.Unchecked_Conversion;
+with Gdk.Types;             use Gdk.Types;
+with Interfaces.C.Strings;  use Interfaces.C.Strings;
+with Gtk.Selection;         use Gtk.Selection;
 with Gtkada.Types;
+with System;                use System;
 
 package body Gtk.Clipboard is
-
-   use Interfaces.C.Strings;
 
    --------------
    -- Set_Text --
@@ -88,5 +88,227 @@ package body Gtk.Clipboard is
    begin
       return Internal (Clipboard) /= 0;
    end Wait_Is_Text_Available;
+
+   ---------------
+   -- Get_Owner --
+   ---------------
+
+   function Get_Owner
+     (Clipboard : Gtk_Clipboard) return Glib.Object.GObject
+   is
+      function Internal (Clipboard : Gtk_Clipboard) return System.Address;
+      pragma Import (C, Internal, "gtk_clipboard_get_owner");
+      Stub : GObject_Record;
+   begin
+      return GObject (Get_User_Data (Internal (Clipboard), Stub));
+   end Get_Owner;
+
+   -------------------
+   -- Set_Can_Store --
+   -------------------
+
+   procedure Set_Can_Store
+     (Clipboard : Gtk_Clipboard;
+      Targets   : Gtk.Selection.Target_Entry_Array)
+   is
+      procedure Internal
+        (Clipboard : Gtk_Clipboard;
+         Targets   : System.Address;
+         N_Targets : Gint);
+      pragma Import (C, Internal, "gtk_clipboard_set_can_store");
+   begin
+      if Targets'Length = 0 then
+         Internal (Clipboard, System.Null_Address, 0);
+      else
+         Internal (Clipboard, Targets (Targets'First)'Address, Targets'Length);
+      end if;
+   end Set_Can_Store;
+
+   -------------------
+   -- Set_With_Data --
+   -------------------
+
+   function Set_With_Data
+     (Clipboard  : Gtk_Clipboard;
+      Targets    : Target_Entry_Array;
+      Get_Func   : Gtk_Clipboard_Get_Func;
+      Clear_Func : Gtk_Clipboard_Clear_Func;
+      User_Data  : System.Address)
+      return Boolean
+   is
+      function Internal
+        (Clipboard  : Gtk_Clipboard;
+         Targets    : System.Address;
+         N_Targets  : Guint;
+         Get_Func   : Gtk_Clipboard_Get_Func;
+         Clear_Func : Gtk_Clipboard_Clear_Func;
+         User_Data  : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_clipboard_set_with_data");
+   begin
+      return Boolean'Val
+        (Internal (Clipboard, Targets (Targets'First)'Address,
+         Targets'Length, Get_Func, Clear_Func, User_Data));
+   end Set_With_Data;
+
+   --------------------
+   -- Set_With_Owner --
+   --------------------
+
+   function Set_With_Owner
+     (Clipboard  : Gtk_Clipboard;
+      Targets    : Target_Entry_Array;
+      Get_Func   : Gtk_Clipboard_Get_Func;
+      Clear_Func : Gtk_Clipboard_Clear_Func;
+      Owner      : access Glib.Object.GObject_Record'Class)
+      return Boolean
+   is
+      function Internal
+        (Clipboard  : Gtk_Clipboard;
+         Targets    : System.Address;
+         N_Targets  : Guint;
+         Get_Func   : Gtk_Clipboard_Get_Func;
+         Clear_Func : Gtk_Clipboard_Clear_Func;
+         Owner      : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_clipboard_set_with_owner");
+   begin
+      return Boolean'Val
+        (Internal (Clipboard, Targets (Targets'First)'Address,
+         Targets'Length, Get_Func, Clear_Func, Get_Object (Owner)));
+   end Set_With_Owner;
+
+   -------------------
+   -- Get_Clipboard --
+   -------------------
+
+   function Get_Clipboard
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Selection : Gdk.Types.Gdk_Atom) return Gtk_Clipboard
+   is
+      function Internal
+        (Widget : System.Address; Selection : Gdk_Atom) return Gtk_Clipboard;
+      pragma Import (C, Internal, "gtk_widget_get_clipboard");
+      --  External binding: gtk_widget_get_clipboard
+   begin
+      return Internal (Get_Object (Widget), Selection);
+   end Get_Clipboard;
+
+   -----------------------------
+   -- Wait_Is_Image_Available --
+   -----------------------------
+
+   function Wait_Is_Image_Available
+     (Clipboard : Gtk_Clipboard) return Boolean
+   is
+      function Internal (Clipboard : Gtk_Clipboard) return Gboolean;
+      pragma Import (C, Internal, "gtk_clipboard_wait_is_image_available");
+   begin
+      return Boolean'Val (Internal (Clipboard));
+   end Wait_Is_Image_Available;
+
+   ------------------------------
+   -- Wait_Is_Target_Available --
+   ------------------------------
+
+   function Wait_Is_Target_Available
+     (Clipboard : Gtk_Clipboard;
+      Target    : Gdk_Atom)
+      return Boolean
+   is
+      function Internal
+        (Clipboard : Gtk_Clipboard;
+         Target    : Gdk_Atom)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_clipboard_wait_is_target_available");
+   begin
+      return Boolean'Val (Internal (Clipboard, Target));
+   end Wait_Is_Target_Available;
+
+   ----------------------
+   -- Wait_For_Targets --
+   ----------------------
+
+   function Wait_For_Targets
+     (Clipboard : Gtk_Clipboard) return Gdk.Types.Gdk_Atom_Array
+   is
+      type Atom_Big_Array is array (Natural) of Gdk_Atom;  --  GdkAtom*
+      type Atom_Big_Array_Access is access Atom_Big_Array; --  GdkAtom**
+
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Atom_Big_Array_Access);
+
+      function Internal
+        (Clipboard : Gtk_Clipboard;
+         Targets   : access System.Address;
+         N_Targets : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_clipboard_wait_for_targets");
+
+      procedure Free (Targets : Atom_Big_Array);
+      pragma Import (C, Free, "g_free");
+      --  External binding: g_free
+
+      Success   : Gboolean;
+      Output    : aliased System.Address;
+      List      : Atom_Big_Array_Access;   --   GdkAtom**
+      pragma Warnings (Off, List);
+      N_Targets : aliased Gint;
+   begin
+      Success := Internal
+        (Clipboard, Output'Unchecked_Access, N_Targets'Unchecked_Access);
+      if Success = 0 or else Output = System.Null_Address then
+         return (1 .. 0 => Gdk.Types.Gdk_None);
+      else
+         List := Convert (Output);
+         declare
+            Result : Gdk.Types.Gdk_Atom_Array (1 .. Natural (N_Targets));
+         begin
+            for R in 0 .. Natural (N_Targets) - 1 loop
+               Result (R + 1) := List (R);
+            end loop;
+
+            Free (List.all);
+            return Result;
+         end;
+      end if;
+   end Wait_For_Targets;
+
+   ----------------------
+   -- Request_Contents --
+   ----------------------
+
+   procedure Request_Contents
+     (Clipboard : Gtk_Clipboard;
+      Target    : Gdk_Atom;
+      Callback  : Gtk_Clipboard_Received_Func;
+      User_Data : System.Address)
+   is
+      procedure Internal
+        (Clipboard : Gtk_Clipboard;
+         Target    : Gdk_Atom;
+         Callback  : Gtk_Clipboard_Received_Func;
+         User_Data : System.Address);
+      pragma Import (C, Internal, "gtk_clipboard_request_contents");
+   begin
+      Internal (Clipboard, Target, Callback, User_Data);
+   end Request_Contents;
+
+   ---------------------
+   -- Request_Targets --
+   ---------------------
+
+   procedure Request_Targets
+     (Clipboard : Gtk_Clipboard;
+      Callback  : Gtk_Clipboard_Targets_Received_Func;
+      User_Data : System.Address)
+   is
+      procedure Internal
+        (Clipboard : Gtk_Clipboard;
+         Callback  : Gtk_Clipboard_Targets_Received_Func;
+         User_Data : System.Address);
+      pragma Import (C, Internal, "gtk_clipboard_request_targets");
+   begin
+      Internal (Clipboard, Callback, User_Data);
+   end Request_Targets;
 
 end Gtk.Clipboard;
