@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,8 +31,9 @@
 --  This widget provides a low level graphical representation of a range of
 --  values. It is used by other widgets such as Gtk_Scale and Gtk_Scrollbar.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
@@ -120,8 +121,37 @@ package Gtk.GRange is
    -- Signal --
    ------------
 
-   --  value_changed
-   --  move_slider
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "value_changed"
+   --    procedure Handler (R :  access Gtk_Range_Record'Class);
+   --    Emitted when the current value of the range has changed
+   --
+   --  - "adjust_bounds"
+   --    procedure Handler
+   --       (R     : access Gtk_Range_Record'Class;
+   --        Value : Gdouble);
+   --
+   --  - "change_value"
+   --    function Handler
+   --       (R     : access Gtk_Range_Record'Class;
+   --        Typ   : Gtk_Scroll_Type;
+   --        Value : Gdouble) return Gboolean;
+   --    Emitted when a scroll action is performed on the range. The type of
+   --    event that occurred and the new value are returned. The application
+   --    should return True if it has handled the event itself.
+   --
+   --  - "move_slider"
+   --    procedure Handler (R : access Gtk_Range_Record'Class);
+   --    Emitted when the slider has changed
+   --
+   --  </signals>
+
+   Signal_Adjust_Bounds : constant String := "adjust_bounds";
+   Signal_Change_Value  : constant String := "change_value";
+   Signal_Move_Slider   : constant String := "move_slider";
+   Signal_Value_Changed : constant String := "value_changed";
 
    ----------------
    -- Properties --
@@ -131,21 +161,37 @@ package Gtk.GRange is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  - Name:  Update_Policy_Property
-   --    Type:  Gtk_Update_Type
-   --    Flags: read-write
-   --    Descr: How the range should be updated on the screen
-   --    See also: Set_Update_Policy
+   --  Name:  Update_Policy_Property
+   --  Type:  Gtk_Update_Type
+   --  Flags: read-write
+   --  Descr: How the range should be updated on the screen
+   --  See also: Set_Update_Policy
+   --
+   --  Name:  Adjustment_Property
+   --  Type:  Object
+   --  Descr: The GtkAdjustment that contains the current value of this range
+   --         object
+   --
+   --  Name:  Inverted_Property
+   --  Type:  Boolean
+   --  Descr: Invert direction slider moves to increase range value
    --
    --  </properties>
 
    Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type;
+   Adjustment_Property    : constant Glib.Properties.Property_Object;
+   Inverted_Property      : constant Glib.Properties.Property_Boolean;
 
 private
    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
 
    Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type :=
      Gtk.Enums.Build ("update_policy");
+
+   Adjustment_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("adjustment");
+   Inverted_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inverted");
 
    pragma Import (C, Get_Type, "gtk_range_get_type");
 end Gtk.GRange;

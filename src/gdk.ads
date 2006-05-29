@@ -48,6 +48,8 @@ package Gdk is
    subtype Gdk_Pixmap is Gdk_Drawable;
    subtype Gdk_Bitmap is Gdk_Drawable;
 
+   type Gdk_Screen is new C_Proxy;
+
    type Gdk_Colormap is new C_Proxy;
 
    type Gdk_Visual is new C_Proxy;

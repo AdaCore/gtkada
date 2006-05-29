@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@
 --  left side of the Gtk_Menu_Item. Activating the Gtk_Menu_Item toggles the
 --  value.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gtk.Menu_Item;
@@ -50,26 +50,21 @@ package Gtk.Check_Menu_Item is
    procedure Gtk_New
      (Check_Menu_Item : out Gtk_Check_Menu_Item;
       Label           : UTF8_String := "");
-   --  Create a new Gtk_Check_Menu_Item with a label, if label isn't null.
-
    procedure Initialize
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
       Label           : UTF8_String := "");
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   --  Creates or initializes a new Gtk_Check_Menu_Item with a label, if label
+   --  isn't null.
 
    procedure Gtk_New_With_Mnemonic
      (Check_Menu_Item : out Gtk_Check_Menu_Item;
       Label           : UTF8_String);
-   --  Create a new Gtk_Check_Menu_Item containing a label. The label
-   --  will be created will be created using Gtk.Label.New_With_Mnemonic,
-   --  so underscores in the label indicate the mnemonic for the menu item.
-
    procedure Initialize_With_Mnemonic
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
       Label           : UTF8_String);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   --  Creates or initializes a new Gtk_Check_Menu_Item containing a label. The
+   --  label will be created will be created using Gtk.Label.New_With_Mnemonic,
+   --  so underscores in the label indicate the mnemonic for the menu item.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Calendar.
@@ -77,18 +72,15 @@ package Gtk.Check_Menu_Item is
    procedure Set_Active
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
       Is_Active       : Boolean);
-   --  Set the active state of the menu item's check box.
-
    function Get_Active
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean;
-   --  Return True if the Item is active
-
-   procedure Toggled (Check_Menu_Item : access Gtk_Check_Menu_Item_Record);
-   --  Emit the "toggled" signal.
+   --  Set the active state of the menu item's check box.
 
    procedure Set_Inconsistent
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
       Setting         : Boolean);
+   function Get_Inconsistent
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean;
    --  If the user has selected a range of elements (such as some text or
    --  spreadsheet cells) that are affected by a boolean setting, and the
    --  current values in that range are inconsistent, you may want to
@@ -98,9 +90,15 @@ package Gtk.Check_Menu_Item is
    --  done manually, Set_Inconsistent only affects visual appearance, it
    --  doesn't affect the semantics of the widget.
 
-   function Get_Inconsistent
+   procedure Set_Draw_As_Radio
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+      Draw_As_Radio   : Boolean);
+   function Get_Draw_As_Radio
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean;
-   --  Return True if the Item is inconsistent.
+   --  Sets whether Check_Menu_Item is drawn like a Radio_Menu_Item.
+
+   procedure Toggled (Check_Menu_Item : access Gtk_Check_Menu_Item_Record);
+   --  Emit the "toggled" signal.
 
    ----------------
    -- Properties --
@@ -110,22 +108,27 @@ package Gtk.Check_Menu_Item is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  - Name:  Active_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    Descr: Whether the menu item is checked.
-   --    See also:  Set_Active and Get_Active
+   --  Name:  Active_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  Descr: Whether the menu item is checked.
+   --  See also:  Set_Active and Get_Active
    --
-   --  - Name:  Inconsistent_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    Descr: Whether to display an "inconsistent" state.
-   --    See also:  Set_Inconsistent and Get_Inconsistent
+   --  Name:  Inconsistent_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  Descr: Whether to display an "inconsistent" state.
+   --  See also:  Set_Inconsistent and Get_Inconsistent
+   --
+   --  Name:  Draw_As_Radio_Property
+   --  Type:  Boolean
+   --  Descr: Whether the menu item looks like a radio menu item
    --
    --  </properties>
 
-   Active_Property : constant Glib.Properties.Property_Boolean;
-   Inconsistent_Property : constant Glib.Properties.Property_Boolean;
+   Active_Property        : constant Glib.Properties.Property_Boolean;
+   Inconsistent_Property  : constant Glib.Properties.Property_Boolean;
+   Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -141,6 +144,8 @@ package Gtk.Check_Menu_Item is
    --  A signal handler can call Get_Active to discover the new state.
    --  </signals>
 
+   Signal_Toggled : constant String := "toggled";
+
 private
    type Gtk_Check_Menu_Item_Record is new Gtk.Menu_Item.Gtk_Menu_Item_Record
      with null record;
@@ -149,6 +154,11 @@ private
      Glib.Properties.Build ("active");
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inconsistent");
+   Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("draw-as-radio");
 
    pragma Import (C, Get_Type, "gtk_check_menu_item_get_type");
 end Gtk.Check_Menu_Item;
+
+--  The following subprogram never had a binding, and is now obsolescent
+--  No binding: gtk_check_menu_item_set_show_toggle

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2005 AdaCore                    --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  This widget is deprecated. Use Gtk.Tree_View instead.
 --
 --  This widget displays a multi-column list. Each line is made of
@@ -46,9 +45,8 @@
 --  a similar widget.
 --
 --  You can add scrolling in a Gtk_Clist by adding it in a Gtk_Scrolled_Window.
---
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gdk.Bitmap;
 with Gdk.Color;
@@ -65,6 +63,7 @@ with Gtkada.Types;
 with Unchecked_Conversion;
 
 package Gtk.Clist is
+   pragma Obsolescent ("Use Gtk.Tree_View instead");
 
    type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record
      with private;
@@ -940,6 +939,24 @@ package Gtk.Clist is
    --
    --  </signals>
 
+   Signal_Abort_Column_Resize    : constant String := "abort_column_resize";
+   Signal_Click_Column           : constant String := "click_column";
+   Signal_End_Selection          : constant String := "end_selection";
+   Signal_Extend_Selection       : constant String := "extend_selection";
+   Signal_Resize_Column          : constant String := "resize_column";
+   Signal_Row_Move               : constant String := "row_move";
+   Signal_Scroll_Horizontal      : constant String := "scroll_horizontal";
+   Signal_Scroll_Vertical        : constant String := "scroll_vertical";
+   Signal_Select_All             : constant String := "select_all";
+   Signal_Select_Row             : constant String := "select_row";
+   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
+   Signal_Start_Selection        : constant String := "start_selection";
+   Signal_Toggle_Add_Mode        : constant String := "toggle_add_mode";
+   Signal_Toggle_Focus_Row       : constant String := "toggle_focus_row";
+   Signal_Undo_Selection         : constant String := "undo_selection";
+   Signal_Unselect_All           : constant String := "unselect_all";
+   Signal_Unselect_Row           : constant String := "unselect_row";
+
 private
    type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record with record
       Sort_Func : Gtk_Clist_Compare_Func := null;
@@ -951,3 +968,7 @@ end Gtk.Clist;
 --  <example>
 --  <include>../examples/documentation/clist.adb</include>
 --  </example>
+
+--  The following subprograms never had a binding, and are now obsolescent:
+--  No binding: gtk_clist_find_row_from_data
+--  No binding: gtk_clist_set_row_data

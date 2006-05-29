@@ -37,12 +37,9 @@ with Gtk.Box;
 with Gtk.Button_Box;
 with Gtk.Calendar;
 with Gtk.Check_Button;
-with Gtk.Clist;
 with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
-with Gtk.Combo;
 with Gtk.Container;
-with Gtk.Ctree;
 with Gtk.Curve;
 with Gtk.Dialog;
 with Gtk.Drawing_Area;
@@ -70,23 +67,30 @@ with Gtk.Hbutton_Box;
 with Gtk.Image;
 with Gtk.Input_Dialog;
 with Gtk.Invisible;
-with Gtk.Item;
+--  with Gtk.Item;
 with Gtk.Item_Factory;
 with Gtk.Layout;
-with Gtk.List;
 with Gtk.Menu_Shell;
 with Gtk.Misc;
 with Gtk.Notebook;
 with Gtk.Object;
-with Gtk.Option_Menu;
 with Gtk.Paned;
-with Gtk.Pixmap;
 with Gtk.Plug;
+pragma Warnings (Off);  --  These packages are obsolescent
+with Gtk.Combo;
+with Gtk.List;
+with Gtk.Option_Menu;
+with Gtk.Pixmap;
 with Gtk.Preview;
 with Gtk.Progress;
+with Gtk.Ctree;
+with Gtk.Clist;
+with Gtk.Text;
+with Gtk.Tips_Query;
+pragma Warnings (On);
 with Gtk.Progress_Bar;
 with Gtk.Radio_Button;
-with Gtk.Rc;
+--  with Gtk.Rc;
 with Gtk.Ruler;
 with Gtk.Scale;
 with Gtk.Scrollbar;
@@ -96,8 +100,6 @@ with Gtk.Socket;
 with Gtk.Spin_Button;
 with Gtk.Status_Bar;
 with Gtk.Table;
-with Gtk.Text;
-with Gtk.Tips_Query;
 with Gtk.Toggle_Button;
 with Gtk.Toolbar;
 with Gtk.Tooltips;
@@ -161,7 +163,9 @@ package body Gtk.Type_Conversion is
             elsif Type_Name = "GtkCheckButton" then
                return new Gtk.Check_Button.Gtk_Check_Button_Record;
             elsif Type_Name = "GtkCList" then
+               pragma Warnings (Off);  --  Gtk.Clist is obsolescent
                return new Gtk.Clist.Gtk_Clist_Record;
+               pragma Warnings (On);
             --  elsif Type_Name = "GtkColorCombo" then
             --     return new Gtk.Extra.Color_Combo.Gtk_Color_Combo_Record;
             elsif Type_Name = "GtkColorSelection" then
@@ -170,13 +174,17 @@ package body Gtk.Type_Conversion is
                return new
                  Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog_Record;
             elsif Type_Name = "GtkCombo" then
+               pragma Warnings (Off);  --  Gtk.Combo is obsolescent
                return new Gtk.Combo.Gtk_Combo_Record;
+               pragma Warnings (On);
             --  elsif Type_Name = "GtkComboBox" then
             --     return new Gtk.Extra.Combo_Box.Gtk_Combo_Box_Record;
             elsif Type_Name = "GtkContainer" then
                return new Gtk.Container.Gtk_Container_Record;
             elsif Type_Name = "GtkCtree" then
+               pragma Warnings (Off);  --  Gtk.Ctree is obsolescent
                return new Gtk.Ctree.Gtk_Ctree_Record;
+               pragma Warnings (On);
             elsif Type_Name = "GtkCurve" then
                return new Gtk.Curve.Gtk_Curve_Record;
             end if;
@@ -259,7 +267,9 @@ package body Gtk.Type_Conversion is
             if Type_Name = "GtkObject" then
                return new Gtk.Object.Gtk_Object_Record;
             elsif Type_Name = "GtkOptionMenu" then
+               pragma Warnings (Off); --  Gtk.Option_Menu is obsolescent;
                return new Gtk.Option_Menu.Gtk_Option_Menu_Record;
+               pragma Warnings (On);
             end if;
          when 'P' =>
             if Type_Name = "GtkPixmap" then

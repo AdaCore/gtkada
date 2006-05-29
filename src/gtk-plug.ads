@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  Any widgets contained in the Gtk_Plug then will appear inside the first
 --  applications window.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Window;
 
@@ -62,10 +62,26 @@ package Gtk.Plug is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Plug.
 
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "embedded"
+   --    procedure Handler (Plug : access Gtk_Plug_Record'Class);
+   --    Emitted when the plug has been successfully added to a socket.
+   --
+   --  </signals>
+
+   Signal_Embedded : constant String := "embedded";
+
 private
-
    type Gtk_Plug_Record is new Gtk.Window.Gtk_Window_Record with null record;
-
    pragma Import (C, Get_Type, "gtk_plug_get_type");
-
 end Gtk.Plug;
+
+--  No binding: gtk_plug_construct
+--  No binding: gtk_plug_construct_for_display
+--  No binding: gtk_plug_new_for_display

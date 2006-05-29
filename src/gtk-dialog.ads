@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@
 --
 --  @pxref{Package_Gtkada.Dialogs} for a higher level dialog interface.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gtk.Box;
@@ -109,6 +109,8 @@ package Gtk.Dialog is
    --  These are returned from dialogs, and you can also use them
    --  yourself if you like.
 
+   type Response_Type_Array is array (Natural range <>) of Gtk_Response_Type;
+
    -----------------
    -- Subprograms --
    -----------------
@@ -169,6 +171,41 @@ package Gtk.Dialog is
    --  When the button is clicked, Dialog will emit the "response" signal.
    --  The button widget is returned.
 
+   function Get_Response_For_Widget
+     (Dialog : access Gtk_Dialog_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
+   --  Gets the response id of a widget in the action area of a dialog, or
+   --  Gtk_Response_None if Widget doesn't have a response Id set
+
+   procedure Set_Alternative_Button_Order_From_Array
+     (Dialog    : access Gtk_Dialog_Record;
+      New_Order : Response_Type_Array);
+   --  Sets an alternative button order. If the gtk-alternative-button-order
+   --  setting is set to %TRUE, the dialog buttons are reordered according to
+   --  the order of the response ids passed to this function.
+   --
+   --  By default, GTK+ dialogs use the button order advocated by the Gnome
+   --  Human Interface Guidelines with the affirmative button at the far right,
+   --  and the cancel button left of it. But the builtin GTK+ dialogs and
+   --  message dialogs' do provide an alternative button order, which is more
+   --  suitable on some platforms, e.g. Windows.
+   --
+   --  Use this function after adding all the buttons to your dialog.
+
+   function Gtk_Alternative_Dialog_Button_Order
+     (Screen : Gdk.Gdk_Screen := null)  return Boolean;
+   --  Returns True if dialogs are expected to use an alternative button order
+   --  on the given screen (or current screen if null) . See
+   --  Set_Alternative_Button_Order_From_Array for more details about
+   --  alternative button order.
+   --
+   --  If you need to use this function, you should probably connect to the
+   --  ::notify:gtk-alternative-button-order signal on the Gtk_Settings object
+   --  associated to Screen, in order to be notified if the button order
+   --  setting changes.
+   --
+   --  Returns: Whether the alternative button order should be used
+
    procedure Set_Response_Sensitive
      (Dialog      : access Gtk_Dialog_Record;
       Response_Id : Gtk_Response_Type;
@@ -184,11 +221,9 @@ package Gtk.Dialog is
 
    procedure Set_Has_Separator
      (Dialog : access Gtk_Dialog_Record; Setting : Boolean);
-   --  Set whether the dialog has a separator above the buttons.
-
    function Get_Has_Separator (Dialog : access Gtk_Dialog_Record)
       return Boolean;
-   --  Return True if the dialog has a separator above the buttons.
+   --  Set whether the dialog has a separator above the buttons.
 
    function Run (Dialog : access Gtk_Dialog_Record) return Gtk_Response_Type;
    --  Block in a recursive main loop until Dialog emits the "response"
@@ -233,15 +268,22 @@ package Gtk.Dialog is
    --    procedure Handler
    --      (Dialog      : access Gtk_Fialog_Record'Class;
    --       Response_Id : Gint);
+   --    Emitted when an action widget is clicked, the dialog receives a delete
+   --    event, or the application programmer calls Response. On delete event,
+   --    the response ID is GTK_RESPONSE_NONE. Otherwise, it depends on which
+   --    action widget was clicked.
    --
    --  - "close"
    --    procedure Handler (Dialog : access Gtk_Fialog_Record'Class);
-   --
    --    Emit this signal to force a closing of the dialog.
    --  </signals>
 
+   Signal_Close    : constant String := "close";
+   Signal_Response : constant String := "response";
+
    procedure Response
-     (Dialog : access Gtk_Dialog_Record; Response_Id : Gtk_Response_Type);
+     (Dialog      : access Gtk_Dialog_Record;
+      Response_Id : Gtk_Response_Type);
    --  Emit the "response" signal
 
 private
@@ -253,8 +295,5 @@ private
    pragma Import (C, Get_Type, "gtk_dialog_get_type");
 end Gtk.Dialog;
 
---  missing:
---  procedure add_buttons
---    (GtkDialog   *dialog,
---     const gchar *first_button_text,
---     ...);
+--  No binding: gtk_dialog_set_alternative_button_order
+--  No binding: gtk_dialog_new_with_buttons

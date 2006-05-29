@@ -166,6 +166,7 @@
 --  IMPORTANT NOTE: These packages must be instantiated at library-level
 --
 --  </description>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Values;
 with Gdk.Event;

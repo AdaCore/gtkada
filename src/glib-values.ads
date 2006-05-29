@@ -52,6 +52,8 @@ package Glib.Values is
    --  table can be of any type.
    --  The index of the first element is always 1.
 
+   type GValue_Array is array (Gint range <>) of GValue;
+
    function Make_Values (Nb : Guint) return GValues;
    --  Create a new GValues structure from scratch. This procedure
    --  causes the allocation of an underlying C array, and this memory

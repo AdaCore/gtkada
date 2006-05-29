@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,10 +35,11 @@
 --  requisition). The size_allocate event will always be sent to the parent
 --  when a child calls Gtk.Widget.Queue_Resize.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gdk.Event;
 with Glib.Properties;
+with Glib.Values;
 with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -54,12 +55,10 @@ package Gtk.Container is
    procedure Set_Border_Width
      (Container    : access Gtk_Container_Record;
       Border_Width : Guint);
-   --  Modify the size of the frame that surrounds the widget.
-   --  The exact visual impact depends on the specific widget class.
-
    function Get_Border_Width
      (Container    : access Gtk_Container_Record) return Guint;
-   --  Return the size of the frame that surrounds the widget.
+   --  Modify the size of the frame that surrounds the widget.
+   --  The exact visual impact depends on the specific widget class.
 
    procedure Add
      (Container : access Gtk_Container_Record;
@@ -85,25 +84,17 @@ package Gtk.Container is
    procedure Set_Resize_Mode
      (Container   : access Gtk_Container_Record;
       Resize_Mode : Gtk.Enums.Gtk_Resize_Mode);
-   --  Change the resizing behavior for the Container.
-   --  The default value is Resize_Parent.
-
    function Get_Resize_Mode
      (Container : access Gtk_Container_Record)
       return Gtk.Enums.Gtk_Resize_Mode;
-   --  Return the resizing behavior for the Container.
+   --  Change the resizing behavior for the Container.
+   --  The default value is Resize_Parent.
 
    function Get_Children
      (Container : access Gtk_Container_Record)
       return Gtk.Widget.Widget_List.Glist;
    --  Return a list of all the children of the container.
    --  The caller must free the returned list.
-
-   function Children
-     (Container : access Gtk_Container_Record)
-      return Gtk.Widget.Widget_List.Glist
-      renames Get_Children;
-   --  This function is deprecated.
 
    procedure Propagate_Expose
      (Container : access Gtk_Container_Record;
@@ -123,46 +114,148 @@ package Gtk.Container is
    --  expose implementation from Gtk_Container, or, do some drawing
    --  and then chain to the expose implementation from Gtk_Container.
 
+   -----------
+   -- Focus --
+   -----------
+
    procedure Set_Focus_Chain
      (Container         : access Gtk_Container_Record;
       Focusable_Widgets : Gtk.Widget.Widget_List.Glist);
    --  Set the chain of widgets that can take the focus for a given Container.
-   --  The list should be freed by the user
+   --  The list should be freed by the user.
+   --  This list indicates in which order the widgets will get the focus when
+   --  the user presses tab or the arrow keys to move from one widget to the
+   --  next.
+
+   procedure Get_Focus_Chain
+     (Container         : access Gtk_Container_Record;
+      Focusable_Widgets : out Gtk.Widget.Widget_List.Glist;
+      Success           : out Boolean);
+   --  Retrieves the focus chain of the container, if one has been
+   --  set explicitly. If no focus chain has been explicitly
+   --  set, GTK+ computes the focus chain based on the positions
+   --  of the children. In that case, GTK+ stores null in
+   --  Focusable_Widgets and returns FALSE.
+   --  The returned list must be freed by the user.
 
    procedure Unset_Focus_Chain (Container : access Gtk_Container_Record);
-   --  Unset the focus chain.
+   --  Undoes the effect of Set_Focus_Chain
 
-   -----------------------
-   -- Foreach functions --
-   -----------------------
+   procedure Set_Focus_Vadjustment
+     (Container  : access Gtk_Container_Record;
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   function Get_Focus_Vadjustment
+     (Container : access Gtk_Container_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
+   --  Set the focus to the vertical adjustment.
+   --  Adjustment should have been created and displayed at some other
+   --  place in your application.
+   --  Container will make sure that Adjustment always matches the range
+   --  for the focus widget's position (y .. y + height).
 
-   type Forall_Function is
+   procedure Set_Focus_Hadjustment
+     (Container  : access Gtk_Container_Record;
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   function Get_Focus_Hadjustment
+     (Container : access Gtk_Container_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
+   --  Set the focus to the horizontal adjustment.
+   --  Adjustment should have been created and displayed at some other
+   --  place in your application.
+   --  Container will make sure that Adjustment always matches the range
+   --  for the focus widget's position (x .. x + width).
+
+   procedure Set_Focus_Child
+     (Container : access Gtk_Container_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
+   function Get_Focus_Child
+     (Container : access Gtk_Container_Record) return Gtk.Widget.Gtk_Widget;
+   --  Emit a "set_focus_child" signal, to set the child that currently has the
+   --  keyboard focus.
+
+   ----------------
+   -- Properties --
+   ----------------
+
+   procedure Child_Set_Property
+     (Container     : access Gtk_Container_Record;
+      Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Property_Name : String;
+      Value         : Glib.Values.GValue);
+   procedure Child_Get_Property
+     (Container     : access Gtk_Container_Record;
+      Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Property_Name : String;
+      Value         : out Glib.Values.GValue);
+   --  Sets or Gets the value of a child property for Child and Container. This
+   --  is property set at the container level, and that applies to all children
+   --  of that container. These are special type of properties, different from
+   --  the properties associated with each type of widget.
+
+   function Class_Find_Child_Property
+     (Cclass        : Glib.Object.GObject_Class;
+      Property_Name : String) return Glib.Param_Spec;
+   --  Finds a child property of a container class by name. The returned value
+   --  describes the property (type, allowed range, description,...)
+
+   procedure Class_Install_Child_Property
+     (Cclass      : Glib.Object.GObject_Class;
+      Property_Id : Guint;
+      Pspec       : Glib.Param_Spec);
+   --  Installs a child property on a container class.
+   --  The Property_Id is an custom id that you choose for your class. It will
+   --  be used in signals that set or get the property, instead of passing
+   --  around a string.
+
+   ----------------------
+   -- Forall functions --
+   ----------------------
+
+   type Gtk_Callback is
      access procedure (Item : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Function that can be call for each child of a container.
    --  This is called automatically by the Forall subprogram below.
 
    procedure Forall
      (Container : access Gtk_Container_Record;
-      Func      : Forall_Function);
-   --  Execute Func for each of the children of Container.
+      Func      : Gtk_Callback);
+   --  Invokes Func on each child of Container, including children that are
+   --  considered "internal" (implementation details of the container).
+   --  "Internal" children generally weren't added by the user of the
+   --  container, but were added by the container implementation itself. See
+   --  Gtk.Widget.Set_Composite_Name.
+   --  Most applications should use gtk_container_foreach(), rather than
+   --  gtk_container_forall().
    --  See also the generic package Forall_Pkg if you want to pass some
    --  extra data to Func.
 
+   procedure Foreach
+     (Container : access Gtk_Container_Record;
+      Func      : Gtk_Callback);
+   --  Invokes Func on each non-internal child of Container. See Forall for
+   --  details on what constitutes an "internal" child.
+
    --  <doc_ignore>
    generic
-      type Data_Type is private;
-   package Forall_Pkg is
-      type Forall_Function is
+      type Data_Type (<>) is private;
+   package For_Pkg is
+      type Gtk_Callback is
         access procedure (Item : access Gtk.Widget.Gtk_Widget_Record'Class;
-                          Data : Data_Type);
-
+                          Data : in out Data_Type);
       procedure Forall
         (Container : access Gtk_Container_Record;
-         Func      : Forall_Function;
+         Func      : Gtk_Callback;
          Data      : Data_Type);
-      --  Execute Func for each of the children of Container
+      --  Execute Func for each of the children of Container, including
+      --  internal ones
 
-   end Forall_Pkg;
+      procedure Foreach
+        (Container : access Gtk_Container_Record;
+         Func      : Gtk_Callback;
+         Data      : Data_Type);
+      --  Execute Func for each of the children of Container, not including
+      --  internal ones
+   end For_Pkg;
    --  </doc_ignore>
 
    --------------------------
@@ -175,24 +268,6 @@ package Gtk.Container is
    --  Set the "needs_redraws" field.
    --  If Needs_Redraws is True, then a "draw" signal is emitted for the
    --  Container whenever one is emitted for a child.
-
-   procedure Set_Focus_Vadjustment
-     (Container  : access Gtk_Container_Record;
-      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-   --  Set the focus to the vertical adjustment.
-   --  Adjustment should have been created and displayed at some other
-   --  place in your application.
-   --  Container will make sure that Adjustment always matches the range
-   --  for the focus widget's position (y .. y + height).
-
-   procedure Set_Focus_Hadjustment
-     (Container  : access Gtk_Container_Record;
-      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-   --  Set the focus to the horizontal adjustment.
-   --  Adjustment should have been created and displayed at some other
-   --  place in your application.
-   --  Container will make sure that Adjustment always matches the range
-   --  for the focus widget's position (x .. x + width).
 
    function Child_Type
      (Container : access Gtk_Container_Record) return Gtk.Gtk_Type;
@@ -213,15 +288,22 @@ package Gtk.Container is
    procedure Check_Resize (Container : access Gtk_Container_Record);
    --  Emit the "check_resize" signal
 
-   procedure Set_Focus_Child
-     (Container : access Gtk_Container_Record;
-      Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Emit a "set_focus_child" signal.
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
 
-   function Get_Focus_Child
-     (Container : access Gtk_Container_Record) return Gtk.Widget.Gtk_Widget;
-   --  Return the child that currently has the keyboard focus. Note that null
-   --  can be returned.
+   function Children
+     (Container : access Gtk_Container_Record)
+      return Gtk.Widget.Widget_List.Glist
+      renames Get_Children;
+   --  pragma Obsolescent;
+
+   --  </doc_ignore>
 
    ----------------
    -- Properties --
@@ -301,6 +383,11 @@ package Gtk.Container is
    --
    --  </signals>
 
+   Signal_Add             : constant String := "add";
+   Signal_Check_Resize    : constant String := "check_resize";
+   Signal_Remove          : constant String := "remove";
+   Signal_Set_Focus_Child : constant String := "set-focus-child";
+
 private
    type Gtk_Container_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
@@ -317,20 +404,9 @@ private
    pragma Import (C, Get_Type, "gtk_container_get_type");
 end Gtk.Container;
 
---  functions that have no equivalent in GtkAda:
---  - gtk_container_add_child_arg_type
---  - gtk_container_query_child_args
---  - gtk_container_child_getv
---  - gtk_container_child_setv
---  - gtk_container_add_with_args
---  - gtk_container_addv
---  - gtk_container_child_set
---
---  missing:
---  - gtk_container_get_focus_chain
---  - gtk_container_get_focus_vadjustment
---  - gtk_container_class_install_child_property
---  - gtk_container_class_find_child_property
---  - gtk_container_class_list_child_properties
---  - gtk_container_child_set_property
---  - gtk_container_child_get_property
+--  No binding: gtk_container_child_get_valist
+--  No binding: gtk_container_child_set_valist
+
+--  These functions never had a binding, but are now obsolescent
+--  No binding: gtk_container_foreach_full
+

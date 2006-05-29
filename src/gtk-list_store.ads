@@ -27,7 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  This package implements a specific model to store your data in. Each
+--  item in the list will correspond to one line in the tree view. Multiple
+--  columns can be displayed for each line.
+--  </description>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Values;
 with Gtk;
@@ -116,6 +121,20 @@ package Gtk.List_Store is
    --  be empty after this function is called. To fill in values, you need to
    --  call Set_Value.
 
+   procedure Insert_With_Valuesv
+     (List_Store : access Gtk_List_Store_Record;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
+      Position   : Glib.Gint;
+      Columns    : Glib.Gint_Array;
+      Values     : Glib.Values.GValue_Array);
+   --  Creates a new row at Position. Iter will be changed to point to this new
+   --  row. If Position is larger than the number of rows on the list, then the
+   --  new row will be appended to the list. The row will be filled with the
+   --  values given to this function.
+   --  Using this function is more efficient that calling Insert and then
+   --  Set for each column, since that will not emit the rows_reordered signal
+   --  when the model is sorted.
+
    procedure Prepend
      (List_Store : access Gtk_List_Store_Record;
       Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
@@ -135,6 +154,46 @@ package Gtk.List_Store is
    procedure Clear (List_Store : access Gtk_List_Store_Record);
    --  Remove all the rows in List_Store.
 
+   function Iter_Is_Valid
+     (List_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+      return Boolean;
+   --  WARNING: This function is slow. Only use it for debugging and/or testing
+   --  purposes.
+   --  Checks if the given iter is a valid iter for List_Store.
+
+   procedure Move_After
+     (Store    : access Gtk_List_Store_Record;
+      Iter     : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Position : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Moves the row pointed to by Iter to the position after Position. Note
+   --  that this function only works with unsorted stores. If Position is
+   --  Null_Iter, Iter will be moved to the start of the list.
+
+   procedure Move_Before
+     (Store    : access Gtk_List_Store_Record;
+      Iter     : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Position : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Moves the row pointed to by Iter to the position before Position. Note
+   --  that this function only works with unsorted stores. If Position is
+   --  Null_Iter, Iter will be moved to the end of the list.
+
+   procedure Reorder
+     (Store     : access Gtk_List_Store_Record;
+      New_Order : Glib.Gint_Array);
+   --  Reorders Store to follow the order indicated by New_order. Note that
+   --  this function only works with unsorted stores.
+   --  New_Order is an array of integers mapping the new position of each child
+   --  to its old position before the re-ordering,
+   --  i.e. New_Order[newpos] = oldpos
+
+   procedure Swap
+     (Store : access Gtk_List_Store_Record;
+      A     : Gtk.Tree_Model.Gtk_Tree_Iter;
+      B     : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Swaps the rwos pointed to by A and B. Note that this function only works
+   --  with unsorted stores.
+
    -------------
    -- Signals --
    -------------
@@ -150,3 +209,8 @@ private
 
    pragma Import (C, Get_Type, "gtk_list_store_get_type");
 end Gtk.List_Store;
+
+--  No binding: gtk_list_store_new
+--  No binding: gtk_list_store_set
+--  No binding: gtk_list_store_set_valist
+--  No binding: gtk_list_store_insert_with_values

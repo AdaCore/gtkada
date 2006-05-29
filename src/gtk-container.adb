@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,11 +27,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;     use System;
-with Gtk.Enums;  use Gtk.Enums;
-with Gtk.Widget; use Gtk.Widget;
+with System;         use System;
+with Glib.Values;    use Glib.Values;
+with Gtk.Adjustment; use Gtk.Adjustment;
+with Gtk.Enums;      use Gtk.Enums;
+with Gtk.Widget;     use Gtk.Widget;
 
 package body Gtk.Container is
+
+   procedure Internal_Gtk_Callback
+     (Widget : System.Address; Data : Gtk_Callback);
+   pragma Convention (C, Internal_Gtk_Callback);
+   --  Proxy for a Gtk callback
 
    ---------
    -- Add --
@@ -76,69 +83,81 @@ package body Gtk.Container is
       return Internal (Get_Object (Container));
    end Child_Type;
 
+   ---------------------------
+   -- Internal_Gtk_Callback --
+   ---------------------------
+
+   procedure Internal_Gtk_Callback
+     (Widget : System.Address;
+      Data   : Gtk_Callback)
+   is
+      Stub : Gtk_Widget_Record;
+   begin
+      Data (Gtk_Widget (Get_User_Data (Widget, Stub)));
+   end Internal_Gtk_Callback;
+
    ------------
    -- Forall --
    ------------
 
    procedure Forall
      (Container : access Gtk_Container_Record;
-      Func      : Forall_Function)
+      Func      : Gtk_Callback)
    is
-      procedure Internal_Func
-        (Widget : System.Address;
-         Data   : Forall_Function);
-
-      -------------------
-      -- Internal_Func --
-      -------------------
-
-      procedure Internal_Func
-        (Widget : System.Address;
-         Data   : Forall_Function)
-      is
-         Stub : Gtk_Widget_Record;
-      begin
-         Data (Gtk_Widget (Get_User_Data (Widget, Stub)));
-      end Internal_Func;
-
       procedure Internal
         (Container : System.Address;
          Func      : System.Address;
-         Data      : Forall_Function);
+         Data      : Gtk_Callback);
       pragma Import (C, Internal, "gtk_container_forall");
-
    begin
-      Internal (Get_Object (Container), Internal_Func'Address, Func);
+      Internal (Get_Object (Container), Internal_Gtk_Callback'Address, Func);
    end Forall;
 
-   ----------------
-   -- Forall_Pkg --
-   ----------------
+   -------------
+   -- Foreach --
+   -------------
 
-   package body Forall_Pkg is
+   procedure Foreach
+     (Container : access Gtk_Container_Record;
+      Func      : Gtk_Callback)
+   is
+      procedure Internal
+        (Container : System.Address;
+         Func      : System.Address;
+         Data      : Gtk_Callback);
+      pragma Import (C, Internal, "gtk_container_foreach");
+   begin
+      Internal (Get_Object (Container), Internal_Gtk_Callback'Address, Func);
+   end Foreach;
+
+   -------------
+   -- For_Pkg --
+   -------------
+
+   package body For_Pkg is
+
+      type Data_Type_Access is access all Data_Type;
 
       type Internal_Data is record
-         Data : Data_Type;
-         Func : Forall_Function;
+         Data : Data_Type_Access;
+         Func : Gtk_Callback;
       end record;
-
       type Internal_Data_Access is access all Internal_Data;
 
       procedure Internal_Func
-        (Widget : System.Address;
-         Data   : Internal_Data_Access);
+        (Widget : System.Address; Data : Internal_Data_Access);
+      pragma Convention (C, Internal_Func);
 
       -------------------
       -- Internal_Func --
       -------------------
 
       procedure Internal_Func
-        (Widget : System.Address;
-         Data   : Internal_Data_Access)
+        (Widget : System.Address; Data : Internal_Data_Access)
       is
          Stub : Gtk_Widget_Record;
       begin
-         Data.Func (Gtk_Widget (Get_User_Data (Widget, Stub)), Data.Data);
+         Data.Func (Gtk_Widget (Get_User_Data (Widget, Stub)), Data.Data.all);
       end Internal_Func;
 
       ------------
@@ -147,7 +166,7 @@ package body Gtk.Container is
 
       procedure Forall
         (Container : access Gtk_Container_Record;
-         Func      : Forall_Function;
+         Func      : Gtk_Callback;
          Data      : Data_Type)
       is
          procedure Internal
@@ -155,14 +174,32 @@ package body Gtk.Container is
             Func      : System.Address;
             Data      : System.Address);
          pragma Import (C, Internal, "gtk_container_forall");
-
-         D : aliased Internal_Data := (Data, Func);
-
+         Local : aliased Data_Type := Data;
+         D : aliased Internal_Data := (Local'Unchecked_Access, Func);
       begin
          Internal (Get_Object (Container), Internal_Func'Address, D'Address);
       end Forall;
 
-   end Forall_Pkg;
+      -------------
+      -- Foreach --
+      -------------
+
+      procedure Foreach
+        (Container : access Gtk_Container_Record;
+         Func      : Gtk_Callback;
+         Data      : Data_Type)
+      is
+         procedure Internal
+           (Container : System.Address;
+            Func      : System.Address;
+            Data      : System.Address);
+         pragma Import (C, Internal, "gtk_container_foreach");
+         Local : aliased Data_Type := Data;
+         D : aliased Internal_Data := (Local'Unchecked_Access, Func);
+      begin
+         Internal (Get_Object (Container), Internal_Func'Address, D'Address);
+      end Foreach;
+   end For_Pkg;
 
    ----------------------
    -- Get_Border_Width --
@@ -295,6 +332,27 @@ package body Gtk.Container is
    end Set_Focus_Chain;
 
    ---------------------
+   -- Get_Focus_Chain --
+   ---------------------
+
+   procedure Get_Focus_Chain
+     (Container         : access Gtk_Container_Record;
+      Focusable_Widgets : out Gtk.Widget.Widget_List.Glist;
+      Success           : out Boolean)
+   is
+      use Widget_List;
+      function Internal
+        (Container : System.Address;
+         List      : access System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_container_get_focus_chain");
+      L : aliased System.Address;
+   begin
+      Success := Boolean'Val (Internal (Get_Object (Container), L'Access));
+      Set_Object (Focusable_Widgets, L);
+   end Get_Focus_Chain;
+
+   ---------------------
    -- Set_Focus_Child --
    ---------------------
 
@@ -420,5 +478,117 @@ package body Gtk.Container is
          return Convert (Child);
       end if;
    end Get_Focus_Child;
+
+   ---------------------------
+   -- Get_Focus_Hadjustment --
+   ---------------------------
+
+   function Get_Focus_Hadjustment
+     (Container : access Gtk_Container_Record)
+      return Gtk_Adjustment
+   is
+      function Internal (Container : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_container_get_focus_hadjustment");
+      Stub : Gtk_Adjustment_Record;
+   begin
+      return Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (Container)), Stub));
+   end Get_Focus_Hadjustment;
+
+   ---------------------------
+   -- Get_Focus_Vadjustment --
+   ---------------------------
+
+   function Get_Focus_Vadjustment
+     (Container : access Gtk_Container_Record)
+      return Gtk_Adjustment
+   is
+      function Internal (Container : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_container_get_focus_vadjustment");
+      Stub : Gtk_Adjustment_Record;
+   begin
+      return Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (Container)), Stub));
+   end Get_Focus_Vadjustment;
+
+   -------------------------------
+   -- Class_Find_Child_Property --
+   -------------------------------
+
+   function Class_Find_Child_Property
+     (Cclass        : GObject_Class;
+      Property_Name : String)
+      return Glib.Param_Spec
+   is
+      function Internal
+        (Cclass        : GObject_Class;
+         Property_Name : String)
+         return Param_Spec;
+      pragma Import (C, Internal, "gtk_container_class_find_child_property");
+   begin
+      return Internal (Cclass, Property_Name & ASCII.NUL);
+   end Class_Find_Child_Property;
+
+   ----------------------------------
+   -- Class_Install_Child_Property --
+   ----------------------------------
+
+   procedure Class_Install_Child_Property
+     (Cclass      : GObject_Class;
+      Property_Id : Guint;
+      Pspec       : Param_Spec)
+   is
+      procedure Internal
+        (Cclass      : GObject_Class;
+         Property_Id : Guint;
+         Pspec       : Param_Spec);
+      pragma Import
+        (C, Internal, "gtk_container_class_install_child_property");
+   begin
+      Internal (Cclass, Property_Id, Pspec);
+   end Class_Install_Child_Property;
+
+   ------------------------
+   -- Child_Get_Property --
+   ------------------------
+
+   procedure Child_Get_Property
+     (Container     : access Gtk_Container_Record;
+      Child         : access Gtk_Widget_Record'Class;
+      Property_Name : String;
+      Value         : out GValue)
+   is
+      procedure Internal
+        (Container     : System.Address;
+         Child         : System.Address;
+         Property_Name : String;
+         Value         : out GValue);
+      pragma Import (C, Internal, "gtk_container_child_get_property");
+   begin
+      Internal (Get_Object (Container), Get_Object (Child),
+                Property_Name & ASCII.NUL, Value);
+   end Child_Get_Property;
+
+   ------------------------
+   -- Child_Set_Property --
+   ------------------------
+
+   procedure Child_Set_Property
+     (Container     : access Gtk_Container_Record;
+      Child         : access Gtk_Widget_Record'Class;
+      Property_Name : String;
+      Value         : GValue)
+   is
+      procedure Internal
+        (Container     : System.Address;
+         Child         : System.Address;
+         Property_Name : String;
+         Value         : GValue);
+      pragma Import (C, Internal, "gtk_container_child_set_property");
+   begin
+      Internal (Get_Object (Container), Get_Object (Child),
+                Property_Name & ASCII.NUL, Value);
+   end Child_Set_Property;
+
 
 end Gtk.Container;

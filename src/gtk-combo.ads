@@ -50,7 +50,7 @@
 --  will set the entry field to the last or first item in the list,
 --  respectively.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gtk.GEntry;
@@ -63,6 +63,7 @@ with Gtk.Window;
 with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Combo is
+   pragma Obsolescent;
 
    type Gtk_Combo_Record is new Gtk.Box.Gtk_Box_Record with private;
    type Gtk_Combo is access all Gtk_Combo_Record'Class;
@@ -126,13 +127,11 @@ package Gtk.Combo is
    --  for the return key, you need to call this subprogram, and connect
    --  a handler to the "activate" signal for the entry.
 
-   function Get_Entry
-     (Combo_Box : access Gtk_Combo_Record) return Gtk.GEntry.Gtk_Entry;
-   --  Return the Gtk_Entry associated with a Combo_Box.
-
    procedure Set_Entry
      (Combo_Box : access Gtk_Combo_Record;
       GEntry    : Gtk.GEntry.Gtk_Entry);
+   function Get_Entry
+     (Combo_Box : access Gtk_Combo_Record) return Gtk.GEntry.Gtk_Entry;
    --  Set the entry field for the combo box.
 
    pragma Warnings (Off); --  Gtk_List is obsolescent
@@ -155,30 +154,45 @@ package Gtk.Combo is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  - Name:  Enable_Arrow_Keys_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    Descr: Whether the arrow keys move through the list of items
-   --    See also:  Set_Use_Arrows
+   --  Name:  Enable_Arrow_Keys_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  Descr: Whether the arrow keys move through the list of items
+   --  See also:  Set_Use_Arrows
    --
-   --  - Name:  Enable_Arrow_Always_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    Descr: Whether the arrow keys work, even if the entry contents are
-   --           not in the list
-   --    See also:  Set_Use_Arrows_Always
+   --  Name:  Enable_Arrow_Always_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  Descr: Whether the arrow keys work, even if the entry contents are
+   --         not in the list
+   --  See also:  Set_Use_Arrows_Always
    --
-   --  - Name:  Case_Sensitive_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    Descr: Whether list item matching is case sensitive
-   --    See also:  Set_Case_Sensitive
+   --  Name:  Case_Sensitive_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  Descr: Whether list item matching is case sensitive
+   --  See also:  Set_Case_Sensitive
+   --
+   --  Name:  Allow_Empty_Property
+   --  Type:  Boolean
+   --  Descr: Whether an empty value may be entered in this field
+   --
+   --  Name:  Enable_Arrows_Always_Property
+   --  Type:  Boolean
+   --  Descr: Obsolete property, ignored
+   --
+   --  Name:  Value_In_List_Property
+   --  Type:  Boolean
+   --  Descr: Whether entered values must already be present in the list
    --
    --  </properties>
 
-   Enable_Arrow_Keys_Property   : constant Glib.Properties.Property_Boolean;
-   Enable_Arrow_Always_Property : constant Glib.Properties.Property_Boolean;
-   Case_Sensitive_Property      : constant Glib.Properties.Property_Boolean;
+   Enable_Arrow_Keys_Property    : constant Glib.Properties.Property_Boolean;
+   Enable_Arrow_Always_Property  : constant Glib.Properties.Property_Boolean;
+   Case_Sensitive_Property       : constant Glib.Properties.Property_Boolean;
+   Allow_Empty_Property          : constant Glib.Properties.Property_Boolean;
+   Enable_Arrows_Always_Property : constant Glib.Properties.Property_Boolean;
+   Value_In_List_Property        : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -197,6 +211,12 @@ private
      Glib.Properties.Build ("enable_arrow_always");
    Case_Sensitive_Property      : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("case_sensitive");
+   Allow_Empty_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("allow-empty");
+   Enable_Arrows_Always_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("enable-arrows-always");
+   Value_In_List_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("value-in-list");
 
    pragma Import (C, Get_Type, "gtk_combo_get_type");
 end Gtk.Combo;

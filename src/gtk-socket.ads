@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -67,7 +67,7 @@
 --  you start with visible windows, some window managers will not be able to
 --  correctly merge the two windows (Enlightenment for instance).
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Container;
 with Gdk.Window;
@@ -109,8 +109,21 @@ package Gtk.Socket is
    --  Gtk.Socket.Gtk_New (Id). The Gtk_Socket must have already been added
    --  into a toplevel window before you can make this call.
 
+   function Get_Plug_Window
+     (Socket : access Gtk_Socket_Record) return Gdk.Window.Gdk_Window;
+   --  Return the id of the embedded window.
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
    --  <doc_ignore>
+
    procedure Steal (Socket : access Gtk_Socket_Record; Wid : Guint32);
+   pragma Obsolescent;  --  Steal
    --  Reparent a pre-existing toplevel window into a Gtk_Socket.
    --  This is meant to embed clients that do not know about embedding into a
    --  Gtk_Socket, however doing so is inherently unreliable, and using
@@ -118,12 +131,8 @@ package Gtk.Socket is
    --  The Gtk_Socket must have already be added into a toplevel window
    --  before you can make this call.
    --  Wid is the XID of an existing toplevel window.
-   --  pragma Deprecated (Steal);
-   --  </doc_ignore>
 
-   function Get_Plug_Window
-     (Socket : access Gtk_Socket_Record) return Gdk.Window.Gdk_Window;
-   --  Return the id of the embedded window.
+   --  </doc_ignore>
 
    ----------------
    -- Properties --
@@ -134,6 +143,29 @@ package Gtk.Socket is
    --  Glib.Properties for more information on properties.
    --
    --  </properties>
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "plug_added"
+   --    procedure Handler (Socket : access Gtk_Socket_Record'Class);
+   --    Emitted when a client is successfully added to the socket
+   --
+   --  - "plug_removed"
+   --    function Handler
+   --       (Socket : access Gtk_Socket_Record'Class) return Boolean;
+   --    Emitted when a client is successfully removed from the socket. The
+   --    default action is to destroy the socket, so you want to reuse it you
+   --    must return True.
+   --
+   --  </signals>
+
+   Signal_Plug_Added   : constant String := "plug_added";
+   Signal_Plug_Removed : constant String := "plug_removed";
 
 private
 

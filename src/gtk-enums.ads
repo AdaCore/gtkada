@@ -474,6 +474,8 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Pack_Direction);
    package Sort_Type_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Sort_Type);
+   package Metric_Type_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Metric_Type);
 
    type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
    type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
@@ -494,6 +496,7 @@ package Gtk.Enums is
    type Property_Gtk_Policy_Type   is new Policy_Properties.Property;
    type Property_Pack_Direction    is new Pack_Direction_Properties.Property;
    type Property_Sort_Type         is new Sort_Type_Properties.Property;
+   type Property_Metric_Type       is new Metric_Type_Properties.Property;
 
    -----------------
    -- Obsolescent --

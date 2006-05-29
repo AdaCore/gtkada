@@ -595,6 +595,7 @@ package body Gtk.Ctree is
    -- Node_Get_Cell_Type --
    ------------------------
 
+   pragma Warnings (Off); --  Gtk.CList is obsolescent
    function Node_Get_Cell_Type (Ctree  : access Gtk_Ctree_Record;
                                 Node   : in     Gtk_Ctree_Node;
                                 Column : in     Gint)
@@ -609,6 +610,7 @@ package body Gtk.Ctree is
       return Gtk.Clist.Gtk_Cell_Type'Val
         (Internal (Get_Object (Ctree), Node, Column));
    end Node_Get_Cell_Type;
+   pragma Warnings (On);
 
    ---------------------
    -- Node_Get_Pixmap --
@@ -739,7 +741,9 @@ package body Gtk.Ctree is
       Text : aliased Interfaces.C.Strings.chars_ptr;
       Success : Gint;
 
+      pragma Warnings (Off); --  Gtk.CList is obsolescent
       use Gtk.Clist;
+      pragma Warnings (On);
 
    begin
       if Node_Get_Cell_Type (Ctree, Node, Column) = Cell_Text then
@@ -1100,6 +1104,7 @@ package body Gtk.Ctree is
         (Object : in System.Address;
          Key    : in String) return Gtk_Ctree_Compare_Drag_Func;
       pragma Import (C, Get_User_Data, "gtk_object_get_data");
+      --  External binding: gtk_object_get_data
 
       Local_Ctree_Stub : Gtk_Ctree_Record;
       Local_Ctree : constant Gtk_Ctree :=
@@ -1113,6 +1118,10 @@ package body Gtk.Ctree is
         (Cmp_Func (Local_Ctree, Source_Node, New_Parent, New_Sibling));
    end C_Compare_Drag_Func;
 
+   ---------------------------
+   -- Set_Drag_Compare_Func --
+   ---------------------------
+
    procedure Set_Drag_Compare_Func
      (Ctree    : access Gtk_Ctree_Record;
       Cmp_Func : in     Gtk_Ctree_Compare_Drag_Func) is
@@ -1125,6 +1134,7 @@ package body Gtk.Ctree is
                                Name   : in String;
                                Data   : in Gtk_Ctree_Compare_Drag_Func);
       pragma Import (C, Set_User_Data, "gtk_object_set_data");
+      --  External binding: gtk_object_set_data
 
    begin
       if Cmp_Func = null then

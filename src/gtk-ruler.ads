@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,9 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  This widget is generally put on the sides of a drawing area to help the
+--  user measure distances. It indicates the current position of the mouse
+--  cursor within the drawing area, and can be graduated in multiple units.
+--  </description>
+--  <c_version>2.8.17</c_version>
 
-with Gtk.Enums; use Gtk.Enums;
+with Glib.Properties;
+with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Ruler is
@@ -43,19 +49,24 @@ package Gtk.Ruler is
    subtype Gtk_Vruler is Gtk_Ruler;
 
    procedure Gtk_New_Hruler (Ruler : out Gtk_Ruler);
+   procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record'Class);
+   --  Creates or initializes a new horizontal ruler
 
    procedure Gtk_New_Vruler (Ruler : out Gtk_Ruler);
-
-   procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record'Class);
-
    procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record'Class);
+   --  Creates or initializes a new vertical ruler
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type        return Gtk.Gtk_Type;
+   function Hruler_Get_Type return Gtk.Gtk_Type;
+   function Vruler_Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Ruler.
 
    procedure Set_Metric
      (Ruler  : access Gtk_Ruler_Record;
       Metric : Gtk_Metric_Type);
+   function Get_Metric
+     (Ruler  : access Gtk_Ruler_Record) return Gtk_Metric_Type;
+   --  Set or get the units used for a Gtk_Ruler. See Set_Metric.
 
    procedure Set_Range
      (Ruler    : access Gtk_Ruler_Record;
@@ -63,15 +74,6 @@ package Gtk.Ruler is
       Upper    : Gdouble;
       Position : Gdouble;
       Max_Size : Gdouble);
-
-   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
-
-   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
-
-   function Get_Metric
-     (Ruler  : access Gtk_Ruler_Record) return Gtk_Metric_Type;
-   --  Get the units used for a Gtk_Ruler. See Set_Metric.
-
    procedure Get_Range
      (Ruler    : access Gtk_Ruler_Record;
       Lower    : out Gdouble;
@@ -86,6 +88,10 @@ package Gtk.Ruler is
    --  Max_Size: Maximum size of the ruler used when calculating the space to
    --            leave for the text.
 
+   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
+   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
+   --  ???
+
    ----------------
    -- Properties --
    ----------------
@@ -94,11 +100,49 @@ package Gtk.Ruler is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Lower_Property
+   --  Type:  Double
+   --  Descr: Lower limit of ruler
+   --
+   --  Name:  Max_Size_Property
+   --  Type:  Double
+   --  Descr: Maximum size of the ruler
+   --
+   --  Name:  Metric_Property
+   --  Type:  Enum
+   --  Descr: The metric used for the ruler
+   --
+   --  Name:  Position_Property
+   --  Type:  Double
+   --  Descr: Position of mark on the ruler
+   --
+   --  Name:  Upper_Property
+   --  Type:  Double
+   --  Descr: Upper limit of ruler
+   --
    --  </properties>
+
+   Lower_Property    : constant Glib.Properties.Property_Double;
+   Max_Size_Property : constant Glib.Properties.Property_Double;
+   Metric_Property   : constant Gtk.Enums.Property_Metric_Type;
+   Position_Property : constant Glib.Properties.Property_Double;
+   Upper_Property    : constant Glib.Properties.Property_Double;
 
 private
    type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
 
-   pragma Import (C, Get_Type, "gtk_ruler_get_type");
+   Lower_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("lower");
+   Max_Size_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("max-size");
+   Metric_Property   : constant Gtk.Enums.Property_Metric_Type :=
+     Gtk.Enums.Build ("metric");
+   Position_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("position");
+   Upper_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("upper");
 
+   pragma Import (C, Get_Type, "gtk_ruler_get_type");
+   pragma Import (C, Vruler_Get_Type, "gtk_vruler_get_type");
+   pragma Import (C, Hruler_Get_Type, "gtk_hruler_get_type");
 end Gtk.Ruler;

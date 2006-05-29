@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>partial 1.3.11</c_version>
+--  <description>
+--  An accel group represents a group of keyboard accelerators, generally
+--  attached to a toplevel window.
+--  Accelerators are different from mnemonics. Accelerators are shortcuts for
+--  activating a menu item. They appear alongside the menu item they are a
+--  shortcut for. Mnemonics are shortcuts for GUI elements, such as buttons.
+--  They appear as underline characters. Menu items can have both.
+--  </description>
+--  <c_version>2.8 partial</c_version>
 
 with Gdk.Types;
 with Gtk.Object;
@@ -50,69 +58,76 @@ package Gtk.Accel_Group is
    end record;
    pragma Convention (C, Gtk_Accel_Key);
 
-   ------------------------
-   -- Accelerator Groups --
-   ------------------------
+   type Gtk_Accel_Group_Activate is access function
+     (Accel_Group   : access Gtk_Accel_Group_Record'Class;
+      Acceleratable : Glib.Object.GObject;
+      Keyval        : Gdk.Types.Gdk_Key_Type;
+      Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
+
+--     type Gtk_Accel_Group_Find_Func is access function
+--       (Key      : Gtk_Accel_Key;
+--        Closure  : Glib.Closure.GClosure;
+--        Data     : System.Address) return Boolean;
+
+   procedure Gtk_New (Accel_Group : out Gtk_Accel_Group);
+   procedure Initialize (Accel_Group : access Gtk_Accel_Group_Record'Class);
+   --  Remember to call Gtk.Window.Add_Accel_Group to active the group.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Accel_Group.
 
-   procedure Gtk_New (Accel_Group : out Gtk_Accel_Group);
-   --  Remember to call Gtk.Window.Add_Accel_Group to active the group.
-
-   procedure Initialize (Accel_Group : access Gtk_Accel_Group_Record'Class);
-
    procedure Lock (Accel_Group : access Gtk_Accel_Group_Record);
-
    procedure Unlock (Accel_Group : access Gtk_Accel_Group_Record);
+   --  Locks or unlocks the group.  When a group is locked, the accelerators
+   --  contained in it cannot be changed at runtime by the user. See
+   --  Gtk_Accel_Map.Change_Entry about runtime accelerator changes.
+   --  Unlock must be called the same number of time that Lock was called.
 
-   --  ??? To bind:
+--     procedure Connect
+--       (Accel_Group : access Gtk_Accel_Group_Record;
+--        Accel_Key   : Guint;
+--        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
+--        Accel_Flags : Gtk_Accel_Flags;
+--        Closure     : Glib.Closure.GClosure);
+   --  Installs an accelerator in this group. When accel_group is being
+   --  activated in response to a call to Accel_Groups_Activate, Closure will
+   --  be invoked if the Accel_Key and Accel_Mods from Accel_Groups_Activate
+   --  match those of this connection.
+   --  The signature used for the Closure is that of Gtk_Accel_Group_Activate.
+   --  Note that, due to implementation details, a single closure can only be
+   --  connected to one accelerator group.
 
-   --  procedure Connect
-   --    (GtkAccelGroup  *accel_group,
-   --     guint           accel_key,
-   --     GdkModifierType accel_mods,
-   --     GtkAccelFlags   accel_flags,
-   --     GClosure       *closure);
+--     function Find
+--       (Accel_Group : access Gtk_Accel_Group_Record;
+--        Find_Func   : Gtk_Accel_Group_Find_Func;
+--        Data        : System.Address)
+--        return Gtk_Accel_Key;
+   --  @accel_group: a #GtkAccelGroup
+   --  @find_func: a function to filter the entries of @accel_group with
+   --  @data: data to pass to @find_func
+   --  @returns: the key of the first entry passing @find_func. The key is
+   --  owned by GTK+ and must not be freed.
+   --
+   --  Finds the first entry in an accelerator group for which
+   --  @find_func returns %TRUE and returns its #GtkAccelKey.
 
-   --  procedure Connect_By_Path
-   --    (GtkAccelGroup  *accel_group,
-   --     const gchar    *accel_path,
-   --     GClosure       *closure);
 
-   --  function Disconnect
-   --    (GtkAccelGroup  *accel_group,
-   --     GClosure       *closure) return Boolean;
-
-   --  function Disconnect_Key
-   --    (GtkAccelGroup  *accel_group,
-   --     guint           accel_key,
-   --     GdkModifierType accel_mods) return Boolean;
-
-   --------------------------
-   -- Gtk_Activatable glue --
-   --------------------------
+   ------------
+   -- Groups --
+   ------------
 
    function Accel_Groups_Activate
      (Object     : access Gtk.Object.Gtk_Object_Record'Class;
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Boolean;
+   --  Find the first accelerator in any group, attached to Object that matches
+   --  the given key and modifier, and activate that accelerator.
+   --  Returns True if an accelerator was activated.
 
    function From_Object
      (Object : access Gtk.Object.Gtk_Object_Record'Class)
       return Object_List.GSlist;
    --  Gets a list of all accel groups which are attached to Object.
-
-   --  ??? To bind:
-
-   --  function Find
-   --   (Accel_Group : access Gtk_Accel_Group_Record,
-   --    gboolean (*find_func)
-   --      (GtkAccelKey *key, GClosure *closure, gpointer data),
-   --    gpointer data) return Gtk_Accel_Key;
-
-   --  function From_Accel_Closure
-   --    (GClosure *closure) return Gtk_Accel_Group;
 
    ------------------
    -- Accelerators --
@@ -121,21 +136,44 @@ package Gtk.Accel_Group is
    function Accelerator_Valid
      (Keyval    : Gdk.Types.Gdk_Key_Type;
       Modifiers : Gdk.Types.Gdk_Modifier_Type) return Boolean;
+   --  Determines whether a given keyval and modifier constitute a valid
+   --  accelerator. For instance, GDK_Control_L is not a valid accelerator,
+   --  whereas Gdk_L associated with Control_Mask is valid.
 
    procedure Accelerator_Parse
      (Accelerator      : String;
       Accelerator_Key  : out Gdk.Types.Gdk_Key_Type;
       Accelerator_Mods : out Gdk.Types.Gdk_Modifier_Type);
+   --  Parse a string representing an accelerator. The format looks like
+   --  "<Control>a", "<Shift><Alt>a" or "<Release>z" (the last one applies to
+   --  a key release. Abbreviations such as "Ctrl" are allowed.
 
    function Accelerator_Name
      (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
       Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type) return String;
+   --  Converts an accelerator keyval and modifier mask into a string parseable
+   --  by Accelerator_Parse. For example, if you pass in GDK_q and
+   --  GDK_CONTROL_MASK, this function returns "<Control>q".
+   --  If you need to display accelerators in the user interface, see
+   --  Accelerator_Get_Label.
 
-   procedure Accelerator_Set_Default_Mod_Mask
+   function Accelerator_Get_Label
+     (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
+      Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type) return String;
+   --  Converts an accelerator keyval and modifier mask into a string
+   --  which can be used to represent the accelerator to the user.
+
+   procedure Set_Default_Mod_Mask
      (Default_Mod_Mask : Gdk.Types.Gdk_Modifier_Type);
-
-   function Accelerator_Get_Default_Mod_Mask
-     return Gdk.Types.Gdk_Modifier_Type;
+   function Get_Default_Mod_Mask return Gdk.Types.Gdk_Modifier_Type;
+   --  Sets the modifiers that will be considered significant for keyboard
+   --  accelerators. The default mod mask is GDK_CONTROL_MASK | GDK_SHIFT_MASK
+   --  | GDK_MOD1_MASK, that is, Control, Shift, and Alt. Other modifiers will
+   --  by default be ignored by GtkAccelGroup. You must include at least the
+   --  three default modifiers in any value you pass to this function.
+   --
+   --  The default mod mask should be changed on application startup, before
+   --  using any accelerator groups.
 
 private
 
@@ -148,8 +186,12 @@ private
 
    pragma Import (C, Get_Type, "gtk_accel_group_get_type");
 
-   pragma Import (C, Accelerator_Set_Default_Mod_Mask,
-                  "gtk_accelerator_set_default_mod_mask");
-   pragma Import (C, Accelerator_Get_Default_Mod_Mask,
-                  "gtk_accelerator_get_default_mod_mask");
+   pragma Import
+     (C, Set_Default_Mod_Mask, "gtk_accelerator_set_default_mod_mask");
+   pragma Import
+     (C, Get_Default_Mod_Mask, "gtk_accelerator_get_default_mod_mask");
 end Gtk.Accel_Group;
+
+--  This function is mostly internal, better used through
+--  gtk_accel_groups_activate
+--  No binding: gtk_accel_group_activate

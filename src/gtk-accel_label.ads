@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,8 +52,9 @@
 --  multiple accelerators and even signal names, though it is almost always
 --  used to display just one accelerator key.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Label;
 with Gtk.Widget;
 
@@ -74,6 +75,11 @@ package Gtk.Accel_Label is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Accel_Label.
 
+   procedure Set_Accel_Widget
+     (Accel_Label  : access Gtk_Accel_Label_Record;
+      Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Add an accelerator to a particular widget.
+
    function Get_Accel_Widget
      (Accel_Label : access Gtk_Accel_Label_Record)
       return Gtk.Widget.Gtk_Widget;
@@ -84,11 +90,6 @@ package Gtk.Accel_Label is
    --  Return the width needed to display the accelerator key(s).
    --  This is used by menus to align all of the Gtk_Menu_Item widgets, and
    --  shouldn't be needed by applications.
-
-   procedure Set_Accel_Widget
-     (Accel_Label  : access Gtk_Accel_Label_Record;
-      Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Add an accelerator to a particular widget.
 
    function Refetch
      (Accel_Label : access Gtk_Accel_Label_Record) return Boolean;
@@ -112,12 +113,29 @@ package Gtk.Accel_Label is
 
    --  <signals>
    --  The following new signals are defined for this widget:
+   --
+   --  Name:  Accel_Closure_Property
+   --  Type:  Boxed
+   --  Descr: The closure to be monitored for accelerator changes
+   --
+   --  Name:  Accel_Widget_Property
+   --  Type:  Object
+   --  Descr: The widget to be monitored for accelerator changes
+   --
    --  </signals>
 
-private
+   --  Accel_Closure_Property : constant Glib.Properties.Property_Boxed;
+   Accel_Widget_Property  : constant Glib.Properties.Property_Object;
 
+
+private
    type Gtk_Accel_Label_Record is new Gtk.Label.Gtk_Label_Record
-     with null record;
+   with null record;
+
+   --  Accel_Closure_Property : constant Glib.Properties.Property_Boxed :=
+   --   Glib.Properties.Build ("accel-closure");
+   Accel_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("accel-widget");
 
    pragma Import (C, Get_Type, "gtk_accel_label_get_type");
 
@@ -147,3 +165,5 @@ end Gtk.Accel_Label;
 --    (Save_Item, "activate", Accel_Group,
 --     GDK_S, Control_Mask, Accel_Visible);
 --  </example>
+
+--  No binding: gtk_accel_label_set_accel_closure

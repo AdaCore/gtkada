@@ -275,4 +275,118 @@ package body Gtk.List_Store is
       Internal (Get_Object (List_Store));
    end Clear;
 
+   -------------------------
+   -- Insert_With_Valuesv --
+   -------------------------
+
+   procedure Insert_With_Valuesv
+     (List_Store : access Gtk_List_Store_Record;
+      Iter       : in out Gtk_Tree_Iter;
+      Position   : Gint;
+      Columns    : Gint_Array;
+      Values     : Glib.Values.GValue_Array)
+   is
+      procedure Internal
+        (List_Store : System.Address;
+         Iter       : in out Gtk_Tree_Iter;
+         Position   : Gint;
+         Columns    : System.Address;
+         Values     : System.Address;
+         N_Values   : Gint);
+      pragma Import (C, Internal, "gtk_list_store_insert_with_valuesv");
+   begin
+      Internal (Get_Object (List_Store), Iter, Position,
+                Columns (Columns'First)'Address, Values (Values'First)'Address,
+                Values'Length);
+   end Insert_With_Valuesv;
+
+   -------------------
+   -- Iter_Is_Valid --
+   -------------------
+
+   function Iter_Is_Valid
+     (List_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk_Tree_Iter)
+      return Boolean
+   is
+      function Internal
+        (List_Store : System.Address;
+         Iter       : Gtk_Tree_Iter)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_list_store_iter_is_valid");
+   begin
+      return Boolean'Val (Internal (Get_Object (List_Store), Iter));
+   end Iter_Is_Valid;
+
+   ----------------
+   -- Move_After --
+   ----------------
+
+   procedure Move_After
+     (Store    : access Gtk_List_Store_Record;
+      Iter     : Gtk_Tree_Iter;
+      Position : Gtk_Tree_Iter)
+   is
+      procedure Internal
+        (Store    : System.Address;
+         Iter     : Gtk_Tree_Iter;
+         Position : Gtk_Tree_Iter);
+      pragma Import (C, Internal, "gtk_list_store_move_after");
+   begin
+      Internal (Get_Object (Store), Iter, Position);
+   end Move_After;
+
+   -----------------
+   -- Move_Before --
+   -----------------
+
+   procedure Move_Before
+     (Store    : access Gtk_List_Store_Record;
+      Iter     : Gtk_Tree_Iter;
+      Position : Gtk_Tree_Iter)
+   is
+      procedure Internal
+        (Store    : System.Address;
+         Iter     : Gtk_Tree_Iter;
+         Position : Gtk_Tree_Iter);
+      pragma Import (C, Internal, "gtk_list_store_move_before");
+   begin
+      Internal (Get_Object (Store), Iter, Position);
+   end Move_Before;
+
+   -------------
+   -- Reorder --
+   -------------
+
+   procedure Reorder
+     (Store     : access Gtk_List_Store_Record;
+      New_Order : Gint_Array)
+   is
+      procedure Internal
+        (Store     : System.Address;
+         New_Order : System.Address);
+      pragma Import (C, Internal, "gtk_list_store_reorder");
+   begin
+      Internal (Get_Object (Store), New_Order (New_Order'First)'Address);
+   end Reorder;
+
+   ----------
+   -- Swap --
+   ----------
+
+   procedure Swap
+     (Store : access Gtk_List_Store_Record;
+      A     : Gtk_Tree_Iter;
+      B     : Gtk_Tree_Iter)
+   is
+      procedure Internal
+        (Store : System.Address;
+         A     : Gtk_Tree_Iter;
+         B     : Gtk_Tree_Iter);
+      pragma Import (C, Internal, "gtk_list_store_swap");
+   begin
+      Internal (Get_Object (Store), A, B);
+   end Swap;
+
+
 end Gtk.List_Store;

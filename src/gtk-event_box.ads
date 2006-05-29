@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2005 AdaCore                    --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,8 +42,9 @@
 --  scrolled window of the popup.
 --
 --  </description>
---  <c_version>2.4.10</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Bin;
 
 package Gtk.Event_Box is
@@ -65,28 +66,23 @@ package Gtk.Event_Box is
    procedure Set_Visible_Window
       (Event_Box : access Gtk_Event_Box_Record;
        Visible_Window : Boolean);
+   function Get_Visible_Window
+      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
    --  Set whether the event box uses a visible or invisible child window. The
    --  default is to use visible windows
    --  Except if you want to explicitly change the background, or explicitly
    --  draw on it, you should make the event box invisible.
 
-   function Get_Visible_Window
-      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
-   --  Returns whether the event box has a visible window
-
    procedure Set_Above_Child
       (Event_Box : access Gtk_Event_Box_Record;
        Above_Child : Boolean);
+   function Get_Above_Child
+      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
    --  Set whether the event box window is positioned above the windows of its
    --  child, as opposed to below it. If the window is above, all events inside
    --  the event box will go to the event box. If the window is below, events
    --  in windows of child widgets will first go to that widget, and then to
    --  its parent. The default is to keep the window below the child.
-
-   function Get_Above_Child
-      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
-   --  Returns whether the event window is positioned above the windows of its
-   --  children.
 
    ----------------
    -- Properties --
@@ -96,7 +92,20 @@ package Gtk.Event_Box is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Above_Child_Property
+   --  Type:  Boolean
+   --  Descr: Whether the event-trapping window of the eventbox is above the
+   --         window of the child widget as opposed to below it.
+   --
+   --  Name:  Visible_Window_Property
+   --  Type:  Boolean
+   --  Descr: Whether the event box is visible, as opposed to invisible and
+   --         only used to trap events.
+   --
    --  </properties>
+
+   Above_Child_Property    : constant Glib.Properties.Property_Boolean;
+   Visible_Window_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -108,5 +117,11 @@ package Gtk.Event_Box is
 
 private
    type Gtk_Event_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
+
+   Above_Child_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("above-child");
+   Visible_Window_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visible-window");
+
    pragma Import (C, Get_Type, "gtk_event_box_get_type");
 end Gtk.Event_Box;

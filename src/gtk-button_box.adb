@@ -130,12 +130,34 @@ package body Gtk.Button_Box is
 
    procedure Set_Child_Ipadding
      (Button_Box : access Gtk_Button_Box_Record;
-      Ipad_X     : Gint;
-      Ipad_Y     : Gint)
+      Ipad_X : Gint;
+      Ipad_Y : Gint)
    is
-      pragma Unreferenced (Button_Box, Ipad_X, Ipad_Y);
+      procedure Internal
+        (Widget : System.Address;
+         Ipad_X : Gint;
+         Ipad_Y : Gint);
+      pragma Import (C, Internal, "gtk_button_box_set_child_ipadding");
    begin
-      null;
+      Internal (Get_Object (Button_Box), Ipad_X, Ipad_Y);
    end Set_Child_Ipadding;
+
+   -------------------------
+   -- Get_Child_Secondary --
+   -------------------------
+
+   function Get_Child_Secondary
+     (Widget : access Gtk_Button_Box_Record;
+      Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Boolean
+   is
+      function Internal
+        (Widget : System.Address;
+         Child  : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_button_box_get_child_secondary");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget), Get_Object (Child)));
+   end Get_Child_Secondary;
 
 end Gtk.Button_Box;

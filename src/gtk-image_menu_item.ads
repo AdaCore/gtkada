@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,8 +36,9 @@
 --  side, the pixmaps will be indented, which is not what you want. This widget
 --  solves the problem).
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Accel_Group;
 with Gtk.Menu_Item;
 with Gtk.Widget;
@@ -105,6 +106,22 @@ package Gtk.Image_Menu_Item is
      (Menu_Item : access Gtk_Image_Menu_Item_Record)
       return Gtk.Widget.Gtk_Widget;
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  Name:  Image_Property
+   --  Type:  Object
+   --  Descr: Child widget to appear next to the menu text
+   --
+   --  </properties>
+
+   Image_Property : constant Glib.Properties.Property_Object;
+
    -------------
    -- Signals --
    -------------
@@ -117,6 +134,9 @@ package Gtk.Image_Menu_Item is
 private
    type Gtk_Image_Menu_Item_Record is new
      Gtk.Menu_Item.Gtk_Menu_Item_Record with null record;
+
+   Image_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("image");
 
    pragma Import (C, Get_Type, "gtk_image_menu_item_get_type");
 end Gtk.Image_Menu_Item;

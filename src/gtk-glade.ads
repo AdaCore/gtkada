@@ -3,6 +3,7 @@
 --                                                                   --
 --                   Copyright (C) 1999-2001                         --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                   Copyright 2002-2006 AdaCore                     --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -21,6 +22,7 @@
 --  This package contains high level support for the Glade GUI builder.
 --  It provides routines to generate Ada code from an XML definition file.
 --  See package Glib.Glade for the low level GUI builder support.
+--  <c_version>2.8.17</c_version>
 
 with Ada.Text_IO; use Ada.Text_IO;
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;

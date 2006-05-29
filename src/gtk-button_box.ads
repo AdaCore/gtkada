@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  above two instead.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Properties;
 with Gtk.Box;
@@ -56,6 +56,9 @@ package Gtk.Button_Box is
    procedure Set_Layout
      (Button_Box   : access Gtk_Button_Box_Record;
       Layout_Style : Enums.Gtk_Button_Box_Style);
+   function Get_Layout
+     (Button_Box : access Gtk_Button_Box_Record)
+      return Enums.Gtk_Button_Box_Style;
    --  Set the layout to use for the box.
    --  There are four such styles:
    --
@@ -70,15 +73,14 @@ package Gtk.Button_Box is
    --  - Buttonbox_End   : The children are put as much to the right
    --                      (resp. bottom) as possible in the box.
 
-   function Get_Layout
-     (Button_Box : access Gtk_Button_Box_Record)
-      return Enums.Gtk_Button_Box_Style;
-   --  Return the layout used in the box.
-
    procedure Set_Child_Secondary
      (Button_Box   : access Gtk_Button_Box_Record;
       Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
       Is_Secondary : Boolean);
+   function Get_Child_Secondary
+     (Widget : access Gtk_Button_Box_Record;
+      Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Boolean;
    --  Set whether Child should appear in a secondary group of children.
    --  A typical use of a secondary child is the help button in a dialog.
    --
@@ -94,30 +96,40 @@ package Gtk.Button_Box is
    --  Is_Secondary: if True, the Child appears in a secondary group of the
    --                button box.
 
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
    --  <doc_ignore>
+
    procedure Set_Child_Size
      (Button_Box : access Gtk_Button_Box_Record;
       Min_Width  : Gint;
       Min_Height : Gint);
+   pragma Obsolescent;  --  Set_Child_Size
    --  Set the size to use for children of this specific box.
    --  You can modify the size for all the boxes at once by using
    --  Set_Child_Size_Default.
-   --  Deprecated.
 
    procedure Get_Child_Size
      (Button_Box : access Gtk_Button_Box_Record;
       Min_Width  : out Gint;
       Min_Height : out Gint);
+   pragma Obsolescent;  --  Get_Child_Size
    --  Return the size to use for children of this specific box.
    --  Min_Width and Min_Height are set to -1 if this widget uses the default
    --  sizes that are set by Set_Child_Size_Default.
-   --  Deprecated.
 
    procedure Set_Child_Ipadding
      (Button_Box : access Gtk_Button_Box_Record;
       Ipad_X     : Gint;
       Ipad_Y     : Gint);
-   --  Obsolete no-op procedure.
+   pragma Obsolescent; --  Set_Child_Ipadding
+   --  no-op procedure.
+
    --  </doc_ignore>
 
    ----------------
@@ -164,3 +176,6 @@ private
       Glib.Properties.Build ("secondary");
 
 end Gtk.Button_Box;
+
+--  The following functions never had a binding, are now obsolescent
+--  No binding: gtk_button_box_get_child_ipadding

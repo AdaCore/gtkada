@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2002-2003 ACT Europe              --
+--                   Copyright (C) 2002-2006 AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,10 +26,28 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  An accel_map provides support for loading and saving accelerators (see
+--  also Gtk.Accel_Group).
+--  </description>
+--  <c_version>2.8.17</c_version>
+
+with Glib;
 with Gdk.Types;
 with Gtk.Accel_Group;
 
 package Gtk.Accel_Map is
+
+   type Gtk_Accel_Map is new Glib.C_Proxy;
+
+   function Get return Gtk_Accel_Map;
+   --  Gets the singleton global Gtk_Accel_Map object. This object
+   --  is useful only for notification of changes to the accelerator
+   --  map via the ::changed signal; it isn't a parameter to the
+   --  other accelerator map functions.
+
+   function Get_Type return Glib.GType;
+   --  Return the internal type used for a Gtk_Accel_Map
 
    procedure Save (File_Name : String);
    --  Save the key shortcuts to a file. These are the shortcuts that might
@@ -84,6 +102,36 @@ package Gtk.Accel_Map is
    --  accelerators. Replace should be set to True if other accelerators may be
    --  deleted to resolve such conflicts.
 
+   procedure Lock_Path   (Accel_Path : String);
+   procedure Unlock_Path (Accel_Path : String);
+   --  Locks the given accelerator path. If the accelerator map doesn't yet
+   --  contain an entry for Accel_Path, a new one is created.
+   --
+   --  Locking an accelerator path prevents its accelerator from being changed
+   --  during runtime. A locked accelerator path can be unlocked by
+   --  Unlock_Path. Refer to Change_Entry for information about runtime
+   --  accelerator changes.
+   --
+   --  If called more than once, Accel_Path remains locked until Unlock_Path
+   --  has been called an equivalent number of times.
+   --
+   --  Note that locking of individual accelerator paths is independent from
+   --  locking the Gtk_Accel_Group containing them. For runtime accelerator
+   --  changes to be possible both the accelerator path and its accel group
+   --  have to be unlocked.
+
+   -------------
+   -- Foreach --
+   -------------
+
+   procedure Add_Filter (Filter_Pattern : String);
+   --  Adds a filter to the global list of accel path filters.
+   --  Accel map entries whose accel path matches one of the filters
+   --  are skipped by Foreach.
+   --  This function is intended for GTK+ modules that create their own
+   --  menus, but don't want them to be saved into the applications accelerator
+   --  map dump.
+
    type Gtk_Accel_Map_Foreach is access procedure
      (Data       : System.Address;
       Accel_Path : String;
@@ -91,18 +139,46 @@ package Gtk.Accel_Map is
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
       Changed    : Boolean);
    --  Changed is set to true if the keybinding was changed manually by the
-   --  user
+   --  user, and thus would need saving during an accelerator map dump.
 
    procedure Foreach
      (Data : System.Address; Func : Gtk_Accel_Map_Foreach);
    --  Calls Func for each of the currently defined key shortcuts.
    --  Data is passed as is to Func
 
+   procedure Foreach_Unfiltered
+     (Data : System.Address; Func : Gtk_Accel_Map_Foreach);
+   --  Loops over all entries in the accelerator map, and execute
+   --  Func on each.
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "changed"
+   --    procedure Handler
+   --      (Map : Gtk_Accel_Map;
+   --       Accel_Path : String;
+   --       Accel_Key  : Gdk_Key_Type;
+   --       Accel_Mods : Gdk_Modifier_Type);
+   --    Notifies of a change in the global accelerator map. The path is also
+   --    used as the detail for the signal, so it is possible to connect to
+   --    changed::accel_path.
+   --
+   --  </signals>
+
+   Signal_Changed : constant String := "changed";
+
+private
+   pragma Import (C, Get, "gtk_accel_map_get");
+   pragma Import (C, Get_Type, "gtk_accel_map_get_type");
 end Gtk.Accel_Map;
 
---  Missing:
---    gtk_accel_map_load_fd
---    gtk_accel_map_load_scanner
---    gtk_accel_map_save_fd
---    gtk_accel_map_add_filter
---    gtk_accel_map_foreach_unfiltered
+--  No binding: gtk_accel_map_load_fd
+--  No binding: gtk_accel_map_save_fd
+--  No binding: gtk_accel_map_load_scanner
+
+

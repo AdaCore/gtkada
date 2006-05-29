@@ -73,11 +73,28 @@ package body Gtk.Accel_Group is
          Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type)
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_accelerator_name");
-
    begin
       return Interfaces.C.Strings.Value
         (Internal (Accelerator_Key, Accelerator_Mods));
    end Accelerator_Name;
+
+   ---------------------------
+   -- Accelerator_Get_Label --
+   ---------------------------
+
+   function Accelerator_Get_Label
+     (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
+      Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type) return String
+   is
+      function Internal
+        (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
+         Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_accelerator_get_label");
+   begin
+      return Interfaces.C.Strings.Value
+        (Internal (Accelerator_Key, Accelerator_Mods));
+   end Accelerator_Get_Label;
 
    -----------------------
    -- Accelerator_Parse --

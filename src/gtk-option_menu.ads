@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,13 +33,15 @@
 --  activated, the Gtk_Option_Menu displays a popup Gtk_Menu which allows the
 --  user to make a new choice.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk.Button;
 with Gtk.Menu;
 with Gtk.Widget;
 
 package Gtk.Option_Menu is
+   pragma Obsolescent;
 
    type Gtk_Option_Menu_Record is new Button.Gtk_Button_Record with private;
    type Gtk_Option_Menu is access all Gtk_Option_Menu_Record'Class;
@@ -54,13 +56,11 @@ package Gtk.Option_Menu is
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Option_Menu.
 
-   function Get_Menu
-     (Option_Menu : access Gtk_Option_Menu_Record) return Gtk.Menu.Gtk_Menu;
-   --  Return the Gtk_Menu associated with the Gtk_Option_Menu.
-
    procedure Set_Menu
      (Option_Menu : access Gtk_Option_Menu_Record;
       Menu        : access Widget.Gtk_Widget_Record'Class);
+   function Get_Menu
+     (Option_Menu : access Gtk_Option_Menu_Record) return Gtk.Menu.Gtk_Menu;
    --  Provide the Gtk_Menu that is popped up to allow the user to choose a new
    --  value. You should provide a simple menu avoiding the use of tearoff menu
    --  items, submenus, and accelerators.
@@ -70,12 +70,10 @@ package Gtk.Option_Menu is
       Menu        : access Widget.Gtk_Widget_Record'Class);
    --  Remove the menu from the option menu.
 
-   function Get_History
-     (Option_Menu : access Gtk_Option_Menu_Record) return Gint;
-   --  Return the index corresponding to the menu item selected.
-
    procedure Set_History
      (Option_Menu : access Gtk_Option_Menu_Record; Index : Gint);
+   function Get_History
+     (Option_Menu : access Gtk_Option_Menu_Record) return Gint;
    --  Select the menu item specified by index making it the newly selected
    --  value for the option menu.
 
@@ -87,7 +85,13 @@ package Gtk.Option_Menu is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Menu_Property
+   --  Type:  Object
+   --  Descr: The menu of options
+   --
    --  </properties>
+
+   Menu_Property : constant Glib.Properties.Property_Object;
 
    -------------
    -- Signals --
@@ -96,11 +100,20 @@ package Gtk.Option_Menu is
    --  <signals>
    --  The following new signals are defined for this widget:
    --
+   --  - "changed"
+   --    procedure Handler (Option : access Gtk_Option_Menu_Record'Class);
+   --    Emitted when the selected value has changed
+   --
    --  </signals>
+
+   Signal_Changed : constant String := "changed";
 
 private
    type Gtk_Option_Menu_Record is new Button.Gtk_Button_Record
      with null record;
+
+   Menu_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("menu");
 
    pragma Import (C, Get_Type, "gtk_option_menu_get_type");
 end Gtk.Option_Menu;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -146,5 +146,52 @@ package body Gtk.Alignment is
    begin
       Internal (Get_Object (Alignment), Xalign, Yalign, Xscale, Yscale);
    end Set;
+
+   -----------------
+   -- Get_Padding --
+   -----------------
+
+   procedure Get_Padding
+     (Alignment      : access Gtk_Alignment_Record;
+      Padding_Top    : out Guint;
+      Padding_Bottom : out Guint;
+      Padding_Left   : out Guint;
+      Padding_Right  : out Guint)
+   is
+      procedure Internal
+        (Alignment      : System.Address;
+         Padding_Top    : out Guint;
+         Padding_Bottom : out Guint;
+         Padding_Left   : out Guint;
+         Padding_Right  : out Guint);
+      pragma Import (C, Internal, "gtk_alignment_get_padding");
+   begin
+      Internal (Get_Object (Alignment), Padding_Top, Padding_Bottom,
+                Padding_Left, Padding_Right);
+   end Get_Padding;
+
+   -----------------
+   -- Set_Padding --
+   -----------------
+
+   procedure Set_Padding
+     (Alignment      : access Gtk_Alignment_Record;
+      Padding_Top    : Guint;
+      Padding_Bottom : Guint;
+      Padding_Left   : Guint;
+      Padding_Right  : Guint)
+   is
+      procedure Internal
+        (Alignment      : System.Address;
+         Padding_Top    : Guint;
+         Padding_Bottom : Guint;
+         Padding_Left   : Guint;
+         Padding_Right  : Guint);
+      pragma Import (C, Internal, "gtk_alignment_set_padding");
+   begin
+      Internal (Get_Object (Alignment), Padding_Top, Padding_Bottom,
+                Padding_Left, Padding_Right);
+   end Set_Padding;
+
 
 end Gtk.Alignment;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2005 AdaCore                    --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,7 +41,7 @@
 --  column headers will disappear when scrolling vertically.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
@@ -54,7 +54,9 @@ with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 with Glib.Gnodes;
 
+pragma Warnings (Off);  --  Gtk.Clist is obsolescent
 with Gtk.Clist;
+pragma Warnings (On);
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Style;
 
@@ -62,11 +64,14 @@ with Gtkada.Types;         use Gtkada.Types;
 
 package Gtk.Ctree is
    pragma Elaborate_Body;
+   pragma Obsolescent;
 
+   pragma Warnings (Off); --  Gtk.Clist is obsolescent;
    type Gtk_Ctree_Record is new Gtk.Clist.Gtk_Clist_Record with private;
    type Gtk_Ctree is access all Gtk_Ctree_Record'Class;
 
    type Gtk_Ctree_Row is new Gtk.Clist.Gtk_Clist_Row;
+   pragma Warnings (On);
    --  Similar to Clist_Row, but for a Ctree.
 
    type Gtk_Ctree_Node is new Gdk.C_Proxy;
@@ -520,10 +525,12 @@ package Gtk.Ctree is
    --  The color must already be allocated.
    --  If no such Node exists in the tree, nothing is done.
 
+   pragma Warnings (Off);  --  Gtk.Clist is obsolescent
    function Node_Get_Cell_Type (Ctree  : access Gtk_Ctree_Record;
                                 Node   : in     Gtk_Ctree_Node;
                                 Column : in     Gint)
                                 return Gtk.Clist.Gtk_Cell_Type;
+   pragma Warnings (On);
    --  Return the type of the cell at Node/Column.
    --  This indicates which of the functions Node_Get_Text. Node_Get_Pixmap,
    --  etc. should be used with this cell.
@@ -905,9 +912,20 @@ package Gtk.Ctree is
    --    changed).
    --
    --  </signals>
+
+   Signal_Change_Focus_Row_Expansion : constant String :=
+     "change_focus_row_expansion";
+   Signal_Tree_Collapse              : constant String := "tree_collapse";
+   Signal_Tree_Expand                : constant String := "tree_expand";
+   Signal_Tree_Move                  : constant String := "tree_move";
+   Signal_Tree_Select_Row            : constant String := "tree_select_row";
+   Signal_Tree_Unselect_Row          : constant String := "tree_unselect_row";
+
 private
 
+   pragma Warnings (Off);  --  Gtk.Clist is obsolescent
    type Gtk_Ctree_Record is new Gtk.Clist.Gtk_Clist_Record with null record;
+   pragma Warnings (On);
 
    pragma Import (C, Get_Type, "gtk_ctree_get_type");
    pragma Import (C, Node_Get_Row, "ada_ctree_node_get_row");
@@ -916,3 +934,9 @@ private
    pragma Import (C, Row_Get_Sibling, "ada_ctree_row_get_sibling");
 
 end Gtk.Ctree;
+
+--  These subprograms never had a binding, and are now obsolescent:
+--  No binding: gtk_ctree_find_all_by_row_data
+--  No binding: gtk_ctree_find_by_row_data
+--  No binding: gtk_ctree_node_get_type
+--  No binding: gtk_ctree_node_set_row_data

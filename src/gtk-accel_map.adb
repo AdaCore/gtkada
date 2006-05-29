@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2002-2003 ACT Europe              --
+--                   Copyright (C) 2002-2006 AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -140,6 +140,10 @@ package body Gtk.Accel_Map is
          Accel_Mods, Boolean'Val (Changed));
    end Foreach_Wrapper;
 
+   -------------
+   -- Foreach --
+   -------------
+
    procedure Foreach
      (Data : System.Address; Func : Gtk_Accel_Map_Foreach)
    is
@@ -150,5 +154,53 @@ package body Gtk.Accel_Map is
    begin
       Internal (D'Access, Foreach_Wrapper'Address);
    end Foreach;
+
+   ------------------------
+   -- Foreach_Unfiltered --
+   ------------------------
+
+   procedure Foreach_Unfiltered
+     (Data : System.Address; Func : Gtk_Accel_Map_Foreach)
+   is
+      procedure Internal (Data : access Data_Wrapper; Func : System.Address);
+      pragma Import (C, Internal, "gtk_accel_map_foreach_unfiltered");
+
+      D : aliased Data_Wrapper := (Data, Func);
+   begin
+      Internal (D'Access, Foreach_Wrapper'Address);
+   end Foreach_Unfiltered;
+
+   ----------------
+   -- Add_Filter --
+   ----------------
+
+   procedure Add_Filter (Filter_Pattern : String) is
+      procedure Internal (Filter_Pattern : String);
+      pragma Import (C, Internal, "gtk_accel_map_add_filter");
+   begin
+      Internal (Filter_Pattern & ASCII.NUL);
+   end Add_Filter;
+
+   ---------------
+   -- Lock_Path --
+   ---------------
+
+   procedure Lock_Path (Accel_Path : String) is
+      procedure Internal (Accel_Path : String);
+      pragma Import (C, Internal, "gtk_accel_map_lock_path");
+   begin
+      Internal (Accel_Path & ASCII.NUL);
+   end Lock_Path;
+
+   -----------------
+   -- Unlock_Path --
+   -----------------
+
+   procedure Unlock_Path (Accel_Path : String) is
+      procedure Internal (Accel_Path : String);
+      pragma Import (C, Internal, "gtk_accel_map_unlock_path");
+   begin
+      Internal (Accel_Path & ASCII.NUL);
+   end Unlock_Path;
 
 end Gtk.Accel_Map;

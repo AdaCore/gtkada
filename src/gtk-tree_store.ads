@@ -36,7 +36,7 @@
 --
 --  Adding new values in the model is done as in the example at the end.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Values; use Glib.Values;
 with Gtk;
@@ -225,8 +225,50 @@ package Gtk.Tree_Store is
    --  This will be 0 for anything on the root level, 1 for anything down a
    --  level, etc.
 
+   function Iter_Is_Valid
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+      return Boolean;
+   --  WARNING: This function is slow. Only use it for debugging and/or testing
+   --  purposes.
+   --  Checks if the given iter is a valid iter for Tree_Store.
+
+   procedure Move_After
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Position   : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Moves the row pointed to by Iter to the position after Position. Iter
+   --  and Position should be in the same level. Note that this function only
+   --  works with unsorted stores. If Position is Null_Iter, Iter will be
+   --  moved to the start of the level.
+
+   procedure Move_Before
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Position   : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Moves the row pointed to by Iter to the position before Position. Iter
+   --  and Position should be in the same level. Note that this function only
+   --  works with unsorted stores. If Position is Null_Iter, Iter will be
+
    procedure Clear (Tree_Store : access Gtk_Tree_Store_Record);
    --  Removes all rows from Tree_Store
+
+   procedure Reorder
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
+      New_Order  : Glib.Gint_Array);
+   --  Reorders the children of Parent to follow the order indicated by
+   --  New_order. Note that this function only works with unsorted stores. New
+   --  order is an array of integers mapping the new position of each child to
+   --  its old position before the re-ordering,
+   --  i.e. New_order[newpos] = oldpos
+
+   procedure Swap
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      A          : Gtk.Tree_Model.Gtk_Tree_Iter;
+      B          : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Swaps the rows pointed to by A and B (in the same level). Note that this
+   --  function only works with unsorted stores.
 
    ---------------------------
    -- Sorting Freeze / Thaw --
@@ -319,3 +361,7 @@ end Gtk.Tree_Store;
 --   end Set;
 --
 --  </example>
+
+--  No binding: gtk_tree_store_new
+--  No binding: gtk_tree_store_set
+--  No binding: gtk_tree_store_set_valist

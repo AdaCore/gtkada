@@ -452,4 +452,95 @@ package body Gtk.Tree_Store is
       Internal (Get_Object (Tree), Column_Id);
    end Thaw_Sort;
 
+   -------------------
+   -- Iter_Is_Valid --
+   -------------------
+
+   function Iter_Is_Valid
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk_Tree_Iter)
+      return Boolean
+   is
+      function Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk_Tree_Iter)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_store_iter_is_valid");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tree_Store), Iter));
+   end Iter_Is_Valid;
+
+   ----------------
+   -- Move_After --
+   ----------------
+
+   procedure Move_After
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk_Tree_Iter;
+      Position   : Gtk_Tree_Iter)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk_Tree_Iter;
+         Position   : Gtk_Tree_Iter);
+      pragma Import (C, Internal, "gtk_tree_store_move_after");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Position);
+   end Move_After;
+
+   -----------------
+   -- Move_Before --
+   -----------------
+
+   procedure Move_Before
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk_Tree_Iter;
+      Position   : Gtk_Tree_Iter)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk_Tree_Iter;
+         Position   : Gtk_Tree_Iter);
+      pragma Import (C, Internal, "gtk_tree_store_move_before");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Position);
+   end Move_Before;
+
+   -------------
+   -- Reorder --
+   -------------
+
+   procedure Reorder
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Parent     : Gtk_Tree_Iter;
+      New_Order  : Gint_Array)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Parent     : Gtk_Tree_Iter;
+         New_Order  : System.Address);
+      pragma Import (C, Internal, "gtk_tree_store_reorder");
+   begin
+      Internal (Get_Object (Tree_Store), Parent,
+                New_Order (New_Order'First)'Address);
+   end Reorder;
+
+   ----------
+   -- Swap --
+   ----------
+
+   procedure Swap
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      A          : Gtk_Tree_Iter;
+      B          : Gtk_Tree_Iter)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         A          : Gtk_Tree_Iter;
+         B          : Gtk_Tree_Iter);
+      pragma Import (C, Internal, "gtk_tree_store_swap");
+   begin
+      Internal (Get_Object (Tree_Store), A, B);
+   end Swap;
+
 end Gtk.Tree_Store;

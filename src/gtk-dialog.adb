@@ -249,4 +249,55 @@ package body Gtk.Dialog is
       Internal (Get_Object (Dialog), Response_Id);
    end Response;
 
+   -----------------------------------------
+   -- Gtk_Alternative_Dialog_Button_Order --
+   -----------------------------------------
+
+   function Gtk_Alternative_Dialog_Button_Order
+     (Screen : Gdk.Gdk_Screen := null) return Boolean
+   is
+      function Internal (Screen : Gdk.Gdk_Screen) return Gboolean;
+      pragma Import (C, Internal, "gtk_alternative_dialog_button_order");
+   begin
+      return Boolean'Val (Internal (Screen));
+   end Gtk_Alternative_Dialog_Button_Order;
+
+   -----------------------------
+   -- Get_Response_For_Widget --
+   -----------------------------
+
+   function Get_Response_For_Widget
+     (Dialog : access Gtk_Dialog_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gint
+   is
+      function Internal
+        (Dialog : System.Address;
+         Widget : System.Address)
+         return Gint;
+      pragma Import (C, Internal, "gtk_dialog_get_response_for_widget");
+   begin
+      return Internal (Get_Object (Dialog), Get_Object (Widget));
+   end Get_Response_For_Widget;
+
+   ---------------------------------------------
+   -- Set_Alternative_Button_Order_From_Array --
+   ---------------------------------------------
+
+   procedure Set_Alternative_Button_Order_From_Array
+     (Dialog    : access Gtk_Dialog_Record;
+      New_Order : Response_Type_Array)
+   is
+      procedure Internal
+        (Dialog    : System.Address;
+         N_Params  : Gint;
+         New_Order : System.Address);
+      pragma Import
+        (C, Internal, "gtk_dialog_set_alternative_button_order_from_array");
+   begin
+      Internal (Get_Object (Dialog), New_Order'Length,
+                New_Order (New_Order'First)'Address);
+   end Set_Alternative_Button_Order_From_Array;
+
+
 end Gtk.Dialog;

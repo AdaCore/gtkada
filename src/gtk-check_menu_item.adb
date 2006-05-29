@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -168,6 +168,34 @@ package body Gtk.Check_Menu_Item is
    begin
       Internal (Get_Object (Check_Menu_Item));
    end Toggled;
+
+   -----------------------
+   -- Get_Draw_As_Radio --
+   -----------------------
+
+   function Get_Draw_As_Radio
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean
+   is
+      function Internal (Check_Menu_Item : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_check_menu_item_get_draw_as_radio");
+   begin
+      return Boolean'Val (Internal (Get_Object (Check_Menu_Item)));
+   end Get_Draw_As_Radio;
+
+   -----------------------
+   -- Set_Draw_As_Radio --
+   -----------------------
+
+   procedure Set_Draw_As_Radio
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+      Draw_As_Radio   : Boolean)
+   is
+      procedure Internal
+        (Check_Menu_Item : System.Address; Draw_As_Radio : Gboolean);
+      pragma Import (C, Internal, "gtk_check_menu_item_set_draw_as_radio");
+   begin
+      Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Draw_As_Radio));
+   end Set_Draw_As_Radio;
 
    ---------------------
    -- Type_Conversion --
