@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -51,8 +51,10 @@
 --  model, not a fixed row.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Ada.Unchecked_Conversion;
+with Glib.Glist;
 with Glib.Object;
 with Glib.Values;
 
@@ -62,6 +64,9 @@ package Gtk.Tree_Model is
      with private;
    type Gtk_Tree_Model is access all Gtk_Tree_Model_Record'Class;
    --  This is an abstract interface
+
+   type Gtk_Tree_Path is new Glib.C_Proxy;
+   type Gtk_Tree_Iter is private;
 
    type Tree_Model_Flags is mod 2 ** 32;
    Tree_Model_Iters_Persist : constant Tree_Model_Flags;
@@ -88,11 +93,22 @@ package Gtk.Tree_Model is
      (Tree_Model : access Gtk_Tree_Model_Record; Index : Gint) return GType;
    --  Return the type of the Index-th column in the model.
 
+   type Gtk_Tree_Model_Foreach_Func is access function
+     (Model     : access Gtk_Tree_Model_Record'Class;
+      Path      : Gtk_Tree_Path;
+      Iter      : Gtk_Tree_Iter;
+      User_Data : System.Address) return Boolean;
+
+   procedure Foreach
+     (Model     : access Gtk_Tree_Model_Record;
+      Func      : Gtk_Tree_Model_Foreach_Func;
+      User_Data : System.Address);
+   --  Calls func on each node in model in a depth-first fashion. If func
+   --  returns True, then the tree ceases to be walked, and Foreach returns.
+
    ------------------------
    -- Paths manipulation --
    ------------------------
-
-   type Gtk_Tree_Path is new Glib.C_Proxy;
 
    function Gtk_New (Path : String := "") return Gtk_Tree_Path;
    --  Create a new Gtk_Tree_Path from a path string.
@@ -100,6 +116,13 @@ package Gtk.Tree_Model is
    --  empty string, then a Gtk_Tree_Path of depth 0 is returned.
    --  The memory allocated for the path must be freed explicitely by calling
    --  Path_Free below.
+
+   function Gtk_New_First return Gtk_Tree_Path;
+   --  Return a new path pointed to the first row in the model. The string
+   --  representation is "0"
+
+   function Path_Get_Type return Glib.GType;
+   --  Return the internal type used for Gtk_Tree_Path
 
    function To_String (Path : Gtk_Tree_Path) return String;
    --  Generate a string representation of the path.
@@ -158,6 +181,12 @@ package Gtk.Tree_Model is
    function Is_Descendant (Path, Ancestor : Gtk_Tree_Path) return Boolean;
    --  Return True if Path is contained inside Ancestor.
 
+   function Convert is new Ada.Unchecked_Conversion
+     (Gtk_Tree_Path, System.Address);
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tree_Path);
+   package Gtk_Tree_Path_List is new Glib.Glist.Generic_List (Gtk_Tree_Path);
+
    --------------------------------
    -- Row_Reference manipulation --
    --------------------------------
@@ -173,6 +202,9 @@ package Gtk.Tree_Model is
    --  all signals on model, and updates it's path appropriately.  If Path
    --  isn't a valid path in Model, then null is returned.
 
+   function Row_Reference_Get_Type return Glib.GType;
+   --  Return the internal type used for row reference.
+
    function Get_Path (Reference : Gtk_Tree_Row_Reference) return Gtk_Tree_Path;
    --  Return the path that Reference currently points to.
    --  null is returned if Reference is no longer valid.
@@ -180,8 +212,17 @@ package Gtk.Tree_Model is
    function Valid (Reference : Gtk_Tree_Row_Reference) return Boolean;
    --  Return True if Reference is non null and is still valid.
 
+   function Row_Reference_Copy
+     (Ref : Gtk_Tree_Row_Reference) return Gtk_Tree_Row_Reference;
+   --  Return a newly allocated copy of Ref
+
    procedure Row_Reference_Free (Reference : Gtk_Tree_Row_Reference);
    --  Free the memory occupied by Reference.
+
+   function Get_Model
+     (Reference : Gtk_Tree_Row_Reference) return Gtk_Tree_Model;
+   --  Returns the model which Reference is monitoring in order to
+   --  appropriately the path.
 
    ---------------
    -- Iterators --
@@ -189,11 +230,11 @@ package Gtk.Tree_Model is
    --  ??? Need to be able to access the user_data fields, so that new models
    --  can define their own iterators
 
-   type Gtk_Tree_Iter is private;
    Null_Iter : constant Gtk_Tree_Iter;
+   --  You can copy tree iters simply by using the usual "=" operator
 
-   procedure Iter_Copy (Source : Gtk_Tree_Iter; Dest : out Gtk_Tree_Iter);
-   --  Create a copy of Source.
+   function Iter_Get_Type return Glib.GType;
+   --  Return the internal type used for iterators
 
    procedure Set_Tree_Iter
      (Val  : in out Glib.Values.GValue;
@@ -221,6 +262,13 @@ package Gtk.Tree_Model is
       Path_String : String) return Gtk_Tree_Iter;
    --  Return an iterator pointing to Path_String.
    --  Null_Iter is returned if Path was invalid or no iterator could be set.
+
+   function Get_String_From_Iter
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter) return String;
+   --  Generates a string representation of the iter. This string is a ':'
+   --  separated list of numbers. For example, "4:10:0:3" would be an
+   --  acceptable return value for this string.
 
    function Get_Iter_First
      (Tree_Model : access Gtk_Tree_Model_Record) return Gtk_Tree_Iter;
@@ -353,7 +401,6 @@ package Gtk.Tree_Model is
    --       (Tree_Model : access Gtk_Tree_Model_Record'Class;
    --        Path       : Gtk_Tree_Path;
    --        Iter       : Gtk_Tree_Iter);
-   --
    --    This signal should be emitted every time the contents of a row (any
    --    column) has changed. This forces the tree_view to refresh the display.
    --
@@ -362,7 +409,6 @@ package Gtk.Tree_Model is
    --      (Tree_Model : access Gtk_Tree_Model_Record'Class;
    --       Path       : Gtk_Tree_Path;
    --       Iter       : Gtk_Tree_Iter);
-   --
    --    This signal should be emitted every time a new row has been inserted.
    --
    --  - "row_has_child_toggled"
@@ -370,7 +416,6 @@ package Gtk.Tree_Model is
    --      (Tree_Model : access Gtk_Tree_Model_Record'Class;
    --       Path       : Gtk_Tree_Path;
    --       Iter       : Gtk_Tree_Iter);
-   --
    --    This should be emitted by models after the child state of a node
    --    changes.
    --
@@ -378,7 +423,6 @@ package Gtk.Tree_Model is
    --    procedure Handler
    --      (Tree_Model : access Gtk_Tree_Model_Record'Class;
    --       Path       : Gtk_Tree_Path);
-   --
    --    This should be emitted by models after the child state of a node
    --    changes.
    --
@@ -388,7 +432,6 @@ package Gtk.Tree_Model is
    --       Path       : Gtk_Tree_Path;
    --       Iter       : Gtk_Tree_Iter;
    --       New_Order  : Gint_Array);
-   --
    --   This should be emitted when the rows have been reordered
    --
    --  </signals>
@@ -423,6 +466,10 @@ package Gtk.Tree_Model is
       New_Order  : Gint_Array);
    --  Emit the "rows_reordered" signal
 
+   Signal_Row_Changed           : constant String := "row_changed";
+   Signal_Row_Has_Child_Toggled : constant String := "row_has_child_toggled";
+
+
 private
    pragma Convention (C, Tree_Model_Flags);
    Tree_Model_Iters_Persist : constant Tree_Model_Flags := 2 ** 0;
@@ -451,16 +498,29 @@ private
    pragma Import (C, Copy,          "gtk_tree_path_copy");
    pragma Import (C, Compare,       "gtk_tree_path_compare");
    pragma Import (C, Down,          "gtk_tree_path_down");
+   pragma Import (C, Iter_Get_Type, "gtk_tree_iter_get_type");
+   pragma Import (C, Path_Get_Type, "gtk_tree_path_get_type");
+   pragma Import (C, Gtk_New_First, "gtk_tree_path_new_first");
+   pragma Import (C, Row_Reference_Copy, "gtk_tree_row_reference_copy");
+   pragma Import
+     (C, Row_Reference_Get_Type, "gtk_tree_row_reference_get_type");
+
    pragma Import (C, Set_Tree_Iter, "g_value_set_pointer");
-   pragma Import (C, Iter_Copy,     "ada_tree_iter_copy");
+   --  External binding: g_value_set_pointer
 
 end Gtk.Tree_Model;
 
---  Not bound:
---  gtk_tree_row_reference_new_proxy ()
---  gtk_tree_row_reference_inserted ()
---  gtk_tree_row_reference_deleted ()
---  gtk_tree_row_reference_reordered ()
---  gtk_tree_iter_copy ()   --  not needed
---  gtk_tree_iter_free ()   --  not needed
---  gtk_tree_model_foreach ()
+--  This function is not intended to be used by applications anyway
+--  No binding: gtk_tree_iter_copy
+--  No binding: gtk_tree_iter_free
+
+--  variable number of arguments, no convenient binding
+--  No binding: gtk_tree_model_get
+--  No binding: gtk_tree_model_get_valist
+--  No binding: gtk_tree_path_new_from_indices
+
+--  Not needed by most applications, in fact, only for low-level monitoring:
+--  No binding: gtk_tree_row_reference_deleted
+--  No binding: gtk_tree_row_reference_inserted
+--  No binding: gtk_tree_row_reference_new_proxy
+--  No binding: gtk_tree_row_reference_reordered

@@ -26,7 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk;    use Gtk;
+with Gtk;             use Gtk;
+with Gtk.Tree_Model;  use Gtk.Tree_Model;
 with System;
 
 package body Gtk.Tree_Model_Sort is
@@ -76,9 +77,10 @@ package body Gtk.Tree_Model_Sort is
 
    procedure Convert_Child_Iter_To_Iter
      (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record;
-      Sort_Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Sort_Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
       Child_Iter      : Gtk.Tree_Model.Gtk_Tree_Iter)
    is
+      pragma Warnings (Off, Sort_Iter);
       procedure Internal
         (Tree_Model_Sort : System.Address;
          Sort_Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
@@ -116,9 +118,11 @@ package body Gtk.Tree_Model_Sort is
 
    procedure Convert_Iter_To_Child_Iter
      (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record;
-      Child_Iter      : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Child_Iter      : out Gtk.Tree_Model.Gtk_Tree_Iter;
       Sorted_Iter     : Gtk.Tree_Model.Gtk_Tree_Iter)
    is
+      pragma Warnings (Off, Child_Iter);
+
       procedure Internal
         (Tree_Model_Sort : System.Address;
          Child_Iter      : Gtk.Tree_Model.Gtk_Tree_Iter;
@@ -155,5 +159,51 @@ package body Gtk.Tree_Model_Sort is
    begin
       Internal (Get_Object (Tree_Model_Sort));
    end Clear_Cache;
+
+   -------------------
+   -- Iter_Is_Valid --
+   -------------------
+
+   function Iter_Is_Valid
+     (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record;
+      Iter            : Gtk_Tree_Iter)
+      return Boolean
+   is
+      function Internal
+        (Tree_Model_Sort : System.Address;
+         Iter            : Gtk_Tree_Iter)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_model_sort_iter_is_valid");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tree_Model_Sort), Iter));
+   end Iter_Is_Valid;
+
+   ------------------------
+   -- Gtk_New_With_Model --
+   ------------------------
+
+   procedure Gtk_New_With_Model
+     (Sort_Model  : out Gtk_Tree_Model_Sort;
+      Child_Model : access Gtk_Tree_Model_Record'Class)
+   is
+   begin
+      Sort_Model := new Gtk_Tree_Model_Sort_Record;
+      Initialize_With_Model (Sort_Model, Child_Model);
+   end Gtk_New_With_Model;
+
+   ---------------------------
+   -- Initialize_With_Model --
+   ---------------------------
+
+   procedure Initialize_With_Model
+     (Sort_Model  : access Gtk_Tree_Model_Sort_Record'Class;
+      Child_Model : access Gtk_Tree_Model_Record'Class)
+   is
+      function Internal
+        (Child_Model : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_model_sort_new_with_model");
+   begin
+      Set_Object (Sort_Model, Internal (Get_Object (Child_Model)));
+   end Initialize_With_Model;
 
 end Gtk.Tree_Model_Sort;

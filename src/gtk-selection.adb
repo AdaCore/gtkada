@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,7 +26,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+with Ada.Unchecked_Conversion;
+with Gdk.Pixbuf;           use Gdk.Pixbuf;
+with Gdk.Types;            use Gdk.Types;
+with Interfaces.C.Strings; use Interfaces.C, Interfaces.C.Strings;
+with System;               use System;
+with GNAT.Strings;         use GNAT.Strings;
 
 package body Gtk.Selection is
 
@@ -226,5 +231,216 @@ package body Gtk.Selection is
    begin
       Internal (Get_Object (Widget));
    end Remove_All;
+
+   ----------------
+   -- Set_Pixbuf --
+   ----------------
+
+   function Set_Pixbuf
+     (Selection : Selection_Data;
+      Pixbuf    : Gdk_Pixbuf)
+      return Boolean
+   is
+      function Internal
+        (Selection : Selection_Data;
+         Pixbuf    : Gdk_Pixbuf)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_selection_data_set_pixbuf");
+   begin
+      return Boolean'Val (Internal (Selection, Pixbuf));
+   end Set_Pixbuf;
+
+   --------------
+   -- Get_Text --
+   --------------
+
+   function Get_Text
+     (Selection : Selection_Data) return String
+   is
+      function Internal
+        (Selection : Selection_Data) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_selection_data_get_text");
+      Val    : chars_ptr := Internal (Selection);
+      Result : constant String := Value (Val);
+   begin
+      Free (Val);
+      return Result;
+   end Get_Text;
+
+   --------------
+   -- Set_Text --
+   --------------
+
+   function Set_Text
+     (Selection : Selection_Data;
+      Str       : UTF8_String)
+      return Boolean
+   is
+      function Internal
+        (Selection : Selection_Data;
+         Str       : String;
+         Len       : Gint)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_selection_data_set_text");
+   begin
+      return Boolean'Val
+        (Internal (Selection, Str, Str'Length));
+   end Set_Text;
+
+   -----------------
+   -- Get_Targets --
+   -----------------
+
+   function Get_Targets
+     (Selection : Selection_Data) return Gdk.Types.Gdk_Atom_Array
+   is
+      type Atom_Big_Array is array (Natural) of Gdk_Atom;  --  GdkAtom*
+      type Atom_Big_Array_Access is access Atom_Big_Array; --  GdkAtom**
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Atom_Big_Array_Access);
+
+      function Internal
+        (Selection : Selection_Data;
+         Targets   : access System.Address;
+         N_Atoms   : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_selection_data_get_targets");
+
+      procedure Free (Targets : Atom_Big_Array);
+      pragma Import (C, Free, "g_free");
+      --  External binding: g_free
+
+      Success   : Gboolean;
+      Output    : aliased System.Address;
+      List      : Atom_Big_Array_Access;   --   GdkAtom**
+      pragma Warnings (Off, List);
+      N_Targets : aliased Gint;
+   begin
+      Success := Internal
+        (Selection, Output'Unchecked_Access, N_Targets'Unchecked_Access);
+      if Success = 0 or else Output = System.Null_Address then
+         return (1 .. 0 => Gdk.Types.Gdk_None);
+      else
+         List := Convert (Output);
+         declare
+            Result : Gdk.Types.Gdk_Atom_Array (1 .. Natural (N_Targets));
+         begin
+            for R in 0 .. Natural (N_Targets) - 1 loop
+               Result (R + 1) := List (R);
+            end loop;
+
+            Free (List.all);
+            return Result;
+         end;
+      end if;
+   end Get_Targets;
+
+   ---------------------------
+   -- Targets_Include_Image --
+   ---------------------------
+
+   function Targets_Include_Image
+     (Selection : Selection_Data; Writable : Boolean := True) return Boolean
+   is
+      function Internal
+        (Selection : Selection_Data; Writable : Gboolean) return Gboolean;
+      pragma Import (C, Internal, "gtk_selection_data_targets_include_image");
+   begin
+      return Boolean'Val (Internal (Selection, Boolean'Pos (Writable)));
+   end Targets_Include_Image;
+
+   --------------------------
+   -- Targets_Include_Text --
+   --------------------------
+
+   function Targets_Include_Text (Selection : Selection_Data) return Boolean is
+      function Internal (Selection : Selection_Data) return Gboolean;
+      pragma Import (C, Internal, "gtk_selection_data_targets_include_text");
+   begin
+      return Boolean'Val (Internal (Selection));
+   end Targets_Include_Text;
+
+   -----------------------------------
+   -- Target_List_Add_Image_Targets --
+   -----------------------------------
+
+   procedure Target_List_Add_Image_Targets
+     (List      : Target_List;
+      Info      : Guint;
+      Writable  : Boolean)
+   is
+      procedure Internal
+        (List     : Target_List;
+         Info     : Guint;
+         Writable : Gboolean);
+      pragma Import (C, Internal, "gtk_target_list_add_image_targets");
+   begin
+      Internal (List, Info, Boolean'Pos (Writable));
+   end Target_List_Add_Image_Targets;
+
+   --------------
+   -- Set_Uris --
+   --------------
+
+   function Set_Uris
+     (Selection : Selection_Data;
+      URIs      : GNAT.Strings.String_List)
+      return Boolean
+   is
+      function Internal
+        (Selection : Selection_Data; URIs : chars_ptr_array) return Gboolean;
+      pragma Import (C, Internal, "gtk_selection_data_set_uris");
+
+      List : chars_ptr_array (1 .. size_t (URIs'Length) + 1);
+      Result : Gboolean;
+   begin
+      for U in URIs'Range loop
+         List (size_t (U - URIs'First) + List'First) :=
+           New_String (URIs (U).all);
+      end loop;
+      List (List'Last) := Null_Ptr;
+      Result := Internal (Selection, List);
+
+      for U in List'Range loop
+         Free (List (U));
+      end loop;
+
+      return Boolean'Val (Result);
+   end Set_Uris;
+
+   --------------
+   -- Get_Uris --
+   --------------
+
+   function Get_Uris
+     (Selection : Selection_Data)
+      return GNAT.Strings.String_List
+   is
+      function Internal (Selection : Selection_Data) return System.Address;
+      pragma Import (C, Internal, "gtk_selection_data_get_uris");
+
+      function Get_Length (S : System.Address) return Integer;
+      pragma Import (C, Get_Length, "ada_selection_data_get_uris_length");
+
+      function Get (S : System.Address; Index : Natural) return chars_ptr;
+      pragma Import (C, Get, "ada_selection_data_get_uris_get");
+
+      Result : constant System.Address := Internal (Selection);
+   begin
+      if Result = System.Null_Address then
+         return (1 .. 0 => null);
+      else
+         declare
+            Output : String_List (1 .. Get_Length (Result));
+            Tmp    : chars_ptr;
+         begin
+            for L in Output'Range loop
+               Tmp := Get (Result, L - Output'First);
+               Output (L) := new String'(Value (Tmp));
+               Free (Tmp);
+            end loop;
+            return Output;
+         end;
+      end if;
+   end Get_Uris;
 
 end Gtk.Selection;

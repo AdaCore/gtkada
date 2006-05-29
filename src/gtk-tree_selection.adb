@@ -26,8 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
-
+with System;         use System;
 with Gtk;            use Gtk;
 with Gtk.Tree_Model; use Gtk.Tree_Model;
 
@@ -338,5 +337,66 @@ package body Gtk.Tree_Selection is
    begin
       Internal (Get_Object (Selection), Start_Path, End_Path);
    end Select_Range;
+
+   -------------------------
+   -- Count_Selected_Rows --
+   -------------------------
+
+   function Count_Selected_Rows
+     (Selection : access Gtk_Tree_Selection_Record) return Gint
+   is
+      function Internal (Selection : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_selection_count_selected_rows");
+   begin
+      return Internal (Get_Object (Selection));
+   end Count_Selected_Rows;
+
+   -----------------------
+   -- Get_Selected_Rows --
+   -----------------------
+
+   procedure Get_Selected_Rows
+     (Selection : access Gtk_Tree_Selection_Record;
+      Model     : out Gtk_Tree_Model;
+      Path_List : out Gtk_Tree_Path_List.Glist)
+   is
+      function Internal
+        (Selection : System.Address;
+         Model     : access System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_selection_get_selected_rows");
+
+      M        : aliased System.Address;
+      Stub     : Gtk_Tree_Model_Record;
+      Selected : System.Address;
+
+   begin
+      Selected := Internal (Get_Object (Selection), M'Access);
+      if Selected = System.Null_Address then
+         Model := null;
+         Path_List := Gtk_Tree_Path_List.Null_List;
+      else
+         Model := Gtk_Tree_Model (Get_User_Data_Fast (M, Stub));
+         Gtk_Tree_Path_List.Set_Object (Path_List, Selected);
+      end if;
+   end Get_Selected_Rows;
+
+   --------------------
+   -- Unselect_Range --
+   --------------------
+
+   procedure Unselect_Range
+     (Selection  : access Gtk_Tree_Selection_Record;
+      Start_Path : Gtk_Tree_Path;
+      End_Path   : Gtk_Tree_Path)
+   is
+      procedure Internal
+        (Selection  : System.Address;
+         Start_Path : Gtk_Tree_Path;
+         End_Path   : Gtk_Tree_Path);
+      pragma Import (C, Internal, "gtk_tree_selection_unselect_range");
+   begin
+      Internal (Get_Object (Selection), Start_Path, End_Path);
+   end Unselect_Range;
+
 
 end Gtk.Tree_Selection;

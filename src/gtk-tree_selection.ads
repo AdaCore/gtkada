@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2005 AdaCore                    --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,7 +26,30 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  The Gtk_Tree_Selection object is a helper object to manage the selection
+--  for a Gtk_Tree_View widget. The Gtk_Tree_Selection object is automatically
+--  created when a new Gtk_Tree_View widget is created, and cannot exist
+--  independentally of this widget. The primary reason the Gtk_Tree_Selection
+--  objects exists is for cleanliness of code and API. That is, there is no
+--  conceptual reason all these functions could not be methods on the
+--  Gtk_Tree_View widget instead of separate function.
+--
+--  The Gtk_Tree_Selection object is gotten from a Gtk_Tree_View by calling
+--  Gtk.Tree_View.Get_Selection. It can be manipulated to check the selection
+--  status of the tree, as well as select and deselect individual rows.
+--  Selection is done completely view side. As a result, multiple views of the
+--  same model can have completely different selections. Additionally, you
+--  cannot change the selection of a row on the model that is not currently
+--  displayed by the view without expanding its parents first.
+--
+--  One of the important things to remember when monitoring the selection of a
+--  view is that the "changed" signal is mostly a hint. That is, it may only
+--  emit one signal when a range of rows is selected. Additionally, it may on
+--  occasion emit a "changed" signal when nothing has happened (mostly as a
+--  result of programmers calling select_row on an already selected row).
+--  </description>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Object;
 with Gtk;
@@ -46,19 +69,21 @@ package Gtk.Tree_Selection is
    procedure Set_Mode
      (Selection : access Gtk_Tree_Selection_Record'Class;
       The_Type  : Gtk_Selection_Mode);
-   --  Set the selection mode of the Selection.
-   --  If the previous type was Gtk_Selection_Multiple,
-   --  then the anchor is kept selected, if it was  previously selected.
-
    function Get_Mode
      (Selection : access Gtk_Tree_Selection_Record'Class)
       return Gtk_Selection_Mode;
-   --  Get the selection mode for Selection. See  Set_Mode.
+   --  Set the selection mode of the Selection.
+   --  If the previous type was Gtk_Selection_Multiple,
+   --  then the anchor is kept selected, if it was  previously selected.
 
    function Get_Tree_View
      (Selection : access Gtk_Tree_Selection_Record'Class)
       return Gtk.Widget.Gtk_Widget;
    --  Return the tree view associated with Selection.
+
+   function Count_Selected_Rows
+     (Selection : access Gtk_Tree_Selection_Record) return Gint;
+   --  Returns the number of rows that have been selected.
 
    procedure Get_Selected
      (Selection : access Gtk_Tree_Selection_Record'Class;
@@ -69,6 +94,17 @@ package Gtk.Tree_Selection is
    --  Iter is set to Null_Iter if no node is currently selected.
    --  Model is filled with the current model as a convenience. This function
    --  will not work if Selection is set to Gtk_Selection_Multiple.
+
+   procedure Get_Selected_Rows
+     (Selection : access Gtk_Tree_Selection_Record;
+      Model     : out Gtk.Tree_Model.Gtk_Tree_Model;
+      Path_List : out Gtk.Tree_Model.Gtk_Tree_Path_List.Glist);
+   --  Creates a list of path of all selected rows. Additionally, if you are
+   --  planning on modifying the model after calling this function, you may
+   --  want to convert the returned list into a list of Gtk_Tree_Row_Reference.
+   --
+   --  You must free the resulting list by calling Path_Free on each item, and
+   --  then freeing the list itself.
 
    generic
       type Data_Type is private;
@@ -93,22 +129,10 @@ package Gtk.Tree_Selection is
    procedure Select_Path
      (Selection : access Gtk_Tree_Selection_Record'Class;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path);
-   --  Select the row at path.
-
    procedure Unselect_Path
      (Selection : access Gtk_Tree_Selection_Record'Class;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path);
-   --  Unselect the row at path.
-
-   procedure Select_Iter
-     (Selection : access Gtk_Tree_Selection_Record'Class;
-      Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Select the specified iterator.
-
-   procedure Unselect_Iter
-     (Selection : access Gtk_Tree_Selection_Record'Class;
-      Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Unselect the specified iterator.
+   --  Selects or unselects the row at path.
 
    function Path_Is_Selected
      (Selection : access Gtk_Tree_Selection_Record'Class;
@@ -117,6 +141,14 @@ package Gtk.Tree_Selection is
    --  Return True if the row pointed to by path is currently selected.
    --  If path does not point to a valid location, False is returned
 
+   procedure Select_Iter
+     (Selection : access Gtk_Tree_Selection_Record'Class;
+      Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
+   procedure Unselect_Iter
+     (Selection : access Gtk_Tree_Selection_Record'Class;
+      Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Selects or unselects the row pointed to by the specified iterator.
+
    function Iter_Is_Selected
      (Selection : access Gtk_Tree_Selection_Record'Class;
       Iter      : Gtk.Tree_Model.Gtk_Tree_Iter)
@@ -124,17 +156,20 @@ package Gtk.Tree_Selection is
    --  Return True if the row pointed to by path is currently selected.
 
    procedure Select_All (Selection : access Gtk_Tree_Selection_Record'Class);
-   --  Select all the nodes.
-   --  Selection must be set to Gtk_Selection_Multiple mode.
-
    procedure Unselect_All (Selection : access Gtk_Tree_Selection_Record'Class);
-   --  Unselect all the nodes.
+   --  Selects or unselects all the nodes.
+   --  Selection must be set to Gtk_Selection_Multiple mode.
 
    procedure Select_Range
      (Selection  : access Gtk_Tree_Selection_Record'Class;
       Start_Path : Gtk.Tree_Model.Gtk_Tree_Path;
       End_Path   : Gtk.Tree_Model.Gtk_Tree_Path);
-   --  Select a range of nodes, determined by Start_Path and End_Path inclusive
+   procedure Unselect_Range
+     (Selection  : access Gtk_Tree_Selection_Record;
+      Start_Path : Gtk.Tree_Model.Gtk_Tree_Path;
+      End_Path   : Gtk.Tree_Model.Gtk_Tree_Path);
+   --  Selects or unselects a range of nodes, determined by Start_Path and
+   --  End_Path inclusive
 
    -------------
    -- Signals --
@@ -146,8 +181,14 @@ package Gtk.Tree_Selection is
    --  - "changed"
    --    procedure Handler
    --      (Widget : access Gtk_Tree_Selection_Record'Class'Class);
+   --    Emitted whenever the selection has (possibly) changed. Please note
+   --    that this signal is mostly a hint. It may only be emitted once when a
+   --    range of rows are selected, and it may occasionally be emitted when
+   --    nothing has happened.
    --
    --  </signals>
+
+   Signal_Changed : constant String := "changed";
 
 private
    type Gtk_Tree_Selection_Record is

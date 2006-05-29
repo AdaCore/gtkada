@@ -52,23 +52,6 @@
 #include <gtk/gtktreesortable.h>
 #include <gtk/gtkenums.h>
 
-
-void
-ada_tree_model_get_value
-  (GtkTreeModel *tree_model,
-   GtkTreeIter  *iter,
-   gint          column,
-   GValue       *value)
-{
-  g_return_if_fail (GTK_IS_TREE_MODEL (tree_model));
-  g_return_if_fail (iter != NULL);
-  g_return_if_fail (value != NULL);
-  g_return_if_fail (GTK_TREE_MODEL_GET_IFACE (tree_model)->get_value != NULL);
-
-  (* GTK_TREE_MODEL_GET_IFACE (tree_model)->get_value)
-    (tree_model, iter, column, value);
-}
-
 gint
 convert_a (gpointer a)
 {
@@ -4127,4 +4110,22 @@ GSource* ada_g_source_new (GSourceFuncs* type, gpointer user_data) {
 
 gpointer ada_g_source_get_user_data (GSource* source) {
   return ((struct CustomGSource*)source)->user_data;
+}
+
+/********************************************************
+ ** Gtk_Selection
+********************************************************/
+
+int ada_selection_data_get_uris_length (gchar** uris) {
+  int count = 0;
+  gchar** tmp = uris;
+  while (*tmp) {
+    tmp++;
+    count++;
+  }
+  return count;
+}
+
+gchar* ada_selection_data_get_uris_get (gchar** uris, int index) {
+  return uris[index];
 }

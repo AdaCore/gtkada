@@ -63,13 +63,25 @@
 --  more information on the way selection works on X-Window systems.
 --
 --  </description>
---  <c_version>old</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gdk.Types;
+with Gdk.Pixbuf;
 with Gtk.Widget;
 with Gtkada.Types;
+with GNAT.Strings;
 
 package Gtk.Selection is
+
+   type Selection_Data is new Gdk.C_Proxy;
+   --  Contents of a selection or a drag-and-drop operation.
+   --  This structure can only be created internally by GtkAda. However, you
+   --  need to be able to access it to get the selection.
+   --   - Selection and Target identify the request.
+   --   - Type specifies the type of the return.
+   --   - if Length is negative, the Data should be ignored. Otherwise, it
+   --     contains the data itself.
+   --   - Time gives the timestamp at which the data was sent.
 
    ---------------
    -- Selection --
@@ -237,6 +249,28 @@ package Gtk.Selection is
       Targets : Target_Entry_Array);
    --  Add a new set of targets to the list.
 
+   procedure Target_List_Add_Text_Targets
+     (List      : Target_List;
+      Info      : Guint);
+   --  Appends the text targets supported internally by gtk+ to List.
+   --  All targets are added with the same info.
+   --  Info will be passed back to the application.
+
+   procedure Target_List_Add_URI_Targets
+     (List      : Target_List;
+      Info      : Guint);
+   --  Appends the URI targets supported internally by gtk+ to List.
+   --  All targets are added with the same info.
+
+   procedure Target_List_Add_Image_Targets
+     (List      : Target_List;
+      Info      : Guint;
+      Writable  : Boolean);
+   --  Appends the image targets supported internally by gtk+ to List.
+   --  All targets are added with the same info.
+   --  If Writable is True, then only those targets for which gtk+ knows how to
+   --  convert a Gdk_Pixbuf into the format are added.
+
    procedure Target_List_Remove
      (List   : Target_List;
       Target : Gdk.Types.Gdk_Atom);
@@ -255,15 +289,8 @@ package Gtk.Selection is
    -- Selection_Data --
    --------------------
 
-   type Selection_Data is new Gdk.C_Proxy;
-   --  Contents of a selection or a drag-and-drop operation.
-   --  This structure can only be created internally by GtkAda. However, you
-   --  need to be able to access it to get the selection.
-   --   - Selection and Target identify the request.
-   --   - Type specifies the type of the return.
-   --   - if Length is negative, the Data should be ignored. Otherwise, it
-   --     contains the data itself.
-   --   - Time gives the timestamp at which the data was sent.
+   function Selection_Get_Type return Glib.GType;
+   --  Return the internal type used for a selection
 
    function Get_Selection (Selection : Selection_Data) return Gdk_Selection;
    --  Return the selection used (primary, clipboard, ...)
@@ -290,8 +317,78 @@ package Gtk.Selection is
    --  This is only a convenience function, since it simply creates a string
    --  from the return of Get_Data.
 
-   function Get_Length (Selection : in Selection_Data) return Gint;
+   function Get_Length (Selection : Selection_Data) return Gint;
    --  Return the length of the data.
+
+   ----------------------------------
+   -- Setting and getting contents --
+   ----------------------------------
+
+   function Set_Pixbuf
+     (Selection : Selection_Data;
+      Pixbuf    : Gdk.Pixbuf.Gdk_Pixbuf) return Boolean;
+   --  Sets the contents of the selection from a pixbuf
+   --  The pixbuf is converted to the form determined by
+   --  Get_Target (Selection_Data).
+   --  Returns True if the selection was successfully set.
+
+   function Get_Pixbuf
+     (Selection : Selection_Data) return Gdk.Pixbuf.Gdk_Pixbuf;
+   --  Gets the contents of the selection data as a pixbuf.
+   --  Return value: if the selection data contained a recognized
+   --  image type and it could be converted to a pixbuf, a
+   --  newly allocated pixbuf is returned, otherwise null.
+   --  If the result is non-null it must be freed with Unref.
+
+   function Targets_Include_Image
+     (Selection : Selection_Data; Writable : Boolean := True) return Boolean;
+   --  Given a Selection object holding a list of targets, determines if any of
+   --  the targets in these targets can be used to provide a Gdk.Pixbuf.
+   --  Writable: whether to accept only targets for which gtk+ knows how to
+   --  convert a pixbuf into the format.
+   --  Returns True if Selection holds a list of targets and a suitable
+   --  target for images is included
+
+   function Set_Text
+     (Selection : Selection_Data;
+      Str       : UTF8_String) return Boolean;
+   --  Sets the contents of the selection from a UTF-8 encoded string.
+   --  The string is converted to the form determined by
+   --  Get_Target (Selection_Data).
+
+   function Get_Text (Selection : Selection_Data) return UTF8_String;
+   --  Gets the contents of the selection data as a UTF-8 string.
+   --  Return value: if the selection data contained a recognized
+   --  text type and it could be converted to UTF-8, the string is returned.
+
+   function Targets_Include_Text (Selection : Selection_Data) return Boolean;
+   --  Given a Selection object holding a list of targets, determines if any of
+   --  the targets can be used to provide text.
+
+   function Set_Uris
+     (Selection : Selection_Data;
+      URIs      : GNAT.Strings.String_List)
+      return Boolean;
+   --  Sets the contents of the selection from a list of URIs.
+   --  The string is converted to the form determined by
+   --  Get_Target (Selection).
+   --  Return True if the selection was successfully set.
+
+   function Get_Uris
+     (Selection : Selection_Data)
+      return GNAT.Strings.String_List;
+   --  Gets the contents of the selection data as array of URIs.
+   --  The returned value must be freed by the caller.
+
+   function Get_Targets
+     (Selection : Selection_Data) return Gdk.Types.Gdk_Atom_Array;
+   --  Gets the contents of Selection_Data as an array of targets.
+   --  This can be used to interpret the results of getting
+   --  the standard TARGETS target that is always supplied for
+   --  any selection.
+   --  This is different from Get_Target, which indicate the current format
+   --  that the selection contains. Get_Targets only applies when Get_Target
+   --  is "TARGETS".
 
    procedure Selection_Data_Set
      (Selection : Selection_Data;
@@ -447,6 +544,12 @@ private
 
    pragma Import (C, Selection_Data_Copy, "gtk_selection_data_copy");
    pragma Import (C, Selection_Data_Free, "gtk_selection_data_free");
+   pragma Import (C, Get_Pixbuf,    "gtk_selection_data_get_pixbuf");
+   pragma Import (C, Selection_Get_Type, "gtk_selection_data_get_type");
+   pragma Import (C, Target_List_Add_Text_Targets,
+                  "gtk_target_list_add_text_targets");
+   pragma Import (C, Target_List_Add_URI_Targets,
+                  "gtk_target_list_add_uri_targets");
 
    function Make_Atom (Num : Gulong) return Gdk.Types.Gdk_Atom;
    pragma Import (C, Make_Atom, "ada_make_atom");
@@ -474,9 +577,7 @@ private
    Target_String   : constant Gdk_Target := Make_Atom (31);
 end Gtk.Selection;
 
---  missing:
---  gtk_selection_clear
---  gtk_selection_request
---  gtk_selection_incr_event
---  gtk_selection_notify
---  gtk_selection_property_notify
+--  This function is indicated as obsolescent by gtk+ developers:
+--  No binding: gtk_selection_clear
+
+--  No binding: gtk_selection_owner_set_for_display

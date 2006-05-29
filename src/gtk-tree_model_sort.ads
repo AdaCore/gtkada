@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,8 +26,77 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.11</c_version>
+--  <description>
+--  The Gtk_Tree_Model_Sort is a model which implements the Gtk_Tree_Sortable
+--  interface. It does not hold any data itself, but rather is created with
+--  child model and proxies its data. It has identical column types to this
+--  child model, and the changes in the child are propagated. The primary
+--  purpose of this model is to provide a way to sort a different model without
+--  modifying it. Note that the sort function used by Gtk_Tree_Model_Sort is
+--  not guaranteed to be stable.
+--
+--  The use of this is best demonstrated through an example. In the following
+--  sample code we create two Gtk_Tree_View widgets each with a view of the
+--  same data. As the model is wrapped here by a Gtk_Tree_Model_Sort, the two
+--  Gtk_Tree_Views can each sort their view of the data without affecting the
+--  other. By contrast, if we simply put the same model in each widget, then
+--  sorting the first would sort the second.
+--
+--  declare
+--     Tree_View1, Tree_View2   : Gtk_Tree_View;
+--     Sort_Model1, Sort_Model2 : Gtk_Tree_Model_Sort;
+--     Child_Model              : Gtk_Tree_Model;
+--  begin
+--    Child_Model := Get_My_Model;  --  Your own implementation
+--
+--    --  Create the first tree
+--    Gtk_New (Sort_Model1, Child_Model);
+--    Gtk_New (Tree_View1, Sort_Model1);
+--    Set_Sort_Column_Id (Sort_Model1, COLUMN1, Sort_Ascending);
+--
+--    --  Create the second tree
+--    Gtk_New (Sort_Model2, Child_Model);
+--    Gtk_New (Tree_View2, Sort_Model2);
+--    Set_Sort_Column_Id (Sort_Model2, COLUMN1, Sort_Descending);
+--  end;
+--
+--  To demonstrate how to access the underlying child model from the sort
+--  model, the next example will be a callback for the Gtk_Tree_Selection
+--  "changed" signal. In this callback, we get a string from COLUMN_1 of the
+--  model. We then modify the string, find the same selected row on the child
+--  model, and change the row there.
+--
+--  procedure Selection_Changed
+--    (Selection : access Gtk_Tree_Selection_Record'Class)
+--  is
+--     Sort_Model, Child_Model : Gtk_Tree_Model;
+--     Sort_Iter, Child_Iter  : Gtk_Tree_Iter;
+--  begin
+--     --  Get the currently selected row and the model
+--     Get_Selected (Selection, Sort_Model, Sort_Iter);
+--     if Sort_Iter = Null_Iter then
+--        return;
+--     end if;
+--
+--     --  Lookup the current value on the selected row
+--     declare
+--       Some_Data : constant String :=
+--          Get_String (Sort_Model, Sort_Iter, COLUMN1);
+--     begin
+--        --  Get an iterator on the child model instead of the sort model
+--        Convert_Iter_To_Child_Iter (Sort_Model, Child_Iter, Sort_Iter);
+--
+--        --  Get the child model and change the value in the row
+--        --  In this example, the model is a Gtk_List_Store, but it could be
+--        --  anything
+--        Child_Model := Get_Model (Gtk_Sort_Model (Sort_Model));
+--        Set (Ctk_List_Store (Child_Model), Child_Iter, COLUMN1, "data");
+--     end;
+--  end Selection_Changed;
+--  </description>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gtk;
 with Gtk.Tree_Model;
 
@@ -36,6 +105,16 @@ package Gtk.Tree_Model_Sort is
    type Gtk_Tree_Model_Sort_Record is
      new Gtk.Tree_Model.Gtk_Tree_Model_Record with private;
    type Gtk_Tree_Model_Sort is access all Gtk_Tree_Model_Sort_Record'Class;
+
+   procedure Gtk_New_With_Model
+     (Sort_Model  : out Gtk_Tree_Model_Sort;
+      Child_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
+   procedure Initialize_With_Model
+     (Sort_Model  : access Gtk_Tree_Model_Sort_Record'Class;
+      Child_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class);
+   --  Creates or initialized a new sortable tree model, with Child_Model as
+   --  the child model.
+   --  Any change in Child_Model is reflected into Sort_Model
 
    function Get_Type return Glib.GType;
    --  Return the internal type associated with a Gtk_Tree_Model_Sort.
@@ -57,7 +136,7 @@ package Gtk.Tree_Model_Sort is
 
    procedure Convert_Child_Iter_To_Iter
      (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record;
-      Sort_Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Sort_Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
       Child_Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Set Sort_Iter to point to the row in Tree_Model_Sort that
    --  corresponds to the row pointed at by Child_Iter.
@@ -73,14 +152,31 @@ package Gtk.Tree_Model_Sort is
 
    procedure Convert_Iter_To_Child_Iter
      (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record;
-      Child_Iter      : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Child_Iter      : out Gtk.Tree_Model.Gtk_Tree_Iter;
       Sorted_Iter     : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Set Child_Iter to point to the row pointed to by Sorted_Iter.
 
    procedure Reset_Default_Sort_Func
      (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record);
+   --  This resets the default sort function to be in the 'unsorted' state.
+   --  That is, it is in the same order as the child model. It will re-sort the
+   --  model to be in the same order as the child model only if the
+   --  Gtk_Tree_Model_Sort is in 'unsorted' state.
 
    procedure Clear_Cache (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record);
+   --  This function should almost never be called. It clears the
+   --  tree_model_sort of any cached iterators that haven't been reffed with
+   --  gtk.tree_model.ref_node. This might be useful if the child model being
+   --  sorted is static (and doesn't change often) and there has been a lot of
+   --  unreffed access to nodes. As a side effect of this function, all
+   --  unreffed iters will be invalid.
+
+   function Iter_Is_Valid
+     (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record;
+      Iter            : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+   --  WARNING: this function is slow. Only use if for debugging and/or
+   --  testing purposes.
+   --  Checks if the given iter is a valid iter for this model.
 
    -------------
    -- Signals --
@@ -91,13 +187,28 @@ package Gtk.Tree_Model_Sort is
    --
    --  </signals>
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+   --
+   --  Name:  Model_Property
+   --  Type:  Object
+   --  Descr: The model for the TreeModelSort to sort
+   --
+   --  </properties>
+
+   Model_Property : constant Glib.Properties.Property_Object;
+
 private
    type Gtk_Tree_Model_Sort_Record is
      new Gtk.Tree_Model.Gtk_Tree_Model_Record with null record;
 
+   Model_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("model");
+
    pragma Import (C, Get_Type, "gtk_tree_model_sort_get_type");
-
 end Gtk.Tree_Model_Sort;
-
---  missing:
---  gtk_tree_model_sort_new_with_model

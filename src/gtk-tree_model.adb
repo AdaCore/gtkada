@@ -28,7 +28,6 @@
 
 with Interfaces.C.Strings;  use Interfaces.C.Strings;
 with System;                use System;
-
 with Gtk;                   use Gtk;
 with Gtkada.Types;
 
@@ -320,8 +319,10 @@ package body Gtk.Tree_Model is
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
          Value      : out Glib.Values.GValue);
-      pragma Import (C, Internal, "ada_tree_model_get_value");
-      --  ??? Calling gtk_tree_model_get_value directly crashes under Windows
+      pragma Import (C, Internal, "gtk_tree_model_get_value");
+      --  Windows used to crash when calling this directly. It might be because
+      --  we didn't have the right version of gtk+. Better to bind directly,
+      --  though, in case gtk+ is changed.
 
    begin
       Internal (Get_Object (Tree_Model), Iter, Column, Value);
@@ -742,5 +743,78 @@ package body Gtk.Tree_Model is
    begin
       Internal (Get_Object (Tree_Model), Path, Iter, New_Order'Address);
    end Rows_Reordered;
+
+   --------------------------
+   -- Get_String_From_Iter --
+   --------------------------
+
+   function Get_String_From_Iter
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter)
+      return String
+   is
+      function Internal
+        (Tree_Model : System.Address;
+         Iter       : Gtk_Tree_Iter)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_tree_model_get_string_from_iter");
+      Str : chars_ptr := Internal (Get_Object (Tree_Model), Iter);
+      Result : constant String := Value (Str);
+   begin
+      Free (Str);
+      return Result;
+   end Get_String_From_Iter;
+
+   ---------------
+   -- Get_Model --
+   ---------------
+
+   function Get_Model
+     (Reference : Gtk_Tree_Row_Reference) return Gtk_Tree_Model
+   is
+      function Internal
+        (Reference : Gtk_Tree_Row_Reference) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_row_reference_get_model");
+      Stub : Gtk_Tree_Model_Record;
+   begin
+      return Gtk_Tree_Model (Get_User_Data (Internal (Reference), Stub));
+   end Get_Model;
+
+   -------------
+   -- Foreach --
+   -------------
+
+   procedure Foreach
+     (Model     : access Gtk_Tree_Model_Record;
+      Func      : Gtk_Tree_Model_Foreach_Func;
+      User_Data : System.Address)
+   is
+      function Proxy
+        (C_Model   : System.Address;
+         Path      : Gtk_Tree_Path;
+         Iter      : Gtk_Tree_Iter;
+         User_Data : System.Address) return Gboolean;
+      pragma Convention (C, Proxy);
+
+      function Proxy
+        (C_Model   : System.Address;
+         Path      : Gtk_Tree_Path;
+         Iter      : Gtk_Tree_Iter;
+         User_Data : System.Address) return Gboolean
+      is
+         pragma Unreferenced (C_Model);
+      begin
+         return Boolean'Pos (Func (Model, Path, Iter, User_Data));
+      end Proxy;
+
+      procedure Internal
+        (Model     : System.Address;
+         Func      : System.Address;
+         User_Data : System.Address);
+      pragma Import (C, Internal, "gtk_tree_model_foreach");
+
+   begin
+      Internal (Get_Object (Model), Proxy'Address, User_Data);
+   end Foreach;
 
 end Gtk.Tree_Model;
