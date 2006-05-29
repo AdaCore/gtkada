@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2002                          --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2006 AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,12 +28,16 @@
 
 with Glib; use Glib;
 with Gtk;
+pragma Warnings (Off); --  Gtk.Combo is obsolescent
 with Gtk.Combo;
+pragma Warnings (On);
 with Gtk.Widget;
 
 package Gnome.GEntry is
 
+   pragma Warnings (Off);  --  Gtk.Combo is obsolescent;
    type Gnome_GEntry_Record is new Gtk.Combo.Gtk_Combo_Record with private;
+   pragma Warnings (On);
    type Gnome_GEntry is access all Gnome_GEntry_Record'Class;
 
    procedure Gnome_New (Widget     : out Gnome_GEntry;
@@ -79,7 +82,9 @@ package Gnome.GEntry is
    --  </signals>
 
 private
+   pragma Warnings (Off);  --  Gtk.Combo is obsolescent;
    type Gnome_GEntry_Record is new Gtk.Combo.Gtk_Combo_Record with null record;
+   pragma Warnings (On);
 
    pragma Import (C, Get_Type, "gnome_gentry_get_type");
 end Gnome.GEntry;
