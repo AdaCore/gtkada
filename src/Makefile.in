@@ -232,6 +232,10 @@ maintainer-clean: mostlyclean-generic
 	$(MAKE) -C gnome maintainer-clean
 	-$(RM) Makefile.common
 
+## Find the list of bindings that are not up-to-date
+bindings_not_up_to_date:
+	egrep -L "2.8.17|gtkextra 2.1.1|glib 2.10" *.ads
+
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
 
