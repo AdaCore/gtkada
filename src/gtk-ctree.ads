@@ -135,6 +135,7 @@ package Gtk.Ctree is
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Columns     : in     Gint;
                       Tree_Column : in     Gint := 0);
+   pragma Obsolescent;  --  New
    --  Create a ctree with Columns columns.
    --  Tree_Column indicates in which column the tree will be displayed.
 
@@ -147,6 +148,7 @@ package Gtk.Ctree is
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Titles      : in     Chars_Ptr_Array;
                       Tree_Column : in     Gint := 0);
+   pragma Obsolescent;  --  New_With_Titles
    --  Create a ctree with Titles'Length columns.
    --  Titles gives the title of each column.
    --  Tree_Column indicates in which column the tree will be displayed.
@@ -158,6 +160,7 @@ package Gtk.Ctree is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
+   pragma Obsolescent; --  Get_Type
    --  Return the internal value associated with a Gtk_Ctree.
 
    function Insert_Node (Ctree         : access Gtk_Ctree_Record;
@@ -172,6 +175,7 @@ package Gtk.Ctree is
                          Is_Leaf       : in     Boolean;
                          Expanded      : in     Boolean)
                          return                 Gtk_Ctree_Node;
+   pragma Obsolescent;  --  Insert_Node
    --  Insert a new node in the Ctree.
    --  Parent is the parent node. If null, the new node is part of the root.
    --  The new node will be inserted right on top of Sibling. If Sibling is
@@ -193,6 +197,7 @@ package Gtk.Ctree is
 
    procedure Remove_Node (Ctree : access Gtk_Ctree_Record;
                           Node  : in     Gtk_Ctree_Node);
+   pragma Obsolescent;  --  Remove_Node
    --  Remove Node from Ctree.
 
    -------------------------------------------
@@ -251,6 +256,7 @@ package Gtk.Ctree is
      (Ctree  : access Gtk_Ctree_Record;
       Node   : in     Gtk_Ctree_Node)
       return Boolean;
+   pragma Obsolescent;  --  Is_Viewable
    --  Return True if Node is viewable.
    --  A Node is viewable if all the trees and subtrees containing it are
    --  expanded.
@@ -259,6 +265,7 @@ package Gtk.Ctree is
      (Ctree  : access Gtk_Ctree_Record;
       Node   : in     Gtk_Ctree_Node)
       return Gtk_Ctree_Node;
+   pragma Obsolescent;  --  Last
    --  Return the last node of a given subtree.
    --  Starting at Node, this function will recursively look for the last
    --  sibling of the last child.
@@ -268,11 +275,13 @@ package Gtk.Ctree is
      (Ctree     : access Gtk_Ctree_Record;
       Ctree_Row : in     Gtk_Ctree_Row)
       return Gtk_Ctree_Node;
+   pragma Obsolescent; --  Find_Node_Ptr
    --  Return the node corresponding to a given row.
 
    function Node_Nth (Ctree  : access Gtk_Ctree_Record;
                       Row    : in     Guint)
                       return          Gtk_Ctree_Node;
+   pragma Obsolescent; --  Node_Nth
    --  Return the Node corresponding to the nth row of a given Ctree.
    --  This can be used to retrieve the root node of the tree, by passing 0 for
    --  Row.
@@ -280,6 +289,7 @@ package Gtk.Ctree is
    function Find (Ctree : access Gtk_Ctree_Record;
                   Node  : in     Gtk_Ctree_Node;
                   Child : in     Gtk_Ctree_Node) return Boolean;
+   pragma Obsolescent; --  Find
    --  Recursively search for a given Child in a given subtree.
    --  the subtree is determined by Node. If Node is empty, the search will
    --  occur on the whole tree.
@@ -289,6 +299,7 @@ package Gtk.Ctree is
      (Ctree  : access Gtk_Ctree_Record;
       Node   : in     Gtk_Ctree_Node;
       Child  : in     Gtk_Ctree_Node) return Boolean;
+   pragma Obsolescent; --  Is_Ancestor
    --  Indicate whether Node is an ancestor of Child.
    --  It is assumed that Node is not empty.
 
@@ -296,6 +307,7 @@ package Gtk.Ctree is
      (Ctree  : access Gtk_Ctree_Record;
       X      : in     Gint;
       Y      : in     Gint) return Boolean;
+   pragma Obsolescent; --  Is_Hot_Spot
    --  Return True if the Ctree is centered on (x,y)
 
    ------------------------------------------------------
@@ -306,6 +318,7 @@ package Gtk.Ctree is
                    Node        : in     Gtk_Ctree_Node;
                    New_Parent  : in     Gtk_Ctree_Node;
                    New_Sibling : in     Gtk_Ctree_Node);
+   pragma Obsolescent; --  Move
    --  Move a node in a Ctree.
    --  After its creation, a node can be moved.
    --  New_Parent points to the new parent node that will contain Node.
@@ -315,67 +328,80 @@ package Gtk.Ctree is
 
    procedure Expand (Ctree : access Gtk_Ctree_Record;
                      Node  : in     Gtk_Ctree_Node);
+   pragma Obsolescent; --  Expand
    --  Expand the first level of the subtree associated with Node.
 
    procedure Expand_Recursive
      (Ctree : access Gtk_Ctree_Record;
       Node  : in     Gtk_Ctree_Node := null);
+   pragma Obsolescent; --  Expand_Recursive
    --  Expand the whole subtree associated with Node.
 
    procedure Expand_To_Depth
      (Ctree : access Gtk_Ctree_Record;
       Node  : in     Gtk_Ctree_Node := null;
       Depth : in     Gint);
+   pragma Obsolescent; --  Expand_To_Depth
    --  Expand the subtree associated with Node and its descendants until Depth
    --  levels of subtrees have been reached.
 
    procedure Collapse (Ctree : access Gtk_Ctree_Record;
                        Node  : in     Gtk_Ctree_Node);
+   pragma Obsolescent; --  Collapse
    --  Collapse the first level of the subtree associated with Node.
 
    procedure Collapse_Recursive
      (Ctree : access Gtk_Ctree_Record;
       Node  : in     Gtk_Ctree_Node := null);
+   pragma Obsolescent; --  Collapse_Recursive
    --  Collapse the whole subtree associated with Node.
 
    procedure Collapse_To_Depth
      (Ctree : access Gtk_Ctree_Record;
       Node  : in     Gtk_Ctree_Node := null;
       Depth : in     Gint);
+   pragma Obsolescent;  --  Collapse_To_Depth
    --  Collapse the subtree associated with Node and its descendants until
    --  Depth levels of subtrees have been reached.
 
    procedure Toggle_Expansion (Ctree : access Gtk_Ctree_Record;
                                Node  : in     Gtk_Ctree_Node);
+   pragma Obsolescent; --  Toggle_Expansion
    --  Change the state of the Ctree from expanded to collapsed and the other
    --  way around on one level.
 
    procedure Toggle_Expansion_Recursive (Ctree : access Gtk_Ctree_Record;
                                          Node  : in     Gtk_Ctree_Node);
+   pragma Obsolescent; --  Toggle_Expansion_Recursive
    --  Change the state of the Ctree from expanded to collapsed and the other
    --  way around for the whole subtree.
 
    procedure Gtk_Select (Ctree : access  Gtk_Ctree_Record;
                          Node  : in      Gtk_Ctree_Node);
+   pragma Obsolescent; --  Select
    --  Select a specified Node, and only this one.
 
    procedure Select_Recursive
      (Ctree : access Gtk_Ctree_Record;
       Node  : in     Gtk_Ctree_Node := null);
+   pragma Obsolescent; --  Select_Recursive
    --  Select a specified Node, and its whole subtree.
 
    procedure Unselect (Ctree : access Gtk_Ctree_Record;
                        Node  : in     Gtk_Ctree_Node);
+   pragma Obsolescent; --  Unselect
    --  Unselect a specified Node, and only this one.
 
    procedure Unselect_Recursive
      (Ctree : access Gtk_Ctree_Record;
       Node  : in     Gtk_Ctree_Node := null);
+   pragma Obsolescent; --  Unselect_Recursive
    --  Unselect a specified Node, and its whole subtree.
 
    procedure Real_Select_Recursive (Ctree     : access Gtk_Ctree_Record;
                                     Node      : in     Gtk_Ctree_Node := null;
                                     Do_Select : in     Boolean);
+   pragma Obsolescent; --  Real_Select_Recursive
    --  Similar to Select_Recursive or Unselect_Recursive.
    --  If Do_Select is True, equivalent to Select_Recursive.
    --  If Do_Select is False, equivalent to Unselect_Recursive.
@@ -388,6 +414,7 @@ package Gtk.Ctree is
                             Node   : in     Gtk_Ctree_Node;
                             Column : in     Gint;
                             Text   : in     UTF8_String);
+   pragma Obsolescent; --  Node_Set_Text
    --  Set the cell's text, replacing its current contents.
    --  This changes the type of the cell to Cell_Text. The pixmap (if any)
    --  will no longer be displayed.
@@ -395,6 +422,7 @@ package Gtk.Ctree is
    function Node_Get_Text (Ctree   : access Gtk_Ctree_Record;
                            Node    : in     Gtk_Ctree_Node;
                            Column  : in     Gint) return UTF8_String;
+   pragma Obsolescent; --  Node_Get_Text
    --  Return the text contained in cell.
    --  An empty string is returned if Column is invalid or if the Cell did not
    --  contain any text (only a pixmap)
@@ -404,6 +432,7 @@ package Gtk.Ctree is
                               Column : in     Gint;
                               Pixmap : in     Gdk.Pixmap.Gdk_Pixmap;
                               Mask   : in     Gdk.Bitmap.Gdk_Bitmap);
+   pragma Obsolescent; --  Node_Set_Pixmap
    --  Set the cell's pixmap, replacing its current contents.
    --  The type of the cell becomes Cell_Pixmap, and the text is no longer
    --  displayed.
@@ -414,6 +443,7 @@ package Gtk.Ctree is
                               Pixmap  :    out Gdk.Pixmap.Gdk_Pixmap;
                               Mask    :    out Gdk.Bitmap.Gdk_Bitmap;
                               Success :    out Boolean);
+   pragma Obsolescent; --  Node_Get_Pixmap
    --  Return the Pixmap contained in a cell.
    --  The type of the cell should be Cell_Pixmap.
    --  The result is meaningful only if Success is True. If the Cell did not
@@ -426,6 +456,7 @@ package Gtk.Ctree is
                                Spacing : in     Guint8;
                                Pixmap  : in     Gdk.Pixmap.Gdk_Pixmap;
                                Mask    : in     Gdk.Bitmap.Gdk_Bitmap);
+   pragma Obsolescent; --  Node_Set_Pixtext
    --  Set both the Text and the Pixmap for the cell.
    --  Replace its current contents. The type of the cell becomes Cell_Pixtext,
    --  and both the text and the pixmap are displayed.
@@ -438,6 +469,7 @@ package Gtk.Ctree is
                                Pixmap  :    out Gdk.Pixmap.Gdk_Pixmap;
                                Mask    :    out Gdk.Bitmap.Gdk_Bitmap;
                                Success :    out Boolean);
+   pragma Obsolescent; --  Node_Get_Pixtext
    --  Return the Text and the Pixmap for the cell.
    --  The result is not meaningful if Success is False.
 
@@ -446,6 +478,7 @@ package Gtk.Ctree is
                              Column     : in     Gint;
                              Vertical   : in     Gint;
                              Horizontal : in     Gint);
+   pragma Obsolescent; --  Node_Set_Shift
    --  Set a horizontal and vertical shift for drawing the content of the cell.
    --  Both shifts can be either positive or negative.
    --  This is particularly useful for indenting items in a columns.
@@ -460,6 +493,7 @@ package Gtk.Ctree is
                             Mask_Opened   : in     Gdk.Bitmap.Gdk_Bitmap;
                             Is_Leaf       : in     Boolean;
                             Expanded      : in     Boolean);
+   pragma Obsolescent; --  Set_Node_Info
    --  Set all the info related to a specific Node.
 
    procedure Get_Node_Info
@@ -474,34 +508,40 @@ package Gtk.Ctree is
       Is_Leaf       :    out Boolean;
       Expanded      :    out Boolean;
       Success       :    out Boolean);
+   pragma Obsolescent; --  Get_Node_Info
    --  Return all the info related to a specific Node.
 
    procedure Node_Set_Selectable (Ctree      : access Gtk_Ctree_Record;
                                   Node       : in     Gtk_Ctree_Node;
                                   Selectable : in     Boolean := True);
+   pragma Obsolescent; --  Node_Set_Selectable
    --  Indicate whether the Node can be selected or not.
    --  The default value is True.
 
    function Node_Get_Selectable (Ctree  : access Gtk_Ctree_Record;
                                  Node   : in     Gtk_Ctree_Node)
                                  return          Boolean;
+   pragma Obsolescent; --  Node_Get_Selectable
    --  Return the selectable status of the Node.
 
    procedure Node_Set_Row_Style (Ctree : access Gtk_Ctree_Record;
                                  Node  : in     Gtk_Ctree_Node;
                                  Style : in     Gtk.Style.Gtk_Style);
+   pragma Obsolescent; --  Node_Set_Row_Style
    --  Set the default style for the cells in the Node.
    --  This can be overridden for each cell with Node_Set_Cell_Style.
 
    function Node_Get_Row_Style (Ctree  : access Gtk_Ctree_Record;
                                 Node   : in     Gtk_Ctree_Node)
                                 return          Gtk.Style.Gtk_Style;
+   pragma Obsolescent; --  Node_Get_Row_Style
    --  Return the default style used for the Node.
 
    procedure Node_Set_Cell_Style (Ctree  : access Gtk_Ctree_Record;
                                   Node   : in     Gtk_Ctree_Node;
                                   Column : in     Gint;
                                   Style  : in     Gtk.Style.Gtk_Style);
+   pragma Obsolescent; --  Node_Set_Cell_Style
    --  Set the style (font, color, ...) used for the cell.
    --  This overrides the Node's style.
 
@@ -509,11 +549,13 @@ package Gtk.Ctree is
                                  Node   : in     Gtk_Ctree_Node;
                                  Column : in     Gint)
                                  return          Gtk.Style.Gtk_Style;
+   pragma Obsolescent; --  Node_Get_Cell_Style
    --  Return the style of the cell.
 
    procedure Node_Set_Foreground (Ctree : access Gtk_Ctree_Record;
                                   Node  : in     Gtk_Ctree_Node;
                                   Color : in     Gdk.Color.Gdk_Color);
+   pragma Obsolescent; --  Node_Set_Foreground
    --  Set the foreground color for the Node.
    --  The color must already be allocated.
    --  If no such Node exists in the tree, nothing is done.
@@ -521,6 +563,7 @@ package Gtk.Ctree is
    procedure Node_Set_Background (Ctree : access Gtk_Ctree_Record;
                                   Node  : in     Gtk_Ctree_Node;
                                   Color : in     Gdk.Color.Gdk_Color);
+   pragma Obsolescent; --  Node_Set_Background
    --  Set the background color for the Node.
    --  The color must already be allocated.
    --  If no such Node exists in the tree, nothing is done.
@@ -530,6 +573,7 @@ package Gtk.Ctree is
                                 Node   : in     Gtk_Ctree_Node;
                                 Column : in     Gint)
                                 return Gtk.Clist.Gtk_Cell_Type;
+   pragma Obsolescent; --  Node_Get_Cell_Type
    pragma Warnings (On);
    --  Return the type of the cell at Node/Column.
    --  This indicates which of the functions Node_Get_Text. Node_Get_Pixmap,
@@ -540,6 +584,7 @@ package Gtk.Ctree is
                           Column    : in     Gint;
                           Row_Align : in     Gfloat := 0.5;
                           Col_Align : in     Gfloat := 0.5);
+   pragma Obsolescent; --  Node_Moveto
    --  Make a Node visible.
    --  Column indicates which column of the Node should be visible, if not
    --  all columns can be displayed.
@@ -551,6 +596,7 @@ package Gtk.Ctree is
      (Ctree  : access Gtk_Ctree_Record;
       Node   : in     Gtk_Ctree_Node)
       return Gtk_Visibility;
+   pragma Obsolescent; --  Node_Is_Visible
    --  Indicate the visibility of a Node.
    --  Return Visibility_None if the Node is not visible in the Ctree window;
    --  Visibility_Partial if the Node is partially visible; Visibility_Full
@@ -564,57 +610,52 @@ package Gtk.Ctree is
 
    procedure Set_Indent (Ctree  : access Gtk_Ctree_Record;
                          Indent : in     Gint := 20);
+   pragma Obsolescent; --  Set_Indent
+   function Get_Indent
+     (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class) return Gint;
    --  Change the indentation of the Ctree.
    --  Each different level of a subtree is indented by a number of pixels.
    --  By default, the indentation is 20 pixels, and can be changed using this
    --  procedure.
 
-   function Get_Indent
-     (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class) return Gint;
-   --  Return the indentation of a Ctree.
-
    procedure Set_Spacing (Ctree   : access Gtk_Ctree_Record;
                           Spacing : in     Gint := 5);
+   pragma Obsolescent; --  Set_Spacing
+   function Get_Spacing
+     (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class) return Gint;
    --  Set the spacing between the tree's icon and the additional pixmap.
    --  The additional pixmap indicates whether the subtree is opened or closed.
    --  The default value is 5 pixels.
 
-   function Get_Spacing
-     (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class) return Gint;
-   --  Return the spacing between the tree's icon and the additional pixmap.
-
    procedure Set_Show_Stub (Ctree     : access Gtk_Ctree_Record;
                             Show_Stub : in     Boolean);
-   --  Set the Show_Stub attribute of Ctree.
-
+   pragma Obsolescent; --  Set_Show_Stub
    function Get_Show_Stub (Ctree : access Gtk_Ctree_Record) return Boolean;
-   --  Return the Show_Stub attribute of Ctree.
+   --  Set the Show_Stub attribute of Ctree.
 
    procedure Set_Line_Style
      (Ctree      : access Gtk_Ctree_Record;
       Line_Style : in     Gtk_Ctree_Line_Style := Ctree_Lines_Solid);
+   pragma Obsolescent;  --  Set_Line_Style
+   function Get_Line_Style
+     (Ctree : access Gtk_Ctree_Record) return Gtk_Ctree_Line_Style;
    --  Change the style of the lines representing the tree of a given Ctree.
    --  By default, solid lines are used.
    --  See the description of Gtk_Ctree_Line_Style for more details of the
    --  possible values.
 
-   function Get_Line_Style
-     (Ctree : access Gtk_Ctree_Record) return Gtk_Ctree_Line_Style;
-   --  return the style of the lines representing the tree of a given Ctree.
-
    procedure Set_Expander_Style
      (Ctree          : access Gtk_Ctree_Record;
       Expander_Style : in     Gtk_Ctree_Expander_Style :=
         Ctree_Expander_Square);
+   pragma Obsolescent; --  Set_Expander_Style
+   function Get_Expander_Style
+     (Ctree : access Gtk_Ctree_Record) return Gtk_Ctree_Expander_Style;
    --  Set the way a given Ctree can be expanded.
    --  To expand a subtree, you can either double-click on a node, or click on
    --  the "+/-" icon. This icon is by default included in a square pixmap.
    --  This procedure can change the form of this pixmap.
    --  See the description of Gtk_Ctree_Expander_Style for more details.
-
-   function Get_Expander_Style
-     (Ctree : access Gtk_Ctree_Record) return Gtk_Ctree_Expander_Style;
-   --  Return the way a given Ctree can be expanded.
 
    type Gtk_Ctree_Compare_Drag_Func is access
      function (Ctree        : in Gtk_Ctree;
@@ -626,6 +667,7 @@ package Gtk.Ctree is
    procedure Set_Drag_Compare_Func
      (Ctree    : access Gtk_Ctree_Record;
       Cmp_Func : in     Gtk_Ctree_Compare_Drag_Func);
+   pragma Obsolescent;  --  Set_Drag_Compare_Func
    --  Set the drag compare function of a given Ctree.
    --  This function is used when the Ctree receives a dragged data.
 
@@ -635,11 +677,13 @@ package Gtk.Ctree is
 
    procedure Sort_Node (Ctree : access Gtk_Ctree_Record;
                         Node  : in     Gtk_Ctree_Node);
+   pragma Obsolescent; --  Sort_Node
    --  Sort the nodes of a given Ctree.
    --  This procedure only sorts the first level of the tree.
 
    procedure Sort_Recursive (Ctree : access Gtk_Ctree_Record;
                              Node  : in     Gtk_Ctree_Node := null);
+   pragma Obsolescent; --  Sort_Recursive
    --  Sort the nodes of a given Ctree recursively.
    --  This procedure sorts the whole tree and subtrees associated with Ctree.
    --  Set Node to null if you want to sort the whole tree starting from its
@@ -672,6 +716,7 @@ package Gtk.Ctree is
                                 Func    : in     Gtk_Ctree_Gnode_Func;
                                 Data    : in     Data_Type_Access)
         return Glib.Gnodes.Gnode;
+      pragma Obsolescent; --  Export_To_Gnode
 
       function Insert_Gnode (Ctree   : access Gtk_Ctree_Record'Class;
                              Parent  : in     Glib.Gnodes.Gnode;
@@ -680,6 +725,7 @@ package Gtk.Ctree is
                              Func    : in     Gtk_Ctree_Gnode_Func;
                              Data    : in     Data_Type_Access)
         return Gtk_Ctree_Node;
+      pragma Obsolescent; --  Insert_Gnode
    private
       --  <doc_ignore>
       type Ctree_Gnode_Func_Record is record
@@ -716,12 +762,14 @@ package Gtk.Ctree is
       procedure Node_Set_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
                                    Node  : in     Gtk_Ctree_Node;
                                    Data  : in     Data_Type);
+      pragma Obsolescent;  --  Node_Set_Row_Data_Full
       --  Associate a Data with a Node.
 
       function Node_Get_Row_Data
         (Ctree : access Gtk_Ctree_Record'Class;
          Node  : in     Gtk_Ctree_Node)
          return Data_Type;
+      pragma Obsolescent; --  Node_Get_Row_Data
       --  Retrieve a data associated with a Node.
       --  Error Handling:
       --  Gtkada.Types.Data_Error is raised when trying to retrieve
@@ -759,6 +807,7 @@ package Gtk.Ctree is
          Data  : in     Data_Type;
          Func  : in     Gcompare_Func)
          return Gtk_Ctree_Node;
+      pragma Obsolescent; --  Find_By_Row_Data_Custom
       --  Find the first node containing a specified Data.
       --  Similar to Find_By_Row_Data but Func is used to allow a more flexible
       --  (user defined) method to compare two nodes.
@@ -768,6 +817,7 @@ package Gtk.Ctree is
          Node  : in     Gtk_Ctree_Node;
          Data  : in     Data_Type;
          Func  : in     Gcompare_Func) return Node_List.Glist;
+      pragma Obsolescent; --  Find_All_By_Row_Data_Custom
       --  Find all the nodes containing a specified Data.
       --  Similar to Find_All_By_Row_Data but Func is used to allow a more
       --  flexible (user defined) method to compare two nodes.
@@ -782,6 +832,7 @@ package Gtk.Ctree is
                                 Node  : in     Gtk_Ctree_Node;
                                 Func  : in     Gtk_Ctree_Func;
                                 Data  : in     Data_Type_Access);
+      pragma Obsolescent; --  Post_Recursive
       --  Apply Func to each node of a subtree.
       --  Node designates the root of the subtree.
       --  Data will be passed as a parameter to Func.
@@ -792,6 +843,7 @@ package Gtk.Ctree is
                                          Depth : in     Gint;
                                          Func  : in     Gtk_Ctree_Func;
                                          Data  : in     Data_Type_Access);
+      pragma Obsolescent; --  Post_Recursive_To_Depth
       --  Apply Func to each node of a subtree until a specified Depth.
       --  Node designates the root of the subtree.
       --  Data will be passed as a parameter to Func.
@@ -802,6 +854,7 @@ package Gtk.Ctree is
                                Node  : in     Gtk_Ctree_Node;
                                Func  : in     Gtk_Ctree_Func;
                                Data  : in     Data_Type_Access);
+      pragma Obsolescent; --  Pre_Recursive
       --  Apply Func to each node of a subtree.
       --  Similar to Post_Recursive but will apply Func to the parent before
       --  applying it to its children.
@@ -811,6 +864,7 @@ package Gtk.Ctree is
                                         Depth : in     Gint;
                                         Func  : in     Gtk_Ctree_Func;
                                         Data  : in     Data_Type_Access);
+      pragma Obsolescent; --  Pre_Recursive_To_Depth
       --  Apply Func to each node of a subtree until a specific Depth.
       --  Similar to Post_Recursive_To_Depth but will apply Func to the parent
       --  before applying it to its children.
