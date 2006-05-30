@@ -231,10 +231,13 @@ package Gtk.Tree_Model is
    --  can define their own iterators
 
    Null_Iter : constant Gtk_Tree_Iter;
-   --  You can copy tree iters simply by using the usual "=" operator
 
    function Iter_Get_Type return Glib.GType;
    --  Return the internal type used for iterators
+
+   procedure Iter_Copy (Source : Gtk_Tree_Iter; Dest : out Gtk_Tree_Iter);
+   --  Create a copy of Source.
+   --  You can copy tree iters simply by using the usual "=" operator.
 
    procedure Set_Tree_Iter
      (Val  : in out Glib.Values.GValue;
@@ -501,6 +504,7 @@ private
    pragma Import (C, Iter_Get_Type, "gtk_tree_iter_get_type");
    pragma Import (C, Path_Get_Type, "gtk_tree_path_get_type");
    pragma Import (C, Gtk_New_First, "gtk_tree_path_new_first");
+   pragma Import (C, Iter_Copy,     "ada_tree_iter_copy");
    pragma Import (C, Row_Reference_Copy, "gtk_tree_row_reference_copy");
    pragma Import
      (C, Row_Reference_Get_Type, "gtk_tree_row_reference_get_type");
