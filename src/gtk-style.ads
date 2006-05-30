@@ -32,6 +32,7 @@
 --  In gtk+ 2.0, consider using directly the various functions
 --  Gtk.Widget.Modify_Font, Gtk.Widget.Modify_Background,...
 
+with Glib.Values;
 with Gdk.Color;
 with Gdk.Font;
 with Gdk.GC;
@@ -39,11 +40,10 @@ with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;
-
 with Gtk.Enums;
 with Gtk.Object;
-
 with Pango.Font;
+with Interfaces.C.Strings;
 
 package Gtk.Style is
 
@@ -52,6 +52,17 @@ package Gtk.Style is
    --  @pxref{Package_Gtk.Widget} for style handling.
 
    Null_Style : constant Gtk_Style := null;
+
+   type Gtk_Rc_Property_Parser is access function
+     (Pspec     : Glib.Param_Spec;
+      Rc_String : Interfaces.C.Strings.chars_ptr;
+      Value     : access Glib.Values.GValue) return Gboolean;
+   pragma Convention (C, Gtk_Rc_Property_Parser);
+   --  A function used to parse a string into the value of a property.
+   --  Pspec is the property that is being parsed, Rc_String is the value as
+   --  read in a gtk configuration file (any string, really), and Value should
+   --  be set to the value read.
+   --  See also Gtk.Settings
 
    procedure Gtk_New (Style : out Gtk_Style);
 

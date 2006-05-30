@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,9 +27,27 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Ada.Unchecked_Conversion;
 with System;
+with Gdk.Color;            use Gdk.Color;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Color_Selection is
+
+   Global_Palette_With_Screen_Hook :
+     Gtk_Color_Selection_Change_Palette_With_Screen_Func := null;
+
+   procedure Palette_Hook_Proxy
+     (Screen : Gdk_Screen; Colors : System.Address; N_Colors : Gint);
+   pragma Convention (C, Palette_Hook_Proxy);
+   --  Proxy for the Palette_With_Screen_Hook
+
+   type Big_Color_Array is array (Natural) of Gdk_Color;
+   pragma Convention (C, Big_Color_Array);
+   type Big_Color_Array_Access is access Big_Color_Array;
+
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Big_Color_Array_Access);
 
    ---------------
    -- Get_Color --
@@ -316,5 +334,101 @@ package body Gtk.Color_Selection is
    begin
       return Gdouble (Color) / Gdouble (Gushort'Last);
    end To_Percent;
+
+   -------------------------
+   -- Palette_From_String --
+   -------------------------
+
+   function Palette_From_String (Str : String) return Gdk_Color_Array is
+      function Internal
+        (Str : String; Colors : access System.Address; N : access Gint)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_color_selection_palette_from_string");
+
+      N      : aliased Gint;
+      Result : aliased System.Address;
+   begin
+      if Internal (Str & ASCII.NUL, Result'Access, N'Access) = 0 then
+         return (1 .. 0 => Null_Color);
+      else
+         declare
+            Res    : constant Big_Color_Array_Access := Convert (Result);
+            Output : Gdk_Color_Array (1 .. Natural (N));
+         begin
+            for O in Output'Range loop
+               Output (O) := Res (O - 1);
+            end loop;
+            return Output;
+         end;
+      end if;
+   end Palette_From_String;
+
+   -----------------------
+   -- Palette_To_String --
+   -----------------------
+
+   function Palette_To_String (Colors : Gdk_Color_Array) return String is
+      function Internal
+        (Colors   : System.Address;
+         N_Colors : Gint)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_color_selection_palette_to_string");
+      Str : chars_ptr;
+   begin
+      if Colors'Length = 0 then
+         return "";
+      else
+         Str := Internal (Colors (Colors'First)'Address, Colors'Length);
+         declare
+            Result : constant String := Value (Str);
+         begin
+            Free (Str);
+            return Result;
+         end;
+      end if;
+   end Palette_To_String;
+
+   ------------------------
+   -- Palette_Hook_Proxy --
+   ------------------------
+
+   procedure Palette_Hook_Proxy
+     (Screen : Gdk_Screen; Colors : System.Address; N_Colors : Gint)
+   is
+      Res    : constant Big_Color_Array_Access := Convert (Colors);
+      Output : Gdk_Color_Array (1 .. Natural (N_Colors));
+   begin
+      for O in Output'Range loop
+         Output (O) := Res (O - 1);
+      end loop;
+      Global_Palette_With_Screen_Hook (Screen, Output);
+   end Palette_Hook_Proxy;
+
+   -----------------------------------------
+   -- Set_Change_Palette_With_Screen_Hook --
+   -----------------------------------------
+
+   function Set_Change_Palette_With_Screen_Hook
+     (Func : Gtk_Color_Selection_Change_Palette_With_Screen_Func)
+      return Gtk_Color_Selection_Change_Palette_With_Screen_Func
+   is
+      function Internal (Func : System.Address) return System.Address;
+      pragma Import
+        (C, Internal,
+         "gtk_color_selection_set_change_palette_with_screen_hook");
+      Old : constant Gtk_Color_Selection_Change_Palette_With_Screen_Func :=
+        Global_Palette_With_Screen_Hook;
+      Tmp : System.Address;
+      pragma Unreferenced (Tmp);
+   begin
+      Global_Palette_With_Screen_Hook := Func;
+      if Func = null then
+         Tmp := Internal (System.Null_Address);
+      else
+         Tmp := Internal (Palette_Hook_Proxy'Address);
+      end if;
+      return Old;
+   end Set_Change_Palette_With_Screen_Hook;
+
 
 end Gtk.Color_Selection;

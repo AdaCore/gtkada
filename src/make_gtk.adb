@@ -160,6 +160,7 @@ with Gtk.Selection;
 with Gtk.Separator;
 with Gtk.Separator_Menu_Item;
 with Gtk.Separator_Tool_Item;
+with Gtk.Settings;
 with Gtk.Size_Group;
 with Gtk.Socket;
 with Gtk.Spin_Button;
