@@ -6,19 +6,19 @@ Contents
 cairo-1.0.4.diff: a patch against cairo 1.0.4 sources needed to build under
 some platforms.
 
-glib-2.10.2.diff: a patch against Glib 2.10.2 sources needed to build
+glib-2.10.3.diff: a patch against Glib 2.10.3 sources needed to build
 Glib.
 
-glib-2.10.2-win32.diff: a patch against Glib 2.10.2 sources needed to build
+glib-2.10.3-win32.diff: a patch against Glib 2.10.3 sources needed to build
 Glib under Windows.
 
-pango-1.12.2-win32.diff: a patch against pango 1.12.2 sources needed to build
+pango-1.12.3-win32.diff: a patch against pango 1.12.3 sources needed to build
 pango under Windows.
 
-gtk+-2.8.17.diff: a patch against Gtk+ 2.8.17 sources containing some
+gtk+-2.8.18.diff: a patch against Gtk+ 2.8.18 sources containing some
 improvements/fixes not submitted yet.
 
-gtk+-2.8.17-win32.diff: a patch against Gtk+ 2.8.17 sources needed to build
+gtk+-2.8.18-win32.diff: a patch against Gtk+ 2.8.18 sources needed to build
 Gtk+ under Windows.
 
 gtkada-2.8-win32.diff: a patch to build GtkAda 2.8.x under Windows
