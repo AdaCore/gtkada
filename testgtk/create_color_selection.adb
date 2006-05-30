@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2000-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,18 +28,20 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk;                         use Gdk;
+with Gdk.Color;                   use Gdk.Color;
 with Gtk;                         use Gtk;
 with Glib;                        use Glib;
 with Gtk.Color_Selection;         use Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;  use Gtk.Color_Selection_Dialog;
 with Gtk.Enums;
 with Gtk.Handlers;
+with Gtk.Settings;                use Gtk.Settings;
 with Common;                      use Common;
-with Ada.Text_IO;
+with Ada.Text_IO;                 use Ada.Text_IO;
 with Gtk.Widget;                  use Gtk.Widget;
 
 package body Create_Color_Selection is
-
 
    type Gtk_Color_Dialog_Access is access all Gtk_Color_Selection_Dialog;
    package Destroy_Dialog_Cb is new Handlers.User_Callback
@@ -48,6 +51,15 @@ package body Create_Color_Selection is
 
    package Color_Sel_Cb is new Handlers.Callback
      (Gtk_Color_Selection_Dialog_Record);
+
+   procedure Destroy_Dialog
+     (Win : access Gtk_Color_Selection_Dialog_Record'Class;
+      Ptr : Gtk_Color_Dialog_Access);
+   --  Called when the dialog is destroyed
+
+   procedure On_Palette_Changed
+     (Screen : Gdk.Gdk_Screen; Colors : Gdk.Color.Gdk_Color_Array);
+   --  Called when the palette is changed
 
    ----------
    -- Help --
@@ -67,7 +79,8 @@ package body Create_Color_Selection is
 
    procedure Destroy_Dialog
      (Win : access Gtk_Color_Selection_Dialog_Record'Class;
-      Ptr : in Gtk_Color_Dialog_Access) is
+      Ptr : in Gtk_Color_Dialog_Access)
+   is
       pragma Warnings (Off, Win);
    begin
       Ptr.all := null;
@@ -82,6 +95,26 @@ package body Create_Color_Selection is
       Destroy (Win);
    end Close_Window;
 
+   ------------------------
+   -- On_Palette_Changed --
+   ------------------------
+
+   procedure On_Palette_Changed
+     (Screen : Gdk.Gdk_Screen; Colors : Gdk.Color.Gdk_Color_Array)
+   is
+      pragma Unreferenced (Screen);
+      Str : constant String := Palette_To_String (Colors);
+   begin
+      Put_Line ("Palette has changed: ");
+      Put_Line ("Palette=" & Str);
+
+      Set_String_Property
+        (Get_Default,
+         Gtk_Color_Palette,
+         Palette_To_String (Colors),
+         "On_Palette_Changed");
+   end On_Palette_Changed;
+
    --------------
    -- Color_Ok --
    --------------
@@ -89,15 +122,16 @@ package body Create_Color_Selection is
    procedure Color_Ok
      (Dialog : access Gtk_Color_Selection_Dialog_Record'Class)
    is
-      Color : Color_Array;
+      Color : Gdk_Color;
    begin
-      Get_Color (Get_Colorsel (Dialog), Color);
-      for I in Red .. Opacity loop
-         Ada.Text_IO.Put_Line (Color_Index'Image (I)
-                               & " => "
-                               & Gdouble'Image (Color (I)));
-      end loop;
-      Set_Color (Get_Colorsel (Dialog), Color);
+      Get_Current_Color (Get_Colorsel (Dialog), Color);
+
+      Put_Line ("Selected color is: ");
+      Put ("Red=" & Guint16'Image (Red (Color)));
+      Put (" Green=" & Guint16'Image (Green (Color)));
+      Put (" Blue=" & Guint16'Image (Blue (Color)));
+      Put (" Alpha="
+           & Guint16'Image (Get_Current_Alpha (Get_Colorsel (Dialog))));
    end Color_Ok;
 
    ---------
@@ -106,10 +140,16 @@ package body Create_Color_Selection is
 
    procedure Run (Frame : access Gtk_Frame_Record'Class) is
       pragma Warnings (Off, Frame);
+      Old : Gtk_Color_Selection_Change_Palette_With_Screen_Func;
    begin
       if Dialog = null then
          Gtk_New (Dialog, Title => "Color Selection Dialog");
          Set_Position (Dialog, Enums.Win_Pos_Mouse);
+
+         Set_Has_Palette (Get_Colorsel (Dialog), True);
+         Set_Has_Opacity_Control (Get_Colorsel (Dialog), True);
+         Old :=
+           Set_Change_Palette_With_Screen_Hook (On_Palette_Changed'Access);
 
          Destroy_Dialog_Cb.Connect
            (Dialog, "destroy",
