@@ -64,7 +64,7 @@ with Gtkada.Types;         use Gtkada.Types;
 
 package Gtk.Ctree is
    pragma Elaborate_Body;
-   pragma Obsolescent;
+   --  pragma Obsolescent;  pragma location not supported by GNAT 5.04
 
    pragma Warnings (Off); --  Gtk.Clist is obsolescent;
    type Gtk_Ctree_Record is new Gtk.Clist.Gtk_Clist_Record with private;
