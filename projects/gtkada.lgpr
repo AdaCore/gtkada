@@ -323,6 +323,8 @@ gtk-separator_menu_item.adb
 gtk-separator_menu_item.ads
 gtk-separator_tool_item.adb
 gtk-separator_tool_item.ads
+gtk-settings.adb
+gtk-settings.ads
 gtk-size_group.adb
 gtk-size_group.ads
 gtk-socket.adb
