@@ -84,17 +84,20 @@ convert_ui (guint s)
  ********************************************************************/
 
 guint
-ada_gtk_major_version () {
+ada_gtk_major_version ()
+{
   return GTK_MAJOR_VERSION;
 }
 
 guint
-ada_gtk_minor_version () {
+ada_gtk_minor_version ()
+{
   return GTK_MINOR_VERSION;
 }
 
 guint
-ada_gtk_micro_version () {
+ada_gtk_micro_version ()
+{
   return GTK_MICRO_VERSION;
 }
 
@@ -4234,47 +4237,18 @@ ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id)
     (GTK_TREE_SORTABLE (tree), id, tree->order);
 }
 
-/*****************************************
- ** Event boxes                         **
- *****************************************/
-
-
-#if (!GTK_CHECK_VERSION (2, 4, 0))
-void
-gtk_event_box_set_visible_window (GtkEventBox *event_box,
-                                  gboolean     visible_window)
-{
-}
-
-gboolean
-gtk_event_box_get_visible_window (GtkEventBox *event_box)
-{
-   return 1;
-}
-
-void
-gtk_event_box_set_above_child (GtkEventBox *event_box,
-                               gboolean     above_child)
-{
-}
-
-gboolean
-gtk_event_box_get_above_child (GtkEventBox *event_box)
-{
-  return 0;
-}
-#endif
-
 /*****************************************************
  ** Glib
 *****************************************************/
 
-struct CustomGSource {
+struct CustomGSource
+{
   GSource source;
   gpointer user_data;
 };
 
-GSourceFuncs* ada_allocate_g_source_funcs
+GSourceFuncs*
+ada_allocate_g_source_funcs
   (gpointer prepare, gpointer check, gpointer dispatch, gpointer finalize)
 {
   GSourceFuncs* result;
@@ -4287,14 +4261,18 @@ GSourceFuncs* ada_allocate_g_source_funcs
   return result;
 }
 
-GSource* ada_g_source_new (GSourceFuncs* type, gpointer user_data) {
+GSource*
+ada_g_source_new (GSourceFuncs* type, gpointer user_data)
+{
   struct CustomGSource* result =
     (struct CustomGSource*)g_source_new (type, sizeof (struct CustomGSource));
   result->user_data = user_data;
   return (GSource*)result;
 }
 
-gpointer ada_g_source_get_user_data (GSource* source) {
+gpointer
+ada_g_source_get_user_data (GSource* source)
+{
   return ((struct CustomGSource*)source)->user_data;
 }
 
@@ -4302,7 +4280,9 @@ gpointer ada_g_source_get_user_data (GSource* source) {
  ** Gtk_Selection
 ********************************************************/
 
-int ada_string_array_length (gchar** uris) {
+int
+ada_string_array_length (gchar** uris)
+{
   int count = 0;
   gchar** tmp = uris;
   while (*tmp) {
@@ -4312,6 +4292,8 @@ int ada_string_array_length (gchar** uris) {
   return count;
 }
 
-gchar* ada_string_array_get (gchar** uris, int index) {
+gchar*
+ada_string_array_get (gchar** uris, int index)
+{
   return uris[index];
 }
