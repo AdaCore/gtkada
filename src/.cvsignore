@@ -8,3 +8,4 @@ gtkada-config
 gtkada-intl.adb
 gtkada.gpr
 libgtkada*.so*
+config.h
