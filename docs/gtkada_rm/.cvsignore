@@ -1,4 +1,5 @@
 Makefile
+gtkada_rm
 *.html
 *.info*
 *.txt
