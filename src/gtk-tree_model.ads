@@ -237,7 +237,7 @@ package Gtk.Tree_Model is
 
    procedure Iter_Copy (Source : Gtk_Tree_Iter; Dest : out Gtk_Tree_Iter);
    --  Create a copy of Source.
-   --  You can copy tree iters simply by using the usual "=" operator.
+   --  You can also copy tree iters simply by using the ":=" Ada construct.
 
    procedure Set_Tree_Iter
      (Val  : in out Glib.Values.GValue;
