@@ -2774,6 +2774,192 @@ ada_text_attributes_set_font (GtkTextAttributes* text_attr,
   text_attr->font = pango_font_description_copy (font);
 }
 
+GtkJustification
+ada_text_attribute_get_justification (GtkTextAttributes* text_attr) {
+  return text_attr->justification;
+}
+void ada_text_attribute_set_justification
+  (GtkTextAttributes* attr, GtkJustification justification) {
+  attr->justification = justification;
+}
+
+GtkTextDirection
+ada_text_attribute_get_direction (GtkTextAttributes* text_attr) {
+  return text_attr->direction;
+}
+void ada_text_attribute_set_direction
+  (GtkTextAttributes* attr, GtkTextDirection direction) {
+  attr->direction = direction;
+}
+
+gdouble
+ada_text_attribute_get_font_scale (GtkTextAttributes* text_attr) {
+  return text_attr->font_scale;
+}
+void ada_text_attribute_set_font_scale
+  (GtkTextAttributes* attr, gdouble scale) {
+  attr->font_scale = scale;
+}
+
+gint
+ada_text_attribute_get_left_margin (GtkTextAttributes* text_attr) {
+  return text_attr->left_margin;
+}
+void ada_text_attribute_set_left_margin
+  (GtkTextAttributes* attr, gint margin) {
+  attr->left_margin = margin;
+}
+
+gint
+ada_text_attribute_get_right_margin (GtkTextAttributes* text_attr) {
+  return text_attr->right_margin;
+}
+void ada_text_attribute_set_right_margin
+  (GtkTextAttributes* attr, gint margin) {
+  attr->right_margin = margin;
+}
+
+gint
+ada_text_attribute_get_indent (GtkTextAttributes* text_attr) {
+  return text_attr->indent;
+}
+void ada_text_attribute_set_indent
+  (GtkTextAttributes* attr, gint indent) {
+  attr->indent = indent;
+}
+
+gint
+ada_text_attribute_get_pixels_above_line (GtkTextAttributes* text_attr) {
+  return text_attr->pixels_above_lines;
+}
+void ada_text_attribute_set_pixels_above_line
+  (GtkTextAttributes* attr, gint above) {
+  attr->pixels_above_lines = above;
+}
+
+gint
+ada_text_attribute_get_pixels_below_line (GtkTextAttributes* text_attr) {
+  return text_attr->pixels_below_lines;
+}
+void ada_text_attribute_set_pixels_below_line
+  (GtkTextAttributes* attr, gint below) {
+  attr->pixels_below_lines = below;
+}
+
+gint
+ada_text_attribute_get_pixels_inside_wrap (GtkTextAttributes* text_attr) {
+  return text_attr->pixels_inside_wrap;
+}
+void ada_text_attribute_set_pixels_inside_wrap
+  (GtkTextAttributes* attr, gint inside) {
+  attr->pixels_inside_wrap = inside;
+}
+
+GtkWrapMode
+ada_text_attribute_get_wrap_mode (GtkTextAttributes* text_attr) {
+  return text_attr->wrap_mode;
+}
+void ada_text_attribute_set_wrap_mode
+  (GtkTextAttributes* attr, GtkWrapMode mode) {
+  attr->wrap_mode = mode;
+}
+
+guint
+ada_text_attribute_get_invisible (GtkTextAttributes* text_attr) {
+  return text_attr->invisible;
+}
+void ada_text_attribute_set_invisible
+  (GtkTextAttributes* attr, guint invisible) {
+  attr->invisible = invisible;
+}
+
+guint
+ada_text_attribute_get_bg_full_height (GtkTextAttributes* text_attr) {
+  return text_attr->bg_full_height;
+}
+void ada_text_attribute_set_bg_full_height
+  (GtkTextAttributes* attr, guint full) {
+  attr->bg_full_height = full;
+}
+
+guint
+ada_text_attribute_get_editable (GtkTextAttributes* text_attr) {
+  return text_attr->editable;
+}
+void ada_text_attribute_set_editable
+  (GtkTextAttributes* attr, guint editable) {
+  attr->editable = editable;
+}
+
+PangoTabArray*
+ada_text_attribute_get_tabs (GtkTextAttributes* text_attr) {
+  return text_attr->tabs;
+}
+void ada_text_attribute_set_tabs
+  (GtkTextAttributes* attr, PangoTabArray* tabs) {
+  attr->tabs = tabs;
+}
+
+gint
+ada_text_appearance_get_rise (GtkTextAppearance* app) {
+  return app->rise;
+}
+void ada_text_appearance_set_rise (GtkTextAppearance* app, gint rise) {
+  app->rise = rise;
+}
+
+guint
+ada_text_appearance_get_underline (GtkTextAppearance* app) {
+  return app->underline;
+}
+void ada_text_appearance_set_underline (GtkTextAppearance* app, guint under) {
+  app->underline = under;
+}
+
+guint
+ada_text_appearance_get_strikethrough (GtkTextAppearance* app) {
+  return app->strikethrough;
+}
+void ada_text_appearance_set_strikethrough (GtkTextAppearance* app, guint s) {
+  app->strikethrough = s;
+}
+
+GdkColor
+ada_text_appearance_get_fg_color (GtkTextAppearance* app) {
+  return app->fg_color;
+}
+void ada_text_appearance_set_fg_color
+  (GtkTextAppearance* app, GdkColor color) {
+  app->fg_color = color;
+}
+
+GdkColor
+ada_text_appearance_get_bg_color (GtkTextAppearance* app) {
+  return app->bg_color;
+}
+void ada_text_appearance_set_bg_color
+  (GtkTextAppearance* app, GdkColor color) {
+  app->bg_color = color;
+}
+
+GdkBitmap*
+ada_text_appearance_get_fg_stipple (GtkTextAppearance* app) {
+  return app->fg_stipple;
+}
+void ada_text_appearance_set_fg_stipple
+  (GtkTextAppearance* app, GdkBitmap* bitmap) {
+  app->fg_stipple = bitmap;
+}
+
+GdkBitmap*
+ada_text_appearance_get_bg_stipple (GtkTextAppearance* app) {
+  return app->bg_stipple;
+}
+void ada_text_appearance_set_bg_stipple
+  (GtkTextAppearance* app, GdkBitmap* bitmap) {
+  app->bg_stipple = bitmap;
+}
+
 /******************************************
  ** Functions for Text_Iter
  ******************************************/

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,9 +27,15 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  The Gtk_Text_Mark data type.
+--  Marks are positions in a buffer which move when the buffer is modified,
+--  so that they always point to the same place in the buffer.
+--  They are automatically destroyed when the buffer is destroyed, unless
+--  you have explicitly call Ref on the mark.
+--  See Gtk.Text_Buffer for various functions dealing with marks. In
+--  particular, Gtk.Text_Buffer.Get_Buffer can be used to retrieve the
+--  buffer from a mark.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Glib.Values;
 
@@ -37,13 +43,6 @@ package Gtk.Text_Mark is
 
    type Gtk_Text_Mark_Record is new GObject_Record with private;
    type Gtk_Text_Mark is access all Gtk_Text_Mark_Record'Class;
-   --  Marks are positions in a buffer which move when the buffer is modified,
-   --  so that they always point to the same place in the buffer.
-   --  They are automatically destroyed when the buffer is destroyed, unless
-   --  you have explicitly call Ref on the mark.
-   --  See Gtk.Text_Buffer for various functions dealing with marks. In
-   --  particular, Gtk.Text_Buffer.Get_Buffer can be used to retrieve the
-   --  buffer from a mark.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Label.
@@ -51,17 +50,14 @@ package Gtk.Text_Mark is
    procedure Set_Visible
      (Mark    : access Gtk_Text_Mark_Record;
       Setting : Boolean := True);
+   function Get_Visible
+     (Mark : access Gtk_Text_Mark_Record) return Boolean;
    --  Set the visibility of Mark.
    --  The insertion point is normally visible, i.e. you can see it as a
    --  vertical bar. Also, the text widget uses a visible mark to indicate
    --  where a drop will occur when dragging-and-dropping text. Most other
    --  marks are not visible.
    --  Marks are not visible by default.
-
-   function Get_Visible
-     (Mark : access Gtk_Text_Mark_Record) return Boolean;
-   --  Return True if the mark is visible.
-   --  i.e. a cursor is displayed for it.
 
    function Get_Name (Mark : access Gtk_Text_Mark_Record) return String;
    --  Return the mark name; Return "" for anonymous marks.
@@ -81,10 +77,8 @@ package Gtk.Text_Mark is
    procedure Set_Text_Mark
      (Val  : in out Glib.Values.GValue;
       Mark : access Gtk_Text_Mark_Record);
-   --  Set the value of the given GValue to Mark.
-
    function Get_Text_Mark (Val : Glib.Values.GValue) return Gtk_Text_Mark;
-   --  Extract the iterator from the given GValue.
+   --  Set the value of the given GValue to Mark.
 
    ----------------
    -- Properties --
@@ -101,5 +95,8 @@ private
    type Gtk_Text_Mark_Record is new GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_text_mark_get_type");
-
 end Gtk.Text_Mark;
+
+--  The following subprogram is implemented in gtk-text_buffer.ads for
+--  circularity reasons:
+--  No binding: gtk_text_mark_get_buffer

@@ -67,31 +67,6 @@ package body Gtk.Text_Tag is
       end if;
    end Initialize;
 
-   -----------
-   -- Event --
-   -----------
-
-   --  function Event
-   --    (Tag          : access Gtk_Text_Tag_Record;
-   --     Event_Object : access Gtk.Object.Gtk_Object_Record'Class;
-   --     Event        : Gdk.Event.Gdk_Event;
-   --     Iter         : access Gtk.Text_Iter.Gtk_Text_Iter_Record'Class)
-   --     return Gint
-   --  is
-   --     function Internal
-   --       (Tag          : System.Address;
-   --        Event_Object : System.Address;
-   --        Event        : GdkEvent;
-   --        Iter         : System.Address)
-   --        return Gint;
-   --     pragma Import (C, Internal, "gtk_text_tag_event");
-   --  begin
-   --     return Internal (Get_Object (Tag),
-   --                      Get_Object (Event_Object),
-   --                      Event,
-   --                      Get_Object (Iter));
-   --  end Event;
-
    ------------------
    -- Get_Priority --
    ------------------

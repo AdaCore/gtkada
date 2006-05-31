@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                    Copyright (C) 2001 - 2005                      --
---                         AdaCore                                   --
+--                    Copyright (C) 2001 - 2006 AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,9 +26,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;           use Gtk.Enums;
+with Gtk.Text_Attributes; use Gtk.Text_Attributes;
+with Pango.Tabs;          use Pango.Tabs;
 with System;
-with Pango.Tabs; use Pango.Tabs;
 
 package body Gtk.Text_View is
 
@@ -297,6 +297,28 @@ package body Gtk.Text_View is
    begin
       Internal (Get_Object (Text_View), Iter'Address, X, Y);
    end Get_Iter_At_Location;
+
+   --------------------------
+   -- Get_Iter_At_Position --
+   --------------------------
+
+   procedure Get_Iter_At_Position
+     (Text_View : access Gtk_Text_View_Record;
+      Iter      : out Gtk.Text_Iter.Gtk_Text_Iter;
+      Trailing  : out Gint;
+      X         : Gint;
+      Y         : Gint)
+   is
+      procedure Internal
+        (Text_View : System.Address;
+         Iter      : System.Address;
+         Trailing  : out Gint;
+         X         : Gint;
+         Y         : Gint);
+      pragma Import (C, Internal, "gtk_text_view_get_iter_at_position");
+   begin
+      Internal (Get_Object (Text_View), Iter'Address, Trailing, X, Y);
+   end Get_Iter_At_Position;
 
    ---------------------
    -- Get_Line_Yrange --
@@ -737,7 +759,6 @@ package body Gtk.Text_View is
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_pixels_above_lines");
-
    begin
       return Internal (Get_Object (Text_View));
    end Get_Pixels_Above_Lines;
@@ -753,7 +774,6 @@ package body Gtk.Text_View is
       procedure Internal
         (Text_View : System.Address; Pixels_Below_Lines : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_pixels_below_lines");
-
    begin
       Internal (Get_Object (Text_View), Pixels_Below_Lines);
    end Set_Pixels_Below_Lines;
@@ -945,5 +965,102 @@ package body Gtk.Text_View is
    begin
       return Internal (Get_Object (Text_View));
    end Get_Tabs;
+
+   -------------------
+   -- Set_Overwrite --
+   -------------------
+
+   procedure Set_Overwrite
+     (Text_View : access Gtk_Text_View_Record;
+      Overwrite : Boolean)
+   is
+      procedure Internal
+        (Text_View : System.Address;
+         Overwrite : Gboolean);
+      pragma Import (C, Internal, "gtk_text_view_set_overwrite");
+   begin
+      Internal (Get_Object (Text_View), Boolean'Pos (Overwrite));
+   end Set_Overwrite;
+
+   -------------------
+   -- Get_Overwrite --
+   -------------------
+
+   function Get_Overwrite
+     (Text_View : access Gtk_Text_View_Record)
+      return Boolean
+   is
+      function Internal
+        (Text_View : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_text_view_get_overwrite");
+   begin
+      return Boolean'Val (Internal (Get_Object (Text_View)));
+   end Get_Overwrite;
+
+   ---------------------
+   -- Get_Accepts_Tab --
+   ---------------------
+
+   function Get_Accepts_Tab
+     (Text_View : access Gtk_Text_View_Record)
+      return Boolean
+   is
+      function Internal
+        (Text_View : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_text_view_get_accepts_tab");
+   begin
+      return Boolean'Val (Internal (Get_Object (Text_View)));
+   end Get_Accepts_Tab;
+
+   ---------------------
+   -- Set_Accepts_Tab --
+   ---------------------
+
+   procedure Set_Accepts_Tab
+     (Text_View   : access Gtk_Text_View_Record;
+      Accepts_Tab : Boolean)
+   is
+      procedure Internal
+        (Text_View   : System.Address;
+         Accepts_Tab : Gboolean);
+      pragma Import (C, Internal, "gtk_text_view_set_accepts_tab");
+   begin
+      Internal (Get_Object (Text_View), Boolean'Pos (Accepts_Tab));
+   end Set_Accepts_Tab;
+
+   ----------------------------
+   -- Get_Border_Window_Size --
+   ----------------------------
+
+   function Get_Border_Window_Size
+     (Text_View : access Gtk_Text_View_Record;
+      The_Type  : Gtk.Enums.Gtk_Text_Window_Type)
+      return Gint
+   is
+      function Internal
+        (Text_View : System.Address;
+         The_Type  : Gtk.Enums.Gtk_Text_Window_Type)
+         return Gint;
+      pragma Import (C, Internal, "gtk_text_view_get_border_window_size");
+   begin
+      return Internal (Get_Object (Text_View), The_Type);
+   end Get_Border_Window_Size;
+
+   ----------------------------
+   -- Get_Default_Attributes --
+   ----------------------------
+
+   function Get_Default_Attributes
+     (Text_View : access Gtk_Text_View_Record)
+      return Gtk_Text_Attributes
+   is
+      function Internal
+        (Text_View : System.Address)  return Gtk_Text_Attributes;
+      pragma Import (C, Internal, "gtk_text_view_get_default_attributes");
+   begin
+      return Internal (Get_Object (Text_View));
+   end Get_Default_Attributes;
 
 end Gtk.Text_View;

@@ -1,9 +1,8 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
---                                                                   --
+--                     Copyright (C) 2001-2006 AdaCore               --
+
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
 -- License as published by the Free Software Foundation; either      --
@@ -55,14 +54,12 @@ package body Gtk.Text_Child is
      (Anchor : access Gtk_Text_Child_Anchor_Record)
       return Gtk.Widget.Widget_List.Glist
    is
+      use Gtk.Widget.Widget_List;
       function Internal (Anchor : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_text_child_anchor_get_deleted");
-
+      pragma Import (C, Internal, "gtk_text_child_anchor_get_widgets");
       List : Gtk.Widget.Widget_List.Glist;
-
    begin
-      Gtk.Widget.Widget_List.Set_Object
-        (List, Internal (Get_Object (Anchor)));
+      Set_Object (List, Internal (Get_Object (Anchor)));
       return List;
    end Get_Widgets;
 

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2005 AdaCore                    --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +30,7 @@
 --  A table is a collection of tags where you can Add, Remove, Lookup
 --  or traverse (Foreach) a tag.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gtk.Text_Tag;
 
@@ -129,9 +129,12 @@ package Gtk.Text_Tag_Table is
    --
    --  </signals>
 
+   Signal_Tag_Added   : constant String := "tag_added";
+   Signal_Tag_Changed : constant String := "tag_changed";
+   Signal_Tag_Removed : constant String := "tag_removed";
+
 private
    type Gtk_Text_Tag_Table_Record is new GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_text_tag_table_get_type");
-
 end Gtk.Text_Tag_Table;
