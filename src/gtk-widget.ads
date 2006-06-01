@@ -2082,6 +2082,7 @@ end Gtk.Widget;
 
 --  Binding is in Gtk.RC
 --  No binding: gtk_widget_modify_style
+--  No binding: gtk_widget_get_modifier_style
 
 --  Binding is in Gtk.Setting
 --  No binding: gtk_widget_get_settings
