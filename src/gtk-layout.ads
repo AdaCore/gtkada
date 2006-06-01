@@ -152,11 +152,11 @@ package Gtk.Layout is
    --  <doc_ignore>
 
    function Get_Width (Layout : access Gtk_Layout_Record) return Guint;
-   pragma Obsolescent;  --  Get_Width
+   pragma Obsolescent;
    --  Deprecated, only provided for compatibility, see Get_Size
 
    function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
-   --  pragma Obsolescent;  --  Get_Height
+   --  pragma Obsolescent;
    --  Deprecated, only provided for compatibility, see Get_Size
 
    procedure Freeze (Layout : access Gtk_Layout_Record);

@@ -115,11 +115,11 @@ package Gtk.Menu_Item is
    procedure Set_Right_Justify
      (Menu_Item : access Gtk_Menu_Item_Record;
       Justify   : Boolean) renames Set_Right_Justified;
-   --  pragma Obsolescent;  --  Set_Right_Justify
+   --  pragma Obsolescent;
    --  This procedure is needed by Gate to automate the code generation.
 
    procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record);
-   pragma Obsolescent;  --  Right_Justify
+   pragma Obsolescent;
    --  Use Set_Right_Justified with Justify = True instead.
 
    --  </doc_ignore>

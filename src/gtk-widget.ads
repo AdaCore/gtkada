@@ -1470,6 +1470,10 @@ package Gtk.Widget is
    --  are generally modified by the current gtk+ theme, although users can
    --  also modify them in their own configuration file.
 
+   function Class_List_Style_Properties
+     (Klass : Glib.Object.GObject_Class) return Glib.Param_Spec_Array;
+   --  Returns all style properties of a widget class.
+
    function Class_Find_Style_Property
      (Klass         : Glib.Object.GObject_Class;
       Property_Name : String) return Glib.Param_Spec;

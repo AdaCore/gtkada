@@ -104,6 +104,7 @@ package body Gtk.Editable is
 
       procedure G_Free (Mem : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, G_Free, "g_free");
+      --  External binding: g_free
 
       use type Interfaces.C.Strings.chars_ptr;
 

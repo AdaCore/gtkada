@@ -539,4 +539,11 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Tree_View_Mode);
    --  </doc_ignore>
 
+   --  These comments are for the sake of our automatic tool to check whether
+   --  the bindings are up-to-date. They indicate that the functions are part
+   --  of GtkAda itself, no gtk+
+   --  External binding: convert_ui
+   --  External binding: convert_ua
+   --  External binding: convert_i
+   --  External binding: convert_a
 end Gtk.Enums;

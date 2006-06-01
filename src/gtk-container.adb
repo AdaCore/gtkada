@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Ada.Unchecked_Conversion;
 with System;         use System;
 with Glib.Values;    use Glib.Values;
 with Gtk.Adjustment; use Gtk.Adjustment;
@@ -590,5 +591,45 @@ package body Gtk.Container is
                 Property_Name & ASCII.NUL, Value);
    end Child_Set_Property;
 
+   ---------------------------------
+   -- Class_List_Child_Properties --
+   ---------------------------------
+
+   function Class_List_Child_Properties
+     (Cclass       : GObject_Class) return Param_Spec_Array
+   is
+      function Internal
+        (Cclass       : GObject_Class;
+         N_Properties : access Guint) return System.Address;
+      pragma Import (C, Internal, "gtk_container_class_list_child_properties");
+
+      type Big_Pspec_Array is array (Natural) of Param_Spec;
+      pragma Convention (C, Big_Pspec_Array);
+      type Big_Pspec_Array_Access is access Big_Pspec_Array;
+
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Big_Pspec_Array_Access);
+
+      Num     : aliased Guint;
+      C_Array : constant System.Address := Internal (Cclass, Num'Access);
+   begin
+      --  Implementation is the same as
+      --  Gtk.Widget.Class_List_Style_Properties
+
+      if C_Array = System.Null_Address then
+         return (1 .. 0 => null);
+      else
+         declare
+            Result : Param_Spec_Array (1 .. Natural (Num));
+            C_Ptr  : constant Big_Pspec_Array_Access := Convert (C_Array);
+         begin
+            for R in Result'Range loop
+               Result (R) := C_Ptr (R - 1);
+            end loop;
+            return Result;
+         end;
+
+      end if;
+   end Class_List_Child_Properties;
 
 end Gtk.Container;

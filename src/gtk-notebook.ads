@@ -483,11 +483,11 @@ package Gtk.Notebook is
    Page_Property         : constant Glib.Properties.Property_Int;
    Tab_Pos_Property      : constant Gtk.Enums.Property_Gtk_Position_Type;
    Tab_Border_Property   : constant Glib.Properties.Property_Uint;
-   Tab_HBorder_Property  : constant Glib.Properties.Property_Uint;
-   Tab_VBorder_Property  : constant Glib.Properties.Property_Uint;
+   Tab_Hborder_Property  : constant Glib.Properties.Property_Uint;
+   Tab_Vborder_Property  : constant Glib.Properties.Property_Uint;
    Show_Tabs_Property    : constant Glib.Properties.Property_Boolean;
    Show_Border_Property  : constant Glib.Properties.Property_Boolean;
-   Scrollbar_Property    : constant Glib.Properties.Property_Boolean;
+   Scrollable_Property   : constant Glib.Properties.Property_Boolean;
    Enable_Popup_Property : constant Glib.Properties.Property_Boolean;
    Homogeneous_Property  : constant Glib.Properties.Property_Boolean;
 
@@ -559,15 +559,15 @@ private
      Gtk.Enums.Build ("tab-pos");
    Tab_Border_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("tab-border");
-   Tab_HBorder_Property : constant Glib.Properties.Property_Uint :=
+   Tab_Hborder_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("tab-hborder");
-   Tab_VBorder_Property : constant Glib.Properties.Property_Uint :=
+   Tab_Vborder_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("tab-vborder");
    Show_Tabs_Property   : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-tabs");
    Show_Border_Property   : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-border");
-   Scrollbar_Property   : constant Glib.Properties.Property_Boolean :=
+   Scrollable_Property   : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("scrollable");
    Enable_Popup_Property   : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("enable-popup");

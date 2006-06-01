@@ -174,22 +174,22 @@ package Gtk.Paned is
    --  <doc_ignore>
 
    procedure Set_Handle_Size (Paned : access Gtk_Paned_Record; Size : Guint16);
-   pragma Obsolescent;  --  Set_Handle_Size
+   pragma Obsolescent;
    --  Do nothing.
    --  Only provided for compatibility.
 
    function Get_Handle_Size (Paned : access Gtk_Paned_Record) return Guint16;
-   pragma Obsolescent;  --  Get_Handle_Size
+   pragma Obsolescent;
    --  Return 0.
    --  Only provided for compatibility.
 
    procedure Set_Gutter_Size (Paned : access Gtk_Paned_Record; Size : Guint16);
-   pragma Obsolescent;  --  Set_Gutter_Size
+   pragma Obsolescent;
    --  Do nothing.
    --  Only provided for compatibility.
 
    function Get_Gutter_Size (Paned : access Gtk_Paned_Record) return Guint16;
-   pragma Obsolescent;  --  Get_Gutter_Size
+   pragma Obsolescent;
    --  Return 0.
    --  Only provided for compatibility.
 

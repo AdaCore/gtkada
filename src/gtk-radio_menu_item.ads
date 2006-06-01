@@ -127,7 +127,7 @@ package Gtk.Radio_Menu_Item is
    function Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
       return Widget_SList.GSlist renames Get_Group;
-   --  pragma Obsolescent;  --  Group
+   --  pragma Obsolescent;
    --  This function is deprecated. Get_Group should be used instead.
 
    --  </doc_ignore>

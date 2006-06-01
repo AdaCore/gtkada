@@ -405,7 +405,7 @@ package Gtk.Main is
          Priority : in Idle_Priority := Priority_Default_Idle;
          Destroy  : in Destroy_Callback := null)
          return Idle_Handler_Id;
-      pragma Obsolescent ("Use Glib.Main.Idle"); --  Add
+      pragma Obsolescent ("Use Glib.Main.Idle");
 
    private
       procedure Free_Data (D : System.Address);
@@ -450,7 +450,7 @@ package Gtk.Main is
          Func     : Callback;
          D        : Data_Type;
          Destroy  : in Destroy_Callback := null) return Timeout_Handler_Id;
-      pragma Obsolescent ("Use Glib.Main.Timeout"); --  Add
+      pragma Obsolescent ("Use Glib.Main.Timeout");
       --  Adds a new timeout. Func will be called after Interval milliseconds.
 
    private

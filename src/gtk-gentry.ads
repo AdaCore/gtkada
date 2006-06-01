@@ -200,13 +200,13 @@ package Gtk.GEntry is
    --  <doc_ignore>
 
    procedure Gtk_New (Widget : out Gtk_Entry; Max : Gint);
-   pragma Obsolescent;  --  New
+   pragma Obsolescent;  --  New_With_Max_Length
    --  Create a new entry with a maximum length for the text.
    --  The text can never be longer than Max characters.
 
    procedure Initialize
      (Widget : access Gtk_Entry_Record'Class; Max : Gint);
-   pragma Obsolescent;  --  Initialize
+   pragma Obsolescent;
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -226,7 +226,7 @@ package Gtk.GEntry is
 
    function Get_Chars (The_Entry : access Gtk_Entry_Record) return UTF8_String
                        renames Get_Text;
-   --  pragma Obsolescent;  --  Get_Chars
+   --  pragma Obsolescent;
    --  Convenience function provided for compatibility with GtkAda 1.2
 
    --  </doc_ignore>

@@ -40,6 +40,7 @@ with Gtk.Object;
 with Gtkada.Types;
 
 package Gtk.Item_Factory is
+   pragma Obsolescent;
 
    type Gtk_Item_Factory_Record is new Object.Gtk_Object_Record with private;
    type Gtk_Item_Factory is access all Gtk_Item_Factory_Record'Class;

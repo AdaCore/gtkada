@@ -144,6 +144,10 @@ package Gtk.Toolbar is
    --  have room for all items on it. If True, the items that have no room are
    --  still available to the user.
 
+   function Get_Icon_Size
+     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Icon_Size;
+   --  Returns the icon size used in this toolbar
+
    ----------
    -- Misc --
    ----------
@@ -304,11 +308,6 @@ package Gtk.Toolbar is
    pragma Obsolescent  --  Set_Icon_Size
      ("Applications should respect user preferences (gtk+ themes)");
 
-   function Get_Icon_Size
-     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Icon_Size;
-   pragma Obsolescent  --  Get_Icon_Size
-     ("Applications should respect user preferences (gtk+ themes)");
-
    procedure Unset_Icon_Size (Toolbar : access Gtk_Toolbar_Record);
    pragma Obsolescent;  --  Unset_Icon_Size
    --  Unsets icon sizes set through Set_Icon_Size, so that user preferences
@@ -347,11 +346,23 @@ package Gtk.Toolbar is
    --    by the Button parameter (set to -1 if popped up with the keyboard).
    --    Return value is True if the signal was handled.
    --
+   --  - "move_focus"
+   --    This signal can't be used in application code, it is internal to GTK
+   --
+   --  - "focus_home_or_end"
+   --    function Handler
+   --       (Toolbar    : access Gtk_Toolbar_Record'Class;
+   --        Focus_Home : Boolean) return Boolean;
+   --    A keybinding signal used internally by GTK+. This signal can't be used
+   --    in application code
+   --
    --  </signals>
 
    Signal_Orientation_Changed : constant String := "orientation-changed";
    Signal_Style_Changed       : constant String := "style-changed";
    Signal_Popup_Context_Menu  : constant String := "popup_context_menu";
+   Signal_Focus_Home_Or_End   : constant String := "focus_home_or_end";
+   Signal_Move_Focus          : constant String := "move_focus";
 
    ----------------
    -- Properties --
@@ -382,6 +393,7 @@ package Gtk.Toolbar is
    Orientation_Property   : constant Gtk.Enums.Property_Gtk_Orientation;
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
    Show_Arrow_Property    : constant Glib.Properties.Property_Boolean;
+   Tooltips_Property      : constant Glib.Properties.Property_Boolean;
 
 private
    type Gtk_Toolbar_Record is
@@ -393,6 +405,8 @@ private
      Gtk.Enums.Build ("toolbar-style");
    Show_Arrow_Property    : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-arrow");
+   Tooltips_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("tooltips");
 
    pragma Import (C, Get_Type, "gtk_toolbar_get_type");
 end Gtk.Toolbar;

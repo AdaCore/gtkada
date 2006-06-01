@@ -207,6 +207,10 @@ package Gtk.Container is
    --  be used in signals that set or get the property, instead of passing
    --  around a string.
 
+   function Class_List_Child_Properties
+     (Cclass : Glib.Object.GObject_Class) return Glib.Param_Spec_Array;
+   --  Returns all child properties of a container class.
+
    ----------------------
    -- Forall functions --
    ----------------------

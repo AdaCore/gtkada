@@ -138,7 +138,7 @@ package Gtk.Radio_Button is
    function Group
      (Radio_Button : access Gtk_Radio_Button_Record)
       return Widget_SList.GSlist renames Get_Group;
-   --  pragma Obsolescent; --  Group
+   --  pragma Obsolescent;
 
    --  </doc_ignore>
 

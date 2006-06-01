@@ -312,7 +312,7 @@ package Gtk.Label is
 
    function Get
      (Label : access Gtk_Label_Record) return UTF8_String renames Get_Text;
-   --  pragma Obsolescent;  --  Get
+   --  pragma Obsolescent;
    --  Same as Get_Text.
 
    --  </doc_ignore>

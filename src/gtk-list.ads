@@ -42,24 +42,20 @@ package Gtk.List is
    type Gtk_List is access all Gtk_List_Record'Class;
 
    function Get_Type return Gtk.Gtk_Type;
-   pragma Obsolescent;  --  Get_Type
    --  Return the internal value associated with a Gtk_List.
 
    procedure Append_Items
      (List  : access Gtk_List_Record;
       Items : in Widget_List.Glist);
-   pragma Obsolescent;  --  Append_Items
 
    function Child_Position
      (List   : access Gtk_List_Record;
       Child  : in Gtk.Widget.Gtk_Widget) return Gint;
-   pragma Obsolescent;  --  Child_Position
 
    procedure Clear_Items
      (List    : access Gtk_List_Record;
       Start   : in Gint;
       The_End : in Gint);
-   pragma Obsolescent;  --  Clear_Items
    --  Remove some items from the list.
    --  if The_End is negative, it is assigned the position of the last item
    --  in the list.
@@ -67,65 +63,52 @@ package Gtk.List is
 
    function Get_Children
      (Widget : access Gtk.List.Gtk_List_Record) return Widget_List.Glist;
-   pragma Obsolescent;  --  Get_Children
    --  The returned list mustn't be freed by the caller, it references internal
    --  data of gtk+
 
    function Get_Selection
      (Widget : access Gtk.List.Gtk_List_Record) return Widget_List.Glist;
-   pragma Obsolescent;  --  Get_Selection
 
    procedure Gtk_New (Widget : out Gtk_List);
-   pragma Obsolescent;  --  New
 
    procedure Initialize (Widget : access Gtk_List_Record'Class);
-   pragma Obsolescent;  --  Initialize
 
    procedure Insert_Items
      (List     : access Gtk_List_Record;
       Items    : in Widget_List.Glist;
       Position : in Gint);
-   pragma Obsolescent;  --  Insert_Items
 
    procedure Prepend_Items
      (List  : access Gtk_List_Record;
       Items : in Widget_List.Glist);
-   pragma Obsolescent;  --  Prepend_Items
 
    procedure Remove_Items
      (List  : access Gtk_List_Record;
       Items : in Widget_List.Glist);
-   pragma Obsolescent;  --  Remove_Items
 
    procedure Remove_Items_No_Unref
      (List  : access Gtk_List_Record;
       Items : in Widget_List.Glist);
-   pragma Obsolescent;  --  Remove_Items_No_Unref
 
    procedure Select_Child
      (List  : access Gtk_List_Record;
       Child : in Gtk.Widget.Gtk_Widget);
-   pragma Obsolescent;  --  Select_Child
 
    procedure Select_Item
      (List : access Gtk_List_Record;
       Item : in Gint);
-   pragma Obsolescent;  --  Select_Item
 
    procedure Set_Selection_Mode
      (List : access Gtk_List_Record;
       Mode : in Gtk_Selection_Mode);
-   pragma Obsolescent;  --  Set_Selection_Mode
 
    procedure Unselect_Child
      (List  : access Gtk_List_Record;
       Child : in Gtk.Widget.Gtk_Widget);
-   pragma Obsolescent;  --  Unselect_Child
 
    procedure Unselect_Item
      (List : access Gtk_List_Record;
       Item : in Gint);
-   pragma Obsolescent;  --  Unselect_Item
 
    ----------------
    -- Properties --
@@ -136,6 +119,23 @@ package Gtk.List is
    --  Glib.Properties for more information on properties.
    --
    --  </properties>
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "select_child"
+   --  - "selection_changed"
+   --  - "unselect_child"
+   --
+   --  </signals>
+
+   Signal_Select_Child      : constant String := "select_child";
+   Signal_Selection_Changed : constant String := "selection_changed";
+   Signal_Unselect_Child    : constant String := "unselect_child";
 
 private
    type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record
