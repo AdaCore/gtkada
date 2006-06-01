@@ -68,7 +68,6 @@ with Gtk.Image;
 with Gtk.Input_Dialog;
 with Gtk.Invisible;
 --  with Gtk.Item;
-with Gtk.Item_Factory;
 with Gtk.Layout;
 with Gtk.Menu_Shell;
 with Gtk.Misc;
@@ -78,6 +77,7 @@ with Gtk.Paned;
 with Gtk.Plug;
 pragma Warnings (Off);  --  These packages are obsolescent
 with Gtk.Combo;
+with Gtk.Item_Factory;
 with Gtk.List;
 with Gtk.Option_Menu;
 with Gtk.Pixmap;
@@ -243,7 +243,9 @@ package body Gtk.Type_Conversion is
             elsif Type_Name = "GtkInvisible" then
                return new Gtk.Invisible.Gtk_Invisible_Record;
             elsif Type_Name = "GtkItemFactory" then
+               pragma Warnings (Off);  --  Gtk.Item_Factory is obsolescent
                return new Gtk.Item_Factory.Gtk_Item_Factory_Record;
+               pragma Warnings (On);
             end if;
          when 'L' =>
             if Type_Name = "GtkLayout" then
