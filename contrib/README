@@ -6,12 +6,13 @@ Contents
 cairo-1.0.4.diff: a patch against cairo 1.0.4 sources needed to build under
 some platforms.
 
-glib-2.10.2.diff: a patch against Glib 2.10.2 sources needed to build Glib.
-
 glib-2.10.3.diff: a patch against Glib 2.10.3 sources needed to build Glib.
 
 glib-2.10.3-win32.diff: a patch against Glib 2.10.3 sources needed to build
 Glib under Windows.
+
+pango-1.12.3.diff: a patch against pango 1.12.3 sources needed to build under
+some platforms.
 
 pango-1.12.3-win32.diff: a patch against pango 1.12.3 sources needed to build
 pango under Windows.

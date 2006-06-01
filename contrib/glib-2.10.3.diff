@@ -1,3 +1,12 @@
+2006-06-01      Arnaud Charlet  <charlet@adacore.com>
+
+	* configure: work around libtool bug on ia64 hpux
+	See http://bugzilla.gnome.org/show_bug.cgi?id=343485
+
+2006-03-14      Arnaud Charlet  <charlet@adacore.com>
+
+	* glib/gatomic.c: work around GCC 3.4 limitation on ia64 platforms
+
 --- glib/gatomic.c.orig	2005-12-17 07:20:50.000000000 -0500
 +++ glib/gatomic.c	2006-03-14 03:09:49.415176530 -0500
 @@ -410,6 +410,14 @@ g_atomic_pointer_compare_and_exchange (v
@@ -29,3 +38,22 @@
  gboolean
  g_atomic_int_compare_and_exchange (volatile gint *atomic,
  				   gint           oldval, 
+*** configure.old	Fri May 26 08:34:27 2006
+--- configure	Thu Jun  1 05:09:42 2006
+***************
+*** 11426,11432 ****
+  
+  	case $host_cpu in
+  	hppa*64*|ia64*)
+! 	  hardcode_libdir_flag_spec_ld='+b $libdir'
+  	  hardcode_direct=no
+  	  hardcode_shlibpath_var=no
+  	  ;;
+--- 11426,11432 ----
+  
+  	case $host_cpu in
+  	hppa*64*|ia64*)
+! 	  hardcode_libdir_flag_spec_ld='${wl}+b ${wl}$libdir'
+  	  hardcode_direct=no
+  	  hardcode_shlibpath_var=no
+  	  ;;
