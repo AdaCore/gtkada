@@ -209,6 +209,9 @@ package Gdk.Window is
    --
    --  See the package Gdk.Window_Attr for more information on window
    --  attributes.
+   --
+   --  Changing the background color of the window can be done through
+   --  Gtk.Style.Set_Background
 
    procedure Set_User_Data
      (Window : Gdk.Gdk_Window;
