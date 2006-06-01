@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,18 +28,17 @@
 -----------------------------------------------------------------------
 
 with Glib;                use Glib;
+with Glib.Properties;     use Glib.Properties;
 with Gtk;                 use Gtk;
 with Gdk;                 use Gdk;
-with Gdk.Bitmap;          use Gdk.Bitmap;
 with Gdk.Color;           use Gdk.Color;
-with Gdk.Font;            use Gdk.Font;
-with Gdk.Pixmap;          use Gdk.Pixmap;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Button;          use Gtk.Button;
 with Gtk.Dialog;          use Gtk.Dialog;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Handlers;        use Gtk.Handlers;
+with Gtkada.Handlers;     use Gtkada.Handlers;
 with Gtk.Hbutton_Box;     use Gtk.Hbutton_Box;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Main;            use Gtk.Main;
@@ -47,14 +46,22 @@ with Gtk.Notebook;        use Gtk.Notebook;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Paned;           use Gtk.Paned;
 with Gtk.Style;           use Gtk.Style;
-with Gtk.Text;            use Gtk.Text;
-with Gtk.Clist;           use Gtk.Clist;
-with Gtk.Ctree;           use Gtk.Ctree;
+with Gtk.Text_Buffer;     use Gtk.Text_Buffer;
+with Gtk.Text_Iter;       use Gtk.Text_Iter;
+with Gtk.Text_Mark;       use Gtk.Text_Mark;
+with Gtk.Text_Tag;        use Gtk.Text_Tag;
+with Gtk.Text_Tag_Table;  use Gtk.Text_Tag_Table;
+with Gtk.Text_View;       use Gtk.Text_View;
+with Gtk.Tree_Model;         use Gtk.Tree_Model;
+with Gtk.Tree_Selection;     use Gtk.Tree_Selection;
+with Gtk.Tree_Store;         use Gtk.Tree_Store;
+with Gtk.Tree_View;          use Gtk.Tree_View;
+with Gtk.Tree_View_Column;   use Gtk.Tree_View_Column;
+with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
 with Gtk.Widget;          use Gtk.Widget;
 with Gtk.Window;          use Gtk.Window;
 with Pango.Font;          use Pango.Font;
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Ada.Strings.Fixed;
 
 with Create_Alignment;
@@ -124,7 +131,7 @@ with Libart_Demo;  use Libart_Demo;
 package body Main_Windows is
 
    procedure Fill_Gtk_Tree
-     (Tree         : in out Gtk.Ctree.Gtk_Ctree;
+     (Tree         : in out Gtk.Tree_Store.Gtk_Tree_Store;
       Gtkada_Demos : Boolean := False;
       Pixbuf_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
@@ -136,7 +143,7 @@ package body Main_Windows is
      (Gtk_Notebook_Record, Gtk_Notebook);
 
    Help_Dialog : Gtk.Dialog.Gtk_Dialog;
-   Help_Text   : Gtk.Text.Gtk_Text;
+   Help_Text   : Gtk.Text_Buffer.Gtk_Text_Buffer;
    --  The dialog used to display the help window
 
    Gtk_Demo_Frames  : array (1 .. 3) of Gtk.Frame.Gtk_Frame;
@@ -152,19 +159,10 @@ package body Main_Windows is
    --  Symbols between @b and @B are displayed in bold
    --  New lines should be represented by ASCII.LF
 
-   function NS (S : String) return chars_ptr renames New_String;
+   type String_Access is access String;
+   function NS (S : String) return String_Access;
 
-   type Demo_Tree_Item is record
-      Demo_Num : Natural;
-      Frame    : Integer;
-   end record;
-
-   package Tree_Data is new Gtk.Clist.Row_Data (Demo_Tree_Item);
-
-   package Tree_Cb is new Gtk.Handlers.Callback
-     (Widget_Type => Gtk.Ctree.Gtk_Ctree_Record);
-
-   procedure Tree_Select_Child (Tree : access Gtk_Ctree_Record'Class);
+   procedure Tree_Select_Child (View : access Gtk_Widget_Record'Class);
    --  Callbacks when a different item in the tree is selected.
 
    package Window_Cb is new Handlers.Callback (Gtk_Widget_Record);
@@ -187,11 +185,16 @@ package body Main_Windows is
    --  Pixbuf:  Demonstrate the use of images
 
    type Tree_Item_Information is record
-      Label  : chars_ptr;
+      Label  : String_Access;
       Typ    : Demo_Type;
       Func   : Demo_Function;
       Help   : Help_Function;
    end record;
+
+   function NS (S : String) return String_Access is
+   begin
+      return new String'(S);
+   end NS;
 
    type Tree_Item_Array is array (Positive range <>) of Tree_Item_Information;
    --  The list of items to put in the tree for the gtk demos
@@ -336,13 +339,12 @@ package body Main_Windows is
    -------------------
 
    procedure Fill_Gtk_Tree
-     (Tree         : in out Gtk.Ctree.Gtk_Ctree;
+     (Tree         : in out Gtk.Tree_Store.Gtk_Tree_Store;
       Gtkada_Demos : Boolean := False;
       Pixbuf_Demos : Boolean := False)
    is
-      Sibling   : Gtk.Ctree.Gtk_Ctree_Node;
-      Subtree   : Gtk.Ctree.Gtk_Ctree_Node;
-      Text      : chars_ptr;
+      Sibling   : Gtk_Tree_Iter := Null_Iter;
+      Subtree   : Gtk_Tree_Iter := Null_Iter;
       Frame_Num : Integer := 1;
    begin
       for Typ in Demo_Type'Range loop
@@ -353,63 +355,50 @@ package body Main_Windows is
            or else (Gtkada_Demos and then Typ = Gtkada)
            or else (Pixbuf_Demos and then Typ = Pixbuf)
          then
+            Append
+              (Tree_Store => Tree,
+               Iter       => Sibling,
+               Parent     => Null_Iter);
+
             case Typ is
-               when Box     => Text := New_String ("Containers");
-               when Base    => Text := New_String ("Basic Widgets");
-               when Complex => Text := New_String ("Composite Widgets");
-               when Gimp    => Text := New_String ("Gimp Widgets");
-               when Misc    => Text := New_String ("Misc. Demos");
-               when GdkD    => Text := New_String ("Gdk demos");
+               when Box     =>
+                  Set (Tree, Sibling, 0, "Containers");
+               when Base    =>
+                  Set (Tree, Sibling, 0, "Base widgets");
+               when Complex =>
+                  Set (Tree, Sibling, 0, "Composite widgets");
+               when Gimp    =>
+                  Set (Tree, Sibling, 0, "Gimp widgets");
+               when Misc    =>
+                  Set (Tree, Sibling, 0, "Misc. demos");
+               when GdkD    =>
+                  Set (Tree, Sibling, 0, "Gdk demos");
                when Gtkada  =>
-                  Text := New_String ("GtkAda Widgets");
+                  Set (Tree, Sibling, 0, "GtkAda widgets");
                   Frame_Num := 2;
                when Pixbuf  =>
-                  Text := New_String ("Images");
+                  Set (Tree, Sibling, 0, "Images");
                   Frame_Num := 3;
             end case;
 
-            Sibling := Gtk.Ctree.Insert_Node
-              (Tree,
-               Parent => null,
-               Sibling => null,
-               Text => (1 => Text),
-               Spacing => 5,
-               Pixmap_Closed => Gdk.Pixmap.Null_Pixmap,
-               Mask_Closed => Gdk.Bitmap.Null_Bitmap,
-               Pixmap_Opened => Gdk.Pixmap.Null_Pixmap,
-               Mask_Opened => Gdk.Bitmap.Null_Bitmap,
-               Is_Leaf => False,
-               Expanded => False);
-            Free (Text);
+            Set (Tree, Sibling, 1, 0);
+            Set (Tree, Sibling, 2, 0);
 
             for Item_Num in Gtk_Demos'Range loop
                if Gtk_Demos (Item_Num).Typ = Typ
                  and then Gtk_Demos (Item_Num).Func /= null
                then
-                  Subtree := Gtk.Ctree.Insert_Node
-                    (Tree,
-                     Parent => Sibling,
-                     Sibling => null,
-                     Text => (1 => Gtk_Demos (Item_Num).Label),
-                     Spacing => 5,
-                     Pixmap_Closed => Gdk.Pixmap.Null_Pixmap,
-                     Mask_Closed => Gdk.Bitmap.Null_Bitmap,
-                     Pixmap_Opened => Gdk.Pixmap.Null_Pixmap,
-                     Mask_Opened => Gdk.Bitmap.Null_Bitmap,
-                     Is_Leaf => True,
-                     Expanded => False);
-                  Tree_Data.Set
-                    (Tree, Gtk_Clist_Row (Node_Get_Row (Subtree)),
-                     (Demo_Num => Item_Num,
-                      Frame    => Frame_Num));
+                  Append
+                    (Tree_Store => Tree,
+                     Iter       => Subtree,
+                     Parent     => Sibling);
+                  Set (Tree, Subtree, 0, Gtk_Demos (Item_Num).Label.all);
+                  Set (Tree, Subtree, 1, Gint (Item_Num));
+                  Set (Tree, Subtree, 2, Gint (Frame_Num));
                end if;
             end loop;
          end if;
       end loop;
-
-      Tree_Cb.Connect
-        (Tree, "tree_select_row",
-         Tree_Cb.To_Marshaller (Tree_Select_Child'Access));
    end Fill_Gtk_Tree;
 
    ------------------
@@ -431,9 +420,33 @@ package body Main_Windows is
       Close     : Gtk.Button.Gtk_Button;
       Scrolled  : Gtk_Scrolled_Window;
       Label     : Gtk.Label.Gtk_Label;
-      Tmp       : Boolean;
+      View      : Gtk_Text_View;
+      Iter, Last : Gtk_Text_Iter;
+      Blue_Tag, Tag  : Gtk_Text_Tag;
+      Mark       : Gtk_Text_Mark;
       pragma Unreferenced (Button);
 
+      procedure Show_Text_With_Tag
+        (Iter : in out Gtk_Text_Iter; Text : String);
+      --  Insert Text in the help dialog, using Tag to set the color
+
+      procedure Show_Text_With_Tag
+        (Iter : in out Gtk_Text_Iter; Text : String)
+      is
+         Last : Gtk_Text_Iter;
+      begin
+         if Mark /= null then
+            Move_Mark (Help_Text, Mark, Iter);
+         else
+            Mark := Create_Mark (Help_Text, "", Iter);
+         end if;
+
+         Insert (Help_Text, Iter, Text);
+         if Tag /= null then
+            Get_Iter_At_Mark (Help_Text, Last, Mark);
+            Apply_Tag (Help_Text, Tag, Last, Iter);
+         end if;
+      end Show_Text_With_Tag;
 
    begin
       if Help_Dialog = null then
@@ -441,8 +454,7 @@ package body Main_Windows is
          Set_Policy (Help_Dialog, Allow_Shrink => True, Allow_Grow => True,
                      Auto_Shrink => True);
          Set_Title (Help_Dialog, "testgtk help");
-         Set_Default_Size (Help_Dialog, 400, 250);
-         --  Set_Usize (Help_Dialog, 400, 250);
+         Set_Default_Size (Help_Dialog, 640, 450);
 
          Set_Spacing (Get_Vbox (Help_Dialog), 3);
 
@@ -454,10 +466,10 @@ package body Main_Windows is
          Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
 
          Gtk_New (Help_Text);
-         Add (Scrolled, Help_Text);
-         Set_Editable (Help_Text, False);
-         Set_Style (Help_Text, Get_Style (Help_Dialog));
-         Set_Word_Wrap (Help_Text, Word_Wrap => True);
+         Gtk_New (View, Help_Text);
+         Add (Scrolled, View);
+         Set_Editable (View, False);
+         Set_Wrap_Mode (View, Wrap_Mode => Wrap_Word);
 
          Gtk_New (Close, "Close");
          Pack_Start (Get_Action_Area (Help_Dialog), Close, False, False);
@@ -468,18 +480,22 @@ package body Main_Windows is
          Set_Flags (Close, Can_Default);
          Grab_Default (Close);
 
+         Blue_Tag := Create_Tag (Help_Text, "blue");
+         Set_Property (Blue_Tag, Gtk.Text_Tag.Foreground_Property, "blue");
+
       else
-         Set_Point (Help_Text, 0);
-         Tmp := Forward_Delete (Help_Text, Guint'Last);
-         --  Delete_Text (Help_Text, 0, -1);
+         Get_Start_Iter (Help_Text, Iter);
+         Get_End_Iter   (Help_Text, Last);
+         Delete (Help_Text, Iter, Last);
+
+         Blue_Tag := Lookup (Get_Tag_Table (Help_Text), "blue");
       end if;
 
-      Freeze (Help_Text);
+      Get_Start_Iter (Help_Text, Iter);
+      Tag := null;
 
       if Current_Help = null then
-         Insert (Help_Text, Null_Font,
-                 Null_Color, Null_Color,
-                 "No help available", -1);
+         Insert (Help_Text, Iter, "No help available");
       else
 
          declare
@@ -487,7 +503,6 @@ package body Main_Windows is
             Pos   : Natural := Help'First;
             First : Natural;
             Blue  : Gdk_Color;
-            Current_Color : Gdk_Color := Null_Color;
             Newline : constant String := (1 => ASCII.LF);
 
             Line_End : Natural;
@@ -521,25 +536,21 @@ package body Main_Windows is
                     (Help (Pos .. Line_End - 1), "@");
 
                   if First = 0 or First = Line_End - 1 then
-                     Insert (Help_Text, Null_Font, Current_Color, Null_Color,
-                             Help (Pos .. Line_End - 1), -1);
+                     Show_Text_With_Tag (Iter, Help (Pos .. Line_End - 1));
                      Pos := Line_End;
 
                   else
-                     Insert (Help_Text, Null_Font, Current_Color, Null_Color,
-                             Help (Pos .. First - 1), -1);
+                     Show_Text_With_Tag (Iter, Help (Pos .. First - 1));
 
                      case Help (First + 1) is
                         when 'b' =>
-                           Current_Color := Blue;
+                           Tag := Blue_Tag;
                            Pos := First + 2;
                         when 'B' =>
-                           Current_Color := Gdk.Color.Null_Color;
+                           Tag := null;
                            Pos := First + 2;
                         when others =>
-                           Insert
-                             (Help_Text, Null_Font, Current_Color, Null_Color,
-                              "@", 1);
+                           Show_Text_With_Tag (Iter, "@");
                            Pos := First + 1;
                      end case;
                   end if;
@@ -547,13 +558,12 @@ package body Main_Windows is
 
                Pos := Pos + 1;
                exit when Pos > Help'Last;
-               Insert
-                 (Help_Text, Null_Font, Null_Color, Null_Color, Newline, 1);
+
+               Insert (Help_Text, Iter, Newline);
             end loop;
          end;
       end if;
 
-      Thaw (Help_Text);
       Show_All (Help_Dialog);
    end Display_Help;
 
@@ -601,33 +611,32 @@ package body Main_Windows is
    -- Tree_Select_Child --
    -----------------------
 
-   procedure Tree_Select_Child (Tree : access Gtk_Ctree_Record'Class) is
-      use Gtk.Widget.Widget_List;
-      List : Gtk.Widget.Widget_List.Glist;
-      Node : constant Gtk_Ctree_Node := Node_List.Get_Data
-        (Node_List.First (Get_Selection (Tree)));
-      Item : Demo_Tree_Item;
+   procedure Tree_Select_Child (View : access Gtk_Widget_Record'Class) is
+      Model     : Gtk_Tree_Model;
+      Iter      : Gtk_Tree_Iter;
+      Demo_Num  : Integer;
+      Frame_Num : Integer;
+      Child     : Gtk_Widget;
    begin
-      if Row_Get_Is_Leaf (Node_Get_Row (Node)) then
-         Item := Tree_Data.Get (Tree, Gtk_Clist_Row (Node_Get_Row (Node)));
+      Get_Selected (Get_Selection (Gtk_Tree_View (View)), Model, Iter);
+      if Iter = Null_Iter then
+         return;
+      end if;
 
-         if Gtk_Demos (Item.Demo_Num).Func /= null then
+      Demo_Num  := Integer (Get_Int (Model, Iter, 1));
+      Frame_Num := Integer (Get_Int (Model, Iter, 2));
 
-            --  Remove the current demo from the frame
-
-            List := Gtk.Frame.Get_Children (Gtk_Demo_Frames (Item.Frame));
-
-            if Length (List) /= 0 then
-               Gtk.Frame.Remove
-                 (Container => Gtk_Demo_Frames (Item.Frame),
-                  Widget    => Get_Data (List));
-            end if;
-
-            --  And then insert our own new demo
-
-            Gtk_Demos (Item.Demo_Num).Func (Gtk_Demo_Frames (Item.Frame));
-            Set_Help (Gtk_Demos (Item.Demo_Num).Help);
+      if Demo_Num /= 0 and then Gtk_Demos (Demo_Num).Func /= null then
+         --  Remove the current demo from the frame
+         Child := Get_Child (Gtk_Demo_Frames (Frame_Num));
+         if Child /= null then
+            Remove (Gtk_Demo_Frames (Frame_Num), Child);
          end if;
+
+         --  And then insert our own new demo
+
+         Gtk_Demos (Demo_Num).Func (Gtk_Demo_Frames (Frame_Num));
+         Set_Help (Gtk_Demos (Demo_Num).Help);
       end if;
    end Tree_Select_Child;
 
@@ -688,9 +697,13 @@ package body Main_Windows is
    is
       Frame    : Gtk.Frame.Gtk_Frame;
       Label    : Gtk.Label.Gtk_Label;
-      Tree     : Gtk.Ctree.Gtk_Ctree;
+      Tree     : Gtk_Tree_View;
+      Model    : Gtk_Tree_Store;
       Scrolled : Gtk_Scrolled_Window;
       Paned    : Gtk_Paned;
+      Render   : Gtk_Cell_Renderer_Text;
+      Col      : Gtk_Tree_View_Column;
+      C        : Gint;
 
    begin
       Gtk_New (Frame);
@@ -705,18 +718,37 @@ package body Main_Windows is
                   Gtk.Enums.Policy_Automatic,
                   Gtk.Enums.Policy_Always);
       Pack1 (Paned, Scrolled);
-      Set_Size_Request (Scrolled, 170, 500);
 
-      Gtk_New (Tree, 1);
-      Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
+      Gtk_New (Model, (1 => GType_String,
+                       2 => GType_Int,
+                       3 => GType_Int));
+      Gtk_New (Tree, Model);
+      Set_Headers_Visible (Tree, False);
+
+      Modify_Font (Tree, From_String ("Sans 8"));
+
+      Gtk_New (Render);
+      Gtk_New (Col);
+      C := Append_Column (Tree, Col);
+
+      Pack_Start (Col, Render, Expand => True);
+      Add_Attribute (Col, Render, "text", 0);
+
+      Set_Mode (Get_Selection (Tree), Gtk.Enums.Selection_Single);
       Add_With_Viewport (Scrolled, Tree);
-      Fill_Gtk_Tree (Tree, Gtkada_Demo, Pixbuf_Demo);
+
+      Fill_Gtk_Tree (Model, Gtkada_Demo, Pixbuf_Demo);
+
+      Widget_Callback.Object_Connect
+        (Get_Selection (Tree), Gtk.Tree_Selection.Signal_Changed,
+         Tree_Select_Child'Access, Slot_Object => Tree);
 
       Gtk_New (Gtk_Demo_Frames (Page));
       Set_Shadow_Type
         (Gtk_Demo_Frames (Page), The_Type => Gtk.Enums.Shadow_None);
       Pack2 (Paned, Gtk_Demo_Frames (Page));
-      Set_Size_Request (Gtk_Demo_Frames (Page), 550, 500);
+
+      Set_Position (Paned, 170);
    end Create_Demo_Frame;
 
    ----------------
@@ -733,6 +765,7 @@ package body Main_Windows is
 
    begin
       Gtk.Window.Initialize (Win, Gtk.Enums.Window_Toplevel);
+      Set_Default_Size (Win, 800, 600);
       Window_Cb.Connect (Win, "destroy",
                          Window_Cb.To_Marshaller (Exit_Main'Access));
       Return_Window_Cb.Connect
