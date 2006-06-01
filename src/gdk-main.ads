@@ -56,7 +56,7 @@ package Gdk.Main is
 
    function Set_Locale return String;
    --  Initialize handling of internationalization of strings.
-   --  @pxref{Package_Gtkada.Intl} for more details.
+   --  Gtkada.Intl for more details.
 
    procedure Set_Locale;
    --  Drops the string returned by the Set_Locale function;

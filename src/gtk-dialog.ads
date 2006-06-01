@@ -45,7 +45,7 @@
 --  A 'modal' dialog (that is, one which freezes the rest of the application
 --  from user input), can be created by calling Set_Modal on the dialog.
 --
---  @pxref{Package_Gtkada.Dialogs} for a higher level dialog interface.
+--  See Gtkada.Dialogs for a higher level dialog interface.
 --  </description>
 --  <c_version>2.8.17</c_version>
 

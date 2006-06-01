@@ -28,8 +28,7 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  This package is obsolete and replaced by Glib.Values
---  (@pxref{Package_Glib.Values}.
+--  This package is obsolete and replaced by Glib.Values.
 --  Future versions of GtkAda will no longer provide this package.
 --
 --  This package provides a convenient interface to C, providing easy

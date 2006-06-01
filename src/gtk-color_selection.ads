@@ -34,10 +34,10 @@
 --  An additional field is provided to select the opacity of the color (this
 --  is usually called the alpha channel).
 --
---  @pxref{Package_Gtk.Color_Selection_Dialog} for a version of this widget
---  that comes with its own dialog.
+--  See Gtk.Color_Selection_Dialog for a version of this widget that comes with
+--  its own dialog.
 --
---  @pxref{Package_Gtk.Extra.Color_Combo} for a different way to select colors.
+--  See Gtk.Extra.Color_Combo for a different way to select colors.
 --  </description>
 --  <c_version>2.8.17</c_version>
 

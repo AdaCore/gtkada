@@ -478,8 +478,7 @@ package Gtk.Extra.Plot is
       Ascent        : out Gint;
       Descent       : out Gint);
    --  Return the size in pixels occupied by a text in the plot.
-   --  @pxref{Package_Gtk.Extra.Plot_Canvas} for a function that returns
-   --  a Gtk_Plot_Text.
+   --  See Gtk.Extra.Plot_Canvas for a function that returns a Gtk_Plot_Text.
 
    procedure Text_Set_Attributes
      (Text          : Gtk_Plot_Text;

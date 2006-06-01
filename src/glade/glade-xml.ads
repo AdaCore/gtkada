@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +30,7 @@
 --
 --  This package is a binding to the libglade library that provides routines
 --  to create widgets dynamically from an XML definition file.
---  @pxref{Package_Glade}.
+--  See also glade.ads
 --
 --  </description>
 
@@ -58,8 +58,7 @@ package Glade.XML is
    --  creating another GladeXML object for the same file.
    --
    --  Domain, if not null, is the international domain to use for
-   --  string translation. @pxref{Package_Gtkada.Intl} for more
-   --  information.
+   --  string translation. See Gtkada.Intl for more information.
 
    procedure Gtk_New_From_Buffer
      (XML    : out Glade_XML;

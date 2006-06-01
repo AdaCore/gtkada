@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                       Copyright (C) 2000                          --
---                           ACT-Europe                              --
+--                       Copyright (C) 2000-2006 AdaCore             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,7 +30,7 @@
 --
 --  This package is a binding to the libglade library that provides routines
 --  to create widgets dynamically from an XML definition file.
---  @pxref{Package_Glade.XML}.
+--  See also Glade.XML
 --
 --  </description>
 

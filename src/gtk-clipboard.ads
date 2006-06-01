@@ -115,7 +115,7 @@ package Gtk.Clipboard is
    --  selection to what the user sees as the clipboard.
    --
    --  (Passing Gdk_None is the same as using Atom_Intern ("CLIPBOARD", False).
-   --  See @uref{"http://www.freedesktop.org/standards/clipboards.txt"} for a
+   --  See http://www.freedesktop.org/standards/clipboards.txt for a
    --  detailed discussion of the "CLIPBOARD" vs. "PRIMARY" selections under
    --  the X window system. On Win32 the Selection_Primary clipboard is
    --  essentially ignored.)
