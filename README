@@ -41,6 +41,7 @@ This library has been tested using Gtk+ 2.8.17 on the following systems:
    - HP-UX/ia64
    - Tru64
    - Mac OS X
+   - FreeBSD/x86
 
 If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
