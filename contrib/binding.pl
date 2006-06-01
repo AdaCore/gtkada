@@ -6,11 +6,39 @@ our ($ada_dir)="/home/briot/Ada/GtkAda/src/";
 #$c_dir  ="/home/briot/gtk/gtk+-2.9/gtk+-2.9.0/";
 our ($c_dir)  ="/home/briot/gtk/gtk+-2.8/gtk+-2.8.17/";
 
-our ($debug) = 0;
-
-## parameters are of the form "gtkbutton", "gtkbutton.h"
-## They shouldn't contain directory indication
+## parameters are of the form "gtkbutton", "gtkbutton.h", "/dir/gtkbutton.h"
+## If the directory is unspecified, files are looked for in $c_dir
 our (@c_files)=@ARGV;
+
+## Set to 1 to list all the files as they are analyzed. This can be set by
+## using -v as the first command line parameter
+our ($verbose) = 0;
+
+## The following files do not have an associated binding, and will be ignored
+our (%c_files_no_binding) =
+  ("gtkalias"  => 1,
+   "gtkhbox"   => 1,
+   "gtkvbox"   => 1,
+   "gtkhruler" => 1,
+   "gtkvruler" => 1,
+   "gtkhscale" => 1,
+   "gtkvscale" => 1,
+   "gtkhscrollbar" => 1,
+   "gtkvscrollbar" => 1,
+   "gtkhseparator" => 1,
+   "gtkvseparator" => 1,
+   "gtkmarshalers" => 1,
+   "gtkmarshal" => 1,
+   "gtkhpaned" => 1,
+   "gtkvpaned" => 1);
+
+## Return the base name (no extension) for a C file
+
+sub basename() {
+   my ($file) = shift;
+   $file =~ s,.*?/([^/]+?)(\.[ch])?$,$1,;  ## basename, no extension
+   return $file;
+}
 
 ## Find out the name of the Ada unit containing the binding to a specific
 ## c file
@@ -24,9 +52,8 @@ sub replace_word() {
 
 sub ada_unit_from_c_file() {
   my ($cfile) = shift;
-  my ($adafile) = $cfile;
+  my ($adafile) = &basename ($cfile);
   my (@words);
-  $adafile =~ s,.*?/([^/]+?)(\.[ch])?$,$1,;  ## basename, no extension
   $adafile =~ s/^gtk(.+)/gtk-$1/;
 
   ## Order matters in this array
@@ -66,7 +93,7 @@ sub ada_unit_from_c_file() {
 our $import_re      = 'pragma\s+Import\s+\(C\s*,\s*(\w+)\s*,\s*"(\w+)"\s*\)';
 our $obsolescent_re = '(pragma\s+Obsolescent).*?(?:-- *(\w+))|(?:pragma Obsolescent(?:\s+\("[^"]+"\))?;\n)';
 our $not_bound_re   = '--  No binding: (\w+)';
-our $ada_prop_re    = '\b(\w+)_Property\s+:\s+constant ';
+our $ada_prop_re    = '\b(\w+)_Property\s+:\s+(?:--)?\s*constant ';
 our $ada_signal_re  = '\bSignal_(\w+)\s+:\s+constant String :=\s*"([^"]+)"';
 our $external_binding_re = '--  External binding: (\w+)';
 
@@ -81,9 +108,8 @@ sub ada_bindings_in_unit() {
      open (FILE, "$ada_dir/$unit.ads");
      $contents = join ("", <FILE>);
      close (FILE);
-     print STDERR "Ada Unit $unit\n" if ($debug);
   } else {
-     print STDERR "Ada unit doesn't exist yet: $unit.ads\n";
+     print "Ada unit doesn't exist yet: $unit.ads\n";
      return (0, %binding, %obsolescent);
   }
 
@@ -236,30 +262,33 @@ sub output_signals() {
 
 sub get_c_file_content () {
   my ($fullname) = shift;
-  my ($contents);
+  my ($contents, $tmp);
 
   # print "--  C file: $fullname\n";
-  open (FILE, $fullname);
+  open (FILE, $fullname) || return "";
   $contents = join ("", <FILE>);
   close (FILE);
 
   return $contents if ($fullname =~ /gtkbbox.[ch]$/);
 
-  $fullname =~ s,/gtk([^/]+)$,/gtkv$1,;
-  if (-f $fullname) {
+  $tmp = $fullname;
+  $tmp =~ s,/gtk([^/]+)$,/gtkv$1,;
+  if (-f $tmp) {
      # print "--  C file: $fullname\n";
-     open (FILE, $fullname);
+     open (FILE, $tmp);
      $contents .= join ("", <FILE>);
      close (FILE);
   }
 
-  $fullname =~ s,/gtkv([^/]+)$,/gtkh$1,;
-  if (-f $fullname) {
+  $tmp = $fullname;
+  $tmp =~ s,/gtk([^/]+)$,/gtkh$1,;
+  if (-f $tmp) {
      # print "--  C file: $fullname\n";
-     open (FILE, $fullname);
+     open (FILE, $tmp);
      $contents .= join ("", <FILE>);
      close (FILE);
   }
+
   return $contents;
 }
 
@@ -285,10 +314,10 @@ sub functions_from_c_file() {
      } elsif (defined $2 && $2 eq "endif") {
         $deprecated = 0;
      } else {
-        my ($returns, $args) = ($3, $6);
+        my ($returns, $args, $name) = ($3, $6, $5);
         ## Ignore internal gtk+ functions:
-        if (substr($5,0,1) ne '_') {
-           $funcs{$5} = [$args, $returns, $deprecated];
+        if (substr($name,0,1) ne '_') {
+           $funcs{$name} = [$args, $returns, $deprecated];
         }
     }
   }
@@ -330,12 +359,14 @@ sub c_to_ada() {
    $c_type =~ s/([^_])([A-Z])/$1_$2/g;  ## Split on upper cases
 
    return "Boolean"            if ($c_type eq "gboolean");
-   return "Gdk_Event"          if ($c_type eq "Gdk_Event*");
+   return "Gdk_$1"             if ($c_type =~ /Gdk_(.+)\*/);
    return "Gfloat"             if ($c_type eq "gfloat");
-   return "String"             if ($c_type eq "gchar*");
+   return "String"             if ($c_type =~ /g?char\*/);
    return "Gtk_Tree_Iter"      if ($c_type eq "Gtk_Tree_Iter*");
+   return "Gtk_Text_Iter"      if ($c_type eq "Gtk_Text_Iter*");
    return "out Gfloat"         if ($c_type eq "gfloat*");
    return "System.Address"     if ($c_type eq "gpointer");
+   return "GType"              if ($c_type eq "G_Type");
    return "access GObject_Record" if ($param_index >= 0 && $c_type eq "G_Object*");
    return "GObject"               if ($param_index == -1 && $c_type eq "G_Object*");
    return "Gtk_Clipboard"      if ($c_type eq "Gtk_Clipboard*");
@@ -361,14 +392,16 @@ sub c_to_low_ada() {
    return "Gboolean"       if ($c_type eq "gboolean");
    $c_type =~ s/([^_])([A-Z])/$1_$2/g;  ## Split on upper cases
    return "Gtk_Tree_Iter"  if ($c_type eq "Gtk_Tree_Iter*");
+   return "Gtk_Text_Iter"  if ($c_type eq "Gtk_Text_Iter*");
    return "Gfloat"         if ($c_type eq "gfloat");
    return "Gtk_Clipboard"  if ($c_type eq "Gtk_Clipboard*");
-   return "Gdk_Event"      if ($c_type eq "Gdk_Event*");
+   return "Gdk_$1"         if ($c_type =~ /Gdk_(.+)\*/);
    return "System.Address" if ($c_type eq "gpointer");
+   return "GType"          if ($c_type eq "G_Type");
    return "out Gfloat"     if ($c_type eq "gfloat*");
-   return "String"         if ($c_type eq "gchar*" && $param_index >= 0);
+   return "String"         if ($c_type =~ /g?char\*/ && $param_index >= 0);
    return "Interfaces.C.Strings.chars_ptr"
-                           if ($c_type eq "gchar*" && $param_index == -1);
+                           if ($c_type =~ /g?char\*/ && $param_index == -1);
    return "System.Address" if ($is_object);
    return &capitalize ($c_type);
 }
@@ -380,8 +413,9 @@ sub c_to_call_ada() {
    my ($c_type) = shift;
    my ($is_object) = &is_object ($c_type);
    return "Boolean'Pos ($name)" if ($c_type eq "gboolean");
-   return "$name & ASCII.NUL"   if ($c_type eq "gchar*");
+   return "$name & ASCII.NUL"   if ($c_type =~ /g?char\*/);
    return "$name"               if ($c_type eq "GtkTreeIter*");
+   return "$name"               if ($c_type eq "GtkTextIter*");
    if ($is_object) {
       return "Get_Object ($name)";
    }
@@ -443,12 +477,16 @@ sub ada_entity_from_c() {
    $ada_pkg =~ s/-/_/g;
    $name =~ s/${ada_pkg}_//i;
 
-   if ($ada_pkg eq "gtk_main") {
+   if ($ada_pkg eq "gtk_main" || $ada_pkg eq "gtk_style") {
       $name =~ s/^gtk_//;
    } elsif ($ada_pkg eq "glib_main") {
       $name =~ s/^g_//;
    } elsif ($ada_pkg eq "gtk_gentry") {
       $name =~ s/^gtk_entry_//;
+   } elsif ($ada_pkg eq "gtk_color_selection") {
+      $name =~ s/^gtk_color_selection_//;
+   } elsif ($ada_pkg eq "gtk_dnd") {
+      $name =~ s/^gtk_drag_//;
    }
 
    return &capitalize ($name);
@@ -657,7 +695,7 @@ sub process_c_file() {
   }
 
   if (!defined $with_dir) {
-     print STDERR "File $c_file not found\n";
+     print "File $c_file not found\n";
      return;
   }
 
@@ -666,9 +704,12 @@ sub process_c_file() {
   $ada_unit = &ada_unit_from_c_file ($c_file);
   ($success, $binding, $obsolescent, $ada_properties, $ada_signals) =
       &ada_bindings_in_unit ($ada_unit);
+  return if (!$success);
+
+  print "Analyzing $with_dir\n" if ($verbose);
+
   %binding = %$binding;
   %obsolescent = %$obsolescent;
-  return if (!$success);
 
   ## Ignore properties already defined in Ada
   my ($prop);
@@ -742,8 +783,12 @@ sub process_c_file() {
 
 ## Process the command line
 our $c_file;
-foreach $c_file (@c_files) {
-   &process_c_file ($c_file);
-}
 
+foreach $c_file (@c_files) {
+   if ($c_file eq "-v") {
+      $verbose = 1;
+   } elsif (!defined $c_files_no_binding{&basename ($c_file)}) {
+     &process_c_file ($c_file);
+   }
+}
 
