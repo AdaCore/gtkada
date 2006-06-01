@@ -2,9 +2,9 @@
 use warnings;
 use strict;
 
-our ($ada_dir)="/home/briot/Ada/GtkAda/src/";
+our ($ada_dir) = "/home/briot/Ada/GtkAda/src/";
 #$c_dir  ="/home/briot/gtk/gtk+-2.9/gtk+-2.9.0/";
-our ($c_dir)  ="/home/briot/gtk/gtk+-2.8/gtk+-2.8.17/";
+our ($c_dir)   = "/home/briot/gtk/gtk+-2.8/gtk+-2.8.17";
 
 ## parameters are of the form "gtkbutton", "gtkbutton.h", "/dir/gtkbutton.h"
 ## If the directory is unspecified, files are looked for in $c_dir
@@ -30,7 +30,10 @@ our (%c_files_no_binding) =
    "gtkmarshalers" => 1,
    "gtkmarshal" => 1,
    "gtkhpaned" => 1,
-   "gtkvpaned" => 1);
+   "gtkvpaned" => 1,
+   "gtkprivate" => 1,
+   "gtksignal"  => 1,
+   "gtkplugprivate" => 1);
 
 ## Return the base name (no extension) for a C file
 
@@ -295,7 +298,7 @@ sub get_c_file_content () {
 ## Find out all C functions defined in a C file.
 ## Return a hash table indexed on the functions
 our $c_function_re = '\b(\w+(\s*\*+|\s))\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST)?;';
-our $c_deprecated_re = '(ifndef|endif).*GTK_DISABLE_DEPRECATED';
+our $c_deprecated_re = '(if |ifndef|endif).*GTK_DISABLE_DEPRECATED';
 our $c_broken_re     = '\#(ifdef.*GTK_ENABLE_BROKEN|endif)';
 sub functions_from_c_file() {
   my ($fullname) = shift;
@@ -305,19 +308,21 @@ sub functions_from_c_file() {
   $contents = &get_c_file_content ($fullname);
 
   while ($contents =~ /$c_deprecated_re|$c_broken_re|$c_function_re/g) {
-     if (defined $1 && $1 eq "ifndef") {
-        $deprecated = 1;
+     if (defined $1 && ($1 eq "ifndef" || $1 eq "if ")) {
+        $deprecated ++;
      } elsif (defined $1 && $1 eq "endif") {
-        $deprecated = 0;
-     } elsif (defined $2 && $2 eq "ifdef") {
-        $deprecated = 1;
+        $deprecated --;
+        $deprecated = 0 if ($deprecated < 0);
+     } elsif (defined $2 && $2 =~ /^ifdef/) {
+        $deprecated ++;
      } elsif (defined $2 && $2 eq "endif") {
-        $deprecated = 0;
+        $deprecated --;
+        $deprecated = 0 if ($deprecated < 0);
      } else {
         my ($returns, $args, $name) = ($3, $6, $5);
         ## Ignore internal gtk+ functions:
         if (substr($name,0,1) ne '_') {
-           $funcs{$name} = [$args, $returns, $deprecated];
+           $funcs{$name} = [$args, $returns, ($deprecated > 0 ? 1 : 0)];
         }
     }
   }
@@ -782,13 +787,13 @@ sub process_c_file() {
 }
 
 ## Process the command line
-our $c_file;
+our $current_file;
 
-foreach $c_file (@c_files) {
-   if ($c_file eq "-v") {
+foreach $current_file (sort @c_files) {
+   if ($current_file eq "-v") {
       $verbose = 1;
-   } elsif (!defined $c_files_no_binding{&basename ($c_file)}) {
-     &process_c_file ($c_file);
+   } elsif (!defined $c_files_no_binding{&basename ($current_file)}) {
+     &process_c_file ($current_file);
    }
 }
 
