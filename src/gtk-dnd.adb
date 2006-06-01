@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,6 @@ with Gdk.Event;     use Gdk.Event;
 with Gdk.Pixmap;    use Gdk.Pixmap;
 with Gdk.Types;     use Gdk.Types;
 with Gdk.Window;    use Gdk.Window;
-
 with Gtk.Widget;    use Gtk.Widget;
 
 package body Gtk.Dnd is
@@ -59,6 +58,26 @@ package body Gtk.Dnd is
                 Hot_X,
                 Hot_Y);
    end Set_Icon_Pixbuf;
+
+   -------------------
+   -- Set_Icon_Name --
+   -------------------
+
+   procedure Set_Icon_Name
+     (Context   : Drag_Context;
+      Icon_Name : String;
+      Hot_X     : Gint;
+      Hot_Y     : Gint)
+   is
+      procedure Internal
+        (Context   : Drag_Context;
+         Icon_Name : String;
+         Hot_X     : Gint;
+         Hot_Y     : Gint);
+      pragma Import (C, Internal, "gtk_drag_set_icon_name");
+   begin
+      Internal (Context, Icon_Name & ASCII.NUL, Hot_X, Hot_Y);
+   end Set_Icon_Name;
 
    --------------------
    -- Set_Icon_Stock --
@@ -117,6 +136,20 @@ package body Gtk.Dnd is
                 Stock_Id & ASCII.NUL);
    end Source_Set_Icon_Stock;
 
+   --------------------------
+   -- Source_Set_Icon_Name --
+   --------------------------
+
+   procedure Source_Set_Icon_Name
+     (Widget    : access Gtk_Widget_Record'Class;
+      Icon_Name : String)
+   is
+      procedure Internal (Widget : System.Address; Icon_Name : String);
+      pragma Import (C, Internal, "gtk_drag_source_set_icon_name");
+   begin
+      Internal (Get_Object (Widget), Icon_Name & ASCII.NUL);
+   end Source_Set_Icon_Name;
+
    ---------------------
    -- Check_Threshold --
    ---------------------
@@ -158,8 +191,7 @@ package body Gtk.Dnd is
          Target_List : System.Address);
       pragma Import (C, Internal, "gtk_drag_dest_set_target_list");
    begin
-      Internal (Get_Object (Widget),
-                Target_List.all'Address);
+      Internal (Get_Object (Widget), Target_List.all'Address);
    end Dest_Set_Target_List;
 
    --------------------------
@@ -175,6 +207,36 @@ package body Gtk.Dnd is
    begin
       return To_Proxy (Internal (Get_Object (Widget)));
    end Dest_Get_Target_List;
+
+   ----------------------------
+   -- Source_Set_Target_List --
+   ----------------------------
+
+   procedure Source_Set_Target_List
+     (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Target_List : Gtk.Selection.Target_List)
+   is
+      procedure Internal
+        (Widget      : System.Address;
+         Target_List : System.Address);
+      pragma Import (C, Internal, "gtk_drag_source_set_target_list");
+   begin
+      Internal (Get_Object (Widget), Target_List.all'Address);
+   end Source_Set_Target_List;
+
+   ----------------------------
+   -- Source_Get_Target_List --
+   ----------------------------
+
+   function Source_Get_Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List
+   is
+      function Internal (Widget : System.Address)
+                        return System.Address;
+      pragma Import (C, Internal, "gtk_drag_source_get_target_list");
+   begin
+      return To_Proxy (Internal (Get_Object (Widget)));
+   end Source_Get_Target_List;
 
    ----------------------
    -- Dest_Find_Target --
@@ -446,5 +508,84 @@ package body Gtk.Dnd is
    begin
       Internal (Get_Object (Widget), Colormap, Pixmap, Mask);
    end Source_Set_Icon;
+
+   ----------------------------
+   -- Dest_Add_Image_Targets --
+   ----------------------------
+
+   procedure Dest_Add_Image_Targets
+     (Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_drag_dest_add_image_targets");
+   begin
+      Internal (Get_Object (Widget));
+   end Dest_Add_Image_Targets;
+
+   ---------------------------
+   -- Dest_Add_Text_Targets --
+   ---------------------------
+
+   procedure Dest_Add_Text_Targets
+     (Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_drag_dest_add_text_targets");
+   begin
+      Internal (Get_Object (Widget));
+   end Dest_Add_Text_Targets;
+
+   --------------------------
+   -- Dest_Add_Uri_Targets --
+   --------------------------
+
+   procedure Dest_Add_Uri_Targets
+     (Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_drag_dest_add_uri_targets");
+   begin
+      Internal (Get_Object (Widget));
+   end Dest_Add_Uri_Targets;
+
+   ------------------------------
+   -- Source_Add_Image_Targets --
+   ------------------------------
+
+   procedure Source_Add_Image_Targets
+     (Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_drag_source_add_image_targets");
+   begin
+      Internal (Get_Object (Widget));
+   end Source_Add_Image_Targets;
+
+   -----------------------------
+   -- Source_Add_Text_Targets --
+   -----------------------------
+
+   procedure Source_Add_Text_Targets
+     (Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_drag_source_add_text_targets");
+   begin
+      Internal (Get_Object (Widget));
+   end Source_Add_Text_Targets;
+
+   ----------------------------
+   -- Source_Add_Uri_Targets --
+   ----------------------------
+
+   procedure Source_Add_Uri_Targets
+     (Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_drag_source_add_uri_targets");
+   begin
+      Internal (Get_Object (Widget));
+   end Source_Add_Uri_Targets;
+
 
 end Gtk.Dnd;

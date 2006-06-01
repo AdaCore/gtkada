@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2004 - 2006                        --
---                          AdaCore                                  --
+--                  Copyright (C) 2004 - 2006 AdaCore                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,10 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
-
-with Gdk.Pixbuf;   use Gdk.Pixbuf;
-with Gtk; use Gtk;
+with Ada.Unchecked_Conversion;
+with System;               use System;
+with Gdk.Pixbuf;           use Gdk.Pixbuf;
+with Gtk;                  use Gtk;
+with Gtk.Enums;            use Gtk.Enums;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtk.Widget;           use Gtk.Widget;
 
 package body Gtk.Icon_Factory is
 
@@ -202,23 +204,6 @@ package body Gtk.Icon_Factory is
       Internal (Source, Filename & ASCII.NUL);
    end Set_Filename;
 
-   ----------------
-   -- Set_Pixbuf --
-   ----------------
-
-   procedure Set_Pixbuf
-     (Source : Gtk_Icon_Source;
-      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf)
-   is
-      procedure Internal
-        (Source : Gtk_Icon_Source;
-         Pixbuf : Gdk_Pixbuf);
-      pragma Import (C, Internal, "gtk_icon_source_set_pixbuf");
-
-   begin
-      Internal (Source, Pixbuf);
-   end Set_Pixbuf;
-
    -------------------------
    -- Set_Size_Wildcarded --
    -------------------------
@@ -232,5 +217,366 @@ package body Gtk.Icon_Factory is
    begin
       Internal (Source, Boolean'Pos (Wildcarded));
    end Set_Size_Wildcarded;
+
+   ---------------
+   -- Get_Sizes --
+   ---------------
+
+   function Get_Sizes (Icon_Set : Gtk_Icon_Set) return Gint_Array is
+      procedure Internal
+        (Icon_Set : Gtk_Icon_Set;
+         Result   : access System.Address;
+         N_Sizes  : access Gint);
+      pragma Import (C, Internal, "gtk_icon_set_get_sizes");
+
+      type Big_Int_Array is array (Natural) of Gint;
+      pragma Convention (C, Big_Int_Array);
+
+      type Big_Int_Array_Access is access Big_Int_Array;
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Big_Int_Array_Access);
+
+      procedure G_Free (S : System.Address);
+      pragma Import (C, G_Free, "g_free");
+      --  External binding: g_free
+
+      Count  : aliased Gint;
+      Result : aliased System.Address;
+   begin
+      Internal (Icon_Set, Result'Access, Count'Access);
+      if Result = System.Null_Address then
+         return (1 .. 0 => 0);
+      else
+         declare
+            Result2 : constant Big_Int_Array_Access := Convert (Result);
+            Output  : Gint_Array (0 .. Natural (Count - 1));
+         begin
+            for O in Output'Range loop
+               Output (O) := Result2 (O);
+            end loop;
+            G_Free (Result);
+            return Output;
+         end;
+      end if;
+   end Get_Sizes;
+
+   ---------------------
+   -- Lookup_Icon_Set --
+   ---------------------
+
+   function Lookup_Icon_Set
+     (Style    : access Gtk.Style.Gtk_Style_Record'Class;
+      Stock_Id : String)
+      return Gtk_Icon_Set
+   is
+      function Internal
+        (Style    : System.Address;
+         Stock_Id : String)
+         return Gtk_Icon_Set;
+      pragma Import (C, Internal, "gtk_style_lookup_icon_set");
+      --  External binding: gtk_style_lookup_icon_set
+   begin
+      return Internal (Get_Object (Style), Stock_Id & ASCII.NUL);
+   end Lookup_Icon_Set;
+
+   -----------------
+   -- Render_Icon --
+   -----------------
+
+   function Render_Icon
+     (Icon_Set  : Gtk_Icon_Set;
+      Style     : access Gtk.Style.Gtk_Style_Record'Class;
+      Direction : Gtk.Enums.Gtk_Text_Direction;
+      State     : Gtk.Enums.Gtk_State_Type;
+      Size      : Gtk.Enums.Gtk_Icon_Size;
+      Widget    : Gtk.Widget.Gtk_Widget := null;
+      Detail    : String := "")
+      return Gdk.Pixbuf.Gdk_Pixbuf
+   is
+      function Internal
+        (Icon_Set  : Gtk_Icon_Set;
+         Style     : System.Address;
+         Direction : Gtk_Text_Direction;
+         State     : Gtk_State_Type;
+         Size      : Gtk_Icon_Size;
+         Widget    : System.Address;
+         Detail    : chars_ptr)
+         return Gdk_Pixbuf;
+      pragma Import (C, Internal, "gtk_icon_set_render_icon");
+      Str : chars_ptr := Null_Ptr;
+      W   : System.Address := System.Null_Address;
+      Result : Gdk_Pixbuf;
+   begin
+      if Detail /= "" then
+         Str := New_String (Detail);
+      end if;
+
+      if Widget /= null then
+         W := Get_Object (Widget);
+      end if;
+
+      Result := Internal
+        (Icon_Set, Get_Object (Style), Direction, State, Size,
+         W, Str);
+      Free (Str);
+
+      return Result;
+   end Render_Icon;
+
+   -----------------
+   -- Render_Icon --
+   -----------------
+
+   function Render_Icon
+     (Style     : access Gtk.Style.Gtk_Style_Record'Class;
+      Source    : Gtk_Icon_Source;
+      Direction : Gtk_Text_Direction;
+      State     : Gtk_State_Type;
+      Size      : Gtk_Icon_Size;
+      Widget    : Gtk_Widget := null;
+      Detail    : String := "")
+      return Gdk_Pixbuf
+   is
+      function Internal
+        (Style     : System.Address;
+         Source    : Gtk_Icon_Source;
+         Direction : Gtk_Text_Direction;
+         State     : Gtk_State_Type;
+         Size      : Gtk_Icon_Size;
+         Widget    : System.Address;
+         Detail    : chars_ptr)
+         return Gdk_Pixbuf;
+      pragma Import (C, Internal, "gtk_style_render_icon");
+      --  External binding: gtk_style_render_icon
+
+      Str    : chars_ptr := Null_Ptr;
+      W      : System.Address := System.Null_Address;
+      Result : Gdk_Pixbuf;
+   begin
+      if Detail /= "" then
+         Str := New_String (Detail);
+      end if;
+
+      if Widget /= null then
+         W := Get_Object (Widget);
+      end if;
+
+      Result := Internal
+        (Get_Object (Style), Source, Direction, State, Size, W, Str);
+      Free (Str);
+      return Result;
+   end Render_Icon;
+
+   -------------------------
+   -- Icon_Size_From_Name --
+   -------------------------
+
+   function Icon_Size_From_Name (Name : String) return Gtk_Icon_Size is
+      function Internal (Name : String) return Gtk_Icon_Size;
+      pragma Import (C, Internal, "gtk_icon_size_from_name");
+   begin
+      return Internal (Name & ASCII.NUL);
+   end Icon_Size_From_Name;
+
+   ------------------------
+   -- Icon_Size_Get_Name --
+   ------------------------
+
+   function Icon_Size_Get_Name (Size : Gtk_Icon_Size) return String is
+      function Internal
+        (Size : Gtk_Icon_Size) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_icon_size_get_name");
+   begin
+      return Value (Internal (Size));
+   end Icon_Size_Get_Name;
+
+   ----------------------
+   -- Icon_Size_Lookup --
+   ----------------------
+
+   procedure Icon_Size_Lookup
+     (Size   : Gtk_Icon_Size;
+      Width  : out Gint;
+      Height : out Gint)
+   is
+      function Internal
+        (Size   : Gtk_Icon_Size;
+         Width  : access Gint;
+         Height : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_icon_size_lookup");
+      W, H : aliased Gint;
+      Tmp  : Gboolean;
+      pragma Unreferenced (Tmp);
+   begin
+      Tmp := Internal (Size, W'Access, H'Access);
+      Width  := W;
+      Height := H;
+   end Icon_Size_Lookup;
+
+   -----------------------------------
+   -- Icon_Size_Lookup_For_Settings --
+   -----------------------------------
+
+   procedure Icon_Size_Lookup_For_Settings
+     (Settings : access Gtk.Settings.Gtk_Settings_Record'Class;
+      Size     : Gtk_Icon_Size;
+      Width    : out Gint;
+      Height   : out Gint)
+   is
+      function Internal
+        (Settings : System.Address;
+         Size     : Gtk_Icon_Size;
+         Width    : access Gint;
+         Height   : access Gint)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_icon_size_lookup_for_settings");
+      W, H : aliased Gint;
+      Tmp  : Gboolean;
+      pragma Unreferenced (Tmp);
+   begin
+      Tmp := Internal (Get_Object (Settings), Size, W'Access, H'Access);
+      Width  := W;
+      Height := H;
+   end Icon_Size_Lookup_For_Settings;
+
+   ------------------------
+   -- Icon_Size_Register --
+   ------------------------
+
+   function Icon_Size_Register
+     (Name   : String;
+      Width  : Gint;
+      Height : Gint)
+      return Gtk_Icon_Size
+   is
+      function Internal
+        (Name   : String;
+         Width  : Gint;
+         Height : Gint)
+         return Gtk_Icon_Size;
+      pragma Import (C, Internal, "gtk_icon_size_register");
+   begin
+      return Internal (Name & ASCII.NUL, Width, Height);
+   end Icon_Size_Register;
+
+   ------------------------------
+   -- Icon_Size_Register_Alias --
+   ------------------------------
+
+   procedure Icon_Size_Register_Alias
+     (Alias  : String;
+      Target : Gtk_Icon_Size)
+   is
+      procedure Internal
+        (Alias  : String;
+         Target : Gtk_Icon_Size);
+      pragma Import (C, Internal, "gtk_icon_size_register_alias");
+   begin
+      Internal (Alias & ASCII.NUL, Target);
+   end Icon_Size_Register_Alias;
+
+   --------------------------
+   -- Set_State_Wildcarded --
+   --------------------------
+
+   procedure Set_State_Wildcarded
+     (Source : Gtk_Icon_Source; Setting : Boolean)
+   is
+      procedure Internal (Source : Gtk_Icon_Source; Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_icon_source_set_state_wildcarded");
+   begin
+      Internal (Source, Boolean'Pos (Setting));
+   end Set_State_Wildcarded;
+
+   ------------------------------
+   -- Set_Direction_Wildcarded --
+   ------------------------------
+
+   procedure Set_Direction_Wildcarded
+     (Source  : Gtk_Icon_Source; Setting : Boolean)
+   is
+      procedure Internal (Source : Gtk_Icon_Source;  Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_icon_source_set_direction_wildcarded");
+   begin
+      Internal (Source, Boolean'Pos (Setting));
+   end Set_Direction_Wildcarded;
+
+   --------------------------
+   -- Get_State_Wildcarded --
+   --------------------------
+
+   function Get_State_Wildcarded
+     (Source : Gtk_Icon_Source) return Boolean
+   is
+      function Internal (Source : Gtk_Icon_Source) return Gboolean;
+      pragma Import (C, Internal, "gtk_icon_source_get_state_wildcarded");
+   begin
+      return Boolean'Val (Internal (Source));
+   end Get_State_Wildcarded;
+
+   ------------------------------
+   -- Get_Direction_Wildcarded --
+   ------------------------------
+
+   function Get_Direction_Wildcarded
+     (Source : Gtk_Icon_Source) return Boolean
+   is
+      function Internal (Source : Gtk_Icon_Source) return Gboolean;
+      pragma Import (C, Internal, "gtk_icon_source_get_direction_wildcarded");
+   begin
+      return Boolean'Val (Internal (Source));
+   end Get_Direction_Wildcarded;
+
+   -------------------------
+   -- Get_Size_Wildcarded --
+   -------------------------
+
+   function Get_Size_Wildcarded (Source : Gtk_Icon_Source) return Boolean is
+      function Internal (Source : Gtk_Icon_Source) return Gboolean;
+      pragma Import (C, Internal, "gtk_icon_source_get_size_wildcarded");
+   begin
+      return Boolean'Val (Internal (Source));
+   end Get_Size_Wildcarded;
+
+   ------------------
+   -- Get_Filename --
+   ------------------
+
+   function Get_Filename (Source : Gtk_Icon_Source) return String is
+      function Internal (Source : Gtk_Icon_Source)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_icon_source_get_filename");
+      --  Return value must not be freed.
+   begin
+      return Value (Internal (Source));
+   end Get_Filename;
+
+   -------------------
+   -- Get_Icon_Name --
+   -------------------
+
+   function Get_Icon_Name (Source : Gtk_Icon_Source) return String is
+      function Internal
+        (Source : Gtk_Icon_Source) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_icon_source_get_icon_name");
+      --  Return value must not be freed
+   begin
+      return Value (Internal (Source));
+   end Get_Icon_Name;
+
+   -------------------
+   -- Set_Icon_Name --
+   -------------------
+
+   procedure Set_Icon_Name
+     (Source : Gtk_Icon_Source; Icon_Name : String)
+   is
+      procedure Internal
+        (Source    : Gtk_Icon_Source;
+         Icon_Name : String);
+      pragma Import (C, Internal, "gtk_icon_source_set_icon_name");
+   begin
+      Internal (Source, Icon_Name & ASCII.NUL);
+   end Set_Icon_Name;
 
 end Gtk.Icon_Factory;

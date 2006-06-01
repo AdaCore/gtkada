@@ -27,6 +27,8 @@
 -----------------------------------------------------------------------
 
 with System.Address_To_Access_Conversions;
+with Gtk.Text_Tag;        use Gtk.Text_Tag;
+with Gtk.Text_Attributes; use Gtk.Text_Attributes;
 
 package body Gtk.Text_Iter is
 
@@ -55,13 +57,12 @@ package body Gtk.Text_Iter is
    --  'Address of the parameter should not be done anymore. In that case,
    --  the proper method is to use the 'Address of a local Gtk_Text_Iter.
 
-   use Gtk.Text_Tag;
-
    package Iter_Access_Address_Conversions is
      new System.Address_To_Access_Conversions (Gtk_Text_Iter);
 
    procedure g_free (Mem : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, g_free, "g_free");
+   --  External binding: g_free
 
    ----------------
    -- Can_Insert --
@@ -230,17 +231,6 @@ package body Gtk.Text_Iter is
       end;
    end Get_Visible_Text;
 
-   ---------------
-   -- Get_Marks --
-   ---------------
-
-   --  function Get_Marks (Iter : access Gtk_Text_Iter) return GSList is
-   --     function Internal (Iter : System.Address) return System.Address;
-   --     pragma Import (C, Internal, "gtk_text_iter_get_marks");
-   --  begin
-   --     return Internal (Iter);
-   --  end Get_Marks;
-
    ----------------------
    -- Get_Child_Anchor --
    ----------------------
@@ -258,24 +248,6 @@ package body Gtk.Text_Iter is
       return Gtk.Text_Child.Gtk_Text_Child_Anchor
                (Get_User_Data_Fast (Internal (Iter), Stub));
    end Get_Child_Anchor;
-
-   ----------------------
-   -- Get_Toggled_Tags --
-   ----------------------
-
-   --  function Get_Toggled_Tags
-   --    (Iter       : access Gtk_Text_Iter;
-   --     Toggled_On : Boolean)
-   --     return GSList
-   --  is
-   --     function Internal
-   --       (Iter       : System.Address;
-   --        Toggled_On : Gboolean)
-   --        return System.Address;
-   --     pragma Import (C, Internal, "gtk_text_iter_get_toggled_tags");
-   --  begin
-   --     return Internal (Iter, Boolean'Pos (Toggled_On));
-   --  end Get_Toggled_Tags;
 
    ----------------
    -- Begins_Tag --
@@ -497,24 +469,6 @@ package body Gtk.Text_Iter is
    begin
       return Internal (Iter) /= 0;
    end Is_Cursor_Position;
-
-   --------------------
-   -- Get_Attributes --
-   --------------------
-
-   --  function Get_Attributes
-   --    (Iter   : access Gtk_Text_Iter;
-   --     Values : access Gtk.Text_Attributes.Gtk_Text_Attributes_Record'Class)
-   --     return Boolean
-   --  is
-   --     function Internal
-   --       (Iter   : System.Address;
-   --        Values : System.Address)
-   --        return Gboolean;
-   --     pragma Import (C, Internal, "gtk_text_iter_get_attributes");
-   --  begin
-   --     return To_Boolean (Internal (Iter, Get_Object (Values)));
-   --  end Get_Attributes;
 
    ------------------
    -- Get_Language --
@@ -1029,56 +983,6 @@ package body Gtk.Text_Iter is
       end if;
    end Backward_To_Tag_Toggle;
 
-   -----------------------
-   -- Forward_Find_Char --
-   -----------------------
-
-   --  function Forward_Find_Char
-   --    (Iter      : access Gtk_Text_Iter;
-   --     Pred      : Gtk_Text_Char_Predicate;
-   --     User_Data : gpointer;
-   --     Limit     : access Gtk_Text_Iter)
-   --     return Boolean
-   --  is
-   --     function Internal
-   --       (Iter      : System.Address;
-   --        Pred      : Gint;
-   --        User_Data : Integer;
-   --        Limit     : System.Address)
-   --        return Gboolean;
-   --     pragma Import (C, Internal, "gtk_text_iter_forward_find_char");
-   --  begin
-   --     return To_Boolean (Internal (Iter,
-   --                                  Gtk_Text_Char_Predicate'Pos (Pred),
-   --                                  User_Data,
-   --                                  Limit));
-   --  end Forward_Find_Char;
-
-   ------------------------
-   -- Backward_Find_Char --
-   ------------------------
-
-   --  function Backward_Find_Char
-   --    (Iter      : access Gtk_Text_Iter;
-   --     Pred      : Gtk_Text_Char_Predicate;
-   --     User_Data : gpointer;
-   --     Limit     : access Gtk_Text_Iter)
-   --     return Boolean
-   --  is
-   --     function Internal
-   --       (Iter      : System.Address;
-   --        Pred      : Gint;
-   --        User_Data : Integer;
-   --        Limit     : System.Address)
-   --        return GBoolean;
-   --     pragma Import (C, Internal, "gtk_text_iter_backward_find_char");
-   --  begin
-   --     return To_Boolean (Internal (Iter,
-   --                                  Gtk_Text_Char_Predicate'Pos (Pred),
-   --                                  User_Data,
-   --                                  Limit));
-   --  end Backward_Find_Char;
-
    --------------------
    -- Forward_Search --
    --------------------
@@ -1189,6 +1093,306 @@ package body Gtk.Text_Iter is
                      (Glib.Values.Get_Address (Val)).all,
          Dest   => Iter);
    end Get_Text_Iter;
+
+   ----------------
+   -- Find_Chars --
+   ----------------
+
+   package body Find_Chars is
+
+      -----------------------
+      -- Forward_Find_Char --
+      -----------------------
+
+      function Forward_Find_Char
+        (Iter      : Gtk_Text_Iter;
+         Pred      : Gtk_Text_Char_Predicate;
+         User_Data : Data_Type;
+         Limit     : Gtk_Text_Iter) return Boolean
+      is
+         function Proxy (Ch : Gunichar; D : System.Address) return Gboolean;
+         pragma Convention (C, Proxy);
+         --  Converts the C types to a proper Ada type, and call the user
+         --  function
+
+         function Proxy (Ch : Gunichar; D : System.Address) return Gboolean is
+            pragma Unreferenced (D);
+         begin
+            return Boolean'Pos (Pred (Ch, User_Data));
+         end Proxy;
+
+         function Internal
+           (Iter : Gtk_Text_Iter;
+            Pred : System.Address;
+            Data : System.Address;
+            Limit : Gtk_Text_Iter) return Gboolean;
+         pragma Import (C, Internal, "gtk_text_iter_forward_find_char");
+
+      begin
+         return Boolean'Val
+           (Internal (Iter, Proxy'Address, System.Null_Address, Limit));
+      end Forward_Find_Char;
+
+      ------------------------
+      -- Backward_Find_Char --
+      ------------------------
+
+      function Backward_Find_Char
+        (Iter      : Gtk_Text_Iter;
+         Pred      : Gtk_Text_Char_Predicate;
+         User_Data : Data_Type;
+         Limit     : Gtk_Text_Iter) return Boolean
+      is
+         function Proxy (Ch : Gunichar; D : System.Address) return Gboolean;
+         pragma Convention (C, Proxy);
+         --  Converts the C types to a proper Ada type, and call the user
+         --  function
+
+         function Proxy (Ch : Gunichar; D : System.Address) return Gboolean is
+            pragma Unreferenced (D);
+         begin
+            return Boolean'Pos (Pred (Ch, User_Data));
+         end Proxy;
+
+         function Internal
+           (Iter : Gtk_Text_Iter;
+            Pred : System.Address;
+            Data : System.Address;
+            Limit : Gtk_Text_Iter) return Gboolean;
+         pragma Import (C, Internal, "gtk_text_iter_backward_find_char");
+
+      begin
+         return Boolean'Val
+           (Internal (Iter, Proxy'Address, System.Null_Address, Limit));
+      end Backward_Find_Char;
+   end Find_Chars;
+
+   -------------------------------------
+   -- Forward_Visible_Cursor_Position --
+   -------------------------------------
+
+   procedure Forward_Visible_Cursor_Position
+     (Iter : in out Gtk_Text_Iter; Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter) return Gboolean;
+      pragma Import
+        (C, Internal, "gtk_text_iter_forward_visible_cursor_position");
+   begin
+      Result := Boolean'Val (Internal (Iter));
+   end Forward_Visible_Cursor_Position;
+
+   --------------------------------------
+   -- Forward_Visible_Cursor_Positions --
+   --------------------------------------
+
+   procedure Forward_Visible_Cursor_Positions
+     (Iter   : in out Gtk_Text_Iter;
+      Count  : Gint := 1;
+      Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
+      pragma Import
+        (C, Internal, "gtk_text_iter_forward_visible_cursor_positions");
+   begin
+      Result := Boolean'Val (Internal (Iter, Count));
+   end Forward_Visible_Cursor_Positions;
+
+   --------------------------------------
+   -- Backward_Visible_Cursor_Position --
+   --------------------------------------
+
+   procedure Backward_Visible_Cursor_Position
+     (Iter : in out Gtk_Text_Iter;  Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter)  return Gboolean;
+      pragma Import
+        (C, Internal, "gtk_text_iter_backward_visible_cursor_position");
+   begin
+      Result := Boolean'Val (Internal (Iter));
+   end Backward_Visible_Cursor_Position;
+
+   ---------------------------------------
+   -- Backward_Visible_Cursor_Positions --
+   ---------------------------------------
+
+   procedure Backward_Visible_Cursor_Positions
+     (Iter   : in out Gtk_Text_Iter;
+      Count  : Gint := 1;
+      Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
+      pragma Import
+        (C, Internal, "gtk_text_iter_backward_visible_cursor_positions");
+   begin
+      Result := Boolean'Val (Internal (Iter, Count));
+   end Backward_Visible_Cursor_Positions;
+
+   --------------------------
+   -- Forward_Visible_Line --
+   --------------------------
+
+   procedure Forward_Visible_Line
+     (Iter : in out Gtk_Text_Iter; Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_forward_visible_line");
+   begin
+      Result := Boolean'Val (Internal (Iter));
+   end Forward_Visible_Line;
+
+   ---------------------------
+   -- Forward_Visible_Lines --
+   ---------------------------
+
+   procedure Forward_Visible_Lines
+     (Iter   : in out Gtk_Text_Iter;
+      Count  : Gint := 1;
+      Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_forward_visible_lines");
+   begin
+      Result := Boolean'Val (Internal (Iter, Count));
+   end Forward_Visible_Lines;
+
+   ---------------------------
+   -- Backward_Visible_Line --
+   ---------------------------
+
+   procedure Backward_Visible_Line
+     (Iter   : in out Gtk_Text_Iter; Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_backward_visible_line");
+   begin
+      Result := Boolean'Val (Internal (Iter));
+   end Backward_Visible_Line;
+
+   ----------------------------
+   -- Backward_Visible_Lines --
+   ----------------------------
+
+   procedure Backward_Visible_Lines
+     (Iter   : in out Gtk_Text_Iter;
+      Count  : Gint := 1;
+      Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_backward_visible_lines");
+   begin
+      Result := Boolean'Val (Internal (Iter, Count));
+   end Backward_Visible_Lines;
+
+   ------------------------------
+   -- Forward_Visible_Word_End --
+   ------------------------------
+
+   procedure Forward_Visible_Word_End
+     (Iter : in out Gtk_Text_Iter; Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_forward_visible_word_end");
+   begin
+      Result := Boolean'Val (Internal (Iter));
+   end Forward_Visible_Word_End;
+
+   -------------------------------
+   -- Forward_Visible_Word_Ends --
+   -------------------------------
+
+   procedure Forward_Visible_Word_Ends
+     (Iter   : in out Gtk_Text_Iter;
+      Count  : Gint := 1;
+      Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_forward_visible_word_ends");
+   begin
+      Result := Boolean'Val (Internal (Iter, Count));
+   end Forward_Visible_Word_Ends;
+
+   ---------------------------------
+   -- Backward_Visible_Word_Start --
+   ---------------------------------
+
+   procedure Backward_Visible_Word_Start
+     (Iter : in out Gtk_Text_Iter; Result : out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_backward_visible_word_start");
+   begin
+      Result := Boolean'Val (Internal (Iter));
+   end Backward_Visible_Word_Start;
+
+   ----------------------------------
+   -- Backward_Visible_Word_Starts --
+   ----------------------------------
+
+   procedure Backward_Visible_Word_Starts
+     (Iter   : Gtk_Text_Iter;
+      Count  : Gint := 1;
+      Result : in out Boolean)
+   is
+      function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
+      pragma Import
+        (C, Internal, "gtk_text_iter_backward_visible_word_starts");
+   begin
+      Result := Boolean'Val (Internal (Iter, Count));
+   end Backward_Visible_Word_Starts;
+
+   --------------------
+   -- Get_Attributes --
+   --------------------
+
+   procedure Get_Attributes
+     (Iter     : Gtk_Text_Iter;
+      Values   : in out Gtk.Text_Attributes.Gtk_Text_Attributes;
+      Modified : out Boolean)
+   is
+      function Internal
+        (Iter   : Gtk_Text_Iter;
+         Values : Gtk_Text_Attributes)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_get_attributes");
+   begin
+      Modified := Boolean'Val (Internal (Iter, Values));
+   end Get_Attributes;
+
+   ----------------------
+   -- Get_Toggled_Tags --
+   ----------------------
+
+   function Get_Toggled_Tags
+     (Iter       : Gtk_Text_Iter;
+      Toggled_On : Boolean)
+      return Glib.Object.Object_List.GSlist
+   is
+      use Glib.Object.Object_List;
+      function Internal
+        (Iter       : Gtk_Text_Iter;
+         Toggled_On : Gboolean) return System.Address;
+      pragma Import (C, Internal, "gtk_text_iter_get_toggled_tags");
+      L : GSlist;
+   begin
+      Set_Object (L, Internal (Iter, Boolean'Pos (Toggled_On)));
+      return L;
+   end Get_Toggled_Tags;
+
+   ---------------
+   -- Get_Marks --
+   ---------------
+
+   function Get_Marks
+     (Iter : Gtk_Text_Iter) return Glib.Object.Object_List.GSlist
+   is
+      use Glib.Object.Object_List;
+      function Internal (Iter : Gtk_Text_Iter) return System.Address;
+      pragma Import (C, Internal, "gtk_text_iter_get_marks");
+      L : GSlist;
+   begin
+      Set_Object (L, Internal (Iter));
+      return L;
+   end Get_Marks;
 
 begin
    if Gtk_Text_Iter'Size /= C_Gtk_Text_Iter_Size * 8 then

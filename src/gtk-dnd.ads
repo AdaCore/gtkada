@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -80,7 +80,7 @@
 --  call Finish, to warn the source widget that the drag and drop operation
 --  is finished, and whether it was successful or not.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gdk.Bitmap;
 with Gdk.Color;
@@ -172,17 +172,37 @@ package Gtk.Dnd is
    --  Clear information about a drop destination set with Dest_Set. The
    --  widget will no longer receive notification of drags.
 
-   function Dest_Find_Target
-     (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Context     : Drag_Context;
-      Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
-
-   function Dest_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List;
-
    procedure Dest_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Target_List : Gtk.Selection.Target_List);
+   function Dest_Get_Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List;
+   --  Sets the target types that this widget can accept from drag-and-drop.
+   --  The widget must first be made into a drag destination with
+   --  Dest_Set.
+
+   procedure Dest_Add_Image_Targets
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Dest_Add_Text_Targets
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Dest_Add_Uri_Targets
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Add the image/text/URI targets supported by Gtk_Selection to the target
+   --  list of the drag destination. The targets are added with Info = 0. If
+   --  you need another value, use Gtk.Selection.Target_List_Add_*_Targets, and
+   --  Dest_Set_Target_List
+
+   function Dest_Find_Target
+     (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Context     : Gdk.Dnd.Drag_Context;
+      Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
+   --  Looks for a match between the targets set for context and the
+   --  Target_List, returning the first matching target, otherwise returning
+   --  GDK_NONE. Target_List should usually be the return value from
+   --  Dest_Get_Target_List, but some widgets may have different valid targets
+   --  for different parts of the widget; in that case, they will have to
+   --  implement a drag_motion handler that passes the correct target list to
+   --  this function.
 
    -------------------------------------
    -- Setting up a widget as a source --
@@ -211,6 +231,44 @@ package Gtk.Dnd is
 
    procedure Source_Unset (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Undo the effects of Source_Set.
+
+   procedure Source_Set_Target_List
+     (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Target_List : Gtk.Selection.Target_List);
+   function Source_Get_Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List;
+   --  Changes the target types that this widget offers for drag-and-drop. The
+   --  widget must first be made into a drag source with Source_Set.
+
+   procedure Source_Add_Image_Targets
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Source_Add_Text_Targets
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Source_Add_Uri_Targets
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Add the writable image/text/URI targets supported by Gtk_Selection to
+   --  the target list of the drag source. The targets are added with Info = 0.
+   --  If you need another value, use Gtk.Selection.Target_List_Add_*_Targets,
+   --  and Source_Set_Target_List
+   --  Widget: a #GtkWidget that's is a drag source
+
+   procedure Source_Set_Icon
+     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Colormap : Gdk.Color.Gdk_Colormap;
+      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : Gdk.Bitmap.Gdk_Bitmap);
+   procedure Source_Set_Icon_Pixbuf
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+   procedure Source_Set_Icon_Stock
+     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Stock_Id : String);
+   procedure Source_Set_Icon_Name
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Icon_Name : String);
+   --  Set the icon that will be used for drags from a particular widget.
+   --  GtkAda retains a reference count for the arguments, and will release
+   --  them when they are no longer needed.
 
    ---------------------------------
    -- The drag-and-drop operation --
@@ -314,16 +372,6 @@ package Gtk.Dnd is
    --  Set the icon for a particular drag to the default icon.
    --  This must be called with a context for the source side of a drag.
 
-   procedure Set_Default_Icon
-     (Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap;
-      Hot_X    : Gint;
-      Hot_Y    : Gint);
-   --  Change the default drag icon. GtkAda retains a reference count for the
-   --  arguments, and will release them when they are no longer needed.
-   --  This procedure is deprecated.
-
    procedure Set_Icon_Pixbuf
      (Context : Drag_Context;
       Pixbuf  : Gdk.Pixbuf.Gdk_Pixbuf;
@@ -348,22 +396,38 @@ package Gtk.Dnd is
    --  Hot_x: the X offset within the icon of the hotspot.
    --  Hot_y: the Y offset within the icon of the hotspot.
 
-   procedure Source_Set_Icon
-     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Colormap : Gdk.Color.Gdk_Colormap;
+   procedure Set_Icon_Name
+     (Context   : Drag_Context;
+      Icon_Name : String;
+      Hot_X     : Gint;
+      Hot_Y     : Gint);
+   --  Sets the icon for a given drag from a named themed icon. See
+   --  the docs for Gtk_Icon_Theme for more details. Note that the
+   --  size of the icon depends on the icon theme (the icon is
+   --  loaded at the symbolic size GTK_ICON_SIZE_DND), thus
+   --  Hot_X and Hot_Y have to be used with care.
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   procedure Set_Default_Icon
+     (Colormap : Gdk.Color.Gdk_Colormap;
       Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap);
-   --  Set the icon that will be used for drags from a particular widget.
-   --  GtkAda retains a reference count for the arguments, and will release
-   --  them when they are no longer needed.
+      Mask     : Gdk.Bitmap.Gdk_Bitmap;
+      Hot_X    : Gint;
+      Hot_Y    : Gint);
+   pragma Obsolescent; --  Set_Default_Icon
+   --  Change the default drag icon. GtkAda retains a reference count for the
+   --  arguments, and will release them when they are no longer needed.
+   --  This procedure is deprecated.
 
-   procedure Source_Set_Icon_Pixbuf
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
-
-   procedure Source_Set_Icon_Stock
-     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Stock_Id : String);
+   --  </doc_ignore>
 
    -------------
    -- Signals --

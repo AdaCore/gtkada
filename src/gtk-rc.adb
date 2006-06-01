@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +30,7 @@
 with System;
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Strings;
+with Gtk.Settings; use Gtk.Settings;
 with Gtk.Widget; use Gtk.Widget;
 
 package body Gtk.Rc is
@@ -135,87 +136,14 @@ package body Gtk.Rc is
    function Get_Style
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Gtk_Style
    is
-      function Internal (Widget : System.Address) return Gtk_Style;
+      function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_rc_get_style");
+      Stub : Gtk_Style_Record;
 
    begin
-      return Internal (Get_Object (Widget));
+      return Gtk_Style
+        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Style;
-
-   ------------------------
-   -- Get_Style_By_Paths --
-   ------------------------
-
-   --  function Get_Style_By_Paths
-   --    (Settings    : access Gtk_Settings_Record'Class;
-   --     Widget_Path : String := "";
-   --     Class_Path  : String := "";
-   --     The_Type    : Glib.GType := Glib.GType_None) return Gtk_Style
-   --  is
-   --     function Internal
-   --       (Settings    : System.Address;
-   --        Widget_Path : System.Address;
-   --        Class_Path  : System.Address;
-   --        The_Type    : Glib.GType) return Gtk_Style;
-   --     pragma Import (C, Internal, "gtk_rc_get_style_by_paths");
-
-   --     W, C : System.Address := System.Null_Address;
-
-   --  begin
-   --     if Widget_Path /= "" then
-   --        W := Widget_Path'Address;
-   --     end if;
-
-   --     if Clast_Path /= "" then
-   --        C := Class_Path'Address;
-   --     end if;
-
-   --     return Internal (Get_Object (Settings, W, C, The_Type));
-   --  end Get_Style_By_Paths;
-
-   ------------------------------
-   -- Reparse_All_For_Settings --
-   ------------------------------
-
-   --  function Reparse_All_For_Settings
-   --    (Settings   : access Gtk_Settings_Record'Class;
-   --     Force_Load : Boolean) return Boolean
-   --  is
-   --     function Internal
-   --       (Settings   : System.Address;
-   --        Force_Load : Gboolean) return Gboolean;
-   --     pragma Import (C, Internal, "gtk_rc_reparse_all_for_settings");
-
-   --  begin
-   --     return To_Boolean (Internal
-   --       (Get_Object (Settings), To_Gboolean (Force_Load));
-   --  end Reparse_All_For_Settings;
-
-   -------------------------
-   -- Find_Pixmap_In_Path --
-   -------------------------
-
-   --  function Find_Pixmap_In_Path
-   --    (Settings    : access Gtk_Settings_Record'Class;
-   --     Pixmap_File : String) return String
-   --  is
-   --     function Internal
-   --       (Settings    : System.Address;
-   --        Scanner     : System.Address := System.Null_Address;
-   --        Pixmap_File : String) return Chars_Ptr;
-   --     pragma Import (C, Internal, "gtk_rc_find_pixmap_in_path");
-
-   --     S : Chars_Ptr := Internal
-   --       (Get_Object (Settings), Pixmap_File => Pixmap_File & ASCII.NUL);
-
-   --  begin
-   --     declare
-   --        Str : constant String := Strings.Value (S);
-   --     begin
-   --        g_free (S);
-   --        return Str;
-   --     end;
-   --  end Find_Pixmap_In_Path;
 
    -----------
    -- Parse --
@@ -342,6 +270,7 @@ package body Gtk.Rc is
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_modifier_style");
+      --  External binding: gtk_widget_get_modifier_style
 
       Stub : Gtk_Rc_Style_Record;
 
@@ -360,9 +289,69 @@ package body Gtk.Rc is
    is
       procedure Internal (Widget : System.Address; Style : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_style");
+      --  External binding: gtk_widget_modify_style
 
    begin
       Internal (Get_Object (Widget), Get_Object (Style));
    end Modify_Style;
+
+   ------------------------------
+   -- Reparse_All_For_Settings --
+   ------------------------------
+
+   function Reparse_All_For_Settings
+     (Settings   : access Gtk_Settings_Record'Class;
+      Force_Load : Boolean)
+      return Boolean
+   is
+      function Internal
+        (Settings   : System.Address;
+         Force_Load : Gboolean)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_rc_reparse_all_for_settings");
+   begin
+      return Boolean'Val
+        (Internal (Get_Object (Settings), Boolean'Pos (Force_Load)));
+   end Reparse_All_For_Settings;
+
+   ------------------
+   -- Reset_Styles --
+   ------------------
+
+   procedure Reset_Styles
+     (Settings : access Gtk_Settings_Record'Class)
+   is
+      procedure Internal (Settings : System.Address);
+      pragma Import (C, Internal, "gtk_rc_reset_styles");
+   begin
+      Internal (Get_Object (Settings));
+   end Reset_Styles;
+
+   ------------------------
+   -- Get_Style_By_Paths --
+   ------------------------
+
+   function Get_Style_By_Paths
+     (Settings    : access Gtk_Settings_Record'Class;
+      Widget_Path : String := "";
+      Class_Path  : String := "";
+      Typ         : GType := GType_None)
+      return Gtk_Style
+   is
+      function Internal
+        (Settings    : System.Address;
+         Widget_Path : String;
+         Class_Path  : String;
+         Typ         : GType)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_rc_get_style_by_paths");
+      Stub : Gtk_Style_Record;
+   begin
+      return Gtk_Style
+        (Get_User_Data
+              (Internal (Get_Object (Settings), Widget_Path & ASCII.NUL,
+               Class_Path & ASCII.NUL, Typ), Stub));
+   end Get_Style_By_Paths;
+
 
 end Gtk.Rc;

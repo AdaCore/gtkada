@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2005 AdaCore                    --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,10 +28,11 @@
 
 --  <description>
 --  This is the public representation of a text buffer to be used in
---  cunjunction with Gtk.Text_View.
+--  coordination with Gtk.Text_View.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.8.17</c_version>
 
+with Glib.Properties;
 with Gdk.Pixbuf;
 with Gtk.Clipboard;
 with Gtk.Text_Child;
@@ -49,18 +50,15 @@ package Gtk.Text_Buffer is
    procedure Gtk_New
      (Buffer : out Gtk_Text_Buffer;
       Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null);
-   --  Create a new text buffer.
+   procedure Initialize
+     (Buffer : access Gtk_Text_Buffer_Record'Class;
+      Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null);
+   --  Creates or initializes a new text buffer.
    --  Create a new table if Table is null.
    --  The buffer is created with a reference count of 1, and therefore should
    --  be manually unreferenced (Glib.Object.Unref). It is recommended to do
    --  that as soon as the buffer has been used to create a
    --  Gtk.Text_View.Gtk_Text_View widget.
-
-   procedure Initialize
-     (Buffer : access Gtk_Text_Buffer_Record'Class;
-      Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Text_Buffer.
@@ -77,10 +75,20 @@ package Gtk.Text_Buffer is
    --  the contents of the buffer in string form to be this many bytes long.
    --  The character count is cached, so this function is very fast.
 
-   function Get_Tag_Table
-     (Buffer : access Gtk_Text_Buffer_Record)
-      return Gtk.Text_Tag_Table.Gtk_Text_Tag_Table;
-   --  Get the Gtk_Text_Tag_Table associated with this buffer.
+   ---------------------------
+   -- Modifiying the buffer --
+   ---------------------------
+
+   procedure Set_Modified
+     (Buffer  : access Gtk_Text_Buffer_Record;
+      Setting : Boolean := True);
+   function Get_Modified
+     (Buffer : access Gtk_Text_Buffer_Record) return Boolean;
+   --  Used to keep track of whether the buffer has been modified since the
+   --  last time it was saved. Whenever the buffer is saved to disk, call
+   --  Set_Modified (Buffer, False). When the buffer is modified,
+   --  it will automatically toggled on the modified bit again. When the
+   --  modified bit flips, the buffer emits a "modified_changed" signal.
 
    procedure Set_Text
      (Buffer : access Gtk_Text_Buffer_Record;
@@ -176,6 +184,18 @@ package Gtk.Text_Buffer is
    --  gtk_text_buffer_insert_with_tags_by_name not bound: variable number
    --  of arguments. ditto.
 
+   procedure Insert_Pixbuf
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+   --  Insert an image into the text buffer at Iter.
+   --  The image will be counted as one character in character counts, and when
+   --  obtaining the buffer contents as a string, will be represented by the
+   --  Unicode "object replacement character" 16#FFFC#. Note that the "slice"
+   --  variants for obtaining portions of the buffer as a string include
+   --  this character for pixbufs, but the "text" variants do not. e.g. see
+   --  Get_Slice and Get_Text.
+
    procedure Delete
      (Buffer  : access Gtk_Text_Buffer_Record;
       Start   : in out Gtk.Text_Iter.Gtk_Text_Iter;
@@ -204,6 +224,30 @@ package Gtk.Text_Buffer is
    --  are revalidated to point to the location of the last deleted range, or
    --  left untouched if no text was deleted.
    --  Result: whether some text was actually deleted
+
+   function Backspace
+     (Buffer           : access Gtk_Text_Buffer_Record;
+      Iter             : Gtk.Text_Iter.Gtk_Text_Iter;
+      Interactive      : Boolean;
+      Default_Editable : Boolean)
+      return Boolean;
+   --  Performs the appropriate action as if the user hit the delete key with
+   --  the cursor at the position specified by Iter. In the normal case a
+   --  single character will be deleted, but when combining accents are
+   --  involved, more than one character can be deleted, and when precomposed
+   --  character and accent combinations are involved, less than one character
+   --  will be deleted.
+   --  Because the buffer is modified, all outstanding iterators become invalid
+   --  after calling this function; however, Iter will be re-initialized to
+   --  point to the location where text was deleted.
+   --  Interactive should be true if the deletion is caused by user
+   --  interaction.
+   --  Default_Editable: Whether the buffer is editable by default.
+   --  Returns True if the buffer was modified.
+
+   ---------------------------------
+   -- Reading the buffer contents --
+   ---------------------------------
 
    function Get_Text
      (Buffer               : access Gtk_Text_Buffer_Record;
@@ -254,40 +298,10 @@ package Gtk.Text_Buffer is
    --  The caller is responsible for freeing (using Gtkada.Types.g_free) the
    --  returned pointer.
 
-   procedure Insert_Pixbuf
-     (Buffer : access Gtk_Text_Buffer_Record;
-      Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
-      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
-   --  Insert an image into the text buffer at Iter.
-   --  The image will be counted as one character in character counts, and when
-   --  obtaining the buffer contents as a string, will be represented by the
-   --  Unicode "object replacement character" 16#FFFC#. Note that the "slice"
-   --  variants for obtaining portions of the buffer as a string include
-   --  this character for pixbufs, but the "text" variants do not. e.g. see
-   --  Get_Slice and Get_Text.
-
-   procedure Insert_Child_Anchor
-     (Buffer : access Gtk_Text_Buffer_Record;
-      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
-      Anchor : access Gtk.Text_Child.Gtk_Text_Child_Anchor_Record'Class);
-   --  Insert a child widget anchor into the text buffer at Iter.
-   --  The anchor will be counted as one character in character counts, and
-   --  when obtaining the buffer contents as a string, will be represented
-   --  by the Unicode "object replacement character" 16#FFFC#. Note that the
-   --  "slice" variants for obtaining portions of the buffer as a string
-   --  include this character for pixbufs, but the "text" variants do
-   --  not. e.g. see Get_Slice and Get_Text. Consider Create_Child_Anchor as a
-   --  more convenient alternative to this function. The buffer will add a
-   --  reference to the anchor, so you can unref it after insertion.
-
-   procedure Create_Child_Anchor
-     (Buffer : access Gtk_Text_Buffer_Record;
-      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
-      Result : out Gtk.Text_Child.Gtk_Text_Child_Anchor);
-   --  Convenience function which simply creates a child anchor with
-   --  Gtk.Text_Child.Gtk_New and inserts it into the buffer with
-   --  Insert_Child_Anchor.
-   --  Result: the created child anchor.
+   -----------
+   -- Marks --
+   -----------
+   --  See Gtk.Text_Mark
 
    function Create_Mark
      (Buffer       : access Gtk_Text_Buffer_Record;
@@ -372,6 +386,15 @@ package Gtk.Text_Buffer is
    --  selection, if you just want to know whether there's a selection and what
    --  its bounds are.
 
+   function Get_Buffer
+     (Mark : Gtk.Text_Mark.Gtk_Text_Mark) return Gtk_Text_Buffer;
+   --  Return the buffer associated to the given mark
+
+   ------------
+   -- Cursor --
+   ------------
+   --  The cursor is a special mark in the buffer
+
    procedure Place_Cursor
      (Buffer : access Gtk_Text_Buffer_Record;
       Where  : Gtk.Text_Iter.Gtk_Text_Iter);
@@ -388,6 +411,28 @@ package Gtk.Text_Buffer is
    --  gtk_text_buffer_create_tag not bound: variable number of arguments
    --  ??? Discuss this with the Gtk+ team.
    --  equivalent to Gtk_New + Gtk.Text_Tag_Table.Add
+
+   ----------
+   -- Tags --
+   ----------
+   --  Tags can be applied to change the properties of a range of text
+
+   function Create_Tag
+     (Buffer              : access Gtk_Text_Buffer_Record;
+      Tag_Name            : String := "")
+      return Gtk.Text_Tag.Gtk_Text_Tag;
+   --  Creates a tag and adds it to the tag table for Buffer. Equivalent to
+   --  calling gtk.text_tag.gtk_new and then adding the tag to the buffer's tag
+   --  table. The returned tag is owned by the buffer's tag table, so the ref
+   --  count will be equal to one.
+   --
+   --  If Tag_Name is NULL, the tag is anonymous, otherwise a tag called
+   --  Tag_Name must not already exist in the tag table for this buffer.
+
+   function Get_Tag_Table
+     (Buffer : access Gtk_Text_Buffer_Record)
+      return Gtk.Text_Tag_Table.Gtk_Text_Tag_Table;
+   --  Get the Gtk_Text_Tag_Table associated with this buffer.
 
    procedure Apply_Tag
      (Buffer  : access Gtk_Text_Buffer_Record;
@@ -431,19 +476,21 @@ package Gtk.Text_Buffer is
    --  Call Gtk.Text_Tag_Table.Lookup on the buffer's tag table to
    --  get a Gtk_Text_Tag, then call Remove_Tag.
 
+   ---------------
+   -- Iterators --
+   ---------------
+
    procedure Get_Iter_At_Line_Offset
      (Buffer      : access Gtk_Text_Buffer_Record;
       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
       Line_Number : Gint;
       Char_Offset : Gint := 0);
-   --  Obtain an iterator pointing to Char_Offset within the given
-   --  line. The Char_Offset must exist, offsets off the end of the line
-   --  are not allowed. Note characters, not bytes;
-   --  UTF-8 may encode one character as multiple bytes.
-   --
-   --  If the Line_Number is an existing line but the Char_Offset is past
-   --  the last offset, the iter pointing at the beginning of the line is
-   --  returned.
+   --  Obtain an iterator pointing to Char_Offset within the given line. The
+   --  Char_Offset must exist, offsets off the end of the line are not allowed.
+   --  Note characters, not bytes; UTF-8 may encode one character as multiple
+   --  bytes.
+   --  If the Line_Number is an existing line but the Char_Offset is past the
+   --  last offset, the iter pointing at the beginning of the line is returned.
    --  If the Line_Number is not valid, the behavior is undetermined.
 
    procedure Get_Iter_At_Line_Index
@@ -500,34 +547,62 @@ package Gtk.Text_Buffer is
       Mark   : access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
    --  Initialize Iter with the current position of Mark.
 
+   function Get_Buffer
+     (Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Gtk_Text_Buffer;
+   --  Return the buffer associated to the given Gtk_Text_Iterator.
+
+   -------------
+   -- Widgets --
+   -------------
+   --  Widgets can be put in the buffer at specific places. See
+   --  Gtk.Text_Child
+
    procedure Get_Iter_At_Child_Anchor
      (Buffer : access Gtk_Text_Buffer_Record;
       Iter   : out Gtk.Text_Iter.Gtk_Text_Iter;
       Anchor : access Gtk.Text_Child.Gtk_Text_Child_Anchor_Record'Class);
-   --  ???
+   --  Obtains the location of Anchor within Buffer.
 
-   function Get_Modified
-     (Buffer : access Gtk_Text_Buffer_Record) return Boolean;
-   --  Whether the buffer has been modified since the last call
-   --  to Set_Modified set the modification flag to False. Used for example to
-   --  enable a "save" function in a text editor.
+   procedure Insert_Child_Anchor
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Anchor : access Gtk.Text_Child.Gtk_Text_Child_Anchor_Record'Class);
+   --  Insert a child widget anchor into the text buffer at Iter.
+   --  The anchor will be counted as one character in character counts, and
+   --  when obtaining the buffer contents as a string, will be represented
+   --  by the Unicode "object replacement character" 16#FFFC#. Note that the
+   --  "slice" variants for obtaining portions of the buffer as a string
+   --  include this character for pixbufs, but the "text" variants do
+   --  not. e.g. see Get_Slice and Get_Text. Consider Create_Child_Anchor as a
+   --  more convenient alternative to this function. The buffer will add a
+   --  reference to the anchor, so you can unref it after insertion.
 
-   procedure Set_Modified
-     (Buffer  : access Gtk_Text_Buffer_Record;
-      Setting : Boolean := True);
-   --  Used to keep track of whether the buffer has been modified since the
-   --  last time it was saved. Whenever the buffer is saved to disk, call
-   --  Set_Modified (Buffer, False). When the buffer is modified,
-   --  it will automatically toggled on the modified bit again. When the
-   --  modified bit flips, the buffer emits a "modified_changed" signal.
+   procedure Create_Child_Anchor
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Result : out Gtk.Text_Child.Gtk_Text_Child_Anchor);
+   --  Convenience function which simply creates a child anchor with
+   --  Gtk.Text_Child.Gtk_New and inserts it into the buffer with
+   --  Insert_Child_Anchor.
+   --  Result: the created child anchor.
 
-   --  ??? Not bound since GtkClipboard hasn't been bound yet
-   --  procedure Add_Selection_Clipboard
-   --    (GtkTextBuffer *buffer,
-   --     GtkClipboard  *clipboard);
-   --  procedure Remove_Selection_Clipboard
-   --    (GtkTextBuffer *buffer,
-   --     GtkClipboard  *clipboard);
+   -----------------------------
+   -- Clipboard and selection --
+   -----------------------------
+
+   procedure Add_Selection_Clipboard
+     (Buffer    : access Gtk_Text_Buffer_Record;
+      Clipboard : Gtk.Clipboard.Gtk_Clipboard);
+   --  Adds Clipboard to the list of clipboards in which the selection contents
+   --  of Buffer are available. In most cases, Clipboard will be the clipboard
+   --  corresponding to SELECTION_PRIMARY.
+   --  You generally do not have to call this procedure yourself unless you are
+   --  creating your own clipboards.
+
+   procedure Remove_Selection_Clipboard
+     (Buffer    : access Gtk_Text_Buffer_Record;
+      Clipboard : Gtk.Clipboard.Gtk_Clipboard);
+   --  Removes a Clipboard added with Add_Selection_Clipboard
 
    procedure Cut_Clipboard
      (Buffer           : access Gtk_Text_Buffer_Record;
@@ -557,6 +632,17 @@ package Gtk.Text_Buffer is
      (Buffer : access Gtk_Text_Buffer_Record) return Boolean;
    --  Return True if some text in the buffer is currently selected.
 
+   procedure Select_Range
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Ins    : Gtk.Text_Iter.Gtk_Text_Iter;
+      Bound  : Gtk.Text_Iter.Gtk_Text_Iter);
+   --  This function moves the "insert" and "selection_bound" marks
+   --  simultaneously. If you move them in two steps with Move_Mark, you will
+   --  temporarily select region in between their old and new locations, which
+   --  can be pretty inefficient since the temporarily-selected region will
+   --  force stuff to be recalculated. This function moves them as a unit,
+   --  which can be optimized.
+
    procedure Get_Selection_Bounds
      (Buffer  : access Gtk_Text_Buffer_Record;
       Start   : out Gtk.Text_Iter.Gtk_Text_Iter;
@@ -577,6 +663,10 @@ package Gtk.Text_Buffer is
    --  uneditable text).
    --  Return value: whether there was a non-empty selection to delete.
 
+   ------------------
+   -- User actions --
+   ------------------
+
    procedure Begin_User_Action (Buffer : access Gtk_Text_Buffer_Record);
    --  Called to indicate that the buffer operations between here and a
    --  call to End_User_Action are part of a single user-visible operation.
@@ -596,28 +686,29 @@ package Gtk.Text_Buffer is
    --  Should be paired with a call to Begin_User_Action.
    --  See that function for a full explanation.
 
-   function Get_Buffer
-     (Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Gtk_Text_Buffer;
-   --  Return the buffer associated to the given Gtk_Text_Iterator.
-
-   function Get_Buffer
-     (Mark : Gtk.Text_Mark.Gtk_Text_Mark) return Gtk_Text_Buffer;
-   --  Return the buffer associated to the given mark
-
    ----------------
    -- Properties --
    ----------------
-
    --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Tag_Table_Property
+   --  Type:  Object
+   --  Descr: Text Tag Table
+   --
+   --  Name:  Text_Property
+   --  Type:  String
+   --  Descr: Current text of the buffer
+   --
    --  </properties>
+
+   Tag_Table_Property : constant Glib.Properties.Property_Object;
+   Text_Property      : constant Glib.Properties.Property_String;
 
    -------------
    -- Signals --
    -------------
-
    --  <signals>
    --  The following new signals are defined for this widget:
    --
@@ -685,10 +776,26 @@ package Gtk.Text_Buffer is
    --
    --  </signals>
 
-private
+   Signal_Apply_Tag           : constant String := "apply_tag";
+   Signal_Begin_User_Action   : constant String := "begin_user_action";
+   Signal_Changed             : constant String := "changed";
+   Signal_Delete_Range        : constant String := "delete_range";
+   Signal_End_User_Action     : constant String := "end_user_action";
+   Signal_Insert_Child_Anchor : constant String := "insert_child_anchor";
+   Signal_Insert_Pixbuf       : constant String := "insert_pixbuf";
+   Signal_Insert_Text         : constant String := "insert_text";
+   Signal_Mark_Deleted        : constant String := "mark_deleted";
+   Signal_Mark_Set            : constant String := "mark_set";
+   Signal_Modified_Changed    : constant String := "modified_changed";
+   Signal_Remove_Tag          : constant String := "remove_tag";
 
+private
    type Gtk_Text_Buffer_Record is new GObject_Record with null record;
 
-   pragma Import (C, Get_Type, "gtk_text_buffer_get_type");
+   Tag_Table_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("tag-table");
+   Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("text");
 
+   pragma Import (C, Get_Type, "gtk_text_buffer_get_type");
 end Gtk.Text_Buffer;

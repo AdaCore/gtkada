@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2006 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,9 +26,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
-with Gtk.Text_Iter; use Gtk.Text_Iter;
+with Gtk.Clipboard;        use Gtk.Clipboard;
+with Gtk.Text_Iter;        use Gtk.Text_Iter;
+with Gtk.Text_Tag;         use Gtk.Text_Tag;
 
 package body Gtk.Text_Buffer is
 
@@ -1122,6 +1124,7 @@ package body Gtk.Text_Buffer is
       function Internal
         (Iter : Gtk.Text_Iter.Gtk_Text_Iter) return System.Address;
       pragma Import (C, Internal, "gtk_text_iter_get_buffer");
+      --  External binding: gtk_text_iter_get_buffer
       Stub : Gtk_Text_Buffer_Record;
    begin
       return Gtk_Text_Buffer (Get_User_Data_Fast (Internal (Iter), Stub));
@@ -1136,10 +1139,115 @@ package body Gtk.Text_Buffer is
    is
       function Internal (Iter : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_mark_get_buffer");
+      --  External binding: gtk_text_mark_get_buffer
       Stub : Gtk_Text_Buffer_Record;
    begin
       return Gtk_Text_Buffer
         (Get_User_Data_Fast (Internal (Get_Object (Mark)), Stub));
    end Get_Buffer;
+
+   -----------------------------
+   -- Add_Selection_Clipboard --
+   -----------------------------
+
+   procedure Add_Selection_Clipboard
+     (Buffer    : access Gtk_Text_Buffer_Record;
+      Clipboard : Gtk_Clipboard)
+   is
+      procedure Internal
+        (Buffer    : System.Address;
+         Clipboard : Gtk_Clipboard);
+      pragma Import (C, Internal, "gtk_text_buffer_add_selection_clipboard");
+   begin
+      Internal (Get_Object (Buffer), Clipboard);
+   end Add_Selection_Clipboard;
+
+   --------------------------------
+   -- Remove_Selection_Clipboard --
+   --------------------------------
+
+   procedure Remove_Selection_Clipboard
+     (Buffer    : access Gtk_Text_Buffer_Record;
+      Clipboard : Gtk_Clipboard)
+   is
+      procedure Internal
+        (Buffer    : System.Address;
+         Clipboard : Gtk_Clipboard);
+      pragma Import
+        (C, Internal, "gtk_text_buffer_remove_selection_clipboard");
+   begin
+      Internal (Get_Object (Buffer), Clipboard);
+   end Remove_Selection_Clipboard;
+
+   ----------------
+   -- Create_Tag --
+   ----------------
+
+   function Create_Tag
+     (Buffer              : access Gtk_Text_Buffer_Record;
+      Tag_Name            : String := "")
+      return Gtk_Text_Tag
+   is
+      function Internal
+        (Buffer              : System.Address;
+         Tag_Name            : Interfaces.C.Strings.chars_ptr;
+         First_Property_Name : System.Address := System.Null_Address)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_text_buffer_create_tag");
+      Stub : Gtk_Text_Tag_Record;
+      Str  : chars_ptr := Null_Ptr;
+      Tag  : Gtk_Text_Tag;
+   begin
+      if Tag_Name /= "" then
+         Str := New_String (Tag_Name);
+      end if;
+
+      Tag := Gtk_Text_Tag
+        (Get_User_Data (Internal (Get_Object (Buffer), Str), Stub));
+      Free (Str);
+      return Tag;
+   end Create_Tag;
+
+   ---------------
+   -- Backspace --
+   ---------------
+
+   function Backspace
+     (Buffer           : access Gtk_Text_Buffer_Record;
+      Iter             : Gtk.Text_Iter.Gtk_Text_Iter;
+      Interactive      : Boolean;
+      Default_Editable : Boolean)
+      return Boolean
+   is
+      function Internal
+        (Buffer           : System.Address;
+         Iter             : Gtk_Text_Iter;
+         Interactive      : Gboolean;
+         Default_Editable : Gboolean)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_text_buffer_backspace");
+   begin
+      return Boolean'Val
+        (Internal (Get_Object (Buffer), Iter,
+         Boolean'Pos (Interactive), Boolean'Pos (Default_Editable)));
+   end Backspace;
+
+   ------------------
+   -- Select_Range --
+   ------------------
+
+   procedure Select_Range
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Ins    : Gtk_Text_Iter;
+      Bound  : Gtk_Text_Iter)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Ins    : Gtk_Text_Iter;
+         Bound  : Gtk_Text_Iter);
+      pragma Import (C, Internal, "gtk_text_buffer_select_range");
+   begin
+      Internal (Get_Object (Buffer), Ins, Bound);
+   end Select_Range;
 
 end Gtk.Text_Buffer;

@@ -35,7 +35,7 @@
 --  shortcut for. Mnemonics are shortcuts for GUI elements, such as buttons.
 --  They appear as underline characters. Menu items can have both.
 --  </description>
---  <c_version>2.8 partial</c_version>
+--  <c_version>2.8.17</c_version>
 
 with Gdk.Types;
 with Gtk.Object;
@@ -64,11 +64,6 @@ package Gtk.Accel_Group is
       Keyval        : Gdk.Types.Gdk_Key_Type;
       Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
 
---     type Gtk_Accel_Group_Find_Func is access function
---       (Key      : Gtk_Accel_Key;
---        Closure  : Glib.Closure.GClosure;
---        Data     : System.Address) return Boolean;
-
    procedure Gtk_New (Accel_Group : out Gtk_Accel_Group);
    procedure Initialize (Accel_Group : access Gtk_Accel_Group_Record'Class);
    --  Remember to call Gtk.Window.Add_Accel_Group to active the group.
@@ -82,35 +77,6 @@ package Gtk.Accel_Group is
    --  contained in it cannot be changed at runtime by the user. See
    --  Gtk_Accel_Map.Change_Entry about runtime accelerator changes.
    --  Unlock must be called the same number of time that Lock was called.
-
---     procedure Connect
---       (Accel_Group : access Gtk_Accel_Group_Record;
---        Accel_Key   : Guint;
---        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
---        Accel_Flags : Gtk_Accel_Flags;
---        Closure     : Glib.Closure.GClosure);
-   --  Installs an accelerator in this group. When accel_group is being
-   --  activated in response to a call to Accel_Groups_Activate, Closure will
-   --  be invoked if the Accel_Key and Accel_Mods from Accel_Groups_Activate
-   --  match those of this connection.
-   --  The signature used for the Closure is that of Gtk_Accel_Group_Activate.
-   --  Note that, due to implementation details, a single closure can only be
-   --  connected to one accelerator group.
-
---     function Find
---       (Accel_Group : access Gtk_Accel_Group_Record;
---        Find_Func   : Gtk_Accel_Group_Find_Func;
---        Data        : System.Address)
---        return Gtk_Accel_Key;
-   --  @accel_group: a #GtkAccelGroup
-   --  @find_func: a function to filter the entries of @accel_group with
-   --  @data: data to pass to @find_func
-   --  @returns: the key of the first entry passing @find_func. The key is
-   --  owned by GTK+ and must not be freed.
-   --
-   --  Finds the first entry in an accelerator group for which
-   --  @find_func returns %TRUE and returns its #GtkAccelKey.
-
 
    ------------
    -- Groups --
@@ -175,6 +141,37 @@ package Gtk.Accel_Group is
    --  The default mod mask should be changed on application startup, before
    --  using any accelerator groups.
 
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "accel_activate"
+   --    procedure Handler
+   --      (Group         : access Gtk_Accel_Group_Record'Class;
+   --       Acceleratable : access GObject_Record'Class;
+   --       Keyval        : Gdk_Key_Type;
+   --       Modifier      : Gdk_Modifier_Type);
+   --    This is an implementation detail, not meant to be used by applications
+   --
+   --  - "accel_changed"
+   --    procedure Handler
+   --      (Group         : access Gtk_Accel_Group_Record'Class;
+   --       Keyval        : Gdk_Key_Type;
+   --       Modifier      : Gdk_Modifier_Type;
+   --       Closure       : GClosure);
+   --    Emitted when a Gtk_Accel_Group_Entry is added to or removed from the
+   --    accel group.
+   --    Widgets like Gtk_Accel_Label which display an associated accelerator
+   --    should connect to this signal, and rebuild their visual representation
+   --    if the accel_closure is theirs.
+   --  </signals>
+
+   Signal_Accel_Activate : constant String := "accel_activate";
+   Signal_Accel_Changed  : constant String := "accel_changed";
+
 private
 
    type Gtk_Accel_Group_Record is new Glib.Object.GObject_Record with
@@ -195,3 +192,12 @@ end Gtk.Accel_Group;
 --  This function is mostly internal, better used through
 --  gtk_accel_groups_activate
 --  No binding: gtk_accel_group_activate
+
+--  We are missing a binding of GClosure for the following functions
+--  No binding: gtk_accel_group_connect
+--  No binding: gtk_accel_group_connect_by_path
+--  No binding: gtk_accel_group_disconnect
+--  No binding: gtk_accel_group_disconnect_key
+--  No binding: gtk_accel_group_find
+--  No binding: gtk_accel_group_from_accel_closure
+--  No binding: gtk_accel_group_query
