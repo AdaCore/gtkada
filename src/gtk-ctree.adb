@@ -29,6 +29,7 @@
 
 with System;
 with Unchecked_Deallocation;
+with Gtk.Style;    use Gtk.Style;
 
 package body Gtk.Ctree is
 
@@ -585,10 +586,12 @@ package body Gtk.Ctree is
       function Internal (Ctree  : in System.Address;
                          Node   : in Gtk_Ctree_Node;
                          Column : in Gint)
-                         return Gtk.Style.Gtk_Style;
+                         return System.Address;
       pragma Import (C, Internal, "gtk_ctree_node_get_cell_style");
+      Stub : Gtk_Style_Record;
    begin
-      return Internal (Get_Object (Ctree), Node, Column);
+      return Gtk_Style
+        (Get_User_Data (Internal (Get_Object (Ctree), Node, Column), Stub));
    end Node_Get_Cell_Style;
 
    ------------------------
@@ -689,10 +692,12 @@ package body Gtk.Ctree is
    is
       function Internal (Ctree  : in System.Address;
                          Node   : in Gtk_Ctree_Node)
-                        return Gtk.Style.Gtk_Style;
+                        return System.Address;
       pragma Import (C, Internal, "gtk_ctree_node_get_row_style");
+      Stub : Gtk_Style_Record;
    begin
-      return Internal (Get_Object (Ctree), Node);
+      return Gtk_Style
+        (Get_User_Data (Internal (Get_Object (Ctree), Node), Stub));
    end Node_Get_Row_Style;
 
    -------------------------
@@ -850,11 +855,11 @@ package body Gtk.Ctree is
       procedure Internal (Ctree  : in System.Address;
                           Node   : in Gtk_Ctree_Node;
                           Column : in Gint;
-                          Style  : in Gtk.Style.Gtk_Style);
+                          Style  : in System.Address);
       pragma Import (C, Internal, "gtk_ctree_node_set_cell_style");
 
    begin
-      Internal (Get_Object (Ctree), Node, Column, Style);
+      Internal (Get_Object (Ctree), Node, Column, Get_Object (Style));
    end Node_Set_Cell_Style;
 
    -------------------------
@@ -938,11 +943,11 @@ package body Gtk.Ctree is
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in Gtk_Ctree_Node;
-                          Style : in Gtk.Style.Gtk_Style);
+                          Style : in System.Address);
       pragma Import (C, Internal, "gtk_ctree_node_set_row_style");
 
    begin
-      Internal (Get_Object (Ctree), Node, Style);
+      Internal (Get_Object (Ctree), Node, Get_Object (Style));
    end Node_Set_Row_Style;
 
    -------------------------

@@ -980,11 +980,11 @@ package body Gtk.Widget is
       Style  : Gtk.Style.Gtk_Style)
    is
       procedure Internal
-        (Widget : System.Address; Style : Gtk.Style.Gtk_Style);
+        (Widget : System.Address; Style : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_style");
 
    begin
-      Internal (Get_Object (Widget), Style);
+      Internal (Get_Object (Widget), Get_Object (Style));
    end Set_Style;
 
    -----------------------
@@ -1008,11 +1008,12 @@ package body Gtk.Widget is
    function Get_Style
      (Widget : access Gtk_Widget_Record) return Gtk.Style.Gtk_Style
    is
-      function Internal (Widget : System.Address) return Gtk.Style.Gtk_Style;
+      function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_style");
-
+      Stub : Gtk.Style.Gtk_Style_Record;
    begin
-      return Internal (Get_Object (Widget));
+      return Gtk.Style.Gtk_Style
+        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Style;
 
    ------------------------
@@ -1022,11 +1023,12 @@ package body Gtk.Widget is
    function Get_Modifier_Style
      (Widget : access Gtk_Widget_Record) return Gtk.Style.Gtk_Style
    is
-      function Internal (Widget : System.Address) return Gtk.Style.Gtk_Style;
+      function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_modifier_style");
-
+      Stub : Gtk.Style.Gtk_Style_Record;
    begin
-      return Internal (Get_Object (Widget));
+      return Gtk.Style.Gtk_Style
+        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Modifier_Style;
 
    ---------------

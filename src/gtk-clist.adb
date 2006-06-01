@@ -171,11 +171,13 @@ package body Gtk.Clist is
       function Internal
         (Clist  : in System.Address;
          Row    : in Gint;
-         Column : in Gint) return Gtk.Style.Gtk_Style;
+         Column : in Gint) return System.Address;
       pragma Import (C, Internal, "gtk_clist_get_cell_style");
+      Stub : Gtk_Style_Record;
 
    begin
-      return Internal (Get_Object (Clist), Row, Column);
+      return Gtk_Style
+        (Get_User_Data (Internal (Get_Object (Clist), Row, Column), Stub));
    end Get_Cell_Style;
 
    -------------------
@@ -424,11 +426,12 @@ package body Gtk.Clist is
    is
       function Internal
         (Clist  : in System.Address;
-         Row    : in Gint) return Gtk.Style.Gtk_Style;
+         Row    : in Gint) return System.Address;
       pragma Import (C, Internal, "gtk_clist_get_row_style");
-
+      Stub : Gtk_Style_Record;
    begin
-      return Internal (Get_Object (Clist), Row);
+      return Gtk_Style
+        (Get_User_Data (Internal (Get_Object (Clist), Row), Stub));
    end Get_Row_Style;
 
    --------------------
@@ -864,10 +867,10 @@ package body Gtk.Clist is
                              Style  : in Gtk_Style) is
       procedure Internal
         (Clist : System.Address; Row : Gint;
-                                 Column : Gint; Style : Gtk_Style);
+                                 Column : Gint; Style : System.Address);
       pragma Import (C, Internal, "gtk_clist_set_cell_style");
    begin
-      Internal (Get_Object (Clist), Row, Column, Style);
+      Internal (Get_Object (Clist), Row, Column, Get_Object (Style));
    end Set_Cell_Style;
 
    ----------------------------
@@ -1203,10 +1206,10 @@ package body Gtk.Clist is
       Style : in Gtk_Style)
    is
       procedure Internal
-        (Clist : System.Address; Row : Gint; Style : Gtk_Style);
+        (Clist : System.Address; Row : Gint; Style : System.Address);
       pragma Import (C, Internal, "gtk_clist_set_row_style");
    begin
-      Internal (Get_Object (Clist), Row, Style);
+      Internal (Get_Object (Clist), Row, Get_Object (Style));
    end Set_Row_Style;
 
    --------------------
