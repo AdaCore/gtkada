@@ -234,7 +234,7 @@ maintainer-clean: mostlyclean-generic
 
 ## Find the list of bindings that are not up-to-date
 bindings_not_up_to_date:
-	egrep -L "2.8.17|gtkextra 2.1.1|glib 2.10" *.ads | grep -v gtkada
+	@egrep -L "2.8.17|gtkextra 2.1.1|glib 2.10" *.ads | grep -v gtkada | grep -v b~ | grep -v dgate_callbacks
 
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
