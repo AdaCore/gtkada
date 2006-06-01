@@ -2030,7 +2030,6 @@ private
    Width_Request_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width-request");
 
-   pragma Import (C, Get_Default_Style, "gtk_widget_get_default_style");
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Get_Type, "gtk_widget_get_type");
    pragma Import (C, Requisition_Get_Type, "gtk_requisition_get_type");

@@ -2200,4 +2200,16 @@ package body Gtk.Widget is
       end if;
    end Class_List_Style_Properties;
 
+   -----------------------
+   -- Get_Default_Style --
+   -----------------------
+
+   function Get_Default_Style return Gtk.Style.Gtk_Style is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_default_style");
+      Stub : Gtk.Style.Gtk_Style_Record;
+   begin
+      return Gtk.Style.Gtk_Style (Get_User_Data (Internal, Stub));
+   end Get_Default_Style;
+
 end Gtk.Widget;
