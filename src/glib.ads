@@ -235,6 +235,7 @@ package Glib is
    --  to C.
 
    type Param_Spec is new Glib.C_Proxy;
+   type Param_Spec_Array is array (Natural range <>) of Param_Spec;
    --  See Glib.Properties.Creation for more information on this type
 
    type Param_Flags is mod 2 ** 6;
