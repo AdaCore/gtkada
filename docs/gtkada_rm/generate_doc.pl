@@ -247,6 +247,9 @@ foreach $source_file (@source_files) {
 	$description =~ s/^\s+<(small)?example>/\@\2example\n/gm;
 	$description =~ s/^\s+<\/(small)?example>/\@end \2example\n/gm;
 
+        # Protect special characters
+        $description =~ s/[{}@]/@$0/g;
+
 	&output ("$description\n");
 
 	if (&get_tag_value ("screenshot", @content)) {
