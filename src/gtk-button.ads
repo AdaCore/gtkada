@@ -218,32 +218,46 @@ package Gtk.Button is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  - Name:  Label_Property
-   --    Type:  UTF8_String
-   --    Flags: read-write
-   --    Descr: Changes the text contained in the button.
-   --    See also: Same as calling Set_Label directly.
+   --  Name:  Label_Property
+   --  Type:  UTF8_String
+   --  Flags: read-write
+   --  Descr: Changes the text contained in the button.
+   --  See also: Same as calling Set_Label directly.
    --
-   --  - Name:  Relief_Property
-   --    Type:  Gtk_Relief_Style
-   --    Flags: read-write
-   --    Descr: Changes the relief used to draw the border of the button.
-   --    See also: Same as calling Set_Relief directly.
+   --  Name:  Relief_Property
+   --  Type:  Gtk_Relief_Style
+   --  Flags: read-write
+   --  Descr: Changes the relief used to draw the border of the button.
+   --  See also: Same as calling Set_Relief directly.
    --
-   --  - Name:  Use_Underline_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    See also: Same as calling Set_Use_Underline directly
+   --  Name:  Use_Underline_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  See also: Same as calling Set_Use_Underline directly
    --
-   --  - Name:  Use_Stock_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    See also: Same as calling Set_Use_Stock directly
+   --  Name:  Use_Stock_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  See also: Same as calling Set_Use_Stock directly
    --
-   --  - Name:  Focus_On_Click_Property
-   --    Type:  Boolean
-   --    Flags: read-write
-   --    See also: Same as calling Set_Focus_On_Click directly
+   --  Name:  Focus_On_Click_Property
+   --  Type:  Boolean
+   --  Flags: read-write
+   --  See also: Same as calling Set_Focus_On_Click directly
+   --
+   --  Name:  Image_Property
+   --  Type:  Object
+   --  Descr: Child widget to appear next to the button text
+   --
+   --  Name:  Xalign_Property
+   --  Type:  Float
+   --  Descr: Horizontal position of child in available space. 0.0 is left
+   --         aligned, 1.0 is right aligned
+   --
+   --  Name:  Yalign_Property
+   --  Type:  Float
+   --  Descr: Vertical position of child in available space. 0.0 is top
+   --         aligned, 1.0 is bottom aligned
    --
    --  </properties>
 
@@ -252,6 +266,9 @@ package Gtk.Button is
    Use_Underline_Property  : constant Glib.Properties.Property_Boolean;
    Use_Stock_Property      : constant Glib.Properties.Property_Boolean;
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
+   Image_Property          : constant Glib.Properties.Property_Object;
+   Xalign_Property         : constant Glib.Properties.Property_Float;
+   Yalign_Property         : constant Glib.Properties.Property_Float;
 
    -------------
    -- Signals --
@@ -262,20 +279,17 @@ package Gtk.Button is
    --
    --  - "clicked"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
-   --
    --    Emitted when the button has been clicked on by the user. This is the
    --    signal you should use to start your own actions.
    --
    --  - "pressed"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
-   --
    --    Emitted when the user presses the mouse button on
    --    the widget. The default implementation modifies the widget state
    --    and its visual aspect.
    --
    --  - "released"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
-   --
    --    Emitted when the user releases the mouse button and
    --    is inside of the widget. The default implementation modifies the
    --    widget state and its visual aspect. If the mouse is still inside
@@ -283,14 +297,18 @@ package Gtk.Button is
    --
    --  - "enter"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
-   --
    --    Emitted when the mouse enters the button. The clicked
    --    signal can only be emitted when the mouse is inside the button.
    --
    --  - "leave"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
-   --
    --    Emitted when the mouse leaves the button.
+   --
+   --  - "activate"
+   --    procedure Handler (Button : access Gtk_Button_Record'Class);
+   --    You should emit this signal to force the activation of this widget, as
+   --    if the user has clicked on it. This is generally only useful when
+   --    bound to a key binding.
    --
    --  </signals>
 
@@ -299,6 +317,7 @@ package Gtk.Button is
    Signal_Released : constant String := "released";
    Signal_Enter    : constant String := "enter";
    Signal_Leave    : constant String := "leave";
+   Signal_Activate : constant String := "activate";
 
 private
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with null record;
@@ -313,6 +332,12 @@ private
      Glib.Properties.Build ("use-stock");
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("focus-on-click");
+   Image_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("image");
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Yalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("yalign");
 
    pragma Import (C, Get_Type, "gtk_button_get_type");
 end Gtk.Button;
