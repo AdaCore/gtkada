@@ -1484,14 +1484,16 @@ package body Gtkada.MDI is
             Child.MDI.Title_Layout);
 
          if Border_Thickness /= 0 then
-            Draw_Shadow
-              (Get_Style (Child),
-               Get_Window (Child),
-               State_Normal,
-               Shadow_Out,
-               0, 0,
-               Gint (Get_Allocation_Width (Child)),
-               Gint (Get_Allocation_Height (Child)));
+            Paint_Shadow
+              (Style       => Get_Style (Child),
+               Window      => Get_Window (Child),
+               State_Type  => State_Normal,
+               Shadow_Type => Shadow_Out,
+               Widget      => Child,
+               X           => 0,
+               Y           => 0,
+               Width       => Gint (Get_Allocation_Width (Child)),
+               Height      => Gint (Get_Allocation_Height (Child)));
          end if;
       end if;
    end Draw_Child;
