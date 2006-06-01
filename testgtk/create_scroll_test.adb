@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2000-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -241,8 +242,7 @@ package body Create_Scroll_Test is
       Box.Pack_Start (In_Box => Vbox, Child => Hbox);
 
       Gtk.Drawing_Area.Gtk_New (Drawing_Area);
-      Gtk.Drawing_Area.Size (Darea => Drawing_Area,
-                             Width => 200, Height => 200);
+      Set_Size_Request (Drawing_Area, 200, 200);
       Box.Pack_Start (In_Box => Hbox, Child => Drawing_Area);
 
       Unrealize (Drawing_Area); --  Required for Set_Events

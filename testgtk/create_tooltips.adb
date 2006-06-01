@@ -33,7 +33,9 @@ with Gtk.Arguments;     use Gtk.Arguments;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Button;        use Gtk.Button;
 with Gtk.Handlers;      use Gtk.Handlers;
+pragma Warnings (Off);  --  Gtk.Tips_Query is obsolescent
 with Gtk.Tips_Query;    use Gtk.Tips_Query;
+pragma Warnings (On);
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Tooltips;      use Gtk.Tooltips;
 with Gtk.Widget;        use Gtk.Widget;

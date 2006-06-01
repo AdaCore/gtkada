@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2000-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,21 +30,16 @@
 
 with Glib;              use Glib;
 with Gtk.Box;           use Gtk.Box;
+with Gtk.Button;        use Gtk.Button;
 with Gtk.Check_Button;  use Gtk.Check_Button;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Label;         use Gtk.Label;
-with Gtk.Menu;          use Gtk.Menu;
-with Gtk.Menu_Item;     use Gtk.Menu_Item;
-with Gtk.Option_Menu;   use Gtk.Option_Menu;
 with Gtk.Size_Group;    use Gtk.Size_Group;
 with Gtk.Table;         use Gtk.Table;
 
 package body Create_Size_Groups is
-
-   function Create_Option_Menu (Text : String) return Gtk_Option_Menu;
-   --  Convenience function to create a dummy option menu.
 
    procedure Add_Row
      (Table : access Gtk_Table_Record'Class;
@@ -81,29 +77,6 @@ package body Create_Size_Groups is
         & " widgets into a table, you would not include the FILL flag.";
    end Help;
 
-   ------------------------
-   -- Create_Option_Menu --
-   ------------------------
-
-   function Create_Option_Menu (Text : String) return Gtk_Option_Menu is
-      Option : Gtk_Option_Menu;
-      Menu   : Gtk_Menu;
-      Item   : Gtk_Menu_Item;
-   begin
-      Gtk_New (Menu);
-
-      Gtk_New (Item, Text);
-      Append (Menu, Item);
-
-      Gtk_New (Item, Text);
-      Append (Menu, Item);
-
-      Gtk_New (Option);
-      Set_Menu (Option, Menu);
-
-      return Option;
-   end Create_Option_Menu;
-
    -------------
    -- Add_Row --
    -------------
@@ -115,7 +88,7 @@ package body Create_Size_Groups is
       Text  : String)
    is
       Label  : Gtk_Label;
-      Option : Gtk_Option_Menu;
+      Button : Gtk_Button;
    begin
       Gtk_New (Label, Text);
       Set_Alignment (Label, 0.0, 1.0);
@@ -129,11 +102,11 @@ package body Create_Size_Groups is
          Xoptions      => Expand or Fill,
          Yoptions      => 0);
 
-      Option := Create_Option_Menu (Text);
-      Gtk.Size_Group.Add_Widget (Group, Option);
+      Gtk_New (Button, Text);
+      Gtk.Size_Group.Add_Widget (Group, Button);
       Attach
         (Table         => Table,
-         Child         => Option,
+         Child         => Button,
          Left_Attach   => 1,
          Right_Attach  => 2,
          Top_Attach    => Row,

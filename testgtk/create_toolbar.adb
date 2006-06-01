@@ -38,6 +38,7 @@ with Gtk.Handlers; use Gtk.Handlers;
 with Gtk.Image;    use Gtk.Image;
 with Gtk.Separator_Tool_Item; use Gtk.Separator_Tool_Item;
 with Gtk.Tool_Button;         use Gtk.Tool_Button;
+with Gtk.Tool_Item; use Gtk.Tool_Item;
 with Gtk.Tooltips; use Gtk.Tooltips;
 with Gtk.Widget;   use Gtk.Widget;
 with Gtk;          use Gtk;
@@ -225,6 +226,7 @@ package body Create_Toolbar is
       Button    : Gtk_Tool_Button;
       Tooltips  : Gtk_Tooltips;
       Separator : Gtk_Separator_Tool_Item;
+      Item      : Gtk_Tool_Item;
       Bg        : constant Gdk_Color := Get_Bg (Style, State_Normal);
 
    begin
@@ -280,10 +282,12 @@ package body Create_Toolbar is
       Insert (Toolbar, Separator);
 
       if With_Entry then
+         Gtk_New (Item);
+         Insert (Toolbar, Item);
+
          Gtk_New (The_Entry);
          Show (The_Entry);
-         Append_Widget (Toolbar, The_Entry, "This is an unusable Gtk_Entry",
-                        "Hey dont't click me!!!");
+         Add (Item, The_Entry);
 
          Gtk_New (Separator);
          Insert (Toolbar, Separator);

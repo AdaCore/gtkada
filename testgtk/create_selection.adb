@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2001-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,31 +28,28 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;           use Glib;
 with Gtk.Frame;      use Gtk.Frame;
-with Gtk.Selection;  use Gtk.Selection;
 with Gtk.Button;     use Gtk.Button;
-with Gtk.Text;       use Gtk.Text;
+with Gtk.Clipboard;  use Gtk.Clipboard;
+with Gtk.Text_Iter;   use Gtk.Text_Iter;
+with Gtk.Text_View;   use Gtk.Text_View;
+with Gtk.Text_Buffer; use Gtk.Text_Buffer;
 with Gtk.Box;        use Gtk.Box;
 with Gtk.Handlers;   use Gtk.Handlers;
-with Gdk.Property;   use Gdk.Property;
-with Gtk.Arguments;  use Gtk.Arguments;
 with Gtk.Label;      use Gtk.Label;
-with Gdk.Types;      use Gdk.Types;
-
-with Ada.Text_IO;    use Ada.Text_IO;
+with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 
 package body Create_Selection is
 
    type My_Button_Record is new Gtk_Button_Record with record
-      Text  : Gtk_Text;
-      Label : Gtk_Label;
+      Text      : Gtk_Text_Buffer;
+      Text_View : Gtk_Text_View;
+      Label     : Gtk_Label;
    end record;
    type My_Button is access all My_Button_Record'Class;
 
    package My_Button_Handler is new Gtk.Handlers.Callback
      (My_Button_Record);
-   package Label_Handler is new Gtk.Handlers.Callback (Gtk_Label_Record);
 
    ----------
    -- Help --
@@ -59,25 +57,8 @@ package body Create_Selection is
 
    function Help return String is
    begin
-      return "This package demonstrates how you can retrieve the current"
-        & " @bselection@B or the contents of the @bclipboard@B in your"
-        & " application. Every function is found in the package"
-        & " @bGtk.Selection@B."
-        & ASCII.LF
-        & "When you click on the button at the top of the demo, it will"
-        & " request the selection on behalf of the @bGtk_Text@B and"
-        & " @bGtk_Label@B widgets."
-        & ASCII.LF
-        & "As a child of @bGtk_Editable@B, there is nothing to be done for"
-        & " the text widget, that automatically knows how to react to the"
-        & " selection_received event, and adds the selection to its contents."
-        & ASCII.LF
-        & "On the other hand, this requires a little bit more work to get"
-        & " the selection for the label widget. Since this is a widget with"
-        & " no window associated to it, it can not directly receive the events"
-        & " for the selection. Thus, the button itself will receive the"
-        & " selection and update the label."
-        & ASCII.LF
+      return "This package demonstrates how to interact with the clipboard to"
+        & " retrieve text copied from other applications" & ASCII.LF
         & "Try selecting some other text outside of this demo, and press"
         & " once again the button at the top.";
    end Help;
@@ -87,63 +68,13 @@ package body Create_Selection is
    ---------------------
 
    procedure On_Button_Click (Button : access My_Button_Record'Class) is
-      Success : Boolean;
+      Text : constant String := Wait_For_Text (Gtk.Clipboard.Get);
+      Iter : Gtk_Text_Iter;
    begin
-      --  Request the selection for the Text widget, as plain text.
-      --  The selection should be sent to the text.
-
-      Success := Convert
-        (Button.Text,
-         Selection => Selection_Primary,
-         Target    => Gdk.Property.Atom_Intern ("STRING", True));
-
-      if not Success then
-         Put_Line ("Could not request a STRING selection to be sent to the"
-                   & " text");
-         Put_Line ("This might be because there is already such a request,");
-         Put_Line (" or because the current owner of the selection does not");
-         Put_Line (" know how to convert it to plain text");
-      end if;
-
-      --  Request the selection for the Label widget, as plain text.
-      --  The selection should be sent to the text.
-      --  Since we can not connect the label directly (it does not have any
-      --  Gdk_Window associated with it), we connect the button, through
-      --  an Object_Connect callback.
-
-      Success := Convert (Button,
-                          Selection => Selection_Primary,
-                          Target    => Target_String);  --  same as previously.
-
-      if not Success then
-         Put_Line ("Could not request a STRING selection to be sent to the"
-                   & " label");
-         Put_Line ("This might be because there is already such a request,");
-         Put_Line (" or because the current owner of the selection does not");
-         Put_Line (" know how to convert it to plain text");
-      end if;
-
+      --  For the text buffer, we query directly the clipboard
+      Get_End_Iter (Button.Text, Iter);
+      Insert (Button.Text, Iter, Text);
    end On_Button_Click;
-
-   ------------------------------
-   -- Label_Selection_Received --
-   ------------------------------
-   --  This is the general form of handlers for the "selection_received"
-   --  event.
-
-   procedure Label_Selection_Received (Label : access Gtk_Label_Record'Class;
-                                       Args : Gtk_Args)
-   is
-      Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 1));
-      Time : Guint := To_Guint (Args, 2);
-      pragma Warnings (Off, Time);
-   begin
-      if Get_Length (Data) > 0 then
-         Set_Text (Label, Get_Data_As_String (Data));
-      else
-         Set_Text (Label, "<no_selection>");
-      end if;
-   end Label_Selection_Received;
 
    ---------
    -- Run --
@@ -152,6 +83,7 @@ package body Create_Selection is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box    : Gtk_Box;
       Button : My_Button;
+      Scrolled : Gtk_Scrolled_Window;
    begin
       Set_Label (Frame, "Selection");
 
@@ -167,17 +99,12 @@ package body Create_Selection is
 
       --  The text
 
+      Gtk_New (Scrolled);
+      Pack_Start (Box, Scrolled, Fill => True, Expand => True);
+
       Gtk_New (Button.Text);
-      Pack_Start (Box, Button.Text, Fill => True, Expand => True);
-
-      --  The label
-
-      Gtk_New (Button.Label, "<paste will go here>");
-      Pack_Start (Box, Button.Label, Fill => False, Expand => False);
-
-      Label_Handler.Object_Connect (Button, "selection_received",
-                                    Label_Selection_Received'Access,
-                                    Button.Label);
+      Gtk_New (Button.Text_View, Button.Text);
+      Add (Scrolled, Button.Text_View);
 
       Show_All (Frame);
    end Run;
