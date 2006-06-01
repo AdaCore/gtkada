@@ -36,6 +36,7 @@ with Ada.Unchecked_Conversion;
 with Pango.Context;               use Pango.Context;
 with Pango.Layout;                use Pango.Layout;
 with Gtk.Enums;                   use Gtk.Enums;
+with Gtk.Style;                   use Gtk.Style;
 with System;                      use System;
 
 package body Gtk.Widget is
@@ -985,7 +986,11 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_style");
 
    begin
-      Internal (Get_Object (Widget), Get_Object (Style));
+      if Style = null then
+         Internal (Get_Object (Widget), System.Null_Address);
+      else
+         Internal (Get_Object (Widget), Get_Object (Style));
+      end if;
    end Set_Style;
 
    -----------------------
