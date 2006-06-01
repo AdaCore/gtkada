@@ -138,17 +138,18 @@ package Gtk.Enums is
       Expander_Expanded);
    --  Expander styles, as seen in trees
 
-   type Gtk_Icon_Size is
-     (Icon_Size_Invalid,
-      Icon_Size_Menu,
-      Icon_Size_Small_Toolbar,
-      Icon_Size_Large_Toolbar,
-      Icon_Size_Button,
-      Icon_Size_Dnd,
-      Icon_Size_Dialog);
+   type Gtk_Icon_Size is new Gint;
+   Icon_Size_Invalid       : constant Gtk_Icon_Size := 0;
+   Icon_Size_Menu          : constant Gtk_Icon_Size := 1;
+   Icon_Size_Small_Toolbar : constant Gtk_Icon_Size := 2;
+   Icon_Size_Large_Toolbar : constant Gtk_Icon_Size := 3;
+   Icon_Size_Button        : constant Gtk_Icon_Size := 4;
+   Icon_Size_Dnd           : constant Gtk_Icon_Size := 5;
+   Icon_Size_Dialog        : constant Gtk_Icon_Size := 6;
    --  Built-in stock icon sizes. Depending on the context, icons should be
    --  displayed larger or smaller (typically, icons in menus are much smaller
    --  than icons in toolbars for instance).
+   --  New custom icon sizes can be created (see gtk-icon_factory.ads)
 
    type Gtk_Text_Direction is
      (Text_Dir_None,
@@ -408,7 +409,6 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Direction_Type);
    pragma Convention (C, Gtk_Path_Type);
    pragma Convention (C, Gtk_Expander_Style);
-   pragma Convention (C, Gtk_Icon_Size);
    pragma Convention (C, Gtk_Text_Direction);
    pragma Convention (C, Gtk_Justification);
    pragma Convention (C, Gtk_Menu_Direction_Type);
