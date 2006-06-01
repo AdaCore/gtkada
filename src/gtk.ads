@@ -31,7 +31,7 @@
 --
 --  This package provides some basic Gtk+ functionalities such as getting the
 --  version number.  For general GtkAda initializations,
---  @pxref{Package_Gtk.Main}.
+--  see Gtk.Main.
 --
 --  </description>
 --  <c_version>2.8.17</c_version>
