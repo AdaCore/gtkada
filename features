@@ -1,12 +1,41 @@
-New features:
-   2006-06-01
-      F515-002 Upgraded existing packages to gtk+ 2.8.17
-   2006-05-13
-      F426-006 Upgraded gtk.extra binding to the new version of the gtkextra
-      library (2.1.1)
-   2005-08-18
-      Project files are now installed along with GtkAda, for ease of use
-   2005-05-26 (E525-016)
-      Add binding to the Pango.Tabs package
-      Add binding to Pango.Layout.Set_Tabs and Gtk.Text_View.Set_Tabs, so that
-        it is now possible to select the stops for the tabs
+GTKADA NEW FEATURES LIST
+========================
+
+Copyright (c) 2005-2006, AdaCore
+
+This file contains a list of new features introduced in GtkAda.
+
+An ISO date (YYYY-MM-DD) appears in parentheses after the
+description line. This date shows the implementation date
+of the feature.
+
+New features in GtkAda 2.8.1
+----------------------------
+
+F515-002 Upgraded existing packages to gtk+ 2.8 API (2006-06-01)
+
+  All existing Gtk.* packages have been updated to include the full
+  Gtk+ 2.8 API.
+
+F426-006 Upgraded Gtk.Extra binding to gtkextra 2.1.1 (2006-05-13)
+
+  The Gtk.Extra.* packages have been updated to the latest gtkada 2.1.1 API,
+  and gtkextra 2.1.1 is now included with GtkAda.
+
+New features in GtkAda 2.8.0
+----------------------------
+
+F512-004 GtkAda comes with Gtk+ 2.8.* binaries (2006-05-12)
+
+  GtkAda is now tested and is used with Gtk+ 2.8 libraries
+
+New features in GtkAda 2.4.2
+----------------------------
+
+Project files are now installed along with GtkAda, for ease of use (2005-08-18)
+
+E525-016 Add binding to the Pango.Tabs package (2005-05-26)
+
+  Add binding to Pango.Layout.Set_Tabs and Gtk.Text_View.Set_Tabs, so that
+  it is now possible to select the stops for the tabs
+
