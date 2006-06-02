@@ -1,4 +1,6 @@
 New features:
+   2006-06-01
+      F515-002 Upgraded existing packages to gtk+ 2.8.17
    2006-05-13
       F426-006 Upgraded gtk.extra binding to the new version of the gtkextra
       library (2.1.1)
