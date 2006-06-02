@@ -6,9 +6,8 @@
 ## The tags are looked for anywhere in the file.
 ##
 ## SETUP NOTES:
-##    This script should be run from the $prefix/doc/automatic
-##    directory in the GtkAda package. It expects to find the gtk+
-##    sources in $prefix/gtk+-1.2.6/ (the version number can vary).
+##    This script should be run from the $prefix/doc/gtkada_ug
+##    directory in the GtkAda package.
 ##
 ## The following tags are known:
 ##
@@ -78,10 +77,6 @@
 $src_dir = "../../src/";
 # name of the source directory for GtkAda
 
-$gtk_src_dir = "../..";
-# Name of the source directory for gtk+ (base directory for now,
-# the exact subdirectory is found below).
-
 $output_file_name  = "generated.texi";
 $menu_file_name    = "generated_menu.texi";
 
@@ -101,12 +96,7 @@ if ($ARGV[0] eq "-usemakeinfo") {
    shift @ARGV;
 }
 
-
 @source_files = @ARGV;
-
-opendir (DIR, $gtk_src_dir);
-$gtk_src_dir .= "/" . (grep (/gtk\+-/, readdir (DIR)))[0];
-closedir (DIR);
 
 local (@Ada_keywords) = ('abort', 'abs', 'accept', 'access', 'all', 'and',
 			 'array', 'at', 'begin', 'body', 'case', 'constant',
@@ -123,44 +113,6 @@ local (@Ada95_keywords) = ('abstract', 'aliased', 'protected', 'requeue',
 			'tagged');
 local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 
-# List of pointer to functions that are not signals in the C files.
-%signals_exceptions = ("gtkcheckbutton.h/draw_indicator" => 0,
-		       "gtkmenushell.h/selection_done"   => 0,
-		       "gtkcontainer.h/forall"           => 0,
-		       "gtkcontainer.h/composite_name"   => 0,
-		       "gtkcontainer.h/child_type"       => 0,
-		       "gtkcontainer.h/set_child_arg"    => 0,
-		       "gtkcontainer.h/get_child_arg"    => 0,
-		       "gtkcontainer.h/set_focus_child"  => 0,
-		       "gtkobject.h/finalize"            => 0,
-		       "gtkobject.h/shutdown"            => 0,
-		       "gtkobject.h/set_arg"             => 0,
-		       "gtkobject.h/get_arg"             => 0,
-		       "gtkwidget.h/hide_all"            => 0,
-		       "gtkwidget.h/show_all"            => 0,
-		       "gtkwidget.h/debug_msg"           => 0,  # is a signal
-		       "gtkclist.h/set_scroll_adjustments" => 0,
-		       "gtkclist.h/refresh"              => 0,
-		       "gtkclist.h/cell_size_request"    => 0,
-		       "gtkclist.h/draw_drag_highlight"  => 0,
-		       "gtkclist.h/sort_list"            => 0,
-		       "gtkclist.h/remove_row"           => 0,
-		       "gtkclist.h/draw_row"             => 0,
-		       "gtkclist.h/selection_find"       => 0,
-		       "gtkclist.h/clear"                => 0,
-		       "gtkclist.h/set_scroll_adjustments" => 0,
-		       "gtkclist.h/insert_row"           => 0,
-		       "gtkclist.h/fake_unselect_all"    => 0,
-		       "gtkclist.h/set_cell_contents"    => 0,
-		       "gtkclist.h/resync_selection"     => 0,
-		       "gtkctree.h/change_focus_row_expansion" => 0,  # is a signal
-		       "gtkcheckitem.h/draw_indicator"   => 0,
-		       "gtkeditable.h/set_position"      => 0,
-		       "gtkeditable.h/set_editable"      => 0,
-		       "gtkeditable.h/update_text"       => 0,
-		       "gtkeditable.h/get_chars"         => 0,
-		       "gtkeditable.h/set_selection"     => 0
-		       );
 %package_from_type = ("Gtk_Plot"         => "Gtk.Extra.Plot",
 		      "Gtk_Check_Item"   => "Gtk.Extra.Check_Item",
 		      "Gtk_Plot_Layout"  => "Gtk.Extra.Plot_Layout",
@@ -253,9 +205,11 @@ foreach $source_file (@source_files) {
 	&output ("$description\n");
 
 	if (&get_tag_value ("screenshot", @content)) {
-	    &output ("\@iftex\n\@image{",
-		     &get_tag_value ("screenshot", @content),
-		     ",}\n\@end iftex\n\n");
+            if (-f &get_tag_value ("screenshot") . ".eps") {
+	       &output ("\@iftex\n\@image{",
+	   	        &get_tag_value ("screenshot", @content),
+		        ",}\n\@end iftex\n\n");
+            }
 	}
 
 	my (%signals) = &find_signals ($cfile . ".h", @content);
@@ -799,38 +753,7 @@ sub get_types () {
 sub find_signals () {
     my ($cfile) = shift;
     my (@content) = @_;
-    my (%c_signals);
     my (%signals);
-
-    ## Parses the C file to find all the signals
-    my ($gtk) = "gtk";
-
-    if ($cfile =~ /^gdk/) {
-	$gtk = "gdk";
-    }
-
-    open (FILE, $gtk_src_dir . "/$gtk/" . $cfile);
-    my (@c_content) = <FILE>;
-    close (FILE);
-
-    my ($in_struct) = 0;
-    my ($line);
-    foreach $line (@c_content) {
-	if ($line =~ /^\s*struct\s/) {
-	    $in_struct = 1;
-	}
-
-	if ($in_struct) {
-
-	    # A pointer to function ?
-	    if ($line =~ /\(\*\s*([^\)]+)/) {
-		$c_signals{$1} = "";
-	    }
-	}
-	if ($line =~ /\s*\}/) {
-	    $in_struct = 0;
-	}
-    }
 
     my ($ada_signals) = &get_tag_value ("signals", @content);
     # If the tag is found in the Ada file, use it
@@ -856,22 +779,6 @@ sub find_signals () {
 	    }
 	}
 	$signals{$signal} = $descr if ($signal ne "");
-
-	# Check that all the signals are documented
-	foreach (keys %c_signals) {
-	    if (! defined $signals{$_}
-		&& ! defined $signals_exceptions{$cfile . "/" . $_})
-	    {
-
-		print "  The signal $_ is not documented in the Ada file!\n";
-		$signals{$_} = "";
-	    }
-	}
-
-    } else {
-	print "  Signals loaded from the C header file.\n"
-	    if (keys %c_signals);
-	return %c_signals;
     }
     return %signals;
 }
