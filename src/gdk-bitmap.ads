@@ -34,7 +34,7 @@
 --  with Gdk.Drawable.Draw_Drawable. The depth of a pixmap is the number of
 --  bits per pixels. Bitmaps are simply pixmaps with a depth of 1. (That is,
 --  they are monochrome bitmaps - each pixel can be either on or off).
---  Gdk.Pixmap for more details on pixmap handling.
+--  See Gdk.Pixmap for more details on pixmap handling.
 --
 --  </description>
 --  <c_version>1.3.6</c_version>

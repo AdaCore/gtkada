@@ -37,7 +37,7 @@
 --  graphics context. This Gdk_GC contains a number of drawing attributes such
 --  as foreground color, background color and line width, and is used to
 --  reduce the number of arguments needed for each drawing operation.
---  Gdk.GC for more information.
+--  See Gdk.GC for more information.
 --
 --  </description>
 --  <c_version>1.3.6</c_version>
