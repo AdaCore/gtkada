@@ -2170,38 +2170,28 @@ package body Gtk.Widget is
    ---------------------------------
 
    function Class_List_Style_Properties
-     (Klass        : Glib.Object.GObject_Class) return Glib.Param_Spec_Array
+     (Klass : Glib.Object.GObject_Class) return Glib.Param_Spec_Array
    is
+      type Big_Pspec_Array is array (Positive) of Param_Spec;
+      type Big_Pspec is access all Big_Pspec_Array;
+      pragma Convention (C, Big_Pspec);
+
       function Internal
         (Cclass       : GObject_Class;
-         N_Properties : access Guint) return System.Address;
+         N_Properties : access Guint) return Big_Pspec;
       pragma Import (C, Internal, "gtk_widget_class_list_style_properties");
 
-      type Big_Pspec_Array is array (Natural) of Param_Spec;
-      pragma Convention (C, Big_Pspec_Array);
-      type Big_Pspec_Array_Access is access Big_Pspec_Array;
-
-      function Convert is new Ada.Unchecked_Conversion
-        (System.Address, Big_Pspec_Array_Access);
-
       Num     : aliased Guint;
-      C_Array : constant System.Address := Internal (Klass, Num'Access);
+      C_Array : constant Big_Pspec := Internal (Klass, Num'Access);
+
    begin
       --  Implementation is the same as
       --  Gtk.Containers.Class_List_Child_Properties
-      if C_Array = System.Null_Address then
+
+      if C_Array = null then
          return (1 .. 0 => null);
       else
-         declare
-            Result : Param_Spec_Array (1 .. Natural (Num));
-            C_Ptr  : constant Big_Pspec_Array_Access := Convert (C_Array);
-         begin
-            for R in Result'Range loop
-               Result (R) := C_Ptr (R - 1);
-            end loop;
-            return Result;
-         end;
-
+         return Param_Spec_Array (C_Array (1 .. Natural (Num)));
       end if;
    end Class_List_Style_Properties;
 
