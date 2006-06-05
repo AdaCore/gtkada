@@ -39,6 +39,7 @@
 --  this group
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Buttons and Toggles</group>
 
 with Glib.Properties;
 with Gtk.Check_Button;

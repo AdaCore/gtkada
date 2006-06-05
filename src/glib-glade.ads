@@ -21,6 +21,7 @@
 --  This package provides the low level Gate API to generate code for the GUI
 --  builder.
 --  See package Gtk.Glade for the high level routines.
+--  <group>Glib, the general-purpose library</group>
 
 with Ada.Text_IO; use Ada.Text_IO;
 with Glib.XML;

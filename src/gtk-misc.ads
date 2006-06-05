@@ -33,6 +33,7 @@
 --  This widget can not be instantiated directly.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Abstract base classes</group>
 
 with Glib.Properties;
 with Gtk.Widget;

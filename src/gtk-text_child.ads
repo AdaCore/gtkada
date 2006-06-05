@@ -32,6 +32,7 @@
 --  have multiple widgets anchored, to allow for multiple views.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Multiline Text Editor</group>
 
 with Gtk; use Gtk;
 with Gtk.Widget;

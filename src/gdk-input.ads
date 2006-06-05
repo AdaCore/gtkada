@@ -30,6 +30,7 @@
 --  This package provides low level handling of file descriptors in the
 --  GtkAda event loop. Note that this package is currently not supported
 --  under Windows.
+--  <group>Gdk, the low-level API</group>
 
 with Gdk.Event;
 with Gdk.Types;

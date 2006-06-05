@@ -35,6 +35,7 @@
 --  This widget only works with postscript fonts (see Gtk.Extra.PsFont).
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>GtkExtra, additional widgets</group>
 
 with Gtk.Toolbar;
 with Gdk.Font;

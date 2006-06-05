@@ -30,6 +30,7 @@
 --  This package provides low level routines for enabling, disabling
 --  and modifying the way log messages are handled in glib/gdk/gtk.
 --  </description>
+--  <group>Glib, the general-purpose library</group>
 
 package Glib.Messages is
    pragma Preelaborate;

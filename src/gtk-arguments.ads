@@ -43,6 +43,7 @@
 --  package provides functions to extract the values from this type.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Signal handling</group>
 
 with Glib.Values;
 with Gdk.Event;

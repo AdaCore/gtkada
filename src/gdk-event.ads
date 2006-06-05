@@ -38,6 +38,7 @@
 --  you have to use the function Free too...
 --  </description>
 --  <c_version>1.3.6</c_version>
+--  <group>Gdk, the low-level API</group>
 
 with System;
 with Glib; use Glib;

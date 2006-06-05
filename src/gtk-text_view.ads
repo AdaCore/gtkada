@@ -36,6 +36,7 @@
 --  <see>Gtk.Text_Tag</see>
 --  <see>Gtk.Text_Attributes</see>
 --  <testgtk>create_text_view.adb</testgtk>
+--  <group>Multiline Text Editor</group>
 
 with Glib.Properties;
 with Gdk.Rectangle;

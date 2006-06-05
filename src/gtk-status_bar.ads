@@ -49,6 +49,7 @@
 --  of each category.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Display widgets</group>
 
 with Gtk.Box;
 with Interfaces.C.Strings;

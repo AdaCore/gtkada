@@ -55,6 +55,7 @@
 --  it is thus easy to keep track of attributes in objects.
 --
 --  </description>
+--  <group>Glib, the general-purpose library</group>
 
 with Glib.Object;
 with Glib.Values;

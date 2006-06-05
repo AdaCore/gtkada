@@ -299,6 +299,7 @@
 --  that can be specified and their default values are the same as for styles.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Configuration and Themes</group>
 
 with Glib.Object;
 with Gtk.Settings;

@@ -36,6 +36,7 @@
 --  when a child calls Gtk.Widget.Queue_Resize.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Abstract base classes</group>
 
 with Gdk.Event;
 with Glib.Properties;

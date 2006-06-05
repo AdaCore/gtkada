@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <group>Glib, the general-purpose library</group>
 with Glib.Enums; use Glib.Enums;
 
 package Glib.Gnodes is

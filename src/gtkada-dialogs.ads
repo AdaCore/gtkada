@@ -32,6 +32,7 @@
 --  This package provides a ready to use high level dialog capability.
 --
 --  </description>
+--  <group>Windows</group>
 
 with Glib;
 with Gtk.Dialog; use Gtk.Dialog;

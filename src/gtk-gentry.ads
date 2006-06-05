@@ -35,6 +35,7 @@
 --  See Gtk_Text_View for a multiple-line text editing widget.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Numeric/Text Data Entry</group>
 
 with Glib.Properties;
 with Gtk.Editable;

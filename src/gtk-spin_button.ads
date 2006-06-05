@@ -41,6 +41,7 @@
 --  See Gtk.GEntry for a text editing widget without spin buttons.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Numeric/Text Data Entry</group>
 
 with Glib.Generic_Properties;
 with Glib.Properties;

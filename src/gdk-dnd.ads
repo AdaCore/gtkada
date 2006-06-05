@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <group>Gdk, the low-level API</group>
 with Glib; use Glib;
 with Gdk.Types; use Gdk.Types;
 with Gdk.Window;

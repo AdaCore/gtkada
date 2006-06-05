@@ -55,6 +55,7 @@
 --  Gdk.Font, which should only be used for legacy applications.
 --
 --  </description>
+--  <group>Pango, font handling</group>
 
 with Glib;
 with Pango.Attributes;

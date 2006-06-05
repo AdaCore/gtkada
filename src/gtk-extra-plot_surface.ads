@@ -31,6 +31,7 @@
 --  A special kind of data set that stores three-dimensional data.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Plotting Data</group>
 
 with Gdk.Color;
 with Gtk;

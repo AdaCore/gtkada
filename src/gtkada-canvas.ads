@@ -94,6 +94,7 @@
 --  not pressed).
 --
 --  </description>
+--  <group>Drawing</group>
 
 with Gdk.Event;
 with Gdk.GC;

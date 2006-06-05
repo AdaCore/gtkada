@@ -41,6 +41,7 @@
 --
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Abstract base classes</group>
 
 with System;
 with Glib.Object;
@@ -1520,7 +1521,6 @@ package Gtk.Widget is
    --
    --  - "show"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    Emitted when a widget is to be shown (see explanation for the Show
    --    subprogam). This schedules the widget to be displayed on the screen,
    --    and if this is a toplevel widget it actually appears on the screen
@@ -1528,45 +1528,38 @@ package Gtk.Widget is
    --
    --  - "hide"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    Emitted when a widget is to be hidden (see explanation for the Hide
    --    subprogram). Hides the widget from the screen, and if its parent is
    --    shown, the widget will not appear on the screen again.
    --
    --  - "map"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    Emitted when a widget is mapped on the screen (the default handler
    --    simply emits the "show" signal).
    --
    --  - "unmap"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    Emitted when a widget needs to be unmapped on the screen (the default
    --    handler simply emits the "hide" signal).
    --
    --  - "realize"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    Emitted when a widget is realized. The default handler creates the
    --    Gdk window associated with the widget, and its ancestors.
    --
    --  - "unrealize"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    Emitted when a widget is unrealized. The default handler destroys the
    --    Gdk windows of the widget and all its children.
    --
    --  - "draw"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class;
    --                       Area   : Gdk.Rectangle.Gdk_Rectangle);
-   --
    --    Emitted when a widget needs to be drawn. The default handler emits
    --    the "expose" event.
    --
    --  - "draw_focus"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    Emitted when a widget needs to be drawn and it has the focus. Some
    --    widgets might want to provide visual clues that they have the focus,
    --    like a black border. This is never called if the widget can not have
@@ -1574,7 +1567,6 @@ package Gtk.Widget is
    --
    --  - "draw_default"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    Emitted when a widget needs to be drawn and it does not have the
    --    focus. This is never called if the widget can not have the focus
    --    (ie the "Can_Focus" flag is unset).
@@ -1582,7 +1574,6 @@ package Gtk.Widget is
    --  - "size_request"
    --    procedure Handler (Widget      : access Gtk_Widget_Record'Class;
    --                       Requisition : access Gtk_Requisition);
-   --
    --    Should return (in Requisition) the ideal size the widget would like to
    --    have. It is not sure this is the size that will be assigned to it,
    --    since it depends on the size of its parent).
@@ -1590,7 +1581,6 @@ package Gtk.Widget is
    --  - "size_allocate"
    --    procedure Handler (Widget     : access Gtk_Widget_Record'Class;
    --                       Allocation : Gtk_Allocation);
-   --
    --    A size and position were assigned to the widget. This is called every
    --    time the size of the widget changes.
    --    The default handler takes care of resizing and moving the widget.
@@ -1598,13 +1588,11 @@ package Gtk.Widget is
    --  - "state_changed"
    --    procedure Handler (Widget         : access Gtk_Widget_Record'Class;
    --                       Previous_State : Gtk.Enums.Gtk_State_Type);
-   --
    --    The state of the widget has changed.
    --
    --  - "parent_set"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class;
    --                       Previous_Parent : access Gtk_Widget_Record'Class);
-   --
    --    A new parent has been set for the widget. The previous parent is
    --    given in arguments (if there was none,
    --    Gdk.Is_Created (Previous_Parent) returns False).
@@ -1612,22 +1600,18 @@ package Gtk.Widget is
    --  - "style_set"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
    --                       Previous_Style : Gtk.Style.Gtk_Style);
-   --
    --    The widget's style has been changed (this is not call when some
    --    settings in the style are changed, only when the style itself is
    --    completely changed with a call to Set_Style or Set_Default_Style).
    --
    --  - "add_accelerator"
-   --
    --  ???
    --
    --  - "remove_accelerator"
-   --
    --  ???
    --
    --  - "grab_focus"
    --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
-   --
    --    The widget has got the focus, ie will now get the keyboard events
    --    sent to a window. This is only called if the "Can_Focus" flag is
    --    set. The "Has_Focus" flag might not be set when this signal is
@@ -1637,7 +1621,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event)
    --                     return Boolean;
-   --
    --    Some event was sent to the widget. This covers all the cases
    --    below, and acts as a general handler. This is called in addition to
    --    the relevant specific handler below.
@@ -1648,7 +1631,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Button)
    --                     return Boolean;
-   --
    --    A button was pressed while the pointer was inside the widget.
    --    To get this signal, some widgets by have to use the Set_Events
    --    subprogram first to get this event.
@@ -1659,7 +1641,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Button)
    --                     return Boolean;
-   --
    --    A button was released while the pointer was inside the widget.
    --    Note that in some cases (Gtk_Buttons for instance), another "clicked"
    --    signal could be emitted). This "button_release_event" should mainly
@@ -1676,7 +1657,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Motion)
    --                     return Boolean;
-   --
    --    The pointer has moved while remaining inside the widget.
    --    The Set_Events subprogram has to be called first to get this event.
    --
@@ -1687,7 +1667,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event)
    --                     return Boolean;
-   --
    --    The user has clicked on the "close" button in the window's frame
    --    (the button that is automatically set by the window manager). If the
    --    handler returns False, the widget will be destroyed (and the window
@@ -1700,7 +1679,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event)
    --                     return Boolean;
-   --
    --    This signal is apparently never emitted by Gtk+. You might want to
    --    use "destroy" instead, which is documented in Gtk.Object.
    --
@@ -1708,7 +1686,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Expose)
    --                     return Boolean;
-   --
    --    The widget needs to be partly redrawn. The exact area to redraw is
    --    found in Event. For some widgets, you should rather connect to the
    --    "draw" signal. However, for instance for Gtk_Drawing_Area widgets,
@@ -1721,7 +1698,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Key)
    --                     return Boolean;
-   --
    --    A key has been pressed while Widget had the focus. Note that some
    --    widgets like Gtk_Editable provide some higher-level signals to handle
    --    this.
@@ -1732,7 +1708,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Key)
    --                     return Boolean;
-   --
    --    A key has been released while Widget had the focus.
    --    If the handler returns False, the event might be pass to the parent
    --    of widget (if no other handler of widget has returned True).
@@ -1741,7 +1716,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Crossing)
    --                     return Boolean;
-   --
    --    The pointer has just entered the widget. If the "Can_Focus" flag is
    --    set, Widget will gain the focus, and the widget might be drawn
    --    differently.
@@ -1752,7 +1726,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Crossing)
    --                     return Boolean;
-   --
    --    The pointer has just leaved the widget. If the "Can_Focus" flag is
    --    set, Widget will gain the focus, and the widget might be drawn
    --    differently.
@@ -1763,7 +1736,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Configure)
    --                     return Boolean;
-   --
    --    Some configuration of the window has changed (it has been
    --    moved or resized).
    --    If the handler returns False, the event might be pass to the parent
@@ -1773,7 +1745,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Focus)
    --                     return Boolean;
-   --
    --    The widget has just gained the focus.
    --    If the handler returns False, the event might be pass to the parent
    --    of widget (if no other handler of widget has returned True).
@@ -1784,7 +1755,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Focus)
    --                     return Boolean;
-   --
    --    The widget has just lost the focus.
    --    If the handler returns False, the event might be pass to the parent
    --    of widget (if no other handler of widget has returned True).
@@ -1795,7 +1765,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event)
    --                     return Boolean;
-   --
    --    The widget has just been mapped. This is different from the "map"
    --    signal, which is called *before* the widget is actually mapped.
    --    If the handler returns False, the event might be pass to the parent
@@ -1805,7 +1774,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event)
    --                     return Boolean;
-   --
    --    The widget has just been unmapped. This is different from the "unmap"
    --    signal, which is called *before* the widget is actually unmapped.
    --    If the handler returns False, the event might be pass to the parent
@@ -1815,28 +1783,24 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Property)
    --                     return Boolean;
-   --
    --    ???
    --
    --  - "selection_clear_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Selection)
    --                     return Boolean;
-   --
    --    ???
    --
    --  - "selection_request_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Selection)
    --                     return Boolean;
-   --
    --    ???
    --
    --  - "selection_notify_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Selection)
    --                     return Boolean;
-   --
    --    ???
    --
    --  - "selection_received"
@@ -1849,7 +1813,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Proximity)
    --                     return Boolean;
-   --
    --    Used for special input devices. See the description of
    --    Gdk.Event.Gdk_Event_Proximity.
    --    If the handler returns False, the event might be pass to the parent
@@ -1859,7 +1822,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Proximity)
    --                     return Boolean;
-   --
    --    Used for special input devices. See the description of
    --    Gdk.Event.Gdk_Event_Proximity.
    --    If the handler returns False, the event might be pass to the parent
@@ -1893,7 +1855,6 @@ package Gtk.Widget is
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event_Visibility)
    --                     return Boolean;
-   --
    --    The visibility state of the widget has changed (partially visible,
    --    fully visible, ...). You might want to use the "expose" signal
    --    instead.
@@ -1901,14 +1862,12 @@ package Gtk.Widget is
    --    of widget (if no other handler of widget has returned True).
    --
    --  - "client_event"
-   --
    --    ???
    --
    --  - "no_expose_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
    --                      Event  : Gdk.Event.Gdk_Event)
    --                     return Boolean;
-   --
    --    ???
    --
    --  </signals>

@@ -56,6 +56,7 @@
 --
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Scrolling</group>
 
 with Glib.Properties;
 with Gtk.Adjustment; use Gtk.Adjustment;

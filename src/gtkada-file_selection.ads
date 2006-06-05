@@ -31,6 +31,7 @@
 --  This package provides a high level support for creating file selection
 --  dialogs by handling the signals internally.
 --  </description>
+--  <group>Selectors</group>
 
 with Glib;
 

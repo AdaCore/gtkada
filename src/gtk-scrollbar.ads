@@ -41,6 +41,7 @@
 --  in the drawing area.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Scrolling</group>
 
 with Gtk.GRange;
 with Gtk.Adjustment;

@@ -39,6 +39,7 @@
 --  the widget that is contained in the page (or returned from Get_Nth_Page).
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Layout containers</group>
 
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);

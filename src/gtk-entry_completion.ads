@@ -52,6 +52,7 @@
 --  selected, the ::action-activated signal is emitted.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Numeric/Text Data Entry</group>
 
 with Glib.Object;
 with Glib.Properties;

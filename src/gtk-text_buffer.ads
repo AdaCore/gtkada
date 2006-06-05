@@ -31,6 +31,7 @@
 --  coordination with Gtk.Text_View.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Multiline Text Editor</group>
 
 with Glib.Properties;
 with Gdk.Pixbuf;

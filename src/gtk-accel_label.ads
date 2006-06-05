@@ -53,6 +53,7 @@
 --  used to display just one accelerator key.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Display widgets</group>
 
 with Glib.Properties;
 with Gtk.Label;

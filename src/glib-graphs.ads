@@ -31,6 +31,7 @@
 --  connected by links (edges).
 --  It is not intended for huges, highly-connected graphs, since there are
 --  several lists provided for efficient access to ancestor and children nodes.
+--  <group>Glib, the general-purpose library</group>
 
 package Glib.Graphs is
 

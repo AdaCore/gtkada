@@ -31,6 +31,7 @@
 --  applications, or even between various parts of your application.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Configuration and Themes</group>
 
 with Gdk;
 with Glib.Object;

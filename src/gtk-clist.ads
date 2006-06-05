@@ -47,6 +47,7 @@
 --  You can add scrolling in a Gtk_Clist by adding it in a Gtk_Scrolled_Window.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Obsolescent widgets</group>
 
 with Gdk.Bitmap;
 with Gdk.Color;

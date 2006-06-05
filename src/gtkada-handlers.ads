@@ -34,6 +34,7 @@
 --  Gate takes advantage of these pre-instantiated packages.
 --
 --  </description>
+--  <group>Signal handling</group>
 
 with Gtk.Handlers;
 pragma Elaborate_All (Gtk.Handlers);

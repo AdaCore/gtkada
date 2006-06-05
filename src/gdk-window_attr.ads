@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <group>Gdk, the low-level API</group>
+
 with Gdk.Color;
 with Gdk.Cursor;
 with Gdk.Event;

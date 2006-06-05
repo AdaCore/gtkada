@@ -33,6 +33,7 @@
 --  Gdk and Gtk.
 --
 --  </description>
+--  <group>Glib, the general-purpose library</group>
 
 with Ada.Unchecked_Deallocation;
 with Ada.Unchecked_Conversion;

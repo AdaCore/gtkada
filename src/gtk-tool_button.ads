@@ -33,6 +33,7 @@
 --  gtk-menu_tool_button.ads
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Menus and Toolbars</group>
 
 with Glib.Properties;
 with Gtk.Tool_Item;

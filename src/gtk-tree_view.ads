@@ -30,6 +30,7 @@
 --  See extended documentation in Gtk.Tree_View_Column and Gtk.Tree_Store.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Trees and Lists</group>
 
 with Glib.Properties;
 with Gdk.Dnd;
@@ -61,10 +62,8 @@ package Gtk.Tree_View is
    pragma Convention (C, Gtk_Tree_View_Drop_Position);
 
    procedure Gtk_New (Widget : out Gtk_Tree_View);
-
    procedure Initialize (Widget : access Gtk_Tree_View_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   --  Creates or initializes a new tree view
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.

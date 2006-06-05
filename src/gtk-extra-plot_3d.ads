@@ -32,6 +32,7 @@
 --  with such plots should either be a function or a Gtk.Extra.Plot_Surface.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Plotting Data</group>
 
 with Gdk.Color;
 with Gdk.Drawable;

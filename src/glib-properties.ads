@@ -67,6 +67,7 @@
 
 --  </description>
 --  <c_version>1.3.4</c_version>
+--  <group>Glib, the general-purpose library</group>
 
 with Glib.Object;
 with Glib.Generic_Properties; use Glib.Generic_Properties;

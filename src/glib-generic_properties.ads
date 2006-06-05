@@ -48,6 +48,7 @@
 --  Generic_Enumeration_Property package, since it also registers the
 --  enumeration type with gtk+ for a full compatibility with C.
 --  </description>
+--  <group>Glib, the general-purpose library</group>
 
 with Glib.Object;
 with Glib.Values;

@@ -1,6 +1,7 @@
 --  Generated from glu.h
 --  Date: Wed Sep 22 12:47:09 1999
 --
+
 with Interfaces.C.Extensions;
 with gl_h;
 

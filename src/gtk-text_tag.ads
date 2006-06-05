@@ -32,6 +32,7 @@
 --  a given before before they are used in that buffer.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Multiline Text Editor</group>
 
 with Gtk.Enums;
 with Pango.Enums;

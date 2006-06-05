@@ -26,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <group>Layout containers</group>
+
 with Ada.Tags;
 with Glib;        use Glib;
 with Glib.Xml_Int;

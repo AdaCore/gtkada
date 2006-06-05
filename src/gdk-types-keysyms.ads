@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <group>Gdk, the low-level API</group>
+
 package Gdk.Types.Keysyms is
 
    GDK_VoidSymbol                      : constant Gdk_Key_Type := 16#FFFFFF#;

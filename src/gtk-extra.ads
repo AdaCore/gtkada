@@ -32,6 +32,7 @@
 --  This is the top level package of the Gtk.Extra widget hierarchy.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>GtkExtra, additional widgets</group>
 
 package Gtk.Extra is
 end Gtk.Extra;

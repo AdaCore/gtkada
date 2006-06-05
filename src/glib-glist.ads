@@ -49,7 +49,8 @@
 --  Gtk.Enums.Gint_List, Gtk.Enums.String_List or Gtk.Widget.Widget_List.
 --
 --  </description>
---  <c_synchro>1.2.6</c_synchro>
+--  <c_version>1.2.6</c_version>
+--  <group>Glib, the general-purpose library</group>
 
 with System;
 

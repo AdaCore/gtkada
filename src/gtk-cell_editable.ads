@@ -31,6 +31,7 @@
 --  usable when editing the contents of a Gtk_Tree_View cell.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Trees and Lists</group>
 
 with Gtk;
 with Gdk.Event;

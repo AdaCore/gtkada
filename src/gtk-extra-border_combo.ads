@@ -33,6 +33,7 @@
 --  Its main usage seems to be with a Gtk_Sheet.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Selectors</group>
 
 with Gtk.Extra.Combo_Button;
 

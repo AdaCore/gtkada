@@ -34,6 +34,7 @@
 --  pointer grabs and drag-and-drop
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Windows</group>
 
 with Glib.Properties;
 with Gtk.Widget;

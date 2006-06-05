@@ -39,6 +39,7 @@
 --  applications window.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Inter-Process communication</group>
 
 with Gtk.Window;
 

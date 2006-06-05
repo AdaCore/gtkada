@@ -30,6 +30,7 @@
 --  <description>
 --  This is the top level package of the Pango hierarchy.
 --  </description>
+--  <group>Pango, font handling</group>
 
 package Pango is
 

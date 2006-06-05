@@ -31,6 +31,7 @@
 --  This special type of data set displays itself with boxes
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Plotting Data</group>
 
 with Gtk.Extra.Plot_Data;
 with Gtk.Enums;

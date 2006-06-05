@@ -37,6 +37,7 @@
 --  of the data after creation) you should use Gtk_Pixmap.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Display widgets</group>
 
 with Glib.Properties;
 with Gdk.Bitmap;

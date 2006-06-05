@@ -37,6 +37,7 @@
 --  Adding new values in the model is done as in the example at the end.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Trees and Lists</group>
 
 with Glib.Values; use Glib.Values;
 with Gtk;

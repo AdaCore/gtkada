@@ -34,6 +34,7 @@
 --  Gtk_Entry widget.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>GtkExtra, additional widgets</group>
 
 with Gtk.Enums;
 with Gtk.GEntry;

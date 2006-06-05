@@ -34,6 +34,7 @@
 --  dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Ornaments</group>
 
 with Gtk.Widget;
 

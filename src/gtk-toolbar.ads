@@ -34,6 +34,7 @@
 --  It is common for an application to have multiple toolbars.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Menus and Toolbars</group>
 
 with Glib;
 with Glib.Properties;

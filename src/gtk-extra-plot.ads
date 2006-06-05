@@ -94,6 +94,7 @@
 --
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Plotting Data</group>
 
 with System;
 with Gdk.Color;

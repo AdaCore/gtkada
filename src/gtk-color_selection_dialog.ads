@@ -33,6 +33,7 @@
 --  dialog for file selection.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Drawing</group>
 
 with Gtk.Dialog;
 with Gtk.Button;

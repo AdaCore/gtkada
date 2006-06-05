@@ -32,6 +32,7 @@
 --  Each cell can contain some text or any kind of widgets.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>GtkExtra, additional widgets</group>
 
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Container;

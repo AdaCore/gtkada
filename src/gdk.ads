@@ -33,6 +33,7 @@
 --  It provides the type definitions used to access underlying C structures.
 --
 --  </description>
+--  <group>Gdk, the low-level API</group>
 
 with Glib;
 

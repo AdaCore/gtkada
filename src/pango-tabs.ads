@@ -35,6 +35,8 @@
 --  font for instance. This is similar to the standard interface that most
 --  word processing tools provide through tab stops in their ruler bars.
 
+--  <group>Pango, font handling</group>
+
 with Glib;
 
 package Pango.Tabs is

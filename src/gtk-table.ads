@@ -39,6 +39,7 @@
 --  also contain text and images in a more efficient way.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Layout containers</group>
 
 with Glib.Properties;
 with Gtk.Container;

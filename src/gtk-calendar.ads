@@ -43,6 +43,7 @@
 --  flicker, using Freeze, and 'thawed' again using Thaw.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Selectors</group>
 
 with Glib.Properties;
 with Gtk.Widget;

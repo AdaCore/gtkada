@@ -34,6 +34,7 @@
 --  </description>
 --  This is a binding to gtkplotprint.h
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Plotting Data</group>
 
 with Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Canvas;  use Gtk.Extra.Plot_Canvas;

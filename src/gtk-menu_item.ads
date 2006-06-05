@@ -40,6 +40,7 @@
 --  interactively modify the shortcuts.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Menus and Toolbars</group>
 
 with Gtk.Item;
 with Gtk.Widget;

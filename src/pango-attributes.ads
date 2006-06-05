@@ -32,6 +32,7 @@
 --  attributes of text displayed in a pango_layout
 --
 --  </description>
+--  <group>Pango, font handling</group>
 
 with Glib;
 with Pango.Enums;

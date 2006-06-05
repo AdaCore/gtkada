@@ -57,6 +57,7 @@
 --  </description>
 
 --  <c_version>2.8.17</c_version>
+--  <group>Trees and Lists</group>
 
 with Glib.Properties;
 with Glib.Generic_Properties;

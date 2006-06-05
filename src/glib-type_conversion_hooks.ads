@@ -44,6 +44,7 @@
 --  function Add_Hook from the elaboration part of your packages.
 --
 --  </description>
+--  <group>Glib, the general-purpose library</group>
 
 with Glib.Object;
 

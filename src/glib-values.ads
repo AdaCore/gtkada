@@ -35,6 +35,7 @@
 --  package provides functions to extract the values from this type.
 --  </description>
 --  <c_version>1.3.15</c_version>
+--  <group>Glib, the general-purpose library</group>
 
 with System;
 with Interfaces.C.Strings;

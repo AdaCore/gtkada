@@ -56,6 +56,7 @@
 --  start_editing virtual functions, respectively.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Trees and Lists</group>
 
 with Glib.Object;
 with Gdk.Event;

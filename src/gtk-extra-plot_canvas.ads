@@ -39,6 +39,7 @@
 --  size for its children, and provides scrolling.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Plotting Data</group>
 
 with Gdk;
 with Gtk.Extra.Plot_Data;

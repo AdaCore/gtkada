@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <group>Glib, the general-purpose library</group>
+
 package Glib.Enums is
 
    type Glib_Traverse_Flags is mod 2 ** 32;

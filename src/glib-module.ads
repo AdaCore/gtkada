@@ -30,6 +30,7 @@
 --  <description>
 --  This package provides wrapper code for dynamic module loading
 --  </description>
+--  <group>Glib, the general-purpose library</group>
 
 package Glib.Module is
    pragma Preelaborate;

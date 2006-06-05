@@ -68,6 +68,7 @@
 --  correctly merge the two windows (Enlightenment for instance).
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Inter-Process communication</group>
 
 with Gtk.Container;
 with Gdk.Window;

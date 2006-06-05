@@ -64,6 +64,7 @@
 --
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Inter-Process communication</group>
 
 with Gdk.Types;
 with Gdk.Pixbuf;

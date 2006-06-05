@@ -42,6 +42,7 @@
 --  this yourself in the second case.
 --
 --  </description>
+--  <group>Pango, font handling</group>
 
 with Glib; use Glib;
 with Glib.Object;

@@ -33,6 +33,7 @@
 --  See also glade.ads
 --
 --  </description>
+--  <group>Glade, the GUI builder</group>
 
 with System;
 with Glib;

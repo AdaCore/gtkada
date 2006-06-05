@@ -48,6 +48,7 @@
 --  See Gtkada.Dialogs for a higher level dialog interface.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Windows</group>
 
 with Glib.Properties;
 with Gtk.Box;

@@ -36,6 +36,7 @@
 --  buffer from a mark.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Multiline Text Editor</group>
 
 with Glib.Values;
 

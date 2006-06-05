@@ -35,6 +35,7 @@
 --  Currently, only one file can be selected in the dialog.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Selectors</group>
 
 with Glib.Properties;
 with Gtk.Box;

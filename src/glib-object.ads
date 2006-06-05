@@ -32,6 +32,7 @@
 --  See Glib.Properties for information on how to manipulate properties
 --
 --  </description>
+--  <group>Glib, the general-purpose library</group>
 
 with Gtkada.Types;
 with Glib.GSlist;

@@ -42,6 +42,7 @@
 --
 --  </description>
 --  <c_version>1.2.6</c_version>
+--  <group>Glib, the general-purpose library</group>
 
 with System;
 

@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 --  <c_version>2.8.17</c_version>
+--  <group>Selectors</group>
 with Gtk.Font_Selection;
 
 package Gtk.Font_Selection_Dialog renames Gtk.Font_Selection;

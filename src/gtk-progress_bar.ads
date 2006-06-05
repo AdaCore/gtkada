@@ -32,6 +32,7 @@
 --  completion for typically lengthy tasks.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Display widgets</group>
 
 with Glib.Properties;
 with Gtk.Enums;    use Gtk.Enums;

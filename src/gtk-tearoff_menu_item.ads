@@ -34,6 +34,7 @@
 --  visible at all time).
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Menus and Toolbars</group>
 
 with Gtk.Menu_Item;
 

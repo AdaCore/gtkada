@@ -34,6 +34,7 @@
 --
 --  </description>
 --  <c_version>gtkglarea 1.2.2</c_version>
+--  <group>Drawing</group>
 
 with Gtk.Drawing_Area;
 with Gdk.GL; use Gdk.GL;

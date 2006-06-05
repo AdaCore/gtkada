@@ -35,6 +35,7 @@
 --  text. The background can have any color, or even be a pixmap.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Obsolescent widgets</group>
 
 with Glib.Properties;
 with Gdk.Color;

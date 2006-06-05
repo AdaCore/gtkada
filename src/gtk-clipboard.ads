@@ -76,6 +76,7 @@
 --  standard form for representing strings in GTK+.)
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Inter-Process communication</group>
 
 with Gdk.Pixbuf;
 with Gdk.Types;

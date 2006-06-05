@@ -40,6 +40,7 @@
 --  and updated it in the handler for this signal.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Selectors</group>
 
 with Gdk.Color;
 with Gtk.Extra.Combo_Button;

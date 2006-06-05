@@ -33,6 +33,7 @@
 --
 --  </description>
 --  <c_version>2.2.1</c_version>
+--  <group>Glib, the general-purpose library</group>
 
 with Interfaces.C.Strings;
 

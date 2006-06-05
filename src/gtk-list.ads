@@ -30,6 +30,7 @@
 
 --  <c_version>2.8.17</c_version>
 --  <doc_ignore>
+--  <group>Obsolescent widgets</group>
 
 with Gtk.Container;
 with Gtk.Enums;  use Gtk.Enums;

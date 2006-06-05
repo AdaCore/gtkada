@@ -33,6 +33,7 @@
 --
 --  </description>
 --  <c_version>1.3.11</c_version>
+--  <group>Glib, the general-purpose library</group>
 
 with Glib.Error; use Glib.Error;
 with Interfaces.C.Strings; use Interfaces.C.Strings;

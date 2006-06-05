@@ -42,6 +42,7 @@
 --
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Obsolescent widgets</group>
 
 with Interfaces.C.Strings;
 with Unchecked_Conversion;

@@ -1,6 +1,7 @@
 --  Generated from GL/gl.h
 --  Date: Wed Sep 22 12:47:08 1999
 --
+
 with Interfaces.C;
 with Interfaces.C.Extensions;
 with System;

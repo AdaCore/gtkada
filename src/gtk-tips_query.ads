@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 --  <c_version>2.8.17</c_version>
+--  <group>Obsolescent widgets</group>
 --  <doc_ignore>
 
 with Gtk.Label;

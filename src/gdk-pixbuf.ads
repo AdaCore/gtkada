@@ -42,6 +42,7 @@
 --  expect and the speed you need.
 --  </description>
 --  <c_version>1.3.11</c_version>
+--  <group>Gdk, the low-level API</group>
 
 with Glib; use Glib;
 with Glib.Error; use Glib.Error;

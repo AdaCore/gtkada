@@ -33,6 +33,7 @@
 --  Gate.
 --
 --  </description>
+--  <group>Glib, the general-purpose library</group>
 
 with Unchecked_Deallocation;
 

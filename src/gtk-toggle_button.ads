@@ -38,6 +38,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <screenshot>togglebutton</screenshot>
+--  <group>Buttons and Toggles</group>
 
 with Glib.Properties;
 with Gtk.Button;

@@ -30,6 +30,7 @@
 --  A special kind of child that can be put in a Gtk_Plot_Canvas.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
+--  <group>Plotting Data</group>
 
 with Gdk.Color;
 with Gtk.Enums;

@@ -35,7 +35,7 @@
 --  implementation: Gtk_Combo, Gtk_Color_Combo, Gtk_Border_Combo.
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
-
+--  <group>Menus and Toolbars</group>
 
 with Gtk.Box;
 with Gtk.Button;

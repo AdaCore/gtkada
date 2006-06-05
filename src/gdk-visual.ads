@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 --  <c_version>1.3.6</c_version>
+--  <group>Gdk, the low-level API</group>
 
 with Glib; use Glib;
 with Glib.Glist;

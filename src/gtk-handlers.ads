@@ -167,6 +167,7 @@
 --
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Signal handling</group>
 
 with Glib.Values;
 with Gdk.Event;

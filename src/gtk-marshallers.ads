@@ -109,6 +109,7 @@
 --  own marshallers.
 --
 --  </description>
+--  <group>Signal handling</group>
 --  <c_version>2.8.17</c_version>
 
 with Glib.Object;

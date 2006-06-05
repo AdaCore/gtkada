@@ -33,6 +33,7 @@
 --  See also Glade.XML
 --
 --  </description>
+--  <group>Glade, the GUI builder</group>
 
 package Glade is
 

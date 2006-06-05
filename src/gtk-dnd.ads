@@ -81,6 +81,7 @@
 --  is finished, and whether it was successful or not.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Inter-Process communication</group>
 
 with Gdk.Bitmap;
 with Gdk.Color;

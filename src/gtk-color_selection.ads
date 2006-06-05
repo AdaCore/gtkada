@@ -40,6 +40,7 @@
 --  See Gtk.Extra.Color_Combo for a different way to select colors.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Drawing</group>
 
 with Glib.Properties;
 with Gdk.Color;

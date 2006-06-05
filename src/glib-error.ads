@@ -33,6 +33,7 @@
 --
 --  </description>
 --  <c_version>1.3.11</c_version>
+--  <group>Glib, the general-purpose library</group>
 
 package Glib.Error is
    pragma Preelaborate;

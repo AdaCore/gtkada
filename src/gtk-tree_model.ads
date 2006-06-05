@@ -52,6 +52,7 @@
 --
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Trees and Lists</group>
 
 with Ada.Unchecked_Conversion;
 with Glib.Glist;

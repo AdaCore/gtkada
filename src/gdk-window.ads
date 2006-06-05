@@ -47,6 +47,7 @@
 --  might want to handle scrolling yourself). See the function
 --  Gdk.Event.Get_Graphics_Expose for more information.
 --  <c_version>1.3.6</c_version>
+--  <group>Gdk, the low-level API</group>
 
 with System;
 with Glib; use Glib;

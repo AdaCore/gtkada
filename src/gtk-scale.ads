@@ -33,6 +33,7 @@
 --  finds on audio systems to select the volume for instance.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Numeric/Text Data Entry</group>
 
 with Glib.Properties;
 with Gtk.Adjustment;

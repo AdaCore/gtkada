@@ -34,6 +34,7 @@
 --  is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <group>Layout containers</group>
 
 with Glib;
 with Gtk.Button_Box;

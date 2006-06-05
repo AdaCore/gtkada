@@ -33,6 +33,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <screenshot>checkbutton</screenshot>
+--  <group>Buttons and Toggles</group>
 
 with Gtk.Toggle_Button;
 

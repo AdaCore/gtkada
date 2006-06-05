@@ -26,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <group>Pango, font handling</group>
+
 with Glib;
 with Glib.Object;
 with Pango.Font;
