@@ -31,6 +31,11 @@
 --  set on a given buffer.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <screenshot>gtk-text_view.png</screenshot>
+--  <see>Gtk.Text_Buffer</see>
+--  <see>Gtk.Text_Tag</see>
+--  <see>Gtk.Text_Attributes</see>
+--  <testgtk>create_text_view.adb</testgtk>
 
 with Glib.Properties;
 with Gdk.Rectangle;
@@ -672,3 +677,21 @@ private
 end Gtk.Text_View;
 
 --  No binding: gtk_text_view_new
+
+--  <example>
+--  --  The following example creates an empty text view, and puts it in a
+--  --  scrolling area so that if more text is added, scrollbars are created
+--  --  automatically.
+--
+--  declare
+--     View     : Gtk_Text_View;
+--     Buffer   : Gtk_Text_Buffer;
+--     Scrolled : Gtk_Scrolled_Window;
+--  begin
+--     Gtk_New (Scrolled);
+--     Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
+--     Gtk_New (Buffer);
+--     Gtk_New (View, Buffer);
+--     Add (Scrolled, View);
+--  end;
+--  </example>
