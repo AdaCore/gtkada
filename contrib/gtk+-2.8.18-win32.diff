@@ -1,3 +1,8 @@
+2006-06-05	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/win32/gdkgc-win32.c (_gdk_win32_gdkregion_to_hrgn): Disable
+	harmless warning which is occurring often with Gtk+ 2.8.18.
+
 2006-02-20	Arnaud Charlet	<charlet@adacore.com>
 
 	* gtk/stock-icons/Makefile.in, demos/Makefile.in,
@@ -175,3 +180,15 @@
  
  @CROSS_COMPILING_FALSE@all-local: gtk.immodules
  # Tell versions [3.59,3.63) of GNU make to not export all variables.
+--- gdk/win32/gdkgc-win32.c.old	2005-07-18 17:20:28.000000000 +0200
++++ gdk/win32/gdkgc-win32.c	2006-06-05 14:56:59.515625000 +0200
+@@ -1160,8 +1160,7 @@ _gdk_win32_gdkregion_to_hrgn (GdkRegion 
+       if (rect->bottom > rgndata->rdh.rcBound.bottom)
+ 	rgndata->rdh.rcBound.bottom = rect->bottom;
+     }
+-  if ((hrgn = ExtCreateRegion (NULL, nbytes, rgndata)) == NULL)
+-    WIN32_API_FAILED ("ExtCreateRegion");
++  hrgn = ExtCreateRegion (NULL, nbytes, rgndata);
+ 
+   g_free (rgndata);
+ 
