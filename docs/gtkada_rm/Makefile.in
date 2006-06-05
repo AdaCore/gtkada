@@ -2,7 +2,7 @@ prefix = @prefix@
 docdir = $(prefix)/share/doc/gtkada/gtkada_rm
 
 MKDIR = mkdir -p
-CP=cp
+CP=cp -p
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
@@ -11,8 +11,8 @@ SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/glade/*.ads
 gtkada_rm: ps html partial_clean
 
 partial_clean::
-	-${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
-	-${RM} generated.texi generated_menu.texi
+	-$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
+	-$(RM) generated.texi generated_menu.texi
 
 ps: gtkada_rm.ps
 gtkada_rm.ps: force
@@ -25,9 +25,9 @@ gtkada_rm.ps: force
 
 html: gtkada_rm_toc.html
 gtkada_rm_toc.html:
-	${MKDIR} gtkada_rm
-	${CP} gtkada_rm.css gtkada_rm.js gtkada_rm/
-	${CP} *.png gtkada_rm/
+	$(MKDIR) gtkada_rm
+	$(CP) gtkada_rm.css gtkada_rm.js gtkada_rm/
+	$(CP) *.png gtkada_rm/
 	./generate_html_doc.pl ${SRC}
 
 info: gtkada_rm.info
@@ -44,12 +44,12 @@ install:
 	done
 
 clean:
-	${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
-	${RM} *.ps *.html *.info* *.txt
-	${RM} generated.texi generated_menu.texi
-	${RM} -rf gtkada_rm/
+	$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
+	$(RM) *.ps *.html *.info* *.txt
+	$(RM) generated.texi generated_menu.texi
+	$(RM) -rf gtkada_rm/
 
 distclean: clean
-	-${RM} Makefile
+	-$(RM) Makefile
 
 force:
