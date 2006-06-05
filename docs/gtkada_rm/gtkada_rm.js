@@ -51,7 +51,10 @@ function getWindowHeight() {
 
 /* Adjust the height of various elements to adapt to the screen size */
 function adjust_height() {
+   /* Do nothing at present (see comment about automatic scrollbars in
+      gtkada_rm.css */
    return;
+
    var screenHeight = getWindowHeight();
 
    var objectName = document.getElementById ('objectName');
@@ -61,8 +64,7 @@ function adjust_height() {
    var h = rightSide.getElementsByTagName ('h2');
    screenHeight = screenHeight - h[0].clientHeight - 20;
 
-screenHeight = 200;
-
+   /* The following code works with Opera, but not firefox */
    var ul = rightSide.getElementsByTagName ('ul');
    ul[0].style.maxHeight = screenHeight;
    ul[0].style.height = screenHeight;
