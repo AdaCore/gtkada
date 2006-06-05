@@ -139,6 +139,9 @@ our %files;
 ## package
 our %groups;
 
+## The list of screenshots. Index is package name, value is image name
+our %screenshots;
+
 #####################
 ## Name of the HTML output file (suitable for links) for an Ada file
 #####################
@@ -212,6 +215,11 @@ sub extract_sections() {
       push (@{$groups{$tags{'group'}}}, $package);
    } else {
       push (@{$groups{"Miscellaneous"}}, $package);
+   }
+
+   # Store the screenshot
+   if (defined $tags{'screenshot'}) {
+     $screenshots{$package} = $tags{'screenshot'};
    }
 
    # Remove private part, after finding special tags
@@ -904,6 +912,39 @@ sub generate_table_of_contents() {
 }
 
 #######################
+## Generates the gallery
+#######################
+
+sub generate_gallery() {
+  my ($screenshot, $pkg);
+
+  open (OUTPUT, ">gtkada_rm/gallery.html");
+  &generate_header ("GtkAda widgets gallery", *OUTPUT);
+  
+  print OUTPUT "<div id='objectName'>\n";
+  print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Toc' title='Table of Contents'/></a>";
+  print OUTPUT "       <a href='entities.html><img src='entities.png' alt='Index' title='Global Index'/></a>\n";
+  print OUTPUT " </span>Widgets gallery</div>\n";
+
+  print OUTPUT "<div class='gallery-spacer' />\n";
+
+  foreach $pkg (sort keys %screenshots) {
+     $screenshot = $screenshots{$pkg};
+     $screenshot .= ".jpg" if (-f "$screenshot.jpg");
+     $screenshot .= ".png" if (-f "$screenshot.png");
+     print OUTPUT "<div class='gallery'>\n";
+     print OUTPUT "  <a href='$files_from_package{$pkg}' title='$pkg'>",
+                  "<img src='$screenshot' alt='No image'/>",
+                  "</a>\n";
+     print OUTPUT "</div>\n";
+  }
+
+  print OUTPUT "<div class='gallery-spacer' />\n";
+  print OUTPUT "</body></html>";
+  close (OUTPUT);
+}
+
+#######################
 ## Main
 #######################
 
@@ -922,3 +963,4 @@ foreach $source (sort keys %files) {
 ## Generate general files
 &generate_table_of_contents();
 &generate_index();
+&generate_gallery();

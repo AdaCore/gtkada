@@ -38,6 +38,9 @@ div.Toc                      { border: 1px solid black;
 div.GeneralIndex             { border: 1px solid black;
                                margin: 10px 10px 0px 0px;
                              }
+div.gallery                  { float: left; 
+                               padding: 0px 10px 10px 0px; }
+div.gallery-spacer           { clear: both; }
 
 /* Automatic scrollbars in some of the lists
    Uncomment this to have local scrollbars in the Alphabetical index and the

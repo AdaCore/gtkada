@@ -28,6 +28,7 @@ gtkada_rm_toc.html:
 	$(MKDIR) gtkada_rm
 	$(CP) gtkada_rm.css gtkada_rm.js gtkada_rm/
 	$(CP) *.png gtkada_rm/
+	${CP} *.jpg gtkada_rm/
 	./generate_html_doc.pl ${SRC}
 
 info: gtkada_rm.info
