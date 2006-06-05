@@ -13,7 +13,7 @@ div#objectName               { font-variant: small-caps;
                                background: #0ca7e1;
                                padding: 3px 0px 3px 0px;
                                width: 100%;
-                               margin: 0px;
+                               margin: 0px 0px 0px 0px;
                                top: 0px;
                                left: 0px;
                                vertical-align: middle;
@@ -30,6 +30,14 @@ div#documentation            { float: left;
 div.notebookPage             { padding: 0px 4px 0px 0px; }
 div#rightSide                { float: left;
                                margin: 0px 0px 0px 10px; }
+div.Toc                      { border: 1px solid black;
+                               margin: 10px 10px 0px 0px;
+                               float: left;
+                               min-height: 330px;
+                               width: 220px; }
+div.GeneralIndex             { border: 1px solid black;
+                               margin: 10px 10px 0px 0px;
+                             }
 
 /* Automatic scrollbars in some of the lists
    Uncomment this to have local scrollbars in the Alphabetical index and the
@@ -58,20 +66,16 @@ div#rightSide div            { border: 1px solid black;
                                padding: 0px 0px 0px 0px;
                                margin-top: 10px;
                              }
-div#documentation a:link,
-div#documentation a:active,
-div#documentation a:visited,
-div#leftSide  a:link,
-div#leftSide  a:active,
-div#leftSide  a:visited,
-div#rightSide a:link,
-div#rightSide a:active,
-div#rightSide a:visited      { text-decoration: none;
+a:link,
+a:active,
+a:visited                    { text-decoration: none;
                                color: blue;
                              }
 div#leftSide  a:hover,
 div#rightSide a:hover        { color: red; }
 div#leftSide ul,
+div.GeneralIndex ul,
+div.Toc ul,
 div#rightSide ul             { margin: 2px 0px 0px 10px;
                                padding: 0px 10px 0px 0px; }
 div#navigation ul ul         { margin: 0px 0px 0px 10px;  }
@@ -84,6 +88,8 @@ div#classHierarchy img       { border-width: 0px;
                                margin: 0px 0px 0px 3px;
                                outline-width: 0px }
 div#leftSide li,
+div.GeneralIndex li,
+div.Toc li,
 div#rightSide li             { list-style-type: none;
                                list-style-position: inside }
 div#screenshot               { text-align: center;

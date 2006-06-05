@@ -76,6 +76,10 @@ use strict;
 ##     Specifies the name of the source file in testgtk that contains example
 ##     for the widget
 ##
+## <group>...</group>
+##     Indicates the group in which the package should be listed in the
+##     general index.
+##
 ## <doc_ignore>...</doc_ignore>
 ##     Indicates a section which should not be included in the documentation.
 ##     All the subprograms inside the section will not be documented. The lines
@@ -110,7 +114,7 @@ our $keywords = join ("|", @Ada95_keywords, @Ada_keywords);
 ## List of special sections in the Ada files
 our @xml_sections = ("description", "example", "screenshot", "c_version",
                      "see", "signals", "properties", "child_properties",
-                     "style_properties", "testgtk");
+                     "style_properties", "testgtk", "group");
 
 ## Will contain, for each widget, the name of its parent type. The parent
 ## doesn't contain a package name.
@@ -130,6 +134,10 @@ our (%entities);
 ## Will contain info about each of the source files (subprograms,...). Indexed
 ## on file name.
 our %files;
+
+## The groups for the index. Key is the group name, contents is an array of
+## package
+our %groups;
 
 #####################
 ## Name of the HTML output file (suitable for links) for an Ada file
@@ -178,9 +186,6 @@ sub extract_sections() {
 
    $html_file = &html_from_ada($file);
 
-   $files_from_package{$package} = $html_file;
-   $entities{$package} = [$html_file, ""];
-
    # Remove sections that must be ignored
    $contents =~ s/<doc_ignore>.*?<\/doc_ignore>/\n/gs;
 
@@ -192,6 +197,21 @@ sub extract_sections() {
       } else {
         $tags{$tag} = $value;
       }
+   }
+
+   # No <description> ? => No automatic doc should be generated
+   if (!defined $tags{'description'}) {
+      return;
+   }
+
+   $files_from_package{$package} = $html_file;
+   $entities{$package} = [$html_file, ""];
+
+   # Store for the index
+   if (defined $tags{'group'}) {
+      push (@{$groups{$tags{'group'}}}, $package);
+   } else {
+      push (@{$groups{"Miscellaneous"}}, $package);
    }
 
    # Remove private part, after finding special tags
@@ -404,6 +424,25 @@ sub parse_properties() {
 }
 
 ######################
+## Generate a HTML header in the given FILE
+######################
+
+sub generate_header() {
+   my ($title) = shift;
+   local (*FILE) = shift;
+
+   print FILE "<?xml version='1.0' encoding='utf-8' />\n";
+   print FILE '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ',
+                ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">', "\n";
+   print FILE "<html><head>\n";
+   print FILE " <title>$title</title>\n";
+   print FILE " <link rel='stylesheet' href='gtkada_rm.css' type='text/css'>\n";
+   print FILE " <script src='gtkada_rm.js' type='text/javascript'></script>\n";
+   print FILE "</head><body>\n";
+
+}
+
+######################
 ## Generate HTML for a package
 ######################
 
@@ -424,15 +463,7 @@ sub generate_html() {
    # Start generating the output
 
    open (OUTPUT, ">gtkada_rm/$output");
-
-   print OUTPUT "<?xml version='1.0' encoding='utf-8' />\n";
-   print OUTPUT '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ',
-                ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">', "\n";
-   print OUTPUT "<html><head>\n";
-   print OUTPUT " <title>GtkAda: $package</title>\n";
-   print OUTPUT " <link rel='stylesheet' href='gtkada_rm.css' type='text/css'>\n";
-   print OUTPUT " <script src='gtkada_rm.js' type='text/javascript'></script>\n";
-   print OUTPUT "</head><body>\n";
+   &generate_header ("GtkAda: $package", *OUTPUT);
 
    $w = $widgets[0];
    if (defined $w && defined $parents{$w}) {
@@ -442,11 +473,12 @@ sub generate_html() {
 
    ## Output the object name
    print OUTPUT "<div id='objectName'>\n";
-   print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Index' title='Index'/></a>";
+   print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Toc' title='Table of Contents'/></a>";
    if (defined $parent_package) {
       print OUTPUT " <a href='$parent_file'><img src='parent.png' alt='Parent widget' title='Parent widget'/></a>";
    }
    print OUTPUT " <a href='gallery.html'><img src='gallery.png' alt='Gallery' title='Widgets gallery'/></a>\n";
+  print OUTPUT "  <a href='entities.html'><img src='entities.png' alt='Index' title='Global Index'/></a>\n";
    print OUTPUT "  </span>\n$package\n";
    print OUTPUT "</div> <!--  objectName -->\n\n";
 
@@ -788,6 +820,90 @@ EOF
 }
 
 #######################
+## Generate the general index
+#######################
+
+sub generate_index() {
+  my ($entity, $short);
+  my ($first) = "";
+  my (%short_entities);
+
+  open (OUTPUT, ">gtkada_rm/entities.html");
+  &generate_header ("GtkAda Index", *OUTPUT);
+
+  print OUTPUT "<div id='objectName'>\n";
+   print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Toc' title='Table of Contents'/></a>";
+  print OUTPUT " <a href='gallery.html'><img src='gallery.png' alt='Gallery' title='Widgets gallery'/></a>\n";
+  print OUTPUT "</span>Index\n";
+  print OUTPUT "</div>\n";
+
+  foreach $entity (keys %entities) {
+     my ($short) = $entity;
+     $short =~ s/^.*\.([^\.]+)$/$1/;
+     $short_entities{$short} = $entity;
+  }
+
+  foreach $short (sort { lc($a) cmp lc($b) } keys %short_entities) {
+     my ($entity) = $short_entities{$short};
+     my ($html_file, $anchor) = @{$entities{$entity}};
+     my ($package) = $entity;
+     my ($new_first) = substr ($short, 0, 1);
+
+     if (lc ($new_first) ne lc ($first)) {
+       print OUTPUT "</ul></div>\n" if ($first ne "");
+       $first = $new_first;
+       print OUTPUT "<div class='GeneralIndex'>\n";
+       print OUTPUT " <h2>$first</h2>\n";
+       print OUTPUT "<ul>\n";
+     } 
+
+     $package =~ s/\.([^\.]+)$//;
+     if ($anchor ne "") {
+        print OUTPUT "   <li><a href='$html_file#$anchor'>$short</a> ($package)</li>\n";
+     } else {
+        print OUTPUT "   <li><a href='$html_file'>$short</a> ($package)</li>\n";
+     }
+  }
+
+  print OUTPUT "</ul>\n";
+  print OUTPUT "</div> <!-- GeneralIndex -->\n";
+  print OUTPUT "</body></html>";
+  close (OUTPUT);
+}
+
+#######################
+## Generate the table of contents
+#######################
+
+sub generate_table_of_contents() {
+   my ($group, $pkg);
+
+   open (OUTPUT, ">gtkada_rm/index.html");
+   &generate_header ("GtkAda Reference Manual", *OUTPUT);
+
+   print OUTPUT "<div id='objectName'>\n";
+  print OUTPUT " <span><a href='entities.html'><img src='entities.png' alt='Index' title='Global Index'/></a>\n";
+   print OUTPUT "       <a href='gallery.html'><img src='gallery.png' alt='Gallery' title='Widgets gallery'/></a>\n";
+   print OUTPUT " </span>GtkAda Reference Manual\n";
+   print OUTPUT "</div>\n";
+
+   foreach $group (sort keys %groups) {
+      print OUTPUT "<div class='Toc'>\n"; 
+      print OUTPUT "  <h2>$group</h2>\n";
+      print OUTPUT "<ul>\n";
+      foreach $pkg (sort @{$groups{$group}}) {
+         print OUTPUT "  <li><a href='$files_from_package{$pkg}'>$pkg</a></li>\n";
+      }
+      print OUTPUT "</ul>\n";
+      print OUTPUT "  </div> <!-- Toc -->\n";
+   }
+
+   print OUTPUT "</body></html>";
+
+   close (OUTPUT);
+}
+
+#######################
 ## Main
 #######################
 
@@ -802,3 +918,7 @@ foreach $source (@source_files) {
 foreach $source (sort keys %files) {
    &generate_html ($source);
 }
+
+## Generate general files
+&generate_table_of_contents();
+&generate_index();
