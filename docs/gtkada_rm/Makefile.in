@@ -2,15 +2,13 @@ prefix = @prefix@
 docdir = $(prefix)/share/doc/gtkada/gtkada_rm
 
 MKDIR = mkdir -p
+CP=cp
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
 SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/glade/*.ads
 
 gtkada_rm: ps html partial_clean
-
-USEMAKEINFO=1
-## Whether we use makeinfo --html  or texi2html to generate the HTML documentation
 
 partial_clean::
 	-${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
@@ -27,13 +25,10 @@ gtkada_rm.ps: force
 
 html: gtkada_rm_toc.html
 gtkada_rm_toc.html:
-ifeq (${USEMAKEINFO},1)
-	./generate_doc.pl -usemakeinfo ${SRC}
-	makeinfo --html --no-number-sections --css-include=gtkada_rm.css gtkada_rm.texi
-else
-	./generate_doc.pl -usetexi2html ${SRC}
-	perl ../texi2html -menu -split_chapter -body "BGCOLOR=#FFFFFF" gtkada_rm.texi
-endif
+	${MKDIR} gtkada_rm
+	${CP} gtkada_rm.css gtkada_rm.js gtkada_rm/
+	${CP} *.png gtkada_rm/
+	./generate_html_doc.pl ${SRC}
 
 info: gtkada_rm.info
 gtkada_rm.info: force
