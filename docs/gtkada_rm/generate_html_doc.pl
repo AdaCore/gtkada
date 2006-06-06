@@ -167,7 +167,7 @@ our $section_and_comment_re =
 our $subprogram_and_comment_re =
    "((?:$subprogram_re)+)\n" . $comment_block_re;
 our $widget_re =
-   '\n\s*type\s+(\w+_Record)\s+is\s+(?:tagged private|new\s+([\w\.]+)\s+with)';
+   '\n\s*type\s+(\w+)\s+is\s+(?:abstract\s+)?(?:tagged\s+private|new\s+([\w\.]+)\s+with)';
 our $type_re = 
    '\s*(type\s+(\w+)\sis(?:[^;]+);)\n' . $comment_block_re;
 
@@ -219,7 +219,11 @@ sub extract_sections() {
 
    # Store the screenshot
    if (defined $tags{'screenshot'}) {
-     $screenshots{$package} = $tags{'screenshot'};
+     my ($screenshot) = $tags{'screenshot'};
+     $screenshot .= ".jpg" if (-f "$screenshot.jpg");
+     $screenshot .= ".png" if (-f "$screenshot.png");
+     $screenshots{$package} = $screenshot;
+     $tags{'screenshot'} = $screenshot;
    }
 
    # Remove private part, after finding special tags
@@ -240,13 +244,10 @@ sub extract_sections() {
        } else {
           $parents{$widget} = "";
        }
-       $entities{"$package.$widget"} = [$html_file, ""];
-       my ($no_record) = $widget;
-       $no_record =~ s/_Record$//;
-       #$entities{"$package.$no_record"} = [$html_file, ""];
-       $packages{$widget} = $package;
-       $files_from_widget{$widget} = $html_file;
        push (@widgets, $widget);
+       $packages{$widget} = $package;
+       $entities{"$package.$widget"} = [$html_file, ""];
+       $files_from_widget{$widget} = $html_file;
    }
 
    # Find types
@@ -482,7 +483,7 @@ sub generate_html() {
    my (@widgets)  = @{$files{$filename}[3]};
    my (@sections) = @{$files{$filename}[4]};
    my (%types)    = %{$files{$filename}[5]};
-   my ($w);
+   my ($w, $current);
    my ($parent_package, $parent_file);
    my ($count) = 1;
    my ($has_types) = scalar (keys %types) > 0;
@@ -505,8 +506,6 @@ sub generate_html() {
    ## Screenshot
    if (defined $tags{"screenshot"}) {
       my ($screenshot) = $tags{"screenshot"};
-      $screenshot .= ".jpg" if (-f "$screenshot.jpg");
-      $screenshot .= ".png" if (-f "$screenshot.png");
       print OUTPUT "  <div id='screenshot'>\n";
       print OUTPUT "    <h2>Screenshot</h2>\n";
       print OUTPUT "    <img src='$screenshot' alt='No screeshot'/>\n";
@@ -515,40 +514,10 @@ sub generate_html() {
 
    ## Class hierarchy
    if (defined $widgets[0]) {
-      my (@hierarchy);
-      my ($index, $index2) = 0;
       print OUTPUT "  <div id='classHierarchy'>\n";
       print OUTPUT "   <h2>Hierarchy</h2>\n";
-      print OUTPUT "    <ul>\n";
-
-      $w = $widgets[0];
-      unshift (@hierarchy, $w);
-      $w = $parents{$w};
-      while (defined $w) {
-         unshift (@hierarchy, $w);
-         $w = $parents{$w};
-      }
-
-      foreach $w (@hierarchy) {
-          print OUTPUT "      <li>";
-
-          $index2 = $index - 1;
-          while ($index2 >= 0) {
-             print OUTPUT "<img src='childtree2.png' alt='  ' />";
-             $index2--;
-          }
-
-          print OUTPUT "<img src='childtree.png' alt='\\_'/>" if ($index > 0);
-          if (!defined $packages{$w} || $w eq $widgets[0]) {
-             print OUTPUT "$w</li>\n";
-          } else {
-             print OUTPUT "<a href='$files_from_widget{$w}'>$packages{$w}.$w</a></li>\n";
-          }
-          $index ++;
-       }
-
-       print OUTPUT "    </ul>\n";
-       print OUTPUT "  </div> <!--  classHierarchy -->\n\n";
+      &generate_tree_for_widgets (\@widgets, 0, *OUTPUT);
+      print OUTPUT "  </div> <!--  classHierarchy -->\n\n";
    }
 
    ## Navigation
@@ -936,8 +905,6 @@ sub generate_gallery() {
 
   foreach $pkg (sort keys %screenshots) {
      $screenshot = $screenshots{$pkg};
-     $screenshot .= ".jpg" if (-f "$screenshot.jpg");
-     $screenshot .= ".png" if (-f "$screenshot.png");
      print OUTPUT "<div class='gallery'>\n";
      print OUTPUT "  <a href='$files_from_package{$pkg}' title='$pkg'>",
                   "<img src='$screenshot' alt='No image'/>",
@@ -958,10 +925,12 @@ sub print_children() {
   my ($level) = shift;
   my ($widget) = shift;
   my ($children) = shift;
+  my (%children) = %$children;
   local (*OUTPUT) = shift;
   my ($has_next_child) = shift;
   my (@has_next_child) = @$has_next_child;  ## One entry for each level
-  my (%children) = %$children;
+  my ($do_xref) = shift;
+  my (%do_xref) = %$do_xref; ## Whether we want xref for those widgets
   my ($count);
 
   print OUTPUT "  <li>";
@@ -979,43 +948,84 @@ sub print_children() {
      print OUTPUT "<img src='childtree.png' alt='\_' />";
   }
 
-  print OUTPUT "<a href='$files_from_widget{$widget}'>$widget</a></li>\n";
+  if (defined $do_xref{$widget} && $do_xref{$widget} == 0) {
+     print OUTPUT "$widget</li>\n";
+  } else {
+     print OUTPUT "<a href='$files_from_widget{$widget}'>$widget</a></li>\n";
+  }
 
   if (defined $children{$widget}) {
      my (@immediate) = @{$children{$widget}};
      while (@immediate) {
         $_ = shift @immediate;
         push (@has_next_child, $#immediate >= 0);
-        &print_children ($level + 1, $_, \%children, *OUTPUT, \@has_next_child);
+        &print_children ($level + 1, $_, \%children, *OUTPUT, \@has_next_child, \%do_xref);
         pop (@has_next_child);
      }
   }
 }
 
-sub generate_tree() {
+##############################
+## Generate a widget tree for a given set of widgets
+## If $xref_widgets_from_list is 1, then these widgets will also have hyper
+## links, otherwise they don't
+##############################
+
+sub generate_tree_for_widgets() {
+   my ($widget_list) = shift;
+   my ($xref_widgets_from_list) = shift;
+   local (*OUTPUT) = shift;
+   my (@widget_list) = @$widget_list;
+   my (%do_xref) = ();
+
+   print OUTPUT "<ul>\n";
+
+   ## Make sure the parents of each widget is in the list. This is wasted
+   ## time when generating the whole inheritance tree, but doesn't really
+   ## matter, that's fast enough
+   my (%list);
+   foreach (@widget_list) {
+      $list{$_} ++;
+      $do_xref{$_} = 0 if (!$xref_widgets_from_list);
+      my ($w) = $parents{$_};
+      while (defined $w && $w ne "") {
+         $list{$w}++;
+         # $do_xref{$w} = 1 if ($list{$w} == 1);
+         $w = $parents{$w};
+      }
+   }
+
    my (%children);
    my (@root);
    my (@has_next_child);
-   foreach (keys %parents) {
-      push (@root, $_) if ($parents{$_} eq "");
-      push (@{$children{$parents{$_}}}, $_);
+   foreach (keys %list) {
+      push (@root, $_) if (!defined $parents{$_} || $parents{$_} eq "");
+      push (@{$children{$parents{$_}}}, $_) if (defined $parents{$_});
    }
 
-   open (OUTPUT, ">gtkada_rm/tree.html");
-   &generate_header ("Widgets Tree", *OUTPUT);
-
-   print OUTPUT "<div id='widgetTree'>\n";
-   print OUTPUT "<ul>\n";
-
+   ## There could be several roots to the inheritance tree
    @root = sort @root;
 
    while (@root) {
       $_ = shift (@root);
       @has_next_child = ($#root >= 0);
-      &print_children (1, $_, \%children, *OUTPUT, \@has_next_child);
+      &print_children (1, $_, \%children, *OUTPUT, \@has_next_child, \%do_xref);
    }
 
    print OUTPUT "</ul>\n";
+}
+
+################################
+## Generate the full inheritance tree
+################################
+
+sub generate_tree() {
+   open (OUTPUT, ">gtkada_rm/tree.html");
+   &generate_header ("Widgets Tree", *OUTPUT);
+
+   print OUTPUT "<div id='widgetTree'>\n";
+   my (@list) = keys %parents;
+   &generate_tree_for_widgets (\@list, 1, *OUTPUT);
    print OUTPUT "</div> <!-- widgetTree -->\n";
    print OUTPUT "</body></html>\n";
    close (OUTPUT);

@@ -94,8 +94,10 @@ div#navigation li li         { list-style-type: square;
                                font-size: 0.9em; }
 div#classHierarchy img       { border-width: 0px;
                                padding: 0px;
-                               margin: 0px 0px 0px 3px;
+                               margin: 0px 0px 0px 0px;
                                outline-width: 0px }
+div#classHierarchy ul        { margin: 0px 0px 5px 0px; }
+div#classHierarchy li,
 div#widgetTree li            { margin: 0px;
                                padding: 0px;
                                height: 18px;
