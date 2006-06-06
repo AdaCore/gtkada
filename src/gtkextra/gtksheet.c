@@ -2738,7 +2738,7 @@ gtk_sheet_unrealize (GtkWidget * widget)
   gdk_window_destroy (sheet->row_title_window);
 
   if (sheet->pixmap){
-    g_free (sheet->pixmap);
+    g_object_unref (sheet->pixmap);
     sheet->pixmap = NULL;
   }
 
@@ -4149,7 +4149,7 @@ gtk_sheet_make_backing_pixmap (GtkSheet *sheet, guint width, guint height)
 			   &pixmap_width, &pixmap_height);
       if ((pixmap_width != width) || (pixmap_height != height))
 	{
-          g_free(sheet->pixmap);
+          g_object_unref (sheet->pixmap);
 	  sheet->pixmap = gdk_pixmap_new (sheet->sheet_window,
 					       width, height,
 					       -1);
