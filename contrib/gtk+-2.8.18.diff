@@ -1,6 +1,7 @@
 2006-06-06	Arnaud Charlet	<charlet@adacore.com>
 
-	* gdk/x11/gdkdisplay-x11.c, gdk/x11/gdkdnd-x11.c,
+	* gdk/x11/gdkdisplay-x11.h, gdk/x11/gdkdisplay-x11.c,
+	gdk/x11/gdkmain-x11.c, gdk/x11/gdkdnd-x11.c,
 	gdk/x11/gdkevents-x11.c, gdk/x11/gdkwindow-x11.c, gtk/gtkcolorsel.c,
 	gtk/gtkinvisible.c, gtk/gtkwidget.c: Backport patch for PR 136571
 	See http://bugzilla.gnome.org/show_bug.cgi?id=136571
@@ -524,3 +525,86 @@
  }
  
  /**
+--- gdk/x11/gdkmain-x11.c.orig	2005-07-07 21:05:33.000000000 +0200
++++ gdk/x11/gdkmain-x11.c	2006-06-06 10:33:42.531250000 +0200
+@@ -191,6 +191,7 @@ gdk_pointer_grab (GdkWindow *	  window,
+ {
+   gint return_val;
+   GdkCursorPrivate *cursor_private;
++  GdkDisplayX11 *display_x11;
+   guint xevent_mask;
+   Window xwindow;
+   Window xconfine_to;
+@@ -202,6 +203,8 @@ gdk_pointer_grab (GdkWindow *	  window,
+   g_return_val_if_fail (GDK_IS_WINDOW (window), 0);
+   g_return_val_if_fail (confine_to == NULL || GDK_IS_WINDOW (confine_to), 0);
+   
++  display_x11 = GDK_DISPLAY_X11 (GDK_WINDOW_DISPLAY (window));
++
+   cursor_private = (GdkCursorPrivate*) cursor;
+   
+   xwindow = GDK_WINDOW_XID (window);
+@@ -233,7 +236,8 @@ gdk_pointer_grab (GdkWindow *	  window,
+ 					confine_to,
+ 					time);
+ 
+-  if (return_val == GrabSuccess)
++  if (return_val == GrabSuccess || 
++      G_UNLIKELY (!display_x11->trusted_client && return_val == AlreadyGrabbed))
+     {
+       if (!GDK_WINDOW_DESTROYED (window))
+ 	{
+@@ -257,7 +261,6 @@ gdk_pointer_grab (GdkWindow *	  window,
+   
+   if (return_val == GrabSuccess)
+     {
+-      GdkDisplayX11 *display_x11 = GDK_DISPLAY_X11 (GDK_WINDOW_DISPLAY (window));
+       if (display_x11->pointer_xgrab_window != NULL &&
+ 	  display_x11->pointer_xgrab_window != (GdkWindowObject *)window)
+ 	generate_grab_broken_event (GDK_WINDOW (display_x11->pointer_xgrab_window),
+@@ -338,10 +341,13 @@ gdk_keyboard_grab (GdkWindow *	   window
+ {
+   gint return_val;
+   unsigned long serial;
++  GdkDisplayX11 *display_x11;
+   
+   g_return_val_if_fail (window != NULL, 0);
+   g_return_val_if_fail (GDK_IS_WINDOW (window), 0);
+   
++  display_x11 = GDK_DISPLAY_X11 (GDK_WINDOW_DISPLAY (window));
++
+   serial = NextRequest (GDK_WINDOW_XDISPLAY (window));
+ 
+   if (!GDK_WINDOW_DESTROYED (window))
+@@ -356,13 +362,16 @@ gdk_keyboard_grab (GdkWindow *	   window
+ 				    owner_events,
+ 				    GrabModeAsync, GrabModeAsync,
+ 				    time);
++	if (G_UNLIKELY (!display_x11->trusted_client && 
++			return_val == AlreadyGrabbed))
++	  /* we can't grab the keyboard, but we can do a GTK-local grab */
++	  return_val = GrabSuccess;
+     }
+   else
+     return_val = AlreadyGrabbed;
+ 
+   if (return_val == GrabSuccess)
+     {
+-      GdkDisplayX11 *display_x11 = GDK_DISPLAY_X11 (gdk_drawable_get_display (window));
+       if (display_x11->keyboard_xgrab_window != NULL &&
+ 	  display_x11->keyboard_xgrab_window != (GdkWindowObject *)window)
+ 	generate_grab_broken_event (GDK_WINDOW (display_x11->keyboard_xgrab_window),
+--- gdk/x11/gdkdisplay-x11.h.orig	2005-06-30 05:35:30.000000000 +0200
++++ gdk/x11/gdkdisplay-x11.h	2006-06-06 10:33:42.453125000 +0200
+@@ -81,6 +81,11 @@ struct _GdkDisplayX11
+   gboolean have_xfixes;
+   gint xfixes_event_base;
+ 
++  /* If the SECURITY extension is in place, whether this client holds 
++   * a trusted authorization and so is allowed to make various requests 
++   * (grabs, properties etc.) Otherwise always TRUE. */
++  gboolean trusted_client;
++
+   /* Information about current pointer and keyboard grabs held by this
+    * client. If gdk_pointer_xgrab_window or gdk_keyboard_xgrab_window
+    * window is NULL, then the other associated fields are ignored
