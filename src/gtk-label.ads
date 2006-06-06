@@ -86,6 +86,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Display widgets</group>
+--  <testgtk>create_label.adb</testgtk>
 
 with Gdk.Types;
 with Glib.Properties;

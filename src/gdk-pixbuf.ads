@@ -43,6 +43,7 @@
 --  </description>
 --  <c_version>1.3.11</c_version>
 --  <group>Gdk, the low-level API</group>
+--  <testgtk>create_pixbuf.adb</testgtk>
 
 with Glib; use Glib;
 with Glib.Error; use Glib.Error;

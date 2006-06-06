@@ -49,6 +49,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Windows</group>
+--  <testgtk>create_dialog.adb</testgtk>
 
 with Glib.Properties;
 with Gtk.Box;

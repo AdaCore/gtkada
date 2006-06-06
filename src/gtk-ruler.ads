@@ -34,6 +34,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Drawing</group>
+--  <testgtk>create_rulers.adb</testgtk>
 
 with Glib.Properties;
 with Gtk.Enums;       use Gtk.Enums;

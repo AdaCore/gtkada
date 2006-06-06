@@ -40,6 +40,7 @@
 --  are packing your widgets into a table, you would not include the Fill flag.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <testgtk>create_size_groups.adb</testgtk>
 
 with Glib.Object;
 with Glib.Properties;

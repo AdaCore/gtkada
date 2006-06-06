@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  Tooltips are the small text windows that popup when the mouse rests over
 --  a widget, and that provide a quick help for the user.
 --
@@ -39,9 +38,9 @@
 --
 --  See the example at the end for how to change the default colors used
 --  for tooltips.
---
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <testgtk>create_tooltips.adb</testgtk>
 
 with Glib;
 with Gtk.Object;

@@ -49,6 +49,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Layout containers</group>
+--  <testgtk>create_layout.adb</testgtk>
 
 with Glib.Properties;
 with Gdk.Window;

@@ -37,8 +37,9 @@
 --  toggled.
 --  </description>
 --  <c_version>2.8.17</c_version>
---  <screenshot>togglebutton</screenshot>
+--  <screenshot>gtk-toggle_button</screenshot>
 --  <group>Buttons and Toggles</group>
+--  <testgtk>create_toggle_buttons.adb</testgtk>
 
 with Glib.Properties;
 with Gtk.Button;

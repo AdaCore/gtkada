@@ -43,6 +43,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Obsolescent widgets</group>
+--  <testgtk>create_ctree.adb</testgtk>
 
 with Interfaces.C.Strings;
 with Unchecked_Conversion;

@@ -83,6 +83,7 @@
 --  </description>
 --  <c_version>glib 2.10.2</c_version>
 --  <group>Glib, the general-purpose library</group>
+--  <testgtk>create_sources.adb</testgtk>
 
 package Glib.Main is
 

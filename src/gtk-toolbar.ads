@@ -35,6 +35,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Menus and Toolbars</group>
+--  <testgtk>create_toolbar.adb</testgtk>
 
 with Glib;
 with Glib.Properties;

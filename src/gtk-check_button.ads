@@ -32,8 +32,9 @@
 --  (usually a Gtk_Label).
 --  </description>
 --  <c_version>2.8.17</c_version>
---  <screenshot>checkbutton</screenshot>
+--  <screenshot>gtk-check_button</screenshot>
 --  <group>Buttons and Toggles</group>
+--  <testgtk>create_check_buttons.adb</testgtk>
 
 with Gtk.Toggle_Button;
 

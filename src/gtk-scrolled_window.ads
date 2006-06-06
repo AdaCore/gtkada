@@ -57,6 +57,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Scrolling</group>
+--  <testgtk>create_scrolled.adb</testgtk>
 
 with Glib.Properties;
 with Gtk.Adjustment; use Gtk.Adjustment;

@@ -32,6 +32,7 @@
 --  values. It is used by other widgets such as Gtk_Scale and Gtk_Scrollbar.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <testgtk>create_range.adb</testgtk>
 
 with Glib.Properties;
 with Gtk.Adjustment;

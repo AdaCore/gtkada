@@ -33,6 +33,7 @@
 --  </description>
 --  <c_version>1.3.6</c_version>
 --  <group>Gdk, the low-level API</group>
+--  <testgtk>create_cursors.adb</testgtk>
 
 with Glib;
 with Gdk.Color;

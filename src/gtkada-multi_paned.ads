@@ -26,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <testgtk>create_splittable.adb</testgtk>
+
 with Glib;       use Glib;
 with Gdk.Cursor;
 with Gdk.GC;

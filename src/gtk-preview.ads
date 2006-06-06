@@ -29,6 +29,7 @@
 
 --  <c_version>2.8.17</c_version>
 --  <group>Obsolescent widgets</group>
+--  <testgtk>create_preview_color.adb</testgtk>
 
 with Glib.Properties;
 with Gdk.Color;

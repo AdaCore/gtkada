@@ -33,6 +33,7 @@
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
 --  <group>GtkExtra, additional widgets</group>
+--  <testgtk>create_sheet.adb</testgtk>
 
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Container;

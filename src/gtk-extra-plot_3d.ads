@@ -33,6 +33,7 @@
 --  </description>
 --  <c_version>gtkextra 2.1.1</c_version>
 --  <group>Plotting Data</group>
+--  <testgtk>create_plot_3d.adb</testgtk>
 
 with Gdk.Color;
 with Gdk.Drawable;

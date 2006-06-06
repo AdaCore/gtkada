@@ -32,6 +32,7 @@
 --  C files themselves, so are still available in GtkAda as well.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <testgtk>create_item_factory.adb</testgtk>
 
 with Gdk.Types;
 with Gtk.Accel_Group;

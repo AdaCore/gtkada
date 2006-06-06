@@ -39,7 +39,9 @@
 --  this group
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <screenshot>gtk-radio_button</screenshot>
 --  <group>Buttons and Toggles</group>
+--  <testgtk>create_radio_button.adb</testgtk>
 
 with Glib.Properties;
 with Gtk.Check_Button;

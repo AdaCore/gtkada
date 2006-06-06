@@ -44,6 +44,7 @@
 --
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <testgtk>create_alignment.adb</testgt>
 
 with Gtk.Bin;
 with Glib.Properties;

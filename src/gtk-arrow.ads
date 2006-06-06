@@ -42,6 +42,7 @@
 --  arrow can be changed after creation by using Set.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <testgtk>create_arrow.adb</testgtk>
 
 with Gtk.Enums;
 with Gtk.Misc;

@@ -55,6 +55,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Layout containers</group>
+--  <testgtk>create_box.adb</testgtk>
 
 with Glib.Properties;
 with Gtk.Container;

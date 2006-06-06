@@ -36,6 +36,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Selectors</group>
+--  <testgtk>create_file_selection.adb</testgtk>
 
 with Glib.Properties;
 with Gtk.Box;
