@@ -442,7 +442,7 @@
 -
 -          XFree (current_desktop);
 -        }
-+      move_to_Current_desktop (window);
++      move_to_current_desktop (window);
      }
    else
      {
