@@ -36,10 +36,15 @@ div.Toc                      { border: 1px solid black;
                                min-height: 330px;
                                width: 220px; }
 div.GeneralIndex             { border: 1px solid black;
-                               margin: 10px 10px 0px 0px;
+                               margin: 10px 10px 0px 100px;
                              }
+div#IndexIndex               { width: 80px; 
+                               float: left;
+                               margin: 10px 0px 0px 0px;
+                               position: fixed;
+                               border: 1px solid black; }
 div.gallery                  { float: left; 
-                               padding: 0px 10px 10px 0px; }
+                               padding: 5px 10px 5px 0px; }
 div.gallery-spacer           { clear: both; }
 
 /* Automatic scrollbars in some of the lists

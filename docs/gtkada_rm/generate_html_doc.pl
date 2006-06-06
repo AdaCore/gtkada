@@ -792,7 +792,7 @@ sub generate_html() {
       print OUTPUT "<div class='description'>This code is part of testgtk, a demo application",
                    " packaged with GtkAda. Testgtk demonstrates the various",
                    " widgets of GtkAda</div>";
-      open (TESTGTK, "../../testgtk/$tags{'testgtk'}");
+      open (TESTGTK, "../../testgtk/$tags{'testgtk'}") || print "Cannot open file testgtk file $tags{'testgtk'}\n";
       print OUTPUT &highlight_syntax (join ("", <TESTGTK>));
       close (TESTGTK);
       print OUTPUT "</div> <!-- testgtk -->\n";
@@ -833,7 +833,7 @@ EOF
 
 sub generate_index() {
   my ($entity, $short);
-  my ($first) = "";
+  my ($first);
   my (%short_entities);
 
   open (OUTPUT, ">gtkada_rm/entities.html");
@@ -845,22 +845,37 @@ sub generate_index() {
   print OUTPUT "</span>Index\n";
   print OUTPUT "</div>\n";
 
+  print OUTPUT "<div id='IndexIndex'>\n";
+  print OUTPUT " <h2>Index</h2>\n";
+  print OUTPUT "<table>\n";
+  print OUTPUT "  <tr><td colspan='3'><a href='#operators'>operators</a></td>\n";
+  for ($first = ord ('a'); $first <= ord ('z'); $first++) {
+     print OUTPUT "  <tr>\n" if (($first - ord ('a')) % 3 == 0);
+     print OUTPUT "    <td><a href='#", chr ($first), "'>", uc (chr ($first)), "</a></td>\n";
+     print OUTPUT "  </tr>\n" if (($first - ord ('a')) % 3 == 2);
+  }
+  print OUTPUT "</table>\n";
+  print OUTPUT "</div> <!-- leftSide -->\n";
+
   foreach $entity (keys %entities) {
      my ($short) = $entity;
      $short =~ s/^.*\.([^\.]+)$/$1/;
      $short_entities{$short} = $entity;
   }
 
+  $first = "";
   foreach $short (sort { lc($a) cmp lc($b) } keys %short_entities) {
      my ($entity) = $short_entities{$short};
      my ($html_file, $anchor) = @{$entities{$entity}};
      my ($package) = $entity;
-     my ($new_first) = substr ($short, 0, 1);
+     my ($new_first) = lc (substr ($short, 0, 1));
+     $new_first = "operators" if ($new_first eq '"');
 
-     if (lc ($new_first) ne lc ($first)) {
+     if ($new_first ne $first) {
        print OUTPUT "</ul></div>\n" if ($first ne "");
        $first = $new_first;
        print OUTPUT "<div class='GeneralIndex'>\n";
+       print OUTPUT " <a name='$first'></a>\n";
        print OUTPUT " <h2>$first</h2>\n";
        print OUTPUT "<ul>\n";
      } 
