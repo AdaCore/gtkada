@@ -27,7 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  This package is deprecated.
+--  <description>
+--  This package is deprecated. It now only acts as an abstract base class
+--  for other widgets.
+--  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Obsolescent widgets</group>
 

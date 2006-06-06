@@ -26,11 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
 --  General implementation for a graph.
 --  This provides a representation for a graph structure, with nodes (vertices)
 --  connected by links (edges).
 --  It is not intended for huges, highly-connected graphs, since there are
 --  several lists provided for efficient access to ancestor and children nodes.
+--  </description>
 --  <group>Glib, the general-purpose library</group>
 
 package Glib.Graphs is
