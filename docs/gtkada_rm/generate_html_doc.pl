@@ -237,6 +237,8 @@ sub extract_sections() {
        if (defined $parent) {
           $parent =~ s/^.*?\.(\w+)$/$1/;
           $parents{$widget} = $parent;
+       } else {
+          $parents{$widget} = "";
        }
        $entities{"$package.$widget"} = [$html_file, ""];
        my ($no_record) = $widget;
@@ -438,16 +440,33 @@ sub parse_properties() {
 sub generate_header() {
    my ($title) = shift;
    local (*FILE) = shift;
+   my ($parent_file) = shift;
 
+   # Headers
    print FILE "<?xml version='1.0' encoding='utf-8' />\n";
    print FILE '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ',
                 ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">', "\n";
    print FILE "<html><head>\n";
-   print FILE " <title>$title</title>\n";
+   print FILE " <title>GtkAda: $title</title>\n";
    print FILE " <link rel='stylesheet' href='gtkada_rm.css' type='text/css'>\n";
    print FILE " <script src='gtkada_rm.js' type='text/javascript'></script>\n";
    print FILE "</head><body>\n";
 
+   # Page title
+   print OUTPUT "<div id='objectName'>\n";
+   print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Toc'",
+                " title='Table of Contents'/></a>";
+   print OUTPUT " <a href='$parent_file'><img src='parent.png' alt='Parent widget'",
+                "  title='Parent widget'/></a>"
+      if (defined $parent_file);
+   print OUTPUT " <a href='gallery.html'><img src='gallery.png' alt='Gallery'",
+                " title='Widgets gallery'/></a>\n";
+   print OUTPUT " <a href='entities.html'><img src='entities.png' alt='Index'",
+                " title='Global Index'/></a>\n";
+   print OUTPUT " <a href='tree.html'><img src='tree.png' alt='Tree'",
+                " title='Widgets Inheritance Tree'/></a>\n";
+   print OUTPUT "  </span>\n$title\n";
+   print OUTPUT "</div> <!--  objectName -->\n\n";
 }
 
 ######################
@@ -470,25 +489,14 @@ sub generate_html() {
 
    # Start generating the output
 
-   open (OUTPUT, ">gtkada_rm/$output");
-   &generate_header ("GtkAda: $package", *OUTPUT);
-
    $w = $widgets[0];
    if (defined $w && defined $parents{$w}) {
       $parent_package = $packages{$parents{$w}};
       $parent_file    = $files_from_widget{$parents{$w}};
    }
 
-   ## Output the object name
-   print OUTPUT "<div id='objectName'>\n";
-   print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Toc' title='Table of Contents'/></a>";
-   if (defined $parent_package) {
-      print OUTPUT " <a href='$parent_file'><img src='parent.png' alt='Parent widget' title='Parent widget'/></a>";
-   }
-   print OUTPUT " <a href='gallery.html'><img src='gallery.png' alt='Gallery' title='Widgets gallery'/></a>\n";
-  print OUTPUT "  <a href='entities.html'><img src='entities.png' alt='Index' title='Global Index'/></a>\n";
-   print OUTPUT "  </span>\n$package\n";
-   print OUTPUT "</div> <!--  objectName -->\n\n";
+   open (OUTPUT, ">gtkada_rm/$output");
+   &generate_header ("$package", *OUTPUT, $parent_file);
 
    ## Left side
 
@@ -837,13 +845,7 @@ sub generate_index() {
   my (%short_entities);
 
   open (OUTPUT, ">gtkada_rm/entities.html");
-  &generate_header ("GtkAda Index", *OUTPUT);
-
-  print OUTPUT "<div id='objectName'>\n";
-   print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Toc' title='Table of Contents'/></a>";
-  print OUTPUT " <a href='gallery.html'><img src='gallery.png' alt='Gallery' title='Widgets gallery'/></a>\n";
-  print OUTPUT "</span>Index\n";
-  print OUTPUT "</div>\n";
+  &generate_header ("Index", *OUTPUT);
 
   print OUTPUT "<div id='IndexIndex'>\n";
   print OUTPUT " <h2>Index</h2>\n";
@@ -902,13 +904,7 @@ sub generate_table_of_contents() {
    my ($group, $pkg);
 
    open (OUTPUT, ">gtkada_rm/index.html");
-   &generate_header ("GtkAda Reference Manual", *OUTPUT);
-
-   print OUTPUT "<div id='objectName'>\n";
-  print OUTPUT " <span><a href='entities.html'><img src='entities.png' alt='Index' title='Global Index'/></a>\n";
-   print OUTPUT "       <a href='gallery.html'><img src='gallery.png' alt='Gallery' title='Widgets gallery'/></a>\n";
-   print OUTPUT " </span>GtkAda Reference Manual\n";
-   print OUTPUT "</div>\n";
+   &generate_header ("Reference Manual", *OUTPUT);
 
    foreach $group (sort keys %groups) {
       print OUTPUT "<div class='Toc'>\n"; 
@@ -934,12 +930,7 @@ sub generate_gallery() {
   my ($screenshot, $pkg);
 
   open (OUTPUT, ">gtkada_rm/gallery.html");
-  &generate_header ("GtkAda widgets gallery", *OUTPUT);
-  
-  print OUTPUT "<div id='objectName'>\n";
-  print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Toc' title='Table of Contents'/></a>";
-  print OUTPUT "       <a href='entities.html><img src='entities.png' alt='Index' title='Global Index'/></a>\n";
-  print OUTPUT " </span>Widgets gallery</div>\n";
+  &generate_header ("Widgets Gallery", *OUTPUT);
 
   print OUTPUT "<div class='gallery-spacer' />\n";
 
@@ -957,6 +948,77 @@ sub generate_gallery() {
   print OUTPUT "<div class='gallery-spacer' />\n";
   print OUTPUT "</body></html>";
   close (OUTPUT);
+}
+
+#######################
+## Generates the widget tree
+#######################
+
+sub print_children() {
+  my ($level) = shift;
+  my ($widget) = shift;
+  my ($children) = shift;
+  local (*OUTPUT) = shift;
+  my ($has_next_child) = shift;
+  my (@has_next_child) = @$has_next_child;  ## One entry for each level
+  my (%children) = %$children;
+  my ($count);
+
+  print OUTPUT "  <li>";
+  for ($count = 0; $count < $level - 1; $count++) {
+     if ($has_next_child[$count]) {
+        print OUTPUT "<img src='childtree4.png' alt='  '/>";
+     } else {
+        print OUTPUT "<img src='childtree2.png' alt='  '/>";
+     }
+  }
+
+  if ($has_next_child[$level - 1]) {
+     print OUTPUT "<img src='childtree3.png' alt='\_' />";
+  } else {
+     print OUTPUT "<img src='childtree.png' alt='\_' />";
+  }
+
+  print OUTPUT "<a href='$files_from_widget{$widget}'>$widget</a></li>\n";
+
+  if (defined $children{$widget}) {
+     my (@immediate) = @{$children{$widget}};
+     while (@immediate) {
+        $_ = shift @immediate;
+        push (@has_next_child, $#immediate >= 0);
+        &print_children ($level + 1, $_, \%children, *OUTPUT, \@has_next_child);
+        pop (@has_next_child);
+     }
+  }
+}
+
+sub generate_tree() {
+   my (%children);
+   my (@root);
+   my (@has_next_child);
+   foreach (keys %parents) {
+      push (@root, $_) if ($parents{$_} eq "");
+      push (@{$children{$parents{$_}}}, $_);
+   }
+
+   open (OUTPUT, ">gtkada_rm/tree.html");
+   &generate_header ("Widgets Tree", *OUTPUT);
+
+   print OUTPUT "<div id='widgetTree'>\n";
+   print OUTPUT "<ul>\n";
+
+   @root = sort @root;
+
+   while (@root) {
+      $_ = shift (@root);
+      @has_next_child = ($#root >= 0);
+      &print_children (1, $_, \%children, *OUTPUT, \@has_next_child);
+   }
+
+   print OUTPUT "</ul>\n";
+   print OUTPUT "</div> <!-- widgetTree -->\n";
+   print OUTPUT "</body></html>\n";
+   close (OUTPUT);
 }
 
 #######################
@@ -979,3 +1041,4 @@ foreach $source (sort keys %files) {
 &generate_table_of_contents();
 &generate_index();
 &generate_gallery();
+&generate_tree();

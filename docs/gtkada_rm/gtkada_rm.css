@@ -83,6 +83,7 @@ div#leftSide  a:hover,
 div#rightSide a:hover        { color: red; }
 div#leftSide ul,
 div.GeneralIndex ul,
+div#widgetTree ul,
 div.Toc ul,
 div#rightSide ul             { margin: 2px 0px 0px 10px;
                                padding: 0px 10px 0px 0px; }
@@ -95,8 +96,14 @@ div#classHierarchy img       { border-width: 0px;
                                padding: 0px;
                                margin: 0px 0px 0px 3px;
                                outline-width: 0px }
+div#widgetTree li            { margin: 0px;
+                               padding: 0px;
+                               height: 18px;
+                               font-size: 14px;
+                               vertical-align: middle; }
 div#leftSide li,
 div.GeneralIndex li,
+div#widgetTree li,
 div.Toc li,
 div#rightSide li             { list-style-type: none;
                                list-style-position: inside }
