@@ -1,3 +1,10 @@
+Known problems fixed in GtkAda 2.8.1
+
+- F606-001 GtkAda 2.8.0 does not run in 16bits mode under Windows
+  Problem:    The libcairo-2.dll provided with GtkAda 2.8.0 does not support
+              16 bits display under Windows.
+  Workaround: Use 24 or 32 bits display
+
 Known problems fixed in GtkAda 2.4.3
 
 - F106-004 Confusion in Glib.Signal_Id definition on 64 bit systems
