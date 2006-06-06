@@ -1,3 +1,9 @@
+2006-06-06  Arnaud Charlet  <charlet@adacore.com>
+
+	* src/cairo-win32-surface.c (cairo_win32_surface_create): Handle
+	16 bits display as RGB24 instead of crashing.
+	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=7126
+
 2006-02-27  Arnaud Charlet  <charlet@adacore.com>
 
 	* src/cairoint.h, pixman/src/slim_internal.h: Fix build failure on
@@ -43,3 +49,14 @@
  #define pixman_private	__attribute__((__visibility__("hidden")))
  #else
  #define pixman_private
+--- src/cairo-win32-surface.c.old	2006-03-15 17:53:43.000000000 +0100
++++ src/cairo-win32-surface.c	2006-06-06 09:46:52.312500000 +0200
+@@ -1003,7 +1003,7 @@ cairo_win32_surface_create (HDC hdc)
+ 	depth = GetDeviceCaps(hdc, BITSPIXEL);
+ 	if (depth == 32)
+ 	    format = CAIRO_FORMAT_ARGB32;
+-	else if (depth == 24)
++	else if (depth == 24 || depth == 16)
+ 	    format = CAIRO_FORMAT_RGB24;
+ 	else if (depth == 8)
+ 	    format = CAIRO_FORMAT_A8;
