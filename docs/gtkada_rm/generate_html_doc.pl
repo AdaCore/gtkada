@@ -80,6 +80,11 @@ use strict;
 ##     Indicates the group in which the package should be listed in the
 ##     general index.
 ##
+## <see>...</see>
+##     The name of a package that the user should also visit for more information
+##     on this widget. You can have several such links if there are more than one
+##     package.
+##
 ## <doc_ignore>...</doc_ignore>
 ##     Indicates a section which should not be included in the documentation.
 ##     All the subprograms inside the section will not be documented. The lines
@@ -441,7 +446,6 @@ sub parse_properties() {
 sub generate_header() {
    my ($title) = shift;
    local (*FILE) = shift;
-   my ($parent_file) = shift;
 
    # Headers
    print FILE "<?xml version='1.0' encoding='utf-8' />\n";
@@ -457,9 +461,6 @@ sub generate_header() {
    print OUTPUT "<div id='objectName'>\n";
    print OUTPUT " <span><a href='index.html'><img src='home.png' alt='Toc'",
                 " title='Table of Contents'/></a>";
-   print OUTPUT " <a href='$parent_file'><img src='parent.png' alt='Parent widget'",
-                "  title='Parent widget'/></a>"
-      if (defined $parent_file);
    print OUTPUT " <a href='gallery.html'><img src='gallery.png' alt='Gallery'",
                 " title='Widgets gallery'/></a>\n";
    print OUTPUT " <a href='entities.html'><img src='entities.png' alt='Index'",
@@ -497,7 +498,7 @@ sub generate_html() {
    }
 
    open (OUTPUT, ">gtkada_rm/$output");
-   &generate_header ("$package", *OUTPUT, $parent_file);
+   &generate_header ("$package", *OUTPUT);
 
    ## Left side
 
