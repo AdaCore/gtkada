@@ -3,6 +3,7 @@
 	* src/cairo-win32-surface.c (cairo_win32_surface_create): Handle
 	16 bits display as RGB24 instead of crashing.
 	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=7126
+	Present in cairo 1.1.6
 
 2006-02-27  Arnaud Charlet  <charlet@adacore.com>
 
