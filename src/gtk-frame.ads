@@ -45,6 +45,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Ornaments</group>
 --  <testgtk>create_frame.adb</testgtk>
+--  <screenshot>gtk-frame</screenshot>
 
 with Glib.Properties;
 with Gtk.Bin;

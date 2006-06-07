@@ -62,6 +62,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Layout containers</group>
 --  <testgtk>create_paned.adb</testgtk>
+--  <screenshot>gtk-paned</screenshot>
 
 with Glib.Properties;
 with Gtk.Container;

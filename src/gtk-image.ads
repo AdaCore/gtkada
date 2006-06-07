@@ -38,6 +38,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Display widgets</group>
+--  <screenshot>gtk-image</screenshot>
 
 with Glib.Properties;
 with Gdk.Bitmap;

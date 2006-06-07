@@ -35,6 +35,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Menus and Toolbars</group>
+--  <screenshot>gtk-menu_bar</screenshot>
 
 with Gtk.Enums;
 with Gtk.Menu_Shell;

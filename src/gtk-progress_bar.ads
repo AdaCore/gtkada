@@ -34,6 +34,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Display widgets</group>
 --  <testgtk>create_progress.adb</testgtk>
+--  <screenshot>gtk-progress_bar</screenshot>
 
 with Glib.Properties;
 with Gtk.Enums;    use Gtk.Enums;

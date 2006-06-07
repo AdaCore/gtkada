@@ -35,6 +35,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Ornaments</group>
+--  <screenshot>gtk-separator</screenshot>
 
 with Gtk.Widget;
 

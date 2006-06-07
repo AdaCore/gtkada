@@ -37,6 +37,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Numeric/Text Data Entry</group>
 --  <testgtk>create_entry.adb</testgtk>
+--  <screenshot>gtk-gentry</screenshot>
 
 with Glib.Properties;
 with Gtk.Editable;

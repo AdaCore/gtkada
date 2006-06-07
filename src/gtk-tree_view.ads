@@ -32,6 +32,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Trees and Lists</group>
 --  <testgtk>create_tree_view.adb</testgtk>
+--  <screenshot>gtk-tree_view</screenshot>
 
 with Glib.Properties;
 with Gdk.Dnd;

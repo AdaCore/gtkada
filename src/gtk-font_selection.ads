@@ -48,6 +48,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Selectors</group>
 --  <testgtk>create_font_selection.adb</testgtk>
+--  <screenshot>gtk-fontsel</screenshot>
 
 with Glib.Properties;
 with Gdk.Font;

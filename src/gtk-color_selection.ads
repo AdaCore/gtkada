@@ -42,6 +42,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Drawing</group>
 --  <testgtk>create_color_selection.adb</testgtk>
+--  <screenshot>gtk-colorsel</screenshot>
 
 with Glib.Properties;
 with Gdk.Color;

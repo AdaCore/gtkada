@@ -52,6 +52,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Obsolescent widgets</group>
+--  <screenshot>gtk-combo</screenshot>
 
 with Glib.Properties;
 with Gtk.GEntry;

@@ -41,6 +41,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Layout containers</group>
 --  <testgtk>create_notebook.adb</testgtk>
+--  <screenshot>gtk-notebook</screenshot>
 
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);

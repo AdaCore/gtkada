@@ -54,6 +54,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Display widgets</group>
+--  <screenshot>gtk-accel_label</screenshot>
 
 with Glib.Properties;
 with Gtk.Label;

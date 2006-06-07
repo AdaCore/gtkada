@@ -51,6 +51,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Display widgets</group>
 --  <testgtk>create_status.adb</testgtk>
+--  <screenshot>gtk-status_bar</screenshot>
 
 with Gtk.Box;
 with Interfaces.C.Strings;

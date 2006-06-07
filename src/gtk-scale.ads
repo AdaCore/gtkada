@@ -34,6 +34,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <group>Numeric/Text Data Entry</group>
+--  <screenshot>gtk-scale.png</screenshot>
 
 with Glib.Properties;
 with Gtk.Adjustment;
