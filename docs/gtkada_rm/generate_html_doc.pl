@@ -144,6 +144,10 @@ our %files;
 ## package
 our %groups;
 
+## The list of types that implements an interface. Index is the interface name (short),
+## value is the list of types that implement it
+our %implemented;
+
 ## The list of screenshots. Index is package name, value is image name
 our %screenshots;
 
@@ -174,14 +178,16 @@ our $subprogram_and_comment_re =
 our $widget_re =
    '\n\s*type\s+(\w+)\s+is\s+(?:abstract\s+)?(?:tagged\s+private|new\s+([\w\.]+)\s+with)';
 our $type_re = 
-   '\s*(type\s+(\w+)\sis(?:[^;]+);)\n' . $comment_block_re;
+   '\s*(type\s+(\w+)\sis([^;]+);)\n' . $comment_block_re;
+our $interface_re =
+   'is\s+new\s+(?:Glib\.Types\.)?Implements\s*\(([\w\.]+),\s*([\w\.]+)';
 
 sub extract_sections() {
    my ($file) = shift;
    my ($html_file);
    my ($tags) = join ("|", @xml_sections);
    my (%tags, @subprograms, $package, @widgets);
-   my ($section, $section_pushed, @sections, %types);
+   my ($section, $section_pushed, @sections, %types, @interfaces);
    my ($count) = 1;
 
    open (FILE, $file) || die "File not found: $file";
@@ -257,9 +263,24 @@ sub extract_sections() {
 
    # Find types
    while ($contents =~ /$type_re/og) {
-       my ($definition, $name, $comment) = ($1, $2, $3);
+       my ($definition, $name, $parent, $comment) = ($1, $2, $3, $4);
        $entities{"$package.$name"} = [$html_file, ""];
+       if ($name eq "GType_Interface") {
+          $parents{$name} = "";
+          $files_from_widget{$name} = $html_file;
+       } elsif ($parent =~ /GType_Interface/) {
+          $parents{$name} = "GType_Interface";
+          $files_from_widget{$name} = $html_file;
+       }
        $types{$name} = [$definition, $comment];
+   }
+
+   # Find interfaces
+   while ($contents =~ /$interface_re/og) {
+      my ($interface, $object) = ($1, $2);
+      push (@interfaces, $interface);
+      $interface =~ s/^.*?\.([^.]+)$/$1/;
+      push (@{$implemented{$interface}}, $object);
    }
 
    # Find subprograms
@@ -289,7 +310,8 @@ sub extract_sections() {
    }
    pop (@sections) if ($section_pushed);  ## No contents => ignore
 
-   $files{$file} = [$package, \%tags, \@subprograms, \@widgets, \@sections, \%types];
+   $files{$file} = [$package, \%tags, \@subprograms, \@widgets,
+                    \@sections, \%types, \@interfaces];
 }
 
 #####################
@@ -484,6 +506,7 @@ sub generate_html() {
    my (@widgets)  = @{$files{$filename}[3]};
    my (@sections) = @{$files{$filename}[4]};
    my (%types)    = %{$files{$filename}[5]};
+   my (@interfaces) = @{$files{$filename}[6]};
    my ($w, $current);
    my ($parent_package, $parent_file);
    my ($count) = 1;
@@ -519,6 +542,41 @@ sub generate_html() {
       print OUTPUT "   <h2>Hierarchy</h2>\n";
       &generate_tree_for_widgets (\@widgets, 0, *OUTPUT);
       print OUTPUT "  </div> <!--  classHierarchy -->\n\n";
+   }
+
+   ## Interfaces
+   if ($#interfaces >= 0) {
+      print OUTPUT "  <div id='interfaces'>\n";
+      print OUTPUT "   <h2>Interfaces</h2>\n";
+      print OUTPUT "   <ul>\n";
+      foreach (@interfaces) {
+         my ($name) = $_;
+         my ($short) = $name;
+         $short =~ s/^.*?\.([^.]+)$/$1/;
+         print OUTPUT "  <li><a href='$files_from_widget{$short}'>$name</a></li>\n";
+      }
+      print OUTPUT "   </ul>\n";
+      print OUTPUT "  </div> <!-- interfaces -->\n\n";
+   }
+
+   ## Implemented by
+   my ($has_interface) = 0;
+   foreach (keys %types) {
+     my ($def) = $types{$_}->[0];
+     if ($def =~ /GType_Interface/ && $_ ne "GType_Interface") {
+        $has_interface = $_;
+     }
+   }
+
+   if ($has_interface) {
+      print OUTPUT "  <div id='interfaces'>\n";
+      print OUTPUT "    <h2>Implemented by</h2>\n";
+      print OUTPUT "    <ul>\n";
+      foreach (@{$implemented{$has_interface}}) {
+         print OUTPUT "  <li><a href='$files_from_widget{$_}'>$_</a></li>\n";
+      }
+      print OUTPUT "    </ul>\n";
+      print OUTPUT "  </div> <!-- interfaces -->\n\n";
    }
 
    ## Navigation
@@ -581,7 +639,7 @@ sub generate_html() {
    ## Notebook
    print OUTPUT "  <ul id='notebook'>\n";
    print OUTPUT "   <li id='tab_page1' class='current'><a href='' ",
-                "onclick='return !switchPage(\"page1\")'>Documentation</a></li>\n";
+                "onclick='return !switchPage(\"page1\")'>Entities</a></li>\n";
    print OUTPUT "   <li id='tab_page2'><a href='#Signals' ",
                 "onclick='return !switchPage(\"page2\")'>Signals</a></li>\n"
       if (defined $tags{"signals"});
@@ -619,6 +677,8 @@ sub generate_html() {
 
       foreach (sort keys %types) {
         my ($name, $def, $comment) = ($_, $types{$_}->[0], $types{$_}->[1]);
+        $def =~ s/</&lt;/g;  ## Think of  "type A (<>) is ..."
+        $def =~ s/>/&gt;/g;
         print OUTPUT "     <li><a name='${name}_'></a>\n";
         print OUTPUT "         <div class='profile'>",
                      &process_profile($def),
@@ -716,10 +776,10 @@ sub generate_html() {
                       "<div></li>\n";
       }
       print OUTPUT "   </ul>\n";
-   }
 
-   print OUTPUT "    </div> <!-- signals -->\n";
-   print OUTPUT "  </div> <!--  notebook_page2 -->\n\n";
+      print OUTPUT "    </div> <!-- signals -->\n";
+      print OUTPUT "  </div> <!--  notebook_page2 -->\n\n";
+   }
 
    ## Third notebook page (properties)
    if (defined $tags{'properties'}) {
