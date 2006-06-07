@@ -949,6 +949,10 @@ sub print_children() {
      print OUTPUT "<img src='childtree.png' alt='\_' />";
   }
 
+  #if (defined $screenshots{$packages{$widget}}) {
+  #   print OUTPUT " SCREENSHOT ";
+  #}
+
   if (defined $do_xref{$widget} && $do_xref{$widget} == 0) {
      print OUTPUT "$widget</li>\n";
   } else {
@@ -991,7 +995,6 @@ sub generate_tree_for_widgets() {
       my ($w) = $parents{$_};
       while (defined $w && $w ne "") {
          $list{$w}++;
-         # $do_xref{$w} = 1 if ($list{$w} == 1);
          $w = $parents{$w};
       }
    }
