@@ -119,6 +119,11 @@ package Gtk.Expander is
    --    if the user had clicked on it. This is mostly useful when associated
    --    with a keybinding
    --
+   --  - "notify::expanded"
+   --    This is the general "notify" signal, but will only call the handler
+   --    when the "expanded property changes. This can be used to monitor state
+   --    changes for the expander
+   --
    --  </signals>
 
    Signal_Activate : constant String := "activate";
