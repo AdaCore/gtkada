@@ -147,6 +147,7 @@ package body Create_Size_Groups is
    begin
       Gtk_New_Vbox (Vbox, Homogeneous => False);
       Add (Frame, Vbox);
+      Set_Label (Frame, "Size group");
 
       Gtk_New (Group, Horizontal);
 
