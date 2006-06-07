@@ -20,7 +20,8 @@ our ($verbose) = 0;
 
 ## The following files do not have an associated binding, and will be ignored
 our (%c_files_no_binding) =
-  ("gtkalias"  => 1,
+  ( 
+   # These are actually bound as part of another package
    "gtkhbox"   => 1,
    "gtkvbox"   => 1,
    "gtkhruler" => 1,
@@ -35,12 +36,51 @@ our (%c_files_no_binding) =
    "gtkmarshal" => 1,
    "gtkhpaned" => 1,
    "gtkvpaned" => 1,
-   "gtkprivate" => 1,
    "gtksignal"  => 1,
-   "gtkdebug"   => 1,
-   "gtksocketprivate" => 1,
+
+   # All of these are internal
+   "gtkalias"               => 1, # Internal only
+   "gtkdebug"               => 1, # Internal only
+   "gtkprivate"             => 1, # Internal only
+   "gtksocketprivate"       => 1, # Internal only
+   "gtkentryprivate"        => 1, # Internal only
+   "gtkfilechooserprivate"  => 1, # Internal only
+   "gtktoggleactionprivate" => 1, # Internal only
+   "gtktreeprivate"         => 1, # Internal only
+   "gtktextchildprivate"    => 1, # Internal only
+   "gtktextiterprivate"     => 1, # Internal only
+   "gtktexttagprivate"      => 1, # Internal only
+   "gtktextmarkprivate"     => 1, # Internal only
+   "gtktree"        => 1,  # Broken
+   "gtktreeitem"    => 1,  # Broken
+   "gtkrbtree"      => 1,  # Internal only
+   "gtksequence"    => 1,  # Internal only
+   "gtkxembed"      => 1,  # Internal only
+   "gtkwin32embed"  => 1,  # Internal only
+   "gtktextutil"    => 1,  # Internal only
+   "gtktexttypes"   => 1,  # Internal only
+   "gtktextsegment" => 1,  # Internal only
+   "gtktextlayout"  => 1,  # Internal only
+   "gtktextdisplay" => 1,  # Internal only
+   "gtktextbtree"   => 1,  # Internal only
+   "gtktreedatalist" => 1, # Internal only
+   "gtkmnemonichash" => 1, # Internal only
+   "gtkkeyhash"     => 1,  # Internal only
+   "gtkpathbar"     => 1,  # Internal only
+   "gtkversion"     => 1,  # Bound in gtk.ads
+   "gtktypeutils"   => 1,  # Better to use the functions in glib anyway
+   "gtkthemes"      => 1,  # For those that want to implement a theme engine... let's use C
+   "gtkmodules"     => 1,  # Internal only
+   "gtkintl"        => 1,  # No function to bind, already done in Gtkada.Intl
+   "gtkwindow-decorate" => 1,  # Never used anywhere, no ref on google... for gtkwindow.c
+   "gtkaccessible"  => 1, # Small interface to ATK, which we do not bind anyway
+   "gtkdndcursors"  => 1, # Internal to the DND implementation
    "xembed"         => 1,
-   "gtkplugprivate" => 1);
+   "gtkplugprivate" => 1,
+
+   # We might provide a binding for those one day, but they are very secondary
+   "gtkimmodule"    => 1,
+   );
 
 ## Return the base name (no extension) for a C file
 
@@ -358,7 +398,9 @@ sub c_widget_to_ada () {
 ## Return 1 if $1 is a type derived from GObject (or GObject itself)
 sub is_object() {
    my ($c_type) = shift;
-   return (($c_type =~ /^Gtk(?:.+)\*/  && $c_type ne "GtkClipboard*")
+   return (($c_type =~ /^Gtk(?:.+)\*/
+               && $c_type ne "GtkClipboard*"
+               && $c_type ne "GtkCellLayout*")
            || $c_type eq "PangoLayout"
            || $c_type eq "GObject*");
 }
@@ -382,6 +424,7 @@ sub c_to_ada() {
    return "access GObject_Record" if ($param_index >= 0 && $c_type eq "G_Object*");
    return "GObject"               if ($param_index == -1 && $c_type eq "G_Object*");
    return "Gtk_Clipboard"      if ($c_type eq "Gtk_Clipboard*");
+   return "Gtk_Cell_Layout"    if ($c_type eq "Gtk_Cell_Layout*");
 
    if ($is_object) {
       if ($param_index == -1) {
@@ -407,6 +450,7 @@ sub c_to_low_ada() {
    return "Gtk_Text_Iter"  if ($c_type eq "Gtk_Text_Iter*");
    return "Gfloat"         if ($c_type eq "gfloat");
    return "Gtk_Clipboard"  if ($c_type eq "Gtk_Clipboard*");
+   return "Gtk_Cell_Layout" if ($c_type eq "Gtk_Cell_Layout*");
    return "Gdk_$1"         if ($c_type =~ /Gdk_(.+)\*/);
    return "System.Address" if ($c_type eq "gpointer");
    return "GType"          if ($c_type eq "G_Type");
