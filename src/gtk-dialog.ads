@@ -268,7 +268,7 @@ package Gtk.Dialog is
    --
    --  - "response"
    --    procedure Handler
-   --      (Dialog      : access Gtk_Fialog_Record'Class;
+   --      (Dialog      : access Gtk_Dialog_Record'Class;
    --       Response_Id : Gint);
    --    Emitted when an action widget is clicked, the dialog receives a delete
    --    event, or the application programmer calls Response. On delete event,
@@ -276,7 +276,7 @@ package Gtk.Dialog is
    --    action widget was clicked.
    --
    --  - "close"
-   --    procedure Handler (Dialog : access Gtk_Fialog_Record'Class);
+   --    procedure Handler (Dialog : access Gtk_Dialog_Record'Class);
    --    Emit this signal to force a closing of the dialog.
    --  </signals>
 
