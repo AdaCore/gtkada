@@ -41,6 +41,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Layout containers</group>
 --  <testgtk>create_button_box.adb</testgtk>
+--  <screenshot>gtk-button_box</screenshot>
 
 with Glib.Properties;
 with Gtk.Box;

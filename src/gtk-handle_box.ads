@@ -51,6 +51,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Menus and Toolbars</group>
 --  <testgtk>create_handle_box.adb</testgtk>
+--  <screenshot>gtk-handle_box</screenshot>
 
 with Glib.Properties;
 with Gtk.Bin;

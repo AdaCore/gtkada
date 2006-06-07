@@ -43,6 +43,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <testgtk>create_arrow.adb</testgtk>
+--  <screenshot>gtk-arrow</screenshot>
 
 with Gtk.Enums;
 with Gtk.Misc;

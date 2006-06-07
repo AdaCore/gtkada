@@ -50,6 +50,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Layout containers</group>
 --  <testgtk>create_layout.adb</testgtk>
+--  <screenshot>gtk-layout</screenshot>
 
 with Glib.Properties;
 with Gdk.Window;

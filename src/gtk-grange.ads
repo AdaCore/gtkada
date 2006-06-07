@@ -33,6 +33,7 @@
 --  </description>
 --  <c_version>2.8.17</c_version>
 --  <testgtk>create_range.adb</testgtk>
+--  <screenshot>gtk-range</screenshot>
 
 with Glib.Properties;
 with Gtk.Adjustment;

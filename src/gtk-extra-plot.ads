@@ -96,6 +96,7 @@
 --  <c_version>gtkextra 2.1.1</c_version>
 --  <group>Plotting Data</group>
 --  <testgtk>create_plot.adb</testgtk>
+--  <screenshot>gtk-plot</screenshot>
 
 with System;
 with Gdk.Color;

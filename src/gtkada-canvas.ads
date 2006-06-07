@@ -96,6 +96,7 @@
 --  </description>
 --  <group>Drawing</group>
 --  <testgtk>create_canvas.adb</testgtk>
+--  <screenshot>gtkada-canvas</screenshot>
 
 with Gdk.Event;
 with Gdk.GC;

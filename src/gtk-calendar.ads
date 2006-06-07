@@ -45,6 +45,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Selectors</group>
 --  <testgtk>create_calendar.adb</testgtk>
+--  <screenshot>gtk-calendar</screenshot>
 
 with Glib.Properties;
 with Gtk.Widget;
