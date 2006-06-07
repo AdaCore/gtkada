@@ -12,6 +12,12 @@ of the feature.
 New features in GtkAda 2.8.1
 ----------------------------
 
+F602-010 Major redesign of the Reference Manual (2006-06-06)
+
+  The Reference Manual is now generated using other templates, and
+  generates a nicer-looking and more usable HTML version of the
+  documentation
+
 F515-002 Upgraded existing packages to gtk+ 2.8 API (2006-06-01)
 
   All existing Gtk.* packages have been updated to include the full
