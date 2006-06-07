@@ -122,15 +122,11 @@ package Gtk.Cell_View is
    ----------------
    -- Interfaces --
    ----------------
-   --  <interface>
    --  This class implements several interfaces. See Glib.Types
    --
    --  - "Gtk_Cell_Layout"
    --    This interface should be used to add new renderers to the view, to
    --    render various columns of the model
-   --
-   --  </interface>
-   --  <doc_ignore>
 
    package Implements_Cell_Layout is new Glib.Types.Implements
      (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Cell_View_Record, Gtk_Cell_View);
@@ -142,8 +138,7 @@ package Gtk.Cell_View is
      (Layout : Gtk.Cell_Layout.Gtk_Cell_Layout)
       return Gtk_Cell_View
       renames Implements_Cell_Layout.To_Object;
-
-   --  </doc_ignore>
+   --  Converts to and from the Gtk_Cell_Layout interface
 
    ----------------
    -- Properties --
