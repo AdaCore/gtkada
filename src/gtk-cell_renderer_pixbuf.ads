@@ -42,7 +42,6 @@
 --  <group>Trees and Lists</group>
 
 with Glib.Properties;
-with Gtk;
 with Gtk.Cell_Renderer;
 
 package Gtk.Cell_Renderer_Pixbuf is
@@ -53,11 +52,9 @@ package Gtk.Cell_Renderer_Pixbuf is
      access all Gtk_Cell_Renderer_Pixbuf_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Cell_Renderer_Pixbuf);
-
    procedure Initialize
      (Widget : access Gtk_Cell_Renderer_Pixbuf_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+   --  Creates or initializes a new renderer
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
