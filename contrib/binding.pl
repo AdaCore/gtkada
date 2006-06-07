@@ -7,7 +7,11 @@ our ($ada_dir) = "/home/briot/Ada/GtkAda/src/";
 our ($c_dir)   = "/home/briot/gtk/gtk+-2.8/gtk+-2.8.17";
 
 ## parameters are of the form "gtkbutton", "gtkbutton.h", "/dir/gtkbutton.h"
-## If the directory is unspecified, files are looked for in $c_dir
+## If the directory is unspecified, files are looked for in $c_dir.
+## To find out the list of files that have no binding:
+##     ./binding.pl $c_dir/gtk/*.h
+## To find out the missing subprogram bindings for a specific file:
+##     ./binding.pl gtkbutton
 our (@c_files)=@ARGV;
 
 ## Set to 1 to list all the files as they are analyzed. This can be set by
@@ -33,6 +37,9 @@ our (%c_files_no_binding) =
    "gtkvpaned" => 1,
    "gtkprivate" => 1,
    "gtksignal"  => 1,
+   "gtkdebug"   => 1,
+   "gtksocketprivate" => 1,
+   "xembed"         => 1,
    "gtkplugprivate" => 1);
 
 ## Return the base name (no extension) for a C file
