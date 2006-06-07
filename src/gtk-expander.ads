@@ -30,7 +30,7 @@
 --  A container which can hide its child.
 --  </description>
 --  <c_version>2.8.17</c_version>
---  <group>Layout Containers</group>
+--  <group>Layout containers</group>
 --  <screenshot>gtk-expander</screenshot>
 
 with Glib.Properties;
