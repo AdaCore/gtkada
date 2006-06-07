@@ -71,6 +71,7 @@ with Create_Button_Box;
 with Create_Buttons;
 with Create_Calendar;
 with Create_Canvas;
+with Create_Cell_View;
 with Create_Check_Buttons;
 with Create_Clipboard;
 with Create_Clist;
@@ -218,6 +219,8 @@ package body Main_Windows is
                                          Create_Calendar.Help'Access),
       (NS ("canvas"),           Gtkada,  Create_Canvas.Run'Access,
                                          Create_Canvas.Help'Access),
+      (NS ("cell view"),        Complex, Create_Cell_View.Run'Access,
+                                         Create_Cell_View.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,
                                          Create_Check_Buttons.Help'Access),
       (NS ("clipboard"),        Misc,    Create_Clipboard.Run'Access,
