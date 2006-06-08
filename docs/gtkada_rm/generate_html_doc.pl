@@ -368,6 +368,9 @@ sub process_comment() {
                  }
                /xeg;
 
+   ## Highlight cross-refs to specific file names
+   $comment =~ s/\b([\w.-]+)(\.ad[bs])/<a href='$1.html'>$1$2<\/a>/g;
+
    return $comment;
 }
 
