@@ -1015,7 +1015,7 @@ sub print_children() {
   my (%do_xref) = %$do_xref; ## Whether we want xref for those widgets
   my ($count);
 
-  print OUTPUT "  <li>";
+  print OUTPUT "  <li level='$level'>";
   for ($count = 0; $count < $level - 1; $count++) {
      if ($has_next_child[$count]) {
         print OUTPUT "<img src='childtree4.png' alt='  '/>";
@@ -1028,6 +1028,10 @@ sub print_children() {
      print OUTPUT "<img src='childtree3.png' alt='\_' />";
   } else {
      print OUTPUT "<img src='childtree.png' alt='\_' />";
+  }
+
+  if (defined $children{$widget}) {
+     print OUTPUT "<a onclick='treetoggle(this)'><img src='treeopen.png' alt='[-]' /></a>";
   }
 
   #if (defined $screenshots{$packages{$widget}}) {

@@ -28,7 +28,43 @@ function switchPage (name) {
   return true;
 }
 
-/* Return the window's height */
+/************************************************
+ ** Toggle the closing or opening of a tree node
+ ************************************************/
+
+function treetoggle (widget) {
+   var img = widget.getElementsByTagName ('img');
+   var li  = widget.parentNode;
+   var level = li.getAttribute ('level');
+   var is_expanded = (img[0].src.indexOf ('treeopen') > -1);
+   var sibling = li.nextSibling;
+
+   while (sibling) {
+      if (sibling.nodeName != 'LI') {
+      } else if (sibling.getAttribute ('level') <= level) {
+         break;
+      } else {
+         if (is_expanded) {
+            sibling.style.display = 'none';
+         } else {
+            sibling.style.display = 'list-item';
+         }
+      }
+      sibling = sibling.nextSibling;
+   }
+
+   if (is_expanded) {
+      img[0].src = "treeclose.png";
+      img[0].alt = '[+]';
+   } else {
+      img[0].src = "treeopen.png";
+      img[0].alt = '[-]';
+   }
+}
+
+/************************************************
+ ** Return the window's height
+ ********************************************** */
 
 function getWindowHeight() {
   var wh=0;

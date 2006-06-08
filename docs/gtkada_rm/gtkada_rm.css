@@ -124,13 +124,13 @@ div#types li                 { list-style-type: none;
                                border: 1px solid black;}
 div#subprograms span.name,
 div#types span.name,
-div#properties div.name,
+div.properties div.name,
 div#signals div.name         { color: red; }
 div#signals div.name         { background: #ddd3ba; 
                                width: 100%;}
 div#subprograms div.profile,
 div#types div.profile,
-div#properties div.profile,
+div.properties div.profile,
 div#signals div.profile      { white-space: pre;
                                font-family: "Courier New", Courier;
                                padding: 0px 5px 0px 5px;
@@ -139,7 +139,7 @@ div#example,
 div#testgtk                  { font-family: "Courier New", Courier;
                                white-space: pre; }
 div#subprograms div.comment,
-div#properties div.comment,
+div.properties div.comment,
 div#types div.comment,
 div#signals div.comment      { padding: 0px 5px 0px 5px; }
 div#subprograms h3           { font-size: 16px;
@@ -147,9 +147,9 @@ div#subprograms h3           { font-size: 16px;
                                margin: 0px;
                              }
 div#signals ul,
-div#properties ul            { margin: 0px; }
+div.properties ul            { margin: 0px; }
 div#signals li,
-div#properties li            { list-style-type: none; 
+div.properties li            { list-style-type: none; 
                                border: 1px solid black;
                                margin: 0px 0px 10px 0px; }
 
