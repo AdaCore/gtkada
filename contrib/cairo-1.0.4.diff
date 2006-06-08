@@ -5,6 +5,9 @@
 	Submitted at https://bugs.freedesktop.org/show_bug.cgi?id=7126
 	Present in cairo 1.1.6
 
+	Also disable this code, since it is causing off by one pixel
+	to be displayed. See F608-002.
+
 2006-02-27  Arnaud Charlet  <charlet@adacore.com>
 
 	* src/cairoint.h, pixman/src/slim_internal.h: Fix build failure on
@@ -61,3 +64,12 @@
  	    format = CAIRO_FORMAT_RGB24;
  	else if (depth == 8)
  	    format = CAIRO_FORMAT_A8;
+@@ -1025,7 +1025,7 @@ cairo_win32_surface_create (HDC hdc)
+     }
+ 
+     surface->image = NULL;
+-    surface->format = format;
++    surface->format = CAIRO_FORMAT_RGB24;
+     
+     surface->dc = hdc;
+     surface->bitmap = NULL;
