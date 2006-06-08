@@ -143,19 +143,17 @@ package Gtk.Cell_View is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Background_Property
-   --  Type:  String
+   --  Type:  String`
    --  Descr: Background color as a string
    --
    --  Name:  Background_Gdk_Property
    --  Type:  Boxed
    --  Descr: Background color as a GdkColor
-   --
    --  </properties>
 
    Background_Property     : constant Glib.Properties.Property_String;
