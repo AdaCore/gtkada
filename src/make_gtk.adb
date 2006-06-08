@@ -105,6 +105,7 @@ with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
 with Gtk.Combo;
 with Gtk.Combo_Box;
+with Gtk.Combo_Box_Entry;
 with Gtk.Container;
 with Gtk.Ctree;
 with Gtk.Curve;
