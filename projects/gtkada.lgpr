@@ -163,6 +163,8 @@ gtk-combo.adb
 gtk-combo.ads
 gtk-combo_box.adb
 gtk-combo_box.ads
+gtk-combo_box_entry.adb
+gtk-combo_box_entry.ads
 gtk-container.adb
 gtk-container.ads
 gtk-ctree.adb
