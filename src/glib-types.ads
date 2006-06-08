@@ -86,6 +86,17 @@ package Glib.Types is
    end Implements;
    --  </doc_ignore>
 
+   function To_Object
+     (Interf : GType_Interface) return Glib.Object.GObject;
+   --  Return the object that the interface represents. This is slightly
+   --  different from using Implements.To_Object, in the case when the object
+   --  wasn't created through Ada. In such a case, GtkAda needs to create an
+   --  Ada wrapper around the object, and will choose a different tagged type:
+   --     - Implements.To_Object creates a tagged type of type Object_Type.
+   --     - This function creates a GObject, which you cannot cast easily
+   --       to some other tagged type afterward.
+   --  Both behave the same when the object was created from Ada.
+
 private
    type GType_Interface is new System.Address;
 end Glib.Types;

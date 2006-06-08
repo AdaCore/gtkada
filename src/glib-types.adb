@@ -59,4 +59,16 @@ package body Glib.Types is
       end To_Interface;
    end Implements;
 
+   ---------------
+   -- To_Object --
+   ---------------
+
+   function To_Object
+     (Interf : GType_Interface) return Glib.Object.GObject
+   is
+      Stub : GObject_Record;
+   begin
+      return GObject (Get_User_Data (System.Address (Interf), Stub));
+   end To_Object;
+
 end Glib.Types;
