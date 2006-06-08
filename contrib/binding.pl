@@ -20,7 +20,7 @@ our ($verbose) = 0;
 
 ## The following files do not have an associated binding, and will be ignored
 our (%c_files_no_binding) =
-  ( 
+  (
    # These are actually bound as part of another package
    "gtkhbox"   => 1,
    "gtkvbox"   => 1,
@@ -203,83 +203,130 @@ sub ada_bindings_in_unit() {
   return (1, \%binding, \%obsolescent, \%properties, \%signals);
 }
 
+#######################
 ## Return all the properties defined for the current widget, as well as the
 ## signals
+#######################
 
-our $property_re = 'g_object_class_install_property\s*\(\s*\w+\s*,\s*\w+\s*,\s*g_param_spec_(\w+)\s*\("([^"]+)"';
+# $1=type $2=name
+our $param_spec_re = '\s*g_param_spec_(\w+)\s*\("([^"]+)"';
+
+# no parenthesis
+our $property_re =
+  'g_object_class_install_property\s*\(\s*\w+\s*,\s*\w+\s*,';
+
+# no parenthesis
+our $style_property_re =
+  'gtk_widget_class_install_style_property\s*\(\s*\w+\s*,';
+
+# no parenthesis
+our $child_property_re =
+  'gtk_container_class_install_child_property\s*\(\s*\w+\s*,\s*\w+\s*,';
+
+# $1=description
 our $property_descr_re = '\s*,\s*P_\("[^"]+"\),\s*P_\("([^"]+)"';
-our $c_signal_re = 'g(tk)?_signal_new\s*\("([^"]+)"';
+
+# $1=signal name
+our $c_signal_re = 'g(?:tk)?_signal_new\s*\("([^"]+)"';
+
+# $1=function name   $2=documentation
 our $c_doc_re = '/\*\*\s*\* (\w+):\s*(.*?)\*/';
 
 sub properties_in_c_file() {
    my ($fullname) = shift;
-   my (%properties, %signals, %docs, $cname);
-   my ($func, $descr, $name, $type, $sname);
+   my (%properties, %child_properties, %style_properties);
+   my (%signals, %docs, $cname);
 
    $fullname =~ s/\.h$/.c/g;
 
    my ($content) = &get_c_file_content ($fullname);
 
-   while ($content =~ /($property_re$property_descr_re)|($c_signal_re)|($c_doc_re)/ogs) {
-      if (defined $9) {
-         ($func, $descr) = ($9, $10);
-         $descr =~ s/^\s*\* */   --  /gm;
-         $docs {$func} = $descr;
+   while ($content =~
+            /(?:($property_re|$style_property_re|$child_property_re)$param_spec_re$property_descr_re)|(?:$c_signal_re)|(?:$c_doc_re)/ogs)
+   {
+      my ($propcategory, $proptype, $propname, $propdescr,
+          $signame,
+          $funcname, $funcdoc) = ($1, $2, $3, $4, $5, $6, $7);
 
-      } elsif (defined $2) {
-         ($type, $name, $descr) = ($2, $3, $4);
-         $cname = $name;
-         $name =~ s/-/_/g;
-         $name = &capitalize ($name);
-         $properties{$name} = [$type, $descr, $cname];
+      if (defined $funcname) {
+         $funcdoc =~ s/^\s*\* */   --  /gm;
+         $docs {$funcname} = $funcdoc;
+
+      } elsif (defined $proptype) {
+         $cname = $propname;
+         $propname =~ s/-/_/g;
+         $propname = &capitalize ($propname);
+
+         if ($propcategory =~ /style_property/) {
+            $style_properties{$propname} = [$proptype, $propdescr, $cname];
+         } elsif ($propcategory =~ /child_property/) {
+            $child_properties{$propname} = [$proptype, $propdescr, $cname];
+         } else {
+            $properties{$propname} = [$proptype, $propdescr, $cname];
+         }
+
       } else {
-         ($sname) = $7;
-         $cname = $sname;
-         $sname =~ s/-/_/g;
-         $sname = &capitalize ($sname);
-         $signals {$sname} = $cname;
+         $cname = $signame;
+         $cname =~ s/-/_/g;
+         $cname = &capitalize ($cname);
+         $signals {$cname} = $signame;
       }
    }
-   return (\%properties, \%signals, \%docs);
+   return (\%properties, \%signals, \%docs,
+           \%child_properties, \%style_properties);
 }
 
 ## Output the descr
 sub output_properties() {
-   my (%properties) = @_;
-   my ($prop, $type, $descr, $cname);
-   my (@list) = sort keys %properties;
+   my ($properties, $child_properties, $style_properties) = @_;
 
-   if ($#list >= 0) {
-      print "   ----------------\n";
-      print "   -- Properties --\n";
-      print "   ----------------\n";
-      print "\n";
-      print "   --  <properties>\n";
+   my ($type, $descr, $cname, $prop, $proptype);
 
-      foreach $prop (@list) {
-         ($type, $descr, $cname) = @{$properties{$prop}};
-         print "   --  Name:  " . $prop . "_Property\n";
-         print "   --  Type:  " . &capitalize ($type) . "\n";
-         print "   --  Descr: $descr\n";
-         print "   --\n";
+   foreach $proptype (('properties', 'child_properties', 'style_properties')) {
+      my (%properties, $title);
+
+      if ($proptype eq 'properties') {
+         %properties = %{$properties}, $title='Properties';
+      } elsif ($proptype eq 'child_properties') {
+         %properties = %{$child_properties}, $title='Child Properties';
+      } elsif ($proptype eq 'style_properties') {
+         %properties = %{$style_properties}, $title='Style Properties';
       }
 
-      print "\n";
-      print "   --  </properties>\n";
+      my (@list) = sort keys %properties;
 
-      print "\n";
-      foreach $prop (@list) {
-         ($type, $descr, $cname) = @{$properties{$prop}};
-         print "   ${prop}_Property : constant Glib.Properties.Property_",
-               &capitalize ($type), ";\n";
-      }
+      if ($#list >= 0) {
+         print "   ", '-' x (length ($title) + 6), "\n";
+         print "   -- $title --\n";
+         print "   ", '-' x (length ($title) + 6), "\n";
+         print "\n";
+         print "   --  <$proptype>\n";
 
-      print "\n";
-      foreach $prop (@list) {
-         ($type, $descr, $cname) = @{$properties{$prop}};
-         print "   ${prop}_Property : constant Glib.Properties.Property_",
-               &capitalize ($type), " :=\n",
-               "     Glib.Properties.Build (\"$cname\");\n";
+         foreach $prop (@list) {
+            ($type, $descr, $cname) = @{$properties{$prop}};
+            print "   --  Name:  " . $prop . "_Property\n";
+            print "   --  Type:  " . &capitalize ($type) . "\n";
+            print "   --  Descr: $descr\n";
+            print "   --\n";
+         }
+
+         print "\n";
+         print "   --  </$proptype>\n";
+         print "\n";
+
+         foreach $prop (@list) {
+            ($type, $descr, $cname) = @{$properties{$prop}};
+            print "   ${prop}_Property : constant Glib.Properties.Property_",
+                  &capitalize ($type), ";\n";
+         }
+
+         print "\n";
+         foreach $prop (@list) {
+            ($type, $descr, $cname) = @{$properties{$prop}};
+            print "   ${prop}_Property : constant Glib.Properties.Property_",
+                  &capitalize ($type), " :=\n",
+                  "     Glib.Properties.Build (\"$cname\");\n";
+         }
       }
    }
 }
@@ -739,8 +786,8 @@ sub process_c_file() {
   my ($c_file) = shift;
   my ($with_dir);
   my (%funcs, %binding, %obsolescent, $func, $ada_unit, $success);
-  my ($binding, $obsolescent, $c_properties, $c_signals, $ada_properties);
-  my ($args, $returns, $deprecated, $ada_signals, $c_docs);
+  my ($binding, $obsolescent, $ada_properties);
+  my ($args, $returns, $deprecated, $ada_signals);
 
   if (-f $c_file) {
     $with_dir = $c_file;
@@ -756,7 +803,8 @@ sub process_c_file() {
   }
 
   %funcs = &functions_from_c_file ($with_dir);
-  ($c_properties, $c_signals, $c_docs) = &properties_in_c_file ($with_dir);
+  my ($c_properties, $c_signals, $c_docs, $c_child_properties,
+      $c_style_properties) = &properties_in_c_file ($with_dir);
   $ada_unit = &ada_unit_from_c_file ($c_file);
   ($success, $binding, $obsolescent, $ada_properties, $ada_signals) =
       &ada_bindings_in_unit ($ada_unit);
@@ -771,6 +819,8 @@ sub process_c_file() {
   my ($prop);
   foreach $prop (keys %$ada_properties) {
      delete $c_properties->{$prop};
+     delete $c_style_properties->{$prop};
+     delete $c_child_properties->{$prop};
   }
 
   ## Ignore signals already defined in Ada
@@ -824,7 +874,7 @@ sub process_c_file() {
      }
   }
 
-   &output_properties (%$c_properties);
+   &output_properties ($c_properties, $c_child_properties, $c_style_properties);
    &output_signals (%$c_signals);
 
   ## Output bodies
