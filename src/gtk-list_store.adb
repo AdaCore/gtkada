@@ -143,6 +143,27 @@ package body Gtk.List_Store is
       Internal (Get_Object (Tree_Store), Iter, Column, Value);
    end Set;
 
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gdk.Pixbuf.Gdk_Pixbuf)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gdk.Pixbuf.Gdk_Pixbuf);
+      pragma Import (C, Internal, "ada_gtk_list_store_set_pixbuf");
+
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+   end Set;
+
    ------------
    -- Remove --
    ------------

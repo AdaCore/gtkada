@@ -35,6 +35,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Trees and Lists</group>
 
+with Gdk.Pixbuf;
 with Glib.Values;
 with Gtk;
 with Gtk.Tree_Model;
@@ -84,6 +85,13 @@ package Gtk.List_Store is
       Column     : Gint;
       Value      : Gint);
    --  Same as above, for a Gint.
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gdk.Pixbuf.Gdk_Pixbuf);
+   --  Same as above for a pixbuf
 
    procedure Remove
      (List_Store : access Gtk_List_Store_Record;
