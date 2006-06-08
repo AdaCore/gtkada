@@ -1070,7 +1070,7 @@ sub generate_tree_for_widgets() {
    my (@widget_list) = @$widget_list;
    my (%do_xref) = ();
 
-   print OUTPUT "<ul>\n";
+   print OUTPUT "<ul class='top'>\n";
 
    ## Make sure the parents of each widget is in the list. This is wasted
    ## time when generating the whole inheritance tree, but doesn't really
