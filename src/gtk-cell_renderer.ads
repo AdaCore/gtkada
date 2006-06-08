@@ -58,11 +58,11 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Trees and Lists</group>
 
-with Glib.Object;
 with Gdk.Event;
 with Gdk.Rectangle;
 with Gdk.Window;
 with Gtk;
+with Gtk.Cell_Editable;
 with Gtk.Object;
 with Gtk.Widget;
 with Glib.Properties;
@@ -161,7 +161,8 @@ package Gtk.Cell_Renderer is
       Path            : UTF8_String;
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-      Flags           : Gtk_Cell_Renderer_State) return Glib.Object.GObject;
+      Flags           : Gtk_Cell_Renderer_State)
+      return Gtk.Cell_Editable.Gtk_Cell_Editable;
    --  Passes an activate event to the cell renderer for possible processing.
    --  Cell: a Gtk_Cell_Renderer
    --  Event: a Gdk_Event
@@ -170,10 +171,6 @@ package Gtk.Cell_Renderer is
    --  e.g. for Gtk_Tree_View, a string representation of Gtk_Tree_Path
    --  Background_Area: background area as passed to Render
    --  Cell_Area: cell area as passed to Render
-
-   --  ??? This function really returns an instance of Gtk_Cell_Editable, but
-   --  this is an interface, which is not supported yet with GtkAda. You could
-   --  try to cast the result to a Gtk_Entry widget.
 
    procedure Set_Fixed_Size
      (Cell   : access Gtk_Cell_Renderer_Record;

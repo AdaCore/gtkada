@@ -35,32 +35,28 @@
 
 with Gtk;
 with Gdk.Event;
-with Glib.Object;
+with Glib.Types;
 
 package Gtk.Cell_Editable is
 
-   type Gtk_Cell_Editable_Record is
-     new Glib.Object.GObject_Record with private;
-   type Gtk_Cell_Editable is access all Gtk_Cell_Editable_Record'Class;
+   type Gtk_Cell_Editable is new Glib.Types.GType_Interface;
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Cell_Editable.
 
    procedure Start_Editing
-     (Cell_Editable : access Gtk_Cell_Editable_Record'Class;
+     (Cell_Editable : Gtk_Cell_Editable;
       Event         : Gdk.Event.Gdk_Event);
    --  Begin editing on a Gtk_Cell_Editable.
    --  Event is the Gdk_Event that began the editing process. It may be null,
    --  if the instance that editing was initiated through programatic means.
 
-   procedure Editing_Done
-     (Cell_Editable : access Gtk_Cell_Editable_Record'Class);
+   procedure Editing_Done (Cell_Editable : Gtk_Cell_Editable);
    --  Emit the "editing_done" signal.
    --  This signal is a sign for the cell renderer to update its value from the
    --  cell.
 
-   procedure Remove_Widget
-     (Cell_Editable : access Gtk_Cell_Editable_Record'Class);
+   procedure Remove_Widget (Cell_Editable : Gtk_Cell_Editable);
    --  Emit the "remove_widget" signal.
    --  This signal is meant to indicate that the cell is finished editing, and
    --  the widget may now be destroyed.
@@ -89,5 +85,8 @@ private
    type Gtk_Cell_Editable_Record is
      new Glib.Object.GObject_Record with null record;
 
-   pragma Import (C, Get_Type, "gtk_cell_editable_get_type");
+   pragma Import (C, Get_Type,      "gtk_cell_editable_get_type");
+   pragma Import (C, Start_Editing, "gtk_cell_editable_start_editing");
+   pragma Import (C, Editing_Done,  "gtk_cell_editable_editing_done");
+   pragma Import (C, Remove_Widget, "gtk_cell_editable_remove_widget");
 end Gtk.Cell_Editable;

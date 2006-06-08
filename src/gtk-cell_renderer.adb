@@ -29,6 +29,7 @@
 with System;     use System;
 
 with Gtk;        use Gtk;
+with Gtk.Cell_Editable; use Gtk.Cell_Editable;
 with Gtk.Widget; use Gtk.Widget;
 
 package body Gtk.Cell_Renderer is
@@ -142,7 +143,7 @@ package body Gtk.Cell_Renderer is
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Gtk_Cell_Renderer_State)
-      return GObject
+      return Gtk_Cell_Editable
    is
       function Internal
         (Cell            : System.Address;
@@ -151,21 +152,18 @@ package body Gtk.Cell_Renderer is
          Path            : UTF8_String;
          Background_Area : Gdk.Rectangle.Gdk_Rectangle;
          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-         Flags           : Gint) return System.Address;
+         Flags           : Gint) return Gtk_Cell_Editable;
       pragma Import (C, Internal, "gtk_cell_renderer_start_editing");
-      Stub : GObject_Record;
 
    begin
-      return GObject (Get_User_Data
-                      (Internal
-                       (Get_Object (Cell),
-                        Event,
-                        Get_Object (Widget),
-                        Path & ASCII.NUL,
-                        Background_Area,
-                        Cell_Area,
-                        Gtk_Cell_Renderer_State'Pos (Flags)),
-                       Stub));
+      return Internal
+        (Get_Object (Cell),
+         Event,
+         Get_Object (Widget),
+         Path & ASCII.NUL,
+         Background_Area,
+         Cell_Area,
+         Gtk_Cell_Renderer_State'Pos (Flags));
    end Start_Editing;
 
    --------------------
