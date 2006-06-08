@@ -161,6 +161,8 @@ gtk-color_selection_dialog.adb
 gtk-color_selection_dialog.ads
 gtk-combo.adb
 gtk-combo.ads
+gtk-combo_box.adb
+gtk-combo_box.ads
 gtk-container.adb
 gtk-container.ads
 gtk-ctree.adb
