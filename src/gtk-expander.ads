@@ -106,36 +106,13 @@ package Gtk.Expander is
    --  If true, an underline in the text of the expander label indicates
    --  the next character should be used for the mnemonic accelerator key.
 
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --
-   --  - "activate"
-   --    procedure Handler (Expander : access Gtk_Expander_Record'Class);
-   --    Send this signal if you want to toggle the state of the expander, as
-   --    if the user had clicked on it. This is mostly useful when associated
-   --    with a keybinding
-   --
-   --  - "notify::expanded"
-   --    This is the general "notify" signal, but will only call the handler
-   --    when the "expanded property changes. This can be used to monitor state
-   --    changes for the expander
-   --
-   --  </signals>
-
-   Signal_Activate : constant String := "activate";
-
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Expanded_Property
    --  Type:  Boolean
    --  Descr: Whether the expander has been opened to reveal the child widget
@@ -160,7 +137,6 @@ package Gtk.Expander is
    --  Type:  Boolean
    --  Descr: If set, an underline in the text indicates the next character
    --         should be used for the mnemonic accelerator key
-   --
    --  </properties>
 
    Expanded_Property      : constant Glib.Properties.Property_Boolean;
@@ -169,6 +145,47 @@ package Gtk.Expander is
    Spacing_Property       : constant Glib.Properties.Property_Int;
    Use_Markup_Property    : constant Glib.Properties.Property_Boolean;
    Use_Underline_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Expander_Size_Property
+   --  Type:  Int
+   --  Descr: Size of the expander arrow
+   --
+   --  Name:  Expander_Spacing_Property
+   --  Type:  Int
+   --  Descr: Spacing around expander arrow
+   --  </style_properties>
+
+   Expander_Size_Property    : constant Glib.Properties.Property_Int;
+   Expander_Spacing_Property : constant Glib.Properties.Property_Int;
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "activate"
+   --    procedure Handler (Expander : access Gtk_Expander_Record'Class);
+   --    Send this signal if you want to toggle the state of the expander, as
+   --    if the user had clicked on it. This is mostly useful when associated
+   --    with a keybinding
+   --
+   --  - "notify::expanded"
+   --    This is the general "notify" signal, but will only call the handler
+   --    when the "expanded property changes. This can be used to monitor state
+   --    changes for the expander
+   --
+   --  </signals>
+
+   Signal_Activate : constant String := "activate";
 
 private
    pragma Import (C, Get_Type, "gtk_expander_get_type");
@@ -185,5 +202,10 @@ private
      Glib.Properties.Build ("use-markup");
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-underline");
+
+   Expander_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("expander-size");
+   Expander_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("expander-spacing");
 
 end Gtk.Expander;

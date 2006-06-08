@@ -119,6 +119,74 @@ package Gtk.GRange is
    function Get_Value (The_Range : access Gtk_Range_Record) return Gdouble;
    --  Return the current value of the range.
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+
+   --  <properties>
+   --  Name:  Update_Policy_Property
+   --  Type:  Gtk_Update_Type
+   --  Flags: read-write
+   --  Descr: How the range should be updated on the screen
+   --  See also: Set_Update_Policy
+   --
+   --  Name:  Adjustment_Property
+   --  Type:  Object
+   --  Descr: The GtkAdjustment that contains the current value of this range
+   --         object
+   --
+   --  Name:  Inverted_Property
+   --  Type:  Boolean
+   --  Descr: Invert direction slider moves to increase range value
+   --  </properties>
+
+   Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type;
+   Adjustment_Property    : constant Glib.Properties.Property_Object;
+   Inverted_Property      : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Arrow_Displacement_X_Property
+   --  Type:  Int
+   --  Descr: How far in the x direction to move the arrow when the button is
+   --         depressed
+   --
+   --  Name:  Arrow_Displacement_Y_Property
+   --  Type:  Int
+   --  Descr: How far in the y direction to move the arrow when the button is
+   --         depressed
+   --
+   --  Name:  Slider_Width_Property
+   --  Type:  Int
+   --  Descr: Width of scrollbar or scale thumb
+   --
+   --  Name:  Stepper_Size_Property
+   --  Type:  Int
+   --  Descr: Length of step buttons at ends
+   --
+   --  Name:  Stepper_Spacing_Property
+   --  Type:  Int
+   --  Descr: Spacing between step buttons and thumb
+   --
+   --  Name:  Trough_Border_Property
+   --  Type:  Int
+   --  Descr: Spacing between thumb/steppers and outer trough bevel
+   --  </style_properties>
+
+   Arrow_Displacement_X_Property : constant Glib.Properties.Property_Int;
+   Arrow_Displacement_Y_Property : constant Glib.Properties.Property_Int;
+   Slider_Width_Property         : constant Glib.Properties.Property_Int;
+   Stepper_Size_Property         : constant Glib.Properties.Property_Int;
+   Stepper_Spacing_Property      : constant Glib.Properties.Property_Int;
+   Trough_Border_Property        : constant Glib.Properties.Property_Int;
+
    ------------
    -- Signal --
    ------------
@@ -155,35 +223,6 @@ package Gtk.GRange is
    Signal_Move_Slider   : constant String := "move_slider";
    Signal_Value_Changed : constant String := "value_changed";
 
-   ----------------
-   -- Properties --
-   ----------------
-
-   --  <properties>
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
-   --
-   --  Name:  Update_Policy_Property
-   --  Type:  Gtk_Update_Type
-   --  Flags: read-write
-   --  Descr: How the range should be updated on the screen
-   --  See also: Set_Update_Policy
-   --
-   --  Name:  Adjustment_Property
-   --  Type:  Object
-   --  Descr: The GtkAdjustment that contains the current value of this range
-   --         object
-   --
-   --  Name:  Inverted_Property
-   --  Type:  Boolean
-   --  Descr: Invert direction slider moves to increase range value
-   --
-   --  </properties>
-
-   Update_Policy_Property : constant Gtk.Enums.Property_Gtk_Update_Type;
-   Adjustment_Property    : constant Glib.Properties.Property_Object;
-   Inverted_Property      : constant Glib.Properties.Property_Boolean;
-
 private
    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
 
@@ -194,6 +233,19 @@ private
      Glib.Properties.Build ("adjustment");
    Inverted_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inverted");
+
+   Arrow_Displacement_X_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("arrow-displacement-x");
+   Arrow_Displacement_Y_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("arrow-displacement-y");
+   Slider_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("slider-width");
+   Stepper_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("stepper-size");
+   Stepper_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("stepper-spacing");
+   Trough_Border_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("trough-border");
 
    pragma Import (C, Get_Type, "gtk_range_get_type");
 end Gtk.GRange;

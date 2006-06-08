@@ -43,6 +43,7 @@
 --  <testgtk>create_fixed.adb</testgtk>
 --  <screenshot>gtk-fixed</screenshot>
 
+with Glib.Properties;
 with Gtk.Container;
 with Gtk.Widget;
 
@@ -89,28 +90,34 @@ package Gtk.Fixed is
    --  separate Gdk_Window). This function must be called while the widget
    --  is not realized, for instance, immediately after the window is created.
 
-   ----------------
-   -- Properties --
-   ----------------
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
 
-   --  <properties>
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
+   --  <child_properties>
+   --  Name:  X_Property
+   --  Type:  Int
+   --  Descr: X position of child widget
    --
-   --  </properties>
+   --  Name:  Y_Property
+   --  Type:  Int
+   --  Descr: Y position of child widget
+   --  </child_properties>
 
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --  </signals>
+   X_Property : constant Glib.Properties.Property_Int;
+   Y_Property : constant Glib.Properties.Property_Int;
 
 private
    type Gtk_Fixed_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
 
-   pragma Import (C, Get_Type, "gtk_fixed_get_type");
 
+   X_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("x");
+   Y_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("y");
+
+   pragma Import (C, Get_Type, "gtk_fixed_get_type");
 end Gtk.Fixed;

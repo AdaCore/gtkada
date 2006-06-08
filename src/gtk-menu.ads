@@ -300,11 +300,10 @@ package Gtk.Menu is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Tearoff_State_Property
    --  Type:  Boolean
    --  Descr: A boolean that indicates whether the menu is torn-off
@@ -313,11 +312,65 @@ package Gtk.Menu is
    --  Type:  String
    --  Descr: A title that may be displayed by the window manager when this
    --         menu is torn-off
-   --
    --  </properties>
 
    Tearoff_State_Property : constant Glib.Properties.Property_Boolean;
    Tearoff_Title_Property : constant Glib.Properties.Property_String;
+
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
+
+   --  <child_properties>
+   --  Name:  Bottom_Attach_Property
+   --  Type:  Int
+   --  Descr: The row number to attach the bottom of the child to
+   --
+   --  Name:  Left_Attach_Property
+   --  Type:  Int
+   --  Descr: The column number to attach the left side of the child to
+   --
+   --  Name:  Right_Attach_Property
+   --  Type:  Int
+   --  Descr: The column number to attach the right side of the child to
+   --
+   --  Name:  Top_Attach_Property
+   --  Type:  Int
+   --  Descr: The row number to attach the top of the child to
+   --  </child_properties>
+
+   Bottom_Attach_Property : constant Glib.Properties.Property_Int;
+   Left_Attach_Property   : constant Glib.Properties.Property_Int;
+   Right_Attach_Property  : constant Glib.Properties.Property_Int;
+   Top_Attach_Property    : constant Glib.Properties.Property_Int;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Horizontal_Offset_Property
+   --  Type:  Int
+   --  Descr: When the menu is a submenu, position it this number of pixels
+   --         offset horizontally
+   --
+   --  Name:  Vertical_Offset_Property
+   --  Type:  Int
+   --  Descr: When the menu is a submenu, position it this number of pixels
+   --         offset vertically
+   --
+   --  Name:  Vertical_Padding_Property
+   --  Type:  Int
+   --  Descr: Extra space at the top and bottom of the menu
+   --  </style_properties>
+
+   Horizontal_Offset_Property : constant Glib.Properties.Property_Int;
+   Vertical_Offset_Property   : constant Glib.Properties.Property_Int;
+   Vertical_Padding_Property  : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -349,6 +402,22 @@ private
      Glib.Properties.Build ("tearoff-state");
    Tearoff_Title_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("tearoff-title");
+
+   Bottom_Attach_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("bottom-attach");
+   Left_Attach_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("left-attach");
+   Right_Attach_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("right-attach");
+   Top_Attach_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("top-attach");
+
+   Horizontal_Offset_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("horizontal-offset");
+   Vertical_Offset_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("vertical-offset");
+   Vertical_Padding_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("vertical-padding");
 
    pragma Import (C, Get_Type, "gtk_menu_get_type");
 end Gtk.Menu;

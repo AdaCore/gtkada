@@ -640,11 +640,10 @@ package Gtk.Tree_View is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Enable_Search_Property
    --  Type:  Boolean
    --  Descr: View allows user to search through columns interactively
@@ -698,7 +697,6 @@ package Gtk.Tree_View is
    --  Name:  Vadjustment_Property
    --  Type:  Object
    --  Descr: Vertical Adjustment for the widget
-   --
    --  </properties>
 
    Enable_Search_Property     : constant Glib.Properties.Property_Boolean;
@@ -714,6 +712,50 @@ package Gtk.Tree_View is
    Rules_Hint_Property        : constant Glib.Properties.Property_Boolean;
    Search_Column_Property     : constant Glib.Properties.Property_Int;
    Vadjustment_Property       : constant Glib.Properties.Property_Object;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Allow_Rules_Property
+   --  Type:  Boolean
+   --  Descr: Allow drawing of alternating color rows
+   --
+   --  Name:  Even_Row_Color_Property
+   --  Type:  Boxed
+   --  Descr: Color to use for even rows
+   --
+   --  Name:  Expander_Size_Property
+   --  Type:  Int
+   --  Descr: Size of the expander arrow
+   --
+   --  Name:  Horizontal_Separator_Property
+   --  Type:  Int
+   --  Descr: Horizontal space between cells.  Must be an even number
+   --
+   --  Name:  Indent_Expanders_Property
+   --  Type:  Boolean
+   --  Descr: Make the expanders indented
+   --
+   --  Name:  Odd_Row_Color_Property
+   --  Type:  Boxed
+   --  Descr: Color to use for odd rows
+   --
+   --  Name:  Vertical_Separator_Property
+   --  Type:  Int
+   --  Descr: Vertical space between cells.  Must be an even number
+   --  </style_properties>
+
+   Allow_Rules_Property          : constant Glib.Properties.Property_Boolean;
+   --  Even_Row_Color_Property   : constant Glib.Properties.Property_Boxed;
+   Expander_Size_Property        : constant Glib.Properties.Property_Int;
+   Horizontal_Separator_Property : constant Glib.Properties.Property_Int;
+   Indent_Expanders_Property     : constant Glib.Properties.Property_Boolean;
+   --  Odd_Row_Color_Property    : constant Glib.Properties.Property_Boxed;
+   Vertical_Separator_Property   : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -835,6 +877,21 @@ private
      Glib.Properties.Build ("search-column");
    Vadjustment_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("vadjustment");
+
+   Allow_Rules_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("allow-rules");
+--     Even_Row_Color_Property : constant Glib.Properties.Property_Boxed :=
+--       Glib.Properties.Build ("even-row-color");
+   Expander_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("expander-size");
+   Horizontal_Separator_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("horizontal-separator");
+   Indent_Expanders_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("indent-expanders");
+--     Odd_Row_Color_Property : constant Glib.Properties.Property_Boxed :=
+--       Glib.Properties.Build ("odd-row-color");
+   Vertical_Separator_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("vertical-separator");
 
    pragma Import (C, Get_Type, "gtk_tree_view_get_type");
 end Gtk.Tree_View;

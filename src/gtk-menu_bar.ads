@@ -37,6 +37,7 @@
 --  <group>Menus and Toolbars</group>
 --  <screenshot>gtk-menu_bar</screenshot>
 
+with Glib.Properties;
 with Gtk.Enums;
 with Gtk.Menu_Shell;
 
@@ -75,11 +76,10 @@ package Gtk.Menu_Bar is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Child_Pack_Direction_Property
    --  Type:  Enum
    --  Descr: The child pack direction of the menubar
@@ -87,19 +87,30 @@ package Gtk.Menu_Bar is
    --  Name:  Pack_Direction_Property
    --  Type:  Enum
    --  Descr: The pack direction of the menubar
-   --
    --  </properties>
 
    Child_Pack_Direction_Property : constant Gtk.Enums.Property_Pack_Direction;
    Pack_Direction_Property       : constant Gtk.Enums.Property_Pack_Direction;
 
-   -------------
-   -- Signals --
-   -------------
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
 
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --  </signals>
+   --  <style_properties>
+   --  Name:  Internal_Padding_Property
+   --  Type:  Int
+   --  Descr: Amount of border space between the menubar shadow and the menu
+   --         items
+   --
+   --  Name:  Shadow_Type_Property
+   --  Type:  Enum
+   --  Descr: Style of bevel around the menubar
+   --  </style_properties>
+
+   Internal_Padding_Property : constant Glib.Properties.Property_Int;
+   Shadow_Type_Property      : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private
    type Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
@@ -109,6 +120,11 @@ private
      := Gtk.Enums.Build ("child-pack-direction");
    Pack_Direction_Property : constant Gtk.Enums.Property_Pack_Direction :=
      Gtk.Enums.Build ("pack-direction");
+
+   Internal_Padding_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("internal-padding");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow-type");
 
    pragma Import (C, Get_Type, "gtk_menu_bar_get_type");
 

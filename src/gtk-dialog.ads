@@ -245,20 +245,42 @@ package Gtk.Dialog is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  - Name:  Has_Separator_Property
    --    Type:  Boolean
    --    Flags: read-write
    --    Descr: The dialog has a separator bar above its buttons
-   --    See also:
-   --
    --  </properties>
 
    Has_Separator_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Action_Area_Border_Property
+   --  Type:  Int
+   --  Descr: Width of border around the button area at the bottom of the
+   --         dialog
+   --
+   --  Name:  Button_Spacing_Property
+   --  Type:  Int
+   --  Descr: Spacing between buttons
+   --
+   --  Name:  Content_Area_Border_Property
+   --  Type:  Int
+   --  Descr: Width of border around the main dialog area
+   --  </style_properties>
+
+   Action_Area_Border_Property  : constant Glib.Properties.Property_Int;
+   Button_Spacing_Property      : constant Glib.Properties.Property_Int;
+   Content_Area_Border_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -294,6 +316,13 @@ private
 
    Has_Separator_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has_separator");
+
+   Action_Area_Border_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("action-area-border");
+   Button_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("button-spacing");
+   Content_Area_Border_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("content-area-border");
 
    pragma Import (C, Get_Type, "gtk_dialog_get_type");
 end Gtk.Dialog;

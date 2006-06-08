@@ -216,11 +216,10 @@ package Gtk.Button is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Label_Property
    --  Type:  UTF8_String
    --  Flags: read-write
@@ -261,7 +260,6 @@ package Gtk.Button is
    --  Type:  Float
    --  Descr: Vertical position of child in available space. 0.0 is top
    --         aligned, 1.0 is bottom aligned
-   --
    --  </properties>
 
    Label_Property          : constant Glib.Properties.Property_String;
@@ -272,6 +270,45 @@ package Gtk.Button is
    Image_Property          : constant Glib.Properties.Property_Object;
    Xalign_Property         : constant Glib.Properties.Property_Float;
    Yalign_Property         : constant Glib.Properties.Property_Float;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Child_Displacement_X_Property
+   --  Type:  Int
+   --  Descr: How far in the x direction to move the child when the button is
+   --         depressed
+   --
+   --  Name:  Child_Displacement_Y_Property
+   --  Type:  Int
+   --  Descr: How far in the y direction to move the child when the button is
+   --         depressed
+   --
+   --  Name:  Default_Border_Property
+   --  Type:  Boxed
+   --  Descr: Extra space to add for CAN_DEFAULT buttons
+   --
+   --  Name:  Default_Outside_Border_Property
+   --  Type:  Boxed
+   --  Descr: Extra space to add for CAN_DEFAULT buttons that is always drawn
+   --         outside the border
+   --
+   --  Name:  Displace_Focus_Property
+   --  Type:  Boolean
+   --  Descr: Whether the child_displacement_x/_y properties should also affect
+   --         the focus rectangle
+   --  </style_properties>
+
+   Child_Displacement_X_Property   : constant Glib.Properties.Property_Int;
+   Child_Displacement_Y_Property   : constant Glib.Properties.Property_Int;
+   --  Default_Border_Property      : constant Glib.Properties.Property_Boxed;
+   --  Default_Outside_Border_Property :
+   --     constant Glib.Properties.Property_Boxed;
+   Displace_Focus_Property         : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -341,6 +378,18 @@ private
      Glib.Properties.Build ("xalign");
    Yalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("yalign");
+
+   Child_Displacement_X_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("child-displacement-x");
+   Child_Displacement_Y_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("child-displacement-y");
+--     Default_Border_Property : constant Glib.Properties.Property_Boxed :=
+--       Glib.Properties.Build ("default-border");
+   --  Default_Outside_Border_Property : constant
+   --    Glib.Properties.Property_Boxed :=
+   --    Glib.Properties.Build ("default-outside-border");
+   Displace_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("displace-focus");
 
    pragma Import (C, Get_Type, "gtk_button_get_type");
 end Gtk.Button;

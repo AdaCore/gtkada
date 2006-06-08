@@ -192,12 +192,17 @@ package Gtk.Container is
    --  is property set at the container level, and that applies to all children
    --  of that container. These are special type of properties, different from
    --  the properties associated with each type of widget.
+   --  See also Gtk.Widget.Child_Notify
+   --  You should use Glib.Property_Name to get the name from the property
+   --  declaration in each of the GtkAda packages
 
    function Class_Find_Child_Property
      (Cclass        : Glib.Object.GObject_Class;
       Property_Name : String) return Glib.Param_Spec;
    --  Finds a child property of a container class by name. The returned value
    --  describes the property (type, allowed range, description,...)
+   --  You should use Glib.Property_Name to get the name from the property
+   --  declaration in each of the GtkAda packages
 
    procedure Class_Install_Child_Property
      (Cclass      : Glib.Object.GObject_Class;

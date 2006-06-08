@@ -178,11 +178,10 @@ package Gtk.Scrolled_Window is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Hadjustment_Property
    --  Type:  Object
    --  Descr: The GtkAdjustment for the horizontal position
@@ -206,7 +205,6 @@ package Gtk.Scrolled_Window is
    --  Name:  Window_Placement_Property
    --  Type:  Enum
    --  Descr: Where the contents are located with respect to the scrollbars
-   --
    --  </properties>
 
    Hadjustment_Property       : constant Glib.Properties.Property_Object;
@@ -215,6 +213,20 @@ package Gtk.Scrolled_Window is
    Vadjustment_Property       : constant Glib.Properties.Property_Object;
    Vscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
    Window_Placement_Property  : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Scrollbar_Spacing_Property
+   --  Type:  Int
+   --  Descr: Number of pixels between the scrollbars and the scrolled window
+   --  </style_properties>
+
+   Scrollbar_Spacing_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -261,6 +273,9 @@ private
      Gtk.Enums.Build ("vscrollbar-policy");
    Window_Placement_Property  : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("window-placement");
+
+   Scrollbar_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("scrollbar-spacing");
 
    pragma Import (C, Get_Type, "gtk_scrolled_window_get_type");
 end Gtk.Scrolled_Window;

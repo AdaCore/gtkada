@@ -36,6 +36,7 @@
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_check_buttons.adb</testgtk>
 
+with Glib.Properties;
 with Gtk.Toggle_Button;
 
 package Gtk.Check_Button is
@@ -76,27 +77,32 @@ package Gtk.Check_Button is
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Check_Button.
 
-   ----------------
-   -- Properties --
-   ----------------
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
 
-   --  <properties>
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
+   --  <style_properties>
+   --  Name:  Indicator_Size_Property
+   --  Type:  Int
+   --  Descr: Size of check or radio indicator
    --
-   --  </properties>
+   --  Name:  Indicator_Spacing_Property
+   --  Type:  Int
+   --  Descr: Spacing around check or radio indicator
+   --  </style_properties>
 
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
-   --
-   --  </signals>
+   Indicator_Size_Property    : constant Glib.Properties.Property_Int;
+   Indicator_Spacing_Property : constant Glib.Properties.Property_Int;
 
 private
    type Gtk_Check_Button_Record is new
      Gtk.Toggle_Button.Gtk_Toggle_Button_Record with null record;
    pragma Import (C, Get_Type, "gtk_check_button_get_type");
+
+   Indicator_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("indicator-size");
+   Indicator_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("indicator-spacing");
 end Gtk.Check_Button;

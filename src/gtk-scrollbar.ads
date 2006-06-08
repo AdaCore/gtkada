@@ -43,6 +43,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Scrolling</group>
 
+with Glib.Properties;
 with Gtk.GRange;
 with Gtk.Adjustment;
 
@@ -77,19 +78,67 @@ package Gtk.Scrollbar is
    function Vscrollbar_Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Scrollbar.
 
-   ----------------
-   -- Properties --
-   ----------------
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
 
-   --  <properties>
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
+   --  <style_properties>
+   --  Name:  Fixed_Slider_Length_Property
+   --  Type:  Boolean
+   --  Descr: Don't change slider size, just lock it to the minimum length
    --
-   --  </properties>
+   --  Name:  Has_Backward_Stepper_Property
+   --  Type:  Boolean
+   --  Descr: Display the standard backward arrow button
+   --
+   --  Name:  Has_Forward_Stepper_Property
+   --  Type:  Boolean
+   --  Descr: Display the standard forward arrow button
+   --
+   --  Name:  Has_Secondary_Backward_Stepper_Property
+   --  Type:  Boolean
+   --  Descr: Display a second backward arrow button on the opposite end of the
+   --         scrollbar
+   --
+   --  Name:  Has_Secondary_Forward_Stepper_Property
+   --  Type:  Boolean
+   --  Descr: Display a secondary forward arrow button on the opposite end of
+   --         the scrollbar
+   --
+   --  Name:  Min_Slider_Length_Property
+   --  Type:  Int
+   --  Descr: Minimum length of scrollbar slider
+   --  </style_properties>
+
+   Fixed_Slider_Length_Property  : constant Glib.Properties.Property_Boolean;
+   Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean;
+   Has_Forward_Stepper_Property  : constant Glib.Properties.Property_Boolean;
+   Has_Secondary_Backward_Stepper_Property : constant
+     Glib.Properties.Property_Boolean;
+   Has_Secondary_Forward_Stepper_Property : constant
+     Glib.Properties.Property_Boolean;
+   Min_Slider_Length_Property    : constant Glib.Properties.Property_Int;
 
 private
    type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record
      with null record;
+
+   Fixed_Slider_Length_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("fixed-slider-length");
+   Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-backward-stepper");
+   Has_Forward_Stepper_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-forward-stepper");
+   Has_Secondary_Backward_Stepper_Property : constant
+     Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-secondary-backward-stepper");
+   Has_Secondary_Forward_Stepper_Property : constant
+     Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-secondary-forward-stepper");
+   Min_Slider_Length_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("min-slider-length");
 
    pragma Import (C, Get_Type, "gtk_scrollbar_get_type");
    pragma Import (C, Hscrollbar_Get_Type, "gtk_hscrollbar_get_type");

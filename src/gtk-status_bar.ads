@@ -59,6 +59,7 @@ with Glib.Properties;
 with Glib.GSlist;
 pragma Elaborate_All (Glib.GSlist);
 with System;
+with Gtk.Enums;
 
 package Gtk.Status_Bar is
 
@@ -141,18 +142,30 @@ package Gtk.Status_Bar is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Has_Resize_Grip_Property
    --  Type:  Boolean
    --  Descr: Whether the statusbar has a grip for resizing the toplevel
-   --
    --  </properties>
 
    Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Shadow_Type_Property
+   --  Type:  Enum
+   --  Descr: Style of bevel around the statusbar text
+   --  </style_properties>
+
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
    -------------
    -- Signals --
@@ -185,6 +198,9 @@ private
 
    Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-resize-grip");
+
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow-type");
 
    pragma Import (C, Get_Type, "gtk_statusbar_get_type");
 end Gtk.Status_Bar;

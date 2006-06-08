@@ -1302,11 +1302,10 @@ package Gtk.Widget is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Name_Property
    --  Type:  UTF8_String
    --  Flags: read-write
@@ -1441,7 +1440,6 @@ package Gtk.Widget is
    --  Type:  Int
    --  Descr: Override for width request of the widget, or -1 if natural
    --         request should be used
-   --
    --  </properties>
 
    procedure Child_Notify
@@ -1452,7 +1450,8 @@ package Gtk.Widget is
    --  the parent, and thus that Widget should refresh itself if needed.
    --
    --  Child_Property is the name of a child property installed on Widget's
-   --  parent.
+   --  parent. You should use Glib.Propert_Name to get the name from the
+   --  property declaration in each of the GtkAda packages
 
    procedure Freeze_Child_Notify (Widget : access Gtk_Widget_Record);
    --  Stops emission of "child-notify" signals on Widget. The signals are
@@ -1480,12 +1479,16 @@ package Gtk.Widget is
       Property_Name : String) return Glib.Param_Spec;
    --  Finds a style property of a widget class by name.
    --  Klass must be a descendent of Gtk_Widget.
+   --  You should use Glib.Property_Name to get the name from the property
+   --  declaration in each of the GtkAda packages
 
    procedure Style_Get_Property
      (Widget        : access Gtk_Widget_Record;
       Property_Name : String;
       Value         : out Glib.Values.GValue);
    --  Gets the value of a style property of Widget.
+   --  You should use Glib.Property_Name to get the name from the property
+   --  declaration in each of the GtkAda packages
 
    Name_Property                  : constant Glib.Properties.Property_String;
    Parent_Property                : constant Glib.Properties.Property_Object;
@@ -1511,6 +1514,57 @@ package Gtk.Widget is
    Is_Focus_Property              : constant Glib.Properties.Property_Boolean;
    No_Show_All_Property           : constant Glib.Properties.Property_Boolean;
    Width_Request_Property         : constant Glib.Properties.Property_Int;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Cursor_Aspect_Ratio_Property
+   --  Type:  Float
+   --  Descr: Aspect ratio with which to draw insertion cursor
+   --
+   --  Name:  Cursor_Color_Property
+   --  Type:  Boxed
+   --  Descr: Color with which to draw insertion cursor
+   --
+   --  Name:  Draw_Border_Property
+   --  Type:  Boxed
+   --  Descr: Size of areas outside the widget's allocation to draw
+   --
+   --  Name:  Focus_Line_Pattern_Property
+   --  Type:  String
+   --  Descr: Dash pattern used to draw the focus indicator
+   --
+   --  Name:  Focus_Line_Width_Property
+   --  Type:  Int
+   --  Descr: Width, in pixels, of the focus indicator line
+   --
+   --  Name:  Focus_Padding_Property
+   --  Type:  Int
+   --  Descr: Width, in pixels, between focus indicator and the widget 'box'
+   --
+   --  Name:  Interior_Focus_Property
+   --  Type:  Boolean
+   --  Descr: Whether to draw the focus indicator inside widgets
+   --
+   --  Name:  Secondary_Cursor_Color_Property
+   --  Type:  Boxed
+   --  Descr: Color with which to draw the secondary insertion cursor when
+   --         editing mixed right-to-left and left-to-right text
+   --  </style_properties>
+
+   Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float;
+   --   Cursor_Color_Property        : constant Glib.Properties.Property_Boxed;
+   --  Draw_Border_Property         : constant Glib.Properties.Property_Boxed;
+   Focus_Line_Pattern_Property  : constant Glib.Properties.Property_String;
+   Focus_Line_Width_Property    : constant Glib.Properties.Property_Int;
+   Focus_Padding_Property       : constant Glib.Properties.Property_Int;
+   Interior_Focus_Property      : constant Glib.Properties.Property_Boolean;
+   --  Secondary_Cursor_Color_Property : constant
+   --    Glib.Properties.Property_Boxed;
 
    -------------
    -- Signals --
@@ -1870,6 +1924,14 @@ package Gtk.Widget is
    --                     return Boolean;
    --    ???
    --
+   --  - "child_notify"
+   --    procedure Handler (Widget : access Gtk_Widget_Record'Class);
+   --    This signal is emitted when the value of one of the child properties
+   --    for the widget has been changed. If you are only interested in the
+   --    changes for a specific property, you can also connect directly to
+   --    "child_notify::<property>", for instance "child_notify:right_attach"
+   --    for a child of Gtk.Menu.Gtk_Menu.
+   --
    --  </signals>
 
    Signal_Accel_Closures_Changed : constant String := "accel_closures_changed";
@@ -1988,6 +2050,25 @@ private
      Glib.Properties.Build ("no-show-all");
    Width_Request_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width-request");
+
+   Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("cursor-aspect-ratio");
+--     Cursor_Color_Property : constant Glib.Properties.Property_Boxed :=
+--       Glib.Properties.Build ("cursor-color");
+--     Draw_Border_Property : constant Glib.Properties.Property_Boxed :=
+--       Glib.Properties.Build ("draw-border");
+   Focus_Line_Pattern_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("focus-line-pattern");
+   Focus_Line_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("focus-line-width");
+   Focus_Padding_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("focus-padding");
+   Interior_Focus_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("interior-focus");
+   --  Secondary_Cursor_Color_Property : constant
+   --    Glib.Properties.Property_Boxed :=
+   --    Glib.Properties.Build ("secondary-cursor-color");
+
 
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Get_Type, "gtk_widget_get_type");

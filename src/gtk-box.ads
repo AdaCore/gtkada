@@ -219,11 +219,10 @@ package Gtk.Box is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  - Name:  Spacing_Property
    --    Type:  Gint
    --    Flags: read-write
@@ -235,11 +234,47 @@ package Gtk.Box is
    --    Flags: read-write
    --    Descr: Whether the childrenshould all be the same size.
    --    See also: Set_Homogeneous
-   --
    --  </properties>
 
-   Spacing_Property : constant Glib.Properties.Property_Int;
+   Spacing_Property     : constant Glib.Properties.Property_Int;
    Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
+
+   --  <child_properties>
+   --  Name:  Expand_Property
+   --  Type:  Boolean
+   --  Descr: Whether the child should receive extra space when the parent
+   --         grows
+   --
+   --  Name:  Fill_Property
+   --  Type:  Boolean
+   --  Descr: Whether extra space given to the child should be allocated to the
+   --         child or used as padding
+   --
+   --  Name:  Pack_Type_Property
+   --  Type:  Enum
+   --  Descr: A GtkPackType indicating whether the child is packed with
+   --         reference to the start or end of the parent
+   --
+   --  Name:  Padding_Property
+   --  Type:  Uint
+   --  Descr: Extra space to put between the child and its neighbors, in pixels
+   --
+   --  Name:  Position_Property
+   --  Type:  Int
+   --  Descr: The index of the child in the parent
+   --  </child_properties>
+
+   Expand_Property    : constant Glib.Properties.Property_Boolean;
+   Fill_Property      : constant Glib.Properties.Property_Boolean;
+   Pack_Type_Property : constant Gtk.Enums.Property_Pack_Type;
+   Padding_Property   : constant Glib.Properties.Property_Uint;
+   Position_Property  : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -257,6 +292,17 @@ private
      Glib.Properties.Build ("spacing");
    Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
+
+   Expand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("expand");
+   Fill_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("fill");
+   Pack_Type_Property : constant Gtk.Enums.Property_Pack_Type :=
+     Gtk.Enums.Build ("pack-type");
+   Padding_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("padding");
+   Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("position");
 
    pragma Import (C, Get_Type,      "gtk_box_get_type");
    pragma Import (C, Get_Hbox_Type, "gtk_hbox_get_type");

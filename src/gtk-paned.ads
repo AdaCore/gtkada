@@ -201,11 +201,10 @@ package Gtk.Paned is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Max_Position_Property
    --  Type:  Int
    --  Descr: Largest possible value for the "position" property
@@ -223,13 +222,46 @@ package Gtk.Paned is
    --  Name:  Position_Set_Property
    --  Type:  Boolean
    --  Descr: TRUE if the Position property should be used
-   --
    --  </properties>
 
    Max_Position_Property : constant Glib.Properties.Property_Int;
    Min_Position_Property : constant Glib.Properties.Property_Int;
    Position_Property     : constant Glib.Properties.Property_Int;
    Position_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
+
+   --  <child_properties>
+   --  Name:  Resize_Property
+   --  Type:  Boolean
+   --  Descr: If TRUE, the child expands and shrinks along with the paned
+   --         widget
+   --
+   --  Name:  Shrink_Property
+   --  Type:  Boolean
+   --  Descr: If TRUE, the child can be made smaller than its requisition
+   --  </child_properties>
+
+   Resize_Property : constant Glib.Properties.Property_Boolean;
+   Shrink_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Handle_Size_Property
+   --  Type:  Int
+   --  Descr: Width of handle
+   --  </style_properties>
+
+   Handle_Size_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -307,6 +339,14 @@ private
      Glib.Properties.Build ("position");
    Position_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("position-set");
+
+   Resize_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("resize");
+   Shrink_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("shrink");
+
+   Handle_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("handle-size");
 
    pragma Import (C, Get_Type, "gtk_paned_get_type");
    pragma Import (C, Get_Type_Vpaned, "gtk_vpaned_get_type");

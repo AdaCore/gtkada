@@ -143,11 +143,10 @@ package Gtk.Scale is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Digits_Property
    --  Type:  Int
    --  Descr: The number of decimal places that are displayed in the value
@@ -160,12 +159,30 @@ package Gtk.Scale is
    --  Name:  Value_Pos_Property
    --  Type:  Gtk_Position_Type
    --  Descr: The position in which the current value is displayed
-   --
    --  </properties>
 
    Digits_Property     : constant Glib.Properties.Property_Int;
    Draw_Value_Property : constant Glib.Properties.Property_Boolean;
    Value_Pos_Property  : constant Gtk.Enums.Property_Gtk_Position_Type;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Slider_Length_Property
+   --  Type:  Int
+   --  Descr: Length of scale's slider
+   --
+   --  Name:  Value_Spacing_Property
+   --  Type:  Int
+   --  Descr: Space between value text and the slider/trough area
+   --  </style_properties>
+
+   Slider_Length_Property : constant Glib.Properties.Property_Int;
+   Value_Spacing_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -195,6 +212,11 @@ private
      Glib.Properties.Build ("draw-value");
    Value_Pos_Property  : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("value-pos");
+
+   Slider_Length_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("slider-length");
+   Value_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("value-spacing");
 
    pragma Import (C, Get_Type,        "gtk_scale_get_type");
    pragma Import (C, Hscale_Get_Type, "gtk_hscale_get_type");

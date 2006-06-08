@@ -175,11 +175,10 @@ package Gtk.Layout is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  - Name:  Hadjustment_Property
    --    Type:  Gtk_Adjustment_Record'Class
    --    Flags: read-write
@@ -203,13 +202,31 @@ package Gtk.Layout is
    --    Flags: read-write
    --    Descr: The height of the layout.
    --    See also: Set_Size and Get_Height
-   --
    --  </properties>
 
    Hadjustment_Property : constant Glib.Properties.Property_Object;
    Vadjustment_Property : constant Glib.Properties.Property_Object;
    Width_Property       : constant Glib.Properties.Property_Uint;
    Height_Property      : constant Glib.Properties.Property_Uint;
+
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
+
+   --  <child_properties>
+   --  Name:  X_Property
+   --  Type:  Int
+   --  Descr: X position of child widget
+   --
+   --  Name:  Y_Property
+   --  Type:  Int
+   --  Descr: Y position of child widget
+   --  </child_properties>
+
+   X_Property : constant Glib.Properties.Property_Int;
+   Y_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -241,6 +258,11 @@ private
      Glib.Properties.Build ("width");
    Height_Property      : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("height");
+
+   X_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("x");
+   Y_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("y");
 
    pragma Import (C, Get_Type, "gtk_layout_get_type");
 end Gtk.Layout;

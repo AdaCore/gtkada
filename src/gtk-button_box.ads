@@ -138,11 +138,10 @@ package Gtk.Button_Box is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  - Name:  Layout_Style_Property
    --    Type:  Gtk_Button_Box_Style
    --    Flags: read-write
@@ -155,11 +154,54 @@ package Gtk.Button_Box is
    --    Descr: If True, the child appears in a secondary group of children,
    --           suitable for, e.g., help buttons.
    --    See also: Same as calling Set_Child_Secondary.
-   --
    --  </properties>
 
-   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
+   Layout_Style_Property    : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
    Child_Secondary_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
+
+   --  <child_properties>
+   --  Name:  Secondary_Property
+   --  Type:  Boolean
+   --  Descr: If TRUE, the child appears in a secondary group of children,
+   --         suitable for, e.g., help buttons
+   --  </child_properties>
+
+   Secondary_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Child_Internal_Pad_X_Property
+   --  Type:  Int
+   --  Descr: Amount to increase child's size on either side
+   --
+   --  Name:  Child_Internal_Pad_Y_Property
+   --  Type:  Int
+   --  Descr: Amount to increase child's size on the top and bottom
+   --
+   --  Name:  Child_Min_Height_Property
+   --  Type:  Int
+   --  Descr: Minimum height of buttons inside the box
+   --
+   --  Name:  Child_Min_Width_Property
+   --  Type:  Int
+   --  Descr: Minimum width of buttons inside the box
+   --  </style_properties>
+
+   Child_Internal_Pad_X_Property : constant Glib.Properties.Property_Int;
+   Child_Internal_Pad_Y_Property : constant Glib.Properties.Property_Int;
+   Child_Min_Height_Property     : constant Glib.Properties.Property_Int;
+   Child_Min_Width_Property      : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -177,6 +219,18 @@ private
       Gtk.Enums.Build ("layout_style");
    Child_Secondary_Property : constant Glib.Properties.Property_Boolean :=
       Glib.Properties.Build ("secondary");
+
+   Secondary_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("secondary");
+
+   Child_Internal_Pad_X_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("child-internal-pad-x");
+   Child_Internal_Pad_Y_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("child-internal-pad-y");
+   Child_Min_Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("child-min-height");
+   Child_Min_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("child-min-width");
 
 end Gtk.Button_Box;
 

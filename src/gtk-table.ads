@@ -169,11 +169,10 @@ package Gtk.Table is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  - Name:  N_Rows_Property
    --    Type:  Guint
    --    Flags: read-write
@@ -204,7 +203,6 @@ package Gtk.Table is
    --    Descr: If TRUE this means the table cells are all the same
    --           width/height
    --    See also: Set_Homogeneous
-   --
    --  </properties>
 
    N_Rows_Property         : constant Glib.Properties.Property_Uint;
@@ -212,6 +210,57 @@ package Gtk.Table is
    Row_Spacing_Property    : constant Glib.Properties.Property_Uint;
    Column_Spacing_Property : constant Glib.Properties.Property_Uint;
    Homogeneous_Property    : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
+
+   --  <child_properties>
+   --  Name:  Bottom_Attach_Property
+   --  Type:  Uint
+   --  Descr: The row number to attach the bottom of the child to
+   --
+   --  Name:  Left_Attach_Property
+   --  Type:  Uint
+   --  Descr: The column number to attach the left side of the child to
+   --
+   --  Name:  Right_Attach_Property
+   --  Type:  Uint
+   --  Descr: The column number to attach the right side of a child widget to
+   --
+   --  Name:  Top_Attach_Property
+   --  Type:  Uint
+   --  Descr: The row number to attach the top of a child widget to
+   --
+   --  Name:  X_Options_Property
+   --  Type:  Flags
+   --  Descr: Options specifying the horizontal behaviour of the child
+   --
+   --  Name:  X_Padding_Property
+   --  Type:  Uint
+   --  Descr: Extra space to put between the child and its left and right
+   --         neighbors, in pixels
+   --
+   --  Name:  Y_Options_Property
+   --  Type:  Flags
+   --  Descr: Options specifying the vertical behaviour of the child
+   --
+   --  Name:  Y_Padding_Property
+   --  Type:  Uint
+   --  Descr: Extra space to put between the child and its upper and lower
+   --         neighbors, in pixels
+   --  </child_properties>
+
+   Bottom_Attach_Property : constant Glib.Properties.Property_Uint;
+   Left_Attach_Property   : constant Glib.Properties.Property_Uint;
+   Right_Attach_Property  : constant Glib.Properties.Property_Uint;
+   Top_Attach_Property    : constant Glib.Properties.Property_Uint;
+   --  X_Options_Property     : constant Glib.Properties.Property_Flags;
+   X_Padding_Property     : constant Glib.Properties.Property_Uint;
+   --  Y_Options_Property     : constant Glib.Properties.Property_Flags;
+   Y_Padding_Property     : constant Glib.Properties.Property_Uint;
 
    -------------
    -- Signals --
@@ -235,6 +284,23 @@ private
      Glib.Properties.Build ("column-spacing");
    Homogeneous_Property    : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
+
+   Bottom_Attach_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("bottom-attach");
+   Left_Attach_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("left-attach");
+   Right_Attach_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("right-attach");
+   Top_Attach_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("top-attach");
+--     X_Options_Property : constant Glib.Properties.Property_Flags :=
+--       Glib.Properties.Build ("x-options");
+   X_Padding_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("x-padding");
+--     Y_Options_Property : constant Glib.Properties.Property_Flags :=
+--       Glib.Properties.Build ("y-options");
+   Y_Padding_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("y-padding");
 
    pragma Import (C, Get_Type, "gtk_table_get_type");
 end Gtk.Table;

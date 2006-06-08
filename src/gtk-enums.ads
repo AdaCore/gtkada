@@ -476,6 +476,8 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Sort_Type);
    package Metric_Type_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Metric_Type);
+   package Pack_Type_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Pack_Type);
 
    type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
    type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
@@ -497,6 +499,7 @@ package Gtk.Enums is
    type Property_Pack_Direction    is new Pack_Direction_Properties.Property;
    type Property_Sort_Type         is new Sort_Type_Properties.Property;
    type Property_Metric_Type       is new Metric_Type_Properties.Property;
+   type Property_Pack_Type         is new Pack_Type_Properties.Property;
 
    -----------------
    -- Obsolescent --
@@ -530,12 +533,18 @@ package Gtk.Enums is
    type Gtk_Toolbar_Space_Style is (Toolbar_Space_Empty, Toolbar_Space_Line);
    --  pragma Obsolescent;
 
+   pragma Convention (C, Gtk_Toolbar_Space_Style);
+
+   package Toolbar_Space_Style_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Toolbar_Space_Style);
+   type Property_Toolbar_Space_Style is new
+     Toolbar_Space_Style_Properties.Property;
+
    type Gtk_Tree_View_Mode is (Tree_View_Line, Tree_View_Item);
    --  pragma Obsolescent;
 
    pragma Convention (C, Gtk_Submenu_Direction);
    pragma Convention (C, Gtk_Submenu_Placement);
-   pragma Convention (C, Gtk_Toolbar_Space_Style);
    pragma Convention (C, Gtk_Tree_View_Mode);
    --  </doc_ignore>
 

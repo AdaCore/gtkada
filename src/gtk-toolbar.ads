@@ -318,6 +318,90 @@ package Gtk.Toolbar is
 
    --  </doc_ignore>
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+
+   --  <properties>
+   --  Name: Orientation_Property
+   --  Type: Gtk_Orientation
+   --  See:  Set_Orientation / Get_Orientation
+   --
+   --  Name: Toolbar_Style_Property
+   --  Type: Gtk_Toolbar_Style
+   --  See:  Set_Style / Get_Style
+   --
+   --  Name: Show_Arrow_Property
+   --  Type: Boolean
+   --  See:  Set_Show_Arrow / Get_Show_Arrow
+   --
+   --  Name: Tooltips_Property
+   --  Type: Boolean
+   --  See : Set_Tooltips / Get_Tooltips
+   --  </properties>
+
+   Orientation_Property   : constant Gtk.Enums.Property_Gtk_Orientation;
+   Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
+   Show_Arrow_Property    : constant Glib.Properties.Property_Boolean;
+   Tooltips_Property      : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
+
+   --  <child_properties>
+   --  Name:  Expand_Property
+   --  Type:  Boolean
+   --  Descr: Whether the item should receive extra space when the toolbar
+   --        grows
+   --
+   --  Name:  Homogeneous_Property
+   --  Type:  Boolean
+   --  Descr: Whether the item should be the same size as other homogeneous
+   --        items
+   --  </child_properties>
+
+   Expand_Property      : constant Glib.Properties.Property_Boolean;
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Button_Relief_Property
+   --  Type:  Enum
+   --  Descr: Type of bevel around toolbar buttons
+   --
+   --  Name:  Internal_Padding_Property
+   --  Type:  Int
+   --  Descr: Amount of border space between the toolbar shadow and the buttons
+   --
+   --  Name:  Shadow_Type_Property
+   --  Type:  Enum
+   --  Descr: Style of bevel around the toolbar
+   --
+   --  Name:  Space_Size_Property
+   --  Type:  Int
+   --  Descr: Size of spacers
+   --
+   --  Name:  Space_Style_Property
+   --  Type:  Enum
+   --  Descr: Whether spacers are vertical lines or just blank
+   --  </style_properties>
+
+   Button_Relief_Property    : constant Gtk.Enums.Property_Gtk_Relief_Style;
+   Internal_Padding_Property : constant Glib.Properties.Property_Int;
+   Shadow_Type_Property      : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+   Space_Size_Property       : constant Glib.Properties.Property_Int;
+   Space_Style_Property      : constant Gtk.Enums.Property_Toolbar_Space_Style;
+
    -------------
    -- Signals --
    -------------
@@ -367,37 +451,6 @@ package Gtk.Toolbar is
    Signal_Focus_Home_Or_End   : constant String := "focus_home_or_end";
    Signal_Move_Focus          : constant String := "move_focus";
 
-   ----------------
-   -- Properties --
-   ----------------
-
-   --  <properties>
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties.
-   --
-   --  Name: Orientation_Property
-   --  Type: Gtk_Orientation
-   --  See:  Set_Orientation / Get_Orientation
-   --
-   --  Name: Toolbar_Style_Property
-   --  Type: Gtk_Toolbar_Style
-   --  See:  Set_Style / Get_Style
-   --
-   --  Name: Show_Arrow_Property
-   --  Type: Boolean
-   --  See:  Set_Show_Arrow / Get_Show_Arrow
-   --
-   --  Name: Tooltips_Property
-   --  Type: Boolean
-   --  See : Set_Tooltips / Get_Tooltips
-   --
-   --  </properties>
-
-   Orientation_Property   : constant Gtk.Enums.Property_Gtk_Orientation;
-   Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
-   Show_Arrow_Property    : constant Glib.Properties.Property_Boolean;
-   Tooltips_Property      : constant Glib.Properties.Property_Boolean;
-
 private
    type Gtk_Toolbar_Record is
      new Gtk.Container.Gtk_Container_Record with null record;
@@ -410,6 +463,22 @@ private
      Glib.Properties.Build ("show-arrow");
    Tooltips_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("tooltips");
+
+   Expand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("expand");
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("homogeneous");
+
+   Button_Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
+     Gtk.Enums.Build ("button-relief");
+   Internal_Padding_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("internal-padding");
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
+     Gtk.Enums.Build ("shadow-type");
+   Space_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("space-size");
+   Space_Style_Property : constant Gtk.Enums.Property_Toolbar_Space_Style :=
+     Gtk.Enums.Build ("space-style");
 
    pragma Import (C, Get_Type, "gtk_toolbar_get_type");
 end Gtk.Toolbar;

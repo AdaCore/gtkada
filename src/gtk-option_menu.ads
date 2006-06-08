@@ -81,18 +81,35 @@ package Gtk.Option_Menu is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name:  Menu_Property
    --  Type:  Object
    --  Descr: The menu of options
-   --
    --  </properties>
 
    Menu_Property : constant Glib.Properties.Property_Object;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Indicator_Size_Property
+   --  Type:  Boxed
+   --  Descr: Size of dropdown indicator
+   --
+   --  Name:  Indicator_Spacing_Property
+   --  Type:  Boxed
+   --  Descr: Spacing around indicator
+   --  </style_properties>
+
+   --  Indicator_Size_Property    : constant Glib.Properties.Property_Boxed;
+   --  Indicator_Spacing_Property : constant Glib.Properties.Property_Boxed;
 
    -------------
    -- Signals --
@@ -115,6 +132,11 @@ private
 
    Menu_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("menu");
+
+--     Indicator_Size_Property : constant Glib.Properties.Property_Boxed :=
+--       Glib.Properties.Build ("indicator-size");
+--     Indicator_Spacing_Property : constant Glib.Properties.Property_Boxed :=
+--       Glib.Properties.Build ("indicator-spacing");
 
    pragma Import (C, Get_Type, "gtk_option_menu_get_type");
 end Gtk.Option_Menu;

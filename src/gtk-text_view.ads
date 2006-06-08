@@ -573,6 +573,21 @@ package Gtk.Text_View is
    --  Tabs_Property           : constant Glib.Properties.Property_Boxed;
    Wrap_Mode_Property          : constant Gtk.Enums.Property_Gtk_Wrap_Mode;
 
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Error_Underline_Color_Property
+   --  Type:  Boxed
+   --  Descr: Color with which to draw error-indication underlines
+   --  </style_properties>
+
+   --  Error_Underline_Color_Property : constant
+   --    Glib.Properties.Property_Boxed;
+
    -------------
    -- Signals --
    -------------
@@ -673,6 +688,9 @@ private
 --       Glib.Properties.Build ("tabs");
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=
      Gtk.Enums.Build ("wrap-mode");
+
+--     Error_Underline_Color_Property : constant Glib.Properties.Property_Boxed
+--       := Glib.Properties.Build ("error-underline-color");
 
    pragma Import (C, Get_Type, "gtk_text_view_get_type");
 end Gtk.Text_View;

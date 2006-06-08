@@ -436,11 +436,10 @@ package Gtk.Notebook is
    ----------------
    -- Properties --
    ----------------
-
-   --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
-   --
+
+   --  <properties>
    --  Name: Page_Property
    --  Type: Gint
    --  See:  Set_Current_Page / Get_Current_Page
@@ -480,7 +479,6 @@ package Gtk.Notebook is
    --  Name: Homogeneous_Property
    --  Type: Boolean
    --  See:  Set_Homogeneous_Tabs / -
-   --
    --  </properties>
 
    Page_Property         : constant Glib.Properties.Property_Int;
@@ -493,6 +491,79 @@ package Gtk.Notebook is
    Scrollable_Property   : constant Glib.Properties.Property_Boolean;
    Enable_Popup_Property : constant Glib.Properties.Property_Boolean;
    Homogeneous_Property  : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Child Properties --
+   ----------------------
+   --  The following properties can be set on children of this widget. See
+   --  in particular Gtk.Containers.Child_Set_Property.
+
+   --  <child_properties>
+   --  Name:  Menu_Label_Property
+   --  Type:  String
+   --  Descr: The string displayed in the child's menu entry
+   --
+   --  Name:  Position_Property
+   --  Type:  Int
+   --  Descr: The index of the child in the parent
+   --
+   --  Name:  Tab_Expand_Property
+   --  Type:  Boolean
+   --  Descr: Whether to expand the child's tab or not
+   --
+   --  Name:  Tab_Fill_Property
+   --  Type:  Boolean
+   --  Descr: Whether the child's tab should fill the allocated area or not
+   --
+   --  Name:  Tab_Label_Property
+   --  Type:  String
+   --  Descr: The string displayed on the child's tab label
+   --
+   --  Name:  Tab_Pack_Property
+   --  Type:  Enum
+   --  Descr: A Gtk_Pack_Type indicating whether the child is packed with
+   --  reference to the start or end of the parent
+   --  </child_properties>
+
+   Menu_Label_Property : constant Glib.Properties.Property_String;
+   Position_Property   : constant Glib.Properties.Property_Int;
+   Tab_Expand_Property : constant Glib.Properties.Property_Boolean;
+   Tab_Fill_Property   : constant Glib.Properties.Property_Boolean;
+   Tab_Label_Property  : constant Glib.Properties.Property_String;
+   Tab_Pack_Property   : constant Gtk.Enums.Property_Pack_Type;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Has_Backward_Stepper_Property
+   --  Type:  Boolean
+   --  Descr: Display the standard backward arrow button
+   --
+   --  Name:  Has_Forward_Stepper_Property
+   --  Type:  Boolean
+   --  Descr: Display the standard forward arrow button
+   --
+   --  Name:  Has_Secondary_Backward_Stepper_Property
+   --  Type:  Boolean
+   --  Descr: Display a second backward arrow button on the opposite end of the
+   --         tab area
+   --
+   --  Name:  Has_Secondary_Forward_Stepper_Property
+   --  Type:  Boolean
+   --  Descr: Display a second forward arrow button on the opposite end of the
+   --         tab area
+   --  </style_properties>
+
+   Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean;
+   Has_Forward_Stepper_Property  : constant Glib.Properties.Property_Boolean;
+   Has_Secondary_Backward_Stepper_Property : constant
+     Glib.Properties.Property_Boolean;
+   Has_Secondary_Forward_Stepper_Property  : constant
+     Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -576,4 +647,29 @@ private
      Glib.Properties.Build ("enable-popup");
    Homogeneous_Property  : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homgeneous");
+
+   Menu_Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("menu-label");
+   Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("position");
+   Tab_Expand_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("tab-expand");
+   Tab_Fill_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("tab-fill");
+   Tab_Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tab-label");
+   Tab_Pack_Property : constant Gtk.Enums.Property_Pack_Type :=
+     Gtk.Enums.Build ("tab-pack");
+
+
+   Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-backward-stepper");
+   Has_Forward_Stepper_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-forward-stepper");
+   Has_Secondary_Backward_Stepper_Property : constant
+     Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-secondary-backward-stepper");
+   Has_Secondary_Forward_Stepper_Property : constant
+     Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-secondary-forward-stepper");
 end Gtk.Notebook;
