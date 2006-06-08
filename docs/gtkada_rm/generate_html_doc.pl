@@ -1015,7 +1015,7 @@ sub print_children() {
   my (%do_xref) = %$do_xref; ## Whether we want xref for those widgets
   my ($count);
 
-  print OUTPUT "  <li level='$level'>";
+  print OUTPUT "  <li>";
   for ($count = 0; $count < $level - 1; $count++) {
      if ($has_next_child[$count]) {
         print OUTPUT "<img src='childtree4.png' alt='  '/>";
@@ -1031,7 +1031,7 @@ sub print_children() {
   }
 
   if (defined $children{$widget}) {
-     print OUTPUT "<a onclick='treetoggle(this)'><img src='treeopen.png' alt='[-]' /></a>";
+     print OUTPUT "<a class='tree' onclick='treetoggle(this)'><img src='treeopen.png' alt='[-]' /></a>";
   }
 
   #if (defined $screenshots{$packages{$widget}}) {
@@ -1039,12 +1039,13 @@ sub print_children() {
   #}
 
   if (defined $do_xref{$widget} && $do_xref{$widget} == 0) {
-     print OUTPUT "$widget</li>\n";
+     print OUTPUT "$widget</li>";
   } else {
-     print OUTPUT "<a href='$files_from_widget{$widget}'>$widget</a></li>\n";
+     print OUTPUT "<a href='$files_from_widget{$widget}'>$widget</a></li>";
   }
 
   if (defined $children{$widget}) {
+     print OUTPUT "<ul>\n";
      my (@immediate) = @{$children{$widget}};
      while (@immediate) {
         $_ = shift @immediate;
@@ -1052,6 +1053,7 @@ sub print_children() {
         &print_children ($level + 1, $_, \%children, *OUTPUT, \@has_next_child, \%do_xref);
         pop (@has_next_child);
      }
+     print OUTPUT "</ul>\n";
   }
 }
 
@@ -1112,6 +1114,10 @@ sub generate_tree() {
    open (OUTPUT, ">gtkada_rm/tree.html");
    &generate_header ("Widgets Tree", *OUTPUT);
 
+   print OUTPUT "<div id='widgetTreeButtons'>\n";
+   print OUTPUT "<input type='button' onclick='treeChangeFoldAll(1)' value='fold all'/>\n";
+   print OUTPUT "<input type='button' onclick='treeChangeFoldAll(0)' value='Expand all'/>\n";
+   print OUTPUT "</div>\n";
    print OUTPUT "<div id='widgetTree'>\n";
    my (@list) = keys %parents;
    &generate_tree_for_widgets (\@list, 1, *OUTPUT);

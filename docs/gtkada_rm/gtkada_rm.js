@@ -32,33 +32,46 @@ function switchPage (name) {
  ** Toggle the closing or opening of a tree node
  ************************************************/
 
+function setTreeState (li, img, close) {
+   if (close) {
+      img.src = "treeclose.png";
+      img.alt = '[+]';
+   } else {
+      img.src = "treeopen.png";
+      img.alt = '[-]';
+   }
+
+   var ul = li.nextSibling;
+   while (ul && ul.nodeName != 'UL' && ul.nodeName != 'LI') {
+      ul = ul.nextSibling;
+   }
+   if (ul && ul.nodeName == 'UL') {
+      if (close) {
+         ul.style.display = 'none';
+      } else {
+         ul.style.display = 'block';
+      }
+   }
+}
+
 function treetoggle (widget) {
    var img = widget.getElementsByTagName ('img');
    var li  = widget.parentNode;
-   var level = li.getAttribute ('level');
    var is_expanded = (img[0].src.indexOf ('treeopen') > -1);
-   var sibling = li.nextSibling;
+   setTreeState (li, img[0], is_expanded);
+}
 
-   while (sibling) {
-      if (sibling.nodeName != 'LI') {
-      } else if (sibling.getAttribute ('level') <= level) {
-         break;
-      } else {
-         if (is_expanded) {
-            sibling.style.display = 'none';
-         } else {
-            sibling.style.display = 'list-item';
+
+function treeChangeFoldAll(fold) {
+   var children = document.getElementById ('widgetTree').getElementsByTagName ('LI');
+   var img, m;
+   for (var c=0; c < children.length; c++) {
+      a = children[c].getElementsByTagName ('a');
+      for (m=0; m < a.length; m++) {
+         if (a[m].className == 'tree') {
+            setTreeState (children[c], a[m].getElementsByTagName ('img')[0], fold);
          }
       }
-      sibling = sibling.nextSibling;
-   }
-
-   if (is_expanded) {
-      img[0].src = "treeclose.png";
-      img[0].alt = '[+]';
-   } else {
-      img[0].src = "treeopen.png";
-      img[0].alt = '[-]';
    }
 }
 
