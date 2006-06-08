@@ -54,6 +54,7 @@
 --  <group>Trees and Lists</group>
 --  <screenshot>gtk-combo_box_entry</screenshot>
 
+with Glib.Properties;
 with Glib.Types;
 with Gtk.Cell_Editable;
 with Gtk.Cell_Layout;
@@ -140,6 +141,23 @@ package Gtk.Combo_Box_Entry is
       renames Implements_Cell_Editable.To_Object;
    --  Converts to and from the Gtk_Cell_Editable interface
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties.
+
+   --  <properties>
+   --  Name:  Text_Column_Property
+   --  Type:  Int
+   --  Descr: A column in the data source model to get the strings from
+   --  </properties>
+
+   Text_Column_Property : constant Glib.Properties.Property_Int;
+
 private
+   Text_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("text-column");
+
    pragma Import (C, Get_Type, "gtk_combo_box_entry_get_type");
 end Gtk.Combo_Box_Entry;
