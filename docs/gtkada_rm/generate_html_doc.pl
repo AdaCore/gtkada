@@ -55,8 +55,8 @@ use strict;
 ##      <example><include>file</include></example>
 ##     Note that comment starts are added at the beginning of each line.
 ##     You can use relative pathnames (relative to the directory of the file
-##     containing this file).
-##     Both tags (opening and closing) should be on the same line.
+##     containing this include).
+##     This is only supported within <example>
 ##
 ## <signals>
 ##    - "signal_name"
@@ -71,6 +71,12 @@ use strict;
 ##   -- Descr: descr
 ## </properties>
 ##     Describes the properties of the widget
+##
+## <child_properties>
+##     Same syntax as <properties>, documents properties for children
+##
+## <style_properties>
+##     Same syntax as <properties>, documents style properties 
 ##
 ## <testgtk>file.adb</testgtk>
 ##     Specifies the name of the source file in testgtk that contains example
@@ -782,31 +788,38 @@ sub generate_html() {
    }
 
    ## Third notebook page (properties)
-   if (defined $tags{'properties'}) {
-      print OUTPUT "  <div id='notebook_page3' class='notebookPage'>\n";
-      print OUTPUT "    <a name='Properties'></a>\n";
-      print OUTPUT "    <div id='properties'>\n";
-      print OUTPUT "      <h2>Properties</h2>\n";
+   my ($proptype);
+   my (%properties_sections) =
+       ('properties'       => 'Properties',
+        'child_properties' => 'Child Properties',
+        'style_properties' => 'Style Properties');
+   print OUTPUT "  <div id='notebook_page3' class='notebookPage'>\n";
+   foreach $proptype (('properties', 'child_properties', 'style_properties')) {
+      if (defined $tags{$proptype}) {
+         print OUTPUT "    <a name='$properties_sections{$proptype}'></a>\n";
+         print OUTPUT "    <div class='properties'>\n";
+         print OUTPUT "      <h2>$properties_sections{$proptype}</h2>\n";
 
-      my (%props) = &parse_properties ($tags{'properties'});
-      print OUTPUT "      <ul>\n";
-      foreach (sort keys %props) {
-         my ($name, $type, $descr, $see) = ($_, $props{$_}->[0],
-                                            $props{$_}->[1],
-                                            $props{$_}->[2],
-                                            $props{$_}->[3]);
-        print OUTPUT "        <li><div class='name'>$name</div>\n";
-        print OUTPUT "            <div class='profile'>$type</div>\n"; 
-        print OUTPUT "            <div class='comment'>",
+         my (%props) = &parse_properties ($tags{$proptype});
+         print OUTPUT "      <ul>\n";
+         foreach (sort keys %props) {
+            my ($name, $type, $descr, $see) = ($_, $props{$_}->[0],
+                                               $props{$_}->[1],
+                                               $props{$_}->[2],
+                                               $props{$_}->[3]);
+            print OUTPUT "        <li><div class='name'>$name</div>\n";
+            print OUTPUT "            <div class='profile'>$type</div>\n"; 
+            print OUTPUT "            <div class='comment'>",
                      (defined $descr ? &process_comment ($descr, $package) : ""),
                      (defined $see ? "<br><b>See:</b> " . &process_comment ($see, $package) : ""),
                      "</div></li>\n";
-      }
+         }
 
-      print OUTPUT "      </ul>\n";
-      print OUTPUT "    </div> <!-- Properties -->\n";
-      print OUTPUT "  </div> <!-- notebook_page3 -->\n\n";
+         print OUTPUT "      </ul>\n";
+         print OUTPUT "    </div> <!-- properties -->\n";
+      }
    }
+   print OUTPUT "  </div> <!-- notebook_page3 -->\n\n";
 
    ## Fourth page (example)
    if (defined $tags{'example'}) {
@@ -815,6 +828,14 @@ sub generate_html() {
       print OUTPUT "   <div id='example'>";
       print OUTPUT "<h2>Example</h2>";
       my ($example) = $tags{'example'};
+      if (($example =~ /<include>(.*)<\/include>/)) {
+         my ($base, $dirname) = ($1, $filename);
+         $dirname =~ s,/[^/]+$,/,;
+         open (EXAMPLE, "$dirname$base") || print "Cannot open $dirname$base\n";
+         $example = join ("", <EXAMPLE>);
+         close (EXAMPLE);
+      }
+
       $example =~ s/^\s*--//mg;
       print OUTPUT &highlight_syntax ($example);
       print OUTPUT "</div> <!-- example -->\n";
