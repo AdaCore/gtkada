@@ -77,6 +77,7 @@ with Create_Clipboard;
 with Create_Clist;
 with Create_Ctree;
 with Create_Color_Selection;
+with Create_Combo_Box;
 with Create_Cursors;
 with Create_Dialog;
 with Create_Dnd;
@@ -231,6 +232,8 @@ package body Main_Windows is
                                          Create_Ctree.Help'Access),
       (NS ("color selection"),  Gimp,    Create_Color_Selection.Run'Access,
                                          Create_Color_Selection.Help'Access),
+      (NS ("combo boxes"),      Complex, Create_Combo_Box.Run'Access,
+                                         Create_Combo_Box.Help'Access),
       (NS ("cursors"),          Misc,    Create_Cursors.Run'Access,
                                          Create_Cursors.Help'Access),
       (NS ("dialog"),           Base,    Create_Dialog.Run'Access,
