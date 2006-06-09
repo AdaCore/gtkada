@@ -61,14 +61,13 @@ package body Gtk.Tree_Model_Sort is
    is
       function Internal
         (Tree_Model_Sort : System.Address;
-         Child_Path      : System.Address)
+         Child_Path      : Gtk_Tree_Path)
          return Gtk.Tree_Model.Gtk_Tree_Path;
       pragma Import (C, Internal,
                      "gtk_tree_model_sort_convert_child_path_to_path");
 
    begin
-      return Internal (Get_Object (Tree_Model_Sort),
-                        Child_Path.all'Address);
+      return Internal (Get_Object (Tree_Model_Sort), Child_Path);
    end Convert_Child_Path_To_Path;
 
    --------------------------------
