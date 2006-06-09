@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2003                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2004-2006 AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,6 +38,7 @@ with Gtk.Cell_Renderer_Text;   use Gtk.Cell_Renderer_Text;
 with Gtk.Cell_Renderer_Toggle; use Gtk.Cell_Renderer_Toggle;
 with Gtk.Tree_View;            use Gtk.Tree_View;
 with Gtk.Tree_Model;           use Gtk.Tree_Model;
+with Gtk.Tree_Sortable;        use Gtk.Tree_Sortable;
 with Gtk.Tree_Store;           use Gtk.Tree_Store;
 with Gtk.Tree_View_Column;     use Gtk.Tree_View_Column;
 with Gtk.Frame;                use Gtk.Frame;
@@ -73,6 +75,11 @@ package body Create_Tree_View is
       Params : Glib.Values.GValues);
    --  Same when a text cell is edited
 
+   function Custom_Sort
+     (Model : access Gtk_Tree_Model_Record'Class;
+      A, B  : Gtk_Tree_Iter) return Gint;
+   --  Our own customer sort function for the tree
+
    ----------
    -- Help --
    ----------
@@ -95,8 +102,43 @@ package body Create_Tree_View is
         & "Cells in the tree can be defined as editable, as shown in this"
         & " example: in this case, the user needs to double click on the"
         & " cell, and an entry widget is then displayed in which the text"
-        & " can be modified";
+        & " can be modified"
+        & ASCII.LF
+        & "The first column is sortable in this example. By default, gtk+"
+        & " would use an alphabetical order on a text column, but here we have"
+        & " defined our own sorting algorithm (striken first, then others,"
+        & " and alphabetical within)";
    end Help;
+
+   -----------------
+   -- Custom_Sort --
+   -----------------
+
+   function Custom_Sort
+     (Model : access Gtk_Tree_Model_Record'Class;
+      A, B  : Gtk_Tree_Iter) return Gint
+   is
+      Text_A : constant String := Get_String (Model, A, Text_Column);
+      Text_B : constant String := Get_String (Model, B, Text_Column);
+      A_Not_Striken : constant Boolean :=
+        Text_A'Length > 11
+        and then Text_A (Text_A'Last - 10 .. Text_A'Last) = "not striken";
+      B_Not_Striken : constant Boolean :=
+        Text_B'Length > 11
+        and then Text_B (Text_B'Last - 10 .. Text_B'Last) = "not striken";
+   begin
+      if not A_Not_Striken and then B_Not_Striken then
+         return -1;  --  A first, B second
+      elsif A_Not_Striken and then not B_Not_Striken then
+         return 1;   --  B first, A second
+      elsif Text_A < Text_B then
+         return -1;  --  A first
+      elsif Text_A = Text_B then
+         return 0;   --  Same
+      else
+         return 1;   --  B first
+      end if;
+   end Custom_Sort;
 
    --------------
    -- Add_Line --
@@ -211,6 +253,7 @@ package body Create_Tree_View is
 
       Gtk_New (Col);
       Num := Append_Column (Tree, Col);
+      Set_Sort_Column_Id (Col, Text_Column);
       Set_Title (Col, "First column");
       Pack_Start (Col, Text_Render, True);
       Set_Sizing (Col, Tree_View_Column_Autosize);
@@ -220,11 +263,19 @@ package body Create_Tree_View is
       Add_Attribute (Col, Text_Render, "foreground", Foreground_Column);
 
       Gtk_New (Col);
+      Set_Sort_Column_Id (Col, -1);  --  unsortable
       Num := Append_Column (Tree, Col);
       Set_Title (Col, "Second column");
       Pack_Start (Col, Toggle_Render, False);
       Add_Attribute (Col, Toggle_Render, "active", Active_Column);
       Add_Attribute (Col, Toggle_Render, "activatable", Editable_Column);
+
+      --  Make the tree sortable (see also calls to Set_Sort_Column_Id above).
+      --  The default sort is alphabetical. For the fun of it, we implement
+      --  our own sorting algorithm here.
+
+      Set_Headers_Clickable (Tree, True);
+      Set_Sort_Func (+Model, Text_Column, Custom_Sort'Access);
 
       --  By default, the toggle renderer doesn't react to clicks, ie the user
       --  cannot interactively change the value of the radio button. This needs
