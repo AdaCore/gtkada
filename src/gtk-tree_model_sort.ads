@@ -136,6 +136,7 @@ package Gtk.Tree_Model_Sort is
    --  The returned path will point to the same row in the sorted model.
    --  If Child_Path isn't a valid path on the child model, then Null
    --  is returned.
+   --  The returned value must be freed with Path_Free.
 
    procedure Convert_Child_Iter_To_Iter
      (Tree_Model_Sort : access Gtk_Tree_Model_Sort_Record;
