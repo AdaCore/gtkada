@@ -52,6 +52,14 @@ package body Create_Combo_Box is
       Color : String);
    --  Append a new pixbuf with Color as its background
 
+   procedure Fill_Pixbuf (Pix : Gdk_Pixbuf; Color : String);
+   --  Fill the background of Pix. This is probably not some code you should
+   --  copy in your own application, since not very clean.
+
+   procedure Set_Color_Pixbuf
+     (Model : Gtk_List_Store; Iter : Gtk_Tree_Iter; Color : String);
+   --  Add a pixbuf to the second column of Model
+
    ----------
    -- Help --
    ----------
@@ -62,24 +70,17 @@ package body Create_Combo_Box is
         & " from a list of valid choices.";
    end Help;
 
-   -------------------------
-   -- Append_Color_Pixbuf --
-   -------------------------
+   -----------------
+   -- Fill_Pixbuf --
+   -----------------
 
-   procedure Append_Color_Pixbuf
-     (Model : Gtk_List_Store;
-      Color : String)
-   is
-      Pix     : Gdk_Pixbuf;
-      GColor  : Gdk_Color;
-      Iter    : Gtk_Tree_Iter;
+   procedure Fill_Pixbuf (Pix : Gdk_Pixbuf; Color : String) is
+      GColor : Gdk_Color;
       Stride  : Gint;
       Num     : Gint;
       Pixels  : Gdk.Rgb.Rgb_Buffer_Access;
    begin
       GColor := Parse (Color);
-
-      Pix := Gdk_New (Bits_Per_Sample => 8, Width => 16, Height => 16);
 
       --  This code is not clean. It would be better to use cairo, but GtkAda
       --  has no binding for it at the time of this writing. You could also
@@ -95,12 +96,40 @@ package body Create_Combo_Box is
          Pixels (Integer (N * 3 + 1)) := Guchar (Green (Gcolor) / 65535 * 255);
          Pixels (Integer (N * 3 + 2)) := Guchar (Blue  (Gcolor) / 65535 * 255);
       end loop;
+   end Fill_Pixbuf;
 
+   -------------------------
+   -- Append_Color_Pixbuf --
+   -------------------------
+
+   procedure Append_Color_Pixbuf
+     (Model : Gtk_List_Store;
+      Color : String)
+   is
+      Pix     : Gdk_Pixbuf;
+      Iter    : Gtk_Tree_Iter;
+   begin
+      Pix := Gdk_New (Bits_Per_Sample => 8, Width => 16, Height => 16);
+      Fill_Pixbuf (Pix, Color);
       Append (Model, Iter);
       Set (Model, Iter, Column_0, Pix);
-
       Unref (Pix);
    end Append_Color_Pixbuf;
+
+   ----------------------
+   -- Set_Color_Pixbuf --
+   ----------------------
+
+   procedure Set_Color_Pixbuf
+     (Model : Gtk_List_Store; Iter : Gtk_Tree_Iter; Color : String)
+   is
+      Pix : Gdk_Pixbuf;
+   begin
+      Pix := Gdk_New (Bits_Per_Sample => 8, Width => 16, Height => 16);
+      Fill_Pixbuf (Pix, Color);
+      Set (Model, Iter, Column_1, Pix);
+      Unref (Pix);
+   end Set_Color_Pixbuf;
 
    ---------
    -- Run --
@@ -131,18 +160,18 @@ package body Create_Combo_Box is
       --  Create a model. This is a set of rows, each with two columns in this
       --  specific case.
       Gtk_New (Model, (Column_0 => GType_String,
-                       Column_1 => GType_Int));
+                       Column_1 => Gdk.Pixbuf.Get_Type));
       Append (Model, Iter);
-      Set (Model, Iter, Column_0, "Combo From Model");
-      Set (Model, Iter, Column_1, 1);
+      Set (Model, Iter, Column_0, "Combo From Model 1");
+      Set_Color_Pixbuf (Model, Iter, "red");
 
       Append (Model, Iter);
-      Set (Model, Iter, Column_0, "Combo From Model");
-      Set (Model, Iter, Column_1, 2);
+      Set (Model, Iter, Column_0, "Combo From Model 2");
+      Set_Color_Pixbuf (Model, Iter, "green");
 
       Append (Model, Iter);
-      Set (Model, Iter, Column_0, "Combo From Model");
-      Set (Model, Iter, Column_1, 3);
+      Set (Model, Iter, Column_0, "Combo From Model 3");
+      Set_Color_Pixbuf (Model, Iter, "blue");
 
       --  Create the combo. We use both columns of the model to display in the
       --  model, but we could display only one, or even have a display that
@@ -152,13 +181,13 @@ package body Create_Combo_Box is
       Gtk_New_With_Model (Combo, Model);
       Pack_Start (Box, Combo, Expand => False);
 
-      Gtk_New (Render);
-      Pack_Start    (+Combo, Render, Expand => True);
-      Add_Attribute (+Combo, Render, "text", Column_0);
+      Gtk_New (Pix);
+      Pack_Start    (+Combo, Pix, Expand => True);
+      Add_Attribute (+Combo, Pix, "pixbuf", Column_1);
 
       Gtk_New (Render);
       Pack_Start    (+Combo, Render, Expand => True);
-      Add_Attribute (+Combo, Render, "text", Column_1);
+      Add_Attribute (+Combo, Render, "text", Column_0);
 
       Set_Active (Combo, 0);
 
