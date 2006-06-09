@@ -200,7 +200,7 @@ foreach $source_file (@source_files) {
 	$description =~ s/^\s+<\/(small)?example>/\@end \2example\n/gm;
 
         # Protect special characters
-        $description =~ s/[{}@]/@$0/g;
+        $description =~ s/([{}@])/@\1/g;
 
 	&output ("$description\n");
 
@@ -336,8 +336,10 @@ foreach $source_file (@source_files) {
 		    &html_output ("</TD></TR><TR><TD><BR></TD></TR>");
 		    $comment =~ s/^\s*//;
 		    if ($comment ne "") {
+                        # Protect special characters
 			$comment = &process_list
 			    (&clean_comment_marks ($comment, 1));
+                        $comment =~ s/([{}@])/@\1/g;
 			&html_output ("<TR><TD colspan=\"3\">");
 			&output ($comment, "\n\n");
 			&html_output ("<BR></TD></TR>");
