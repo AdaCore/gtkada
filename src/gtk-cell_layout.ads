@@ -120,11 +120,15 @@ package Gtk.Cell_Layout is
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Data        : Data_Type);
 
+      type Destroy_Notify is access procedure (Data : in out Data_Type);
+      --  Free the memory used by Data
+
       procedure Set_Cell_Data_Func
         (Cell_Layout : Gtk_Cell_Layout;
          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
          Func        : Cell_Data_Func;
-         Data        : Data_Type);
+         Data        : Data_Type;
+         Destroy     : Destroy_Notify := null);
       --  Same as the other Set_Cell_Data_Func, but passes an addition user
       --  data to the callback.
 
@@ -133,8 +137,9 @@ package Gtk.Cell_Layout is
       type Data_Type_Access is access Data_Type;
 
       type Data_Type_Record is record
-         Func : Cell_Data_Func;
-         Data : Data_Type_Access;
+         Func    : Cell_Data_Func;
+         Destroy : Destroy_Notify;
+         Data    : Data_Type_Access;
       end record;
       type Data_Type_Record_Access is access Data_Type_Record;
       pragma Convention (C, Data_Type_Record_Access);

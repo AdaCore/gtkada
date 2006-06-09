@@ -225,6 +225,9 @@ package body Gtk.Cell_Layout is
       procedure Internal_Destroy_Notify (Data : Data_Type_Record_Access) is
          D : Data_Type_Record_Access := Data;
       begin
+         if D.Destroy /= null then
+            D.Destroy (D.Data.all);
+         end if;
          Free (D.Data);
          Free (D);
       end Internal_Destroy_Notify;
@@ -237,14 +240,15 @@ package body Gtk.Cell_Layout is
         (Cell_Layout : Gtk_Cell_Layout;
          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
          Func        : Cell_Data_Func;
-         Data        : Data_Type)
+         Data        : Data_Type;
+         Destroy     : Destroy_Notify := null)
       is
       begin
          Internal
            (Cell_Layout, Get_Object (Cell),
             Internal_Data_Cell_Data_Func'Address,
             new Data_Type_Record'
-              (Func => Func, Data => new Data_Type'(Data)),
+              (Func => Func, Destroy => Destroy, Data => new Data_Type'(Data)),
             Internal_Destroy_Notify'Address);
       end Set_Cell_Data_Func;
    end Cell_Data_Functions;
