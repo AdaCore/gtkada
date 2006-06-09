@@ -391,6 +391,8 @@ gtk-tooltips.adb
 gtk-tooltips.ads
 gtk-tree_model.adb
 gtk-tree_model.ads
+gtk-tree_model_filter.adb
+gtk-tree_model_filter.ads
 gtk-tree_model_sort.adb
 gtk-tree_model_sort.ads
 gtk-tree_selection.adb

@@ -190,6 +190,7 @@ with Gtk.Toggle_Tool_Button;
 with Gtk.Tool_Button;
 with Gtk.Tool_Item;
 with Gtk.Tree_Model;
+with Gtk.Tree_Model_Filter;
 with Gtk.Tree_Model_Sort;
 with Gtk.Tree_Selection;
 with Gtk.Tree_Sortable;
