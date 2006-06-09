@@ -28,17 +28,12 @@
 -----------------------------------------------------------------------
 
 with System;
+with System.Assertions;       use System.Assertions;
 with Unchecked_Deallocation;
 
 with Glib.Values; use Glib.Values;
 
 package body Gtk.Handlers is
-
-   function Type_Of_Return
-     (Object : access GObject_Record'Class; Signal : String)
-      return Glib.GType;
-   --  Convenience function that groups together a call to Lookup, Query and
-   --  Return_Type.
 
    function Count_Arguments
      (Object : access GObject_Record'Class; Signal : String)
@@ -54,8 +49,27 @@ package body Gtk.Handlers is
       Func_Data   : System.Address;
       Destroy     : System.Address;
       After       : Boolean;
-      Slot_Object : System.Address := System.Null_Address) return Handler_Id;
+      Slot_Object : System.Address := System.Null_Address;
+      Expect_Return_Value : Boolean) return Handler_Id;
    --  Internal function used to connect the signal.
+   --  Expect_Return_Value should be true if the user is connecting a function
+   --  to the signal, False if he is connecting a procedure
+
+   function G_Signal_Parse_Name
+     (Detailed_Signal    : String;
+      Itype              : GType;
+      Signal_Id_P        : access Signal_Id;
+      Detail_P           : access GQuark;
+      Force_Detail_Quark : Gboolean) return Gboolean;
+   pragma Import (C, G_Signal_Parse_Name, "g_signal_parse_name");
+   --  Internal function to parse a signal name into its signal_id and
+   --  detail quark.
+   --  Detailed_Signal is a string of the form "signal-name::detail".
+   --  Itype is the interface or instance that introduce "signal-name".
+   --  Force_Detail_Quark, if True, forces the creation of a GQuark for the
+   --     detail.
+   --  This function returns true if the signal name could successfully be
+   --  parsed, and Signal_Id_P and Detail_P contain valid return values.
 
    procedure Disconnect_Internal (Obj : System.Address; Id : Gulong);
    pragma Import (C, Disconnect_Internal, "g_signal_handler_disconnect");
@@ -87,27 +101,6 @@ package body Gtk.Handlers is
    procedure Watch_Closure (Object : System.Address; Closure : GClosure);
    pragma Import (C, Watch_Closure, "g_object_watch_closure");
    --  The closure will be destroyed when Object is destroyed.
-
-   --------------------
-   -- Type_Of_Return --
-   --------------------
-
-   function Type_Of_Return
-     (Object : access GObject_Record'Class; Signal : String)
-      return Glib.GType
-   is
-      Q  : Signal_Query;
-      Id : constant Signal_Id :=
-        Lookup (Get_Type (Object), Signal & ASCII.NUL);
-
-   begin
-      if Id = Invalid_Signal_Id or else Id = Null_Signal_Id then
-         return GType_Invalid;
-      else
-         Query (Id, Q);
-         return Return_Type (Q);
-      end if;
-   end Type_Of_Return;
 
    ---------------------
    -- Count_Arguments --
@@ -142,19 +135,23 @@ package body Gtk.Handlers is
       Func_Data   : System.Address;
       Destroy     : System.Address;
       After       : Boolean;
-      Slot_Object : System.Address := System.Null_Address) return Handler_Id
+      Slot_Object : System.Address := System.Null_Address;
+      Expect_Return_Value : Boolean) return Handler_Id
    is
       function Internal
         (Instance  : System.Address;
          Id        : Signal_Id;
-         Detail    : GQuark := Unknown_Quark;
+         Detail    : GQuark;
          Closure   : GClosure;
          After     : Gint := 0) return Gulong;
       pragma Import (C, Internal, "g_signal_connect_closure_by_id");
 
       use type System.Address;
-      Id      : Handler_Id;
-      Signal  : Signal_Id;
+      Id          : Handler_Id;
+      Signal      : aliased Signal_Id;
+      Detail      : aliased GQuark;
+      Success     : Gboolean;
+      Q           : Signal_Query;
 
    begin
       --  When the handler is destroyed, for instance because Object is
@@ -163,16 +160,44 @@ package body Gtk.Handlers is
       --  The closure is invoked when the signal is emitted. As a result,
       --  Handler is called, with Func_Data as a parameter.
 
+      Success := G_Signal_Parse_Name
+        (Detailed_Signal    => Name & ASCII.NUL,
+         Itype              => Get_Type (Object),
+         Signal_Id_P        => Signal'Access,
+         Detail_P           => Detail'Access,
+         Force_Detail_Quark => 0);
+
+      if Success = 0 or else Signal = Invalid_Signal_Id then
+         Raise_Assert_Failure
+           ("Trying to connect to unknown signal (""" & Name
+            & """) on type " & Type_Name (Get_Type (Object)));
+      end if;
+
+      Query (Signal, Q);
+      if Expect_Return_Value then
+         if Return_Type (Q) = GType_None then
+            Raise_Assert_Failure
+              ("Handlers for """ & Name & """ on a "
+               & Type_Name (Get_Type (Object))
+               & " should be procedures");
+         end if;
+
+      else
+         if Return_Type (Q) /= GType_None then
+            Raise_Assert_Failure
+              ("Handlers for """ & Name & """ on a "
+               & Type_Name (Get_Type (Object))
+               & " should be functions");
+         end if;
+      end if;
+
       Id.Closure := CClosure_New (Handler, Func_Data, Destroy);
       Set_Marshal (Id.Closure, Marshaller);
-      Signal := Signal_Lookup (Name & ASCII.NUL, Get_Type (Object));
-
-      pragma Assert (Signal /= Null_Signal_Id,
-                     "Trying to connect to unknown signal");
 
       Id.Id := Internal
         (Get_Object (Object),
          Id      => Signal,
+         Detail  => Detail,
          Closure => Id.Closure,
          After   => Boolean'Pos (After));
 
@@ -401,13 +426,6 @@ package body Gtk.Handlers is
               Proxy    => Marsh.Proxy,
               Object   => null);
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -415,7 +433,8 @@ package body Gtk.Handlers is
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Expect_Return_Value => True);
       end Connect;
 
       --------------------
@@ -436,13 +455,6 @@ package body Gtk.Handlers is
               Object   => Acc (Slot_Object));
 
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -451,7 +463,8 @@ package body Gtk.Handlers is
             Convert (D),
             Free_Data'Address,
             After,
-            Get_Object (Slot_Object));
+            Get_Object (Slot_Object),
+            Expect_Return_Value => True);
       end Object_Connect;
 
       -------------
@@ -471,13 +484,6 @@ package body Gtk.Handlers is
               Object   => null);
 
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -485,7 +491,8 @@ package body Gtk.Handlers is
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Expect_Return_Value => True);
       end Connect;
 
       --------------------
@@ -506,13 +513,6 @@ package body Gtk.Handlers is
               Object   => Acc (Slot_Object));
 
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -521,7 +521,8 @@ package body Gtk.Handlers is
             Convert (D),
             Free_Data'Address,
             After,
-            Get_Object (Slot_Object));
+            Get_Object (Slot_Object),
+            Expect_Return_Value => True);
       end Object_Connect;
 
       ------------------
@@ -765,13 +766,6 @@ package body Gtk.Handlers is
             User     => new User_Type'(User_Data),
             Object   => null);
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -779,7 +773,8 @@ package body Gtk.Handlers is
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Expect_Return_Value => True);
       end Connect;
 
       --------------------
@@ -800,13 +795,6 @@ package body Gtk.Handlers is
             User     => new User_Type'(User_Data),
             Object   => Acc (Slot_Object));
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -815,7 +803,8 @@ package body Gtk.Handlers is
             Convert (D),
             Free_Data'Address,
             After,
-            Get_Object (Slot_Object));
+            Get_Object (Slot_Object),
+            Expect_Return_Value => True);
       end Object_Connect;
 
       -------------
@@ -835,13 +824,6 @@ package body Gtk.Handlers is
             User     => new User_Type'(User_Data),
             Object   => null);
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -849,7 +831,8 @@ package body Gtk.Handlers is
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Expect_Return_Value => True);
       end Connect;
 
       --------------------
@@ -870,13 +853,6 @@ package body Gtk.Handlers is
             User     => new User_Type'(User_Data),
             Object   => Acc (Slot_Object));
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -885,7 +861,8 @@ package body Gtk.Handlers is
             Convert (D),
             Free_Data'Address,
             After,
-            Get_Object (Slot_Object));
+            Get_Object (Slot_Object),
+            Expect_Return_Value => True);
       end Object_Connect;
 
       ------------------
@@ -1116,13 +1093,6 @@ package body Gtk.Handlers is
               Object => null);
 
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -1130,7 +1100,8 @@ package body Gtk.Handlers is
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Expect_Return_Value => False);
       end Connect;
 
       --------------------
@@ -1151,13 +1122,6 @@ package body Gtk.Handlers is
               Object => Acc (Slot_Object));
 
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -1166,7 +1130,8 @@ package body Gtk.Handlers is
             Convert (D),
             Free_Data'Address,
             After,
-            Get_Object (Slot_Object));
+            Get_Object (Slot_Object),
+            Expect_Return_Value => False);
       end Object_Connect;
 
       -------------
@@ -1184,13 +1149,6 @@ package body Gtk.Handlers is
            new Data_Type_Record'(Func => Cb, Proxy => null, Object => null);
 
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should not return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -1198,7 +1156,8 @@ package body Gtk.Handlers is
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Expect_Return_Value => False);
       end Connect;
 
       --------------------
@@ -1219,13 +1178,6 @@ package body Gtk.Handlers is
               Object => Acc (Slot_Object));
 
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should not return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -1234,7 +1186,8 @@ package body Gtk.Handlers is
             Convert (D),
             Free_Data'Address,
             After,
-            Get_Object (Slot_Object));
+            Get_Object (Slot_Object),
+            Expect_Return_Value => False);
       end Object_Connect;
 
       ------------------
@@ -1469,13 +1422,6 @@ package body Gtk.Handlers is
             User   => new User_Type'(User_Data),
             Object => null);
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should not return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -1483,7 +1429,8 @@ package body Gtk.Handlers is
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Expect_Return_Value => False);
       end Connect;
 
       --------------------
@@ -1504,13 +1451,6 @@ package body Gtk.Handlers is
             User  => new User_Type'(User_Data),
             Object => Acc (Slot_Object));
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should not return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -1519,7 +1459,8 @@ package body Gtk.Handlers is
             Convert (D),
             Free_Data'Address,
             After,
-            Get_Object (Slot_Object));
+            Get_Object (Slot_Object),
+            Expect_Return_Value => False);
       end Object_Connect;
 
       -------------
@@ -1540,13 +1481,6 @@ package body Gtk.Handlers is
             Object => null);
 
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should not return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -1554,7 +1488,8 @@ package body Gtk.Handlers is
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Expect_Return_Value => False);
       end Connect;
 
       --------------------
@@ -1575,13 +1510,6 @@ package body Gtk.Handlers is
             User   => new User_Type'(User_Data),
             Object => Acc (Slot_Object));
       begin
-         pragma Assert
-           (Type_Of_Return (Widget, Name) /= GType_Invalid,
-            "Invalid signal for this widget");
-         pragma Assert
-           (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should not return a value.");
-
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
@@ -1590,7 +1518,8 @@ package body Gtk.Handlers is
             Convert (D),
             Free_Data'Address,
             After,
-            Get_Object (Slot_Object));
+            Get_Object (Slot_Object),
+            Expect_Return_Value => False);
       end Object_Connect;
 
       ------------------
