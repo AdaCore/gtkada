@@ -184,7 +184,7 @@ our $subprogram_and_comment_re =
 our $widget_re =
    '\n\s*type\s+(\w+)\s+is\s+(?:abstract\s+)?(?:tagged\s+private|new\s+([\w\.]+)\s+with)';
 our $type_re = 
-   '\s*(type\s+(\w+)\sis([^;]+);)\n' . $comment_block_re;
+   '\s*(type\s+(\w+)\sis\s+((?:access\s*(?:function|procedure)\s*\([^)]+\))?[^;]*);)\n' . $comment_block_re;
 our $interface_re =
    'is\s+new\s+(?:Glib\.Types\.)?Implements\s*\(([\w\.]+),\s*([\w\.]+)';
 
@@ -243,8 +243,9 @@ sub extract_sections() {
      $tags{'screenshot'} = $screenshot;
    }
 
-   # Remove private part, after finding special tags
-   $contents =~ s/\n\s*private\s.*//s;
+   # Remove private part, after finding special tags. Ignore private part
+   # for local packages
+   $contents =~ s/\nprivate\s.*//s;
 
    # Remove these special tags so that they get ignored when looking for
    # subprograms (think of examples and/or signal descriptions). In fact, this
