@@ -395,6 +395,8 @@ gtk-tree_model_sort.adb
 gtk-tree_model_sort.ads
 gtk-tree_selection.adb
 gtk-tree_selection.ads
+gtk-tree_sortable.adb
+gtk-tree_sortable.ads
 gtk-tree_store.adb
 gtk-tree_store.ads
 gtk-tree_view.adb
