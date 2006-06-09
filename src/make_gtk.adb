@@ -192,6 +192,7 @@ with Gtk.Tool_Item;
 with Gtk.Tree_Model;
 with Gtk.Tree_Model_Sort;
 with Gtk.Tree_Selection;
+with Gtk.Tree_Sortable;
 with Gtk.Tree_Store;
 with Gtk.Tree_View;
 with Gtk.Tree_View_Column;

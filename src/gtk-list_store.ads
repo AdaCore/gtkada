@@ -36,14 +36,16 @@
 --  <group>Trees and Lists</group>
 
 with Gdk.Pixbuf;
+with Glib.Types;
 with Glib.Values;
 with Gtk;
 with Gtk.Tree_Model;
+with Gtk.Tree_Sortable;
 
 package Gtk.List_Store is
 
    type Gtk_List_Store_Record is
-     new Gtk.Tree_Model.Gtk_Tree_Model_Record with private;
+     new Gtk.Tree_Model.Gtk_Tree_Model_Record with null record;
    type Gtk_List_Store is access all Gtk_List_Store_Record'Class;
 
    procedure Gtk_New
@@ -203,18 +205,29 @@ package Gtk.List_Store is
    --  Swaps the rwos pointed to by A and B. Note that this function only works
    --  with unsorted stores.
 
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
    --
-   --  </signals>
+   --  - "Gtk_Tree_Sortable"
+   --    This interface allows you to specify your own sort function
+
+   package Implements_Tree_Sortable is new Glib.Types.Implements
+     (Gtk.Tree_Sortable.Gtk_Tree_Sortable,
+      Gtk_List_Store_Record,
+      Gtk_List_Store);
+   function "+"
+     (Model : access Gtk_List_Store_Record'Class)
+      return Gtk.Tree_Sortable.Gtk_Tree_Sortable
+      renames Implements_Tree_Sortable.To_Interface;
+   function "-"
+     (Sortable : Gtk.Tree_Sortable.Gtk_Tree_Sortable)
+      return Gtk_List_Store
+      renames Implements_Tree_Sortable.To_Object;
+   --  Converts to and from the Gtk_Tree_Sortable interface
 
 private
-   type Gtk_List_Store_Record is
-     new Gtk.Tree_Model.Gtk_Tree_Model_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_list_store_get_type");
 end Gtk.List_Store;

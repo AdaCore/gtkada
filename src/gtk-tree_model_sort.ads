@@ -98,13 +98,15 @@
 --  <group>Trees and Lists</group>
 
 with Glib.Properties;
+with Glib.Types;
 with Gtk;
 with Gtk.Tree_Model;
+with Gtk.Tree_Sortable;
 
 package Gtk.Tree_Model_Sort is
 
    type Gtk_Tree_Model_Sort_Record is
-     new Gtk.Tree_Model.Gtk_Tree_Model_Record with private;
+     new Gtk.Tree_Model.Gtk_Tree_Model_Record with null record;
    type Gtk_Tree_Model_Sort is access all Gtk_Tree_Model_Sort_Record'Class;
 
    procedure Gtk_New_With_Model
@@ -179,6 +181,28 @@ package Gtk.Tree_Model_Sort is
    --  testing purposes.
    --  Checks if the given iter is a valid iter for this model.
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Tree_Sortable"
+   --    This interface allows you to specify your own sort function
+
+   package Implements_Tree_Sortable is new Glib.Types.Implements
+     (Gtk.Tree_Sortable.Gtk_Tree_Sortable,
+      Gtk_Tree_Model_Sort_Record,
+      Gtk_Tree_Model_Sort);
+   function "+"
+     (Model : access Gtk_Tree_Model_Sort_Record'Class)
+      return Gtk.Tree_Sortable.Gtk_Tree_Sortable
+      renames Implements_Tree_Sortable.To_Interface;
+   function "-"
+     (Sortable : Gtk.Tree_Sortable.Gtk_Tree_Sortable)
+      return Gtk_Tree_Model_Sort
+      renames Implements_Tree_Sortable.To_Object;
+   --  Converts to and from the Gtk_Tree_Sortable interface
+
    -------------
    -- Signals --
    -------------
@@ -205,9 +229,6 @@ package Gtk.Tree_Model_Sort is
    Model_Property : constant Glib.Properties.Property_Object;
 
 private
-   type Gtk_Tree_Model_Sort_Record is
-     new Gtk.Tree_Model.Gtk_Tree_Model_Record with null record;
-
    Model_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("model");
 

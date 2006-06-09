@@ -39,14 +39,16 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Trees and Lists</group>
 
+with Glib.Types;
 with Glib.Values; use Glib.Values;
 with Gtk;
 with Gtk.Tree_Model;
+with Gtk.Tree_Sortable;
 
 package Gtk.Tree_Store is
 
    type Gtk_Tree_Store_Record is
-     new Gtk.Tree_Model.Gtk_Tree_Model_Record with private;
+     new Gtk.Tree_Model.Gtk_Tree_Model_Record with null record;
    type Gtk_Tree_Store is access all Gtk_Tree_Store_Record'Class;
 
    procedure Gtk_New
@@ -290,23 +292,31 @@ package Gtk.Tree_Store is
    --  Thaw a frozen tree_view. Column_Id should be the value returned by
    --  the corresponding call to Freeze_Sort.
 
-   -------------
-   -- Signals --
-   -------------
-
-   --  <signals>
-   --  The following new signals are defined for this widget:
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
    --
-   --  </signals>
+   --  - "Gtk_Tree_Sortable"
+   --    This interface allows you to specify your own sort function
+
+   package Implements_Tree_Sortable is new Glib.Types.Implements
+     (Gtk.Tree_Sortable.Gtk_Tree_Sortable,
+      Gtk_Tree_Store_Record,
+      Gtk_Tree_Store);
+   function "+"
+     (Model : access Gtk_Tree_Store_Record'Class)
+      return Gtk.Tree_Sortable.Gtk_Tree_Sortable
+      renames Implements_Tree_Sortable.To_Interface;
+   function "-"
+     (Sortable : Gtk.Tree_Sortable.Gtk_Tree_Sortable)
+      return Gtk_Tree_Store
+      renames Implements_Tree_Sortable.To_Object;
+   --  Converts to and from the Gtk_Tree_Sortable interface
 
 private
-   type Gtk_Tree_Store_Record is
-     new Gtk.Tree_Model.Gtk_Tree_Model_Record with null record;
-
    pragma Import (C, Get_Type, "gtk_tree_store_get_type");
 end Gtk.Tree_Store;
-
---  ??? Missing : drag-and-drop stuff
 
 --  <example>
 --  Adding a new line in the model:
