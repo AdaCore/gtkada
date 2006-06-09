@@ -33,7 +33,7 @@ div#rightSide                { float: left;
 div.Toc                      { border: 1px solid black;
                                margin: 10px 10px 0px 0px;
                                float: left;
-                               min-height: 330px;
+                               min-height: 370px;
                                width: 220px; }
 div.GeneralIndex             { border: 1px solid black;
                                margin: 10px 10px 0px 100px;
