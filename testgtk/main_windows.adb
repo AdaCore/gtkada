@@ -124,6 +124,7 @@ with Create_Text_View;
 with Create_Toggle_Buttons;
 with Create_Toolbar;
 with Create_Tooltips;
+with Create_Tree_Filter;
 with Create_Tree_View;
 with Common; use Common;
 with View_Gl; use View_Gl;
@@ -335,6 +336,8 @@ package body Main_Windows is
                                          Create_Toolbar.Help'Access),
       (NS ("tooltips"),         Complex, Create_Tooltips.Run'Access,
                                          Create_Tooltips.Help'Access),
+      (NS ("tree filter"),      Complex, Create_Tree_Filter.Run'Access,
+                                         Create_Tree_Filter.Help'Access),
       (NS ("tree view"),        Complex, Create_Tree_View.Run'Access,
                                          Create_Tree_View.Help'Access),
       (NS ("WM hints"),         Misc,    null, null)
