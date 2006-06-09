@@ -143,7 +143,7 @@ sub ada_unit_from_c_file() {
 our $import_re      = 'pragma\s+Import\s+\(C\s*,\s*(\w+)\s*,\s*"(\w+)"\s*\)';
 our $obsolescent_re = '(pragma\s+Obsolescent).*?(?:-- *(\w+))|(?:pragma Obsolescent(?:\s+\("[^"]+"\))?;\n)';
 our $not_bound_re   = '--  No binding: (\w+)';
-our $ada_prop_re    = '\b(\w+)_Property\s+:\s+(?:--)?\s*constant ';
+our $ada_prop_re    = '\b(\w+)_Property\s+:\s+(?:--)?\s*constant\b';
 our $ada_signal_re  = '\bSignal_(\w+)\s+:\s+constant String :=\s*"([^"]+)"';
 our $external_binding_re = '--  External binding: (\w+)';
 
@@ -283,14 +283,22 @@ sub output_properties() {
    my ($type, $descr, $cname, $prop, $proptype);
 
    foreach $proptype (('properties', 'child_properties', 'style_properties')) {
-      my (%properties, $title);
+      my (%properties, $title, $comment);
 
       if ($proptype eq 'properties') {
-         %properties = %{$properties}, $title='Properties';
+         %properties = %{$properties};
+         $title='Properties';
+         $comment = "";
       } elsif ($proptype eq 'child_properties') {
-         %properties = %{$child_properties}, $title='Child Properties';
+         %properties = %{$child_properties};
+         $title='Child Properties';
+         $comment = "   --  The following properties can be set on children of this widget. See\n"
+            . "   --  in particular Gtk.Containers.Child_Set_Property.\n";
       } elsif ($proptype eq 'style_properties') {
-         %properties = %{$style_properties}, $title='Style Properties';
+         %properties = %{$style_properties};
+         $title='Style Properties';
+         $comment = "   --  The following properties can be changed through the gtk theme and\n"
+            . "   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property\n";
       }
 
       my (@list) = sort keys %properties;
@@ -299,6 +307,7 @@ sub output_properties() {
          print "   ", '-' x (length ($title) + 6), "\n";
          print "   -- $title --\n";
          print "   ", '-' x (length ($title) + 6), "\n";
+         print $comment;
          print "\n";
          print "   --  <$proptype>\n";
 
@@ -447,6 +456,7 @@ sub is_object() {
    my ($c_type) = shift;
    return (($c_type =~ /^Gtk(?:.+)\*/
                && $c_type ne "GtkClipboard*"
+               && $c_type ne "GtkTreeSortable*"
                && $c_type ne "GtkCellLayout*")
            || $c_type eq "PangoLayout"
            || $c_type eq "GObject*");
@@ -464,14 +474,17 @@ sub c_to_ada() {
    return "Gfloat"             if ($c_type eq "gfloat");
    return "String"             if ($c_type =~ /g?char\*/);
    return "Gtk_Tree_Iter"      if ($c_type eq "Gtk_Tree_Iter*");
+   return "out Gtk_Sort_Type"  if ($c_type eq "Gtk_Sort_Type*");
    return "Gtk_Text_Iter"      if ($c_type eq "Gtk_Text_Iter*");
+   return "Gtk_Tree_Path"      if ($c_type eq "Gtk_Tree_Path*");
    return "out Gfloat"         if ($c_type eq "gfloat*");
    return "System.Address"     if ($c_type eq "gpointer");
    return "GType"              if ($c_type eq "G_Type");
    return "access GObject_Record" if ($param_index >= 0 && $c_type eq "G_Object*");
-   return "GObject"               if ($param_index == -1 && $c_type eq "G_Object*");
+   return "GObject"            if ($param_index == -1 && $c_type eq "G_Object*");
    return "Gtk_Clipboard"      if ($c_type eq "Gtk_Clipboard*");
    return "Gtk_Cell_Layout"    if ($c_type eq "Gtk_Cell_Layout*");
+   return "Gtk_Tree_Sortable"  if ($c_type eq "Gtk_Tree_Sortable*");
 
    if ($is_object) {
       if ($param_index == -1) {
@@ -498,10 +511,13 @@ sub c_to_low_ada() {
    return "Gfloat"         if ($c_type eq "gfloat");
    return "Gtk_Clipboard"  if ($c_type eq "Gtk_Clipboard*");
    return "Gtk_Cell_Layout" if ($c_type eq "Gtk_Cell_Layout*");
+   return "Gtk_Tree_Path"   if ($c_type eq "Gtk_Tree_Path*");
+   return "Gtk_Tree_Sortable" if ($c_type eq "Gtk_Tree_Sortable*");
    return "Gdk_$1"         if ($c_type =~ /Gdk_(.+)\*/);
    return "System.Address" if ($c_type eq "gpointer");
    return "GType"          if ($c_type eq "G_Type");
    return "out Gfloat"     if ($c_type eq "gfloat*");
+   return "out Gtk_Sort_Type"     if ($c_type eq "Gtk_Sort_Type*");
    return "String"         if ($c_type =~ /g?char\*/ && $param_index >= 0);
    return "Interfaces.C.Strings.chars_ptr"
                            if ($c_type =~ /g?char\*/ && $param_index == -1);
