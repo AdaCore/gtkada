@@ -791,7 +791,7 @@ package body Gtk.Tree_View is
          Rect      : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_tree_view_get_cell_area");
 
-      Col_Addr  : System.Address;
+      Col_Addr : System.Address;
       use type Gtk.Tree_View_Column.Gtk_Tree_View_Column;
    begin
       if Column = null then
@@ -820,7 +820,7 @@ package body Gtk.Tree_View is
          Rect      : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_tree_view_get_background_area");
 
-      Col_Addr  : System.Address;
+      Col_Addr : System.Address;
       use type Gtk.Tree_View_Column.Gtk_Tree_View_Column;
 
    begin
@@ -830,7 +830,7 @@ package body Gtk.Tree_View is
          Col_Addr := Get_Object (Column);
       end if;
 
-      Internal (Get_Object (Tree_View), Path, Get_Object (Column), Rect);
+      Internal (Get_Object (Tree_View), Path, Col_Addr, Rect);
    end Get_Background_Area;
 
    ----------------------
