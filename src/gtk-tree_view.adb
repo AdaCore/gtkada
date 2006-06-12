@@ -811,16 +811,25 @@ package body Gtk.Tree_View is
      (Tree_View : access Gtk_Tree_View_Record;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
       Column    : Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-      Rect      : Gdk.Rectangle.Gdk_Rectangle)
+      Rect      : out Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal
         (Tree_View : System.Address;
          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
          Column    : System.Address;
-         Rect      : Gdk.Rectangle.Gdk_Rectangle);
+         Rect      : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_tree_view_get_background_area");
 
+      Col_Addr  : System.Address;
+      use type Gtk.Tree_View_Column.Gtk_Tree_View_Column;
+
    begin
+      if Column = null then
+         Col_Addr := System.Null_Address;
+      else
+         Col_Addr := Get_Object (Column);
+      end if;
+
       Internal (Get_Object (Tree_View), Path, Get_Object (Column), Rect);
    end Get_Background_Area;
 
