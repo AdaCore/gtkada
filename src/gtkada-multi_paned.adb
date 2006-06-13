@@ -273,7 +273,10 @@ package body Gtkada.Multi_Paned is
                    & Image ("HIDDEN", not Child.Visible)
                    & Image ("FIXED", Child.Fixed_Size)
                    & Image ("NoHandle", Child.Handle.Win = null)
-                   & "w=" & System.Address_Image (Child.Widget.all'Address)
+                   & "handle=("
+                   & Gint'Image (Child.Handle.Position.X)
+                   & Gint'Image (Child.Handle.Position.Y)
+                   & ") w=" & System.Address_Image (Child.Widget.all'Address)
                    & " C=" & System.Address_Image (Get_Object (Child.Widget))
                    & ">");
       else
@@ -282,6 +285,10 @@ package body Gtkada.Multi_Paned is
                    & Float'Image (Child.Height)
                    & ") x,y=(" & Gint'Image (Child.X)
                    & Gint'Image (Child.Y)
+                   & ")"
+                   & " handle=("
+                   & Gint'Image (Child.Handle.Position.X)
+                   & Gint'Image (Child.Handle.Position.Y)
                    & ")>");
          Tmp := Child.First_Child;
          while Tmp /= null loop
@@ -2214,8 +2221,11 @@ package body Gtkada.Multi_Paned is
                           Previous.Handle.Position.X - Width
                             + Gint (Current.Width);
                      else
-                        Current.Handle.Position.Y :=
-                       Previous.Handle.Position.Y - Height
+                        --  Move the handle up so that the number of pixels is
+                        --  the difference between the old size and the new
+                        --  one.
+                        Previous.Handle.Position.Y :=
+                          Previous.Handle.Position.Y - Height
                             + Gint (Current.Height);
                      end if;
                      Resize_Child_And_Siblings (Current.Parent, Previous);
