@@ -41,7 +41,6 @@ with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Widget;
 
-
 package Gtkada.Multi_Paned is
    type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record
      with private;
