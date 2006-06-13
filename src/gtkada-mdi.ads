@@ -424,6 +424,12 @@ package Gtkada.MDI is
    --  Return the MDI_Child that encapsulates Widget.
    --  Widget must be the exact same one you gave in argument to Put.
 
+   function Find_MDI_Child_From_Widget
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child;
+   --  Return the MDI child that encapsulate the parent of Widget.
+   --  As opposed to Find_MDI_Child, Widget can be anywhere within the
+   --  widget tree. This function properly handles floating children
+
    function Find_MDI_Child_By_Tag
      (MDI : access MDI_Window_Record;
       Tag : Ada.Tags.Tag) return MDI_Child;

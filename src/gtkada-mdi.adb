@@ -192,6 +192,8 @@ package body Gtkada.MDI is
    --  available. Such a notebook is also kept empty when its last child is
    --  removed, provided no other Position_Default child exists.
 
+   package Child_User_Data is new Glib.Object.User_Data (MDI_Child);
+
    type Children_Array is array (Natural range <>) of Widget_List.Glist;
 
    procedure Free is new
@@ -2401,6 +2403,52 @@ package body Gtkada.MDI is
       return null;
    end Find_MDI_Child;
 
+   --------------------------------
+   -- Find_MDI_Child_From_Widget --
+   --------------------------------
+
+   function Find_MDI_Child_From_Widget
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child
+   is
+      W   : Gtk_Widget := Gtk_Widget (Widget);
+      Win : Gtk_Window;
+   begin
+      if W = null then
+         return null;
+      end if;
+
+      --  As a special case, if the widget's parent is a notebook, we check
+      --  whether the associated page is a MDI child, and behave as if that
+      --  child had the focus (EC19-008)
+
+      while W /= null loop
+         if W.all in MDI_Child_Record'Class then
+            return MDI_Child (W);
+
+         elsif W.all in Gtk_Notebook_Record'Class
+           and then Get_Nth_Page
+             (Gtk_Notebook (W), Get_Current_Page (Gtk_Notebook (W))).all
+              in MDI_Child_Record'Class
+         then
+            return MDI_Child
+              (Get_Nth_Page
+                 (Gtk_Notebook (W), Get_Current_Page (Gtk_Notebook (W))));
+         end if;
+
+         W := Get_Parent (W);
+      end loop;
+
+      --  Not found ? We might have a floating window. Unfortunately, these
+      --  windows do not keep track of the MDI child they belong to...
+
+      Win := Gtk_Window (Get_Toplevel (Widget));
+      if Win /= null then
+         return Child_User_Data.Get (Win, "parent_mdi_child");
+      else
+         return null;
+      end if;
+   end Find_MDI_Child_From_Widget;
+
    ---------------------------
    -- Find_MDI_Child_By_Tag --
    ---------------------------
@@ -2864,6 +2912,14 @@ package body Gtkada.MDI is
             Cont := Gtk_Container (Win);
          end if;
 
+         Size_Request (Child, Requisition);
+         Set_Default_Size (Win, Requisition.Width, Requisition.Height);
+
+         --  Memorize the MDI_Child associated with the window, for faster
+         --  lookip for instance in Find_MDI_Child_From_Widget.
+
+         Child_User_Data.Set (Win, MDI_Child (Child), "parent_mdi_child");
+
          --  Set the accelerators for this window, so that menu key shortcuts
          --  behave the same as in the main window.
          --  ??? Should we do the same for mnemonics, even though the menu
@@ -2909,9 +2965,6 @@ package body Gtkada.MDI is
             Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
 
          Reparent (Get_Parent (Child.Initial), Cont);
-
-         Size_Request (Child, Requisition);
-         Set_Default_Size (Win, Requisition.Width, Requisition.Height);
 
          Child.State := Floating;
          Update_Float_Menu (Child);
