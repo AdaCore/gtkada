@@ -26,6 +26,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  This widget implements a multi-paned widget, similar to the standard
+--  Gtk_Paned widget, but which can contain several children side to side.
+--  This widget can mix vertical and horizontal splits
+--  </description>
+--  <group>Layout containers</group>
 --  <testgtk>create_splittable.adb</testgtk>
 
 with Glib;       use Glib;
@@ -35,10 +41,6 @@ with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Widget;
 
---  This widget implements a multi-paned widget, similar to the standard
---  Gtk_Paned widget, but which can contain several children side to side.
---
---  This widget can mix vertical and horizontal splits
 
 package Gtkada.Multi_Paned is
    type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record
