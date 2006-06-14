@@ -769,11 +769,6 @@ package Gtk.Text_Iter is
    --  by the give GValue. Modifying the iterator returned does not modify
    --  the iterator referenced by the GValue.
 
-
-
-
-
-
    --  function Get_Marks
    --    (Iter : access Gtk_Text_Iter)
    --     return Gtk.Text_Mark.Text_Mark_List.GSList;
@@ -793,8 +788,6 @@ package Gtk.Text_Iter is
    --  following Iter has that tag applied to it. If a tag is toggled off, then
    --  some non-empty range following Iter does not have the tag applied to it.
    --  ???
-
-
 
    --  function Get_Attributes
    --    (Iter   : Gtk_Text_Iter;
