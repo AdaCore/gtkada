@@ -237,7 +237,7 @@ package body Gtk.Tree_Model_Filter is
       ----------------------
 
       procedure Set_Visible_Func
-        (Filter  : access Gtk_Tree_Model_Filter_Record;
+        (Filter  : access Gtk_Tree_Model_Filter_Record'Class;
          Func    : Gtk_Tree_Model_Filter_Visible_Func;
          Data    : Data_Type;
          Destroy : Destroy_Notify := null)
@@ -360,7 +360,7 @@ package body Gtk.Tree_Model_Filter is
       ---------------------
 
       procedure Set_Modify_Func
-        (Filter    : access Gtk_Tree_Model_Filter_Record;
+        (Filter    : access Gtk_Tree_Model_Filter_Record'Class;
          Types     : Glib.GType_Array;
          Func      : Gtk_Tree_Model_Filter_Modify_Func;
          Data      : Data_Type;

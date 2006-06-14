@@ -224,7 +224,7 @@ package Gtk.Tree_View_Column is
          Data        : Data_Type);
 
       procedure Set_Cell_Data_Func
-        (Tree_Column : access Gtk_Tree_View_Column_Record;
+        (Tree_Column : access Gtk_Tree_View_Column_Record'Class;
          Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
          Func        : Cell_Data_Func;
          Data        : Data_Type);
