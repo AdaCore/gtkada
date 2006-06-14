@@ -98,7 +98,7 @@ package Gtk.Tree_Sortable is
    --  the model will sort using this function.
 
    generic
-      type Data_Type is (<>);
+      type Data_Type (<>) is private;
    package Compare_Funcs is
       type Gtk_Tree_Iter_Compare_Func is access function
         (Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;

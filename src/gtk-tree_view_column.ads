@@ -214,7 +214,7 @@ package Gtk.Tree_View_Column is
    --  application-specific data structures rather than stored in the model.
 
    generic
-      type Data_Type is (<>);
+      type Data_Type (<>) is private;
    package Cell_Data_Functions is
       type Cell_Data_Func is access procedure
         (Tree_Column : access Gtk_Tree_View_Column_Record'Class;

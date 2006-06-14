@@ -148,7 +148,7 @@ package Gtk.Tree_Model_Filter is
    --  keep the visibility information of the model uptodate.
 
    generic
-      type Data_Type is (<>);
+      type Data_Type (<>) is private;
    package Visible_Funcs is
       type Gtk_Tree_Model_Filter_Visible_Func is access function
         (Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
@@ -229,7 +229,7 @@ package Gtk.Tree_Model_Filter is
    --  using the parameters of the modify function.
 
    generic
-      type Data_Type is (<>);
+      type Data_Type (<>) is private;
    package Modify_Funcs is
       type Gtk_Tree_Model_Filter_Modify_Func is access procedure
         (Model     : access Gtk_Tree_Model_Filter_Record'Class;

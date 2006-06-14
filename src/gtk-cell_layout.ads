@@ -111,7 +111,7 @@ package Gtk.Cell_Layout is
    --  columns of the model for instance
 
    generic
-      type Data_Type is (<>);
+      type Data_Type (<>) is private;
    package Cell_Data_Functions is
       type Cell_Data_Func is access procedure
         (Cell_Layout : Gtk_Cell_Layout;
