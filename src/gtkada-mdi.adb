@@ -98,6 +98,7 @@ with Gtk.Window;              use Gtk.Window;
 
 with Gtkada.Handlers;         use Gtkada.Handlers;
 with Gtkada.Multi_Paned;      use Gtkada.Multi_Paned;
+with Gtkada.Types;
 
 package body Gtkada.MDI is
 
@@ -2443,7 +2444,12 @@ package body Gtkada.MDI is
 
       Win := Gtk_Window (Get_Toplevel (Widget));
       if Win /= null then
-         return Child_User_Data.Get (Win, "parent_mdi_child");
+         begin
+            return Child_User_Data.Get (Win, "parent_mdi_child");
+         exception
+            when Gtkada.Types.Data_Error =>
+               return null;
+         end;
       else
          return null;
       end if;
