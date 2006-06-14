@@ -349,8 +349,7 @@ private
    end record;
 
    procedure Add    (List : in out Vertex_List; V : access Vertex'Class);
-   procedure Remove
-     (List : in out Vertex_List; V : access Vertex'Class; G : in out Graph);
+   procedure Internal_Remove (G : in out Graph; V : access Vertex'Class);
 
    type Edge is abstract tagged record
       Src, Dest : Vertex_Access;

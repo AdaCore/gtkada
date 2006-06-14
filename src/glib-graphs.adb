@@ -170,7 +170,7 @@ package body Glib.Graphs is
       end loop;
 
       --  Free the vertex
-      Remove (G.Vertices, V, G);
+      Internal_Remove (G, V);
       Destroy (V.all);
       Free (V2);
    end Remove;
@@ -240,12 +240,10 @@ package body Glib.Graphs is
    -- Remove --
    ------------
 
-   procedure Remove
-     (List : in out Vertex_List; V : access Vertex'Class; G : in out Graph)
-   is
+   procedure Internal_Remove (G : in out Graph; V : access Vertex'Class) is
       procedure Internal is new Unchecked_Deallocation
         (Vertex_List_Record, Vertex_List);
-      Tmp      : Vertex_List := List;
+      Tmp      : Vertex_List := G.Vertices;
       Previous : Vertex_List := null;
    begin
       while Tmp /= null
@@ -257,9 +255,11 @@ package body Glib.Graphs is
 
       if Tmp /= null then
          if Previous = null then
-            pragma Assert (Tmp = List, "Remove vertex");
-            Previous := List;
-            List := List.Next;
+            --  The list contains only one item which is the one to be removed.
+            --  Once it has been removed the list must be reset to null.
+            pragma Assert (Tmp = G.Vertices, "Remove vertex");
+            Previous := G.Vertices;
+            G.Vertices := G.Vertices.Next;
             Internal (Previous);
          else
             Previous.Next := Tmp.Next;
@@ -267,7 +267,7 @@ package body Glib.Graphs is
          end if;
          G.Num_Vertices := G.Num_Vertices - 1;
       end if;
-   end Remove;
+   end Internal_Remove;
 
    -----------
    -- First --
