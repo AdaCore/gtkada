@@ -4313,11 +4313,11 @@ ada_string_array_get (gchar** uris, int index)
 
 void
 ada_gtk_text_buffer_insert_with_tags
- (GtkTextBuffer * buffer,
-  GtkTextIter   * iter,
-  const gchar   * text,
-  gint            len,
-  GtkTextTag    * tag)
+ (GtkTextBuffer *buffer,
+  GtkTextIter   *iter,
+  const gchar   *text,
+  gint           len,
+  GtkTextTag    *tag)
 {
   gtk_text_buffer_insert_with_tags
     (buffer, iter, text, len, tag, NULL);
@@ -4325,11 +4325,11 @@ ada_gtk_text_buffer_insert_with_tags
 
 void
 ada_gtk_text_buffer_insert_with_tags_by_name
- (GtkTextBuffer * buffer,
-  GtkTextIter   * iter,
-  const gchar   * text,
-  gint            len,
-  const gchar   * name)
+ (GtkTextBuffer *buffer,
+  GtkTextIter   *iter,
+  const gchar   *text,
+  gint           len,
+  const gchar   *name)
 {
   gtk_text_buffer_insert_with_tags_by_name
     (buffer, iter, text, len, name, NULL);
