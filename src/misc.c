@@ -4311,7 +4311,8 @@ ada_string_array_get (gchar** uris, int index)
  ** Gtk_Text_Buffer
 ***********************************************************/
 
-void ada_gtk_text_buffer_insert_with_tags
+void
+ada_gtk_text_buffer_insert_with_tags
  (GtkTextBuffer * buffer,
   GtkTextIter   * iter,
   const gchar   * text,
@@ -4322,7 +4323,8 @@ void ada_gtk_text_buffer_insert_with_tags
     (buffer, iter, text, len, tag, NULL);
 }
 
-void ada_gtk_text_buffer_insert_with_tags_by_name
+void
+ada_gtk_text_buffer_insert_with_tags_by_name
  (GtkTextBuffer * buffer,
   GtkTextIter   * iter,
   const gchar   * text,
