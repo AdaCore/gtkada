@@ -112,6 +112,20 @@ package Gtk.Text_Buffer is
    --  inserted text.
    --  Text: UTF-8 format text to insert.
 
+   procedure Insert_With_Tags
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : UTF8_String;
+      Tag    : Gtk.Text_Tag.Gtk_Text_Tag);
+   --  Same as Insert, but specifies the tag to apply to the range.
+
+   procedure Insert_With_Tags_By_Name
+     (Buffer   : access Gtk_Text_Buffer_Record;
+      Iter     : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text     : UTF8_String;
+      Tag_Name : String);
+   --  Same as Insert_With_Tags, but the tag is specified by its name
+
    procedure Insert_At_Cursor
      (Buffer : access Gtk_Text_Buffer_Record;
       Text   : UTF8_String);
@@ -178,12 +192,6 @@ package Gtk.Text_Buffer is
    --  Iter if no tags enclosing Iter affect editability. Typically the result
    --  of Gtk.Text_View.Get_Editable is appropriate here.
    --  Result: whether an insertion was possible at Iter
-
-   --  gtk_text_buffer_insert_with_tags not bound: variable number of arguments
-   --  could write the equivalent of this convenience function using arrays.
-
-   --  gtk_text_buffer_insert_with_tags_by_name not bound: variable number
-   --  of arguments. ditto.
 
    procedure Insert_Pixbuf
      (Buffer : access Gtk_Text_Buffer_Record;

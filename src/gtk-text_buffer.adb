@@ -151,6 +151,53 @@ package body Gtk.Text_Buffer is
    end Insert;
 
    ----------------------
+   -- Insert_With_Tags --
+   ----------------------
+
+   procedure Insert_With_Tags
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : UTF8_String;
+      Tag    : Gtk_Text_Tag)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+         Text   : UTF8_String;
+         Len    : Gint;
+         Tag    : System.Address);
+      pragma Import (C, Internal, "ada_gtk_text_buffer_insert_with_tags");
+
+   begin
+      Internal
+        (Get_Object (Buffer), Iter, Text, Text'Length, Get_Object (Tag));
+   end Insert_With_Tags;
+
+   ------------------------------
+   -- Insert_With_Tags_By_Name --
+   ------------------------------
+
+   procedure Insert_With_Tags_By_Name
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : UTF8_String;
+      Tag_Name : String)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+         Text   : UTF8_String;
+         Len    : Gint;
+         Name   : String);
+      pragma Import
+        (C, Internal, "ada_gtk_text_buffer_insert_with_tags_by_name");
+
+   begin
+      Internal
+        (Get_Object (Buffer), Iter, Text, Text'Length, Tag_Name & ASCII.NUL);
+   end Insert_With_Tags_By_Name;
+
+   ----------------------
    -- Insert_At_Cursor --
    ----------------------
 
