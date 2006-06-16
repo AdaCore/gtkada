@@ -29,8 +29,22 @@
 with Gdk.Types;            use Gdk.Types;
 with Gtk.Accel_Group;      use Gtk.Accel_Group;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with System;               use System;
 
 package body Gtk.Accel_Map is
+
+   ---------
+   -- Get --
+   ---------
+
+   function Get return Gtk_Accel_Map is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_accel_map_get");
+      Stub : Gtk_Accel_Map_Record;
+   begin
+      return Gtk_Accel_Map
+        (Get_User_Data (Internal, Stub));
+   end Get;
 
    ----------
    -- Save --

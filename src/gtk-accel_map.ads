@@ -38,7 +38,9 @@ with Gtk.Accel_Group;
 
 package Gtk.Accel_Map is
 
-   type Gtk_Accel_Map is new Glib.C_Proxy;
+   type Gtk_Accel_Map_Record is
+     new Glib.Object.GObject_Record with null record;
+   type Gtk_Accel_Map is access all Gtk_Accel_Map_Record'Class;
 
    function Get return Gtk_Accel_Map;
    --  Gets the singleton global Gtk_Accel_Map object. This object
@@ -173,7 +175,6 @@ package Gtk.Accel_Map is
    Signal_Changed : constant String := "changed";
 
 private
-   pragma Import (C, Get, "gtk_accel_map_get");
    pragma Import (C, Get_Type, "gtk_accel_map_get_type");
 end Gtk.Accel_Map;
 
