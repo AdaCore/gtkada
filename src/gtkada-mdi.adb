@@ -4473,7 +4473,7 @@ package body Gtkada.MDI is
          --  rest of the desktop makes sense
 
          declare
-            Width, Height, X, Y : Gint;
+            Width, Height : Gint;
             State  : Gdk_Window_State;
          begin
             State  := Gdk_Window_State'Value
@@ -4492,12 +4492,6 @@ package body Gtkada.MDI is
                  Gint'Value (Get_Attribute (From_Tree, "width",  "640"));
                Height :=
                  Gint'Value (Get_Attribute (From_Tree, "height", "480"));
-               X      := Gint'Value (Get_Attribute (From_Tree, "x", "-1"));
-               Y      := Gint'Value (Get_Attribute (From_Tree, "y", "-1"));
-
-               pragma Warnings (Off);  --  Set_UPosition is now obsolescent
-               Set_UPosition (Get_Toplevel (MDI), X, Y);
-               pragma Warnings (On);
 
                Set_Default_Size
                  (Gtk_Window (Get_Toplevel (MDI)), Width, Height);
@@ -4706,16 +4700,12 @@ package body Gtkada.MDI is
                   declare
                      Win : constant Gtk_Widget :=
                        Get_Toplevel (Child.Initial);
-                     X, Y, W, H : Gint;
+                     W, H : Gint;
                   begin
                      --  Note: This size doesn't include the size of the window
                      --  decorations, doesn't seem to be a way to do this.
                      W := Get_Allocation_Width (Win);
                      H := Get_Allocation_Height (Win);
-                     Get_Root_Origin (Get_Window (Win), X, Y);
-
-                     Add (Child_Node, "Y", Gint'Image (Y));
-                     Add (Child_Node, "X", Gint'Image (X));
                      Add (Child_Node, "Height", Gint'Image (H));
                      Add (Child_Node, "Width", Gint'Image (W));
                   end;
