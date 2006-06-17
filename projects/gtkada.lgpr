@@ -129,7 +129,6 @@ gtk-button_box.adb
 gtk-button_box.ads
 gtk-calendar.adb
 gtk-calendar.ads
-gtk-cell_editable.adb
 gtk-cell_editable.ads
 gtk-cell_layout.adb
 gtk-cell_layout.ads
