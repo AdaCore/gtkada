@@ -5164,6 +5164,7 @@ package body Gtkada.MDI is
       Event  : Gdk_Event)
    is
       Tmp : Gdk_Grab_Status;
+      Win : Gdk.Window.Gdk_Window;
       pragma Unreferenced (Tmp);
    begin
       --  Focus and raise the child. Raise_Child must be called explicitly
@@ -5179,15 +5180,25 @@ package body Gtkada.MDI is
       Set_Focus_Child (Child);
       Raise_Child (Child, False);
 
-      Tmp := Pointer_Grab
-        (Get_Window (Child),
-         False,
-         Button_Press_Mask or Button_Motion_Mask or Button_Release_Mask,
-         Cursor => null,
-         Time   => 0);
-      Child.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
-      Child.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
-      Child.MDI.In_Drag := In_Pre_Drag;
+      Win := Get_Window (Child);
+
+      --  If Child is floating, Win may be null at this point. In this case,
+      --  do nothing.
+
+      if Win /= null then
+         Tmp := Pointer_Grab
+           (Win,
+            False,
+            Button_Press_Mask or Button_Motion_Mask or Button_Release_Mask,
+            Cursor => null,
+            Time   => 0);
+
+         Child.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
+         Child.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
+         Child.MDI.In_Drag := In_Pre_Drag;
+      elsif Traces then
+         Put_Line ("MDI: Child is floating, did not initiate DnD");
+      end if;
    end Child_Drag_Begin;
 
    -----------------------
