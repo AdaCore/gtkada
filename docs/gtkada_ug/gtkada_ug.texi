@@ -126,10 +126,10 @@ makes it even easier to develop interfaces, since you just have to click
 to create a window and all the dialogs. Ada code can then be generated
 with a single click.
 
-GtkAda also has a full support for OpenGL, and comes with a very thin
-binding to the OpenGL (@code{Mesa}) libraries. You can thus create
-graphical applications that display 3D graphics, and display them in a
-GtkAda window, as with any other 2D graphics. This manual does not
+Under some platforms, GtkAda also provides a bridge to use OpenGL, with
+which you can create graphical applications that display 3D graphics, and
+display them in a GtkAda window, as with any other 2D graphics.
+This manual does not
 document OpenGL at all, see any book on OpenGL, or the specification
 that came with your OpenGL library, for more information.
 
