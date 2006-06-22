@@ -2,7 +2,6 @@
 with Glib;                use Glib;
 with Gdk.Color;           use Gdk.Color;
 with Gdk.GC;              use Gdk.GC;
-with Gdk.Font;            use Gdk.Font;
 with Gdk.Drawable;        use Gdk.Drawable;
 with Gtk.Adjustment;      use Gtk.Adjustment;
 with Gtk.Window;          use Gtk.Window;
@@ -15,7 +14,8 @@ with Gtk.Widget;          use Gtk.Widget;
 with Double_Buffer;       use Double_Buffer;
 with Gtk.Toggle_Button;   use Gtk.Toggle_Button;
 with Gtk.Main;            use Gtk.Main;
-with Gtk.Text;            use Gtk.Text;
+with Gtk.Text_Buffer;     use Gtk.Text_Buffer;
+with Gtk.Text_View;       use Gtk.Text_View;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 
 with Gtk.Type_Conversion;
@@ -235,7 +235,8 @@ package body Full_Test is
       Buffer : Gtk_Double_Buffer;
       Button : Gtk_Button;
       Toggle : Gtk_Toggle_Button;
-      Text   : Gtk_Text;
+      Text   : Gtk_Text_View;
+      Text_Buffer : Gtk_Text_Buffer;
       Scrolled : Gtk_Scrolled_Window;
       Color   : Gdk.Color.Gdk_Color;
       Result  : Gint;
@@ -302,18 +303,13 @@ package body Full_Test is
       Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
       Pack_Start (Vbox, Scrolled);
 
-      Gtk_New (Text);
+      Gtk_New (Text_Buffer);
+      Gtk_New (Text, Text_Buffer);
       Set_Editable (Text, False);
       Set_USize (Text, Pixmap_Width, 250);
       Add (Scrolled, Text);
 
-      Freeze (Text);
-      Insert (Text, Null_Font,
-              Gdk.Color.Black (Get_Colormap (Text)),
-              Gdk.Color.White (Get_Colormap (Text)),
-              Help, -1);
-      Gtk.Adjustment.Set_Value (Get_Vadj (Text), 0.0);
-      Thaw (Text);
+      Set_Text (Text_Buffer, Help);
 
       Show_All (Win);
 
