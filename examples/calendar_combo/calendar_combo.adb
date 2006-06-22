@@ -83,7 +83,7 @@ package body Calendar_Combo is
 
    procedure Initialize (Calendar : access Gtk_Calendar_Combo_Record'Class) is
    begin
-      Gtk.Extra.Combo_Box.Initialize (Calendar);
+      Gtk.Extra.Combo_Button.Initialize (Calendar);
       Gtk_New (Calendar.Cal);
       Show (Calendar.Cal);
 
