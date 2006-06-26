@@ -41,7 +41,9 @@ with Glib.Properties;
 with Gdk.Color;
 with Gdk.Font;
 with Gtk.Adjustment;
+pragma Warnings (Off);
 with Gtk.Old_Editable;
+pragma Warnings (On);
 with Gdk.Window;
 
 package Gtk.Text is
