@@ -3268,6 +3268,7 @@ package body Gtkada.MDI is
       C                     : MDI_Child;
       Note                  : Gtk_Notebook;
       Current               : Gtk_Notebook;
+      Default_Current_Found : Boolean := False;
    begin
       --  Do we already have a child within the same group ?
 
@@ -3277,6 +3278,13 @@ package body Gtkada.MDI is
          if C.State = Normal then
             Note := Get_Notebook (C);
             if Current = null then
+               Current := Note;
+            end if;
+
+            if not Default_Current_Found
+              and then C.Group = Group_Default
+            then
+               Default_Current_Found := True;
                Current := Note;
             end if;
 
