@@ -8,7 +8,6 @@ DIRECTORIES=base_widget \
   doublebuffer          \
   documentation         \
   dynamic_cast          \
-  editor                \
   gtk_examples          \
   tutorial              \
   handlers		\
