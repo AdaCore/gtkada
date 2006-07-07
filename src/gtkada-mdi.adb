@@ -344,7 +344,7 @@ package body Gtkada.MDI is
       Ignore      : MDI_Child := null;
       Ignore_Note : Gtk_Notebook := null) return Boolean;
    --  Return True if the MDI still contains a child in the Default_Group,
-   --  appart from Ignore and all children of Ignore_Note.
+   --  apart from Ignore and all children of Ignore_Note.
 
    procedure Set_Focus_Child_MDI
      (MDI : access Gtk_Widget_Record'Class; Args : Gtk_Args);
