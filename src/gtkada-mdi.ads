@@ -337,12 +337,16 @@ package Gtkada.MDI is
    -----------
 
    function Create_Menu
-     (MDI : access MDI_Window_Record) return Gtk.Menu.Gtk_Menu;
+     (MDI : access MDI_Window_Record;
+      Accel_Path_Prefix : String := "<gtkada>") return Gtk.Menu.Gtk_Menu;
    --  Create a dynamic menu that can then be inserted into a menu bar. This
    --  menu is dynamic, ie its content will changed based on the focus
    --  child.
    --  If this function is called several times, the same menu is returned
-   --  every time.
+   --  every time. Accel_Path_Prefix must be the same for every call.
+   --  Accel_Path_Prefix is used so that the key shortcuts associated with
+   --  these menu items can be changed dynamically by the user (see
+   --  gtk-accel_map.ads). The prefix must start with "<" and end with ">".
 
    ------------------------
    -- Selecting children --
@@ -812,6 +816,9 @@ private
       Focus_Child : MDI_Child := null;
       --  The child that currently has the focus. Some default actions will
       --  apply to this child only.
+
+      Accel_Path_Prefix  : String_Access;
+      --  The Accel path used for the dynamic menu
 
       Menu               : Gtk.Menu.Gtk_Menu;
       Float_Menu_Item    : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;

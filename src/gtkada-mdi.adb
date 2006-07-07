@@ -407,7 +407,8 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class);
    --  Return the tab to use in the notebooks containing Child
 
-   procedure Update_Menu_Item (Child : access MDI_Child_Record'Class);
+   procedure Update_Menu_Item
+     (Child : access MDI_Child_Record'Class);
    --  Update the menu entry for Child
 
    function Find_Current_In_Central
@@ -2276,7 +2277,8 @@ package body Gtkada.MDI is
          Add (Child.Menu_Item, Box);
 
          Set_Accel_Path
-           (Child.Menu_Item, "<gtkada>/window/child/" & Child.Short_Title.all,
+           (Child.Menu_Item, Child.MDI.Accel_Path_Prefix.all
+            & "/window/child/" & Child.Short_Title.all,
             Child.MDI.Group);
       end if;
    end Update_Menu_Item;
@@ -3872,7 +3874,8 @@ package body Gtkada.MDI is
    -----------------
 
    function Create_Menu
-     (MDI : access MDI_Window_Record) return Gtk.Menu.Gtk_Menu
+     (MDI : access MDI_Window_Record;
+      Accel_Path_Prefix : String := "<gtkada>") return Gtk.Menu.Gtk_Menu
    is
       Item  : Gtk_Menu_Item;
       Child : MDI_Child;
@@ -3880,6 +3883,7 @@ package body Gtkada.MDI is
 
    begin
       if MDI.Menu = null then
+         MDI.Accel_Path_Prefix := new String'(Accel_Path_Prefix);
          Gtk_New (MDI.Menu);
 
          Gtk_New (Item, "Split Side-by-Side");
@@ -3887,14 +3891,16 @@ package body Gtkada.MDI is
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Split_H_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/split_horizontal", MDI.Group);
+         Set_Accel_Path (Item, Accel_Path_Prefix
+           & "/window/split_horizontal", MDI.Group);
 
          Gtk_New (Item, "Split Up-Down");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Split_V_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/split_vertical", MDI.Group);
+         Set_Accel_Path (Item, Accel_Path_Prefix
+           & "/window/split_vertical", MDI.Group);
 
          Gtk_New (Item);
          Append (MDI.Menu, Item);
@@ -3908,7 +3914,8 @@ package body Gtkada.MDI is
            (MDI.Float_Menu_Item, "toggled",
             Widget_Callback.To_Marshaller (Float_Cb'Access), MDI);
          Set_Accel_Path
-           (MDI.Float_Menu_Item, "<gtkada>/window/floating", MDI.Group);
+           (MDI.Float_Menu_Item, Accel_Path_Prefix
+           & "/window/floating", MDI.Group);
 
          Gtk_New (Item);
          Append (MDI.Menu, Item);
@@ -3918,7 +3925,8 @@ package body Gtkada.MDI is
          Widget_Callback.Object_Connect
            (MDI.Close_Menu_Item, "activate",
             Widget_Callback.To_Marshaller (Close_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/close", MDI.Group);
+         Set_Accel_Path (Item, Accel_Path_Prefix
+           & "/window/close", MDI.Group);
 
          Gtk_New (Item);
          Append (MDI.Menu, Item);
@@ -3934,6 +3942,11 @@ package body Gtkada.MDI is
          Widget_Callback.Object_Connect
            (MDI.Menu, "destroy",
             Widget_Callback.To_Marshaller (Menu_Destroyed'Access), MDI);
+
+      elsif Accel_Path_Prefix /= MDI.Accel_Path_Prefix.all then
+         Put_Line
+           ("Accel_Path_Prefix must have the same prefix across calls"
+            & " to Create_Menu");
       end if;
 
       Show_All (MDI.Menu);
