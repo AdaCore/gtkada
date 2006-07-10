@@ -400,7 +400,7 @@ sub get_c_file_content () {
 
 ## Find out all C functions defined in a C file.
 ## Return a hash table indexed on the functions
-our $c_function_re = '\b(\w+(\s*\*+|\s))\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST)?;';
+our $c_function_re = '\b(\w+(\s*\*+|\s))\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST|\s*G_GNUC_NULL_TERMINATED)?;';
 our $c_deprecated_re = '(if |ifndef|endif).*GTK_DISABLE_DEPRECATED';
 our $c_broken_re     = '\#(ifdef.*GTK_ENABLE_BROKEN|endif)';
 sub functions_from_c_file() {
@@ -485,6 +485,7 @@ sub c_to_ada() {
    return "Gtk_Clipboard"      if ($c_type eq "Gtk_Clipboard*");
    return "Gtk_Cell_Layout"    if ($c_type eq "Gtk_Cell_Layout*");
    return "Gtk_Tree_Sortable"  if ($c_type eq "Gtk_Tree_Sortable*");
+   return "Selection_Data"     if ($c_type eq "Gtk_Selection_Data*");
 
    if ($is_object) {
       if ($param_index == -1) {
@@ -512,6 +513,7 @@ sub c_to_low_ada() {
    return "Gtk_Clipboard"  if ($c_type eq "Gtk_Clipboard*");
    return "Gtk_Cell_Layout" if ($c_type eq "Gtk_Cell_Layout*");
    return "Gtk_Tree_Path"   if ($c_type eq "Gtk_Tree_Path*");
+   return "Selection_Data"  if ($c_type eq "Gtk_Selection_Data*");
    return "Gtk_Tree_Sortable" if ($c_type eq "Gtk_Tree_Sortable*");
    return "Gdk_$1"         if ($c_type =~ /Gdk_(.+)\*/);
    return "System.Address" if ($c_type eq "gpointer");
@@ -535,6 +537,7 @@ sub c_to_call_ada() {
    return "$name & ASCII.NUL"   if ($c_type =~ /g?char\*/);
    return "$name"               if ($c_type eq "GtkTreeIter*");
    return "$name"               if ($c_type eq "GtkTextIter*");
+   return "$name"               if ($c_type eq "GtkSelectionData*");
    if ($is_object) {
       return "Get_Object ($name)";
    }
@@ -566,18 +569,20 @@ sub output_params() {
       print $indent, "  (";
       my ($index) = 0;
       while ($index <= $#args) {
-         my ($n) = &capitalize ($args[$index]);
-         print $indent, "   " if ($index != 0);
-         print $n;
-         print ' ' x ($longuest - length ($n)), " : ";
-         if ($index == 0 && $subprogram_name =~ /^Gtk_New/) {
-            print "out ", &$convert ($arg_types[$index], -1);
-         } elsif ($index == 0 && $subprogram_name =~ /^Initialize/) {
-            print &$convert ($arg_types[$index], $index), "'Class";
-         } else {
-            print &$convert ($arg_types[$index], $index);
+         if ($args[$index] ne "...") {
+            my ($n) = &capitalize ($args[$index]);
+            print $indent, "   " if ($index != 0);
+            print $n;
+            print ' ' x ($longuest - length ($n)), " : ";
+            if ($index == 0 && $subprogram_name =~ /^Gtk_New/) {
+               print "out ", &$convert ($arg_types[$index], -1);
+            } elsif ($index == 0 && $subprogram_name =~ /^Initialize/) {
+               print &$convert ($arg_types[$index], $index), "'Class";
+            } else {
+               print &$convert ($arg_types[$index], $index);
+            }
+            print "", (($index != $#args && $args[$index+1] ne "...") ? ";\n" : ")");
          }
-         print "", (($index != $#args) ? ";\n" : ")");
          $index++;
       }
       print "\n" if ($returns ne "void");
@@ -627,6 +632,7 @@ sub output_subprogram() {
    my ($longuest_param) = 0;
    my ($index);
    my ($is_gobject);
+   my ($has_variable_number_of_args) = 0;
 
    if (!$specs_only && $name eq "Get_Type") {
       ## Nothing to do, this is just a pragma Import
@@ -638,6 +644,14 @@ sub output_subprogram() {
       print "\n   ", '-' x (length($name) + 6), "\n";
       print "   -- $name --\n";
       print "   ", '-' x (length($name) + 6), "\n\n";
+   }
+
+   ## Check for multiple number of arguments
+   foreach $a (@args) {
+     if ($a eq "...") {
+       $has_variable_number_of_args = 1;
+       $func = "ada_$func";
+     }
    }
 
    ## Prototype of Ada subprogram
@@ -773,10 +787,15 @@ sub create_binding() {
    $args =~ s/\s+/ /g;
    $args =~ s/ \* ?/\* /g;
 
-   while ($args =~ / ?(\w+\*?) (\w+) ?[,)]/g) {
-      push (@args, $2);
-      $longuest_param = (length ($2) > $longuest_param) ? length ($2) : $longuest_param;
-      push (@arg_types, $1);
+   while ($args =~ / ?(?:(\w+\*?) (\w+)|(\.\.\.)) ?[,)]/g) {
+      if (defined $3) {
+        push (@args, "...");
+        push (@arg_types, "...");
+      } else {
+        push (@args, $2);
+        $longuest_param = (length ($2) > $longuest_param) ? length ($2) : $longuest_param;
+        push (@arg_types, $1);
+      }
    }
 
    if ($name =~ /^New/) {
