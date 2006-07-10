@@ -4334,3 +4334,8 @@ ada_gtk_text_buffer_insert_with_tags_by_name
   gtk_text_buffer_insert_with_tags_by_name
     (buffer, iter, text, len, name, NULL);
 }
+
+GtkTextTag*
+ada_gtk_text_buffer_create_tag (GtkTextBuffer* buffer, const gchar* name) {
+   return gtk_text_buffer_create_tag (buffer, name, NULL);
+}

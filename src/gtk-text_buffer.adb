@@ -1237,10 +1237,9 @@ package body Gtk.Text_Buffer is
    is
       function Internal
         (Buffer              : System.Address;
-         Tag_Name            : Interfaces.C.Strings.chars_ptr;
-         First_Property_Name : System.Address := System.Null_Address)
+         Tag_Name            : Interfaces.C.Strings.chars_ptr)
          return System.Address;
-      pragma Import (C, Internal, "gtk_text_buffer_create_tag");
+      pragma Import (C, Internal, "ada_gtk_text_buffer_create_tag");
       Stub : Gtk_Text_Tag_Record;
       Str  : chars_ptr := Null_Ptr;
       Tag  : Gtk_Text_Tag;
