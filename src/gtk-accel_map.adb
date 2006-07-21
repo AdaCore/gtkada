@@ -109,19 +109,21 @@ package body Gtk.Accel_Map is
    -- Change_Entry --
    ------------------
 
-   procedure Change_Entry
+   function Change_Entry
      (Accel_Path : UTF8_String;
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-      Replace    : Boolean)
+      Replace    : Boolean) return Boolean
    is
-      procedure Internal
+      function Internal
         (P : UTF8_String;
-         K : Gdk_Key_Type; M : Gdk_Modifier_Type; R : Integer);
+         K : Gdk_Key_Type; M : Gdk_Modifier_Type; R : Integer)
+         return Gboolean;
       pragma Import (C, Internal, "gtk_accel_map_change_entry");
    begin
-      Internal (Accel_Path & ASCII.NUL, Accel_Key, Accel_Mods,
-                Boolean'Pos (Replace));
+      return Boolean'Val
+        (Internal (Accel_Path & ASCII.NUL, Accel_Key, Accel_Mods,
+         Boolean'Pos (Replace)));
    end Change_Entry;
 
    -------------

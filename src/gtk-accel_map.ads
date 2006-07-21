@@ -94,15 +94,16 @@ package Gtk.Accel_Map is
    --  accelerator was set, Found is set to False, and the value of Key is
    --  meaningless.
 
-   procedure Change_Entry
+   function Change_Entry
      (Accel_Path : String;
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-      Replace    : Boolean);
+      Replace    : Boolean) return Boolean;
    --  Change the accelerator currently associated wtih Accel_Path.
    --  A change may not always be possible due to conflicts with other
    --  accelerators. Replace should be set to True if other accelerators may be
    --  deleted to resolve such conflicts.
+   --  Returns True if the entry could be changed
 
    procedure Lock_Path   (Accel_Path : String);
    procedure Unlock_Path (Accel_Path : String);
