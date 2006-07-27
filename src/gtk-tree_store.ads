@@ -95,7 +95,7 @@ package Gtk.Tree_Store is
       type Data_Type_Access is access all Data_Type;
 
       procedure Set
-        (Tree_Store : access Gtk_Tree_Store_Record;
+        (Tree_Store : access Gtk_Tree_Store_Record'Class;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
          Value      : Data_Type_Access);
@@ -136,6 +136,13 @@ package Gtk.Tree_Store is
       Column     : Gint;
       Value      : Glib.C_Proxy);
    --  Same as Generic_Set, but tailored for Gdk types.
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Address    : System.Address);
+   --  Same as Generic_Set, for a generic address
 
    procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;

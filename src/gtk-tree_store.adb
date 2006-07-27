@@ -72,7 +72,7 @@ package body Gtk.Tree_Store is
         Ada.Unchecked_Conversion (Data_Type_Access, System.Address);
 
       procedure Set
-        (Tree_Store : access Gtk_Tree_Store_Record;
+        (Tree_Store : access Gtk_Tree_Store_Record'Class;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
          Value      : Data_Type_Access)
@@ -90,6 +90,27 @@ package body Gtk.Tree_Store is
       end Set;
 
    end Generic_Set;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Address    : System.Address)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : System.Address);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ptr");
+
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Address);
+   end Set;
 
    ---------
    -- Set --
