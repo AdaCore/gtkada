@@ -985,4 +985,62 @@ package body Glib.XML is
       return Deep_Copy_Internal (N);
    end Deep_Copy;
 
+   --------------
+   -- Is_Equal --
+   --------------
+
+   function Is_Equal (Node1, Node2 : Node_Ptr) return Boolean is
+   begin
+      if Node1.Tag = null then
+         if Node2.Tag /= null then
+            return False;
+         end if;
+      elsif Node2.Tag /= null
+        and then Node1.Tag.all /= Node2.Tag.all
+      then
+         return False;
+      end if;
+
+      if Node1.Attributes = null then
+         if Node2.Attributes /= null then
+            return False;
+         end if;
+      elsif Node2.Attributes /= null
+        and then Node1.Attributes.all /= Node2.Attributes.all
+      then
+         return False;
+      end if;
+
+      if Node1.Value = null then
+         if Node2.Value /= null then
+            return False;
+         end if;
+      elsif Node2.Value /= null
+        and then Node1.Value.all /= Node2.Value.all
+      then
+         return False;
+      end if;
+
+      if Node1.Child = null then
+         if Node2.Child /= null then
+            return False;
+         end if;
+      elsif Node2.Child /= null
+        and then not Is_Equal (Node1.Child, Node2.Child)
+      then
+         return False;
+      end if;
+
+      if Node1.Next = null then
+         if Node2.Next /= null then
+            return False;
+         end if;
+      elsif Node2.Next /= null
+        and then not Is_Equal (Node1.Next, Node2.Next)
+      then
+         return False;
+      end if;
+      return True;
+   end Is_Equal;
+
 end Glib.XML;

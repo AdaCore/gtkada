@@ -104,6 +104,11 @@ package Glib.XML is
    --  Return null otherwise.
    --  Do not free the returned value.
 
+   function Is_Equal (Node1, Node2 : Node_Ptr) return Boolean;
+   --  Compare two XML nodes recursively, and returns True if they are equal.
+   --  Casing in attributes is relevant. Order of attributes is also
+   --  relevant.
+
    procedure Add_Child
      (N : Node_Ptr; Child : Node_Ptr; Append : Boolean := False);
    --  Add a new child to a node.
