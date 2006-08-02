@@ -991,6 +991,14 @@ package body Glib.XML is
 
    function Is_Equal (Node1, Node2 : Node_Ptr) return Boolean is
    begin
+      if Node1 = null and then Node2 /= null then
+         return False;
+      elsif Node1 = null and then Node2 = null then
+         return True;
+      elsif Node1 /= null and then Node2 = null then
+         return False;
+      end if;
+
       if Node1.Tag = null then
          if Node2.Tag /= null then
             return False;
