@@ -991,11 +991,13 @@ package body Glib.XML is
 
    function Is_Equal (Node1, Node2 : Node_Ptr) return Boolean is
    begin
-      if Node1 = null and then Node2 /= null then
-         return False;
-      elsif Node1 = null and then Node2 = null then
-         return True;
-      elsif Node1 /= null and then Node2 = null then
+      if Node1 = null then
+         if Node2 /= null then
+            return False;
+         else
+            return True;
+         end if;
+      elsif Node2 = null then
          return False;
       end if;
 
@@ -1003,9 +1005,9 @@ package body Glib.XML is
          if Node2.Tag /= null then
             return False;
          end if;
-      elsif Node2.Tag /= null
-        and then Node1.Tag.all /= Node2.Tag.all
-      then
+      elsif Node2.Tag = null then
+         return False;
+      elsif Node1.Tag.all /= Node2.Tag.all then
          return False;
       end if;
 
@@ -1013,9 +1015,9 @@ package body Glib.XML is
          if Node2.Attributes /= null then
             return False;
          end if;
-      elsif Node2.Attributes /= null
-        and then Node1.Attributes.all /= Node2.Attributes.all
-      then
+      elsif Node2.Attributes = null then
+         return False;
+      elsif Node1.Attributes.all /= Node2.Attributes.all then
          return False;
       end if;
 
@@ -1023,9 +1025,9 @@ package body Glib.XML is
          if Node2.Value /= null then
             return False;
          end if;
-      elsif Node2.Value /= null
-        and then Node1.Value.all /= Node2.Value.all
-      then
+      elsif Node2.Value = null then
+         return False;
+      elsif Node1.Value.all /= Node2.Value.all then
          return False;
       end if;
 
@@ -1033,9 +1035,9 @@ package body Glib.XML is
          if Node2.Child /= null then
             return False;
          end if;
-      elsif Node2.Child /= null
-        and then not Is_Equal (Node1.Child, Node2.Child)
-      then
+      elsif Node2.Child = null then
+         return False;
+      elsif not Is_Equal (Node1.Child, Node2.Child) then
          return False;
       end if;
 
@@ -1043,9 +1045,9 @@ package body Glib.XML is
          if Node2.Next /= null then
             return False;
          end if;
-      elsif Node2.Next /= null
-        and then not Is_Equal (Node1.Next, Node2.Next)
-      then
+      elsif Node2.Next = null then
+         return False;
+      elsif not Is_Equal (Node1.Next, Node2.Next) then
          return False;
       end if;
       return True;
