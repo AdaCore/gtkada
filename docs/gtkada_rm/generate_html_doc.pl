@@ -369,8 +369,10 @@ sub process_comment() {
                  }
                /xeg;
 
-   ## Highlight cross-refs to specific file names
-   $comment =~ s/\b([\w.-]+)(\.ad[bs])/<a href='$1.html'>$1$2<\/a>/g;
+   ## Highlight cross-refs to specific file names (only starting with g
+   ## so that we do not add xref to files in testgtk, since no html is
+   ## generated for these)
+   $comment =~ s/\b(g[\w.-]+)(\.ad[bs])/<a href='$1.html'>$1$2<\/a>/g;
 
    return $comment;
 }
