@@ -7,7 +7,7 @@ version=$4
 
 libs=`../src/gtkada-config --libs`
 
-lcmodule=`echo $module | tr A-Z a-z`
+lcmodule=`echo $module | tr [A-Z] [a-z]`
 
 if [ "$OS" = "Windows_NT" ]; then
 lcversion="-$version"
@@ -48,10 +48,10 @@ echo_linker() {
       esac
 
    else
-      echo -n "        \"$prefix/lib/lib${lcmodule}.a\""
+      echo "        \"$prefix/lib/lib${lcmodule}.a\""
    fi
 
-   echo ");"
+   echo "      );"
    echo "   end Linker;"
 }
 
