@@ -128,7 +128,7 @@
 --
 --    The simple form above also applies for most handlers that take one
 --    additional argument, for instance the "button_press_event" in
---    gtk_widget.ads. Just declare your subprogram with the appropriate profile
+--    gtk-widget.ads. Just declare your subprogram with the appropriate profile
 --    and connect it, as in:
 --        with Gtkada.Handlers;
 --        procedure On_Button (Widget : access Gtk_Widget_Record'Class;
