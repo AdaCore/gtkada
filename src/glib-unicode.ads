@@ -85,7 +85,7 @@ package Glib.Unicode is
       Unicode_Paragraph_Separator,
       Unicode_Space_Separator);
    --  The possible character classifications.
-   --  See http://www.unicode.org/Public/UNIDATA/UnicodeData.html
+   --  See http://www.unicode.org/Public/UNIDATA/UCD.html
 
    function Is_Space (Char : Gunichar) return Boolean;
    --  True if Char is a space character
