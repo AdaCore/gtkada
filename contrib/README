@@ -19,10 +19,10 @@ some platforms.
 pango-1.12.3-win32.diff: a patch against pango 1.12.3 sources needed to build
 pango under Windows.
 
-gtk+-2.8.18.diff: a patch against Gtk+ 2.8.18 sources containing some
+gtk+-2.8.20.diff: a patch against Gtk+ 2.8.20 sources containing some
 improvements/fixes not submitted yet.
 
-gtk+-2.8.18-win32.diff: a patch against Gtk+ 2.8.18 sources needed to build
+gtk+-2.8.20-win32.diff: a patch against Gtk+ 2.8.20 sources needed to build
 Gtk+ under Windows.
 
 gtkada-2.8-win32.diff: a patch to build GtkAda 2.8.x under Windows
