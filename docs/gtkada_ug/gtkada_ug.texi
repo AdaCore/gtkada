@@ -136,11 +136,11 @@ that came with your OpenGL library, for more information.
 The following Internet sites will always contain the latest public
 packages for @code{GtkAda}, @code{gtk+} and @code{Glade}.
 
-     @uref{http://libre.act-europe.fr/GtkAda}
+     @uref{http://libre.act-europe.fr/GtkAda/}
 
-     @uref{http://www.gtk.org}
+     @uref{http://www.gtk.org/}
 
-     @uref{http://glade.gnome.org}
+     @uref{http://glade.gnome.org/}
      
 
 The scheme used for GtkAda's version numbers is the following: the major
