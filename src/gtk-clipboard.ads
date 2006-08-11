@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2002-2006 AdaCore                    --
+--                 Copyright (C) 2002-2006, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -117,7 +117,7 @@ package Gtk.Clipboard is
    --  selection to what the user sees as the clipboard.
    --
    --  (Passing Gdk_None is the same as using Atom_Intern ("CLIPBOARD", False).
-   --  See http://www.freedesktop.org/standards/clipboards.txt for a
+   --  See http://standards.freedesktop.org/clipboards-spec/ for a
    --  detailed discussion of the "CLIPBOARD" vs. "PRIMARY" selections under
    --  the X window system. On Win32 the Selection_Primary clipboard is
    --  essentially ignored.)

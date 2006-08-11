@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                 Copyright (C) 2000-2006, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -59,7 +59,7 @@
 --  data is accompanied by a type (an atom), and a format (an integer,
 --  representing the number of bits per item).
 --
---  See also http://www.freedesktop.org/standards/clipboards.txt for
+--  See also http://standards.freedesktop.org/clipboards-spec/ for
 --  more information on the way selection works on X-Window systems.
 --
 --  </description>
