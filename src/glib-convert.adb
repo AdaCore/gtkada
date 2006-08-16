@@ -485,7 +485,7 @@ package body Glib.Convert is
       pragma Import (C, Internal, "g_markup_escape_text");
 
       C_Res  : constant Interfaces.C.Strings.chars_ptr :=
-        Internal (S & ASCII.NUL, S'Length);
+        Internal (S, S'Length);
       Result : constant String := Interfaces.C.Strings.Value (C_Res);
 
    begin
