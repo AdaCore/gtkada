@@ -536,9 +536,10 @@ package Gtk.Extra.Plot is
    --  Set up ticks for a specific orientation.
    --  A horizontal orientation will match the left and right sides, whereas
    --  a vertical orientation will match the top and bottom sides.
-   --  Major_Step is a percentage value of the widget size, and indicate the
-   --  step between each big ticks. For instance, if Major_Step has a value
-   --  of 0.2, there will be 5 big ticks drawn along the axis.
+   --  Major_Step is a value between 0.0 and 1.0 which indicates the
+   --  proportion of the total axis length between successive big ticks.
+   --  For instance, if Major_Step has a value of 0.2, there will be 5 big
+   --  ticks drawn along the axis.
    --  Num_Minor is the number of minor ticks between each major one.
 
    procedure Set_Major_Ticks
@@ -546,8 +547,11 @@ package Gtk.Extra.Plot is
       Orientation : Plot_Orientation;
       Major_Step  : Gdouble);
    --  Modify the step for major ticks.
-   --  This is a percentage value that indicates how many major ticks are
-   --  drawn along the axis. See also Axis_Set_Ticks.
+   --  Major_Step is a value between 0.0 and 1.0 which indicates the
+   --  proportion of the total axis length between successive big ticks.
+   --  For instance, if Major_Step has a value of 0.2, there will be 5 big
+   --  ticks drawn along the axis.
+   --  See also Set_Ticks.
 
    procedure Set_Minor_Ticks
      (Plot        : access Gtk_Plot_Record;
@@ -669,17 +673,20 @@ package Gtk.Extra.Plot is
    --  Set up ticks for a specific orientation.
    --  A horizontal orientation will match the left and right sides, whereas
    --  a vertical orientation will match the top and bottom sides.
-   --  Major_Step is a percentage value of the widget size, and indicate the
-   --  step between each big ticks. For instance, if Major_Step has a value
-   --  of 0.2, there will be 5 big ticks drawn along the axis.
-   --  Num_Minor is the number of minor ticks between each major one.
+   --  Major_Step is a value between 0.0 and 1.0 which indicates the
+   --  proportion of the total axis length between successive big ticks.
+   --  For instance, if Major_Step has a value of 0.2, there will be 5 big
+   --  ticks drawn along the axis.
 
    procedure Axis_Set_Major_Ticks
      (Axis        : access Gtk_Plot_Axis_Record;
       Major_Step  : Gdouble);
    --  Modify the step for major ticks.
-   --  This is a percentage value that indicates how many major ticks are
-   --  drawn along the axis. See also Axis_Set_Ticks.
+   --  Major_Step is a value between 0.0 and 1.0 which indicates the
+   --  proportion of the total axis length between successive big ticks.
+   --  For instance, if Major_Step has a value of 0.2, there will be 5 big
+   --  ticks drawn along the axis.
+   --  See also Axis_Set_Ticks.
 
    procedure Axis_Set_Minor_Ticks
      (Axis        : access Gtk_Plot_Axis_Record;
