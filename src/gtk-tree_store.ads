@@ -107,6 +107,16 @@ package Gtk.Tree_Store is
       --  Please see the example at the end for more information on how to
       --  create your own Set procedures adapted to your model. Also consider
       --  using Set_Value for complex cases
+
+      function Get
+        (Tree_Store : access Gtk_Tree_Store_Record'Class;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint) return Data_Type_Access;
+      --  Generic procedure used to get access objects back from the model.
+      --  For GObject and all of its descendents (including all widgets),
+      --  you should use the Get_Object function defined in Gtk-Tree_Model
+      --  that returns a GObject.
+
    end Generic_Set;
 
    procedure Set
