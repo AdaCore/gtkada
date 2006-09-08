@@ -2,12 +2,12 @@ Installing and compiling your programs
 ======================================
 
 If you have a previous version of GtkAda on your system, we recommend that
-you remove it using the following command:
+you move/remove it using e.g. the following command:
 
-   $ rm -rf <prefix>/include/gtkada
+   $ mv <prefix>/include/gtkada <prefix/include/gtkada.old
 
 where <prefix> is the prefix you used to configure GtkAda the first time.
-The default prefix is /usr/local. If you don't have the rights to remove
+The default prefix is /usr/local. If you don't have the rights to move
 these files, then you should at least make sure that your ADA_INCLUDE_PATH
 and your ADA_OBJECTS_PATH don't include this directory before building GtkAda.
 
