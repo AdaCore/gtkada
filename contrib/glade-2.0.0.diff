@@ -1,14 +1,19 @@
-Tue Jun 17 14:28:40 CEST 2003	Arnaud Charlet	<charlet@act-europe.fr>
+Fri Sep 29 2006	Arnaud Charlet	<charlet@adacore.com>
+
+	glade/glade_project_options.c: Fix invalid C syntax now detected
+	by GCC 4.1
+
+Tue Jun 17 2003	Arnaud Charlet	<charlet@act-europe.fr>
 
 	glade/utils.c: Remove wrong/unneeded Win32 specific code.
 
-Mon Jun 16 16:12:18 CEST 2003	Arnaud Charlet	<charlet@act-europe.fr>
+Mon Jun 16 2003	Arnaud Charlet	<charlet@act-europe.fr>
 
 	glade/main.c: Disable gail and non portable nls calls.
 	glade/glade_project.c: Set Ada as the default language.
 	configure.in: Disable check for scrollkeeper, not needed/available.
 
-Thu Jun 12 12:05:57 CEST 2003	Nicolas Setton	<setton@act-europe.fr>
+Thu Jun 12 2003	Nicolas Setton	<setton@act-europe.fr>
 
 	glade/glade_project.c: Generate Ada as well as C and C++.
 
@@ -157,3 +162,14 @@ Thu Jun 12 12:05:57 CEST 2003	Nicolas Setton	<setton@act-europe.fr>
  #include <errno.h>
  
  #include <gtk/gtk.h>
+--- glade/glade_project_options.c.old	2003-04-02 08:56:17.000000000 -0500
++++ glade/glade_project_options.c	2006-09-29 04:06:54.543132935 -0400
+@@ -1074,7 +1074,7 @@ glade_project_options_generate_program_n
+ {
+   gchar *project_name, *program_name;
+ 
+-  (char*) project_name = gtk_entry_get_text (GTK_ENTRY (options->name_entry));
++  project_name = (gchar *)gtk_entry_get_text (GTK_ENTRY (options->name_entry));
+   program_name = glade_project_options_generate_program_name_from_project_name (project_name);
+   options->auto_generation_level++;
+   gtk_entry_set_text (GTK_ENTRY (options->program_name_entry), program_name);
