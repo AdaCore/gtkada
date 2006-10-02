@@ -32,14 +32,12 @@ with Gdk.Rgb;                use Gdk.Rgb;
 with Glib;                   use Glib;
 with Gtk.Box;                use Gtk.Box;
 with Gtk.Frame;              use Gtk.Frame;
-with Gtk.Cell_Renderer;      use Gtk.Cell_Renderer;
 with Gtk.Cell_Renderer_Pixbuf; use Gtk.Cell_Renderer_Pixbuf;
 with Gtk.Cell_Renderer_Text;   use Gtk.Cell_Renderer_Text;
 with Gtk.Combo_Box;          use Gtk.Combo_Box;
 with Gtk.Cell_Layout;        use Gtk.Cell_Layout;
 with Gtk.List_Store;         use Gtk.List_Store;
 with Gtk.Tree_Model;         use Gtk.Tree_Model;
-with Gtk.Widget;             use Gtk.Widget;
 
 package body Create_Combo_Box is
 
