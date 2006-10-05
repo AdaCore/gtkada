@@ -72,4 +72,24 @@ package body Gtk.Enums is
       List := String_List.Null_List;
    end Free_String_List;
 
+   ----------------------
+   -- Free_String_List --
+   ----------------------
+
+   procedure Free_String_List (List : in out String_SList.GSlist) is
+      use type String_SList.GSlist;
+
+      Tmp   : String_SList.GSlist := List;
+      Chars : Interfaces.C.Strings.chars_ptr;
+   begin
+      while Tmp /= String_SList.Null_List loop
+         Chars := Convert_Chars_Ptr (String_SList.Get_Data_Address (Tmp));
+         Interfaces.C.Strings.Free (Chars);
+         Tmp := String_SList.Next (Tmp);
+      end loop;
+
+      String_SList.Free (List);
+      List := String_SList.Null_List;
+   end Free_String_List;
+
 end Gtk.Enums;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2006, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,8 +36,9 @@
 with Glib;
 with Glib.Generic_Properties;  use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
-with Glib.Glist;
+with Glib.Glist, Glib.GSlist;
 pragma Elaborate_All (Glib.Glist);
+pragma Elaborate_All (Glib.GSlist);
 
 with System;
 
@@ -384,11 +385,13 @@ package Gtk.Enums is
    pragma Import (C, Convert_A, "convert_a");
 
    package String_List is new Glib.Glist.Generic_List (UTF8_String);
+   package String_SList is new Glib.GSlist.Generic_SList (UTF8_String);
    --  Warning: when you create this list, new memory gets allocated for
    --  all the strings. You should use the function Free_String_List
    --  instead of Glib.Glist.Free to be sure to free this memory.
 
    procedure Free_String_List (List : in out String_List.Glist);
+   procedure Free_String_List (List : in out String_SList.GSlist);
    --  Free the memory occupied by all the strings in the list, as well
    --  as the memory occupied by the list itself.
 
