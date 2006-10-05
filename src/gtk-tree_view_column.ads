@@ -614,3 +614,6 @@ private
 
    pragma Import (C, Get_Type, "gtk_tree_view_column_get_type");
 end Gtk.Tree_View_Column;
+
+--  No binding: gtk_tree_view_column_new_with_attributes
+--  No binding: gtk_tree_view_column_set_attributes

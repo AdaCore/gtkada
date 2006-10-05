@@ -293,6 +293,7 @@ end Gtk.Object;
 
 --  The following subprograms never had a binding, but are now obsolescent
 --  No binding: gtk_object_add_arg_type
+--  No binding: gtk_object_get
 --  No binding: gtk_object_get_data
 --  No binding: gtk_object_get_data_by_id
 --  No binding: gtk_object_get_user_data
@@ -303,6 +304,7 @@ end Gtk.Object;
 --  No binding: gtk_object_remove_data_by_id
 --  No binding: gtk_object_remove_no_notify
 --  No binding: gtk_object_remove_no_notify_by_id
+--  No binding: gtk_object_set
 --  No binding: gtk_object_set_data
 --  No binding: gtk_object_set_data_by_id
 --  No binding: gtk_object_set_data_by_id_full

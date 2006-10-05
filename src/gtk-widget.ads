@@ -2118,6 +2118,8 @@ end Gtk.Widget;
 --  No binding: gtk_widget_get_display
 --  No binding: gtk_widget_get_screen
 --  No binding: gtk_widget_style_get_valist
+--  No binding: gtk_widget_set
+--  No binding: gtk_widget_style_get
 
 --  Might be useful, but very complex to explain
 --  No binding: gtk_widget_list_accel_closures

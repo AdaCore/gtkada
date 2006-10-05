@@ -159,3 +159,5 @@ private
    pragma Import (C, Get_Type, "gtk_cell_layout_get_type");
    pragma Import (C, Clear, "gtk_cell_layout_clear");
 end Gtk.Cell_Layout;
+
+--  No binding: gtk_cell_layout_set_attributes

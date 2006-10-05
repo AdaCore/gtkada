@@ -897,3 +897,4 @@ private
 end Gtk.Tree_View;
 
 --  No binding: gtk_tree_view_set_destroy_count_func
+--  No binding: gtk_tree_view_insert_column_with_attributes

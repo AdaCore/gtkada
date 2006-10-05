@@ -808,3 +808,7 @@ private
 
    pragma Import (C, Get_Type, "gtk_text_buffer_get_type");
 end Gtk.Text_Buffer;
+
+--  No binding: gtk_text_buffer_create_tag
+--  No binding: gtk_text_buffer_insert_with_tags
+--  No binding: gtk_text_buffer_insert_with_tags_by_name

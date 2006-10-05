@@ -416,6 +416,9 @@ end Gtk.Container;
 
 --  No binding: gtk_container_child_get_valist
 --  No binding: gtk_container_child_set_valist
+--  No binding: gtk_container_child_set
+--  No binding: gtk_container_child_get
+--  No binding: gtk_container_add_with_properties
 
 --  These functions never had a binding, but are now obsolescent
 --  No binding: gtk_container_foreach_full
