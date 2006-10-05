@@ -3805,13 +3805,13 @@ ada_genum_get_value (GEnumValue* value)
   return value->value;
 }
 
-gchar*
+const gchar*
 ada_genum_get_name (GEnumValue* value)
 {
   return value->value_name;
 }
 
-gchar*
+const gchar*
 ada_genum_get_nick (GEnumValue* value)
 {
   return value->value_nick;
@@ -3833,13 +3833,13 @@ ada_gflags_get_value (GFlagsValue* value)
   return value->value;
 }
 
-gchar*
+const gchar*
 ada_gflags_get_name (GFlagsValue* value)
 {
   return value->value_name;
 }
 
-gchar*
+const gchar*
 ada_gflags_get_nick (GFlagsValue* value)
 {
   return value->value_nick;
@@ -4386,3 +4386,28 @@ const gchar* ada_file_filter_info_get_mime_type (GtkFileFilterInfo* info)
     return NULL;
   }
 }
+
+/***********************************************************
+ ** Gtk_File_Chooser_Dialog
+***********************************************************/
+
+GtkWidget *
+ada_gtk_file_chooser_dialog_new
+  (const gchar          *title,
+   GtkWindow            *parent,
+   GtkFileChooserAction  action)
+{
+  return gtk_file_chooser_dialog_new (title, parent, action, NULL);
+}
+
+GtkWidget *
+ada_gtk_file_chooser_dialog_new_with_backend
+  (const gchar          *title,
+   GtkWindow            *parent,
+   GtkFileChooserAction  action,
+   const gchar          *backend)
+{
+  return gtk_file_chooser_dialog_new_with_backend
+    (title, parent, action, backend, NULL);
+}
+
