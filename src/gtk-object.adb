@@ -31,6 +31,29 @@ with System;
 
 package body Gtk.Object is
 
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (W : Gtk_Object) return System.Address is
+   begin
+      if W = null then
+         return System.Null_Address;
+      else
+         return Get_Object (W);
+      end if;
+   end Convert;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (W : System.Address) return Gtk_Object is
+      Stub : Gtk_Object_Record;
+   begin
+      return Gtk_Object (Get_User_Data (W, Stub));
+   end Convert;
+
    ---------------------------
    -- In_Destruction_Is_Set --
    ---------------------------

@@ -97,6 +97,7 @@
 
 with Glib.Object;
 with Glib.Properties;
+with Glib.GSlist;
 with Gtkada.Types;
 
 package Gtk.Object is
@@ -139,6 +140,15 @@ package Gtk.Object is
    --  This function is now obsolete, and is temporarily kept for backward
    --  compatibility only. Use Glib.Object.Get_Type instead.
    --  ???
+
+   -----------
+   -- Lists --
+   -----------
+
+   function Convert (W : Gtk_Object) return System.Address;
+   function Convert (W : System.Address) return Gtk_Object;
+
+   package Object_SList is new Glib.GSlist.Generic_SList (Gtk_Object);
 
    -----------
    -- Flags --
