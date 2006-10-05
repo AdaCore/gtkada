@@ -74,6 +74,12 @@ package Glib.GSlist is
       procedure Free (List : in out GSlist);
       function Get_Data (List : in GSlist)
                          return Gpointer;
+
+      function Get_Data_Address (List : GSlist) return System.Address;
+      --  Return directly the System.Address contained in the C list.
+      --  This is used mainly internally in GtkAda to implement String lists,
+      --  and you should not have to use this subprogram yourself.
+
       function Index (List : in GSlist;
                       Data : in Gpointer)
                       return Gint;

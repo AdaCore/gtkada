@@ -91,6 +91,17 @@ package body Glib.GSlist is
          return Convert (Internal (Get_Object (List)));
       end Get_Data;
 
+      ----------------------
+      -- Get_Data_Address --
+      ----------------------
+
+      function Get_Data_Address (List : GSlist) return System.Address is
+         function Internal (List : in System.Address) return System.Address;
+         pragma Import (C, Internal, "ada_slist_get_data");
+      begin
+         return Internal (Get_Object (List));
+      end Get_Data_Address;
+
       ------------
       -- Insert --
       ------------
