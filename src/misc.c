@@ -3241,6 +3241,12 @@ ada_gslist_get_data (GSList* list)
   return list->data;
 }
 
+gpointer
+ada_slist_get_data (GSList* list)
+{
+  return list->data;
+}
+
 /******************************************
  ** Functions for Status bar
  ******************************************/
@@ -4339,4 +4345,44 @@ GtkTextTag*
 ada_gtk_text_buffer_create_tag (GtkTextBuffer* buffer, const gchar* name)
 {
    return gtk_text_buffer_create_tag (buffer, name, NULL);
+}
+
+/***********************************************************
+ ** Gtk_File_Filter
+***********************************************************/
+
+const gchar* ada_file_filter_info_get_filename (GtkFileFilterInfo* info)
+{
+  if (info->contains & GTK_FILE_FILTER_FILENAME) {
+    return info->filename;
+  } else {
+    return NULL;
+  }
+}
+
+const gchar* ada_file_filter_info_get_uri (GtkFileFilterInfo* info)
+{
+  if (info->contains & GTK_FILE_FILTER_URI) {
+    return info->uri;
+  } else {
+    return NULL;
+  }
+}
+
+const gchar* ada_file_filter_info_get_display_name (GtkFileFilterInfo* info)
+{
+  if (info->contains & GTK_FILE_FILTER_DISPLAY_NAME) {
+    return info->display_name;
+  } else {
+    return NULL;
+  }
+}
+
+const gchar* ada_file_filter_info_get_mime_type (GtkFileFilterInfo* info)
+{
+  if (info->contains & GTK_FILE_FILTER_MIME_TYPE) {
+    return info->mime_type;
+  } else {
+    return NULL;
+  }
 }
