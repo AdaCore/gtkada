@@ -69,11 +69,11 @@ package Gtk.Cell_Editable is
    --  The following new signals are defined for this widget:
    --
    --  - "editing_done"
-   --    procedure Handler (Editable : Gtk_Cell_Editable_Record'Class);
+   --    procedure Handler (Editable : Gtk_Cell_Editable);
    --    Should be emitted when the user has finished editing
    --
    --  - "remove_widget"
-   --    procedure Handler (Editable : Gtk_Cell_Editable_Record'Class);
+   --    procedure Handler (Editable : Gtk_Cell_Editable);
    --    Emitted when the widget is about to be removed
    --
    --  </signals>
