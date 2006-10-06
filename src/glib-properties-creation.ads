@@ -165,6 +165,12 @@ package Glib.Properties.Creation is
    function Flags (Param : Param_Spec) return Param_Flags;
    --  Return the flags for the property
 
+   function Owner_Type (Param : Param_Spec) return Glib.GType;
+   --  The type that defined Param. If you look for instance at all properties
+   --  provides by a type, they will also include properties provided by the
+   --  parents of the type. This function can be used to find those declared
+   --  with that type only
+
    function Description (Param : Param_Spec) return String;
    --  Return the description (ie the help string) for Param
 
@@ -450,6 +456,7 @@ package Glib.Properties.Creation is
 
 private
    pragma Import (C, Flags, "ada_gparam_get_flags");
+   pragma Import (C, Owner_Type, "ada_gparam_get_owner_type");
    pragma Import (C, Value_Type, "ada_gparam_get_value_type");
    pragma Import (C, Set_Value_Type, "ada_gparam_set_value_type");
    pragma Import (C, Get_Value, "g_enum_get_value");
