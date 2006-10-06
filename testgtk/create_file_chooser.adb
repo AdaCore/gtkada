@@ -30,11 +30,19 @@ with Ada.Text_IO;               use Ada.Text_IO;
 with Glib.Error;                use Glib.Error;
 with GNAT.Directory_Operations; use GNAT.Directory_Operations;
 with Gtk.Box;                   use Gtk.Box;
+with Gtk.Button;                use Gtk.Button;
 with Gtk.File_Chooser;          use Gtk.File_Chooser;
 with Gtk.File_Chooser_Button;   use Gtk.File_Chooser_Button;
 with Gtk.Frame;                 use Gtk.Frame;
+with Gtk.Stock;                 use Gtk.Stock;
+with Gtkada.Handlers;           use Gtkada.Handlers;
+with Gtkada.Properties;         use Gtkada.Properties;
+with Gtk.Widget;                use Gtk.Widget;
 
 package body Create_File_Chooser is
+
+   procedure Show_Properties (Widget : access Gtk_Widget_Record'Class);
+   --  Opens a properties editor for Widget
 
    -----------------
    -- Help_Button --
@@ -47,13 +55,24 @@ package body Create_File_Chooser is
         & "It can exist in several modes, which influence its behavior.";
    end Help_Button;
 
+   ---------------------
+   -- Show_Properties --
+   ---------------------
+
+   procedure Show_Properties (Widget : access Gtk_Widget_Record'Class) is
+   begin
+      Popup_Properties_Editor (Widget);
+   end Show_Properties;
+
    ----------------
    -- Run_Button --
    ----------------
 
    procedure Run_Button (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box    : Gtk_Box;
-      Button : Gtk_File_Chooser_Button;
+      Hbox   : Gtk_Box;
+      Button : Gtk_Button;
+      File   : Gtk_File_Chooser_Button;
       Error  : GError;
    begin
       Set_Label (Frame, "File Chooser Button");
@@ -61,11 +80,19 @@ package body Create_File_Chooser is
       Gtk_New_Vbox (Box, Homogeneous => False);
       Add (Frame, Box);
 
-      Gtk_New (Button,
+      Gtk_New_Hbox (Hbox, Homogeneous => False);
+      Pack_Start (Box, Hbox, Fill => False);
+      Gtk_New (File,
                Title   => "Select a file (Open mode)",
                Action  => Action_Open);
-      Pack_Start (Box, Button, Fill => False);
-      Error := Add_Shortcut_Folder (+Button, Get_Current_Dir);
+      Pack_Start (Hbox, File, Expand => True);
+
+      Gtk_New_From_Stock (Button, Stock_Properties);
+      Pack_Start (Hbox, Button, Expand => False);
+      Widget_Callback.Object_Connect
+        (Button, "clicked", Show_Properties'Access, File);
+
+      Error := Add_Shortcut_Folder (+File, Get_Current_Dir);
       if Error /= null then
          Put_Line (Get_Message (Error));
       end if;
