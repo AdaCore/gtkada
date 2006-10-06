@@ -3862,6 +3862,12 @@ ada_gparam_get_flags (GParamSpec* param)
 }
 
 GType
+ada_gparam_get_owner_type (GParamSpec* param)
+{
+  return param->owner_type;
+}
+
+GType
 ada_gparam_get_value_type (GParamSpec* param)
 {
   return G_PARAM_SPEC_VALUE_TYPE (param);
@@ -4174,6 +4180,12 @@ GType
 ada_gtype_fundamental (GType type)
 {
   return G_TYPE_FUNDAMENTAL (type);
+}
+
+gboolean
+ada_g_type_is_interface (GType type)
+{
+  return G_TYPE_IS_INTERFACE (type);
 }
 
 /******************************************
