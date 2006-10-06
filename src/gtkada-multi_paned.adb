@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003-2006 AdaCore                   --
+--                 Copyright (C) 2003-2006, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -43,6 +43,7 @@ with Gdk.Window;           use Gdk.Window;
 with Gdk.Window_Attr;      use Gdk.Window_Attr;
 
 with Glib.Object;          use Glib.Object;
+with Glib.Types;           use Glib.Types;
 
 with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
@@ -1100,7 +1101,7 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       return Default_Expose_Event_Handler
-        (Class_From_Type (Parent (Get_Type (Split))))
+        (Glib.Object.GObject_Class (Class_Ref (Parent (Get_Type (Split)))))
           (Get_Object (Split), Event);
    end Expose_Paned;
 
