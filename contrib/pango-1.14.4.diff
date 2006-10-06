@@ -1,0 +1,24 @@
+2006-06-01      Arnaud Charlet  <charlet@adacore.com>
+
+	* configure: work around libtool bug on ia64 hpux
+	See http://bugzilla.gnome.org/show_bug.cgi?id=343485
+
+*** configure.old	Fri May 26 18:43:16 2006
+--- configure	Thu Jun  1 05:18:15 2006
+***************
+*** 7952,7958 ****
+  
+  	case $host_cpu in
+  	hppa*64*|ia64*)
+! 	  hardcode_libdir_flag_spec_ld='+b $libdir'
+  	  hardcode_direct=no
+  	  hardcode_shlibpath_var=no
+  	  ;;
+--- 7952,7958 ----
+  
+  	case $host_cpu in
+  	hppa*64*|ia64*)
+! 	  hardcode_libdir_flag_spec_ld='${wl}+b ${wl}$libdir'
+  	  hardcode_direct=no
+  	  hardcode_shlibpath_var=no
+  	  ;;
