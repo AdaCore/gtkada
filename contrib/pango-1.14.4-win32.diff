@@ -1,3 +1,8 @@
+2006-10-06  Arnaud Charlet  <charlet@adacore.com>
+
+	* examples/Makefile.in: Work around wrong dependency when freetype is
+	not available (e.g. under Windows).
+
 Mon Mar 13 2006  Arnaud Charlet  <charlet@adacore.com>
 
 	* modules/Makefile.in: work around cygwin limitation.
@@ -57,3 +62,21 @@ Fri Jun 17 2005  Arnaud Charlet  <charlet@adacore.com>
  	else \
            echo "No dynamic modules found; will use only static modules for tests/examples."; \
  	  touch $@; \
+--- examples/Makefile.in.old	2006-09-16 00:22:23.000000000 +0200
++++ examples/Makefile.in	2006-10-06 12:07:16.421875000 +0200
+@@ -111,7 +111,6 @@ am__cairosimple_SOURCES_DIST = cairosimp
+ cairosimple_OBJECTS = $(am_cairosimple_OBJECTS)
+ am__DEPENDENCIES_1 =
+ @HAVE_CAIRO_PNG_TRUE@cairosimple_DEPENDENCIES = ../pango/libpango-$(PANGO_API_VERSION).la \
+-@HAVE_CAIRO_PNG_TRUE@	../pango/libpangoft2-$(PANGO_API_VERSION).la \
+ @HAVE_CAIRO_PNG_TRUE@	../pango/libpangocairo-$(PANGO_API_VERSION).la \
+ @HAVE_CAIRO_PNG_TRUE@	$(am__DEPENDENCIES_1) \
+ @HAVE_CAIRO_PNG_TRUE@	$(am__DEPENDENCIES_1)
+@@ -576,7 +575,6 @@ INCLUDES = \
+ 
+ @HAVE_CAIRO_PNG_TRUE@cairosimple_LDADD = \
+ @HAVE_CAIRO_PNG_TRUE@	../pango/libpango-$(PANGO_API_VERSION).la	\
+-@HAVE_CAIRO_PNG_TRUE@	../pango/libpangoft2-$(PANGO_API_VERSION).la	\
+ @HAVE_CAIRO_PNG_TRUE@	../pango/libpangocairo-$(PANGO_API_VERSION).la	\
+ @HAVE_CAIRO_PNG_TRUE@	$(GLIB_LIBS)					\
+ @HAVE_CAIRO_PNG_TRUE@	$(CAIRO_LIBS)
