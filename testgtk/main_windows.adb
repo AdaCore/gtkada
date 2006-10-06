@@ -83,6 +83,7 @@ with Create_Dialog;
 with Create_Dnd;
 with Create_Entry;
 with Create_Frame;
+with Create_File_Chooser;
 with Create_File_Selection;
 with Create_Fixed;
 with Create_Font_Selection;
@@ -244,6 +245,9 @@ package body Main_Windows is
       (NS ("entry"),            Base,    Create_Entry.Run'Access,
                                          Create_Entry.Help'Access),
       (NS ("event watcher"),    Misc,    null, null),
+      (NS ("file chooser button"), Complex,
+                                   Create_File_Chooser.Run_Button'Access,
+                                   Create_File_Chooser.Help_Button'Access),
       (NS ("file selection"),   Complex, Create_File_Selection.Run'Access,
                                          Create_File_Selection.Help'Access),
       (NS ("fixed"),            Box,     Create_Fixed.Run'Access,
