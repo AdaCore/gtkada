@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-our ($ada_dir) = "/home/briot/Ada/GtkAda/src/";
+our ($ada_dir) = ".";
 #$c_dir  ="/home/briot/gtk/gtk+-2.9/gtk+-2.9.0/";
 our ($c_dir)   = "/home/briot/gtk/gtk+-2.8/gtk+-2.8.17";
 
@@ -51,6 +51,9 @@ our (%c_files_no_binding) =
    "gtktextiterprivate"     => 1, # Internal only
    "gtktexttagprivate"      => 1, # Internal only
    "gtktextmarkprivate"     => 1, # Internal only
+   "gtkfilechooserentry"    => 1, # Internal only
+   "gtkfilechooserdefault"  => 1, # Internal only
+   "gtkoldeditable"         => 1, # Deprecated
    "gtktree"        => 1,  # Broken
    "gtktreeitem"    => 1,  # Broken
    "gtkrbtree"      => 1,  # Internal only
@@ -78,8 +81,11 @@ our (%c_files_no_binding) =
    "xembed"         => 1,
    "gtkplugprivate" => 1,
 
-   # We might provide a binding for those one day, but they are very secondary
+   # We might provide a binding for those one day, but they are very secondary. They are
+   # also not documented in the gtk+ manual itself
    "gtkimmodule"    => 1,
+   "gtkfilechooserembed" => 1,
+   "gtkfilechooserutils" => 1,
    );
 
 ## Return the base name (no extension) for a C file
@@ -129,7 +135,7 @@ sub ada_unit_from_c_file() {
   $adafile =~ s/^gmain$/glib-main/;
   $adafile =~ s/-tipsquery/-tips_query/;
   $adafile =~ s/-spinbutton/-spin_button/;
-  $adafile =~ s/-oldeditable/-old_editable/;
+  #$adafile =~ s/-oldeditable/-old_editable/;   ## Ignore this one, always
   $adafile =~ s/-range/-grange/;
   $adafile =~ s/-imagemenuitem/-image_menu_item/;
   $adafile =~ s/-gamma/-gamma_curve/;
@@ -215,9 +221,12 @@ our $param_spec_re = '\s*g_param_spec_(\w+)\s*\("([^"]+)"';
 our $property_re =
   'g_object_class_install_property\s*\(\s*\w+\s*,\s*\w+\s*,';
 
+our $interface_property_re = 
+  'g_object_interface_install_property\s*\(\s*\w+\s*,';
+
 # no parenthesis
 our $style_property_re =
-  'gtk_widget_class_install_style_property\s*\(\s*\w+\s*,';
+  'gtk_widget_(?:class|interface)_install_style_property\s*\(\s*\w+\s*,';
 
 # no parenthesis
 our $child_property_re =
@@ -242,7 +251,7 @@ sub properties_in_c_file() {
    my ($content) = &get_c_file_content ($fullname);
 
    while ($content =~
-            /(?:($property_re|$style_property_re|$child_property_re)$param_spec_re$property_descr_re)|(?:$c_signal_re)|(?:$c_doc_re)/ogs)
+            /(?:($property_re|$interface_property_re|$style_property_re|$child_property_re)$param_spec_re$property_descr_re)|(?:$c_signal_re)|(?:$c_doc_re)/ogs)
    {
       my ($propcategory, $proptype, $propname, $propdescr,
           $signame,
@@ -457,6 +466,7 @@ sub is_object() {
    return (($c_type =~ /^Gtk(?:.+)\*/
                && $c_type ne "GtkClipboard*"
                && $c_type ne "GtkTreeSortable*"
+               && $c_type ne "GtkFileChooser*"
                && $c_type ne "GtkCellLayout*")
            || $c_type eq "PangoLayout"
            || $c_type eq "GObject*");
@@ -484,6 +494,7 @@ sub c_to_ada() {
    return "GObject"            if ($param_index == -1 && $c_type eq "G_Object*");
    return "Gtk_Clipboard"      if ($c_type eq "Gtk_Clipboard*");
    return "Gtk_Cell_Layout"    if ($c_type eq "Gtk_Cell_Layout*");
+   return "Gtk_File_Chooser"   if ($c_type eq "Gtk_File_Chooser*");
    return "Gtk_Tree_Sortable"  if ($c_type eq "Gtk_Tree_Sortable*");
    return "Selection_Data"     if ($c_type eq "Gtk_Selection_Data*");
 
@@ -512,6 +523,7 @@ sub c_to_low_ada() {
    return "Gfloat"         if ($c_type eq "gfloat");
    return "Gtk_Clipboard"  if ($c_type eq "Gtk_Clipboard*");
    return "Gtk_Cell_Layout" if ($c_type eq "Gtk_Cell_Layout*");
+   return "Gtk_File_Chooser" if ($c_type eq "Gtk_File_Chooser*");
    return "Gtk_Tree_Path"   if ($c_type eq "Gtk_Tree_Path*");
    return "Selection_Data"  if ($c_type eq "Gtk_Selection_Data*");
    return "Gtk_Tree_Sortable" if ($c_type eq "Gtk_Tree_Sortable*");
