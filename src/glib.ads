@@ -221,6 +221,10 @@ package Glib is
    --  on how to get and set the value of properties for specific objects, or
    --  the package Glib.Properties.Creation for information on how to create
    --  new properties in your own widgets.
+   --  Introspection is available, ie from an existing object you can find out
+   --  the list of properties it supports. See the functions
+   --  Glib.Object.Interface_List_Properties and
+   --  Glib.Object.Class_List_Properties
 
    type Property (<>) is private;
 
@@ -264,7 +268,12 @@ package Glib is
    --  You can get the exact type value for each type by using the functions
    --  Get_Type provided in all the packages in GtkAda.
    --  You can get the specific value for an existing widget by using the
-   --  function Gtk.Object.Get_Type.
+   --  function Glib.Object.Get_Type.
+
+   type GType_Class is private;
+   --  An opaque structure used as the base for all classes in glib and gtk+.
+   --  See also Glib.Object.GObject_Class for a more useful child of this
+   --  type.
 
    type GType_Array is array (Guint range <>) of Glib.GType;
 
@@ -368,6 +377,8 @@ private
    type C_Dummy is null record;
    --  This array can contain anything, since it is never used on the Ada side
    --  anyway.
+
+   type GType_Class is new System.Address;
 
    type Property is new String;
 
