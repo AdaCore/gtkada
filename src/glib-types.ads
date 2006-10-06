@@ -31,6 +31,9 @@
 --  provide an object-oriented framework (through inheritance and interfaces),
 --  as well as reference-counting, signals and properties on these types.
 --
+--  Most of the time, you DO NOT need to use this package, only when you are
+--  working with the introspection capabilities of glib.
+--
 --  See the other glib packages for more subprograms to manipulate these types.
 --  In particular, Glib.Properties describes the properties system, that
 --  provide the base for dynamic introspection. See also Glib itself, which
@@ -43,6 +46,26 @@ with Glib.Object;
 with System;
 
 package Glib.Types is
+
+   function Class_Peek (T : GType) return Glib.GType_Class;
+   function Class_Ref  (T : GType) return Glib.GType_Class;
+   --  Return the class structure encapsulated in T.
+   --  Class_Ref will create the class on-demand if it doesn't exist yet, but
+   --  Class_Peek might return null if the class hasn't been referenced before.
+   --  Class_Ref also increments the reference counting for the returned value
+
+   procedure Class_Unref (T : GType);
+   --  Decrement the reference counting on the associated class. When it
+   --  reaches 0, the class may be finalized by the type system.
+
+   function Depth (T : GType) return Guint;
+   --  Returns the length of the ancestry of the passed in type. This includes
+   --  the type itself, so that e.g. a fundamental type has depth 1.
+
+   function Is_A (T : GType; Is_A_Type : GType) return Boolean;
+   --  If Is_A_Type is a derivable type, check whether type is a descendant of
+   --  Is_A_Type. If Is_A_Type is an interface, check whether type conforms to
+   --  it.
 
    ----------------
    -- Interfaces --
@@ -97,6 +120,29 @@ package Glib.Types is
    --       to some other tagged type afterward.
    --  Both behave the same when the object was created from Ada.
 
+   function Interfaces (T : GType) return GType_Array;
+   --  Return the list of interfaces implemented by objects of a given type.
+
+   function Is_Interface (T : GType) return Boolean;
+   --  Whether T represents an interface type description
+
+   function Default_Interface_Peek
+     (T : GType) return Glib.Object.Interface_Vtable;
+   function Default_Interface_Ref
+     (T : GType) return Glib.Object.Interface_Vtable;
+   --  If the interface type T is currently in use, returns its default
+   --  interface vtable.
+   --  Default_Interface_Ref will create the default vtable for the type if the
+   --  type is not currently in use. This is useful when you want to make sure
+   --  that signals and properties for an interface have been installed.
+
 private
-   type GType_Interface is new System.Address;
+   type GType_Interface  is new System.Address;
+
+   pragma Import (C, Depth,                  "g_type_depth");
+   pragma Import (C, Class_Peek,             "g_type_class_peek");
+   pragma Import (C, Class_Ref,              "g_type_class_ref");
+   pragma Import (C, Class_Unref,            "g_type_class_unref");
+   pragma Import (C, Default_Interface_Peek, "g_type_default_interface_peek");
+   pragma Import (C, Default_Interface_Ref,  "g_type_default_interface_ref");
 end Glib.Types;

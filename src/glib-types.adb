@@ -71,4 +71,60 @@ package body Glib.Types is
       return GObject (Get_User_Data (System.Address (Interf), Stub));
    end To_Object;
 
+   ----------------
+   -- Interfaces --
+   ----------------
+
+   function Interfaces (T : GType) return GType_Array is
+      type Flat_GType_Array is array (Guint) of GType;
+      pragma Convention (C, Flat_GType_Array);
+      type Flat_GType_Array_Access is access all Flat_GType_Array;
+
+      procedure G_Free (S : Flat_GType_Array_Access);
+      pragma Import (C, G_Free, "g_free");
+
+      function Internal
+        (T        : GType;
+         N_Ifaces : access Guint) return Flat_GType_Array_Access;
+      pragma Import (C, Internal, "g_type_interfaces");
+
+      N_Ids  : aliased Guint;
+      Result : constant Flat_GType_Array_Access := Internal (T, N_Ids'Access);
+
+   begin
+      if N_Ids = 0 then
+         return (1 .. 0 => GType_Invalid);
+      else
+         declare
+            R : constant GType_Array := GType_Array (Result (0 .. N_Ids - 1));
+         begin
+            G_Free (Result);
+            return R;
+         end;
+      end if;
+   end Interfaces;
+
+   ------------------
+   -- Is_Interface --
+   ------------------
+
+   function Is_Interface (T : GType) return Boolean is
+      function Internal (T : GType) return Gboolean;
+      pragma Import (C, Internal, "ada_g_type_is_interface");
+   begin
+      return Boolean'Val (Internal (T));
+   end Is_Interface;
+
+   ----------
+   -- Is_A --
+   ----------
+
+   function Is_A (T : GType; Is_A_Type : GType) return Boolean is
+      function Internal (T1, T2 : GType) return Gboolean;
+      pragma Import (C, Internal, "g_type_is_a");
+   begin
+      return Boolean'Val (Internal (T, Is_A_Type));
+   end Is_A;
+
+
 end Glib.Types;
