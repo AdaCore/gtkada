@@ -73,6 +73,7 @@ with Glib.Object;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with System;
+with Glib.Values;
 
 package Glib.Properties is
 
@@ -124,6 +125,25 @@ package Glib.Properties is
    type Property_Address   is new Glib.Property;
    type Property_Float     is new Glib.Property;
    type Property_Double    is new Glib.Property;
+
+   --  General properties getter
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : String;
+      Value  : in out Glib.Values.GValue);
+   procedure Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : String;
+      Value  : in out Glib.Values.GValue);
+   --  Get the property. Value must have been initialized first with the
+   --  expected type for the property, as in:
+   --      Value : GValue;
+   --      Init (Value, Value_Type (Pspec));
+   --      Get_Property (Object, Pspec_Name (Pspec), Value);
+   --  If you do not have a Param_Spec, this can be replaced with:
+   --      Init (Value, GType_Int);
+   --      Get_Property (Object, Property_Name (Property), Value);
 
    --  Special handling of string properties
 

@@ -33,8 +33,41 @@ package body Glib.Properties is
 
    procedure Get
      (Object : System.Address; Name : Glib.Property; Value : in out GValue);
+   procedure Get
+     (Object : System.Address; Name : String; Value : in out GValue);
    pragma Import (C, Get, "g_object_get_property");
    --  Internal function to get the properties
+
+   procedure Set
+     (Object : System.Address; Name : String; Value : in out GValue);
+   pragma Import (C, Set, "g_object_set_property");
+   --  Internal function to set the properties
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   procedure Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : String;
+      Value  : in out Glib.Values.GValue)
+   is
+   begin
+      Get (Get_Object (Object), Name & ASCII.NUL, Value);
+   end Get_Property;
+
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : String;
+      Value  : in out Glib.Values.GValue)
+   is
+   begin
+      Set (Get_Object (Object), Name & ASCII.NUL, Value);
+   end Set_Property;
 
    ------------------
    -- Set_Property --
@@ -154,12 +187,15 @@ package body Glib.Properties is
      (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_Object) return Glib.Object.GObject
    is
-      A     : constant System.Address :=
-        Get_Property (Object, Property_Address (Name));
+      Value : GValue;
+      Addr  : System.Address;
       Stub  : GObject_Record;
-
    begin
-      return Get_User_Data (A, Stub);
+      Init (Value, GType_Object);
+      Get (Get_Object (Object), Property (Name), Value);
+      Addr := Get_Address (Value);
+      Unset (Value);
+      return Get_User_Data (Addr, Stub);
    end Get_Property;
 
    ------------------
