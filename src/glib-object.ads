@@ -221,7 +221,11 @@ package Glib.Object is
    --  See the GtkAda user's guide for more information on how to create your
    --  own widget types in Ada.
 
-   type GObject_Class is private;
+   type Interface_Vtable is private;
+   --  The virtual table of an interface (see Glib.Types). This is only useful
+   --  when doing introspection.
+
+   type GObject_Class is new GType_Class;
    Uninitialized_Class : constant GObject_Class;
    --  This type encloses all the informations related to a specific type of
    --  object or widget. All instances of such an object have a pointer to this
@@ -276,10 +280,24 @@ package Glib.Object is
 
    function Type_From_Class (Class_Record : GObject_Class) return GType;
    --  Return the internal gtk+ type that describes the newly created
-   --  Class_Record
+   --  Class_Record.
+   --  See the function Glib.Types.Class_Peek for the opposite function
+   --  converting from a GType to a GObject_Class.
 
-   function Class_From_Type (Typ : GType) return GObject_Class;
-   --  Return the class record for a specific type
+   ------------------------------
+   -- Properties introspection --
+   ------------------------------
+   --  See glib.ads for more information on properties
+
+   function Interface_List_Properties
+     (Vtable : Interface_Vtable) return Glib.Param_Spec_Array;
+   --  Return the list of properties of an interface (see also Glib.Properties)
+   --  from a Vtable from Default_Interface_Peek).
+   --  See also Class_List_Properties for a similar function for objects.
+
+   function Class_List_Properties
+     (Class : GObject_Class) return Glib.Param_Spec_Array;
+   --  Return the list of all properties of the class.
 
    -------------
    -- Signals --
@@ -388,7 +406,8 @@ private
       Ptr : System.Address := System.Null_Address;
    end record;
 
-   type GObject_Class is new System.Address;
+   type Interface_Vtable is new Glib.C_Proxy;
+
    Uninitialized_Class : constant GObject_Class :=
      GObject_Class (System.Null_Address);
 
@@ -433,5 +452,4 @@ private
    pragma Import (C, Query, "g_signal_query");
    pragma Import (C, Id, "ada_gsignal_query_id");
    pragma Import (C, Return_Type, "ada_gsignal_query_return_type");
-   pragma Import (C, Class_From_Type, "gtk_type_class");
 end Glib.Object;

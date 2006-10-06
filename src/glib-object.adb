@@ -35,6 +35,13 @@ with Gtkada.Types; use Gtkada.Types;
 
 package body Glib.Object is
 
+   type Flat_Param_Spec_Array is array (Guint) of Param_Spec;
+   pragma Convention (C, Flat_Param_Spec_Array);
+   type Flat_Param_Spec_Array_Access is access all Flat_Param_Spec_Array;
+
+   procedure Free (PSA : Flat_Param_Spec_Array_Access);
+   pragma Import (C, Free, "g_free");
+
    procedure Free_User_Data (Data : System.Address);
    --  Free the user data Data. This function should not be called directly
 
@@ -697,5 +704,64 @@ package body Glib.Object is
    begin
       Internal (Get_Object (Object), Notify, Data);
    end Weak_Unref;
+
+   -------------------------------
+   -- Interface_List_Properties --
+   -------------------------------
+
+   function Interface_List_Properties
+     (Vtable : Interface_Vtable) return Glib.Param_Spec_Array
+   is
+      function Internal
+        (Vtable  : Interface_Vtable;
+         N_Props : access Guint) return Flat_Param_Spec_Array_Access;
+      pragma Import (C, Internal, "g_object_interface_list_properties");
+
+      N_Props : aliased Guint;
+      Result  : constant Flat_Param_Spec_Array_Access :=
+        Internal (Vtable, N_Props'Access);
+
+   begin
+      if N_Props = 0 then
+         return (1 .. 0 => null);
+      else
+         declare
+            R : constant Param_Spec_Array :=
+              Param_Spec_Array (Result (0 .. N_Props - 1));
+         begin
+            Free (Result);
+            return R;
+         end;
+      end if;
+   end Interface_List_Properties;
+
+   ---------------------------
+   -- Class_List_Properties --
+   ---------------------------
+
+   function Class_List_Properties
+     (Class : GObject_Class) return Glib.Param_Spec_Array
+   is
+      function Internal
+        (Class   : GObject_Class;
+         N_Props : access Guint) return Flat_Param_Spec_Array_Access;
+      pragma Import (C, Internal, "g_object_class_list_properties");
+
+      N_Props : aliased Guint;
+      Result  : constant Flat_Param_Spec_Array_Access :=
+        Internal (Class, N_Props'Access);
+   begin
+      if N_Props = 0 then
+         return (1 .. 0 => null);
+      else
+         declare
+            R : constant Param_Spec_Array :=
+              Param_Spec_Array (Result (0 .. N_Props - 1));
+         begin
+            Free (Result);
+            return R;
+         end;
+      end if;
+   end Class_List_Properties;
 
 end Glib.Object;
