@@ -237,6 +237,7 @@ with Gtkada.Handlers;
 with Gtkada.Intl;
 with Gtkada.MDI;
 with Gtkada.Pixmaps;
+with Gtkada.Properties;
 with Gtkada.Types;
 
 with Pango;
