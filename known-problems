@@ -1,3 +1,11 @@
+
+Known problems fixed in GtkAda 2.8.2
+
+- F206-018 GtkAda project files not working under Windows
+  Problem:    The project files where not usable on Windows. The build
+              options had to be passed explicitly on the command line.
+  Workaround: Pass options explicitly using the gtkada-config script.
+
 Known problems fixed in GtkAda 2.8.1
 
 - F606-001 GtkAda 2.8.0 does not run in 16bits mode under Windows
@@ -15,5 +23,4 @@ Known problems fixed in GtkAda 2.4.3
               where Integer'Size /= Long_Integer'Size
   Workaround: No work around needed. When upgrading to GtkAda 2.4.3, some
               code changes might be needed (Handler.Signal -> Handler.Id,
-              Null_Signal_Id -> Null_Handler_Id)
-
+              Null_Signal_Id -> Null_Handler_Id).
