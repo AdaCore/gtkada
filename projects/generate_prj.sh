@@ -43,7 +43,8 @@ echo_linker() {
       case `uname` in
          *_NT*)
             echo ","
-            echo -n "        \"-luser32\""
+            echo "        \"-luser32\","
+	    echo -n "        \"-L../../bin\""
          ;;
       esac
 
