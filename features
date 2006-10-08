@@ -12,10 +12,15 @@ of the feature.
 New features in GtkAda 2.8.2
 ----------------------------
 
+F927-011 New Gtk.File_Chooser* widgets bound (2006-10-06)
+
+  The Gtk+ widgets Gtk_File_Chooser (and children) have been bound and replace
+  the obsolescent Gtk_File_Selection.
+
 F505-009 GtkAda shared lib on Windows (2006-10-08)
 
   GtkAda shared library is now built on Windows. This is also the
-  default mode.
+  default mode. The use the GtkAda static library, use gtkada_static.gpr.
 
 New features in GtkAda 2.8.1
 ----------------------------
