@@ -4,7 +4,8 @@ Known problems fixed in GtkAda 2.8.2
 - F206-018 GtkAda project files not working under Windows
   Problem:    The project files where not usable on Windows. The build
               options had to be passed explicitly on the command line.
-  Workaround: Pass options explicitly using the gtkada-config script.
+  Workaround: Pass options explicitly on the command line or using a manual
+              project file.
 
 Known problems fixed in GtkAda 2.8.1
 
