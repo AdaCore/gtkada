@@ -9,6 +9,14 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
+New features in GtkAda 2.8.2
+----------------------------
+
+F505-009 GtkAda shared lib on Windows (2006-10-08)
+
+  GtkAda shared library is now built on Windows. This is also the
+  default mode.
+
 New features in GtkAda 2.8.1
 ----------------------------
 
