@@ -194,8 +194,23 @@ package Glib.Generic_Properties is
       function Get_Property
         (Object : access Glib.Object.GObject_Record'Class;
          Name   : Property_RO) return Boxed_Type;
-      --  Get a property from Object
+      --  Get a property from Object.
+      --  Unset_Value is raised if the property is not set
+
+      procedure Set_Value
+        (Value  : out Glib.Values.GValue;
+         Val    : Boxed_Type);
+      --  Store Val in Value. The latter is properly initialized, and reference
+      --  counting is handled automatically. You must Unset Value when you are
+      --  done using it.
+
+      function Get_Value (Value : Glib.Values.GValue) return Boxed_Type;
+      --  Get the value stored in Value. Reference counting is automatically
+      --  handled, and the returned value has been properly referenced.
+      --  Unset_Value is raised if Value contains no data
 
    end Generic_Internal_Boxed_Property;
+
+   Unset_Value : exception;
 
 end Glib.Generic_Properties;

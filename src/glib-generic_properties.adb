@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2006 AdaCore                   --
+--                 Copyright (C) 2001-2006, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,10 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Object; use Glib.Object;
-with Glib.Values; use Glib.Values;
+with Glib.Object;     use Glib.Object;
+with Glib.Values;     use Glib.Values;
 with Unchecked_Conversion;
-with System;      use System;
+with System;          use System;
+
+--  Can't with because of elaboration order issues
+--  with Glib.Properties;
 
 package body Glib.Generic_Properties is
 
@@ -210,6 +213,33 @@ package body Glib.Generic_Properties is
       function Conv is new Unchecked_Conversion
         (System.Address, Boxed_Access);
 
+      ---------------
+      -- Set_Value --
+      ---------------
+
+      procedure Set_Value
+        (Value  : out Glib.Values.GValue;
+         Val    : Boxed_Type)
+      is
+      begin
+         Init (Value, Get_Type);
+         Set_Boxed (Value, Copy (Val));
+      end Set_Value;
+
+      ---------------
+      -- Get_Value --
+      ---------------
+
+      function Get_Value (Value : Glib.Values.GValue) return Boxed_Type is
+         Boxed : constant Boxed_Access := Conv (Get_Boxed (Value));
+      begin
+         if Boxed = null then
+            raise Unset_Value;
+         else
+            return Boxed.all;
+         end if;
+      end Get_Value;
+
       ------------------
       -- Set_Property --
       ------------------
@@ -220,16 +250,16 @@ package body Glib.Generic_Properties is
          Value  : Boxed_Type)
       is
          procedure Internal
-           (Object : System.Address;
-            Name   : Property;
-            Value  : in out GValue);
+           (Object : System.Address; Name : String; Value : in out GValue);
          pragma Import (C, Internal, "g_object_set_property");
+         --  Internal function to set the properties (can't use the one from
+         --  glib.properties because of elaboration order issues
 
          Val : GValue;
       begin
-         Init (Val, Get_Type);
-         Set_Boxed (Val, Copy (Value));
-         Internal (Get_Object (Object), Name, Val);
+         Set_Value (Val, Value);
+         Internal (Get_Object (Object), Property_Name (Name) & ASCII.NUL, Val);
+         Unset (Val);
       end Set_Property;
 
       ------------------
@@ -257,13 +287,14 @@ package body Glib.Generic_Properties is
             Value  : in out GValue);
          pragma Import (C, Internal, "g_object_get_property");
 
-         Boxed : Boxed_Access;
          Value : GValue;
+         Result : Boxed_Type;
       begin
          Init (Value, Get_Type);
          Internal (Get_Object (Object), Name, Value);
-         Boxed := Conv (Get_Boxed (Value));
-         return Boxed.all;
+         Result := Get_Value (Value);
+         Unset (Value);
+         return Result;
       end Get_Property;
    end Generic_Internal_Boxed_Property;
 
