@@ -52,6 +52,7 @@
 
 with Glib; use Glib;
 with Glib.Object;
+with Glib.Values;
 with Gdk.Visual;
 
 package Gdk.Color is
@@ -281,6 +282,10 @@ package Gdk.Color is
    function Get_Property
      (Object : access Glib.Object.GObject_Record'Class;
       Name   : Property_Gdk_Color) return Gdk_Color;
+
+   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_Color);
+   function  Get_Value (Value : Glib.Values.GValue) return Gdk_Color;
+   --  Store or retrieve a color from a value
 
    --  </doc_ignore>
 

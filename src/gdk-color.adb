@@ -38,6 +38,11 @@ package body Gdk.Color is
    package Color_Properties is new Generic_Internal_Boxed_Property
      (Gdk_Color, Gdk_Color_Type, Internal_Copy);
 
+   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_Color)
+                        renames Color_Properties.Set_Value;
+   function  Get_Value (Value : Glib.Values.GValue) return Gdk_Color
+                        renames Color_Properties.Get_Value;
+
    -------------------
    -- Internal_Copy --
    -------------------
