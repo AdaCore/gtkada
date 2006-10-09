@@ -109,16 +109,15 @@ package body Gtk.Color_Button is
    -- Get_Color --
    ---------------
 
-   procedure Get_Color
-     (Button : access Gtk_Color_Button_Record;
-      Color  : out Gdk_Color)
+   function Get_Color
+     (Button : access Gtk_Color_Button_Record) return Gdk.Color.Gdk_Color
    is
       procedure Internal (Button : System.Address; Color : System.Address);
       pragma Import (C, Internal, "gtk_color_button_get_color");
       C : aliased Gdk_Color;
    begin
       Internal (Get_Object (Button), C'Address);
-      Color := C;
+      return C;
    end Get_Color;
 
    ---------------

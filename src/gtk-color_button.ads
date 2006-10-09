@@ -67,9 +67,8 @@ package Gtk.Color_Button is
    procedure Set_Color
      (Button : access Gtk_Color_Button_Record;
       Color  : Gdk.Color.Gdk_Color);
-   procedure Get_Color
-     (Button : access Gtk_Color_Button_Record;
-      Color  : out Gdk.Color.Gdk_Color);
+   function Get_Color
+     (Button : access Gtk_Color_Button_Record) return Gdk.Color.Gdk_Color;
    --  Sets the current color to be Color.
 
    procedure Set_Alpha
@@ -121,7 +120,7 @@ package Gtk.Color_Button is
    --  </properties>
 
    Alpha_Property     : constant Glib.Properties.Property_Uint;
-   --  Color_Property : constant Glib.Properties.Property_Boxed;
+   Color_Property     : constant Gdk.Color.Property_Gdk_Color;
    Title_Property     : constant Glib.Properties.Property_String;
    Use_Alpha_Property : constant Glib.Properties.Property_Boolean;
 
@@ -147,8 +146,8 @@ package Gtk.Color_Button is
 private
    Alpha_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("alpha");
---     Color_Property : constant Glib.Properties.Property_Boxed :=
---       Glib.Properties.Build ("color");
+   Color_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Property_Gdk_Color (Glib.Build ("color"));
    Title_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("title");
    Use_Alpha_Property : constant Glib.Properties.Property_Boolean :=
