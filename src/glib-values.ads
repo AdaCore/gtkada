@@ -147,6 +147,8 @@ package Glib.Values is
    --       Val := To_Ref_Counted_Value (Get_Boxed (Value));
    --       Unset (Value);
    --    end;
+   --
+   --  See also Glib.Generic_Properties.Generic_Internal_Boxed_Property.
 
    procedure Set_Enum (Value : in out GValue; V_Enum : Gint);
    function Get_Enum (Value : GValue) return Glib.Gint;

@@ -144,6 +144,7 @@ package Glib.Properties is
    --  If you do not have a Param_Spec, this can be replaced with:
    --      Init (Value, GType_Int);
    --      Get_Property (Object, Property_Name (Property), Value);
+   --  Value must be Unset by the caller to free memory
 
    --  Special handling of string properties
 
