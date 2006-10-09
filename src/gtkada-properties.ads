@@ -26,13 +26,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
 --  This package provides a dialog, that you can use a development help in your
 --  own application.
 --  This dialog allows you to select any widget from your application, and see
 --  its properties, or even change them dynamically. This helps in analyzing
 --  the effect of properties.
+--  </description>
+--  <group>Miscellaneous</group>
 
 with Glib.Object;
+with Gtk.Widget;
 
 package Gtkada.Properties is
 
@@ -40,5 +44,13 @@ package Gtkada.Properties is
      (Object : access Glib.Object.GObject_Record'Class);
    --  Popup a dialog to view and edit the properties of Object. If such a
    --  dialog is already displayed for Object, it is made visible.
+
+   function Widget_At
+     (Top  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X, Y : Glib.Gint) return Gtk.Widget.Gtk_Widget;
+   --  Return the widget at the given coordinates within Top
+
+   function Widget_At_Pointer return Gtk.Widget.Gtk_Widget;
+   --  Return the widget below the mouse pointer
 
 end Gtkada.Properties;
