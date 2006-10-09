@@ -48,7 +48,7 @@
 --      "roots" of the filesystem.
 --
 --  File Names and Encodings
---  ========================
+--
 --  When the user is finished selecting files in a Gtk_File_Chooser, your
 --  program can get the selected names either as filenames or as URIs. For
 --  URIs, the normal escaping rules are applied if the URI contains non-ASCII
@@ -68,7 +68,7 @@
 --  update the contents of the preview.
 --
 --  Preview widgets
---  ===============
+--
 --  You can add a custom preview widget to a file chooser and then get
 --  notification about when the preview needs to be updated. To install a
 --  preview widget, use Set_Preview_Widget. Then, connect to the
@@ -81,7 +81,7 @@
 --  your callback could successfully generate a preview.
 --
 --  Adding Extra Widgets
---  ====================
+
 --  You can add extra widgets to a file chooser to provide options that are not
 --  present in the default design. For example, you can add a toggle button to
 --  give the user the option to open a file in read-only mode. You can use
@@ -92,7 +92,7 @@
 --  Then, set the container as the whole extra widget.
 --
 --  Key bindings
---  ============
+--
 --  The following default key bindings are provided, but you can use a gtkrc
 --  file to override them if you need (see gtk-rc.ads).
 --     Signal name    | Key binding
