@@ -44,6 +44,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Selectors</group>
 --  <screenshot>file-button.png</screenshot>
+--  <testgtk>create_file_chooser.adb</testgtk>
 
 with Glib.Properties;
 with Glib.Types;
