@@ -128,6 +128,7 @@ with Create_Toolbar;
 with Create_Tooltips;
 with Create_Tree_Filter;
 with Create_Tree_View;
+with Create_UI_Manager;
 with Common; use Common;
 with View_Gl; use View_Gl;
 
@@ -347,6 +348,8 @@ package body Main_Windows is
                                          Create_Tree_Filter.Help'Access),
       (NS ("tree view"),        Complex, Create_Tree_View.Run'Access,
                                          Create_Tree_View.Help'Access),
+      (NS ("UI manager"),       Complex, Create_UI_Manager.Run'Access,
+                                         Create_UI_Manager.Help'Access),
       (NS ("WM hints"),         Misc,    null, null)
       );
 
