@@ -64,6 +64,7 @@ with Pango.Font;          use Pango.Font;
 
 with Ada.Strings.Fixed;
 
+with Create_About;
 with Create_Alignment;
 with Create_Arrow;
 with Create_Box;
@@ -204,7 +205,9 @@ package body Main_Windows is
    --  The list of items to put in the tree for the gtk demos
 
    Gtk_Demos : constant Tree_Item_Array :=
-     ((NS ("alignment"),        Box,     Create_Alignment.Run'Access,
+     ((NS ("about dialog"),     Base,    Create_About.Run'Access,
+                                         Create_About.Help'Access),
+      (NS ("alignment"),        Box,     Create_Alignment.Run'Access,
                                          Create_Alignment.Help'Access),
       (NS ("animation"),        Pixbuf,  Create_Pixbuf.Run'Access,
                                          Create_Pixbuf.Help'Access),
@@ -599,9 +602,9 @@ package body Main_Windows is
    is
       pragma Unreferenced (Object);
    begin
-      --  Do not allow the user to kill the window by clicking on the icon,
-      --  he has to press explicitly "Quit"
-      return True;
+      --  We could return True to force the user to kill the window through the
+      --  "Quit" button, as opposed to the icon in the title bar.
+      return False;
    end Delete_Event;
 
    --------------
