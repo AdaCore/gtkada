@@ -46,7 +46,7 @@ package Gtk.Color_Button is
    type Gtk_Color_Button is access all Gtk_Color_Button_Record'Class;
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_File_Chooser
+   --  Return the internal value associated with a Gtk_Color_Button.
 
    procedure Gtk_New (Button : out Gtk_Color_Button);
    procedure Initialize (Button : access Gtk_Color_Button_Record'Class);
