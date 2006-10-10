@@ -169,6 +169,10 @@ package Gtk.Settings is
    --  - "gtk-fallback-icon-theme": String
    --    Name of a icon theme to fall back to.
    --
+   --  - "gtk-file-chooser-backend": String
+   --    The default file system backend to use in the file chooser. See also
+   --    Gtk.File_System
+   --
    --  - "gtk-font-name": String
    --    Name of default font to use.
    --
@@ -245,6 +249,7 @@ package Gtk.Settings is
    Gtk_Double_Click_Time     : constant String := "gtk-double-click-time";
    Gtk_Entry_Select_On_Focus : constant String := "gtk-entry-select-on-focus";
    Gtk_Fallback_Icon_Theme   : constant String := "gtk-fallback-icon-theme";
+   Gtk_File_Chooser_Backend  : constant String := "gtk-file-chooser-backend";
    Gtk_Font_Name             : constant String := "gtk-font-name";
    Gtk_Icon_Sizes            : constant String := "gtk-icon-sizes";
    Gtk_Icon_Theme_Name       : constant String := "gtk-icon-theme-name";
