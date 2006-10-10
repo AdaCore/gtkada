@@ -75,6 +75,7 @@ with Gdk.Window;
 with Gdk.Window_Attr;
 
 with Gtk.Type_Conversion;
+with Gtk.About_Dialog;
 with Gtk.Accel_Group;
 with Gtk.Accel_Label;
 with Gtk.Accel_Map;
