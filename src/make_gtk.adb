@@ -125,6 +125,7 @@ with Gtk.File_Chooser_Dialog;
 with Gtk.File_Chooser_Widget;
 with Gtk.File_Selection;
 with Gtk.Fixed;
+with Gtk.Font_Button;
 with Gtk.Font_Selection;
 with Gtk.Font_Selection_Dialog;
 with Gtk.Frame;
