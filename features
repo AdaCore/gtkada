@@ -12,6 +12,14 @@ of the feature.
 New features in GtkAda 2.8.2
 ----------------------------
 
+F515-002 New widgets bound (2006-10-11)
+
+  Missing widgets present in gtk+ 2.8.17, and not bound in GtkAda so far, have
+  been added. This includes among others: Gtk_Icon_View, Gtk_Message_Dialog,
+  Gtk_About_Dialog, Gtk_Action, Gtk_Action_Group, Gtk_UI_Manager,
+  Gtk_Color_Button, Gtk_Font_Button, Gtk_Tree_Model_Filter, Gtk_Tree_Sortable,
+  Gtk_Combo_Box
+
 F927-011 New Gtk.File_Chooser* widgets bound (2006-10-06)
 
   The Gtk+ widgets Gtk_File_Chooser (and children) have been bound and replace
