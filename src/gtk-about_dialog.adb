@@ -27,69 +27,11 @@
 -----------------------------------------------------------------------
 
 with Gdk.Pixbuf;            use Gdk.Pixbuf;
+with Gtkada.Types;
 with GNAT.Strings;          use GNAT.Strings;
 with Interfaces.C.Strings;  use Interfaces.C, Interfaces.C.Strings;
 
 package body Gtk.About_Dialog is
-
-   type chars_ptr_array_access is access chars_ptr_array (size_t);
-
-   function To_String_List (C : chars_ptr_array) return String_List;
-   --  Converts C into a String_List
-
-   function From_String_List (C : String_List) return chars_ptr_array;
-   --  Converts C into a chars_ptr_array
-
-   procedure Free (C : in out chars_ptr_array);
-   --  Free the strings in C
-
-   ----------
-   -- Free --
-   ----------
-
-   procedure Free (C : in out chars_ptr_array) is
-   begin
-      for S in C'Range loop
-         Free (C (S));
-      end loop;
-   end Free;
-
-   --------------------
-   -- To_String_List --
-   --------------------
-
-   function To_String_List (C : chars_ptr_array) return String_List is
-      Count : Natural := 0;
-   begin
-      while C (size_t (Count)) /= Null_Ptr loop
-         Count := Count + 1;
-      end loop;
-
-      declare
-         Result : String_List (1 .. Count);
-      begin
-         Count := 0;
-         while C (size_t (Count)) /= Null_Ptr loop
-            Result (Count + 1) := new String'(Value (C (size_t (Count))));
-            Count := Count + 1;
-         end loop;
-         return Result;
-      end;
-   end To_String_List;
-
-   ----------------------
-   -- From_String_List --
-   ----------------------
-
-   function From_String_List (C : String_List) return chars_ptr_array is
-      Result : chars_ptr_array (0 .. C'Length);
-   begin
-      for S in C'Range loop
-         Result (size_t (S - C'First)) := New_String (C (S).all);
-      end loop;
-      Result (Result'Last) := Null_Ptr;
-      return Result;
-   end From_String_List;
 
    -----------------
    -- Get_Artists --
@@ -98,11 +40,12 @@ package body Gtk.About_Dialog is
    function Get_Artists
      (About : access Gtk_About_Dialog_Record) return String_List
    is
-      function Internal (About : System.Address) return chars_ptr_array_access;
+      function Internal
+        (About : System.Address) return Gtkada.Types.chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_artists");
    begin
       --  Returned value owned by gtk+, and must not be freed
-      return To_String_List (Internal (Get_Object (About)).all);
+      return Gtkada.Types.To_String_List (Internal (Get_Object (About)).all);
    end Get_Artists;
 
    -----------------
@@ -112,11 +55,12 @@ package body Gtk.About_Dialog is
    function Get_Authors
      (About : access Gtk_About_Dialog_Record) return String_List
    is
-      function Internal (About : System.Address) return chars_ptr_array_access;
+      function Internal
+        (About : System.Address) return Gtkada.Types.chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_authors");
    begin
       --  Returned value owned by gtk+
-      return To_String_List (Internal (Get_Object (About)).all);
+      return Gtkada.Types.To_String_List (Internal (Get_Object (About)).all);
    end Get_Authors;
 
    ------------------
@@ -154,11 +98,12 @@ package body Gtk.About_Dialog is
    function Get_Documenters
      (About : access Gtk_About_Dialog_Record) return String_List
    is
-      function Internal (About : System.Address) return chars_ptr_array_access;
+      function Internal
+        (About : System.Address) return Gtkada.Types.chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_documenters");
    begin
       --  Returned value owned by gtk+
-      return To_String_List (Internal (Get_Object (About)).all);
+      return Gtkada.Types.To_String_List (Internal (Get_Object (About)).all);
    end Get_Documenters;
 
    -----------------
@@ -322,10 +267,10 @@ package body Gtk.About_Dialog is
    is
       procedure Internal (About : System.Address; Artists : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_artists");
-      Val : aliased chars_ptr_array := From_String_List (Artists);
+      Val : aliased chars_ptr_array := Gtkada.Types.From_String_List (Artists);
    begin
       Internal (Get_Object (About), Val (Val'First)'Address);
-      Free (Val);
+      Gtkada.Types.Free (Val);
    end Set_Artists;
 
    -----------------
@@ -338,10 +283,10 @@ package body Gtk.About_Dialog is
    is
       procedure Internal (About : System.Address; Authors : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_authors");
-      Val : aliased chars_ptr_array := From_String_List (Authors);
+      Val : aliased chars_ptr_array := Gtkada.Types.From_String_List (Authors);
    begin
       Internal (Get_Object (About), Val (Val'First)'Address);
-      Free (Val);
+      Gtkada.Types.Free (Val);
    end Set_Authors;
 
    ------------------
@@ -386,10 +331,11 @@ package body Gtk.About_Dialog is
    is
       procedure Internal (About, Documenters : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_documenters");
-      Val : aliased chars_ptr_array := From_String_List (Documenters);
+      Val : aliased chars_ptr_array :=
+        Gtkada.Types.From_String_List (Documenters);
    begin
       Internal (Get_Object (About), Val (Val'First)'Address);
-      Free (Val);
+      Gtkada.Types.Free (Val);
    end Set_Documenters;
 
    -----------------
@@ -434,15 +380,10 @@ package body Gtk.About_Dialog is
    is
       procedure Internal (About : System.Address; Icon_Name : chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo_icon_name");
-      Str : chars_ptr := Null_Ptr;
+      Str : chars_ptr := Gtkada.Types.String_Or_Null (Icon_Name);
    begin
-      if Icon_Name /= "" then
-         Str := New_String (Icon_Name);
-      end if;
       Internal (Get_Object (About), Str);
-      if Str /= Null_Ptr then
-         Free (Str);
-      end if;
+      Free (Str);
    end Set_Logo_Icon_Name;
 
    --------------
