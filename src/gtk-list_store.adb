@@ -151,6 +151,27 @@ package body Gtk.List_Store is
      (Tree_Store : access Gtk_List_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
+      Value      : Boolean)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gboolean);
+      pragma Import (C, Internal, "ada_gtk_list_store_set_boolean");
+
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Boolean'Pos (Value));
+   end Set;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
       Value      : Gdk.Pixbuf.Gdk_Pixbuf)
    is
       procedure Internal

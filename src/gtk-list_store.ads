@@ -95,6 +95,13 @@ package Gtk.List_Store is
       Value      : Gdk.Pixbuf.Gdk_Pixbuf);
    --  Same as above for a pixbuf
 
+   procedure Set
+     (Tree_Store : access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Boolean);
+   --  Same as above for a boolean
+
    procedure Remove
      (List_Store : access Gtk_List_Store_Record;
       Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
