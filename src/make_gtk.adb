@@ -155,6 +155,7 @@ with Gtk.Menu_Bar;
 with Gtk.Menu_Item;
 with Gtk.Menu_Shell;
 with Gtk.Menu_Tool_Button;
+with Gtk.Message_Dialog;
 with Gtk.Misc;
 with Gtk.Notebook;
 with Gtk.Object;

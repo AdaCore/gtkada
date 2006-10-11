@@ -4423,3 +4423,44 @@ ada_gtk_file_chooser_dialog_new_with_backend
     (title, parent, action, backend, NULL);
 }
 
+/**************************************************************
+ **  Gtk_Message_Dialog
+**************************************************************/
+
+void
+ada_gtk_message_dialog_format_secondary_markup
+  (GtkMessageDialog* dialog, gchar* msg)
+{
+  gtk_message_dialog_format_secondary_markup (dialog, msg);
+}
+
+void
+ada_gtk_message_dialog_format_secondary_text
+  (GtkMessageDialog* dialog, gchar* msg)
+{
+  gtk_message_dialog_format_secondary_text (dialog, msg);
+}
+
+GtkWidget*
+ada_gtk_message_dialog_new
+  (GtkWindow      *parent,
+  GtkDialogFlags  flags,
+  GtkMessageType  type,
+  GtkButtonsType  buttons,
+  const gchar    *message)
+{
+  return gtk_message_dialog_new (parent, flags, type, buttons, message);
+}
+
+GtkWidget*
+ada_gtk_message_dialog_new_with_markup
+  (GtkWindow      *parent,
+  GtkDialogFlags  flags,
+  GtkMessageType  type,
+  GtkButtonsType  buttons,
+  const gchar    *message)
+{
+  return gtk_message_dialog_new_with_markup
+    (parent, flags, type, buttons, message);
+}
+
