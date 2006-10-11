@@ -132,6 +132,7 @@ with Gtk.Font_Selection;
 with Gtk.Font_Selection_Dialog;
 with Gtk.Frame;
 with Gtk.Gamma_Curve;
+with Gtk.GC;
 with Gtk.GEntry;
 with Gtk.GRange;
 with Gtk.Handle_Box;
