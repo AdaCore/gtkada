@@ -108,16 +108,20 @@ package Gtk.Cell_Renderer_Toggle is
    --  Type:  Boolean
    --  Descr: The inconsistent state of the button
    --
+   --  Name: Indicator_Size_Property
+   --  Type: Gint
+   --
    --  Name:  Radio_Property
    --  Type:  Boolean
    --  Descr: Draw the toggle button as a radio button
    --
    --  </properties>
 
-   Activatable_Property  : constant Glib.Properties.Property_Boolean;
-   Active_Property       : constant Glib.Properties.Property_Boolean;
-   Inconsistent_Property : constant Glib.Properties.Property_Boolean;
-   Radio_Property        : constant Glib.Properties.Property_Boolean;
+   Activatable_Property    : constant Glib.Properties.Property_Boolean;
+   Active_Property         : constant Glib.Properties.Property_Boolean;
+   Inconsistent_Property   : constant Glib.Properties.Property_Boolean;
+   Indicator_Size_Property : constant Glib.Properties.Property_Int;
+   Radio_Property          : constant Glib.Properties.Property_Boolean;
 
 private
    type Gtk_Cell_Renderer_Toggle_Record is
@@ -129,6 +133,8 @@ private
      Glib.Properties.Build ("active");
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inconsistent");
+   Indicator_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("indicator-size");
    Radio_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("radio");
 
