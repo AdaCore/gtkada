@@ -28,6 +28,7 @@
 
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
+with Gtkada.Types;
 with Gtk.Action;           use Gtk.Action;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
@@ -57,23 +58,6 @@ package body Gtk.Action_Group is
      (Local_Radio_Action_User_Data_Access, System.Address);
    procedure Unchecked_Free is new Ada.Unchecked_Deallocation
      (Local_Radio_Action_User_Data, Local_Radio_Action_User_Data_Access);
-
-   function String_Or_Null (S : String) return chars_ptr;
-   --  Return Null_Ptr if S is the empty string, or a newly allocated string
-   --  otherwise
-
-   --------------------
-   -- String_Or_Null --
-   --------------------
-
-   function String_Or_Null (S : String) return chars_ptr is
-   begin
-      if S = "" then
-         return Null_Ptr;
-      else
-         return New_String (S);
-      end if;
-   end String_Or_Null;
 
    ----------------
    -- Add_Action --
@@ -105,7 +89,7 @@ package body Gtk.Action_Group is
          Action       : System.Address;
          Accelerator  : chars_ptr);
       pragma Import (C, Internal, "gtk_action_group_add_action_with_accel");
-      A : chars_ptr := String_Or_Null (Accelerator);
+      A : chars_ptr := Gtkada.Types.String_Or_Null (Accelerator);
    begin
       Internal (Get_Object (Action_Group), Get_Object (Action), A);
       Free (A);
@@ -123,11 +107,11 @@ package body Gtk.Action_Group is
       Tooltip     : String := "";
       Callback    : Action_Callback := null) return Action_Entry is
    begin
-      return (Name        => New_String (Name),
-              Label       => String_Or_Null (Label),
-              Stock_Id    => String_Or_Null (Stock_Id),
-              Accelerator => String_Or_Null (Accelerator),
-              Tooltip     => String_Or_Null (Tooltip),
+      return (Name        => Gtkada.Types.String_Or_Null (Name),
+              Label       => Gtkada.Types.String_Or_Null (Label),
+              Stock_Id    => Gtkada.Types.String_Or_Null (Stock_Id),
+              Accelerator => Gtkada.Types.String_Or_Null (Accelerator),
+              Tooltip     => Gtkada.Types.String_Or_Null (Tooltip),
               Callback    => Callback);
    end Create;
 
@@ -144,11 +128,11 @@ package body Gtk.Action_Group is
       Callback    : Action_Callback := null;
       Is_Active   : Boolean := True) return Toggle_Action_Entry is
    begin
-      return (Name        => New_String (Name),
-              Label       => String_Or_Null (Label),
-              Stock_Id    => String_Or_Null (Stock_Id),
-              Accelerator => String_Or_Null (Accelerator),
-              Tooltip     => String_Or_Null (Tooltip),
+      return (Name        => Gtkada.Types.String_Or_Null (Name),
+              Label       => Gtkada.Types.String_Or_Null (Label),
+              Stock_Id    => Gtkada.Types.String_Or_Null (Stock_Id),
+              Accelerator => Gtkada.Types.String_Or_Null (Accelerator),
+              Tooltip     => Gtkada.Types.String_Or_Null (Tooltip),
               Callback    => Callback,
               Is_Active   => Boolean'Pos (Is_Active));
    end Create;
@@ -165,11 +149,11 @@ package body Gtk.Action_Group is
       Tooltip     : String := "";
       Value       : Glib.Gint) return Radio_Action_Entry is
    begin
-      return (Name        => New_String (Name),
-              Label       => New_String (Label),
-              Stock_Id    => String_Or_Null (Stock_Id),
-              Accelerator => String_Or_Null (Accelerator),
-              Tooltip     => String_Or_Null (Tooltip),
+      return (Name        => Gtkada.Types.String_Or_Null (Name),
+              Label       => Gtkada.Types.String_Or_Null (Label),
+              Stock_Id    => Gtkada.Types.String_Or_Null (Stock_Id),
+              Accelerator => Gtkada.Types.String_Or_Null (Accelerator),
+              Tooltip     => Gtkada.Types.String_Or_Null (Tooltip),
               Value       => Value);
    end Create;
 
