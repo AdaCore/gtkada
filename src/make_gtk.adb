@@ -195,6 +195,7 @@ with Gtk.Text_Mark;
 with Gtk.Text_Tag;
 with Gtk.Text_Tag_Table;
 with Gtk.Text_View;
+with Gtk.Toggle_Action;
 with Gtk.Toggle_Tool_Button;
 with Gtk.Tool_Button;
 with Gtk.Tool_Item;
