@@ -33,6 +33,7 @@
 --
 --  </description>
 --  <group>Windows</group>
+--  <see>Gtk.Message_Dialog</see>
 
 with Glib;
 with Gtk.Dialog; use Gtk.Dialog;
