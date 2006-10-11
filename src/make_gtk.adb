@@ -87,6 +87,7 @@ with Gtk.Arguments;
 with Gtk.Arrow;
 with Gtk.Aspect_Frame;
 with Gtk.Bin;
+with Gtk.Bindings;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Button_Box;
