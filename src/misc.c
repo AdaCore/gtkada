@@ -4473,3 +4473,44 @@ ada_gtk_message_dialog_new_with_markup
     (parent, flags, type, buttons, message);
 }
 
+/**************************************************************
+ **  Gtk_Bindings
+**************************************************************/
+
+void
+ada_gtk_binding_entry_add_signal_NO
+  (GtkBindingSet* set, guint keyval, GdkModifierType modifier,
+   const gchar* signal_name)
+{
+  gtk_binding_entry_add_signal (set, keyval, modifier, signal_name, 0);
+}
+
+void
+ada_gtk_binding_entry_add_signal_int
+  (GtkBindingSet* set, guint keyval, GdkModifierType modifier,
+   const gchar* signal_name, gint arg1)
+{
+  gtk_binding_entry_add_signal
+    (set, keyval, modifier, signal_name, 1,
+     G_TYPE_INT, arg1);
+}
+
+void
+ada_gtk_binding_entry_add_signal_int_int
+  (GtkBindingSet* set, guint keyval, GdkModifierType modifier,
+   const gchar* signal_name, gint arg1, gint arg2)
+{
+  gtk_binding_entry_add_signal
+    (set, keyval, modifier, signal_name, 2,
+     G_TYPE_INT, arg1, G_TYPE_INT, arg2);
+}
+
+void
+ada_gtk_binding_entry_add_signal_bool
+  (GtkBindingSet* set, guint keyval, GdkModifierType modifier,
+   const gchar* signal_name, gboolean arg1)
+{
+  gtk_binding_entry_add_signal
+    (set, keyval, modifier, signal_name, 1,
+     G_TYPE_BOOLEAN, arg1);
+}
