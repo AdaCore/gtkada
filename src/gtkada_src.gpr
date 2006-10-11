@@ -1,10 +1,9 @@
-with "../src/gtkada_src";
-
-project TestGtk is
-   for Languages use ("Ada");
-   for Main use ("testgtk.adb");
-   for Source_Dirs use ("./");
-   for Object_Dir use ".";
+project GtkAda_Src is
+   for Languages use ("C", "Ada");
+   for Main use ("make_gtk.adb");
+   for Source_Dirs use
+     ("./", "./glade/", "./gnome/", "./gtkextra/", "./opengl");
+   for Object_Dir use "./lib-obj";
 
    package Compiler is
       for Default_Switches ("Ada") use ("-gnatwa", "-gnatay");
@@ -16,4 +15,4 @@ project TestGtk is
       for VCS_File_Check use "ci_check";
    end IDE;
 
-end TestGtk;
+end GtkAda_Src;
