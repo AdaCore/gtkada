@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2006, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtkada.Types;
 with Interfaces.C.Strings;        use Interfaces.C.Strings;
 with Glib.Values;                 use Glib.Values;
 with Gdk.Color;                   use Gdk.Color;
@@ -1661,15 +1662,11 @@ package body Gtk.Widget is
          Group      : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_accel_path");
 
-      S : Interfaces.C.Strings.chars_ptr;
+      S : Interfaces.C.Strings.chars_ptr :=
+        Gtkada.Types.String_Or_Null (Accel_Path);
    begin
-      if Accel_Path = "" then
-         Internal (Get_Object (Widget), Null_Ptr, Get_Object (Group));
-      else
-         S := New_String (Accel_Path);
-         Internal (Get_Object (Widget), S, Get_Object (Group));
-         Free (S);
-      end if;
+      Internal (Get_Object (Widget), S, Get_Object (Group));
+      Free (S);
    end Set_Accel_Path;
 
    -----------------------

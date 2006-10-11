@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with Ada.Unchecked_Conversion;
+with Gtkada.Types;
 with System;               use System;
 with Gdk.Pixbuf;           use Gdk.Pixbuf;
 with Gtk;                  use Gtk;
@@ -303,14 +304,10 @@ package body Gtk.Icon_Factory is
          Detail    : chars_ptr)
          return Gdk_Pixbuf;
       pragma Import (C, Internal, "gtk_icon_set_render_icon");
-      Str : chars_ptr := Null_Ptr;
+      Str : chars_ptr := Gtkada.Types.String_Or_Null (Detail);
       W   : System.Address := System.Null_Address;
       Result : Gdk_Pixbuf;
    begin
-      if Detail /= "" then
-         Str := New_String (Detail);
-      end if;
-
       if Widget /= null then
          W := Get_Object (Widget);
       end if;
@@ -349,14 +346,10 @@ package body Gtk.Icon_Factory is
       pragma Import (C, Internal, "gtk_style_render_icon");
       --  External binding: gtk_style_render_icon
 
-      Str    : chars_ptr := Null_Ptr;
+      Str    : chars_ptr := Gtkada.Types.String_Or_Null (Detail);
       W      : System.Address := System.Null_Address;
       Result : Gdk_Pixbuf;
    begin
-      if Detail /= "" then
-         Str := New_String (Detail);
-      end if;
-
       if Widget /= null then
          W := Get_Object (Widget);
       end if;

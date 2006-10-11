@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2006, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +30,7 @@
 with Gdk.Rectangle; use Gdk.Rectangle;
 with Gdk.Window;    use Gdk.Window;
 with Gdk.Types;     use Gdk.Types;
+with Gtkada.Types;  use Gtkada.Types;
 with Interfaces.C;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;  use Interfaces.C.Strings;
@@ -1271,13 +1272,16 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_String (Event : Gdk_Event; Str : String) is
-      function Internal (Event : Gdk_Event; Str : chars_ptr) return Gint;
+      function Internal
+        (Event : Gdk_Event; Str : Interfaces.C.Strings.chars_ptr) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_string");
-
+      S : Interfaces.C.Strings.chars_ptr := String_Or_Null (Str);
    begin
-      if Internal (Event, New_String (Str)) = 0 then
+      if Internal (Event, S) = 0 then
+         Free (S);
          raise Invalid_Field;
       end if;
+      Free (S);
    end Set_String;
 
    ------------------

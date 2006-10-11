@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006, AdaCore                        --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtkada.Types;
 with Gtk.Menu;             use Gtk.Menu;
 with Gtk.Tooltips;         use Gtk.Tooltips;
 with Gtk.Widget;           use Gtk.Widget;
@@ -78,12 +79,9 @@ package body Gtk.Menu_Tool_Button is
          Label       : chars_ptr)
          return System.Address;
       pragma Import (C, Internal, "gtk_menu_tool_button_new");
-      Str : chars_ptr := Null_Ptr;
+      Str : chars_ptr := Gtkada.Types.String_Or_Null (Label);
       Obj : System.Address := System.Null_Address;
    begin
-      if Label /= "" then
-         Str := New_String (Label);
-      end if;
       if Icon_Widget /= null then
          Obj := Get_Object (Icon_Widget);
       end if;

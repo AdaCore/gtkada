@@ -1241,13 +1241,9 @@ package body Gtk.Text_Buffer is
          return System.Address;
       pragma Import (C, Internal, "ada_gtk_text_buffer_create_tag");
       Stub : Gtk_Text_Tag_Record;
-      Str  : chars_ptr := Null_Ptr;
+      Str  : chars_ptr := Gtkada.Types.String_Or_Null (Tag_Name);
       Tag  : Gtk_Text_Tag;
    begin
-      if Tag_Name /= "" then
-         Str := New_String (Tag_Name);
-      end if;
-
       Tag := Gtk_Text_Tag
         (Get_User_Data (Internal (Get_Object (Buffer), Str), Stub));
       Free (Str);

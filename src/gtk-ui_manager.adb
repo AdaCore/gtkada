@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtkada.Types;
 with Glib.Error;           use Glib.Error;
 with Gtk.Accel_Group;      use Gtk.Accel_Group;
 with Gtk.Action;           use Gtk.Action;
@@ -57,12 +58,8 @@ package body Gtk.UI_Manager is
          Typ      : Manager_Item_Type;
          Top      : Gboolean);
       pragma Import (C, Internal, "gtk_ui_manager_add_ui");
-      A : chars_ptr := Null_Ptr;
+      A : chars_ptr := Gtkada.Types.String_Or_Null (Action);
    begin
-      if Action /= ""  then
-         A := New_String (Action);
-      end if;
-
       Internal (Get_Object (Self), Merge_Id, Path & ASCII.NUL,
                 Name & ASCII.NUL, A, Typ, Boolean'Pos (Top));
       Free (A);

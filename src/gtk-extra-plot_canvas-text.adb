@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtkada.Types;
 with Gdk.Color;            use Gdk.Color;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Extra.Plot_Data;  use Gtk.Extra.Plot_Data;
@@ -60,7 +61,7 @@ package body Gtk.Extra.Plot_Canvas.Text is
       F1   : aliased Gdk_Color := Fg;
       B1   : aliased Gdk_Color := Bg;
       F, B : System.Address := System.Null_Address;
-      T    : chars_ptr := Null_Ptr;
+      T    : chars_ptr := Gtkada.Types.String_Or_Null (Font);
 
    begin
       if Fg /= Null_Color then
@@ -68,9 +69,6 @@ package body Gtk.Extra.Plot_Canvas.Text is
       end if;
       if Bg /= Null_Color then
          B := B1'Address;
-      end if;
-      if Font /= "" then
-         T := New_String (Font);
       end if;
 
       Child := new Gtk_Plot_Canvas_Text_Record;
@@ -110,16 +108,13 @@ package body Gtk.Extra.Plot_Canvas.Text is
       F1   : aliased Gdk_Color := Fg;
       B1   : aliased Gdk_Color := Bg;
       F, B : System.Address := System.Null_Address;
-      T    : chars_ptr := Null_Ptr;
+      T    : chars_ptr := Gtkada.Types.String_Or_Null (Font);
    begin
       if Fg /= Null_Color then
          F := F1'Address;
       end if;
       if Bg /= Null_Color then
          B := B1'Address;
-      end if;
-      if Font /= "" then
-         T := New_String (Font);
       end if;
       Internal (Get_Object (Child), T, Height, Angle, F, B,
                 Boolean'Pos (Transparent), Justification, Text & ASCII.NUL);
