@@ -48,7 +48,9 @@
 --  <group>Trees and Lists</group>
 --  <testgtk>create_tree_filter.adb</testgtk>
 
+with Glib.Types;
 with Glib.Values;
+with Gtk.Tree_Dnd;
 with Gtk.Tree_Model;
 
 package Gtk.Tree_Model_Filter is
@@ -285,6 +287,28 @@ package Gtk.Tree_Model_Filter is
    --  doesn't change often) and there has been a lot of unreffed access to
    --  nodes. As a side effect of this function, all unrefed iters will be
    --  invalid.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Tree_Drag_Source"
+   --    This interface allows this widget to act as a dnd source
+
+   package Implements_Drag_Source is new Glib.Types.Implements
+     (Gtk.Tree_Dnd.Gtk_Tree_Drag_Source,
+      Gtk_Tree_Model_Filter_Record,
+      Gtk_Tree_Model_Filter);
+   function "+"
+     (Model : access Gtk_Tree_Model_Filter_Record'Class)
+      return Gtk.Tree_Dnd.Gtk_Tree_Drag_Source
+      renames Implements_Drag_Source.To_Interface;
+   function "-"
+     (Drag_Source : Gtk.Tree_Dnd.Gtk_Tree_Drag_Source)
+      return Gtk_Tree_Model_Filter
+      renames Implements_Drag_Source.To_Object;
+   --  Converts to and from the Gtk_Tree_Drag_Source interface
 
 private
    pragma Import (C, Get_Type, "gtk_tree_model_filter_get_type");

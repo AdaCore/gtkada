@@ -42,6 +42,7 @@
 with Glib.Types;
 with Glib.Values; use Glib.Values;
 with Gtk;
+with Gtk.Tree_Dnd;
 with Gtk.Tree_Model;
 with Gtk.Tree_Sortable;
 
@@ -316,6 +317,12 @@ package Gtk.Tree_Store is
    --
    --  - "Gtk_Tree_Sortable"
    --    This interface allows you to specify your own sort function
+   --
+   --  - "Gtk_Tree_Drag_Source"
+   --    This interface allows this widget to act as a dnd source
+   --
+   --  - "Gtk_Tree_Drag_Dest"
+   --    This interface allows this widget to act as a dnd destination
 
    package Implements_Tree_Sortable is new Glib.Types.Implements
      (Gtk.Tree_Sortable.Gtk_Tree_Sortable,
@@ -330,6 +337,34 @@ package Gtk.Tree_Store is
       return Gtk_Tree_Store
       renames Implements_Tree_Sortable.To_Object;
    --  Converts to and from the Gtk_Tree_Sortable interface
+
+   package Implements_Drag_Source is new Glib.Types.Implements
+     (Gtk.Tree_Dnd.Gtk_Tree_Drag_Source,
+      Gtk_Tree_Store_Record,
+      Gtk_Tree_Store);
+   function "+"
+     (Model : access Gtk_Tree_Store_Record'Class)
+      return Gtk.Tree_Dnd.Gtk_Tree_Drag_Source
+      renames Implements_Drag_Source.To_Interface;
+   function "-"
+     (Drag_Source : Gtk.Tree_Dnd.Gtk_Tree_Drag_Source)
+      return Gtk_Tree_Store
+      renames Implements_Drag_Source.To_Object;
+   --  Converts to and from the Gtk_Tree_Drag_Source interface
+
+   package Implements_Drag_Dest is new Glib.Types.Implements
+     (Gtk.Tree_Dnd.Gtk_Tree_Drag_Dest,
+      Gtk_Tree_Store_Record,
+      Gtk_Tree_Store);
+   function "+"
+     (Model : access Gtk_Tree_Store_Record'Class)
+      return Gtk.Tree_Dnd.Gtk_Tree_Drag_Dest
+      renames Implements_Drag_Dest.To_Interface;
+   function "-"
+     (Drag_Dest : Gtk.Tree_Dnd.Gtk_Tree_Drag_Dest)
+      return Gtk_Tree_Store
+      renames Implements_Drag_Dest.To_Object;
+   --  Converts to and from the Gtk_Tree_Drag_Source interface
 
 private
    pragma Import (C, Get_Type, "gtk_tree_store_get_type");

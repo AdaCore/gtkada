@@ -100,6 +100,7 @@
 with Glib.Properties;
 with Glib.Types;
 with Gtk;
+with Gtk.Tree_Dnd;
 with Gtk.Tree_Model;
 with Gtk.Tree_Sortable;
 
@@ -189,6 +190,9 @@ package Gtk.Tree_Model_Sort is
    --
    --  - "Gtk_Tree_Sortable"
    --    This interface allows you to specify your own sort function
+   --
+   --  - "Gtk_Tree_Drag_Source"
+   --    This interface allows this widget to act as a dnd source
 
    package Implements_Tree_Sortable is new Glib.Types.Implements
      (Gtk.Tree_Sortable.Gtk_Tree_Sortable,
@@ -203,6 +207,20 @@ package Gtk.Tree_Model_Sort is
       return Gtk_Tree_Model_Sort
       renames Implements_Tree_Sortable.To_Object;
    --  Converts to and from the Gtk_Tree_Sortable interface
+
+   package Implements_Drag_Source is new Glib.Types.Implements
+     (Gtk.Tree_Dnd.Gtk_Tree_Drag_Source,
+      Gtk_Tree_Model_Sort_Record,
+      Gtk_Tree_Model_Sort);
+   function "+"
+     (Model : access Gtk_Tree_Model_Sort_Record'Class)
+      return Gtk.Tree_Dnd.Gtk_Tree_Drag_Source
+      renames Implements_Drag_Source.To_Interface;
+   function "-"
+     (Drag_Source : Gtk.Tree_Dnd.Gtk_Tree_Drag_Source)
+      return Gtk_Tree_Model_Sort
+      renames Implements_Drag_Source.To_Object;
+   --  Converts to and from the Gtk_Tree_Drag_Source interface
 
    -------------
    -- Signals --
