@@ -78,14 +78,20 @@ our (%c_files_no_binding) =
    "gtkwindow-decorate" => 1,  # Never used anywhere, no ref on google... for gtkwindow.c
    "gtkaccessible"  => 1, # Small interface to ATK, which we do not bind anyway
    "gtkdndcursors"  => 1, # Internal to the DND implementation
+   "gtkiconcache"   => 1, # Internal
    "xembed"         => 1,
    "gtkplugprivate" => 1,
 
    # We might provide a binding for those one day, but they are very secondary. They are
    # also not documented in the gtk+ manual itself
-   "gtkimmodule"    => 1,
+   "gtkimmodule"         => 1,
    "gtkfilechooserembed" => 1,
    "gtkfilechooserutils" => 1,
+   "gtktypebuiltins"     => 1, 
+   "gtkimcontext"        => 1,
+   "gtkimcontextsimple"  => 1,
+   "gtkimmulticontext"   => 1,
+   "gtkhsv"              => 1
    );
 
 ## Return the base name (no extension) for a C file
@@ -411,7 +417,7 @@ sub get_c_file_content () {
 
 ## Find out all C functions defined in a C file.
 ## Return a hash table indexed on the functions
-our $c_function_re = '\b(\w+(\s*\*+|\s))\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST|\s*G_GNUC_NULL_TERMINATED)?;';
+our $c_function_re = '\b(\w+(\s*\*+|\s))\s*(\w+)\s*\(([^)]*\))(\s*G_GNUC_CONST|\s*G_GNUC_NULL_TERMINATED|\s*G_GNUC_PRINTF\s+\(\d+,\s*\d+\))?;';
 our $c_deprecated_re = '(if |ifndef|endif).*GTK_DISABLE_DEPRECATED';
 our $c_broken_re     = '\#(ifdef.*GTK_ENABLE_BROKEN|endif)';
 sub functions_from_c_file() {
