@@ -230,6 +230,15 @@ ada_gtk_list_store_set_int (GtkListStore *list_store,
 }
 
 void
+ada_gtk_list_store_set_boolean (GtkListStore *list_store,
+                            GtkTreeIter  *iter,
+                            gint          col,
+                            gboolean          val)
+{
+  gtk_list_store_set (list_store, iter, col, val, -1);
+}
+
+void
 ada_gtk_list_store_set_pixbuf (GtkListStore *list_store,
                             GtkTreeIter  *iter,
                             gint          col,
