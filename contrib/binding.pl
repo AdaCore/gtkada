@@ -91,7 +91,11 @@ our (%c_files_no_binding) =
    "gtkimcontext"        => 1,
    "gtkimcontextsimple"  => 1,
    "gtkimmulticontext"   => 1,
-   "gtkhsv"              => 1
+   "gtkhsv"              => 1,
+   "gtkfilesystem"       => 1, # Hard to bind, requires support for external
+   "gtkfilesystemmodel"  => 1, # modules in gtk+ apparently, see
+   "gtkfilesystemunix"   => 1, # _gtk_file_system_create, and
+   "gtkfilesystemwin32"  => 1  # set_file_system_backend
    );
 
 ## Return the base name (no extension) for a C file
