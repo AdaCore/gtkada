@@ -91,6 +91,7 @@ with Create_Font_Selection;
 with Create_Gamma_Curve;
 with Create_Gc;
 with Create_Handle_Box;
+with Create_Icon_View;
 with Create_Item_Factory;
 with Create_Label;
 with Create_Layout;
@@ -266,6 +267,8 @@ package body Main_Windows is
                                          Create_Gc.Help'Access),
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
                                          Create_Handle_Box.Help'Access),
+      (NS ("icon view"),        Complex, Create_Icon_View.Run'Access,
+                                         Create_Icon_View.Help'Access),
       (NS ("item factory"),     Complex, Create_Item_Factory.Run'Access,
                                          Create_Item_Factory.Help'Access),
       (NS ("labels"),           Base,    Create_Label.Run'Access,
