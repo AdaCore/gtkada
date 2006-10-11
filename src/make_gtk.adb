@@ -165,6 +165,7 @@ with Gtk.Plug;
 with Gtk.Preview;
 with Gtk.Progress;
 with Gtk.Progress_Bar;
+with Gtk.Radio_Action;
 with Gtk.Radio_Button;
 with Gtk.Radio_Menu_Item;
 with Gtk.Radio_Tool_Button;
