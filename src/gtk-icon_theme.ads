@@ -359,7 +359,7 @@ package Gtk.Icon_Theme is
    Signal_Changed : constant String := "changed";
 
 private
-   pragma Import (C, Free, "gtk_icon_info_Free");
+   pragma Import (C, Free, "gtk_icon_info_free");
    pragma Import (C, Get_Base_Size, "gtk_icon_info_get_base_size");
    pragma Import (C, Get_Builtin_Pixbuf, "gtk_icon_info_get_builtin_pixbuf");
    pragma Import (C, Copy, "gtk_icon_info_copy");
@@ -367,3 +367,8 @@ private
    pragma Import (C, Icon_Info_Get_Type, "gtk_icon_info_get_type");
 end Gtk.Icon_Theme;
 
+--  Binding will be provided later:
+--  No binding: gtk_icon_info_free
+--  No binding: gtk_icon_theme_error_quark
+--  No binding: gtk_icon_theme_get_for_screen
+--  No binding: gtk_icon_theme_set_screen
