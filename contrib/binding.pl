@@ -479,6 +479,8 @@ sub is_object() {
                && $c_type ne "GtkClipboard*"
                && $c_type ne "GtkTreeSortable*"
                && $c_type ne "GtkFileChooser*"
+               && $c_type ne "GtkTreeDragSource*"
+               && $c_type ne "GtkTreeDragDest*"
                && $c_type ne "GtkCellLayout*")
            || $c_type eq "PangoLayout"
            || $c_type eq "GObject*");
@@ -506,6 +508,8 @@ sub c_to_ada() {
    return "GObject"            if ($param_index == -1 && $c_type eq "G_Object*");
    return "Gtk_Clipboard"      if ($c_type eq "Gtk_Clipboard*");
    return "Gtk_Cell_Layout"    if ($c_type eq "Gtk_Cell_Layout*");
+   return "Gtk_Tree_Drag_Dest" if ($c_type eq "Gtk_Tree_Drag_Dest*");
+   return "Gtk_Tree_Drag_Source" if ($c_type eq "Gtk_Tree_Drag_Source*");
    return "Gtk_File_Chooser"   if ($c_type eq "Gtk_File_Chooser*");
    return "Gtk_Tree_Sortable"  if ($c_type eq "Gtk_Tree_Sortable*");
    return "Selection_Data"     if ($c_type eq "Gtk_Selection_Data*");
