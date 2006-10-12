@@ -48,6 +48,7 @@
 --  for a given stock ID.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <see>Gtk.Icon_Theme</see>
 
 with Glib.Object;
 with Gdk.Pixbuf;
