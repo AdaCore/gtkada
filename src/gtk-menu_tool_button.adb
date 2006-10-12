@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtkada.Types;
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Gtk.Menu;             use Gtk.Menu;
 with Gtk.Tooltips;         use Gtk.Tooltips;
 with Gtk.Widget;           use Gtk.Widget;
@@ -79,7 +79,7 @@ package body Gtk.Menu_Tool_Button is
          Label       : chars_ptr)
          return System.Address;
       pragma Import (C, Internal, "gtk_menu_tool_button_new");
-      Str : chars_ptr := Gtkada.Types.String_Or_Null (Label);
+      Str : chars_ptr := String_Or_Null (Label);
       Obj : System.Address := System.Null_Address;
    begin
       if Icon_Widget /= null then

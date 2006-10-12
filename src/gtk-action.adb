@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtkada.Types;
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Gtk.Accel_Group;      use Gtk.Accel_Group;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Widget;           use Gtk.Widget;
@@ -342,8 +342,8 @@ package body Gtk.Action is
          Stock_Id : chars_ptr)
          return System.Address;
       pragma Import (C, Internal, "gtk_action_new");
-      T    : chars_ptr := Gtkada.Types.String_Or_Null (Tooltip);
-      S    : chars_ptr := Gtkada.Types.String_Or_Null (Stock_Id);
+      T    : chars_ptr := String_Or_Null (Tooltip);
+      S    : chars_ptr := String_Or_Null (Stock_Id);
    begin
       Set_Object
         (Action, Internal (Name & ASCII.NUL, Label & ASCII.NUL, T, S));

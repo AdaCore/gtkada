@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtkada.Types;
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Toggle_Action is
@@ -91,9 +91,9 @@ package body Gtk.Toggle_Action is
          Stock_Id : chars_ptr)
          return System.Address;
       pragma Import (C, Internal, "gtk_toggle_action_new");
-      L : chars_ptr := Gtkada.Types.String_Or_Null (Label);
-      T : chars_ptr := Gtkada.Types.String_Or_Null (Tooltip);
-      S : chars_ptr := Gtkada.Types.String_Or_Null (Stock_Id);
+      L : chars_ptr := String_Or_Null (Label);
+      T : chars_ptr := String_Or_Null (Tooltip);
+      S : chars_ptr := String_Or_Null (Stock_Id);
    begin
       Set_Object (Action, Internal (Name & ASCII.NUL, L, T, S));
       Free (L);

@@ -30,7 +30,7 @@
 with Gdk.Rectangle; use Gdk.Rectangle;
 with Gdk.Window;    use Gdk.Window;
 with Gdk.Types;     use Gdk.Types;
-with Gtkada.Types;  use Gtkada.Types;
+with Gtkada.Bindings; use Gtkada.Bindings;
 with Interfaces.C;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;  use Interfaces.C.Strings;

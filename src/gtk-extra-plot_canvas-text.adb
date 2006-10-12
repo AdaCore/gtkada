@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtkada.Types;
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Gdk.Color;            use Gdk.Color;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Extra.Plot_Data;  use Gtk.Extra.Plot_Data;
@@ -61,7 +61,7 @@ package body Gtk.Extra.Plot_Canvas.Text is
       F1   : aliased Gdk_Color := Fg;
       B1   : aliased Gdk_Color := Bg;
       F, B : System.Address := System.Null_Address;
-      T    : chars_ptr := Gtkada.Types.String_Or_Null (Font);
+      T    : chars_ptr := String_Or_Null (Font);
 
    begin
       if Fg /= Null_Color then
@@ -108,7 +108,7 @@ package body Gtk.Extra.Plot_Canvas.Text is
       F1   : aliased Gdk_Color := Fg;
       B1   : aliased Gdk_Color := Bg;
       F, B : System.Address := System.Null_Address;
-      T    : chars_ptr := Gtkada.Types.String_Or_Null (Font);
+      T    : chars_ptr := String_Or_Null (Font);
    begin
       if Fg /= Null_Color then
          F := F1'Address;

@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 with Gtk.Clipboard;        use Gtk.Clipboard;
@@ -1241,7 +1242,7 @@ package body Gtk.Text_Buffer is
          return System.Address;
       pragma Import (C, Internal, "ada_gtk_text_buffer_create_tag");
       Stub : Gtk_Text_Tag_Record;
-      Str  : chars_ptr := Gtkada.Types.String_Or_Null (Tag_Name);
+      Str  : chars_ptr := String_Or_Null (Tag_Name);
       Tag  : Gtk_Text_Tag;
    begin
       Tag := Gtk_Text_Tag

@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with Gdk.Pixbuf;            use Gdk.Pixbuf;
+with Gtkada.Bindings;       use Gtkada.Bindings;
 with Gtkada.Types;
 with GNAT.Strings;          use GNAT.Strings;
 with Interfaces.C.Strings;  use Interfaces.C, Interfaces.C.Strings;
@@ -41,11 +42,11 @@ package body Gtk.About_Dialog is
      (About : access Gtk_About_Dialog_Record) return String_List
    is
       function Internal
-        (About : System.Address) return Gtkada.Types.chars_ptr_array_access;
+        (About : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_artists");
    begin
       --  Returned value owned by gtk+, and must not be freed
-      return Gtkada.Types.To_String_List (Internal (Get_Object (About)).all);
+      return To_String_List (Internal (Get_Object (About)).all);
    end Get_Artists;
 
    -----------------
@@ -56,11 +57,11 @@ package body Gtk.About_Dialog is
      (About : access Gtk_About_Dialog_Record) return String_List
    is
       function Internal
-        (About : System.Address) return Gtkada.Types.chars_ptr_array_access;
+        (About : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_authors");
    begin
       --  Returned value owned by gtk+
-      return Gtkada.Types.To_String_List (Internal (Get_Object (About)).all);
+      return To_String_List (Internal (Get_Object (About)).all);
    end Get_Authors;
 
    ------------------
@@ -99,11 +100,11 @@ package body Gtk.About_Dialog is
      (About : access Gtk_About_Dialog_Record) return String_List
    is
       function Internal
-        (About : System.Address) return Gtkada.Types.chars_ptr_array_access;
+        (About : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_documenters");
    begin
       --  Returned value owned by gtk+
-      return Gtkada.Types.To_String_List (Internal (Get_Object (About)).all);
+      return To_String_List (Internal (Get_Object (About)).all);
    end Get_Documenters;
 
    -----------------
@@ -267,7 +268,7 @@ package body Gtk.About_Dialog is
    is
       procedure Internal (About : System.Address; Artists : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_artists");
-      Val : aliased chars_ptr_array := Gtkada.Types.From_String_List (Artists);
+      Val : aliased chars_ptr_array := From_String_List (Artists);
    begin
       Internal (Get_Object (About), Val (Val'First)'Address);
       Gtkada.Types.Free (Val);
@@ -283,7 +284,7 @@ package body Gtk.About_Dialog is
    is
       procedure Internal (About : System.Address; Authors : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_authors");
-      Val : aliased chars_ptr_array := Gtkada.Types.From_String_List (Authors);
+      Val : aliased chars_ptr_array := From_String_List (Authors);
    begin
       Internal (Get_Object (About), Val (Val'First)'Address);
       Gtkada.Types.Free (Val);
@@ -331,8 +332,7 @@ package body Gtk.About_Dialog is
    is
       procedure Internal (About, Documenters : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_documenters");
-      Val : aliased chars_ptr_array :=
-        Gtkada.Types.From_String_List (Documenters);
+      Val : aliased chars_ptr_array := From_String_List (Documenters);
    begin
       Internal (Get_Object (About), Val (Val'First)'Address);
       Gtkada.Types.Free (Val);
@@ -380,7 +380,7 @@ package body Gtk.About_Dialog is
    is
       procedure Internal (About : System.Address; Icon_Name : chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo_icon_name");
-      Str : chars_ptr := Gtkada.Types.String_Or_Null (Icon_Name);
+      Str : chars_ptr := String_Or_Null (Icon_Name);
    begin
       Internal (Get_Object (About), Str);
       Free (Str);

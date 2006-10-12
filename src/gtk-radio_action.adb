@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtkada.Types; use Gtkada.Types;
 with Gtk.Widget;   use Gtk.Widget;
 with Interfaces.C.Strings;
