@@ -26,8 +26,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Object;  use Glib.Object;
-with System;       use System;
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Glib.Object;     use Glib.Object;
+with System;          use System;
 
 package body Glib.Types is
 
@@ -76,32 +77,20 @@ package body Glib.Types is
    ----------------
 
    function Interfaces (T : GType) return GType_Array is
-      type Flat_GType_Array is array (Guint) of GType;
-      pragma Convention (C, Flat_GType_Array);
-      type Flat_GType_Array_Access is access all Flat_GType_Array;
-
-      procedure G_Free (S : Flat_GType_Array_Access);
-      pragma Import (C, G_Free, "g_free");
-
+      use GType_Arrays;
       function Internal
         (T        : GType;
-         N_Ifaces : access Guint) return Flat_GType_Array_Access;
+         N_Ifaces : access Guint) return Unbounded_Array_Access;
       pragma Import (C, Internal, "g_type_interfaces");
 
-      N_Ids  : aliased Guint;
-      Result : constant Flat_GType_Array_Access := Internal (T, N_Ids'Access);
+      N      : aliased Guint;
+      Output : constant Unbounded_Array_Access := Internal (T, N'Access);
+      Result : constant GType_Array := To_Array (Output, N);
 
    begin
-      if N_Ids = 0 then
-         return (1 .. 0 => GType_Invalid);
-      else
-         declare
-            R : constant GType_Array := GType_Array (Result (0 .. N_Ids - 1));
-         begin
-            G_Free (Result);
-            return R;
-         end;
-      end if;
+      --  Do says we should free, but doing so results in double deallocation
+--      G_Free (Output);
+      return Result;
    end Interfaces;
 
    ------------------

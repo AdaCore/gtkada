@@ -31,10 +31,11 @@
 with Ada.Unchecked_Conversion;
 with Interfaces.C; use Interfaces.C;
 
-with Gdk.Color;    use Gdk.Color;
-with Gdk.GC;       use Gdk.GC;
-with Gtk.Widget;   use Gtk.Widget;
-with Gtkada.Types; use Gtkada.Types;
+with Gdk.Color;       use Gdk.Color;
+with Gdk.GC;          use Gdk.GC;
+with Gtk.Widget;      use Gtk.Widget;
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtkada.Types;    use Gtkada.Types;
 
 package body Gtk.Extra.Plot_Data is
 
@@ -478,18 +479,14 @@ package body Gtk.Extra.Plot_Data is
    function Get_Labels (Data : access Gtk_Plot_Data_Record)
       return Gtkada.Types.Chars_Ptr_Array
    is
-      type Str_Array is array (Natural) of Chars_Ptr;
-      type Str_Array_Access is access all Str_Array;
-      pragma Convention (C, Str_Array_Access);
-
-      function Internal (Data : System.Address) return Str_Array_Access;
+      function Internal (Data : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_plot_data_get_labels");
 
       N : constant size_t := size_t (Get_Numpoints (Data));
 
    begin
       return Chars_Ptr_Array
-        (Internal (Get_Object (Data))(0 .. Integer (N) - 1));
+        (Internal (Get_Object (Data))(0 .. N - 1));
    end Get_Labels;
 
    -----------------

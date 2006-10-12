@@ -31,16 +31,14 @@ with Unchecked_Conversion;
 with Unchecked_Deallocation;
 
 with Glib.Type_Conversion_Hooks;
-with Gtkada.Types; use Gtkada.Types;
+with Gtkada.Bindings;  use Gtkada.Bindings;
+with Gtkada.C;         use Gtkada.C;
+with Gtkada.Types;     use Gtkada.Types;
 
 package body Glib.Object is
-
-   type Flat_Param_Spec_Array is array (Guint) of Param_Spec;
-   pragma Convention (C, Flat_Param_Spec_Array);
-   type Flat_Param_Spec_Array_Access is access all Flat_Param_Spec_Array;
-
-   procedure Free (PSA : Flat_Param_Spec_Array_Access);
-   pragma Import (C, Free, "g_free");
+   package Signal_Id_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Glib.Signal_Id, Glib.Null_Signal_Id, Glib.Guint,
+      Glib.Object.Signal_Id_Array);
 
    procedure Free_User_Data (Data : System.Address);
    --  Free the user data Data. This function should not be called directly
@@ -354,23 +352,18 @@ package body Glib.Object is
    --------------
 
    function List_Ids (Typ : Glib.GType) return Signal_Id_Array is
-      type Flat_Id_Array is array (Guint) of Signal_Id;
-      pragma Convention (C, Flat_Id_Array);
-      type Flat_Id_Array_Access is access all Flat_Id_Array;
-
+      use Signal_Id_Arrays;
       function Internal
-        (Typ : GType; N_Ids : access Guint) return Flat_Id_Array_Access;
+        (Typ : GType; N_Ids : access Guint) return Unbounded_Array_Access;
       pragma Import (C, Internal, "g_signal_list_ids");
 
-      N_Ids  : aliased Guint;
-      Result : constant Flat_Id_Array_Access := Internal (Typ, N_Ids'Access);
+      N      : aliased Guint;
+      Output : Unbounded_Array_Access := Internal (Typ, N'Access);
+      Result : constant Signal_Id_Array := To_Array (Output, N);
 
    begin
-      if N_Ids = 0 then
-         return (1 .. 0 => 0);
-      else
-         return Signal_Id_Array (Result (0 .. N_Ids - 1));
-      end if;
+      G_Free (Output);
+      return Result;
    end List_Ids;
 
    -----------------
@@ -391,24 +384,19 @@ package body Glib.Object is
    ------------
 
    function Params (Q : Signal_Query) return GType_Array is
-      type Flat_GType_Array is array (Guint) of GType;
-      pragma Convention (C, Flat_GType_Array);
-      type Flat_GType_Array_Access is access all Flat_GType_Array;
-
+      use GType_Arrays;
       function Internal
         (Q     : Signal_Query;
-         N_Ids : access Guint) return Flat_GType_Array_Access;
+         N_Ids : access Guint) return Unbounded_Array_Access;
       pragma Import (C, Internal, "ada_gsignal_query_params");
 
-      N_Ids  : aliased Guint;
-      Result : constant Flat_GType_Array_Access := Internal (Q, N_Ids'Access);
+      N      : aliased Guint;
+      Output : Unbounded_Array_Access := Internal (Q, N'Access);
+      Result : constant GType_Array := To_Array (Output, N);
 
    begin
-      if N_Ids = 0 then
-         return (1 .. 0 => GType_Invalid);
-      else
-         return GType_Array (Result (0 .. N_Ids - 1));
-      end if;
+      G_Free (Output);
+      return Result;
    end Params;
 
    ------------
@@ -712,27 +700,20 @@ package body Glib.Object is
    function Interface_List_Properties
      (Vtable : Interface_Vtable) return Glib.Param_Spec_Array
    is
+      use Pspec_Arrays;
       function Internal
         (Vtable  : Interface_Vtable;
-         N_Props : access Guint) return Flat_Param_Spec_Array_Access;
+         N_Props : access Guint) return Unbounded_Array_Access;
       pragma Import (C, Internal, "g_object_interface_list_properties");
 
-      N_Props : aliased Guint;
-      Result  : constant Flat_Param_Spec_Array_Access :=
-        Internal (Vtable, N_Props'Access);
+      N       : aliased Guint;
+      Output  : constant Unbounded_Array_Access := Internal (Vtable, N'Access);
+      Result  : constant Param_Spec_Array := To_Array (Output, Integer (N));
 
    begin
-      if N_Props = 0 then
-         return (1 .. 0 => null);
-      else
-         declare
-            R : constant Param_Spec_Array :=
-              Param_Spec_Array (Result (0 .. N_Props - 1));
-         begin
-            Free (Result);
-            return R;
-         end;
-      end if;
+      --  Doc says we should free, but that results in double-deallocation...
+--     G_Free (Output);
+      return Result;
    end Interface_List_Properties;
 
    ---------------------------
@@ -742,26 +723,19 @@ package body Glib.Object is
    function Class_List_Properties
      (Class : GObject_Class) return Glib.Param_Spec_Array
    is
+      use Pspec_Arrays;
       function Internal
         (Class   : GObject_Class;
-         N_Props : access Guint) return Flat_Param_Spec_Array_Access;
+         N_Props : access Guint) return Unbounded_Array_Access;
       pragma Import (C, Internal, "g_object_class_list_properties");
 
-      N_Props : aliased Guint;
-      Result  : constant Flat_Param_Spec_Array_Access :=
-        Internal (Class, N_Props'Access);
+      N      : aliased Guint;
+      Output : constant Unbounded_Array_Access := Internal (Class, N'Access);
+      Result : constant Param_Spec_Array := To_Array (Output, Integer (N));
    begin
-      if N_Props = 0 then
-         return (1 .. 0 => null);
-      else
-         declare
-            R : constant Param_Spec_Array :=
-              Param_Spec_Array (Result (0 .. N_Props - 1));
-         begin
-            Free (Result);
-            return R;
-         end;
-      end if;
+      --  Doc says we should free, but that results in double-deallocation...
+--      G_Free (Output);
+      return Result;
    end Class_List_Properties;
 
 end Glib.Object;

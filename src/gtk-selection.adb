@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Ada.Unchecked_Conversion;
+with Gtkada.C;             use Gtkada.C;
 with Gdk.Pixbuf;           use Gdk.Pixbuf;
 with Gdk.Types;            use Gdk.Types;
 with Interfaces.C.Strings; use Interfaces.C, Interfaces.C.Strings;
@@ -34,6 +34,10 @@ with System;               use System;
 with GNAT.Strings;         use GNAT.Strings;
 
 package body Gtk.Selection is
+
+   package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
+      Natural, Gdk.Types.Gdk_Atom_Array);
 
    ------------------------
    -- Get_Data_As_String --
@@ -294,44 +298,28 @@ package body Gtk.Selection is
    function Get_Targets
      (Selection : Selection_Data) return Gdk.Types.Gdk_Atom_Array
    is
-      type Atom_Big_Array is array (Natural) of Gdk_Atom;  --  GdkAtom*
-      type Atom_Big_Array_Access is access Atom_Big_Array; --  GdkAtom**
-      function Convert is new Ada.Unchecked_Conversion
-        (System.Address, Atom_Big_Array_Access);
-
+      use Atom_Arrays;
       function Internal
         (Selection : Selection_Data;
-         Targets   : access System.Address;
+         Targets   : access Unbounded_Array_Access;
          N_Atoms   : access Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_get_targets");
 
-      procedure Free (Targets : Atom_Big_Array);
-      pragma Import (C, Free, "g_free");
-      --  External binding: g_free
-
-      Success   : Gboolean;
-      Output    : aliased System.Address;
-      List      : Atom_Big_Array_Access;   --   GdkAtom**
-      pragma Warnings (Off, List);
-      N_Targets : aliased Gint;
+      Output    : aliased Unbounded_Array_Access;
+      N         : aliased Gint;
    begin
-      Success := Internal
-        (Selection, Output'Unchecked_Access, N_Targets'Unchecked_Access);
-      if Success = 0 or else Output = System.Null_Address then
-         return (1 .. 0 => Gdk.Types.Gdk_None);
-      else
-         List := Convert (Output);
-         declare
-            Result : Gdk.Types.Gdk_Atom_Array (1 .. Natural (N_Targets));
-         begin
-            for R in 0 .. Natural (N_Targets) - 1 loop
-               Result (R + 1) := List (R);
-            end loop;
-
-            Free (List.all);
-            return Result;
-         end;
+      if Internal
+        (Selection, Output'Unchecked_Access, N'Unchecked_Access) = 0
+      then
+         Output := null;
       end if;
+
+      declare
+         Result : constant Gdk_Atom_Array := To_Array (Output, Integer (N));
+      begin
+         G_Free (Output);
+         return Result;
+      end;
    end Get_Targets;
 
    ---------------------------

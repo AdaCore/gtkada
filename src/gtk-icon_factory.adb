@@ -26,8 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Ada.Unchecked_Conversion;
-with Gtkada.Types;
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with System;               use System;
 with Gdk.Pixbuf;           use Gdk.Pixbuf;
 with Gtk;                  use Gtk;
@@ -224,41 +223,23 @@ package body Gtk.Icon_Factory is
    ---------------
 
    function Get_Sizes (Icon_Set : Gtk_Icon_Set) return Gint_Array is
+      use Gint_Arrays;
       procedure Internal
         (Icon_Set : Gtk_Icon_Set;
-         Result   : access System.Address;
+         Result   : access Unbounded_Array_Access;
          N_Sizes  : access Gint);
       pragma Import (C, Internal, "gtk_icon_set_get_sizes");
 
-      type Big_Int_Array is array (Natural) of Gint;
-      pragma Convention (C, Big_Int_Array);
-
-      type Big_Int_Array_Access is access Big_Int_Array;
-      function Convert is new Ada.Unchecked_Conversion
-        (System.Address, Big_Int_Array_Access);
-
-      procedure G_Free (S : System.Address);
-      pragma Import (C, G_Free, "g_free");
-      --  External binding: g_free
-
       Count  : aliased Gint;
-      Result : aliased System.Address;
+      Result : aliased Unbounded_Array_Access;
    begin
       Internal (Icon_Set, Result'Access, Count'Access);
-      if Result = System.Null_Address then
-         return (1 .. 0 => 0);
-      else
-         declare
-            Result2 : constant Big_Int_Array_Access := Convert (Result);
-            Output  : Gint_Array (0 .. Natural (Count - 1));
-         begin
-            for O in Output'Range loop
-               Output (O) := Result2 (O);
-            end loop;
-            G_Free (Result);
-            return Output;
-         end;
-      end if;
+      declare
+         Output : constant Gint_Array := To_Array (Result, Integer (Count));
+      begin
+         G_Free (Result);
+         return Output;
+      end;
    end Get_Sizes;
 
    ---------------------
@@ -304,7 +285,7 @@ package body Gtk.Icon_Factory is
          Detail    : chars_ptr)
          return Gdk_Pixbuf;
       pragma Import (C, Internal, "gtk_icon_set_render_icon");
-      Str : chars_ptr := Gtkada.Types.String_Or_Null (Detail);
+      Str : chars_ptr := String_Or_Null (Detail);
       W   : System.Address := System.Null_Address;
       Result : Gdk_Pixbuf;
    begin
@@ -346,7 +327,7 @@ package body Gtk.Icon_Factory is
       pragma Import (C, Internal, "gtk_style_render_icon");
       --  External binding: gtk_style_render_icon
 
-      Str    : chars_ptr := Gtkada.Types.String_Or_Null (Detail);
+      Str    : chars_ptr := String_Or_Null (Detail);
       W      : System.Address := System.Null_Address;
       Result : Gdk_Pixbuf;
    begin

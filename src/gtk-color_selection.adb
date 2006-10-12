@@ -27,12 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Ada.Unchecked_Conversion;
+with Gtkada.C;             use Gtkada.C;
 with System;
 with Gdk.Color;            use Gdk.Color;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Color_Selection is
+   package Color_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color, Natural,
+      Gdk.Color.Gdk_Color_Array);
 
    Global_Palette_With_Screen_Hook :
      Gtk_Color_Selection_Change_Palette_With_Screen_Func := null;
@@ -41,13 +44,6 @@ package body Gtk.Color_Selection is
      (Screen : Gdk_Screen; Colors : System.Address; N_Colors : Gint);
    pragma Convention (C, Palette_Hook_Proxy);
    --  Proxy for the Palette_With_Screen_Hook
-
-   type Big_Color_Array is array (Natural) of Gdk_Color;
-   pragma Convention (C, Big_Color_Array);
-   type Big_Color_Array_Access is access Big_Color_Array;
-
-   function Convert is new Ada.Unchecked_Conversion
-     (System.Address, Big_Color_Array_Access);
 
    ---------------
    -- Get_Color --
@@ -340,27 +336,26 @@ package body Gtk.Color_Selection is
    -------------------------
 
    function Palette_From_String (Str : String) return Gdk_Color_Array is
+      use Color_Arrays;
       function Internal
-        (Str : String; Colors : access System.Address; N : access Gint)
+        (Str : String;
+         Colors : access Unbounded_Array_Access; N : access Gint)
          return Gboolean;
       pragma Import (C, Internal, "gtk_color_selection_palette_from_string");
 
       N      : aliased Gint;
-      Result : aliased System.Address;
+      Output : aliased Unbounded_Array_Access;
    begin
-      if Internal (Str & ASCII.NUL, Result'Access, N'Access) = 0 then
-         return (1 .. 0 => Null_Color);
-      else
-         declare
-            Res    : constant Big_Color_Array_Access := Convert (Result);
-            Output : Gdk_Color_Array (1 .. Natural (N));
-         begin
-            for O in Output'Range loop
-               Output (O) := Res (O - 1);
-            end loop;
-            return Output;
-         end;
+      if Internal (Str & ASCII.NUL, Output'Access, N'Access) = 0 then
+         Output := null;
       end if;
+
+      declare
+         Result : constant Gdk_Color_Array := To_Array (Output, Integer (N));
+      begin
+         G_Free (Output);
+         return Result;
+      end;
    end Palette_From_String;
 
    -----------------------
@@ -395,12 +390,9 @@ package body Gtk.Color_Selection is
    procedure Palette_Hook_Proxy
      (Screen : Gdk_Screen; Colors : System.Address; N_Colors : Gint)
    is
-      Res    : constant Big_Color_Array_Access := Convert (Colors);
-      Output : Gdk_Color_Array (1 .. Natural (N_Colors));
+      Output : constant Gdk_Color_Array := Color_Arrays.To_Array
+        (Color_Arrays.Convert (Colors), Integer (N_Colors));
    begin
-      for O in Output'Range loop
-         Output (O) := Res (O - 1);
-      end loop;
       Global_Palette_With_Screen_Hook (Screen, Output);
    end Palette_Hook_Proxy;
 

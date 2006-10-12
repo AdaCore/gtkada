@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtkada.Bindings; use Gtkada.Bindings;
 with System;
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Strings;
@@ -99,34 +100,13 @@ package body Gtk.Rc is
    -----------------------
 
    function Get_Default_Files return Chars_Ptr_Array is
-      type Flat_Chars_Ptr_Array is array (Positive) of Chars_Ptr;
-      type Flat_Access is access all Flat_Chars_Ptr_Array;
-
-      function Internal return Flat_Access;
+      function Internal return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_rc_get_default_files");
 
-      Addr : constant Flat_Access := Internal;
-      Len  : Positive;
-
-      use type Strings.chars_ptr;
-
+      Addr : constant chars_ptr_array_access := Internal;
    begin
-      Len := 1;
-
-      loop
-         exit when Addr (Len) = Null_Ptr;
-         Len := Len + 1;
-      end loop;
-
-      declare
-         Result : Chars_Ptr_Array (1 .. size_t (Len) - 1);
-      begin
-         for J in Result'Range loop
-            Result (J) := Addr (Positive (J));
-         end loop;
-
-         return Result;
-      end;
+      --  Do not free Addr, since strings are shared with result
+      return To_Chars_Ptr (Addr);
    end Get_Default_Files;
 
    ---------------

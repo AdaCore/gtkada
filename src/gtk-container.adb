@@ -27,11 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;         use System;
-with Glib.Values;    use Glib.Values;
-with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Enums;      use Gtk.Enums;
-with Gtk.Widget;     use Gtk.Widget;
+with Gtkada.Bindings; use Gtkada.Bindings;
+with System;          use System;
+with Glib.Values;     use Glib.Values;
+with Gtk.Adjustment;  use Gtk.Adjustment;
+with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Widget;      use Gtk.Widget;
 
 package body Gtk.Container is
 
@@ -597,27 +598,21 @@ package body Gtk.Container is
    function Class_List_Child_Properties
      (Cclass : GObject_Class) return Param_Spec_Array
    is
-      type Big_Pspec_Array is array (Positive) of Param_Spec;
-      type Big_Pspec is access all Big_Pspec_Array;
-      pragma Convention (C, Big_Pspec);
-
+      use Pspec_Arrays;
       function Internal
         (Cclass       : GObject_Class;
-         N_Properties : access Guint) return Big_Pspec;
+         N_Properties : access Guint) return Unbounded_Array_Access;
       pragma Import (C, Internal, "gtk_container_class_list_child_properties");
 
       Num     : aliased Guint;
-      C_Array : constant Big_Pspec := Internal (Cclass, Num'Access);
+      C_Array : constant Unbounded_Array_Access :=
+        Internal (Cclass, Num'Access);
+      Result  : constant Param_Spec_Array := To_Array (C_Array, Integer (Num));
 
    begin
-      --  Implementation is the same as
-      --  Gtk.Widget.Class_List_Style_Properties
-
-      if C_Array = null then
-         return (1 .. 0 => null);
-      else
-         return Param_Spec_Array (C_Array (1 .. Natural (Num)));
-      end if;
+      --  Do says we should free, but doing so results in double-deallocation
+--      G_Free (C_Array);
+      return Result;
    end Class_List_Child_Properties;
 
 end Gtk.Container;
