@@ -210,7 +210,7 @@ package Gtk.Icon_View is
       Col_Align : Glib.Gfloat := 0.0);
    --  Moves the alignments of Icon_View to the position specified by Path.
    --  Row_Align determines where the row is placed, and Col_Align determines
-   --  where @column is placed. Both are expected to be between 0.0 and 1.0.
+   --  where column is placed. Both are expected to be between 0.0 and 1.0.
    --  0.0 means left/top alignment, 1.0 means right/bottom alignment, 0.5
    --  means center.
    --
