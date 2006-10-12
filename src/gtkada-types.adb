@@ -3,7 +3,6 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2000-2006, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,10 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with GNAT.Strings;         use GNAT.Strings;
-with Interfaces.C.Strings; use Interfaces.C, Interfaces.C.Strings;
-
 package body Gtkada.Types is
+
+   use Interfaces.C.Strings;
 
    ---------
    -- "+" --
@@ -69,75 +67,16 @@ package body Gtkada.Types is
    -- Free --
    ----------
 
+   procedure Free (A : in out Chars_Ptr_Array) is
+   begin
+      for J in A'Range loop
+         Interfaces.C.Strings.Free (A (J));
+      end loop;
+   end Free;
+
    function Null_Array return Chars_Ptr_Array is
    begin
       return (1 .. 0 => Null_Ptr);
    end Null_Array;
-
-   --------------------
-   -- String_Or_Null --
-   --------------------
-
-   function String_Or_Null
-     (S : String) return Interfaces.C.Strings.chars_ptr is
-   begin
-      if S = "" then
-         return Null_Ptr;
-      else
-         return New_String (S);
-      end if;
-   end String_Or_Null;
-
-   ----------
-   -- Free --
-   ----------
-
-   procedure Free (C : in out Interfaces.C.Strings.chars_ptr_array) is
-   begin
-      for S in C'Range loop
-         Free (C (S));
-      end loop;
-   end Free;
-
-   --------------------
-   -- To_String_List --
-   --------------------
-
-   function To_String_List
-     (C : Interfaces.C.Strings.chars_ptr_array) return String_List
-   is
-      Count : Natural := 0;
-   begin
-      while C (size_t (Count)) /= Null_Ptr loop
-         Count := Count + 1;
-      end loop;
-
-      declare
-         Result : String_List (1 .. Count);
-      begin
-         Count := 0;
-         while C (size_t (Count)) /= Null_Ptr loop
-            Result (Count + 1) := new String'(Value (C (size_t (Count))));
-            Count := Count + 1;
-         end loop;
-         return Result;
-      end;
-   end To_String_List;
-
-   ----------------------
-   -- From_String_List --
-   ----------------------
-
-   function From_String_List
-     (C : String_List) return Interfaces.C.Strings.chars_ptr_array
-   is
-      Result : Interfaces.C.Strings.chars_ptr_array (0 .. C'Length);
-   begin
-      for S in C'Range loop
-         Result (size_t (S - C'First)) := New_String (C (S).all);
-      end loop;
-      Result (Result'Last) := Null_Ptr;
-      return Result;
-   end From_String_List;
 
 end Gtkada.Types;
