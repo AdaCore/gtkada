@@ -140,6 +140,7 @@ with Gtk.Handle_Box;
 with Gtk.Handlers;
 with Gtk.Hbutton_Box;
 with Gtk.Icon_Factory;
+with Gtk.Icon_Theme;
 with Gtk.Icon_View;
 with Gtk.Image;
 with Gtk.Image_Menu_Item;
