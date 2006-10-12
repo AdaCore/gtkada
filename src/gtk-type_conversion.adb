@@ -136,6 +136,10 @@ package body Gtk.Type_Conversion is
 
    function Full_Conversion (Type_Name : String) return GObject is
    begin
+      if Type_Name'Length < 4 then
+         return null;
+      end if;
+
       case Type_Name (Type_Name'First + 3) is
          when 'A' =>
             if Type_Name = "GtkAdjustment" then
