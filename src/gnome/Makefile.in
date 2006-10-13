@@ -1,67 +1,21 @@
-include ../Makefile.common
-
+OBJ_DIR       = obj
 LIBNAME       = libgnomeada$(SO_EXT)
 SONAME        = libgnomeada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 ARCHIVENAME   = libgnomeada.a
-GNOME_LIBS    = @GNOME_LIBS@
+SRC_FILES     = gnome.o gnome-*.o bonobo*.o
+EXTERNAL_LIBS = @GNOME_LIBS@
+GPRFILE       = gnome
 
-ifeq ($(HAVE_GNOME),True)
+include ../Makefile.common
 
-ifeq ($(BUILD_SHARED),yes)
-all: $(ARCHIVENAME) $(LIBNAME)
-else
-all: $(ARCHIVENAME)
-endif
-
-install: all
-	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
-	$(RM) $(libdir)/$(ARCHIVENAME)
-ifeq ($(BUILD_SHARED),yes)
-	$(INSTALL_DATA) $(SONAME) $(alidir)
-	$(RM) $(libdir)/$(LIBNAME)
-	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
-	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
-	$(LN) gtkada/$(SONAME) $(libdir)/$(SONAME)
-endif
-	$(CP) gnome*.ads gnome*.adb bonobo*.ads bonobo*.adb $(incdir)
-	$(CP) gnome*.ali bonobo*.ali $(alidir)
-	$(CHMOD) -w $(alidir)/*.ali
-
-else
+ifneq ($(HAVE_GNOME),True)
 all:
 install:
+else
+all: module_all 
+install: module_install
 endif
 
-gnome:
-	@if [ -f ../.devel ]; then \
-	  $(GNATMAKE) -c $(GNATFLAGS_DEVEL) $(FPIC) -I.. -aO../lib-obj make_gnome; \
-	else \
-	  $(GNATMAKE) -c $(GNATFLAGS) $(FPIC) -I.. -aO../lib-obj make_gnome; \
-	fi
+clean:     module_clean
+distclean: module_distclean
 
-$(LIBNAME): gnome
-	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
-	  $(SO_OPTS)$(SONAME) gnome.o gnome-*.o bonobo*.o \
-	  $(GTK_LIBS) $(GNOME_LIBS)
-	$(RM) $(LIBNAME)
-	$(LN) $(SONAME) $(LIBNAME)
-	-@if [ ! -f ../.devel ]; then \
-	  strip $(LIBNAME); \
-	  $(CHMOD) +x $(LIBNAME); \
-	fi
-
-$(ARCHIVENAME): gnome
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) gnome.o gnome-*.o bonobo*.o
-	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
-	  $(RANLIB) $(ARCHIVENAME); \
-	fi
-
-link: $(LIBNAME)
-	gnatmake -gnaty make_gnome `gtkada-config` -largs -lgnomeada
-
-clean:
-	-$(RM) *.o *.ali *~ core
-
-distclean: clean
-	-$(RM) Makefile
-	-$(RM) libgnomeada*.so*

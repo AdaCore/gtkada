@@ -1,99 +1,32 @@
-.SUFFIXES:
-.SUFFIXES: .c .o .ads .adb .ali
- 
-.PHONY:
-.PHONY: clean-generic mostlyclean-generic \
-	clean distclean mostlyclean maintainer-clean
-
+CFLAGS           = @CFLAGS@ -Wall @GTK_CFLAGS@ -I. $(FPIC)
+OBJ_DIR          = obj
+SONAME           = libgtkada_gl-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
+LIBNAME          = libgtkada_gl$(SO_EXT)
+ARCHIVENAME      = libgtkada_gl.a
+OPENGL_OBJECTS   = gtk-glarea.o gdk-gl.o
+OPENGL_C_OBJECTS = gtkglarea.o gdkgl.o
+OPENGL_C_OBJECTS_DIR = ${OPENGL_C_OBJECTS:%=${OBJ_DIR}/%}
+EXTERNAL_LIBS    = @GL_LIBS@
+OPENGL_FLAGS     = @GL_CFLAGS@
+GPRFILE          = opengl
+SRC_FILES        = ${OPENGL_OBJECTS} ${OPENGL_C_OBJECTS}
 include ../Makefile.common
 
-CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I. $(FPIC)
- 
-SONAME        = libgtkada_gl-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
-LIBNAME       = libgtkada_gl$(SO_EXT)
-ARCHIVENAME   = libgtkada_gl.a
-
-ifeq ($(HAVE_OPENGL),True)
-OPENGL_C_OBJECTS=gtkglarea.o gdkgl.o
-OPENGL_SOURCES=gdk-gl.adb gtk-glarea.adb
-OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=%.o)
-OPENGL_LIBS=@GL_LIBS@
-OPENGL_FLAGS=@GL_CFLAGS@
-
-ifeq ($(BUILD_SHARED),yes)
-all: $(LIBNAME) $(ARCHIVENAME)
-else
-all: $(ARCHIVENAME)
-endif
-
-install: all
-	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
-	$(RM) $(libdir)/$(ARCHIVENAME)
-	if [ $(BUILD_SHARED) = yes ]; then \
-	  $(INSTALL_DATA) $(SONAME) $(alidir); \
-	  $(RM) $(libdir)/$(LIBNAME); \
-	  $(LN) $(SONAME) $(alidir)/$(LIBNAME); \
-	  $(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME); \
-	  $(LN) gtkada/$(SONAME) $(libdir)/$(SONAME); \
-	fi
-	$(CP) gdk*.ads gdk*.adb $(incdir)
-	$(CP) gtk*.ads gtk*.adb $(incdir)
-	$(CP) *.ali $(alidir)
-	$(CHMOD) -w $(alidir)/*.ali
-
-else
-OPENGL_C_OBJECTS=
-OPENGL_SOURCES=
-OPENGL_OBJECTS=
-OPENGL_LIBS=
-OPENGL_FLAGS=
-
+ifneq ($(HAVE_OPENGL),True)
 all:
 install:
+else
+all:       module_all
+install:   module_install
 endif
 
-$(LIBNAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
-	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
-	  $(SO_OPTS)$(SONAME) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS) \
-	  @GTK_LIBS@ -L.. -lgtkada $(OPENGL_LIBS)
-	$(RM) $(LIBNAME)
-	$(LN) $(SONAME) $(LIBNAME)
-	-@if [ ! -f ../.devel ]; then \
-	   strip $(LIBNAME); \
-	fi
- 
-$(ARCHIVENAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) gdk*.o gtk*.o
-	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
-	   $(RANLIB) $(ARCHIVENAME); \
-	fi
+module_ada: ${OPENGL_C_OBJECTS_DIR}
 
-$(OPENGL_OBJECTS):: force
-	@if [ -f ../.devel ]; then \
-	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) -c $(patsubst %.o,%.adb,$@); \
-	else \
-	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS) $(FPIC) -c $(patsubst %.o,%.adb,$@); \
-	fi
- 
-gtkglarea.o: gtkglarea.h gtkglarea.c
-	$(CC) -c $(CFLAGS) $(OPENGL_FLAGS) gtkglarea.c
-gdkgl.o:     gdkgl.h gdkgl.c
-	$(CC) -c $(CFLAGS) $(OPENGL_FLAGS) gdkgl.c
+${OBJ_DIR}/gtkglarea.o: gtkglarea.h gtkglarea.c
+	$(CC) -c $(CFLAGS) -o$@ $(OPENGL_FLAGS) gtkglarea.c
 
-clean-generic:
-	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
-	-${RM} $(ARCHIVENAME) $(LIBNAME) $(SONAME)
-	-${RM} .\#*
- 
-mostlyclean-generic: clean-generic
-	-${RM} Makefile
- 
-clean: clean-generic
- 
-distclean: mostlyclean-generic
- 
-mostlyclean: mostlyclean-generic
- 
-maintainer-clean: mostlyclean-generic
+${OBJ_DIR}/gdkgl.o:  gdkgl.h gdkgl.c
+	$(CC) -c $(CFLAGS) -o$@ $(OPENGL_FLAGS) gdkgl.c
 
-force:
+clean:     module_clean
+distclean: module_distclean

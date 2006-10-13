@@ -10,19 +10,19 @@ SRC=gtkbordercombo.c  gtkfontcombo.c     gtkplotbox.c \
     gtkplotcanvastext.c gtkplotcanvasplot.c gtkplotcanvaspixmap.c \
     gtkplotcanvasline.c gtkplotcanvasellipse.c gtkplotcanvasrectangle.c
 
-OBJ=${SRC:%.c=%.o}
-CC=@CC@
-FPIC=@FPIC@
-CFLAGS=@CFLAGS@
-ALL_CFLAGS=$(CFLAGS) @GTK_CFLAGS@ $(FPIC)
+OBJ=${SRC:%.c=${OBJ_DIR}/%.o}
+OBJ_DIR=obj
+ALL_CFLAGS=@CFLAGS@ @GTK_CFLAGS@ $(FPIC)
 
 all: $(OBJ)
 
-%.o: %.c %.h
-	$(CC) -c $(ALL_CFLAGS) $<
+include ../Makefile.common
+
+${OBJ_DIR}/%.o: %.c %.h
+	$(CC) -o$@ -c $(ALL_CFLAGS) $<
 
 clean:
-	-$(RM) $(OBJ)
+	-$(RM) ${OBJ_DIR}/*.o
 
 distclean: clean
 	-$(RM) Makefile

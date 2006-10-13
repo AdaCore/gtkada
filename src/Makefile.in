@@ -1,31 +1,15 @@
-SHELL=/bin/sh
-
-.SUFFIXES:
-.SUFFIXES: .c .o .ads .adb .ali
-
-.PHONY:
-.PHONY: clean-generic mostlyclean-generic \
-	clean distclean mostlyclean maintainer-clean
-
-include Makefile.common
+all: dirs libs tools
 
 MAKE_ADB = make_gtk
 
 CFLAGS = -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS \
  @CFLAGS@ -Wall @GTK_CFLAGS@ -I.. $(FPIC)
 
-GNATMAKEBINDFLAGS =
-GNATMAKELDFLAGS = -largs -L. -lgtkada $(GTK_LIBS)
-
 GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
 
-LIB_DIR=lib-obj
-
-CD = cd
-MKDIR = mkdir -p
-RMDIR = rmdir
-MV = mv
+OBJ_DIR=lib-obj
+GNATMAKELDFLAGS = -largs -L${OBJ_DIR} -lgtkada $(GTK_LIBS)
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
@@ -43,128 +27,75 @@ GTKADA_CONFIG = gtkada-config
 GATE_SRC      = gate.adb
 GATE_EX       = gate-in.exe
 GATE          = gate
-GENERATE      = generate.pl
-DGATE         = dgate
 GDIALOG       = gdialog
 
-c_objects = $(LIB_DIR)/misc.o $(LIB_DIR)/misc_extra.o $(LIB_DIR)/misc_broken.o
-c_extra_objects = gtkextra/gtk*.o
+c_objects = misc.o misc_extra.o misc_broken.o
+c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
+c_extra_objects = ../gtkextra/obj/gtk*.o
+
+SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o ${c_objects} ${c_extra_objects}
+EXTERNAL_LIBS=
+include Makefile.common
 
 ## General and public targets
 
-all: dirs libs tools
-
+libs: ada ${c_objects_dir} gtkextra
 ifeq ($(BUILD_SHARED),yes)
-libs: extra $(LIBNAME) $(ARCHIVENAME) opengl glade gnome install_ali
-else
-libs: extra $(ARCHIVENAME) opengl glade gnome install_ali
+libs: ${OBJ_DIR}/$(SONAME)
 endif
+libs: ${OBJ_DIR}/${ARCHIVENAME} opengl glade gnome install_ali
 
-opengl: force
-	$(MAKE) -C opengl
+opengl gtkextra glade gnome: force
+	$(MAKE) -C $@
 
-extra: force
-	$(MAKE) -C gtkextra
-
-glade: force
-	$(MAKE) -C glade
-
-gnome: force
-	$(MAKE) -C gnome
-
-tools: $(GATE_EX) $(GDIALOG)
+tools: $(GATE) $(GDIALOG)
 
 ## Private targets
 
 dirs:: force
-	-$(MKDIR) $(LIB_DIR)
+	-$(MKDIR) $(OBJ_DIR)
 	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
-$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
-ifeq ($(BUILD_SHARED),yes)
-	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
-	  $(SO_OPTS)$(SONAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o \
-	  $(LIB_DIR)/gtk*.o $(LIB_DIR)/pango*.o \
-	  $(c_objects) $(c_extra_objects) $(GTK_LIBS)
-	$(RM) $(LIBNAME)
-	$(LN) $(SONAME) $(LIBNAME)
-ifeq ($(OS),Windows_NT)
-	-@if [ ! -f .devel ]; then \
-	  $(CHMOD) +x $(SONAME) $(LIBNAME); \
-	fi
-else
-	-@if [ ! -f .devel ]; then \
-	  strip $(LIBNAME); \
-	  $(CHMOD) +x $(LIBNAME); \
-	fi
-endif
-endif
-
-$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(LIB_DIR)/pango*.o $(c_objects) $(c_extra_objects)
-	-$(RANLIB) $(ARCHIVENAME)
+ada: gtkada-intl.adb force
+	${GNATMAKE} -Pgtkada_src -u ${FPIC} ${GPR_BUILD}
 
 # This copies the .ali files from lib_obj/ to the current directory, and change
-# the permission of the files so that dgate, gate and testgtk use the dynamic
-# library. We do not do this if .devel exists, so that gnatmake will still
+# the permission of the files so that dialog, gate and testgtk use the dynamic
+# library. We do not do this in Debug mode, so that gnatmake will still
 # rebuild the files (it does not check anything if the .ali files are read-only.
 install_ali::
-	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
-	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali pango*.ali
+ifneq (${BUILD_TYPE},Debug)
+	$(CP) $(OBJ_DIR)/*.ali .
+	$(CHMOD) -w glib*.ali gdk*.ali gtk*.ali pango*.ali
+endif
 
-$(GATE_EX):: $(GATE_SRC) $(LIBNAME) force
-	@if [ -f .devel ]; then \
-	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
-	else \
-	  $(GNATMAKE) $(GNATFLAGS) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
-	fi
-
-$(DGATE):: $(DGATE).adb $(LIBNAME) glade
-	@if [ -f .devel ]; then \
-	   $(GNATMAKE) -aO$(LIB_DIR) -Iglade $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
-	else \
-	   $(GNATMAKE) -Iglade $(GNATFLAGS) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
-	fi
-
-$(GDIALOG):: $(GDIALOG).adb $(LIBNAME)
-	@if [ -f .devel ]; then \
-	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(GDIALOG) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
-	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(GDIALOG) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
-	fi
-
-$(LIB_DIR)/$(MAKE_ADB).o:: gtkada-intl.adb force
-	@if [ -f .devel ]; then \
-	  $(CD) $(LIB_DIR); \
-	  $(GNATMAKE) -c ../$(MAKE_ADB) $(GNATFLAGS_DEVEL) $(FPIC); \
-	else \
-	  $(CD) $(LIB_DIR); \
-	  $(GNATMAKE) -c ../$(MAKE_ADB) $(GNATFLAGS) $(FPIC); \
-	fi
+$(GATE) $(GDIALOG): ${OBJ_DIR}/$(SONAME) force
+	@echo Building $@
+	@${GNATMAKE} -Pgtkada_src $@ ${GPR_BUILD} ${GNATMAKELDFLAGS}
 
 gtkada-intl.adb: gtkada-intl.gpb Makefile
 	gnatprep -DGETTEXT_INTL=$(GETTEXT_INTL) \
 	  -DHAVE_GETTEXT=$(HAVE_GETTEXT) gtkada-intl.gpb gtkada-intl.adb
 
-install: all
+install: force
 	@if [ "$(prefix)" != `pwd` ]; then \
 	   echo Installing GtkAda in $(prefix); \
 	   $(MKDIR) $(bindir); \
 	   $(MKDIR) $(libdir); \
 	   $(MKDIR) $(incdir); \
 	   $(MKDIR) $(alidir); \
-	   $(INSTALL_DATA) $(ARCHIVENAME) $(alidir); \
+	   $(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir); \
 	   $(RM) $(libdir)/$(ARCHIVENAME); \
 	   if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	     $(RANLIB) $(alidir)/$(ARCHIVENAME); \
 	   fi; \
 	   if [ $(BUILD_SHARED) = yes ]; then \
 		if [ "$(OS)" = "Windows_NT" ]; then \
-		     $(INSTALL_DATA) $(SONAME) $(bindir); \
-		     $(INSTALL_DATA) $(SONAME) $(alidir); \
+		     $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(bindir); \
+		     $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir); \
 		     $(CHMOD) +x $(bindir)/$(SONAME) $(alidir)/$(SONAME); \
 		else \
-		     $(INSTALL_DATA) $(SONAME) $(alidir); \
+		     $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir); \
 		     $(RM) $(libdir)/$(LIBNAME); \
 		     $(LN) $(SONAME) $(alidir)/$(LIBNAME); \
 		     $(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME); \
@@ -175,61 +106,35 @@ install: all
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \
 	   $(CP) gtk*.ads gtk*.adb $(incdir); \
 	   $(CP) pango*.ads pango*.adb $(incdir); \
-	   $(CP) $(LIB_DIR)/glib*.ali $(LIB_DIR)/gdk*.ali $(LIB_DIR)/gtk*.ali $(LIB_DIR)/pango*.ali $(alidir); \
-	   $(CHMOD) ugo-w $(alidir)/*.ali; \
-	   $(INSTALL_SCRIPT) $(GTKADA_CONFIG) $(bindir); \
-           $(INSTALL_SCRIPT) $(GATE) $(bindir); \
-           $(INSTALL_SCRIPT) $(GENERATE) $(bindir); \
-           $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
-           $(INSTALL_PROGRAM) $(GDIALOG) $(bindir); \
+	   $(CP) $(OBJ_DIR)/glib*.ali $(OBJ_DIR)/gdk*.ali $(alidir); \
+	   $(CP) $(OBJ_DIR)/gtk*.ali $(OBJ_DIR)/pango*.ali $(alidir); \
            $(MAKE) -C opengl install; \
            $(MAKE) -C glade install; \
            $(MAKE) -C gnome install; \
+	   $(CHMOD) ugo-w $(alidir)/*.ali; \
+	   $(INSTALL_SCRIPT) $(GTKADA_CONFIG) $(bindir); \
+           $(INSTALL_SCRIPT) $(GATE) $(bindir); \
+           $(INSTALL_PROGRAM) ${OBJ_DIR}/$(GATE_EX) $(bindir); \
+           $(INSTALL_PROGRAM) ${OBJ_DIR}/$(GDIALOG) $(bindir); \
 	fi
-	@echo '------------------------------------------------------------------'
-	@echo '--  GtkAda has now been installed.                              --'
-	@echo '--  To be able to use the library, you may need to update your  --'
-	@echo '--  LD_LIBRARY_PATH or to run ldconfig. You may also need to    --'
-	@echo '--  update your PATH to include gtkada-config in it.            --'
-	@echo '------------------------------------------------------------------'
 
-clean-generic:
-	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
-	-$(RM) $(LIB_DIR)/*
-	-${RM} $(ARCHIVENAME) $(LIBNAME) $(SONAME)
-	-${RM} $(GATE_EX) $(DGATE) $(GDIALOG)
+clean:
+	-${RM} *.o *.ali *~ b_*.c b~*.ad? core gtkada-intl.adb
+	-$(RM) $(OBJ_DIR)/*
 	-${RM} .\#*
-
-mostlyclean-generic: clean-generic
-	-${RM} Makefile
-	-${RM} $(GATE)
-	-${RM} $(GTKADA_CONFIG)
-
-clean: clean-generic
 	$(MAKE) -C gtkextra clean
 	$(MAKE) -C opengl clean
 	$(MAKE) -C glade clean
 	$(MAKE) -C gnome clean
 
-distclean: mostlyclean-generic
+distclean: force
+	-${RM} Makefile
+	-${RM} $(GATE)
+	-${RM} $(GTKADA_CONFIG)
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
 	$(MAKE) -C glade distclean
 	$(MAKE) -C gnome distclean
-	-$(RM) Makefile.common
-
-mostlyclean: mostlyclean-generic
-	$(MAKE) -C gtkextra mostlyclean
-	$(MAKE) -C opengl mostlyclean
-	$(MAKE) -C glade mostlyclean
-	$(MAKE) -C gnome mostlyclean
-	-$(RM) Makefile.common
-
-maintainer-clean: mostlyclean-generic
-	$(MAKE) -C gtkextra maintainer-clean
-	$(MAKE) -C opengl maintainer-clean
-	$(MAKE) -C glade maintainer-clean
-	$(MAKE) -C gnome maintainer-clean
 	-$(RM) Makefile.common
 
 ## Find the list of bindings that are not up-to-date
@@ -239,8 +144,8 @@ bindings_not_up_to_date:
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
 
-$(c_objects): $(LIB_DIR)/%.o : %.c
-	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) ../$<
+$(c_objects_dir): $(OBJ_DIR)/%.o : %.c
+	$(CC) -o $@ -c $(CFLAGS) $<
 
 force:
 

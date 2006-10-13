@@ -1,16 +1,6 @@
-SHELL = /bin/sh
 @SET_MAKE@
 
-include ../src/Makefile.common
 examples=$(prefix)/share/examples/gtkada/testgtk
-
-.SUFFIXES:
-.SUFFIXES: .c .o .ads .adb .ali
-
-.PHONY:
-.PHONY: clean-generic mostlyclean-generic \
-	clean distclean mostlyclean maintainer-clean \
-	force
 
 target  = testgtk
 src_dir = ../src
@@ -18,26 +8,18 @@ opengl_dir = $(src_dir)/opengl
 
 CC = @CC@
 GTKADA_CONFIG=gtkada-config
-GNATFLAGS = @CFLAGS@ -gnata -gnatws
-GNATFLAGS_DEVEL = @CFLAGS@ -g -gnatawu
 TARGET_LFLAGS = @TARGET_LFLAGS@
 
-GNATMAKE = gnatmake
 GNATMAKELDFLAGS = -largs -L$(src_dir) -L$(opengl_dir) -lgtkada @GTK_LIBS@ \
 		  $(TARGET_LFLAGS)
 
-CP = cp -pf
-MKDIR = mkdir -p
-RMDIR = rmdir
-RM = rm -f
+OBJ_DIR=obj
+include ../src/Makefile.common
+
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-
-## This variable should be set to "True" if the opengl directories
-## have been installed on the system.
-HAVE_OPENGL=@HAVE_OPENGL@
 
 ifeq ($(HAVE_OPENGL),True)
 OPENGL_C_OBJECTS=lw.o
@@ -49,15 +31,11 @@ endif
 
 all: opengl/view_gl.adb $(OPENGL_C_OBJECTS) $(target) 
 
-$(target)::
+$(target): force
 	@echo "-------------------------------------"
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
-	@if [ -f $(src_dir)/.devel ]; then \
-	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
-	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
-	fi
+	${GNATMAKE} -Ptestgtk ${GPR_BUILD} -largs ${GNATMAKELDFLAGS} ${OPENGL_C_OBJECTS} ${OPENGL_LIBS}
 
 opengl/view_gl.adb:: opengl/view_gl.gpb Makefile
 	gnatprep -r -c -DHAVE_GL=$(HAVE_OPENGL) -DWIN32=False \
@@ -66,7 +44,7 @@ opengl/view_gl.adb:: opengl/view_gl.gpb Makefile
 lw.o: opengl/lw.c opengl/lw.h
 	$(CC) -c opengl/lw.c -Iopengl @GTK_CFLAGS@
 
-install: all
+install: force
 	$(MKDIR) $(examples)
 	$(MKDIR) $(examples)/opengl
 	$(RM) b~*
@@ -74,10 +52,7 @@ install: all
 	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo $(examples)
 	$(CP) opengl/*.ad? opengl/*.[ch] $(examples)/opengl
 
-clean:
-	-${RM} *.o *.ali *~ testgtk b_testgtk.c b~testgtk.ad? core
-	-${RM} opengl/view_gl.adb
-	-${RM} .\#*
+clean: module_clean
 
 distclean: clean
 	-${RM} Makefile

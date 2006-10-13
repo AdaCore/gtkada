@@ -1,86 +1,21 @@
-.SUFFIXES:
-.SUFFIXES: .c .o .ads .adb .ali
- 
-.PHONY:
-.PHONY: clean-generic mostlyclean-generic \
-	clean distclean mostlyclean maintainer-clean
-
+OBJ_DIR          = obj
+SONAME           = libgtkada_glade-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
+LIBNAME          = libgtkada_glade$(SO_EXT)
+ARCHIVENAME      = libgtkada_glade.a
+LIBGLADE_SOURCES = glade.adb glade-xml.adb
+LIBGLADE_OBJECTS = glade.o glade-xml.o
+EXTERNAL_LIBS    = @LIBGLADE_LIBS@
+GPRFILE          = glade
+SRC_FILES        = ${LIBGLADE_OBJECTS}
 include ../Makefile.common
 
-SONAME        = libgtkada_glade-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
-LIBNAME       = libgtkada_glade$(SO_EXT)
-ARCHIVENAME   = libgtkada_glade.a
-
-ifeq ($(HAVE_LIBGLADE),True)
-LIBGLADE_SOURCES=glade.adb glade-xml.adb
-LIBGLADE_OBJECTS=glade.o glade-xml.o
-LIBGLADE_LIBS=@LIBGLADE_LIBS@
-
-ifeq ($(BUILD_SHARED),yes)
-all: $(LIBNAME) $(ARCHIVENAME)
-else
-all: $(ARCHIVENAME)
-endif
-
-install: all
-	$(INSTALL_DATA) $(ARCHIVENAME) $(alidir)
-	$(RM) $(libdir)/$(ARCHIVENAME)
-ifeq ($(BUILD_SHARED),yes)
-	$(INSTALL_DATA) $(SONAME) $(alidir)
-	$(RM) $(libdir)/$(LIBNAME)
-	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
-	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
-	$(LN) gtkada/$(SONAME) $(libdir)/$(SONAME)
-endif
-	$(CP) glade*.ads glade*.adb $(incdir)
-	$(CP) *.ali $(alidir)
-	$(CHMOD) -w $(alidir)/*.ali
-
-else
-LIBGLADE_SOURCES=
-LIBGLADE_OBJECTS=
-LIBGLADE_LIBS=
-
+ifneq ($(HAVE_LIBGLADE),True)
 all:
 install:
+else
+all:     module_all
+install: module_install
 endif
 
-$(LIBNAME): $(LIBGLADE_OBJECTS)
-	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
-	  $(SO_OPTS)$(SONAME) $(LIBGLADE_OBJECTS) $(LIBGLADE_LIBS) @GTK_LIBS@
-	$(RM) $(LIBNAME)
-	$(LN) $(SONAME) $(LIBNAME)
-	-@if [ ! -f ../.devel ]; then \
-	   strip $(LIBNAME); \
-	fi
- 
-$(ARCHIVENAME): $(LIBGLADE_OBJECTS)
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIBGLADE_OBJECTS)
-	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
-	   $(RANLIB) $(ARCHIVENAME); \
-	fi
-
-$(LIBGLADE_OBJECTS):: force
-	@if [ -f ../.devel ]; then \
-	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) ${@:%.o=%} ;\
-	else \
-	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS) $(FPIC) ${@:%.o=%}; \
-	fi
-
-clean-generic:
-	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
-	-${RM} $(ARCHIVENAME) $(LIBNAME) $(SONAME)
-	-${RM} .\#*
- 
-mostlyclean-generic: clean-generic
-	-${RM} Makefile
- 
-clean: clean-generic
- 
-distclean: mostlyclean-generic
- 
-mostlyclean: mostlyclean-generic
- 
-maintainer-clean: mostlyclean-generic
-
-force:
+clean:     module_clean
+distclean: module_distclean
