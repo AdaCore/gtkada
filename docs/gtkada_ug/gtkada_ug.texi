@@ -1822,39 +1822,30 @@ will probably need less than 15 min to create a new binding once you
 will get used to the way GtkAda works. Note that your C file should
 have the same format as is used by Gtk+ itself.
 
-Here are the steps to create a new binding :
-
-@itemize @bullet
-@item Give the 'generate.pl' script the C header file
-       
-@item The perl script should ask you for every field in the C structure if
-you want to create a function to make it accessible from Ada. Answer
-@i{y} or @i{n} (the default value is @i{n}, just press ENTER).
+To get started on a new binding, launch the script @file{contrib/binding.pl}
+as follows:
 
 @smallexample
-$ generate.pl ../include/gtk/gtkbutton.h > temporary
-  Create a function for the field child (of type GtkWidget*) [n]? 
-  Create a function for the field in_button (of type guint) [n]? 
-  Create a function for the field button_down (of type guint) [n]?
+$ touch gtk-button.ads
+$ binding.pl ../include/gtk/gtkbutton.h > temporary
 @end smallexample
 
-@item If you answered yes to at least one of the above questions, create a
-new C file, and move  the C part   of the @i{temporary} file created  by
-generate.pl to this C file.
+This dumps several kind of information on the standard output:
 
-@item Do a gnatchop on the @i{temporary} file created by generate.pl
-
-@smallexample
-$ gnatchop temporary
-@end smallexample
-       
-  This should create two Ada files (spec and body)
-
-@item Edit these two files if needed (generally to change some parameters
-  from Gint to Boolean for instance). It can be a little bit tricky 
-  when one of your functions returns a GList* or a GSList*. Please have 
-  a look at @code{gtk-combo.ads} for examples how to do this.
+@itemize
+@item List of subprograms defined in the @file{.h} file. Their
+  documentation is also added, since binding.pl will parse the @file{.c} file
+  as appropriate.
+@item List of properties and signals for the widget
+@item Tentative bodies for the subprograms
+  These will often need adjustements, but provide a good start
 @end itemize
+
+You can also use this script to update existing bindings:
+
+@smallexample
+$ binding.pl ../include/gtk/*.h
+@end smallexample
 
 @c -------------------------------------------------------------------
 @node Debugging GtkAda applications
