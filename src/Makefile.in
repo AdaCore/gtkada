@@ -9,11 +9,6 @@ GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
 
 OBJ_DIR=lib-obj
-GNATMAKELDFLAGS = -largs -L${OBJ_DIR} -lgtkada $(GTK_LIBS)
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
 LIBNAME       = libgtkada$(SO_EXT)
 ifeq ($(OS),Windows_NT)
@@ -22,12 +17,6 @@ else
 SONAME        = libgtkada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 endif
 ARCHIVENAME   = libgtkada.a
-
-GTKADA_CONFIG = gtkada-config
-GATE_SRC      = gate.adb
-GATE_EX       = gate-in.exe
-GATE          = gate
-GDIALOG       = gdialog
 
 c_objects = misc.o misc_extra.o misc_broken.o
 c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
@@ -45,16 +34,13 @@ libs: ${OBJ_DIR}/$(SONAME)
 endif
 libs: ${OBJ_DIR}/${ARCHIVENAME} opengl glade gnome install_ali
 
-opengl gtkextra glade gnome: force
+opengl gtkextra glade gnome tools: force
 	$(MAKE) -C $@
-
-tools: $(GATE) $(GDIALOG)
 
 ## Private targets
 
 dirs:: force
 	-$(MKDIR) $(OBJ_DIR)
-	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
 ada: gtkada-intl.adb force
 	${GNATMAKE} -Pgtkada_src -u ${FPIC} ${GPR_BUILD}
@@ -66,12 +52,10 @@ ada: gtkada-intl.adb force
 install_ali::
 ifneq (${BUILD_TYPE},Debug)
 	$(CP) $(OBJ_DIR)/*.ali .
-	$(CHMOD) -w glib*.ali gdk*.ali gtk*.ali pango*.ali
+	$(CHMOD) -w glib*.ali
+	$(CHMOD) -w gdk*.ali
+	$(CHMOD) -w gtk*.ali pango*.ali
 endif
-
-$(GATE) $(GDIALOG): ${OBJ_DIR}/$(SONAME) force
-	@echo Building $@
-	@${GNATMAKE} -Pgtkada_src $@ ${GPR_BUILD} ${GNATMAKELDFLAGS}
 
 gtkada-intl.adb: gtkada-intl.gpb Makefile
 	gnatprep -DGETTEXT_INTL=$(GETTEXT_INTL) \
@@ -111,11 +95,8 @@ install: force
            $(MAKE) -C opengl install; \
            $(MAKE) -C glade install; \
            $(MAKE) -C gnome install; \
+           $(MAKE) -C tools install; \
 	   $(CHMOD) ugo-w $(alidir)/*.ali; \
-	   $(INSTALL_SCRIPT) $(GTKADA_CONFIG) $(bindir); \
-           $(INSTALL_SCRIPT) $(GATE) $(bindir); \
-           $(INSTALL_PROGRAM) ${OBJ_DIR}/$(GATE_EX) $(bindir); \
-           $(INSTALL_PROGRAM) ${OBJ_DIR}/$(GDIALOG) $(bindir); \
 	fi
 
 clean:
@@ -126,15 +107,15 @@ clean:
 	$(MAKE) -C opengl clean
 	$(MAKE) -C glade clean
 	$(MAKE) -C gnome clean
+	$(MAKE) -C tools clean
 
 distclean: force
 	-${RM} Makefile
-	-${RM} $(GATE)
-	-${RM} $(GTKADA_CONFIG)
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
 	$(MAKE) -C glade distclean
 	$(MAKE) -C gnome distclean
+	$(MAKE) -C tools distclean
 	-$(RM) Makefile.common
 
 ## Find the list of bindings that are not up-to-date
