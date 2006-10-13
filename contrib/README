@@ -22,9 +22,9 @@ pango-1.12.3.diff: ditto for pango 1.12.3
 
 pango-1.12.3-win32.diff: ditto for pango 1.12.3 under Windows.
 
-pango-1.14.4.diff: ditto for pango 1.14.4
+pango-1.14.6.diff: ditto for pango 1.14.6
 
-pango-1.14.4-win32.diff: ditto for pango 1.14.4 under Windows.
+pango-1.14.6-win32.diff: ditto for pango 1.14.6 under Windows.
 
 gtk+-2.8.20.diff: a patch against Gtk+ 2.8.20 sources containing some
 improvements/fixes not incorporated yet.
