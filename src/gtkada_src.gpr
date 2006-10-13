@@ -3,14 +3,9 @@ with "gtkextra/gtkextra";
 
 project GtkAda_Src is
    for Languages use ("C", "Ada");
-   for Main use ("gdialog.adb", "gate.adb");
    for Source_Dirs use ("./");
    for Object_Dir use "./lib-obj";
 
-   package Builder  is
-      for Default_Switches ("Ada") use Shared.Builder'Default_Switches ("Ada");
-      for Executable ("gate.adb") use "gate-in.exe";
-   end Builder;
    package Compiler renames Shared.Compiler;
    package Binder   renames Shared.Binder;
    package IDE      renames Shared.IDE;
