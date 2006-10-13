@@ -7,7 +7,6 @@ src_dir = ../src
 opengl_dir = $(src_dir)/opengl
 
 CC = @CC@
-GTKADA_CONFIG=gtkada-config
 TARGET_LFLAGS = @TARGET_LFLAGS@
 
 GNATMAKELDFLAGS = -largs -L$(src_dir) -L$(opengl_dir) -lgtkada @GTK_LIBS@ \
@@ -32,9 +31,6 @@ endif
 all: opengl/view_gl.adb $(OPENGL_C_OBJECTS) $(target) 
 
 $(target): force
-	@echo "-------------------------------------"
-	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
-	@echo "-------------------------------------"
 	${GNATMAKE} -Ptestgtk ${GPR_BUILD} -largs ${GNATMAKELDFLAGS} ${OPENGL_C_OBJECTS} ${OPENGL_LIBS}
 
 opengl/view_gl.adb:: opengl/view_gl.gpb Makefile
