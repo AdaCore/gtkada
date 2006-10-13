@@ -241,6 +241,7 @@ end Gdk.Display;
 --  No binding: gdk_display_get_default_screen
 --  No binding: gdk_display_get_pointer
 --  No binding: gdk_display_get_screen
+--  No binding: gdk_display_warp_pointer
 
 --  Binding might be nice later:
 --  No binding: gdk_display_set_pointer_hooks
