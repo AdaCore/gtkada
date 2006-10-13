@@ -79,6 +79,20 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
 )
 
 #############################################################
+#  Checking for build type
+#############################################################
+
+AC_DEFUN(CHECK_BUILD_TYPE,
+[
+    AC_ARG_ENABLE(build,
+                  AS_HELP_STRING([--enable-build=<type>],
+                                 [Default build type for the library (Debug, Production)]),
+                  [BUILD_TYPE=$enableval],
+                  [BUILD_TYPE=Production])
+]
+)
+
+#############################################################
 #
 #  Checking for Gnat
 #
@@ -109,7 +123,7 @@ begin
 end Conftest;
 EOF
 
-   $GNATMAKE conftest > /dev/null
+   $GNATMAKE -q conftest > /dev/null
 
    if ( test ! -x conftest ) then
       AC_MSG_RESULT(no)
@@ -542,22 +556,24 @@ AC_DEFUN(AM_CHECK_OPENGL,
    
 
    saved_LIBS="$LIBS"
- 
-   AC_MSG_CHECKING([for OpenGL])
-   LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGLU -lGL"
-   AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
-   AC_MSG_RESULT($have_GL)
-   
-   AC_MSG_CHECKING([for Mesa])
-   LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL"
-   AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL=yes, have_MesaGL=no)
-   AC_MSG_RESULT($have_MesaGL)
 
-   if test "x$have_MesaGL" = "xno"; then
-     AC_MSG_CHECKING([Mesa with pthreads])
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-     AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL_pthread=yes, have_MesaGL_pthread=no)
-     AC_MSG_RESULT($have_MesaGL_pthread)
+   if test "x$with_GL" != xno ; then
+     AC_MSG_CHECKING([for OpenGL])
+     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGLU -lGL"
+     AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
+     AC_MSG_RESULT($have_GL)
+   
+     AC_MSG_CHECKING([for Mesa])
+     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL"
+     AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL=yes, have_MesaGL=no)
+     AC_MSG_RESULT($have_MesaGL)
+
+     if test "x$have_MesaGL" = "xno"; then
+       AC_MSG_CHECKING([Mesa with pthreads])
+       LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
+       AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL_pthread=yes, have_MesaGL_pthread=no)
+       AC_MSG_RESULT($have_MesaGL_pthread)
+     fi
    fi
 
    LIBS="$saved_LIBS"
