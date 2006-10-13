@@ -18,13 +18,19 @@ all:
 	$(MAKE) -C $(src_dir)
 	$(MAKE) -C $(testgtk_dir)
 
-install: 
+install: all
 	$(MAKE) -C $(src_dir) install
 	$(MAKE) -C $(projects_dir) install
 	$(MAKE) -C $(testgtk_dir) install
 	$(MAKE) -C $(doc_dir) install
 	$(MAKE) -C $(example_dir) install
 	$(MAKE) -C $(xml_dir) install
+	@echo '------------------------------------------------------------------'
+	@echo '--  GtkAda has now been installed.                              --'
+	@echo '--  To be able to use the library, you may need to update your  --'
+	@echo '--  LD_LIBRARY_PATH or to run ldconfig. You may also need to    --'
+	@echo '--  update your PATH to include gtkada-config in it.            --'
+	@echo '------------------------------------------------------------------'
 
 clean-generic:
 	-${RM} core
