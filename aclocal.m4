@@ -85,9 +85,9 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
 AC_DEFUN(CHECK_BUILD_TYPE,
 [
     AC_ARG_ENABLE(build,
-                  [--enable-build=<type>       Default build type for the library (Debug, Production)]),
-                  [BUILD_TYPE=$enableval],
-                  [BUILD_TYPE=Production])
+                  [--enable-build=<type>       Default build type for the library (Debug, Production)],
+                  BUILD_TYPE=$enableval,
+                  BUILD_TYPE=Production)
 ]
 )
 

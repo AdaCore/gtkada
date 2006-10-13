@@ -2967,10 +2967,10 @@ fi
     # Check whether --enable-build or --disable-build was given.
 if test "${enable_build+set}" = set; then
   enableval="$enable_build"
-
-fi; ,
-                  BUILD_TYPE=$enableval,
-                  BUILD_TYPE=Production)
+  BUILD_TYPE=$enableval
+else
+  BUILD_TYPE=Production
+fi;
 
 
 
