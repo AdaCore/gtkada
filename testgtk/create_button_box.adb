@@ -39,6 +39,15 @@ with Gtk; use Gtk;
 
 package body Create_Button_Box is
 
+   function Create_Bbox (Horizontal : in Boolean;
+                         Title      : in String;
+                         Spacing    : in Gint;
+                         Child_W    : in Gint;
+                         Child_H    : in Gint;
+                         Layout     : in Gtk_Button_Box_Style)
+                         return Gtk_Frame;
+   --  Create one of the sample button box
+
    ----------
    -- Help --
    ----------

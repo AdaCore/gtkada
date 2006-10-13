@@ -94,6 +94,7 @@ package body Create_About is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Dialog : Gtk_About_Dialog;
       Tmp    : Activate_Link_Func;
+      pragma Unreferenced (Tmp);
    begin
       Set_Label (Frame, "About dialog");
 

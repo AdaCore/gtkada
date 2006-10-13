@@ -41,6 +41,9 @@ package body Create_Buttons is
 
    package Button_Cb is new Handlers.Callback (Gtk_Button_Record);
 
+   procedure Button_Window (Widget : access Gtk_Button_Record'Class);
+   --  Toggles the visibility of Widget
+
    ----------
    -- Help --
    ----------
@@ -58,7 +61,6 @@ package body Create_Buttons is
 
    procedure Button_Window (Widget : access Gtk_Button_Record'Class) is
    begin
-      --  Toggles the visibility of the window
       if Visible_Is_Set (Widget) then
          Hide (Widget);
       else

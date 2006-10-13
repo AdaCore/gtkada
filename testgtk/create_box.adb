@@ -37,6 +37,13 @@ with Gtk; use Gtk;
 
 package body Create_Box is
 
+   procedure Add_Buttons (Vbox        : Gtk_Box;
+                          Message     : String;
+                          Homogeneous : Boolean;
+                          Expand      : Boolean := False;
+                          Fill        : Boolean := False);
+   --  Add the buttons within Vbox
+
    ----------
    -- Help --
    ----------

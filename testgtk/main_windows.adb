@@ -180,6 +180,21 @@ package body Main_Windows is
    function Delete_Event
      (Object : access Gtk_Widget_Record'Class) return Boolean;
 
+   procedure Destroy_Help (Button : access Gtk_Widget_Record'Class);
+   function Opengl_Help return String;
+
+   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
+                          Page     : in Gtk.Gtk_Notebook_Page;
+                          User     : in Gtk_Notebook);
+   --  Called when a new notebook page is selected
+
+   procedure Create_Demo_Frame
+     (Win   : access Main_Window_Record'Class;
+      Page  : Integer;
+      Title : String;
+      Gtkada_Demo, Pixbuf_Demo : Boolean);
+   --  Create the main demo frame
+
    type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc, Pixbuf);
    --  The available types for demos.
    --  Each of them is a tree item, whose subitems are the matching demos.
@@ -726,6 +741,7 @@ package body Main_Windows is
       Render   : Gtk_Cell_Renderer_Text;
       Col      : Gtk_Tree_View_Column;
       C        : Gint;
+      pragma Unreferenced (C);
 
    begin
       Gtk_New (Frame);
