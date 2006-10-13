@@ -5,7 +5,7 @@ prefix=$2
 has_shared="$3"
 version=$4
 
-libs=`../src/gtkada-config --libs`
+libs=`sh ../src/gtkada-config --libs`
 
 lcmodule=`echo $module | tr [A-Z] [a-z]`
 
