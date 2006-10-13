@@ -1,14 +1,10 @@
 with "testgtk/testgtk";
 with "src/gtkada_src";
+with "src/gnome/gnome";
+with "src/opengl/opengl";
+with "shared";
 
 project GtkAda is
-   for Languages use ("C", "Ada");
    for Source_Files use ();
-
-   package IDE is
-      for VCS_Kind use "cvs";
-      for VCS_Log_Check use "log_check";
-      for VCS_File_Check use "ci_check";
-   end IDE;
-
+   package IDE renames Shared.IDE;
 end GtkAda;

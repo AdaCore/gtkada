@@ -1,18 +1,17 @@
+with "../shared";
+with "gtkextra/gtkextra";
+
 project GtkAda_Src is
    for Languages use ("C", "Ada");
-   for Main use ("make_gtk.adb");
-   for Source_Dirs use
-     ("./", "./glade/", "./gnome/", "./gtkextra/", "./opengl");
+   for Main use ("gdialog.adb", "gate.adb");
+   for Source_Dirs use ("./");
    for Object_Dir use "./lib-obj";
 
-   package Compiler is
-      for Default_Switches ("Ada") use ("-gnatwa", "-gnatay");
-   end Compiler;
-
-   package IDE is
-      for VCS_Kind use "cvs";
-      for VCS_Log_Check use "log_check";
-      for VCS_File_Check use "ci_check";
-   end IDE;
-
+   package Builder  is
+      for Default_Switches ("Ada") use Shared.Builder'Default_Switches ("Ada");
+      for Executable ("gate.adb") use "gate-in.exe";
+   end Builder;
+   package Compiler renames Shared.Compiler;
+   package Binder   renames Shared.Binder;
+   package IDE      renames Shared.IDE;
 end GtkAda_Src;
