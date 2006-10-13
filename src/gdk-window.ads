@@ -511,6 +511,15 @@ package Gdk.Window is
       Name   : UTF8_String);
 
    procedure Set_Group (Window : Gdk_Window; Leader : Gdk_Window);
+   --  Sets the group leader window for window. By default, GDK sets the group
+   --  leader for all toplevel windows to a global window implicitly created by
+   --  GDK. With this function you can override this default.
+   --
+   --  The group leader window allows the window manager to distinguish all
+   --  windows that belong to a single application. It may for example allow
+   --  users to minimize/unminimize all windows belonging to an application at
+   --  once. You should only set a non-default group window if your application
+   --  pretends to be multiple applications.
 
    procedure Set_Decorations
      (Window      : Gdk_Window;

@@ -128,6 +128,7 @@ package Gdk.Event is
       Owner_Change,
       --  Emitted when the owner of a selection has changed
       --  Added in gtk+ 2.6
+      --  See Gdk.Display.Supports_Selection_Notification
 
       Grab_Broken
       --  A pointer or keyboard grab was broken

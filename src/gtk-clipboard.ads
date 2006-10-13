@@ -148,6 +148,8 @@ package Gtk.Clipboard is
    procedure Store (Clipboard : Gtk_Clipboard);
    --  Stores the current clipboard data somewhere so that it will stay
    --  around after the application has quit.
+   --  See also Gdk.Display.Supports_Clipboard_Persistence and
+   --  Gdk.Display.Store_Clipboard.
 
    function Get_Owner (Clipboard : Gtk_Clipboard) return Glib.Object.GObject;
    --  If the clipboard contents callbacks were set with Set_With_Owner, and
