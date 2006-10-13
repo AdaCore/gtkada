@@ -1,9 +1,7 @@
+SHELL=/bin/sh
 CC = @CC@
 FPIC = @FPIC@
 PWD = $(shell pwd)
-
-GNATFLAGS = -O2 -gnatn -gnatws
-GNATFLAGS_DEVEL = -O2 -gnatay -gnatwae -g -gnatec=$(PWD)/gnat.adc
 
 GNATMAKE = gnatmake
 OS_SPECIFIC_LINK_OPTIONS = @OS_SPECIFIC_LINK_OPTIONS@
@@ -19,6 +17,9 @@ HAVE_OPENGL   = @HAVE_OPENGL@
 HAVE_GNOME    = @HAVE_GNOME@
 INSTALL       = @INSTALL@
 INSTALL_DATA  = @INSTALL_DATA@
+BUILD_TYPE    = @BUILD@
+
+GPR_BUILD=-XBUILD=${BUILD_TYPE} -XOPENGL=${HAVE_OPENGL} -XGNOME=${HAVE_GNOME} -XGLADE=${HAVE_LIBGLADE}
 
 CP = cp -p -f
 ifeq ($(OS),Windows_NT)
@@ -29,6 +30,11 @@ endif
 
 CHMOD = chmod
 ARFLAGS = cr
+CD = cd
+MKDIR = mkdir -p
+RMDIR = rmdir
+MV = mv
+RM = rm -f
 
 RANLIB = @RANLIB@
 
@@ -38,3 +44,78 @@ bindir        = $(prefix)/bin
 libdir        = $(prefix)/lib
 incdir        = $(prefix)/include/gtkada
 alidir        = $(prefix)/lib/gtkada
+
+#################################################################
+## Generic targets
+## This code is reused by all modules, but is put in a common place
+## to avoid code duplication.
+## Object directory for the modules must be defined in OBJ_DIR.
+## Library to generate is defined in SONAME, ARCHIVENAME and LIBNAME
+## List of source files basenames in SRC_FILES
+## Additional external libs in EXTERNAL_LIBS
+## Module's project file in GPRFILE
+#################################################################
+
+.PHONY: clean distclean module_ada module_install_common module_libname \
+   module_archivename force
+.SUFFIXES: .c .o .ads .adb .ali
+
+all:
+
+ifeq ($(BUILD_SHARED),yes)
+module_all:     module_ada ${OBJ_DIR}/${ARCHIVENAME} ${OBJ_DIR}/${SONAME}
+module_install: module_install_common module_install_shared
+else
+module_all:     module_ada ${OBJ_DIR}/${ARCHIVENAME}
+module_install: module_install_common
+endif
+
+module_ada: force
+	${GNATMAKE} -P${GPRFILE} -u ${FPIC} ${GPR_BUILD}
+
+ifneq (${SONAME},)
+module_install_common: force
+	$(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)
+	$(RM) $(libdir)/$(ARCHIVENAME)
+	$(CP) *.ads *.adb $(incdir)
+	${CP} ${OBJ_DIR}/*.ali ${alidir}
+
+module_install_shared: force
+	$(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)
+	$(RM) $(libdir)/$(LIBNAME)
+	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
+	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
+	$(LN) gtkada/$(SONAME) $(libdir)/$(SONAME)
+
+${OBJ_DIR}/${SONAME}: ${wildcard ${SRC_FILES:%=${OBJ_DIR}/%}}
+	@echo Building ${SONAME}
+	@cd ${OBJ_DIR}; $(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) \
+	  -o $(SONAME) $(SO_OPTS)$(SONAME) ${SRC_FILES} \
+          $(GTK_LIBS) $(EXTERNAL_LIBS)
+	@cd ${OBJ_DIR}; $(RM) $(LIBNAME)
+	@cd ${OBJ_DIR}; $(LN) $(SONAME) $(LIBNAME)
+ifneq (${BUILD_TYPE},Debug)
+ifneq (${OS},Windows_NT)
+	@cd ${OBJ_DIR}; strip $(LIBNAME)
+endif
+endif
+	@cd ${OBJ_DIR}; ${CHMOD} +x ${LIBNAME}
+
+${OBJ_DIR}/${ARCHIVENAME}: ${wildcard ${SRC_FILES:%=${OBJ_DIR}/%}}
+	@echo Building ${ARCHIVENAME}
+	@cd ${OBJ_DIR}; $(AR) $(ARFLAGS) $(ARCHIVENAME) ${SRC_FILES}
+	@if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
+	   cd ${OBJ_DIR}; $(RANLIB) $(ARCHIVENAME); \
+	fi
+endif
+
+module_clean: force
+	-${RM} *~ core .\#*
+	-${RM} ${OBJ_DIR}/*.ali
+	-${RM} ${OBJ_DIR}/*.o
+	-${RM} ${OBJ_DIR}/lib*
+
+module_distclean: clean
+	-${RM} Makefile
+
+force:
