@@ -19,7 +19,7 @@ all: $(OBJ)
 include ../Makefile.common
 
 ${OBJ_DIR}/%.o: %.c %.h
-	$(CC) -o$@ -c $(ALL_CFLAGS) $<
+	$(CC) -c $(ALL_CFLAGS) $< -o $@
 
 clean:
 	-$(RM) ${OBJ_DIR}/*.o
