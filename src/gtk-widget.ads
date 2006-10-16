@@ -633,6 +633,7 @@ package Gtk.Widget is
    --  Modify permanently the default colormap used when a widget is created.
    --  If you only want to modify this colormap temporarily for a few widgets,
    --  you should consider using Push_Colormap and Pop_Colormap instead.
+   --  See also Gdk.Screen.Get_Default_Colormap for a multihead-aware version
 
    function Get_Default_Visual return Gdk.Visual.Gdk_Visual;
    --  Return the default visual used when a new widget is created.
