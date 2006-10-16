@@ -391,11 +391,12 @@ package body Glib.Object is
       pragma Import (C, Internal, "ada_gsignal_query_params");
 
       N      : aliased Guint;
-      Output : Unbounded_Array_Access := Internal (Q, N'Access);
+      Output : constant Unbounded_Array_Access := Internal (Q, N'Access);
       Result : constant GType_Array := To_Array (Output, N);
 
    begin
-      G_Free (Output);
+      --  Do not free Output, it belongs to gtk+
+      --  G_Free (Output);
       return Result;
    end Params;
 
