@@ -26,13 +26,20 @@ SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o ${c_objects} ${c_extra_objects}
 EXTERNAL_LIBS=
 include Makefile.common
 
+## These cannot be shared in Makefile.common, since relative paths might be
+## generated for configure (../install-sh), or absolute paths (/usr/bin/install)
+INSTALL         = @INSTALL@
+INSTALL_DATA    = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT  = @INSTALL_SCRIPT@
+
 ## General and public targets
 
 libs: ada ${c_objects_dir} gtkextra
 ifeq ($(BUILD_SHARED),yes)
 libs: ${OBJ_DIR}/$(SONAME)
 endif
-libs: ${OBJ_DIR}/${ARCHIVENAME} opengl glade gnome install_ali
+libs: ${OBJ_DIR}/${ARCHIVENAME} opengl glade gnome
 
 opengl gtkextra glade gnome tools: force
 	$(MAKE) -C $@
@@ -44,18 +51,6 @@ dirs:: force
 
 ada: gtkada-intl.adb force
 	${GNATMAKE} -Pgtkada_src -u ${FPIC} ${GPR_BUILD}
-
-# This copies the .ali files from lib_obj/ to the current directory, and change
-# the permission of the files so that dialog, gate and testgtk use the dynamic
-# library. We do not do this in Debug mode, so that gnatmake will still
-# rebuild the files (it does not check anything if the .ali files are read-only.
-install_ali::
-ifneq (${BUILD_TYPE},Debug)
-	$(CP) $(OBJ_DIR)/*.ali .
-	$(CHMOD) -w glib*.ali
-	$(CHMOD) -w gdk*.ali
-	$(CHMOD) -w gtk*.ali pango*.ali
-endif
 
 gtkada-intl.adb: gtkada-intl.gpb Makefile
 	gnatprep -DGETTEXT_INTL=$(GETTEXT_INTL) \

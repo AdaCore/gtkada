@@ -12,6 +12,13 @@ GPRFILE          = opengl
 SRC_FILES        = ${OPENGL_OBJECTS} ${OPENGL_C_OBJECTS}
 include ../Makefile.common
 
+## These cannot be shared in Makefile.common, since relative paths might be
+## generated for configure (../install-sh), or absolute paths (/usr/bin/install)
+INSTALL         = @INSTALL@
+INSTALL_DATA    = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT  = @INSTALL_SCRIPT@
+
 ifneq ($(HAVE_OPENGL),True)
 all:
 install:

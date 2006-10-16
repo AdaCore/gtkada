@@ -15,6 +15,8 @@ GNATMAKELDFLAGS = -largs -L$(src_dir)/lib-obj -L$(opengl_dir) -lgtkada @GTK_LIBS
 OBJ_DIR=obj
 include ../src/Makefile.common
 
+## These cannot be shared in Makefile.common, since relative paths might be
+## generated for configure (../install-sh), or absolute paths (/usr/bin/install)
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
