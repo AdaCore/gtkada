@@ -1,7 +1,7 @@
 project Shared is
 
    type Build_Type is ("Debug", "Production");
-   Build : Build_Type := external ("Build", "Debug");
+   Build : Build_Type := external ("BUILD", "Production");
 
    type Boolean_Type is ("True", "False");
    Build_Gnome  : Boolean_Type := external ("GNOME",  "True");
