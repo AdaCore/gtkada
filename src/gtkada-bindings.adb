@@ -27,7 +27,6 @@
 -----------------------------------------------------------------------
 
 with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
 with GNAT.Strings;         use GNAT.Strings;
 with Interfaces.C;         use Interfaces.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
