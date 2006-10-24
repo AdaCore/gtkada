@@ -2855,13 +2855,16 @@ package body Gtkada.MDI is
       Diag        : Gtk_Dialog;
       Win         : Gtk_Window;
       Cont        : Gtk_Container;
-      Requisition : Gtk_Requisition;
       Groups      : Object_List.GSlist;
+      W, H        : Gint;
    begin
       if Traces then
          Put_Line ("Float_Child " & Get_Title (Child)
                    & " Float=" & Boolean'Image (Float));
       end if;
+
+      W := Get_Allocation_Width (Child);
+      H := Get_Allocation_Height (Child);
 
       if Child.State /= Floating and then Float then
          --  Ref is removed when the child is unfloated
@@ -2920,8 +2923,7 @@ package body Gtkada.MDI is
             Cont := Gtk_Container (Win);
          end if;
 
-         Size_Request (Child, Requisition);
-         Set_Default_Size (Win, Requisition.Width, Requisition.Height);
+         Set_Default_Size (Win, W, H);
 
          --  Memorize the MDI_Child associated with the window, for faster
          --  lookip for instance in Find_MDI_Child_From_Widget.
