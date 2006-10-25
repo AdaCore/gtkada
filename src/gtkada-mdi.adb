@@ -2855,6 +2855,7 @@ package body Gtkada.MDI is
       Diag        : Gtk_Dialog;
       Win         : Gtk_Window;
       Cont        : Gtk_Container;
+      Requisition : Gtk_Requisition;
       Groups      : Object_List.GSlist;
       W, H        : Gint;
    begin
@@ -2863,8 +2864,18 @@ package body Gtkada.MDI is
                    & " Float=" & Boolean'Image (Float));
       end if;
 
-      W := Get_Allocation_Width (Child);
-      H := Get_Allocation_Height (Child);
+      --  If the Child already has a window, the resulting floating window
+      --  should have the same size.
+      --  Otherwise, ask the Child for its requisiton.
+
+      if Mapped_Is_Set (Child) then
+         W := Get_Allocation_Width (Child);
+         H := Get_Allocation_Height (Child);
+      else
+         Size_Request (Child, Requisition);
+         W := Requisition.Width;
+         H := Requisition.Height;
+      end if;
 
       if Child.State /= Floating and then Float then
          --  Ref is removed when the child is unfloated
