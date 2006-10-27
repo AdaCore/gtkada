@@ -1,3 +1,7 @@
+2006-10-27  Arnaud Charlet  <charlet@adacore.com>
+
+	* src/cairo-png.c: Work around compilation error under AIX
+
 2006-06-06  Arnaud Charlet  <charlet@adacore.com>
 
 	* src/cairo-win32-surface.c (cairo_win32_surface_create): Handle
@@ -73,3 +77,16 @@
      
      surface->dc = hdc;
      surface->bitmap = NULL;
+--- src/cairo-png.c.old	Fri Oct 27 11:24:17 2006
++++ src/cairo-png.c	Fri Oct 27 11:27:21 2006
+@@ -39,6 +39,10 @@
+ #include <errno.h>
+ #include "cairoint.h"
+ 
++#ifdef _AIX
++#undef jmpbuf
++#endif
++
+ /* Unpremultiplies data and converts native endian ARGB => RGBA bytes */
+ static void
+ unpremultiply_data (png_structp png, png_row_infop row_info, png_bytep data)
