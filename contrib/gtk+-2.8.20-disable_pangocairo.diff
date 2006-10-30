@@ -1,6 +1,116 @@
-diff -cp -r ../../original/gtk+-2.8.20/configure.in ./configure.in
+diff -cp -r -N ../../original/gtk+-2.8.20/configure ./configure
+*** ../../original/gtk+-2.8.20/configure	Sun Jul  2 15:57:45 2006
+--- ./configure	Mon Oct 30 14:17:57 2006
+*************** ac_x_header_dirs='
+*** 26948,26954 ****
+  /usr/openwin/share/include'
+  
+  if test "$ac_x_includes" = no; then
+!   # Guess where to find include files, by looking for Xlib.h.
+    # First, try using that file with no special directory specified.
+    cat >conftest.$ac_ext <<_ACEOF
+  /* confdefs.h.  */
+--- 26948,26954 ----
+  /usr/openwin/share/include'
+  
+  if test "$ac_x_includes" = no; then
+!   # Guess where to find include files, by looking for Intrinsic.h.
+    # First, try using that file with no special directory specified.
+    cat >conftest.$ac_ext <<_ACEOF
+  /* confdefs.h.  */
+*************** _ACEOF
+*** 26956,26962 ****
+  cat confdefs.h >>conftest.$ac_ext
+  cat >>conftest.$ac_ext <<_ACEOF
+  /* end confdefs.h.  */
+! #include <X11/Xlib.h>
+  _ACEOF
+  if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
+    (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
+--- 26956,26962 ----
+  cat confdefs.h >>conftest.$ac_ext
+  cat >>conftest.$ac_ext <<_ACEOF
+  /* end confdefs.h.  */
+! #include <X11/Intrinsic.h>
+  _ACEOF
+  if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
+    (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
+*************** else
+*** 26983,26989 ****
+  sed 's/^/| /' conftest.$ac_ext >&5
+  
+    for ac_dir in $ac_x_header_dirs; do
+!   if test -r "$ac_dir/X11/Xlib.h"; then
+      ac_x_includes=$ac_dir
+      break
+    fi
+--- 26983,26989 ----
+  sed 's/^/| /' conftest.$ac_ext >&5
+  
+    for ac_dir in $ac_x_header_dirs; do
+!   if test -r "$ac_dir/X11/Intrinsic.h"; then
+      ac_x_includes=$ac_dir
+      break
+    fi
+*************** if test "$ac_x_libraries" = no; then
+*** 26997,27014 ****
+    # See if we find them without any special options.
+    # Don't add to $LIBS permanently.
+    ac_save_LIBS=$LIBS
+!   LIBS="-lX11 $LIBS"
+    cat >conftest.$ac_ext <<_ACEOF
+  /* confdefs.h.  */
+  _ACEOF
+  cat confdefs.h >>conftest.$ac_ext
+  cat >>conftest.$ac_ext <<_ACEOF
+  /* end confdefs.h.  */
+! #include <X11/Xlib.h>
+  int
+  main ()
+  {
+! XrmInitialize ()
+    ;
+    return 0;
+  }
+--- 26997,27014 ----
+    # See if we find them without any special options.
+    # Don't add to $LIBS permanently.
+    ac_save_LIBS=$LIBS
+!   LIBS="-lXt $LIBS"
+    cat >conftest.$ac_ext <<_ACEOF
+  /* confdefs.h.  */
+  _ACEOF
+  cat confdefs.h >>conftest.$ac_ext
+  cat >>conftest.$ac_ext <<_ACEOF
+  /* end confdefs.h.  */
+! #include <X11/Intrinsic.h>
+  int
+  main ()
+  {
+! XtMalloc (0)
+    ;
+    return 0;
+  }
+*************** fi
+*** 30514,30520 ****
+  if test "x$gdktarget" = "xwin32"; then
+  	PANGO_PACKAGES="pangowin32 pangocairo"
+  else
+! 	PANGO_PACKAGES="pango pangocairo"
+  fi
+  
+  echo "$as_me:$LINENO: checking Pango flags" >&5
+--- 30514,30520 ----
+  if test "x$gdktarget" = "xwin32"; then
+  	PANGO_PACKAGES="pangowin32 pangocairo"
+  else
+! 	PANGO_PACKAGES="pango pangocairo pangoxft"
+  fi
+  
+  echo "$as_me:$LINENO: checking Pango flags" >&5
+diff -cp -r -N ../../original/gtk+-2.8.20/configure.in ./configure.in
 *** ../../original/gtk+-2.8.20/configure.in	Mon Jun 19 04:19:27 2006
---- ./configure.in	Thu Oct 26 10:52:34 2006
+--- ./configure.in	Mon Oct 30 14:17:42 2006
 *************** fi
 *** 1358,1364 ****
   if test "x$gdktarget" = "xwin32"; then
@@ -18,9 +128,9 @@ diff -cp -r ../../original/gtk+-2.8.20/configure.in ./configure.in
   fi
   
   AC_MSG_CHECKING(Pango flags)
-diff -cp -r ../../original/gtk+-2.8.20/gdk/gdk.symbols ./gdk/gdk.symbols
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/gdk.symbols ./gdk/gdk.symbols
 *** ../../original/gtk+-2.8.20/gdk/gdk.symbols	Wed Aug 24 05:29:05 2005
---- ./gdk/gdk.symbols	Thu Oct 26 10:52:34 2006
+--- ./gdk/gdk.symbols	Mon Oct 30 14:17:42 2006
 *************** gdk_net_wm_supports
 *** 845,851 ****
   gdk_pango_attr_embossed_new
@@ -46,9 +156,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/gdk.symbols ./gdk/gdk.symbols
   #if IN_HEADER(__GDK_PIXBUF_H__)
   #if IN_FILE(__GDK_PIXBUF_DRAWABLE_C__)
   gdk_pixbuf_get_from_drawable
-diff -cp -r ../../original/gtk+-2.8.20/gdk/gdkdraw.c ./gdk/gdkdraw.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/gdkdraw.c ./gdk/gdkdraw.c
 *** ../../original/gtk+-2.8.20/gdk/gdkdraw.c	Mon Feb 20 19:00:36 2006
---- ./gdk/gdkdraw.c	Thu Oct 26 10:52:34 2006
+--- ./gdk/gdkdraw.c	Mon Oct 30 14:17:42 2006
 *************** gdk_draw_glyphs (GdkDrawable      *drawa
 *** 932,940 ****
   {
@@ -133,9 +243,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/gdkdraw.c ./gdk/gdkdraw.c
   }
   
   /**
-diff -cp -r ../../original/gtk+-2.8.20/gdk/gdkpango.c ./gdk/gdkpango.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/gdkpango.c ./gdk/gdkpango.c
 *** ../../original/gtk+-2.8.20/gdk/gdkpango.c	Mon May 22 19:10:55 2006
---- ./gdk/gdkpango.c	Thu Oct 26 10:52:34 2006
+--- ./gdk/gdkpango.c	Mon Oct 30 14:17:42 2006
 *************** struct _GdkPangoRendererPrivate
 *** 52,70 ****
     GdkBitmap *stipple[MAX_RENDER_PART + 1];
@@ -926,9 +1036,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/gdkpango.c ./gdk/gdkpango.c
   #define __GDK_PANGO_C__
   #include "gdkaliasdef.c"
 --- 1454,1458 ----
-diff -cp -r ../../original/gtk+-2.8.20/gdk/gdkwindow.c ./gdk/gdkwindow.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/gdkwindow.c ./gdk/gdkwindow.c
 *** ../../original/gtk+-2.8.20/gdk/gdkwindow.c	Fri Feb  3 22:20:06 2006
---- ./gdk/gdkwindow.c	Thu Oct 26 10:55:57 2006
+--- ./gdk/gdkwindow.c	Mon Oct 30 14:17:42 2006
 *************** setup_backing_rect_method (BackingRectMe
 *** 1802,1810 ****
       }
@@ -1018,10 +1128,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/gdkwindow.c ./gdk/gdkwindow.c
   
     if (method.cr)
       {
-Only in ./gdk: gdkwindow.c~
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/Makefile.am ./gdk/x11/Makefile.am
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/Makefile.am ./gdk/x11/Makefile.am
 *** ../../original/gtk+-2.8.20/gdk/x11/Makefile.am	Thu Jul 21 15:59:22 2005
---- ./gdk/x11/Makefile.am	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/Makefile.am	Mon Oct 30 14:17:42 2006
 *************** libgdk_x11_la_SOURCES =    	\
 *** 39,44 ****
 --- 39,45 ----
@@ -1032,9 +1141,76 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/Makefile.am ./gdk/x11/Makefile.am
   	gdkpixmap-x11.c	   	\
   	gdkpixmap-x11.h		\
   	gdkproperty-x11.c  	\
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkdisplay-x11.c ./gdk/x11/gdkdisplay-x11.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/Makefile.in ./gdk/x11/Makefile.in
+*** ../../original/gtk+-2.8.20/gdk/x11/Makefile.in	Sun Jul  2 15:57:39 2006
+--- ./gdk/x11/Makefile.in	Mon Oct 30 14:17:42 2006
+*************** libgdk_x11_la_SOURCES = \
+*** 323,328 ****
+--- 323,329 ----
+  	gdkinput.c	   	\
+  	gdkkeys-x11.c		\
+  	gdkmain-x11.c	   	\
++ 	gdkpango-x11.c		\
+  	gdkpixmap-x11.c	   	\
+  	gdkpixmap-x11.h		\
+  	gdkproperty-x11.c  	\
+*************** am__libgdk_x11_la_SOURCES_DIST = MwmUtil
+*** 369,375 ****
+  	gdkdisplay-x11.h gdkdnd-x11.c gdkdrawable-x11.c \
+  	gdkdrawable-x11.h gdkevents-x11.c gdkfont-x11.c gdkgc-x11.c \
+  	gdkgeometry-x11.c gdkglobals-x11.c gdkim-x11.c gdkimage-x11.c \
+! 	gdkinput.c gdkkeys-x11.c gdkmain-x11.c gdkpixmap-x11.c \
+  	gdkpixmap-x11.h gdkproperty-x11.c gdkscreen-x11.c \
+  	gdkscreen-x11.h gdkselection-x11.c gdkspawn-x11.c \
+  	gdkvisual-x11.c gdkwindow-x11.c gdkwindow-x11.h \
+--- 370,376 ----
+  	gdkdisplay-x11.h gdkdnd-x11.c gdkdrawable-x11.c \
+  	gdkdrawable-x11.h gdkevents-x11.c gdkfont-x11.c gdkgc-x11.c \
+  	gdkgeometry-x11.c gdkglobals-x11.c gdkim-x11.c gdkimage-x11.c \
+! 	gdkinput.c gdkkeys-x11.c gdkmain-x11.c gdkpango-x11.c gdkpixmap-x11.c \
+  	gdkpixmap-x11.h gdkproperty-x11.c gdkscreen-x11.c \
+  	gdkscreen-x11.h gdkselection-x11.c gdkspawn-x11.c \
+  	gdkvisual-x11.c gdkwindow-x11.c gdkwindow-x11.h \
+*************** am_libgdk_x11_la_OBJECTS = gdkasync.lo g
+*** 383,389 ****
+  	gdkdisplay-x11.lo gdkdnd-x11.lo gdkdrawable-x11.lo \
+  	gdkevents-x11.lo gdkfont-x11.lo gdkgc-x11.lo gdkgeometry-x11.lo \
+  	gdkglobals-x11.lo gdkim-x11.lo gdkimage-x11.lo gdkinput.lo \
+! 	gdkkeys-x11.lo gdkmain-x11.lo gdkpixmap-x11.lo \
+  	gdkproperty-x11.lo gdkscreen-x11.lo gdkselection-x11.lo \
+  	gdkspawn-x11.lo gdkvisual-x11.lo gdkwindow-x11.lo \
+  	gdkxftdefaults.lo gdkxid.lo xsettings-client.lo \
+--- 384,390 ----
+  	gdkdisplay-x11.lo gdkdnd-x11.lo gdkdrawable-x11.lo \
+  	gdkevents-x11.lo gdkfont-x11.lo gdkgc-x11.lo gdkgeometry-x11.lo \
+  	gdkglobals-x11.lo gdkim-x11.lo gdkimage-x11.lo gdkinput.lo \
+! 	gdkkeys-x11.lo gdkmain-x11.lo gdkpango-x11.lo gdkpixmap-x11.lo \
+  	gdkproperty-x11.lo gdkscreen-x11.lo gdkselection-x11.lo \
+  	gdkspawn-x11.lo gdkvisual-x11.lo gdkwindow-x11.lo \
+  	gdkxftdefaults.lo gdkxid.lo xsettings-client.lo \
+*************** am__depfiles_maybe = depfiles
+*** 412,417 ****
+--- 413,419 ----
+  @AMDEP_TRUE@	./$(DEPDIR)/gdkinput.Plo \
+  @AMDEP_TRUE@	./$(DEPDIR)/gdkkeys-x11.Plo \
+  @AMDEP_TRUE@	./$(DEPDIR)/gdkmain-x11.Plo \
++ @AMDEP_TRUE@    ./$(DEPDIR)/gdkpango-x11.Plo \
+  @AMDEP_TRUE@	./$(DEPDIR)/gdkpixmap-x11.Plo \
+  @AMDEP_TRUE@	./$(DEPDIR)/gdkproperty-x11.Plo \
+  @AMDEP_TRUE@	./$(DEPDIR)/gdkscreen-x11.Plo \
+*************** distclean-compile:
+*** 483,488 ****
+--- 485,491 ----
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdkinput.Plo@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdkkeys-x11.Plo@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdkmain-x11.Plo@am__quote@
++ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdkpango-x11.Plo@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdkpixmap-x11.Plo@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdkproperty-x11.Plo@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdkscreen-x11.Plo@am__quote@
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkdisplay-x11.c ./gdk/x11/gdkdisplay-x11.c
 *** ../../original/gtk+-2.8.20/gdk/x11/gdkdisplay-x11.c	Thu Jun 30 05:35:30 2005
---- ./gdk/x11/gdkdisplay-x11.c	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/gdkdisplay-x11.c	Mon Oct 30 14:17:42 2006
 *************** gdk_display_open (const gchar *display_n
 *** 208,214 ****
     display_x11->leader_window_title_set = FALSE;
@@ -1053,9 +1229,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkdisplay-x11.c ./gdk/x11/gdkdis
   #ifdef HAVE_XFIXES
     if (XFixesQueryExtension (display_x11->xdisplay, 
   			    &display_x11->xfixes_event_base, 
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkdisplay-x11.h ./gdk/x11/gdkdisplay-x11.h
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkdisplay-x11.h ./gdk/x11/gdkdisplay-x11.h
 *** ../../original/gtk+-2.8.20/gdk/x11/gdkdisplay-x11.h	Thu Jun 30 05:35:30 2005
---- ./gdk/x11/gdkdisplay-x11.h	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/gdkdisplay-x11.h	Mon Oct 30 14:17:42 2006
 *************** struct _GdkDisplayX11
 *** 78,83 ****
 --- 78,84 ----
@@ -1066,9 +1242,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkdisplay-x11.h ./gdk/x11/gdkdis
     gboolean have_xfixes;
     gint xfixes_event_base;
   
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkdrawable-x11.c ./gdk/x11/gdkdrawable-x11.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkdrawable-x11.c ./gdk/x11/gdkdrawable-x11.c
 *** ../../original/gtk+-2.8.20/gdk/x11/gdkdrawable-x11.c	Mon Aug 15 21:04:54 2005
---- ./gdk/x11/gdkdrawable-x11.c	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/gdkdrawable-x11.c	Mon Oct 30 14:17:42 2006
 ***************
 *** 26,31 ****
 --- 26,33 ----
@@ -1464,9 +1640,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkdrawable-x11.c ./gdk/x11/gdkdr
 + }
   #define __GDK_DRAWABLE_X11_C__
   #include "gdkaliasdef.c"
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkdrawable-x11.h ./gdk/x11/gdkdrawable-x11.h
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkdrawable-x11.h ./gdk/x11/gdkdrawable-x11.h
 *** ../../original/gtk+-2.8.20/gdk/x11/gdkdrawable-x11.h	Sun Jun 12 07:32:25 2005
---- ./gdk/x11/gdkdrawable-x11.h	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/gdkdrawable-x11.h	Mon Oct 30 14:17:42 2006
 ***************
 *** 33,38 ****
 --- 33,39 ----
@@ -1513,9 +1689,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkdrawable-x11.h ./gdk/x11/gdkdr
   G_END_DECLS
   
   #endif /* __GDK_DRAWABLE_X11_H__ */
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkgc-x11.c ./gdk/x11/gdkgc-x11.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkgc-x11.c ./gdk/x11/gdkgc-x11.c
 *** ../../original/gtk+-2.8.20/gdk/x11/gdkgc-x11.c	Tue May  3 01:29:23 2005
---- ./gdk/x11/gdkgc-x11.c	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/gdkgc-x11.c	Mon Oct 30 14:17:42 2006
 *************** static void
 *** 106,112 ****
   gdk_gc_x11_finalize (GObject *object)
@@ -1979,10 +2155,189 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkgc-x11.c ./gdk/x11/gdkgc-x11.c
 + }
   #define __GDK_GC_X11_C__
   #include "gdkaliasdef.c"
-Only in ./gdk/x11: gdkpango-x11.c
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkpixmap-x11.c ./gdk/x11/gdkpixmap-x11.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkpango-x11.c ./gdk/x11/gdkpango-x11.c
+*** ../../original/gtk+-2.8.20/gdk/x11/gdkpango-x11.c	Thu Jan  1 01:00:00 1970
+--- ./gdk/x11/gdkpango-x11.c	Mon Oct 30 14:40:30 2006
+***************
+*** 0 ****
+--- 1,174 ----
++ /* GDK - The GIMP Drawing Kit
++  * Copyright (C) 2000 Red Hat, Inc. 
++  *
++  * This library is free software; you can redistribute it and/or
++  * modify it under the terms of the GNU Lesser General Public
++  * License as published by the Free Software Foundation; either
++  * version 2 of the License, or (at your option) any later version.
++  *
++  * This library is distributed in the hope that it will be useful,
++  * but WITHOUT ANY WARRANTY; without even the implied warranty of
++  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
++  * Lesser General Public License for more details.
++  *
++  * You should have received a copy of the GNU Lesser General Public
++  * License along with this library; if not, write to the
++  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++  * Boston, MA 02111-1307, USA.
++  */
++ 
++ #include <config.h>
++ #include <stdlib.h>
++ 
++ #include "gdkx.h"
++ #include "gdkdisplay-x11.h"
++ #include "gdkpango.h"
++ #include <pango/pangoxft.h>
++ #include <pango/pangoxft-render.h>
++ #include "gdkalias.h"
++ 
++ #include <math.h>
++ 
++ typedef struct _GdkX11Renderer      GdkX11Renderer;
++ typedef struct _GdkX11RendererClass GdkX11RendererClass;
++ 
++ #define GDK_TYPE_X11_RENDERER            (_gdk_x11_renderer_get_type())
++ #define GDK_X11_RENDERER(object)         (G_TYPE_CHECK_INSTANCE_CAST ((object), GDK_TYPE_X11_RENDERER, GdkX11Renderer))
++ #define GDK_IS_X11_RENDERER(object)      (G_TYPE_CHECK_INSTANCE_TYPE ((object), GDK_TYPE_X11_RENDERER))
++ #define GDK_X11_RENDERER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GDK_TYPE_X11_RENDERER, GdkX11RendererClass))
++ #define GDK_IS_X11_RENDERER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDK_TYPE_X11_RENDERER))
++ #define GDK_X11_RENDERER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GDK_TYPE_X11_RENDERER, GdkX11RendererClass))
++ 
++ #define MAX_RENDER_PART  PANGO_RENDER_PART_STRIKETHROUGH
++ 
++ struct _GdkX11Renderer
++ {
++   PangoXftRenderer parent_instance;
++ 
++   XRenderPictFormat *mask_format;
++   
++   GdkDrawable *drawable;
++   GdkGC *gc;
++ };
++ 
++ struct _GdkX11RendererClass
++ {
++   PangoXftRendererClass parent_class;
++ };
++ 
++ G_DEFINE_TYPE (GdkX11Renderer, _gdk_x11_renderer, PANGO_TYPE_XFT_RENDERER)
++ 
++ static void
++ gdk_x11_renderer_finalize (GObject *object)
++ {
++   G_OBJECT_CLASS (_gdk_x11_renderer_parent_class)->finalize (object);
++ }
++      
++ static void
++ gdk_x11_renderer_composite_trapezoids (PangoXftRenderer *xftrenderer,
++ 				       PangoRenderPart   part,
++ 				       XTrapezoid       *trapezoids,
++ 				       int               n_trapezoids)
++ {
++   /* Because we only use this renderer for "draw_glyphs()" calls, we
++    * won't hit this code path much. However, it is hit for drawing
++    * the "unknown glyph" hex squares. We can safely ignore the part,
++    */
++   GdkX11Renderer *x11_renderer = GDK_X11_RENDERER (xftrenderer);
++ 
++   _gdk_x11_drawable_draw_xtrapezoids (x11_renderer->drawable,
++ 				      x11_renderer->gc,
++ 				      trapezoids, n_trapezoids);
++ 
++ }
++ 
++ static void
++ gdk_x11_renderer_composite_glyphs (PangoXftRenderer *xftrenderer,
++ 				   XftFont          *xft_font,
++ 				   XftGlyphSpec     *glyphs,
++ 				   gint              n_glyphs)
++ {
++   GdkX11Renderer *x11_renderer = GDK_X11_RENDERER (xftrenderer);
++ 
++   _gdk_x11_drawable_draw_xft_glyphs (x11_renderer->drawable,
++ 				     x11_renderer->gc,
++ 				     xft_font, glyphs, n_glyphs);
++ }
++ 
++ static void
++ _gdk_x11_renderer_init (GdkX11Renderer *renderer)
++ {
++ }
++ 
++ static void
++ _gdk_x11_renderer_class_init (GdkX11RendererClass *klass)
++ {
++   PangoXftRendererClass *xftrenderer_class = PANGO_XFT_RENDERER_CLASS (klass);
++   GObjectClass *object_class = G_OBJECT_CLASS (klass);
++   
++   xftrenderer_class->composite_glyphs = gdk_x11_renderer_composite_glyphs;
++   xftrenderer_class->composite_trapezoids = gdk_x11_renderer_composite_trapezoids;
++ 
++   object_class->finalize = gdk_x11_renderer_finalize;
++ }
++ 
++ PangoRenderer *
++ _gdk_x11_renderer_get (GdkDrawable *drawable,
++ 		       GdkGC       *gc)
++ {
++   GdkScreen *screen = GDK_DRAWABLE_IMPL_X11 (drawable)->screen;
++   GdkScreenX11 *screen_x11 = GDK_SCREEN_X11 (screen);
++   GdkX11Renderer *x11_renderer;
++ 
++   if (!screen_x11->renderer)
++     {
++       screen_x11->renderer = g_object_new (GDK_TYPE_X11_RENDERER,
++ 					   "display", GDK_SCREEN_XDISPLAY (screen),
++ 					   "screen",  GDK_SCREEN_XNUMBER (screen),
++ 					   NULL);
++     }
++ 
++   x11_renderer = GDK_X11_RENDERER (screen_x11->renderer);
++ 
++   x11_renderer->drawable = drawable;
++   x11_renderer->gc = gc;
++ 
++   return screen_x11->renderer;
++ }
++ 
++ /**
++  * gdk_pango_context_get_for_screen:
++  * @screen: the #GdkScreen for which the context is to be created.
++  * 
++  * Creates a #PangoContext for @screen.
++  *
++  * The context must be freed when you're finished with it.
++  * 
++  * When using GTK+, normally you should use gtk_widget_get_pango_context()
++  * instead of this function, to get the appropriate context for
++  * the widget you intend to render text onto.
++  * 
++  * Return value: a new #PangoContext for @screen
++  *
++  * Since: 2.2
++  **/
++ PangoContext *
++ gdk_pango_context_get_for_screen (GdkScreen *screen)
++ {
++   PangoContext *context;
++   
++   g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
++ 
++   if (screen->closed)
++     return NULL;
++   
++   context = pango_xft_get_context (GDK_SCREEN_XDISPLAY (screen),
++ 				   GDK_SCREEN_X11 (screen)->screen_num);
++   
++   g_object_set_data (G_OBJECT (context), "gdk-pango-screen", screen);
++   
++   return context;
++ }
++ 
++ #define __GDK_PANGO_X11_C__
++ #include "gdkaliasdef.c"
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkpixmap-x11.c ./gdk/x11/gdkpixmap-x11.c
 *** ../../original/gtk+-2.8.20/gdk/x11/gdkpixmap-x11.c	Sat May 14 03:04:15 2005
---- ./gdk/x11/gdkpixmap-x11.c	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/gdkpixmap-x11.c	Mon Oct 30 14:17:42 2006
 *************** gdk_pixmap_impl_x11_finalize (GObject *o
 *** 132,138 ****
       {
@@ -2002,9 +2357,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkpixmap-x11.c ./gdk/x11/gdkpixm
         _gdk_x11_drawable_finish (GDK_DRAWABLE (draw_impl));
   
         if (!impl->is_foreign)
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkprivate-x11.h ./gdk/x11/gdkprivate-x11.h
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkprivate-x11.h ./gdk/x11/gdkprivate-x11.h
 *** ../../original/gtk+-2.8.20/gdk/x11/gdkprivate-x11.h	Fri Jan 20 05:39:43 2006
---- ./gdk/x11/gdkprivate-x11.h	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/gdkprivate-x11.h	Mon Oct 30 14:17:42 2006
 *************** struct _GdkGCX11
 *** 63,68 ****
 --- 63,71 ----
@@ -2031,9 +2386,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkprivate-x11.h ./gdk/x11/gdkpri
   
   GdkGC *_gdk_x11_gc_new                  (GdkDrawable     *drawable,
   					 GdkGCValues     *values,
-diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkwindow-x11.c ./gdk/x11/gdkwindow-x11.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gdk/x11/gdkwindow-x11.c ./gdk/x11/gdkwindow-x11.c
 *** ../../original/gtk+-2.8.20/gdk/x11/gdkwindow-x11.c	Sun Apr 16 07:05:03 2006
---- ./gdk/x11/gdkwindow-x11.c	Thu Oct 26 10:52:34 2006
+--- ./gdk/x11/gdkwindow-x11.c	Mon Oct 30 14:17:42 2006
 *************** _gdk_windowing_window_destroy (GdkWindow
 *** 1132,1138 ****
   {
@@ -2066,10 +2421,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gdk/x11/gdkwindow-x11.c ./gdk/x11/gdkwind
     _gdk_x11_drawable_finish (private->impl);
   
     if (!recursing && !foreign_destroy)
-Only in .: grodiff
-diff -cp -r ../../original/gtk+-2.8.20/gtk/gtkcalendar.c ./gtk/gtkcalendar.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gtk/gtkcalendar.c ./gtk/gtkcalendar.c
 *** ../../original/gtk+-2.8.20/gtk/gtkcalendar.c	Thu May 18 21:25:13 2006
---- ./gtk/gtkcalendar.c	Thu Oct 26 10:52:34 2006
+--- ./gtk/gtkcalendar.c	Mon Oct 30 14:17:42 2006
 *************** gtk_calendar_size_allocate (GtkWidget	  
 *** 1828,1834 ****
       }
@@ -2557,9 +2911,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gtk/gtkcalendar.c ./gtk/gtkcalendar.c
   
   static void
 --- 2228,2233 ----
-diff -cp -r ../../original/gtk+-2.8.20/gtk/gtkentry.c ./gtk/gtkentry.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gtk/gtkentry.c ./gtk/gtkentry.c
 *** ../../original/gtk+-2.8.20/gtk/gtkentry.c	Thu May 18 18:44:24 2006
---- ./gtk/gtkentry.c	Thu Oct 26 10:52:34 2006
+--- ./gtk/gtkentry.c	Mon Oct 30 14:17:42 2006
 *************** gtk_entry_draw_text (GtkEntry *entry)
 *** 3152,3158 ****
     if (GTK_WIDGET_DRAWABLE (entry))
@@ -2683,9 +3037,9 @@ diff -cp -r ../../original/gtk+-2.8.20/gtk/gtkentry.c ./gtk/gtkentry.c
       }
   }
   
-diff -cp -r ../../original/gtk+-2.8.20/gtk/gtkwidget.c ./gtk/gtkwidget.c
+diff -cp -r -N ../../original/gtk+-2.8.20/gtk/gtkwidget.c ./gtk/gtkwidget.c
 *** ../../original/gtk+-2.8.20/gtk/gtkwidget.c	Sat Apr 29 08:58:25 2006
---- ./gtk/gtkwidget.c	Thu Oct 26 10:52:34 2006
+--- ./gtk/gtkwidget.c	Mon Oct 30 14:17:42 2006
 *************** gtk_widget_update_pango_context (GtkWidg
 *** 5229,5235 ****
         GdkScreen *screen;
