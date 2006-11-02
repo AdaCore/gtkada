@@ -53,7 +53,7 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       BUILD_SHARED=no
 #      SO_OPTS="-dynamiclib -compatibility_version 2.2.2 -current_version 2.2.2 -install_name @prefix@/lib/"
       FPIC=-fno-common
-      TARGET_LFLAGS="-Wl,-flat_namespace -Wl,-undefined suppress"
+      TARGET_LFLAGS="-Wl,-flat_namespace -Wl,-undefined,suppress"
       ;;
    # ??? The following case has been introduced because of an elaboration
    # problem with the GtkAda dynamic library and GPS (see E511-010). This
