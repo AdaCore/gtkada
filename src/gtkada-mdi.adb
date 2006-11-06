@@ -918,6 +918,12 @@ package body Gtkada.MDI is
          then
             Close := True;
 
+         elsif (D.Modifier and Shift_Mask) /= 0
+           and then (Key = Gdk.Types.Keysyms.GDK_Shift_L
+                     or else Key = Gdk.Types.Keysyms.GDK_Shift_R)
+         then
+            Close := True;
+
          elsif Key = Gdk.Types.Keysyms.GDK_Escape then
             Close := True;
          end if;
@@ -962,7 +968,10 @@ package body Gtkada.MDI is
          return;
       end if;
 
-      if Event = null then
+      if Event = null
+        or else (Get_Event_Type (Event) /= Key_Press
+                 and then Get_Event_Type (Event) /= Key_Release)
+      then
          declare
             List     : Widget_List.Glist;
             Current  : Gtk_Notebook;
