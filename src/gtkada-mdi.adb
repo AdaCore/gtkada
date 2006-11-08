@@ -1595,10 +1595,28 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean
    is
       C : constant MDI_Child := MDI_Child (Child);
+      W, H : Gint;
    begin
       C.MDI.In_Drag := No_Drag;
 
-      if Get_Event_Type (Event) /= Button_Press
+      --  Double-click on left icon => close child
+      if Get_Event_Type (Event) = Gdk_2button_Press
+        and then Get_Button (Event) = 1
+      then
+         if C.Icon /= null then
+            W := Get_Width (C.Icon);
+            H := Get_Height (C.Icon);
+
+            if Gint (Get_X (Event)) <= W
+              and then Gint (Get_Y (Event)) <= H
+            then
+               Close_Child (C);
+               return True;
+            end if;
+         end if;
+         return False;
+
+      elsif Get_Event_Type (Event) /= Button_Press
         or else Get_Button (Event) /= 1
       then
          return False;
