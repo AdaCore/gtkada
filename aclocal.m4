@@ -45,6 +45,12 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       FPIC=
       ac_tmp_GNATDIR=`which gcc | sed 's,/gcc,,'`
       ac_GNATDIR=`cygpath --mixed $ac_tmp_GNATDIR`
+      count=`cd $ac_GNATDIR; ls libgnat*.dll | wc -l`
+      if test $count -gt 1 ; then
+         echo "Too many libgnat.dll, in $ac_GNATDIR"
+	 echo Found: `cd $ac_GNATDIR; ls libgnat*.dll`
+         exit 1
+      fi
       ac_GNATLIB=`cd $ac_GNATDIR; ls libgnat*.dll | sed 's,lib,,;s,.dll,,'`
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-L$ac_GNATDIR,-l$ac_GNATLIB
       ;;
