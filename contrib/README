@@ -26,6 +26,8 @@ pango-1.14.7.diff: ditto for pango 1.14.7
 
 pango-1.14.7-win32.diff: ditto for pango 1.14.7 under Windows.
 
+pygtk-2.8.6.diff: patch to build pygtk 2.8.6 with --without-threads
+
 gtk+-2.8.20.diff: a patch against Gtk+ 2.8.20 sources containing some
 improvements/fixes not incorporated yet.
 
