@@ -1,3 +1,6 @@
+	* Fixes build with --without-threads.
+	Submitted at: http://bugzilla.gnome.org/show_bug.cgi?id=374603
+
 --- gobject/gobjectmodule.c.old	2006-11-12 13:45:27.445909011 +0100
 +++ gobject/gobjectmodule.c	2006-11-12 13:46:36.515561908 +0100
 @@ -1942,13 +1942,19 @@ pyg_enable_threads (void)
