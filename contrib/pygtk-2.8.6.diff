@@ -1,4 +1,4 @@
-	* Fixes build with --without-threads.
+	* Fixes build with --disable-thread
 	Submitted at: http://bugzilla.gnome.org/show_bug.cgi?id=374603
 
 --- gobject/gobjectmodule.c.old	2006-11-12 13:45:27.445909011 +0100
