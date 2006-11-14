@@ -1348,6 +1348,7 @@ package body Gtkada.MDI is
       use type Widget_SList.GSlist;
       C   : constant MDI_Child := MDI_Child (Child);
       MDI : constant MDI_Window := C.MDI;
+      In_Selection_Dialog : Boolean := False;
 
    begin
       --  We know at that stage that Child has already been unparent-ed
@@ -1388,6 +1389,10 @@ package body Gtkada.MDI is
          MDI.Focus_Child := null;
       end if;
 
+      In_Selection_Dialog := MDI.Selection_Dialog /= null
+        and then C = MDI_Child (Get_Data (Selection_Dialog_Access
+          (MDI.Selection_Dialog).Current_Child));
+
       --  Only remove it from the list of children at the end, since some of
       --  calls above might result in calls to Raise_Child_Idle, which tries
       --  to manipulate that list.
@@ -1397,6 +1402,13 @@ package body Gtkada.MDI is
       --  fully removed, but before we actually free it
       Emit_By_Name_Child
         (Get_Object (MDI), "child_removed" & ASCII.NUL, Get_Object (C));
+
+      --  If we are currently displaying the window selection dialog, update it
+      --  so that the widget that has been destroyed does not show up in the
+      --  selection window.
+      if In_Selection_Dialog then
+         Update_Selection_Dialog (MDI, +1);
+      end if;
 
       Free (C.Title);
       Free (C.Short_Title);
