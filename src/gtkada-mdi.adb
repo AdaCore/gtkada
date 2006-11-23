@@ -2774,7 +2774,7 @@ package body Gtkada.MDI is
             Child.MDI.Title_Bar_Height);
       end if;
 
-      if Realized_Is_Set (C) then
+      if Realized_Is_Set (C.Initial) then
          Queue_Draw_Area
            (C, Border_Thickness, Border_Thickness,
             Gint (Get_Allocation_Width (C)) - 2 * Border_Thickness,
@@ -2793,7 +2793,7 @@ package body Gtkada.MDI is
              (Get_Toplevel (Previous_Focus_Child.Initial),
               Has_Toplevel_Focus_Property)
          then
-            Present (Gtk_Window (Get_Toplevel (C)));
+            Raise_Child (C);
          end if;
       end if;
 
