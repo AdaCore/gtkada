@@ -167,17 +167,17 @@
  
  @CROSS_COMPILING_FALSE@all-local: gtk.immodules
  # Tell versions [3.59,3.63) of GNU make to not export all variables.
---- gtk/Makefile.in.old	2006-10-06 12:33:54.234375000 +0200
-+++ gtk/Makefile.in	2006-10-06 12:34:16.593750000 +0200
-@@ -2949,7 +2949,7 @@ stamp-icons: $(STOCK_ICONS)
+--- gtk/Makefile.in.orig	2007-01-05 19:44:17.000000000 +0100
++++ gtk/Makefile.in	2007-01-08 17:08:17.078125000 +0100
+@@ -2956,7 +2956,7 @@ stamp-icons: $(STOCK_ICONS)
+ 
  gtkbuiltincache.h: @REBUILD@ stamp-icons
  	$(MAKE) $(AM_MAKEFLAGS) gtk-update-icon-cache$(EXEEXT)
- 	GDK_PIXBUF_MODULE_FILE=$(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders	\
--	   ./gtk-update-icon-cache --force --ignore-theme-index 		\
-+	   ./gtk-update-icon-cache. --force --ignore-theme-index 		\
- 	   --source builtin_icons stock-icons > gtkbuiltincache.h
+-	$(gtk_update_icon_cache_program) --force --ignore-theme-index		\
++	$(gtk_update_icon_cache_program). --force --ignore-theme-index		\
+ 	   --source builtin_icons stock-icons > gtkbuiltincache.h.tmp &&        \
+ 	mv gtkbuiltincache.h.tmp gtkbuiltincache.h
  
- install-data-local:
 --- gdk/win32/gdkgc-win32.c.old	2005-07-18 17:20:28.000000000 +0200
 +++ gdk/win32/gdkgc-win32.c	2006-06-05 14:56:59.515625000 +0200
 @@ -1160,8 +1160,7 @@ _gdk_win32_gdkregion_to_hrgn (GdkRegion 

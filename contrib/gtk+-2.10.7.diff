@@ -8,12 +8,6 @@
 	* gdk/x11/gdkasync.c: #define ANSICPP on Solaris, to work around
 	bug in X11/Xmd.h on Solaris 8.
 
-2006-01-04	Arnaud Charlet	<charlet@adacore.com>
-
-	* gtk/gtktextview.c (gtk_text_view_start_selection_dnd): Disabled,
-	since not functional.
-	For C928-003.
-
 2003-11-27	Arnaud Charlet	<charlet@adacore.com>
 
 	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
@@ -32,15 +26,6 @@
  
    gtk_text_view_update_adjustments (text_view);
    
-@@ -6028,6 +6028,8 @@ gtk_text_view_start_selection_dnd (GtkTe
-   GdkDragContext *context;
-   GtkTargetList  *target_list;
- 
-+  return;
-+
-   text_view->drag_start_x = -1;
-   text_view->drag_start_y = -1;
-   text_view->pending_place_cursor_button = 0;
 --- gdk/x11/gdkasync.c.old	Thu Feb 23 11:30:46 2006
 +++ gdk/x11/gdkasync.c	Thu Feb 23 11:48:14 2006
 @@ -47,6 +47,11 @@ in this Software without prior written a
