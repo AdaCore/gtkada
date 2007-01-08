@@ -34,7 +34,7 @@ install:
 	-for dir in ${DIRECTORIES} ${TUTORIAL_DIRS}; do \
 	  mkdir -p $(examples)/$${dir}; \
 	  rm -f $${dir}/b~*; \
-	  cp -p $${dir}/*.ad? $(examples)/$${dir} 2>/dev/null; \
+	  cp -p $${dir}/*.ad? $${dir}/*.gpr $(examples)/$${dir} 2>/dev/null; \
 	  cp -p $${dir}/Makefile $(examples)/$${dir} 2>/dev/null; \
 	  cp -p $${dir}/README $(examples)/$${dir} 2>/dev/null; \
 	done
