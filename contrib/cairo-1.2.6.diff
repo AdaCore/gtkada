@@ -29,16 +29,17 @@
  #define pixman_private	__attribute__((__visibility__("hidden")))
  #else
  #define pixman_private
---- src/cairo-png.c.old	Fri Oct 27 11:24:17 2006
-+++ src/cairo-png.c	Fri Oct 27 11:27:21 2006
-@@ -39,6 +39,10 @@
+--- src/cairo-png.c.orig	Wed Nov  1 03:27:38 2006
++++ src/cairo-png.c	Wed Jan 10 18:50:34 2007
+@@ -37,6 +37,11 @@
+ 
  #include <errno.h>
  #include "cairoint.h"
- 
++
 +#ifdef _AIX
 +#undef jmpbuf
 +#endif
 +
+ #include <png.h>
+ 
  /* Unpremultiplies data and converts native endian ARGB => RGBA bytes */
- static void
- unpremultiply_data (png_structp png, png_row_infop row_info, png_bytep data)
