@@ -5,7 +5,13 @@ Known problems fixed in GtkAda 2.8.2
   Problem:    If you create your interface through the Glade GUI builder, the
               generate code defines an access type which isn't a general
               access type. This prevents conversions to it in various cases
-  Workaround: edit the generate file "*_pkg.ads" and add the keyword "all"
+  Workaround: Edit the generate file "*_pkg.ads" and add the keyword "all"
+
+- G112-004 Glade doesn't handle signals with "Object" parameter
+  Problem:    If you connect a signal to your widget through the GUI builder,
+              and specify an "Object" argument to it, then the generated
+              callback has an incorrect type for its parameter
+  Workaround: Edit the generated code in "*_pkg-callbacks.ads"
 
 - F206-018 GtkAda project files not working under Windows
   Problem:    The project files where not usable on Windows. The build
