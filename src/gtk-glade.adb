@@ -496,7 +496,7 @@ package body Gtk.Glade is
 
                Put_Line (Output, "   end record;");
                Put_Line (Output, "   type " & To_Ada (Name) &
-                 "_Access is access " & To_Ada (Name) & "_Record'Class;");
+                 "_Access is access all " & To_Ada (Name) & "_Record'Class;");
                New_Line (Output);
                Put_Line (Output, "   procedure Gtk_New (" &
                   To_Ada (Name) & " : out " & To_Ada (Name) & "_Access);");
