@@ -1,6 +1,12 @@
 
 Known problems fixed in GtkAda 2.8.2
 
+- G112-004 Glade doesn't generate general access types
+  Problem:    If you create your interface through the Glade GUI builder, the
+              generate code defines an access type which isn't a general
+              access type. This prevents conversions to it in various cases
+  Workaround: edit the generate file "*_pkg.ads" and add the keyword "all"
+
 - F206-018 GtkAda project files not working under Windows
   Problem:    The project files where not usable on Windows. The build
               options had to be passed explicitly on the command line.
