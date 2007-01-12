@@ -929,12 +929,21 @@ package body Glib.Glade is
                Query (Id, Q);
                Returned := Return_Type (Q);
 
-               Rename := Add_Signal
-                 (Top,
-                  new String'(Handler),
-                  new String'(Name),
-                  Class,
-                  new String'(Orig_Class));
+               if Object = "" then
+                  Rename := Add_Signal
+                    (Top,
+                     new String'(Handler),
+                     new String'(Name),
+                     Class,
+                     new String'(Orig_Class));
+               else
+                  Rename := Add_Signal
+                    (Top,
+                     new String'(Handler),
+                     new String'(Name),
+                     new String'("Gtk_Widget"),
+                     new String'(Orig_Class));
+               end if;
 
                if Returned <= GType_None and then Class.all /= "GtkWidget" then
                   Add_Signal_Instantiation (Class, Rename);
@@ -942,6 +951,8 @@ package body Glib.Glade is
 
                if Returned > GType_None then
                   Put (File, "   Return_Callback.");
+               elsif Object /= "" then
+                  Put (File, "   Widget_Callback.");
                else
                   Put
                     (File, "   " &
@@ -978,9 +989,14 @@ package body Glib.Glade is
 
                if Params (Q)'Length = 0 then
                   New_Line (File);
-                  Put (File, "      " &
-                       To_Ada (Class (Class'First + 3 .. Class'Last)) &
-                       "_Callback.To_Marshaller (" & To_Ada (Handler)
+                  Put (File, "      ");
+                  if Object /= "" then
+                     Put (File, "Widget");
+                  else
+                     Put
+                       (File, To_Ada (Class (Class'First + 3 .. Class'Last)));
+                  end if;
+                  Put (File, "_Callback.To_Marshaller (" & To_Ada (Handler)
                        & "'Access)");
                else
                   Put (File, " " & To_Ada (Handler) & "'Access");
