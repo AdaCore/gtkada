@@ -40,5 +40,7 @@ gtk+-2.10.7-win32.diff: ditto for Windows.
 
 gtkada-2.8-win32.diff: a patch to build GtkAda 2.8.x under Windows
 
+gtkada-2.10-win32.diff: a patch to build GtkAda 2.10.x under Windows
+
 glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
 
