@@ -44,7 +44,10 @@ echo_linker() {
          *_NT*)
             echo ","
             echo "        \"-luser32\","
-	    echo -n "        \"-L../../bin\""
+	    if [ "$shared" = "1" ]; then
+		echo "        \"-L../../bin\","
+	    fi
+	    echo -n "        \"-L..\""
          ;;
       esac
 
