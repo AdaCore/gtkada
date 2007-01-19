@@ -1,6 +1,12 @@
 GATE_SRC      = gate.adb
 GATE_EX       = gate-in.exe
-GATE          = gate
+
+ifeq ($(OS),Windows_NT)
+  GATE        = gate.bat
+else
+  GATE        = gate
+endif
+
 GDIALOG       = gdialog
 GTKADA_CONFIG = gtkada-config
 
@@ -29,4 +35,4 @@ install: force
 clean: module_clean
 
 distclean: module_distclean
-	-${RM} ${GATE} ${GTKADA_CONFIG}
+	-${RM} gate ${GTKADA_CONFIG}
