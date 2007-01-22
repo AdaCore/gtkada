@@ -1,3 +1,4 @@
+Known problems fixed in GtkAda 2.8.3
 
 Known problems fixed in GtkAda 2.8.2
 
@@ -26,14 +27,3 @@ Known problems fixed in GtkAda 2.8.1
               16 bits display under Windows.
   Workaround: Use 24 or 32 bits display
 
-Known problems fixed in GtkAda 2.4.3
-
-- F106-004 Confusion in Glib.Signal_Id definition on 64 bit systems
-  Problem:    The Glib.Signal_Id type is used for both signal id and handler
-              id in Gtk.Handlers. In order to fix this confusion, a new
-              type and field is used in Gtk.Handlers.Handler_Id.
-              This confusion could cause troubles on 64 bit systems only
-              where Integer'Size /= Long_Integer'Size
-  Workaround: No work around needed. When upgrading to GtkAda 2.4.3, some
-              code changes might be needed (Handler.Signal -> Handler.Id,
-              Null_Signal_Id -> Null_Handler_Id).
