@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-pragma Warnings (Off);
 with Gtk.Adjustment;
 with Gtk.Alignment;
 with Gtk.Arrow;
@@ -86,7 +85,6 @@ with Gtk.Progress;
 with Gtk.Ctree;
 with Gtk.Clist;
 with Gtk.Text;
-with Gtk.Text_View;
 with Gtk.Tips_Query;
 pragma Warnings (On);
 with Gtk.Progress_Bar;
@@ -101,14 +99,15 @@ with Gtk.Socket;
 with Gtk.Spin_Button;
 with Gtk.Status_Bar;
 with Gtk.Table;
+with Gtk.Text_View;
 with Gtk.Toggle_Button;
 with Gtk.Toolbar;
 with Gtk.Tooltips;
+with Gtk.Tree_View;
 with Gtk.Vbutton_Box;
 with Gtk.Viewport;
 with Gtk.Widget;
 with Gtk.Window;
-pragma Warnings (On);
 
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
@@ -346,6 +345,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.Tooltips.Gtk_Tooltips_Record;
             elsif Type_Name = "GtkTextView" then
                return new Gtk.Text_View.Gtk_Text_View_Record;
+            elsif Type_Name = "GtkTreeView" then
+               return new Gtk.Tree_View.Gtk_Tree_View_Record;
             end if;
          when 'V' =>
             if Type_Name = "GtkVBox" then
