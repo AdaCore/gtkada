@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2006 AdaCore                   --
+--                 Copyright (C) 2001-2007 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -5269,6 +5269,8 @@ package body Gtkada.MDI is
          Child.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
          Child.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
          Child.MDI.In_Drag := In_Pre_Drag;
+         Child.MDI.Dnd_Rectangle_Owner := null;
+         Child.MDI.Dnd_Rectangle := (0, 0, 0, 0);
       elsif Traces then
          Put_Line ("MDI: Child is floating, did not initiate DnD");
       end if;
