@@ -33,10 +33,10 @@ improvements/fixes not incorporated yet.
 
 gtk+-2.8.20-win32.diff: ditto for Windows.
 
-gtk+-2.10.8.diff: a patch against Gtk+ 2.10.8 sources containing some
+gtk+-2.10.9.diff: a patch against Gtk+ 2.10.9 sources containing some
 improvements/fixes not incorporated yet.
 
-gtk+-2.10.8-win32.diff: ditto for Windows.
+gtk+-2.10.9-win32.diff: ditto for Windows.
 
 gtkada-2.8-win32.diff: a patch to build GtkAda 2.8.x under Windows
 
