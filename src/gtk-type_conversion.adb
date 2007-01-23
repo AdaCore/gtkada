@@ -86,6 +86,7 @@ with Gtk.Progress;
 with Gtk.Ctree;
 with Gtk.Clist;
 with Gtk.Text;
+with Gtk.Text_View;
 with Gtk.Tips_Query;
 pragma Warnings (On);
 with Gtk.Progress_Bar;
@@ -343,6 +344,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.Toolbar.Gtk_Toolbar_Record;
             elsif Type_Name = "GtkTooltips" then
                return new Gtk.Tooltips.Gtk_Tooltips_Record;
+            elsif Type_Name = "GtkTextView" then
+               return new Gtk.Text_View.Gtk_Text_View_Record;
             end if;
          when 'V' =>
             if Type_Name = "GtkVBox" then
