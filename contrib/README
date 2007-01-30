@@ -22,9 +22,9 @@ pango-1.12.3.diff: ditto for pango 1.12.3
 
 pango-1.12.3-win32.diff: ditto for pango 1.12.3 under Windows.
 
-pango-1.14.8.diff: ditto for pango 1.14.8
+pango-1.14.10.diff: ditto for pango 1.14.10
 
-pango-1.14.8-win32.diff: ditto for pango 1.14.8 under Windows.
+pango-1.14.10-win32.diff: ditto for pango 1.14.10 under Windows.
 
 pygtk-2.8.6.diff: patch to build pygtk 2.8.6 with --without-threads
 
