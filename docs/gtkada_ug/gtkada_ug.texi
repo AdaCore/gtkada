@@ -419,7 +419,7 @@ switches (chosen to be compatible with the ones set by @code{gtk-config}):
 @subsubsection Windows systems
 
 Things are somewhat easier on Windows systems. You don't have access to the
-@code{gtkada-config} script. On the other hang you also don't
+@code{gtkada-config} script. On the other hand you also don't
 have to specify which libraries to use or where to find them.
 
 The only thing you should specify on the @code{gnatmake} command line is
