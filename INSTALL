@@ -19,7 +19,7 @@ C files, and a unix-like environment (e.g. cygwin or msys) where the paths
 correspond to real Windows path (for instance by installing cygwin under
 the root directory). You can use an older GCC version for the Ada files
 (gnatmake). Under sh:
-   $ (cd src; patch -p0 < ../contrib/gtkada-2.8-win32.diff)
+   $ (cd src; patch -p0 < ../contrib/gtkada-2.10-win32.diff)
    $ CC='gcc-3.2 -mms-bitfields' ./configure --prefix=<install_dir> \
        --build=i386-pc-mingw32
    $ make install
