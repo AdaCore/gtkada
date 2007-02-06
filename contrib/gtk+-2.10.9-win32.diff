@@ -98,19 +98,6 @@
    if (private->extension_events != 0)
      _gdk_input_window_destroy (window);
  
---- gdk/Makefile.in.old	2006-02-21 10:46:12.000000000 +0100
-+++ gdk/Makefile.in	2006-02-21 10:46:33.000000000 +0100
-@@ -437,8 +437,8 @@
- libgdk_win32_2_0_la_LIBADD = win32/libgdk-win32.la $(GDK_DEP_LIBS) \
-   $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la\
- $(am__append_1) $(am__append_2)
--libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la win32/rc/gdk-win32-res.o gdk.def
--libgdk_win32_2_0_la_LDFLAGS = -Wl,win32/rc/gdk-win32-res.o -export-symbols gdk.def $(LDADD)
-+libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la gdk.def
-+libgdk_win32_2_0_la_LDFLAGS = -export-symbols gdk.def $(LDADD)
- 
- @MS_LIB_AVAILABLE_TRUE@noinst_DATA = gdk-win32-$(GTK_API_VERSION).lib
- 
 --- gdk-pixbuf/Makefile.in.old	2006-02-21 09:00:26.000000000 +0100
 +++ gdk-pixbuf/Makefile.in	2006-02-21 08:58:57.000000000 +0100
 @@ -1603,7 +1603,7 @@ distclean-local:
@@ -189,4 +176,17 @@
 +  hrgn = ExtCreateRegion (NULL, nbytes, rgndata);
  
    g_free (rgndata);
+ 
+--- gdk/Makefile.in.orig	2007-01-22 17:01:32.000000000 +0100
++++ gdk/Makefile.in	2007-02-06 16:57:40.128679000 +0100
+@@ -462,8 +462,8 @@ libgdk_win32_2_0_la_SOURCES = $(common_s
+ libgdk_win32_2_0_la_LIBADD = win32/libgdk-win32.la $(GDK_DEP_LIBS) \
+   $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la
+ 
+-libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la win32/rc/gdk-win32-res.o gdk.def
+-libgdk_win32_2_0_la_LDFLAGS = -Wl,win32/rc/gdk-win32-res.o -export-symbols $(srcdir)/gdk.def $(LDADD) $(am__append_1) $(am__append_2)
++libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la gdk.def
++libgdk_win32_2_0_la_LDFLAGS = -export-symbols $(srcdir)/gdk.def $(LDADD) $(am__append_1) $(am__append_2)
+ 
+ @MS_LIB_AVAILABLE_TRUE@noinst_DATA = gdk-win32-$(GTK_API_VERSION).lib
  
