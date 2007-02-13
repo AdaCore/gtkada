@@ -505,7 +505,9 @@ package Gtkada.MDI is
      (Child : access MDI_Child_Record'Class; Give_Focus : Boolean := True);
    --  Put Child in the foreground.
    --  Note that this does not give the focus to this child, unless
-   --  Give_Focus is set to True
+   --  Give_Focus is set to True. If Child and the current focus child are in
+   --  the same notebook, Child will always gain the focus, so that the focus
+   --  is not left on an invisible window.
 
    function Is_Raised (Child : access MDI_Child_Record'Class) return Boolean;
    --  Whether the child is currently raised, ie fully visible to the user

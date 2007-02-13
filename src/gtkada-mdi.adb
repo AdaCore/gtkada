@@ -2591,17 +2591,28 @@ package body Gtkada.MDI is
       Old_Focus     : constant MDI_Child := Child.MDI.Focus_Child;
       Note          : Gtk_Notebook;
       Current_Focus : MDI_Child;
+      Give          : Boolean := Give_Focus;
    begin
       --  For a docked item, we in fact want to raise its parent dock,
       --  and make sure the current page in that dock is the correct one.
 
       if Child.State = Normal then
          Note := Get_Notebook (Child);
+         Current_Focus := Child.MDI.Focus_Child;
+
+         --  We'll have to transfer the focus if the current focus window is in
+         --  the same dock, since otherwise that means an invisible window
+         --  would have the focus.
+
+         if Current_Focus.State = Normal
+           and then Get_Notebook (Current_Focus) = Note
+         then
+            Give := True;
+         end if;
 
          --  Temporary fool the system, so that the child doesn't necessarily
          --  gain the focus. Otherwise, switching a notebook page gives the
          --  child the focus.
-         Current_Focus := Child.MDI.Focus_Child;
          Child.MDI.Focus_Child := MDI_Child (Child);
 
          --  There could be no parent if we are in all-floating mode
@@ -2624,7 +2635,7 @@ package body Gtkada.MDI is
       --  might have changed that.
 
       if not Child.MDI.Loading_Desktop then
-         if not Give_Focus then
+         if not Give then
             --  This must be done even if Old_Focus = MDI.Focus_Child.
             --  Otherwise, clicking inside an editor in GPS for instance will
             --  not properly refresh the outline view
