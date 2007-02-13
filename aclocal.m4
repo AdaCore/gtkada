@@ -19,6 +19,7 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       FPIC=
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-bexpall,-berok
       TARGET_LFLAGS=-Wl,-bbigtoc
+      SO_OPTS="-o "
       ;;
    hp*)
       SO_EXT=.sl

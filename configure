@@ -1355,6 +1355,7 @@ test -n "$target_alias" &&
       FPIC=
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-bexpall,-berok
       TARGET_LFLAGS=-Wl,-bbigtoc
+      SO_OPTS="-o "
       ;;
    hp*)
       SO_EXT=.sl
