@@ -1,4 +1,4 @@
-Known problems fixed in GtkAda 2.8.3
+Known problems fixed in GtkAda 2.10.0
 
 - G202-018 Gtkada.MDI.Raise_Child ends up with hidden focused window
   Problem:    When you raise a window without giving the focus to it,

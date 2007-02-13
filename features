@@ -9,8 +9,13 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
-New features in GtkAda 2.8.3
-----------------------------
+New features in GtkAda 2.10.0
+-----------------------------
+
+FA06-005 Compatiblity with Gtk+ 2.10.x  (2006-02-10)
+
+  GtkAda has been successfully tested against Gtk+ 2.10.x, and
+  binary versions now come with Gtk+ 2.10.x libraries
 
 New features in GtkAda 2.8.2
 ----------------------------
