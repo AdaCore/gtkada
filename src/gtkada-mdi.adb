@@ -2251,13 +2251,22 @@ package body Gtkada.MDI is
       --  latter should force the size
       if not MDI.Loading_Desktop and then Notebook /= null then
          --  Only take this into account if we have a single page
-         if Get_Nth_Page (Notebook, 1) = null then
+         if Get_Nth_Page (Notebook, 1) = null
+           and then MDI.Show_Tabs_Policy /= Always
+         then
             Set_Size (MDI,
                       Widget     => Notebook,
                       Width      => Width, Height => Height,
                       Fixed_Size => Fixed_Size);
          else
             Set_Size_Request (Child, Width, Height);
+            Set_Size (MDI,
+                      Widget     => Notebook,
+                      Width      => Width,
+                      Height     => Height
+                      + Get_Allocation_Height (Notebook)
+                      - Get_Allocation_Height (Child),
+                      Fixed_Size => Fixed_Size);
          end if;
       end if;
    end Set_Size;
