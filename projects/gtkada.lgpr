@@ -5,6 +5,8 @@ gdk-color.adb
 gdk-color.ads
 gdk-cursor.adb
 gdk-cursor.ads
+gdk-display.ads
+gdk-display.adb
 gdk-dnd.adb
 gdk-dnd.ads
 gdk-drawable.adb
