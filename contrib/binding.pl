@@ -121,6 +121,7 @@ sub ada_unit_from_c_file() {
   my ($adafile) = &basename ($cfile);
   my (@words);
   $adafile =~ s/^gtk(.+)/gtk-$1/;
+  $adafile =~ s/^gdk(.+)/gdk-$1/;
 
   ## Order matters in this array
   @words = ("about", "accel", "action", "aspect", "button", "cell", "check",
@@ -483,6 +484,8 @@ sub is_object() {
                && $c_type ne "GtkTreeDragDest*"
                && $c_type ne "GtkCellLayout*")
            || $c_type eq "PangoLayout"
+           || $c_type eq "GdkDisplay*"
+           || $c_type eq "GdkScreen*"
            || $c_type eq "GObject*");
 }
 
@@ -494,7 +497,6 @@ sub c_to_ada() {
    $c_type =~ s/([^_])([A-Z])/$1_$2/g;  ## Split on upper cases
 
    return "Boolean"            if ($c_type eq "gboolean");
-   return "Gdk_$1"             if ($c_type =~ /Gdk_(.+)\*/);
    return "Gfloat"             if ($c_type eq "gfloat");
    return "String"             if ($c_type =~ /g?char\*/);
    return "Gtk_Tree_Iter"      if ($c_type eq "Gtk_Tree_Iter*");
@@ -523,6 +525,8 @@ sub c_to_ada() {
          return "access " . &c_widget_to_ada ($c_type) . "_Record'Class";
       }
    }
+
+   return "Gdk_$1"             if ($c_type =~ /Gdk_(.+)\*/);
    return &capitalize ($c_type);
 }
 
@@ -543,7 +547,6 @@ sub c_to_low_ada() {
    return "Gtk_Tree_Path"   if ($c_type eq "Gtk_Tree_Path*");
    return "Selection_Data"  if ($c_type eq "Gtk_Selection_Data*");
    return "Gtk_Tree_Sortable" if ($c_type eq "Gtk_Tree_Sortable*");
-   return "Gdk_$1"         if ($c_type =~ /Gdk_(.+)\*/);
    return "System.Address" if ($c_type eq "gpointer");
    return "GType"          if ($c_type eq "G_Type");
    return "out Gfloat"     if ($c_type eq "gfloat*");
@@ -552,6 +555,7 @@ sub c_to_low_ada() {
    return "Interfaces.C.Strings.chars_ptr"
                            if ($c_type =~ /g?char\*/ && $param_index == -1);
    return "System.Address" if ($is_object);
+   return "Gdk_$1"         if ($c_type =~ /Gdk_(.+)\*/);
    return &capitalize ($c_type);
 }
 
