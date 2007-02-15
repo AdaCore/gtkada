@@ -52,5 +52,6 @@ package Gtkada.Properties is
 
    function Widget_At_Pointer return Gtk.Widget.Gtk_Widget;
    --  Return the widget below the mouse pointer
+   --  ??? See Gdk.Display.Get_Window_At_Pointer
 
 end Gtkada.Properties;
