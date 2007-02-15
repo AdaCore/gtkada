@@ -50,6 +50,8 @@ with Glib.Error; use Glib.Error;
 with Gdk.Bitmap;
 with Gdk.Drawable;
 with Gdk.Color;
+with Gdk.Cursor;
+with Gdk.Display;
 with Gdk.GC;
 with Gdk.Pixmap;
 with Gdk.Rgb;
@@ -644,8 +646,33 @@ package Gdk.Pixbuf is
    --  if True, you need to call Get_Pixbuf and update the display with the new
    --  pixbuf.
 
+   -------------
+   -- Cursors --
+   -------------
+
+   procedure Gdk_New_From_Pixbuf
+     (Cursor  : out Gdk.Cursor.Gdk_Cursor;
+      Display : Gdk.Display.Gdk_Display := Gdk.Display.Get_Default;
+      Pixbuf  : Gdk_Pixbuf;
+      X       : Glib.Gint;
+      Y       : Glib.Gint);
+   --  Create a cursor from a pixbuf.
+   --  Not all GDK backends support RGBA cursors. If they are not supported,
+   --  a monochrome approximation will be displayed.
+   --  The functions gdk.display.supports_cursor_alpha and
+   --  gdk.display.supports_cursor_color can be used to determine whether RGBA
+   --  cursors are supported;
+   --  gdk.display.get_default_cursor_size and
+   --  gdk.display.get_maximal_cursor_size give information about cursor sizes.
+   --  On the X backend, support for RGBA cursors requires a sufficently new
+   --  version of the X Render extension.
+
+   function Get_Image (Cursor : Gdk.Cursor.Gdk_Cursor) return Gdk_Pixbuf;
+   --  Return the image stored in the cursor
+
 private
 
+   pragma Import (C, Get_Image, "gdk_cursor_get_image");
    pragma Import (C, Get_Type, "gdk_pixbuf_get_type");
    pragma Import (C, Get_Type_Animation, "gdk_pixbuf_animation_get_type");
    pragma Import

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,6 +26,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk.Cursor;  use Gdk.Cursor;
+with Gdk.Display; use Gdk.Display;
+with Glib.Object; use Glib.Object;
 with System;
 
 package body Gdk.Pixbuf is
@@ -360,5 +363,24 @@ package body Gdk.Pixbuf is
    begin
       return Internal (Iter, Current_Timer) /= 0;
    end Advance;
+
+   -------------------------
+   -- Gdk_New_From_Pixbuf --
+   -------------------------
+
+   procedure Gdk_New_From_Pixbuf
+     (Cursor  : out Gdk.Cursor.Gdk_Cursor;
+      Display : Gdk.Display.Gdk_Display := Gdk.Display.Get_Default;
+      Pixbuf  : Gdk_Pixbuf;
+      X       : Glib.Gint;
+      Y       : Glib.Gint)
+   is
+      function Internal
+        (D : System.Address; P : Gdk_Pixbuf; X, Y : Gint)
+        return Gdk_Cursor;
+      pragma Import (C, Internal, "gdk_cursor_new_from_pixbuf");
+   begin
+      Cursor := Internal (Get_Object (Display), Pixbuf, X, Y);
+   end Gdk_New_From_Pixbuf;
 
 end Gdk.Pixbuf;

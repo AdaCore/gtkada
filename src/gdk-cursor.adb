@@ -74,4 +74,13 @@ package body Gdk.Cursor is
         (Source, Mask, Col_Fg'Address,  Col_Bg'Address, X, Y);
    end Gdk_New;
 
+   procedure Gdk_New
+     (Cursor  : out Gdk_Cursor;
+      Name    : String)
+   is
+      function Internal (Name : String) return Gdk_Cursor;
+      pragma Import (C, Internal, "gdk_cursor_new_from_name");
+   begin
+      Cursor := Internal (Name & ASCII.NUL);
+   end Gdk_New;
 end Gdk.Cursor;

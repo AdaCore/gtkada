@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -136,6 +136,7 @@ package Gdk.Cursor is
       X      : Glib.Gint;
       Y      : Glib.Gint);
    --  Create a new cursor from a given pixmap and mask.
+   --  See also Gdk.Pixbuf.Gdk_New_From_Pixbuf.
    --  Both the pixmap and mask must have a depth of 1 (i.e. each pixel has
    --  only 2 values - on or off). The standard cursor size is 16 by 16 pixels.
    --   - Source is the pixmap specifying the cursor.
@@ -148,7 +149,17 @@ package Gdk.Cursor is
    --   - X is the horizontal offset of the 'hotspot' of the cursor.
    --   - Y is the vertical offset of the 'hotspot' of the cursor.
 
+   --  procedure Gdk_New_From_Pixbuf (...)
+   --  This function is declared in Gdk.Pixbuf, for dependency circularity
+   --  reasons. It can be used to create a cursor directly from a pixbuf.
+
+   procedure Gdk_New
+     (Cursor  : out Gdk_Cursor;
+      Name    : String);
+   --  Create a cursor from a name
+
    procedure Destroy (Cursor : Gdk_Cursor);
+   pragma Obsolescent;  --  Destroy
    --  Destroy a cursor, freeing any resources allocated for it.
    --  Deprecated, use Unref instead.
 
