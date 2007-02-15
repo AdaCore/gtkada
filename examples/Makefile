@@ -12,6 +12,8 @@ DIRECTORIES=base_widget \
   tutorial              \
   handlers		\
   powergnu		\
+  images                \
+  cursors               \
   user_data
 
 TUTORIAL_DIRS=tutorial/gtkdial \
