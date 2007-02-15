@@ -2613,7 +2613,8 @@ package body Gtkada.MDI is
          --  the same dock, since otherwise that means an invisible window
          --  would have the focus.
 
-         if Current_Focus.State = Normal
+         if Current_Focus /= null
+           and then Current_Focus.State = Normal
            and then Get_Notebook (Current_Focus) = Note
          then
             Give := True;
