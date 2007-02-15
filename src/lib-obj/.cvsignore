@@ -1,6 +1,7 @@
 *.o
 *.ali
 .gpssnprj
+.gpsrcs
 gdialog
 gate-in.exe
 libgtkada-*
