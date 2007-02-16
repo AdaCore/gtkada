@@ -14,23 +14,17 @@ example_dir = examples
 projects_dir = projects
 xml_dir      = xml
 
-all: build testgtk
-
-build:
+all:
 	$(MAKE) -C $(src_dir)
-
-testgtk:
 	$(MAKE) -C $(testgtk_dir)
 
-install_no_testgtk: build
+install: all
 	$(MAKE) -C $(src_dir) install
 	$(MAKE) -C $(projects_dir) install
+	$(MAKE) -C $(testgtk_dir) install
 	$(MAKE) -C $(doc_dir) install
 	$(MAKE) -C $(example_dir) install
 	$(MAKE) -C $(xml_dir) install
-
-install: install_no_testgtk testgtk
-	$(MAKE) -C $(testgtk_dir) install
 	@echo '------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                              --'
 	@echo '--  To be able to use the library, you may need to update your  --'
