@@ -2528,7 +2528,7 @@ package body Gtkada.Canvas is
 
       Gdk_New (Cursor, Fleur);
       Set_Cursor (Get_Window (Canvas), Cursor);
-      Destroy (Cursor);
+      Unref (Cursor);
 
       --  Initialize the move
 
