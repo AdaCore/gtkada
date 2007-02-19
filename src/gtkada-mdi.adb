@@ -2786,6 +2786,11 @@ package body Gtkada.MDI is
          Raise_Child (C, False);
       end if;
 
+      --  Give the actual keyboard focus to the appropriate subwindow of
+      --  the focus child.
+
+      Give_Focus_To_Child (Child.MDI.Focus_Child);
+
       if Old /= null
         and then Realized_Is_Set (Old)
       then
