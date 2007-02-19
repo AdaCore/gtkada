@@ -646,7 +646,7 @@ private
    Enable_Popup_Property   : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("enable-popup");
    Homogeneous_Property  : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("homgeneous");
+     Glib.Properties.Build ("homogeneous");
 
    Menu_Label_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("menu-label");
