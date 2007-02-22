@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -777,6 +777,86 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Get_Object (Child), Position);
    end Reorder_Child;
 
+   -------------------------
+   -- Get_Tab_Reorderable --
+   -------------------------
+
+   function Get_Tab_Reorderable
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : Gint)
+      return Boolean
+   is
+      function Internal
+        (Notebook : System.Address;
+         Child    : System.Address;
+         Position : Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_notebook_get_tab_reorderable");
+
+   begin
+      return Internal
+        (Get_Object (Notebook), Get_Object (Child), Position) /= 0;
+   end Get_Tab_Reorderable;
+
+   -------------------------
+   -- Set_Tab_Reorderable --
+   -------------------------
+
+   procedure Set_Tab_Reorderable
+     (Notebook    : access Gtk_Notebook_Record;
+      Child       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Reorderable : Boolean := True)
+   is
+      procedure Internal
+        (Notebook    : System.Address;
+         Child       : System.Address;
+         Reorderable : Gint);
+      pragma Import (C, Internal, "gtk_notebook_set_tab_reorderable");
+   begin
+      Internal
+        (Get_Object (Notebook), Get_Object (Child), Boolean'Pos (Reorderable));
+   end Set_Tab_Reorderable;
+
+   ------------------------
+   -- Get_Tab_Detachable --
+   ------------------------
+
+   function Get_Tab_Detachable
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : Gint)
+      return Boolean
+   is
+      function Internal
+        (Notebook : System.Address;
+         Child    : System.Address;
+         Position : Gint)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_notebook_get_tab_detachable");
+   begin
+      return Internal
+        (Get_Object (Notebook), Get_Object (Child), Position) /= 0;
+   end Get_Tab_Detachable;
+
+   ------------------------
+   -- Set_Tab_Detachable --
+   ------------------------
+
+   procedure Set_Tab_Detachable
+     (Notebook   : access Gtk_Notebook_Record;
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Detachable : Boolean := True)
+   is
+      procedure Internal
+        (Notebook   : System.Address;
+         Child      : System.Address;
+         Detachable : Gint);
+      pragma Import (C, Internal, "gtk_notebook_set_tab_detachable");
+   begin
+      Internal
+        (Get_Object (Notebook), Get_Object (Child), Boolean'Pos (Detachable));
+   end Set_Tab_Detachable;
+
    -----------------------
    -- Get_Notebook_Page --
    -----------------------
@@ -800,5 +880,49 @@ package body Gtk.Notebook is
    begin
       return Internal (Get_Object (Notebook));
    end Get_N_Pages;
+
+   ------------------------------
+   -- Set_Window_Creation_Hook --
+   ------------------------------
+
+   procedure Set_Window_Creation_Hook
+     (Func    : Gtk_Notebook_Window_Creation_Func;
+      Data    : System.Address;
+      Destroy : Glib.G_Destroy_Notify_Address)
+   is
+      procedure Internal
+        (Func : Gtk_Notebook_Window_Creation_Func;
+         Data : System.Address;
+         Destroy : G_Destroy_Notify_Address);
+      pragma Import (C, Internal, "gtk_notebook_set_window_creation_hook");
+   begin
+      Internal (Func, Data, Destroy);
+   end Set_Window_Creation_Hook;
+
+   ------------------
+   -- Set_Group_Id --
+   ------------------
+
+   procedure Set_Group_Id
+     (Notebook : access Gtk_Notebook_Record; Group_Id : Gint)
+   is
+      procedure Internal
+        (Notebook : System.Address;
+         Group_Id : Gint);
+      pragma Import (C, Internal, "gtk_notebook_set_group_id");
+   begin
+      Internal (Get_Object (Notebook), Group_Id);
+   end Set_Group_Id;
+
+   ------------------
+   -- Get_Group_Id --
+   ------------------
+
+   function Get_Group_Id (Notebook : access Gtk_Notebook_Record) return Gint is
+      function Internal (Notebook : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_notebook_get_group_id");
+   begin
+      return Internal (Get_Object (Notebook));
+   end Get_Group_Id;
 
 end Gtk.Notebook;
