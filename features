@@ -16,7 +16,7 @@ G222-021 Upgraded Gtk.Notebook binding (2006-02-22)
 
   The Gtk.Notebook binding now incorporates new features that comes with
   Gtk+ 2.10.x and in particular the support for drag-and-drop of tabs. The API
-  allows to easily reorder tabs within a notebook or drad-and-drop a tab from
+  allows to easily reorder tabs within a notebook or drag-and-drop a tab from
   a notebook to another one.
 
 FA06-005 Compatiblity with Gtk+ 2.10.x  (2006-02-10)
