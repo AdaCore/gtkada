@@ -38,7 +38,7 @@
 --  You can hide some of the pages of the notebook by simply calling Hide on
 --  the widget that is contained in the page (or returned from Get_Nth_Page).
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.10.9</c_version>
 --  <group>Layout containers</group>
 --  <testgtk>create_notebook.adb</testgtk>
 --  <screenshot>gtk-notebook</screenshot>
@@ -547,6 +547,11 @@ package Gtk.Notebook is
    --  Name: Homogeneous_Property
    --  Type: Boolean
    --  See:  Set_Homogeneous_Tabs / -
+   --
+   --  <properties>
+   --  Name:  Group_Id_Property
+   --  Type:  Int
+   --  See: Set_Group_Id / Get_Group_Id
    --  </properties>
 
    Page_Property         : constant Glib.Properties.Property_Int;
@@ -559,6 +564,7 @@ package Gtk.Notebook is
    Scrollable_Property   : constant Glib.Properties.Property_Boolean;
    Enable_Popup_Property : constant Glib.Properties.Property_Boolean;
    Homogeneous_Property  : constant Glib.Properties.Property_Boolean;
+   Group_Id_Property : constant Glib.Properties.Property_Int;
 
    ----------------------
    -- Child Properties --
@@ -591,6 +597,14 @@ package Gtk.Notebook is
    --  Type:  Enum
    --  Descr: A Gtk_Pack_Type indicating whether the child is packed with
    --  reference to the start or end of the parent
+   --
+   --  Name:  Detachable_Property
+   --  Type:  Boolean
+   --  See:   Set_Tab_Detachable / Get_Tab_Detachable
+   --
+   --  Name:  Reorderable_Property
+   --  Type:  Boolean
+   --  See:   Set_Tab_Reorderable / Get_Tab_Reorderable
    --  </child_properties>
 
    Menu_Label_Property : constant Glib.Properties.Property_String;
@@ -599,6 +613,8 @@ package Gtk.Notebook is
    Tab_Fill_Property   : constant Glib.Properties.Property_Boolean;
    Tab_Label_Property  : constant Glib.Properties.Property_String;
    Tab_Pack_Property   : constant Gtk.Enums.Property_Pack_Type;
+   Detachable_Property : constant Glib.Properties.Property_Boolean;
+   Reorderable_Property : constant Glib.Properties.Property_Boolean;
 
    ----------------------
    -- Style Properties --
@@ -624,6 +640,14 @@ package Gtk.Notebook is
    --  Type:  Boolean
    --  Descr: Display a second forward arrow button on the opposite end of the
    --         tab area
+   --
+   --  Name:  Tab_Curvature_Property
+   --  Type:  Int
+   --  Descr: Size of tab curvature
+   --
+   --  Name:  Tab_Overlap_Property
+   --  Type:  Int
+   --  Descr: Size of tab overlap area
    --  </style_properties>
 
    Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean;
@@ -632,6 +656,8 @@ package Gtk.Notebook is
      Glib.Properties.Property_Boolean;
    Has_Secondary_Forward_Stepper_Property  : constant
      Glib.Properties.Property_Boolean;
+   Tab_Curvature_Property : constant Glib.Properties.Property_Int;
+   Tab_Overlap_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -715,6 +741,8 @@ private
      Glib.Properties.Build ("enable-popup");
    Homogeneous_Property  : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
+   Group_Id_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("group-id");
 
    Menu_Label_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("menu-label");
@@ -728,6 +756,10 @@ private
      Glib.Properties.Build ("tab-label");
    Tab_Pack_Property : constant Gtk.Enums.Property_Pack_Type :=
      Gtk.Enums.Build ("tab-pack");
+   Detachable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("detachable");
+   Reorderable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("reorderable");
 
    Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-backward-stepper");
@@ -739,4 +771,9 @@ private
    Has_Secondary_Forward_Stepper_Property : constant
      Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-secondary-forward-stepper");
+   Tab_Curvature_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("tab-curvature");
+   Tab_Overlap_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("tab-overlap");
+
 end Gtk.Notebook;
