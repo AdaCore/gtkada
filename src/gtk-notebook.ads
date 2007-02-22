@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -164,6 +164,35 @@ package Gtk.Notebook is
      (Notebook : access Gtk_Notebook_Record; Page_Num : Gint);
    --  Remove a page from the notebook.
    --  The first position in the list of pages is 0.
+
+   ------------------------
+   -- Tabs drag and drop --
+   ------------------------
+
+   type Gtk_Notebook_Window_Creation_Func is access
+     function (Source : System.Address; --  Gtk_Notebook
+               Page   : System.Address; --  Gtk_Widget
+               X      : System.Address; --  Gint
+               Y      : System.Address; --  Gint
+               Data   : System.Address) return Gtk_Notebook;
+   pragma Convention (C, Gtk_Notebook_Window_Creation_Func);
+
+   procedure Set_Window_Creation_Hook
+     (Func     : Gtk_Notebook_Window_Creation_Func;
+      Data     : System.Address;
+      Destroy  : Glib.G_Destroy_Notify_Address);
+   --  Install a global function used to create a window when a detached tab
+   --  is dropped in an empty area.
+
+   procedure Set_Group_Id
+     (Notebook : access Gtk_Notebook_Record; Group_Id : Gint);
+   --  Set a group identificator for Notebook. Notebooks sharing
+   --  the same group identificator will be able to exchange tabs
+   --  via drag and drop. A notebook with group identificator -1 will
+   --  not be able to exchange tabs with any other notebook.
+
+   function Get_Group_Id (Notebook : access Gtk_Notebook_Record) return Gint;
+   --  Gets the current group identificator for Notebook or -1 if not set.
 
    --------------------------------------------
    -- Modifying and getting the current page --
@@ -376,6 +405,45 @@ package Gtk.Notebook is
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position : Gint);
    --  Change the position of the page that contains Child.
+
+   function Get_Tab_Reorderable
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : Gint)
+      return Boolean;
+   --  Get whether the tab can be reordered via drag and drop or not.
+
+   procedure Set_Tab_Reorderable
+     (Notebook    : access Gtk_Notebook_Record;
+      Child       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Reorderable : Boolean := True);
+   --  Set whether the notebook tab can be reordered.
+
+   function Get_Tab_Detachable
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : Gint)
+      return Boolean;
+   --  Return whether the tab contents can be detached from Notebook.
+
+   procedure Set_Tab_Detachable
+     (Notebook   : access Gtk_Notebook_Record;
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Detachable : Boolean := True);
+   --  Set whether the tab can be detached from Notebook to another
+   --  notebook or widget.
+   --
+   --  Note that 2 notebooks must share a common group identificator
+   --  (see Set_Group_Id) to allow automatic tabs interchange between them.
+   --
+   --  If you want a widget to interact with a notebook through DnD
+   --  (i.e.: accept dragged tabs from it) it must be set as a drop
+   --  destination and accept the target "GTK_NOTEBOOK_TAB". The notebook
+   --  will fill the selection with a Gtk_Widget pointing to the child
+   --  widget that corresponds to the dropped tab.
+   --
+   --  If you want a notebook to accept drags from other widgets,
+   --  you will have to set your own DnD code to do it.
 
    --------------------
    -- GValue support --
@@ -660,7 +728,6 @@ private
      Glib.Properties.Build ("tab-label");
    Tab_Pack_Property : constant Gtk.Enums.Property_Pack_Type :=
      Gtk.Enums.Build ("tab-pack");
-
 
    Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-backward-stepper");
