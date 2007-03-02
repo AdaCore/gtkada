@@ -23,20 +23,16 @@ echo_linker() {
    echo "   package Linker is"
    echo "      for Linker_Options use ("
 
-   if [ x$lcmodule = xgtkada ]; then
+   if [ "$lcmodule" = "gtkada" ]; then
       cpt=0
       for j in $libs; do
          lib="$j"
-         if [ x"$lib" = x"-lgtkada" ]; then
-            lib=""
-         fi
-
-         if [ x"$lib" != x ]; then
+         if [ "$lib" != "-lgtkada" ]; then
             if [ $cpt -eq 1 ]; then
                echo ","
             fi
             cpt=1
-            echo -n "        \"$lib\""
+            echo "        \"$lib\""
          fi
       done
 
