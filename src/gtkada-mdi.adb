@@ -4216,12 +4216,17 @@ package body Gtkada.MDI is
             Put_Line ("MDI Parse_Notebook_Node: done adding all children");
          end if;
 
-         if Child_Node.Child = null then
+         --  Create a dummy node if necessary, since otherwise the calls to
+         --  Split afterward will simply discard that notebook. This dummy
+         --  widget is destroyed at the end of restoring the desktop
+
+         if Child_Node.Child = null and then Empty_Notebook_Filler = null then
             Gtk_New (Dummy, "");
             Gtk_New (Empty_Notebook_Filler, Dummy);
             Set_Title (Empty_Notebook_Filler, "<Dummy, notebook filler>");
             Put (MDI, Empty_Notebook_Filler);
             Put_In_Notebook (MDI, Empty_Notebook_Filler, Notebook);
+            MDI_Notebook (Notebook).Is_Default_Notebook := True;
          end if;
 
          if Raised_Child /= null then
@@ -4654,6 +4659,11 @@ package body Gtkada.MDI is
                Note : constant Gtk_Notebook :=
                  Gtk_Notebook (Get_Parent (Empty_Notebook_Filler));
             begin
+               if Traces then
+                  Put_Line
+                    ("MDI: Restore desktop, removing empty_notebook_filler");
+               end if;
+
                Ref (Note);
                Remove_Page (Note, 0);
             end;
@@ -4873,6 +4883,15 @@ package body Gtkada.MDI is
                        and not Has_Default_Child (MDI, Ignore_Note => Note));
             if Is_Default_Notebook then
                Set_Attribute (Parent, "default", "true");
+            end if;
+
+            if Traces then
+               Put_Line ("Saving notebook, Length="
+                         & Gint'Image (Length)
+                         & " Is_Default="
+                         & Boolean'Image (Is_Default_Notebook)
+                         & " parent.child is null="
+                         & Boolean'Image (Parent.Child = null));
             end if;
 
             if Length = 0
