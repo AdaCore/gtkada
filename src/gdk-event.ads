@@ -394,6 +394,7 @@ package Gdk.Event is
 
    function Get_Window    (Event : Gdk_Event) return Gdk.Gdk_Window;
    --  The window the event occured on.
+   --  See the function Gdk.Window.Get_User_Data to get the actual widget.
 
    function Get_Time      (Event : Gdk_Event) return Guint32;
    --  Time when the event occured.
