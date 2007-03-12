@@ -75,7 +75,7 @@ package body Create_Combo_Box is
    procedure Fill_Pixbuf (Pix : Gdk_Pixbuf; Color : String) is
       GColor : Gdk_Color;
       Stride  : Gint;
-      Num     : Gint;
+      Num     : Guint;
       Pixels  : Gdk.Rgb.Rgb_Buffer_Access;
    begin
       GColor := Parse (Color);
@@ -84,15 +84,15 @@ package body Create_Combo_Box is
       --  has no binding for it at the time of this writing. You could also
       --  load the images from XPM data instead.
       Stride := Get_Rowstride (Pix);
-      Num    := Get_Width (Pix) * Get_Height (Pix);
+      Num    := Guint (Get_Width (Pix) * Get_Height (Pix));
       Pixels := Get_Pixels (Pix);
 
       for N in 0 .. Num - 1 loop
          --  By default, each color occupies 8bits, thus is it easier to
          --  manipulate colors
-         Pixels (Integer (N * 3 + 0)) := Guchar (Red   (Gcolor) / 65535 * 255);
-         Pixels (Integer (N * 3 + 1)) := Guchar (Green (Gcolor) / 65535 * 255);
-         Pixels (Integer (N * 3 + 2)) := Guchar (Blue  (Gcolor) / 65535 * 255);
+         Pixels (N).Red   := Guchar (Red   (GColor) / 65535 * 255);
+         Pixels (N).Green := Guchar (Green (GColor) / 65535 * 255);
+         Pixels (N).Blue  := Guchar (Blue  (GColor) / 65535 * 255);
       end loop;
    end Fill_Pixbuf;
 
