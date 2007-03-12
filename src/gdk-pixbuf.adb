@@ -105,7 +105,7 @@ package body Gdk.Pixbuf is
       function Internal
         (Filename : String;
          Error    : access GError) return Gdk_Pixbuf;
-      pragma Import (C, Internal, "gdk_pixbuf_new_from_file_utf8");
+      pragma Import (C, Internal, "gdk_pixbuf_new_from_file");
 
       Err : aliased GError;
 
@@ -126,7 +126,7 @@ package body Gdk.Pixbuf is
       function Internal
         (Filename : String;
          Error    : access GError) return Gdk_Pixbuf_Animation;
-      pragma Import (C, Internal, "gdk_pixbuf_animation_new_from_file_utf8");
+      pragma Import (C, Internal, "gdk_pixbuf_animation_new_from_file");
 
       Err : aliased GError;
 
