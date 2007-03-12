@@ -105,7 +105,7 @@ package body Gdk.Pixbuf is
       function Internal
         (Filename : String;
          Error    : access GError) return Gdk_Pixbuf;
-      pragma Import (C, Internal, "gdk_pixbuf_new_from_file");
+      pragma Import (C, Internal, "gdk_pixbuf_new_from_file_utf8");
 
       Err : aliased GError;
 
@@ -126,7 +126,7 @@ package body Gdk.Pixbuf is
       function Internal
         (Filename : String;
          Error    : access GError) return Gdk_Pixbuf_Animation;
-      pragma Import (C, Internal, "gdk_pixbuf_animation_new_from_file");
+      pragma Import (C, Internal, "gdk_pixbuf_animation_new_from_file_utf8");
 
       Err : aliased GError;
 
@@ -253,7 +253,8 @@ package body Gdk.Pixbuf is
       Filename : String;
       Format   : File_Format;
       Error    : out GError;
-      Quality  : Image_Quality := Image_Quality'Last)
+      Quality  : Image_Quality := Image_Quality'Last;
+      Depth    : Integer := 32)
    is
       procedure Internal
         (Pixbuf   : Gdk_Pixbuf;
@@ -286,6 +287,18 @@ package body Gdk.Pixbuf is
 
          when PNG =>
             Internal (Pixbuf, Filename & ASCII.NUL, "png" & ASCII.NUL, Error);
+
+         when ICO =>
+            Internal
+              (Pixbuf,
+               Filename & ASCII.NUL,
+               "ico" & ASCII.NUL,
+               Error,
+               "depth" & ASCII.NUL,
+               Integer'Image (Depth));
+
+         when BMP =>
+            Internal (Pixbuf, Filename & ASCII.NUL, "bmp" & ASCII.NUL, Error);
       end case;
    end Save;
 

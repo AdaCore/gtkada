@@ -138,7 +138,7 @@ package Gdk.Pixbuf is
    Failed                : constant := 5;
    --  Operation failed.
 
-   type File_Format is (JPEG, PNG);
+   type File_Format is (JPEG, PNG, ICO, BMP);
    --  Possible formats when saving a file.
 
    type Image_Quality is range 0 .. 100;
@@ -239,9 +239,12 @@ package Gdk.Pixbuf is
       Filename : String;
       Format   : File_Format;
       Error    : out GError;
-      Quality  : Image_Quality := Image_Quality'Last);
+      Quality  : Image_Quality := Image_Quality'Last;
+      Depth    : Integer := 32);
    --  Save pixbuf to a file.
    --  Quality is only taken into account for JPEG images.
+   --  Depth is only taken into account for ICO images and can take the values
+   --  16, 24 or 32.
    --  Error is set to null on success, and set to a GError otherwise.
 
    function Add_Alpha
