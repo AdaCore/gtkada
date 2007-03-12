@@ -12,6 +12,10 @@ of the feature.
 New features in GtkAda 2.10.0
 -----------------------------
 
+G312-002 Support for saving ICO and BMP formats (2007-03-12)
+
+  Gdk.Pixbuf.Save now allows saving images in ico and bmp formats.
+
 G222-021 Upgraded Gtk.Notebook binding (2006-02-22)
 
   The Gtk.Notebook binding now incorporates new features that comes with
