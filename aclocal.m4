@@ -44,7 +44,7 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       BUILD_SHARED=yes
       SO_EXT=.dll
       FPIC=
-      ac_tmp_GNATDIR=`which gcc | sed 's,/gcc,,'`
+      ac_tmp_GNATDIR=`which gcc | sed 's,/gcc$,,'`
       ac_GNATDIR=`cygpath --mixed $ac_tmp_GNATDIR`
       count=`cd $ac_GNATDIR; ls libgnat*.dll | wc -l`
       if test $count -gt 1 ; then
