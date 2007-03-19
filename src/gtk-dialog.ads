@@ -66,11 +66,11 @@ package Gtk.Dialog is
    -- Enumeration types --
    -----------------------
 
-   type Gtk_Dialog_Flags is mod 3;
+   type Gtk_Dialog_Flags is mod 8;
    pragma Convention (C, Gtk_Dialog_Flags);
-   Modal               : constant Gtk_Dialog_Flags := 0;
-   Destroy_With_Parent : constant Gtk_Dialog_Flags := 1;
-   No_Separator        : constant Gtk_Dialog_Flags := 2;
+   Modal               : constant Gtk_Dialog_Flags := 2 ** 0;
+   Destroy_With_Parent : constant Gtk_Dialog_Flags := 2 ** 1;
+   No_Separator        : constant Gtk_Dialog_Flags := 2 ** 2;
    --  Various flags that can be set for the dialog, with the following
    --  implications:
    --     - Modal : the dialog is modal, see Gtk.Window.Set_Modal
