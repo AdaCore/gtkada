@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -163,12 +163,18 @@ package body Gtk_Generates is
                "homogeneous");
             Q := Find_Tag_With_Attribute (N.Child, "property", "name",
                "spacing");
+
             if P /= null and Q /= null then
                Gen_New (N, "Box", P.Value.all, Q.Value.all,
                  Class (Class'First + 3) & "box", File);
+            elsif P = null and Q /= null then
+               Gen_New (N, "Box", "False", Q.Value.all,
+                 Class (Class'First + 3) & "box", File);
+            elsif P = null and Q = null then
+               Gen_New (N, "Box", "False", "0",
+                 Class (Class'First + 3) & "box", File);
             end if;
          end if;
-
       else
          Gen_Child (N, Child_Name, File);
       end if;
@@ -2065,7 +2071,13 @@ package body Gtk_Generates is
       Widget := Widget_New (Build_Type);
 
       P := Find_Tag_With_Attribute (N.Child, "property", "name", "type");
-      Gen_New (N, "Window", P.Value.all, File => File);
+
+      if P = null then
+         Gen_New (N, "Window", "GTK_WINDOW_TOPLEVEL", File => File);
+      else
+         Gen_New (N, "Window", P.Value.all, File => File);
+      end if;
+
       Widget_Destroy (Widget);
       Bin_Generate (N, File);
 
