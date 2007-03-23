@@ -1,0 +1,18 @@
+	* test/pdiff/pdiff.c: Fix compilation on Solaris
+
+--- test/pdiff/pdiff.c.old	2007-03-23 15:10:23.226278183 +0100
++++ test/pdiff/pdiff.c	2007-03-23 15:11:18.486787797 +0100
+@@ -20,7 +20,13 @@
+ #include <math.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++
++#ifdef sun
++#include <sys/int_types.h>
++#else
+ #include <stdint.h>
++#endif
++
+ #include "pdiff.h"
+ 
+ #ifndef M_PI
