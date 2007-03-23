@@ -1,0 +1,58 @@
+	* glib/convert.c, glib/gmem.c: Do not crash when trying to convert
+	a huge file, return NULL instead.
+
+	* gobject/Makefile.in, tests/gobject/Makefile.in: Work around cygwin
+	limitation
+
+--- gobject/Makefile.in.old	2006-02-20 11:17:54.000000000 +0100
++++ gobject/Makefile.in	2006-02-20 11:26:07.000000000 +0100
+@@ -377,7 +377,7 @@
+ # srcdir to be writable, passing --disable-rebuilds to
+ # ../configure will supress all autogeneration rules.
+ @CROSS_COMPILING_TRUE@glib_genmarshal = $(GLIB_GENMARSHAL)
+-@CROSS_COMPILING_FALSE@glib_genmarshal = ./glib-genmarshal
++@CROSS_COMPILING_FALSE@glib_genmarshal = ./glib-genmarshal.
+ 
+ # target platform:
+ libgobjectinclude_HEADERS = $(gobject_target_headers)
+--- tests/gobject/Makefile.in.old	2006-03-13 12:09:02.062400000 +0100
++++ tests/gobject/Makefile.in	2006-03-13 12:09:26.096960000 +0100
+@@ -260,7 +260,7 @@ libtestgobject_la_SOURCES = \
+ 
+ 
+ @CROSS_COMPILING_TRUE@glib_genmarshal = $(GLIB_GENMARSHAL)
+-@CROSS_COMPILING_FALSE@glib_genmarshal = $(top_builddir)/gobject/glib-genmarshal
++@CROSS_COMPILING_FALSE@glib_genmarshal = $(top_builddir)/gobject/glib-genmarshal.
+ 
+ BUILT_SOURCES = testmarshal.h testmarshal.c
+ CLEANFILES = stamp-testmarshal.h
+--- glib/gconvert.c.old	2007-01-26 17:16:07.171875000 +0100
++++ glib/gconvert.c	2007-01-26 17:17:35.812500000 +0100
+@@ -610,7 +610,15 @@ g_convert_with_iconv (const gchar *str,
+ 		
+ 		outbuf_size *= 2;
+ 		dest = g_realloc (dest, outbuf_size);
+-		
++
++		if (dest == NULL)
++		  {
++		    g_set_error (error, G_CONVERT_ERROR, G_CONVERT_ERROR_FAILED,
++			         _("Error during conversion: %s"),
++			         g_strerror (errno));
++		    return NULL;
++		  }
++
+ 		outp = dest + used;
+ 		outbytes_remaining = outbuf_size - used - 1; /* -1 for nul */
+ 	      }
+--- glib/gmem.c.old	2007-01-26 17:10:51.218750000 +0100
++++ glib/gmem.c	2007-01-26 17:10:52.046875000 +0100
+@@ -169,7 +169,7 @@ g_realloc (gpointer mem,
+       if (mem)
+ 	return mem;
+ 
+-      g_error ("%s: failed to allocate %lu bytes", G_STRLOC, n_bytes);
++      /* g_error ("%s: failed to allocate %lu bytes", G_STRLOC, n_bytes); */
+     }
+ 
+   if (mem)
