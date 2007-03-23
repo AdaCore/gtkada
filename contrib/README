@@ -8,6 +8,8 @@ binding.pl: perl script used to automate generation and update of GtkAda files.
 cairo-1.2.6.diff: a patch against cairo 1.2.6 sources needed to build under
 some platforms.
 
+cairo-1.4.2.diff: ditto for cairo 1.4.2
+
 glib-2.12.9.diff: ditto for glib 2.12.9
 
 glib-2.12.9-win32.diff: ditto for glib 2.12.9 under Windows.
@@ -22,6 +24,8 @@ gtk+-2.10.9.diff: a patch against Gtk+ 2.10.9 sources containing some
 improvements/fixes not incorporated yet.
 
 gtk+-2.10.9-win32.diff: ditto for Windows.
+
+gtk+-2.10.11.diff: ditto against Gtk+ 2.10.11 sources
 
 gtkada-2.10-win32.diff: a patch to build GtkAda 2.10.x under Windows
 
