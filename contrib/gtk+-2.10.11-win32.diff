@@ -177,8 +177,8 @@
  
    g_free (rgndata);
  
---- gdb/Makefile.in.orig	2007-03-14 05:12:38.000000000 +0100
-+++ gdb/Makefile.in	2007-03-23 17:23:57.062500000 +0100
+--- gdk/Makefile.in.orig	2007-03-14 05:12:38.000000000 +0100
++++ gdk/Makefile.in	2007-03-23 17:23:57.062500000 +0100
 @@ -462,8 +462,8 @@ libgdk_win32_2_0_la_SOURCES = $(common_s
  libgdk_win32_2_0_la_LIBADD = win32/libgdk-win32.la $(GDK_DEP_LIBS) \
    $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la
