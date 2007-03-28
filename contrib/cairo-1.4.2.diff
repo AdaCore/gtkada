@@ -4,14 +4,16 @@
 
 --- test/pdiff/pdiff.c.old	2007-03-23 15:10:23.226278183 +0100
 +++ test/pdiff/pdiff.c	2007-03-23 15:11:18.486787797 +0100
-@@ -20,7 +20,13 @@
+@@ -20,7 +20,15 @@
  #include <math.h>
  #include <stdio.h>
  #include <stdlib.h>
 +
 +#ifdef sun
 +#include <sys/int_types.h>
-+#elif !defined (__hpux__) && !defined (__osf__)
++#elif defined (__osf__)
++#include <inttypes.h>
++#elif !defined (__hpux__)
  #include <stdint.h>
 +#endif
 +
