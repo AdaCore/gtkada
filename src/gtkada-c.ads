@@ -79,7 +79,7 @@ package Gtkada.C is
       pragma Convention (C, Unbounded_Array);
       type Unbounded_Array_Access is access Unbounded_Array;
 
-      procedure G_Free (Arr : in out Unbounded_Array_Access);
+      procedure G_Free (Arr : Unbounded_Array_Access);
 
       function To_Array
         (Arr : Unbounded_Array_Access; N : Index) return T_Array;
