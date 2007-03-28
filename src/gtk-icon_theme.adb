@@ -213,7 +213,7 @@ package body Gtk.Icon_Theme is
          Icon_Name  : String) return Unbounded_Array_Access;
       pragma Import (C, Internal, "gtk_icon_theme_get_icon_sizes");
 
-      Res    : Unbounded_Array_Access := Internal
+      Res    : constant Unbounded_Array_Access := Internal
         (Get_Object (Icon_Theme), Icon_Name & ASCII.NUL);
       Result : constant Gint_Array := To_Gint_Array_Zero_Terminated (Res);
    begin

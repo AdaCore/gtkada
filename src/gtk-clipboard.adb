@@ -249,6 +249,7 @@ package body Gtk.Clipboard is
       if Internal
         (Clipboard, Output'Unchecked_Access, N_Targets'Unchecked_Access) = 0
       then
+         G_Free (Output);
          Output := null;
       end if;
 
@@ -256,7 +257,10 @@ package body Gtk.Clipboard is
          Result : constant Gdk_Atom_Array :=
            To_Array (Output, Integer (N_Targets));
       begin
-         G_Free (Output);
+         if Output /= null then
+            G_Free (Output);
+         end if;
+
          return Result;
       end;
    end Wait_For_Targets;
