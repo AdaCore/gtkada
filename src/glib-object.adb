@@ -358,7 +358,7 @@ package body Glib.Object is
       pragma Import (C, Internal, "g_signal_list_ids");
 
       N      : aliased Guint;
-      Output : Unbounded_Array_Access := Internal (Typ, N'Access);
+      Output : constant Unbounded_Array_Access := Internal (Typ, N'Access);
       Result : constant Signal_Id_Array := To_Array (Output, N);
 
    begin
