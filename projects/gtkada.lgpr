@@ -36,6 +36,8 @@ gdk-region.adb
 gdk-region.ads
 gdk-rgb.adb
 gdk-rgb.ads
+gdk-screen.adb
+gdk-screen.ads
 gdk-threads.ads
 gdk-types.ads
 gdk-types-keysyms.ads
