@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -4114,9 +4114,10 @@ ada_gparam_ensure_non_null_string (GParamSpecString* param)
  ** New widgets
  ******************************************/
 
-void ada_set_properties_handlers (gpointer klass,
-				  GObjectSetPropertyFunc set_handler,
-				  GObjectGetPropertyFunc get_handler)
+void
+ada_set_properties_handlers (gpointer klass,
+			     GObjectSetPropertyFunc set_handler,
+			     GObjectGetPropertyFunc get_handler)
 {
   G_OBJECT_CLASS (klass)->set_property = set_handler;
   G_OBJECT_CLASS (klass)->get_property = get_handler;
@@ -4372,7 +4373,8 @@ ada_gtk_text_buffer_create_tag (GtkTextBuffer* buffer, const gchar* name)
  ** Gtk_File_Filter
 ***********************************************************/
 
-const gchar* ada_file_filter_info_get_filename (GtkFileFilterInfo* info)
+const gchar*
+ada_file_filter_info_get_filename (GtkFileFilterInfo* info)
 {
   if (info->contains & GTK_FILE_FILTER_FILENAME) {
     return info->filename;
@@ -4381,7 +4383,8 @@ const gchar* ada_file_filter_info_get_filename (GtkFileFilterInfo* info)
   }
 }
 
-const gchar* ada_file_filter_info_get_uri (GtkFileFilterInfo* info)
+const gchar*
+ada_file_filter_info_get_uri (GtkFileFilterInfo* info)
 {
   if (info->contains & GTK_FILE_FILTER_URI) {
     return info->uri;
@@ -4390,7 +4393,8 @@ const gchar* ada_file_filter_info_get_uri (GtkFileFilterInfo* info)
   }
 }
 
-const gchar* ada_file_filter_info_get_display_name (GtkFileFilterInfo* info)
+const gchar*
+ada_file_filter_info_get_display_name (GtkFileFilterInfo* info)
 {
   if (info->contains & GTK_FILE_FILTER_DISPLAY_NAME) {
     return info->display_name;
@@ -4399,7 +4403,8 @@ const gchar* ada_file_filter_info_get_display_name (GtkFileFilterInfo* info)
   }
 }
 
-const gchar* ada_file_filter_info_get_mime_type (GtkFileFilterInfo* info)
+const gchar*
+ada_file_filter_info_get_mime_type (GtkFileFilterInfo* info)
 {
   if (info->contains & GTK_FILE_FILTER_MIME_TYPE) {
     return info->mime_type;
