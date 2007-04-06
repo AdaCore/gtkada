@@ -2,7 +2,7 @@ GtkAda 2.10.0 release
 ---------------------
 
 GtkAda is an Ada graphical toolkit based on Gtk+. It allows you
-to develop graphical applications in Ada95 using Gtk+.
+to develop graphical applications in Ada using Gtk+.
 
 The primary download site is http://libre.act-europe.fr/GtkAda
 
