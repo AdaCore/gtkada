@@ -1,3 +1,5 @@
+Known problems fixed in GtkAda 2.10.1
+
 Known problems fixed in GtkAda 2.10.0
 
 - G202-018 Gtkada.MDI.Raise_Child ends up with hidden focused window
