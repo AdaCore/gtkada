@@ -1,4 +1,5 @@
-/*-----------------------------------------------------------------------
+/*
+-----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
@@ -25,7 +26,8 @@
 -- executable to be covered by the GNU General Public License. This  --
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------*/
+-----------------------------------------------------------------------
+*/
 
 #include <gtk/gtk.h>
 
