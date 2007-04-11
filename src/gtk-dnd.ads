@@ -220,7 +220,7 @@ package Gtk.Dnd is
    --
    --  Targets is the list of targets that the drag can provide. The first
    --  possible target accepted by the drop site will be used. For instance,
-   --  it Targets contains "text/plain" and "text/url", and the drop site only
+   --  if Targets contains "text/plain" and "text/url", and the drop site only
    --  accepts "text/url", this will be the one used. However, if the drop site
    --  also accepts "text/plain", the latter will be prefered.
    --
@@ -232,7 +232,7 @@ package Gtk.Dnd is
    --  drag-and-drop operation to succeed.
 
    procedure Source_Unset (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Undo the effects of Source_Set.
+   --  Undo the effects of Source_Set
 
    procedure Source_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
