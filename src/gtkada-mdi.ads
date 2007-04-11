@@ -337,7 +337,7 @@ package Gtkada.MDI is
    -----------
 
    function Create_Menu
-     (MDI : access MDI_Window_Record;
+     (MDI               : access MDI_Window_Record;
       Accel_Path_Prefix : String := "<gtkada>") return Gtk.Menu.Gtk_Menu;
    --  Create a dynamic menu that can then be inserted into a menu bar. This
    --  menu is dynamic, ie its content will changed based on the focus
@@ -369,7 +369,7 @@ package Gtkada.MDI is
    --  null is returned if no child has the focus.
 
    procedure Set_Focus_Child
-     (MDI : access MDI_Window_Record;
+     (MDI        : access MDI_Window_Record;
       Containing : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Give the focus to the child containing Containing. This will not
    --  Grab_Focus for the child in all cases, since you might want to give the
@@ -566,8 +566,7 @@ package Gtkada.MDI is
 
       type Save_Desktop_Function is access function
         (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-         User   : User_Data)
-         return Glib.Xml_Int.Node_Ptr;
+         User   : User_Data) return Glib.Xml_Int.Node_Ptr;
       --  A general function that dumps the parameters of a widget into an XML
       --  tree.
       --

@@ -109,7 +109,7 @@ package body Gtkada.MDI is
 
    Default_Title_Bar_Focus_Color : constant String := "#000088";
    --  Default color to use for the title bar of the child that has
-   --  the focus
+   --  the focus.
 
    Default_Title_Bar_Color : constant String := "#AAAAAA";
    --  Default color to use for the title bar of children that do not
@@ -254,7 +254,7 @@ package body Gtkada.MDI is
    function Delete_Child
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
-   --  Forward a delete_event from the toplevel window to the child.
+   --  Forward a delete_event from the toplevel window to the child
 
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class);
    procedure Destroy_Initial_Child (Child : access Gtk_Widget_Record'Class);
@@ -262,13 +262,13 @@ package body Gtkada.MDI is
    --  in it, are destroyed. Remove the child from the MDI properly.
 
    procedure Destroy_MDI (MDI : access Gtk_Widget_Record'Class);
-   --  Called when the MDI is destroyed.
+   --  Called when the MDI is destroyed
 
    procedure Menu_Entry_Destroyed (Child : access Gtk_Widget_Record'Class);
-   --  Called when the Menu_Item associated with a Child is destroyed.
+   --  Called when the Menu_Item associated with a Child is destroyed
 
    procedure Menu_Destroyed (MDI : access Gtk_Widget_Record'Class);
-   --  Called when the Menu associated with a MDI is destroyed.
+   --  Called when the Menu associated with a MDI is destroyed
 
    procedure Draw_Child
      (Child : access MDI_Child_Record'Class; Area : Gdk_Rectangle);
@@ -278,7 +278,7 @@ package body Gtkada.MDI is
    --  Draw the child (and the title bar)
 
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class);
-   --  Called when the child is realized.
+   --  Called when the child is realized
 
    procedure Set_Dnd_Source
      (Widget : access Gtk_Widget_Record'Class;
@@ -299,13 +299,13 @@ package body Gtkada.MDI is
    --  Draw the DND rectangle
 
    procedure Update_Float_Menu (Child : access MDI_Child_Record'Class);
-   --  Update the state of the "Float" menu item associated with child.
+   --  Update the state of the "Float" menu item associated with child
 
    procedure Put_In_Notebook
-     (MDI      : access MDI_Window_Record'Class;
-      Child    : access MDI_Child_Record'Class;
-      Notebook : Gtk_Notebook := null;
-      Initial_Position : Child_Position := Position_Automatic;
+     (MDI                      : access MDI_Window_Record'Class;
+      Child                    : access MDI_Child_Record'Class;
+      Notebook                 : Gtk_Notebook := null;
+      Initial_Position         : Child_Position := Position_Automatic;
       Force_Parent_Destruction : Boolean := True);
    --  Remove Child from MDI, and put it under control of a notebook.
    --  Notebook can be used to specify a specific notebook to which the child
@@ -520,8 +520,8 @@ package body Gtkada.MDI is
    procedure Set_Focus_Child_Switch_Notebook_Page
      (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args)
    is
-      N    : constant Gtk_Notebook := Gtk_Notebook (Note);
-      Page : constant Guint := To_Guint (Args, 2);
+      N     : constant Gtk_Notebook := Gtk_Notebook (Note);
+      Page  : constant Guint := To_Guint (Args, 2);
       Child : MDI_Child;
    begin
       Child := MDI_Child (Get_Nth_Page (N, Gint (Page)));
@@ -951,10 +951,10 @@ package body Gtkada.MDI is
    ----------------------------------------
 
    procedure Check_Interactive_Selection_Dialog
-     (MDI                     : access MDI_Window_Record;
-      Event                   : Gdk.Event.Gdk_Event;
-      Move_To_Next            : Boolean;
-      Only_Group              : Child_Group := Group_Any)
+     (MDI          : access MDI_Window_Record;
+      Event        : Gdk.Event.Gdk_Event;
+      Move_To_Next : Boolean;
+      Only_Group   : Child_Group := Group_Any)
    is
       use type Widget_List.Glist;
       D         : Selection_Dialog_Access;
@@ -1193,8 +1193,8 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class) is
-      Window_Attr : Gdk.Window_Attr.Gdk_Window_Attr;
       M           : constant MDI_Window := MDI_Window (MDI);
+      Window_Attr : Gdk.Window_Attr.Gdk_Window_Attr;
 
    begin
       Gdk.Window.Set_Background (Get_Window (M), M.Background_Color);
@@ -1346,8 +1346,8 @@ package body Gtkada.MDI is
 
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class) is
       use type Widget_SList.GSlist;
-      C   : constant MDI_Child := MDI_Child (Child);
-      MDI : constant MDI_Window := C.MDI;
+      C                   : constant MDI_Child := MDI_Child (Child);
+      MDI                 : constant MDI_Window := C.MDI;
       In_Selection_Dialog : Boolean := False;
 
    begin
@@ -1606,7 +1606,7 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      C : constant MDI_Child := MDI_Child (Child);
+      C    : constant MDI_Child := MDI_Child (Child);
       W, H : Gint;
    begin
       C.MDI.In_Drag := No_Drag;
@@ -3516,9 +3516,10 @@ package body Gtkada.MDI is
       Ignore_Note : Gtk_Notebook := null) return Boolean
    is
       Child_Is_Being_Destroyed : constant Boolean :=
-        Ignore = null or else Ignore.MDI.In_Drag = No_Drag;
-      L : Widget_List.Glist := MDI.Items;
-      C  : MDI_Child;
+                                   Ignore = null
+                                   or else Ignore.MDI.In_Drag = No_Drag;
+      L                        : Widget_List.Glist := MDI.Items;
+      C                        : MDI_Child;
    begin
       while L /= Null_List loop
          C := MDI_Child (Get_Data (L));
@@ -3542,12 +3543,13 @@ package body Gtkada.MDI is
    procedure Removed_From_Notebook
      (Note : access Gtk_Widget_Record'Class; Args  : Gtk_Args)
    is
-      C            : constant  Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
-      Page2, Page1 : Gtk_Widget;
-      Child        : MDI_Child;
-      First_Child  : MDI_Child;
+      C                     : constant  Gtk_Widget :=
+                                Gtk_Widget (To_Object (Args, 1));
+      Page2, Page1          : Gtk_Widget;
+      Child                 : MDI_Child;
+      First_Child           : MDI_Child;
       Default_Child_Remains : Boolean := False;
-      Must_Destroy : Boolean := False;
+      Must_Destroy          : Boolean := False;
    begin
       if C.all not in MDI_Child_Record'Class then
          return;
@@ -3952,7 +3954,7 @@ package body Gtkada.MDI is
    -----------------
 
    function Create_Menu
-     (MDI : access MDI_Window_Record;
+     (MDI               : access MDI_Window_Record;
       Accel_Path_Prefix : String := "<gtkada>") return Gtk.Menu.Gtk_Menu
    is
       Item  : Gtk_Menu_Item;
@@ -4578,7 +4580,7 @@ package body Gtkada.MDI is
 
          declare
             Width, Height : Gint;
-            State  : Gdk_Window_State;
+            State         : Gdk_Window_State;
          begin
             State  := Gdk_Window_State'Value
               (Get_Attribute (From_Tree, "state", "0"));
@@ -4657,7 +4659,7 @@ package body Gtkada.MDI is
             --  The empty notebook has been created during the desktop load
             declare
                Note : constant Gtk_Notebook :=
-                 Gtk_Notebook (Get_Parent (Empty_Notebook_Filler));
+                        Gtk_Notebook (Get_Parent (Empty_Notebook_Filler));
             begin
                if Traces then
                   Put_Line
@@ -4837,14 +4839,14 @@ package body Gtkada.MDI is
          -------------------
 
          procedure Save_Notebook (Current : Node_Ptr; Note : Gtk_Notebook) is
-            Length       : constant Gint := Get_N_Pages (Note);
-            Current_Page : constant Gint := Get_Current_Page (Note);
-            Parent       : Node_Ptr;
+            Length                  : constant Gint := Get_N_Pages (Note);
+            Current_Page            : constant Gint := Get_Current_Page (Note);
+            Parent                  : Node_Ptr;
             Has_Default_Group_Child : Boolean := False;
-            Child        : MDI_Child;
-            Is_Default_Notebook : Boolean := False;
+            Child                   : MDI_Child;
+            Is_Default_Notebook     : Boolean := False;
 
-            Border_Width : constant Allocation_Int := 0;
+            Border_Width            : constant Allocation_Int := 0;
             --  +4 is to take into account the border of the notebook
 
          begin
@@ -5040,7 +5042,7 @@ package body Gtkada.MDI is
    -----------------
 
    function First_Child
-     (MDI : access MDI_Window_Record;
+     (MDI               : access MDI_Window_Record;
       Group_By_Notebook : Boolean := False) return Child_Iterator
    is
       Children : Widget_List.Glist;
@@ -5278,8 +5280,8 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Child_Drag_Begin
-     (Child  : access MDI_Child_Record'Class;
-      Event  : Gdk_Event)
+     (Child : access MDI_Child_Record'Class;
+      Event : Gdk_Event)
    is
       Tmp : Gdk_Grab_Status;
       Win : Gdk.Window.Gdk_Window;
@@ -5425,6 +5427,7 @@ package body Gtkada.MDI is
                Y      => 0,
                Width  => Get_Allocation_Width (Parent),
                Height => Border_Height);
+
          elsif Y > Get_Allocation_Height (Parent) - Border_Height then
             Position := Position_Bottom;
             Rectangle :=
@@ -5432,6 +5435,7 @@ package body Gtkada.MDI is
                Y      => Get_Allocation_Height (Parent) - Border_Height,
                Width  => Get_Allocation_Width (Parent),
                Height => Border_Height);
+
          elsif X < Border_Width then
             Position := Position_Left;
             Rectangle :=
@@ -5439,6 +5443,7 @@ package body Gtkada.MDI is
                Y      => 0,
                Width  => Border_Width,
                Height => Get_Allocation_Height (Parent));
+
          elsif X > Get_Allocation_Width (Parent) - Border_Width then
             Position := Position_Right;
             Rectangle :=
@@ -5446,6 +5451,7 @@ package body Gtkada.MDI is
                Y      => 0,
                Width  => Border_Width,
                Height => Get_Allocation_Height (Parent));
+
          else
             Position := Position_Automatic;
             Rectangle :=

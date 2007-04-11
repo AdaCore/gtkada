@@ -26,13 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Bitmap;    use Gdk.Bitmap;
-with Gdk.Color;     use Gdk.Color;
-with Gdk.Event;     use Gdk.Event;
-with Gdk.Pixmap;    use Gdk.Pixmap;
-with Gdk.Types;     use Gdk.Types;
-with Gdk.Window;    use Gdk.Window;
-with Gtk.Widget;    use Gtk.Widget;
+with Gdk.Bitmap; use Gdk.Bitmap;
+with Gdk.Color;  use Gdk.Color;
+with Gdk.Event;  use Gdk.Event;
+with Gdk.Pixmap; use Gdk.Pixmap;
+with Gdk.Types;  use Gdk.Types;
+with Gdk.Window; use Gdk.Window;
+with Gtk.Widget; use Gtk.Widget;
 
 package body Gtk.Dnd is
 
@@ -586,6 +586,5 @@ package body Gtk.Dnd is
    begin
       Internal (Get_Object (Widget));
    end Source_Add_Uri_Targets;
-
 
 end Gtk.Dnd;
