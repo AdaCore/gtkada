@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2006 AdaCore                   --
+--                 Copyright (C) 2001-2007 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -497,6 +497,11 @@ package Gtkada.MDI is
    --  window manager handle the windows. If All_Floating is True, children
    --  can no longer be maximized.
 
+   procedure Use_Short_Titles_For_Floats
+     (MDI : access MDI_Window_Record; Short_Titles : Boolean);
+   --  If Short_Titles is set to true, all floating children will use their
+   --  short titles.
+
    ---------------------------
    -- Reorganizing children --
    ---------------------------
@@ -868,6 +873,9 @@ private
 
       All_Floating_Mode : Boolean := False;
       --  Set to true if all windows should be set to floating
+
+      Use_Short_Titles_For_Floats : Boolean := False;
+      --  Set to true if all floating children should use their short titles
 
       --  Handling of Dnd
       Drag_Start_X, Drag_Start_Y : Gint;
