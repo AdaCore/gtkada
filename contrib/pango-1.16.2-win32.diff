@@ -35,25 +35,25 @@ Mon Mar 13 2006  Arnaud Charlet  <charlet@adacore.com>
  }
 --- modules/Makefile.in.old	2006-03-13 12:37:32.642092800 +0100
 +++ modules/Makefile.in	2006-03-13 12:38:25.648312000 +0100
-@@ -606,10 +606,10 @@ uninstall-info: uninstall-info-recursive
- install-data-local: $(top_builddir)/pango/pango-querymodules
+@@ -657,10 +657,10 @@ uninstall-info: uninstall-info-recursive
+ install-data-local: $(top_builddir)/pango/pango-querymodules$(EXEEXT)
  	@if $(RUN_QUERY_MODULES_TEST) ; then 				\
  	  echo $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/pango \&\& 	\
--	  $(top_builddir)/pango/pango-querymodules 			\
+-	  $(top_builddir)/pango/pango-querymodules$(EXEEXT) 			\
 +	  $(top_builddir)/pango/pango-querymodules. 			\
  		\> $(DESTDIR)$(sysconfdir)/pango/pango.modules ;	\
  	  $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/pango && 		\
--	  $(top_builddir)/pango/pango-querymodules 			\
+-	  $(top_builddir)/pango/pango-querymodules$(EXEEXT) 			\
 +	  $(top_builddir)/pango/pango-querymodules. 			\
  		> $(DESTDIR)$(sysconfdir)/pango/pango.modules ;		\
  	else								\
  	  echo "***" ; 							\
-@@ -626,7 +626,7 @@ uninstall-local:
- pango.modules: $(top_builddir)/pango/pango-querymodules $(SUBDIRS)
- 	@if find . -name '*.so' | grep 'so' > /dev/null ; then \
+@@ -680,7 +680,7 @@ pango.modules:						\
+ 	$(top_builddir)/pango/pango-querymodules$(EXEEXT)
+ 	@if find . -name '*.la' | grep -v '\.libs' | grep -v libpango | grep '.' > /dev/null ; then \
            echo "Writing a pango.modules file to use with tests/examples."; \
--          $(top_builddir)/pango/pango-querymodules `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
+-          $(top_builddir)/pango/pango-querymodules$(EXEEXT) `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
 +          $(top_builddir)/pango/pango-querymodules. `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
  	else \
            echo "No dynamic modules found; will use only static modules for tests/examples."; \
- 	  touch $@; \
+ 	  > $@; \
