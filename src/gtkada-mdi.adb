@@ -2995,14 +2995,20 @@ package body Gtkada.MDI is
             Cont := Gtk_Container (Get_Vbox (Diag));
          else
             Gtk_New (Win);
-            Set_Title (Win, Child.Title.all);
+
+            if Child.MDI.Use_Short_Titles_For_Floats then
+               Set_Title (Win, Locale_From_UTF8 (Child.Short_Title.all));
+            else
+               Set_Title (Win, Locale_From_UTF8 (Child.Title.all));
+            end if;
+
             Cont := Gtk_Container (Win);
          end if;
 
          Set_Default_Size (Win, W, H);
 
          --  Memorize the MDI_Child associated with the window, for faster
-         --  lookip for instance in Find_MDI_Child_From_Widget.
+         --  lookup for instance in Find_MDI_Child_From_Widget.
 
          Child_User_Data.Set (Win, MDI_Child (Child), "parent_mdi_child");
 
@@ -3486,6 +3492,50 @@ package body Gtkada.MDI is
          Resize (Gtk_Window (Get_Toplevel (MDI)), -1, -1);
       end if;
    end Set_All_Floating_Mode;
+
+   ---------------------------------
+   -- Use_Short_Titles_For_Floats --
+   ---------------------------------
+
+   procedure Use_Short_Titles_For_Floats
+     (MDI : access MDI_Window_Record; Short_Titles : Boolean)
+   is
+      List  : Widget_List.Glist := First (MDI.Items);
+      Child : MDI_Child;
+   begin
+      if MDI.Use_Short_Titles_For_Floats = Short_Titles then
+         --  Nothing to be changed
+         return;
+      end if;
+
+      MDI.Use_Short_Titles_For_Floats := Short_Titles;
+
+      --  The property has been changed. We need to walk though all children
+      --  and enforce the title to the short one for floating children.
+
+      loop
+         List := First (MDI.Items);
+
+         while List /= Null_List loop
+            Child := MDI_Child (Get_Data (List));
+            if Child.State = Floating then
+               if Short_Titles then
+                  Set_Title
+                    (Gtk_Window (Get_Toplevel (Child.Initial)),
+                     Locale_From_UTF8 (Child.Short_Title.all));
+               else
+                  Set_Title
+                    (Gtk_Window (Get_Toplevel (Child.Initial)),
+                     Locale_From_UTF8 (Child.Title.all));
+               end if;
+            end if;
+
+            List := Next (List);
+         end loop;
+
+         exit when List = Null_List;
+      end loop;
+   end Use_Short_Titles_For_Floats;
 
    ----------------
    -- Get_Widget --
