@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -169,8 +169,8 @@ package Gtk.Accel_Group is
    --    if the accel_closure is theirs.
    --  </signals>
 
-   Signal_Accel_Activate : constant String := "accel_activate";
-   Signal_Accel_Changed  : constant String := "accel_changed";
+   Signal_Accel_Activate : constant Glib.Signal_Name := "accel_activate";
+   Signal_Accel_Changed  : constant Glib.Signal_Name := "accel_changed";
 
 private
 

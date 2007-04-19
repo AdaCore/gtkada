@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -64,8 +64,8 @@ package Gtk.Input_Dialog is
    --  - "disable_device"
    --  </signals>
 
-   Signal_Disable_Device : constant String := "disable_device";
-   Signal_Enable_Device  : constant String := "enable_device";
+   Signal_Disable_Device : constant Glib.Signal_Name := "disable_device";
+   Signal_Enable_Device  : constant Glib.Signal_Name := "enable_device";
 
 private
    type Gtk_Input_Dialog_Record is new Dialog.Gtk_Dialog_Record

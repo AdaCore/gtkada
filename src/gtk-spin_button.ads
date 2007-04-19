@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -302,10 +302,10 @@ package Gtk.Spin_Button is
    --
    --  </signals>
 
-   Signal_Change_Value  : constant String := "change_value";
-   Signal_Input         : constant String := "input";
-   Signal_Output        : constant String := "output";
-   Signal_Value_Changed : constant String := "value_changed";
+   Signal_Change_Value  : constant Glib.Signal_Name := "change_value";
+   Signal_Input         : constant Glib.Signal_Name := "input";
+   Signal_Output        : constant Glib.Signal_Name := "output";
+   Signal_Value_Changed : constant Glib.Signal_Name := "value_changed";
 
 private
    type Gtk_Spin_Button_Record is new Gtk.GEntry.Gtk_Entry_Record

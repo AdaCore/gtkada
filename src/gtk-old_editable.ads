@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-1999 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -278,19 +278,19 @@ package Gtk.Old_Editable is
    --
    --  </signals>
 
-   Signal_Activate : constant String := "activate";
-   Signal_Copy_Clipboard : constant String := "copy_clipboard";
-   Signal_Cut_Clipboard : constant String := "cut_clipboard";
-   Signal_Kill_Char : constant String := "kill_char";
-   Signal_Kill_Line : constant String := "kill_line";
-   Signal_Kill_Word : constant String := "kill_word";
-   Signal_Move_Cursor : constant String := "move_cursor";
-   Signal_Move_Page : constant String := "move_page";
-   Signal_Move_To_Column : constant String := "move_to_column";
-   Signal_Move_To_Row : constant String := "move_to_row";
-   Signal_Move_Word : constant String := "move_word";
-   Signal_Paste_Clipboard : constant String := "paste_clipboard";
-   Signal_Set_Editable : constant String := "set-editable";
+   Signal_Activate        : constant Glib.Signal_Name := "activate";
+   Signal_Copy_Clipboard  : constant Glib.Signal_Name := "copy_clipboard";
+   Signal_Cut_Clipboard   : constant Glib.Signal_Name := "cut_clipboard";
+   Signal_Kill_Char       : constant Glib.Signal_Name := "kill_char";
+   Signal_Kill_Line       : constant Glib.Signal_Name := "kill_line";
+   Signal_Kill_Word       : constant Glib.Signal_Name := "kill_word";
+   Signal_Move_Cursor     : constant Glib.Signal_Name := "move_cursor";
+   Signal_Move_Page       : constant Glib.Signal_Name := "move_page";
+   Signal_Move_To_Column  : constant Glib.Signal_Name := "move_to_column";
+   Signal_Move_To_Row     : constant Glib.Signal_Name := "move_to_row";
+   Signal_Move_Word       : constant Glib.Signal_Name := "move_word";
+   Signal_Paste_Clipboard : constant Glib.Signal_Name := "paste_clipboard";
+   Signal_Set_Editable    : constant Glib.Signal_Name := "set-editable";
 
 private
    type Gtk_Old_Editable_Record is new Gtk.Widget.Gtk_Widget_Record

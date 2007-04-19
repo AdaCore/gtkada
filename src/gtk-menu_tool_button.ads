@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -101,7 +101,7 @@ package Gtk.Menu_Tool_Button is
    --
    --  </signals>
 
-   Signal_Show_Menu : constant String := "show-menu";
+   Signal_Show_Menu : constant Glib.Signal_Name := "show-menu";
 
    ----------------
    -- Properties --

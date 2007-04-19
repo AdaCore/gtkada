@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -785,18 +785,30 @@ package Gtk.Text_Buffer is
    --
    --  </signals>
 
-   Signal_Apply_Tag           : constant String := "apply_tag";
-   Signal_Begin_User_Action   : constant String := "begin_user_action";
-   Signal_Changed             : constant String := "changed";
-   Signal_Delete_Range        : constant String := "delete_range";
-   Signal_End_User_Action     : constant String := "end_user_action";
-   Signal_Insert_Child_Anchor : constant String := "insert_child_anchor";
-   Signal_Insert_Pixbuf       : constant String := "insert_pixbuf";
-   Signal_Insert_Text         : constant String := "insert_text";
-   Signal_Mark_Deleted        : constant String := "mark_deleted";
-   Signal_Mark_Set            : constant String := "mark_set";
-   Signal_Modified_Changed    : constant String := "modified_changed";
-   Signal_Remove_Tag          : constant String := "remove_tag";
+   Signal_Apply_Tag           : constant Glib.Signal_Name :=
+                                  "apply_tag";
+   Signal_Begin_User_Action   : constant Glib.Signal_Name :=
+                                  "begin_user_action";
+   Signal_Changed             : constant Glib.Signal_Name :=
+                                  "changed";
+   Signal_Delete_Range        : constant Glib.Signal_Name :=
+                                  "delete_range";
+   Signal_End_User_Action     : constant Glib.Signal_Name :=
+                                  "end_user_action";
+   Signal_Insert_Child_Anchor : constant Glib.Signal_Name :=
+                                  "insert_child_anchor";
+   Signal_Insert_Pixbuf       : constant Glib.Signal_Name :=
+                                  "insert_pixbuf";
+   Signal_Insert_Text         : constant Glib.Signal_Name :=
+                                  "insert_text";
+   Signal_Mark_Deleted        : constant Glib.Signal_Name :=
+                                  "mark_deleted";
+   Signal_Mark_Set            : constant Glib.Signal_Name :=
+                                  "mark_set";
+   Signal_Modified_Changed    : constant Glib.Signal_Name :=
+                                  "modified_changed";
+   Signal_Remove_Tag          : constant Glib.Signal_Name :=
+                                  "remove_tag";
 
 private
    type Gtk_Text_Buffer_Record is new GObject_Record with null record;

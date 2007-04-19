@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -411,7 +411,7 @@ package Gtk.Widget is
 
    procedure Add_Accelerator
      (Widget       : access Gtk_Widget_Record;
-      Accel_Signal : String;
+      Accel_Signal : Glib.Signal_Name;
       Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
       Accel_Key    : Gdk.Types.Gdk_Key_Type;
       Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
@@ -1558,7 +1558,7 @@ package Gtk.Widget is
    --  </style_properties>
 
    Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float;
-   --   Cursor_Color_Property        : constant Glib.Properties.Property_Boxed;
+   --  Cursor_Color_Property        : constant Glib.Properties.Property_Boxed;
    --  Draw_Border_Property         : constant Glib.Properties.Property_Boxed;
    Focus_Line_Pattern_Property  : constant Glib.Properties.Property_String;
    Focus_Line_Width_Property    : constant Glib.Properties.Property_Int;
@@ -1935,70 +1935,130 @@ package Gtk.Widget is
    --
    --  </signals>
 
-   Signal_Accel_Closures_Changed : constant String := "accel_closures_changed";
-   Signal_Button_Press_Event     : constant String := "button_press_event";
-   Signal_Button_Release_Event   : constant String := "button_release_event";
-   Signal_Can_Activate_Accel     : constant String := "can_activate_accel";
-   Signal_Child_Notify           : constant String := "child_notify";
-   Signal_Client_Event           : constant String := "client_event";
-   Signal_Configure_Event        : constant String := "configure_event";
-   Signal_Delete_Event           : constant String := "delete_event";
-   Signal_Destroy_Event          : constant String := "destroy_event";
-   Signal_Direction_Changed      : constant String := "direction_changed";
-   Signal_Drag_Begin             : constant String := "drag_begin";
-   Signal_Drag_Data_Delete       : constant String := "drag_data_delete";
-   Signal_Drag_Data_Get          : constant String := "drag_data_get";
-   Signal_Drag_Data_Received     : constant String := "drag_data_received";
-   Signal_Drag_Drop              : constant String := "drag_drop";
-   Signal_Drag_End               : constant String := "drag_end";
-   Signal_Drag_Leave             : constant String := "drag_leave";
-   Signal_Drag_Motion            : constant String := "drag_motion";
-   Signal_Enter_Notify_Event     : constant String := "enter_notify_event";
-   Signal_Event                  : constant String := "event";
-   Signal_Event_After            : constant String := "event-after";
-   Signal_Expose_Event           : constant String := "expose_event";
-   Signal_Focus                  : constant String := "focus";
-   Signal_Focus_In_Event         : constant String := "focus_in_event";
-   Signal_Focus_Out_Event        : constant String := "focus_out_event";
-   Signal_Grab_Broken_Event      : constant String := "grab_broken_event";
-   Signal_Grab_Focus             : constant String := "grab_focus";
-   Signal_Grab_Notify            : constant String := "grab_notify";
-   Signal_Hide                   : constant String := "hide";
-   Signal_Hierarchy_Changed      : constant String := "hierarchy_changed";
-   Signal_Key_Press_Event        : constant String := "key_press_event";
-   Signal_Key_Release_Event      : constant String := "key_release_event";
-   Signal_Leave_Notify_Event     : constant String := "leave_notify_event";
-   Signal_Map                    : constant String := "map";
-   Signal_Map_Event              : constant String := "map_event";
-   Signal_Mnemonic_Activate      : constant String := "mnemonic_activate";
-   Signal_Motion_Notify_Event    : constant String := "motion_notify_event";
-   Signal_No_Expose_Event        : constant String := "no_expose_event";
-   Signal_Parent_Set             : constant String := "parent_set";
-   Signal_Popup_Menu             : constant String := "popup_menu";
-   Signal_Property_Notify_Event  : constant String := "property_notify_event";
-   Signal_Proximity_In_Event     : constant String := "proximity_in_event";
-   Signal_Proximity_Out_Event    : constant String := "proximity_out_event";
-   Signal_Realize                : constant String := "realize";
-   Signal_Screen_Changed         : constant String := "screen_changed";
-   Signal_Scroll_Event           : constant String := "scroll_event";
-   Signal_Selection_Clear_Event  : constant String := "selection_clear_event";
-   Signal_Selection_Get          : constant String := "selection_get";
-   Signal_Selection_Notify_Event : constant String := "selection_notify_event";
-   Signal_Selection_Received     : constant String := "selection_received";
-   Signal_Selection_Request_Event : constant String :=
-     "selection_request_event";
-   Signal_Show                   : constant String := "show";
-   Signal_Show_Help              : constant String := "show_help";
-   Signal_Size_Allocate          : constant String := "size_allocate";
-   Signal_Size_Request           : constant String := "size_request";
-   Signal_State_Changed          : constant String := "state_changed";
-   Signal_Style_Set              : constant String := "style_set";
-   Signal_Unmap                  : constant String := "unmap";
-   Signal_Unmap_Event            : constant String := "unmap_event";
-   Signal_Unrealize              : constant String := "unrealize";
-   Signal_Visibility_Notify_Event : constant String :=
-     "visibility_notify_event";
-   Signal_Window_State_Event     : constant String := "window_state_event";
+   Signal_Accel_Closures_Changed  : constant Glib.Signal_Name :=
+                                      "accel_closures_changed";
+   Signal_Button_Press_Event      : constant Glib.Signal_Name :=
+                                      "button_press_event";
+   Signal_Button_Release_Event    : constant Glib.Signal_Name :=
+                                      "button_release_event";
+   Signal_Can_Activate_Accel      : constant Glib.Signal_Name :=
+                                      "can_activate_accel";
+   Signal_Child_Notify            : constant Glib.Signal_Name :=
+                                      "child_notify";
+   Signal_Client_Event            : constant Glib.Signal_Name :=
+                                      "client_event";
+   Signal_Configure_Event         : constant Glib.Signal_Name :=
+                                      "configure_event";
+   Signal_Delete_Event            : constant Glib.Signal_Name :=
+                                      "delete_event";
+   Signal_Destroy_Event           : constant Glib.Signal_Name :=
+                                      "destroy_event";
+   Signal_Direction_Changed       : constant Glib.Signal_Name :=
+                                      "direction_changed";
+   Signal_Drag_Begin              : constant Glib.Signal_Name :=
+                                      "drag_begin";
+   Signal_Drag_Data_Delete        : constant Glib.Signal_Name :=
+                                      "drag_data_delete";
+   Signal_Drag_Data_Get           : constant Glib.Signal_Name :=
+                                      "drag_data_get";
+   Signal_Drag_Data_Received      : constant Glib.Signal_Name :=
+                                      "drag_data_received";
+   Signal_Drag_Drop               : constant Glib.Signal_Name :=
+                                      "drag_drop";
+   Signal_Drag_End                : constant Glib.Signal_Name :=
+                                      "drag_end";
+   Signal_Drag_Leave              : constant Glib.Signal_Name :=
+                                      "drag_leave";
+   Signal_Drag_Motion             : constant Glib.Signal_Name :=
+                                      "drag_motion";
+   Signal_Enter_Notify_Event      : constant Glib.Signal_Name :=
+                                      "enter_notify_event";
+   Signal_Event                   : constant Glib.Signal_Name :=
+                                      "event";
+   Signal_Event_After             : constant Glib.Signal_Name :=
+                                      "event-after";
+   Signal_Expose_Event            : constant Glib.Signal_Name :=
+                                      "expose_event";
+   Signal_Focus                   : constant Glib.Signal_Name :=
+                                      "focus";
+   Signal_Focus_In_Event          : constant Glib.Signal_Name :=
+                                      "focus_in_event";
+   Signal_Focus_Out_Event         : constant Glib.Signal_Name :=
+                                      "focus_out_event";
+   Signal_Grab_Broken_Event       : constant Glib.Signal_Name :=
+                                      "grab_broken_event";
+   Signal_Grab_Focus              : constant Glib.Signal_Name :=
+                                      "grab_focus";
+   Signal_Grab_Notify             : constant Glib.Signal_Name :=
+                                      "grab_notify";
+   Signal_Hide                    : constant Glib.Signal_Name :=
+                                      "hide";
+   Signal_Hierarchy_Changed       : constant Glib.Signal_Name :=
+                                      "hierarchy_changed";
+   Signal_Key_Press_Event         : constant Glib.Signal_Name :=
+                                      "key_press_event";
+   Signal_Key_Release_Event       : constant Glib.Signal_Name :=
+                                      "key_release_event";
+   Signal_Leave_Notify_Event      : constant Glib.Signal_Name :=
+                                      "leave_notify_event";
+   Signal_Map                     : constant Glib.Signal_Name :=
+                                      "map";
+   Signal_Map_Event               : constant Glib.Signal_Name :=
+                                      "map_event";
+   Signal_Mnemonic_Activate       : constant Glib.Signal_Name :=
+                                      "mnemonic_activate";
+   Signal_Motion_Notify_Event     : constant Glib.Signal_Name :=
+                                      "motion_notify_event";
+   Signal_No_Expose_Event         : constant Glib.Signal_Name :=
+                                      "no_expose_event";
+   Signal_Parent_Set              : constant Glib.Signal_Name :=
+                                      "parent_set";
+   Signal_Popup_Menu              : constant Glib.Signal_Name :=
+                                      "popup_menu";
+   Signal_Property_Notify_Event   : constant Glib.Signal_Name :=
+                                      "property_notify_event";
+   Signal_Proximity_In_Event      : constant Glib.Signal_Name :=
+                                      "proximity_in_event";
+   Signal_Proximity_Out_Event     : constant Glib.Signal_Name :=
+                                      "proximity_out_event";
+   Signal_Realize                 : constant Glib.Signal_Name :=
+                                      "realize";
+   Signal_Screen_Changed          : constant Glib.Signal_Name :=
+                                      "screen_changed";
+   Signal_Scroll_Event            : constant Glib.Signal_Name :=
+                                      "scroll_event";
+   Signal_Selection_Clear_Event   : constant Glib.Signal_Name :=
+                                      "selection_clear_event";
+   Signal_Selection_Get           : constant Glib.Signal_Name :=
+                                      "selection_get";
+   Signal_Selection_Notify_Event  : constant Glib.Signal_Name :=
+                                      "selection_notify_event";
+   Signal_Selection_Received      : constant Glib.Signal_Name :=
+                                      "selection_received";
+   Signal_Selection_Request_Event : constant Glib.Signal_Name :=
+                                      "selection_request_event";
+   Signal_Show                    : constant Glib.Signal_Name :=
+                                      "show";
+   Signal_Show_Help               : constant Glib.Signal_Name :=
+                                      "show_help";
+   Signal_Size_Allocate           : constant Glib.Signal_Name :=
+                                      "size_allocate";
+   Signal_Size_Request            : constant Glib.Signal_Name :=
+                                      "size_request";
+   Signal_State_Changed           : constant Glib.Signal_Name :=
+                                      "state_changed";
+   Signal_Style_Set               : constant Glib.Signal_Name :=
+                                      "style_set";
+   Signal_Unmap                   : constant Glib.Signal_Name :=
+                                      "unmap";
+   Signal_Unmap_Event             : constant Glib.Signal_Name :=
+                                      "unmap_event";
+   Signal_Unrealize               : constant Glib.Signal_Name :=
+                                      "unrealize";
+   Signal_Visibility_Notify_Event : constant Glib.Signal_Name :=
+                                      "visibility_notify_event";
+   Signal_Window_State_Event      : constant Glib.Signal_Name :=
+                                      "window_state_event";
 
 private
 
@@ -2070,7 +2130,6 @@ private
    --    Glib.Properties.Property_Boxed :=
    --    Glib.Properties.Build ("secondary-cursor-color");
 
-
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Get_Type, "gtk_widget_get_type");
    pragma Import (C, Requisition_Get_Type, "gtk_requisition_get_type");
@@ -2105,6 +2164,7 @@ private
    pragma Inline (Has_Grab_Is_Set);
    pragma Inline (Rc_Style_Is_Set);
    pragma Inline (Double_Buffered_Is_Set);
+
 end Gtk.Widget;
 
 --  Not needed, so not bound

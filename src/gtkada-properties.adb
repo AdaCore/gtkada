@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2006, AdaCore                   --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -540,14 +540,14 @@ package body Gtkada.Properties is
    ---------------------
 
    function Property_Widget
-     (Object        : access GObject_Record'Class;
-      Property      : Param_Spec;
-      Prop_Type     : Property_Type) return Gtk_Widget
+     (Object    : access GObject_Record'Class;
+      Property  : Param_Spec;
+      Prop_Type : Property_Type) return Gtk_Widget
    is
       procedure Connect_Controller
-        (Editor        : access Gtk_Widget_Record'Class;
-         Signal        : String;
-         Callback      : Controller_Callback);
+        (Editor   : access Gtk_Widget_Record'Class;
+         Signal   : Glib.Signal_Name;
+         Callback : Controller_Callback);
       --  Connect a controller to Editor, ie propagate changes done to
       --  controller onto Property.
 
@@ -564,12 +564,15 @@ package body Gtkada.Properties is
         (Editor   : access Gtk_Widget_Record'Class;
          Callback : Pspec_Callback)
       is
+         use type Glib.Signal_Name;
          Id : Handler_Id;
       begin
          case Prop_Type is
             when Property_Child =>
                Id := Prop_Callback.Connect
-                 (Object, Signal_Child_Notify & "::" & Pspec_Name (Property),
+                 (Object,
+                  Signal_Child_Notify & "::"
+                    & Glib.Signal_Name (Pspec_Name (Property)),
                   Prop_Callback.To_Marshaller (Property_Modified'Access),
                   User_Data   => (Pspec         => Property,
                                   Prop_Type     => Prop_Type,
@@ -577,7 +580,8 @@ package body Gtkada.Properties is
                                   Callback      => Callback));
             when Property_Standard =>
                Id := Prop_Callback.Connect
-                 (Object, "notify::" & Pspec_Name (Property),
+                 (Object,
+                  "notify::" & Glib.Signal_Name (Pspec_Name (Property)),
                   Prop_Callback.To_Marshaller (Property_Modified'Access),
                   User_Data   => (Pspec         => Property,
                                   Prop_Type     => Prop_Type,
@@ -606,9 +610,9 @@ package body Gtkada.Properties is
       ------------------------
 
       procedure Connect_Controller
-        (Editor        : access Gtk_Widget_Record'Class;
-         Signal        : String;
-         Callback      : Controller_Callback)
+        (Editor   : access Gtk_Widget_Record'Class;
+         Signal   : Glib.Signal_Name;
+         Callback : Controller_Callback)
       is
          Id : Handler_Id;
       begin

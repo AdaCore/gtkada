@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -78,8 +78,8 @@ package Gtk.Cell_Editable is
    --
    --  </signals>
 
-   Signal_Editing_Done  : constant String := "editing_done";
-   Signal_Remove_Widget : constant String := "remove_widget";
+   Signal_Editing_Done  : constant Glib.Signal_Name := "editing_done";
+   Signal_Remove_Widget : constant Glib.Signal_Name := "remove_widget";
 
 private
    type Gtk_Cell_Editable_Record is

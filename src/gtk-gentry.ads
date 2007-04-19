@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -396,16 +396,26 @@ package Gtk.GEntry is
    --    for the Insert key.
    --  </signals>
 
-   Signal_Activate           : constant String := "activate";
-   Signal_Backspace          : constant String := "backspace";
-   Signal_Copy_Clipboard     : constant String := "copy_clipboard";
-   Signal_Cut_Clipboard      : constant String := "cut_clipboard";
-   Signal_Delete_From_Cursor : constant String := "delete_from_cursor";
-   Signal_Insert_At_Cursor   : constant String := "insert_at_cursor";
-   Signal_Move_Cursor        : constant String := "move_cursor";
-   Signal_Paste_Clipboard    : constant String := "paste_clipboard";
-   Signal_Populate_Popup     : constant String := "populate_popup";
-   Signal_Toggle_Overwrite   : constant String := "toggle_overwrite";
+   Signal_Activate           : constant Glib.Signal_Name :=
+                                 "activate";
+   Signal_Backspace          : constant Glib.Signal_Name :=
+                                 "backspace";
+   Signal_Copy_Clipboard     : constant Glib.Signal_Name :=
+                                 "copy_clipboard";
+   Signal_Cut_Clipboard      : constant Glib.Signal_Name :=
+                                 "cut_clipboard";
+   Signal_Delete_From_Cursor : constant Glib.Signal_Name :=
+                                 "delete_from_cursor";
+   Signal_Insert_At_Cursor   : constant Glib.Signal_Name :=
+                                 "insert_at_cursor";
+   Signal_Move_Cursor        : constant Glib.Signal_Name :=
+                                 "move_cursor";
+   Signal_Paste_Clipboard    : constant Glib.Signal_Name :=
+                                 "paste_clipboard";
+   Signal_Populate_Popup     : constant Glib.Signal_Name :=
+                                 "populate_popup";
+   Signal_Toggle_Overwrite   : constant Glib.Signal_Name :=
+                                 "toggle_overwrite";
 
 private
    type Gtk_Entry_Record is new

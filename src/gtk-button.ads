@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -352,12 +352,12 @@ package Gtk.Button is
    --
    --  </signals>
 
-   Signal_Clicked  : constant String := "clicked";
-   Signal_Pressed  : constant String := "pressed";
-   Signal_Released : constant String := "released";
-   Signal_Enter    : constant String := "enter";
-   Signal_Leave    : constant String := "leave";
-   Signal_Activate : constant String := "activate";
+   Signal_Clicked  : constant Glib.Signal_Name := "clicked";
+   Signal_Pressed  : constant Glib.Signal_Name := "pressed";
+   Signal_Released : constant Glib.Signal_Name := "released";
+   Signal_Enter    : constant Glib.Signal_Name := "enter";
+   Signal_Leave    : constant Glib.Signal_Name := "leave";
+   Signal_Activate : constant Glib.Signal_Name := "activate";
 
 private
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with null record;

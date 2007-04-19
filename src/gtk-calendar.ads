@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -240,14 +240,20 @@ package Gtk.Calendar is
    --
    --  </signals>
 
-   Signal_Day_Selected              : constant String := "day_selected";
-   Signal_Day_Selected_Double_Click : constant String :=
-     "day_selected_double_click";
-   Signal_Month_Changed             : constant String := "month_changed";
-   Signal_Next_Month                : constant String := "next_month";
-   Signal_Next_Year                 : constant String := "next_year";
-   Signal_Prev_Month                : constant String := "prev_month";
-   Signal_Prev_Year                 : constant String := "prev_year";
+   Signal_Day_Selected              : constant Glib.Signal_Name :=
+                                        "day_selected";
+   Signal_Day_Selected_Double_Click : constant Glib.Signal_Name :=
+                                        "day_selected_double_click";
+   Signal_Month_Changed             : constant Glib.Signal_Name :=
+                                        "month_changed";
+   Signal_Next_Month                : constant Glib.Signal_Name :=
+                                        "next_month";
+   Signal_Next_Year                 : constant Glib.Signal_Name :=
+                                        "next_year";
+   Signal_Prev_Month                : constant Glib.Signal_Name :=
+                                        "prev_month";
+   Signal_Prev_Year                 : constant Glib.Signal_Name :=
+                                        "prev_year";
 
 private
    type Gtk_Calendar_Record is new Gtk.Widget.Gtk_Widget_Record

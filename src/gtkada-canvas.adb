@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -111,12 +111,12 @@ package body Gtkada.Canvas is
    --  given item.
 
    Signals : constant chars_ptr_array :=
-     (1 => New_String ("background_click"),
-      2 => New_String ("item_selected"),
-      3 => New_String ("zoomed"),
-      4 => New_String ("set_scroll_adjustments"),
-      5 => New_String ("item_unselected"),
-      6 => New_String ("item_moved"));
+               (1 => New_String (String (Signal_Background_Click)),
+                2 => New_String (String (Signal_Item_Selected)),
+                3 => New_String (String (Signal_Zoomed)),
+                4 => New_String (String (Signal_Set_Scroll_Adjustments)),
+                5 => New_String (String (Signal_Item_Unselected)),
+                6 => New_String (String (Signal_Item_Moved)));
    --  Array of the signals created for this widget
 
    -----------------

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -370,13 +370,14 @@ package body Glib.Object is
    -- Signal_Name --
    -----------------
 
-   function Signal_Name (Q : Signal_Query) return String is
+   function Signal_Name (Q : Signal_Query) return Glib.Signal_Name is
       function Internal
         (Q : Signal_Query) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gsignal_query_signal_name");
 
    begin
-      return Interfaces.C.Strings.Value (Internal (Q));
+      return Glib.Signal_Name
+        (String'(Interfaces.C.Strings.Value (Internal (Q))));
    end Signal_Name;
 
    ------------

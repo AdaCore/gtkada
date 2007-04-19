@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -640,21 +640,36 @@ package Gtk.Text_View is
    --
    --  </signals>
 
-   Signal_Backspace              : constant String := "backspace";
-   Signal_Copy_Clipboard         : constant String := "copy_clipboard";
-   Signal_Cut_Clipboard          : constant String := "cut_clipboard";
-   Signal_Delete_From_Cursor     : constant String := "delete_from_cursor";
-   Signal_Insert_At_Cursor       : constant String := "insert_at_cursor";
-   Signal_Move_Cursor            : constant String := "move_cursor";
-   Signal_Move_Focus             : constant String := "move_focus";
-   Signal_Move_Viewport          : constant String := "move_viewport";
-   Signal_Page_Horizontally      : constant String := "page_horizontally";
-   Signal_Paste_Clipboard        : constant String := "paste_clipboard";
-   Signal_Populate_Popup         : constant String := "populate_popup";
-   Signal_Select_All             : constant String := "select_all";
-   Signal_Set_Anchor             : constant String := "set_anchor";
-   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
-   Signal_Toggle_Overwrite       : constant String := "toggle_overwrite";
+   Signal_Backspace              : constant Glib.Signal_Name :=
+                                     "backspace";
+   Signal_Copy_Clipboard         : constant Glib.Signal_Name :=
+                                     "copy_clipboard";
+   Signal_Cut_Clipboard          : constant Glib.Signal_Name :=
+                                     "cut_clipboard";
+   Signal_Delete_From_Cursor     : constant Glib.Signal_Name :=
+                                     "delete_from_cursor";
+   Signal_Insert_At_Cursor       : constant Glib.Signal_Name :=
+                                     "insert_at_cursor";
+   Signal_Move_Cursor            : constant Glib.Signal_Name :=
+                                     "move_cursor";
+   Signal_Move_Focus             : constant Glib.Signal_Name :=
+                                     "move_focus";
+   Signal_Move_Viewport          : constant Glib.Signal_Name :=
+                                     "move_viewport";
+   Signal_Page_Horizontally      : constant Glib.Signal_Name :=
+                                     "page_horizontally";
+   Signal_Paste_Clipboard        : constant Glib.Signal_Name :=
+                                     "paste_clipboard";
+   Signal_Populate_Popup         : constant Glib.Signal_Name :=
+                                     "populate_popup";
+   Signal_Select_All             : constant Glib.Signal_Name :=
+                                     "select_all";
+   Signal_Set_Anchor             : constant Glib.Signal_Name :=
+                                     "set_anchor";
+   Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name :=
+                                     "set_scroll_adjustments";
+   Signal_Toggle_Overwrite       : constant Glib.Signal_Name :=
+                                     "toggle_overwrite";
 
 private
    type Gtk_Text_View_Record is new Gtk.Container.Gtk_Container_Record with

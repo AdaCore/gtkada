@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -241,9 +241,9 @@ package Gtk.Entry_Completion is
    --
    --  </signals>
 
-   Signal_Action_Activated : constant String := "action_activated";
-   Signal_Insert_Prefix    : constant String := "insert_prefix";
-   Signal_Match_Selected   : constant String := "match_selected";
+   Signal_Action_Activated : constant Glib.Signal_Name := "action_activated";
+   Signal_Insert_Prefix    : constant Glib.Signal_Name := "insert_prefix";
+   Signal_Match_Selected   : constant Glib.Signal_Name := "match_selected";
 
    ----------------
    -- Properties --

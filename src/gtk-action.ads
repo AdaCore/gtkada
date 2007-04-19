@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -286,7 +286,7 @@ package Gtk.Action is
    --    The "activate" signal is emitted when the action is activated.
    --  </signals>
 
-   Signal_Activate : constant String := "activate";
+   Signal_Activate : constant Glib.Signal_Name := "activate";
 
 private
    Action_Group_Property : constant Glib.Properties.Property_Object :=

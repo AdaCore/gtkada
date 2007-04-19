@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -218,10 +218,10 @@ package Gtk.GRange is
    --
    --  </signals>
 
-   Signal_Adjust_Bounds : constant String := "adjust_bounds";
-   Signal_Change_Value  : constant String := "change_value";
-   Signal_Move_Slider   : constant String := "move_slider";
-   Signal_Value_Changed : constant String := "value_changed";
+   Signal_Adjust_Bounds : constant Glib.Signal_Name := "adjust_bounds";
+   Signal_Change_Value  : constant Glib.Signal_Name := "change_value";
+   Signal_Move_Slider   : constant Glib.Signal_Name := "move_slider";
+   Signal_Value_Changed : constant Glib.Signal_Name := "value_changed";
 
 private
    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with null record;

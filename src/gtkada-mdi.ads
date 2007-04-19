@@ -741,6 +741,27 @@ package Gtkada.MDI is
    --
    --  </signals>
 
+   Signal_Child_Selected       : constant Signal_Name :=
+                                   "child_selected";
+   Signal_Float_Child          : constant Signal_Name :=
+                                   "float_child";
+   Signal_Child_Title_Changed  : constant Signal_Name :=
+                                   "child_title_changed";
+   Signal_Child_Added          : constant Signal_Name :=
+                                   "child_added";
+   Signal_Child_Removed        : constant Signal_Name :=
+                                   "child_removed";
+   Signal_Child_Icon_Changed   : constant Signal_Name :=
+                                   "child_icon_changed";
+   Signal_Children_Reorganized : constant Signal_Name :=
+                                   "children_reorganized";
+   Signal_Delete_Event         : constant Signal_Name :=
+                                   "delete_event";
+   Signal_Selected             : constant Signal_Name :=
+                                   "selected";
+   Signal_Unfloat_Child        : constant Signal_Name :=
+                                   "unfloat_child";
+
 private
    type String_Access is access all UTF8_String;
 
@@ -890,4 +911,5 @@ private
    pragma Inline (Get);
    pragma Inline (Next);
    pragma Inline (First_Child);
+
 end Gtkada.MDI;

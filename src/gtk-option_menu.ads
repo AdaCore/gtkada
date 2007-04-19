@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -124,7 +124,7 @@ package Gtk.Option_Menu is
    --
    --  </signals>
 
-   Signal_Changed : constant String := "changed";
+   Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
    type Gtk_Option_Menu_Record is new Button.Gtk_Button_Record

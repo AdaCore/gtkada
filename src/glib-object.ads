@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001-2006 AdaCore                 --
+--                   Copyright (C) 2001-2007 AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -203,7 +203,7 @@ package Glib.Object is
    --  These Ids can then be used to temporarily block a signal for instance,
    --  through the subprograms in Gtk.Handlers.
 
-   function Signal_Name (Q : Signal_Query) return String;
+   function Signal_Name (Q : Signal_Query) return Glib.Signal_Name;
    --  Return the name of the signal, as should be used in a call to Connect.
 
    function Return_Type (Q : Signal_Query) return Glib.GType;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -157,7 +157,7 @@ package Gtk.Font_Button is
    --    notify::font-name signal.
    --  </signals>
 
-   Signal_Font_Set : constant String := "font-set";
+   Signal_Font_Set : constant Glib.Signal_Name := "font-set";
 
 private
    Font_Name_Property : constant Glib.Properties.Property_String :=

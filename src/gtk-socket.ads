@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -165,8 +165,8 @@ package Gtk.Socket is
    --
    --  </signals>
 
-   Signal_Plug_Added   : constant String := "plug_added";
-   Signal_Plug_Removed : constant String := "plug_removed";
+   Signal_Plug_Added   : constant Glib.Signal_Name := "plug_added";
+   Signal_Plug_Removed : constant Glib.Signal_Name := "plug_removed";
 
 private
 

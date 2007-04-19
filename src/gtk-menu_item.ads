@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -168,10 +168,14 @@ package Gtk.Menu_Item is
    --        (Get_Toplevel (Item), "map",
    --         Slot_Object => Item);
 
-   Signal_Activate : constant String := "activate";
-   Signal_Activate_Item : constant String := "activate_item";
-   Signal_Toggle_Size_Allocate : constant String := "toggle_size_allocate";
-   Signal_Toggle_Size_Request : constant String := "toggle_size_request";
+   Signal_Activate             : constant Glib.Signal_Name :=
+                                   "activate";
+   Signal_Activate_Item        : constant Glib.Signal_Name :=
+                                   "activate_item";
+   Signal_Toggle_Size_Allocate : constant Glib.Signal_Name :=
+                                   "toggle_size_allocate";
+   Signal_Toggle_Size_Request  : constant Glib.Signal_Name :=
+                                   "toggle_size_request";
 
    procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
    --  Emits the "select" signal on Menu_Item

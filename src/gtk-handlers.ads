@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -222,21 +222,21 @@ package Gtk.Handlers is
       --  In all the Connect services below, the following arguments
       --  will be used:
       --    o Widget, Name: This represents the association (Gtk Object,
-      --      Signal_Name) to which the handler is to be connected.
+      --      Glib.Signal_Name) to which the handler is to be connected.
       --    o After: If this boolean is set to True, then the handler
       --      will be connected after all the default handlers. By
       --      default, it is set to False.
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Marsh   : Marshallers.Marshaller;
-         After   : Boolean := False);
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Marsh  : Marshallers.Marshaller;
+         After  : Boolean := False);
       --  Connects a Marshaller. The Handler_Id is dropped.
 
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
@@ -246,13 +246,13 @@ package Gtk.Handlers is
       --  Slot_Object *must* be of type Gtk_Object or one of its children.
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Cb      : Simple_Handler;
-         After   : Boolean := False);
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Cb     : Simple_Handler;
+         After  : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
@@ -261,13 +261,13 @@ package Gtk.Handlers is
       --  procedures, except it is shorter to write.
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Cb      : Handler;
-         After   : Boolean := False);
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Cb     : Handler;
+         After  : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
@@ -280,15 +280,15 @@ package Gtk.Handlers is
       pragma Inline (Object_Connect);
 
       function Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Marsh   : Marshallers.Marshaller;
-         After   : Boolean := False) return Handler_Id;
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Marsh  : Marshallers.Marshaller;
+         After  : Boolean := False) return Handler_Id;
       --  Connects a Marshaller. Returns the Handler_Id.
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id;
@@ -298,15 +298,15 @@ package Gtk.Handlers is
       --  Slot_Object *must* be of type Gtk_Object or one of its children.
 
       function Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Cb      : Handler;
-         After   : Boolean := False) return Handler_Id;
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Cb     : Handler;
+         After  : Boolean := False) return Handler_Id;
       --  Connects a Handler. Returns the Handler_Id.
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id;
@@ -358,35 +358,35 @@ package Gtk.Handlers is
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gint)
          return Return_Type renames Gint_Marshaller.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Guint)
          return Return_Type renames Guint_Marshaller.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gdk.Event.Gdk_Event) return Return_Type;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
          return Return_Type renames Widget_Marshaller.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String)
+         Name   : Glib.Signal_Name)
          return Return_Type renames Marshallers.Void_Marshaller.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
 
@@ -398,13 +398,13 @@ package Gtk.Handlers is
       --  parameter of Marshaller to another type.
 
       type Data_Type_Record is record
-         Func     : Handler;
+         Func   : Handler;
          --  User's callback
 
-         Proxy    : Marshallers.Handler_Proxy := null;
+         Proxy  : Marshallers.Handler_Proxy := null;
          --  Handler_Proxy to use
 
-         Object   : Acc := null;
+         Object : Acc := null;
          --  Slot Object for Object_Connect
       end record;
       type Data_Type_Access is access all Data_Type_Record;
@@ -431,6 +431,7 @@ package Gtk.Handlers is
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
+
    end Return_Callback;
 
    ---------------------------------------------------------
@@ -460,13 +461,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -474,13 +475,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Simple_Handler;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -488,13 +489,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -504,14 +505,14 @@ package Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -519,14 +520,14 @@ package Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -575,35 +576,35 @@ package Gtk.Handlers is
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gint)
          return Return_Type renames Gint_Marshaller.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Guint)
          return Return_Type renames Guint_Marshaller.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gdk.Event.Gdk_Event) return Return_Type;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
          return Return_Type renames Widget_Marshaller.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String)
+         Name   : Glib.Signal_Name)
          return Return_Type renames Marshallers.Void_Marshaller.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
 
@@ -616,14 +617,14 @@ package Gtk.Handlers is
 
       type User_Access is access User_Type;
       type Data_Type_Record is record
-         Func  : Handler;
+         Func   : Handler;
          --  User's callback
 
-         Proxy : Marshallers.Handler_Proxy := null;
+         Proxy  : Marshallers.Handler_Proxy := null;
          --  Handler_Proxy to use
 
-         User  : User_Access := null;
-         Object   : Acc := null;
+         User   : User_Access := null;
+         Object : Acc := null;
          --  Slot Object for Object_Connect
       end record;
       type Data_Type_Access is access all Data_Type_Record;
@@ -650,6 +651,7 @@ package Gtk.Handlers is
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
+
    end User_Return_Callback;
 
    -------------------------------------
@@ -678,13 +680,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -692,13 +694,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -706,13 +708,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Simple_Handler;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -722,14 +724,14 @@ package Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -737,14 +739,14 @@ package Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -788,35 +790,37 @@ package Gtk.Handlers is
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gint) return Return_Type renames Internal_Cb.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Guint) return Return_Type renames Internal_Cb.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gdk.Event.Gdk_Event) return Return_Type
          renames Internal_Cb.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
          return Return_Type renames Internal_Cb.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String) return Return_Type renames Internal_Cb.Emit_By_Name;
+         Name   : Glib.Signal_Name)
+         return Return_Type renames Internal_Cb.Emit_By_Name;
 
       function Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page) return Return_Type
-         renames Internal_Cb.Emit_By_Name;
+         Name   : Glib.Signal_Name;
+         Param  : Gtk.Notebook.Gtk_Notebook_Page)
+         return Return_Type renames Internal_Cb.Emit_By_Name;
+
    end User_Return_Callback_With_Setup;
 
    ---------------------------------------------------------
@@ -840,37 +844,37 @@ package Gtk.Handlers is
       --  Connecting a handler to an object
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Marsh   : Marshallers.Marshaller;
-         After   : Boolean := False);
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Marsh  : Marshallers.Marshaller;
+         After  : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Cb      : Handler;
-         After   : Boolean := False);
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Cb     : Handler;
+         After  : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Cb      : Simple_Handler;
-         After   : Boolean := False);
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Cb     : Simple_Handler;
+         After  : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
@@ -879,27 +883,27 @@ package Gtk.Handlers is
       pragma Inline (Object_Connect);
 
       function Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Marsh   : Marshallers.Marshaller;
-         After   : Boolean := False) return Handler_Id;
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Marsh  : Marshallers.Marshaller;
+         After  : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id;
 
       function Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : String;
-         Cb      : Handler;
-         After   : Boolean := False) return Handler_Id;
+        (Widget : access Widget_Type'Class;
+         Name   : Glib.Signal_Name;
+         Cb     : Handler;
+         After  : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id;
@@ -947,32 +951,33 @@ package Gtk.Handlers is
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gint) renames Gint_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Guint) renames Guint_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name
          (Object : access Widget_Type'Class;
-          Name   : String;
+          Name   : Glib.Signal_Name;
           Param  : Gdk.Event.Gdk_Event);
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
          renames Widget_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String) renames Marshallers.Void_Marshaller.Emit_By_Name;
+         Name   : Glib.Signal_Name)
+         renames Marshallers.Void_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          renames Notebook_Page_Marshaller.Emit_By_Name;
 
@@ -1012,6 +1017,7 @@ package Gtk.Handlers is
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
+
    end Callback;
 
    ---------------------------------------------------------
@@ -1040,13 +1046,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1054,13 +1060,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1068,13 +1074,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Simple_Handler;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1084,14 +1090,14 @@ package Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1099,14 +1105,14 @@ package Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1155,32 +1161,33 @@ package Gtk.Handlers is
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gint) renames Gint_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Guint) renames Guint_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gdk.Event.Gdk_Event);
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
          renames Widget_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String) renames Marshallers.Void_Marshaller.Emit_By_Name;
+         Name   : Glib.Signal_Name)
+         renames Marshallers.Void_Marshaller.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          renames Notebook_Page_Marshaller.Emit_By_Name;
 
@@ -1227,6 +1234,7 @@ package Gtk.Handlers is
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
+
    end User_Callback;
 
    ------------------------------
@@ -1253,13 +1261,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1267,13 +1275,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1281,13 +1289,13 @@ package Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Simple_Handler;
          User_Data : User_Type;
          After     : Boolean := False);
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1297,14 +1305,14 @@ package Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1312,14 +1320,14 @@ package Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : String;
+         Name      : Glib.Signal_Name;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
       function Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
-         Name        : String;
+         Name        : Glib.Signal_Name;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
@@ -1363,34 +1371,35 @@ package Gtk.Handlers is
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gint) renames Internal_Cb.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Guint) renames Internal_Cb.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gdk.Event.Gdk_Event) renames Internal_Cb.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : access Gtk.Widget.Gtk_Widget_Record'Class)
          renames Internal_Cb.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String) renames Internal_Cb.Emit_By_Name;
+         Name   : Glib.Signal_Name) renames Internal_Cb.Emit_By_Name;
 
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
-         Name   : String;
+         Name   : Glib.Signal_Name;
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          renames Internal_Cb.Emit_By_Name;
+
    end User_Callback_With_Setup;
 
    ------------------------------------------------------------------
@@ -1413,7 +1422,7 @@ package Gtk.Handlers is
 
    procedure Emit_Stop_By_Name
      (Object : access Glib.Object.GObject_Record'Class;
-      Name   : String);
+      Name   : Glib.Signal_Name);
    --  During a signal emission, invoking this procedure will halt the
    --  emission.
 

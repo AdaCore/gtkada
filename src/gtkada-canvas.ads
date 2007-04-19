@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -942,7 +942,25 @@ package Gtkada.Canvas is
    --  Emitted when the canvas has been zoomed in or out. You do not need to
    --  redraw the items yourself, since this will be handled by calls to Draw
    --
+   --  - "set_scroll_adjustments"
+   --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class);
+   --
+   --  Emitted when the canvas ???
+   --
    --  </signals>
+
+   Signal_Background_Click       : constant Glib.Signal_Name :=
+                                     "background_click";
+   Signal_Item_Selected          : constant Glib.Signal_Name :=
+                                     "item_selected";
+   Signal_Item_Unselected        : constant Glib.Signal_Name :=
+                                     "item_unselected";
+   Signal_Item_Moved             : constant Glib.Signal_Name :=
+                                     "item_moved";
+   Signal_Zoomed                 : constant Glib.Signal_Name :=
+                                     "zoomed";
+   Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name :=
+                                     "set_scroll_adjustments";
 
 private
 
@@ -1098,6 +1116,7 @@ private
    pragma Inline (To_World_Coordinates);
    pragma Inline (Get_Arrow_Type);
    pragma Inline (Pixmap);
+
 end Gtkada.Canvas;
 
 --  <example>

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -941,23 +941,40 @@ package Gtk.Clist is
    --
    --  </signals>
 
-   Signal_Abort_Column_Resize    : constant String := "abort_column_resize";
-   Signal_Click_Column           : constant String := "click_column";
-   Signal_End_Selection          : constant String := "end_selection";
-   Signal_Extend_Selection       : constant String := "extend_selection";
-   Signal_Resize_Column          : constant String := "resize_column";
-   Signal_Row_Move               : constant String := "row_move";
-   Signal_Scroll_Horizontal      : constant String := "scroll_horizontal";
-   Signal_Scroll_Vertical        : constant String := "scroll_vertical";
-   Signal_Select_All             : constant String := "select_all";
-   Signal_Select_Row             : constant String := "select_row";
-   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
-   Signal_Start_Selection        : constant String := "start_selection";
-   Signal_Toggle_Add_Mode        : constant String := "toggle_add_mode";
-   Signal_Toggle_Focus_Row       : constant String := "toggle_focus_row";
-   Signal_Undo_Selection         : constant String := "undo_selection";
-   Signal_Unselect_All           : constant String := "unselect_all";
-   Signal_Unselect_Row           : constant String := "unselect_row";
+   Signal_Abort_Column_Resize    : constant Glib.Signal_Name :=
+                                     "abort_column_resize";
+   Signal_Click_Column           : constant Glib.Signal_Name :=
+                                     "click_column";
+   Signal_End_Selection          : constant Glib.Signal_Name :=
+                                     "end_selection";
+   Signal_Extend_Selection       : constant Glib.Signal_Name :=
+                                     "extend_selection";
+   Signal_Resize_Column          : constant Glib.Signal_Name :=
+                                     "resize_column";
+   Signal_Row_Move               : constant Glib.Signal_Name :=
+                                     "row_move";
+   Signal_Scroll_Horizontal      : constant Glib.Signal_Name :=
+                                     "scroll_horizontal";
+   Signal_Scroll_Vertical        : constant Glib.Signal_Name :=
+                                     "scroll_vertical";
+   Signal_Select_All             : constant Glib.Signal_Name :=
+                                     "select_all";
+   Signal_Select_Row             : constant Glib.Signal_Name :=
+                                     "select_row";
+   Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name :=
+                                     "set_scroll_adjustments";
+   Signal_Start_Selection        : constant Glib.Signal_Name :=
+                                     "start_selection";
+   Signal_Toggle_Add_Mode        : constant Glib.Signal_Name :=
+                                     "toggle_add_mode";
+   Signal_Toggle_Focus_Row       : constant Glib.Signal_Name :=
+                                     "toggle_focus_row";
+   Signal_Undo_Selection         : constant Glib.Signal_Name :=
+                                     "undo_selection";
+   Signal_Unselect_All           : constant Glib.Signal_Name :=
+                                     "unselect_all";
+   Signal_Unselect_Row           : constant Glib.Signal_Name :=
+                                     "unselect_row";
 
 private
    type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record with record

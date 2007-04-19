@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -201,12 +201,12 @@ package Gtk.Menu_Shell is
    --
    --  </signals>
 
-   Signal_Activate_Current : constant String := "activate_current";
-   Signal_Cancel           : constant String := "cancel";
-   Signal_Cycle_Focus      : constant String := "cycle_focus";
-   Signal_Deactivate       : constant String := "deactivate";
-   Signal_Move_Current     : constant String := "move_current";
-   Signal_Selection_Done   : constant String := "selection-done";
+   Signal_Activate_Current : constant Glib.Signal_Name := "activate_current";
+   Signal_Cancel           : constant Glib.Signal_Name := "cancel";
+   Signal_Cycle_Focus      : constant Glib.Signal_Name := "cycle_focus";
+   Signal_Deactivate       : constant Glib.Signal_Name := "deactivate";
+   Signal_Move_Current     : constant Glib.Signal_Name := "move_current";
+   Signal_Selection_Done   : constant Glib.Signal_Name := "selection-done";
 
 private
    type Gtk_Menu_Shell_Record is new

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -185,7 +185,7 @@ package Gtk.Expander is
    --
    --  </signals>
 
-   Signal_Activate : constant String := "activate";
+   Signal_Activate : constant Glib.Signal_Name := "activate";
 
 private
    pragma Import (C, Get_Type, "gtk_expander_get_type");

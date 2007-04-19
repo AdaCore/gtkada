@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -255,8 +255,8 @@ package Gtk.Scrolled_Window is
    --    user interaction. You do not need to connect to this signal
    --  </signals>
 
-   Signal_Move_Focus_Out : constant String := "move_focus_out";
-   Signal_Scroll_Child   : constant String := "scroll_child";
+   Signal_Move_Focus_Out : constant Glib.Signal_Name := "move_focus_out";
+   Signal_Scroll_Child   : constant Glib.Signal_Name := "scroll_child";
 
 private
    type Gtk_Scrolled_Window_Record is new Bin.Gtk_Bin_Record with null record;

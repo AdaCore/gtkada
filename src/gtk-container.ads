@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -393,10 +393,10 @@ package Gtk.Container is
    --
    --  </signals>
 
-   Signal_Add             : constant String := "add";
-   Signal_Check_Resize    : constant String := "check_resize";
-   Signal_Remove          : constant String := "remove";
-   Signal_Set_Focus_Child : constant String := "set-focus-child";
+   Signal_Add             : constant Glib.Signal_Name := "add";
+   Signal_Check_Resize    : constant Glib.Signal_Name := "check_resize";
+   Signal_Remove          : constant Glib.Signal_Name := "remove";
+   Signal_Set_Focus_Child : constant Glib.Signal_Name := "set-focus-child";
 
 private
    type Gtk_Container_Record is new Gtk.Widget.Gtk_Widget_Record

@@ -710,11 +710,12 @@ package Gtk.Notebook is
    --
    --  </signals>
 
-   Signal_Switch_Page         : constant String := "switch_page";
-   Signal_Select_Page         : constant String := "select_page";
-   Signal_Focus_Tab           : constant String := "focus_tab";
-   Signal_Move_Focus_Out      : constant String := "move_focus_out";
-   Signal_Change_Current_Page : constant String := "change_current_page";
+   Signal_Switch_Page         : constant Glib.Signal_Name := "switch_page";
+   Signal_Select_Page         : constant Glib.Signal_Name := "select_page";
+   Signal_Focus_Tab           : constant Glib.Signal_Name := "focus_tab";
+   Signal_Move_Focus_Out      : constant Glib.Signal_Name := "move_focus_out";
+   Signal_Change_Current_Page : constant Glib.Signal_Name :=
+                                  "change_current_page";
 
 private
    type Gtk_Notebook_Record is new Gtk.Container.Gtk_Container_Record

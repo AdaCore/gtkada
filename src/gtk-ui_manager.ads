@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -442,12 +442,12 @@ package Gtk.UI_Manager is
    --    before any action is activated.
    --  </signals>
 
-   Signal_Actions_Changed  : constant String := "actions_changed";
-   Signal_Add_Widget       : constant String := "add_widget";
-   Signal_Connect_Proxy    : constant String := "connect_proxy";
-   Signal_Disconnect_Proxy : constant String := "disconnect_proxy";
-   Signal_Post_Activate    : constant String := "post_activate";
-   Signal_Pre_Activate     : constant String := "pre_activate";
+   Signal_Actions_Changed  : constant Glib.Signal_Name := "actions_changed";
+   Signal_Add_Widget       : constant Glib.Signal_Name := "add_widget";
+   Signal_Connect_Proxy    : constant Glib.Signal_Name := "connect_proxy";
+   Signal_Disconnect_Proxy : constant Glib.Signal_Name := "disconnect_proxy";
+   Signal_Post_Activate    : constant Glib.Signal_Name := "post_activate";
+   Signal_Pre_Activate     : constant Glib.Signal_Name := "pre_activate";
 
 private
    Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean :=

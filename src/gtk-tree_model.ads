@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -470,9 +470,16 @@ package Gtk.Tree_Model is
       New_Order  : Gint_Array);
    --  Emit the "rows_reordered" signal
 
-   Signal_Row_Changed           : constant String := "row_changed";
-   Signal_Row_Has_Child_Toggled : constant String := "row_has_child_toggled";
-
+   Signal_Row_Changed           : constant Glib.Signal_Name :=
+                                    "row_changed";
+   Signal_Row_Inserted          : constant Glib.Signal_Name :=
+                                    "row_inserted";
+   Signal_Row_Has_Child_Toggled : constant Glib.Signal_Name :=
+                                    "row_has_child_toggled";
+   Signal_Row_Deleted           : constant Glib.Signal_Name :=
+                                    "row_deleted";
+   Signal_Rows_Reordered        : constant Glib.Signal_Name :=
+                                    "rows_reordered";
 
 private
    pragma Convention (C, Tree_Model_Flags);

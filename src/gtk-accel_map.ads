@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2002-2006 AdaCore                 --
+--                   Copyright (C) 2002-2007 AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -173,7 +173,7 @@ package Gtk.Accel_Map is
    --
    --  </signals>
 
-   Signal_Changed : constant String := "changed";
+   Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
    pragma Import (C, Get_Type, "gtk_accel_map_get_type");

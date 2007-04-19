@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -828,24 +828,38 @@ package Gtk.Tree_View is
    --
    --  </signals>
 
-   Signal_Columns_Changed            : constant String := "columns_changed";
-   Signal_Cursor_Changed             : constant String := "cursor_changed";
-   Signal_Expand_Collapse_Cursor_Row : constant String :=
-     "expand_collapse_cursor_row";
-   Signal_Move_Cursor            : constant String := "move_cursor";
-   Signal_Row_Activated          : constant String := "row_activated";
-   Signal_Row_Collapsed          : constant String := "row_collapsed";
-   Signal_Row_Expanded           : constant String := "row_expanded";
-   Signal_Select_All             : constant String := "select_all";
-   Signal_Select_Cursor_Parent   : constant String := "select_cursor_parent";
-   Signal_Select_Cursor_Row      : constant String := "select_cursor_row";
-   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
-   Signal_Start_Interactive_Search : constant String :=
-     "start_interactive_search";
-   Signal_Test_Collapse_Row      : constant String := "test_collapse_row";
-   Signal_Test_Expand_Row        : constant String := "test_expand_row";
-   Signal_Toggle_Cursor_Row      : constant String := "toggle_cursor_row";
-   Signal_Unselect_All           : constant String := "unselect_all";
+   Signal_Columns_Changed            : constant Glib.Signal_Name :=
+                                         "columns_changed";
+   Signal_Cursor_Changed             : constant Glib.Signal_Name :=
+                                         "cursor_changed";
+   Signal_Expand_Collapse_Cursor_Row : constant Glib.Signal_Name :=
+                                         "expand_collapse_cursor_row";
+   Signal_Move_Cursor                : constant Glib.Signal_Name :=
+                                         "move_cursor";
+   Signal_Row_Activated              : constant Glib.Signal_Name :=
+                                         "row_activated";
+   Signal_Row_Collapsed              : constant Glib.Signal_Name :=
+                                         "row_collapsed";
+   Signal_Row_Expanded               : constant Glib.Signal_Name :=
+                                         "row_expanded";
+   Signal_Select_All                 : constant Glib.Signal_Name :=
+                                         "select_all";
+   Signal_Select_Cursor_Parent       : constant Glib.Signal_Name :=
+                                         "select_cursor_parent";
+   Signal_Select_Cursor_Row          : constant Glib.Signal_Name :=
+                                         "select_cursor_row";
+   Signal_Set_Scroll_Adjustments     : constant Glib.Signal_Name :=
+                                         "set_scroll_adjustments";
+   Signal_Start_Interactive_Search   : constant Glib.Signal_Name :=
+                                         "start_interactive_search";
+   Signal_Test_Collapse_Row          : constant Glib.Signal_Name :=
+                                         "test_collapse_row";
+   Signal_Test_Expand_Row            : constant Glib.Signal_Name :=
+                                         "test_expand_row";
+   Signal_Toggle_Cursor_Row          : constant Glib.Signal_Name :=
+                                         "toggle_cursor_row";
+   Signal_Unselect_All               : constant Glib.Signal_Name :=
+                                         "unselect_all";
 
 private
    type Gtk_Tree_View_Record is

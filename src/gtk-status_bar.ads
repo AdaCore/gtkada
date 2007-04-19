@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -190,8 +190,8 @@ package Gtk.Status_Bar is
    --
    --  </signals>
 
-   Signal_Text_Popped : constant String := "text_popped";
-   Signal_Text_Pushed : constant String := "text_pushed";
+   Signal_Text_Popped : constant Glib.Signal_Name := "text_popped";
+   Signal_Text_Pushed : constant Glib.Signal_Name := "text_pushed";
 
 private
    type Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with null record;

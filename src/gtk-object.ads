@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -288,7 +288,7 @@ package Gtk.Object is
    --    The default implementation destroys all the handlers.
    --  </signals>
 
-   Signal_Destroy : constant String := "destroy";
+   Signal_Destroy : constant Glib.Signal_Name := "destroy";
 
 private
    type Gtk_Object_Record is new Glib.Object.GObject_Record with null record;

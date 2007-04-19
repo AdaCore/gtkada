@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2006 AdaCore                   --
+--                 Copyright (C) 2001-2007 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -402,7 +402,7 @@ package Gtk.Text_Tag is
    --
    --  </signals>
 
-   Signal_Event : constant String := "event";
+   Signal_Event : constant Glib.Signal_Name := "event";
 
 private
    type Gtk_Text_Tag_Record is new GObject_Record with null record;

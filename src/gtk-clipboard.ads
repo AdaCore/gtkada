@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2002-2006, AdaCore                  --
+--                 Copyright (C) 2002-2007, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -371,7 +371,7 @@ package Gtk.Clipboard is
    --
    --  </signals>
 
-   Signal_Owner_Change : constant String := "owner_change";
+   Signal_Owner_Change : constant Glib.Signal_Name := "owner_change";
 
 private
    pragma Import (C, Get_Type,          "gtk_clipboard_get_type");

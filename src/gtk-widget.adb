@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006, AdaCore                   --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,18 +27,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtkada.Bindings;             use Gtkada.Bindings;
+with Ada.Unchecked_Conversion;
 with Interfaces.C.Strings;        use Interfaces.C.Strings;
+with System;                      use System;
+
 with Glib.Values;                 use Glib.Values;
 with Gdk.Color;                   use Gdk.Color;
 with Gdk.Types;                   use Gdk.Types;
 with Gdk.Visual;                  use Gdk.Visual;
-with Ada.Unchecked_Conversion;
-with Pango.Context;               use Pango.Context;
-with Pango.Layout;                use Pango.Layout;
 with Gtk.Enums;                   use Gtk.Enums;
 with Gtk.Style;                   use Gtk.Style;
-with System;                      use System;
+with Gtkada.Bindings;             use Gtkada.Bindings;
+with Pango.Context;               use Pango.Context;
+with Pango.Layout;                use Pango.Layout;
 
 package body Gtk.Widget is
 
@@ -60,7 +61,7 @@ package body Gtk.Widget is
 
    procedure Add_Accelerator
      (Widget       : access Gtk_Widget_Record;
-      Accel_Signal : String;
+      Accel_Signal : Glib.Signal_Name;
       Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
       Accel_Key    : Gdk.Types.Gdk_Key_Type;
       Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
@@ -68,7 +69,7 @@ package body Gtk.Widget is
    is
       procedure Internal
         (Widget       : System.Address;
-         Accel_Signal : String;
+         Accel_Signal : Glib.Signal_Name;
          Accel_Group  : System.Address;
          Accel_Key    : Gdk.Types.Gdk_Key_Type;
          Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;

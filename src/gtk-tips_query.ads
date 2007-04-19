@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -81,10 +81,10 @@ package Gtk.Tips_Query is
    --
    --  </signals>
 
-   Signal_Widget_Selected : constant String := "widget_selected";
-   Signal_Start_Query     : constant String := "start_query";
-   Signal_Stop_Query      : constant String := "stop_query";
-   Signal_Widget_Entered  : constant String := "widget_entered";
+   Signal_Widget_Selected : constant Glib.Signal_Name := "widget_selected";
+   Signal_Start_Query     : constant Glib.Signal_Name := "start_query";
+   Signal_Stop_Query      : constant Glib.Signal_Name := "stop_query";
+   Signal_Widget_Entered  : constant Glib.Signal_Name := "widget_entered";
 
 private
    type Gtk_Tips_Query_Record is new Gtk.Label.Gtk_Label_Record

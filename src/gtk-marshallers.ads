@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -156,7 +156,7 @@ package Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type;
          --  The function above should be used when Base_Type can be passed
          --  as is to C.
@@ -165,7 +165,7 @@ package Gtk.Marshallers is
             with function Conversion (Param : Base_Type) return System.Address;
          function Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type;
          --  Provide an explicit conversion function for PARAM.
 
@@ -191,7 +191,7 @@ package Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : access Base_Type'Class) return Return_Type;
 
       private
@@ -212,7 +212,7 @@ package Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String) return Return_Type;
+            Name   : Glib.Signal_Name) return Return_Type;
 
       private
          function Call
@@ -260,7 +260,7 @@ package Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type;
          --  The function above should be used when BASE_TYPE can be passed
          --  as is to C.
@@ -269,7 +269,7 @@ package Gtk.Marshallers is
             with function Conversion (Param : Base_Type) return System.Address;
          function Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type;
          --  Provide an explicit conversion function for PARAM.
       private
@@ -296,7 +296,7 @@ package Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : access Base_Type'Class) return Return_Type;
 
       private
@@ -319,7 +319,7 @@ package Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String) return Return_Type;
+            Name   : Glib.Signal_Name) return Return_Type;
 
       private
          function Call
@@ -366,7 +366,7 @@ package Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type);
          --  The function above should be used when BASE_TYPE can be passed
          --  as is to C.
@@ -375,7 +375,7 @@ package Gtk.Marshallers is
             with function Conversion (Param : Base_Type) return System.Address;
          procedure Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type);
          --  Provide an explicit conversion function for PARAM.
 
@@ -401,7 +401,7 @@ package Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : access Base_Type'Class);
 
       private
@@ -421,7 +421,7 @@ package Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String);
+            Name   : Glib.Signal_Name);
 
       private
          procedure Call
@@ -469,7 +469,7 @@ package Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type);
          --  The function above should be used when BASE_TYPE can be passed
          --  as is to C.
@@ -478,7 +478,7 @@ package Gtk.Marshallers is
             with function Conversion (Param : Base_Type) return System.Address;
          procedure Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type);
          --  Provide an explicit conversion function for PARAM.
 
@@ -506,7 +506,7 @@ package Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : access Base_Type'Class);
 
       private
@@ -529,7 +529,7 @@ package Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String);
+            Name   : Glib.Signal_Name);
 
       private
          procedure Call

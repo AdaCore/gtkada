@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -243,9 +243,12 @@ package Gtk.Tool_Item is
    --
    --  </signals>
 
-   Signal_Create_Menu_Proxy    : constant String := "create_menu_proxy";
-   Signal_Toolbar_Reconfigured : constant String := "toolbar_reconfigured";
-   Signal_Set_Tooltip          : constant String := "set_tooltip";
+   Signal_Create_Menu_Proxy    : constant Glib.Signal_Name :=
+                                   "create_menu_proxy";
+   Signal_Toolbar_Reconfigured : constant Glib.Signal_Name :=
+                                   "toolbar_reconfigured";
+   Signal_Set_Tooltip          : constant Glib.Signal_Name :=
+                                   "set_tooltip";
 
 private
 

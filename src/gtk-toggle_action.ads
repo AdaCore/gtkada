@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -105,7 +105,7 @@ package Gtk.Toggle_Action is
    --
    --  </signals>
 
-   Signal_Toggled : constant String := "toggled";
+   Signal_Toggled : constant Glib.Signal_Name := "toggled";
 
    procedure Toggled (Action : access Gtk_Toggle_Action_Record);
    --  Emits the "toggled" signal on the toggle action.

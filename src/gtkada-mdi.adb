@@ -90,7 +90,7 @@ pragma Elaborate_All (Gtk.Main);
 with Gtk.Menu;                use Gtk.Menu;
 with Gtk.Menu_Item;           use Gtk.Menu_Item;
 with Gtk.Notebook;            use Gtk.Notebook;
-with Gtk.Object;
+with Gtk.Object;              use Gtk.Object;
 with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Style;               use Gtk.Style;
 with Gtk.Widget;              use Gtk.Widget;
@@ -142,18 +142,18 @@ package body Gtkada.MDI is
      Gtk.Object.Uninitialized_Class;
 
    MDI_Signals : constant chars_ptr_array :=
-     (1 => New_String ("child_selected"),
-      2 => New_String ("float_child"),
-      3 => New_String ("child_title_changed"),
-      4 => New_String ("child_added"),
-      5 => New_String ("child_removed"),
-      6 => New_String ("child_icon_changed"),
-      7 => New_String ("children_reorganized"));
+     (1 => New_String (String (Signal_Child_Selected)),
+      2 => New_String (String (Signal_Float_Child)),
+      3 => New_String (String (Signal_Child_Title_Changed)),
+      4 => New_String (String (Signal_Child_Added)),
+      5 => New_String (String (Signal_Child_Removed)),
+      6 => New_String (String (Signal_Child_Icon_Changed)),
+      7 => New_String (String (Signal_Children_Reorganized)));
 
    Child_Signals : constant chars_ptr_array :=
-     (1 => New_String ("float_child"),
-      2 => New_String ("unfloat_child"),
-      3 => New_String ("selected"));
+     (1 => New_String (String (Signal_Float_Child)),
+      2 => New_String (String (Signal_Unfloat_Child)),
+      3 => New_String (String (Signal_Selected)));
 
    Close_Xpm : constant Interfaces.C.Strings.chars_ptr_array :=
      (New_String ("13 11 2 1"),
@@ -654,7 +654,7 @@ package body Gtkada.MDI is
       Parent : access Gtk.Window.Gtk_Window_Record'Class) is
    begin
       Return_Callback.Object_Connect
-        (Parent, "focus_in_event",
+        (Parent, Signal_Focus_In_Event,
          Return_Callback.To_Marshaller (Toplevel_Focus_In'Access),
          MDI);
    end Setup_Toplevel_Window;
@@ -679,7 +679,7 @@ package body Gtkada.MDI is
      (MDI   : access MDI_Window_Record'Class;
       Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
    is
-      Signal_Parameters : constant Signal_Parameter_Types :=
+      Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
         (1 => (1 => GType_Pointer),
          2 => (1 => GType_Pointer),
          3 => (1 => GType_Pointer),
@@ -737,11 +737,13 @@ package body Gtkada.MDI is
          Orientation => Orientation_Vertical);
 
       Widget_Callback.Connect
-        (MDI, "realize", Widget_Callback.To_Marshaller (Realize_MDI'Access));
+        (MDI, Gtk.Widget.Signal_Realize,
+         Widget_Callback.To_Marshaller (Realize_MDI'Access));
       Widget_Callback.Connect
-        (MDI, "destroy", Widget_Callback.To_Marshaller (Destroy_MDI'Access));
+        (MDI, Signal_Destroy,
+         Widget_Callback.To_Marshaller (Destroy_MDI'Access));
       Widget_Callback.Connect
-        (MDI, "set_focus_child", Set_Focus_Child_MDI'Access);
+        (MDI, Signal_Set_Focus_Child, Set_Focus_Child_MDI'Access);
    end Initialize;
 
    -----------------------
@@ -1056,11 +1058,11 @@ package body Gtkada.MDI is
          Grab_Focus (D.Ent);
 
          Return_Callback.Object_Connect
-           (D, "key_release_event",
+           (D, Signal_Key_Release_Event,
             Return_Callback.To_Marshaller
               (Key_Event_Selection_Dialog'Access), MDI);
          Return_Callback.Object_Connect
-           (D, "key_press_event",
+           (D, Signal_Key_Press_Event,
             Return_Callback.To_Marshaller
               (Key_Event_Selection_Dialog'Access), MDI);
       else
@@ -2010,7 +2012,7 @@ package body Gtkada.MDI is
       Group        : Child_Group := Group_Default;
       Focus_Widget : Gtk.Widget.Gtk_Widget := null)
    is
-      Signal_Parameters : constant Signal_Parameter_Types :=
+      Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
                             (1 => (1 => GType_None),
                              2 => (1 => GType_None),
                              3 => (1 => GType_None));
@@ -2049,16 +2051,16 @@ package body Gtkada.MDI is
            or Button_Release_Mask
            or Pointer_Motion_Mask);
       Return_Callback.Connect
-        (Child, "button_press_event",
+        (Child, Signal_Button_Press_Event,
          Return_Callback.To_Marshaller (Button_Pressed'Access));
       Return_Callback.Connect
-        (Child, "button_release_event",
+        (Child, Signal_Button_Release_Event,
          Return_Callback.To_Marshaller (Button_Release'Access));
       Return_Callback.Connect
-        (Child, "motion_notify_event",
+        (Child, Signal_Motion_Notify_Event,
          Return_Callback.To_Marshaller (Button_Motion'Access));
       Widget_Callback.Connect
-        (Child, "destroy",
+        (Child, Signal_Destroy,
          Widget_Callback.To_Marshaller (Destroy_Child'Access));
 
       Gtk_New_Vbox (Child.Main_Box, Homogeneous => False, Spacing => 0);
@@ -2075,13 +2077,13 @@ package body Gtkada.MDI is
         (Child.Title_Box, Child.Title_Area, Expand => True, Fill => True);
 
       Return_Callback.Object_Connect
-        (Child.Title_Area, "expose_event",
+        (Child.Title_Area, Signal_Expose_Event,
          Return_Callback.To_Marshaller (Draw_Child'Access),
          Slot_Object => Child,
          After => True);
 
       Return_Callback.Object_Connect
-        (Child, "expose_event",
+        (Child, Signal_Expose_Event,
          Return_Callback.To_Marshaller (Draw_Child'Access),
          Slot_Object => Child,
          After => True);
@@ -2094,7 +2096,7 @@ package body Gtkada.MDI is
          Add (Button, Pixmap);
          Pack_End (Child.Title_Box, Button, Expand => False, Fill => False);
          Widget_Callback.Object_Connect
-           (Button, "clicked",
+           (Button, Signal_Clicked,
             Widget_Callback.To_Marshaller (Internal_Close_Child'Access),
             Child);
       end if;
@@ -2106,17 +2108,17 @@ package body Gtkada.MDI is
         (Child.Main_Box, Event, Expand => True, Fill => True, Padding => 0);
 
       Widget_Callback.Object_Connect
-        (Child.Initial, "destroy",
+        (Child.Initial, Signal_Destroy,
          Widget_Callback.To_Marshaller (Destroy_Initial_Child'Access),
          Child);
       Widget_Callback.Connect
-        (Child, "hide", Child_Widget_Hidden'Access);
+        (Child, Signal_Hide, Child_Widget_Hidden'Access);
       Widget_Callback.Connect
-        (Child, "show", Child_Widget_Shown'Access);
+        (Child, Signal_Show, Child_Widget_Shown'Access);
       Widget_Callback.Object_Connect
-        (Child.Initial, "hide", Child_Widget_Hidden'Access, Child);
+        (Child.Initial, Signal_Hide, Child_Widget_Hidden'Access, Child);
       Widget_Callback.Object_Connect
-        (Child.Initial, "show", Child_Widget_Shown'Access, Child);
+        (Child.Initial, Signal_Show, Child_Widget_Shown'Access, Child);
    end Initialize;
 
    -------------------------
@@ -2887,10 +2889,10 @@ package body Gtkada.MDI is
       --  editors most notably) will not work as expected.
       if Get_Event_Type (Event) = Key_Press then
          return Return_Callback.Emit_By_Name
-           (Win, "key_press_event", Event);
+           (Win, Signal_Key_Press_Event, Event);
       else
          return Return_Callback.Emit_By_Name
-           (Win, "key_release_event", Event);
+           (Win, Signal_Key_Release_Event, Event);
       end if;
    end Key_Event_In_Floating;
 
@@ -3034,12 +3036,12 @@ package body Gtkada.MDI is
          --  toplevel window
 
          Return_Callback.Object_Connect
-           (Win, "delete_event",
+           (Win, Signal_Delete_Event,
             Return_Callback.To_Marshaller (Delete_Child'Access), Child);
 
          Add_Events (Win, Enter_Notify_Mask);
          Return_Callback.Object_Connect
-           (Win, "focus_in_event",
+           (Win, Signal_Focus_In_Event,
             Return_Callback.To_Marshaller
                (Set_Focus_Child_MDI_Floating'Access),
             Child);
@@ -3048,11 +3050,11 @@ package body Gtkada.MDI is
          --  proper handling of menu key shortcuts.
 
          Return_Callback.Object_Connect
-           (Win, "key_press_event",
+           (Win, Signal_Key_Press_Event,
             Return_Callback.To_Marshaller (Key_Event_In_Floating'Access),
             Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
          Return_Callback.Object_Connect
-           (Win, "key_release_event",
+           (Win, Signal_Key_Release_Event,
             Return_Callback.To_Marshaller (Key_Event_In_Floating'Access),
             Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
 
@@ -3109,11 +3111,12 @@ package body Gtkada.MDI is
       Set_Scrollable (Notebook);
 
       Widget_Callback.Connect
-        (Notebook, "remove", Removed_From_Notebook'Access);
+        (Notebook, Signal_Remove, Removed_From_Notebook'Access);
       Widget_Callback.Connect
-        (Notebook, "set_focus_child", Set_Focus_Child_Notebook'Access);
+        (Notebook, Signal_Set_Focus_Child, Set_Focus_Child_Notebook'Access);
       Widget_Callback.Connect
-        (Notebook, "switch_page", Set_Focus_Child_Switch_Notebook_Page'Access);
+        (Notebook, Signal_Switch_Page,
+         Set_Focus_Child_Switch_Notebook_Page'Access);
       return Notebook;
    end Create_Notebook;
 
@@ -3197,12 +3200,12 @@ package body Gtkada.MDI is
          Update_Tab_Color (Child);
 
          Return_Callback.Object_Connect
-           (Event, "button_press_event",
+           (Event, Signal_Button_Press_Event,
             Return_Callback.To_Marshaller
             (Set_Focus_Child_MDI_From_Tab'Access),
             Child);
          Return_Callback.Object_Connect
-           (Event, "button_release_event",
+           (Event, Signal_Button_Release_Event,
             Return_Callback.To_Marshaller
             (Set_Focus_Child_MDI_From_Tab'Access),
             Child);
@@ -3958,11 +3961,11 @@ package body Gtkada.MDI is
            (Child.Menu_Item, MDI_Child (Child) = Child.MDI.Focus_Child);
          Show_All (Child.Menu_Item);
          Widget_Callback.Object_Connect
-           (Child.Menu_Item, "activate",
+           (Child.Menu_Item, Gtk.Menu_Item.Signal_Activate,
             Widget_Callback.To_Marshaller (Focus_Cb'Access), Child,
             After => True);
          Widget_Callback.Object_Connect
-           (Child.Menu_Item, "destroy",
+           (Child.Menu_Item, Signal_Destroy,
             Widget_Callback.To_Marshaller (Menu_Entry_Destroyed'Access),
             Child);
       end if;
@@ -4019,7 +4022,7 @@ package body Gtkada.MDI is
          Gtk_New (Item, "Split Side-by-Side");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
-           (Item, "activate",
+           (Item, Gtk.Menu_Item.Signal_Activate,
             Widget_Callback.To_Marshaller (Split_H_Cb'Access), MDI);
          Set_Accel_Path (Item, Accel_Path_Prefix
            & "/window/split_horizontal", MDI.Group);
@@ -4027,7 +4030,7 @@ package body Gtkada.MDI is
          Gtk_New (Item, "Split Up-Down");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
-           (Item, "activate",
+           (Item, Gtk.Menu_Item.Signal_Activate,
             Widget_Callback.To_Marshaller (Split_V_Cb'Access), MDI);
          Set_Accel_Path (Item, Accel_Path_Prefix
            & "/window/split_vertical", MDI.Group);
@@ -4041,7 +4044,7 @@ package body Gtkada.MDI is
                      MDI.Focus_Child /= null
                      and then MDI.Focus_Child.State = Floating);
          MDI.Float_Menu_Item_Id := Widget_Callback.Object_Connect
-           (MDI.Float_Menu_Item, "toggled",
+           (MDI.Float_Menu_Item, Signal_Toggled,
             Widget_Callback.To_Marshaller (Float_Cb'Access), MDI);
          Set_Accel_Path
            (MDI.Float_Menu_Item, Accel_Path_Prefix
@@ -4053,7 +4056,7 @@ package body Gtkada.MDI is
          Gtk_New (MDI.Close_Menu_Item, "Close");
          Append (MDI.Menu, MDI.Close_Menu_Item);
          Widget_Callback.Object_Connect
-           (MDI.Close_Menu_Item, "activate",
+           (MDI.Close_Menu_Item, Gtk.Menu_Item.Signal_Activate,
             Widget_Callback.To_Marshaller (Close_Cb'Access), MDI);
          Set_Accel_Path (Item, Accel_Path_Prefix
            & "/window/close", MDI.Group);
@@ -4070,7 +4073,7 @@ package body Gtkada.MDI is
          end loop;
 
          Widget_Callback.Object_Connect
-           (MDI.Menu, "destroy",
+           (MDI.Menu, Signal_Destroy,
             Widget_Callback.To_Marshaller (Menu_Destroyed'Access), MDI);
 
       elsif Accel_Path_Prefix /= MDI.Accel_Path_Prefix.all then
@@ -5293,7 +5296,7 @@ package body Gtkada.MDI is
    begin
       Add_Events (Widget, Button_Press_Mask);
       Return_Callback.Object_Connect
-        (Widget, "button_press_event",
+        (Widget, Signal_Button_Press_Event,
          Return_Callback.To_Marshaller (Button_Pressed_Forced'Access),
          Child);
    end Set_Dnd_Source;

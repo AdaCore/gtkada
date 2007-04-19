@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -147,7 +147,7 @@ package Gtk.Tool_Button is
    --
    --  </signals>
 
-   Signal_Clicked : constant String := "clicked";
+   Signal_Clicked : constant Glib.Signal_Name := "clicked";
 
    ----------------
    -- Properties --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -320,12 +320,18 @@ package Gtk.Paned is
    --
    --  </signals>
 
-   Signal_Accept_Position     : constant String := "accept_position";
-   Signal_Cancel_Position     : constant String := "cancel_position";
-   Signal_Cycle_Child_Focus   : constant String := "cycle_child_focus";
-   Signal_Cycle_Handle_Focus  : constant String := "cycle_handle_focus";
-   Signal_Move_Handle         : constant String := "move_handle";
-   Signal_Toggle_Handle_Focus : constant String := "toggle_handle_focus";
+   Signal_Accept_Position     : constant Glib.Signal_Name :=
+                                  "accept_position";
+   Signal_Cancel_Position     : constant Glib.Signal_Name :=
+                                  "cancel_position";
+   Signal_Cycle_Child_Focus   : constant Glib.Signal_Name :=
+                                  "cycle_child_focus";
+   Signal_Cycle_Handle_Focus  : constant Glib.Signal_Name :=
+                                  "cycle_handle_focus";
+   Signal_Move_Handle         : constant Glib.Signal_Name :=
+                                  "move_handle";
+   Signal_Toggle_Handle_Focus : constant Glib.Signal_Name :=
+                                  "toggle_handle_focus";
 
 private
    type Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record

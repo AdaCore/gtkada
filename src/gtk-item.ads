@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -83,9 +83,9 @@ package Gtk.Item is
    --    Emitted when the item is toggled
    --  </signals>
 
-   Signal_Deselect : constant String := "deselect";
-   Signal_Select   : constant String := "select";
-   Signal_Toggle   : constant String := "toggle";
+   Signal_Deselect : constant Glib.Signal_Name := "deselect";
+   Signal_Select   : constant Glib.Signal_Name := "select";
+   Signal_Toggle   : constant Glib.Signal_Name := "toggle";
 
 private
    type Gtk_Item_Record is new Gtk.Bin.Gtk_Bin_Record with null record;

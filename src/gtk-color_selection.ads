@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -260,7 +260,7 @@ package Gtk.Color_Selection is
    --    Called every time a new color is selected in the dialog
    --  </signals>
 
-   Signal_Color_Changed : constant String := "color_changed";
+   Signal_Color_Changed : constant Glib.Signal_Name := "color_changed";
 
 private
    type Gtk_Color_Selection_Record is new Gtk.Box.Gtk_Box_Record

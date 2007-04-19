@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -87,7 +87,7 @@ package Gtk.Cell_Renderer_Text is
    --    instance through a call to Set_Value
    --  </signals>
 
-   Signal_Edited : constant String := "edited";
+   Signal_Edited : constant Glib.Signal_Name := "edited";
 
    ----------------
    -- Properties --

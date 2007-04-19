@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -130,9 +130,9 @@ package Gtk.Text_Tag_Table is
    --
    --  </signals>
 
-   Signal_Tag_Added   : constant String := "tag_added";
-   Signal_Tag_Changed : constant String := "tag_changed";
-   Signal_Tag_Removed : constant String := "tag_removed";
+   Signal_Tag_Added   : constant Glib.Signal_Name := "tag_added";
+   Signal_Tag_Changed : constant Glib.Signal_Name := "tag_changed";
+   Signal_Tag_Removed : constant Glib.Signal_Name := "tag_removed";
 
 private
    type Gtk_Text_Tag_Table_Record is new GObject_Record with null record;

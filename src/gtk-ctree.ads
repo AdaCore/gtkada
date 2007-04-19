@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -915,13 +915,18 @@ package Gtk.Ctree is
    --
    --  </signals>
 
-   Signal_Change_Focus_Row_Expansion : constant String :=
-     "change_focus_row_expansion";
-   Signal_Tree_Collapse              : constant String := "tree_collapse";
-   Signal_Tree_Expand                : constant String := "tree_expand";
-   Signal_Tree_Move                  : constant String := "tree_move";
-   Signal_Tree_Select_Row            : constant String := "tree_select_row";
-   Signal_Tree_Unselect_Row          : constant String := "tree_unselect_row";
+   Signal_Change_Focus_Row_Expansion : constant Glib.Signal_Name :=
+                                         "change_focus_row_expansion";
+   Signal_Tree_Collapse              : constant Glib.Signal_Name :=
+                                         "tree_collapse";
+   Signal_Tree_Expand                : constant Glib.Signal_Name :=
+                                         "tree_expand";
+   Signal_Tree_Move                  : constant Glib.Signal_Name :=
+                                         "tree_move";
+   Signal_Tree_Select_Row            : constant Glib.Signal_Name :=
+                                         "tree_select_row";
+   Signal_Tree_Unselect_Row          : constant Glib.Signal_Name :=
+                                         "tree_unselect_row";
 
 private
 

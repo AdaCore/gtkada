@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -54,9 +54,10 @@
 
 with Glib.Object;
 with Gtk;
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Tree_Model;
-with Gtk.Widget; use Gtk.Widget;
+with Gtk.Widget;     use Gtk.Widget;
+with Gtkada.Types;
 
 package Gtk.Tree_Selection is
 
@@ -189,7 +190,7 @@ package Gtk.Tree_Selection is
    --
    --  </signals>
 
-   Signal_Changed : constant String := "changed";
+   Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
    type Gtk_Tree_Selection_Record is

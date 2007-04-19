@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -508,15 +508,24 @@ package Gtk.Icon_View is
    --  - "unselect_all"
    --  </signals>
 
-   Signal_Activate_Cursor_Item : constant String := "activate_cursor_item";
-   Signal_Item_Activated : constant String := "item_activated";
-   Signal_Move_Cursor : constant String := "move_cursor";
-   Signal_Select_All : constant String := "select_all";
-   Signal_Select_Cursor_Item : constant String := "select_cursor_item";
-   Signal_Selection_Changed : constant String := "selection_changed";
-   Signal_Set_Scroll_Adjustments : constant String := "set_scroll_adjustments";
-   Signal_Toggle_Cursor_Item : constant String := "toggle_cursor_item";
-   Signal_Unselect_All : constant String := "unselect_all";
+   Signal_Activate_Cursor_Item   : constant Glib.Signal_Name :=
+                                     "activate_cursor_item";
+   Signal_Item_Activated         : constant Glib.Signal_Name :=
+                                     "item_activated";
+   Signal_Move_Cursor            : constant Glib.Signal_Name :=
+                                     "move_cursor";
+   Signal_Select_All             : constant Glib.Signal_Name :=
+                                     "select_all";
+   Signal_Select_Cursor_Item     : constant Glib.Signal_Name :=
+                                     "select_cursor_item";
+   Signal_Selection_Changed      : constant Glib.Signal_Name :=
+                                     "selection_changed";
+   Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name :=
+                                     "set_scroll_adjustments";
+   Signal_Toggle_Cursor_Item     : constant Glib.Signal_Name :=
+                                     "toggle_cursor_item";
+   Signal_Unselect_All           : constant Glib.Signal_Name :=
+                                     "unselect_all";
 
 private
 

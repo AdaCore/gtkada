@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright 2000-2006 AdaCore                   --
+--                     Copyright 2000-2007 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -135,9 +135,9 @@ package Gtk.List is
    --
    --  </signals>
 
-   Signal_Select_Child      : constant String := "select_child";
-   Signal_Selection_Changed : constant String := "selection_changed";
-   Signal_Unselect_Child    : constant String := "unselect_child";
+   Signal_Select_Child      : constant Glib.Signal_Name := "select_child";
+   Signal_Selection_Changed : constant Glib.Signal_Name := "selection_changed";
+   Signal_Unselect_Child    : constant Glib.Signal_Name := "unselect_child";
 
 private
    type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record

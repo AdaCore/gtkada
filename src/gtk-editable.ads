@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -172,9 +172,9 @@ package Gtk.Editable is
    --    Called when the contents of Widget has changed
    --  </signals>
 
-   Signal_Changed     : constant String := "changed";
-   Signal_Delete_Text : constant String := "delete_text";
-   Signal_Insert_Text : constant String := "insert_text";
+   Signal_Changed     : constant Glib.Signal_Name := "changed";
+   Signal_Delete_Text : constant Glib.Signal_Name := "delete_text";
+   Signal_Insert_Text : constant Glib.Signal_Name := "insert_text";
 
 private
    type Gtk_Editable_Record is new Gtk.Widget.Gtk_Widget_Record

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -210,6 +210,10 @@ package Glib is
 
    type Signal_Id is private;
    --  This uniquely identifies a connection widget<->signal.
+
+   type Signal_Name is new String;
+   --  A signal name as used in connect, shared type between the Gtk
+   --  and Glib layer.
 
    Invalid_Signal_Id : constant Signal_Id;
    Null_Signal_Id : constant Signal_Id;

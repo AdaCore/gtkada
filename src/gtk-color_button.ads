@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -141,7 +141,7 @@ package Gtk.Color_Button is
    --    notify::color signal.
    --  </signals>
 
-   Signal_Color_Set : constant String := "color_set";
+   Signal_Color_Set : constant Glib.Signal_Name := "color_set";
 
 private
    Alpha_Property : constant Glib.Properties.Property_Uint :=

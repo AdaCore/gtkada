@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -227,8 +227,8 @@ package Gtk.Adjustment is
    --    modified
    --  </signals>
 
-   Signal_Changed       : constant String := "changed";
-   Signal_Value_Changed : constant String := "value_changed";
+   Signal_Changed       : constant Glib.Signal_Name := "changed";
+   Signal_Value_Changed : constant Glib.Signal_Name := "value_changed";
 
 private
    type Gtk_Adjustment_Record is new Object.Gtk_Object_Record with null record;

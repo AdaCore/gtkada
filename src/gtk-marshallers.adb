@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2006 AdaCore                   --
+--                 Copyright (C) 2000-2007 AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,10 +28,12 @@
 -----------------------------------------------------------------------
 
 with Ada.Unchecked_Conversion;
-with System; use System;
+with System;      use System;
 with Glib.Values; use Glib.Values;
 
 package body Gtk.Marshallers is
+
+   use type Glib.Signal_Name;
 
    ------------------------
    -- Return_Marshallers --
@@ -85,12 +87,12 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address;
                Ret    : out Gint);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
@@ -105,7 +107,7 @@ package body Gtk.Marshallers is
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
             Internal
-              (Get_Object (Object), Name & ASCII.NUL, To_Address (Param), B);
+              (Get_Object (Object), Name & ASCII.Nul, To_Address (Param), B);
             return Return_Type'Val (B);
          end Emit_By_Name;
 
@@ -115,12 +117,12 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address;
                Ret    : out Gint);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
@@ -187,12 +189,12 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : access Base_Type'Class) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address;
                Ret    : out Gint);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
@@ -249,11 +251,11 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String) return Return_Type
+            Name   : Glib.Signal_Name) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Ret    : out Gint);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
@@ -318,12 +320,12 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address;
                Ret    : out Gint);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
@@ -348,12 +350,12 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address;
                Ret    : out Gint);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
@@ -422,12 +424,12 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : access Base_Type'Class) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address;
                Ret    : out Gint);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
@@ -486,11 +488,11 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String) return Return_Type
+            Name   : Glib.Signal_Name) return Return_Type
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Ret    : out Gint);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
@@ -554,12 +556,12 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type)
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
@@ -580,12 +582,12 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type)
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
@@ -649,12 +651,12 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : access Base_Type'Class)
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
@@ -707,9 +709,10 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String)
+            Name   : Glib.Signal_Name)
          is
-            procedure Internal (Object : System.Address; Name : String);
+            procedure Internal
+              (Object : System.Address; Name : Glib.Signal_Name);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name");
 
          begin
@@ -771,12 +774,12 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type)
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
@@ -797,12 +800,12 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : Base_Type)
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
@@ -868,12 +871,12 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String;
+            Name   : Glib.Signal_Name;
             Param  : access Base_Type'Class)
          is
             procedure Internal
               (Object : System.Address;
-               Name   : String;
+               Name   : Glib.Signal_Name;
                Param  : System.Address);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
 
@@ -928,9 +931,10 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : String)
+            Name   : Glib.Signal_Name)
          is
-            procedure Internal (Object : System.Address; Name : String);
+            procedure Internal
+              (Object : System.Address; Name : Glib.Signal_Name);
             pragma Import (C, Internal, "ada_g_signal_emit_by_name");
 
          begin

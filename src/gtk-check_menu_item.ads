@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -145,7 +145,7 @@ package Gtk.Check_Menu_Item is
    --  A signal handler can call Get_Active to discover the new state.
    --  </signals>
 
-   Signal_Toggled : constant String := "toggled";
+   Signal_Toggled : constant Glib.Signal_Name := "toggled";
 
 private
    type Gtk_Check_Menu_Item_Record is new Gtk.Menu_Item.Gtk_Menu_Item_Record

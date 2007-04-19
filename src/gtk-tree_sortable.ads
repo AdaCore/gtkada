@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -156,7 +156,8 @@ package Gtk.Tree_Sortable is
    --    Emitted when the sort column is changed through Set_Sort_Column_Id
    --  </signals>
 
-   Signal_Sort_Column_Changed : constant String := "sort_column_changed";
+   Signal_Sort_Column_Changed : constant Glib.Signal_Name :=
+                                  "sort_column_changed";
 
    procedure Sort_Column_Changed (Sortable : Gtk_Tree_Sortable);
    --  Emits sort_column_changed signal

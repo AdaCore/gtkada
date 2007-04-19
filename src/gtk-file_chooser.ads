@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2007 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -613,11 +613,16 @@ package Gtk.File_Chooser is
    --    or not.
    --  </signals>
 
-   Signal_Confirm_Overwrite      : constant String := "confirm-overwrite";
-   Signal_Current_Folder_Changed : constant String := "current-folder-changed";
-   Signal_File_Activated         : constant String := "file-activated";
-   Signal_Selection_Changed      : constant String := "selection-changed";
-   Signal_Update_Preview         : constant String := "update-preview";
+   Signal_Confirm_Overwrite      : constant Glib.Signal_Name :=
+                                     "confirm-overwrite";
+   Signal_Current_Folder_Changed : constant Glib.Signal_Name :=
+                                     "current-folder-changed";
+   Signal_File_Activated         : constant Glib.Signal_Name :=
+                                     "file-activated";
+   Signal_Selection_Changed      : constant Glib.Signal_Name :=
+                                     "selection-changed";
+   Signal_Update_Preview         : constant Glib.Signal_Name :=
+                                     "update-preview";
 
 private
    pragma Import (C, Get_Type, "gtk_file_chooser_get_type");
