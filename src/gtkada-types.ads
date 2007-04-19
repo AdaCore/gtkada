@@ -45,7 +45,7 @@ package Gtkada.Types is
    subtype Chars_Ptr_Array is Interfaces.C.Strings.chars_ptr_array;
 
    procedure g_free (Mem : Chars_Ptr);
-   --  Free a C string returned from Gtk.
+   --  Free a C string returned from Gtk
 
    Null_Ptr : Chars_Ptr renames Interfaces.C.Strings.Null_Ptr;
 
