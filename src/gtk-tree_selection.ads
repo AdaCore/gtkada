@@ -57,7 +57,6 @@ with Gtk;
 with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Tree_Model;
 with Gtk.Widget;     use Gtk.Widget;
-with Gtkada.Types;
 
 package Gtk.Tree_Selection is
 
