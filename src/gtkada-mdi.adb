@@ -2928,6 +2928,7 @@ package body Gtkada.MDI is
    begin
       if Traces then
          Put_Line ("Float_Child " & Get_Title (Child)
+                   & " State=" & State_Type'Image (Child.State)
                    & " Float=" & Boolean'Image (Float));
       end if;
 
@@ -3028,8 +3029,8 @@ package body Gtkada.MDI is
          if Position_At_Mouse then
             Set_Position (Win, Win_Pos_Mouse);
          else
-            Set_Position (Win, Win_Pos_None);
             Set_UPosition (Win, X, Y);
+            Set_Position (Win, Win_Pos_None);
          end if;
 
          --  Delete_Event should be forwarded to the child, not to the
@@ -4312,6 +4313,8 @@ package body Gtkada.MDI is
          Child    := null;
          Raised   := False;
          State    := Normal;
+         X        := 0;
+         Y        := 0;
 
          if Traces then
             Put_Line ("MDI About to insert child. Will be moved elsewhere");
@@ -4530,7 +4533,7 @@ package body Gtkada.MDI is
          Child_Node         : Node_Ptr;
          State              : State_Type;
          Raised             : Boolean;
-         X, Y               : Gint;
+         X, Y               : Gint := 0;
          Items_Removed      : Boolean := False;
          To_Raise           : Gtk.Widget.Widget_List.Glist;
 
