@@ -945,7 +945,7 @@ package Gtkada.Canvas is
    --  - "set_scroll_adjustments"
    --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class);
    --
-   --  Emitted when the canvas ???
+   --  Emitted when the canvas has scrolled.
    --
    --  </signals>
 
