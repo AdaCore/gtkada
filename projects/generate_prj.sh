@@ -95,8 +95,6 @@ EOF
   cat <<EOF >> ${lc}.gpr
 end ${uc};
 EOF
-
-
 }
 
 generate_static ${module}_Static ${lcmodule}_static
@@ -107,4 +105,3 @@ if [ x"$has_shared" = xyes ]; then
 else
   generate_static ${module} ${lcmodule}
 fi
-
