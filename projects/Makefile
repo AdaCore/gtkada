@@ -11,20 +11,25 @@ install: force
 	${CP} gtkada.pc $(prefix)/lib/pkgconfig/
 	-${RM} ${prefix}/projects/gtkada*
 	./generate_prj.sh GtkAda "${prefix}" ${BUILD_SHARED} ${SOVER}
+	${CP} gtkada.gpr ${prefix}/lib/gnat/
 ifeq ($(HAVE_LIBGLADE), True)
 	./generate_prj.sh GtkAda_Glade "${prefix}" ${BUILD_SHARED} ${SOVER}
+	${CP} gtkada_glade.gpr ${prefix}/lib/gnat/
 endif	
 ifeq ($(HAVE_OPENGL), True)
 	./generate_prj.sh GtkAda_GL "${prefix}" ${BUILD_SHARED} ${SOVER}
+	${CP} gtkada_gl.gpr ${prefix}/lib/gnat/
 endif	
 ifeq ($(HAVE_GNOME), True)
 	./generate_prj.sh GtkAda_Gnome "${prefix}" ${BUILD_SHARED} ${SOVER}
+	${CP} gtkada_gnome.gpr ${prefix}/lib/gnat/
 endif	
-	${CP} *.gpr ${prefix}/lib/gnat/
 	${CP} *.lgpr ${prefix}/lib/gnat/gtkada
+ifeq ($(OS),Windows_NT)
+	${CP} gtkada_install_*.gpr ${prefix}/include/gtkada
+endif
 
 clean: force
 	${RM} *.gpr 
 
 force:
-
