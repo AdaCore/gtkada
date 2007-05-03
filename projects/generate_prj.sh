@@ -43,7 +43,8 @@ echo_linker() {
 	    if [ "$shared" = "1" ]; then
 		echo "        \"-L../../bin\","
 	    fi
-	    echo -n "        \"-L..\""
+	    echo "        \"-L..\","
+	    echo -n "        \"-L../../include/gtkada\""
          ;;
       esac
 
