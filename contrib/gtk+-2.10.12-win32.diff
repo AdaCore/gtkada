@@ -1,13 +1,7 @@
-2007-03-31	Arnaud Charlet	<charlet@adacore.com>
-
-	* modules/engines/ms-windows/msw_style.c (draw_extension): Incorporate
-	fix for PR 399253
-	Fixes G330-007
-
 2006-06-05	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/win32/gdkgc-win32.c (_gdk_win32_gdkregion_to_hrgn): Disable
-	harmless warning which is occurring often with Gtk+ 2.8.18.
+	harmless warning which is occurring often with Gtk+ >= 2.8.18
 
 2006-02-20	Arnaud Charlet	<charlet@adacore.com>
 
@@ -196,63 +190,3 @@
  
  @MS_LIB_AVAILABLE_TRUE@noinst_DATA = gdk-win32-$(GTK_API_VERSION).lib
  
---- modules/engines/ms-windows/msw_style.c.old	2007-03-31 21:53:05
-+++ modules/engines/ms-windows/msw_style.c	2007-03-31 21:55:46
-@@ -2466,18 +2466,12 @@ draw_extension (GtkStyle * style,
- 	      }
- 	    else if (real_gap_side == GTK_POS_BOTTOM)
- 	      {
--		x2 = x;
--		y2 = y + (state_type == GTK_STATE_NORMAL ? 0 : notebook->tab_vborder);
-+		x2 = 0;
-+		y2 = 0;
- 		w2 = width;
- 		h2 = height - (state_type == GTK_STATE_NORMAL ? 0 : notebook->tab_vborder * 2);
--		target = window;
--
--		/* If we are currently drawing the right-most tab (any state)... */
--		if (widget->allocation.x + widget->allocation.width - border_width == x + width)
--		  {
--		    x2--;
--		    w2--;
--		  }
-+		pixmap = gdk_pixmap_new (window, w2, h2, -1);
-+		target = pixmap;
- 	      }
- 
- 	    if (xp_theme_draw (target, tab_part, style, x2, y2, w2, h2, state_type, NULL /*area*/))
-@@ -2526,10 +2520,23 @@ draw_extension (GtkStyle * style,
- 				   h2--;
- 				 }
- 			     }
-+                           else if (real_gap_side == GTK_POS_BOTTOM)
-+                             {
-+				x2 = x;
-+				y2 = y + (state_type == GTK_STATE_NORMAL ? 0 : notebook->tab_vborder);
-+				w2 = width;
-+				h2 = height - (state_type == GTK_STATE_NORMAL ? 0 : notebook->tab_vborder * 2);
-+				/* If we are currently drawing the right-most tab (any state)... */
-+				if (widget->allocation.x + widget->allocation.width - border_width == x + width)
-+				  {
-+				    x2--;
-+				    w2--;
-+				  }
-+                             }
- 
- 			   gdk_draw_pixbuf (window, NULL, pixbuf, 0, 0, x2, y2, w2, h2, GDK_RGB_DITHER_NONE, 0, 0);
- 
--			   if (real_gap_side == GTK_POS_LEFT || real_gap_side == GTK_POS_RIGHT)
-+			   if (real_gap_side == GTK_POS_LEFT || real_gap_side == GTK_POS_RIGHT || real_gap_side == GTK_POS_BOTTOM)
- 			     {
- 			       g_object_unref (pixmap);
- 			     }
-@@ -2541,6 +2548,9 @@ draw_extension (GtkStyle * style,
- 		    HDC dc;
- 		    gint32 aPosition;
- 
-+		   if (real_gap_side == GTK_POS_BOTTOM)
-+		       g_object_unref (pixmap);
-+
- 		    dc = get_window_dc(style, window, state_type, x, y, width, height, &rect);
- 
- 		    if (real_gap_side == GTK_POS_TOP)
