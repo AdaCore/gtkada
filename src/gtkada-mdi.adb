@@ -5362,6 +5362,10 @@ package body Gtkada.MDI is
       --  do nothing.
 
       if Win /= null then
+         --  Grab the pointer, so that we can detect whether the mouse moved
+         --  far enough from its initial position to start a drag. This also
+         --  ensures we get all the button_motion events
+
          Tmp := Pointer_Grab
            (Win,
             False,
