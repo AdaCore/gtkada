@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2007 AdaCore                   --
+--                 Copyright (C) 2001-2007, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -3291,6 +3291,7 @@ package body Gtkada.MDI is
       Child.State := Normal;
 
       Append_Page (Note, Child);
+      Set_Tab_Reorderable (Note, Child, Reorderable => True);
 
       Configure_Notebook_Tabs (MDI, Note);
 
