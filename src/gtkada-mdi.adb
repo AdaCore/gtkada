@@ -1819,7 +1819,8 @@ package body Gtkada.MDI is
             Set_Focus_Child (C2);
 
          when No_Drag =>
-            null;
+            --  Let the even through, we have nothing to do here
+            return False;
       end case;
 
       C.MDI.In_Drag := No_Drag;
@@ -1916,11 +1917,47 @@ package body Gtkada.MDI is
             return True;
 
          when In_Pre_Drag =>
+            --  If we are still in the tabs area, do nothing so that tabs can
+            --  be reordered graphically
+
+            Note := Get_Notebook (C);
+            if Note /= null
+              and then Get_Show_Tabs (Note)
+            then
+               case Get_Tab_Pos (Note) is
+                  when Pos_Top | Pos_Bottom =>
+                     if abs (Gint (Get_Y_Root (Event)) - C.MDI.Drag_Start_Y) <
+                       Drag_Threshold / 2
+                     then
+                        return False;
+                     end if;
+
+                  when Pos_Left | Pos_Right =>
+                     if abs (Gint (Get_X_Root (Event)) - C.MDI.Drag_Start_X) <
+                       Drag_Threshold / 2
+                     then
+                        return False;
+                     end if;
+               end case;
+            end if;
+
+            --  Else start a drag operation if appropriate
+
             if abs (C.MDI.Drag_Start_X - Gint (Get_X_Root (Event))) >
                Drag_Threshold
               or else abs (C.MDI.Drag_Start_Y - Gint (Get_Y_Root (Event))) >
                Drag_Threshold
             then
+               --  If we had a tab reorder operation, but the tab was left at
+               --  the same position, the signal "page_reordered" has not been
+               --  emitted. Still, the pointer has been ungrabbed, so we do
+               --  the following test below, so that we do not start our own
+               --  dnd operation
+
+               if not Pointer_Is_Grabbed then
+                  return False;
+               end if;
+
                C.MDI.In_Drag := In_Drag;
                C.MDI.Dnd_Rectangle_Owner := null;
                Pointer_Ungrab (Time => 0);
