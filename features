@@ -9,7 +9,7 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
-New features in GtkAda 2.10.1
+New features in GtkAda 2.10.2
 -----------------------------
 
 G710-011 Installing both static and shared libraries
