@@ -12,6 +12,12 @@ of the feature.
 New features in GtkAda 2.10.1
 -----------------------------
 
+G710-011 Installing both static and shared libraries
+
+  Support is now provided for dynamically selecting either the shared or
+  the static library when building your application, once GtkAda has been
+  installed.
+
 New features in GtkAda 2.10.0
 -----------------------------
 

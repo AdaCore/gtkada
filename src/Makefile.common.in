@@ -73,17 +73,18 @@ module_ada: force
 
 ifneq (${SONAME},)
 module_install_common: force
-	$(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)
+	$(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)/static
 	$(RM) $(libdir)/$(ARCHIVENAME)
 	$(CP) *.ads *.adb $(incdir)
-	${CP} ${OBJ_DIR}/*.ali ${alidir}
+	${CP} ${OBJ_DIR}/*.ali ${alidir}/static
 
 module_install_shared: force
-	$(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)
+	$(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)/relocatable
 	$(RM) $(libdir)/$(LIBNAME)
-	$(LN) $(SONAME) $(alidir)/$(LIBNAME)
-	$(LN) gtkada/$(SONAME) $(libdir)/$(LIBNAME)
-	$(LN) gtkada/$(SONAME) $(libdir)/$(SONAME)
+	$(LN) $(SONAME) $(alidir)/relocatable/$(LIBNAME)
+	$(LN) gtkada/relocatable/$(SONAME) $(libdir)/$(LIBNAME)
+	$(LN) gtkada/relocatable/$(SONAME) $(libdir)/$(SONAME)
+	${CP} ${OBJ_DIR}/*.ali ${alidir}/relocatable
 
 ${OBJ_DIR}/${SONAME}: ${wildcard ${SRC_FILES:%=${OBJ_DIR}/%}}
 	@echo Building ${SONAME}

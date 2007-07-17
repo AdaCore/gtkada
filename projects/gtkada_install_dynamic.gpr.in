@@ -34,7 +34,7 @@ project GtkAda_Install_Dynamic is
 
    for Source_Dirs use (".");
    for Library_Dir use "../../bin";
-   for Library_ALI_Dir use "../../lib/gtkada";
+   for Library_ALI_Dir use "../../lib/gtkada/relocatable";
    for Library_Kind use "relocatable";
    for Library_Name use "libgtkada-@GTKADA_MAJOR_VERSION@.@GTKADA_MINOR_VERSION@";
    for Library_Options use ("-L.", "-L../../bin", "-L../../lib",

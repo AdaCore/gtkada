@@ -565,7 +565,10 @@ sub generate_html() {
          my ($name) = $_;
          my ($short) = $name;
          $short =~ s/^.*?\.([^.]+)$/$1/;
-         print OUTPUT "  <li><a href='$files_from_widget{$short}'>$name</a></li>\n";
+         my ($f) = $files_from_widget{$short};
+         if (defined $f) {
+            print OUTPUT "  <li><a href='$f'>$name</a></li>\n";
+         }
       }
       print OUTPUT "   </ul>\n";
       print OUTPUT "  </div> <!-- interfaces -->\n\n";
@@ -636,7 +639,9 @@ sub generate_html() {
       print OUTPUT "   <ul>\n";
       foreach $w (split ("\n", $tags{'see'})) {
          my ($file) = $files_from_package{$w};
-         print OUTPUT "     <li><a href='$file'>$w</a></li>\n";
+         if (defined $file) {
+            print OUTPUT "     <li><a href='$file'>$w</a></li>\n";
+         }
       }
       print OUTPUT "   </ul>\n";
       print OUTPUT "  </div>  <!-- seeAlso --> \n\n";
@@ -1047,7 +1052,10 @@ sub print_children() {
   if (defined $do_xref{$widget} && $do_xref{$widget} == 0) {
      print OUTPUT "$widget</li>";
   } else {
-     print OUTPUT "<a href='$files_from_widget{$widget}'>$widget</a></li>";
+     my ($tmp) = $files_from_widget{$widget};
+     if (defined $tmp) {
+         print OUTPUT "<a href='$tmp'>$widget</a></li>";
+     }
   }
 
   if (defined $children{$widget}) {

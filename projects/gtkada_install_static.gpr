@@ -33,7 +33,7 @@
 project GtkAda_Install_Static is
 
    for Source_Dirs use (".");
-   for Library_Dir use "../../lib/gtkada";
+   for Library_Dir use "../../lib/gtkada/static";
    for Library_Kind use "static";
    for Library_Name use "gtkada";
 

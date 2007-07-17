@@ -4,8 +4,8 @@
 prefix=@prefix@
 
 gtk_libs="@GTK_LIBS@"
-gtkada_libs="-L$prefix/lib/gtkada"
-gtkada_cflags="-aI$prefix/include/gtkada -aO$prefix/lib/gtkada"
+gtkada_libs="-L$prefix/lib/gtkada/relocatable"
+gtkada_cflags="-aI$prefix/include/gtkada -aO$prefix/lib/gtkada/relocatable"
 gtkada_lflags="-lgtkada"
 
 usage()
@@ -41,7 +41,8 @@ while test $# -gt 0; do
       exit 1
       ;;
     --static)
-      gtkada_libs="$prefix/lib/gtkada/libgtkada.a"
+      gtkada_libs="$prefix/lib/gtkada/static/libgtkada.a"
+      gtkada_cflags="-aI$prefix/include/gtkada -aO$prefix/lib/gtkada/static"
       gtkada_lflags=""
       ;;  
     --prefix)

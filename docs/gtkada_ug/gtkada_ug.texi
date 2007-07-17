@@ -370,6 +370,14 @@ with "gtkada";
 This will automatically set the right compiler and linker options, so that
 your application is linked with GtkAda.
 
+By default, the linker will use GtkAda's shared library, if it was built.
+If you would prefer to link with the static library, you can set the
+environment variable
+    GTKADA_TYPE=static
+    export GTKADA_TYPE
+before launching the compiler or linker, which will force it to use the
+static library instead.
+
 @subsection Using the command line
 
 The procedure is system-dependent, and thus is divided into two

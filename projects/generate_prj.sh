@@ -5,8 +5,6 @@ prefix=$2
 has_shared="$3"
 version=$4
 
-libs=`sh ../src/tools/gtkada-config --libs`
-
 lcmodule=`echo $module | tr [A-Z] [a-z]`
 
 if [ "$OS" = "Windows_NT" ]; then
@@ -20,89 +18,98 @@ fi
 echo_linker() {
    shared=$1
 
-   echo "   package Linker is"
-   echo "      for Linker_Options use ("
+   if [ $shared = 1 ]; then
+      libs=`sh ../src/tools/gtkada-config --libs`
+   else
+      libs=`sh ../src/tools/gtkada-config --static --libs`
+   fi
 
    if [ "$lcmodule" = "gtkada" ]; then
-      cpt=0
-      for j in $libs; do
-         lib="$j"
+      previous=""
+      for lib in $libs; do
          if [ "$lib" != "-lgtkada" ]; then
-            if [ $cpt -eq 1 ]; then
-               echo ","
+            if [ x"$previous" != x"" ]; then
+                echo "        \"$previous\","
             fi
-            cpt=1
-            echo "        \"$lib\""
+            previous="$lib"
          fi
       done
 
       case `uname` in
          *_NT*)
-            echo ","
+            echo "        \"$previous\","
             echo "        \"-luser32\","
 	    if [ "$shared" = "1" ]; then
 		echo "        \"-L../../bin\","
 	    fi
 	    echo "        \"-L..\","
 	    echo -n "        \"-L../../include/gtkada\""
+            ;;
+         *)
+            if [ x"$previous" != x"" ]; then
+              echo "        \"$previous\""
+            fi
          ;;
       esac
 
-   else
-      echo "        \"$prefix/lib/lib${lcmodule}.a\""
+   # Do nothing: since we are using library project files, these parameters
+   # are set automatically
+   #else
+   #   if [ $shared = 1 ]; then
+   #      echo "        \"-l${lcmodule}\""
+   #   else
+   #      echo "        \"$prefix/lib/static/lib${lcmodule}.a\""
+   #   fi
    fi
-
-   echo "      );"
-   echo "   end Linker;"
 }
 
 
-#### Generate the project file for the relocatable library
+#### Generate the project file
 
 generate_shared() {
   uc=$1   # upper-case name
   lc=$2   # lower-case name
+  default=$3
 
   cat <<EOF > ${lc}.gpr
 project ${uc} is
+   type Gtkada_Kind_Type is ("static", "relocatable");
+   Gtkada_Kind : Gtkada_Kind_Type := external ("GTKADA_TYPE", "$3");
+
    for Source_Dirs use ("../../include/gtkada");
    for Source_List_File use "gtkada/${lcmodule}.lgpr";
-   for Library_Dir use "../gtkada";
-   for Library_Kind use "relocatable";
-   for Library_Name use "${lcmodule}${lcversion}";
+   for Library_Kind use Gtkada_Kind;
+   for Library_Dir use "../gtkada/" & Project'Library_Kind;
+   case Gtkada_Kind is
+      when "static" =>
+         for Library_Name use "${lcmodule}";
+      when "relocatable" =>
+         for Library_Name use "${lcmodule}${lcversion}";
+   end case;
    for Externally_Built use "true";
-EOF
-  echo_linker 1 >> ${lc}.gpr
-  cat <<EOF >> ${lc}.gpr
-end ${uc};
-EOF
-}
 
-#### Generate the project file for the static library
-
-generate_static() {
-  uc=$1
-  lc=$2
-  cat <<EOF > ${lc}.gpr
-project ${uc} is
-   for Source_Dirs use ("../../include/gtkada");
-   for Source_List_File use "gtkada/${lcmodule}.lgpr";
-   for Library_Dir use "../gtkada";
-   for Library_Kind use "static";
-   for Library_Name use "${lcmodule}";
-   for Externally_Built use "true";
+   package Linker is
+     case Gtkada_Kind is
+       when "static" =>
+          for Linker_Options use (
 EOF
   echo_linker 0 >> ${lc}.gpr
   cat <<EOF >> ${lc}.gpr
+          );
+       when "relocatable" =>
+          for Linker_Options use (
+EOF
+  echo_linker 1 >> ${lc}.gpr
+  cat <<EOF >> ${lc}.gpr
+          );
+     end case;
+   end Linker;
 end ${uc};
 EOF
 }
 
-generate_static ${module}_Static ${lcmodule}_static
-
 if [ x"$has_shared" = xyes ]; then
-  generate_shared ${module}_Relocatable ${lcmodule}_relocatable
-  generate_shared ${module} ${lcmodule}
+  generate_shared ${module} ${lcmodule} "relocatable"
 else
-  generate_static ${module} ${lcmodule}
+  generate_shared ${module} ${lcmodule} "static"
 fi

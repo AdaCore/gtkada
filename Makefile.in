@@ -1,11 +1,9 @@
 SHELL=/bin/sh
 
 .SUFFIXES:
-
-.PHONY:
 .PHONY: clean-generic mostlyclean-generic \
 	clean distclean mostlyclean maintainer-clean \
-	install
+	install src tests
 
 src_dir     = src
 testgtk_dir = testgtk
@@ -14,11 +12,15 @@ example_dir = examples
 projects_dir = projects
 xml_dir      = xml
 
-all:
+all: src tests
+
+src:
 	$(MAKE) -C $(src_dir)
+
+tests:
 	$(MAKE) -C $(testgtk_dir)
 
-install: all
+install: src
 	$(MAKE) -C $(src_dir) install
 	$(MAKE) -C $(projects_dir) install
 	$(MAKE) -C $(testgtk_dir) install
