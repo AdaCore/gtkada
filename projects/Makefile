@@ -12,7 +12,6 @@ install: force
 	-${RM} ${prefix}/projects/gtkada*
 	./generate_prj.sh GtkAda "${prefix}" ${BUILD_SHARED} ${SOVER}
 	${CP} gtkada.gpr ${prefix}/lib/gnat/
-	${CP} gtkada_static.gpr ${prefix}/lib/gnat/
 ifeq (${BUILD_SHARED}, yes)
 	${CP} gtkada_relocatable.gpr ${prefix}/lib/gnat/
 endif
