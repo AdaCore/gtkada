@@ -2,6 +2,14 @@ include ../src/Makefile.common
 
 examples=$(prefix)/share/examples/gtkada/
 
+ifeq (${OS},Windows_NT)
+DIRSEP=;
+else
+DIRSEP=:
+endif
+
+export ADA_PROJECT_PATH=${prefix}/lib/gnat${DIRSEP}${ADA_PROJECT_PATH}
+
 DIRECTORIES=base_widget \
   calendar_combo        \
   composite_widget      \
