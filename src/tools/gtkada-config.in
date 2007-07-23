@@ -2,11 +2,15 @@
 # @configure_input@
 
 prefix=@prefix@
-
+exec_prefix=@exec_prefix@
+libdir=@libdir@/gtkada
+includedir=@includedir@/gtkada
 gtk_libs="@GTK_LIBS@"
-gtkada_libs="-L$prefix/lib/gtkada/relocatable"
-gtkada_cflags="-aI$prefix/include/gtkada -aO$prefix/lib/gtkada/relocatable"
-gtkada_lflags="-lgtkada"
+
+cflags_static="-aI${includedir} -aO${libdir}/static"
+cflags_relocatable="-aI${includedir} -aO${libdir}/relocatable"
+libs_relocatable="-L${libdir}/relocatable -lgtkada ${gtk_libs}"
+libs_static="${libdir}/static/libgtkada.a ${gtk_libs}"
 
 usage()
 {
@@ -22,6 +26,10 @@ Options:
 EOF
         exit $1
 }
+
+show_cflags=1
+show_libs=1
+libtype=relocatable
 
 # Can have the following values:
 #   0 = none
@@ -41,23 +49,23 @@ while test $# -gt 0; do
       exit 1
       ;;
     --static)
-      gtkada_libs="$prefix/lib/gtkada/static/libgtkada.a"
-      gtkada_cflags="-aI$prefix/include/gtkada -aO$prefix/lib/gtkada/static"
-      gtkada_lflags=""
+      libtype=static
       ;;  
     --prefix)
       echo $prefix
-      output_type=0
+      exit 0
       ;;
     --version|-v)
       echo @GTKADA_VERSION@
-      exit 1
+      exit 0
       ;;
     --libs)
-      output_type=2
+      show_libs=1
+      show_cflags=0
       ;;
     --cflags)
-      output_type=1
+      show_libs=0
+      show_cflags=1
       ;;
     *)
       usage 1>&2
@@ -67,8 +75,33 @@ while test $# -gt 0; do
   shift
 done
 
-case $output_type in
-   1) echo $gtkada_cflags ;;
-   2) echo $gtkada_libs $gtkada_lflags $gtk_libs ;;
-   4) echo $gtkada_cflags -largs $gtkada_libs $gtkada_lflags $gtk_libs;;
-esac
+## Force static if relocatable was not installed
+if [ -d $libdir/relocatable ]; then
+   :
+else
+   libtype=static
+fi
+
+result=""
+
+if [ $show_cflags = 1 ]; then
+   if [ $libtype = static ]; then
+      result="$cflags_static"
+   else
+      result="$cflags_relocatable"
+   fi
+
+   if [ $show_libs = 1 ]; then
+     result="$result -largs "
+   fi
+fi
+
+if [ $show_libs = 1 ]; then
+   if [ $libtype = static ]; then
+     result="${result}${libs_static}"
+   else
+     result="${result}${libs_relocatable}"
+   fi
+fi
+
+echo $result
