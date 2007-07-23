@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
+--                Copyright (C) 2000-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -540,6 +540,8 @@ package Gdk.Window is
       Invalidate_Children : Boolean);
 
    function Get_Toplevels return Gdk_Window_List.Glist;
+   --  The returned list must be freed by calling Gdk_Window_List.Free.
+   --  Consider using Gtk.Window.List_Toplevels instead.
 
    procedure Iconify (Window : Gdk_Window);
 
