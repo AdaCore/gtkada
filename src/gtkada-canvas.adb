@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
+--                Copyright (C) 2000-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -3055,12 +3055,32 @@ package body Gtkada.Canvas is
       Current : Edge_Iterator := First
         (Canvas.Children,
          Src  => Vertex_Access (From),
-         Dest => Vertex_Access (To));
+         Dest => Vertex_Access (To),
+         Directed => False);
+      E : Canvas_Link;
+      Candidate : Boolean;
    begin
+      --  We need to examine both links from FROM to TO and from TO to FROM,
+      --  since the layout algorithm might sometimes transparently revert links
+      --  to get an acyclic graph
+
       while not At_End (Current) loop
-         if Name = ""
-           or else (Canvas_Link (Get (Current)).Descr /= null
-                    and then Canvas_Link (Get (Current)).Descr.all = Name)
+         E := Canvas_Link (Get (Current));
+         if Get_Arrow_Type (E) = End_Arrow then
+            Candidate := Get_Src (E) = Vertex_Access (From)
+              and then Get_Dest (E) = Vertex_Access (To);
+         elsif Get_Arrow_Type (E) = Start_Arrow then
+            Candidate := Get_Src (E) = Vertex_Access (To)
+              and then Get_Dest (E) = Vertex_Access (From);
+         else
+            Candidate := True;
+         end if;
+
+         if Candidate
+           and then
+             (Name = ""
+              or else (Canvas_Link (Get (Current)).Descr /= null
+                       and then Canvas_Link (Get (Current)).Descr.all = Name))
          then
             return True;
          end if;
