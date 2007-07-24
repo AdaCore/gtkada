@@ -73,6 +73,7 @@ install: all force
 	        $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)/relocatable; \
 		if [ "$(OS)" = "Windows_NT" ]; then \
 		     $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(bindir); \
+		     ${INSTALL_DATA} ${OBJ_DIR}/$(SONAME) ${alidir}/relocatable/${LIBNAME}; \
 		     $(CHMOD) +x $(bindir)/$(SONAME) $(alidir)/relocatable/$(SONAME); \
 		else \
 		     $(RM) $(libdir)/$(LIBNAME); \
