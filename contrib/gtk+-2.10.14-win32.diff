@@ -16,11 +16,6 @@
 	* gdk/Makefile.in: Remove gdk-win32res.o dependency,
 	since we do not want to use the default Gtk+ icon.
 
-2003-03-27	Arnaud Charlet <charlet@adacore.com>
-
-	* gdk/win32/gdkwindow-win32.c: Bring parent window on top when
-	destroying a modal window. Fixes unexpected lost focus.
-
 2002-09-12	Florent Duguet	<duguet@adacore.com>
 
 	* gdk/win32/gdkevents-win32.c: Force an update when paint message
@@ -80,24 +75,6 @@
      case WM_PAINT:
        handle_wm_paint (msg, window, FALSE, NULL);
        break;
---- gdk/win32/gdkwindow-win32.c.old	2006-02-21 10:09:41.000000000 +0100
-+++ gdk/win32/gdkwindow-win32.c	2006-02-21 10:10:19.000000000 +0100
-@@ -837,6 +837,15 @@ _gdk_windowing_window_destroy (GdkWindow
-   GDK_NOTE (MISC, g_print ("_gdk_windowing_window_destroy: %p\n",
- 			   GDK_WINDOW_HWND (window)));
- 
-+  if (private->modal_hint)
-+    {
-+      HWND parent = (HWND) GetWindowLong
-+	(GDK_WINDOW_HWND (window), GWL_HWNDPARENT);
-+
-+      if ((long)parent > 1 && !BringWindowToTop (parent))
-+	WIN32_API_FAILED ("BringWindowToTop");
-+    }
-+
-   if (private->extension_events != 0)
-     _gdk_input_window_destroy (window);
- 
 --- gdk-pixbuf/Makefile.in.old	2006-02-21 09:00:26.000000000 +0100
 +++ gdk-pixbuf/Makefile.in	2006-02-21 08:58:57.000000000 +0100
 @@ -1603,7 +1603,7 @@ distclean-local:
