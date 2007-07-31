@@ -74,6 +74,7 @@ package Gdk.Screen is
 
    procedure Get_Pointer
      (Display : access Gdk.Display.Gdk_Display_Record'Class;
+      Screen  : out Gdk_Screen;
       X       : out Glib.Gint;
       Y       : out Glib.Gint;
       Mask    : out Gdk.Types.Gdk_Modifier_Type);

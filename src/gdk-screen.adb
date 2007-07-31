@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -86,19 +86,26 @@ package body Gdk.Screen is
 
    procedure Get_Pointer
      (Display : access Gdk_Display_Record'Class;
+      Screen  : out Gdk_Screen;
       X       : out Gint;
       Y       : out Gint;
       Mask    : out Gdk_Modifier_Type)
    is
       procedure Internal
         (Display : System.Address;
+         Screen  : out System.Address;
          X       : out Gint;
          Y       : out Gint;
          Mask    : out Gdk_Modifier_Type);
       pragma Import (C, Internal, "gdk_display_get_pointer");
       --  External binding: gdk_display_get_pointer
+
+      S    : System.Address;
+      Stub : Gdk_Screen_Record;
+
    begin
-      Internal (Get_Object (Display), X, Y, Mask);
+      Internal (Get_Object (Display), S, X, Y, Mask);
+      Screen := Gdk_Screen (Get_User_Data (S, Stub));
    end Get_Pointer;
 
    -----------------

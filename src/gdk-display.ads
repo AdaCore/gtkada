@@ -59,7 +59,7 @@ package Gdk.Display is
    --  have the format host:screen, for instance "foo.com:0".
 
    function Get_Default return Gdk_Display;
-   --  Gets the default Gdk_Display. See also functions in Gdk.Display_Manager
+   --  Gets the default Gdk_Display
 
    function Get_Name (Display : access Gdk_Display_Record) return String;
    --  Return the name of the screen
@@ -253,5 +253,3 @@ end Gdk.Display;
 
 --  Function has no implementation
 --  No binding: gdk_display_open_default_libgtk_only
-
-
