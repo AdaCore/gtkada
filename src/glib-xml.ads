@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -92,6 +92,12 @@ package Glib.XML is
    --  file is valid XML, and can be parsed with the Parse function.
    --  If File_Name is the empty string, then the tree is printed on the
    --  standard output
+
+   procedure Print
+     (N         : Node_Ptr;
+      File_Name : String;
+      Success   : out Boolean);
+   --  Same as above, with Success reporting the success of the operation.
 
    function Protect (S : String) return String;
    --  Return a copy of S modified so that it is a valid XML value
