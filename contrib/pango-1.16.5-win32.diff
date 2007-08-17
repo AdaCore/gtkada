@@ -33,27 +33,27 @@ Mon Mar 13 2006  Arnaud Charlet  <charlet@adacore.com>
  
    return 1;
  }
---- modules/Makefile.in.old	2006-03-13 12:37:32.642092800 +0100
-+++ modules/Makefile.in	2006-03-13 12:38:25.648312000 +0100
-@@ -657,10 +657,10 @@ uninstall-info: uninstall-info-recursive
+--- modules/Makefile.in.orig	2007-07-27 23:27:10.000000000 +0200
++++ modules/Makefile.in	2007-08-17 18:57:21.031250000 +0200
+@@ -560,10 +560,10 @@ uninstall-am: uninstall-local
  install-data-local: $(top_builddir)/pango/pango-querymodules$(EXEEXT)
- 	@if $(RUN_QUERY_MODULES_TEST) ; then 				\
+ 	@if $(RUN_QUERY_MODULES_TEST) && test -z "$(DESTDIR)" ; then 	\
  	  echo $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/pango \&\& 	\
--	  $(top_builddir)/pango/pango-querymodules$(EXEEXT) 			\
-+	  $(top_builddir)/pango/pango-querymodules. 			\
+-	  $(top_builddir)/pango/pango-querymodules$(EXEEXT) 		\
++	  $(top_builddir)/pango/pango-querymodules. 		\
  		\> $(DESTDIR)$(sysconfdir)/pango/pango.modules ;	\
  	  $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/pango && 		\
--	  $(top_builddir)/pango/pango-querymodules$(EXEEXT) 			\
-+	  $(top_builddir)/pango/pango-querymodules. 			\
+-	  $(top_builddir)/pango/pango-querymodules$(EXEEXT) 		\
++	  $(top_builddir)/pango/pango-querymodules. 		\
  		> $(DESTDIR)$(sysconfdir)/pango/pango.modules ;		\
  	else								\
  	  echo "***" ; 							\
-@@ -680,7 +680,7 @@ pango.modules:						\
+@@ -583,7 +583,7 @@ pango.modules:						\
  	$(top_builddir)/pango/pango-querymodules$(EXEEXT)
- 	@if find . -name '*.la' | grep -v '\.libs' | grep -v libpango | grep '.' > /dev/null ; then \
+ 	@if $(RUN_QUERY_MODULES_TEST) && find . -name '*.la' | grep -v '\.libs' | grep -v libpango | grep '.' > /dev/null ; then \
            echo "Writing a pango.modules file to use with tests/examples."; \
 -          $(top_builddir)/pango/pango-querymodules$(EXEEXT) `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
 +          $(top_builddir)/pango/pango-querymodules. `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
  	else \
-           echo "No dynamic modules found; will use only static modules for tests/examples."; \
- 	  > $@; \
+           echo "***" ; \
+ 	  echo "*** No dynamic modules found, or cross-compiling" ; \
