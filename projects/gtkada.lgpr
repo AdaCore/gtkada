@@ -104,6 +104,10 @@ gtkada-canvas.adb
 gtkada-canvas.ads
 gtkada-dialogs.adb
 gtkada-dialogs.ads
+gtk-file_chooser.adb
+gtk-file_chooser.ads
+gtk-file_chooser_widget.adb
+gtk-file_chooser_widget.ads
 gtkada-file_selection.adb
 gtkada-file_selection.ads
 gtkada-handlers.ads
