@@ -247,6 +247,8 @@ gtk-file_chooser.adb
 gtk-file_chooser.ads
 gtk-file_chooser_widget.adb
 gtk-file_chooser_widget.ads
+gtk-file_filter.adb
+gtk-file_filter.ads
 gtk-file_selection.adb
 gtk-file_selection.ads
 gtk-fixed.adb
