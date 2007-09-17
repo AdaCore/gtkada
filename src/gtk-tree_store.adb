@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -68,11 +68,17 @@ package body Gtk.Tree_Store is
 
    package body Generic_Set is
 
+      pragma Warnings (Off);
+      --  Disable warnings on strict aliasing, since there's no aliasing
+      --  issue here.
+
       function To_Address is new
         Ada.Unchecked_Conversion (Data_Type_Access, System.Address);
 
       function To_Access is new
         Ada.Unchecked_Conversion (System.Address, Data_Type_Access);
+
+      pragma Warnings (On);
 
       procedure Set
         (Tree_Store : access Gtk_Tree_Store_Record'Class;
