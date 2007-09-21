@@ -2617,7 +2617,11 @@ package body Gtkada.Canvas is
       end if;
 
       if Item /= null then
-         Add_To_Selection (Canvas, Item);
+         if Item.Selected then
+            Remove_From_Selection (Canvas, Item);
+         else
+            Add_To_Selection (Canvas, Item);
+         end if;
          Set_X (Event, Gdouble (Canvas.World_X_At_Click - Item.Coord.X));
          Set_Y (Event, Gdouble (Canvas.World_Y_At_Click - Item.Coord.Y));
       else
