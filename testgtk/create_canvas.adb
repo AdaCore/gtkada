@@ -780,22 +780,22 @@ package body Create_Canvas is
 
       Add_Canvas_Link (Canvas, Item1, Item1, "From1->2");
       Add_Canvas_Link (Canvas, Item3, Item1, "From3->2");
-      Add_Canvas_Link (Canvas, Item1, Item4, "From1->4");
-      Add_Canvas_Link (Canvas, Item1, Item4, "From1->4");
+      Add_Canvas_Link (Canvas, Item1, Item4, "From1->4(1)");
+      Add_Canvas_Link (Canvas, Item1, Item4, "From1->4(2)");
       Add_Canvas_Link (Canvas, Item2, Item3, "From2->3");
       Add_Canvas_Link (Canvas, Item2, Item4, "From2->4");
-      Add_Canvas_Link (Canvas, Item3, Item4, "From3->41");
+      Add_Canvas_Link (Canvas, Item3, Item4, "From3->4(1)");
 
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item3, Item4, Start_Arrow, "From3->42");
+      Add_Link (Canvas, Link, Item3, Item4, Start_Arrow, "From3->4(2)");
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item4, Item3, End_Arrow, "From3->43");
+      Add_Link (Canvas, Link, Item4, Item3, End_Arrow, "From3->4(3)");
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item3, Item4, Both_Arrow, "From3->44");
+      Add_Link (Canvas, Link, Item3, Item4, Both_Arrow, "From3->4(4)");
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item4, Item3, Both_Arrow, "From3->45");
+      Add_Link (Canvas, Link, Item4, Item3, Both_Arrow, "From3->4(5)");
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item3, Item4, Both_Arrow, "From3->46");
+      Add_Link (Canvas, Link, Item3, Item4, Both_Arrow, "From3->4(6)");
       Link := new Canvas_Link_Record;
       Add_Link (Canvas, Link, Item2, Item2, No_Arrow, "Self");
       Link := new Canvas_Link_Record;
@@ -904,6 +904,7 @@ package body Create_Canvas is
       Pack_Start (Box, F);
 
       Gtk_New (Scrolled);
+      Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
       Add (F, Scrolled);
 
       Canvas := new Image_Canvas_Record;

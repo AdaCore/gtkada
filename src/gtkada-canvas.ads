@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -171,6 +171,7 @@ package Gtkada.Canvas is
    --  item. If the mouse has moved less than that amount of pixels in any
    --  direction, then the mouse click is considered as being a selection
    --  only and is transfered to the item itself.
+   --  This is in screen coordinates
 
    ----------------
    -- Enum types --
@@ -414,11 +415,13 @@ package Gtkada.Canvas is
 
    function Start
      (Canvas            : access Interactive_Canvas_Record;
-      Linked_From_Or_To : Canvas_Item := null) return Item_Iterator;
+      Linked_From_Or_To : Canvas_Item := null;
+      Selected_Only     : Boolean := False) return Item_Iterator;
    --  Return the first item in the canvas.
    --  The same restriction as above applies if Linked_From_Or_To is not null.
 
    procedure Next (Iter : in out Item_Iterator);
+   function Next (Iter : Item_Iterator) return Item_Iterator;
    --  Move the iterator to the next item.
    --  All items will eventually be returned if you do not add new items during
    --  the iteration and none are removed. However, it is safe to remove items
@@ -458,20 +461,20 @@ package Gtkada.Canvas is
    function To_Canvas_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
       X      : Glib.Gint) return Glib.Gint;
-   --  Scale the scalar X depending by the zoom level (map from world
-   --  coordinates to canvas coordinates).
+   --  Scale the scalar X depending on the zoom level (map from world
+   --  lengths to canvas lengths).
    --  Substract the coordinates of the top-left corner if you are converting
    --  coordinates instead of lengths.
 
    function Top_World_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint;
    --  Return the world coordinates for the y=0 canvas coordinates (ie for the
-   --  upper-left corner).
+   --  upper-left corner of the screen).
 
    function Left_World_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint;
    --  Return the world coordinates for the x=0 canvas coordinates (ie for the
-   --  upper-left corner).
+   --  upper-left corner of the screen).
 
    function To_World_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -680,7 +683,8 @@ package Gtkada.Canvas is
       Link        : access Canvas_Link_Record;
       Invert_Mode : Boolean;
       GC          : Gdk.GC.Gdk_GC;
-      Edge_Number : Glib.Gint);
+      Edge_Number : Glib.Gint;
+      Show_Annotation : Boolean := True);
    --  Redraw the link on the canvas.
    --  Note that this is a primitive procedure of Link, not of Canvas, and thus
    --  can easily be overrided for specific links. The default version draws
@@ -712,6 +716,7 @@ package Gtkada.Canvas is
 
    procedure Clip_Line
      (Src   : access Canvas_Item_Record;
+      Canvas : access Interactive_Canvas_Record'Class;
       To_X  : Glib.Gint;
       To_Y  : Glib.Gint;
       X_Pos : Glib.Gfloat;
@@ -777,19 +782,6 @@ package Gtkada.Canvas is
       Item   : access Canvas_Item_Record'Class) return Boolean;
    --  Return True if the item is currently selected
 
-   type Selection_Iterator is private;
-
-   function Start (Canvas : access Interactive_Canvas_Record)
-      return Selection_Iterator;
-   --  Return the first selected item
-
-   function Next (Iterator : Selection_Iterator)
-      return Selection_Iterator;
-   --  Move to the next selected item
-
-   function Get (Iterator : Selection_Iterator) return Canvas_Item;
-   --  Return the current item, or null if there is no more selected item.
-
    ------------------------
    -- Items manipulation --
    ------------------------
@@ -827,7 +819,8 @@ package Gtkada.Canvas is
       Xdest, Ydest : Glib.Gint) is abstract;
    --  This subprogram, that must be overridden, should draw the item on
    --  Get_Pixmap (Canvas), at the specific location (Xdest, Ydest). The item
-   --  must also be drawn at the appropriate zoom level.
+   --  must also be drawn at the appropriate zoom level. To do so, all lengths
+   --  must be multiplied by the current zoom level.
    --  If you need to change the contents of the item, you should call
    --  Item_Updated after having done the drawing.
 
@@ -982,20 +975,6 @@ private
       --  Position of the link's attachment in each of the src and dest items.
    end record;
 
-   type Item_Selection_List_Record;
-   type Item_Selection_List is access all Item_Selection_List_Record;
-   type Item_Selection_List_Record is record
-      Item : Canvas_Item;
-      X, Y : Glib.Gint;
-      Next : Item_Selection_List;
-   end record;
-   --  A list of items, but this also memorizes the position of the items (used
-   --  for selected widgets while they are being moved, so that we do not
-   --  change the coordinates of the item itself until the mouse is released
-   --  (and thus provide correct scrolling).
-
-   type Selection_Iterator is new Item_Selection_List;
-
    type Interactive_Canvas_Record is new
      Gtk.Drawing_Area.Gtk_Drawing_Area_Record
    with record
@@ -1006,18 +985,19 @@ private
       Vertical_Layout   : Boolean := False;
       --  The algorithm to use when laying out items on the canvas.
 
-      Selection         : Item_Selection_List := null;
-      --  List of currently selected items that will be moved when the mouse
-      --  is dragged
+      World_X_At_Click  : Glib.Gint;
+      World_Y_At_Click  : Glib.Gint;
+      --  Coordinates of the last button_press event in the canvas.
+      --  These are world-coordinates, so that even if the canvas is scrolled
+      --  they remain valid
 
-      Last_X_Event      : Glib.Gint;
-      Last_Y_Event      : Glib.Gint;
-      --  Last position where the mouse was pressed or moved in the canvas.
+      Selected_Count : Natural := 0;
+      --  Number of selected items
 
-      Bg_Selection_Width  : Glib.Gint;
-      Bg_Selection_Height : Glib.Gint;
-      --  The current dimension of the background selection rectangle. These
-      --  can be negative.
+      Offset_X_World : Glib.Gint;
+      Offset_Y_World : Glib.Gint;
+      --  How much world-coordinates have we moved the mouse since the last
+      --  button press event ?
 
       Mouse_Has_Moved   : Boolean;
       --  True if mouse has moved while the button was clicked. This is used
@@ -1028,12 +1008,10 @@ private
       --  event will be sent to the application if the item was not moved.
 
       Show_Item                    : Canvas_Item;
-      Show_X, Show_Y               : Glib.Gint;
       Show_Canvas_X, Show_Canvas_Y : Glib.Gdouble;
       --  The item that should be made visible when the canvas is resized.
       --  This is required since the canvas doesn't necessarily have a size yet
-      --  when Show_Item() is called the first time. Show_X and Show_Y are
-      --  used to save the other parameters to Show_Item
+      --  when Show_Item() is called the first time.
 
       Grid_Size         : Glib.Guint := Default_Grid_Size;
       --  The current number of pixels between each dot of the grid. If this
@@ -1081,6 +1059,7 @@ private
       --  This is the bounding box of the item
 
       Visible          : Boolean := True;
+      Selected         : Boolean := False;
 
       From_Auto_Layout : Boolean := True;
       --  True if the item's current location is the result of the automatic
@@ -1110,6 +1089,7 @@ private
       Vertex            : Glib.Graphs.Vertex_Iterator;
       Edge              : Glib.Graphs.Edge_Iterator;
       Linked_From_Or_To : Canvas_Item;
+      Selected_Only     : Boolean;
    end record;
 
    pragma Inline (To_Canvas_Coordinates);
