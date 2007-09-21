@@ -566,12 +566,17 @@ package body Gtk.Tree_Store is
    is
       procedure Internal
         (Tree_Store : System.Address;
-         Parent     : Gtk_Tree_Iter;
+         Parent     : System.Address;
          New_Order  : System.Address);
       pragma Import (C, Internal, "gtk_tree_store_reorder");
    begin
-      Internal (Get_Object (Tree_Store), Parent,
-                New_Order (New_Order'First)'Address);
+      if Parent = Null_Iter then
+         Internal (Get_Object (Tree_Store), System.Null_Address,
+                   New_Order (New_Order'First)'Address);
+      else
+         Internal (Get_Object (Tree_Store), Parent'Address,
+                   New_Order (New_Order'First)'Address);
+      end if;
    end Reorder;
 
    ----------

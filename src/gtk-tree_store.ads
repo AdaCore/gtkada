@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -283,6 +283,7 @@ package Gtk.Tree_Store is
    --  order is an array of integers mapping the new position of each child to
    --  its old position before the re-ordering,
    --  i.e. New_order[newpos] = oldpos
+   --  If Parent is Null_Iter, it also reorders the root nodes
 
    procedure Swap
      (Tree_Store : access Gtk_Tree_Store_Record;
