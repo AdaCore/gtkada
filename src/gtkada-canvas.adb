@@ -3585,15 +3585,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class; Percent : Guint)
    is
       Z  : constant Gdouble := Gdouble (Canvas.Zoom);
---        H  : Gdouble := Get_Value (Canvas.Hadj) / Z * 100.0;
---        V  : Gdouble := Get_Value (Canvas.Vadj) / Z * 100.0;
---        Lh : Gdouble := Get_Page_Size (Canvas.Hadj) / Z * 100.0;
---        Lv : Gdouble := Get_Page_Size (Canvas.Vadj) / Z * 100.0;
---        L  : Gdouble;
---        Iter : Item_Iterator;
---        Item : Canvas_Item;
       X, Y : Gint;
---        X_Min, X_Max, Y_Min, Y_Max : Gint;
    begin
       Canvas.Zoom := Percent;
       Update_Adjustments (Canvas);
@@ -3611,24 +3603,14 @@ package body Gtkada.Canvas is
          Scroll_Canvas_To_Area
            (Canvas,
             X, Y, X, Y,
---              Gint (Get_Lower (Canvas.Hadj)),
---              Gint (Get_Lower (Canvas.Vadj)),
---              Gint (Get_Upper (Canvas.Hadj)),
---              Gint (Get_Upper (Canvas.Vadj)),
             Canvas_X => 0.5, Canvas_Y => 0.5,
             Ignore_If_Visible => False,
             Report_Adj_Changed => True);
 
       else
---           Get_Bounding_Box (Canvas, X_Min, X_Max, Y_Min, Y_Max);
          Scroll_Canvas_To_Area
            (Canvas,
             X, Y, X, Y,
---              Gint (Get_Lower (Canvas.Hadj)),
---              Gint (Get_Lower (Canvas.Vadj)),
---              Gint (Get_Upper (Canvas.Hadj)),
---              Gint (Get_Upper (Canvas.Vadj)),
---              X_Min, Y_Min, X_Max, Y_Max,
             Canvas_X => 0.5, Canvas_Y => 0.5,
             Ignore_If_Visible => False,
             Report_Adj_Changed => True);
@@ -3639,47 +3621,6 @@ package body Gtkada.Canvas is
       --  new one.
       --  When zooming in, we want to keep the same center as before
       --  (reverse of zoom out)
-
---        if Gdouble (Canvas.Zoom) < Z then  --  zoom out
---           L := (Z / Gdouble (Canvas.Zoom) - 1.0) / 2.0;
---           H := (H - L * Lh) * Gdouble (Canvas.Zoom) / 100.0;
---           V := (V - L * Lv) * Gdouble (Canvas.Zoom) / 100.0;
---           Lh := Lh * (L * 2.0 + 1.0) * Gdouble (Canvas.Zoom) / 100.0;
---           Lv := Lv * (L * 2.0 + 1.0) * Gdouble (Canvas.Zoom) / 100.0;
---
---        else  --  zoom in
---           L := (1.0 - Z / Gdouble (Canvas.Zoom)) / 2.0;
---           H := (H + Lh * L) * Gdouble (Canvas.Zoom) / 100.0;
---           V := (V + Lv * L) * Gdouble (Canvas.Zoom) / 100.0;
---           Lh := Lh * Z / 100.0;
---           Lv := Lv * Z / 100.0;
---        end if;
---
---        Set_Lower (Canvas.Hadj, Gdouble'Min (H, Get_Lower (Canvas.Hadj)));
---      Set_Upper (Canvas.Hadj, Gdouble'Max (H + Lh, Get_Upper (Canvas.Hadj)));
---
---        Set_Lower (Canvas.Vadj, Gdouble'Min (V, Get_Lower (Canvas.Vadj)));
---      Set_Upper (Canvas.Vadj, Gdouble'Max (V + Lv, Get_Upper (Canvas.Vadj)));
---
---        Iter := Start (Canvas, Selected_Only => True);
---        Item := Get (Iter);
---        if Item = null then
---           Set_Value (Canvas.Hadj, H);
---           Set_Value (Canvas.Vadj, V);
---        else
---           Show_Item (Canvas, Item);
---        end if;
---
---        --  Do not report the modification to the scrollbar, since this does
---      --  too much flickering and slows things done a lot when the canvas is
---        --  in a scrolled_window whose policy is set on automatic.
---
---        if Canvas.Zoom = Canvas.Target_Zoom then
---           Changed (Canvas.Hadj);
---           Changed (Canvas.Vadj);
---        end if;
---
---        Refresh_Canvas (Canvas);
 
       Widget_Callback.Emit_By_Name (Canvas, "zoomed");
    end Zoom_Internal;
