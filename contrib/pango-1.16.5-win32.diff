@@ -4,10 +4,6 @@ Fri Jun 17 2005  Arnaud Charlet  <charlet@adacore.com>
 	http://bugzilla.gnome.org/show_bug.cgi?id=110521
 	Fix E607-006
 
-Mon Mar 13 2006  Arnaud Charlet  <charlet@adacore.com>
-
-	* modules/Makefile.in: work around cygwin limitation.
-
 --- pango/pangowin32-fontmap.c.old	2006-02-27 08:32:44.000000000 +0100
 +++ pango/pangowin32-fontmap.c	2006-02-27 08:34:50.000000000 +0100
 @@ -133,7 +133,21 @@ pango_win32_inner_enum_proc (LOGFONT    
@@ -33,27 +29,3 @@ Mon Mar 13 2006  Arnaud Charlet  <charlet@adacore.com>
  
    return 1;
  }
---- modules/Makefile.in.orig	2007-07-27 23:27:10.000000000 +0200
-+++ modules/Makefile.in	2007-08-17 18:57:21.031250000 +0200
-@@ -560,10 +560,10 @@ uninstall-am: uninstall-local
- install-data-local: $(top_builddir)/pango/pango-querymodules$(EXEEXT)
- 	@if $(RUN_QUERY_MODULES_TEST) && test -z "$(DESTDIR)" ; then 	\
- 	  echo $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/pango \&\& 	\
--	  $(top_builddir)/pango/pango-querymodules$(EXEEXT) 		\
-+	  $(top_builddir)/pango/pango-querymodules. 		\
- 		\> $(DESTDIR)$(sysconfdir)/pango/pango.modules ;	\
- 	  $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/pango && 		\
--	  $(top_builddir)/pango/pango-querymodules$(EXEEXT) 		\
-+	  $(top_builddir)/pango/pango-querymodules. 		\
- 		> $(DESTDIR)$(sysconfdir)/pango/pango.modules ;		\
- 	else								\
- 	  echo "***" ; 							\
-@@ -583,7 +583,7 @@ pango.modules:						\
- 	$(top_builddir)/pango/pango-querymodules$(EXEEXT)
- 	@if $(RUN_QUERY_MODULES_TEST) && find . -name '*.la' | grep -v '\.libs' | grep -v libpango | grep '.' > /dev/null ; then \
-           echo "Writing a pango.modules file to use with tests/examples."; \
--          $(top_builddir)/pango/pango-querymodules$(EXEEXT) `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
-+          $(top_builddir)/pango/pango-querymodules. `find . -name '*.la' | grep -v '\.libs' | grep -v libpango` > $@ ;\
- 	else \
-           echo "***" ; \
- 	  echo "*** No dynamic modules found, or cross-compiling" ; \

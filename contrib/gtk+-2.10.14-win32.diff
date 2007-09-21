@@ -3,14 +3,6 @@
 	* gdk/win32/gdkgc-win32.c (_gdk_win32_gdkregion_to_hrgn): Disable
 	harmless warning which is occurring often with Gtk+ >= 2.8.18
 
-2006-02-20	Arnaud Charlet	<charlet@adacore.com>
-
-	* gtk/Makefile.in, demos/Makefile.in,
-	gdk-pixbuf/Makefile.in, modules/input/Makefile.in: Force call to
-	gdk-pixbuf-csource., gdk-pixbuf-query-loaders.,
-	gtk-query-immodules-2.0. and gtk-update-icon-cache. to work around
-	cygwin ambiguity.
-
 2002-11-25	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/Makefile.in: Remove gdk-win32res.o dependency,
@@ -75,73 +67,6 @@
      case WM_PAINT:
        handle_wm_paint (msg, window, FALSE, NULL);
        break;
---- gdk-pixbuf/Makefile.in.old	2006-02-21 09:00:26.000000000 +0100
-+++ gdk-pixbuf/Makefile.in	2006-02-21 08:58:57.000000000 +0100
-@@ -1603,7 +1603,7 @@ distclean-local:
- install-data-hook: install-ms-lib install-def-file
- 	@if $(RUN_QUERY_LOADER_TEST) ; then \
- 	  $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/gtk-2.0 ; \
--	  $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders > $(DESTDIR)$(sysconfdir)/gtk-2.0/gdk-pixbuf.loaders ; \
-+	  $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders. > $(DESTDIR)$(sysconfdir)/gtk-2.0/gdk-pixbuf.loaders ; \
- 	else \
- 	  echo "***" ; \
- 	  echo "*** Warning: gdk-pixbuf.loaders not built" ; \
-@@ -1622,7 +1622,7 @@ uninstall-local: uninstall-ms-lib uninst
- @BUILD_DYNAMIC_MODULES_TRUE@	LOADERS=`echo libpixbufloader-*.la` ; \
- @BUILD_DYNAMIC_MODULES_TRUE@	if test "x$$LOADERS" != 'xlibpixbufloader-*.la' ; then \
- @BUILD_DYNAMIC_MODULES_TRUE@          echo "Writing a gdk-pixbuf.loader file to use when running examples before installing gdk-pixbuf."; \
--@BUILD_DYNAMIC_MODULES_TRUE@	  $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders $$LOADERS > ./gdk-pixbuf.loaders ;\
-+@BUILD_DYNAMIC_MODULES_TRUE@	  $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders. $$LOADERS > ./gdk-pixbuf.loaders ;\
- @BUILD_DYNAMIC_MODULES_TRUE@	else \
- @BUILD_DYNAMIC_MODULES_TRUE@          echo "No dynamic modules found; will use only static modules for uninstalled example programs."; \
- @BUILD_DYNAMIC_MODULES_TRUE@	  touch gdk-pixbuf.loaders; \
---- demos/Makefile.in.old	2006-02-20 16:58:02.000000000 +0100
-+++ demos/Makefile.in	2006-02-21 09:06:00.000000000 +0100
-@@ -317,9 +317,9 @@ $(am__append_1)
- @HAVE_PNG_TRUE@BUILT_SOURCES = test-inline-pixbufs.h
- 
- @CROSS_COMPILING_TRUE@pixbuf_csource = $(GDK_PIXBUF_CSOURCE)
--@CROSS_COMPILING_FALSE@pixbuf_csource = GDK_PIXBUF_MODULE_FILE=$(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource
-+@CROSS_COMPILING_FALSE@pixbuf_csource = GDK_PIXBUF_MODULE_FILE=$(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource.
- @CROSS_COMPILING_TRUE@pixbuf_csource_deps = 
--@CROSS_COMPILING_FALSE@pixbuf_csource_deps = $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource $(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders 
-+@CROSS_COMPILING_FALSE@pixbuf_csource_deps = $(top_builddir)/gdk-pixbuf/gdk-pixbuf-csource. $(top_builddir)/gdk-pixbuf/gdk-pixbuf.loaders 
- 
- testpixbuf_DEPENDENCIES = $(DEPS)
- testpixbuf_drawable_DEPENDENCIES = $(DEPS)
---- modules/input/Makefile.in.old	2006-02-21 09:07:45.000000000 +0100
-+++ modules/input/Makefile.in	2006-02-21 09:08:12.000000000 +0100
-@@ -800,8 +800,8 @@ install-data-hook:
- 	@if $(RUN_QUERY_IMMODULES_TEST) ; then \
- 	  echo $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/gtk-2.0 ; \
- 	  $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/gtk-2.0 ; \
--	  echo "$(top_builddir)/gtk/gtk-query-immodules-2.0 > $(DESTDIR)$(sysconfdir)/gtk-2.0/gtk.immodules" ; \
--	  $(top_builddir)/gtk/gtk-query-immodules-2.0 > $(DESTDIR)$(sysconfdir)/gtk-2.0/gtk.immodules ; \
-+	  echo "$(top_builddir)/gtk/gtk-query-immodules-2.0. > $(DESTDIR)$(sysconfdir)/gtk-2.0/gtk.immodules" ; \
-+	  $(top_builddir)/gtk/gtk-query-immodules-2.0. > $(DESTDIR)$(sysconfdir)/gtk-2.0/gtk.immodules ; \
- 	else \
- 	  echo "***" ; \
- 	  echo "*** Warning: gtk.immodules not built" ; \
-@@ -815,7 +815,7 @@ uninstall-local:
- 	rm -f $(DESTDIR)$(sysconfdir)/gtk-2.0/gtk.immodules
- 
- gtk.immodules: Makefile.am $(module_LTLIBRARIES)
--	$(top_builddir)/gtk/gtk-query-immodules-2.0 $(module_LTLIBRARIES) > gtk.immodules
-+	$(top_builddir)/gtk/gtk-query-immodules-2.0. $(module_LTLIBRARIES) > gtk.immodules
- 
- @CROSS_COMPILING_FALSE@all-local: gtk.immodules
- # Tell versions [3.59,3.63) of GNU make to not export all variables.
---- gtk/Makefile.in.orig	2007-01-05 19:44:17.000000000 +0100
-+++ gtk/Makefile.in	2007-01-08 17:08:17.078125000 +0100
-@@ -2956,7 +2956,7 @@ stamp-icons: $(STOCK_ICONS)
- 
- gtkbuiltincache.h: @REBUILD@ stamp-icons
- 	$(MAKE) $(AM_MAKEFLAGS) gtk-update-icon-cache$(EXEEXT)
--	$(gtk_update_icon_cache_program) --force --ignore-theme-index		\
-+	$(gtk_update_icon_cache_program). --force --ignore-theme-index		\
- 	   --source builtin_icons stock-icons > gtkbuiltincache.h.tmp &&        \
- 	mv gtkbuiltincache.h.tmp gtkbuiltincache.h
- 
 --- gdk/win32/gdkgc-win32.c.old	2005-07-18 17:20:28.000000000 +0200
 +++ gdk/win32/gdkgc-win32.c	2006-06-05 14:56:59.515625000 +0200
 @@ -1160,8 +1160,7 @@ _gdk_win32_gdkregion_to_hrgn (GdkRegion 
