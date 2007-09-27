@@ -2618,7 +2618,9 @@ package body Gtkada.Canvas is
 
       if Item /= null then
          if Item.Selected then
-            Remove_From_Selection (Canvas, Item);
+            if (Get_State (Event) and Control_Mask) /= 0 then
+               Remove_From_Selection (Canvas, Item);
+            end if;
          else
             Add_To_Selection (Canvas, Item);
          end if;
