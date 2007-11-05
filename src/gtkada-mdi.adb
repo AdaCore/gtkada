@@ -3920,6 +3920,11 @@ package body Gtkada.MDI is
       C : constant MDI_Child := MDI_Child (Child);
    begin
       if Get_Active (C.Menu_Item) then
+         --  If C is floating, raise the window.
+         if C.State = Floating then
+            Raise_Child (C);
+         end if;
+
          Set_Focus_Child (C);
       end if;
    end Focus_Cb;
