@@ -404,6 +404,8 @@ package body Gtkada.Canvas is
 
    begin
       Gtk.Drawing_Area.Initialize (Canvas);
+      Canvas.Offset_X_World := 0;
+      Canvas.Offset_Y_World := 0;
 
       Set_Directed (Canvas.Children, True);
       Canvas.Auto_Layout := Auto_Layout;
@@ -648,6 +650,14 @@ package body Gtkada.Canvas is
                  (Y_Max, Item.Coord.Y + Gint (Item.Coord.Height));
                Y_Min := Gint'Min (Y_Min, Item.Coord.Y);
 
+               if Traces then
+                  Put_Line ("Get_Bounding_Box, item at "
+                            & Gint'Image (Item.Coord.Width) & "x"
+                            & Gint'Image (Item.Coord.Height) & "+"
+                            & Gint'Image (Item.Coord.X)
+                            & Gint'Image (Item.Coord.Y));
+               end if;
+
                --  If the item is selected, also include its new position in
                --  the computation (while we are moving items)
 
@@ -692,12 +702,21 @@ package body Gtkada.Canvas is
          Canvas_Size : Gint)
       is
          --  Computation is such that the value of Adj does not change
+         Val   : constant Gdouble := Get_Value (Adj);
          Lower : constant Gdouble :=
-           Gdouble'Min (Get_Value (Adj), Gdouble (Min));
+           Gdouble'Min (Val, Gdouble (Min));
          Size  : constant Gint := To_World_Coordinates (Canvas, Canvas_Size);
          Upper : constant Gdouble :=
-           Gdouble'Max (Get_Value (Adj) + Gdouble (Size), Gdouble (Max));
+           Gdouble'Max (Val + Gdouble (Size), Gdouble (Max));
       begin
+         if Traces then
+            Put_Line ("Update_Axis, Min=" & Gint'Image (Min)
+                      & " Max=" & Gint'Image (Max)
+                      & " Lower=" & Gdouble'Image (Lower)
+                      & " Upper=" & Gdouble'Image (Upper)
+                      & " Size=" & Gint'Image (Size)
+                      & " Value=" & Gdouble'Image (Val));
+         end if;
          Set_Lower          (Adj, Lower);
          Set_Upper          (Adj, Upper);
          Set_Page_Size      (Adj, Gdouble (Size));
@@ -708,9 +727,16 @@ package body Gtkada.Canvas is
 
       X_Max, Y_Max, X_Min, Y_Min : Gint;
    begin
-      Get_Bounding_Box (Canvas, X_Min, X_Max, Y_Min, Y_Max);
-      Update_Axis (Canvas.Hadj, X_Min, X_Max, Get_Allocation_Width (Canvas));
-      Update_Axis (Canvas.Vadj, Y_Min, Y_Max, Get_Allocation_Height (Canvas));
+      --  If the canvas was properly initialized
+      if Realized_Is_Set (Canvas)
+        and then Get_Allocation_Width (Canvas) /= 1
+      then
+         Get_Bounding_Box (Canvas, X_Min, X_Max, Y_Min, Y_Max);
+         Update_Axis
+           (Canvas.Hadj, X_Min, X_Max, Get_Allocation_Width (Canvas));
+         Update_Axis
+           (Canvas.Vadj, Y_Min, Y_Max, Get_Allocation_Height (Canvas));
+      end if;
    end Update_Adjustments;
 
    ------------------------------
