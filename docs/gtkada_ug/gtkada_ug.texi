@@ -39,7 +39,7 @@ unmodified in any copy.
 
 GtkAda User's Guide
 
-GtkAda, the Ada 95 graphical toolkit
+GtkAda, the Ada graphical toolkit
 
 Version @value{GtkAdaVersion}
 
@@ -76,6 +76,7 @@ unmodified in any copy.
 Getting started with GtkAda
 
 * How to build and install GtkAda::
+* How to distribute a GtkAda application::
 * Organization of the GtkAda package::
 * How to compile an application with GtkAda::
 * Architecture of the toolkit::
@@ -201,6 +202,7 @@ in GtkAda.
 
 @menu
 * How to build and install GtkAda::
+* How to distribute a GtkAda application::
 * Organization of the GtkAda package::
 * How to compile an application with GtkAda::
 * Architecture of the toolkit::
@@ -277,11 +279,50 @@ using bash:
 $ export FONTCONFIG_FILE=/opt/gtk/etc/fonts/fonts.conf
 @end smallexample
 
+@c ---------------------------------------------------------------------
+@node How to distribute a GtkAda application
+@section How to distribute a GtkAda application
+@c ---------------------------------------------------------------------
+
+@noindent
+Since GtkAda depends on Gtk+, you usually need to distribute some Gtk+
+libraries along with your application.
+
+Under some OSes such as Linux, Gtk+ comes preinstalled, so in this case, 
+a simple solution is to rely on the preinstalled Gtk+ libraries. See
+below for more information on the gtkada library itself.
+
+Under other unix systems, GtkAda usually comes with a precompiled set of Gtk+
+libraries that have been specifically designed to be easily redistributed.
+
+In order to use the precompiled Gtk+ binaries that we distribute
+with GtkAda, you need to do distribute all the Gtk+ .so libraries along
+with your application, and use the LD_LIBRARY_PATH environment variable to
+point to these libraries.
+
+The list of libraries needed is <gtkada-prefix>/lib/lib*.so.?
+along with your executable, and set LD_LIBRARY_PATH.
+
+By default you will also need the libgtkada-xxx.so file. This dependency
+is optional since gtkada supports both static and dynamic linking, so
+by e.g. using gtkada-config --static or by using gtkada_static.gpr, you will
+end up linking with libgtkada.a.
+
+Under Windows, you need to distribute the following files and directories
+along with your application, and respect the original directory set up:
+
+@itemize @file
+@item bin/*.dll
+@item etc/
+@item lib/gtk-2.0
+@end itemize
+
 @c ----------------------------------------------------------------------
 @node Organization of the GtkAda package
 @section Organization of the GtkAda package
 @c ----------------------------------------------------------------------
 
+@noindent
 In addition to the full sources, the GtkAda package contains a lot of
 heavily commented examples. If you haven't been through those examples, we
 really recommend that you look at them and try to understand them, since
