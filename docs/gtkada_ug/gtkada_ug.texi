@@ -243,8 +243,8 @@ You can finally download the latest version of GtkAda from the web site.
 Untar and uncompress the package, then simply do the following
 steps:
 @smallexample
-> ./configure
-> make install
+$ ./configure
+$ make install
 @end smallexample
 
 As usual with the @code{configure} script, you can specify where you want
@@ -269,7 +269,7 @@ would do one of the following:
 @end itemize
 
 In addition, if you are using precompiled Gtk+ binary packages, you will
-also need to set the FONTCONFIG_FILE environment variable to point to
+also need to set the @code{FONTCONFIG_FILE} environment variable to point to
 the @file{prefix/etc/fonts/fonts.conf} file of your binary installation.
 
 For example, assuming you have installed Gtk+ under @file{/opt/gtk} and
