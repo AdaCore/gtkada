@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2007, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -609,8 +609,8 @@ package body Main_Windows is
    -----------------
 
    procedure Exit_Main (Object : access Gtk_Widget_Record'Class) is
-      pragma Unreferenced (Object);
    begin
+      Destroy (Object);
       Gtk.Main.Main_Quit;
    end Exit_Main;
 
@@ -857,8 +857,9 @@ package body Main_Windows is
 
       Gtk_New (Button, "Quit");
       Pack_Start (Bbox, Button, Expand => True, Fill => False);
-      Window_Cb.Connect (Button, "clicked",
-                         Window_Cb.To_Marshaller (Exit_Main'Access));
+      Window_Cb.Object_Connect
+         (Button, "clicked",
+          Window_Cb.To_Marshaller (Exit_Main'Access), Win);
 
       Pack_End (Vbox, Bbox, Expand => False, Padding => 5);
 
