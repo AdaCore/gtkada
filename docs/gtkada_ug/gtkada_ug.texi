@@ -300,21 +300,21 @@ with GtkAda, you need to do distribute all the Gtk+ .so libraries along
 with your application, and use the LD_LIBRARY_PATH environment variable to
 point to these libraries.
 
-The list of libraries needed is <gtkada-prefix>/lib/lib*.so.?
+The list of libraries needed is @file{<gtkada-prefix>/lib/lib*.so.?}
 along with your executable, and set LD_LIBRARY_PATH.
 
-By default you will also need the libgtkada-xxx.so file. This dependency
+By default you will also need the @file{libgtkada-xxx.so} file. This dependency
 is optional since gtkada supports both static and dynamic linking, so
-by e.g. using gtkada-config --static or by using gtkada_static.gpr, you will
-end up linking with libgtkada.a.
+by e.g. using @code{gtkada-config --static} or by using
+@file{gtkada_static.gpr}, you will end up linking with @file{libgtkada.a}.
 
 Under Windows, you need to distribute the following files and directories
 along with your application, and respect the original directory set up:
 
-@itemize @file
-@item bin/*.dll
-@item etc/
-@item lib/gtk-2.0
+@itemize @bullet
+@item @file{bin/*.dll}
+@item @file{etc/}
+@item @file{lib/gtk-2.0}
 @end itemize
 
 @c ----------------------------------------------------------------------
