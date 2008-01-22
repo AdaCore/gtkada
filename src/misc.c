@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -4423,7 +4423,8 @@ ada_gtk_file_chooser_dialog_new
    GtkWindow            *parent,
    GtkFileChooserAction  action)
 {
-  return gtk_file_chooser_dialog_new (title, parent, action, NULL);
+  return gtk_file_chooser_dialog_new
+    (title, parent, action, NULL, (char *)NULL);
 }
 
 GtkWidget *
@@ -4434,7 +4435,7 @@ ada_gtk_file_chooser_dialog_new_with_backend
    const gchar          *backend)
 {
   return gtk_file_chooser_dialog_new_with_backend
-    (title, parent, action, backend, NULL);
+    (title, parent, action, backend, NULL, (char *)NULL);
 }
 
 /**************************************************************
