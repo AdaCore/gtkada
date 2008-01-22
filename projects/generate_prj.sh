@@ -86,23 +86,26 @@ project ${uc} is
       when "relocatable" =>
          for Library_Name use "${lcmodule}${lcversion}";
    end case;
-   for Externally_Built use "true";
 
-   package Linker is
-     case Gtkada_Kind is
-       when "static" =>
-          for Linker_Options use (
+   case Gtkada_Kind is
+      when "static" =>
+         for Library_Options use (
 EOF
   echo_linker 0 >> ${lc}.gpr
   cat <<EOF >> ${lc}.gpr
           );
-       when "relocatable" =>
-          for Linker_Options use (
+      when "relocatable" =>
+          for Library_Options use (
 EOF
   echo_linker 1 >> ${lc}.gpr
   cat <<EOF >> ${lc}.gpr
           );
-     end case;
+   end case;
+
+   for Externally_Built use "true";
+
+   package Linker is
+     for Linker_Options use Project'Library_Options;
    end Linker;
 end ${uc};
 EOF
