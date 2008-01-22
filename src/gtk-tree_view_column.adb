@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006, AdaCore                   --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -198,14 +198,22 @@ package body Gtk.Tree_View_Column is
         (Tree_Column   : System.Address;
          Cell_Renderer : System.Address;
          Func          : System.Address;
-         Func_Data     : Cell_Data_Func;
+         Func_Data     : System.Address;
          Destroy       : System.Address);
       pragma Import (C, Internal, "gtk_tree_view_column_set_cell_data_func");
 
    begin
-      Internal
-        (Get_Object (Tree_Column), Get_Object (Cell),
-         Internal_Cell_Data_Func'Address, Func, System.Null_Address);
+      if Func = null then
+         Internal
+           (Get_Object (Tree_Column), Get_Object (Cell),
+            System.Null_Address, System.Null_Address,
+            System.Null_Address);
+      else
+         Internal
+           (Get_Object (Tree_Column), Get_Object (Cell),
+            Internal_Cell_Data_Func'Address, Func.all'Address,
+            System.Null_Address);
+      end if;
    end Set_Cell_Data_Func;
 
    -------------------------
