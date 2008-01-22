@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2006, AdaCore                  --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -72,8 +72,17 @@ package body Gtk.Tree_Model is
    function To_String (Path : Gtk_Tree_Path) return String   is
       function Internal (Path   : Gtk_Tree_Path) return chars_ptr;
       pragma Import (C, Internal, "gtk_tree_path_to_string");
+
+      Result : chars_ptr;
    begin
-      return Interfaces.C.Strings.Value (Internal (Path));
+      Result := Internal (Path);
+
+      declare
+         S : constant String := Interfaces.C.Strings.Value (Result);
+      begin
+         Free (Result);
+         return S;
+      end;
    end To_String;
 
    -----------------
