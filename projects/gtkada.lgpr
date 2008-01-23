@@ -168,6 +168,8 @@ gtk-clipboard.adb
 gtk-clipboard.ads
 gtk-clist.adb
 gtk-clist.ads
+gtk-color_button.adb
+gtk-color_button.ads
 gtk-color_selection.adb
 gtk-color_selection.ads
 gtk-color_selection_dialog.adb
