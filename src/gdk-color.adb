@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,12 +48,16 @@ package body Gdk.Color is
    -------------------
 
    function Internal_Copy (C : Gdk_Color) return System.Address is
-      function Internal (C : System.Address) return System.Address;
-      pragma Import (C, Internal, "gdk_color_copy");
       C2 : aliased Gdk_Color := C;
    begin
+      --  Do not do an actual copy with gdk_color_copy: it is in fact done
+      --  automatically by gdk, when it defines (in gdkcolor.c) the type as
+      --  g_boxed_type_register_static
+      --   ("GdkColor",(GBoxedCopyFunc)gdk_color_copy,
+      --    (GBoxedFreeFunc)gdk_color_free);
+
       if C /= Null_Color then
-         return Internal (C2'Address);
+         return C2'Address;
       else
          return System.Null_Address;
       end if;
