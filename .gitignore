@@ -1,0 +1,17 @@
+Makefile
+config.log
+config.status
+projects/gtkada.gpr
+projects/gtkada.pc
+projects/gtkada_install_dynamic.gpr
+src/Makefile.common
+src/config.h
+src/gtkada-intl.adb
+src/gtkextra/obj
+src/lib-obj
+src/tools/gate
+src/tools/gtkada-config
+src/tools/obj
+testgtk.exe
+testgtk/obj
+testgtk/opengl/view_gl.adb
