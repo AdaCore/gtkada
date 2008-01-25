@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2006, AdaCore                  --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -221,9 +221,17 @@ package body Glib.Generic_Properties is
         (Value  : out Glib.Values.GValue;
          Val    : Boxed_Type)
       is
+         V : System.Address := To_Address (Val, Val'Address);
       begin
+         --  Do not do an actual copy with gdk_color_copy, or
+         --  pango_font_description_copy: it is in fact done
+         --  automatically by gdk, when it defines (in gdkcolor.c) the type as
+         --  g_boxed_type_register_static
+         --   ("GdkColor",(GBoxedCopyFunc)gdk_color_copy,
+         --    (GBoxedFreeFunc)gdk_color_free);
+
          Init (Value, Get_Type);
-         Set_Boxed (Value, Copy (Val));
+         Set_Boxed (Value, V);
       end Set_Value;
 
       ---------------

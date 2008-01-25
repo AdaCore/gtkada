@@ -33,35 +33,29 @@ with System;
 
 package body Gdk.Color is
 
-   function Internal_Copy (C : Gdk_Color) return System.Address;
-
+   function To_Address
+     (C : Gdk_Color; Add : System.Address) return System.Address;
    package Color_Properties is new Generic_Internal_Boxed_Property
-     (Gdk_Color, Gdk_Color_Type, Internal_Copy);
+     (Gdk_Color, Gdk_Color_Type, To_Address);
 
    procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_Color)
                         renames Color_Properties.Set_Value;
    function  Get_Value (Value : Glib.Values.GValue) return Gdk_Color
                         renames Color_Properties.Get_Value;
 
-   -------------------
-   -- Internal_Copy --
-   -------------------
+   ----------------
+   -- To_Address --
+   ----------------
 
-   function Internal_Copy (C : Gdk_Color) return System.Address is
-      C2 : aliased Gdk_Color := C;
+   function To_Address
+     (C : Gdk_Color; Add : System.Address) return System.Address is
    begin
-      --  Do not do an actual copy with gdk_color_copy: it is in fact done
-      --  automatically by gdk, when it defines (in gdkcolor.c) the type as
-      --  g_boxed_type_register_static
-      --   ("GdkColor",(GBoxedCopyFunc)gdk_color_copy,
-      --    (GBoxedFreeFunc)gdk_color_free);
-
-      if C /= Null_Color then
-         return C2'Address;
-      else
+      if C = Null_Color then
          return System.Null_Address;
+      else
+         return Add;
       end if;
-   end Internal_Copy;
+   end To_Address;
 
    -----------
    -- Equal --

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2005 AdaCore                    --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -262,11 +262,11 @@ package Pango.Font is
 
    pragma Import (C, Get_Type, "pango_font_description_get_type");
 
-   function Internal_Copy (F : Pango_Font_Description) return System.Address;
-   pragma Import (C, Internal_Copy, "pango_font_description_copy");
+   function To_Address
+     (F : Pango_Font_Description; Add : System.Address) return System.Address;
 
    package Desc_Properties is new Generic_Internal_Boxed_Property
-     (Pango_Font_Description, Get_Type, Internal_Copy);
+     (Pango_Font_Description, Get_Type, To_Address);
 
    type Property_Font_Description is new Desc_Properties.Property;
 

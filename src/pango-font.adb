@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2002                          --
---                         ACT-Europe                                --
+--                  Copyright (C) 2001-2008, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -225,5 +224,18 @@ package body Pango.Font is
    begin
       return Internal (Get_Object (Font), Language);
    end Get_Metrics;
+
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Address
+     (F : Pango_Font_Description; Add : System.Address)
+      return System.Address
+   is
+      pragma Unreferenced (Add);
+   begin
+      return F.all'Address;
+   end To_Address;
 
 end Pango.Font;

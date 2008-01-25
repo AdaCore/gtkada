@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2002 ACT-Europe                --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -172,10 +172,14 @@ package Glib.Generic_Properties is
    generic
       type Boxed_Type is private;
       with function Get_Type return Glib.GType;
-      with function Copy (B : Boxed_Type) return System.Address;
-      --  Copy should return a newly allocated of B. Allocation should be done
-      --  through the glib/gtk+ functions, or the memory will not be freed
-      --  correctly.
+
+      with function To_Address
+        (B : Boxed_Type; Default : System.Address) return System.Address;
+      --  Convert B into an address that can be passed to gtk+.
+      --  Default is the address of the parameters passed by the user (since
+      --  this function cannot return B'Address, where B might be passed by
+      --  copy).
+
    package Generic_Internal_Boxed_Property is
       type Property_RO is new Glib.Property;
       type Property    is new Glib.Property;
