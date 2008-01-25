@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2007, AdaCore                  --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -3922,7 +3922,7 @@ package body Gtkada.MDI is
       if Get_Active (C.Menu_Item) then
          --  If C is floating, raise the window.
          if C.State = Floating then
-            Raise_Child (C);
+            Raise_Child (C, False);
          end if;
 
          Set_Focus_Child (C);
