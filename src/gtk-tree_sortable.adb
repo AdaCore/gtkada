@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,11 +32,16 @@ with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Tree_Model;  use Gtk.Tree_Model;
 with System;          use System;
 
+with Unchecked_Conversion;
+
 package body Gtk.Tree_Sortable is
 
    type Gtk_Tree_Iter_Access is access all Gtk_Tree_Iter;
    function To_Iter is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_Iter_Access);
+
+   function To_Address is new Unchecked_Conversion
+     (Gtk_Tree_Iter_Compare_Func, System.Address);
 
    function Compare_Func_Wrapper
      (Model, A, B : System.Address;
@@ -99,11 +104,12 @@ package body Gtk.Tree_Sortable is
       procedure Internal
         (Sortable  : Gtk_Tree_Sortable;
          Sort_Func : System.Address;
-         User_Data : Gtk_Tree_Iter_Compare_Func;
+         User_Data : System.Address;
          Destroy   : System.Address := System.Null_Address);
       pragma Import (C, Internal, "gtk_tree_sortable_set_default_sort_func");
    begin
-      Internal (Sortable, Compare_Func_Wrapper'Address, Sort_Func);
+      Internal
+        (Sortable, Compare_Func_Wrapper'Address, To_Address (Sort_Func));
    end Set_Default_Sort_Func;
 
    ---------------------------
@@ -132,12 +138,14 @@ package body Gtk.Tree_Sortable is
         (Sortable       : Gtk_Tree_Sortable;
          Sort_Column_Id : Gint;
          Sort_Func      : System.Address;
-         User_Data      : Gtk_Tree_Iter_Compare_Func;
+         User_Data      : System.Address;
          Destroy        : System.Address := System.Null_Address);
       pragma Import (C, Internal, "gtk_tree_sortable_set_sort_func");
    begin
-      Internal (Sortable, Sort_Column_Id,
-                Compare_Func_Wrapper'Address, Sort_Func);
+      Internal
+        (Sortable, Sort_Column_Id,
+         Compare_Func_Wrapper'Address,
+         To_Address (Sort_Func));
    end Set_Sort_Func;
 
    -------------------
