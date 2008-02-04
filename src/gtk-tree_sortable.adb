@@ -32,15 +32,13 @@ with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Tree_Model;  use Gtk.Tree_Model;
 with System;          use System;
 
-with Unchecked_Conversion;
-
 package body Gtk.Tree_Sortable is
 
    type Gtk_Tree_Iter_Access is access all Gtk_Tree_Iter;
    function To_Iter is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_Iter_Access);
 
-   function To_Address is new Unchecked_Conversion
+   function To_Address is new Ada.Unchecked_Conversion
      (Gtk_Tree_Iter_Compare_Func, System.Address);
 
    function Compare_Func_Wrapper

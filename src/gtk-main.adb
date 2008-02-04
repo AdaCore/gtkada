@@ -29,8 +29,8 @@
 
 with Gdk.Types;               use Gdk.Types;
 with Interfaces.C.Strings;    use Interfaces.C.Strings;
-with Unchecked_Deallocation;
-with Unchecked_Conversion;
+with Ada.Unchecked_Deallocation;
+with Ada.Unchecked_Conversion;
 
 package body Gtk.Main is
 
@@ -101,7 +101,7 @@ package body Gtk.Main is
       end record;
       type Cb_Record_Access is access Cb_Record;
 
-      function Convert is new Unchecked_Conversion
+      function Convert is new Ada.Unchecked_Conversion
         (System.Address, Cb_Record_Access);
 
       ----------
@@ -109,9 +109,9 @@ package body Gtk.Main is
       ----------
 
       procedure Free_Data (D : System.Address) is
-         procedure Internal is new Unchecked_Deallocation
+         procedure Internal is new Ada.Unchecked_Deallocation
            (Cb_Record, Cb_Record_Access);
-         procedure Internal2 is new Unchecked_Deallocation
+         procedure Internal2 is new Ada.Unchecked_Deallocation
            (Data_Type, Data_Type_Access);
 
          Data : Cb_Record_Access := Convert (D);
@@ -147,7 +147,7 @@ package body Gtk.Main is
             Destroy    : System.Address) return Quit_Handler_Id;
          pragma Import (C, Internal, "gtk_quit_add_full");
 
-         function Convert is new Unchecked_Conversion
+         function Convert is new Ada.Unchecked_Conversion
            (Cb_Record_Access, System.Address);
 
          D : constant Cb_Record_Access :=
@@ -211,7 +211,7 @@ package body Gtk.Main is
      (Cb       : Idle_Callback;
       Priority : Idle_Priority := Priority_Default_Idle) return Idle_Handler_Id
    is
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Idle_Callback, System.Address);
       function Internal
         (Priority : Idle_Priority;
@@ -364,7 +364,7 @@ package body Gtk.Main is
      (Interval : Guint32;
       Func     : Timeout_Callback) return Timeout_Handler_Id
    is
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Timeout_Callback, System.Address);
       function Internal
         (Interval : Guint32;
@@ -395,7 +395,7 @@ package body Gtk.Main is
       end record;
       type Cb_Record_Access is access Cb_Record;
 
-      function Convert is new Unchecked_Conversion
+      function Convert is new Ada.Unchecked_Conversion
         (System.Address, Cb_Record_Access);
 
       ----------
@@ -403,9 +403,9 @@ package body Gtk.Main is
       ----------
 
       procedure Free_Data (D : System.Address) is
-         procedure Internal is new Unchecked_Deallocation
+         procedure Internal is new Ada.Unchecked_Deallocation
            (Cb_Record, Cb_Record_Access);
-         procedure Internal2 is new Unchecked_Deallocation
+         procedure Internal2 is new Ada.Unchecked_Deallocation
            (Data_Type, Data_Type_Access);
          Data : Cb_Record_Access := Convert (D);
 
@@ -446,7 +446,7 @@ package body Gtk.Main is
             Destroy  : System.Address) return Idle_Handler_Id;
          pragma Import (C, Internal, "gtk_idle_add_full");
 
-         function Convert is new Unchecked_Conversion
+         function Convert is new Ada.Unchecked_Conversion
            (Cb_Record_Access, System.Address);
 
          Data : constant Cb_Record_Access := new Cb_Record'
@@ -474,7 +474,7 @@ package body Gtk.Main is
       end record;
       type Cb_Record_Access is access Cb_Record;
 
-      function Convert is new Unchecked_Conversion
+      function Convert is new Ada.Unchecked_Conversion
         (System.Address, Cb_Record_Access);
 
       ----------
@@ -482,9 +482,9 @@ package body Gtk.Main is
       ----------
 
       procedure Free_Data (D : System.Address) is
-         procedure Internal is new Unchecked_Deallocation
+         procedure Internal is new Ada.Unchecked_Deallocation
            (Cb_Record, Cb_Record_Access);
-         procedure Internal2 is new Unchecked_Deallocation
+         procedure Internal2 is new Ada.Unchecked_Deallocation
            (Data_Type, Data_Type_Access);
 
          Data : Cb_Record_Access := Convert (D);
@@ -525,7 +525,7 @@ package body Gtk.Main is
             Destroy  : System.Address) return Timeout_Handler_Id;
          pragma Import (C, Internal, "gtk_timeout_add_full");
 
-         function Convert is new Unchecked_Conversion
+         function Convert is new Ada.Unchecked_Conversion
            (Cb_Record_Access, System.Address);
 
          Data : constant Cb_Record_Access := new Cb_Record'
