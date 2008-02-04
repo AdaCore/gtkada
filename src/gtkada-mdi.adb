@@ -753,7 +753,6 @@ package body Gtkada.MDI is
    function Matching_Children
      (MDI : access MDI_Window_Record'Class; Str : String) return Children_Array
    is
-      use type Widget_List.Glist;
       Count    : constant Natural := Natural (Length (MDI.Items));
       Children : Children_Array (1 .. Count);
       L        : Widget_List.Glist := MDI.Items;
@@ -958,7 +957,6 @@ package body Gtkada.MDI is
       Move_To_Next : Boolean;
       Only_Group   : Child_Group := Group_Any)
    is
-      use type Widget_List.Glist;
       D         : Selection_Dialog_Access;
       Box, HBox : Gtk_Box;
       Frame     : Gtk_Frame;
@@ -4839,8 +4837,6 @@ package body Gtkada.MDI is
         (MDI  : access MDI_Window_Record'Class;
          User : User_Data) return Glib.Xml_Int.Node_Ptr
       is
-         use type Widget_List.Glist;
-
          Item             : Widget_List.Glist;
          Root, Child_Node : Node_Ptr;
          Widget_Node      : Node_Ptr;
@@ -4963,13 +4959,13 @@ package body Gtkada.MDI is
             if Length > 0 then
                for Page_Index in 0 .. Length - 1 loop
                   Child := Get_Child_From_Page
-                    (Get_Nth_Page (Note, Gint (Page_Index)));
+                    (Get_Nth_Page (Note, Page_Index));
                   Has_Default_Group_Child := Has_Default_Group_Child
                     or else Child.Group = Group_Default;
                   Save_Widget
                     (Parent,
                      Child,
-                     Raised => Current_Page = Gint (Page_Index));
+                     Raised => Current_Page = Page_Index);
                end loop;
             end if;
 
@@ -5242,7 +5238,6 @@ package body Gtkada.MDI is
    ---------
 
    function Get (Iterator : Child_Iterator) return MDI_Child is
-      use type Widget_List.Glist;
    begin
       if Iterator.Group_By_Notebook then
          if Iterator.Notebook = null then
