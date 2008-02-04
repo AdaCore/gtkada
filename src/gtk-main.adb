@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2006, AdaCore                  --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -211,18 +211,21 @@ package body Gtk.Main is
      (Cb       : Idle_Callback;
       Priority : Idle_Priority := Priority_Default_Idle) return Idle_Handler_Id
    is
+      function To_Address is new Unchecked_Conversion
+        (Idle_Callback, System.Address);
       function Internal
         (Priority : Idle_Priority;
          Func     : System.Address;
          Marshal  : System.Address := System.Null_Address;
-         Data     : Idle_Callback;
+         Data     : System.Address;
          Destroy  : System.Address := System.Null_Address)
          return Idle_Handler_Id;
       pragma Import (C, Internal, "gtk_idle_add_full");
 
    begin
       return Internal
-        (Priority, Idle_Marshaller'Address, System.Null_Address, Cb);
+        (Priority, Idle_Marshaller'Address, System.Null_Address,
+         To_Address (Cb));
    end Idle_Add;
 
    ----------
@@ -313,11 +316,11 @@ package body Gtk.Main is
    --------------------
 
    function Main_Iteration (Blocking : Boolean := True) return Boolean is
-      function Internal (Blocking : Boolean) return Gint;
+      function Internal (Blocking : Gboolean) return Gint;
       pragma Import (C, Internal, "gtk_main_iteration_do");
 
    begin
-      return Boolean'Val (Internal (Blocking));
+      return Boolean'Val (Internal (Boolean'Pos (Blocking)));
    end Main_Iteration;
 
    ----------------
@@ -361,18 +364,21 @@ package body Gtk.Main is
      (Interval : Guint32;
       Func     : Timeout_Callback) return Timeout_Handler_Id
    is
+      function To_Address is new Unchecked_Conversion
+        (Timeout_Callback, System.Address);
       function Internal
         (Interval : Guint32;
          Func     : System.Address;
          Marshal  : System.Address := System.Null_Address;
-         Data     : Timeout_Callback;
+         Data     : System.Address;
          Destroy  : System.Address := System.Null_Address)
          return Timeout_Handler_Id;
       pragma Import (C, Internal, "gtk_timeout_add_full");
 
    begin
       return Internal
-        (Interval, Timeout_Marshaller'Address, System.Null_Address, Func);
+        (Interval, Timeout_Marshaller'Address, System.Null_Address,
+         To_Address (Func));
    end Timeout_Add;
 
    ----------
