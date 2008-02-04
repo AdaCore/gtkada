@@ -363,7 +363,7 @@ package body Gtkada.Canvas is
          Param  : System.Address);
       pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
    begin
-      Internal (Object, Name, Param'Address);
+      Internal (Object, Name, Param.all'Address);
    end Emit_By_Name_Item;
 
    ---------------------------
