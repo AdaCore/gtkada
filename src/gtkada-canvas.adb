@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
---                Copyright (C) 2000-2007, AdaCore                   --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -76,7 +76,7 @@ package body Gtkada.Canvas is
 
    use type Gdk_Font;
    use type Gdk_GC;
-   use type Gdk_Window, Gdk_Pixmap;
+   use type Gdk_Window;
    use type System.Address;
 
    Traces : constant Boolean := False;
@@ -333,7 +333,7 @@ package body Gtkada.Canvas is
      (Object : System.Address;
       Name   : String;
       Param  : access Canvas_Item_Record'Class);
-   pragma Import (C, Emit_By_Name_Item, "ada_g_signal_emit_by_name_ptr");
+   --  ???
 
    function Compute_Line_Pos
      (Canvas : access Interactive_Canvas_Record'Class) return Gint_Array;
@@ -347,6 +347,24 @@ package body Gtkada.Canvas is
    --  Scroll the canvas to the item. This function tries to scroll the canvas
    --  as less as possible, typically used when the item is moving out of the
    --  window.
+
+   -----------------------
+   -- Emit_By_Name_Item --
+   -----------------------
+
+   procedure Emit_By_Name_Item
+     (Object : System.Address;
+      Name   : String;
+      Param  : access Canvas_Item_Record'Class)
+   is
+      procedure Internal
+        (Object : System.Address;
+         Name   : String;
+         Param  : System.Address);
+      pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr");
+   begin
+      Internal (Object, Name, Param'Address);
+   end Emit_By_Name_Item;
 
    ---------------------------
    -- To_Canvas_Coordinates --
@@ -594,8 +612,8 @@ package body Gtkada.Canvas is
      (Canv : access Gtk_Widget_Record'Class;
       Args : Gtk_Args)
    is
-      Alloc  : constant Gtk_Allocation_Access := To_Allocation (Args, 1);
       Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
+      pragma Unreferenced (Args);
    begin
       Update_Adjustments (Canvas);
 
@@ -2220,7 +2238,6 @@ package body Gtkada.Canvas is
       From_Selection : Boolean)
    is
       Current : Edge_Iterator := First (Canvas.Children);
-      Iter    : Item_Iterator;
       Count   : Natural := 0;
       L       : Canvas_Link;
    begin
@@ -2974,7 +2991,6 @@ package body Gtkada.Canvas is
       Mouse_X_Canvas, Mouse_Y_Canvas : Gint;
       Mask    : Gdk_Modifier_Type;
       W       : Gdk_Window;
-      Success : Boolean;
       X_Scroll, Y_Scroll : Gint;
    begin
       if Traces then
@@ -3097,14 +3113,8 @@ package body Gtkada.Canvas is
       Mouse_X_In_Canvas, Mouse_Y_In_Canvas : Gint;
       New_Offset_X_World, New_Offset_Y_World : Gint) return Boolean
    is
-      Iter : Item_Iterator;
-      Item : Canvas_Item;
-      Xorig_Screen, Yorig_Screen : Gint;
-      Xmouse, Ymouse : Gint;
-      Success : Boolean;
-      Mask : Gdk_Modifier_Type;
-      W : Gdk_Window;
-      X, Y, X2, Y2 : Gint;
+      pragma Unreferenced (Mouse_X_In_Canvas, Mouse_Y_In_Canvas);
+      --  ??? these parameters could be removed.
    begin
       if not Canvas.Mouse_Has_Moved then
          --  Is this a motion, or simply a selection ?
