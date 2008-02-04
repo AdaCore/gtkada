@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --     Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet      --
---                 Copyright (C) 2001-2006, AdaCore                  --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -175,7 +175,7 @@ package body Gtkada.Dialogs is
                return Button_OK;
             end if;
 
-         elsif Response in 0 .. Gtk_Response_Type'Last then
+         elsif Response >= 0 then
             Result := Message_Dialog_Buttons (Response);
 
             case Result is
