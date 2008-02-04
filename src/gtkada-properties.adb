@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                Copyright (C) 2006-2007 AdaCore                    --
+--                Copyright (C) 2006-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -564,7 +564,6 @@ package body Gtkada.Properties is
         (Editor   : access Gtk_Widget_Record'Class;
          Callback : Pspec_Callback)
       is
-         use type Glib.Signal_Name;
          Id : Handler_Id;
       begin
          case Prop_Type is
