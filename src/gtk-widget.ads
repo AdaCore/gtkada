@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1066,6 +1066,7 @@ package Gtk.Widget is
 
    type Expose_Event_Handler is access function
      (Widget : System.Address; Event : Gdk.Event.Gdk_Event) return Boolean;
+   pragma Convention (C, Expose_Event_Handler);
    function Default_Expose_Event_Handler (Klass : GObject_Class)
       return Expose_Event_Handler;
    --  Return the default expose event handler for the widget class Klass. The
