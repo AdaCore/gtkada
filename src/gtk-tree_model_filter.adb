@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -212,14 +212,17 @@ package body Gtk.Tree_Model_Filter is
      (Filter  : access Gtk_Tree_Model_Filter_Record;
       Func    : Gtk_Tree_Model_Filter_Visible_Func)
    is
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Tree_Model_Filter_Visible_Func, System.Address);
       procedure Internal
         (Filter  : System.Address;
          Func    : System.Address;
-         Data    : Gtk_Tree_Model_Filter_Visible_Func;
+         Data    : System.Address;
          Destroy : System.Address := System.Null_Address);
       pragma Import (C, Internal, "gtk_tree_model_filter_set_visible_func");
    begin
-      Internal (Get_Object (Filter), Visible_Func_Wrapper'Address, Func);
+      Internal
+        (Get_Object (Filter), Visible_Func_Wrapper'Address, To_Address (Func));
    end Set_Visible_Func;
 
    -------------------
@@ -331,17 +334,19 @@ package body Gtk.Tree_Model_Filter is
       Types     : Glib.GType_Array;
       Func      : Gtk_Tree_Model_Filter_Modify_Func)
    is
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Tree_Model_Filter_Modify_Func, System.Address);
       procedure Internal
         (Filter    : System.Address;
          N_Columns : Gint;
          Types     : System.Address;
          Func      : System.Address;
-         Data      : Gtk_Tree_Model_Filter_Modify_Func;
+         Data      : System.Address;
          Destroy   : System.Address := System.Null_Address);
       pragma Import (C, Internal, "gtk_tree_model_filter_set_modify_func");
    begin
       Internal (Get_Object (Filter), Types'Length, Types (Types'First)'Address,
-                Modify_Func_Wrapper'Address, Func);
+                Modify_Func_Wrapper'Address, To_Address (Func));
    end Set_Modify_Func;
 
    ------------------
