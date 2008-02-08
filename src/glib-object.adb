@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2007 AdaCore                    --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -480,6 +480,16 @@ package body Glib.Object is
          Destroy : System.Address);
       pragma Import (C, Set_Data_Internal_Id, "g_object_set_qdata_full");
 
+      function Get_Data_Internal
+        (Object : System.Address;
+         Key    : String) return System.Address;
+      pragma Import (C, Get_Data_Internal, "g_object_get_data");
+
+      function Get_Data_Internal_Id
+        (Object : System.Address;
+         Key    : Glib.GQuark) return System.Address;
+      pragma Import (C, Get_Data_Internal_Id, "g_object_get_qdata");
+
       ----------
       -- Free --
       ----------
@@ -509,14 +519,8 @@ package body Glib.Object is
         (Object : access GObject_Record'Class;
          Id     : String := "user_data") return Data_Type
       is
-         function Internal
-           (Object : System.Address;
-            Key    : String) return System.Address;
-         pragma Import (C, Internal, "g_object_get_data");
-
          D : constant Cb_Record_Access :=
-           Convert (Internal (Get_Object (Object), Id & ASCII.NUL));
-
+           Convert (Get_Data_Internal (Get_Object (Object), Id & ASCII.NUL));
       begin
          if D = null or else D.Ptr = null then
             raise Gtkada.Types.Data_Error;
@@ -530,20 +534,52 @@ package body Glib.Object is
       ---------
 
       function Get
+        (Object  : access GObject_Record'Class;
+         Id      : String := "user_data";
+         Default : Data_Type) return Data_Type
+      is
+         D : constant Cb_Record_Access :=
+           Convert (Get_Data_Internal (Get_Object (Object), Id & ASCII.NUL));
+      begin
+         if D = null or else D.Ptr = null then
+            return Default;
+         else
+            return D.Ptr.all;
+         end if;
+      end Get;
+
+      ---------
+      -- Get --
+      ---------
+
+      function Get
         (Object : access GObject_Record'Class;
          Id     : Glib.GQuark) return Data_Type
       is
-         function Internal
-           (Object : System.Address;
-            Key    : Glib.GQuark) return System.Address;
-         pragma Import (C, Internal, "g_object_get_qdata");
-
          D : constant Cb_Record_Access :=
-           Convert (Internal (Get_Object (Object), Id));
-
+           Convert (Get_Data_Internal_Id (Get_Object (Object), Id));
       begin
          if D = null or else D.Ptr = null then
             raise Gtkada.Types.Data_Error;
+         else
+            return D.Ptr.all;
+         end if;
+      end Get;
+
+      ---------
+      -- Get --
+      ---------
+
+      function Get
+        (Object  : access GObject_Record'Class;
+         Id      : Glib.GQuark;
+         Default : Data_Type) return Data_Type
+      is
+         D : constant Cb_Record_Access :=
+           Convert (Get_Data_Internal_Id (Get_Object (Object), Id));
+      begin
+         if D = null or else D.Ptr = null then
+            return Default;
          else
             return D.Ptr.all;
          end if;

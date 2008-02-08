@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001-2007 AdaCore                 --
+--                   Copyright (C) 2001-2008, AdaCore                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -348,6 +348,14 @@ package Glib.Object is
       --  Get the information associated with the key ID.
       --  Raise Gtkada.Types.Data_Error if there is none.
 
+      function Get
+        (Object  : access GObject_Record'Class;
+         Id      : String := "user_data";
+         Default : Data_Type) return Data_Type;
+      --  Get the information associated with the key ID.
+      --  Return Default instead of raising an exception if there is no such
+      --  user data
+
       procedure Set
         (Object : access GObject_Record'Class;
          Data   : Data_Type;
@@ -364,6 +372,10 @@ package Glib.Object is
       function Get
         (Object : access GObject_Record'Class;
          Id     : Glib.GQuark) return Data_Type;
+      function Get
+        (Object  : access GObject_Record'Class;
+         Id      : Glib.GQuark;
+         Default : Data_Type) return Data_Type;
       --  Same function as Get above, but uses directly the Quark associated
       --  with the string, which speeds up the access time significantly.
 
