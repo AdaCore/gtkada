@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2006, AdaCore                  --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,10 +31,17 @@ with System;
 with Unchecked_Deallocation;
 with Gtk.Style;    use Gtk.Style;
 
+with Ada.Unchecked_Conversion;
+
 package body Gtk.Ctree is
 
    Compare_Drag_Func_Key : constant String :=
-     "_GtkAda_Ctree_Compare_Drag_Func" & ASCII.NUL;
+                             "_GtkAda_Ctree_Compare_Drag_Func" & ASCII.NUL;
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Ctree_Compare_Drag_Func, System.Address);
+   function From_Address is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Ctree_Compare_Drag_Func);
    --
    --  The key that will be used to store the address of the Ada
    --  Compare_Drag_Func function.
@@ -1107,7 +1114,7 @@ package body Gtk.Ctree is
 
       function Get_User_Data
         (Object : in System.Address;
-         Key    : in String) return Gtk_Ctree_Compare_Drag_Func;
+         Key    : in String) return System.Address;
       pragma Import (C, Get_User_Data, "gtk_object_get_data");
       --  External binding: gtk_object_get_data
 
@@ -1115,8 +1122,8 @@ package body Gtk.Ctree is
       Local_Ctree : constant Gtk_Ctree :=
         Gtk_Ctree (Get_User_Data (Ctree, Local_Ctree_Stub));
 
-      Cmp_Func : constant Gtk_Ctree_Compare_Drag_Func :=
-        Get_User_Data (Object => Ctree, Key => Compare_Drag_Func_Key);
+      Cmp_Func : constant Gtk_Ctree_Compare_Drag_Func := From_Address
+        (Get_User_Data (Object => Ctree, Key => Compare_Drag_Func_Key));
 
    begin
       return Boolean'Pos
@@ -1137,7 +1144,7 @@ package body Gtk.Ctree is
 
       procedure Set_User_Data (Object : in System.Address;
                                Name   : in String;
-                               Data   : in Gtk_Ctree_Compare_Drag_Func);
+                               Data   : in System.Address);
       pragma Import (C, Set_User_Data, "gtk_object_set_data");
       --  External binding: gtk_object_set_data
 
@@ -1145,7 +1152,10 @@ package body Gtk.Ctree is
       if Cmp_Func = null then
          Internal (Get_Object (Ctree), System.Null_Address);
       else
-         Set_User_Data (Get_Object (Ctree), Compare_Drag_Func_Key, Cmp_Func);
+         Set_User_Data
+           (Get_Object (Ctree), Compare_Drag_Func_Key,
+            To_Address (Cmp_Func)
+           );
          Internal (Get_Object (Ctree), C_Compare_Drag_Func'Address);
          --
          --  It is not possible to store directly the Ada Cmp_Func into

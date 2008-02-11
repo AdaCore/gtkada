@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +30,18 @@ with Interfaces.C.Strings; use Interfaces.C, Interfaces.C.Strings;
 with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
 
+with Ada.Unchecked_Conversion;
+
 package body Glib.Properties.Creation is
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Get_Property_Handler, System.Address);
+   function To_Address is new Ada.Unchecked_Conversion
+     (Set_Property_Handler, System.Address);
+   function From_Address is new Ada.Unchecked_Conversion
+     (System.Address, Set_Property_Handler);
+   function From_Address is new Ada.Unchecked_Conversion
+     (System.Address, Get_Property_Handler);
 
    procedure Internal_Set_Property_Handler
      (Object        : System.Address;
@@ -921,12 +932,15 @@ package body Glib.Properties.Creation is
       Value         : GValue;
       Property_Spec : Param_Spec)
    is
-      function Internl (Object : System.Address) return Set_Property_Handler;
+      function Internl (Object : System.Address) return System.Address;
       pragma Import (C, Internl, "ada_real_set_property_handler");
       Stub : GObject_Record;
       Obj : constant GObject := Get_User_Data (Object, Stub);
+
+      F : Set_Property_Handler;
    begin
-      Internl (Object) (Obj, Prop_Id, Value, Property_Spec);
+      F := From_Address (Internl (Object));
+      F (Obj, Prop_Id, Value, Property_Spec);
    end Internal_Set_Property_Handler;
 
    -----------------------------------
@@ -939,12 +953,15 @@ package body Glib.Properties.Creation is
       Value         : out GValue;
       Property_Spec : Param_Spec)
    is
-      function Internal (Object : System.Address) return Get_Property_Handler;
+      function Internal (Object : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_real_get_property_handler");
       Stub : GObject_Record;
       Obj : constant GObject := Get_User_Data (Object, Stub);
+
+      F : Get_Property_Handler;
    begin
-      Internal (Object) (Obj, Prop_Id, Value, Property_Spec);
+      F := From_Address (Internal (Object));
+      F (Obj, Prop_Id, Value, Property_Spec);
    end Internal_Get_Property_Handler;
 
    -----------------------------
@@ -957,11 +974,11 @@ package body Glib.Properties.Creation is
       Get_Property : Get_Property_Handler)
    is
       procedure Set_Set
-        (Class_Record : GObject_Class; Set_Prop : Set_Property_Handler);
+        (Class_Record : GObject_Class; Set_Prop : System.Address);
       pragma Import (C, Set_Set, "ada_set_real_set_property_handler");
 
       procedure Set_Get
-        (Class_Record : GObject_Class; Set_Prop : Get_Property_Handler);
+        (Class_Record : GObject_Class; Set_Prop : System.Address);
       pragma Import (C, Set_Get, "ada_set_real_get_property_handler");
 
       procedure Internal
@@ -971,8 +988,8 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "ada_set_properties_handlers");
 
    begin
-      Set_Set (Class_Record, Set_Property);
-      Set_Get (Class_Record, Get_Property);
+      Set_Set (Class_Record, To_Address (Set_Property));
+      Set_Get (Class_Record, To_Address (Get_Property));
       Internal (Class_Record,
                 Internal_Set_Property_Handler'Address,
                 Internal_Get_Property_Handler'Address);

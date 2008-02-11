@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -108,10 +108,12 @@ package body Gtk.Container is
       procedure Internal
         (Container : System.Address;
          Func      : System.Address;
-         Data      : Gtk_Callback);
+         Data      : System.Address);
       pragma Import (C, Internal, "gtk_container_forall");
    begin
-      Internal (Get_Object (Container), Internal_Gtk_Callback'Address, Func);
+      Internal
+        (Get_Object (Container), Internal_Gtk_Callback'Address,
+         Func.all'Address);
    end Forall;
 
    -------------
@@ -125,10 +127,12 @@ package body Gtk.Container is
       procedure Internal
         (Container : System.Address;
          Func      : System.Address;
-         Data      : Gtk_Callback);
+         Data      : System.Address);
       pragma Import (C, Internal, "gtk_container_foreach");
    begin
-      Internal (Get_Object (Container), Internal_Gtk_Callback'Address, Func);
+      Internal
+        (Get_Object (Container), Internal_Gtk_Callback'Address,
+         Func.all'Address);
    end Foreach;
 
    -------------
@@ -383,8 +387,6 @@ package body Gtk.Container is
          Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_container_set_focus_hadjustment");
 
-      use type Gtk.Adjustment.Gtk_Adjustment;
-
    begin
       if Adjustment = null then
          Internal (Get_Object (Container), System.Null_Address);
@@ -405,8 +407,6 @@ package body Gtk.Container is
         (Container  : System.Address;
          Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_container_set_focus_vadjustment");
-
-      use type Gtk.Adjustment.Gtk_Adjustment;
 
    begin
       if Adjustment = null then

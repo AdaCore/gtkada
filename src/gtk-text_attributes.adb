@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,5 +39,135 @@ package body Gtk.Text_Attributes is
    begin
       Text_Attr := Internal;
    end Gtk_New;
+
+   -----------------------
+   -- Set_Strikethrough --
+   -----------------------
+
+   procedure Set_Strikethrough
+     (Appearance : Gtk_Text_Appearance;
+      Strikethrough : Boolean)
+   is
+      procedure Internal
+        (Appearance    : Gtk_Text_Appearance;
+         Strikethrough : Gboolean);
+
+      pragma Import
+        (C, Internal, "ada_text_appearance_set_strikethrough");
+   begin
+      Internal (Appearance, Boolean'Pos (Strikethrough));
+   end Set_Strikethrough;
+
+   -----------------------
+   -- Get_Strikethrough --
+   -----------------------
+
+   function Get_Strikethrough
+     (Appearance : Gtk_Text_Appearance) return Boolean
+
+   is
+      function Internal (Appearance : Gtk_Text_Appearance) return Gboolean;
+      pragma Import
+        (C, Internal, "ada_text_appearance_get_strikethrough");
+   begin
+      return Boolean'Val (Internal (Appearance));
+   end Get_Strikethrough;
+
+   -------------------
+   -- Set_Invisible --
+   -------------------
+
+   procedure Set_Invisible
+     (Text_Attr : Gtk_Text_Attributes;
+      Invisible : Boolean)
+   is
+      procedure Internal
+        (Text_Attr : Gtk_Text_Attributes;
+         Invisible : Gboolean);
+
+      pragma Import
+        (C, Internal, "ada_text_attribute_set_invisible");
+   begin
+      Internal (Text_Attr, Boolean'Pos (Invisible));
+   end Set_Invisible;
+
+   -------------------
+   -- Get_Invisible --
+   -------------------
+
+   function Get_Invisible
+     (Text_Attr : Gtk_Text_Attributes) return Boolean
+   is
+      function Internal (Text_Attr : Gtk_Text_Attributes) return Gboolean;
+      pragma Import
+        (C, Internal, "ada_text_attribute_get_invisible");
+   begin
+      return Boolean'Val (Internal (Text_Attr));
+   end Get_Invisible;
+
+   -----------------------
+   -- Set_BG_Full_Height --
+   -----------------------
+
+   procedure Set_Bg_Full_Height
+     (Text_Attr   : Gtk_Text_Attributes;
+      Full_Height : Boolean)
+   is
+      procedure Internal
+        (Text_Attr   : Gtk_Text_Attributes;
+         Full_Height : Gboolean);
+
+      pragma Import
+        (C, Internal, "ada_text_attribute_set_bg_full_height");
+   begin
+      Internal (Text_Attr, Boolean'Pos (Full_Height));
+   end Set_Bg_Full_Height;
+
+   -----------------------
+   -- Get_BG_Full_Height --
+   -----------------------
+
+   function Get_Bg_Full_Height
+     (Text_Attr : Gtk_Text_Attributes) return Boolean
+
+   is
+      function Internal (Text_Attr : Gtk_Text_Attributes) return Gboolean;
+      pragma Import
+        (C, Internal, "ada_text_attribute_get_bg_full_height");
+   begin
+      return Boolean'Val (Internal (Text_Attr));
+   end Get_Bg_Full_Height;
+
+   ------------------
+   -- Set_Editable --
+   ------------------
+
+   procedure Set_Editable
+     (Text_Attr : Gtk_Text_Attributes;
+      Editable  : Boolean)
+   is
+      procedure Internal
+        (Text_Attr    : Gtk_Text_Attributes;
+         Editable     : Gboolean);
+
+      pragma Import (C, Internal, "ada_text_attribute_set_editable");
+   begin
+      Internal (Text_Attr, Boolean'Pos (Editable));
+   end Set_Editable;
+
+   ------------------
+   -- Get_Editable --
+   ------------------
+
+   function Get_Editable
+     (Text_Attr : Gtk_Text_Attributes) return Boolean
+
+   is
+      function Internal (Text_Attr : Gtk_Text_Attributes) return Gboolean;
+      pragma Import
+        (C, Internal, "ada_text_attribute_get_editable");
+   begin
+      return Boolean'Val (Internal (Text_Attr));
+   end Get_Editable;
 
 end Gtk.Text_Attributes;

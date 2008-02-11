@@ -76,6 +76,7 @@ package Gtk.Menu is
    type Gtk_Menu_Detach_Func is access procedure
      (Attach_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Menu          : access Gtk_Menu_Record'Class);
+   pragma Convention (C, Gtk_Menu_Detach_Func);
    --  Function called when a menu previously attached to a widget is detached.
    --  An access to this function is given in Attach_To_Widget.
 

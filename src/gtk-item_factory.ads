@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -170,6 +170,7 @@ package Gtk.Item_Factory is
       type Gtk_Translate_Func is access function
         (Path      : UTF8_String;  --  const gchar* ???
          Func_Data : Data_Type_Access) return Gtkada.Types.Chars_Ptr;
+      pragma Convention (C, Gtk_Translate_Func);
 
       type Limited_Widget is limited private;
       Null_Widget : constant Limited_Widget;
@@ -311,4 +312,3 @@ end Gtk.Item_Factory;
 --  No binding: gtk_item_factory_create_items_ac
 --  No binding: gtk_item_factory_create_menu_entries
 --  No binding: gtk_item_factory_from_path
-

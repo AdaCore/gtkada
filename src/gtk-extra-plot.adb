@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---               Copyright (C) 2001-2006, AdaCore                    --
+--               Copyright (C) 2001-2008, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -180,7 +180,6 @@ package body Gtk.Extra.Plot is
       procedure Internal (Plot       : in System.Address;
                           Background : in System.Address);
       pragma Import (C, Internal, "gtk_plot_set_background");
-      use type Gdk.Color.Gdk_Color;
 
       Back : aliased Gdk.Color.Gdk_Color := Background;
       Backa : System.Address := Back'Address;
@@ -512,7 +511,6 @@ package body Gtk.Extra.Plot is
          Justification : Gtk.Enums.Gtk_Justification;
          Text          : String) return Gtk_Plot_Text;
       pragma Import (C, Internal, "gtk_plot_put_text");
-      use type Gdk.Color.Gdk_Color;
 
       Back  : aliased Gdk.Color.Gdk_Color := Background;
       Fore  : aliased Gdk.Color.Gdk_Color := Foreground;
@@ -672,7 +670,6 @@ package body Gtk.Extra.Plot is
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_axis_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       C  : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -884,7 +881,6 @@ package body Gtk.Extra.Plot is
          Transparent   : Gint;
          Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_plot_axis_title_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       Fore : aliased Gdk.Color.Gdk_Color := Foreground;
       Fa   : System.Address := Fore'Address;
@@ -929,7 +925,6 @@ package body Gtk.Extra.Plot is
          Transparent   : Gint;
          Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_plot_axis_set_labels_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       Fore : aliased Gdk.Color.Gdk_Color := Foreground;
       Fa   : System.Address := Fore'Address;
@@ -1034,13 +1029,19 @@ package body Gtk.Extra.Plot is
                             Hminor : out Boolean)
    is
       procedure Internal (Plot   : in System.Address;
-                          Vmajor : out Boolean;
-                          Vminor : out Boolean;
-                          Hmajor : out Boolean;
-                          Hminor : out Boolean);
+                          Vmajor : out Gboolean;
+                          Vminor : out Gboolean;
+                          Hmajor : out Gboolean;
+                          Hminor : out Gboolean);
       pragma Import (C, Internal, "gtk_plot_grids_visible");
+
+      Vma, Vmi, Hma, Hmi : Gboolean;
    begin
-      Internal (Get_Object (Plot), Vmajor, Vminor, Hmajor, Hminor);
+      Internal (Get_Object (Plot), Vma, Vmi, Hma, Hmi);
+      Vmajor := Boolean'Val (Vma);
+      Vminor := Boolean'Val (Vmi);
+      Hmajor := Boolean'Val (Hma);
+      Hminor := Boolean'Val (Hmi);
    end Grids_Visible;
 
    -----------------------
@@ -1083,7 +1084,6 @@ package body Gtk.Extra.Plot is
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_x0line_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1111,7 +1111,6 @@ package body Gtk.Extra.Plot is
           Width : Gfloat;
           Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_y0line_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1139,7 +1138,6 @@ package body Gtk.Extra.Plot is
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_major_hgrid_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1167,7 +1165,6 @@ package body Gtk.Extra.Plot is
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_major_vgrid_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1195,7 +1192,6 @@ package body Gtk.Extra.Plot is
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_minor_hgrid_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1223,7 +1219,6 @@ package body Gtk.Extra.Plot is
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_minor_vgrid_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1340,7 +1335,6 @@ package body Gtk.Extra.Plot is
                           Foreground : in System.Address;
                           Background : in System.Address);
       pragma Import (C, Internal, "gtk_plot_legends_set_attributes");
-      use type Gdk.Color.Gdk_Color;
 
       Fore  : aliased Gdk.Color.Gdk_Color := Foreground;
       Forea : System.Address := Fore'Address;
@@ -1531,7 +1525,6 @@ package body Gtk.Extra.Plot is
          Str           : String);
       pragma Import (C, Internal, "gtk_plot_text_set_attributes");
 
-      use type Gdk.Color.Gdk_Color;
       Back  : aliased Gdk.Color.Gdk_Color := Bg;
       Fore  : aliased Gdk.Color.Gdk_Color := Fg;
       Backa : System.Address := Back'Address;

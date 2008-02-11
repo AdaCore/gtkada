@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -142,10 +142,12 @@ package body Gtk.Widget is
    function Create_Pango_Context (Widget : access Gtk_Widget_Record)
       return Pango.Context.Pango_Context
    is
-      function Internal (Widget : System.Address) return Pango_Context;
+      function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_create_pango_context");
+      Stub : Pango_Context_Record;
    begin
-      return Internal (Get_Object (Widget));
+      return Pango_Context
+        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Create_Pango_Context;
 
    -------------------------
@@ -356,7 +358,6 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_get_parent");
 
       S : System.Address;
-      use type System.Address;
 
    begin
       S := Internal (Get_Object (Widget));
@@ -1054,7 +1055,6 @@ package body Gtk.Widget is
          Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_fg");
 
-      use type Gdk.Color.Gdk_Color;
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -1081,7 +1081,6 @@ package body Gtk.Widget is
          Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_bg");
 
-      use type Gdk.Color.Gdk_Color;
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -1108,7 +1107,6 @@ package body Gtk.Widget is
          Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_text");
 
-      use type Gdk.Color.Gdk_Color;
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -1135,7 +1133,6 @@ package body Gtk.Widget is
          Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_modify_base");
 
-      use type Gdk.Color.Gdk_Color;
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -1191,7 +1188,6 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_get_ancestor");
 
       S : System.Address;
-      use type System.Address;
 
    begin
       S := Internal (Get_Object (Widget), Ancestor_Type);

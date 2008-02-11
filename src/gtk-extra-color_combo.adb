@@ -3,7 +3,7 @@
 --                                                                   --
 --                       Copyright (C) 2000                          --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                 Copyright (C) 2000-2006, AdaCore                  --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -63,7 +63,6 @@ package body Gtk.Extra.Color_Combo is
                           Row         : out Gint;
                           Col         : out Gint);
       pragma Import (C, Internal, "gtk_color_combo_find_color");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;

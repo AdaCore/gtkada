@@ -1,13 +1,29 @@
 GTKADA NEW FEATURES LIST
 ========================
 
-Copyright (c) 2005-2007, AdaCore
+Copyright (c) 2005-2008, AdaCore
 
 This file contains a list of new features introduced in GtkAda.
 
 An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
+
+New features in GtkAda 2.10.3
+-----------------------------
+
+H121-008 Small API changes
+
+  The following API changes have been introduced to improve safety of C/Ada
+  binding.
+
+    - in gdk-event.ads: type Event_Handler_Func now has pragma Convention (C)
+      To adapt to this change, add the same pragma to your implementations for
+      this function.
+
+    - in gdk-window.ads: likewise, for type Gdk_Filter_Func.
+
+    - in gtk-menu.ads: likewise, for type Gtk_Menu_Detacher_Func.
 
 New features in GtkAda 2.10.2
 -----------------------------

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2007 AdaCore                   --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,8 +32,6 @@ with System;      use System;
 with Glib.Values; use Glib.Values;
 
 package body Gtk.Marshallers is
-
-   use type Glib.Signal_Name;
 
    ------------------------
    -- Return_Marshallers --

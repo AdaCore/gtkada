@@ -50,6 +50,9 @@ package body Glib.Object is
       Destroy : System.Address);
    pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
 
+   function To_Object is new Ada.Unchecked_Conversion
+     (System.Address, GObject);
+
    ----------------
    -- Deallocate --
    ----------------
@@ -164,7 +167,7 @@ package body Glib.Object is
    is
       function Internal
         (Object : in System.Address;
-         Quark  : in Glib.GQuark) return GObject;
+         Quark  : in Glib.GQuark) return System.Address;
       pragma Import (C, Internal, "g_object_get_qdata");
 
       use type System.Address;
@@ -180,7 +183,7 @@ package body Glib.Object is
          GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
       end if;
 
-      R := Internal (Obj, GtkAda_String_Quark);
+      R := To_Object (Internal (Obj, GtkAda_String_Quark));
 
       if R = null then
          R := Conversion_Function (Obj, Stub);
@@ -206,7 +209,7 @@ package body Glib.Object is
 
       function Internal
         (Object : in System.Address;
-         Quark  : in Glib.GQuark) return GObject;
+         Quark  : in Glib.GQuark) return System.Address;
       pragma Import (C, Internal, "g_object_get_qdata");
 
       use type System.Address;
@@ -222,7 +225,7 @@ package body Glib.Object is
          GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
       end if;
 
-      R := Internal (Obj, GtkAda_String_Quark);
+      R := To_Object (Internal (Obj, GtkAda_String_Quark));
 
       if R = null then
          R := new GObject_Record'Class'(Stub);
@@ -289,14 +292,14 @@ package body Glib.Object is
       procedure Set_User_Data
         (Obj     : System.Address;
          Quark   : Glib.GQuark;
-         Data    : GObject;
+         Data    : System.Address;
          Destroy : System.Address);
       pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
 
    begin
       Result.Ptr := Obj.Ptr;
       Set_User_Data
-        (Obj.Ptr, GtkAda_String_Quark, Result, Free_User_Data'Address);
+        (Obj.Ptr, GtkAda_String_Quark, Result'Address, Free_User_Data'Address);
       Deallocate (Obj);
       return Result;
    end Unchecked_Cast;

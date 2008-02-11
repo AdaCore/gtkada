@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006, AdaCore                   --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -140,8 +140,6 @@ package body Gtk.Tree_View is
         (Tree_View : System.Address;
          Model     : System.Address);
       pragma Import (C, Internal, "gtk_tree_view_set_model");
-
-      use type Gtk.Tree_Model.Gtk_Tree_Model;
 
    begin
       if Model = null then
@@ -688,8 +686,6 @@ package body Gtk.Tree_View is
 
       Column_Address : System.Address;
 
-      use type Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-
    begin
       if Focus_Column = null then
          Column_Address := System.Null_Address;
@@ -792,7 +788,6 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_get_cell_area");
 
       Col_Addr : System.Address;
-      use type Gtk.Tree_View_Column.Gtk_Tree_View_Column;
    begin
       if Column = null then
          Col_Addr := System.Null_Address;
@@ -821,7 +816,6 @@ package body Gtk.Tree_View is
       pragma Import (C, Internal, "gtk_tree_view_get_background_area");
 
       Col_Addr : System.Address;
-      use type Gtk.Tree_View_Column.Gtk_Tree_View_Column;
 
    begin
       if Column = null then
@@ -1357,18 +1351,26 @@ package body Gtk.Tree_View is
          Title     : String;
          Cell      : System.Address;
          Func      : System.Address;
-         Data      : Cell_Data_Func;
+         Data      : System.Address;
          Dnotify   : G_Destroy_Notify)
          return Gint;
       pragma Import
         (C, Internal, "gtk_tree_view_insert_column_with_data_func");
    begin
-      return Internal
-        (Get_Object (Tree_View),
-         Position, Title & ASCII.NUL,
-         Get_Object (Cell),
-         Internal_Cell_Data_Func'Address,
-         Func, null);
+      if Func = null then
+         return Internal
+           (Get_Object (Tree_View),
+            Position, Title & ASCII.NUL,
+            Get_Object (Cell),
+            System.Null_Address, System.Null_Address, null);
+      else
+         return Internal
+           (Get_Object (Tree_View),
+            Position, Title & ASCII.NUL,
+            Get_Object (Cell),
+            Internal_Cell_Data_Func'Address,
+            Func.all'Address, null);
+      end if;
    end Insert_Column_With_Data_Func;
 
    -----------------------

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006, AdaCore                   --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -497,8 +497,6 @@ package body Gdk.Event is
       function Internal
         (Event : Gdk_Event) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gdk_event_get_string");
-
-      use type Interfaces.C.Strings.chars_ptr;
 
       Event_Type : constant Gdk_Event_Type := Get_Event_Type (Event);
 

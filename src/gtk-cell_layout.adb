@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -166,14 +166,15 @@ package body Gtk.Cell_Layout is
         (Cell_Layout   : Gtk_Cell_Layout;
          Cell_Renderer : System.Address;
          Func          : System.Address;
-         Func_Data     : Cell_Data_Func;
+         Func_Data     : System.Address;
          Destroy       : System.Address);
       pragma Import (C, Internal, "gtk_cell_layout_set_cell_data_func");
 
    begin
       Internal
         (Cell_Layout, Get_Object (Cell),
-         Internal_Cell_Data_Func'Address, Func, System.Null_Address);
+         Internal_Cell_Data_Func'Address,
+         Func.all'Address, System.Null_Address);
    end Set_Cell_Data_Func;
 
    -------------------------

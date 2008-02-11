@@ -221,7 +221,7 @@ package body Glib.Generic_Properties is
         (Value  : out Glib.Values.GValue;
          Val    : Boxed_Type)
       is
-         V : System.Address := To_Address (Val, Val'Address);
+         V : constant System.Address := To_Address (Val, Val'Address);
       begin
          --  Do not do an actual copy with gdk_color_copy, or
          --  pango_font_description_copy: it is in fact done
@@ -265,7 +265,7 @@ package body Glib.Generic_Properties is
 
          Val : GValue;
       begin
-         Set_Value (Val, Value);
+         Set_Value (Value => Val, Val => Value);
          Internal (Get_Object (Object), Property_Name (Name) & ASCII.NUL, Val);
          Unset (Val);
       end Set_Property;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -191,8 +191,6 @@ package body Gtk.Style is
          Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_fg");
 
-      use type Gdk.Color.Gdk_Color;
-
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -234,8 +232,6 @@ package body Gtk.Style is
          State : Enums.Gtk_State_Type;
          Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_bg");
-
-      use type Gdk.Color.Gdk_Color;
 
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
@@ -279,8 +275,6 @@ package body Gtk.Style is
          Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_light");
 
-      use type Gdk.Color.Gdk_Color;
-
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -323,8 +317,6 @@ package body Gtk.Style is
          Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_dark");
 
-      use type Gdk.Color.Gdk_Color;
-
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -366,7 +358,6 @@ package body Gtk.Style is
          State : Enums.Gtk_State_Type;
          Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_mid");
-      use type Gdk.Color.Gdk_Color;
 
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
@@ -410,8 +401,6 @@ package body Gtk.Style is
          Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_text");
 
-      use type Gdk.Color.Gdk_Color;
-
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -454,8 +443,6 @@ package body Gtk.Style is
          Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_base");
 
-      use type Gdk.Color.Gdk_Color;
-
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -486,8 +473,6 @@ package body Gtk.Style is
       procedure Internal (Style : System.Address; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_black");
 
-      use type Gdk.Color.Gdk_Color;
-
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;
 
@@ -517,8 +502,6 @@ package body Gtk.Style is
    procedure Set_White (Style : Gtk_Style; Color : Gdk.Color.Gdk_Color) is
       procedure Internal (Style : System.Address; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_white");
-
-      use type Gdk.Color.Gdk_Color;
 
       Col     : aliased Gdk.Color.Gdk_Color := Color;
       Color_A : System.Address := Col'Address;

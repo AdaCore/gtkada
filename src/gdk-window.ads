@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
---                Copyright (C) 2000-2007, AdaCore                   --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -245,6 +245,7 @@ package Gdk.Window is
      (System_Event : C_Proxy;
       Event        : Gdk.Event.Gdk_Event;
       Data         : System.Address) return Gdk_Filter_Return;
+   pragma Convention (C, Gdk_Filter_Func);
    --  A filter function, that will be called before the standard processing
    --  in gtk+. System_Event is the raw event from the system,
    --
@@ -661,7 +662,6 @@ private
    pragma Import (C, Withdraw, "gdk_window_withdraw");
    pragma Import (C, Set_Cursor, "gdk_window_set_cursor");
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
-   pragma Import (C, Invalidate_Rect, "gdk_window_invalidate_rect");
    pragma Import (C, Get_Window_Id, "ada_gdk_get_window_id");
 
    pragma Convention (C, Gdk_Window_Type);

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -684,6 +684,7 @@ package Gdk.Event is
 
    type Event_Handler_Func is access procedure
      (Event : Gdk_Event; Data : System.Address);
+   pragma Convention (C, Event_Handler_Func);
    --  Function that can be used as a new event handler.
    --  This function should dispatch all the events properly, since it replaces
    --  completly the default event handler. However, it can call

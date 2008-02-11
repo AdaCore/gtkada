@@ -1,3 +1,30 @@
+-----------------------------------------------------------------------
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
+--                                                                   --
+--                Copyright (C) 2006-2008, AdaCore                   --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
 
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
@@ -8,6 +35,9 @@ package body Glib.Main is
    pragma Convention (C, Low_Level_Source_Func);
    --  Low-level wrapper around G_Source_Func, which can be called directly
    --  from C. Func is the Ada function that this wraps.
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (G_Source_Func, System.Address);
 
    -----------------------
    -- Find_Source_By_Id --
@@ -42,10 +72,10 @@ package body Glib.Main is
 
    function Idle_Add (Func : G_Source_Func) return G_Source_Id is
       function Internal
-        (Func : System.Address; Data : G_Source_Func) return G_Source_Id;
+        (Func : System.Address; Data : System.Address) return G_Source_Id;
       pragma Import (C, Internal, "g_idle_add");
    begin
-      return Internal (Low_Level_Source_Func'Address, Func);
+      return Internal (Low_Level_Source_Func'Address, To_Address (Func));
    end Idle_Add;
 
    -----------------
@@ -59,10 +89,11 @@ package body Glib.Main is
       function Internal
         (Interval : Guint;
          Func     : System.Address;
-         Data     : G_Source_Func) return G_Source_Id;
+         Data     : System.Address) return G_Source_Id;
       pragma Import (C, Internal, "g_timeout_add");
    begin
-      return Internal (Interval, Low_Level_Source_Func'Address, Func);
+      return Internal
+        (Interval, Low_Level_Source_Func'Address, To_Address (Func));
    end Timeout_Add;
 
    ---------------------
@@ -237,5 +268,49 @@ package body Glib.Main is
          return 0;
       end if;
    end Default_Dispatch;
+
+   -------------
+   -- Acquire --
+   -------------
+
+   function Acquire (Context : G_Main_Context) return Boolean is
+      function Internal (Context : G_Main_Context) return Gboolean;
+      pragma Import (C, Internal, "g_main_context_acquire");
+   begin
+      return Boolean'Val (Internal (Context));
+   end Acquire;
+
+   --------------
+   -- Is_Owner --
+   --------------
+
+   function Is_Owner (Context : G_Main_Context) return Boolean is
+      function Internal (Context : G_Main_Context) return Gboolean;
+      pragma Import (C, Internal, "g_main_context_is_owner");
+   begin
+      return Boolean'Val (Internal (Context));
+   end Is_Owner;
+
+   ---------------------
+   -- Set_Can_Recurse --
+   ---------------------
+
+   procedure Set_Can_Recurse (Source : G_Source; Can_Recurse : Boolean) is
+      procedure Internal (Source : G_Source; Can_Recurse : Gboolean);
+      pragma Import (C, Internal, "g_source_set_can_recurse");
+   begin
+      Internal (Source, Boolean'Pos (Can_Recurse));
+   end Set_Can_Recurse;
+
+   ---------------------
+   -- Get_Can_Recurse --
+   ---------------------
+
+   function Get_Can_Recurse (Source : G_Source) return Boolean is
+      function Internal (Source : G_Source) return Gboolean;
+      pragma Import (C, Internal, "g_source_get_can_recurse");
+   begin
+      return Boolean'Val (Internal (Source));
+   end Get_Can_Recurse;
 
 end Glib.Main;

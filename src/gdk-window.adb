@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -472,5 +472,23 @@ package body Gdk.Window is
       Win_X := X_Out;
       Win_Y := Y_Out;
    end Window_At_Pointer;
+
+   ---------------------
+   -- Invalidate_Rect --
+   ---------------------
+
+   procedure Invalidate_Rect
+     (Window              : Gdk_Window;
+      Rectangle           : Gdk.Rectangle.Gdk_Rectangle;
+      Invalidate_Children : Boolean)
+   is
+      procedure Internal
+        (Window              : Gdk_Window;
+         Rectangle           : Gdk.Rectangle.Gdk_Rectangle;
+         Invalidate_Children : Gboolean);
+      pragma Import (C, Internal, "gdk_window_invalidate_rect");
+   begin
+      Internal (Window, Rectangle, Boolean'Pos (Invalidate_Children));
+   end Invalidate_Rect;
 
 end Gdk.Window;

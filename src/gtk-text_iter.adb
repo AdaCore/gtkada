@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006, AdaCore                   --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1349,6 +1349,7 @@ package body Gtk.Text_Iter is
       Values   : in out Gtk.Text_Attributes.Gtk_Text_Attributes;
       Modified : out Boolean)
    is
+      pragma Unmodified (Values);
       function Internal
         (Iter   : Gtk_Text_Iter;
          Values : Gtk_Text_Attributes)

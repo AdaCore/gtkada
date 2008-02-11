@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2003 ACT-Europe                   --
+--                   Copyright (C) 2003-2008, AdaCore                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -68,12 +68,13 @@ package body Glib.Messages is
         (Log_Domain : String;
          Log_Levels : Log_Level_Flags;
          Log_Func   : System.Address;
-         User_Data  : Log_Function) return Log_Handler_Id;
+         User_Data  : System.Address) return Log_Handler_Id;
       pragma Import (C, Internal, "g_log_set_handler");
 
    begin
       return Internal
-        (Log_Domain & ASCII.NUL, Log_Levels, C_Log_Func'Address, Log_Func);
+        (Log_Domain & ASCII.NUL, Log_Levels, C_Log_Func'Address,
+         Log_Func.all'Address);
    end Log_Set_Handler;
 
    ------------------------

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -408,9 +408,7 @@ private
    pragma Import (C, Main_Context_Unref,   "g_main_context_unref");
    pragma Import (C, Main_Context_Default, "g_main_context_default");
    pragma Import (C, Wakeup,               "g_main_context_wakeup");
-   pragma Import (C, Acquire,              "g_main_context_acquire");
    pragma Import (C, Release,              "g_main_context_release");
-   pragma Import (C, Is_Owner,             "g_main_context_is_owner");
    pragma Import (C, Dispatch,             "g_main_context_dispatch");
    pragma Import (C, Source_Ref,           "g_source_ref");
    pragma Import (C, Source_Unref,         "g_source_unref");
@@ -418,8 +416,6 @@ private
    pragma Import (C, Source_Destroy,       "g_source_destroy");
    pragma Import (C, Set_Priority,         "g_source_set_priority");
    pragma Import (C, Get_Priority,         "g_source_get_priority");
-   pragma Import (C, Set_Can_Recurse,      "g_source_set_can_recurse");
-   pragma Import (C, Get_Can_Recurse,      "g_source_get_can_recurse");
    pragma Import (C, Get_Id,               "g_source_get_id");
    pragma Import (C, Get_Context,          "g_source_get_context");
    pragma Import (C, Idle_Source_New,      "g_idle_source_new");

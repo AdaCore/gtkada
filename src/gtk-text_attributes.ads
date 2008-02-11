@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -270,10 +270,6 @@ private
    pragma Import (C, Get_Rise, "ada_text_appearance_get_rise");
    pragma Import (C, Set_Underline, "ada_text_appearance_set_underline");
    pragma Import (C, Get_Underline, "ada_text_appearance_get_underline");
-   pragma Import
-     (C, Set_Strikethrough, "ada_text_appearance_set_strikethrough");
-   pragma Import
-     (C, Get_Strikethrough, "ada_text_appearance_get_strikethrough");
    pragma Import (C, Set_Fg_Color, "ada_text_appearance_set_fg_color");
    pragma Import (C, Get_Fg_Color, "ada_text_appearance_get_fg_color");
    pragma Import (C, Set_Bg_Color, "ada_text_appearance_set_bg_color");
@@ -303,14 +299,6 @@ private
      (C, Get_Pixels_Inside_Wrap, "ada_text_attribute_get_pixels_inside_wrap");
    pragma Import (C, Set_Wrap_Mode, "ada_text_attribute_set_wrap_mode");
    pragma Import (C, Get_Wrap_Mode, "ada_text_attribute_get_wrap_mode");
-   pragma Import (C, Set_Invisible, "ada_text_attribute_set_invisible");
-   pragma Import (C, Get_Invisible, "ada_text_attribute_get_invisible");
-   pragma Import
-     (C, Set_Bg_Full_Height, "ada_text_attribute_set_bg_full_height");
-   pragma Import
-     (C, Get_Bg_Full_Height, "ada_text_attribute_get_bg_full_height");
-   pragma Import (C, Set_Editable, "ada_text_attribute_set_editable");
-   pragma Import (C, Get_Editable, "ada_text_attribute_get_editable");
    pragma Import (C, Get_Appearance, "ada_text_attribute_get_appearance");
    pragma Import (C, Set_Tabs, "ada_text_attribute_set_tabs");
    pragma Import (C, Get_Tabs, "ada_text_attribute_get_tabs");

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                 Copyright (C) 2000-2006, AdaCore                  --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -921,8 +921,6 @@ package body Gtk.Extra.Sheet is
          Col    : Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_sheet_cell_get_text");
 
-      use type Interfaces.C.Strings.chars_ptr;
-
       C : Interfaces.C.Strings.chars_ptr;
 
    begin
@@ -1288,7 +1286,6 @@ package body Gtk.Extra.Sheet is
                           The_Range : in Gtk_Sheet_Range;
                           Color     : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_range_set_background");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1313,7 +1310,6 @@ package body Gtk.Extra.Sheet is
                           The_Range : in Gtk_Sheet_Range;
                           Color     : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_range_set_foreground");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1430,7 +1426,6 @@ package body Gtk.Extra.Sheet is
                           The_Range : in Gtk_Sheet_Range;
                           Color     : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_range_set_border_color");
-      use type Gdk.Color.Gdk_Color;
 
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
@@ -1553,12 +1548,12 @@ package body Gtk.Extra.Sheet is
    function Get_Widget (Child : Gtk_Sheet_Child)
                        return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Child : Gtk_Sheet_Child) return System.Address;
+      function Internal (Child : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_sheet_get_widget");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
       return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Child), Stub));
+        (Get_User_Data (Internal (Get_Object (Child)), Stub));
    end Get_Widget;
 
    ---------------
@@ -1607,7 +1602,6 @@ package body Gtk.Extra.Sheet is
       function Internal (Sheet : System.Address; Column : Gint)
                         return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_sheet_get_column_title");
-      use type Interfaces.C.Strings.chars_ptr;
       C : Interfaces.C.Strings.chars_ptr;
    begin
       C := Internal (Get_Object (Sheet), Column);
@@ -1629,7 +1623,6 @@ package body Gtk.Extra.Sheet is
       function Internal (Sheet : System.Address; Row : Gint)
                         return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_sheet_get_row_title");
-      use type Interfaces.C.Strings.chars_ptr;
       C : Interfaces.C.Strings.chars_ptr;
    begin
       C := Internal (Get_Object (Sheet), Row);

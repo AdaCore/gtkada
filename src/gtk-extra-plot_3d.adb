@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001-2006                       --
---                         AdaCore                                   --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -479,10 +478,14 @@ package body Gtk.Extra.Plot_3D is
    procedure Major_Grids_Visible
      (Plot : access Gtk_Plot_3D_Record; X, Y, Z : out Boolean)
    is
-      procedure Internal (Plot : System.Address; X, Y, Z : out Boolean);
+      procedure Internal (Plot : System.Address; X, Y, Z : out Gboolean);
       pragma Import (C, Internal, "gtk_plot3d_major_grids_visible");
+      Xb, Yb, Zb : Gboolean;
    begin
-      Internal (Get_Object (Plot), X, Y, Z);
+      Internal (Get_Object (Plot), Xb, Yb, Zb);
+      X := Boolean'Val (Xb);
+      Y := Boolean'Val (Yb);
+      Z := Boolean'Val (Zb);
    end Major_Grids_Visible;
 
    --------------------------------
@@ -551,10 +554,14 @@ package body Gtk.Extra.Plot_3D is
    procedure Minor_Grids_Visible
      (Plot : access Gtk_Plot_3D_Record; X, Y, Z : out Boolean)
    is
-      procedure Internal (Plot : System.Address; X, Y, Z : out Boolean);
+      procedure Internal (Plot : System.Address; X, Y, Z : out Gboolean);
       pragma Import (C, Internal, "gtk_plot3d_minor_grids_visible");
+      Xb, Yb, Zb : Gboolean;
    begin
-      Internal (Get_Object (Plot), X, Y, Z);
+      Internal (Get_Object (Plot), Xb, Yb, Zb);
+      X := Boolean'Val (Xb);
+      Y := Boolean'Val (Yb);
+      Z := Boolean'Val (Zb);
    end Minor_Grids_Visible;
 
    --------------------------------
