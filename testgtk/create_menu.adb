@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,17 +27,146 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib; use Glib;
+with Glib.Object; use Glib.Object;
+
+with Gtk.Handlers;
+with Gtkada.Handlers; use Gtkada.Handlers;
+
 with Gtk.Box; use Gtk.Box;
+with Gtk.Button; use Gtk.Button;
 with Gtk.Menu; use Gtk.Menu;
 with Gtk.Menu_Bar; use Gtk.Menu_Bar;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
+
+--  Gtk.Option_Menu is obsolescent, but we would still like to test it.
+--  Deactivate obsolencence warning.
+pragma Warnings (Off);
 with Gtk.Option_Menu; use Gtk.Option_Menu;
+pragma Warnings (On);
+with Gtk.Spin_Button; use Gtk.Spin_Button;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Tearoff_Menu_Item; use Gtk.Tearoff_Menu_Item;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 
 package body Create_Menu is
+
+   package Button_Cb is new Handlers.Callback (Gtk_Button_Record);
+
+   package My_Popup is new Gtk.Menu.User_Menu_Popup (Gint);
+   use My_Popup;
+
+   procedure Position_At_0
+     (Menu : access Gtk_Menu_Record'Class;
+      X    : out Gint;
+      Y    : out Gint);
+   --  Position function at coordinates 0,0.
+
+   procedure Position_At_Data
+     (Menu : access Gtk_Menu_Record'Class;
+      X    : out Gint;
+      Y    : out Gint;
+      Val  : access Gint);
+   --  Position function at coordinates Val,Val.
+
+   procedure Popup_At_Position (Widget : access GObject_Record'Class);
+   --  Callback for the "Popup at given coordinates" button
+
+   procedure Popup (Widget : access Gtk_Button_Record'Class);
+   --  Callback for the "Popup at 0,0 coordinates" button
+
+   -------------------
+   -- Position_At_0 --
+   -------------------
+
+   procedure Position_At_0
+     (Menu : access Gtk_Menu_Record'Class;
+      X    : out Gint;
+      Y    : out Gint)
+   is
+      pragma Unreferenced (Menu);
+   begin
+      X := 0;
+      Y := 0;
+   end Position_At_0;
+
+   ----------------------
+   -- Position_At_Data --
+   ----------------------
+
+   procedure Position_At_Data
+     (Menu : access Gtk_Menu_Record'Class;
+      X    : out Gint;
+      Y    : out Gint;
+      Val  : access Gint)
+   is
+      pragma Unreferenced (Menu);
+   begin
+      X := Val.all;
+      Y := Val.all;
+   end Position_At_Data;
+
+   -----------------------
+   -- Popup_At_Position --
+   -----------------------
+
+   procedure Popup_At_Position (Widget : access GObject_Record'Class) is
+      Spin : constant Gtk_Spin_Button := Gtk_Spin_Button (Widget);
+      Menu : Gtk_Menu;
+      Menu_Item : Gtk_Menu_Item;
+
+      Val : aliased Gint := Get_Value_As_Int (Spin);
+   begin
+      Gtk_New (Menu);
+
+      Gtk_New (Menu_Item, "this");
+      Append (Menu, Menu_Item);
+      Gtk_New (Menu_Item, "menu");
+      Append (Menu, Menu_Item);
+      Gtk_New (Menu_Item, "should be positioned");
+      Append (Menu, Menu_Item);
+      Gtk_New (Menu_Item, "at " & Val'Img & "," & Val'Img);
+      Append (Menu, Menu_Item);
+      Show_All (Menu);
+      My_Popup.Popup
+        (Menu => Menu,
+         Func => Position_At_Data'Access,
+         Data => Val'Access);
+   end Popup_At_Position;
+
+   -----------
+   -- Popup --
+   -----------
+
+   procedure Popup (Widget : access Gtk_Button_Record'Class) is
+      pragma Unreferenced (Widget);
+      Menu : Gtk_Menu;
+      Menu_Item : Gtk_Menu_Item;
+   begin
+      Gtk_New (Menu);
+
+      Gtk_New (Menu_Item, "this");
+      Append (Menu, Menu_Item);
+      Gtk_New (Menu_Item, "menu");
+      Append (Menu, Menu_Item);
+      Gtk_New (Menu_Item, "should be positioned");
+      Append (Menu, Menu_Item);
+      Gtk_New (Menu_Item, "in the top-left corner");
+      Append (Menu, Menu_Item);
+      Show_All (Menu);
+      Popup
+        (Menu,
+         Parent_Menu_Shell => null,
+         Parent_Menu_Item  => null,
+         Func              => Position_At_0'Access,
+         Button            => 1,
+         Activate_Time     => 0);
+   end Popup;
+
+   ----------
+   -- Help --
+   ----------
 
    function Help return String is
    begin
@@ -76,6 +205,10 @@ package body Create_Menu is
         & " any editable entry associated with it.";
    end Help;
 
+   -----------------
+   -- Create_Menu --
+   -----------------
+
    function Create_Menu
      (Depth : Integer; Tearoff : Boolean) return Gtk_Menu is
       Menu      : Gtk_Menu;
@@ -112,6 +245,10 @@ package body Create_Menu is
       return Menu;
    end Create_Menu;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1 : Gtk_Box;
       Box2 : Gtk_Box;
@@ -119,6 +256,9 @@ package body Create_Menu is
       Menu : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
       Option_Menu : Gtk_Option_Menu;
+
+      Button : Gtk_Button;
+      Spin   : Gtk_Spin_Button;
 
    begin
 
@@ -154,8 +294,29 @@ package body Create_Menu is
       Set_History (Option_Menu, 3);
       Pack_Start (Box2, Option_Menu, False, False, 0);
 
+      Gtk_New (Button, "Popup at 0,0 coordinates");
+      Pack_Start (Box1, Button, False, False, 3);
+
+      Button_Cb.Connect
+        (Button, "clicked",
+         Button_Cb.To_Marshaller (Popup'Access));
+
+      Gtk_New_Hbox (Box2, False, 10);
+               Pack_Start (Box1, Box2, False, False, 0);
+
+      Gtk_New (Spin, 0.0, 800.0, 100.0);
+      Set_Value (Spin, 200.0);
+      Pack_Start (Box2, Spin, False, False, 3);
+
+      Gtk_New (Button, "Popup at given coordinates");
+      Pack_Start (Box2, Button, False, False, 3);
+
+      Object_Callback.Object_Connect
+        (Button, "clicked",
+         Popup_At_Position'Access,
+         Spin);
+
       Show_All (Frame);
    end Run;
 
 end Create_Menu;
-

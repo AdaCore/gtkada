@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -193,14 +193,14 @@ package Gtk.Menu is
    package User_Menu_Popup is
       --  <doc_ignore>
       type Gtk_Menu_Position_Func is access procedure
-        (Menu      : access Gtk_Menu_Record;
+        (Menu      : access Gtk_Menu_Record'Class;
          X         : out Gint;
          Y         : out Gint;
          User_Data : access Data_Type);
       --  </doc_ignore>
 
       procedure Popup
-        (Menu              : access Gtk_Menu_Record;
+        (Menu              : access Gtk_Menu_Record'Class;
          Data              : access Data_Type;
          Parent_Menu_Shell : in Gtk.Menu_Shell.Gtk_Menu_Shell := null;
          Parent_Menu_Item  : in Gtk.Menu_Item.Gtk_Menu_Item := null;

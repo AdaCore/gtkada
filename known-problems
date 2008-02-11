@@ -1,4 +1,10 @@
-Known problems fixed in GtkAda 2.10.1
+Known problems fixed in GtkAda 2.10.3
+
+- H211-002 Gtk.Menu.Popup not working or crashing when "Func" is non-null.
+  Problem:    In Gtk.Menu, calling Popup or User_Menu_Popup.Popup might not
+              function or cause crashes when the parameter "Func" is not
+              null.
+  Workaround: Do not use this mechanism to position a menu.
 
 Known problems fixed in GtkAda 2.10.0
 
