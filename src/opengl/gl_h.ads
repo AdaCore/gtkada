@@ -7,6 +7,9 @@ with Interfaces.C.Extensions;
 with System;
 
 package gl_h is
+   pragma Warnings (Off);
+   --  disable warnings for this file which was generated automatically
+
    GL_VERSION_1_1     : constant := 1;
    GL_VERSION_1_2     : constant := 1;
 

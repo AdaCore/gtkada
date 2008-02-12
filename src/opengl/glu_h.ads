@@ -10,6 +10,9 @@ with gl_h;
 --  examples, not as a full binding and are provided without support.
 
 package glu_h is
+   pragma Warnings (Off);
+   --  disable warnings for this file which was generated automatically
+
    --  Mesa 3-D graphics library
    --  Version:  3.0
    --  Copyright (C) 1995-1998  Brian Paul
