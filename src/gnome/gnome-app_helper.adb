@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                   Copyright (C) 2000-2002                         --
---                          ACT-Europe                               --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -129,7 +128,7 @@ package body Gnome.App_Helper is
       procedure Internal
         (Menu_Shell   : System.Address;
          Info         : System.Address;
-         Accel_Group  : Gtk_Accel_Group;
+         Accel_Group  : System.Address;
          Uline_Accels : Gint;
          Pos          : Gint);
       pragma Import (C, Internal, "gnome_app_fill_menu");
@@ -177,7 +176,7 @@ package body Gnome.App_Helper is
       Internal
         (Get_Object (Menu_Shell),
          Info.all'Address,
-         Accel_Group,
+         Get_Object (Accel_Group),
          Boolean'Pos (Uline_Accels),
          Pos);
    end Fill_Menu;
@@ -194,11 +193,12 @@ package body Gnome.App_Helper is
       procedure Internal
         (Toolbar     : System.Address;
          Info        : System.Address;
-         Accel_Group : Gtk_Accel_Group);
+         Accel_Group : System.Address);
       pragma Import (C, Internal, "gnome_app_fill_toolbar");
 
    begin
-      Internal (Get_Object (Toolbar), Info.all'Address, Accel_Group);
+      Internal
+        (Get_Object (Toolbar), Info.all'Address, Get_Object (Accel_Group));
    end Fill_Toolbar;
 
    -------------------
