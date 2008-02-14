@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -152,7 +152,7 @@ package Glib is
    type C_Dummy is limited private;
    --  </doc_ignore>
 
-   type C_Proxy is access C_Dummy;
+   type C_Proxy is access all C_Dummy;
    --  General proxy for C structures.
    --  This type is used instead of System.Address so that the variables are
    --  automatically initialized to 'null'.
@@ -378,9 +378,14 @@ package Glib is
    --  Create a new boxed type
 
 private
-   type C_Dummy is null record;
+   type Private_String_Access is access all String;
+   type C_Dummy is record
+      Field1 : Private_String_Access;
+   end record;
+   pragma Convention (C, C_Dummy);
    --  This array can contain anything, since it is never used on the Ada side
-   --  anyway.
+   --  anyway. Pretend it contains a string access so that the compiler
+   --  chooses a large default alignment, compatible with most types.
 
    type GType_Class is new System.Address;
 
