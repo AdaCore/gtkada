@@ -378,14 +378,13 @@ package Glib is
    --  Create a new boxed type
 
 private
-   type Private_String_Access is access all String;
    type C_Dummy is record
-      Field1 : Private_String_Access;
+      Dummy1 : System.Address;
    end record;
    pragma Convention (C, C_Dummy);
    --  This array can contain anything, since it is never used on the Ada side
-   --  anyway. Pretend it contains a string access so that the compiler
-   --  chooses a large default alignment, compatible with most types.
+   --  anyway. Pretend it contains an address so that the compiler a
+   --  reasonable default alignment, compatible with most types.
 
    type GType_Class is new System.Address;
 
