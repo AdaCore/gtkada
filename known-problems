@@ -6,6 +6,11 @@ Known problems fixed in GtkAda 2.10.3
               null.
   Workaround: Do not use this mechanism to position a menu.
 
+- H121-015 Memory leak in Gtk.Tree_Model.To_String
+  Problem:    Calling the function Gtk.Tree_Model.To_String causes a memory
+              leak.
+  Workaround: No known workaround.
+
 Known problems fixed in GtkAda 2.10.0
 
 - G202-018 Gtkada.MDI.Raise_Child ends up with hidden focused window
