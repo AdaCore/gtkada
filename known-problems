@@ -9,7 +9,17 @@ Known problems fixed in GtkAda 2.10.3
 - H121-015 Memory leak in Gtk.Tree_Model.To_String
   Problem:    Calling the function Gtk.Tree_Model.To_String causes a memory
               leak.
-  Workaround: No known workaround.
+  Workaround: Replace the body of the function with:
+
+    function To_String (Path : Gtk_Tree_Path) return String  is
+         function Internal (Path   : Gtk_Tree_Path) return chars_ptr;
+         pragma Import (C, Internal, "gtk_tree_path_to_string");
+         Result : chars_ptr := Internal (Path);
+         S : constant String := Interfaces.C.Strings.Value (Result);
+      begin
+         Free (Result);
+         return S;
+      end To_String;
 
 Known problems fixed in GtkAda 2.10.0
 
