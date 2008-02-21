@@ -798,23 +798,30 @@ package body Gtk.Tree_Model is
       Func      : Gtk_Tree_Model_Foreach_Func;
       User_Data : System.Address)
    is
-      function Proxy
-        (C_Model   : System.Address;
-         Path      : Gtk_Tree_Path;
-         Iter      : Gtk_Tree_Iter;
-         User_Data : System.Address) return Gboolean;
-      pragma Convention (C, Proxy);
+      type Foreach_Data is record
+         Func      : Gtk_Tree_Model_Foreach_Func;
+         User_Data : System.Address;
+         Model     : Gtk_Tree_Model;
+      end record;
 
-      function Proxy
-        (C_Model   : System.Address;
-         Path      : Gtk_Tree_Path;
-         Iter      : Gtk_Tree_Iter;
-         User_Data : System.Address) return Gboolean
+      function Foreach_Proxy
+        (C_Model : System.Address;
+         Path    : Gtk_Tree_Path;
+         Iter    : Gtk_Tree_Iter;
+         Data    : access Foreach_Data) return Gboolean;
+      pragma Convention (C, Foreach_Proxy);
+
+      function Foreach_Proxy
+        (C_Model : System.Address;
+         Path    : Gtk_Tree_Path;
+         Iter    : Gtk_Tree_Iter;
+         Data    : access Foreach_Data) return Gboolean
       is
          pragma Unreferenced (C_Model);
       begin
-         return Boolean'Pos (Func (Model, Path, Iter, User_Data));
-      end Proxy;
+         return Boolean'Pos
+           (Data.Func (Data.Model, Path, Iter, Data.User_Data));
+      end Foreach_Proxy;
 
       procedure Internal
         (Model     : System.Address;
@@ -822,8 +829,10 @@ package body Gtk.Tree_Model is
          User_Data : System.Address);
       pragma Import (C, Internal, "gtk_tree_model_foreach");
 
+      Data : aliased Foreach_Data := (Func, User_Data, Model.all'Access);
+
    begin
-      Internal (Get_Object (Model), Proxy'Address, User_Data);
+      Internal (Get_Object (Model), Foreach_Proxy'Address, Data'Address);
    end Foreach;
 
 end Gtk.Tree_Model;
