@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -306,7 +306,7 @@ package Gdk.Pixbuf is
    procedure Render_To_Drawable
      (Pixbuf   : Gdk_Pixbuf;
       Drawable : Gdk.Drawable.Gdk_Drawable;
-      Gc       : Gdk.GC.Gdk_GC;
+      GC       : Gdk.GC.Gdk_GC;
       Src_X    : Gint;
       Src_Y    : Gint;
       Dest_X   : Gint;

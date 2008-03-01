@@ -3739,7 +3739,7 @@ package body Gtkada.Canvas is
       if Canvas.Zoom = 100 then
          Draw_Pixmap
            (Drawable => Get_Window (Canvas),
-            Gc       => GC,
+            GC       => GC,
             Src      => Item.Pixmap,
             Xsrc     => 0,
             Ysrc     => 0,

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -79,14 +79,14 @@ package Gdk.Drawable is
 
    procedure Draw_Point
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       X        : Gint;
       Y        : Gint);
    --  Draw a point, using the foreground color and other attributes of the Gc.
 
    procedure Draw_Line
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       X1       : Gint;
       Y1       : Gint;
       X2       : Gint;
@@ -97,7 +97,7 @@ package Gdk.Drawable is
 
    procedure Draw_Rectangle
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Filled   : Boolean := False;
       X        : Gint;
       Y        : Gint;
@@ -116,7 +116,7 @@ package Gdk.Drawable is
 
    procedure Draw_Arc
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Filled   : Boolean := False;
       X        : Gint;
       Y        : Gint;
@@ -137,7 +137,7 @@ package Gdk.Drawable is
 
    procedure Draw_Polygon
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Filled   : Boolean;
       Points   : Gdk.Types.Gdk_Points_Array);
    --  Draw an outlined or filled polygon.
@@ -150,7 +150,7 @@ package Gdk.Drawable is
    procedure Draw_Text
      (Drawable    : Gdk_Drawable;
       Font        : Gdk.Gdk_Font;
-      Gc          : Gdk.Gdk_GC;
+      GC          : Gdk.Gdk_GC;
       X           : Gint;
       Y           : Gint;
       Text        : UTF8_String);
@@ -164,7 +164,7 @@ package Gdk.Drawable is
    procedure Draw_Text
      (Drawable    : Gdk_Drawable;
       Font        : Gdk.Gdk_Font;
-      Gc          : Gdk.Gdk_GC;
+      GC          : Gdk.Gdk_GC;
       X           : Gint;
       Y           : Gint;
       Wide_Text   : Gdk.Types.Gdk_WString);
@@ -174,7 +174,7 @@ package Gdk.Drawable is
 
    procedure Draw_Drawable
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Src      : Gdk_Drawable;
       Xsrc     : Gint;
       Ysrc     : Gint;
@@ -204,7 +204,7 @@ package Gdk.Drawable is
 
    procedure Draw_Pixmap
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Src      : Gdk_Drawable;
       Xsrc     : Gint;
       Ysrc     : Gint;
@@ -216,7 +216,7 @@ package Gdk.Drawable is
 
    procedure Draw_Image
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Image    : Gdk.Gdk_Image;
       Xsrc     : Gint;
       Ysrc     : Gint;
@@ -238,20 +238,20 @@ package Gdk.Drawable is
 
    procedure Draw_Points
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Points   : Gdk.Types.Gdk_Points_Array);
    --  Draw a number of points.
    --  Use the foreground color and other attributes of the Gc.
 
    procedure Draw_Segments
      (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.Gdk_GC;
+      GC       : in Gdk.Gdk_GC;
       Segs     : in Gdk.Types.Gdk_Segments_Array);
    --  Draw a number of unconnected lines.
 
    procedure Draw_Lines
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Points   : Gdk.Types.Gdk_Points_Array);
    --  Draw a series of lines connecting the given points.
    --  The way in which joins between lines are drawn is determined by the

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,7 +41,7 @@ package body Gdk.Drawable is
 
    procedure Draw_Arc
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Filled   : Boolean := False;
       X        : Gint;
       Y        : Gint;
@@ -52,7 +52,7 @@ package body Gdk.Drawable is
    is
       procedure Internal
         (Drawable : Gdk_Drawable;
-         Gc       : Gdk.Gdk_GC;
+         GC       : Gdk.Gdk_GC;
          Filled   : Gboolean;
          X, Y     : Gint;
          Width    : Gint;
@@ -62,7 +62,7 @@ package body Gdk.Drawable is
       pragma Import (C, Internal, "gdk_draw_arc");
 
    begin
-      Internal (Drawable, Gc, Boolean'Pos (Filled),
+      Internal (Drawable, GC, Boolean'Pos (Filled),
                 X, Y, Width, Height, Angle1, Angle2);
    end Draw_Arc;
 
@@ -72,18 +72,18 @@ package body Gdk.Drawable is
 
    procedure Draw_Lines
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Points   : Gdk.Types.Gdk_Points_Array)
    is
       procedure Internal
         (Drawable : Gdk_Drawable;
-         Gc       : Gdk.Gdk_GC;
+         GC       : Gdk.Gdk_GC;
          Points   : Gdk.Types.Gdk_Points_Array;
          Npoints  : Gint);
       pragma Import (C, Internal, "gdk_draw_lines");
 
    begin
-      Internal (Drawable, Gc, Points, Points'Length);
+      Internal (Drawable, GC, Points, Points'Length);
    end Draw_Lines;
 
    -----------------
@@ -92,18 +92,18 @@ package body Gdk.Drawable is
 
    procedure Draw_Points
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Points   : Gdk.Types.Gdk_Points_Array)
    is
       procedure Internal
         (Drawable : Gdk_Drawable;
-         Gc       : Gdk.Gdk_GC;
+         GC       : Gdk.Gdk_GC;
          Points   : Gdk.Types.Gdk_Points_Array;
          Npoints  : Gint);
       pragma Import (C, Internal, "gdk_draw_points");
 
    begin
-      Internal (Drawable, Gc, Points, Points'Length);
+      Internal (Drawable, GC, Points, Points'Length);
    end Draw_Points;
 
    ------------------
@@ -112,20 +112,20 @@ package body Gdk.Drawable is
 
    procedure Draw_Polygon
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Filled   : Boolean;
       Points   : Gdk.Types.Gdk_Points_Array)
    is
       procedure Internal
         (Drawable : Gdk_Drawable;
-         Gc       : Gdk.Gdk_GC;
+         GC       : Gdk.Gdk_GC;
          Filled   : Gboolean;
          Points   : Gdk.Types.Gdk_Points_Array;
          Npoints  : Gint);
       pragma Import (C, Internal, "gdk_draw_polygon");
 
    begin
-      Internal (Drawable, Gc, Boolean'Pos (Filled), Points, Points'Length);
+      Internal (Drawable, GC, Boolean'Pos (Filled), Points, Points'Length);
    end Draw_Polygon;
 
    --------------------
@@ -134,7 +134,7 @@ package body Gdk.Drawable is
 
    procedure Draw_Rectangle
      (Drawable : Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Filled   : Boolean := False;
       X, Y     : Gint;
       Width    : Gint;
@@ -142,7 +142,7 @@ package body Gdk.Drawable is
    is
       procedure Internal
         (Drawable : Gdk_Drawable;
-         Gc       : Gdk.Gdk_GC;
+         GC       : Gdk.Gdk_GC;
          Filled   : Gboolean;
          X, Y     : Gint;
          Width    : Gint;
@@ -150,7 +150,7 @@ package body Gdk.Drawable is
       pragma Import (C, Internal, "gdk_draw_rectangle");
 
    begin
-      Internal (Drawable, Gc, Boolean'Pos (Filled), X, Y, Width, Height);
+      Internal (Drawable, GC, Boolean'Pos (Filled), X, Y, Width, Height);
    end Draw_Rectangle;
 
    -------------------
@@ -159,18 +159,18 @@ package body Gdk.Drawable is
 
    procedure Draw_Segments
      (Drawable : Gdk.Drawable.Gdk_Drawable;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       Segs     : Gdk.Types.Gdk_Segments_Array)
    is
       procedure Internal
         (Drawable : Gdk.Drawable.Gdk_Drawable;
-         Gc       : Gdk.Gdk_GC;
+         GC       : Gdk.Gdk_GC;
          Segs     : Gdk.Types.Gdk_Segments_Array;
          Nsegs    : Gint);
       pragma Import (C, Internal, "gdk_draw_segments");
 
    begin
-      Internal (Drawable, Gc, Segs, Segs'Length);
+      Internal (Drawable, GC, Segs, Segs'Length);
    end Draw_Segments;
 
    ---------------
@@ -180,7 +180,7 @@ package body Gdk.Drawable is
    procedure Draw_Text
      (Drawable : Gdk_Drawable;
       Font     : Gdk.Gdk_Font;
-      Gc       : Gdk.Gdk_GC;
+      GC       : Gdk.Gdk_GC;
       X        : Gint;
       Y        : Gint;
       Text     : UTF8_String)
@@ -188,7 +188,7 @@ package body Gdk.Drawable is
       procedure Internal
         (Drawable    : Gdk_Drawable;
          Font        : Gdk.Gdk_Font;
-         Gc          : Gdk.Gdk_GC;
+         GC          : Gdk.Gdk_GC;
          X           : Gint;
          Y           : Gint;
          Text        : UTF8_String;
@@ -196,13 +196,13 @@ package body Gdk.Drawable is
       pragma Import (C, Internal, "gdk_draw_text");
 
    begin
-      Internal (Drawable, Font, Gc, X, Y, Text, Text'Length);
+      Internal (Drawable, Font, GC, X, Y, Text, Text'Length);
    end Draw_Text;
 
    procedure Draw_Text
      (Drawable  : Gdk_Drawable;
       Font      : Gdk.Gdk_Font;
-      Gc        : Gdk.Gdk_GC;
+      GC        : Gdk.Gdk_GC;
       X         : Gint;
       Y         : Gint;
       Wide_Text : Gdk.Types.Gdk_WString)
@@ -210,7 +210,7 @@ package body Gdk.Drawable is
       procedure Internal
         (Drawable    : Gdk_Drawable;
          Font        : Gdk.Gdk_Font;
-         Gc          : Gdk.Gdk_GC;
+         GC          : Gdk.Gdk_GC;
          X           : Gint;
          Y           : Gint;
          Text        : C.wchar_array;
@@ -219,7 +219,7 @@ package body Gdk.Drawable is
 
    begin
       Internal
-        (Drawable, Font, Gc, X, Y,
+        (Drawable, Font, GC, X, Y,
          C.To_C (Item => Wide_Text, Append_Nul => False),
          Wide_Text'Length);
    end Draw_Text;
