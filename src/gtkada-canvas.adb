@@ -148,52 +148,52 @@ package body Gtkada.Canvas is
    --  When the item is resized.
 
    function Button_Pressed
-     (Canv : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean;
+     (Canv  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean;
    --  Called when the user has pressed the mouse button in the canvas.
    --  This tests whether an item was selected.
 
    function Button_Release
-     (Canv : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean;
+     (Canv  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean;
    --  Called when the user has released the mouse button.
    --  If an item was selected, this refreshed the canvas.
 
    function Button_Motion
-     (Canv : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean;
+     (Canv  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean;
    --  Called when the user moves the mouse while a button is pressed.
    --  If an item was selected, the item is moved.
 
    function Key_Press
-     (Canv : access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  Handle key events, to provide scrolling through Page Up, Page Down, and
    --  arrow keys.
 
    procedure Draw_Orthogonal_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : in Gdk.GC.Gdk_GC;
-      Link   : access Canvas_Link_Record'Class;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      GC              : in Gdk.GC.Gdk_GC;
+      Link            : access Canvas_Link_Record'Class;
       Show_Annotation : Boolean);
    --  Draw a link on the screen, as possibly several orthogonal lines.
    --  This link includes both an arrow head on its destination, and an
    --  optional text displayed approximatively in its middle.
 
    procedure Draw_Straight_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : in Gdk.GC.Gdk_GC;
-      Link   : access Canvas_Link_Record'Class;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      GC              : in Gdk.GC.Gdk_GC;
+      Link            : access Canvas_Link_Record'Class;
       Show_Annotation : Boolean);
    --  Draw Link on the screen as a straight line.
    --  This link includes both an arrow head on its destination, and an
    --  optional text displayed approximatively in its middle.
 
    procedure Draw_Arc_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : in Gdk.GC.Gdk_GC;
-      Link   : access Canvas_Link_Record'Class;
-      Offset : Gint;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      GC              : in Gdk.GC.Gdk_GC;
+      Link            : access Canvas_Link_Record'Class;
+      Offset          : Gint;
       Show_Annotation : Boolean);
    --  Draw Link on the screen.
    --  The link is drawn as a curved link (ie there is an extra handle in its
@@ -202,10 +202,10 @@ package body Gtkada.Canvas is
    --  optional text displayed approximatively in its middle.
 
    procedure Draw_Self_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : in Gdk.GC.Gdk_GC;
-      Link   : access Canvas_Link_Record'Class;
-      Offset : Gint;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      GC              : in Gdk.GC.Gdk_GC;
+      Link            : access Canvas_Link_Record'Class;
+      Offset          : Gint;
       Show_Annotation : Boolean);
    --  Draw a link when its source and destination items are the same
 
@@ -250,10 +250,10 @@ package body Gtkada.Canvas is
    --  The returned values are in world coordinates
 
    procedure Test_Scrolling_Box
-     (Canvas   : access Interactive_Canvas_Record'Class;
+     (Canvas : access Interactive_Canvas_Record'Class;
       Mouse_X_In_Canvas, Mouse_Y_In_Canvas : Gint;
-      X_Scroll : out Gint;
-      Y_Scroll : out Gint);
+      X_Scroll                             : out Gint;
+      Y_Scroll                             : out Gint);
    --  We keep moving the selection (and scrolling the canvas) as long as the
    --  mouse remains in a surrounding box around the canvas, or even outside
    --  the canvas. This is done even if the mouse doesn't move, so at to make
@@ -268,8 +268,8 @@ package body Gtkada.Canvas is
    --  This provides scrolling even when the mouse doesn't move
 
    procedure Scroll_Canvas_To_Area
-     (Canvas : access Interactive_Canvas_Record'Class;
-      X1, Y1, X2, Y2   : Gint;
+     (Canvas             : access Interactive_Canvas_Record'Class;
+      X1, Y1, X2, Y2     : Gint;
       Canvas_X, Canvas_Y : Gdouble := 0.5;
       Ignore_If_Visible  : Boolean := True;
       Report_Adj_Changed : Boolean := True);
@@ -283,9 +283,8 @@ package body Gtkada.Canvas is
 
    function Move_Selection
      (Canvas : access Interactive_Canvas_Record'Class;
-      Mouse_X_In_Canvas, Mouse_Y_In_Canvas : Gint;
-      New_Offset_X_World, New_Offset_Y_World : Gint)
-      return Boolean;
+      Mouse_X_In_Canvas, Mouse_Y_In_Canvas   : Gint;
+      New_Offset_X_World, New_Offset_Y_World : Gint) return Boolean;
    --  Moves all selected items by a specific amount.
    --  The move is relative to the initial position of the items, and
    --  (Delta_X_World, Delta_Y_World) are given in world coordinates.
@@ -323,8 +322,7 @@ package body Gtkada.Canvas is
    --  Internal function to implement zooming
 
    function Get_Background_Selection_Rectangle
-     (Canvas : access Interactive_Canvas_Record'Class)
-      return Gdk_Rectangle;
+     (Canvas : access Interactive_Canvas_Record'Class) return Gdk_Rectangle;
    --  Return the coordinates of the rectangle representing the background
    --  selection (when the user clicks in the background and drags the mouse).
    --  Return coordinates are in world coordinates
@@ -340,8 +338,8 @@ package body Gtkada.Canvas is
    --  ???
 
    procedure Scroll_Canvas_To_Item
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item   : access Canvas_Item_Record'Class;
+     (Canvas             : access Interactive_Canvas_Record'Class;
+      Item               : access Canvas_Item_Record'Class;
       Canvas_X, Canvas_Y : Gdouble := 0.5;
       Report_Adj_Changed : Boolean := True);
    --  Scroll the canvas to the item. This function tries to scroll the canvas
@@ -581,7 +579,7 @@ package body Gtkada.Canvas is
    ---------------
 
    procedure Configure
-     (Canvas : access Interactive_Canvas_Record;
+     (Canvas            : access Interactive_Canvas_Record;
       Grid_Size         : Guint := Default_Grid_Size;
       Annotation_Font   : Pango.Font.Pango_Font_Description :=
         Pango.Font.From_String (Default_Annotation_Font);
@@ -640,11 +638,11 @@ package body Gtkada.Canvas is
    ----------------------
 
    procedure Get_Bounding_Box
-     (Canvas : access Interactive_Canvas_Record'Class;
+     (Canvas                     : access Interactive_Canvas_Record'Class;
       X_Min, X_Max, Y_Min, Y_Max : out Gint)
    is
       Current : Vertex_Iterator := First (Canvas.Children);
-      Item : Canvas_Item;
+      Item    : Canvas_Item;
    begin
       if At_End (Current) then
          X_Min := 0;
@@ -714,6 +712,10 @@ package body Gtkada.Canvas is
          Canvas_Size : Gint);
       --  Takes care of one of the axis
 
+      -----------------
+      -- Update_Axis --
+      -----------------
+
       procedure Update_Axis
         (Adj : access Gtk_Adjustment_Record'Class;
          Min, Max : Gint;
@@ -762,9 +764,9 @@ package body Gtkada.Canvas is
    ------------------------------
 
    procedure Default_Layout_Algorithm
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Graph : Glib.Graphs.Graph;
-      Force : Boolean;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      Graph           : Glib.Graphs.Graph;
+      Force           : Boolean;
       Vertical_Layout : Boolean)
    is
       pragma Unreferenced (Force);
@@ -917,7 +919,7 @@ package body Gtkada.Canvas is
    ---------------------
 
    procedure Set_Auto_Layout
-     (Canvas : access Interactive_Canvas_Record;
+     (Canvas      : access Interactive_Canvas_Record;
       Auto_Layout : Boolean) is
    begin
       Canvas.Auto_Layout := Auto_Layout;
@@ -1133,12 +1135,12 @@ package body Gtkada.Canvas is
    -------------------
 
    procedure For_Each_Item
-     (Canvas  : access Interactive_Canvas_Record;
-      Execute : Item_Processor;
+     (Canvas            : access Interactive_Canvas_Record;
+      Execute           : Item_Processor;
       Linked_From_Or_To : Canvas_Item := null)
    is
       Iter : Item_Iterator := Start (Canvas, Linked_From_Or_To);
-      It : Canvas_Item;
+      It   : Canvas_Item;
    begin
       loop
          It := Get (Iter);
@@ -1154,7 +1156,7 @@ package body Gtkada.Canvas is
    -----------
 
    function Start
-     (Canvas : access Interactive_Canvas_Record;
+     (Canvas            : access Interactive_Canvas_Record;
       Linked_From_Or_To : Canvas_Item := null;
       Selected_Only     : Boolean := False) return Item_Iterator
    is
@@ -1263,22 +1265,22 @@ package body Gtkada.Canvas is
    ---------------
 
    procedure Clip_Line
-     (Src   : access Canvas_Item_Record;
+     (Src    : access Canvas_Item_Record;
       Canvas : access Interactive_Canvas_Record'Class;
-      To_X  : Gint;
-      To_Y  : Gint;
-      X_Pos : Gfloat;
-      Y_Pos : Gfloat;
-      Side  : out Item_Side;
-      X_Out : out Gint;
-      Y_Out : out Gint)
+      To_X   : Gint;
+      To_Y   : Gint;
+      X_Pos  : Gfloat;
+      Y_Pos  : Gfloat;
+      Side   : out Item_Side;
+      X_Out  : out Gint;
+      Y_Out  : out Gint)
    is
-      Rect : Gdk_Rectangle;
-      Src_X    : Gint;
-      Src_Y    : Gint;
-      Delta_X  : Gint;
-      Delta_Y  : Gint;
-      Offset   : Gint;
+      Rect    : Gdk_Rectangle;
+      Src_X   : Gint;
+      Src_Y   : Gint;
+      Delta_X : Gint;
+      Delta_Y : Gint;
+      Offset  : Gint;
    begin
       if Src.Selected then
          Rect := (Src.Coord.X + Canvas.Offset_X_World,
@@ -1354,7 +1356,7 @@ package body Gtkada.Canvas is
       Angle  : in Float)
    is
       Length : constant Float :=
-        Float (To_Canvas_Coordinates (Canvas, Canvas.Arrow_Length));
+                 Float (To_Canvas_Coordinates (Canvas, Canvas.Arrow_Length));
    begin
       Draw_Polygon
         (Get_Window (Canvas),
@@ -1449,8 +1451,7 @@ package body Gtkada.Canvas is
    ----------------------
 
    function Compute_Line_Pos
-     (Canvas : access Interactive_Canvas_Record'Class)
-     return Gint_Array
+     (Canvas : access Interactive_Canvas_Record'Class) return Gint_Array
    is
       type Graph_Range is record
          From, To : Gint;
@@ -1465,11 +1466,11 @@ package body Gtkada.Canvas is
       Xbase : constant Gint := Left_World_Coordinates (Canvas);
 
       Free_Ranges : Range_Array_Access := new Range_Array (1 .. 1000);
-      Tmp : Range_Array_Access;
-      Last_Range : Positive := Free_Ranges'First;
-      Iter : Vertex_Iterator := First (Canvas.Children);
-      E : Canvas_Item;
-      Right : Gint;
+      Tmp         : Range_Array_Access;
+      Last_Range  : Positive := Free_Ranges'First;
+      Iter        : Vertex_Iterator := First (Canvas.Children);
+      E           : Canvas_Item;
+      Right       : Gint;
    begin
       Free_Ranges (Free_Ranges'First) := (From => Gint'First, To => Gint'Last);
 
@@ -1537,8 +1538,8 @@ package body Gtkada.Canvas is
    ----------------------------
 
    procedure Scroll_Canvas_To_Item
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item   : access Canvas_Item_Record'Class;
+     (Canvas             : access Interactive_Canvas_Record'Class;
+      Item               : access Canvas_Item_Record'Class;
       Canvas_X, Canvas_Y : Gdouble := 0.5;
       Report_Adj_Changed : Boolean := True)
    is
@@ -1567,21 +1568,25 @@ package body Gtkada.Canvas is
    ---------------------------
 
    procedure Scroll_Canvas_To_Area
-     (Canvas : access Interactive_Canvas_Record'Class;
-      X1, Y1, X2, Y2   : Gint;
+     (Canvas             : access Interactive_Canvas_Record'Class;
+      X1, Y1, X2, Y2     : Gint;
       Canvas_X, Canvas_Y : Gdouble := 0.5;
       Ignore_If_Visible  : Boolean := True;
       Report_Adj_Changed : Boolean := True)
    is
       procedure Center_On_Coordinate
-        (Adj : access Gtk_Adjustment_Record'Class;
-         Min, Max : Gint;
+        (Adj        : access Gtk_Adjustment_Record'Class;
+         Min, Max   : Gint;
          Canvas_Pos : Gdouble);
       --  Takes care of one of the axis
 
+      --------------------------
+      -- Center_On_Coordinate --
+      --------------------------
+
       procedure Center_On_Coordinate
-        (Adj : access Gtk_Adjustment_Record'Class;
-         Min, Max : Gint;
+        (Adj        : access Gtk_Adjustment_Record'Class;
+         Min, Max   : Gint;
          Canvas_Pos : Gdouble)
       is
          Adj_Changed : Boolean := False;
@@ -1640,9 +1645,9 @@ package body Gtkada.Canvas is
    --------------------------
 
    procedure Draw_Orthogonal_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : Gdk.GC.Gdk_GC;
-      Link   : access Canvas_Link_Record'Class;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      GC              : Gdk.GC.Gdk_GC;
+      Link            : access Canvas_Link_Record'Class;
       Show_Annotation : Boolean)
    is
       X1, Y1, Xp1, Yp1, X2, Y2, Xp2, Yp2, X3, Y3 : Gint;
@@ -1843,13 +1848,13 @@ package body Gtkada.Canvas is
    ------------------------
 
    procedure Draw_Straight_Line
-     (Link : access Canvas_Link_Record;
-      Window : Gdk_Window;
-      GC : Gdk.GC.Gdk_GC;
-      Src_Side : Item_Side;
-      X1, Y1 : Glib.Gint;
+     (Link      : access Canvas_Link_Record;
+      Window    : Gdk_Window;
+      GC        : Gdk.GC.Gdk_GC;
+      Src_Side  : Item_Side;
+      X1, Y1    : Glib.Gint;
       Dest_Side : Item_Side;
-      X2, Y2 : Glib.Gint)
+      X2, Y2    : Glib.Gint)
    is
       pragma Unreferenced (Link, Src_Side, Dest_Side);
    begin
@@ -1861,9 +1866,9 @@ package body Gtkada.Canvas is
    ------------------------
 
    procedure Draw_Straight_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : in Gdk.GC.Gdk_GC;
-      Link   : access Canvas_Link_Record'Class;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      GC              : in Gdk.GC.Gdk_GC;
+      Link            : access Canvas_Link_Record'Class;
       Show_Annotation : Boolean)
    is
       X1, Y1, X2, Y2, Xs, Ys, Xd, Yd : Gint;
@@ -1955,19 +1960,19 @@ package body Gtkada.Canvas is
    --------------------
 
    procedure Draw_Self_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : Gdk.GC.Gdk_GC;
-      Link   : access Canvas_Link_Record'Class;
-      Offset : Gint;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      GC              : Gdk.GC.Gdk_GC;
+      Link            : access Canvas_Link_Record'Class;
+      Offset          : Gint;
       Show_Annotation : Boolean)
    is
-      Xbase      : constant Gint := Left_World_Coordinates (Canvas);
-      Ybase      : constant Gint := Top_World_Coordinates (Canvas);
-      Arc_Offset : constant Float :=
-        Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
+      Xbase       : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase       : constant Gint := Top_World_Coordinates (Canvas);
+      Arc_Offset  : constant Float := Float
+        (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
       Right_Angle : constant Float := Ada.Numerics.Pi / 2.0;
+      Src         : constant Canvas_Item := Canvas_Item (Get_Src (Link));
       X1, Y1, X3, Y3, Xc, Yc, Radius : Gint;
-      Src        : constant Canvas_Item := Canvas_Item (Get_Src (Link));
 
    begin
       pragma Assert (Src = Canvas_Item (Get_Dest (Link)));
@@ -2021,10 +2026,10 @@ package body Gtkada.Canvas is
    -------------------
 
    procedure Draw_Arc_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      GC     : Gdk.GC.Gdk_GC;
-      Link   : access Canvas_Link_Record'Class;
-      Offset : Gint;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      GC              : Gdk.GC.Gdk_GC;
+      Link            : access Canvas_Link_Record'Class;
+      Offset          : Gint;
       Show_Annotation : Boolean)
    is
       procedure Bezier_One_Control
@@ -2038,12 +2043,12 @@ package body Gtkada.Canvas is
       procedure Bezier_One_Control
         (X1, Y1, X2, Y2, X3, Y3 : Gint; Step : Float)
       is
-         T : Float := 0.0;
+         T           : Float := 0.0;
          A, B, B2, C : Float;
-         Old_X : Gint := X1;
-         Old_Y : Gint := Y1;
-         Old_X2 : Gint := X3;
-         Old_Y2 : Gint := Y3;
+         Old_X       : Gint := X1;
+         Old_Y       : Gint := Y1;
+         Old_X2      : Gint := X3;
+         Old_Y2      : Gint := Y3;
          New_X, New_Y, New_X2, New_Y2 : Gint;
       begin
          --  The general formula for a quadratic bezier curve is:
@@ -2197,11 +2202,11 @@ package body Gtkada.Canvas is
    ---------------
 
    procedure Draw_Link
-     (Canvas      : access Interactive_Canvas_Record'Class;
-      Link        : access Canvas_Link_Record;
-      Invert_Mode : Boolean;
-      GC          : Gdk.GC.Gdk_GC;
-      Edge_Number : Gint;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      Link            : access Canvas_Link_Record;
+      Invert_Mode     : Boolean;
+      GC              : Gdk.GC.Gdk_GC;
+      Edge_Number     : Gint;
       Show_Annotation : Boolean := True)
    is
       pragma Unreferenced (Invert_Mode);
@@ -2278,7 +2283,7 @@ package body Gtkada.Canvas is
       X_Left     : constant Gint := Left_World_Coordinates (Canvas);
       Y_Top      : constant Gint := Top_World_Coordinates (Canvas);
       Grid       : constant Gint :=
-        To_Canvas_Coordinates (Canvas, Gint (Canvas.Grid_Size));
+                     To_Canvas_Coordinates (Canvas, Gint (Canvas.Grid_Size));
       X, Y, Xmin : Gint;
       Window     : Gdk_Window;
 
@@ -2426,8 +2431,8 @@ package body Gtkada.Canvas is
    ---------------------
 
    procedure Set_Screen_Size
-     (Item   : access Canvas_Item_Record;
-      Width, Height  : Gint) is
+     (Item          : access Canvas_Item_Record;
+      Width, Height : Gint) is
    begin
       Item.Coord.Width  := Width;
       Item.Coord.Height := Height;
@@ -2438,7 +2443,7 @@ package body Gtkada.Canvas is
    ---------------
 
    function Key_Press
-     (Canv : access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
       Canvas    : constant Interactive_Canvas := Interactive_Canvas (Canv);
@@ -2544,8 +2549,8 @@ package body Gtkada.Canvas is
    -------------------
 
    function Point_In_Item
-     (Item   : access Canvas_Item_Record;
-      X, Y   : Gint) return Boolean is
+     (Item : access Canvas_Item_Record;
+      X, Y : Gint) return Boolean is
    begin
       return X >= Item.Coord.X
         and then X <= Item.Coord.X + Gint (Item.Coord.Width)
@@ -2559,11 +2564,11 @@ package body Gtkada.Canvas is
 
    function Item_At_Coordinates
      (Canvas : access Interactive_Canvas_Record;
-      X, Y : Glib.Gint) return Canvas_Item
+      X, Y   : Glib.Gint) return Canvas_Item
    is
-      Tmp  : Vertex_Iterator := First (Canvas.Children);
+      Tmp    : Vertex_Iterator := First (Canvas.Children);
       Result : Canvas_Item := null;
-      Item : Canvas_Item;
+      Item   : Canvas_Item;
    begin
       --  Keep the last item found, since this is the one on top.
       --  ??? Not the most efficient way to search, since we have to traverse
@@ -2592,7 +2597,7 @@ package body Gtkada.Canvas is
    is
       Xbase : constant Gint := Left_World_Coordinates (Canvas);
       Ybase : constant Gint := Top_World_Coordinates (Canvas);
-      X : constant Gint := To_World_Coordinates
+      X     : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_X (Event))) + Xbase;
       Y     : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_Y (Event))) + Ybase;
@@ -2923,7 +2928,8 @@ package body Gtkada.Canvas is
      (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
+      Canvas             : constant Interactive_Canvas :=
+                             Interactive_Canvas (Canv);
       X_Scroll, Y_Scroll : Gint;
    begin
       if Get_Window (Event) /= Get_Window (Canvas) then
@@ -2940,6 +2946,7 @@ package body Gtkada.Canvas is
          Mouse_Y_In_Canvas => Gint (Get_Y (Event)),
          X_Scroll          => X_Scroll,
          Y_Scroll          => Y_Scroll);
+
       if X_Scroll /= 0 or else Y_Scroll /= 0 then
          if Canvas.Scrolling_Timeout_Id = 0 then
             if Traces then
@@ -2989,9 +2996,9 @@ package body Gtkada.Canvas is
 
    function Scrolling_Timeout (Canvas : Interactive_Canvas) return Boolean is
       Mouse_X_Canvas, Mouse_Y_Canvas : Gint;
-      Mask    : Gdk_Modifier_Type;
-      W       : Gdk_Window;
-      X_Scroll, Y_Scroll : Gint;
+      Mask                           : Gdk_Modifier_Type;
+      W                              : Gdk_Window;
+      X_Scroll, Y_Scroll             : Gint;
    begin
       if Traces then
          Put_Line ("Scrolling timeout");
@@ -3036,12 +3043,12 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Show   : Boolean)
    is
-      Xbase    : constant Gint := Left_World_Coordinates (Canvas);
-      Ybase    : constant Gint := Top_World_Coordinates (Canvas);
-      Iter     : Item_Iterator;
-      Item     : Canvas_Item;
-      X, Y     : Gint;
-      Rect     : Gdk_Rectangle;
+      Xbase : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase : constant Gint := Top_World_Coordinates (Canvas);
+      Iter  : Item_Iterator;
+      Item  : Canvas_Item;
+      X, Y  : Gint;
+      Rect  : Gdk_Rectangle;
 
    begin
       if (Canvas.Dashed_Line_Visible and Show)
@@ -3110,7 +3117,7 @@ package body Gtkada.Canvas is
 
    function Move_Selection
      (Canvas : access Interactive_Canvas_Record'Class;
-      Mouse_X_In_Canvas, Mouse_Y_In_Canvas : Gint;
+      Mouse_X_In_Canvas, Mouse_Y_In_Canvas   : Gint;
       New_Offset_X_World, New_Offset_Y_World : Gint) return Boolean
    is
       pragma Unreferenced (Mouse_X_In_Canvas, Mouse_Y_In_Canvas);
@@ -3214,8 +3221,8 @@ package body Gtkada.Canvas is
    ---------------------
 
    procedure On_Button_Click
-     (Item   : access Canvas_Item_Record;
-      Event  : Gdk.Event.Gdk_Event_Button)
+     (Item  : access Canvas_Item_Record;
+      Event : Gdk.Event.Gdk_Event_Button)
    is
       pragma Unreferenced (Item, Event);
    begin
@@ -3241,12 +3248,12 @@ package body Gtkada.Canvas is
       From, To : access Canvas_Item_Record'Class;
       Name     : UTF8_String := "") return Boolean
    is
-      Current : Edge_Iterator := First
+      Current   : Edge_Iterator := First
         (Canvas.Children,
          Src  => Vertex_Access (From),
          Dest => Vertex_Access (To),
          Directed => False);
-      E : Canvas_Link;
+      E         : Canvas_Link;
       Candidate : Boolean;
    begin
       --  We need to examine both links from FROM to TO and from TO to FROM,
@@ -3440,7 +3447,7 @@ package body Gtkada.Canvas is
 
    procedure Remove_From_Selection
      (Canvas : access Interactive_Canvas_Record;
-      Item : access Canvas_Item_Record'Class)
+      Item   : access Canvas_Item_Record'Class)
    is
    begin
       if Item.Selected then
