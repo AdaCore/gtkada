@@ -206,8 +206,6 @@ package body Gtkada.Dialogs is
             end case;
          end if;
       end loop;
-
-      return Button_None;
    end Message_Dialog;
 
    -----------------------
