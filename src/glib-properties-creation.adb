@@ -145,7 +145,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_char");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Minimum, Maximum, Default, Flags);
    end Gnew_Char;
 
@@ -199,7 +199,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_uchar");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Minimum, Maximum, Default, Flags);
    end Gnew_Uchar;
 
@@ -231,7 +231,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_boolean");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Boolean'Pos (Default), Flags);
    end Gnew_Boolean;
 
@@ -285,7 +285,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_int");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Minimum, Maximum, Default, Flags);
    end Gnew_Int;
 
@@ -339,7 +339,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_uint");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Minimum, Maximum, Default, Flags);
    end Gnew_Uint;
 
@@ -393,7 +393,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_long");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Minimum, Maximum, Default, Flags);
    end Gnew_Long;
 
@@ -447,7 +447,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_ulong");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Minimum, Maximum, Default, Flags);
    end Gnew_Ulong;
 
@@ -479,7 +479,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_unichar");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Default, Flags);
    end Gnew_Unichar;
 
@@ -524,7 +524,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_flags");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Flags_Type, Default, Flags);
    end Gnew_Flags;
 
@@ -589,7 +589,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_float");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Minimum, Maximum, Default, Flags);
    end Gnew_Float;
 
@@ -654,7 +654,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_double");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Minimum, Maximum, Default, Flags);
    end Gnew_Double;
 
@@ -745,8 +745,8 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_string");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
-         Default & ASCII.Nul, Flags);
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
+         Default & ASCII.NUL, Flags);
    end Gnew_String;
 
    ----------------
@@ -766,7 +766,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_param");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Param_Type, Flags);
    end Gnew_Param;
 
@@ -787,7 +787,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_boxed");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Boxed_Type, Flags);
    end Gnew_Boxed;
 
@@ -806,7 +806,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_pointer");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul, Flags);
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL, Flags);
    end Gnew_Pointer;
 
    -----------------
@@ -826,7 +826,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, Internal, "g_param_spec_object");
    begin
       return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
          Object_Type, Flags);
    end Gnew_Object;
 

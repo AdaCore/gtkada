@@ -105,7 +105,7 @@ package body Gtk.Marshallers is
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
             Internal
-              (Get_Object (Object), Name & ASCII.Nul, To_Address (Param), B);
+              (Get_Object (Object), Name & ASCII.NUL, To_Address (Param), B);
             return Return_Type'Val (B);
          end Emit_By_Name;
 
