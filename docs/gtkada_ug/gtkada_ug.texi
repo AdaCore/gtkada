@@ -2071,7 +2071,7 @@ and, if you think this is a problem in GtkAda itself, send us an e-mail.
 
 If you are a supported user of GNAT, send mail to
 @uref{mailto:report@@gnat.com} to report errors, otherwise send mail
-to the authors (@uref{mailto:gtkada@@ada.eu.org}) explaining exactly
+to the GtkAda list (@uref{mailto:gtkada@@lists.adacore.com}) explaining exactly
 what your are  doing,  what  is  the  expected  result  and  what  you
 actually get. Please include the required sources to reproduce the
 problem, in a  format usable  by @code{gnatchop}  (basically, insert
