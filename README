@@ -1,8 +1,8 @@
-----------------------------------------------------------------------
---                                                                  --
---        GtkAda . An Ada95 graphical toolkit based on Gtk+         --
---                                                                  --
-----------------------------------------------------------------------
+--------------------------------------------------------------------
+--                                                                --
+--        GtkAda . An Ada graphical toolkit based on Gtk+         --
+--                                                                --
+--------------------------------------------------------------------
 
 Installation
 ============
@@ -22,12 +22,12 @@ The home page for gtk is
 
 This home page will always contain the latest news for this toolkit.
 
-This is GtkAda version 2.10.2. This package is an Ada graphical library
+This is GtkAda version 2.12.0. This package is an Ada graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada
 as the programming language.
 
-This library has been tested using Gtk+ 2.10.9 on the following systems:
+This library has been tested using Gtk+ 2.12.9 on the following systems:
 
    - GNU Linux/x86
    - GNU Linux/x86-64
@@ -35,13 +35,7 @@ This library has been tested using Gtk+ 2.10.9 on the following systems:
    - Solaris/sparc
    - Solaris/x86
    - Windows XP
-   - HP-UX/pa
-   - Tru64
    - FreeBSD/x86
-
-If you manage to use it on other systems (which should probably be
-straightforward - just recompile GtkAda), please let us know so that
-we can add to the above list.
 
 Disclaimer
 ==========
