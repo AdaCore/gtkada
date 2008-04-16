@@ -1,6 +1,6 @@
 2007-01-22	Nicolas Setton  <setton@adacore.com>
 
-	* gtk/gtktextview.c (cancel_arrow_animation): Reset the node
+	* gtk/gtktreeview.c (cancel_arrow_animation): Reset the node
 	corresponding to the expanding/collapsing iter, which has no
 	reason to be referenced past this point.
 	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=511217
