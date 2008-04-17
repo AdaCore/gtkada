@@ -85,22 +85,22 @@
  
    g_free (rgndata);
  
---- gdk/Makefile.in.orig	2007-03-14 05:12:38.000000000 +0100
-+++ gdk/Makefile.in	2007-03-23 17:23:57.062500000 +0100
-@@ -462,8 +462,8 @@ libgdk_win32_2_0_la_SOURCES = $(common_s
+--- gdk/Makefile.in.orig	2008-03-12 05:18:11.000000000 +0100
++++ gdk/Makefile.in	2008-04-17 18:31:16.984375000 +0200
+@@ -496,8 +496,8 @@ libgdk_win32_2_0_la_SOURCES = $(common_s
  libgdk_win32_2_0_la_LIBADD = win32/libgdk-win32.la $(GDK_DEP_LIBS) \
    $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la
  
 -libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la win32/rc/gdk-win32-res.o gdk.def
--libgdk_win32_2_0_la_LDFLAGS = -Wl,win32/rc/gdk-win32-res.o -export-symbols gdk.def $(LDADD) $(am__append_1) $(am__append_2)
+-libgdk_win32_2_0_la_LDFLAGS = -Wl,win32/rc/gdk-win32-res.o -export-symbols gdk.def $(LDADD)
 +libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la gdk.def
-+libgdk_win32_2_0_la_LDFLAGS = -export-symbols gdk.def $(LDADD) $(am__append_1) $(am__append_2)
++libgdk_win32_2_0_la_LDFLAGS = -export-symbols gdk.def $(LDADD)
  
  @MS_LIB_AVAILABLE_TRUE@noinst_DATA = gdk-win32-$(GTK_API_VERSION).lib
  
---- modules/engines/ms-windows/msw_style.c.old	2007-10-10 17:54:45 +0200
-+++ modules/engines/ms-windows/msw_style.c	2007-10-10 17:55:12 +0200
-@@ -2575,6 +2575,9 @@ draw_themed_tab_button (GtkStyle *style,
+--- modules/engines/ms-windows/msw_style.c.orig	2008-03-12 05:17:03.000000000 +0100
++++ modules/engines/ms-windows/msw_style.c	2008-04-17 18:35:13.515625000 +0200
+@@ -2649,6 +2649,9 @@ draw_themed_tab_button (GtkStyle *style,
        GdkPixbuf *pixbuf;
        GdkPixbuf *rotated;
  
@@ -108,29 +108,21 @@
 +        return TRUE;
 +      
        if (gap_side == GTK_POS_LEFT || gap_side == GTK_POS_RIGHT)
-         {
-           pixmap = gdk_pixmap_new (window, clip_rect.height, clip_rect.width, -1);
-@@ -2606,13 +2609,16 @@ draw_themed_tab_button (GtkStyle *style,
-           g_object_unref (pixmap);
-         }
+ 	{
+ 	  pixmap = gdk_pixmap_new (window, clip_rect.height, clip_rect.width, -1);
+@@ -2682,6 +2685,7 @@ draw_themed_tab_button (GtkStyle *style,
+ 	  g_object_unref (pixmap);
+ 	}
  
--      rotated = gdk_pixbuf_rotate_simple (pixbuf, rotation);
--      g_object_unref (pixbuf);
--      pixbuf = rotated;
--
--      gdk_draw_pixbuf (window, NULL, pixbuf, 0, 0, clip_rect.x, clip_rect.y,
--                       clip_rect.width, clip_rect.height, GDK_RGB_DITHER_NONE, 0, 0);
--      g_object_unref (pixbuf);
-+      if (pixbuf != NULL)
-+	{
-+	  rotated = gdk_pixbuf_rotate_simple (pixbuf, rotation);
-+	  g_object_unref (pixbuf);
-+	  pixbuf = rotated;
-+
-+	  gdk_draw_pixbuf (window, NULL, pixbuf, 0, 0, clip_rect.x, clip_rect.y,
-+	  clip_rect.width, clip_rect.height, GDK_RGB_DITHER_NONE, 0, 0);
-+	  g_object_unref (pixbuf);
-+	}
++      if (pixbuf != NULL) {
+       rotated = gdk_pixbuf_rotate_simple (pixbuf, rotation);
+       g_object_unref (pixbuf);
+       pixbuf = rotated;
+@@ -2710,6 +2714,7 @@ draw_themed_tab_button (GtkStyle *style,
+ 		       clip_rect.width, clip_rect.height, GDK_RGB_DITHER_NONE,
+ 		       0, 0);
+       g_object_unref (pixbuf);
++      }
      }
-   
+ 
    return TRUE;
