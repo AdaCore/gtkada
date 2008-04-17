@@ -14,6 +14,8 @@ glib-2.16.3-win32.diff: ditto for glib 2.16.3 under Windows.
 
 pango-1.20.2-win32.diff: ditto for pango 1.16.5 under Windows.
 
+pixman-0.10.0.diff: ditto for pixman 0.10.0
+
 pygtk-2.8.6.diff: patch to build pygtk 2.8.6 with --without-threads
 
 gtkada-2.10-win32.diff: a patch to build GtkAda under Windows
