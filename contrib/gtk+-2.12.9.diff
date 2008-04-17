@@ -1,16 +1,21 @@
-2007-01-22	Nicolas Setton  <setton@adacore.com>
+2000-04-17  Arnaud Charlet  <charlet@adacore.com>
+
+	* tests/Makefile.in: Fix makefile when there is no C++ compiler
+	available.
+
+2007-01-22  Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtktreeview.c (cancel_arrow_animation): Reset the node
 	corresponding to the expanding/collapsing iter, which has no
 	reason to be referenced past this point.
 	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=511217
 
-2006-02-23	Arnaud Charlet	<charlet@adacore.com>
+2006-02-23  Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/x11/gdkasync.c: #define ANSICPP on Solaris, to work around
 	bug in X11/Xmd.h on Solaris 8.
 
-2003-11-27	Arnaud Charlet	<charlet@adacore.com>
+2003-11-27  Arnaud Charlet  <charlet@adacore.com>
 
 	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
 	of characters validated at each call, this gives a better behavior
@@ -56,3 +61,13 @@
       }
   }
   
+--- tests/Makefile.in.old	2008-04-17 16:46:37.829103347 +0200
++++ tests/Makefile.in	2008-04-17 16:46:40.179128761 +0200
+@@ -361,7 +361,6 @@ TESTS = floatingtest buildertest $(am__a
+ 
+ noinst_PROGRAMS = \
+ 	autotestfilechooser		\
+-	autotestkeywords		\
+ 	floatingtest			\
+ 	buildertest			\
+ 	simple				\
