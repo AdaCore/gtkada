@@ -16,6 +16,8 @@ pango-1.20.2-win32.diff: ditto for pango 1.16.5 under Windows
 
 pixman-0.10.0.diff: ditto for pixman 0.10.0
 
+pixman-0.10.0-win32.diff: ditto for pixman 0.10.0 under Windows
+
 cairo-1.6.4.diff: ditto for cairo 1.6.4
 
 pygtk-2.8.6.diff: patch to build pygtk 2.8.6 with --without-threads
