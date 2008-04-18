@@ -61,13 +61,36 @@
       }
   }
   
---- tests/Makefile.in.old	2008-04-17 16:46:37.829103347 +0200
-+++ tests/Makefile.in	2008-04-17 16:46:40.179128761 +0200
-@@ -361,7 +361,6 @@ TESTS = floatingtest buildertest $(am__a
- 
- noinst_PROGRAMS = \
+--- tests/Makefile.in.old	2008-04-18 12:32:24.431430164 +0200
++++ tests/Makefile.in	2008-04-18 12:34:07.692529898 +0200
+@@ -363,3 +363,2 @@ noinst_PROGRAMS = \
  	autotestfilechooser		\
 -	autotestkeywords		\
  	floatingtest			\
- 	buildertest			\
- 	simple				\
+@@ -697,3 +696,2 @@ CONFIG_CLEAN_FILES =
+ @HAVE_CXX_FALSE@@USE_X11_TRUE@	autotestfilechooser$(EXEEXT) \
+-@HAVE_CXX_FALSE@@USE_X11_TRUE@	autotestkeywords$(EXEEXT) \
+ @HAVE_CXX_FALSE@@USE_X11_TRUE@	floatingtest$(EXEEXT) \
+@@ -762,3 +760,2 @@ CONFIG_CLEAN_FILES =
+ @HAVE_CXX_FALSE@@USE_X11_FALSE@	autotestfilechooser$(EXEEXT) \
+-@HAVE_CXX_FALSE@@USE_X11_FALSE@	autotestkeywords$(EXEEXT) \
+ @HAVE_CXX_FALSE@@USE_X11_FALSE@	floatingtest$(EXEEXT) \
+@@ -825,3 +822,2 @@ CONFIG_CLEAN_FILES =
+ @HAVE_CXX_TRUE@@USE_X11_TRUE@	autotestfilechooser$(EXEEXT) \
+-@HAVE_CXX_TRUE@@USE_X11_TRUE@	autotestkeywords$(EXEEXT) \
+ @HAVE_CXX_TRUE@@USE_X11_TRUE@	floatingtest$(EXEEXT) \
+@@ -887,7 +883,5 @@ CONFIG_CLEAN_FILES =
+ @HAVE_CXX_TRUE@@USE_X11_TRUE@	testtooltips$(EXEEXT) \
+-@HAVE_CXX_TRUE@@USE_X11_TRUE@	testvolumebutton$(EXEEXT) \
+-@HAVE_CXX_TRUE@@USE_X11_TRUE@	autotestkeywords$(EXEEXT)
++@HAVE_CXX_TRUE@@USE_X11_TRUE@	testvolumebutton$(EXEEXT)
+ @HAVE_CXX_TRUE@@USE_X11_FALSE@noinst_PROGRAMS = \
+ @HAVE_CXX_TRUE@@USE_X11_FALSE@	autotestfilechooser$(EXEEXT) \
+-@HAVE_CXX_TRUE@@USE_X11_FALSE@	autotestkeywords$(EXEEXT) \
+ @HAVE_CXX_TRUE@@USE_X11_FALSE@	floatingtest$(EXEEXT) \
+@@ -951,4 +945,3 @@ CONFIG_CLEAN_FILES =
+ @HAVE_CXX_TRUE@@USE_X11_FALSE@	testtooltips$(EXEEXT) \
+-@HAVE_CXX_TRUE@@USE_X11_FALSE@	testvolumebutton$(EXEEXT) \
+-@HAVE_CXX_TRUE@@USE_X11_FALSE@	autotestkeywords$(EXEEXT)
++@HAVE_CXX_TRUE@@USE_X11_FALSE@	testvolumebutton$(EXEEXT)
+ PROGRAMS = $(noinst_PROGRAMS)
