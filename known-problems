@@ -1,5 +1,13 @@
 Known problems fixed in GtkAda 2.12.0
 
+- H421-008 GtkAda static library support broken on Windows.
+  Problem:    It is not possible to use the GtkAda project file to build a
+              application linked statically with GtkAda on Windows. This is
+              because the libgtkada.a library is specified using an hard
+              coded path into the project file.
+  Workaround: Build the application manually or edit lib/gnat/gtkada.gpr to
+              fix the offending path.
+
 Known problems fixed in GtkAda 2.10.3
 
 - H211-002 Gtk.Menu.Popup not working or crashing when "Func" is non-null.
