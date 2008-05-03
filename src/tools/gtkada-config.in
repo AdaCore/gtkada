@@ -10,7 +10,7 @@ gtk_libs="@GTK_LIBS@"
 cflags_static="-aI${includedir} -aO${libdir}/static"
 cflags_relocatable="-aI${includedir} -aO${libdir}/relocatable"
 libs_relocatable="-L${libdir}/relocatable -lgtkada ${gtk_libs}"
-libs_static="${libdir}/static/libgtkada.a ${gtk_libs}"
+libs_static="-L${libdir}/static -lgtkada ${gtk_libs}"
 
 usage()
 {
