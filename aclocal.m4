@@ -6,12 +6,27 @@
 
 AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
 [
-
    SO_EXT=.so
    SO_OPTS=-Wl,-soname,
-   BUILD_SHARED=yes
    FPIC=-fPIC
    TARGET_LFLAGS=
+   DEFAULT_LIBRARY_TYPE=static
+
+   AC_ARG_ENABLE(shared,
+     [AC_HELP_STRING(
+        [--disable-shared],
+        [Disable building of shared libraries])
+AC_HELP_STRING(
+        [--enable-shared],
+        [Build shared libraries if supported on the target
+Make them the installation default])],
+     [CAN_BUILD_SHARED=$enableval
+      if test $enableval = yes; then
+         DEFAULT_LIBRARY_TYPE=relocatable
+      fi],
+     [CAN_BUILD_SHARED=yes])
+
+   BUILD_SHARED=$CAN_BUILD_SHARED
 
    case $build_os in
    aix*)
@@ -41,7 +56,9 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-expect_unresolved,\*
       ;;
    *mingw*)
-      BUILD_SHARED=yes
+      if test x$CAN_BUILD_SHARED = xyes ; then
+         BUILD_SHARED=yes
+      fi
       SO_EXT=.dll
       FPIC=
       ac_tmp_GNATDIR=`which gcc | sed 's,/gcc$,,'`
@@ -75,6 +92,11 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       ;;
    esac
 
+  if test x$BUILD_SHARED = xno ; then
+     DEFAULT_LIBRARY_TYPE=static
+  fi
+
+  AC_SUBST(DEFAULT_LIBRARY_TYPE)
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
   AC_SUBST(BUILD_SHARED)
   AC_SUBST(SO_EXT)

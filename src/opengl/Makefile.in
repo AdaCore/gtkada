@@ -3,7 +3,7 @@ OBJ_DIR          = obj
 SONAME           = libgtkada_gl-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 LIBNAME          = libgtkada_gl$(SO_EXT)
 ARCHIVENAME      = libgtkada_gl.a
-OPENGL_OBJECTS   = gtk-glarea.o gdk-gl.o
+OPENGL_OBJECTS   = gtk-glarea.o gdk-gl.o gl_h.o
 OPENGL_C_OBJECTS = gtkglarea.o gdkgl.o
 OPENGL_C_OBJECTS_DIR = ${OPENGL_C_OBJECTS:%=${OBJ_DIR}/%}
 EXTERNAL_LIBS    = @GL_LIBS@

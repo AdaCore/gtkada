@@ -2,7 +2,7 @@
 
 module=${1:-}
 prefix=$2
-has_shared="$3"
+default_library_type="$3"
 version=$4
 
 lcmodule=`echo $module | tr [A-Z] [a-z]`
@@ -74,7 +74,7 @@ generate_shared() {
   cat <<EOF > ${lc}.gpr
 project ${uc} is
    type Gtkada_Kind_Type is ("static", "relocatable");
-   Gtkada_Kind : Gtkada_Kind_Type := external ("GTKADA_TYPE", "$3");
+   Gtkada_Kind : Gtkada_Kind_Type := external ("LIBRARY_TYPE", "$3");
 
    for Source_Dirs use ("../../include/gtkada");
    for Source_List_File use "gtkada/${lcmodule}.lgpr";
@@ -111,8 +111,4 @@ end ${uc};
 EOF
 }
 
-if [ x"$has_shared" = xyes ]; then
-  generate_shared ${module} ${lcmodule} "relocatable"
-else
-  generate_shared ${module} ${lcmodule} "static"
-fi
+generate_shared ${module} ${lcmodule} "$default_library_type"

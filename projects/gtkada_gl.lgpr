@@ -2,3 +2,5 @@ gdk-gl.adb
 gdk-gl.ads
 gtk-glarea.adb
 gtk-glarea.ads
+gl_h.ads
+gl_h.adb

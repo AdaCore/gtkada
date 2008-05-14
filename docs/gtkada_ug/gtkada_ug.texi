@@ -243,11 +243,21 @@ Untar and uncompress the package, then simply do the following
 steps:
 @smallexample
 $ ./configure
+$ make
+$ make tests     (this step is optional)
 $ make install
 @end smallexample
 
 As usual with the @code{configure} script, you can specify where you want
 to install the GtkAda libraries by using the @code{--prefix} switch.
+
+You can specify the switch @code{--disable-shared} to prevent building
+shared libraries, even if your system supports them (by default, both
+shared and static libraries are installed). By default, your application
+will be linked statically with the GtkAda libraries. You can override this
+default by specifying @code{--enable-shared} as a switch to @code{configure},
+although you can override it later through the LIBRARY_TYPE scenario
+variable.
 
 If you have some OpenGL libraries installed on your system, you can make
 sure that @code{configure} finds them by specifying the
@@ -413,8 +423,8 @@ your application is linked with GtkAda.
 By default, the linker will use GtkAda's shared library, if it was built.
 If you would prefer to link with the static library, you can set the
 environment variable
-    GTKADA_TYPE=static
-    export GTKADA_TYPE
+    LIBRARY_TYPE=static
+    export LIBRARY_TYPE
 before launching the compiler or linker, which will force it to use the
 static library instead.
 
