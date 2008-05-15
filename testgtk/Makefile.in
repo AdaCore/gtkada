@@ -46,7 +46,7 @@ install: force
 	$(MKDIR) $(examples)
 	$(MKDIR) $(examples)/opengl
 	$(RM) b~*
-	$(INSTALL_PROGRAM) testgtk $(examples)
+	-$(INSTALL_PROGRAM) testgtk $(examples)
 	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo $(examples)
 	$(CP) opengl/*.ad? opengl/*.[ch] $(examples)/opengl
 
