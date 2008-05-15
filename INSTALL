@@ -22,10 +22,12 @@ the root directory). You can use an older GCC version for the Ada files
    $ (cd src; patch -p0 < ../contrib/gtkada-2.10-win32.diff)
    $ CC='gcc-3.2 -mms-bitfields' ./configure --prefix=<install_dir> \
        --build=i386-pc-mingw32
+   $ make
    $ make install
 
 On others platforms:
    $ ./configure --prefix=<install_dir>
+   $ make
    $ make install
 
 This will create (and install) the GtkAda library and then compile the
