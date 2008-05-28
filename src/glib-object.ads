@@ -49,7 +49,7 @@ package Glib.Object is
    --  efficiency reasons and because glib takes care of the memory
    --  management on its own.
 
-   function Is_Created (Object : in GObject_Record'Class) return Boolean;
+   function Is_Created (Object : GObject_Record'Class) return Boolean;
    --  Return True if the associated C object has been created, False if
    --  no C object is associated with Object.
    --  This is not the same as testing whether an access type (for instance
@@ -452,8 +452,9 @@ private
       return GObject;
    --  This function has to convert a C object to an Ada object.
    --  It will first try all the registered functions (in
-   --  Glib.Type_Conversion_Hooks) and by default, will create a Stub'Class
-   --  object, no matter what the real C type is.
+   --  Glib.Type_Conversion_Hooks). If no match is found, then it will try
+   --  recursively all parents of the C object. If no match is found at all,
+   --  it will create a Stub'Class object, no matter what the real C type is.
    --  Stub is the expected type.
 
    --  </doc_ignore>

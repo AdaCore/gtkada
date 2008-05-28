@@ -77,24 +77,33 @@ package body Glib.Object is
       function Get_Type (Obj : System.Address) return GType;
       pragma Import (C, Get_Type, "ada_gobject_get_type");
 
-      Name  : constant String := Type_Name (Get_Type (Obj));
+      The_Type : GType := Get_Type (Obj);
       Hooks : Glib.Type_Conversion_Hooks.Hook_List_Access;
 
       use type Glib.Type_Conversion_Hooks.Hook_List_Access;
 
    begin
-      Hooks := Glib.Type_Conversion_Hooks.Conversion_Hooks;
-
-      while Hooks /= null loop
+      while The_Type > GType_Object loop
          declare
-            R : constant GObject := Hooks.Func (Name);
+            Name  : constant String := Type_Name (The_Type);
          begin
-            if R /= null then
-               return R;
-            end if;
+
+            Hooks := Glib.Type_Conversion_Hooks.Conversion_Hooks;
+
+            while Hooks /= null loop
+               declare
+                  R : constant GObject := Hooks.Func (Name);
+               begin
+                  if R /= null then
+                     return R;
+                  end if;
+               end;
+
+               Hooks := Hooks.Next;
+            end loop;
          end;
 
-         Hooks := Hooks.Next;
+         The_Type := Parent (The_Type);
       end loop;
 
       return new GObject_Record'Class'(Stub);
@@ -166,8 +175,8 @@ package body Glib.Object is
       Stub : GObject_Record'Class) return GObject
    is
       function Internal
-        (Object : in System.Address;
-         Quark  : in Glib.GQuark) return System.Address;
+        (Object : System.Address;
+         Quark  : Glib.GQuark) return System.Address;
       pragma Import (C, Internal, "g_object_get_qdata");
 
       use type System.Address;
@@ -202,14 +211,14 @@ package body Glib.Object is
    ------------------------
 
    function Get_User_Data_Fast
-     (Obj  : in System.Address;
-      Stub : in GObject_Record'Class) return GObject
+     (Obj  : System.Address;
+      Stub : GObject_Record'Class) return GObject
    is
       pragma Suppress (All_Checks);
 
       function Internal
-        (Object : in System.Address;
-         Quark  : in Glib.GQuark) return System.Address;
+        (Object : System.Address;
+         Quark  : Glib.GQuark) return System.Address;
       pragma Import (C, Internal, "g_object_get_qdata");
 
       use type System.Address;
@@ -239,7 +248,7 @@ package body Glib.Object is
    -- Is_Created --
    ----------------
 
-   function Is_Created (Object : in GObject_Record'Class) return Boolean is
+   function Is_Created (Object : GObject_Record'Class) return Boolean is
       use type System.Address;
    begin
       return Object.Ptr /= System.Null_Address;
