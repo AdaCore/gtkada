@@ -1,10 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright 2001-2005                           --
---                          AdaCore
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--               Copyright (C) 2001-2008, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +34,12 @@ with Gtk.Widget; use Gtk.Widget;
 
 package body Gtk.GLArea is
 
-   function Type_Conversion (Type_Name : String) return GObject;
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_GLArea_Record);
+   pragma Warnings (Off, Type_Conversion);
+   --  This package is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    procedure On_Destroy (Widget : access Gtk_Widget_Record'Class);
 
@@ -58,7 +61,7 @@ package body Gtk.GLArea is
    -------------
 
    procedure Gtk_New (Widget    : out Gtk_GLArea;
-                      Attr_List : in  Attributes_Array) is
+                      Attr_List : Attributes_Array) is
    begin
       Widget := new Gtk_GLArea_Record;
       Initialize (Widget, Attr_List);
@@ -69,7 +72,7 @@ package body Gtk.GLArea is
    ----------------
 
    procedure Initialize (Widget    : access Gtk_GLArea_Record;
-                         Attr_List : in     Attributes_Array)
+                         Attr_List : Attributes_Array)
    is
       function Internal (Attr_List : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_gl_area_new");
@@ -96,8 +99,8 @@ package body Gtk.GLArea is
    -------------
 
    procedure Gtk_New
-     (Widget    :    out Gtk_GLArea;
-      Attr_List : in     Attributes_Array;
+     (Widget    : out Gtk_GLArea;
+      Attr_List : Attributes_Array;
       Share     : access Gtk_GLArea_Record'Class) is
    begin
       Widget := new Gtk_GLArea_Record;
@@ -110,7 +113,7 @@ package body Gtk.GLArea is
 
    procedure Initialize
      (Widget    : access Gtk_GLArea_Record;
-      Attr_List : in     Attributes_Array;
+      Attr_List : Attributes_Array;
       Share     : access Gtk_GLArea_Record'Class)
    is
       function Internal (Attr_List : System.Address;
@@ -152,18 +155,4 @@ package body Gtk.GLArea is
       Internal (Get_Object (Glarea));
    end Swap_Buffers;
 
-   ---------------------
-   -- Type_Conversion --
-   ---------------------
-
-   function Type_Conversion (Type_Name : String) return GObject is
-   begin
-      if Type_Name = "GtkGlArea" then
-         return new Gtk.GLArea.Gtk_GLArea_Record;
-      end if;
-      return null;
-   end Type_Conversion;
-
-begin
-   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.GLArea;

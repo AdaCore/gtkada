@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--     Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet      --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,8 +34,10 @@ pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Extra.Item_Entry is
 
-   function Type_Conversion (Type_Name : String) return GObject;
-   --  This function is used to implement a minimal automated type conversion
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Item_Entry_Record);
+   pragma Warnings (Off, Type_Conversion);
+   --  This package is used to implement a minimal automated type conversion
    --  without having to drag the whole Gtk.Type_Conversion package for the
    --  most common widgets.
 
@@ -44,7 +46,7 @@ package body Gtk.Extra.Item_Entry is
    -------------
 
    procedure Gtk_New (Widget : out Gtk_IEntry;
-                      Max    : in Guint16 := 0)
+                      Max    : Guint16 := 0)
    is
    begin
       Widget := new Gtk_IEntry_Record;
@@ -56,9 +58,9 @@ package body Gtk.Extra.Item_Entry is
    ----------------
 
    procedure Initialize (Widget : access Gtk_IEntry_Record'Class;
-                         Max    : in Guint16)
+                         Max    : Guint16)
    is
-      function Internal (Max    : in Guint16)
+      function Internal (Max    : Guint16)
                          return      System.Address;
       pragma Import (C, Internal, "gtk_item_entry_new_with_max_length");
    begin
@@ -71,7 +73,7 @@ package body Gtk.Extra.Item_Entry is
 
    procedure Set_Justification
       (Item_Entry    : access Gtk_IEntry_Record;
-       Justification : in Gtk.Enums.Gtk_Justification)
+       Justification : Gtk.Enums.Gtk_Justification)
    is
       procedure Internal
         (Item_Entry    : System.Address;
@@ -88,8 +90,8 @@ package body Gtk.Extra.Item_Entry is
 
    procedure Set_Text
       (Item_Entry    : access Gtk_IEntry_Record;
-       Text          : in String;
-       Justification : in Gtk.Enums.Gtk_Justification)
+       Text          : String;
+       Justification : Gtk.Enums.Gtk_Justification)
    is
       procedure Internal
         (Item_Entry    : System.Address;
@@ -129,19 +131,4 @@ package body Gtk.Extra.Item_Entry is
       return Boolean'Val (Internal (Get_Object (Item_Entry)));
    end Get_Cursor_Visible;
 
-   ---------------------
-   -- Type_Conversion --
-   ---------------------
-
-   function Type_Conversion (Type_Name : String) return GObject is
-   begin
-      if Type_Name = "GtkItemEntry" then
-         return new Gtk_Item_Entry_Record;
-      else
-         return null;
-      end if;
-   end Type_Conversion;
-
-begin
-   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Extra.Item_Entry;

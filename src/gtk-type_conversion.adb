@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -71,7 +71,7 @@ with Gtk.Layout;
 with Gtk.Menu_Shell;
 with Gtk.Misc;
 with Gtk.Notebook;
-with Gtk.Object;
+--  with Gtk.Object;
 with Gtk.Paned;
 with Gtk.Plug;
 pragma Warnings (Off);  --  These packages are obsolescent
@@ -114,11 +114,6 @@ pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Type_Conversion is
 
-   function Full_Conversion (Type_Name : String) return GObject;
-   --  This function knows about all base widgets present in GtkAda.
-   --  One noticeable difference is Gtk_Label that is recognized by default,
-   --  to avoid the need of this package for the common usage.
-
    ----------
    -- Init --
    ----------
@@ -127,251 +122,362 @@ package body Gtk.Type_Conversion is
    begin
       null;
       --  This function is only used to force the 'with' of this unit. All the
-      --  actual work is done in the elaboration part of this package.
+      --  actual work is done in the elaboration part of the Type_Conversion
+      --  packages
    end Init;
 
-   ---------------------
-   -- Full_Conversion --
-   ---------------------
+   package Gtk_Adjustment_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Adjustment.Get_Type'Access, Gtk.Adjustment.Gtk_Adjustment_Record);
+   pragma Warnings (Off, Gtk_Adjustment_Conversion);
 
-   function Full_Conversion (Type_Name : String) return GObject is
-   begin
-      if Type_Name'Length < 4 then
-         return null;
-      end if;
+   package Gtk_Alignment_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Alignment.Get_Type'Access, Gtk.Alignment.Gtk_Alignment_Record);
+   pragma Warnings (Off, Gtk_Alignment_Conversion);
 
-      case Type_Name (Type_Name'First + 3) is
-         when 'A' =>
-            if Type_Name = "GtkAdjustment" then
-               return new Gtk.Adjustment.Gtk_Adjustment_Record;
-            elsif Type_Name = "GtkAlignment" then
-               return new Gtk.Alignment.Gtk_Alignment_Record;
-            elsif Type_Name = "GtkArrow" then
-               return new Gtk.Arrow.Gtk_Arrow_Record;
-            elsif Type_Name = "GtkAspectFrame" then
-               return new Gtk.Aspect_Frame.Gtk_Aspect_Frame_Record;
-            end if;
-         when 'B' =>
-            if Type_Name = "GtkBin" then
-               return new Gtk.Bin.Gtk_Bin_Record;
-            --  elsif Type_Name = "GtkBorderCombo" then
-            --     return new Gtk.Extra.Border_Combo.Gtk_Border_Combo_Record;
-            elsif Type_Name = "GtkBox" then
-               return new Gtk.Box.Gtk_Box_Record;
-            elsif Type_Name = "GtkButtonBox" then
-               return new Gtk.Button_Box.Gtk_Button_Box_Record;
-            end if;
-         when 'C' =>
-            if Type_Name = "GtkCalendar" then
-               return new Gtk.Calendar.Gtk_Calendar_Record;
-            elsif Type_Name = "GtkCheckButton" then
-               return new Gtk.Check_Button.Gtk_Check_Button_Record;
-            elsif Type_Name = "GtkCList" then
-               pragma Warnings (Off);  --  Gtk.Clist is obsolescent
-               return new Gtk.Clist.Gtk_Clist_Record;
-               pragma Warnings (On);
-            --  elsif Type_Name = "GtkColorCombo" then
-            --     return new Gtk.Extra.Color_Combo.Gtk_Color_Combo_Record;
-            elsif Type_Name = "GtkColorSelection" then
-               return new Gtk.Color_Selection.Gtk_Color_Selection_Record;
-            elsif Type_Name = "GtkColorSelectionDialog" then
-               return new
-                 Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog_Record;
-            elsif Type_Name = "GtkCombo" then
-               pragma Warnings (Off);  --  Gtk.Combo is obsolescent
-               return new Gtk.Combo.Gtk_Combo_Record;
-               pragma Warnings (On);
-            --  elsif Type_Name = "GtkComboBox" then
-            --     return new Gtk.Extra.Combo_Box.Gtk_Combo_Box_Record;
-            elsif Type_Name = "GtkContainer" then
-               return new Gtk.Container.Gtk_Container_Record;
-            elsif Type_Name = "GtkCtree" then
-               pragma Warnings (Off);  --  Gtk.Ctree is obsolescent
-               return new Gtk.Ctree.Gtk_Ctree_Record;
-               pragma Warnings (On);
-            elsif Type_Name = "GtkCurve" then
-               return new Gtk.Curve.Gtk_Curve_Record;
-            end if;
-         when 'D' =>
-            if Type_Name = "GtkDialog" then
-               return new Gtk.Dialog.Gtk_Dialog_Record;
-            elsif Type_Name = "GtkDrawingArea" then
-               return new Gtk.Drawing_Area.Gtk_Drawing_Area_Record;
-            end if;
-         when 'E' =>
-            if Type_Name = "GtkEditable" then
-               return new Gtk.Editable.Gtk_Editable_Record;
-            elsif Type_Name = "GtkEventBox" then
-               return new Gtk.Event_Box.Gtk_Event_Box_Record;
-            elsif Type_Name = "GtkEntry" then
-               return new Gtk.GEntry.Gtk_Entry_Record;
-            end if;
-         when 'F' =>
-            if Type_Name = "GtkFileSelection" then
-               return new Gtk.File_Selection.Gtk_File_Selection_Record;
-            elsif Type_Name = "GtkFixed" then
-               return new Gtk.Fixed.Gtk_Fixed_Record;
-            --  elsif Type_Name = "GtkFontCombo" then
-            --     return new Gtk.Extra.Font_Combo.Gtk_Font_Combo_Record;
-            elsif Type_Name = "GtkFontSelection" then
-               return new Gtk.Font_Selection.Gtk_Font_Selection_Record;
-            elsif Type_Name = "GtkFontSelectionDialog" then
-               return new
-                 Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog_Record;
-            elsif Type_Name = "GtkFrame" then
-               return new Gtk.Frame.Gtk_Frame_Record;
-            end if;
-         when 'G' =>
-            if Type_Name = "GtkGammaCurve" then
-               return new Gtk.Gamma_Curve.Gtk_Gamma_Curve_Record;
-            end if;
-         when 'H' =>
-            if Type_Name = "GtkHBox" then
-               return new Gtk.Box.Gtk_Box_Record;
-            elsif Type_Name = "GtkHandleBox" then
-               return new Gtk.Handle_Box.Gtk_Handle_Box_Record;
-            elsif Type_Name = "GtkHButtonBox" then
-               return new Gtk.Hbutton_Box.Gtk_Hbutton_Box_Record;
-            elsif Type_Name = "GtkHPaned" then
-               return new Gtk.Paned.Gtk_Paned_Record;
-            end if;
-         when 'I' =>
-            if False then
-               return null;
-            --  if Type_Name = "GtkItemEntry" then
-            --     return new Gtk.Extra.Item_Entry.Gtk_IEntry_Record;
-            elsif Type_Name = "GtkImage" then
-               return new Gtk.Image.Gtk_Image_Record;
-            elsif Type_Name = "GtkInputDialog" then
-               return new Gtk.Input_Dialog.Gtk_Input_Dialog_Record;
-            elsif Type_Name = "GtkInvisible" then
-               return new Gtk.Invisible.Gtk_Invisible_Record;
-            elsif Type_Name = "GtkItemFactory" then
-               pragma Warnings (Off);  --  Gtk.Item_Factory is obsolescent
-               return new Gtk.Item_Factory.Gtk_Item_Factory_Record;
-               pragma Warnings (On);
-            end if;
-         when 'L' =>
-            if Type_Name = "GtkLayout" then
-               return new Gtk.Layout.Gtk_Layout_Record;
-            elsif Type_Name = "GtkList" then
-               pragma Warnings (Off); --  Gtk_List is obsolescent
-               return new Gtk.List.Gtk_List_Record;
-               pragma Warnings (On);
-            end if;
-         when 'M' =>
-            if Type_Name = "GtkMenuShell" then
-               return new Gtk.Menu_Shell.Gtk_Menu_Shell_Record;
-            elsif Type_Name = "GtkMisc" then
-               return new Gtk.Misc.Gtk_Misc_Record;
-            end if;
-         when 'N' =>
-            if Type_Name = "GtkNotebook" then
-               return new Gtk.Notebook.Gtk_Notebook_Record;
-            end if;
-         when 'O' =>
-            if Type_Name = "GtkObject" then
-               return new Gtk.Object.Gtk_Object_Record;
-            elsif Type_Name = "GtkOptionMenu" then
-               pragma Warnings (Off); --  Gtk.Option_Menu is obsolescent;
-               return new Gtk.Option_Menu.Gtk_Option_Menu_Record;
-               pragma Warnings (On);
-            end if;
-         when 'P' =>
-            if Type_Name = "GtkPixmap" then
-               pragma Warnings (Off); --  Gtk_Pixmap is obsolescent
-               return new Gtk.Pixmap.Gtk_Pixmap_Record;
-               pragma Warnings (On);
-            elsif Type_Name = "GtkPlug" then
-               return new Gtk.Plug.Gtk_Plug_Record;
-            --  elsif Type_Name = "GtkPlot" then
-            --     return new Gtk.Extra.Plot.Gtk_Plot_Record;
-            --  elsif Type_Name = "GtkPlotCanvas" then
-            --     return new Gtk.Extra.Plot_Canvas.Gtk_Plot_Canvas_Record;
-            elsif Type_Name = "GtkPreview" then
-               pragma Warnings (Off); --  Gtk_Preview is obsolescent
-               return new Gtk.Preview.Gtk_Preview_Record;
-               pragma Warnings (On);
-            elsif Type_Name = "GtkProgress" then
-               pragma Warnings (Off);
-               return new Gtk.Progress.Gtk_Progress_Record;
-               pragma Warnings (On);
-               --  Gtk.Progress is obsolete
-            elsif Type_Name = "GtkProgressBar" then
-               return new Gtk.Progress_Bar.Gtk_Progress_Bar_Record;
-            end if;
-         when 'R' =>
-            if Type_Name = "GtkRadioButton" then
-               return new Gtk.Radio_Button.Gtk_Radio_Button_Record;
-            elsif Type_Name = "GtkRange" then
-               return new Gtk.GRange.Gtk_Range_Record;
-            elsif Type_Name = "GtkRuler" then
-               return new Gtk.Ruler.Gtk_Ruler_Record;
-            end if;
-         when 'S' =>
-            if Type_Name = "GtkScale" then
-               return new Gtk.Scale.Gtk_Scale_Record;
-            elsif Type_Name = "GtkScrollbar" then
-               return new Gtk.Scrollbar.Gtk_Scrollbar_Record;
-            elsif Type_Name = "GtkScrolledWindow" then
-               return new Gtk.Scrolled_Window.Gtk_Scrolled_Window_Record;
-            elsif Type_Name = "GtkSeparator" then
-               return new Gtk.Separator.Gtk_Separator_Record;
-            --  elsif Type_Name = "GtkSheet" then
-            --     return new Gtk.Extra.Sheet.Gtk_Sheet_Record;
-            elsif Type_Name = "GtkSocket" then
-               return new Gtk.Socket.Gtk_Socket_Record;
-            elsif Type_Name = "GtkSpinButton" then
-               return new Gtk.Spin_Button.Gtk_Spin_Button_Record;
-            elsif Type_Name = "GtkStatusBar" then
-               return new Gtk.Status_Bar.Gtk_Status_Bar_Record;
-            end if;
-         when 'T' =>
-            if Type_Name = "GtkTable" then
-               return new Gtk.Table.Gtk_Table_Record;
-            elsif Type_Name = "GtkText" then
-               pragma Warnings (Off); --  Gtk.Text is obsolescent
-               return new Gtk.Text.Gtk_Text_Record;
-               pragma Warnings (On);
-            elsif Type_Name = "GtkTipsQuery" then
-               pragma Warnings (Off); -- Gtk_Tips_Query is obsolescent
-               return new Gtk.Tips_Query.Gtk_Tips_Query_Record;
-               pragma Warnings (On);
-            elsif Type_Name = "GtkToggleButton" then
-               return new Gtk.Toggle_Button.Gtk_Toggle_Button_Record;
-            elsif Type_Name = "GtkToolbar" then
-               return new Gtk.Toolbar.Gtk_Toolbar_Record;
-            elsif Type_Name = "GtkTooltips" then
-               return new Gtk.Tooltips.Gtk_Tooltips_Record;
-            elsif Type_Name = "GtkTextView" then
-               return new Gtk.Text_View.Gtk_Text_View_Record;
-            elsif Type_Name = "GtkTreeView" then
-               return new Gtk.Tree_View.Gtk_Tree_View_Record;
-            end if;
-         when 'V' =>
-            if Type_Name = "GtkVBox" then
-               return new Gtk.Box.Gtk_Box_Record;
-            elsif Type_Name = "GtkVButtonBox" then
-               return new Gtk.Vbutton_Box.Gtk_Vbutton_Box_Record;
-            elsif Type_Name = "GtkViewport" then
-               return new Gtk.Viewport.Gtk_Viewport_Record;
-            elsif Type_Name = "GtkVPaned" then
-               return new Gtk.Paned.Gtk_Paned_Record;
-            elsif Type_Name = "GtkVScrollbar" then
-               return new Gtk.Scrollbar.Gtk_Scrollbar_Record;
-            end if;
-         when 'W' =>
-            if Type_Name = "GtkWidget" then
-               return new Gtk.Widget.Gtk_Widget_Record;
-            elsif Type_Name = "GtkWindow" then
-               return new Gtk.Window.Gtk_Window_Record;
-            end if;
-         when others => null;
-      end case;
+   package Gtk_Arrow_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Arrow.Get_Type'Access, Gtk.Arrow.Gtk_Arrow_Record);
+   pragma Warnings (Off, Gtk_Arrow_Conversion);
 
-      return null;
-   end Full_Conversion;
+   package Gtk_Aspect_Frame_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Aspect_Frame.Get_Type'Access,
+        Gtk.Aspect_Frame.Gtk_Aspect_Frame_Record);
+   pragma Warnings (Off, Gtk_Aspect_Frame_Conversion);
 
-begin
-   Glib.Type_Conversion_Hooks.Add_Hook (Full_Conversion'Access);
+   package Gtk_Bin_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Bin.Get_Type'Access, Gtk.Bin.Gtk_Bin_Record);
+   pragma Warnings (Off, Gtk_Bin_Conversion);
+
+   package Gtk_Box_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Box.Get_Type'Access, Gtk.Box.Gtk_Box_Record);
+   pragma Warnings (Off, Gtk_Box_Conversion);
+
+   package Gtk_Button_Box_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Button_Box.Get_Type'Access, Gtk.Button_Box.Gtk_Button_Box_Record);
+   pragma Warnings (Off, Gtk_Button_Box_Conversion);
+
+   package Gtk_Calendar_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Calendar.Get_Type'Access, Gtk.Calendar.Gtk_Calendar_Record);
+   pragma Warnings (Off, Gtk_Calendar_Conversion);
+
+   package Gtk_Check_Button_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Check_Button.Get_Type'Access,
+        Gtk.Check_Button.Gtk_Check_Button_Record);
+   pragma Warnings (Off, Gtk_Check_Button_Conversion);
+
+   package Gtk_Clist_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Clist.Get_Type'Access, Gtk.Clist.Gtk_Clist_Record);
+   pragma Warnings (Off, Gtk_Clist_Conversion);
+
+   package Gtk_Color_Selection_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Color_Selection.Get_Type'Access,
+        Gtk.Color_Selection.Gtk_Color_Selection_Record);
+   pragma Warnings (Off, Gtk_Color_Selection_Conversion);
+
+   package Gtk_Color_Selection_Dialog_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Color_Selection_Dialog.Get_Type'Access,
+        Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog_Record);
+   pragma Warnings (Off, Gtk_Color_Selection_Dialog_Conversion);
+
+   package Gtk_Combo_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Combo.Get_Type'Access, Gtk.Combo.Gtk_Combo_Record);
+   pragma Warnings (Off, Gtk_Combo_Conversion);
+
+   package Gtk_Container_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Container.Get_Type'Access, Gtk.Container.Gtk_Container_Record);
+   pragma Warnings (Off, Gtk_Container_Conversion);
+
+   package Gtk_Ctree_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Ctree.Get_Type'Access, Gtk.Ctree.Gtk_Ctree_Record);
+   pragma Warnings (Off, Gtk_Ctree_Conversion);
+
+   package Gtk_Curve_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Curve.Get_Type'Access, Gtk.Curve.Gtk_Curve_Record);
+   pragma Warnings (Off, Gtk_Curve_Conversion);
+
+   package Gtk_Dialog_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Dialog.Get_Type'Access, Gtk.Dialog.Gtk_Dialog_Record);
+   pragma Warnings (Off, Gtk_Dialog_Conversion);
+
+   package Gtk_Drawing_Area_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Drawing_Area.Get_Type'Access,
+        Gtk.Drawing_Area.Gtk_Drawing_Area_Record);
+   pragma Warnings (Off, Gtk_Drawing_Area_Conversion);
+
+   package Gtk_Editable_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Editable.Get_Type'Access, Gtk.Editable.Gtk_Editable_Record);
+   pragma Warnings (Off, Gtk_Editable_Conversion);
+
+   package Gtk_Event_Box_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Event_Box.Get_Type'Access, Gtk.Event_Box.Gtk_Event_Box_Record);
+   pragma Warnings (Off, Gtk_Event_Box_Conversion);
+
+   package Gtk_GEntry_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.GEntry.Get_Type'Access, Gtk.GEntry.Gtk_Entry_Record);
+   pragma Warnings (Off, Gtk_GEntry_Conversion);
+
+   package Gtk_File_Selection_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.File_Selection.Get_Type'Access,
+        Gtk.File_Selection.Gtk_File_Selection_Record);
+   pragma Warnings (Off, Gtk_File_Selection_Conversion);
+
+   package Gtk_Fixed_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Fixed.Get_Type'Access, Gtk.Fixed.Gtk_Fixed_Record);
+   pragma Warnings (Off, Gtk_Fixed_Conversion);
+
+   package Gtk_Font_Selection_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Font_Selection.Get_Type'Access,
+        Gtk.Font_Selection.Gtk_Font_Selection_Record);
+   pragma Warnings (Off, Gtk_Font_Selection_Conversion);
+
+   package Gtk_Font_Selection_Dialog_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Font_Selection_Dialog.Get_Type'Access,
+        Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog_Record);
+   pragma Warnings (Off, Gtk_Font_Selection_Dialog_Conversion);
+
+   package Gtk_Frame_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Frame.Get_Type'Access, Gtk.Frame.Gtk_Frame_Record);
+   pragma Warnings (Off, Gtk_Frame_Conversion);
+
+   package Gtk_Gamma_Curve_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Gamma_Curve.Get_Type'Access,
+        Gtk.Gamma_Curve.Gtk_Gamma_Curve_Record);
+   pragma Warnings (Off, Gtk_Gamma_Curve_Conversion);
+
+   package Gtk_Handle_Box_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Handle_Box.Get_Type'Access, Gtk.Handle_Box.Gtk_Handle_Box_Record);
+   pragma Warnings (Off, Gtk_Handle_Box_Conversion);
+
+   package Gtk_HButton_Box_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Hbutton_Box.Get_Type'Access,
+        Gtk.Hbutton_Box.Gtk_Hbutton_Box_Record);
+   pragma Warnings (Off, Gtk_HButton_Box_Conversion);
+
+   package Gtk_Paned_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Paned.Get_Type'Access, Gtk.Paned.Gtk_Paned_Record);
+   pragma Warnings (Off, Gtk_Paned_Conversion);
+
+   package Gtk_Image_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Image.Get_Type'Access, Gtk.Image.Gtk_Image_Record);
+   pragma Warnings (Off, Gtk_Image_Conversion);
+
+   package Gtk_Input_Dialog_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Input_Dialog.Get_Type'Access,
+        Gtk.Input_Dialog.Gtk_Input_Dialog_Record);
+   pragma Warnings (Off, Gtk_Input_Dialog_Conversion);
+
+   package Gtk_Invisible_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Invisible.Get_Type'Access, Gtk.Invisible.Gtk_Invisible_Record);
+   pragma Warnings (Off, Gtk_Invisible_Conversion);
+
+   package Gtk_Item_Factory_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Item_Factory.Get_Type'Access,
+        Gtk.Item_Factory.Gtk_Item_Factory_Record);
+   pragma Warnings (Off, Gtk_Item_Factory_Conversion);
+
+   package Gtk_Layout_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Layout.Get_Type'Access, Gtk.Layout.Gtk_Layout_Record);
+   pragma Warnings (Off, Gtk_Layout_Conversion);
+
+   package Gtk_List_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.List.Get_Type'Access, Gtk.List.Gtk_List_Record);
+   pragma Warnings (Off, Gtk_List_Conversion);
+
+   package Gtk_Menu_Shell_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Menu_Shell.Get_Type'Access, Gtk.Menu_Shell.Gtk_Menu_Shell_Record);
+   pragma Warnings (Off, Gtk_Menu_Shell_Conversion);
+
+   package Gtk_Misc_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Misc.Get_Type'Access, Gtk.Misc.Gtk_Misc_Record);
+   pragma Warnings (Off, Gtk_Misc_Conversion);
+
+   package Gtk_Notebook_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Notebook.Get_Type'Access, Gtk.Notebook.Gtk_Notebook_Record);
+   pragma Warnings (Off, Gtk_Notebook_Conversion);
+
+--     package Gtk_Object_Conversion is new
+--       Glib.Type_Conversion_Hooks.Hook_Registrator
+--         (Gtk.Object.Get_Type'Access, Gtk.Object.Gtk_Object_Record);
+--     pragma Warnings (Off, Gtk_Object_Conversion);
+
+   package Gtk_Option_Menu_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Option_Menu.Get_Type'Access,
+        Gtk.Option_Menu.Gtk_Option_Menu_Record);
+   pragma Warnings (Off, Gtk_Option_Menu_Conversion);
+
+   package Gtk_Pixmap_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Pixmap.Get_Type'Access, Gtk.Pixmap.Gtk_Pixmap_Record);
+   pragma Warnings (Off, Gtk_Pixmap_Conversion);
+
+   package Gtk_Plug_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Plug.Get_Type'Access, Gtk.Plug.Gtk_Plug_Record);
+   pragma Warnings (Off, Gtk_Plug_Conversion);
+
+   package Gtk_Preview_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Preview.Get_Type'Access, Gtk.Preview.Gtk_Preview_Record);
+   pragma Warnings (Off, Gtk_Preview_Conversion);
+
+   package Gtk_Progress_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Progress.Get_Type'Access, Gtk.Progress.Gtk_Progress_Record);
+   pragma Warnings (Off, Gtk_Progress_Conversion);
+
+   package Gtk_Progress_Bar_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Progress_Bar.Get_Type'Access,
+        Gtk.Progress_Bar.Gtk_Progress_Bar_Record);
+   pragma Warnings (Off, Gtk_Progress_Bar_Conversion);
+
+   package Gtk_Radio_Button_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Radio_Button.Get_Type'Access,
+        Gtk.Radio_Button.Gtk_Radio_Button_Record);
+   pragma Warnings (Off, Gtk_Radio_Button_Conversion);
+
+   package Gtk_Range_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.GRange.Get_Type'Access, Gtk.GRange.Gtk_Range_Record);
+   pragma Warnings (Off, Gtk_Range_Conversion);
+
+   package Gtk_Ruler_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Ruler.Get_Type'Access, Gtk.Ruler.Gtk_Ruler_Record);
+   pragma Warnings (Off, Gtk_Ruler_Conversion);
+
+   package Gtk_Scale_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Scale.Get_Type'Access, Gtk.Scale.Gtk_Scale_Record);
+   pragma Warnings (Off, Gtk_Scale_Conversion);
+
+   package Gtk_Scrollbar_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Scrollbar.Get_Type'Access, Gtk.Scrollbar.Gtk_Scrollbar_Record);
+   pragma Warnings (Off, Gtk_Scrollbar_Conversion);
+
+   package Gtk_Scrolled_Window_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Scrolled_Window.Get_Type'Access,
+        Gtk.Scrolled_Window.Gtk_Scrolled_Window_Record);
+   pragma Warnings (Off, Gtk_Scrolled_Window_Conversion);
+
+   package Gtk_Separator_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Separator.Get_Type'Access, Gtk.Separator.Gtk_Separator_Record);
+   pragma Warnings (Off, Gtk_Separator_Conversion);
+
+   package Gtk_Socket_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Socket.Get_Type'Access, Gtk.Socket.Gtk_Socket_Record);
+   pragma Warnings (Off, Gtk_Socket_Conversion);
+
+   package Gtk_Spin_Button_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Spin_Button.Get_Type'Access,
+        Gtk.Spin_Button.Gtk_Spin_Button_Record);
+   pragma Warnings (Off, Gtk_Spin_Button_Conversion);
+
+   package Gtk_Status_Bar_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Status_Bar.Get_Type'Access, Gtk.Status_Bar.Gtk_Status_Bar_Record);
+   pragma Warnings (Off, Gtk_Status_Bar_Conversion);
+
+   package Gtk_Table_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Table.Get_Type'Access, Gtk.Table.Gtk_Table_Record);
+   pragma Warnings (Off, Gtk_Table_Conversion);
+
+   package Gtk_Text_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Text.Get_Type'Access, Gtk.Text.Gtk_Text_Record);
+   pragma Warnings (Off, Gtk_Text_Conversion);
+
+   package Gtk_Toggle_Button_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Toggle_Button.Get_Type'Access,
+        Gtk.Toggle_Button.Gtk_Toggle_Button_Record);
+   pragma Warnings (Off, Gtk_Toggle_Button_Conversion);
+
+   package Gtk_Toolbar_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Toolbar.Get_Type'Access, Gtk.Toolbar.Gtk_Toolbar_Record);
+   pragma Warnings (Off, Gtk_Toolbar_Conversion);
+
+   package Gtk_Tooltips_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Tooltips.Get_Type'Access, Gtk.Tooltips.Gtk_Tooltips_Record);
+   pragma Warnings (Off, Gtk_Tooltips_Conversion);
+
+   package Gtk_Text_View_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Text_View.Get_Type'Access, Gtk.Text_View.Gtk_Text_View_Record);
+   pragma Warnings (Off, Gtk_Text_View_Conversion);
+
+   package Gtk_Tree_View_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Tree_View.Get_Type'Access, Gtk.Tree_View.Gtk_Tree_View_Record);
+   pragma Warnings (Off, Gtk_Tree_View_Conversion);
+
+   package Gtk_Vbutton_Box_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Vbutton_Box.Get_Type'Access,
+        Gtk.Vbutton_Box.Gtk_Vbutton_Box_Record);
+   pragma Warnings (Off, Gtk_Vbutton_Box_Conversion);
+
+   package Gtk_Viewport_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Viewport.Get_Type'Access, Gtk.Viewport.Gtk_Viewport_Record);
+   pragma Warnings (Off, Gtk_Viewport_Conversion);
+
+   package Gtk_Widget_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Widget.Get_Type'Access, Gtk.Widget.Gtk_Widget_Record);
+   pragma Warnings (Off, Gtk_Widget_Conversion);
+
+   package Gtk_Window_Conversion is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Gtk.Window.Get_Type'Access, Gtk.Window.Gtk_Window_Record);
+   pragma Warnings (Off, Gtk_Window_Conversion);
+
 end Gtk.Type_Conversion;

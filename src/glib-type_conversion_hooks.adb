@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,23 +29,84 @@
 
 package body Glib.Type_Conversion_Hooks is
 
-   --------------
-   -- Add_Hook --
-   --------------
+   type Conversion_Support_Hook_Type is
+     access function return Glib.GType;
+   pragma Convention (C, Conversion_Support_Hook_Type);
+   --  This variable can be point to one of your functions.
+   --  It returns the GType corresponding to the handled widget
 
-   procedure Add_Hook (Func : File_Conversion_Hook_Type) is
-   begin
-      File_Conversion_Hook :=
-        new Hook_List'(Func => Func, Next => File_Conversion_Hook);
-   end Add_Hook;
+   type Hook_List;
+   type Hook_List_Access is access Hook_List;
+   type Hook_List is record
+      Get_GType : Conversion_Support_Hook_Type;
+      Creator   : Conversion_Creator_Hook_Type;
+      Next : Hook_List_Access := null;
+   end record;
+   --  Internal structure used for the list.
+
+   Conversion_Hooks : Hook_List_Access := null;
 
    ----------------------
-   -- Conversion_Hooks --
+   -- Hook_Registrator --
    ----------------------
 
-   function Conversion_Hooks return Hook_List_Access is
+   package body Hook_Registrator is
+
+      -------------
+      -- Creator --
+      -------------
+
+      function Creator (Expected_Object : GObject_Record'Class)
+                        return GObject
+      is
+      begin
+         if Expected_Object in Handled_Type'Class then
+            return new GObject_Record'Class'(Expected_Object);
+         else
+            return new Handled_Type;
+         end if;
+      end Creator;
+
    begin
-      return File_Conversion_Hook;
-   end Conversion_Hooks;
+
+      Conversion_Hooks :=
+        new Hook_List'
+          (Get_GType  => Conversion_Support_Hook_Type (Get_GType),
+           Creator    => Creator_Access,
+           Next       => Conversion_Hooks);
+   end Hook_Registrator;
+
+   -------------------------
+   -- Conversion_Function --
+   -------------------------
+
+   function Conversion_Function
+     (Obj : System.Address; Stub : GObject_Record'Class) return GObject
+   is
+      function Get_Type (Obj : System.Address) return GType;
+      pragma Import (C, Get_Type, "ada_gobject_get_type");
+
+      The_Type  : GType := Get_Type (Obj);
+      Hooks     : Glib.Type_Conversion_Hooks.Hook_List_Access;
+
+      use type Glib.Type_Conversion_Hooks.Hook_List_Access;
+
+   begin
+      while The_Type > GType_Object loop
+         Hooks := Glib.Type_Conversion_Hooks.Conversion_Hooks;
+
+         while Hooks /= null loop
+            if The_Type = Hooks.Get_GType.all then
+               return Hooks.Creator (Stub);
+            end if;
+
+            Hooks := Hooks.Next;
+         end loop;
+
+         The_Type := Parent (The_Type);
+      end loop;
+
+      return new GObject_Record'Class'(Stub);
+   end Conversion_Function;
 
 end Glib.Type_Conversion_Hooks;

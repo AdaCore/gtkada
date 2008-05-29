@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---               Copyright (C) 2001-2006 AdaCore                    --
+--               Copyright (C) 2001-2008, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,9 +36,12 @@ pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Extra.Plot_Canvas is
 
-   function Type_Conversion (Type_Name : String) return GObject;
-   --  Used to implement an automatic type conversion for objects returned
-   --  from C.
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Plot_Canvas_Record);
+   pragma Warnings (Off, Type_Conversion);
+   --  This package is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    -------------------
    -- Cancel_Action --
@@ -46,7 +49,7 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Cancel_Action (Plot_Canvas : access Gtk_Plot_Canvas_Record)
    is
-      procedure Internal (Plot_Canvas : in System.Address);
+      procedure Internal (Plot_Canvas : System.Address);
       pragma Import (C, Internal, "gtk_plot_canvas_cancel_action");
    begin
       Internal (Get_Object (Plot_Canvas));
@@ -58,9 +61,9 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Gtk_New
      (Widget        : out Gtk_Plot_Canvas;
-      Width         : in Gint;
-      Height        : in Gint;
-      Magnification : in Gdouble := 1.0)
+      Width         : Gint;
+      Height        : Gint;
+      Magnification : Gdouble := 1.0)
    is
    begin
       Widget := new Gtk_Plot_Canvas_Record;
@@ -73,13 +76,13 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Initialize
      (Widget        : access Gtk_Plot_Canvas_Record'Class;
-      Width         : in Gint;
-      Height        : in Gint;
-      Magnification : in Gdouble := 1.0)
+      Width         : Gint;
+      Height        : Gint;
+      Magnification : Gdouble := 1.0)
    is
-      function Internal (Width         : in Gint;
-                         Height        : in Gint;
-                         Magnification : in Gdouble)
+      function Internal (Width         : Gint;
+                         Height        : Gint;
+                         Magnification : Gdouble)
                         return      System.Address;
       pragma Import (C, Internal, "gtk_plot_canvas_new");
    begin
@@ -92,7 +95,7 @@ package body Gtk.Extra.Plot_Canvas is
 
    function Plot_Canvas_Flag_Is_Set
      (Plot_Canvas : access Gtk_Plot_Canvas_Record;
-      Flag        : in Guint16)
+      Flag        : Guint16)
      return Boolean
    is
       function Internal (Canvas : System.Address;
@@ -109,7 +112,7 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Plot_Canvas_Set_Flags
      (Plot_Canvas  : access Gtk_Plot_Canvas_Record;
-      Flags        : in Guint16)
+      Flags        : Guint16)
    is
       procedure Internal (Canvas : System.Address;
                           Flags  : Guint16);
@@ -124,7 +127,7 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Plot_Canvas_Unset_Flags
      (Plot_Canvas  : access Gtk_Plot_Canvas_Record;
-      Flags        : in Guint16)
+      Flags        : Guint16)
    is
       procedure Internal (Canvas : System.Address;
                           Flags  : Guint16);
@@ -138,8 +141,8 @@ package body Gtk.Extra.Plot_Canvas is
    --------------
 
    procedure Set_Size (Canvas  : access Gtk_Plot_Canvas_Record;
-                       Width   : in Gint;
-                       Height  : in Gint)
+                       Width   : Gint;
+                       Height  : Gint)
    is
       procedure Internal (Canvas : System.Address;
                           Width  : Gint;
@@ -220,9 +223,9 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Grid_Set_Attributes
      (Canvas : access Gtk_Plot_Canvas_Record;
-      Style  : in Gtk.Extra.Plot_Data.Plot_Line_Style;
-      Width  : in Gint;
-      Color  : in Gdk.Color.Gdk_Color)
+      Style  : Gtk.Extra.Plot_Data.Plot_Line_Style;
+      Width  : Gint;
+      Color  : Gdk.Color.Gdk_Color)
    is
       procedure Internal
         (Canvas : System.Address;
@@ -286,9 +289,9 @@ package body Gtk.Extra.Plot_Canvas is
       X      : out Gint;
       Y      : out Gint)
    is
-      procedure Internal (Canvas : in System.Address;
-                          Px     : in Gdouble;
-                          Py     : in Gdouble;
+      procedure Internal (Canvas : System.Address;
+                          Px     : Gdouble;
+                          Py     : Gdouble;
                           X      : out Gint;
                           Y      : out Gint);
       pragma Import (C, Internal, "gtk_plot_canvas_get_pixel");
@@ -500,19 +503,4 @@ package body Gtk.Extra.Plot_Canvas is
       Internal (Get_Object (Canvas), Get_Object (Child), X1, Y1, X2, Y2);
    end Get_Position;
 
-   ---------------------
-   -- Type_Conversion --
-   ---------------------
-
-   function Type_Conversion (Type_Name : String) return GObject is
-   begin
-      if Type_Name = "GtkPlotCanvasChild" then
-         return new Gtk_Plot_Canvas_Child_Record;
-      else
-         return null;
-      end if;
-   end Type_Conversion;
-
-begin
-   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Extra.Plot_Canvas;

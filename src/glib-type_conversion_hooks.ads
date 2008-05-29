@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,33 +46,60 @@
 --  </description>
 --  <group>Glib, the general-purpose library</group>
 
-with Glib.Object;
+with Glib.Object; use Glib.Object;
 
 package Glib.Type_Conversion_Hooks is
 
-   type File_Conversion_Hook_Type is
-     access function (Type_Name : String) return Glib.Object.GObject;
-   --  This variable can be point to one of your functions.
-   --  It gets the name of a C widget (ex/ "GtkButton") and should return
-   --  a newly allocated Ada widget.
+   --  <doc_ignore>
 
-   type Hook_List;
-   type Hook_List_Access is access Hook_List;
-   type Hook_List is record
-      Func : File_Conversion_Hook_Type;
-      Next : Hook_List_Access := null;
-   end record;
-   --  Internal structure used for the list.
+   function Conversion_Function
+     (Obj : System.Address; Stub : GObject_Record'Class) return GObject;
+   --  This function has to convert a C object to an Ada object.
+   --  It will first try all the registered functions (in
+   --  Glib.Type_Conversion_Hooks). If no match is found, then it will try
+   --  recursively all parents of the C object. If no match is found at all,
+   --  it will create an object of type Expected_Type, no matter what the real
+   --  C type is.
 
-   procedure Add_Hook (Func : File_Conversion_Hook_Type);
-   --  Add a new function to the list of hooks for file conversions.
-   --  All the hooks are called when GtkAda finds a type which is not one of
-   --  the standard types.
+   type Get_GType_Func is access function return Glib.GType;
+   pragma Convention (C, Get_GType_Func);
+   --  Type used during the type conversion process
 
-   function Conversion_Hooks return Hook_List_Access;
-   --  Return the head of the hook list.
+   type Conversion_Creator_Hook_Type is
+     access function (Expected_Object : GObject_Record'Class) return GObject;
 
-private
-   File_Conversion_Hook : Hook_List_Access := null;
+   --  </doc_ignore>
+
+   --  This package is used to allow automatic conversion from a C gtk object
+   --  to Ada.
+   --  To allow GtkAda to automatically bind an incoming externally created
+   --  widget to the correct Ada type, you just need to instantiate this
+   --  package, that will then automatically register the appropriate
+   --  conversion methods.
+   generic
+      Get_GType : Get_GType_Func;
+      --  This function returns the GType assiciated with the type we want to
+      --  convert to. Usually, all widgets have a class-wide Get_Type that can
+      --  directly be used here.
+
+      type Handled_Type is new GObject_Record with private;
+      --  The type we want to convert to.
+
+   package Hook_Registrator is
+
+      function Creator (Expected_Object : GObject_Record'Class) return GObject;
+      --  This function will create an Ada type corresponding to Handled_Type.
+      --  In case Expected_Object is a child type of Handled_Type, an Ada
+      --  object of type Expected_Object is returned instead.
+      --
+      --  This allows convertion of types we know are expected, but don't have
+      --  registered conversion hook functions.
+
+   private
+      Creator_Access : constant Conversion_Creator_Hook_Type := Creator'Access;
+      --  We need to create this access type here because of RM 3.10.2(28)
+      --  It should go to the body, but conversion of Creator'Access to
+      --  Conversion_Creator_Hook_Type is only allowed in the private section.
+   end Hook_Registrator;
 
 end Glib.Type_Conversion_Hooks;

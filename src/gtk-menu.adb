@@ -39,8 +39,10 @@ with Ada.Unchecked_Deallocation;
 
 package body Gtk.Menu is
 
-   function Type_Conversion (Type_Name : String) return GObject;
-   --  This function is used to implement a minimal automated type conversion
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Menu_Record);
+   pragma Warnings (Off, Type_Conversion);
+   --  This package is used to implement a minimal automated type conversion
    --  without having to drag the whole Gtk.Type_Conversion package for the
    --  most common widgets.
 
@@ -518,19 +520,4 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu), Monitor_Num);
    end Set_Monitor;
 
-   ---------------------
-   -- Type_Conversion --
-   ---------------------
-
-   function Type_Conversion (Type_Name : String) return GObject is
-   begin
-      if Type_Name = "GtkMenu" then
-         return new Gtk_Menu_Record;
-      else
-         return null;
-      end if;
-   end Type_Conversion;
-
-begin
-   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Menu;

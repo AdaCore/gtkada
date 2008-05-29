@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -51,7 +51,7 @@ package Gtk.GLArea is
    --  transparently by GtkAda itself.
 
    procedure Gtk_New (Widget    : out Gtk_GLArea;
-                      Attr_List : in  Attributes_Array);
+                      Attr_List : Attributes_Array);
    --  Make an OpenGL widget, Attr_List is passed to glXChooseVisual GLX call.
    --  Attr_List specifies a list of Boolean attributes and enum/integer
    --  attribute/value pairs.
@@ -62,13 +62,13 @@ package Gtk.GLArea is
    --  is not created until widget is realized.
 
    procedure Initialize (Widget    : access Gtk_GLArea_Record;
-                         Attr_List : in     Attributes_Array);
+                         Attr_List : Attributes_Array);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Gtk_New
-     (Widget    :    out Gtk_GLArea;
-      Attr_List : in     Attributes_Array;
+     (Widget    : out Gtk_GLArea;
+      Attr_List : Attributes_Array;
       Share     : access Gtk_GLArea_Record'Class);
    --  Same as above.
    --  Share specifies the widget with which to share display lists and
@@ -77,10 +77,13 @@ package Gtk.GLArea is
 
    procedure Initialize
      (Widget    : access Gtk_GLArea_Record;
-      Attr_List : in     Attributes_Array;
+      Attr_List : Attributes_Array;
       Share     : access Gtk_GLArea_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_GLArea.
 
    function Make_Current
      (Glarea : access Gtk_GLArea_Record'Class)
@@ -97,4 +100,5 @@ private
    type Gtk_GLArea_Record is
      new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_gl_area_get_type");
 end Gtk.GLArea;

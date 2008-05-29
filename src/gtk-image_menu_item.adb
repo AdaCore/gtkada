@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006, AdaCore                   --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,8 +36,10 @@ package body Gtk.Image_Menu_Item is
    -- Local Subprograms --
    -----------------------
 
-   function Type_Conversion (Type_Name : String) return GObject;
-   --  This function is used to implement a minimal automated type conversion
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Image_Menu_Item_Record);
+   pragma Warnings (Off, Type_Conversion);
+   --  This package is used to implement a minimal automated type conversion
    --  without having to drag the whole Gtk.Type_Conversion package for the
    --  most common widgets.
 
@@ -188,19 +190,4 @@ package body Gtk.Image_Menu_Item is
       Internal (Get_Object (Menu_Item), Get_Object (Image));
    end Set_Image;
 
-   ---------------------
-   -- Type_Conversion --
-   ---------------------
-
-   function Type_Conversion (Type_Name : String) return GObject is
-   begin
-      if Type_Name = "GtkImageMenuItem" then
-         return new Gtk_Image_Menu_Item_Record;
-      else
-         return null;
-      end if;
-   end Type_Conversion;
-
-begin
-   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Image_Menu_Item;

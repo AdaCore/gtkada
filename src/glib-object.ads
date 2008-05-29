@@ -447,16 +447,6 @@ private
    --  The Quark version is to speed up the string lookup (this is done
    --  only once).
 
-   function Conversion_Function
-     (Obj : System.Address; Stub : GObject_Record'Class)
-      return GObject;
-   --  This function has to convert a C object to an Ada object.
-   --  It will first try all the registered functions (in
-   --  Glib.Type_Conversion_Hooks). If no match is found, then it will try
-   --  recursively all parents of the C object. If no match is found at all,
-   --  it will create a Stub'Class object, no matter what the real C type is.
-   --  Stub is the expected type.
-
    --  </doc_ignore>
 
    pragma Inline (Get_Object);

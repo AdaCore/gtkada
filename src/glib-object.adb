@@ -67,48 +67,6 @@ package body Glib.Object is
       Free (Obj);
    end Deallocate;
 
-   -------------------------
-   -- Conversion_Function --
-   -------------------------
-
-   function Conversion_Function
-     (Obj : System.Address; Stub : GObject_Record'Class) return GObject
-   is
-      function Get_Type (Obj : System.Address) return GType;
-      pragma Import (C, Get_Type, "ada_gobject_get_type");
-
-      The_Type : GType := Get_Type (Obj);
-      Hooks : Glib.Type_Conversion_Hooks.Hook_List_Access;
-
-      use type Glib.Type_Conversion_Hooks.Hook_List_Access;
-
-   begin
-      while The_Type > GType_Object loop
-         declare
-            Name  : constant String := Type_Name (The_Type);
-         begin
-
-            Hooks := Glib.Type_Conversion_Hooks.Conversion_Hooks;
-
-            while Hooks /= null loop
-               declare
-                  R : constant GObject := Hooks.Func (Name);
-               begin
-                  if R /= null then
-                     return R;
-                  end if;
-               end;
-
-               Hooks := Hooks.Next;
-            end loop;
-         end;
-
-         The_Type := Parent (The_Type);
-      end loop;
-
-      return new GObject_Record'Class'(Stub);
-   end Conversion_Function;
-
    --------------------
    -- Free_User_Data --
    --------------------
@@ -195,7 +153,7 @@ package body Glib.Object is
       R := To_Object (Internal (Obj, GtkAda_String_Quark));
 
       if R = null then
-         R := Conversion_Function (Obj, Stub);
+         R := Glib.Type_Conversion_Hooks.Conversion_Function (Obj, Stub);
 
          --  This function will either simply return what we expect (Stub), or
          --  try to create the exact Ada type corresponding to the C type.
