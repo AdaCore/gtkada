@@ -56,9 +56,8 @@ package body Glib.Type_Conversion_Hooks is
       -- Creator --
       -------------
 
-      function Creator (Expected_Object : GObject_Record'Class)
-                        return GObject
-      is
+      function Creator
+        (Expected_Object : GObject_Record'Class) return GObject is
       begin
          if Expected_Object in Handled_Type'Class then
             return new GObject_Record'Class'(Expected_Object);
@@ -68,7 +67,6 @@ package body Glib.Type_Conversion_Hooks is
       end Creator;
 
    begin
-
       Conversion_Hooks :=
         new Hook_List'
           (Get_GType  => Conversion_Support_Hook_Type (Get_GType),
