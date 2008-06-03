@@ -1344,7 +1344,7 @@ See the section @ref{Creating new widgets in Ada} below.
 
 @subsection Type conversions from C to Ada widgets
 
-There are basically three kinds of widgets that you can use with GtkAda:
+There are three kinds of widgets that you can use with GtkAda:
 @itemize @bullet
 @item @i{Ada widgets}:
 These are widgets that are written directly in Ada, using the object
@@ -1360,75 +1360,29 @@ have if you want to use third party widgets.
 @end itemize
 
 GtkAda will always be able to find and/or create a valid tagged type in
-the first case, no matter if you explicitly created the widget or if it
+the first two cases, no matter if you explicitly created the widget or if it
 was created automatically by gtk+. For instance, if you created a widget
 in Ada, put it in a table, and later on extracted it from the table, then you
 will still have the same widget.
 
-There are two issues: if the widget was explictly created by you,
-or at least by GtkAda, then it will always be and remain associated with a
-correct Ada type.
-
-If the widget was created implicitly (for instance every time you
-create a Gtk_Button, a Gtk_Label is also created for the text displayed), then
-GtkAda will only be able to create the corresponding type by default for the
-following widgets: Gtk_Label, Gtk_Button, Gtk_Item, Gtk_List_Item,
-Gtk_Menu_Item, Gtk_Check_Menu_Item, Gtk_Radio_Menu_Item, Gtk_Tearoff_Menu_Item,
-Gtk_Tree_Item and Gtk_Entry.
-For other widgets, it will instead create a Gtk_Widget, and you will have
-to either call Gtk.Unchecked_Cast to convert it back to the type you expect,
-or use @b{Gtk.Type_Conversion} as described below. Here is an example of
-use of Gtk.Unchecked_Cast:
-
-@smallexample
-@b{declare}
-   Stub : Gtk_Window_Record;
-@b{begin}
-   Window := Gtk.Unchecked_Cast (Widget, Stub);
-@b{end};
-@end smallexample
-
 In the third case (third party C widgets), GtkAda is not, by default, able to
 create the corresponding Ada type.
 
-The solution we suggest to solve the first issue is to 'with' the
-@b{Gtk.Type_Conversion} unit. In that case, every standard widget, no matter who
-created them, will always be correctly converted to an appropriate Ada type.
-So, basically, if you put the following in your main unit:
-
-@smallexample
-@b{with} Gtk.Type_Conversion;
-
-@b{begin}
-   Gtk.Main.Init;
-   ...
-@b{end}
-@end smallexample
-
-then you can safely get the children of any widget (table, boxes, ...) and be
-sure you have the right Ada type. You won't need to explictly convert your
-widget to something else.
-
-However, 'with'ing this unit means that your application will depend on every
-package of GtkAda, which is a little bit heavier, and explains why this is not
-the default. We do recommend you use it if it is not extremely important
-whether your application depends on all the packages of GtkAda.
-
-The case of third party C widgets is a little bit trickier. Since GtkAda does not
-know anything about them when it is built, it can't magically convert the C
+The case of third party C widgets is a little bit trickier. Since GtkAda does
+not know anything about them when it is built, it can't magically convert the C
 widgets to Ada widgets. This is your job to teach GtkAda how to do the
 conversion.
 
 We thus provide a 'hook' function which you need to modify. This function is
-defined in the package @b{Gtk.Type_Conversion}. This function takes
-a string with the name of the C widget (ex/ "GtkButton"), and should return a newly
-allocated pointer. If you don't know this type either, simply
+defined in the package @b{Glib.Type_Conversion}. This function takes
+a string with the name of the C widget (ex/ "GtkButton"), and should return a
+newly allocated pointer. If you don't know this type either, simply
 return @b{null}.
 
 @node Using tagged types to extend Gtk widgets
 @section Using tagged types to extend Gtk widgets
 
-Since version 0.6 of this toolkit, it is possible to associate your
+With this toolkit, it's possible to associate your
 own data with existing widgets simply by creating new types. This
 section will show you a simple example, but you should rather read the
 source code in testgtk/ where we used this feature instead of using
