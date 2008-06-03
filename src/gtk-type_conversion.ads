@@ -1,9 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2001-2006 AdaCore               --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,20 +29,15 @@
 
 --  <description>
 --  Provides full dynamic typing within GtkAda.
+--  Note that this package is obsolete, since GtkAda now provides this
+--  capability by default.
 --  </description>
 --  <c_version>2.8.17</c_version>
 
 package Gtk.Type_Conversion is
 
    procedure Init;
-   --  This function has to be called to enable the full capacity for type
-   --  conversions in GtkAda. If this function is not called, then
-   --  converting a C widget to an Ada type will not be as exact (for
-   --  instance, most C widgets will get converted to a Gtk.Object, instead
-   --  of the matching Ada widget. One major exception is Gtk_Label which
-   --  will always be recognized by GtkAda).
-   --  On the other hand, if you call this function (or with this package),
-   --  then your application will 'with' all the GtkAda packages, involving
-   --  bigger statically linked executables and a longer elaboration.
+   --  No-op, GtkAda provides automatic conversion of C widgets to Ada types
+   --  automatically.
 
 end Gtk.Type_Conversion;
