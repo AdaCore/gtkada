@@ -12,6 +12,11 @@ of the feature.
 New features in GtkAda 2.10.3
 -----------------------------
 
+H528-010 Automatic conversion of C widgets
+
+  The package Gtk.Type_Conversion is now obsolete and now longer needed, since
+  all standard Gtk+ widgets are now automatically converted when needed.
+
 H121-008 Small API changes
 
   The following API changes have been introduced to improve safety of C/Ada
