@@ -92,6 +92,7 @@ with Gtk.Menu_Item;           use Gtk.Menu_Item;
 with Gtk.Notebook;            use Gtk.Notebook;
 with Gtk.Object;              use Gtk.Object;
 with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
+with Gtk.Rc;
 with Gtk.Style;               use Gtk.Style;
 with Gtk.Widget;              use Gtk.Widget;
 with Gtk.Window;              use Gtk.Window;
@@ -2753,7 +2754,7 @@ package body Gtkada.MDI is
 
          if not Color_Equal (Get_Bg (Get_Style (Note), State_Normal), Color)
            and then not Color_Equal
-             (Get_Bg (Get_Modifier_Style (Note), State_Normal), Color)
+             (Get_Bg (Gtk.Rc.Get_Style (Note), State_Normal), Color)
          then
             Modify_Bg (Note, State_Normal, Color);
             Label := Get_Tab_Label (Note, Child);

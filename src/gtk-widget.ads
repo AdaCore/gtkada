@@ -650,10 +650,6 @@ package Gtk.Widget is
    --  Set or get the style for a given widget.
    --  See also Gtk.Rc.Modify_Style
 
-   function Get_Modifier_Style (Widget : access Gtk_Widget_Record)
-     return Gtk.Style.Gtk_Style;
-   --  Return the current modifier style for the widget.
-
    function Get_Default_Style return Gtk.Style.Gtk_Style;
    --  Get the default global style.
 

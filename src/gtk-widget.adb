@@ -1031,21 +1031,6 @@ package body Gtk.Widget is
         (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Style;
 
-   ------------------------
-   -- Get_Modifier_Style --
-   ------------------------
-
-   function Get_Modifier_Style
-     (Widget : access Gtk_Widget_Record) return Gtk.Style.Gtk_Style
-   is
-      function Internal (Widget : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_widget_get_modifier_style");
-      Stub : Gtk.Style.Gtk_Style_Record;
-   begin
-      return Gtk.Style.Gtk_Style
-        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
-   end Get_Modifier_Style;
-
    ---------------
    -- Modify_Fg --
    ---------------
