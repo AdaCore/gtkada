@@ -1,9 +1,9 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---               Copyright (C) 2001-2008, AdaCore                    --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,13 @@ with Gdk.Pixmap;           use Gdk.Pixmap;
 with Gtk.Enums;            use Gtk.Enums;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Extra.Plot is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Plot_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -------------
    -- Gtk_New --

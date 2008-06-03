@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,13 @@
 with Gdk.Color;            use Gdk.Color;
 with Gtk.Extra.Plot_Data;  use Gtk.Extra.Plot_Data;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Extra.Plot_Canvas.Ellipse is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Plot_Canvas_Ellipse_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -------------
    -- Gtk_New --

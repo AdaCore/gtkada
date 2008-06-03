@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2005 AdaCore                    --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,13 @@
 with System;
 with Gtk.Text_Tag;  use Gtk.Text_Tag;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Text_Tag_Table is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Text_Tag_Table_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -------------
    -- Gtk_New --

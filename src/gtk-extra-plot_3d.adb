@@ -32,7 +32,13 @@ with Gtk;                 use Gtk;
 with Gtk.Extra.Plot;      use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Data; use Gtk.Extra.Plot_Data;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Extra.Plot_3D is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Plot_3D_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -------------
    -- Gtk_New --

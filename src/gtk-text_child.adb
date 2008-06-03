@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001-2006 AdaCore               --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +30,13 @@ with System;
 
 with Glib;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Text_Child is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Text_Child_Anchor_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -----------------
    -- Get_Deleted --

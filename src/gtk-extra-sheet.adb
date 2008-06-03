@@ -34,7 +34,13 @@ with Unchecked_Conversion;
 with Gdk.Color;            use Gdk.Color;
 with Pango.Font;           use Pango.Font;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Extra.Sheet is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Sheet_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -------------
    -- Gtk_New --

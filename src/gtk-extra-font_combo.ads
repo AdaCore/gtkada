@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,6 +37,7 @@
 --  <c_version>gtkextra 2.1.1</c_version>
 --  <group>GtkExtra, additional widgets</group>
 
+with Glib;
 with Gtk.Toolbar;
 with Gdk.Font;
 with Pango.Font;
@@ -54,7 +55,7 @@ package Gtk.Extra.Font_Combo is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Guint;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Font_Combo.
 
    procedure Font_Combo_Select

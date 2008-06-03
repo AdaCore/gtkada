@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,13 @@ with System;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Pango.Font;       use Pango.Font;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Style is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Style_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    type Gdk_Color_Access is access Gdk_Color;
    function Convert is new Ada.Unchecked_Conversion

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                    Copyright (C) 2001 - 2006 AdaCore              --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,7 +31,13 @@ with Gtk.Text_Attributes; use Gtk.Text_Attributes;
 with Pango.Tabs;          use Pango.Tabs;
 with System;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Text_View is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Text_View_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    --  See Note (2) in the body of package Gtk.Text_Iter for more details
    --  on why it is safe to apply the 'Address attribute on a Gtk_Text_Iter

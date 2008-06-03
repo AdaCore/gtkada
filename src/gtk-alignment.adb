@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,13 @@
 
 with System;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Alignment is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Alignment_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    ----------------
    -- Get_Xalign --
@@ -192,6 +198,5 @@ package body Gtk.Alignment is
       Internal (Get_Object (Alignment), Padding_Top, Padding_Bottom,
                 Padding_Left, Padding_Right);
    end Set_Padding;
-
 
 end Gtk.Alignment;

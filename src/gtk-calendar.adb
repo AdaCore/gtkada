@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +30,13 @@
 with Gtk.Widget; use Gtk.Widget;
 with System;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Calendar is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Calendar_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -----------------
    -- Clear_Marks --

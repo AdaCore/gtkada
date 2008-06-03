@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,13 @@ with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Widget;      use Gtk.Widget;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Container is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Container_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    procedure Internal_Gtk_Callback
      (Widget : System.Address; Data : Gtk_Callback);

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2008, AdaCore                   --
+--                 Copyright (C) 2006-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,13 @@ with Glib.Values;      use Glib.Values;
 with Gtk.Tree_Model;   use Gtk.Tree_Model;
 with System;           use System;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Tree_Model_Filter is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Tree_Model_Filter_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    type Gtk_Tree_Iter_Access is access all Gtk_Tree_Iter;
    function To_Iter is new Ada.Unchecked_Conversion

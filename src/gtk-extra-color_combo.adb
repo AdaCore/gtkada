@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                       Copyright (C) 2000                          --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
@@ -33,7 +33,13 @@ with System;
 with Gtk.Widget;
 with Ada.Unchecked_Conversion;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Extra.Color_Combo is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Color_Combo_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    procedure Set_Row
      (Combo : access Gtk_Color_Combo_Record'Class;

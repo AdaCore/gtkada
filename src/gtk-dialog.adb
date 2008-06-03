@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,7 +31,13 @@ with System;
 with Gdk.Event;  use Gdk.Event;
 with Gtk.Window; use Gtk.Window;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Dialog is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Dialog_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    ---------------------
    -- Get_Action_Area --
@@ -298,6 +304,5 @@ package body Gtk.Dialog is
       Internal (Get_Object (Dialog), New_Order'Length,
                 New_Order (New_Order'First)'Address);
    end Set_Alternative_Button_Order_From_Array;
-
 
 end Gtk.Dialog;

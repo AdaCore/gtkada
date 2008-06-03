@@ -33,7 +33,13 @@ with Gtk.Style;    use Gtk.Style;
 
 with Ada.Unchecked_Conversion;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Ctree is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Ctree_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    Compare_Drag_Func_Key : constant String :=
                              "_GtkAda_Ctree_Compare_Drag_Func" & ASCII.NUL;

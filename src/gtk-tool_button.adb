@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                 Copyright (C) 2006-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,13 @@ with Gtk.Widget;           use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;               use System;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Tool_Button is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Tool_Button_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -------------------
    -- Get_Icon_Name --

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                 Copyright (C) 2006-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,13 @@
 with Gtk.Dialog;   use Gtk.Dialog;
 with Gtk.Window;   use Gtk.Window;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Message_Dialog is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Message_Dialog_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    ----------------
    -- Set_Markup --
@@ -164,7 +170,5 @@ package body Gtk.Message_Dialog is
          Internal (Get_Object (Parent), Flags, Typ, Buttons,
            Message & ASCII.NUL));
    end Initialize_With_Markup;
-
-
 
 end Gtk.Message_Dialog;

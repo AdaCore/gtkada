@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                      Copyright (C) 2001-2006                      --
---                               AdaCore                             --
+--                 Copyright (C) 2001-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +31,13 @@ with System;
 with Gtk;            use Gtk;
 with Gtk.Tree_Model; use Gtk.Tree_Model;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.List_Store is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_List_Store_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    -------------
    -- Gtk_New --
@@ -429,6 +434,5 @@ package body Gtk.List_Store is
    begin
       Internal (Get_Object (Store), A, B);
    end Swap;
-
 
 end Gtk.List_Store;

@@ -31,7 +31,13 @@ with System;                use System;
 with Gtk;                   use Gtk;
 with Gtkada.Types;
 
+with Glib.Type_Conversion_Hooks;
+
 package body Gtk.Tree_Model is
+
+   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gtk_Tree_Model_Record);
+   pragma Warnings (Off, Type_Conversion);
 
    ---------------
    -- Get_Flags --
