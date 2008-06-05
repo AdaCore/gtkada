@@ -2,6 +2,7 @@
 
 	* gdk/win32/gdkevents-win32.c (gdk_event_translate): Fix handling
 	of window resizing. See H602-004
+	Fixed differently in gtk+-2.12.10, to be verified.
 
 2007-10-10	Arnaud Charlet	<charlet@adacore.com>
 
