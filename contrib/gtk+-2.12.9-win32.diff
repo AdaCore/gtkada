@@ -1,3 +1,8 @@
+2008-06-05	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c (gdk_event_translate): Fix handling
+	of window resizing. See H602-004
+
 2007-10-10	Arnaud Charlet	<charlet@adacore.com>
 
 	* modules/engines/ms-windows/msw_style.c (draw_themed_tab_button):
@@ -16,9 +21,9 @@
 
 2002-09-12	Florent Duguet	<duguet@adacore.com>
 
-	* gdk/win32/gdkevents-win32.c: Force an update when paint message
-	is received, otherwise windows in background are not immediately
-	refreshed when moving a modal window on top of them.
+	* gdk/win32/gdkevents-win32.c (handle_wm_paint): Force an update when
+	paint message is received, otherwise windows in background are not
+	immediately refreshed when moving a modal window on top of them.
 	Add handling of WM_NCPAINT message to refresh some areas when a window
 	from another application is moved on top of the current app.
 
@@ -126,3 +131,14 @@
      }
  
    return TRUE;
+--- gdk/win32/gdkevents-win32.c.old	2008-06-05 15:48:11.541000000 +0200
++++ gdk/win32/gdkevents-win32.c	2008-06-05 16:45:48.259750000 +0200
+@@ -3029,7 +3029,7 @@ gdk_event_translate (MSG  *msg,
+ 
+ 	      if (GDK_WINDOW_TYPE (window) != GDK_WINDOW_TEMP && !GDK_WINDOW_IS_MAPPED (window))
+ 		{
+-		  show_window_internal (window, FALSE);
++		  ShowWindow (GDK_WINDOW_HWND (window), SW_RESTORE);
+ 		}
+ 	    }
+ 	  else if (msg->wParam == SIZE_MAXIMIZED)
