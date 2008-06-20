@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,10 +53,13 @@ package Gdk.Keyval is
 
    function Is_Lower (Keyval : Gdk.Types.Gdk_Key_Type) return Boolean;
 
+   function To_Unicode (Keyval : Gdk.Types.Gdk_Key_Type) return Glib.Gunichar;
+
 private
    pragma Import (C, To_Upper, "gdk_keyval_to_upper");
    pragma Import (C, To_Lower, "gdk_keyval_to_lower");
    pragma Import (C, Get_Type, "gdk_keymap_get_type");
+   pragma Import (C, To_Unicode, "gdk_keyval_to_unicode");
 
    type Gdk_Keymap is new C_Proxy;
 end Gdk.Keyval;
@@ -67,5 +70,4 @@ end Gdk.Keyval;
 --  gdk_keymap_get_entries_for_keyval
 --  gdk_keymap_get_entries_for_keycode
 --  gdk_keyval_convert_case
---  gdk_keyval_to_unicode
 --  gdk_unicode_to_keyval
