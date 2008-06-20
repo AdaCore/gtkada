@@ -12,6 +12,10 @@ of the feature.
 New features in GtkAda 2.10.3
 -----------------------------
 
+H620-010 Minor API additions
+
+  The function Gdk.Keyval.To_Unicode has been bound.
+
 H528-010 Automatic conversion of C widgets
 
   The package Gtk.Type_Conversion is now obsolete and now longer needed, since
