@@ -1,0 +1,31 @@
+Fri Jun 17 2005  Arnaud Charlet  <charlet@adacore.com>
+
+	* pango/pangowin32-fontmap.c: integrate patch from
+	http://bugzilla.gnome.org/show_bug.cgi?id=110521
+	Fix E607-006
+
+--- pango/pangowin32-fontmap.c.orig	2008-02-25 08:11:40.000000000 +0100
++++ pango/pangowin32-fontmap.c	2008-04-17 18:28:43.250000000 +0200
+@@ -183,7 +183,21 @@ pango_win32_inner_enum_proc (LOGFONTW   
+    * Asian fonts with @ prepended to their name, ignore them.
+    */
+   if (lfp->lfFaceName[0] != '@')
+-    pango_win32_insert_font (win32fontmap, lfp, FALSE);
++    {
++      /* Bold and italic variants can always (?) be simulated,
++       * so insert them.
++       */
++      lfp->lfItalic = 0;
++      lfp->lfWeight = FW_NORMAL;
++      pango_win32_insert_font (win32fontmap, lfp, FALSE); /* normal */
++      lfp->lfItalic = 1;
++      pango_win32_insert_font (win32fontmap, lfp, FALSE); /* italic */
++      lfp->lfItalic = 0;
++      lfp->lfWeight = FW_BOLD;
++      pango_win32_insert_font (win32fontmap, lfp, FALSE); /* bold */
++      lfp->lfItalic = 1;
++      pango_win32_insert_font (win32fontmap, lfp, FALSE); /* bold+italic */
++    }
+ 
+   return 1;
+ }
