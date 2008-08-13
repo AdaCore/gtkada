@@ -242,9 +242,12 @@ package body Gtkada.MDI is
    --  Create a notebook, and set it up for drag-and-drop
 
    procedure Configure_Notebook_Tabs
-     (MDI : access MDI_Window_Record'Class;
-      Notebook : access Gtk_Notebook_Record'Class);
-   --  Configure the visibility and position of notebook tabs
+     (MDI           : access MDI_Window_Record'Class;
+      Notebook      : access Gtk_Notebook_Record'Class;
+      Hide_If_Empty : Boolean := False);
+   --  Configure the visibility and position of notebook tabs.
+   --  If there are no visible pages and Hide_If_Empty is true, then the
+   --  notebook itself is hidden
 
    procedure Update_Tab_Color
      (Child : access MDI_Child_Record'Class;
@@ -1998,11 +2001,18 @@ package body Gtkada.MDI is
      (Widget : access Gtk_Widget_Record'Class)
    is
       Child : constant MDI_Child := MDI_Child (Widget);
+      Note  : Gtk_Notebook;
    begin
       if Child.State = Floating then
          Hide (Get_Toplevel (Get_Widget (Child)));
       else
          Hide (Child);
+
+         --  At startup, the notebook might be null
+         Note := Get_Notebook (Child);
+         if Note /= null then
+            Configure_Notebook_Tabs (Child.MDI, Note, Hide_If_Empty => True);
+         end if;
       end if;
    end Child_Widget_Hidden;
 
@@ -2014,11 +2024,18 @@ package body Gtkada.MDI is
      (Widget : access Gtk_Widget_Record'Class)
    is
       Child : constant MDI_Child := MDI_Child (Widget);
+      Note  : Gtk_Notebook;
    begin
       if Child.State = Floating then
          Show (Get_Toplevel (Get_Widget (Child)));
       else
          Show (Child);
+
+         --  At startup, the notebook might be null
+         Note := Get_Notebook (Child);
+         if Note /= null then
+            Configure_Notebook_Tabs (Child.MDI, Note, Hide_If_Empty => True);
+         end if;
       end if;
    end Child_Widget_Shown;
 
@@ -2640,6 +2657,8 @@ package body Gtkada.MDI is
       Current_Focus : MDI_Child;
       Give          : Boolean := Give_Focus;
    begin
+      Show (Child);  --  Make sure the child is visible
+
       --  For a docked item, we in fact want to raise its parent dock,
       --  and make sure the current page in that dock is the correct one.
 
@@ -2796,6 +2815,7 @@ package body Gtkada.MDI is
          return;
       end if;
 
+      Show (C);  --  Make sure the child is visible
       Child.MDI.Focus_Child := C;
 
       if Traces then
@@ -3163,14 +3183,26 @@ package body Gtkada.MDI is
 
    procedure Configure_Notebook_Tabs
      (MDI      : access MDI_Window_Record'Class;
-      Notebook : access Gtk_Notebook_Record'Class)
+      Notebook : access Gtk_Notebook_Record'Class;
+      Hide_If_Empty : Boolean := False)
    is
       Child : MDI_Child;
+      Page_Count : constant Gint := Get_N_Pages (Notebook);
+      Visible_Page_Count : Natural := 0;
    begin
       Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
       Set_Property (Notebook, Tab_Border_Property, 0);
 
-      if Get_Nth_Page (Notebook, 1) /= null then
+      --  Some pages might be hidden, in which case they should not be counted
+      --  when we compute whether the tabs should be made visible
+
+      for P in 0 .. Page_Count - 1 loop
+         if Visible_Is_Set (Get_Nth_Page (Notebook, P)) then
+            Visible_Page_Count := Visible_Page_Count + 1;
+         end if;
+      end loop;
+
+      if Visible_Page_Count >= 2 then
          Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy /= Never);
       else
          Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy = Always);
@@ -3185,6 +3217,14 @@ package body Gtkada.MDI is
          Set_Border_Width (Child.Main_Box, 0);
       else
          Set_Border_Width (Child.Main_Box, Guint (Small_Border_Thickness));
+      end if;
+
+      if Hide_If_Empty then
+         if Visible_Page_Count = 0 then
+            Hide (Notebook);
+         else
+            Show (Notebook);
+         end if;
       end if;
    end Configure_Notebook_Tabs;
 
@@ -4170,7 +4210,8 @@ package body Gtkada.MDI is
          Y           : out Gint;
          Raised      : out Boolean;
          State       : out State_Type;
-         Child       : out MDI_Child);
+         Child       : out MDI_Child;
+         To_Hide     : in out Gtk.Widget.Widget_List.Glist);
       --  Parse a <child> node and return the corresponding Child. The latter
       --  has not been inserted in the MDI
 
@@ -4182,6 +4223,7 @@ package body Gtkada.MDI is
          Width, Height         : out Gint;
          Notebook              : out Gtk_Notebook;
          To_Raise              : in out Gtk.Widget.Widget_List.Glist;
+         To_Hide               : in out Gtk.Widget.Widget_List.Glist;
          Reuse_Empty_If_Needed : in out Boolean);
       --  Parse a <notebook> node.
       --  A new notebook is created and returned.
@@ -4201,6 +4243,7 @@ package body Gtkada.MDI is
          User                  : User_Data;
          Initial_Ref_Child     : Gtk_Notebook := null;
          To_Raise              : in out Gtk.Widget.Widget_List.Glist;
+         To_Hide               : in out Gtk.Widget.Widget_List.Glist;
          Reuse_Empty_If_Needed : in out Boolean);
       --  Parse a <Pane> node
       --  First_Child is the first notebook insert in pane (possibly inserted
@@ -4231,6 +4274,7 @@ package body Gtkada.MDI is
          Width, Height         : out Gint;
          Notebook              : out Gtk_Notebook;
          To_Raise              : in out Gtk.Widget.Widget_List.Glist;
+         To_Hide               : in out Gtk.Widget.Widget_List.Glist;
          Reuse_Empty_If_Needed : in out Boolean)
       is
          N            : Node_Ptr := Child_Node.Child;
@@ -4283,7 +4327,7 @@ package body Gtkada.MDI is
             if N.Tag.all = "Child" then
                Parse_Child_Node
                  (MDI, N, User, Focus_Child, X, Y,
-                  Raised, State, Child);
+                  Raised, State, Child, To_Hide => To_Hide);
                if Raised then
                   Raised_Child := Child;
                end if;
@@ -4345,11 +4389,14 @@ package body Gtkada.MDI is
          Y           : out Gint;
          Raised      : out Boolean;
          State       : out State_Type;
-         Child       : out MDI_Child)
+         Child       : out MDI_Child;
+         To_Hide     : in out Gtk.Widget.Widget_List.Glist)
       is
          N        : Node_Ptr;
          Register : Register_Node;
          W, H     : Allocation_Int := -1;
+         Visible  : constant Boolean := Boolean'Value
+           (Get_Attribute (Child_Node, "visible", "true"));
       begin
          Register := Registers;
          Child    := null;
@@ -4415,6 +4462,10 @@ package body Gtkada.MDI is
             Set_Size_Request (Child, W, H);
          end if;
 
+         if not Visible then
+            Prepend (To_Hide, Gtk_Widget (Child));
+         end if;
+
          if Traces then
             Put_Line ("MDI: Parse_Child_Node: done");
          end if;
@@ -4431,6 +4482,7 @@ package body Gtkada.MDI is
          User                  : User_Data;
          Initial_Ref_Child     : Gtk_Notebook := null;
          To_Raise              : in out Gtk.Widget.Widget_List.Glist;
+         To_Hide               : in out Gtk.Widget.Widget_List.Glist;
          Reuse_Empty_If_Needed : in out Boolean)
       is
          Orientation : constant Gtk_Orientation := Gtk_Orientation'Value
@@ -4487,6 +4539,7 @@ package body Gtkada.MDI is
                      Height      => Height,
                      Notebook    => Notebooks (Count),
                      To_Raise    => To_Raise,
+                     To_Hide     => To_Hide,
                      Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
                   if Traces then
                      Put_Line
@@ -4554,6 +4607,7 @@ package body Gtkada.MDI is
                      User                  => User,
                      Initial_Ref_Child     => Notebooks (Count),
                      To_Raise              => To_Raise,
+                     To_Hide               => To_Hide,
                      Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
                end if;
                Count := Count + 1;
@@ -4578,6 +4632,7 @@ package body Gtkada.MDI is
          X, Y               : Gint := 0;
          Items_Removed      : Boolean := False;
          To_Raise           : Gtk.Widget.Widget_List.Glist;
+         To_Hide            : Gtk.Widget.Widget_List.Glist;
 
          procedure Remove_All_Items (Remove_All_Empty : Boolean);
          --  Remove all the items currently in the MDI.
@@ -4716,6 +4771,7 @@ package body Gtkada.MDI is
                Parse_Pane_Node
                  (MDI, Child_Node, Focus_Child, User, null,
                   To_Raise              => To_Raise,
+                  To_Hide               => To_Hide,
                   Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
 
             elsif Child_Node.Tag.all = "Bottom_Dock_Height" then
@@ -4731,7 +4787,8 @@ package body Gtkada.MDI is
                Remove_All_Items (Remove_All_Empty => False);
                Parse_Child_Node
                  (MDI, Child_Node, User,
-                  Focus_Child, X, Y, Raised, State, Child);
+                  Focus_Child, X, Y, Raised, State, Child,
+                  To_Hide => To_Hide);
 
                if Child /= null then
                   case State is
@@ -4788,6 +4845,14 @@ package body Gtkada.MDI is
                Item := Widget_List.Next (Item);
             end loop;
             Free (To_Raise);
+
+            Item := To_Hide;
+            while Item /= Widget_List.Null_List loop
+               Child := MDI_Child (Widget_List.Get_Data (Item));
+               Hide (Child);
+               Item := Widget_List.Next (Item);
+            end loop;
+            Free (To_Hide);
          end;
 
          --  Realize the window while frozen, so that windows that insist on
@@ -4924,6 +4989,10 @@ package body Gtkada.MDI is
 
                if Raised then
                   Set_Attribute (Child_Node, "Raised", "True");
+               end if;
+
+               if not Visible_Is_Set (Child) then
+                  Set_Attribute (Child_Node, "visible", "False");
                end if;
 
                Add_Child (Parent, Child_Node, Append => True);
@@ -5272,6 +5341,8 @@ package body Gtkada.MDI is
       Style : Gtk_Style;
    begin
       if Highlight then
+         Show (Child);  --  Make sure the child is visible
+
          if Note /= null
            and then Get_Current_Page (Note) = Page_Num (Note, Child)
          then
