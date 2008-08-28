@@ -20,7 +20,7 @@ pixman-0.10.0-win32.diff: ditto for pixman 0.10.0 under Windows
 
 cairo-1.6.4.diff: ditto for cairo 1.6.4
 
-pygtk-2.8.6.diff: patch to build pygtk 2.8.6 with --without-threads
+pygobject-2.14.2.diff: patch to build pygobject 2.14.2 with --disable-thread
 
 gtkada-2.10-win32.diff: a patch to build GtkAda under Windows
 
