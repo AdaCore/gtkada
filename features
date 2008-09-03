@@ -12,6 +12,14 @@ of the feature.
 New features in GtkAda 2.10.3
 -----------------------------
 
+H903-015 Gtk.Extra.Combo_Button.Get_Arrow no longer exists
+
+  This was replaced by Get_Toggle_Button to match what is returned by the
+  C code. We no longer have access to the arrow itself, so Get_Arrow could
+  not be preserved. Instead of sending the "clicked" signal to the arrow
+  to force the display of the popup window, you should call Set_Active on
+  the button returned by Get_Toggle_Button.
+
 H620-010 Minor API additions
 
   The function Gdk.Keyval.To_Unicode has been bound.

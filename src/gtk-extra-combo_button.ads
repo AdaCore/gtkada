@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,7 +39,7 @@
 
 with Gtk.Box;
 with Gtk.Button;
-with Gtk.Arrow;
+with Gtk.Toggle_Button;
 with Gtk.Frame;
 
 package Gtk.Extra.Combo_Button is
@@ -68,8 +68,9 @@ package Gtk.Extra.Combo_Button is
      (Combo : access Gtk_Combo_Button_Record) return Gtk.Button.Gtk_Button;
    --  Return the button that shows the value of the combo.
 
-   function Get_Arrow
-     (Combo : access Gtk_Combo_Button_Record) return Gtk.Arrow.Gtk_Arrow;
+   function Get_Toggle_Button
+     (Combo : access Gtk_Combo_Button_Record)
+      return Gtk.Toggle_Button.Gtk_Toggle_Button;
    --  Return the arrow button.
    --  The user has to click on it to open the popup window.
 

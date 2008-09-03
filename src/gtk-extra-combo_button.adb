@@ -87,20 +87,21 @@ package body Gtk.Extra.Combo_Button is
         (Get_User_Data (Internal (Get_Object (Combo)), Stub));
    end Get_Button;
 
-   ---------------
-   -- Get_Arrow --
-   ---------------
+   -----------------------
+   -- Get_Toggle_Button --
+   -----------------------
 
-   function Get_Arrow (Combo : access Gtk_Combo_Button_Record)
-                      return Gtk.Arrow.Gtk_Arrow
+   function Get_Toggle_Button
+     (Combo : access Gtk_Combo_Button_Record)
+      return Gtk.Toggle_Button.Gtk_Toggle_Button
    is
       function Internal (Combo : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_combo_button_get_arrow");
-      Stub : Gtk.Arrow.Gtk_Arrow_Record;
+      Stub : Gtk.Toggle_Button.Gtk_Toggle_Button_Record;
    begin
-      return Gtk.Arrow.Gtk_Arrow
+      return Gtk.Toggle_Button.Gtk_Toggle_Button
         (Get_User_Data (Internal (Get_Object (Combo)), Stub));
-   end Get_Arrow;
+   end Get_Toggle_Button;
 
    ---------------
    -- Get_Frame --
