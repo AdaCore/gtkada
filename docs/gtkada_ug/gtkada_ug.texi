@@ -1870,7 +1870,7 @@ This chapter presents a number of technics that can be used when
 debugging GtkAda applications. First, the standard tools to debug
 Ada applications can be used:
 
-@table @bullet
+@table @asis
 @item Compile with -g
 You should almost always include debugging information when compiling
 and linking your code. This gives you the possibility to use the
@@ -1895,7 +1895,7 @@ applications. For most of them, you might need to recompile these
 libraries with the appropriate switches to get access to the extended
 debugging features.
 
-@table @bullet
+@table @asis
 @item Use the @code{--sync} switch
 Under unix systems, all applications compiled with gtk+ automatically
 support this switch, which forces events to be processed synchronously,
@@ -1931,15 +1931,15 @@ For these three variables, the possible values are given below. These
 are lists of colon-separated keywords. You can choose to remove any of
 these value from the variable
 
-@table @minus
-@item @samp{GOBJECT_DEBUG=objects:signals}
+@table @samp
+@item GOBJECT_DEBUG=objects:signals
 This sets up the debugging output for glib. The value @samp{objects}
 is probably the most useful, and displays, on exit of the application,
 the list of unfreed objects. This helps detect memory leaks. The
 second value @samp{signals} will display all the signals emitted by
 the objects. Note that this results in a significant amount of output.
 
-@item @samp{GDK_DEBUG=updates:nograbs:events:dnd:misc:@*xim:colormap:gdkrgb:gc:pixmap:image:input:cursor}
+@item GDK_DEBUG=updates:nograbs:events:dnd:misc:@*xim:colormap:gdkrgb:gc:pixmap:image:input:cursor
 This sets up the debugging output for gdk. The most useful value is
 @samp{nograbs}, which prevents the application from ever grabbing the
 mouse or keyboards. If you don't set this, it might happen that the
@@ -1948,7 +1948,7 @@ when the debugger stops on a breakpoint. Another simpler solution is
 to debug remotely from another machine, in which case the grabs
 won't affect the terminal on which the debugger is running.
 
-@item @samp{GTK_DEBUG=misc:plugsocket:text:tree:updates:keybindings}
+@item GTK_DEBUG=misc:plugsocket:text:tree:updates:keybindings
 This sets up the debugging output for gtk. Almost all of these values
 are mostly for internal use by gtk+ developpers, although
 @samp{keybindings} might prove useful sometimes.
