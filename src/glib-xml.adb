@@ -976,6 +976,8 @@ package body Glib.XML is
          Value : String_Ptr;
 
          New_N : Node_Ptr;
+         Child : Node_Ptr;
+         N_Child : Node_Ptr;
       begin
          if N = null then
             return null;
@@ -988,16 +990,32 @@ package body Glib.XML is
                Value := new String'(N.Value.all);
             end if;
 
+            --  Do not clone Next: For the initial node, we should not clone
+            --  the next nodes, only its children. And for children this is
+            --  done by Deep_Copy_Internal on the parent
+
             New_N := new Node'
               (Tag => new String'(N.Tag.all),
                Attributes => Attr,
                Value => Value,
                Parent => Parent,
                Child => null,
-               Next => Deep_Copy_Internal (N.Next, Parent => Parent),
+               Next => null,
                Specific_Data => N.Specific_Data);
 
-            New_N.Child := Deep_Copy_Internal (N.Child, Parent => New_N);
+            --  Clone each child
+
+            Child := N.Child;
+            while Child /= null loop
+               if N_Child = null then
+                  New_N.Child := Deep_Copy_Internal (Child, Parent => New_N);
+                  N_Child := New_N.Child;
+               else
+                  N_Child.Next := Deep_Copy_Internal (Child, Parent => New_N);
+                  N_Child := N_Child.Next;
+               end if;
+               Child := Child.Next;
+            end loop;
 
             return New_N;
          end if;
