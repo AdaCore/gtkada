@@ -1237,7 +1237,8 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Destroy_MDI (MDI : access Gtk_Widget_Record'Class) is
-      Tmp : Widget_List.Glist := First (MDI_Window (MDI).Items);
+      M   : constant MDI_Window := MDI_Window (MDI);
+      Tmp : Widget_List.Glist := First (M.Items);
       N   : Widget_List.Glist;
    begin
       --  Note: we only destroy the floating children. Other children will be
@@ -1261,11 +1262,15 @@ package body Gtkada.MDI is
          Tmp := N;
       end loop;
 
-      Free (MDI_Window (MDI).Items);
-      Unref (MDI_Window (MDI).Title_Layout);
+      Free (M.Items);
+      Unref (M.Title_Layout);
 
-      if MDI_Window (MDI).Menu /= null then
-         Destroy (MDI_Window (MDI).Menu);
+      if M.Highlight_Style /= null then
+         Unref (M.Highlight_Style);
+      end if;
+
+      if M.Menu /= null then
+         Destroy (M.Menu);
       end if;
    end Destroy_MDI;
 
