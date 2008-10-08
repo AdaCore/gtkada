@@ -379,8 +379,9 @@ package body Glib.XML is
             Tmp := Index;
             Get_Next_Word (N.Attributes.all, Index, Key);
             Get_Buf (N.Attributes.all, Index, '=', Value);
-            Get_Next_Word (N.Attributes.all, Index, Value);
+            Free (Value);
 
+            Get_Next_Word (N.Attributes.all, Index, Value);
             Free (Value);
 
             if Attribute_Name = Key.all then
