@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003-2006, AdaCore                  --
+--                 Copyright (C) 2003-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -100,8 +100,11 @@ package body Gtkada.Multi_Paned is
       end case;
    end record;
 
-   procedure Free (Child : in out Child_Description_Access);
-   --  Free Child, but not its Next or parent children
+   procedure Free
+     (Child     : in out Child_Description_Access;
+      Recursive : Boolean);
+   --  Free Child, but not its Next or parent nodes.
+   --  If Recursive is True, the children of Child are also destroyed
 
    procedure Size_Allocate_Paned
      (Paned : System.Address; Alloc : Gtk_Allocation);
@@ -279,6 +282,7 @@ package body Gtkada.Multi_Paned is
                    & Gint'Image (Child.Handle.Position.Y)
                    & ") w=" & System.Address_Image (Child.Widget.all'Address)
                    & " C=" & System.Address_Image (Get_Object (Child.Widget))
+                   & " D=" & System.Address_Image (Child.all'Address)
                    & ">");
       else
          Put_Line (Prefix & "<" & Image (Child.Orientation)
@@ -290,7 +294,9 @@ package body Gtkada.Multi_Paned is
                    & " handle=("
                    & Gint'Image (Child.Handle.Position.X)
                    & Gint'Image (Child.Handle.Position.Y)
-                   & ")>");
+                   & ")"
+                   & " D=" & System.Address_Image (Child.all'Address)
+                   & ">");
          Tmp := Child.First_Child;
          while Tmp /= null loop
             Dump (Split, Tmp, Prefix & "  ");
@@ -314,14 +320,32 @@ package body Gtkada.Multi_Paned is
    -- Free --
    ----------
 
-   procedure Free (Child : in out Child_Description_Access) is
+   procedure Free
+     (Child     : in out Child_Description_Access;
+      Recursive : Boolean)
+   is
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
         (Child_Description, Child_Description_Access);
+      Tmp : Child_Description_Access;
    begin
       if Child /= null then
          if Child.Handle.Win /= null then
             Destroy (Child.Handle.Win);
          end if;
+      end if;
+
+      if Traces then
+         Put_Line ("Freeing Child_Description: "
+                   & System.Address_Image (Child.all'Address));
+      end if;
+
+      if Recursive and then not Child.Is_Widget then
+         while Child.First_Child /= null loop
+            Tmp := Child.First_Child.Next;
+            Free (Child.First_Child, Recursive);
+            Child.First_Child := Tmp;
+         end loop;
+
       end if;
 
       Unchecked_Free (Child);
@@ -479,10 +503,15 @@ package body Gtkada.Multi_Paned is
       use type Widget_List.Glist;
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
    begin
+      if Traces then
+         Put_Line ("Destroy_Paned");
+         Dump (Split);
+      end if;
+
       --  Destruction of children would be done automatically by the default
       --  "destroy" handler of the ancestor of Gtkada_Multi_Paned (ie GtkFixed)
 
-      Free (Split.Children);
+      Free (Split.Children, Recursive => True);
 
       if Split.GC /= null then
          Unref (Split.GC);
@@ -569,11 +598,11 @@ package body Gtkada.Multi_Paned is
 
                Tmp := Child;
                Child := Child.First_Child;
-               Free (Tmp);
+               Free (Tmp, Recursive => False);
             elsif not Child.First_Child.Is_Widget then
                Split.Children := Child.First_Child;
                Split.Children.Parent := null;
-               Free (Child);
+               Free (Child, Recursive => False);
                Child := Split.Children;
             end if;
          end if;
@@ -616,7 +645,7 @@ package body Gtkada.Multi_Paned is
                end if;
             end if;
 
-            Free (Child);
+            Free (Child, Recursive => False);
          end if;
       end Merge_With_Parent_If_Same;
 
@@ -645,7 +674,7 @@ package body Gtkada.Multi_Paned is
             Tmp.Next := Current.Next;
          end if;
 
-         Free (Current);
+         Free (Current, Recursive => False);
 
          Merge_With_Parent_If_Single_Child (Parent);
          Merge_With_Parent_If_Same (Parent);
@@ -657,7 +686,7 @@ package body Gtkada.Multi_Paned is
             if Parent.Parent /= null then
                Remove_Child (Split, Parent);
             else
-               Free (Parent);
+               Free (Parent, Recursive => False);
                Split.Children := null;
             end if;
          end if;
@@ -1812,6 +1841,12 @@ package body Gtkada.Multi_Paned is
             Y           => 0,
             Visible     => True,
             Handle      => No_Handle);
+
+         if Traces then
+            Put_Line ("Create_Or_Get_Parent Child_Description="
+                      & System.Address_Image (Pane.all'Address));
+         end if;
+
          Current.Parent := Pane;
 
          if Pane.Parent = null then
@@ -1857,6 +1892,12 @@ package body Gtkada.Multi_Paned is
             Visible     => True,
             Handle      => No_Handle,
             Widget      => Gtk_Widget (New_Child));
+
+         if Traces then
+            Put_Line ("Add_In_List, Child_Description="
+                      & System.Address_Image (Tmp2.all'Address));
+         end if;
+
          New_Pane := Tmp2;
 
          if After then
@@ -1907,9 +1948,6 @@ package body Gtkada.Multi_Paned is
 
       procedure Add_As_First_Child (Parent : Child_Description_Access) is
       begin
-         if Traces then
-            Put_Line ("Add_As_First_Child");
-         end if;
          if Parent.First_Child = null then
             Parent.First_Child := new Child_Description'
               (Parent      => Parent,
@@ -1922,7 +1960,14 @@ package body Gtkada.Multi_Paned is
                Visible     => True,
                Widget      => Gtk_Widget (New_Child));
             New_Pane := Parent.First_Child;
+            if Traces then
+               Put_Line ("Add_As_First_Child Child_Description="
+                         & System.Address_Image (New_Pane.all'Address));
+            end if;
          else
+            if Traces then
+               Put_Line ("Add_As_First_Child");
+            end if;
             Add_In_List (Parent, Parent.First_Child, After => False);
          end if;
       end Add_As_First_Child;
@@ -1934,9 +1979,6 @@ package body Gtkada.Multi_Paned is
       procedure Add_After_All_Children (Parent : Child_Description_Access) is
          Tmp : Child_Description_Access;
       begin
-         if Traces then
-            Put_Line ("Add_After_All_Children");
-         end if;
          if Parent.First_Child = null then
             Parent.First_Child := new Child_Description'
               (Parent      => Parent,
@@ -1949,7 +1991,14 @@ package body Gtkada.Multi_Paned is
                Visible     => True,
                Widget      => Gtk_Widget (New_Child));
             New_Pane := Parent.First_Child;
+            if Traces then
+               Put_Line ("Add_After_All_Children Child_Description="
+                         & System.Address_Image (New_Pane.all'Address));
+            end if;
          else
+            if Traces then
+               Put_Line ("Add_After_All_Children");
+            end if;
             Tmp := Parent.First_Child;
             while Tmp.Next /= null loop
                Tmp := Tmp.Next;
@@ -2016,9 +2065,6 @@ package body Gtkada.Multi_Paned is
 
       --   Current = null => Do nothing unless there is no child yet
       elsif Win.Children = null then
-         if Traces then
-            Put_Line ("No children yet");
-         end if;
          New_Pane := new Child_Description'
            (Parent      => null,
             Next        => null,
@@ -2042,6 +2088,11 @@ package body Gtkada.Multi_Paned is
             Visible     => True,
             Handle      => No_Handle);
          New_Pane.Parent := Win.Children;
+         if Traces then
+            Put_Line ("No children yet Child_Description="
+                      & System.Address_Image (New_Pane.all'Address)
+                      & " " & System.Address_Image (Win.Children.all'Address));
+         end if;
 
       elsif Win.Children /= null then
          if Traces then
