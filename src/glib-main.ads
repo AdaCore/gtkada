@@ -155,7 +155,7 @@ package Glib.Main is
    type G_Source_Id is new Guint;
    --  The ID of a source within the context to which it is attached.
 
-   No_Source_Id : constant Guint;
+   No_Source_Id : constant G_Source_Id;
 
    type G_Source_Func is access function return Boolean;
 
@@ -401,7 +401,7 @@ package Glib.Main is
    end Generic_Sources;
 
 private
-   No_Source_Id : constant Guint := 0;
+   No_Source_Id : constant G_Source_Id := 0;
 
    type G_Source_Type is new System.Address;
    Null_Source_Type : constant G_Source_Type :=
