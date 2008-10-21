@@ -1265,13 +1265,27 @@ package body Gtkada.MDI is
       Free (M.Items);
       Unref (M.Title_Layout);
 
+      if M.Cursor_Cross /= null then
+         Unref (M.Cursor_Cross);
+      end if;
+
       if M.Highlight_Style /= null then
          Unref (M.Highlight_Style);
+      end if;
+
+      if M.Non_Focus_GC /= null then
+         Unref (M.Non_Focus_GC);
+      end if;
+
+      if M.Focus_GC /= null then
+         Unref (M.Focus_GC);
       end if;
 
       if M.Menu /= null then
          Destroy (M.Menu);
       end if;
+
+      Free (M.Accel_Path_Prefix);
    end Destroy_MDI;
 
    -----------
@@ -1320,9 +1334,13 @@ package body Gtkada.MDI is
          --  For a top-level window, we must rebuild the initial widget
          --  temporarily, so that the application can do all the test it wants.
          --  However, we need to restore the initial state before calling
-         --  Dock_Child and Float_Child below
+         --  Dock_Child and Float_Child below.
+         --  We should not test this when the MDI is being destroyed, though,
+         --  to avoid memory leaks
 
-         if Force or else not Return_Callback.Emit_By_Name
+         if Force
+           or else In_Destruction_Is_Set (MDI)
+           or else not Return_Callback.Emit_By_Name
            (Child.Initial, "delete_event", Event)
          then
             --  Transfer the focus before unfloating, so that the parent in
@@ -1334,8 +1352,17 @@ package body Gtkada.MDI is
 
             Float_Child (Child, False);
 
+            if Traces then
+               Put_Line ("Close_Child: destroying " & Get_Title (Child));
+            end if;
+
             Destroy (Child);
+
+         elsif Traces then
+            Put_Line ("Close_Child: not destroying " & Get_Title (Child));
          end if;
+
+         Free (Event);
       end if;
 
    exception
@@ -1364,6 +1391,10 @@ package body Gtkada.MDI is
 
       pragma Assert (Get_Parent (Child) = null);
 
+      if Traces then
+         Put_Line ("Destroy_Child " & Get_Title (C));
+      end if;
+
       Ref (C);
 
       C.Tab_Label := null;
@@ -1385,6 +1416,9 @@ package body Gtkada.MDI is
       end if;
 
       if Get_Parent (C.Initial) /= null then
+         if Traces then
+            Put_Line ("Destroy_Child removing initial child from parent");
+         end if;
          Remove (Gtk_Container (Get_Parent (C.Initial)), C.Initial);
       end if;
 
@@ -2918,7 +2952,11 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean is
    begin
-      if MDI_Child (Child).MDI.Close_Floating_Is_Unfloat
+      if In_Destruction_Is_Set (MDI_Child (Child).MDI) then
+         --  We can always close a child when the MDI is being destroyed
+         return False;
+
+      elsif MDI_Child (Child).MDI.Close_Floating_Is_Unfloat
         and then (MDI_Child (Child).Flags and Always_Destroy_Float) = 0
         and then not MDI_Child (Child).MDI.All_Floating_Mode
       then
@@ -4789,7 +4827,10 @@ package body Gtkada.MDI is
                --  Used for floating children, and children in the default
                --  desktop (see Add_To_Tree)
 
-               Remove_All_Items (Remove_All_Empty => False);
+               --  ??? Why would we want this, in case we already added some
+               --  widgets to the tree
+               --  Remove_All_Items (Remove_All_Empty => False);
+
                Parse_Child_Node
                  (MDI, Child_Node, User,
                   Focus_Child, X, Y, Raised, State, Child,
@@ -4826,7 +4867,6 @@ package body Gtkada.MDI is
                     ("MDI: Restore desktop, removing empty_notebook_filler");
                end if;
 
-               Ref (Note);
                Remove_Page (Note, 0);
             end;
          end if;

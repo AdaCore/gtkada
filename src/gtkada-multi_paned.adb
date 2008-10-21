@@ -100,8 +100,11 @@ package body Gtkada.Multi_Paned is
       end case;
    end record;
 
-   procedure Free (Child : in out Child_Description_Access);
-   --  Free Child, but not its Next or parent children
+   procedure Free
+     (Child     : in out Child_Description_Access;
+      Recursive : Boolean);
+   --  Free Child, but not its Next or parent nodes.
+   --  If Recursive is True, the children of Child are also destroyed
 
    procedure Size_Allocate_Paned
      (Paned : System.Address; Alloc : Gtk_Allocation);
@@ -314,14 +317,26 @@ package body Gtkada.Multi_Paned is
    -- Free --
    ----------
 
-   procedure Free (Child : in out Child_Description_Access) is
+   procedure Free
+     (Child     : in out Child_Description_Access;
+      Recursive : Boolean)
+   is
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
         (Child_Description, Child_Description_Access);
+      Tmp : Child_Description_Access;
    begin
       if Child /= null then
          if Child.Handle.Win /= null then
             Destroy (Child.Handle.Win);
          end if;
+      end if;
+
+      if Recursive and then not Child.Is_Widget then
+         while Child.First_Child /= null loop
+            Tmp := Child.First_Child.Next;
+            Free (Child.First_Child, Recursive);
+            Child.First_Child := Tmp;
+         end loop;
       end if;
 
       Unchecked_Free (Child);
@@ -482,7 +497,7 @@ package body Gtkada.Multi_Paned is
       --  Destruction of children would be done automatically by the default
       --  "destroy" handler of the ancestor of Gtkada_Multi_Paned (ie GtkFixed)
 
-      Free (Split.Children);
+      Free (Split.Children, Recursive => True);
 
       if Split.GC /= null then
          Unref (Split.GC);
@@ -569,11 +584,11 @@ package body Gtkada.Multi_Paned is
 
                Tmp := Child;
                Child := Child.First_Child;
-               Free (Tmp);
+               Free (Tmp, Recursive => False);
             elsif not Child.First_Child.Is_Widget then
                Split.Children := Child.First_Child;
                Split.Children.Parent := null;
-               Free (Child);
+               Free (Child, Recursive => False);
                Child := Split.Children;
             end if;
          end if;
@@ -616,7 +631,7 @@ package body Gtkada.Multi_Paned is
                end if;
             end if;
 
-            Free (Child);
+            Free (Child, Recursive => False);
          end if;
       end Merge_With_Parent_If_Same;
 
@@ -645,7 +660,7 @@ package body Gtkada.Multi_Paned is
             Tmp.Next := Current.Next;
          end if;
 
-         Free (Current);
+         Free (Current, Recursive => False);
 
          Merge_With_Parent_If_Single_Child (Parent);
          Merge_With_Parent_If_Same (Parent);
@@ -657,7 +672,7 @@ package body Gtkada.Multi_Paned is
             if Parent.Parent /= null then
                Remove_Child (Split, Parent);
             else
-               Free (Parent);
+               Free (Parent, Recursive => False);
                Split.Children := null;
             end if;
          end if;

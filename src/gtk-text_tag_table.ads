@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2007 AdaCore                    --
+--                Copyright (C) 2001-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,6 +55,7 @@ package Gtk.Text_Tag_Table is
       Tag   : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
    --  Add a tag to the table.
    --  The tag is assigned the highest priority in the table.
+   --  You must Unref the Tag on exit
 
    procedure Remove
      (Table : access Gtk_Text_Tag_Table_Record;
