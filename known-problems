@@ -1,3 +1,5 @@
+Known problems fixed in GtkAda 2.12.1
+
 Known problems fixed in GtkAda 2.12.0
 
 - H421-008 GtkAda static library support broken on Windows.
@@ -7,63 +9,4 @@ Known problems fixed in GtkAda 2.12.0
               coded path into the project file.
   Workaround: Build the application manually or edit lib/gnat/gtkada.gpr to
               fix the offending path.
-
-Known problems fixed in GtkAda 2.10.3
-
-- H211-002 Gtk.Menu.Popup not working or crashing when "Func" is non-null.
-  Problem:    In Gtk.Menu, calling Popup or User_Menu_Popup.Popup might not
-              function or cause crashes when the parameter "Func" is not
-              null.
-  Workaround: Do not use this mechanism to position a menu.
-
-- H121-015 Memory leak in Gtk.Tree_Model.To_String
-  Problem:    Calling the function Gtk.Tree_Model.To_String causes a memory
-              leak.
-  Workaround: Replace the body of the function with:
-
-    function To_String (Path : Gtk_Tree_Path) return String  is
-       function Internal (Path : Gtk_Tree_Path) return chars_ptr;
-       pragma Import (C, Internal, "gtk_tree_path_to_string");
-       Result : chars_ptr := Internal (Path);
-       S : constant String := Interfaces.C.Strings.Value (Result);
-    begin
-       Free (Result); return S;
-    end To_String;
-
-Known problems fixed in GtkAda 2.10.0
-
-- G202-018 Gtkada.MDI.Raise_Child ends up with hidden focused window
-  Problem:    When you raise a window without giving the focus to it,
-              it might happen that the current focus becomes hidden when it
-              is in the same notebook. This is a surprising behavior for users
-              since for instance they won't see the characters they type.
-  Workaround: Set the parameter Give_Focus to true when both windows are in
-              the same notebook.
-
-Known problems fixed in GtkAda 2.8.2
-
-- G112-004 Glade doesn't generate general access types
-  Problem:    If you create your interface through the Glade GUI builder, the
-              generate code defines an access type which isn't a general
-              access type. This prevents conversions to it in various cases
-  Workaround: Edit the generate file "*_pkg.ads" and add the keyword "all"
-
-- G112-004 Glade doesn't handle signals with "Object" parameter
-  Problem:    If you connect a signal to your widget through the GUI builder,
-              and specify an "Object" argument to it, then the generated
-              callback has an incorrect type for its parameter
-  Workaround: Edit the generated code in "*_pkg-callbacks.ads"
-
-- F206-018 GtkAda project files not working under Windows
-  Problem:    The project files where not usable on Windows. The build
-              options had to be passed explicitly on the command line.
-  Workaround: Pass options explicitly on the command line or using a manual
-              project file.
-
-Known problems fixed in GtkAda 2.8.1
-
-- F606-001 GtkAda 2.8.0 does not run in 16bits mode under Windows
-  Problem:    The libcairo-2.dll provided with GtkAda 2.8.0 does not support
-              16 bits display under Windows.
-  Workaround: Use 24 or 32 bits display
 

@@ -9,6 +9,9 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
+New features in GtkAda 2.12.1
+-----------------------------
+
 New features in GtkAda 2.12.0
 -----------------------------
 
@@ -41,84 +44,4 @@ H121-008 Small API changes
     - in gdk-window.ads: likewise, for type Gdk_Filter_Func.
 
     - in gtk-menu.ads: likewise, for type Gtk_Menu_Detacher_Func.
-
-New features in GtkAda 2.10.2
------------------------------
-
-G710-011 Installing both static and shared libraries
-
-  Support is now provided for dynamically selecting either the shared or
-  the static library when building your application, once GtkAda has been
-  installed.
-
-New features in GtkAda 2.10.0
------------------------------
-
-G312-002 Support for saving ICO and BMP formats (2007-03-12)
-
-  Gdk.Pixbuf.Save now allows saving images in ico and bmp formats.
-
-G310-003 Improved Gdk.Rgb API (2007-03-12)
-
-  The Gdk.Rgb API has been enhanced to provide better support for pixel
-  manipulation.
-
-G222-021 Upgraded Gtk.Notebook binding (2006-02-22)
-
-  The Gtk.Notebook binding now incorporates new features that comes with
-  Gtk+ 2.10.x and in particular the support for drag-and-drop of tabs. The API
-  allows to easily reorder tabs within a notebook or drag-and-drop a tab from
-  a notebook to another one.
-
-FA06-005 Compatiblity with Gtk+ 2.10.x  (2006-02-10)
-
-  GtkAda has been successfully tested against Gtk+ 2.10.x, and
-  binary versions now come with Gtk+ 2.10.x libraries
-
-New features in GtkAda 2.8.2
-----------------------------
-
-F515-002 New widgets bound (2006-10-11)
-
-  Missing widgets present in gtk+ 2.8.17, and not bound in GtkAda so far, have
-  been added. This includes among others: Gtk_Icon_View, Gtk_Message_Dialog,
-  Gtk_About_Dialog, Gtk_Action, Gtk_Action_Group, Gtk_UI_Manager,
-  Gtk_Color_Button, Gtk_Font_Button, Gtk_Tree_Model_Filter, Gtk_Tree_Sortable,
-  Gtk_Combo_Box
-
-F927-011 New Gtk.File_Chooser* widgets bound (2006-10-06)
-
-  The Gtk+ widgets Gtk_File_Chooser (and children) have been bound and replace
-  the obsolescent Gtk_File_Selection.
-
-F505-009 GtkAda shared lib on Windows (2006-10-08)
-
-  GtkAda shared library is now built on Windows. This is also the
-  default mode. The use the GtkAda static library, use gtkada_static.gpr.
-
-New features in GtkAda 2.8.1
-----------------------------
-
-F602-010 Major redesign of the Reference Manual (2006-06-06)
-
-  The Reference Manual is now generated using other templates, and
-  generates a nicer-looking and more usable HTML version of the
-  documentation
-
-F515-002 Upgraded existing packages to gtk+ 2.8 API (2006-06-01)
-
-  All existing Gtk.* packages have been updated to include the full
-  Gtk+ 2.8 API.
-
-F426-006 Upgraded Gtk.Extra binding to gtkextra 2.1.1 (2006-05-13)
-
-  The Gtk.Extra.* packages have been updated to the latest gtkada 2.1.1 API,
-  and gtkextra 2.1.1 is now included with GtkAda.
-
-New features in GtkAda 2.8.0
-----------------------------
-
-F512-004 GtkAda comes with Gtk+ 2.8.* binaries (2006-05-12)
-
-  GtkAda is now tested and is used with Gtk+ 2.8 libraries
 
