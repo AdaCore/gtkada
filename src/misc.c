@@ -3228,7 +3228,10 @@ ada_list_prev (GList* list)
 gpointer
 ada_list_get_data (GList* list)
 {
-  return list->data;
+  if (list)
+     return list->data;
+  else
+     return NULL;
 }
 
 /**********************************************
