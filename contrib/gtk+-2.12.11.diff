@@ -1,3 +1,8 @@
+2008-10-28  Arnaud Charlet  <charlet@adacore.com>
+
+	* configure: Force disabling of mediaLib support, too painful to
+	support.
+
 2000-04-17  Arnaud Charlet  <charlet@adacore.com>
 
 	* tests/Makefile.in: Fix makefile when there is no C++ compiler
@@ -73,3 +78,14 @@
 -@HAVE_CXX_TRUE@@USE_X11_FALSE@	autotestkeywords$(EXEEXT)
 +@HAVE_CXX_TRUE@@USE_X11_FALSE@	testvolumebutton$(EXEEXT)
  PROGRAMS = $(noinst_PROGRAMS)
+--- configure.old	2008-10-28 04:44:14.140371000 -0400
++++ configure	2008-10-28 04:45:48.426989000 -0400
+@@ -29542,6 +29542,8 @@ else
+   use_mlib=no
+ fi
+ 
++use_mlib=no
++
+ if test $use_mlib = yes; then
+     cat >>confdefs.h <<\_ACEOF
+ #define USE_MEDIALIB 1
