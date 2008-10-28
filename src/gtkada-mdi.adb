@@ -1883,6 +1883,7 @@ package body Gtkada.MDI is
       Rect2    : Gdk_Rectangle;
       Tmp      : Gdk_Grab_Status;
       Position : Child_Position;
+      Delta_X, Delta_Y : Gint;
       pragma Unreferenced (Tmp);
 
    begin
@@ -1961,21 +1962,24 @@ package body Gtkada.MDI is
             --  If we are still in the tabs area, do nothing so that tabs can
             --  be reordered graphically
 
+            Delta_X := abs (Gint (Get_X_Root (Event)) - C.MDI.Drag_Start_X);
+            Delta_Y := abs (Gint (Get_Y_Root (Event)) - C.MDI.Drag_Start_Y);
+
             Note := Get_Notebook (C);
             if Note /= null
               and then Get_Show_Tabs (Note)
             then
                case Get_Tab_Pos (Note) is
                   when Pos_Top | Pos_Bottom =>
-                     if abs (Gint (Get_Y_Root (Event)) - C.MDI.Drag_Start_Y) <
-                       Drag_Threshold / 2
+                     if Delta_Y < Drag_Threshold / 2
+                        and then Delta_Y < Delta_X
                      then
                         return False;
                      end if;
 
                   when Pos_Left | Pos_Right =>
-                     if abs (Gint (Get_X_Root (Event)) - C.MDI.Drag_Start_X) <
-                       Drag_Threshold / 2
+                     if Delta_X < Drag_Threshold / 2
+                        and then Delta_X < Delta_Y
                      then
                         return False;
                      end if;
@@ -1984,10 +1988,8 @@ package body Gtkada.MDI is
 
             --  Else start a drag operation if appropriate
 
-            if abs (C.MDI.Drag_Start_X - Gint (Get_X_Root (Event))) >
-               Drag_Threshold
-              or else abs (C.MDI.Drag_Start_Y - Gint (Get_Y_Root (Event))) >
-               Drag_Threshold
+            if Delta_X > Drag_Threshold
+              or else Delta_Y > Drag_Threshold
             then
                --  If we had a tab reorder operation, but the tab was left at
                --  the same position, the signal "page_reordered" has not been
