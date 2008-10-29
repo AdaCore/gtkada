@@ -2249,13 +2249,13 @@ package body Gtkada.MDI is
       Last : MDI_Child;
    begin
       --  Set the focus on the child that had the focus just before,
-      --  and in the same notebook.
+      --  and in the same notebook, and still visible
 
       Item := Child.MDI.Items;
       while Item /= Widget_List.Null_List loop
          It := MDI_Child (Get_Data (Item));
 
-         if It /= MDI_Child (Child) then
+         if Visible_Is_Set (It) and then It /= MDI_Child (Child) then
             if Last = null then
                Last := It;
             end if;
@@ -3721,9 +3721,8 @@ package body Gtkada.MDI is
    is
       C                     : constant  Gtk_Widget :=
                                 Gtk_Widget (To_Object (Args, 1));
-      Page2, Page1          : Gtk_Widget;
+      Page1                 : Gtk_Widget;
       Child                 : MDI_Child;
-      First_Child           : MDI_Child;
       Default_Child_Remains : Boolean := False;
       Must_Destroy          : Boolean := False;
    begin
@@ -3739,7 +3738,6 @@ package body Gtkada.MDI is
       if not Gtk.Object.In_Destruction_Is_Set (Note) then
          Configure_Notebook_Tabs (Child.MDI, Gtk_Notebook (Note));
 
-         Page2 := Get_Nth_Page (Gtk_Notebook (Note), 1);
          Page1 := Get_Nth_Page (Gtk_Notebook (Note), 0);
 
          --  Do we have any child remaining with Group_Default ?
@@ -3811,16 +3809,6 @@ package body Gtkada.MDI is
 
          else
             --  If we have only one page:
-            if Page2 = null then
-               First_Child := MDI_Child (Page1);
-               if Child.MDI.Show_Tabs_Policy = Always then
-                  Set_Border_Width (First_Child.Main_Box, 0);
-               else
-                  Set_Border_Width
-                    (First_Child.Main_Box, Guint (Small_Border_Thickness));
-               end if;
-            end if;
-
             if Child.Group = Group_Default
               and then not Default_Child_Remains
             then
