@@ -3736,7 +3736,8 @@ package body Gtkada.MDI is
       Child.State := Normal;
 
       if not Gtk.Object.In_Destruction_Is_Set (Note) then
-         Configure_Notebook_Tabs (Child.MDI, Gtk_Notebook (Note));
+         Configure_Notebook_Tabs
+           (Child.MDI, Gtk_Notebook (Note), Hide_If_Empty => True);
 
          Page1 := Get_Nth_Page (Gtk_Notebook (Note), 0);
 
@@ -3749,6 +3750,12 @@ package body Gtkada.MDI is
             --  Position_Default child.
             Default_Child_Remains := Has_Default_Child
               (Child.MDI, Ignore => Child);
+         end if;
+
+         if Traces then
+            Put_Line ("Removed_From_Notebook: " & Get_Title (Child)
+                      & " default child remains ? "
+                      & Boolean'Image (Default_Child_Remains));
          end if;
 
          --  No more pages in the notebook ?
@@ -3805,6 +3812,7 @@ package body Gtkada.MDI is
                Destroy (Note);
             else
                MDI_Notebook (Note).Is_Default_Notebook := True;
+               Show (Note);  --  Default notebook always visible
             end if;
 
          else
