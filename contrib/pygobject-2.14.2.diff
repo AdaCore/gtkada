@@ -1,3 +1,5 @@
+	* (configure): Fix handling of --without-libffi
+
 	* Fixes build with --disable-thread
 	Submitted at: http://bugzilla.gnome.org/show_bug.cgi?id=374603
 
@@ -67,3 +69,14 @@
  
  #define pyg_begin_allow_threads                 \
      G_STMT_START {                              \
+--- configure.old	2008-10-29 05:01:47.822672000 -0400
++++ configure	2008-10-29 05:02:19.743263000 -0400
+@@ -11322,7 +11322,7 @@ fi
+     LIBS=$save_LIBS
+   fi
+ fi
+-if test x"$with_ffi" != xauto && test x"$pygobject_ffi_h" != xyes ; then
++if test x"$with_ffi" = xyes && test x"$pygobject_ffi_h" != xyes ; then
+   { { echo "$as_me:$LINENO: error: libffi requested, but ffi.h not found" >&5
+ echo "$as_me: error: libffi requested, but ffi.h not found" >&2;}
+    { (exit 1); exit 1; }; }
