@@ -2,6 +2,7 @@
 
 	* gdk/quartz/gdkkeys-quartz.c: Use new input API, since old keyboard
 	API is not available for x86-64.
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=558586
 
 2008-10-28  Arnaud Charlet  <charlet@adacore.com>
 
