@@ -63,6 +63,7 @@ unmodified in any copy.
 * Resource files::
 * Memory management::
 * Tasking with GtkAda::
+* Processing external events::
 * Object-oriented features::
 * Support for Glade the Gtk GUI builder::
 * Binding new widgets::
@@ -1287,6 +1288,44 @@ within the GtkAda lock. However, callbacks from Glib (timeouts, IO callbacks,
 and idle functions) are made outside of the GtkAda lock. So, within a signal
 handler you do not need to call Gdk.Threads.Enter, but within the other types
 of callbacks, you do.
+
+@node Processing external events
+@chapter Processing external events
+
+It often happens that your application, in addition to processing graphical
+events through the GtkAda main loop, also needs to monitor external events.
+This is the case for instance if you are running external processes and need
+to display their output, or if you are listening to incoming data on a socket,
+or various other situations. You cannot have your own infinite loop which
+keeps checking for those external events, and spawns the GUI as appropriate,
+because then the GUI itself starts an infinite loop and never goes back to
+your own.
+
+There are several ways to handle that:
+
+@itemize @bullet
+@item The most correct one, especially if you intend to make the GUI a
+ major part of your application (as opposed to just popping up a
+ few dialogs here and there), would be to use gtk+ mainloop as the
+ infinite loop, instead of yours.
+
+ You can the use what gtk+ calls idle callbacks (which are called
+ every time the gtk+ loop is not busy processing graphical events)
+ or timeout callbacks (which are called every n millisecons), and
+ in those callbacks do the work you were doing before in your own
+ infinite loop (that assumes the check is relatively fast,
+ otherwise the GUI will be frozen during that time). Such callbacks
+ are created through packages in glib-main.ads
+
+@item Another approach is not to start the gtk+ mainloop, but check
+ yourself periodically whether there are some events to be handled.
+ See the subprogram Gtk.Main.Main_Iteration.
+
+ This second approach is not necessarily recommended, since you would
+ basically duplicate code that's already in gtk+ to manage the main
+ loop, and you also get finer control using idle and timeout callbacks
+
+@end itemize
 
 @node Object-oriented features
 @chapter Object-oriented features
