@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2006, AdaCore                  --
+--                 Copyright (C) 2000-2008, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -59,9 +59,12 @@ package body Gtk.Object is
    ---------------------------
 
    function In_Destruction_Is_Set
-     (Object : access Gtk_Object_Record'Class) return Boolean is
+     (Object : access Gtk_Object_Record'Class) return Boolean
+   is
+      use type System.Address;
    begin
-      return Flag_Is_Set (Object, In_Destruction);
+      return Get_Object (Object) = System.Null_Address
+        or else Flag_Is_Set (Object, In_Destruction);
    end In_Destruction_Is_Set;
 
    -------------
