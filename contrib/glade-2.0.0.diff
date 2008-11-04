@@ -173,3 +173,13 @@ Thu Jun 12 2003	Nicolas Setton	<setton@act-europe.fr>
    program_name = glade_project_options_generate_program_name_from_project_name (project_name);
    options->auto_generation_level++;
    gtk_entry_set_text (GTK_ENTRY (options->program_name_entry), program_name);
+--- glade/gbwidgetsgbclist.c.old	2008-11-04 15:06:42.000000000 +0100
++++ glade/gbwidgetsgbclist.c	2008-11-04 15:06:45.000000000 +0100
+@@ -19,6 +19,7 @@
+ 
+ #include <string.h>
+ 
++#include <gtk/gtkctree.h>
+ #include <gtk/gtkclist.h>
+ #include <gtk/gtkhbox.h>
+ #include <gtk/gtkmain.h>
