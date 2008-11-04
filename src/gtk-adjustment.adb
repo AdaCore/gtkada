@@ -151,7 +151,7 @@ package body Gtk.Adjustment is
       Upper          : Gdouble;
       Step_Increment : Gdouble;
       Page_Increment : Gdouble;
-      Page_Size      : Gdouble) is
+      Page_Size      : Gdouble := 0.0) is
    begin
       Adjustment := new Gtk_Adjustment_Record;
       Initialize (Adjustment, Value, Lower, Upper, Step_Increment,

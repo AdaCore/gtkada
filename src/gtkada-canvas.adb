@@ -547,7 +547,7 @@ package body Gtkada.Canvas is
       if Hadj /= System.Null_Address then
          Canv.Hadj := Gtk_Adjustment (Get_User_Data (Hadj, Stub));
       else
-         Gtk_New (Canv.Hadj, 0.0, 0.0, 0.0, 1.0, 1.0, 10.0);
+         Gtk_New (Canv.Hadj, 0.0, 0.0, 0.0, 1.0, 1.0);
       end if;
       Ref (Canv.Hadj);
       Sink (Canv.Hadj);
@@ -559,7 +559,7 @@ package body Gtkada.Canvas is
       if Vadj /= System.Null_Address then
          Canv.Vadj := Gtk_Adjustment (Get_User_Data (Vadj, Stub));
       else
-         Gtk_New (Canv.Vadj, 0.0, 0.0, 0.0, 1.0, 1.0, 10.0);
+         Gtk_New (Canv.Vadj, 0.0, 0.0, 0.0, 1.0, 1.0);
       end if;
       Ref (Canv.Vadj);
       Sink (Canv.Vadj);

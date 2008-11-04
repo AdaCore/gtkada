@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2008, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -65,7 +65,7 @@ package Gtk.Adjustment is
       Upper          : Gdouble;
       Step_Increment : Gdouble;
       Page_Increment : Gdouble;
-      Page_Size      : Gdouble);
+      Page_Size      : Gdouble := 0.0);
    --  Create a new adjustment.
    --  Value is the initial value of the adjustment. It must be in the
    --  range (Lower .. Upper) and the adjustment's value will never be
@@ -74,8 +74,7 @@ package Gtk.Adjustment is
    --  as when the user clicks on the arrows of a scrollbar.
    --  Page_Increment is used to make major adjustments, such as when
    --  the user clicks in the through on a scrollbar.
-   --  Page_Size is the size of the area that is currently visible
-   --  (for instance in a Gtk_Scrolled_Window).
+   --  Page_Size is deprecated, use the default value.
 
    procedure Initialize
      (Adjustment     : access Gtk_Adjustment_Record'Class;
