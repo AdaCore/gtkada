@@ -5,7 +5,7 @@ Contents
 
 binding.pl: perl script used to automate generation and update of GtkAda files.
 
-gtk+-2.12.11.diff: a patch against Gtk+ 2.12.11 sources containing some
+gtk+-2.14.4.diff: a patch against Gtk+ sources containing some
 improvements/fixes not incorporated yet.
 
 gtk+-2.12.11-win32.diff: ditto for Windows
