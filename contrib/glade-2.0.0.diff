@@ -1,7 +1,8 @@
 Nov 04 2008	Arnaud Charlet	<charlet@adacore.com>
 
-	* glade/glade_keys_dialog.c,
-	glade/gbwidgets/gbclist.c: Fix compilation error with Gtk+ 2.14.4
+	* glade/glade_menu_editor.c, glade/glade_project_view.h,
+	* glade/glade_keys_dialog.c, glade/gbwidgets/gbclist.c: Fix compilation
+	error with Gtk+ 2.14.4
 
 Fri Sep 29 2006	Arnaud Charlet	<charlet@adacore.com>
 
@@ -198,3 +199,23 @@ Thu Jun 12 2003	Nicolas Setton	<setton@act-europe.fr>
  #include <gtk/gtkclist.h>
  #include <gtk/gtkstock.h>
  #include <gtk/gtkscrolledwindow.h>
+--- glade/glade_menu_editor.c.old	2008-11-04 15:36:26.000000000 +0100
++++ glade/glade_menu_editor.c	2008-11-04 15:36:39.000000000 +0100
+@@ -28,6 +28,7 @@
+ #include <gdk/gdkkeysyms.h>
+ #include <gtk/gtkarrow.h>
+ #include <gtk/gtkaccellabel.h>
++#include <gtk/gtkctree.h>
+ #include <gtk/gtkclist.h>
+ #include <gtk/gtkcombo.h>
+ #include <gtk/gtkentry.h>
+--- glade/glade_project_view.h.old	2008-11-04 15:37:08.000000000 +0100
++++ glade/glade_project_view.h	2008-11-04 15:37:17.000000000 +0100
+@@ -18,6 +18,7 @@
+ #ifndef GLADE_PROJECT_VIEW_H
+ #define GLADE_PROJECT_VIEW_H
+ 
++#include <gtk/gtkctree.h>
+ #include <gtk/gtkclist.h>
+ 
+ #include "glade_project.h"
