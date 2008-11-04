@@ -9,11 +9,6 @@
 	* configure: Force disabling of mediaLib support, too painful to
 	support.
 
-2000-04-17  Arnaud Charlet  <charlet@adacore.com>
-
-	* tests/Makefile.in: Fix makefile when there is no C++ compiler
-	available.
-
 2006-02-23  Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/x11/gdkasync.c: #define ANSICPP on Solaris, to work around
@@ -51,39 +46,6 @@
  #include <X11/Xlibint.h>
  #include "gdkasync.h"
  #include "gdkx.h"
---- tests/Makefile.in.old	2008-04-18 12:32:24.431430164 +0200
-+++ tests/Makefile.in	2008-04-18 12:34:07.692529898 +0200
-@@ -363,3 +363,2 @@ noinst_PROGRAMS = \
- 	autotestfilechooser		\
--	autotestkeywords		\
- 	floatingtest			\
-@@ -697,3 +696,2 @@ CONFIG_CLEAN_FILES =
- @HAVE_CXX_FALSE@@USE_X11_TRUE@	autotestfilechooser$(EXEEXT) \
--@HAVE_CXX_FALSE@@USE_X11_TRUE@	autotestkeywords$(EXEEXT) \
- @HAVE_CXX_FALSE@@USE_X11_TRUE@	floatingtest$(EXEEXT) \
-@@ -762,3 +760,2 @@ CONFIG_CLEAN_FILES =
- @HAVE_CXX_FALSE@@USE_X11_FALSE@	autotestfilechooser$(EXEEXT) \
--@HAVE_CXX_FALSE@@USE_X11_FALSE@	autotestkeywords$(EXEEXT) \
- @HAVE_CXX_FALSE@@USE_X11_FALSE@	floatingtest$(EXEEXT) \
-@@ -825,3 +822,2 @@ CONFIG_CLEAN_FILES =
- @HAVE_CXX_TRUE@@USE_X11_TRUE@	autotestfilechooser$(EXEEXT) \
--@HAVE_CXX_TRUE@@USE_X11_TRUE@	autotestkeywords$(EXEEXT) \
- @HAVE_CXX_TRUE@@USE_X11_TRUE@	floatingtest$(EXEEXT) \
-@@ -887,7 +883,5 @@ CONFIG_CLEAN_FILES =
- @HAVE_CXX_TRUE@@USE_X11_TRUE@	testtooltips$(EXEEXT) \
--@HAVE_CXX_TRUE@@USE_X11_TRUE@	testvolumebutton$(EXEEXT) \
--@HAVE_CXX_TRUE@@USE_X11_TRUE@	autotestkeywords$(EXEEXT)
-+@HAVE_CXX_TRUE@@USE_X11_TRUE@	testvolumebutton$(EXEEXT)
- @HAVE_CXX_TRUE@@USE_X11_FALSE@noinst_PROGRAMS = \
- @HAVE_CXX_TRUE@@USE_X11_FALSE@	autotestfilechooser$(EXEEXT) \
--@HAVE_CXX_TRUE@@USE_X11_FALSE@	autotestkeywords$(EXEEXT) \
- @HAVE_CXX_TRUE@@USE_X11_FALSE@	floatingtest$(EXEEXT) \
-@@ -951,4 +945,3 @@ CONFIG_CLEAN_FILES =
- @HAVE_CXX_TRUE@@USE_X11_FALSE@	testtooltips$(EXEEXT) \
--@HAVE_CXX_TRUE@@USE_X11_FALSE@	testvolumebutton$(EXEEXT) \
--@HAVE_CXX_TRUE@@USE_X11_FALSE@	autotestkeywords$(EXEEXT)
-+@HAVE_CXX_TRUE@@USE_X11_FALSE@	testvolumebutton$(EXEEXT)
- PROGRAMS = $(noinst_PROGRAMS)
 --- configure.old	2008-10-28 04:44:14.140371000 -0400
 +++ configure	2008-10-28 04:45:48.426989000 -0400
 @@ -29542,6 +29542,8 @@ else
