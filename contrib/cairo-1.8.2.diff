@@ -1,3 +1,8 @@
+2008-11-07  Arnaud Charlet  <charlet@adacore.com>
+
+	* configure: Disable dolt, which is even worse than libtool for us
+	(using too recent bash syntax).
+
 2008-11-05  Arnaud Charlet  <charlet@adacore.com>
 
 	* src/cairo-xlib-xrender-private.h: Fix build on systems that do
@@ -46,3 +51,13 @@
  #else /* !CAIRO_HAS_XLIB_XRENDER_SURFACE */
  
  /* Provide dummy symbols and macros to get it compile and take the fallback
+--- configure.old	2008-11-07 17:00:33.093987080 +0100
++++ configure	2008-11-07 17:03:34.222451368 +0100
+@@ -20404,5 +20404,5 @@ if test x$DOLT_BASH = x; then
+ fi
+-if test x$GCC != xyes; then
++#if test x$GCC != xyes; then
+     dolt_supported=no
+-fi
++#fi
+ case $host in
