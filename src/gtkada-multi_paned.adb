@@ -1095,6 +1095,18 @@ package body Gtkada.Multi_Paned is
                   Orientation := Orientation_Vertical;
             end case;
 
+            Paint_Box
+              (Get_Style (Split),
+               Get_Window (Split),
+               State_Normal,
+               Shadow_None,
+               Area,
+               Split,
+               X           => Current.Handle.Position.X,
+               Y           => Current.Handle.Position.Y,
+               Width       => Current.Handle.Position.Width,
+               Height      => Current.Handle.Position.Height);
+
             Paint_Handle
               (Get_Style (Split),
                Get_Window (Split),
