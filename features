@@ -12,6 +12,12 @@ of the feature.
 New features in GtkAda 2.12.1
 -----------------------------
 
+HA17-023 Tabs position in MDI can be specific to each notebook
+
+  Each notebook in a Gtkada_MDI can now have its own position for tabs.
+  A contextual menu is provided on tabs to allow the user to change this
+  interactively (and close the tab)
+
 New features in GtkAda 2.12.0
 -----------------------------
 

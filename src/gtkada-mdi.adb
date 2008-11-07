@@ -225,6 +225,11 @@ package body Gtkada.MDI is
    --  Called when the user moves the mouse while a button is pressed.
    --  If an item was selected, the item is moved.
 
+   function On_Notebook_Button_Press
+     (Child    : access Gtk_Widget_Record'Class;
+      Event    : Gdk.Event.Gdk_Event) return Boolean;
+   --  Manage the contextual menu on tabs
+
    procedure Child_Widget_Shown
      (Widget : access Gtk_Widget_Record'Class);
    procedure Child_Widget_Hidden
@@ -322,9 +327,6 @@ package body Gtkada.MDI is
    function Get_Notebook
      (Child : access MDI_Child_Record'Class) return Gtk_Notebook;
    --  Return the notebook that directly contains Child
-
-   function Get_Child_From_Page (Page : Gtk_Widget) return MDI_Child;
-   --  Return the MDI child contained in the notebook page.
 
    procedure Create_Menu_Entry (Child : access MDI_Child_Record'Class);
    --  Add an entry to the MDI menu that provides easy activation of Child
@@ -590,7 +592,7 @@ package body Gtkada.MDI is
          Tmp := Button_Release (Child => Child, Event => Event);
          return False;
 
-      else
+      elsif Get_Button (Event) = 1 then
          --  Let the event through if the child already has the focus. This way
          --  the notebook tab of the focus child can still be used for
          --  drag-and-drop
@@ -613,6 +615,7 @@ package body Gtkada.MDI is
             return True;
          end if;
       end if;
+      return False;
    end Set_Focus_Child_MDI_From_Tab;
 
    -----------------------
@@ -1102,6 +1105,8 @@ package body Gtkada.MDI is
       C           : MDI_Child;
       Need_Redraw : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
       Iter        : Gtkada.Multi_Paned.Child_Iterator;
+      Pos_Changed : constant Boolean :=
+        MDI.Tabs_Position /= Tabs_Position;
 
    begin
       MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
@@ -1155,6 +1160,11 @@ package body Gtkada.MDI is
       Iter := Start (MDI);
       while not At_End (Iter) loop
          if Get_Widget (Iter) /= null then
+            if Pos_Changed then
+               Set_Tab_Pos
+                 (Gtk_Notebook (Get_Widget (Iter)), MDI.Tabs_Position);
+            end if;
+
             Configure_Notebook_Tabs (MDI, Gtk_Notebook (Get_Widget (Iter)));
          end if;
          Next (Iter);
@@ -3196,6 +3206,84 @@ package body Gtkada.MDI is
       return Child.State = Floating;
    end Is_Floating;
 
+   ----------------
+   -- On_Tab_Pos --
+   ----------------
+
+   package Tab_Pos_Callback is new Gtk.Handlers.User_Callback
+     (Gtk_Notebook_Record, Gtk.Enums.Gtk_Position_Type);
+   procedure On_Tab_Pos
+     (Note : access Gtk_Notebook_Record'Class;
+      Pos  : Gtk.Enums.Gtk_Position_Type);
+
+   procedure On_Tab_Pos
+     (Note : access Gtk_Notebook_Record'Class;
+      Pos  : Gtk.Enums.Gtk_Position_Type) is
+   begin
+      Set_Tab_Pos (Note, Pos);
+   end On_Tab_Pos;
+
+   ------------------------------
+   -- On_Notebook_Button_Press --
+   ------------------------------
+
+   function On_Notebook_Button_Press
+     (Child    : access Gtk_Widget_Record'Class;
+      Event    : Gdk.Event.Gdk_Event) return Boolean
+   is
+      C    : constant MDI_Child := MDI_Child (Child);
+      Note : constant Gtk_Notebook := Get_Notebook (C);
+      Menu : Gtk_Menu;
+      Submenu : Gtk_Menu;
+      Item : Gtk_Menu_Item;
+   begin
+      if Get_Button (Event) = 3 then
+         Gtk_New (Menu);
+
+         Gtk_New (Item, "Close");
+         Widget_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate, Close_Cb'Access, Child);
+         Append (Menu, Item);
+
+         Gtk_New (Item, "Tabs location");
+         Append (Menu, Item);
+
+         Gtk_New (Submenu);
+         Set_Submenu (Item, Submenu);
+
+         Gtk_New (Item, "Top");
+         Tab_Pos_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate,
+            On_Tab_Pos'Access, Note, Pos_Top);
+         Append (Submenu, Item);
+
+         Gtk_New (Item, "Bottom");
+         Tab_Pos_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate,
+            On_Tab_Pos'Access, Note, Pos_Bottom);
+         Append (Submenu, Item);
+
+         Gtk_New (Item, "Left");
+         Tab_Pos_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate,
+            On_Tab_Pos'Access, Note, Pos_Left);
+         Append (Submenu, Item);
+
+         Gtk_New (Item, "Right");
+         Tab_Pos_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate,
+            On_Tab_Pos'Access, Note, Pos_Right);
+         Append (Submenu, Item);
+
+         Show_All (Menu);
+         Popup (Menu,
+                Button        => 3,
+                Activate_Time => Gdk.Event.Get_Time (Event));
+         return True;
+      end if;
+      return False;
+   end On_Notebook_Button_Press;
+
    ---------------------
    -- Create_Notebook --
    ---------------------
@@ -3211,6 +3299,7 @@ package body Gtkada.MDI is
       Set_Show_Border (Notebook, False);
       Set_Border_Width (Notebook, 0);
       Set_Scrollable (Notebook);
+      Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
 
       Widget_Callback.Connect
         (Notebook, Signal_Remove, Removed_From_Notebook'Access);
@@ -3235,7 +3324,6 @@ package body Gtkada.MDI is
       Page_Count : constant Gint := Get_N_Pages (Notebook);
       Visible_Page_Count : Natural := 0;
    begin
-      Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
       Set_Property (Notebook, Tab_Border_Property, 0);
 
       --  Some pages might be hidden, in which case they should not be counted
@@ -3325,6 +3413,10 @@ package body Gtkada.MDI is
            (Event, Signal_Button_Press_Event,
             Return_Callback.To_Marshaller
             (Set_Focus_Child_MDI_From_Tab'Access),
+            Child);
+         Return_Callback.Object_Connect
+           (Event, Signal_Button_Press_Event,
+            Return_Callback.To_Marshaller (On_Notebook_Button_Press'Access),
             Child);
          Return_Callback.Object_Connect
            (Event, Signal_Button_Release_Event,
@@ -3564,15 +3656,6 @@ package body Gtkada.MDI is
 
       return Note;
    end Find_Current_In_Central;
-
-   -------------------------
-   -- Get_Child_From_Page --
-   -------------------------
-
-   function Get_Child_From_Page (Page : Gtk_Widget) return MDI_Child is
-   begin
-      return MDI_Child (Page);
-   end Get_Child_From_Page;
 
    ---------------------------
    -- Set_All_Floating_Mode --
@@ -4326,9 +4409,13 @@ package body Gtkada.MDI is
          X, Y         : Gint;
          Dummy        : Gtk_Label;
          Is_Default   : Boolean;
+         Pos          : Gtk_Position_Type;
       begin
          Width  := Gint'Value (Get_Attribute (Child_Node, "Width", "-1"));
          Height := Gint'Value (Get_Attribute (Child_Node, "Height", "-1"));
+         Pos    := Gtk_Position_Type'Value
+           (Get_Attribute (Child_Node, "Tabs",
+            Gtk_Position_Type'Image (MDI.Tabs_Position)));
          Is_Default := Boolean'Value
            (Get_Attribute (Child_Node, "default", "false"));
 
@@ -4361,6 +4448,7 @@ package body Gtkada.MDI is
             end if;
          end if;
 
+         Set_Tab_Pos (Notebook, Pos);
          Set_Child_Visible (Notebook, True);
          Show_All (Notebook);
 
@@ -5068,10 +5156,13 @@ package body Gtkada.MDI is
               (Parent, "Height",
                Allocation_Int'Image
                  (Get_Allocation_Height (Note) + Border_Width));
+            Set_Attribute
+              (Parent, "Tabs",
+               Gtk_Position_Type'Image (Get_Tab_Pos (Note)));
 
             if Length > 0 then
                for Page_Index in 0 .. Length - 1 loop
-                  Child := Get_Child_From_Page
+                  Child := MDI_Child
                     (Get_Nth_Page (Note, Page_Index));
                   Has_Default_Group_Child := Has_Default_Group_Child
                     or else Child.Group = Group_Default;
