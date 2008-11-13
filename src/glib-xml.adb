@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Glib.Convert;  use Glib.Convert;
 with Glib.Error;    use Glib.Error;
@@ -525,7 +526,12 @@ package body Glib.XML is
             when '&' => Length := Length + 5;
             when ''' => Length := Length + 6;
             when '"' => Length := Length + 6;
-            when others => Length := Length + 1;
+            when others =>
+               if Is_Control (S (J)) then
+                  Length := Length + 6;
+               else
+                  Length := Length + 1;
+               end if;
          end case;
       end loop;
 
@@ -551,8 +557,22 @@ package body Glib.XML is
                   Result (Index .. Index + 5) := "&quot;";
                   Index := Index + 6;
                when others =>
-                  Result (Index) := S (J);
-                  Index := Index + 1;
+                  if Is_Control (S (J)) then
+                     declare
+                        Str : constant String :=
+                                Natural'Image (Character'Pos (S (J)));
+                     begin
+                        Result (Index .. Index + 1) := "&#";
+                        Result (Index + 2 .. Index + 4) := (others => '0');
+                        Result (Index + 6 - Str'Length .. Index + 4) :=
+                          Str (Str'First + 1 .. Str'Last);
+                        Result (Index + 5) := ';';
+                        Index := Index + 6;
+                     end;
+                  else
+                     Result (Index) := S (J);
+                     Index := Index + 1;
+                  end if;
             end case;
          end loop;
 
