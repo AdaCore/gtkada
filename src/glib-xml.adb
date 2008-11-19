@@ -31,6 +31,7 @@ with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Glib.Convert;  use Glib.Convert;
 with Glib.Error;    use Glib.Error;
+with Glib.Unicode;  use Glib.Unicode;
 with Glib.Messages; use Glib.Messages;
 
 package body Glib.XML is
@@ -517,64 +518,140 @@ package body Glib.XML is
    -------------
 
    function Protect (S : String) return String is
-      Length : Natural := 0;
-   begin
-      for J in S'Range loop
-         case S (J) is
+      Length      : Natural := 0;
+      Valid_Utf8  : Boolean;
+      Invalid_Pos : Natural;
+      Pos         : Natural;
+
+      procedure Update_Length (Idx : Natural);
+      --  Update the final length of the result string
+
+      procedure Translate
+        (Idx : Natural; Res : in out String; Res_Idx : in out Natural);
+      --  Protect an xml-reserved character into its entities equivalence
+
+      -------------------
+      -- Update_Length --
+      -------------------
+
+      procedure Update_Length (Idx : Natural) is
+      begin
+         case S (Idx) is
             when '<' => Length := Length + 4;
             when '>' => Length := Length + 4;
             when '&' => Length := Length + 5;
             when ''' => Length := Length + 6;
             when '"' => Length := Length + 6;
             when others =>
-               if Is_Control (S (J)) then
-                  Length := Length + 6;
+               --  Single case for ascii/utf8: ascii control characters will
+               --  also match.
+               if Unichar_Type (UTF8_Get_Char (S (Idx .. S'Last))) =
+                 Unicode_Control
+               then
+                  declare
+                     Str : constant String :=
+                             Glib.Gunichar'Image
+                               (UTF8_Get_Char (S (Idx .. S'Last)));
+                  begin
+                     --  Add 2: -1 for the starting space, and +3 for leading
+                     --  &# and trailing ;
+                     Length := Length + Str'Length + 2;
+                  end;
+               elsif Valid_Utf8 then
+                  Length := Length + UTF8_Next_Char (S, Idx) - Idx;
                else
                   Length := Length + 1;
                end if;
          end case;
-      end loop;
+      end Update_Length;
+
+      ---------------
+      -- Translate --
+      ---------------
+
+      procedure Translate
+        (Idx : Natural; Res : in out String; Res_Idx : in out Natural) is
+      begin
+         case S (Idx) is
+            when '<' =>
+               Res (Res_Idx .. Res_Idx + 3) := "&lt;";
+               Res_Idx := Res_Idx + 4;
+            when '>' =>
+               Res (Res_Idx .. Res_Idx + 3) := "&gt;";
+               Res_Idx := Res_Idx + 4;
+            when '&' =>
+               Res (Res_Idx .. Res_Idx + 4) := "&amp;";
+               Res_Idx := Res_Idx + 5;
+            when ''' =>
+               Res (Res_Idx .. Res_Idx + 5) := "&apos;";
+               Res_Idx := Res_Idx + 6;
+            when '"' =>
+               Res (Res_Idx .. Res_Idx + 5) := "&quot;";
+               Res_Idx := Res_Idx + 6;
+            when others =>
+               declare
+                  Char : constant Glib.Gunichar :=
+                           UTF8_Get_Char (S (Idx .. S'Last));
+                  Next : Natural;
+               begin
+                  if Unichar_Type (Char) = Unicode_Control then
+                     declare
+                        Str : constant String := Glib.Gunichar'Image (Char);
+                     begin
+                        Res (Res_Idx .. Res_Idx + Str'Length + 1) :=
+                          "&#" & Str (Str'First + 1 .. Str'Last) & ";";
+                        Res_Idx := Res_Idx + Str'Length + 2;
+                     end;
+
+                  elsif Valid_Utf8 then
+                     Next := UTF8_Next_Char (S, Idx);
+                     Res (Res_Idx .. Res_Idx + Next - Idx - 1) :=
+                       S (Idx .. Next - 1);
+                     Res_Idx := Res_Idx + Next - Idx;
+
+                  else
+                     Res (Res_Idx) := S (Idx);
+                     Res_Idx := Res_Idx + 1;
+                  end if;
+               end;
+         end case;
+      end Translate;
+
+   begin
+      UTF8_Validate (S, Valid_Utf8, Invalid_Pos);
+
+      if Valid_Utf8 then
+         Pos := S'First;
+
+         while Pos <= S'Last loop
+            Update_Length (Pos);
+            Pos := UTF8_Next_Char (S, Pos);
+         end loop;
+
+      else
+         for J in S'Range loop
+            Update_Length (J);
+         end loop;
+      end if;
 
       declare
          Result : String (1 .. Length);
          Index : Integer := 1;
+
       begin
-         for J in S'Range loop
-            case S (J) is
-               when '<' =>
-                  Result (Index .. Index + 3) := "&lt;";
-                  Index := Index + 4;
-               when '>' =>
-                  Result (Index .. Index + 3) := "&gt;";
-                  Index := Index + 4;
-               when '&' =>
-                  Result (Index .. Index + 4) := "&amp;";
-                  Index := Index + 5;
-               when ''' =>
-                  Result (Index .. Index + 5) := "&apos;";
-                  Index := Index + 6;
-               when '"' =>
-                  Result (Index .. Index + 5) := "&quot;";
-                  Index := Index + 6;
-               when others =>
-                  if Is_Control (S (J)) then
-                     declare
-                        Str : constant String :=
-                                Natural'Image (Character'Pos (S (J)));
-                     begin
-                        Result (Index .. Index + 1) := "&#";
-                        Result (Index + 2 .. Index + 4) := (others => '0');
-                        Result (Index + 6 - Str'Length .. Index + 4) :=
-                          Str (Str'First + 1 .. Str'Last);
-                        Result (Index + 5) := ';';
-                        Index := Index + 6;
-                     end;
-                  else
-                     Result (Index) := S (J);
-                     Index := Index + 1;
-                  end if;
-            end case;
-         end loop;
+         if Valid_Utf8 then
+            Pos := S'First;
+
+            while Pos <= S'Last loop
+               Translate (Pos, Result, Index);
+               Pos := UTF8_Next_Char (S, Pos);
+            end loop;
+
+         else
+            for J in S'Range loop
+               Translate (J, Result, Index);
+            end loop;
+         end if;
 
          return Result;
       end;
