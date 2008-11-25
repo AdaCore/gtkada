@@ -12,6 +12,11 @@ of the feature.
 New features in GtkAda 2.12.1
 -----------------------------
 
+HB24-020 API Additions
+
+  The package Gdk.Display_Manager has been added, allowing GtkAda
+  applications to change their target X11 display.
+
 HA17-023 Tabs position in MDI can be specific to each notebook
 
   Each notebook in a Gtkada_MDI can now have its own position for tabs.
