@@ -40,23 +40,23 @@ package Gtkada.Abstract_List_Model is
 
    procedure Initialize (Self : access Gtk_Abstract_List_Model_Record'Class);
 
-   overriding function Get_Flags
+   function Get_Flags
      (Self : access Gtk_Abstract_List_Model_Record)
       return Gtk.Tree_Model.Tree_Model_Flags;
    --  Return a set of flags supported by this interface.
 
-   overriding function Has_Child
+   function Has_Child
      (Self : access Gtk_Abstract_List_Model_Record;
       Iter : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --  Return True if Iter has children, False otherwise.
 
-   overriding function Children
+   function Children
      (Self   : access Gtk_Abstract_List_Model_Record;
       Parent : Gtk.Tree_Model.Gtk_Tree_Iter)
       return Gtk.Tree_Model.Gtk_Tree_Iter;
    --  Returns the first child of Parent.
 
-   overriding function Parent
+   function Parent
      (Self  : access Gtk_Abstract_List_Model_Record;
       Child : Gtk.Tree_Model.Gtk_Tree_Iter)
       return Gtk.Tree_Model.Gtk_Tree_Iter;

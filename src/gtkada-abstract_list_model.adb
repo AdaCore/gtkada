@@ -34,7 +34,7 @@ package body Gtkada.Abstract_List_Model is
    -- Children --
    --------------
 
-   overriding function Children
+   function Children
      (Self   : access Gtk_Abstract_List_Model_Record;
       Parent : Gtk.Tree_Model.Gtk_Tree_Iter)
       return Gtk.Tree_Model.Gtk_Tree_Iter
@@ -63,7 +63,7 @@ package body Gtkada.Abstract_List_Model is
    -- Get_Flags --
    ---------------
 
-   overriding function Get_Flags
+   function Get_Flags
      (Self : access Gtk_Abstract_List_Model_Record)
       return Gtk.Tree_Model.Tree_Model_Flags
    is
@@ -77,7 +77,7 @@ package body Gtkada.Abstract_List_Model is
    -- Has_Child --
    ---------------
 
-   overriding function Has_Child
+   function Has_Child
      (Self : access Gtk_Abstract_List_Model_Record;
       Iter : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean
    is
@@ -105,7 +105,7 @@ package body Gtkada.Abstract_List_Model is
    -- Parent --
    ------------
 
-   overriding function Parent
+   function Parent
      (Self  : access Gtk_Abstract_List_Model_Record;
       Child : Gtk.Tree_Model.Gtk_Tree_Iter)
       return Gtk.Tree_Model.Gtk_Tree_Iter
