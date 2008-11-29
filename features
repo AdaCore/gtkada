@@ -17,6 +17,9 @@ HB10-010 API Additions
   The package Gtkada.Abstract_Tree_Model has been added, allowing GtkAda
   applications to create custom tree models.
 
+  The package Gtkada.Abstract_List_Model has been added, allowing GtkAda
+  applications to create custom list models.
+
   The package Gtk.Tree_Model.Utils has been added, allowing GtkAda applications
   to construct Gtk_Tree_Iter and retrieve information from it.
 
