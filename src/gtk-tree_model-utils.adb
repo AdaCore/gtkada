@@ -103,7 +103,7 @@ package body Gtk.Tree_Model.Utils is
       Stamp : Glib.Gint) return Boolean
    is
    begin
-      return Self.Stamp /= 0 and then Self.Stamp = Stamp;
+      return Self.Stamp = 0 or else Self.Stamp = Stamp;
    end Is_Valid;
 
 end Gtk.Tree_Model.Utils;

@@ -42,7 +42,7 @@ package Gtk.Tree_Model.Utils is
    function Is_Valid
      (Self  : Gtk.Tree_Model.Gtk_Tree_Iter;
       Stamp : Glib.Gint) return Boolean;
-   --  Returns True if specified iterator is not null iterator and its internal
+   --  Returns True if specified iterator is null iterator or its internal
    --  stamp is equal to the specified stamp.
 
    function Get_Stamp (Self : Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gint;
