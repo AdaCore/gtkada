@@ -5,16 +5,16 @@ Contents
 
 binding.pl: perl script used to automate generation and update of GtkAda files.
 
-gtk+-2.14.4.diff: a patch against Gtk+ sources containing some
+gtk+-2.14.5.diff: a patch against Gtk+ sources containing some
 improvements/fixes not incorporated yet.
 
-gtk+-2.12.11-win32.diff: ditto for Windows
+gtk+-2.14.5-win32.diff: ditto for Windows
 
-glib-2.18.2-win32.diff: ditto for glib under Windows
+glib-2.18.3-win32.diff: ditto for glib under Windows
 
-pango-1.22.2-win32.diff: ditto for pango under Windows
+pango-1.22.3-win32.diff: ditto for pango under Windows
 
-cairo-1.8.2.diff: ditto for cairo 1.8.2
+cairo-1.8.4.diff: ditto for cairo 1.8.2
 
 pygobject-2.14.2.diff: patch to build pygobject 2.14.2 with --disable-thread
 
