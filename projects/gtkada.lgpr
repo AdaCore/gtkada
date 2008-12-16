@@ -7,6 +7,8 @@ gdk-cursor.adb
 gdk-cursor.ads
 gdk-display.ads
 gdk-display.adb
+gdk-display_manager.adb
+gdk-display_manager.ads
 gdk-dnd.adb
 gdk-dnd.ads
 gdk-drawable.adb
@@ -102,6 +104,10 @@ gtk-action.ads
 gtk-action_group.adb
 gtk-action_group.ads
 gtkada.ads
+gtkada-abstract_list_model.adb
+gtkada-abstract_list_model.ads
+gtkada-abstract_table_model.adb
+gtkada-abstract_table_model.ads
 gtkada-bindings.adb
 gtkada-bindings.ads
 gtkada-c.adb
@@ -414,6 +420,8 @@ gtk-tooltips.adb
 gtk-tooltips.ads
 gtk-tree_dnd.adb
 gtk-tree_dnd.ads
+gtk-tree_model-utils.adb
+gtk-tree_model-utils.ads
 gtk-tree_model.adb
 gtk-tree_model.ads
 gtk-tree_model_filter.adb
