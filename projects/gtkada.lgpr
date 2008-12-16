@@ -106,8 +106,8 @@ gtk-action_group.ads
 gtkada.ads
 gtkada-abstract_list_model.adb
 gtkada-abstract_list_model.ads
-gtkada-abstract_table_model.adb
-gtkada-abstract_table_model.ads
+gtkada-abstract_tree_model.adb
+gtkada-abstract_tree_model.ads
 gtkada-bindings.adb
 gtkada-bindings.ads
 gtkada-c.adb
