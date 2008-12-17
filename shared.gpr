@@ -3,6 +3,9 @@ project Shared is
    type Build_Type is ("Debug", "Production");
    Build : Build_Type := external ("BUILD", "Production");
 
+   Processors := external ("PROCESSORS", "1");
+   --  Number of parallel compilations that should be performed
+
    type Boolean_Type is ("True", "False");
    Build_Gnome  : Boolean_Type := external ("GNOME",  "True");
    Build_Opengl : Boolean_Type := external ("OPENGL", "True");
@@ -24,7 +27,7 @@ project Shared is
    end Compiler;
 
    package Builder is
-      for Default_Switches ("Ada") use ("-m");
+      for Default_Switches ("Ada") use ("-m", "-j" & Processors);
       for Global_Configuration_Pragmas use "src/gnat.adc";
    end Builder;
 
