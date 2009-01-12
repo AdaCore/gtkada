@@ -1,3 +1,10 @@
+2009-01-12  Nicolas Setton  <setton@adacore.com>
+
+	* gtktreeview.c (gtk_tree_view_enter_notify): Do not react to
+	 crossing events.
+	(gtk_tree_view_leave_notify): Likewise.
+        Prevents unwanted side-effects of synth-crossing. (I106-018)
+
 2009-01-06  Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtktreeview.c (gtk_tree_view_enter_notify): Put kludge to
@@ -225,3 +232,30 @@
    /* find the node internally */
    new_y = TREE_WINDOW_Y_TO_RBTREE_Y(tree_view, event->y);
    if (new_y < 0)
+--- gtk/gtktreeview.c.orig	2009-01-12 11:49:09.000000000 +0100
++++ gtk/gtktreeview.c	2009-01-12 15:44:05.000000000 +0100
+@@ -5461,6 +5461,12 @@ gtk_tree_view_enter_notify (GtkWidget   
+   GtkRBNode *node;
+   gint new_y;
+ 
++  if (event->mode == GDK_CROSSING_GRAB 
++      || event->mode == GDK_CROSSING_NORMAL
++      || event->mode == GDK_CROSSING_GTK_GRAB
++      || event->mode == GDK_CROSSING_GTK_UNGRAB)
++    return TRUE;
++
+   /* Sanity check it */
+   if (event->window != tree_view->priv->bin_window)
+     return FALSE;
+@@ -5487,7 +5493,10 @@ gtk_tree_view_leave_notify (GtkWidget   
+ {
+   GtkTreeView *tree_view;
+ 
+-  if (event->mode == GDK_CROSSING_GRAB)
++  if (event->mode == GDK_CROSSING_GRAB 
++      || event->mode == GDK_CROSSING_NORMAL
++      || event->mode == GDK_CROSSING_GTK_GRAB
++      || event->mode == GDK_CROSSING_GTK_UNGRAB)
+     return TRUE;
+ 
+   tree_view = GTK_TREE_VIEW (widget);
