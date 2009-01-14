@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2000-2006, AdaCore                  --
+--                 Copyright (C) 2000-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -546,7 +546,6 @@ private
 
    pragma Import (C, Selection_Data_Copy, "gtk_selection_data_copy");
    pragma Import (C, Selection_Data_Free, "gtk_selection_data_free");
-   pragma Import (C, Get_Pixbuf,    "gtk_selection_data_get_pixbuf");
    pragma Import (C, Selection_Get_Type, "gtk_selection_data_get_type");
    pragma Import (C, Target_List_Add_Text_Targets,
                   "gtk_target_list_add_text_targets");

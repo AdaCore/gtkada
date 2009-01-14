@@ -54,6 +54,20 @@ package body Gtk.Selection is
       return Interfaces.C.Strings.Value (Internal (Selection));
    end Get_Data_As_String;
 
+   ----------------
+   -- Get_Pixbuf --
+   ----------------
+
+   function Get_Pixbuf
+     (Selection : Selection_Data) return Gdk.Pixbuf.Gdk_Pixbuf
+   is
+      function Internal
+        (Selection : Selection_Data) return System.Address;
+      pragma Import (C, Internal, "gtk_selection_data_get_pixbuf");
+   begin
+      return Gdk.Pixbuf.Convert (Internal (Selection));
+   end Get_Pixbuf;
+
    ------------------------
    -- Selection_Data_Set --
    ------------------------
