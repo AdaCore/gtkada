@@ -29,7 +29,6 @@
 with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Display; use Gdk.Display;
 with Glib.Object; use Glib.Object;
-with System;
 
 package body Gdk.Pixbuf is
 
