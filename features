@@ -1,7 +1,7 @@
 GTKADA NEW FEATURES LIST
 ========================
 
-Copyright (c) 2005-2008, AdaCore
+Copyright (c) 2005-2009, AdaCore
 
 This file contains a list of new features introduced in GtkAda.
 
@@ -23,6 +23,11 @@ I105-017 Small API changes
 New features in GtkAda 2.14.0
 -----------------------------
 
+HB24-020 API Additions
+
+  The package Gdk.Display_Manager has been added, allowing GtkAda
+  applications to change their target X11 display.
+
 HB10-010 API Additions
 
   The package Gtkada.Abstract_Tree_Model has been added, allowing GtkAda
@@ -33,11 +38,6 @@ HB10-010 API Additions
 
   The package Gtk.Tree_Model.Utils has been added, allowing GtkAda applications
   to construct Gtk_Tree_Iter and retrieve information from it.
-
-HB24-020 API Additions
-
-  The package Gdk.Display_Manager has been added, allowing GtkAda
-  applications to change their target X11 display.
 
 HA17-023 Tabs position in MDI can be specific to each notebook
 
