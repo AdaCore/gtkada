@@ -12,6 +12,11 @@ of the feature.
 New features in GtkAda 2.14.1
 -----------------------------
 
+I114-016 API Additions
+
+  Set_Object/Get_Object subprograms have been added to the Glib.Value package.
+  Them allows to store/retrieve instances of the GObjects into/from GValue.
+
 I105-017 Small API changes
 
   The type Gdk_Pixbuf derived from the GObject for now, following change in

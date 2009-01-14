@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,6 +39,8 @@
 
 with System;
 with Interfaces.C.Strings;
+
+with Glib.Object;
 
 package Glib.Values is
 
@@ -159,6 +161,10 @@ package Glib.Values is
    procedure Set_Flags (Value : in out GValue; V_Enum : Guint);
    function Get_Flags (Value : GValue) return Glib.Guint;
    --  ??? Should really manipulate Glib.Properties.Creation.Flags_Int_Value
+
+   procedure Set_Object (Value : in out GValue; To : Glib.Object.GObject);
+   function Get_Object (Value : GValue) return Glib.Object.GObject;
+   --  These are used to manupulate GObject instances.
 
    --  Convenience function to Get and Set a Gtk_Text_Iter are
    --  also provided inside Gtk.Text_Iter.

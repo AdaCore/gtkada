@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,6 +52,18 @@ package body Glib.Values is
    begin
       return Boolean'Val (Internal (Value));
    end Get_Boolean;
+
+   ----------------
+   -- Get_Object --
+   ----------------
+
+   function Get_Object (Value : GValue) return Glib.Object.GObject is
+      function Internal (Value : GValue) return System.Address;
+      pragma Import (C, Internal, "g_value_get_object");
+
+   begin
+      return Glib.Object.Convert (Internal (Value));
+   end Get_Object;
 
    ----------------
    -- Get_String --
@@ -131,6 +143,20 @@ package body Glib.Values is
    begin
       Internal (Value, Boolean'Pos (V_Boolean));
    end Set_Boolean;
+
+   ----------------
+   -- Set_Object --
+   ----------------
+
+   procedure Set_Object (Value : in out GValue; To : Glib.Object.GObject) is
+      procedure Internal
+        (Value : in out Glib.Values.GValue;
+         To    : System.Address);
+      pragma Import (C, Internal, "g_value_set_object");
+
+   begin
+      Internal (Value, Glib.Object.Convert (To));
+   end Set_Object;
 
    ----------------
    -- Set_String --
