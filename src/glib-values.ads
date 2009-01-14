@@ -164,7 +164,7 @@ package Glib.Values is
 
    procedure Set_Object (Value : in out GValue; To : Glib.Object.GObject);
    function Get_Object (Value : GValue) return Glib.Object.GObject;
-   --  These are used to manupulate GObject instances.
+   --  These are used to manipulate GObject instances.
 
    --  Convenience function to Get and Set a Gtk_Text_Iter are
    --  also provided inside Gtk.Text_Iter.
