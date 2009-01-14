@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2006, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -247,11 +247,11 @@ package body Gtk.Selection is
    is
       function Internal
         (Selection : Selection_Data;
-         Pixbuf    : Gdk_Pixbuf)
+         Pixbuf    : System.Address)
          return Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_set_pixbuf");
    begin
-      return Boolean'Val (Internal (Selection, Pixbuf));
+      return Boolean'Val (Internal (Selection, Get_Object (Pixbuf)));
    end Set_Pixbuf;
 
    --------------

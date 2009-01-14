@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1383,6 +1383,7 @@ package body Gtkada.Canvas is
       Pixmap : Gdk_Pixmap;
       Tmp    : Gdk_Pixbuf;
       W, H   : Gint;
+
    begin
       if Link.Descr /= null
         and then Link.Descr.all /= ""
@@ -3738,6 +3739,7 @@ package body Gtkada.Canvas is
       Ydest  : Glib.Gint)
    is
       Tmp, Tmp2 : Gdk_Pixbuf;
+
    begin
       if Item.Pixmap = null then
          return;

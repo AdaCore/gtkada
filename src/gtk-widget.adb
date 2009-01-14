@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1497,15 +1497,18 @@ package body Gtk.Widget is
         (Widget : System.Address;
          Stock_Id : String;
          Size : Gtk.Enums.Gtk_Icon_Size;
-         Detail : System.Address) return Gdk.Pixbuf.Gdk_Pixbuf;
+         Detail : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_render_icon");
+
       D : System.Address := System.Null_Address;
+
    begin
       if Detail /= "" then
          D := Detail'Address;
       end if;
 
-      return Internal (Get_Object (Widget), Stock_Id & ASCII.NUL, Size, D);
+      return Gdk.Pixbuf.Convert
+        (Internal (Get_Object (Widget), Stock_Id & ASCII.NUL, Size, D));
    end Render_Icon;
 
    --------------------

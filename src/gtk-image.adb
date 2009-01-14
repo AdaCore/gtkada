@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -76,11 +76,11 @@ package body Gtk.Image is
    function Get
      (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf
    is
-      function Internal (Image : System.Address) return Gdk.Pixbuf.Gdk_Pixbuf;
+      function Internal (Image : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_get_pixbuf");
 
    begin
-      return Internal (Get_Object (Image));
+      return Gdk.Pixbuf.Convert (Internal (Get_Object (Image)));
    end Get;
 
    function Get
@@ -255,11 +255,11 @@ package body Gtk.Image is
      (Image  : access Gtk_Image_Record'Class;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf)
    is
-      function Internal (Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf) return System.Address;
+      function Internal (Pixbuf : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_pixbuf");
 
    begin
-      Set_Object (Image, Internal (Pixbuf));
+      Set_Object (Image, Internal (Get_Object (Pixbuf)));
    end Initialize;
 
    procedure Initialize
@@ -350,11 +350,11 @@ package body Gtk.Image is
    is
       procedure Internal
         (Image  : System.Address;
-         Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+         Pixbuf : System.Address);
       pragma Import (C, Internal, "gtk_image_set_from_pixbuf");
 
    begin
-      Internal (Get_Object (Image), Pixbuf);
+      Internal (Get_Object (Image), Get_Object (Pixbuf));
    end Set;
 
    procedure Set

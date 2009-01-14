@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                    Copyright (C) 2004-2006 AdaCore                --
+--                   Copyright (C) 2004-2009, AdaCore                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -418,6 +418,5 @@ private
    pragma Import (C, Set_State, "gtk_icon_source_set_state");
    pragma Import (C, Get_State, "gtk_icon_source_get_state");
    pragma Import (C, Icon_Source_Copy, "gtk_icon_source_copy");
-   pragma Import (C, Set_Pixbuf, "gtk_icon_source_set_pixbuf");
-   pragma Import (C, Get_Pixbuf, "gtk_icon_source_get_pixbuf");
+
 end Gtk.Icon_Factory;

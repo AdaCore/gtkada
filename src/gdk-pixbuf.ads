@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -45,8 +45,12 @@
 --  <group>Gdk, the low-level API</group>
 --  <testgtk>create_pixbuf.adb</testgtk>
 
+with Interfaces.C.Strings;
+with System;
+
 with Glib; use Glib;
 with Glib.Error; use Glib.Error;
+with Glib.Object;
 with Gdk.Bitmap;
 with Gdk.Drawable;
 with Gdk.Color;
@@ -55,11 +59,12 @@ with Gdk.Display;
 with Gdk.GC;
 with Gdk.Pixmap;
 with Gdk.Rgb;
-with Interfaces.C.Strings;
 
 package Gdk.Pixbuf is
 
-   type Gdk_Pixbuf is new Glib.C_Proxy;
+   type Gdk_Pixbuf_Record is new Glib.Object.GObject_Record with private;
+
+   type Gdk_Pixbuf is access all Gdk_Pixbuf_Record'Class;
    --  A very efficient client-side pixmap.
    --  This type can be adapted to all the possible screen depths (number of
    --  bits per pixel), and the algorithms are extremely efficient.
@@ -154,19 +159,6 @@ package Gdk.Pixbuf is
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gdk_Pixbuf.
-
-   ------------------------
-   -- Reference counting --
-   ------------------------
-
-   procedure Ref (Pixbuf : Gdk_Pixbuf);
-   --  Increment the reference counting on the image.
-   --  The image is destroyed when its reference counting reaches 0.
-   --  Note also that most of the time you won't have to call this
-   --  function yourself.
-
-   procedure Unref (Pixbuf : Gdk_Pixbuf);
-   --  Decrement the reference counting on the image.
 
    --------------------------
    -- Accessing the fields --
@@ -673,43 +665,19 @@ package Gdk.Pixbuf is
    function Get_Image (Cursor : Gdk.Cursor.Gdk_Cursor) return Gdk_Pixbuf;
    --  Return the image stored in the cursor
 
+   --  <doc_ignore>
+   function Convert (P : System.Address) return Gdk_Pixbuf;
+   --  </doc_ignore>
+
 private
 
-   pragma Import (C, Get_Image, "gdk_cursor_get_image");
+   type Gdk_Pixbuf_Record is new Glib.Object.GObject_Record with null record;
+
    pragma Import (C, Get_Type, "gdk_pixbuf_get_type");
    pragma Import (C, Get_Type_Animation, "gdk_pixbuf_animation_get_type");
    pragma Import
      (C, Get_Type_Animation_Iter, "gdk_pixbuf_animation_iter_get_type");
-   pragma Import (C, Fill, "gdk_pixbuf_fill");
-   pragma Import (C, Get_Colorspace, "gdk_pixbuf_get_colorspace");
-   pragma Import (C, Get_N_Channels, "gdk_pixbuf_get_n_channels");
-   pragma Import (C, Get_Bits_Per_Sample, "gdk_pixbuf_get_bits_per_sample");
-   pragma Import (C, Get_Pixels, "gdk_pixbuf_get_pixels");
-   pragma Import (C, Get_Rowstride, "gdk_pixbuf_get_rowstride");
-   pragma Import
-     (C, Get_Static_Image, "gdk_pixbuf_animation_get_static_image");
    pragma Import (C, Get_Iter, "gdk_pixbuf_animation_get_iter");
-   pragma Import (C, Gdk_New_Subpixbuf, "gdk_pixbuf_new_subpixbuf");
-   pragma Import (C, Gdk_New_From_Xpm_Data, "gdk_pixbuf_new_from_xpm_data");
-   pragma Import (C, Copy_Area, "gdk_pixbuf_copy_area");
-   pragma Import (C, Scale, "gdk_pixbuf_scale");
-   pragma Import (C, Composite, "gdk_pixbuf_composite");
-   pragma Import (C, Composite_Color, "gdk_pixbuf_composite_color");
-   pragma Import (C, Render_To_Drawable, "gdk_pixbuf_render_to_drawable");
-   pragma Import
-     (C, Render_To_Drawable_Alpha, "gdk_pixbuf_render_to_drawable_alpha");
-   pragma Import
-     (C, Render_Pixmap_And_Mask, "gdk_pixbuf_render_pixmap_and_mask");
-   pragma Import
-     (C, Render_Pixmap_And_Mask_For_Colormap,
-      "gdk_pixbuf_render_pixmap_and_mask_for_colormap");
-   pragma Import (C, Scale_Simple, "gdk_pixbuf_scale_simple");
-   pragma Import
-     (C, Composite_Color_Simple, "gdk_pixbuf_composite_color_simple");
-   pragma Import
-     (C, Render_Threshold_Alpha, "gdk_pixbuf_render_threshold_alpha");
-   pragma Import (C, Get_From_Drawable, "gdk_pixbuf_get_from_drawable");
-   pragma Import (C, Get_Pixbuf, "gdk_pixbuf_animation_iter_get_pixbuf");
    pragma Import
      (C, Get_Delay_Time, "gdk_pixbuf_animation_iter_get_delay_time");
 

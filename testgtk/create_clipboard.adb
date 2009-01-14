@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                  Copyright (C) 2006 AdaCore                       --
+--               Copyright (C) 2006-2009, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -63,7 +63,7 @@ package body Create_Clipboard is
 
    procedure On_Image_Retrieved
      (Clipboard : Gtk_Clipboard;
-      Pixbuf    : Gdk_Pixbuf;
+      Pixbuf    : System.Address;
       Data      : System.Address);
    pragma Convention (C, On_Image_Retrieved);
    --  Called when the image has been retrieved from the clipboard
@@ -98,15 +98,17 @@ package body Create_Clipboard is
 
    procedure On_Image_Retrieved
      (Clipboard : Gtk_Clipboard;
-      Pixbuf    : Gdk_Pixbuf;
+      Pixbuf    : System.Address;
       Data      : System.Address)
    is
       pragma Unreferenced (Clipboard);
       pragma Unreferenced (Data);
       First : Gtk_Text_Iter;
+      P     : constant Gdk.Pixbuf.Gdk_Pixbuf := Gdk.Pixbuf.Convert (Pixbuf);
+
    begin
-      if Pixbuf /= null then
-         Set (Image, Pixbuf);
+      if P /= null then
+         Set (Image, P);
       else
          Get_Start_Iter (Contents, First);
          Insert (Contents, First,

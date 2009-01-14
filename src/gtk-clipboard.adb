@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                  Copyright (C) 2002-2006, AdaCore                 --
+--                  Copyright (C) 2002-2009, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,6 +39,21 @@ package body Gtk.Clipboard is
      (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
       Natural, Gdk.Types.Gdk_Atom_Array);
 
+   ---------------
+   -- Set_Image --
+   ---------------
+
+   procedure Set_Image
+     (Clipboard : Gtk_Clipboard;
+      Pixbuf    : Gdk.Pixbuf.Gdk_Pixbuf)
+   is
+      procedure Internal (Clipboard : Gtk_Clipboard; Pixbuf : System.Address);
+      pragma Import (C, Internal, "gtk_clipboard_set_image");
+
+   begin
+      Internal (Clipboard, Get_Object (Pixbuf));
+   end Set_Image;
+
    --------------
    -- Set_Text --
    --------------
@@ -56,6 +71,21 @@ package body Gtk.Clipboard is
    begin
       Internal (Clipboard, Text, Text'Length);
    end Set_Text;
+
+   --------------------
+   -- Wait_For_Image --
+   --------------------
+
+   function Wait_For_Image
+     (Clipboard : Gtk_Clipboard)
+      return Gdk.Pixbuf.Gdk_Pixbuf
+   is
+      function Internal (Clipboard : Gtk_Clipboard) return System.Address;
+      pragma Import (C, Internal, "gtk_clipboard_wait_for_image");
+
+   begin
+      return Gdk.Pixbuf.Convert (Internal (Clipboard));
+   end Wait_For_Image;
 
    -------------------
    -- Wait_For_Text --

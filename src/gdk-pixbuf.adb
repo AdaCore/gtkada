@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -45,29 +45,249 @@ package body Gdk.Pixbuf is
       Blue             : Guchar := 0) return Gdk_Pixbuf
    is
       function Internal
-        (Pixbuf           : Gdk_Pixbuf;
+        (Pixbuf           : System.Address;
          Substitute_Color : Gboolean;
          Red              : Guchar;
          Green            : Guchar;
-         Blue             : Guchar) return Gdk_Pixbuf;
+         Blue             : Guchar) return System.Address;
       pragma Import (C, Internal, "gdk_pixbuf_add_alpha");
 
    begin
-      return Internal
-        (Pixbuf, Boolean'Pos (Substitute_Color), Red, Green, Blue);
+      return Convert
+        (Internal
+           (Get_Object (Pixbuf),
+            Boolean'Pos (Substitute_Color),
+            Red,
+            Green,
+            Blue));
    end Add_Alpha;
+
+   ---------------
+   -- Composite --
+   ---------------
+
+   procedure Composite
+     (Src           : Gdk_Pixbuf;
+      Dest          : Gdk_Pixbuf;
+      Dest_X        : Gint;
+      Dest_Y        : Gint;
+      Dest_Width    : Gint;
+      Dest_Height   : Gint;
+      Offset_X      : Gdouble := 0.0;
+      Offset_Y      : Gdouble := 0.0;
+      Scale_X       : Gdouble := 1.0;
+      Scale_Y       : Gdouble := 1.0;
+      Inter_Type    : Gdk_Interp_Type := Interp_Bilinear;
+      Overall_Alpha : Alpha_Range := 128)
+   is
+      procedure Internal
+        (Src           : System.Address;
+         Dest          : System.Address;
+         Dest_X        : Gint;
+         Dest_Y        : Gint;
+         Dest_Width    : Gint;
+         Dest_Height   : Gint;
+         Offset_X      : Gdouble := 0.0;
+         Offset_Y      : Gdouble := 0.0;
+         Scale_X       : Gdouble := 1.0;
+         Scale_Y       : Gdouble := 1.0;
+         Inter_Type    : Gdk_Interp_Type := Interp_Bilinear;
+         Overall_Alpha : Alpha_Range := 128);
+      pragma Import (C, Internal, "gdk_pixbuf_composite");
+
+   begin
+      Internal
+        (Get_Object (Src),
+         Get_Object (Dest),
+         Dest_X,
+         Dest_Y,
+         Dest_Width,
+         Dest_Height,
+         Offset_X,
+         Offset_Y,
+         Scale_X,
+         Scale_Y,
+         Inter_Type,
+         Overall_Alpha);
+   end Composite;
+
+   ---------------------
+   -- Composite_Color --
+   ---------------------
+
+   procedure Composite_Color
+     (Src           : Gdk_Pixbuf;
+      Dest          : Gdk_Pixbuf;
+      Dest_X        : Gint;
+      Dest_Y        : Gint;
+      Dest_Width    : Gint;
+      Dest_Height   : Gint;
+      Offset_X      : Gdouble := 0.0;
+      Offset_Y      : Gdouble := 0.0;
+      Scale_X       : Gdouble := 1.0;
+      Scale_Y       : Gdouble := 1.0;
+      Inter_Type    : Gdk_Interp_Type := Interp_Bilinear;
+      Overall_Alpha : Alpha_Range := 128;
+      Check_X       : Gint := 0;
+      Check_Y       : Gint := 0;
+      Check_Size    : Gint := 0;
+      Color1        : Guint32 := 0;
+      Color2        : Guint32 := 0)
+   is
+      procedure Internal
+        (Src           : System.Address;
+         Dest          : System.Address;
+         Dest_X        : Gint;
+         Dest_Y        : Gint;
+         Dest_Width    : Gint;
+         Dest_Height   : Gint;
+         Offset_X      : Gdouble;
+         Offset_Y      : Gdouble;
+         Scale_X       : Gdouble;
+         Scale_Y       : Gdouble;
+         Inter_Type    : Gdk_Interp_Type;
+         Overall_Alpha : Alpha_Range;
+         Check_X       : Gint;
+         Check_Y       : Gint;
+         Check_Size    : Gint;
+         Color1        : Guint32;
+         Color2        : Guint32);
+      pragma Import (C, Internal, "gdk_pixbuf_composite_color");
+
+   begin
+      Internal
+        (Get_Object (Src),
+         Get_Object (Dest),
+         Dest_X,
+         Dest_Y,
+         Dest_Width,
+         Dest_Height,
+         Offset_X,
+         Offset_Y,
+         Scale_X,
+         Scale_Y,
+         Inter_Type,
+         Overall_Alpha,
+         Check_X,
+         Check_Y,
+         Check_Size,
+         Color1,
+         Color2);
+   end Composite_Color;
+
+   ----------------------------
+   -- Composite_Color_Simple --
+   ----------------------------
+
+   function Composite_Color_Simple
+     (Src           : Gdk_Pixbuf;
+      Dest_Width    : Gint;
+      Dest_Height   : Gint;
+      Inter_Type    : Gdk_Interp_Type := Interp_Bilinear;
+      Overall_Alpha : Alpha_Range := 128;
+      Color1        : Guint32 := 0;
+      Color2        : Guint32 := 0) return Gdk_Pixbuf
+   is
+      function Internal
+        (Src           : System.Address;
+         Dest_Width    : Gint;
+         Dest_Height   : Gint;
+         Inter_Type    : Gdk_Interp_Type := Interp_Bilinear;
+         Overall_Alpha : Alpha_Range := 128;
+         Color1        : Guint32 := 0;
+         Color2        : Guint32 := 0) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_composite_color_simple");
+
+   begin
+      return Convert
+        (Internal
+           (Get_Object (Src),
+            Dest_Width,
+            Dest_Height,
+            Inter_Type,
+            Overall_Alpha,
+            Color1,
+            Color2));
+   end Composite_Color_Simple;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (P : System.Address) return Gdk_Pixbuf is
+      use type System.Address;
+
+      Stub : Gdk_Pixbuf_Record;
+
+   begin
+      if P = System.Null_Address then
+         return null;
+
+      else
+         return Gdk_Pixbuf (Get_User_Data (P, Stub));
+      end if;
+   end Convert;
 
    ----------
    -- Copy --
    ----------
 
    function Copy (Pixbuf : Gdk_Pixbuf) return Gdk_Pixbuf is
-      function Internal (Pixbuf : Gdk_Pixbuf) return Gdk_Pixbuf;
+      function Internal (Pixbuf : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_pixbuf_copy");
 
    begin
-      return Internal (Pixbuf);
+      return Convert (Internal (Get_Object (Pixbuf)));
    end Copy;
+
+   ---------------
+   -- Copy_Area --
+   ---------------
+
+   procedure Copy_Area
+     (Src_Pixbuf  : Gdk_Pixbuf;
+      Src_X       : Gint;
+      Src_Y       : Gint;
+      Width       : Gint;
+      Height      : Gint;
+      Dest_Pixbuf : Gdk_Pixbuf;
+      Dest_X      : Gint;
+      Dest_Y      : Gint)
+   is
+      procedure Internal
+        (Src_Pixbuf  : System.Address;
+         Src_X       : Gint;
+         Src_Y       : Gint;
+         Width       : Gint;
+         Height      : Gint;
+         Dest_Pixbuf : System.Address;
+         Dest_X      : Gint;
+         Dest_Y      : Gint);
+      pragma Import (C, Internal, "gdk_pixbuf_copy_area");
+
+   begin
+      Internal
+        (Get_Object (Src_Pixbuf),
+         Src_X,
+         Src_Y,
+         Width,
+         Height,
+         Get_Object (Dest_Pixbuf),
+         Dest_X,
+         Dest_Y);
+   end Copy_Area;
+
+   ----------
+   -- Fill --
+   ----------
+
+   procedure Fill (Pixbuf : Gdk_Pixbuf; Pixel : Guint32) is
+      procedure Internal (Pixbuf : System.Address; Pixel : Guint32);
+      pragma Import (C, Internal, "gdk_pixbuf_fill");
+
+   begin
+      Internal (Get_Object (Pixbuf), Pixel);
+   end Fill;
 
    -------------
    -- Gdk_New --
@@ -85,12 +305,17 @@ package body Gdk.Pixbuf is
          Has_Alpha       : Gboolean;
          Bits_Per_Sample : Gint;
          Width           : Gint;
-         Height          : Gint) return Gdk_Pixbuf;
+         Height          : Gint) return System.Address;
       pragma Import (C, Internal, "gdk_pixbuf_new");
 
    begin
-      return Internal
-        (Colorspace, Boolean'Pos (Has_Alpha), Bits_Per_Sample, Width, Height);
+      return Convert
+        (Internal
+           (Colorspace,
+            Boolean'Pos (Has_Alpha),
+            Bits_Per_Sample,
+            Width,
+            Height));
    end Gdk_New;
 
    -----------------------
@@ -104,13 +329,13 @@ package body Gdk.Pixbuf is
    is
       function Internal
         (Filename : String;
-         Error    : access GError) return Gdk_Pixbuf;
+         Error    : access GError) return System.Address;
       pragma Import (C, Internal, "gdk_pixbuf_new_from_file");
 
       Err : aliased GError;
 
    begin
-      Pixbuf := Internal (Filename & ASCII.NUL, Err'Access);
+      Pixbuf := Convert (Internal (Filename & ASCII.NUL, Err'Access));
       Error := Err;
    end Gdk_New_From_File;
 
@@ -135,16 +360,135 @@ package body Gdk.Pixbuf is
       Error := Err;
    end Gdk_New_From_File;
 
+   ---------------------------
+   -- Gdk_New_From_Xpm_Data --
+   ---------------------------
+
+   function Gdk_New_From_Xpm_Data
+     (Data : Interfaces.C.Strings.chars_ptr_array) return Gdk_Pixbuf
+   is
+      function Internal
+        (Data : Interfaces.C.Strings.chars_ptr_array) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_new_from_xpm_data");
+
+   begin
+      return Convert (Internal (Data));
+   end Gdk_New_From_Xpm_Data;
+
+   -----------------------
+   -- Gdk_New_Subpixbuf --
+   -----------------------
+
+   function Gdk_New_Subpixbuf
+     (Src_Pixbuf : Gdk_Pixbuf;
+      Src_X      : Gint;
+      Src_Y      : Gint;
+      Width      : Gint;
+      Height     : Gint) return Gdk_Pixbuf
+   is
+      function Internal
+        (Src_Pixbuf : System.Address;
+         Src_X      : Gint;
+         Src_Y      : Gint;
+         Width      : Gint;
+         Height     : Gint) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_new_subpixbuf");
+
+   begin
+      return Convert
+        (Internal (Get_Object (Src_Pixbuf), Src_X, Src_Y, Width, Height));
+   end Gdk_New_Subpixbuf;
+
+   -------------------------
+   -- Get_Bits_Per_Sample --
+   -------------------------
+
+   function Get_Bits_Per_Sample (Pixbuf : Gdk_Pixbuf) return Gint is
+      function Internal (Pixbuf : System.Address) return Gint;
+      pragma Import (C, Internal, "gdk_pixbuf_get_bits_per_sample");
+
+   begin
+      return Internal (Get_Object (Pixbuf));
+   end Get_Bits_Per_Sample;
+
+   --------------------
+   -- Get_Colorspace --
+   --------------------
+
+   function Get_Colorspace (Pixbuf : Gdk_Pixbuf) return Gdk_Colorspace is
+      function Internal (Pixbuf : System.Address) return Gdk_Colorspace;
+      pragma Import (C, Internal, "gdk_pixbuf_get_colorspace");
+
+   begin
+      return Internal (Get_Object (Pixbuf));
+   end Get_Colorspace;
+
+   -----------------------
+   -- Get_From_Drawable --
+   -----------------------
+
+   function Get_From_Drawable
+     (Dest   : Gdk_Pixbuf;
+      Src    : Gdk.Drawable.Gdk_Drawable;
+      Cmap   : Gdk.Color.Gdk_Colormap;
+      Src_X  : Gint;
+      Src_Y  : Gint;
+      Dest_X : Gint;
+      Dest_Y : Gint;
+      Width  : Gint;
+      Height : Gint) return Gdk_Pixbuf
+   is
+      function Internal
+        (Dest   : System.Address;
+         Src    : Gdk.Drawable.Gdk_Drawable;
+         Cmap   : Gdk.Color.Gdk_Colormap;
+         Src_X  : Gint;
+         Src_Y  : Gint;
+         Dest_X : Gint;
+         Dest_Y : Gint;
+         Width  : Gint;
+         Height : Gint) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_get_from_drawable");
+
+   begin
+      if Dest = null then
+         return Convert
+           (Internal
+              (System.Null_Address,
+               Src,
+               Cmap,
+               Src_X,
+               Src_Y,
+               Dest_X,
+               Dest_Y,
+               Width,
+               Height));
+
+      else
+         return Convert
+           (Internal
+              (Get_Object (Dest),
+               Src,
+               Cmap,
+               Src_X,
+               Src_Y,
+               Dest_X,
+               Dest_Y,
+               Width,
+               Height));
+      end if;
+   end Get_From_Drawable;
+
    -------------------
    -- Get_Has_Alpha --
    -------------------
 
    function Get_Has_Alpha (Pixbuf : Gdk_Pixbuf) return Boolean is
-      function Internal (Pixbuf : Gdk_Pixbuf) return Gboolean;
+      function Internal (Pixbuf : System.Address) return Gboolean;
       pragma Import (C, Internal, "gdk_pixbuf_get_has_alpha");
 
    begin
-      return Internal (Pixbuf) /= 0;
+      return Internal (Get_Object (Pixbuf)) /= 0;
    end Get_Has_Alpha;
 
    ----------------
@@ -152,11 +496,11 @@ package body Gdk.Pixbuf is
    ----------------
 
    function Get_Height (Pixbuf : Gdk_Pixbuf) return Gint is
-      function Internal (Pixbuf : Gdk_Pixbuf) return Gint;
+      function Internal (Pixbuf : System.Address) return Gint;
       pragma Import (C, Internal, "gdk_pixbuf_get_height");
 
    begin
-      return Internal (Pixbuf);
+      return Internal (Get_Object (Pixbuf));
    end Get_Height;
 
    ----------------
@@ -172,15 +516,94 @@ package body Gdk.Pixbuf is
    end Get_Height;
 
    ---------------
+   -- Get_Image --
+   ---------------
+
+   function Get_Image (Cursor : Gdk.Cursor.Gdk_Cursor) return Gdk_Pixbuf is
+      function Internal (Cursor : Gdk.Cursor.Gdk_Cursor) return System.Address;
+      pragma Import (C, Internal, "gdk_cursor_get_image");
+
+   begin
+      return Convert (Internal (Cursor));
+   end Get_Image;
+
+   --------------------
+   -- Get_N_Channels --
+   --------------------
+
+   function Get_N_Channels (Pixbuf : Gdk_Pixbuf) return Gint is
+      function Internal (Pixbuf : System.Address) return Gint;
+      pragma Import (C, Internal, "gdk_pixbuf_get_n_channels");
+
+   begin
+      return Internal (Get_Object (Pixbuf));
+   end Get_N_Channels;
+
+   ----------------
+   -- Get_Pixbuf --
+   ----------------
+
+   function Get_Pixbuf (Iter : Gdk_Pixbuf_Animation_Iter) return Gdk_Pixbuf is
+      function Internal
+        (Iter : Gdk_Pixbuf_Animation_Iter) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_animation_iter_get_pixbuf");
+
+   begin
+      return Convert (Internal (Iter));
+   end Get_Pixbuf;
+
+   ----------------
+   -- Get_Pixels --
+   ----------------
+
+   function Get_Pixels
+     (Pixbuf : Gdk_Pixbuf) return Gdk.Rgb.Rgb_Buffer_Access
+   is
+      function Internal
+        (Pixbuf : System.Address) return Gdk.Rgb.Rgb_Buffer_Access;
+      pragma Import (C, Internal, "gdk_pixbuf_get_pixels");
+
+   begin
+      return Internal (Get_Object (Pixbuf));
+   end Get_Pixels;
+
+   -------------------
+   -- Get_Rowstride --
+   -------------------
+
+   function Get_Rowstride (Pixbuf : Gdk_Pixbuf) return Gint is
+      function Internal (Pixbuf : System.Address) return Gint;
+      pragma Import (C, Internal, "gdk_pixbuf_get_rowstride");
+
+   begin
+      return Internal (Get_Object (Pixbuf));
+   end Get_Rowstride;
+
+   ----------------------
+   -- Get_Static_Image --
+   ----------------------
+
+   function Get_Static_Image
+     (Animation : Gdk_Pixbuf_Animation) return Gdk_Pixbuf
+   is
+      function Internal
+        (Animation : Gdk_Pixbuf_Animation) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_animation_get_static_image");
+
+   begin
+      return Convert (Internal (Animation));
+   end Get_Static_Image;
+
+   ---------------
    -- Get_Width --
    ---------------
 
    function Get_Width (Pixbuf : Gdk_Pixbuf) return Gint is
-      function Internal (Pixbuf : Gdk_Pixbuf) return Gint;
+      function Internal (Pixbuf : System.Address) return Gint;
       pragma Import (C, Internal, "gdk_pixbuf_get_width");
 
    begin
-      return Internal (Pixbuf);
+      return Internal (Get_Object (Pixbuf));
    end Get_Width;
 
    ---------------
@@ -199,14 +622,6 @@ package body Gdk.Pixbuf is
    -- Ref --
    ---------
 
-   procedure Ref (Pixbuf : Gdk_Pixbuf) is
-      procedure Internal (Pixbuf : Gdk_Pixbuf);
-      pragma Import (C, Internal, "gdk_pixbuf_ref");
-
-   begin
-      Internal (Pixbuf);
-   end Ref;
-
    procedure Ref (Animation : Gdk_Pixbuf_Animation) is
       procedure Internal (Pixbuf : Gdk_Pixbuf_Animation);
       pragma Import (C, Internal, "gdk_pixbuf_animation_ref");
@@ -223,6 +638,192 @@ package body Gdk.Pixbuf is
       Internal (Iter);
    end Ref;
 
+   ----------------------------
+   -- Render_Pixmap_And_Mask --
+   ----------------------------
+
+   procedure Render_Pixmap_And_Mask
+     (Pixbuf          : Gdk_Pixbuf;
+      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
+      Alpha_Threshold : Alpha_Range)
+   is
+      procedure Internal
+        (Pixbuf          : System.Address;
+         Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
+         Mask            : out Gdk.Bitmap.Gdk_Bitmap;
+         Alpha_Threshold : Alpha_Range);
+      pragma Import (C, Internal, "gdk_pixbuf_render_pixmap_and_mask");
+
+   begin
+      Internal (Get_Object (Pixbuf), Pixmap, Mask, Alpha_Threshold);
+   end Render_Pixmap_And_Mask;
+
+   -----------------------------------------
+   -- Render_Pixmap_And_Mask_For_Colormap --
+   -----------------------------------------
+
+   procedure Render_Pixmap_And_Mask_For_Colormap
+     (Pixbuf          : Gdk_Pixbuf;
+      Colormap        : Gdk.Color.Gdk_Colormap;
+      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
+      Alpha_Threshold : Alpha_Range)
+   is
+      procedure Internal
+        (Pixbuf          : System.Address;
+         Colormap        : Gdk.Color.Gdk_Colormap;
+         Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
+         Mask            : out Gdk.Bitmap.Gdk_Bitmap;
+         Alpha_Threshold : Alpha_Range);
+      pragma Import
+        (C, Internal, "gdk_pixbuf_render_pixmap_and_mask_for_colormap");
+
+   begin
+      Internal (Get_Object (Pixbuf), Colormap, Pixmap, Mask, Alpha_Threshold);
+   end Render_Pixmap_And_Mask_For_Colormap;
+
+   ----------------------------
+   -- Render_Threshold_Alpha --
+   ----------------------------
+
+   procedure Render_Threshold_Alpha
+     (Pixbuf          : Gdk_Pixbuf;
+      Bitmap          : Gdk.Bitmap.Gdk_Bitmap;
+      Src_X           : Gint;
+      Src_Y           : Gint;
+      Dest_X          : Gint;
+      Dest_Y          : Gint;
+      Width           : Gint;
+      Height          : Gint;
+      Alpha_Threshold : Alpha_Range)
+   is
+      procedure Internal
+        (Pixbuf          : System.Address;
+         Bitmap          : Gdk.Bitmap.Gdk_Bitmap;
+         Src_X           : Gint;
+         Src_Y           : Gint;
+         Dest_X          : Gint;
+         Dest_Y          : Gint;
+         Width           : Gint;
+         Height          : Gint;
+         Alpha_Threshold : Alpha_Range);
+      pragma Import (C, Internal, "gdk_pixbuf_render_threshold_alpha");
+
+   begin
+      Internal
+        (Get_Object (Pixbuf),
+         Bitmap,
+         Src_X,
+         Src_Y,
+         Dest_X,
+         Dest_Y,
+         Width,
+         Height,
+         Alpha_Threshold);
+   end Render_Threshold_Alpha;
+
+   ------------------------
+   -- Render_To_Drawable --
+   ------------------------
+
+   procedure Render_To_Drawable
+     (Pixbuf   : Gdk_Pixbuf;
+      Drawable : Gdk.Drawable.Gdk_Drawable;
+      GC       : Gdk.GC.Gdk_GC;
+      Src_X    : Gint;
+      Src_Y    : Gint;
+      Dest_X   : Gint;
+      Dest_Y   : Gint;
+      Width    : Gint;
+      Height   : Gint;
+      Dither   : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
+      X_Dither : Gint := 0;
+      Y_Dither : Gint := 0)
+   is
+      procedure Internal
+        (Pixbuf   : System.Address;
+         Drawable : Gdk.Drawable.Gdk_Drawable;
+         GC       : Gdk.GC.Gdk_GC;
+         Src_X    : Gint;
+         Src_Y    : Gint;
+         Dest_X   : Gint;
+         Dest_Y   : Gint;
+         Width    : Gint;
+         Height   : Gint;
+         Dither   : Gdk.Rgb.Gdk_Rgb_Dither;
+         X_Dither : Gint;
+         Y_Dither : Gint);
+      pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable");
+
+   begin
+      Internal
+        (Get_Object (Pixbuf),
+         Drawable,
+         GC,
+         Src_X,
+         Src_Y,
+         Dest_X,
+         Dest_Y,
+         Width,
+         Height,
+         Dither,
+         X_Dither,
+         Y_Dither);
+   end Render_To_Drawable;
+
+   ------------------------------
+   -- Render_To_Drawable_Alpha --
+   ------------------------------
+
+   procedure Render_To_Drawable_Alpha
+     (Pixbuf          : Gdk_Pixbuf;
+      Drawable        : Gdk.Drawable.Gdk_Drawable;
+      Src_X           : Gint;
+      Src_Y           : Gint;
+      Dest_X          : Gint;
+      Dest_Y          : Gint;
+      Width           : Gint;
+      Height          : Gint;
+      Alpha           : Alpha_Mode;
+      Alpha_Threshold : Alpha_Range;
+      Dither          : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
+      X_Dither        : Gint := 0;
+      Y_Dither        : Gint := 0)
+   is
+      procedure Internal
+        (Pixbuf          : System.Address;
+         Drawable        : Gdk.Drawable.Gdk_Drawable;
+         Src_X           : Gint;
+         Src_Y           : Gint;
+         Dest_X          : Gint;
+         Dest_Y          : Gint;
+         Width           : Gint;
+         Height          : Gint;
+         Alpha           : Alpha_Mode;
+         Alpha_Threshold : Alpha_Range;
+         Dither          : Gdk.Rgb.Gdk_Rgb_Dither;
+         X_Dither        : Gint;
+         Y_Dither        : Gint);
+      pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable_alpha");
+
+   begin
+      Internal
+        (Get_Object (Pixbuf),
+         Drawable,
+         Src_X,
+         Src_Y,
+         Dest_X,
+         Dest_Y,
+         Width,
+         Height,
+         Alpha,
+         Alpha_Threshold,
+         Dither,
+         X_Dither,
+         Y_Dither);
+   end Render_To_Drawable_Alpha;
+
    ---------------------------
    -- Saturate_And_Pixelate --
    ---------------------------
@@ -234,14 +835,18 @@ package body Gdk.Pixbuf is
       Pixelate   : Boolean := True)
    is
       procedure Internal
-        (Src        : Gdk_Pixbuf;
-         Dest       : Gdk_Pixbuf;
+        (Src        : System.Address;
+         Dest       : System.Address;
          Saturation : Gfloat;
          Pixelate   : Gboolean);
       pragma Import (C, Internal, "gdk_pixbuf_saturate_and_pixelate");
 
    begin
-      Internal (Src, Dest, Saturation, Boolean'Pos (Pixelate));
+      Internal
+        (Get_Object (Src),
+         Get_Object (Dest),
+         Saturation,
+         Boolean'Pos (Pixelate));
    end Saturate_And_Pixelate;
 
    ----------
@@ -257,14 +862,14 @@ package body Gdk.Pixbuf is
       Depth    : Integer := 32)
    is
       procedure Internal
-        (Pixbuf   : Gdk_Pixbuf;
+        (Pixbuf   : System.Address;
          Filename : String;
          Format   : String;
          Error    : out GError;
          Term     : System.Address := System.Null_Address);
 
       procedure Internal
-        (Pixbuf   : Gdk_Pixbuf;
+        (Pixbuf   : System.Address;
          Filename : String;
          Format   : String;
          Error    : out GError;
@@ -278,7 +883,7 @@ package body Gdk.Pixbuf is
       case Format is
          when JPEG =>
             Internal
-              (Pixbuf,
+              (Get_Object (Pixbuf),
                Filename & ASCII.NUL,
                "jpeg" & ASCII.NUL,
                Error,
@@ -286,11 +891,15 @@ package body Gdk.Pixbuf is
                Image_Quality'Image (Quality) & ASCII.NUL);
 
          when PNG =>
-            Internal (Pixbuf, Filename & ASCII.NUL, "png" & ASCII.NUL, Error);
+            Internal
+              (Get_Object (Pixbuf),
+               Filename & ASCII.NUL,
+               "png" & ASCII.NUL,
+               Error);
 
          when ICO =>
             Internal
-              (Pixbuf,
+              (Get_Object (Pixbuf),
                Filename & ASCII.NUL,
                "ico" & ASCII.NUL,
                Error,
@@ -298,21 +907,85 @@ package body Gdk.Pixbuf is
                Integer'Image (Depth));
 
          when BMP =>
-            Internal (Pixbuf, Filename & ASCII.NUL, "bmp" & ASCII.NUL, Error);
+            Internal
+              (Get_Object (Pixbuf),
+               Filename & ASCII.NUL,
+               "bmp" & ASCII.NUL,
+               Error);
       end case;
    end Save;
 
    -----------
-   -- Unref --
+   -- Scale --
    -----------
 
-   procedure Unref (Pixbuf : Gdk_Pixbuf) is
-      procedure Internal (Pixbuf : Gdk_Pixbuf);
-      pragma Import (C, Internal, "gdk_pixbuf_unref");
+   procedure Scale
+     (Src          : Gdk_Pixbuf;
+      Dest         : Gdk_Pixbuf;
+      Dest_X       : Gint;
+      Dest_Y       : Gint;
+      Dest_Width   : Gint;
+      Dest_Height  : Gint;
+      Offset_X     : Gdouble := 0.0;
+      Offset_Y     : Gdouble := 0.0;
+      Scale_X      : Gdouble := 1.0;
+      Scale_Y      : Gdouble := 1.0;
+      Inter_Type   : Gdk_Interp_Type := Interp_Bilinear)
+   is
+      procedure Internal
+        (Src          : System.Address;
+         Dest         : System.Address;
+         Dest_X       : Gint;
+         Dest_Y       : Gint;
+         Dest_Width   : Gint;
+         Dest_Height  : Gint;
+         Offset_X     : Gdouble := 0.0;
+         Offset_Y     : Gdouble := 0.0;
+         Scale_X      : Gdouble := 1.0;
+         Scale_Y      : Gdouble := 1.0;
+         Inter_Type   : Gdk_Interp_Type);
+      pragma Import (C, Internal, "gdk_pixbuf_scale");
 
    begin
-      Internal (Pixbuf);
-   end Unref;
+      Internal
+        (Get_Object (Src),
+         Get_Object (Dest),
+         Dest_X,
+         Dest_Y,
+         Dest_Width,
+         Dest_Height,
+         Offset_X,
+         Offset_Y,
+         Scale_X,
+         Scale_Y,
+         Inter_Type);
+   end Scale;
+
+   ------------------
+   -- Scale_Simple --
+   ------------------
+
+   function Scale_Simple
+     (Src           : Gdk_Pixbuf;
+      Dest_Width    : Gint;
+      Dest_Height   : Gint;
+      Inter_Type    : Gdk_Interp_Type := Interp_Bilinear) return Gdk_Pixbuf
+   is
+      function Internal
+        (Src           : System.Address;
+         Dest_Width    : Gint;
+         Dest_Height   : Gint;
+         Inter_Type    : Gdk_Interp_Type) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_scale_simple");
+
+   begin
+      return Convert
+        (Internal (Get_Object (Src), Dest_Width, Dest_Height, Inter_Type));
+   end Scale_Simple;
+
+   -----------
+   -- Unref --
+   -----------
 
    procedure Unref (Animation : Gdk_Pixbuf_Animation) is
       procedure Internal (Pixbuf : Gdk_Pixbuf_Animation);
@@ -389,11 +1062,12 @@ package body Gdk.Pixbuf is
       Y       : Glib.Gint)
    is
       function Internal
-        (D : System.Address; P : Gdk_Pixbuf; X, Y : Gint)
-        return Gdk_Cursor;
+        (D : System.Address; P : System.Address; X, Y : Gint)
+         return Gdk_Cursor;
       pragma Import (C, Internal, "gdk_cursor_new_from_pixbuf");
+
    begin
-      Cursor := Internal (Get_Object (Display), Pixbuf, X, Y);
+      Cursor := Internal (Get_Object (Display), Get_Object (Pixbuf), X, Y);
    end Gdk_New_From_Pixbuf;
 
 end Gdk.Pixbuf;

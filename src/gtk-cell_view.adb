@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -127,10 +127,10 @@ package body Gtk.Cell_View is
      (View   : access Gtk_Cell_View_Record'Class;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf)
    is
-      function Internal (Pixbuf : Gdk_Pixbuf) return System.Address;
+      function Internal (Pixbuf : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_view_new_with_pixbuf");
    begin
-      Set_Object (View, Internal (Pixbuf));
+      Set_Object (View, Internal (Get_Object (Pixbuf)));
    end Initialize_With_Pixbuf;
 
    -----------------------

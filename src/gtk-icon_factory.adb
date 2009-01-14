@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2004-2008, AdaCore                  --
+--                 Copyright (C) 2004-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -159,10 +159,10 @@ package body Gtk.Icon_Factory is
    -------------
 
    function Gtk_New (Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf) return Gtk_Icon_Set is
-      function Internal (Pixbuf : Gdk_Pixbuf) return Gtk_Icon_Set;
+      function Internal (Pixbuf : System.Address) return Gtk_Icon_Set;
       pragma Import (C, Internal, "gtk_icon_set_new_from_pixbuf");
    begin
-      return Internal (Pixbuf);
+      return Internal (Get_Object (Pixbuf));
    end Gtk_New;
 
    ----------------
@@ -289,19 +289,20 @@ package body Gtk.Icon_Factory is
          Size      : Gtk_Icon_Size;
          Widget    : System.Address;
          Detail    : chars_ptr)
-         return Gdk_Pixbuf;
+         return System.Address;
       pragma Import (C, Internal, "gtk_icon_set_render_icon");
       Str : chars_ptr := String_Or_Null (Detail);
       W   : System.Address := System.Null_Address;
       Result : Gdk_Pixbuf;
+
    begin
       if Widget /= null then
          W := Get_Object (Widget);
       end if;
 
-      Result := Internal
-        (Icon_Set, Get_Object (Style), Direction, State, Size,
-         W, Str);
+      Result := Convert
+        (Internal
+           (Icon_Set, Get_Object (Style), Direction, State, Size, W, Str));
       Free (Str);
 
       return Result;
@@ -329,21 +330,24 @@ package body Gtk.Icon_Factory is
          Size      : Gtk_Icon_Size;
          Widget    : System.Address;
          Detail    : chars_ptr)
-         return Gdk_Pixbuf;
+         return System.Address;
       pragma Import (C, Internal, "gtk_style_render_icon");
       --  External binding: gtk_style_render_icon
 
       Str    : chars_ptr := String_Or_Null (Detail);
       W      : System.Address := System.Null_Address;
       Result : Gdk_Pixbuf;
+
    begin
       if Widget /= null then
          W := Get_Object (Widget);
       end if;
 
-      Result := Internal
-        (Get_Object (Style), Source, Direction, State, Size, W, Str);
+      Result := Convert
+        (Internal
+           (Get_Object (Style), Source, Direction, State, Size, W, Str));
       Free (Str);
+
       return Result;
    end Render_Icon;
 
@@ -507,6 +511,20 @@ package body Gtk.Icon_Factory is
       return Boolean'Val (Internal (Source));
    end Get_Direction_Wildcarded;
 
+   ----------------
+   -- Get_Pixbuf --
+   ----------------
+
+   function Get_Pixbuf
+     (Source : Gtk_Icon_Source) return Gdk.Pixbuf.Gdk_Pixbuf
+   is
+      function Internal (Source : Gtk_Icon_Source) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_source_get_pixbuf");
+
+   begin
+      return Convert (Internal (Source));
+   end Get_Pixbuf;
+
    -------------------------
    -- Get_Size_Wildcarded --
    -------------------------
@@ -558,5 +576,19 @@ package body Gtk.Icon_Factory is
    begin
       Internal (Source, Icon_Name & ASCII.NUL);
    end Set_Icon_Name;
+
+   ----------------
+   -- Set_Pixbuf --
+   ----------------
+
+   procedure Set_Pixbuf
+     (Source : Gtk_Icon_Source; Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf)
+   is
+      procedure Internal (Source : Gtk_Icon_Source; Pixbuf : System.Address);
+      pragma Import (C, Internal, "gtk_icon_source_set_pixbuf");
+
+   begin
+      Internal (Source, Get_Object (Pixbuf));
+   end Set_Pixbuf;
 
 end Gtk.Icon_Factory;

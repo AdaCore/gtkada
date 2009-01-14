@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -135,10 +135,11 @@ package body Gtk.About_Dialog is
      (About : access Gtk_About_Dialog_Record)
       return Gdk_Pixbuf
    is
-      function Internal (About : System.Address) return Gdk_Pixbuf;
+      function Internal (About : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo");
+
    begin
-      return Internal (Get_Object (About));
+      return Convert (Internal (Get_Object (About)));
    end Get_Logo;
 
    ------------------------
@@ -370,10 +371,10 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
         (About : System.Address;
-         Logo  : Gdk_Pixbuf);
+         Logo  : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo");
    begin
-      Internal (Get_Object (About), Logo);
+      Internal (Get_Object (About), Get_Object (Logo));
    end Set_Logo;
 
    ------------------------

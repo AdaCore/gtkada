@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007 AdaCore                    --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -169,7 +169,6 @@ package Gtk.Icon_Theme is
      (Icon_Info : Gtk_Icon_Info;
       Error     : Glib.Error.GError_Access := null)
       return Gdk.Pixbuf.Gdk_Pixbuf;
-   pragma Import (C, Load_Icon, "gtk_icon_info_load_icon");
    --  Renders an icon previously looked up in an icon theme using Lookup_Icon;
    --  the size will be based on the size passed to Lookup_Icon. Note that the
    --  resulting pixbuf may not be exactly this size; an icon theme may have
@@ -361,7 +360,6 @@ package Gtk.Icon_Theme is
 private
    pragma Import (C, Free, "gtk_icon_info_free");
    pragma Import (C, Get_Base_Size, "gtk_icon_info_get_base_size");
-   pragma Import (C, Get_Builtin_Pixbuf, "gtk_icon_info_get_builtin_pixbuf");
    pragma Import (C, Copy, "gtk_icon_info_copy");
    pragma Import (C, Get_Type, "gtk_icon_theme_get_type");
    pragma Import (C, Icon_Info_Get_Type, "gtk_icon_info_get_type");

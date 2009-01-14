@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2002-2007, AdaCore                  --
+--                 Copyright (C) 2002-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -213,11 +213,12 @@ package Gtk.Clipboard is
 
    type Gtk_Clipboard_Image_Received_Func is access
      procedure (Clipboard : Gtk_Clipboard;
-                Pixbuf    : Gdk.Pixbuf.Gdk_Pixbuf;
+                Pixbuf    : System.Address;
                 Data      : System.Address);
    pragma Convention (C, Gtk_Clipboard_Image_Received_Func);
    --  Pixbuf will contain null if the request failed.
-   --  Pixbuf must not be Unref.
+   --  Pixbuf must not be Unref. Pixbuf must be converted to GtkAda object
+   --  using Gdk.Pixbuf.Convert.
 
    procedure Set_Image
      (Clipboard : Gtk_Clipboard;
@@ -378,8 +379,6 @@ private
    pragma Import (C, Get,               "gtk_clipboard_get");
    pragma Import (C, Clear,             "gtk_clipboard_clear");
    pragma Import (C, Store,             "gtk_clipboard_store");
-   pragma Import (C, Set_Image,         "gtk_clipboard_set_image");
-   pragma Import (C, Wait_For_Image,    "gtk_clipboard_wait_for_image");
    pragma Import (C, Request_Text,      "gtk_clipboard_request_text");
    pragma Import (C, Request_Image,     "gtk_clipboard_request_image");
    pragma Import (C, Wait_For_Contents, "gtk_clipboard_wait_for_contents");

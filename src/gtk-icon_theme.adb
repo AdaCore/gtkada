@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -79,6 +79,21 @@ package body Gtk.Icon_Theme is
       end;
    end Get_Attach_Points;
 
+   ------------------------
+   -- Get_Builtin_Pixbuf --
+   ------------------------
+
+   function Get_Builtin_Pixbuf
+     (Icon_Info : Gtk_Icon_Info) return Gdk.Pixbuf.Gdk_Pixbuf
+   is
+      function Internal
+        (Icon_Info : Gtk_Icon_Info) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_info_get_builtin_pixbuf");
+
+   begin
+      return Convert (Internal (Icon_Info));
+   end Get_Builtin_Pixbuf;
+
    ----------------------
    -- Get_Display_Name --
    ----------------------
@@ -152,10 +167,10 @@ package body Gtk.Icon_Theme is
       procedure Internal
         (Icon_Name : String;
          Size      : Gint;
-         Pixbuf    : Gdk_Pixbuf);
+         Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_icon_theme_add_builtin_icon");
    begin
-      Internal (Icon_Name & ASCII.NUL, Size, Pixbuf);
+      Internal (Icon_Name & ASCII.NUL, Size, Get_Object (Pixbuf));
    end Add_Builtin_Icon;
 
    ------------------------
@@ -313,11 +328,27 @@ package body Gtk.Icon_Theme is
          Icon_Name  : String;
          Size       : Gint;
          Flags      : Gtk_Icon_Lookup_Flags)
-         return Gdk_Pixbuf;
+         return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_load_icon");
    begin
-      return Internal
-        (Get_Object (Icon_Theme), Icon_Name & ASCII.NUL, Size, Flags);
+      return Convert
+        (Internal
+           (Get_Object (Icon_Theme), Icon_Name & ASCII.NUL, Size, Flags));
+   end Load_Icon;
+
+   function Load_Icon
+     (Icon_Info : Gtk_Icon_Info;
+      Error     : Glib.Error.GError_Access := null)
+      return Gdk.Pixbuf.Gdk_Pixbuf
+   is
+      function Internal
+        (Icon_Info : Gtk_Icon_Info;
+         Error     : Glib.Error.GError_Access := null)
+      return System.Address;
+      pragma Import (C, Internal, "gtk_icon_info_load_icon");
+
+   begin
+      return Convert (Internal (Icon_Info, Error));
    end Load_Icon;
 
    -----------------

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2008, AdaCore                   --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -124,6 +124,18 @@ package body Gtk.Text_Iter is
 
       return Character'Val (Result and Eight_LSB_Mask);
    end Get_Char;
+
+   ----------------
+   -- Get_Pixbuf --
+   ----------------
+
+   function Get_Pixbuf (Iter : Gtk_Text_Iter) return Gdk.Pixbuf.Gdk_Pixbuf is
+      function Internal (Iter : Gtk_Text_Iter) return System.Address;
+      pragma Import (C, Internal, "gtk_text_iter_get_pixbuf");
+
+   begin
+      return Gdk.Pixbuf.Convert (Internal (Iter));
+   end Get_Pixbuf;
 
    ---------------
    -- Get_Slice --

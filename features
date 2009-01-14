@@ -12,6 +12,14 @@ of the feature.
 New features in GtkAda 2.14.1
 -----------------------------
 
+I105-017 Small API changes
+
+  The type Gdk_Pixbuf derived from the GObject for now, following change in
+  the Gtk+. This change introduce incompatibility in the profile of the
+  Gtk_Clipboard_Image_Received_Func callback subprogram: the Pixbuf parameter
+  has System.Address type for now. You need to use Gdk.Pixbuf.Convert
+  subprogram to convert it to the Gdk_Pixbuf type.
+
 New features in GtkAda 2.14.0
 -----------------------------
 

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -822,7 +822,6 @@ package Gtk.Text_Iter is
    --  ??? Need to be put in a generic package.
    --  And also needs a binding to gunichar.
 
-
 private
    function C_Gtk_Text_Iter_Size return Gint;
    pragma Import (C, C_Gtk_Text_Iter_Size, "ada_c_gtk_text_iter_size");
@@ -866,7 +865,6 @@ private
    pragma Import (C, Forward_To_End,    "gtk_text_iter_forward_to_end");
    pragma Import (C, Compare,           "gtk_text_iter_compare");
    pragma Import (C, Order,             "gtk_text_iter_order");
-   pragma Import (C, Get_Pixbuf,        "gtk_text_iter_get_pixbuf");
    pragma Import (C, Set_Text_Iter,     "g_value_set_pointer");
    --  External binding: g_value_set_pointer
 

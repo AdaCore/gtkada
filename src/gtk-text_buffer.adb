@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2008, AdaCore                  --
+--                 Copyright (C) 2001-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -474,11 +474,11 @@ package body Gtk.Text_Buffer is
       procedure Internal
         (Buffer : System.Address;
          Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
-         Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+         Pixbuf : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_insert_pixbuf");
 
    begin
-      Internal (Get_Object (Buffer), Iter, Pixbuf);
+      Internal (Get_Object (Buffer), Iter, Get_Object (Pixbuf));
    end Insert_Pixbuf;
 
    -------------------------

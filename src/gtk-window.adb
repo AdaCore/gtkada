@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -876,10 +876,10 @@ package body Gtk.Window is
    ----------------------
 
    procedure Set_Default_Icon (Icon : Gdk_Pixbuf) is
-      procedure Internal (Icon : Gdk_Pixbuf);
+      procedure Internal (Icon : System.Address);
       pragma Import (C, Internal, "gtk_window_set_default_icon");
    begin
-      Internal (Icon);
+      Internal (Get_Object (Icon));
    end Set_Default_Icon;
 
    --------------------------------
@@ -944,10 +944,10 @@ package body Gtk.Window is
    is
       procedure Internal
         (Window : System.Address;
-         Icon   : Gdk_Pixbuf);
+         Icon   : System.Address);
       pragma Import (C, Internal, "gtk_window_set_icon");
    begin
-      Internal (Get_Object (Window), Icon);
+      Internal (Get_Object (Window), Get_Object (Icon));
    end Set_Icon;
 
    ----------
@@ -1317,10 +1317,11 @@ package body Gtk.Window is
    is
       function Internal
         (Window : System.Address)
-         return Gdk_Pixbuf;
+         return System.Address;
       pragma Import (C, Internal, "gtk_window_get_icon");
+
    begin
-      return Internal (Get_Object (Window));
+      return Convert (Internal (Get_Object (Window)));
    end Get_Icon;
 
    -------------------

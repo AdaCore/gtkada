@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,15 +48,13 @@ package body Gtk.Dnd is
    is
       procedure Internal
         (Context : Drag_Context;
-         Pixbuf  : Gdk.Pixbuf.Gdk_Pixbuf;
+         Pixbuf  : System.Address;
          Hot_X   : Gint;
          Hot_Y   : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_pixbuf");
+
    begin
-      Internal (Context,
-                Pixbuf,
-                Hot_X,
-                Hot_Y);
+      Internal (Context, Get_Object (Pixbuf), Hot_X, Hot_Y);
    end Set_Icon_Pixbuf;
 
    -------------------
@@ -112,11 +110,11 @@ package body Gtk.Dnd is
    is
       procedure Internal
         (Widget : System.Address;
-         Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+         Pixbuf : System.Address);
       pragma Import (C, Internal, "gtk_drag_source_set_icon_pixbuf");
+
    begin
-      Internal (Get_Object (Widget),
-                Pixbuf);
+      Internal (Get_Object (Widget), Get_Object (Pixbuf));
    end Source_Set_Icon_Pixbuf;
 
    ---------------------------

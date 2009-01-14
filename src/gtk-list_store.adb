@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2008, AdaCore                  --
+--                 Copyright (C) 2001-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -183,11 +183,11 @@ package body Gtk.List_Store is
         (Tree_Store : System.Address;
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : Gdk.Pixbuf.Gdk_Pixbuf);
+         Value      : System.Address);
       pragma Import (C, Internal, "ada_gtk_list_store_set_pixbuf");
 
    begin
-      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+      Internal (Get_Object (Tree_Store), Iter, Column, Get_Object (Value));
    end Set;
 
    ------------
