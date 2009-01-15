@@ -24,12 +24,17 @@
 
 Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright @copyright{} 2000-2008, AdaCore
+Copyright @copyright{} 2000-2009, AdaCore
 
-This document may be copied, in whole or in part, in any form or by any
-means, as is or with alterations, provided that (1) alterations are clearly
-marked as alterations and (2) this copyright notice is included
-unmodified in any copy.
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1
+or any later version published by the Free Software Foundation;
+with the Invariant Sections being ``GNU Free Documentation License'', with the
+Front-Cover Texts being
+``GtkAda User's Guide'',
+and with no Back-Cover Texts.
+A copy of the license is included in the section entitled
+``GNU Free Documentation License''.
 
 @end titlepage
 
@@ -47,12 +52,17 @@ Date: $Date$
 
 Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright @copyright{} 2000-2008, AdaCore
+Copyright @copyright{} 2000-2009, AdaCore
 
-This document may be copied, in whole or in part, in any form or by any
-means, as is or with alterations, provided that (1) alterations are clearly
-marked as alterations and (2) this copyright notice is included
-unmodified in any copy.
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1
+or any later version published by the Free Software Foundation;
+with the Invariant Sections being ``GNU Free Documentation License'', with the
+Front-Cover Texts being
+``GtkAda User's Guide'',
+and with no Back-Cover Texts.
+A copy of the license is included in the section entitled
+``GNU Free Documentation License''.
 
 @menu
 * Introduction::
@@ -70,6 +80,7 @@ unmodified in any copy.
 * Debugging GtkAda applications::
 * How to report bugs::
 * Bibliography::
+* GNU Free Documentation License::
 
 @detailmenu
  --- The Detailed Node Listing ---
@@ -2102,6 +2113,12 @@ It is worth noting that this book has been published under the Open
 Publication License. You can get an electronic copy of it at
 @url{http://www.opencontent.org/}.
 @end itemize
+
+@c **********************************
+@c * GNU Free Documentation License *
+@c **********************************
+@include gfdl.texi
+@c GNU Free Documentation License
 
 @c @printindex cp
 @contents

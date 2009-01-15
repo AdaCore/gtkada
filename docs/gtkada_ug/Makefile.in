@@ -5,7 +5,7 @@ MKDIR = mkdir -p
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
-all: gtkada_ug.texi
+all: gtkada_ug.texi gfdl.texi
 	echo x | tex gtkada_ug.texi
 	texindex gtkada_ug.cp
 	tex gtkada_ug.texi
