@@ -3,6 +3,7 @@ with "../shared";
 with "opengl/testgtk_opengl";
 
 project TestGtk is
+
    for Languages use ("Ada");
    for Main use ("testgtk.adb");
    for Source_Dirs use ("./");
@@ -20,4 +21,5 @@ project TestGtk is
 
    package Binder   renames Shared.Binder;
    package IDE      renames Shared.IDE;
+
 end TestGtk;
