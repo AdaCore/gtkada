@@ -6,6 +6,7 @@ project GtkAda_Src is
    for Source_Dirs use (".");
    for Object_Dir use "lib-obj";
 
+   package Builder  renames Shared.Builder;
    package Compiler renames Shared.Compiler;
    package Binder   renames Shared.Binder;
    package IDE      renames Shared.IDE;

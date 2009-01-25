@@ -10,7 +10,7 @@ project TestGtk is
    for Exec_Dir use ".";
 
    package Builder is
-      for Default_Switches ("Ada") use ("-m");
+      for Default_Switches ("Ada") use Shared.Builder'Default_Switches ("Ada");
    end Builder;
 
    package Compiler is
