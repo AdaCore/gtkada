@@ -16,7 +16,7 @@ project TestGtk is
 
    package Compiler is
       for Default_Switches ("Ada") use
-         ("-gnatQ", "-gnatwa", "-gnatay", "-g", "-O1");
+         ("-gnatQ", "-gnatwa", "-gnatay3abcefhiklmnprt", "-g", "-O1");
    end Compiler;
 
    package Binder   renames Shared.Binder;
