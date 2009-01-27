@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1045,10 +1045,12 @@ package body Glib.XML is
             Child := Child.Next;
          end loop;
 
-         if Previous = null then
-            N.Parent.Child := N.Next;
-         else
-            Previous.Next := N.Next;
+         if Child = N then
+            if Previous = null then
+               N.Parent.Child := N.Next;
+            else
+               Previous.Next := N.Next;
+            end if;
          end if;
       end if;
 
