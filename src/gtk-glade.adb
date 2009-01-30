@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2004 ACT-Europe                 --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -305,18 +305,7 @@ package body Gtk.Glade is
                                  then
                                     Put_Line (File, "Gtk_Widget;");
                                  else
-                                    --  Special case for toolbar children
-
-                                    if Get_Attribute (P.Parent, "class")
-                                      = "GtkToolbar"
-                                    then
-                                       Put_Line
-                                         (File, "Gtk_" & To_Upper
-                                            (S (S'First .. S'First)) &
-                                          S (S'First + 1 .. S'Last) & ";");
-                                    else
-                                       Put_Line (File, To_Ada (S) & ";");
-                                    end if;
+                                    Put_Line (File, To_Ada (S) & ";");
                                  end if;
                               end;
                               Printed := True;
@@ -577,7 +566,16 @@ package body Gtk.Glade is
                end if;
 
                Put_Line (Output, "begin");
+               Initialize_Signals_Store;
+               --  Generate the widgets
                Print_Initialize_Procedure (Project, M, Output);
+
+               --  Generate the signals
+               New_Line (Output);
+               Put_Line (Output, "   --  Connect signals");
+               New_Line (Output);
+
+               Process_Signals (Output);
                Put_Line (Output, "end Initialize;");
                New_Line (Output);
                Put_Line (Output, "end " & To_Ada (Name) & "_Pkg;");

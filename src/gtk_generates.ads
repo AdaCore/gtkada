@@ -3,7 +3,7 @@
 --                                                                   --
 --                      Copyright (C) 2001                           --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                       Copyright 2002-2006 AdaCore                 --
+--                     Copyright 2002-2009, AdaCore                  --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -111,5 +111,14 @@ package Gtk_Generates is
    --  This should always be called *after* calling Generate for each widget.
    --  It will in particular set up the flags and accelerator, and put the
    --  widget in the right container using the right procedure call.
+
+   procedure Initialize_Signals_Store;
+   --  Initialize the storing of signals
+
+   procedure Store_Signal_Node (N : Node_Ptr);
+   --  Store N
+
+   procedure Process_Signals (File : File_Type);
+   --  Generate the signals stored in the signals store
 
 end Gtk_Generates;

@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2009 AdaCore                    --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -1879,9 +1879,9 @@ package body Gtk_Generates is
             declare
                Class : constant String := Get_Class (P);
             begin
-               if Class = "button"
-                 or else Class = "toggle"
-                 or else Class = "radio"
+               if Class = "GtkButton"
+                 or else Class = "GtkToggle"
+                 or else Class = "GtkRadio"
                then
                   Child := Find_Child (P, "child");
 
@@ -1927,8 +1927,7 @@ package body Gtk_Generates is
                      Put_Line (File, To_Ada (Cur) & ",");
 
                      Put (File, "      The_Type => Toolbar_Child_"
-                       & To_Upper (Class (Class'First .. Class'First))
-                       & Class (Class'First + 1 .. Class'Last));
+                       & Class (Class'First + 3 .. Class'Last));
                      S := Get_Property (P, "label");
 
                      if S /= null then
@@ -2511,7 +2510,7 @@ package body Gtk_Generates is
       end if;
 
       if not N.Specific_Data.Initialized then
-         Gen_Signal (N, File);
+         Store_Signal_Node (N);
       end if;
 
       if Find_Tag (N.Child, "child_name") = null then
@@ -2600,5 +2599,42 @@ package body Gtk_Generates is
          end if;
       end if;
    end End_Generate;
+
+   type Node_Store is array (1 .. 32768) of Node_Ptr;
+   Store : Node_Store;
+   First_Available_Item : Natural := 1;
+
+   ------------------------------
+   -- Initialize_Signals_Store --
+   ------------------------------
+
+   procedure Initialize_Signals_Store is
+   begin
+      First_Available_Item := 1;
+   end Initialize_Signals_Store;
+
+   -----------------------
+   -- Store_Signal_Node --
+   -----------------------
+
+   procedure Store_Signal_Node (N : Node_Ptr) is
+   begin
+      Store (First_Available_Item) := N;
+      First_Available_Item := First_Available_Item + 1;
+   end Store_Signal_Node;
+
+   ---------------------
+   -- Process_Signals --
+   ---------------------
+
+   procedure Process_Signals
+     (File : File_Type)
+   is
+   begin
+      for J in 1 .. First_Available_Item - 1 loop
+         Gen_Signal (Store (J), File);
+      end loop;
+      First_Available_Item := 1;
+   end Process_Signals;
 
 end Gtk_Generates;
