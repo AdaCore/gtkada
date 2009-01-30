@@ -20,7 +20,6 @@
 
 with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Strings.Maps;        use Ada.Strings.Maps;
-with Ada.Characters.Handling; use Ada.Characters.Handling;
 with System;
 
 package body Gtk_Generates is

@@ -20,7 +20,6 @@
 
 with GNAT.HTable;
 with Gtk_Generates; use Gtk_Generates;
-with Ada.Characters.Handling; use Ada.Characters.Handling;
 
 package body Gtk.Glade is
 
