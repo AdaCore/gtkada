@@ -1,9 +1,9 @@
 with Glib;        use Glib;
 with Glib.Values; use Glib.Values;
 with Gtk.Frame;   use Gtk.Frame;
-with Gtk.Arrow;   use Gtk.Arrow;
 with Gtk.Widget;  use Gtk.Widget;
 with Gtk.Button;  use Gtk.Button;
+with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Unchecked_Conversion;
 with System;
 with Gtk.Handlers; use Gtk.Handlers;
@@ -31,7 +31,7 @@ package body Calendar_Combo is
       Req_Button : Gtk_Requisition;
    begin
       Size_Request (Get_Button (Widget), Req_Button);
-      Size_Request (Get_Arrow (Widget), Req_Arrow);
+      Size_Request (Get_Toggle_Button (Widget), Req_Arrow);
       Requisition.Width := Req_Button.Width + Req_Arrow.Width;
       Requisition.Height := Gint'Max (Req_Button.Height, Req_Arrow.Height);
 
