@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2007 AdaCore                    --
+--               Copyright (C) 2001-2009, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -209,6 +209,7 @@ package Gtk.Tree_Model is
    function Get_Path (Reference : Gtk_Tree_Row_Reference) return Gtk_Tree_Path;
    --  Return the path that Reference currently points to.
    --  null is returned if Reference is no longer valid.
+   --  The caller must free the returned path.
 
    function Valid (Reference : Gtk_Tree_Row_Reference) return Boolean;
    --  Return True if Reference is non null and is still valid.
