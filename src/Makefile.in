@@ -56,7 +56,7 @@ gtkada-intl.adb: gtkada-intl.gpb Makefile
 	gnatprep -DGETTEXT_INTL=$(GETTEXT_INTL) \
 	  -DHAVE_GETTEXT=$(HAVE_GETTEXT) gtkada-intl.gpb gtkada-intl.adb
 
-install: all force
+install: force
 	@if [ "$(prefix)" != `pwd` ]; then \
 	   echo Installing GtkAda in $(prefix); \
 	   $(MKDIR) $(bindir); \
