@@ -77,27 +77,29 @@ project ${uc} is
    type Gtkada_Kind_Type is ("static", "relocatable");
    Gtkada_Kind : Gtkada_Kind_Type := external ("LIBRARY_TYPE", "$3");
 
-   type OS_Type is ("UNIX", "Windows_NT");
-   OS : OS_Type := external ("OS", "UNIX");
-
    for Source_Dirs use ("../../include/gtkada");
    for Source_List_File use "gtkada/${lcmodule}.lgpr";
    for Library_Kind use Gtkada_Kind;
 
-   case OS is
-      when "UNIX" =>
-         for Library_Dir use "../gtkada/" & Project'Library_Kind;
+EOF
 
-      when "Windows_NT" =>
-         case Gtkada_Kind is
-            when "static" =>
-               for Library_Dir use "../gtkada/static";
-            when "relocatable" =>
-               for Library_Dir use "../../bin";
-               for Library_ALI_Dir use "../gtkada/relocatable";
-         end case;
+   case `uname` in
+     *_NT*)
+       cat <<EOF >> ${lc}.gpr
+   case Gtkada_Kind is
+      when "static" =>
+         for Library_Name use "${lcmodule}";
+         for Library_Dir use "../gtkada/static";
+      when "relocatable" =>
+         for Library_Name use "${lcmodule}${lcversion}";
+         for Library_Dir use "../../bin";
+         for Library_ALI_Dir use "../gtkada/relocatable";
    end case;
 
+EOF
+       ;;
+     *)
+      cat <<EOF >> ${lc}.gpr
    case Gtkada_Kind is
       when "static" =>
          for Library_Name use "${lcmodule}";
@@ -105,6 +107,12 @@ project ${uc} is
          for Library_Name use "${lcmodule}${lcversion}";
    end case;
 
+   for Library_Dir use "../gtkada/" & Project'Library_Kind;
+
+EOF
+   esac
+
+   cat <<EOF >> ${lc}.gpr
    case Gtkada_Kind is
       when "static" =>
          for Library_Options use (
