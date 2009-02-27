@@ -73,13 +73,31 @@ generate_shared() {
 
   cat <<EOF > ${lc}.gpr
 project ${uc} is
+
    type Gtkada_Kind_Type is ("static", "relocatable");
    Gtkada_Kind : Gtkada_Kind_Type := external ("LIBRARY_TYPE", "$3");
+
+   type OS_Type is ("UNIX", "Windows_NT");
+   OS : OS_Type := external ("OS", "UNIX");
 
    for Source_Dirs use ("../../include/gtkada");
    for Source_List_File use "gtkada/${lcmodule}.lgpr";
    for Library_Kind use Gtkada_Kind;
-   for Library_Dir use "../gtkada/" & Project'Library_Kind;
+
+   case OS is
+      when "UNIX" =>
+         for Library_Dir use "../gtkada/" & Project'Library_Kind;
+
+      when "Windows_NT" =>
+         case Gtkada_Kind is
+            when "static" =>
+               for Library_Dir use "../gtkada/static";
+            when "relocatable" =>
+               for Library_Dir use "../../bin";
+               for Library_ALI_Dir use "../gtkada/relocatable";
+         end case;
+   end case;
+
    case Gtkada_Kind is
       when "static" =>
          for Library_Name use "${lcmodule}";

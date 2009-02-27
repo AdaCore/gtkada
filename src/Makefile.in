@@ -70,12 +70,11 @@ install: force
 	   fi; \
 	   if [ $(BUILD_SHARED) = yes ]; then \
 	        $(MKDIR) $(alidir)/relocatable; \
-	        $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)/relocatable; \
 		if [ "$(OS)" = "Windows_NT" ]; then \
 		     $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(bindir); \
-		     ${INSTALL_DATA} ${OBJ_DIR}/$(SONAME) ${alidir}/relocatable/${LIBNAME}; \
-		     $(CHMOD) +x $(bindir)/$(SONAME) $(alidir)/relocatable/$(SONAME); \
+		     $(CHMOD) +x $(bindir)/$(SONAME); \
 		else \
+	             $(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)/relocatable; \
 		     $(RM) $(libdir)/$(LIBNAME); \
 		     $(LN) $(SONAME) $(alidir)/relocatable/$(LIBNAME); \
 		     $(LN) gtkada/relocatable/$(SONAME) $(libdir)/$(LIBNAME); \
