@@ -1,4 +1,9 @@
+*.ali
+*.exe
+*.o
+*.orig
 Makefile
+b~*.ad*
 config.log
 config.status
 projects/gtkada.gpr
