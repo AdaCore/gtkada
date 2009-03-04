@@ -18,11 +18,6 @@
 	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=558586
 	Committed on Gtk+ trunk on 2008-11-06
 
-2008-10-28  Arnaud Charlet  <charlet@adacore.com>
-
-	* configure: Force disabling of mediaLib support, too painful to
-	support.
-
 2006-02-23  Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/x11/gdkasync.c: #define ANSICPP on Solaris, to work around
@@ -60,17 +55,6 @@
  #include <X11/Xlibint.h>
  #include "gdkasync.h"
  #include "gdkx.h"
---- configure.old	2008-10-28 04:44:14.140371000 -0400
-+++ configure	2008-10-28 04:45:48.426989000 -0400
-@@ -27037,6 +27037,8 @@ _ACEOF
-   use_mlib=no
- fi
- 
-+use_mlib=no
-+use_mlib25=no
-
- if test $use_mlib = yes; then
-   USE_MEDIALIB_TRUE=
 --- gdk/quartz/gdkkeys-quartz.c.old	2008-10-30 14:31:20.000000000 +0100
 +++ gdk/quartz/gdkkeys-quartz.c	2008-10-30 15:31:09.000000000 +0100
 @@ -61,7 +61,7 @@
