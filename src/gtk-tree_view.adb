@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2008, AdaCore                  --
+--                 Copyright (C) 2001-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -995,6 +995,37 @@ package body Gtk.Tree_View is
    begin
       Internal (Get_Object (Tree_View), Column);
    end Set_Search_Column;
+
+   ------------------------
+   -- Get_Tooltip_Column --
+   ------------------------
+
+   function Get_Tooltip_Column
+     (Tree_View : access Gtk_Tree_View_Record) return Gint
+   is
+      function Internal (Tree_View : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_view_get_tooltip_column");
+
+   begin
+      return Internal (Get_Object (Tree_View));
+   end Get_Tooltip_Column;
+
+   ------------------------
+   -- Set_Tooltip_Column --
+   ------------------------
+
+   procedure Set_Tooltip_Column
+     (Tree_View : access Gtk_Tree_View_Record;
+      Column    : Gint)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Column    : Gint);
+      pragma Import (C, Internal, "gtk_tree_view_set_tooltip_column");
+
+   begin
+      Internal (Get_Object (Tree_View), Column);
+   end Set_Tooltip_Column;
 
    --------------------
    -- Expand_To_Path --

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2007 AdaCore                    --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -532,6 +532,26 @@ package Gtk.Tree_View is
      (Tree_View : access Gtk_Tree_View_Record)
       return Gtk_Tree_View_Search_Equal_Func;
    --  Sets the compare function for the interactive search capabilities
+
+   --------------
+   -- Tooltips --
+   --------------
+
+   procedure Set_Tooltip_Column
+     (Tree_View : access Gtk_Tree_View_Record;
+      Column    : Gint);
+   function Get_Tooltip_Column
+     (Tree_View : access Gtk_Tree_View_Record) return Gint;
+   --  If you only plan to have simple (text-only) tooltips on full rows, you
+   --  can use this function to have GtkTreeView handle these automatically for
+   --  you. column should be set to the column in tree_view's model containing
+   --  the tooltip texts, or -1 to disable this feature.
+   --
+   --  When enabled, "has-tooltip" will be set to TRUE and tree_view will
+   --  connect a "query-tooltip" signal handler.
+   --
+   --  Note that the signal handler sets the text with
+   --  gtk_tooltip_set_markup(), so &, <, etc have to be escaped in the text.
 
    ------------------------
    -- Columns reordering --
