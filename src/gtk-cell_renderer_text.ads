@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2007 AdaCore                    --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,6 +37,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Trees and Lists</group>
 
+with Pango.Enums;
 with Glib.Properties;
 with Gtk;
 with Gtk.Cell_Renderer;
@@ -231,7 +232,7 @@ package Gtk.Cell_Renderer_Text is
    --  Variant_Property           : constant Glib.Properties.Property_Enum;
    Weight_Property                : constant Glib.Properties.Property_Int;
    Width_Chars_Property           : constant Glib.Properties.Property_Int;
-   --  Wrap_Mode_Property             : constant Glib.Properties.Property_Enum;
+   Wrap_Mode_Property             : constant Pango.Enums.Property_Wrap_Mode;
    Wrap_Width_Property            : constant Glib.Properties.Property_Int;
 
    --   Attribute             Type in Model             Mode
@@ -326,8 +327,8 @@ private
      Glib.Properties.Build ("weight");
    Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width-chars");
---     Wrap_Mode_Property : constant Glib.Properties.Property_Enum :=
---       Glib.Properties.Build ("wrap-mode");
+   Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode :=
+     Pango.Enums.Property_Wrap_Mode (Glib.Build ("wrap-mode"));
    Wrap_Width_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("wrap-width");
 

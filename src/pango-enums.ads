@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2006 AdaCore                  --
+--                 Copyright (C) 2001-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -146,7 +146,8 @@ package Pango.Enums is
 
    type Wrap_Mode is
      (Pango_Wrap_Word,
-      Pango_Wrap_Char);
+      Pango_Wrap_Char,
+      Pango_Wrap_Word_Char);
    pragma Convention (C, Wrap_Mode);
 
    ----------------
@@ -165,11 +166,14 @@ package Pango.Enums is
      new Generic_Internal_Discrete_Property (Stretch);
    package Underline_Properties is
      new Generic_Internal_Discrete_Property (Underline);
+   package Wrap_Mode_Properties is
+     new Generic_Internal_Discrete_Property (Wrap_Mode);
 
    type Property_Style is new Style_Properties.Property;
    type Property_Weight is new Weight_Properties.Property;
    type Property_Variant is new Variant_Properties.Property;
    type Property_Stretch is new Stretch_Properties.Property;
    type Property_Underline is new Underline_Properties.Property;
+   type Property_Wrap_Mode is new Wrap_Mode_Properties.Property;
 
 end Pango.Enums;

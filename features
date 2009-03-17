@@ -12,6 +12,12 @@ of the feature.
 New features in GtkAda 2.14.1
 -----------------------------
 
+I119-030 API Additions
+
+  Pango.Enums.Wrap_Mode type can be used in Gobject's properties.
+
+  "wrap-mode" property has been added for GtkCellRendererText.
+
 I114-016 API Additions
 
   Set_Object/Get_Object subprograms have been added to the Glib.Value package.
