@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2008, AdaCore                  --
+--                 Copyright (C) 2001-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -2570,10 +2570,6 @@ package body Gtkada.MDI is
       W   : Gtk_Widget := Gtk_Widget (Widget);
       Win : Gtk_Window;
    begin
-      if W = null then
-         return null;
-      end if;
-
       --  As a special case, if the widget's parent is a notebook, we check
       --  whether the associated page is a MDI child, and behave as if that
       --  child had the focus (EC19-008)
