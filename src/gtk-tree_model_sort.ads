@@ -50,12 +50,12 @@
 --    Child_Model := Get_My_Model;  --  Your own implementation
 --
 --    --  Create the first tree
---    Gtk_New (Sort_Model1, Child_Model);
+--    Gtk_New_With_Model (Sort_Model1, Child_Model);
 --    Gtk_New (Tree_View1, Sort_Model1);
 --    Set_Sort_Column_Id (Sort_Model1, COLUMN1, Sort_Ascending);
 --
 --    --  Create the second tree
---    Gtk_New (Sort_Model2, Child_Model);
+--    Gtk_New_With_Model (Sort_Model2, Child_Model);
 --    Gtk_New (Tree_View2, Sort_Model2);
 --    Set_Sort_Column_Id (Sort_Model2, COLUMN1, Sort_Descending);
 --  end;
@@ -70,7 +70,7 @@
 --    (Selection : access Gtk_Tree_Selection_Record'Class)
 --  is
 --     Sort_Model, Child_Model : Gtk_Tree_Model;
---     Sort_Iter, Child_Iter  : Gtk_Tree_Iter;
+--     Sort_Iter, Child_Iter   : Gtk_Tree_Iter;
 --  begin
 --     --  Get the currently selected row and the model
 --     Get_Selected (Selection, Sort_Model, Sort_Iter);
@@ -81,7 +81,7 @@
 --     --  Lookup the current value on the selected row
 --     declare
 --       Some_Data : constant String :=
---          Get_String (Sort_Model, Sort_Iter, COLUMN1);
+--                     Get_String (Sort_Model, Sort_Iter, COLUMN1);
 --     begin
 --        --  Get an iterator on the child model instead of the sort model
 --        Convert_Iter_To_Child_Iter (Sort_Model, Child_Iter, Sort_Iter);

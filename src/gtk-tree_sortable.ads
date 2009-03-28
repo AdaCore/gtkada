@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007 AdaCore                    --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,18 +53,18 @@ package Gtk.Tree_Sortable is
       Sort_Column_Id : Gint;
       Order          : Gtk.Enums.Gtk_Sort_Type);
    procedure Get_Sort_Column_Id
-     (Sortable        : Gtk_Tree_Sortable;
-      Sort_Column_Id  : out Gint;
-      Order           : out Gtk.Enums.Gtk_Sort_Type);
+     (Sortable       : Gtk_Tree_Sortable;
+      Sort_Column_Id : out Gint;
+      Order          : out Gtk.Enums.Gtk_Sort_Type);
    --  Sets the current sort column to be Sort_Column_Id. The Sortable will
    --  resort itself to reflect this change, after emitting sort_column_changed
    --  signal. If Sort_Column_Id is Default_Sort_Column_Id, then the default
    --  sort function will be used, if it is set.
 
    type Gtk_Tree_Iter_Compare_Func is access function
-     (Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      A         : Gtk.Tree_Model.Gtk_Tree_Iter;
-      B         : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
+     (Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      A     : Gtk.Tree_Model.Gtk_Tree_Iter;
+      B     : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
    --  A Gtk_Tree_Iter_Compare_Func should return a negative integer, zero, or
    --  a positive integer if a sorts before b, a sorts with b, or a sorts after
    --  b respectively. If two iters compare as equal, their order in the sorted
