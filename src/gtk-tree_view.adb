@@ -1027,6 +1027,84 @@ package body Gtk.Tree_View is
       Internal (Get_Object (Tree_View), Column);
    end Set_Tooltip_Column;
 
+   -------------------------
+   -- Get_Tooltip_Context --
+   -------------------------
+
+   procedure Get_Tooltip_Context
+     (Tree_View     : access Gtk_Tree_View_Record;
+      X             : in out Glib.Gint;
+      Y             : in out Glib.Gint;
+      Keyboard_Mode : Boolean;
+      Model         : out Gtk_Tree_Model;
+      Path          : out Gtk_Tree_Path;
+      Iter          : out Gtk_Tree_Iter;
+      Success       : out Boolean)
+   is
+      function Internal
+        (Tree_View     : System.Address;
+         X             : access Glib.Gint;
+         Y             : access Glib.Gint;
+         Keyboard_Mode : Glib.Gboolean;
+         Model         : access System.Address;
+         Path          : access Gtk_Tree_Path;
+         Iter          : access Gtk_Tree_Iter)
+         return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_tree_view_get_tooltip_context");
+
+      C_X     : aliased Glib.Gint := X;
+      C_Y     : aliased Glib.Gint := Y;
+      C_Model : aliased System.Address;
+      C_Path  : aliased Gtk_Tree_Path;
+      C_Iter  : aliased Gtk_Tree_Iter;
+      C_Ret   : Glib.Gboolean;
+
+      Stub    : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+
+   begin
+      C_Ret :=
+        Internal
+          (Get_Object (Tree_View),
+           C_X'Access,
+           C_Y'Access,
+           Glib.Gboolean (Glib.To_Gint (Keyboard_Mode)),
+           C_Model'Access,
+           C_Path'Access,
+           C_Iter'Access);
+
+      if C_Ret = 0 then
+         Success := False;
+
+      else
+         Success := True;
+         X := C_X;
+         Y := C_Y;
+         Model :=
+           Gtk.Tree_Model.Gtk_Tree_Model (Get_User_Data_Fast (C_Model, Stub));
+         Path := C_Path;
+         Iter := C_Iter;
+      end if;
+   end Get_Tooltip_Context;
+
+   ---------------------
+   -- Set_Tooltip_Row --
+   ---------------------
+
+   procedure Set_Tooltip_Row
+     (Tree_View : access Gtk_Tree_View_Record;
+      Tooltip   : access Gtk.Tooltips.Gtk_Tooltips_Record'Class;
+      Path      : Gtk.Tree_Model.Gtk_Tree_Path)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Tooltip   : System.Address;
+         Path      : Gtk_Tree_Path);
+      pragma Import (C, Internal, "gtk_tree_view_set_tooltip_row");
+
+   begin
+      Internal (Get_Object (Tree_View), Get_Object (Tooltip), Path);
+   end Set_Tooltip_Row;
+
    --------------------
    -- Expand_To_Path --
    --------------------

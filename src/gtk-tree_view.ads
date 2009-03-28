@@ -45,6 +45,7 @@ with Gtk.Adjustment;
 with Gtk.Cell_Renderer;
 with Gtk.Container;
 with Gtk.Selection;
+with Gtk.Tooltips;
 with Gtk.Tree_Model;
 with Gtk.Tree_Selection;
 with Gtk.Tree_View_Column;
@@ -552,6 +553,35 @@ package Gtk.Tree_View is
    --
    --  Note that the signal handler sets the text with
    --  gtk_tooltip_set_markup(), so &, <, etc have to be escaped in the text.
+
+   procedure Get_Tooltip_Context
+     (Tree_View     : access Gtk_Tree_View_Record;
+      X             : in out Glib.Gint;
+      Y             : in out Glib.Gint;
+      Keyboard_Mode : Boolean;
+      Model         : out Gtk.Tree_Model.Gtk_Tree_Model;
+      Path          : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Iter          : out Gtk.Tree_Model.Gtk_Tree_Iter;
+      Success       : out Boolean);
+   --  This function is supposed to be used in a "query-tooltip" signal handler
+   --  for GtkTreeView. The x, y and keyboard_tip values which are received in
+   --  the signal handler, should be passed to this function without
+   --  modification.
+   --
+   --  The Success indicates whether there is a tree view row at the given
+   --  coordinates (True) or not (False) for mouse tooltips. For keyboard
+   --  tooltips the row returned will be the cursor row. When True, then any of
+   --  model, path and iter which have been provided will be set to point to
+   --  that row and the corresponding model. x and y will always be converted
+   --  to be relative to tree_view's bin_window if keyboard_tooltip is False.
+
+   procedure Set_Tooltip_Row
+     (Tree_View : access Gtk_Tree_View_Record;
+      Tooltip   : access Gtk.Tooltips.Gtk_Tooltips_Record'Class;
+      Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+   --  Sets the tip area of tooltip to be the area covered by the row at path.
+   --  See also Set_Tooltip_Column for a simpler alternative. See also
+   --  Gtk.Tooltips.Set_Tip_Area.
 
    ------------------------
    -- Columns reordering --

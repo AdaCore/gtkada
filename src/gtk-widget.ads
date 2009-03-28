@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1438,6 +1438,18 @@ package Gtk.Widget is
    --  Type:  Int
    --  Descr: Override for width request of the widget, or -1 if natural
    --         request should be used
+   --
+   --  Name:  Has_Tooltip
+   --  Type:  Boolean
+   --  Descr: Enables or disables the emission of "query-tooltip" on widget. A
+   --         value of TRUE indicates that widget can have a tooltip, in this
+   --         case the widget will be queried using "query-tooltip" to
+   --         determine whether it will provide a tooltip or not.
+   --
+   --         Note that setting this property to TRUE for the first time will
+   --         change the event masks of the GdkWindows of this widget to
+   --         include leave-notify and motion-notify events. This cannot and
+   --         will not be undone when the property is set to FALSE again.
    --  </properties>
 
    procedure Child_Notify
@@ -1512,6 +1524,7 @@ package Gtk.Widget is
    Is_Focus_Property              : constant Glib.Properties.Property_Boolean;
    No_Show_All_Property           : constant Glib.Properties.Property_Boolean;
    Width_Request_Property         : constant Glib.Properties.Property_Int;
+   Has_Tooltip_Property           : constant Glib.Properties.Property_Boolean;
 
    ----------------------
    -- Style Properties --
@@ -1930,6 +1943,22 @@ package Gtk.Widget is
    --    "child_notify::<property>", for instance "child_notify:right_attach"
    --    for a child of Gtk.Menu.Gtk_Menu.
    --
+   --
+   --  - "query-tooltip"
+   --    function Handler (Widget : access Gtk_Widget_Record'Class;
+   --                      Params : Glib.Values.GValues)
+   --                     return Boolean;
+   --    Emitted when "has-tooltip" is TRUE and the "gtk-tooltip-timeout" has
+   --    expired with the cursor hovering "above" widget; or emitted when
+   --    widget got focus in keyboard mode.
+   --
+   --    Using the given coordinates, the signal handler should determine
+   --    whether a tooltip should be shown for widget. If this is the case TRUE
+   --    should be returned, FALSE otherwise. Note that if keyboard_mode is
+   --    TRUE, the values of x and y are undefined and should not be used.
+   --
+   --    The signal handler is free to manipulate tooltip with the therefore
+   --    destined function calls.
    --  </signals>
 
    Signal_Accel_Closures_Changed  : constant Glib.Signal_Name :=
@@ -2020,6 +2049,8 @@ package Gtk.Widget is
                                       "proximity_out_event";
    Signal_Realize                 : constant Glib.Signal_Name :=
                                       "realize";
+   Signal_Query_Tooltip           : constant Glib.Signal_Name :=
+                                      "query-tooltip";
    Signal_Screen_Changed          : constant Glib.Signal_Name :=
                                       "screen_changed";
    Signal_Scroll_Event            : constant Glib.Signal_Name :=
@@ -2108,6 +2139,8 @@ private
      Glib.Properties.Build ("no-show-all");
    Width_Request_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width-request");
+   Has_Tooltip_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-tooltip");
 
    Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("cursor-aspect-ratio");

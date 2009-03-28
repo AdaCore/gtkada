@@ -12,6 +12,23 @@ of the feature.
 New features in GtkAda 2.14.1
 -----------------------------
 
+I327-027 API Additions
+
+  The subprogram Gtk.Tooltips.Set_Markup has been added, allowing GtkAda
+  applications to setup tooltip's markup.
+
+  The subprogram Gtk.Tree_View.Get_Tooltip_Context has been added, allowing
+  GtkAda applications to get GtkTreeView tooltip context.
+
+  The subprogram Gtk.Tree_View.Set_Tooltip_Row has been added, allowing GtkAda
+  applications to set up tooltip's position at tree view row.
+
+  The property Gtk.Widget.Has_Tooltip has been added, allowing GtkAda
+  applications to enable tooltip processing by application.
+
+  The signal Gtk.Widget.Signal_Query_Tooltip ahs been added, allowing GtkAda
+  applications to receive and process tooltip queries.
+
 I119-030 API Additions
 
   Pango.Enums.Wrap_Mode type can be used in Gobject's properties.

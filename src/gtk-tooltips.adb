@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -170,5 +169,30 @@ package body Gtk.Tooltips is
       Data.Text_Private := P;
       return Data;
    end Get_Data;
+
+   ----------------
+   -- Set_Markup --
+   ----------------
+
+   procedure Set_Markup
+     (Tooltips : access Gtk_Tooltips_Record;
+      Text     : UTF8_String)
+   is
+      procedure Internal
+        (Tooltips : System.Address;
+         Text     : UTF8_String);
+      procedure Internal
+        (Tooltips : System.Address;
+         Text     : System.Address);
+      pragma Import (C, Internal, "gtk_tooltip_set_markup");
+
+   begin
+      if Text /= "" then
+         Internal (Get_Object (Tooltips), Text & ASCII.NUL);
+
+      else
+         Internal (Get_Object (Tooltips), System.Null_Address);
+      end if;
+   end Set_Markup;
 
 end Gtk.Tooltips;

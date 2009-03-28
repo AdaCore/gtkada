@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -105,6 +104,13 @@ package Gtk.Tooltips is
    --  created.
    --  This is useful if you want to modify some characteristics of that
    --  window.
+
+   procedure Set_Markup
+     (Tooltips : access Gtk_Tooltips_Record;
+      Text     : UTF8_String);
+   --  Sets the text of the tooltip to be markup, which is marked up with the
+   --  Pango text markup language. If markup is empty string, the label will be
+   --  hidden.
 
    -----------------
    -- Obsolescent --
