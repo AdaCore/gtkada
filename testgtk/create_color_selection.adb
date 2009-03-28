@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2000-2006 AdaCore               --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -141,6 +141,7 @@ package body Create_Color_Selection is
    procedure Run (Frame : access Gtk_Frame_Record'Class) is
       pragma Warnings (Off, Frame);
       Old : Gtk_Color_Selection_Change_Palette_With_Screen_Func;
+      pragma Unreferenced (Old);
    begin
       if Dialog = null then
          Gtk_New (Dialog, Title => "Color Selection Dialog");

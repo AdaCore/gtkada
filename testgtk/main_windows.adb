@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -138,7 +138,7 @@ with Libart_Demo;  use Libart_Demo;
 package body Main_Windows is
 
    procedure Fill_Gtk_Tree
-     (Tree         : in out Gtk.Tree_Store.Gtk_Tree_Store;
+     (Tree         : in Gtk.Tree_Store.Gtk_Tree_Store;
       Gtkada_Demos : Boolean := False;
       Pixbuf_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
@@ -376,7 +376,7 @@ package body Main_Windows is
    -------------------
 
    procedure Fill_Gtk_Tree
-     (Tree         : in out Gtk.Tree_Store.Gtk_Tree_Store;
+     (Tree         : in Gtk.Tree_Store.Gtk_Tree_Store;
       Gtkada_Demos : Boolean := False;
       Pixbuf_Demos : Boolean := False)
    is

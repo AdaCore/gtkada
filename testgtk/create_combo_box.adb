@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2006 AdaCore                    --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -74,7 +74,6 @@ package body Create_Combo_Box is
 
    procedure Fill_Pixbuf (Pix : Gdk_Pixbuf; Color : String) is
       GColor : Gdk_Color;
-      Stride  : Gint;
       Num     : Guint;
       Pixels  : Gdk.Rgb.Rgb_Buffer_Access;
    begin
@@ -83,7 +82,6 @@ package body Create_Combo_Box is
       --  This code is not clean. It would be better to use cairo, but GtkAda
       --  has no binding for it at the time of this writing. You could also
       --  load the images from XPM data instead.
-      Stride := Get_Rowstride (Pix);
       Num    := Guint (Get_Width (Pix) * Get_Height (Pix));
       Pixels := Get_Pixels (Pix);
 
@@ -104,8 +102,8 @@ package body Create_Combo_Box is
      (Model : Gtk_List_Store;
       Color : String)
    is
-      Pix     : Gdk_Pixbuf;
-      Iter    : Gtk_Tree_Iter;
+      Pix  : Gdk_Pixbuf;
+      Iter : Gtk_Tree_Iter;
    begin
       Pix := Gdk_New (Bits_Per_Sample => 8, Width => 16, Height => 16);
       Fill_Pixbuf (Pix, Color);

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -354,7 +354,6 @@ package body Create_Canvas is
          Xdest + W, Ydest + H,
          Xdest + W + Arrow, Ydest + H - Arrow);
 
-
       Draw_Line
         (Get_Window (Canvas),
          GC,
@@ -439,15 +438,15 @@ package body Create_Canvas is
                     (Screen_Rect.Height + Screen_Rect.Y - Ys, Bh - Y);
 
                   Render_To_Drawable
-                    (Pixbuf       => Scaled,
-                     Drawable     => Get_Window (Canvas),
-                     Gc           => Get_Black_GC (Get_Style (Canvas)),
-                     Src_X        => X,
-                     Src_Y        => Y,
-                     Dest_X       => Xs,
-                     Dest_Y       => Ys,
-                     Width        => W,
-                     Height       => H);
+                    (Pixbuf   => Scaled,
+                     Drawable => Get_Window (Canvas),
+                     GC       => Get_Black_GC (Get_Style (Canvas)),
+                     Src_X    => X,
+                     Src_Y    => Y,
+                     Dest_X   => Xs,
+                     Dest_Y   => Ys,
+                     Width    => W,
+                     Height   => H);
                   Ys := Ys + H;
                end loop;
                Xs := Xs + W;
@@ -1037,4 +1036,3 @@ package body Create_Canvas is
       Show_All (Frame);
    end Run;
 end Create_Canvas;
-

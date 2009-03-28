@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2003                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2004-2006 AdaCore               --
+--              Copyright (C) 2004-2009, AdaCore                     --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -181,11 +181,11 @@ package body Create_Tree_View is
      (Model  : access GObject_Record'Class;
       Params : Glib.Values.GValues)
    is
-      M             : constant Gtk_Tree_Store := Gtk_Tree_Store (Model);
-      Path_String   : constant String := Get_String (Nth (Params, 1));
-      Iter          : constant Gtk_Tree_Iter :=
-        Get_Iter_From_String (M, Path_String);
-      Old_Value     : Boolean;
+      M           : constant Gtk_Tree_Store := Gtk_Tree_Store (Model);
+      Path_String : constant String := Get_String (Nth (Params, 1));
+      Iter        : constant Gtk_Tree_Iter :=
+                      Get_Iter_From_String (M, Path_String);
+      Old_Value   : Boolean;
    begin
       Old_Value := Get_Boolean (M, Iter, Active_Column);
       Set (M, Iter, Active_Column, not Old_Value);
@@ -199,11 +199,11 @@ package body Create_Tree_View is
      (Model  : access GObject_Record'Class;
       Params : Glib.Values.GValues)
    is
-      M             : constant Gtk_Tree_Store := Gtk_Tree_Store (Model);
-      Path_String   : constant String := Get_String (Nth (Params, 1));
-      Text_Value    : constant GValue := Nth (Params, 2);
-      Iter          : constant Gtk_Tree_Iter :=
-        Get_Iter_From_String (M, Path_String);
+      M           : constant Gtk_Tree_Store := Gtk_Tree_Store (Model);
+      Path_String : constant String := Get_String (Nth (Params, 1));
+      Text_Value  : constant GValue := Nth (Params, 2);
+      Iter        : constant Gtk_Tree_Iter :=
+                      Get_Iter_From_String (M, Path_String);
    begin
       Set_Value (M, Iter, Text_Column, Text_Value);
    end Text_Edited_Callback;
@@ -222,6 +222,7 @@ package body Create_Tree_View is
       Toggle_Render : Gtk_Cell_Renderer_Toggle;
       Parent, Iter  : Gtk_Tree_Iter;
       pragma Unreferenced (Num);
+      pragma Warnings (Off, Iter);
 
    begin
       --  Create the model that contains the actual data. In this example,

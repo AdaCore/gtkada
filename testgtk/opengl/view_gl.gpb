@@ -242,7 +242,8 @@ package body View_Gl is
                (Float (Rect.Height) - 2.0 * Area.Mesh_Info.Beginy)
                   / Float (Rect.Height),
                (2.0 * Float (X) - Float (Rect.Width)) / Float (Rect.Width),
-               (Float (Rect.Height) - 2.0 * Float (Y)) / Float (Rect.Height));
+               (Float (Rect.Height) - 2.0 * Float (Y))
+                / Float (Rect.Height));
             Add_Quats (Spin_Quat, Area.Mesh_Info.Quat,
                        Dest => Area.Mesh_Info.Quat);
 
@@ -254,7 +255,8 @@ package body View_Gl is
       if (State and Button2_Mask) /= 0 then
          --  Zooming drag
          Area.Mesh_Info.Zoom := Area.Mesh_Info.Zoom +
-           ((Float (Y) - Area.Mesh_Info.Beginy) / Float (Rect.Height)) * 40.0;
+           ((Float (Y) - Area.Mesh_Info.Beginy)
+            / Float (Rect.Height)) * 40.0;
          if Area.Mesh_Info.Zoom < 5.0 then
             Area.Mesh_Info.Zoom := 5.0;
          end if;

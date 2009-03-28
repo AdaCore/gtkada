@@ -234,6 +234,7 @@ package body Create_Clipboard is
       Bbox       : Gtk_Hbutton_Box;
       View       : Gtk_Tree_View;
       Col_Pos    : Gint;
+      pragma Unreferenced (Col_Pos);
       Col        : Gtk_Tree_View_Column;
       Render     : Gtk_Cell_Renderer_Text;
       Button     : Gtk_Button;

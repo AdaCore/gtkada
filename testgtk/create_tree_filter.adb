@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2006 AdaCore                    --
+--               Copyright (C) 2006-2009, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -87,7 +87,7 @@ package body Create_Tree_Filter is
    is
       Value : constant Gint := Get_Int (Model, Iter, Column_0);
    begin
-      return Value mod 2 /=1 ;
+      return Value mod 2 /= 1;
    end Custom_Filter;
 
    -----------------------

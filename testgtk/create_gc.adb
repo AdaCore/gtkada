@@ -48,7 +48,7 @@ package body Create_Gc is
       Draw_Text
         (Drawable => Get_Window (Area),
          Font     => Font,
-         Gc       => Gc,
+         Gc       => GC,
          X        => 3,
          Y        => Y,
          Text     => Text);
@@ -56,7 +56,7 @@ package body Create_Gc is
       if Num_Lines = 1 then
          Draw_Line
            (Drawable => Get_Window (Area),
-            Gc       => Gc,
+            Gc       => GC,
             X1       => 10,
             Y1       => Y + 7,
             X2       => 200,
@@ -65,7 +65,7 @@ package body Create_Gc is
       else
          Draw_Lines
            (Drawable => Get_Window (Area),
-            Gc       => Gc,
+            Gc       => GC,
             Points   => ((10,  Y + 7),
                          (200, Y + 7),
                          (250, Y + 50)));
