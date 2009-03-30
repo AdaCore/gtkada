@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
+--                Copyright (C) 2003-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -60,8 +60,6 @@ package body Create_Ctree is
 
    use type Gtk.Window.Gtk_Window;
    use Gtkada.Types;
-
-   use type Gtk.Ctree.Gtk_Ctree_Node;
 
    package Ctree_Style_Row_Data is
      new Gtk.Ctree.Row_Data (Gtk.Style.Gtk_Style);
@@ -517,8 +515,6 @@ package body Create_Ctree is
       Style : Gtk.Style.Gtk_Style;
       Tmp_Color : Gdk.Color.Gdk_Color;
 
-      use type Gtk_Ctree_Line_Style;
-
    begin
 
       Gint_Random.Reset (Gen);
@@ -950,7 +946,6 @@ package body Create_Ctree is
          Name => "value_changed",
          Marsh => Adjustment_Cb.To_Marshaller (Change_Spacing'Access),
          User_Data => Ctree);
-
 
       Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
       Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
