@@ -9,7 +9,7 @@ project TestGTK_OpenGL is
 
    package Compiler is
       for Default_Switches ("Ada") use
-         ("-gnatQ", "-gnatwa", "-gnatay", "-g", "-O1");
+         ("-gnatQ", "-gnatwa",  "-gnatay3abcefhiklmnprt", "-g", "-O1");
    end Compiler;
 
    package IDE      renames Shared.IDE;
