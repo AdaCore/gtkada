@@ -1,0 +1,24 @@
+with "gtkada";
+
+project Tooltips is
+
+   type Gtkada_Kind_Type is
+      ("static", "relocatable");
+   for Main use ("tooltips.adb");
+   for Object_Dir use "objs";
+   LIBRARY_TYPE : Gtkada_Kind_Type := external ("LIBRARY_TYPE");
+
+   package Compiler is
+
+      case LIBRARY_TYPE is
+
+         when "static" =>
+            for Default_Switches ("ada") use ("-gnat05");
+
+         when "relocatable" =>
+
+      end case;
+   end Compiler;
+
+end Tooltips;
+
