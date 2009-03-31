@@ -42,6 +42,7 @@
 --  <testgtk>create_tooltips.adb</testgtk>
 
 with Glib;
+with Gtk.Enums;
 with Gtk.Object;
 with Gtk.Widget;
 
@@ -111,6 +112,14 @@ package Gtk.Tooltips is
    --  Sets the text of the tooltip to be markup, which is marked up with the
    --  Pango text markup language. If markup is empty string, the label will be
    --  hidden.
+
+   procedure Set_Icon_From_Stock
+     (Tooltips : access Gtk_Tooltips_Record;
+      Stock_Id : String;
+      Size     : Gtk.Enums.Gtk_Icon_Size);
+   --  Sets the icon of the tooltip (which is in front of the text) to be the
+   --  stock item indicated by stock_id with the size indicated by size. If
+   --  stock_id is emtry string, the image will be hidden.
 
    -----------------
    -- Obsolescent --

@@ -1006,6 +1006,50 @@ package Gtk.Widget is
    --
    --  Null is returned if Stock_Id wasn't known.
 
+   --------------
+   -- Tooltips --
+   --------------
+
+   procedure Set_Tooltip_Text
+     (Widget : access Gtk_Widget_Record;
+      Text   : UTF8_String);
+   --  Sets text as the contents of the tooltip. This function will take care
+   --  of setting GtkWidget::has-tooltip to TRUE and of the default handler for
+   --  the GtkWidget::query-tooltip signal.
+   --
+   --  See also the GtkWidget:tooltip-text property and Gtk_Tooltips.Set_Text.
+
+   procedure Set_Tooltip_Markup
+     (Widget : access Gtk_Widget_Record;
+      Text   : UTF8_String);
+   --  Sets markup as the contents of the tooltip, which is marked up with the
+   --  Pango text markup language.
+   --
+   --  This function will take care of setting GtkWidget:has-tooltip to TRUE
+   --  and of the default handler for the GtkWidget::query-tooltip signal.
+   --
+   --  See also the GtkWidget::tooltip-markup property and
+   --  Gtk_Tooltips.Set_Markup.
+
+   procedure Set_Tooltip_Window
+     (Widget        : access Gtk_Widget_Record;
+      Custom_Window : access Gtk_Widget_Record'Class);
+   --   Custom_Window : access Gtk.Window.Gtk_Window_Record'Class);
+   --
+   --  Replaces the default, usually yellow, window used for displaying
+   --  tooltips with custom_window. GTK+ will take care of showing and hiding
+   --  Custom_Window at the right moment, to behave likewise as the default
+   --  tooltip window. If Custom_Window is NULL, the default tooltip window
+   --  will be used.
+
+   function Get_Tooltip_Window
+     (Widget : access Gtk_Widget_Record) return Gtk_Widget;
+   --    return Gtk.Window.Gtk_Window;
+   --
+   --  Returns the GtkWindow of the current tooltip. This can be the GtkWindow
+   --  created by default, or the custom tooltip window set using
+   --  Gtk.Widget.Set_Tooltip_Window.
+
    --------------------------
    -- Creating new widgets --
    --------------------------

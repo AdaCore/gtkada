@@ -14,6 +14,9 @@ New features in GtkAda 2.14.1
 
 I327-027 API Additions
 
+  The subprogram Gtk.Tooltips.Set_Icon_From_Stock has been added, allowing
+  GtkAda applications to setup tooltip's icon.
+
   The subprogram Gtk.Tooltips.Set_Markup has been added, allowing GtkAda
   applications to setup tooltip's markup.
 
@@ -22,6 +25,18 @@ I327-027 API Additions
 
   The subprogram Gtk.Tree_View.Set_Tooltip_Row has been added, allowing GtkAda
   applications to set up tooltip's position at tree view row.
+
+  The subprogram Gtk.Widget.Set_Tooltip_Text has been added, allowing GtkAda
+  applications to set up static text tooltip for widgets.
+
+  The subprogram Gtk.Widget.Set_Tooltip_Markup has been added, allowing GtkAda
+  applications to set up static tooltip with Pango markup for widgets.
+
+  The subprogram Gtk.Widget.Set_Tooltip_Window has been added, allowing GtkAda
+  applications to use custom window for widget's tooltip.
+
+  The subprogram Gtk.Widget.Get_Tooltip_Window has been added, allowing GtkAda
+  applications to get window used for widget's tooltip.
 
   The property Gtk.Widget.Has_Tooltip has been added, allowing GtkAda
   applications to enable tooltip processing by application.

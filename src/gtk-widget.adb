@@ -37,6 +37,7 @@ with Gdk.Types;                   use Gdk.Types;
 with Gdk.Visual;                  use Gdk.Visual;
 with Gtk.Enums;                   use Gtk.Enums;
 with Gtk.Style;                   use Gtk.Style;
+with Gtk.Window;
 with Gtkada.Bindings;             use Gtkada.Bindings;
 with Pango.Context;               use Pango.Context;
 with Pango.Layout;                use Pango.Layout;
@@ -2187,5 +2188,72 @@ package body Gtk.Widget is
    begin
       return Gtk.Style.Gtk_Style (Get_User_Data (Internal, Stub));
    end Get_Default_Style;
+
+   ----------------------
+   -- Set_Tooltip_Text --
+   ----------------------
+
+   procedure Set_Tooltip_Text
+     (Widget : access Gtk_Widget_Record;
+      Text   : UTF8_String)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         Text   : UTF8_String);
+      pragma Import (C, Internal, "gtk_widget_set_tooltip_text");
+
+   begin
+      Internal (Get_Object (Widget), Text & ASCII.NUL);
+   end Set_Tooltip_Text;
+
+   ------------------------
+   -- Set_Tooltip_Markup --
+   ------------------------
+
+   procedure Set_Tooltip_Markup
+     (Widget : access Gtk_Widget_Record;
+      Text   : UTF8_String)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         Text   : UTF8_String);
+      pragma Import (C, Internal, "gtk_widget_set_tooltip_markup");
+
+   begin
+      Internal (Get_Object (Widget), Text & ASCII.NUL);
+   end Set_Tooltip_Markup;
+
+   ------------------------
+   -- Set_Tooltip_Window --
+   ------------------------
+
+   procedure Set_Tooltip_Window
+     (Widget        : access Gtk_Widget_Record;
+      Custom_Window : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Widget        : System.Address;
+         Custom_Window : System.Address);
+      pragma Import (C, Internal, "gtk_widget_set_tooltip_window");
+
+   begin
+      Internal (Get_Object (Widget), Get_Object (Custom_Window));
+   end Set_Tooltip_Window;
+
+   --------------------------
+   --  Get_Tooltip_Window  --
+   --------------------------
+
+   function Get_Tooltip_Window
+     (Widget : access Gtk_Widget_Record) return Gtk_Widget
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_tooltip_window");
+
+      Stub : Gtk.Window.Gtk_Window_Record;
+
+   begin
+      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub));
+   end Get_Tooltip_Window;
 
 end Gtk.Widget;

@@ -195,4 +195,32 @@ package body Gtk.Tooltips is
       end if;
    end Set_Markup;
 
+   -------------------------
+   -- Set_Icon_From_Stock --
+   -------------------------
+
+   procedure Set_Icon_From_Stock
+     (Tooltips : access Gtk_Tooltips_Record;
+      Stock_Id : String;
+      Size     : Gtk.Enums.Gtk_Icon_Size)
+   is
+      procedure Internal
+        (Tooltips : System.Address;
+         Stock_Id : UTF8_String;
+         Size     : Gtk.Enums.Gtk_Icon_Size);
+      procedure Internal
+        (Tooltips : System.Address;
+         Stock_Id : System.Address;
+         Size     : Gtk.Enums.Gtk_Icon_Size);
+      pragma Import (C, Internal, "gtk_tooltip_set_icon_from_stock");
+
+   begin
+      if Stock_Id /= "" then
+         Internal (Get_Object (Tooltips), Stock_Id & ASCII.NUL, Size);
+
+      else
+         Internal (Get_Object (Tooltips), System.Null_Address, Size);
+      end if;
+   end Set_Icon_From_Stock;
+
 end Gtk.Tooltips;
