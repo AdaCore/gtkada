@@ -16,7 +16,7 @@ package body Create_Gc is
    package Event_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Drawing_Area_Record, Boolean);
 
-   Gc   : Gdk_GC;
+   GC   : Gdk_GC;
    Font : Gdk_Font;
    Blue : Gdk_Color;
    Red  : Gdk_Color;
@@ -48,7 +48,7 @@ package body Create_Gc is
       Draw_Text
         (Drawable => Get_Window (Area),
          Font     => Font,
-         Gc       => GC,
+         GC       => GC,
          X        => 3,
          Y        => Y,
          Text     => Text);
@@ -56,7 +56,7 @@ package body Create_Gc is
       if Num_Lines = 1 then
          Draw_Line
            (Drawable => Get_Window (Area),
-            Gc       => GC,
+            GC       => GC,
             X1       => 10,
             Y1       => Y + 7,
             X2       => 200,
@@ -65,7 +65,7 @@ package body Create_Gc is
       else
          Draw_Lines
            (Drawable => Get_Window (Area),
-            Gc       => GC,
+            GC       => GC,
             Points   => ((10,  Y + 7),
                          (200, Y + 7),
                          (250, Y + 50)));
@@ -83,74 +83,74 @@ package body Create_Gc is
    is
       pragma Warnings (Off, Event);
    begin
-      Set_Foreground (Gc, Blue);
-      Set_Background (Gc, Red);
+      Set_Foreground (GC, Blue);
+      Set_Background (GC, Red);
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 8,
                            Line_Style => Line_Solid,
                            Cap_Style  => Cap_Butt,
                            Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 15, "Cap_Style = Cap_Butt");
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 8,
                            Line_Style => Line_Solid,
                            Cap_Style  => Cap_Projecting,
                            Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 45, "Cap_Style = Cap_Projecting");
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 8,
                            Line_Style => Line_Solid,
                            Cap_Style  => Cap_Round,
                            Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 75, "Cap_Style = Cap_Round");
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 4,
                            Line_Style => Line_On_Off_Dash,
                            Cap_Style  => Cap_Butt,
                            Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 105, "Line_Style = Line_On_Off_Dash");
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 4,
                            Line_Style => Line_Double_Dash,
                            Cap_Style  => Cap_Butt,
                            Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 135, "Line_Style = Line_Double_Dash");
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 4,
                            Line_Style => Line_On_Off_Dash,
                            Cap_Style  => Cap_Butt,
                            Join_Style => Join_Miter);
-      Set_Dashes (Gc,
+      Set_Dashes (GC,
                   Dash_Offset => 0,
                   Dash_List   => (2, 2, 4, 4, 6, 6));
       Draw_Text_And_Line (Area, 180, "Dashes set to (2,2,4,4,6,6)");
 
-      Set_Dashes (Gc,
+      Set_Dashes (GC,
                   Dash_Offset => 0,
                   Dash_List   => (2, 2, 4, 4, 6));
       Draw_Text_And_Line (Area, 210, "Dashes set to (2,2,4,4,6)");
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 8,
                            Line_Style => Line_Solid,
                            Cap_Style  => Cap_Butt,
                            Join_Style => Join_Miter);
       Draw_Text_And_Line (Area, 250, "Join_Style = Join_Miter", 2);
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 8,
                            Line_Style => Line_Solid,
                            Cap_Style  => Cap_Butt,
                            Join_Style => Join_Round);
       Draw_Text_And_Line (Area, 300, "Join_Style = Join_Round", 2);
 
-      Set_Line_Attributes (Gc,
+      Set_Line_Attributes (GC,
                            Line_Width => 8,
                            Line_Style => Line_Solid,
                            Cap_Style  => Cap_Butt,
@@ -179,7 +179,7 @@ package body Create_Gc is
 
       Show_All (Frame);
 
-      Gdk_New (Gc, Get_Window (Area));
+      Gdk_New (GC, Get_Window (Area));
       Load (Font, "-*-courier-*-i-*-*-*-130-*-*-*-*-*-*");
 
       Blue := Gdk.Color.Parse ("Blue");
