@@ -2241,9 +2241,7 @@ package body Gtkada.MDI is
          --  child itself. This is better than keeping it on the previous
          --  child.
 
-         if not Child_Focus (F, Dir_Tab_Forward) then
-            Grab_Focus (Child);
-         end if;
+         Grab_Focus (F);
       end if;
    end Give_Focus_To_Child;
 
