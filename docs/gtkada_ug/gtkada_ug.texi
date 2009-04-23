@@ -317,14 +317,14 @@ Under other unix systems, GtkAda usually comes with a precompiled set of Gtk+
 libraries that have been specifically designed to be easily redistributed.
 
 In order to use the precompiled Gtk+ binaries that we distribute
-with GtkAda, you need to do distribute all the Gtk+ .so libraries along
+with GtkAda, you need to distribute all the Gtk+ .so libraries along
 with your application, and use the LD_LIBRARY_PATH environment variable to
 point to these libraries.
 
 The list of libraries needed is @file{<gtkada-prefix>/lib/lib*.so.?}
 along with your executable, and set LD_LIBRARY_PATH.
 
-By default you will also need the @file{libgtkada-xxx.so} file. This dependency
+You may also need the @file{libgtkada-xxx.so} file. This dependency
 is optional since gtkada supports both static and dynamic linking, so
 by e.g. using @code{gtkada-config --static} or by using
 @file{gtkada_static.gpr}, you will end up linking with @file{libgtkada.a}.
