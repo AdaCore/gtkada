@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -461,6 +461,10 @@ package body Gdk.Event is
       return Gdk_Key_Type (Key);
    end Get_Key_Val;
 
+   ---------------
+   -- Get_Group --
+   ---------------
+
    function Get_Group (Event : Gdk_Event) return Guint8 is
       function Internal (Event : Gdk_Event) return Guint8;
       pragma Import (C, Internal, "ada_gdk_event_get_group");
@@ -474,6 +478,10 @@ package body Gdk.Event is
 
       raise Invalid_Field;
    end Get_Group;
+
+   --------------------------
+   -- Get_Hardware_Keycode --
+   --------------------------
 
    function Get_Hardware_Keycode (Event : Gdk_Event) return Guint16 is
       function Internal (Event : Gdk_Event) return Guint16;
