@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--               Copyright (C) 2000-2009, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -221,7 +221,7 @@ package Gtk.Notebook is
 
    procedure Set_Current_Page
      (Notebook : access Gtk_Notebook_Record;
-      Page_Num : in Gint := -1);
+      Page_Num : Gint := -1);
    --  Modify the current page.
    --  The current page is the page that is currently visible on the screen.
    --  Nothing happens if there is no such page.
@@ -234,7 +234,7 @@ package Gtk.Notebook is
 
    procedure Set_Page
      (Notebook : access Gtk_Notebook_Record;
-      Page_Num : in Gint := -1)
+      Page_Num : Gint := -1)
      renames Set_Current_Page;
    --  This function is deprecated. Use Set_Current_Page instead.
 
@@ -282,7 +282,7 @@ package Gtk.Notebook is
 
    procedure Set_Scrollable
      (Notebook   : access Gtk_Notebook_Record;
-      Scrollable : in Boolean := True);
+      Scrollable : Boolean := True);
    --  Indicate whether Notebook display scrolling arrows when there are
    --  too many tabs.
    --  The default is not to display such scrolling arrows. Note also that
@@ -331,6 +331,10 @@ package Gtk.Notebook is
    --  Modify the widget displayed in the tab for the page that contains Child.
    --  Tab_Label is generally a Gtk_Label, although it can also be a Gtk_Box
    --  that contains a Gtk_Pixmap and a Gtk_Label if you want to show pixmaps.
+   --
+   --  Note that you will need to call Show_All on Tab_Label: since it is not
+   --  a Child of the notebook in the sense of Gtk_Container, the Show_All
+   --  passed to the notebook will not be transmitted to the Tab_Label.
 
    procedure Set_Tab_Label_Text
      (Notebook : access Gtk_Notebook_Record;
@@ -475,27 +479,27 @@ package Gtk.Notebook is
 
    procedure Set_Homogeneous_Tabs
      (Notebook    : access Gtk_Notebook_Record;
-      Homogeneous : in Boolean := True);
+      Homogeneous : Boolean := True);
    pragma Obsolescent;  --  Set_Homogeneous_Tabs
    --  Indicate whether all the tabs should have the same size (width or
    --  height, depending on which side they are displayed on).
 
    procedure Set_Tab_Border
      (Notebook     : access Gtk_Notebook_Record;
-      Border_Width : in Gint);
+      Border_Width : Gint);
    pragma Obsolescent;  --  Set_Tab_Border
    --  Change the width of the tabs' borders.
    --  This modifies both the horizontal border and the vertical border.
 
    procedure Set_Tab_Hborder
      (Notebook     : access Gtk_Notebook_Record;
-      Border_Width : in Gint);
+      Border_Width : Gint);
    pragma Obsolescent;  --  Set_Tab_Hborder
    --  Modify the width of the horizontal borders of the tabs.
 
    procedure Set_Tab_Vborder
      (Notebook     : access Gtk_Notebook_Record;
-      Border_Width : in Gint);
+      Border_Width : Gint);
    pragma Obsolescent;  --  Set_Tab_Vborder
    --  Modify the height of the vertical borders of the tabs.
 
