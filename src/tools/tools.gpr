@@ -8,6 +8,7 @@ project Tools is
    package Builder  is
       for Default_Switches ("Ada") use Shared.Builder'Default_Switches ("Ada");
       for Executable ("gate.adb") use "gate-in.exe";
+      for Executable ("gdialog.adb") use "gtkada-dialog";
    end Builder;
 
    package Compiler renames Shared.Compiler;

@@ -105,7 +105,7 @@ Conflicts have been kept in the following files to help merging manually:
   done
 
   if [ $conflicts = 1 ]; then
-    cat $gt/conflicts.txt | gdialog error justify_left
+    cat $gt/conflicts.txt | gtkada-dialog error justify_left
   fi
   
   echo done.
@@ -136,7 +136,7 @@ else
       echo "  "$j
     done
 
-    cat << EOF | gdialog error justify_left
+    cat << EOF | gtkada-dialog error justify_left
 Merge of some changes failed. It usually means that some modified code
 is obsolete in the current project file.
 .rej files have been generated to help merging manually if needed.

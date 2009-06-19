@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --                 GDialog - GtkAda Components                       --
 --                                                                   --
---                      Copyright (C) 2000                           --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                  Copyright (C) 2009, AdaCore                      --
 --                                                                   --
 -- Dialog is free software; you can redistribute it and/or modify it --
 -- under the terms of the GNU General Public License as published by --
@@ -23,7 +23,7 @@
 --
 --  Example using a unix-like shell:
 --
---  $ cat << EOF | gdialog error justify_fill
+--  $ cat << EOF | gtkada-dialog error justify_fill
 --  > Merge of some changes failed. It usually means that some modified code
 --  > is obsolete in the current project file.
 --  >

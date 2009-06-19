@@ -7,7 +7,7 @@ else
   GATE        = gate
 endif
 
-GDIALOG       = gdialog
+GDIALOG       = gtkada-dialog
 GTKADA_CONFIG = gtkada-config
 
 GNATMAKELDFLAGS = -largs -L../lib-obj -lgtkada $(GTK_LIBS)
