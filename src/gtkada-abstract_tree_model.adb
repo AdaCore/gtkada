@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2008, AdaCore                   --
+--                  Copyright (C) 2008-2009, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -118,7 +118,7 @@ package body Gtkada.Abstract_Tree_Model is
    function Dispatch_Iter_Children
      (Tree_Model : System.Address;
       Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Parent     : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Parent     : Gtk_Tree_Iter_Access)
       return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Children);
 
@@ -289,17 +289,27 @@ package body Gtkada.Abstract_Tree_Model is
    function Dispatch_Iter_Children
      (Tree_Model : System.Address;
       Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Parent     : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Parent     : Gtk_Tree_Iter_Access)
       return Glib.Gboolean
    is
       Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      Real_Parent : Gtk.Tree_Model.Gtk_Tree_Iter;
    begin
+      --  Gtk should normally never pass null to that function. Unfortunately,
+      --  When using e.g. PyGtk, Parent may be null, probably due to a bug.
+      --  Using a null parent and passing Null_Iter in this case is a
+      --  workaround to that problem.
+      if Parent /= null then
+         Real_Parent := Parent.all;
+      else
+         Real_Parent := Gtk.Tree_Model.Null_Iter;
+      end if;
+
       Iter.all :=
         Gtk.Tree_Model.Children
           (Gtk.Tree_Model.Gtk_Tree_Model
                (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-           Parent);
+           Real_Parent);
 
       if Iter.all = Gtk.Tree_Model.Null_Iter then
          return 0;
