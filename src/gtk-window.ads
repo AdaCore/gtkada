@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -397,7 +397,7 @@ package Gtk.Window is
    --  If Position is Win_Pos_Mouse, then the window is positioned so that it
    --  centered around the mouse.
    --  If Position is Win_Pos_None, no calculation is done. If
-   --  Gtk.Widget.Set_Uposition as been called, it is respected. This is the
+   --  Gtk.Widget.Set_Uposition has been called, it is respected. This is the
    --  default case.
 
    procedure Get_Position
