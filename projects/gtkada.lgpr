@@ -126,6 +126,8 @@ gtkada-mdi.ads
 gtkada-multi_paned.adb
 gtkada-multi_paned.ads
 gtkada-pixmaps.ads
+gtkada-properties.adb
+gtkada-properties.ads
 gtkada-types.adb
 gtkada-types.ads
 gtk-adjustment.adb
@@ -141,6 +143,8 @@ gtk-aspect_frame.adb
 gtk-aspect_frame.ads
 gtk-bin.adb
 gtk-bin.ads
+gtk-bindings.adb
+gtk-bindings.ads
 gtk-box.adb
 gtk-box.ads
 gtk-button.adb
@@ -253,6 +257,8 @@ gtk-extra-sheet.adb
 gtk-extra-sheet.ads
 gtk-file_chooser.adb
 gtk-file_chooser.ads
+gtk-file_chooser_button.adb
+gtk-file_chooser_button.ads
 gtk-file_chooser_dialog.adb
 gtk-file_chooser_dialog.ads
 gtk-file_chooser_widget.adb
@@ -263,6 +269,8 @@ gtk-file_selection.adb
 gtk-file_selection.ads
 gtk-fixed.adb
 gtk-fixed.ads
+gtk-font_button.adb
+gtk-font_button.ads
 gtk-font_selection.adb
 gtk-font_selection.ads
 gtk-font_selection_dialog.ads
@@ -270,6 +278,7 @@ gtk-frame.adb
 gtk-frame.ads
 gtk-gamma_curve.adb
 gtk-gamma_curve.ads
+gtk-gc.ads
 gtk_generates.adb
 gtk_generates.ads
 gtk-gentry.adb
@@ -286,6 +295,10 @@ gtk-hbutton_box.adb
 gtk-hbutton_box.ads
 gtk-icon_factory.adb
 gtk-icon_factory.ads
+gtk-icon_theme.adb
+gtk-icon_theme.ads
+gtk-icon_view.adb
+gtk-icon_view.ads
 gtk-image.adb
 gtk-image.ads
 gtk-image_menu_item.adb
@@ -346,6 +359,8 @@ gtk-progress.adb
 gtk-progress.ads
 gtk-progress_bar.adb
 gtk-progress_bar.ads
+gtk-radio_action.adb
+gtk-radio_action.ads
 gtk-radio_button.adb
 gtk-radio_button.ads
 gtk-radio_menu_item.adb
@@ -408,6 +423,8 @@ gtk-text_view.adb
 gtk-text_view.ads
 gtk-tips_query.adb
 gtk-tips_query.ads
+gtk-toggle_action.adb
+gtk-toggle_action.ads
 gtk-toggle_button.adb
 gtk-toggle_button.ads
 gtk-toggle_tool_button.adb
