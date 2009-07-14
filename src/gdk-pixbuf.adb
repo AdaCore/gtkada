@@ -29,8 +29,33 @@
 with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Display; use Gdk.Display;
 with Glib.Object; use Glib.Object;
+with Ada.Unchecked_Deallocation;
 
 package body Gdk.Pixbuf is
+
+   type Proxy_Data is record
+      Pixels : Guchar_Array_Access;
+      --  Access to the Ada allocated memory used by Gdk_New_From_Data.
+      --  Strictly, this is not necessary, as this access could be
+      --  built from the Pixels parameter of the destroy callback.
+      --  However, it's not possible to easily and portably convert an
+      --  Address to an access to unconstrained array.
+   end record;
+   pragma Convention (C, Proxy_Data);
+   --  Closure data attached to a pixbuf created from user data.
+
+   type Proxy_Data_Access is access Proxy_Data;
+   pragma Convention (C, Proxy_Data_Access);
+
+   procedure Free is new Ada.Unchecked_Deallocation
+     (Object => Proxy_Data, Name => Proxy_Data_Access);
+
+   procedure Destroy_Pixels
+     (Pixels : System.Address;
+      Data   : Proxy_Data_Access);
+   pragma Convention (C, Destroy_Pixels);
+   --  Low level, C compatible, callback called when the reference
+   --  count of a pixbuf (that was created from user data) reaches 0.
 
    ---------------
    -- Add_Alpha --
@@ -276,6 +301,21 @@ package body Gdk.Pixbuf is
          Dest_Y);
    end Copy_Area;
 
+   --------------------
+   -- Destroy_Pixels --
+   --------------------
+
+   procedure Destroy_Pixels
+     (Pixels : System.Address;
+      Data   : Proxy_Data_Access)
+   is
+      pragma Unreferenced (Pixels);
+      Tmp : Proxy_Data_Access := Data;
+   begin
+      Free (Data.Pixels);
+      Free (Tmp);
+   end Destroy_Pixels;
+
    ----------
    -- Fill --
    ----------
@@ -283,7 +323,6 @@ package body Gdk.Pixbuf is
    procedure Fill (Pixbuf : Gdk_Pixbuf; Pixel : Guint32) is
       procedure Internal (Pixbuf : System.Address; Pixel : Guint32);
       pragma Import (C, Internal, "gdk_pixbuf_fill");
-
    begin
       Internal (Get_Object (Pixbuf), Pixel);
    end Fill;
@@ -316,6 +355,61 @@ package body Gdk.Pixbuf is
             Width,
             Height));
    end Gdk_New;
+
+   -----------------------
+   -- Gdk_New_From_Data --
+   -----------------------
+
+   function Gdk_New_From_Data
+     (Data              : Guchar_Array_Access;
+      Colorspace        : Gdk_Colorspace := Colorspace_RGB;
+      Has_Alpha         : Boolean := False;
+      Bits_Per_Sample   : Gint := 8;
+      Width             : Gint;
+      Height            : Gint;
+      Rowstride         : Gint;
+      Auto_Destroy_Data : Boolean := True) return Gdk_Pixbuf
+   is
+      function Internal
+        (Data            : System.Address;
+         Colorspace      : Gdk_Colorspace;
+         Has_Alpha       : Gboolean;
+         Bits_Per_Sample : Gint;
+         Width           : Gint;
+         Height          : Gint;
+         Row_Stride      : Gint;
+         Destroy_Fn      : System.Address;
+         Destroy_Fn_Data : Proxy_Data_Access) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_new_from_data");
+
+   begin
+      if Auto_Destroy_Data then
+         return Convert
+           (Internal
+              (Data.all'Address,
+               Colorspace,
+               Boolean'Pos (Has_Alpha),
+               Bits_Per_Sample,
+               Width,
+               Height,
+               Rowstride,
+               Destroy_Pixels'Address,
+               new Proxy_Data'(Pixels => Data)));
+
+      else
+         return Convert
+           (Internal
+              (Data.all'Address,
+               Colorspace,
+               Boolean'Pos (Has_Alpha),
+               Bits_Per_Sample,
+               Width,
+               Height,
+               Rowstride,
+               System.Null_Address,
+               null));
+      end if;
+   end Gdk_New_From_Data;
 
    -----------------------
    -- Gdk_New_From_File --

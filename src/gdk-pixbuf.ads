@@ -219,6 +219,24 @@ package Gdk.Pixbuf is
       Error    : out GError);
    --  Load an image from file.
 
+   function Gdk_New_From_Data
+     (Data              : Guchar_Array_Access;
+      Colorspace        : Gdk_Colorspace := Colorspace_RGB;
+      Has_Alpha         : Boolean := False;
+      Bits_Per_Sample   : Gint := 8;
+      Width             : Gint;
+      Height            : Gint;
+      Rowstride         : Gint;
+      Auto_Destroy_Data : Boolean := True) return Gdk_Pixbuf;
+   --  Create a pixbuf out of in-memory image data.
+   --  Currently only RGB images with 8 bits per sample are supported.
+   --  Width and Height must be > 0.
+   --  Rowstride is the distance in bytes between row starts.
+   --  A typical value is 4*Width when there is an Alpha channel.
+   --  If Auto_Destroy_Data is true, passed data will be automatically
+   --  freed when the reference count of the pixbuf reaches 1.
+   --  Otherwise, data is never freed.
+
    function Gdk_New_From_Xpm_Data
      (Data : Interfaces.C.Strings.chars_ptr_array) return Gdk_Pixbuf;
    --  Create an image from a XPM data.
@@ -682,5 +700,3 @@ private
      (C, Get_Delay_Time, "gdk_pixbuf_animation_iter_get_delay_time");
 
 end Gdk.Pixbuf;
-
---  missing: gdk_pixbuf_new_from_data
