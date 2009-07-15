@@ -12,6 +12,10 @@ of the feature.
 New features in GtkAda 2.14.1
 -----------------------------
 
+I714-005 Support for glade-3
+
+  Support for glade-3 file format is added to 'gate'.
+
 I327-027 API Additions
 
   The subprogram Gtk.Tooltips.Set_Icon_From_Stock has been added, allowing
@@ -87,37 +91,4 @@ HA17-023 Tabs position in MDI can be specific to each notebook
   Each notebook in a Gtkada_MDI can now have its own position for tabs.
   A contextual menu is provided on tabs to allow the user to change this
   interactively (and close the tab)
-
-New features in GtkAda 2.12.0
------------------------------
-
-H903-015 Gtk.Extra.Combo_Button.Get_Arrow no longer exists
-
-  This was replaced by Get_Toggle_Button to match what is returned by the
-  C code. We no longer have access to the arrow itself, so Get_Arrow could
-  not be preserved. Instead of sending the "clicked" signal to the arrow
-  to force the display of the popup window, you should call Set_Active on
-  the button returned by Get_Toggle_Button.
-
-H620-010 Minor API additions
-
-  The function Gdk.Keyval.To_Unicode has been bound.
-
-H528-010 Automatic conversion of C widgets
-
-  The package Gtk.Type_Conversion is now obsolete and now longer needed, since
-  all standard Gtk+ widgets are now automatically converted when needed.
-
-H121-008 Small API changes
-
-  The following API changes have been introduced to improve safety of C/Ada
-  binding.
-
-    - in gdk-event.ads: type Event_Handler_Func now has pragma Convention (C)
-      To adapt to this change, add the same pragma to your implementations for
-      this function.
-
-    - in gdk-window.ads: likewise, for type Gdk_Filter_Func.
-
-    - in gtk-menu.ads: likewise, for type Gtk_Menu_Detacher_Func.
 
