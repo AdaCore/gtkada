@@ -15,27 +15,3 @@ See for instance base_widget/ and calendar_combo/
 Others are build using the gtkada-config script, on machines where this script
 is usable.
 
-
-1- menu
- 
-  Demonstrates the use of gate/dgate with a glade project file.
-  To test dgate, simply type
-
-    $ dgate menu.glade
-
-  And play with the interface automatically generated.
-
-  To test gate, type
-
-    $ gate menu.glade
-
-  This will generate a set of files. Optionally modify callbacks_menu.adb
-  to customize it, then compile and run it:
-
-    $ gnatmake menu `gtkada-config`
-    $ menu
-
-2- file
-
-  Demonstrates the file selection GTK widget. Follow the instructions
-  explained above for menu.
