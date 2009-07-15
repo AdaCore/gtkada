@@ -3,6 +3,7 @@
 --                                                                   --
 --                   Copyright (C) 1999-2000                         --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                   Copyright (C) 2001-2009, AdaCore                --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -30,112 +31,29 @@ with Ada.Exceptions; use Ada.Exceptions;
 with System.Assertions;
 
 procedure Gate is
-   Project_Node           : Node_Ptr;
-   Interface_Node         : Node_Ptr;
-   S                      : String_Ptr;
-   Arg                    : Natural;
-   Flag_Project           : Boolean := False;
-   Flag_Source_Directory  : Boolean := False;
-   Flag_Pixmaps_Directory : Boolean := False;
-
    procedure Usage;
 
    procedure Usage is
    begin
-      Put_Line ("Usage: " & Command_Name & " switches project-file");
+      Put_Line ("Usage: " & Command_Name & " project-file");
       New_Line;
-      Put_Line ("  -p    Output the program name and exit");
-      Put_Line ("  -s    Output the name of the source directory and exit");
-      Put_Line ("  -x    Output the name of the pixmaps directory and exit");
       Set_Exit_Status (1);
    end Usage;
 
 begin
-   if Argument_Count = 0 then
+   if Argument_Count /= 1 then
       Usage;
-   else
-      Arg := 1;
-
-      if Argument (Arg) = "-p" then
-         Flag_Project := True;
-         Arg := Arg + 1;
-      end if;
-
-      if Argument (Arg) = "-s" then
-         Flag_Source_Directory := True;
-         Arg := Arg + 1;
-      end if;
-
-      if Argument (Arg) = "-x" then
-         Flag_Pixmaps_Directory := True;
-         Arg := Arg + 1;
-      end if;
-
-      if Arg > Argument_Count then
-         Usage;
-         return;
-      end if;
-
-      --  With Glade-2 there are two files. file.gladep is the project
-      --  file while file.glade is the interface to be translated into
-      --  Ada code. file.gladep will be removed in Glade-3
-
-      --  Need to open both files.
-
-      if not GNAT.OS_Lib.Is_Regular_File (Argument (Arg) & "p") then
-         Put_Line (Argument (Arg) & "p is not a regular file");
-         Set_Exit_Status (2);
-         return;
-      end if;
-
-      if not GNAT.OS_Lib.Is_Regular_File (Argument (Arg)) then
-         Put_Line (Argument (Arg) & " is not a regular file");
-         Set_Exit_Status (2);
-         return;
-      end if;
-
-      Interface_Node := Parse (Argument (Arg));
-      Project_Node := Parse (Argument (Arg) & "p");
-
-      if Flag_Project or else Flag_Source_Directory
-        or else Flag_Pixmaps_Directory
-      then
-         if Flag_Project then
-            S := Get_Field (Project_Node, "program_name");
-
-            if S = null then
-               Put_Line ("<no_name>");
-            else
-               Put_Line (S.all);
-            end if;
-         end if;
-
-         if Flag_Source_Directory then
-            S := Get_Field (Project_Node, "source_directory");
-
-            if S = null then
-               Put_Line ("src");
-            else
-               Put_Line (S.all);
-            end if;
-         end if;
-
-         if Flag_Pixmaps_Directory then
-            S := Get_Field (Project_Node,
-              "pixmaps_directory");
-
-            if S = null then
-               Put_Line ("pixmaps");
-            else
-               Put_Line (S.all);
-            end if;
-         end if;
-
-      else
-         Gtk.Main.Init;
-         Generate (Project_Node, Interface_Node);
-      end if;
+      return;
    end if;
+
+   if not GNAT.OS_Lib.Is_Regular_File (Argument (1)) then
+      Put_Line (Argument (1) & " is not a regular file");
+      Set_Exit_Status (2);
+      return;
+   end if;
+
+   Gtk.Main.Init;
+   Generate (Argument (1));
 
 exception
    when System.Assertions.Assert_Failure =>
@@ -148,8 +66,7 @@ exception
       Put_Line ("Exception = " & Exception_Name (E));
       Put_Line ("GATE: Internal error. " &
         "Please send a bug report with the XML");
-      Put_Line ("file " & Argument (Arg) &
-        " and the GtkAda version to " &
-        "gtkada@lists.act-europe.fr");
+      Put_Line ("file " & Argument (1) &
+        " and the GtkAda version to " & "report@adacore.com");
       Set_Exit_Status (2);
 end Gate;

@@ -20,6 +20,9 @@
 
 with GNAT.HTable;
 with Gtk_Generates; use Gtk_Generates;
+pragma Warnings (Off);
+with Ada.Directories; use Ada.Directories;
+pragma Warnings (On);
 
 package body Gtk.Glade is
 
@@ -47,7 +50,7 @@ package body Gtk.Glade is
       Equal      => Equal);
 
    procedure Print_Initialize_Procedure
-     (Project : Node_Ptr; N : Node_Ptr; File : File_Type);
+     (N : Node_Ptr; File : File_Type);
    --  Print body of a given "Initialize" procedure to file.
 
    procedure Print_Header (N : Node_Ptr; File : File_Type);
@@ -113,7 +116,7 @@ package body Gtk.Glade is
    --------------------------------
 
    procedure Print_Initialize_Procedure
-     (Project : Node_Ptr; N : Node_Ptr; File : File_Type)
+     (N : Node_Ptr; File : File_Type)
    is
       P, Q : Node_Ptr;
       S : constant String := Get_Attribute (N, "class");
@@ -143,7 +146,7 @@ package body Gtk.Glade is
 
             while Q /= null loop
                if Q.Tag.all = "widget" then
-                  Print_Initialize_Procedure (Project, Q, File);
+                  Print_Initialize_Procedure (Q, File);
                end if;
 
                Q := Q.Next;
@@ -154,7 +157,7 @@ package body Gtk.Glade is
       end loop;
 
       if not Is_Internal then
-         End_Generate (Project, N, File);
+         End_Generate (N, File);
       end if;
    end Print_Initialize_Procedure;
 
@@ -423,29 +426,20 @@ package body Gtk.Glade is
 
    procedure Generate (File : String) is
    begin
-      Generate (Parse (File & "p"), Parse (File));
-      --  Adding a "p" to the filename as Glade produces a .glade and a
-      --  .gladep file now. The .gladep file will disappear in future
-      --  versions of Glade.
+      Generate (Base_Name (File), Parse (File));
    end Generate;
 
    --------------
    -- Generate --
    --------------
 
-   procedure Generate (Project : Node_Ptr; Window : Node_Ptr) is
+   procedure Generate (Project_Name : String; Window : Node_Ptr) is
       M              : Node_Ptr;
-      Tmp            : Node_Ptr;
       Buffer         : String (1 .. 256);
       Len            : Natural;
       Num_Signals    : Natural;
       pragma Unreferenced (Num_Signals);
       Output         : File_Type;
-      Project_Name   : constant String :=
-       To_Ada (Get_Field (Find_Tag (Project, "glade-project"), "name").all);
-         --  I_Name   : constant String :=
-         --     To_Ada (Get_Field (Find_Tag (Window, "glade-interface"),
-         --    "child").all);
 
    begin
       M := Window;
@@ -457,10 +451,8 @@ package body Gtk.Glade is
       end if;
 
       Print_Header (Window, Standard_Output);
-      Tmp := Find_Tag (Project.Child, "gettext_support");
 
-      Gettext := Tmp = null or else Tmp.Value.all /= "FALSE";
-
+      Gettext := True;
       M := M.Child;
 
       loop
@@ -545,18 +537,8 @@ package body Gtk.Glade is
 
                Put_Line (Output, "   pragma Suppress (All_Checks);");
 
-               declare
-                  Pixmaps : constant Node_Ptr := Find_Tag
-                    (Project.Child, "pixmaps_directory");
-               begin
-                  if Pixmaps /= null then
-                     Put_Line (Output, "   Pixmaps_Dir : constant String := """
-                               & Pixmaps.Value.all & "/"";");
-                  else
-                     Put_Line (Output, "   Pixmaps_Dir : constant String := """
-                               & "pixmaps" & "/"";");
-                  end if;
-               end;
+               Put_Line (Output, "   Pixmaps_Dir : constant String := """
+                         & "pixmaps/"";");
 
                --  ??? Is this still safe? UTF-8 etc...
 
@@ -567,7 +549,7 @@ package body Gtk.Glade is
                Put_Line (Output, "begin");
                Initialize_Signals_Store;
                --  Generate the widgets
-               Print_Initialize_Procedure (Project, M, Output);
+               Print_Initialize_Procedure (M, Output);
 
                --  Generate the signals
                New_Line (Output);
@@ -624,7 +606,6 @@ package body Gtk.Glade is
       end if;
 
       Num_Signals := Gen_Signal_Instantiations (Project_Name, Standard_Output);
-
    end Generate;
 
    --------------

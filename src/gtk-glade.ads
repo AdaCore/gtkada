@@ -3,7 +3,7 @@
 --                                                                   --
 --                   Copyright (C) 1999-2001                         --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                   Copyright 2002-2006 AdaCore                     --
+--                   Copyright (C) 2002-2009, AdaCore                --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -51,10 +51,9 @@ package Gtk.Glade is
    --  output. Note the .glade file should be passed here and not the
    --  .gladep file.
 
-   procedure Generate (Project : Node_Ptr; Window : Node_Ptr);
-   --  Generate the Ada code corresponding the creation of to
-   --  Project and Window and its children on
-   --  standard input.
+   procedure Generate (Project_Name : String; Window : Node_Ptr);
+   --  Generate the Ada code corresponding the creation of the
+   --  Project and Window and its children on standard output.
 
    procedure Register_Generate (Widget : String; Generate : Generate_Ptr);
    --  Register Callback as a procedure that knows how to generate code

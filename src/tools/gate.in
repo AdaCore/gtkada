@@ -9,48 +9,24 @@ echo Generating Ada files...
 
 dir=`dirname $1`
 file=`cd $dir; pwd`/`basename $1`
-info=`gate-in.exe -p -s -x $file`
-stat=$?
+prj=$file
+srcdir=.
+psrcdir="the current directory"
+pixdir="pixmaps"
 
-if [ $stat != 0 ]; then
-  if [ $stat = 2 ]; then
-     echo $info
-  fi
-
-  echo "Couldn't parse $file Exiting."
-  exit 1
-fi
-
-set $info
-
-if [ "$1" = "<no_name>" ]; then
-   prj=default
-else
-   prj=$1
-fi
-
-if [ "$2" = "<no_name>" ]; then
-   srcdir=.
-   psrcdir="the current directory"
-else
-   srcdir=$2
-   psrcdir=$srcdir
-fi
-
-pixdir="$3"
 # Copy any pixmap files from pixdir to srcdir
 
 mkdir -p $dir/$srcdir
 
-if [ "$pixdir" != "<no_name>" -a -d $dir/$pixdir ]; then
+if [ -d $dir/$pixdir ]; then
    cp $dir/$pixdir/*xpm $dir/$srcdir > /dev/null 2>&1
 fi
 
 owd=`pwd`
-cd $dir/$srcdir
+cd $dir
 
 if [ $? != 0 ]; then
-  echo "Couldn't change to $dir/$srcdir, aborting."
+  echo "Couldn't change to $dir, aborting."
   exit 1
 fi
 

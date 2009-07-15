@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -2109,7 +2109,7 @@ package body Gtk_Generates is
    ------------------
 
    procedure End_Generate
-      (Project : Node_Ptr; N : Node_Ptr; File : File_Type)
+      (N : Node_Ptr; File : File_Type)
    is
       Packing      : constant Node_Ptr := Find_Tag (N, "packing");
       Q            : Node_Ptr;
@@ -2126,19 +2126,6 @@ package body Gtk_Generates is
       Parent_Class : constant String := Get_Class (Parent);
 
    begin
-      S := Get_Field (Find_Child (Project, "glade-project"),
-         "use_widget_names");
-
-      if S /= null and then Boolean'Value (S.all) then
-         if Gettext_Support (N) then
-            Gen_Set (N, "name",
-              File => File, Prefix => "-""", Postfix => """");
-         else
-            Gen_Set (N, "name",
-              File => File, Prefix => """", Postfix => """");
-         end if;
-      end if;
-
       Gen_Set (N, "sensitive", File);
       Gen_Set (N, "UPosition", "x", "y", "", "", File);
       Gen_Set (N, "USize", "width", "height", "", "", File);
