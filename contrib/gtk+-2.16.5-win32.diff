@@ -1,6 +1,7 @@
-2008-12-02	Arnaud Charlet	<charlet@adacore.com>
+2009-02-24	Arnaud Charlet	<charlet@adacore.com>
 
-	* gdk/win32/gdkevents-win32.c (gdk_events_translate): Fix build failure.
+	* gtk/gtkmain.c (gtk_grab_notify_foreach): Disable event crossing
+	handling, causing crashes.
 
 2007-10-10	Arnaud Charlet	<charlet@adacore.com>
 
@@ -130,14 +131,29 @@
      }
  
    return TRUE;
---- gdk/win32/gdkevents-win32.c.old	2008-12-02 10:23:48.109375000 +0100
-+++ gdk/win32/gdkevents-win32.c	2008-12-02 10:23:51.984375000 +0100
-@@ -3011,7 +3011,7 @@ gdk_event_translate (MSG  *msg,
- 	{
- 	  GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
+--- gtk/gtkmain.c.old	2009-02-24 10:44:02.598600000 +0100
++++ gtk/gtkmain.c	2009-02-24 10:45:04.218600000 +0100
+@@ -1707,19 +1707,23 @@ gtk_grab_notify_foreach (GtkWidget *chil
+   if (is_shadowed)
+     {
+       GTK_PRIVATE_SET_FLAG (child, GTK_SHADOWED);
++#if !defined (_WIN32)
+       if (!was_shadowed && GTK_WIDGET_HAS_POINTER (child)
+ 	  && GTK_WIDGET_IS_SENSITIVE (child))
+ 	_gtk_widget_synthesize_crossing (child, info->new_grab_widget,
+ 					 GDK_CROSSING_GTK_GRAB);
++#endif
+     }
+   else
+     {
+       GTK_PRIVATE_UNSET_FLAG (child, GTK_SHADOWED);
++#if !defined (_WIN32)
+       if (was_shadowed && GTK_WIDGET_HAS_POINTER (child)
+ 	  && GTK_WIDGET_IS_SENSITIVE (child))
+ 	_gtk_widget_synthesize_crossing (info->old_grab_widget, child,
+ 					 info->from_grab ? GDK_CROSSING_GTK_GRAB
+ 					 : GDK_CROSSING_GTK_UNGRAB);
++#endif
+     }
  
--	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
-+	  _gdk_win32_windowing_window_get_offsets (window, &xoffset, &yoffset);
- 	  gdk_region_offset (update_region, xoffset, yoffset);
- 
- 	  _gdk_window_process_expose (window, update_region);
+   if (was_shadowed != is_shadowed)
