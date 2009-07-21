@@ -22,3 +22,25 @@
  
  #define pyg_begin_allow_threads                         \
      G_STMT_START {                                      \
+--- glib/pyglib.c.old	2009-07-21 10:32:50.000000000 +0200
++++ glib/pyglib.c	2009-07-21 10:32:54.000000000 +0200
+@@ -107,7 +107,9 @@ pyglib_gil_state_ensure(void)
+     if (!_PyGLib_API->threads_enabled)
+ 	return PyGILState_LOCKED;
+ 
++#ifndef DISABLE_THREADING
+     return PyGILState_Ensure();
++#endif
+ }
+ 
+ void
+@@ -118,7 +120,9 @@ pyglib_gil_state_release(PyGILState_STAT
+     if (!_PyGLib_API->threads_enabled)
+ 	return;
+ 
++#ifndef DISABLE_THREADING
+     PyGILState_Release(state);
++#endif
+ }
+ 
+ /**
