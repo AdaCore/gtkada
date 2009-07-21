@@ -23,7 +23,7 @@
  #define pyg_begin_allow_threads                         \
      G_STMT_START {                                      \
 --- glib/pyglib.c.old	2009-07-21 10:32:50.000000000 +0200
-+++ glib/pyglib.c	2009-07-21 10:32:54.000000000 +0200
++++ glib/pyglib.c	2009-07-21 11:03:34.000000000 +0200
 @@ -107,7 +107,9 @@ pyglib_gil_state_ensure(void)
      if (!_PyGLib_API->threads_enabled)
  	return PyGILState_LOCKED;
@@ -40,6 +40,26 @@
  
 +#ifndef DISABLE_THREADING
      PyGILState_Release(state);
++#endif
+ }
+ 
+ /**
+@@ -184,13 +188,19 @@ _pyglib_notify_on_enabling_threads(PyGLi
+ int
+ pyglib_gil_state_ensure_py23 (void)
+ {
++#ifndef DISABLE_THREADING
++    return 0;
++#else
+     return PyGILState_Ensure();
++#endif
+ }
+ 
+ void
+ pyglib_gil_state_release_py23 (int flag)
+ {
++#ifndef DISABLE_THREADING
+     PyGILState_Release(flag);
 +#endif
  }
  
