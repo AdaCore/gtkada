@@ -18,9 +18,9 @@ cairo-1.8.8-win32.diff: ditto for cairo under Windows
 
 pixman-0.15.12-win32.diff: ditto for pixman under Windows
 
-pango-1.24.4-win32.diff: ditto for pango under Windows
+pango-1.20.3-win32.diff: ditto for pango under Windows
 
-pygobject-2.14.2.diff: patch to build pygobject 2.14.2 with --disable-thread
+pygobject-2.18.0.diff: patch to build pygobject with --disable-thread
 
 gtkada-2.10-win32.diff: a patch to build GtkAda under Windows
 
