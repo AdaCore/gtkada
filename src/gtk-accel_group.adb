@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2000-2008, AdaCore                 --
+--                  Copyright (C) 2000-2009, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -194,5 +194,34 @@ package body Gtk.Accel_Group is
       Object_List.Set_Object (List, Internal (Get_Object (Object)));
       return List;
    end From_Object;
+
+   -------------------
+   -- Get_Is_Locked --
+   -------------------
+
+   function Get_Is_Locked
+     (Accel_Group : access Gtk_Accel_Group_Record)
+      return Boolean
+   is
+      function Internal (Accel_Group : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_accel_group_get_is_locked");
+   begin
+      return Boolean'Val (Internal (Get_Object (Accel_Group)));
+   end Get_Is_Locked;
+
+   -----------------------
+   -- Get_Modifier_Mask --
+   -----------------------
+
+   function Get_Modifier_Mask
+     (Accel_Group : access Gtk_Accel_Group_Record)
+      return Gdk.Types.Gdk_Modifier_Type
+   is
+      function Internal
+         (Accel_Group : System.Address) return Gdk.Types.Gdk_Modifier_Type;
+      pragma Import (C, Internal, "gtk_accel_group_get_modifier_mask");
+   begin
+      return Internal (Get_Object (Accel_Group));
+   end Get_Modifier_Mask;
 
 end Gtk.Accel_Group;

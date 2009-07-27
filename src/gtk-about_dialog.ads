@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -45,7 +45,7 @@
 --  use the function gtk_show_about_dialog which constructs and shows a dialog
 --  and keeps it around so that it can be shown again.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16</c_version>
 --  <group>Windows</group>
 --  <testgtk>create_about.adb</testgtk>
 
@@ -139,11 +139,13 @@ package Gtk.About_Dialog is
    --  If the Icon_Name is set to the empty string, the default window icon
    --  set with Gtk.Window.Set_Default_Icon will be used.
 
-   procedure Set_Name
-     (About : access Gtk_About_Dialog_Record; Name  : String);
-   function Get_Name
-     (About : access Gtk_About_Dialog_Record) return String;
-   --  Returns the program name displayed in the about dialog.
+   function Get_Program_Name (About : access Gtk_About_Dialog_Record)
+      return String;
+   procedure Set_Program_Name
+     (About : access Gtk_About_Dialog_Record;
+      Name  : String);
+   --  Returns or sets the program name displayed in the about dialog.
+   --  (since 2.12)
 
    procedure Set_Translator_Credits
      (About              : access Gtk_About_Dialog_Record;
@@ -223,6 +225,16 @@ package Gtk.About_Dialog is
    --  URL link in an about dialog.
    --  Return value: the previous URL hook.
 
+   procedure Set_Name
+     (About : access Gtk_About_Dialog_Record; Name  : String)
+     renames Set_Program_Name;
+   pragma Obsolescent; --  Set_Name
+   function Get_Name
+     (About : access Gtk_About_Dialog_Record) return String
+     renames Get_Program_Name;
+   pragma Obsolescent; --  Get_Name
+   --  Returns the program name displayed in the about dialog.
+
    ----------------
    -- Properties --
    ----------------
@@ -261,8 +273,13 @@ package Gtk.About_Dialog is
    --
    --  Name:  Name_Property
    --  Type:  String
+   --  Obsolescent, see Program_Name_Property
    --  Descr: The name of the program. If this is not set, it defaults to
    --         the application name from the command line
+   --
+   --  Name:  Program_Name_Property
+   --  Type:  String
+   --  Descr: The name of the program.
    --
    --  Name:  Translator_Credits_Property
    --  Type:  String
@@ -295,11 +312,21 @@ package Gtk.About_Dialog is
    Logo_Property               : constant Glib.Properties.Property_Object;
    Logo_Icon_Name_Property     : constant Glib.Properties.Property_String;
    Name_Property               : constant Glib.Properties.Property_String;
+   Program_Name_Property       : constant Glib.Properties.Property_String;
    Translator_Credits_Property : constant Glib.Properties.Property_String;
    Version_Property            : constant Glib.Properties.Property_String;
    Website_Property            : constant Glib.Properties.Property_String;
    Website_Label_Property      : constant Glib.Properties.Property_String;
    Wrap_License_Property       : constant Glib.Properties.Property_Boolean;
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
 
    ----------------------
    -- Style Properties --
@@ -332,6 +359,8 @@ private
      Glib.Properties.Build ("logo-icon-name");
    Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("name");
+   Program_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("program-name");
    Translator_Credits_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("translator-credits");
    Version_Property : constant Glib.Properties.Property_String :=
@@ -352,3 +381,7 @@ private
 end Gtk.About_Dialog;
 
 --  No binding: gtk_show_about_dialog
+--
+--  These are obsolescent, and implemented as renamings
+--  No binding: gtk_about_dialog_get_name
+--  No binding: gtk_about_dialog_set_name

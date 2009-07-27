@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,7 +53,7 @@
 --  on how all the parameters for the boxes work.
 --
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Layout containers</group>
 --  <testgtk>create_box.adb</testgtk>
 --  <screenshot>gtk-box</screenshot>
@@ -156,18 +156,6 @@ package Gtk.Box is
    --
    --  See Pack_Start for an explanation of all the parameters.
 
-   procedure Pack_Start_Defaults
-     (In_Box  : access Gtk_Box_Record;
-      Child   : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  This is the same as Pack_Start if you use the default parameter values.
-   --  It is provided for backward compatibility only.
-
-   procedure Pack_End_Defaults
-     (In_Box  : access Gtk_Box_Record;
-      Child   : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  This is the same as Pack_End if you use the default parameter values.
-   --  It is provided for backward compatibility only.
-
    procedure Set_Homogeneous
      (In_Box      : access Gtk_Box_Record;
       Homogeneous : Boolean);
@@ -215,6 +203,29 @@ package Gtk.Box is
    function Get_Child
      (Box : access Gtk_Box_Record; Num : Gint) return Gtk.Widget.Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child.
+
+   -----------------
+   -- Obsolescent --
+   -----------------
+   --  All subprograms below are now obsolescent in gtk+. They might be removed
+   --  from future versions of gtk+ (and therefore GtkAda).
+   --  To find out whether your code uses any of these, we recommend compiling
+   --  with the -gnatwj switch
+   --  <doc_ignore>
+
+   procedure Pack_Start_Defaults
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent;  --  Pack_Start_Defaults
+   --  This is the same as Pack_Start if you use the default parameter values.
+   --  It is provided for backward compatibility only.
+
+   procedure Pack_End_Defaults
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent;  --  Pack_End_Defaults
+   --  This is the same as Pack_End if you use the default parameter values.
+   --  It is provided for backward compatibility only.
 
    ----------------
    -- Properties --

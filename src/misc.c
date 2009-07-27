@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -2239,73 +2239,6 @@ ada_gdk_event_set_message_type (GdkEvent * event, GdkAtom type)
       return 1;
     }
   return 0;
-}
-
-/********************
- * GtkAdjustment
- ********************/
-
-gdouble
-ada_gtk_adjustment_get_page_size (GtkAdjustment * adjustment)
-{
-  return adjustment->page_size;
-}
-
-gdouble
-ada_gtk_adjustment_get_page_increment (GtkAdjustment * adjustment)
-{
-  return adjustment->page_increment;
-}
-
-gdouble
-ada_adjustment_get_lower (GtkAdjustment * adjustment)
-{
-  return adjustment->lower;
-}
-
-gdouble
-ada_adjustment_get_upper (GtkAdjustment * adjustment)
-{
-  return adjustment->upper;
-}
-
-void
-ada_adjustment_set_page_increment (GtkAdjustment * adjustment,
-				   gdouble value)
-{
-  adjustment->page_increment = value;
-}
-
-void
-ada_adjustment_set_step_increment (GtkAdjustment * adjustment,
-				   gdouble value)
-{
-  adjustment->step_increment = value;
-}
-
-void
-ada_gtk_adjustment_set_lower (GtkAdjustment * adjustment, gdouble lower)
-{
-  adjustment->lower = lower;
-}
-
-void
-ada_gtk_adjustment_set_upper (GtkAdjustment * adjustment, gdouble upper)
-{
-  adjustment->upper = upper;
-}
-
-gdouble
-ada_gtk_adjustment_get_step_increment (GtkAdjustment * adjustment)
-{
-  return adjustment->step_increment;
-}
-
-void
-ada_adjustment_set_page_size (GtkAdjustment * adjustment,
-			      gdouble value)
-{
-  adjustment->page_size = value;
 }
 
 /*

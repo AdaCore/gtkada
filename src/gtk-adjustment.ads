@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@
 --
 --  </example>
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Scrolling</group>
 
 with Glib.Properties;
@@ -87,6 +87,20 @@ package Gtk.Adjustment is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   procedure Configure
+     (Adjustment     : access Gtk_Adjustment_Record;
+      Value          : Gdouble;
+      Lower          : Gdouble;
+      Upper          : Gdouble;
+      Step_Increment : Gdouble;
+      Page_Increment : Gdouble;
+      Page_Size      : Gdouble);
+   --  Sets all properties of the adjustment at once.
+   --  Use this function to avoid multiple emissions of the "changed"
+   --  signal. See Set_Lower for an alternative way
+   --  of compressing multiple emissions of "changed" into one.
+   --  Since: 2.14
+
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Adjustment.
 
@@ -104,7 +118,15 @@ package Gtk.Adjustment is
    function Get_Lower
      (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Modify the lower bound of the adjustment.
-   --  You should call Changed after modifying this value.
+   --  When setting multiple adjustment properties via their individual
+   --  setters, multiple "changed" signals will be emitted. However, since
+   --  the emission of the "changed" signal is tied to the emission of the
+   --  "GObject::notify" signals of the changed properties, it's possible
+   --  to compress the "changed" signals into one by calling
+   --  Glib.Object.Freeze_Notify and Glib.Object.Thaw_Notify around the
+   --  calls to the individual setters.
+   --  Alternatively, using Configure has the same effect
+   --  of compressing "changed" emissions.
 
    procedure Set_Upper
      (Adjustment : access Gtk_Adjustment_Record;

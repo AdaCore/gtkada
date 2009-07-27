@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,7 +35,7 @@
 --  shortcut for. Mnemonics are shortcuts for GUI elements, such as buttons.
 --  They appear as underline characters. Menu items can have both.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16</c_version>
 
 with Gdk.Types;
 with Gtk.Object;
@@ -73,6 +73,8 @@ package Gtk.Accel_Group is
 
    procedure Lock (Accel_Group : access Gtk_Accel_Group_Record);
    procedure Unlock (Accel_Group : access Gtk_Accel_Group_Record);
+   function Get_Is_Locked
+     (Accel_Group : access Gtk_Accel_Group_Record) return Boolean;
    --  Locks or unlocks the group.  When a group is locked, the accelerators
    --  contained in it cannot be changed at runtime by the user. See
    --  Gtk_Accel_Map.Change_Entry about runtime accelerator changes.
@@ -140,6 +142,12 @@ package Gtk.Accel_Group is
    --
    --  The default mod mask should be changed on application startup, before
    --  using any accelerator groups.
+
+   function Get_Modifier_Mask
+     (Accel_Group : access Gtk_Accel_Group_Record)
+      return Gdk.Types.Gdk_Modifier_Type;
+   --  Gets a modifier type representing the mask for this
+   --  Accel_Group. For example, GDK_CONTROL_MASK, GDK_SHIFT_MASK, etc.
 
    -------------
    -- Signals --

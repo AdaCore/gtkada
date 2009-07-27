@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,7 +42,7 @@
 --  If performing many 'mark' operations, the calendar can be frozen to prevent
 --  flicker, using Freeze, and 'thawed' again using Thaw.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Selectors</group>
 --  <testgtk>create_calendar.adb</testgtk>
 --  <screenshot>gtk-calendar</screenshot>
@@ -129,6 +129,55 @@ package Gtk.Calendar is
    --  Sets display options (whether to display the heading and the month
    --  headings).
 
+   function Get_Detail_Height_Rows
+     (Calendar : access Gtk_Calendar_Record)
+      return Gint;
+   procedure Set_Detail_Height_Rows
+     (Calendar : access Gtk_Calendar_Record;
+      Rows     : Gint);
+   --  Queries the height of detail cells, in rows.
+   --  Since: 2.14
+
+   function Get_Detail_Width_Chars
+     (Calendar : access Gtk_Calendar_Record)
+      return Gint;
+   procedure Set_Detail_Width_Chars
+     (Calendar : access Gtk_Calendar_Record;
+      Chars    : Gint);
+   --  Queries the width of detail cells, in characters.
+   --  Since: 2.14
+
+   -------------
+   -- Details --
+   -------------
+
+   type Gtk_Calendar_Detail_Func is access function
+      (Calendar  : access Gtk_Calendar_Record'Class;
+       Year      : Guint;
+       Month     : Guint;
+       Day       : Guint;
+       User_Data : System.Address) return String;
+   --  Return the details for the given day, or the empty string when there
+   --  are no details.
+
+   procedure Set_Detail_Func
+     (Calendar : access Gtk_Calendar_Record;
+      Func     : Gtk_Calendar_Detail_Func;
+      Data     : System.Address;
+      Destroy  : G_Destroy_Notify_Address);
+   --  Installs a function which provides Pango markup with detail information
+   --  for each day. Examples for such details are holidays or appointments.
+   --  That information is shown below each day when the property
+   --  "show-details" is set.
+   --  A tooltip containing with full detail information is provided, if the
+   --  entire text should not fit into the details area, or if show-details
+   --  is not set.
+   --
+   --  The size of the details area can be restricted by setting the
+   --  "detail-width-chars" and "detail-height-rows" properties.
+   --
+   --  Since: 2.14
+
    -----------------
    -- Obsolescent --
    -----------------
@@ -169,6 +218,14 @@ package Gtk.Calendar is
    --  Descr: The selected day (as a number between 1 and 31, or 0 to unselect
    --         the currently selected day)
    --
+   --  Name:  Detail_Height_Rows_Property
+   --  Type:  Int
+   --  Descr: Details height in rows
+   --
+   --  Name:  Detail_Width_Chars_Property
+   --  Type:  Int
+   --  Descr: Details width in characters
+   --
    --  Name:  Month_Property
    --  Type:  Int
    --  Descr: The selected month (as a number between 0 and 11)
@@ -180,6 +237,10 @@ package Gtk.Calendar is
    --  Name:  Show_Day_Names_Property
    --  Type:  Boolean
    --  Descr: If TRUE, day names are displayed
+   --
+   --  Name:  Show_Details_Property
+   --  Type:  Boolean
+   --  Descr: If TRUE, details are shown
    --
    --  Name:  Show_Heading_Property
    --  Type:  Boolean
@@ -196,9 +257,12 @@ package Gtk.Calendar is
    --  </properties>
 
    Day_Property               : constant Glib.Properties.Property_Int;
+   Detail_Height_Rows_Property : constant Glib.Properties.Property_Int;
+   Detail_Width_Chars_Property : constant Glib.Properties.Property_Int;
    Month_Property             : constant Glib.Properties.Property_Int;
    No_Month_Change_Property   : constant Glib.Properties.Property_Boolean;
    Show_Day_Names_Property    : constant Glib.Properties.Property_Boolean;
+   Show_Details_Property      : constant Glib.Properties.Property_Boolean;
    Show_Heading_Property      : constant Glib.Properties.Property_Boolean;
    Show_Week_Numbers_Property : constant Glib.Properties.Property_Boolean;
    Year_Property              : constant Glib.Properties.Property_Int;
@@ -261,12 +325,18 @@ private
 
    Day_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("day");
+   Detail_Height_Rows_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("detail-height-rows");
+   Detail_Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("detail-width-chars");
    Month_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("month");
    No_Month_Change_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("no-month-change");
    Show_Day_Names_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-day-names");
+   Show_Details_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-details");
    Show_Heading_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-heading");
    Show_Week_Numbers_Property : constant Glib.Properties.Property_Boolean :=

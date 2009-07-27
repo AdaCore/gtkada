@@ -2,16 +2,15 @@
 use warnings;
 use strict;
 
-our ($ada_dir) = ".";
-#$c_dir  ="/home/briot/gtk/gtk+-2.9/gtk+-2.9.0/";
-our ($c_dir)   = "/home/briot/gtk/gtk+-2.8/gtk+-2.8.17";
+our ($ada_dir) = "src";
+our ($c_dir)   = "/home/briot/gtk/gtk+/";
 
 ## parameters are of the form "gtkbutton", "gtkbutton.h", "/dir/gtkbutton.h"
 ## If the directory is unspecified, files are looked for in $c_dir.
 ## To find out the list of files that have no binding:
-##     ./binding.pl $c_dir/gtk/*.h
+##     ./contrib/binding.pl $c_dir/gtk/*.h
 ## To find out the missing subprogram bindings for a specific file:
-##     ./binding.pl gtkbutton
+##     ./contrib/binding.pl gtkbutton
 our (@c_files)=@ARGV;
 
 ## Set to 1 to list all the files as they are analyzed. This can be set by
@@ -431,6 +430,7 @@ sub functions_from_c_file() {
   my ($deprecated) = 0;
 
   $contents = &get_c_file_content ($fullname);
+  $contents =~ s/GSEAL//g;
 
   while ($contents =~ /$c_deprecated_re|$c_broken_re|$c_function_re/g) {
      if (defined $1 && ($1 eq "ifndef" || $1 eq "if ")) {
@@ -925,6 +925,8 @@ sub process_c_file() {
           } else {
              delete $obsolescent{$name};
           }
+        } else {
+          delete $obsolescent{$name};
         }
      }
   }

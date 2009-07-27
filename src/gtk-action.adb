@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -440,5 +440,43 @@ package body Gtk.Action is
    begin
       Internal (Get_Object (Action), Get_Object (Proxy));
    end Unblock_Activate_From;
+
+   -----------------
+   -- Create_Menu --
+   -----------------
+
+   function Create_Menu
+     (Action : access Gtk_Action_Record)
+      return Gtk_Widget
+   is
+      function Internal
+        (Action : System.Address)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_action_create_menu");
+      Stub : Gtk_Widget_Record;
+   begin
+      return Gtk_Widget
+        (Get_User_Data
+          (Internal (Get_Object (Action)), Stub));
+   end Create_Menu;
+
+   ---------------------------
+   -- Gtk_Widget_Get_Action --
+   ---------------------------
+
+   function Gtk_Widget_Get_Action
+     (Widget : access Gtk_Widget_Record)
+      return Gtk_Action
+   is
+      function Internal
+        (Widget : System.Address)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_action");
+      Stub : Gtk_Action_Record;
+   begin
+      return Gtk_Action
+        (Get_User_Data
+          (Internal (Get_Object (Widget)), Stub));
+   end Gtk_Widget_Get_Action;
 
 end Gtk.Action;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -97,7 +97,7 @@
 --  are not consumed by this widget. As usual, further processing of the key
 --  presses, e.g. by an entries parent widget, is now possible.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Configuration and Themes</group>
 
 with Gdk.Event;
@@ -155,6 +155,15 @@ package Gtk.Bindings is
    --  Find a key binding matching keyval and modifiers within binding_set and
    --  activate the binding on object.
 
+   procedure Binding_Entry_Skip
+     (Binding_Set : Gtk_Binding_Set;
+      Keyval      : Guint;
+      Modifiers   : Gdk.Types.Gdk_Modifier_Type);
+   --  Install a binding on Binding_Set which causes key lookups
+   --  to be aborted, to prevent bindings from lower priority sets
+   --  to be activated.
+   --  Since: 2.12
+
    procedure Add_Signal
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
@@ -185,6 +194,7 @@ package Gtk.Bindings is
 
 private
    pragma Import (C, Binding_Set_By_Class, "gtk_binding_set_by_class");
+   pragma Import (C, Binding_Entry_Skip,   "gtk_binding_entry_skip");
 end Gtk.Bindings;
 
 --  These are bound through our own C wrappers:

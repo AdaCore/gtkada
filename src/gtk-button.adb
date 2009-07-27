@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                    --
+--                 Copyright (C) 2000-2009, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +31,7 @@ with System;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Widget;           use Gtk.Widget;
 
 package body Gtk.Button is
@@ -416,5 +417,37 @@ package body Gtk.Button is
    begin
       Internal (Get_Object (Button), Get_Object (Image));
    end Set_Image;
+
+   ------------------------
+   -- Get_Image_Position --
+   ------------------------
+
+   function Get_Image_Position
+     (Button : access Gtk_Button_Record)
+      return Gtk_Position_Type
+   is
+      function Internal
+        (Button : System.Address)
+         return Gtk_Position_Type;
+      pragma Import (C, Internal, "gtk_button_get_image_position");
+   begin
+      return Internal (Get_Object (Button));
+   end Get_Image_Position;
+
+   ------------------------
+   -- Set_Image_Position --
+   ------------------------
+
+   procedure Set_Image_Position
+     (Button   : access Gtk_Button_Record;
+      Position : Gtk_Position_Type)
+   is
+      procedure Internal
+        (Button   : System.Address;
+         Position : Gtk_Position_Type);
+      pragma Import (C, Internal, "gtk_button_set_image_position");
+   begin
+      Internal (Get_Object (Button), Position);
+   end Set_Image_Position;
 
 end Gtk.Button;

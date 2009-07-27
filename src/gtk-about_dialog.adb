@@ -156,19 +156,19 @@ package body Gtk.About_Dialog is
       return Value (Internal (Get_Object (About)));
    end Get_Logo_Icon_Name;
 
-   --------------
-   -- Get_Name --
-   --------------
+   -----------------------
+   -- Get_Proogram_Name --
+   -----------------------
 
-   function Get_Name
+   function Get_Program_Name
      (About : access Gtk_About_Dialog_Record) return String
    is
       function Internal (About : System.Address) return chars_ptr;
-      pragma Import (C, Internal, "gtk_about_dialog_get_name");
+      pragma Import (C, Internal, "gtk_about_dialog_get_program_name");
    begin
       --  Returned value owned by gtk+
       return Value (Internal (Get_Object (About)));
-   end Get_Name;
+   end Get_Program_Name;
 
    ----------------------------
    -- Get_Translator_Credits --
@@ -393,21 +393,21 @@ package body Gtk.About_Dialog is
       Free (Str);
    end Set_Logo_Icon_Name;
 
-   --------------
-   -- Set_Name --
-   --------------
+   ----------------------
+   -- Set_Program_Name --
+   ----------------------
 
-   procedure Set_Name
+   procedure Set_Program_Name
      (About : access Gtk_About_Dialog_Record;
       Name  : String)
    is
       procedure Internal
         (About : System.Address;
          Name  : String);
-      pragma Import (C, Internal, "gtk_about_dialog_set_name");
+      pragma Import (C, Internal, "gtk_about_dialog_set_program_name");
    begin
       Internal (Get_Object (About), Name & ASCII.NUL);
-   end Set_Name;
+   end Set_Program_Name;
 
    ----------------------------
    -- Set_Translator_Credits --

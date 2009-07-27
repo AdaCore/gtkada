@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2007 AdaCore                    --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,7 +55,7 @@
 --  activatable or editable, you have to implement the activate or
 --  start_editing virtual functions, respectively.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Trees and Lists</group>
 
 with Gdk.Event;
@@ -245,6 +245,10 @@ package Gtk.Cell_Renderer is
    --  Type:  Boxed
    --  Descr: Cell background color as a GdkColor
    --
+   --  Name:  Editing_Property
+   --  Type:  Boolean
+   --  Descr: Whether the cell renderer is currently in editing mode
+   --
    --  Name:  Height_Property
    --  Type:  Int
    --  Descr: The fixed height
@@ -299,6 +303,7 @@ package Gtk.Cell_Renderer is
 
    Cell_Background_Property     : constant Glib.Properties.Property_String;
    --  Cell_Background_Gdk_Property : constant Glib.Properties.Property_Boxed;
+   Editing_Property             : constant Glib.Properties.Property_Boolean;
    Height_Property              : constant Glib.Properties.Property_Int;
    Is_Expanded_Property         : constant Glib.Properties.Property_Boolean;
    Is_Expander_Property         : constant Glib.Properties.Property_Boolean;
@@ -321,6 +326,8 @@ private
      Glib.Properties.Build ("cell-background");
    --  Cell_Background_Gdk_Property : constant Glib.Properties.Property_Boxed
    --    := Glib.Properties.Build ("cell-background-gdk");
+   Editing_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("editing");
    Height_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("height");
    Is_Expanded_Property : constant Glib.Properties.Property_Boolean :=
@@ -343,7 +350,6 @@ private
      Glib.Properties.Build ("yalign");
    Ypad_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("ypad");
-
 
    Cell_Renderer_Selected    : constant Gtk_Cell_Renderer_State := 2 ** 0;
    Cell_Renderer_Prelit      : constant Gtk_Cell_Renderer_State := 2 ** 1;

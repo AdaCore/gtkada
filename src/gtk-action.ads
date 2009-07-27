@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007, AdaCore                   --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,7 +55,7 @@
 --  icon, visible, sensitive, etc), and should change when the action's state
 --  changes. When the proxy is activated, it should activate its action.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Action-based menus</group>
 
 with Glib.Properties;
@@ -117,6 +117,14 @@ package Gtk.Action is
    --  create icons displayed in the proxy widgets.
    --  Returns a widget that displays the icon for this action.
 
+   function Create_Menu
+     (Action : access Gtk_Action_Record)
+      return Gtk.Widget.Gtk_Widget;
+   --  If Action provides a Gtk_Menu widget as a submenu for the menu
+   --  item or the toolbar item it creates, this function returns an
+   --  instance of that menu.
+   --  Since: 2.12
+
    function Create_Menu_Item
      (Action : access Gtk_Action_Record) return Gtk.Widget.Gtk_Widget;
    --  Creates a menu item widget that proxies for the given action.
@@ -167,6 +175,17 @@ package Gtk.Action is
    -- Proxies --
    -------------
 
+   function Get_Proxies
+     (Action : access Gtk_Action_Record) return Gtk.Widget.Widget_SList.GSlist;
+   --  Returns the proxy widgets for an action. The returned list must not be
+   --  modified
+
+   function Gtk_Widget_Get_Action
+     (Widget : access Gtk.Widget.Gtk_Widget_Record) return Gtk_Action;
+   --  Returns the action that Widget is a proxy for.
+   --  See also Get_Proxies.
+   --  Since: 2.10
+
    procedure Connect_Proxy
      (Action : access Gtk_Action_Record;
       Proxy  : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -180,11 +199,6 @@ package Gtk.Action is
    --  If the widget is already connected to an action, it is disconnected
    --  first.
    --  Disconnect_Proxy does not destroy the widget.
-
-   function Get_Proxies
-     (Action : access Gtk_Action_Record) return Gtk.Widget.Widget_SList.GSlist;
-   --  Returns the proxy widgets for an action. The returned list must not be
-   --  modified
 
    procedure Block_Activate_From
      (Action : access Gtk_Action_Record;
@@ -213,6 +227,10 @@ package Gtk.Action is
    --  Name:  Hide_If_Empty_Property
    --  Type:  Boolean
    --  Descr: When TRUE, empty menu proxies for this action are hidden.
+   --
+   --  Name:  Icon_Name_Property
+   --  Type:  String
+   --  Descr: The name of the icon from the icon theme
    --
    --  Name:  Is_Important_Property
    --  Type:  Boolean
@@ -262,6 +280,7 @@ package Gtk.Action is
 
    Action_Group_Property       : constant Glib.Properties.Property_Object;
    Hide_If_Empty_Property      : constant Glib.Properties.Property_Boolean;
+   Icon_Name_Property          : constant Glib.Properties.Property_String;
    Is_Important_Property       : constant Glib.Properties.Property_Boolean;
    Label_Property              : constant Glib.Properties.Property_String;
    Name_Property               : constant Glib.Properties.Property_String;
@@ -293,6 +312,8 @@ private
      Glib.Properties.Build ("action-group");
    Hide_If_Empty_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("hide-if-empty");
+   Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("icon-name");
    Is_Important_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is-important");
    Label_Property : constant Glib.Properties.Property_String :=

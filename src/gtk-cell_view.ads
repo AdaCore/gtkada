@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,7 @@
 --  the more complex features of Gtk_Tree_View, like cell editing and drag and
 --  drop.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Trees and Lists</group>
 --  <testgtk>create_cell_view.adb</testgtk>
 
@@ -154,16 +154,23 @@ package Gtk.Cell_View is
    --  Name:  Background_Gdk_Property
    --  Type:  Boxed
    --  Descr: Background color as a GdkColor
+   --
+   --  Name:  Model_Property
+   --  Type:  Object
+   --  Descr: The model for cell view
    --  </properties>
 
    Background_Property     : constant Glib.Properties.Property_String;
    --  Background_Gdk_Property : constant Glib.Properties.Property_Boxed;
+   Model_Property : constant Glib.Properties.Property_Object;
 
 private
    pragma Import (C, Get_Type, "gtk_cell_view_get_type");
 
    Background_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("background");
+   Model_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("model");
 --     Background_Gdk_Property : constant Glib.Properties.Property_Boxed :=
 --       Glib.Properties.Build ("background-gdk");
 

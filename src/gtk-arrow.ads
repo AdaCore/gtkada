@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,10 +41,11 @@
 --  Arrows are created with a call to Gtk_New. The direction or style of an
 --  arrow can be changed after creation by using Set.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <testgtk>create_arrow.adb</testgtk>
 --  <screenshot>gtk-arrow</screenshot>
 
+with Glib.Properties;
 with Gtk.Enums;
 with Gtk.Misc;
 
@@ -83,20 +84,25 @@ package Gtk.Arrow is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  - Name:  Arrow_Type_Property
-   --    Type:  Gtk_Arrow_Type
-   --    Flags: read-write
-   --    Descr: The direction the arrow should point
-   --    See also: Set
+   --  Name:  Arrow_Type_Property
+   --  Type:  Gtk_Arrow_Type
+   --  Flags: read-write
+   --  Descr: The direction the arrow should point
+   --  See also: Set
    --
-   --  - Name:  Shadow_Type_Property
-   --    Type:  Gtk_Shadow_Type
-   --    Flags: read-write
-   --    Descr: Appearance of the shadow surrounding the arrow
-   --    See also: Set
+   --  Name:  Shadow_Type_Property
+   --  Type:  Gtk_Shadow_Type
+   --  Flags: read-write
+   --  Descr: Appearance of the shadow surrounding the arrow
+   --  See also: Set
+   --
+   --  Name:  Arrow_Scaling_Property
+   --  Type:  Float
+   --  Descr: Amount of space used up by arrow
    --
    --  </properties>
 
+   Arrow_Scaling_Property : constant Glib.Properties.Property_Float;
    Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type;
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
@@ -111,6 +117,8 @@ package Gtk.Arrow is
 private
    type Gtk_Arrow_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
 
+   Arrow_Scaling_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("arrow-scaling");
    Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type :=
      Gtk.Enums.Build ("arrow_type");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=

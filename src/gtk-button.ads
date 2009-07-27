@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -62,7 +62,7 @@
 --  |                border_width                    |
 --  +------------------------------------------------+
 --  </example>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <screenshot>gtk-button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_buttons.adb</testgtk>
@@ -194,6 +194,15 @@ package Gtk.Button is
    --  "gtk-button-images" indicates whether or not images should be displayed
    --  in buttons).
 
+   function Get_Image_Position
+     (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Position_Type;
+   procedure Set_Image_Position
+     (Button   : access Gtk_Button_Record;
+      Position : Gtk.Enums.Gtk_Position_Type);
+   --  Gets the position of the image relative to the text
+   --  inside the button.
+   --  Since: 2.10
+
    ----------------------
    -- Signals emission --
    ----------------------
@@ -251,6 +260,10 @@ package Gtk.Button is
    --  Type:  Object
    --  Descr: Child widget to appear next to the button text
    --
+   --  Name:  Image_Position_Property
+   --  Type:  Enum
+   --  Descr: The position of the image relative to the text
+   --
    --  Name:  Xalign_Property
    --  Type:  Float
    --  Descr: Horizontal position of child in available space. 0.0 is left
@@ -268,6 +281,7 @@ package Gtk.Button is
    Use_Stock_Property      : constant Glib.Properties.Property_Boolean;
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
    Image_Property          : constant Glib.Properties.Property_Object;
+   --  Image_Position_Property : constant Glib.Properties.Property_Enum;
    Xalign_Property         : constant Glib.Properties.Property_Float;
    Yalign_Property         : constant Glib.Properties.Property_Float;
 
@@ -301,6 +315,14 @@ package Gtk.Button is
    --  Type:  Boolean
    --  Descr: Whether the child_displacement_x/_y properties should also affect
    --         the focus rectangle
+   --
+   --  Name:  Image_Spacing_Property
+   --  Type:  Int
+   --  Descr: Spacing in pixels between the image and label
+   --
+   --  Name:  Inner_Border_Property
+   --  Type:  Boxed
+   --  Descr: Border between button edges and child
    --  </style_properties>
 
    Child_Displacement_X_Property   : constant Glib.Properties.Property_Int;
@@ -309,6 +331,8 @@ package Gtk.Button is
    --  Default_Outside_Border_Property :
    --     constant Glib.Properties.Property_Boxed;
    Displace_Focus_Property         : constant Glib.Properties.Property_Boolean;
+   Image_Spacing_Property : constant Glib.Properties.Property_Int;
+   --  Inner_Border_Property : constant Glib.Properties.Property_Boxed;
 
    -------------
    -- Signals --
@@ -362,6 +386,8 @@ package Gtk.Button is
 private
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with null record;
 
+   --  Image_Position_Property : constant Glib.Properties.Property_Enum :=
+   --    Glib.Properties.Build ("image-position");
    Label_Property  : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("label");
    Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style :=
@@ -390,6 +416,10 @@ private
    --    Glib.Properties.Build ("default-outside-border");
    Displace_Focus_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("displace-focus");
+   Image_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("image-spacing");
+   --  Inner_Border_Property : constant Glib.Properties.Property_Boxed :=
+   --    Glib.Properties.Build ("inner-border");
 
    pragma Import (C, Get_Type, "gtk_button_get_type");
 end Gtk.Button;

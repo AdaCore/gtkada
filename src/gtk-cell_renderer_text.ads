@@ -34,7 +34,7 @@
 --  If the mode is CELL_RENDERER_MODE_EDITABLE, the Gtk_Cell_Renderer_Text
 --  allows to edit its text using an entry.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Trees and Lists</group>
 
 with Pango.Enums;
@@ -205,9 +205,14 @@ package Gtk.Cell_Renderer_Text is
    --  Type:  Int
    --  Descr: The width at which the text is wrapped
    --
+   --  Name:  Alignment_Property
+   --  Type:  Enum
+   --  Descr: How to align the lines
+   --
    --  </properties>
 
    --  Attributes_Property        : constant Glib.Properties.Property_Boxed;
+   --  Alignment_Property : constant Glib.Properties.Property_Enum;
    Background_Property            : constant Glib.Properties.Property_String;
    --  Background_Gdk_Property    : constant Glib.Properties.Property_Boxed;
    Editable_Property              : constant Glib.Properties.Property_Boolean;
@@ -277,8 +282,10 @@ private
    type Gtk_Cell_Renderer_Text_Record is
      new Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record with null record;
 
---     Attributes_Property : constant Glib.Properties.Property_Boxed :=
---       Glib.Properties.Build ("attributes");
+   --  Alignment_Property : constant Glib.Properties.Property_Enum :=
+   --     Glib.Properties.Build ("alignment");
+   --  Attributes_Property : constant Glib.Properties.Property_Boxed :=
+   --     Glib.Properties.Build ("attributes");
    Background_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("background");
 --     Background_Gdk_Property : constant Glib.Properties.Property_Boxed :=

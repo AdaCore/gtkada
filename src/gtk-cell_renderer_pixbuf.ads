@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  and the pixbuf-expander-closed property is set to a pixbuf, it renders that
 --  one.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.14</c_version>
 --  <group>Trees and Lists</group>
 
 with Glib.Properties;
@@ -79,6 +79,10 @@ package Gtk.Cell_Renderer_Pixbuf is
    --  Type:  Boolean
    --  Descr: Whether the rendered pixbuf should be
    --
+   --  Name:  Gicon_Property
+   --  Type:  Object
+   --  Descr: The GIcon being displayed
+   --
    --  Name:  Icon_Name_Property
    --  Type:  String
    --  Descr: The name of the icon from the icon theme
@@ -111,6 +115,7 @@ package Gtk.Cell_Renderer_Pixbuf is
    --  </properties>
 
    Follow_State_Property           : constant Glib.Properties.Property_Boolean;
+   Gicon_Property                  : constant Glib.Properties.Property_Object;
    Icon_Name_Property              : constant Glib.Properties.Property_String;
    Pixbuf_Property                 : constant Glib.Properties.Property_Object;
    Pixbuf_Expander_Closed_Property : constant Glib.Properties.Property_Object;
@@ -125,6 +130,8 @@ private
 
    Follow_State_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("follow-state");
+   Gicon_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("gicon");
    Icon_Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("icon-name");
    Pixbuf_Property : constant Glib.Properties.Property_Object :=
