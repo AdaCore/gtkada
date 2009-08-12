@@ -597,8 +597,7 @@ ada_initialize_class_record
 
       /* Need to create a new type, otherwise Gtk+ won't free objects of
          this type */
-      new_type = g_type_register_static
-	(ancestor, g_strdup (type_name), class_info, 0);
+      new_type = g_type_register_static (ancestor, type_name, class_info, 0);
       klass = g_type_class_ref (new_type);
 
       g_assert (klass != NULL);
