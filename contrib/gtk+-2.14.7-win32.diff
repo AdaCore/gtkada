@@ -1,0 +1,143 @@
+2008-12-02	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c (gdk_events_translate): Fix build failure.
+
+2007-10-10	Arnaud Charlet	<charlet@adacore.com>
+
+	* modules/engines/ms-windows/msw_style.c (draw_themed_tab_button):
+	Avoid SEGV in case pixbuf is null or clip_rect is empty.
+	Fixes G928-005
+
+2006-06-05	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/win32/gdkgc-win32.c (_gdk_win32_gdkregion_to_hrgn): Disable
+	harmless warning which is occurring often with Gtk+ >= 2.8.18
+
+2002-11-25	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/Makefile.in: Remove gdk-win32res.o dependency,
+	since we do not want to use the default Gtk+ icon.
+
+2002-09-12	Florent Duguet	<duguet@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c (handle_wm_paint): Force an update when
+	paint message is received, otherwise windows in background are not
+	immediately refreshed when moving a modal window on top of them.
+	Add handling of WM_NCPAINT message to refresh some areas when a window
+	from another application is moved on top of the current app.
+
+--- gdk/win32/gdkevents-win32.c.old	2006-02-21 10:02:58.000000000 +0100
++++ gdk/win32/gdkevents-win32.c	2006-02-21 10:08:22.000000000 +0100
+@@ -2125,6 +2125,12 @@ handle_wm_paint (MSG        *msg,
+   _gdk_window_process_expose (window, update_region);
+   gdk_region_destroy (update_region);
+ 
++  /* Force a process_updates to refresh visible windows
++   * when receiving a paint message. */
++
++  if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
++    gdk_window_process_updates (window, FALSE);
++
+   DeleteObject (hrgn);
+ }
+ 
+@@ -2964,6 +2970,35 @@ gdk_event_translate (MSG  *msg,
+       *ret_valp = 1;
+       break;
+ 
++    case WM_NCPAINT:
++      if (msg->wParam < 1)
++	break;
++
++      {
++	HRGN hrgn;
++
++	hrgn = CreateRectRgn (0, 0, 0, 0);
++	if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
++	  {
++	    WIN32_GDI_FAILED ("GetUpdateRgn");
++	    break;
++	  }
++
++	{
++	  GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
++
++	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
++	  gdk_region_offset (update_region, xoffset, yoffset);
++
++	  _gdk_window_process_expose (window, update_region);
++	  gdk_region_destroy (update_region);
++
++	  DeleteObject (hrgn);
++	  return_val = FALSE;
++	}
++      }
++      break;
++
+     case WM_PAINT:
+       handle_wm_paint (msg, window, FALSE, NULL);
+       break;
+--- gdk/win32/gdkgc-win32.c.old	2005-07-18 17:20:28.000000000 +0200
++++ gdk/win32/gdkgc-win32.c	2006-06-05 14:56:59.515625000 +0200
+@@ -1160,8 +1160,7 @@ _gdk_win32_gdkregion_to_hrgn (GdkRegion 
+       if (rect->bottom > rgndata->rdh.rcBound.bottom)
+ 	rgndata->rdh.rcBound.bottom = rect->bottom;
+     }
+-  if ((hrgn = ExtCreateRegion (NULL, nbytes, rgndata)) == NULL)
+-    WIN32_API_FAILED ("ExtCreateRegion");
++  hrgn = ExtCreateRegion (NULL, nbytes, rgndata);
+ 
+   g_free (rgndata);
+ 
+--- gdk/Makefile.in.orig	2008-07-01 15:44:02.000000000 +0200
++++ gdk/Makefile.in	2008-08-28 14:35:53.531250000 +0200
+@@ -498,8 +498,8 @@ libgdk_win32_2_0_la_SOURCES = $(common_s
+ libgdk_win32_2_0_la_LIBADD = win32/libgdk-win32.la $(GDK_DEP_LIBS) \
+   $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la
+ 
+-libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la win32/rc/gdk-win32-res.o gdk.def
+-libgdk_win32_2_0_la_LDFLAGS = -Wl,win32/rc/gdk-win32-res.o -export-symbols $(srcdir)/gdk.def $(LDADD)
++libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la gdk.def
++libgdk_win32_2_0_la_LDFLAGS = -export-symbols $(srcdir)/gdk.def $(LDADD)
+ 
+ @MS_LIB_AVAILABLE_TRUE@noinst_DATA = gdk-win32-$(GTK_API_VERSION).lib
+ 
+--- modules/engines/ms-windows/msw_style.c.orig	2008-03-12 05:17:03.000000000 +0100
++++ modules/engines/ms-windows/msw_style.c	2008-04-17 18:35:13.515625000 +0200
+@@ -2649,6 +2649,9 @@ draw_themed_tab_button (GtkStyle *style,
+       GdkPixbuf *pixbuf;
+       GdkPixbuf *rotated;
+ 
++      if (clip_rect.width <= 0 || clip_rect.height <= 0)
++        return TRUE;
++      
+       if (gap_side == GTK_POS_LEFT || gap_side == GTK_POS_RIGHT)
+ 	{
+ 	  pixmap = gdk_pixmap_new (window, clip_rect.height, clip_rect.width, -1);
+@@ -2682,6 +2685,7 @@ draw_themed_tab_button (GtkStyle *style,
+ 	  g_object_unref (pixmap);
+ 	}
+ 
++      if (pixbuf != NULL) {
+       rotated = gdk_pixbuf_rotate_simple (pixbuf, rotation);
+       g_object_unref (pixbuf);
+       pixbuf = rotated;
+@@ -2710,6 +2714,7 @@ draw_themed_tab_button (GtkStyle *style,
+ 		       clip_rect.width, clip_rect.height, GDK_RGB_DITHER_NONE,
+ 		       0, 0);
+       g_object_unref (pixbuf);
++      }
+     }
+ 
+   return TRUE;
+--- gdk/win32/gdkevents-win32.c.old	2008-12-02 10:23:48.109375000 +0100
++++ gdk/win32/gdkevents-win32.c	2008-12-02 10:23:51.984375000 +0100
+@@ -3011,7 +3011,7 @@ gdk_event_translate (MSG  *msg,
+ 	{
+ 	  GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
+ 
+-	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
++	  _gdk_win32_windowing_window_get_offsets (window, &xoffset, &yoffset);
+ 	  gdk_region_offset (update_region, xoffset, yoffset);
+ 
+ 	  _gdk_window_process_expose (window, update_region);
