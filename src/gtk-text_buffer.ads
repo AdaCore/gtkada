@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2007 AdaCore                    --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -104,6 +104,10 @@ package Gtk.Text_Buffer is
      (Buffer : access Gtk_Text_Buffer_Record;
       Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
       Text   : UTF8_String);
+   procedure Insert
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : Gtkada.Types.Chars_Ptr);
    --  Insert Text at position Iter.
    --  Emit the "insert_text" signal; insertion actually occurs
    --  in the default handler for the signal. Iter is invalidated when
@@ -116,6 +120,11 @@ package Gtk.Text_Buffer is
      (Buffer : access Gtk_Text_Buffer_Record;
       Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
       Text   : UTF8_String;
+      Tag    : Gtk.Text_Tag.Gtk_Text_Tag);
+   procedure Insert_With_Tags
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : Gtkada.Types.Chars_Ptr;
       Tag    : Gtk.Text_Tag.Gtk_Text_Tag);
    --  Same as Insert, but specifies the tag to apply to the range.
 

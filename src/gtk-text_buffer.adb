@@ -157,6 +157,26 @@ package body Gtk.Text_Buffer is
       Internal (Get_Object (Buffer), Iter, Text, Text'Length);
    end Insert;
 
+   ------------
+   -- Insert --
+   ------------
+
+   procedure Insert
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : Gtkada.Types.Chars_Ptr)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+         Text   : Gtkada.Types.Chars_Ptr;
+         Len    : Gint := -1);
+      pragma Import (C, Internal, "gtk_text_buffer_insert");
+
+   begin
+      Internal (Get_Object (Buffer), Iter, Text);
+   end Insert;
+
    ----------------------
    -- Insert_With_Tags --
    ----------------------
@@ -178,6 +198,28 @@ package body Gtk.Text_Buffer is
    begin
       Internal
         (Get_Object (Buffer), Iter, Text, Text'Length, Get_Object (Tag));
+   end Insert_With_Tags;
+
+   ----------------------
+   -- Insert_With_Tags --
+   ----------------------
+
+   procedure Insert_With_Tags
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
+      Text   : Gtkada.Types.Chars_Ptr;
+      Tag    : Gtk.Text_Tag.Gtk_Text_Tag)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+         Text   : Gtkada.Types.Chars_Ptr;
+         Len    : Gint := -1;
+         Tag    : System.Address);
+      pragma Import (C, Internal, "ada_gtk_text_buffer_insert_with_tags");
+
+   begin
+      Internal (Get_Object (Buffer), Iter, Text, Tag => Get_Object (Tag));
    end Insert_With_Tags;
 
    ------------------------------
