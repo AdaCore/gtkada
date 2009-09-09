@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2008, AdaCore                   --
+--                     Copyright (C) 2008-2009, AdaCore              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -132,6 +132,13 @@ package Gtkada.Abstract_Tree_Model is
    --  based model would not want to keep the entire file-hierarchy in memory,
    --  just the sections that are currently being displayed by every current
    --  view.
+   --  Technically, the idea is to increase the refcount for the node itself,
+   --  not for any data associated with it (should you want to associate a
+   --  reference counted type with the rows). Most of the time you will not
+   --  need to do anything here.
+   --  Every time the view makes a row visible (for instance when you expand
+   --  a node), it calls Ref_Node for that row. When the row is hidden again,
+   --  it calls Unref_Node.
 
    procedure Unref_Node
      (Self : access Gtk_Abstract_Tree_Model_Record;
@@ -142,6 +149,10 @@ package Gtkada.Abstract_Tree_Model is
    --  reasons. For more information on what this means, please see
    --  Tree_Model_Ref_Node. Please note that nodes that are deleted are not
    --  unreferenced.
+   --  Technically, your model is the one deleting a row (and it should do so
+   --  only if the refcount for the row is not 1, see Ref_Node). Thus gtk+
+   --  avoids a potential callback to your application by not emitting
+   --  Unref_Node in such a case.
 
 private
 
