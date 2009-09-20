@@ -1,3 +1,9 @@
+2009-09-19  Arnaud Charlet  <charlet@adacore.com>
+
+	* gtk/gtktreemodel.c (gtk_tree_model_row_has_child_toggled): Replace
+	g_return_if_fail by explicit check, since path may legitimately
+	be NULL (I918-021).2009-09-19  Arnaud Charlet  <charlet@adacore.com>
+
 2009-01-12  Nicolas Setton  <setton@adacore.com>
 
 	* gtktreeview.c (gtk_tree_view_enter_notify): Do not react to
@@ -87,3 +93,19 @@
      return TRUE;
  
    tree_view = GTK_TREE_VIEW (widget);
+--- gtk/gtktreemodel.c.old	2009-09-19 12:03:49.804000000 +0200
++++ gtk/gtktreemodel.c	2009-09-19 12:41:00.954000000 +0200
+@@ -1512,8 +1512,11 @@ gtk_tree_model_row_has_child_toggled (Gt
+ 				      GtkTreeIter  *iter)
+ {
+   g_return_if_fail (GTK_IS_TREE_MODEL (tree_model));
+-  g_return_if_fail (path != NULL);
+-  g_return_if_fail (iter != NULL);
++
++  if (path == NULL)
++    return;
++  if (iter == NULL)
++    return;
+ 
+   g_signal_emit (tree_model, tree_model_signals[ROW_HAS_CHILD_TOGGLED], 0, path, iter);
+ }
