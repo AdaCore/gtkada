@@ -4496,6 +4496,15 @@ package body Gtkada.MDI is
 
          if Raised_Child /= null then
             Prepend (To_Raise, Gtk_Widget (Raised_Child));
+
+            --  Make sure the child appears first in the list for this
+            --  notebook. That way, if the current focus child is closed by the
+            --  user, we know the focus won't fallback to a child currently not
+            --  visible in the notebook, which would result in a raise.
+            Ref (Raised_Child);
+            Remove (MDI.Items, Gtk_Widget (Raised_Child));
+            Prepend (MDI.Items, Gtk_Widget (Raised_Child));
+            Unref (Raised_Child);
          end if;
       end Parse_Notebook_Node;
 
