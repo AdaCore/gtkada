@@ -2,15 +2,16 @@
 
 	* gdk/win32/gdkevents-win32.c:
 	Protect against infinite loop in the events processing queue, in cases
-	where the translation of events cause the same events to be regenerated.
-	This protects against two cases of loops that have been observed under Citrix.
-	(gdk_event_translate): Protect against reentry on move or size events that are
-	being re-posted by Gtk+, which happens when a Citrix window receives move
-	events but has never been mapped to a Gtk+ window.
-	Protect against flip/flopping between two windows competing for becoming
-	the active window.
-	(_gdk_event_queue): After having processed all the messages, reset the reentry
-	flags.
+	where the translation of events cause the same events to be
+	regenerated. This protects against two cases of loops that have been 
+	observed under Citrix.
+	(gdk_event_translate): Protect against reentry on move or size events
+	that are being re-posted by Gtk+, which happens when a Citrix window
+	receives move events but has never been mapped to a Gtk+ window.
+	Protect against flip/flopping between two windows competing for 
+	becoming the active window.
+	(_gdk_event_queue): After having processed all the messages, reset the
+	reentry flags.
 
 2008-12-02	Arnaud Charlet	<charlet@adacore.com>
 
