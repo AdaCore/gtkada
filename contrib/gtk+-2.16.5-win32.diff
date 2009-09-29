@@ -1,3 +1,18 @@
+2009-09-29      Nicolas Setton  <setton@adacore.com>
+
+        * gdk/win32/gdkevents-win32.c:
+        Protect against infinite loop in the events processing queue, in cases
+        where the translation of events cause the same events to be
+        regenerated. This protects against two cases of loops that have been
+        observed under Citrix.
+        (gdk_event_translate): Protect against reentry on move or size events
+        that are being re-posted by Gtk+, which happens when a Citrix window
+        receives move events but has never been mapped to a Gtk+ window.
+        Protect against flip/flopping between two windows competing for
+        becoming the active window.
+        (_gdk_event_queue): After having processed all the messages, reset the
+        reentry flags.
+
 2009-07-21	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/win32/gdkselection-win32.c (BITMAPV5HEADER): Provide missing
@@ -227,3 +242,78 @@
  /* We emulate the GDK_SELECTION window properties of windows (as used
   * in the X11 backend) by using a hash table from window handles to
   * GdkSelProp structs.
+*** gdk/win32/gdkevents-win32.c.before_patch	2009-09-22 20:06:09.000000000 +0200
+--- gdk/win32/gdkevents-win32.c	2009-09-24 16:25:23.000000000 +0200
+*************** static UINT client_message;
+*** 133,138 ****
+--- 133,144 ----
+  static UINT got_gdk_events_message;
+  static HWND modal_win32_dialog = NULL;
+  
++ /* The following variables are used to protect against re-entry in the
++    _gdk_event_queue main loop, which can happen under Citrix. */
++ static gint activate_events = 0;
++ static gint move_or_size_events = 0;
++ static gint reentry_threshold = 3;
++ 
+  #if 0
+  static HKL latin_locale = NULL;
+  #endif
+*************** gdk_event_translate (MSG  *msg,
+*** 2324,2330 ****
+  	   */
+  	  GDK_NOTE (EVENTS, g_print (" (posted)"));
+  	
+! 	  PostMessageW (msg->hwnd, msg->message, msg->wParam, msg->lParam);
+  	}
+        else if (msg->message == WM_CREATE)
+  	{
+--- 2330,2340 ----
+  	   */
+  	  GDK_NOTE (EVENTS, g_print (" (posted)"));
+  	
+! 	  /* Do not post this message if we have posted it too many times 
+! 	     within the same event loop. */
+! 	  move_or_size_events += 1;
+! 	  if (move_or_size_events < reentry_threshold)
+! 	     PostMessageW (msg->hwnd, msg->message, msg->wParam, msg->lParam);
+  	}
+        else if (msg->message == WM_CREATE)
+  	{
+*************** gdk_event_translate (MSG  *msg,
+*** 3695,3701 ****
+        if (is_modally_blocked (window) && LOWORD (msg->wParam) == WA_ACTIVE)
+  	{
+  	  GdkWindow *modal_current = _gdk_modal_current ();
+! 	  SetActiveWindow (GDK_WINDOW_HWND (modal_current));
+  	  *ret_valp = 0;
+  	  return_val = TRUE;
+  	  break;
+--- 3705,3717 ----
+        if (is_modally_blocked (window) && LOWORD (msg->wParam) == WA_ACTIVE)
+  	{
+  	  GdkWindow *modal_current = _gdk_modal_current ();
+! 	  
+! 	  /* Do not change the active window if we have done this too many
+! 	     times within the same event loop. */
+! 	  activate_events += 1;
+! 	  if (activate_events < reentry_threshold)
+! 	      SetActiveWindow (GDK_WINDOW_HWND (modal_current));
+! 	    
+  	  *ret_valp = 0;
+  	  return_val = TRUE;
+  	  break;
+*************** _gdk_events_queue (GdkDisplay *display)
+*** 3775,3780 ****
+--- 3791,3801 ----
+        TranslateMessage (&msg);
+        DispatchMessageW (&msg);
+      }
++   
++    /* we are leaving the events queue processing: reset flags that protect
++       against re-entry */
++    activate_events = 0;
++    move_or_size_events = 0;
+  }
+  
+  static gboolean
