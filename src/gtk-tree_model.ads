@@ -234,6 +234,8 @@ package Gtk.Tree_Model is
 
    Null_Iter : constant Gtk_Tree_Iter;
 
+   function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean;
+
    function Iter_Get_Type return Glib.GType;
    --  Return the internal type used for iterators
 

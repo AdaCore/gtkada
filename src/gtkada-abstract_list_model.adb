@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2008, AdaCore                   --
+--                 Copyright (C) 2008-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Tree_Model.Utils;
+with Gtk.Tree_Model; use Gtk.Tree_Model;
 
 package body Gtkada.Abstract_List_Model is
 
@@ -40,7 +40,7 @@ package body Gtkada.Abstract_List_Model is
       return Gtk.Tree_Model.Gtk_Tree_Iter
    is
    begin
-      if Gtk.Tree_Model.Utils.Is_Null (Parent) then
+      if Parent = Null_Iter then
          declare
             Path : constant Gtk.Tree_Model.Gtk_Tree_Path
               := Gtk.Tree_Model.Gtk_New_First;
@@ -82,10 +82,10 @@ package body Gtkada.Abstract_List_Model is
       Iter : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean
    is
    begin
-      if Gtk.Tree_Model.Utils.Is_Null (Iter) then
-         return not Gtk.Tree_Model.Utils.Is_Null
-           (Gtk.Tree_Model.Children
-              (Gtk.Tree_Model.Gtk_Tree_Model (Self), (Iter)));
+      if Iter = Null_Iter then
+         return
+           Gtk.Tree_Model.Children
+             (Gtk.Tree_Model.Gtk_Tree_Model (Self), (Iter)) /= Null_Iter;
 
       else
          return False;

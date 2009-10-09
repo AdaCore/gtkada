@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2008, AdaCore                  --
+--                 Copyright (C) 2001-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,6 +38,30 @@ package body Gtk.Tree_Model is
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Tree_Model_Record);
    pragma Warnings (Off, Type_Conversion);
+
+   ---------
+   -- "=" --
+   ---------
+
+   function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean is
+   begin
+      if Left.Stamp = Right.Stamp then
+         if Left.Stamp = 0 then
+            --  Stamp = 0 means the iterator is null iterator, we need not to
+            --  compare other fields in this case.
+
+            return True;
+
+         else
+            return Left.User_Data = Right.User_Data
+                     and then Left.User_Data2 = Right.User_Data2
+                     and then Left.User_Data3 = Right.User_Data3;
+         end if;
+
+      else
+         return False;
+      end if;
+   end "=";
 
    ---------------
    -- Get_Flags --
