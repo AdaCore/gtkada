@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -102,6 +102,8 @@ package Gtk.File_Filter is
      (Filter    : access Gtk_File_Filter_Record;
       Mime_Type : String);
    --  Adds a rule allowing a given mime type to Filter.
+   --  In particular, if you want to show directories only and not files, you
+   --  could use "x-directory/normal" as the Mime type
 
    procedure Add_Pattern
      (Filter  : access Gtk_File_Filter_Record;
