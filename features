@@ -12,9 +12,10 @@ of the feature.
 New features in GtkAda 2.14.1
 -----------------------------
 
-I714-005 Support for glade-3
+I714-005 Initial support for glade-3
 
   Support for glade-3 file format is added to 'gate'.
+  However, we still recommend using glade-2 for the time being
 
 I327-027 API Additions
 
