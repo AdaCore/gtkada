@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2006                          --
---                           AdaCore                                 --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -83,10 +82,10 @@ package body Gnome.Druid_Page_Standard is
    is
       procedure Internal
         (Druid_Page_Standard : System.Address;
-         Logo                : Gdk.Pixbuf.Gdk_Pixbuf);
+         Logo                : System.Address);
       pragma Import (C, Internal, "gnome_druid_page_standard_set_logo");
    begin
-      Internal (Get_Object (Druid_Page_Standard), Logo);
+      Internal (Get_Object (Druid_Page_Standard), Get_Object (Logo));
    end Set_Logo;
 
    -----------------------
@@ -99,11 +98,11 @@ package body Gnome.Druid_Page_Standard is
    is
       procedure Internal
         (Druid_Page_Standard : System.Address;
-         Logo                : Gdk.Pixbuf.Gdk_Pixbuf);
+         Logo                : System.Address);
       pragma Import (C, Internal,
                      "gnome_druid_page_standard_set_top_watermark");
    begin
-      Internal (Get_Object (Druid_Page_Standard), Top_Watermark);
+      Internal (Get_Object (Druid_Page_Standard), Get_Object (Top_Watermark));
    end Set_Top_Watermark;
 
    --------------------------

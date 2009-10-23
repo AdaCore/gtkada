@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                    Copyright (C) 2000-2002                        --
---                            ACT-Europe                             --
+--              Copyright (C) 2000-2009, AdaCore                     --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -81,7 +80,7 @@ package body Gnome.About is
          Authors            : Chars_Ptr_Array;
          Documenters        : Chars_Ptr_Array;
          Translator_Credits : String;
-         Logo               : Gdk_Pixbuf) return System.Address;
+         Logo               : System.Address) return System.Address;
       pragma Import (C, Internal, "gnome_about_new");
 
    begin
@@ -95,7 +94,7 @@ package body Gnome.About is
           Authors_Padded,
           Documenters_Padded,
           Translator_Credits & ASCII.NUL,
-          Logo));
+          Get_Object (Logo)));
    end Initialize;
 
 end Gnome.About;

@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                  Copyright (C) 2001-2006                          --
---                           AdaCore                                 --
+--                Copyright (C) 2001-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -178,10 +177,10 @@ package body Gnome.Druid_Page_Edge is
    is
       procedure Internal
         (Druid_Page_Edge : System.Address;
-         Logo_Image      : Gdk.Pixbuf.Gdk_Pixbuf);
+         Logo_Image      : System.Address);
       pragma Import (C, Internal, "gnome_druid_page_edge_set_logo");
    begin
-      Internal (Get_Object (Druid_Page_Edge), Logo_Image);
+      Internal (Get_Object (Druid_Page_Edge), Get_Object (Logo_Image));
    end Set_Logo;
 
    -------------------
@@ -194,10 +193,10 @@ package body Gnome.Druid_Page_Edge is
    is
       procedure Internal
         (Druid_Page_Edge : System.Address;
-         Watermark       : Gdk.Pixbuf.Gdk_Pixbuf);
+         Watermark       : System.Address);
       pragma Import (C, Internal, "gnome_druid_page_edge_set_watermark");
    begin
-      Internal (Get_Object (Druid_Page_Edge), Watermark);
+      Internal (Get_Object (Druid_Page_Edge), Get_Object (Watermark));
    end Set_Watermark;
 
    -----------------------
@@ -210,10 +209,10 @@ package body Gnome.Druid_Page_Edge is
    is
       procedure Internal
         (Druid_Page_Edge : System.Address;
-         Top_Watermark   : Gdk.Pixbuf.Gdk_Pixbuf);
+         Top_Watermark   : System.Address);
       pragma Import (C, Internal, "gnome_druid_page_edge_set_top_watermark");
    begin
-      Internal (Get_Object (Druid_Page_Edge), Top_Watermark);
+      Internal (Get_Object (Druid_Page_Edge), Get_Object (Top_Watermark));
    end Set_Top_Watermark;
 
 end Gnome.Druid_Page_Edge;
