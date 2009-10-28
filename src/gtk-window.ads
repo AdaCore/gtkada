@@ -316,12 +316,6 @@ package Gtk.Window is
    --
    --  If Window is hidden, this function calls Gtk.Widget.Show as well.
    --
-   --  This function should be used when the user tries to open a window
-   --  that's already open. Say for example the preferences dialog is
-   --  currently open, and the user chooses Preferences from the menu
-   --  a second time; use Present to move the already-open dialog
-   --  where the user can see it.
-   --
    --  If you are calling this function in response to a user interaction, it
    --  is preferable to use Present_With_Time.
 
@@ -331,6 +325,12 @@ package Gtk.Window is
    --  Present a window to the user in response to a user interaction.
    --  Timestamp is the timestamp of the user interaction (typically a button
    --  or key press event) which triggered this call.
+   --
+   --  This function should be used when the user tries to open a window
+   --  that's already open. Say for example the preferences dialog is
+   --  currently open, and the user chooses Preferences from the menu
+   --  a second time; use Present to move the already-open dialog
+   --  where the user can see it.
 
    procedure Stick (Window : access Gtk_Window_Record);
    --  Ask to stick Window, which means that it will appear on all user
