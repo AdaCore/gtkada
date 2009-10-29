@@ -7,6 +7,12 @@ Known problems fixed in GtkAda 2.14.1
   Workaround: Move manually the calls to Object_Connect to the end of the
               Initialize procedure.
 
+- I116-034 Building problem with File Chooser Dialog
+  Problem:    When building with the project mechanim, the package for the
+              file chooser dialog is not found by the compiler.
+  Workaround: Add mention of gtkada-file_chooser_dialog.ad[sb] in
+              <prefix>/lib/gnat/gtkada/gtkada.lgpr
+
 Known problems fixed in GtkAda 2.12.0
 
 - H421-008 GtkAda static library support broken on Windows.
