@@ -39,6 +39,17 @@ package Gtkada.Abstract_Tree_Model is
 
    procedure Initialize (Self : access Gtk_Abstract_Tree_Model_Record'Class);
 
+   ------------------------------
+   -- Interface implementation --
+   ------------------------------
+
+   --  The following subprograms can be overridden to implement the custom
+   --  tree model.
+   --  Note that they are called from C (wrapped through calls to the
+   --  Dispatch_* functions defined in the body of this package) so it is
+   --  advised to add exception handlers in these subprograms, just like in
+   --  regular GtkAda callbacks.
+
    function Get_Flags
      (Self : access Gtk_Abstract_Tree_Model_Record)
       return Gtk.Tree_Model.Tree_Model_Flags;
