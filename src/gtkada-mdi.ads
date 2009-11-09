@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2007 AdaCore                   --
+--                 Copyright (C) 2001-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -71,6 +71,7 @@ package Gtkada.MDI is
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record
      with private;
    type MDI_Child is access all MDI_Child_Record'Class;
+   pragma No_Strict_Aliasing (MDI_Child);
    --  A child of the MDI, that encapsulates the widgets you have put in the
    --  MDI window.
    --  You can easily convert from this to the initial widget using the
