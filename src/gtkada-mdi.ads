@@ -71,7 +71,6 @@ package Gtkada.MDI is
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record
      with private;
    type MDI_Child is access all MDI_Child_Record'Class;
-   pragma No_Strict_Aliasing (MDI_Child);
    --  A child of the MDI, that encapsulates the widgets you have put in the
    --  MDI window.
    --  You can easily convert from this to the initial widget using the
