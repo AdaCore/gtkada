@@ -13,6 +13,13 @@ Known problems fixed in GtkAda 2.14.1
   Workaround: Add mention of gtkada-file_chooser_dialog.ad[sb] in
               <prefix>/lib/gnat/gtkada/gtkada.lgpr
 
+- H123-001 Memory leak in Gdk.Color.Copy (when using Set_Property)
+  Problem:    If you are using Set_Property to change the color properties of
+              various widgets (a Text_Tag for instance), this results in a
+              memory leak
+  Workaround: There is no real workaround. The best is to reduce the number of
+              calls to Set_Property
+
 Known problems fixed in GtkAda 2.12.0
 
 - H421-008 GtkAda static library support broken on Windows.
