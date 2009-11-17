@@ -276,6 +276,10 @@ package Gtkada.MDI is
    --  This title will be the one used for the window when the child is set to
    --  floating state.
 
+   function Get_MDI (Child : access MDI_Child_Record) return MDI_Window;
+   --  Return the MDI to which Child is associated. In Child is a floating
+   --  child, it might not be in the MDI window itself.
+
    function Get_Title (Child : access MDI_Child_Record) return UTF8_String;
    --  Return the title for a specific child
 
@@ -347,6 +351,18 @@ package Gtkada.MDI is
    --  Accel_Path_Prefix is used so that the key shortcuts associated with
    --  these menu items can be changed dynamically by the user (see
    --  gtk-accel_map.ads). The prefix must start with "<" and end with ">".
+
+   type Tab_Contextual_Menu_Factory is access procedure
+     (Child : access MDI_Child_Record'Class;
+      Menu  : access Gtk.Menu.Gtk_Menu_Record'Class);
+
+   procedure Set_Tab_Contextual_Menu_Factory
+     (MDI     : access MDI_Window_Record;
+      Factory : Tab_Contextual_Menu_Factory);
+   --  Set (or unset if Factory is null) the callback to create the contextual
+   --  menu entries when the user clicks on a notebook tab.
+   --  Factory should add entries to Menu (which already contains the default
+   --  entries, but you can remove them if needed).
 
    ------------------------
    -- Selecting children --
@@ -853,6 +869,9 @@ private
       Close_Menu_Item    : Gtk.Menu_Item.Gtk_Menu_Item;
       --  The dynamic menu used to provide access to the most common
       --  functions of MDI.
+
+      Tab_Factory : Tab_Contextual_Menu_Factory;
+      --  Build the contextual menu when right-clicking on tabs
 
       Title_Layout        : Pango.Layout.Pango_Layout;
       --  Layout used to draw titles in the MDI children

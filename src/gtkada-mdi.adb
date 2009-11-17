@@ -3217,6 +3217,27 @@ package body Gtkada.MDI is
       Set_Tab_Pos (Note, Pos);
    end On_Tab_Pos;
 
+   -------------
+   -- Get_MDI --
+   -------------
+
+   function Get_MDI (Child : access MDI_Child_Record) return MDI_Window is
+   begin
+      return Child.MDI;
+   end Get_MDI;
+
+   -------------------------------------
+   -- Set_Tab_Contextual_Menu_Factory --
+   -------------------------------------
+
+   procedure Set_Tab_Contextual_Menu_Factory
+     (MDI     : access MDI_Window_Record;
+      Factory : Tab_Contextual_Menu_Factory)
+   is
+   begin
+      MDI.Tab_Factory := Factory;
+   end Set_Tab_Contextual_Menu_Factory;
+
    ------------------------------
    -- On_Notebook_Button_Press --
    ------------------------------
@@ -3268,6 +3289,10 @@ package body Gtkada.MDI is
            (Item, Gtk.Menu_Item.Signal_Activate,
             On_Tab_Pos'Access, Note, Pos_Right);
          Append (Submenu, Item);
+
+         if C.MDI.Tab_Factory /= null then
+            C.MDI.Tab_Factory (C, Menu);
+         end if;
 
          Show_All (Menu);
          Popup (Menu,
