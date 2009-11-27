@@ -5251,9 +5251,19 @@ package body Gtkada.MDI is
          --  Close all existing windows (internal_load_perspective would try to
          --  preserve them, but they do not apply to the current desktop)
 
-         while MDI.Items /= Null_List loop
-            Destroy (Get_Data (MDI.Items));
-         end loop;
+         declare
+            Tmp : Widget_List.Glist := MDI.Items;
+            Tmp2 : Widget_List.Glist;
+         begin
+            while Tmp /= Null_List loop
+               Tmp2 := Next (Tmp);
+
+               --  Do not force closure, we want to keep desktop-independent
+               --  views
+               Close (MDI, MDI_Child (Get_Data (Tmp)));
+               Tmp := Tmp2;
+            end loop;
+         end;
 
          --  Prepare the contents of the central area. This will automatically
          --  replace the central area's contents in the perspective
