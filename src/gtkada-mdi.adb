@@ -4775,7 +4775,12 @@ package body Gtkada.MDI is
          end loop;
 
          --  Check whether we have a project-specific contents for this child.
-         --  This always takes priority other any project-independent contents
+         --  This always takes priority other any project-independent contents.
+         --  When we have multiple children with the same XML node name, we
+         --  should use the first project-dependent part, then the second,...,
+         --  and not reuse multiple times the first one. To do this, we simply
+         --  remove the nodes from the project-dependent part as we use them,
+         --  which also saves memory.
 
          N := MDI.View_Contents;
          if Child = null and then N /= null then
@@ -4791,6 +4796,8 @@ package body Gtkada.MDI is
                   if Child /= null then
                      Print_Debug ("Found project-specific contents for "
                                   & Child_Node.Child.Tag.all);
+
+                     Free (N);
                      exit;
                   end if;
                end if;
