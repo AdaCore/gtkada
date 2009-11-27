@@ -452,11 +452,14 @@ package Gtkada.MDI is
 
    function Find_MDI_Child_By_Tag
      (MDI : access MDI_Window_Record;
-      Tag : Ada.Tags.Tag) return MDI_Child;
+      Tag : Ada.Tags.Tag;
+      Visible_Only : Boolean := False) return MDI_Child;
    --  Return the first child matching Tag
    --  If the child is currently not visible in the perspective (for instance
    --  it was created for another perspective, but is not present in the
    --  current one), it is inserted automatically back in the MDI.
+   --  If Visible_Only is True, an invisible child is not returned. This is
+   --  useful to check whether a child is currently visible.
 
    function Find_MDI_Child_By_Name
      (MDI  : access MDI_Window_Record;

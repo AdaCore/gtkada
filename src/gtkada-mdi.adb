@@ -2719,10 +2719,12 @@ package body Gtkada.MDI is
 
    function Find_MDI_Child_By_Tag
      (MDI : access MDI_Window_Record;
-      Tag : Ada.Tags.Tag) return MDI_Child
+      Tag : Ada.Tags.Tag;
+      Visible_Only : Boolean := False) return MDI_Child
    is
       Child : MDI_Child;
-      Iter  : Child_Iterator := First_Child (MDI, Visible_Only => False);
+      Iter  : Child_Iterator :=
+        First_Child (MDI, Visible_Only => Visible_Only);
    begin
       loop
          Child := Get (Iter);
@@ -4767,6 +4769,8 @@ package body Gtkada.MDI is
               and then Tmp.XML_Node_Name.all = Child_Node.Child.Tag.all
             then
                Child := Tmp;
+               Put_Line (ASCII.LF & ASCII.LF & ASCII.LF
+                         & " Reuse " & Get_Title (Child));
                Put (MDI, Child);  --  put it back in the MDI
                exit;
             end if;
@@ -5275,7 +5279,7 @@ package body Gtkada.MDI is
          --  Prepare the contents of the central area. This will automatically
          --  replace the central area's contents in the perspective
 
-         Print_Debug ("+++++++ Loading central area ++++++");
+         Print_Debug ("+++++++ Destroying central area ++++++");
 
          if MDI.Central /= null then
             --  It could come from a previous desktop
@@ -5309,6 +5313,8 @@ package body Gtkada.MDI is
          --  part of MDI.Central. So we must restore the central area only
          --  after we restored the views, or Internal_Load_Perspective will
          --  close the floating windows.
+
+         Print_Debug ("+++++++ Loading central area ++++++");
 
          Restore_Multi_Pane
            (Pane                  => MDI.Central,
