@@ -34,6 +34,7 @@
 --  <group>Layout containers</group>
 
 with Ada.Tags;
+with GNAT.Strings;
 with Glib;        use Glib;
 with Glib.Xml_Int;
 with Gdk.GC;
@@ -57,6 +58,7 @@ with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
 with Gtk.Window;
+with Gtkada.Handlers;
 with Gtkada.Multi_Paned;
 with Pango.Font;
 with Pango.Layout;
@@ -71,6 +73,7 @@ package Gtkada.MDI is
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record
      with private;
    type MDI_Child is access all MDI_Child_Record'Class;
+   pragma No_Strict_Aliasing (MDI_Child);
    --  A child of the MDI, that encapsulates the widgets you have put in the
    --  MDI window.
    --  You can easily convert from this to the initial widget using the
@@ -340,18 +343,6 @@ package Gtkada.MDI is
    -- Menus --
    -----------
 
-   function Create_Menu
-     (MDI               : access MDI_Window_Record;
-      Accel_Path_Prefix : String := "<gtkada>") return Gtk.Menu.Gtk_Menu;
-   --  Create a dynamic menu that can then be inserted into a menu bar. This
-   --  menu is dynamic, ie its content will changed based on the focus
-   --  child.
-   --  If this function is called several times, the same menu is returned
-   --  every time. Accel_Path_Prefix must be the same for every call.
-   --  Accel_Path_Prefix is used so that the key shortcuts associated with
-   --  these menu items can be changed dynamically by the user (see
-   --  gtk-accel_map.ads). The prefix must start with "<" and end with ">".
-
    type Tab_Contextual_Menu_Factory is access procedure
      (Child : access MDI_Child_Record'Class;
       Menu  : access Gtk.Menu.Gtk_Menu_Record'Class);
@@ -577,13 +568,28 @@ package Gtkada.MDI is
    --  memory yourself, and thus hard-code the default desktop if need be.
 
    generic
-      type User_Data (<>) is private;
+      type User_Data is private;
       --  Generic type of parameter that is passed to all the children's save
       --  and restore functions.
 
       --  This package needs to be instantiated at library level
 
    package Desktop is
+
+      function Create_Menu
+        (MDI               : access MDI_Window_Record'Class;
+         Accel_Path_Prefix : String := "<gtkada>";
+         User              : User_Data) return Gtk.Menu.Gtk_Menu;
+      --  Create a dynamic menu that can then be inserted into a menu bar. This
+      --  menu is dynamic, ie its content will changed based on the focus
+      --  child.
+      --  If this function is called several times, the same menu is returned
+      --  every time. Accel_Path_Prefix must be the same for every call.
+      --  Accel_Path_Prefix is used so that the key shortcuts associated with
+      --  these menu items can be changed dynamically by the user (see
+      --  gtk-accel_map.ads). The prefix must start with "<" and end with ">".
+      --  User is used for the callbacks on perspective changes, and passed to
+      --  Load_Perspective
 
       type Save_Desktop_Function is access function
         (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -616,20 +622,43 @@ package Gtkada.MDI is
       --  Neither Save nor Load can be null.
 
       function Restore_Desktop
-        (MDI       : access MDI_Window_Record'Class;
-         From_Tree : Glib.Xml_Int.Node_Ptr;
-         User      : User_Data) return Boolean;
+        (MDI          : access MDI_Window_Record'Class;
+         Perspectives : Glib.Xml_Int.Node_Ptr;
+         From_Tree    : Glib.Xml_Int.Node_Ptr;
+         User         : User_Data) return Boolean;
       --  Restore the contents of the MDI from its saved XML tree.
+      --  Perspectives is the list of perspectives. It is cloned as needed, so
+      --  the caller is still responsible for freeing it. The first perspective
+      --  is loaded.
+      --  From_Tree is the part of the desktop that describes the editor area.
       --  User is passed as a parameter to all of the Load_Desktop_Function
       --  registered by the widgets.
       --  Return False if the desktop couldn't be loaded
       --  It also restores the size and position of the toplevel window that
       --  contains the MDI
 
-      function Save_Desktop
-        (MDI : access MDI_Window_Record'Class;
-         User : User_Data) return Glib.Xml_Int.Node_Ptr;
-      --  Return an XML tree that describes the current contents of the MDI.
+      procedure Load_Perspective
+        (MDI          : access MDI_Window_Record'Class;
+         Name         : String;
+         User         : User_Data);
+      --  Replace the current perspective by another one. This preserves the
+      --  editor area
+
+      procedure Create_Perspective
+        (MDI          : access MDI_Window_Record'Class;
+         Name         : String;
+         User         : User_Data);
+      --  Create a new perspective with the current desktop layout. If another
+      --  perspective with the same name exists, it is replaced.
+
+      procedure Save_Desktop
+        (MDI          : access MDI_Window_Record'Class;
+         User         : User_Data;
+         Perspectives : out Glib.Xml_Int.Node_Ptr;
+         Central      : out Glib.Xml_Int.Node_Ptr);
+      --  Return XML reprenstations of the perspectives and central area. Both
+      --  nodes need to be freed by the caller, and can be saved in a file (to
+      --  be passed to Restore_Desktop later on).
       --  This function calls each of the registered function for the children
       --  of the MDI.
       --  It also saves the size and position of the toplevel window that
@@ -647,6 +676,31 @@ package Gtkada.MDI is
          Next : Register_Node;
       end record;
 
+      type Perspective_Menu_Item_Record
+        is new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item_Record
+      with record
+         MDI  : MDI_Window;
+         Name : Natural;
+         User : User_Data;
+      end record;
+      type Perspective_Menu_Item
+        is access all Perspective_Menu_Item_Record'Class;
+
+      procedure Change_Perspective
+        (Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+      CP_Access : constant
+        Gtkada.Handlers.Widget_Callback.Marshallers.Marshaller :=
+        Gtkada.Handlers.Widget_Callback.To_Marshaller
+          (Change_Perspective'Access);
+      --  Internal, but needed so that we can have a 'Access on a callback
+
+      procedure Create_Perspective_CB
+        (Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+      CreateP_Access : constant
+        Gtkada.Handlers.Widget_Callback.Marshallers.Marshaller :=
+        Gtkada.Handlers.Widget_Callback.To_Marshaller
+          (Create_Perspective_CB'Access);
+
       Registers : Register_Node;
       --  Global variable that contains the list of functions that have been
       --  registered.
@@ -655,6 +709,16 @@ package Gtkada.MDI is
    function Desktop_Was_Loaded (MDI : access MDI_Window_Record) return Boolean;
    --  Return True if a desktop was loaded, False if the MDI is only the result
    --  of calls to Gtk_New and Put.
+
+   function List_Of_Perspectives
+     (MDI : access MDI_Window_Record)
+      return GNAT.Strings.String_List_Access;
+   --  Return the list of perspectives known to the MDI. The caller must not
+   --  free the list
+
+   function Current_Perspective
+     (MDI : access MDI_Window_Record'Class) return String;
+   --  Return the name of the currently displayed perspective
 
    -------------
    -- Signals --
@@ -718,6 +782,11 @@ package Gtkada.MDI is
    --     Emitted when the children have been reorganized: either a split
    --     occurred, or a window was dropped into another position
    --
+   --  - "perspective_changed"
+   --     procedure Handler (MDI : access MDI_Window_Record'Class);
+   --     Called when the user has selected a new perspective. One use is to
+   --     save the new desktop to a file.
+   --
    --  </signals>
    --
    --  <signals>
@@ -757,26 +826,18 @@ package Gtkada.MDI is
    --
    --  </signals>
 
-   Signal_Child_Selected       : constant Signal_Name :=
-                                   "child_selected";
-   Signal_Float_Child          : constant Signal_Name :=
-                                   "float_child";
-   Signal_Child_Title_Changed  : constant Signal_Name :=
-                                   "child_title_changed";
-   Signal_Child_Added          : constant Signal_Name :=
-                                   "child_added";
-   Signal_Child_Removed        : constant Signal_Name :=
-                                   "child_removed";
-   Signal_Child_Icon_Changed   : constant Signal_Name :=
-                                   "child_icon_changed";
+   Signal_Child_Selected       : constant Signal_Name := "child_selected";
+   Signal_Float_Child          : constant Signal_Name := "float_child";
+   Signal_Child_Title_Changed  : constant Signal_Name := "child_title_changed";
+   Signal_Child_Added          : constant Signal_Name := "child_added";
+   Signal_Child_Removed        : constant Signal_Name := "child_removed";
+   Signal_Child_Icon_Changed   : constant Signal_Name := "child_icon_changed";
+   Signal_Delete_Event         : constant Signal_Name := "delete_event";
+   Signal_Selected             : constant Signal_Name := "selected";
+   Signal_Unfloat_Child        : constant Signal_Name := "unfloat_child";
+   Signal_Perspective_Changed  : constant Signal_Name := "perspective_changed";
    Signal_Children_Reorganized : constant Signal_Name :=
                                    "children_reorganized";
-   Signal_Delete_Event         : constant Signal_Name :=
-                                   "delete_event";
-   Signal_Selected             : constant Signal_Name :=
-                                   "selected";
-   Signal_Unfloat_Child        : constant Signal_Name :=
-                                   "unfloat_child";
 
 private
    type String_Access is access all UTF8_String;
@@ -841,7 +902,8 @@ private
    type MDI_Window_Record is new Gtkada.Multi_Paned.Gtkada_Multi_Paned_Record
    with record
       Items : Gtk.Widget.Widget_List.Glist := Gtk.Widget.Widget_List.Null_List;
-      --  The list of all MDI children.
+      --  The list of all MDI children. This includes children in the editor
+      --  area, even though they are technically in a separate multi_paned
 
       Desktop_Was_Loaded : Boolean := False;
       --  True if a desktop was loaded
@@ -923,6 +985,16 @@ private
       Dnd_Rectangle : Gdk.Rectangle.Gdk_Rectangle;
       Dnd_Rectangle_Owner : Gdk.Gdk_Window;
       Dnd_Xor_GC : Gdk.Gdk_GC;
+
+      --  Loaded perspectives
+      Perspective_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item;
+      Perspectives           : Glib.Xml_Int.Node_Ptr;
+      View_Contents          : Glib.Xml_Int.Node_Ptr;
+      Perspective_Names      : GNAT.Strings.String_List_Access;
+      Central                : Gtkada.Multi_Paned.Gtkada_Multi_Paned;
+
+      Current_Perspective    : Glib.Xml_Int.Node_Ptr;
+      --  pointer into Perspectives
    end record;
 
    pragma Inline (Get_Widget);

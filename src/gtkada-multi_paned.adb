@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003-2008, AdaCore                  --
+--                 Copyright (C) 2003-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -268,8 +268,9 @@ package body Gtkada.Multi_Paned is
          Put_Line ("<null>");
 
       elsif Child.Is_Widget then
-         Put_Line (Prefix & "<w req=(" & Float'Image (Child.Width)
-                   & Float'Image (Child.Height)
+         Put_Line (Prefix & "<w req=("
+                   & Gint'Image (Gint (Child.Width))
+                   & Gint'Image (Gint (Child.Height))
                    & ") alloc=("
                    & Gint'Image (Get_Allocation_Width (Child.Widget))
                    & Gint'Image (Get_Allocation_Height (Child.Widget))
@@ -283,10 +284,17 @@ package body Gtkada.Multi_Paned is
                    & ") w=" & System.Address_Image (Child.Widget.all'Address)
                    & " C=" & System.Address_Image (Get_Object (Child.Widget))
                    & ">");
+
+         if Child.Widget.all in Gtkada_Multi_Paned_Record'Class then
+            Dump (Gtkada_Multi_Paned (Child.Widget),
+                  Gtkada_Multi_Paned (Child.Widget).Children,
+                  Prefix & "  nested:");
+         end if;
+
       else
          Put_Line (Prefix & "<" & Image (Child.Orientation)
-                   & " req=(" & Float'Image (Child.Width)
-                   & Float'Image (Child.Height)
+                   & " req=(" & Gint'Image (Gint (Child.Width))
+                   & Gint'Image (Gint (Child.Height))
                    & ") x,y=(" & Gint'Image (Child.X)
                    & Gint'Image (Child.Y)
                    & ")"
@@ -329,17 +337,17 @@ package body Gtkada.Multi_Paned is
          if Child.Handle.Win /= null then
             Destroy (Child.Handle.Win);
          end if;
-      end if;
 
-      if Recursive and then not Child.Is_Widget then
-         while Child.First_Child /= null loop
-            Tmp := Child.First_Child.Next;
-            Free (Child.First_Child, Recursive);
-            Child.First_Child := Tmp;
-         end loop;
-      end if;
+         if Recursive and then not Child.Is_Widget then
+            while Child.First_Child /= null loop
+               Tmp := Child.First_Child.Next;
+               Free (Child.First_Child, Recursive);
+               Child.First_Child := Tmp;
+            end loop;
+         end if;
 
-      Unchecked_Free (Child);
+         Unchecked_Free (Child);
+      end if;
    end Free;
 
    -----------
@@ -1120,7 +1128,12 @@ package body Gtkada.Multi_Paned is
                Height      => Current.Handle.Position.Height,
                Orientation => Orientation);
 
-         elsif Current.Handle.Win /= null then
+         --  Hide could cause another Expose event to be sent, resulting in an
+         --  infinite loop. So we first check whether it is already visible
+
+         elsif Current.Handle.Win /= null
+           and then Is_Visible (Current.Handle.Win)
+         then
             Hide (Current.Handle.Win);
          end if;
 
@@ -1589,9 +1602,15 @@ package body Gtkada.Multi_Paned is
    begin
       if not Realized_Is_Set (Split)
         or else Split.Frozen
-        or else Split.Children = null
         or else Alloc.Width <= 1 --  Uninitialized yet
       then
+         return;
+
+      elsif Split.Children = null then
+         --  With nested multi_paned, we must make sure we still properly store
+         --  the allocation.
+
+         Set_Allocation (Split, Alloc);
          return;
       end if;
 
