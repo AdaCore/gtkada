@@ -4769,8 +4769,6 @@ package body Gtkada.MDI is
               and then Tmp.XML_Node_Name.all = Child_Node.Child.Tag.all
             then
                Child := Tmp;
-               Put_Line (ASCII.LF & ASCII.LF & ASCII.LF
-                         & " Reuse " & Get_Title (Child));
                Put (MDI, Child);  --  put it back in the MDI
                exit;
             end if;
