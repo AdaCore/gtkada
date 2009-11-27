@@ -642,7 +642,10 @@ package Gtkada.MDI is
          Name         : String;
          User         : User_Data);
       --  Replace the current perspective by another one. This preserves the
-      --  editor area
+      --  editor area.
+      --  If the perspective does not exist, nothing is done, unless no
+      --  perspective is currently loaded (in which case we load the first
+      --  on in the list).
 
       procedure Create_Perspective
         (MDI          : access MDI_Window_Record'Class;

@@ -5733,8 +5733,32 @@ package body Gtkada.MDI is
          end Remove_All_Items;
 
          MDI_Width, MDI_Height : Gint;
+         Tmp_Persp : Node_Ptr;
 
       begin
+         --  Find the right perspective node
+
+         Tmp_Persp := MDI.Perspectives.Child;
+         while Tmp_Persp /= null
+           and then Get_Attribute (Tmp_Persp, "name") /= Name
+         loop
+            Tmp_Persp := Tmp_Persp.Next;
+         end loop;
+
+         if Tmp_Persp = null then
+            --  If not found, and we already have a perspective => do nothing
+
+            if MDI.Current_Perspective /= null then
+               return;
+            end if;
+
+            --  Else load the first one
+            Print_Debug ("Perspective not found, loading default one");
+            Tmp_Persp := MDI.Perspectives.Child;
+         end if;
+
+         MDI.Current_Perspective := Tmp_Persp;
+
          Print_Debug ("+++++++ Loading perspective " & Name
                       & " ++++++");
 
@@ -5765,21 +5789,6 @@ package body Gtkada.MDI is
 
          MDI.Loading_Desktop := True;
          Freeze (MDI);
-
-         --  Find the right perspective node
-
-         MDI.Current_Perspective := MDI.Perspectives.Child;
-         while MDI.Current_Perspective /= null
-           and then Get_Attribute (MDI.Current_Perspective, "name") /= Name
-         loop
-            MDI.Current_Perspective := MDI.Current_Perspective.Next;
-         end loop;
-
-         if MDI.Current_Perspective = null then
-            --  If not found, load the first one
-            Print_Debug ("Perspective not found, loading default one");
-            MDI.Current_Perspective := MDI.Perspectives.Child;
-         end if;
 
          --  Clean up MDI if necessary
 
@@ -5869,6 +5878,10 @@ package body Gtkada.MDI is
 
          Print_Debug ("++++++ Load_Perspective " & Name);
          if MDI.Current_Perspective /= null then
+            if Get_Attribute (MDI.Current_Perspective, "name") = Name then
+               return;
+            end if;
+
             --  We only rely on the side effect of changing MDI.Perspectives,
             --  since the central area does not change in any case
             Free (MDI.View_Contents);
