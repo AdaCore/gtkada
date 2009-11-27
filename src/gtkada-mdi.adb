@@ -236,6 +236,12 @@ package body Gtkada.MDI is
    --  that fact at the MDI_Child level, no matter whether the child is
    --  currently floating or not.
 
+   function Insert_Child_If_Needed
+     (MDI   : access MDI_Window_Record'Class;
+      Child : MDI_Child) return MDI_Child;
+   --  If the child is currently invisible in the perspective, insert it back
+   --  in the MDI. In both case, return the child itself
+
    procedure Internal_Close_Child
      (Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Internal version of Close, for a MDI_Child
@@ -515,6 +521,7 @@ package body Gtkada.MDI is
    begin
       case Child.State is
          when Floating  => return null;
+         when Invisible => return null;
          when Normal    =>
             if Get_Parent (Child) /= null
               and then Get_Parent (Child).all in Gtk_Notebook_Record'Class
@@ -1508,6 +1515,12 @@ package body Gtkada.MDI is
 
       Free (C.Title);
       Free (C.Short_Title);
+      Free (C.XML_Node_Name);
+
+      if C.State = Invisible then
+         --  We owned an extra reference in  this case
+         Unref (C);
+      end if;
 
       --  Destroy the child, unless the user has explicitely kept a Ref on it
       --  (therefore, do not use Destroy, only Unref). In all cases, it should
@@ -2391,7 +2404,14 @@ package body Gtkada.MDI is
          Put_In_Notebook (MDI, Child, Initial_Position => Initial_Position);
       end if;
 
-      Widget_List.Prepend (MDI.Items, Gtk_Widget (Child));
+      --  Add the child to the list of widgets. It could in fact already be in
+      --  the list if we are reusing a Invisible child from a previous
+      --  perspective. We however want to move it to the front of the list
+
+      Ref (Child);
+      Remove (MDI.Items, Gtk_Widget (Child));
+      Prepend (MDI.Items, Gtk_Widget (Child));
+      Unref (Child);
 
       if MDI.Menu /= null then
          Create_Menu_Entry (Child);
@@ -2606,6 +2626,20 @@ package body Gtkada.MDI is
       end if;
    end Set_Title;
 
+   ----------------------------
+   -- Insert_Child_If_Needed --
+   ----------------------------
+
+   function Insert_Child_If_Needed
+     (MDI   : access MDI_Window_Record'Class;
+      Child : MDI_Child) return MDI_Child is
+   begin
+      if Child /= null and then Child.State = Invisible then
+         Put (MDI, Child);
+      end if;
+      return Child;
+   end Insert_Child_If_Needed;
+
    --------------------
    -- Find_MDI_Child --
    --------------------
@@ -2620,7 +2654,7 @@ package body Gtkada.MDI is
 
       while Tmp /= Null_List loop
          if MDI_Child (Get_Data (Tmp)).Initial = Gtk_Widget (Widget) then
-            return MDI_Child (Get_Data (Tmp));
+            return Insert_Child_If_Needed (MDI, MDI_Child (Get_Data (Tmp)));
          end if;
 
          Tmp := Next (Tmp);
@@ -2638,6 +2672,7 @@ package body Gtkada.MDI is
    is
       W   : Gtk_Widget := Gtk_Widget (Widget);
       Win : Gtk_Window;
+      C   : MDI_Child;
    begin
       --  As a special case, if the widget's parent is a notebook, we check
       --  whether the associated page is a MDI child, and behave as if that
@@ -2645,16 +2680,17 @@ package body Gtkada.MDI is
 
       while W /= null loop
          if W.all in MDI_Child_Record'Class then
-            return MDI_Child (W);
+            return Insert_Child_If_Needed (MDI_Child (W).MDI, MDI_Child (W));
 
          elsif W.all in Gtk_Notebook_Record'Class
            and then Get_Nth_Page
              (Gtk_Notebook (W), Get_Current_Page (Gtk_Notebook (W))).all
               in MDI_Child_Record'Class
          then
-            return MDI_Child
+            C := MDI_Child
               (Get_Nth_Page
                  (Gtk_Notebook (W), Get_Current_Page (Gtk_Notebook (W))));
+            return Insert_Child_If_Needed (C.MDI, C);
          end if;
 
          W := Get_Parent (W);
@@ -2666,7 +2702,8 @@ package body Gtkada.MDI is
       Win := Gtk_Window (Get_Toplevel (Widget));
       if Win /= null then
          begin
-            return Child_User_Data.Get (Win, "parent_mdi_child");
+            C := Child_User_Data.Get (Win, "parent_mdi_child");
+            return Insert_Child_If_Needed (C.MDI, C);
          exception
             when Gtkada.Types.Data_Error =>
                return null;
@@ -2685,7 +2722,7 @@ package body Gtkada.MDI is
       Tag : Ada.Tags.Tag) return MDI_Child
    is
       Child : MDI_Child;
-      Iter  : Child_Iterator := First_Child (MDI);
+      Iter  : Child_Iterator := First_Child (MDI, Visible_Only => False);
    begin
       loop
          Child := Get (Iter);
@@ -2693,7 +2730,11 @@ package body Gtkada.MDI is
          Next (Iter);
       end loop;
 
-      return Get (Iter);
+      if Child /= null then
+         return Insert_Child_If_Needed (MDI, Child);
+      else
+         return null;
+      end if;
    end Find_MDI_Child_By_Tag;
 
    ----------------------------
@@ -2705,7 +2746,7 @@ package body Gtkada.MDI is
       Name : String) return MDI_Child
    is
       Child : MDI_Child;
-      Iter  : Child_Iterator := First_Child (MDI);
+      Iter  : Child_Iterator := First_Child (MDI, Visible_Only => False);
    begin
       loop
          Child := Get (Iter);
@@ -2715,7 +2756,7 @@ package body Gtkada.MDI is
          Next (Iter);
       end loop;
 
-      return Get (Iter);
+      return Insert_Child_If_Needed (MDI, Get (Iter));
    end Find_MDI_Child_By_Name;
 
    -----------------
@@ -2754,6 +2795,8 @@ package body Gtkada.MDI is
       case Child.State is
          when Floating =>
             return True;
+         when Invisible =>
+            return False;
          when Normal =>
             Note := Get_Notebook (Child);
             return Get_Nth_Page (Note, Get_Current_Page (Note)) =
@@ -4697,6 +4740,8 @@ package body Gtkada.MDI is
          W, H     : Allocation_Int := -1;
          Visible  : constant Boolean := Boolean'Value
            (Get_Attribute (Child_Node, "visible", "true"));
+         Iter     : Child_Iterator;
+         Tmp      : MDI_Child;
       begin
          Print_Debug ("Parse_Child_Node");
          Indent_Debug (1);
@@ -4707,11 +4752,33 @@ package body Gtkada.MDI is
          X        := 0;
          Y        := 0;
 
+         --  Check whether this child was already in a previous perspective.
+         --  If that's the case, reuse it
+
+         Iter := First_Child (MDI, Visible_Only => False);
+         loop
+            Tmp := Get (Iter);
+            exit when Tmp = null;
+
+            --  If not already used in the perspective
+
+            if Tmp.State = Invisible
+              and then Tmp.XML_Node_Name /= null
+              and then Tmp.XML_Node_Name.all = Child_Node.Child.Tag.all
+            then
+               Child := Tmp;
+               Put (MDI, Child);  --  put it back in the MDI
+               exit;
+            end if;
+
+            Next (Iter);
+         end loop;
+
          --  Check whether we have a project-specific contents for this child.
          --  This always takes priority other any project-independent contents
 
          N := MDI.View_Contents;
-         if N /= null then
+         if Child = null and then N /= null then
             N := N.Child;
             while N /= null loop
                if N.Tag.all = Child_Node.Child.Tag.all then
@@ -5028,6 +5095,9 @@ package body Gtkada.MDI is
                           (Child, True, Position_At_Mouse => False,
                            X => X, Y => Y);
 
+                     when Invisible =>
+                        null;
+
                      when Normal =>
                         Float_Child (Child, False);
                   end case;
@@ -5110,6 +5180,7 @@ package body Gtkada.MDI is
 
          Free (MDI.Perspectives);
          MDI.Perspectives := Deep_Copy (Perspectives);
+         MDI.Current_Perspective := null;
          Recompute_Perspective_Names (MDI);
 
          Free (MDI.View_Contents);
@@ -5177,6 +5248,13 @@ package body Gtkada.MDI is
                null;
          end;
 
+         --  Close all existing windows (internal_load_perspective would try to
+         --  preserve them, but they do not apply to the current desktop)
+
+         while MDI.Items /= Null_List loop
+            Destroy (Get_Data (MDI.Items));
+         end loop;
+
          --  Prepare the contents of the central area. This will automatically
          --  replace the central area's contents in the perspective
 
@@ -5188,17 +5266,6 @@ package body Gtkada.MDI is
          end if;
 
          Gtk_New (MDI.Central);
-
-         Restore_Multi_Pane
-           (Pane                  => MDI.Central,
-            MDI                   => MDI,
-            Focus_Child           => Focus_Child,
-            To_Raise              => To_Raise,
-            To_Hide               => To_Hide,
-            User                  => User,
-            Node                  => From_Tree,
-            Full_Width            => MDI_Width,
-            Full_Height           => MDI_Height);
 
          Set_Child_Visible (MDI.Central, True);
 
@@ -5220,6 +5287,22 @@ package body Gtkada.MDI is
             User, Focus_Child => Focus_Child,
             To_Raise => To_Raise, To_Hide => To_Hide,
             Width => MDI_Width, Height => MDI_Height);
+
+         --  The central area describes the floating children, so they are not
+         --  part of MDI.Central. So we must restore the central area only
+         --  after we restored the views, or Internal_Load_Perspective will
+         --  close the floating windows.
+
+         Restore_Multi_Pane
+           (Pane                  => MDI.Central,
+            MDI                   => MDI,
+            Focus_Child           => Focus_Child,
+            To_Raise              => To_Raise,
+            To_Hide               => To_Hide,
+            User                  => User,
+            Node                  => From_Tree,
+            Full_Width            => MDI_Width,
+            Full_Height           => MDI_Height);
 
          --  And do the actual resizing on the screen
 
@@ -5338,6 +5421,10 @@ package body Gtkada.MDI is
             Widget_Node : Node_Ptr;
             Tmp_Node    : Node_Ptr;
          begin
+            if Child.State = Invisible then
+               return;
+            end if;
+
             Register := Registers;
             Widget_Node := null;
 
@@ -5347,6 +5434,12 @@ package body Gtkada.MDI is
             end loop;
 
             if Widget_Node /= null then
+               --  Save the XML node name, which might be useful when switching
+               --  perspectives
+
+               Free (Child.XML_Node_Name);
+               Child.XML_Node_Name := new String'(Widget_Node.Tag.all);
+
                --  We only save the name of the child, not its contents, which
                --  is project specific and thus goes into the central area's
                --  XML
@@ -5624,7 +5717,7 @@ package body Gtkada.MDI is
             Child := MDI_Child (Widget_List.Get_Data (Item));
 
             case Child.State is
-               when Normal   => null;
+               when Normal | Invisible  => null;
                when Floating =>
                   Save_Widget (Central, Child, False, In_Central => True);
             end case;
@@ -5681,32 +5774,33 @@ package body Gtkada.MDI is
 
          procedure Remove_All_Items (Remove_All_Empty : Boolean) is
             Children    : Widget_List.Glist;
-            L, L2       : Widget_List.Glist;
+            L           : Widget_List.Glist;
             Note        : Gtk_Notebook;
+            C           : MDI_Child;
          begin
             Print_Debug ("Remove_All_Items: remove_empty="
                          & Boolean'Image (Remove_All_Empty));
             Indent_Debug (1);
 
-            --  Close all children, except those in the central area that
-            --  are managed separately. We do not send the delete_event
-            --  signal since we need to empty the desktop completely to
-            --  reload it correctly.
-            --  ??? In fact, we should first save the current perspective,
-            --  then check whether an existing window also exists in the new
-            --  perspective to load (we can compare XML nodes without asking
-            --  the application), and keep/reuse those windows so that any
-            --  context they have is correctly preserved.
+            --  Remove all children from the MDI. However, we do not close them
+            --  in case we switch back to the perspective (or the user opens
+            --  them while in the perspective). They will just be marked as
+            --  Invisible for now.
 
             L := MDI.Items;
             while L /= Null_List loop
-               L2 := Next (L);
-               Print_Debug ("Remove_All_Items: should we close "
-                            & Get_Title (MDI_Child (Get_Data (L))));
-               if not In_Central_Area (MDI, Get_Data (L)) then
-                  Close_Child (MDI_Child (Get_Data (L)), Force => True);
+               C := MDI_Child (Get_Data (L));
+
+               if C.State = Normal
+                 and then not In_Central_Area (MDI, C)
+               then
+                  Ref (C);   --  Unref called in Destroy_Child
+                  Remove (Gtk_Container (Get_Parent (C)), C);
+
+                  C.State := Invisible;
                end if;
-               L := L2;
+
+               L := Next (L);
             end loop;
 
             --  We now force the closing of all empty notebooks
@@ -5905,9 +5999,11 @@ package body Gtkada.MDI is
 
    function First_Child
      (MDI               : access MDI_Window_Record;
-      Group_By_Notebook : Boolean := False) return Child_Iterator
+      Group_By_Notebook : Boolean := False;
+      Visible_Only      : Boolean := True) return Child_Iterator
    is
       Children : Widget_List.Glist;
+      C        : MDI_Child;
    begin
       if Group_By_Notebook then
          Children := Get_Children (MDI);
@@ -5915,6 +6011,7 @@ package body Gtkada.MDI is
             declare
                Iter : Child_Iterator :=
                  (Group_By_Notebook => True,
+                  Visible_Only      => Visible_Only,
                   Notebook          => Gtk_Notebook (Get_Data (Children)),
                   Notebook_Page     => 0,
                   Floating_Iter     => MDI.Items,
@@ -5933,12 +6030,26 @@ package body Gtkada.MDI is
          else
             return (Group_By_Notebook => True,
                     Notebook       => null,
+                    Visible_Only   => Visible_Only,
                     Notebook_Page  => Gint'Last,
                     Floating_Iter  => Null_List,
                     MDI            => MDI_Window (MDI));
          end if;
       else
-         return (Group_By_Notebook => False, Iter => MDI.Items);
+         Children := MDI.Items;
+
+         if Children /= Widget_List.Null_List and then Visible_Only then
+            C := MDI_Child (Widget_List.Get_Data (MDI.Items));
+            if  C.State = Invisible then
+               --  There are no visible child, since the first one should be
+               --  the one with the focus
+               Children := Widget_List.Null_List;
+            end if;
+         end if;
+
+         return (Group_By_Notebook => False,
+                 Visible_Only      => Visible_Only,
+                 Iter              => Children);
       end if;
    end First_Child;
 
@@ -5958,6 +6069,7 @@ package body Gtkada.MDI is
 
    procedure Next (Iterator : in out Child_Iterator) is
       Children, Child : Widget_List.Glist;
+      C  : MDI_Child;
    begin
       if Iterator.Group_By_Notebook then
          if Iterator.Notebook = null then
@@ -5996,7 +6108,15 @@ package body Gtkada.MDI is
          end if;
 
       else
-         Iterator.Iter := Widget_List.Next (Iterator.Iter);
+         loop
+            Iterator.Iter := Widget_List.Next (Iterator.Iter);
+            if Iterator.Visible_Only then
+               C := Get (Iterator);
+               exit when C = null or else C.State /= Invisible;
+            else
+               exit;
+            end if;
+         end loop;
       end if;
    end Next;
 

@@ -82,13 +82,16 @@ package Gtkada.MDI is
    type MDI_Child_Array is array (Natural range <>) of MDI_Child;
    No_Children : constant MDI_Child_Array := (1 .. 0 => null);
 
-   type State_Type is (Normal, Floating);
+   type State_Type is (Normal, Floating, Invisible);
    --  This type indicates the state of an item in the MDI:
    --  - Normal: the item can be manipulated (moved and resized) by the user.
    --      It is found either in the middle notebook (maximized items), or
    --      in the layout.
    --  - Floating: the item has its own toplevel window, and is thus managed
    --      by the window manager.
+   --  - Invisible: the child was part of a previously displayed perspective,
+   --      but is no longer in the current perspective. We still keep it to
+   --      reuse it when switching back to the previous perspective.
 
    procedure Gtk_New
      (MDI   : out MDI_Window;
@@ -434,28 +437,41 @@ package Gtkada.MDI is
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child;
    --  Return the MDI_Child that encapsulates Widget.
    --  Widget must be the exact same one you gave in argument to Put.
+   --  If the child is currently not visible in the perspective (for instance
+   --  it was created for another perspective, but is not present in the
+   --  current one), it is inserted automatically back in the MDI.
 
    function Find_MDI_Child_From_Widget
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child;
    --  Return the MDI child that encapsulate the parent of Widget.
    --  As opposed to Find_MDI_Child, Widget can be anywhere within the
    --  widget tree. This function properly handles floating children
+   --  If the child is currently not visible in the perspective (for instance
+   --  it was created for another perspective, but is not present in the
+   --  current one), it is inserted automatically back in the MDI.
 
    function Find_MDI_Child_By_Tag
      (MDI : access MDI_Window_Record;
       Tag : Ada.Tags.Tag) return MDI_Child;
    --  Return the first child matching Tag
+   --  If the child is currently not visible in the perspective (for instance
+   --  it was created for another perspective, but is not present in the
+   --  current one), it is inserted automatically back in the MDI.
 
    function Find_MDI_Child_By_Name
      (MDI  : access MDI_Window_Record;
       Name : String) return MDI_Child;
    --  Return the first child matching Name.
+   --  If the child is currently not visible in the perspective (for instance
+   --  it was created for another perspective, but is not present in the
+   --  current one), it is inserted automatically back in the MDI.
 
    type Child_Iterator is private;
 
    function First_Child
      (MDI               : access MDI_Window_Record;
-      Group_By_Notebook : Boolean := False) return Child_Iterator;
+      Group_By_Notebook : Boolean := False;
+      Visible_Only      : Boolean := True) return Child_Iterator;
    --  Return an access to the first child of the MDI.
    --
    --  If Group_By_Notebook is True, then the children are reported one after
@@ -467,6 +483,10 @@ package Gtkada.MDI is
    --  If Group_By_Notebook is False, it is garanteed that the first child is
    --  the one that currently has the focus in the MDI. The children are
    --  returned in the order in which they last had the focus.
+   --
+   --  If Visible_Only is true, then only those children currently visible in
+   --  the perspective are returned. The children that were part of a former
+   --  perspective are not returned.
 
    procedure Next (Iterator : in out Child_Iterator);
    --  Move to the next child in the MDI
@@ -861,6 +881,11 @@ private
       --  Title of the item, as it appears in the title bar.
       --  These are UTF8-Encoded
 
+      XML_Node_Name : String_Access;
+      --  The name of the XML node when this child is saved in a desktop (if
+      --  we know it). This is used to reuse a child when switching
+      --  perspectives.
+
       MDI : MDI_Window;
       --  The MDI to which the child belongs. We cannot get this information
       --  directly from Get_Parent since some children are actually floating
@@ -888,6 +913,8 @@ private
    end record;
 
    type Child_Iterator (Group_By_Notebook : Boolean := False) is record
+      Visible_Only : Boolean;
+
       case Group_By_Notebook is
          when False =>
             Iter : Gtk.Widget.Widget_List.Glist;
@@ -906,7 +933,10 @@ private
    with record
       Items : Gtk.Widget.Widget_List.Glist := Gtk.Widget.Widget_List.Null_List;
       --  The list of all MDI children. This includes children in the editor
-      --  area, even though they are technically in a separate multi_paned
+      --  area, even though they are technically in a separate multi_paned.
+      --  Warning: this list might contain items which are in fact invisible in
+      --  the MDI (in fact that are not even children of the MDI), if they
+      --  existed in a previous perspective but no longer in the current one.
 
       Desktop_Was_Loaded : Boolean := False;
       --  True if a desktop was loaded
