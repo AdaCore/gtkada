@@ -4038,6 +4038,11 @@ package body Gtkada.MDI is
            (Get_Object (MDI),
             String (Signal_Children_Reorganized) & ASCII.NUL);
       end if;
+
+      if Traces then
+         Print_Debug ("After split " & Gtk_Orientation'Image (Orientation));
+         Dump (MDI);
+      end if;
    end Split;
 
    ----------------
