@@ -558,8 +558,7 @@ package Gtkada.MDI is
       Reuse_If_Possible : Boolean := False;
       After             : Boolean := False;
       Width, Height     : Glib.Gint := 0);
-   --  Split the central area. The split starting from either the currently
-   --  selected child or the last child that had the focus in that area.
+   --  Split the notebook containing the current focus window.
    --  If Reuse_If_Possible is True, and the current child is already splitted
    --  in the right directory, we reuse that area.
    --  If After is true, then the currently selected child is put below or

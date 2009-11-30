@@ -3981,25 +3981,37 @@ package body Gtkada.MDI is
       Note, Note2 : Gtk_Notebook;
       Child       : MDI_Child;
       Pane        : Gtkada_Multi_Paned;
+      W           : Gtk_Widget;
    begin
-      if MDI.Focus_Child /= null
-        and then In_Central_Area (MDI, MDI.Focus_Child)
-      then
-         Pane := MDI.Central;
+      if MDI.Focus_Child = null then
+         if MDI.Items = Widget_List.Null_List then
+            return;
+         end if;
+
+         Child := MDI_Child (Get_Data (MDI.Items));
       else
-         Pane := Gtkada_Multi_Paned (MDI);
+         Child := MDI.Focus_Child;
       end if;
 
-      Note := Find_Current_In_Central (Pane, MDI);
+      Note := Get_Notebook (Child);
 
       --  Only split if there are at least two children
       if Note /= null and then Get_Nth_Page (Note, 1) /= null then
 
-         Child := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
-         Ref (Child);
+         if In_Central_Area (MDI, Child) then
+            Pane := MDI.Central;
+         else
+            Pane := Gtkada_Multi_Paned (MDI);
+         end if;
 
-         Note2 := Gtk_Notebook (Splitted_Area
-           (Pane, Note, Orientation, After));
+         Child := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
+
+         W := Splitted_Area (Pane, Note, Orientation, After);
+         if W /= null and then W.all in Gtk_Notebook_Record'Class then
+            Note2 := Gtk_Notebook (W);
+         else
+            Note2 := null;
+         end if;
 
          if not Reuse_If_Possible or else Note2 = null then
             Note2 := Create_Notebook (MDI);
@@ -4013,6 +4025,7 @@ package body Gtkada.MDI is
                    After       => After);
          end if;
 
+         Ref (Child);
          Give_Focus_To_Previous_Child (Child);
          Remove (Note, Child);
          Put_In_Notebook (MDI, Child, Note2);
