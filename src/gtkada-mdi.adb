@@ -1291,7 +1291,9 @@ package body Gtkada.MDI is
       M   : constant MDI_Window := MDI_Window (MDI);
       Tmp : Widget_List.Glist := First (M.Items);
       N   : Widget_List.Glist;
+      C   : MDI_Child;
    begin
+      Print_Debug ("Destroy_MDI");
       --  Note: we only destroy the floating children. Other children will be
       --  destroyed when their parent container is destroyed, so we have
       --  nothing to do for them.
@@ -1299,16 +1301,28 @@ package body Gtkada.MDI is
       while Tmp /= Null_List loop
          --  Get the next field first, since Destroy will actually destroy Tmp
 
+         C := MDI_Child (Get_Data (Tmp));
+
          N := Next (Tmp);
-         if MDI_Child (Get_Data (Tmp)).State = Floating then
-            Destroy (Get_Data (Tmp));
+         if C.State = Floating then
+            Print_Debug
+              ("Destroy_MDI => Destroying floating " & Get_Title (C));
+            Destroy (C);
+
+         elsif C.State = Invisible then
+            Print_Debug
+              ("Destroy_MDI => Unref invisible " & Get_Title (C));
+            C.State := Normal;
+            Unref (C);
          else
+            Print_Debug
+              ("Destroy_MDI => Do nothing to " & Get_Title (C));
             --  Pretend the child is not docked or floating. Otherwise,
             --  Destroy_Child would try to undock the child. Standard gtk+
             --  containers handle this by having this destroy callback called
             --  last, but it isn't doable from GtkAda since it means modifying
             --  the pointer-to-subprogram in the Class struct.
-            MDI_Child (Get_Data (Tmp)).State := Normal;
+            C.State := Normal;
          end if;
          Tmp := N;
       end loop;
@@ -1518,7 +1532,7 @@ package body Gtkada.MDI is
       Free (C.XML_Node_Name);
 
       if C.State = Invisible then
-         --  We owned an extra reference in  this case
+         --  We owned an extra reference in this case
          Unref (C);
       end if;
 
@@ -2394,8 +2408,14 @@ package body Gtkada.MDI is
       --  We need to show the widget before inserting it in a notebook,
       --  otherwise the notebook page will not be made visible.
 
+      Ref (Child);
+
       Show_All (Child);
       Set_Child_Title_Bar (Child);
+
+      if Child.State = Invisible then
+         Unref (Child);  --  Set in Remove_All_Items
+      end if;
 
       Child.State := Normal;
       Float_Child (Child, MDI.All_Floating_Mode);
@@ -2408,7 +2428,6 @@ package body Gtkada.MDI is
       --  the list if we are reusing a Invisible child from a previous
       --  perspective. We however want to move it to the front of the list
 
-      Ref (Child);
       Remove (MDI.Items, Gtk_Widget (Child));
       Prepend (MDI.Items, Gtk_Widget (Child));
       Unref (Child);
@@ -5826,7 +5845,7 @@ package body Gtkada.MDI is
                if C.State = Normal
                  and then not In_Central_Area (MDI, C)
                then
-                  Ref (C);   --  Unref called in Destroy_Child
+                  Ref (C);   --  Unref called in Destroy_Child and Put
                   Remove (Gtk_Container (Get_Parent (C)), C);
 
                   C.State := Invisible;
