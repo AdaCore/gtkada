@@ -4450,6 +4450,37 @@ package body Gtkada.MDI is
            (Get_Object (MDI), String (Signal_Perspective_Changed) & ASCII.NUL);
       end Create_Perspective;
 
+      ------------------------
+      -- Define_Perspective --
+      ------------------------
+
+      procedure Define_Perspective
+        (MDI          : access MDI_Window_Record'Class;
+         XML          : Glib.Xml_Int.Node_Ptr;
+         User         : User_Data)
+      is
+         Name : constant String := Get_Attribute (XML, "name");
+         Tmp : Node_Ptr;
+      begin
+         if Name = "" or else MDI.Perspectives = null then
+            return;
+         end if;
+
+         Tmp := MDI.Perspectives.Child;
+
+         while Tmp /= null loop
+            if Get_Attribute (Tmp, "name") = Name then
+               --  Perspective already exists
+               return;
+            end if;
+
+            Tmp := Tmp.Next;
+         end loop;
+
+         Add_Child (MDI.Perspectives, Deep_Copy (XML), Append => True);
+         Create_Perspective_Menu (MDI, User);
+      end Define_Perspective;
+
       -----------------------------
       -- Create_Perspective_Menu --
       -----------------------------

@@ -677,6 +677,19 @@ package Gtkada.MDI is
       --  Create a new perspective with the current desktop layout. If another
       --  perspective with the same name exists, it is replaced.
 
+      procedure Define_Perspective
+        (MDI          : access MDI_Window_Record'Class;
+         XML          : Glib.Xml_Int.Node_Ptr;
+         User         : User_Data);
+      --  Define a new perspective (in the same format as returned by
+      --  Save_Desktop, the central area is under control of the user so you
+      --  cannot change it).
+      --  If such a perspective already exists, nothing is done (since the user
+      --  might have modified it already).
+      --  XML's root node is the <perspective> node, including its "name"
+      --  attribute.
+      --  XML must be freed by the caller.
+
       procedure Save_Desktop
         (MDI          : access MDI_Window_Record'Class;
          User         : User_Data;
