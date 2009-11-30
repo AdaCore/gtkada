@@ -3933,8 +3933,17 @@ package body Gtkada.MDI is
    is
       Note, Note2 : Gtk_Notebook;
       Child       : MDI_Child;
+      Pane        : Gtkada_Multi_Paned;
    begin
-      Note := Find_Current_In_Central (MDI, MDI);
+      if MDI.Focus_Child /= null
+        and then In_Central_Area (MDI, MDI.Focus_Child)
+      then
+         Pane := MDI.Central;
+      else
+         Pane := Gtkada_Multi_Paned (MDI);
+      end if;
+
+      Note := Find_Current_In_Central (Pane, MDI);
 
       --  Only split if there are at least two children
       if Note /= null and then Get_Nth_Page (Note, 1) /= null then
@@ -3943,12 +3952,12 @@ package body Gtkada.MDI is
          Ref (Child);
 
          Note2 := Gtk_Notebook (Splitted_Area
-           (MDI, Note, Orientation, After));
+           (Pane, Note, Orientation, After));
 
          if not Reuse_If_Possible or else Note2 = null then
             Note2 := Create_Notebook (MDI);
             Show_All (Note2);
-            Split (MDI,
+            Split (Pane,
                    Ref_Widget  => Note,
                    New_Child   => Note2,
                    Width       => Width,
@@ -3976,15 +3985,17 @@ package body Gtkada.MDI is
    ----------------
 
    procedure Split_H_Cb (MDI : access Gtk_Widget_Record'Class) is
+      M : constant MDI_Window := MDI_Window (MDI);
    begin
       --  Do nothing unless the current child is in the central area, since
       --  otherwise this is disturbing for the user
 
-      if MDI_Window (MDI).Focus_Child /= null
-        and then MDI_Window (MDI).Focus_Child.State = Normal
+      if M.Focus_Child /= null
+        and then M.Focus_Child.State = Normal
       then
-         Split (MDI_Window (MDI), Orientation => Orientation_Horizontal);
+         Split (M, Orientation => Orientation_Horizontal);
       end if;
+
    exception
       when E : others =>
          pragma Debug
@@ -5961,6 +5972,11 @@ package body Gtkada.MDI is
          end;
 
          Show_All (MDI);
+
+         --  If Central was not part of the perspective (an error...), we let
+         --  gtk+ display an error message. We cannot simply Add_Child the
+         --  central area to the MDI, since that doesn't seem to work correctly
+
          Realize (MDI.Central);
          Show_All (MDI.Central);
          Unref (MDI.Central);
