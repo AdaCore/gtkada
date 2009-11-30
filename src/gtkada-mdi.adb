@@ -5908,6 +5908,10 @@ package body Gtkada.MDI is
                   Remove (Gtk_Container (Get_Parent (C)), C);
 
                   C.State := Invisible;
+
+                  if C.Menu_Item /= null then
+                     Destroy (C.Menu_Item);
+                  end if;
                end if;
 
                L := Next (L);
