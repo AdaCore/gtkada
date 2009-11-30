@@ -1803,6 +1803,8 @@ package body Gtkada.MDI is
             Child_Drag_Finished (C);
 
          when In_Drag =>
+            Set_Border_Width (C.MDI.Central, 0);
+
             Destroy_Dnd_Window (C.MDI);
             Draw_Dnd_Rectangle (C.MDI);
             Get_Dnd_Target (C.MDI, Current, Position, C.MDI.Dnd_Rectangle);
@@ -1972,7 +1974,14 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
+      In_Perspective : aliased constant String := ASCII.LF
+        & "(will be hidden when changing perspective)";
+      In_Central : aliased constant String := ASCII.LF
+        & "(will be preserved when changing perspective)";
       C        : constant MDI_Child := MDI_Child (Child);
+
+      type Cst_String_Access is access constant String;
+      Loc      : Cst_String_Access;
       Current  : Gtk_Widget;
       C3       : MDI_Child;
       Note     : Gtk_Notebook;
@@ -1996,22 +2005,27 @@ package body Gtkada.MDI is
             --  location
 
             if Current = null then
-               Update_Dnd_Window (C.MDI, "Float");
+               Update_Dnd_Window (C.MDI, "Float" & In_Central);
 
             elsif Current = Gtk_Widget (C.MDI.Central) then
                case Position is
                   when Position_Bottom =>
-                     Update_Dnd_Window (C.MDI, "Put below central area");
+                     Update_Dnd_Window
+                       (C.MDI, "Put below central area" & In_Perspective);
                   when Position_Top =>
-                     Update_Dnd_Window (C.MDI, "Put above central area");
+                     Update_Dnd_Window
+                       (C.MDI, "Put above central area" & In_Perspective);
                   when Position_Left =>
                      Update_Dnd_Window
-                       (C.MDI, "Put on the left of central area");
+                       (C.MDI,
+                        "Put on the left of central area" & In_Perspective);
                   when Position_Right =>
                      Update_Dnd_Window
-                       (C.MDI, "Put on the right of central area");
+                       (C.MDI, "Put on the right of central area"
+                        & In_Perspective);
                   when others =>
-                     Update_Dnd_Window (C.MDI, "Put in central area");
+                     Update_Dnd_Window
+                       (C.MDI, "Put in central area" & In_Central);
                end case;
 
             elsif Current = Get_Parent (C)
@@ -2024,27 +2038,39 @@ package body Gtkada.MDI is
                C3  := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
 
                if C3 = null then
-                  Update_Dnd_Window (C.MDI, "Put in central area");
+                  Update_Dnd_Window
+                    (C.MDI, "Put in central area" & In_Central);
 
                else
+                  if In_Central_Area (C.MDI, C3) then
+                     Loc := In_Central'Access;
+                  else
+                     Loc := In_Perspective'Access;
+                  end if;
+
                   case Position is
                      when Position_Bottom =>
                         Update_Dnd_Window
-                          (C.MDI, "Put below " & Get_Short_Title (C3));
+                          (C.MDI,
+                           "Put below " & Get_Short_Title (C3) & Loc.all);
                      when Position_Top =>
                         Update_Dnd_Window
-                          (C.MDI, "Put above " & Get_Short_Title (C3));
+                          (C.MDI,
+                           "Put above " & Get_Short_Title (C3) & Loc.all);
                      when Position_Left =>
                         Update_Dnd_Window
                           (C.MDI,
-                           "Put on the left of " & Get_Short_Title (C3));
+                           "Put on the left of "
+                           & Get_Short_Title (C3) & Loc.all);
                      when Position_Right =>
                         Update_Dnd_Window
                           (C.MDI,
-                           "Put on the right of " & Get_Short_Title (C3));
+                           "Put on the right of "
+                           & Get_Short_Title (C3) & Loc.all);
                      when others =>
                         Update_Dnd_Window
-                          (C.MDI, "Put on top of " & Get_Short_Title (C3));
+                          (C.MDI, "Put on top of "
+                           & Get_Short_Title (C3) & Loc.all);
                   end case;
                end if;
             end if;
@@ -2109,6 +2135,8 @@ package body Gtkada.MDI is
                if not Pointer_Is_Grabbed then
                   return False;
                end if;
+
+               Set_Border_Width (C.MDI.Central, 10);
 
                C.MDI.In_Drag := In_Drag;
                C.MDI.Dnd_Rectangle_Owner := null;
