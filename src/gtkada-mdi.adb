@@ -65,6 +65,7 @@ with Gdk.GC;                  use Gdk.GC;
 with Gdk.Main;                use Gdk.Main;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Gdk.Rectangle;           use Gdk.Rectangle;
+with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
 with Gdk.Types.Keysyms;
 with Gdk.Window;              use Gdk.Window;
@@ -5344,18 +5345,29 @@ package body Gtkada.MDI is
               (Get_Attribute (From_Tree, "state", "0"));
 
             if (State and Window_State_Maximized) /= 0 then
-               --  Issue: this will not be done immediately, since the
-               --  window might not be mapped when loading the initial desktop.
-               --  As a result, the first call to Size_Allocate below will
-               --  use whatever current size the window has, and thus might
-               --  break the desktop. See the call to Realize below
+
+               --  Compute the width the window will have when maximized.
+               --  We cannot simply do a Maximize and then read the allocation
+               --  size, since that is asynchronous.
+
+               declare
+                  Rect : Gdk_Rectangle;
+               begin
+                  Get_Monitor_Geometry
+                    (Screen      => Gdk.Screen.Get_Default,
+                     Monitor_Num =>
+                       Get_Monitor_At_Window
+                         (Gdk.Screen.Get_Default, Get_Window (MDI)),
+                     Dest        => Rect);
+                  MDI_Width  := Rect.Width;
+                  MDI_Height := Rect.Height;
+               end;
+
                Maximize (Gtk_Window (Get_Toplevel (MDI)));
                Do_Size_Allocate := False;
 
-               MDI_Width := Gint (Get_Allocation_Width (Get_Toplevel (MDI)));
-               MDI_Height := Gint (Get_Allocation_Width (Get_Toplevel (MDI)));
                Print_Debug
-                 ("MDI size computed from existing window "
+                 ("MDI must be maximized, to size "
                   & Gint'Image (MDI_Width) & "x" & Gint'Image (MDI_Height));
 
             else
