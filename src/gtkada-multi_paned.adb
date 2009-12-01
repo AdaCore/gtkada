@@ -59,11 +59,6 @@ package body Gtkada.Multi_Paned is
    Traces : constant Boolean := False;
    --  Whether debug traces should be displayed on stdout
 
-   Handle_Width : constant := 6;
-   --  Width, in pixels, of the resizing handles.
-   --  ??? Should be read from theme with
-   --     gtk_widget_style_get (gtk_paned, "handle_size", &handle_size, NULL)
-
    Minimum_Width : constant := 1;
    --  Minimum width for a child
 
@@ -377,6 +372,51 @@ package body Gtkada.Multi_Paned is
    begin
       return Iter.Depth;
    end Get_Depth;
+
+   --------------
+   -- Get_Size --
+   --------------
+
+   procedure Get_Size
+     (Iter                        : Child_Iterator;
+      Width, Height               : out Gint;
+      Parent_Width, Parent_Height : out Gint;
+      Parent_Orientation          : out Gtk_Orientation)
+   is
+      Count : Natural := 1;
+      Tmp   : Child_Description_Access;
+   begin
+      --  Assert (Iter.Current /= null);
+
+      Width := Gint (Iter.Current.Width);
+      Height := Gint (Iter.Current.Height);
+
+      if Iter.Current.Parent /= null then
+         Tmp := Iter.Current.Parent.First_Child;
+         while Tmp /= null loop
+            Count := Count + 1;
+            Tmp := Tmp.Next;
+         end loop;
+
+         Parent_Orientation := Iter.Current.Parent.Orientation;
+
+         case Parent_Orientation is
+            when Orientation_Horizontal =>
+               Parent_Width  := Gint (Iter.Current.Parent.Width)
+                 - Gint (Count - 1) * Handle_Width;
+               Parent_Height := Gint (Iter.Current.Parent.Height);
+            when Orientation_Vertical =>
+               Parent_Width  := Gint (Iter.Current.Parent.Width);
+               Parent_Height := Gint (Iter.Current.Parent.Height)
+                 - Gint (Count - 1) * Handle_Width;
+         end case;
+
+      else
+         Parent_Width       := Width;
+         Parent_Height      := Height;
+         Parent_Orientation := Orientation_Horizontal;
+      end if;
+   end Get_Size;
 
    ------------
    -- At_End --

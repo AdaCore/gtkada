@@ -46,6 +46,11 @@ package Gtkada.Multi_Paned is
      with private;
    type Gtkada_Multi_Paned is access all Gtkada_Multi_Paned_Record'Class;
 
+   Handle_Width : constant := 6;
+   --  Width, in pixels, of the resizing handles.
+   --  ??? Should be read from theme with
+   --     gtk_widget_style_get (gtk_paned, "handle_size", &handle_size, NULL)
+
    type Pane is private;
    --  An area of the window, which can is splitted either horizontally or
    --  vertically. It can contain one or several children, next to each other,
@@ -235,6 +240,16 @@ package Gtkada.Multi_Paned is
    --  toplevel, 1 that this is a child directly underneath,...).
    --  This can be used to detect when the Iter has finished traversing one
    --  of the panes.
+
+   procedure Get_Size
+     (Iter                        : Child_Iterator;
+      Width, Height               : out Gint;
+      Parent_Width, Parent_Height : out Gint;
+      Parent_Orientation          : out Gtk.Enums.Gtk_Orientation);
+   --  Return the size of the current element (pane or widget), as well as the
+   --  parent's pane (the resizable area that contains notebooks or other
+   --  panes). The parent size is the total size devoted to its children,
+   --  omitting the size occupied by resize handles.
 
    procedure Dump (Split : access Gtkada_Multi_Paned_Record'Class);
    --  Dump the configuration of Split to stdout. This is only intended for

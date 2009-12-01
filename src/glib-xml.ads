@@ -121,6 +121,9 @@ package Glib.XML is
    --  If Append is true, the child is added at the end of the current list of
    --  children.
 
+   function Children_Count (N : Node_Ptr) return Natural;
+   --  Return the number of child nodes
+
    function Deep_Copy (N : Node_Ptr) return Node_Ptr;
    --  Return a deep copy of the tree starting with N. N can then be freed
    --  without affecting the copy.

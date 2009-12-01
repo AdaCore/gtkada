@@ -4344,7 +4344,8 @@ package body Gtkada.MDI is
         (MDI                   : access MDI_Window_Record'Class;
          Child_Node            : Node_Ptr;
          User                  : User_Data;
-         Paned_Width, Paned_Height : Gint;
+         Parent_Width, Parent_Height : Gint;
+         Parent_Orientation          : Gtk_Orientation;
          Focus_Child           : in out MDI_Child;
          Width, Height         : out Gint;
          Notebook              : out Gtk_Notebook;
@@ -4369,7 +4370,8 @@ package body Gtkada.MDI is
          MDI                   : access MDI_Window_Record'Class;
          Node                  : Node_Ptr;
          Focus_Child           : in out MDI_Child;
-         Paned_Width, Paned_Height : Gint;
+         Parent_Width, Parent_Height : Gint;
+         Parent_Orientation    : Gtk_Orientation;
          User                  : User_Data;
          Initial_Ref_Child     : Gtk_Notebook := null;
          To_Raise              : in out Gtk.Widget.Widget_List.Glist;
@@ -4407,10 +4409,15 @@ package body Gtkada.MDI is
       procedure Compute_Size_From_Attributes
         (Node                        : Node_Ptr;
          Parent_Width, Parent_Height : Gint;
-         Width, Height               : out Gint);
+         Parent_Orientation          : Gtk_Orientation;
+         Width, Height               : out Gint;
+         Children_Count              : Integer := 1);
       --  Compute the actual size of the widget represented by node, from the
       --  attributes of the node ("width" and "height", which use percent of
-      --  the total pane size)
+      --  the total pane size), and the attributes of the parent container.
+      --  Children_Count is the number of children for the widget represented
+      --  by Node, since the size returned is the one really available for
+      --  sharing between the children (thus omitting the resize handles)
 
       procedure Create_Perspective_Menu
         (MDI  : access MDI_Window_Record'Class;
@@ -4707,29 +4714,54 @@ package body Gtkada.MDI is
       procedure Compute_Size_From_Attributes
         (Node                        : Node_Ptr;
          Parent_Width, Parent_Height : Gint;
-         Width, Height               : out Gint)
+         Parent_Orientation          : Gtk_Orientation;
+         Width, Height               : out Gint;
+         Children_Count              : Integer := 1)
       is
-         Width_Percent : constant String :=
-           Get_Attribute (Node, "width", "100%");
-         Height_Percent : constant String :=
-           Get_Attribute (Node, "height", "100%");
+         WAttr : constant String := Get_Attribute (Node, "width", "100%");
+         HAttr : constant String := Get_Attribute (Node, "height", "100%");
+         Tmp   : Gint;
       begin
-         if Width_Percent (Width_Percent'Last) = '%' then
-            Width  := Gint'Value
-              (Width_Percent (Width_Percent'First .. Width_Percent'Last - 1))
-              * Parent_Width / 100;
-         else
-            Width := Gint'Value (Width_Percent);
-         end if;
+         --  For backward compatibility, we accept absolute sizes in the XML
+         --  nodes, but that might lead to inconsistencies (and incorrect
+         --  reload of desktop) if the user modifies this by hand
+         --
+         --  Depending on the orientation of the parent, one of the dimensions
+         --  is in fact fixed (the full height or width of the parent).
+         --
+         --  If there are multiple children (case of panes for instance), the
+         --  size we return is the one really available for children, not the
+         --  physical size of the pane itself.
 
-         if Height_Percent (Height_Percent'Last) = '%' then
-            Height := Gint'Value
-              (Height_Percent
-                 (Height_Percent'First .. Height_Percent'Last - 1))
-              * Parent_Height / 100;
-         else
-            Height := Gint'Value (Height_Percent);
-         end if;
+         case Parent_Orientation is
+            when Orientation_Horizontal =>
+               Height := Parent_Height;
+
+               if WAttr (WAttr'Last) = '%' then
+                  Tmp :=
+                    Parent_Width - Gint (Children_Count - 1) * Handle_Width;
+                  Width  := Gint'Value (WAttr (WAttr'First .. WAttr'Last - 1))
+                    * Tmp / 100;
+               else
+                  Width := Gint'Value (WAttr);
+               end if;
+
+            when Orientation_Vertical =>
+               Width := Parent_Width;
+
+               if HAttr (HAttr'Last) = '%' then
+                  Tmp :=
+                    Parent_Height - Gint (Children_Count - 1) * Handle_Width;
+                  Height := Gint'Value (HAttr (HAttr'First .. HAttr'Last - 1))
+                    * Tmp / 100;
+               else
+                  Height := Gint'Value (HAttr);
+               end if;
+         end case;
+
+         Print_Debug
+           ("Compute_Size_From_Attributes WAttr=" & WAttr & " HAttr=" & HAttr
+            & " => size " & Gint'Image (Width) & Gint'Image (Height));
       end Compute_Size_From_Attributes;
 
       -------------------------
@@ -4740,7 +4772,8 @@ package body Gtkada.MDI is
         (MDI                   : access MDI_Window_Record'Class;
          Child_Node            : Node_Ptr;
          User                  : User_Data;
-         Paned_Width, Paned_Height : Gint;
+         Parent_Width, Parent_Height : Gint;
+         Parent_Orientation          : Gtk_Orientation;
          Focus_Child           : in out MDI_Child;
          Width, Height         : out Gint;
          Notebook              : out Gtk_Notebook;
@@ -4758,11 +4791,15 @@ package body Gtkada.MDI is
          Pos          : Gtk_Position_Type;
 
       begin
-         Print_Debug ("Parse_Notebook_Node");
+         Print_Debug ("Parse_Notebook_Node Parent_Width="
+                      & Gint'Image (Parent_Width) & " Parent_Height="
+                      & Gint'Image (Parent_Height) & " Parent_Orientation="
+                      & Gtk_Orientation'Image (Parent_Orientation));
          Indent_Debug (1);
 
          Compute_Size_From_Attributes
-           (Child_Node, Paned_Width, Paned_Height, Width, Height);
+           (Child_Node, Parent_Width, Parent_Height, Parent_Orientation,
+            Width, Height, Children_Count => 1);
 
          Pos    := Gtk_Position_Type'Value
            (Get_Attribute (Child_Node, "Tabs",
@@ -5007,7 +5044,8 @@ package body Gtkada.MDI is
          MDI                   : access MDI_Window_Record'Class;
          Node                  : Node_Ptr;
          Focus_Child           : in out MDI_Child;
-         Paned_Width, Paned_Height : Gint;
+         Parent_Width, Parent_Height : Gint;
+         Parent_Orientation          : Gtk_Orientation;
          User                  : User_Data;
          Initial_Ref_Child     : Gtk_Notebook := null;
          To_Raise              : in out Gtk.Widget.Widget_List.Glist;
@@ -5018,76 +5056,104 @@ package body Gtkada.MDI is
            (Get_Attribute (Node, "Orientation"));
          N             : Node_Ptr;
          Ref_Item      : Gtk_Widget := Gtk_Widget (Initial_Ref_Child);
-         Count         : Natural := 0;
+         Count         : constant Natural := Children_Count (Node);
          Notebook_Node : Node_Ptr;
          Width, Height : Gint;
 
+         Width_For_Children  : Gint := Parent_Width;
+         Height_For_Children : Gint := Parent_Height;
+
       begin
-         N := Node.Child;
-         while N /= null loop
-            Count := Count + 1;
-            N := N.Next;
-         end loop;
+         Compute_Size_From_Attributes
+           (Node, Parent_Width, Parent_Height, Parent_Orientation,
+            Width_For_Children, Height_For_Children, Count);
 
          Print_Debug
            ("Parse_Pane_Node " & Gtk_Orientation'Image (Orientation)
-            & " children count=" & Integer'Image (Count)
-            & " size=" & Gint'Image (Paned_Width)
-            & "x" & Gint'Image (Paned_Height));
+            & " children=" & Integer'Image (Count)
+            & " child_size=" & Gint'Image (Width_For_Children)
+            & "x" & Gint'Image (Height_For_Children));
          Indent_Debug (1);
 
          declare
             Notebooks : array (1 .. Count) of Gtk_Notebook;
             W         : Gtk_Widget;
+            Tmp_Width, Tmp_Height : Gint;
+            Tmp_Orientation : Gtk_Orientation;
+            Index     : Natural := Notebooks'First;
          begin
             --  First insert all direct children of the pane, splitting as
             --  needed. Only then process the Pane children. Otherwise, the
             --  children of Pane will have been split and reorganized so that
             --  we won't be able to get a reference item for further splitting.
 
-            Count := Notebooks'First;
             N := Node.Child;
 
             while N /= null loop
+               Tmp_Width       := Width_For_Children;
+               Tmp_Height      := Height_For_Children;
+               Tmp_Orientation := Orientation;
+
                --  Find the first notebook node of N
                Notebook_Node := N;
                while Notebook_Node.Tag /= null
-                 and then Notebook_Node.Tag.all /= "Notebook"
-                 and then Notebook_Node.Tag.all /= "central"
+                 and then Notebook_Node.Tag.all = "Pane"
                loop
+                  Compute_Size_From_Attributes
+                    (Notebook_Node,
+                     Parent_Width       => Tmp_Width,
+                     Parent_Height      => Tmp_Height,
+                     Parent_Orientation => Tmp_Orientation,
+                     Width              => Tmp_Width,
+                     Height             => Tmp_Height,
+                     Children_Count     => Children_Count (Notebook_Node));
+                  Tmp_Orientation := Gtk_Orientation'Value
+                    (Get_Attribute (Notebook_Node, "Orientation"));
+                  Print_Debug
+                    ("Descending into pane while looking for first notebook w="
+                     & Gint'Image (Tmp_Width) & "x" & Gint'Image (Tmp_Height));
+
                   Notebook_Node := Notebook_Node.Child;
                end loop;
 
-               if Count = Notebooks'First
+               if Index = Notebooks'First
                  and then Initial_Ref_Child /= null
                then
-                  Notebooks (Count) := Initial_Ref_Child;
+                  Notebooks (Index) := Initial_Ref_Child;
                   W := Gtk_Widget (Initial_Ref_Child);
 
                else
                   if Notebook_Node.Tag.all = "Notebook" then
                      Parse_Notebook_Node
-                       (MDI          => MDI,
-                        Child_Node   => Notebook_Node,
-                        Paned_Width  => Paned_Width,
-                        Paned_Height => Paned_Height,
+                       (MDI                => MDI,
+                        Child_Node         => Notebook_Node,
+                        Parent_Width       => Tmp_Width,
+                        Parent_Height      => Tmp_Height,
+                        Parent_Orientation => Tmp_Orientation,
                         User         => User,
                         Focus_Child  => Focus_Child,
                         Width        => Width,
                         Height       => Height,
-                        Notebook     => Notebooks (Count),
+                        Notebook     => Notebooks (Index),
                         To_Raise     => To_Raise,
                         To_Hide      => To_Hide,
                         Empty_Notebook_Filler => Empty_Notebook_Filler);
 
-                     W := Gtk_Widget (Notebooks (Count));
+                     W := Gtk_Widget (Notebooks (Index));
 
                   else
-                     Print_Debug ("Parse_Pane_Node: seen <central>");
-                     W := Gtk_Widget (MDI.Central);
+                     W      := Gtk_Widget (MDI.Central);
                      Compute_Size_From_Attributes
-                       (Notebook_Node, Paned_Width, Paned_Height,
-                        Width, Height);
+                       (Notebook_Node,
+                        Parent_Width       => Tmp_Width,
+                        Parent_Height      => Tmp_Height,
+                        Parent_Orientation => Tmp_Orientation,
+                        Width              => Width,
+                        Height             => Height,
+                        Children_Count     => 1);
+
+                     Print_Debug ("Parse_Pane_Node: seen <central> size="
+                                  & Gint'Image (Width) & Gint'Image (Height));
                   end if;
 
                   if Get_Parent (W) = null then
@@ -5126,7 +5192,7 @@ package body Gtkada.MDI is
                end if;
 
                Ref_Item := W;
-               Count := Count + 1;
+               Index := Index + 1;
                N := N.Next;
             end loop;
 
@@ -5135,7 +5201,7 @@ package body Gtkada.MDI is
             Print_Debug ("Parse_Pane_Node: now process pane children");
 
             N := Node.Child;
-            Count := Notebooks'First;
+            Index := Notebooks'First;
             while N /= null loop
                if N.Tag.all = "Pane" then
                   Parse_Pane_Node
@@ -5144,14 +5210,15 @@ package body Gtkada.MDI is
                      Node                  => N,
                      Focus_Child           => Focus_Child,
                      User                  => User,
-                     Paned_Width           => Paned_Width,
-                     Paned_Height          => Paned_Height,
-                     Initial_Ref_Child     => Notebooks (Count),
+                     Parent_Width          => Width_For_Children,
+                     Parent_Height         => Height_For_Children,
+                     Parent_Orientation    => Orientation,
+                     Initial_Ref_Child     => Notebooks (Index),
                      To_Raise              => To_Raise,
                      To_Hide               => To_Hide,
                      Empty_Notebook_Filler => Empty_Notebook_Filler);
                end if;
-               Count := Count + 1;
+               Index := Index + 1;
                N := N.Next;
             end loop;
          end;
@@ -5200,8 +5267,9 @@ package body Gtkada.MDI is
                   MDI                   => MDI,
                   Node                  => Child_Node,
                   Focus_Child           => Focus_Child,
-                  Paned_Width           => Full_Width,
-                  Paned_Height          => Full_Height,
+                  Parent_Width          => Full_Width,
+                  Parent_Height         => Full_Height,
+                  Parent_Orientation    => Orientation_Horizontal,
                   User                  => User,
                   Initial_Ref_Child     => null,
                   To_Raise              => To_Raise,
@@ -5570,7 +5638,7 @@ package body Gtkada.MDI is
          --  the central area of the desktop
 
          procedure Save_Size
-           (Widget : access Gtk_Widget_Record'Class;
+           (Iter   : Gtkada.Multi_Paned.Child_Iterator;
             Node   : Node_Ptr);
          --  Set the size of Widget (relative to the total size of the window)
          --  as attributes of Node
@@ -5582,8 +5650,10 @@ package body Gtkada.MDI is
          --  Look through all the notebooks, and save the widgets in the
          --  notebook order.
 
-         procedure Save_Notebook
-           (Current : Node_Ptr; Note : Gtk_Notebook; In_Central : Boolean);
+         function Save_Notebook
+           (Current    : Node_Ptr;
+            Note       : Gtk_Notebook;
+            In_Central : Boolean) return Node_Ptr;
          --  save all pages of the notebook
 
          procedure Prune_Empty (N : in out Node_Ptr);
@@ -5687,27 +5757,36 @@ package body Gtkada.MDI is
          ---------------
 
          procedure Save_Size
-           (Widget : access Gtk_Widget_Record'Class;
-            Node   : Node_Ptr) is
+           (Iter   : Gtkada.Multi_Paned.Child_Iterator;
+            Node   : Node_Ptr)
+         is
+            Parent_Width, Parent_Height, Width, Height : Gint;
+            Orientation : Gtk_Orientation;
          begin
-            Set_Attribute
-              (Node, "width",
-               Allocation_Int'Image
-                 (Get_Allocation_Width (Widget) * 100 / MDI_Width) & "%");
-            Set_Attribute
-              (Node, "height",
-               Allocation_Int'Image
-                 (Get_Allocation_Height (Widget) * 100 / MDI_Height) & "%");
+            Get_Size (Iter, Width, Height, Parent_Width, Parent_Height,
+                      Orientation);
+
+            case Orientation is
+               when Orientation_Horizontal =>
+                  Set_Attribute
+                    (Node, "width",
+                     Allocation_Int'Image (Width * 100 / Parent_Width) & "%");
+               when Orientation_Vertical =>
+                  Set_Attribute
+                    (Node, "height",
+                     Allocation_Int'Image
+                       (Height * 100 / Parent_Height) & "%");
+            end case;
          end Save_Size;
 
          -------------------
          -- Save_Notebook --
          -------------------
 
-         procedure Save_Notebook
+         function Save_Notebook
            (Current    : Node_Ptr;
             Note       : Gtk_Notebook;
-            In_Central : Boolean)
+            In_Central : Boolean) return Node_Ptr
          is
             Length                  : constant Gint := Get_N_Pages (Note);
             Current_Page            : constant Gint := Get_Current_Page (Note);
@@ -5717,7 +5796,6 @@ package body Gtkada.MDI is
          begin
             Parent := new Node;
             Parent.Tag := new String'("Notebook");
-            Save_Size (Note, Parent);
             Set_Attribute
               (Parent, "Tabs",
                Gtk_Position_Type'Image (Get_Tab_Pos (Note)));
@@ -5752,8 +5830,10 @@ package body Gtkada.MDI is
               or else Parent.Child /= null
             then
                Add_Child (Current, Parent, Append => True);
+               return Parent;
             else
                Free (Parent);
+               return null;
             end if;
          end Save_Notebook;
 
@@ -5794,28 +5874,36 @@ package body Gtkada.MDI is
             N          : Node_Ptr;
             Depth      : Natural := 0;
             Iter       : Gtkada.Multi_Paned.Child_Iterator := Start (Paned);
+            Orientation   : Gtk_Orientation;
+
          begin
             while not At_End (Iter) loop
                for N in Get_Depth (Iter) + 1 .. Depth loop
                   Current := Current.Parent;
                end loop;
 
+               Orientation := Get_Orientation (Iter);
+
                if Get_Widget (Iter) = Gtk_Widget (MDI.Central) then
                   N := new Node;
                   N.Tag := new String'("central");
-                  Save_Size (Get_Widget (Iter), N);
+                  Save_Size (Iter, N);
                   Add_Child (Current, N, Append => True);
 
                elsif Get_Widget (Iter) /= null then
-                  Save_Notebook (Current, Gtk_Notebook (Get_Widget (Iter)),
-                                 In_Central => In_Central);
+                  N := Save_Notebook
+                    (Current, Gtk_Notebook (Get_Widget (Iter)),
+                     In_Central => In_Central);
+                  if N /= null then
+                     Save_Size (Iter, N);
+                  end if;
 
                else
                   N := new Node;
                   N.Tag := new String'("Pane");
                   Set_Attribute
-                    (N, "Orientation",
-                     Gtk_Orientation'Image (Get_Orientation (Iter)));
+                    (N, "Orientation", Gtk_Orientation'Image (Orientation));
+                  Save_Size (Iter, N);
                   Add_Child (Current, N, Append => True);
                   Current := N;
                end if;
@@ -5867,16 +5955,12 @@ package body Gtkada.MDI is
          declare
             Win   : constant Gtk_Window := Gtk_Window (Get_Toplevel (MDI));
             State : Gdk_Window_State;
-            X, Y  : Gint;
          begin
             if Win /= null then
                State := Get_State (Get_Window (Win));
                if (State and Window_State_Maximized) = 0 then
                   Set_Attribute (Central, "width", Gint'Image (MDI_Width));
                   Set_Attribute (Central, "height", Gint'Image (MDI_Height));
-                  Get_Root_Origin (Get_Window (Win), X, Y);
-                  Set_Attribute (Central, "x", Gint'Image (X));
-                  Set_Attribute (Central, "y", Gint'Image (Y));
                end if;
 
                Set_Attribute

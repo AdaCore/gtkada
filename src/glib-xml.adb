@@ -1192,4 +1192,22 @@ package body Glib.XML is
       return True;
    end Is_Equal;
 
+   --------------------
+   -- Children_Count --
+   --------------------
+
+   function Children_Count (N : Node_Ptr) return Natural is
+      Tmp : Node_Ptr;
+      Count : Natural := 0;
+   begin
+      if N /= null then
+         Tmp := N.Child;
+         while Tmp /= null loop
+            Count := Count + 1;
+            Tmp := Tmp.Next;
+         end loop;
+      end if;
+      return Count;
+   end Children_Count;
+
 end Glib.XML;
