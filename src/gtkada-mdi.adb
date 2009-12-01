@@ -1350,6 +1350,10 @@ package body Gtkada.MDI is
          Destroy (M.Menu);
       end if;
 
+      Free (M.Perspectives);
+      Free (M.View_Contents);
+      Free (M.Perspective_Names);
+
       Free (M.Accel_Path_Prefix);
    end Destroy_MDI;
 
@@ -4315,6 +4319,12 @@ package body Gtkada.MDI is
 
    package body Desktop is
 
+      function Get_XML_For_Widget
+        (Child : MDI_Child;
+         User  : User_Data) return Node_Ptr;
+      --  Get the XML node for a given widget. This automatically sets
+      --  Child.XML_Node_Name as well
+
       procedure Parse_Child_Node
         (MDI         : access MDI_Window_Record'Class;
          Child_Node  : Node_Ptr;
@@ -4875,6 +4885,8 @@ package body Gtkada.MDI is
               and then Tmp.XML_Node_Name /= null
               and then Tmp.XML_Node_Name.all = Child_Node.Child.Tag.all
             then
+               Print_Debug ("Reusing existing hidden view for "
+                            & Child_Node.Child.Tag.all);
                Child := Tmp;
                Put (MDI, Child);  --  put it back in the MDI
                exit;
@@ -5368,8 +5380,10 @@ package body Gtkada.MDI is
          --  preserve them, but they do not apply to the current desktop)
 
          declare
-            Tmp : Widget_List.Glist := MDI.Items;
+            Tmp  : Widget_List.Glist := MDI.Items;
             Tmp2 : Widget_List.Glist;
+            C    : MDI_Child;
+            Widget_Node : Node_Ptr;
          begin
             while Tmp /= Null_List loop
                Tmp2 := Next (Tmp);
@@ -5378,6 +5392,22 @@ package body Gtkada.MDI is
                --  views
                Close (MDI, MDI_Child (Get_Data (Tmp)));
                Tmp := Tmp2;
+            end loop;
+
+            Tmp := MDI.Items;
+            while Tmp /= Null_List loop
+               C := MDI_Child (Get_Data (Tmp));
+
+               --  For those items still in the list, we must ensure we know
+               --  their XML node name, otherwise they will never be reused and
+               --  just waste memory (and result in memory leaks)
+
+               if C.XML_Node_Name = null then
+                  Widget_Node := Get_XML_For_Widget (Child => C, User => User);
+                  Free (Widget_Node);
+               end if;
+
+               Tmp := Next (Tmp);
             end loop;
          end;
 
@@ -5392,6 +5422,22 @@ package body Gtkada.MDI is
          end if;
 
          Gtk_New (MDI.Central);
+
+         --  The central area describes the floating children, so they are not
+         --  part of MDI.Central.
+
+         Print_Debug ("+++++++ Loading central area ++++++");
+
+         Restore_Multi_Pane
+           (Pane                  => MDI.Central,
+            MDI                   => MDI,
+            Focus_Child           => Focus_Child,
+            To_Raise              => To_Raise,
+            To_Hide               => To_Hide,
+            User                  => User,
+            Node                  => From_Tree,
+            Full_Width            => MDI_Width,
+            Full_Height           => MDI_Height);
 
          Set_Child_Visible (MDI.Central, True);
 
@@ -5413,24 +5459,6 @@ package body Gtkada.MDI is
             User, Focus_Child => Focus_Child,
             To_Raise => To_Raise, To_Hide => To_Hide,
             Width => MDI_Width, Height => MDI_Height);
-
-         --  The central area describes the floating children, so they are not
-         --  part of MDI.Central. So we must restore the central area only
-         --  after we restored the views, or Internal_Load_Perspective will
-         --  close the floating windows.
-
-         Print_Debug ("+++++++ Loading central area ++++++");
-
-         Restore_Multi_Pane
-           (Pane                  => MDI.Central,
-            MDI                   => MDI,
-            Focus_Child           => Focus_Child,
-            To_Raise              => To_Raise,
-            To_Hide               => To_Hide,
-            User                  => User,
-            Node                  => From_Tree,
-            Full_Width            => MDI_Width,
-            Full_Height           => MDI_Height);
 
          --  And do the actual resizing on the screen
 
@@ -5471,6 +5499,33 @@ package body Gtkada.MDI is
          return True;
       end Restore_Desktop;
 
+      ------------------------
+      -- Get_XML_For_Widget --
+      ------------------------
+
+      function Get_XML_For_Widget
+        (Child : MDI_Child;
+         User  : User_Data) return Node_Ptr
+      is
+         Register    : Register_Node := Registers;
+         Widget_Node : Node_Ptr;
+      begin
+         while Widget_Node = null and then Register /= null loop
+            Widget_Node := Register.Save (Child.Initial, User);
+            Register := Register.Next;
+         end loop;
+
+         if Widget_Node /= null then
+            --  Save the XML node name, which might be useful when switching
+            --  perspectives
+
+            Free (Child.XML_Node_Name);
+            Child.XML_Node_Name := new String'(Widget_Node.Tag.all);
+         end if;
+
+         return Widget_Node;
+      end Get_XML_For_Widget;
+
       ------------------
       -- Save_Desktop --
       ------------------
@@ -5488,7 +5543,6 @@ package body Gtkada.MDI is
 
          Item             : Widget_List.Glist;
          Child_Node       : Node_Ptr;
-         Register         : Register_Node;
          Child            : MDI_Child;
 
          procedure Add (Parent : Node_Ptr; Name, Value : String);
@@ -5553,21 +5607,9 @@ package body Gtkada.MDI is
                return;
             end if;
 
-            Register := Registers;
-            Widget_Node := null;
-
-            while Widget_Node = null and then Register /= null loop
-               Widget_Node := Register.Save (Child.Initial, User);
-               Register := Register.Next;
-            end loop;
+            Widget_Node := Get_XML_For_Widget (Child, User);
 
             if Widget_Node /= null then
-               --  Save the XML node name, which might be useful when switching
-               --  perspectives
-
-               Free (Child.XML_Node_Name);
-               Child.XML_Node_Name := new String'(Widget_Node.Tag.all);
-
                --  We only save the name of the child, not its contents, which
                --  is project specific and thus goes into the central area's
                --  XML
@@ -5922,6 +5964,8 @@ package body Gtkada.MDI is
                if C.State = Normal
                  and then not In_Central_Area (MDI, C)
                then
+                  Print_Debug ("Remove_All_Items, markgin "
+                               & Get_Title (C) & " as invisible");
                   Ref (C);   --  Unref called in Destroy_Child and Put
                   Remove (Gtk_Container (Get_Parent (C)), C);
 
