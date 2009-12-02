@@ -5398,7 +5398,7 @@ package body Gtkada.MDI is
          --  properly restore the desktop even if notebooks are referenced.
          MDI.All_Floating_Mode := False;
 
-         if From_Tree.Tag.all /= "desktop" then
+         if From_Tree /= null and then From_Tree.Tag.all /= "desktop" then
             return False;
          end if;
 
@@ -5527,16 +5527,18 @@ package body Gtkada.MDI is
 
          Print_Debug ("+++++++ Loading central area ++++++");
 
-         Restore_Multi_Pane
-           (Pane                  => MDI.Central,
-            MDI                   => MDI,
-            Focus_Child           => Focus_Child,
-            To_Raise              => To_Raise,
-            To_Hide               => To_Hide,
-            User                  => User,
-            Node                  => From_Tree,
-            Full_Width            => MDI_Width,
-            Full_Height           => MDI_Height);
+         if From_Tree /= null then
+            Restore_Multi_Pane
+              (Pane                  => MDI.Central,
+               MDI                   => MDI,
+               Focus_Child           => Focus_Child,
+               To_Raise              => To_Raise,
+               To_Hide               => To_Hide,
+               User                  => User,
+               Node                  => From_Tree,
+               Full_Width            => MDI_Width,
+               Full_Height           => MDI_Height);
+         end if;
 
          Set_Child_Visible (MDI.Central, True);
 
