@@ -5364,12 +5364,12 @@ package body Gtkada.MDI is
          From_Tree    : Glib.Xml_Int.Node_Ptr;
          User         : User_Data) return Boolean
       is
-         To_Raise           : Gtk.Widget.Widget_List.Glist;
-         To_Hide            : Gtk.Widget.Widget_List.Glist;
-         Focus_Child        : MDI_Child;
+         To_Raise                  : Gtk.Widget.Widget_List.Glist;
+         To_Hide                   : Gtk.Widget.Widget_List.Glist;
+         Focus_Child               : MDI_Child;
          Initial_All_Floating_Mode : constant Boolean := MDI.All_Floating_Mode;
-         Do_Size_Allocate : Boolean := True;
-         MDI_Width, MDI_Height : Gint;
+         Do_Size_Allocate          : Boolean := True;
+         MDI_Width, MDI_Height     : Gint;
 
       begin
          if Perspectives = null then
@@ -5416,9 +5416,9 @@ package body Gtkada.MDI is
          --  rest of the desktop makes sense.
 
          declare
-            State         : Gdk_Window_State;
+            State : Gdk_Window_State;
          begin
-            State  := Gdk_Window_State'Value
+            State := Gdk_Window_State'Value
               (Get_Attribute (From_Tree, "state", "0"));
 
             if (State and Window_State_Maximized) /= 0 then
@@ -5479,9 +5479,9 @@ package body Gtkada.MDI is
          --  preserve them, but they do not apply to the current desktop)
 
          declare
-            Tmp  : Widget_List.Glist := MDI.Items;
-            Tmp2 : Widget_List.Glist;
-            C    : MDI_Child;
+            Tmp         : Widget_List.Glist := MDI.Items;
+            Tmp2        : Widget_List.Glist;
+            C           : MDI_Child;
             Widget_Node : Node_Ptr;
          begin
             while Tmp /= Null_List loop
