@@ -48,6 +48,7 @@ with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 with GNAT.IO;                 use GNAT.IO;
 with GNAT.Strings;            use GNAT.Strings;
+with GNAT.OS_Lib;
 
 with Glib.Convert;            use Glib.Convert;
 with Glib.Object;             use Glib.Object;
@@ -5372,6 +5373,10 @@ package body Gtkada.MDI is
 
       begin
          if From_Tree = null then
+            --  No desktop to load, but we still have to setup a minimal
+            --  environment to avoid critical errors later on.
+            Gtk_New (MDI.Central);
+            Add_Child (MDI, MDI.Central);
             return False;
          end if;
 
@@ -5417,19 +5422,29 @@ package body Gtkada.MDI is
                --  Compute the width the window will have when maximized.
                --  We cannot simply do a Maximize and then read the allocation
                --  size, since that is asynchronous.
+               --  On Windows, the following calls seem to fail, so we just
+               --  simulate a size (this is irrelevant anyway, since the call
+               --  to Maximize will find the correct size, but it helps
+               --  debugging when we use the real sizes)
 
-               declare
-                  Rect : Gdk_Rectangle;
-               begin
-                  Get_Monitor_Geometry
-                    (Screen      => Gdk.Screen.Get_Default,
-                     Monitor_Num =>
-                       Get_Monitor_At_Window
-                         (Gdk.Screen.Get_Default, Get_Window (MDI)),
-                     Dest        => Rect);
-                  MDI_Width  := Rect.Width;
-                  MDI_Height := Rect.Height;
-               end;
+               if GNAT.OS_Lib.Directory_Separator = '\' then
+                  declare
+                     Rect : Gdk_Rectangle;
+                  begin
+                     Get_Monitor_Geometry
+                       (Screen      => Gdk.Screen.Get_Default,
+                        Monitor_Num =>
+                          Get_Monitor_At_Window
+                            (Gdk.Screen.Get_Default, Get_Window (MDI)),
+                        Dest        => Rect);
+                     MDI_Width  := Rect.Width;
+                     MDI_Height := Rect.Height;
+                  end;
+
+               else
+                  MDI_Width := 1000;
+                  MDI_Height := 1000;
+               end if;
 
                Maximize (Gtk_Window (Get_Toplevel (MDI)));
                Do_Size_Allocate := False;
@@ -5530,6 +5545,7 @@ package body Gtkada.MDI is
          if Perspectives = null    --   <perspectives> node
            or else Perspectives.Child = null  --   <perspective> node
          then
+            Add_Child (MDI, MDI.Central);
             return False;
          end if;
 
@@ -5539,6 +5555,14 @@ package body Gtkada.MDI is
             User, Focus_Child => Focus_Child,
             To_Raise => To_Raise, To_Hide => To_Hide,
             Width => MDI_Width, Height => MDI_Height);
+
+         --  If the central area was not in the desktop, that's an error and
+         --  the application will not be usable anyway, so better break the
+         --  desktop but show the central area
+
+         if Get_Parent (MDI.Central) = null then
+            Add_Child (MDI, MDI.Central);
+         end if;
 
          --  And do the actual resizing on the screen
 
