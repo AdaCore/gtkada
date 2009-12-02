@@ -20,3 +20,4 @@ src/tools/obj
 testgtk.exe
 testgtk/obj
 testgtk/opengl/view_gl.adb
+testgtk/testgtk
