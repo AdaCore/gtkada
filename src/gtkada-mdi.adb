@@ -5431,7 +5431,7 @@ package body Gtkada.MDI is
                --  to Maximize will find the correct size, but it helps
                --  debugging when we use the real sizes)
 
-               if GNAT.OS_Lib.Directory_Separator = '\' then
+               if GNAT.OS_Lib.Directory_Separator = '/' then
                   declare
                      Rect : Gdk_Rectangle;
                   begin
