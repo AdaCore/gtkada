@@ -5372,9 +5372,13 @@ package body Gtkada.MDI is
          MDI_Width, MDI_Height : Gint;
 
       begin
-         if From_Tree = null then
+         if Perspectives = null then
             --  No desktop to load, but we still have to setup a minimal
             --  environment to avoid critical errors later on.
+            if MDI.Central /= null then
+               Destroy (MDI.Central);
+            end if;
+
             Gtk_New (MDI.Central);
             Add_Child (MDI, MDI.Central);
             return False;
