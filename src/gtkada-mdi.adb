@@ -5372,7 +5372,9 @@ package body Gtkada.MDI is
          MDI_Width, MDI_Height     : Gint;
 
       begin
-         if Perspectives = null then
+         if Perspectives = null
+           or else Perspectives.Child = null  --   <perspective> node
+         then
             --  No desktop to load, but we still have to setup a minimal
             --  environment to avoid critical errors later on.
             if MDI.Central /= null then
@@ -5545,15 +5547,6 @@ package body Gtkada.MDI is
          --  Now restore the appropriate perspective, which gives the global
          --  organization of the desktop apart from the default area (which is
          --  restored later on).
-
-         --  If we have no perspective, nothing to do
-
-         if Perspectives = null    --   <perspectives> node
-           or else Perspectives.Child = null  --   <perspective> node
-         then
-            Add_Child (MDI, MDI.Central);
-            return False;
-         end if;
 
          Internal_Load_Perspective
            (MDI,
