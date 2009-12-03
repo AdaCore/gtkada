@@ -5529,6 +5529,9 @@ package body Gtkada.MDI is
 
          Print_Debug ("+++++++ Loading central area ++++++");
 
+         To_Raise := Widget_List.Null_List;
+         To_Hide  := Widget_List.Null_List;
+
          if From_Tree /= null then
             Restore_Multi_Pane
               (Pane                  => MDI.Central,
@@ -5865,17 +5868,15 @@ package body Gtkada.MDI is
          -----------------
 
          procedure Prune_Empty (N : in out Node_Ptr) is
-            C : Node_Ptr;
+            C, Tmp : Node_Ptr;
          begin
             if N.Tag.all = "Pane" then
                C := N.Child;
 
                while C /= null loop
+                  Tmp := C.Next;
                   Prune_Empty (C);
-
-                  if C /= null then
-                     C := C.Next;
-                  end if;
+                  C := Tmp;
                end loop;
 
                if N.Child = null then

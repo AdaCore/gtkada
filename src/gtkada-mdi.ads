@@ -694,7 +694,7 @@ package Gtkada.MDI is
          User         : User_Data;
          Perspectives : out Glib.Xml_Int.Node_Ptr;
          Central      : out Glib.Xml_Int.Node_Ptr);
-      --  Return XML reprenstations of the perspectives and central area. Both
+      --  Return XML representations of the perspectives and central area. Both
       --  nodes need to be freed by the caller, and can be saved in a file (to
       --  be passed to Restore_Desktop later on).
       --  This function calls each of the registered function for the children
