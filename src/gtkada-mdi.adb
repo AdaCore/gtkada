@@ -5558,14 +5558,6 @@ package body Gtkada.MDI is
             To_Raise => To_Raise, To_Hide => To_Hide,
             Width => MDI_Width, Height => MDI_Height);
 
-         --  If the central area was not in the desktop, that's an error and
-         --  the application will not be usable anyway, so better break the
-         --  desktop but show the central area
-
-         if Get_Parent (MDI.Central) = null then
-            Add_Child (MDI, MDI.Central);
-         end if;
-
          --  And do the actual resizing on the screen
 
          Set_All_Floating_Mode (MDI, Initial_All_Floating_Mode);
@@ -6199,6 +6191,14 @@ package body Gtkada.MDI is
             Node                  => MDI.Current_Perspective,
             Full_Width            => MDI_Width,
             Full_Height           => MDI_Height);
+
+         --  If the central area was not in the desktop, that's an error and
+         --  the application will not be usable anyway, so better break the
+         --  desktop but show the central area
+
+         if Get_Parent (MDI.Central) = null then
+            Add_Child (MDI, MDI.Central);
+         end if;
 
          MDI.Desktop_Was_Loaded := True;
          Queue_Resize (MDI);
