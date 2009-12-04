@@ -5427,10 +5427,10 @@ package body Gtkada.MDI is
                --  Compute the width the window will have when maximized.
                --  We cannot simply do a Maximize and then read the allocation
                --  size, since that is asynchronous.
-               --  On Windows, the following calls seem to fail, so we just
-               --  simulate a size (this is irrelevant anyway, since the call
-               --  to Maximize will find the correct size, but it helps
-               --  debugging when we use the real sizes)
+               --  On many systems, the following calls seem to fail, so we
+               --  just simulate a size (this is irrelevant anyway, since the
+               --  call to Maximize will find the correct size, but it helps
+               --  debugging when we use the real sizes).
 
                if Traces then
                   declare
