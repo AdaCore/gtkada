@@ -48,7 +48,6 @@ with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 with GNAT.IO;                 use GNAT.IO;
 with GNAT.Strings;            use GNAT.Strings;
-with GNAT.OS_Lib;
 
 with Glib.Convert;            use Glib.Convert;
 with Glib.Object;             use Glib.Object;
@@ -5433,7 +5432,7 @@ package body Gtkada.MDI is
                --  to Maximize will find the correct size, but it helps
                --  debugging when we use the real sizes)
 
-               if GNAT.OS_Lib.Directory_Separator = '/' then
+               if Traces then
                   declare
                      Rect : Gdk_Rectangle;
                   begin
