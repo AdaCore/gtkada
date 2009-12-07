@@ -135,7 +135,9 @@ package body Gtkada.MDI is
    --  notebook with multiple pages.
 
    Max_Drag_Border_Width : constant Gint := 30;
-   --  Width or height of the drag-and-drop borders for each notebook
+   --  Width or height of the drag-and-drop borders for each notebook. On the
+   --  sides of the MDI, half of it is dedicated to moving the window so that
+   --  it occupies that whole side of the MDI
 
    Drag_Threshold : constant Gint := 20;
    --  Our own threshold (instead of Gtk.Dnd.Check_Threshold), since on
@@ -300,7 +302,7 @@ package body Gtkada.MDI is
    --  Setup a widget as either a source or a target for drag-and-drop ops.
 
    procedure Get_Dnd_Target
-     (Pane      : access Gtkada_Multi_Paned_Record'Class;
+     (MDI       : access MDI_Window_Record'Class;
       Parent    : out Gtk_Widget;
       Position  : out Child_Position;
       Rectangle : out Gdk_Rectangle);
@@ -1823,7 +1825,9 @@ package body Gtkada.MDI is
             Draw_Dnd_Rectangle (C.MDI);
             Get_Dnd_Target (C.MDI, Current, Position, C.MDI.Dnd_Rectangle);
 
-            if Get_Parent (Current) = Gtk_Widget (C.MDI.Central) then
+            if Current = Gtk_Widget (C.MDI) then
+               Pane := Gtkada_Multi_Paned (C.MDI);
+            elsif Get_Parent (Current) = Gtk_Widget (C.MDI.Central) then
                Pane := C.MDI.Central;
             else
                Pane := Gtkada_Multi_Paned (C.MDI);
@@ -1883,10 +1887,17 @@ package body Gtkada.MDI is
 
                --  Find in which notebook the widget should be moved.
 
-               if Current = Gtk_Widget (C.MDI.Central) then
+               if Current = Gtk_Widget (C.MDI.Central)
+                 or else Current = Gtk_Widget (C.MDI)
+               then
                   --  The central area is empty if Current has this value, we
                   --  always create a new notebook
                   Note := Create_Notebook (MDI);
+
+                  if Current = Gtk_Widget (C.MDI) then
+                     Current := null;
+                  end if;
+
                else
                   --  We dropped in a notebook, should we reuse or create one ?
                   if Position = Position_Automatic then
@@ -1919,33 +1930,50 @@ package body Gtkada.MDI is
 
                case Position is
                   when Position_Bottom =>
-                     Split
-                       (Pane,
-                        Current, Note, Orientation_Vertical,
-                        Width  => 0,
-                        Height => 0,
-                        After  => True);
+                     if Current = null then
+                        Split
+                          (Pane,
+                           Root_Pane, Note, Orientation_Vertical,
+                           Height => -1);
+                     else
+                        Split (Pane, Current, Note, Orientation_Vertical);
+                     end if;
+
                   when Position_Top =>
-                     Split
-                       (Pane,
-                        Current, Note, Orientation_Vertical,
-                        Width  => 0,
-                        Height => 0,
-                        After  => False);
+                     if Current = null then
+                        Split
+                          (Pane,
+                           Root_Pane, Note, Orientation_Vertical,
+                           Height => -1, After  => False);
+                     else
+                        Split
+                          (Pane,
+                           Current, Note, Orientation_Vertical,
+                           After  => False);
+                     end if;
                   when Position_Left =>
-                     Split
-                       (Pane,
-                        Current, Note, Orientation_Horizontal,
-                        Width  => 0,
-                        Height => 0,
-                        After  => False);
+                     if Current = null then
+                        Split
+                          (Pane,
+                           Root_Pane, Note, Orientation_Horizontal,
+                           Width => -1, After  => False);
+                     else
+                        Split
+                          (Pane,
+                           Current, Note, Orientation_Horizontal,
+                           After  => False);
+                     end if;
+
                   when Position_Right =>
-                     Split
-                       (Pane,
-                        Current, Note, Orientation_Horizontal,
-                        Width  => 0,
-                        Height => 0,
-                        After  => True);
+                     if Current = null then
+                        Split
+                          (Pane,
+                           Root_Pane, Note, Orientation_Horizontal,
+                           Width => -1);
+                     else
+                        Split (Pane, Current, Note, Orientation_Horizontal);
+                     end if;
+
                   when Position_Automatic =>
                      if Current = Gtk_Widget (C.MDI.Central) then
                         Add_Child
@@ -2020,6 +2048,28 @@ package body Gtkada.MDI is
 
             if Current = null then
                Update_Dnd_Window (C.MDI, "Float" & In_Central);
+
+            elsif Current = Gtk_Widget (C.MDI) then
+               case Position is
+                  when Position_Bottom =>
+                     Update_Dnd_Window
+                       (C.MDI, "Below all other windows"
+                        & In_Perspective);
+                  when Position_Top =>
+                     Update_Dnd_Window
+                       (C.MDI, "Above all other windows" & In_Perspective);
+                  when Position_Left =>
+                     Update_Dnd_Window
+                       (C.MDI, "On the left of all other windows"
+                        & In_Perspective);
+                  when Position_Right =>
+                     Update_Dnd_Window
+                       (C.MDI, "On the right of all other windows"
+                        & In_Perspective);
+                  when others =>
+                     --  Cannot occur
+                     null;
+               end case;
 
             elsif Current = Gtk_Widget (C.MDI.Central) then
                case Position is
@@ -6687,7 +6737,7 @@ package body Gtkada.MDI is
    --------------------
 
    procedure Get_Dnd_Target
-     (Pane      : access Gtkada_Multi_Paned_Record'Class;
+     (MDI       : access MDI_Window_Record'Class;
       Parent    : out Gtk_Widget;
       Position  : out Child_Position;
       Rectangle : out Gdk_Rectangle)
@@ -6707,14 +6757,14 @@ package body Gtkada.MDI is
          Current := Gtk_Widget (Get_User_Data (Win));
 
          while Current /= null
-           and then Current /= Gtk_Widget (Pane)
+           and then Current /= Gtk_Widget (MDI)
            and then Current.all not in Gtkada_Multi_Paned_Record'Class
            and then Get_Parent (Current) /= null
            and then
              (Current.all not in Gtk_Notebook_Record'Class
               or else Get_Parent (Current).all
                  not in Gtkada_Multi_Paned_Record'Class)
-           and then Get_Parent (Current) /= Gtk_Widget (Pane)
+           and then Get_Parent (Current) /= Gtk_Widget (MDI)
          loop
             Current := Get_Parent (Current);
          end loop;
@@ -6727,73 +6777,114 @@ package body Gtkada.MDI is
             return;
          end if;
 
-         if Current = Gtk_Widget (Pane)
-           and then Current.all in MDI_Window_Record'Class
-         then
-            Current := Gtk_Widget (MDI_Window (Current).Central);
+         if Current = Gtk_Widget (MDI) then
+            Current := Gtk_Widget (MDI.Central);
          end if;
 
          Parent := Current;
 
+         --  Are we on the sides of the MDI itself ?
+
          Rectangle :=
-           (X      => Get_Allocation_X (Parent),
-            Y      => Get_Allocation_Y (Parent),
-            Width  => Get_Allocation_Width (Parent),
-            Height => Get_Allocation_Height (Parent));
+           (X      => 0,
+            Y      => 0,
+            Width  => Get_Allocation_Width (MDI),
+            Height => Get_Allocation_Height (MDI));
 
-         --  Never split the empty area
---           if Current.all not in Gtk_Notebook_Record'Class
---             or else Get_Nth_Page (Gtk_Notebook (Current), 0) = null
---           then
---              Position := Position_Automatic;
---              return;
---           end if;
+         Get_Pointer (MDI, X, Y);
 
-         Get_Pointer (Parent, X, Y);
-
-         Border_Height := Gint'Min
-           (Max_Drag_Border_Width, Rectangle.Height / 3);
-         Border_Width := Gint'Min (Max_Drag_Border_Width, Rectangle.Width / 3);
-
-         if Y < Border_Height then
+         if Y < Max_Drag_Border_Width / 2 then
             Position := Position_Top;
+            Parent := Gtk_Widget (MDI);
             Rectangle :=
               (X      => 0,
                Y      => 0,
                Width  => Rectangle.Width,
-               Height => Border_Height);
+               Height => Max_Drag_Border_Width / 2);
 
-         elsif Y > Rectangle.Height - Border_Height then
+         elsif Y > Rectangle.Height - Max_Drag_Border_Width / 2 then
             Position := Position_Bottom;
+            Parent := Gtk_Widget (MDI);
             Rectangle :=
               (X      => 0,
-               Y      => Rectangle.Height - Border_Height,
+               Y      => Rectangle.Height - Max_Drag_Border_Width / 2,
                Width  => Rectangle.Width,
-               Height => Border_Height);
+               Height => Max_Drag_Border_Width / 2);
 
-         elsif X < Border_Width then
+         elsif X < Max_Drag_Border_Width / 2 then
             Position := Position_Left;
+            Parent := Gtk_Widget (MDI);
             Rectangle :=
               (X      => 0,
                Y      => 0,
-               Width  => Border_Width,
+               Width  => Max_Drag_Border_Width / 2,
                Height => Rectangle.Height);
 
-         elsif X > Rectangle.Width - Border_Width then
+         elsif X > Rectangle.Width - Max_Drag_Border_Width / 2 then
             Position := Position_Right;
+            Parent := Gtk_Widget (MDI);
             Rectangle :=
-              (X      => Rectangle.Width - Border_Width,
+              (X      => Rectangle.Width - Max_Drag_Border_Width / 2,
                Y      => 0,
-               Width  => Border_Width,
+               Width  => Max_Drag_Border_Width / 2,
                Height => Rectangle.Height);
 
          else
-            Position := Position_Automatic;
+            --  Are we on the sides of the current MDI child ?
+
             Rectangle :=
-              (X      => Border_Width,
-               Y      => Border_Height,
-               Width  => Rectangle.Width - 2 * Border_Width,
-               Height => Rectangle.Height - 2 * Border_Height);
+              (X      => Get_Allocation_X (Parent),
+               Y      => Get_Allocation_Y (Parent),
+               Width  => Get_Allocation_Width (Parent),
+               Height => Get_Allocation_Height (Parent));
+
+            Get_Pointer (Parent, X, Y);
+
+            Border_Height := Gint'Min
+              (Max_Drag_Border_Width, Rectangle.Height / 3);
+            Border_Width :=
+              Gint'Min (Max_Drag_Border_Width, Rectangle.Width / 3);
+
+            if Y < Border_Height then
+               Position := Position_Top;
+               Rectangle :=
+                 (X      => 0,
+                  Y      => 0,
+                  Width  => Rectangle.Width,
+                  Height => Border_Height);
+
+            elsif Y > Rectangle.Height - Border_Height then
+               Position := Position_Bottom;
+               Rectangle :=
+                 (X      => 0,
+                  Y      => Rectangle.Height - Border_Height,
+                  Width  => Rectangle.Width,
+                  Height => Border_Height);
+
+            elsif X < Border_Width then
+               Position := Position_Left;
+               Rectangle :=
+                 (X      => 0,
+                  Y      => 0,
+                  Width  => Border_Width,
+                  Height => Rectangle.Height);
+
+            elsif X > Rectangle.Width - Border_Width then
+               Position := Position_Right;
+               Rectangle :=
+                 (X      => Rectangle.Width - Border_Width,
+                  Y      => 0,
+                  Width  => Border_Width,
+                  Height => Rectangle.Height);
+
+            else
+               Position := Position_Automatic;
+               Rectangle :=
+                 (X      => Border_Width,
+                  Y      => Border_Height,
+                  Width  => Rectangle.Width - 2 * Border_Width,
+                  Height => Rectangle.Height - 2 * Border_Height);
+            end if;
          end if;
 
          if No_Window_Is_Set (Parent) then
