@@ -6363,9 +6363,15 @@ package body Gtkada.MDI is
    ------------------
 
    function Get_Notebook
-     (Iterator : Child_Iterator) return Gtk.Notebook.Gtk_Notebook is
+     (Iterator : Child_Iterator) return Gtk.Notebook.Gtk_Notebook
+   is
+      C : constant MDI_Child := Get (Iterator);
    begin
-      return Get_Notebook (Get (Iterator));
+      if C = null then
+         return null;
+      else
+         return Get_Notebook (C);
+      end if;
    end Get_Notebook;
 
    ---------------------------
@@ -6416,11 +6422,14 @@ package body Gtkada.MDI is
       if Iterator.Group_By_Notebook then
          if Iterator.Notebook = null then
             --  Find the next floating child
-            while Iterator.Iter /= Null_List
-              and then MDI_Child (Widget_List.Get_Data (Iterator.Iter)).State
-                 /= Floating
             loop
-               Iterator.Iter := Widget_List.Next (Iterator.Iter);
+               Iterator.Floating_Iter :=
+                 Widget_List.Next (Iterator.Floating_Iter);
+
+               exit when Iterator.Floating_Iter = Null_List
+                 or else MDI_Child
+                   (Widget_List.Get_Data (Iterator.Floating_Iter)).State =
+                 Floating;
             end loop;
 
          else
