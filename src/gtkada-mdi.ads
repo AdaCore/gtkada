@@ -117,6 +117,7 @@ package Gtkada.MDI is
    --  Parent must be the toplevel window that contains the MDI.
 
    type Show_Tabs_Policy_Enum is (Always, Never, Automatic);
+   type Title_Bars_Policy     is (Always, Never, Central_Only);
 
    procedure Configure
      (MDI                       : access MDI_Window_Record;
@@ -126,7 +127,7 @@ package Gtkada.MDI is
       Background_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Title_Bar_Color    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Draw_Title_Bars    : Boolean             := True;
+      Draw_Title_Bars    : Title_Bars_Policy   := Always;
       Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
       Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic);
    --  Change the setup of the MDI.
@@ -292,6 +293,9 @@ package Gtkada.MDI is
    function Get_Short_Title
      (Child : access MDI_Child_Record) return UTF8_String;
    --  Return the name of the notebook tab used when children are maximized.
+
+   function Has_Title_Bar (Child : access MDI_Child_Record) return Boolean;
+   --  Whether a title bar is currently displayed for Child
 
    function Get_State (Child : access MDI_Child_Record) return State_Type;
    --  Return the current state of the child
@@ -1019,7 +1023,7 @@ private
       Cursor_Fleur      : Gdk.Cursor.Gdk_Cursor;
       --  Cached cursors
 
-      Draw_Title_Bars   : Boolean             := True;
+      Draw_Title_Bars   : Title_Bars_Policy := Always;
       Tabs_Position     : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
       Show_Tabs_Policy  : Show_Tabs_Policy_Enum := Automatic;
 

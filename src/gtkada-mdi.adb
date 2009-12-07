@@ -1135,7 +1135,7 @@ package body Gtkada.MDI is
       Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Draw_Title_Bars           : Boolean             := True;
+      Draw_Title_Bars           : Title_Bars_Policy   := Always;
       Tabs_Position             : Gtk.Enums.Gtk_Position_Type :=
         Gtk.Enums.Pos_Bottom;
       Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic)
@@ -1209,11 +1209,13 @@ package body Gtkada.MDI is
          if Get_Notebook (Iter) /= Note then
             Note := Get_Notebook (Iter);
 
-            if Pos_Changed then
-               Set_Tab_Pos (Note, MDI.Tabs_Position);
-            end if;
+            if Note /= null then
+               if Pos_Changed then
+                  Set_Tab_Pos (Note, MDI.Tabs_Position);
+               end if;
 
-            Configure_Notebook_Tabs (MDI, Note);
+               Configure_Notebook_Tabs (MDI, Note);
+            end if;
          end if;
 
          Next (Iter);
@@ -1571,7 +1573,7 @@ package body Gtkada.MDI is
 
    procedure Set_Child_Title_Bar (Child : access MDI_Child_Record'Class) is
    begin
-      if not Child.MDI.Draw_Title_Bars then
+      if not Has_Title_Bar (Child) then
          Hide (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, False);
          Set_USize (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
@@ -2451,7 +2453,6 @@ package body Gtkada.MDI is
       Ref (Child);
 
       Show_All (Child);
-      Set_Child_Title_Bar (Child);
 
       if Child.State = Invisible then
          Unref (Child);  --  Set in Remove_All_Items
@@ -2463,6 +2464,8 @@ package body Gtkada.MDI is
       if not MDI.All_Floating_Mode then
          Put_In_Notebook (MDI, Child, Initial_Position => Initial_Position);
       end if;
+
+      Set_Child_Title_Bar (Child);
 
       --  Add the child to the list of widgets. It could in fact already be in
       --  the list if we are reusing a Invisible child from a previous
@@ -2950,6 +2953,19 @@ package body Gtkada.MDI is
       end if;
    end Update_Float_Menu;
 
+   -------------------
+   -- Has_Title_Bar --
+   -------------------
+
+   function Has_Title_Bar (Child : access MDI_Child_Record) return Boolean is
+   begin
+      case Child.MDI.Draw_Title_Bars is
+         when Always       => return True;
+         when Never        => return False;
+         when Central_Only => return In_Central_Area (Child.MDI, Child);
+      end case;
+   end Has_Title_Bar;
+
    ----------------------
    -- Update_Tab_Color --
    ----------------------
@@ -2981,7 +2997,7 @@ package body Gtkada.MDI is
          Color := Child.MDI.Focus_Title_Color;
       end if;
 
-      if (Force or else not Child.MDI.Draw_Title_Bars)
+      if (Force or else not Has_Title_Bar (Child))
         and then Note /= null
       then
          --  If the color is already being applied to this notebook, avoid
