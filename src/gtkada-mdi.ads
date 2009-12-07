@@ -936,8 +936,20 @@ private
 
          when True =>
             MDI                 : MDI_Window;
+
+            --  While iterating children
+            Paned_Iter          : Gtkada.Multi_Paned.Child_Iterator;
+
+            --  Whether we have already visited the children of the central
+            --  area. This is True while iterating them, False afterward
+            In_Central          : Boolean;
+
+            --  While iterating the pages of a specific notebook (notebook is
+            --  set to null when returning floating children)
             Notebook            : Gtk.Notebook.Gtk_Notebook;
             Notebook_Page       : Glib.Gint;
+
+            --  While iterating the floating children
             Floating_Iter       : Gtk.Widget.Widget_List.Glist;
       end case;
    end record;

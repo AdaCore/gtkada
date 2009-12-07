@@ -472,6 +472,10 @@ package body Gtkada.MDI is
       Child : access Gtk_Widget_Record'Class) return Boolean;
    --  Whether Child is in the central area
 
+   procedure Move_To_Next_Notebook (Iterator : in out Child_Iterator);
+   --  Move to the next notebook for this iterator (does nothing if Iterator
+   --  already points to a notebook).
+
    ---------------------
    -- In_Central_Area --
    ---------------------
@@ -1141,7 +1145,7 @@ package body Gtkada.MDI is
       List        : Widget_List.Glist;
       C           : MDI_Child;
       Need_Redraw : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
-      Iter        : Gtkada.Multi_Paned.Child_Iterator;
+      Iter        : Child_Iterator;
       Pos_Changed : constant Boolean :=
         MDI.Tabs_Position /= Tabs_Position;
       Note        : Gtk_Notebook;
@@ -1195,13 +1199,15 @@ package body Gtkada.MDI is
            (MDI.Highlight_Style, State_Insensitive, MDI.Focus_Title_Color);
       end if;
 
-      Iter := Start (MDI);
-      while not At_End (Iter) loop
-         --  Do we have a notebook or the central area ?
-         if Get_Widget (Iter) /= null
-           and then Get_Widget (Iter).all in Gtk_Notebook_Record'Class
-         then
-            Note := Gtk_Notebook (Get_Widget (Iter));
+      Iter := First_Child
+        (MDI, Group_By_Notebook => True, Visible_Only => True);
+
+      loop
+         C := Get (Iter);
+         exit when C = null;
+
+         if Get_Notebook (Iter) /= Note then
+            Note := Get_Notebook (Iter);
 
             if Pos_Changed then
                Set_Tab_Pos (Note, MDI.Tabs_Position);
@@ -1209,6 +1215,7 @@ package body Gtkada.MDI is
 
             Configure_Notebook_Tabs (MDI, Note);
          end if;
+
          Next (Iter);
       end loop;
 
@@ -6306,35 +6313,33 @@ package body Gtkada.MDI is
       C        : MDI_Child;
    begin
       if Group_By_Notebook then
-         Children := Get_Children (MDI);
-         if Children /= Null_List then
-            declare
-               Iter : Child_Iterator :=
-                 (Group_By_Notebook => True,
-                  Visible_Only      => Visible_Only,
-                  Notebook          => Gtk_Notebook (Get_Data (Children)),
-                  Notebook_Page     => 0,
-                  Floating_Iter     => MDI.Items,
-                  MDI               => MDI_Window (MDI));
-            begin
-               while Iter.Floating_Iter /= Null_List
-                 and then MDI_Child
-                  (Widget_List.Get_Data (Iter.Floating_Iter)).State /= Floating
-               loop
-                  Iter.Floating_Iter := Widget_List.Next (Iter.Floating_Iter);
-               end loop;
+         declare
+            Iter : Child_Iterator :=
+              (Group_By_Notebook => True,
+               Visible_Only      => Visible_Only,
+               Paned_Iter        => Start (MDI),
+               In_Central        => False,
+               Notebook          => null,
+               Notebook_Page     => 0,
+               Floating_Iter     => MDI.Items,
+               MDI               => MDI_Window (MDI));
+         begin
+            if MDI.Central /= null then
+               Iter.Paned_Iter := Start (MDI.Central);
+               Iter.In_Central := True;
+            end if;
 
-               Free (Children);
-               return Iter;
-            end;
-         else
-            return (Group_By_Notebook => True,
-                    Notebook       => null,
-                    Visible_Only   => Visible_Only,
-                    Notebook_Page  => Gint'Last,
-                    Floating_Iter  => Null_List,
-                    MDI            => MDI_Window (MDI));
-         end if;
+            Move_To_Next_Notebook (Iter);
+
+            while Iter.Floating_Iter /= Null_List
+              and then MDI_Child
+                (Widget_List.Get_Data (Iter.Floating_Iter)).State /= Floating
+            loop
+               Iter.Floating_Iter := Widget_List.Next (Iter.Floating_Iter);
+            end loop;
+
+            return Iter;
+         end;
       else
          Children := MDI.Items;
 
@@ -6363,12 +6368,49 @@ package body Gtkada.MDI is
       return Get_Notebook (Get (Iterator));
    end Get_Notebook;
 
+   ---------------------------
+   -- Move_To_Next_Notebook --
+   ---------------------------
+
+   procedure Move_To_Next_Notebook (Iterator : in out Child_Iterator) is
+   begin
+      Iterator.Notebook := null;
+      Iterator.Notebook_Page := 0;
+
+      loop
+         if At_End (Iterator.Paned_Iter) then
+            if Iterator.In_Central then
+               Iterator.In_Central := False;
+               Iterator.Paned_Iter := Start (Iterator.MDI);
+               exit when At_End (Iterator.Paned_Iter);
+            else
+               exit;
+            end if;
+         end if;
+
+         --  Assert (not At_End (Iterator.Paned_Iter))
+
+         if Get_Widget (Iterator.Paned_Iter) /= null
+           and then
+             (not Iterator.Visible_Only
+              or else Visible_Is_Set (Get_Widget (Iterator.Paned_Iter)))
+           and then Get_Widget (Iterator.Paned_Iter).all
+             in Gtk_Notebook_Record'Class
+         then
+            Iterator.Notebook :=
+              Gtk_Notebook (Get_Widget (Iterator.Paned_Iter));
+            exit;
+         end if;
+
+         Next (Iterator.Paned_Iter);
+      end loop;
+   end Move_To_Next_Notebook;
+
    ----------
    -- Next --
    ----------
 
    procedure Next (Iterator : in out Child_Iterator) is
-      Children, Child : Widget_List.Glist;
       C  : MDI_Child;
    begin
       if Iterator.Group_By_Notebook then
@@ -6386,24 +6428,8 @@ package body Gtkada.MDI is
             if Get_Nth_Page
               (Iterator.Notebook, Iterator.Notebook_Page) = null
             then
-               Iterator.Notebook_Page := 0;
-               Children := Get_Children (Iterator.MDI);
-               Child := First (Children);
-
-               while Child /= Null_List
-                 and then Get_Data (Child) /= Gtk_Widget (Iterator.Notebook)
-               loop
-                  Child := Next (Child);
-               end loop;
-
-               if Child = Null_List or else Next (Child) = Null_List then
-                  Iterator.Notebook := null;
-                  --  We will start returning floating children
-               else
-                  Iterator.Notebook := Gtk_Notebook (Get_Data (Next (Child)));
-               end if;
-
-               Free (Children);
+               Next (Iterator.Paned_Iter);
+               Move_To_Next_Notebook (Iterator);
             end if;
          end if;
 
