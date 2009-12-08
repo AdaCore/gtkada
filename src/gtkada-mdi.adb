@@ -434,9 +434,12 @@ package body Gtkada.MDI is
    --  Called when a child is removed from one of the notebooks
 
    procedure Update_Dnd_Window
-     (MDI : access MDI_Window_Record'Class; Text : String);
+     (MDI        : access MDI_Window_Record'Class;
+      Text       : String;
+      In_Central : Boolean);
    --  Create and update the contents of the small window displayed while a
-   --  drag-and-drop operation is taking place
+   --  drag-and-drop operation is taking place.
+   --  In_Central should be True if the window will be part of the central area
 
    procedure Destroy_Dnd_Window (MDI : access MDI_Window_Record'Class);
    --  Destroy the small window displayed while a drag-and-drop operation is
@@ -1685,8 +1688,16 @@ package body Gtkada.MDI is
    -----------------------
 
    procedure Update_Dnd_Window
-     (MDI : access MDI_Window_Record'Class; Text : String)
+     (MDI        : access MDI_Window_Record'Class;
+      Text       : String;
+      In_Central : Boolean)
    is
+      In_Perspective_Txt : aliased constant String := "hidden";
+      In_Central_Txt : aliased constant String := "preserved";
+
+      type Cst_String_Access is access constant String;
+      Loc      : Cst_String_Access;
+
       Frame : Gtk_Frame;
       Box   : Gtk_Box;
    begin
@@ -1702,12 +1713,25 @@ package body Gtkada.MDI is
          Add (Frame, Box);
          Set_Border_Width (Box, 10);
 
-         Gtk_New (MDI.Dnd_Window_Label, Text);
+         Gtk_New (MDI.Dnd_Window_Label, "");
+         Set_Use_Markup (MDI.Dnd_Window_Label, True);
          Pack_Start (Box, MDI.Dnd_Window_Label, Expand => True);
          Show_All (MDI.Dnd_Window);
-      else
-         Set_Text (MDI.Dnd_Window_Label, Text);
       end if;
+
+      if In_Central then
+         Loc := In_Central_Txt'Access;
+      else
+         Loc := In_Perspective_Txt'Access;
+      end if;
+
+      Set_Label
+        (MDI.Dnd_Window_Label,
+         ASCII.HT & Text
+         & ASCII.LF
+         & "<i>Will be <b>" & Loc.all & "</b> when changing perspective"
+         & ASCII.LF & "Use <b>control</b> to move the whole notebook"
+         & ASCII.LF & "Use <b>shift</b> to create a new view for editors</i>");
    end Update_Dnd_Window;
 
    ------------------------
@@ -2020,14 +2044,7 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      In_Perspective : aliased constant String := ASCII.LF
-        & "(will be hidden when changing perspective)";
-      In_Central : aliased constant String := ASCII.LF
-        & "(will be preserved when changing perspective)";
       C        : constant MDI_Child := MDI_Child (Child);
-
-      type Cst_String_Access is access constant String;
-      Loc      : Cst_String_Access;
       Current  : Gtk_Widget;
       C3       : MDI_Child;
       Note     : Gtk_Notebook;
@@ -2036,6 +2053,7 @@ package body Gtkada.MDI is
       Position : Child_Position;
       Delta_X, Delta_Y : Gint;
       pragma Unreferenced (Tmp);
+      In_Central : Boolean;
 
    begin
       if Get_Window (Child) /= Get_Window (Event) then
@@ -2051,25 +2069,22 @@ package body Gtkada.MDI is
             --  location
 
             if Current = null then
-               Update_Dnd_Window (C.MDI, "Float" & In_Central);
+               Update_Dnd_Window (C.MDI, "Float", True);
 
             elsif Current = Gtk_Widget (C.MDI) then
                case Position is
                   when Position_Bottom =>
                      Update_Dnd_Window
-                       (C.MDI, "Below all other windows"
-                        & In_Perspective);
+                       (C.MDI, "Below all other windows", False);
                   when Position_Top =>
                      Update_Dnd_Window
-                       (C.MDI, "Above all other windows" & In_Perspective);
+                       (C.MDI, "Above all other windows", False);
                   when Position_Left =>
                      Update_Dnd_Window
-                       (C.MDI, "On the left of all other windows"
-                        & In_Perspective);
+                       (C.MDI, "On the left of all other windows", False);
                   when Position_Right =>
                      Update_Dnd_Window
-                       (C.MDI, "On the right of all other windows"
-                        & In_Perspective);
+                       (C.MDI, "On the right of all other windows", False);
                   when others =>
                      --  Cannot occur
                      null;
@@ -2079,66 +2094,63 @@ package body Gtkada.MDI is
                case Position is
                   when Position_Bottom =>
                      Update_Dnd_Window
-                       (C.MDI, "Put below central area" & In_Perspective);
+                       (C.MDI, "Put below central area", False);
                   when Position_Top =>
                      Update_Dnd_Window
-                       (C.MDI, "Put above central area" & In_Perspective);
+                       (C.MDI, "Put above central area", False);
                   when Position_Left =>
                      Update_Dnd_Window
-                       (C.MDI,
-                        "Put on the left of central area" & In_Perspective);
+                       (C.MDI, "Put on the left of central area", False);
                   when Position_Right =>
                      Update_Dnd_Window
-                       (C.MDI, "Put on the right of central area"
-                        & In_Perspective);
+                       (C.MDI, "Put on the right of central area", False);
                   when others =>
-                     Update_Dnd_Window
-                       (C.MDI, "Put in central area" & In_Central);
+                     Update_Dnd_Window (C.MDI, "Put in central area", True);
                end case;
 
             elsif Current = Get_Parent (C)
               and then Position = Position_Automatic
             then
-               Update_Dnd_Window (C.MDI, "Leave at current position");
+               Update_Dnd_Window
+                 (C.MDI, "Leave at current position",
+                  In_Central_Area (C.MDI, C));
 
             else
                Note := Gtk_Notebook (Current);
                C3  := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
 
                if C3 = null then
-                  Update_Dnd_Window
-                    (C.MDI, "Put in central area" & In_Central);
+                  Update_Dnd_Window (C.MDI, "Put in central area", True);
 
                else
-                  if In_Central_Area (C.MDI, C3) then
-                     Loc := In_Central'Access;
-                  else
-                     Loc := In_Perspective'Access;
-                  end if;
+                  In_Central := In_Central_Area (C.MDI, C3);
 
                   case Position is
                      when Position_Bottom =>
                         Update_Dnd_Window
                           (C.MDI,
-                           "Put below " & Get_Short_Title (C3) & Loc.all);
+                           "Put below <b>" & Get_Short_Title (C3) & "</b>",
+                           In_Central);
                      when Position_Top =>
                         Update_Dnd_Window
                           (C.MDI,
-                           "Put above " & Get_Short_Title (C3) & Loc.all);
+                           "Put above <b>" & Get_Short_Title (C3) & "</b>",
+                           In_Central);
                      when Position_Left =>
                         Update_Dnd_Window
                           (C.MDI,
-                           "Put on the left of "
-                           & Get_Short_Title (C3) & Loc.all);
+                           "Put on the left of <b>"
+                           & Get_Short_Title (C3) & "</b>",
+                           In_Central);
                      when Position_Right =>
                         Update_Dnd_Window
                           (C.MDI,
-                           "Put on the right of "
-                           & Get_Short_Title (C3) & Loc.all);
+                           "Put on the right of <b>"
+                           & Get_Short_Title (C3) & "</b>", In_Central);
                      when others =>
                         Update_Dnd_Window
-                          (C.MDI, "Put on top of "
-                           & Get_Short_Title (C3) & Loc.all);
+                          (C.MDI, "Put on top of <b>"
+                           & Get_Short_Title (C3) & "</b>", In_Central);
                   end case;
                end if;
             end if;
