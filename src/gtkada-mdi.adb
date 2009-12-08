@@ -69,7 +69,6 @@ with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
 with Gdk.Types.Keysyms;
 with Gdk.Window;              use Gdk.Window;
-with Gdk.Window_Attr;         use Gdk.Window_Attr;
 
 with Gtk;                     use Gtk;
 with Gtk.Accel_Group;         use Gtk.Accel_Group;
@@ -311,7 +310,11 @@ package body Gtkada.MDI is
    --    Position_Bottom .. Position_Right: To one of the sides
    --    Position_Automatic:                In the center
 
-   procedure Draw_Dnd_Rectangle (MDI : access MDI_Window_Record'Class);
+   type Dnd_Rectangle_Mode is (Show, Hide, Destroy);
+   procedure Draw_Dnd_Rectangle
+     (MDI        : access MDI_Window_Record'Class;
+      Mode       : Dnd_Rectangle_Mode;
+      Ref_Window : Gdk.Gdk_Window := null);
    --  Draw the DND rectangle
 
    procedure Update_Float_Menu (Child : access MDI_Child_Record'Class);
@@ -1268,7 +1271,6 @@ package body Gtkada.MDI is
 
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class) is
       M           : constant MDI_Window := MDI_Window (MDI);
-      Window_Attr : Gdk.Window_Attr.Gdk_Window_Attr;
 
    begin
       Gdk.Window.Set_Background (Get_Window (M), M.Background_Color);
@@ -1284,21 +1286,7 @@ package body Gtkada.MDI is
       if M.Cursor_Cross = null then
          Gdk_New (M.Cursor_Cross, Cross);
       end if;
-      Gdk_New (Window_Attr,
-               Window_Type => Window_Child,
-               Wclass      => Input_Output,
-               Cursor      => M.Cursor_Cross,
-               Visual      => Get_Visual (MDI),
-               Colormap    => Get_Colormap (MDI),
-               Event_Mask  => Get_Events (MDI)
-               or Exposure_Mask
-               or Button_Press_Mask
-               or Button_Release_Mask
-               or Button_Motion_Mask);
 
-      --  Destroy the window attribute and the cursor
-
-      Destroy (Window_Attr);
       Queue_Resize (MDI);
    end Realize_MDI;
 
@@ -1705,6 +1693,8 @@ package body Gtkada.MDI is
          Gtk_New (MDI.Dnd_Window, Window_Popup);
          Set_Transient_For (MDI.Dnd_Window, Gtk_Window (Get_Toplevel (MDI)));
          Set_Position (MDI.Dnd_Window, Win_Pos_Center_On_Parent);
+         Modify_Bg (MDI.Dnd_Window, State_Normal, MDI.Focus_Title_Color);
+         Set_Keep_Above (MDI.Dnd_Window, True);
 
          Gtk_New (Frame);
          Add (MDI.Dnd_Window, Frame);
@@ -1850,7 +1840,7 @@ package body Gtkada.MDI is
             Set_Border_Width (C.MDI.Central, 0);
 
             Destroy_Dnd_Window (C.MDI);
-            Draw_Dnd_Rectangle (C.MDI);
+            Draw_Dnd_Rectangle (C.MDI, Mode => Destroy);
             Get_Dnd_Target (C.MDI, Current, Position, C.MDI.Dnd_Rectangle);
 
             if Current = Gtk_Widget (C.MDI) then
@@ -2070,8 +2060,10 @@ package body Gtkada.MDI is
 
             if Current = null then
                Update_Dnd_Window (C.MDI, "Float", True);
+               C.MDI.Dnd_Target := null;
 
             elsif Current = Gtk_Widget (C.MDI) then
+               C.MDI.Dnd_Target := Get_Window (C.MDI);
                case Position is
                   when Position_Bottom =>
                      Update_Dnd_Window
@@ -2091,6 +2083,8 @@ package body Gtkada.MDI is
                end case;
 
             elsif Current = Gtk_Widget (C.MDI.Central) then
+               C.MDI.Dnd_Target := Get_Window (C.MDI.Central);
+
                case Position is
                   when Position_Bottom =>
                      Update_Dnd_Window
@@ -2111,6 +2105,7 @@ package body Gtkada.MDI is
             elsif Current = Get_Parent (C)
               and then Position = Position_Automatic
             then
+               C.MDI.Dnd_Target := Get_Window (C);
                Update_Dnd_Window
                  (C.MDI, "Leave at current position",
                   In_Central_Area (C.MDI, C));
@@ -2121,8 +2116,10 @@ package body Gtkada.MDI is
 
                if C3 = null then
                   Update_Dnd_Window (C.MDI, "Put in central area", True);
+                  C.MDI.Dnd_Target := Get_Window (C.MDI.Central);
 
                else
+                  C.MDI.Dnd_Target := Get_Window (C3);
                   In_Central := In_Central_Area (C.MDI, C3);
 
                   case Position is
@@ -2155,20 +2152,12 @@ package body Gtkada.MDI is
                end if;
             end if;
 
-            --  Highlight the destination area itself. This doesn't work on
-            --  windows which doesn't support drawing on top of child windows
-            --  in the graphic context.
-
             if Current = null then
-               Draw_Dnd_Rectangle (C.MDI);
-               C.MDI.Dnd_Rectangle_Owner := null;
-            elsif Rect2 /= C.MDI.Dnd_Rectangle
-              or else C.MDI.Dnd_Rectangle_Owner /= Get_Window (Current)
-            then
-               Draw_Dnd_Rectangle (C.MDI);
+               Draw_Dnd_Rectangle (C.MDI, Mode => Hide);
+            else
                C.MDI.Dnd_Rectangle := Rect2;
-               C.MDI.Dnd_Rectangle_Owner := Get_Window (Current);
-               Draw_Dnd_Rectangle (C.MDI);
+               Draw_Dnd_Rectangle
+                 (C.MDI, Mode => Show, Ref_Window => Get_Window (Current));
             end if;
 
             return True;
@@ -2219,7 +2208,6 @@ package body Gtkada.MDI is
                Set_Border_Width (C.MDI.Central, 10);
 
                C.MDI.In_Drag := In_Drag;
-               C.MDI.Dnd_Rectangle_Owner := null;
                Pointer_Ungrab (Time => 0);
 
                if C.MDI.Cursor_Fleur = null then
@@ -6652,27 +6640,58 @@ package body Gtkada.MDI is
    -- Draw_Dnd_Rectangle --
    ------------------------
 
-   procedure Draw_Dnd_Rectangle (MDI : access MDI_Window_Record'Class) is
+   procedure Draw_Dnd_Rectangle
+     (MDI        : access MDI_Window_Record'Class;
+      Mode       : Dnd_Rectangle_Mode;
+      Ref_Window : Gdk.Gdk_Window := null)
+   is
+      Root_X, Root_Y : Gint;
+      Success : Boolean;
    begin
-      if MDI.Dnd_Xor_GC = null then
-         Gdk_New (MDI.Dnd_Xor_GC, Get_Window (MDI));
-         Set_Function (MDI.Dnd_Xor_GC, Invert);
-         Set_Exposures (MDI.Dnd_Xor_GC, False);
-         Set_Subwindow (MDI.Dnd_Xor_GC, Include_Inferiors);
-         Set_Line_Attributes
-           (MDI.Dnd_Xor_GC, 2, Line_On_Off_Dash, Cap_Not_Last, Join_Bevel);
-      end if;
+      case Mode is
+         when Destroy =>
+            if MDI.Dnd_Target_Window /= null then
+               Destroy (MDI.Dnd_Target_Window);
+               MDI.Dnd_Target_Window := null;
+            end if;
 
-      if MDI.Dnd_Rectangle_Owner /= null then
-         Draw_Rectangle
-           (MDI.Dnd_Rectangle_Owner,
-            MDI.Dnd_Xor_GC,
-            False,
-            MDI.Dnd_Rectangle.X,
-            MDI.Dnd_Rectangle.Y,
-            MDI.Dnd_Rectangle.Width,
-            MDI.Dnd_Rectangle.Height);
-      end if;
+         when Hide =>
+            if MDI.Dnd_Target_Window /= null then
+               Hide (MDI.Dnd_Target_Window);
+            end if;
+
+         when Show =>
+            if MDI.Dnd_Target_Window = null then
+               Gtk_New (MDI.Dnd_Target_Window, Window_Popup);
+               Set_Transient_For
+                 (MDI.Dnd_Target_Window, Gtk_Window (Get_Toplevel (MDI)));
+               Set_Events (MDI.Dnd_Target_Window, Exposure_Mask);
+               Modify_Bg
+                 (MDI.Dnd_Target_Window, State_Normal, MDI.Focus_Title_Color);
+               Set_Decorated (MDI.Dnd_Target_Window, False);
+               Set_Accept_Focus (MDI.Dnd_Target_Window, False);
+
+               Realize (MDI.Dnd_Target_Window);
+
+               --  This will not work on all Unix platforms, though...
+               Set_Opacity (Get_Window (MDI.Dnd_Target_Window), 0.5);
+            end if;
+
+            Resize (MDI.Dnd_Target_Window,
+                    MDI.Dnd_Rectangle.Width, MDI.Dnd_Rectangle.Height);
+
+            Get_Origin (Ref_Window, Root_X, Root_Y, Success);
+
+            Move (MDI.Dnd_Target_Window,
+                  Root_X + MDI.Dnd_Rectangle.X,
+                  Root_Y + MDI.Dnd_Rectangle.Y);
+
+            --  Keep the text above, for readability, especially when the
+            --  dnd window is not transparent
+            Gdk_Raise (Get_Window (MDI.Dnd_Window));
+
+            Show (MDI.Dnd_Target_Window);
+      end case;
    end Draw_Dnd_Rectangle;
 
    ----------------------
@@ -6718,7 +6737,6 @@ package body Gtkada.MDI is
          Child.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
          Child.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
          Child.MDI.In_Drag := In_Pre_Drag;
-         Child.MDI.Dnd_Rectangle_Owner := null;
          Child.MDI.Dnd_Rectangle := (0, 0, 0, 0);
 
       else
@@ -6765,6 +6783,15 @@ package body Gtkada.MDI is
    begin
       Window_At_Pointer (X, Y, Win);
 
+      if (MDI.Dnd_Target_Window /= null
+          and then Win = Get_Window (MDI.Dnd_Target_Window))
+        or else
+          (MDI.Dnd_Window /= null
+           and then Win = Get_Window (MDI.Dnd_Window))
+      then
+         Win := MDI.Dnd_Target;
+      end if;
+
       if Win = null then
          Position := Position_Automatic;
          Parent := null;
@@ -6795,6 +6822,15 @@ package body Gtkada.MDI is
 
          if Current = Gtk_Widget (MDI) then
             Current := Gtk_Widget (MDI.Central);
+
+            --  Central area not empty ? We have therefore passed the mouse on
+            --  one of the handles, and should not allow a drop there
+
+            if not At_End (Start (MDI.Central)) then
+               Position := Position_Automatic;
+               Parent := null;
+               return;
+            end if;
          end if;
 
          Parent := Current;

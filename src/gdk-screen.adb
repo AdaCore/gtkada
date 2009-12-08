@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007, AdaCore                   --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -443,5 +443,16 @@ package body Gdk.Screen is
    begin
       Internal (Get_Object (Display), Get_Object (Screen), X, Y);
    end Warp_Pointer;
+
+   -------------------
+   -- Is_Composited --
+   -------------------
+
+   function Is_Composited (Screen : access Gdk_Screen_Record) return Boolean is
+      function Internal (Screen : System.Address) return Gint;
+      pragma Import (C, Internal, "gdk_screen_is_composited");
+   begin
+      return Internal (Get_Object (Screen)) /= 0;
+   end Is_Composited;
 
 end Gdk.Screen;

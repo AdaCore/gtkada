@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -490,5 +490,16 @@ package body Gdk.Window is
    begin
       Internal (Window, Rectangle, Boolean'Pos (Invalidate_Children));
    end Invalidate_Rect;
+
+   --------------------
+   -- Set_Composited --
+   --------------------
+
+   procedure Set_Composited (Window : Gdk_Window; Composited : Boolean) is
+      procedure Internal (Window : Gdk_Window; Composited : Gboolean);
+      pragma Import (C, Internal, "gdk_window_set_composited");
+   begin
+      Internal (Window, Gboolean (Boolean'Pos (Composited)));
+   end Set_Composited;
 
 end Gdk.Window;

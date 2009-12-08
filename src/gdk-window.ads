@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,6 +47,7 @@
 --  might want to handle scrolling yourself). See the function
 --  Gdk.Event.Get_Graphics_Expose for more information.
 --  <c_version>1.3.6</c_version>
+--  <c_version>2.12</c_version> for some of the functions
 --  <group>Gdk, the low-level API</group>
 
 with System;
@@ -423,6 +424,41 @@ package Gdk.Window is
    procedure Set_Transient_For
      (Window : Gdk_Window; Leader : Gdk_Window);
 
+   procedure Set_Opacity (Window : Gdk_Window; Opacity : Gdouble);
+   --  Request the windowing system to make Window partially transparent, with
+   --  opacity 0.0 being fully transparent and 1.0 fully opaque (Values of the
+   --  opacity parameter are clamped to the [0,1] range).
+   --
+   --  On X11, this works only on X screens with a compositing manager running
+   --  (see Gdk.Screen.Is_Composited)
+   --
+   --  For setting up per-pixel alpha, see Gdk.Screen.Get_Rgba_Colormap
+   --  For making non-toplevel windows translucent, see Set_Composited
+   --
+   --  Since: gtk+ 2.12
+
+   procedure Set_Composited (Window : Gdk_Window; Composited : Boolean);
+   --  Sets Window as composited, or unsets it. Composited windows do not
+   --  automatically have their contents drawn to the screen. Drawing is
+   --  redirected to an offscreen buffer and an expose event is emitted on the
+   --  parent of the composited window. It is the responsibility of the
+   --  parent's expose handler to manually merge the off-screen content onto
+   --  the screen in whatever way it sees fit.
+   --
+   --  It only makes sense for child windows to be composited; see Set_Opacity
+   --  if you need translucent toplevel windows.
+   --
+   --  An additional effect of this call is that the area of this window is no
+   --  longer clipped from regions marked for invalidation on its parent. Draws
+   --  done on the parent window are also no longer clipped by the child.
+   --
+   --  This call is only supported on some systems (currently, only X11 with
+   --  new enough Xcomposite and Xdamage extensions). You must call
+   --  gdk_display_supports_composite() to check if setting a window as
+   --  composited is supported before attempting to do so.
+   --
+   --  Since: 2.12
+
    procedure Set_Background
      (Window : Gdk_Window; Color : Gdk.Color.Gdk_Color);
 
@@ -456,6 +492,9 @@ package Gdk.Window is
       X       : out Gint;
       Y       : out Gint;
       Success : out Boolean);
+   --  Obtains the position of a window in root window coordinates. (Compare
+   --  with Get_Position and Get_Geometry which return the position of a window
+   --  relative to its parent window)
 
    procedure Get_Desk_Relative_Origin
      (Window  : Gdk_Window;
@@ -467,6 +506,8 @@ package Gdk.Window is
      (Window : Gdk_Window;
       X      : out Gint;
       Y      : out Gint);
+   --  Obtains the top-left corner of the window manager frame in root window
+   --  coordinates.
 
    procedure Get_Frame_Extents
      (Window : Gdk_Window;
@@ -663,6 +704,7 @@ private
    pragma Import (C, Set_Cursor, "gdk_window_set_cursor");
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
    pragma Import (C, Get_Window_Id, "ada_gdk_get_window_id");
+   pragma Import (C, Set_Opacity, "gdk_window_set_opacity");
 
    pragma Convention (C, Gdk_Window_Type);
 

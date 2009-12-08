@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007, AdaCore                   --
+--                Copyright (C) 2006-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,6 +37,7 @@
 --  form a large screen area.
 --  </description>
 --  <c_version>2.8.17</c_version>
+--  <c_version>2.12</c_version> for some of the functions
 --  <group>Gdk, the low-level API</group>
 --  <see>Gdk_Display</see>
 
@@ -180,6 +181,15 @@ package Gdk.Screen is
      (Screen : access Gdk_Screen_Record) return Glib.Gint;
    --  Returns the number of monitors which screen consists of.
 
+   function Is_Composited (Screen : access Gdk_Screen_Record) return Boolean;
+   --  Returns whether windows with an RGBA visual can reasonably be expected
+   --  to have their alpha channel drawn correctly on the screen.
+   --
+   --  On X11 this function returns whether a compositing manager is
+   --  compositing Screen.
+   --
+   --  Since: 2.10
+
    --------------
    -- Monitors --
    --------------
@@ -245,4 +255,3 @@ end Gdk.Screen;
 --  Binding would be nice, requires a list of C_Proxy:
 --  No binding: gdk_screen_get_toplevel_windows
 --  No binding: gdk_screen_list_visuals
-

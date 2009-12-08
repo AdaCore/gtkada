@@ -1045,10 +1045,10 @@ private
 
       --  Handling of Dnd
       Drag_Start_X, Drag_Start_Y : Gint;
-      In_Drag : Drag_Status := No_Drag;
-      Dnd_Rectangle : Gdk.Rectangle.Gdk_Rectangle;
-      Dnd_Rectangle_Owner : Gdk.Gdk_Window;
-      Dnd_Xor_GC : Gdk.Gdk_GC;
+      In_Drag           : Drag_Status := No_Drag;
+      Dnd_Rectangle     : Gdk.Rectangle.Gdk_Rectangle;  --  Highlighted area
+      Dnd_Target        : Gdk.Gdk_Window;     --  The current target for DND
+      Dnd_Target_Window : Gtk.Window.Gtk_Window;  --  The overlay window
 
       --  Loaded perspectives
       Perspective_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item;
