@@ -39,6 +39,7 @@
 
 with Pango.Enums;
 with Glib.Properties;
+with Gdk.Color;
 with Gtk;
 with Gtk.Cell_Renderer;
 
@@ -221,7 +222,7 @@ package Gtk.Cell_Renderer_Text is
    Font_Property                  : constant Glib.Properties.Property_String;
    --  Font_Desc_Property         : constant Glib.Properties.Property_Boxed;
    Foreground_Property            : constant Glib.Properties.Property_String;
-   --  Foreground_Gdk_Property    : constant Glib.Properties.Property_Boxed;
+   Foreground_Gdk_Property        : constant Gdk.Color.Property_Gdk_Color;
    Language_Property              : constant Glib.Properties.Property_String;
    Markup_Property                : constant Glib.Properties.Property_String;
    Rise_Property                  : constant Glib.Properties.Property_Int;
@@ -302,8 +303,8 @@ private
 --       Glib.Properties.Build ("font-desc");
    Foreground_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("foreground");
---     Foreground_Gdk_Property : constant Glib.Properties.Property_Boxed :=
---       Glib.Properties.Build ("foreground-gdk");
+   Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color :=
+     Gdk.Color.Build ("foreground_gdk");
    Language_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("language");
    Markup_Property : constant Glib.Properties.Property_String :=
