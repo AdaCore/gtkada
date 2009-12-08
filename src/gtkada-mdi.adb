@@ -1148,8 +1148,8 @@ package body Gtkada.MDI is
       C           : MDI_Child;
       Need_Redraw : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
       Iter        : Child_Iterator;
-      Pos_Changed : constant Boolean :=
-        MDI.Tabs_Position /= Tabs_Position;
+      Old_Tabs_Pos : constant Gtk_Position_Type := MDI.Tabs_Position;
+      Pos_Changed : constant Boolean := Old_Tabs_Pos /= Tabs_Position;
       Note        : Gtk_Notebook;
 
    begin
@@ -1212,7 +1212,11 @@ package body Gtkada.MDI is
             Note := Get_Notebook (Iter);
 
             if Note /= null then
-               if Pos_Changed then
+               --  Unless we had a specific position for tabs in this notebook
+
+               if Pos_Changed
+                 and then Get_Tab_Pos (Note) = Old_Tabs_Pos
+               then
                   Set_Tab_Pos (Note, MDI.Tabs_Position);
                end if;
 
