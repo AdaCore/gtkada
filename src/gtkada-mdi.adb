@@ -4817,8 +4817,9 @@ package body Gtkada.MDI is
                if WAttr (WAttr'Last) = '%' then
                   Tmp :=
                     Parent_Width - Gint (Children_Count - 1) * Handle_Width;
-                  Width  := Gint'Value (WAttr (WAttr'First .. WAttr'Last - 1))
-                    * Tmp / 100;
+                  Width  := Gint
+                    (Float'Value (WAttr (WAttr'First .. WAttr'Last - 1))
+                     * Float (Tmp) / 100.0);
                else
                   Width := Gint'Value (WAttr);
                end if;
@@ -4829,8 +4830,9 @@ package body Gtkada.MDI is
                if HAttr (HAttr'Last) = '%' then
                   Tmp :=
                     Parent_Height - Gint (Children_Count - 1) * Handle_Width;
-                  Height := Gint'Value (HAttr (HAttr'First .. HAttr'Last - 1))
-                    * Tmp / 100;
+                  Height := Gint
+                    (Float'Value (HAttr (HAttr'First .. HAttr'Last - 1))
+                     * Float (Tmp) / 100.0);
                else
                   Height := Gint'Value (HAttr);
                end if;
@@ -5864,12 +5866,13 @@ package body Gtkada.MDI is
                when Orientation_Horizontal =>
                   Set_Attribute
                     (Node, "width",
-                     Allocation_Int'Image (Width * 100 / Parent_Width) & "%");
+                     Float'Image
+                       (Float (Width) * 100.0 / Float (Parent_Width)) & "%");
                when Orientation_Vertical =>
                   Set_Attribute
                     (Node, "height",
-                     Allocation_Int'Image
-                       (Height * 100 / Parent_Height) & "%");
+                     Float'Image
+                       (Float (Height) * 100.0 / Float (Parent_Height)) & "%");
             end case;
          end Save_Size;
 
