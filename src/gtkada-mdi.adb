@@ -260,9 +260,7 @@ package body Gtkada.MDI is
    --  If there are no visible pages and Hide_If_Empty is true, then the
    --  notebook itself is hidden
 
-   procedure Update_Tab_Color
-     (Child : access MDI_Child_Record'Class;
-      Force : Boolean := False);
+   procedure Update_Tab_Color (Child : access MDI_Child_Record'Class);
    --  Change the background color of the notebook tab containing child,
    --  depending on whether the child is selected or not.
 
@@ -1256,7 +1254,7 @@ package body Gtkada.MDI is
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
          Set_Child_Title_Bar (C);
-         Update_Tab_Color (C, Force => True);
+         Update_Tab_Color (C);
          List := Widget_List.Next (List);
       end loop;
 
@@ -3024,10 +3022,7 @@ package body Gtkada.MDI is
    -- Update_Tab_Color --
    ----------------------
 
-   procedure Update_Tab_Color
-     (Child : access MDI_Child_Record'Class;
-      Force : Boolean := False)
-   is
+   procedure Update_Tab_Color (Child : access MDI_Child_Record'Class) is
       Color : Gdk_Color := Get_Bg (Get_Default_Style, State_Normal);
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
       Label : Gtk_Widget;
@@ -3047,13 +3042,11 @@ package body Gtkada.MDI is
       end Color_Equal;
 
    begin
-      if not Force and then MDI_Child (Child) = Child.MDI.Focus_Child then
-         Color := Child.MDI.Focus_Title_Color;
-      end if;
+      if Note /= null then
+         if MDI_Child (Child) = Child.MDI.Focus_Child then
+            Color := Child.MDI.Focus_Title_Color;
+         end if;
 
-      if (Force or else not Has_Title_Bar (Child))
-        and then Note /= null
-      then
          --  If the color is already being applied to this notebook, avoid
          --  the call to Modify_BG, which is quite costly since it causes
          --  a queue_resize on the notebook.
