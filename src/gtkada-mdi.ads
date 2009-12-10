@@ -556,18 +556,30 @@ package Gtkada.MDI is
    --  If the children are maximized, this selected the next page from the
    --  notebook.
 
+   type Split_Mode is
+     (Before, Before_Reuse,
+      After,  After_Reuse,
+      Any_Side_Reuse);
+   --  How a child should be split:
+   --  If "Before", the child is put above or to the left of its current
+   --  position. A new window is created to containing it. If the "_Reuse"
+   --  version is used, and a window already exist at that position, the child
+   --  will be put in it instead of creating a new one.
+   --  Any_Side_Reuse indicates that the child will be put on either side,
+   --  depending on where a window already exists. If there is no window on the
+   --  side, a new one is created.
+
    procedure Split
-     (MDI               : access MDI_Window_Record;
-      Orientation       : Gtk.Enums.Gtk_Orientation;
-      Reuse_If_Possible : Boolean := False;
-      After             : Boolean := False;
-      Width, Height     : Glib.Gint := 0);
-   --  Split the notebook containing the current focus window.
-   --  If Reuse_If_Possible is True, and the current child is already splitted
-   --  in the right directory, we reuse that area.
-   --  If After is true, then the currently selected child is put below or
-   --  to the right in the splitted area, otherwise it is left on the top or
-   --  left of that area).
+     (MDI           : access MDI_Window_Record;
+      Orientation   : Gtk.Enums.Gtk_Orientation;
+      Child         : MDI_Child := null;
+      Mode          : Split_Mode := Before;
+      Width, Height : Glib.Gint := 0);
+   --  Split the notebook containing Child (by default, the current focus
+   --  child).
+   --  Mode indicates in which direction the splitting should occur. If you
+   --  are splitting a child in the central area, splitting will never reuse
+   --  a window outside of the central area.
    --  Width and Height indicate the desired geometry for the splitted area,
    --  0 indicate a 50/50 split.
 
