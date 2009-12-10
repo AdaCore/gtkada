@@ -4110,7 +4110,6 @@ package body Gtkada.MDI is
          end if;
 
          if Note2 = null then
-            Put_Line ("MANU Creating new notebook");
             Note2 := Create_Notebook (MDI);
             Show_All (Note2);
             Split (Pane,
