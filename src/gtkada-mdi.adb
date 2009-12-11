@@ -6349,7 +6349,7 @@ package body Gtkada.MDI is
             end if;
          end;
 
-         Reset_Title_Bars_And_Colors (Child.MDI);
+         Reset_Title_Bars_And_Colors (MDI);
 
          Show_All (MDI);
 
