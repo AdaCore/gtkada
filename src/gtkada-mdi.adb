@@ -1583,14 +1583,12 @@ package body Gtkada.MDI is
    procedure Set_Child_Title_Bar (Child : access MDI_Child_Record'Class) is
    begin
       if not Has_Title_Bar (Child) then
-         Put_Line ("Set_Child_Title_Bar OFF " & Get_Title (Child));
          Hide (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, False);
          Set_USize (Child.Title_Box, -1, 0);
          Set_Size_Request (Child.Title_Box, -1, 0);
 
       else
-         Put_Line ("Set_Child_Title_Bar ON " & Get_Title (Child));
          Show (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, True);
          Set_USize (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
@@ -3784,6 +3782,11 @@ package body Gtkada.MDI is
       Configure_Notebook_Tabs (MDI, Note);
 
       Update_Tab_Label (Child);
+
+      --  In case the user displays title bars only in the central area, we
+      --  might need to change its visibility when moving in or out of the
+      --  central area
+      Set_Child_Title_Bar (Child);
 
       Set_Child_Visible (Note, True);
       Show (Note);
