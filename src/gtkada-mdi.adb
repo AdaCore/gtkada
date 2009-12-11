@@ -395,6 +395,10 @@ package body Gtkada.MDI is
       return Children_Array;
    --  Return the list of children of the MDI that match Str
 
+   procedure Reset_Title_Bars_And_Colors
+     (MDI : access MDI_Window_Record'Class);
+   --  Reset the color and title bar of the MDI Child
+
    procedure Update_Selection_Dialog
      (MDI : access MDI_Window_Record'Class; Increment : Integer);
    --  Update the currently selected child in the selection dialog, so that it
@@ -1148,7 +1152,6 @@ package body Gtkada.MDI is
    is
       Desc        : Pango_Font_Description;
       W, H        : Gint;
-      List        : Widget_List.Glist;
       C           : MDI_Child;
       Need_Redraw : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
       Iter        : Child_Iterator;
@@ -1248,8 +1251,23 @@ package body Gtkada.MDI is
          end if;
       end if;
 
-      --  Resize the title bar of all children already in the MDI
+      Reset_Title_Bars_And_Colors (MDI);
 
+      if Need_Redraw then
+         Queue_Draw (MDI);
+      end if;
+   end Configure;
+
+   ---------------------------------
+   -- Reset_Title_Bars_And_Colors --
+   ---------------------------------
+
+   procedure Reset_Title_Bars_And_Colors
+     (MDI : access MDI_Window_Record'Class)
+   is
+      List : Widget_List.Glist;
+      C    : MDI_Child;
+   begin
       List := First (MDI.Items);
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
@@ -1257,11 +1275,7 @@ package body Gtkada.MDI is
          Update_Tab_Color (C);
          List := Widget_List.Next (List);
       end loop;
-
-      if Need_Redraw then
-         Queue_Draw (MDI);
-      end if;
-   end Configure;
+   end Reset_Title_Bars_And_Colors;
 
    -----------------
    -- Realize_MDI --
@@ -1569,13 +1583,17 @@ package body Gtkada.MDI is
    procedure Set_Child_Title_Bar (Child : access MDI_Child_Record'Class) is
    begin
       if not Has_Title_Bar (Child) then
+         Put_Line ("Set_Child_Title_Bar OFF " & Get_Title (Child));
          Hide (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, False);
-         Set_USize (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
+         Set_USize (Child.Title_Box, -1, 0);
+         Set_Size_Request (Child.Title_Box, -1, 0);
 
       else
+         Put_Line ("Set_Child_Title_Bar ON " & Get_Title (Child));
          Show (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, True);
+         Set_USize (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
       end if;
    end Set_Child_Title_Bar;
 
@@ -6327,6 +6345,8 @@ package body Gtkada.MDI is
                Dump (MDI);
             end if;
          end;
+
+         Reset_Title_Bars_And_Colors (Child.MDI);
 
          Show_All (MDI);
 
