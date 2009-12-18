@@ -4509,13 +4509,14 @@ package body Gtkada.MDI is
       --  the contents of the children are saved.
 
       procedure Internal_Load_Perspective
-        (MDI          : access MDI_Window_Record'Class;
-         Name         : String;
-         User         : User_Data;
-         Focus_Child  : in out MDI_Child;
-         To_Raise     : in out Gtk.Widget.Widget_List.Glist;
-         To_Hide      : in out Gtk.Widget.Widget_List.Glist;
-         Width, Height : Gint := 0);
+        (MDI              : access MDI_Window_Record'Class;
+         Name             : String;
+         User             : User_Data;
+         Focus_Child      : in out MDI_Child;
+         To_Raise         : in out Gtk.Widget.Widget_List.Glist;
+         To_Hide          : in out Gtk.Widget.Widget_List.Glist;
+         Width, Height    : Gint := 0;
+         Do_Size_Allocate : Boolean);
       --  Internal version of Load_Perspective
 
       procedure Compute_Size_From_Attributes
@@ -5668,32 +5669,14 @@ package body Gtkada.MDI is
            (MDI,
             Get_Attribute (From_Tree, "perspective", ""),
             User, Focus_Child => Focus_Child,
-            To_Raise => To_Raise, To_Hide => To_Hide,
-            Width => MDI_Width, Height => MDI_Height);
+            To_Raise          => To_Raise, To_Hide => To_Hide,
+            Width             => MDI_Width,
+            Height            => MDI_Height,
+            Do_Size_Allocate  => Do_Size_Allocate);
 
          --  And do the actual resizing on the screen
 
          Set_All_Floating_Mode (MDI, Initial_All_Floating_Mode);
-
-         --  Realize the window while frozen, so that windows that insist on
-         --  setting their own size when realized (eg. the search window in
-         --  GPS) will not break the desktop.
-         --  However, don't do this when attempting to maximize the desktop,
-         --  since otherwise we get a first Size_Allocate for whatever current
-         --  size we have, and then a second one for the maximized size. The
-         --  first one breaks the desktop partially.
-
-         if Do_Size_Allocate then
-            Print_Debug ("Restore_Desktop, forcing a Size_Allocate");
-            Realize (MDI.Central);
-            Realize (MDI);
-            Size_Allocate
-              (MDI,
-               Allocation => (X      => Get_Allocation_X (MDI),
-                              Y      => Get_Allocation_Y (MDI),
-                              Width  => Get_Allocation_Width (MDI),
-                              Height => Get_Allocation_Height (MDI)));
-         end if;
 
          if Focus_Child /= null then
             Print_Debug
@@ -6151,13 +6134,14 @@ package body Gtkada.MDI is
       -------------------------------
 
       procedure Internal_Load_Perspective
-        (MDI          : access MDI_Window_Record'Class;
-         Name         : String;
-         User         : User_Data;
-         Focus_Child  : in out MDI_Child;
-         To_Raise     : in out Gtk.Widget.Widget_List.Glist;
-         To_Hide      : in out Gtk.Widget.Widget_List.Glist;
-         Width, Height : Gint := 0)
+        (MDI              : access MDI_Window_Record'Class;
+         Name             : String;
+         User             : User_Data;
+         Focus_Child      : in out MDI_Child;
+         To_Raise         : in out Gtk.Widget.Widget_List.Glist;
+         To_Hide          : in out Gtk.Widget.Widget_List.Glist;
+         Width, Height    : Gint := 0;
+         Do_Size_Allocate : Boolean)
       is
          Child    : MDI_Child;
 
@@ -6366,6 +6350,26 @@ package body Gtkada.MDI is
 
          --  Update to show which menu is active
          Create_Perspective_Menu (MDI, User);
+
+         --  Realize the window while frozen, so that windows that insist on
+         --  setting their own size when realized (eg. the search window in
+         --  GPS) will not break the desktop.
+         --  However, don't do this when attempting to maximize the desktop,
+         --  since otherwise we get a first Size_Allocate for whatever current
+         --  size we have, and then a second one for the maximized size. The
+         --  first one breaks the desktop partially.
+
+         if Do_Size_Allocate then
+            Print_Debug ("Internal_Load_Perspective, forcing a Size_Allocate");
+            Realize (MDI.Central);
+            Realize (MDI);
+            Size_Allocate
+              (MDI,
+               Allocation => (X      => Get_Allocation_X (MDI),
+                              Y      => Get_Allocation_Y (MDI),
+                              Width  => Get_Allocation_Width (MDI),
+                              Height => Get_Allocation_Height (MDI)));
+         end if;
       end Internal_Load_Perspective;
 
       ----------------------
@@ -6403,9 +6407,10 @@ package body Gtkada.MDI is
          Print_Debug ("++++ Load_Perspective, desktop was saved, now loading");
          Internal_Load_Perspective
            (MDI, Name, User,
-            Focus_Child => Focus_Child,
-            To_Raise    => To_Raise,
-            To_Hide     => To_Hide);
+            Focus_Child      => Focus_Child,
+            To_Raise         => To_Raise,
+            To_Hide          => To_Hide,
+            Do_Size_Allocate => True);
       end Load_Perspective;
 
    end Desktop;
