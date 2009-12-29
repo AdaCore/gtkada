@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -176,6 +176,7 @@ with Gtk.Marshallers;
 pragma Elaborate_All (Gtk.Marshallers);
 
 with Gtk.Notebook;
+with Gtk.Tree_Model;
 with Gtk.Widget;
 
 with Unchecked_Conversion;
@@ -920,6 +921,16 @@ package Gtk.Handlers is
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
       package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
         (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
+      package Tree_Path_Marshaller is new Marshallers.Generic_Marshaller
+        (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path);
+      package Tree_Iter_Tree_Path_Marshaller is
+         new Marshallers.Generic_Marshaller_2
+               (Gtk.Tree_Model.Gtk_Tree_Iter, Gtk.Tree_Model.Get_Tree_Iter,
+                Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path);
+      package Tree_Path_Tree_Iter_Marshaller is
+         new Marshallers.Generic_Marshaller_2
+               (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path,
+                Gtk.Tree_Model.Gtk_Tree_Iter, Gtk.Tree_Model.Get_Tree_Iter);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -946,6 +957,21 @@ package Gtk.Handlers is
         (Cb : Notebook_Page_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Notebook_Page_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Tree_Path_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Tree_Path_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Tree_Iter_Tree_Path_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Tree_Iter_Tree_Path_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Tree_Path_Tree_Iter_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Tree_Path_Tree_Iter_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
@@ -980,6 +1006,20 @@ package Gtk.Handlers is
          Name   : Glib.Signal_Name;
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          renames Notebook_Page_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name is
+        new Tree_Path_Marshaller.Emit_By_Name_Generic
+              (Gtk.Tree_Model.To_Address);
+
+      procedure Emit_By_Name is
+        new Tree_Iter_Tree_Path_Marshaller.Emit_By_Name_Generic
+              (Gtk.Tree_Model.To_Address,
+               Gtk.Tree_Model.To_Address);
+
+      procedure Emit_By_Name is
+        new Tree_Path_Tree_Iter_Marshaller.Emit_By_Name_Generic
+              (Gtk.Tree_Model.To_Address,
+               Gtk.Tree_Model.To_Address);
 
    private
       --  <doc_ignore>
@@ -1130,6 +1170,16 @@ package Gtk.Handlers is
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
       package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
         (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
+      package Tree_Path_Marshaller is new Marshallers.Generic_Marshaller
+        (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path);
+      package Tree_Iter_Tree_Path_Marshaller is
+         new Marshallers.Generic_Marshaller_2
+               (Gtk.Tree_Model.Gtk_Tree_Iter, Gtk.Tree_Model.Get_Tree_Iter,
+                Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path);
+      package Tree_Path_Tree_Iter_Marshaller is
+         new Marshallers.Generic_Marshaller_2
+               (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path,
+                Gtk.Tree_Model.Gtk_Tree_Iter, Gtk.Tree_Model.Get_Tree_Iter);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -1156,6 +1206,21 @@ package Gtk.Handlers is
         (Cb : Notebook_Page_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Notebook_Page_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Tree_Path_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Tree_Path_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Tree_Iter_Tree_Path_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Tree_Iter_Tree_Path_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Tree_Path_Tree_Iter_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Tree_Path_Tree_Iter_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
@@ -1190,6 +1255,20 @@ package Gtk.Handlers is
          Name   : Glib.Signal_Name;
          Param  : Gtk.Notebook.Gtk_Notebook_Page)
          renames Notebook_Page_Marshaller.Emit_By_Name;
+
+      procedure Emit_By_Name is
+        new Tree_Path_Marshaller.Emit_By_Name_Generic
+              (Gtk.Tree_Model.To_Address);
+
+      procedure Emit_By_Name is
+        new Tree_Iter_Tree_Path_Marshaller.Emit_By_Name_Generic
+              (Gtk.Tree_Model.To_Address,
+               Gtk.Tree_Model.To_Address);
+
+      procedure Emit_By_Name is
+        new Tree_Path_Tree_Iter_Marshaller.Emit_By_Name_Generic
+              (Gtk.Tree_Model.To_Address,
+               Gtk.Tree_Model.To_Address);
 
    private
       --  <doc_ignore>

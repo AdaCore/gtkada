@@ -129,6 +129,9 @@ package Gtk.Tree_Model is
    --  Generate a string representation of the path.
    --  This string is a colon-separated list of numbers, as described above.
 
+   function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path;
+   --  Extract the path from the given GValue.
+
    procedure Append_Index (Path : Gtk_Tree_Path; Index : Gint);
    --  Append a new index to a path.
    --  As a result, the depth of the path is increased. See Path_Up for the
@@ -257,6 +260,12 @@ package Gtk.Tree_Model is
    --  Note that the iterator returned is a copy of the iterator referenced
    --  by the give GValue. Modifying the iterator returned does not modify
    --  the iterator referenced by the GValue.
+
+   function Get_Tree_Iter (Val : Glib.Values.GValue) return Gtk_Tree_Iter;
+   --  Extract the iterator from the given GValue.
+
+   function To_Address (Iter : Gtk_Tree_Iter) return System.Address;
+   --  Returns address of the specified iterator.
 
    function Get_Iter
      (Tree_Model : access Gtk_Tree_Model_Record;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2009, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -388,6 +388,51 @@ package Gtk.Marshallers is
          Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Marshaller;
 
+      generic
+         type Base_Type_1 is private;
+         with function Conversion
+           (Value : Glib.Values.GValue) return Base_Type_1;
+         type Base_Type_2 is private;
+         with function Conversion
+           (Value : Glib.Values.GValue) return Base_Type_2;
+
+      package Generic_Marshaller_2 is
+         type Handler is access procedure
+           (Widget  : access Widget_Type'Class;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2);
+
+         function To_Marshaller (Cb : Handler) return Marshaller;
+
+         procedure Emit_By_Name
+           (Object  : access Widget_Type'Class;
+            Name    : Glib.Signal_Name;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2);
+         --  The function above should be used when BASE_TYPE can be passed
+         --  as is to C.
+
+         generic
+            with function Conversion
+                            (Param : Base_Type_1) return System.Address;
+            with function Conversion
+                            (Param : Base_Type_2) return System.Address;
+         procedure Emit_By_Name_Generic
+           (Object  : access Widget_Type'Class;
+            Name    : Glib.Signal_Name;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2);
+         --  Provide an explicit conversion function for PARAM.
+
+      private
+         procedure Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler);
+
+         Call_Access : constant Handler_Proxy := Call'Access;
+      end Generic_Marshaller_2;
+
       --  Widget Marshaller
       generic
          type Base_Type is new Gtk.Widget.Gtk_Widget_Record with private;
@@ -491,6 +536,54 @@ package Gtk.Marshallers is
 
          Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Marshaller;
+
+      generic
+         type Base_Type_1 is private;
+         with function Conversion
+           (Value : Glib.Values.GValue) return Base_Type_1;
+         type Base_Type_2 is private;
+         with function Conversion
+           (Value : Glib.Values.GValue) return Base_Type_2;
+
+      package Generic_Marshaller_2 is
+
+         type Handler is access procedure
+           (Widget    : access Widget_Type'Class;
+            Param_1   : Base_Type_1;
+            Param_2   : Base_Type_2;
+            User_Data : User_Type);
+
+         function To_Marshaller (Cb : Handler) return Marshaller;
+
+         procedure Emit_By_Name
+           (Object  : access Widget_Type'Class;
+            Name    : Glib.Signal_Name;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2);
+         --  The function above should be used when BASE_TYPE can be passed
+         --  as is to C.
+
+         generic
+            with function Conversion
+                            (Param : Base_Type_1) return System.Address;
+            with function Conversion
+                            (Param : Base_Type_2) return System.Address;
+         procedure Emit_By_Name_Generic
+           (Object  : access Widget_Type'Class;
+            Name    : Glib.Signal_Name;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2);
+         --  Provide an explicit conversion function for PARAM.
+
+      private
+         procedure Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type);
+
+         Call_Access : constant Handler_Proxy := Call'Access;
+      end Generic_Marshaller_2;
 
       --  Widget Marshaller
       generic

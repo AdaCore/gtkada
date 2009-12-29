@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2009, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -597,6 +597,106 @@ package body Gtk.Marshallers is
 
       end Generic_Marshaller;
 
+      --------------------------
+      -- Generic_Marshaller_2 --
+      --------------------------
+
+      package body Generic_Marshaller_2 is
+         function To_Handler is new
+           Ada.Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Ada.Unchecked_Conversion (Handler, General_Handler);
+
+         ----------
+         -- Call --
+         ----------
+
+         procedure Call
+           (Widget  : access Widget_Type'Class;
+            Params  : Glib.Values.GValues;
+            Cb      : General_Handler)
+         is
+            Func : constant Handler := To_Handler (Cb);
+         begin
+            Func
+              (Widget,
+               Conversion (Nth (Params, 1)),
+               Conversion (Nth (Params, 2)));
+         end Call;
+
+         -------------------
+         -- To_Marshaller --
+         -------------------
+
+         function To_Marshaller (Cb : Handler) return Marshaller is
+         begin
+            --  We must have at least one argument in the real callback.
+            --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
+
+            return (Func => To_General_Handler (Cb), Proxy => Call_Access);
+         end To_Marshaller;
+
+         ------------------
+         -- Emit_By_Name --
+         ------------------
+
+         procedure Emit_By_Name
+           (Object  : access Widget_Type'Class;
+            Name    : Glib.Signal_Name;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2)
+         is
+            procedure Internal
+              (Object  : System.Address;
+               Name    : Glib.Signal_Name;
+               Param_1 : System.Address;
+               Param_2 : System.Address);
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
+
+            pragma Warnings (Off);
+            function To_Address is new
+              Ada.Unchecked_Conversion (Base_Type_1, System.Address);
+            function To_Address is new
+              Ada.Unchecked_Conversion (Base_Type_2, System.Address);
+            pragma Warnings (On);
+
+         begin
+            --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+            Internal
+              (Get_Object (Object),
+               Name & ASCII.NUL,
+               To_Address (Param_1),
+               To_Address (Param_2));
+         end Emit_By_Name;
+
+         --------------------------
+         -- Emit_By_Name_Generic --
+         --------------------------
+
+         procedure Emit_By_Name_Generic
+           (Object  : access Widget_Type'Class;
+            Name    : Glib.Signal_Name;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2)
+         is
+            procedure Internal
+              (Object  : System.Address;
+               Name    : Glib.Signal_Name;
+               Param_1 : System.Address;
+               Param_2 : System.Address);
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
+
+         begin
+            --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+            Internal
+              (Get_Object (Object),
+               Name & ASCII.NUL,
+               Conversion (Param_1),
+               Conversion (Param_2));
+         end Emit_By_Name_Generic;
+
+      end Generic_Marshaller_2;
+
       -------------------------------
       -- Generic_Widget_Marshaller --
       -------------------------------
@@ -814,6 +914,109 @@ package body Gtk.Marshallers is
          end Emit_By_Name_Generic;
 
       end Generic_Marshaller;
+
+      --------------------------
+      -- Generic_Marshaller_2 --
+      --------------------------
+
+      package body Generic_Marshaller_2 is
+
+         function To_Handler is new
+           Ada.Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Ada.Unchecked_Conversion (Handler, General_Handler);
+
+         ----------
+         -- Call --
+         ----------
+
+         procedure Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type)
+         is
+            Func : constant Handler := To_Handler (Cb);
+         begin
+            Func
+              (Widget,
+               Conversion (Nth (Params, 1)),
+               Conversion (Nth (Params, 2)),
+               User_Data);
+         end Call;
+
+         -------------------
+         -- To_Marshaller --
+         -------------------
+
+         function To_Marshaller (Cb : Handler) return Marshaller is
+         begin
+            --  We must have at least one argument in the real callback.
+            --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
+
+            return (Func => To_General_Handler (Cb), Proxy => Call_Access);
+         end To_Marshaller;
+
+         ------------------
+         -- Emit_By_Name --
+         ------------------
+
+         procedure Emit_By_Name
+           (Object  : access Widget_Type'Class;
+            Name    : Glib.Signal_Name;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2)
+         is
+            procedure Internal
+              (Object  : System.Address;
+               Name    : Glib.Signal_Name;
+               Param_1 : System.Address;
+               Param_2 : System.Address);
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
+
+            pragma Warnings (Off);
+            function To_Address is new
+              Ada.Unchecked_Conversion (Base_Type_1, System.Address);
+            function To_Address is new
+              Ada.Unchecked_Conversion (Base_Type_2, System.Address);
+            pragma Warnings (On);
+
+         begin
+            --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+            Internal
+              (Get_Object (Object),
+               Name & ASCII.NUL,
+               To_Address (Param_1),
+               To_Address (Param_2));
+         end Emit_By_Name;
+
+         --------------------------
+         -- Emit_By_Name_Generic --
+         --------------------------
+
+         procedure Emit_By_Name_Generic
+           (Object  : access Widget_Type'Class;
+            Name    : Glib.Signal_Name;
+            Param_1 : Base_Type_1;
+            Param_2 : Base_Type_2)
+         is
+            procedure Internal
+              (Object  : System.Address;
+               Name    : Glib.Signal_Name;
+               Param_1 : System.Address;
+               Param_2 : System.Address);
+            pragma Import (C, Internal, "ada_g_signal_emit_by_name_ptr_ptr");
+
+         begin
+            --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+            Internal
+              (Get_Object (Object),
+               Name & ASCII.NUL,
+               Conversion (Param_1),
+               Conversion (Param_2));
+         end Emit_By_Name_Generic;
+
+      end Generic_Marshaller_2;
 
       -------------------------------
       -- Generic_Widget_Marshaller --

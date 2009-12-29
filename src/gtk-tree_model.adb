@@ -115,6 +115,19 @@ package body Gtk.Tree_Model is
       end;
    end To_String;
 
+   -------------------
+   -- Get_Tree_Path --
+   -------------------
+
+   function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path is
+
+      function To_Gtk_Tree_Path is
+        new Ada.Unchecked_Conversion (System.Address, Gtk_Tree_Path);
+
+   begin
+      return To_Gtk_Tree_Path (Glib.Values.Get_Address (Val));
+   end Get_Tree_Path;
+
    -----------------
    -- Get_Indices --
    -----------------
@@ -248,6 +261,28 @@ package body Gtk.Tree_Model is
    begin
       Internal (Glib.Values.Get_Address (Val), Iter);
    end Get_Tree_Iter;
+
+   -------------------
+   -- Get_Tree_Iter --
+   -------------------
+
+   function Get_Tree_Iter (Val : Glib.Values.GValue) return Gtk_Tree_Iter is
+      Result : Gtk_Tree_Iter;
+
+   begin
+      Get_Tree_Iter (Val, Result);
+
+      return Result;
+   end Get_Tree_Iter;
+
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Address (Iter : Gtk_Tree_Iter) return System.Address is
+   begin
+      return Iter'Address;
+   end To_Address;
 
    --------------
    -- Get_Iter --
