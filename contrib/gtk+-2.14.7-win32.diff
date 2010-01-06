@@ -231,3 +231,13 @@
   }
   
   static gboolean
+--- configure.old       2009-02-23 15:54:03.650263500 +0100
++++ configure   2009-02-23 15:54:54.711263500 +0100
+@@ -36969,6 +36971,7 @@ if test "$ac_cs_awk_cr" = "a${ac_cr}b";
+ else
+   ac_cs_awk_cr=$ac_cr
+ fi
++ac_cs_awk_cr=$ac_cr
+
+ echo 'BEGIN {' >"$tmp/subs1.awk" &&
+ _ACEOF
