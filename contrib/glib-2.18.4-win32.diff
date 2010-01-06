@@ -1,3 +1,5 @@
+	* configure: Work around ^M handling on cygwin with igncr
+
 	* glib/convert.c, glib/gmem.c: Do not crash when trying to convert
 	a huge file, return NULL instead.
 
@@ -33,3 +35,13 @@
      }
  
    if (mem)
+--- configure.old	2009-07-20 17:21:54.661000000 +0200
++++ configure	2009-07-20 17:22:25.630000000 +0200
+@@ -44575,6 +44575,7 @@ if test "$ac_cs_awk_cr" = "a${ac_cr}b"; 
+ else
+   ac_cs_awk_cr=$ac_cr
+ fi
++ac_cs_awk_cr=$ac_cr
+ 
+ echo 'BEGIN {' >"$tmp/subs1.awk" &&
+ _ACEOF
