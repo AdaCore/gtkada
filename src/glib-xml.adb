@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -224,7 +224,7 @@ package body Glib.XML is
       Index   : in out Natural;
       Word    : out String_Ptr)
    is
-      Terminator : Character := ' ';
+      Terminator : Character;
    begin
       Skip_Blanks (Buf, Index);
 
@@ -318,9 +318,9 @@ package body Glib.XML is
    -------------------
 
    function Get_Attribute
-     (N : in Node_Ptr;
-      Attribute_Name : in UTF8_String;
-      Default        : in UTF8_String := "") return UTF8_String
+     (N              : Node_Ptr;
+      Attribute_Name : UTF8_String;
+      Default        : UTF8_String := "") return UTF8_String
    is
       Index      : Natural;
       Key, Value : String_Ptr;
