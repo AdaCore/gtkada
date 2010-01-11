@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2009, AdaCore                  --
+--                 Copyright (C) 2001-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1857,7 +1857,9 @@ package body Gtkada.MDI is
             Draw_Dnd_Rectangle (C.MDI, Mode => Destroy);
             Get_Dnd_Target (C.MDI, Current, Position, C.MDI.Dnd_Rectangle);
 
-            if Current = Gtk_Widget (C.MDI) then
+            if Current = null then --  outside of the main window ?
+               Pane := null;
+            elsif Current = Gtk_Widget (C.MDI) then
                Pane := Gtkada_Multi_Paned (C.MDI);
             elsif Get_Parent (Current) = Gtk_Widget (C.MDI.Central) then
                Pane := C.MDI.Central;
