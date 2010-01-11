@@ -5537,7 +5537,7 @@ package body Gtkada.MDI is
             State : Gdk_Window_State;
          begin
             State := Gdk_Window_State'Value
-              (Get_Attribute (From_Tree, "state", "0"));
+              (Get_Attribute (Perspectives, "state", "0"));
 
             if (State and Window_State_Maximized) /= 0 then
 
@@ -5577,9 +5577,9 @@ package body Gtkada.MDI is
 
             else
                MDI_Width  :=
-                 Gint'Value (Get_Attribute (From_Tree, "width",  "640"));
+                 Gint'Value (Get_Attribute (Perspectives, "width",  "640"));
                MDI_Height :=
-                 Gint'Value (Get_Attribute (From_Tree, "height", "480"));
+                 Gint'Value (Get_Attribute (Perspectives, "height", "480"));
                Print_Debug
                  ("MDI size computed read from desktop "
                   & Gint'Image (MDI_Width) & "x" & Gint'Image (MDI_Height));
@@ -6074,12 +6074,14 @@ package body Gtkada.MDI is
             if Win /= null then
                State := Get_State (Get_Window (Win));
                if (State and Window_State_Maximized) = 0 then
-                  Set_Attribute (Central, "width", Gint'Image (MDI_Width));
-                  Set_Attribute (Central, "height", Gint'Image (MDI_Height));
+                  Set_Attribute
+                    (MDI.Perspectives, "width", Gint'Image (MDI_Width));
+                  Set_Attribute
+                    (MDI.Perspectives, "height", Gint'Image (MDI_Height));
                end if;
 
                Set_Attribute
-                 (Central, "state", Gdk_Window_State'Image (State));
+                 (MDI.Perspectives, "state", Gdk_Window_State'Image (State));
                Set_Attribute
                  (Central, "perspective", Current_Perspective (MDI));
             end if;
