@@ -1,8 +1,14 @@
+2010-01-11  Arnaud Charlet  <charlet@adacore.com>
+
+	* gdk/gdkwindow.c (gdk_window_get_composite_drawable): Protect
+	against NULL access.
+	Observed when creating a new file in GPS under Windows.
+
 2009-09-19  Arnaud Charlet  <charlet@adacore.com>
 
 	* gtk/gtktreemodel.c (gtk_tree_model_row_has_child_toggled): Replace
 	g_return_if_fail by explicit check, since path may legitimately
-	be NULL (I918-021).2009-09-19  Arnaud Charlet  <charlet@adacore.com>
+	be NULL (I918-021).
 
 2009-01-12  Nicolas Setton  <setton@adacore.com>
 
@@ -109,3 +115,14 @@
  
    g_signal_emit (tree_model, tree_model_signals[ROW_HAS_CHILD_TOGGLED], 0, path, iter);
  }
+--- gdk/gdkwindow.c.old	2009-12-08 16:13:05.000000000 +0100
++++ gdk/gdkwindow.c	2010-01-10 20:33:05.783000000 +0100
+@@ -3858,7 +3858,7 @@ gdk_window_get_composite_drawable (GdkDr
+ 		     width, height);
+ 
+   /* paint the backing stores */
+-  if (implicit_paint)
++  if (implicit_paint && list != NULL)
+     {
+       GdkWindowPaint *paint = list->data;
+ 

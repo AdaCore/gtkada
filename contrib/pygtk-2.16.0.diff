@@ -1,0 +1,19 @@
+	* Fixes build with --disable-thread
+	See: http://bugzilla.gnome.org/show_bug.cgi?id=374603
+
+--- gtk/gtk.c.old	2009-12-21 15:58:22.000000000 +0100
++++ gtk/gtk.c	2009-12-21 16:36:09.000000000 +0100
+@@ -117,9 +117,13 @@ static int _loop(void)
+     g_io_channel_unref(channel);
+ 
+     /* Start the main loop */
++#ifdef DISABLE_THREADING
++    gtk_main();
++#else
+     gstate = PyGILState_Ensure();
+     gtk_main();
+     PyGILState_Release(gstate);
++#endif
+ 
+     return 0;
+ }

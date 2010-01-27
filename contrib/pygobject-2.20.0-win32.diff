@@ -1,0 +1,20 @@
+--- configure.old	2009-12-22 15:40:04.056759800 +0100
++++ configure	2009-12-22 15:41:40.387377300 +0100
+@@ -15509,6 +15509,7 @@ if test "$ac_cs_awk_cr" = "a${ac_cr}b"; 
+ else
+   ac_cs_awk_cr=$ac_cr
+ fi
++ac_cs_awk_cr=$ac_cr
+ 
+ echo 'BEGIN {' >"$tmp/subs1.awk" &&
+ _ACEOF
+--- glib/pygiochannel.c.old	2009-06-17 22:48:38.000000000 +0200
++++ glib/pygiochannel.c	2009-12-22 15:54:47.615223600 +0100
+@@ -10,6 +10,7 @@
+ 
+ #include "pyglib.h"
+ #include "pyglib-private.h"
++#include "pygsource.h"
+ 
+ typedef struct {
+     PyObject_HEAD

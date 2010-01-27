@@ -1,21 +1,24 @@
-2009-09-29	Nicolas Setton  <setton@adacore.com>
+2009-09-29      Nicolas Setton  <setton@adacore.com>
 
 	* gdk/win32/gdkevents-win32.c:
 	Protect against infinite loop in the events processing queue, in cases
 	where the translation of events cause the same events to be
-	regenerated. This protects against two cases of loops that have been 
+	regenerated. This protects against two cases of loops that have been
 	observed under Citrix.
 	(gdk_event_translate): Protect against reentry on move or size events
 	that are being re-posted by Gtk+, which happens when a Citrix window
 	receives move events but has never been mapped to a Gtk+ window.
-	Protect against flip/flopping between two windows competing for 
-	becoming the active window.
 	(_gdk_event_queue): After having processed all the messages, reset the
 	reentry flags.
 
-2008-12-02	Arnaud Charlet	<charlet@adacore.com>
+2009-07-20	Arnaud Charlet	<charlet@adacore.com>
 
-	* gdk/win32/gdkevents-win32.c (gdk_events_translate): Fix build failure.
+	* configure: Work around ^M handling on cygwin with igncr
+
+2009-02-24	Arnaud Charlet	<charlet@adacore.com>
+
+	* gtk/gtkmain.c (gtk_grab_notify_foreach): Disable event crossing
+	handling, causing crashes.
 
 2007-10-10	Arnaud Charlet	<charlet@adacore.com>
 
@@ -30,21 +33,17 @@
 
 2002-11-25	Arnaud Charlet	<charlet@adacore.com>
 
-	* gdk/Makefile.in: Remove gdk-win32res.o dependency,
-	since we do not want to use the default Gtk+ icon.
-
-2002-09-12	Florent Duguet	<duguet@adacore.com>
-
 	* gdk/win32/gdkevents-win32.c (handle_wm_paint): Force an update when
 	paint message is received, otherwise windows in background are not
 	immediately refreshed when moving a modal window on top of them.
-	Add handling of WM_NCPAINT message to refresh some areas when a window
-	from another application is moved on top of the current app.
 
---- gdk/win32/gdkevents-win32.c.old	2006-02-21 10:02:58.000000000 +0100
-+++ gdk/win32/gdkevents-win32.c	2006-02-21 10:08:22.000000000 +0100
-@@ -2125,6 +2125,12 @@ handle_wm_paint (MSG        *msg,
-   _gdk_window_process_expose (window, update_region);
+	* gdk/Makefile.in: Remove gdk-win32res.o dependency,
+	since we do not want to use the default Gtk+ icon.
+
+--- gdk/win32/gdkevents-win32.c.old	2009-12-22 12:37:10.468370000 +0100
++++ gdk/win32/gdkevents-win32.c	2010-01-06 17:04:42.923000000 +0100
+@@ -1692,6 +1692,12 @@ handle_wm_paint (MSG        *msg,
+     _gdk_window_invalidate_for_expose (window, update_region);
    gdk_region_destroy (update_region);
  
 +  /* Force a process_updates to refresh visible windows
@@ -56,42 +55,19 @@
    DeleteObject (hrgn);
  }
  
-@@ -2964,6 +2970,35 @@ gdk_event_translate (MSG  *msg,
-       *ret_valp = 1;
-       break;
+--- gdk/Makefile.in.orig	2009-12-08 16:19:08.000000000 +0100
++++ gdk/Makefile.in	2009-12-21 18:05:08.160000000 +0100
+@@ -662,8 +662,8 @@ libgdk_win32_2_0_la_SOURCES = $(common_s
+ libgdk_win32_2_0_la_LIBADD = win32/libgdk-win32.la $(GDK_DEP_LIBS) \
+   $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la
  
-+    case WM_NCPAINT:
-+      if (msg->wParam < 1)
-+	break;
-+
-+      {
-+	HRGN hrgn;
-+
-+	hrgn = CreateRectRgn (0, 0, 0, 0);
-+	if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
-+	  {
-+	    WIN32_GDI_FAILED ("GetUpdateRgn");
-+	    break;
-+	  }
-+
-+	{
-+	  GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
-+
-+	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
-+	  gdk_region_offset (update_region, xoffset, yoffset);
-+
-+	  _gdk_window_process_expose (window, update_region);
-+	  gdk_region_destroy (update_region);
-+
-+	  DeleteObject (hrgn);
-+	  return_val = FALSE;
-+	}
-+      }
-+      break;
-+
-     case WM_PAINT:
-       handle_wm_paint (msg, window, FALSE, NULL);
-       break;
+-libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la win32/rc/gdk-win32-res.o gdk.def
+-libgdk_win32_2_0_la_LDFLAGS = -Wl,win32/rc/gdk-win32-res.o -export-symbols $(srcdir)/gdk.def $(LDADD)
++libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la gdk.def
++libgdk_win32_2_0_la_LDFLAGS = -export-symbols $(srcdir)/gdk.def $(LDADD)
+ @MS_LIB_AVAILABLE_TRUE@noinst_DATA = gdk-win32-$(GTK_API_VERSION).lib
+ @OS_LINUX_TRUE@TESTS = abicheck.sh pltcheck.sh
+ lib_LTLIBRARIES = $(gdktargetlib)
 --- gdk/win32/gdkgc-win32.c.old	2005-07-18 17:20:28.000000000 +0200
 +++ gdk/win32/gdkgc-win32.c	2006-06-05 14:56:59.515625000 +0200
 @@ -1160,8 +1160,7 @@ _gdk_win32_gdkregion_to_hrgn (GdkRegion 
@@ -103,19 +79,6 @@
 +  hrgn = ExtCreateRegion (NULL, nbytes, rgndata);
  
    g_free (rgndata);
- 
---- gdk/Makefile.in.orig	2008-07-01 15:44:02.000000000 +0200
-+++ gdk/Makefile.in	2008-08-28 14:35:53.531250000 +0200
-@@ -498,8 +498,8 @@ libgdk_win32_2_0_la_SOURCES = $(common_s
- libgdk_win32_2_0_la_LIBADD = win32/libgdk-win32.la $(GDK_DEP_LIBS) \
-   $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la
- 
--libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la win32/rc/gdk-win32-res.o gdk.def
--libgdk_win32_2_0_la_LDFLAGS = -Wl,win32/rc/gdk-win32-res.o -export-symbols $(srcdir)/gdk.def $(LDADD)
-+libgdk_win32_2_0_la_DEPENDENCIES = win32/libgdk-win32.la gdk.def
-+libgdk_win32_2_0_la_LDFLAGS = -export-symbols $(srcdir)/gdk.def $(LDADD)
- 
- @MS_LIB_AVAILABLE_TRUE@noinst_DATA = gdk-win32-$(GTK_API_VERSION).lib
  
 --- modules/engines/ms-windows/msw_style.c.orig	2008-03-12 05:17:03.000000000 +0100
 +++ modules/engines/ms-windows/msw_style.c	2008-04-17 18:35:13.515625000 +0200
@@ -145,17 +108,42 @@
      }
  
    return TRUE;
---- gdk/win32/gdkevents-win32.c.old	2008-12-02 10:23:48.109375000 +0100
-+++ gdk/win32/gdkevents-win32.c	2008-12-02 10:23:51.984375000 +0100
-@@ -3011,7 +3011,7 @@ gdk_event_translate (MSG  *msg,
- 	{
- 	  GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
+--- gtk/gtkmain.c.old	2009-02-24 10:44:02.598600000 +0100
++++ gtk/gtkmain.c	2009-02-24 10:45:04.218600000 +0100
+@@ -1707,19 +1707,23 @@ gtk_grab_notify_foreach (GtkWidget *chil
+   if (is_shadowed)
+     {
+       GTK_PRIVATE_SET_FLAG (child, GTK_SHADOWED);
++#if !defined (_WIN32)
+       if (!was_shadowed && GTK_WIDGET_HAS_POINTER (child)
+ 	  && GTK_WIDGET_IS_SENSITIVE (child))
+ 	_gtk_widget_synthesize_crossing (child, info->new_grab_widget,
+ 					 GDK_CROSSING_GTK_GRAB);
++#endif
+     }
+   else
+     {
+       GTK_PRIVATE_UNSET_FLAG (child, GTK_SHADOWED);
++#if !defined (_WIN32)
+       if (was_shadowed && GTK_WIDGET_HAS_POINTER (child)
+ 	  && GTK_WIDGET_IS_SENSITIVE (child))
+ 	_gtk_widget_synthesize_crossing (info->old_grab_widget, child,
+ 					 info->from_grab ? GDK_CROSSING_GTK_GRAB
+ 					 : GDK_CROSSING_GTK_UNGRAB);
++#endif
+     }
  
--	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
-+	  _gdk_win32_windowing_window_get_offsets (window, &xoffset, &yoffset);
- 	  gdk_region_offset (update_region, xoffset, yoffset);
+   if (was_shadowed != is_shadowed)
+--- configure.old	2009-02-23 15:54:03.650263500 +0100
++++ configure	2009-02-23 15:54:54.711263500 +0100
+@@ -36969,6 +36971,7 @@ if test "$ac_cs_awk_cr" = "a${ac_cr}b"; 
+ else
+   ac_cs_awk_cr=$ac_cr
+ fi
++ac_cs_awk_cr=$ac_cr
  
- 	  _gdk_window_process_expose (window, update_region);
+ echo 'BEGIN {' >"$tmp/subs1.awk" &&
+ _ACEOF
 *** gdk/win32/gdkevents-win32.c.before_patch	2009-09-22 20:06:09.000000000 +0200
 --- gdk/win32/gdkevents-win32.c	2009-09-24 16:25:23.000000000 +0200
 *************** static UINT client_message;
@@ -231,13 +219,3 @@
   }
   
   static gboolean
---- configure.old       2009-02-23 15:54:03.650263500 +0100
-+++ configure   2009-02-23 15:54:54.711263500 +0100
-@@ -36969,6 +36971,7 @@ if test "$ac_cs_awk_cr" = "a${ac_cr}b";
- else
-   ac_cs_awk_cr=$ac_cr
- fi
-+ac_cs_awk_cr=$ac_cr
-
- echo 'BEGIN {' >"$tmp/subs1.awk" &&
- _ACEOF
