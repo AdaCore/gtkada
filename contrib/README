@@ -26,8 +26,6 @@ pygobject-2.20.0.diff: patch to build pygobject with --disable-thread
 
 pycairo-1.8.8.diff: patch to build pycairo with --disable-thread
 
-pygtk-2.16.0.diff: patch to build pygtk with --disable-thread
-
 gtkada-2.10-win32.diff: a patch to build GtkAda under Windows
 
 glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
