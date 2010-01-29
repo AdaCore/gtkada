@@ -5153,6 +5153,49 @@ package body Gtkada.MDI is
       end Parse_Child_Node;
 
       ---------------------
+      -- Get_XML_Content --
+      ---------------------
+
+      function Get_XML_Content
+        (MDI : access MDI_Window_Record'Class;
+         Tag : String) return Glib.Xml_Int.Node_Ptr
+      is
+         function Internal_Get_XML_Content
+           (N : Glib.Xml_Int.Node_Ptr) return Glib.Xml_Int.Node_Ptr;
+
+         ------------------------------
+         -- Internal_Get_XML_Content --
+         ------------------------------
+
+         function Internal_Get_XML_Content
+           (N : Glib.Xml_Int.Node_Ptr) return Glib.Xml_Int.Node_Ptr
+         is
+            Node  : Glib.Xml_Int.Node_Ptr := N;
+            Child : Glib.Xml_Int.Node_Ptr;
+
+         begin
+            while Node /= null loop
+               if Node.Tag.all = Tag then
+                  return Node;
+               end if;
+
+               Child := Internal_Get_XML_Content (Node.Child);
+
+               if Child /= null then
+                  return Child;
+               end if;
+
+               Node := Node.Next;
+            end loop;
+
+            return null;
+         end Internal_Get_XML_Content;
+
+      begin
+         return Internal_Get_XML_Content (MDI.View_Contents);
+      end Get_XML_Content;
+
+      ---------------------
       -- Parse_Pane_Node --
       ---------------------
 

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2009, AdaCore                  --
+--                 Copyright (C) 2001-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -717,6 +717,12 @@ package Gtkada.MDI is
       --  of the MDI.
       --  It also saves the size and position of the toplevel window that
       --  contains the MDI
+
+      function Get_XML_Content
+        (MDI : access MDI_Window_Record'Class;
+         Tag : String) return Glib.Xml_Int.Node_Ptr;
+      --  Return the first XML subtree starting with 'Tag'. This allows a
+      --  module to retrieve its content after the 'Load_Desktop' call.
 
       procedure Free_Registered_Desktop_Functions;
       --  Free the memory allocated for the registered functions.
