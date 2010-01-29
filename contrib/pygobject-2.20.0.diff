@@ -22,6 +22,18 @@
  
  #define pyg_begin_allow_threads                         \
      G_STMT_START {                                      \
+--- glib/pyglib.h.old	2009-06-17 22:48:38.000000000 +0200
++++ glib/pyglib.h	2010-01-28 11:03:09.000000000 +0100
+@@ -28,6 +28,9 @@
+ 
+ G_BEGIN_DECLS
+ 
++#define PyGILState_Ensure() 0
++#define PyGILState_Release(x) do {} while (0)
++
+ typedef void (*PyGLibThreadsEnabledFunc) (void);
+ typedef void (*PyGLibThreadBlockFunc) (void);
+ 
 --- gobject/pygobject.h.old	2010-01-29 08:28:30.000000000 +0100
 +++ gobject/pygobject.h	2010-01-29 08:28:53.000000000 +0100
 @@ -9,6 +9,9 @@
