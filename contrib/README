@@ -18,6 +18,8 @@ cairo-1.8.8.diff: ditto for cairo
 
 cairo-1.8.8-win32.diff: ditto for cairo under Windows
 
+pixman-0.15.12.diff: ditto for pixman
+
 pixman-0.15.12-win32.diff: ditto for pixman under Windows
 
 pango-1.20.3-win32.diff: ditto for pango under Windows
