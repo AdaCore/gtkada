@@ -22,7 +22,10 @@ pixman-0.15.12.diff: ditto for pixman
 
 pixman-0.15.12-win32.diff: ditto for pixman under Windows
 
+pango-1.26.1.diff: ditto for pango
+
 pango-1.20.3-win32.diff: ditto for pango under Windows
+pango-1.26.1-win32.diff: ditto for pango under Windows
 
 Python-2.6.4.diff: patch to build python with --without-threads
 
