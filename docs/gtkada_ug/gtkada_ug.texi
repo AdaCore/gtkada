@@ -9,7 +9,7 @@
 * GtkAda_Ug: (gtkada_ug).           Ada95 graphical tookit based on GTK+ (User's Guide)
 @end direntry 
 
-@set GtkAdaVersion 2.14.2
+@set GtkAdaVersion 2.18.0
 
 @titlepage
 
@@ -158,7 +158,7 @@ packages for @code{GtkAda}, @code{gtk+} and @code{Glade}.
 
 The scheme used for GtkAda's version numbers is the following: the major
 and minor version number is the same as for the underlying gtk+ library
-(e.g 2.14).
+(e.g 2.18).
 The micro version number depends on GtkAda's release number.
 
 This toolkit was tested on the following systems:
@@ -173,7 +173,7 @@ This toolkit was tested on the following systems:
 with the latest version of the @code{GNAT} compiler, developed and supported by
 Ada Core Technologies (see @uref{http://www.adacore.com}).
 
-This version of GtkAda is known to be compatible with @code{gtk+} @b{2.14.x}.
+This version of GtkAda is known to be compatible with @code{gtk+} @b{2.18.x}.
 This release may or may not be compatible with older versions of gtk+.
 
 This version of GtkAda is compatible with @code{Glade} @b{version
