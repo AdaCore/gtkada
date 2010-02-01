@@ -1,3 +1,8 @@
+2010-02-01      Arnaud Charlet  <charlet@adacore.com>
+
+	* gdk/win32/gdkdrawable-win32.c	(draw_segments): Ignore LineTo
+	errors.
+
 2009-09-29      Nicolas Setton  <setton@adacore.com>
 
 	* gdk/win32/gdkevents-win32.c:
@@ -219,3 +224,14 @@
   }
   
   static gboolean
+--- gdk/win32/gdkdrawable-win32.c.old	2010-01-31 18:48:07.679800000 +0100
++++ gdk/win32/gdkdrawable-win32.c	2010-01-31 18:48:32.429800000 +0100
+@@ -1246,7 +1246,7 @@ draw_segments (GdkGCWin32 *gcwin32,
+ 
+ 	  GDK_NOTE (DRAW, g_print (" +%d+%d..+%d+%d", x1, y1, x2, y2));
+ 	  GDI_CALL (MoveToEx, (hdc, x1, y1, NULL)) &&
+-	    GDI_CALL (LineTo, (hdc, x2, y2));
++	    LineTo (hdc, x2, y2);
+ 	}
+ 
+       GDK_NOTE (DRAW, g_print ("\n"));
