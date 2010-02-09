@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -481,6 +481,8 @@ package Gtk.Enums is
      Generic_Internal_Discrete_Property (Gtk_Metric_Type);
    package Pack_Type_Properties is new
      Generic_Internal_Discrete_Property (Gtk_Pack_Type);
+   package Icon_Size_Properties is new
+     Generic_Internal_Discrete_Property (Gtk_Icon_Size);
 
    type Property_Gtk_Relief_Style  is new Relief_Style_Properties.Property;
    type Property_Gtk_Resize_Mode   is new Resize_Mode_Properties.Property;
@@ -503,6 +505,7 @@ package Gtk.Enums is
    type Property_Sort_Type         is new Sort_Type_Properties.Property;
    type Property_Metric_Type       is new Metric_Type_Properties.Property;
    type Property_Pack_Type         is new Pack_Type_Properties.Property;
+   type Property_Gtk_Icon_Size     is new Icon_Size_Properties.Property;
 
    -----------------
    -- Obsolescent --
