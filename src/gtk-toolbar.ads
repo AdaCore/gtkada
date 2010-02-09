@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -401,6 +401,7 @@ package Gtk.Toolbar is
    Shadow_Type_Property      : constant Gtk.Enums.Property_Gtk_Shadow_Type;
    Space_Size_Property       : constant Glib.Properties.Property_Int;
    Space_Style_Property      : constant Gtk.Enums.Property_Toolbar_Space_Style;
+   Icon_Size_Property        : constant Gtk.Enums.Property_Gtk_Icon_Size;
 
    -------------
    -- Signals --
@@ -480,6 +481,8 @@ private
      Glib.Properties.Build ("internal-padding");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");
+   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
+     Gtk.Enums.Build ("icon-size");
    Space_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("space-size");
    Space_Style_Property : constant Gtk.Enums.Property_Toolbar_Space_Style :=
