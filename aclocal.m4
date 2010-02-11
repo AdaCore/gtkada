@@ -573,15 +573,20 @@ AC_DEFUN(AM_CHECK_OPENGL,
    AC_ARG_WITH(GL,         [  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,MesaGL,no)])
    AC_ARG_WITH(GL-prefix,  [  --with-GL-prefix=DIR    Prefix where GL/MesaGL is installed])
    
-
    if test "x$with_GL_prefix" = "x" ; then
       GL_LDOPTS=""
       GL_CFLAGS=""
    else
-      GL_LDOPTS="-L$with_GL_prefix/lib"
       GL_CFLAGS="-I$with_GL_prefix/include"
+      case "${host}" in
+         *64*)
+            GL_LDOPTS="-L$with_GL_prefix/lib64"
+            ;;
+         *)
+            GL_LDOPTS="-L$with_GL_prefix/lib"
+            ;;
+      esac
    fi
-   
 
    saved_LIBS="$LIBS"
 

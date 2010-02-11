@@ -1,3 +1,31 @@
+-----------------------------------------------------------------------
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
+--                                                                   --
+--                 Copyright (C) 2001-2010, AdaCore                  --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
+--
 --  Generated from GL/gl.h
 --  Date: Wed Sep 22 12:47:08 1999
 --
@@ -58,6 +86,21 @@ package gl_h is
    GL_DOUBLE         : constant GLenum := 16#140A#;
 
    --   Primitives (see glBegin)
+   --  GL_POINTS => each vertex set by glVertex* is one point to draw on the
+   --               screen
+   --  GL_LINES  => each pair of vertex is one line
+   --  GL_TRIANGLES => each group of three vertices is a triangle
+   --  GL_TRIANGLE_STRIP => first three vertices are a triangle, then each new
+   --               vertex is combined with the previous two to build a new
+   --               triangle. The triangles are [123], [234], [345],...
+   --  GL_TRIANGLE_FAN => first vertex is the central vertex, then each vertex
+   --               is combined with previous to make a triangle. So the
+   --               triangles are [123], [134], [145],...
+   --  GL_QUADS => Each group of four vertices is a quadrilateral
+   --  GL_QUAD_STRIP => first four vertices are one polygon, then each pair of
+   --               vertices are combined with the previous two.
+   --  GL_POLYGON   => A single polygon
+
    GL_POINTS         : constant GLenum := 0;
    GL_LINES          : constant GLenum := 1;
    GL_LINE_LOOP      : constant GLenum := 2;
@@ -913,6 +956,7 @@ package gl_h is
    procedure glLoadMatrixf (m : access GLfloat);
    procedure glMultMatrixd (m : access GLdouble);
    procedure glMultMatrixf (m : access GLfloat);
+
    procedure glRotated (angle : GLdouble;
                         x     : GLdouble;
                         y     : GLdouble;
@@ -921,6 +965,8 @@ package gl_h is
                         x     : GLfloat;
                         y     : GLfloat;
                         z     : GLfloat);
+   --  The angle is specified in degrees, counter-clockwise.
+
    procedure glScaled (x : GLdouble; y : GLdouble; z : GLdouble);
    procedure glScalef (x : GLfloat; y : GLfloat; z : GLfloat);
    procedure glTranslated (x : GLdouble; y : GLdouble; z : GLdouble);
