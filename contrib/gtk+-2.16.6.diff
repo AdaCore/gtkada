@@ -1,0 +1,111 @@
+2009-09-19  Arnaud Charlet  <charlet@adacore.com>
+
+	* gtk/gtktreemodel.c (gtk_tree_model_row_has_child_toggled): Replace
+	g_return_if_fail by explicit check, since path may legitimately
+	be NULL (I918-021).
+
+2009-01-12  Nicolas Setton  <setton@adacore.com>
+
+	* gtktreeview.c (gtk_tree_view_enter_notify): Do not react to
+	 crossing events.
+	(gtk_tree_view_leave_notify): Likewise.
+        Prevents unwanted side-effects of synth-crossing. (I106-018)
+
+2009-01-06  Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktreeview.c (gtk_tree_view_enter_notify): Put kludge to
+	work around Gtk+ bug in handling of keyboard keys+focus events in
+	tree view (HC15-032).
+
+2006-02-23  Arnaud Charlet  <charlet@adacore.com>
+
+	* gdk/x11/gdkasync.c: #define ANSICPP on Solaris, to work around
+	bug in X11/Xmd.h on Solaris 8.
+
+2003-11-27  Arnaud Charlet  <charlet@adacore.com>
+
+	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
+	of characters validated at each call, this gives a better behavior
+	when loading big files.
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=332057
+
+--- gtk/gtktextview.c.old	2006-02-17 16:11:04.000000000 +0100
++++ gtk/gtktextview.c	2006-02-20 17:08:54.691581240 +0100
+@@ -3273,7 +3273,7 @@ incremental_validate_callback (gpointer 
+   
+   DV(g_print(G_STRLOC"\n"));
+   
+-  gtk_text_layout_validate (text_view->layout, 2000);
++  gtk_text_layout_validate (text_view->layout, 20000);
+ 
+   gtk_text_view_update_adjustments (text_view);
+   
+--- gdk/x11/gdkasync.c.old	Thu Feb 23 11:30:46 2006
++++ gdk/x11/gdkasync.c	Thu Feb 23 11:48:14 2006
+@@ -47,6 +47,11 @@ in this Software without prior written a
+ #ifdef NEED_XIPROTO_H_FOR_XREPLY
+ #include <X11/extensions/XIproto.h>
+ #endif
++
++#if defined (sun) && defined (__SVR4)
++#define ANSICPP
++#endif
++
+ #include <X11/Xlibint.h>
+ #include "gdkasync.h"
+ #include "gdkx.h"
+--- gtk/gtktreeview.c.old	2008-11-24 07:35:35.000000000 +0100
++++ gtk/gtktreeview.c	2009-01-06 15:14:25.171875000 +0100
+@@ -5459,6 +5459,9 @@ gtk_tree_view_enter_notify (GtkWidget   
+   if (tree_view->priv->tree == NULL)
+     return FALSE;
+ 
++  if (event->y == 0)
++    return FALSE;
++
+   /* find the node internally */
+   new_y = TREE_WINDOW_Y_TO_RBTREE_Y(tree_view, event->y);
+   if (new_y < 0)
+--- gtk/gtktreeview.c.orig	2009-01-12 11:49:09.000000000 +0100
++++ gtk/gtktreeview.c	2009-01-12 15:44:05.000000000 +0100
+@@ -5461,6 +5461,12 @@ gtk_tree_view_enter_notify (GtkWidget   
+   GtkRBNode *node;
+   gint new_y;
+ 
++  if (event->mode == GDK_CROSSING_GRAB 
++      || event->mode == GDK_CROSSING_NORMAL
++      || event->mode == GDK_CROSSING_GTK_GRAB
++      || event->mode == GDK_CROSSING_GTK_UNGRAB)
++    return TRUE;
++
+   /* Sanity check it */
+   if (event->window != tree_view->priv->bin_window)
+     return FALSE;
+@@ -5487,7 +5493,10 @@ gtk_tree_view_leave_notify (GtkWidget   
+ {
+   GtkTreeView *tree_view;
+ 
+-  if (event->mode == GDK_CROSSING_GRAB)
++  if (event->mode == GDK_CROSSING_GRAB 
++      || event->mode == GDK_CROSSING_NORMAL
++      || event->mode == GDK_CROSSING_GTK_GRAB
++      || event->mode == GDK_CROSSING_GTK_UNGRAB)
+     return TRUE;
+ 
+   tree_view = GTK_TREE_VIEW (widget);
+--- gtk/gtktreemodel.c.old	2009-09-19 12:03:49.804000000 +0200
++++ gtk/gtktreemodel.c	2009-09-19 12:41:00.954000000 +0200
+@@ -1512,8 +1512,11 @@ gtk_tree_model_row_has_child_toggled (Gt
+ 				      GtkTreeIter  *iter)
+ {
+   g_return_if_fail (GTK_IS_TREE_MODEL (tree_model));
+-  g_return_if_fail (path != NULL);
+-  g_return_if_fail (iter != NULL);
++
++  if (path == NULL)
++    return;
++  if (iter == NULL)
++    return;
+ 
+   g_signal_emit (tree_model, tree_model_signals[ROW_HAS_CHILD_TOGGLED], 0, path, iter);
+ }
