@@ -1,0 +1,68 @@
+	* Fixes build with --disable-thread
+	Submitted at: http://bugzilla.gnome.org/show_bug.cgi?id=374603
+
+--- gobject/pygobject-private.h.orig	Wed May 13 23:56:45 2009
++++ gobject/pygobject-private.h	Tue Jul 21 09:02:57 2009
+@@ -32,12 +32,18 @@ extern struct _PyGObject_Functions pygob
+ 
+ #define pyg_threads_enabled (pygobject_api_functions.threads_enabled)
+ 
++#ifdef DISABLE_THREADING
++#define pyg_gil_state_ensure() 0
++#define pyg_gil_state_release(state) G_STMT_START {     \
++    } G_STMT_END
+ 
++#else
+ #define pyg_gil_state_ensure() (pygobject_api_functions.threads_enabled? (PyGILState_Ensure()) : 0)
+ #define pyg_gil_state_release(state) G_STMT_START {     \
+     if (pygobject_api_functions.threads_enabled)        \
+         PyGILState_Release(state);                      \
+     } G_STMT_END
++#endif
+ 
+ #define pyg_begin_allow_threads                         \
+     G_STMT_START {                                      \
+--- glib/pyglib.c.old	2009-07-21 10:32:50.000000000 +0200
++++ glib/pyglib.c	2009-07-21 11:29:23.000000000 +0200
+@@ -107,7 +107,11 @@ pyglib_gil_state_ensure(void)
+     if (!_PyGLib_API->threads_enabled)
+ 	return PyGILState_LOCKED;
+ 
++#ifdef DISABLE_THREADING
++    return PyGILState_LOCKED;
++#else
+     return PyGILState_Ensure();
++#endif
+ }
+ 
+ void
+@@ -118,7 +122,9 @@ pyglib_gil_state_release(PyGILState_STAT
+     if (!_PyGLib_API->threads_enabled)
+ 	return;
+ 
++#ifndef DISABLE_THREADING
+     PyGILState_Release(state);
++#endif
+ }
+ 
+ /**
+@@ -184,13 +190,19 @@ _pyglib_notify_on_enabling_threads(PyGLi
+ int
+ pyglib_gil_state_ensure_py23 (void)
+ {
++#ifdef DISABLE_THREADING
++    return 0;
++#else
+     return PyGILState_Ensure();
++#endif
+ }
+ 
+ void
+ pyglib_gil_state_release_py23 (int flag)
+ {
++#ifndef DISABLE_THREADING
+     PyGILState_Release(flag);
++#endif
+ }
+ 
+ /**
