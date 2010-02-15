@@ -1,5 +1,10 @@
 	* gio/gsocket.c: Fix build on Solaris 8 by providing needed macros
 	defined on Solaris 10.
+	* gio/libasyncns/asyncns.c: Fix build on Solaris 8 by providing
+	include of inttypes.h if stdint.h is not defined.
+	* gio/tests/Makefile.in: Force linking with /usr/lib/libsocket.so.1
+	so that build works under Solaris. (This is temporary, suggest
+	disabling the build in gio/tests completely)
 
 --- gio/gsocket.c.old	2010-01-07 01:19:12.000000000 +0100
 +++ gio/gsocket.c	2010-01-29 13:07:02.275043000 +0100
@@ -20,3 +25,41 @@
  /**
   * SECTION:gsocket
   * @short_description: Low-level socket object
+*** gio/libasyncns/asyncns.c.original   Mon Feb 15 16:20:38 2010
+--- gio/libasyncns/asyncns.c    Mon Feb 15 16:24:36 2010
+***************
+*** 50,56 ****
+--- 50,62 ----
+  #endif
+
+  #include <sys/resource.h>
++
++ #if HAVE_STDINT_H
+  #include <stdint.h>
++ #endif
++ #if HAVE_INTTYPES_H
++ #include <inttypes.h>
++ #endif
+
+  #ifdef HAVE_SYS_PRCTL_H
+  #include <sys/prctl.h>
+*** gio/tests/Makefile.in.orig  Mon Feb 15 17:09:46 2010
+--- gio/tests/Makefile.in       Mon Feb 15 17:10:28 2010
+***************
+*** 231,237 ****
+  CATOBJEXT = @CATOBJEXT@
+  CC = @CC@
+  CCDEPMODE = @CCDEPMODE@
+! CFLAGS = @CFLAGS@
+  CONFIG_STATUS_DEPENDENCIES = @CONFIG_STATUS_DEPENDENCIES@
+  CPP = @CPP@
+  CPPFLAGS = @CPPFLAGS@
+--- 231,237 ----
+  CATOBJEXT = @CATOBJEXT@
+  CC = @CC@
+  CCDEPMODE = @CCDEPMODE@
+! CFLAGS = @CFLAGS@  -Wl,/usr/lib/libsocket.so.1
+  CONFIG_STATUS_DEPENDENCIES = @CONFIG_STATUS_DEPENDENCIES@
+  CPP = @CPP@
+  CPPFLAGS = @CPPFLAGS@
+
