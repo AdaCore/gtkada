@@ -1,7 +1,10 @@
 	* gio/gsocket.c: Fix build on Solaris 8 by providing needed macros
 	defined on Solaris 10.
+
 	* gio/libasyncns/asyncns.c: Fix build on Solaris 8 by providing
 	include of inttypes.h if stdint.h is not defined.
+	Submitted at: https://bugzilla.gnome.org/show_bug.cgi?id=610131
+
 	* gio/tests/Makefile.in: Force linking with /usr/lib/libsocket.so.1
 	so that build works under Solaris. (This is temporary, suggest
 	disabling the build in gio/tests completely)
