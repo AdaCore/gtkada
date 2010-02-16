@@ -5,9 +5,9 @@
 	include of inttypes.h if stdint.h is not defined.
 	Submitted at: https://bugzilla.gnome.org/show_bug.cgi?id=610131
 
-	* gio/tests/Makefile.in: Force linking with /usr/lib/libsocket.so.1
-	so that build works under Solaris. (This is temporary, suggest
-	disabling the build in gio/tests completely)
+	* gio/Makefile.in: Disable build in subdirectory tests, which does
+	not build out of the box on Solaris
+
 
 --- gio/gsocket.c.old	2010-01-07 01:19:12.000000000 +0100
 +++ gio/gsocket.c	2010-01-29 13:07:02.275043000 +0100
@@ -46,23 +46,40 @@
 
   #ifdef HAVE_SYS_PRCTL_H
   #include <sys/prctl.h>
-*** gio/tests/Makefile.in.orig  Mon Feb 15 17:09:46 2010
---- gio/tests/Makefile.in       Mon Feb 15 17:10:28 2010
+*** gio/Makefile.in.original    Tue Feb 16 16:49:14 2010
+--- gio/Makefile.in     Tue Feb 16 16:49:29 2010
 ***************
-*** 231,237 ****
-  CATOBJEXT = @CATOBJEXT@
-  CC = @CC@
-  CCDEPMODE = @CCDEPMODE@
-! CFLAGS = @CFLAGS@
-  CONFIG_STATUS_DEPENDENCIES = @CONFIG_STATUS_DEPENDENCIES@
-  CPP = @CPP@
-  CPPFLAGS = @CPPFLAGS@
---- 231,237 ----
-  CATOBJEXT = @CATOBJEXT@
-  CC = @CC@
-  CCDEPMODE = @CCDEPMODE@
-! CFLAGS = @CFLAGS@  -Wl,/usr/lib/libsocket.so.1
-  CONFIG_STATUS_DEPENDENCIES = @CONFIG_STATUS_DEPENDENCIES@
-  CPP = @CPP@
-  CPPFLAGS = @CPPFLAGS@
+*** 258,264 ****
+  CTAGS = ctags
+  am__tty_colors = \
+  red=; grn=; lgn=; blu=; std=
+! DIST_SUBDIRS = libasyncns xdgmime inotify fen win32 . fam tests
+  DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+  am__relativize = \
+    dir0=`pwd`; \
+--- 258,264 ----
+  CTAGS = ctags
+  am__tty_colors = \
+  red=; grn=; lgn=; blu=; std=
+! DIST_SUBDIRS = libasyncns xdgmime inotify fen win32 . fam 
+  DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+  am__relativize = \
+    dir0=`pwd`; \
+***************
+*** 508,514 ****
+  TEST_PROGS = 
+  NULL = 
+  SUBDIRS = $(am__append_1) $(am__append_2) $(am__append_6) \
+!       $(am__append_9) . $(am__append_12) tests
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
+--- 508,514 ----
+  TEST_PROGS = 
+  NULL = 
+  SUBDIRS = $(am__append_1) $(am__append_2) $(am__append_6) \
+!       $(am__append_9) . $(am__append_12) 
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
 
