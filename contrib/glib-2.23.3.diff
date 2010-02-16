@@ -46,9 +46,9 @@
 
   #ifdef HAVE_SYS_PRCTL_H
   #include <sys/prctl.h>
-*** gio/Makefile.in.original    Tue Feb 16 16:49:14 2010
---- gio/Makefile.in     Tue Feb 16 16:49:29 2010
-***************
+*** gio/Makefile.in.original	Tue Feb 16 17:28:32 2010
+--- gio/Makefile.in	Tue Feb 16 17:28:56 2010
+*************** ETAGS = etags
 *** 258,264 ****
   CTAGS = ctags
   am__tty_colors = \
@@ -65,12 +65,12 @@
   DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
   am__relativize = \
     dir0=`pwd`; \
-***************
+*************** EXTRA_DIST = gio-marshal.list gio.symbol
 *** 508,514 ****
   TEST_PROGS = 
   NULL = 
   SUBDIRS = $(am__append_1) $(am__append_2) $(am__append_6) \
-!       $(am__append_9) . $(am__append_12) tests
+! 	$(am__append_9) . $(am__append_12) tests
   @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
   @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
   @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
@@ -78,8 +78,7 @@
   TEST_PROGS = 
   NULL = 
   SUBDIRS = $(am__append_1) $(am__append_2) $(am__append_6) \
-!       $(am__append_9) . $(am__append_12) 
+! 	$(am__append_9) . $(am__append_12) 
   @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
   @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
   @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
-
