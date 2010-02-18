@@ -7,7 +7,7 @@
  #define HB_COMMON_H
  
 +#ifdef sun
-+#include <sys/inttypes.h>
++#include <inttypes.h>
 +#else
  #include <stdint.h>
 +#endif
