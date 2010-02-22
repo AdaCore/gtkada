@@ -1,10 +1,11 @@
 	* gio/gsocket.c: Fix build on Solaris 8 by providing needed macros
 	defined on Solaris 10.
+	Submitted at: https://bugzilla.gnome.org/show_bug.cgi?id=610664
 
 	* gio/libasyncns/asyncns.c: Fix build on Solaris 8 by providing
 	include of inttypes.h if stdint.h is not defined.
 	Submitted at: https://bugzilla.gnome.org/show_bug.cgi?id=610131
-	FIXED in glib 2.23.4.
+	Merged in glib 2.23.4.
 
 	* gio/Makefile.in: Disable build in subdirectory tests, which does
 	not build out of the box on Solaris
