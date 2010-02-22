@@ -2,11 +2,6 @@
 	defined on Solaris 10.
 	Submitted at: https://bugzilla.gnome.org/show_bug.cgi?id=610664
 
-	* gio/libasyncns/asyncns.c: Fix build on Solaris 8 by providing
-	include of inttypes.h if stdint.h is not defined.
-	Submitted at: https://bugzilla.gnome.org/show_bug.cgi?id=610131
-	Merged in glib 2.23.4.
-
 	* gio/Makefile.in: Disable build in subdirectory tests, which does
 	not build out of the box on Solaris
 
@@ -29,24 +24,6 @@
  /**
   * SECTION:gsocket
   * @short_description: Low-level socket object
-*** gio/libasyncns/asyncns.c.original   Mon Feb 15 16:20:38 2010
---- gio/libasyncns/asyncns.c    Mon Feb 15 16:24:36 2010
-***************
-*** 50,56 ****
---- 50,62 ----
-  #endif
-
-  #include <sys/resource.h>
-+
-+ #if HAVE_STDINT_H
-  #include <stdint.h>
-+ #endif
-+ #if HAVE_INTTYPES_H
-+ #include <inttypes.h>
-+ #endif
-
-  #ifdef HAVE_SYS_PRCTL_H
-  #include <sys/prctl.h>
 *** gio/Makefile.in.original	Tue Feb 16 17:28:32 2010
 --- gio/Makefile.in	Tue Feb 16 17:28:56 2010
 *************** ETAGS = etags
