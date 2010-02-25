@@ -18,7 +18,7 @@
 2009-01-12  Nicolas Setton  <setton@adacore.com>
 
 	* gtktreeview.c (gtk_tree_view_enter_notify): Do not react to
-	 crossing events.
+	crossing events.
 	(gtk_tree_view_leave_notify): Likewise.
         Prevents unwanted side-effects of synth-crossing. (I106-018)
 
