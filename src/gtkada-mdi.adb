@@ -6204,6 +6204,7 @@ package body Gtkada.MDI is
             L           : Widget_List.Glist;
             Note        : Gtk_Notebook;
             C           : MDI_Child;
+            Parent      : Gtk_Widget;
          begin
             Print_Debug ("Remove_All_Items: remove_empty="
                          & Boolean'Image (Remove_All_Empty));
@@ -6224,7 +6225,12 @@ package body Gtkada.MDI is
                   Print_Debug ("Remove_All_Items, markgin "
                                & Get_Title (C) & " as invisible");
                   Ref (C);   --  Unref called in Destroy_Child and Put
-                  Remove (Gtk_Container (Get_Parent (C)), C);
+
+                  Parent := Get_Parent (C);
+
+                  if Parent /= null then
+                     Remove (Gtk_Container (Get_Parent (C)), C);
+                  end if;
 
                   C.State := Invisible;
 
