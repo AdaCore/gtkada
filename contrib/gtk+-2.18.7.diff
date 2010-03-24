@@ -1,3 +1,10 @@
+2010-03-24  Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktextview.c (gtk_text_view_check_cursor_blink): Do not
+	register a cursor blink if the text view if not realized.
+	This prevents a segmentation fault which can happen if the
+	text_view happens to get the focus before it has been realized.
+
 2010-02-24  Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/x11/gdkdnd-x11.c: Fix build on Solaris 8.
@@ -141,3 +148,22 @@
  #include <X11/extensions/shape.h>
  
  #include <string.h>
+*** gtk/gtktextview.c.orig	Wed Mar 24 14:47:16 2010
+--- gtk/gtktextview.c	Wed Mar 24 14:47:19 2010
+*************** gtk_text_view_check_cursor_blink (GtkTex
+*** 4931,4937 ****
+        text_view->cursor_visible &&
+        GTK_WIDGET_HAS_FOCUS (text_view))
+      {
+!       if (cursor_blinks (text_view))
+  	{
+  	  if (text_view->blink_timeout == 0)
+  	    {
+--- 4931,4937 ----
+        text_view->cursor_visible &&
+        GTK_WIDGET_HAS_FOCUS (text_view))
+      {
+!       if (cursor_blinks (text_view) && GTK_WIDGET_REALIZED (text_view))
+  	{
+  	  if (text_view->blink_timeout == 0)
+  	    {
