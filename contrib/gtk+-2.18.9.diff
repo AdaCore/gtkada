@@ -1,3 +1,8 @@
+2010-03-27  Arnaud Charlet  <charlet@adacore.com>
+
+	* gtk/gtkentry.c (gtk_entry_set_buffer): Prevent crashing when
+	encountering a null buffer as reported on gtk+ list.
+
 2010-03-24  Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtktextview.c (gtk_text_view_check_cursor_blink): Do not
@@ -167,3 +172,17 @@
   	{
   	  if (text_view->blink_timeout == 0)
   	    {
+--- gtk/gtkentry.c.old
++++ gtk/gtkentry.c
+@@ -6668,8 +6668,11 @@ gtk_entry_set_buffer
+   g_object_notify (obj, "invisible-char-set");
+   g_object_thaw_notify (obj);
+
+-  gtk_editable_set_position (GTK_EDITABLE (entry), 0);
+-  gtk_entry_recompute (entry);
++  if (priv->buffer)
++    {
++      gtk_editable_set_position (GTK_EDITABLE (entry), 0);
++      gtk_entry_recompute (entry);
++    }
+ }
