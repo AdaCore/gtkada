@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                   Copyright (C) 2004-2009, AdaCore                --
+--                   Copyright (C) 2004-2010, AdaCore                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -156,8 +156,8 @@ package Gtk.Icon_Factory is
    function Get_Sizes (Icon_Set : Gtk_Icon_Set) return Gint_Array;
    --  Obtains a list of icon sizes this icon set can render.
 
-   function Ref   (Icon_Set : Gtk_Icon_Set) return Gtk_Icon_Set;
-   function Unref (Icon_Set : Gtk_Icon_Set) return Gtk_Icon_Set;
+   procedure Ref   (Icon_Set : Gtk_Icon_Set);
+   procedure Unref (Icon_Set : Gtk_Icon_Set);
    pragma Import (C, Ref,   "gtk_icon_set_ref");
    pragma Import (C, Unref, "gtk_icon_set_unref");
    --  Increase or decrease the reference counting for the icon set. When this
