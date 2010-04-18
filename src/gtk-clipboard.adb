@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                  Copyright (C) 2002-2009, AdaCore                 --
+--                  Copyright (C) 2002-2010, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -134,7 +134,7 @@ package body Gtk.Clipboard is
       pragma Import (C, Internal, "gtk_clipboard_get_owner");
       Stub : GObject_Record;
    begin
-      return GObject (Get_User_Data (Internal (Clipboard), Stub));
+      return Get_User_Data (Internal (Clipboard), Stub);
    end Get_Owner;
 
    -------------------

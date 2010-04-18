@@ -1410,7 +1410,7 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class;
       Force : Boolean := False)
    is
-      MDI   : constant MDI_Window := MDI_Window (Child.MDI);
+      MDI   : constant MDI_Window := Child.MDI;
       Event : Gdk_Event;
       Prevent_Delete : Boolean;
    begin
@@ -4004,7 +4004,7 @@ package body Gtkada.MDI is
 
    function Get_Widget (Child : access MDI_Child_Record) return Gtk_Widget is
    begin
-      return Gtk_Widget (Child.Initial);
+      return Child.Initial;
    end Get_Widget;
 
    ---------------------

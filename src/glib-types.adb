@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006 AdaCore                         --
+--                Copyright (C) 2006-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -69,7 +69,7 @@ package body Glib.Types is
    is
       Stub : GObject_Record;
    begin
-      return GObject (Get_User_Data (System.Address (Interf), Stub));
+      return Get_User_Data (System.Address (Interf), Stub);
    end To_Object;
 
    ----------------
@@ -114,6 +114,5 @@ package body Glib.Types is
    begin
       return Boolean'Val (Internal (T, Is_A_Type));
    end Is_A;
-
 
 end Glib.Types;

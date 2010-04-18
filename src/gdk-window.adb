@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -446,7 +446,7 @@ package body Gdk.Window is
       Stub : Gtk_Widget_Record;
    begin
       Internal (Window, Data'Address);
-      return GObject (Get_User_Data (Data, Stub));
+      return Get_User_Data (Data, Stub);
    end Get_User_Data;
 
    -----------------------
