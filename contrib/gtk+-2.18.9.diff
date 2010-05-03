@@ -14,6 +14,7 @@
 
 	* gdk/x11/gdkdnd-x11.c: Fix build on Solaris 8.
 	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=610966
+	Committed in Gtk+ 2.20.1
 
 2010-01-11  Arnaud Charlet  <charlet@adacore.com>
 
