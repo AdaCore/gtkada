@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2006, AdaCore                   --
+--                  Copyright (C) 2006-2010, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -154,7 +154,7 @@ package body Create_Icon_View is
           2 => GType_Boolean));      --  Toggle activated ?
       Set_Model (View, Gtk_Tree_Model (List));
 
-      Fill_Model (List);
+      Fill_Model (Gtk_List_Store (Get_Model (View)));
 
       Gtk_New (Toggle);
       Pack_Start (+View, Toggle, Expand => False);

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -293,7 +293,7 @@ package body Gtk.Icon_View is
       if M = System.Null_Address then
          return null;
       else
-         return Gtk_Tree_Model (Get_User_Data (Internal (M), Stub));
+         return Gtk_Tree_Model (Get_User_Data (M, Stub));
       end if;
    end Get_Model;
 
