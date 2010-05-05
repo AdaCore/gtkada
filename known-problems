@@ -1,5 +1,11 @@
 Known problems fixed in GtkAda 2.18.0
 
+- J504-027 Bug in implementation of Gtk.Icon_View.Get_Model
+  Problem:    Calling this function might cause a Gtk_Critical error or
+              memory corruption.
+  Workaround: Avoid calling this function, or manually change line 296 to
+              "return Gtk_Tree_Model (Get_User_Data (M, Stub));"
+
 Known problems fixed in GtkAda 2.14.1
 
 - I128-040 Wrong code generated with GUI builder for signal
