@@ -1,3 +1,5 @@
+Known problems fixed in GtkAda 2.18.0
+
 Known problems fixed in GtkAda 2.14.1
 
 - I128-040 Wrong code generated with GUI builder for signal
