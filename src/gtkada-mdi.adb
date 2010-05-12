@@ -760,6 +760,11 @@ package body Gtkada.MDI is
 
       MDI.Group := Gtk_Accel_Group (Group);
 
+      MDI.Dnd_Message := new String'
+        ("<i>Will be <b>(#)</b> when changing perspective"
+         & ASCII.LF & "Use <b>control</b> to move the whole notebook"
+         & ASCII.LF & "Use <b>shift</b> to create a new view for editors</i>");
+
       MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
       MDI.Background_Color := Parse (Default_MDI_Background_Color);
       Alloc (Get_Default_Colormap, MDI.Background_Color);
@@ -1369,6 +1374,7 @@ package body Gtkada.MDI is
          Destroy (M.Menu);
       end if;
 
+      Free (M.Dnd_Message);
       Free (M.Perspectives);
       Free (M.View_Contents);
       Free (M.Perspective_Names);
@@ -1702,6 +1708,8 @@ package body Gtkada.MDI is
 
       Frame : Gtk_Frame;
       Box   : Gtk_Box;
+      Pos   : constant Integer := Ada.Strings.Fixed.Index
+        (MDI.Dnd_Message.all, "(#)");
    begin
       if MDI.Dnd_Window = null then
          Gtk_New (MDI.Dnd_Window, Window_Popup);
@@ -1729,14 +1737,31 @@ package body Gtkada.MDI is
          Loc := In_Perspective_Txt'Access;
       end if;
 
-      Set_Label
-        (MDI.Dnd_Window_Label,
-         ASCII.HT & Text
-         & ASCII.LF
-         & "<i>Will be <b>" & Loc.all & "</b> when changing perspective"
-         & ASCII.LF & "Use <b>control</b> to move the whole notebook"
-         & ASCII.LF & "Use <b>shift</b> to create a new view for editors</i>");
+      if Pos < MDI.Dnd_Message'First then
+         Set_Label
+           (MDI.Dnd_Window_Label,
+            ASCII.HT & Text & ASCII.LF & MDI.Dnd_Message.all);
+      else
+         Set_Label
+           (MDI.Dnd_Window_Label,
+            ASCII.HT & Text & ASCII.LF
+            & MDI.Dnd_Message (MDI.Dnd_Message'First .. Pos - 1)
+            & Loc.all
+            & MDI.Dnd_Message (Pos + 3 .. MDI.Dnd_Message'Last));
+      end if;
    end Update_Dnd_Window;
+
+   ---------------------
+   -- Set_Dnd_Message --
+   ---------------------
+
+   procedure Set_Dnd_Message
+     (MDI     : access MDI_Window_Record;
+      Message : String) is
+   begin
+      Free (MDI.Dnd_Message);
+      MDI.Dnd_Message := new String'(Message);
+   end Set_Dnd_Message;
 
    ------------------------
    -- Destroy_Dnd_Window --

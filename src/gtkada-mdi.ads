@@ -329,6 +329,20 @@ package Gtkada.MDI is
    --  simple move operation was requested. It can be ignored if Child doesn't
    --  know how to create a copy of itself for instance.
 
+   procedure Set_Dnd_Message
+     (MDI     : access MDI_Window_Record;
+      Message : String);
+   --  Override the message that is displayed in the popup window while
+   --  performing a drag. By default, this message mentions:
+   --     "... will be (preserved|hidden) when changing perspective"
+   --     "Use shift to create a new view for editors"
+   --  so might not be suitable for all applications.
+   --  Through this function you can override the message. If you insert the
+   --  special sequence "(#)" in the message, it will be replaced either with
+   --  "preserved" or "hidden" depending on where the drop occurs (the central
+   --  area or the perspectives).
+   --  You can use markup like "<b>...</b>" to put keywords in bold.
+
    procedure Child_Drag_Begin
      (Child  : access MDI_Child_Record'Class;
       Event  : Gdk.Event.Gdk_Event);
@@ -1003,6 +1017,9 @@ private
       Focus_Child : MDI_Child := null;
       --  The child that currently has the focus. Some default actions will
       --  apply to this child only.
+
+      Dnd_Message : String_Access;
+      --  The message displayed during a dnd operation (see Set_Dnd_Message)
 
       Accel_Path_Prefix  : String_Access;
       --  The Accel path used for the dynamic menu
