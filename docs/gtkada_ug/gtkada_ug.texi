@@ -119,8 +119,8 @@ portable user interfaces for multiple platforms, including most
 platforms that have a X11 server and Win32 platforms.
 
 Although it is based on a C library, GtkAda uses some advanced Ada95
-features like tagged types, generic packages, access to subprograms,
-exceptions, etc@dots{} to make it easier to use and design interfaces.
+features such as tagged types, generic packages, access to subprograms,
+and exceptions to make it easier to use and design interfaces.
 For efficiency reasons, it does not use controlled types, but takes care
 of all the memory management for you in other ways.
 
@@ -227,14 +227,17 @@ in GtkAda.
 
 @noindent
 This section explains how to build and install GtkAda on your machine.
-It is Unix-oriented, since GtkAda is distributed in binary format on
-Windows machines, and comes with all the dependent packages, including
-the gtk+ libraries and @code{Glade}. If you are a Windows-user, you should
-skip this section.
+
+On Windows systems, we provide an automatic installer that installs
+GtkAda along with dependent components like gtk+ libraries and
+@code{Glade}.  If you are a Windows user, you can skip the rest of
+this section which will address installation on Unix systems.
 
 On Unix systems, you first need to install the glib and gtk+
 libraries. Download the compatible packages from the gtk+ web site
-(@url{http://www.gtk.org}, compile and install it.
+(@url{http://www.gtk.org}), compile and install it.  Alternatively,
+if your operating system vendor provides glib and gtk+ development
+packages, you can install the libraries they provide.
 
 Change your PATH environment variable so that the script @code{pkg-config},
 which indicates where gtk+ was installed and what libraries it needs is
@@ -508,22 +511,22 @@ if GtkAda was installed under @file{c:\gtkada}.
 
 @noindent
 The gtk+ toolkit has been designed from the beginning to be portable.
-It is made of three libraries, @code{gtk}, @code{gdk} and @code{glib}.
+It is made of three libraries: @code{gtk}, @code{gdk} and @code{glib}.
 
-@code{Glib} is a non-graphical library, that includes support for lists,
-h-tables, threads, etc@dots{} It is a highly optimized,
+@code{Glib} is a non-graphical library that includes support for lists,
+h-tables, threads, and so on. It is a highly optimized,
 platform-independent library. Since most of its contents are already
 available in Ada (or in the @file{GNAT.*} hierarchy in the GNAT
-distribution), GtkAda does not include a binding to it, except for a few
-required packages. These are the @file{Glib.*} packages in the GtkAda
-distribution.
+distribution), GtkAda does not include a complete binding to it. 
+For the parts of @code{Glib} that we do depend on, we provide
+@file{Glib.*} packages in the GtkAda distribution.
 
-@code{Gdk} is the platform-dependent part of gtk+. Its implementation is
-completely different on win32 systems and X11 systems, although the
-interface is of course the same. It provides a set of functions to draw
-lines, rectangles and pixmaps on the screen, manipulate
-colors, etc@dots{} It has a complete equivalent in GtkAda, through the
-@file{Gdk.*} packages.
+@code{Gdk} is the platform-dependent part of gtk+, and so there are
+different implementations (for instance, for Win32 and X11 based
+systems) that implement a common API. @code{Gdk} provides primitive
+graphical functionality to, for instance, draw lines, rectangles and
+pixmaps on the screen, as well as manipulate colors. The @file{Gdk.*}
+packages provide a full Ada interface to @code{Gdk}.
 
 @code{Gtk} is the top level library. It is platform independent, and
 does all its drawing through calls to Gdk. This is where the high-level
@@ -589,7 +592,7 @@ generic packages.
 
 @item Callbacks were the most difficult thing to interface with. These
 are extremely powerful and versatile, since the callbacks can have any
-number of arguments, can return values, or not,etc@dots{} These are once
+number of arguments and may or may not return values. These are once
 again implemented as generic packages, that require more explanation
 (@pxref{Signal handling}).
 
