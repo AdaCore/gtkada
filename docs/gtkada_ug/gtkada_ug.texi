@@ -602,7 +602,7 @@ again implemented as generic packages, that require more explanation
 @b{WARNING:} all the generic packages allocate some memory for internal
 structures, and call internal functions. This memory is freed by gtk
 itself, by calling some Ada functions. Therefore the generic packages
-have to be instanciated at library level, not inside a subprogram, so
+have to be instantiated at library level, not inside a subprogram, so
 that the functions are still defined when gtk needs to free the memory.
 @end cartouche
 
@@ -829,7 +829,7 @@ package, see below).
 @c ----------------------------------------------------------------------
 
 @noindent
-All the signal handling work is performed by using the services provided
+All signal handling work is performed using services provided
 by the @code{Gtk.Handlers} package. This package is self-documented,
 so please read the documentation for this package either in the GtkAda
 Reference Manual or in the specs themselves. The rest of this section assumes
@@ -924,16 +924,7 @@ in @code{Gtk.Handlers}. They each take a single argument, the name of the
 function you want to call, and return a handler that can be used directly in
 @code{Connect}.
 
-The connection is then done with the following piece of code. Note that this
-can be done just after creating the widget, in the same block. As soon as it
-is created, a widget is ready to accept connections (although no signals will
-be emitted before the widget is shown on the screen).
-
-Note that we use @code{To_Marshaller} since our handler does not accept
-the array of arguments as a parameter, and we use the special
-@code{Object_Connect} procedure. This means that the parameter to
-our callback (Files) will be the Slot_Object given in Object_Connect, instead
-of being the button itself.
+The connection is then done with the following piece of code:
 
 @smallexample
 Files_Cb.Object_Connect
@@ -942,6 +933,17 @@ Files_Cb.Object_Connect
    Files_Cb.To_Marshaller (Ok'Access),  --  The signal handler
    Slot_Object => Window);
 @end smallexample
+
+Note that this can be done just after creating the widget, in the same
+block. As soon as it is created, a widget is ready to accept
+connections (although no signals will be emitted before the widget is
+shown on the screen).
+
+We use @code{To_Marshaller} since our handler does not accept the array
+of arguments as a parameter, and we use the special
+@code{Object_Connect} procedure. This means that the parameter to
+our callback (Files) will be the Slot_Object given in Object_Connect,
+instead of being the button itself.
 
 @c ----------------------------------------------------------------------
 @node Handling user data
@@ -955,7 +957,7 @@ user_data, and is passed to the @code{Connect} or
 @code{Object_Connect} subprograms.
 
 GtkAda will automatically free any memory it has allocated internally
-to store these user data. For instance, if you instanciated the
+to store this user data. For instance, if you instantiated the
 generic package @code{User_Callback} with a String, it means that you
 want to be able to have a callback of the form:
 
@@ -978,22 +980,20 @@ the callback is destroyed.
 There are a few subtleties in the use of user_data, most importantly
 when the user data is itself a widget.
 
-The following four examples do exactly the same thing, ie create two
-buttons, and clicking on the first one will destroy the second
-one. They all work fine the first time, while the two buttons
-exist. However, some of them will fail if you press on the first
-button a second time.
+The following four examples do exactly the same thing: each creates two
+buttons, where clicking on the first one will destroy the second one.
+They all work fine the first time, while both buttons exist. However,
+some of them will fail if you press on the first button a second time.
 
-The code for this example can be found in the distribution, in the
-@file{examples/user_data} directory. The examples below do not include
-the creation of the main window, or of the buttons themselves, to
-emphasize the important part.
+Complete, compilable source code for these examples can be found in the
+distribution's @file{examples/user_data} directory, from which the code
+samples below are excerpted.
 
 @subsection First case: simple user data
 
-This code will fail: when @code{Button2} has been destroyed, the Ada
-type still points to some random memory, and the second call to
-@code{Destroy} will fail with a Storage_Error.
+This code will fail: even after @code{Button2} is destroyed, the Ada
+pointer continues to reference memory that has been deallocated.  The
+second call to @code{Destroy} will fail with a Storage_Error.
 
 @smallexample
    package User_Callback is new Gtk.Handlers.User_Callback
@@ -1308,32 +1308,31 @@ of callbacks, you do.
 
 It often happens that your application, in addition to processing graphical
 events through the GtkAda main loop, also needs to monitor external events.
-This is the case for instance if you are running external processes and need
-to display their output, or if you are listening to incoming data on a socket,
-or various other situations. You cannot have your own infinite loop which
-keeps checking for those external events, and spawns the GUI as appropriate,
-because then the GUI itself starts an infinite loop and never goes back to
-your own.
+This is the case if, for instance, you are running external processes and need
+to display their output, or if you are listening to incoming data on a socket.
+If you implement your own main loop to poll for these external events and then
+invoke the GUI, the GUI will enter its main loop and not return control back
+to you.
 
-There are several ways to handle that:
+There are several ways to handle this situation:
 
 @itemize @bullet
-@item The most correct one, especially if you intend to make the GUI a
+@item The cleanest solution, especially if you intend to make the GUI a
  major part of your application (as opposed to just popping up a
- few dialogs here and there), would be to use gtk+ mainloop as the
+ few dialogs here and there), would be to use the gtk+ mainloop as the
  infinite loop, instead of yours.
 
- You can the use what gtk+ calls idle callbacks (which are called
+ You can then use gtk+ ``idle callbacks'' (which are called
  every time the gtk+ loop is not busy processing graphical events)
- or timeout callbacks (which are called every n millisecons), and
+ or ``timeout callbacks'' (which are called every n milliseconds), and
  in those callbacks do the work you were doing before in your own
- infinite loop (that assumes the check is relatively fast,
+ main loop (that assumes the check is relatively fast,
  otherwise the GUI will be frozen during that time). Such callbacks
  are created through packages in glib-main.ads
 
-@item Another approach is not to start the gtk+ mainloop, but check
- yourself periodically whether there are some events to be handled.
- See the subprogram Gtk.Main.Main_Iteration.
+@item Another approach is to not start the gtk+ mainloop, but to check
+ periodically whether there are some events to be handled.
+ See the subprogram @code{Gtk.Main.Main_Iteration}.
 
  This second approach is not necessarily recommended, since you would
  basically duplicate code that's already in gtk+ to manage the main
