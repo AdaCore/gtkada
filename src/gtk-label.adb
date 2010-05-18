@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -93,6 +93,20 @@ package body Gtk.Label is
    begin
       return Internal (Get_Object (Label)) /= 0;
    end Get_Line_Wrap;
+
+   ------------------------
+   -- Get_Line_Wrap_Mode --
+   ------------------------
+
+   function Get_Line_Wrap_Mode
+     (Label : access Gtk_Label_Record) return Pango_Wrap_Mode
+   is
+      function Internal (Label : System.Address) return Pango_Wrap_Mode;
+      pragma Import (C, Internal, "gtk_label_get_line_wrap_mode");
+
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Line_Wrap_Mode;
 
    -----------------
    -- Get_Justify --
@@ -317,6 +331,21 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Boolean'Pos (Wrap));
    end Set_Line_Wrap;
+
+   ------------------------
+   -- Set_Line_Wrap_Mode --
+   ------------------------
+
+   procedure Set_Line_Wrap_Mode
+     (Label     : access Gtk_Label_Record;
+      Wrap_Mode : Pango_Wrap_Mode)
+   is
+      procedure Internal (Label : System.Address; Wrap_Mode : Pango_Wrap_Mode);
+      pragma Import (C, Internal, "gtk_label_set_line_wrap_mode");
+
+   begin
+      Internal (Get_Object (Label), Wrap_Mode);
+   end Set_Line_Wrap_Mode;
 
    --------------------
    -- Set_Selectable --

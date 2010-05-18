@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -140,6 +140,15 @@ package Gtk.Label is
    --  if Wrap is True, then Label will break lines if the text is larger
    --  then the widget's size. If Wrap is False, then the text is simply
    --  cut off.
+
+   procedure Set_Line_Wrap_Mode
+     (Label     : access Gtk_Label_Record;
+      Wrap_Mode : Pango.Layout.Pango_Wrap_Mode);
+   function Get_Line_Wrap_Mode
+     (Label : access Gtk_Label_Record) return Pango.Layout.Pango_Wrap_Mode;
+   --  If line wrapping is on (see Set_Line_Wrap) this controls how the
+   --  line wrapping is done. The default is Pango_Wrap_Word which means
+   --  wrap on word boundaries.
 
    procedure Set_Selectable
      (Label : access Gtk_Label_Record; Selectable : Boolean);

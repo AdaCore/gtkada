@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
+--                 Copyright (C) 2003-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,6 +33,7 @@ with Gtk.Enums;   use Gtk.Enums;
 with Gtk.Frame;   use Gtk.Frame;
 with Gtk.Label;   use Gtk.Label;
 with Glib.Convert; use Glib.Convert;
+with Pango.Layout; use Pango.Layout;
 
 package body Create_Label is
 
@@ -103,7 +104,6 @@ package body Create_Label is
       Add (Frame2, Label);
       Pack_Start (Vbox, Frame2, False, False, 0);
 
-
       Gtk_New_Vbox (Vbox, False, 5);
       Pack_Start (Hbox, Vbox, False, False, 0);
 
@@ -118,6 +118,22 @@ package body Create_Label is
                & "     It supports multiple paragraphs correctly, and  "
                & "correctly   adds many          extra  spaces. ");
       Set_Line_Wrap (Label, True);
+      Add (Frame2, Label);
+      Pack_Start (Vbox, Frame2, False, False, 0);
+
+      Gtk_New (Frame2, "Character mode wrapped label");
+      Gtk_New (Label,
+               "This is an example of a line-wrapped label.  Like the above "
+               & "example, it will not be taking up the entire width "
+               & "allocated to it, but instead of wrapping words to fit, it "
+               & "wraps characters to fit.  "
+               & "The time has come, for all good men, to come to "
+               & "the aid of their party.  The sixth sheik's six sheep's sick."
+               & ASCII.LF
+               & "     It supports multiple paragraphs correctly, and  "
+               & "correctly   adds many          extra  spaces. ");
+      Set_Line_Wrap (Label, True);
+      Set_Line_Wrap_Mode (Label, Pango_Wrap_Char);
       Add (Frame2, Label);
       Pack_Start (Vbox, Frame2, False, False, 0);
 
