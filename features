@@ -1,13 +1,22 @@
 GTKADA NEW FEATURES LIST
 ========================
 
-Copyright (c) 2005-2009, AdaCore
+Copyright (c) 2005-2010, AdaCore
 
 This file contains a list of new features introduced in GtkAda.
 
 An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
+
+New features in GtkAda 2.xxx
+----------------------------
+
+J511-036 GtkAda.MDI.Set_Dnd_Message
+
+  It is now possible to configure the text in the tooltip while dragging
+  windows. The default text mentions editors, which is not appropriate in
+  all contexts.
 
 New features in GtkAda 2.14.1
 -----------------------------
