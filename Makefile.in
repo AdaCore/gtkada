@@ -17,7 +17,7 @@ all: src tests
 src:
 	$(MAKE) -C $(src_dir)
 
-tests:
+tests: src
 	$(MAKE) -C $(testgtk_dir)
 
 install: 
