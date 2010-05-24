@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -95,6 +95,7 @@ with Create_Icon_View;
 with Create_Item_Factory;
 with Create_Label;
 with Create_Layout;
+with Create_Link_Buttons;
 with Create_List;
 with Create_Main_Loop;
 with Create_Menu;
@@ -138,7 +139,7 @@ with Libart_Demo;  use Libart_Demo;
 package body Main_Windows is
 
    procedure Fill_Gtk_Tree
-     (Tree         : in Gtk.Tree_Store.Gtk_Tree_Store;
+     (Tree         : Gtk.Tree_Store.Gtk_Tree_Store;
       Gtkada_Demos : Boolean := False;
       Pixbuf_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
@@ -184,8 +185,8 @@ package body Main_Windows is
    function Opengl_Help return String;
 
    procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : in Gtk.Gtk_Notebook_Page;
-                          User     : in Gtk_Notebook);
+                          Page     : Gtk.Gtk_Notebook_Page;
+                          User     : Gtk_Notebook);
    --  Called when a new notebook page is selected
 
    procedure Create_Demo_Frame
@@ -290,6 +291,8 @@ package body Main_Windows is
                                          Create_Label.Help'Access),
       (NS ("layout"),           Box,     Create_Layout.Run'Access,
                                          Create_Layout.Help'Access),
+      (NS ("link buttons"),     Base,    Create_Link_Buttons.Run'Access,
+                                         Create_Link_Buttons.Help'Access),
       (NS ("list"),             Base,    Create_List.Run'Access,
                                          Create_List.Help'Access),
       (NS ("menus"),            Base,    Create_Menu.Run'Access,
@@ -376,7 +379,7 @@ package body Main_Windows is
    -------------------
 
    procedure Fill_Gtk_Tree
-     (Tree         : in Gtk.Tree_Store.Gtk_Tree_Store;
+     (Tree         : Gtk.Tree_Store.Gtk_Tree_Store;
       Gtkada_Demos : Boolean := False;
       Pixbuf_Demos : Boolean := False)
    is
@@ -709,8 +712,8 @@ package body Main_Windows is
    -----------------
 
    procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : in Gtk.Gtk_Notebook_Page;
-                          User     : in Gtk_Notebook)
+                          Page     : Gtk.Gtk_Notebook_Page;
+                          User     : Gtk_Notebook)
    is
       pragma Warnings (Off, Page);
       pragma Warnings (Off, User);

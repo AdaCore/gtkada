@@ -18,6 +18,16 @@ J511-036 GtkAda.MDI.Set_Dnd_Message
   windows. The default text mentions editors, which is not appropriate in
   all contexts.
 
+J510-028 API Additions
+
+  Subprograms Set_Line_Wrap_Mode and Get_Line_Wrap_Mode have been added to
+  the Gtk.Label package.  This allows specification of character or word
+  based line wrapping for labels.
+
+  The package Gtk.Link_Button has been added.  This provides buttons with
+  contents that look like clickable hyperlinks, similar to the ones shown
+  by web browsers.
+
 New features in GtkAda 2.14.1
 -----------------------------
 

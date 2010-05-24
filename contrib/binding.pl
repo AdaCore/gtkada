@@ -151,6 +151,7 @@ sub ada_unit_from_c_file() {
   $adafile =~ s/-gamma/-gamma_curve/;
   $adafile =~ s/-plotcanvas(.+)/-extra-plot_canvas-$1/;
   $adafile =~ s/uimanager/ui_manager/;
+  $adafile =~ s/linkbutton/link_button/;
   $adafile =~ s/__/_/g;
   return $adafile;
 }
