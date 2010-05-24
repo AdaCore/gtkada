@@ -41,6 +41,13 @@ package body Create_Link_Buttons is
 
    package Reset_Button_Cb is new Handlers.Callback (Gtk_Link_Button_Record);
 
+   procedure On_Link_Button_Clicked
+     (Button : System.Address;
+      Link   : Interfaces.C.Strings.chars_ptr;
+      Data   : System.Address);
+   pragma Convention (C, On_Link_Button_Clicked);
+   --  Make sure to use a C calling convention for this callback.
+
    ----------------------------
    -- On_Link_Button_Clicked --
    ----------------------------
