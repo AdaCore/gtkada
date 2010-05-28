@@ -9,8 +9,8 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
-New features in GtkAda 2.xxx
-----------------------------
+New features in GtkAda 2.18.0
+-----------------------------
 
 J511-036 GtkAda.MDI.Set_Dnd_Message
 
@@ -27,6 +27,11 @@ J510-028 API Additions
   The package Gtk.Link_Button has been added.  This provides buttons with
   contents that look like clickable hyperlinks, similar to the ones shown
   by web browsers.
+
+IC11-012 Support for Gtk+ 2.18.x
+
+  GtkAda now supports and takes advantage of some of the features from
+  Gtk+ 2.18 under Unix, and Gtk+ 2.16 under Windows.
 
 New features in GtkAda 2.14.1
 -----------------------------
