@@ -3881,6 +3881,36 @@ package body Gtkada.MDI is
 
             List := Next (List);
          end loop;
+
+         --  No last child ? It means the central area is empty (or contains
+         --  an empty notebook, in case we could not reload the desktop, for
+         --  instance because a file previously edited no longer exists).
+
+         if Current = null then
+            if Traces then
+               Print_Debug
+                 ("Find_Current_In_Central: no last child in <central>,"
+                  & " checking whether we have an empty notebook");
+            end if;
+
+            declare
+               Iter : Gtkada.Multi_Paned.Child_Iterator := Start (MDI.Central);
+            begin
+               while not At_End (Iter)
+                 and then Get_Widget (Iter) = null
+               loop
+                  Next (Iter);
+               end loop;
+
+               if not At_End (Iter) then
+                  Print_Debug ("Found empty notebook, using it");
+                  Note := Gtk_Notebook (Get_Widget (Iter));
+                  Current := Note;
+               end if;
+            end;
+
+            --  Current might still be null if the central area really is empty
+         end if;
       end if;
 
       if Note = null then
@@ -3926,7 +3956,8 @@ package body Gtkada.MDI is
                   Note := Current;
                else
                   Note := Create_Notebook (MDI);
-                  Add_Child (Pane, New_Child => Note);
+                  Add_Child
+                    (Pane, New_Child => Note, Width => -1, Height => -1);
                end if;
          end case;
       end if;
@@ -4933,10 +4964,13 @@ package body Gtkada.MDI is
          Pos          : Gtk_Position_Type;
 
       begin
-         Print_Debug ("Parse_Notebook_Node Parent_Width="
-                      & Gint'Image (Parent_Width) & " Parent_Height="
-                      & Gint'Image (Parent_Height) & " Parent_Orientation="
-                      & Gtk_Orientation'Image (Parent_Orientation));
+         if Traces then
+            Print_Debug ("Parse_Notebook_Node Parent_Width="
+                         & Gint'Image (Parent_Width) & " Parent_Height="
+                         & Gint'Image (Parent_Height) & " Parent_Orientation="
+                         & Gtk_Orientation'Image (Parent_Orientation));
+         end if;
+
          Indent_Debug (1);
 
          Compute_Size_From_Attributes
@@ -4956,6 +4990,7 @@ package body Gtkada.MDI is
            ("Parse_Notebook_Node: created new notebook "
             & System.Address_Image (Notebook.all'Address));
 
+         Set_Size_Request (Notebook, Width, Height);
          Set_Tab_Pos (Notebook, Pos);
          Set_Child_Visible (Notebook, True);
          Show_All (Notebook);
@@ -4965,12 +5000,13 @@ package body Gtkada.MDI is
                Parse_Child_Node
                  (MDI, N, User, Focus_Child, X, Y,
                   Raised, State, Child, To_Hide => To_Hide);
-               if Raised then
-                  Raised_Child := Child;
-               end if;
 
                --  Child cannot be floating while in a notebook
                if Child /= null then
+                  if Raised then
+                     Raised_Child := Child;
+                  end if;
+
                   Print_Debug
                     ("Parse_Notebook_Node, moving child into the"
                      & " the notebook");
@@ -4978,6 +5014,8 @@ package body Gtkada.MDI is
                   Put_In_Notebook (MDI, Child, Notebook);
                   Print_Debug
                     ("Parse_Notebook_Node, done moving child");
+               else
+                  Print_Debug ("Parse_Notebook_Node: no child created");
                end if;
 
             else
@@ -5121,6 +5159,7 @@ package body Gtkada.MDI is
          end loop;
 
          if Child = null then
+            Print_Debug ("Parse_Child_Node: Could not create the child");
             return;
          end if;
 
@@ -5253,11 +5292,15 @@ package body Gtkada.MDI is
            (Node, Parent_Width, Parent_Height, Parent_Orientation,
             Width_For_Children, Height_For_Children, Count);
 
-         Print_Debug
-           ("Parse_Pane_Node " & Gtk_Orientation'Image (Orientation)
-            & " children=" & Integer'Image (Count)
-            & " child_size=" & Gint'Image (Width_For_Children)
-            & "x" & Gint'Image (Height_For_Children));
+         if Traces then
+            New_Line;
+            Print_Debug
+              ("Parse_Pane_Node " & Gtk_Orientation'Image (Orientation)
+               & " children=" & Integer'Image (Count)
+               & " child_size=" & Gint'Image (Width_For_Children)
+               & "x" & Gint'Image (Height_For_Children));
+         end if;
+
          Indent_Debug (1);
 
          declare
@@ -5442,9 +5485,11 @@ package body Gtkada.MDI is
          Indent_Debug (1);
 
          while Child_Node /= null loop
-            Print_Debug
-              ("Restore_Multi_Pane, got child """
-               & Child_Node.Tag.all & """");
+            if Traces then
+               Print_Debug
+                 ("Restore_Multi_Pane, got child """
+                  & Child_Node.Tag.all & """");
+            end if;
 
             if Child_Node.Tag.all = "Pane" then
                Parse_Pane_Node
@@ -6158,11 +6203,16 @@ package body Gtkada.MDI is
          Print_Debug ("Save_Desktop: window size reported as"
                       & Gint'Image (MDI_Width) & "x"
                       & Gint'Image (MDI_Height));
+
+         Print_Debug ("Save_Desktop: saving the perspective");
          Save_Paned (MDI, MDI.Current_Perspective, In_Central => False);
+
+         Print_Debug ("Save_Desktop: saving central area");
          Save_Paned (MDI.Central, Central, In_Central => True);
 
          --  Save the floating widgets (these are part of the perspective)
 
+         Print_Debug ("Save_Desktop: saving floating widgets");
          Item := MDI.Items;
          while Item /= Widget_List.Null_List loop
             Child := MDI_Child (Widget_List.Get_Data (Item));
@@ -6182,6 +6232,9 @@ package body Gtkada.MDI is
             Print_Debug ("After saving the desktop (current perspective is "
                          & Current_Perspective (MDI) & "), desktop is");
             Print (MDI.Perspectives);
+
+            Print_Debug ("And the central area is");
+            Print (Central);
          end if;
       end Save_Desktop;
 

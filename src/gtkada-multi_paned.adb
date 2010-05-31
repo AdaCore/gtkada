@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2003-2009, AdaCore                  --
+--                 Copyright (C) 2003-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,6 +48,7 @@ with Glib.Types;           use Glib.Types;
 with Gtk.Arguments;        use Gtk.Arguments;
 with Gtk.Enums;            use Gtk.Enums;
 with Gtk.Fixed;            use Gtk.Fixed;
+with Gtk.Notebook;         use Gtk.Notebook;
 with Gtk.Object;           use Gtk.Object;
 with Gtk.Style;            use Gtk.Style;
 with Gtk.Widget;           use Gtk.Widget;
@@ -241,6 +242,19 @@ package body Gtkada.Multi_Paned is
       function Image (Str : String; Value : Boolean) return String;
       --  Return Str if Value is True
 
+      function Image (Value : Gint) return String;
+      --  Return Value, without the leading space
+
+      function Image (Value : Gint) return String is
+         S : constant String := Gint'Image (Value);
+      begin
+         if S (S'First) = ' ' then
+            return S (S'First + 1 .. S'Last);
+         else
+            return S;
+         end if;
+      end Image;
+
       function Image (Orient : Gtk_Orientation) return String is
       begin
          case Orient is
@@ -263,18 +277,25 @@ package body Gtkada.Multi_Paned is
          Put_Line ("<null>");
 
       elsif Child.Is_Widget then
-         Put_Line (Prefix & "<w req=("
-                   & Gint'Image (Gint (Child.Width))
-                   & Gint'Image (Gint (Child.Height))
-                   & ") alloc=("
-                   & Gint'Image (Get_Allocation_Width (Child.Widget))
-                   & Gint'Image (Get_Allocation_Height (Child.Widget))
-                   & ") "
-                   & Image ("HIDDEN", not Child.Visible)
-                   & Image ("FIXED", Child.Fixed_Size)
-                   & Image ("NoHandle", Child.Handle.Win = null)
-                   & "handle=("
-                   & Gint'Image (Child.Handle.Position.X)
+         Put (Prefix & "<w req=("
+              & Image (Gint (Child.Width))
+              & Gint'Image (Gint (Child.Height))
+              & ") alloc=("
+              & Image (Get_Allocation_Width (Child.Widget))
+              & Gint'Image (Get_Allocation_Height (Child.Widget))
+              & ") "
+              & Image ("HIDDEN", not Child.Visible)
+              & Image ("FIXED", Child.Fixed_Size)
+              & Image ("NoHandle", Child.Handle.Win = null));
+
+         if Child.Widget.all in Gtk_Notebook_Record'Class then
+            Put ("pages="
+                 & Image (Get_N_Pages (Gtk_Notebook (Child.Widget)))
+                 & " ");
+         end if;
+
+         Put_Line ("handle=("
+                   & Image (Child.Handle.Position.X)
                    & Gint'Image (Child.Handle.Position.Y)
                    & ") w=" & System.Address_Image (Child.Widget.all'Address)
                    & " C=" & System.Address_Image (Get_Object (Child.Widget))
@@ -288,13 +309,11 @@ package body Gtkada.Multi_Paned is
 
       else
          Put_Line (Prefix & "<" & Image (Child.Orientation)
-                   & " req=(" & Gint'Image (Gint (Child.Width))
-                   & Gint'Image (Gint (Child.Height))
-                   & ") x,y=(" & Gint'Image (Child.X)
-                   & Gint'Image (Child.Y)
-                   & ")"
+                   & " req=(" & Image (Gint (Child.Width))
+                   & Image (Gint (Child.Height))
+                   & ") x,y=(" & Image (Child.X) & Gint'Image (Child.Y) & ")"
                    & " handle=("
-                   & Gint'Image (Child.Handle.Position.X)
+                   & Image (Child.Handle.Position.X)
                    & Gint'Image (Child.Handle.Position.Y)
                    & ")>");
          Tmp := Child.First_Child;
@@ -383,7 +402,7 @@ package body Gtkada.Multi_Paned is
       Parent_Width, Parent_Height : out Gint;
       Parent_Orientation          : out Gtk_Orientation)
    is
-      Count : Natural := 1;
+      Count : Gint := 0;
       Tmp   : Child_Description_Access;
    begin
       --  Assert (Iter.Current /= null);
@@ -403,12 +422,12 @@ package body Gtkada.Multi_Paned is
          case Parent_Orientation is
             when Orientation_Horizontal =>
                Parent_Width  := Gint (Iter.Current.Parent.Width)
-                 - Gint (Count - 1) * Handle_Width;
+                 - Count * Handle_Width;
                Parent_Height := Gint (Iter.Current.Parent.Height);
             when Orientation_Vertical =>
                Parent_Width  := Gint (Iter.Current.Parent.Width);
                Parent_Height := Gint (Iter.Current.Parent.Height)
-                 - Gint (Count - 1) * Handle_Width;
+                 - Count * Handle_Width;
          end case;
 
       else
@@ -2046,6 +2065,17 @@ package body Gtkada.Multi_Paned is
 
       Current, Pane : Child_Description_Access;
    begin
+      if Traces then
+         Put_Line ("Split_Internal: Orientation="
+                   & Gtk_Orientation'Image (Orientation)
+                   & " Width=" & Gint'Image (Width)
+                   & " Height=" & Gint'Image (Height)
+                   & " After=" & Boolean'Image (After)
+                   & " Fixed=" & Boolean'Image (Fixed_Size)
+                   & " Ref_Widget=" & Boolean'Image (Ref_Widget /= null)
+                   & " Ref_Pane=" & Boolean'Image (Ref_Pane /= null));
+      end if;
+
       if Ref_Pane /= null then
          --  Split specific pane
          Current := Child_Description_Access (Ref_Pane);
