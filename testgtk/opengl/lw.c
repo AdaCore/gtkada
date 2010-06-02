@@ -19,6 +19,7 @@
 
 #include "lw.h"
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 
 #define MK_ID(a,b,c,d) ((((guint32)(a))<<24)| \
@@ -53,8 +54,9 @@ static gint32 read_long(FILE *f)
 
 static GLfloat read_float(FILE *f)
 {
-  gint32 x = read_long(f);
-  return *(GLfloat*)&x;
+  union { GLfloat g; gint32 x; } u;
+  u.x = read_long(f);
+  return u.g;
 }
 
 static gint read_string(FILE *f, char *s)
@@ -144,7 +146,7 @@ static void read_surf(FILE *f, gint nbytes, lwObject *lwo)
 static void read_pols(FILE *f, int nbytes, lwObject *lwo)
 {
   int guess_cnt = lwo->face_cnt;
-  
+
   while (nbytes > 0) {
     lwFace *face;
     int i;
@@ -162,17 +164,17 @@ static void read_pols(FILE *f, int nbytes, lwObject *lwo)
 
     /* allocate space for points */
     face->index = g_malloc0(sizeof(int)*face->index_cnt);
-    
+
     /* read points in */
     for (i=0; i<face->index_cnt; i++) {
       face->index[i] = read_short(f);
       nbytes -= 2;
     }
-    
+
     /* read surface material */
     face->material = read_short(f);
     nbytes -= 2;
-    
+
     /* skip over detail  polygons */
     if (face->material < 0) {
       int det_cnt;
@@ -295,7 +297,7 @@ lwObject *lw_object_read(const char *lw_file)
 void lw_object_free(lwObject *lw_object)
 {
   g_return_if_fail(lw_object != NULL);
- 
+
   if (lw_object->face) {
     int i;
     for (i=0; i<lw_object->face_cnt; i++)
