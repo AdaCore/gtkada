@@ -570,7 +570,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
 [   
 
    # checking for OpenGL libraries
-   AC_ARG_WITH(GL,         [  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,glut,MesaGL,,no)])
+   AC_ARG_WITH(GL,         [  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,GL32,MesaGL,,no)])
    AC_ARG_WITH(GL-prefix,  [  --with-GL-prefix=DIR    Prefix where GL/MesaGL is installed])
    
    if test "x$with_GL_prefix" = "x" ; then
@@ -596,14 +596,14 @@ AC_DEFUN(AM_CHECK_OPENGL,
      AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
      AC_MSG_RESULT($have_GL)
   
-     AC_MSG_CHECKING([for glut])
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lglu32 -lglut32 -lopengl32 -lgdi32"
+     AC_MSG_CHECKING([for GL32])
+     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
      AC_TRY_LINK([
 #include <GL/gl.h>
 #include <windows.h>], 
 [ glBegin(0); 
-  CreateCompatibleDC(NULL); ], have_glut=yes, have_glut=no)
-     AC_MSG_RESULT($have_glut)
+  CreateCompatibleDC(NULL); ], have_GL32=yes, have_GL32=no)
+     AC_MSG_RESULT($have_GL32)
  
      AC_MSG_CHECKING([for Mesa])
      LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL"
@@ -626,8 +626,8 @@ AC_DEFUN(AM_CHECK_OPENGL,
       if test "x$have_GL" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lGLU -lGL"
          HAVE_OPENGL="True"
-      elif test "x$have_glut" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lglu32 -lglut32 -lopengl32 -lgdi32"
+      elif test "x$have_GL32" = "xyes"; then
+         GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
          HAVE_OPENGL="True"
       elif test "x$have_MesaGL" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
@@ -645,12 +645,12 @@ AC_DEFUN(AM_CHECK_OPENGL,
          AC_MSG_ERROR([Missing OpenGL library])
       fi
       ;;
-   xglut)
+   xGL32)
       if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lglu32 -lglut32 -lopengl32 -lgdi32"
+         GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
          HAVE_OPENGL="True"
       else
-         AC_MSG_ERROR([Missing glut library])
+         AC_MSG_ERROR([Missing Windows OpenGL library])
       fi
       ;;
    xMesaGL)
@@ -667,7 +667,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
    xno)
       ;;
    *)
-      AC_MSG_ERROR([Unknown value for "--with-GL" option. Should be either auto, glut, GL, MesaGL, no])
+      AC_MSG_ERROR([Unknown value for "--with-GL" option. Should be either auto, GL32, GL, MesaGL, no])
       ;;
    esac
 

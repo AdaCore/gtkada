@@ -813,7 +813,7 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,glut,MesaGL,,no)
+  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,GL32,MesaGL,,no)
   --with-GL-prefix=DIR    Prefix where GL/MesaGL is installed
 
 Some influential environment variables:
@@ -3552,9 +3552,9 @@ rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
      echo "$as_me:$LINENO: result: $have_GL" >&5
 echo "${ECHO_T}$have_GL" >&6
 
-     echo "$as_me:$LINENO: checking for glut" >&5
-echo $ECHO_N "checking for glut... $ECHO_C" >&6
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lglu32 -lglut32 -lopengl32 -lgdi32"
+     echo "$as_me:$LINENO: checking for GL32" >&5
+echo $ECHO_N "checking for GL32... $ECHO_C" >&6
+     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
      cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
@@ -3586,16 +3586,16 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  have_glut=yes
+  have_GL32=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-have_glut=no
+have_GL32=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-     echo "$as_me:$LINENO: result: $have_glut" >&5
-echo "${ECHO_T}$have_glut" >&6
+     echo "$as_me:$LINENO: result: $have_GL32" >&5
+echo "${ECHO_T}$have_GL32" >&6
 
      echo "$as_me:$LINENO: checking for Mesa" >&5
 echo $ECHO_N "checking for Mesa... $ECHO_C" >&6
@@ -3692,8 +3692,8 @@ echo "${ECHO_T}$have_MesaGL_pthread" >&6
       if test "x$have_GL" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lGLU -lGL"
          HAVE_OPENGL="True"
-      elif test "x$have_glut" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lglu32 -lglut32 -lopengl32 -lgdi32"
+      elif test "x$have_GL32" = "xyes"; then
+         GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
          HAVE_OPENGL="True"
       elif test "x$have_MesaGL" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
@@ -3713,13 +3713,13 @@ echo "$as_me: error: Missing OpenGL library" >&2;}
    { (exit 1); exit 1; }; }
       fi
       ;;
-   xglut)
+   xGL32)
       if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lglu32 -lglut32 -lopengl32 -lgdi32"
+         GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
          HAVE_OPENGL="True"
       else
-         { { echo "$as_me:$LINENO: error: Missing glut library" >&5
-echo "$as_me: error: Missing glut library" >&2;}
+         { { echo "$as_me:$LINENO: error: Missing Windows OpenGL library" >&5
+echo "$as_me: error: Missing Windows OpenGL library" >&2;}
    { (exit 1); exit 1; }; }
       fi
       ;;
@@ -3739,8 +3739,8 @@ echo "$as_me: error: Missing Mesa library" >&2;}
    xno)
       ;;
    *)
-      { { echo "$as_me:$LINENO: error: Unknown value for \"--with-GL\" option. Should be either auto, glut, GL, MesaGL, no" >&5
-echo "$as_me: error: Unknown value for \"--with-GL\" option. Should be either auto, glut, GL, MesaGL, no" >&2;}
+      { { echo "$as_me:$LINENO: error: Unknown value for \"--with-GL\" option. Should be either auto, GL32, GL, MesaGL, no" >&5
+echo "$as_me: error: Unknown value for \"--with-GL\" option. Should be either auto, GL32, GL, MesaGL, no" >&2;}
    { (exit 1); exit 1; }; }
       ;;
    esac
