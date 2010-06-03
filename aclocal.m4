@@ -603,7 +603,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
 #include <windows.h>], 
 [ glBegin(0); 
   CreateCompatibleDC(NULL); ], have_GL=yes, have_GL=no)
-     AC_MSG_RESULT($have_GL)
+     AC_MSG_RESULT($have_glut)
  
      AC_MSG_CHECKING([for Mesa])
      LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL"
@@ -629,7 +629,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
       elif test "x$have_glut" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lglu32 -lglut32 -lopengl32 -lgdi32"
          HAVE_OPENGL="True"
-     elif test "x$have_MesaGL" = "xyes"; then
+      elif test "x$have_MesaGL" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
          HAVE_OPENGL="True"
       elif test "x$have_MesaGL_pthread" = "xyes"; then

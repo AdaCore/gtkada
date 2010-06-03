@@ -3594,8 +3594,8 @@ sed 's/^/| /' conftest.$ac_ext >&5
 have_GL=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-     echo "$as_me:$LINENO: result: $have_GL" >&5
-echo "${ECHO_T}$have_GL" >&6
+     echo "$as_me:$LINENO: result: $have_glut" >&5
+echo "${ECHO_T}$have_glut" >&6
 
      echo "$as_me:$LINENO: checking for Mesa" >&5
 echo $ECHO_N "checking for Mesa... $ECHO_C" >&6
@@ -3695,7 +3695,7 @@ echo "${ECHO_T}$have_MesaGL_pthread" >&6
       elif test "x$have_glut" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lglu32 -lglut32 -lopengl32 -lgdi32"
          HAVE_OPENGL="True"
-     elif test "x$have_MesaGL" = "xyes"; then
+      elif test "x$have_MesaGL" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
          HAVE_OPENGL="True"
       elif test "x$have_MesaGL_pthread" = "xyes"; then
