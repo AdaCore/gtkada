@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2009, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -207,6 +207,25 @@ package body Gtk.Cell_View is
          Internal (Get_Object (Cell_View), C'Address);
       end if;
    end Set_Background_Color;
+
+   ---------------
+   -- Get_Model --
+   ---------------
+
+   function Get_Model
+     (Cell_View : access Gtk_Cell_View_Record)
+      return Gtk.Tree_Model.Gtk_Tree_Model
+   is
+      function Internal
+        (Cell_View : System.Address)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_cell_view_get_model");
+      Stub : Gtk_Tree_Model_Record;
+   begin
+      return Gtk.Tree_Model.Gtk_Tree_Model
+        (Get_User_Data
+          (Internal (Get_Object (Cell_View)), Stub));
+   end Get_Model;
 
    ---------------
    -- Set_Model --

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2009, AdaCore                   --
+--                Copyright (C) 2006-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -111,6 +111,12 @@ package Gtk.Cell_View is
    --  Sets the model for Cell_View.  If Cell_View already has a model
    --  set, it will remove it before setting the new model.  If Model is
    --  null, then it will unset the old model.
+
+   function Get_Model
+     (Cell_View : access Gtk_Cell_View_Record)
+      return Gtk.Tree_Model.Gtk_Tree_Model;
+   --  Returns the model for Cell_View.  If no model is used, null is
+   --  returned.
 
    function Get_Cell_Renderers
      (Cell_View : access Gtk_Cell_View_Record)
