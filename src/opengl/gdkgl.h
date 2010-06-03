@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 1998 Janne Löf <jlof@mail.student.oulu.fi>
  *
  * This library is free software; you can redistribute it and/or
@@ -19,34 +19,18 @@
 #ifndef __GDK_GL_H__
 #define __GDK_GL_H__
 
-#if defined(_WIN32) || defined(_WIN32_) || defined(WIN32)
+#include <glib.h>
 
- /* gl/gl.h needs WIN32 defined */
- #ifndef WIN32
-  #define WIN32
- #endif
-
- /* win32 gl/gl.h needs APIENTRY and WINGDIAPI defined properly */
- #if defined(i386) && defined(__GNUC__)
-  #define STDCALL     __attribute__ ((stdcall))
-  #define CDECL       __cdecl
-  #define CALLBACK    WINAPI
-  #define PASCAL      WINAPI
-  #define WINAPI      STDCALL
-  #define APIENTRY    STDCALL
-  #define WINGDIAPI
- #else
-  #include <windows.h>
- #endif
-
+#ifdef G_OS_WIN32
+ /* The GL/gl.h on Windows requires you to include <windows.h>
+  * anyway, so we might as well include it here.
+  */
+ #include <windows.h>
 #endif
-
 
 #include <gdk/gdk.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+G_BEGIN_DECLS
 
 /*
  * These definitions are duplicated from GL/glx.h that comes with Mesa.
@@ -60,7 +44,7 @@ enum _GDK_GL_CONFIGS {
 	GDK_GL_BUFFER_SIZE	= 2,
 	GDK_GL_LEVEL		= 3,
 	GDK_GL_RGBA		= 4,
-	GDK_GL_DOUBLEBUFFER	= 5, 
+	GDK_GL_DOUBLEBUFFER	= 5,
 	GDK_GL_STEREO		= 6,
 	GDK_GL_AUX_BUFFERS	= 7,
 	GDK_GL_RED_SIZE		= 8,
@@ -85,6 +69,13 @@ enum _GDK_GL_CONFIGS {
 };
 
 
+#define GDK_TYPE_GL_CONTEXT            (gdk_gl_context_get_type())
+#define GDK_GL_CONTEXT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDK_TYPE_GL_CONTEXT, GdkGLContext))
+#define GDK_GL_CONTEXT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST (klass, GDK_TYPE_GL_CONTEXT, GdkGLContextClass))
+#define GDK_IS_GL_CONTEXT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDK_TYPE_GL_CONTEXT))
+#define GDK_IS_GL_CONTEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDK_TYPE_GL_CONTEXT))
+#define GDK_GL_CONTEXT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GDK_TYPE_GL_CONTEXT, GdkGLContext))
+
 typedef struct _GdkGLContext GdkGLContext;
 
 
@@ -94,12 +85,10 @@ gchar        *gdk_gl_get_info(void);
 GdkVisual    *gdk_gl_choose_visual(int *attrlist);
 int           gdk_gl_get_config(GdkVisual *visual, int attrib);
 
+GType         gdk_gl_context_get_type(void);
 GdkGLContext *gdk_gl_context_new(GdkVisual *visual);
 GdkGLContext *gdk_gl_context_share_new(GdkVisual *visual, GdkGLContext *sharelist, gint direct);
 GdkGLContext *gdk_gl_context_attrlist_share_new(int *attrlist, GdkGLContext *sharelist, gint direct);
-
-GdkGLContext *gdk_gl_context_ref(GdkGLContext *context);
-void          gdk_gl_context_unref(GdkGLContext *context);
 
 gint          gdk_gl_make_current(GdkDrawable *drawable, GdkGLContext *context);
 void          gdk_gl_swap_buffers(GdkDrawable *drawable);
@@ -111,11 +100,17 @@ void          gdk_gl_wait_gl(void);
 
 /* glpixmap stuff */
 
+#define GDK_TYPE_GL_PIXMAP            (gdk_gl_pixmap_get_type())
+#define GDK_GL_PIXMAP(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDK_TYPE_GL_PIXMAP, GdkGLPixmap))
+#define GDK_GL_PIXMAP_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST (klass, GDK_TYPE_GL_PIXMAP, GdkGLPixmapClass))
+#define GDK_IS_GL_PIXMAP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDK_TYPE_GL_PIXMAP))
+#define GDK_IS_GL_PIXMAP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDK_TYPE_GL_PIXMAP))
+#define GDK_GL_PIXMAP_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GDK_TYPE_GL_PIXMAP, GdkGLPixmap))
+
 typedef struct _GdkGLPixmap GdkGLPixmap;
 
+GType        gdk_gl_pixmap_get_type(void);
 GdkGLPixmap *gdk_gl_pixmap_new(GdkVisual *visual, GdkPixmap *pixmap);
-GdkGLPixmap *gdk_gl_pixmap_ref(GdkGLPixmap *glpixmap);
-void         gdk_gl_pixmap_unref(GdkGLPixmap *glpixmap);
 
 gint         gdk_gl_pixmap_make_current(GdkGLPixmap *glpixmap, GdkGLContext *context);
 
@@ -124,10 +119,14 @@ gint         gdk_gl_pixmap_make_current(GdkGLPixmap *glpixmap, GdkGLContext *con
 void gdk_gl_use_gdk_font(GdkFont *font, int first, int count, int list_base);
 
 
-#ifdef __cplusplus
-}
+#ifndef GTKGL_DISABLE_DEPRECATED
+#  define gdk_gl_context_ref(context)   g_object_ref(context)
+#  define gdk_gl_context_unref(context) g_object_unref(context)
+#  define gdk_gl_pixmap_ref(pixmap)     g_object_ref(pixmap)
+#  define gdk_gl_pixmap_unref(pixmap)   g_object_unref(pixmap)
 #endif
 
+G_END_DECLS
 
 #endif /* __GDK_GL_H__ */
 

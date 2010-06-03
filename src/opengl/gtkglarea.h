@@ -25,15 +25,15 @@
 #include <gtk/gtkdrawingarea.h>
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
-#define GTK_TYPE_GL_AREA          (gtk_gl_area_get_type())
-#define GTK_GL_AREA(obj)          (GTK_CHECK_CAST ((obj), GTK_TYPE_GL_AREA, GtkGLArea))
-#define GTK_GL_AREA_CLASS(klass)  (GTK_CHECK_CLASS_CAST (klass, GTK_TYPE_GL_AREA, GtkGLAreaClass))
-#define GTK_IS_GL_AREA(obj)       (GTK_CHECK_TYPE ((obj), GTK_TYPE_GL_AREA))
-#define GTK_IS_GL_AREA_CLASS      (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_GL_AREA))
+#define GTK_TYPE_GL_AREA            (gtk_gl_area_get_type())
+#define GTK_GL_AREA(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_GL_AREA, GtkGLArea))
+#define GTK_GL_AREA_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST (klass, GTK_TYPE_GL_AREA, GtkGLAreaClass))
+#define GTK_IS_GL_AREA(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_GL_AREA))
+#define GTK_IS_GL_AREA_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_GL_AREA))
+#define GTK_GL_AREA_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_GL_AREA, GtkGLArea))
+
 
 typedef struct _GtkGLArea       GtkGLArea;
 typedef struct _GtkGLAreaClass  GtkGLAreaClass;
@@ -50,7 +50,7 @@ struct _GtkGLAreaClass
   GtkDrawingAreaClass parent_class;
 };
 
-GtkType    gtk_gl_area_get_type   (void);
+GType      gtk_gl_area_get_type   (void);
 GtkWidget* gtk_gl_area_new        (int       *attrList);
 GtkWidget* gtk_gl_area_share_new  (int       *attrList,
                                    GtkGLArea *share);
@@ -60,19 +60,24 @@ GtkWidget* gtk_gl_area_new_vargs  (GtkGLArea *share,
 
 gint       gtk_gl_area_make_current(GtkGLArea *glarea);
 
-gint       gtk_gl_area_begingl    (GtkGLArea *glarea); /* deprecated, use gtk_gl_area_make_current */
 void       gtk_gl_area_endgl      (GtkGLArea *glarea); /* deprecated */
 
-void       gtk_gl_area_swapbuffers(GtkGLArea *glarea); /* deprecated */
 void       gtk_gl_area_swap_buffers(GtkGLArea *glarea);
 
-void       gtk_gl_area_size       (GtkGLArea *glarea,  /* deprecated, use gtk_drawing_area_size() */
-				   gint width,
-				   gint height);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+#ifndef GTKGL_DISABLE_DEPRECATED
 
+#  define gtk_gl_area_begingl(glarea) \
+      gtk_gl_area_make_current(glarea)
+#  define gtk_gl_area_endgl(glarea) \
+      glFlush()
+#  define gtk_gl_area_swapbuffers(glarea) \
+      gtk_gl_area_swap_buffers(glarea)
+#  define gtk_gl_area_size(glarea, width, height) \
+      gtk_widget_set_size_request(GTK_WIDGET(glarea), (width), (height))
+
+#endif
+
+G_END_DECLS
 
 #endif /* __GTK_GL_AREA_H__ */
