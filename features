@@ -28,6 +28,10 @@ J510-028 API Additions
   contents that look like clickable hyperlinks, similar to the ones shown
   by web browsers.
 
+  The package Gtk.Assistant has been added.  This provides a widget used
+  to guide users through multi-step operations, and can be used to
+  implement wizards.
+
 IC11-012 Support for Gtk+ 2.18.x
 
   GtkAda now supports and takes advantage of some of the features from

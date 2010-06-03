@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2003 ACT-Europe                --
+--                Copyright (C) 2001-2003, ACT-Europe                --
+--                    Copyright (C) 2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -125,6 +126,7 @@ package Glib.Properties is
    type Property_Address   is new Glib.Property;
    type Property_Float     is new Glib.Property;
    type Property_Double    is new Glib.Property;
+   type Property_Enum      is new Glib.Property;
 
    --  General properties getter
 
