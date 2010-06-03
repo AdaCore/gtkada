@@ -92,10 +92,6 @@ package body View_Gl is
 
       M : Trackball.Matrix;
 
-#if WIN32 then
-      Val : aliased GLfloat;
-#end if;
-
    begin
       --  Draw only the last expose event
 
@@ -117,13 +113,8 @@ package body View_Gl is
          glMatrixMode (GL_PROJECTION);
          glLoadIdentity;
 
-#if WIN32 then
-         gluPerspective (GLdouble (Area.Mesh_Info.Zoom),
-                         GLdouble (VIEW_ASPECT), 1.0, 100.0);
-#else
          gluPerspective (Long_Float (Area.Mesh_Info.Zoom),
                          Long_Float (VIEW_ASPECT), 1.0, 100.0);
-#end if;
          glMatrixMode (GL_MODELVIEW);
 
          --  Draw Object
@@ -134,12 +125,7 @@ package body View_Gl is
          glTranslatef (0.0, 0.0, -30.0);
          Build_Rotmatrix (M, Area.Mesh_Info.Quat);
 
-#if WIN32 then
-         Val := GLfloat (M (0, 0));
-         glmultmatrixf (Val'Unchecked_Access);
-#else
          glMultMatrixf (M (0, 0)'Access);
-#end if;
 
          Lw_Object_Show (Area.Mesh_Info.Object);
 
