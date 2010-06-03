@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2009, AdaCore                   --
+--                Copyright (C) 2006-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,7 +55,7 @@
 --  icon, visible, sensitive, etc), and should change when the action's state
 --  changes. When the proxy is activated, it should activate its action.
 --  </description>
---  <c_version>2.14</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Action-based menus</group>
 
 with Glib.Properties;
@@ -116,6 +116,57 @@ package Gtk.Action is
    --  This function is intended for use by action implementations to
    --  create icons displayed in the proxy widgets.
    --  Returns a widget that displays the icon for this action.
+
+   function Get_Icon_Name (Action : access Gtk_Action_Record) return String;
+   procedure Set_Icon_Name
+     (Action    : access Gtk_Action_Record;
+      Icon_Name : String);
+   --  Gets/Sets the Action's icon name.
+
+   function Get_Is_Important (Action : access Gtk_Action_Record)
+      return Boolean;
+   procedure Set_Is_Important
+     (Action       : access Gtk_Action_Record;
+      Is_Important : Boolean);
+   --  Gets/Sets whether or not Action is important.
+
+   function Get_Label (Action : access Gtk_Action_Record) return String;
+   procedure Set_Label
+     (Action : access Gtk_Action_Record;
+      Label  : String);
+   --  Gets/Sets the label text associated with Action.
+
+   function Get_Short_Label (Action : access Gtk_Action_Record) return String;
+   procedure Set_Short_Label
+     (Action      : access Gtk_Action_Record;
+      Short_Label : String);
+   --  Gets/Sets the short label text of Action.
+
+   function Get_Stock_Id (Action : access Gtk_Action_Record) return String;
+   procedure Set_Stock_Id
+     (Action   : access Gtk_Action_Record;
+      Stock_Id : String);
+   --  Gets/Sets the stock id of Action.
+
+   function Get_Tooltip (Action : access Gtk_Action_Record) return String;
+   procedure Set_Tooltip
+     (Action  : access Gtk_Action_Record;
+      Tooltip : String);
+   --  Gets/Sets the tooltip text associated with Action.
+
+   function Get_Visible_Horizontal (Action : access Gtk_Action_Record)
+      return Boolean;
+   procedure Set_Visible_Horizontal
+     (Action             : access Gtk_Action_Record;
+      Visible_Horizontal : Boolean);
+   --  Gets/Sets whether Action is visible when horizontal.
+
+   function Get_Visible_Vertical (Action : access Gtk_Action_Record)
+      return Boolean;
+   procedure Set_Visible_Vertical
+     (Action           : access Gtk_Action_Record;
+      Visible_Vertical : Boolean);
+   --  Gets/Sets whether Action is visible when vertical.
 
    function Create_Menu
      (Action : access Gtk_Action_Record)
@@ -199,6 +250,13 @@ package Gtk.Action is
    --  If the widget is already connected to an action, it is disconnected
    --  first.
    --  Disconnect_Proxy does not destroy the widget.
+
+   procedure Block_Activate   (Action : access Gtk_Action_Record);
+   procedure Unblock_Activate (Action : access Gtk_Action_Record);
+   --  Disable or reenable activation signals from the action.  This is
+   --  needed when updating the state of your proxy widget could result
+   --  in calling Activate.  This is a convenience function to avoid
+   --  recursing in those cases (updating toggle state for instance).
 
    procedure Block_Activate_From
      (Action : access Gtk_Action_Record;

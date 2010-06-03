@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2009, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,6 +53,19 @@ package body Gtk.Action is
    begin
       Internal (Get_Object (Action));
    end Activate;
+
+   --------------------
+   -- Block_Activate --
+   --------------------
+
+   procedure Block_Activate
+     (Action : access Gtk_Action_Record)
+   is
+      procedure Internal (Action : System.Address);
+      pragma Import (C, Internal, "gtk_action_block_activate");
+   begin
+      Internal (Get_Object (Action));
+   end Block_Activate;
 
    -------------------------
    -- Block_Activate_From --
@@ -214,6 +227,54 @@ package body Gtk.Action is
       return Value (Internal (Get_Object (Action)));
    end Get_Accel_Path;
 
+   -------------------
+   -- Get_Icon_Name --
+   -------------------
+
+   function Get_Icon_Name
+     (Action : access Gtk_Action_Record)
+      return String
+   is
+      function Internal
+        (Action : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_action_get_icon_name");
+   begin
+      return Value (Internal (Get_Object (Action)));
+   end Get_Icon_Name;
+
+   ----------------------
+   -- Get_Is_Important --
+   ----------------------
+
+   function Get_Is_Important
+     (Action : access Gtk_Action_Record)
+      return Boolean
+   is
+      function Internal
+        (Action : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_action_get_is_important");
+   begin
+      return Boolean'Val (Internal (Get_Object (Action)));
+   end Get_Is_Important;
+
+   ---------------
+   -- Get_Label --
+   ---------------
+
+   function Get_Label
+     (Action : access Gtk_Action_Record)
+      return String
+   is
+      function Internal
+        (Action : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_action_get_label");
+   begin
+      return Value (Internal (Get_Object (Action)));
+   end Get_Label;
+
    --------------
    -- Get_Name --
    --------------
@@ -261,6 +322,52 @@ package body Gtk.Action is
       return Boolean'Val (Internal (Get_Object (Action)));
    end Get_Sensitive;
 
+   ---------------------
+   -- Get_Short_Label --
+   ---------------------
+
+   function Get_Short_Label
+     (Action : access Gtk_Action_Record)
+      return String
+   is
+      function Internal (Action : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_action_get_short_label");
+   begin
+      return Value (Internal (Get_Object (Action)));
+   end Get_Short_Label;
+
+   ------------------
+   -- Get_Stock_Id --
+   ------------------
+
+   function Get_Stock_Id
+     (Action : access Gtk_Action_Record)
+      return String
+   is
+      function Internal
+        (Action : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_action_get_stock_id");
+   begin
+      return Value (Internal (Get_Object (Action)));
+   end Get_Stock_Id;
+
+   -----------------
+   -- Get_Tooltip --
+   -----------------
+
+   function Get_Tooltip
+     (Action : access Gtk_Action_Record)
+      return String
+   is
+      function Internal (Action : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_action_get_tooltip");
+   begin
+      return Value (Internal (Get_Object (Action)));
+   end Get_Tooltip;
+
    -----------------
    -- Get_Visible --
    -----------------
@@ -276,6 +383,34 @@ package body Gtk.Action is
    begin
       return Boolean'Val (Internal (Get_Object (Action)));
    end Get_Visible;
+
+   ----------------------------
+   -- Get_Visible_Horizontal --
+   ----------------------------
+
+   function Get_Visible_Horizontal
+     (Action : access Gtk_Action_Record)
+      return Boolean
+   is
+      function Internal (Action : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_action_get_visible_horizontal");
+   begin
+      return Boolean'Val (Internal (Get_Object (Action)));
+   end Get_Visible_Horizontal;
+
+   --------------------------
+   -- Get_Visible_Vertical --
+   --------------------------
+
+   function Get_Visible_Vertical
+     (Action : access Gtk_Action_Record)
+      return Boolean
+   is
+      function Internal (Action : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_action_get_visible_vertical");
+   begin
+      return Boolean'Val (Internal (Get_Object (Action)));
+   end Get_Visible_Vertical;
 
    ------------------
    -- Is_Sensitive --
@@ -394,6 +529,54 @@ package body Gtk.Action is
    end Set_Accel_Path;
 
    -------------------
+   -- Set_Icon_Name --
+   -------------------
+
+   procedure Set_Icon_Name
+     (Action    : access Gtk_Action_Record;
+      Icon_Name : String)
+   is
+      procedure Internal
+        (Action    : System.Address;
+         Icon_Name : String);
+      pragma Import (C, Internal, "gtk_action_set_icon_name");
+   begin
+      Internal (Get_Object (Action), Icon_Name & ASCII.NUL);
+   end Set_Icon_Name;
+
+   ----------------------
+   -- Set_Is_Important --
+   ----------------------
+
+   procedure Set_Is_Important
+     (Action       : access Gtk_Action_Record;
+      Is_Important : Boolean)
+   is
+      procedure Internal
+        (Action       : System.Address;
+         Is_Important : Gboolean);
+      pragma Import (C, Internal, "gtk_action_set_is_important");
+   begin
+      Internal (Get_Object (Action), Boolean'Pos (Is_Important));
+   end Set_Is_Important;
+
+   ---------------
+   -- Set_Label --
+   ---------------
+
+   procedure Set_Label
+     (Action : access Gtk_Action_Record;
+      Label  : String)
+   is
+      procedure Internal
+        (Action : System.Address;
+         Label  : String);
+      pragma Import (C, Internal, "gtk_action_set_label");
+   begin
+      Internal (Get_Object (Action), Label & ASCII.NUL);
+   end Set_Label;
+
+   -------------------
    -- Set_Sensitive --
    -------------------
 
@@ -408,6 +591,54 @@ package body Gtk.Action is
    begin
       Internal (Get_Object (Action), Boolean'Pos (Sensitive));
    end Set_Sensitive;
+
+   ---------------------
+   -- Set_Short_Label --
+   ---------------------
+
+   procedure Set_Short_Label
+     (Action      : access Gtk_Action_Record;
+      Short_Label : String)
+   is
+      procedure Internal
+        (Action      : System.Address;
+         Short_Label : String);
+      pragma Import (C, Internal, "gtk_action_set_short_label");
+   begin
+      Internal (Get_Object (Action), Short_Label & ASCII.NUL);
+   end Set_Short_Label;
+
+   ------------------
+   -- Set_Stock_Id --
+   ------------------
+
+   procedure Set_Stock_Id
+     (Action   : access Gtk_Action_Record;
+      Stock_Id : String)
+   is
+      procedure Internal
+        (Action   : System.Address;
+         Stock_Id : String);
+      pragma Import (C, Internal, "gtk_action_set_stock_id");
+   begin
+      Internal (Get_Object (Action), Stock_Id & ASCII.NUL);
+   end Set_Stock_Id;
+
+   -----------------
+   -- Set_Tooltip --
+   -----------------
+
+   procedure Set_Tooltip
+     (Action  : access Gtk_Action_Record;
+      Tooltip : String)
+   is
+      procedure Internal
+        (Action  : System.Address;
+         Tooltip : String);
+      pragma Import (C, Internal, "gtk_action_set_tooltip");
+   begin
+      Internal (Get_Object (Action), Tooltip & ASCII.NUL);
+   end Set_Tooltip;
 
    -----------------
    -- Set_Visible --
@@ -424,6 +655,49 @@ package body Gtk.Action is
    begin
       Internal (Get_Object (Action), Boolean'Pos (Visible));
    end Set_Visible;
+
+   ----------------------------
+   -- Set_Visible_Horizontal --
+   ----------------------------
+
+   procedure Set_Visible_Horizontal
+     (Action             : access Gtk_Action_Record;
+      Visible_Horizontal : Boolean)
+   is
+      procedure Internal
+        (Action             : System.Address;
+         Visible_Horizontal : Gboolean);
+      pragma Import (C, Internal, "gtk_action_set_visible_horizontal");
+   begin
+      Internal (Get_Object (Action), Boolean'Pos (Visible_Horizontal));
+   end Set_Visible_Horizontal;
+
+   --------------------------
+   -- Set_Visible_Vertical --
+   --------------------------
+
+   procedure Set_Visible_Vertical
+     (Action           : access Gtk_Action_Record;
+      Visible_Vertical : Boolean)
+   is
+      procedure Internal
+        (Action           : System.Address;
+         Visible_Vertical : Gboolean);
+      pragma Import (C, Internal, "gtk_action_set_visible_vertical");
+   begin
+      Internal (Get_Object (Action), Boolean'Pos (Visible_Vertical));
+   end Set_Visible_Vertical;
+
+   ----------------------
+   -- Unblock_Activate --
+   ----------------------
+
+   procedure Unblock_Activate (Action : access Gtk_Action_Record) is
+      procedure Internal (Action : System.Address);
+      pragma Import (C, Internal, "gtk_action_unblock_activate");
+   begin
+      Internal (Get_Object (Action));
+   end Unblock_Activate;
 
    ---------------------------
    -- Unblock_Activate_From --

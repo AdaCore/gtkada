@@ -32,6 +32,9 @@ J510-028 API Additions
   to guide users through multi-step operations, and can be used to
   implement wizards.
 
+  The package Gtk.Action now contains additional subprograms that have
+  been added since Gtk+ 2.16.6.
+
 IC11-012 Support for Gtk+ 2.18.x
 
   GtkAda now supports and takes advantage of some of the features from
