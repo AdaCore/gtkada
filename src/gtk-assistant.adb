@@ -143,11 +143,12 @@ package body Gtk.Assistant is
    is
       function Internal
         (Assistant : System.Address;
-         Page      : System.Address)
-         return Gdk_Pixbuf;
+         Page      : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_page_header_image");
+      Stub : Gdk_Pixbuf_Record;
    begin
-      return Internal (Get_Object (Assistant), Get_Object (Page));
+      return Gdk_Pixbuf (Get_User_Data
+        (Internal (Get_Object (Assistant), Get_Object (Page)), Stub));
    end Get_Page_Header_Image;
 
    -------------------------
@@ -161,11 +162,12 @@ package body Gtk.Assistant is
    is
       function Internal
         (Assistant : System.Address;
-         Page      : System.Address)
-         return Gdk_Pixbuf;
+         Page      : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_page_side_image");
+      Stub : Gdk_Pixbuf_Record;
    begin
-      return Internal (Get_Object (Assistant), Get_Object (Page));
+      return Gdk_Pixbuf (Get_User_Data
+        (Internal (Get_Object (Assistant), Get_Object (Page)), Stub));
    end Get_Page_Side_Image;
 
    --------------------
@@ -321,6 +323,10 @@ package body Gtk.Assistant is
          return Gint;
       pragma Convention (C, General_Cb);
 
+      procedure Free_Data (D : System.Address);
+      pragma Convention (C, Free_Data);
+      --  Callback used to free data associated with Set_Forward_Page_Func
+
       ----------------
       -- General_Cb --
       ----------------
@@ -362,12 +368,6 @@ package body Gtk.Assistant is
          User_Data : Data_Type;
          Destroy   : Destroy_Notify := null)
       is
-         type Gtk_Assistant_Page_Func is access function
-           (Current_Page : Gint;
-            Data         : System.Address)
-           return Gint;
-         pragma Convention (C, Gtk_Assistant_Page_Func);
-
          procedure Internal
            (Assistant : System.Address;
             Page_Func : System.Address;
