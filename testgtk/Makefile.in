@@ -9,9 +9,6 @@ opengl_dir = $(src_dir)/opengl
 CC = @CC@
 TARGET_LFLAGS = @TARGET_LFLAGS@
 
-GNATMAKELDFLAGS = -largs -L$(src_dir)/lib-obj -L$(opengl_dir) -lgtkada -lgtkada_gl @GTK_LIBS@ \
-		  $(TARGET_LFLAGS)
-
 OBJ_DIR=obj
 include ../src/Makefile.common
 
@@ -25,10 +22,16 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 ifeq ($(HAVE_OPENGL),True)
 OPENGL_C_OBJECTS=lw.o
 OPENGL_LIBS= @GL_LIBS@
+GTKADA_GL_LIBS=-lgtkada_gl
 else
 OPENGL_C_OBJECTS=
 OPENGL_LIBS=
+GTKADA_GL_LIBS=
 endif
+
+GNATMAKELDFLAGS = -largs -L$(src_dir)/lib-obj -L$(opengl_dir) -lgtkada $GTKADA_GL_LIBS \
+      @GTK_LIBS@ $(TARGET_LFLAGS)
+
 
 all: opengl/view_gl.adb $(OPENGL_C_OBJECTS) $(target) 
 
