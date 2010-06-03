@@ -9,7 +9,7 @@ opengl_dir = $(src_dir)/opengl
 CC = @CC@
 TARGET_LFLAGS = @TARGET_LFLAGS@
 
-GNATMAKELDFLAGS = -largs -L$(src_dir)/lib-obj -L$(opengl_dir) -lgtkada @GTK_LIBS@ \
+GNATMAKELDFLAGS = -largs -L$(src_dir)/lib-obj -L$(opengl_dir) -lgtkada -lgtkada_gl @GTK_LIBS@ \
 		  $(TARGET_LFLAGS)
 
 OBJ_DIR=obj
