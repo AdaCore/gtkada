@@ -3586,12 +3586,12 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  have_GL=yes
+  have_glut=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-have_GL=no
+have_glut=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
      echo "$as_me:$LINENO: result: $have_glut" >&5

@@ -602,7 +602,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
 #include <GL/gl.h>
 #include <windows.h>], 
 [ glBegin(0); 
-  CreateCompatibleDC(NULL); ], have_GL=yes, have_GL=no)
+  CreateCompatibleDC(NULL); ], have_glut=yes, have_glut=no)
      AC_MSG_RESULT($have_glut)
  
      AC_MSG_CHECKING([for Mesa])
