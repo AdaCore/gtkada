@@ -173,6 +173,7 @@ package Gtk.Assistant is
         (Current_Page : Gint;
          User_Data    : Data_Type)
          return Gint;
+      --  Spec for page forwarding function.
 
       type Destroy_Notify is access procedure (User_Data : in out Data_Type);
       --  Destroy_Notify is called just prior to the destruction of
@@ -183,9 +184,9 @@ package Gtk.Assistant is
          Func      : Page_Func;
          User_Data : Data_Type;
          Destroy   : Destroy_Notify := null);
-      --  Sets the page forwarding function to be Page_Func.  This function
-      --  will be used to determine what will be the next page when the user
-      --  presses the forward button. Setting Page_Func to null will make
+      --  Sets the Assistant's page forwarding function to be Func.  This
+      --  function will be used to determine what will be the next page when
+      --  the user presses the forward button. Setting Func to null will make
       --  the assistant use the default forward function, which just goes
       --  to the next visible page.
    end Generic_Assistant_Functions;
