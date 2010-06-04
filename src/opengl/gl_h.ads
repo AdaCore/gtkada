@@ -2205,8 +2205,12 @@ private
    pragma Import (Stdcall, glTexParameteriv, "glTexParameteriv");
    pragma Import (Stdcall, glGetTexParameterfv, "glGetTexParameterfv");
    pragma Import (Stdcall, glGetTexParameteriv, "glGetTexParameteriv");
-   pragma Import (Stdcall, glGetTexLevelParameterfv, "glGetTexLevelParameterfv");
-   pragma Import (Stdcall, glGetTexLevelParameteriv, "glGetTexLevelParameteriv");
+   pragma Import (Stdcall,
+                  glGetTexLevelParameterfv,
+                  "glGetTexLevelParameterfv");
+   pragma Import (Stdcall,
+                  glGetTexLevelParameteriv,
+                  "glGetTexLevelParameteriv");
    pragma Import (Stdcall, glTexImage1D, "glTexImage1D");
    pragma Import (Stdcall, glTexImage2D, "glTexImage2D");
    pragma Import (Stdcall, glGetTexImage, "glGetTexImage");
@@ -2270,7 +2274,9 @@ private
    pragma Import (Stdcall, glDeleteTexturesEXT, "glDeleteTexturesEXT");
    pragma Import (Stdcall, glBindTextureEXT, "glBindTextureEXT");
    pragma Import (Stdcall, glPrioritizeTexturesEXT, "glPrioritizeTexturesEXT");
-   pragma Import (Stdcall, glAreTexturesResidentEXT, "glAreTexturesResidentEXT");
+   pragma Import (Stdcall,
+                  glAreTexturesResidentEXT,
+                  "glAreTexturesResidentEXT");
    pragma Import (Stdcall, glIsTextureEXT, "glIsTextureEXT");
    pragma Import (Stdcall, glTexImage3DEXT, "glTexImage3DEXT");
    pragma Import (Stdcall, glTexSubImage3DEXT, "glTexSubImage3DEXT");
