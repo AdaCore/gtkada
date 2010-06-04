@@ -20,24 +20,29 @@ J511-036 GtkAda.MDI.Set_Dnd_Message
 
 J510-028 API Additions
 
-  Subprograms Set_Line_Wrap_Mode and Get_Line_Wrap_Mode have been added to
-  the Gtk.Label package.  This allows specification of character or word
-  based line wrapping for labels.
+  In order to support functionality present in Gtk+ 2.16.6 and later, new
+  packages have been added and existing packages have been updated.  Here
+  is a list of the changes:
 
-  The package Gtk.Link_Button has been added.  This provides buttons with
-  contents that look like clickable hyperlinks, similar to the ones shown
-  by web browsers.
+    Gtk.Label: added new subprograms
+      Get_Line_Wrap_Mode, Set_Line_Wrap_Mode
 
-  The package Gtk.Assistant has been added.  This provides a widget used
-  to guide users through multi-step operations, and can be used to
-  implement wizards.
+    Gtk.Action: added new subprograms
+      Block_Activate, Unblock_Activate
+      Get_Icon_Name, Set_Icon_Name
+      Get_Is_Important, Set_Is_Important
+      Get_Label, Set_Label
+      Get_Short_Label, Set_Short_Label
+      Get_Stock_Id, Set_Stock_Id
+      Get_Tooltip, Set_Tooltip
+      Get_Visible_Horizontal, Set_Visible_Horizontal
+      Get_Visible_Vertical, Set_Visible_Vertical
 
-  The package Gtk.Action now contains additional subprograms that have
-  been added since Gtk+ 2.16.6.
+    Gtk.Cell_View: added new subprogram
+      Get_Model
 
-  The subprogram Gtk.Cell_View.Get_Model has been added, so that the
-  application may now retrieve the model that is being used with a
-  Gtk_Cell_View.
+    Gtk.Assistant: new package
+    Gtk.Link_Button: new package
 
 IC11-012 Support for Gtk+ 2.18.x
 
