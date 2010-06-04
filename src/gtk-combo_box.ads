@@ -47,7 +47,7 @@
 --  is suitable for text-only combo boxes, and hides the complexity of managing
 --  the data in a model.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Trees and Lists</group>
 --  <see>Gtk.Combo_Box_Entry</see>
 --  <screenshot>gtk-combo_box</screenshot>
@@ -56,6 +56,7 @@ with Glib.Properties;
 with Gtk.Bin;
 with Gtk.Cell_Editable;
 with Gtk.Cell_Layout;
+with Gtk.Enums;
 with Gtk.Tree_Model;
 with Gtk.Tree_View;
 with Glib.Types;
@@ -128,6 +129,16 @@ package Gtk.Combo_Box is
    --  Clicking on this menu will detach the combo into a floating window that
    --  the user can put anywhere on the screen.
 
+   procedure Set_Button_Sensitivity
+     (Combo_Box   : access Gtk_Combo_Box_Record;
+      Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type);
+   function Get_Button_Sensitivity
+     (Combo_Box : access Gtk_Combo_Box_Record)
+      return Gtk.Enums.Gtk_Sensitivity_Type;
+   --  Sets whether the dropdown button of the combo box should be always
+   --  sensitive (Gtk_Sensitivity_On), never sensitive (Gtk_Sensitivity_Off)
+   --  or only if there is at least one item to display (Gtk_Sensitivity_Auto).
+
    procedure Set_Column_Span_Column
      (Combo_Box : access Gtk_Combo_Box_Record; Column_Span : Gint);
    function Get_Column_Span_Column
@@ -166,6 +177,14 @@ package Gtk.Combo_Box is
    --  Sets the row separator function, which is used to determine
    --  whether a row should be drawn as a separator. If the row separator
    --  function is null, no separators are drawn. This is the default value.
+
+   procedure Set_Title
+     (Combo_Box : access Gtk_Combo_Box_Record;
+      Title     : String);
+   function Get_Title
+     (Combo_Box : access Gtk_Combo_Box_Record)
+      return String;
+   --  Sets or Gets the menu's title in tearoff mode.
 
    ---------------------------
    -- Text-only combo boxes --
@@ -266,6 +285,10 @@ package Gtk.Combo_Box is
    --  Type:  Boolean
    --  Descr: Whether dropdowns should have a tearoff menu item
    --
+   --  Name:  Button_Sensitivity_Property
+   --  Type:  Enum
+   --  Descr: Whether the dropdown button is sensitive when the model is empty
+   --
    --  Name:  Column_Span_Column_Property
    --  Type:  Int
    --  Descr: TreeModel column containing the column span values
@@ -283,9 +306,18 @@ package Gtk.Combo_Box is
    --  Type:  Object
    --  Descr: The model for the combo box
    --
+   --  Name:  Popup_Shown_Property
+   --  Type:  Boolean
+   --  Descr: Whether the combo's dropdown is shown
+   --
    --  Name:  Row_Span_Column_Property
    --  Type:  Int
    --  Descr: TreeModel column containing the row span values
+   --
+   --  Name:  Tearoff_Title_Property
+   --  Type:  String
+   --  Descr: A title that may be displayed by the window manager when the
+   --         popup is torn-off
    --
    --  Name:  Wrap_Width_Property
    --  Type:  Int
@@ -294,11 +326,14 @@ package Gtk.Combo_Box is
 
    Active_Property             : constant Glib.Properties.Property_Int;
    Add_Tearoffs_Property       : constant Glib.Properties.Property_Boolean;
+   Button_Sensitivity_Property : constant Glib.Properties.Property_Enum;
    Column_Span_Column_Property : constant Glib.Properties.Property_Int;
    Focus_On_Click_Property     : constant Glib.Properties.Property_Boolean;
    Has_Frame_Property          : constant Glib.Properties.Property_Boolean;
    Model_Property              : constant Glib.Properties.Property_Object;
+   Popup_Shown_Property        : constant Glib.Properties.Property_Boolean;
    Row_Span_Column_Property    : constant Glib.Properties.Property_Int;
+   Tearoff_Title_Property      : constant Glib.Properties.Property_String;
    Wrap_Width_Property         : constant Glib.Properties.Property_Int;
 
    ----------------------
@@ -311,9 +346,19 @@ package Gtk.Combo_Box is
    --  Name:  Appears_As_List_Property
    --  Type:  Boolean
    --  Descr: Whether dropdowns should look like lists rather than menus
+   --
+   --  Name:  Arrow_Size_Property
+   --  Type:  Int
+   --  Descr: The minimum size of the arrow in the combo box
+   --
+   --  Name:  Shadow_Type_Property
+   --  Type:  Enum
+   --  Descr: Which kind of shadow to draw around the combo box
    --  </style_properties>
 
    Appears_As_List_Property : constant Glib.Properties.Property_Boolean;
+   Arrow_Size_Property      : constant Glib.Properties.Property_Int;
+   Shadow_Type_Property     : constant Glib.Properties.Property_Enum;
 
    -------------
    -- Signals --
@@ -339,6 +384,10 @@ private
      Glib.Properties.Build ("active");
    Add_Tearoffs_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("add-tearoffs");
+   Arrow_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("arrow-size");
+   Button_Sensitivity_Property : constant Glib.Properties.Property_Enum :=
+     Glib.Properties.Build ("button-sensitivity");
    Column_Span_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("column-span-column");
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
@@ -347,8 +396,14 @@ private
      Glib.Properties.Build ("has-frame");
    Model_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("model");
+   Popup_Shown_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("popup-shown");
    Row_Span_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("row-span-column");
+   Shadow_Type_Property : constant Glib.Properties.Property_Enum :=
+     Glib.Properties.Build ("shadow-type");
+   Tearoff_Title_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tearoff-title");
    Wrap_Width_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("wrap-width");
 

@@ -24,10 +24,12 @@ J510-028 API Additions
   packages have been added and existing packages have been updated.  Here
   is a list of the changes:
 
-    Gtk.Label: added new subprograms
+  Gtk.Label:
+    added new subprograms:
       Get_Line_Wrap_Mode, Set_Line_Wrap_Mode
 
-    Gtk.Action: added new subprograms
+  Gtk.Action:
+    added new subprograms:
       Block_Activate, Unblock_Activate
       Get_Icon_Name, Set_Icon_Name
       Get_Is_Important, Set_Is_Important
@@ -37,12 +39,22 @@ J510-028 API Additions
       Get_Tooltip, Set_Tooltip
       Get_Visible_Horizontal, Set_Visible_Horizontal
       Get_Visible_Vertical, Set_Visible_Vertical
+    added new property Icon_Name_Property
 
-    Gtk.Cell_View: added new subprogram
-      Get_Model
+  Gtk.Cell_View:
+    added new subprogram Get_Model
+    added new property Model_Property
 
-    Gtk.Assistant: new package
-    Gtk.Link_Button: new package
+  Gtk.Enums:
+    added new enumeration Gtk_Sensitivity_Type
+
+  Gtk.Combo_Box:
+    added new subprograms:
+      Get_Button_Sensitivity, Set_Button_Sensitivity
+      Get_Title, Set_Title
+
+  Gtk.Assistant: new package
+  Gtk.Link_Button: new package
 
 IC11-012 Support for Gtk+ 2.18.x
 

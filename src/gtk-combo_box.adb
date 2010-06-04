@@ -281,6 +281,22 @@ package body Gtk.Combo_Box is
    end Get_Add_Tearoffs;
 
    ----------------------------
+   -- Get_Button_Sensitivity --
+   ----------------------------
+
+   function Get_Button_Sensitivity
+     (Combo_Box : access Gtk_Combo_Box_Record)
+      return Gtk.Enums.Gtk_Sensitivity_Type
+   is
+      function Internal
+        (Combo_Box : System.Address)
+         return Gtk.Enums.Gtk_Sensitivity_Type;
+      pragma Import (C, Internal, "gtk_combo_box_get_button_sensitivity");
+   begin
+      return Internal (Get_Object (Combo_Box));
+   end Get_Button_Sensitivity;
+
+   ----------------------------
    -- Get_Column_Span_Column --
    ----------------------------
 
@@ -318,6 +334,22 @@ package body Gtk.Combo_Box is
    begin
       return Internal (Get_Object (Combo_Box));
    end Get_Row_Span_Column;
+
+   ---------------
+   -- Get_Title --
+   ---------------
+
+   function Get_Title
+     (Combo_Box : access Gtk_Combo_Box_Record)
+      return String
+   is
+      function Internal
+        (Combo_Box : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_combo_box_get_title");
+   begin
+      return Value (Internal (Get_Object (Combo_Box)));
+   end Get_Title;
 
    ----------------
    -- Set_Active --
@@ -365,6 +397,22 @@ package body Gtk.Combo_Box is
    end Set_Add_Tearoffs;
 
    ----------------------------
+   -- Set_Button_Sensitivity --
+   ----------------------------
+
+   procedure Set_Button_Sensitivity
+     (Combo_Box   : access Gtk_Combo_Box_Record;
+      Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type)
+   is
+      procedure Internal
+        (Combo_Box   : System.Address;
+         Sensitivity : Gtk.Enums.Gtk_Sensitivity_Type);
+      pragma Import (C, Internal, "gtk_combo_box_set_button_sensitivity");
+   begin
+      Internal (Get_Object (Combo_Box), Sensitivity);
+   end Set_Button_Sensitivity;
+
+   ----------------------------
    -- Set_Column_Span_Column --
    ----------------------------
 
@@ -405,6 +453,22 @@ package body Gtk.Combo_Box is
    begin
       Internal (Get_Object (Combo_Box), Row_Span);
    end Set_Row_Span_Column;
+
+   ---------------
+   -- Set_Title --
+   ---------------
+
+   procedure Set_Title
+     (Combo_Box : access Gtk_Combo_Box_Record;
+      Title     : String)
+   is
+      procedure Internal
+        (Combo_Box : System.Address;
+         Title     : String);
+      pragma Import (C, Internal, "gtk_combo_box_set_title");
+   begin
+      Internal (Get_Object (Combo_Box), Title & ASCII.NUL);
+   end Set_Title;
 
    --------------------
    -- Set_Wrap_Width --

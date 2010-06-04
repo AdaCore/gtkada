@@ -286,6 +286,13 @@ package Gtk.Enums is
    --  single line, a single line when the mouse is released, or multiple
    --  lines).
 
+   type Gtk_Sensitivity_Type is
+     (Gtk_Sensitivity_Auto,
+      Gtk_Sensitivity_On,
+      Gtk_Sensitivity_Off);
+   --  Determines how GTK+ handles the sensitivity of stepper arrows at
+   --  the end of range widgets.
+
    type Gtk_Shadow_Type is
      (Shadow_None,
       Shadow_In,
@@ -426,6 +433,7 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Resize_Mode);
    pragma Convention (C, Gtk_Scroll_Type);
    pragma Convention (C, Gtk_Selection_Mode);
+   pragma Convention (C, Gtk_Sensitivity_Type);
    pragma Convention (C, Gtk_Shadow_Type);
    pragma Convention (C, Gtk_State_Type);
    pragma Convention (C, Gtk_Text_Window_Type);
