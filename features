@@ -53,6 +53,10 @@ J510-028 API Additions
       Get_Button_Sensitivity, Set_Button_Sensitivity
       Get_Title, Set_Title
 
+  Gtk.Dialog:
+    added new subprogram Get_Content_Area
+    added new property Content_Area_Spacing_Property
+
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
 

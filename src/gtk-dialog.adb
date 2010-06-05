@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,6 +55,21 @@ package body Gtk.Dialog is
       return Gtk.Box.Gtk_Box
         (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
    end Get_Action_Area;
+
+   ----------------------
+   -- Get_Content_Area --
+   ----------------------
+
+   function Get_Content_Area
+     (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
+   is
+      function Internal (Dialog : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_dialog_get_content_area");
+      Stub : Gtk.Box.Gtk_Box_Record;
+   begin
+      return Gtk.Box.Gtk_Box
+        (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
+   end Get_Content_Area;
 
    --------------
    -- Get_Vbox --

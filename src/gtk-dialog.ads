@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@
 --
 --  See Gtkada.Dialogs for a higher level dialog interface.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Windows</group>
 --  <testgtk>create_dialog.adb</testgtk>
 --  <screenshot>gtk-dialog</screenshot>
@@ -151,6 +151,10 @@ package Gtk.Dialog is
    function Get_Action_Area
      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Return the action area box associated with a Dialog.
+
+   function Get_Content_Area
+     (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+   --  Return the content area of the Dialog.
 
    function Get_Vbox
      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
@@ -276,11 +280,16 @@ package Gtk.Dialog is
    --  Name:  Content_Area_Border_Property
    --  Type:  Int
    --  Descr: Width of border around the main dialog area
+   --
+   --  Name:  Content_Area_Spacing_Property
+   --  Type:  Int
+   --  Descr: Spacing between elements of the main dialog area
    --  </style_properties>
 
    Action_Area_Border_Property  : constant Glib.Properties.Property_Int;
    Button_Spacing_Property      : constant Glib.Properties.Property_Int;
    Content_Area_Border_Property : constant Glib.Properties.Property_Int;
+   Content_Area_Spacing_Property : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -323,6 +332,8 @@ private
      Glib.Properties.Build ("button-spacing");
    Content_Area_Border_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("content-area-border");
+   Content_Area_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("content-area-spacing");
 
    pragma Import (C, Get_Type, "gtk_dialog_get_type");
 end Gtk.Dialog;
