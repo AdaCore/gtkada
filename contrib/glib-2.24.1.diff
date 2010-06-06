@@ -1,7 +1,7 @@
 	* gio/gsocket.c: Fix build on Solaris 8 by providing needed macros
 	defined on Solaris 10.
 	Submitted at: https://bugzilla.gnome.org/show_bug.cgi?id=610664
-	Committed on 2010-04-23
+	Committed on 2010-04-23 in glib 2.25.x
 
 	* gio/Makefile.in: Disable build in subdirectory tests, which does
 	not build out of the box on Solaris
