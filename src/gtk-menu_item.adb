@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Interfaces.C.Strings;
 with System;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
@@ -134,6 +135,36 @@ package body Gtk.Menu_Item is
       Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
    end Initialize_With_Mnemonic;
 
+   --------------------
+   -- Get_Accel_Path --
+   --------------------
+
+   function Get_Accel_Path
+     (Menu_Item : access Gtk_Menu_Item_Record)
+      return String
+   is
+      function Internal (Menu_Item : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_menu_item_get_accel_path");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Menu_Item)));
+   end Get_Accel_Path;
+
+   ---------------
+   -- Get_Label --
+   ---------------
+
+   function Get_Label
+     (Menu_Item : access Gtk_Menu_Item_Record)
+      return String
+   is
+      function Internal (Menu_Item : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_menu_item_get_label");
+   begin
+      return Interfaces.C.Strings.Value (Internal (Get_Object (Menu_Item)));
+   end Get_Label;
+
    -----------------
    -- Get_Submenu --
    -----------------
@@ -159,6 +190,20 @@ package body Gtk.Menu_Item is
    begin
       return Gtk.Widget.Convert (Internal (Get_Object (Menu_Item)));
    end Get_Submenu;
+
+   -----------------------
+   -- Get_Use_Underline --
+   -----------------------
+
+   function Get_Use_Underline
+     (Menu_Item : access Gtk_Menu_Item_Record)
+      return Boolean
+   is
+      function Internal (Menu_Item : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_menu_item_get_use_underline");
+   begin
+      return Boolean'Val (Internal (Get_Object (Menu_Item)));
+   end Get_Use_Underline;
 
    --------------------
    -- Remove_Submenu --
@@ -198,6 +243,22 @@ package body Gtk.Menu_Item is
       Internal (Get_Object (Menu_Item), Accel_Path & ASCII.NUL);
    end Set_Accel_Path;
 
+   ---------------
+   -- Set_Label --
+   ---------------
+
+   procedure Set_Label
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Label     : String)
+   is
+      procedure Internal
+        (Menu_Item : System.Address;
+         Label     : String);
+      pragma Import (C, Internal, "gtk_menu_item_set_label");
+   begin
+      Internal (Get_Object (Menu_Item), Label & ASCII.NUL);
+   end Set_Label;
+
    -----------------
    -- Set_Submenu --
    -----------------
@@ -231,6 +292,22 @@ package body Gtk.Menu_Item is
    begin
       Internal (Get_Object (Menu_Item), Boolean'Pos (Justify));
    end Set_Right_Justified;
+
+   -----------------------
+   -- Set_Use_Underline --
+   -----------------------
+
+   procedure Set_Use_Underline
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Setting   : Boolean)
+   is
+      procedure Internal
+        (Menu_Item : System.Address;
+         Setting   : Gboolean);
+      pragma Import (C, Internal, "gtk_menu_item_set_use_underline");
+   begin
+      Internal (Get_Object (Menu_Item), Boolean'Pos (Setting));
+   end Set_Use_Underline;
 
    --------------------------
    -- Toggle_Size_Allocate --

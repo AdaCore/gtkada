@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,9 +39,10 @@
 --  Activating the proper options in the theme files will allow the user to
 --  interactively modify the shortcuts.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Menus and Toolbars</group>
 
+with Glib.Properties;
 with Gtk.Item;
 with Gtk.Widget;
 
@@ -49,6 +50,8 @@ package Gtk.Menu_Item is
 
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
    type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
+
+   Null_Submenu : constant Gtk.Widget.Gtk_Widget;
 
    procedure Gtk_New
      (Menu_Item : out Gtk_Menu_Item; Label : UTF8_String := "");
@@ -81,8 +84,13 @@ package Gtk.Menu_Item is
      (Menu_Item : access Gtk_Menu_Item_Record) return Gtk.Widget.Gtk_Widget;
    --  Set or Get the submenu underneath Menu_Item.
 
-   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
-   --  Remove the menu_item's submenu
+   procedure Set_Label
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Label     : String);
+   function Get_Label
+     (Menu_Item : access Gtk_Menu_Item_Record)
+      return String;
+   --  Controls the text in Menu_Item's label.
 
    procedure Set_Right_Justified
      (Menu_Item : access Gtk_Menu_Item_Record;
@@ -95,9 +103,21 @@ package Gtk.Menu_Item is
    --  right-to-left language like Hebrew or Arabic, right-justified-menu-items
    --  appear at the left.)
 
+   procedure Set_Use_Underline
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Setting   : Boolean);
+   function Get_Use_Underline
+     (Menu_Item : access Gtk_Menu_Item_Record)
+      return Boolean;
+   --  If true, an underline in the text indicates the next character should be
+   --  used for the mnemonic accelerator key.
+
    procedure Set_Accel_Path
      (Menu_Item  : access Gtk_Menu_Item_Record;
       Accel_Path : UTF8_String);
+   function Get_Accel_Path
+     (Menu_Item : access Gtk_Menu_Item_Record)
+      return String;
    --  Set the path that will be used to reference the widget in calls to the
    --  subprograms in Gtk.Accel_Map. This means, for instance, that the widget
    --  is fully setup for interactive modification of the shortcuts by the
@@ -112,6 +132,13 @@ package Gtk.Menu_Item is
    --  To find out whether your code uses any of these, we recommend compiling
    --  with the -gnatwj switch
    --  <doc_ignore>
+
+   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
+   pragma Obsolescent;
+   --  Remove the menu_item's submenu
+   --
+   --  Deprecated: 2.12: Remove_Submenu deprecated and should not be used
+   --  in newly written code. Use Set_Submenu instead.
 
    procedure Set_Right_Justify
      (Menu_Item : access Gtk_Menu_Item_Record;
@@ -204,10 +231,77 @@ package Gtk.Menu_Item is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Accel_Path_Property
+   --  Type:  String
+   --  Descr: Sets the accelerator path of the menu item
+   --
+   --  Name:  Label_Property
+   --  Type:  String
+   --  Descr: The text for the child label
+   --
+   --  Name:  Right_Justified_Property
+   --  Type:  Boolean
+   --  Descr: Sets whether the menu item appears justified at the right
+   --         side of a menu bar
+   --
+   --  Name:  Submenu_Property
+   --  Type:  Object
+   --  Descr: The submenu attached to the menu item, or null if it has none
+   --
+   --  Name:  Use_Underline_Property
+   --  Type:  Boolean
+   --  Descr: If set, an underline in the text indicates the next character
+   --         should be used for the mnemonic accelerator key
+   --
    --  </properties>
+
+   Accel_Path_Property      : constant Glib.Properties.Property_String;
+   Label_Property           : constant Glib.Properties.Property_String;
+   Right_Justified_Property : constant Glib.Properties.Property_Boolean;
+   Submenu_Property         : constant Glib.Properties.Property_Object;
+   Use_Underline_Property   : constant Glib.Properties.Property_Boolean;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Arrow_Scaling_Property
+   --  Type:  Float
+   --  Descr: Amount of space used up by arrow, relative to the menu item's
+   --         font size
+   --
+   --  Name:  Width_Chars_Property
+   --  Type:  Int
+   --  Descr: The minimum desired width of the menu item in characters
+   --
+   --  </style_properties>
+
+   Arrow_Scaling_Property : constant Glib.Properties.Property_Float;
+   Width_Chars_Property   : constant Glib.Properties.Property_Int;
 
 private
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with null record;
+
+   Null_Submenu : constant Gtk.Widget.Gtk_Widget := null;
+
+   Accel_Path_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("accel-path");
+   Label_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("label");
+   Right_Justified_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("right-justified");
+   Submenu_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("submenu");
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-underline");
+
+   Arrow_Scaling_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("arrow-scaling");
+   Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width-chars");
 
    pragma Import (C, Get_Type, "gtk_menu_item_get_type");
 end Gtk.Menu_Item;

@@ -70,7 +70,6 @@ J510-028 API Additions
     added new subprograms:
       Get_Focus_On_Click, Set_Focus_On_Click
     added new property Focus_On_Click_Property
-    set Gtk_New_With_Backend as being obsolescent
 
   Gtk.Handle_Box:
     added new subprogram Get_Child_Detached
@@ -101,6 +100,21 @@ J510-028 API Additions
       Arrow_Scaling_Property
       Double_Arrows_Property
       Horizontal_Padding_Property
+
+  Gtk.Menu_Item:
+    added new subprograms:
+      Get_Accel_Path
+      Get_Label, Set_Label
+      Get_Use_Underline, Set_Use_Underline
+    added new properties:
+      Accel_Path_Property
+      Label_Property
+      Right_Justified_Property
+      Submenu_Property
+      Use_Underline_Property
+    added new style properties:
+      Arrow_Scaling_Property
+      Width_Chars_Property
 
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
