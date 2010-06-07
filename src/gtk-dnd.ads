@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -205,6 +205,19 @@ package Gtk.Dnd is
    --  for different parts of the widget; in that case, they will have to
    --  implement a drag_motion handler that passes the correct target list to
    --  this function.
+
+   function Dest_Get_Track_Motion
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Boolean;
+   procedure Dest_Set_Track_Motion
+     (Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Track_Motion : Boolean);
+   --  Control whether the widget emits drag-motion and drag-leave
+   --  events regardless of the targets and the Dest_Default_Motion
+   --  flag.
+   --
+   --  This may be used when a widget wants to do generic
+   --  actions regardless of the targets that the source offers.
 
    -------------------------------------
    -- Setting up a widget as a source --

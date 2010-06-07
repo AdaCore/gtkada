@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -254,6 +254,36 @@ package body Gtk.Dnd is
    begin
       return Internal (Get_Object (Widget), Context, Target_List.all'Address);
    end Dest_Find_Target;
+
+   ---------------------------
+   -- Dest_Get_Track_Motion --
+   ---------------------------
+
+   function Dest_Get_Track_Motion
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Boolean
+   is
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_drag_dest_get_track_motion");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Dest_Get_Track_Motion;
+
+   ---------------------------
+   -- Dest_Set_Track_Motion --
+   ---------------------------
+
+   procedure Dest_Set_Track_Motion
+     (Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Track_Motion : Boolean)
+   is
+      procedure Internal
+        (Widget       : System.Address;
+         Track_Motion : Gboolean);
+      pragma Import (C, Internal, "gtk_drag_dest_set_track_motion");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (Track_Motion));
+   end Dest_Set_Track_Motion;
 
    --------------
    -- Dest_Set --

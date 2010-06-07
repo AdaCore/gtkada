@@ -62,6 +62,10 @@ J510-028 API Additions
     added new subprogram Get_Content_Area
     added new property Content_Area_Spacing_Property
 
+  Gtk.Dnd:
+    added new subprograms:
+      Dest_Get_Track_Motion, Dest_Set_Track_Motion
+
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
 
