@@ -86,6 +86,22 @@ J510-028 API Additions
       Always_Show_Image_Property
       Use_Stock_Property
 
+  Gtk.Menu:
+    added new subprograms:
+      Get_Monitor
+      Set_Accel_Path
+    added new properties:
+      Accel_Group_Property
+      Accel_Path_Property
+      Active_Property
+      Attach_Widget_Property
+      Monitor_Property
+    added new style properties:
+      Arrow_Placement_Property
+      Arrow_Scaling_Property
+      Double_Arrows_Property
+      Horizontal_Padding_Property
+
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -104,6 +104,18 @@ package body Gtk.Menu is
         (Get_User_Data_Fast (Internal (Get_Object (Menu)), Stub));
    end Get_Accel_Group;
 
+   --------------------
+   -- Get_Accel_Path --
+   --------------------
+
+   function Get_Accel_Path (Menu : access Gtk_Menu_Record) return String is
+      function Internal (Menu : System.Address)
+         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_menu_get_accel_path");
+   begin
+      return Value (Internal (Get_Object (Menu)));
+   end Get_Accel_Path;
+
    ----------------
    -- Get_Active --
    ----------------
@@ -134,6 +146,17 @@ package body Gtk.Menu is
    begin
       return Gtk.Widget.Convert (Internal (Get_Object (Menu)));
    end Get_Attach_Widget;
+
+   -----------------
+   -- Get_Monitor --
+   -----------------
+
+   function Get_Monitor (Menu : access Gtk_Menu_Record) return Gint is
+      function Internal (Menu : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_menu_get_monitor");
+   begin
+      return Internal (Get_Object (Menu));
+   end Get_Monitor;
 
    -----------------------
    -- Get_Tearoff_State --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -57,7 +57,7 @@
 --  Gtk.Accel_Group.Get_Default, which is the one used for items that don't
 --  initially have a shortcut.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Menus and Toolbars</group>
 --  <testgtk>create_menu.adb</testgtk>
 
@@ -227,7 +227,7 @@ package Gtk.Menu is
      (Menu        : access Gtk_Menu_Record;
       Monitor_Num : Gint);
    --  Informs GTK+ on which monitor a menu should be popped up.
-   --  See gdk_screen_get_monitor_geometry().
+   --  See Gdk.Screen.Get_Monitor_Geometry.
    --
    --  This function should be called from a Gtk_Menu_Position_Func if the
    --  menu should not appear on the same monitor as the pointer. This
@@ -235,6 +235,10 @@ package Gtk.Menu is
    --  by a Gtk_Menu_Position_Func, since, for very long menus, these
    --  coordinates may extend beyond the monitor boundaries or even the screen
    --  boundaries.
+
+   function Get_Monitor (Menu : access Gtk_Menu_Record) return Gint;
+   --  Retrieves the number of the monitor on which to show the menu, or
+   --  -1 if no monitor has been set.
 
    --------------------------------
    -- Modifying the accelerators --
@@ -251,6 +255,7 @@ package Gtk.Menu is
    procedure Set_Accel_Path
      (Menu       : access Gtk_Menu_Record;
       Accel_Path : UTF8_String);
+   function Get_Accel_Path (Menu : access Gtk_Menu_Record) return String;
    --  Set an accelerator path for this menu from which accelerator paths
    --  for its immediate children, its menu items, can be constructed.
    --  The main purpose of this function is to spare the programmer the
@@ -305,6 +310,27 @@ package Gtk.Menu is
    --  Glib.Properties for more information on properties.
 
    --  <properties>
+   --  Name:  Accel_Group_Property
+   --  Type:  Object
+   --  Descr: The accel group holding accelerators for the menu
+   --
+   --  Name:  Accel_Path_Property
+   --  Type:  String
+   --  Descr: An accel path used to conveniently construct accel paths of
+   --         child items
+   --
+   --  Name:  Active_Property
+   --  Type:  Int
+   --  Descr: The currently selected menu item
+   --
+   --  Name:  Attach_Widget_Property
+   --  Type:  Object
+   --  Descr: The widget the menu is attached to
+   --
+   --  Name:  Monitor_Property
+   --  Type:  Int
+   --  Descr: The monitor the menu will be popped up on
+   --
    --  Name:  Tearoff_State_Property
    --  Type:  Boolean
    --  Descr: A boolean that indicates whether the menu is torn-off
@@ -315,6 +341,11 @@ package Gtk.Menu is
    --         menu is torn-off
    --  </properties>
 
+   Accel_Group_Property   : constant Glib.Properties.Property_Object;
+   Accel_Path_Property    : constant Glib.Properties.Property_String;
+   Active_Property        : constant Glib.Properties.Property_Int;
+   Attach_Widget_Property : constant Glib.Properties.Property_Object;
+   Monitor_Property       : constant Glib.Properties.Property_Int;
    Tearoff_State_Property : constant Glib.Properties.Property_Boolean;
    Tearoff_Title_Property : constant Glib.Properties.Property_String;
 
@@ -354,10 +385,26 @@ package Gtk.Menu is
    --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
 
    --  <style_properties>
+   --  Name:  Arrow_Placement_Property
+   --  Type:  Enum
+   --  Descr: Indicates where scroll arrows should be placed
+   --
+   --  Name:  Arrow_Scaling_Property
+   --  Type:  Float
+   --  Descr: Arbitrary constant to scale down the size of the scroll arrow
+   --
+   --  Name:  Double_Arrows_Property
+   --  Type:  Boolean
+   --  Descr: When scrolling, always show both arrows.
+   --
    --  Name:  Horizontal_Offset_Property
    --  Type:  Int
    --  Descr: When the menu is a submenu, position it this number of pixels
    --         offset horizontally
+   --
+   --  Name:  Horizontal_Padding_Property
+   --  Type:  Int
+   --  Descr: Extra space at the left and right edges of the menu
    --
    --  Name:  Vertical_Offset_Property
    --  Type:  Int
@@ -369,9 +416,13 @@ package Gtk.Menu is
    --  Descr: Extra space at the top and bottom of the menu
    --  </style_properties>
 
-   Horizontal_Offset_Property : constant Glib.Properties.Property_Int;
-   Vertical_Offset_Property   : constant Glib.Properties.Property_Int;
-   Vertical_Padding_Property  : constant Glib.Properties.Property_Int;
+   Arrow_Placement_Property    : constant Glib.Properties.Property_Enum;
+   Arrow_Scaling_Property      : constant Glib.Properties.Property_Float;
+   Double_Arrows_Property      : constant Glib.Properties.Property_Boolean;
+   Horizontal_Offset_Property  : constant Glib.Properties.Property_Int;
+   Horizontal_Padding_Property : constant Glib.Properties.Property_Int;
+   Vertical_Offset_Property    : constant Glib.Properties.Property_Int;
+   Vertical_Padding_Property   : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -399,6 +450,16 @@ private
    type Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
      with null record;
 
+   Accel_Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("accel-group");
+   Accel_Path_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("accel-path");
+   Active_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("active");
+   Attach_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("attach-widget");
+   Monitor_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("monitor");
    Tearoff_State_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("tearoff-state");
    Tearoff_Title_Property : constant Glib.Properties.Property_String :=
@@ -413,8 +474,16 @@ private
    Top_Attach_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("top-attach");
 
+   Arrow_Placement_Property : constant Glib.Properties.Property_Enum :=
+     Glib.Properties.Build ("arrow-placement");
+   Arrow_Scaling_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("arrow-scaling");
+   Double_Arrows_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("double-arrows");
    Horizontal_Offset_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("horizontal-offset");
+   Horizontal_Padding_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("horizontal-padding");
    Vertical_Offset_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("vertical-offset");
    Vertical_Padding_Property : constant Glib.Properties.Property_Int :=
