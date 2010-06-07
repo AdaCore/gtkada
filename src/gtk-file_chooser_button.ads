@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,7 +41,7 @@
 --  Gtk.Widget.Size_Request, Set_Width_Chars, or pack the button in such a way
 --  that other interface elements give space to the widget.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Selectors</group>
 --  <screenshot>file-button.png</screenshot>
 --  <testgtk>create_file_chooser.adb</testgtk>
@@ -78,6 +78,7 @@ package Gtk.File_Chooser_Button is
       Title   : String;
       Action  : Gtk.File_Chooser.File_Chooser_Action;
       Backend : String);
+   pragma Obsolescent; --  Gtk_New_With_Backend
    procedure Initialize_With_Backend
      (Button  : access Gtk_File_Chooser_Button_Record'Class;
       Title   : String;
@@ -108,6 +109,17 @@ package Gtk.File_Chooser_Button is
      (Button : access Gtk_File_Chooser_Button_Record) return Gint;
    --  Sets the width (in characters) that Button will use.
 
+   function Get_Focus_On_Click
+     (Button : access Gtk_File_Chooser_Button_Record)
+      return Boolean;
+   procedure Set_Focus_On_Click
+     (Button         : access Gtk_File_Chooser_Button_Record;
+      Focus_On_Click : Boolean);
+   --  Controls whether the button will grab focus when it is clicked with
+   --  the mouse.  Making mouse clicks not grab focus is useful in places
+   --  like toolbars where you don't want the keyboard focus removed from
+   --  the main area of the application.
+
    ----------------
    -- Interfaces --
    ----------------
@@ -136,6 +148,10 @@ package Gtk.File_Chooser_Button is
    --  Type:  Object
    --  Descr: The file chooser dialog to use.
    --
+   --  Name:  Focus_On_Click_Property
+   --  Type:  Boolean
+   --  Descr: Whether the button grabs focus when it is clicked with the mouse
+   --
    --  Name:  Title_Property
    --  Type:  String
    --  Descr: The title of the file chooser dialog.
@@ -146,16 +162,18 @@ package Gtk.File_Chooser_Button is
    --
    --  </properties>
 
-   Dialog_Property      : constant Glib.Properties.Property_Object;
-   Title_Property       : constant Glib.Properties.Property_String;
-   Width_Chars_Property : constant Glib.Properties.Property_Int;
+   Dialog_Property         : constant Glib.Properties.Property_Object;
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
+   Title_Property          : constant Glib.Properties.Property_String;
+   Width_Chars_Property    : constant Glib.Properties.Property_Int;
 
 private
    pragma Import (C, Get_Type, "gtk_file_chooser_button_get_type");
 
-
    Dialog_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("dialog");
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("focus-on-click");
    Title_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("title");
    Width_Chars_Property : constant Glib.Properties.Property_Int :=

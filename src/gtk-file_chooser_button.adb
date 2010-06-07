@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,7 +28,7 @@
 
 --  <description>
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Selectors</group>
 --  <screenshot>file-button.png</screenshot>
 
@@ -189,5 +189,37 @@ package body Gtk.File_Chooser_Button is
    begin
       Internal (Get_Object (Button), N_Chars);
    end Set_Width_Chars;
+
+   ------------------------
+   -- Get_Focus_On_Click --
+   ------------------------
+
+   function Get_Focus_On_Click
+     (Button : access Gtk_File_Chooser_Button_Record)
+      return Boolean
+   is
+      function Internal (Button : System.Address) return Gboolean;
+      pragma Import
+        (C, Internal, "gtk_file_chooser_button_get_focus_on_click");
+   begin
+      return Boolean'Val (Internal (Get_Object (Button)));
+   end Get_Focus_On_Click;
+
+   ------------------------
+   -- Set_Focus_On_Click --
+   ------------------------
+
+   procedure Set_Focus_On_Click
+     (Button         : access Gtk_File_Chooser_Button_Record;
+      Focus_On_Click : Boolean)
+   is
+      procedure Internal
+        (Button         : System.Address;
+         Focus_On_Click : Gboolean);
+      pragma Import
+        (C, Internal, "gtk_file_chooser_button_set_focus_on_click");
+   begin
+      Internal (Get_Object (Button), Boolean'Pos (Focus_On_Click));
+   end Set_Focus_On_Click;
 
 end Gtk.File_Chooser_Button;

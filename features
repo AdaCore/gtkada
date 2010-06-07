@@ -66,6 +66,12 @@ J510-028 API Additions
     added new subprograms:
       Dest_Get_Track_Motion, Dest_Set_Track_Motion
 
+  Gtk.File_Chooser_Button:
+    added new subprograms:
+      Get_Focus_On_Click, Set_Focus_On_Click
+    added new property Focus_On_Click_Property
+    set Gtk_New_With_Backend as being obsolescent
+
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
 

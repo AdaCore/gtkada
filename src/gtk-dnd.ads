@@ -80,7 +80,7 @@
 --  call Finish, to warn the source widget that the drag and drop operation
 --  is finished, and whether it was successful or not.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Inter-Process communication</group>
 --  <testgtk>create_dnd.adb</testgtk>
 
