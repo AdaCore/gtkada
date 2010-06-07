@@ -4734,7 +4734,7 @@ package body Gtkada.MDI is
          --  Prevent changing perspective when setting "Active" on the buttons
          MDI.Loading_Desktop := True;
 
-         Set_Submenu (MDI.Perspective_Menu_Item, Null_Submenu);
+         Remove_Submenu (MDI.Perspective_Menu_Item);
 
          Gtk_New (Submenu);
          Set_Submenu (MDI.Perspective_Menu_Item, Submenu);
