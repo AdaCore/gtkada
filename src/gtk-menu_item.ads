@@ -279,8 +279,6 @@ package Gtk.Menu_Item is
 private
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with null record;
 
-   Null_Submenu : constant Gtk.Widget.Gtk_Widget := null;
-
    Accel_Path_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("accel-path");
    Label_Property : constant Glib.Properties.Property_String :=
