@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2010 AdaCore                    --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -51,8 +51,6 @@ package Gtk.Menu_Item is
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
    type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
 
-   Null_Submenu : constant Gtk.Widget.Gtk_Widget;
-
    procedure Gtk_New
      (Menu_Item : out Gtk_Menu_Item; Label : UTF8_String := "");
    procedure Initialize
@@ -76,6 +74,9 @@ package Gtk.Menu_Item is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu_Item.
+
+   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
+   --  Remove the menu_item's submenu
 
    procedure Set_Submenu
      (Menu_Item : access Gtk_Menu_Item_Record;
@@ -132,13 +133,6 @@ package Gtk.Menu_Item is
    --  To find out whether your code uses any of these, we recommend compiling
    --  with the -gnatwj switch
    --  <doc_ignore>
-
-   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
-   pragma Obsolescent;
-   --  Remove the menu_item's submenu
-   --
-   --  Deprecated: 2.12: Remove_Submenu deprecated and should not be used
-   --  in newly written code. Use Set_Submenu instead.
 
    procedure Set_Right_Justify
      (Menu_Item : access Gtk_Menu_Item_Record;
