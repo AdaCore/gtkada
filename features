@@ -116,6 +116,11 @@ J510-028 API Additions
       Arrow_Scaling_Property
       Width_Chars_Property
 
+  Gtk.Menu_Tool_Button:
+    added new subprograms:
+      Set_Arrow_Tooltip_Markup
+      Set_Arrow_Tooltip_Text
+
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
 

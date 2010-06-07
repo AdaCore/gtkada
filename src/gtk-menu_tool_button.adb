@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -142,6 +142,36 @@ package body Gtk.Menu_Tool_Button is
       Internal (Get_Object (Button), Get_Object (Tooltips),
                 Tip_Text & ASCII.NUL, Tip_Private & ASCII.NUL);
    end Set_Arrow_Tooltip;
+
+   ------------------------------
+   -- Set_Arrow_Tooltip_Markup --
+   ------------------------------
+
+   procedure Set_Arrow_Tooltip_Markup
+     (Button : access Gtk_Menu_Tool_Button_Record;
+      Markup : String)
+   is
+      procedure Internal (Button : System.Address; Markup : String);
+      pragma Import
+        (C, Internal, "gtk_menu_tool_button_set_arrow_tooltip_markup");
+   begin
+      Internal (Get_Object (Button), Markup & ASCII.NUL);
+   end Set_Arrow_Tooltip_Markup;
+
+   ----------------------------
+   -- Set_Arrow_Tooltip_Text --
+   ----------------------------
+
+   procedure Set_Arrow_Tooltip_Text
+     (Button : access Gtk_Menu_Tool_Button_Record;
+      Text   : String)
+   is
+      procedure Internal (Button : System.Address; Text : String);
+      pragma Import
+        (C, Internal, "gtk_menu_tool_button_set_arrow_tooltip_text");
+   begin
+      Internal (Get_Object (Button), Text & ASCII.NUL);
+   end Set_Arrow_Tooltip_Text;
 
    --------------
    -- Set_Menu --

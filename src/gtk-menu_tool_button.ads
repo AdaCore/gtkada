@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006-2007 AdaCore                    --
+--                  Copyright (C) 2006-2010, AdaCore                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,7 @@
 --  In practice, it is used internally by gtk+ itself to implement the
 --  overflow menu in the toolbar.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Menus and Toolbars</group>
 
 with Glib.Properties;
@@ -85,8 +85,26 @@ package Gtk.Menu_Tool_Button is
       Tooltips    : access Gtk.Tooltips.Gtk_Tooltips_Record'Class;
       Tip_Text    : String;
       Tip_Private : String := "");
+   pragma Obsolescent; --  Set_Arrow_Tooltip
    --  Set the tooltip set on the arrow button that will display the menu when
    --  clicked on.
+   --
+   --  Set_Arrow_Tooltip has been deprecated since version 2.12 and should
+   --  not be used in newly-written code. Use Set_Arrow_Tooltip_Text instead.
+
+   procedure Set_Arrow_Tooltip_Markup
+     (Button : access Gtk_Menu_Tool_Button_Record;
+      Markup : String);
+   --  Sets the tooltip markup text to be used as tooltip for the arrow button
+   --  which pops up the menu.  See Gtk.Tool_Item.Set_Tooltip for setting a
+   --  tooltip on the whole Gtk_Menu_Tool_Button.
+
+   procedure Set_Arrow_Tooltip_Text
+     (Button : access Gtk_Menu_Tool_Button_Record;
+      Text   : String);
+   --  Sets the tooltip text to be used as tooltip for the arrow button which
+   --  pops up the menu.  See Gtk.Tool_Item.Set_Tooltip for setting a tooltip
+   --  on the whole Gtk_Menu_Tool_Button.
 
    -------------
    -- Signals --
