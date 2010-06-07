@@ -91,7 +91,7 @@ ${OBJ_DIR}/${SONAME}: ${wildcard ${SRC_FILES:%=${OBJ_DIR}/%}}
 	@echo Building ${SONAME}
 	@cd ${OBJ_DIR}; $(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) \
 	  -o $(SONAME) $(SO_OPTS)$(SONAME) ${SRC_FILES} \
-          $(GTK_LIBS) $(EXTERNAL_LIBS)
+          $(GTKADA_LIBS) $(GTK_LIBS) $(EXTERNAL_LIBS)
 	@cd ${OBJ_DIR}; $(RM) $(LIBNAME)
 	@cd ${OBJ_DIR}; $(LN) $(SONAME) $(LIBNAME)
 ifneq (${BUILD_TYPE},Debug)

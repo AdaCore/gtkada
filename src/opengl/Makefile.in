@@ -6,6 +6,7 @@ ARCHIVENAME      = libgtkada_gl.a
 OPENGL_OBJECTS   = gtk-glarea.o gdk-gl.o gl_h.o
 OPENGL_C_OBJECTS = gtkglarea.o gdkgl.o
 OPENGL_C_OBJECTS_DIR = ${OPENGL_C_OBJECTS:%=${OBJ_DIR}/%}
+GTKADA_LIBS      = -L../../lib-obj -lgtkada
 EXTERNAL_LIBS    = @GL_LIBS@
 OPENGL_FLAGS     = @GL_CFLAGS@
 GPRFILE          = opengl
