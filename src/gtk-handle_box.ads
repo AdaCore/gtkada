@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,7 +48,7 @@
 --  as the height of the handlebox shrinks, so the snap edge should be set to
 --  Pos_Bottom.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Menus and Toolbars</group>
 --  <testgtk>create_handle_box.adb</testgtk>
 --  <screenshot>gtk-handle_box</screenshot>
@@ -106,6 +106,11 @@ package Gtk.Handle_Box is
    --  Pos_Left, then the snap edge will be Pos_Top, otherwise it will be
    --  Pos_Left.
 
+   function Get_Child_Detached
+     (Handle_Box : access Gtk_Handle_Box_Record)
+      return Boolean;
+   --  Returns whether the handlebox's child is currently detached.
+
    ----------------
    -- Properties --
    ----------------
@@ -113,6 +118,11 @@ package Gtk.Handle_Box is
    --  <properties>
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
+   --
+   --  - Name:  Child_Detached_Property
+   --    Type:  Boolean
+   --    Descr: A boolean value indicating whether the handlebox's child is
+   --           attached or detached.
    --
    --  - Name:  Shadow_Property and Shadow_Type_Property
    --    Type:  Gtk_Shadow_Type
@@ -140,6 +150,7 @@ package Gtk.Handle_Box is
    --
    --  </properties>
 
+   Child_Detached_Property  : constant Glib.Properties.Property_Boolean;
    Shadow_Property          : constant Gtk.Enums.Property_Gtk_Shadow_Type;
    Shadow_Type_Property     : constant Gtk.Enums.Property_Gtk_Shadow_Type;
    Handle_Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
@@ -177,6 +188,8 @@ package Gtk.Handle_Box is
 private
    type Gtk_Handle_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
+   Child_Detached_Property  : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("child-detached");
    Shadow_Property          : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");  --  Same as Shadow_Type !
    Shadow_Type_Property     : constant Gtk.Enums.Property_Gtk_Shadow_Type :=

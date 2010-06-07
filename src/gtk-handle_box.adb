@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -152,5 +152,19 @@ package body Gtk.Handle_Box is
    begin
       Internal (Get_Object (Handle_Box), Edge);
    end Set_Snap_Edge;
+
+   ------------------------
+   -- Get_Child_Detached --
+   ------------------------
+
+   function Get_Child_Detached
+     (Handle_Box : access Gtk_Handle_Box_Record)
+      return Boolean
+   is
+      function Internal (Handle_Box : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_handle_box_get_child_detached");
+   begin
+      return Boolean'Val (Internal (Get_Object (Handle_Box)));
+   end Get_Child_Detached;
 
 end Gtk.Handle_Box;

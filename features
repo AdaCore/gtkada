@@ -72,6 +72,10 @@ J510-028 API Additions
     added new property Focus_On_Click_Property
     set Gtk_New_With_Backend as being obsolescent
 
+  Gtk.Handle_Box:
+    added new subprogram Get_Child_Detached
+    added new property Child_Detached_Property
+
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
 
