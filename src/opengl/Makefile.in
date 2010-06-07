@@ -1,6 +1,10 @@
 CFLAGS           = @CFLAGS@ -Wall @GTK_CFLAGS@ -I. $(FPIC)
 OBJ_DIR          = obj
-SONAME           = libgtkada_gl-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
+ifeq ($(OS),Windows_NT)
+SONAME        = libgtkada_gl-$(MAJOR).$(MINOR)$(SO_EXT)
+else
+SONAME        = libgtkada_gl-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
+endif
 LIBNAME          = libgtkada_gl$(SO_EXT)
 ARCHIVENAME      = libgtkada_gl.a
 OPENGL_OBJECTS   = gtk-glarea.o gdk-gl.o glu_h.o gl_h.o

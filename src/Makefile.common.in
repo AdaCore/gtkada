@@ -82,9 +82,9 @@ module_install_common: force
 module_install_shared: force
 	$(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)/relocatable
 	$(RM) $(libdir)/$(LIBNAME)
-	$(LN) $(SONAME) $(alidir)/relocatable/$(LIBNAME)
-	$(LN) gtkada/relocatable/$(SONAME) $(libdir)/$(LIBNAME)
-	$(LN) gtkada/relocatable/$(SONAME) $(libdir)/$(SONAME)
+	$(LN) ${OBJ_DIR}/$(SONAME) $(alidir)/relocatable/$(LIBNAME)
+	$(LN) ${alidir}/relocatable/$(SONAME) $(libdir)/$(LIBNAME)
+	$(LN) ${alidir}/relocatable/$(SONAME) $(libdir)/$(SONAME)
 	${CP} ${OBJ_DIR}/*.ali ${alidir}/relocatable
 
 ${OBJ_DIR}/${SONAME}: ${wildcard ${SRC_FILES:%=${OBJ_DIR}/%}}
