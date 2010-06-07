@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2006 AdaCore                    --
+--                Copyright (C) 2001-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@
 --  side, the pixmaps will be indented, which is not what you want. This widget
 --  solves the problem).
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Menus and Toolbars</group>
 
 with Glib.Properties;
@@ -107,6 +107,38 @@ package Gtk.Image_Menu_Item is
      (Menu_Item : access Gtk_Image_Menu_Item_Record)
       return Gtk.Widget.Gtk_Widget;
 
+   procedure Set_Accel_Group
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class;
+      Accel_Group     : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
+   --  Specifies an Accel_Group to add the menu items accelerator to.
+   --  This only applies to stock items, so a stock item must already
+   --  be set.  Make sure to call Set_Use_Stock and Set_Label with a
+   --  valid stock item first.
+   --
+   --  If you want this menu item to have changeable accelerators then
+   --  you shouldn't need this (see Gtk_New_From_Stock).
+
+   function Get_Always_Show_Image
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class)
+      return Boolean;
+   procedure Set_Always_Show_Image
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class;
+      Always_Show     : Boolean);
+   --  If True, the menu item will ignore the GtkSettings:gtk-menu-images
+   --  setting and always show the image, if available.
+   --
+   --  Use this property if the menuitem would be useless or hard to use
+   --  without the image.
+
+   function Get_Use_Stock
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class)
+      return Boolean;
+   procedure Set_Use_Stock
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class;
+      Use_Stock       : Boolean);
+   --  If True, the label set in the Image_Menu_Item is used as a
+   --  stock id to select the stock item for the item.
+
    ----------------
    -- Properties --
    ----------------
@@ -115,13 +147,28 @@ package Gtk.Image_Menu_Item is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Accel_Group_Property
+   --  Type:  Object
+   --  Descr: The Accel Group to use for stock accelerator keys
+   --
+   --  Name:  Always_Show_Image_Property
+   --  Type:  Boolean
+   --  Descr: Whether the image will always be shown
+   --
    --  Name:  Image_Property
    --  Type:  Object
    --  Descr: Child widget to appear next to the menu text
    --
+   --  Name:  Use_Stock_Property
+   --  Type:  Boolean
+   --  Descr: Whether to use the label text to create a stock menu item
+   --
    --  </properties>
 
-   Image_Property : constant Glib.Properties.Property_Object;
+   Accel_Group_Property       : constant Glib.Properties.Property_Object;
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
+   Image_Property             : constant Glib.Properties.Property_Object;
+   Use_Stock_Property         : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -136,8 +183,14 @@ private
    type Gtk_Image_Menu_Item_Record is new
      Gtk.Menu_Item.Gtk_Menu_Item_Record with null record;
 
+   Accel_Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("accel-group");
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("always-show-image");
    Image_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("image");
+   Use_Stock_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-stock");
 
    pragma Import (C, Get_Type, "gtk_image_menu_item_get_type");
 end Gtk.Image_Menu_Item;

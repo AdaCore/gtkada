@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2008, AdaCore                   --
+--                Copyright (C) 2001-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -158,6 +158,34 @@ package body Gtk.Image_Menu_Item is
         (Widget, Internal (Stock_Id & ASCII.NUL, System.Null_Address));
    end Initialize_From_Stock;
 
+   ---------------------------
+   -- Get_Always_Show_Image --
+   ---------------------------
+
+   function Get_Always_Show_Image
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class)
+      return Boolean
+   is
+      function Internal (Image_Menu_Item : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_image_menu_item_get_always_show_image");
+   begin
+      return Boolean'Val (Internal (Get_Object (Image_Menu_Item)));
+   end Get_Always_Show_Image;
+
+   -------------------
+   -- Get_Use_Stock --
+   -------------------
+
+   function Get_Use_Stock
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class)
+      return Boolean
+   is
+      function Internal (Image_Menu_Item : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_image_menu_item_get_use_stock");
+   begin
+      return Boolean'Val (Internal (Get_Object (Image_Menu_Item)));
+   end Get_Use_Stock;
+
    ---------------
    -- Get_Image --
    ---------------
@@ -172,6 +200,38 @@ package body Gtk.Image_Menu_Item is
    begin
       return Gtk.Widget.Convert (Internal (Get_Object (Menu_Item)));
    end Get_Image;
+
+   ---------------------
+   -- Set_Accel_Group --
+   ---------------------
+
+   procedure Set_Accel_Group
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class;
+      Accel_Group     : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
+   is
+      procedure Internal
+        (Image_Menu_Item : System.Address;
+         Accel_Group     : System.Address);
+      pragma Import (C, Internal, "gtk_image_menu_item_set_accel_group");
+   begin
+      Internal (Get_Object (Image_Menu_Item), Get_Object (Accel_Group));
+   end Set_Accel_Group;
+
+   ---------------------------
+   -- Set_Always_Show_Image --
+   ---------------------------
+
+   procedure Set_Always_Show_Image
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class;
+      Always_Show     : Boolean)
+   is
+      procedure Internal
+        (Image_Menu_Item : System.Address;
+         Always_Show     : Gboolean);
+      pragma Import (C, Internal, "gtk_image_menu_item_set_always_show_image");
+   begin
+      Internal (Get_Object (Image_Menu_Item), Boolean'Pos (Always_Show));
+   end Set_Always_Show_Image;
 
    ---------------
    -- Set_Image --
@@ -189,5 +249,21 @@ package body Gtk.Image_Menu_Item is
    begin
       Internal (Get_Object (Menu_Item), Get_Object (Image));
    end Set_Image;
+
+   -------------------
+   -- Set_Use_Stock --
+   -------------------
+
+   procedure Set_Use_Stock
+     (Image_Menu_Item : access Gtk_Image_Menu_Item_Record'Class;
+      Use_Stock       : Boolean)
+   is
+      procedure Internal
+        (Image_Menu_Item : System.Address;
+         Use_Stock       : Gboolean);
+      pragma Import (C, Internal, "gtk_image_menu_item_set_use_stock");
+   begin
+      Internal (Get_Object (Image_Menu_Item), Boolean'Pos (Use_Stock));
+   end Set_Use_Stock;
 
 end Gtk.Image_Menu_Item;
