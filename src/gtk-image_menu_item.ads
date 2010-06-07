@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2010 AdaCore                    --
+--                Copyright (C) 2001-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -112,8 +112,8 @@ package Gtk.Image_Menu_Item is
       Accel_Group     : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Specifies an Accel_Group to add the menu items accelerator to.
    --  This only applies to stock items, so a stock item must already
-   --  be set.  Make sure to call Set_Use_Stock and Set_Label with a
-   --  valid stock item first.
+   --  be set.  Make sure to call Set_Use_Stock and Gtk.Menu_Item.Set_Label
+   --  with a valid stock item first.
    --
    --  If you want this menu item to have changeable accelerators then
    --  you shouldn't need this (see Gtk_New_From_Stock).
