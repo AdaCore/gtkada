@@ -12,6 +12,11 @@ of the feature.
 New features in GtkAda 2.18.0
 -----------------------------
 
+J528-025 Support for OpenGL/Gtk.GLArea under Windows
+
+  It is now possible to integrate OpenGL in GtkAda applications under
+  Windows, using the GLArea widget.
+
 J511-036 GtkAda.MDI.Set_Dnd_Message
 
   It is now possible to configure the text in the tooltip while dragging
