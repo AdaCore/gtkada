@@ -33,11 +33,11 @@
 project GtkAda_Install_Static is
 
    for Source_Dirs use (".");
-   for Source_List_File use "../../lib/gnat/gtkada/gtkada.lgpr";
+   for Source_List_File use "../../lib/gnat/gtkada/gtkada_gl.lgpr";
 
    for Library_Dir use "../../lib/gtkada/static";
    for Library_Kind use "static";
-   for Library_Name use "gtkada";
+   for Library_Name use "gtkada_gl";
 
    package Compiler is
       for Default_Switches ("Ada") use ("-O2");

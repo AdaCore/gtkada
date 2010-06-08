@@ -30,17 +30,40 @@
 --  Project file used by the InstallShield to build the GtkAda shared
 --  library on Windows.
 
-project GtkAda_Install_Static is
+project GtkAda_Install_Dynamic is
 
    for Source_Dirs use (".");
-   for Source_List_File use "../../lib/gnat/gtkada/gtkada.lgpr";
+   for Source_List_File use "../../lib/gnat/gtkada/gtkada_gl.lgpr";
 
-   for Library_Dir use "../../lib/gtkada/static";
-   for Library_Kind use "static";
-   for Library_Name use "gtkada";
+   for Library_Dir use "../../bin";
+   for Library_ALI_Dir use "../../lib/gtkada/relocatable";
+   for Library_Kind use "relocatable";
+   for Library_Name use "gtkada_gl-@GTKADA_MAJOR_VERSION@.@GTKADA_MINOR_VERSION@";
+   for Library_Options use ("-L.", "-L../../bin", "-L../../lib",
+        "-lgtkada_c",
+        "-lgtkada_gl_c", 
+        "-lgtk-win32-2.0",
+        "-lgdk-win32-2.0",
+        "-latk-1.0",
+        "-lgdk_pixbuf-2.0",
+        "-lpangowin32-1.0",
+        "-lglu32",
+        "-lopengl32",
+        "-lgdi32",
+        "-lpangocairo-1.0",
+        "-lpango-1.0",
+        "-ljpeg",
+        "-lpng",
+        "-lcairo",
+        "-lgobject-2.0",
+        "-lgmodule-2.0",
+        "-lglib-2.0",
+        "-lintl",
+        "-liconv",
+        "-luser32");
 
    package Compiler is
       for Default_Switches ("Ada") use ("-O2");
    end Compiler;
 
-end GtkAda_Install_Static;
+end GtkAda_Install_Dynamic;
