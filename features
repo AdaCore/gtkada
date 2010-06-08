@@ -121,6 +121,16 @@ J510-028 API Additions
       Set_Arrow_Tooltip_Markup
       Set_Arrow_Tooltip_Text
 
+  Gtk.Message_Dialog:
+    added new subprograms:
+      Get_Image, Set_Image
+    added new properties:
+      Image_Property
+      Secondary_Text_Property
+      Secondary_Use_Markup_Property
+      Text_Property
+      Use_Markup_Property
+
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
 

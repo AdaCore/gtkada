@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -170,5 +170,35 @@ package body Gtk.Message_Dialog is
          Internal (Get_Object (Parent), Flags, Typ, Buttons,
            Message & ASCII.NUL));
    end Initialize_With_Markup;
+
+   ---------------
+   -- Get_Image --
+   ---------------
+
+   function Get_Image
+     (Dialog : access Gtk_Message_Dialog_Record)
+      return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Dialog : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_message_dialog_get_image");
+      Stub : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
+   end Get_Image;
+
+   ---------------
+   -- Set_Image --
+   ---------------
+
+   procedure Set_Image
+     (Dialog : access Gtk_Message_Dialog_Record;
+      Image  : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Dialog : System.Address; Image : System.Address);
+      pragma Import (C, Internal, "gtk_message_dialog_set_image");
+   begin
+      Internal (Get_Object (Dialog), Get_Object (Image));
+   end Set_Image;
 
 end Gtk.Message_Dialog;

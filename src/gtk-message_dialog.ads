@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006, AdaCore                        --
+--                Copyright (C) 2006-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,13 +38,14 @@
 --  makes the dialog modal and waits for the user to respond to it.
 --  Gtk.Dialog.Run returns when any dialog button is clicked.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Windows</group>
 --  <screenshot>messagedialog.png</screenshot>
 --  <see>Gtkada.Dialogs</see>
 
 with Glib.Properties;
 with Gtk.Dialog;
+with Gtk.Widget;
 with Gtk.Window;
 
 package Gtk.Message_Dialog is
@@ -125,6 +126,14 @@ package Gtk.Message_Dialog is
    --  Note that setting a secondary text makes the primary text become bold,
    --  unless you have provided explicit markup.
 
+   function Get_Image
+     (Dialog : access Gtk_Message_Dialog_Record)
+      return Gtk.Widget.Gtk_Widget;
+   procedure Set_Image
+     (Dialog : access Gtk_Message_Dialog_Record;
+      Image  : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Get and set the dialog's image.
+
    ----------------
    -- Properties --
    ----------------
@@ -136,14 +145,39 @@ package Gtk.Message_Dialog is
    --  Type:  Enum
    --  Descr: The buttons shown in the message dialog
    --
+   --  Name:  Image_Property
+   --  Type:  Object
+   --  Descr: The image
+   --
    --  Name:  Message_Type_Property
    --  Type:  Enum
    --  Descr: The type of message
+   --
+   --  Name:  Secondary_Text_Property
+   --  Type:  String
+   --  Descr: The secondary text of the message dialog
+   --
+   --  Name:  Secondary_Use_Markup_Property
+   --  Type:  Boolean
+   --  Descr: The secondary text includes Pango markup.
+   --
+   --  Name:  Text_Property
+   --  Type:  String
+   --  Descr: The primary text of the message dialog
+   --
+   --  Name:  Use_Markup_Property
+   --  Type:  Boolean
+   --  Descr: The primary text of the title includes Pango markup.
    --
    --  </properties>
 
 --     Buttons_Property      : constant Glib.Properties.Property_Enum;
 --     Message_Type_Property : constant Glib.Properties.Property_Enum;
+   Image_Property                : constant Glib.Properties.Property_Object;
+   Secondary_Text_Property       : constant Glib.Properties.Property_String;
+   Secondary_Use_Markup_Property : constant Glib.Properties.Property_Boolean;
+   Text_Property                 : constant Glib.Properties.Property_String;
+   Use_Markup_Property           : constant Glib.Properties.Property_Boolean;
 
    ----------------------
    -- Style Properties --
@@ -171,6 +205,16 @@ private
 --       Glib.Properties.Build ("buttons");
 --     Message_Type_Property : constant Glib.Properties.Property_Enum :=
 --       Glib.Properties.Build ("message-type");
+   Image_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("image");
+   Secondary_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-text");
+   Secondary_Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("secondary-use-markup");
+   Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("text");
+   Use_Markup_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-markup");
 
    Message_Border_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("message-border");
