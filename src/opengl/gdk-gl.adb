@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                    Copyright (C) 2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,8 +31,6 @@
 with Glib; use Glib;
 
 package body Gdk.GL is
-
-   pragma Linker_Options ("-lgtkada_gl");
 
    -----------
    -- Query --
