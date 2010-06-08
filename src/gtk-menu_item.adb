@@ -165,9 +165,9 @@ package body Gtk.Menu_Item is
       return Interfaces.C.Strings.Value (Internal (Get_Object (Menu_Item)));
    end Get_Label;
 
-   -----------------
-   -- Get_Submenu --
-   -----------------
+   -------------------------
+   -- Get_Right_Justified --
+   -------------------------
 
    function Get_Right_Justified
      (Menu_Item : access Gtk_Menu_Item_Record) return Boolean
@@ -267,13 +267,15 @@ package body Gtk.Menu_Item is
      (Menu_Item : access Gtk_Menu_Item_Record;
       Submenu   : access Widget.Gtk_Widget_Record'Class)
    is
+      use Gtk.Widget;
+
       procedure Internal
         (Menu_Item : System.Address;
          Submenu   : System.Address);
       pragma Import (C, Internal, "gtk_menu_item_set_submenu");
 
    begin
-      Internal (Get_Object (Menu_Item), Get_Object (Submenu));
+      Internal (Get_Object (Menu_Item), Convert (Gtk_Widget (Submenu)));
    end Set_Submenu;
 
    -------------------------

@@ -51,6 +51,8 @@ package Gtk.Menu_Item is
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
    type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
 
+   Null_Submenu : constant Widget.Gtk_Widget;
+
    procedure Gtk_New
      (Menu_Item : out Gtk_Menu_Item; Label : UTF8_String := "");
    procedure Initialize
@@ -74,9 +76,6 @@ package Gtk.Menu_Item is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu_Item.
-
-   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
-   --  Remove the menu_item's submenu
 
    procedure Set_Submenu
      (Menu_Item : access Gtk_Menu_Item_Record;
@@ -133,6 +132,13 @@ package Gtk.Menu_Item is
    --  To find out whether your code uses any of these, we recommend compiling
    --  with the -gnatwj switch
    --  <doc_ignore>
+
+   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
+   pragma Obsolescent; --  Remove_Submenu
+   --  Remove the menu_item's submenu
+   --
+   --  Deprecated: 2.12: Remove_Submenu deprecated and should not be used
+   --  in newly written code. Use Set_Submenu instead.
 
    procedure Set_Right_Justify
      (Menu_Item : access Gtk_Menu_Item_Record;
@@ -294,6 +300,8 @@ private
      Glib.Properties.Build ("arrow-scaling");
    Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width-chars");
+
+   Null_Submenu : constant Widget.Gtk_Widget := null;
 
    pragma Import (C, Get_Type, "gtk_menu_item_get_type");
 end Gtk.Menu_Item;
