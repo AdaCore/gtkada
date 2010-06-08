@@ -27,10 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  Project file used by the InstallShield to build the GtkAda shared
+--  Project file used by the InstallShield to build the GtkAda GL shared
 --  library on Windows.
 
-project GtkAda_Install_Dynamic is
+with "gtkada_install_dynamic";
+
+project GtkAda_Install_Dynamic_GL is
 
    for Source_Dirs use (".");
    for Source_List_File use "../../lib/gnat/gtkada/gtkada_gl.lgpr";
@@ -66,4 +68,4 @@ project GtkAda_Install_Dynamic is
       for Default_Switches ("Ada") use ("-O2");
    end Compiler;
 
-end GtkAda_Install_Dynamic;
+end GtkAda_Install_Dynamic_GL;
