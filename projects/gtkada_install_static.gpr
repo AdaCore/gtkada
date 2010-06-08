@@ -33,7 +33,6 @@
 project GtkAda_Install_Static is
 
    for Source_Dirs use (".");
-   for Source_List_File use "../../lib/gnat/gtkada/gtkada.lgpr";
 
    for Library_Dir use "../../lib/gtkada/static";
    for Library_Kind use "static";

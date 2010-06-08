@@ -4,6 +4,7 @@ module=${1:-}
 prefix=$2
 default_library_type="$3"
 version=$4
+subdir=$5
 
 lcmodule=`echo $module | tr [A-Z] [a-z]`
 
@@ -39,11 +40,14 @@ echo_linker() {
          *_NT*)
             echo "        \"$previous\","
             echo "        \"-luser32\","
+            echo "        \"-lglu32\","
+            echo "        \"-lopengl32\","
+            echo "        \"-lgdi32\","
 	    if [ "$shared" = "1" ]; then
 		echo "        \"-L../../bin\","
 	    fi
 	    echo "        \"-L..\","
-	    echo -n "        \"-L../../include/gtkada\""
+	    echo -n "        \"-L../../include/gtkada/$subdir\""
             ;;
          *)
             if [ x"$previous" != x"" ]; then
@@ -77,8 +81,7 @@ project ${uc} is
    type Gtkada_Kind_Type is ("static", "relocatable");
    Gtkada_Kind : Gtkada_Kind_Type := external ("LIBRARY_TYPE", "$3");
 
-   for Source_Dirs use ("../../include/gtkada");
-   for Source_List_File use "gtkada/${lcmodule}.lgpr";
+   for Source_Dirs use ("../../include/gtkada/$subdir");
    for Library_Kind use Gtkada_Kind;
 
 EOF

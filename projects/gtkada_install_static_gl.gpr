@@ -34,8 +34,7 @@ with "gtkada_install_static";
 
 project GtkAda_Install_Static_GL is
 
-   for Source_Dirs use (".");
-   for Source_List_File use "../../lib/gnat/gtkada/gtkada_gl.lgpr";
+   for Source_Dirs use ("opengl");
 
    for Library_Dir use "../../lib/gtkada/static";
    for Library_Kind use "static";
