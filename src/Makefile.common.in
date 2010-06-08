@@ -76,7 +76,8 @@ ifneq (${SONAME},)
 module_install_common: force
 	$(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)/static
 	$(RM) $(libdir)/$(ARCHIVENAME)
-	$(CP) *.ads *.adb $(incdir)
+	$(MKDIR) $(incdir)/$(INC_SUBDIR)
+	$(CP) *.ads *.adb $(incdir)/$(INC_SUBDIR)
 	${CP} ${OBJ_DIR}/*.ali ${alidir}/static
 
 module_install_shared: force
