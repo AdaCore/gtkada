@@ -34,11 +34,10 @@ with "gtkada_install_dynamic";
 
 project GtkAda_Install_Dynamic_GL is
 
-   for Source_Dirs use (".");
-   for Source_List_File use "../../lib/gnat/gtkada/gtkada_gl.lgpr";
+   for Source_Dirs use ("opengl");
 
    for Library_Dir use "../../bin";
-   for Library_ALI_Dir use "../../lib/gtkada/relocatable";
+   for Library_ALI_Dir use "../../lib/gtkada/relocatable/opengl";
    for Library_Kind use "relocatable";
    for Library_Name use "gtkada_gl-@GTKADA_MAJOR_VERSION@.@GTKADA_MINOR_VERSION@";
    for Library_Options use ("-L.", "-L../../bin", "-L../../lib",

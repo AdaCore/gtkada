@@ -92,11 +92,11 @@ EOF
    case Gtkada_Kind is
       when "static" =>
          for Library_Name use "${lcmodule}";
-         for Library_Dir use "../gtkada/static";
+         for Library_Dir use "../gtkada/static/$subdir";
       when "relocatable" =>
          for Library_Name use "${lcmodule}${lcversion}";
          for Library_Dir use "../../bin";
-         for Library_ALI_Dir use "../gtkada/relocatable";
+         for Library_ALI_Dir use "../gtkada/relocatable/$subdir";
    end case;
 
 EOF
