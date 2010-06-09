@@ -74,14 +74,16 @@ module_ada: force
 
 ifneq (${SONAME},)
 module_install_common: force
-	$(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)/static
+	$(MKDIR) $(alidir)/static/$(INC_SUBDIR)/
+	$(INSTALL_DATA) ${OBJ_DIR}/$(ARCHIVENAME) $(alidir)/static/$(INC_SUBDIR)/
 	$(RM) $(libdir)/$(ARCHIVENAME)
 	$(MKDIR) $(incdir)/$(INC_SUBDIR)
 	$(CP) *.ads *.adb $(incdir)/$(INC_SUBDIR)
 	${CP} ${OBJ_DIR}/*.ali ${alidir}/static
 
 module_install_shared: force
-	$(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)/relocatable
+	$(MKDIR) $(alidir)/relocatable/$(INC_SUBDIR)/
+	$(INSTALL_DATA) ${OBJ_DIR}/$(SONAME) $(alidir)/relocatable/$(INC_SUBDIR)/
 	$(RM) $(libdir)/$(LIBNAME)
 ifneq (${OS},Windows_NT)
 	$(LN) $(SONAME) $(alidir)/relocatable/$(LIBNAME)

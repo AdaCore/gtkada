@@ -9,6 +9,7 @@ GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
 
 OBJ_DIR=lib-obj
+INC_SUBDIR=.
 
 LIBNAME       = libgtkada$(SO_EXT)
 ifeq ($(OS),Windows_NT)
