@@ -26,10 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Ada.Text_IO;          use Ada.Text_IO;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-with System;
-
+with Ada.Text_IO;     use Ada.Text_IO;
+with Glib;            use Glib;
 with Gtk;             use Gtk;
 with Gtk.Box;         use Gtk.Box;
 with Gtk.Button;      use Gtk.Button;
@@ -40,26 +38,21 @@ with Gtk.Widget;      use Gtk.Widget;
 package body Create_Link_Buttons is
 
    package Reset_Button_Cb is new Handlers.Callback (Gtk_Link_Button_Record);
-
-   procedure On_Link_Button_Clicked
-     (Button : System.Address;
-      Link   : Interfaces.C.Strings.chars_ptr;
-      Data   : System.Address);
-   pragma Convention (C, On_Link_Button_Clicked);
-   --  Make sure to use a C calling convention for this callback.
+   package Uri_Hook is new Generic_Uri_Hook (Integer);
+   --  Integer is just a dummy type, we don't actually pass any user data.
 
    ----------------------------
    -- On_Link_Button_Clicked --
    ----------------------------
 
    procedure On_Link_Button_Clicked
-     (Button : System.Address;
-      Link   : Interfaces.C.Strings.chars_ptr;
-      Data   : System.Address)
+     (Button : access Gtk_Link_Button_Record'Class;
+      Link   : UTF8_String;
+      Data   : Integer)
    is
       pragma Unreferenced (Button, Data);
    begin
-      Put_Line ("Link_Button clicked: " & Value (Link));
+      Put_Line ("Link_Button clicked: " & Link);
    end On_Link_Button_Clicked;
 
    -----------------------------
@@ -106,10 +99,10 @@ package body Create_Link_Buttons is
         (Widget => Link_Button1,
          Uri    => "http://www.example.com/",
          Label  => "Click me.");
-      Tmp := Set_Uri_Hook
-        (Func    => On_Link_Button_Clicked'Access,
-         Data    => System.Null_Address,
-         Destroy => null);
+      Uri_Hook.Set_Uri_Hook
+        (Handler   => On_Link_Button_Clicked'Access,
+         User_Data => 0,
+         Destroy   => null);
       Pack_Start
         (Box1, Link_Button1, Expand => False, Fill => False, Padding => 0);
 

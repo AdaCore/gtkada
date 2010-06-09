@@ -99,32 +99,58 @@ package Gtk.Link_Button is
       Link   : Interfaces.C.Strings.chars_ptr;
       Data   : System.Address);
    pragma Convention (C, Uri_Func);
-   --  A callback that is invoked when the user presses a hyperlink.
-   --  This is a low-level function, and you could convert the parameters
-   --  to Ada types with the following declarations:
-   --     Stub : Gtk_Link_Button_Record;
-   --     B    : constant Gtk_Link_Button :=
-   --              Gtk_Link_Button (Get_User_Data (Button, Stub));
-   --     Link : constant String := Interfaces.C.Strings.Value (Link);
+   --  This is a low-level callback function to be used with Set_Uri_Hook.
+   --  See package Generic_Uri_Hook below for a higher-level interface.
+   --
+   --  You could convert the parameters to Ada types with the following
+   --  declarations:
+   --
+   --     Stub        : Gtk_Link_Button_Record;
+   --     Link_Button : constant Gtk_Link_Button :=
+   --                     Gtk_Link_Button (Get_User_Data (Button, Stub));
+   --     Link_String : constant String := Interfaces.C.Strings.Value (Link);
+   --
+   --  You'd also perform an appropriate conversion on Data using
+   --  Ada.Unchecked_Conversion.
 
    function Set_Uri_Hook
      (Func    : Uri_Func;
       Data    : System.Address;
       Destroy : G_Destroy_Notify)
       return Uri_Func;
-   --  Func: a function called each time a Gtk_Link_Button is clicked,
-   --     or null
+   --  Func: a function called each time a Gtk_Link_Button is clicked, or null
    --  Data: user data to be passed to Func, or null
-   --  Destroy: a G_Destroy_Notify that gets called when Data is no longer
-   --     needed, or null
+   --  Destroy: called when Data is no longer needed, or null
    --
-   --  Sets Func as the function that should be invoked every time a user
+   --  Sets Func as the subprogram that should be invoked every time a user
    --  clicks a Gtk_Link_Button. This function is called before every
    --  callback registered for the "clicked" signal.
    --
-   --  If no uri hook has been set, GTK+ defaults to calling gtk_show_uri().
-   --
-   --  Return value: the previously set hook function.
+   --  Returns the previously set hook function.
+
+   generic
+      type Data_Type (<>) is private;
+   package Generic_Uri_Hook is
+      type Uri_Handler is access procedure
+        (Button    : access Gtk_Link_Button_Record'Class;
+         Link      : UTF8_String;
+         User_Data : Data_Type);
+      --  A callback that is invoked when the user presses a hyperlink.
+
+      type Destroy_Notify is access procedure (User_Data : in out Data_Type);
+      --  Destroy_Notify is called just prior to the destruction of
+      --  User_Data.
+
+      procedure Set_Uri_Hook
+        (Handler   : Uri_Handler;
+         User_Data : Data_Type;
+         Destroy   : Destroy_Notify);
+      --  Sets Handler as the subprogram that should be invoked every time
+      --  a user clicks a Gtk_Link_Button. This subprogram is called before
+      --  every callback registered for the "clicked" signal.
+      --
+      --  If no uri hook has been set, GTK+ defaults to calling gtk_show_uri().
+   end Generic_Uri_Hook;
 
    procedure Set_Visited
      (Link_Button : access Gtk_Link_Button_Record;

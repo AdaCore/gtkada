@@ -26,7 +26,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Ada.Unchecked_Conversion;
+with Ada.Unchecked_Deallocation;
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
 with System;
 
 package body Gtk.Link_Button is
@@ -167,5 +169,103 @@ package body Gtk.Link_Button is
    begin
       Internal (Get_Object (Link_Button), Boolean'Pos (Visited));
    end Set_Visited;
+
+   ----------------------
+   -- Generic_Uri_Hook --
+   ----------------------
+
+   package body Generic_Uri_Hook is
+
+      type Data_Type_Access is access Data_Type;
+
+      type Cb_Record is record
+         Handler   : Uri_Handler;
+         Notify    : Destroy_Notify;
+         User_Data : Data_Type_Access;
+      end record;
+      type Cb_Record_Access is access Cb_Record;
+
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Cb_Record_Access);
+
+      function Convert is new Ada.Unchecked_Conversion
+        (Cb_Record_Access, System.Address);
+
+      procedure Free_Data (D : System.Address);
+      --  Proxy subprogram to be passed as a G_Destroy_Notify when we invoke
+      --  gtk_link_button_set_uri_hook() in Set_Uri_Hook.
+
+      procedure General_Cb
+        (B : System.Address;
+         L : Interfaces.C.Strings.chars_ptr;
+         D : System.Address);
+      pragma Convention (C, General_Cb);
+      --  Wrapper for user callback.
+
+      ---------------
+      -- Free_Data --
+      ---------------
+
+      procedure Free_Data (D : System.Address) is
+         procedure Free is new Ada.Unchecked_Deallocation
+           (Cb_Record, Cb_Record_Access);
+         procedure Free is new Ada.Unchecked_Deallocation
+           (Data_Type, Data_Type_Access);
+         Data : Cb_Record_Access := Convert (D);
+      begin
+         if Data.Notify /= null then
+            Data.Notify (Data.User_Data.all);
+         end if;
+         Free (Data.User_Data);
+         Free (Data);
+      end Free_Data;
+
+      ----------------
+      -- General_Cb --
+      ----------------
+
+      procedure General_Cb
+        (B : System.Address;
+         L : Interfaces.C.Strings.chars_ptr;
+         D : System.Address)
+      is
+         Stub   : Gtk_Link_Button_Record;
+         Button : constant Gtk_Link_Button :=
+                    Gtk_Link_Button (Get_User_Data (B, Stub));
+         Link   : constant String := Interfaces.C.Strings.Value (L);
+         Data   : constant Cb_Record_Access := Convert (D);
+      begin
+         Data.Handler (Button, Link, Data.User_Data.all);
+      end General_Cb;
+
+      ------------------
+      -- Set_Uri_Hook --
+      ------------------
+
+      procedure Set_Uri_Hook
+        (Handler   : Uri_Handler;
+         User_Data : Data_Type;
+         Destroy   : Destroy_Notify)
+      is
+         function Internal
+           (Func    : System.Address;
+            Data    : System.Address;
+            Destroy : System.Address)
+            return Uri_Func;
+         pragma Import (C, Internal, "gtk_link_button_set_uri_hook");
+
+         D : constant Cb_Record_Access := new Cb_Record'
+           (Handler   => Handler,
+            Notify    => Destroy,
+            User_Data => new Data_Type'(User_Data));
+
+         Old_Handler : Uri_Func;
+         pragma Warnings (Off, Old_Handler);
+      begin
+         Old_Handler := Internal
+           (General_Cb'Address, Convert (D), Free_Data'Address);
+      end Set_Uri_Hook;
+
+   end Generic_Uri_Hook;
 
 end Gtk.Link_Button;
