@@ -33,7 +33,6 @@
 project GtkAda_Install_Dynamic is
 
    for Source_Dirs use (".");
-   for Source_List_File use "../../lib/gnat/gtkada/gtkada.lgpr";
 
    for Library_Dir use "../../bin";
    for Library_ALI_Dir use "../../lib/gtkada/relocatable";
