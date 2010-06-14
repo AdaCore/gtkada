@@ -898,6 +898,14 @@ package Gtkada.MDI is
    --
    --    Emitted when a child is put back in the main MDI window
    --
+   --  - "child_state_changed"
+   --    procedure Handler (Child : access MDI_Child_Record'Class);
+   --
+   --    Emitted when the state of the child has changed. See the function
+   --    Get_State. In particular, this signal can be detected when a child is
+   --    removed from the current perspective (the new state is "invisible"),
+   --    and when it is put back (the new state is "normal" or "floating").
+   --
    --  </signals>
 
    Signal_Child_Selected       : constant Signal_Name := "child_selected";
@@ -912,6 +920,7 @@ package Gtkada.MDI is
    Signal_Perspective_Changed  : constant Signal_Name := "perspective_changed";
    Signal_Children_Reorganized : constant Signal_Name :=
                                    "children_reorganized";
+   Signal_Child_State_Changed  : constant Signal_Name := "child_state_changed";
 
 private
    type String_Access is access all UTF8_String;

@@ -12,6 +12,12 @@ of the feature.
 New features in GtkAda 2.18.0
 -----------------------------
 
+J609-002 New signal GtkAda.MDI.Signal_Child_State_Changed
+
+  This signal can be used to monitor state changes for windows. In
+  particular, it allows tracking when a window is removed from the
+  perspective when the user switches perspectives
+
 J528-025 Support for OpenGL/Gtk.GLArea under Windows
 
   It is now possible to integrate OpenGL in GtkAda applications under

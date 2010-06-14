@@ -161,7 +161,8 @@ package body Gtkada.MDI is
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String (String (Signal_Float_Child)),
       2 => New_String (String (Signal_Unfloat_Child)),
-      3 => New_String (String (Signal_Selected)));
+      3 => New_String (String (Signal_Selected)),
+      4 => New_String (String (Signal_Child_State_Changed)));
 
    Close_Xpm : constant Interfaces.C.Strings.chars_ptr_array :=
      (New_String ("13 11 2 1"),
@@ -263,6 +264,10 @@ package body Gtkada.MDI is
    procedure Update_Tab_Color (Child : access MDI_Child_Record'Class);
    --  Change the background color of the notebook tab containing child,
    --  depending on whether the child is selected or not.
+
+   procedure Set_State
+     (Child : access MDI_Child_Record'Class; New_State : State_Type);
+   --  Change the state of Child
 
    function Delete_Child
      (Child : access Gtk_Widget_Record'Class;
@@ -526,6 +531,21 @@ package body Gtkada.MDI is
    begin
       Traces_Indent := Traces_Indent + Amount;
    end Indent_Debug;
+
+   ---------------
+   -- Set_State --
+   ---------------
+
+   procedure Set_State
+     (Child : access MDI_Child_Record'Class; New_State : State_Type)
+   is
+      Old_State : constant State_Type := Child.State;
+   begin
+      if New_State /= Old_State then
+         Child.State := New_State;
+         Widget_Callback.Emit_By_Name (Child, Signal_Child_State_Changed);
+      end if;
+   end Set_State;
 
    ------------------
    -- Get_Notebook --
@@ -1336,7 +1356,7 @@ package body Gtkada.MDI is
          elsif C.State = Invisible then
             Print_Debug
               ("Destroy_MDI => Unref invisible " & Get_Title (C));
-            C.State := Normal;
+            Set_State (C, Normal);
             Unref (C);
          else
             Print_Debug
@@ -1346,7 +1366,7 @@ package body Gtkada.MDI is
             --  containers handle this by having this destroy callback called
             --  last, but it isn't doable from GtkAda since it means modifying
             --  the pointer-to-subprogram in the Class struct.
-            C.State := Normal;
+            Set_State (C, Normal);
          end if;
          Tmp := N;
       end loop;
@@ -2355,7 +2375,8 @@ package body Gtkada.MDI is
       Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
                             (1 => (1 => GType_None),
                              2 => (1 => GType_None),
-                             3 => (1 => GType_None));
+                             3 => (1 => GType_None),
+                             4 => (1 => GType_None));
       Button            : Gtk_Button;
       Pix               : Gdk_Pixbuf;
       Pixmap            : Gtk_Image;
@@ -2553,7 +2574,7 @@ package body Gtkada.MDI is
          Unref (Child);  --  Set in Remove_All_Items
       end if;
 
-      Child.State := Normal;
+      Set_State (Child, Normal);
       Float_Child (Child, MDI.All_Floating_Mode);
 
       if not MDI.All_Floating_Mode then
@@ -3439,7 +3460,7 @@ package body Gtkada.MDI is
 
          Reparent (Get_Parent (Child.Initial), Cont);
 
-         Child.State := Floating;
+         Set_State (Child, Floating);
          Update_Float_Menu (Child);
          Emit_By_Name_Child
            (Get_Object (Child.MDI), String (Signal_Float_Child) & ASCII.NUL,
@@ -3453,7 +3474,7 @@ package body Gtkada.MDI is
          Win := Gtk_Window (Get_Toplevel (Child.Initial));
          Reparent (Get_Parent (Child.Initial),
                    New_Parent => Gtk_Box (Get_Child (Child)));
-         Child.State := Normal;
+         Set_State (Child, Normal);
          Destroy (Win);
 
          Put_In_Notebook (Child.MDI, Child);
@@ -3801,7 +3822,7 @@ package body Gtkada.MDI is
          end if;
       end if;
 
-      Child.State := Normal;
+      Set_State (Child, Normal);
 
       Append_Page (Note, Child);
       Set_Tab_Reorderable (Note, Child, Reorderable => True);
@@ -4090,7 +4111,7 @@ package body Gtkada.MDI is
 
       Child := MDI_Child (C);
       Child.Tab_Label := null;
-      Child.State := Normal;
+      Set_State (Child, Normal);
 
       if not Gtk.Object.In_Destruction_Is_Set (Note) then
          Print_Debug ("Removed_From_Notebook: " & Get_Title (Child));
@@ -6310,7 +6331,7 @@ package body Gtkada.MDI is
                      Remove (Gtk_Container (Get_Parent (C)), C);
                   end if;
 
-                  C.State := Invisible;
+                  Set_State (C, Invisible);
 
                   if C.Menu_Item /= null then
                      Destroy (C.Menu_Item);
