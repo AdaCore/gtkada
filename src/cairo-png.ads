@@ -31,8 +31,6 @@ pragma Ada_2005;
 with System;
 with Interfaces.C.Strings;
 
-with Glib; use Glib;
-
 package Cairo.Png is
 
    function Cairo_Surface_Write_To_Png
@@ -110,8 +108,7 @@ package Cairo.Png is
    --
    --  Return value: a new Cairo_Surface initialized with the contents
    --  of the PNG file or a "nil" surface if the data read is not a valid PNG
-   --image
-   --  or memory could not be allocated for the operation.  A nil
+   --  image or memory could not be allocated for the operation.  A nil
    --  surface can be checked for with Cairo.Surface.Status(surface) which
    --  may return one of the following values:
    --

@@ -28,11 +28,6 @@
 
 pragma Ada_2005;
 
-with System;
-with Interfaces.C.Strings;
-
-with Glib; use Glib;
-
 package Cairo.Font_Options is
 
    function Create return Cairo_Font_Options;
@@ -44,8 +39,7 @@ package Cairo.Font_Options is
    --    Cairo.Font_Options.Destroy. This function always returns a
    --    valid pointer; if memory cannot be allocated, then a special
    --    error object is returned where all operations on the object do
-   --nothing.
-   --    You can check for this with Cairo.Font_Options.Status.
+   --    nothing.  You can check for this with Cairo.Font_Options.Status.
 
    function Copy
      (Original : access constant Cairo_Font_Options)
@@ -59,8 +53,7 @@ package Cairo.Font_Options is
    --    Cairo.Font_Options.Destroy. This function always returns a
    --    valid pointer; if memory cannot be allocated, then a special
    --    error object is returned where all operations on the object do
-   --nothing.
-   --    You can check for this with Cairo.Font_Options.Status.
+   --    nothing.  You can check for this with Cairo.Font_Options.Status.
 
    procedure Destroy (Options : Cairo_Font_Options);
    --  Options: a Cairo_Font_Options

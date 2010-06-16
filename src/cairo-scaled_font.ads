@@ -31,8 +31,6 @@ pragma Ada_2005;
 with System;
 with Interfaces.C.Strings;
 
-with Glib; use Glib;
-
 package Cairo.Scaled_Font is
 
    function Create
@@ -226,11 +224,10 @@ package Cairo.Scaled_Font is
    --  Glyphs: pointer to array of Glyphs to fill
    --  Num_Glyphs: pointer to number of glyphs
    --  Clusters: pointer to array of cluster mapping information to fill, or
-   --NULL
+   --  NULL
    --  Num_Clusters: pointer to number of clusters, or NULL
    --  Cluster_Flags: pointer to location to store cluster flags corresponding
-   --to the
-   --                  output clusters, or NULL
+   --  to the output clusters, or NULL
    --
    --  Converts UTF-8 text to an array of glyphs, optionally with cluster
    --  mapping, that can be used to render later using scaled_font.
@@ -239,7 +236,7 @@ package Cairo.Scaled_Font is
    --  as a glyph buffer, and num_glyphs should point to the number of glyph
    --  entries available there.  If the provided glyph array is too short for
    --  the conversion, a new glyph array is allocated using
-   --Cairo_Glyph_Allocate
+   --  Cairo_Glyph_Allocate
    --  and placed in glyphs.  Upon return, num_glyphs always contains the
    --  number of generated glyphs.  If the value glyphs points to has changed
    --  after the call, the user is responsible for freeing the allocated glyph
@@ -247,25 +244,20 @@ package Cairo.Scaled_Font is
    --  array was large enough.
    --
    --  If clusters is not NULL, num_clusters and cluster_flags should not be
-   --NULL,
-   --  and cluster mapping will be computed.
+   --  NULL, and cluster mapping will be computed.
    --  The semantics of how cluster array allocation works is similar to the
-   --glyph
-   --  array.  That is,
+   --  glyph array.  That is,
    --  if clusters initially points to a non-NULL value, that array is used
    --  as a cluster buffer, and num_clusters should point to the number of
-   --cluster
+   --  cluster
    --  entries available there.  If the provided cluster array is too short for
    --  the conversion, a new cluster array is allocated using
-   --Cairo_Text_Cluster_Allocate
+   --  Cairo_Text_Cluster_Allocate
    --  and placed in clusters.  Upon return, num_clusters always contains the
    --  number of generated clusters.  If the value clusters points at has
-   --changed
-   --  after the call, the user is responsible for freeing the allocated
-   --cluster
-   --  array using Cairo_Text_Cluster_Free.  This may happen even if the
-   --provided
-   --  array was large enough.
+   --  changed after the call, the user is responsible for freeing the
+   --  allocated cluster array using Cairo_Text_Cluster_Free.  This may happen
+   --  even if the provided array was large enough.
    --
    --  In the simplest case, glyphs and clusters can point to NULL initially
    --  and a suitable array will be allocated.  In code:
@@ -283,7 +275,7 @@ package Cairo.Scaled_Font is
    --                                             utf8, utf8_len,
    --                                             &amp;glyphs, &amp;num_glyphs,
    --                                             &amp;clusters,
-   --&amp;num_clusters, &amp;cluster_flags);
+   --  &amp;num_clusters, &amp;cluster_flags);
    --
    --  if (status == CAIRO_STATUS_SUCCESS) {
    --      Cairo_Show_Text_Glyphs (cr,
@@ -334,7 +326,7 @@ package Cairo.Scaled_Font is
    --                                             utf8, utf8_len,
    --                                             &amp;glyphs, &amp;num_glyphs,
    --                                             &amp;clusters,
-   --&amp;num_clusters, &amp;cluster_flags);
+   --  &amp;num_clusters, &amp;cluster_flags);
    --
    --  if (status == CAIRO_STATUS_SUCCESS) {
    --      Cairo_Show_Text_Glyphs (cr,

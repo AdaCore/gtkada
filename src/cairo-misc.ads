@@ -28,10 +28,7 @@
 
 pragma Ada_2005;
 
-with System;
 with Interfaces.C.Strings;
-
-with Glib; use Glib;
 
 package Cairo.Misc is
 
@@ -93,7 +90,7 @@ package Cairo.Misc is
    --  Clusters: array of text Clusters to free, or NULL
    --
    --  Frees an array of Cairo_Text_Cluster's allocated using
-   --Cairo_Text_Cluster_Allocate.
+   --  Cairo_Text_Cluster_Allocate.
    --  This function is only useful to free text cluster array returned
    --  by Cairo.Scaled_Font.Text_To_Glyphs where cairo returns
    --  an array of text clusters that the user will free.

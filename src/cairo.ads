@@ -161,7 +161,7 @@ package Cairo is
    --   CAIRO_STATUS_SUCCESS: no error has occurred
    --   CAIRO_STATUS_NO_MEMORY: out of memory
    --   CAIRO_STATUS_INVALID_RESTORE: Cairo_Restore called without matching
-   --Cairo_Save
+   --   Cairo_Save
    --   CAIRO_STATUS_INVALID_POP_GROUP: no saved group to pop
    --   CAIRO_STATUS_NO_CURRENT_POINT: no current point defined
    --   CAIRO_STATUS_INVALID_MATRIX: invalid matrix (not invertible)
@@ -173,36 +173,36 @@ package Cairo is
    --   CAIRO_STATUS_WRITE_ERROR: error while writing to output stream
    --   CAIRO_STATUS_SURFACE_FINISHED: target surface has been finished
    --   CAIRO_STATUS_SURFACE_TYPE_MISMATCH: the surface type is not
-   --appropriate for the operation
+   --   appropriate for the operation
    --   CAIRO_STATUS_PATTERN_TYPE_MISMATCH: the pattern type is not
-   --appropriate for the operation
+   --   appropriate for the operation
    --   CAIRO_STATUS_INVALID_CONTENT: invalid value for an input Cairo_content
    --   CAIRO_STATUS_INVALID_FORMAT: invalid value for an input Cairo_format
    --   CAIRO_STATUS_INVALID_VISUAL: invalid value for an input Visual*
    --   CAIRO_STATUS_FILE_NOT_FOUND: file not found
    --   CAIRO_STATUS_INVALID_DASH: invalid value for a dash setting
    --   CAIRO_STATUS_INVALID_DSC_COMMENT: invalid value for a DSC comment
-   --(Since 1.2)
+   --   Since 1.2)
    --   CAIRO_STATUS_INVALID_INDEX: invalid index passed to getter (Since 1.4)
    --   CAIRO_STATUS_CLIP_NOT_REPRESENTABLE: clip region not representable in
-   --desired format (Since 1.4)
+   --   desired format (Since 1.4)
    --   CAIRO_STATUS_TEMP_FILE_ERROR: error creating or writing to a temporary
-   --file (Since 1.6)
+   --   file (Since 1.6)
    --   CAIRO_STATUS_INVALID_STRIDE: invalid value for stride (Since 1.6)
    --   CAIRO_STATUS_FONT_TYPE_MISMATCH: the font type is not appropriate for
-   --the operation (Since 1.8)
+   --   the operation (Since 1.8)
    --   CAIRO_STATUS_USER_FONT_IMMUTABLE: the user-font is immutable (Since
-   --1.8)
+   --   1.8)
    --   CAIRO_STATUS_USER_FONT_ERROR: error occurred in a user-font callback
-   --function (Since 1.8)
+   --   function (Since 1.8)
    --   CAIRO_STATUS_NEGATIVE_COUNT: negative number used where it is not
-   --allowed (Since 1.8)
+   --   allowed (Since 1.8)
    --   CAIRO_STATUS_INVALID_CLUSTERS: input clusters do not represent the
-   --accompanying text and glyph array (Since 1.8)
+   --   accompanying text and glyph array (Since 1.8)
    --   CAIRO_STATUS_INVALID_SLANT: invalid value for an input
-   --Cairo_font_slant (Since 1.8)
+   --   Cairo_font_slant (Since 1.8)
    --   CAIRO_STATUS_INVALID_WEIGHT: invalid value for an input
-   --Cairo_font_weight (Since 1.8)
+   --   Cairo_font_weight (Since 1.8)
    --
    --   Cairo_status is used to indicate errors that can occur when
    --   using Cairo. In some cases it is returned directly by functions.
@@ -210,7 +210,7 @@ package Cairo is
    --   the context and can be retrieved with Cairo_Status.
    --
    --   New entries may be added in future versions.  Use
-   --Cairo_Status_To_String
+   --   Cairo_Status_To_String
    --   to get a human-readable representation of an error message.
    --
 
@@ -249,14 +249,14 @@ package Cairo is
       Cairo_Status_Invalid_Weight);
    pragma Convention (C, U_Cairo_Status);
 
-   -- after adding a new error: update CAIRO_STATUS_LAST_STATUS in cairoint.h
+   --  after adding a new error: update CAIRO_STATUS_LAST_STATUS in cairoint.h
    subtype Cairo_Status is U_Cairo_Status;
 
    --   Cairo_Content:
    --   CAIRO_CONTENT_COLOR: The surface will hold color content only.
    --   CAIRO_CONTENT_ALPHA: The surface will hold alpha content only.
    --   CAIRO_CONTENT_COLOR_ALPHA: The surface will hold color and alpha
-   --content.
+   --   content.
    --
    --   Cairo_content is used to describe the content that a surface will
    --   contain, whether color information, alpha information (translucence
@@ -318,7 +318,7 @@ package Cairo is
       Arg3 : Guint)
       return Cairo_Status;
 
-   -- Functions for manipulating state objects
+   --  Functions for manipulating state objects
    function Create (Target : Cairo_Surface) return Cairo_Context;
    --  Target: Target surface for the context
    --
@@ -539,7 +539,7 @@ package Cairo is
    --
    --  Since: 1.2
 
-   -- Modify state
+   --  Modify state
 
    --   Cairo_Operator:
    --   CAIRO_OPERATOR_CLEAR: clear destination layer (bounded)
@@ -561,7 +561,7 @@ package Cairo is
    --   CAIRO_OPERATOR_DEST_ATOP: leave destination on top of source content
    --   and only there (unbounded)
    --   CAIRO_OPERATOR_XOR: source and destination are shown where there is
-   --only
+   --   only
    --   one of them
    --   CAIRO_OPERATOR_ADD: source and destination layers are accumulated
    --   CAIRO_OPERATOR_SATURATE: like over, but assuming source and dest are
@@ -574,22 +574,19 @@ package Cairo is
    --
    --   The operators marked as <firstterm>unbounded</firstterm> modify their
    --   destination even outside of the mask layer (that is, their effect is
-   --not
+   --   not
    --   bound by the mask layer).  However, their effect can still be limited
-   --by
-   --   way of clipping.
+   --   by way of clipping.
    --
    --   To keep things simple, the operator descriptions here
    --   document the behavior for when both source and destination are either
-   --fully
+   --   fully
    --   transparent or fully opaque.  The actual implementation works for
    --   translucent layers too.
    --   For a more detailed explanation of the effects of each operator,
-   --including
-   --   the mathematical definitions, see
-   --   <ulink
-   --url="http://cairographics.org/operators/">http://cairographics.org/operato
-   --rs/</ulink>.
+   --   including the mathematical definitions, see
+   --   <ulink url="http://cairographics.org/operators/">
+   --   http://cairographics.org/operators/</ulink>.
    --
 
    type Cairo_Operator is (
@@ -827,11 +824,11 @@ package Cairo is
 
    --   Cairo_Line_Cap:
    --   CAIRO_LINE_CAP_BUTT: start(stop) the line exactly at the start(end)
-   --point
+   --   point
    --   CAIRO_LINE_CAP_ROUND: use a round ending, the center of the circle is
-   --the end point
+   --   the end point
    --   CAIRO_LINE_CAP_SQUARE: use squared ending, the center of the square is
-   --the end point
+   --   the end point
    --
    --   Specifies how to render the endpoints of the path when stroking.
    --
@@ -863,8 +860,7 @@ package Cairo is
    --   CAIRO_LINE_JOIN_MITER: use a sharp (angled) corner, see
    --   Cairo_Set_Miter_Limit
    --   CAIRO_LINE_JOIN_ROUND: use a rounded join, the center of the circle is
-   --the
-   --   joint point
+   --   the joint point
    --   CAIRO_LINE_JOIN_BEVEL: use a cut-off join, the join is cut off at half
    --   the line width from the joint point
    --
@@ -903,7 +899,7 @@ package Cairo is
       Offset     : Gdouble);
    --  Cr: a cairo context
    --  Dashes: an array specifying alternate lengths of on and off stroke
-   --portions
+   --  portions
    --  Num_Dashes: the length of the dashes array
    --  Offset: an Offset into the dash pattern at which the stroke should start
    --
@@ -1068,7 +1064,7 @@ package Cairo is
    --  translation components of the inverse CTM will be ignored when
    --  transforming (dx,dy).
 
-   -- Path creation functions
+   --  Path creation functions
    procedure New_Path (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
@@ -1212,12 +1208,12 @@ package Cairo is
    --  See Cairo_Arc for more details. This function differs only in the
    --  direction of the arc between the two angles.
 
-   -- XXX: NYI
-   --Cairo_Public void
-   --Cairo_Arc_To (Cairo_Context *cr,
-   --	      Gdouble x1, Gdouble y1,
-   --	      Gdouble x2, Gdouble y2,
-   --	      Gdouble radius);
+   --  XXX: NYI
+   --  Cairo_Public void
+   --  Cairo_Arc_To (Cairo_Context *cr,
+   --         Gdouble x1, Gdouble y1,
+   --         Gdouble x2, Gdouble y2,
+   --         Gdouble radius);
    --
 
    procedure Rel_Move_To (Cr : Cairo_Context; Dx : Gdouble; Dy : Gdouble);
@@ -1307,9 +1303,9 @@ package Cairo is
    --  Cairo_Close_Path (cr);
    --  </programlisting></informalexample>
 
-   -- XXX: NYI
-   --Cairo_Public void
-   --Cairo_Stroke_To_Path (Cairo_Context *cr);
+   --  XXX: NYI
+   --  Cairo_Public void
+   --  Cairo_Stroke_To_Path (Cairo_Context *cr);
    --
 
    procedure Close_Path (Cr : Cairo_Context);
@@ -1372,7 +1368,7 @@ package Cairo is
    --
    --  Since: 1.6
 
-   -- Painting functions
+   --  Painting functions
    procedure Paint (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
@@ -1494,7 +1490,7 @@ package Cairo is
    --  This is a convenience function that simply calls
    --  Cairo.Surface.Show_Page on cr's target.
 
-   -- Insideness testing
+   --  Insideness testing
    function In_Stroke
      (Cr   : Cairo_Context;
       X    : Gdouble;
@@ -1535,7 +1531,7 @@ package Cairo is
    --  Return value: A non-zero value if the point is inside, or zero if
    --  outside.
 
-   -- Rectangular extents
+   --  Rectangular extents
    procedure Stroke_Extents
      (Cr : Cairo_Context;
       X1 : access Gdouble;
@@ -1597,7 +1593,7 @@ package Cairo is
    --
    --  See Cairo_Fill, Cairo_Set_Fill_Rule and Cairo_Fill_Preserve.
 
-   -- Clipping
+   --  Clipping
    procedure Reset_Clip (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
@@ -1715,7 +1711,7 @@ package Cairo is
    --  Cr: a cairo context
    --
    --  Gets the current clip region as a list of rectangles in user
-   --coordinates.
+   --  coordinates.
    --  Never returns NULL.
    --
    --  The status in the list may be CAIRO_STATUS_CLIP_NOT_REPRESENTABLE to
@@ -1724,7 +1720,7 @@ package Cairo is
    --  other errors.
    --
    --  Returns: the current clip region as a list of rectangles in user
-   --coordinates,
+   --  coordinates,
    --  which should be destroyed using Cairo_Rectangle_List_Destroy.
    --
    --  Since: 1.4
@@ -1732,7 +1728,7 @@ package Cairo is
    procedure Rectangle_List_Destroy
      (Rectangle_List : access Cairo_Rectangle_List);
 
-   -- Font/Text functions
+   --  Font/Text functions
 
    --   Cairo_Scaled_Font:
    --
@@ -2048,7 +2044,7 @@ package Cairo is
 
    type Cairo_Font_Options is private;
 
-   -- This interface is for dealing with text as text, not caring about the
+   --  This interface is for dealing with text as text, not caring about the
    --   font object inside the the Cairo_Context.
 
    procedure Select_Font_Face
@@ -2389,7 +2385,7 @@ package Cairo is
    --
    --  Gets the font extents for the currently selected font.
 
-   -- Generic identifier for a font style
+   --  Generic identifier for a font style
 
    --   Cairo_Font_Type:
    --   CAIRO_FONT_TYPE_TOY: The font was created using cairo's toy font api
@@ -2397,7 +2393,7 @@ package Cairo is
    --   CAIRO_FONT_TYPE_WIN32: The font is of type Win32
    --   CAIRO_FONT_TYPE_QUARTZ: The font is of type Quartz (Since: 1.6)
    --   CAIRO_FONT_TYPE_USER: The font was create using cairo's user font api
-   --(Since: 1.8)
+   --   Since: 1.8)
    --
    --   Cairo_font_type is used to describe the type of a given font
    --   face or scaled font. The font types are also known as "font
@@ -2406,7 +2402,7 @@ package Cairo is
    --   The type of a font face is determined by the function used to
    --   create it, which will generally be of the form
    --   Cairo_<emphasis>type</emphasis>_Font_Face_Create. The font face type
-   --can be queried
+   --   can be queried
    --   with Cairo.Font_Face.Get_Type
    --
    --   The various Cairo_font_face functions can be used with a font face
@@ -2421,7 +2417,7 @@ package Cairo is
    --   type-specific functions that must only be called with a scaled font
    --   of the appropriate type. These functions have names that begin with
    --   Cairo_<emphasis>type</emphasis>_Scaled_Font such as
-   --Cairo_Ft_Scaled_Font_Lock_Face.
+   --   Cairo_Ft_Scaled_Font_Lock_Face.
    --
    --   The behavior of calling a type-specific function with a scaled font
    --   of the wrong type is undefined.
@@ -2439,13 +2435,13 @@ package Cairo is
       Cairo_Font_Type_User);
    pragma Convention (C, Cairo_Font_Type);
 
-   -- Portable interface to general font features.
+   --  Portable interface to general font features.
 
-   -- Toy fonts
+   --  Toy fonts
 
-   -- User fonts
+   --  User fonts
 
-   -- User-font method signatures
+   --  User-font method signatures
 
    --   Cairo_User_Scaled_Font_Init_Func:
    --   Scaled_Font: the scaled-font being created
@@ -2468,12 +2464,12 @@ package Cairo is
    --   descent and max_y_advance members.
    --
    --   The callback is optional.  If not set, default font extents as
-   --described
+   --   described
    --   in the previous paragraph will be used.
    --
    --   Note that scaled_font is not fully initialized at this
    --   point and trying to use it for text operations in the callback will
-   --result
+   --   result
    --   in deadlock.
    --
    --   Returns: CAIRO_STATUS_SUCCESS upon success, or
@@ -2498,19 +2494,19 @@ package Cairo is
    --   is called when a user scaled-font needs to render a glyph.
    --
    --   The callback is mandatory, and expected to draw the glyph with code
-   --glyph to
+   --   glyph to
    --   the cairo context cr.  cr is prepared such that the glyph drawing is
-   --done in
+   --   done in
    --   font space.  That is, the matrix set on cr is the scale matrix of
-   --scaled_font,
+   --   scaled_font,
    --   The extents argument is where the user font sets the font extents for
    --   scaled_font.  However, if user prefers to draw in user space, they can
    --   achieve that by changing the matrix on cr.  All cairo rendering
-   --operations
+   --   operations
    --   to cr are permitted, however, the result is undefined if any source
-   --other
+   --   other
    --   than the default source on cr is used.  That means, glyph bitmaps
-   --should
+   --   should
    --   be rendered using Cairo_Mask instead of Cairo_Paint.
    --
    --   Other non-default settings on cr include a font size of 1.0 (given that
@@ -2520,19 +2516,19 @@ package Cairo is
    --   The extents argument is preset to have <literal>x_bearing</literal>,
    --   <literal>width</literal>, and <literal>y_advance</literal> of zero,
    --   <literal>y_bearing</literal> set to
-   --<literal>-font_extents.ascent</literal>,
+   --   literal>-font_extents.ascent</literal>,
    --   <literal>height</literal> to
-   --<literal>font_extents.ascent+font_extents.descent</literal>,
+   --   literal>font_extents.ascent+font_extents.descent</literal>,
    --   and <literal>x_advance</literal> to
-   --<literal>font_extents.max_x_advance</literal>.
+   --   literal>font_extents.max_x_advance</literal>.
    --   The only field user needs to set in majority of cases is
    --   <literal>x_advance</literal>.
    --   If the <literal>width</literal> field is zero upon the callback
-   --returning
+   --   returning
    --   (which is its preset value), the glyph extents are automatically
-   --computed
+   --   computed
    --   based on the drawings done to cr.  This is in most cases exactly what
-   --the
+   --   the
    --   desired behavior is.  However, if for any reason the callback sets the
    --   extents, it must be ink extents, and include the extents of all drawing
    --   done to cr in the callback.
@@ -2557,27 +2553,27 @@ package Cairo is
    --   Glyphs: pointer to array of Glyphs to fill, in font space
    --   Num_Glyphs: pointer to number of glyphs
    --   Clusters: pointer to array of cluster mapping information to fill, or
-   --NULL
+   --   NULL
    --   Num_Clusters: pointer to number of clusters
    --   Cluster_Flags: pointer to location to store cluster flags
-   --corresponding to the
+   --   corresponding to the
    --                   output clusters
    --
    --   Cairo_user_scaled_font_text_to_glyphs_func is the type of function
-   --which
+   --   which
    --   is called to convert input text to an array of glyphs.  This is used
-   --by the
+   --   by the
    --   Cairo_Show_Text operation.
    --
    --   Using this callback the user-font has full control on glyphs and their
    --   positions.  That means, it allows for features like ligatures and
-   --kerning,
+   --   kerning,
    --   as well as complex <firstterm>shaping</firstterm> required for scripts
-   --like
+   --   like
    --   Arabic and Indic.
    --
    --   The num_glyphs argument is preset to the number of glyph entries
-   --available
+   --   available
    --   in the glyphs buffer. If the glyphs buffer is NULL, the value of
    --   num_glyphs will be zero.  If the provided glyph array is too short for
    --   the conversion (or for convenience), a new glyph array may be allocated
@@ -2586,19 +2582,19 @@ package Cairo is
    --   glyphs points at has changed after the call, the caller will free the
    --   allocated glyph array using Cairo_Glyph_Free.
    --   The callback should populate the glyph indices and positions (in font
-   --space)
+   --   space)
    --   assuming that the text is to be shown at the origin.
    --
    --   If clusters is not NULL, num_clusters and cluster_flags are also
    --   non-NULL, and cluster mapping should be computed. The semantics of how
    --   cluster array allocation works is similar to the glyph array.  That is,
    --   if clusters initially points to a non-NULL value, that array may be
-   --used
+   --   used
    --   as a cluster buffer, and num_clusters points to the number of cluster
    --   entries available there.  If the provided cluster array is too short
-   --for
+   --   for
    --   the conversion (or for convenience), a new cluster array may be
-   --allocated
+   --   allocated
    --   using Cairo_Text_Cluster_Allocate and placed in clusters.  Upon return,
    --   num_clusters should contain the number of generated clusters.
    --   If the value clusters points at has changed after the call, the caller
@@ -2639,26 +2635,26 @@ package Cairo is
    --   Glyph_Index: output glyph index
    --
    --   Cairo_user_scaled_font_unicode_to_glyph_func is the type of function
-   --which
+   --   which
    --   is called to convert an input Unicode character to a single glyph.
    --   This is used by the Cairo_Show_Text operation.
    --
    --   This callback is used to provide the same functionality as the
    --   text_to_glyphs callback does (see
-   --Cairo_user_scaled_font_text_to_glyphs_func)
+   --   Cairo_user_scaled_font_text_to_glyphs_func)
    --   but has much less control on the output,
    --   in exchange for increased ease of use.  The inherent assumption to
-   --using
+   --   using
    --   this callback is that each character maps to one glyph, and that the
    --   mapping is context independent.  It also assumes that glyphs are
-   --positioned
+   --   positioned
    --   according to their advance width.  These mean no ligatures, kerning, or
    --   complex scripts can be implemented using this callback.
    --
    --   The callback is optional, and only used if text_to_glyphs callback is
-   --not
+   --   not
    --   set or fails to return glyphs.  If this callback is not set, an
-   --identity
+   --   identity
    --   mapping from Unicode code-points to glyph indices is assumed.
    --
    --   Note: While cairo does not impose any limitation on glyph indices,
@@ -2681,11 +2677,11 @@ package Cairo is
       Arg3 : access Gulong)
       return Cairo_Status;
 
-   -- User-font method setters
+   --  User-font method setters
 
-   -- User-font method getters
+   --  User-font method getters
 
-   -- Query functions
+   --  Query functions
    function Get_Operator (Cr : Cairo_Context) return Cairo_Operator;
    --  Cr: a cairo context
    --
@@ -3068,7 +3064,7 @@ package Cairo is
 
    procedure Path_Destroy (Path : access Cairo_Path);
 
-   -- Error status queries
+   --  Error status queries
    function Status (Cr : Cairo_Context) return Cairo_Status;
    --  Cr: a cairo context
    --
@@ -3076,7 +3072,7 @@ package Cairo is
    --
    --  Returns: the current status of this context, see Cairo_Status
 
-   -- Surface manipulation
+   --  Surface manipulation
 
    --   Cairo_Surface_Type:
    --   CAIRO_SURFACE_TYPE_IMAGE: The surface is of type image
@@ -3092,7 +3088,7 @@ package Cairo is
    --   CAIRO_SURFACE_TYPE_SVG: The surface is of type svg
    --   CAIRO_SURFACE_TYPE_OS2: The surface is of type os2
    --   CAIRO_SURFACE_TYPE_WIN32_PRINTING: The surface is a win32 printing
-   --surface
+   --   surface
    --   CAIRO_SURFACE_TYPE_QUARTZ_IMAGE: The surface is of type quartz_image
    --
    --   Cairo_surface_type is used to describe the type of a given
@@ -3101,7 +3097,7 @@ package Cairo is
    --
    --   The type of a surface is determined by the function used to create
    --   it, which will generally be of the form
-   --Cairo_<emphasis>type</emphasis>_Surface_Create,
+   --   Cairo_<emphasis>type</emphasis>_Surface_Create,
    --   (though see Cairo.Surface.Create_Similar as well).
    --
    --   The surface type can be queried with Cairo.Surface.Get_Type
@@ -3111,7 +3107,7 @@ package Cairo is
    --   that must only be called with a surface of the appropriate
    --   type. These functions have names that begin with
    --   Cairo_<emphasis>type</emphasis>_Surface<!-- --> such as
-   --Cairo.Image_Surface.Get_Width.
+   --   Cairo.Image_Surface.Get_Width.
    --
    --   The behavior of calling a type-specific function with a surface of
    --   the wrong type is undefined.
@@ -3138,7 +3134,7 @@ package Cairo is
       Cairo_Surface_Type_Quartz_Image);
    pragma Convention (C, Cairo_Surface_Type);
 
-   -- Image-surface functions
+   --  Image-surface functions
 
    --   Cairo_Format:
    --   CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with
@@ -3167,7 +3163,7 @@ package Cairo is
    --   New entries may be added in future versions.
    --
 
-   -- The value of 4 is reserved by a deprecated enum value.
+   --  The value of 4 is reserved by a deprecated enum value.
    --     * The next format added must have an explicit value of 5.
    --    CAIRO_FORMAT_RGB16_565 = 4,
    --
@@ -3179,13 +3175,13 @@ package Cairo is
       Cairo_Format_A1);
    pragma Convention (C, Cairo_Format);
 
-   -- Pattern creation functions
+   --  Pattern creation functions
 
    --   Cairo_Pattern_Type:
    --   CAIRO_PATTERN_TYPE_SOLID: The pattern is a solid (uniform)
    --   color. It may be opaque or translucent.
    --   CAIRO_PATTERN_TYPE_SURFACE: The pattern is a based on a surface (an
-   --image).
+   --   image).
    --   CAIRO_PATTERN_TYPE_LINEAR: The pattern is a linear gradient.
    --   CAIRO_PATTERN_TYPE_RADIAL: The pattern is a radial gradient.
    --
@@ -3274,11 +3270,7 @@ package Cairo is
       Cairo_Filter_Gaussian);
    pragma Convention (C, Cairo_Filter);
 
-   -- Matrix functions
-
-   -- Functions to be used while debugging (not intended for use in production
-   --code)
-   --  skipped func _cairo_debug_reset_static_data
+   --  Matrix functions
 
    Null_Context      : constant Cairo_Context;
    Null_Surface      : constant Cairo_Surface;

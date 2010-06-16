@@ -31,8 +31,6 @@ pragma Ada_2005;
 with System;
 with Interfaces.C.Strings;
 
-with Glib; use Glib;
-
 package Cairo.Font_Face is
 
    function Reference (Font_Face : Cairo_Font_Face) return Cairo_Font_Face;

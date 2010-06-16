@@ -28,11 +28,6 @@
 
 pragma Ada_2005;
 
-with System;
-with Interfaces.C.Strings;
-
-with Glib; use Glib;
-
 package Cairo.Matrix is
 
    procedure Init

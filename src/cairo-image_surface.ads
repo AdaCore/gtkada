@@ -28,11 +28,6 @@
 
 pragma Ada_2005;
 
-with System;
-with Interfaces.C.Strings;
-
-with Glib; use Glib;
-
 package Cairo.Image_Surface is
 
    function Create
@@ -77,8 +72,7 @@ package Cairo.Image_Surface is
    --  stride = Cairo_Format_Stride_For_Width (format, width);
    --  data = malloc (stride * height);
    --  surface = Cairo.Image_Surface.Create_For_Data (data, format,
-   --  					  width, height,
-   --  					  stride);
+   --               width, height, stride);
    --  </programlisting></informalexample>
    --
    --  Return value: the appropriate stride to use given the desired

@@ -31,8 +31,6 @@ pragma Ada_2005;
 with System;
 with Interfaces.C.Strings;
 
-with Glib; use Glib;
-
 package Cairo.User_Font is
 
    function Face_Create return Cairo_Font_Face;
@@ -68,10 +66,8 @@ package Cairo.User_Font is
    --  works.
    --
    --  The font-face should not be immutable or a
-   --CAIRO_STATUS_USER_FONT_IMMUTABLE
-   --  error will occur.  A user font-face is immutable as soon as a
-   --scaled-font
-   --  is created from it.
+   --  CAIRO_STATUS_USER_FONT_IMMUTABLE error will occur.  A user font-face is
+   --  immutable as soon as a scaled-font is created from it.
    --
    --  Since: 1.8
 
@@ -88,14 +84,11 @@ package Cairo.User_Font is
    --
    --  Sets the glyph rendering function of a user-font.
    --  See Cairo_User_Scaled_Font_Render_Glyph_Func for details of how the
-   --callback
-   --  works.
+   --  callback works.
    --
    --  The font-face should not be immutable or a
-   --CAIRO_STATUS_USER_FONT_IMMUTABLE
-   --  error will occur.  A user font-face is immutable as soon as a
-   --scaled-font
-   --  is created from it.
+   --  CAIRO_STATUS_USER_FONT_IMMUTABLE error will occur.  A user font-face is
+   --  immutable as soon as a scaled-font is created from it.
    --
    --  The render_glyph callback is the only mandatory callback of a user-font.
    --  If the callback is NULL and a glyph is tried to be rendered using
@@ -120,14 +113,11 @@ package Cairo.User_Font is
    --
    --  Sets th text-to-glyphs conversion function of a user-font.
    --  See Cairo_User_Scaled_Font_Text_To_Glyphs_Func for details of how the
-   --callback
-   --  works.
+   --  callback works.
    --
    --  The font-face should not be immutable or a
-   --CAIRO_STATUS_USER_FONT_IMMUTABLE
-   --  error will occur.  A user font-face is immutable as soon as a
-   --scaled-font
-   --  is created from it.
+   --  CAIRO_STATUS_USER_FONT_IMMUTABLE error will occur.  A user font-face is
+   --  immutable as soon as a scaled-font is created from it.
    --
    --  Since: 1.8
 
@@ -143,14 +133,11 @@ package Cairo.User_Font is
    --
    --  Sets the unicode-to-glyph conversion function of a user-font.
    --  See Cairo_User_Scaled_Font_Unicode_To_Glyph_Func for details of how the
-   --callback
-   --  works.
+   --  callback works.
    --
    --  The font-face should not be immutable or a
-   --CAIRO_STATUS_USER_FONT_IMMUTABLE
-   --  error will occur.  A user font-face is immutable as soon as a
-   --scaled-font
-   --  is created from it.
+   --  CAIRO_STATUS_USER_FONT_IMMUTABLE error will occur.  A user font-face is
+   --  immutable as soon as a scaled-font is created from it.
    --
    --  Since: 1.8
 

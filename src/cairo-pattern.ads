@@ -29,9 +29,6 @@
 pragma Ada_2005;
 
 with System;
-with Interfaces.C.Strings;
-
-with Glib; use Glib;
 
 package Cairo.Pattern is
 
@@ -146,7 +143,7 @@ package Cairo.Pattern is
    --
    --  Creates a new radial gradient Cairo_Pattern between the two
    --  circles defined by (cx0, cy0, radius0) and (cx1, cy1, radius1).  Before
-   --using the
+   --  using the
    --  gradient pattern, a number of color stops should be defined using
    --  Cairo.Pattern.Add_Color_Stop_Rgb or
    --  Cairo.Pattern.Add_Color_Stop_Rgba.
@@ -516,14 +513,14 @@ package Cairo.Pattern is
       return    Cairo_Status;
    --  Pattern: a Cairo_Pattern
    --  X0: return value for the x coordinate of the center of the first
-   --circle, or NULL
+   --  circle, or NULL
    --  Y0: return value for the y coordinate of the center of the first
-   --circle, or NULL
+   --  circle, or NULL
    --  R0: return value for the radius of the first circle, or NULL
    --  X1: return value for the x coordinate of the center of the second
-   --circle, or NULL
+   --  circle, or NULL
    --  Y1: return value for the y coordinate of the center of the second
-   --circle, or NULL
+   --  circle, or NULL
    --  R1: return value for the radius of the second circle, or NULL
    --
    --  Gets the gradient endpoint circles for a radial gradient, each
