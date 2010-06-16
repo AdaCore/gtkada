@@ -35,21 +35,7 @@ with Glib; use Glib;
 
 package Cairo is
 
-   --   Cairo_Bool:
-   --
-   --   Cairo_bool is used for boolean values. Returns of type
-   --   Cairo_bool will always be either 0 or 1, but testing against
-   --   these values explicitly is not encouraged; just use the
-   --   value as a boolean condition.
-   --
-   --   <informalexample><programlisting>
-   --    if (Cairo_In_Stroke (cr, x, y)) {
-   --        /<!-- -->* do something *<!-- -->/
-   --    }
-   --   </programlisting></informalexample>
-   --
-
-   subtype Cairo_Bool is Gint;
+   type Cairo_Bool is new Boolean;
 
    --   Cairo_Context:
    --
@@ -60,27 +46,25 @@ package Cairo is
    --   cairo and all drawing with cairo is always done to a Cairo_Context
    --   object.
    --
-   --   Memory management of Cairo_Context is done with
-   --   Cairo_Reference and Cairo_Destroy.
-   --
+   --   Memory management of Cairo_Context is done with subprograms
+   --   Reference and Destroy, see below.
 
    type Cairo_Context is private;
 
    --   Cairo_Surface:
    --
-   --   A Cairo_surface represents an image, either as the destination
+   --   A Cairo_Surface represents an image, either as the destination
    --   of a drawing operation or as source when drawing onto another
-   --   surface.  To draw to a Cairo.Surface.T, create a cairo context
-   --   with the surface as the target, using Cairo_Create.
+   --   surface.  To draw to a Cairo_Surface, create a cairo context
+   --   with the surface as the target, using Create.
    --
-   --   There are different subtypes of Cairo_surface for
+   --   There are different subtypes of Cairo_Surface for
    --   different drawing backends; for example, Cairo.Image_Surface.Create
    --   creates a bitmap image in memory.
    --   The type of a surface can be queried with Cairo.Surface.Get_Type.
    --
-   --   Memory management of Cairo_surface is done with
+   --   Memory management of Cairo_Surface is done with
    --   Cairo.Surface.Reference and Cairo.Surface.Destroy.
-   --
 
    type Cairo_Surface is private;
 
@@ -92,14 +76,12 @@ package Cairo is
    --   X0: X translation component of the affine transformation
    --   Y0: Y translation component of the affine transformation
    --
-   --   A Cairo_matrix holds an affine transformation, such as a scale,
+   --   A Cairo_Matrix holds an affine transformation, such as a scale,
    --   rotation, shear, or a combination of those. The transformation of
-   --   a point (x, y) is given by:
-   --   <programlisting>
-   --       x_new = xx * x + xy * y + x0;
-   --       y_new = yx * x + yy * y + y0;
-   --   </programlisting>
+   --   a point (X, Y) is given by:
    --
+   --       X_New = Xx * X + Xy * Y + X0;
+   --       Y_New = Yx * X + Yy * Y + Y0;
 
    type Cairo_Matrix is record
       Xx : aliased Gdouble;
@@ -109,26 +91,23 @@ package Cairo is
       X0 : aliased Gdouble;
       Y0 : aliased Gdouble;
    end record;
-   pragma Convention (C_Pass_By_Copy, Cairo_Matrix);
 
    --   Cairo_Pattern:
    --
-   --   A Cairo_pattern represents a source when drawing onto a
-   --   surface. There are different subtypes of Cairo.Pattern.T,
+   --   A Cairo_Pattern represents a source when drawing onto a
+   --   surface. There are different subtypes of Cairo_Pattern,
    --   for different types of sources; for example,
    --   Cairo.Pattern.Create_Rgb creates a pattern for a solid
    --   opaque color.
    --
-   --   Other than various Cairo.Pattern.Create_<emphasis>type</emphasis>
+   --   Other than various Cairo.Pattern.Create_<type>
    --   functions, some of the pattern types can be implicitly created
-   --   using various Cairo_Set_Source_<emphasis>type</emphasis> functions;
-   --   for example Cairo_Set_Source_Rgb.
+   --   using various Set_Source_<type> functions; for example Set_Source_Rgb.
    --
    --   The type of a pattern can be queried with Cairo.Pattern.Get_Type.
    --
-   --   Memory management of Cairo_pattern is done with
+   --   Memory management of Cairo_Pattern is done with
    --   Cairo.Pattern.Reference and Cairo.Pattern.Destroy.
-   --
 
    type Cairo_Pattern is private;
 
@@ -138,7 +117,6 @@ package Cairo is
    --   Cairo_destroy_func the type of function which is called when a
    --   data element is destroyed. It is passed the pointer to the data
    --   element and should free any memory and resources allocated for it.
-   --
 
    type Cairo_Destroy_Func is access procedure (Arg1 : System.Address);
 
@@ -158,51 +136,6 @@ package Cairo is
    pragma Convention (C_Pass_By_Copy, Cairo_User_Data_Key);
 
    --   Cairo_Status:
-   --   CAIRO_STATUS_SUCCESS: no error has occurred
-   --   CAIRO_STATUS_NO_MEMORY: out of memory
-   --   CAIRO_STATUS_INVALID_RESTORE: Cairo_Restore called without matching
-   --   Cairo_Save
-   --   CAIRO_STATUS_INVALID_POP_GROUP: no saved group to pop
-   --   CAIRO_STATUS_NO_CURRENT_POINT: no current point defined
-   --   CAIRO_STATUS_INVALID_MATRIX: invalid matrix (not invertible)
-   --   CAIRO_STATUS_INVALID_STATUS: invalid value for an input Cairo_status
-   --   CAIRO_STATUS_NULL_POINTER: NULL pointer
-   --   CAIRO_STATUS_INVALID_STRING: input string not valid UTF-8
-   --   CAIRO_STATUS_INVALID_PATH_DATA: input path data not valid
-   --   CAIRO_STATUS_READ_ERROR: error while reading from input stream
-   --   CAIRO_STATUS_WRITE_ERROR: error while writing to output stream
-   --   CAIRO_STATUS_SURFACE_FINISHED: target surface has been finished
-   --   CAIRO_STATUS_SURFACE_TYPE_MISMATCH: the surface type is not
-   --   appropriate for the operation
-   --   CAIRO_STATUS_PATTERN_TYPE_MISMATCH: the pattern type is not
-   --   appropriate for the operation
-   --   CAIRO_STATUS_INVALID_CONTENT: invalid value for an input Cairo_content
-   --   CAIRO_STATUS_INVALID_FORMAT: invalid value for an input Cairo_format
-   --   CAIRO_STATUS_INVALID_VISUAL: invalid value for an input Visual*
-   --   CAIRO_STATUS_FILE_NOT_FOUND: file not found
-   --   CAIRO_STATUS_INVALID_DASH: invalid value for a dash setting
-   --   CAIRO_STATUS_INVALID_DSC_COMMENT: invalid value for a DSC comment
-   --   Since 1.2)
-   --   CAIRO_STATUS_INVALID_INDEX: invalid index passed to getter (Since 1.4)
-   --   CAIRO_STATUS_CLIP_NOT_REPRESENTABLE: clip region not representable in
-   --   desired format (Since 1.4)
-   --   CAIRO_STATUS_TEMP_FILE_ERROR: error creating or writing to a temporary
-   --   file (Since 1.6)
-   --   CAIRO_STATUS_INVALID_STRIDE: invalid value for stride (Since 1.6)
-   --   CAIRO_STATUS_FONT_TYPE_MISMATCH: the font type is not appropriate for
-   --   the operation (Since 1.8)
-   --   CAIRO_STATUS_USER_FONT_IMMUTABLE: the user-font is immutable (Since
-   --   1.8)
-   --   CAIRO_STATUS_USER_FONT_ERROR: error occurred in a user-font callback
-   --   function (Since 1.8)
-   --   CAIRO_STATUS_NEGATIVE_COUNT: negative number used where it is not
-   --   allowed (Since 1.8)
-   --   CAIRO_STATUS_INVALID_CLUSTERS: input clusters do not represent the
-   --   accompanying text and glyph array (Since 1.8)
-   --   CAIRO_STATUS_INVALID_SLANT: invalid value for an input
-   --   Cairo_font_slant (Since 1.8)
-   --   CAIRO_STATUS_INVALID_WEIGHT: invalid value for an input
-   --   Cairo_font_weight (Since 1.8)
    --
    --   Cairo_status is used to indicate errors that can occur when
    --   using Cairo. In some cases it is returned directly by functions.
@@ -214,65 +147,127 @@ package Cairo is
    --   to get a human-readable representation of an error message.
    --
 
-   type U_Cairo_Status is (
+   type Cairo_Status is
+     (
       Cairo_Status_Success,
-      Cairo_Status_No_Memory,
-      Cairo_Status_Invalid_Restore,
-      Cairo_Status_Invalid_Pop_Group,
-      Cairo_Status_No_Current_Point,
-      Cairo_Status_Invalid_Matrix,
-      Cairo_Status_Invalid_Status,
-      Cairo_Status_Null_Pointer,
-      Cairo_Status_Invalid_String,
-      Cairo_Status_Invalid_Path_Data,
-      Cairo_Status_Read_Error,
-      Cairo_Status_Write_Error,
-      Cairo_Status_Surface_Finished,
-      Cairo_Status_Surface_Type_Mismatch,
-      Cairo_Status_Pattern_Type_Mismatch,
-      Cairo_Status_Invalid_Content,
-      Cairo_Status_Invalid_Format,
-      Cairo_Status_Invalid_Visual,
-      Cairo_Status_File_Not_Found,
-      Cairo_Status_Invalid_Dash,
-      Cairo_Status_Invalid_Dsc_Comment,
-      Cairo_Status_Invalid_Index,
-      Cairo_Status_Clip_Not_Representable,
-      Cairo_Status_Temp_File_Error,
-      Cairo_Status_Invalid_Stride,
-      Cairo_Status_Font_Type_Mismatch,
-      Cairo_Status_User_Font_Immutable,
-      Cairo_Status_User_Font_Error,
-      Cairo_Status_Negative_Count,
-      Cairo_Status_Invalid_Clusters,
-      Cairo_Status_Invalid_Slant,
-      Cairo_Status_Invalid_Weight);
-   pragma Convention (C, U_Cairo_Status);
+      --  no error has occurred
 
-   --  after adding a new error: update CAIRO_STATUS_LAST_STATUS in cairoint.h
-   subtype Cairo_Status is U_Cairo_Status;
+      Cairo_Status_No_Memory,
+      --  out of memory
+
+      Cairo_Status_Invalid_Restore,
+      --  Cairo_Restore called without matching Cairo_Save
+
+      Cairo_Status_Invalid_Pop_Group,
+      --  no saved group to pop
+
+      Cairo_Status_No_Current_Point,
+      --  no current point defined
+
+      Cairo_Status_Invalid_Matrix,
+      --  invalid matrix (not invertible)
+
+      Cairo_Status_Invalid_Status,
+      --  invalid value for an input Cairo_status
+
+      Cairo_Status_Null_Pointer,
+      --  NULL pointer
+
+      Cairo_Status_Invalid_String,
+      --  input string not valid UTF-8
+
+      Cairo_Status_Invalid_Path_Data,
+      --  input path data not valid
+
+      Cairo_Status_Read_Error,
+      --  error while reading from input stream
+
+      Cairo_Status_Write_Error,
+      --  error while writing to output stream
+
+      Cairo_Status_Surface_Finished,
+      --  target surface has been finished
+
+      Cairo_Status_Surface_Type_Mismatch,
+      --  the surface type is not appropriate for the operation
+
+      Cairo_Status_Pattern_Type_Mismatch,
+      --  the pattern type is not appropriate for the operation
+
+      Cairo_Status_Invalid_Content,
+      --  invalid value for an input Cairo_content
+
+      Cairo_Status_Invalid_Format,
+      --  invalid value for an input Cairo_format
+
+      Cairo_Status_Invalid_Visual,
+      --  invalid value for an input Visual*
+
+      Cairo_Status_File_Not_Found,
+      --  file not found
+
+      Cairo_Status_Invalid_Dash,
+      --  invalid value for a dash setting
+
+      Cairo_Status_Invalid_Dsc_Comment,
+      --  invalid value for a DSC comment (Since 1.2)
+
+      Cairo_Status_Invalid_Index,
+      --  invalid index passed to getter (Since 1.4)
+
+      Cairo_Status_Clip_Not_Representable,
+      --  clip region not representable in desired format (Since 1.4)
+
+      Cairo_Status_Temp_File_Error,
+      --  error creating or writing to a temporary file (Since 1.6)
+
+      Cairo_Status_Invalid_Stride,
+      --  invalid value for stride (Since 1.6)
+
+      Cairo_Status_Font_Type_Mismatch,
+      --  the font type is not appropriate for the operation (Since 1.8)
+
+      Cairo_Status_User_Font_Immutable,
+      --  the user-font is immutable (Since 1.8)
+
+      Cairo_Status_User_Font_Error,
+      --  error occurred in a user-font callback function (Since 1.8)
+
+      Cairo_Status_Negative_Count,
+      --  negative number used where it is not allowed (Since 1.8)
+
+      Cairo_Status_Invalid_Clusters,
+      --  input clusters do not represent the accompanying text and glyph
+      --   array (Since 1.8)
+
+      Cairo_Status_Invalid_Slant,
+      --  invalid value for an input Cairo_Font_Slant (Since 1.8)
+
+      Cairo_Status_Invalid_Weight
+      --  invalid value for an input Cairo_Font_Weight (Since 1.8)
+     );
 
    --   Cairo_Content:
-   --   CAIRO_CONTENT_COLOR: The surface will hold color content only.
-   --   CAIRO_CONTENT_ALPHA: The surface will hold alpha content only.
-   --   CAIRO_CONTENT_COLOR_ALPHA: The surface will hold color and alpha
-   --   content.
    --
    --   Cairo_content is used to describe the content that a surface will
    --   contain, whether color information, alpha information (translucence
    --   vs. opacity), or both.
    --
-   --   Note: The large values here are designed to keep Cairo_content
-   --   values distinct from Cairo_format values so that the
+   --   Note: The large values here are designed to keep Cairo_Content
+   --   values distinct from Cairo_Format values so that the
    --   implementation can detect the error if users confuse the two types.
-   --
 
-   subtype U_Cairo_Content is Guint;
-   Cairo_Content_Color       : constant U_Cairo_Content := 4096;
-   Cairo_Content_Alpha       : constant U_Cairo_Content := 8192;
-   Cairo_Content_Color_Alpha : constant U_Cairo_Content := 12288;
+   subtype Cairo_Content is Guint;
 
-   subtype Cairo_Content is U_Cairo_Content;
+   Cairo_Content_Color       : constant Cairo_Content := 4096;
+   --   The surface will hold color content only.
+
+   Cairo_Content_Alpha       : constant Cairo_Content := 8192;
+   --   CAIRO_CONTENT_ALPHA: The surface will hold alpha content only.
+
+   Cairo_Content_Color_Alpha : constant Cairo_Content := 12288;
+   --   CAIRO_CONTENT_COLOR_ALPHA: The surface will hold color and alpha
+   --   content.
 
    --   Cairo_Write_Func:
    --   Closure: the output Closure
@@ -288,7 +283,6 @@ package Cairo is
    --   CAIRO_STATUS_WRITE_ERROR otherwise.
    --
    --   Returns: the status code of the write operation
-   --
 
    type Cairo_Write_Func is access function
      (Arg1 : System.Address;
@@ -390,7 +384,7 @@ package Cairo is
      (Cr        : Cairo_Context;
       Key       : access constant Cairo_User_Data_Key;
       User_Data : System.Address;
-      Destroy   : access procedure (Arg1 : System.Address))
+      Destroy   : Cairo_Destroy_Func)
       return      Cairo_Status;
    --  Cr: a Cairo_Context
    --  Key: the address of a Cairo_User_Data_Key to attach the user data to
@@ -3278,7 +3272,12 @@ package Cairo is
    Null_Scaled_Font  : constant Cairo_Scaled_Font;
    Null_Font_Face    : constant Cairo_Font_Face;
    Null_Font_Options : constant Cairo_Font_Options;
+
 private
+
+   pragma Convention (C, Cairo_Bool);
+   pragma Convention (C_Pass_By_Copy, Cairo_Matrix);
+   pragma Convention (C, U_Cairo_Status);
 
    type Cairo_Context is new System.Address;
    Null_Context : constant Cairo_Context :=
