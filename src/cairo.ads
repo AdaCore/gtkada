@@ -340,7 +340,7 @@ package Cairo is
    --  cr from being destroyed until a matching call to Destroy
    --  is made.
    --
-   --  The number of references to a Cairo_Context can be get using
+   --  The number of references to a Cairo_Context can be retrieved using
    --  Get_Reference_Count.
    --
    --  Return value: the referenced Cairo_Context.
