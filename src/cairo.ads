@@ -305,7 +305,6 @@ package Cairo is
    --   CAIRO_STATUS_READ_ERROR otherwise.
    --
    --   Returns: the status code of the read operation
-   --
 
    type Cairo_Read_Func is access function
      (Arg1 : System.Address;
@@ -313,15 +312,13 @@ package Cairo is
       Arg3 : Guint)
       return Cairo_Status;
 
-   --  Functions for manipulating state objects
    function Create (Target : Cairo_Surface) return Cairo_Context;
    --  Target: Target surface for the context
    --
    --  Creates a new Cairo_Context with all graphics state parameters set to
    --  default values and with target as a target surface. The target
    --  surface should be constructed with a backend-specific function such
-   --  as Cairo.Image_Surface.Create (or any other
-   --  Cairo_<emphasis>backend</emphasis>_Surface_Create variant).
+   --  as Cairo.Image_Surface.Create.
    --
    --  This function references target, so you can immediately
    --  call Cairo.Surface.Destroy on it if you don't need to
@@ -329,10 +326,10 @@ package Cairo is
    --
    --  Return value: a newly allocated Cairo_Context with a reference
    --   count of 1. The initial reference count should be released
-   --   with Cairo_Destroy when you are done using the Cairo_Context.
+   --   with Destroy when you are done using the Cairo_Context.
    --   This function never returns NULL. If memory cannot be
    --   allocated, a special Cairo_Context object will be returned on
-   --   which Cairo_Status returns CAIRO_STATUS_NO_MEMORY.
+   --   which Status returns Cairo_Status_No_Memory.
    --   You can use this object normally, but no drawing will
    --   be done.
 
@@ -340,11 +337,11 @@ package Cairo is
    --  Cr: a Cairo_Context
    --
    --  Increases the reference count on cr by one. This prevents
-   --  cr from being destroyed until a matching call to Cairo_Destroy
+   --  cr from being destroyed until a matching call to Destroy
    --  is made.
    --
    --  The number of references to a Cairo_Context can be get using
-   --  Cairo_Get_Reference_Count.
+   --  Get_Reference_Count.
    --
    --  Return value: the referenced Cairo_Context.
 
@@ -353,7 +350,7 @@ package Cairo is
    --
    --  Decreases the reference count on cr by one. If the result
    --  is zero, then cr and all associated resources are freed.
-   --  See Cairo_Reference.
+   --  See Reference.
 
    function Get_Reference_Count (Cr : Cairo_Context) return Guint;
    --  Cr: a Cairo_Context
