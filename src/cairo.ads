@@ -119,6 +119,7 @@ package Cairo is
    --   element and should free any memory and resources allocated for it.
 
    type Cairo_Destroy_Func is access procedure (Arg1 : System.Address);
+   pragma Convention (C, Cairo_Destroy_Func);
 
    --   Cairo_User_Data_Key:
    --   Unused: not used; ignore.
@@ -3277,7 +3278,7 @@ private
 
    pragma Convention (C, Cairo_Bool);
    pragma Convention (C_Pass_By_Copy, Cairo_Matrix);
-   pragma Convention (C, U_Cairo_Status);
+   pragma Convention (C, Cairo_Status);
 
    type Cairo_Context is new System.Address;
    Null_Context : constant Cairo_Context :=
