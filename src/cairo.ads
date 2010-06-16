@@ -427,8 +427,9 @@ package Cairo is
    --
    --  Temporarily redirects drawing to an intermediate surface known as a
    --  group. The redirection lasts until the group is completed by a call
-   --  to Cairo_Pop_Group or Cairo_Pop_Group_To_Source. These calls
-   --  provide the result of any drawing to the group as a pattern,
+   --  to Pop_Group or Pop_Group_To_Source.
+   --
+   --  These calls provide the result of any drawing to the group as a pattern,
    --  (either as an explicit object, or set as the source pattern).
    --
    --  This group functionality can be convenient for performing
@@ -438,30 +439,28 @@ package Cairo is
    --  destination.
    --
    --  Groups can be nested arbitrarily deep by making balanced calls to
-   --  Cairo_Push_Group/cairo_Pop_Group. Each call pushes/pops the new
-   --  target group onto/from a stack.
+   --  Push_Group/Pop_Group. Each call pushes/pops the new target group
+   --  onto/from a stack.
    --
-   --  The Cairo_Push_Group function calls Cairo_Save so that any
-   --  changes to the graphics state will not be visible outside the
-   --  group, (the pop_group functions call Cairo_Restore).
+   --  The Push_Group function calls Save so that any changes to the graphics
+   --  state will not be visible outside the group, (the pop_group functions
+   --  call Restore).
    --
    --  By default the intermediate group will have a content type of
-   --  CAIRO_CONTENT_COLOR_ALPHA. Other content types can be chosen for
-   --  the group by using Cairo_Push_Group_With_Content instead.
+   --  Cairo_Content_Color_Alphe. Other content types can be chosen for
+   --  the group by using Push_Group_With_Content instead.
    --
    --  As an example, here is how one might fill and stroke a path with
    --  translucence, but without any portion of the fill being visible
    --  under the stroke:
    --
-   --  <informalexample><programlisting>
-   --  Cairo_Push_Group (cr);
-   --  Cairo_Set_Source (cr, fill_pattern);
-   --  Cairo_Fill_Preserve (cr);
-   --  Cairo_Set_Source (cr, stroke_pattern);
-   --  Cairo_Stroke (cr);
-   --  Cairo_Pop_Group_To_Source (cr);
-   --  Cairo_Paint_With_Alpha (cr, alpha);
-   --  </programlisting></informalexample>
+   --      Push_Group (Cr);
+   --      Set_Source (Cr, Fill_Pattern);
+   --      Fill_Preserve (Cr);
+   --      Set_Source (Cr, Stroke_Pattern);
+   --      Stroke (Cr);
+   --      Pop_Group_To_Source (Cr);
+   --      Paint_With_Alpha (Cr, Alpha);
    --
    --  Since: 1.2
 
@@ -473,30 +472,28 @@ package Cairo is
    --            will be created
    --
    --  Temporarily redirects drawing to an intermediate surface known as a
-   --  group. The redirection lasts until the group is completed by a call
-   --  to Cairo_Pop_Group or Cairo_Pop_Group_To_Source. These calls
-   --  provide the result of any drawing to the group as a pattern,
-   --  (either as an explicit object, or set as the source pattern).
+   --  group. The redirection lasts until the group is completed by a call to
+   --  Pop_Group or Pop_Group_To_Source. These calls provide the result of any
+   --  drawing to the group as a pattern, (either as an explicit object, or set
+   --  as the source pattern).
    --
-   --  The group will have a content type of content. The ability to
-   --  control this content type is the only distinction between this
-   --  function and Cairo_Push_Group which you should see for a more
-   --  detailed description of group rendering.
+   --  The group will have a content type of content. The ability to control
+   --  this content type is the only distinction between this function and
+   --  Push_Group which you should see for a more detailed description of group
+   --  rendering.
    --
    --  Since: 1.2
 
    function Pop_Group (Cr : Cairo_Context) return Cairo_Pattern;
    --  Cr: a cairo context
    --
-   --  Terminates the redirection begun by a call to Cairo_Push_Group or
-   --  Cairo_Push_Group_With_Content and returns a new pattern
-   --  containing the results of all drawing operations performed to the
-   --  group.
+   --  Terminates the redirection begun by a call to Push_Group or
+   --  Push_Group_With_Content and returns a new pattern containing the results
+   --  of all drawing operations performed to the group.
    --
-   --  The Cairo_Pop_Group function calls Cairo_Restore, (balancing a
-   --  call to Cairo_Save by the push_group function), so that any
-   --  changes to the graphics state will not be visible outside the
-   --  group.
+   --  The Pop_Group function calls Restore, (balancing a call to Save by the
+   --  Push_Group function), so that any changes to the graphics state will not
+   --  be visible outside the group.
    --
    --  Return value: a newly created (surface) pattern containing the
    --  results of all drawing operations performed to the group. The
@@ -508,95 +505,95 @@ package Cairo is
    procedure Pop_Group_To_Source (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
-   --  Terminates the redirection begun by a call to Cairo_Push_Group or
-   --  Cairo_Push_Group_With_Content and installs the resulting pattern
-   --  as the source pattern in the given cairo context.
+   --  Terminates the redirection begun by a call to Push_Group or
+   --  Push_Group_With_Content and installs the resulting pattern as the source
+   --  pattern in the given cairo context.
    --
    --  The behavior of this function is equivalent to the sequence of
    --  operations:
    --
-   --  <informalexample><programlisting>
-   --  Cairo_Pattern *group = Cairo_Pop_Group (cr);
-   --  Cairo_Set_Source (cr, group);
-   --  Cairo.Pattern.Destroy (group);
-   --  </programlisting></informalexample>
+   --  declare
+   --     Group: Cairo_Pattern := Pop_Group (cr);
+   --  begin
+   --     Set_Source (Cr, Group);
+   --     Cairo.Pattern.Destroy (Group);
+   --  end;
    --
    --  but is more convenient as their is no need for a variable to store
    --  the short-lived pointer to the pattern.
    --
-   --  The Cairo_Pop_Group function calls Cairo_Restore, (balancing a
-   --  call to Cairo_Save by the push_group function), so that any
-   --  changes to the graphics state will not be visible outside the
-   --  group.
+   --  The Pop_Group function calls Restore, (balancing a call to Save by the
+   --  push_group function), so that any changes to the graphics state will not
+   --  be visible outside the group.
    --
    --  Since: 1.2
 
    --  Modify state
 
    --   Cairo_Operator:
-   --   CAIRO_OPERATOR_CLEAR: clear destination layer (bounded)
-   --   CAIRO_OPERATOR_SOURCE: replace destination layer (bounded)
-   --   CAIRO_OPERATOR_OVER: draw source layer on top of destination layer
-   --   (bounded)
-   --   CAIRO_OPERATOR_IN: draw source where there was destination content
-   --   (unbounded)
-   --   CAIRO_OPERATOR_OUT: draw source where there was no destination
-   --   content (unbounded)
-   --   CAIRO_OPERATOR_ATOP: draw source on top of destination content and
-   --   only there
-   --   CAIRO_OPERATOR_DEST: ignore the source
-   --   CAIRO_OPERATOR_DEST_OVER: draw destination on top of source
-   --   CAIRO_OPERATOR_DEST_IN: leave destination only where there was
-   --   source content (unbounded)
-   --   CAIRO_OPERATOR_DEST_OUT: leave destination only where there was no
-   --   source content
-   --   CAIRO_OPERATOR_DEST_ATOP: leave destination on top of source content
-   --   and only there (unbounded)
-   --   CAIRO_OPERATOR_XOR: source and destination are shown where there is
-   --   only
-   --   one of them
-   --   CAIRO_OPERATOR_ADD: source and destination layers are accumulated
-   --   CAIRO_OPERATOR_SATURATE: like over, but assuming source and dest are
-   --   disjoint geometries
    --
    --   Cairo_operator is used to set the compositing operator for all cairo
    --   drawing operations.
    --
-   --   The default operator is CAIRO_OPERATOR_OVER.
+   --   The default operator is Cairo_Operator_Over.
    --
-   --   The operators marked as <firstterm>unbounded</firstterm> modify their
-   --   destination even outside of the mask layer (that is, their effect is
-   --   not
-   --   bound by the mask layer).  However, their effect can still be limited
-   --   by way of clipping.
+   --   The operators marked as "unbounded" modify their destination even
+   --   outside of the mask layer (that is, their effect is not bound by the
+   --   mask layer). However, their effect can still be limited by way of
+   --   clipping.
    --
-   --   To keep things simple, the operator descriptions here
-   --   document the behavior for when both source and destination are either
-   --   fully
-   --   transparent or fully opaque.  The actual implementation works for
+   --   To keep things simple, the operator descriptions here document the
+   --   behavior for when both source and destination are either fully
+   --   transparent or fully opaque. The actual implementation works for
    --   translucent layers too.
+   --
    --   For a more detailed explanation of the effects of each operator,
    --   including the mathematical definitions, see
-   --   <ulink url="http://cairographics.org/operators/">
-   --   http://cairographics.org/operators/</ulink>.
-   --
+   --   http://cairographics.org/operators/
 
-   type Cairo_Operator is (
-      Cairo_Operator_Clear,
+   type Cairo_Operator is
+     (Cairo_Operator_Clear,
+      --  clear destination layer (bounded)
+
       Cairo_Operator_Source,
+      --  replace destination layer (bounded)
+
       Cairo_Operator_Over,
+      --  draw source layer on top of destination layer (bounded)
+
       Cairo_Operator_In,
+      --  draw source where there was destination content (unbounded)
+
       Cairo_Operator_Out,
+      --  draw source where there was no destination content (unbounded)
+
       Cairo_Operator_Atop,
+      --  draw source on top of destination content and only there
+
       Cairo_Operator_Dest,
+      --  ignore the source
+
       Cairo_Operator_Dest_Over,
+      --  draw destination on top of source
+
       Cairo_Operator_Dest_In,
+      --  leave destination only where there was source content (unbounded)
+
       Cairo_Operator_Dest_Out,
+      --  leave destination only where there was no source content
+
       Cairo_Operator_Dest_Atop,
+      --  leave destination on top of source content and only there (unbounded)
+
       Cairo_Operator_Xor,
+      --  source and destination are shown where there is only one of them
+
       Cairo_Operator_Add,
-      Cairo_Operator_Saturate);
-   pragma Convention (C, Cairo_Operator);
+      --  source and destination layers are accumulated
+
+      Cairo_Operator_Saturate
+      --  like over, but assuming source and dest are disjoint geometries
+     );
 
    procedure Set_Operator (Cr : Cairo_Context; Op : Cairo_Operator);
    --  Cr: a Cairo_Context
@@ -606,37 +603,36 @@ package Cairo is
    --  operations. See Cairo_Operator for details on the semantics of
    --  each available compositing operator.
    --
-   --  The default operator is CAIRO_OPERATOR_OVER.
+   --  The default operator is Cairo_Operator_Over.
 
    procedure Set_Source (Cr : Cairo_Context; Source : Cairo_Pattern);
    --  Cr: a cairo context
    --  Source: a Cairo_Pattern to be used as the Source for
    --  subsequent drawing operations.
    --
-   --  Sets the source pattern within cr to source. This pattern
+   --  Sets the source pattern within Cr to source. This pattern
    --  will then be used for any subsequent drawing operation until a new
    --  source pattern is set.
    --
-   --  Note: The pattern's transformation matrix will be locked to the
-   --  user space in effect at the time of Cairo_Set_Source. This means
-   --  that further modifications of the current transformation matrix
-   --  will not affect the source pattern. See Cairo.Pattern.Set_Matrix.
+   --  Note: The pattern's transformation matrix will be locked to the user
+   --  space in effect at the time of Set_Source. This means that further
+   --  modifications of the current transformation matrix will not affect the
+   --  source pattern. See Cairo.Pattern.Set_Matrix.
    --
    --  The default source pattern is a solid pattern that is opaque black,
-   --  (that is, it is equivalent to Cairo_Set_Source_Rgb(cr, 0.0, 0.0,
-   --  0.0)).
+   --  (that is, it is equivalent to Set_Source_Rgb (Cr, 0.0, 0.0, 0.0)).
 
    procedure Set_Source_Rgb
      (Cr    : Cairo_Context;
       Red   : Gdouble;
       Green : Gdouble;
       Blue  : Gdouble);
-   --  Cr: a cairo context
-   --  Red: Red component of color
-   --  Green: Green component of color
-   --  Blue: Blue component of color
+   --  Cr    : a cairo context
+   --  Red   : Red component of color
+   --  Green : Green component of color
+   --  Blue  : Blue component of color
    --
-   --  Sets the source pattern within cr to an opaque color. This opaque
+   --  Sets the source pattern within Cr to an opaque color. This opaque
    --  color will then be used for any subsequent drawing operation until
    --  a new source pattern is set.
    --
@@ -645,7 +641,7 @@ package Cairo is
    --  clamped.
    --
    --  The default source pattern is opaque black, (that is, it is
-   --  equivalent to Cairo_Set_Source_Rgb(cr, 0.0, 0.0, 0.0)).
+   --  equivalent to Set_Source_Rgb (Cr, 0.0, 0.0, 0.0)).
 
    procedure Set_Source_Rgba
      (Cr    : Cairo_Context;
@@ -653,13 +649,13 @@ package Cairo is
       Green : Gdouble;
       Blue  : Gdouble;
       Alpha : Gdouble);
-   --  Cr: a cairo context
-   --  Red: Red component of color
-   --  Green: Green component of color
-   --  Blue: Blue component of color
-   --  Alpha: Alpha component of color
+   --  Cr    : a cairo context
+   --  Red   : Red component of color
+   --  Green : Green component of color
+   --  Blue  : Blue component of color
+   --  Alpha : Alpha component of color
    --
-   --  Sets the source pattern within cr to a translucent color. This
+   --  Sets the source pattern within Cr to a translucent color. This
    --  color will then be used for any subsequent drawing operation until
    --  a new source pattern is set.
    --
@@ -668,32 +664,32 @@ package Cairo is
    --  will be clamped.
    --
    --  The default source pattern is opaque black, (that is, it is
-   --  equivalent to Cairo_Set_Source_Rgba(cr, 0.0, 0.0, 0.0, 1.0)).
+   --  equivalent to Set_Source_Rgba (Cr, 0.0, 0.0, 0.0, 1.0)).
 
    procedure Set_Source_Surface
      (Cr      : Cairo_Context;
       Surface : Cairo_Surface;
       X       : Gdouble;
       Y       : Gdouble);
-   --  Cr: a cairo context
-   --  Surface: a Surface to be used to set the source pattern
-   --  X: User-space X coordinate for surface origin
-   --  Y: User-space Y coordinate for surface origin
+   --  Cr      : a cairo context
+   --  Surface : a Surface to be used to set the source pattern
+   --  X       : User-space X coordinate for surface origin
+   --  Y       : User-space Y coordinate for surface origin
    --
    --  This is a convenience function for creating a pattern from surface
-   --  and setting it as the source in cr with Cairo_Set_Source.
+   --  and setting it as the source in Cr with Set_Source.
    --
-   --  The x and y parameters give the user-space coordinate at which
+   --  The X and Y parameters give the user-space coordinate at which
    --  the surface origin should appear. (The surface origin is its
    --  upper-left corner before any transformation has been applied.) The
-   --  x and y patterns are negated and then set as translation values
+   --  X and Y patterns are negated and then set as translation values
    --  in the pattern matrix.
    --
    --  Other than the initial translation pattern matrix, as described
    --  above, all other pattern attributes, (such as its extend mode), are
    --  set to the default values as in Cairo.Pattern.Create_For_Surface.
-   --  The resulting pattern can be queried with Cairo_Get_Source so
-   --  that these attributes can be modified if desired, (eg. to create a
+   --  The resulting pattern can be queried with Get_Source so that these
+   --  attributes can be modified if desired, (eg. to create a
    --  repeating pattern with Cairo.Pattern.Set_Extend).
 
    procedure Set_Tolerance (Cr : Cairo_Context; Tolerance : Gdouble);
@@ -712,24 +708,25 @@ package Cairo is
    --  representable internal value.
 
    --   Cairo_Antialias:
-   --   CAIRO_ANTIALIAS_DEFAULT: Use the default antialiasing for
-   --     the subsystem and target device
-   --   CAIRO_ANTIALIAS_NONE: Use a bilevel alpha mask
-   --   CAIRO_ANTIALIAS_GRAY: Perform single-color antialiasing (using
-   --    shades of gray for black text on a white background, for example).
-   --   CAIRO_ANTIALIAS_SUBPIXEL: Perform antialiasing by taking
-   --    advantage of the order of subpixel elements on devices
-   --    such as LCD panels
    --
    --   Specifies the type of antialiasing to do when rendering text or shapes.
-   --
 
-   type Cairo_Antialias is (
+   type Cairo_Antialias is
+     (
       Cairo_Antialias_Default,
+      --  Use the default antialiasing for the subsystem and target device
+
       Cairo_Antialias_None,
+      --  Use a bilevel alpha mask
+
       Cairo_Antialias_Gray,
-      Cairo_Antialias_Subpixel);
-   pragma Convention (C, Cairo_Antialias);
+      --  Perform single-color antialiasing (using shades of gray for black
+      --  text on a white background, for example).
+
+      Cairo_Antialias_Subpixel
+      --  Perform antialiasing by taking advantage of the order of subpixel
+      --  elements on devices such as LCD panels
+     );
 
    procedure Set_Antialias
      (Cr        : Cairo_Context;
@@ -3276,6 +3273,8 @@ private
    pragma Convention (C, Cairo_Bool);
    pragma Convention (C_Pass_By_Copy, Cairo_Matrix);
    pragma Convention (C, Cairo_Status);
+   pragma Convention (C, Cairo_Operator);
+   pragma Convention (C, Cairo_Antialias);
 
    type Cairo_Context is new System.Address;
    Null_Context : constant Cairo_Context :=
