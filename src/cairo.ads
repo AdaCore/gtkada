@@ -737,23 +737,14 @@ package Cairo is
    --  Set the antialiasing mode of the rasterizer used for drawing shapes.
    --  This value is a hint, and a particular backend may or may not support
    --  a particular value.  At the current time, no backend supports
-   --  CAIRO_ANTIALIAS_SUBPIXEL when drawing shapes.
+   --  Cairo_Antialias_Subpixel when drawing shapes.
    --
    --  Note that this option does not affect text rendering, instead see
    --  Cairo.Font_Options.Set_Antialias.
 
    --   Cairo_Fill_Rule:
-   --   CAIRO_FILL_RULE_WINDING: If the path crosses the ray from
-   --   left-to-right, counts +1. If the path crosses the ray
-   --   from right to left, counts -1. (Left and right are determined
-   --   from the perspective of looking along the ray from the starting
-   --   point.) If the total count is non-zero, the point will be filled.
-   --   CAIRO_FILL_RULE_EVEN_ODD: Counts the total number of
-   --   intersections, without regard to the orientation of the contour. If
-   --   the total number of intersections is odd, the point will be
-   --   filled.
    --
-   --   Cairo_fill_rule is used to select how paths are filled. For both
+   --   Cairo_Fill_Rule is used to select how paths are filled. For both
    --   fill rules, whether or not a point is included in the fill is
    --   determined by taking a ray from that point to infinity and looking
    --   at intersections with the path. The ray can be in any direction,
@@ -762,29 +753,38 @@ package Cairo is
    --   (Note that filling is not actually implemented in this way. This
    --   is just a description of the rule that is applied.)
    --
-   --   The default fill rule is CAIRO_FILL_RULE_WINDING.
+   --   The default fill rule is Cairo_Fill_Rule_Winding.
    --
    --   New entries may be added in future versions.
    --
 
-   type Cairo_Fill_Rule is (
-      Cairo_Fill_Rule_Winding,
-      Cairo_Fill_Rule_Even_Odd);
-   pragma Convention (C, Cairo_Fill_Rule);
+   type Cairo_Fill_Rule is
+     (Cairo_Fill_Rule_Winding,
+      --  If the path crosses the ray from left-to-right, counts +1. If the
+      --  path crosses the ray from right to left, counts -1. (Left and right
+      --  are determined from the perspective of looking along the ray from
+      --  the starting point). If the total count is non-zero, the point will
+      --  be filled.
+
+      Cairo_Fill_Rule_Even_Odd
+      --  Counts the total number of
+      --  intersections, without regard to the orientation of the contour. If
+      --  the total number of intersections is odd, the point will be filled.
+     );
 
    procedure Set_Fill_Rule
      (Cr        : Cairo_Context;
       Fill_Rule : Cairo_Fill_Rule);
    --  Cr: a Cairo_Context
-   --  Fill_Rule: a fill rule, specified as a Cairo_Fill_Rule
+   --  Fill_Rule: a fill rule
    --
-   --  Set the current fill rule within the cairo context. The fill rule
-   --  is used to determine which regions are inside or outside a complex
-   --  (potentially self-intersecting) path. The current fill rule affects
-   --  both Cairo_Fill and Cairo_Clip. See Cairo_Fill_Rule for details
-   --  on the semantics of each available fill rule.
+   --  Set the current fill rule within the cairo context. The fill rule is
+   --  used to determine which regions are inside or outside a complex
+   --  (potentially self-intersecting) path. The current fill rule affects both
+   --  Fill and Clip. See Cairo_Fill_Rule for details on the semantics of each
+   --  available fill rule.
    --
-   --  The default fill rule is CAIRO_FILL_RULE_WINDING.
+   --  The default fill rule is Cairo_Fill_Rule_Winding.
 
    procedure Set_Line_Width (Cr : Cairo_Context; Width : Gdouble);
    --  Cr: a Cairo_Context
@@ -798,37 +798,34 @@ package Cairo is
    --  Note: When the description above refers to user space and CTM it
    --  refers to the user space and CTM in effect at the time of the
    --  stroking operation, not the user space and CTM in effect at the
-   --  time of the call to Cairo_Set_Line_Width. The simplest usage
+   --  time of the call to Set_Line_Width. The simplest usage
    --  makes both of these spaces identical. That is, if there is no
-   --  change to the CTM between a call to Cairo_Set_Line_Width and the
+   --  change to the CTM between a call to Set_Line_Width and the
    --  stroking operation, then one can just pass user-space values to
-   --  Cairo_Set_Line_Width and ignore this note.
+   --  Set_Line_Width and ignore this note.
    --
-   --  As with the other stroke parameters, the current line width is
-   --  examined by Cairo_Stroke, Cairo_Stroke_Extents, and
-   --  Cairo_Stroke_To_Path, but does not have any effect during path
-   --  construction.
+   --  As with the other stroke parameters, the current line width is examined
+   --  by Stroke, Stroke_Extents, and Stroke_To_Path, but does not have any
+   --  effect during path construction.
    --
    --  The default line width value is 2.0.
 
    --   Cairo_Line_Cap:
-   --   CAIRO_LINE_CAP_BUTT: start(stop) the line exactly at the start(end)
-   --   point
-   --   CAIRO_LINE_CAP_ROUND: use a round ending, the center of the circle is
-   --   the end point
-   --   CAIRO_LINE_CAP_SQUARE: use squared ending, the center of the square is
-   --   the end point
    --
    --   Specifies how to render the endpoints of the path when stroking.
    --
-   --   The default line cap style is CAIRO_LINE_CAP_BUTT.
-   --
+   --   The default line cap style is Cairo_Line_Cap_Butt.
 
-   type Cairo_Line_Cap is (
-      Cairo_Line_Cap_Butt,
+   type Cairo_Line_Cap is
+     (Cairo_Line_Cap_Butt,
+      --  start(stop) the line exactly at the start(end) point
+
       Cairo_Line_Cap_Round,
-      Cairo_Line_Cap_Square);
-   pragma Convention (C, Cairo_Line_Cap);
+      --  use a round ending, the center of the circle is the end point
+
+      Cairo_Line_Cap_Square
+      --  use squared ending, the center of the square is the end point
+     );
 
    procedure Set_Line_Cap (Cr : Cairo_Context; Line_Cap : Cairo_Line_Cap);
    --  Cr: a cairo context
@@ -839,30 +836,28 @@ package Cairo is
    --  styles are drawn.
    --
    --  As with the other stroke parameters, the current line cap style is
-   --  examined by Cairo_Stroke, Cairo_Stroke_Extents, and
-   --  Cairo_Stroke_To_Path, but does not have any effect during path
-   --  construction.
+   --  examined by Stroke, Stroke_Extents, and Stroke_To_Path, but does not
+   --  have any effect during path construction.
    --
-   --  The default line cap style is CAIRO_LINE_CAP_BUTT.
+   --  The default line cap style is Cairo_Line_Cap_Butt.
 
    --   Cairo_Line_Join:
-   --   CAIRO_LINE_JOIN_MITER: use a sharp (angled) corner, see
-   --   Cairo_Set_Miter_Limit
-   --   CAIRO_LINE_JOIN_ROUND: use a rounded join, the center of the circle is
-   --   the joint point
-   --   CAIRO_LINE_JOIN_BEVEL: use a cut-off join, the join is cut off at half
-   --   the line width from the joint point
    --
    --   Specifies how to render the junction of two lines when stroking.
    --
-   --   The default line join style is CAIRO_LINE_JOIN_MITER.
-   --
+   --   The default line join style is Cairo_Line_Join_Miter.
 
-   type Cairo_Line_Join is (
-      Cairo_Line_Join_Miter,
+   type Cairo_Line_Join is
+     (Cairo_Line_Join_Miter,
+      --  use a sharp (angled) corner, see Set_Miter_Limit
+
       Cairo_Line_Join_Round,
-      Cairo_Line_Join_Bevel);
-   pragma Convention (C, Cairo_Line_Join);
+      --  use a rounded join, the center of the circle is the joint point
+
+      Cairo_Line_Join_Bevel
+      --  use a cut-off join, the join is cut off at half the line width from
+      --  the joint point
+     );
 
    procedure Set_Line_Join
      (Cr        : Cairo_Context;
@@ -871,15 +866,14 @@ package Cairo is
    --  Line_Join: a line join style
    --
    --  Sets the current line join style within the cairo context. See
-   --  Cairo_Line_Join for details about how the available line join
-   --  styles are drawn.
+   --  Cairo_Line_Join for details about how the available line join styles are
+   --  drawn.
    --
    --  As with the other stroke parameters, the current line join style is
-   --  examined by Cairo_Stroke, Cairo_Stroke_Extents, and
-   --  Cairo_Stroke_To_Path, but does not have any effect during path
-   --  construction.
+   --  examined by Stroke, Stroke_Extents, and Stroke_To_Path, but does
+   --  not have any effect during path construction.
    --
-   --  The default line join style is CAIRO_LINE_JOIN_MITER.
+   --  The default line join style is Cairo_Line_Join_Miter.
 
    procedure Set_Dash
      (Cr         : Cairo_Context;
@@ -892,7 +886,7 @@ package Cairo is
    --  Num_Dashes: the length of the dashes array
    --  Offset: an Offset into the dash pattern at which the stroke should start
    --
-   --  Sets the dash pattern to be used by Cairo_Stroke. A dash pattern
+   --  Sets the dash pattern to be used by Stroke. A dash pattern
    --  is specified by dashes, an array of positive values. Each value
    --  provides the length of alternate "on" and "off" portions of the
    --  stroke. The offset specifies an offset into the pattern at which
@@ -900,12 +894,12 @@ package Cairo is
    --
    --  Each "on" segment will have caps applied as if the segment were a
    --  separate sub-path. In particular, it is valid to use an "on" length
-   --  of 0.0 with CAIRO_LINE_CAP_ROUND or CAIRO_LINE_CAP_SQUARE in order
+   --  of 0.0 with Cairo_Line_Cap_Round or Cairo_Line_Cap_Square in order
    --  to distributed dots or squares along a path.
    --
    --  Note: The length values are in user-space units as evaluated at the
    --  time of stroking. This is not necessarily the same as the user
-   --  space at the time of Cairo_Set_Dash.
+   --  space at the time of Set_Dash.
    --
    --  If num_dashes is 0 dashing is disabled.
    --
@@ -915,7 +909,7 @@ package Cairo is
    --
    --  If any value in dashes is negative, or if all values are 0, then
    --  cr will be put into an error state with a status of
-   --  CAIRO_STATUS_INVALID_DASH.
+   --  Cairo_Status_Invalid_Dash.
 
    procedure Set_Miter_Limit (Cr : Cairo_Context; Limit : Gdouble);
    --  Cr: a cairo context
@@ -923,7 +917,7 @@ package Cairo is
    --
    --  Sets the current miter limit within the cairo context.
    --
-   --  If the current line join style is set to CAIRO_LINE_JOIN_MITER
+   --  If the current line join style is set to Cairo_Line_Join_Miter
    --  (see Cairo_Set_Line_Join), the miter limit is used to determine
    --  whether the lines should be joined with a bevel instead of a miter.
    --  Cairo divides the length of the miter by the line width.
@@ -931,9 +925,8 @@ package Cairo is
    --  converted to a bevel.
    --
    --  As with the other stroke parameters, the current line miter limit is
-   --  examined by Cairo_Stroke, Cairo_Stroke_Extents, and
-   --  Cairo_Stroke_To_Path, but does not have any effect during path
-   --  construction.
+   --  examined by Stroke, Stroke_Extents, and Stroke_To_Path, but does not
+   --  have any effect during path construction.
    --
    --  The default miter limit value is 10.0, which will convert joins
    --  with interior angles less than 11 degrees to bevels instead of
@@ -952,7 +945,7 @@ package Cairo is
    --  Modifies the current transformation matrix (CTM) by translating the
    --  user-space origin by (tx, ty). This offset is interpreted as a
    --  user-space coordinate according to the CTM in place before the new
-   --  call to Cairo_Translate. In other words, the translation of the
+   --  call to Translate. In other words, the translation of the
    --  user-space origin takes place after any existing transformation.
 
    procedure Scale (Cr : Cairo_Context; Sx : Gdouble; Sy : Gdouble);
@@ -1024,9 +1017,8 @@ package Cairo is
    --  Dy: Y component of a distance vector (in/out parameter)
    --
    --  Transform a distance vector from user space to device space. This
-   --  function is similar to Cairo_User_To_Device except that the
-   --  translation components of the CTM will be ignored when transforming
-   --  (dx,dy).
+   --  function is similar to User_To_Device except that the translation
+   --  components of the CTM will be ignored when transforming (Dx,Dy).
 
    procedure Device_To_User
      (Cr : Cairo_Context;
@@ -1049,11 +1041,14 @@ package Cairo is
    --  Dy: Y component of a distance vector (in/out parameter)
    --
    --  Transform a distance vector from device space to user space. This
-   --  function is similar to Cairo_Device_To_User except that the
+   --  function is similar to Device_To_User except that the
    --  translation components of the inverse CTM will be ignored when
    --  transforming (dx,dy).
 
-   --  Path creation functions
+   -------------------
+   -- Path creation --
+   -------------------
+
    procedure New_Path (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
@@ -1065,8 +1060,7 @@ package Cairo is
    --  X: the X coordinate of the new position
    --  Y: the Y coordinate of the new position
    --
-   --  Begin a new sub-path. After this call the current point will be (x,
-   --  y).
+   --  Begin a new sub-path. After this call the current point will be (X, Y).
 
    procedure New_Sub_Path (Cr : Cairo_Context);
    --  Cr: a cairo context
@@ -1075,13 +1069,13 @@ package Cairo is
    --  affected. After this call there will be no current point.
    --
    --  In many cases, this call is not needed since new sub-paths are
-   --  frequently started with Cairo_Move_To.
+   --  frequently started with Move_To.
    --
-   --  A call to Cairo_New_Sub_Path is particularly useful when
-   --  beginning a new sub-path with one of the Cairo_Arc calls. This
+   --  A call to New_Sub_Path is particularly useful when
+   --  beginning a new sub-path with one of the Arc calls. This
    --  makes things easier as it is no longer necessary to manually
    --  compute the arc's initial coordinates for a call to
-   --  Cairo_Move_To.
+   --  Move_To.
    --
    --  Since: 1.2
 
@@ -1090,12 +1084,12 @@ package Cairo is
    --  X: the X coordinate of the end of the new line
    --  Y: the Y coordinate of the end of the new line
    --
-   --  Adds a line to the path from the current point to position (x, y)
+   --  Adds a line to the path from the current point to position (X, Y)
    --  in user-space coordinates. After this call the current point
-   --  will be (x, y).
+   --  will be (X, Y).
    --
-   --  If there is no current point before the call to Cairo_Line_To
-   --  this function will behave as Cairo_Move_To(cr, x, y).
+   --  If there is no current point before the call to Line_To
+   --  this function will behave as Move_To (Cr, X, Y).
 
    procedure Curve_To
      (Cr : Cairo_Context;
@@ -1113,14 +1107,14 @@ package Cairo is
    --  X3: the X coordinate of the end of the curve
    --  Y3: the Y coordinate of the end of the curve
    --
-   --  Adds a cubic BÃ©zier spline to the path from the current point to
-   --  position (x3, y3) in user-space coordinates, using (x1, y1) and
-   --  (x2, y2) as the control points. After this call the current point
-   --  will be (x3, y3).
+   --  Adds a cubic Bézier spline to the path from the current point to
+   --  position (X3, Y3) in user-space coordinates, using (X1, Y1) and
+   --  (X2, Y2) as the control points. After this call the current point
+   --  will be (X3, Y3).
    --
-   --  If there is no current point before the call to Cairo_Curve_To
+   --  If there is no current point before the call to Curve_To
    --  this function will behave as if preceded by a call to
-   --  Cairo_Move_To(cr, x1, y1).
+   --  Move_To (Cr, X1, Y1).
 
    procedure Arc
      (Cr     : Cairo_Context;
@@ -1137,15 +1131,15 @@ package Cairo is
    --  Angle2: the end angle, in radians
    --
    --  Adds a circular arc of the given radius to the current path.  The
-   --  arc is centered at (xc, yc), begins at angle1 and proceeds in
-   --  the direction of increasing angles to end at angle2. If angle2 is
-   --  less than angle1 it will be progressively increased by 2*M_PI
-   --  until it is greater than angle1.
+   --  arc is centered at (Xc, Yc), begins at Angle1 and proceeds in
+   --  the direction of increasing angles to end at Angle2. If Angle2 is
+   --  less than Angle1 it will be progressively increased by 2*M_PI
+   --  until it is greater than Angle1.
    --
    --  If there is a current point, an initial line segment will be added
    --  to the path to connect the current point to the beginning of the
    --  arc. If this initial line is undesired, it can be avoided by
-   --  calling Cairo_New_Sub_Path before calling Cairo_Arc.
+   --  calling New_Sub_Path before calling Arc.
    --
    --  Angles are measured in radians. An angle of 0.0 is in the direction
    --  of the positive X axis (in user space). An angle of M_PI/2.0 radians
@@ -1154,8 +1148,7 @@ package Cairo is
    --  axis toward the positive Y axis. So with the default transformation
    --  matrix, angles increase in a clockwise direction.
    --
-   --  (To convert from degrees to radians, use <literal>degrees * (M_PI /
-   --  180.)</literal>.)
+   --  (To convert from degrees to radians, use degrees * (Pi / 180.0))
    --
    --  This function gives the arc in the direction of increasing angles;
    --  see Cairo_Arc_Negative to get the arc in the direction of
@@ -1164,15 +1157,13 @@ package Cairo is
    --  The arc is circular in user space. To achieve an elliptical arc,
    --  you can scale the current transformation matrix by different
    --  amounts in the X and Y directions. For example, to draw an ellipse
-   --  in the box given by X, y, width, height:
+   --  in the box given by X, Y, Width, Height:
    --
-   --  <informalexample><programlisting>
-   --  Cairo_Save (cr);
-   --  Cairo_Translate (cr, x + width / 2., y + height / 2.);
-   --  Cairo_Scale (cr, width / 2., height / 2.);
-   --  Cairo_Arc (cr, 0., 0., 1., 0., 2 * M_PI);
-   --  Cairo_Restore (cr);
-   --  </programlisting></informalexample>
+   --  Cairo_Save (Cr);
+   --  Cairo_Translate (Cr, X + Width / 2.0, Y + Height / 2.0);
+   --  Cairo_Scale (Cr, Width / 2.0, Height / 2.0);
+   --  Cairo_Arc (Cr, 0.0, 0.0, 1.0, 0.0, 2 * Pi);
+   --  Cairo_Restore (Cr);
 
    procedure Arc_Negative
      (Cr     : Cairo_Context;
@@ -1189,21 +1180,13 @@ package Cairo is
    --  Angle2: the end angle, in radians
    --
    --  Adds a circular arc of the given radius to the current path.  The
-   --  arc is centered at (xc, yc), begins at angle1 and proceeds in
-   --  the direction of decreasing angles to end at angle2. If angle2 is
-   --  greater than angle1 it will be progressively decreased by 2*M_PI
-   --  until it is less than angle1.
+   --  arc is centered at (Xc, Yc), begins at Angle1 and proceeds in
+   --  the direction of decreasing angles to end at Angle2. If Angle2 is
+   --  greater than Angle1 it will be progressively decreased by 2*Pi
+   --  until it is less than Angle1.
    --
-   --  See Cairo_Arc for more details. This function differs only in the
+   --  See Arc for more details. This function differs only in the
    --  direction of the arc between the two angles.
-
-   --  XXX: NYI
-   --  Cairo_Public void
-   --  Cairo_Arc_To (Cairo_Context *cr,
-   --         Gdouble x1, Gdouble y1,
-   --         Gdouble x2, Gdouble y2,
-   --         Gdouble radius);
-   --
 
    procedure Rel_Move_To (Cr : Cairo_Context; Dx : Gdouble; Dy : Gdouble);
    --  Cr: a cairo context
@@ -3275,6 +3258,9 @@ private
    pragma Convention (C, Cairo_Status);
    pragma Convention (C, Cairo_Operator);
    pragma Convention (C, Cairo_Antialias);
+   pragma Convention (C, Cairo_Fill_Rule);
+   pragma Convention (C, Cairo_Line_Cap);
+   pragma Convention (C, Cairo_Line_Join);
 
    type Cairo_Context is new System.Address;
    Null_Context : constant Cairo_Context :=
