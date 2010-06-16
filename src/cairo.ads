@@ -513,7 +513,7 @@ package Cairo is
    --  operations:
    --
    --  declare
-   --     Group: Cairo_Pattern := Pop_Group (cr);
+   --     Group: Cairo_Pattern := Pop_Group (Cr);
    --  begin
    --     Set_Source (Cr, Group);
    --     Cairo.Pattern.Destroy (Group);
@@ -1043,7 +1043,7 @@ package Cairo is
    --  Transform a distance vector from device space to user space. This
    --  function is similar to Device_To_User except that the
    --  translation components of the inverse CTM will be ignored when
-   --  transforming (dx,dy).
+   --  transforming (Dx,dy).
 
    -------------------
    -- Path creation --
@@ -1194,31 +1194,31 @@ package Cairo is
    --  Dy: the Y offset
    --
    --  Begin a new sub-path. After this call the current point will offset
-   --  by (x, y).
+   --  by (X, Y).
    --
-   --  Given a current point of (x, y), Cairo_Rel_Move_To(cr, dx, dy)
-   --  is logically equivalent to Cairo_Move_To(cr, x + dx, y + dy).
+   --  Given a current point of (X, Y), Rel_Move_To (Cr, Dx, Dy)
+   --  is logically equivalent to Move_To (Cr, X + Dx, Y + Dy).
    --
    --  It is an error to call this function with no current point. Doing
    --  so will cause cr to shutdown with a status of
-   --  CAIRO_STATUS_NO_CURRENT_POINT.
+   --  Cairo_Status_No_Current_Point.
 
    procedure Rel_Line_To (Cr : Cairo_Context; Dx : Gdouble; Dy : Gdouble);
    --  Cr: a cairo context
    --  Dx: the X offset to the end of the new line
    --  Dy: the Y offset to the end of the new line
    --
-   --  Relative-coordinate version of Cairo_Line_To. Adds a line to the
+   --  Relative-coordinate version of Line_To. Adds a line to the
    --  path from the current point to a point that is offset from the
-   --  current point by (dx, dy) in user space. After this call the
-   --  current point will be offset by (dx, dy).
+   --  current point by (Dx, Dy) in user space. After this call the
+   --  current point will be offset by (Dx, Dy).
    --
-   --  Given a current point of (x, y), Cairo_Rel_Line_To(cr, dx, dy)
-   --  is logically equivalent to Cairo_Line_To(cr, x + dx, y + dy).
+   --  Given a current point of (X, Y), Rel_Line_To (Cr, Dx, Dy)
+   --  is logically equivalent to Cairo_Line_To(Cr, X + Dx, Y + Dy).
    --
    --  It is an error to call this function with no current point. Doing
    --  so will cause cr to shutdown with a status of
-   --  CAIRO_STATUS_NO_CURRENT_POINT.
+   --  Cairo_Status_No_Current_Point.
 
    procedure Rel_Curve_To
      (Cr  : Cairo_Context;
@@ -1237,19 +1237,19 @@ package Cairo is
    --  Dy3: the Y offset to the end of the curve
    --
    --  Relative-coordinate version of Cairo_Curve_To. All offsets are
-   --  relative to the current point. Adds a cubic BÃ©zier spline to the
+   --  relative to the current point. Adds a cubic Bézier spline to the
    --  path from the current point to a point offset from the current
-   --  point by (dx3, dy3), using points offset by (dx1, dy1) and
-   --  (dx2, dy2) as the control points. After this call the current
-   --  point will be offset by (dx3, dy3).
+   --  point by (Dx3, Dy3), using points offset by (Dx1, Dy1) and
+   --  (Dx2, Dy2) as the control points. After this call the current
+   --  point will be offset by (Dx3, Dy3).
    --
-   --  Given a current point of (x, y), Cairo_Rel_Curve_To(cr, dx1,
-   --  dy1, dx2, dy2, dx3, dy3) is logically equivalent to
-   --  Cairo_Curve_To(cr, x+dx1, y+dy1, x+dx2, y+dy2, x+dx3, y+dy3).
+   --  Given a current point of (X, Y), Cairo_Rel_Curve_To(Cr, Dx1,
+   --  Dy1, Dx2, Dy2, Dx3, Dy3) is logically equivalent to
+   --  Cairo_Curve_To(Cr, X+Dx1, Y+Dy1, X+Dx2, Y+Dy2, X+Dx3, Y+Dy3).
    --
    --  It is an error to call this function with no current point. Doing
    --  so will cause cr to shutdown with a status of
-   --  CAIRO_STATUS_NO_CURRENT_POINT.
+   --  Cairo_Status_No_Current_Point.
 
    procedure Rectangle
      (Cr     : Cairo_Context;
@@ -1264,42 +1264,36 @@ package Cairo is
    --  Height: the Height of the rectangle
    --
    --  Adds a closed sub-path rectangle of the given size to the current
-   --  path at position (x, y) in user-space coordinates.
+   --  path at position (X, Y) in user-space coordinates.
    --
    --  This function is logically equivalent to:
-   --  <informalexample><programlisting>
-   --  Cairo_Move_To (cr, x, y);
-   --  Cairo_Rel_Line_To (cr, width, 0);
-   --  Cairo_Rel_Line_To (cr, 0, height);
-   --  Cairo_Rel_Line_To (cr, -width, 0);
-   --  Cairo_Close_Path (cr);
-   --  </programlisting></informalexample>
-
-   --  XXX: NYI
-   --  Cairo_Public void
-   --  Cairo_Stroke_To_Path (Cairo_Context *cr);
    --
+   --  Move_To (Cr, x, Y);
+   --  Rel_Line_To (Cr, Width, 0);
+   --  Rel_Line_To (Cr, 0, Height);
+   --  Rel_Line_To (Cr, -Width, 0);
+   --  Close_Path (Cr);
 
    procedure Close_Path (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
    --  Adds a line segment to the path from the current point to the
    --  beginning of the current sub-path, (the most recent point passed to
-   --  Cairo_Move_To), and closes this sub-path. After this call the
+   --  Move_To), and closes this sub-path. After this call the
    --  current point will be at the joined endpoint of the sub-path.
    --
-   --  The behavior of Cairo_Close_Path is distinct from simply calling
-   --  Cairo_Line_To with the equivalent coordinate in the case of
+   --  The behavior of Close_Path is distinct from simply calling
+   --  Line_To with the equivalent coordinate in the case of
    --  stroking. When a closed sub-path is stroked, there are no caps on
    --  the ends of the sub-path. Instead, there is a line join connecting
    --  the final and initial segments of the sub-path.
    --
-   --  If there is no current point before the call to Cairo_Close_Path,
+   --  If there is no current point before the call to Close_Path,
    --  this function will have no effect.
    --
-   --  Note: As of cairo version 1.2.4 any call to Cairo_Close_Path will
+   --  Note: As of cairo version 1.2.4 any call to Close_Path will
    --  place an explicit MOVE_TO element into the path immediately after
-   --  the CLOSE_PATH element, (which can be seen in Cairo_Copy_Path for
+   --  the CLOSE_PATH element, (which can be seen in Copy_Path for
    --  example). This can simplify path processing in some cases as it may
    --  not be necessary to save the "last move_to point" during processing
    --  as the MOVE_TO immediately after the CLOSE_PATH will provide that
@@ -1322,25 +1316,27 @@ package Cairo is
    --  an empty rectangle ((0,0), (0,0)). Stroke parameters, fill rule,
    --  surface dimensions and clipping are not taken into account.
    --
-   --  Contrast with Cairo_Fill_Extents and Cairo_Stroke_Extents which
+   --  Contrast with Fill_Extents and Stroke_Extents which
    --  return the extents of only the area that would be "inked" by
    --  the corresponding drawing operations.
    --
-   --  The result of Cairo_Path_Extents is defined as equivalent to the
-   --  limit of Cairo_Stroke_Extents with CAIRO_LINE_CAP_ROUND as the
+   --  The result of Path_Extents is defined as equivalent to the
+   --  limit of Stroke_Extents with Cairo_Line_Cap_Round as the
    --  line width approaches 0.0, (but never reaching the empty-rectangle
    --  returned by Cairo_Stroke_Extents for a line width of 0.0).
    --
    --  Specifically, this means that zero-area sub-paths such as
-   --  Cairo_Move_To;Cairo_Line_To segments, (even degenerate cases
-   --  where the coordinates to both calls are identical), will be
-   --  considered as contributing to the extents. However, a lone
-   --  Cairo_Move_To will not contribute to the results of
-   --  Cairo_Path_Extents.
+   --  Move_To;Line_To segments, (even degenerate cases where the coordinates
+   --  to both calls are identical), will be considered as contributing to the
+   --  extents. However, a lone Move_To will not contribute to the results of
+   --  Path_Extents.
    --
    --  Since: 1.6
 
-   --  Painting functions
+   --------------
+   -- Painting --
+   --------------
+
    procedure Paint (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
@@ -1351,19 +1347,18 @@ package Cairo is
    --  Cr: a cairo context
    --  Alpha: Alpha value, between 0 (transparent) and 1 (opaque)
    --
-   --  A drawing operator that paints the current source everywhere within
-   --  the current clip region using a mask of constant alpha value
-   --  alpha. The effect is similar to Cairo_Paint, but the drawing
-   --  is faded out using the alpha value.
+   --  A drawing operator that paints the current source everywhere within the
+   --  current clip region using a mask of constant alpha value alpha. The
+   --  effect is similar to Paint, but the drawing is faded out using the alpha
+   --  value.
 
    procedure Mask (Cr : Cairo_Context; Pattern : Cairo_Pattern);
    --  Cr: a cairo context
    --  Pattern: a Cairo_Pattern
    --
-   --  A drawing operator that paints the current source
-   --  using the alpha channel of pattern as a mask. (Opaque
-   --  areas of pattern are painted with the source, transparent
-   --  areas are not painted.)
+   --  A drawing operator that paints the current source using the alpha
+   --  channel of pattern as a mask. (Opaque areas of pattern are painted with
+   --  the source, transparent areas are not painted.)
 
    procedure Mask_Surface
      (Cr        : Cairo_Context;
@@ -1386,29 +1381,28 @@ package Cairo is
    --  A drawing operator that strokes the current path according to the
    --  current line width, line join, line cap, and dash settings. After
    --  Cairo_Stroke, the current path will be cleared from the cairo
-   --  context. See Cairo_Set_Line_Width, Cairo_Set_Line_Join,
-   --  Cairo_Set_Line_Cap, Cairo_Set_Dash, and
-   --  Cairo_Stroke_Preserve.
+   --  context. See Set_Line_Width, Set_Line_Join, Set_Line_Cap, Set_Dash,
+   --  and Stroke_Preserve.
    --
    --  Note: Degenerate segments and sub-paths are treated specially and
    --  provide a useful result. These can result in two different
    --  situations:
    --
    --  1. Zero-length "on" segments set in Cairo_Set_Dash. If the cap
-   --  style is CAIRO_LINE_CAP_ROUND or CAIRO_LINE_CAP_SQUARE then these
+   --  style is Cairo_Line_Cap_Round or Cairo_Line_Cap_Square then these
    --  segments will be drawn as circular dots or squares respectively. In
-   --  the case of CAIRO_LINE_CAP_SQUARE, the orientation of the squares
+   --  the case of Cairo_Line_Cap_Square, the orientation of the squares
    --  is determined by the direction of the underlying path.
    --
    --  2. A sub-path created by Cairo_Move_To followed by either a
    --  Cairo_Close_Path or one or more calls to Cairo_Line_To to the
    --  same coordinate as the Cairo_Move_To. If the cap style is
-   --  CAIRO_LINE_CAP_ROUND then these sub-paths will be drawn as circular
-   --  dots. Note that in the case of CAIRO_LINE_CAP_SQUARE a degenerate
+   --  Cairo_Line_Cap_Round then these sub-paths will be drawn as circular
+   --  dots. Note that in the case of Cairo_Line_Cap_Square a degenerate
    --  sub-path will not be drawn at all, (since the correct orientation
    --  is indeterminate).
    --
-   --  In no case will a cap style of CAIRO_LINE_CAP_BUTT cause anything
+   --  In no case will a cap style of Cairo_Line_Cap_Butt cause anything
    --  to be drawn in the case of either degenerate segments or sub-paths.
 
    procedure Stroke_Preserve (Cr : Cairo_Context);
@@ -1419,45 +1413,43 @@ package Cairo is
    --  Cairo_Stroke, Cairo_Stroke_Preserve preserves the path within the
    --  cairo context.
    --
-   --  See Cairo_Set_Line_Width, Cairo_Set_Line_Join,
-   --  Cairo_Set_Line_Cap, Cairo_Set_Dash, and
-   --  Cairo_Stroke_Preserve.
+   --  See Set_Line_Width, Set_Line_Join, Set_Line_Cap, Set_Dash, and
+   --  Stroke_Preserve.
 
    procedure Fill (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
    --  A drawing operator that fills the current path according to the
    --  current fill rule, (each sub-path is implicitly closed before being
-   --  filled). After Cairo_Fill, the current path will be cleared from
-   --  the cairo context. See Cairo_Set_Fill_Rule and
-   --  Cairo_Fill_Preserve.
+   --  filled). After Fill, the current path will be cleared from
+   --  the cairo context. See Set_Fill_Rule and Fill_Preserve.
 
    procedure Fill_Preserve (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
    --  A drawing operator that fills the current path according to the
    --  current fill rule, (each sub-path is implicitly closed before being
-   --  filled). Unlike Cairo_Fill, Cairo_Fill_Preserve preserves the
-   --  path within the cairo context.
+   --  filled). Unlike Fill, Fill_Preserve preserves the path within the
+   --  cairo context.
    --
-   --  See Cairo_Set_Fill_Rule and Cairo_Fill.
+   --  See Set_Fill_Rule and Fill.
 
    procedure Copy_Page (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
    --  Emits the current page for backends that support multiple pages, but
    --  doesn't clear it, so, the contents of the current page will be retained
-   --  for the next page too.  Use Cairo_Show_Page if you want to get an
+   --  for the next page too.  Use Show_Page if you want to get an
    --  empty page after the emission.
    --
    --  This is a convenience function that simply calls
-   --  Cairo.Surface.Copy_Page on cr's target.
+   --  Cairo.Surface.Copy_Page on Cr's target.
 
    procedure Show_Page (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
    --  Emits and clears the current page for backends that support multiple
-   --  pages.  Use Cairo_Copy_Page if you don't want to clear the page.
+   --  pages.  Use Copy_Page if you don't want to clear the page.
    --
    --  This is a convenience function that simply calls
    --  Cairo.Surface.Show_Page on cr's target.
@@ -1473,13 +1465,12 @@ package Cairo is
    --  Y: Y coordinate of the point to test
    --
    --  Tests whether the given point is inside the area that would be
-   --  affected by a Cairo_Stroke operation given the current path and
+   --  affected by a Stroke operation given the current path and
    --  stroking parameters. Surface dimensions and clipping are not taken
    --  into account.
    --
-   --  See Cairo_Stroke, Cairo_Set_Line_Width, Cairo_Set_Line_Join,
-   --  Cairo_Set_Line_Cap, Cairo_Set_Dash, and
-   --  Cairo_Stroke_Preserve.
+   --  See Stroke, Set_Line_Width, Set_Line_Join,
+   --  Set_Line_Cap, Set_Dash, and Stroke_Preserve.
    --
    --  Return value: A non-zero value if the point is inside, or zero if
    --  outside.
@@ -1494,16 +1485,19 @@ package Cairo is
    --  Y: Y coordinate of the point to test
    --
    --  Tests whether the given point is inside the area that would be
-   --  affected by a Cairo_Fill operation given the current path and
+   --  affected by a Fill operation given the current path and
    --  filling parameters. Surface dimensions and clipping are not taken
    --  into account.
    --
-   --  See Cairo_Fill, Cairo_Set_Fill_Rule and Cairo_Fill_Preserve.
+   --  See Fill, Set_Fill_Rule and Fill_Preserve.
    --
    --  Return value: A non-zero value if the point is inside, or zero if
    --  outside.
 
-   --  Rectangular extents
+   -------------------------
+   -- Rectangular extents --
+   -------------------------
+
    procedure Stroke_Extents
      (Cr : Cairo_Context;
       X1 : access Gdouble;
@@ -1517,24 +1511,23 @@ package Cairo is
    --  Y2: bottom of the resulting extents
    --
    --  Computes a bounding box in user coordinates covering the area that
-   --  would be affected, (the "inked" area), by a Cairo_Stroke
+   --  would be affected, (the "inked" area), by a Stroke
    --  operation given the current path and stroke parameters.
    --  If the current path is empty, returns an empty rectangle ((0,0), (0,0)).
    --  Surface dimensions and clipping are not taken into account.
    --
    --  Note that if the line width is set to exactly zero, then
-   --  Cairo_Stroke_Extents will return an empty rectangle. Contrast with
-   --  Cairo_Path_Extents which can be used to compute the non-empty
+   --  Stroke_Extents will return an empty rectangle. Contrast with
+   --  Path_Extents which can be used to compute the non-empty
    --  bounds as the line width approaches zero.
    --
-   --  Note that Cairo_Stroke_Extents must necessarily do more work to
+   --  Note that Stroke_Extents must necessarily do more work to
    --  compute the precise inked areas in light of the stroke parameters,
-   --  so Cairo_Path_Extents may be more desirable for sake of
+   --  so Path_Extents may be more desirable for sake of
    --  performance if non-inked path extents are desired.
    --
-   --  See Cairo_Stroke, Cairo_Set_Line_Width, Cairo_Set_Line_Join,
-   --  Cairo_Set_Line_Cap, Cairo_Set_Dash, and
-   --  Cairo_Stroke_Preserve.
+   --  See Stroke, Set_Line_Width, Set_Line_Join, Set_Line_Cap, Set_Dash, and
+   --  Stroke_Preserve.
 
    procedure Fill_Extents
      (Cr : Cairo_Context;
@@ -1549,23 +1542,26 @@ package Cairo is
    --  Y2: bottom of the resulting extents
    --
    --  Computes a bounding box in user coordinates covering the area that
-   --  would be affected, (the "inked" area), by a Cairo_Fill operation
+   --  would be affected, (the "inked" area), by a Fill operation
    --  given the current path and fill parameters. If the current path is
    --  empty, returns an empty rectangle ((0,0), (0,0)). Surface
    --  dimensions and clipping are not taken into account.
    --
-   --  Contrast with Cairo_Path_Extents, which is similar, but returns
+   --  Contrast with Path_Extents, which is similar, but returns
    --  non-zero extents for some paths with no inked area, (such as a
    --  simple line segment).
    --
-   --  Note that Cairo_Fill_Extents must necessarily do more work to
+   --  Note that Fill_Extents must necessarily do more work to
    --  compute the precise inked areas in light of the fill rule, so
-   --  Cairo_Path_Extents may be more desirable for sake of performance
+   --  Path_Extents may be more desirable for sake of performance
    --  if the non-inked path extents are desired.
    --
-   --  See Cairo_Fill, Cairo_Set_Fill_Rule and Cairo_Fill_Preserve.
+   --  See Fill, Set_Fill_Rule and Fill_Preserve.
 
-   --  Clipping
+   --------------
+   -- Clipping --
+   --------------
+
    procedure Reset_Clip (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
@@ -1576,52 +1572,51 @@ package Cairo is
    --  exact bounds of the target surface.
    --
    --  Note that code meant to be reusable should not call
-   --  Cairo_Reset_Clip as it will cause results unexpected by
-   --  higher-level code which calls Cairo_Clip. Consider using
-   --  Cairo_Save and Cairo_Restore around Cairo_Clip as a more
+   --  Reset_Clip as it will cause results unexpected by higher-level code
+   --  which calls Clip. Consider using Save and Restore around Clip as a more
    --  robust means of temporarily restricting the clip region.
 
    procedure Clip (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
    --  Establishes a new clip region by intersecting the current clip
-   --  region with the current path as it would be filled by Cairo_Fill
-   --  and according to the current fill rule (see Cairo_Set_Fill_Rule).
+   --  region with the current path as it would be filled by Fill
+   --  and according to the current fill rule (see Set_Fill_Rule).
    --
-   --  After Cairo_Clip, the current path will be cleared from the cairo
+   --  After Clip, the current path will be cleared from the cairo
    --  context.
    --
    --  The current clip region affects all drawing operations by
    --  effectively masking out any changes to the surface that are outside
    --  the current clip region.
    --
-   --  Calling Cairo_Clip can only make the clip region smaller, never
+   --  Calling Clip can only make the clip region smaller, never
    --  larger. But the current clip is part of the graphics state, so a
    --  temporary restriction of the clip region can be achieved by
-   --  calling Cairo_Clip within a Cairo_Save/cairo_Restore
+   --  calling Clip within a Save/Restore
    --  pair. The only other means of increasing the size of the clip
-   --  region is Cairo_Reset_Clip.
+   --  region is Reset_Clip.
 
    procedure Clip_Preserve (Cr : Cairo_Context);
    --  Cr: a cairo context
    --
    --  Establishes a new clip region by intersecting the current clip
-   --  region with the current path as it would be filled by Cairo_Fill
-   --  and according to the current fill rule (see Cairo_Set_Fill_Rule).
+   --  region with the current path as it would be filled by Fill
+   --  and according to the current fill rule (see Set_Fill_Rule).
    --
-   --  Unlike Cairo_Clip, Cairo_Clip_Preserve preserves the path within
+   --  Unlike Clip, Clip_Preserve preserves the path within
    --  the cairo context.
    --
    --  The current clip region affects all drawing operations by
    --  effectively masking out any changes to the surface that are outside
    --  the current clip region.
    --
-   --  Calling Cairo_Clip_Preserve can only make the clip region smaller, never
+   --  Calling Clip_Preserve can only make the clip region smaller, never
    --  larger. But the current clip is part of the graphics state, so a
    --  temporary restriction of the clip region can be achieved by
-   --  calling Cairo_Clip_Preserve within a Cairo_Save/cairo_Restore
+   --  calling Clip_Preserve within a Save/Restore
    --  pair. The only other means of increasing the size of the clip
-   --  region is Cairo_Reset_Clip.
+   --  region is Reset_Clip.
 
    procedure Clip_Extents
      (Cr : Cairo_Context;
@@ -1664,7 +1659,7 @@ package Cairo is
    --   Rectangles: Array containing the Rectangles
    --   Num_Rectangles: Number of rectangles in this list
    --
-   --   A data structure for holding a dynamically allocated
+   --   A data structure for holding a Dynamically allocated
    --   array of rectangles.
    --
    --   Since: 1.4
@@ -1827,7 +1822,7 @@ package Cairo is
    --   glyph or a string of glyphs in user-space coordinates. Because text
    --   extents are in user-space coordinates, they are mostly, but not
    --   entirely, independent of the current transformation matrix. If you call
-   --   <literal>Cairo_Scale(cr, 2.0, 2.0)</literal>, text will
+   --   <literal>Cairo_Scale(Cr, 2.0, 2.0)</literal>, text will
    --   be drawn twice as big, but the reported text extents will not be
    --   doubled. They will change slightly due to hinting (so you can't
    --   assume that metrics are independent of the transformation matrix),
@@ -1878,7 +1873,7 @@ package Cairo is
    --
    --   Because font metrics are in user-space coordinates, they are
    --   mostly, but not entirely, independent of the current transformation
-   --   matrix. If you call <literal>Cairo_Scale(cr, 2.0, 2.0)</literal>,
+   --   matrix. If you call <literal>Cairo_Scale(Cr, 2.0, 2.0)</literal>,
    --   text will be drawn twice as big, but the reported text extents will
    --   not be doubled. They will change slightly due to hinting (so you
    --   can't assume that metrics are independent of the transformation
@@ -2881,7 +2876,7 @@ package Cairo is
    --        Cairo_path *path;
    --        Cairo_path_data *data;
    --   &nbsp;
-   --        path = Cairo_Copy_Path (cr);
+   --        path = Cairo_Copy_Path (Cr);
    --   &nbsp;
    --        for (i=0; i < path->num_data; i += path->data[i].header.length) {
    --            data = &amp;path->data[i];
