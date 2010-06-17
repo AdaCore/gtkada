@@ -44,7 +44,7 @@ package Cairo.Scaled_Font is
    --        font. In the simplest case of a N point font, this matrix is
    --        just a scale by N, but it can also be used to shear the font
    --        or stretch it unequally along the two axes. See
-   --        Cairo_Set_Font_Matrix.
+   --        Cairo.Set_Font_Matrix.
    --  Ctm: user to device transformation matrix with which the font will
    --        be used.
    --  Options: Options to use when getting metrics for the font and
@@ -55,12 +55,12 @@ package Cairo.Scaled_Font is
    --  be used.
    --
    --  Return value: a newly created Cairo_Scaled_Font. Destroy with
-   --   Cairo.Scaled_Font.Destroy
+   --  Cairo.Scaled_Font.Destroy
 
    function Reference
      (Scaled_Font : Cairo_Scaled_Font)
       return        Cairo_Scaled_Font;
-   --  Scaled_Font: a Cairo.Scaled_Font.T, (may be NULL in which case
+   --  Scaled_Font: a Cairo.Scaled_Font.T, (may be null in which case
    --  this function does nothing)
    --
    --  Increases the reference count on scaled_font by one. This prevents
@@ -97,8 +97,8 @@ package Cairo.Scaled_Font is
    --  Checks whether an error has previously occurred for this
    --  scaled_font.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS or another error such as
-   --    CAIRO_STATUS_NO_MEMORY.
+   --  Return value: Cairo_Status_Success or another error such as
+   --    Cairo_Status_No_Memory.
 
    function Get_Type
      (Scaled_Font : Cairo_Scaled_Font)
@@ -122,9 +122,9 @@ package Cairo.Scaled_Font is
    --
    --  Return user data previously attached to scaled_font using the
    --  specified key.  If no user data has been attached with the given
-   --  key this function returns NULL.
+   --  key this function returns null.
    --
-   --  Return value: the user data previously attached or NULL.
+   --  Return value: the user data previously attached or null.
    --
    --  Since: 1.4
 
@@ -132,7 +132,7 @@ package Cairo.Scaled_Font is
      (Scaled_Font : Cairo_Scaled_Font;
       Key         : access constant Cairo_User_Data_Key;
       User_Data   : System.Address;
-      Destroy     : access procedure (Arg1 : System.Address))
+      Destroy     : Cairo_Destroy_Func)
       return        Cairo_Status;
    --  Scaled_Font: a Cairo_Scaled_Font
    --  Key: the address of a Cairo_User_Data_Key to attach the user data to
@@ -142,10 +142,10 @@ package Cairo.Scaled_Font is
    --  same key.
    --
    --  Attach user data to scaled_font.  To remove user data from a surface,
-   --  call this function with the key that was used to set it and NULL
+   --  call this function with the key that was used to set it and null
    --  for data.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY if a
+   --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory if a
    --  slot could not be allocated for the user data.
    --
    --  Since: 1.4
@@ -183,11 +183,11 @@ package Cairo.Scaled_Font is
    --
    --  Since: 1.2
 
-   procedure Glyph_Extents
-     (Scaled_Font : Cairo_Scaled_Font;
-      Glyphs      : access constant Cairo_Glyph;
-      Num_Glyphs  : Gint;
-      Extents     : Cairo_Text_Extents);
+--     procedure Glyph_Extents
+--       (Scaled_Font : Cairo_Scaled_Font;
+--        Glyphs      : access constant Cairo_Glyph;
+--        Num_Glyphs  : Gint;
+--        Extents     : Cairo_Text_Extents);
    --  Scaled_Font: a Cairo_Scaled_Font
    --  Glyphs: an array of glyph IDs with X and Y offsets.
    --  Num_Glyphs: the number of glyphs in the glyphs array
@@ -195,27 +195,27 @@ package Cairo.Scaled_Font is
    --
    --  Gets the extents for an array of glyphs. The extents describe a
    --  user-space rectangle that encloses the "inked" portion of the
-   --  glyphs, (as they would be drawn by Cairo_Show_Glyphs if the cairo
-   --  graphics state were set to the same font_face, font_matrix, ctm,
-   --  and font_options as scaled_font).  Additionally, the x_advance and
-   --  y_advance values indicate the amount by which the current point
-   --  would be advanced by Cairo_Show_Glyphs.
+   --  glyphs, (as they would be drawn by Cairo.Show_Glyphs if the cairo
+   --  graphics state were set to the same Font_Face, Font_Matrix, Ctm,
+   --  and Font_Options as Scaled_Font).  Additionally, the x_advance and
+   --  Y_Advance values indicate the amount by which the current point
+   --  would be advanced by Cairo.Show_Glyphs.
    --
    --  Note that whitespace glyphs do not contribute to the size of the
    --  rectangle (extents.width and extents.height).
 
-   function Text_To_Glyphs
-     (Scaled_Font   : Cairo_Scaled_Font;
-      X             : Gdouble;
-      Y             : Gdouble;
-      Utf8          : Interfaces.C.Strings.chars_ptr;
-      Utf8_Len      : Gint;
-      Glyphs        : System.Address;
-      Num_Glyphs    : access Gint;
-      Clusters      : System.Address;
-      Num_Clusters  : access Gint;
-      Cluster_Flags : Cairo_Text_Cluster_Flags)
-      return          Cairo_Status;
+--     function Text_To_Glyphs
+--       (Scaled_Font   : Cairo_Scaled_Font;
+--        X             : Gdouble;
+--        Y             : Gdouble;
+--        Utf8          : Interfaces.C.Strings.chars_ptr;
+--        Utf8_Len      : Gint;
+--        Glyphs        : System.Address;
+--        Num_Glyphs    : access Gint;
+--        Clusters      : System.Address;
+--        Num_Clusters  : access Gint;
+--        Cluster_Flags : Cairo_Text_Cluster_Flags)
+--        return          Cairo_Status;
    --  X: X position to place first glyph
    --  Y: Y position to place first glYph
    --  Scaled_Font: a Cairo_Scaled_Font
@@ -224,15 +224,15 @@ package Cairo.Scaled_Font is
    --  Glyphs: pointer to array of Glyphs to fill
    --  Num_Glyphs: pointer to number of glyphs
    --  Clusters: pointer to array of cluster mapping information to fill, or
-   --  NULL
-   --  Num_Clusters: pointer to number of clusters, or NULL
+   --  null
+   --  Num_Clusters: pointer to number of clusters, or null
    --  Cluster_Flags: pointer to location to store cluster flags corresponding
-   --  to the output clusters, or NULL
+   --  to the output clusters, or null
    --
    --  Converts UTF-8 text to an array of glyphs, optionally with cluster
    --  mapping, that can be used to render later using scaled_font.
    --
-   --  If glyphs initially points to a non-NULL value, that array is used
+   --  If glyphs initially points to a non-null value, that array is used
    --  as a glyph buffer, and num_glyphs should point to the number of glyph
    --  entries available there.  If the provided glyph array is too short for
    --  the conversion, a new glyph array is allocated using
@@ -243,11 +243,11 @@ package Cairo.Scaled_Font is
    --  array using Cairo_Glyph_Free.  This may happen even if the provided
    --  array was large enough.
    --
-   --  If clusters is not NULL, num_clusters and cluster_flags should not be
-   --  NULL, and cluster mapping will be computed.
+   --  If clusters is not null, num_clusters and cluster_flags should not be
+   --  null, and cluster mapping will be computed.
    --  The semantics of how cluster array allocation works is similar to the
    --  glyph array.  That is,
-   --  if clusters initially points to a non-NULL value, that array is used
+   --  if clusters initially points to a non-null value, that array is used
    --  as a cluster buffer, and num_clusters should point to the number of
    --  cluster
    --  entries available there.  If the provided cluster array is too short for
@@ -259,14 +259,14 @@ package Cairo.Scaled_Font is
    --  allocated cluster array using Cairo_Text_Cluster_Free.  This may happen
    --  even if the provided array was large enough.
    --
-   --  In the simplest case, glyphs and clusters can point to NULL initially
+   --  In the simplest case, glyphs and clusters can point to null initially
    --  and a suitable array will be allocated.  In code:
    --  <informalexample><programlisting>
    --  Cairo_Status status;
    --
-   --  Cairo_Glyph *glyphs = NULL;
+   --  Cairo_Glyph *glyphs = null;
    --  int num_glyphs;
-   --  Cairo_Text_Cluster *clusters = NULL;
+   --  Cairo_Text_Cluster *clusters = null;
    --  int num_clusters;
    --  Cairo_Text_Cluster_Flags cluster_flags;
    --
@@ -277,7 +277,7 @@ package Cairo.Scaled_Font is
    --                                             &amp;clusters,
    --  &amp;num_clusters, &amp;cluster_flags);
    --
-   --  if (status == CAIRO_STATUS_SUCCESS) {
+   --  if (status == Cairo_Status_Success) {
    --      Cairo_Show_Text_Glyphs (cr,
    --                              utf8, utf8_len,
    --                              *glyphs, *num_glyphs,
@@ -292,17 +292,17 @@ package Cairo.Scaled_Font is
    --  <informalexample><programlisting>
    --  Cairo_Status status;
    --
-   --  Cairo_Glyph *glyphs = NULL;
+   --  Cairo_Glyph *glyphs = null;
    --  int num_glyphs;
    --
    --  status = Cairo.Scaled_Font.Text_To_Glyphs (scaled_font,
    --                                             x, y,
    --                                             utf8, utf8_len,
    --                                             &amp;glyphs, &amp;num_glyphs,
-   --                                             NULL, NULL,
-   --                                             NULL);
+   --                                             null, null,
+   --                                             null);
    --
-   --  if (status == CAIRO_STATUS_SUCCESS) {
+   --  if (status == Cairo_Status_Success) {
    --      Cairo_Show_Glyphs (cr, *glyphs, *num_glyphs);
    --      Cairo_Glyph_Free (*glyphs);
    --  }
@@ -328,7 +328,7 @@ package Cairo.Scaled_Font is
    --                                             &amp;clusters,
    --  &amp;num_clusters, &amp;cluster_flags);
    --
-   --  if (status == CAIRO_STATUS_SUCCESS) {
+   --  if (status == Cairo_Status_Success) {
    --      Cairo_Show_Text_Glyphs (cr,
    --                              utf8, utf8_len,
    --                              *glyphs, *num_glyphs,
@@ -348,7 +348,7 @@ package Cairo.Scaled_Font is
    --  Cairo_Show_Glyphs, or related functions, assuming that the exact
    --  same scaled_font is used for the operation.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS upon success, or an error status
+   --  Return value: Cairo_Status_Success upon success, or an error status
    --  if the input values are wrong or if conversion failed.  If the input
    --  values are correct but the conversion failed, the error status is also
    --  set on scaled_font.
@@ -362,7 +362,7 @@ package Cairo.Scaled_Font is
    --
    --  Gets the font face that this scaled font was created for.
    --
-   --  Return value: The Cairo_Font_Face with which scaled_font was
+   --  Return value: The Cairo_Font_Face with which Scaled_Font was
    --  created.
    --
    --  Since: 1.2
@@ -373,7 +373,7 @@ package Cairo.Scaled_Font is
    --  Scaled_Font: a Cairo_Scaled_Font
    --  Font_Matrix: return value for the matrix
    --
-   --  Stores the font matrix with which scaled_font was created into
+   --  Stores the font matrix with which Scaled_Font was created into
    --  matrix.
    --
    --  Since: 1.2
@@ -384,7 +384,7 @@ package Cairo.Scaled_Font is
    --  Scaled_Font: a Cairo_Scaled_Font
    --  Ctm: return value for the CTM
    --
-   --  Stores the CTM with which scaled_font was created into ctm.
+   --  Stores the CTM with which Scaled_Font was created into Ctm.
    --
    --  Since: 1.2
 
@@ -427,8 +427,8 @@ private
    pragma Import (C, Set_User_Data, "cairo_scaled_font_set_user_data");
    pragma Import (C, Extents, "cairo_scaled_font_extents");
    pragma Import (C, Text_Extents, "cairo_scaled_font_text_extents");
-   pragma Import (C, Glyph_Extents, "cairo_scaled_font_glyph_extents");
-   pragma Import (C, Text_To_Glyphs, "cairo_scaled_font_text_to_glyphs");
+--     pragma Import (C, Glyph_Extents, "cairo_scaled_font_glyph_extents");
+--     pragma Import (C, Text_To_Glyphs, "cairo_scaled_font_text_to_glyphs");
    pragma Import (C, Get_Font_Face, "cairo_scaled_font_get_font_face");
    pragma Import (C, Get_Font_Matrix, "cairo_scaled_font_get_font_matrix");
    pragma Import (C, Get_Ctm, "cairo_scaled_font_get_ctm");
