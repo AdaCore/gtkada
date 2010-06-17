@@ -31,29 +31,26 @@ pragma Ada_2005;
 package Cairo.Font_Options is
 
    function Create return Cairo_Font_Options;
-   --
    --  Allocates a new font options object with all options initialized
-   --   to default values.
+   --  to default values.
    --
    --  Return value: a newly allocated Cairo_Font_Options. Free with
-   --    Cairo.Font_Options.Destroy. This function always returns a
-   --    valid pointer; if memory cannot be allocated, then a special
-   --    error object is returned where all operations on the object do
-   --    nothing.  You can check for this with Cairo.Font_Options.Status.
+   --  Cairo.Font_Options.Destroy. If memory cannot be allocated, then a
+   --  special error object is returned where all operations on the object do
+   --  nothing. You can check for this with Cairo.Font_Options.Status.
 
    function Copy
-     (Original : access constant Cairo_Font_Options)
+     (Original : Cairo_Font_Options)
       return     Cairo_Font_Options;
    --  Original: a Cairo_Font_Options
    --
    --  Allocates a new font options object copying the option values from
-   --   original.
+   --  original.
    --
    --  Return value: a newly allocated Cairo_Font_Options. Free with
-   --    Cairo.Font_Options.Destroy. This function always returns a
-   --    valid pointer; if memory cannot be allocated, then a special
-   --    error object is returned where all operations on the object do
-   --    nothing.  You can check for this with Cairo.Font_Options.Status.
+   --  Cairo.Font_Options.Destroy. If memory cannot be allocated, then a
+   --  special error object is returned where all operations on the object do
+   --  nothing. You can check for this with Cairo.Font_Options.Status.
 
    procedure Destroy (Options : Cairo_Font_Options);
    --  Options: a Cairo_Font_Options
@@ -67,34 +64,34 @@ package Cairo.Font_Options is
    --  Checks whether an error has previously occurred for this
    --  font options object
    --
-   --  Return value: CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY
+   --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory
 
    procedure Merge
      (Options : Cairo_Font_Options;
-      Other   : access constant Cairo_Font_Options);
+      Other   : Cairo_Font_Options);
    --  Options: a Cairo_Font_Options
    --  Other: anOther Cairo_Font_Options
    --
    --  Merges non-default options from other into options, replacing
    --  existing values. This operation can be thought of as somewhat
    --  similar to compositing other onto options with the operation
-   --  of CAIRO_OPERATION_OVER.
+   --  of Cairo_Operation_Over.
 
    function Equal
-     (Options : access constant Cairo_Font_Options;
-      Other   : access constant Cairo_Font_Options)
+     (Options : Cairo_Font_Options;
+      Other   : Cairo_Font_Options)
       return    Cairo_Bool;
    --  Options: a Cairo_Font_Options
-   --  Other: anOther Cairo_Font_Options
+   --  Other: another Cairo_Font_Options
    --
    --  Compares two font options objects for equality.
    --
-   --  Return value: TRUE if all fields of the two font options objects match.
-   --  Note that this function will return FALSE if either object is in
+   --  Return value: True if all fields of the two font options objects match.
+   --  Note that this function will return False if either object is in
    --  error.
 
    function Hash
-     (Options : access constant Cairo_Font_Options)
+     (Options : Cairo_Font_Options)
       return    Gulong;
    --  Options: a Cairo_Font_Options
    --
@@ -103,8 +100,8 @@ package Cairo.Font_Options is
    --  in a hash table.
    --
    --  Return value: the hash value for the font options object.
-   --    The return value can be cast to a 32-bit type if a
-   --    32-bit hash value is needed.
+   --  The return value can be cast to a 32-bit type if a
+   --  32-bit hash value is needed.
 
    procedure Set_Antialias
      (Options   : Cairo_Font_Options;
@@ -116,7 +113,7 @@ package Cairo.Font_Options is
    --  specifies the type of antialiasing to do when rendering text.
 
    function Get_Antialias
-     (Options : access constant Cairo_Font_Options)
+     (Options : Cairo_Font_Options)
       return    Cairo_Antialias;
    --  Options: a Cairo_Font_Options
    --
@@ -133,11 +130,11 @@ package Cairo.Font_Options is
    --  Sets the subpixel order for the font options object. The subpixel
    --  order specifies the order of color elements within each pixel on
    --  the display device when rendering with an antialiasing mode of
-   --  CAIRO_ANTIALIAS_SUBPIXEL. See the documentation for
+   --  Cairo_Antialias_Subpixel. See the documentation for
    --  Cairo_Subpixel_Order for full details.
 
    function Get_Subpixel_Order
-     (Options : access constant Cairo_Font_Options)
+     (Options : Cairo_Font_Options)
       return    Cairo_Subpixel_Order;
    --  Options: a Cairo_Font_Options
    --
@@ -158,7 +155,7 @@ package Cairo.Font_Options is
    --  See the documentation for Cairo_Hint_Style for full details.
 
    function Get_Hint_Style
-     (Options : access constant Cairo_Font_Options)
+     (Options : Cairo_Font_Options)
       return    Cairo_Hint_Style;
    --  Options: a Cairo_Font_Options
    --
@@ -179,7 +176,7 @@ package Cairo.Font_Options is
    --  See the documentation for Cairo_Hint_Metrics for full details.
 
    function Get_Hint_Metrics
-     (Options : access constant Cairo_Font_Options)
+     (Options : Cairo_Font_Options)
       return    Cairo_Hint_Metrics;
    --  Options: a Cairo_Font_Options
    --
