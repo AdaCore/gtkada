@@ -2015,8 +2015,7 @@ package Cairo is
    --   Cairo.Font_Options.Equal, Cairo.Font_Options.Merge, and
    --   Cairo.Font_Options.Hash should be used to copy, check
    --   for equality, merge, or compute a hash value of
-   --   Cairo_font_options objects.
-   --
+   --   Cairo_Font_Options objects.
 
    type Cairo_Font_Options is private;
 
@@ -2033,7 +2032,7 @@ package Cairo is
    --  Slant: the Slant for the font
    --  Weight: the Weight for the font
    --
-   --  Note: The Cairo_Select_Font_Face function call is part of what
+   --  Note: The Select_Font_Face function call is part of what
    --  the cairo designers call the "toy" text API. It is convenient for
    --  short demos and simple programs, but it is not expected to be
    --  adequate for serious text-using applications.
@@ -2045,44 +2044,31 @@ package Cairo is
    --  "sans-serif", "cursive", "fantasy", "monospace"), are likely to
    --  work as expected.
    --
-   --  For "real" font selection, see the font-backend-specific
-   --  font_face_create functions for the font backend you are using. (For
-   --  example, if you are using the freetype-based cairo-ft font backend,
-   --  see Cairo_Ft_Font_Face_Create_For_Ft_Face or
-   --  Cairo_Ft_Font_Face_Create_For_Pattern.) The resulting font face
-   --  could then be used with Cairo.Scaled_Font.Create and
-   --  Cairo_Set_Scaled_Font.
-   --
-   --  Similarly, when using the "real" font support, you can call
-   --  directly into the underlying font system, (such as fontconfig or
-   --  freetype), for operations such as listing available fonts, etc.
-   --
    --  It is expected that most applications will need to use a more
    --  comprehensive font handling and text layout library, (for example,
    --  pango), in conjunction with cairo.
    --
-   --  If text is drawn without a call to Cairo_Select_Font_Face, (nor
-   --  Cairo_Set_Font_Face nor Cairo_Set_Scaled_Font), the default
+   --  If text is drawn without a call to Select_Font_Face, (nor
+   --  Set_Font_Face nor Set_Scaled_Font), the default
    --  family is platform-specific, but is essentially "sans-serif".
-   --  Default slant is CAIRO_FONT_SLANT_NORMAL, and default weight is
-   --  CAIRO_FONT_WEIGHT_NORMAL.
+   --  Default slant is Cairo_Font_Slant_Normal, and default weight is
+   --  Cairo_Font_Weight_Normal.
    --
-   --  This function is equivalent to a call to Cairo_Toy_Font_Face_Create
-   --  followed by Cairo_Set_Font_Face.
+   --  This function is equivalent to a call to
+   --  Cairo.Font_Face.Toy_Font_Face_Create followed by Set_Font_Face.
 
    procedure Set_Font_Size (Cr : Cairo_Context; Size : Gdouble);
    --  Cr: a Cairo_Context
    --  Size: the new font Size, in user space units
    --
    --  Sets the current font matrix to a scale by a factor of size, replacing
-   --  any font matrix previously set with Cairo_Set_Font_Size or
-   --  Cairo_Set_Font_Matrix. This results in a font size of size user space
+   --  any font matrix previously set with Set_Font_Size or
+   --  Set_Font_Matrix. This results in a font size of size user space
    --  units. (More precisely, this matrix will result in the font's
    --  em-square being a size by size square in user space.)
    --
-   --  If text is drawn without a call to Cairo_Set_Font_Size, (nor
-   --  Cairo_Set_Font_Matrix nor Cairo_Set_Scaled_Font), the default
-   --  font size is 10.0.
+   --  If text is drawn without a call to Set_Font_Size, (nor Set_Font_Matrix
+   --  nor Set_Scaled_Font), the default font size is 10.0.
 
    procedure Set_Font_Matrix
      (Cr     : Cairo_Context;
@@ -2094,7 +2080,7 @@ package Cairo is
    --  Sets the current font matrix to matrix. The font matrix gives a
    --  transformation from the design space of the font (in this space,
    --  the em-square is 1 unit by 1 unit) to user space. Normally, a
-   --  simple scale is used (see Cairo_Set_Font_Size), but a more
+   --  simple scale is used (see Set_Font_Size), but a more
    --  complex font matrix can be used to shear the font
    --  or stretch it unequally along the two axes
 
@@ -2104,8 +2090,7 @@ package Cairo is
    --  Cr: a Cairo_Context
    --  Matrix: return value for the Matrix
    --
-   --  Stores the current font matrix into matrix. See
-   --  Cairo_Set_Font_Matrix.
+   --  Stores the current font matrix into matrix. See Set_Font_Matrix.
 
    procedure Set_Font_Options
      (Cr      : Cairo_Context;
@@ -2116,7 +2101,7 @@ package Cairo is
    --  Sets a set of custom font rendering options for the Cairo_Context.
    --  Rendering options are derived by merging these options with the
    --  options derived from underlying surface; if the value in options
-   --  has a default value (like CAIRO_ANTIALIAS_DEFAULT), then the value
+   --  has a default value (like Cairo_Antialias_Default), then the value
    --  from the surface is used.
 
    procedure Get_Font_Options
@@ -2126,16 +2111,17 @@ package Cairo is
    --  Options: a Cairo_Font_Options object into which to store
    --    the retrieved options. All existing values are overwritten
    --
-   --  Retrieves font rendering options set via Cairo_Set_Font_Options.
+   --  Retrieves font rendering options set via Set_Font_Options.
    --  Note that the returned options do not include any options derived
    --  from the underlying surface; they are literally the options
-   --  passed to Cairo_Set_Font_Options.
+   --  passed to Set_Font_Options.
 
    procedure Set_Font_Face
      (Cr        : Cairo_Context;
       Font_Face : Cairo_Font_Face);
    --  Cr: a Cairo_Context
-   --  Font_Face: a Cairo.Font_Face.T, or NULL to restore to the default font
+   --  Font_Face: a Cairo_Font_Face, or Null_Font_Face to restore to the
+   --  default font
    --
    --  Replaces the current Cairo_Font_Face object in the Cairo_Context with
    --  font_face. The replaced font face in the Cairo_Context will be
@@ -2150,13 +2136,12 @@ package Cairo is
    --  cairo. To keep a reference to it, you must call
    --  Cairo.Font_Face.Reference.
    --
-   --  This function never returns NULL. If memory cannot be allocated, a
-   --  special "nil" Cairo_Font_Face object will be returned on which
-   --  Cairo.Font_Face.Status returns CAIRO_STATUS_NO_MEMORY. Using
-   --  this nil object will cause its error state to propagate to other
-   --  objects it is passed to, (for example, calling
-   --  Cairo_Set_Font_Face with a nil font will trigger an error that
-   --  will shutdown the Cairo_Context object).
+   --  This function never returns Null_Font_Face. If memory cannot be
+   --  allocated, a special "nil" Cairo_Font_Face object will be returned on
+   --  which Cairo.Font_Face.Status returns Cairo_Status_No_Memory. Using this
+   --  nil object will cause its error state to propagate to other objects it
+   --  is passed to, (for example, calling Set_Font_Face with a nil font
+   --  will trigger an error that will shutdown the Cairo_Context object).
 
    procedure Set_Scaled_Font
      (Cr          : Cairo_Context;
@@ -2167,7 +2152,7 @@ package Cairo is
    --  Replaces the current font face, font matrix, and font options in
    --  the Cairo_Context with those of the Cairo_Scaled_Font.  Except for
    --  some translation, the current CTM of the Cairo_Context should be the
-   --  same as that of the Cairo.Scaled_Font.T, which can be accessed
+   --  same as that of the Cairo_Scaled_Font, which can be accessed
    --  using Cairo.Scaled_Font.Get_Ctm.
    --
    --  Since: 1.2
@@ -2181,13 +2166,12 @@ package Cairo is
    --  cairo. To keep a reference to it, you must call
    --  Cairo.Scaled_Font.Reference.
    --
-   --  This function never returns NULL. If memory cannot be allocated, a
-   --  special "nil" Cairo_Scaled_Font object will be returned on which
-   --  Cairo.Scaled_Font.Status returns CAIRO_STATUS_NO_MEMORY. Using
-   --  this nil object will cause its error state to propagate to other
-   --  objects it is passed to, (for example, calling
-   --  Cairo_Set_Scaled_Font with a nil font will trigger an error that
-   --  will shutdown the Cairo_Context object).
+   --  This function never returns Null_Font_Face. If memory cannot be
+   --  allocated, a special "nil" Cairo_Scaled_Font object will be returned on
+   --  which Cairo.Font_Face.Status returns Cairo_Status_No_Memory. Using this
+   --  nil object will cause its error state to propagate to other objects it
+   --  is passed to, (for example, calling Set_Font_Face with a nil font
+   --  will trigger an error that will shutdown the Cairo_Context object).
    --
    --  Since: 1.4
 
@@ -2195,11 +2179,11 @@ package Cairo is
      (Cr   : Cairo_Context;
       Utf8 : Interfaces.C.Strings.chars_ptr);
    --  Cr: a cairo context
-   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or NULL
+   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr
    --
    --  A drawing operator that generates the shape from a string of UTF-8
-   --  characters, rendered according to the current font_face, font_size
-   --  (font_matrix), and font_options.
+   --  characters, rendered according to the current Font_Face, Font_Size
+   --  (Font_Matrix), and Font_Options.
    --
    --  This function first computes a set of glyphs for the string of
    --  text. The first glyph is placed so that its origin is at the
@@ -2211,12 +2195,12 @@ package Cairo is
    --  the next glyph would be placed in this same progression. That is,
    --  the current point will be at the origin of the final glyph offset
    --  by its advance values. This allows for easy display of a single
-   --  logical string with multiple calls to Cairo_Show_Text.
+   --  logical string with multiple calls to Show_Text.
    --
-   --  Note: The Cairo_Show_Text function call is part of what the cairo
+   --  Note: The Show_Text function call is part of what the cairo
    --  designers call the "toy" text API. It is convenient for short demos
    --  and simple programs, but it is not expected to be adequate for
-   --  serious text-using applications. See Cairo_Show_Glyphs for the
+   --  serious text-using applications. See Show_Glyphs for the
    --  "real" text display API in cairo.
 
    procedure Show_Glyphs
@@ -2231,15 +2215,15 @@ package Cairo is
    --  rendered according to the current font face, font size
    --  (font matrix), and font options.
 
-   procedure Show_Text_Glyphs
-     (Cr            : Cairo_Context;
-      Utf8          : Interfaces.C.Strings.chars_ptr;
-      Utf8_Len      : Gint;
-      Glyphs        : access constant Cairo_Glyph;
-      Num_Glyphs    : Gint;
-      Clusters      : access constant Cairo_Text_Cluster;
-      Num_Clusters  : Gint;
-      Cluster_Flags : Cairo_Text_Cluster_Flags);
+--     procedure Show_Text_Glyphs
+--       (Cr            : Cairo_Context;
+--        Utf8          : Interfaces.C.Strings.chars_ptr;
+--        Utf8_Len      : Gint;
+--        Glyphs        : access constant Cairo_Glyph;
+--        Num_Glyphs    : Gint;
+--        Clusters      : access constant Cairo_Text_Cluster;
+--        Num_Clusters  : Gint;
+--        Cluster_Flags : Cairo_Text_Cluster_Flags);
    --  Cr: a cairo context
    --  Utf8: a string of text encoded in UTF-8
    --  Utf8_Len: length of utf8 in bytes, or -1 if it is NUL-terminated
@@ -2249,21 +2233,21 @@ package Cairo is
    --  Num_Clusters: number of clusters in the mapping
    --  Cluster_Flags: cluster mapping flags
    --
-   --  This operation has rendering effects similar to Cairo_Show_Glyphs
+   --  This operation has rendering effects similar to Show_Glyphs
    --  but, if the target surface supports it, uses the provided text and
    --  cluster mapping to embed the text for the glyphs shown in the output.
    --  If the target does not support the extended attributes, this function
-   --  acts like the basic Cairo_Show_Glyphs as if it had been passed
-   --  glyphs and num_glyphs.
+   --  acts like the basic Show_Glyphs as if it had been passed
+   --  Glyphs and Num_Glyphs.
    --
-   --  The mapping between utf8 and glyphs is provided by an array of
-   --  <firstterm>clusters</firstterm>.  Each cluster covers a number of
+   --  The mapping between Utf8 and Glyphs is provided by an array of
+   --  clusters.  Each cluster covers a number of
    --  text bytes and glyphs, and neighboring clusters cover neighboring
-   --  areas of utf8 and glyphs.  The clusters should collectively cover utf8
-   --  and glyphs in entirety.
+   --  areas of utf8 and glyphs.  The clusters should collectively cover Utf8
+   --  and Glyphs in entirety.
    --
    --  The first cluster always covers bytes from the beginning of utf8.
-   --  If cluster_flags do not have the CAIRO_TEXT_CLUSTER_FLAG_BACKWARD
+   --  If cluster_flags do not have the Cairo_Text_Cluster_Flag_Backward
    --  set, the first cluster also covers the beginning
    --  of glyphs, otherwise it covers the end of the glyphs array and
    --  following clusters move backward.
@@ -2276,51 +2260,51 @@ package Cairo is
      (Cr   : Cairo_Context;
       Utf8 : Interfaces.C.Strings.chars_ptr);
    --  Cr: a cairo context
-   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or NULL
+   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr
    --
    --  Adds closed paths for text to the current path.  The generated
    --  path if filled, achieves an effect similar to that of
-   --  Cairo_Show_Text.
+   --  Show_Text.
    --
-   --  Text conversion and positioning is done similar to Cairo_Show_Text.
+   --  Text conversion and positioning is done similar to Show_Text.
    --
-   --  Like Cairo_Show_Text, After this call the current point is
+   --  Like Show_Text, After this call the current point is
    --  moved to the origin of where the next glyph would be placed in
    --  this same progression.  That is, the current point will be at
    --  the origin of the final glyph offset by its advance values.
    --  This allows for chaining multiple calls to to Cairo_Text_Path
    --  without having to set current point in between.
    --
-   --  Note: The Cairo_Text_Path function call is part of what the cairo
+   --  Note: The Text_Path function call is part of what the cairo
    --  designers call the "toy" text API. It is convenient for short demos
    --  and simple programs, but it is not expected to be adequate for
-   --  serious text-using applications. See Cairo_Glyph_Path for the
+   --  serious text-using applications. See Glyph_Path for the
    --  "real" text path API in cairo.
 
-   procedure Glyph_Path
-     (Cr         : Cairo_Context;
-      Glyphs     : access constant Cairo_Glyph;
-      Num_Glyphs : Gint);
+--     procedure Glyph_Path
+--       (Cr         : Cairo_Context;
+--        Glyphs     : access constant Cairo_Glyph;
+--        Num_Glyphs : Gint);
    --  Cr: a cairo context
    --  Glyphs: array of Glyphs to show
    --  Num_Glyphs: number of glyphs to show
    --
    --  Adds closed paths for the glyphs to the current path.  The generated
    --  path if filled, achieves an effect similar to that of
-   --  Cairo_Show_Glyphs.
+   --  Show_Glyphs.
 
    procedure Text_Extents
      (Cr      : Cairo_Context;
       Utf8    : Interfaces.C.Strings.chars_ptr;
-      Extents : Cairo_Text_Extents);
+      Extents : access Cairo_Text_Extents);
    --  Cr: a Cairo_Context
-   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or NULL
+   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr
    --  Extents: a Cairo_Text_Extents object into which the results
    --  will be stored
    --
    --  Gets the extents for a string of text. The extents describe a
    --  user-space rectangle that encloses the "inked" portion of the text,
-   --  (as it would be drawn by Cairo_Show_Text). Additionally, the
+   --  (as it would be drawn by Show_Text). Additionally, the
    --  x_advance and y_advance values indicate the amount by which the
    --  current point would be advanced by Cairo_Show_Text.
    --
@@ -2335,7 +2319,7 @@ package Cairo is
      (Cr         : Cairo_Context;
       Glyphs     : access constant Cairo_Glyph;
       Num_Glyphs : Gint;
-      Extents    : Cairo_Text_Extents);
+      Extents    : access Cairo_Text_Extents);
    --  Cr: a Cairo_Context
    --  Glyphs: an array of Cairo_Glyph objects
    --  Num_Glyphs: the number of elements in glyphs
@@ -2344,13 +2328,13 @@ package Cairo is
    --
    --  Gets the extents for an array of glyphs. The extents describe a
    --  user-space rectangle that encloses the "inked" portion of the
-   --  glyphs, (as they would be drawn by Cairo_Show_Glyphs).
-   --  Additionally, the x_advance and y_advance values indicate the
+   --  glyphs, (as they would be drawn by Show_Glyphs).
+   --  Additionally, the X_Advance and Y_Advance values indicate the
    --  amount by which the current point would be advanced by
-   --  Cairo_Show_Glyphs.
+   --  Show_Glyphs.
    --
    --  Note that whitespace glyphs do not contribute to the size of the
-   --  rectangle (extents.width and extents.height).
+   --  rectangle (Extents.Width and Extents.Height).
 
    procedure Font_Extents
      (Cr      : Cairo_Context;
@@ -2361,27 +2345,19 @@ package Cairo is
    --
    --  Gets the font extents for the currently selected font.
 
-   --  Generic identifier for a font style
-
    --   Cairo_Font_Type:
-   --   CAIRO_FONT_TYPE_TOY: The font was created using cairo's toy font api
-   --   CAIRO_FONT_TYPE_FT: The font is of type FreeType
-   --   CAIRO_FONT_TYPE_WIN32: The font is of type Win32
-   --   CAIRO_FONT_TYPE_QUARTZ: The font is of type Quartz (Since: 1.6)
-   --   CAIRO_FONT_TYPE_USER: The font was create using cairo's user font api
-   --   Since: 1.8)
    --
    --   Cairo_font_type is used to describe the type of a given font
    --   face or scaled font. The font types are also known as "font
-   --   backends" within cairo.
+   --   backends" within Cairo.
    --
    --   The type of a font face is determined by the function used to
    --   create it, which will generally be of the form
-   --   Cairo_<emphasis>type</emphasis>_Font_Face_Create. The font face type
+   --   <type>_Font_Face_Create. The font face type
    --   can be queried
    --   with Cairo.Font_Face.Get_Type
    --
-   --   The various Cairo_font_face functions can be used with a font face
+   --   The various Cairo_Font_Face functions can be used with a font face
    --   of any type.
    --
    --   The type of a scaled font is determined by the type of the font
@@ -2392,8 +2368,7 @@ package Cairo is
    --   fonts of any type, but some font backends also provide
    --   type-specific functions that must only be called with a scaled font
    --   of the appropriate type. These functions have names that begin with
-   --   Cairo_<emphasis>type</emphasis>_Scaled_Font such as
-   --   Cairo_Ft_Scaled_Font_Lock_Face.
+   --   <type>_Scaled_Font such as Ft_Scaled_Font_Lock_Face.
    --
    --   The behavior of calling a type-specific function with a scaled font
    --   of the wrong type is undefined.
@@ -2401,263 +2376,29 @@ package Cairo is
    --   New entries may be added in future versions.
    --
    --   Since: 1.2
-   --
 
-   type Cairo_Font_Type is (
-      Cairo_Font_Type_Toy,
+   type Cairo_Font_Type is
+     (Cairo_Font_Type_Toy,
+      --  The font was created using cairo's toy font api (Since: 1.8)
+
       Cairo_Font_Type_Ft,
+      --  The font is of type FreeType
+
       Cairo_Font_Type_Win32,
+      --  The font is of type Win32
+
       Cairo_Font_Type_Quartz,
-      Cairo_Font_Type_User);
+      --  The font is of type Quartz (Since: 1.6)
+
+      Cairo_Font_Type_User
+      --  The font was create using cairo's user font api
+     );
    pragma Convention (C, Cairo_Font_Type);
 
-   --  Portable interface to general font features.
+   ---------------------
+   -- Query functions --
+   ---------------------
 
-   --  Toy fonts
-
-   --  User fonts
-
-   --  User-font method signatures
-
-   --   Cairo_User_Scaled_Font_Init_Func:
-   --   Scaled_Font: the scaled-font being created
-   --   Cr: a cairo context, in font space
-   --   Extents: font Extents to fill in, in font space
-   --
-   --   Cairo_user_scaled_font_init_func is the type of function which is
-   --   called when a scaled-font needs to be created for a user font-face.
-   --
-   --   The cairo context cr is not used by the caller, but is prepared in font
-   --   space, similar to what the cairo contexts passed to the render_glyph
-   --   method will look like.  The callback can use this context for extents
-   --   computation for example.  After the callback is called, cr is checked
-   --   for any error status.
-   --
-   --   The extents argument is where the user font sets the font extents for
-   --   scaled_font.  It is in font space, which means that for most cases its
-   --   ascent and descent members should add to 1.0.  extents is preset to
-   --   hold a value of 1.0 for ascent, height, and max_x_advance, and 0.0 for
-   --   descent and max_y_advance members.
-   --
-   --   The callback is optional.  If not set, default font extents as
-   --   described
-   --   in the previous paragraph will be used.
-   --
-   --   Note that scaled_font is not fully initialized at this
-   --   point and trying to use it for text operations in the callback will
-   --   result
-   --   in deadlock.
-   --
-   --   Returns: CAIRO_STATUS_SUCCESS upon success, or
-   --   CAIRO_STATUS_USER_FONT_ERROR or any other error status on error.
-   --
-   --   Since: 1.8
-   --
-
-   type Cairo_User_Scaled_Font_Init_Func is access function
-     (Arg1 : Cairo_Scaled_Font;
-      Arg2 : Cairo_Context;
-      Arg3 : access Cairo_Font_Extents)
-      return Cairo_Status;
-
-   --   Cairo_User_Scaled_Font_Render_Glyph_Func:
-   --   Scaled_Font: user scaled-font
-   --   Glyph: Glyph code to render
-   --   Cr: cairo context to draw to, in font space
-   --   Extents: glyph Extents to fill in, in font space
-   --
-   --   Cairo_user_scaled_font_render_glyph_func is the type of function which
-   --   is called when a user scaled-font needs to render a glyph.
-   --
-   --   The callback is mandatory, and expected to draw the glyph with code
-   --   glyph to
-   --   the cairo context cr.  cr is prepared such that the glyph drawing is
-   --   done in
-   --   font space.  That is, the matrix set on cr is the scale matrix of
-   --   scaled_font,
-   --   The extents argument is where the user font sets the font extents for
-   --   scaled_font.  However, if user prefers to draw in user space, they can
-   --   achieve that by changing the matrix on cr.  All cairo rendering
-   --   operations
-   --   to cr are permitted, however, the result is undefined if any source
-   --   other
-   --   than the default source on cr is used.  That means, glyph bitmaps
-   --   should
-   --   be rendered using Cairo_Mask instead of Cairo_Paint.
-   --
-   --   Other non-default settings on cr include a font size of 1.0 (given that
-   --   it is set up to be in font space), and font options corresponding to
-   --   scaled_font.
-   --
-   --   The extents argument is preset to have <literal>x_bearing</literal>,
-   --   <literal>width</literal>, and <literal>y_advance</literal> of zero,
-   --   <literal>y_bearing</literal> set to
-   --   literal>-font_extents.ascent</literal>,
-   --   <literal>height</literal> to
-   --   literal>font_extents.ascent+font_extents.descent</literal>,
-   --   and <literal>x_advance</literal> to
-   --   literal>font_extents.max_x_advance</literal>.
-   --   The only field user needs to set in majority of cases is
-   --   <literal>x_advance</literal>.
-   --   If the <literal>width</literal> field is zero upon the callback
-   --   returning
-   --   (which is its preset value), the glyph extents are automatically
-   --   computed
-   --   based on the drawings done to cr.  This is in most cases exactly what
-   --   the
-   --   desired behavior is.  However, if for any reason the callback sets the
-   --   extents, it must be ink extents, and include the extents of all drawing
-   --   done to cr in the callback.
-   --
-   --   Returns: CAIRO_STATUS_SUCCESS upon success, or
-   --   CAIRO_STATUS_USER_FONT_ERROR or any other error status on error.
-   --
-   --   Since: 1.8
-   --
-
-   type Cairo_User_Scaled_Font_Render_Glyph_Func is access function
-     (Arg1 : Cairo_Scaled_Font;
-      Arg2 : Gulong;
-      Arg3 : Cairo_Context;
-      Arg4 : Cairo_Text_Extents)
-      return Cairo_Status;
-
-   --   Cairo_User_Scaled_Font_Text_To_Glyphs_Func:
-   --   Scaled_Font: the scaled-font being created
-   --   Utf8: a string of text encoded in UTF-8
-   --   Utf8_Len: length of utf8 in bytes
-   --   Glyphs: pointer to array of Glyphs to fill, in font space
-   --   Num_Glyphs: pointer to number of glyphs
-   --   Clusters: pointer to array of cluster mapping information to fill, or
-   --   NULL
-   --   Num_Clusters: pointer to number of clusters
-   --   Cluster_Flags: pointer to location to store cluster flags
-   --   corresponding to the
-   --                   output clusters
-   --
-   --   Cairo_user_scaled_font_text_to_glyphs_func is the type of function
-   --   which
-   --   is called to convert input text to an array of glyphs.  This is used
-   --   by the
-   --   Cairo_Show_Text operation.
-   --
-   --   Using this callback the user-font has full control on glyphs and their
-   --   positions.  That means, it allows for features like ligatures and
-   --   kerning,
-   --   as well as complex <firstterm>shaping</firstterm> required for scripts
-   --   like
-   --   Arabic and Indic.
-   --
-   --   The num_glyphs argument is preset to the number of glyph entries
-   --   available
-   --   in the glyphs buffer. If the glyphs buffer is NULL, the value of
-   --   num_glyphs will be zero.  If the provided glyph array is too short for
-   --   the conversion (or for convenience), a new glyph array may be allocated
-   --   using Cairo_Glyph_Allocate and placed in glyphs.  Upon return,
-   --   num_glyphs should contain the number of generated glyphs.  If the value
-   --   glyphs points at has changed after the call, the caller will free the
-   --   allocated glyph array using Cairo_Glyph_Free.
-   --   The callback should populate the glyph indices and positions (in font
-   --   space)
-   --   assuming that the text is to be shown at the origin.
-   --
-   --   If clusters is not NULL, num_clusters and cluster_flags are also
-   --   non-NULL, and cluster mapping should be computed. The semantics of how
-   --   cluster array allocation works is similar to the glyph array.  That is,
-   --   if clusters initially points to a non-NULL value, that array may be
-   --   used
-   --   as a cluster buffer, and num_clusters points to the number of cluster
-   --   entries available there.  If the provided cluster array is too short
-   --   for
-   --   the conversion (or for convenience), a new cluster array may be
-   --   allocated
-   --   using Cairo_Text_Cluster_Allocate and placed in clusters.  Upon return,
-   --   num_clusters should contain the number of generated clusters.
-   --   If the value clusters points at has changed after the call, the caller
-   --   will free the allocated cluster array using Cairo_Text_Cluster_Free.
-   --
-   --   The callback is optional.  If num_glyphs is negative upon
-   --   the callback returning, the unicode_to_glyph callback
-   --   is tried.  See Cairo_user_scaled_font_unicode_to_glyph_func.
-   --
-   --   Note: While cairo does not impose any limitation on glyph indices,
-   --   some applications may assume that a glyph index fits in a 16-bit
-   --   Guint integer.  As such, it is advised that user-fonts keep their
-   --   glyphs in the 0 to 65535 range.  Furthermore, some applications may
-   --   assume that glyph 0 is a special glyph-not-found glyph.  User-fonts
-   --   are advised to use glyph 0 for such purposes and do not use that
-   --   glyph value for other purposes.
-   --
-   --   Returns: CAIRO_STATUS_SUCCESS upon success, or
-   --   CAIRO_STATUS_USER_FONT_ERROR or any other error status on error.
-   --
-   --   Since: 1.8
-   --
-
-   type Cairo_User_Scaled_Font_Text_To_Glyphs_Func is access function
-     (Arg1 : Cairo_Scaled_Font;
-      Arg2 : Interfaces.C.Strings.chars_ptr;
-      Arg3 : Gint;
-      Arg4 : System.Address;
-      Arg5 : access Gint;
-      Arg6 : System.Address;
-      Arg7 : access Gint;
-      Arg8 : Cairo_Text_Cluster_Flags)
-      return Cairo_Status;
-
-   --   Cairo_User_Scaled_Font_Unicode_To_Glyph_Func:
-   --   Scaled_Font: the scaled-font being created
-   --   Unicode: input Unicode character code-point
-   --   Glyph_Index: output glyph index
-   --
-   --   Cairo_user_scaled_font_unicode_to_glyph_func is the type of function
-   --   which
-   --   is called to convert an input Unicode character to a single glyph.
-   --   This is used by the Cairo_Show_Text operation.
-   --
-   --   This callback is used to provide the same functionality as the
-   --   text_to_glyphs callback does (see
-   --   Cairo_user_scaled_font_text_to_glyphs_func)
-   --   but has much less control on the output,
-   --   in exchange for increased ease of use.  The inherent assumption to
-   --   using
-   --   this callback is that each character maps to one glyph, and that the
-   --   mapping is context independent.  It also assumes that glyphs are
-   --   positioned
-   --   according to their advance width.  These mean no ligatures, kerning, or
-   --   complex scripts can be implemented using this callback.
-   --
-   --   The callback is optional, and only used if text_to_glyphs callback is
-   --   not
-   --   set or fails to return glyphs.  If this callback is not set, an
-   --   identity
-   --   mapping from Unicode code-points to glyph indices is assumed.
-   --
-   --   Note: While cairo does not impose any limitation on glyph indices,
-   --   some applications may assume that a glyph index fits in a 16-bit
-   --   Guint integer.  As such, it is advised that user-fonts keep their
-   --   glyphs in the 0 to 65535 range.  Furthermore, some applications may
-   --   assume that glyph 0 is a special glyph-not-found glyph.  User-fonts
-   --   are advised to use glyph 0 for such purposes and do not use that
-   --   glyph value for other purposes.
-   --
-   --   Returns: CAIRO_STATUS_SUCCESS upon success, or
-   --   CAIRO_STATUS_USER_FONT_ERROR or any other error status on error.
-   --
-   --   Since: 1.8
-   --
-
-   type Cairo_User_Scaled_Font_Unicode_To_Glyph_Func is access function
-     (Arg1 : Cairo_Scaled_Font;
-      Arg2 : Gulong;
-      Arg3 : access Gulong)
-      return Cairo_Status;
-
-   --  User-font method setters
-
-   --  User-font method getters
-
-   --  Query functions
    function Get_Operator (Cr : Cairo_Context) return Cairo_Operator;
    --  Cr: a cairo context
    --
@@ -2668,7 +2409,7 @@ package Cairo is
    function Get_Source (Cr : Cairo_Context) return Cairo_Pattern;
    --  Cr: a cairo context
    --
-   --  Gets the current source pattern for cr.
+   --  Gets the current source pattern for Cr.
    --
    --  Return value: the current source pattern. This object is owned by
    --  cairo. To keep a reference to it, you must call
@@ -2677,14 +2418,14 @@ package Cairo is
    function Get_Tolerance (Cr : Cairo_Context) return Gdouble;
    --  Cr: a cairo context
    --
-   --  Gets the current tolerance value, as set by Cairo_Set_Tolerance.
+   --  Gets the current tolerance value, as set by Set_Tolerance.
    --
    --  Return value: the current tolerance value.
 
    function Get_Antialias (Cr : Cairo_Context) return Cairo_Antialias;
    --  Cr: a cairo context
    --
-   --  Gets the current shape antialiasing mode, as set by Cairo_Set_Antialias.
+   --  Gets the current shape antialiasing mode, as set by Set_Antialias.
    --
    --  Return value: the current shape antialiasing mode.
 
@@ -2692,7 +2433,7 @@ package Cairo is
    --  Cr: a cairo context
    --
    --  Returns whether a current point is defined on the current path.
-   --  See Cairo_Get_Current_Point for details on the current point.
+   --  See Get_Current_Point for details on the current point.
    --
    --  Return value: whether a current point is defined.
    --
@@ -2711,29 +2452,25 @@ package Cairo is
    --
    --  The current point is returned in the user-space coordinate
    --  system. If there is no defined current point or if cr is in an
-   --  error status, x and y will both be set to 0.0. It is possible to
-   --  check this in advance with Cairo_Has_Current_Point.
+   --  error status, X and Y will both be set to 0.0. It is possible to
+   --  check this in advance with Has_Current_Point.
    --
    --  Most path construction functions alter the current point. See the
    --  following for details on how they affect the current point:
-   --  Cairo_New_Path, Cairo_New_Sub_Path,
-   --  Cairo_Append_Path, Cairo_Close_Path,
-   --  Cairo_Move_To, Cairo_Line_To, Cairo_Curve_To,
-   --  Cairo_Rel_Move_To, Cairo_Rel_Line_To, Cairo_Rel_Curve_To,
-   --  Cairo_Arc, Cairo_Arc_Negative, Cairo_Rectangle,
-   --  Cairo_Text_Path, Cairo_Glyph_Path, Cairo_Stroke_To_Path.
+   --  New_Path, New_Sub_Path, Append_Path, Close_Path, Move_To, Line_To,
+   --  Curve_To, Rel_Move_To, Rel_Line_To, Rel_Curve_To, Arc, Arc_Negative,
+   --  Rectangle, Text_Path, Glyph_Path, Stroke_To_Path.
    --
-   --  Some functions use and alter the current point but do not
-   --  otherwise change current path:
-   --  Cairo_Show_Text.
+   --  Some functions use and alter the current point but do not otherwise
+   --  change current path: Show_Text.
    --
    --  Some functions unset the current path and as a result, current point:
-   --  Cairo_Fill, Cairo_Stroke.
+   --  Fill, Stroke.
 
    function Get_Fill_Rule (Cr : Cairo_Context) return Cairo_Fill_Rule;
    --  Cr: a cairo context
    --
-   --  Gets the current fill rule, as set by Cairo_Set_Fill_Rule.
+   --  Gets the current fill rule, as set by Set_Fill_Rule.
    --
    --  Return value: the current fill rule.
 
@@ -2741,30 +2478,30 @@ package Cairo is
    --  Cr: a cairo context
    --
    --  This function returns the current line width value exactly as set by
-   --  Cairo_Set_Line_Width. Note that the value is unchanged even if
-   --  the CTM has changed between the calls to Cairo_Set_Line_Width and
-   --  Cairo_Get_Line_Width.
+   --  Set_Line_Width. Note that the value is unchanged even if
+   --  the CTM has changed between the calls to Set_Line_Width and
+   --  Get_Line_Width.
    --
    --  Return value: the current line width.
 
    function Get_Line_Cap (Cr : Cairo_Context) return Cairo_Line_Cap;
    --  Cr: a cairo context
    --
-   --  Gets the current line cap style, as set by Cairo_Set_Line_Cap.
+   --  Gets the current line cap style, as set by Set_Line_Cap.
    --
    --  Return value: the current line cap style.
 
    function Get_Line_Join (Cr : Cairo_Context) return Cairo_Line_Join;
    --  Cr: a cairo context
    --
-   --  Gets the current line join style, as set by Cairo_Set_Line_Join.
+   --  Gets the current line join style, as set by Set_Line_Join.
    --
    --  Return value: the current line join style.
 
    function Get_Miter_Limit (Cr : Cairo_Context) return Gdouble;
    --  Cr: a cairo context
    --
-   --  Gets the current miter limit, as set by Cairo_Set_Miter_Limit.
+   --  Gets the current miter limit, as set by Set_Miter_Limit.
    --
    --  Return value: the current miter limit.
 
@@ -2774,23 +2511,23 @@ package Cairo is
    --  This function returns the length of the dash array in cr (0 if dashing
    --  is not currently in effect).
    --
-   --  See also Cairo_Set_Dash and Cairo_Get_Dash.
+   --  See also Set_Dash and Get_Dash.
    --
    --  Return value: the length of the dash array, or 0 if no dash array set.
    --
    --  Since: 1.4
 
-   procedure Get_Dash
-     (Cr     : Cairo_Context;
-      Dashes : access Gdouble;
-      Offset : access Gdouble);
+--     procedure Get_Dash
+--       (Cr     : Cairo_Context;
+--        Dashes : access Gdouble;
+--        Offset : access Gdouble);
    --  Cr: a Cairo_Context
-   --  Dashes: return value for the dash array, or NULL
-   --  Offset: return value for the current dash Offset, or NULL
+   --  Dashes: return value for the dash array, or null
+   --  Offset: return value for the current dash Offset, or null
    --
-   --  Gets the current dash array.  If not NULL, dashes should be big
+   --  Gets the current dash array.  If not null, dashes should be big
    --  enough to hold at least the number of values returned by
-   --  Cairo_Get_Dash_Count.
+   --  Get_Dash_Count.
    --
    --  Since: 1.4
 
@@ -2803,14 +2540,13 @@ package Cairo is
    function Get_Target (Cr : Cairo_Context) return Cairo_Surface;
    --  Cr: a cairo context
    --
-   --  Gets the target surface for the cairo context as passed to
-   --  Cairo_Create.
+   --  Gets the target surface for the cairo context as passed to Create.
    --
    --  This function will always return a valid pointer, but the result
    --  can be a "nil" surface if cr is already in an error state,
-   --  (ie. Cairo_Status <literal>!=</literal> CAIRO_STATUS_SUCCESS).
-   --  A nil surface is indicated by Cairo.Surface.Status
-   --  <literal>!=</literal> CAIRO_STATUS_SUCCESS.
+   --  (ie. Cairo_Status /= Cairo_Status_Success).
+   --  A nil surface is indicated by
+   --  Cairo.Surface.Status/= Cairo_Status_Success.
    --
    --  Return value: the target surface. This object is owned by cairo. To
    --  keep a reference to it, you must call Cairo.Surface.Reference.
@@ -2819,15 +2555,14 @@ package Cairo is
    --  Cr: a cairo context
    --
    --  Gets the current destination surface for the context. This is either
-   --  the original target surface as passed to Cairo_Create or the target
+   --  the original target surface as passed to Create or the target
    --  surface for the current group as started by the most recent call to
-   --  Cairo_Push_Group or Cairo_Push_Group_With_Content.
+   --  Push_Group or Push_Group_With_Content.
    --
    --  This function will always return a valid pointer, but the result
    --  can be a "nil" surface if cr is already in an error state,
-   --  (ie. Cairo_Status <literal>!=</literal> CAIRO_STATUS_SUCCESS).
-   --  A nil surface is indicated by Cairo.Surface.Status
-   --  <literal>!=</literal> CAIRO_STATUS_SUCCESS.
+   --  (ie. Cairo_Status /= Cairo_Status_Success).
+   --  A nil surface is indicated by Cairo_Status /= Cairo_Status_Success.
    --
    --  Return value: the target surface. This object is owned by cairo. To
    --  keep a reference to it, you must call Cairo.Surface.Reference.
@@ -2835,21 +2570,17 @@ package Cairo is
    --  Since: 1.2
 
    --   Cairo_Path_Data_Type:
-   --   CAIRO_PATH_MOVE_TO: A move-to operation
-   --   CAIRO_PATH_LINE_TO: A line-to operation
-   --   CAIRO_PATH_CURVE_TO: A curve-to operation
-   --   CAIRO_PATH_CLOSE_PATH: A close-path operation
    --
    --   Cairo_path_data is used to describe the type of one portion
-   --   of a path when represented as a Cairo_path.
-   --   See Cairo_path_data for details.
-   --
+   --   of a path when represented as a Cairo_Path.
+   --   See Cairo_Path_Data for details.
 
-   type Cairo_Path_Data_Type is (
-      Cairo_Path_Move_To,
-      Cairo_Path_Line_To,
-      Cairo_Path_Curve_To,
-      Cairo_Path_Close_Path);
+   type Cairo_Path_Data_Type is
+     (Cairo_Path_Move_To,    --  A move-to operation
+      Cairo_Path_Line_To,    --  A line-to operation
+      Cairo_Path_Curve_To,   --  A curve-to operation
+      Cairo_Path_Close_Path  --  A close-path operation
+     );
    pragma Convention (C, Cairo_Path_Data_Type);
 
    --   Cairo_Path_Data:
@@ -3188,9 +2919,9 @@ private
    pragma Import (C, Get_Scaled_Font, "cairo_get_scaled_font");
    pragma Import (C, Show_Text, "cairo_show_text");
    pragma Import (C, Show_Glyphs, "cairo_show_glyphs");
-   pragma Import (C, Show_Text_Glyphs, "cairo_show_text_glyphs");
+--     pragma Import (C, Show_Text_Glyphs, "cairo_show_text_glyphs");
    pragma Import (C, Text_Path, "cairo_text_path");
-   pragma Import (C, Glyph_Path, "cairo_glyph_path");
+--     pragma Import (C, Glyph_Path, "cairo_glyph_path");
    pragma Import (C, Text_Extents, "cairo_text_extents");
    pragma Import (C, Glyph_Extents, "cairo_glyph_extents");
    pragma Import (C, Font_Extents, "cairo_font_extents");
@@ -3206,7 +2937,7 @@ private
    pragma Import (C, Get_Line_Join, "cairo_get_line_join");
    pragma Import (C, Get_Miter_Limit, "cairo_get_miter_limit");
    pragma Import (C, Get_Dash_Count, "cairo_get_dash_count");
-   pragma Import (C, Get_Dash, "cairo_get_dash");
+--     pragma Import (C, Get_Dash, "cairo_get_dash");
    pragma Import (C, Get_Matrix, "cairo_get_matrix");
    pragma Import (C, Get_Target, "cairo_get_target");
    pragma Import (C, Get_Group_Target, "cairo_get_group_target");
