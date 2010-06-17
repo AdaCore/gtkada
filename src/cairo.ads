@@ -528,8 +528,6 @@ package Cairo is
    --
    --  Since: 1.2
 
-   --  Modify state
-
    --   Cairo_Operator:
    --
    --   Cairo_operator is used to set the compositing operator for all cairo
@@ -1652,7 +1650,6 @@ package Cairo is
       Width  : aliased Gdouble;
       Height : aliased Gdouble;
    end record;
-   pragma Convention (C_Pass_By_Copy, Cairo_Rectangle);
 
    --   Cairo_Rectangle_List:
    --   Status: Error Status of the rectangle list
@@ -1663,11 +1660,17 @@ package Cairo is
    --   array of rectangles.
    --
    --   Since: 1.4
-   --
+
+   type Cairo_Rectangle_Array is array (Natural) of Cairo_Rectangle;
+   type Cairo_Rectangle_Array_Access is access all Cairo_Rectangle_Array;
 
    type Cairo_Rectangle_List is record
       Status         : aliased Cairo_Status;
-      Rectangles     : access Cairo_Rectangle;
+      Rectangles     : Cairo_Rectangle_Array_Access;
+      --  Warning: for efficiency reasons, Rectangles is a direct mapping to
+      --  the C structure. Therefore, there is no bounds checking on this
+      --  array, user needs to make sure only to access data between indexes 0
+      --  and Num_Rectanges-1.
       Num_Rectangles : aliased Gint;
    end record;
    pragma Convention (C_Pass_By_Copy, Cairo_Rectangle_List);
@@ -1681,96 +1684,101 @@ package Cairo is
    --  coordinates.
    --  Never returns NULL.
    --
-   --  The status in the list may be CAIRO_STATUS_CLIP_NOT_REPRESENTABLE to
+   --  The status in the list may be Cairo_Status_Clip_Not_Representable to
    --  indicate that the clip region cannot be represented as a list of
    --  user-space rectangles. The status may have other values to indicate
    --  other errors.
    --
    --  Returns: the current clip region as a list of rectangles in user
    --  coordinates,
-   --  which should be destroyed using Cairo_Rectangle_List_Destroy.
+   --  which should be destroyed using Rectangle_List_Destroy.
    --
    --  Since: 1.4
 
    procedure Rectangle_List_Destroy
      (Rectangle_List : access Cairo_Rectangle_List);
+   --  Rectangle_List: a rectangle list, as obtained from Copy_Clip_Rectangles
+   --
+   --  Unconditionally frees Rectangle_List and all associated
+   --  references. After this call, the Rectangle_List pointer must not
+   --  be dereferenced.
+   --
+   --  Since: 1.4
 
-   --  Font/Text functions
+   -------------------------
+   -- Font/Text functions --
+   -------------------------
 
    --   Cairo_Scaled_Font:
    --
-   --   A Cairo_scaled_font is a font scaled to a particular size and device
-   --   resolution. A Cairo_scaled_font is most useful for low-level font
+   --   A Cairo_Scaled_Font is a font scaled to a particular size and device
+   --   resolution. A Cairo_Scaled_Font is most useful for low-level font
    --   usage where a library or application wants to cache a reference
    --   to a scaled font to speed up the computation of metrics.
    --
-   --   There are various types of scaled fonts, depending on the
-   --   <firstterm>font backend</firstterm> they use. The type of a
-   --   scaled font can be queried using Cairo.Scaled_Font.Get_Type.
+   --   There are various types of scaled fonts, depending on the font backend
+   --   they use. The type of a scaled font can be queried using
+   --   Cairo.Scaled_Font.Get_Type.
    --
-   --   Memory management of Cairo_scaled_font is done with
+   --   Memory management of Cairo_Scaled_Font is done with
    --   Cairo.Scaled_Font.Reference and Cairo.Scaled_Font.Destroy.
-   --
 
    type Cairo_Scaled_Font is private;
 
    --   Cairo_Font_Face:
    --
-   --   A Cairo_font_face specifies all aspects of a font other
+   --   A Cairo_Font_Face specifies all aspects of a font other
    --   than the size or font matrix (a font matrix is used to distort
    --   a font by sheering it or scaling it unequally in the two
    --   directions) . A font face can be set on a Cairo_Context by using
-   --   Cairo_Set_Font_Face; the size and font matrix are set with
-   --   Cairo_Set_Font_Size and Cairo_Set_Font_Matrix.
+   --   Set_Font_Face; the size and font matrix are set with
+   --   Set_Font_Size and Set_Font_Matrix.
    --
-   --   There are various types of font faces, depending on the
-   --   <firstterm>font backend</firstterm> they use. The type of a
-   --   font face can be queried using Cairo.Font_Face.Get_Type.
+   --   There are various types of font faces, depending on the font backend
+   --   they use. The type of a font face can be queried using
+   --   Cairo.Font_Face.Get_Type.
    --
-   --   Memory management of Cairo_font_face is done with
+   --   Memory management of Cairo_Font_Face is done with
    --   Cairo.Font_Face.Reference and Cairo.Font_Face.Destroy.
-   --
 
    type Cairo_Font_Face is private;
 
    --   Cairo_Glyph:
-   --   Index: glyph Index in the font. The exact interpretation of the
-   --        glyph index depends on the font technology being used.
-   --   X: the offset in the X direction between the origin used for
-   --       drawing or measuring the string and the origin of this glyph.
-   --   Y: the offset in the Y direction between the origin used for
-   --       drawing or measuring the string and the origin of this glyph.
    --
-   --   The Cairo_glyph structure holds information about a single glyph
-   --   when drawing or measuring text. A font is (in simple terms) a
-   --   collection of shapes used to draw text. A glyph is one of these
-   --   shapes. There can be multiple glyphs for a single character
-   --   (alternates to be used in different contexts, for example), or a
-   --   glyph can be a <firstterm>ligature</firstterm> of multiple
-   --   characters. Cairo doesn't expose any way of converting input text
-   --   into glyphs, so in order to use the Cairo interfaces that take
-   --   arrays of glyphs, you must directly access the appropriate
-   --   underlying font system.
+   --   The Cairo_glyph structure holds information about a single glyph when
+   --   drawing or measuring text. A font is (in simple terms) a collection of
+   --   shapes used to draw text. A glyph is one of these shapes. There can be
+   --   multiple glyphs for a single character (alternates to be used in
+   --   different contexts, for example), or a glyph can be a ligature of
+   --   multiple characters. Cairo doesn't expose any way of converting input
+   --   text into glyphs, so in order to use the Cairo interfaces that take
+   --   arrays of glyphs, you must directly access the appropriate underlying
+   --   font system.
    --
-   --   Note that the offsets given by x and y are not cumulative. When
+   --   Note that the offsets given by X and Y are not cumulative. When
    --   drawing or measuring text, each glyph is individually positioned
    --   with respect to the overall origin
-   --
 
    type Cairo_Glyph is record
       Index : aliased Gulong;
+      --  Glyph Index in the font. The exact interpretation of the
+      --  glyph index depends on the font technology being used.
+
       X     : aliased Gdouble;
+      --  The offset in the X direction between the origin used for
+      --  drawing or measuring the string and the origin of this glyph.
+
       Y     : aliased Gdouble;
+      --  The offset in the Y direction between the origin used for drawing or
+      --  measuring the string and the origin of this glyph.
    end record;
    pragma Convention (C_Pass_By_Copy, Cairo_Glyph);
 
    --   Cairo_Text_Cluster:
-   --   Num_Bytes: the number of bytes of UTF-8 text covered by cluster
-   --   Num_Glyphs: the number of glyphs covered by cluster
    --
-   --   The Cairo_text_cluster structure holds information about a single
-   --   <firstterm>text cluster</firstterm>.  A text cluster is a minimal
-   --   mapping of some glyphs corresponding to some UTF-8 text.
+   --   The Cairo_text_cluster structure holds information about a single text
+   --   cluster. A text cluster is a minimal mapping of some glyphs
+   --   corresponding to some UTF-8 text.
    --
    --   For a cluster to be valid, both num_bytes and num_glyphs should
    --   be non-negative, and at least one should be non-zero.
@@ -1778,94 +1786,71 @@ package Cairo is
    --   normal clusters.  For example, PDF rendering applications typically
    --   ignore those clusters when PDF text is being selected.
    --
-   --   See Cairo_Show_Text_Glyphs for how clusters are used in advanced
+   --   See Show_Text_Glyphs for how clusters are used in advanced
    --   text operations.
    --
    --   Since: 1.8
-   --
 
    type Cairo_Text_Cluster is record
       Num_Bytes  : aliased Gint;
+      --  The number of bytes of UTF-8 text covered by cluster
+
       Num_Glyphs : aliased Gint;
+      --  The number of glyphs covered by cluster
    end record;
    pragma Convention (C_Pass_By_Copy, Cairo_Text_Cluster);
 
    --   Cairo_Text_Cluster_Flags:
-   --   CAIRO_TEXT_CLUSTER_FLAG_BACKWARD: The clusters in the cluster array
-   --   map to glyphs in the glyph array from end to start.
    --
    --   Specifies properties of a text cluster mapping.
    --
    --   Since: 1.8
-   --
 
    subtype Cairo_Text_Cluster_Flags is Guint;
    Cairo_Text_Cluster_Flag_Backward : constant Cairo_Text_Cluster_Flags := 1;
+   --   The clusters in the cluster array map to glyphs in the glyph array from
+   --   end to start.
 
    --   Cairo_Text_Extents:
-   --   X_Bearing: the horizontal distance from the origin to the
-   --     leftmost part of the glyphs as drawn. Positive if the
-   --     glyphs lie entirely to the right of the origin.
-   --   Y_Bearing: the vertical distance from the origin to the
-   --     topmost part of the glyphs as drawn. Positive only if the
-   --     glyphs lie completely below the origin; will usually be
-   --     negative.
-   --   Width: Width of the glyphs as drawn
-   --   Height: Height of the glyphs as drawn
-   --   X_Advance:distance to advance in the X direction
-   --      after drawing these glyphs
-   --   Y_Advance: distance to advance in the Y direction
-   --     after drawing these glyphs. Will typically be zero except
-   --     for vertical text layout as found in East-Asian languages.
    --
-   --   The Cairo_text_extents structure stores the extents of a single
-   --   glyph or a string of glyphs in user-space coordinates. Because text
-   --   extents are in user-space coordinates, they are mostly, but not
-   --   entirely, independent of the current transformation matrix. If you call
-   --   <literal>Cairo_Scale(Cr, 2.0, 2.0)</literal>, text will
-   --   be drawn twice as big, but the reported text extents will not be
-   --   doubled. They will change slightly due to hinting (so you can't
-   --   assume that metrics are independent of the transformation matrix),
-   --   but otherwise will remain unchanged.
-   --
+   --   The Cairo_text_extents structure stores the extents of a single glyph
+   --   or a string of glyphs in user-space coordinates. Because text extents
+   --   are in user-space coordinates, they are mostly, but not entirely,
+   --   independent of the current transformation matrix. If you call
+   --   Scale (Cr, 2.0, 2.0), text will be drawn twice as big, but the reported
+   --   text extents will not be doubled. They will change slightly due to
+   --   hinting (so you can't assume that metrics are independent of the
+   --   transformation matrix), but otherwise will remain unchanged.
 
    type Cairo_Text_Extents is record
       X_Bearing : aliased Gdouble;
+      --  The horizontal distance from the origin to the
+      --  leftmost part of the glyphs as drawn. Positive if the
+      --  glyphs lie entirely to the right of the origin.
+
       Y_Bearing : aliased Gdouble;
+      --  The vertical distance from the origin to the
+      --  topmost part of the glyphs as drawn. Positive only if the
+      --  glyphs lie completely below the origin; will usually be
+      --  negative.
+
       Width     : aliased Gdouble;
+      --  Width of the glyphs as drawn
+
       Height    : aliased Gdouble;
+      --  Height of the glyphs as drawn
+
       X_Advance : aliased Gdouble;
+      --  Distance to advance in the X direction after drawing these glyphs
+
       Y_Advance : aliased Gdouble;
+      --  Distance to advance in the Y direction
+      --  after drawing these glyphs. Will typically be zero except
+      --  for vertical text layout as found in East-Asian languages.
    end record;
    pragma Convention (C_Pass_By_Copy, Cairo_Text_Extents);
 
    --   Cairo_Font_Extents:
-   --   Ascent: the distance that the font extends above the baseline.
-   --            Note that this is not always exactly equal to the maximum
-   --            of the extents of all the glyphs in the font, but rather
-   --            is picked to express the font designer's intent as to
-   --            how the font should align with elements above it.
-   --   Descent: the distance that the font extends below the baseline.
-   --             This value is positive for typical fonts that include
-   --             portions below the baseline. Note that this is not always
-   --             exactly equal to the maximum of the extents of all the
-   --             glyphs in the font, but rather is picked to express the
-   --             font designer's intent as to how the the font should
-   --             align with elements below it.
-   --   Height: the recommended vertical distance between baselines when
-   --            setting consecutive lines of text with the font. This
-   --            is greater than ascent+descent by a
-   --            quantity known as the <firstterm>line spacing</firstterm>
-   --            or <firstterm>external leading</firstterm>. When space
-   --            is at a premium, most fonts can be set with only
-   --            a distance of ascent+descent between lines.
-   --   Max_X_Advance: the maximum distance in the X direction that
-   --           the the origin is advanced for any glyph in the font.
-   --   Max_Y_Advance: the maximum distance in the Y direction that
-   --           the the origin is advanced for any glyph in the font.
-   --           this will be zero for normal fonts used for horizontal
-   --           writing. (The scripts of East Asia are sometimes written
-   --           vertically.)
    --
    --   The Cairo_font_extents structure stores metric information for
    --   a font. Values are given in the current user-space coordinate
@@ -1873,29 +1858,53 @@ package Cairo is
    --
    --   Because font metrics are in user-space coordinates, they are
    --   mostly, but not entirely, independent of the current transformation
-   --   matrix. If you call <literal>Cairo_Scale(Cr, 2.0, 2.0)</literal>,
-   --   text will be drawn twice as big, but the reported text extents will
-   --   not be doubled. They will change slightly due to hinting (so you
-   --   can't assume that metrics are independent of the transformation
-   --   matrix), but otherwise will remain unchanged.
-   --
+   --   matrix. If you call Scale (Cr, 2.0, 2.0), text will be drawn twice as
+   --   big, but the reported text extents will not be doubled. They will
+   --   change slightly due to hinting (so you can't assume that metrics are
+   --   independent of the transformation matrix), but otherwise will remain
+   --   unchanged.
 
    type Cairo_Font_Extents is record
       Ascent        : aliased Gdouble;
+      --  The distance that the font extends above the baseline.
+      --  Note that this is not always exactly equal to the maximum
+      --  of the extents of all the glyphs in the font, but rather
+      --  is picked to express the font designer's intent as to
+      --  how the font should align with elements above it.
+
       Descent       : aliased Gdouble;
+      --  The distance that the font extends below the baseline.
+      --  This value is positive for typical fonts that include
+      --  portions below the baseline. Note that this is not always
+      --  exactly equal to the maximum of the extents of all the
+      --  glyphs in the font, but rather is picked to express the
+      --  font designer's intent as to how the the font should
+      --  align with elements below it.
+
       Height        : aliased Gdouble;
+      --  The recommended vertical distance between baselines when
+      --  setting consecutive lines of text with the font. This
+      --  is greater than ascent+descent by a
+      --  quantity known as the line spacing or external leading. When space is
+      --  at a premium, most fonts can be set with only a distance of
+      --  ascent+descent between lines.
+
       Max_X_Advance : aliased Gdouble;
+      --  The maximum distance in the X direction that
+      --  the the origin is advanced for any glyph in the font.
+
       Max_Y_Advance : aliased Gdouble;
+      --  The maximum distance in the Y direction that
+      --  the the origin is advanced for any glyph in the font.
+      --  this will be zero for normal fonts used for horizontal
+      --  writing. (The scripts of East Asia are sometimes written
+      --  vertically.)
    end record;
    pragma Convention (C_Pass_By_Copy, Cairo_Font_Extents);
 
    --   Cairo_Font_Slant:
-   --   CAIRO_FONT_SLANT_NORMAL: Upright font style
-   --   CAIRO_FONT_SLANT_ITALIC: Italic font style
-   --   CAIRO_FONT_SLANT_OBLIQUE: Oblique font style
    --
    --   Specifies variants of a font face based on their slant.
-   --
 
    type Cairo_Font_Slant is (
       Cairo_Font_Slant_Normal,
@@ -1904,11 +1913,8 @@ package Cairo is
    pragma Convention (C, Cairo_Font_Slant);
 
    --   Cairo_Font_Weight:
-   --   CAIRO_FONT_WEIGHT_NORMAL: Normal font weight
-   --   CAIRO_FONT_WEIGHT_BOLD: Bold font weight
    --
    --   Specifies variants of a font face based on their weight.
-   --
 
    type Cairo_Font_Weight is (
       Cairo_Font_Weight_Normal,
@@ -1916,41 +1922,31 @@ package Cairo is
    pragma Convention (C, Cairo_Font_Weight);
 
    --   Cairo_Subpixel_Order:
-   --   CAIRO_SUBPIXEL_ORDER_DEFAULT: Use the default subpixel order for
-   --     for the target device
-   --   CAIRO_SUBPIXEL_ORDER_RGB: Subpixel elements are arranged horizontally
-   --     with red at the left
-   --   CAIRO_SUBPIXEL_ORDER_BGR:  Subpixel elements are arranged horizontally
-   --     with blue at the left
-   --   CAIRO_SUBPIXEL_ORDER_VRGB: Subpixel elements are arranged vertically
-   --     with red at the top
-   --   CAIRO_SUBPIXEL_ORDER_VBGR: Subpixel elements are arranged vertically
-   --     with blue at the top
    --
    --   The subpixel order specifies the order of color elements within
    --   each pixel on the display device when rendering with an
    --   antialiasing mode of CAIRO_ANTIALIAS_SUBPIXEL.
    --
 
-   type Cairo_Subpixel_Order is (
-      Cairo_Subpixel_Order_Default,
+   type Cairo_Subpixel_Order is
+     (Cairo_Subpixel_Order_Default,
+      --   Use the default subpixel order for the target device
+
       Cairo_Subpixel_Order_Rgb,
+      --   Subpixel elements are arranged horizontally with red at the left
+
       Cairo_Subpixel_Order_Bgr,
+      --   Subpixel elements are arranged horizontally with blue at the left
+
       Cairo_Subpixel_Order_Vrgb,
-      Cairo_Subpixel_Order_Vbgr);
+      --  Subpixel elements are arranged vertically with red at the top
+
+      Cairo_Subpixel_Order_Vbgr
+      --  Subpixel elements are arranged vertically with blue at the top
+   );
    pragma Convention (C, Cairo_Subpixel_Order);
 
    --   Cairo_Hint_Style:
-   --   CAIRO_HINT_STYLE_DEFAULT: Use the default hint style for
-   --     font backend and target device
-   --   CAIRO_HINT_STYLE_NONE: Do not hint outlines
-   --   CAIRO_HINT_STYLE_SLIGHT: Hint outlines slightly to improve
-   --     contrast while retaining good fidelity to the original
-   --     shapes.
-   --   CAIRO_HINT_STYLE_MEDIUM: Hint outlines with medium strength
-   --     giving a compromise between fidelity to the original shapes
-   --     and contrast
-   --   CAIRO_HINT_STYLE_FULL: Hint outlines to maximize contrast
    --
    --   Specifies the type of hinting to do on font outlines. Hinting
    --   is the process of fitting outlines to the pixel grid in order
@@ -1960,33 +1956,46 @@ package Cairo is
    --   styles are supported by all font backends.
    --
    --   New entries may be added in future versions.
-   --
 
-   type Cairo_Hint_Style is (
-      Cairo_Hint_Style_Default,
+   type Cairo_Hint_Style is
+     (Cairo_Hint_Style_Default,
+      --   Use the default hint style for font backend and target device
+
       Cairo_Hint_Style_None,
+      --   Do not hint outlines
+
       Cairo_Hint_Style_Slight,
+      --   Hint outlines slightly to improve contrast while retaining good
+      --   fidelity to the original shapes.
+
       Cairo_Hint_Style_Medium,
-      Cairo_Hint_Style_Full);
+      --  Hint outlines with medium strength giving a compromise between
+      --  fidelity to the original shapes and contrast
+
+      Cairo_Hint_Style_Full
+      --  Hint outlines to maximize contrast
+     );
    pragma Convention (C, Cairo_Hint_Style);
 
    --   Cairo_Hint_Metrics:
-   --   CAIRO_HINT_METRICS_DEFAULT: Hint metrics in the default
-   --    manner for the font backend and target device
-   --   CAIRO_HINT_METRICS_OFF: Do not hint font metrics
-   --   CAIRO_HINT_METRICS_ON: Hint font metrics
    --
    --   Specifies whether to hint font metrics; hinting font metrics
    --   means quantizing them so that they are integer values in
    --   device space. Doing this improves the consistency of
    --   letter and line spacing, however it also means that text
    --   will be laid out differently at different zoom factors.
-   --
 
-   type Cairo_Hint_Metrics is (
-      Cairo_Hint_Metrics_Default,
+   type Cairo_Hint_Metrics is
+     (Cairo_Hint_Metrics_Default,
+      --  Hint metrics in the default manner for the font backend and target
+      --  device
+
       Cairo_Hint_Metrics_Off,
-      Cairo_Hint_Metrics_On);
+      --  Do not hint font metrics
+
+      Cairo_Hint_Metrics_On
+      --  Hint font metrics
+     );
    pragma Convention (C, Cairo_Hint_Metrics);
 
    --   Cairo_Font_Options:
@@ -1994,10 +2003,10 @@ package Cairo is
    --   An opaque structure holding all options that are used when
    --   rendering fonts.
    --
-   --   Individual features of a Cairo_font_options can be set or
+   --   Individual features of a Cairo_Font_Options can be set or
    --   accessed using functions named
-   --   Cairo.Font_Options.Set_<emphasis>feature_Name</emphasis> and
-   --   Cairo.Font_Options.Get_<emphasis>feature_Name</emphasis>, like
+   --   Cairo.Font_Options.Set_<feature_Name> and
+   --   Cairo.Font_Options.Get_<feature_Name>, like
    --   Cairo.Font_Options.Set_Antialias and
    --   Cairo.Font_Options.Get_Antialias.
    --
@@ -2012,7 +2021,7 @@ package Cairo is
    type Cairo_Font_Options is private;
 
    --  This interface is for dealing with text as text, not caring about the
-   --   font object inside the the Cairo_Context.
+   --  font object inside the the Cairo_Context.
 
    procedure Select_Font_Face
      (Cr     : Cairo_Context;
@@ -3061,6 +3070,8 @@ private
    pragma Convention (C, Cairo_Line_Join);
    pragma Convention (C, Path_Data_Array_Access);
    pragma Convention (C_Pass_By_Copy, Cairo_Path);
+   pragma Convention (C_Pass_By_Copy, Cairo_Rectangle);
+   pragma Convention (C, Cairo_Rectangle_Array_Access);
 
    pragma Convention (C_Pass_By_Copy, Header_Type);
    pragma Convention (C_Pass_By_Copy, Point_Type);
