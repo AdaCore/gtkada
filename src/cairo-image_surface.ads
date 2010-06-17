@@ -33,42 +33,44 @@ package Cairo.Image_Surface is
    --  Image-surface functions
 
    --   Cairo_Format:
-   --   CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with
-   --     alpha in the upper 8 bits, then red, then green, then blue.
-   --     The 32-bit quantities are stored native-endian. Pre-multiplied
-   --     alpha is used. (That is, 50 transparent red is 0x80800000,
-   --     not 0x80ff0000.)
-   --   CAIRO_FORMAT_RGB24: each pixel is a 32-bit quantity, with
-   --     the upper 8 bits unused. Red, Green, and Blue are stored
-   --     in the remaining 24 bits in that order.
-   --   CAIRO_FORMAT_A8: each pixel is a 8-bit quantity holding
-   --     an alpha value.
-   --   CAIRO_FORMAT_A1: each pixel is a 1-bit quantity holding
-   --     an alpha value. Pixels are packed together into 32-bit
-   --     quantities. The ordering of the bits matches the
-   --     endianess of the platform. On a big-endian machine, the
-   --     first pixel is in the uppermost bit, on a little-endian
-   --     machine the first pixel is in the least-significant bit.
-   --   CAIRO_FORMAT_RGB16_565: This format value is deprecated. It has
-   --     never been properly implemented in cairo and should not be used
-   --     by applications. (since 1.2)
    --
-   --   Cairo_format is used to identify the memory format of
+   --   Cairo_Format is used to identify the memory format of
    --   image data.
    --
    --   New entries may be added in future versions.
-   --
 
    --  The value of 4 is reserved by a deprecated enum value.
    --     * The next format added must have an explicit value of 5.
    --    CAIRO_FORMAT_RGB16_565 = 4,
    --
 
-   type Cairo_Format is (
-      Cairo_Format_Argb32,
+   type Cairo_Format is
+     (Cairo_Format_Argb32,
+      --  Each pixel is a 32-bit quantity, with
+      --  alpha in the upper 8 bits, then red, then green, then blue.
+      --  The 32-bit quantities are stored native-endian. Pre-multiplied
+      --  alpha is used. (That is, 50 transparent red is 0x80800000,
+      --  not 0x80ff0000.)
+
       Cairo_Format_Rgb24,
+      --  Each pixel is a 32-bit quantity, with
+      --  the upper 8 bits unused. Red, Green, and Blue are stored
+      --  in the remaining 24 bits in that order.
+
       Cairo_Format_A8,
-      Cairo_Format_A1);
+      --  Each pixel is a 8-bit quantity holding an alpha value.
+
+      Cairo_Format_A1,
+      --  Each pixel is a 1-bit quantity holding
+      --  an alpha value. Pixels are packed together into 32-bit
+      --  quantities. The ordering of the bits matches the
+      --  endianess of the platform. On a big-endian machine, the
+      --  first pixel is in the uppermost bit, on a little-endian
+      --  machine the first pixel is in the least-significant bit.
+
+      CAIRO_FORMAT_RGB16_565_Deprecated_Do_Not_Use
+      --  This value is deprecated
+     );
    pragma Convention (C, Cairo_Format);
 
    function Create
@@ -105,16 +107,21 @@ package Cairo.Image_Surface is
    --  alignment requirements of the accelerated image-rendering code
    --  within cairo. Typical usage will be of the form:
    --
-   --  <informalexample><programlisting>
-   --  int stride;
-   --  unsigned char *data;
-   --  Cairo_Surface *surface;
+   --     declare
+   --        Stride  : Gint;
+   --        Data    : Interfaces.C.Strings.chars_ptr;
+   --        Surface : Cairo_Surface;
+   --     begin
+   --        Stride := Cairo_Format_Stride_For_Width (Format, Width);
    --
-   --  stride = Cairo_Format_Stride_For_Width (format, width);
-   --  data = malloc (stride * height);
-   --  surface = Cairo.Image_Surface.Create_For_Data (data, format,
-   --               width, height, stride);
-   --  </programlisting></informalexample>
+   --   ??? To be checked and completed
+   --
+   --        Data := New_String ((1 .. Stride * Height) => others => ' ');
+   --     stride = Cairo_Format_Stride_For_Width (format, width);
+   --     data = malloc (stride * height);
+   --     surface = Cairo.Image_Surface.Create_For_Data (data, format,
+   --                  width, height, stride);
+   --     </programlisting></informalexample>
    --
    --  Return value: the appropriate stride to use given the desired
    --  format and width, or -1 if either the format is invalid or the width
@@ -122,13 +129,13 @@ package Cairo.Image_Surface is
    --
    --  Since: 1.6
 
-   function Create_For_Data
-     (Data   : access Guchar;
-      Format : Cairo_Format;
-      Width  : Gint;
-      Height : Gint;
-      Stride : Gint)
-      return   Cairo_Surface;
+--     function Create_For_Data
+--       (Data   : access Guchar;
+--        Format : Cairo_Format;
+--        Width  : Gint;
+--        Height : Gint;
+--        Stride : Gint)
+--        return   Cairo_Surface;
    --  Data: a pointer to a buffer supplied by the application in which
    --      to write contents. This pointer must be suitably aligned for any
    --      kind of variable, (for example, a pointer returned by malloc).
@@ -145,7 +152,7 @@ package Cairo.Image_Surface is
    --  or Cairo.Surface.Finish is called on the surface.  The initial
    --  contents of data will be used as the initial image contents; you
    --  must explicitly clear the buffer, using, for example,
-   --  Cairo_Rectangle and Cairo_Fill if you want it cleared.
+   --  Cairo.Rectangle and Cairo.Fill if you want it cleared.
    --
    --  Note that the stride may be larger than
    --  width*bytes_per_pixel to provide proper alignment for each pixel
@@ -164,7 +171,7 @@ package Cairo.Image_Surface is
    --  pointer to a "nil" surface in the case of an error such as out of
    --  memory or an invalid stride value. In case of invalid stride value
    --  the error status of the returned surface will be
-   --  CAIRO_STATUS_INVALID_STRIDE.  You can use
+   --  Cairo_Status_Invalid_Stride.  You can use
    --  Cairo.Surface.Status to check for this.
    --
    --  See Cairo.Surface.Set_User_Data for a means of attaching a
@@ -224,7 +231,8 @@ private
      (C,
       Cairo_Format_Stride_For_Width,
       "cairo_format_stride_for_width");
-   pragma Import (C, Create_For_Data, "cairo_image_surface_create_for_data");
+--     pragma Import (C, Create_For_Data,
+--        "cairo_image_surface_create_for_data");
    pragma Import (C, Get_Data, "cairo_image_surface_get_data");
    pragma Import (C, Get_Format, "cairo_image_surface_get_format");
    pragma Import (C, Get_Width, "cairo_image_surface_get_width");
