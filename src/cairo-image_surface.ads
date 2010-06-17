@@ -30,6 +30,47 @@ pragma Ada_2005;
 
 package Cairo.Image_Surface is
 
+   --  Image-surface functions
+
+   --   Cairo_Format:
+   --   CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with
+   --     alpha in the upper 8 bits, then red, then green, then blue.
+   --     The 32-bit quantities are stored native-endian. Pre-multiplied
+   --     alpha is used. (That is, 50 transparent red is 0x80800000,
+   --     not 0x80ff0000.)
+   --   CAIRO_FORMAT_RGB24: each pixel is a 32-bit quantity, with
+   --     the upper 8 bits unused. Red, Green, and Blue are stored
+   --     in the remaining 24 bits in that order.
+   --   CAIRO_FORMAT_A8: each pixel is a 8-bit quantity holding
+   --     an alpha value.
+   --   CAIRO_FORMAT_A1: each pixel is a 1-bit quantity holding
+   --     an alpha value. Pixels are packed together into 32-bit
+   --     quantities. The ordering of the bits matches the
+   --     endianess of the platform. On a big-endian machine, the
+   --     first pixel is in the uppermost bit, on a little-endian
+   --     machine the first pixel is in the least-significant bit.
+   --   CAIRO_FORMAT_RGB16_565: This format value is deprecated. It has
+   --     never been properly implemented in cairo and should not be used
+   --     by applications. (since 1.2)
+   --
+   --   Cairo_format is used to identify the memory format of
+   --   image data.
+   --
+   --   New entries may be added in future versions.
+   --
+
+   --  The value of 4 is reserved by a deprecated enum value.
+   --     * The next format added must have an explicit value of 5.
+   --    CAIRO_FORMAT_RGB16_565 = 4,
+   --
+
+   type Cairo_Format is (
+      Cairo_Format_Argb32,
+      Cairo_Format_Rgb24,
+      Cairo_Format_A8,
+      Cairo_Format_A1);
+   pragma Convention (C, Cairo_Format);
+
    function Create
      (Format : Cairo_Format;
       Width  : Gint;
