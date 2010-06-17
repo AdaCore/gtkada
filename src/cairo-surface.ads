@@ -32,6 +32,53 @@ with System;
 
 package Cairo.Surface is
 
+   --------------------------
+   -- Surface manipulation --
+   --------------------------
+
+   --   Cairo_Surface_Type:
+   --   Cairo_surface_type is used to describe the type of a given
+   --   surface. The surface types are also known as "backends" or "surface
+   --   backends" within cairo.
+   --
+   --   The type of a surface is determined by the function used to create
+   --   it, which will generally be of the form
+   --   Cairo_<emphasis>type</emphasis>_Surface_Create,
+   --   (though see Cairo.Surface.Create_Similar as well).
+   --
+   --   The surface type can be queried with Cairo.Surface.Get_Type
+   --
+   --   The various Cairo_surface functions can be used with surfaces of
+   --   any type, but some backends also provide type-specific functions
+   --   that must only be called with a surface of the appropriate
+   --   type. These functions have names that begin with
+   --   Cairo_<emphasis>type</emphasis>_Surface<!-- --> such as
+   --   Cairo.Image_Surface.Get_Width.
+   --
+   --   The behavior of calling a type-specific function with a surface of
+   --   the wrong type is undefined.
+   --
+   --   New entries may be added in future versions.
+   --
+   --   Since: 1.2
+
+   type Cairo_Surface_Type is (
+      Cairo_Surface_Type_Image,
+      Cairo_Surface_Type_Pdf,
+      Cairo_Surface_Type_Ps,
+      Cairo_Surface_Type_Xlib,
+      Cairo_Surface_Type_Xcb,
+      Cairo_Surface_Type_Glitz,
+      Cairo_Surface_Type_Quartz,
+      Cairo_Surface_Type_Win32,
+      Cairo_Surface_Type_Beos,
+      Cairo_Surface_Type_Directfb,
+      Cairo_Surface_Type_Svg,
+      Cairo_Surface_Type_Os2,
+      Cairo_Surface_Type_Win32_Printing,
+      Cairo_Surface_Type_Quartz_Image);
+   pragma Convention (C, Cairo_Surface_Type);
+
    function Create_Similar
      (Other   : Cairo_Surface;
       Content : Cairo_Content;
