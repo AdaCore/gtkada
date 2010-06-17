@@ -32,6 +32,101 @@ with System;
 
 package Cairo.Pattern is
 
+   --  Pattern creation functions
+
+   --   Cairo_Pattern_Type:
+   --   CAIRO_PATTERN_TYPE_SOLID: The pattern is a solid (uniform)
+   --   color. It may be opaque or translucent.
+   --   CAIRO_PATTERN_TYPE_SURFACE: The pattern is a based on a surface (an
+   --   image).
+   --   CAIRO_PATTERN_TYPE_LINEAR: The pattern is a linear gradient.
+   --   CAIRO_PATTERN_TYPE_RADIAL: The pattern is a radial gradient.
+   --
+   --   Cairo_pattern_type is used to describe the type of a given pattern.
+   --
+   --   The type of a pattern is determined by the function used to create
+   --   it. The Cairo.Pattern.Create_Rgb and Cairo.Pattern.Create_Rgba
+   --   functions create SOLID patterns. The remaining
+   --   Cairo.Pattern.Create<!-- --> functions map to pattern types in obvious
+   --   ways.
+   --
+   --   The pattern type can be queried with Cairo.Pattern.Get_Type
+   --
+   --   Most Cairo_pattern functions can be called with a pattern of any
+   --   type, (though trying to change the extend or filter for a solid
+   --   pattern will have no effect). A notable exception is
+   --   Cairo.Pattern.Add_Color_Stop_Rgb and
+   --   Cairo.Pattern.Add_Color_Stop_Rgba which must only be called with
+   --   gradient patterns (either LINEAR or RADIAL). Otherwise the pattern
+   --   will be shutdown and put into an error state.
+   --
+   --   New entries may be added in future versions.
+   --
+   --   Since: 1.2
+   --
+
+   type Cairo_Pattern_Type is (
+      Cairo_Pattern_Type_Solid,
+      Cairo_Pattern_Type_Surface,
+      Cairo_Pattern_Type_Linear,
+      Cairo_Pattern_Type_Radial);
+   pragma Convention (C, Cairo_Pattern_Type);
+
+   --   Cairo_Extend:
+   --   CAIRO_EXTEND_NONE: pixels outside of the source pattern
+   --     are fully transparent
+   --   CAIRO_EXTEND_REPEAT: the pattern is tiled by repeating
+   --   CAIRO_EXTEND_REFLECT: the pattern is tiled by reflecting
+   --     at the edges (Implemented for surface patterns since 1.6)
+   --   CAIRO_EXTEND_PAD: pixels outside of the pattern copy
+   --     the closest pixel from the source (Since 1.2; but only
+   --     implemented for surface patterns since 1.6)
+   --
+   --   Cairo_extend is used to describe how pattern color/alpha will be
+   --   determined for areas "outside" the pattern's natural area, (for
+   --   example, outside the surface bounds or outside the gradient
+   --   geometry).
+   --
+   --   The default extend mode is CAIRO_EXTEND_NONE for surface patterns
+   --   and CAIRO_EXTEND_PAD for gradient patterns.
+   --
+   --   New entries may be added in future versions.
+   --
+
+   type Cairo_Extend is (
+      Cairo_Extend_None,
+      Cairo_Extend_Repeat,
+      Cairo_Extend_Reflect,
+      Cairo_Extend_Pad);
+   pragma Convention (C, Cairo_Extend);
+
+   --   Cairo_Filter:
+   --   CAIRO_FILTER_FAST: A high-performance filter, with quality similar
+   --       to CAIRO_FILTER_NEAREST
+   --   CAIRO_FILTER_GOOD: A reasonable-performance filter, with quality
+   --       similar to CAIRO_FILTER_BILINEAR
+   --   CAIRO_FILTER_BEST: The highest-quality available, performance may
+   --       not be suitable for interactive use.
+   --   CAIRO_FILTER_NEAREST: Nearest-neighbor filtering
+   --   CAIRO_FILTER_BILINEAR: Linear interpolation in two dimensions
+   --   CAIRO_FILTER_GAUSSIAN: This filter value is currently
+   --       unimplemented, and should not be used in current code.
+   --
+   --   Cairo_filter is used to indicate what filtering should be
+   --   applied when reading pixel values from patterns. See
+   --   Cairo.Pattern.Set_Source for indicating the desired filter to be
+   --   used with a particular pattern.
+   --
+
+   type Cairo_Filter is (
+      Cairo_Filter_Fast,
+      Cairo_Filter_Good,
+      Cairo_Filter_Best,
+      Cairo_Filter_Nearest,
+      Cairo_Filter_Bilinear,
+      Cairo_Filter_Gaussian);
+   pragma Convention (C, Cairo_Filter);
+
    function Create_Rgb
      (Red   : Gdouble;
       Green : Gdouble;
