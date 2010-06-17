@@ -34,11 +34,11 @@ with Interfaces.C.Strings;
 package Cairo.Font_Face is
 
    function Reference (Font_Face : Cairo_Font_Face) return Cairo_Font_Face;
-   --  Font_Face: a Cairo.Font_Face.T, (may be NULL in which case this
+   --  Font_Face: a Cairo_Font_Face, (may be Null_Font_Face in which case this
    --  function does nothing).
    --
-   --  Increases the reference count on font_face by one. This prevents
-   --  font_face from being destroyed until a matching call to
+   --  Increases the reference count on Font_Face by one. This prevents
+   --  Font_Face from being destroyed until a matching call to
    --  Cairo.Font_Face.Destroy is made.
    --
    --  The number of references to a Cairo_Font_Face can be get using
@@ -49,16 +49,16 @@ package Cairo.Font_Face is
    procedure Destroy (Font_Face : Cairo_Font_Face);
    --  Font_Face: a Cairo_Font_Face
    --
-   --  Decreases the reference count on font_face by one. If the result
-   --  is zero, then font_face and all associated resources are freed.
+   --  Decreases the reference count on Font_Face by one. If the result
+   --  is zero, then Font_Face and all associated resources are freed.
    --  See Cairo.Font_Face.Reference.
 
    function Get_Reference_Count (Font_Face : Cairo_Font_Face) return Guint;
    --  Font_Face: a Cairo_Font_Face
    --
-   --  Returns the current reference count of font_face.
+   --  Returns the current reference count of Font_Face.
    --
-   --  Return value: the current reference count of font_face.  If the
+   --  Return value: the current reference count of Font_Face.  If the
    --  object is a nil object, 0 will be returned.
    --
    --  Since: 1.4
@@ -69,8 +69,8 @@ package Cairo.Font_Face is
    --  Checks whether an error has previously occurred for this
    --  font face
    --
-   --  Return value: CAIRO_STATUS_SUCCESS or another error such as
-   --    CAIRO_STATUS_NO_MEMORY.
+   --  Return value: Cairo_Status_Success or another error such as
+   --    Cairo_Status_No_Memory.
 
    function Get_Type (Font_Face : Cairo_Font_Face) return Cairo_Font_Type;
    --  Font_Face: a font face
@@ -78,7 +78,7 @@ package Cairo.Font_Face is
    --  This function returns the type of the backend used to create
    --  a font face. See Cairo_Font_Type for available types.
    --
-   --  Return value: The type of font_face.
+   --  Return value: The type of Font_Face.
    --
    --  Since: 1.2
 
@@ -90,17 +90,17 @@ package Cairo.Font_Face is
    --  Key: the address of the Cairo_User_Data_Key the user data was
    --  attached to
    --
-   --  Return user data previously attached to font_face using the specified
+   --  Return user data previously attached to Font_Face using the specified
    --  key.  If no user data has been attached with the given key this
-   --  function returns NULL.
+   --  function returns System.Null_Address.
    --
-   --  Return value: the user data previously attached or NULL.
+   --  Return value: the user data previously attached or System.Null_Address.
 
    function Set_User_Data
      (Font_Face : Cairo_Font_Face;
       Key       : access constant Cairo_User_Data_Key;
       User_Data : System.Address;
-      Destroy   : access procedure (Arg1 : System.Address))
+      Destroy   : Cairo_Destroy_Func)
       return      Cairo_Status;
    --  Font_Face: a Cairo_Font_Face
    --  Key: the address of a Cairo_User_Data_Key to attach the user data to
@@ -109,14 +109,14 @@ package Cairo.Font_Face is
    --  font face is destroyed or when new user data is attached using the
    --  same key.
    --
-   --  Attach user data to font_face.  To remove user data from a font face,
-   --  call this function with the key that was used to set it and NULL
-   --  for data.
+   --  Attach user data to Font_Face.  To remove user data from a font face,
+   --  call this function with the key that was used to set it and
+   --  System.Null_Address for data.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY if a
+   --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory if a
    --  slot could not be allocated for the user data.
 
-   function Cairo_Toy_Font_Face_Create
+   function Toy_Font_Face_Create
      (Family : Interfaces.C.Strings.chars_ptr;
       Slant  : Cairo_Font_Slant;
       Weight : Cairo_Font_Weight)
@@ -127,12 +127,11 @@ package Cairo.Font_Face is
    --
    --  Creates a font face from a triplet of family, slant, and weight.
    --  These font faces are used in implementation of the the Cairo_Context
-   --"toy"
-   --  font API.
+   --  "toy" font API.
    --
-   --  If family is the zero-length string "", the platform-specific default
+   --  If Family is the zero-length string "", the platform-specific default
    --  family is assumed.  The default family then can be queried using
-   --  Cairo_Toy_Font_Face_Get_Family.
+   --  Toy_Font_Face_Get_Family.
    --
    --  The Cairo_Select_Font_Face function uses this to create font faces.
    --  See that function for limitations of toy font faces.
@@ -142,7 +141,7 @@ package Cairo.Font_Face is
    --
    --  Since: 1.8
 
-   function Cairo_Toy_Font_Face_Get_Family
+   function Toy_Font_Face_Get_Family
      (Font_Face : Cairo_Font_Face)
       return      Interfaces.C.Strings.chars_ptr;
    --  Font_Face: A toy font face
@@ -154,7 +153,7 @@ package Cairo.Font_Face is
    --
    --  Since: 1.8
 
-   function Cairo_Toy_Font_Face_Get_Slant
+   function Toy_Font_Face_Get_Slant
      (Font_Face : Cairo_Font_Face)
       return      Cairo_Font_Slant;
    --  Font_Face: A toy font face
@@ -165,7 +164,7 @@ package Cairo.Font_Face is
    --
    --  Since: 1.8
 
-   function Cairo_Toy_Font_Face_Get_Weight
+   function Toy_Font_Face_Get_Weight
      (Font_Face : Cairo_Font_Face)
       return      Cairo_Font_Weight;
    --  Font_Face: A toy font face
@@ -190,19 +189,19 @@ private
    pragma Import (C, Set_User_Data, "cairo_font_face_set_user_data");
    pragma Import
      (C,
-      Cairo_Toy_Font_Face_Create,
+      Toy_Font_Face_Create,
       "cairo_toy_font_face_create");
    pragma Import
      (C,
-      Cairo_Toy_Font_Face_Get_Family,
+      Toy_Font_Face_Get_Family,
       "cairo_toy_font_face_get_family");
    pragma Import
      (C,
-      Cairo_Toy_Font_Face_Get_Slant,
+      Toy_Font_Face_Get_Slant,
       "cairo_toy_font_face_get_slant");
    pragma Import
      (C,
-      Cairo_Toy_Font_Face_Get_Weight,
+      Toy_Font_Face_Get_Weight,
       "cairo_toy_font_face_get_weight");
 
 end Cairo.Font_Face;
