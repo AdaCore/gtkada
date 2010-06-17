@@ -32,55 +32,50 @@ with System;
 
 package Cairo.Pattern is
 
-   --  Pattern creation functions
+   --------------------------------
+   -- Pattern creation functions --
+   --------------------------------
 
-   --   Cairo_Pattern_Type:
-   --   CAIRO_PATTERN_TYPE_SOLID: The pattern is a solid (uniform)
-   --   color. It may be opaque or translucent.
-   --   CAIRO_PATTERN_TYPE_SURFACE: The pattern is a based on a surface (an
-   --   image).
-   --   CAIRO_PATTERN_TYPE_LINEAR: The pattern is a linear gradient.
-   --   CAIRO_PATTERN_TYPE_RADIAL: The pattern is a radial gradient.
+   --  Cairo_Pattern_Type:
    --
-   --   Cairo_pattern_type is used to describe the type of a given pattern.
+   --  Cairo_Pattern_Type is used to describe the type of a given pattern.
    --
-   --   The type of a pattern is determined by the function used to create
-   --   it. The Cairo.Pattern.Create_Rgb and Cairo.Pattern.Create_Rgba
-   --   functions create SOLID patterns. The remaining
-   --   Cairo.Pattern.Create<!-- --> functions map to pattern types in obvious
-   --   ways.
+   --  The type of a pattern is determined by the function used to create
+   --  it. The Cairo.Pattern.Create_Rgb and Cairo.Pattern.Create_Rgba
+   --  functions create Solid patterns. The remaining
+   --  Cairo.Pattern.Create_<> functions map to pattern types in obvious
+   --  ways.
    --
-   --   The pattern type can be queried with Cairo.Pattern.Get_Type
+   --  The pattern type can be queried with Cairo.Pattern.Get_Type
    --
-   --   Most Cairo_pattern functions can be called with a pattern of any
-   --   type, (though trying to change the extend or filter for a solid
-   --   pattern will have no effect). A notable exception is
-   --   Cairo.Pattern.Add_Color_Stop_Rgb and
-   --   Cairo.Pattern.Add_Color_Stop_Rgba which must only be called with
-   --   gradient patterns (either LINEAR or RADIAL). Otherwise the pattern
-   --   will be shutdown and put into an error state.
+   --  Most Cairo_pattern functions can be called with a pattern of any type,
+   --  (though trying to change the extend or filter for a solid pattern will
+   --  have no effect). A notable exception is Cairo.Pattern.Add_Color_Stop_Rgb
+   --  and Cairo.Pattern.Add_Color_Stop_Rgba which must only be called with
+   --  gradient patterns (either Linear or Radial). Otherwise the pattern will
+   --  be shutdown and put into an error state.
    --
-   --   New entries may be added in future versions.
+   --  New entries may be added in future versions.
    --
-   --   Since: 1.2
-   --
+   --  Since: 1.2
 
-   type Cairo_Pattern_Type is (
-      Cairo_Pattern_Type_Solid,
+   type Cairo_Pattern_Type is
+     (Cairo_Pattern_Type_Solid,
+      --  The pattern is a solid (uniform) color. It may be opaque or
+      --  translucent.
+
       Cairo_Pattern_Type_Surface,
+      --   The pattern is a based on a surface (an image).
+
       Cairo_Pattern_Type_Linear,
-      Cairo_Pattern_Type_Radial);
+      --  The pattern is a linear gradient.
+
+      Cairo_Pattern_Type_Radial
+      --  The pattern is a radial gradient.
+     );
    pragma Convention (C, Cairo_Pattern_Type);
 
    --   Cairo_Extend:
-   --   CAIRO_EXTEND_NONE: pixels outside of the source pattern
-   --     are fully transparent
-   --   CAIRO_EXTEND_REPEAT: the pattern is tiled by repeating
-   --   CAIRO_EXTEND_REFLECT: the pattern is tiled by reflecting
-   --     at the edges (Implemented for surface patterns since 1.6)
-   --   CAIRO_EXTEND_PAD: pixels outside of the pattern copy
-   --     the closest pixel from the source (Since 1.2; but only
-   --     implemented for surface patterns since 1.6)
    --
    --   Cairo_extend is used to describe how pattern color/alpha will be
    --   determined for areas "outside" the pattern's natural area, (for
@@ -91,40 +86,55 @@ package Cairo.Pattern is
    --   and CAIRO_EXTEND_PAD for gradient patterns.
    --
    --   New entries may be added in future versions.
-   --
 
-   type Cairo_Extend is (
-      Cairo_Extend_None,
+   type Cairo_Extend is
+     (Cairo_Extend_None,
+      --  Pixels outside of the source pattern are fully transparent
+
       Cairo_Extend_Repeat,
+      --  The pattern is tiled by repeating
+
       Cairo_Extend_Reflect,
-      Cairo_Extend_Pad);
+      --  The pattern is tiled by reflecting at the edges (Implemented for
+      --  surface patterns since 1.6)
+
+      Cairo_Extend_Pad
+      --  Pixels outside of the pattern copy
+      --  the closest pixel from the source (Since 1.2; but only
+      --  implemented for surface patterns since 1.6)
+     );
    pragma Convention (C, Cairo_Extend);
 
    --   Cairo_Filter:
-   --   CAIRO_FILTER_FAST: A high-performance filter, with quality similar
-   --       to CAIRO_FILTER_NEAREST
-   --   CAIRO_FILTER_GOOD: A reasonable-performance filter, with quality
-   --       similar to CAIRO_FILTER_BILINEAR
-   --   CAIRO_FILTER_BEST: The highest-quality available, performance may
-   --       not be suitable for interactive use.
-   --   CAIRO_FILTER_NEAREST: Nearest-neighbor filtering
-   --   CAIRO_FILTER_BILINEAR: Linear interpolation in two dimensions
-   --   CAIRO_FILTER_GAUSSIAN: This filter value is currently
-   --       unimplemented, and should not be used in current code.
    --
    --   Cairo_filter is used to indicate what filtering should be
    --   applied when reading pixel values from patterns. See
    --   Cairo.Pattern.Set_Source for indicating the desired filter to be
    --   used with a particular pattern.
-   --
 
-   type Cairo_Filter is (
-      Cairo_Filter_Fast,
+   type Cairo_Filter is
+     (Cairo_Filter_Fast,
+      --  A high-performance filter, with quality similar to
+      --  Cairo_Filter_Nearest
+
       Cairo_Filter_Good,
+      --  A reasonable-performance filter, with quality similar to
+      --  Cairo_Filter_Bilinear
+
       Cairo_Filter_Best,
+      --  The highest-quality available, performance may
+      --  not be suitable for interactive use.
+
       Cairo_Filter_Nearest,
+      --  Nearest-neighbor filtering
+
       Cairo_Filter_Bilinear,
-      Cairo_Filter_Gaussian);
+      --  Linear interpolation in two dimensions
+
+      Cairo_Filter_Gaussian
+      --  This filter value is currently unimplemented, and should not be used
+      --  in current code.
+     );
    pragma Convention (C, Cairo_Filter);
 
    function Create_Rgb
@@ -132,9 +142,9 @@ package Cairo.Pattern is
       Green : Gdouble;
       Blue  : Gdouble)
       return  Cairo_Pattern;
-   --  Red: Red component of the color
+   --  Red:   Red component of the color
    --  Green: Green component of the color
-   --  Blue: Blue component of the color
+   --  Blue:  Blue component of the color
    --
    --  Creates a new Cairo_Pattern corresponding to an opaque color.  The
    --  color components are floating point numbers in the range 0 to 1.
@@ -147,7 +157,7 @@ package Cairo.Pattern is
    --  finished with it.
    --
    --  This function will always return a valid pointer, but if an error
-   --  occurred the pattern status will be set to an error.  To inspect
+   --  occurred the pattern status will be set to an error. To inspect
    --  the status of a pattern use Cairo.Pattern.Status.
 
    function Create_Rgba
@@ -172,7 +182,7 @@ package Cairo.Pattern is
    --  finished with it.
    --
    --  This function will always return a valid pointer, but if an error
-   --  occurred the pattern status will be set to an error.  To inspect
+   --  occurred the pattern status will be set to an error. To inspect
    --  the status of a pattern use Cairo.Pattern.Status.
 
    function Create_For_Surface
@@ -188,7 +198,7 @@ package Cairo.Pattern is
    --  finished with it.
    --
    --  This function will always return a valid pointer, but if an error
-   --  occurred the pattern status will be set to an error.  To inspect
+   --  occurred the pattern status will be set to an error. To inspect
    --  the status of a pattern use Cairo.Pattern.Status.
 
    function Create_Linear
@@ -203,7 +213,7 @@ package Cairo.Pattern is
    --  Y1: y coordinate of the end point
    --
    --  Create a new linear gradient Cairo_Pattern along the line defined
-   --  by (x0, y0) and (x1, y1).  Before using the gradient pattern, a
+   --  by (X0, Y0) and (X1, Y1).  Before using the gradient pattern, a
    --  number of color stops should be defined using
    --  Cairo.Pattern.Add_Color_Stop_Rgb or
    --  Cairo.Pattern.Add_Color_Stop_Rgba.
@@ -229,19 +239,17 @@ package Cairo.Pattern is
       Cy1     : Gdouble;
       Radius1 : Gdouble)
       return    Cairo_Pattern;
-   --  Cx0: x coordinate for the center of the start circle
-   --  Cy0: y coordinate for the center of the start circle
+   --  Cx0: X coordinate for the center of the start circle
+   --  Cy0: Y coordinate for the center of the start circle
    --  Radius0: radius of the start circle
-   --  Cx1: x coordinate for the center of the end circle
-   --  Cy1: y coordinate for the center of the end circle
+   --  Cx1: X coordinate for the center of the end circle
+   --  Cy1: Y coordinate for the center of the end circle
    --  Radius1: radius of the end circle
    --
-   --  Creates a new radial gradient Cairo_Pattern between the two
-   --  circles defined by (cx0, cy0, radius0) and (cx1, cy1, radius1).  Before
-   --  using the
+   --  Creates a new radial gradient Cairo_Pattern between the two circles
+   --  defined by (Cx0, Cy0, Radius0) and (Cx1, Cy1, Radius1). Before using the
    --  gradient pattern, a number of color stops should be defined using
-   --  Cairo.Pattern.Add_Color_Stop_Rgb or
-   --  Cairo.Pattern.Add_Color_Stop_Rgba.
+   --  Cairo.Pattern.Add_Color_Stop_Rgb or Cairo.Pattern.Add_Color_Stop_Rgba.
    --
    --  Note: The coordinates here are in pattern space. For a new pattern,
    --  pattern space is identical to user space, but the relationship
@@ -291,8 +299,8 @@ package Cairo.Pattern is
    --  Checks whether an error has previously occurred for this
    --  pattern.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS, CAIRO_STATUS_NO_MEMORY, or
-   --  CAIRO_STATUS_PATTERN_TYPE_MISMATCH.
+   --  Return value: Cairo_Status_Success, Cairo_Status_No_Memory, or
+   --  Cairo_Status_Pattern_Type_Mismatch.
 
    function Get_User_Data
      (Pattern : Cairo_Pattern;
@@ -304,9 +312,9 @@ package Cairo.Pattern is
    --
    --  Return user data previously attached to pattern using the
    --  specified key.  If no user data has been attached with the given
-   --  key this function returns NULL.
+   --  key this function returns System.Null_Address.
    --
-   --  Return value: the user data previously attached or NULL.
+   --  Return value: the user data previously attached or System.Null_Address.
    --
    --  Since: 1.4
 
@@ -314,7 +322,7 @@ package Cairo.Pattern is
      (Pattern   : Cairo_Pattern;
       Key       : access constant Cairo_User_Data_Key;
       User_Data : System.Address;
-      Destroy   : access procedure (Arg1 : System.Address))
+      Destroy   : Cairo_Destroy_Func)
       return      Cairo_Status;
    --  Pattern: a Cairo_Pattern
    --  Key: the address of a Cairo_User_Data_Key to attach the user data to
@@ -324,10 +332,10 @@ package Cairo.Pattern is
    --  same key.
    --
    --  Attach user data to pattern.  To remove user data from a surface,
-   --  call this function with the key that was used to set it and NULL
+   --  call this function with the key that was used to set it and Null_Address
    --  for data.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY if a
+   --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory if a
    --  slot could not be allocated for the user data.
    --
    --  Since: 1.4
@@ -356,11 +364,11 @@ package Cairo.Pattern is
    --
    --  Adds an opaque color stop to a gradient pattern. The offset
    --  specifies the location along the gradient's control vector. For
-   --  example, a linear gradient's control vector is from (x0,y0) to
-   --  (x1,y1) while a radial gradient's control vector is from any point
+   --  example, a linear gradient's control vector is from (X0,Y0) to
+   --  (X1,Y1) while a radial gradient's control vector is from any point
    --  on the start circle to the corresponding point on the end circle.
    --
-   --  The color is specified in the same way as in Cairo_Set_Source_Rgb.
+   --  The color is specified in the same way as in Cairo.Set_Source_Rgb.
    --
    --  If two (or more) stops are specified with identical offset values,
    --  they will be sorted according to the order in which the stops are
@@ -371,7 +379,7 @@ package Cairo.Pattern is
    --
    --  Note: If the pattern is not a gradient pattern, (eg. a linear or
    --  radial pattern), then the pattern will be put into an error status
-   --  with a status of CAIRO_STATUS_PATTERN_TYPE_MISMATCH.
+   --  with a status of Cairo_Status_Pattern_Type_Mismatch.
 
    procedure Add_Color_Stop_Rgba
      (Pattern : Cairo_Pattern;
@@ -403,7 +411,7 @@ package Cairo.Pattern is
    --
    --  Note: If the pattern is not a gradient pattern, (eg. a linear or
    --  radial pattern), then the pattern will be put into an error status
-   --  with a status of CAIRO_STATUS_PATTERN_TYPE_MISMATCH.
+   --  with a status of Cairo_Status_Pattern_Type_Mismatch.
 
    procedure Set_Matrix
      (Pattern : Cairo_Pattern;
@@ -427,10 +435,8 @@ package Cairo.Pattern is
    --  For example, if you want to make a pattern appear twice as large as
    --  it does by default the correct code to use is:
    --
-   --  <informalexample><programlisting>
-   --  Cairo.Matrix.Init_Scale (&amp;matrix, 0.5, 0.5);
-   --  Cairo.Pattern.Set_Matrix (pattern, &amp;matrix);
-   --  </programlisting></informalexample>
+   --  Cairo.Matrix.Init_Scale (Matrix, 0.5, 0.5);
+   --  Cairo.Pattern.Set_Matrix (Pattern, Matrix);
    --
    --  Meanwhile, using values of 2.0 rather than 0.5 in the code above
    --  would cause the pattern to appear at half of its default size.
@@ -455,8 +461,8 @@ package Cairo.Pattern is
    --  See Cairo_Extend for details on the semantics of each extend
    --  strategy.
    --
-   --  The default extend mode is CAIRO_EXTEND_NONE for surface patterns
-   --  and CAIRO_EXTEND_PAD for gradient patterns.
+   --  The default extend mode is Cairo_Extend_None for surface patterns
+   --  and Cairo_Extend_PAd for gradient patterns.
 
    function Get_Extend (Pattern : Cairo_Pattern) return Cairo_Extend;
    --  Pattern: a Cairo_Pattern
@@ -475,16 +481,14 @@ package Cairo.Pattern is
    --  Sets the filter to be used for resizing when using this pattern.
    --  See Cairo_Filter for details on each filter.
    --
-   --  * Note that you might want to control filtering even when you do not
+   --  Note that you might want to control filtering even when you do not
    --  have an explicit Cairo_Pattern object, (for example when using
    --  Cairo_Set_Source_Surface). In these cases, it is convenient to
    --  use Cairo_Get_Source to get access to the pattern that cairo
    --  creates implicitly. For example:
    --
-   --  <informalexample><programlisting>
-   --  Cairo_Set_Source_Surface (cr, image, x, y);
-   --  Cairo.Pattern.Set_Filter (Cairo_Get_Source (cr), CAIRO_FILTER_NEAREST);
-   --  </programlisting></informalexample>
+   --  Cairo_Set_Source_Surface (Cr, Image, X, Y);
+   --  Cairo.Pattern.Set_Filter (Cairo_Get_Source (Cr), Cairo_Filter_Nearest);
 
    function Get_Filter (Pattern : Cairo_Pattern) return Cairo_Filter;
    --  Pattern: a Cairo_Pattern
@@ -502,32 +506,32 @@ package Cairo.Pattern is
       Alpha   : access Gdouble)
       return    Cairo_Status;
    --  Pattern: a Cairo_Pattern
-   --  Red: return value for Red component of color, or NULL
-   --  Green: return value for Green component of color, or NULL
-   --  Blue: return value for Blue component of color, or NULL
-   --  Alpha: return value for Alpha component of color, or NULL
+   --  Red: return value for Red component of color, or null
+   --  Green: return value for Green component of color, or null
+   --  Blue: return value for Blue component of color, or null
+   --  Alpha: return value for Alpha component of color, or null
    --
    --  Gets the solid color for a solid color pattern.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS, or
-   --  CAIRO_STATUS_PATTERN_TYPE_MISMATCH if the pattern is not a solid
+   --  Return value: Cairo_Status_Success, or
+   --  Cairo_Status_Pattern_Type_Mismatch if the pattern is not a solid
    --  color pattern.
    --
    --  Since: 1.4
 
    function Get_Surface
      (Pattern : Cairo_Pattern;
-      Surface : System.Address)
+      Surface : Cairo_Surface)
       return    Cairo_Status;
    --  Pattern: a Cairo_Pattern
-   --  Surface: return value for Surface of pattern, or NULL
+   --  Surface: return value for Surface of pattern, or null
    --
    --  Gets the surface of a surface pattern.  The reference returned in
    --  surface is owned by the pattern; the caller should call
    --  Cairo.Surface.Reference if the surface is to be retained.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS, or
-   --  CAIRO_STATUS_PATTERN_TYPE_MISMATCH if the pattern is not a surface
+   --  Return value: Cairo_Status_Success, or
+   --  Cairo_Status_Pattern_Type_Mismatch if the pattern is not a surface
    --  pattern.
    --
    --  Since: 1.4
@@ -543,19 +547,19 @@ package Cairo.Pattern is
       return    Cairo_Status;
    --  Pattern: a Cairo_Pattern
    --  Index: Index of the stop to return data for
-   --  Offset: return value for the Offset of the stop, or NULL
-   --  Red: return value for Red component of color, or NULL
-   --  Green: return value for Green component of color, or NULL
-   --  Blue: return value for Blue component of color, or NULL
-   --  Alpha: return value for Alpha component of color, or NULL
+   --  Offset: return value for the Offset of the stop, or null
+   --  Red: return value for Red component of color, or null
+   --  Green: return value for Green component of color, or null
+   --  Blue: return value for Blue component of color, or null
+   --  Alpha: return value for Alpha component of color, or null
    --
    --  Gets the color and offset information at the given index for a
    --  gradient pattern.  Values of index are 0 to 1 less than the number
    --  returned by Cairo.Pattern.Get_Color_Stop_Count.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS, or CAIRO_STATUS_INVALID_INDEX
+   --  Return value: Cairo_Status_Success, or Cairo_Status_Invalid_Index
    --  if index is not valid for the given pattern.  If the pattern is
-   --  not a gradient pattern, CAIRO_STATUS_PATTERN_TYPE_MISMATCH is
+   --  not a gradient pattern, Cairo_Status_Pattern_Type_Mismatch is
    --  returned.
    --
    --  Since: 1.4
@@ -570,8 +574,8 @@ package Cairo.Pattern is
    --  Gets the number of color stops specified in the given gradient
    --  pattern.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS, or
-   --  CAIRO_STATUS_PATTERN_TYPE_MISMATCH if pattern is not a gradient
+   --  Return value: Cairo_Status_Success, or
+   --  Cairo_Status_Pattern_Type_Mismatch if pattern is not a gradient
    --  pattern.
    --
    --  Since: 1.4
@@ -584,15 +588,15 @@ package Cairo.Pattern is
       Y1      : access Gdouble)
       return    Cairo_Status;
    --  Pattern: a Cairo_Pattern
-   --  X0: return value for the x coordinate of the first point, or NULL
-   --  Y0: return value for the y coordinate of the first point, or NULL
-   --  X1: return value for the x coordinate of the second point, or NULL
-   --  Y1: return value for the y coordinate of the second point, or NULL
+   --  X0: return value for the x coordinate of the first point, or null
+   --  Y0: return value for the y coordinate of the first point, or null
+   --  X1: return value for the x coordinate of the second point, or null
+   --  Y1: return value for the y coordinate of the second point, or null
    --
    --  Gets the gradient endpoints for a linear gradient.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS, or
-   --  CAIRO_STATUS_PATTERN_TYPE_MISMATCH if pattern is not a linear
+   --  Return value: Cairo_Status_Success, or
+   --  Cairo_Status_Pattern_Type_Mismatch if pattern is not a linear
    --  gradient pattern.
    --
    --  Since: 1.4
@@ -608,21 +612,21 @@ package Cairo.Pattern is
       return    Cairo_Status;
    --  Pattern: a Cairo_Pattern
    --  X0: return value for the x coordinate of the center of the first
-   --  circle, or NULL
+   --  circle, or null
    --  Y0: return value for the y coordinate of the center of the first
-   --  circle, or NULL
-   --  R0: return value for the radius of the first circle, or NULL
+   --  circle, or null
+   --  R0: return value for the radius of the first circle, or null
    --  X1: return value for the x coordinate of the center of the second
-   --  circle, or NULL
+   --  circle, or null
    --  Y1: return value for the y coordinate of the center of the second
-   --  circle, or NULL
-   --  R1: return value for the radius of the second circle, or NULL
+   --  circle, or null
+   --  R1: return value for the radius of the second circle, or null
    --
    --  Gets the gradient endpoint circles for a radial gradient, each
    --  specified as a center coordinate and a radius.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS, or
-   --  CAIRO_STATUS_PATTERN_TYPE_MISMATCH if pattern is not a radial
+   --  Return value: Cairo_Status_Success, or
+   --  Cairo_Status_Pattern_Type_Mismatch if pattern is not a radial
    --  gradient pattern.
    --
    --  Since: 1.4
