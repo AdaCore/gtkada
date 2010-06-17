@@ -2850,7 +2850,7 @@ package Cairo is
    --
    --   The data structure is designed to try to balance the demands of
    --   efficiency and ease-of-use. A path is represented as an array of
-   --   Cairo_Path_Data_T, which is a union of headers and points.
+   --   Cairo_Path_Data, which is a union of headers and points.
    --
    --   Each portion of the path is represented by one or more elements in
    --   the array, (one header followed by 0 or more points). The length
@@ -2858,106 +2858,105 @@ package Cairo is
    --   portion including the header, (ie. length == 1 +  of points), and
    --   where the number of points for each element type is as follows:
    --
-   --   <programlisting>
-   --       CAIRO_PATH_MOVE_TO:     1 point
-   --       CAIRO_PATH_LINE_TO:     1 point
-   --       CAIRO_PATH_CURVE_TO:    3 points
-   --       CAIRO_PATH_CLOSE_PATH:  0 points
-   --   </programlisting>
+   --       Cairo_Path_Move_To:     1 point
+   --       Cairo_Path_Line_To:     1 point
+   --       Cairo_Path_Curve_To:    3 points
+   --       Cairo_Path_Close_Path:  0 points
    --
    --   The semantics and ordering of the coordinate values are consistent
-   --   with Cairo_Move_To, Cairo_Line_To, Cairo_Curve_To, and
-   --   Cairo_Close_Path.
+   --   with Move_To, Line_To, Curve_To, and Close_Path.
    --
    --   Here is sample code for iterating through a Cairo_Path:
    --
-   --   <informalexample><programlisting>
-   --        Gint i;
-   --        Cairo_path *path;
-   --        Cairo_path_data *data;
-   --   &nbsp;
-   --        path = Cairo_Copy_Path (Cr);
-   --   &nbsp;
-   --        for (i=0; i < path->num_data; i += path->data[i].header.length) {
-   --            data = &amp;path->data[i];
-   --            switch (data->header.type) {
-   --            case CAIRO_PATH_MOVE_TO:
-   --                do_move_to_things (data[1].point.x, data[1].point.y);
-   --                break;
-   --            case CAIRO_PATH_LINE_TO:
-   --                do_line_to_things (data[1].point.x, data[1].point.y);
-   --                break;
-   --            case CAIRO_PATH_CURVE_TO:
-   --                do_curve_to_things (data[1].point.x, data[1].point.y,
-   --                                    data[2].point.x, data[2].point.y,
-   --                                    data[3].point.x, data[3].point.y);
-   --                break;
-   --            case CAIRO_PATH_CLOSE_PATH:
-   --                do_close_path_things ;
-   --                break;
-   --            }
-   --        }
-   --        Cairo_Path_Destroy (path);
-   --   </programlisting></informalexample>
+   --     declare
+   --        J    : Gint;
+   --        Path : Cairo_Path;
+   --        Data : Cairo_Path_Data;
+   --      begin
+   --        Path = Copy_Path (Cr);
+   --
+   --        J := 0;
+   --        while J < Path.Num_Data loop
+   --           Data := Path.Data(J);
+   --
+   --           case Data.Header.Path_Type is
+   --
+   --               when Cairo_Path_Move_To =>
+   --                  Do_Move_To_Things (Data(1).Point.X, Data(1).Point.Y);
+   --
+   --               when Cairo_Path_Line_To =>
+   --                  Do_Line_To_Things (Data(1).Point.X, Data(1).Point.Y);
+   --
+   --               when Cairo_Path_Curve_To =>
+   --                  Do_Curve_To_Things (Data(1).Point.X, Data(1).Point.Y,
+   --                                      Data(2).Point.X, Data(2).Point.Y,
+   --                                      Data(3).Point.X, Data(3).Point.Y);
+   --
+   --               when Cairo_Path_Curve_To =>
+   --                  Do_Close_Path_Things;
+   --           end case;
+   --
+   --           J := J + Path.Data[J].Header.Length;
+   --        end loop;
+   --
+   --        Path_Destroy (Path);
+   --     end;
    --
    --   As of cairo 1.4, cairo does not mind if there are more elements in
    --   a portion of the path than needed.  Such elements can be used by
    --   users of the cairo API to hold extra values in the path data
    --   structure.  For this reason, it is recommended that applications
-   --   always use <literal>data->header.length</literal> to
-   --   iterate over the path data, instead of hardcoding the number of
-   --   elements for each element type.
-   --
+   --   always use Data.Header.Length to iterate over the path data, instead of
+   --   hardcoding the number of elements for each element type.
 
-   type U_Cairo_Path_Data;
-   type Anon_27 is record
-      C_Type : aliased Cairo_Path_Data_Type;
-      Length : aliased Gint;
+   type Header_Type is record
+      Path_Type : aliased Cairo_Path_Data_Type;
+      Length    : aliased Gint;
    end record;
-   pragma Convention (C_Pass_By_Copy, Anon_27);
-   type Anon_28 is record
+
+   type Point_Type is record
       X : aliased Gdouble;
       Y : aliased Gdouble;
    end record;
-   pragma Convention (C_Pass_By_Copy, Anon_28);
-   subtype Cairo_Path_Data is U_Cairo_Path_Data;
 
-   type U_Cairo_Path_Data (Discr : Guint := 0) is record
+   type Cairo_Path_Data (Discr : Guint := 0) is record
       case Discr is
          when 0 =>
-            Header : aliased Anon_27;
+            Header : aliased Header_Type;
          when others =>
-            Point : aliased Anon_28;
+            Point : aliased Point_Type;
       end case;
    end record;
-   pragma Convention (C_Pass_By_Copy, U_Cairo_Path_Data);
-   pragma Unchecked_Union (U_Cairo_Path_Data);
 
    --   Cairo_Path:
    --   Status: the current error Status
    --   Data: the elements in the path
    --   Num_Data: the number of elements in the data array
    --
-   --   A data structure for holding a path. This data structure serves as
-   --   the return value for Cairo_Copy_Path and
-   --   Cairo_Copy_Path_Flat as well the input value for
-   --   Cairo_Append_Path.
+   --   A data structure for holding a path. This data structure serves as the
+   --   return value for Copy_Path and Copy_Path_Flat as well the input value
+   --   for Append_Path.
    --
-   --   See Cairo_path_data for hints on how to iterate over the
+   --   See Cairo_Path_Data for hints on how to iterate over the
    --   actual data within the path.
    --
    --   The num_data member gives the number of elements in the data
    --   array. This number is larger than the number of independent path
-   --   portions (defined in Cairo_path_data_type), since the data
+   --   portions (defined in Cairo_Path_Data_Type), since the data
    --   includes both headers and coordinates for each portion.
-   --
+
+   type Path_Data_Array is array (Natural) of Cairo_Path_Data;
+   type Path_Data_Array_Access is access all Path_Data_Array;
 
    type Cairo_Path is record
       Status   : aliased Cairo_Status;
-      Data     : access Cairo_Path_Data;
+      Data     : Path_Data_Array_Access;
+      --  Warning: for efficiency reasons, Data is a direct mapping to the C
+      --  structure. Therefore, there is no bounds checking on this array,
+      --  the user needs to make sure only to access data between indexes
+      --  0 and Num_Data-1.
       Num_Data : aliased Gint;
    end record;
-   pragma Convention (C_Pass_By_Copy, Cairo_Path);
 
    function Copy_Path (Cr : Cairo_Context) return access Cairo_Path;
    --  Cr: a cairo context
@@ -2967,22 +2966,18 @@ package Cairo is
    --  over the returned data structure.
    --
    --  This function will always return a valid pointer, but the result
-   --  will have no data (<literal>data==NULL</literal> and
-   --  <literal>num_data==0</literal>), if either of the following
-   --  conditions hold:
+   --  will have no data (Data = null and Num_Data = 0), if
+   --  either of the following conditions hold:
    --
-   --  <orderedlist>
-   --  <listitem>If there is insufficient memory to copy the path. In this
-   --      case <literal>path->status</literal> will be set to
-   --      CAIRO_STATUS_NO_MEMORY.</listitem>
-   --  <listitem>If cr is already in an error state. In this case
-   --     <literal>path->status</literal> will contain the same status that
-   --     would be returned by Cairo_Status.</listitem>
-   --  </orderedlist>
+   --  -> If there is insufficient memory to copy the path. In this
+   --      case Path.Status will be set to Cairo_Status_No_Memory
+   --
+   --  -> If Cr is already in an error state. In this case
+   --     Path.Status will contain the same status that
+   --     would be returned by Status.
    --
    --  Return value: the copy of the current path. The caller owns the
-   --  returned object and should call Cairo_Path_Destroy when finished
-   --  with it.
+   --  returned object and should call Path_Destroy when finished with it.
 
    function Copy_Path_Flat (Cr : Cairo_Context) return access Cairo_Path;
    --  Cr: a cairo context
@@ -2991,29 +2986,26 @@ package Cairo is
    --  user as a Cairo_Path. See Cairo_Path_Data for hints on
    --  how to iterate over the returned data structure.
    --
-   --  This function is like Cairo_Copy_Path except that any curves
+   --  This function is like Copy_Path except that any curves
    --  in the path will be approximated with piecewise-linear
    --  approximations, (accurate to within the current tolerance
    --  value). That is, the result is guaranteed to not have any elements
-   --  of type CAIRO_PATH_CURVE_TO which will instead be replaced by a
-   --  series of CAIRO_PATH_LINE_TO elements.
+   --  of type Cairo_Path_Curve_To which will instead be replaced by a
+   --  series of Cairo_Path_Line_To elements.
    --
-   --  This function will always return a valid pointer, but the result
-   --  will have no data (<literal>data==NULL</literal> and
-   --  <literal>num_data==0</literal>), if either of the following
+   --  This function will always return a valid pointer, but the result will
+   --  have no data (Data = null and Num_Data = 0), if either of the following
    --  conditions hold:
    --
-   --  <orderedlist>
-   --  <listitem>If there is insufficient memory to copy the path. In this
-   --      case <literal>path->status</literal> will be set to
-   --      CAIRO_STATUS_NO_MEMORY.</listitem>
-   --  <listitem>If cr is already in an error state. In this case
-   --     <literal>path->status</literal> will contain the same status that
-   --     would be returned by Cairo_Status.</listitem>
-   --  </orderedlist>
+   --  -> If there is insufficient memory to copy the path. In this
+   --      case Path.Status will be set to Cairo_Status_No_Memory
+   --
+   --  -> If Cr is already in an error state. In this case
+   --     Path.Status will contain the same status that
+   --     would be returned by Status.
    --
    --  Return value: the copy of the current path. The caller owns the
-   --  returned object and should call Cairo_Path_Destroy when finished
+   --  returned object and should call Path_Destroy when finished
    --  with it.
 
    procedure Append_Path
@@ -3022,222 +3014,33 @@ package Cairo is
    --  Cr: a cairo context
    --  Path: Path to be appended
    --
-   --  Append the path onto the current path. The path may be either the
-   --  return value from one of Cairo_Copy_Path or
-   --  Cairo_Copy_Path_Flat or it may be constructed manually.  See
-   --  Cairo_Path for details on how the path data structure should be
-   --  initialized, and note that <literal>path->status</literal> must be
-   --  initialized to CAIRO_STATUS_SUCCESS.
+   --  Append the path onto the current path. The path may be either the return
+   --  value from one of Copy_Path or Copy_Path_Flat or it may be constructed
+   --  manually. See Cairo_Path for details on how the path data structure
+   --  should be initialized, and note that Path.Status must be initialized to
+   --  Cairo_Status_Success.
 
    procedure Path_Destroy (Path : access Cairo_Path);
+   --  Path: a path previously returned by either Copy_Path or Copy_Path_Flat.
+   --
+   --  Immediately releases all memory associated with Path. After a call
+   --  to Path_Destroy the Path pointer is no longer valid and should not be
+   --  used further.
+   --
+   --  Note: Path_Destroy should only be called with an access to a
+   --  Cairo_Path returned by a cairo function. Any path that is created
+   --  manually (ie. outside of cairo) should be destroyed manually as well.
 
-   --  Error status queries
+   --------------------------
+   -- Error status queries --
+   --------------------------
+
    function Status (Cr : Cairo_Context) return Cairo_Status;
    --  Cr: a cairo context
    --
    --  Checks whether an error has previously occurred for this context.
    --
    --  Returns: the current status of this context, see Cairo_Status
-
-   --  Surface manipulation
-
-   --   Cairo_Surface_Type:
-   --   CAIRO_SURFACE_TYPE_IMAGE: The surface is of type image
-   --   CAIRO_SURFACE_TYPE_PDF: The surface is of type pdf
-   --   CAIRO_SURFACE_TYPE_PS: The surface is of type ps
-   --   CAIRO_SURFACE_TYPE_XLIB: The surface is of type xlib
-   --   CAIRO_SURFACE_TYPE_XCB: The surface is of type xcb
-   --   CAIRO_SURFACE_TYPE_GLITZ: The surface is of type glitz
-   --   CAIRO_SURFACE_TYPE_QUARTZ: The surface is of type quartz
-   --   CAIRO_SURFACE_TYPE_WIN32: The surface is of type win32
-   --   CAIRO_SURFACE_TYPE_BEOS: The surface is of type beos
-   --   CAIRO_SURFACE_TYPE_DIRECTFB: The surface is of type directfb
-   --   CAIRO_SURFACE_TYPE_SVG: The surface is of type svg
-   --   CAIRO_SURFACE_TYPE_OS2: The surface is of type os2
-   --   CAIRO_SURFACE_TYPE_WIN32_PRINTING: The surface is a win32 printing
-   --   surface
-   --   CAIRO_SURFACE_TYPE_QUARTZ_IMAGE: The surface is of type quartz_image
-   --
-   --   Cairo_surface_type is used to describe the type of a given
-   --   surface. The surface types are also known as "backends" or "surface
-   --   backends" within cairo.
-   --
-   --   The type of a surface is determined by the function used to create
-   --   it, which will generally be of the form
-   --   Cairo_<emphasis>type</emphasis>_Surface_Create,
-   --   (though see Cairo.Surface.Create_Similar as well).
-   --
-   --   The surface type can be queried with Cairo.Surface.Get_Type
-   --
-   --   The various Cairo_surface functions can be used with surfaces of
-   --   any type, but some backends also provide type-specific functions
-   --   that must only be called with a surface of the appropriate
-   --   type. These functions have names that begin with
-   --   Cairo_<emphasis>type</emphasis>_Surface<!-- --> such as
-   --   Cairo.Image_Surface.Get_Width.
-   --
-   --   The behavior of calling a type-specific function with a surface of
-   --   the wrong type is undefined.
-   --
-   --   New entries may be added in future versions.
-   --
-   --   Since: 1.2
-   --
-
-   type Cairo_Surface_Type is (
-      Cairo_Surface_Type_Image,
-      Cairo_Surface_Type_Pdf,
-      Cairo_Surface_Type_Ps,
-      Cairo_Surface_Type_Xlib,
-      Cairo_Surface_Type_Xcb,
-      Cairo_Surface_Type_Glitz,
-      Cairo_Surface_Type_Quartz,
-      Cairo_Surface_Type_Win32,
-      Cairo_Surface_Type_Beos,
-      Cairo_Surface_Type_Directfb,
-      Cairo_Surface_Type_Svg,
-      Cairo_Surface_Type_Os2,
-      Cairo_Surface_Type_Win32_Printing,
-      Cairo_Surface_Type_Quartz_Image);
-   pragma Convention (C, Cairo_Surface_Type);
-
-   --  Image-surface functions
-
-   --   Cairo_Format:
-   --   CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with
-   --     alpha in the upper 8 bits, then red, then green, then blue.
-   --     The 32-bit quantities are stored native-endian. Pre-multiplied
-   --     alpha is used. (That is, 50 transparent red is 0x80800000,
-   --     not 0x80ff0000.)
-   --   CAIRO_FORMAT_RGB24: each pixel is a 32-bit quantity, with
-   --     the upper 8 bits unused. Red, Green, and Blue are stored
-   --     in the remaining 24 bits in that order.
-   --   CAIRO_FORMAT_A8: each pixel is a 8-bit quantity holding
-   --     an alpha value.
-   --   CAIRO_FORMAT_A1: each pixel is a 1-bit quantity holding
-   --     an alpha value. Pixels are packed together into 32-bit
-   --     quantities. The ordering of the bits matches the
-   --     endianess of the platform. On a big-endian machine, the
-   --     first pixel is in the uppermost bit, on a little-endian
-   --     machine the first pixel is in the least-significant bit.
-   --   CAIRO_FORMAT_RGB16_565: This format value is deprecated. It has
-   --     never been properly implemented in cairo and should not be used
-   --     by applications. (since 1.2)
-   --
-   --   Cairo_format is used to identify the memory format of
-   --   image data.
-   --
-   --   New entries may be added in future versions.
-   --
-
-   --  The value of 4 is reserved by a deprecated enum value.
-   --     * The next format added must have an explicit value of 5.
-   --    CAIRO_FORMAT_RGB16_565 = 4,
-   --
-
-   type Cairo_Format is (
-      Cairo_Format_Argb32,
-      Cairo_Format_Rgb24,
-      Cairo_Format_A8,
-      Cairo_Format_A1);
-   pragma Convention (C, Cairo_Format);
-
-   --  Pattern creation functions
-
-   --   Cairo_Pattern_Type:
-   --   CAIRO_PATTERN_TYPE_SOLID: The pattern is a solid (uniform)
-   --   color. It may be opaque or translucent.
-   --   CAIRO_PATTERN_TYPE_SURFACE: The pattern is a based on a surface (an
-   --   image).
-   --   CAIRO_PATTERN_TYPE_LINEAR: The pattern is a linear gradient.
-   --   CAIRO_PATTERN_TYPE_RADIAL: The pattern is a radial gradient.
-   --
-   --   Cairo_pattern_type is used to describe the type of a given pattern.
-   --
-   --   The type of a pattern is determined by the function used to create
-   --   it. The Cairo.Pattern.Create_Rgb and Cairo.Pattern.Create_Rgba
-   --   functions create SOLID patterns. The remaining
-   --   Cairo.Pattern.Create<!-- --> functions map to pattern types in obvious
-   --   ways.
-   --
-   --   The pattern type can be queried with Cairo.Pattern.Get_Type
-   --
-   --   Most Cairo_pattern functions can be called with a pattern of any
-   --   type, (though trying to change the extend or filter for a solid
-   --   pattern will have no effect). A notable exception is
-   --   Cairo.Pattern.Add_Color_Stop_Rgb and
-   --   Cairo.Pattern.Add_Color_Stop_Rgba which must only be called with
-   --   gradient patterns (either LINEAR or RADIAL). Otherwise the pattern
-   --   will be shutdown and put into an error state.
-   --
-   --   New entries may be added in future versions.
-   --
-   --   Since: 1.2
-   --
-
-   type Cairo_Pattern_Type is (
-      Cairo_Pattern_Type_Solid,
-      Cairo_Pattern_Type_Surface,
-      Cairo_Pattern_Type_Linear,
-      Cairo_Pattern_Type_Radial);
-   pragma Convention (C, Cairo_Pattern_Type);
-
-   --   Cairo_Extend:
-   --   CAIRO_EXTEND_NONE: pixels outside of the source pattern
-   --     are fully transparent
-   --   CAIRO_EXTEND_REPEAT: the pattern is tiled by repeating
-   --   CAIRO_EXTEND_REFLECT: the pattern is tiled by reflecting
-   --     at the edges (Implemented for surface patterns since 1.6)
-   --   CAIRO_EXTEND_PAD: pixels outside of the pattern copy
-   --     the closest pixel from the source (Since 1.2; but only
-   --     implemented for surface patterns since 1.6)
-   --
-   --   Cairo_extend is used to describe how pattern color/alpha will be
-   --   determined for areas "outside" the pattern's natural area, (for
-   --   example, outside the surface bounds or outside the gradient
-   --   geometry).
-   --
-   --   The default extend mode is CAIRO_EXTEND_NONE for surface patterns
-   --   and CAIRO_EXTEND_PAD for gradient patterns.
-   --
-   --   New entries may be added in future versions.
-   --
-
-   type Cairo_Extend is (
-      Cairo_Extend_None,
-      Cairo_Extend_Repeat,
-      Cairo_Extend_Reflect,
-      Cairo_Extend_Pad);
-   pragma Convention (C, Cairo_Extend);
-
-   --   Cairo_Filter:
-   --   CAIRO_FILTER_FAST: A high-performance filter, with quality similar
-   --       to CAIRO_FILTER_NEAREST
-   --   CAIRO_FILTER_GOOD: A reasonable-performance filter, with quality
-   --       similar to CAIRO_FILTER_BILINEAR
-   --   CAIRO_FILTER_BEST: The highest-quality available, performance may
-   --       not be suitable for interactive use.
-   --   CAIRO_FILTER_NEAREST: Nearest-neighbor filtering
-   --   CAIRO_FILTER_BILINEAR: Linear interpolation in two dimensions
-   --   CAIRO_FILTER_GAUSSIAN: This filter value is currently
-   --       unimplemented, and should not be used in current code.
-   --
-   --   Cairo_filter is used to indicate what filtering should be
-   --   applied when reading pixel values from patterns. See
-   --   Cairo.Pattern.Set_Source for indicating the desired filter to be
-   --   used with a particular pattern.
-   --
-
-   type Cairo_Filter is (
-      Cairo_Filter_Fast,
-      Cairo_Filter_Good,
-      Cairo_Filter_Best,
-      Cairo_Filter_Nearest,
-      Cairo_Filter_Bilinear,
-      Cairo_Filter_Gaussian);
-   pragma Convention (C, Cairo_Filter);
-
-   --  Matrix functions
 
    Null_Context      : constant Cairo_Context;
    Null_Surface      : constant Cairo_Surface;
@@ -3256,6 +3059,13 @@ private
    pragma Convention (C, Cairo_Fill_Rule);
    pragma Convention (C, Cairo_Line_Cap);
    pragma Convention (C, Cairo_Line_Join);
+   pragma Convention (C, Path_Data_Array_Access);
+   pragma Convention (C_Pass_By_Copy, Cairo_Path);
+
+   pragma Convention (C_Pass_By_Copy, Header_Type);
+   pragma Convention (C_Pass_By_Copy, Point_Type);
+   pragma Convention (C_Pass_By_Copy, Cairo_Path_Data);
+   pragma Unchecked_Union (Cairo_Path_Data);
 
    type Cairo_Context is new System.Address;
    Null_Context : constant Cairo_Context :=
