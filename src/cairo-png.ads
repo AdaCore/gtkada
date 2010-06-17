@@ -43,11 +43,11 @@ package Cairo.Png is
    --  Writes the contents of surface to a new file filename as a PNG
    --  image.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS if the PNG file was written
-   --  successfully. Otherwise, CAIRO_STATUS_NO_MEMORY if memory could not
+   --  Return value: Cairo_Status_Success if the PNG file was written
+   --  successfully. Otherwise, Cairo_Status_No_Memory if memory could not
    --  be allocated for the operation or
-   --  CAIRO_STATUS_SURFACE_TYPE_MISMATCH if the surface does not have
-   --  pixel contents, or CAIRO_STATUS_WRITE_ERROR if an I/O error occurs
+   --  Cairo_Status_Surface_Type_Mismatch if the surface does not have
+   --  pixel contents, or Cairo_Status_Write_Error if an I/O error occurs
    --  while attempting to write the file.
 
    function Cairo_Surface_Write_To_Png_Stream
@@ -65,10 +65,10 @@ package Cairo.Png is
    --
    --  Writes the image surface to the write function.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS if the PNG file was written
-   --  successfully.  Otherwise, CAIRO_STATUS_NO_MEMORY is returned if
+   --  Return value: Cairo_Status_Success if the PNG file was written
+   --  successfully.  Otherwise, Cairo_Status_No_Memory is returned if
    --  memory could not be allocated for the operation,
-   --  CAIRO_STATUS_SURFACE_TYPE_MISMATCH if the surface does not have
+   --  Cairo_Status_Surface_Type_Mismatch if the surface does not have
    --  pixel contents.
 
    function Cairo_Image_Surface_Create_From_Png
@@ -81,12 +81,12 @@ package Cairo.Png is
    --
    --  Return value: a new Cairo_Surface initialized with the contents
    --  of the PNG file, or a "nil" surface if any error occurred. A nil
-   --  surface can be checked for with Cairo.Surface.Status(surface) which
+   --  surface can be checked for with Cairo.Surface.Status (Surface) which
    --  may return one of the following values:
    --
-   --  CAIRO_STATUS_NO_MEMORY
-   --  CAIRO_STATUS_FILE_NOT_FOUND
-   --  CAIRO_STATUS_READ_ERROR
+   --  Cairo_Status_No_Memory
+   --  Cairo_Status_File_Not_Found
+   --  Cairo_Status_Read_Error
    --
    --  Alternatively, you can allow errors to propagate through the drawing
    --  operations and check the status on the context upon completion
@@ -109,11 +109,11 @@ package Cairo.Png is
    --  Return value: a new Cairo_Surface initialized with the contents
    --  of the PNG file or a "nil" surface if the data read is not a valid PNG
    --  image or memory could not be allocated for the operation.  A nil
-   --  surface can be checked for with Cairo.Surface.Status(surface) which
+   --  surface can be checked for with Cairo.Surface.Status (Surface) which
    --  may return one of the following values:
    --
-   --  CAIRO_STATUS_NO_MEMORY
-   --  CAIRO_STATUS_READ_ERROR
+   --  Cairo_Status_No_Memory
+   --  Cairo_Status_Read_Error
    --
    --  Alternatively, you can allow errors to propagate through the drawing
    --  operations and check the status on the context upon completion
