@@ -32,9 +32,8 @@ with Interfaces.C.Strings;
 
 package Cairo.Misc is
 
-   function Cairo_Glyph_Allocate
-     (Num_Glyphs : Gint)
-      return       access Cairo_Glyph;
+--     function Cairo_Glyph_Allocate
+--      (Num_Glyphs : Gint) return access Cairo_Glyph;
    --  Num_Glyphs: number of glyphs to allocate
    --
    --  Allocates an array of Cairo_Glyph_T's.
@@ -44,9 +43,9 @@ package Cairo.Misc is
    --  For all other uses, user can use their own allocation method
    --  for glyphs.
    --
-   --  This function returns NULL if num_glyphs is not positive,
-   --  or if out of memory.  That means, the NULL return value
-   --  signals out-of-memory only if num_glyphs was positive.
+   --  This function returns null if Num_Glyphs is not positive,
+   --  or if out of memory.  That means, the nulL return value
+   --  signals out-of-memory only if Num_Glyphs was positive.
    --
    --  Returns: the newly allocated array of glyphs that should be
    --           freed using Cairo_Glyph_Free
@@ -60,20 +59,20 @@ package Cairo.Misc is
    --  This function is only useful to free glyph array returned
    --  by Cairo.Scaled_Font.Text_To_Glyphs where cairo returns
    --  an array of glyphs that the user will free.
-   --  For all other uses, user can use their own allocation method
+   --  For all other uses, users can use their own allocation method
    --  for glyphs.
    --
    --  Since: 1.8
 
-   function Cairo_Text_Cluster_Allocate
-     (Num_Clusters : Gint)
-      return         Cairo_Text_Cluster;
+--     function Cairo_Text_Cluster_Allocate
+--       (Num_Clusters : Gint)
+--        return         Cairo_Text_Cluster;
    --  Num_Clusters: number of text_clusters to allocate
    --
    --  Allocates an array of Cairo_Text_Cluster_T's.
    --  This function is only useful in implementations of
-   --  Cairo_User_Scaled_Font_Text_To_Glyphs_Func where the user
-   --  needs to allocate an array of text clusters that cairo will free.
+   --  Cairo_User_Scaled_Font_Text_To_Glyphs_Func (not bound yet) where the
+   --  user needs to allocate an array of text clusters that cairo will free.
    --  For all other uses, user can use their own allocation method
    --  for text clusters.
    --
@@ -110,12 +109,12 @@ package Cairo.Misc is
 
 private
 
-   pragma Import (C, Cairo_Glyph_Allocate, "cairo_glyph_allocate");
+--     pragma Import (C, Cairo_Glyph_Allocate, "cairo_glyph_allocate");
    pragma Import (C, Cairo_Glyph_Free, "cairo_glyph_free");
-   pragma Import
-     (C,
-      Cairo_Text_Cluster_Allocate,
-      "cairo_text_cluster_allocate");
+--     pragma Import
+--       (C,
+--        Cairo_Text_Cluster_Allocate,
+--        "cairo_text_cluster_allocate");
    pragma Import (C, Cairo_Text_Cluster_Free, "cairo_text_cluster_free");
    pragma Import (C, Cairo_Status_To_String, "cairo_status_to_string");
 
