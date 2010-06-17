@@ -37,13 +37,13 @@ package Cairo.Surface is
    --------------------------
 
    --   Cairo_Surface_Type:
-   --   Cairo_surface_type is used to describe the type of a given
+   --   Cairo_Surface_Type is used to describe the type of a given
    --   surface. The surface types are also known as "backends" or "surface
    --   backends" within cairo.
    --
    --   The type of a surface is determined by the function used to create
    --   it, which will generally be of the form
-   --   Cairo_<emphasis>type</emphasis>_Surface_Create,
+   --   Cairo.<type>_Surface_Create,
    --   (though see Cairo.Surface.Create_Similar as well).
    --
    --   The surface type can be queried with Cairo.Surface.Get_Type
@@ -52,7 +52,7 @@ package Cairo.Surface is
    --   any type, but some backends also provide type-specific functions
    --   that must only be called with a surface of the appropriate
    --   type. These functions have names that begin with
-   --   Cairo_<emphasis>type</emphasis>_Surface<!-- --> such as
+   --   Cairo.<type>_Surface.* such as
    --   Cairo.Image_Surface.Get_Width.
    --
    --   The behavior of calling a type-specific function with a surface of
@@ -130,7 +130,7 @@ package Cairo.Surface is
    --  surface are getting and setting user, referencing and
    --  destroying, and flushing and finishing it.
    --  Further drawing to the surface will not affect the
-   --  surface but will instead trigger a CAIRO_STATUS_SURFACE_FINISHED
+   --  surface but will instead trigger a Cairo_Status_Surface_Finished
    --  error.
    --
    --  When the last call to Cairo.Surface.Destroy decreases the
@@ -161,10 +161,10 @@ package Cairo.Surface is
    --  Checks whether an error has previously occurred for this
    --  surface.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS, CAIRO_STATUS_NULL_POINTER,
-   --  CAIRO_STATUS_NO_MEMORY, CAIRO_STATUS_READ_ERROR,
-   --  CAIRO_STATUS_INVALID_CONTENT, CAIRO_STATUS_INVALID_FORMAT, or
-   --  CAIRO_STATUS_INVALID_VISUAL.
+   --  Return value: Cairo_Status_Success, Cairo_Status_Null_Pointer,
+   --     Cairo_Status_No_Memory, Cairo_Status_Read_Error,
+   --     Cairo_Status_Invalid_Content, Cairo_Status_Invalid_Format, or
+   --     Cairo_Status_Invalid_Visual.
 
    function Get_Type (Surface : Cairo_Surface) return Cairo_Surface_Type;
    --  Surface: a Cairo_Surface
@@ -197,9 +197,9 @@ package Cairo.Surface is
    --
    --  Return user data previously attached to surface using the specified
    --  key.  If no user data has been attached with the given key this
-   --  function returns NULL.
+   --  function returns null.
    --
-   --  Return value: the user data previously attached or NULL.
+   --  Return value: the user data previously attached or null.
 
    function Set_User_Data
      (Surface   : Cairo_Surface;
@@ -215,10 +215,10 @@ package Cairo.Surface is
    --  same key.
    --
    --  Attach user data to surface.  To remove user data from a surface,
-   --  call this function with the key that was used to set it and NULL
+   --  call this function with the key that was used to set it and null
    --  for data.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY if a
+   --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory if a
    --  slot could not be allocated for the user data.
 
    procedure Get_Font_Options
@@ -284,9 +284,9 @@ package Cairo.Surface is
    --  is when we want to create a Cairo_Surface that redirects drawing
    --  for a portion of an onscreen surface to an offscreen surface in a
    --  way that is completely invisible to the user of the cairo
-   --  API. Setting a transformation via Cairo_Translate isn't
+   --  API. Setting a transformation via Cairo.Translate isn't
    --  sufficient to do this, since functions like
-   --  Cairo_Device_To_User will expose the hidden offset.
+   --  Cairo.Device_To_User will expose the hidden offset.
    --
    --  Note that the offset affects drawing to the surface as well as
    --  using the surface in a source pattern.
@@ -330,7 +330,7 @@ package Cairo.Surface is
    --  backends.
    --
    --  Note: The fallback resolution only takes effect at the time of
-   --  completing a page (with Cairo_Show_Page or Cairo_Copy_Page) so
+   --  completing a page (with Cairo.Show_Page or Cairo.Copy_Page) so
    --  there is currently no way to have more than one fallback resolution
    --  in effect on a single page.
    --
@@ -361,8 +361,8 @@ package Cairo.Surface is
    --  be retained for the next page.  Use Cairo.Surface.Show_Page if you
    --  want to get an empty page after the emission.
    --
-   --  There is a convenience function for this that takes a Cairo_T,
-   --  namely Cairo_Copy_Page.
+   --  There is a convenience function for this that takes a Cairo_Context,
+   --  namely Cairo.Copy_Page.
    --
    --  Since: 1.6
 
@@ -372,7 +372,7 @@ package Cairo.Surface is
    --  Emits and clears the current page for backends that support multiple
    --  pages.  Use Cairo.Surface.Copy_Page if you don't want to clear the page.
    --
-   --  There is a convenience function for this that takes a Cairo_T,
+   --  There is a convenience function for this that takes a Cairo_Context,
    --  namely Cairo_Show_Page.
    --
    --  Since: 1.6
