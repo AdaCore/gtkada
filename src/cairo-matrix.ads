@@ -47,12 +47,11 @@ package Cairo.Matrix is
    --  Y0: Y translation component of the affine transformation
    --
    --  Sets matrix to be the affine transformation given by
-   --  xx, yx, xy, yy, x0, y0. The transformation is given
+   --  Xx, Yx, Xy, Yy, X0, Y0. The transformation is given
    --  by:
-   --  <programlisting>
-   --   x_new = xx * x + xy * y + x0;
-   --   y_new = yx * x + yy * y + y0;
-   --  </programlisting>
+   --
+   --   X_new = Xx * X + Xy * Y + X0;
+   --   Y_new = Yx * X + Yy * Y + Y0;
 
    procedure Init_Identity (Matrix : access Cairo_Matrix);
    --  Matrix: a Cairo_Matrix
@@ -67,8 +66,8 @@ package Cairo.Matrix is
    --  Tx: amount to translate in the X direction
    --  Ty: amount to translate in the Y direction
    --
-   --  Initializes matrix to a transformation that translates by tx and
-   --  ty in the X and Y dimensions, respectively.
+   --  Initializes matrix to a transformation that translates by Tx and
+   --  Ty in the X and Y dimensions, respectively.
 
    procedure Init_Scale
      (Matrix : access Cairo_Matrix;
@@ -78,7 +77,7 @@ package Cairo.Matrix is
    --  Sx: scale factor in the X direction
    --  Sy: scale factor in the Y direction
    --
-   --  Initializes matrix to a transformation that scales by sx and sy
+   --  Initializes matrix to a transformation that scales by Sx and Sy
    --  in the X and Y dimensions, respectively.
 
    procedure Init_Rotate (Matrix : access Cairo_Matrix; Radians : Gdouble);
@@ -99,9 +98,9 @@ package Cairo.Matrix is
    --  Tx: amount to translate in the X direction
    --  Ty: amount to translate in the Y direction
    --
-   --  Applies a translation by tx, ty to the transformation in
+   --  Applies a translation by Tx, Ty to the transformation in
    --  matrix. The effect of the new transformation is to first translate
-   --  the coordinates by tx and ty, then apply the original transformation
+   --  the coordinates by Tx and Ty, then apply the original transformation
    --  to the coordinates.
 
    procedure Scale
@@ -112,9 +111,9 @@ package Cairo.Matrix is
    --  Sx: scale factor in the X direction
    --  Sy: scale factor in the Y direction
    --
-   --  Applies scaling by sx, sy to the transformation in matrix. The
+   --  Applies scaling by Sx, Sy to the transformation in matrix. The
    --  effect of the new transformation is to first scale the coordinates
-   --  by sx and sy, then apply the original transformation to the coordinates.
+   --  by Sx and Sy, then apply the original transformation to the coordinates.
 
    procedure Rotate (Matrix : access Cairo_Matrix; Radians : Gdouble);
    --  Matrix: a Cairo_Matrix
@@ -124,29 +123,28 @@ package Cairo.Matrix is
    --  axis orientation of cairo, positive angles rotate in a clockwise
    --  direction.
    --
-   --  Applies rotation by radians to the transformation in
-   --  matrix. The effect of the new transformation is to first rotate the
-   --  coordinates by radians, then apply the original transformation
-   --  to the coordinates.
+   --  Applies rotation by radians to the transformation in matrix. The effect
+   --  of the new transformation is to first rotate the coordinates by radians,
+   --  then apply the original transformation to the coordinates.
 
    function Invert (Matrix : access Cairo_Matrix) return Cairo_Status;
    --  Matrix: a Cairo_Matrix
    --
-   --  Changes matrix to be the inverse of it's original value. Not
+   --  Changes matrix to be the inverse of its original value. Not
    --  all transformation matrices have inverses; if the matrix
-   --  collapses points together (it is <firstterm>degenerate</firstterm>),
+   --  collapses points together (it is "degenerate"),
    --  then it has no inverse and this function will fail.
    --
    --  Returns: If matrix has an inverse, modifies matrix to
-   --   be the inverse matrix and returns CAIRO_STATUS_SUCCESS. Otherwise,
-   --   returns CAIRO_STATUS_INVALID_MATRIX.
+   --  be the inverse matrix and returns Cairo_Status_Success. Otherwise,
+   --  returns Cairo_Status_Invalid_Matrix.
 
    procedure Multiply
      (Result : access Cairo_Matrix;
       A      : access constant Cairo_Matrix;
       B      : access constant Cairo_Matrix);
    --  Result: a Cairo_Matrix in which to store the Result
-   --  A: A CAiro_MAtrix
+   --  A: a Cairo_Matrix
    --  B: a Cairo_Matrix
    --
    --  Multiplies the affine transformations in a and b together
@@ -165,20 +163,18 @@ package Cairo.Matrix is
    --  Dx: X component of a distance vector. An in/out parameter
    --  Dy: Y component of a distance vector. An in/out parameter
    --
-   --  Transforms the distance vector (dx,dy) by matrix. This is
+   --  Transforms the distance vector (Dx,Dy) by matrix. This is
    --  similar to Cairo.Matrix.Transform_Point except that the translation
    --  components of the transformation are ignored. The calculation of
    --  the returned vector is as follows:
    --
-   --  <programlisting>
-   --  dx2 = dx1 * a + dy1 * c;
-   --  dy2 = dx1 * b + dy1 * d;
-   --  </programlisting>
+   --  Dx2 = Dx1 * A + Dy1 * C;
+   --  Dy2 = Dx1 * B + Dy1 * D;
    --
    --  Affine transformations are position invariant, so the same vector
-   --  always transforms to the same vector. If (x1,y1) transforms
-   --  to (x2,y2) then (x1+dx1,y1+dy1) will transform to
-   --  (x1+dx2,y1+dy2) for all values of x1 and x2.
+   --  always transforms to the same vector. If (X1,Y1) transforms
+   --  to (X2,Y2) then (X1+Dx1,Y1+Dy1) will transform to
+   --  (X1+Dx2,Y1+Dy2) for all values of X1 and X2.
 
    procedure Transform_Point
      (Matrix : access constant Cairo_Matrix;
@@ -188,7 +184,7 @@ package Cairo.Matrix is
    --  X: X position. An in/out parameter
    --  Y: Y position. An in/out parameter
    --
-   --  Transforms the point (x, y) by matrix.
+   --  Transforms the point (X, Y) by matrix.
 
 private
 
