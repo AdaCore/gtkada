@@ -175,6 +175,7 @@ procedure Testcairo is
          when Paths =>
             New_Path (Cr);
 
+            --  Draw a sinusoid
             Move_To (Cr, 2.0, 50.0);
             for J in 2 .. 40 loop
                D := Gdouble (J) / 20.0;
@@ -184,6 +185,7 @@ procedure Testcairo is
             Set_Source_Rgb (Cr, 0.2, 0.0, 0.5);
             Stroke (Cr);
 
+            --  Draw a sinusoid using curves to go from one point to the next
             Move_To (Cr, 2.0, 100.0);
             for J in 2 .. 40 loop
                D  := Gdouble (J - 1) / 20.0;
@@ -205,6 +207,7 @@ procedure Testcairo is
             Set_Source_Rgb (Cr, 0.5, 0.0, 0.2);
             Stroke (Cr);
 
+            --  Draw a sinusoid using a dashed line
             Move_To (Cr, 2.0, 150.0);
             for J in 2 .. 40 loop
                D := Gdouble (J - 1) / 20.0;
@@ -215,6 +218,7 @@ procedure Testcairo is
             Set_Dash (Cr, (1 => 15.0, 2 => 10.0, 3 => 2.0, 4 => 10.0), 0.1);
             Stroke (Cr);
 
+            --  Draw a sinusoid using thick round-capped lines
             Move_To (Cr, 2.0, 200.0);
             for J in 1 .. 40 loop
                D := Gdouble (J - 1) / 20.0;
@@ -226,6 +230,7 @@ procedure Testcairo is
             Set_Source_Rgb (Cr, 0.5, 0.5, 1.0);
             Stroke (Cr);
 
+            --  Draw a sinusoid using a thin line and no dashes
             Move_To (Cr, 2.0, 250.0);
             for J in 2 .. 40 loop
                D := Gdouble (J - 1) / 20.0;
@@ -238,6 +243,7 @@ procedure Testcairo is
             Set_Dash (Cr, No_Dashes, 0.0);
             Stroke (Cr);
 
+            --  Draw a sinusoid without antialiasing
             Move_To (Cr, 2.0, 300.0);
             for J in 2 .. 40 loop
                D := Gdouble (J - 1) / 20.0;
@@ -248,18 +254,21 @@ procedure Testcairo is
             Stroke (Cr);
 
          when Patterns =>
+            --  A solid-filled rectangle
             P := Create_Rgb (1.0, 1.0, 0.0);
             Set_Source (Cr, P);
             Rectangle (Cr, 10.0, 10.0, 50.0, 50.0);
             Fill (Cr);
             Destroy (P);
 
+            --  A rectangle with a transparent solid fill
             P := Create_Rgba (0.0, 0.0, 1.0, 0.3);
             Set_Source (Cr, P);
             Rectangle (Cr, 5.0, 30.0, 50.0, 50.0);
             Fill (Cr);
             Destroy (P);
 
+            --  A rectangle with a linear gradient
             P := Create_Linear (70.0, 10.0, 120.0, 60.0);
             Add_Color_Stop_Rgb (P, 0.0, 1.0, 1.0, 0.0);
             Add_Color_Stop_Rgb (P, 1.0, 0.0, 0.0, 1.0);
@@ -268,6 +277,7 @@ procedure Testcairo is
             Fill (Cr);
             Destroy (P);
 
+            --  A rectangle with a linear transparent gradient
             P := Create_Rgb (1.0, 1.0, 0.0);
             Set_Source (Cr, P);
             Rectangle (Cr, 130.0, 10.0, 50.0, 50.0);
@@ -281,6 +291,7 @@ procedure Testcairo is
             Fill (Cr);
             Destroy (P);
 
+            --  A rectangle with a radial transparent gradient
             Set_Source_Rgb (Cr, 0.5, 0.0, 0.5);
             P := Create_Radial (215.0, 35.0, 10.0, 215.0, 35.0, 30.0);
             Add_Color_Stop_Rgba (P, 0.0, 0.0, 1.0, 0.0, 0.0);
