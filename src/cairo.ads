@@ -2526,17 +2526,17 @@ package Cairo is
    --
    --  Since: 1.4
 
---     procedure Get_Dash
---       (Cr     : Cairo_Context;
---        Dashes : access Gdouble;
---        Offset : access Gdouble);
+   type Dash_Array_Access is access all Dash_Array;
+
+   procedure Get_Dash
+     (Cr     : Cairo_Context;
+      Dashes : out Dash_Array_Access;
+      Offset : out Gdouble);
    --  Cr: a Cairo_Context
    --  Dashes: return value for the dash array, or null
    --  Offset: return value for the current dash Offset, or null
    --
-   --  Gets the current dash array.  If not null, dashes should be big
-   --  enough to hold at least the number of values returned by
-   --  Get_Dash_Count.
+   --  Gets the current dash array.
    --
    --  Since: 1.4
 
@@ -2944,7 +2944,6 @@ private
    pragma Import (C, Get_Line_Join, "cairo_get_line_join");
    pragma Import (C, Get_Miter_Limit, "cairo_get_miter_limit");
    pragma Import (C, Get_Dash_Count, "cairo_get_dash_count");
---     pragma Import (C, Get_Dash, "cairo_get_dash");
    pragma Import (C, Get_Matrix, "cairo_get_matrix");
    pragma Import (C, Get_Target, "cairo_get_target");
    pragma Import (C, Get_Group_Target, "cairo_get_group_target");
