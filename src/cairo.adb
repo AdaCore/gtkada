@@ -43,8 +43,14 @@ package body Cairo is
          Num_Dashes : Gint;
          Offset     : Gdouble);
       pragma Import (C, C_Set_Dash, "cairo_set_dash");
+
+      Len : constant Natural := Dashes'Length;
    begin
-      C_Set_Dash (Cr, Dashes (Dashes'First)'Address, Dashes'Length, Offset);
+      if Len = 0 then
+         C_Set_Dash (Cr, System.Null_Address, 0, Offset);
+      else
+         C_Set_Dash (Cr, Dashes (Dashes'First)'Address, Dashes'Length, Offset);
+      end if;
    end Set_Dash;
 
 end Cairo;
