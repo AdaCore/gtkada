@@ -881,6 +881,9 @@ package Cairo is
    --  The default line join style is Cairo_Line_Join_Miter.
 
    type Dash_Array is array (Natural range <>) of Gdouble;
+
+   No_Dashes : constant Dash_Array (1 .. 0) := (others => 0.0);
+
    procedure Set_Dash
      (Cr         : Cairo_Context;
       Dashes     : Dash_Array;
@@ -905,11 +908,11 @@ package Cairo is
    --  time of stroking. This is not necessarily the same as the user
    --  space at the time of Set_Dash.
    --
-   --  If num_dashes is 0 dashing is disabled.
+   --  If the array is No_Dashes, dashing is disabled.
    --
-   --  If num_dashes is 1 a symmetric pattern is assumed with alternating
-   --  on and off portions of the size specified by the single value in
-   --  dashes.
+   --  If the array contains only one element symmetric pattern is assumed with
+   --  alternating on and off portions of the size specified by the single
+   --  value in dashes.
    --
    --  If any value in dashes is negative, or if all values are 0, then
    --  cr will be put into an error state with a status of
