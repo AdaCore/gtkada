@@ -26,9 +26,16 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+pragma Ada_2005;
+
+with Ada.Numerics;
+with Ada.Numerics.Generic_Elementary_Functions;
+
 with Glib; use Glib;
 
-with Cairo;        use Cairo;
+with Cairo;         use Cairo;
+with Cairo.Matrix;  use Cairo.Matrix;
+with Cairo.Pattern; use Cairo.Pattern;
 
 with Gdk.Cairo;    use Gdk.Cairo;
 
@@ -38,9 +45,18 @@ with Gtk.Window;   use Gtk.Window;
 with Gtk.Handlers; use Gtk.Handlers;
 
 procedure Testcairo is
+
+   package Gdouble_Numerics is new Ada.Numerics.Generic_Elementary_Functions
+     (Gdouble);
+   use Gdouble_Numerics;
+
+   --  Pi : constant Gdouble := Gdouble (Ada.Numerics.Pi);
+   Two_Pi : constant Gdouble := Gdouble (2.0 * Ada.Numerics.Pi);
+
    Win : Gtk_Window;
 
-   type Test_Type is (Rectangles);
+   type Test_Type is (Rectangles, Transparency, Matrix, Transformations,
+                      Paths, Patterns);
 
    package Event_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Window_Record, Boolean);
@@ -57,9 +73,12 @@ procedure Testcairo is
    is
       pragma Unreferenced (Event);
       Cr : Cairo_Context;
-      D  : Gdouble;
+      D, D2, D3 : Gdouble;
+      M, M2, M3 : Cairo_Matrix_Access;
 
-      Test : constant Test_Type := Rectangles;
+      P : Cairo_Pattern;
+
+      Test : constant Test_Type := Test_Type'Last;
    begin
       Cr := Create (Get_Window (Win));
 
@@ -74,7 +93,204 @@ procedure Testcairo is
                Rectangle (Cr, 0.0, 0.0, D * 10.0, D * 10.0);
                Fill (Cr);
             end loop;
+
+         when Transparency =>
+            for J in 1 .. 5 loop
+               D := Gdouble (J);
+
+               --  Create a transparent color
+               Set_Source_Rgba (Cr, 0.0, 0.0, 1.0, 1.0 - D / 5.0);
+
+               --  Draw a disk
+               Arc (Cr     => Cr,
+                    Xc     => 100.0 + D * 60.0,
+                    Yc     => 100.0,
+                    Radius => 100.0,
+                    Angle1 => 0.0,
+                    Angle2 => Two_Pi);
+               Fill (Cr);
+            end loop;
+
+         when Matrix =>
+            M := new Cairo_Matrix;
+            M2 := new Cairo_Matrix;
+            M3 := new Cairo_Matrix;
+
+            for J in 1 .. 50 loop
+               D := Gdouble (J - 1) / 50.0;
+
+               --  Create a color
+               Set_Source_Rgba (Cr, 0.0, 1.0 - D, D, 0.7);
+
+               --  Create a rotation matrix
+               Init_Rotate (M, Two_Pi * D);
+
+               --  Create a translation matrix
+               Init_Translate (M2, 400.0 * D + 50.0, 200.0 * D + 50.0);
+
+               --  Create a scale matrix
+               Init_Scale (M3, 1.0 - D, 1.0 - D);
+
+               --  We want first to scale, then rotate...
+               Multiply (M, M, M3);
+
+               --  ...then translate.
+               Multiply (M, M, M2);
+
+               --  Reset the transformation matrix on CR...
+               Identity_Matrix (Cr);
+
+               --  ... then apply our scale + rotate + translate matrix
+               Transform (Cr, M);
+
+               --  Draw a rectangle
+               Rectangle (Cr, -50.0, -50.0, 100.0, 100.0);
+               Fill (Cr);
+            end loop;
+
+            Unchecked_Free (M);
+            Unchecked_Free (M2);
+            Unchecked_Free (M3);
+
+         when Transformations =>
+            for J in 1 .. 50 loop
+               D := Gdouble (J - 1) / 50.0;
+
+               --  Create a color
+               Set_Source_Rgba (Cr, 0.0, 1.0 - D, D, 0.7);
+
+               --  Reset the transformation matrix on CR...
+               Identity_Matrix (Cr);
+
+               --  ... then apply our scale + rotate + translate matrix
+               Translate (Cr, 400.0 * D + 50.0, 200.0 * D + 50.0);
+               Rotate (Cr, Two_Pi * D);
+               Scale (Cr, 1.0 - D, 1.0 - D);
+
+               --  Draw a rectangle
+               Rectangle (Cr, -50.0, -50.0, 100.0, 100.0);
+               Fill (Cr);
+            end loop;
+
+         when Paths =>
+            New_Path (Cr);
+
+            Move_To (Cr, 2.0, 50.0);
+            for J in 2 .. 40 loop
+               D := Gdouble (J) / 20.0;
+               Line_To (Cr, 300.0 * D, 50.0 + 50.0 * Sin (Two_Pi * D * 2.0));
+            end loop;
+
+            Set_Source_Rgb (Cr, 0.2, 0.0, 0.5);
+            Stroke (Cr);
+
+            Move_To (Cr, 2.0, 100.0);
+            for J in 2 .. 40 loop
+               D  := Gdouble (J - 1) / 20.0;
+               D2 := (Gdouble (J) - 1.6) / 20.0;
+               D3 := (Gdouble (J) - 1.3) / 20.0;
+
+               Curve_To (Cr,
+                         300.0 * D2,
+                         100.0 + 50.0 * Sin (Two_Pi * D2 * 2.0),
+
+                         300.0 * D3,
+                         100.0 + 50.0 * Sin (Two_Pi * D3 * 2.0),
+
+                         300.0 * D,
+
+                         100.0 + 50.0 * Sin (Two_Pi * D * 2.0));
+            end loop;
+
+            Set_Source_Rgb (Cr, 0.5, 0.0, 0.2);
+            Stroke (Cr);
+
+            Move_To (Cr, 2.0, 150.0);
+            for J in 2 .. 40 loop
+               D := Gdouble (J - 1) / 20.0;
+               Line_To (Cr, 300.0 * D, 150.0 + 50.0 * Sin (Two_Pi * D * 2.0));
+            end loop;
+
+            Set_Source_Rgb (Cr, 0.5, 0.0, 0.5);
+            Set_Dash (Cr, (1 => 15.0, 2 => 10.0, 3 => 2.0, 4 => 10.0), 0.1);
+            Stroke (Cr);
+
+            Move_To (Cr, 2.0, 200.0);
+            for J in 1 .. 40 loop
+               D := Gdouble (J - 1) / 20.0;
+               Line_To (Cr, 300.0 * D, 200.0 + 50.0 * Sin (Two_Pi * D * 2.0));
+            end loop;
+
+            Set_Line_Width (Cr, 7.0);
+            Set_Line_Cap (Cr, Cairo_Line_Cap_Round);
+            Set_Source_Rgb (Cr, 0.5, 0.5, 1.0);
+            Stroke (Cr);
+
+            Move_To (Cr, 2.0, 250.0);
+            for J in 2 .. 40 loop
+               D := Gdouble (J - 1) / 20.0;
+               Line_To (Cr, 300.0 * D, 250.0 + 50.0 * Sin (Two_Pi * D * 2.0));
+            end loop;
+
+            Set_Line_Width (Cr, 1.0);
+            Set_Line_Cap (Cr, Cairo_Line_Cap_Butt);
+            Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
+            Set_Dash (Cr, No_Dashes, 0.0);
+            Stroke (Cr);
+
+            Move_To (Cr, 2.0, 300.0);
+            for J in 2 .. 40 loop
+               D := Gdouble (J - 1) / 20.0;
+               Line_To (Cr, 300.0 * D, 300.0 + 50.0 * Sin (Two_Pi * D * 2.0));
+            end loop;
+
+            Set_Antialias (Cr, Cairo_Antialias_None);
+            Stroke (Cr);
+
+         when Patterns =>
+            P := Create_Rgb (1.0, 1.0, 0.0);
+            Set_Source (Cr, P);
+            Rectangle (Cr, 10.0, 10.0, 50.0, 50.0);
+            Fill (Cr);
+            Destroy (P);
+
+            P := Create_Rgba (0.0, 0.0, 1.0, 0.3);
+            Set_Source (Cr, P);
+            Rectangle (Cr, 5.0, 30.0, 50.0, 50.0);
+            Fill (Cr);
+            Destroy (P);
+
+            P := Create_Linear (70.0, 10.0, 120.0, 60.0);
+            Add_Color_Stop_Rgb (P, 0.0, 1.0, 1.0, 0.0);
+            Add_Color_Stop_Rgb (P, 1.0, 0.0, 0.0, 1.0);
+            Set_Source (Cr, P);
+            Rectangle (Cr, 70.0, 10.0, 50.0, 50.0);
+            Fill (Cr);
+            Destroy (P);
+
+            P := Create_Rgb (1.0, 1.0, 0.0);
+            Set_Source (Cr, P);
+            Rectangle (Cr, 130.0, 10.0, 50.0, 50.0);
+            Fill (Cr);
+            Destroy (P);
+            P := Create_Linear (175.0, 30.0, 125.0, 80.0);
+            Add_Color_Stop_Rgba (P, 0.0, 0.0, 1.0, 0.0, 0.0);
+            Add_Color_Stop_Rgba (P, 1.0, 0.0, 0.0, 1.0, 1.0);
+            Set_Source (Cr, P);
+            Rectangle (Cr, 125.0, 30.0, 50.0, 50.0);
+            Fill (Cr);
+            Destroy (P);
+
+            Set_Source_Rgb (Cr, 0.5, 0.0, 0.5);
+            P := Create_Radial (215.0, 35.0, 10.0, 215.0, 35.0, 30.0);
+            Add_Color_Stop_Rgba (P, 0.0, 0.0, 1.0, 0.0, 0.0);
+            Add_Color_Stop_Rgba (P, 1.0, 0.0, 0.0, 1.0, 1.0);
+            Set_Source (Cr, P);
+            Rectangle (Cr, 190.0, 10.0, 50.0, 50.0);
+            Fill (Cr);
+            Destroy (P);
       end case;
+
       Destroy (Cr);
       return True;
    end Expose_Cb;
@@ -83,6 +299,7 @@ begin
    Gtk.Main.Set_Locale;
    Gtk.Main.Init;
    Gtk_New (Win);
+   Set_Default_Size (Win, 600, 400);
 
    --  Connect to the "expose" event.
 
