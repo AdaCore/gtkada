@@ -26,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+pragma Ada_2005;
+
 package body Cairo is
 
    --------------
@@ -52,5 +54,40 @@ package body Cairo is
          C_Set_Dash (Cr, Dashes (Dashes'First)'Address, Dashes'Length, Offset);
       end if;
    end Set_Dash;
+
+   --------------
+   -- Get_Dash --
+   --------------
+
+   procedure Get_Dash
+     (Cr     : Cairo_Context;
+      Dashes : out Dash_Array_Access;
+      Offset : out Gdouble)
+   is
+      procedure C_Get_Dash
+        (Cr     : Cairo_Context;
+         Dashes : System.Address;
+         Offset : access Gdouble);
+      pragma Import (C, C_Get_Dash, "cairo_get_dash");
+
+      Count : constant Integer := Integer (Get_Dash_Count (Cr));
+      G     : access Gdouble;
+   begin
+      if Count = 0 then
+         Offset := 0.0;
+         Dashes := null;
+         return;
+      end if;
+
+      Dashes := new Dash_Array (1 .. Count);
+
+      C_Get_Dash (Cr, Dashes (Dashes'First)'Address, G);
+
+      if G = null then
+         Offset := 0.0;
+      else
+         Offset := G.all;
+      end if;
+   end Get_Dash;
 
 end Cairo;
