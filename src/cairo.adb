@@ -71,7 +71,7 @@ package body Cairo is
       pragma Import (C, C_Get_Dash, "cairo_get_dash");
 
       Count : constant Integer := Integer (Get_Dash_Count (Cr));
-      G     : access Gdouble;
+      G     : aliased Gdouble;
    begin
       if Count = 0 then
          Offset := 0.0;
@@ -81,13 +81,8 @@ package body Cairo is
 
       Dashes := new Dash_Array (1 .. Count);
 
-      C_Get_Dash (Cr, Dashes (Dashes'First)'Address, G);
-
-      if G = null then
-         Offset := 0.0;
-      else
-         Offset := G.all;
-      end if;
+      C_Get_Dash (Cr, Dashes (Dashes'First)'Address, G'Access);
+      Offset := G;
    end Get_Dash;
 
 end Cairo;
