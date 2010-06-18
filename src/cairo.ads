@@ -28,6 +28,8 @@
 
 pragma Ada_2005;
 
+with Ada.Unchecked_Deallocation;
+
 with System;
 with Interfaces.C.Strings;
 
@@ -91,6 +93,11 @@ package Cairo is
       X0 : aliased Gdouble;
       Y0 : aliased Gdouble;
    end record;
+   pragma Convention (C_Pass_By_Copy, Cairo_Matrix);
+
+   type Cairo_Matrix_Access is access Cairo_Matrix;
+   procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+     (Cairo_Matrix, Cairo_Matrix_Access);
 
    --   Cairo_Pattern:
    --
@@ -873,15 +880,14 @@ package Cairo is
    --
    --  The default line join style is Cairo_Line_Join_Miter.
 
+   type Dash_Array is array (Natural range <>) of Gdouble;
    procedure Set_Dash
      (Cr         : Cairo_Context;
-      Dashes     : access Gdouble;
-      Num_Dashes : Gint;
+      Dashes     : Dash_Array;
       Offset     : Gdouble);
    --  Cr: a cairo context
    --  Dashes: an array specifying alternate lengths of on and off stroke
    --  portions
-   --  Num_Dashes: the length of the dashes array
    --  Offset: an Offset into the dash pattern at which the stroke should start
    --
    --  Sets the dash pattern to be used by Stroke. A dash pattern
@@ -1386,7 +1392,7 @@ package Cairo is
    --  provide a useful result. These can result in two different
    --  situations:
    --
-   --  1. Zero-length "on" segments set in Cairo_Set_Dash. If the cap
+   --  1. Zero-length "on" segments set in Set_Dash. If the cap
    --  style is Cairo_Line_Cap_Round or Cairo_Line_Cap_Square then these
    --  segments will be drawn as circular dots or squares respectively. In
    --  the case of Cairo_Line_Cap_Square, the orientation of the squares
@@ -2792,7 +2798,6 @@ package Cairo is
 private
 
    pragma Convention (C, Cairo_Bool);
-   pragma Convention (C_Pass_By_Copy, Cairo_Matrix);
    pragma Convention (C, Cairo_Status);
    pragma Convention (C, Cairo_Operator);
    pragma Convention (C, Cairo_Antialias);
@@ -2853,7 +2858,6 @@ private
    pragma Import (C, Set_Line_Width, "cairo_set_line_width");
    pragma Import (C, Set_Line_Cap, "cairo_set_line_cap");
    pragma Import (C, Set_Line_Join, "cairo_set_line_join");
-   pragma Import (C, Set_Dash, "cairo_set_dash");
    pragma Import (C, Set_Miter_Limit, "cairo_set_miter_limit");
    pragma Import (C, Translate, "cairo_translate");
    pragma Import (C, Scale, "cairo_scale");
