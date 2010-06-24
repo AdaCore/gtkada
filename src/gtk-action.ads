@@ -58,6 +58,7 @@
 --  <c_version>2.16.6</c_version>
 --  <group>Action-based menus</group>
 
+with Glib.G_Icon;
 with Glib.Properties;
 with Gtk.Accel_Group;
 with Gtk.Enums;
@@ -116,6 +117,13 @@ package Gtk.Action is
    --  This function is intended for use by action implementations to
    --  create icons displayed in the proxy widgets.
    --  Returns a widget that displays the icon for this action.
+
+   function Get_GIcon (Action : access Gtk_Action_Record)
+      return Glib.G_Icon.G_Icon;
+   procedure Set_GIcon
+     (Action : access Gtk_Action_Record;
+      Icon   : Glib.G_Icon.G_Icon);
+   --  Gets/Sets the Action's G_Icon.
 
    function Get_Icon_Name (Action : access Gtk_Action_Record) return String;
    procedure Set_Icon_Name
@@ -282,6 +290,10 @@ package Gtk.Action is
    --  Descr: The Gtk_Action_Group this Gtk_Action is associated with, or NULL
    --        (for internal use).
    --
+   --  Name:  GIcon_Property
+   --  Type:  Object
+   --  Descr: The GIcon being displayed
+   --
    --  Name:  Hide_If_Empty_Property
    --  Type:  Boolean
    --  Descr: When TRUE, empty menu proxies for this action are hidden.
@@ -337,6 +349,7 @@ package Gtk.Action is
    --  </properties>
 
    Action_Group_Property       : constant Glib.Properties.Property_Object;
+   GIcon_Property              : constant Glib.Properties.Property_Object;
    Hide_If_Empty_Property      : constant Glib.Properties.Property_Boolean;
    Icon_Name_Property          : constant Glib.Properties.Property_String;
    Is_Important_Property       : constant Glib.Properties.Property_Boolean;
@@ -368,6 +381,8 @@ package Gtk.Action is
 private
    Action_Group_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("action-group");
+   GIcon_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("gicon");
    Hide_If_Empty_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("hide-if-empty");
    Icon_Name_Property : constant Glib.Properties.Property_String :=

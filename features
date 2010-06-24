@@ -42,6 +42,7 @@ J510-028 API Additions
   Gtk.Action:
     added new subprograms:
       Block_Activate, Unblock_Activate
+      Get_GIcon, Set_GIcon
       Get_Icon_Name, Set_Icon_Name
       Get_Is_Important, Set_Is_Important
       Get_Label, Set_Label
@@ -50,7 +51,9 @@ J510-028 API Additions
       Get_Tooltip, Set_Tooltip
       Get_Visible_Horizontal, Set_Visible_Horizontal
       Get_Visible_Vertical, Set_Visible_Vertical
-    added new property Icon_Name_Property
+    added new properties:
+      GIcon_Property
+      Icon_Name_Property
 
   Gtk.Cell_View:
     added new subprogram Get_Model
@@ -137,6 +140,7 @@ J510-028 API Additions
       Text_Property
       Use_Markup_Property
 
+  Glib.G_Icon: new package
   Gtk.Assistant: new package
   Gtk.Link_Button: new package
 

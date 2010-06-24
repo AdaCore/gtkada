@@ -227,6 +227,20 @@ package body Gtk.Action is
       return Value (Internal (Get_Object (Action)));
    end Get_Accel_Path;
 
+   ---------------
+   -- Get_GIcon --
+   ---------------
+
+   function Get_GIcon
+     (Action : access Gtk_Action_Record)
+      return Glib.G_Icon.G_Icon
+   is
+      function Internal (Action : System.Address) return Glib.G_Icon.G_Icon;
+      pragma Import (C, Internal, "gtk_action_get_gicon");
+   begin
+      return Internal (Get_Object (Action));
+   end Get_GIcon;
+
    -------------------
    -- Get_Icon_Name --
    -------------------
@@ -527,6 +541,20 @@ package body Gtk.Action is
    begin
       Internal (Get_Object (Action), Accel_Path & ASCII.NUL);
    end Set_Accel_Path;
+
+   ---------------
+   -- Set_GIcon --
+   ---------------
+
+   procedure Set_GIcon
+     (Action : access Gtk_Action_Record;
+      Icon   : Glib.G_Icon.G_Icon)
+   is
+      procedure Internal (Action : System.Address; Icon : Glib.G_Icon.G_Icon);
+      pragma Import (C, Internal, "gtk_action_set_gicon");
+   begin
+      Internal (Get_Object (Action), Icon);
+   end Set_GIcon;
 
    -------------------
    -- Set_Icon_Name --
