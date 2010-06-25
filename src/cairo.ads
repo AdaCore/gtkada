@@ -2267,7 +2267,7 @@ package Cairo is
 
    procedure Text_Path
      (Cr   : Cairo_Context;
-      Utf8 : Interfaces.C.Strings.chars_ptr);
+      Utf8 : String);
    --  Cr: a cairo context
    --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr
    --
@@ -2925,7 +2925,6 @@ private
    pragma Import (C, Get_Scaled_Font, "cairo_get_scaled_font");
    pragma Import (C, Show_Glyphs, "cairo_show_glyphs");
 --     pragma Import (C, Show_Text_Glyphs, "cairo_show_text_glyphs");
-   pragma Import (C, Text_Path, "cairo_text_path");
 --     pragma Import (C, Glyph_Path, "cairo_glyph_path");
    pragma Import (C, Text_Extents, "cairo_text_extents");
    pragma Import (C, Glyph_Extents, "cairo_glyph_extents");
