@@ -40,7 +40,7 @@ package Cairo.Font_Options is
    --  nothing. You can check for this with Cairo.Font_Options.Status.
 
    function Copy
-     (Original : Cairo_Font_Options)
+     (Original : access constant Cairo_Font_Options)
       return     Cairo_Font_Options;
    --  Original: a Cairo_Font_Options
    --
@@ -52,13 +52,13 @@ package Cairo.Font_Options is
    --  special error object is returned where all operations on the object do
    --  nothing. You can check for this with Cairo.Font_Options.Status.
 
-   procedure Destroy (Options : Cairo_Font_Options);
+   procedure Destroy (Options : access Cairo_Font_Options);
    --  Options: a Cairo_Font_Options
    --
    --  Destroys a Cairo_Font_Options object created with
    --  Cairo.Font_Options.Create or Cairo.Font_Options.Copy.
 
-   function Status (Options : Cairo_Font_Options) return Cairo_Status;
+   function Status (Options : access Cairo_Font_Options) return Cairo_Status;
    --  Options: a Cairo_Font_Options
    --
    --  Checks whether an error has previously occurred for this
@@ -67,8 +67,8 @@ package Cairo.Font_Options is
    --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory
 
    procedure Merge
-     (Options : Cairo_Font_Options;
-      Other   : Cairo_Font_Options);
+     (Options : access Cairo_Font_Options;
+      Other   : access constant Cairo_Font_Options);
    --  Options: a Cairo_Font_Options
    --  Other: anOther Cairo_Font_Options
    --
@@ -78,8 +78,8 @@ package Cairo.Font_Options is
    --  of Cairo_Operation_Over.
 
    function Equal
-     (Options : Cairo_Font_Options;
-      Other   : Cairo_Font_Options)
+     (Options : access Cairo_Font_Options;
+      Other   : access Cairo_Font_Options)
       return    Cairo_Bool;
    --  Options: a Cairo_Font_Options
    --  Other: another Cairo_Font_Options
@@ -91,7 +91,7 @@ package Cairo.Font_Options is
    --  error.
 
    function Hash
-     (Options : Cairo_Font_Options)
+     (Options : access constant Cairo_Font_Options)
       return    Gulong;
    --  Options: a Cairo_Font_Options
    --
@@ -104,7 +104,7 @@ package Cairo.Font_Options is
    --  32-bit hash value is needed.
 
    procedure Set_Antialias
-     (Options   : Cairo_Font_Options;
+     (Options   : access Cairo_Font_Options;
       Antialias : Cairo_Antialias);
    --  Options: a Cairo_Font_Options
    --  Antialias: the new Antialiasing mode
@@ -113,7 +113,7 @@ package Cairo.Font_Options is
    --  specifies the type of antialiasing to do when rendering text.
 
    function Get_Antialias
-     (Options : Cairo_Font_Options)
+     (Options : access constant Cairo_Font_Options)
       return    Cairo_Antialias;
    --  Options: a Cairo_Font_Options
    --
@@ -122,7 +122,7 @@ package Cairo.Font_Options is
    --  Return value: the antialiasing mode
 
    procedure Set_Subpixel_Order
-     (Options        : Cairo_Font_Options;
+     (Options        : access constant Cairo_Font_Options;
       Subpixel_Order : Cairo_Subpixel_Order);
    --  Options: a Cairo_Font_Options
    --  Subpixel_Order: the new subpixel order
@@ -134,7 +134,7 @@ package Cairo.Font_Options is
    --  Cairo_Subpixel_Order for full details.
 
    function Get_Subpixel_Order
-     (Options : Cairo_Font_Options)
+     (Options : access constant Cairo_Font_Options)
       return    Cairo_Subpixel_Order;
    --  Options: a Cairo_Font_Options
    --
@@ -144,7 +144,7 @@ package Cairo.Font_Options is
    --  Return value: the subpixel order for the font options object
 
    procedure Set_Hint_Style
-     (Options    : Cairo_Font_Options;
+     (Options    : access Cairo_Font_Options;
       Hint_Style : Cairo_Hint_Style);
    --  Options: a Cairo_Font_Options
    --  Hint_Style: the new hint style
@@ -155,7 +155,7 @@ package Cairo.Font_Options is
    --  See the documentation for Cairo_Hint_Style for full details.
 
    function Get_Hint_Style
-     (Options : Cairo_Font_Options)
+     (Options : access constant Cairo_Font_Options)
       return    Cairo_Hint_Style;
    --  Options: a Cairo_Font_Options
    --
@@ -165,7 +165,7 @@ package Cairo.Font_Options is
    --  Return value: the hint style for the font options object
 
    procedure Set_Hint_Metrics
-     (Options      : Cairo_Font_Options;
+     (Options      : access Cairo_Font_Options;
       Hint_Metrics : Cairo_Hint_Metrics);
    --  Options: a Cairo_Font_Options
    --  Hint_Metrics: the new metrics hinting mode
@@ -176,7 +176,7 @@ package Cairo.Font_Options is
    --  See the documentation for Cairo_Hint_Metrics for full details.
 
    function Get_Hint_Metrics
-     (Options : Cairo_Font_Options)
+     (Options : access Cairo_Font_Options)
       return    Cairo_Hint_Metrics;
    --  Options: a Cairo_Font_Options
    --

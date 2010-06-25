@@ -85,4 +85,42 @@ package body Cairo is
       Offset := G;
    end Get_Dash;
 
+   ----------------------
+   -- Select_Font_Face --
+   ----------------------
+
+   procedure Select_Font_Face
+     (Cr     : Cairo_Context;
+      Family : String;
+      Slant  : Cairo_Font_Slant;
+      Weight : Cairo_Font_Weight)
+   is
+      procedure C_Select_Font_Face
+        (Cr     : Cairo_Context;
+         Family : System.Address;
+         Slant  : Cairo_Font_Slant;
+         Weight : Cairo_Font_Weight);
+
+      pragma Import (C, C_Select_Font_Face, "cairo_select_font_face");
+
+      Tmp : constant String := Family & ASCII.NUL;
+   begin
+      C_Select_Font_Face (Cr, Tmp'Address, Slant, Weight);
+   end Select_Font_Face;
+
+   ---------------
+   -- Show_Text --
+   ---------------
+
+   procedure Show_Text
+     (Cr   : Cairo_Context;
+      Utf8 : String)
+   is
+      procedure C_Show_Text (Cr : Cairo_Context; Utf8 : System.Address);
+      pragma Import (C, C_Show_Text, "cairo_show_text");
+      Tmp : constant String := Utf8 & ASCII.NUL;
+   begin
+      C_Show_Text (Cr, Tmp'Address);
+   end Show_Text;
+
 end Cairo;

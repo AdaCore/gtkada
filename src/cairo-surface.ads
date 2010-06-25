@@ -223,7 +223,7 @@ package Cairo.Surface is
 
    procedure Get_Font_Options
      (Surface : Cairo_Surface;
-      Options : Cairo_Font_Options);
+      Options : access Cairo_Font_Options);
    --  Surface: a Cairo_Surface
    --  Options: a Cairo_Font_Options object into which to store
    --    the retrieved options. All existing values are overwritten

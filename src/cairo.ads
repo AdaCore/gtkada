@@ -2033,7 +2033,7 @@ package Cairo is
 
    procedure Select_Font_Face
      (Cr     : Cairo_Context;
-      Family : Interfaces.C.Strings.chars_ptr;
+      Family : String;
       Slant  : Cairo_Font_Slant;
       Weight : Cairo_Font_Weight);
    --  Cr: a Cairo_Context
@@ -2115,7 +2115,7 @@ package Cairo is
 
    procedure Get_Font_Options
      (Cr      : Cairo_Context;
-      Options : Cairo_Font_Options);
+      Options : access Cairo_Font_Options);
    --  Cr: a Cairo_Context
    --  Options: a Cairo_Font_Options object into which to store
    --    the retrieved options. All existing values are overwritten
@@ -2186,7 +2186,7 @@ package Cairo is
 
    procedure Show_Text
      (Cr   : Cairo_Context;
-      Utf8 : Interfaces.C.Strings.chars_ptr);
+      Utf8 : String);
    --  Cr: a cairo context
    --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr
    --
@@ -2914,7 +2914,6 @@ private
       Copy_Clip_Rectangle_List,
       "cairo_copy_clip_rectangle_list");
    pragma Import (C, Rectangle_List_Destroy, "cairo_rectangle_list_destroy");
-   pragma Import (C, Select_Font_Face, "cairo_select_font_face");
    pragma Import (C, Set_Font_Size, "cairo_set_font_size");
    pragma Import (C, Set_Font_Matrix, "cairo_set_font_matrix");
    pragma Import (C, Get_Font_Matrix, "cairo_get_font_matrix");
@@ -2924,7 +2923,6 @@ private
    pragma Import (C, Get_Font_Face, "cairo_get_font_face");
    pragma Import (C, Set_Scaled_Font, "cairo_set_scaled_font");
    pragma Import (C, Get_Scaled_Font, "cairo_get_scaled_font");
-   pragma Import (C, Show_Text, "cairo_show_text");
    pragma Import (C, Show_Glyphs, "cairo_show_glyphs");
 --     pragma Import (C, Show_Text_Glyphs, "cairo_show_text_glyphs");
    pragma Import (C, Text_Path, "cairo_text_path");

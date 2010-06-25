@@ -403,7 +403,7 @@ package Cairo.Scaled_Font is
 
    procedure Get_Font_Options
      (Scaled_Font : Cairo_Scaled_Font;
-      Options     : Cairo_Font_Options);
+      Options     : access Cairo_Font_Options);
    --  Scaled_Font: a Cairo_Scaled_Font
    --  Options: return value for the font Options
    --
