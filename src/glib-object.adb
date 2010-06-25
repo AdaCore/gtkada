@@ -237,7 +237,7 @@ package body Glib.Object is
       --  the finalization on it, and thus indirectly destroy the Ada
       --  object. which is exactly what we want.
 
-      --  Special case for Null_Address, sicne this means we are already
+      --  Special case for Null_Address, since this means we are already
       --  destroying the widget, and Set_User_Data would be invalid.
 
       if Value /= System.Null_Address then
