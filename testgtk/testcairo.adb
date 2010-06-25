@@ -50,7 +50,7 @@ procedure Testcairo is
    --  The tests implemented in this example program
 
    type Test_Type is (Rectangles, Transparency, Matrix, Transformations,
-                      Paths, Patterns, Toy_Text);
+                      Paths, Patterns, Toy_Text, Clip_And_Paint);
 
    package Gdouble_Numerics is new Ada.Numerics.Generic_Elementary_Functions
      (Gdouble);
@@ -343,6 +343,15 @@ procedure Testcairo is
             Set_Antialias (Opt, Cairo_Antialias_Default);
             Set_Font_Options (Cr, Opt);
 
+            Fill (Cr);
+
+            Set_Source_Rgb (Cr, 0.3, 0.0, 0.1);
+            Set_Font_Size (Cr, 80.0);
+            Move_To (Cr, 150.0, 200.0);
+            Set_Dash (Cr, (1 => 2.0, 2 => 2.0), 0.0);
+            Text_Path (Cr, "Text path");
+            Stroke (Cr);
+
             Move_To (Cr, 200.0, 100.0);
             Set_Source_Rgb (Cr, 0.5, 0.0, 1.0);
 
@@ -353,7 +362,29 @@ procedure Testcairo is
             Show_Text (Cr, "text with matrix transforms");
             Unchecked_Free (M);
 
+         when Clip_And_Paint =>
+            --  Paint the background pink
+            Set_Source_Rgb (Cr, 1.0, 0.9, 0.9);
+            Paint (Cr);
+
+            --  Draw a green rectangle
+            Rectangle (Cr, 50.0, 50.0, 150.0, 150.0);
+            Set_Source_Rgb (Cr, 0.0, 1.0, 0.0);
             Fill (Cr);
+
+            --  Create a path
+            Move_To (Cr, 10.0, 10.0);
+            Line_To (Cr, 10.0, 100.0);
+            Line_To (Cr, 100.0, 160.0);
+            Line_To (Cr, 100.0, 10.0);
+            Close_Path (Cr);
+
+            --  Clip
+            Clip (Cr);
+
+            --  Paint the clipped region with a transparent blue.
+            Set_Source_Rgb (Cr, 0.0, 0.0, 1.0);
+            Paint_With_Alpha (Cr, 0.6);
       end case;
 
       Destroy (Cr);
