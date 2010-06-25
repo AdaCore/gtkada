@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -60,61 +60,50 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Text & ASCII.NUL);
    end Append_Text;
 
-   --------------------
-   -- Get_Visibility --
-   --------------------
+   ---------------------------
+   -- Get_Activates_Default --
+   ---------------------------
 
-   function Get_Visibility
+   function Get_Activates_Default
      (The_Entry : access Gtk_Entry_Record) return Boolean
    is
       function Internal (The_Entry : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_entry_get_visibility");
+      pragma Import (C, Internal, "gtk_entry_get_activates_default");
 
    begin
       return Internal (Get_Object (The_Entry)) /= 0;
-   end Get_Visibility;
-
-   ------------------------
-   -- Set_Invisible_Char --
-   ------------------------
-
-   procedure Set_Invisible_Char
-     (The_Entry : access Gtk_Entry_Record; Char : Gunichar)
-   is
-      procedure Internal (The_Entry : System.Address; Char : Gunichar);
-      pragma Import (C, Internal, "gtk_entry_set_invisible_char");
-
-   begin
-      Internal (Get_Object (The_Entry), Char);
-   end Set_Invisible_Char;
-
-   ------------------------
-   -- Get_Invisible_Char --
-   ------------------------
-
-   function Get_Invisible_Char
-     (The_Entry : access Gtk_Entry_Record) return Gunichar
-   is
-      function Internal (The_Entry : System.Address) return Gunichar;
-      pragma Import (C, Internal, "gtk_entry_get_invisible_char");
-
-   begin
-      return Internal (Get_Object (The_Entry));
-   end Get_Invisible_Char;
+   end Get_Activates_Default;
 
    -------------------
-   -- Set_Has_Frame --
+   -- Get_Alignment --
    -------------------
 
-   procedure Set_Has_Frame
-     (The_Entry : access Gtk_Entry_Record; Setting : Boolean := True)
+   function Get_Alignment
+     (Ent : access Gtk_Entry_Record)
+      return Gfloat
    is
-      procedure Internal (The_Entry : System.Address; Setting : Gboolean);
-      pragma Import (C, Internal, "gtk_entry_set_has_frame");
-
+      function Internal (Ent : System.Address) return Gfloat;
+      pragma Import (C, Internal, "gtk_entry_get_alignment");
    begin
-      Internal (Get_Object (The_Entry), Boolean'Pos (Setting));
-   end Set_Has_Frame;
+      return Internal (Get_Object (Ent));
+   end Get_Alignment;
+
+   --------------------
+   -- Get_Completion --
+   --------------------
+
+   function Get_Completion
+     (Ent : access Gtk_Entry_Record) return Gtk_Entry_Completion
+   is
+      function Internal
+        (Ent : System.Address)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_entry_get_completion");
+      Stub : Gtk_Entry_Completion_Record;
+   begin
+      return Gtk_Entry_Completion
+        (Get_User_Data (Internal (Get_Object (Ent)), Stub));
+   end Get_Completion;
 
    -------------------
    -- Get_Has_Frame --
@@ -130,59 +119,19 @@ package body Gtk.GEntry is
       return Internal (Get_Object (The_Entry)) /= 0;
    end Get_Has_Frame;
 
-   --------------------
-   -- Get_Max_Length --
-   --------------------
+   ------------------------
+   -- Get_Invisible_Char --
+   ------------------------
 
-   function Get_Max_Length (The_Entry : access Gtk_Entry_Record) return Gint is
-      function Internal (The_Entry : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_entry_get_max_length");
+   function Get_Invisible_Char
+     (The_Entry : access Gtk_Entry_Record) return Gunichar
+   is
+      function Internal (The_Entry : System.Address) return Gunichar;
+      pragma Import (C, Internal, "gtk_entry_get_invisible_char");
 
    begin
       return Internal (Get_Object (The_Entry));
-   end Get_Max_Length;
-
-   ---------------------------
-   -- Set_Activates_Default --
-   ---------------------------
-
-   procedure Set_Activates_Default
-     (The_Entry : access Gtk_Entry_Record; Setting : Boolean)
-   is
-      procedure Internal (The_Entry : System.Address; Setting : Gboolean);
-      pragma Import (C, Internal, "gtk_entry_set_activates_default");
-
-   begin
-      Internal (Get_Object (The_Entry), Boolean'Pos (Setting));
-   end Set_Activates_Default;
-
-   ---------------------------
-   -- Get_Activates_Default --
-   ---------------------------
-
-   function Get_Activates_Default
-     (The_Entry : access Gtk_Entry_Record) return Boolean
-   is
-      function Internal (The_Entry : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_entry_get_activates_default");
-
-   begin
-      return Internal (Get_Object (The_Entry)) /= 0;
-   end Get_Activates_Default;
-
-   ---------------------
-   -- Get_Width_Chars --
-   ---------------------
-
-   function Get_Width_Chars
-     (The_Entry : access Gtk_Entry_Record'Class) return Gint
-   is
-      function Internal (The_Entry : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_entry_get_width_chars");
-
-   begin
-      return Internal (Get_Object (The_Entry));
-   end Get_Width_Chars;
+   end Get_Invisible_Char;
 
    ----------------
    -- Get_Layout --
@@ -218,6 +167,18 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), X, Y);
    end Get_Layout_Offsets;
 
+   --------------------
+   -- Get_Max_Length --
+   --------------------
+
+   function Get_Max_Length (The_Entry : access Gtk_Entry_Record) return Gint is
+      function Internal (The_Entry : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_entry_get_max_length");
+
+   begin
+      return Internal (Get_Object (The_Entry));
+   end Get_Max_Length;
+
    --------------
    -- Get_Text --
    --------------
@@ -232,6 +193,34 @@ package body Gtk.GEntry is
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (The_Entry)));
    end Get_Text;
+
+   --------------------
+   -- Get_Visibility --
+   --------------------
+
+   function Get_Visibility
+     (The_Entry : access Gtk_Entry_Record) return Boolean
+   is
+      function Internal (The_Entry : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_entry_get_visibility");
+
+   begin
+      return Internal (Get_Object (The_Entry)) /= 0;
+   end Get_Visibility;
+
+   ---------------------
+   -- Get_Width_Chars --
+   ---------------------
+
+   function Get_Width_Chars
+     (The_Entry : access Gtk_Entry_Record'Class) return Gint
+   is
+      function Internal (The_Entry : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_entry_get_width_chars");
+
+   begin
+      return Internal (Get_Object (The_Entry));
+   end Get_Width_Chars;
 
    -------------
    -- Gtk_New --
@@ -282,6 +271,24 @@ package body Gtk.GEntry is
       Set_Object (Widget, Internal);
    end Initialize;
 
+   --------------------------------
+   -- Layout_Index_To_Text_Index --
+   --------------------------------
+
+   function Layout_Index_To_Text_Index
+     (Ent          : access Gtk_Entry_Record;
+      Layout_Index : Gint)
+      return Gint
+   is
+      function Internal
+        (Ent          : System.Address;
+         Layout_Index : Gint)
+         return Gint;
+      pragma Import (C, Internal, "gtk_entry_layout_index_to_text_index");
+   begin
+      return Internal (Get_Object (Ent), Layout_Index);
+   end Layout_Index_To_Text_Index;
+
    ------------------
    -- Prepend_Text --
    ------------------
@@ -296,6 +303,47 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Text & ASCII.NUL);
    end Prepend_Text;
 
+   ---------------------------
+   -- Set_Activates_Default --
+   ---------------------------
+
+   procedure Set_Activates_Default
+     (The_Entry : access Gtk_Entry_Record; Setting : Boolean)
+   is
+      procedure Internal (The_Entry : System.Address; Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_entry_set_activates_default");
+
+   begin
+      Internal (Get_Object (The_Entry), Boolean'Pos (Setting));
+   end Set_Activates_Default;
+
+   -------------------
+   -- Set_Alignment --
+   -------------------
+
+   procedure Set_Alignment (Ent  : access Gtk_Entry_Record; Xalign : Gfloat) is
+      procedure Internal (Ent  : System.Address; Xalign : Gfloat);
+      pragma Import (C, Internal, "gtk_entry_set_alignment");
+   begin
+      Internal (Get_Object (Ent), Xalign);
+   end Set_Alignment;
+
+   --------------------
+   -- Set_Completion --
+   --------------------
+
+   procedure Set_Completion
+     (Ent        : access Gtk_Entry_Record;
+      Completion : access Gtk_Entry_Completion_Record'Class)
+   is
+      procedure Internal
+        (Ent        : System.Address;
+         Completion : System.Address);
+      pragma Import (C, Internal, "gtk_entry_set_completion");
+   begin
+      Internal (Get_Object (Ent), Get_Object (Completion));
+   end Set_Completion;
+
    ------------------
    -- Set_Editable --
    ------------------
@@ -309,6 +357,34 @@ package body Gtk.GEntry is
    begin
       Internal (Get_Object (The_Entry), Boolean'Pos (Editable));
    end Set_Editable;
+
+   -------------------
+   -- Set_Has_Frame --
+   -------------------
+
+   procedure Set_Has_Frame
+     (The_Entry : access Gtk_Entry_Record; Setting : Boolean := True)
+   is
+      procedure Internal (The_Entry : System.Address; Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_entry_set_has_frame");
+
+   begin
+      Internal (Get_Object (The_Entry), Boolean'Pos (Setting));
+   end Set_Has_Frame;
+
+   ------------------------
+   -- Set_Invisible_Char --
+   ------------------------
+
+   procedure Set_Invisible_Char
+     (The_Entry : access Gtk_Entry_Record; Char : Gunichar)
+   is
+      procedure Internal (The_Entry : System.Address; Char : Gunichar);
+      pragma Import (C, Internal, "gtk_entry_set_invisible_char");
+
+   begin
+      Internal (Get_Object (The_Entry), Char);
+   end Set_Invisible_Char;
 
    --------------------
    -- Set_Max_Length --
@@ -366,33 +442,6 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Width);
    end Set_Width_Chars;
 
-   -------------------
-   -- Set_Alignment --
-   -------------------
-
-   procedure Set_Alignment (Ent  : access Gtk_Entry_Record; Xalign : Gfloat) is
-      procedure Internal (Ent  : System.Address; Xalign : Gfloat);
-      pragma Import (C, Internal, "gtk_entry_set_alignment");
-   begin
-      Internal (Get_Object (Ent), Xalign);
-   end Set_Alignment;
-
-   --------------------
-   -- Set_Completion --
-   --------------------
-
-   procedure Set_Completion
-     (Ent        : access Gtk_Entry_Record;
-      Completion : access Gtk_Entry_Completion_Record'Class)
-   is
-      procedure Internal
-        (Ent        : System.Address;
-         Completion : System.Address);
-      pragma Import (C, Internal, "gtk_entry_set_completion");
-   begin
-      Internal (Get_Object (Ent), Get_Object (Completion));
-   end Set_Completion;
-
    --------------------------------
    -- Text_Index_To_Layout_Index --
    --------------------------------
@@ -410,54 +459,5 @@ package body Gtk.GEntry is
    begin
       return Internal (Get_Object (Ent), Text_Index);
    end Text_Index_To_Layout_Index;
-
-   -------------------
-   -- Get_Alignment --
-   -------------------
-
-   function Get_Alignment
-     (Ent : access Gtk_Entry_Record)
-      return Gfloat
-   is
-      function Internal (Ent : System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtk_entry_get_alignment");
-   begin
-      return Internal (Get_Object (Ent));
-   end Get_Alignment;
-
-   --------------------
-   -- Get_Completion --
-   --------------------
-
-   function Get_Completion
-     (Ent : access Gtk_Entry_Record) return Gtk_Entry_Completion
-   is
-      function Internal
-        (Ent : System.Address)
-         return System.Address;
-      pragma Import (C, Internal, "gtk_entry_get_completion");
-      Stub : Gtk_Entry_Completion_Record;
-   begin
-      return Gtk_Entry_Completion
-        (Get_User_Data (Internal (Get_Object (Ent)), Stub));
-   end Get_Completion;
-
-   --------------------------------
-   -- Layout_Index_To_Text_Index --
-   --------------------------------
-
-   function Layout_Index_To_Text_Index
-     (Ent          : access Gtk_Entry_Record;
-      Layout_Index : Gint)
-      return Gint
-   is
-      function Internal
-        (Ent          : System.Address;
-         Layout_Index : Gint)
-         return Gint;
-      pragma Import (C, Internal, "gtk_entry_layout_index_to_text_index");
-   begin
-      return Internal (Get_Object (Ent), Layout_Index);
-   end Layout_Index_To_Text_Index;
 
 end Gtk.GEntry;
