@@ -36,6 +36,7 @@ with Glib; use Glib;
 with Cairo;         use Cairo;
 with Cairo.Matrix;  use Cairo.Matrix;
 with Cairo.Pattern; use Cairo.Pattern;
+with Cairo.Font_Options; use Cairo.Font_Options;
 
 with Gdk.Cairo;    use Gdk.Cairo;
 
@@ -46,6 +47,11 @@ with Gtk.Handlers; use Gtk.Handlers;
 
 procedure Testcairo is
 
+   --  The tests implemented in this example program
+
+   type Test_Type is (Rectangles, Transparency, Matrix, Transformations,
+                      Paths, Patterns, Toy_Text);
+
    package Gdouble_Numerics is new Ada.Numerics.Generic_Elementary_Functions
      (Gdouble);
    use Gdouble_Numerics;
@@ -54,9 +60,6 @@ procedure Testcairo is
    Two_Pi : constant Gdouble := Gdouble (2.0 * Ada.Numerics.Pi);
 
    Win : Gtk_Window;
-
-   type Test_Type is (Rectangles, Transparency, Matrix, Transformations,
-                      Paths, Patterns);
 
    package Event_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Window_Record, Boolean);
@@ -76,7 +79,8 @@ procedure Testcairo is
       D, D2, D3 : Gdouble;
       M, M2, M3 : Cairo_Matrix_Access;
 
-      P : Cairo_Pattern;
+      P   : Cairo_Pattern;
+      Opt : access Cairo_Font_Options;
 
       Test : constant Test_Type := Test_Type'Last;
    begin
@@ -225,6 +229,14 @@ procedure Testcairo is
                Line_To (Cr, 300.0 * D, 200.0 + 50.0 * Sin (Two_Pi * D * 2.0));
             end loop;
 
+            declare
+               Dashes : Dash_Array_Access;
+               Offset : Gdouble;
+            begin
+               Get_Dash (Cr, Dashes, Offset);
+               Set_Dash (Cr, Dashes (1 .. 4), Offset);
+            end;
+
             Set_Line_Width (Cr, 7.0);
             Set_Line_Cap (Cr, Cairo_Line_Cap_Round);
             Set_Source_Rgb (Cr, 0.5, 0.5, 1.0);
@@ -300,6 +312,48 @@ procedure Testcairo is
             Rectangle (Cr, 190.0, 10.0, 50.0, 50.0);
             Fill (Cr);
             Destroy (P);
+
+         when Toy_Text =>
+            Set_Source_Rgb (Cr, 0.0, 0.0, 1.0);
+            Select_Font_Face
+              (Cr, "courier",
+               Cairo_Font_Slant_Normal,
+               Cairo_Font_Weight_Normal);
+            Set_Font_Size (Cr, 10.0);
+            Move_To (Cr, 10.0, 10.0);
+            Show_Text (Cr, "Hello");
+            Show_Text (Cr, " World!");
+
+            Move_To (Cr, 20.0, 30.0);
+            Select_Font_Face
+              (Cr, "courier",
+               Cairo_Font_Slant_Normal,
+               Cairo_Font_Weight_Bold);
+            Set_Font_Size (Cr, 20.0);
+            Show_Text (Cr, "Bigger");
+
+            Move_To (Cr, 10.0, 100.0);
+
+            Opt := new Cairo_Font_Options;
+            Get_Font_Options (Cr, Opt);
+            Set_Antialias (Opt, Cairo_Antialias_None);
+            Set_Font_Options (Cr, Opt);
+            Show_Text (Cr, "No antialias");
+
+            Set_Antialias (Opt, Cairo_Antialias_Default);
+            Set_Font_Options (Cr, Opt);
+
+            Move_To (Cr, 200.0, 100.0);
+            Set_Source_Rgb (Cr, 0.5, 0.0, 1.0);
+
+            M := new Cairo_Matrix;
+            Init_Scale (M, 10.0, 40.0);
+            Rotate (M, -0.1);
+            Set_Font_Matrix (Cr, M);
+            Show_Text (Cr, "text with matrix transforms");
+            Unchecked_Free (M);
+
+            Fill (Cr);
       end case;
 
       Destroy (Cr);
