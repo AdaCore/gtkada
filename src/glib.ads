@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2008, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,7 @@
 
 --  <description>
 --
---  This package provides definitions for the basic types used in Glib,
+--  This package provides definitions for the basic types used in Glib, Cairo,
 --  Gdk and Gtk.
 --
 --  </description>
@@ -126,10 +126,10 @@ package Glib is
    -- Conversion services --
    -------------------------
 
-   function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array;
+   function To_Boolean_Array (A : Gboolean_Array) return Boolean_Array;
    --  Convert a C-style boolean array into an Ada-style array.
 
-   function To_Gint (Bool : in Boolean) return Gint;
+   function To_Gint (Bool : Boolean) return Gint;
    --  Convert an Ada boolean into a C int.
 
    -----------------------
@@ -195,12 +195,12 @@ package Glib is
 
    Unknown_Quark : constant GQuark := 0;
 
-   function Quark_From_String (Id : in String) return GQuark;
+   function Quark_From_String (Id : String) return GQuark;
    --  Return, or create the quark associated with the string.
    --  Note that if the quark does not already exist, an entry is created for
    --  it in the global htable for quarks.
 
-   function Quark_Try_String (Id : in String) return GQuark;
+   function Quark_Try_String (Id : String) return GQuark;
    --  Return the quark associated with the string, if it exists.
    --  If it does not exist, return Unknown_Quark.
 
@@ -295,13 +295,13 @@ package Glib is
    --  For instance, each enumeration type in gtk+ has its own GType.
    --  However, Fundamental will return GType_Enum in all of these cases.
 
-   function Type_Name (Type_Num : in GType) return String;
+   function Type_Name (Type_Num : GType) return String;
    --  Return the name of the type (enumeration,...) associated with Typ.
    --  If Fundamental (Typ) return GType_Enum, this returns the name of
    --  the enumeration type that Typ represents.
    --  This might be useful in debug messages.
 
-   function Type_From_Name (Name : in String) return GType;
+   function Type_From_Name (Name : String) return GType;
    --  Convert a string to the matching type.
    --  Name should be the C GObject name rather than the Ada name: thus,
    --  use names such as GtkScrollbar or GtkButton for widgets.
