@@ -123,4 +123,19 @@ package body Cairo is
       C_Show_Text (Cr, Tmp'Address);
    end Show_Text;
 
+   ---------------
+   -- Text_Path --
+   ---------------
+
+   procedure Text_Path
+     (Cr   : Cairo_Context;
+      Utf8 : String)
+   is
+      procedure C_Text_Path (Cr : Cairo_Context; Utf8 : System.Address);
+      pragma Import (C, C_Text_Path, "cairo_text_path");
+      Tmp : constant String := Utf8 & ASCII.NUL;
+   begin
+      C_Text_Path (Cr, Tmp'Address);
+   end Text_Path;
+
 end Cairo;
