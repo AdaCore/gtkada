@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2009, AdaCore                   --
+--                Copyright (C) 2006-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -76,7 +76,7 @@
 --         Error_Free (Error);
 --      end if;
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Display widgets</group>
 --  <see>Gtk.Icon_Factory</see>
 
@@ -84,6 +84,7 @@ with Gdk.Pixbuf;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Glib.Error;
+with Glib.G_Icon;
 with Glib.Object;
 with Gtk.Enums;
 with GNAT.Strings;
@@ -110,6 +111,12 @@ package Gtk.Icon_Theme is
    type Gtk_Icon_Info is new Glib.C_Proxy;
 
    function Icon_Info_Get_Type return GType;
+
+   function New_For_Pixbuf
+     (Icon_Theme : access Gtk_Icon_Theme_Record;
+      Pixbuf     : Gdk.Pixbuf.Gdk_Pixbuf)
+      return Gtk_Icon_Info;
+   --  Creates a Gtk_Icon_Info for a Gtk_Pixbuf.
 
    function Copy (Icon_Info : Gtk_Icon_Info) return Gtk_Icon_Info;
    --  Make a copy of a Icon_Info
@@ -262,6 +269,25 @@ package Gtk.Icon_Theme is
    --  This function will generally be used with pixbufs loaded via
    --  Gdk.Pixbuf.Gdk_New_From-Inline.
 
+   function Choose_Icon
+     (Icon_Theme : access Gtk_Icon_Theme_Record;
+      Icon_Names : GNAT.Strings.String_List;
+      Size       : Gint;
+      Flags      : Gtk_Icon_Lookup_Flags)
+      return Gtk_Icon_Info;
+   --  Looks up a named icon and returns a structure containing
+   --  information such as the filename of the icon.  Returns null if
+   --  the icon wasn't found.  The returned value can then be rendered
+   --  into a pixbuf using Load_Icon.  There is also a Load_Icon
+   --  subprogram that combines these two steps if all you need is the
+   --  pixbuf.
+   --
+   --  If Icon_Names contains more than one name, this function
+   --  tries them all in the given order before falling back to
+   --  inherited icon themes.
+   --
+   --  Free the returned value with Free.
+
    function Get_Default return Gtk_Icon_Theme;
    --  Gets the icon theme for the default screen. See Get_For_Screen. Return
    --  value: A unique Gtk_Icon_Theme associated with the default screen. This
@@ -302,8 +328,8 @@ package Gtk.Icon_Theme is
       return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Looks up an icon in an icon theme, scales it to the given size and
    --  renders it into a pixbuf. This is a convenience function; if more
-   --  details about the icon are needed, use Lookup_Icon followed by
-   --  Load_Icon.
+   --  details about the icon are needed, use Lookup_Icon or Choose_Icon
+   --  followed by Load_Icon.
    --
    --  Note that you probably want to listen for icon theme changes and update
    --  the icon. This is usually done by connecting to the GtkWidget::style-set
@@ -316,6 +342,18 @@ package Gtk.Icon_Theme is
    --  Return value: the rendered icon; this may be a newly created icon or a
    --  new reference to an internal icon, so you must not modify the icon. Use
    --  Unref to release your reference to the icon.
+
+   function Lookup_By_Gicon
+     (Icon_Theme : access Gtk_Icon_Theme_Record;
+      Icon       : Glib.G_Icon.G_Icon;
+      Size       : Gint;
+      Flags      : Gtk_Icon_Lookup_Flags)
+      return Gtk_Icon_Info;
+   --  Looks up an icon and returns a structure containing
+   --  information such as the filename of the icon.
+   --  The icon can then be rendered into a pixbuf using
+   --  Load_Icon.  Returns null if the icon wasn't found.
+   --  Free the returned value with Free.
 
    function Lookup_Icon
      (Icon_Theme : access Gtk_Icon_Theme_Record;
@@ -366,7 +404,6 @@ private
 end Gtk.Icon_Theme;
 
 --  Binding will be provided later:
---  No binding: gtk_icon_info_free
 --  No binding: gtk_icon_theme_error_quark
 --  No binding: gtk_icon_theme_get_for_screen
 --  No binding: gtk_icon_theme_set_screen

@@ -155,6 +155,12 @@ J510-028 API Additions
     added new subprogram Get_Child_Detached
     added new property Child_Detached_Property
 
+  Gtk.Icon_Theme:
+    added new subprograms:
+      Choose_Icon
+      Lookup_By_Gicon
+      New_For_Pixbuf
+
   Gtk.Image_Menu_Item:
     added new subprograms:
       Get_Always_Show_Image, Set_Always_Show_Image

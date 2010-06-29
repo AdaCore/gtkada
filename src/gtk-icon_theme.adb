@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2009, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,25 +26,25 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Pixbuf;    use Gdk.Pixbuf;
-with Gdk.Rectangle; use Gdk.Rectangle;
-with Gdk.Types;     use Gdk.Types;
-with Glib.Error;    use Glib.Error;
-with Gtk.Enums;     use Gtk.Enums;
-with Gtkada.Bindings; use Gtkada.Bindings;
-with Gtkada.C;        use Gtkada.C;
-with Gtkada.Types;  use Gtkada.Types;
-with GNAT.Strings;  use GNAT.Strings;
+with System;                     use System;
 with Interfaces.C.Strings;
-with System;        use System;
-
+with GNAT.Strings;               use GNAT.Strings;
+with Glib.Error;                 use Glib.Error;
 with Glib.Type_Conversion_Hooks;
+with Gdk.Pixbuf;                 use Gdk.Pixbuf;
+with Gdk.Rectangle;              use Gdk.Rectangle;
+with Gdk.Types;                  use Gdk.Types;
+with Gtk.Enums;                  use Gtk.Enums;
+with Gtkada.Bindings;            use Gtkada.Bindings;
+with Gtkada.C;                   use Gtkada.C;
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.Icon_Theme is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Icon_Theme_Record);
    pragma Warnings (Off, Type_Conversion);
+
    package ICS renames Interfaces.C.Strings;
 
    package Points_Arrays is new Gtkada.C.Unbounded_Arrays
@@ -188,6 +188,33 @@ package body Gtk.Icon_Theme is
    begin
       Internal (Get_Object (Icon_Theme), Path & ASCII.NUL);
    end Append_Search_Path;
+
+   -----------------
+   -- Choose_Icon --
+   -----------------
+
+   function Choose_Icon
+     (Icon_Theme : access Gtk_Icon_Theme_Record;
+      Icon_Names : GNAT.Strings.String_List;
+      Size       : Gint;
+      Flags      : Gtk_Icon_Lookup_Flags)
+      return Gtk_Icon_Info
+   is
+      function Internal
+        (Icon_Theme : System.Address;
+         Icon_Names : ICS.chars_ptr_array;
+         Size       : Gint;
+         Flags      : Gtk_Icon_Lookup_Flags)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_icon_theme_choose_icon");
+
+      C_Icon_Names : ICS.chars_ptr_array := From_String_List (Icon_Names);
+      Retval       : System.Address;
+   begin
+      Retval := Internal (Get_Object (Icon_Theme), C_Icon_Names, Size, Flags);
+      Free (C_Icon_Names);
+      return To_Proxy (Retval);
+   end Choose_Icon;
 
    -----------------
    -- Get_Default --
@@ -374,6 +401,28 @@ package body Gtk.Icon_Theme is
         (Get_Object (Icon_Theme), Icon_Name & ASCII.NUL, Size, Flags);
    end Lookup_Icon;
 
+   ---------------------
+   -- Lookup_By_Gicon --
+   ---------------------
+
+   function Lookup_By_Gicon
+     (Icon_Theme : access Gtk_Icon_Theme_Record;
+      Icon       : Glib.G_Icon.G_Icon;
+      Size       : Gint;
+      Flags      : Gtk_Icon_Lookup_Flags)
+      return Gtk_Icon_Info
+   is
+      function Internal
+        (Icon_Theme : System.Address;
+         Icon       : Glib.G_Icon.G_Icon;
+         Size       : Gint;
+         Flags      : Gtk_Icon_Lookup_Flags)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_icon_theme_lookup_by_gicon");
+   begin
+      return To_Proxy (Internal (Get_Object (Icon_Theme), Icon, Size, Flags));
+   end Lookup_By_Gicon;
+
    -------------
    -- Gtk_New --
    -------------
@@ -394,6 +443,25 @@ package body Gtk.Icon_Theme is
    begin
       Set_Object (Theme, Internal);
    end Initialize;
+
+   --------------------
+   -- New_For_Pixbuf --
+   --------------------
+
+   function New_For_Pixbuf
+     (Icon_Theme : access Gtk_Icon_Theme_Record;
+      Pixbuf     : Gdk_Pixbuf)
+      return Gtk_Icon_Info
+   is
+      function Internal
+        (Icon_Theme : System.Address;
+         Pixbuf     : System.Address)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_icon_info_new_for_pixbuf");
+   begin
+      return To_Proxy
+        (Internal (Get_Object (Icon_Theme), Get_Object (Pixbuf)));
+   end New_For_Pixbuf;
 
    -------------------------
    -- Prepend_Search_Path --
