@@ -653,10 +653,15 @@ package body Gtkada.MDI is
      (Child : Gtk_Widget) return Boolean
    is
       C : constant MDI_Child := MDI_Child (Child);
+      Top : constant Gtk_Widget := Get_Toplevel (Get_Widget (C));
    begin
-      if Has_Toplevel_Focus (Gtk_Window (Get_Toplevel (Get_Widget (C)))) then
+      if Top /= null
+        and then Top.all in Gtk_Window_Record'Class
+        and then Has_Toplevel_Focus (Gtk_Window (Top))
+      then
          Set_Focus_Child (C);
       end if;
+      Put_Line ("Top =" & External_Tag (Top'Tag));
       return False;
    end After_Focus_Child_MDI_Floating;
 
@@ -667,8 +672,6 @@ package body Gtkada.MDI is
    function Set_Focus_Child_MDI_Floating
      (Child : access Gtk_Widget_Record'Class) return Boolean
    is
-      Id : G_Source_Id;
-      pragma Unreferenced (Id);
       C  : constant MDI_Child := MDI_Child (Child);
    begin
       Print_Debug ("Set_Focus_Child_MDI_Floating");
@@ -676,7 +679,11 @@ package body Gtkada.MDI is
       if C.MDI.Delay_Before_Focus = 0 then
          Set_Focus_Child (C);
       else
-         Id := Widget_Sources.Timeout_Add
+         if C.MDI.Delay_Before_Focus_Id /= No_Source_Id then
+            Remove (C.MDI.Delay_Before_Focus_Id);
+         end if;
+
+         C.MDI.Delay_Before_Focus_Id := Widget_Sources.Timeout_Add
            (C.MDI.Delay_Before_Focus,
             After_Focus_Child_MDI_Floating'Access, Gtk_Widget (Child));
       end if;
@@ -1377,6 +1384,11 @@ package body Gtkada.MDI is
       --  destroyed when their parent container is destroyed, so we have
       --  nothing to do for them.
 
+      if M.Delay_Before_Focus_Id /= No_Source_Id then
+         Remove (M.Delay_Before_Focus_Id);
+         M.Delay_Before_Focus_Id := No_Source_Id;
+      end if;
+
       while Tmp /= Null_List loop
          --  Get the next field first, since Destroy will actually destroy Tmp
 
@@ -1555,6 +1567,11 @@ package body Gtkada.MDI is
       Print_Debug ("Destroy_Child " & Get_Title (C));
 
       Ref (C);
+
+      if MDI.Delay_Before_Focus_Id /= No_Source_Id then
+         Remove (MDI.Delay_Before_Focus_Id);
+         MDI.Delay_Before_Focus_Id := No_Source_Id;
+      end if;
 
       C.Tab_Label := null;
 

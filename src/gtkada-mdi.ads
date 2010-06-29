@@ -36,6 +36,7 @@
 with Ada.Tags;
 with GNAT.Strings;
 with Glib;        use Glib;
+with Glib.Main;
 with Glib.Xml_Int;
 with Gdk.GC;
 with Gdk.Color;
@@ -1018,6 +1019,7 @@ private
       --  of focus and sizing parameters, so that the desktop can be restored
       --  as accurately as possible.
 
+      Delay_Before_Focus_Id : Glib.Main.G_Source_Id := Glib.Main.No_Source_Id;
       Delay_Before_Focus : Glib.Guint := 700;
       --  Delay in ms before a floating window gains the GPS focus, after the
       --  "focus_in" event. In all floating mode, this ensures that when the
