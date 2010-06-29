@@ -182,6 +182,21 @@ package Gtk.Entry_Completion is
    procedure Insert_Prefix (Completion : access Gtk_Entry_Completion_Record);
    --  Requests a prefix insertion.
 
+   function Get_Completion_Prefix
+     (Completion : access Gtk_Entry_Completion_Record)
+      return String;
+   --  Get the original text entered by the user that triggered
+   --  the completion or "" if there's no completion ongoing.
+
+   function Get_Inline_Selection
+     (Completion : access Gtk_Entry_Completion_Record)
+      return Boolean;
+   procedure Set_Inline_Selection
+     (Completion       : access Gtk_Entry_Completion_Record;
+      Inline_Selection : Boolean);
+   --  Gets/Sets whether it is possible to cycle through the possible
+   --  completions inside the entry.
+
    generic
       type Data_Type (<>) is private;
    package Match_Functions is
@@ -257,6 +272,10 @@ package Gtk.Entry_Completion is
    --  Type:  Boolean
    --  Descr: Whether the common prefix should be inserted automatically
    --
+   --  Name:  Inline_Selection_Property
+   --  Type:  Boolean
+   --  Descr: Whether you can cycle through possible completions inline
+   --
    --  Name:  Minimum_Key_Length_Property
    --  Type:  Int
    --  Descr: Minimum length of the search key in order to look up matches
@@ -284,6 +303,7 @@ package Gtk.Entry_Completion is
    --  </properties>
 
    Inline_Completion_Property  : constant Glib.Properties.Property_Boolean;
+   Inline_Selection_Property   : constant Glib.Properties.Property_Boolean;
    Minimum_Key_Length_Property : constant Glib.Properties.Property_Int;
    Model_Property              : constant Glib.Properties.Property_Object;
    Popup_Completion_Property   : constant Glib.Properties.Property_Boolean;
@@ -294,6 +314,8 @@ package Gtk.Entry_Completion is
 private
    Inline_Completion_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inline-completion");
+   Inline_Selection_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("inline-selection");
    Minimum_Key_Length_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("minimum-key-length");
    Model_Property : constant Glib.Properties.Property_Object :=

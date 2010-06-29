@@ -96,6 +96,20 @@ package body Gtk.Entry_Completion is
       return Boolean'Val (Internal (Get_Object (Completion)));
    end Get_Inline_Completion;
 
+   --------------------------
+   -- Get_Inline_Selection --
+   --------------------------
+
+   function Get_Inline_Selection
+     (Completion : access Gtk_Entry_Completion_Record)
+      return Boolean
+   is
+      function Internal (Completion : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_entry_completion_get_inline_selection");
+   begin
+      return Boolean'Val (Internal (Get_Object (Completion)));
+   end Get_Inline_Selection;
+
    ----------------------------
    -- Get_Minimum_Key_Length --
    ----------------------------
@@ -235,12 +249,32 @@ package body Gtk.Entry_Completion is
    procedure Insert_Prefix
      (Completion : access Gtk_Entry_Completion_Record)
    is
-      procedure Internal
-        (Completion : System.Address);
+      procedure Internal (Completion : System.Address);
       pragma Import (C, Internal, "gtk_entry_completion_insert_prefix");
    begin
       Internal (Get_Object (Completion));
    end Insert_Prefix;
+
+   ---------------------------
+   -- Get_Completion_Prefix --
+   ---------------------------
+
+   function Get_Completion_Prefix
+     (Completion : access Gtk_Entry_Completion_Record)
+      return String
+   is
+      function Internal (Completion : System.Address) return chars_ptr;
+      pragma Import
+        (C, Internal, "gtk_entry_completion_get_completion_prefix");
+      Tmp : chars_ptr;
+   begin
+      Tmp := Internal (Get_Object (Completion));
+      if Tmp = Null_Ptr then
+         return "";
+      else
+         return Value (Tmp);
+      end if;
+   end Get_Completion_Prefix;
 
    -------------
    -- Gtk_New --
@@ -281,6 +315,22 @@ package body Gtk.Entry_Completion is
    begin
       Internal (Get_Object (Completion), Boolean'Pos (Inline_Completion));
    end Set_Inline_Completion;
+
+   --------------------------
+   -- Set_Inline_Selection --
+   --------------------------
+
+   procedure Set_Inline_Selection
+     (Completion       : access Gtk_Entry_Completion_Record;
+      Inline_Selection : Boolean)
+   is
+      procedure Internal
+        (Completion       : System.Address;
+         Inline_Selection : Gboolean);
+      pragma Import (C, Internal, "gtk_entry_completion_set_inline_selection");
+   begin
+      Internal (Get_Object (Completion), Boolean'Pos (Inline_Selection));
+   end Set_Inline_Selection;
 
    ---------------------
    -- Match_Functions --
