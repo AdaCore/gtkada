@@ -341,3 +341,4 @@ end Gtk.Dialog;
 --  No binding: gtk_dialog_set_alternative_button_order
 --  No binding: gtk_dialog_new_with_buttons
 --  No binding: gtk_dialog_add_buttons
+--  No binding: gtk_dialog_get_action_area

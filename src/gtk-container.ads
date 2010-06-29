@@ -423,3 +423,5 @@ end Gtk.Container;
 --  These functions never had a binding, but are now obsolescent
 --  No binding: gtk_container_foreach_full
 
+--  Bound using C glue function:
+--  No binding: gtk_container_get_focus_child

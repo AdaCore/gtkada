@@ -384,6 +384,10 @@ package Gtk.Label is
    --  Descr: If set, wrap lines if the text becomes too wide.
    --  See also: Set_Line_Wrap
    --
+   --  Name:  Wrap_Mode_Property
+   --  Type:  Enum
+   --  Descr: If wrap is set, controls how linewrapping is done
+   --
    --  Name:  Selectable_Property
    --  Type:  Boolean
    --  Flags: read-write
@@ -441,6 +445,7 @@ package Gtk.Label is
    Justify_Property          : constant Gtk.Enums.Property_Gtk_Justification;
    Pattern_Property          :  constant Glib.Properties.Property_String;
    Wrap_Property             : constant Glib.Properties.Property_Boolean;
+   Wrap_Mode_Property        : constant Glib.Properties.Property_Enum;
    Selectable_Property       : constant Glib.Properties.Property_Boolean;
    Mnemonic_Keyval_Property  : constant Glib.Properties.Property_Uint_RO;
    Mnemonic_Widget_Property  : constant Glib.Properties.Property_Object;
@@ -501,6 +506,8 @@ private
      Glib.Properties.Build ("pattern");
    Wrap_Property            : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("wrap");
+   Wrap_Mode_Property : constant Glib.Properties.Property_Enum :=
+     Glib.Properties.Build ("wrap-mode");
    Selectable_Property      : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("selectable");
    Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint_RO :=

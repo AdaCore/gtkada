@@ -47,6 +47,7 @@ J510-028 API Additions
   Gtk.Label:
     added new subprograms:
       Get_Line_Wrap_Mode, Set_Line_Wrap_Mode
+    added new property Wrap_Mode_Property
 
   Gtk.Action:
     added new subprograms:
