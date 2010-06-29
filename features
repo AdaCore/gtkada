@@ -89,6 +89,61 @@ J510-028 API Additions
       Get_Focus_On_Click, Set_Focus_On_Click
     added new property Focus_On_Click_Property
 
+  Gtk.GEntry:
+    added new subprograms:
+      Get_Current_Icon_Drag_Source, Set_Icon_Drag_Source
+      Get_Cursor_Hadjustment, Set_Cursor_Hadjustment
+      Get_Icon_Activatable, Set_Icon_Activatable
+      Get_Icon_At_Pos
+      Get_Icon_Gicon, Set_Icon_From_Gicon
+      Get_Icon_Name, Set_Icon_From_Icon_Name
+      Get_Icon_Pixbuf, Set_Icon_From_Pixbuf
+      Get_Icon_Stock, Set_Icon_From_Stock
+      Get_Icon_Sensitive, Set_Icon_Sensitive
+      Get_Icon_Storage_Type
+      Get_Icon_Tooltip_Markup, Set_Icon_Tooltip_Markup
+      Get_Icon_Tooltip_Text, Set_Icon_Tooltip_Text
+      Get_Inner_Border, Set_Inner_Border
+      Get_Overwrite_Mode, Set_Overwrite_Mode
+      Get_Progress_Fraction, Set_Progress_Fraction
+      Get_Progress_Pulse_Step, Set_Progress_Pulse_Step
+      Progress_Pulse
+      Get_Text_Length
+      Unset_Invisible_Char
+    added new properties:
+      Caps_Lock_Warning_Property
+      Im_Module_Property
+      Inner_Border_Property
+      Invisible_Char_Set_Property
+      Overwrite_Mode_Property
+      Primary_Icon_Activatable_Property
+      Primary_Icon_Gicon_Property
+      Primary_Icon_Name_Property
+      Primary_Icon_Pixbuf_Property
+      Primary_Icon_Sensitive_Property
+      Primary_Icon_Stock_Property
+      Primary_Icon_Storage_Type_Property
+      Primary_Icon_Tooltip_Markup_Property
+      Primary_Icon_Tooltip_Text_Property
+      Progress_Fraction_Property
+      Progress_Pulse_Step_Property
+      Secondary_Icon_Activatable_Property
+      Secondary_Icon_Gicon_Property
+      Secondary_Icon_Name_Property
+      Secondary_Icon_Pixbuf_Property
+      Secondary_Icon_Sensitive_Property
+      Secondary_Icon_Stock_Property
+      Secondary_Icon_Storage_Type_Property
+      Secondary_Icon_Tooltip_Markup_Property
+      Secondary_Icon_Tooltip_Text_Property
+      Shadow_Type_Property
+      Text_Length_Property
+      Truncate_Multiline_Property
+    added new style properties:
+      Icon_Prelight_Property
+      Progress_Border_Property
+      State_Hint_Property
+
   Gtk.Handle_Box:
     added new subprogram Get_Child_Detached
     added new property Child_Detached_Property
@@ -148,6 +203,14 @@ J510-028 API Additions
       Secondary_Use_Markup_Property
       Text_Property
       Use_Markup_Property
+
+  Gtk.Style:
+    added new types:
+      Gtk_Border_Record, Gtk_Border
+    added new subprograms:
+      Border_Copy
+      Border_Free
+      Border_Get_Type
 
   Glib.G_Icon: new package
   Gtk.Assistant: new package

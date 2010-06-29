@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,16 +29,20 @@
 
 with Ada.Unchecked_Conversion;
 with System;
+with System.Address_To_Access_Conversions;
+with Glib.Type_Conversion_Hooks;
+
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Pango.Font;       use Pango.Font;
-
-with Glib.Type_Conversion_Hooks;
 
 package body Gtk.Style is
 
    package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Style_Record);
    pragma Warnings (Off, Type_Conversion);
+
+   package Border_Address_Access_Conversions is
+     new System.Address_To_Access_Conversions (Gtk_Border_Record);
 
    type Gdk_Color_Access is access Gdk_Color;
    function Convert is new Ada.Unchecked_Conversion
@@ -1755,5 +1759,42 @@ package body Gtk.Style is
       Internal (Get_Object (Style), Window, State_Type, Shadow_Type, X, Y,
                 Width, Height);
    end Draw_Shadow;
+
+   -----------------
+   -- Border_Copy --
+   -----------------
+
+   function Border_Copy (Border : access Gtk_Border_Record)
+      return Gtk_Border
+   is
+      use Border_Address_Access_Conversions;
+
+      function Internal (Border : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_border_copy");
+   begin
+      return Gtk_Border (To_Pointer (Internal (Border.all'Address)));
+   end Border_Copy;
+
+   -----------------
+   -- Border_Free --
+   -----------------
+
+   procedure Border_Free (Border : access Gtk_Border_Record) is
+      procedure Internal (Border : System.Address);
+      pragma Import (C, Internal, "gtk_border_free");
+   begin
+      Internal (Border.all'Address);
+   end Border_Free;
+
+   ---------------------
+   -- Border_Get_Type --
+   ---------------------
+
+   function Border_Get_Type return GType is
+      function Internal return GType;
+      pragma Import (C, Internal, "gtk_border_get_type");
+   begin
+      return Internal;
+   end Border_Get_Type;
 
 end Gtk.Style;

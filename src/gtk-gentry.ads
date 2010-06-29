@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,17 +34,28 @@
 --
 --  See Gtk_Text_View for a multiple-line text editing widget.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Numeric/Text Data Entry</group>
 --  <testgtk>create_entry.adb</testgtk>
 --  <screenshot>gtk-gentry</screenshot>
 
+with Glib.G_Icon;
 with Glib.Properties;
+with Gdk.Dnd;
+with Gdk.Pixbuf;
+with Gtk.Adjustment;
 with Gtk.Editable;
 with Gtk.Entry_Completion;  use Gtk.Entry_Completion;
+with Gtk.Image;
+with Gtk.Selection;
+with Gtk.Style;
 with Pango.Layout;
 
 package Gtk.GEntry is
+
+   type Gtk_Entry_Icon_Position is
+     (Gtk_Entry_Icon_Primary, Gtk_Entry_Icon_Secondary);
+   pragma Convention (C, Gtk_Entry_Icon_Position);
 
    type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record with private;
    --  Gtk_Entry is actually a child of Gtk_Widget, and implements the
@@ -64,6 +75,10 @@ package Gtk.GEntry is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Entry.
 
+   function Get_Text_Length (The_Entry : access Gtk_Entry_Record)
+      return Guint16;
+   --  Retrieves the current length of the text in The_Entry.
+
    procedure Set_Visibility
      (The_Entry : access Gtk_Entry_Record; Visible : Boolean);
    function Get_Visibility
@@ -77,14 +92,17 @@ package Gtk.GEntry is
      (The_Entry : access Gtk_Entry_Record; Char : Gunichar);
    function Get_Invisible_Char
      (The_Entry : access Gtk_Entry_Record) return Gunichar;
-   --  Set the character to use in place of the actual text when
+   --  Gets/Sets the character to use in place of the actual text when
    --  Set_Visibility has been called to set text visibility to False.
    --  i.e. this is the character used in "password mode" to
-   --  show the user how many characters have been typed. The default
-   --  invisible char is an asterisk ('*'). If you set the invisible char
-   --  to 0, then the user will get no feedback at all; there will be
-   --  no text on the screen as they type.
-   --  for entries with visisbility set to false. See Set_Invisible_Char.
+   --  show the user how many characters have been typed. By default, GTK+
+   --  picks the best invisible char available in the current font. If you
+   --  set the invisible char to 0, then the user will get no feedback
+   --  at all; there will be no text on the screen as they type.
+
+   procedure Unset_Invisible_Char (The_Entry : access Gtk_Entry_Record);
+   --  Unsets the invisible char previously set with Set_Invisible_Char,
+   --  so that the default invisible char is used again.
 
    procedure Set_Has_Frame
      (The_Entry : access Gtk_Entry_Record; Setting : Boolean := True);
@@ -193,6 +211,237 @@ package Gtk.GEntry is
    --  in combination with Get_Layout_Offsets.  The returned layout is owned by
    --  the entry so need not be freed by the caller.
 
+   function Get_Current_Icon_Drag_Source (The_Entry : access Gtk_Entry_Record)
+      return Gint;
+   --  Returns the index of the icon which is the source of the current
+   --  DND operation, or -1.
+   --
+   --  This function is meant to be used in a #GtkWidget::drag-data-get
+   --  callback.
+
+   procedure Set_Icon_Drag_Source
+     (The_Entry   : access Gtk_Entry_Record;
+      Icon_Pos    : Gtk_Entry_Icon_Position;
+      Target_List : Gtk.Selection.Target_List;
+      Actions     : Gdk.Dnd.Drag_Action);
+   --  Sets up the icon at the given position so that GTK+ will start a drag
+   --  operation when the user clicks and drags the icon.
+   --
+   --  To handle the drag operation, you need to connect to the usual
+   --  #GtkWidget::drag-data-get (or possibly #GtkWidget::drag-data-delete)
+   --  signal, and use Get_Current_Icon_Drag_Source in your signal handler
+   --  to find out if the drag was started from an icon.
+   --
+   --  By default, GTK+ uses the icon as the drag icon. You can use the
+   --  #GtkWidget::drag-begin signal to set a different icon. Note that you
+   --  have to use g_signal_connect_after() to ensure that your signal handler
+   --  gets executed after the default handler.
+
+   function Get_Cursor_Hadjustment (The_Entry : access Gtk_Entry_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
+   procedure Set_Cursor_Hadjustment
+     (The_Entry  : access Gtk_Entry_Record;
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+   --  Hooks up an adjustment to the cursor position in an entry, so that when
+   --  the cursor is moved, the adjustment is scrolled to show that position.
+   --  See Gtk.Scrolled_Window.Get_Hadjustment for a typical way of obtaining
+   --  the adjustment.
+   --
+   --  The adjustment has to be in pixel units and in the same coordinate
+   --  system as the entry.
+   --
+   --  Get_Cursor_Hadjustment returns the horizontal cursor adjustment, or
+   --  null if none has been set.
+
+   function Get_Icon_Activatable
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return Boolean;
+   procedure Set_Icon_Activatable
+     (The_Entry   : access Gtk_Entry_Record;
+      Icon_Pos    : Gtk_Entry_Icon_Position;
+      Activatable : Boolean);
+   --  Get/Sets whether the icon is activatable.
+
+   function Get_Icon_At_Pos
+     (The_Entry : access Gtk_Entry_Record;
+      X         : Gint;
+      Y         : Gint)
+      return Gint;
+   --  Finds the icon at the given position and return its index.
+   --  If (X, Y) doesn't lie inside an icon, -1 is returned.
+   --  This function is intended for use in a GtkWidget "query-tooltip"
+   --  signal handler.
+
+   function Get_Icon_Gicon
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return Glib.G_Icon.G_Icon;
+   procedure Set_Icon_From_Gicon
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position;
+      Icon      : Glib.G_Icon.G_Icon);
+   --  Sets the icon shown in the entry at the specified position
+   --  from the current icon theme.
+   --  If the icon isn't known, a "broken image" icon will be displayed
+   --  instead.
+   --
+   --  If Icon is null, no icon will be shown in the specified position.
+
+   function Get_Icon_Name
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return String;
+   --  Retrieves the icon name used for the icon, or "" if there is
+   --  no icon or if the icon was set by some other method (e.g., by
+   --  pixbuf, stock or gicon).
+
+   procedure Set_Icon_From_Icon_Name
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position;
+      Icon_Name : String);
+   --  Sets the icon shown in the entry at the specified position
+   --  from the current icon theme.
+   --
+   --  If the icon name isn't known, a "broken image" icon will be displayed
+   --  instead.
+   --
+   --  If Icon_Name is "", no icon will be shown in the specified position.
+
+   function Get_Icon_Pixbuf
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return Gdk.Pixbuf.Gdk_Pixbuf;
+   --  Retrieves the image used for the icon.
+   --
+   --  Unlike the other methods of setting and getting icon data, this
+   --  method will work regardless of whether the icon was set using a
+   --  Gdk_Pixbuf, a G_Icon, a stock item, or an icon name.
+   --
+   --  Returns: A Gdk_Pixbuf, or null if no icon is set for this position.
+
+   procedure Set_Icon_From_Pixbuf
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position;
+      Pixbuf    : Gdk.Pixbuf.Gdk_Pixbuf);
+   --  Sets the icon shown in the specified position using a pixbuf.
+   --  If Pixbuf is null, no icon will be shown in the specified position.
+
+   function Get_Icon_Stock
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return String;
+   --  Retrieves the stock id used for the icon, or "" if there is
+   --  no icon or if the icon was set by some other method (e.g., by
+   --  pixbuf, icon name or gicon).
+   --
+   --  Returns a stock id, or "" if no icon is set or if the icon
+   --  wasn't set from a stock id
+
+   procedure Set_Icon_From_Stock
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position;
+      Stock_Id  : String);
+   --  Sets the icon shown in the entry at the specified position from
+   --  a stock image.
+   --
+   --  If Stock_Id is "", no icon will be shown in the specified position.
+
+   function Get_Icon_Sensitive
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return Boolean;
+   procedure Set_Icon_Sensitive
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position;
+      Sensitive : Boolean);
+   --  Gets/Sets the sensitivity for the specified icon.
+
+   function Get_Icon_Storage_Type
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return Gtk.Image.Gtk_Image_Type;
+   --  Gets the type of representation being used by the icon
+   --  to store image data. If the icon has no image data,
+   --  the return value will be Gtk.Image.Image_Empty.
+
+   function Get_Icon_Tooltip_Markup
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return String;
+   procedure Set_Icon_Tooltip_Markup
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position;
+      Tooltip   : String);
+   --  Gets/Sets Tooltip as the contents of the tooltip for the icon at
+   --  the specified position. Tooltip is assumed to be marked up with
+   --  the Pango text markup language.
+   --
+   --  Use "" for Tooltip to remove an existing tooltip.
+   --
+   --  See also Gtk.Widget.Set_Tooltip_Markup and Set_Icon_Tooltip_Text
+
+   function Get_Icon_Tooltip_Text
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position)
+      return String;
+   procedure Set_Icon_Tooltip_Text
+     (The_Entry : access Gtk_Entry_Record;
+      Icon_Pos  : Gtk_Entry_Icon_Position;
+      Tooltip   : String);
+   --  Gets/Sets Tooltip as the contents of the tooltip for the icon
+   --  at the specified position.
+   --
+   --  Use "" for Tooltip to remove an existing tooltip.
+   --
+   --  See also Gtk.Widget.Set_Tooltip_Text and Set_Icon_Tooltip_Markup
+
+   function Get_Inner_Border (The_Entry : access Gtk_Entry_Record)
+      return Gtk.Style.Gtk_Border;
+   procedure Set_Inner_Border
+     (The_Entry : access Gtk_Entry_Record;
+      Border    : Gtk.Style.Gtk_Border);
+   --  Gets/Sets The_Entry's inner-border property.  null signifies that
+   --  the property is (should be) cleared.  The inner-border is the area
+   --  around the entry's text, but inside its frame.
+   --
+   --  If set, this property overrides the inner-border style property.
+   --  Overriding the style-provided border is useful when you want to do
+   --  in-place editing of some text in a canvas or list widget, where
+   --  pixel-exact positioning of the entry is important.
+
+   function Get_Overwrite_Mode (The_Entry : access Gtk_Entry_Record)
+      return Boolean;
+   procedure Set_Overwrite_Mode
+     (The_Entry : access Gtk_Entry_Record;
+      Overwrite : Boolean);
+   --  Gets/Sets whether text is overwritten when typing in the Gtk_Entry.
+
+   function Get_Progress_Fraction (The_Entry : access Gtk_Entry_Record)
+      return Gdouble;
+   procedure Set_Progress_Fraction
+     (The_Entry : access Gtk_Entry_Record;
+      Fraction  : Gdouble);
+   --  Causes the entry's progress indicator to "fill in" the given
+   --  fraction of the bar. The fraction should be between 0.0 and 1.0,
+   --  inclusive.
+
+   function Get_Progress_Pulse_Step (The_Entry : access Gtk_Entry_Record)
+      return Gdouble;
+   procedure Set_Progress_Pulse_Step
+     (The_Entry : access Gtk_Entry_Record;
+      Fraction  : Gdouble);
+   --  Gets/Sets the fraction of total entry width to move the progress
+   --  bouncing block for each call to Progress_Pulse.
+
+   procedure Progress_Pulse (The_Entry : access Gtk_Entry_Record);
+   --  Indicates that some progress is made, but you don't know how much.
+   --  Causes the entry's progress indicator to enter "activity mode,"
+   --  where a block bounces back and forth. Each call to
+   --  Progress_Pulse causes the block to move by a little bit
+   --  (the amount of movement per pulse is determined by
+   --  Set_Progress_Pulse_Step).
+
    -----------------
    -- Obsolescent --
    -----------------
@@ -242,10 +491,19 @@ package Gtk.GEntry is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
-   --  Name:  Text_Position_Property
-   --  Type:  Gint
+   --  Name:  Activates_Default_Property
+   --  Type:  Boolean
    --  Flags: read-write
-   --  Descr: The current position of the insertion point
+   --  Descr: Whether to activate the default widget (such as the default
+   --         button in a dialog) when Enter is pressed.)
+   --
+   --  Name:  Caps_Lock_Warning_Property
+   --  Type:  Boolean
+   --  Descr: Whether password entries will show a warning when Caps Lock is on
+   --
+   --  Name:  Cursor_Position_Property
+   --  Type:  Int
+   --  Descr: The current position of the insertion cursor in chars
    --
    --  Name:  Editable_Property
    --  Type:  Boolean
@@ -253,11 +511,152 @@ package Gtk.GEntry is
    --  Descr: Whether the entry contents can be edited
    --  See also:  Set_Editable
    --
+   --  Name:  Has_Frame_Property
+   --  Type:  Boolean
+   --  Descr: FALSE removes outside bevel from entry
+   --
+   --  Name:  Im_Module_Property
+   --  Type:  String
+   --  Descr: Which IM module should be used
+   --
+   --  Name:  Inner_Border_Property
+   --  Type:  Boxed
+   --  Descr: Border between text and frame. Overrides the inner-border
+   --         style property
+   --
+   --  Name:  Invisible_Char_Property
+   --  Type:  Gunichar
+   --  Flags: read-write
+   --  Descr: The character to use when masking entry contents
+   --         (in "password mode")
+   --
+   --  Name:  Invisible_Char_Set_Property
+   --  Type:  Boolean
+   --  Descr: Whether the invisible char has been set
+   --
    --  Name:  Max_Length_Property
    --  Type:  Gint
    --  Flags: read-write
    --  Descr: Maximum number of characters for this entry
    --  See also:  Set_Max_Length
+   --
+   --  Name:  Overwrite_Mode_Property
+   --  Type:  Boolean
+   --  Descr: Whether new text overwrites existing text
+   --
+   --  Name:  Primary_Icon_Activatable_Property
+   --  Type:  Boolean
+   --  Descr: Whether the primary icon is activatable
+   --
+   --  Name:  Primary_Icon_Gicon_Property
+   --  Type:  Object
+   --  Descr: GIcon for primary icon
+   --
+   --  Name:  Primary_Icon_Name_Property
+   --  Type:  String
+   --  Descr: Icon name for primary icon
+   --
+   --  Name:  Primary_Icon_Pixbuf_Property
+   --  Type:  Object
+   --  Descr: Primary pixbuf for the entry
+   --
+   --  Name:  Primary_Icon_Sensitive_Property
+   --  Type:  Boolean
+   --  Descr: Whether the primary icon is sensitive
+   --
+   --  Name:  Primary_Icon_Stock_Property
+   --  Type:  String
+   --  Descr: Stock ID for primary icon
+   --
+   --  Name:  Primary_Icon_Storage_Type_Property
+   --  Type:  Enum
+   --  Descr: The representation being used for primary icon
+   --
+   --  Name:  Primary_Icon_Tooltip_Markup_Property
+   --  Type:  String
+   --  Descr: The contents of the tooltip on the primary icon
+   --
+   --  Name:  Primary_Icon_Tooltip_Text_Property
+   --  Type:  String
+   --  Descr: The contents of the tooltip on the primary icon
+   --
+   --  Name:  Progress_Fraction_Property
+   --  Type:  Double
+   --  Descr: The current fraction of the task that's been completed
+   --
+   --  Name:  Progress_Pulse_Step_Property
+   --  Type:  Double
+   --  Descr: The fraction of total entry width to move the progress
+   --         bouncing block for each call to Progress_Pulse
+   --
+   --  Name:  Scroll_Offset_Property
+   --  Type:  Gint
+   --  Flags: read only
+   --  Descr: Number of pixels of the entry scrolled off the screen to the
+   --         left
+   --
+   --  Name:  Secondary_Icon_Activatable_Property
+   --  Type:  Boolean
+   --  Descr: Whether the secondary icon is activatable
+   --
+   --  Name:  Secondary_Icon_Gicon_Property
+   --  Type:  Object
+   --  Descr: GIcon for secondary icon
+   --
+   --  Name:  Secondary_Icon_Name_Property
+   --  Type:  String
+   --  Descr: Icon name for secondary icon
+   --
+   --  Name:  Secondary_Icon_Pixbuf_Property
+   --  Type:  Object
+   --  Descr: Secondary pixbuf for the entry
+   --
+   --  Name:  Secondary_Icon_Sensitive_Property
+   --  Type:  Boolean
+   --  Descr: Whether the secondary icon is sensitive
+   --
+   --  Name:  Secondary_Icon_Stock_Property
+   --  Type:  String
+   --  Descr: Stock ID for secondary icon
+   --
+   --  Name:  Secondary_Icon_Storage_Type_Property
+   --  Type:  Enum
+   --  Descr: The representation being used for secondary icon
+   --
+   --  Name:  Secondary_Icon_Tooltip_Markup_Property
+   --  Type:  String
+   --  Descr: The contents of the tooltip on the secondary icon
+   --
+   --  Name:  Secondary_Icon_Tooltip_Text_Property
+   --  Type:  String
+   --  Descr: The contents of the tooltip on the secondary icon
+   --
+   --  Name:  Selection_Bound_Property
+   --  Type:  Int
+   --  Descr: The position of the opposite end of the selection from the cursor
+   --         in chars
+   --
+   --  Name:  Shadow_Type_Property
+   --  Type:  Enum
+   --  Descr: Which kind of shadow to draw around the entry when has-frame
+   --         is set
+   --
+   --  Name:  Text_Length_Property
+   --  Type:  Uint
+   --  Descr: Length of the text currently in the entry
+   --
+   --  Name:  Text_Position_Property
+   --  Type:  Gint
+   --  Flags: read-write
+   --  Descr: The current position of the insertion point
+   --
+   --  Name:  Text_Property
+   --  Type:  String
+   --  Descr: The contents of the entry
+   --
+   --  Name:  Truncate_Multiline_Property
+   --  Type:  Boolean
+   --  Descr: Whether to truncate multiline pastes to one line.
    --
    --  Name:  Visibility_Property
    --  Type:  Boolean
@@ -266,68 +665,105 @@ package Gtk.GEntry is
    --         text (password mode)
    --  See also:  Set_Visibility
    --
-   --  Name:  Invisible_Char_Property
-   --  Type:  Gunichar
-   --  Flags: read-write
-   --  Descr: The character to use when masking entry contents
-   --         (in "password mode")
-   --
-   --  Name:  Activates_Default_Property
-   --  Type:  Boolean
-   --  Flags: read-write
-   --  Descr: Whether to activate the default widget (such as the default
-   --         button in a dialog) when Enter is pressed.)
-   --
    --  Name:  Width_Chars_Property
    --  Type:  Gint
    --  Flags: read-write
    --  Descr: Number of characters to leave space for in the entry.
    --  See also: Set_Width_Chars
    --
-   --  Name:  Scroll_Offset_Property
-   --  Type:  Gint
-   --  Flags: read only
-   --  Descr: Number of pixels of the entry scrolled off the screen to the
-   --         left
-   --
-   --  Name:  Cursor_Position_Property
-   --  Type:  Int
-   --  Descr: The current position of the insertion cursor in chars
-   --
-   --  Name:  Has_Frame_Property
-   --  Type:  Boolean
-   --  Descr: FALSE removes outside bevel from entry
-   --
-   --  Name:  Selection_Bound_Property
-   --  Type:  Int
-   --  Descr: The position of the opposite end of the selection from the cursor
-   --         in chars
-   --
-   --  Name:  Text_Property
-   --  Type:  String
-   --  Descr: The contents of the entry
-   --
    --  Name:  Xalign_Property
    --  Type:  Float
    --  Descr: The horizontal alignment, from 0 (left) to 1 (right). Reversed
    --         for RTL layouts.
    --
-   --
    --  </properties>
 
-   Text_Position_Property     : constant Glib.Properties.Property_Int;
-   Editable_Property          : constant Glib.Properties.Property_Boolean;
-   Max_Length_Property        : constant Glib.Properties.Property_Int;
-   Visibility_Property        : constant Glib.Properties.Property_Boolean;
-   Invisible_Char_Property    : constant Glib.Properties.Property_Unichar;
    Activates_Default_Property : constant Glib.Properties.Property_Boolean;
-   Width_Chars_Property       : constant Glib.Properties.Property_Int;
-   Scroll_Offset_Property     : constant Glib.Properties.Property_Int;
+   Caps_Lock_Warning_Property : constant Glib.Properties.Property_Boolean;
    Cursor_Position_Property   : constant Glib.Properties.Property_Int;
+   Editable_Property          : constant Glib.Properties.Property_Boolean;
    Has_Frame_Property         : constant Glib.Properties.Property_Boolean;
+   Im_Module_Property         : constant Glib.Properties.Property_String;
+   Inner_Border_Property      : constant Glib.Properties.Property_Boxed;
+   Invisible_Char_Property    : constant Glib.Properties.Property_Unichar;
+   Invisible_Char_Set_Property :
+                                constant Glib.Properties.Property_Boolean;
+   Max_Length_Property        : constant Glib.Properties.Property_Int;
+   Overwrite_Mode_Property    : constant Glib.Properties.Property_Boolean;
+   Primary_Icon_Activatable_Property :
+                                constant Glib.Properties.Property_Boolean;
+   Primary_Icon_Gicon_Property :
+                                constant Glib.Properties.Property_Object;
+   Primary_Icon_Name_Property : constant Glib.Properties.Property_String;
+   Primary_Icon_Pixbuf_Property :
+                                constant Glib.Properties.Property_Object;
+   Primary_Icon_Sensitive_Property :
+                                constant Glib.Properties.Property_Boolean;
+   Primary_Icon_Stock_Property :
+                                constant Glib.Properties.Property_String;
+   Primary_Icon_Storage_Type_Property :
+                                constant Glib.Properties.Property_Enum;
+   Primary_Icon_Tooltip_Markup_Property :
+                                constant Glib.Properties.Property_String;
+   Primary_Icon_Tooltip_Text_Property :
+                                constant Glib.Properties.Property_String;
+   Progress_Fraction_Property : constant Glib.Properties.Property_Double;
+   Progress_Pulse_Step_Property :
+                                constant Glib.Properties.Property_Double;
+   Scroll_Offset_Property     : constant Glib.Properties.Property_Int;
+   Secondary_Icon_Activatable_Property :
+                                constant Glib.Properties.Property_Boolean;
+   Secondary_Icon_Gicon_Property :
+                                constant Glib.Properties.Property_Object;
+   Secondary_Icon_Name_Property :
+                                constant Glib.Properties.Property_String;
+   Secondary_Icon_Pixbuf_Property :
+                                constant Glib.Properties.Property_Object;
+   Secondary_Icon_Sensitive_Property :
+                                constant Glib.Properties.Property_Boolean;
+   Secondary_Icon_Stock_Property :
+                                constant Glib.Properties.Property_String;
+   Secondary_Icon_Storage_Type_Property :
+                                constant Glib.Properties.Property_Enum;
+   Secondary_Icon_Tooltip_Markup_Property :
+                                constant Glib.Properties.Property_String;
+   Secondary_Icon_Tooltip_Text_Property :
+                                constant Glib.Properties.Property_String;
    Selection_Bound_Property   : constant Glib.Properties.Property_Int;
+   Shadow_Type_Property       : constant Glib.Properties.Property_Enum;
+   Text_Length_Property       : constant Glib.Properties.Property_Uint;
+   Text_Position_Property     : constant Glib.Properties.Property_Int;
    Text_Property              : constant Glib.Properties.Property_String;
+   Truncate_Multiline_Property :
+                                constant Glib.Properties.Property_Boolean;
+   Visibility_Property        : constant Glib.Properties.Property_Boolean;
+   Width_Chars_Property       : constant Glib.Properties.Property_Int;
    Xalign_Property            : constant Glib.Properties.Property_Float;
+
+   ----------------------
+   -- Style Properties --
+   ----------------------
+   --  The following properties can be changed through the gtk theme and
+   --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
+
+   --  <style_properties>
+   --  Name:  Icon_Prelight_Property
+   --  Type:  Boolean
+   --  Descr: Whether activatable icons should prelight when hovered
+   --
+   --  Name:  Progress_Border_Property
+   --  Type:  Boxed
+   --  Descr: Border around the progress bar
+   --
+   --  Name:  State_Hint_Property
+   --  Type:  Boolean
+   --  Descr: Whether to pass a proper state when drawing shadow or background
+   --
+   --  </style_properties>
+
+   Icon_Prelight_Property   : constant Glib.Properties.Property_Boolean;
+   Progress_Border_Property : constant Glib.Properties.Property_Boxed;
+   State_Hint_Property      : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -421,32 +857,107 @@ private
    type Gtk_Entry_Record is new
      Gtk.Editable.Gtk_Editable_Record with null record;
 
-   Text_Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("text_position");
-   Editable_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("editable");
-   Max_Length_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("max_length");
-   Visibility_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("visibility");
-   Invisible_Char_Property : constant Glib.Properties.Property_Unichar :=
-     Glib.Properties.Build ("invisible_char");
+   --  properties
    Activates_Default_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("activates_default");
-   Width_Chars_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("width_chars");
-   Scroll_Offset_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("scroll_offset");
-      Cursor_Position_Property : constant Glib.Properties.Property_Int :=
+   Caps_Lock_Warning_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("caps-lock-warning");
+   Cursor_Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("cursor-position");
+   Editable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("editable");
    Has_Frame_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-frame");
+   Im_Module_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("im-module");
+   Inner_Border_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("inner-border");
+   Invisible_Char_Property : constant Glib.Properties.Property_Unichar :=
+     Glib.Properties.Build ("invisible_char");
+   Invisible_Char_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("invisible-char-set");
+   Max_Length_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max_length");
+   Overwrite_Mode_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("overwrite-mode");
+   Primary_Icon_Activatable_Property :
+     constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("primary-icon-activatable");
+   Primary_Icon_Gicon_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("primary-icon-gicon");
+   Primary_Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("primary-icon-name");
+   Primary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("primary-icon-pixbuf");
+   Primary_Icon_Sensitive_Property :
+     constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("primary-icon-sensitive");
+   Primary_Icon_Stock_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("primary-icon-stock");
+   Primary_Icon_Storage_Type_Property :
+     constant Glib.Properties.Property_Enum :=
+     Glib.Properties.Build ("primary-icon-storage-type");
+   Primary_Icon_Tooltip_Markup_Property :
+     constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("primary-icon-tooltip-markup");
+   Primary_Icon_Tooltip_Text_Property :
+     constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("primary-icon-tooltip-text");
+   Progress_Fraction_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("progress-fraction");
+   Progress_Pulse_Step_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("progress-pulse-step");
+   Scroll_Offset_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("scroll_offset");
+   Secondary_Icon_Activatable_Property :
+     constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("secondary-icon-activatable");
+   Secondary_Icon_Gicon_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("secondary-icon-gicon");
+   Secondary_Icon_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-icon-name");
+   Secondary_Icon_Pixbuf_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("secondary-icon-pixbuf");
+   Secondary_Icon_Sensitive_Property :
+     constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("secondary-icon-sensitive");
+   Secondary_Icon_Stock_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-icon-stock");
+   Secondary_Icon_Storage_Type_Property :
+     constant Glib.Properties.Property_Enum :=
+     Glib.Properties.Build ("secondary-icon-storage-type");
+   Secondary_Icon_Tooltip_Markup_Property :
+     constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-icon-tooltip-markup");
+   Secondary_Icon_Tooltip_Text_Property :
+     constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("secondary-icon-tooltip-text");
    Selection_Bound_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("selection-bound");
+   Shadow_Type_Property : constant Glib.Properties.Property_Enum :=
+     Glib.Properties.Build ("shadow-type");
+   Text_Length_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("text-length");
+   Text_Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("text_position");
    Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("text");
+   Truncate_Multiline_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("truncate-multiline");
+   Visibility_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("visibility");
+   Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("width_chars");
    Xalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("xalign");
+
+   --  style properties
+   Icon_Prelight_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("icon-prelight");
+   Progress_Border_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("progress-border");
+   State_Hint_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("state-hint");
 
    pragma Import (C, Get_Type, "gtk_entry_get_type");
 end Gtk.GEntry;

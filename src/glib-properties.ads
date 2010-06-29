@@ -127,6 +127,7 @@ package Glib.Properties is
    type Property_Float     is new Glib.Property;
    type Property_Double    is new Glib.Property;
    type Property_Enum      is new Glib.Property;
+   type Property_Boxed     is new Glib.Property;
 
    --  General properties getter
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -809,6 +809,27 @@ package Gtk.Style is
    --  </doc_ignore>
 
    -------------
+   -- Borders --
+   -------------
+
+   type Gtk_Border_Record is record
+      Left   : Gint;
+      Right  : Gint;
+      Top    : Gint;
+      Bottom : Gint;
+   end record;
+   pragma Convention (C, Gtk_Border_Record);
+   type Gtk_Border is access all Gtk_Border_Record;
+
+   function Border_Copy (Border : access Gtk_Border_Record) return Gtk_Border;
+   --  Copies a Gtk_Border structure.
+
+   procedure Border_Free (Border : access Gtk_Border_Record);
+   --  Frees a Gtk_Border structure.
+
+   function Border_Get_Type return GType;
+
+   -------------
    -- Signals --
    -------------
 
@@ -867,8 +888,3 @@ end Gtk.Style;
 --  Binding is in gtk-icon_factory.ads
 --  No binding: gtk_style_lookup_icon_set
 --  No binding: gtk_style_render_icon
-
---  Borders are currently unused anyway
---  No binding: gtk_border_copy
---  No binding: gtk_border_free
---  No binding: gtk_border_get_type
