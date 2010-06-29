@@ -661,7 +661,6 @@ package body Gtkada.MDI is
       then
          Set_Focus_Child (C);
       end if;
-      Put_Line ("Top =" & External_Tag (Top'Tag));
       return False;
    end After_Focus_Child_MDI_Floating;
 
