@@ -1018,6 +1018,14 @@ private
       --  of focus and sizing parameters, so that the desktop can be restored
       --  as accurately as possible.
 
+      Delay_Before_Focus : Glib.Guint := 700;
+      --  Delay in ms before a floating window gains the GPS focus, after the
+      --  "focus_in" event. In all floating mode, this ensures that when the
+      --  user is passing briefly over floating windows they do not gain the
+      --  focus, thus potentially leaving the focus to the window that had it
+      --  at the beginning of the move.
+      --  Set to 0 to remove any delay.
+
       Focus_GC     : Gdk.GC.Gdk_GC;
       Non_Focus_GC : Gdk.GC.Gdk_GC;
       --  The various graphic contexts used to draw the titles of the
