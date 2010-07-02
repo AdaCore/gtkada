@@ -28,15 +28,20 @@
 
 pragma Ada_2005;
 
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
+
+with Ada.Text_IO; use Ada.Text_IO;
 
 with Glib; use Glib;
 
 with Cairo;         use Cairo;
 with Cairo.Matrix;  use Cairo.Matrix;
 with Cairo.Pattern; use Cairo.Pattern;
+with Cairo.Image_Surface; use Cairo.Image_Surface;
 with Cairo.Font_Options; use Cairo.Font_Options;
+with Cairo.Png; use Cairo.Png;
 
 with Gdk.Cairo;    use Gdk.Cairo;
 
@@ -50,7 +55,8 @@ procedure Testcairo is
    --  The tests implemented in this example program
 
    type Test_Type is (Rectangles, Transparency, Matrix, Transformations,
-                      Paths, Patterns, Toy_Text, Clip_And_Paint);
+                      Paths, Patterns, Toy_Text, Clip_And_Paint,
+                      Surface);
 
    package Gdouble_Numerics is new Ada.Numerics.Generic_Elementary_Functions
      (Gdouble);
@@ -66,6 +72,27 @@ procedure Testcairo is
 
    function Expose_Cb (Win : access Gtk_Window_Record'Class;
                        Event : Gdk_Event) return Boolean;
+   --  Callback on an expose event on Win
+
+   type Doc_Array is array (Test_Type) of Unbounded_String;
+
+   function "-"
+     (S : String) return Unbounded_String
+      renames To_Unbounded_String;
+
+   Docs : constant Doc_Array :=
+     (Rectangles      => -"Simple rectangles",
+      Transparency    => -"Transparency",
+        Matrix        =>
+      -"Translating, rotating and scaling using matrix transformations",
+      Transformations => -"Direct transformations",
+      Paths           => -"Paths",
+      Patterns        => -"Patterns",
+      Toy_Text        => -"Cairo 'toy' text API",
+      Clip_And_Paint  => -"Painting and clipping",
+      Surface         => -"Using surfaces");
+
+   pragma Unreferenced (Docs);
 
    ---------------
    -- Expose_Cb --
@@ -83,6 +110,10 @@ procedure Testcairo is
       Opt : access Cairo_Font_Options;
 
       Test : constant Test_Type := Test_Type'Last;
+
+      Image_Surface : Cairo_Surface;
+      Status : Cairo_Status;
+
    begin
       Cr := Create (Get_Window (Win));
 
@@ -314,6 +345,9 @@ procedure Testcairo is
             Destroy (P);
 
          when Toy_Text =>
+            --  "Hello world" using two calls to Show_Text, taking advantage
+            --  of the fact that one call to Show_Text places the current point
+            --  after the first string
             Set_Source_Rgb (Cr, 0.0, 0.0, 1.0);
             Select_Font_Face
               (Cr, "courier",
@@ -324,6 +358,7 @@ procedure Testcairo is
             Show_Text (Cr, "Hello");
             Show_Text (Cr, " World!");
 
+            --  Bold and a bigger font
             Move_To (Cr, 20.0, 30.0);
             Select_Font_Face
               (Cr, "courier",
@@ -332,19 +367,19 @@ procedure Testcairo is
             Set_Font_Size (Cr, 20.0);
             Show_Text (Cr, "Bigger");
 
+            --  Modify font options to remove anti-aliasing
             Move_To (Cr, 10.0, 100.0);
-
             Opt := new Cairo_Font_Options;
             Get_Font_Options (Cr, Opt);
             Set_Antialias (Opt, Cairo_Antialias_None);
             Set_Font_Options (Cr, Opt);
             Show_Text (Cr, "No antialias");
-
             Set_Antialias (Opt, Cairo_Antialias_Default);
             Set_Font_Options (Cr, Opt);
 
             Fill (Cr);
 
+            --  Draw along the path of the text
             Set_Source_Rgb (Cr, 0.3, 0.0, 0.1);
             Set_Font_Size (Cr, 80.0);
             Move_To (Cr, 150.0, 200.0);
@@ -352,6 +387,7 @@ procedure Testcairo is
             Text_Path (Cr, "Text path");
             Stroke (Cr);
 
+            --  Use matrix transforms on the text
             Move_To (Cr, 200.0, 100.0);
             Set_Source_Rgb (Cr, 0.5, 0.0, 1.0);
 
@@ -374,9 +410,9 @@ procedure Testcairo is
 
             --  Create a path
             Move_To (Cr, 10.0, 10.0);
-            Line_To (Cr, 10.0, 100.0);
-            Line_To (Cr, 100.0, 160.0);
-            Line_To (Cr, 100.0, 10.0);
+            Rel_Line_To (Cr, 0.0, 100.0);
+            Rel_Line_To (Cr, 100.0, 60.0);
+            Rel_Line_To (Cr, 50.0, 0.0);
             Close_Path (Cr);
 
             --  Clip
@@ -385,6 +421,32 @@ procedure Testcairo is
             --  Paint the clipped region with a transparent blue.
             Set_Source_Rgb (Cr, 0.0, 0.0, 1.0);
             Paint_With_Alpha (Cr, 0.6);
+
+         when Surface =>
+            declare
+               Width  : constant := 255;
+               Height : constant := 200;
+               Data : Argb32_Array (1 .. Width * Height);
+            begin
+               --  Initialize some data
+               for Line in 1 .. Height loop
+                  for Col in 1 .. Width loop
+                     Data ((Line - 1) * Width + Col) :=
+                       (Alpha => 255,
+                        Red   => Byte (Line),
+                        Green => Byte (Col),
+                        Blue  => 0);
+                  end loop;
+               end loop;
+
+               Image_Surface := Create_For_Data_ARGB32 (Data, Width, Height);
+               Status := Cairo_Surface_Write_To_Png (Image_Surface, "try.png");
+
+               Put_Line ("Writing to PNG: " & Status'Img);
+
+               Set_Source_Surface (Cr, Image_Surface, 0.0, 0.0);
+               Paint (Cr);
+            end;
       end case;
 
       Destroy (Cr);

@@ -39,11 +39,6 @@ package Cairo.Image_Surface is
    --
    --   New entries may be added in future versions.
 
-   --  The value of 4 is reserved by a deprecated enum value.
-   --     * The next format added must have an explicit value of 5.
-   --    CAIRO_FORMAT_RGB16_565 = 4,
-   --
-
    type Cairo_Format is
      (Cairo_Format_Argb32,
       --  Each pixel is a 32-bit quantity, with
@@ -72,6 +67,26 @@ package Cairo.Image_Surface is
       --  This value is deprecated
      );
    pragma Convention (C, Cairo_Format);
+
+   type Byte is range 0 .. 255;
+   for Byte'Size use 8;
+
+   type Argb32_Record is record
+      Alpha : Byte;
+      Red   : Byte;
+      Green : Byte;
+      Blue  : Byte;
+   end record;
+
+   for Argb32_Record use
+      record
+         Alpha at 0 range 24 .. 31;
+         Red   at 0 range 16 .. 23;
+         Green at 0 range 8 .. 15;
+         Blue  at 0 range 0 .. 7;
+      end record;
+
+   type Argb32_Array is array (Natural range <>) of Argb32_Record;
 
    function Create
      (Format : Cairo_Format;
@@ -129,13 +144,13 @@ package Cairo.Image_Surface is
    --
    --  Since: 1.6
 
---     function Create_For_Data
---       (Data   : access Guchar;
---        Format : Cairo_Format;
---        Width  : Gint;
---        Height : Gint;
---        Stride : Gint)
---        return   Cairo_Surface;
+   function Create_For_Data_Generic
+     (Data   : System.Address;
+      Format : Cairo_Format;
+      Width  : Gint;
+      Height : Gint;
+      Stride : Gint)
+      return   Cairo_Surface;
    --  Data: a pointer to a buffer supplied by the application in which
    --      to write contents. This pointer must be suitably aligned for any
    --      kind of variable, (for example, a pointer returned by malloc).
@@ -176,6 +191,13 @@ package Cairo.Image_Surface is
    --
    --  See Cairo.Surface.Set_User_Data for a means of attaching a
    --  destroy-notification fallback to the surface if necessary.
+
+   function Create_For_Data_ARGB32
+     (Data   : Argb32_Array;
+      Width  : Gint;
+      Height : Gint)
+      return   Cairo_Surface;
+   --  Same as above, working on ARGB32 format.
 
    function Get_Data (Surface : Cairo_Surface) return access Guchar;
    --  Surface: a Cairo_Image_Surface
@@ -231,8 +253,10 @@ private
      (C,
       Cairo_Format_Stride_For_Width,
       "cairo_format_stride_for_width");
---     pragma Import (C, Create_For_Data,
---        "cairo_image_surface_create_for_data");
+
+   pragma Import (C, Create_For_Data_Generic,
+                  "cairo_image_surface_create_for_data");
+
    pragma Import (C, Get_Data, "cairo_image_surface_get_data");
    pragma Import (C, Get_Format, "cairo_image_surface_get_format");
    pragma Import (C, Get_Width, "cairo_image_surface_get_width");
