@@ -29,25 +29,69 @@
 package body Cairo.Image_Surface is
 
    ----------------------------
-   -- Create_For_Data_Argb32 --
+   -- Create_For_Data_ARGB32 --
    ----------------------------
 
    function Create_For_Data_ARGB32
-     (Data   : Argb32_Array;
+     (Data   : ARGB32_Array_Access;
       Width  : Gint;
       Height : Gint)
       return Cairo_Surface
    is
       Stride : constant Gint := Cairo_Format_Stride_For_Width
-        (Format => Cairo_Format_Argb32,
+        (Format => Cairo_Format_ARGB32,
          Width  => Width);
    begin
       return Create_For_Data_Generic
         (Data (Data'First)'Address,
-         Cairo_Format_Argb32,
+         Cairo_Format_ARGB32,
          Width,
          Height,
          Stride);
    end Create_For_Data_ARGB32;
+
+   ---------------------------
+   -- Create_For_Data_RGB24 --
+   ---------------------------
+
+   function Create_For_Data_RGB24
+     (Data   : RGB24_Array_Access;
+      Width  : Gint;
+      Height : Gint)
+      return Cairo_Surface
+   is
+      Stride : constant Gint := Cairo_Format_Stride_For_Width
+        (Format => Cairo_Format_RGB24,
+         Width  => Width);
+   begin
+      return Create_For_Data_Generic
+        (Data (Data'First)'Address,
+         Cairo_Format_RGB24,
+         Width,
+         Height,
+         Stride);
+   end Create_For_Data_RGB24;
+
+   ----------------------
+   -- Create_For_Data_ --
+   ----------------------
+
+   function Create_For_Data_A8
+     (Data   : Byte_Array_Access;
+      Width  : Gint;
+      Height : Gint)
+      return Cairo_Surface
+   is
+      Stride : constant Gint := Cairo_Format_Stride_For_Width
+        (Format => Cairo_Format_A8,
+         Width  => Width);
+   begin
+      return Create_For_Data_Generic
+        (Data (Data'First)'Address,
+         Cairo_Format_A8,
+         Width,
+         Height,
+         Stride);
+   end Create_For_Data_A8;
 
 end Cairo.Image_Surface;
