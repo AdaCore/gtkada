@@ -40,14 +40,14 @@ package Cairo.Image_Surface is
    --   New entries may be added in future versions.
 
    type Cairo_Format is
-     (Cairo_Format_Argb32,
+     (Cairo_Format_ARGB32,
       --  Each pixel is a 32-bit quantity, with
       --  alpha in the upper 8 bits, then red, then green, then blue.
       --  The 32-bit quantities are stored native-endian. Pre-multiplied
       --  alpha is used. (That is, 50 transparent red is 0x80800000,
       --  not 0x80ff0000.)
 
-      Cairo_Format_Rgb24,
+      Cairo_Format_RGB24,
       --  Each pixel is a 32-bit quantity, with
       --  the upper 8 bits unused. Red, Green, and Blue are stored
       --  in the remaining 24 bits in that order.
@@ -69,24 +69,28 @@ package Cairo.Image_Surface is
    pragma Convention (C, Cairo_Format);
 
    type Byte is range 0 .. 255;
-   for Byte'Size use 8;
 
-   type Argb32_Record is record
+   type ARGB32_Record is record
       Alpha : Byte;
       Red   : Byte;
       Green : Byte;
       Blue  : Byte;
    end record;
 
-   for Argb32_Record use
-      record
-         Alpha at 0 range 24 .. 31;
-         Red   at 0 range 16 .. 23;
-         Green at 0 range 8 .. 15;
-         Blue  at 0 range 0 .. 7;
-      end record;
+   type ARGB32_Array is array (Natural range <>) of ARGB32_Record;
+   type ARGB32_Array_Access is access ARGB32_Array;
 
-   type Argb32_Array is array (Natural range <>) of Argb32_Record;
+   type RGB24_Record is record
+      Red   : Byte;
+      Green : Byte;
+      Blue  : Byte;
+   end record;
+
+   type RGB24_Array is array (Natural range <>) of RGB24_Record;
+   type RGB24_Array_Access is access RGB24_Array;
+
+   type Byte_Array is array (Natural range <>) of Byte;
+   type Byte_Array_Access is access Byte_Array;
 
    function Create
      (Format : Cairo_Format;
@@ -191,15 +195,32 @@ package Cairo.Image_Surface is
    --
    --  See Cairo.Surface.Set_User_Data for a means of attaching a
    --  destroy-notification fallback to the surface if necessary.
+   --
+   --  This function is a low-level binding to the C function: see also
+   --  Create_For_Data_[ARGB32|RGB24|A8|A1]
 
    function Create_For_Data_ARGB32
-     (Data   : Argb32_Array;
+     (Data   : ARGB32_Array_Access;
       Width  : Gint;
       Height : Gint)
       return   Cairo_Surface;
    --  Same as above, working on ARGB32 format.
 
-   function Get_Data (Surface : Cairo_Surface) return access Guchar;
+   function Create_For_Data_RGB24
+     (Data   : RGB24_Array_Access;
+      Width  : Gint;
+      Height : Gint)
+      return   Cairo_Surface;
+   --  Same as above, working on RGB24 format.
+
+   function Create_For_Data_A8
+     (Data   : Byte_Array_Access;
+      Width  : Gint;
+      Height : Gint)
+      return   Cairo_Surface;
+   --  Same as above, working on A8 format.
+
+   function Get_Data (Surface : Cairo_Surface) return System.Address;
    --  Surface: a Cairo_Image_Surface
    --
    --  Get a pointer to the data of the image surface, for direct
@@ -247,6 +268,29 @@ package Cairo.Image_Surface is
    --  Since: 1.2
 
 private
+
+   for Byte'Size use 8;
+
+   --  Representation working with all endiannesses
+
+   BOP  : constant := System.Bit_Order'Pos (System.Default_Bit_Order);
+   NBOP : constant := 1 - BOP;
+
+   for ARGB32_Record use
+      record
+         Alpha at BOP * 3 + NBOP * 0 range 0 .. 7;
+         Red   at BOP * 2 + NBOP * 1 range 0 .. 7;
+         Green at BOP * 1 + NBOP * 2 range 0 .. 7;
+         Blue  at BOP * 0 + NBOP * 3 range 0 .. 7;
+      end record;
+
+   for RGB24_Record use
+      record
+         Red   at BOP * 2 + NBOP * 1 range 0 .. 7;
+         Green at BOP * 1 + NBOP * 2 range 0 .. 7;
+         Blue  at BOP * 0 + NBOP * 3 range 0 .. 7;
+      end record;
+   for RGB24_Record'Size use 32;
 
    pragma Import (C, Create, "cairo_image_surface_create");
    pragma Import
