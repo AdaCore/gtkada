@@ -423,29 +423,68 @@ procedure Testcairo is
             Paint_With_Alpha (Cr, 0.6);
 
          when Surface =>
+            Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
+            Rectangle (Cr, 40.0, 40.0, 300.0, 200.0);
+            Fill (Cr);
+
             declare
-               Width  : constant := 255;
-               Height : constant := 200;
-               Data : Argb32_Array (1 .. Width * Height);
+               Width  : constant := 60;
+               Height : constant := 60;
+               Data   : constant ARGB32_Array_Access := new ARGB32_Array
+                 (1 .. Width * Height);
+
+               Data2  : constant RGB24_Array_Access := new RGB24_Array
+                 (1 .. Width * Height);
+
+               Data3  : constant Byte_Array_Access := new Byte_Array
+                 (1 .. Width * Height);
+
             begin
                --  Initialize some data
                for Line in 1 .. Height loop
                   for Col in 1 .. Width loop
                      Data ((Line - 1) * Width + Col) :=
-                       (Alpha => 255,
-                        Red   => Byte (Line),
-                        Green => Byte (Col),
+                       (Alpha => 200,
+                        Red   => Byte (Line * 4),
+                        Green => Byte (Col * 4),
                         Blue  => 0);
+                     Data2 ((Line - 1) * Width + Col) :=
+                       (Red   => Byte (Line * 4),
+                        Green => Byte (Col * 4),
+                        Blue  => 0);
+
+                     Data3 ((Line - 1) * Width + Col) := Byte (Line);
+                  end loop;
+               end loop;
+
+               --  Manual "video inverse" in the middle of the surface
+
+               for L in 10 .. 30 loop
+                  for C in 30 .. 50 loop
+                     Data (L * Width + C).Red := 255
+                       - Data (L * Width + C).Red;
+                     Data (L * Width + C).Green := 255
+                       - Data (L * Width + C).Green;
+                     Data (L * Width + C).Blue := 255
+                       - Data (L * Width + C).Blue;
                   end loop;
                end loop;
 
                Image_Surface := Create_For_Data_ARGB32 (Data, Width, Height);
-               Status := Cairo_Surface_Write_To_Png (Image_Surface, "try.png");
-
-               Put_Line ("Writing to PNG: " & Status'Img);
-
-               Set_Source_Surface (Cr, Image_Surface, 0.0, 0.0);
+               Set_Source_Surface (Cr, Image_Surface, 10.0, 10.0);
                Paint (Cr);
+
+               Image_Surface := Create_For_Data_RGB24 (Data2, Width, Height);
+               Set_Source_Surface (Cr, Image_Surface, 75.0, 10.0);
+               Paint (Cr);
+
+               Image_Surface := Create_For_Data_A8 (Data3, Width, Height);
+               Set_Source_Surface (Cr, Image_Surface, 140.0, 10.0);
+               Paint (Cr);
+
+               Put ("Writing to PNG ... ");
+               Status := Cairo_Surface_Write_To_Png (Image_Surface, "try.png");
+               Put_Line (Status'Img);
             end;
       end case;
 
