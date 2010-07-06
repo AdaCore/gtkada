@@ -31,5 +31,13 @@ with Cairo;        use Cairo;
 package Gdk.Cairo is
 
    function Create (Drawable : Gdk_Drawable) return Cairo_Context;
+   --  Creates a Cairo context for drawing to Drawable.
+   --
+   --  Note that due to double-buffering, Cairo contexts created
+   --  in a GTK+ expose event handler cannot be cached and reused
+   --  between different expose events.
+   --
+   --  Returns a newly created Cairo context. The result should be freed with
+   --  Cairo.Destroy.
 
 end Gdk.Cairo;
