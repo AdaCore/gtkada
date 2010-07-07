@@ -23,7 +23,7 @@ c_objects = misc.o misc_extra.o misc_broken.o
 c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
 c_extra_objects = ../gtkextra/obj/gtk*.o
 
-SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o ${c_objects} ${c_extra_objects}
+SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o cairo*.o ${c_objects} ${c_extra_objects}
 EXTERNAL_LIBS=
 include Makefile.common
 
@@ -83,13 +83,16 @@ install: force
 		fi; \
 	        $(CP) $(OBJ_DIR)/glib*.ali $(OBJ_DIR)/gdk*.ali $(alidir)/relocatable; \
 	        $(CP) $(OBJ_DIR)/gtk*.ali $(OBJ_DIR)/pango*.ali $(alidir)/relocatable; \
+	        $(CP) $(OBJ_DIR)/cairo*.ali $(alidir)/relocatable; \
 	   fi; \
 	   $(CP) glib*.ads glib*.adb $(MESA_SPECS) $(incdir); \
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \
 	   $(CP) gtk*.ads gtk*.adb $(incdir); \
 	   $(CP) pango*.ads pango*.adb $(incdir); \
+	   $(CP) cairo*.ads cairo*.adb $(incdir); \
 	   $(CP) $(OBJ_DIR)/glib*.ali $(OBJ_DIR)/gdk*.ali $(alidir)/static; \
 	   $(CP) $(OBJ_DIR)/gtk*.ali $(OBJ_DIR)/pango*.ali $(alidir)/static; \
+	   $(CP) $(OBJ_DIR)/cairo*.ali $(alidir)/static; \
            $(MAKE) -C opengl install; \
            $(MAKE) -C glade install; \
            $(MAKE) -C gnome install; \
