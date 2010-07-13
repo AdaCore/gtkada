@@ -218,6 +218,11 @@ package Glib is
    Invalid_Signal_Id : constant Signal_Id;
    Null_Signal_Id : constant Signal_Id;
 
+   type G_Connect_Flags is mod 2 ** C.int'Size;
+   G_Connect_After   : constant G_Connect_Flags := 2 ** 0;
+   G_Connect_Swapped : constant G_Connect_Flags := 2 ** 1;
+   --  Used to specify the behavior of a signal's connection.
+
    ----------------
    -- Properties --
    ----------------

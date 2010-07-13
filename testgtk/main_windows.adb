@@ -69,6 +69,7 @@ with Create_Alignment;
 with Create_Arrow;
 with Create_Assistant;
 with Create_Box;
+with Create_Builder;
 with Create_Button_Box;
 with Create_Buttons;
 with Create_Calendar;
@@ -238,6 +239,8 @@ package body Main_Windows is
                                          Create_Assistant.Help'Access),
       (NS ("box"),              Box,     Create_Box.Run'Access,
                                          Create_Box.Help'Access),
+      (NS ("builder"),          Complex, Create_Builder.Run'Access,
+                                         Create_Builder.Help'Access),
       (NS ("button box"),       Box,     Create_Button_Box.Run'Access,
                                          Create_Button_Box.Help'Access),
       (NS ("buttons"),          Base,    Create_Buttons.Run'Access,

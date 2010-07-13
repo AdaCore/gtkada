@@ -12,11 +12,19 @@ of the feature.
 New features in GtkAda 2.18.0
 -----------------------------
 
+J624-014 New package Gtk.Builder
+
+  A Gtk_Builder can be used to create a graphical user interface from
+  an XML user interface definition, such as that saved by the Glade UI
+  designer.
+
+  Contributed by Robert ter Vehn <robert.tervehn@saabgroup.com>.
+
 J609-002 New signal GtkAda.MDI.Signal_Child_State_Changed
 
   This signal can be used to monitor state changes for windows. In
   particular, it allows tracking when a window is removed from the
-  perspective when the user switches perspectives
+  perspective when the user switches perspectives.
 
 J528-030 GtkAda.MDI gives focus after a short delay to floating windows
 
