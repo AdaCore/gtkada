@@ -44,6 +44,35 @@ package body Gtk.Icon_View is
      (Get_Type'Access, Gtk_Icon_View_Record);
    pragma Warnings (Off, Type_Conversion);
 
+   -----------------------------------------
+   -- Convert_Widget_To_Bin_Window_Coords --
+   -----------------------------------------
+
+   procedure Convert_Widget_To_Bin_Window_Coords
+     (Icon_View : access Gtk_Icon_View_Record;
+      Wx        : Gint;
+      Wy        : Gint;
+      Bx        : out Gint;
+      By        : out Gint)
+   is
+      procedure Internal
+        (Icon_View : System.Address;
+         Wx        : Gint;
+         Wy        : Gint;
+         Bx        : access Gint;
+         By        : access Gint);
+      pragma Import
+        (C, Internal, "gtk_icon_view_convert_widget_to_bin_window_coords");
+
+      Local_Bx : aliased Gint;
+      Local_By : aliased Gint;
+   begin
+      Internal
+        (Get_Object (Icon_View), Wx, Wy, Local_Bx'Access, Local_By'Access);
+      Bx := Local_Bx;
+      By := Local_By;
+   end Convert_Widget_To_Bin_Window_Coords;
+
    ----------------------
    -- Create_Drag_Icon --
    ----------------------
@@ -424,6 +453,68 @@ package body Gtk.Icon_View is
    begin
       return Internal (Get_Object (Icon_View));
    end Get_Text_Column;
+
+   ------------------------
+   -- Get_Tooltip_Column --
+   ------------------------
+
+   function Get_Tooltip_Column
+     (Icon_View : access Gtk_Icon_View_Record) return Gint
+   is
+      function Internal (Icon_View : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_icon_view_get_tooltip_column");
+   begin
+      return Internal (Get_Object (Icon_View));
+   end Get_Tooltip_Column;
+
+   -------------------------
+   -- Get_Tooltip_Context --
+   -------------------------
+
+   procedure Get_Tooltip_Context
+     (Icon_View    : access Gtk_Icon_View_Record;
+      X            : in out Gint;
+      Y            : in out Gint;
+      Keyboard_Tip : Boolean;
+      Model        : out Gtk_Tree_Model;
+      Path         : out Gtk_Tree_Path;
+      Iter         : out Gtk_Tree_Iter;
+      Success      : out Boolean)
+   is
+      function Internal
+        (Icon_View    : System.Address;
+         X            : access Gint;
+         Y            : access Gint;
+         Keyboard_Tip : Gboolean;
+         Model        : access System.Address;
+         Path         : access Gtk_Tree_Path;
+         Iter         : access Gtk_Tree_Iter)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_icon_view_get_tooltip_context");
+
+      Local_X     : aliased Gint := X;
+      Local_Y     : aliased Gint := Y;
+      Local_Model : aliased System.Address;
+      Local_Path  : aliased Gtk_Tree_Path;
+      Local_Iter  : aliased Gtk_Tree_Iter;
+
+      Stub : Gtk_Tree_Model_Record;
+   begin
+      Success := Boolean'Val (Internal
+        (Get_Object (Icon_View),
+         Local_X'Access,
+         Local_Y'Access,
+         Boolean'Pos (Keyboard_Tip),
+         Local_Model'Access,
+         Local_Path'Access,
+         Local_Iter'Access));
+
+      X     := Local_X;
+      Y     := Local_Y;
+      Model := Gtk_Tree_Model (Get_User_Data (Local_Model, Stub));
+      Path  := Local_Path;
+      Iter  := Local_Iter;
+   end Get_Tooltip_Context;
 
    -----------------------
    -- Get_Visible_Range --
@@ -815,6 +906,67 @@ package body Gtk.Icon_View is
    begin
       Internal (Get_Object (Icon_View), Column);
    end Set_Text_Column;
+
+   ----------------------
+   -- Set_Tooltip_Cell --
+   ----------------------
+
+   procedure Set_Tooltip_Cell
+     (Icon_View : access Gtk_Icon_View_Record;
+      Tooltip   : access Gtk.Tooltip.Gtk_Tooltip_Record'Class;
+      Path      : Gtk_Tree_Path;
+      Cell      : access Gtk_Cell_Renderer_Record'Class)
+   is
+      procedure Internal
+        (Icon_View : System.Address;
+         Tooltip   : System.Address;
+         Path      : Gtk_Tree_Path;
+         Cell      : System.Address);
+      pragma Import (C, Internal, "gtk_icon_view_set_tooltip_cell");
+   begin
+      Internal
+        (Get_Object (Icon_View),
+         Get_Object (Tooltip),
+         Path,
+         Get_Object (Cell));
+   end Set_Tooltip_Cell;
+
+   ------------------------
+   -- Set_Tooltip_Column --
+   ------------------------
+
+   procedure Set_Tooltip_Column
+     (Icon_View : access Gtk_Icon_View_Record;
+      Column    : Gint)
+   is
+      procedure Internal
+        (Icon_View : System.Address;
+         Column    : Gint);
+      pragma Import (C, Internal, "gtk_icon_view_set_tooltip_column");
+   begin
+      Internal (Get_Object (Icon_View), Column);
+   end Set_Tooltip_Column;
+
+   ----------------------
+   -- Set_Tooltip_Item --
+   ----------------------
+
+   procedure Set_Tooltip_Item
+     (Icon_View : access Gtk_Icon_View_Record;
+      Tooltip   : access Gtk.Tooltip.Gtk_Tooltip_Record'Class;
+      Path      : Gtk_Tree_Path)
+   is
+      procedure Internal
+        (Icon_View : System.Address;
+         Tooltip   : System.Address;
+         Path      : Gtk_Tree_Path);
+      pragma Import (C, Internal, "gtk_icon_view_set_tooltip_item");
+   begin
+      Internal
+        (Get_Object (Icon_View),
+         Get_Object (Tooltip),
+         Path);
+   end Set_Tooltip_Item;
 
    ------------------
    -- Unselect_All --

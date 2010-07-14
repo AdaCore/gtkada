@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007 AdaCore                    --
+--                Copyright (C) 2006-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,7 @@
 --  Gtk_Icon_View supports rubberband selection, which is controlled by
 --  dragging the pointer.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Trees and Lists</group>
 --  <screenshot>icon-view</screenshot>
 --  <testgtk>create_icon_view.adb</testgtk>
@@ -49,6 +49,7 @@ with Gtk.Cell_Renderer;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Selection;
+with Gtk.Tooltip;
 with Gtk.Tree_Model;
 
 package Gtk.Icon_View is
@@ -224,6 +225,75 @@ package Gtk.Icon_View is
    --  the model. If the model changes before the Icon_View is realized, the
    --  centered path will be modified to reflect this change.
 
+   --------------
+   -- Tooltips --
+   --------------
+
+   procedure Set_Tooltip_Column
+     (Icon_View : access Gtk_Icon_View_Record;
+      Column    : Gint);
+   function Get_Tooltip_Column
+     (Icon_View : access Gtk_Icon_View_Record) return Gint;
+   --  If you only plan to have simple (text-only) tooltips on full items, you
+   --  can use Set_Tooltip_Column to have Gtk_Icon_View handle these
+   --  automatically for you. Column should be set to the column in
+   --  Icon_View's model containing the tooltip texts, or -1 to disable this
+   --  feature.
+   --
+   --  When enabled, #GtkWidget::has-tooltip will be set to True and
+   --  Icon_View will connect a #GtkWidget::query-tooltip signal handler.
+   --
+   --  Get_Tooltip_Column returns the index of the tooltip column that is
+   --  currently being used, or -1 if this is disabled.
+
+   procedure Get_Tooltip_Context
+     (Icon_View    : access Gtk_Icon_View_Record;
+      X            : in out Gint;
+      Y            : in out Gint;
+      Keyboard_Tip : Boolean;
+      Model        : out Gtk.Tree_Model.Gtk_Tree_Model;
+      Path         : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Iter         : out Gtk.Tree_Model.Gtk_Tree_Iter;
+      Success      : out Boolean);
+   --  Icon_View: a Gtk_Icon_View
+   --  X: the x coordinate (relative to widget coordinates)
+   --  Y: the y coordinate (relative to widget coordinates)
+   --  Keyboard_Tip: whether or not this is a keyboard tooltip
+   --  Model: a Gtk_Tree_Model
+   --  Path: a Gtk_Tree_Path
+   --  Iter: a Gtk_Tree_Iter
+   --
+   --  This subprogram is supposed to be used in a #GtkWidget::query-tooltip
+   --  signal handler for Gtk_Icon_View.  The X, Y and Keyboard_Tip values
+   --  which are received in the signal handler should be passed to this
+   --  subprogram without modification.
+   --
+   --  The Success value indicates whether there is an icon view item at the
+   --  given coordinates (True) or not (False) for mouse tooltips. For keyboard
+   --  tooltips the item returned will be the cursor item. When True, then any
+   --  of Model, Path and Iter which have been provided will be set to point to
+   --  that row and the corresponding model. X and Y will always be converted
+   --  to be relative to Icon_View's bin_window if Keyboard_Tip is False.
+
+   procedure Set_Tooltip_Cell
+     (Icon_View : access Gtk_Icon_View_Record;
+      Tooltip   : access Gtk.Tooltip.Gtk_Tooltip_Record'Class;
+      Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+      Cell      : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
+   --  Sets the tip area of Tooltip to the area which Cell occupies in
+   --  the item pointed to by Path. See also Gtk.Tooltip.Set_Tip_Area.
+   --
+   --  See also Set_Tooltip_Column for a simpler alternative.
+
+   procedure Set_Tooltip_Item
+     (Icon_View : access Gtk_Icon_View_Record;
+      Tooltip   : access Gtk.Tooltip.Gtk_Tooltip_Record'Class;
+      Path      : Gtk.Tree_Model.Gtk_Tree_Path);
+   --  Sets the tip area of Tooltip to be the area covered by the item at Path.
+   --
+   --  See also Set_Tooltip_Column for a simpler alternative.
+   --  See also Gtk.Tooltip.Set_Tip_Area.
+
    ----------------
    -- Tree Model --
    ----------------
@@ -283,6 +353,21 @@ package Gtk.Icon_View is
    --  obtains the cell at the specified position. The returned path should
    --  be freed with Path_Free.
    --  Has_Item is set to True if an item exists at the specified position.
+
+   procedure Convert_Widget_To_Bin_Window_Coords
+     (Icon_View : access Gtk_Icon_View_Record;
+      Wx        : Gint;
+      Wy        : Gint;
+      Bx        : out Gint;
+      By        : out Gint);
+   --  Icon_View: a Gtk_Icon_View
+   --  Wx: X coordinate relative to the widget
+   --  Wy: Y coordinate relative to the widget
+   --  Bx: bin_window X coordinate
+   --  By: bin_window Y coordinate
+   --
+   --  Converts widget coordinates to coordinates for the bin_window,
+   --  as expected by e.g. Get_Path_At_Pos.
 
    ---------------
    -- Selection --
@@ -455,6 +540,11 @@ package Gtk.Icon_View is
    --  Type:  Int
    --  Descr: Model column used to retrieve the text from
    --
+   --  Name:  Tooltip_Column_Property
+   --  Type:  Int
+   --  Descr: The column in the model containing the tooltip texts for
+   --         the items
+   --
    --  </properties>
 
    Column_Spacing_Property : constant Glib.Properties.Property_Int;
@@ -470,6 +560,7 @@ package Gtk.Icon_View is
    --  Selection_Mode_Property : constant Glib.Properties.Property_Enum;
    Spacing_Property        : constant Glib.Properties.Property_Int;
    Text_Column_Property    : constant Glib.Properties.Property_Int;
+   Tooltip_Column_Property : constant Glib.Properties.Property_Int;
 
    ----------------------
    -- Style Properties --
@@ -560,6 +651,8 @@ private
      Glib.Properties.Build ("spacing");
    Text_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("text-column");
+   Tooltip_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("tooltip-column");
 
    pragma Import (C, Get_Type, "gtk_icon_view_get_type");
 
