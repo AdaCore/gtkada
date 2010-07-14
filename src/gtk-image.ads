@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,10 +36,11 @@
 --  to store the pixel data on the server side (thus not allowing manipulation
 --  of the data after creation) you should use Gtk_Pixmap.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Display widgets</group>
 --  <screenshot>gtk-image</screenshot>
 
+with Glib.G_Icon;
 with Glib.Properties;
 with Gdk.Bitmap;
 with Gdk.Pixbuf;
@@ -63,7 +64,9 @@ package Gtk.Image is
       Image_Pixbuf,
       Image_Stock,
       Image_Icon_Set,
-      Image_Animation);
+      Image_Animation,
+      Image_Icon_Name,
+      Image_Gicon);
    pragma Convention (C, Gtk_Image_Type);
 
    procedure Gtk_New    (Image : out Gtk_Image);
@@ -149,6 +152,19 @@ package Gtk.Image is
    --  displayed instead. If the current icon theme is changed, the icon will
    --  be updated appropriately.
 
+   procedure Gtk_New_From_Gicon
+     (Image  : out Gtk_Image;
+      Icon   : Glib.G_Icon.G_Icon;
+      Size   : Gtk.Enums.Gtk_Icon_Size);
+   procedure Initialize_From_Gicon
+     (Image  : access Gtk_Image_Record'Class;
+      Icon   : Glib.G_Icon.G_Icon;
+      Size   : Gtk.Enums.Gtk_Icon_Size);
+   --  Creates a Gtk_Image displaying an icon from the current icon theme.
+   --  If the icon name isn't known, a "broken image" icon will be
+   --  displayed instead.  If the current icon theme is changed, the icon
+   --  will be updated appropriately.
+
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Image.
 
@@ -209,6 +225,19 @@ package Gtk.Image is
    --  reference counter for the returned animation is not incremented. This
    --  must be done separately if needed.
 
+   procedure Set
+     (Image : access Gtk_Image_Record;
+      Icon  : Glib.G_Icon.G_Icon;
+      Size  : Gtk.Enums.Gtk_Icon_Size);
+   procedure Get
+     (Image : access Gtk_Image_Record;
+      Icon  : out Glib.G_Icon.G_Icon;
+      Size  : out Gtk.Enums.Gtk_Icon_Size);
+   --  Sets/Gets the G_Icon and size being displayed by the Gtk_Image.
+   --  For Get, the storage type of the image must be Image_Empty or
+   --  Image_Gicon (see Get_Storage_Type).  The caller of the Get
+   --  subprogram does not own a reference to the returned G_Icon.
+
    function Get_Storage_Type
      (Image : access Gtk_Image_Record) return Gtk_Image_Type;
    --  Indicates how the image was created
@@ -246,6 +275,10 @@ package Gtk.Image is
    --  Name:  File_Property
    --  Type:  String
    --  Descr: Filename to load and display
+   --
+   --  Name:  Gicon_Property
+   --  Type:  Object
+   --  Descr: The GIcon being displayed
    --
    --  Name:  Icon_Name_Property
    --  Type:  String
@@ -299,6 +332,7 @@ package Gtk.Image is
    type Property_Image_Type is new Image_Type_Properties.Property;
 
    File_Property             : constant Glib.Properties.Property_String;
+   Gicon_Property            : constant Glib.Properties.Property_Object;
    Icon_Name_Property        : constant Glib.Properties.Property_String;
    --   Icon_Set_Property         : constant Glib.Properties.Property_Boxed;
    Icon_Size_Property        : constant Glib.Properties.Property_Int;
@@ -324,6 +358,8 @@ private
 
    File_Property      : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("file");
+   Gicon_Property     : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("gicon");
    Icon_Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("icon-name");
    --  Icon_Set_Property  : constant Glib.Properties.Property_Boxed :=
