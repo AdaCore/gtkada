@@ -255,6 +255,11 @@ J510-028 API Additions
   Gtk.Scale:
     added new subprograms Add_Mark, Clear_Marks
 
+  Gtk.Scrolled_Window:
+    added new subprogram Unset_Placement
+    added new property Window_Placement_Set_Property
+    added new style property Scrollbars_Within_Bevel_Property
+
   Gtk.Style:
     added new types:
       Gtk_Border_Record, Gtk_Border

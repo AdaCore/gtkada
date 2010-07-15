@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,7 +55,7 @@
 --  Set_Scroll_Adjustments in the call to Gtk.Object.Initialize_Class_Record.
 --
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Scrolling</group>
 --  <testgtk>create_scrolled.adb</testgtk>
 --  <screenshot>gtk-scrolled_window</screenshot>
@@ -148,6 +148,12 @@ package Gtk.Scrolled_Window is
    --  Determine or return the location of the widget with respect to the
    --  scrollbars. The default is Corner_Top_Left.
 
+   procedure Unset_Placement
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record);
+   --  Unsets the placement of the contents with respect to the scrollbars
+   --  for the scrolled window. If no window placement is set for a scrolled
+   --  window, it obeys the "gtk-scrolled-window-placement" XSETTING.
+
    procedure Set_Shadow_Type
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
       Shadow_Type     : Gtk.Enums.Gtk_Shadow_Type);
@@ -205,6 +211,12 @@ package Gtk.Scrolled_Window is
    --  Name:  Window_Placement_Property
    --  Type:  Enum
    --  Descr: Where the contents are located with respect to the scrollbars
+   --
+   --  Name:  Window_Placement_Set_Property
+   --  Type:  Boolean
+   --  Descr: Whether "window-placement" should be used to determine the
+   --         location of the contents with respect to the scrollbars.
+   --
    --  </properties>
 
    Hadjustment_Property       : constant Glib.Properties.Property_Object;
@@ -213,6 +225,7 @@ package Gtk.Scrolled_Window is
    Vadjustment_Property       : constant Glib.Properties.Property_Object;
    Vscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
    Window_Placement_Property  : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+   Window_Placement_Set_Property : constant Glib.Properties.Property_Boolean;
 
    ----------------------
    -- Style Properties --
@@ -224,9 +237,16 @@ package Gtk.Scrolled_Window is
    --  Name:  Scrollbar_Spacing_Property
    --  Type:  Int
    --  Descr: Number of pixels between the scrollbars and the scrolled window
+   --
+   --  Name:  Scrollbars_Within_Bevel_Property
+   --  Type:  Boolean
+   --  Descr: Place scrollbars within the scrolled window's bevel
+   --
    --  </style_properties>
 
    Scrollbar_Spacing_Property : constant Glib.Properties.Property_Int;
+   Scrollbars_Within_Bevel_Property :
+     constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -273,7 +293,12 @@ private
      Gtk.Enums.Build ("vscrollbar-policy");
    Window_Placement_Property  : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("window-placement");
+   Window_Placement_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("window-placement-set");
 
+   Scrollbars_Within_Bevel_Property :
+     constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("scrollbars-within-bevel");
    Scrollbar_Spacing_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("scrollbar-spacing");
 
