@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2006-2007 AdaCore                    --
+--                Copyright (C) 2006-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,7 +31,7 @@
 --  actions can be linked together so that only one may be active at any one
 --  time.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Action-based menus</group>
 --  <see>Gtk_Action</see>
 
@@ -66,9 +66,12 @@ package Gtk.Radio_Action is
    function Get_Type return GType;
    --  Return the internal type used for a Gtk_Radio_Action
 
+   procedure Set_Current_Value
+     (Action        : access Gtk_Radio_Action_Record;
+      Current_Value : Gint);
    function Get_Current_Value
      (Action : access Gtk_Radio_Action_Record) return Glib.Gint;
-   --  Obtains the value property of the currently active member of
+   --  Sets/Gets the value property of the currently active member of
    --  the group to which Action belongs.
 
    procedure Set_Group
@@ -98,6 +101,11 @@ package Gtk.Radio_Action is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  Name:  Current_Value_Property
+   --  Type:  Int
+   --  Descr: The value property of the currently active member of the group
+   --         to which this action belongs.
+   --
    --  Name:  Group_Property
    --  Type:  Object
    --  Descr: The radio action whose group this action belongs to.
@@ -108,8 +116,9 @@ package Gtk.Radio_Action is
    --         this action is the current action of its group.
    --  </properties>
 
-   Group_Property : constant Glib.Properties.Property_Object;
-   Value_Property : constant Glib.Properties.Property_Int;
+   Current_Value_Property : constant Glib.Properties.Property_Int;
+   Group_Property         : constant Glib.Properties.Property_Object;
+   Value_Property         : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -131,6 +140,8 @@ package Gtk.Radio_Action is
    Signal_Changed : constant Glib.Signal_Name := "changed";
 
 private
+   Current_Value_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("current-value");
    Group_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("group");
    Value_Property : constant Glib.Properties.Property_Int :=

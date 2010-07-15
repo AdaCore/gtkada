@@ -248,6 +248,10 @@ J510-028 API Additions
     added new property Group_Property
     added new style property Arrow_Spacing_Property
 
+  Gtk.Radio_Action:
+    added new subprogram Set_Current_Value
+    added new property Current_Value_Property
+
   Gtk.Style:
     added new types:
       Gtk_Border_Record, Gtk_Border

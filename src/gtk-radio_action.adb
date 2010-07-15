@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -112,6 +112,22 @@ package body Gtk.Radio_Action is
       Interfaces.C.Strings.Free (T);
       Interfaces.C.Strings.Free (S);
    end Initialize;
+
+   -----------------------
+   -- Set_Current_Value --
+   -----------------------
+
+   procedure Set_Current_Value
+     (Action        : access Gtk_Radio_Action_Record;
+      Current_Value : Gint)
+   is
+      procedure Internal
+        (Action        : System.Address;
+         Current_Value : Gint);
+      pragma Import (C, Internal, "gtk_radio_action_set_current_value");
+   begin
+      Internal (Get_Object (Action), Current_Value);
+   end Set_Current_Value;
 
    ---------------
    -- Set_Group --
