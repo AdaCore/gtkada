@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---               Copyright (C) 2000-2009, AdaCore                    --
+--               Copyright (C) 2000-2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  You can hide some of the pages of the notebook by simply calling Hide on
 --  the widget that is contained in the page (or returned from Get_Nth_Page).
 --  </description>
---  <c_version>2.10.9</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Layout containers</group>
 --  <testgtk>create_notebook.adb</testgtk>
 --  <screenshot>gtk-notebook</screenshot>
@@ -64,6 +64,8 @@ package Gtk.Notebook is
      (Notebook_Tab_First,
       Notebook_Tab_Last);
    pragma Convention (C, Gtk_Notebook_Tab);
+
+   subtype Gtk_Notebook_Group is Glib.C_Proxy;
 
    ---------------------------------------------
    -- Creating a notebook and inserting pages --
@@ -183,16 +185,6 @@ package Gtk.Notebook is
       Destroy  : Glib.G_Destroy_Notify_Address);
    --  Install a global function used to create a window when a detached tab
    --  is dropped in an empty area.
-
-   procedure Set_Group_Id
-     (Notebook : access Gtk_Notebook_Record; Group_Id : Gint);
-   --  Set a group identificator for Notebook. Notebooks sharing
-   --  the same group identificator will be able to exchange tabs
-   --  via drag and drop. A notebook with group identificator -1 will
-   --  not be able to exchange tabs with any other notebook.
-
-   function Get_Group_Id (Notebook : access Gtk_Notebook_Record) return Gint;
-   --  Gets the current group identificator for Notebook or -1 if not set.
 
    --------------------------------------------
    -- Modifying and getting the current page --
@@ -449,6 +441,16 @@ package Gtk.Notebook is
    --  If you want a notebook to accept drags from other widgets,
    --  you will have to set your own DnD code to do it.
 
+   function Get_Group (Notebook : access Gtk_Notebook_Record)
+      return Gtk_Notebook_Group;
+   procedure Set_Group
+     (Notebook : access Gtk_Notebook_Record;
+      Group    : Gtk_Notebook_Group);
+   --  Gets/Sets a group identificator pointer for Notebook, notebooks sharing
+   --  the same group identificator pointer will be able to exchange tabs
+   --  via drag and drop. A notebook with a null group identificator will
+   --  not be able to exchange tabs with any other notebook.
+
    --------------------
    -- GValue support --
    --------------------
@@ -503,6 +505,18 @@ package Gtk.Notebook is
    pragma Obsolescent;  --  Set_Tab_Vborder
    --  Modify the height of the vertical borders of the tabs.
 
+   procedure Set_Group_Id
+     (Notebook : access Gtk_Notebook_Record; Group_Id : Gint);
+   pragma Obsolescent; --  Set_Group_Id
+   --  Set a group identificator for Notebook. Notebooks sharing
+   --  the same group identificator will be able to exchange tabs
+   --  via drag and drop. A notebook with group identificator -1 will
+   --  not be able to exchange tabs with any other notebook.
+
+   function Get_Group_Id (Notebook : access Gtk_Notebook_Record) return Gint;
+   pragma Obsolescent; --  Get_Group_Id
+   --  Gets the current group identificator for Notebook or -1 if not set.
+
    --  </doc_ignore>
 
    ----------------
@@ -552,7 +566,10 @@ package Gtk.Notebook is
    --  Type: Boolean
    --  See:  Set_Homogeneous_Tabs / -
    --
-   --  <properties>
+   --  Name:  Group_Property
+   --  Type:  Gtk_Notebook_Group
+   --  Descr: Group for tabs drag and drop
+   --
    --  Name:  Group_Id_Property
    --  Type:  Int
    --  See: Set_Group_Id / Get_Group_Id
@@ -568,7 +585,8 @@ package Gtk.Notebook is
    Scrollable_Property   : constant Glib.Properties.Property_Boolean;
    Enable_Popup_Property : constant Glib.Properties.Property_Boolean;
    Homogeneous_Property  : constant Glib.Properties.Property_Boolean;
-   Group_Id_Property : constant Glib.Properties.Property_Int;
+   Group_Property        : constant Glib.Properties.Property_C_Proxy;
+   Group_Id_Property     : constant Glib.Properties.Property_Int;
 
    ----------------------
    -- Child Properties --
@@ -627,6 +645,10 @@ package Gtk.Notebook is
    --  configuration files, and retrieved through Gtk.Widget.Style_Get_Property
 
    --  <style_properties>
+   --  Name:  Arrow_Spacing_Property
+   --  Type:  Int
+   --  Descr: Scroll arrow spacing
+   --
    --  Name:  Has_Backward_Stepper_Property
    --  Type:  Boolean
    --  Descr: Display the standard backward arrow button
@@ -654,14 +676,15 @@ package Gtk.Notebook is
    --  Descr: Size of tab overlap area
    --  </style_properties>
 
+   Arrow_Spacing_Property        : constant Glib.Properties.Property_Int;
    Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean;
    Has_Forward_Stepper_Property  : constant Glib.Properties.Property_Boolean;
    Has_Secondary_Backward_Stepper_Property : constant
      Glib.Properties.Property_Boolean;
    Has_Secondary_Forward_Stepper_Property  : constant
      Glib.Properties.Property_Boolean;
-   Tab_Curvature_Property : constant Glib.Properties.Property_Int;
-   Tab_Overlap_Property : constant Glib.Properties.Property_Int;
+   Tab_Curvature_Property        : constant Glib.Properties.Property_Int;
+   Tab_Overlap_Property          : constant Glib.Properties.Property_Int;
 
    -------------
    -- Signals --
@@ -746,6 +769,8 @@ private
      Glib.Properties.Build ("enable-popup");
    Homogeneous_Property  : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
+   Group_Property : constant Glib.Properties.Property_C_Proxy :=
+     Glib.Properties.Build ("group");
    Group_Id_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("group-id");
 
@@ -766,6 +791,8 @@ private
    Reorderable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("reorderable");
 
+   Arrow_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("arrow-spacing");
    Has_Backward_Stepper_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-backward-stepper");
    Has_Forward_Stepper_Property : constant Glib.Properties.Property_Boolean :=

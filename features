@@ -242,6 +242,12 @@ J510-028 API Additions
       Text_Property
       Use_Markup_Property
 
+  Gtk.Notebook:
+    added new type Gtk_Notebook_Group
+    added new subprograms Get_Group, Set_Group
+    added new property Group_Property
+    added new style property Arrow_Spacing_Property
+
   Gtk.Style:
     added new types:
       Gtk_Border_Record, Gtk_Border

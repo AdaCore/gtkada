@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -135,6 +135,19 @@ package body Gtk.Notebook is
       Set_Object (List, Internal (Get_Object (Widget)));
       return List;
    end Get_Children;
+
+   ---------------
+   -- Get_Group --
+   ---------------
+
+   function Get_Group (Notebook : access Gtk_Notebook_Record)
+      return Gtk_Notebook_Group
+   is
+      function Internal (Notebook : System.Address) return Gtk_Notebook_Group;
+      pragma Import (C, Internal, "gtk_notebook_get_group");
+   begin
+      return Internal (Get_Object (Notebook));
+   end Get_Group;
 
    --------------------
    -- Get_Menu_Label --
@@ -536,6 +549,22 @@ package body Gtk.Notebook is
    begin
       Internal (Get_Object (Notebook), Page_Num);
    end Set_Current_Page;
+
+   ---------------
+   -- Set_Group --
+   ---------------
+
+   procedure Set_Group
+     (Notebook : access Gtk_Notebook_Record;
+      Group    : Gtk_Notebook_Group)
+   is
+      procedure Internal
+        (Notebook : System.Address;
+         Group    : Gtk_Notebook_Group);
+      pragma Import (C, Internal, "gtk_notebook_set_group");
+   begin
+      Internal (Get_Object (Notebook), Group);
+   end Set_Group;
 
    --------------------
    -- Set_Scrollable --
