@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2007 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,7 @@
 --  a value in a given range. This is a kind of cursor, similar to what one
 --  finds on audio systems to select the volume for instance.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Numeric/Text Data Entry</group>
 --  <screenshot>gtk-scale.png</screenshot>
 
@@ -139,6 +139,27 @@ package Gtk.Scale is
    --  when using the Pango_Layout functions you need to convert to
    --  and from pixels using Pango.Enums.To_Pixels
    --  If the draw_value property is False, the return values are undefined.
+
+   procedure Add_Mark
+     (Scale    : access Gtk_Scale_Record;
+      Value    : Gdouble;
+      Position : Gtk_Position_Type;
+      Markup   : String);
+   --  Adds a mark at Value.
+   --
+   --  A mark is indicated visually by drawing a tick mark next to the scale,
+   --  and GTK+ makes it easy for the user to position the scale exactly at the
+   --  marks value. For a horizontal scale, Pos_Top is drawn above the scale,
+   --  anything else below. For a vertical scale, Pos_Left is drawn to the left
+   --  of the scale, anything else to the right.
+   --
+   --  If Markup is not "", text (in Pango Markup format) is shown next to the
+   --  tick mark.
+   --
+   --  To remove marks from a scale, use Clear_Marks.
+
+   procedure Clear_Marks (Scale : access Gtk_Scale_Record);
+   --  Removes any marks that have been added Add_Mark.
 
    ----------------
    -- Properties --

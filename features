@@ -252,6 +252,9 @@ J510-028 API Additions
     added new subprogram Set_Current_Value
     added new property Current_Value_Property
 
+  Gtk.Scale:
+    added new subprograms Add_Mark, Clear_Marks
+
   Gtk.Style:
     added new types:
       Gtk_Border_Record, Gtk_Border

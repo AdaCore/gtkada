@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
+--                Copyright (C) 2000-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -273,5 +273,42 @@ package body Gtk.Scale is
    begin
       Internal (Get_Object (Scale), X, Y);
    end Get_Layout_Offsets;
+
+   --------------
+   -- Add_Mark --
+   --------------
+
+   procedure Add_Mark
+     (Scale    : access Gtk_Scale_Record;
+      Value    : Gdouble;
+      Position : Gtk_Position_Type;
+      Markup   : String)
+   is
+      procedure Internal
+        (Scale    : System.Address;
+         Value    : Gdouble;
+         Position : Gtk_Position_Type;
+         Markup   : System.Address);
+      pragma Import (C, Internal, "gtk_scale_add_mark");
+
+      Tmp : constant String := Markup & ASCII.NUL;
+   begin
+      if Markup = "" then
+         Internal (Get_Object (Scale), Value, Position, System.Null_Address);
+      else
+         Internal (Get_Object (Scale), Value, Position, Tmp'Address);
+      end if;
+   end Add_Mark;
+
+   -----------------
+   -- Clear_Marks --
+   -----------------
+
+   procedure Clear_Marks (Scale : access Gtk_Scale_Record) is
+      procedure Internal (Scale : System.Address);
+      pragma Import (C, Internal, "gtk_scale_clear_marks");
+   begin
+      Internal (Get_Object (Scale));
+   end Clear_Marks;
 
 end Gtk.Scale;
