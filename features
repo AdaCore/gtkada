@@ -268,6 +268,12 @@ J510-028 API Additions
       Border_Free
       Border_Get_Type
 
+  Gtk.Tool_Item:
+    added new subprograms:
+      Set_Tooltip_Markup
+      Set_Tooltip_Text
+      Toolbar_Reconfigured
+
   Glib.G_Icon: new package
   Gtk.Assistant: new package
   Gtk.Link_Button: new package

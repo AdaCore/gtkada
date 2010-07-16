@@ -114,14 +114,14 @@ package Gtk.Tooltip is
 
    procedure Set_Markup
      (Tooltip : access Gtk_Tooltip_Record;
-      Markup  : String);
+      Markup  : UTF8_String);
    --  Sets the text of the tooltip to be Markup, which is marked up with
    --  the Pango text markup language.  If Markup is "", the label will be
    --  hidden.
 
    procedure Set_Text
      (Tooltip : access Gtk_Tooltip_Record;
-      Text    : String);
+      Text    : UTF8_String);
    --  Sets the text of the tooltip to be @text. If Text is "", the label
    --  will be hidden. See also Set_Markup.
 

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2006-2008, AdaCore                  --
+--                 Copyright (C) 2006-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -25,8 +25,6 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
-
---  <c_version>2.8.17</c_version>
 
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Menu_Item;    use Gtk.Menu_Item;
@@ -363,6 +361,46 @@ package body Gtk.Tool_Item is
                 Tip_Text & ASCII.NUL, Tip_Private & ASCII.NUL);
    end Set_Tooltip;
 
+   ------------------------
+   -- Set_Tooltip_Markup --
+   ------------------------
+
+   procedure Set_Tooltip_Markup
+     (Tool_Item : access Gtk_Tool_Item_Record;
+      Markup    : UTF8_String)
+   is
+      procedure Internal (Tool_Item, Markup : System.Address);
+      pragma Import (C, Internal, "gtk_tool_item_set_tooltip_markup");
+
+      Tmp : constant UTF8_String := Markup & ASCII.NUL;
+   begin
+      if Markup = "" then
+         Internal (Get_Object (Tool_Item), System.Null_Address);
+      else
+         Internal (Get_Object (Tool_Item), Tmp'Address);
+      end if;
+   end Set_Tooltip_Markup;
+
+   ----------------------
+   -- Set_Tooltip_Text --
+   ----------------------
+
+   procedure Set_Tooltip_Text
+     (Tool_Item : access Gtk_Tool_Item_Record;
+      Text      : UTF8_String)
+   is
+      procedure Internal (Tool_Item, Text : System.Address);
+      pragma Import (C, Internal, "gtk_tool_item_set_tooltip_text");
+
+      Tmp : constant UTF8_String := Text & ASCII.NUL;
+   begin
+      if Text = "" then
+         Internal (Get_Object (Tool_Item), System.Null_Address);
+      else
+         Internal (Get_Object (Tool_Item), Tmp'Address);
+      end if;
+   end Set_Tooltip_Text;
+
    -------------------------
    -- Set_Use_Drag_Window --
    -------------------------
@@ -410,5 +448,16 @@ package body Gtk.Tool_Item is
    begin
       Internal (Get_Object (Toolitem), Boolean'Pos (Visible_Vertical));
    end Set_Visible_Vertical;
+
+   --------------------------
+   -- Toolbar_Reconfigured --
+   --------------------------
+
+   procedure Toolbar_Reconfigured (Tool_Item : access Gtk_Tool_Item_Record) is
+      procedure Internal (Tool_Item : System.Address);
+      pragma Import (C, Internal, "gtk_tool_item_toolbar_reconfigured");
+   begin
+      Internal (Get_Object (Tool_Item));
+   end Toolbar_Reconfigured;
 
 end Gtk.Tool_Item;

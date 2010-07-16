@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2006-2007 AdaCore                    --
+--                Copyright (C) 2006-2010 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,7 @@
 --  See also Gtk.Tool_Button (gtk-tool_button.ads).
 --  See also Gtk.Separator_Tool_Item (gtk-separator_tool_item).
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Menus and Toolbars</group>
 
 with Glib.Properties;
@@ -139,6 +139,18 @@ package Gtk.Tool_Item is
    --  Sets the tooltips object to be used for Tool item, the text to be
    --  displayed as tooltip on the item and the private text to be used
 
+   procedure Set_Tooltip_Markup
+     (Tool_Item : access Gtk_Tool_Item_Record;
+      Markup    : UTF8_String);
+   --  Sets the markup text to be displayed as tooltip on the item.
+   --  See Gtk.Widget.Set_Tooltip_Markup.
+
+   procedure Set_Tooltip_Text
+     (Tool_Item : access Gtk_Tool_Item_Record;
+      Text      : UTF8_String);
+   --  Sets the text to be displayed as tooltip on the item.
+   --  See Gtk.Widget.Set_Tooltip_Text.
+
    procedure Set_Visible_Vertical
      (Toolitem         : access Gtk_Tool_Item_Record;
       Visible_Vertical : Boolean);
@@ -178,6 +190,11 @@ package Gtk.Tool_Item is
      (Tool_Item : access Gtk_Tool_Item_Record)
       return Gtk.Enums.Gtk_Toolbar_Style;
    --  Get the style of the toolbar that contains the item
+
+   procedure Toolbar_Reconfigured (Tool_Item : access Gtk_Tool_Item_Record);
+   --  Emits the signal #GtkToolItem::toolbar_reconfigured on Tool_Item.
+   --  Gtk_Toolbar and other Gtk_Tool_Shell implementations use this function
+   --  to notify children when some aspect of their configuration changes.
 
    ----------------
    -- Properties --

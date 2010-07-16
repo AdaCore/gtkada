@@ -110,12 +110,12 @@ package body Gtk.Tooltip is
 
    procedure Set_Markup
      (Tooltip : access Gtk_Tooltip_Record;
-      Markup  : String)
+      Markup  : UTF8_String)
    is
       procedure Internal (Tooltip, Markup : System.Address);
       pragma Import (C, Internal, "gtk_tooltip_set_markup");
 
-      Tmp : constant String := Markup & ASCII.NUL;
+      Tmp : constant UTF8_String := Markup & ASCII.NUL;
    begin
       if Markup = "" then
          Internal (Get_Object (Tooltip), System.Null_Address);
@@ -130,12 +130,12 @@ package body Gtk.Tooltip is
 
    procedure Set_Text
      (Tooltip : access Gtk_Tooltip_Record;
-      Text    : String)
+      Text    : UTF8_String)
    is
       procedure Internal (Tooltip, Text : System.Address);
       pragma Import (C, Internal, "gtk_tooltip_set_text");
 
-      Tmp : constant String := Text & ASCII.NUL;
+      Tmp : constant UTF8_String := Text & ASCII.NUL;
    begin
       if Text = "" then
          Internal (Get_Object (Tooltip), System.Null_Address);
