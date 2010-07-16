@@ -122,7 +122,7 @@ package Gtk.Tooltip is
    procedure Set_Text
      (Tooltip : access Gtk_Tooltip_Record;
       Text    : UTF8_String);
-   --  Sets the text of the tooltip to be @text. If Text is "", the label
+   --  Sets the text of the tooltip to be Text. If Text is "", the label
    --  will be hidden. See also Set_Markup.
 
    procedure Set_Tip_Area
