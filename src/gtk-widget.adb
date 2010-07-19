@@ -39,6 +39,7 @@ with Gtk.Enums;                   use Gtk.Enums;
 with Gtk.Style;                   use Gtk.Style;
 with Gtk.Window;
 with Gtkada.Bindings;             use Gtkada.Bindings;
+with Gtkada.Types;
 with Pango.Context;               use Pango.Context;
 with Pango.Layout;                use Pango.Layout;
 
@@ -232,9 +233,7 @@ package body Gtk.Widget is
    -- Class_Path --
    ----------------
 
-   function Class_Path
-     (Widget      : access Gtk_Widget_Record) return String
-   is
+   function Class_Path (Widget : access Gtk_Widget_Record) return String is
       procedure Internal
         (Widget        : System.Address;
          Path_Length   : out Guint;
@@ -891,10 +890,18 @@ package body Gtk.Widget is
      (Widget : access Gtk_Widget_Record) return UTF8_String
    is
       function Internal
-        (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+        (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_widget_get_tooltip_markup");
    begin
-      return Value (Internal (Get_Object (Widget)));
+      --  We need to free the returned string.
+      declare
+         Tmp : constant Gtkada.Types.Chars_Ptr :=
+               Internal (Get_Object (Widget));
+         Str : constant String := Value (Tmp);
+      begin
+         Gtkada.Types.g_free (Tmp);
+         return Str;
+      end;
    end Get_Tooltip_Markup;
 
    ----------------------
@@ -905,10 +912,18 @@ package body Gtk.Widget is
      (Widget : access Gtk_Widget_Record) return UTF8_String
    is
       function Internal
-        (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+        (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_widget_get_tooltip_text");
    begin
-      return Value (Internal (Get_Object (Widget)));
+      --  We need to free the returned string.
+      declare
+         Tmp : constant Gtkada.Types.Chars_Ptr :=
+               Internal (Get_Object (Widget));
+         Str : constant String := Value (Tmp);
+      begin
+         Gtkada.Types.g_free (Tmp);
+         return Str;
+      end;
    end Get_Tooltip_Text;
 
    --------------------------
