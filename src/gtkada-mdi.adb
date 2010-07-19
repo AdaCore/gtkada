@@ -5075,7 +5075,10 @@ package body Gtkada.MDI is
 
                --  Child cannot be floating while in a notebook
                if Child /= null then
-                  if Raised then
+                  if Raised
+                    or else Raised_Child = null
+                    or else Focus_Child = Child
+                  then
                      Raised_Child := Child;
                   end if;
 
@@ -6512,6 +6515,11 @@ package body Gtkada.MDI is
          begin
             while Item /= Widget_List.Null_List loop
                Child := MDI_Child (Widget_List.Get_Data (Item));
+
+               if Focus_Child = null then
+                  Focus_Child := Child;
+               end if;
+
                Print_Debug
                  ("Restore_Desktop, raising child with no focus "
                   & Get_Title (Child));

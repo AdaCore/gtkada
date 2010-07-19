@@ -1,5 +1,13 @@
 Known problems fixed in GtkAda 2.18.0
 
+- J702-017 Crash in MDI when loading desktop
+  Problem:    If the desktop restored by calling Restore_Desktop contains
+              a notebook with no raised child (ie a <child> node with
+              an attribute Raised="True"), then an error (fatal on Windows
+              systems) would occur later on.
+  Workaround: Upon a crash, the simplest is to destroy the perspectives.xml
+              file, although this will also lost saved desktops
+
 - J504-027 Bug in implementation of Gtk.Icon_View.Get_Model
   Problem:    Calling this function might cause a Gtk_Critical error or
               memory corruption.
