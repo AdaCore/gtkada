@@ -306,6 +306,31 @@ J510-028 API Additions
       Tree_Line_Pattern_Property
       Tree_Line_Width_Property
 
+  Gtk.Widget:
+    added new subprograms:
+      Error_Bell
+      Keynav_Failed
+      Is_Composited
+      Modify_Cursor
+      Input_Shape_Combine_Mask
+      Get_Snapshot
+      Get_Tooltip_Text
+      Get_Tooltip_Markup
+      Get_Has_Tooltip, Set_Has_Tooltip
+      Trigger_Tooltip_Query
+    added new properties:
+      Tooltip_Markup_Property
+      Tooltip_Text_Property
+      Window_Property
+    added new style properties:
+      Link_Color_Property
+      Scroll_Arrow_Hlength_Property
+      Scroll_Arrow_Vlength_Property
+      Separator_Height_Property
+      Separator_Width_Property
+      Visited_Link_Color_Property
+      Wide_Separators_Property
+
   Glib.G_Icon: new package
   Gtk.Assistant: new package
   Gtk.Link_Button: new package

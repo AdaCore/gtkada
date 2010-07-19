@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2009, AdaCore                  --
+--                 Copyright (C) 2000-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -2255,5 +2255,169 @@ package body Gtk.Widget is
    begin
       return Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Tooltip_Window;
+
+   ----------------
+   -- Error_Bell --
+   ----------------
+
+   procedure Error_Bell (Widget : access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_error_bell");
+   begin
+      Internal (Get_Object (Widget));
+   end Error_Bell;
+
+   ---------------------
+   -- Get_Has_Tooltip --
+   ---------------------
+
+   function Get_Has_Tooltip
+     (Widget : access Gtk_Widget_Record) return Boolean
+   is
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_get_has_tooltip");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Get_Has_Tooltip;
+
+   ------------------
+   -- Get_Snapshot --
+   ------------------
+
+   function Get_Snapshot
+     (Widget    : access Gtk_Widget_Record;
+      Clip_Rect : Gdk.Rectangle.Gdk_Rectangle)
+      return Gdk.Pixmap.Gdk_Pixmap
+   is
+      function Internal
+        (Widget    : System.Address;
+         Clip_Rect : Gdk.Rectangle.Gdk_Rectangle)
+         return Gdk.Pixmap.Gdk_Pixmap;
+      pragma Import (C, Internal, "gtk_widget_get_snapshot");
+   begin
+      return Internal (Get_Object (Widget), Clip_Rect);
+   end Get_Snapshot;
+
+   ------------------------
+   -- Get_Tooltip_Markup --
+   ------------------------
+
+   function Get_Tooltip_Markup
+     (Widget : access Gtk_Widget_Record) return UTF8_String
+   is
+      function Internal
+        (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_widget_get_tooltip_markup");
+   begin
+      return Value (Internal (Get_Object (Widget)));
+   end Get_Tooltip_Markup;
+
+   ----------------------
+   -- Get_Tooltip_Text --
+   ----------------------
+
+   function Get_Tooltip_Text
+     (Widget : access Gtk_Widget_Record) return UTF8_String
+   is
+      function Internal
+        (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_widget_get_tooltip_text");
+   begin
+      return Value (Internal (Get_Object (Widget)));
+   end Get_Tooltip_Text;
+
+   ------------------------------
+   -- Input_Shape_Combine_Mask --
+   ------------------------------
+
+   procedure Input_Shape_Combine_Mask
+     (Widget     : access Gtk_Widget_Record;
+      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
+      Offset_X   : Gint;
+      Offset_Y   : Gint)
+   is
+      procedure Internal
+        (Widget     : System.Address;
+         Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
+         Offset_X   : Gint;
+         Offset_Y   : Gint);
+      pragma Import (C, Internal, "gtk_widget_input_shape_combine_mask");
+   begin
+      Internal (Get_Object (Widget), Shape_Mask, Offset_X, Offset_Y);
+   end Input_Shape_Combine_Mask;
+
+   -------------------
+   -- Is_Composited --
+   -------------------
+
+   function Is_Composited (Widget : access Gtk_Widget_Record) return Boolean is
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_is_composited");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Is_Composited;
+
+   -------------------
+   -- Keynav_Failed --
+   -------------------
+
+   function Keynav_Failed
+     (Widget    : access Gtk_Widget_Record;
+      Direction : Gtk.Enums.Gtk_Direction_Type)
+      return Boolean
+   is
+      function Internal
+        (Widget    : System.Address;
+         Direction : Gtk.Enums.Gtk_Direction_Type)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_widget_keynav_failed");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget), Direction));
+   end Keynav_Failed;
+
+   -------------------
+   -- Modify_Cursor --
+   -------------------
+
+   procedure Modify_Cursor
+     (Widget    : access Gtk_Widget_Record;
+      Primary   : Gdk.Color.Gdk_Color;
+      Secondary : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Widget    : System.Address;
+         Primary   : Gdk_Color;
+         Secondary : Gdk_Color);
+      pragma Import (C, Internal, "gtk_widget_modify_cursor");
+   begin
+      Internal (Get_Object (Widget), Primary, Secondary);
+   end Modify_Cursor;
+
+   ---------------------
+   -- Set_Has_Tooltip --
+   ---------------------
+
+   procedure Set_Has_Tooltip
+     (Widget      : access Gtk_Widget_Record;
+      Has_Tooltip : Boolean)
+   is
+      procedure Internal
+        (Widget      : System.Address;
+         Has_Tooltip : Gboolean);
+      pragma Import (C, Internal, "gtk_widget_set_has_tooltip");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (Has_Tooltip));
+   end Set_Has_Tooltip;
+
+   ---------------------------
+   -- Trigger_Tooltip_Query --
+   ---------------------------
+
+   procedure Trigger_Tooltip_Query (Widget : access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_trigger_tooltip_query");
+   begin
+      Internal (Get_Object (Widget));
+   end Trigger_Tooltip_Query;
 
 end Gtk.Widget;

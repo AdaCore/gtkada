@@ -550,7 +550,7 @@ package Gtk.Tree_View is
    --                        :.................:         /
    --
    --  Widget coordinates ------ coordinates relative to the widget (usually
-   --                            widget->window.
+   --                            widget->window).
    --
    --  Bin window coordinates -- coordinates relative to the window that
    --                            Gtk_Tree_View renders to.

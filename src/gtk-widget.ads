@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,7 +40,7 @@
 --  We have tried to reference these functions in the other packages as well.
 --
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Abstract base classes</group>
 
 with System;
@@ -62,6 +62,7 @@ with Gdk.Bitmap;
 with Gdk.Rectangle;
 with Gdk.Region;
 with Gdk.Pixbuf;
+with Gdk.Pixmap;
 with Gdk.Types;
 with Gdk.Visual;
 with Gdk.Window;
@@ -600,6 +601,50 @@ package Gtk.Widget is
    --  Note that the function Default_Motion_Notify_Event should not be called
    --  if this one returns False, since it would create a segmentation fault.
 
+   procedure Error_Bell (Widget : access Gtk_Widget_Record);
+   --  Notifies the user about an input-related error on this widget.
+   --  If the GtkSettings:gtk-error-bell setting is True, it calls
+   --  Gdk_Window_Beep, otherwise it does nothing.
+   --
+   --  Note that the effect of Gdk_Window_Beep can be configured in many
+   --  ways, depending on the windowing backend and the desktop environment
+   --  or window manager that is used.
+
+   function Keynav_Failed
+     (Widget    : access Gtk_Widget_Record;
+      Direction : Gtk.Enums.Gtk_Direction_Type)
+      return Boolean;
+   --  This function should be called whenever keyboard navigation within
+   --  a single widget hits a boundary. The function emits the
+   --  GtkWidget::keynav-failed signal on the widget and its return
+   --  value should be interpreted in a way similar to the return value of
+   --  Child_Focus.
+   --
+   --  When True is returned, stay in the widget, the failed keyboard
+   --  navigation is Ok and/or there is nowhere we can/should move the
+   --  focus to.
+   --
+   --  When False is returned, the caller should continue with keyboard
+   --  navigation outside the widget, e.g. by calling Child_Focus on the
+   --  widget's toplevel.
+   --
+   --  The default ::keynav-failed handler returns True for
+   --  Dir_Tab_Forward and Dir_Tab_Backward. For the other values of
+   --  Gtk_Direction_Type, it looks at the
+   --  GtkSettings:gtk-keynav-cursor-only setting and returns False
+   --  if the setting is True. This way the entire user interface
+   --  becomes cursor-navigatable on input devices such as mobile phones
+   --  which only have cursor keys but no tab key.
+   --
+   --  Whenever the default handler returns True, it also calls
+   --  Error_Bell to notify the user of the failed keyboard navigation.
+   --
+   --  A use case for providing an own implementation of ::keynav-failed
+   --  (either by connecting to it or by overriding it) would be a row of
+   --  Gtk_Entry widgets where the user should be able to navigate the
+   --  entire row with the cursor keys, as e.g. known from user interfaces
+   --  that require entering license keys.
+
    --------------------------
    -- Colors and colormaps --
    --------------------------
@@ -637,6 +682,15 @@ package Gtk.Widget is
 
    function Get_Default_Visual return Gdk.Visual.Gdk_Visual;
    --  Return the default visual used when a new widget is created.
+
+   function Is_Composited (Widget : access Gtk_Widget_Record) return Boolean;
+   --  Returns whether Widget can rely on having its alpha channel
+   --  drawn correctly. On X11 this function returns whether a
+   --  compositing manager is running for Widget's screen.
+   --
+   --  Please note that the semantics of this call will change
+   --  in the future if used on a widget that has a composited
+   --  window in its hierarchy (as set by Gdk.Window.Set_Composited).
 
    ------------
    -- Styles --
@@ -747,6 +801,15 @@ package Gtk.Widget is
    --
    --  If the direction is set to TEXT_DIR_NONE, then the value
    --  set by Set_Default_Direction will be used.
+
+   procedure Modify_Cursor
+     (Widget    : access Gtk_Widget_Record;
+      Primary   : Gdk.Color.Gdk_Color;
+      Secondary : Gdk.Color.Gdk_Color);
+   --  Sets the cursor color to use in a widget, overriding the
+   --  GtkWidget:cursor-color and GtkWidget:secondary-cursor-color
+   --  style properties. All other style values are left untouched.
+   --  See also Gtk.Rc.Modify_Style.
 
    -------------------
    -- Widgets' tree --
@@ -989,6 +1052,15 @@ package Gtk.Widget is
    --  will still work.
    --  See the manual page for XShapeCombineMask(3x) for more information.
 
+   procedure Input_Shape_Combine_Mask
+     (Widget     : access Gtk_Widget_Record;
+      Shape_Mask : Gdk.Bitmap.Gdk_Bitmap;
+      Offset_X   : Gint;
+      Offset_Y   : Gint);
+   --  Sets an input shape for this widget's GDK window. This allows for
+   --  windows which react to mouse click in a nonrectangular region, see
+   --  Gdk.Window.Input_Shape_Combine_Mask for more information.
+
    procedure Reset_Shapes (Widget : access Gtk_Widget_Record);
    --  Recursively resets the shape on this widget and its descendants.
 
@@ -1006,24 +1078,61 @@ package Gtk.Widget is
    --
    --  Null is returned if Stock_Id wasn't known.
 
+   function Get_Snapshot
+     (Widget    : access Gtk_Widget_Record;
+      Clip_Rect : Gdk.Rectangle.Gdk_Rectangle)
+      return Gdk.Pixmap.Gdk_Pixmap;
+   --  Create a Gdk_Pixmap of the contents of the widget and its children.
+   --
+   --  Works even if the widget is obscured. The depth and visual of the
+   --  resulting pixmap is dependent on the widget being snapshot and likely
+   --  differs from those of a target widget displaying the pixmap.
+   --  The function Gdk.Pixbuf.Get_From_Drawable can be used to convert
+   --  the pixmap to a visual independant representation.
+   --
+   --  The snapshot area used by this function is the Widget's allocation plus
+   --  any extra space occupied by additional windows belonging to this widget
+   --  (such as the arrows of a spin button).  Thus, the resulting snapshot
+   --  pixmap is possibly larger than the allocation.
+   --
+   --  If Clip_Rect is non-null, the resulting pixmap is shrunken to
+   --  match the specified clip_rect. The (x,y) coordinates of Clip_Rect are
+   --  interpreted widget relative. If width or height of Clip_Rect are 0 or
+   --  negative, the width or height of the resulting pixmap will be shrunken
+   --  by the respective amount.
+   --
+   --  For instance using a Clip_Rect'(+5, +5, -10, -10) will chop off 5 pixels
+   --  at each side of the snapshot pixmap.
+   --
+   --  If non-null, Clip_Rect will contain the exact widget-relative snapshot
+   --  coordinates upon return. A Clip_Rect of (-1, -1, 0, 0) can be used to
+   --  preserve the auto-grown snapshot area and use Clip_Rect as a pure output
+   --  parameter.
+   --
+   --  The returned pixmap can be null, if the resulting Clip_Area was empty.
+
    --------------
    -- Tooltips --
    --------------
 
+   function Get_Tooltip_Text
+     (Widget : access Gtk_Widget_Record) return UTF8_String;
    procedure Set_Tooltip_Text
      (Widget : access Gtk_Widget_Record;
       Text   : UTF8_String);
-   --  Sets text as the contents of the tooltip. This function will take care
-   --  of setting GtkWidget::has-tooltip to TRUE and of the default handler for
-   --  the GtkWidget::query-tooltip signal.
+   --  Gets/Sets text as the contents of the tooltip. This function will take
+   --  care of setting GtkWidget::has-tooltip to TRUE and of the default
+   --  handler for the GtkWidget::query-tooltip signal.
    --
    --  See also the GtkWidget:tooltip-text property and Gtk_Tooltips.Set_Text.
 
+   function Get_Tooltip_Markup
+     (Widget : access Gtk_Widget_Record) return UTF8_String;
    procedure Set_Tooltip_Markup
      (Widget : access Gtk_Widget_Record;
       Text   : UTF8_String);
-   --  Sets markup as the contents of the tooltip, which is marked up with the
-   --  Pango text markup language.
+   --  Gets/Sets tooltip contents, marked up with the Pango text markup
+   --  language.
    --
    --  This function will take care of setting GtkWidget:has-tooltip to TRUE
    --  and of the default handler for the GtkWidget::query-tooltip signal.
@@ -1049,6 +1158,18 @@ package Gtk.Widget is
    --  Returns the GtkWindow of the current tooltip. This can be the GtkWindow
    --  created by default, or the custom tooltip window set using
    --  Gtk.Widget.Set_Tooltip_Window.
+
+   function Get_Has_Tooltip (Widget : access Gtk_Widget_Record) return Boolean;
+   procedure Set_Has_Tooltip
+     (Widget      : access Gtk_Widget_Record;
+      Has_Tooltip : Boolean);
+   --  Gets/Sets the has-tooltip property on Widget to Has_Tooltip.  See
+   --  GtkWidget:has-tooltip for more information.
+
+   procedure Trigger_Tooltip_Query (Widget : access Gtk_Widget_Record);
+   --  Triggers a tooltip query on the display where the toplevel of Widget
+   --  is located. See Gtk.Tooltip.Trigger_Tooltip_Query for more
+   --  information.
 
    --------------------------
    -- Creating new widgets --
@@ -1483,6 +1604,14 @@ package Gtk.Widget is
    --  Descr: Override for width request of the widget, or -1 if natural
    --         request should be used
    --
+   --  Name:  Tooltip_Markup_Property
+   --  Type:  String
+   --  Descr: The contents of the tooltip for this widget
+   --
+   --  Name:  Tooltip_Text_Property
+   --  Type:  String
+   --  Descr: The contents of the tooltip for this widget
+   --
    --  Name:  Has_Tooltip
    --  Type:  Boolean
    --  Descr: Enables or disables the emission of "query-tooltip" on widget. A
@@ -1494,6 +1623,11 @@ package Gtk.Widget is
    --         change the event masks of the GdkWindows of this widget to
    --         include leave-notify and motion-notify events. This cannot and
    --         will not be undone when the property is set to FALSE again.
+   --
+   --  Name:  Window_Property
+   --  Type:  Object
+   --  Descr: The widget's window if it is realized
+   --
    --  </properties>
 
    procedure Child_Notify
@@ -1568,7 +1702,10 @@ package Gtk.Widget is
    Is_Focus_Property              : constant Glib.Properties.Property_Boolean;
    No_Show_All_Property           : constant Glib.Properties.Property_Boolean;
    Width_Request_Property         : constant Glib.Properties.Property_Int;
+   Tooltip_Markup_Property        : constant Glib.Properties.Property_String;
+   Tooltip_Text_Property          : constant Glib.Properties.Property_String;
    Has_Tooltip_Property           : constant Glib.Properties.Property_Boolean;
+   Window_Property                : constant Glib.Properties.Property_Object;
 
    ----------------------
    -- Style Properties --
@@ -1605,21 +1742,57 @@ package Gtk.Widget is
    --  Type:  Boolean
    --  Descr: Whether to draw the focus indicator inside widgets
    --
+   --  Name:  Link_Color_Property
+   --  Type:  Boxed
+   --  Descr: Color of unvisited links
+   --
+   --  Name:  Scroll_Arrow_Hlength_Property
+   --  Type:  Int
+   --  Descr: The length of horizontal scroll arrows
+   --
+   --  Name:  Scroll_Arrow_Vlength_Property
+   --  Type:  Int
+   --  Descr: The length of vertical scroll arrows
+   --
    --  Name:  Secondary_Cursor_Color_Property
    --  Type:  Boxed
    --  Descr: Color with which to draw the secondary insertion cursor when
    --         editing mixed right-to-left and left-to-right text
+   --
+   --  Name:  Separator_Height_Property
+   --  Type:  Int
+   --  Descr: The height of separators if \
+   --
+   --  Name:  Separator_Width_Property
+   --  Type:  Int
+   --  Descr: The width of separators if wide-separators is TRUE
+   --
+   --  Name:  Visited_Link_Color_Property
+   --  Type:  Boxed
+   --  Descr: Color of visited links
+   --
+   --  Name:  Wide_Separators_Property
+   --  Type:  Boolean
+   --  Descr: Whether separators have configurable width and should be drawn
+   --         using a box instead of a line
    --  </style_properties>
 
-   Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float;
+   Cursor_Aspect_Ratio_Property  : constant Glib.Properties.Property_Float;
    --  Cursor_Color_Property        : constant Glib.Properties.Property_Boxed;
    --  Draw_Border_Property         : constant Glib.Properties.Property_Boxed;
-   Focus_Line_Pattern_Property  : constant Glib.Properties.Property_String;
-   Focus_Line_Width_Property    : constant Glib.Properties.Property_Int;
-   Focus_Padding_Property       : constant Glib.Properties.Property_Int;
-   Interior_Focus_Property      : constant Glib.Properties.Property_Boolean;
+   Focus_Line_Pattern_Property   : constant Glib.Properties.Property_String;
+   Focus_Line_Width_Property     : constant Glib.Properties.Property_Int;
+   Focus_Padding_Property        : constant Glib.Properties.Property_Int;
+   Interior_Focus_Property       : constant Glib.Properties.Property_Boolean;
+   Link_Color_Property           : constant Glib.Properties.Property_Boxed;
+   Scroll_Arrow_Hlength_Property : constant Glib.Properties.Property_Int;
+   Scroll_Arrow_Vlength_Property : constant Glib.Properties.Property_Int;
    --  Secondary_Cursor_Color_Property : constant
    --    Glib.Properties.Property_Boxed;
+   Separator_Height_Property     : constant Glib.Properties.Property_Int;
+   Separator_Width_Property      : constant Glib.Properties.Property_Int;
+   Visited_Link_Color_Property   : constant Glib.Properties.Property_Boxed;
+   Wide_Separators_Property      : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -2183,8 +2356,14 @@ private
      Glib.Properties.Build ("no-show-all");
    Width_Request_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("width-request");
+   Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tooltip-markup");
+   Tooltip_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tooltip-text");
    Has_Tooltip_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-tooltip");
+   Window_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("window");
 
    Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("cursor-aspect-ratio");
@@ -2200,9 +2379,23 @@ private
      Glib.Properties.Build ("focus-padding");
    Interior_Focus_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("interior-focus");
+   Link_Color_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("link-color");
+   Scroll_Arrow_Hlength_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("scroll-arrow-hlength");
+   Scroll_Arrow_Vlength_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("scroll-arrow-vlength");
    --  Secondary_Cursor_Color_Property : constant
    --    Glib.Properties.Property_Boxed :=
    --    Glib.Properties.Build ("secondary-cursor-color");
+   Separator_Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("separator-height");
+   Separator_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("separator-width");
+   Visited_Link_Color_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("visited-link-color");
+   Wide_Separators_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("wide-separators");
 
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Get_Type, "gtk_widget_get_type");
@@ -2269,3 +2462,6 @@ end Gtk.Widget;
 
 --  Binding is in Gtk.Clipboard
 --  No binding: gtk_widget_get_clipboard
+
+--  Binding uses custom C glue
+--  No binding: gtk_widget_get_window
