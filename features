@@ -274,6 +274,38 @@ J510-028 API Additions
       Set_Tooltip_Text
       Toolbar_Reconfigured
 
+  Gtk.Tree_View:
+    added new subprograms:
+      Convert_Bin_Window_To_Tree_Coords
+      Convert_Bin_Window_To_Widget_Coords
+      Convert_Tree_To_Bin_Window_Coords
+      Convert_Tree_To_Widget_Coords
+      Convert_Widget_To_Bin_Window_Coords
+      Convert_Widget_To_Tree_Coords
+      Get_Enable_Tree_Lines, Set_Enable_Tree_Lines
+      Get_Grid_Lines, Set_Grid_Lines
+      Get_Headers_Clickable
+      Get_Level_Indentation, Set_Level_Indentation
+      Get_Rubber_Banding, Set_Rubber_Banding
+      Get_Show_Expanders, Set_Show_Expanders
+      Get_Search_Entry, Set_Search_Entry
+      Get_Search_Position_Func, Set_Search_Position_Func
+      Is_Rubber_Banding_Active
+      Set_Tooltip_Cell
+    added new properties:
+      Enable_Grid_Lines_Property
+      Enable_Tree_Lines_Property
+      Level_Indentation_Property
+      Rubber_Banding_Property
+      Show_Expanders_Property
+      Tooltip_Column_Property
+    added new style properties:
+      Grid_Line_Pattern_Property
+      Grid_Line_Width_Property
+      Row_Ending_Details_Property
+      Tree_Line_Pattern_Property
+      Tree_Line_Width_Property
+
   Glib.G_Icon: new package
   Gtk.Assistant: new package
   Gtk.Link_Button: new package

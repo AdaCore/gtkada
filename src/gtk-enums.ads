@@ -218,6 +218,13 @@ package Gtk.Enums is
    --  Corner_Top_Left means the child is in the top left, with the scrollbars
    --  underneath and to the right.
 
+   type Gtk_Grid_Lines is
+     (Grid_Lines_None,
+      Grid_Lines_Horizontal,
+      Grid_Lines_Vertical,
+      Grid_Lines_Both);
+   --  Used to indicate which grid lines to draw in a tree view.
+
    type Gtk_Pack_Type is (Pack_Start, Pack_End);
    --  Whether items should be added at the start or at the end of the list of
    --  children for a widget. This impacts the visual rendering of containers
@@ -417,6 +424,7 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Curve_Type);
    pragma Convention (C, Gtk_Delete_Type);
    pragma Convention (C, Gtk_Direction_Type);
+   pragma Convention (C, Gtk_Grid_Lines);
    pragma Convention (C, Gtk_Path_Type);
    pragma Convention (C, Gtk_Expander_Style);
    pragma Convention (C, Gtk_Text_Direction);

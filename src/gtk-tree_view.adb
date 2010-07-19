@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                 Copyright (C) 2001-2009, AdaCore                  --
+--                 Copyright (C) 2001-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -243,6 +243,165 @@ package body Gtk.Tree_View is
       Internal (Get_Object (Tree_View), Get_Object (Adjustment));
    end Set_Vadjustment;
 
+   ---------------------------
+   -- Get_Enable_Tree_Lines --
+   ---------------------------
+
+   function Get_Enable_Tree_Lines
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean
+   is
+      function Internal (Tree_View : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_view_get_enable_tree_lines");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tree_View)));
+   end Get_Enable_Tree_Lines;
+
+   ---------------------------
+   -- Set_Enable_Tree_Lines --
+   ---------------------------
+
+   procedure Set_Enable_Tree_Lines
+     (Tree_View : access Gtk_Tree_View_Record;
+      Enabled   : Boolean)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Enabled   : Gboolean);
+      pragma Import (C, Internal, "gtk_tree_view_set_enable_tree_lines");
+   begin
+      Internal (Get_Object (Tree_View), Boolean'Pos (Enabled));
+   end Set_Enable_Tree_Lines;
+
+   --------------------
+   -- Get_Grid_Lines --
+   --------------------
+
+   function Get_Grid_Lines
+     (Tree_View : access Gtk_Tree_View_Record) return Gtk.Enums.Gtk_Grid_Lines
+   is
+      function Internal
+        (Tree_View : System.Address) return Gtk.Enums.Gtk_Grid_Lines;
+      pragma Import (C, Internal, "gtk_tree_view_get_grid_lines");
+   begin
+      return Internal (Get_Object (Tree_View));
+   end Get_Grid_Lines;
+
+   --------------------
+   -- Set_Grid_Lines --
+   --------------------
+
+   procedure Set_Grid_Lines
+     (Tree_View  : access Gtk_Tree_View_Record;
+      Grid_Lines : Gtk.Enums.Gtk_Grid_Lines)
+   is
+      procedure Internal
+        (Tree_View  : System.Address;
+         Grid_Lines : Gtk.Enums.Gtk_Grid_Lines);
+      pragma Import (C, Internal, "gtk_tree_view_set_grid_lines");
+   begin
+      Internal (Get_Object (Tree_View), Grid_Lines);
+   end Set_Grid_Lines;
+
+   ---------------------------
+   -- Get_Level_Indentation --
+   ---------------------------
+
+   function Get_Level_Indentation
+     (Tree_View : access Gtk_Tree_View_Record) return Gint
+   is
+      function Internal (Tree_View : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_tree_view_get_level_indentation");
+   begin
+      return Internal (Get_Object (Tree_View));
+   end Get_Level_Indentation;
+
+   ---------------------------
+   -- Set_Level_Indentation --
+   ---------------------------
+
+   procedure Set_Level_Indentation
+     (Tree_View   : access Gtk_Tree_View_Record;
+      Indentation : Gint)
+   is
+      procedure Internal
+        (Tree_View   : System.Address;
+         Indentation : Gint);
+      pragma Import (C, Internal, "gtk_tree_view_set_level_indentation");
+   begin
+      Internal (Get_Object (Tree_View), Indentation);
+   end Set_Level_Indentation;
+
+   ------------------------
+   -- Get_Rubber_Banding --
+   ------------------------
+
+   function Get_Rubber_Banding
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean
+   is
+      function Internal (Tree_View : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_view_get_rubber_banding");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tree_View)));
+   end Get_Rubber_Banding;
+
+   ------------------------
+   -- Set_Rubber_Banding --
+   ------------------------
+
+   procedure Set_Rubber_Banding
+     (Tree_View : access Gtk_Tree_View_Record;
+      Enable    : Boolean)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Enable    : Gboolean);
+      pragma Import (C, Internal, "gtk_tree_view_set_rubber_banding");
+   begin
+      Internal (Get_Object (Tree_View), Boolean'Pos (Enable));
+   end Set_Rubber_Banding;
+
+   ------------------------------
+   -- Is_Rubber_Banding_Active --
+   ------------------------------
+
+   function Is_Rubber_Banding_Active
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean
+   is
+      function Internal (Tree_View : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_view_is_rubber_banding_active");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tree_View)));
+   end Is_Rubber_Banding_Active;
+
+   ------------------------
+   -- Get_Show_Expanders --
+   ------------------------
+
+   function Get_Show_Expanders
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean
+   is
+      function Internal (Tree_View : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_view_get_show_expanders");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tree_View)));
+   end Get_Show_Expanders;
+
+   ------------------------
+   -- Set_Show_Expanders --
+   ------------------------
+
+   procedure Set_Show_Expanders
+     (Tree_View : access Gtk_Tree_View_Record;
+      Enabled   : Boolean)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Enabled   : Gboolean);
+      pragma Import (C, Internal, "gtk_tree_view_set_show_expanders");
+   begin
+      Internal (Get_Object (Tree_View), Boolean'Pos (Enabled));
+   end Set_Show_Expanders;
+
    -------------------------
    -- Get_Headers_Visible --
    -------------------------
@@ -285,6 +444,19 @@ package body Gtk.Tree_View is
    begin
       Internal (Get_Object (Tree_View));
    end Columns_Autosize;
+
+   ---------------------------
+   -- Get_Headers_Clickable --
+   ---------------------------
+
+   function Get_Headers_Clickable
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean
+   is
+      function Internal (Tree_View : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_view_get_headers_clickable");
+   begin
+      return Boolean'Val (Internal (Get_Object (Tree_View)));
+   end Get_Headers_Clickable;
 
    ---------------------------
    -- Set_Headers_Clickable --
@@ -893,6 +1065,144 @@ package body Gtk.Tree_View is
       Internal (Get_Object (Tree_View), Tx, Ty, Wx, Wy);
    end Tree_To_Widget_Coords;
 
+   ---------------------------------------
+   -- Convert_Bin_Window_To_Tree_Coords --
+   ---------------------------------------
+
+   procedure Convert_Bin_Window_To_Tree_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Bx        : Gint;
+      By        : Gint;
+      Tx        : out Gint;
+      Ty        : out Gint)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Bx        : Gint;
+         By        : Gint;
+         Tx        : out Gint;
+         Ty        : out Gint);
+      pragma Import
+        (C, Internal, "gtk_tree_view_convert_bin_window_to_tree_coords");
+   begin
+      Internal (Get_Object (Tree_View), Bx, By, Tx, Ty);
+   end Convert_Bin_Window_To_Tree_Coords;
+
+   -----------------------------------------
+   -- Convert_Bin_Window_To_Widget_Coords --
+   -----------------------------------------
+
+   procedure Convert_Bin_Window_To_Widget_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Bx        : Gint;
+      By        : Gint;
+      Wx        : out Gint;
+      Wy        : out Gint)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Bx        : Gint;
+         By        : Gint;
+         Wx        : out Gint;
+         Wy        : out Gint);
+      pragma Import
+        (C, Internal, "gtk_tree_view_convert_bin_window_to_widget_coords");
+   begin
+      Internal (Get_Object (Tree_View), Bx, By, Wx, Wy);
+   end Convert_Bin_Window_To_Widget_Coords;
+
+   ---------------------------------------
+   -- Convert_Tree_To_Bin_Window_Coords --
+   ---------------------------------------
+
+   procedure Convert_Tree_To_Bin_Window_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Tx        : Gint;
+      Ty        : Gint;
+      Bx        : out Gint;
+      By        : out Gint)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Tx        : Gint;
+         Ty        : Gint;
+         Bx        : out Gint;
+         By        : out Gint);
+      pragma Import
+        (C, Internal, "gtk_tree_view_convert_tree_to_bin_window_coords");
+   begin
+      Internal (Get_Object (Tree_View), Tx, Ty, Bx, By);
+   end Convert_Tree_To_Bin_Window_Coords;
+
+   -----------------------------------
+   -- Convert_Tree_To_Widget_Coords --
+   -----------------------------------
+
+   procedure Convert_Tree_To_Widget_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Tx        : Gint;
+      Ty        : Gint;
+      Wx        : out Gint;
+      Wy        : out Gint)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Tx        : Gint;
+         Ty        : Gint;
+         Wx        : out Gint;
+         Wy        : out Gint);
+      pragma Import
+        (C, Internal, "gtk_tree_view_convert_tree_to_widget_coords");
+   begin
+      Internal (Get_Object (Tree_View), Tx, Ty, Wx, Wy);
+   end Convert_Tree_To_Widget_Coords;
+
+   -----------------------------------------
+   -- Convert_Widget_To_Bin_Window_Coords --
+   -----------------------------------------
+
+   procedure Convert_Widget_To_Bin_Window_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Wx        : Gint;
+      Wy        : Gint;
+      Bx        : out Gint;
+      By        : out Gint)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Wx        : Gint;
+         Wy        : Gint;
+         Bx        : out Gint;
+         By        : out Gint);
+      pragma Import
+        (C, Internal, "gtk_tree_view_convert_widget_to_bin_window_coords");
+   begin
+      Internal (Get_Object (Tree_View), Wx, Wy, Bx, By);
+   end Convert_Widget_To_Bin_Window_Coords;
+
+   -----------------------------------
+   -- Convert_Widget_To_Tree_Coords --
+   -----------------------------------
+
+   procedure Convert_Widget_To_Tree_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Wx        : Gint;
+      Wy        : Gint;
+      Tx        : out Gint;
+      Ty        : out Gint)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Wx        : Gint;
+         Wy        : Gint;
+         Tx        : out Gint;
+         Ty        : out Gint);
+      pragma Import
+        (C, Internal, "gtk_tree_view_convert_widget_to_tree_coords");
+   begin
+      Internal (Get_Object (Tree_View), Wx, Wy, Tx, Ty);
+   end Convert_Widget_To_Tree_Coords;
+
    ----------------------------
    -- Unset_Rows_Drag_Source --
    ----------------------------
@@ -995,6 +1305,98 @@ package body Gtk.Tree_View is
    begin
       Internal (Get_Object (Tree_View), Column);
    end Set_Search_Column;
+
+   ----------------------
+   -- Get_Search_Entry --
+   ----------------------
+
+   function Get_Search_Entry
+     (Tree_View : access Gtk_Tree_View_Record) return Gtk.GEntry.Gtk_Entry
+   is
+      function Internal (Tree_View : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_view_get_search_entry");
+      Stub : Gtk.GEntry.Gtk_Entry_Record;
+   begin
+      return Gtk.GEntry.Gtk_Entry
+        (Get_User_Data (Internal (Get_Object (Tree_View)), Stub));
+   end Get_Search_Entry;
+
+   ----------------------
+   -- Set_Search_Entry --
+   ----------------------
+
+   procedure Set_Search_Entry
+     (Tree_View : access Gtk_Tree_View_Record;
+      The_Entry : access Gtk.GEntry.Gtk_Entry_Record'Class)
+   is
+      procedure Internal (Tree_View, The_Entry : System.Address);
+      pragma Import (C, Internal, "gtk_tree_view_set_search_entry");
+   begin
+      Internal (Get_Object (Tree_View), Get_Object (The_Entry));
+   end Set_Search_Entry;
+
+   ------------------------------
+   -- Get_Search_Position_Func --
+   ------------------------------
+
+   function Get_Search_Position_Func
+     (Tree_View : access Gtk_Tree_View_Record)
+      return Gtk_Tree_View_Search_Position_Func
+   is
+      function Internal
+        (Tree_View : System.Address) return Gtk_Tree_View_Search_Position_Func;
+      pragma Import (C, Internal, "gtk_tree_view_get_search_position_func");
+   begin
+      return Internal (Get_Object (Tree_View));
+   end Get_Search_Position_Func;
+
+   ------------------------------
+   -- Set_Search_Position_Func --
+   ------------------------------
+
+   procedure Set_Search_Position_Func
+     (Tree_View : access Gtk_Tree_View_Record;
+      Func      : Gtk_Tree_View_Search_Position_Func;
+      Data      : System.Address;
+      Destroy   : G_Destroy_Notify)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Func      : Gtk_Tree_View_Search_Position_Func;
+         Data      : System.Address;
+         Destroy   : G_Destroy_Notify);
+      pragma Import (C, Internal, "gtk_tree_view_set_search_position_func");
+   begin
+      Internal (Get_Object (Tree_View), Func, Data, Destroy);
+   end Set_Search_Position_Func;
+
+   ----------------------
+   -- Set_Tooltip_Cell --
+   ----------------------
+
+   procedure Set_Tooltip_Cell
+     (Tree_View : access Gtk_Tree_View_Record;
+      Tooltip   : access Gtk.Tooltip.Gtk_Tooltip_Record'Class;
+      Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+      Column    : access
+                  Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class;
+      Cell      : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
+   is
+      procedure Internal
+        (Tree_View : System.Address;
+         Tooltip   : System.Address;
+         Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+         Column    : System.Address;
+         Cell      : System.Address);
+      pragma Import (C, Internal, "gtk_tree_view_set_tooltip_cell");
+   begin
+      Internal
+        (Get_Object (Tree_View),
+         Get_Object (Tooltip),
+         Path,
+         Get_Object (Column),
+         Get_Object (Cell));
+   end Set_Tooltip_Cell;
 
    ------------------------
    -- Get_Tooltip_Column --

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2009, AdaCore                   --
+--                Copyright (C) 2001-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,7 @@
 --  <description>
 --  See extended documentation in Gtk.Tree_View_Column and Gtk.Tree_Store.
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Trees and Lists</group>
 --  <testgtk>create_tree_view.adb</testgtk>
 --  <screenshot>gtk-tree_view</screenshot>
@@ -44,8 +44,11 @@ with Gtk;
 with Gtk.Adjustment;
 with Gtk.Cell_Renderer;
 with Gtk.Container;
+with Gtk.Enums;
+with Gtk.GEntry;
 with Gtk.Selection;
 with Gtk.Tooltips;
+with Gtk.Tooltip;
 with Gtk.Tree_Model;
 with Gtk.Tree_Selection;
 with Gtk.Tree_View_Column;
@@ -113,6 +116,58 @@ package Gtk.Tree_View is
    --  Sets or Gets the Gtk_Adjustment currently being used for the vertical
    --  aspect.
 
+   function Get_Enable_Tree_Lines
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   procedure Set_Enable_Tree_Lines
+     (Tree_View : access Gtk_Tree_View_Record;
+      Enabled   : Boolean);
+   --  Whether to draw lines interconnecting the expanders in Tree_View.
+   --  This does not have any visible effects for lists.
+
+   function Get_Grid_Lines
+     (Tree_View : access Gtk_Tree_View_Record) return Gtk.Enums.Gtk_Grid_Lines;
+   procedure Set_Grid_Lines
+     (Tree_View  : access Gtk_Tree_View_Record;
+      Grid_Lines : Gtk.Enums.Gtk_Grid_Lines);
+   --  Which grid lines to draw in Tree_View.
+
+   function Get_Level_Indentation
+     (Tree_View : access Gtk_Tree_View_Record) return Gint;
+   procedure Set_Level_Indentation
+     (Tree_View   : access Gtk_Tree_View_Record;
+      Indentation : Gint);
+   --  Sets the amount of extra indentation for child levels to use in
+   --  Tree_View in addition to the default indentation.  The value should be
+   --  specified in pixels, a value of 0 disables this feature and in this case
+   --  only the default indentation will be used.
+   --  This does not have any visible effects for lists.
+
+   function Get_Rubber_Banding
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   procedure Set_Rubber_Banding
+     (Tree_View : access Gtk_Tree_View_Record;
+      Enable    : Boolean);
+   --  Enables or disables rubber banding in Tree_View.  If the selection mode
+   --  is Gtk_Selection_Multiple, rubber banding will allow the user to select
+   --  multiple rows by dragging the mouse.
+
+   function Is_Rubber_Banding_Active
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   --  Returns whether a rubber banding operation is currently being done
+   --  in Tree_View.
+
+   function Get_Show_Expanders
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
+   procedure Set_Show_Expanders
+     (Tree_View : access Gtk_Tree_View_Record;
+      Enabled   : Boolean);
+   --  Whether to draw and enable expanders and indent child rows in Tree_View.
+   --  When disabled there will be no expanders visible in trees and there will
+   --  be no way to expand and collapse rows by default.  Also note that hiding
+   --  the expanders will disable the default indentation.  You can set a
+   --  custom indentation in this case using Set_Level_Indentation.
+   --  This does not have any visible effects for lists.
+
    ----------------------------------
    -- Column and header operations --
    ----------------------------------
@@ -127,6 +182,8 @@ package Gtk.Tree_View is
    procedure Columns_Autosize (Tree_View : access Gtk_Tree_View_Record);
    --  Resizes all columns to their optimal width.
 
+   function Get_Headers_Clickable
+     (Tree_View : access Gtk_Tree_View_Record) return Boolean;
    procedure Set_Headers_Clickable
      (Tree_View : access Gtk_Tree_View_Record;
       Setting   : Boolean);
@@ -466,14 +523,60 @@ package Gtk.Tree_View is
    --  0,0 for row 0 of the tree, and cover the entire scrollable area of
    --  the tree.
 
+   -----------------
+   -- Coordinates --
+   -----------------
+
+   --  Several different coordinate systems are exposed in the Gtk.Tree_View
+   --  API. These are:
+   --
+   --                -  +---------------------------+
+   --               /   | +-----------------------+ |
+   --              /    | |     Header_Window     | |
+   --             /     | +-----------------------+ |
+   --             |     | +-----------------------+ |
+   --             |     | |  ...................  | |   -
+   --    widget- -+     | |  .                 .  | |    \
+   --  relative   |     | |  .   Bin_Window    .  | |     \
+   --             |     | |  .                 .  | |      \
+   --             \     | |  .                 .  | |       |
+   --              \    | |  .                 .  | |       |
+   --               \   | +--.-----------------.--+ |       +- tree
+   --                -  +----.-----------------.----+       |  coordinates
+   --                        .                 .            |
+   --                        .                 .            /
+   --                        .                 .           /
+   --                        .                 .          /
+   --                        ...................         -
+   --
+   --  Widget coordinates ------ coordinates relative to the widget (usually
+   --                            widget->window.
+   --
+   --  Bin window coordinates -- coordinates relative to the window that
+   --                            Gtk_Tree_View renders to.
+   --
+   --  Tree coordinates -------- coordinates relative to the entire scrollable
+   --                            area of Gtk_Tree_View. These coordinates start
+   --                            at (0, 0) for row 0 of the tree.
+   --
+   --  Several functions are available for converting between the different
+   --  coordinate systems. The most common translations are between widget and
+   --  bin window coordinates and between bin window and tree coordinates. For
+   --  the former you can use Convert_Widget_To_Bin_Window_Coords (and vice
+   --  versa), for the latter Convert_Bin_Window_To_Tree_Coords (and vice
+   --  versa).
+
    procedure Widget_To_Tree_Coords
      (Tree_View : access Gtk_Tree_View_Record;
       Wx        : Gint;
       Wy        : Gint;
       Tx        : out Gint;
       Ty        : out Gint);
+   pragma Obsolescent; --  Widget_To_Tree_Coords
    --  Converts widget coordinates to coordinates for the
    --  tree window (the full scrollable area of the tree).
+   --
+   --  Obsolescent; use Convert_Widget_To_Tree_Coords instead.
 
    procedure Tree_To_Widget_Coords
      (Tree_View : access Gtk_Tree_View_Record;
@@ -481,8 +584,65 @@ package Gtk.Tree_View is
       Ty        : Gint;
       Wx        : out Gint;
       Wy        : out Gint);
+   pragma Obsolescent; --  Tree_To_Widget_Coords
    --  Converts tree coordinates (coordinates in full scrollable area of
    --  the tree) to widget coordinates.
+   --
+   --  Obsolescent; use Convert_Tree_To_Widget_Coords instead.
+
+   procedure Convert_Widget_To_Tree_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Wx        : Gint;
+      Wy        : Gint;
+      Tx        : out Gint;
+      Ty        : out Gint);
+   --  Converts widget coordinates to coordinates for the tree (the full
+   --  scrollable area of the tree).
+
+   procedure Convert_Tree_To_Widget_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Tx        : Gint;
+      Ty        : Gint;
+      Wx        : out Gint;
+      Wy        : out Gint);
+   --  Converts tree coordinates (coordinates in full scrollable area of the
+   --  tree) to widget coordinates.
+
+   procedure Convert_Bin_Window_To_Tree_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Bx        : Gint;
+      By        : Gint;
+      Tx        : out Gint;
+      Ty        : out Gint);
+   --  Converts bin_window coordinates to coordinates for the
+   --  tree (the full scrollable area of the tree).
+
+   procedure Convert_Tree_To_Bin_Window_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Tx        : Gint;
+      Ty        : Gint;
+      Bx        : out Gint;
+      By        : out Gint);
+   --  Converts tree coordinates (coordinates in full scrollable area of the
+   --  tree) to bin_window coordinates.
+
+   procedure Convert_Widget_To_Bin_Window_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Wx        : Gint;
+      Wy        : Gint;
+      Bx        : out Gint;
+      By        : out Gint);
+   --  Converts widget coordinates to coordinates for the Bin_Window
+   --  (see Get_Bin_Window).
+
+   procedure Convert_Bin_Window_To_Widget_Coords
+     (Tree_View : access Gtk_Tree_View_Record;
+      Bx        : Gint;
+      By        : Gint;
+      Wx        : out Gint;
+      Wy        : out Gint);
+   --  Converts Bin_Window coordinates (see Get_Bin_Window) to widget
+   --  relative coordinates.
 
    ---------------
    -- Searching --
@@ -534,9 +694,54 @@ package Gtk.Tree_View is
       return Gtk_Tree_View_Search_Equal_Func;
    --  Sets the compare function for the interactive search capabilities
 
+   function Get_Search_Entry
+     (Tree_View : access Gtk_Tree_View_Record) return Gtk.GEntry.Gtk_Entry;
+   procedure Set_Search_Entry
+     (Tree_View : access Gtk_Tree_View_Record;
+      The_Entry : access Gtk.GEntry.Gtk_Entry_Record'Class);
+   --  Gets/Sets the entry which the interactive search code will use for this
+   --  Tree_View.  This is useful when you want to provide a search entry
+   --  in our interface at all time at a fixed position.  A null Gtk_Entry will
+   --  make the interactive search code use the built-in popup entry again.
+
+   type Gtk_Tree_View_Search_Position_Func is access procedure
+     (Tree_View     : System.Address;  --  Get_Object (Gtk_Tree_View_Record)
+      Search_Dialog : System.Address;  --  Get_Object (Gtk_Widget'Class)
+      User_Data     : System.Address);
+   pragma Convention (C, Gtk_Tree_View_Search_Position_Func);
+
+   function Get_Search_Position_Func
+     (Tree_View : access Gtk_Tree_View_Record)
+      return Gtk_Tree_View_Search_Position_Func;
+   procedure Set_Search_Position_Func
+     (Tree_View : access Gtk_Tree_View_Record;
+      Func      : Gtk_Tree_View_Search_Position_Func;
+      Data      : System.Address;
+      Destroy   : G_Destroy_Notify);
+   --  Gets/Sets the function to use when positioning the search dialog.
+
    --------------
    -- Tooltips --
    --------------
+
+   procedure Set_Tooltip_Cell
+     (Tree_View : access Gtk_Tree_View_Record;
+      Tooltip   : access Gtk.Tooltip.Gtk_Tooltip_Record'Class;
+      Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+      Column    : access
+                  Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class;
+      Cell      : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
+   --  Sets the tip area of Tooltip to the area Path, Column and Cell have
+   --  in common.  For example, if Path is null and Column is set, the tip
+   --  area will be set to the full area covered by Column.  See also
+   --  Gtk.Tooltip.Set_Tip_Area.
+   --
+   --  Note that if Path is not specified and Cell is set and part of a column
+   --  containing the expander, the tooltip might not show and hide at the
+   --  correct position.  In such cases Path must be set to the current node
+   --  under the mouse cursor for this function to operate correctly.
+   --
+   --  See also Set_Tooltip_Column for a simpler alternative.
 
    procedure Set_Tooltip_Column
      (Tree_View : access Gtk_Tree_View_Record;
@@ -694,9 +899,17 @@ package Gtk.Tree_View is
    --  Glib.Properties for more information on properties.
 
    --  <properties>
+   --  Name:  Enable_Grid_Lines_Property
+   --  Type:  Enum
+   --  Descr: Whether grid lines should be drawn in the tree view
+   --
    --  Name:  Enable_Search_Property
    --  Type:  Boolean
    --  Descr: View allows user to search through columns interactively
+   --
+   --  Name:  Enable_Tree_Lines_Property
+   --  Type:  Boolean
+   --  Descr: Whether tree lines should be drawn in the tree view
    --
    --  Name:  Expander_Column_Property
    --  Type:  Object
@@ -728,6 +941,10 @@ package Gtk.Tree_View is
    --  Type:  Boolean
    --  Descr: Whether the selection should follow the pointer
    --
+   --  Name:  Level_Indentation_Property
+   --  Type:  Int
+   --  Descr: Extra indentation for each level
+   --
    --  Name:  Model_Property
    --  Type:  Object
    --  Descr: The model for the tree view
@@ -735,6 +952,11 @@ package Gtk.Tree_View is
    --  Name:  Reorderable_Property
    --  Type:  Boolean
    --  Descr: View is reorderable
+   --
+   --  Name:  Rubber_Banding_Property
+   --  Type:  Boolean
+   --  Descr: Whether to enable selection of multiple items by dragging the
+   --         mouse pointer
    --
    --  Name:  Rules_Hint_Property
    --  Type:  Boolean
@@ -744,12 +966,22 @@ package Gtk.Tree_View is
    --  Type:  Int
    --  Descr: Model column to search through when searching through code
    --
+   --  Name:  Show_Expanders_Property
+   --  Type:  Boolean
+   --  Descr: View has expanders
+   --
+   --  Name:  Tooltip_Column_Property
+   --  Type:  Int
+   --  Descr: The column in the model containing the tooltip texts for the rows
+   --
    --  Name:  Vadjustment_Property
    --  Type:  Object
    --  Descr: Vertical Adjustment for the widget
    --  </properties>
 
+   Enable_Grid_Lines_Property : constant Glib.Properties.Property_Enum;
    Enable_Search_Property     : constant Glib.Properties.Property_Boolean;
+   Enable_Tree_Lines_Property : constant Glib.Properties.Property_Boolean;
    Expander_Column_Property   : constant Glib.Properties.Property_Object;
    Fixed_Height_Mode_Property : constant Glib.Properties.Property_Boolean;
    Hadjustment_Property       : constant Glib.Properties.Property_Object;
@@ -757,10 +989,14 @@ package Gtk.Tree_View is
    Headers_Visible_Property   : constant Glib.Properties.Property_Boolean;
    Hover_Expand_Property      : constant Glib.Properties.Property_Boolean;
    Hover_Selection_Property   : constant Glib.Properties.Property_Boolean;
+   Level_Indentation_Property : constant Glib.Properties.Property_Int;
    Model_Property             : constant Glib.Properties.Property_Object;
    Reorderable_Property       : constant Glib.Properties.Property_Boolean;
+   Rubber_Banding_Property    : constant Glib.Properties.Property_Boolean;
    Rules_Hint_Property        : constant Glib.Properties.Property_Boolean;
    Search_Column_Property     : constant Glib.Properties.Property_Int;
+   Show_Expanders_Property    : constant Glib.Properties.Property_Boolean;
+   Tooltip_Column_Property    : constant Glib.Properties.Property_Int;
    Vadjustment_Property       : constant Glib.Properties.Property_Object;
 
    ----------------------
@@ -782,6 +1018,14 @@ package Gtk.Tree_View is
    --  Type:  Int
    --  Descr: Size of the expander arrow
    --
+   --  Name:  Grid_Line_Pattern_Property
+   --  Type:  String
+   --  Descr: Dash pattern used to draw the tree view grid lines
+   --
+   --  Name:  Grid_Line_Width_Property
+   --  Type:  Int
+   --  Descr: Width, in pixels, of the tree view grid lines
+   --
    --  Name:  Horizontal_Separator_Property
    --  Type:  Int
    --  Descr: Horizontal space between cells.  Must be an even number
@@ -794,6 +1038,18 @@ package Gtk.Tree_View is
    --  Type:  Boxed
    --  Descr: Color to use for odd rows
    --
+   --  Name:  Row_Ending_Details_Property
+   --  Type:  Boolean
+   --  Descr: Enable extended row background theming
+   --
+   --  Name:  Tree_Line_Pattern_Property
+   --  Type:  String
+   --  Descr: Dash pattern used to draw the tree view lines
+   --
+   --  Name:  Tree_Line_Width_Property
+   --  Type:  Int
+   --  Descr: Width, in pixels, of the tree view lines
+   --
    --  Name:  Vertical_Separator_Property
    --  Type:  Int
    --  Descr: Vertical space between cells.  Must be an even number
@@ -802,9 +1058,14 @@ package Gtk.Tree_View is
    Allow_Rules_Property          : constant Glib.Properties.Property_Boolean;
    --  Even_Row_Color_Property   : constant Glib.Properties.Property_Boxed;
    Expander_Size_Property        : constant Glib.Properties.Property_Int;
+   Grid_Line_Pattern_Property    : constant Glib.Properties.Property_String;
+   Grid_Line_Width_Property      : constant Glib.Properties.Property_Int;
    Horizontal_Separator_Property : constant Glib.Properties.Property_Int;
    Indent_Expanders_Property     : constant Glib.Properties.Property_Boolean;
    --  Odd_Row_Color_Property    : constant Glib.Properties.Property_Boxed;
+   Row_Ending_Details_Property   : constant Glib.Properties.Property_Boolean;
+   Tree_Line_Pattern_Property    : constant Glib.Properties.Property_String;
+   Tree_Line_Width_Property      : constant Glib.Properties.Property_Int;
    Vertical_Separator_Property   : constant Glib.Properties.Property_Int;
 
    -------------
@@ -915,8 +1176,12 @@ private
    type Gtk_Tree_View_Record is
      new Gtk.Container.Gtk_Container_Record with null record;
 
+   Enable_Grid_Lines_Property : constant Glib.Properties.Property_Enum :=
+     Glib.Properties.Build ("enable-grid-lines");
    Enable_Search_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("enable-search");
+   Enable_Tree_Lines_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("enable-tree-lines");
    Expander_Column_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("expander-column");
    Fixed_Height_Mode_Property : constant Glib.Properties.Property_Boolean :=
@@ -931,14 +1196,22 @@ private
      Glib.Properties.Build ("hover-expand");
    Hover_Selection_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("hover-selection");
+   Level_Indentation_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("level-indentation");
    Model_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("model");
    Reorderable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("reorderable");
+   Rubber_Banding_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("rubber-banding");
    Rules_Hint_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("rules-hint");
    Search_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("search-column");
+   Show_Expanders_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-expanders");
+   Tooltip_Column_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("tooltip-column");
    Vadjustment_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("vadjustment");
 
@@ -948,12 +1221,22 @@ private
 --       Glib.Properties.Build ("even-row-color");
    Expander_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("expander-size");
+   Grid_Line_Pattern_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("grid-line-pattern");
+   Grid_Line_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("grid-line-width");
    Horizontal_Separator_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("horizontal-separator");
    Indent_Expanders_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("indent-expanders");
 --     Odd_Row_Color_Property : constant Glib.Properties.Property_Boxed :=
 --       Glib.Properties.Build ("odd-row-color");
+   Row_Ending_Details_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("row-ending-details");
+   Tree_Line_Pattern_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("tree-line-pattern");
+   Tree_Line_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("tree-line-width");
    Vertical_Separator_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("vertical-separator");
 
