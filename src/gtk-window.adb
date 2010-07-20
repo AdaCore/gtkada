@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -122,6 +122,42 @@ package body Gtk.Window is
       Internal (Get_Object (Window));
    end Deiconify;
 
+   -------------------
+   -- Get_Deletable --
+   -------------------
+
+   function Get_Deletable (Window : access Gtk_Window_Record) return Boolean is
+      function Internal (Window : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_window_get_deletable");
+   begin
+      return Boolean'Val (Internal (Get_Object (Window)));
+   end Get_Deletable;
+
+   ---------------------------
+   -- Get_Default_Icon_Name --
+   ---------------------------
+
+   function Get_Default_Icon_Name return String is
+      function Internal return chars_ptr;
+      pragma Import (C, Internal, "gtk_window_get_default_icon_name");
+   begin
+      return Value (Internal);
+   end Get_Default_Icon_Name;
+
+   ------------------------
+   -- Get_Default_Widget --
+   ------------------------
+
+   function Get_Default_Widget
+     (Window : access Gtk_Window_Record) return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Window : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_window_get_default_widget");
+      Stub : Gtk_Widget_Record;
+   begin
+      return Gtk_Widget (Get_User_Data (Internal (Get_Object (Window)), Stub));
+   end Get_Default_Widget;
+
    ---------------
    -- Get_Focus --
    ---------------
@@ -151,6 +187,32 @@ package body Gtk.Window is
    begin
       return Internal (Get_Object (Window));
    end Get_Gravity;
+
+   ---------------
+   -- Get_Group --
+   ---------------
+
+   function Get_Group
+     (Window : access Gtk_Window_Record) return Gtk_Window_Group
+   is
+      function Internal (Window : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_window_get_group");
+      Stub : Gtk_Window_Group_Record;
+   begin
+      return Gtk_Window_Group
+        (Get_User_Data (Internal (Get_Object (Window)), Stub));
+   end Get_Group;
+
+   -----------------
+   -- Get_Opacity --
+   -----------------
+
+   function Get_Opacity (Window : access Gtk_Window_Record) return Gdouble is
+      function Internal (Window : System.Address) return Gdouble;
+      pragma Import (C, Internal, "gtk_window_get_opacity");
+   begin
+      return Internal (Get_Object (Window));
+   end Get_Opacity;
 
    ---------------
    -- Get_Title --
@@ -201,6 +263,24 @@ package body Gtk.Window is
       return Gtk_Window
         (Get_User_Data_Fast (Internal (Get_Object (Window)), Stub));
    end Get_Transient_For;
+
+   ------------------------
+   -- Group_List_Windows --
+   ------------------------
+
+   function Group_List_Windows
+     (Window_Group : access Gtk_Window_Group_Record)
+      return Gtk.Widget.Widget_List.Glist
+   is
+      function Internal (Window_Group : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_window_group_list_windows");
+
+      List : Gtk.Widget.Widget_List.Glist;
+   begin
+      Gtk.Widget.Widget_List.Set_Object
+        (List, Internal (Get_Object (Window_Group)));
+      return List;
+   end Group_List_Windows;
 
    -------------
    -- Gtk_New --
@@ -367,6 +447,22 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Width, Height);
    end Set_Default_Size;
 
+   -------------------
+   -- Set_Deletable --
+   -------------------
+
+   procedure Set_Deletable
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean)
+   is
+      procedure Internal
+        (Window  : System.Address;
+         Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_window_set_deletable");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Deletable;
+
    -----------------------------
    -- Set_Destroy_With_Parent --
    -----------------------------
@@ -496,6 +592,22 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Boolean'Pos (Modal));
    end Set_Modal;
 
+   -----------------
+   -- Set_Opacity --
+   -----------------
+
+   procedure Set_Opacity
+     (Window  : access Gtk_Window_Record;
+      Opacity : Gdouble)
+   is
+      procedure Internal
+        (Window  : System.Address;
+         Opacity : Gdouble);
+      pragma Import (C, Internal, "gtk_window_set_opacity");
+   begin
+      Internal (Get_Object (Window), Opacity);
+   end Set_Opacity;
+
    ----------------
    -- Set_Policy --
    ----------------
@@ -534,6 +646,22 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window), Position);
    end Set_Position;
+
+   --------------------
+   -- Set_Startup_Id --
+   --------------------
+
+   procedure Set_Startup_Id
+     (Window     : access Gtk_Window_Record;
+      Startup_Id : String)
+   is
+      procedure Internal
+        (Window     : System.Address;
+         Startup_Id : String);
+      pragma Import (C, Internal, "gtk_window_set_startup_id");
+   begin
+      Internal (Get_Object (Window), Startup_Id & ASCII.NUL);
+   end Set_Startup_Id;
 
    -----------------------
    -- Set_Transient_For --

@@ -331,6 +331,21 @@ J510-028 API Additions
       Visited_Link_Color_Property
       Wide_Separators_Property
 
+  Gtk.Window:
+    added new subprograms:
+      Get_Default_Icon_Name
+      Get_Default_Widget
+      Get_Deletable, Set_Deletable
+      Get_Group
+      Get_Opacity, Set_Opacity
+      Group_List_Windows
+      Set_Startup_Id
+    added new properties:
+      Deletable_Property
+      Opacity_Property
+      Startup_Id_Property
+      Transient_For_Property
+
   Glib.G_Icon: new package
   Gtk.Assistant: new package
   Gtk.Link_Button: new package

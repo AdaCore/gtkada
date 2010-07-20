@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2009, AdaCore                   --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,7 +48,7 @@
 --  in the application while it is displayed.
 --
 --  </description>
---  <c_version>2.8.17</c_version>
+--  <c_version>2.16.6</c_version>
 --  <group>Windows</group>
 --  <screenshot>gtk-window</screenshot>
 
@@ -206,6 +206,35 @@ package Gtk.Window is
    --  Notification is used by the desktop environment to show the user that
    --  your application is still loading.
 
+   procedure Set_Startup_Id
+     (Window     : access Gtk_Window_Record;
+      Startup_Id : String);
+   --  Startup notification identifiers are used by desktop environment to
+   --  track application startup, to provide user feedback and other
+   --  features. This function changes the corresponding property on the
+   --  underlying Gdk_Window. Normally, startup identifier is managed
+   --  automatically and you should only use this function in special cases
+   --  like transferring focus from other processes. You should use this
+   --  function before calling Present or any equivalent function generating
+   --  a window map event.
+   --
+   --  This function is only useful on X11, not with other GTK+ targets.
+
+   function Get_Deletable (Window : access Gtk_Window_Record) return Boolean;
+   procedure Set_Deletable
+     (Window  : access Gtk_Window_Record;
+      Setting : Boolean);
+   --  By default, windows have a close button in the window frame. Some
+   --  window managers allow GTK+ to disable this button. If you set the
+   --  deletable property to False using this function, GTK+ will do its best
+   --  to convince the window manager not to show a close button. Depending on
+   --  the system, this function may not have any effect when called on a
+   --  window that is already visible, so you should call it before calling
+   --  Gtk.Window.Show.
+   --
+   --  On Windows, this function always works, since there's no window manager
+   --  policy involved.
+
    procedure Set_Destroy_With_Parent
      (Window  : access Gtk_Window_Record;
       Setting : Boolean := True);
@@ -354,6 +383,19 @@ package Gtk.Window is
    --
    --  You can track stickiness via the "window_state_event" signal
    --  on Gtk_Widget.
+
+   function Get_Opacity (Window : access Gtk_Window_Record) return Gdouble;
+   procedure Set_Opacity
+     (Window  : access Gtk_Window_Record;
+      Opacity : Gdouble);
+   --  Request the windowing system to make Window partially transparent,
+   --  with opacity 0.0 being fully transparent and 1.0 fully opaque. (Values
+   --  of the opacity parameter are clamped to the [0.0,1.0] range.) On X11
+   --  this has any effect only on X screens with a compositing manager
+   --  running. See Gtk.Widget.Is_Composited. On Windows it should always work.
+   --
+   --  Note that on Windows, setting a window's opacity after the window has
+   --  been shown causes it to flicker once.
 
    --------------
    -- Position --
@@ -778,8 +820,9 @@ package Gtk.Window is
    function Set_Default_Icon_From_File (Filename : String) return Boolean;
    --  Same as Set_Default_Icon, loads the pixbuf automatically.
 
+   function Get_Default_Icon_Name return String;
    procedure Set_Default_Icon_Name (Name : String);
-   --  Sets an icon to be used as fallback for windows that haven't had a
+   --  Gets/Sets icon to be used as a fallback for windows that haven't had a
    --  themed icon set (set Set_Icon_Name).
 
    ------------
@@ -803,6 +846,17 @@ package Gtk.Window is
      (Window_Group : access Gtk_Window_Group_Record;
       Window       : access Gtk_Window_Record'Class);
    --  Remove a specific window from the group
+
+   function Group_List_Windows
+     (Window_Group : access Gtk_Window_Group_Record)
+      return Gtk.Widget.Widget_List.Glist;
+   --  Returns a list of the Gtk_Windows that belong to Window_Group.
+
+   function Get_Group
+     (Window : access Gtk_Window_Record) return Gtk_Window_Group;
+   --  Returns the group for Window or the default group, if
+   --  Window is null or if Window does not have an explicit
+   --  window group.
 
    -----------
    -- Focus --
@@ -859,6 +913,8 @@ package Gtk.Window is
    -- Keys and shortcuts --
    ------------------------
 
+   function Get_Default_Widget
+     (Window : access Gtk_Window_Record) return Gtk.Widget.Gtk_Widget;
    procedure Set_Default
      (Window         : access Gtk_Window_Record;
       Default_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -868,7 +924,7 @@ package Gtk.Window is
    --  default widget it's generally easier to call Grab_Focus on the widget.
    --  Before making a widget the default widget, you must set the CAN_DEFAULT
    --  flag on the widget you'd like to make the default using
-   --  GTK.WIDGET.SET_FLAGS.
+   --  Gtk.Widget.Set_Flags. A null value indicates no default widget.
 
    procedure Set_Mnemonic_Modifier
      (Window   : access Gtk_Window_Record;
@@ -1051,6 +1107,23 @@ package Gtk.Window is
    --    Flags: read-only
    --    Descr: Whether the toplevel is the current active window
    --
+   --  Name:  Deletable_Property
+   --  Type:  Boolean
+   --  Descr: Whether the window frame should have a close button
+   --
+   --  Name:  Opacity_Property
+   --  Type:  Double
+   --  Descr: The opacity of the window, from 0.0 to 1.0
+   --
+   --  Name:  Startup_Id_Property
+   --  Type:  String
+   --  Descr: Unique startup identifier for the window used by
+   --         startup-notification
+   --
+   --  Name:  Transient_For_Property
+   --  Type:  Object
+   --  Descr: The transient parent of the dialog
+   --
    --  </properties>
 
    Type_Property                : constant Gtk.Enums.Property_Gtk_Window_Type;
@@ -1077,6 +1150,10 @@ package Gtk.Window is
    Focus_On_Map_Property        : constant Glib.Properties.Property_Boolean;
    Decorated_Property           : constant Glib.Properties.Property_Boolean;
    Gravity_Property             : constant Gdk.Window.Property_Gravity;
+   Deletable_Property           : constant Glib.Properties.Property_Boolean;
+   Opacity_Property             : constant Glib.Properties.Property_Double;
+   Startup_Id_Property          : constant Glib.Properties.Property_String;
+   Transient_For_Property       : constant Glib.Properties.Property_Object;
 
    -------------
    -- Signals --
@@ -1159,7 +1236,6 @@ private
      Glib.Properties.Build ("has_toplevel_focus");
    Is_Active_Property        : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is_active");
-
    Icon_Property                : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("icon");
    Icon_Name_Property           : constant Glib.Properties.Property_String :=
@@ -1189,6 +1265,14 @@ private
      Glib.Properties.Build ("resizable");
    Role_Property                : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("role");
+   Deletable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("deletable");
+   Opacity_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("opacity");
+   Startup_Id_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("startup-id");
+   Transient_For_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("transient-for");
 
    pragma Import (C, Get_Type, "gtk_window_get_type");
    pragma Import (C, Group_Get_Type, "gtk_window_group_get_type");
