@@ -348,6 +348,7 @@ J510-028 API Additions
 
   Glib.G_Icon: new package
   Gtk.Assistant: new package
+  Gtk.Cell_Renderer_Accel: new package
   Gtk.Link_Button: new package
   Gtk.Tooltip: new package
 
