@@ -351,6 +351,8 @@ J510-028 API Additions
   Gtk.Cell_Renderer_Accel: new package
   Gtk.Cell_Renderer_Spin: new package
   Gtk.Link_Button: new package
+  Gtk.Recent_Action: new package
+  Gtk.Recent_Manager: new package
   Gtk.Tooltip: new package
 
 IC11-012 Support for Gtk+ 2.18.x
