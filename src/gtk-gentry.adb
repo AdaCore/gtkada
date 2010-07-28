@@ -216,7 +216,7 @@ package body Gtk.GEntry is
    function Get_Icon_Name
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position)
-      return String
+      return UTF8_String
    is
       use Interfaces.C.Strings;
 
@@ -280,7 +280,7 @@ package body Gtk.GEntry is
    function Get_Icon_Stock
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position)
-      return String
+      return UTF8_String
    is
       use Interfaces.C.Strings;
 
@@ -324,7 +324,7 @@ package body Gtk.GEntry is
    function Get_Icon_Tooltip_Markup
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position)
-      return String
+      return UTF8_String
    is
       use Interfaces.C.Strings;
 
@@ -357,7 +357,7 @@ package body Gtk.GEntry is
    function Get_Icon_Tooltip_Text
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position)
-      return String
+      return UTF8_String
    is
       use Interfaces.C.Strings;
 
@@ -744,7 +744,7 @@ package body Gtk.GEntry is
    procedure Set_Icon_From_Icon_Name
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position;
-      Icon_Name : String)
+      Icon_Name : UTF8_String)
    is
       use Interfaces.C.Strings;
 
@@ -787,7 +787,7 @@ package body Gtk.GEntry is
    procedure Set_Icon_From_Stock
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position;
-      Stock_Id  : String)
+      Stock_Id  : UTF8_String)
    is
       use Interfaces.C.Strings;
 
@@ -881,7 +881,7 @@ package body Gtk.GEntry is
    procedure Set_Icon_Tooltip_Markup
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position;
-      Tooltip   : String)
+      Tooltip   : UTF8_String)
    is
       use Interfaces.C.Strings;
 
@@ -907,7 +907,7 @@ package body Gtk.GEntry is
    procedure Set_Icon_Tooltip_Text
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position;
-      Tooltip   : String)
+      Tooltip   : UTF8_String)
    is
       use Interfaces.C.Strings;
 

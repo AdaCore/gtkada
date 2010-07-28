@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                    Copyright (C) 2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,18 +28,31 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib;             use Glib;
+with Glib.Main;        use Glib.Main;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Combo;        use Gtk.Combo;
 with Gtk.GEntry;       use Gtk.GEntry;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk.Separator;    use Gtk.Separator;
+with Gtk.Widget;       use Gtk.Widget;
 with Gtk;              use Gtk;
+
+with Common;           use Common;
 
 package body Create_Entry is
 
    package Entry_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Entry);
+
+   package Time_Cb is new Glib.Main.Generic_Sources (Gtk_Entry);
+
+   Timer1, Timer2 : G_Source_Id;
+   --  This is stored at the library level so that the On_Destroy callback
+   --  can refer to the results from the calls to Time_Cb.Timeout_Add in the
+   --  Run subprogram.
 
    ----------
    -- Help --
@@ -46,9 +60,12 @@ package body Create_Entry is
 
    function Help return String is
    begin
-      return "This demo demonstrates two types of widgets, a simple"
-        & " @bGtk_Entry@B and a @bGtk_Combo@B that is composed that adds a"
-        & " window to facilitates the insertion of the text.";
+      return "This demo demonstrates several types of widgets.  The first"
+        & " couple of @bGtk_Entry@B widgets demonstrate different kinds of"
+        & " progress bars that may be embedded.  Then, there's a simple"
+        & " @bGtk_Entry@B with user-selectable options.  Finally, the last"
+        & " widget is a @bGtk_Combo@B that adds a window to facilitate the"
+        & " insertion of the text.";
    end Help;
 
    ---------------------
@@ -61,6 +78,18 @@ package body Create_Entry is
    begin
       Set_Editable (The_Entry, Get_Active (Button));
    end Toggle_Editable;
+
+   ----------------------
+   -- Toggle_Overwrite --
+   ----------------------
+
+   procedure Toggle_Overwrite
+     (Button    : access Gtk_Check_Button_Record'Class;
+      The_Entry : Gtk_Entry)
+   is
+   begin
+      Set_Overwrite_Mode (The_Entry, Get_Active (Button));
+   end Toggle_Overwrite;
 
    ----------------------
    -- Toggle_Sensitive --
@@ -78,12 +107,50 @@ package body Create_Entry is
    -- Toggle_Visibility --
    -----------------------
 
-   procedure Toggle_Visibility (Button : access Gtk_Check_Button_Record'Class;
-                                The_Entry : in Gtk_Entry)
+   procedure Toggle_Visibility
+     (Button    : access Gtk_Check_Button_Record'Class;
+      The_Entry : Gtk_Entry)
    is
    begin
       Set_Visibility (The_Entry, Get_Active (Button));
    end Toggle_Visibility;
+
+   -------------------
+   -- Pulse_Timeout --
+   -------------------
+
+   function Pulse_Timeout (The_Entry : Gtk_Entry) return Boolean is
+   begin
+      Progress_Pulse (The_Entry);
+      return True;
+   end Pulse_Timeout;
+
+   ------------------------
+   -- Fractional_Timeout --
+   ------------------------
+
+   function Fractional_Timeout (The_Entry : Gtk_Entry) return Boolean is
+      Progress : Gdouble := Get_Progress_Fraction (The_Entry);
+   begin
+      Progress := Progress + 0.005;
+      if Progress > 1.0 then
+         Progress := 0.0;
+      end if;
+
+      Set_Progress_Fraction (The_Entry, Progress);
+      return True;
+   end Fractional_Timeout;
+
+   ----------------
+   -- On_Destroy --
+   ----------------
+
+   procedure On_Destroy (Window : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Window);
+   begin
+      Remove (Timer1);
+      Remove (Timer2);
+   end On_Destroy;
 
    ---------
    -- Run --
@@ -98,6 +165,7 @@ package body Create_Entry is
       The_Entry : Gtk_Entry;
       Combo     : Gtk_Combo;
       Check     : Gtk_Check_Button;
+      Hsep      : Gtk_Hseparator;
 
    begin
       Append (List, "item0");
@@ -116,18 +184,35 @@ package body Create_Entry is
       Gtk_New_Vbox (Box1, False, 0);
       Add (Frame, Box1);
 
+      Widget_Handler.Connect
+        (Box1, "destroy", Widget_Handler.To_Marshaller (On_Destroy'Access));
+
       Gtk_New_Vbox (Box2, False, 10);
       Set_Border_Width (Box2, 10);
       Pack_Start (Box1, Box2, False, False, 0);
 
       Gtk_New (The_Entry);
-      Set_Text (The_Entry, "Hello world");
+      Set_Text (The_Entry, "Pulsed Progress");
+      Set_Sensitive (The_Entry, False);
+      Set_Editable (The_Entry, False);
+      Timer1 := Time_Cb.Timeout_Add
+        (100, Pulse_Timeout'Access, The_Entry);
       Pack_Start (Box2, The_Entry, True, True, 0);
 
-      Gtk_New (Combo);
-      Set_Popdown_Strings (Combo, List);
-      Set_Text (Get_Entry (Combo), "hello world");
-      Pack_Start (Box2, Combo, True, True, 0);
+      Gtk_New (The_Entry);
+      Set_Text (The_Entry, "Fractional Progress");
+      Set_Sensitive (The_Entry, False);
+      Set_Editable (The_Entry, False);
+      Timer2 := Time_Cb.Timeout_Add
+        (20, Fractional_Timeout'Access, The_Entry);
+      Pack_Start (Box2, The_Entry, True, True, 0);
+
+      Gtk_New_Hseparator (Hsep);
+      Pack_Start (Box2, Hsep);
+
+      Gtk_New (The_Entry);
+      Set_Text (The_Entry, "Hello world");
+      Pack_Start (Box2, The_Entry, True, True, 0);
 
       Gtk_New (Check, "Editable");
       Pack_Start (Box2, Check, False, True, 0);
@@ -135,6 +220,13 @@ package body Create_Entry is
         (Check, "toggled",
          Entry_Cb.To_Marshaller (Toggle_Editable'Access), The_Entry);
       Set_Active (Check, True);
+
+      Gtk_New (Check, "Overwrite");
+      Pack_Start (Box2, Check, False, True, 0);
+      Entry_Cb.Connect
+        (Check, "toggled",
+         Entry_Cb.To_Marshaller (Toggle_Overwrite'Access), The_Entry);
+      Set_Active (Check, False);
 
       Gtk_New (Check, "Visible");
       Pack_Start (Box2, Check, False, True, 0);
@@ -150,8 +242,15 @@ package body Create_Entry is
          Entry_Cb.To_Marshaller (Toggle_Sensitive'Access), The_Entry);
       Set_Active (Check, True);
 
+      Gtk_New_Hseparator (Hsep);
+      Pack_Start (Box2, Hsep);
+
+      Gtk_New (Combo);
+      Set_Popdown_Strings (Combo, List);
+      Set_Text (Get_Entry (Combo), "hello world");
+      Pack_Start (Box2, Combo, True, True, 0);
+
       Show_All (Frame);
    end Run;
 
 end Create_Entry;
-

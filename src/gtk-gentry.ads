@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2010 AdaCore                    --
+--                Copyright (C) 2000-2010, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -291,7 +291,7 @@ package Gtk.GEntry is
    function Get_Icon_Name
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position)
-      return String;
+      return UTF8_String;
    --  Retrieves the icon name used for the icon, or "" if there is
    --  no icon or if the icon was set by some other method (e.g., by
    --  pixbuf, stock or gicon).
@@ -299,7 +299,7 @@ package Gtk.GEntry is
    procedure Set_Icon_From_Icon_Name
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position;
-      Icon_Name : String);
+      Icon_Name : UTF8_String);
    --  Sets the icon shown in the entry at the specified position
    --  from the current icon theme.
    --
@@ -330,7 +330,7 @@ package Gtk.GEntry is
    function Get_Icon_Stock
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position)
-      return String;
+      return UTF8_String;
    --  Retrieves the stock id used for the icon, or "" if there is
    --  no icon or if the icon was set by some other method (e.g., by
    --  pixbuf, icon name or gicon).
@@ -341,7 +341,7 @@ package Gtk.GEntry is
    procedure Set_Icon_From_Stock
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position;
-      Stock_Id  : String);
+      Stock_Id  : UTF8_String);
    --  Sets the icon shown in the entry at the specified position from
    --  a stock image.
    --
@@ -368,11 +368,11 @@ package Gtk.GEntry is
    function Get_Icon_Tooltip_Markup
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position)
-      return String;
+      return UTF8_String;
    procedure Set_Icon_Tooltip_Markup
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position;
-      Tooltip   : String);
+      Tooltip   : UTF8_String);
    --  Gets/Sets Tooltip as the contents of the tooltip for the icon at
    --  the specified position. Tooltip is assumed to be marked up with
    --  the Pango text markup language.
@@ -384,11 +384,11 @@ package Gtk.GEntry is
    function Get_Icon_Tooltip_Text
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position)
-      return String;
+      return UTF8_String;
    procedure Set_Icon_Tooltip_Text
      (The_Entry : access Gtk_Entry_Record;
       Icon_Pos  : Gtk_Entry_Icon_Position;
-      Tooltip   : String);
+      Tooltip   : UTF8_String);
    --  Gets/Sets Tooltip as the contents of the tooltip for the icon
    --  at the specified position.
    --
