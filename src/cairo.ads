@@ -2103,7 +2103,7 @@ package Cairo is
 
    procedure Set_Font_Options
      (Cr      : Cairo_Context;
-      Options : access constant Cairo_Font_Options);
+      Options : Cairo_Font_Options);
    --  Cr: a Cairo_Context
    --  Options: font Options to use
    --
@@ -2115,7 +2115,7 @@ package Cairo is
 
    procedure Get_Font_Options
      (Cr      : Cairo_Context;
-      Options : access Cairo_Font_Options);
+      Options : Cairo_Font_Options);
    --  Cr: a Cairo_Context
    --  Options: a Cairo_Font_Options object into which to store
    --    the retrieved options. All existing values are overwritten
