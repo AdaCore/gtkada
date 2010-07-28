@@ -26,7 +26,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib;         use Glib;
 with Cairo;        use Cairo;
+with Gdk.Color;    use Gdk.Color;
+with Gdk.Pixbuf;   use Gdk.Pixbuf;
 
 package Gdk.Cairo is
 
@@ -40,4 +43,40 @@ package Gdk.Cairo is
    --  Returns a newly created Cairo context. The result should be freed with
    --  Cairo.Destroy.
 
+   procedure Set_Source_Pixmap
+     (Cr       : Cairo_Context;
+      Pixmap   : Gdk_Pixmap;
+      Pixmap_X : Gdouble;
+      Pixmap_Y : Gdouble);
+   --  Cr: a Cairo_Context
+   --  Pixmap: a Gdk_Pixmap
+   --  Pixmap_X: X coordinate of location to place upper left corner of Pixmap
+   --  Pixmap_Y: Y coordinate of location to place upper left corner of Pixmap
+   --
+   --  Sets the given pixmap as the source pattern for the Cairo context.
+   --  The pattern has an extend mode of CAIRO_EXTEND_NONE and is aligned
+   --  so that the origin of Pixmap is Pixmap_X, Pixmap_Y
+
+   procedure Set_Source_Pixbuf
+     (Cr       : Cairo_Context;
+      Pixbuf   : Gdk_Pixbuf;
+      Pixbuf_X : Gdouble;
+      Pixbuf_Y : Gdouble);
+   --  Cr: a Cairo_Context
+   --  Pixbuf: a Gdk_Pixbuf
+   --  Pixbuf_X: X coordinate of location to place upper left corner of Pixbuf
+   --  Pixbuf_Y: Y coordinate of location to place upper left corner of Pixbuf
+   --
+   --  Sets the given pixbuf as the source pattern for the Cairo context.
+   --  The pattern has an extend mode of CAIRO_EXTEND_NONE and is aligned
+   --  so that the origin of Pixbuf is Pixbuf_X, Pixbuf_Y
+
+   procedure Set_Source_Color
+     (Cr       : Cairo_Context;
+      Color    : Gdk_Color);
+   --  Set the specified Color as the source of Cr.
+
+private
+   pragma Import (C, Set_Source_Pixmap, "gdk_cairo_set_source_pixmap");
+   pragma Import (C, Set_Source_Color, "gdk_cairo_set_source_color");
 end Gdk.Cairo;

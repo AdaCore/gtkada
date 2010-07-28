@@ -45,4 +45,22 @@ package body Gdk.Cairo is
       return Cr;
    end Create;
 
+   -----------------------
+   -- Set_Source_Pixbuf --
+   -----------------------
+
+   procedure Set_Source_Pixbuf
+     (Cr       : Cairo_Context;
+      Pixbuf   : Gdk_Pixbuf;
+      Pixbuf_X : Gdouble;
+      Pixbuf_Y : Gdouble)
+   is
+      procedure Internal (Cr     : Cairo_Context;
+                          Pixbuf : System.Address;
+                          Pixbuf_X, Pixbuf_Y : Gdouble);
+      pragma Import (C, Internal, "gdk_cairo_set_source_pixbuf");
+   begin
+      Internal (Cr, Get_Object (Pixbuf), Pixbuf_X, Pixbuf_Y);
+   end Set_Source_Pixbuf;
+
 end Gdk.Cairo;
