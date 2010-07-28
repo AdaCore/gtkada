@@ -76,15 +76,17 @@ package Cairo.Image_Surface is
       Green : Byte;
       Blue  : Byte;
    end record;
-
-   type ARGB32_Array is array (Natural range <>) of ARGB32_Record;
-   type ARGB32_Array_Access is access ARGB32_Array;
+   --  One pixel in ARGB32 format
 
    type RGB24_Record is record
       Red   : Byte;
       Green : Byte;
       Blue  : Byte;
    end record;
+   --  One pixel in RGB24 format
+
+   type ARGB32_Array is array (Natural range <>) of ARGB32_Record;
+   type ARGB32_Array_Access is access ARGB32_Array;
 
    type RGB24_Array is array (Natural range <>) of RGB24_Record;
    type RGB24_Array_Access is access RGB24_Array;
@@ -124,23 +126,7 @@ package Cairo.Image_Surface is
    --
    --  This function provides a stride value that will respect all
    --  alignment requirements of the accelerated image-rendering code
-   --  within cairo. Typical usage will be of the form:
-   --
-   --     declare
-   --        Stride  : Gint;
-   --        Data    : Interfaces.C.Strings.chars_ptr;
-   --        Surface : Cairo_Surface;
-   --     begin
-   --        Stride := Cairo_Format_Stride_For_Width (Format, Width);
-   --
-   --   ??? To be checked and completed
-   --
-   --        Data := New_String ((1 .. Stride * Height) => others => ' ');
-   --     stride = Cairo_Format_Stride_For_Width (format, width);
-   --     data = malloc (stride * height);
-   --     surface = Cairo.Image_Surface.Create_For_Data (data, format,
-   --                  width, height, stride);
-   --     </programlisting></informalexample>
+   --  within cairo.
    --
    --  Return value: the appropriate stride to use given the desired
    --  format and width, or -1 if either the format is invalid or the width
@@ -166,6 +152,9 @@ package Cairo.Image_Surface is
    --      Cairo_Format_Stride_For_Width before allocating the data
    --      buffer.
    --
+   --  This function is a low-level binding to the C function: see also
+   --  Create_For_Data_[ARGB32|RGB24|A8|A1]
+   --
    --  Creates an image surface for the provided pixel data. The output
    --  buffer must be kept around until the Cairo_Surface is destroyed
    --  or Cairo.Surface.Finish is called on the surface.  The initial
@@ -173,13 +162,12 @@ package Cairo.Image_Surface is
    --  must explicitly clear the buffer, using, for example,
    --  Cairo.Rectangle and Cairo.Fill if you want it cleared.
    --
-   --  Note that the stride may be larger than
-   --  width*bytes_per_pixel to provide proper alignment for each pixel
-   --  and row. This alignment is required to allow high-performance rendering
-   --  within cairo. The correct way to obtain a legal stride value is to
-   --  call Cairo_Format_Stride_For_Width with the desired format and
-   --  maximum image width value, and the use the resulting stride value
-   --  to allocate the data and to create the image surface. See
+   --  Note that the stride may be larger than Width*bytes_per_pixel to provide
+   --  proper alignment for each pixel and row. This alignment is required to
+   --  allow high-performance rendering within cairo. The correct way to obtain
+   --  a legal stride value is to call Cairo_Format_Stride_For_Width with the
+   --  desired format and maximum image width value, and the use the resulting
+   --  stride value to allocate the data and to create the image surface. See
    --  Cairo_Format_Stride_For_Width for example code.
    --
    --  Return value: a pointer to the newly created surface. The caller
@@ -195,9 +183,6 @@ package Cairo.Image_Surface is
    --
    --  See Cairo.Surface.Set_User_Data for a means of attaching a
    --  destroy-notification fallback to the surface if necessary.
-   --
-   --  This function is a low-level binding to the C function: see also
-   --  Create_For_Data_[ARGB32|RGB24|A8|A1]
 
    function Create_For_Data_ARGB32
      (Data   : ARGB32_Array_Access;
@@ -220,15 +205,15 @@ package Cairo.Image_Surface is
       return   Cairo_Surface;
    --  Same as above, working on A8 format.
 
-   function Get_Data (Surface : Cairo_Surface) return System.Address;
+   function Get_Data_Generic (Surface : Cairo_Surface) return System.Address;
    --  Surface: a Cairo_Image_Surface
    --
    --  Get a pointer to the data of the image surface, for direct
    --  inspection or modification.
    --
-   --  Return value: a pointer to the image data of this surface or NULL
-   --  if surface is not an image surface, or if Cairo.Surface.Finish
-   --  has been called.
+   --  Return value: a pointer to the image data of this surface or
+   --  System.Null_Address if surface is not an image surface, or if
+   --  Cairo.Surface.Finish has been called.
    --
    --  Since: 1.2
 
@@ -301,7 +286,7 @@ private
    pragma Import (C, Create_For_Data_Generic,
                   "cairo_image_surface_create_for_data");
 
-   pragma Import (C, Get_Data, "cairo_image_surface_get_data");
+   pragma Import (C, Get_Data_Generic, "cairo_image_surface_get_data");
    pragma Import (C, Get_Format, "cairo_image_surface_get_format");
    pragma Import (C, Get_Width, "cairo_image_surface_get_width");
    pragma Import (C, Get_Height, "cairo_image_surface_get_height");
