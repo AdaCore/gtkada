@@ -28,6 +28,7 @@
 
 pragma Ada_2005;
 
+with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
@@ -35,6 +36,7 @@ with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glib; use Glib;
+with Glib.Object; use Glib.Object;
 
 with Cairo;         use Cairo;
 with Cairo.Matrix;  use Cairo.Matrix;
@@ -44,19 +46,35 @@ with Cairo.Font_Options; use Cairo.Font_Options;
 with Cairo.Png; use Cairo.Png;
 
 with Gdk.Cairo;    use Gdk.Cairo;
-
 with Gdk.Event;    use Gdk.Event;
+with Gdk.Window;   use Gdk.Window;
+
 with Gtk.Main;
+with Gtk.Box;           use Gtk.Box;
+with Gtk.Drawing_Area;  use Gtk.Drawing_Area;
+with Gtk.Label;         use Gtk.Label;
+
 with Gtk.Window;   use Gtk.Window;
 with Gtk.Handlers; use Gtk.Handlers;
+
+with Gtk.Tree_Model;         use Gtk.Tree_Model;
+with Gtk.Tree_View;          use Gtk.Tree_View;
+with Gtk.Tree_Selection;     use Gtk.Tree_Selection;
+with Gtk.Tree_Store;         use Gtk.Tree_Store;
+with Gtk.Tree_View_Column;   use Gtk.Tree_View_Column;
+with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
+with Gtk.Widget; use Gtk.Widget;
 
 procedure Testcairo is
 
    --  The tests implemented in this example program
 
    type Test_Type is (Rectangles, Transparency, Matrix, Transformations,
-                      Paths, Patterns, Toy_Text, Clip_And_Paint,
-                      Surface);
+                      Paths, Patterns, Clip_And_Paint,
+                      Surface_And_Png, Text);
+
+   function Pretty (T : Test_Type) return String;
+   --  Pretty print T
 
    package Gdouble_Numerics is new Ada.Numerics.Generic_Elementary_Functions
      (Gdouble);
@@ -65,12 +83,17 @@ procedure Testcairo is
    --  Pi : constant Gdouble := Gdouble (Ada.Numerics.Pi);
    Two_Pi : constant Gdouble := Gdouble (2.0 * Ada.Numerics.Pi);
 
-   Win : Gtk_Window;
+   Win  : Gtk_Window;
+   Area : Gtk_Drawing_Area;
+   Test : Test_Type := Test_Type'First;
 
    package Event_Cb is new Gtk.Handlers.Return_Callback
-     (Gtk_Window_Record, Boolean);
+     (Gtk_Drawing_Area_Record, Boolean);
 
-   function Expose_Cb (Win : access Gtk_Window_Record'Class;
+   package Selection_Cb is new Gtk.Handlers.Callback
+     (Gtk_Tree_Selection_Record);
+
+   function Expose_Cb (Area  : access Gtk_Drawing_Area_Record'Class;
                        Event : Gdk_Event) return Boolean;
    --  Callback on an expose event on Win
 
@@ -88,17 +111,15 @@ procedure Testcairo is
       Transformations => -"Direct transformations",
       Paths           => -"Paths",
       Patterns        => -"Patterns",
-      Toy_Text        => -"Cairo 'toy' text API",
+      Text            => -"Cairo 'toy' text API",
       Clip_And_Paint  => -"Painting and clipping",
-      Surface         => -"Using surfaces");
-
-   pragma Unreferenced (Docs);
+      Surface_And_Png => -"Using surfaces and saving to PNG");
 
    ---------------
    -- Expose_Cb --
    ---------------
 
-   function Expose_Cb (Win : access Gtk_Window_Record'Class;
+   function Expose_Cb (Area  : access Gtk_Drawing_Area_Record'Class;
                        Event : Gdk_Event) return Boolean
    is
       pragma Unreferenced (Event);
@@ -107,15 +128,13 @@ procedure Testcairo is
       M, M2, M3 : Cairo_Matrix_Access;
 
       P   : Cairo_Pattern;
-      Opt : access Cairo_Font_Options;
-
-      Test : constant Test_Type := Test_Type'Last;
+      Opt : Cairo_Font_Options;
 
       Image_Surface : Cairo_Surface;
       Status : Cairo_Status;
 
    begin
-      Cr := Create (Get_Window (Win));
+      Cr := Create (Get_Window (Area));
 
       case Test is
          when Rectangles =>
@@ -300,51 +319,51 @@ procedure Testcairo is
             --  A solid-filled rectangle
             P := Create_Rgb (1.0, 1.0, 0.0);
             Set_Source (Cr, P);
-            Rectangle (Cr, 10.0, 10.0, 50.0, 50.0);
+            Rectangle (Cr, 10.0, 10.0, 100.0, 100.0);
             Fill (Cr);
             Destroy (P);
 
             --  A rectangle with a transparent solid fill
             P := Create_Rgba (0.0, 0.0, 1.0, 0.3);
             Set_Source (Cr, P);
-            Rectangle (Cr, 5.0, 30.0, 50.0, 50.0);
+            Rectangle (Cr, 5.0, 30.0, 100.0, 100.0);
             Fill (Cr);
             Destroy (P);
 
             --  A rectangle with a linear gradient
-            P := Create_Linear (70.0, 10.0, 120.0, 60.0);
+            P := Create_Linear (120.0, 10.0, 170.0, 60.0);
             Add_Color_Stop_Rgb (P, 0.0, 1.0, 1.0, 0.0);
             Add_Color_Stop_Rgb (P, 1.0, 0.0, 0.0, 1.0);
             Set_Source (Cr, P);
-            Rectangle (Cr, 70.0, 10.0, 50.0, 50.0);
+            Rectangle (Cr, 120.0, 10.0, 100.0, 100.0);
             Fill (Cr);
             Destroy (P);
 
             --  A rectangle with a linear transparent gradient
             P := Create_Rgb (1.0, 1.0, 0.0);
             Set_Source (Cr, P);
-            Rectangle (Cr, 130.0, 10.0, 50.0, 50.0);
+            Rectangle (Cr, 230.0, 10.0, 100.0, 100.0);
             Fill (Cr);
             Destroy (P);
-            P := Create_Linear (175.0, 30.0, 125.0, 80.0);
+            P := Create_Linear (275.0, 30.0, 225.0, 80.0);
             Add_Color_Stop_Rgba (P, 0.0, 0.0, 1.0, 0.0, 0.0);
             Add_Color_Stop_Rgba (P, 1.0, 0.0, 0.0, 1.0, 1.0);
             Set_Source (Cr, P);
-            Rectangle (Cr, 125.0, 30.0, 50.0, 50.0);
+            Rectangle (Cr, 225.0, 30.0, 100.0, 100.0);
             Fill (Cr);
             Destroy (P);
 
             --  A rectangle with a radial transparent gradient
             Set_Source_Rgb (Cr, 0.5, 0.0, 0.5);
-            P := Create_Radial (215.0, 35.0, 10.0, 215.0, 35.0, 30.0);
+            P := Create_Radial (365.0, 35.0, 10.0, 365.0, 35.0, 30.0);
             Add_Color_Stop_Rgba (P, 0.0, 0.0, 1.0, 0.0, 0.0);
             Add_Color_Stop_Rgba (P, 1.0, 0.0, 0.0, 1.0, 1.0);
             Set_Source (Cr, P);
-            Rectangle (Cr, 190.0, 10.0, 50.0, 50.0);
+            Rectangle (Cr, 340.0, 10.0, 100.0, 100.0);
             Fill (Cr);
             Destroy (P);
 
-         when Toy_Text =>
+         when Text =>
             --  "Hello world" using two calls to Show_Text, taking advantage
             --  of the fact that one call to Show_Text places the current point
             --  after the first string
@@ -369,13 +388,14 @@ procedure Testcairo is
 
             --  Modify font options to remove anti-aliasing
             Move_To (Cr, 10.0, 100.0);
-            Opt := new Cairo_Font_Options;
+            Opt := Create;
             Get_Font_Options (Cr, Opt);
             Set_Antialias (Opt, Cairo_Antialias_None);
             Set_Font_Options (Cr, Opt);
             Show_Text (Cr, "No antialias");
             Set_Antialias (Opt, Cairo_Antialias_Default);
             Set_Font_Options (Cr, Opt);
+            Destroy (Opt);
 
             Fill (Cr);
 
@@ -385,6 +405,19 @@ procedure Testcairo is
             Move_To (Cr, 150.0, 200.0);
             Set_Dash (Cr, (1 => 2.0, 2 => 2.0), 0.0);
             Text_Path (Cr, "Text path");
+
+            --  Print the stroke extents for this text
+            declare
+               X1, Y1, X2, Y2 : aliased Gdouble;
+            begin
+               Stroke_Extents (Cr, X1'Access, Y1'Access, X2'Access, Y2'Access);
+               Put_Line ("Stroke extents:" &
+                         Integer (X1)'Img & "," &
+                         Integer (Y1)'Img & " - " &
+                         Integer (X2)'Img & "," &
+                         Integer (Y2)'Img);
+            end;
+
             Stroke (Cr);
 
             --  Use matrix transforms on the text
@@ -422,7 +455,7 @@ procedure Testcairo is
             Set_Source_Rgb (Cr, 0.0, 0.0, 1.0);
             Paint_With_Alpha (Cr, 0.6);
 
-         when Surface =>
+         when Surface_And_Png =>
             Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
             Rectangle (Cr, 40.0, 40.0, 300.0, 200.0);
             Fill (Cr);
@@ -489,18 +522,123 @@ procedure Testcairo is
       end case;
 
       Destroy (Cr);
-      return True;
+      return False;
    end Expose_Cb;
+
+   Tree    : Gtk_Tree_View;
+   Model   : Gtk_Tree_Store;
+   Col     : Gtk_Tree_View_Column;
+   Rend    : Gtk_Cell_Renderer_Text;
+   Col_Num : Gint;
+   Iter    : Gtk_Tree_Iter;
+   Label   : Gtk_Label;
+
+   Box     : Gtk_Box;
+   Vbox    : Gtk_Box;
+
+   pragma Unreferenced (Col_Num);
+
+   ------------
+   -- Pretty --
+   ------------
+
+   function Pretty (T : Test_Type) return String is
+      Capitalize : Boolean := True;
+      Img        : String := Test_Type'Image (T);
+   begin
+      for J in Img'Range loop
+         if not Capitalize then
+            if Img (J) = '_' then
+               Img (J) := ' ';
+               Capitalize := True;
+            else
+               Img (J) := To_Lower (Img (J));
+            end if;
+         else
+            Capitalize := False;
+         end if;
+      end loop;
+      return Img;
+   end Pretty;
+
+   procedure S_Changed
+     (Widget : access Gtk_Tree_Selection_Record'Class);
+
+   ---------------
+   -- S_Changed --
+   ---------------
+
+   procedure S_Changed
+     (Widget : access Gtk_Tree_Selection_Record'Class)
+   is
+      pragma Unreferenced (Widget);
+      Iter  : Gtk_Tree_Iter;
+      Model : Gtk_Tree_Model;
+      Path  : Gtk_Tree_Path;
+      Ind   : Gint_Array (0 .. 0);
+      W, H  : Gint;
+   begin
+      Get_Selected (Get_Selection (Tree), Model, Iter);
+      Path := Get_Path (Model, Iter);
+      Ind := Get_Indices (Path);
+      Test := Test_Type'Val (Ind (0));
+      Path_Free (Path);
+
+      W := Area.Get_Allocation_Width;
+      H := Area.Get_Allocation_Height;
+
+      Invalidate_Rect (Get_Window (Area),
+                       (0, 0, W, H), Invalidate_Children => False);
+
+      Set_Text (Label, To_String (Docs (Test)));
+   end S_Changed;
 
 begin
    Gtk.Main.Set_Locale;
    Gtk.Main.Init;
    Gtk_New (Win);
-   Set_Default_Size (Win, 600, 400);
+   Set_Default_Size (Win, 960, 400);
+
+   --  Create the tree and model
+   Gtk_New (Model, (0 => GType_String));
+   Gtk_New (Tree, Model);
+   Tree.Set_Headers_Visible (False);
+   Tree.Set_Show_Expanders (False);
+   Gtk_New (Rend);
+
+   Gtk_New (Col);
+   Pack_Start (Col, Rend, False);
+   Add_Attribute (Col, Rend, "text", 0);
+   Col_Num := Tree.Append_Column (Col);
+
+   for T in Test_Type loop
+      Append (Model, Iter, Null_Iter);
+      Set (Model, Iter, 0, Pretty (T));
+   end loop;
+
+   Selection_Cb.Connect
+     (Get_Selection (Tree),
+      Gtk.Tree_Selection.Signal_Changed,
+      S_Changed'Access,
+      After => True);
+
+   Gtk_New_Hbox (Box);
+   Win.Add (Box);
+   Box.Pack_Start (Tree, False, False, 3);
+
+   Gtk_New (Area);
+
+   Gtk_New_Vbox (Vbox);
+   Vbox.Pack_Start (Area, True, True, 3);
+
+   Gtk_New (Label);
+   Vbox.Pack_Start (Label, False, False, 3);
+
+   Box.Pack_Start (Vbox, True, True, 3);
 
    --  Connect to the "expose" event.
 
-   Event_Cb.Connect (Win, "expose_event",
+   Event_Cb.Connect (Area, "expose_event",
                      Event_Cb.To_Marshaller (Expose_Cb'Access));
 
    Show_All (Win);
