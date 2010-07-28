@@ -352,6 +352,7 @@ J510-028 API Additions
   Gtk.Cell_Renderer_Spin: new package
   Gtk.Link_Button: new package
   Gtk.Recent_Action: new package
+  Gtk.Recent_Filter: new package
   Gtk.Recent_Manager: new package
   Gtk.Tooltip: new package
 
