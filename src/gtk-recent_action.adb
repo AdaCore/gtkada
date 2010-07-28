@@ -26,6 +26,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Bindings;      use Gtkada.Bindings;
+
 package body Gtk.Recent_Action is
 
    ----------------------
@@ -48,9 +51,9 @@ package body Gtk.Recent_Action is
    procedure Gtk_New
      (Widget   : out Gtk_Recent_Action;
       Name     : String;
-      Label    : String;
-      Tooltip  : String;
-      Stock_Id : String)
+      Label    : String := "";
+      Tooltip  : String := "";
+      Stock_Id : String := "")
    is
    begin
       Widget := new Gtk_Recent_Action_Record;
@@ -64,25 +67,33 @@ package body Gtk.Recent_Action is
    procedure Initialize
      (Widget   : access Gtk_Recent_Action_Record'Class;
       Name     : String;
-      Label    : String;
-      Tooltip  : String;
-      Stock_Id : String)
+      Label    : String := "";
+      Tooltip  : String := "";
+      Stock_Id : String := "")
    is
       function Internal
         (Name     : String;
-         Label    : String;
-         Tooltip  : String;
-         Stock_Id : String)
+         Label    : chars_ptr;
+         Tooltip  : chars_ptr;
+         Stock_Id : chars_ptr)
          return System.Address;
       pragma Import (C, Internal, "gtk_recent_action_new");
+
+      C_Label    : chars_ptr := String_Or_Null (Label);
+      C_Tooltip  : chars_ptr := String_Or_Null (Tooltip);
+      C_Stock_Id : chars_ptr := String_Or_Null (Stock_Id);
    begin
       Set_Object
         (Widget,
          Internal
            (Name & ASCII.NUL,
-            Label & ASCII.NUL,
-            Tooltip & ASCII.NUL,
-            Stock_Id & ASCII.NUL));
+            C_Label,
+            C_Tooltip,
+            C_Stock_Id));
+
+      Free (C_Label);
+      Free (C_Tooltip);
+      Free (C_Stock_Id);
    end Initialize;
 
    -------------------------
@@ -92,10 +103,11 @@ package body Gtk.Recent_Action is
    procedure Gtk_New_For_Manager
      (Widget   : out Gtk_Recent_Action;
       Name     : String;
-      Label    : String;
-      Tooltip  : String;
-      Stock_Id : String;
-      Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
+      Label    : String := "";
+      Tooltip  : String := "";
+      Stock_Id : String := "";
+      Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class :=
+                 Gtk.Recent_Manager.Get_Default)
    is
    begin
       Widget := new Gtk_Recent_Action_Record;
@@ -109,28 +121,37 @@ package body Gtk.Recent_Action is
    procedure Initialize_For_Manager
      (Widget   : access Gtk_Recent_Action_Record'Class;
       Name     : String;
-      Label    : String;
-      Tooltip  : String;
-      Stock_Id : String;
-      Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
+      Label    : String := "";
+      Tooltip  : String := "";
+      Stock_Id : String := "";
+      Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class :=
+                 Gtk.Recent_Manager.Get_Default)
    is
       function Internal
         (Name     : String;
-         Label    : String;
-         Tooltip  : String;
-         Stock_Id : String;
+         Label    : chars_ptr;
+         Tooltip  : chars_ptr;
+         Stock_Id : chars_ptr;
          Manager  : System.Address)
          return System.Address;
       pragma Import (C, Internal, "gtk_recent_action_new_for_manager");
+
+      C_Label    : chars_ptr := String_Or_Null (Label);
+      C_Tooltip  : chars_ptr := String_Or_Null (Tooltip);
+      C_Stock_Id : chars_ptr := String_Or_Null (Stock_Id);
    begin
       Set_Object
         (Widget,
          Internal
            (Name & ASCII.NUL,
-            Label & ASCII.NUL,
-            Tooltip & ASCII.NUL,
-            Stock_Id & ASCII.NUL,
+            C_Label,
+            C_Tooltip,
+            C_Stock_Id,
             Get_Object (Manager)));
+
+      Free (C_Label);
+      Free (C_Tooltip);
+      Free (C_Stock_Id);
    end Initialize_For_Manager;
 
    ----------------------

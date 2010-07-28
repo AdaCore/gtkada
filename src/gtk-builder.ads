@@ -80,7 +80,7 @@ package Gtk.Builder is
       Flags          : Glib.G_Connect_Flags;
       User_Data      : System.Address);
    pragma Convention (C, Gtk_Builder_Connect_Func);
-   --  This is the signature of a subprograms used to connect signals. It is
+   --  This is the signature of a subprogram used to connect signals. It is
    --  used by the Connect_Signals and Connect_Signals_Full methods. It is
    --  mainly intended for interpreted language bindings, but could be useful
    --  where the programmer wants more control over the signal connection
@@ -94,16 +94,12 @@ package Gtk.Builder is
    --     Connect_Object: A GObject; if non-null, use g_signal_connect_object()
    --     Flags:          G_Connect_Flags to use
    --     User_Data:      user data
-   --
-   --  Since 2.12
 
    procedure Gtk_New (Builder : out Gtk_Builder);
    --  Creates a new Gtk_Builder object.
-   --  Since 2.12
 
    procedure Initialize (Builder : access Gtk_Builder_Record'Class);
    --  Creates a new builder object.
-   --  Since: 2.12
 
    function Add_From_File
      (Builder  : Gtk_Builder;
@@ -112,7 +108,6 @@ package Gtk.Builder is
    --  Parses a file containing a Gtk_Builder UI definition and merges it with
    --  the current contents of builder.
    --  Returns: A GError if an error occured, otherwise null.
-   --  Since 2.12
 
    function Get_Object
      (Builder     : Gtk_Builder;
@@ -121,7 +116,6 @@ package Gtk.Builder is
    --  Gets the object named Object_Name. Note that this function does not
    --  increment the reference count of the returned object.  Returns null
    --  if it could not be found in the object tree.
-   --  Since 2.12
 
    procedure Connect_Signals_Full
      (Builder         : Gtk_Builder;
@@ -130,7 +124,6 @@ package Gtk.Builder is
    --  This function can be thought of the interpreted language binding
    --  version of Connect_Signals, except that it does not require GModule
    --  to function correctly.
-   --  Since 2.12
 
 private
    type Gtk_Builder_Record is new Glib.Object.GObject_Record with null record;

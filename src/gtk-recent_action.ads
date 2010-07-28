@@ -32,10 +32,11 @@
 --  Gtk_Recent_Chooser_Menu.
 --
 --  To construct a submenu showing recently used files, use a Gtk_Recent_Action
---  as the action for a <menuitem>. To construct a menu toolbutton showing the
+--  as the action for a menuitem. To construct a menu toolbutton showing the
 --  recently used files in the popup menu, use a Gtk_Recent_Action as the
---  action for a <toolitem> element.
+--  action for a toolitem element.
 --  </description>
+--  <group>Action-based menus</group>
 --  <c_version>2.16.6</c_version>
 
 with Glib.Properties;
@@ -51,20 +52,20 @@ package Gtk.Recent_Action is
    procedure Gtk_New
      (Widget   : out Gtk_Recent_Action;
       Name     : String;
-      Label    : String;
-      Tooltip  : String;
-      Stock_Id : String);
+      Label    : String := "";
+      Tooltip  : String := "";
+      Stock_Id : String := "");
    procedure Initialize
      (Widget   : access Gtk_Recent_Action_Record'Class;
       Name     : String;
-      Label    : String;
-      Tooltip  : String;
-      Stock_Id : String);
+      Label    : String := "";
+      Tooltip  : String := "";
+      Stock_Id : String := "");
    --  Name: a unique name for the action
-   --  Label: the label displayed in menu items and on buttons, or ""
-   --  Tooltip: a tooltip for the action, or ""
+   --  Label: the label displayed in menu items and on buttons
+   --  Tooltip: a tooltip for the action
    --  Stock_Id: the stock icon to display in widgets representing the
-   --  action, or ""
+   --  action
    --
    --  Creates a new Gtk_Recent_Action object. To add the action to
    --  a Gtk_Action_Group and set the accelerator for the action,
@@ -76,24 +77,25 @@ package Gtk.Recent_Action is
    procedure Gtk_New_For_Manager
      (Widget   : out Gtk_Recent_Action;
       Name     : String;
-      Label    : String;
-      Tooltip  : String;
-      Stock_Id : String;
-      Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
+      Label    : String := "";
+      Tooltip  : String := "";
+      Stock_Id : String := "";
+      Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class :=
+                 Gtk.Recent_Manager.Get_Default);
    procedure Initialize_For_Manager
      (Widget   : access Gtk_Recent_Action_Record'Class;
       Name     : String;
-      Label    : String;
-      Tooltip  : String;
-      Stock_Id : String;
-      Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
+      Label    : String := "";
+      Tooltip  : String := "";
+      Stock_Id : String := "";
+      Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class :=
+                 Gtk.Recent_Manager.Get_Default);
    --  Name: a unique name for the action
-   --  Label: the label displayed in menu items and on buttons, or ""
-   --  Tooltip: a tooltip for the action, or ""
+   --  Label: the label displayed in menu items and on buttons
+   --  Tooltip: a tooltip for the action
    --  Stock_Id: the stock icon to display in widgets representing the
-   --  action, or ""
-   --  manager: a Gtk_Recent_Manager, or "" for using the default
-   --  Gtk_Recent_Manager
+   --  action
+   --  manager: a Gtk_Recent_Manager, or use the default Gtk_Recent_Manager
    --
    --  Creates a new Gtk_Recent_Action object. To add the action to
    --  a Gtk_Action_Group and set the accelerator for the action,
