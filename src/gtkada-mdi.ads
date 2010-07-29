@@ -38,7 +38,6 @@ with GNAT.Strings;
 with Glib;        use Glib;
 with Glib.Main;
 with Glib.Xml_Int;
-with Gdk.GC;
 with Gdk.Color;
 with Gdk.Cursor;
 with Gdk.Event;
@@ -1027,11 +1026,6 @@ private
       --  focus, thus potentially leaving the focus to the window that had it
       --  at the beginning of the move.
       --  Set to 0 to remove any delay.
-
-      Focus_GC     : Gdk.GC.Gdk_GC;
-      Non_Focus_GC : Gdk.GC.Gdk_GC;
-      --  The various graphic contexts used to draw the titles of the
-      --  children.
 
       Focus_Child : MDI_Child := null;
       --  The child that currently has the focus. Some default actions will

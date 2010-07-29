@@ -54,15 +54,18 @@ with Glib.Main;               use Glib.Main;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 
+with Cairo;                   use Cairo;
+
+with Pango.Cairo;             use Pango.Cairo;
 with Pango.Font;              use Pango.Font;
 with Pango.Layout;            use Pango.Layout;
 
 with Gdk;                     use Gdk;
+with Gdk.Cairo;               use Gdk.Cairo;
 with Gdk.Color;               use Gdk.Color;
 with Gdk.Cursor;              use Gdk.Cursor;
 with Gdk.Drawable;            use Gdk.Drawable;
 with Gdk.Event;               use Gdk.Event;
-with Gdk.GC;                  use Gdk.GC;
 with Gdk.Main;                use Gdk.Main;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Gdk.Rectangle;           use Gdk.Rectangle;
@@ -129,10 +132,6 @@ package body Gtkada.MDI is
 
    Border_Thickness : constant Gint := 4;
    --  Thickness of the separators in the MDI
-
-   Small_Border_Thickness : constant Gint := 2;
-   --  The width of the borders around children that do not belong to a
-   --  notebook with multiple pages.
 
    Max_Drag_Border_Width : constant Gint := 30;
    --  Width or height of the drag-and-drop borders for each notebook. On the
@@ -1307,12 +1306,10 @@ package body Gtkada.MDI is
          end if;
 
          if Title_Bar_Color /= Null_Color then
-            Set_Foreground (MDI.Non_Focus_GC, Title_Bar_Color);
             Need_Redraw := True;
          end if;
 
          if Focus_Title_Color /= Null_Color then
-            Set_Foreground (MDI.Focus_GC, Focus_Title_Color);
             Need_Redraw := True;
          end if;
       end if;
@@ -1352,14 +1349,6 @@ package body Gtkada.MDI is
 
    begin
       Gdk.Window.Set_Background (Get_Window (M), M.Background_Color);
-
-      Gdk_New (M.Non_Focus_GC, Get_Window (MDI));
-      Set_Foreground (M.Non_Focus_GC, M.Title_Bar_Color);
-      Set_Exposures (M.Non_Focus_GC, False);
-
-      Gdk_New (M.Focus_GC, Get_Window (MDI));
-      Set_Foreground (M.Focus_GC, M.Focus_Title_Color);
-      Set_Exposures (M.Focus_GC, False);
 
       if M.Cursor_Cross = null then
          Gdk_New (M.Cursor_Cross, Cross);
@@ -1426,14 +1415,6 @@ package body Gtkada.MDI is
 
       if M.Highlight_Style /= null then
          Unref (M.Highlight_Style);
-      end if;
-
-      if M.Non_Focus_GC /= null then
-         Unref (M.Non_Focus_GC);
-      end if;
-
-      if M.Focus_GC /= null then
-         Unref (M.Focus_GC);
       end if;
 
       if M.Menu /= null then
@@ -1683,15 +1664,16 @@ package body Gtkada.MDI is
 
       Border_Thickness : constant Gint :=
                            Gint (Get_Border_Width (Child.Main_Box));
-      GC   : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
-      W, H : Gint;
-      X    : Gint := 1;
+      Color : Gdk_Color := Child.MDI.Title_Bar_Color;
+      Cr    : Cairo_Context;
+      W, H  : Gint;
+      X     : Gint := 1;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
 
       if Child.MDI.Focus_Child = MDI_Child (Child) then
-         GC := Child.MDI.Focus_GC;
+         Color := Child.MDI.Focus_Title_Color;
       end if;
 
       --  Set the color of the notebook page and label.
@@ -1699,39 +1681,37 @@ package body Gtkada.MDI is
       Update_Tab_Color (Child);
 
       if Realized_Is_Set (Child.Title_Area) then
-         Draw_Rectangle
-           (Get_Window (Child.Title_Area),
-            GC, True, 0, 0,
-            Gint (Get_Allocation_Width (Child.Title_Area)),
-            Child.MDI.Title_Bar_Height);
+         Cr := Create (Get_Window (Child.Title_Area));
+
+         Set_Source_Color (Cr, Color);
+         Cairo.Rectangle
+           (Cr,
+            0.0, 0.0,
+            Gdouble (Get_Allocation_Width (Child.Title_Area)),
+            Gdouble (Child.MDI.Title_Bar_Height));
+         Cairo.Fill (Cr);
 
          if Child.Icon /= null then
             W := Get_Width (Child.Icon);
             H := Get_Height (Child.Icon);
 
-            Render_To_Drawable_Alpha
-              (Child.Icon,
-               Get_Window (Child.Title_Area),
-               Src_X           => 0,
-               Src_Y           => 0,
-               Dest_X          => X,
-               Dest_Y          => (Child.MDI.Title_Bar_Height - H) / 2,
-               Width           => W,
-               Height          => H,
-               Alpha           => Alpha_Full,
-               Alpha_Threshold => 128);
+            Set_Source_Pixbuf (Cr, Child.Icon, 0.0, 0.0);
+            Save (Cr);
+            Translate
+              (Cr,
+               Gdouble (X), Gdouble ((Child.MDI.Title_Bar_Height - H) / 2));
+            Paint (Cr);
+            Restore (Cr);
 
             X := X + W + 1;
          end if;
 
          Set_Text (Child.MDI.Title_Layout, Child.Title.all);
          Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
-         Draw_Layout
-           (Get_Window (Child.Title_Area),
-            Get_White_GC (Get_Style (Child.MDI)),
-            X,
-            0,
-            Child.MDI.Title_Layout);
+
+         Set_Source_Color (Cr, Get_White (Get_Style (Child.MDI)));
+         Move_To (Cr, Gdouble (X), 0.0);
+         Show_Layout (Cr, Child.MDI.Title_Layout);
 
          if Border_Thickness /= 0 then
             Paint_Shadow
@@ -1745,6 +1725,8 @@ package body Gtkada.MDI is
                Width       => Gint (Get_Allocation_Width (Child)),
                Height      => Gint (Get_Allocation_Height (Child)));
          end if;
+
+         Destroy (Cr);
       end if;
    end Draw_Child;
 
@@ -3712,9 +3694,10 @@ package body Gtkada.MDI is
       elsif Get_Nth_Page (Notebook, 1) /= null
          or else MDI.Show_Tabs_Policy = Always
       then
-         Set_Border_Width (Child.Main_Box, 0);
+         Set_Property (Notebook, Show_Border_Property, False);
+
       else
-         Set_Border_Width (Child.Main_Box, Guint (Small_Border_Thickness));
+         Set_Property (Notebook, Show_Border_Property, True);
       end if;
 
       if Hide_If_Empty then
