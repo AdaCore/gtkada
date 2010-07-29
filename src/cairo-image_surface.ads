@@ -70,7 +70,7 @@ package Cairo.Image_Surface is
 
    type Byte is range 0 .. 255;
 
-   type ARGB32_Record is record
+   type ARGB32_Data is record
       Alpha : Byte;
       Red   : Byte;
       Green : Byte;
@@ -78,17 +78,17 @@ package Cairo.Image_Surface is
    end record;
    --  One pixel in ARGB32 format
 
-   type RGB24_Record is record
+   type RGB24_Data is record
       Red   : Byte;
       Green : Byte;
       Blue  : Byte;
    end record;
    --  One pixel in RGB24 format
 
-   type ARGB32_Array is array (Natural range <>) of ARGB32_Record;
+   type ARGB32_Array is array (Natural range <>) of ARGB32_Data;
    type ARGB32_Array_Access is access ARGB32_Array;
 
-   type RGB24_Array is array (Natural range <>) of RGB24_Record;
+   type RGB24_Array is array (Natural range <>) of RGB24_Data;
    type RGB24_Array_Access is access RGB24_Array;
 
    type Byte_Array is array (Natural range <>) of Byte;
@@ -261,7 +261,7 @@ private
    BOP  : constant := System.Bit_Order'Pos (System.Default_Bit_Order);
    NBOP : constant := 1 - BOP;
 
-   for ARGB32_Record use
+   for ARGB32_Data use
       record
          Alpha at BOP * 3 + NBOP * 0 range 0 .. 7;
          Red   at BOP * 2 + NBOP * 1 range 0 .. 7;
@@ -269,13 +269,13 @@ private
          Blue  at BOP * 0 + NBOP * 3 range 0 .. 7;
       end record;
 
-   for RGB24_Record use
+   for RGB24_Data use
       record
          Red   at BOP * 2 + NBOP * 1 range 0 .. 7;
          Green at BOP * 1 + NBOP * 2 range 0 .. 7;
          Blue  at BOP * 0 + NBOP * 3 range 0 .. 7;
       end record;
-   for RGB24_Record'Size use 32;
+   for RGB24_Data'Size use 32;
 
    pragma Import (C, Create, "cairo_image_surface_create");
    pragma Import
