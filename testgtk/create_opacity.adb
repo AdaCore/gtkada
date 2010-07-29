@@ -54,16 +54,6 @@ package body Create_Opacity is
         & " shown causes it to flicker once on Windows.";
    end Help;
 
-   ----------------
-   -- On_Destroy --
-   ----------------
-
-   procedure On_Destroy (Window : access Gtk_Widget_Record'Class) is
-      pragma Unreferenced (Window);
-   begin
-      Set_Opacity (Main_Window, 1.0);
-   end On_Destroy;
-
    ----------------------
    -- On_Value_Changed --
    ----------------------
@@ -93,9 +83,6 @@ package body Create_Opacity is
       Gtk_New_Vbox (Box1, False, 0);
       Add (Frame, Box1);
 
-      Widget_Handler.Connect
-        (Box1, "destroy", Widget_Handler.To_Marshaller (On_Destroy'Access));
-
       Gtk_New_Vbox (Box2, False, 10);
       Set_Border_Width (Box2, 10);
       Pack_Start (Box1, Box2, False, False, 0);
@@ -104,15 +91,20 @@ package body Create_Opacity is
          Gtk_New (Label, "The main window IS composited.");
       else
          Gtk_New
-           (Label,
-            "The main window IS NOT composited.  This might not work.");
+           (Label, "The main window IS NOT composited.  This might not work.");
       end if;
       Pack_Start (Box2, Label, False, False, 10);
 
       Gtk_New (Label, "Opacity setting for the main window:");
       Pack_Start (Box2, Label, False, False, 0);
 
-      Gtk_New (Adjustment, 100.0, 0.0, 100.0, 0.1, 5.0);
+      Gtk_New
+        (Adjustment,
+         Value          => Get_Opacity (Main_Window) * 100.0,
+         Lower          =>   0.0,
+         Upper          => 100.0,
+         Step_Increment =>   0.1,
+         Page_Increment =>   5.0);
       Gtk_New_Hscale (Scale, Adjustment);
       Pack_Start (Box2, Scale, True, True, 0);
 
