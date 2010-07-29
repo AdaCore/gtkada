@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                    Copyright (C) 2010, AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +28,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib; use Glib;
 with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Enums; use Gtk.Enums;
@@ -76,11 +78,16 @@ package body Create_Range is
 
       Gtk_New (Adjustment, 0.0, 0.0, 101.0, 0.1, 1.0, 1.0);
       Gtk_New_Hscale (Scale, Adjustment);
-      Set_USize (Scale, 150, 30);
+      Set_USize (Scale, 150, 80);
       Set_Update_Policy (Scale, Update_Delayed);
       Set_Digits (Scale, 1);
       Set_Draw_Value (Scale, True);
+      Set_Value_Pos (Scale, Pos_Bottom);
       Pack_Start (Box2, Scale, True, True, 0);
+
+      for I in 0 .. 10 loop
+         Add_Mark (Scale, Gdouble (I) * 10.0, Pos_Top, I'Img);
+      end loop;
 
       Gtk_New_Hscrollbar (Scrollbar, Adjustment);
       Set_Update_Policy (Scrollbar, Update_Continuous);
@@ -90,4 +97,3 @@ package body Create_Range is
    end Run;
 
 end Create_Range;
-
