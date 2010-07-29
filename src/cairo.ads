@@ -1651,7 +1651,6 @@ package Cairo is
    --   A data structure for holding a rectangle.
    --
    --   Since: 1.4
-   --
 
    type Cairo_Rectangle is record
       X      : aliased Gdouble;
