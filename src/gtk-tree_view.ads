@@ -148,7 +148,7 @@ package Gtk.Tree_View is
      (Tree_View : access Gtk_Tree_View_Record;
       Enable    : Boolean);
    --  Enables or disables rubber banding in Tree_View.  If the selection mode
-   --  is Gtk_Selection_Multiple, rubber banding will allow the user to select
+   --  is Selection_Multiple, rubber banding will allow the user to select
    --  multiple rows by dragging the mouse.
 
    function Is_Rubber_Banding_Active

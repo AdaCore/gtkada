@@ -3,7 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2003                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---              Copyright (C) 2004-2009, AdaCore                     --
+--              Copyright (C) 2004-2010, AdaCore                     --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,6 +38,7 @@ with Gtk.Cell_Renderer_Text;   use Gtk.Cell_Renderer_Text;
 with Gtk.Cell_Renderer_Toggle; use Gtk.Cell_Renderer_Toggle;
 with Gtk.Tree_View;            use Gtk.Tree_View;
 with Gtk.Tree_Model;           use Gtk.Tree_Model;
+with Gtk.Tree_Selection;       use Gtk.Tree_Selection;
 with Gtk.Tree_Sortable;        use Gtk.Tree_Sortable;
 with Gtk.Tree_Store;           use Gtk.Tree_Store;
 with Gtk.Tree_View_Column;     use Gtk.Tree_View_Column;
@@ -239,7 +240,6 @@ package body Create_Tree_View is
                 Active_Column     => GType_Boolean,
                 Foreground_Column => GType_String));
 
-
       --  Create the view: it shows two columns, the first contains some text,
       --  the second contains a toggle button. In each column, a renderer is
       --  used to display the data graphically. In the future, it will be
@@ -248,6 +248,10 @@ package body Create_Tree_View is
       --  for these is defined in their respective packages.
 
       Gtk_New (Tree, Model);
+      Set_Grid_Lines (Tree, Grid_Lines_Vertical);
+      Set_Enable_Tree_Lines (Tree, True);
+      Set_Rubber_Banding (Tree, True);
+      Set_Mode (Get_Selection (Tree), Selection_Multiple);
 
       Gtk_New (Text_Render);
       Gtk_New (Toggle_Render);
