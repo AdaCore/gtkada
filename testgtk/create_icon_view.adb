@@ -117,12 +117,14 @@ package body Create_Icon_View is
       Set (List, Iter, 1, "Really Really" & ASCII.LF
            & " Really really looooooooong item name");
       Set (List, Iter, 2, True);
+      Set (List, Iter, 3, "This is the tooltip for the really long item.");
 
       for J in 0 .. 9 loop
          Prepend (List, Iter);
          Set (List, Iter, 0, Pixbuf);
          Set (List, Iter, 1, "Icon" & J'Img);
          Set (List, Iter, 2, True);
+         Set (List, Iter, 3, "This is the tooltip for item" & J'Img & ".");
       end loop;
    end Fill_Model;
 
@@ -151,10 +153,14 @@ package body Create_Icon_View is
         (List,
          (0 => Gdk.Pixbuf.Get_Type,  --  Associated pixbuf
           1 => GType_String,         --  Text for the icon
-          2 => GType_Boolean));      --  Toggle activated ?
+          2 => GType_Boolean,        --  Toggle activated ?
+          3 => GType_String));       --  Tooltip
       Set_Model (View, Gtk_Tree_Model (List));
 
       Fill_Model (Gtk_List_Store (Get_Model (View)));
+
+      --  Position 3 in our model is the column that we use for tooltips.
+      Set_Tooltip_Column (View, 3);
 
       Gtk_New (Toggle);
       Pack_Start (+View, Toggle, Expand => False);
