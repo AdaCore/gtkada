@@ -39,13 +39,13 @@
 --  drops these references when it is finalized. This finalization can cause
 --  the destruction of non-widget objects or widgets which are not contained
 --  in a toplevel window. For toplevel windows constructed by a builder, it is
---  the responsibility of the user to call gtk_widget_destroy() to get rid of
+--  the responsibility of the user to call Gtk.Widget.Destroy to get rid of
 --  them and all the widgets they contain.
 --
---  The subprograms Get_Object and Get_Objects can be used to access the
---  widgets in the interface by the names assigned to them inside the UI
---  description. Toplevel windows returned by these subprograms will stay
---  around until the user explicitly destroys them with gtk_widget_destroy().
+--  The subprogram Get_Object can be used to access the widgets in the
+--  interface by the names assigned to them inside the UI description.
+--  Toplevel windows returned by this subprogram will stay around until the
+--  user explicitly destroys them with Gtk.Widget.Destroy.
 --  Other widgets will either be part of a larger hierarchy constructed by
 --  the builder (in which case you should not have to worry about their
 --  lifecycle), or without a parent, in which case they have to be added
@@ -53,8 +53,8 @@
 --  reffed with Glib.Object.Ref to keep them beyond the lifespan of the
 --  builder.
 --
---  The subprograms Connect_Signals_Full and variants thereof can be used
---  to connect handlers to the named signals in the description.
+--  The subprogram Connect_Signals_Full can be used to connect handlers to the
+--  named signals in the description.
 --  </description>
 --  <c_version>2.16.6</c_version>
 
@@ -70,27 +70,6 @@ package Gtk.Builder is
    type Gtk_Builder is access all Gtk_Builder_Record'Class;
 
    function Get_Type return GType;
-
-   type Gtk_Builder_Connect_Func is access procedure
-     (Builder        : System.Address;
-      Object         : System.Address;
-      Signal_Name    : Interfaces.C.Strings.chars_ptr;
-      Handler_Name   : Interfaces.C.Strings.chars_ptr;
-      Connect_Object : System.Address;
-      Flags          : Glib.G_Connect_Flags;
-      User_Data      : System.Address);
-   pragma Convention (C, Gtk_Builder_Connect_Func);
-   --  This is the signature of a subprogram used to connect signals. It is
-   --  used by the Connect_Signals and Connect_Signals_Full methods.
-   --
-   --  Parameters:
-   --     Builder:        The address of a Gtk_Builder
-   --     Object:         The object to connect a signal to
-   --     Signal_Name:    The name of the signal
-   --     Handler_Name:   The name of the handler
-   --     Connect_Object: A GObject; if non-null, use g_signal_connect_object()
-   --     Flags:          G_Connect_Flags to use
-   --     User_Data:      user data
 
    procedure Gtk_New (Builder : out Gtk_Builder);
    --  Creates a new Gtk_Builder object.
@@ -113,6 +92,35 @@ package Gtk.Builder is
    --  Gets the object named Object_Name. Note that this function does not
    --  increment the reference count of the returned object.  Returns null
    --  if it could not be found in the object tree.
+
+   ------------------------
+   -- Connecting signals --
+   ------------------------
+
+   --  The following is a low-level binding to Gtk+.
+   --  See create_builder.adb in the testgtk source for an example of how
+   --  to use this low-level binding in an applications.
+
+   type Gtk_Builder_Connect_Func is access procedure
+     (Builder        : System.Address;
+      Object         : System.Address;
+      Signal_Name    : Interfaces.C.Strings.chars_ptr;
+      Handler_Name   : Interfaces.C.Strings.chars_ptr;
+      Connect_Object : System.Address;
+      Flags          : Glib.G_Connect_Flags;
+      User_Data      : System.Address);
+   pragma Convention (C, Gtk_Builder_Connect_Func);
+   --  This is the signature of a subprogram used to connect signals. It is
+   --  used by the Connect_Signals and Connect_Signals_Full methods.
+   --
+   --  Parameters:
+   --     Builder:        The address of a Gtk_Builder
+   --     Object:         The object to connect a signal to
+   --     Signal_Name:    The name of the signal
+   --     Handler_Name:   The name of the handler
+   --     Connect_Object: The internal address of a GObject
+   --     Flags:          G_Connect_Flags to use
+   --     User_Data:      user data
 
    procedure Connect_Signals_Full
      (Builder         : Gtk_Builder;
