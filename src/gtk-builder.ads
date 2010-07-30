@@ -81,10 +81,7 @@ package Gtk.Builder is
       User_Data      : System.Address);
    pragma Convention (C, Gtk_Builder_Connect_Func);
    --  This is the signature of a subprogram used to connect signals. It is
-   --  used by the Connect_Signals and Connect_Signals_Full methods. It is
-   --  mainly intended for interpreted language bindings, but could be useful
-   --  where the programmer wants more control over the signal connection
-   --  process.
+   --  used by the Connect_Signals and Connect_Signals_Full methods.
    --
    --  Parameters:
    --     Builder:        The address of a Gtk_Builder
