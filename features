@@ -52,11 +52,6 @@ J510-028 API Additions
   packages have been added and existing packages have been updated.  Here
   is a list of the changes:
 
-  Gtk.Label:
-    added new subprograms:
-      Get_Line_Wrap_Mode, Set_Line_Wrap_Mode
-    added new property Wrap_Mode_Property
-
   Gtk.Action:
     added new subprograms:
       Block_Activate, Unblock_Activate
@@ -73,12 +68,13 @@ J510-028 API Additions
       GIcon_Property
       Icon_Name_Property
 
+  Gtk.Builder:
+    added new subprogram Add_From_File
+    added new property Translation_Domain_Property
+
   Gtk.Cell_View:
     added new subprogram Get_Model
     added new property Model_Property
-
-  Gtk.Enums:
-    added new enumeration Gtk_Sensitivity_Type
 
   Gtk.Combo_Box:
     added new subprograms:
@@ -98,6 +94,9 @@ J510-028 API Additions
       Get_Completion_Prefix
       Get_Inline_Selection, Set_Inline_Selection
     added new property Inline_Selection_Property
+
+  Gtk.Enums:
+    added new enumeration Gtk_Sensitivity_Type
 
   Gtk.File_Chooser_Button:
     added new subprograms:
@@ -195,6 +194,11 @@ J510-028 API Additions
       Accel_Group_Property
       Always_Show_Image_Property
       Use_Stock_Property
+
+  Gtk.Label:
+    added new subprograms:
+      Get_Line_Wrap_Mode, Set_Line_Wrap_Mode
+    added new property Wrap_Mode_Property
 
   Gtk.Menu:
     added new subprograms:
@@ -347,6 +351,7 @@ J510-028 API Additions
       Transient_For_Property
 
   Glib.G_Icon: new package
+
   Gtk.Assistant: new package
   Gtk.Cell_Renderer_Accel: new package
   Gtk.Cell_Renderer_Spin: new package

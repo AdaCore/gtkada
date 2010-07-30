@@ -54,20 +54,47 @@ package body Gtk.Builder is
         (Builder  : System.Address;
          Filename : String;
          Error    : access Glib.Error.GError)
-         return Glib.Guint;
+         return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_file");
       Err : aliased Glib.Error.GError;
    begin
       if Internal
-           (Glib.Object.Get_Object (Builder),
-            Filename & ASCII.NUL,
-            Err'Access) = 0
+        (Get_Object (Builder), Filename & ASCII.NUL, Err'Access) = 0
       then
          return Err;
       else
          return null;
       end if;
    end Add_From_File;
+
+   ---------------------
+   -- Add_From_String --
+   ---------------------
+
+   function Add_From_String
+     (Builder : Gtk_Builder;
+      Buffer  : String;
+      Length  : Gsize)
+      return Glib.Error.GError
+   is
+      function Internal
+        (Builder : System.Address;
+         Buffer  : String;
+         Length  : Gsize;
+         Error   : access Glib.Error.GError)
+         return Guint;
+      pragma Import (C, Internal, "gtk_builder_add_from_string");
+
+      Err : aliased Glib.Error.GError;
+   begin
+      if Internal
+        (Get_Object (Builder), Buffer & ASCII.NUL, Length, Err'Access) = 0
+      then
+         return Err;
+      else
+         return null;
+      end if;
+   end Add_From_String;
 
    --------------------------
    -- Connect_Signals_Full --

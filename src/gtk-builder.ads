@@ -72,10 +72,10 @@ package Gtk.Builder is
    function Get_Type return GType;
 
    procedure Gtk_New (Builder : out Gtk_Builder);
+   procedure Initialize (Builder : access Gtk_Builder_Record'Class);
    --  Creates a new Gtk_Builder object.
 
-   procedure Initialize (Builder : access Gtk_Builder_Record'Class);
-   --  Creates a new builder object.
+   function Error_Quark return G_Quark;
 
    function Add_From_File
      (Builder  : Gtk_Builder;
@@ -83,6 +83,15 @@ package Gtk.Builder is
       return Glib.Error.GError;
    --  Parses a file containing a Gtk_Builder UI definition and merges it with
    --  the current contents of builder.
+   --  Returns: A GError if an error occured, otherwise null.
+
+   function Add_From_String
+     (Builder : Gtk_Builder;
+      Buffer  : String;
+      Length  : Gsize)
+      return Glib.Error.GError;
+   --  Parses a string containing a Gtk_Builder UI definition and merges it
+   --  with the current contents of Builder.
    --  Returns: A GError if an error occured, otherwise null.
 
    function Get_Object
@@ -130,8 +139,27 @@ package Gtk.Builder is
    --  version of Connect_Signals, except that it does not require GModule
    --  to function correctly.
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  <properties>
+   --  Name:  Translation_Domain_Property
+   --  Type:  String
+   --  Descr: The translation domain used by gettext
+   --
+   --  </properties>
+
+   Translation_Domain_Property : constant Glib.Properties.Property_String;
+
 private
+
    type Gtk_Builder_Record is new Glib.Object.GObject_Record with null record;
 
+   Translation_Domain_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("translation-domain");
+
+   pragma Import (C, Error_Quark, "gtk_builder_error_quark");
    pragma Import (C, Get_Type, "gtk_builder_get_type");
+
 end Gtk.Builder;
