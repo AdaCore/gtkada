@@ -62,6 +62,7 @@ with System;
 with Glib;
 with Glib.Error;
 with Glib.Object;
+with Glib.Properties;
 with Interfaces.C.Strings;
 
 package Gtk.Builder is
@@ -75,7 +76,7 @@ package Gtk.Builder is
    procedure Initialize (Builder : access Gtk_Builder_Record'Class);
    --  Creates a new Gtk_Builder object.
 
-   function Error_Quark return G_Quark;
+   function Error_Quark return GQuark;
 
    function Add_From_File
      (Builder  : Gtk_Builder;
