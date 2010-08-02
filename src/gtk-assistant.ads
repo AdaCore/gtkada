@@ -32,7 +32,7 @@
 --  pages and controlling the page flow to collect the necessary data.
 --  </description>
 --  <c_version>2.16.6</c_version>
---  <group>Windows<group>
+--  <group>Windows</group>
 --  <testgtk>create_assistant.adb</testgtk>
 
 with Glib;
