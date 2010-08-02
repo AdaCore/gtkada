@@ -45,6 +45,10 @@ with Cairo.Image_Surface; use Cairo.Image_Surface;
 with Cairo.Font_Options; use Cairo.Font_Options;
 with Cairo.Png; use Cairo.Png;
 
+with Pango.Cairo;  use Pango.Cairo;
+with Pango.Layout; use Pango.Layout;
+with Pango.Font;   use Pango.Font;
+
 with Gdk.Cairo;    use Gdk.Cairo;
 with Gdk.Event;    use Gdk.Event;
 with Gdk.Window;   use Gdk.Window;
@@ -71,7 +75,7 @@ procedure Testcairo is
 
    type Test_Type is (Rectangles, Transparency, Matrix, Transformations,
                       Paths, Patterns, Clip_And_Paint,
-                      Surface_And_Png, Text);
+                      Surface_And_Png, Toy_Text, Pango_Text);
 
    function Pretty (T : Test_Type) return String;
    --  Pretty print T
@@ -111,7 +115,8 @@ procedure Testcairo is
       Transformations => -"Direct transformations",
       Paths           => -"Paths",
       Patterns        => -"Patterns",
-      Text            => -"Cairo 'toy' text API",
+      Toy_Text        => -"The Cairo 'toy' text API",
+      Pango_Text      => -"Rendering sophisticated text using Pango",
       Clip_And_Paint  => -"Painting and clipping",
       Surface_And_Png => -"Using surfaces and saving to PNG");
 
@@ -363,7 +368,7 @@ procedure Testcairo is
             Fill (Cr);
             Destroy (P);
 
-         when Text =>
+         when Toy_Text =>
             --  "Hello world" using two calls to Show_Text, taking advantage
             --  of the fact that one call to Show_Text places the current point
             --  after the first string
@@ -430,6 +435,31 @@ procedure Testcairo is
             Set_Font_Matrix (Cr, M);
             Show_Text (Cr, "text with matrix transforms");
             Unchecked_Free (M);
+
+         when Pango_Text =>
+            declare
+               Layout : Pango_Layout;
+               Desc   : Pango_Font_Description;
+            begin
+               Desc := From_String ("Verdana Medium Italic 15");
+               Layout := Create_Pango_Layout
+                 (Win, "Verdana Medium Italic 15");
+               Set_Font_Description (Layout, Desc);
+               Show_Layout (Cr, Layout);
+               Unref (Layout);
+               Free (Desc);
+
+               Desc := From_String ("Helvetica 20");
+               Move_To (Cr, 20.0, 20.0);
+               Layout := Create_Pango_Layout (Win);
+               Layout.Set_Markup
+                 ("<b>bold</b> <i>italic</i> " &
+                  "<span foreground=""#FF9900"">orange</span>");
+               Set_Font_Description (Layout, Desc);
+               Show_Layout (Cr, Layout);
+               Unref (Layout);
+               Free (Desc);
+            end;
 
          when Clip_And_Paint =>
             --  Paint the background pink
