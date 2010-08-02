@@ -28,17 +28,23 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;             use Glib;
-with Gtk;              use Gtk;
-with Gtk.Adjustment;   use Gtk.Adjustment;
-with Gtk.Box;          use Gtk.Box;
-with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Scale;        use Gtk.Scale;
-with Gtk.Scale_Button; use Gtk.Scale_Button;
-with Gtk.Scrollbar;    use Gtk.Scrollbar;
-with Gtkada.Types;     use Gtkada.Types;
+with Glib;              use Glib;
+with Gtk;               use Gtk;
+with Gtk.Adjustment;    use Gtk.Adjustment;
+with Gtk.Box;           use Gtk.Box;
+with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Label;         use Gtk.Label;
+with Gtk.Scale;         use Gtk.Scale;
+with Gtk.Scale_Button;  use Gtk.Scale_Button;
+with Gtk.Scrollbar;     use Gtk.Scrollbar;
+with Gtk.Volume_Button; use Gtk.Volume_Button;
+with Gtkada.Types;      use Gtkada.Types;
 
 package body Create_Range is
+
+   ----------
+   -- Help --
+   ----------
 
    function Help return String is
    begin
@@ -61,6 +67,10 @@ package body Create_Range is
         & " the user releases the mouse button.";
    end Help;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1         : Gtk_Box;
       Box2         : Gtk_Box;
@@ -69,7 +79,9 @@ package body Create_Range is
       Scrollbar    : Gtk_Scrollbar;
 
       Box3         : Gtk_Box;
+      Label        : Gtk_Label;
       Scale_Button : Gtk_Scale_Button;
+      Vol_Button   : Gtk_Volume_Button;
 
    begin
       Set_Label (Frame, "Range");
@@ -101,8 +113,17 @@ package body Create_Range is
       Gtk_New_Hbox (Box3, False, 10);
       Pack_Start (Box2, Box3, True, True, 0);
 
+      Gtk_New (Label, "Scale button:");
+      Pack_Start (Box3, Label, False, False, 0);
+
       Scale_Button := Gtk_New (Icon_Size_Button, 0.0, 100.0, 2.0, Null_Array);
       Pack_Start (Box3, Scale_Button, False, False, 0);
+
+      Gtk_New (Label, "Volume button:");
+      Pack_Start (Box3, Label, False, False, 0);
+
+      Gtk_New (Vol_Button);
+      Pack_Start (Box3, Vol_Button, False, False, 0);
 
       Show_All (Frame);
    end Run;
