@@ -153,6 +153,7 @@ sub ada_unit_from_c_file() {
   $adafile =~ s/uimanager/ui_manager/;
   $adafile =~ s/linkbutton/link_button/;
   $adafile =~ s/gicon/g_icon/;
+  $adafile =~ s/scalebutton/scale_button/;
   $adafile =~ s/__/_/g;
   return $adafile;
 }

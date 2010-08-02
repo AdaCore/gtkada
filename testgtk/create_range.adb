@@ -28,13 +28,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Scale; use Gtk.Scale;
-with Gtk.Scrollbar; use Gtk.Scrollbar;
-with Gtk; use Gtk;
+with Glib;             use Glib;
+with Gtk;              use Gtk;
+with Gtk.Adjustment;   use Gtk.Adjustment;
+with Gtk.Box;          use Gtk.Box;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Scale;        use Gtk.Scale;
+with Gtk.Scale_Button; use Gtk.Scale_Button;
+with Gtk.Scrollbar;    use Gtk.Scrollbar;
+with Gtkada.Types;     use Gtkada.Types;
 
 package body Create_Range is
 
@@ -60,11 +62,14 @@ package body Create_Range is
    end Help;
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box1       : Gtk_Box;
-      Box2       : Gtk_Box;
-      Adjustment : Gtk_Adjustment;
-      Scale      : Gtk_Scale;
-      Scrollbar  : Gtk_Scrollbar;
+      Box1         : Gtk_Box;
+      Box2         : Gtk_Box;
+      Adjustment   : Gtk_Adjustment;
+      Scale        : Gtk_Scale;
+      Scrollbar    : Gtk_Scrollbar;
+
+      Box3         : Gtk_Box;
+      Scale_Button : Gtk_Scale_Button;
 
    begin
       Set_Label (Frame, "Range");
@@ -92,6 +97,12 @@ package body Create_Range is
       Gtk_New_Hscrollbar (Scrollbar, Adjustment);
       Set_Update_Policy (Scrollbar, Update_Continuous);
       Pack_Start (Box2, Scrollbar, True, True, 0);
+
+      Gtk_New_Hbox (Box3, False, 10);
+      Pack_Start (Box2, Box3, True, True, 0);
+
+      Scale_Button := Gtk_New (Icon_Size_Button, 0.0, 100.0, 2.0, Null_Array);
+      Pack_Start (Box3, Scale_Button, False, False, 0);
 
       Show_All (Frame);
    end Run;
