@@ -145,7 +145,7 @@ package Cairo.Font_Face is
    --  See that function for limitations of toy font faces.
    --
    --  Return value: a newly created Cairo_Font_Face. Free with
-   --   Cairo.Font_Face.Destroy when you are done using it.
+   --    Cairo.Font_Face.Destroy when you are done using it.
    --
    --  Since: 1.8
 
