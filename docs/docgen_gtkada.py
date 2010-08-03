@@ -30,12 +30,11 @@ class ScreenshotTagHandler (GPS.DocgenTagHandler):
       self.pictureslist = {}
 
    def on_match (self, docgen, attrs, value, entity_name, entity_href):
-      GPS.Console ("Messages").write ("Screenshot: %s\n" % (value))
       file = docgen.get_current_file()
-      dir = os.path.normpath (
+      srcdir = os.path.normpath (
          os.path.join (GPS.Project.root().file().directory(),
                        "..", "docs", "gtkada_rm"))
-      fullfile = os.path.join (dir, value)
+      fullfile = os.path.join (srcdir, value)
 
       try:
          os.stat(fullfile)
@@ -52,12 +51,13 @@ class ScreenshotTagHandler (GPS.DocgenTagHandler):
                GPS.Console ("Messages").write ("could not find screenshot %s\n" % (fullfile))
                return ""
 
-      if not os.path.exists ("pics"):
-           os.mkdir ("pics")
+      docdir = os.path.join (docgen.get_doc_dir ().name(), "screenshots")
+      if not os.path.exists (docdir):
+        os.mkdir(docdir)
 
-      shutil.copy (os.path.join (dir, pict), "pics")
+      shutil.copy (os.path.join(srcdir,pict), docdir)
 
-      img = """<img src="%s" alt="%s" style="border: 0px;"/>""" % (("pics" + "/" + pict), pict)
+      img = """<img src="screenshots/%s" alt="%s" style="border: 0px;"/>""" % (pict, pict)
 
       self.pictureslist[entity_name] = [entity_href, img]
       return """</div>
@@ -105,5 +105,12 @@ class ScreenshotTagHandler (GPS.DocgenTagHandler):
 
 def on_gps_start (hook):
    GPS.Docgen.register_tag_handler (ScreenshotTagHandler ())
+   GPS.Project.root().generate_doc (True)
+   GPS.Timeout (500, wait_doc)
+
+def wait_doc(timeout):
+   if len (GPS.Task.list()) > 0:
+      return True
+   GPS.exit()
 
 GPS.Hook ("gps_started").add (on_gps_start)
