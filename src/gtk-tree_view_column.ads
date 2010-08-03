@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2007 AdaCore                    --
+--                 Copyright (C) 2001-2010, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -97,6 +97,13 @@ package Gtk.Tree_View_Column is
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with this widget.
+
+   --  function Get_Tree_View
+   --    (Tree_Column : access Gtk_Tree_View_Column_Record)
+   --     return Gtk_Tree_View;
+   --  Returns the Gtk_Tree_View wherein Tree_Column has been inserted.
+   --  This function has been relocated to the Gtk.Tree_View package to
+   --  avoid a dependency circularity.
 
    ---------------------------------------
    -- Visual representation of the data --
@@ -617,3 +624,6 @@ end Gtk.Tree_View_Column;
 
 --  No binding: gtk_tree_view_column_new_with_attributes
 --  No binding: gtk_tree_view_column_set_attributes
+
+--  Implemented in Gtk.Tree_View:
+--  No binding: gtk_tree_view_column_get_tree_view

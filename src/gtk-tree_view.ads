@@ -250,7 +250,14 @@ package Gtk.Tree_View is
      (Tree_View : access Gtk_Tree_View_Record;
       N         : Gint)
       return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-   --  Gets the Gtk_Tree_ViewColumn at the given position in the Tree_View.
+   --  Gets the Gtk_Tree_View_Column at the given position in the Tree_View.
+
+   function Get_Tree_View
+     (Tree_Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record)
+      return Gtk_Tree_View;
+   --  Returns the Gtk_Tree_View wherein Tree_Column has been inserted.  If
+   --  Column is currently not inserted in any tree view, null is
+   --  returned.
 
    function Get_Columns
      (Tree_View : access Gtk_Tree_View_Record)
@@ -416,7 +423,7 @@ package Gtk.Tree_View is
       Focus_Column  : Gtk.Tree_View_Column.Gtk_Tree_View_Column := null;
       Focus_Cell    : Gtk.Cell_Renderer.Gtk_Cell_Renderer := null;
       Start_Editing : Boolean);
-   --  Sets the current keyboard focus to be atPath, and selects it. This is
+   --  Sets the current keyboard focus to be at Path, and selects it. This is
    --  useful when you want to focus the user's attention on a particular row.
    --  If Focus_Column is not null, then focus is given to the column specified
    --  by it. If Focus_Column and Focus_Cell are not null, and Focus_Column
@@ -749,9 +756,9 @@ package Gtk.Tree_View is
    function Get_Tooltip_Column
      (Tree_View : access Gtk_Tree_View_Record) return Gint;
    --  If you only plan to have simple (text-only) tooltips on full rows, you
-   --  can use this function to have GtkTreeView handle these automatically for
-   --  you. column should be set to the column in tree_view's model containing
-   --  the tooltip texts, or -1 to disable this feature.
+   --  can use this function to have Gtk_Tree_View handle these automatically
+   --  for you. Column should be set to the column in tree_view's model
+   --  containing the tooltip texts, or -1 to disable this feature.
    --
    --  When enabled, "has-tooltip" will be set to TRUE and tree_view will
    --  connect a "query-tooltip" signal handler.
@@ -769,8 +776,8 @@ package Gtk.Tree_View is
       Iter          : out Gtk.Tree_Model.Gtk_Tree_Iter;
       Success       : out Boolean);
    --  This function is supposed to be used in a "query-tooltip" signal handler
-   --  for GtkTreeView. The x, y and keyboard_tip values which are received in
-   --  the signal handler, should be passed to this function without
+   --  for Gtk_Tree_View. The x, y and keyboard_tip values which are received
+   --  in the signal handler, should be passed to this function without
    --  modification.
    --
    --  The Success indicates whether there is a tree view row at the given
@@ -917,7 +924,7 @@ package Gtk.Tree_View is
    --
    --  Name:  Fixed_Height_Mode_Property
    --  Type:  Boolean
-   --  Descr: Speeds up GtkTreeView by assuming that all rows have the same
+   --  Descr: Speeds up Gtk_Tree_View by assuming that all rows have the same
    --         height
    --
    --  Name:  Hadjustment_Property

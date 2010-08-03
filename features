@@ -312,6 +312,9 @@ J510-028 API Additions
       Tree_Line_Pattern_Property
       Tree_Line_Width_Property
 
+  Gtk.Tree_View_Column:
+    added new subprogram Get_Tree_View (as Gtk.Tree_View.Get_Tree_View)
+
   Gtk.Widget:
     added new subprograms:
       Error_Bell

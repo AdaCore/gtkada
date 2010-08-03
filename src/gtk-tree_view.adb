@@ -599,6 +599,22 @@ package body Gtk.Tree_View is
       return List;
    end Get_Columns;
 
+   -------------------
+   -- Get_Tree_View --
+   -------------------
+
+   function Get_Tree_View
+     (Tree_Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record)
+      return Gtk_Tree_View
+   is
+      function Internal (Tree_Column : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_view_column_get_tree_view");
+      Stub : Gtk_Tree_View_Record;
+   begin
+      return Gtk_Tree_View
+        (Get_User_Data (Internal (Get_Object (Tree_Column)), Stub));
+   end Get_Tree_View;
+
    -----------------------
    -- Move_Column_After --
    -----------------------
