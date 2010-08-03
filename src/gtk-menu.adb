@@ -29,13 +29,13 @@
 
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
+with Ada.Unchecked_Conversion;
+with Ada.Unchecked_Deallocation;
 
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
 with Gtk.Widget;     use Gtk.Widget;
-
-with Ada.Unchecked_Deallocation;
 
 package body Gtk.Menu is
 
@@ -47,11 +47,11 @@ package body Gtk.Menu is
    --  most common widgets.
 
    procedure Internal_Menu_Position_Func
-     (Menu    : access Gtk_Menu_Record'Class;
+     (Menu    : System.Address;
       X       : out Gint;
       Y       : out Gint;
       Push_In : out Gboolean;
-      Data    : Gtk_Menu_Position_Func);
+      Data    : System.Address);
    pragma Convention (C, Internal_Menu_Position_Func);
    --  Wrapper function passed to C.
 
@@ -318,21 +318,6 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu), Boolean'Pos (Torn_Off));
    end Set_Tearoff_State;
 
-   ---------------------------------
-   -- Internal_Menu_Position_Func --
-   ---------------------------------
-
-   procedure Internal_Menu_Position_Func
-     (Menu    : access Gtk_Menu_Record'Class;
-      X       : out Gint;
-      Y       : out Gint;
-      Push_In : out Gboolean;
-      Data    : Gtk_Menu_Position_Func) is
-   begin
-      Data.all (Menu, X, Y);
-      Push_In := Boolean'Pos (False); --  ???
-   end Internal_Menu_Position_Func;
-
    -----------
    -- Popup --
    -----------
@@ -341,7 +326,8 @@ package body Gtk.Menu is
      (Menu              : access Gtk_Menu_Record;
       Parent_Menu_Shell : Gtk.Menu_Shell.Gtk_Menu_Shell := null;
       Parent_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item := null;
-      Func              : Gtk_Menu_Position_Func := null;
+      Func              : C_Gtk_Menu_Position_Func := null;
+      User_Data         : System.Address;
       Button            : Guint := 1;
       Activate_Time     : Guint32 := 0)
    is
@@ -375,9 +361,64 @@ package body Gtk.Menu is
       else
          Internal
            (Get_Object (Menu), Parent_Shell, Parent_Item,
-            Internal_Menu_Position_Func'Address,
-            Func.all'Address, Button, Activate_Time);
+            Func.all'Address, User_Data, Button, Activate_Time);
       end if;
+   end Popup;
+
+   ---------------------------------
+   -- Internal_Menu_Position_Func --
+   ---------------------------------
+
+   procedure Internal_Menu_Position_Func
+     (Menu    : System.Address;
+      X       : out Gint;
+      Y       : out Gint;
+      Push_In : out Gboolean;
+      Data    : System.Address)
+   is
+      function Convert is
+        new Ada.Unchecked_Conversion (System.Address, Gtk_Menu_Position_Func);
+      Func : constant Gtk_Menu_Position_Func := Convert (Data);
+
+      M    : Gtk_Menu;
+      Stub : Gtk_Menu_Record;
+   begin
+      M := Gtk_Menu (Get_User_Data (Menu, Stub));
+      Func.all (M, X, Y);
+
+      --  Always place popup at our specified coordinates regardless of
+      --  whether it may be outside the visible area.
+      Push_In := Boolean'Pos (False);
+   end Internal_Menu_Position_Func;
+
+   -----------
+   -- Popup --
+   -----------
+
+   procedure Popup
+     (Menu              : access Gtk_Menu_Record;
+      Parent_Menu_Shell : Gtk.Menu_Shell.Gtk_Menu_Shell := null;
+      Parent_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item := null;
+      Func              : Gtk_Menu_Position_Func := null;
+      Button            : Guint := 1;
+      Activate_Time     : Guint32 := 0)
+   is
+      F : C_Gtk_Menu_Position_Func := null;
+      D : System.Address := System.Null_Address;
+   begin
+      if Func /= null then
+         F := Internal_Menu_Position_Func'Access;
+         D := Func.all'Address;
+      end if;
+
+      Popup
+        (Menu,
+         Parent_Menu_Shell,
+         Parent_Menu_Item,
+         F,
+         D,
+         Button,
+         Activate_Time);
    end Popup;
 
    ---------------------------------------
@@ -400,33 +441,35 @@ package body Gtk.Menu is
 
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
         (Data_And_Cb, Data_And_Cb_Access);
-
-      procedure Internal_Menu_Position_Func_With_Data
-        (Menu    : access Gtk_Menu_Record;
-         X       : out Gint;
-         Y       : out Gint;
-         Push_In : out Gboolean;
-         Data    : Data_And_Cb_Access);
-      pragma Convention (C, Internal_Menu_Position_Func_With_Data);
-      --  Wrapper function passed to C.
+      function Convert is
+        new Ada.Unchecked_Conversion (System.Address, Data_And_Cb_Access);
+      function Convert is
+        new Ada.Unchecked_Conversion (Data_And_Cb_Access, System.Address);
 
       -------------------------------------------
       -- Internal_Menu_Position_Func_With_Data --
       -------------------------------------------
 
       procedure Internal_Menu_Position_Func_With_Data
-        (Menu    : access Gtk_Menu_Record;
-         X       : out Gint;
-         Y       : out Gint;
-         Push_In : out Gboolean;
-         Data    : Data_And_Cb_Access)
+        (Menu      : System.Address;
+         X         : out Gint;
+         Y         : out Gint;
+         Push_In   : out Gboolean;
+         User_Data : System.Address)
       is
-         The_Data : Data_And_Cb_Access := Data;
+         Data : Data_And_Cb_Access := Convert (User_Data);
+         M    : Gtk_Menu;
+         Stub : Gtk_Menu_Record;
       begin
-         Data.Cb (Menu, X, Y, Data.Data);
-         Push_In := Boolean'Pos (False); --  ???
+         M := Gtk_Menu (Get_User_Data (Menu, Stub));
+         Data.Cb (M, X, Y, Data.Data);
+
+         --  Always place popup at our specified coordinates regardless of
+         --  whether it may be outside the visible area.
+         Push_In := Boolean'Pos (False);
+
          Unchecked_Free (Data.Data);
-         Unchecked_Free (The_Data);
+         Unchecked_Free (Data);
       end Internal_Menu_Position_Func_With_Data;
 
       -----------
@@ -442,49 +485,24 @@ package body Gtk.Menu is
          Button            : Guint := 1;
          Activate_Time     : Guint32 := 0)
       is
-         procedure Internal
-           (Menu          : System.Address;
-            Parent_M      : System.Address;
-            Parent_I      : System.Address;
-            Func          : System.Address;
-            Data          : System.Address;
-            Button        : Guint;
-            Activate_Time : Guint32);
-         pragma Import (C, Internal, "gtk_menu_popup");
-
-         Parent_Shell : System.Address := System.Null_Address;
-         Parent_Item  : System.Address := System.Null_Address;
-
          The_Data : Data_And_Cb_Access;
+         F : C_Gtk_Menu_Position_Func := null;
+         D : System.Address := System.Null_Address;
       begin
-         if Parent_Menu_Shell /= null then
-            Parent_Shell := Get_Object (Parent_Menu_Shell);
-         end if;
-
-         if Parent_Menu_Item /= null then
-            Parent_Item := Get_Object (Parent_Menu_Item);
-         end if;
-
-         if Func = null then
-            Internal
-              (Get_Object (Menu),
-               Parent_Shell,
-               Parent_Item,
-               System.Null_Address,
-               System.Null_Address,
-               Button,
-               Activate_Time);
-         else
+         if Func /= null then
             The_Data := new Data_And_Cb'(new Data_Type'(Data.all), Func);
-            Internal
-              (Get_Object (Menu),
-               Parent_Shell,
-               Parent_Item,
-               Internal_Menu_Position_Func_With_Data'Address,
-               The_Data.all'Address,
-               Button,
-               Activate_Time);
+            F := Internal_Menu_Position_Func_With_Data_Access;
+            D := Convert (The_Data);
          end if;
+
+         Popup
+           (Menu,
+            Parent_Menu_Shell,
+            Parent_Menu_Item,
+            F,
+            D,
+            Button,
+            Activate_Time);
       end Popup;
    end User_Menu_Popup;
 

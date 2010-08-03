@@ -201,9 +201,11 @@ J510-028 API Additions
     added new property Wrap_Mode_Property
 
   Gtk.Menu:
+    added new type C_Gtk_Menu_Position_Func
     added new subprograms:
       Get_Monitor
       Set_Accel_Path
+      Popup (which accepts C_Gtk_Menu_Position_Func)
     added new properties:
       Accel_Group_Property
       Accel_Path_Property
@@ -360,6 +362,7 @@ J510-028 API Additions
   Gtk.Recent_Filter: new package
   Gtk.Recent_Manager: new package
   Gtk.Scale_Button: new package
+  Gtk.Status_Icon: new package
   Gtk.Volume_Button: new package
   Gtk.Tooltip: new package
 

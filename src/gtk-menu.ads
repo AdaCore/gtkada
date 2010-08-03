@@ -163,11 +163,11 @@ package Gtk.Menu is
 
    procedure Popup
      (Menu              : access Gtk_Menu_Record;
-      Parent_Menu_Shell : in Gtk.Menu_Shell.Gtk_Menu_Shell := null;
-      Parent_Menu_Item  : in Gtk.Menu_Item.Gtk_Menu_Item := null;
-      Func              : in Gtk_Menu_Position_Func := null;
-      Button            : in Guint := 1;
-      Activate_Time     : in Guint32 := 0);
+      Parent_Menu_Shell : Gtk.Menu_Shell.Gtk_Menu_Shell := null;
+      Parent_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item := null;
+      Func              : Gtk_Menu_Position_Func := null;
+      Button            : Guint := 1;
+      Activate_Time     : Guint32 := 0);
    --  Display a menu on the screen.
    --  This is the function to use to create contextual menus.
    --  Most of the time, the parameters can have a null value.
@@ -186,6 +186,25 @@ package Gtk.Menu is
    --  Note: in the Popup function, the Parent_* parameters are not access
    --  parameters because they might be null.
 
+   type C_Gtk_Menu_Position_Func is access procedure
+     (Menu      : System.Address;
+      X         : out Gint;
+      Y         : out Gint;
+      Push_In   : out Gboolean;
+      User_Data : System.Address);
+   pragma Convention (C, C_Gtk_Menu_Position_Func);
+
+   procedure Popup
+     (Menu              : access Gtk_Menu_Record;
+      Parent_Menu_Shell : Gtk.Menu_Shell.Gtk_Menu_Shell := null;
+      Parent_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item := null;
+      Func              : C_Gtk_Menu_Position_Func := null;
+      User_Data         : System.Address;
+      Button            : Guint := 1;
+      Activate_Time     : Guint32 := 0);
+   --  Similar to the Popup function above, but exposes a lower level
+   --  interface to a C positioning function (C_Gtk_Menu_Position_Func).
+
    generic
       --  <doc_ignore>
       type Data_Type is private;
@@ -203,17 +222,33 @@ package Gtk.Menu is
       procedure Popup
         (Menu              : access Gtk_Menu_Record'Class;
          Data              : access Data_Type;
-         Parent_Menu_Shell : in Gtk.Menu_Shell.Gtk_Menu_Shell := null;
-         Parent_Menu_Item  : in Gtk.Menu_Item.Gtk_Menu_Item := null;
-         Func              : in Gtk_Menu_Position_Func := null;
-         Button            : in Guint := 1;
-         Activate_Time     : in Guint32 := 0);
+         Parent_Menu_Shell : Gtk.Menu_Shell.Gtk_Menu_Shell := null;
+         Parent_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item := null;
+         Func              : Gtk_Menu_Position_Func := null;
+         Button            : Guint := 1;
+         Activate_Time     : Guint32 := 0);
       --  Same as the Popup function above.
       --  Note that Data is not duplicated, thus you should take care of the
       --  memory allocation/deallocation yourself.
 
       --  Note also that the order of parameters is slightly different from the
       --  C version.
+   private
+      procedure Internal_Menu_Position_Func_With_Data
+        (Menu      : System.Address;
+         X         : out Gint;
+         Y         : out Gint;
+         Push_In   : out Gboolean;
+         User_Data : System.Address);
+      pragma Convention (C, Internal_Menu_Position_Func_With_Data);
+      --  Wrapper function passed to C.  This spec has been put in the
+      --  generic's private part because we can not use 'Access in the
+      --  generic body to assign to a C_Gtk_Menu_Position_Func type, because
+      --  the type is declared outside the generic unit.  (RM 3.10.2(32))
+
+      Internal_Menu_Position_Func_With_Data_Access :
+        constant C_Gtk_Menu_Position_Func :=
+        Internal_Menu_Position_Func_With_Data'Access;
    end User_Menu_Popup;
 
    procedure Popdown (Menu : access Gtk_Menu_Record);
