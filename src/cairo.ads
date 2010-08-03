@@ -128,11 +128,11 @@ package Cairo is
    end record;
    --  Unused: not used; ignore.
    --
-   --  Cairo_user_data_key is used for attaching user data to cairo
+   --  Cairo_User_Data_Key is used for attaching user data to cairo
    --  data structures.  The actual contents of the struct is never used,
    --  and there is no need to initialize the object; only the unique
-   --  address of a Cairo_data_key object is used.  Typically, you
-   --  would just use the address of a static Cairo_data_key object.
+   --  address of a Cairo_User_Data_Key object is used.  Typically, you
+   --  would just use the address of a static Cairo_User_Data_Key object.
 
    pragma Convention (C_Pass_By_Copy, Cairo_User_Data_Key);
 
